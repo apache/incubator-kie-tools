@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.gwt.dom.client.ButtonElement;
 import com.google.gwt.dom.client.HeadingElement;
 import com.google.gwt.dom.client.LIElement;
 import com.google.gwt.dom.client.SpanElement;
@@ -139,6 +140,9 @@ public class CollectionPresenterTest extends AbstractCollectionEditorTest {
     @Mock
     private SpanElement propertyTitleMock;
 
+    @Mock
+    private ButtonElement addItemButtonMock;
+
     private CollectionPresenter collectionEditorPresenter;
 
     @Before
@@ -149,6 +153,7 @@ public class CollectionPresenterTest extends AbstractCollectionEditorTest {
         when(collectionViewMock.getEditorTitle()).thenReturn(editorTitleMock);
         when(collectionViewMock.getPropertyTitle()).thenReturn(propertyTitleMock);
         when(collectionViewMock.getObjectSeparator()).thenReturn(objectSeparatorLIMock);
+        when(collectionViewMock.getAddItemButton()).thenReturn(addItemButtonMock);
         when(objectSeparatorLIMock.getStyle()).thenReturn(styleMock);
 
         when(nestedValue1Mock.keySet()).thenReturn(KEY_SET);
@@ -246,6 +251,9 @@ public class CollectionPresenterTest extends AbstractCollectionEditorTest {
         verify(collectionViewMock, times(1)).getElementsContainer();
         verify(listEditingBoxPresenterMock, times(1)).getEditingBox(eq(TEST_KEY), anyMap());
         verify(elementsContainerMock, times(1)).appendChild(eq(listEditingBoxMock));
+//        verify(collectionEditorPresenter, times(1)).toggleEditingStatus(eq(true));
+//        verify(listElementPresenterMock, times(1)).toggleEditingStatus(eq(true));
+//        verify(mapElementPresenterMock, times(1)).toggleEditingStatus(eq(true));
     }
 
     @Test
@@ -255,6 +263,9 @@ public class CollectionPresenterTest extends AbstractCollectionEditorTest {
         verify(collectionViewMock, times(1)).getElementsContainer();
         verify(mapEditingBoxPresenterMock, times(1)).getEditingBox(eq(TEST_KEY), anyMap(), anyMap());
         verify(elementsContainerMock, times(1)).appendChild(eq(mapEditingBoxMock));
+        verify(collectionEditorPresenter, times(1)).toggleEditingStatus(eq(true));
+        verify(listElementPresenterMock, times(1)).toggleEditingStatus(eq(true));
+        verify(mapElementPresenterMock, times(1)).toggleEditingStatus(eq(true));
     }
 
     @Test
@@ -276,6 +287,7 @@ public class CollectionPresenterTest extends AbstractCollectionEditorTest {
         verify(elementsContainerMock, times(1)).getChildCount();
         verify(listElementPresenterMock, times(1)).getItemContainer(eq(ITEM_ID), eq(propertyMapLocal));
         verify(elementsContainerMock, times(1)).appendChild(eq(itemElementMock));
+        verify(collectionEditorPresenter, times(1)).toggleEditingStatus(eq(false));
     }
 
     @Test
@@ -285,6 +297,7 @@ public class CollectionPresenterTest extends AbstractCollectionEditorTest {
         verify(elementsContainerMock, times(1)).getChildCount();
         verify(mapElementPresenterMock, times(1)).getKeyValueContainer(eq(ITEM_ID), eq(keyPropertyMapLocal), eq(propertyMapLocal));
         verify(elementsContainerMock, times(1)).appendChild(eq(itemElementMock));
+        verify(collectionEditorPresenter, times(1)).toggleEditingStatus(eq(false));
     }
 
     @Test
@@ -345,6 +358,24 @@ public class CollectionPresenterTest extends AbstractCollectionEditorTest {
     public void populateMap() {
         collectionEditorPresenter.populateMap(jsonValueMock);
         verify(collectionEditorPresenter, times(JSON_ARRAY_SIZE)).addMapItem(anyMap(), anyMap());
+    }
+
+    @Test
+    public void toggleEditingStatusToDisableTrue() {
+        collectionEditorPresenter.toggleEditingStatus(true);
+        verify(collectionViewMock, times(1)).getAddItemButton();
+        verify(addItemButtonMock, times(1)).setDisabled(eq(true));
+        verify(listElementPresenterMock, times(1)).toggleEditingStatus(eq(true));
+        verify(mapElementPresenterMock, times(1)).toggleEditingStatus(eq(true));
+    }
+
+    @Test
+    public void toggleEditingStatusToDisableFalse() {
+        collectionEditorPresenter.toggleEditingStatus(false);
+        verify(collectionViewMock, times(1)).getAddItemButton();
+        verify(addItemButtonMock, times(1)).setDisabled(eq(false));
+        verify(listElementPresenterMock, times(1)).toggleEditingStatus(eq(false));
+        verify(mapElementPresenterMock, times(1)).toggleEditingStatus(eq(false));
     }
 
     private void commonSetValue(boolean isListWidget) {

@@ -15,6 +15,7 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.collectioneditor;
 
+import com.google.gwt.dom.client.ButtonElement;
 import com.google.gwt.dom.client.LIElement;
 import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.dom.client.UListElement;
@@ -66,7 +67,12 @@ public interface ElementView<T extends ElementView.Presenter> extends HasPresent
          */
         void remove();
 
+        void toggleEditingStatus(boolean toDisable);
     }
+
+    ButtonElement getEditItemButton();
+
+    ButtonElement getDeleteItemButton();
 
     boolean isShown();
 

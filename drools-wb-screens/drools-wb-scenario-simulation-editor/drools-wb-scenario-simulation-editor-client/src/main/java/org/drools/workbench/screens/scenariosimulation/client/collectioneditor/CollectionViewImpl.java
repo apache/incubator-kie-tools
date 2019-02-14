@@ -196,6 +196,11 @@ public class CollectionViewImpl extends FocusWidget implements HasCloseComposite
         return propertyTitle;
     }
 
+    @Override
+    public ButtonElement getAddItemButton() {
+        return addItemButton;
+    }
+
     @EventHandler("collectionEditor")
     public void onCollectionEditorClick(ClickEvent clickEvent) {
         clickEvent.stopPropagation();

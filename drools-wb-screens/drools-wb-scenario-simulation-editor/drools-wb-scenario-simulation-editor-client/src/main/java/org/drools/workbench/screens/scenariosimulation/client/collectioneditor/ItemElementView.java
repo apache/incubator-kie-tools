@@ -40,6 +40,7 @@ public interface ItemElementView extends ElementView<ItemElementView.Presenter> 
          * @return
          */
         List<Map<String, String>> getItemsProperties();
+
     }
 
 }

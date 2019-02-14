@@ -26,7 +26,6 @@ import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 
 /**
  * This class is used to show a single <b>item</b> of a collection
- *
  */
 public abstract class ElementViewImpl<T extends ElementView.Presenter> implements ElementView<T> {
 
@@ -99,6 +98,14 @@ public abstract class ElementViewImpl<T extends ElementView.Presenter> implement
     @Override
     public SpanElement getFaAngleRight() {
         return faAngleRight;
+    }
+
+    @Override
+    public ButtonElement getEditItemButton() { return editItemButton; }
+
+    @Override
+    public ButtonElement getDeleteItemButton() {
+        return deleteItemButton;
     }
 
     @Override

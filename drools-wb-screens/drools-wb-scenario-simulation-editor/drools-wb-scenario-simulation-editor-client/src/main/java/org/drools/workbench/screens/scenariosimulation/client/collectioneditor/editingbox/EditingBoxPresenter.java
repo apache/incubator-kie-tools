@@ -39,6 +39,7 @@ public abstract class EditingBoxPresenter implements EditingBox.Presenter {
     @Override
     public void close(EditingBox toClose) {
         toClose.getEditingBox().removeFromParent();
+        collectionEditorPresenter.toggleEditingStatus(false);
     }
 
 }

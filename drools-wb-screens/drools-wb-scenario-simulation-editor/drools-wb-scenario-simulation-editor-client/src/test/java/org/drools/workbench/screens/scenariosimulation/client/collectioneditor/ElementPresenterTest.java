@@ -21,7 +21,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import com.google.gwt.dom.client.ButtonElement;
 import org.junit.Test;
+import org.mockito.Mock;
 
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
@@ -29,7 +31,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public abstract class ElementPresenterTest<E extends ElementView, T extends ElementView.Presenter<E>> extends AbstractCollectionEditorTest {
-
 
     protected final static String ELEMENT1_ID = "ELEMENT1_ID";
     protected final static String ELEMENT2_ID = "ELEMENT2_ID";
@@ -44,10 +45,17 @@ public abstract class ElementPresenterTest<E extends ElementView, T extends Elem
     protected E elementView1Mock;
     protected E elementView2Mock;
 
-
+    @Mock
+    protected ButtonElement editItemButtonMock;
+    @Mock
+    protected ButtonElement deleteItemButtonMock;
 
     protected void setup() {
         super.setup();
+        when(elementView1Mock.getEditItemButton()).thenReturn(editItemButtonMock);
+        when(elementView2Mock.getEditItemButton()).thenReturn(editItemButtonMock);
+        when(elementView1Mock.getDeleteItemButton()).thenReturn(deleteItemButtonMock);
+        when(elementView2Mock.getDeleteItemButton()).thenReturn(deleteItemButtonMock);
         when(elementView1Mock.getItemId()).thenReturn(ELEMENT1_ID);
         when(elementView2Mock.getItemId()).thenReturn(ELEMENT2_ID);
         when(elementView1Mock.getItemSeparator()).thenReturn(itemSeparatorMock);
@@ -63,8 +71,8 @@ public abstract class ElementPresenterTest<E extends ElementView, T extends Elem
         elementViewListLocal.add(elementView1Mock);
         elementViewListLocal.add(elementView2Mock);
         for (String el : Arrays.asList(ELEMENT1_ID, ELEMENT2_ID)) {
-            when(propertyPresenterMock.getProperties(eq(el +"#KEY"))).thenReturn(new HashMap<>());
-            when(propertyPresenterMock.getProperties(eq(el +"#VALUE"))).thenReturn(new HashMap<>());
+            when(propertyPresenterMock.getProperties(eq(el + "#KEY"))).thenReturn(new HashMap<>());
+            when(propertyPresenterMock.getProperties(eq(el + "#VALUE"))).thenReturn(new HashMap<>());
         }
     }
 
@@ -86,12 +94,32 @@ public abstract class ElementPresenterTest<E extends ElementView, T extends Elem
         });
     }
 
+    @Test
+    public void toggleEditItemButtonStatusToDisableTrue() {
+        elementPresenter.toggleEditingStatus(true);
+        elementViewListLocal.forEach(elementViewMock -> {
+            verify(elementViewMock, times(1)).getEditItemButton();
+            verify(elementViewMock, times(1)).getDeleteItemButton();
+        });
+        verify(editItemButtonMock, times(2)).setDisabled(true);
+        verify(deleteItemButtonMock, times(2)).setDisabled(true);
+    }
+
+    @Test
+    public void toggleEditItemButtonStatusToDisableFalse() {
+        elementPresenter.toggleEditingStatus(false);
+        elementViewListLocal.forEach(elementViewMock -> {
+            verify(elementViewMock, times(1)).getEditItemButton();
+            verify(elementViewMock, times(1)).getDeleteItemButton();
+        });
+        verify(editItemButtonMock, times(2)).setDisabled(false);
+        verify(deleteItemButtonMock, times(2)).setDisabled(false);
+    }
+
     private void commonOnToggleRowExpansion(boolean isShown) {
         elementPresenter.onToggleRowExpansion(isShown);
         elementViewListLocal.forEach(elementViewMock -> {
             verify(elementPresenter, times(1)).onToggleRowExpansion(eq(elementViewMock), eq(isShown));
         });
     }
-
-
 }

@@ -53,4 +53,13 @@ public abstract class ElementPresenter<E extends ElementView> implements Element
         newList.forEach(elementView -> onDeleteItem(elementView));
     }
 
+    @Override
+    public void toggleEditingStatus(boolean toDisable) {
+        elementViewList.forEach(element -> {
+            element.getEditItemButton().setDisabled(toDisable);
+            element.getDeleteItemButton().setDisabled(toDisable);
+        });
+    }
+
+
 }

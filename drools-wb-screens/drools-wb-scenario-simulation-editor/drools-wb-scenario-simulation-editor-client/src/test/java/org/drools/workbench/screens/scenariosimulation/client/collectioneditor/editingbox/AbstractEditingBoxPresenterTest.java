@@ -23,6 +23,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -54,5 +55,6 @@ public abstract class AbstractEditingBoxPresenterTest extends AbstractCollection
     public void close() {
         editingBoxPresenter.close(editingBoxToCloseMock);
         verify(editingBoxMock, times(1)).removeFromParent();
+        verify(collectionPresenterMock, times(1)).toggleEditingStatus(eq(false));
     }
 }

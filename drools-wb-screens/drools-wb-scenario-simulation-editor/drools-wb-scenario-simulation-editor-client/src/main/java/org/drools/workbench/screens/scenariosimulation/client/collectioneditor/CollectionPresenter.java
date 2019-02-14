@@ -99,12 +99,15 @@ public class CollectionPresenter implements CollectionView.Presenter {
     public void showEditingBox() {
         String key = collectionView.getEditorTitle().getInnerText();
         if (collectionView.isListWidget()) {
+            LIElement editingBox = listEditingBoxPresenter.getEditingBox(key, instancePropertiesMap.get(key));
             collectionView.getElementsContainer()
-                    .appendChild(listEditingBoxPresenter.getEditingBox(key, instancePropertiesMap.get(key)));
+                    .appendChild(editingBox);
         } else {
+            LIElement editingBox = mapEditingBoxPresenter.getEditingBox(key, instancePropertiesMap.get(key + "#key"), instancePropertiesMap.get(key + "#value"));
             collectionView.getElementsContainer()
-                    .appendChild(mapEditingBoxPresenter.getEditingBox(key, instancePropertiesMap.get(key + "#key"), instancePropertiesMap.get(key + "#value")));
+                    .appendChild(editingBox);
         }
+        toggleEditingStatus(true);
     }
 
     @Override
@@ -123,6 +126,7 @@ public class CollectionPresenter implements CollectionView.Presenter {
         String itemId = String.valueOf(elementsContainer.getChildCount() - 1);
         final LIElement itemElement = listElementPresenter.getItemContainer(itemId, propertiesValues);
         elementsContainer.appendChild(itemElement);
+        toggleEditingStatus(false);
     }
 
     @Override
@@ -131,6 +135,7 @@ public class CollectionPresenter implements CollectionView.Presenter {
         String itemId = String.valueOf(elementsContainer.getChildCount() - 1);
         final LIElement itemElement = mapElementPresenter.getKeyValueContainer(itemId, keyPropertiesValues, valuePropertiesValues);
         elementsContainer.appendChild(itemElement);
+        toggleEditingStatus(false);
     }
 
     @Override
@@ -156,6 +161,13 @@ public class CollectionPresenter implements CollectionView.Presenter {
             mapElementPresenter.remove();
         }
         toRemove = true;
+    }
+
+    @Override
+    public void toggleEditingStatus(boolean toDisable) {
+        collectionView.getAddItemButton().setDisabled(toDisable);
+        mapElementPresenter.toggleEditingStatus(toDisable);
+        listElementPresenter.toggleEditingStatus(toDisable);
     }
 
     protected void commonInit(String key, CollectionView collectionView) {
