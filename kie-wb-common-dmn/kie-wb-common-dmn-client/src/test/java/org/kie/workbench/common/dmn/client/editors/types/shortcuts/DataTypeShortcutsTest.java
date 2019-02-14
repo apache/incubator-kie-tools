@@ -26,6 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.uberfire.client.views.pfly.selectpicker.JQuery;
 
 import static com.google.gwt.dom.client.BrowserEvents.CLICK;
 import static com.google.gwt.dom.client.BrowserEvents.KEYDOWN;
@@ -107,10 +108,41 @@ public class DataTypeShortcutsTest {
     }
 
     @Test
-    public void testClickListener() {
-        shortcuts.clickListener(mock(Event.class));
+    public void testClickListenerWhenTabContentContainsTarget() {
+
+        final Event target = mock(Event.class);
+        final Element targetElement = mock(Element.class);
+        final Element tabContentElement = mock(Element.class);
+        final JQuery jQuery = mock(JQuery.class);
+
+        JQuery.$ = jQuery;
+        target.target = targetElement;
+        doReturn(tabContentElement).when(shortcuts).querySelector(".tab-content");
+        when(jQuery.contains(tabContentElement, targetElement)).thenReturn(true);
+
+        shortcuts.clickListener(target);
+
+        verify(listShortcuts).focusIn();
+        verify(listShortcuts, never()).reset();
+    }
+
+    @Test
+    public void testClickListenerWhenTabContentDoesNotContainTarget() {
+
+        final Event target = mock(Event.class);
+        final Element targetElement = mock(Element.class);
+        final Element tabContentElement = mock(Element.class);
+        final JQuery jQuery = mock(JQuery.class);
+
+        JQuery.$ = jQuery;
+        target.target = targetElement;
+        doReturn(tabContentElement).when(shortcuts).querySelector(".tab-content");
+        when(jQuery.contains(tabContentElement, targetElement)).thenReturn(false);
+
+        shortcuts.clickListener(target);
 
         verify(listShortcuts).reset();
+        verify(listShortcuts, never()).focusIn();
     }
 
     @Test

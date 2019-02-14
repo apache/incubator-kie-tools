@@ -238,8 +238,10 @@ public class DataTypeListItem {
 
     Command doSaveAndCloseEditMode(final DataType dataType) {
         return () -> {
+            final String referenceDataTypeHash = dataTypeList.calculateParentHash(dataType);
             dataTypeList.refreshItemsByUpdatedDataTypes(persist(dataType));
             closeEditMode();
+            dataTypeList.fireOnDataTypeListItemUpdateCallback(getNewDataTypeHash(dataType, referenceDataTypeHash));
         };
     }
 
@@ -405,7 +407,7 @@ public class DataTypeListItem {
             dataTypeList.refreshItemsByUpdatedDataTypes(updatedDataTypes);
         }
 
-        dataTypeList.enableEditMode(getNewDataTypeHash(newDataType, referenceDataTypeHash));
+        enableEditModeAndUpdateCallbacks(getNewDataTypeHash(newDataType, referenceDataTypeHash));
     }
 
     public void insertFieldBelow() {
@@ -422,7 +424,7 @@ public class DataTypeListItem {
             dataTypeList.refreshItemsByUpdatedDataTypes(updatedDataTypes);
         }
 
-        dataTypeList.enableEditMode(getNewDataTypeHash(newDataType, referenceDataTypeHash));
+        enableEditModeAndUpdateCallbacks(getNewDataTypeHash(newDataType, referenceDataTypeHash));
     }
 
     public void insertNestedField() {
@@ -433,9 +435,14 @@ public class DataTypeListItem {
         final DataType newDataType = newDataType();
         final String referenceDataTypeHash = dataTypeList.calculateHash(getDataType());
         final List<DataType> updatedDataTypes = newDataType.create(getDataType(), NESTED);
-
         dataTypeList.refreshItemsByUpdatedDataTypes(updatedDataTypes);
-        dataTypeList.enableEditMode(getNewDataTypeHash(newDataType, referenceDataTypeHash));
+
+        enableEditModeAndUpdateCallbacks(getNewDataTypeHash(newDataType, referenceDataTypeHash));
+    }
+
+    void enableEditModeAndUpdateCallbacks(final String dataTypeHash) {
+        dataTypeList.enableEditMode(dataTypeHash);
+        dataTypeList.fireOnDataTypeListItemUpdateCallback(dataTypeHash);
     }
 
     String getNewDataTypeHash(final DataType newDataType,

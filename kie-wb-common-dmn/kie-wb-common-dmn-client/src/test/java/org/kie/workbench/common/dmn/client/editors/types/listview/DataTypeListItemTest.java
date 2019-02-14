@@ -410,14 +410,19 @@ public class DataTypeListItemTest {
 
         final DataType dataType = spy(makeDataType());
         final List<DataType> updatedDataTypes = singletonList(makeDataType());
+        final String referenceDataTypeHash = "referenceDataTypeHash";
+        final String newDataTypeHash = "newDataTypeHash";
 
         doReturn(updatedDataTypes).when(listItem).persist(dataType);
         doReturn(dataType).when(listItem).getDataType();
+        doReturn(newDataTypeHash).when(listItem).getNewDataTypeHash(dataType, referenceDataTypeHash);
+        when(dataTypeList.calculateParentHash(dataType)).thenReturn(referenceDataTypeHash);
 
         listItem.doSaveAndCloseEditMode(dataType).execute();
 
         verify(dataTypeList).refreshItemsByUpdatedDataTypes(updatedDataTypes);
         verify(listItem).closeEditMode();
+        verify(dataTypeList).fireOnDataTypeListItemUpdateCallback(newDataTypeHash);
     }
 
     @Test
@@ -703,8 +708,8 @@ public class DataTypeListItemTest {
         listItem.insertFieldAbove();
 
         verify(listItem).closeEditMode();
+        verify(listItem).enableEditModeAndUpdateCallbacks(newDataTypeHash);
         verify(dataTypeList).insertAbove(newDataType, reference);
-        verify(dataTypeList).enableEditMode(newDataTypeHash);
     }
 
     @Test
@@ -727,8 +732,8 @@ public class DataTypeListItemTest {
         listItem.insertFieldAbove();
 
         verify(listItem).closeEditMode();
+        verify(listItem).enableEditModeAndUpdateCallbacks(newDataTypeHash);
         verify(dataTypeList).refreshItemsByUpdatedDataTypes(updatedDataTypes);
-        verify(dataTypeList).enableEditMode(newDataTypeHash);
     }
 
     @Test
@@ -751,8 +756,8 @@ public class DataTypeListItemTest {
         listItem.insertFieldBelow();
 
         verify(listItem).closeEditMode();
+        verify(listItem).enableEditModeAndUpdateCallbacks(newDataTypeHash);
         verify(dataTypeList).insertBelow(newDataType, reference);
-        verify(dataTypeList).enableEditMode(newDataTypeHash);
     }
 
     @Test
@@ -775,8 +780,8 @@ public class DataTypeListItemTest {
         listItem.insertFieldBelow();
 
         verify(listItem).closeEditMode();
+        verify(listItem).enableEditModeAndUpdateCallbacks(newDataTypeHash);
         verify(dataTypeList).refreshItemsByUpdatedDataTypes(updatedDataTypes);
-        verify(dataTypeList).enableEditMode(newDataTypeHash);
     }
 
     @Test
@@ -798,7 +803,7 @@ public class DataTypeListItemTest {
         listItem.insertNestedField();
 
         verify(dataTypeList).refreshItemsByUpdatedDataTypes(updatedDataTypes);
-        verify(dataTypeList).enableEditMode(newDataTypeHash);
+        verify(listItem).enableEditModeAndUpdateCallbacks(newDataTypeHash);
     }
 
     @Test
@@ -859,6 +864,17 @@ public class DataTypeListItemTest {
         listItem.refreshConstraintComponent();
 
         verify(dataTypeConstraintComponent).enable();
+    }
+
+    @Test
+    public void testEnableEditModeAndUpdateCallbacks() {
+
+        final String dataTypeHash = "dataTypeHash";
+
+        listItem.enableEditModeAndUpdateCallbacks(dataTypeHash);
+
+        verify(dataTypeList).enableEditMode(dataTypeHash);
+        verify(dataTypeList).fireOnDataTypeListItemUpdateCallback(dataTypeHash);
     }
 
     private DataType makeDataType() {

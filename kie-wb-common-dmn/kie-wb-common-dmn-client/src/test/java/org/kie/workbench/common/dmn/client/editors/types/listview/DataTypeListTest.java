@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import elemental2.dom.HTMLElement;
@@ -77,6 +78,9 @@ public class DataTypeListTest {
 
     @Mock
     private DataTypeSearchBar searchBar;
+
+    @Mock
+    private Consumer<DataTypeListItem> listItemConsumer;
 
     private DataTypeStore dataTypeStore;
 
@@ -549,6 +553,20 @@ public class DataTypeListTest {
         dataTypeList.enableEditMode(dataTypeHash);
 
         verify(listItem).enableEditMode();
+    }
+
+    @Test
+    public void testFireListItemUpdateCallbacks() {
+
+        final String dataTypeHash = "tCity.name";
+        final DataTypeListItem listItem = mock(DataTypeListItem.class);
+
+        doReturn(Optional.of(listItem)).when(dataTypeList).findItemByDataTypeHash(dataTypeHash);
+
+        dataTypeList.registerDataTypeListItemUpdateCallback(listItemConsumer);
+        dataTypeList.fireOnDataTypeListItemUpdateCallback(dataTypeHash);
+
+        verify(listItemConsumer).accept(listItem);
     }
 
     @Test

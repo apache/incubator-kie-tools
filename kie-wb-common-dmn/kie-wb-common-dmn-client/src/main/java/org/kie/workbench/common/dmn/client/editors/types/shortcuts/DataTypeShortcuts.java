@@ -31,6 +31,7 @@ import org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeList;
 
 import static com.google.gwt.dom.client.BrowserEvents.CLICK;
 import static com.google.gwt.dom.client.BrowserEvents.KEYDOWN;
+import static org.uberfire.client.views.pfly.selectpicker.JQuery.$;
 
 @ApplicationScoped
 public class DataTypeShortcuts {
@@ -74,8 +75,12 @@ public class DataTypeShortcuts {
         removeEventListener(CLICK, CLICK_LISTENER);
     }
 
-    void clickListener(final Event e) {
-        listShortcuts.reset();
+    void clickListener(final Event event) {
+        if (tabContentContainsTarget(event)) {
+            listShortcuts.focusIn();
+        } else {
+            listShortcuts.reset();
+        }
     }
 
     void keyDownListener(final Event e) {
@@ -154,7 +159,7 @@ public class DataTypeShortcuts {
     }
 
     boolean isSearchBarTarget(final KeyboardEvent event) {
-        final Element element = (Element) event.target;
+        final Element element = getTarget(event);
         return Objects.equals(element.getAttribute("data-field"), "search-bar");
     }
 
@@ -163,8 +168,18 @@ public class DataTypeShortcuts {
     }
 
     boolean isTargetElementAnInput(final KeyboardEvent event) {
-        final Element element = (Element) event.target;
+        final Element element = getTarget(event);
         return element instanceof HTMLInputElement;
+    }
+
+    private boolean tabContentContainsTarget(final Event event) {
+        final Element target = getTarget(event);
+        final Element tabContent = getTabContent();
+        return $.contains(tabContent, target);
+    }
+
+    private Element getTabContent() {
+        return querySelector(".tab-content");
     }
 
     boolean isDropdownOpened() {
@@ -187,5 +202,9 @@ public class DataTypeShortcuts {
     void removeEventListener(final String type,
                              final EventListener eventListener) {
         DomGlobal.document.removeEventListener(type, eventListener);
+    }
+
+    private Element getTarget(final Event e) {
+        return (Element) e.target;
     }
 }

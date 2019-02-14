@@ -41,13 +41,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItemView.UUID_ATTR;
-import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper.FOCUSED_CSS_CLASS;
 import static org.kie.workbench.common.dmn.client.editors.types.shortcuts.DataTypeListShortcutsView.HIGHLIGHT;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -291,35 +291,6 @@ public class DataTypeListShortcutsViewTest {
     }
 
     @Test
-    public void getFocusedDataTypeListItemWhenElementExists() {
-
-        final String uuid = "uuid";
-        final Element element = fakeDataTypeRow(uuid);
-        final DataTypeList dataTypeList = mock(DataTypeList.class);
-        final DataTypeListItem item = mock(DataTypeListItem.class);
-        final DataType dataType = fakeDataType(uuid);
-        final List<DataTypeListItem> items = singletonList(item);
-
-        when(item.getDataType()).thenReturn(dataType);
-        when(dataTypeList.getItems()).thenReturn(items);
-        when(presenter.getDataTypeList()).thenReturn(dataTypeList);
-        doReturn(Optional.of(element)).when(view).querySelector("." + FOCUSED_CSS_CLASS);
-
-        final Optional<DataTypeListItem> focusedDataTypeListItem = view.getFocusedDataTypeListItem();
-
-        assertTrue(focusedDataTypeListItem.isPresent());
-        assertEquals(item, focusedDataTypeListItem.get());
-    }
-
-    @Test
-    public void getFocusedDataTypeListItemWhenElementDoesNotExist() {
-
-        doReturn(Optional.empty()).when(view).querySelector("." + FOCUSED_CSS_CLASS);
-
-        assertFalse(view.getFocusedDataTypeListItem().isPresent());
-    }
-
-    @Test
     public void testAddHighlightClass() {
         final Element element = fakeDataTypeRow("uuid");
         element.classList = mock(DOMTokenList.class);
@@ -342,6 +313,77 @@ public class DataTypeListShortcutsViewTest {
         view.scrollTo(element);
 
         verify(scrollHelper).scrollTo(element, container, 20);
+    }
+
+    @Test
+    public void testSetCurrentUUID() {
+
+        final String expectedPreviousUUID = "123";
+        final String expectedCurrentUUID = "456";
+
+        view.setCurrentUUID(expectedPreviousUUID);
+        view.setCurrentUUID(expectedCurrentUUID);
+
+        final String actualPreviousUUID = view.getPreviousUUID();
+        final String actualCurrentUUID = view.getCurrentUUID();
+
+        assertEquals(expectedPreviousUUID, actualPreviousUUID);
+        assertEquals(expectedCurrentUUID, actualCurrentUUID);
+    }
+
+    @Test
+    public void testSetCurrentDataTypeRowWhenCurrentUUIDIsBlank() {
+
+        final Element element1 = fakeDataTypeRow("uuid1");
+        final Element element2 = fakeDataTypeRow("uuid2");
+
+        doReturn("uuid1").when(view).getCurrentUUID();
+        doReturn("something").when(view).getPreviousUUID();
+
+        final Optional<Element> actualElement = view.getCurrentDataTypeRow(asList(element1, element2));
+
+        assertEquals(element1, actualElement.get());
+    }
+
+    @Test
+    public void testSetCurrentDataTypeRowWhenCurrentUUIDIsNotBlank() {
+
+        final Element element1 = fakeDataTypeRow("uuid1");
+        final Element element2 = fakeDataTypeRow("uuid2");
+
+        doReturn("").when(view).getCurrentUUID();
+        doReturn("uuid1").when(view).getPreviousUUID();
+
+        final Optional<Element> actualElement = view.getCurrentDataTypeRow(asList(element1, element2));
+
+        assertEquals(element1, actualElement.get());
+    }
+
+    @Test
+    public void testFocusInWhenCurrentUUIDIsBlank() {
+
+        final DataTypeListItem listItem = mock(DataTypeListItem.class);
+        final HTMLElement element = mock(HTMLElement.class);
+
+        when(listItem.getElement()).thenReturn(element);
+        doReturn("").when(view).getCurrentUUID();
+        doReturn("uuid").when(view).getPreviousUUID();
+        doReturn(Optional.of(listItem)).when(view).getDataTypeListItem("uuid");
+        doNothing().when(view).highlight(any());
+
+        view.focusIn();
+
+        verify(view).highlight(element);
+    }
+
+    @Test
+    public void testFocusInWhenCurrentUUIDIsNotBlank() {
+
+        doReturn("something").when(view).getCurrentUUID();
+
+        view.focusIn();
+
+        verify(view, never()).highlight(any());
     }
 
     @Test

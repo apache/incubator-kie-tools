@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -47,6 +48,8 @@ public class DataTypeList {
     private final DataTypeSearchBar searchBar;
 
     private final DataTypeStackHash dataTypeStackHash;
+
+    private Consumer<DataTypeListItem> onDataTypeListItemUpdate = (e) -> { /* Nothing. */ };
 
     private List<DataTypeListItem> items;
 
@@ -193,15 +196,16 @@ public class DataTypeList {
         view.addSubItem(listItem);
 
         listItem.enableEditMode();
+        fireOnDataTypeListItemUpdateCallback(listItem);
     }
 
-    public void insertBelow(final DataType dataType,
-                            final DataType reference) {
+    void insertBelow(final DataType dataType,
+                     final DataType reference) {
         view.insertBelow(makeListItem(dataType), reference);
     }
 
-    public void insertAbove(final DataType dataType,
-                            final DataType reference) {
+    void insertAbove(final DataType dataType,
+                     final DataType reference) {
         view.insertAbove(makeListItem(dataType), reference);
     }
 
@@ -245,6 +249,18 @@ public class DataTypeList {
 
     public void enableEditMode(final String dataTypeHash) {
         findItemByDataTypeHash(dataTypeHash).ifPresent(DataTypeListItem::enableEditMode);
+    }
+
+    public void registerDataTypeListItemUpdateCallback(final Consumer<DataTypeListItem> onDataTypeListItemUpdate) {
+        this.onDataTypeListItemUpdate = onDataTypeListItemUpdate;
+    }
+
+    void fireOnDataTypeListItemUpdateCallback(final String dataTypeHash) {
+        findItemByDataTypeHash(dataTypeHash).ifPresent(this::fireOnDataTypeListItemUpdateCallback);
+    }
+
+    private void fireOnDataTypeListItemUpdateCallback(final DataTypeListItem listItem) {
+        onDataTypeListItemUpdate.accept(listItem);
     }
 
     Optional<DataTypeListItem> findItemByDataTypeHash(final String dataTypeHash) {

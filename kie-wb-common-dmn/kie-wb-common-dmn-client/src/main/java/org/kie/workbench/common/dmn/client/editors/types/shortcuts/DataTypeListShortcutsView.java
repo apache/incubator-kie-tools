@@ -35,7 +35,7 @@ import org.uberfire.client.views.pfly.selectpicker.JQueryList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItemView.UUID_ATTR;
-import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper.FOCUSED_CSS_CLASS;
+import static org.kie.workbench.common.stunner.core.util.StringUtils.isEmpty;
 import static org.uberfire.client.views.pfly.selectpicker.JQuery.$;
 
 @Dependent
@@ -48,6 +48,8 @@ public class DataTypeListShortcutsView implements DataTypeListShortcuts.View {
     final ListUtils utils = new ListUtils();
 
     private String currentUUID = "";
+
+    private String previousUUID = "";
 
     private DataTypeListShortcuts presenter;
 
@@ -89,12 +91,6 @@ public class DataTypeListShortcutsView implements DataTypeListShortcuts.View {
     }
 
     @Override
-    public Optional<DataTypeListItem> getFocusedDataTypeListItem() {
-        return querySelector("." + FOCUSED_CSS_CLASS)
-                .flatMap(focusedElement -> getDataTypeListItem(getUUID(focusedElement)));
-    }
-
-    @Override
     public List<DataTypeListItem> getVisibleDataTypeListItems() {
         return getVisibleDataTypeRows()
                 .stream()
@@ -111,6 +107,13 @@ public class DataTypeListShortcutsView implements DataTypeListShortcuts.View {
         setCurrentUUID(getUUID(element));
         addHighlightClass(element);
         scrollTo(element);
+    }
+
+    @Override
+    public void focusIn() {
+        if (isEmpty(getCurrentUUID())) {
+            getDataTypeListItem(getPreviousUUID()).ifPresent(listItem -> highlight(listItem.getElement()));
+        }
     }
 
     void scrollTo(final Element target) {
@@ -137,15 +140,11 @@ public class DataTypeListShortcutsView implements DataTypeListShortcuts.View {
         return presenter.getDataTypeList().getListItemsElement().querySelectorAll(selector);
     }
 
-    Optional<Element> querySelector(final String selector) {
-        return Optional.ofNullable(presenter.getDataTypeList().getListItemsElement().querySelector(selector));
-    }
-
     void addHighlightClass(final Element element) {
         element.classList.add(HIGHLIGHT);
     }
 
-    private Optional<DataTypeListItem> getDataTypeListItem(final String uuid) {
+    Optional<DataTypeListItem> getDataTypeListItem(final String uuid) {
         return presenter
                 .getDataTypeList()
                 .getItems()
@@ -154,10 +153,11 @@ public class DataTypeListShortcutsView implements DataTypeListShortcuts.View {
                 .findFirst();
     }
 
-    private Optional<Element> getCurrentDataTypeRow(final List<Element> elements) {
+    Optional<Element> getCurrentDataTypeRow(final List<Element> elements) {
+        final String uuid = isEmpty(getCurrentUUID()) ? getPreviousUUID() : getCurrentUUID();
         return elements
                 .stream()
-                .filter(e -> Objects.equals(getCurrentUUID(), getUUID(e)))
+                .filter(e -> Objects.equals(uuid, getUUID(e)))
                 .findFirst();
     }
 
@@ -169,7 +169,12 @@ public class DataTypeListShortcutsView implements DataTypeListShortcuts.View {
         return currentUUID;
     }
 
+    String getPreviousUUID() {
+        return previousUUID;
+    }
+
     void setCurrentUUID(final String currentUUID) {
+        this.previousUUID = this.currentUUID;
         this.currentUUID = currentUUID;
     }
 
