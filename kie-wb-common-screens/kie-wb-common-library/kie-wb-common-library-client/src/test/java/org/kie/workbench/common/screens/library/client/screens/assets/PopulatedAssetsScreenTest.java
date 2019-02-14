@@ -250,6 +250,7 @@ public class PopulatedAssetsScreenTest extends ProjectScreenTestBase {
 
         populatedAssetsScreen.search("");
 
+        verify(view).clear();
         verify(busyIndicatorView).showBusyIndicator(anyString());
         verify(populatedAssetsScreen).update(any());
         verify(busyIndicatorView).hideBusyIndicator();

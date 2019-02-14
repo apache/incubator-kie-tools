@@ -180,10 +180,10 @@ public class PopulatedAssetsScreen {
             case Normal: {
                 List<AssetInfo> assetInfos = result.getAssetInfos().get();
                 if (assetInfos.isEmpty()) {
+                    this.view.clear();
                     this.showSearchHitNothing();
                 } else {
 
-                    this.hideEmptyState();
                     List<AssetItemWidget> items = assetInfos.stream().map(asset -> {
                         AssetItemWidget item = null;
                         if (!asset.getFolderItem().getType().equals(FolderItemType.FOLDER)) {
@@ -207,6 +207,7 @@ public class PopulatedAssetsScreen {
                             .map(Optional::get)
                             .collect(Collectors.toList());
 
+                    this.hideEmptyState();
                     this.view.clear();
                     items.forEach(this.view::addAssetItem);
                 }
