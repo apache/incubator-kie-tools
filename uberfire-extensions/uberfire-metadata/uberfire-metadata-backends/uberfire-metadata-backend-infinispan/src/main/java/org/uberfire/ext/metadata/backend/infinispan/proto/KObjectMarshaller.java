@@ -78,7 +78,6 @@ public class KObjectMarshaller implements MessageMarshaller<KObject> {
 
         List<KProperty<?>> properties = descriptor.getFields()
                 .stream()
-                .filter(fieldDescriptor -> !isMainAttribute(fieldDescriptor))
                 .filter(fieldDescriptor ->
                                 isExtension(descriptor.getName())
                 )
@@ -89,12 +88,18 @@ public class KObjectMarshaller implements MessageMarshaller<KObject> {
                 )
                 .collect(toList());
 
-        String id = protoStreamReader.readString(MetaObject.META_OBJECT_ID);
-        String type = protoStreamReader.readString(MetaObject.META_OBJECT_TYPE);
-        String clusterId = protoStreamReader.readString(CLUSTER_ID);
-        String segmentId = protoStreamReader.readString(SEGMENT_ID);
-        String key = protoStreamReader.readString(MetaObject.META_OBJECT_KEY);
-        String fullText = protoStreamReader.readString(MetaObject.META_OBJECT_FULL_TEXT);
+        String id = getAndRemove(properties,
+                                 MetaObject.META_OBJECT_ID);
+        String type = getAndRemove(properties,
+                                   MetaObject.META_OBJECT_TYPE);
+        String clusterId = getAndRemove(properties,
+                                        MetaObject.META_OBJECT_CLUSTER_ID);
+        String segmentId = getAndRemove(properties,
+                                        MetaObject.META_OBJECT_SEGMENT_ID);
+        String key = getAndRemove(properties,
+                                  MetaObject.META_OBJECT_KEY);
+        String fullText = getAndRemove(properties,
+                                       MetaObject.META_OBJECT_FULL_TEXT);
 
         return new KObjectImpl(id,
                                type,
@@ -103,6 +108,13 @@ public class KObjectMarshaller implements MessageMarshaller<KObject> {
                                key,
                                properties,
                                !StringUtils.isEmpty(fullText));
+    }
+
+    private String getAndRemove(final List<KProperty<?>> properties,
+                                final String key) {
+        KProperty<?> value = properties.stream().filter(kProperty -> kProperty.getName().equals(key)).findFirst().get();
+        properties.remove(value);
+        return (String) value.getValue();
     }
 
     @Override
@@ -290,10 +302,6 @@ public class KObjectMarshaller implements MessageMarshaller<KObject> {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private boolean isMainAttribute(FieldDescriptor fieldDescriptor) {
-        return this.getMainAttributes().contains(fieldDescriptor.getName());
     }
 
     private KProperty<?> addKProperty(Map<Integer, KProperty<?>> props,
