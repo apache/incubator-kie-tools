@@ -46,6 +46,7 @@ import org.dashbuilder.displayer.client.AbstractDisplayerListener;
 import org.dashbuilder.displayer.client.Displayer;
 import org.dashbuilder.displayer.client.DisplayerListener;
 import org.dashbuilder.displayer.client.DisplayerLocator;
+import org.dashbuilder.displayer.client.RendererManager;
 import org.dashbuilder.displayer.client.events.DataSetLookupChangedEvent;
 import org.dashbuilder.displayer.client.events.DisplayerEditorClosedEvent;
 import org.dashbuilder.displayer.client.events.DisplayerEditorSavedEvent;
@@ -111,13 +112,15 @@ public class DisplayerEditor implements IsWidget {
     protected Command onSaveCommand = () -> {};
     protected DisplayerType displayerType = DisplayerType.BARCHART;
     protected DisplayerSubType displayerSubType = null;
+    protected RendererManager rendererManager;
+    protected String currentRenderer = "";
 
     DisplayerListener displayerListener = new AbstractDisplayerListener() {
         public void onError(Displayer displayer, ClientRuntimeError error) {
             view.error(error);
         }
     };
-
+    
     @Inject
     public DisplayerEditor(View view,
                            DataSetClientServices clientServices,
@@ -129,7 +132,8 @@ public class DisplayerEditor implements IsWidget {
                            DisplayerEditorStatus editorStatus,
                            DisplayerHtmlEditor displayerHtmlEditor,
                            Event<DisplayerEditorSavedEvent> savedEvent,
-                           Event<DisplayerEditorClosedEvent> closedEvent) {
+                           Event<DisplayerEditorClosedEvent> closedEvent,
+                           RendererManager rendererManager) {
         this.view = view;
         this.displayerLocator = displayerLocator;
         this.clientServices = clientServices;
@@ -141,6 +145,7 @@ public class DisplayerEditor implements IsWidget {
         this.displayerHtmlEditor = displayerHtmlEditor;
         this.saveEvent = savedEvent;
         this.closeEvent = closedEvent;
+        this.rendererManager = rendererManager;
 
         view.init(this);
     }
@@ -170,6 +175,11 @@ public class DisplayerEditor implements IsWidget {
         initSettingsEditor();
         gotoLastSection();
         showDisplayer();
+        
+        currentRenderer = displayerSettings.getRenderer(); 
+        if (currentRenderer == null || currentRenderer.trim().isEmpty()) {
+            currentRenderer = rendererManager.getDefaultRenderer(displayerSettings.getType()).getUUID();
+        }
     }
 
     protected boolean supportsHtmlTemplate() {
@@ -367,9 +377,14 @@ public class DisplayerEditor implements IsWidget {
     }
 
     void onDisplayerSettingsChanged(@Observes DisplayerSettingsChangedEvent event) {
+        String newRenderer = event.getDisplayerSettings().getRenderer();
         displayerSettings = event.getDisplayerSettings();
         initDisplayer();
         showDisplayer();
+        if (! currentRenderer.equals(newRenderer)) {
+            initSettingsEditor();
+            currentRenderer = newRenderer;
+        }
     }
 
     void onDisplayerTypeChanged(@Observes DisplayerTypeSelectedEvent event) {
