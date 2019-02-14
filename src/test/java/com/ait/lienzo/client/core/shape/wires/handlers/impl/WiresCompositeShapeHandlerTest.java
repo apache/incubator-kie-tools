@@ -17,27 +17,37 @@
  */
 package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 
+import java.util.Collections;
+
 import com.ait.lienzo.client.core.event.NodeDragEndEvent;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.wires.PickerPart;
+import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresCompositeControl;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresLayerIndex;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeHighlight;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.widget.DragContext;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import com.ait.tooling.common.api.java.util.function.Supplier;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyDouble;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -49,6 +59,9 @@ public class WiresCompositeShapeHandlerTest {
     private WiresCompositeControl control;
 
     @Mock
+    private WiresCompositeControl.Context context;
+
+    @Mock
     private WiresShapeHighlight<PickerPart.ShapePart> highlight;
 
     @Mock
@@ -56,6 +69,9 @@ public class WiresCompositeShapeHandlerTest {
 
     @Mock
     private DragContext dragContext;
+
+    @Mock
+    private WiresLayerIndex index;
 
     private WiresCompositeShapeHandler tested;
 
@@ -65,9 +81,16 @@ public class WiresCompositeShapeHandlerTest {
     public void setup() {
         parent = new WiresShape(new MultiPath().circle(10));
         when(control.getSharedParent()).thenReturn(parent);
-        tested = new WiresCompositeShapeHandler(control,
-                                                highlight,
-                                                manager);
+        when(control.getContext()).thenReturn(context);
+        when(context.getShapes()).thenReturn(Collections.<WiresShape>emptyList());
+        when(context.getConnectors()).thenReturn(Collections.<WiresConnector>emptyList());
+        tested = spy(new WiresCompositeShapeHandler(new Supplier<WiresLayerIndex>() {
+            @Override
+            public WiresLayerIndex get() {
+                return index;
+            }
+        }, control, highlight, manager));
+        doReturn(index).when(tested).getIndex();
     }
 
     @Test
@@ -77,6 +100,21 @@ public class WiresCompositeShapeHandlerTest {
         tested.startDrag(dragContext);
         verify(control, times(1)).onMoveStart(eq(10d),
                                               eq(5d));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testBuiltIndexOnStartDrag() {
+        when(dragContext.getDragStartX()).thenReturn(10);
+        when(dragContext.getDragStartY()).thenReturn(5);
+        WiresShape shape = new WiresShape(new MultiPath());
+        when(context.getShapes()).thenReturn(Collections.singletonList(shape));
+        tested.startDrag(dragContext);
+        verify(index, times(1)).exclude(eq(shape));
+        ArgumentCaptor<Supplier> indexCaptor = ArgumentCaptor.forClass(Supplier.class);
+        verify(control, times(1)).useIndex(indexCaptor.capture());
+        Supplier<WiresLayerIndex> value = indexCaptor.getValue();
+        assertEquals(index, value.get());
     }
 
     @Test
@@ -139,7 +177,7 @@ public class WiresCompositeShapeHandlerTest {
         when(dragContext.getDragStartX()).thenReturn(adjustedX);
         when(dragContext.getDragStartY()).thenReturn(adjustedY);
         when(endEvent.getDragContext()).thenReturn(dragContext);
-        when(control.onMoveComplete()).thenReturn(true);
+        when(control.onMove(anyDouble(), anyDouble())).thenReturn(false);
         when(control.accept()).thenReturn(true);
 
         tested.startDrag(dragContext);
@@ -150,6 +188,9 @@ public class WiresCompositeShapeHandlerTest {
         verify(control).execute();
         verify(highlight, atLeastOnce()).restore();
         verify(control, never()).reset();
+
+        // Verify index is being cleared.
+        verify(index, times(1)).clear();
     }
 
     @Test
@@ -164,7 +205,7 @@ public class WiresCompositeShapeHandlerTest {
         when(dragContext.getDragStartX()).thenReturn(adjustedX);
         when(dragContext.getDragStartY()).thenReturn(adjustedY);
         when(endEvent.getDragContext()).thenReturn(dragContext);
-        when(control.onMoveComplete()).thenReturn(true);
+        when(control.onMove(anyDouble(), anyDouble())).thenReturn(false);
         when(control.accept()).thenReturn(false);
 
         tested.startDrag(dragContext);
@@ -184,5 +225,7 @@ public class WiresCompositeShapeHandlerTest {
         verify(dragContext, times(1)).reset();
         verify(control, times(1)).reset();
         verify(highlight, atLeastOnce()).restore();
+        // Verify index is being cleared.
+        verify(index, times(1)).clear();
     }
 }

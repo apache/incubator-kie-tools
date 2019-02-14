@@ -62,10 +62,20 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyDouble;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class WiresConnectorControlImplTest {
@@ -302,9 +312,9 @@ public class WiresConnectorControlImplTest {
         assertEquals(p3, CP3);
         assertEquals(CP4_INIT, CP4);
         verify(connector, never()).moveControlPoint(eq(1), eq(p0));
-        verify(connector, times(1)).moveControlPoint(eq(1), eq(p1));
-        verify(connector, times(1)).moveControlPoint(eq(2), eq(p2));
-        verify(connector, times(1)).moveControlPoint(eq(3), eq(p3));
+        verify(connector, atLeastOnce()).moveControlPoint(eq(1), eq(p1));
+        verify(connector, atLeastOnce()).moveControlPoint(eq(2), eq(p2));
+        verify(connector, atLeastOnce()).moveControlPoint(eq(3), eq(p3));
         verify(connector, never()).moveControlPoint(eq(1), eq(p4));
     }
 
@@ -418,6 +428,11 @@ public class WiresConnectorControlImplTest {
         assertEquals(CP0, points.get(0));
         assertEquals(CP1, points.get(1));
         assertEquals(CP2, points.get(2));
+    }
+
+    @Test
+    public void testAccept() {
+        assertTrue(tested.accept());
     }
 
     @Test

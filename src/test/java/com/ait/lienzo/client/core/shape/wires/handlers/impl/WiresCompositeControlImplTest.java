@@ -16,28 +16,45 @@
 
 package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.MultiPathDecorator;
 import com.ait.lienzo.client.core.shape.PolyLine;
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.shape.wires.WiresContainer;
+import com.ait.lienzo.client.core.shape.wires.WiresLayer;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
-import com.ait.lienzo.client.core.shape.wires.handlers.*;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresCompositeControl;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresContainmentControl;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresDockingControl;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresLayerIndex;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresParentPickerControl;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeControl;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import com.ait.tooling.common.api.java.util.function.Supplier;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class WiresCompositeControlImplTest extends AbstractWiresControlTest {
@@ -58,10 +75,10 @@ public class WiresCompositeControlImplTest extends AbstractWiresControlTest {
     private WiresShapeControl shapeControl1;
 
     @Mock
-    private WiresParentPickerCachedControl parentPicker1;
+    private WiresParentPickerControl parentPicker1;
 
     @Mock
-    private WiresParentPickerControl.Index index1;
+    private WiresLayerIndex index1;
 
     @Mock
     private WiresDockingControl dockingControl1;
@@ -117,12 +134,24 @@ public class WiresCompositeControlImplTest extends AbstractWiresControlTest {
     }
 
     @Test
-    public void testSkipAllSelectedShapesOnStart() {
+    public void testUseIndex() {
+        Supplier<WiresLayerIndex> indexSupplier = new Supplier<WiresLayerIndex>() {
+            @Override
+            public WiresLayerIndex get() {
+                return index;
+            }
+        };
+        tested.useIndex(indexSupplier);
+        verify(shapeControl, times(1)).useIndex(eq(indexSupplier));
+        verify(shapeControl1, times(1)).useIndex(eq(indexSupplier));
+    }
+
+    @Test
+    public void testNeverUpdateIndexOnStart() {
         tested.onMoveStart(2d, 7d);
-        verify(index, times(1)).exclude(shape);
-        verify(index, times(1)).exclude(shape1);
-        verify(index1, times(1)).exclude(shape);
-        verify(index1, times(1)).exclude(shape1);
+        verify(index, never()).exclude(any(WiresContainer.class));
+        verify(index, never()).build(any(WiresLayer.class));
+        verify(index, never()).clear();
     }
 
     @Test

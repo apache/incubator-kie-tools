@@ -26,6 +26,7 @@ import com.ait.lienzo.client.core.shape.wires.OptionalBounds;
 import com.ait.lienzo.client.core.shape.wires.WiresConnection;
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.shape.wires.WiresContainer;
+import com.ait.lienzo.client.core.shape.wires.WiresLayer;
 import com.ait.lienzo.client.core.shape.wires.WiresMagnet;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.shape.wires.handlers.AlignAndDistributeControl;
@@ -48,7 +49,6 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyDouble;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -168,6 +168,7 @@ public class WiresShapeControlImplTest extends AbstractWiresControlTest {
         when(connector.getTailDecorator()).thenReturn(tailDecorator);
         when(connector.getHeadConnection()).thenReturn(connection1);
         when(connector.getTailConnection()).thenReturn(connection2);
+        when(parentPicker.getShape()).thenReturn(shape);
         when(parentPicker.onMove(10, 10)).thenReturn(false);
         when(connector.getHead()).thenReturn(head);
         when(connector.getTail()).thenReturn(tail);
@@ -190,13 +191,14 @@ public class WiresShapeControlImplTest extends AbstractWiresControlTest {
     @Test
     public void testOnMoveStart() {
         tested.onMoveStart(2, 7);
-        verify(index, times(1)).exclude(eq(shape));
-        verify(index, times(1)).exclude(eq(childWiresShape1));
-        verify(index, never()).clear();
         verify(m_dockingAndControl, times(1)).onMoveStart(eq(2d), eq(7d));
         verify(m_containmentControl, times(1)).onMoveStart(eq(2d), eq(7d));
         verify(alignAndDistributeControl, times(1)).dragStart();
         verify(connectorControl, times(1)).onMoveStart(eq(2d), eq(7d));
+        // Verify index is never updated.
+        verify(index, never()).build(any(WiresLayer.class));
+        verify(index, never()).exclude(any(WiresContainer.class));
+        verify(index, never()).clear();
     }
 
     @Test
@@ -214,8 +216,6 @@ public class WiresShapeControlImplTest extends AbstractWiresControlTest {
 
     @Test
     public void testOnMoveComplete() {
-        when(m_dockingAndControl.onMoveComplete()).thenReturn(true);
-        when(m_containmentControl.onMoveComplete()).thenReturn(true);
         tested.onMoveStart(1, 4);
         tested.onMoveComplete();
         verify(m_dockingAndControl, times(1)).onMoveComplete();

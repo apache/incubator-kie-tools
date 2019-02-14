@@ -15,6 +15,8 @@
  */
 package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 
+import java.util.HashSet;
+
 import com.ait.lienzo.client.core.event.NodeDragEndEvent;
 import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
 import com.ait.lienzo.client.core.event.NodeDragStartEvent;
@@ -45,10 +47,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.Mock;
-
-import java.util.HashSet;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -56,7 +55,11 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyDouble;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class WiresConnectorHandlerImplTest
@@ -119,6 +122,7 @@ public class WiresConnectorHandlerImplTest
         Point2DArray linePoints = new Point2DArray(new Point2D(0, 0), new Point2D(100, 100));
         BoundingBox boundingBox = new BoundingBox(0, 0, 100, 100);
         when(connector.getControl()).thenReturn(control);
+        when(control.accept()).thenReturn(true);
         when(control.getControlPointBuilder()).thenReturn(controlPointBuilder);
         when(control.areControlPointsVisible()).thenReturn(true);
         when(control.getPointHandleDecorator()).thenReturn(pointHandleDecorator);
@@ -170,11 +174,11 @@ public class WiresConnectorHandlerImplTest
         DragContext      context = mockDragContext();
         NodeDragEndEvent event   = mock(NodeDragEndEvent.class);
         when(event.getDragContext()).thenReturn(context);
-        when(control.onMoveComplete()).thenReturn(true);
+        when(control.onMove(anyDouble(), anyDouble())).thenReturn(false);
         tested.onNodeDragEnd(event);
         verify(control, times(1)).execute();
         verify(control, times(1)).onMoveComplete();
-        verify(control, never()).onMove(anyDouble(), anyDouble());
+        verify(control, times(1)).onMove(anyDouble(), anyDouble());
         verify(control, never()).onMoveStart(anyDouble(), anyDouble());
         verify(control, never()).reset();
     }
@@ -185,11 +189,12 @@ public class WiresConnectorHandlerImplTest
         DragContext      context = mockDragContext();
         NodeDragEndEvent event   = mock(NodeDragEndEvent.class);
         when(event.getDragContext()).thenReturn(context);
-        when(control.onMoveComplete()).thenReturn(false);
+        when(control.onMove(anyDouble(), anyDouble())).thenReturn(false);
+        when(control.accept()).thenReturn(false);
         tested.onNodeDragEnd(event);
         verify(control, times(1)).reset();
-        verify(control, times(1)).onMoveComplete();
-        verify(control, never()).onMove(anyDouble(), anyDouble());
+        verify(control, times(1)).onMove(anyDouble(), anyDouble());
+        verify(control, never()).onMoveComplete();
         verify(control, never()).onMoveStart(anyDouble(), anyDouble());
         verify(control, never()).execute();
     }

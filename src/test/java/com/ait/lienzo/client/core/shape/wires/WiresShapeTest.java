@@ -311,6 +311,7 @@ public class WiresShapeTest
 
         tested.refresh();
 
+        verify(tested, times(1)).destroyControls();
         verify(controls).refresh();
     }
 

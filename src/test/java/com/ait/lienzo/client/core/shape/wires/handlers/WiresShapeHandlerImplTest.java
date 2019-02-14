@@ -21,18 +21,23 @@ import com.ait.lienzo.client.core.event.NodeDragEndEvent;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.wires.PickerPart;
+import com.ait.lienzo.client.core.shape.wires.WiresLayer;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresShapeHandlerImpl;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.widget.DragContext;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import com.ait.tooling.common.api.java.util.function.Supplier;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.mockito.Matchers.anyDouble;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
@@ -66,8 +71,12 @@ public class WiresShapeHandlerImplTest {
     @Mock
     private DragContext dragContext;
 
+    @Mock
+    private WiresLayerIndex index;
+
     private WiresShapeHandlerImpl tested;
     private Layer layer;
+    private WiresLayer wiresLayer;
     private WiresShape shape;
     private WiresShape parent;
 
@@ -78,19 +87,28 @@ public class WiresShapeHandlerImplTest {
         layer = new Layer();
         layer.add(shape.getGroup());
         layer.add(parent.getGroup());
+        wiresLayer = new WiresLayer(layer);
+        when(manager.getLayer()).thenReturn(wiresLayer);
         when(control.getDockingControl()).thenReturn(dockingControl);
         when(control.getContainmentControl()).thenReturn(containmentControl);
         when(control.getParentPickerControl()).thenReturn(parentPickerControl);
+        when(parentPickerControl.getIndex()).thenReturn(index);
         when(parentPickerControl.getShape()).thenReturn(shape);
         when(parentPickerControl.getParent()).thenReturn(parent);
         when(parentPickerControl.getParentShapePart()).thenReturn(PickerPart.ShapePart.BODY);
         when(dragContext.getStartAdjusted()).thenReturn(new Point2D(0,
                                                                     0));
         shape.setControl(control);
-        tested = spy(new WiresShapeHandlerImpl(shape, highlight, manager));
+        tested = spy(new WiresShapeHandlerImpl(new Supplier<WiresLayerIndex>() {
+            @Override
+            public WiresLayerIndex get() {
+                return index;
+            }
+        }, shape, highlight, manager));
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testOnStartDrag() {
         when(dragContext.getStartAdjusted()).thenReturn(new Point2D(10,
                                                                     5));
@@ -100,6 +118,15 @@ public class WiresShapeHandlerImplTest {
                                               eq(5d));
         verify(highlight, times(1)).highlight(eq(parent),
                                               eq(PickerPart.ShapePart.BODY));
+
+        // Verify index is being built.
+        verify(index, never()).clear();
+        verify(index, times(1)).exclude(eq(shape));
+        verify(index, times(1)).build(eq(wiresLayer));
+        ArgumentCaptor<Supplier> indexCaptor = ArgumentCaptor.forClass(Supplier.class);
+        verify(control, times(1)).useIndex(indexCaptor.capture());
+        Supplier<WiresLayerIndex> value = indexCaptor.getValue();
+        assertEquals(index, value.get());
     }
 
     @Test
@@ -155,7 +182,7 @@ public class WiresShapeHandlerImplTest {
                                                                     adjustedY));
 
         when(endEvent.getDragContext()).thenReturn(dragContext);
-        when(control.onMoveComplete()).thenReturn(true);
+        when(control.onMove(anyDouble(), anyDouble())).thenReturn(false);
         when(control.accept()).thenReturn(true);
 
         tested.startDrag(dragContext);
@@ -166,6 +193,9 @@ public class WiresShapeHandlerImplTest {
         verify(control).execute();
         verify(highlight, atLeastOnce()).restore();
         verify(control, never()).reset();
+
+        // Verify index is being cleared.
+        verify(index, times(1)).clear();
     }
 
     @Test
@@ -181,7 +211,7 @@ public class WiresShapeHandlerImplTest {
                                                                     adjustedY));
 
         when(endEvent.getDragContext()).thenReturn(dragContext);
-        when(control.onMoveComplete()).thenReturn(true);
+        when(control.onMove(anyDouble(), anyDouble())).thenReturn(false);
         when(control.accept()).thenReturn(false);
 
         tested.startDrag(dragContext);
@@ -201,5 +231,7 @@ public class WiresShapeHandlerImplTest {
         verify(dragContext, times(1)).reset();
         verify(control, times(1)).reset();
         verify(highlight, atLeastOnce()).restore();
+        // Verify index is being cleared.
+        verify(index, times(1)).clear();
     }
 }

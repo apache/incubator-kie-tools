@@ -22,7 +22,7 @@ import com.ait.lienzo.client.core.shape.wires.IDockingAcceptor;
 import com.ait.lienzo.client.core.shape.wires.PickerPart;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
-import com.ait.lienzo.client.core.shape.wires.handlers.WiresParentPickerControl;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresLayerIndex;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresMagnetsControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeControl;
 import com.ait.lienzo.client.core.shape.wires.picker.ColorMapBackedPicker;
@@ -50,10 +50,10 @@ public abstract class AbstractWiresControlTest {
     protected ColorMapBackedPicker.PickerOptions pickerOptions;
 
     @Mock
-    protected WiresParentPickerCachedControl parentPicker;
+    protected WiresParentPickerControlImpl parentPicker;
 
     @Mock
-    protected WiresParentPickerControl.Index index;
+    protected WiresLayerIndex index;
 
     @Mock
     protected IDockingAcceptor dockingAcceptor;
@@ -85,15 +85,12 @@ public abstract class AbstractWiresControlTest {
 
         when(shapeControl.getMagnetsControl()).thenReturn(shapeMagnetsControl);
         when(parentControl.getMagnetsControl()).thenReturn(parentMagnetsControl);
-        when(parentPicker.getWiresLayer()).thenReturn(manager.getLayer());
         when(parentPicker.getParent()).thenReturn(parent);
         when(dockingAcceptor.dockingAllowed(parent, shape)).thenReturn(true);
         when(parentPicker.getParentShapePart()).thenReturn(PickerPart.ShapePart.BORDER);
         when(parentPicker.getShape()).thenReturn(shape);
         when(parentPicker.getCurrentLocation()).thenReturn(parent.getLocation());
-        when(parentPicker.onMove(anyDouble(), anyDouble())).thenReturn(true);
-        when(parentPicker.getPickerOptions()).thenReturn(pickerOptions);
-        when(parentPicker.getIndex()).thenReturn(index);
+        when(parentPicker.onMove(anyDouble(), anyDouble())).thenReturn(false);
         when(parentPicker.getIndex()).thenReturn(index);
 
         shape.setLocation(new Point2D(0, 0));
