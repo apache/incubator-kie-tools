@@ -134,7 +134,7 @@ public class ScenarioSimulationGridHeaderUtilities {
         return String.join(".", simulation.getSimulationDescriptor().getFactMappingByIndex(columnIndex).getExpressionElementsWithoutClass()
                 .stream()
                 .map(ExpressionElement::getStep)
-                .collect(Collectors.toSet()));
+                .collect(Collectors.toList()));
     }
 
     public static boolean isHeaderEditable(BaseGridRendererHelper rendererHelper, ScenarioHeaderMetaData clickedScenarioHeaderMetadata, ScenarioGridColumn scenarioGridColumn) {

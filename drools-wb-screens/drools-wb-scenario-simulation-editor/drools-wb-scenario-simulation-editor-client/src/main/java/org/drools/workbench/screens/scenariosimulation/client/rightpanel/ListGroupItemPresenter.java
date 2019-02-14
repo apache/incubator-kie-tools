@@ -16,6 +16,7 @@
 package org.drools.workbench.screens.scenariosimulation.client.rightpanel;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -61,20 +62,21 @@ public class ListGroupItemPresenter implements ListGroupItemView.Presenter {
     }
 
     @Override
-    public void selectProperty(String factName, String propertyName) {
+    public void selectProperty(String factName, List<String> propertyParts) {
         final ListGroupItemView listGroupItemView = listGroupItemViewMap.get(factName);
         if (!listGroupItemView.isShown()) {
             onToggleRowExpansion(listGroupItemView, false);
         }
         String key;
-        if (propertyName.contains(".")) {
-            key = factName + "." + propertyName.substring(0, propertyName.indexOf("."));
+        for (int i = 1; i < propertyParts.size(); i++) {
+            String subPart = String.join(".", propertyParts.subList(0, i));
+            key = factName + "." + subPart;
             final ListGroupItemView subListGroupItemView = listGroupItemViewMap.get(key);
-            if (!subListGroupItemView.isShown()) {
+            if (subListGroupItemView != null && !subListGroupItemView.isShown()) {
                 onToggleRowExpansion(subListGroupItemView, false);
             }
         }
-        key = factName + "." + propertyName;
+        key = factName + "." + String.join(".", propertyParts);
         if (fieldItemPresenter.fieldItemMap.containsKey(key)) {
             fieldItemPresenter.fieldItemMap.get(key).onFieldElementClick();
         }

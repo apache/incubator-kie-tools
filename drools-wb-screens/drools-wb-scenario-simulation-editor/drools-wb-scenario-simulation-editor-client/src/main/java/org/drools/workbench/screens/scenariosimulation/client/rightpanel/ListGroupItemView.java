@@ -15,6 +15,8 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.rightpanel;
 
+import java.util.List;
+
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.LIElement;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -124,9 +126,9 @@ public interface ListGroupItemView extends IsWidget,
         /**
          * Expand the node and select the given property
          * @param factName
-         * @param propertyName
+         * @param propertyParts
          */
-        void selectProperty(String factName, String propertyName);
+        void selectProperty(String factName, List<String> propertyParts);
 
 
     }

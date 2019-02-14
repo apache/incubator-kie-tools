@@ -17,6 +17,7 @@
 package org.drools.workbench.screens.scenariosimulation.client.rightpanel;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -302,7 +303,8 @@ public class RightPanelPresenter implements RightPanelView.Presenter {
         editingColumnEnabled = true;
         view.enableEditorTab();
         if (propertyName != null && !notEqualsSearch) {
-            listGroupItemPresenter.selectProperty(factName, propertyName);
+            List<String> propertyParts = propertyName.contains(".") ? Arrays.asList(propertyName.split("\\.")) : Collections.singletonList(propertyName);
+            listGroupItemPresenter.selectProperty(factName, propertyParts);
         }
     }
 

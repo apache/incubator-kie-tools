@@ -226,7 +226,10 @@ public class ScenarioSimulationEditorPresenter
     }
 
     public void expandToolsDock() {
-        scenarioSimulationDocksHandler.expandToolsDock();
+        final DefaultPlaceRequest placeRequest = new DefaultPlaceRequest(RightPanelPresenter.IDENTIFIER);
+        if (!PlaceStatus.OPEN.equals(placeManager.getStatus(placeRequest))) {
+            scenarioSimulationDocksHandler.expandToolsDock();
+        }
     }
 
     public ScenarioSimulationView getView() {
