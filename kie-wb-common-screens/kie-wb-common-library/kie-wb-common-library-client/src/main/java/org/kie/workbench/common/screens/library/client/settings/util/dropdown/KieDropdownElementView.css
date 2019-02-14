@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-.dropdown .dropdown-menu li.action a {
+[data-i18n-prefix="KieDropdownElementView."].dropdown .dropdown-menu li.action a {
     color: #0088ce;
 }
 
-.dropdown .dropdown-menu .option-link .option-label {
+[data-i18n-prefix="KieDropdownElementView."].dropdown .dropdown-menu .option-link .option-label {
     padding-right: 20px;
 }
 
-.dropdown .dropdown-menu .fa-pull-right {
+[data-i18n-prefix="KieDropdownElementView."].dropdown .dropdown-menu .fa-pull-right {
     line-height: inherit;
     position: absolute;
     right: 8px;
 }
 
-.dropdown .dropdown-menu {
+[data-i18n-prefix="KieDropdownElementView."].dropdown .dropdown-menu {
     overflow-y: auto;
     max-height: 500px;
 }
