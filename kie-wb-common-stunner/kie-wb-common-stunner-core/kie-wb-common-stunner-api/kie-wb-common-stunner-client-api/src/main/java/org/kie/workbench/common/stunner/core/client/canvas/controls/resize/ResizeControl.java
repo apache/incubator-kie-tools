@@ -30,10 +30,4 @@ public interface ResizeControl<C extends CanvasHandler, E extends Element>
     CommandResult<CanvasViolation> resize(final E element,
                                           final double width,
                                           final double height);
-
-    CommandResult<CanvasViolation> resize(final E element,
-                                          final double x,
-                                          final double y,
-                                          final double width,
-                                          final double height);
 }

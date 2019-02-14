@@ -41,7 +41,7 @@ public class WiresCanvasView extends LienzoCanvasView<WiresLayer> {
     }
 
     @Override
-    public LienzoCanvasView add(final ShapeView<?> shape) {
+    public LienzoCanvasView<WiresLayer> add(final ShapeView<?> shape) {
         if (WiresUtils.isWiresShape(shape)) {
             layer.add((WiresShape) shape);
         } else if (WiresUtils.isWiresConnector(shape)) {
@@ -64,7 +64,7 @@ public class WiresCanvasView extends LienzoCanvasView<WiresLayer> {
     }
 
     @Override
-    public LienzoCanvasView delete(final ShapeView<?> shape) {
+    public LienzoCanvasView<WiresLayer> delete(final ShapeView<?> shape) {
         if (WiresUtils.isWiresShape(shape)) {
             layer.delete((WiresShape) shape);
         } else if (WiresUtils.isWiresConnector(shape)) {
@@ -93,6 +93,7 @@ public class WiresCanvasView extends LienzoCanvasView<WiresLayer> {
         final WiresShape childShape = (WiresShape) child;
         layer.addChild(parentShape,
                        childShape);
+        childShape.shapeMoved();
         return this;
     }
 
@@ -103,6 +104,7 @@ public class WiresCanvasView extends LienzoCanvasView<WiresLayer> {
         final WiresShape childShape = (WiresShape) child;
         layer.deleteChild(parentShape,
                           childShape);
+        childShape.shapeMoved();
         return this;
     }
 
@@ -113,6 +115,7 @@ public class WiresCanvasView extends LienzoCanvasView<WiresLayer> {
         final WiresShape childShape = (WiresShape) child;
         layer.dock(parentShape,
                    childShape);
+        childShape.shapeMoved();
         return this;
     }
 
@@ -121,6 +124,7 @@ public class WiresCanvasView extends LienzoCanvasView<WiresLayer> {
                                    final ShapeView<?> child) {
         final WiresShape childShape = (WiresShape) child;
         layer.undock(childShape);
+        childShape.shapeMoved();
         return this;
     }
 

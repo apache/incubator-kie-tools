@@ -37,15 +37,6 @@ public abstract class AbstractCanvasGraphCommand
         extends AbstractCanvasCommand
         implements HasGraphCommand<AbstractCanvasHandler> {
 
-    private boolean canvasCommandFirst = false;
-
-    public AbstractCanvasGraphCommand() {
-    }
-
-    public AbstractCanvasGraphCommand(boolean canvasCommandFirst) {
-        this.canvasCommandFirst = canvasCommandFirst;
-    }
-
     /**
      * The private instance of the graph command.
      * It's a private stateful command instance - will be used for undoing the operation on the graph.
@@ -85,60 +76,32 @@ public abstract class AbstractCanvasGraphCommand
 
     @Override
     public CommandResult<CanvasViolation> allow(final AbstractCanvasHandler context) {
-        final CommandResult<CanvasViolation> result = canvasCommandFirst ?
-                performOperationOnCanvas(context, CommandOperation.ALLOW) :
-                performOperationOnGraph(context, CommandOperation.ALLOW);
-
+        final CommandResult<CanvasViolation> result = performOperationOnGraph(context, CommandOperation.ALLOW);
         if (canDoNexOperation(result)) {
-            return canvasCommandFirst ? performOperationOnGraph(context, CommandOperation.ALLOW) :
-                    performOperationOnCanvas(context, CommandOperation.ALLOW);
+            return performOperationOnCanvas(context, CommandOperation.ALLOW);
         }
         return result;
     }
 
     @Override
     public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
-        CommandResult<CanvasViolation> result = canvasCommandFirst ?
-                performOperationOnCanvas(context, CommandOperation.EXECUTE) :
-                performOperationOnGraph(context, CommandOperation.EXECUTE);
-
-        boolean revertGraphCommand = false;
-        boolean revertCanvasCommand = false;
-
+        CommandResult<CanvasViolation> result = performOperationOnGraph(context, CommandOperation.EXECUTE);
         if (canDoNexOperation(result)) {
-            final CommandResult<CanvasViolation> lastResult = canvasCommandFirst ?
-                    performOperationOnGraph(context, CommandOperation.EXECUTE) :
+            final CommandResult<CanvasViolation> canvasResult =
                     performOperationOnCanvas(context, CommandOperation.EXECUTE);
-            if (!canDoNexOperation(lastResult)) {
-                revertGraphCommand = true;
-                revertCanvasCommand = true;
-                result = lastResult;
+            if (!canDoNexOperation(canvasResult)) {
+                performOperationOnGraph(context, CommandOperation.UNDO);
+                return canvasResult;
             }
-        } else {
-            revertGraphCommand = true;
         }
-
-        if (revertGraphCommand) {
-            performOperationOnGraph(context, CommandOperation.UNDO);
-        }
-
-        if (revertCanvasCommand) {
-            performOperationOnCanvas(context, CommandOperation.UNDO);
-        }
-
         return result;
     }
 
     @Override
     public CommandResult<CanvasViolation> undo(final AbstractCanvasHandler context) {
-        final CommandResult<CanvasViolation> result = canvasCommandFirst ?
-                performOperationOnCanvas(context, CommandOperation.UNDO) :
-                performOperationOnGraph(context, CommandOperation.UNDO);
-
+        final CommandResult<CanvasViolation> result = performOperationOnGraph(context, CommandOperation.UNDO);
         if (canDoNexOperation(result)) {
-            return canvasCommandFirst ?
-                    performOperationOnGraph(context, CommandOperation.UNDO) :
-                    performOperationOnCanvas(context, CommandOperation.UNDO);
+            return performOperationOnCanvas(context, CommandOperation.UNDO);
         }
         return result;
     }
@@ -201,17 +164,5 @@ public abstract class AbstractCanvasGraphCommand
 
     private boolean canDoNexOperation(CommandResult<CanvasViolation> result) {
         return null == result || !CommandUtils.isError(result);
-    }
-
-    @Override
-    public String toString() {
-        return "[" +
-                this.getClass().getName() +
-                "]" +
-                " [canvasCommand=" +
-                (null != canvasCommand ? canvasCommand.toString() : "null") +
-                " [graphCommand=" +
-                (null != graphCommand ? graphCommand.toString() : null) +
-                "]";
     }
 }

@@ -16,8 +16,6 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.shape.view.wires;
 
-import java.util.List;
-
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.MultiPathDecorator;
@@ -51,6 +49,7 @@ import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyDouble;
@@ -422,33 +421,102 @@ public class WiresConnectorViewTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testAddControlPoint() {
-        Point2D point1 = new Point2D(0.1, 0.2);
-        ControlPoint controlPoint1 = ControlPoint.build(point1.getX(), point1.getY(), 0);
-        IControlHandleList pointHandles = mock(IControlHandleList.class);
-        when(pointHandles.isEmpty()).thenReturn(true);
-        when(pointHandles.size()).thenReturn(0);
-        tested.setPointHandles(pointHandles);
-        List<ControlPoint> addedControlPoint = tested.addControlPoints(controlPoint1);
-        assertFalse(addedControlPoint.isEmpty());
-        assertEquals(controlPoint1, addedControlPoint.get(0));
-        ArgumentCaptor<Point2DArray> c1 = ArgumentCaptor.forClass(Point2DArray.class);
-        verify(line, atLeastOnce()).setPoint2DArray(c1.capture());
-        Point2DArray points1 = c1.getValue();
-        assertEquals(6, points1.size());
-        assertEquals(point1, points1.get(1));
+    public void testGetEmptyControlPoints() {
+        Point2DArray linePoints = new Point2DArray(new Point2D(0, 0),
+                                                   new Point2D(1, 2));
+        when(line.getPoint2DArray()).thenReturn(linePoints);
+        ControlPoint[] controlPoints = tested.getManageableControlPoints();
+        assertNotNull(controlPoints);
+        assertEquals(0, controlPoints.length);
     }
 
     @Test
-    public void testGetShapeControlPoints() {
-        List<ControlPoint> controlPoints = tested.getShapeControlPoints();
-        for (int i = 1; i < controlPoints.size() - 1; i++) {
-            ControlPoint controlPoint = controlPoints.get(i);
-            Point2D point = point2DArray.get(i);
-            assertEquals(controlPoint.getLocation().getX(), point.getX(), 0);
-            assertEquals(controlPoint.getLocation().getY(), point.getY(), 0);
-            assertEquals(controlPoint.getIndex().intValue(), i);
-        }
+    @SuppressWarnings("unchecked")
+    public void testGetEmptyControlPoints2() {
+        Point2DArray linePoints = new Point2DArray(new Point2D(0, 0));
+        when(line.getPoint2DArray()).thenReturn(linePoints);
+        ControlPoint[] controlPoints = tested.getManageableControlPoints();
+        assertNotNull(controlPoints);
+        assertEquals(0, controlPoints.length);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testGetControlPoints() {
+        Point2DArray linePoints = new Point2DArray(new Point2D(0, 0),
+                                                   new Point2D(0.1, 0.2),
+                                                   new Point2D(0.3, 0.4),
+                                                   new Point2D(0.5, 0.6),
+                                                   new Point2D(1, 2));
+        when(line.getPoint2DArray()).thenReturn(linePoints);
+        ControlPoint[] controlPoints = tested.getManageableControlPoints();
+        assertNotNull(controlPoints);
+        assertEquals(3, controlPoints.length);
+        ControlPoint controlPoint0 = controlPoints[0];
+        assertNotNull(controlPoint0);
+        assertNotNull(controlPoint0.getLocation());
+        assertEquals(0.1d, controlPoint0.getLocation().getX(), 0d);
+        assertEquals(0.2d, controlPoint0.getLocation().getY(), 0d);
+        ControlPoint controlPoint1 = controlPoints[1];
+        assertNotNull(controlPoint1);
+        assertNotNull(controlPoint1.getLocation());
+        assertEquals(0.3d, controlPoint1.getLocation().getX(), 0d);
+        assertEquals(0.4d, controlPoint1.getLocation().getY(), 0d);
+        ControlPoint controlPoint2 = controlPoints[2];
+        assertNotNull(controlPoint2);
+        assertNotNull(controlPoint2.getLocation());
+        assertEquals(0.5d, controlPoint2.getLocation().getX(), 0d);
+        assertEquals(0.6d, controlPoint2.getLocation().getY(), 0d);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testAddControlPoint() {
+        Point2DArray cps = new Point2DArray(new Point2D(0, 0),
+                                            new Point2D(0.1, 0.2),
+                                            new Point2D(1, 2));
+        when(line.getPoint2DArray()).thenReturn(cps);
+        ControlPoint newCP = ControlPoint.build(0.5, 0.5);
+        tested.addControlPoint(newCP, 1);
+        ArgumentCaptor<Point2DArray> linePointsCaptor = ArgumentCaptor.forClass(Point2DArray.class);
+        verify(line, atLeastOnce()).setPoint2DArray(linePointsCaptor.capture());
+        Point2DArray linePoints = linePointsCaptor.getValue();
+        assertEquals(4, linePoints.size());
+        assertEquals(new Point2D(0.1, 0.2), linePoints.get(1));
+        assertEquals(new Point2D(0.5, 0.5), linePoints.get(2));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testDeleteControlPoint() {
+        Point2DArray cps = new Point2DArray(new Point2D(0, 0),
+                                            new Point2D(0.1, 0.2),
+                                            new Point2D(1, 2));
+        when(line.getPoint2DArray()).thenReturn(cps);
+        tested.deleteControlPoint(0);
+        ArgumentCaptor<Point2DArray> linePointsCaptor = ArgumentCaptor.forClass(Point2DArray.class);
+        verify(line, atLeastOnce()).setPoint2DArray(linePointsCaptor.capture());
+        Point2DArray linePoints = linePointsCaptor.getValue();
+        assertEquals(2, linePoints.size());
+        assertEquals(new Point2D(0, 0), linePoints.get(0));
+        assertEquals(new Point2D(1, 2), linePoints.get(1));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testUpdateControlPoint() {
+        Point2D p = new Point2D(0.1, 0.2);
+        Point2DArray cps = new Point2DArray(new Point2D(0, 0),
+                                            p,
+                                            new Point2D(1, 2));
+        when(line.getPoint2DArray()).thenReturn(cps);
+        IControlHandleList pointHandles = mock(IControlHandleList.class);
+        when(pointHandles.isEmpty()).thenReturn(false);
+        when(pointHandles.size()).thenReturn(1);
+        tested.setPointHandles(pointHandles);
+        tested.updateControlPoints(new ControlPoint[]{ControlPoint.build(0.5, 0.5)});
+        assertEquals(0.5, p.getX(), 0d);
+        assertEquals(0.5, p.getY(), 0d);
     }
 
     @Test

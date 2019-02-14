@@ -15,10 +15,13 @@
  */
 package org.kie.workbench.common.stunner.client.widgets.menu.dev;
 
+import java.util.logging.Level;
+
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractSession;
+import org.kie.workbench.common.stunner.core.client.util.StunnerClientLogger;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 
@@ -50,5 +53,10 @@ public abstract class AbstractMenuDevCommand
 
     protected Graph getGraph() {
         return null != getDiagram() ? getDiagram().getGraph() : null;
+    }
+
+    protected static void logTask(final Runnable task) {
+        StunnerClientLogger.logTask(Level.FINEST,
+                                    task);
     }
 }

@@ -38,6 +38,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -45,6 +46,10 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CompositeCommandTest {
+
+    private static CommandResult<RuleViolation> SOME_ERROR_VIOLATION =
+            new CommandResultImpl<>(CommandResult.Type.ERROR,
+                                    Collections.singletonList(new RuleViolationImpl("failed")));
 
     @Mock
     GraphCommandExecutionContext commandExecutionContext;
@@ -87,30 +92,149 @@ public class CompositeCommandTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testExecuteFailedThenUndo() {
-        Command c1 = mock(Command.class);
-        when(c1.allow(eq(commandExecutionContext))).thenReturn(GraphCommandResultBuilder.SUCCESS);
-        when(c1.execute(eq(commandExecutionContext))).thenReturn(GraphCommandResultBuilder.SUCCESS);
-        Command c2 = mock(Command.class);
-        when(c2.allow(eq(commandExecutionContext))).thenReturn(GraphCommandResultBuilder.SUCCESS);
-        when(c2.execute(eq(commandExecutionContext))).thenReturn(GraphCommandResultBuilder.SUCCESS);
-        CommandResult<RuleViolation> failed =
-                new CommandResultImpl<>(CommandResult.Type.ERROR,
-                                        Collections.singletonList(new RuleViolationImpl("failed")));
-        Command c3 = mock(Command.class);
-        when(c3.allow(eq(commandExecutionContext))).thenReturn(GraphCommandResultBuilder.SUCCESS);
-        when(c3.execute(eq(commandExecutionContext))).thenReturn(failed);
-        CompositeCommand composite = new CompositeCommand.Builder<>()
+    public void testExecute1Failed() {
+        Command c1 = mockSuccessCommandOperations();
+        when(c1.execute(eq(commandExecutionContext))).thenReturn(SOME_ERROR_VIOLATION);
+        Command c2 = mockSuccessCommandOperations();
+        Command c3 = mockSuccessCommandOperations();
+        CompositeCommand command = new CompositeCommand.Builder<>()
                 .addCommand(c1)
                 .addCommand(c2)
                 .addCommand(c3)
                 .build();
-        CommandResult result = composite.execute(commandExecutionContext);
+        CommandResult result = command.execute(commandExecutionContext);
         assertEquals(CommandResult.Type.ERROR,
                      result.getType());
+        verify(c1, times(1)).execute(eq(commandExecutionContext));
+        verify(c1, never()).undo(eq(commandExecutionContext));
+        verify(c2, never()).execute(eq(commandExecutionContext));
+        verify(c2, never()).undo(eq(commandExecutionContext));
+        verify(c3, never()).execute(eq(commandExecutionContext));
+        verify(c3, never()).undo(eq(commandExecutionContext));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testExecute2FailedThenUndo() {
+        Command c1 = mockSuccessCommandOperations();
+        Command c2 = mockSuccessCommandOperations();
+        when(c2.execute(eq(commandExecutionContext))).thenReturn(SOME_ERROR_VIOLATION);
+        Command c3 = mockSuccessCommandOperations();
+        CompositeCommand command = new CompositeCommand.Builder<>()
+                .addCommand(c1)
+                .addCommand(c2)
+                .addCommand(c3)
+                .build();
+        CommandResult result = command.execute(commandExecutionContext);
+        assertEquals(CommandResult.Type.ERROR,
+                     result.getType());
+        verify(c1, times(1)).execute(eq(commandExecutionContext));
         verify(c1, times(1)).undo(eq(commandExecutionContext));
+        verify(c2, times(1)).execute(eq(commandExecutionContext));
+        verify(c2, never()).undo(eq(commandExecutionContext));
+        verify(c3, never()).execute(eq(commandExecutionContext));
+        verify(c3, never()).undo(eq(commandExecutionContext));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testExecute3FailedThenUndo() {
+        Command c1 = mockSuccessCommandOperations();
+        Command c2 = mockSuccessCommandOperations();
+        Command c3 = mockSuccessCommandOperations();
+        when(c3.execute(eq(commandExecutionContext))).thenReturn(SOME_ERROR_VIOLATION);
+        CompositeCommand command = new CompositeCommand.Builder<>()
+                .addCommand(c1)
+                .addCommand(c2)
+                .addCommand(c3)
+                .build();
+        CommandResult result = command.execute(commandExecutionContext);
+        assertEquals(CommandResult.Type.ERROR,
+                     result.getType());
+        verify(c1, times(1)).execute(eq(commandExecutionContext));
+        verify(c1, times(1)).undo(eq(commandExecutionContext));
+        verify(c2, times(1)).execute(eq(commandExecutionContext));
         verify(c2, times(1)).undo(eq(commandExecutionContext));
+        verify(c3, times(1)).execute(eq(commandExecutionContext));
+        verify(c3, never()).undo(eq(commandExecutionContext));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testUndo3Failed() {
+        Command c1 = mockSuccessCommandOperations();
+        Command c2 = mockSuccessCommandOperations();
+        Command c3 = mockSuccessCommandOperations();
+        when(c3.undo(eq(commandExecutionContext))).thenReturn(SOME_ERROR_VIOLATION);
+        CompositeCommand command = new CompositeCommand.Builder<>()
+                .addCommand(c1)
+                .addCommand(c2)
+                .addCommand(c3)
+                .build();
+        CommandResult result = command.undo(commandExecutionContext);
+        assertEquals(CommandResult.Type.ERROR,
+                     result.getType());
         verify(c3, times(1)).undo(eq(commandExecutionContext));
+        verify(c3, never()).execute(eq(commandExecutionContext));
+        verify(c2, never()).undo(eq(commandExecutionContext));
+        verify(c2, never()).execute(eq(commandExecutionContext));
+        verify(c1, never()).undo(eq(commandExecutionContext));
+        verify(c1, never()).execute(eq(commandExecutionContext));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testUndo2FailedSoRedo() {
+        Command c1 = mockSuccessCommandOperations();
+        Command c2 = mockSuccessCommandOperations();
+        when(c2.undo(eq(commandExecutionContext))).thenReturn(SOME_ERROR_VIOLATION);
+        Command c3 = mockSuccessCommandOperations();
+        CompositeCommand command = new CompositeCommand.Builder<>()
+                .addCommand(c1)
+                .addCommand(c2)
+                .addCommand(c3)
+                .build();
+        CommandResult result = command.undo(commandExecutionContext);
+        assertEquals(CommandResult.Type.ERROR,
+                     result.getType());
+        verify(c3, times(1)).undo(eq(commandExecutionContext));
+        verify(c3, times(1)).execute(eq(commandExecutionContext));
+        verify(c2, times(1)).undo(eq(commandExecutionContext));
+        verify(c2, never()).execute(eq(commandExecutionContext));
+        verify(c1, never()).undo(eq(commandExecutionContext));
+        verify(c1, never()).execute(eq(commandExecutionContext));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testUndo1FailedSoRedo() {
+        Command c1 = mockSuccessCommandOperations();
+        when(c1.undo(eq(commandExecutionContext))).thenReturn(SOME_ERROR_VIOLATION);
+        Command c2 = mockSuccessCommandOperations();
+        Command c3 = mockSuccessCommandOperations();
+        CompositeCommand command = new CompositeCommand.Builder<>()
+                .addCommand(c1)
+                .addCommand(c2)
+                .addCommand(c3)
+                .build();
+        CommandResult result = command.undo(commandExecutionContext);
+        assertEquals(CommandResult.Type.ERROR,
+                     result.getType());
+        verify(c3, times(1)).undo(eq(commandExecutionContext));
+        verify(c3, times(1)).execute(eq(commandExecutionContext));
+        verify(c2, times(1)).undo(eq(commandExecutionContext));
+        verify(c2, times(1)).execute(eq(commandExecutionContext));
+        verify(c1, times(1)).undo(eq(commandExecutionContext));
+        verify(c1, never()).execute(eq(commandExecutionContext));
+    }
+
+    @SuppressWarnings("unchecked")
+    private Command mockSuccessCommandOperations() {
+        Command command = mock(Command.class);
+        when(command.allow(eq(commandExecutionContext))).thenReturn(GraphCommandResultBuilder.SUCCESS);
+        when(command.execute(eq(commandExecutionContext))).thenReturn(GraphCommandResultBuilder.SUCCESS);
+        when(command.undo(eq(commandExecutionContext))).thenReturn(GraphCommandResultBuilder.SUCCESS);
+        return command;
     }
 
     private static class CompositeCommandStub extends AbstractCompositeCommand<GraphCommandExecutionContext, RuleViolation> {

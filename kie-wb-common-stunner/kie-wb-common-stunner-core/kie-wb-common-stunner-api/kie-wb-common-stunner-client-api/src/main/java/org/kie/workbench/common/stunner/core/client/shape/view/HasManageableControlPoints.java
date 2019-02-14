@@ -16,17 +16,15 @@
 
 package org.kie.workbench.common.stunner.core.client.shape.view;
 
-import java.util.List;
-
 import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
 
 public interface HasManageableControlPoints<T> extends HasControlPoints<T> {
 
-    List<ControlPoint> addControlPoints(ControlPoint... controlPoint);
+    T addControlPoint(ControlPoint controlPoint, int index);
 
-    List<ControlPoint> getShapeControlPoints();
+    T updateControlPoints(ControlPoint[] controlPoints);
 
-    T updateControlPoint(ControlPoint controlPoint);
+    T deleteControlPoint(int index);
 
-    T removeControlPoints(ControlPoint... controlPoint);
+    ControlPoint[] getManageableControlPoints();
 }

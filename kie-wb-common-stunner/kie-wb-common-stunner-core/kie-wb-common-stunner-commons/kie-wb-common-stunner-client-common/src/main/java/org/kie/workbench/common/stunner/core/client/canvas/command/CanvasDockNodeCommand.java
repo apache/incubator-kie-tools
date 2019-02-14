@@ -105,8 +105,8 @@ public class CanvasDockNodeCommand extends AbstractCanvasCommand {
 
     @Override
     public String toString() {
-        return getClass().getName() +
+        return getClass().getSimpleName() +
                 " [parent=" + getParent() + "," +
-                " candidate=" + getCandidate() + "]";
+                "candidate=" + getCandidate() + "]";
     }
 }

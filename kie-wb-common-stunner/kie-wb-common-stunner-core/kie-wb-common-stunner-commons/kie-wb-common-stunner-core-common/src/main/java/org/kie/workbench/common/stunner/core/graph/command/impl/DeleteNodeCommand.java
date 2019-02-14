@@ -15,8 +15,6 @@
  */
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
-import java.util.logging.Logger;
-
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
@@ -31,8 +29,6 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
  */
 @Portable
 public final class DeleteNodeCommand extends DeregisterNodeCommand {
-
-    private static Logger LOGGER = Logger.getLogger(DeleteNodeCommand.class.getName());
 
     public DeleteNodeCommand(final @MapsTo("uuid") String uuid) {
         super(uuid);

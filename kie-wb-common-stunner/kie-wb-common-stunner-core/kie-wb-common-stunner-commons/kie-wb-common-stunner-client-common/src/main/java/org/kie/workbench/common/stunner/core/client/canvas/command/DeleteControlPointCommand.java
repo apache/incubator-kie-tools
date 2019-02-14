@@ -19,7 +19,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
-import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
 /**
@@ -28,21 +27,28 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 public class DeleteControlPointCommand extends AbstractCanvasGraphCommand {
 
     private final Edge candidate;
-    private final ControlPoint[] controlPoints;
+    private final int index;
 
     public DeleteControlPointCommand(final Edge candidate,
-                                     final ControlPoint[] controlPoints) {
+                                     final int index) {
         this.candidate = candidate;
-        this.controlPoints = controlPoints;
+        this.index = index;
     }
 
     @Override
     protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand(final AbstractCanvasHandler context) {
-        return new org.kie.workbench.common.stunner.core.graph.command.impl.DeleteControlPointCommand(candidate, controlPoints);
+        return new org.kie.workbench.common.stunner.core.graph.command.impl.DeleteControlPointCommand(candidate.getUUID(), index);
     }
 
     @Override
     protected AbstractCanvasCommand newCanvasCommand(final AbstractCanvasHandler context) {
-        return new DeleteCanvasControlPointCommand(candidate, controlPoints);
+        return new DeleteCanvasControlPointCommand(candidate, index);
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() +
+                " [candidate=" + getUUID(candidate) + "," +
+                "index=" + index + "]";
     }
 }

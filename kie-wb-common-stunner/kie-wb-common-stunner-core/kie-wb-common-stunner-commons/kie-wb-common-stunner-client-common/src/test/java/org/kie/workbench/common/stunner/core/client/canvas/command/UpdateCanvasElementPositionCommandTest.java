@@ -36,7 +36,6 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -74,15 +73,15 @@ public class UpdateCanvasElementPositionCommandTest extends AbstractCanvasComman
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testOutOfBoundsError() {
+    public void testOutOfBoundsWarn() {
         tested = new UpdateCanvasElementPositionCommand(candidate, Point2D.create(550d, 550d));
         CommandResult<CanvasViolation> result = tested.execute(canvasHandler);
-        assertEquals(CommandResult.Type.ERROR,
+        assertEquals(CommandResult.Type.WARNING,
                      result.getType());
         Iterator<CanvasViolation> violationsIt = result.getViolations().iterator();
         assertTrue(violationsIt.hasNext());
         verify(canvasHandler,
-               never()).updateElementPosition(eq(candidate),
-                                              any(MutationContext.class));
+               times(1)).updateElementPosition(eq(candidate),
+                                               any(MutationContext.class));
     }
 }

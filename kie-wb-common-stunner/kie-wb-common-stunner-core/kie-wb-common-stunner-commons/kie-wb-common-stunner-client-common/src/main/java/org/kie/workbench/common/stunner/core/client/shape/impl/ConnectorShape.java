@@ -16,20 +16,16 @@
 
 package org.kie.workbench.common.stunner.core.client.shape.impl;
 
-import java.util.List;
-
 import org.kie.workbench.common.stunner.core.client.shape.EdgeShape;
 import org.kie.workbench.common.stunner.core.client.shape.Lifecycle;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
-import org.kie.workbench.common.stunner.core.client.shape.view.HasManageableControlPoints;
 import org.kie.workbench.common.stunner.core.client.shape.view.IsConnector;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.definition.shape.ShapeViewDef;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
-import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 
 /**
@@ -77,31 +73,6 @@ public class ConnectorShape<W, D extends ShapeViewDef<W, V>, V extends ShapeView
                           sourceConnection,
                           target,
                           targetConnection);
-    }
-
-    @SuppressWarnings("unchecked")
-    public List<ControlPoint> getControlPoints() {
-        return getShapeViewWithControlPoints().getShapeControlPoints();
-    }
-
-    @SuppressWarnings("unchecked")
-    public List<ControlPoint> addControlPoints(final ControlPoint... controlPoints) {
-        return getShapeViewWithControlPoints().addControlPoints(controlPoints);
-    }
-
-    public void removeControlPoints(final ControlPoint... controlPoints) {
-        getShapeViewWithControlPoints().removeControlPoints(controlPoints);
-    }
-
-    public void updateControlPoint(final ControlPoint controlPoint) {
-        getShapeViewWithControlPoints().updateControlPoint(controlPoint);
-    }
-
-    private HasManageableControlPoints getShapeViewWithControlPoints() {
-        if (!(getShapeView() instanceof HasManageableControlPoints)) {
-            throw new IllegalArgumentException("ShapeView should be a HasManageableControlPoints. " + getShapeView());
-        }
-        return (HasManageableControlPoints) getShapeView();
     }
 
     @Override

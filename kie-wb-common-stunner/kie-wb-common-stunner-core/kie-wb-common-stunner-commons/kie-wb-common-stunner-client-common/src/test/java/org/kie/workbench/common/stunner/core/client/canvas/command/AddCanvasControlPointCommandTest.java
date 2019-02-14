@@ -22,44 +22,95 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
+import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.spy;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AddCanvasControlPointCommandTest extends AbstractCanvasControlPointCommandTest {
 
-    private AddCanvasControlPointCommand addCanvasControlPointCommand;
+    private AddCanvasControlPointCommand tested;
+    private ControlPoint newControlPoint;
 
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        addCanvasControlPointCommand = spy(new AddCanvasControlPointCommand(edge, controlPoint1));
+        newControlPoint = ControlPoint.build(4, 4);
+        tested = new AddCanvasControlPointCommand(edge, newControlPoint, 2);
     }
 
     @Test
-    public void testAllowSuccess() {
-        CommandResult<CanvasViolation> result = addCanvasControlPointCommand.allow(canvasHandler);
-        verify(shape).addControlPoints(controlPoint1);
+    public void testAllow() {
+        tested = new AddCanvasControlPointCommand(edge, newControlPoint, 0);
+        CommandResult<CanvasViolation> result = tested.allow(canvasHandler);
+        assertFalse(CommandUtils.isError(result));
+        tested = new AddCanvasControlPointCommand(edge, newControlPoint, 1);
+        result = tested.allow(canvasHandler);
+        assertFalse(CommandUtils.isError(result));
+        tested = new AddCanvasControlPointCommand(edge, newControlPoint, 2);
+        result = tested.allow(canvasHandler);
+        assertFalse(CommandUtils.isError(result));
+        assertFalse(CommandUtils.isError(result));
+        tested = new AddCanvasControlPointCommand(edge, newControlPoint, 3);
+        result = tested.allow(canvasHandler);
         assertFalse(CommandUtils.isError(result));
     }
 
-    @Test
-    public void testAllowError() {
-        when(shape.addControlPoints(controlPoint1)).thenReturn(controlPointList);
-        CommandResult<CanvasViolation> result = addCanvasControlPointCommand.allow(canvasHandler);
-        verify(shape).addControlPoints(controlPoint1);
-        assertTrue(CommandUtils.isError(result));
+    @Test(expected = IllegalArgumentException.class)
+    public void testInvalidCPIndex() {
+        // Index cannot be bigger than actual CP's length
+        tested = new AddCanvasControlPointCommand(edge, newControlPoint, 4);
+        tested.allow(canvasHandler);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testInvalidCPIndexDuringExecute() {
+        // Index cannot be bigger than actual CP's length
+        tested = new AddCanvasControlPointCommand(edge, newControlPoint, 4);
+        tested.execute(canvasHandler);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testInvalidCP() {
+        // the CP's location must be present
+        tested = new AddCanvasControlPointCommand(edge, newControlPoint, 2);
+        newControlPoint.setLocation(null);
+        tested.allow(canvasHandler);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testInvalidCPDuringExecute() {
+        // the CP's location must be present
+        tested = new AddCanvasControlPointCommand(edge, newControlPoint, 2);
+        newControlPoint.setLocation(null);
+        tested.execute(canvasHandler);
     }
 
     @Test
     public void execute() {
-        CommandResult<CanvasViolation> result = addCanvasControlPointCommand.execute(canvasHandler);
-        verify(addCanvasControlPointCommand).allow(canvasHandler);
+        checkExecution(true);
+    }
+
+    @Test
+    public void executeWithCPsNotVisible() {
+        checkExecution(false);
+    }
+
+    private void checkExecution(boolean areControlPointsVisible) {
+        when(connectorView.areControlsVisible()).thenReturn(areControlPointsVisible);
+        CommandResult<CanvasViolation> result = tested.execute(canvasHandler);
         assertFalse(CommandUtils.isError(result));
+        checkControlPointsVisibilitySwitch(areControlPointsVisible);
+        verify(connectorView, times(1)).addControlPoint(eq(newControlPoint), eq(2));
+        verify(connectorView, never()).updateControlPoints(any(ControlPoint[].class));
+        verify(connectorView, never()).deleteControlPoint(anyInt());
     }
 }

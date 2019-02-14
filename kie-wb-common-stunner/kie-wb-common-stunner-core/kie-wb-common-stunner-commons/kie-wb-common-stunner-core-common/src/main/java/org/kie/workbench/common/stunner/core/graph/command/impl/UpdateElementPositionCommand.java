@@ -111,13 +111,13 @@ public final class UpdateElementPositionCommand extends AbstractGraphCommand {
         final Node<? extends View<?>, Edge> element = getNodeNotNull(context);
         final Bounds targetBounds = getTargetBounds(element);
         final Bounds parentBounds = getParentBounds(getNodeNotNull(context), graph);
+        boundsConsumer.accept(targetBounds);
         if (areBoundsExceeded(element, targetBounds, parentBounds)) {
             return new GraphCommandResultBuilder()
                     .addViolation(new BoundsExceededViolation(parentBounds)
                                           .setUUID(node.getUUID()))
                     .build();
         }
-        boundsConsumer.accept(targetBounds);
         return GraphCommandResultBuilder.SUCCESS;
     }
 

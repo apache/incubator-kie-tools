@@ -18,7 +18,9 @@ package org.kie.workbench.common.stunner.client.lienzo.canvas.controls;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Default;
@@ -39,6 +41,7 @@ import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 
 @Dependent
 @Default
@@ -46,17 +49,24 @@ public class ContainmentAcceptorControlImpl extends AbstractAcceptorControl
         implements ContainmentAcceptorControl<AbstractCanvasHandler> {
 
     private final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
+    private final Function<AbstractCanvasHandler, CanvasHighlight> highlightFactory;
     private CanvasHighlight canvasHighlight;
 
     @Inject
     public ContainmentAcceptorControlImpl(final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory) {
+        this(canvasCommandFactory, CanvasHighlight::new);
+    }
+
+    ContainmentAcceptorControlImpl(final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
+                                   final Function<AbstractCanvasHandler, CanvasHighlight> highlightFactory) {
         this.canvasCommandFactory = canvasCommandFactory;
+        this.highlightFactory = highlightFactory;
     }
 
     @Override
     protected void onInit(final WiresCanvas canvas) {
         canvas.getWiresManager().setContainmentAcceptor(CONTAINMENT_ACCEPTOR);
-        this.canvasHighlight = new CanvasHighlight(getCanvasHandler());
+        this.canvasHighlight = highlightFactory.apply(getCanvasHandler());
     }
 
     @Override
@@ -98,29 +108,40 @@ public class ContainmentAcceptorControlImpl extends AbstractAcceptorControl
         if (parent == null && children.length >= 2) {
             return false;
         }
-        // Generate the commands and perform the execution.
-        final CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation> builder =
-                new CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation>()
-                        .forward();
-        for (final Node node : children) {
-            builder.addCommand(canvasCommandFactory.updateChildNode((Node) parent,
-                                                                    node));
-        }
-        if (builder.size() > 0) {
-            final Command<AbstractCanvasHandler, CanvasViolation> command = builder.size() == 1 ?
-                    builder.get(0) :
-                    builder.build();
-            final CommandResult<CanvasViolation> result =
-                    executor.apply(command);
-            final boolean success = isCommandSuccess(result);
-            if (highlights && !success) {
-                canvasHighlight.invalid(result.getViolations());
-            } else {
-                canvasHighlight.unhighLight();
+        boolean success = true;
+        if (!areInSameParent(parent, children)) {
+            // Generate the commands and perform the execution.
+            final CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation> builder =
+                    new CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation>()
+                            .forward();
+            for (final Node node : children) {
+                builder.addCommand(canvasCommandFactory.updateChildNode((Node) parent,
+                                                                        node));
             }
-            return success;
+            if (builder.size() > 0) {
+                final Command<AbstractCanvasHandler, CanvasViolation> command = builder.size() == 1 ?
+                        builder.get(0) :
+                        builder.build();
+                final CommandResult<CanvasViolation> result =
+                        executor.apply(command);
+                success = isCommandSuccess(result);
+                if (highlights && !success) {
+                    canvasHighlight.invalid(result.getViolations());
+                }
+            }
         }
-        return true;
+
+        if (success) {
+            canvasHighlight.unhighLight();
+        }
+        return success;
+    }
+
+    static boolean areInSameParent(final Element parent,
+                                   final Node[] children) {
+        return Stream.of(children)
+                .map(GraphUtils::getParent)
+                .noneMatch(childParent -> !Objects.equals(parent, childParent));
     }
 
     private final IContainmentAcceptor CONTAINMENT_ACCEPTOR = new IContainmentAcceptor() {

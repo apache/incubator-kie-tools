@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.client.widgets.menu.dev.impl;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -58,6 +57,10 @@ public class LogSelectedEdgeDevCommand extends AbstractSelectionDevCommand {
 
     @Override
     protected void execute(final Collection<Element<? extends View<?>>> items) {
+        logTask(() -> logEdges(items));
+    }
+
+    private void logEdges(final Collection<Element<? extends View<?>>> items) {
         if (1 == items.size()) {
             final Element<? extends View<?>> e = items.iterator().next();
             if (null != e.asEdge()) {
@@ -70,11 +73,11 @@ public class LogSelectedEdgeDevCommand extends AbstractSelectionDevCommand {
         StunnerLogger.log(edge);
         if (edge.getContent() instanceof HasControlPoints) {
 
-            final List<ControlPoint> controlPoints = ((HasControlPoints) edge.getContent()).getControlPoints();
+            final ControlPoint[] controlPoints = ((HasControlPoints) edge.getContent()).getControlPoints();
             String s = "*** CPS = ";
-            if (null != controlPoints && !controlPoints.isEmpty()) {
+            if (null != controlPoints) {
                 for (ControlPoint cp : controlPoints) {
-                    s += " [" + cp.getIndex() + "=" + format(cp.getLocation()) + "] ";
+                    s += " [" + format(cp.getLocation()) + "] ";
                 }
                 s += " *** ";
             } else {

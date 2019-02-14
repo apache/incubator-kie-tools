@@ -15,8 +15,6 @@
  */
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
-import java.util.List;
-
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
@@ -27,37 +25,51 @@ import org.kie.workbench.common.stunner.core.graph.content.HasControlPoints;
 import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
+import static org.kie.workbench.common.stunner.core.graph.util.ControlPointValidations.checkDeleteControlPoint;
+
 /**
  * A Graph command that deletes {@link ControlPoint} from a given {@link Edge}.
  */
 @Portable
 public class DeleteControlPointCommand extends AbstractControlPointCommand {
 
-    public DeleteControlPointCommand(final @MapsTo("edge") Edge edge,
-                                     final @MapsTo("controlPoints") ControlPoint... controlPoints) {
-        super(edge, controlPoints);
+    private final int index;
+    private transient ControlPoint deletedControlPoint;
+
+    public DeleteControlPointCommand(final @MapsTo("edgeUUID") String edgeUUID,
+                                     final @MapsTo("index") int index) {
+        super(edgeUUID);
+        this.index = index;
     }
 
     @Override
-    protected CommandResult<RuleViolation> check(GraphCommandExecutionContext context) {
-        return checkArguments();
-    }
-
-    @Override
-    public CommandResult<RuleViolation> execute(GraphCommandExecutionContext context) {
-        HasControlPoints edgeContent = getEdgeContent();
-
-        List<ControlPoint> connectorControlPoints = edgeContent.getControlPoints();
-        connectorControlPoints.removeAll(getControlPointList());
-
-        //update index
-        updateControlPointsIndex(connectorControlPoints);
-
+    protected CommandResult<RuleViolation> check(final GraphCommandExecutionContext context) {
+        checkDeleteControlPoint(getEdgeControlPoints(context).getControlPoints(),
+                                index);
         return GraphCommandResultBuilder.SUCCESS;
     }
 
     @Override
-    protected AddControlPointCommand newUndoCommand() {
-        return new AddControlPointCommand(edge, controlPoints);
+    public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext context) {
+        check(context);
+        final HasControlPoints edgeControlPoints = getEdgeControlPoints(context);
+        final int size = edgeControlPoints.getControlPoints().length;
+        final ControlPoint[] cps = new ControlPoint[size - 1];
+        for (int i = 0, j = 0; i < size; i++, j++) {
+            ControlPoint controlPoint = edgeControlPoints.getControlPoints()[i];
+            if (i == index) {
+                j--;
+                deletedControlPoint = controlPoint;
+            } else {
+                cps[j] = controlPoint;
+            }
+        }
+        edgeControlPoints.setControlPoints(cps);
+        return GraphCommandResultBuilder.SUCCESS;
+    }
+
+    @Override
+    public CommandResult<RuleViolation> undo(final GraphCommandExecutionContext context) {
+        return new AddControlPointCommand(getEdgeUUID(), deletedControlPoint, index).execute(context);
     }
 }

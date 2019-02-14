@@ -63,6 +63,12 @@ public class DeleteElementsCommand extends AbstractCanvasGraphCommand {
         return command;
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() +
+                " [elements=" + elements + "]";
+    }
+
     protected class CanvasMultipleDeleteProcessor
             implements org.kie.workbench.common.stunner.core.graph.command.impl.DeleteElementsCommand.DeleteCallback {
 

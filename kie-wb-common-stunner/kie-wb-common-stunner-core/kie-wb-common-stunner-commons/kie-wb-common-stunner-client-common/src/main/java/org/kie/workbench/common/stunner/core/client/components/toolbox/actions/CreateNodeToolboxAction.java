@@ -16,16 +16,22 @@
 
 package org.kie.workbench.common.stunner.core.client.components.toolbox.actions;
 
+import java.lang.annotation.Annotation;
+
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Default;
+import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseClickEvent;
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
+
+import static org.kie.workbench.common.stunner.core.client.session.impl.InstanceUtils.lookup;
 
 /**
  * A toolbox action/operation for creating a new node, connector and connections from
@@ -33,34 +39,34 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
  */
 @Dependent
 @FlowActionsToolbox
-public class CreateNodeAction extends AbstractToolboxAction {
+public class CreateNodeToolboxAction extends AbstractToolboxAction {
 
     static final String KEY_TITLE = "org.kie.workbench.common.stunner.core.client.toolbox.createNewNode";
 
-    private final GeneralCreateNodeAction generalCreateNodeAction;
+    private final ManagedInstance<GeneralCreateNodeAction> actions;
 
     private String nodeId;
     private String edgeId;
 
     @Inject
-    public CreateNodeAction(final DefinitionUtils definitionUtils,
-                            final ClientTranslationService translationService,
-                            final @Default GeneralCreateNodeAction generalCreateNodeAction) {
+    public CreateNodeToolboxAction(final DefinitionUtils definitionUtils,
+                                   final ClientTranslationService translationService,
+                                   final @Any ManagedInstance<GeneralCreateNodeAction> actions) {
         super(definitionUtils,
               translationService);
-        this.generalCreateNodeAction = generalCreateNodeAction;
+        this.actions = actions;
     }
 
     public String getNodeId() {
         return nodeId;
     }
 
-    public CreateNodeAction setNodeId(final String nodeId) {
+    public CreateNodeToolboxAction setNodeId(final String nodeId) {
         this.nodeId = nodeId;
         return this;
     }
 
-    public CreateNodeAction setEdgeId(final String edgeId) {
+    public CreateNodeToolboxAction setEdgeId(final String edgeId) {
         this.edgeId = edgeId;
         return this;
     }
@@ -88,11 +94,13 @@ public class CreateNodeAction extends AbstractToolboxAction {
     public ToolboxAction<AbstractCanvasHandler> onMouseClick(final AbstractCanvasHandler canvasHandler,
                                                              final String uuid,
                                                              final MouseClickEvent event) {
-
-        generalCreateNodeAction.executeAction(canvasHandler,
-                                              uuid,
-                                              nodeId,
-                                              edgeId);
+        final Metadata metadata = canvasHandler.getDiagram().getMetadata();
+        final Annotation qualifier = getDefinitionUtils().getQualifier(metadata.getDefinitionSetId());
+        final GeneralCreateNodeAction action = lookup(actions, qualifier);
+        action.executeAction(canvasHandler,
+                             uuid,
+                             nodeId,
+                             edgeId);
 
         return this;
     }
@@ -111,8 +119,8 @@ public class CreateNodeAction extends AbstractToolboxAction {
 
     @Override
     public boolean equals(final Object o) {
-        if (o instanceof CreateNodeAction) {
-            CreateNodeAction other = (CreateNodeAction) o;
+        if (o instanceof CreateNodeToolboxAction) {
+            CreateNodeToolboxAction other = (CreateNodeToolboxAction) o;
             return other.edgeId.equals(edgeId) &&
                     other.nodeId.equals(nodeId);
         }

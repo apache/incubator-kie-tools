@@ -42,7 +42,6 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -181,13 +180,15 @@ public class UpdateElementPositionCommandTest extends AbstractGraphCommandTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testOutOfBoundsFail() {
-        when(candidate.getContent()).thenReturn(new ViewImpl<>(mock(Object.class),
-                                                               Bounds.create(0d, 0d, 100d, 100d)));
+    public void testOutOfBoundsWarn() {
+        ViewImpl<Object> view = new ViewImpl<>(mock(Object.class),
+                                               Bounds.create(0d, 0d, 100d, 100d));
+        when(candidate.getContent()).thenReturn(view);
         tested = new UpdateElementPositionCommand(candidate,
                                                   Point2D.create(550d, 550d));
         CommandResult<RuleViolation> result = tested.execute(graphCommandExecutionContext);
-        assertEquals(CommandResult.Type.ERROR, result.getType());
-        verify(content, never()).setBounds(any(Bounds.class));
+        assertEquals(CommandResult.Type.WARNING, result.getType());
+        assertEquals(view.getBounds().getUpperLeft(), Bound.create(550d, 550d));
+        assertEquals(view.getBounds().getLowerRight(), Bound.create(650d, 650d));
     }
 }

@@ -17,8 +17,10 @@
 package org.kie.workbench.common.dmn.client.canvas.controls.toolbox;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.GeneralCreateNodeAction;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
@@ -26,14 +28,14 @@ import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 @Dependent
 @DMNFlowActionsToolbox
-public class CreateNodeAction extends org.kie.workbench.common.stunner.core.client.components.toolbox.actions.CreateNodeAction {
+public class CreateNodeToolboxAction extends org.kie.workbench.common.stunner.core.client.components.toolbox.actions.CreateNodeToolboxAction {
 
     @Inject
-    public CreateNodeAction(final DefinitionUtils definitionUtils,
-                            final ClientTranslationService translationService,
-                            final @DMNEditor GeneralCreateNodeAction generalCreateNodeAction) {
+    public CreateNodeToolboxAction(final DefinitionUtils definitionUtils,
+                                   final ClientTranslationService translationService,
+                                   final @Any @DMNEditor ManagedInstance<GeneralCreateNodeAction> actions) {
         super(definitionUtils,
               translationService,
-              generalCreateNodeAction);
+              actions);
     }
 }

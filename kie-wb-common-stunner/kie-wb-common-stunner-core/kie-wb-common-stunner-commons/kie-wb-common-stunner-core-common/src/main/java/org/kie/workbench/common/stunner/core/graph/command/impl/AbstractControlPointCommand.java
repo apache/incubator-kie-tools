@@ -16,66 +16,28 @@
 
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import org.kie.soup.commons.validation.PortablePreconditions;
-import org.kie.workbench.common.stunner.core.command.Command;
-import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
-import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.graph.content.HasControlPoints;
-import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
-import org.kie.workbench.common.stunner.core.rule.RuleViolation;
-import org.kie.workbench.common.stunner.core.util.Counter;
 
 public abstract class AbstractControlPointCommand extends AbstractGraphCommand {
 
-    protected final Edge edge;
-    protected final ControlPoint[] controlPoints;
+    private final String edgeUUID;
 
-    public AbstractControlPointCommand(final Edge edge, final ControlPoint... controlPoints) {
-        this.controlPoints = PortablePreconditions.checkNotNull("controlPoints", controlPoints);
-        this.edge = PortablePreconditions.checkNotNull("edge", edge);
+    public AbstractControlPointCommand(final String edgeUUID) {
+        this.edgeUUID = PortablePreconditions.checkNotNull("edgeUUID", edgeUUID);
     }
 
-    @Override
-    public CommandResult<RuleViolation> undo(final GraphCommandExecutionContext context) {
-        return newUndoCommand().execute(context);
+    protected HasControlPoints getEdgeControlPoints(final GraphCommandExecutionContext context) {
+        return (HasControlPoints) getEdge(context).getContent();
     }
 
-    protected CommandResult<RuleViolation> checkArguments() {
-        if (areArgumentsValid()) {
-            return GraphCommandResultBuilder.SUCCESS;
-        }
-        return GraphCommandResultBuilder.FAILED;
+    public String getEdgeUUID() {
+        return edgeUUID;
     }
 
-    protected boolean areArgumentsValid() {
-        return getEdgeContent().getControlPoints().containsAll(getControlPointList());
-    }
-
-    protected List<ControlPoint> getControlPointList() {
-        return Stream.of(controlPoints).collect(Collectors.toList());
-    }
-
-    protected HasControlPoints getEdgeContent() {
-        return (HasControlPoints) edge.getContent();
-    }
-
-    protected List<ControlPoint> updateControlPointsIndex(final List<ControlPoint> controlPointsList) {
-        final Counter counter = new Counter(-1);
-        return controlPointsList.stream().sequential().map(cp -> {
-            cp.setIndex(counter.increment());
-            return cp;
-        }).collect(Collectors.toList());
-    }
-
-    protected abstract Command<GraphCommandExecutionContext, RuleViolation> newUndoCommand();
-
-    public ControlPoint[] getControlPoints() {
-        return controlPoints;
+    public Edge getEdge(final GraphCommandExecutionContext context) {
+        return context.getGraphIndex().getEdge(edgeUUID);
     }
 }

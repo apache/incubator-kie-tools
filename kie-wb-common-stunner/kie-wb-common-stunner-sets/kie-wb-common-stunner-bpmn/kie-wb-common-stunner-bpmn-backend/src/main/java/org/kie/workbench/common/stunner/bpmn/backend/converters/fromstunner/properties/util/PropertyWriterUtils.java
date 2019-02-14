@@ -35,7 +35,7 @@ public class PropertyWriterUtils {
     public static BPMNEdge createBPMNEdge(BasePropertyWriter source,
                                           BasePropertyWriter target,
                                           Connection sourceConnection,
-                                          List<ControlPoint> mid,
+                                          ControlPoint[] mid,
                                           Connection targetConnection) {
         BPMNEdge bpmnEdge = di.createBPMNEdge();
         bpmnEdge.setId(Ids.bpmnEdge(source.getShape().getId(),
@@ -57,11 +57,12 @@ public class PropertyWriterUtils {
         List<Point> waypoints = bpmnEdge.getWaypoint();
         waypoints.add(sourcePoint);
 
-        mid.stream()
-                .map(pt -> pointOf(
-                        pt.getLocation().getX(),
-                        pt.getLocation().getY()))
-                .forEach(waypoints::add);
+        if (null != mid) {
+            for (ControlPoint controlPoint : mid) {
+                waypoints.add(pointOf(controlPoint.getLocation().getX(),
+                                      controlPoint.getLocation().getY()));
+            }
+        }
 
         waypoints.add(targetPoint);
 

@@ -16,8 +16,6 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties;
 
-import java.util.List;
-
 import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.FormalExpression;
 import org.eclipse.bpmn2.SequenceFlow;
@@ -65,7 +63,7 @@ public class SequenceFlowPropertyWriter extends PropertyWriter {
         setAutoConnectionSource(sourceConnection);
         setAutoConnectionTarget(targetConnection);
 
-        List<ControlPoint> controlPoints = connector.getControlPoints();
+        ControlPoint[] controlPoints = connector.getControlPoints();
         bpmnEdge = PropertyWriterUtils.createBPMNEdge(source, target, sourceConnection, controlPoints, targetConnection);
         bpmnEdge.setBpmnElement(sequenceFlow);
     }

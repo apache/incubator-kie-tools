@@ -16,21 +16,24 @@
 
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.mockito.Mock;
 
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
 public class AbstractControlPointCommandTest extends AbstractGraphCommandTest {
 
+    static final String EDGE_UUID = "cpEdge";
+
     @Mock
     protected Edge edge;
+
+    @Mock
+    protected ViewConnector viewConnector;
 
     protected ControlPoint controlPoint1;
 
@@ -38,27 +41,16 @@ public class AbstractControlPointCommandTest extends AbstractGraphCommandTest {
 
     protected ControlPoint controlPoint3;
 
-    protected Point2D newLocation;
-
-    protected List<ControlPoint> controlPointList;
-
-    @Mock
-    protected ViewConnector viewConnector;
-
     public void setUp() {
         super.init();
-
-        newLocation = new Point2D(0, 0);
-        controlPoint1 = ControlPoint.build(new Point2D(1, 1), 1);
-        controlPoint2 = ControlPoint.build(new Point2D(2, 2), 2);
-        controlPoint3 = ControlPoint.build(new Point2D(3, 3), 3);
-        controlPointList = new ArrayList<ControlPoint>() {{
-            add(controlPoint1);
-            add(controlPoint2);
-            add(controlPoint3);
-        }};
-
+        when(edge.getUUID()).thenReturn(EDGE_UUID);
+        when(graphIndex.get(eq(EDGE_UUID))).thenReturn(edge);
+        when(graphIndex.getEdge(eq(EDGE_UUID))).thenReturn(edge);
+        controlPoint1 = ControlPoint.build(new Point2D(1, 1));
+        controlPoint2 = ControlPoint.build(new Point2D(2, 2));
+        controlPoint3 = ControlPoint.build(new Point2D(3, 3));
         when(edge.getContent()).thenReturn(viewConnector);
-        when(viewConnector.getControlPoints()).thenReturn(controlPointList);
+        when(viewConnector.getControlPoints())
+                .thenReturn(new ControlPoint[]{controlPoint1, controlPoint2, controlPoint3});
     }
 }

@@ -138,7 +138,7 @@ public class EdgeCardinalityEvaluationHandlerTest {
         RuleViolations violations = tested.evaluate(RULE_IN_MAX_1,
                                                     context);
         assertNotNull(violations);
-        assertTrue(violations.violations(RuleViolation.Type.ERROR).iterator().hasNext());
+        assertTrue(violations.violations(RuleViolation.Type.WARNING).iterator().hasNext());
     }
 
     @Test

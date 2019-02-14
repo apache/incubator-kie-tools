@@ -26,11 +26,15 @@ import com.ait.lienzo.client.core.shape.wires.handlers.WiresCompositeControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectionControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresControlFactory;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresLayerIndex;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeHighlight;
+import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresColorMapIndex;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresConnectionControlImpl;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresConnectorControlImpl;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresShapeHighlightImpl;
+import com.ait.lienzo.client.core.shape.wires.picker.ColorMapBackedPicker;
+import com.ait.lienzo.client.core.util.ScratchPad;
 import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
 
 @ApplicationScoped
@@ -59,6 +63,16 @@ public class CaseManagementControlFactory implements WiresControlFactory {
     @Override
     public WiresShapeHighlight<PickerPart.ShapePart> newShapeHighlight(WiresManager wiresManager) {
         return new WiresShapeHighlightImpl(wiresManager.getDockingAcceptor().getHotspotSize());
+    }
+
+    @Override
+    public WiresLayerIndex newIndex(WiresManager manager) {
+        final ScratchPad scratchPad = manager.getLayer().getLayer().getScratchPad();
+        final ColorMapBackedPicker.PickerOptions pickerOptions =
+                new ColorMapBackedPicker.PickerOptions(false, 0);
+        final CaseManagementColorMapBackedPicker picker = new CaseManagementColorMapBackedPicker(scratchPad,
+                                                                                                 pickerOptions);
+        return new WiresColorMapIndex(picker);
     }
 
     @Override

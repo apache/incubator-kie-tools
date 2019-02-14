@@ -26,11 +26,10 @@ import com.ait.lienzo.client.core.shape.wires.ILayoutHandler;
 import com.ait.lienzo.client.core.shape.wires.WiresContainer;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
-import com.ait.lienzo.client.core.shape.wires.handlers.WiresParentPickerControl;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresLayerIndex;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresContainmentControlImpl;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresParentPickerControlImpl;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresShapeLocationControlImpl;
-import com.ait.lienzo.client.core.shape.wires.picker.ColorMapBackedPicker;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
@@ -57,10 +56,6 @@ import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class CaseManagementContainmentControlTest {
-
-    private static ColorMapBackedPicker.PickerOptions PICKER_OPTIONS =
-            new ColorMapBackedPicker.PickerOptions(false,
-                                                   0d);
 
     @Mock
     private WiresManager wiresManager;
@@ -90,7 +85,7 @@ public class CaseManagementContainmentControlTest {
     private CaseManagementShapeView ghost;
 
     @Mock
-    private WiresParentPickerControl.Index index;
+    private WiresLayerIndex index;
 
     private CaseManagementContainmentControl control;
 
@@ -109,9 +104,9 @@ public class CaseManagementContainmentControlTest {
         when(shape.getWiresManager()).thenReturn(wiresManager);
         doReturn(ghost).when(shape).getGhost();
         when(wiresManager.getContainmentAcceptor()).thenReturn(containmentAcceptor);
-        when(parentPickerControl.getPickerOptions()).thenReturn(PICKER_OPTIONS);
-        when(parentPickerControl.getShapeLocationControl()).thenReturn(shapeLocationControl);
         when(parentPickerControl.getIndex()).thenReturn(index);
+        when(parentPickerControl.getShape()).thenReturn(shape);
+        when(parentPickerControl.getParent()).thenReturn(parent);
         when(containmentControl.getParentPickerControl()).thenReturn(parentPickerControl);
         when(containmentControl.getShape()).thenReturn(shape);
         when(containmentControl.getParent()).thenReturn(parent);
@@ -140,7 +135,7 @@ public class CaseManagementContainmentControlTest {
     @Test
     public void testOnMoveStartButNoCMShape() {
         final WiresShape aShape = mock(WiresShape.class);
-        when(containmentControl.getShape()).thenReturn(aShape);
+        when(parentPickerControl.getShape()).thenReturn(aShape);
         final double x = 15.5d;
         final double y = 21.63d;
         control.onMoveStart(x, y);
@@ -151,6 +146,7 @@ public class CaseManagementContainmentControlTest {
         verify(state, times(1)).setOriginalParent(eq(Optional.empty()));
         verify(parent, never()).logicallyReplace(any(CaseManagementShapeView.class),
                                                  any(CaseManagementShapeView.class));
+        verify(index, never()).clear();
     }
 
     @Test
@@ -165,6 +161,7 @@ public class CaseManagementContainmentControlTest {
         verify(state, times(1)).setOriginalParent(eq(Optional.of(parent)));
         verify(parent, times(1)).logicallyReplace(eq(shape),
                                                   eq(ghost));
+        verify(index, never()).clear();
     }
 
     @Test
@@ -181,7 +178,6 @@ public class CaseManagementContainmentControlTest {
         verify(parentLayoutHandler, never()).add(any(WiresShape.class),
                                                  any(WiresContainer.class),
                                                  any(Point2D.class));
-        verify(parentPickerControl, never()).rebuildPicker();
     }
 
     @Test
@@ -198,7 +194,6 @@ public class CaseManagementContainmentControlTest {
         verify(parentLayoutHandler, times(1)).add(eq(ghost),
                                                   eq(parent),
                                                   eq(new Point2D(x, y)));
-        verify(parentPickerControl, times(1)).rebuildPicker();
         verify(containmentAcceptor, never()).acceptContainment(any(WiresContainer.class),
                                                                any(WiresShape[].class));
     }
@@ -295,14 +290,14 @@ public class CaseManagementContainmentControlTest {
 
     @Test
     public void testGetShapeIndex_noShape() throws Exception {
-        when(containmentControl.getShape()).thenReturn(null);
+        when(parentPickerControl.getShape()).thenReturn(null);
         OptionalInt result = control.getShapeIndex();
         assertFalse(result.isPresent());
     }
 
     @Test
     public void testGetShapeIndex_noParent() throws Exception {
-        when(containmentControl.getParent()).thenReturn(null);
+        when(parentPickerControl.getParent()).thenReturn(null);
         OptionalInt result = control.getShapeIndex();
         assertFalse(result.isPresent());
     }

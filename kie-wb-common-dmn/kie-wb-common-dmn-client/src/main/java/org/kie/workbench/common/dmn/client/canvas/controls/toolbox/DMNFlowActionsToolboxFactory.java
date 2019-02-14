@@ -29,8 +29,8 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.AbstractActionsToolboxFactory;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ActionsToolboxView;
-import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.CreateConnectorAction;
-import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.CreateNodeAction;
+import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.CreateConnectorToolboxAction;
+import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.CreateNodeToolboxAction;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.FlowActionsToolbox;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ToolboxAction;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ToolboxDomainLookups;
@@ -47,14 +47,14 @@ public class DMNFlowActionsToolboxFactory
         extends AbstractActionsToolboxFactory {
 
     private final ToolboxDomainLookups toolboxDomainLookups;
-    private final ManagedInstance<CreateConnectorAction> createConnectorActions;
-    private final ManagedInstance<CreateNodeAction> createNodeActions;
+    private final ManagedInstance<CreateConnectorToolboxAction> createConnectorActions;
+    private final ManagedInstance<CreateNodeToolboxAction> createNodeActions;
     private final ManagedInstance<ActionsToolboxView> views;
 
     @Inject
     public DMNFlowActionsToolboxFactory(final ToolboxDomainLookups toolboxDomainLookups,
-                                        final @Any ManagedInstance<CreateConnectorAction> createConnectorActions,
-                                        final @Any @DMNFlowActionsToolbox ManagedInstance<CreateNodeAction> createNodeActions,
+                                        final @Any ManagedInstance<CreateConnectorToolboxAction> createConnectorActions,
+                                        final @Any @DMNFlowActionsToolbox ManagedInstance<CreateNodeToolboxAction> createNodeActions,
                                         final @Any @FlowActionsToolbox ManagedInstance<ActionsToolboxView> views) {
         this.toolboxDomainLookups = toolboxDomainLookups;
         this.createConnectorActions = createConnectorActions;

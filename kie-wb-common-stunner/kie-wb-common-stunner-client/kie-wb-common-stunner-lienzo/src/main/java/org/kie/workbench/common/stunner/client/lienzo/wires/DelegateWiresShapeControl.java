@@ -22,16 +22,23 @@ import com.ait.lienzo.client.core.shape.wires.handlers.MouseEvent;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresBoundsConstraintControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresContainmentControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresDockingControl;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresLayerIndex;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresMagnetsControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresParentPickerControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresShapeControlImpl;
 import com.ait.lienzo.client.core.types.Point2D;
+import com.ait.tooling.common.api.java.util.function.Supplier;
 
 public abstract class DelegateWiresShapeControl implements WiresShapeControl,
                                                            WiresBoundsConstraintControl.SupportsOptionalBounds<DelegateWiresShapeControl> {
 
     public abstract WiresShapeControlImpl getDelegate();
+
+    @Override
+    public void useIndex(Supplier<WiresLayerIndex> index) {
+        getDelegate().useIndex(index);
+    }
 
     @Override
     public void setAlignAndDistributeControl(AlignAndDistributeControl control) {
@@ -124,8 +131,8 @@ public abstract class DelegateWiresShapeControl implements WiresShapeControl,
     }
 
     @Override
-    public boolean onMoveComplete() {
-        return getDelegate().onMoveComplete();
+    public void onMoveComplete() {
+        getDelegate().onMoveComplete();
     }
 
     @Override

@@ -17,14 +17,9 @@
 package org.kie.workbench.common.stunner.client.lienzo.shape.view.wires;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import com.ait.lienzo.client.core.shape.AbstractDirectionalMultiPointShape;
@@ -36,6 +31,7 @@ import com.ait.lienzo.client.core.shape.wires.WiresConnection;
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.shape.wires.WiresMagnet;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
+import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.client.core.types.Shadow;
 import com.ait.lienzo.shared.core.types.ColorName;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
@@ -51,7 +47,6 @@ import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
 import org.kie.workbench.common.stunner.core.graph.content.view.DiscreteConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
-import org.kie.workbench.common.stunner.core.util.Counter;
 
 public class WiresConnectorView<T> extends WiresConnector
         implements
@@ -107,63 +102,56 @@ public class WiresConnectorView<T> extends WiresConnector
     }
 
     @Override
-    public List<ControlPoint> addControlPoints(final ControlPoint... controlPoint) {
-        if (validateControlPointShape()) {
-            final List<ControlPoint> result = Stream.of(controlPoint)
-                    .map(cp -> {
-                        double x = cp.getLocation().getX();
-                        double y = cp.getLocation().getY();
-                        addControlPoint(x, y, cp.getIndex() + 1);
-                        return cp;
-                    }).collect(Collectors.toList());
-            refrehControlPoints();
-            return result;
+    public ControlPoint[] getManageableControlPoints() {
+        final Point2DArray controlPoints = getControlPoints();
+        if (null != controlPoints && controlPoints.size() > 2) {
+            // Notice first and last CP from lienzo's connector are discarded,
+            // as they're considered the Connection's on Stunner side, so not
+            // part of the model's ControlPoint array.
+            return StreamSupport.stream(controlPoints.spliterator(), false)
+                    .limit(controlPoints.size() - 1)
+                    .skip(1)
+                    .map(controlPoint -> ControlPoint.build(controlPoint.getX(),
+                                                            controlPoint.getY()))
+                    .toArray(ControlPoint[]::new);
         }
-        return Collections.emptyList();
+        return new ControlPoint[0];
     }
 
     @Override
-    public T updateControlPoint(final ControlPoint controlPoint) {
-        if (validateControlPointShape()) {
-            final Point2D location = controlPoint.getLocation();
-            moveControlPoint(controlPoint.getIndex() + 1,
-                             new com.ait.lienzo.client.core.types.Point2D(location.getX(),
-                                                                          location.getY()));
-            refrehControlPoints();
-        }
+    public T addControlPoint(final ControlPoint controlPoint,
+                             final int index) {
+        addControlPoint(controlPoint.getLocation().getX(),
+                        controlPoint.getLocation().getY()
+                , index + 1);
+        refreshControlPoints();
         return cast();
     }
 
-    private void refrehControlPoints() {
+    @Override
+    public T updateControlPoints(final ControlPoint[] controlPoints) {
+        for (int i = 0; i < controlPoints.length; i++) {
+            final Point2D location = controlPoints[i].getLocation();
+            final com.ait.lienzo.client.core.types.Point2D lienzoPoint =
+                    new com.ait.lienzo.client.core.types.Point2D(location.getX(),
+                                                                 location.getY());
+            moveControlPoint(i + 1, lienzoPoint);
+        }
+        refreshControlPoints();
+        return cast();
+    }
+
+    @Override
+    public T deleteControlPoint(final int index) {
+        destroyControlPoints(new int[]{index + 1});
+        return cast();
+    }
+
+    private void refreshControlPoints() {
         getLine().refresh();
         if (null != getGroup().getLayer()) {
             getGroup().getLayer().batch();
         }
-    }
-
-    @Override
-    public T removeControlPoints(final ControlPoint... cps) {
-        if (validateControlPointShape()) {
-            final int[] indexes = Arrays.stream(cps)
-                    .filter(Objects::nonNull)
-                    .mapToInt(cp -> cp.getIndex() + 1)
-                    .toArray();
-            destroyControlPoints(indexes);
-        }
-        return cast();
-    }
-
-    private boolean validateControlPointShape() {
-        return getLine().isControlPointShape();
-    }
-
-    @Override
-    public List<ControlPoint> getShapeControlPoints() {
-        Counter counter = new Counter(-1);
-        return StreamSupport.stream(getControlPoints().spliterator(), false)
-                .map(point -> ControlPoint.build(new Point2D(point.getX(), point.getY()), counter.increment()))
-                .sequential()
-                .collect(Collectors.toList());
     }
 
     @SuppressWarnings("unchecked")

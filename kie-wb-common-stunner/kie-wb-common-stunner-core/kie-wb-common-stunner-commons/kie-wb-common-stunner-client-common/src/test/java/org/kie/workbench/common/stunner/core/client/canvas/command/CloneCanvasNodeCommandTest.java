@@ -26,8 +26,8 @@ import org.kie.workbench.common.stunner.core.TestingGraphInstanceBuilder;
 import org.kie.workbench.common.stunner.core.TestingGraphMockHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
+import org.kie.workbench.common.stunner.core.client.shape.ConnectorViewStub;
 import org.kie.workbench.common.stunner.core.client.shape.impl.ConnectorShape;
-import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.command.impl.AbstractCompositeCommand;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.ChildrenTraverseProcessor;
@@ -61,7 +61,7 @@ public class CloneCanvasNodeCommandTest extends AbstractCanvasCommandTest {
     private ConnectorShape edgeShape;
 
     @Mock
-    private ShapeView shapeView;
+    private ConnectorViewStub edgeShapeView;
 
     @Mock
     private ManagedInstance<ChildrenTraverseProcessor> childrenTraverseProcessorManagedInstance;
@@ -78,7 +78,7 @@ public class CloneCanvasNodeCommandTest extends AbstractCanvasCommandTest {
 
         when(canvas.getShape(graphInstance.edge1.getUUID())).thenReturn(edgeShape);
         when(canvas.getShape(graphInstance.edge2.getUUID())).thenReturn(edgeShape);
-        when(edgeShape.getShapeView()).thenReturn(shapeView);
+        when(edgeShape.getShapeView()).thenReturn(edgeShapeView);
         when(childrenTraverseProcessorManagedInstance.get()).thenReturn(new ChildrenTraverseProcessorImpl(new TreeWalkTraverseProcessorImpl()));
 
         this.cloneCanvasNodeCommand = new CloneCanvasNodeCommand(parent,

@@ -35,6 +35,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.command.SetConnectionSourceNodeCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.command.SetConnectionTargetNodeCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.event.CancelCanvasAction;
+import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasHighlight;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
@@ -77,6 +78,8 @@ public class ConnectionAcceptorControlImplTest {
     private CanvasCommandManager<AbstractCanvasHandler> commandManager;
     @Mock
     private AbstractCanvasHandler canvasHandler;
+    @Mock
+    private CanvasHighlight highlight;
     @Mock
     private WiresCanvas canvas;
     @Mock
@@ -144,7 +147,9 @@ public class ConnectionAcceptorControlImplTest {
                                   eq(setConnectionTargetNodeCommand))).thenReturn(result);
         when(commandManager.execute(eq(canvasHandler),
                                     eq(setConnectionTargetNodeCommand))).thenReturn(result);
-        this.tested = new ConnectionAcceptorControlImpl(canvasCommandFactory, cancelCanvasActionEvent);
+        this.tested = new ConnectionAcceptorControlImpl(canvasCommandFactory,
+                                                        cancelCanvasActionEvent,
+                                                        canvasHandler1 -> highlight);
         this.tested.setCommandManagerProvider(() -> commandManager);
     }
 
@@ -180,6 +185,7 @@ public class ConnectionAcceptorControlImplTest {
                      setConnectionSourceNodeCommand.getEdge());
         assertEquals(connection,
                      setConnectionSourceNodeCommand.getConnection());
+        verify(highlight, times(1)).unhighLight();
     }
 
     @Test
@@ -218,6 +224,7 @@ public class ConnectionAcceptorControlImplTest {
                      setConnectionTargetNodeCommand.getEdge());
         assertEquals(connection,
                      setConnectionTargetNodeCommand.getConnection());
+        verify(highlight, times(1)).unhighLight();
     }
 
     @Test
@@ -256,6 +263,7 @@ public class ConnectionAcceptorControlImplTest {
                      setConnectionSourceNodeCommand.getEdge());
         assertEquals(connection,
                      setConnectionSourceNodeCommand.getConnection());
+        verify(highlight, times(1)).unhighLight();
     }
 
     @Test
@@ -277,6 +285,7 @@ public class ConnectionAcceptorControlImplTest {
                      setConnectionTargetNodeCommand.getEdge());
         assertEquals(connection,
                      setConnectionTargetNodeCommand.getConnection());
+        verify(highlight, times(1)).unhighLight();
     }
 
     @Test
@@ -299,6 +308,7 @@ public class ConnectionAcceptorControlImplTest {
                      setConnectionSourceNodeCommand.getEdge());
         assertEquals(connection,
                      setConnectionSourceNodeCommand.getConnection());
+        verify(highlight, times(1)).unhighLight();
     }
 
     @Test
@@ -321,6 +331,7 @@ public class ConnectionAcceptorControlImplTest {
                      setConnectionTargetNodeCommand.getEdge());
         assertEquals(connection,
                      setConnectionTargetNodeCommand.getConnection());
+        verify(highlight, times(1)).unhighLight();
     }
 
     @Test

@@ -16,11 +16,6 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.canvas.controls;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -29,9 +24,6 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
-import com.ait.lienzo.client.core.shape.wires.WiresMagnet;
-import com.ait.lienzo.client.core.shape.wires.WiresShape;
-import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanvasHandlerRegistrationControl;
@@ -40,31 +32,22 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.AbstractCanvasH
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasUtils;
-import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.RequiresCommandManager;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
+import org.kie.workbench.common.stunner.core.client.shape.view.BoundingBox;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasControlPoints;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasEventHandlers;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ResizeEvent;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ResizeHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
-import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
-import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
-import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
-import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
-import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
-import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
-import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
-import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
-import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
@@ -108,22 +91,6 @@ public class ResizeControlImpl extends AbstractCanvasHandlerRegistrationControl<
                                                  final double width,
                                                  final double height) {
         return doResize(element,
-                        null,
-                        null,
-                        width,
-                        height);
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public CommandResult<CanvasViolation> resize(final Element element,
-                                                 final double x,
-                                                 final double y,
-                                                 final double width,
-                                                 final double height) {
-        return doResize(element,
-                        x,
-                        y,
                         width,
                         height);
     }
@@ -218,21 +185,12 @@ public class ResizeControlImpl extends AbstractCanvasHandlerRegistrationControl<
 
                 @Override
                 public void end(final ResizeEvent event) {
-                    LOGGER.log(Level.FINE,
-                               "Shape [" + element.getUUID() + "] resized to size {"
-                                       + event.getWidth() + ", " + event.getHeight() + "] " +
-                                       "& Coordinates [" + event.getX() + ", " + event.getY() + "]");
-                    final Shape shape = canvasHandler.getCanvas().getShape(element.getUUID());
-                    final double x = shape.getShapeView().getShapeX();
-                    final double y = shape.getShapeView().getShapeY();
                     final CommandResult<CanvasViolation> result =
                             doResize(element,
-                                     x + event.getX(),
-                                     y + event.getY(),
                                      event.getWidth(),
                                      event.getHeight());
                     if (CommandUtils.isError(result)) {
-                        LOGGER.log(Level.WARNING,
+                        LOGGER.log(Level.SEVERE,
                                    "Command failed at resize end [result=" + result + "]");
                     }
                 }
@@ -246,13 +204,9 @@ public class ResizeControlImpl extends AbstractCanvasHandlerRegistrationControl<
 
     @SuppressWarnings("unchecked")
     private CommandResult<CanvasViolation> doResize(final Element<? extends View<?>> element,
-                                                    final Double x,
-                                                    final Double y,
                                                     final double w,
                                                     final double h) {
-        // Calculate the new graph element's bounds.
-        final Point2D current = (null != x && null != y) ? new Point2D(x,
-                                                                       y) : GraphUtils.getPosition(element.getContent());
+        final Point2D current = GraphUtils.getPosition(element.getContent());
         final Bounds newBounds = Bounds.create(current.getX(),
                                                current.getY(),
                                                current.getX() + w,
@@ -262,139 +216,8 @@ public class ResizeControlImpl extends AbstractCanvasHandlerRegistrationControl<
             return CanvasUtils.createBoundsExceededCommandResult(canvasHandler, newBounds);
         }
 
-        // Execute the update position and update property/ies command/s on the bean instance to achieve the new bounds.
-        final List<Command<AbstractCanvasHandler, CanvasViolation>> commands = getResizeCommands(element,
-                                                                                                 w,
-                                                                                                 h);
-        final CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation> commandBuilder =
-                new CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation>();
-        if (null != commands) {
-            Node<View<?>, Edge> node = (Node<View<?>, Edge>) element;
-            if (null != x && null != y) {
-                commandBuilder.addCommand(canvasCommandFactory.updatePosition((Node<View<?>, Edge>) element, new Point2D(x, y)));
-            }
-
-            commands.forEach(commandBuilder::addCommand);
-
-            //Updating Docked nodes position
-            if (GraphUtils.hasDockedNodes(node)) {
-                updateDockedNodesPosition(commandBuilder, node);
-            }
-
-            //Updating connection positions to the node
-            if (GraphUtils.hasConnections(node)) {
-                updateConnectionsPositions(commandBuilder, node);
-            }
-        }
-
-        final CommandResult<CanvasViolation> resizeResults = getCommandManager().execute(canvasHandler,
-                                                                                         commandBuilder.build());
-
-        // Update the view bounds on the node content after successful resize.
-        if (!CommandUtils.isError(resizeResults)) {
-            element.getContent().setBounds(newBounds);
-        }
-        return resizeResults;
-    }
-
-    private void updateConnectionsPositions(final CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation> commandBuilder, final Node<View<?>, Edge> node) {
-        GraphUtils.getSourceConnections(node)
-                .forEach(edge -> edge.getContent()
-                        .getSourceConnection()
-                        .ifPresent(connection -> handleConnections(commandBuilder, node, () -> connection, () -> canvasCommandFactory.setSourceNode(node, edge, connection)))
-                );
-
-        GraphUtils.getTargetConnections(node)
-                .forEach(edge -> edge.getContent()
-                        .getTargetConnection()
-                        .ifPresent(connection -> handleConnections(commandBuilder, node, () -> connection, () -> canvasCommandFactory.setTargetNode(node, edge, connection))
-                        )
-                );
-    }
-
-    private void handleConnections(final CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation> commandBuilder,
-                                   final Node<View<?>, Edge> node,
-                                   final Supplier<Connection> connectionSupplier,
-                                   final Supplier<CanvasCommand<AbstractCanvasHandler>> commandSupplier) {
-        final Connection connection = connectionSupplier.get();
-        if (Objects.isNull(connection) || !(connection instanceof MagnetConnection)) {
-            return;
-        }
-
-        final MagnetConnection magnetConnection = (MagnetConnection) connection;
-        magnetConnection.getMagnetIndex().ifPresent(index -> {
-            final Shape shape = canvasHandler.getCanvas().getShape(node.getUUID());
-            Optional.ofNullable(WiresUtils.isWiresShape(shape.getShapeView()) ? (WiresShape) shape.getShapeView() : null)
-                    .ifPresent(wiresShape -> {
-                        final WiresMagnet magnet = wiresShape.getMagnets().getMagnet(index);
-                        magnetConnection.setLocation(new Point2D(magnet.getX(), magnet.getY()));
-                        commandBuilder.addCommand(commandSupplier.get());
-                    });
-        });
-    }
-
-    private void updateDockedNodesPosition(CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation> commandBuilder, Node<View<?>, Edge> node) {
-        GraphUtils.getDockedNodes(node)
-                .stream()
-                .forEach(docked -> {
-                    final Shape shape = canvasHandler.getCanvas().getShape(docked.getUUID());
-                    final double dockedX = shape.getShapeView().getShapeX();
-                    final double dockedY = shape.getShapeView().getShapeY();
-                    commandBuilder.addCommand(canvasCommandFactory.updatePosition(docked, new Point2D(dockedX, dockedY)));
-                });
-    }
-
-    /**
-     * It provides the necessary canvas commands in order to update the domain model with new values that will met
-     * the new bounding box size.
-     * It always updates the element's position, as resize can update it, and it updates as well some of the bean's properties.
-     */
-    private List<Command<AbstractCanvasHandler, CanvasViolation>> getResizeCommands(final Element<? extends Definition<?>> element,
-                                                                                    final double w,
-                                                                                    final double h) {
-        final Definition content = element.getContent();
-        final Object def = content.getDefinition();
-        final DefinitionAdapter<Object> adapter =
-                canvasHandler.getDefinitionManager()
-                        .adapters().registry().getDefinitionAdapter(def.getClass());
-        final List<Command<AbstractCanvasHandler, CanvasViolation>> result =
-                new LinkedList<>();
-        final Object width = adapter.getMetaProperty(PropertyMetaTypes.WIDTH,
-                                                     def);
-        if (null != width) {
-            appendCommandForModelProperty(element,
-                                          width,
-                                          w,
-                                          result);
-        }
-        final Object height = adapter.getMetaProperty(PropertyMetaTypes.HEIGHT,
-                                                      def);
-        if (null != height) {
-            appendCommandForModelProperty(element,
-                                          height,
-                                          h,
-                                          result);
-        }
-        final Object radius = adapter.getMetaProperty(PropertyMetaTypes.RADIUS,
-                                                      def);
-        if (null != radius) {
-            final double r = w > h ? (h / 2) : (w / 2);
-            appendCommandForModelProperty(element,
-                                          radius,
-                                          r,
-                                          result);
-        }
-        return result;
-    }
-
-    private void appendCommandForModelProperty(final Element<? extends Definition<?>> element,
-                                               final Object property,
-                                               final Object value,
-                                               final List<Command<AbstractCanvasHandler, CanvasViolation>> result) {
-        final String id = canvasHandler.getDefinitionManager().adapters().forProperty().getId(property);
-        result.add(canvasCommandFactory.updatePropertyValue(element,
-                                                            id,
-                                                            value));
+        return getCommandManager().execute(canvasHandler,
+                                           canvasCommandFactory.resize(element, new BoundingBox(0, 0, w, h)));
     }
 
     private CanvasCommandManager<AbstractCanvasHandler> getCommandManager() {

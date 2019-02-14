@@ -55,4 +55,11 @@ public class UpdateElementPositionCommand extends AbstractCanvasGraphCommand {
     public Point2D getLocation() {
         return location;
     }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() +
+                " [element=" + getUUID(element) + "," +
+                "location=" + location + "]";
+    }
 }

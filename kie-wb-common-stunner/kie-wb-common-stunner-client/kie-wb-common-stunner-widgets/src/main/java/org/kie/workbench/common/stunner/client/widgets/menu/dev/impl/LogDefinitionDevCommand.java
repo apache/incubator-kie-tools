@@ -44,11 +44,13 @@ public class LogDefinitionDevCommand extends AbstractSelectedNodeDevCommand {
 
     @Override
     protected void execute(final Node<? extends View<?>, Edge> node) {
-        if (null == node) {
-            StunnerClientLogger.log("No item selected!");
-        } else {
-            StunnerClientLogger.logDefinition(getCanvasHandler().getDefinitionManager(),
-                                              node.getContent().getDefinition());
-        }
+        logTask(() -> {
+            if (null == node) {
+                StunnerClientLogger.log("No item selected!");
+            } else {
+                StunnerClientLogger.logDefinition(getCanvasHandler().getDefinitionManager(),
+                                                  node.getContent().getDefinition());
+            }
+        });
     }
 }

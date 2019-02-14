@@ -39,7 +39,7 @@ public class AppendEmbeddedSubprocessShortcut extends AbstractAppendNodeShortcut
     @Inject
     public AppendEmbeddedSubprocessShortcut(final ToolboxDomainLookups toolboxDomainLookups,
                                             final DefinitionsCacheRegistry definitionsCacheRegistry,
-                                            final GeneralCreateNodeAction generalCreateNodeAction) {
+                                            final @BPMN GeneralCreateNodeAction generalCreateNodeAction) {
         super(toolboxDomainLookups, definitionsCacheRegistry, generalCreateNodeAction);
     }
 

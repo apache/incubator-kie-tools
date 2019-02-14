@@ -54,4 +54,11 @@ public class AddNodeCommand extends AbstractCanvasGraphCommand {
     public String getShapeSetId() {
         return shapeSetId;
     }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() +
+                " [candidate=" + getUUID(getCandidate()) + "," +
+                "shapeSet=" + getShapeSetId() + "]";
+    }
 }

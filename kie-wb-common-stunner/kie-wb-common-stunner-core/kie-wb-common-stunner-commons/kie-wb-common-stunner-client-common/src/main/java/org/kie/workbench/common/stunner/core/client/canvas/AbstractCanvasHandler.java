@@ -506,6 +506,6 @@ public abstract class AbstractCanvasHandler<D extends Diagram, C extends Abstrac
 
     @Override
     public String toString() {
-        return this.getClass().getName() + " [" + getUuid() + "]";
+        return this.getClass().getSimpleName() + " [" + getUuid() + "]";
     }
 }

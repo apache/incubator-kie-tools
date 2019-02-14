@@ -18,8 +18,6 @@ package org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.sh
 
 import java.util.Set;
 
-import javax.inject.Inject;
-
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.GeneralCreateNodeAction;
@@ -36,7 +34,6 @@ public abstract class AbstractAppendNodeShortcut implements KeyboardShortcut<Abs
 
     private GeneralCreateNodeAction generalCreateNodeAction;
 
-    @Inject
     public AbstractAppendNodeShortcut(final ToolboxDomainLookups toolboxDomainLookups,
                                       final DefinitionsCacheRegistry definitionsCacheRegistry,
                                       final GeneralCreateNodeAction generalCreateNodeAction) {

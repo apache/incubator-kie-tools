@@ -129,7 +129,7 @@ public class AbstractCanvasGraphCommandTest {
         when(graphCommand.execute(eq(graphContext))).thenReturn(GRAPH_COMMAND_FAILED);
         CommandResult<CanvasViolation> result = tested.execute(canvasHandler);
         verify(graphCommand, times(1)).execute(eq(graphContext));
-        verify(graphCommand, times(1)).undo(eq(graphContext));
+        verify(graphCommand, never()).undo(eq(graphContext));
         verify(canvasCommand, never()).execute(eq(canvasHandler));
         assertEquals(CommandResult.Type.ERROR, result.getType());
     }

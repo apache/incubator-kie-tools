@@ -49,6 +49,10 @@ public class LogNodeEdgesDevCommand extends AbstractSelectedNodeDevCommand {
 
     @Override
     protected void execute(final Node<? extends View<?>, Edge> node) {
+        logTask(() -> log(node));
+    }
+
+    private void log(final Node<? extends View<?>, Edge> node) {
         final String uuid = node.getUUID();
         try {
             final List<Edge> inEdges = node.getInEdges();

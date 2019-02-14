@@ -73,13 +73,13 @@ public class FlowActionsToolboxFactoryTest {
     private CommonDomainLookups domainLookups;
 
     @Mock
-    private CreateConnectorAction createConnectorAction;
+    private CreateConnectorToolboxAction createConnectorAction;
 
     @Mock
     private Command createConnectorActionDestroyer;
 
     @Mock
-    private CreateNodeAction createNodeAction;
+    private CreateNodeToolboxAction createNodeAction;
 
     @Mock
     private Command createNodeActionDestroyer;

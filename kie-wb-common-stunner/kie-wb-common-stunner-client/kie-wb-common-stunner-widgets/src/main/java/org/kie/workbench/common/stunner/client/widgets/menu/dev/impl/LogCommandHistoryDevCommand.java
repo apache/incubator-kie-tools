@@ -48,7 +48,7 @@ public class LogCommandHistoryDevCommand extends AbstractMenuDevCommand {
     @Override
     public void execute() {
         try {
-            StunnerClientLogger.logCommandHistory((EditorSession) getSession());
+            logTask(() -> StunnerClientLogger.logCommandHistory((EditorSession) getSession()));
         } catch (ClassCastException e) {
             LOGGER.log(Level.WARNING,
                        "Session is not an instance of ClientFullSession");

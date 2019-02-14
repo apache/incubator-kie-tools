@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.core.graph.content.view;
 
 import java.util.Objects;
+import java.util.function.Function;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.NonPortable;
@@ -148,22 +149,55 @@ public class MagnetConnection extends DiscreteConnection {
                                         false);
         }
 
-        public static MagnetConnection forElement(final Element<? extends View<?>> element) {
-            final Bounds bounds = element.getContent().getBounds();
-            final double width = bounds.getWidth();
-            final double height = bounds.getHeight();
-            final Point2D at = width > 0 && height > 0 ?
-                    new Point2D(width / 2,
-                                height / 2) :
-                    null;
-            return new MagnetConnection(MAGNET_CENTER).setLocation(at).setAuto(false);
+        public static MagnetConnection forTarget(final Element<? extends View<?>> source,
+                                                 final Element<? extends View<?>> target) {
+            final Point2D sourcePosition = GraphUtils.getPosition(source.getContent());
+            final Point2D targetPosition = (Objects.nonNull(target) ? GraphUtils.getPosition(target.getContent()) : sourcePosition);
+            final boolean isLeft = sourcePosition.getX() > targetPosition.getX();
+            return isLeft ? atLeft(source) : atRight(source);
         }
 
-        public static MagnetConnection forElement(final Element<? extends View<?>> element, final Element<? extends View<?>> connectedTo) {
-            final Point2D elementPosition = GraphUtils.getPosition(element.getContent());
-            final Point2D connectedToPosition = (Objects.nonNull(connectedTo) ? GraphUtils.getPosition(connectedTo.getContent()) : elementPosition);
-            final int index = (elementPosition.getX() > connectedToPosition.getX() ? MAGNET_LEFT : MAGNET_RIGHT);
-            return new MagnetConnection(index).setAuto(false);
+        public static MagnetConnection atCenter(final Element<? extends View<?>> element) {
+            return atLocation(element,
+                              MAGNET_CENTER,
+                              bounds -> bounds.getWidth() > 0 && bounds.getHeight() > 0 ?
+                                      new Point2D(bounds.getWidth() / 2,
+                                                  bounds.getHeight() / 2) :
+                                      null,
+                              false);
+        }
+
+        public static MagnetConnection atRight(final Element<? extends View<?>> element) {
+            return atLocation(element,
+                              MAGNET_RIGHT,
+                              bounds -> bounds.getWidth() > 0 && bounds.getHeight() > 0 ?
+                                      new Point2D(bounds.getWidth(),
+                                                  bounds.getHeight() / 2) :
+                                      null);
+        }
+
+        public static MagnetConnection atLeft(final Element<? extends View<?>> element) {
+            return atLocation(element,
+                              MAGNET_LEFT,
+                              bounds -> bounds.getWidth() > 0 && bounds.getHeight() > 0 ?
+                                      new Point2D(0,
+                                                  bounds.getHeight() / 2) :
+                                      null);
+        }
+
+        private static MagnetConnection atLocation(final Element<? extends View<?>> element,
+                                                   final int magnet,
+                                                   final Function<Bounds, Point2D> atResolver) {
+            return atLocation(element, magnet, atResolver, true);
+        }
+
+        private static MagnetConnection atLocation(final Element<? extends View<?>> element,
+                                                   final int magnet,
+                                                   final Function<Bounds, Point2D> atResolver,
+                                                   final boolean isAuto) {
+            final Bounds bounds = element.getContent().getBounds();
+            final Point2D at = atResolver.apply(bounds);
+            return new MagnetConnection(magnet).setLocation(at).setAuto(isAuto);
         }
     }
 }

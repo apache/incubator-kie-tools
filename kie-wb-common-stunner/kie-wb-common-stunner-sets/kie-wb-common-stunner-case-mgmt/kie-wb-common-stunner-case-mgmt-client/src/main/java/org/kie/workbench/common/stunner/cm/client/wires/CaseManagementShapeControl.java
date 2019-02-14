@@ -16,13 +16,13 @@
 
 package org.kie.workbench.common.stunner.cm.client.wires;
 
-import com.ait.lienzo.client.core.shape.wires.WiresLayer;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresLayerIndex;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresParentPickerControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresMagnetsControlImpl;
-import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresParentPickerCachedControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresParentPickerControlImpl;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresShapeControlImpl;
-import com.ait.lienzo.client.core.shape.wires.picker.ColorMapBackedPicker;
+import com.ait.tooling.common.api.java.util.function.Supplier;
 import org.kie.workbench.common.stunner.client.lienzo.wires.DelegateWiresShapeControl;
 
 public class CaseManagementShapeControl
@@ -32,12 +32,14 @@ public class CaseManagementShapeControl
 
     public CaseManagementShapeControl(final WiresShape shape,
                                       final CaseManagementContainmentStateHolder state) {
-        final ColorMapBackedPicker.PickerOptions pickerOptions =
-                new ColorMapBackedPicker.PickerOptions(false,
-                                                       0);
-        final WiresParentPickerCachedControl parentPicker =
-                new WiresParentPickerCachedControl(new CaseManagementShapeLocationControl(shape),
-                                                   new CaseManagementColorMapBackedPickerProvider(pickerOptions));
+        final WiresParentPickerControl parentPicker =
+                new WiresParentPickerControlImpl(new CaseManagementShapeLocationControl(shape),
+                                                 new Supplier<WiresLayerIndex>() {
+                                                     @Override
+                                                     public WiresLayerIndex get() {
+                                                         return shapeControl.getIndex().get();
+                                                     }
+                                                 });
         shapeControl = new WiresShapeControlImpl(parentPicker,
                                                  new WiresMagnetsControlImpl(shape),
                                                  null,
@@ -47,18 +49,5 @@ public class CaseManagementShapeControl
     @Override
     public WiresShapeControlImpl getDelegate() {
         return shapeControl;
-    }
-
-    public static class CaseManagementColorMapBackedPickerProvider extends WiresParentPickerControlImpl.ColorMapBackedPickerProviderImpl {
-
-        public CaseManagementColorMapBackedPickerProvider(final ColorMapBackedPicker.PickerOptions pickerOptions) {
-            super(pickerOptions);
-        }
-
-        @Override
-        public ColorMapBackedPicker get(WiresLayer layer) {
-            return new CaseManagementColorMapBackedPicker(layer,
-                                                          getOptions());
-        }
     }
 }

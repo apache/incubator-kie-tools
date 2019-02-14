@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.util;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -71,14 +70,13 @@ public class PropertyWriterUtilsTest {
         BPMNShape targetShape = mockShape(TARGET_SHAPE_ID, 10, 10, 4, 4);
         when(sourceWriter.getShape()).thenReturn(sourceShape);
         when(targetWriter.getShape()).thenReturn(targetShape);
-
         Connection sourceConnection = mockConnection(1, 1);
         Connection targetConnection = mockConnection(10, 10);
-
-        List<ControlPoint> controlPoints = new ArrayList<>();
-        controlPoints.add(new ControlPoint(Point2D.create(3,3),0));
-        controlPoints.add(new ControlPoint(Point2D.create(4,4),0));
-        controlPoints.add(new ControlPoint(Point2D.create(5,5),0));
+        ControlPoint[] controlPoints = new ControlPoint[]{
+                new ControlPoint(Point2D.create(3, 3)),
+                new ControlPoint(Point2D.create(4, 4)),
+                new ControlPoint(Point2D.create(5, 5))
+        };
 
         BPMNEdge edge = PropertyWriterUtils.createBPMNEdge(sourceWriter, targetWriter, sourceConnection, controlPoints, targetConnection);
 
@@ -115,7 +113,7 @@ public class PropertyWriterUtilsTest {
     }
 
     @SuppressWarnings("unchecked")
-    public static ViewConnector<? extends BPMNViewDefinition> mockConnector(double sourceX, double sourceY, double targetX, double targetY, List<ControlPoint> controlPoints) {
+    public static ViewConnector<? extends BPMNViewDefinition> mockConnector(double sourceX, double sourceY, double targetX, double targetY, ControlPoint[] controlPoints) {
         ViewConnector<? extends BPMNViewDefinition> connector = mock(ViewConnector.class);
         Connection sourceConnection = mockConnection(sourceX, sourceY);
         Connection targetConnection = mockConnection(targetX, targetY);

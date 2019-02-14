@@ -31,7 +31,6 @@ public class MorphNodeCommand extends AbstractCanvasGraphCommand {
     private MorphDefinition morphDefinition;
     private String morphTarget;
     private String shapeSetId;
-    private String oldMorphTarget;
 
     public MorphNodeCommand(final Node<? extends Definition<?>, Edge> candidate,
                             final MorphDefinition morphDefinition,
@@ -56,5 +55,11 @@ public class MorphNodeCommand extends AbstractCanvasGraphCommand {
         return new MorphCanvasNodeCommand(candidate,
                                           morphDefinition,
                                           shapeSetId);
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() +
+                " [candidate=" + getUUID(candidate) + "]";
     }
 }

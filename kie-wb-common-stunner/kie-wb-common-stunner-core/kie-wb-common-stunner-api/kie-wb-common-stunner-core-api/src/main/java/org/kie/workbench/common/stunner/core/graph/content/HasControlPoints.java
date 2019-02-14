@@ -16,13 +16,11 @@
 
 package org.kie.workbench.common.stunner.core.graph.content;
 
-import java.util.List;
-
 import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
 
 public interface HasControlPoints {
 
-    List<ControlPoint> getControlPoints();
+    ControlPoint[] getControlPoints();
 
-    void setControlPoints(List<ControlPoint> controlPoints);
+    void setControlPoints(ControlPoint[] controlPoints);
 }

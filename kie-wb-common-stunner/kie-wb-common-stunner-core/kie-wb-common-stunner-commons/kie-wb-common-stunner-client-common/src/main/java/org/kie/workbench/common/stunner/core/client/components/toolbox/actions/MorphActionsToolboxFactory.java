@@ -52,7 +52,7 @@ public class MorphActionsToolboxFactory
 
     private final DefinitionUtils definitionUtils;
     private final DomainProfileManager profileManager;
-    private final Supplier<MorphNodeAction> morphNodeActions;
+    private final Supplier<MorphNodeToolboxAction> morphNodeActions;
     private final Command morphNodeActionsDestroyer;
     private final Supplier<ActionsToolboxView> views;
     private final Command viewsDestroyer;
@@ -60,7 +60,7 @@ public class MorphActionsToolboxFactory
     @Inject
     public MorphActionsToolboxFactory(final DefinitionUtils definitionUtils,
                                       final DomainProfileManager profileManager,
-                                      final @Any ManagedInstance<MorphNodeAction> morphNodeActions,
+                                      final @Any ManagedInstance<MorphNodeToolboxAction> morphNodeActions,
                                       final @Any @MorphActionsToolbox ManagedInstance<ActionsToolboxView> views) {
         this(definitionUtils,
              profileManager,
@@ -72,7 +72,7 @@ public class MorphActionsToolboxFactory
 
     MorphActionsToolboxFactory(final DefinitionUtils definitionUtils,
                                final DomainProfileManager profileManager,
-                               final Supplier<MorphNodeAction> morphNodeActions,
+                               final Supplier<MorphNodeToolboxAction> morphNodeActions,
                                final Command morphNodeActionsDestroyer,
                                final Supplier<ActionsToolboxView> views,
                                final Command viewsDestroyer) {

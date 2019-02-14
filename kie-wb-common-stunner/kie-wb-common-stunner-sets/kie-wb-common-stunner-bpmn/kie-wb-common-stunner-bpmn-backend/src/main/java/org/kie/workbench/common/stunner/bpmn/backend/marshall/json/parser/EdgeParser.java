@@ -75,11 +75,12 @@ public class EdgeParser extends ElementParser<Edge<View, Node>> {
         dockersParser.addParser(createDockerObjectParser(viewConnector.getSourceConnection()));
 
         //inserting ControlPoints
-        viewConnector.getControlPoints().stream()
-                .sequential()
-                .map(ControlPoint::getLocation)
-                .map(this::createDockerObjectParser)
-                .forEach(dockersParser::addParser);
+        final ControlPoint[] controlPoints = viewConnector.getControlPoints();
+        if (null != controlPoints) {
+            for (ControlPoint controlPoint : controlPoints) {
+                dockersParser.addParser(createDockerObjectParser(controlPoint.getLocation()));
+            }
+        }
 
         //insert target
         dockersParser.addParser(createDockerObjectParser(viewConnector.getTargetConnection()));
@@ -93,14 +94,14 @@ public class EdgeParser extends ElementParser<Edge<View, Node>> {
 
     private ObjectParser createDockerObjectParser(Point2D location) {
         return (Objects.nonNull(location) ? createDockerObjectParser(Double.valueOf(location.getX()).intValue(),
-                                                Double.valueOf(location.getY()).intValue())
+                                                                     Double.valueOf(location.getY()).intValue())
                 : createDockerObjectParser(-1, -1));
     }
 
     private ObjectParser createDockerObjectParser(final int x, final int y) {
         return new ObjectParser("")
-                .addParser(new IntegerFieldParser("x",x))
-                .addParser(new IntegerFieldParser("y",y));
+                .addParser(new IntegerFieldParser("x", x))
+                .addParser(new IntegerFieldParser("y", y));
     }
 
     private void appendConnAuto(final Connection connection,

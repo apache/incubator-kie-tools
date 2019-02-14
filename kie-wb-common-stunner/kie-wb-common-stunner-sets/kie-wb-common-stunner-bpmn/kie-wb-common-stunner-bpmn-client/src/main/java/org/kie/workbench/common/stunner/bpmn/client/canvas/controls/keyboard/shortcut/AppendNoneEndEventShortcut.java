@@ -39,7 +39,7 @@ public class AppendNoneEndEventShortcut extends AbstractAppendNodeShortcut {
     @Inject
     public AppendNoneEndEventShortcut(final ToolboxDomainLookups toolboxDomainLookups,
                                       final DefinitionsCacheRegistry definitionsCacheRegistry,
-                                      final GeneralCreateNodeAction generalCreateNodeAction) {
+                                      final @BPMN GeneralCreateNodeAction generalCreateNodeAction) {
         super(toolboxDomainLookups, definitionsCacheRegistry, generalCreateNodeAction);
     }
 

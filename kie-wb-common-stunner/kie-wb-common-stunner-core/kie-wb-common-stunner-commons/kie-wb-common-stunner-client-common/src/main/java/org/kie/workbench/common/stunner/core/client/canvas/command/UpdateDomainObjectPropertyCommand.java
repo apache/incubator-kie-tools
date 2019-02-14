@@ -66,4 +66,12 @@ public class UpdateDomainObjectPropertyCommand extends AbstractCanvasGraphComman
     protected AbstractCanvasCommand newCanvasCommand(final AbstractCanvasHandler context) {
         return new RefreshPropertiesPanelCommand();
     }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() +
+                " [domainObject=" + domainObject.getDomainObjectUUID() + "," +
+                "propertyId=" + propertyId + "," +
+                "value=" + value + "]";
+    }
 }

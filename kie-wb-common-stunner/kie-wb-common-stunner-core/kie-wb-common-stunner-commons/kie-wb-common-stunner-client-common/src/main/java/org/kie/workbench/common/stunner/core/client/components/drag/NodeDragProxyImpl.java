@@ -123,8 +123,8 @@ public class NodeDragProxyImpl implements NodeDragProxy<AbstractCanvasHandler> {
 
                                        private MagnetConnection[] createShapeConnections() {
                                            return new MagnetConnection[]{
-                                                   MagnetConnection.Builder.forElement(inEdgeSourceNode),
-                                                   MagnetConnection.Builder.forElement(node)
+                                                   MagnetConnection.Builder.forTarget(inEdgeSourceNode, node),
+                                                   MagnetConnection.Builder.forTarget(node, inEdgeSourceNode)
                                            };
                                        }
                                    });

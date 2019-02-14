@@ -20,41 +20,86 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
-import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
-import org.mockito.InOrder;
+import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertFalse;
-import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.spy;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DeleteCanvasControlPointCommandTest extends AbstractCanvasControlPointCommandTest {
 
-    private DeleteCanvasControlPointCommand deleteCanvasControlPointCommand;
+    private DeleteCanvasControlPointCommand tested;
 
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        this.deleteCanvasControlPointCommand = spy(new DeleteCanvasControlPointCommand(edge, controlPoint1));
+        this.tested = new DeleteCanvasControlPointCommand(edge, 0);
     }
 
     @Test
-    public void execute() {
-        CommandResult<CanvasViolation> result = deleteCanvasControlPointCommand.execute(canvasHandler);
-        InOrder inOrder = inOrder(shape);
-        inOrder.verify(shape).applyState(ShapeState.NONE);
-        inOrder.verify(shape).removeControlPoints(controlPoint1);
-        inOrder.verify(shape).applyState(ShapeState.SELECTED);
+    public void testChecks() {
+        tested = new DeleteCanvasControlPointCommand(edge, 0);
+        CommandResult<CanvasViolation> result = tested.allow(canvasHandler);
+        assertFalse(CommandUtils.isError(result));
+        tested = new DeleteCanvasControlPointCommand(edge, 1);
+        result = tested.allow(canvasHandler);
+        assertFalse(CommandUtils.isError(result));
+        tested = new DeleteCanvasControlPointCommand(edge, 2);
+        result = tested.allow(canvasHandler);
         assertFalse(CommandUtils.isError(result));
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testInvalidIndex() {
+        tested = new DeleteCanvasControlPointCommand(edge, -1);
+        tested.allow(canvasHandler);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testIndexForbidden() {
+        tested = new DeleteCanvasControlPointCommand(edge, 3);
+        tested.allow(canvasHandler);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testInvalidIndexDuringExecute() {
+        tested = new DeleteCanvasControlPointCommand(edge, -1);
+        tested.execute(canvasHandler);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testIndexForbiddenDuringExecute() {
+        tested = new DeleteCanvasControlPointCommand(edge, 3);
+        tested.execute(canvasHandler);
+    }
+
     @Test
-    public void undo() {
-        deleteCanvasControlPointCommand.undo(canvasHandler);
-        verify(deleteCanvasControlPointCommand).newUndoCommand();
+    public void testDeleteControlPoint() {
+        checkExecution(true);
+    }
+
+    @Test
+    public void testDeleteControlPointWhenNotVisible() {
+        checkExecution(false);
+    }
+
+    private void checkExecution(boolean areControlPointsVisible) {
+        when(connectorView.areControlsVisible()).thenReturn(areControlPointsVisible);
+        tested = new DeleteCanvasControlPointCommand(edge, 0);
+        CommandResult<CanvasViolation> result = tested.execute(canvasHandler);
+        assertFalse(CommandUtils.isError(result));
+        checkControlPointsVisibilitySwitch(areControlPointsVisible);
+        verify(connectorView, times(1)).deleteControlPoint(eq(0));
+        verify(connectorView, never()).updateControlPoints(any(ControlPoint[].class));
+        verify(connectorView, never()).addControlPoint(any(ControlPoint.class), anyInt());
     }
 }

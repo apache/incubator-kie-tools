@@ -125,14 +125,14 @@ public class SequenceFlowPropertyWriterTest {
         ViewConnectorImpl<SequenceFlow> connector = makeConnector();
         connector.setSourceConnection(MagnetConnection.Builder.at(1, 2));
         connector.setTargetConnection(MagnetConnection.Builder.at(2, 3));
-        connector.setControlPoints(asList(
+        connector.setControlPoints(new ControlPoint[]{
                 ControlPoint.build(Point2D.create(
                         sx + 100,
                         sy + 100)),
                 ControlPoint.build(Point2D.create(
                         sx + 150,
                         sy + 150))
-        ));
+        });
         p.setConnection(connector);
 
         BPMNEdge edge = p.getEdge();

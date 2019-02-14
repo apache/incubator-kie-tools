@@ -64,7 +64,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class CreateConnectorActionTest {
+public class CreateConnectorToolboxActionTest {
 
     private static final String NODE_UUID = "node1";
     private static final String EDGE_UUID = "edge1";
@@ -133,7 +133,7 @@ public class CreateConnectorActionTest {
     @Mock
     private DragProxy<AbstractCanvasHandler, ConnectorDragProxy.Item, DragProxyCallback> dragProxy;
 
-    private CreateConnectorAction tested;
+    private CreateConnectorToolboxAction tested;
 
     @Before
     @SuppressWarnings("unchecked")
@@ -168,13 +168,13 @@ public class CreateConnectorActionTest {
                                             eq(500),
                                             any(DragProxyCallback.class))).thenReturn(dragProxy);
 
-        this.tested = new CreateConnectorAction(definitionUtils,
-                                                clientFactoryManager,
-                                                graphBoundsIndexer,
-                                                connectorDragProxyFactory,
-                                                edgeBuilderControl,
-                                                sessionCommandManager,
-                                                translationService,
+        this.tested = new CreateConnectorToolboxAction(definitionUtils,
+                                                       clientFactoryManager,
+                                                       graphBoundsIndexer,
+                                                       connectorDragProxyFactory,
+                                                       edgeBuilderControl,
+                                                       sessionCommandManager,
+                                                       translationService,
                                                 handler -> canvasHighlight)
                 .setEdgeId(EDGE_ID);
     }
@@ -187,7 +187,7 @@ public class CreateConnectorActionTest {
         tested.getTitle(canvasHandler,
                         NODE_UUID);
         verify(translationService,
-               times(1)).getValue(eq(CreateConnectorAction.KEY_TITLE));
+               times(1)).getValue(eq(CreateConnectorToolboxAction.KEY_TITLE));
     }
 
     @Test

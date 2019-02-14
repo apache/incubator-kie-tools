@@ -56,4 +56,11 @@ public class RemoveChildCommand extends AbstractCanvasGraphCommand {
     public Node getCandidate() {
         return child;
     }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() +
+                " [child=" + getUUID(getCandidate()) + "," +
+                "parent=" + getUUID(getParent()) + "]";
+    }
 }

@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.function.Consumer;
 
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
+import org.kie.workbench.common.stunner.core.client.shape.view.BoundingBox;
 import org.kie.workbench.common.stunner.core.definition.morph.MorphDefinition;
 import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -34,85 +35,99 @@ import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 
 public interface CanvasCommandFactory<H extends CanvasHandler> {
 
-    CanvasCommand<H> addNode(final Node candidate,
-                             final String shapeSetId);
+    CanvasCommand<H> addNode(Node candidate,
+                             String shapeSetId);
 
-    CanvasCommand<H> addChildNode(final Node parent,
-                                  final Node candidate,
-                                  final String shapeSetId);
+    CanvasCommand<H> addChildNode(Node parent,
+                                  Node candidate,
+                                  String shapeSetId);
 
-    CanvasCommand<H> addDockedNode(final Node parent,
-                                   final Node candidate,
-                                   final String shapeSetId);
+    CanvasCommand<H> addDockedNode(Node parent,
+                                   Node candidate,
+                                   String shapeSetId);
 
-    CanvasCommand<H> deleteNode(final Node candidate);
+    CanvasCommand<H> deleteNode(Node candidate);
 
-    CanvasCommand<H> delete(final Collection<Element> candidates);
+    CanvasCommand<H> delete(Collection<Element> candidates);
 
-    CanvasCommand<H> addConnector(final Node sourceNode,
-                                  final Edge candidate,
-                                  final Connection connection,
-                                  final String shapeSetId);
+    CanvasCommand<H> addConnector(Node sourceNode,
+                                  Edge candidate,
+                                  Connection connection,
+                                  String shapeSetId);
 
-    CanvasCommand<H> deleteConnector(final Edge candidate);
+    CanvasCommand<H> deleteConnector(Edge candidate);
 
-    CanvasCommand<H> setChildNode(final Node parent,
-                                  final Node candidate);
+    CanvasCommand<H> cloneNode(Node candidate,
+                               String parentUuid,
+                               Point2D cloneLocation,
+                               Consumer<Node> callback);
 
-    CanvasCommand<H> removeChild(final Node parent,
-                                 final Node candidate);
+    CanvasCommand<H> cloneConnector(Edge candidate,
+                                    String sourceUUID,
+                                    String targetUUID,
+                                    String shapeSetId,
+                                    Consumer<Edge> callback);
 
-    CanvasCommand<H> updateChildNode(final Node parent,
-                                     final Node candidate);
+    CanvasCommand<H> setChildNode(Node parent,
+                                  Node candidate);
 
-    CanvasCommand<H> dockNode(final Node parent,
-                              final Node candidate);
+    CanvasCommand<H> removeChild(Node parent,
+                                 Node candidate);
 
-    CanvasCommand<H> unDockNode(final Node parent,
-                                final Node candidate);
+    CanvasCommand<H> updateChildNode(Node parent,
+                                     Node candidate);
 
-    CanvasCommand<H> updateDockNode(final Node parent,
-                                    final Node candidate);
+    CanvasCommand<H> dockNode(Node parent,
+                              Node candidate);
 
-    CanvasCommand<H> updateDockNode(final Node parent,
-                                    final Node candidate,
-                                    final boolean adjustPosition);
+    CanvasCommand<H> unDockNode(Node parent,
+                                Node candidate);
+
+    CanvasCommand<H> updateDockNode(Node parent,
+                                    Node candidate);
+
+    CanvasCommand<H> updateDockNode(Node parent,
+                                    Node candidate,
+                                    boolean adjustPosition);
 
     CanvasCommand<H> draw();
 
-    CanvasCommand<H> morphNode(final Node<? extends Definition<?>, Edge> candidate,
-                               final MorphDefinition morphDefinition,
-                               final String morphTarget,
-                               final String shapeSetId);
+    CanvasCommand<H> morphNode(Node<? extends Definition<?>, Edge> candidate,
+                               MorphDefinition morphDefinition,
+                               String morphTarget,
+                               String shapeSetId);
 
-    CanvasCommand<H> setSourceNode(final Node<? extends View<?>, Edge> node,
-                                   final Edge<? extends ViewConnector<?>, Node> edge,
-                                   final Connection connection);
+    CanvasCommand<H> updatePosition(Node<View<?>, Edge> element,
+                                    Point2D location);
 
-    CanvasCommand<H> setTargetNode(final Node<? extends View<?>, Edge> node,
-                                   final Edge<? extends ViewConnector<?>, Node> edge,
-                                   final Connection connection);
+    CanvasCommand<H> resize(Element<? extends View<?>> element,
+                            BoundingBox boundingBox);
 
-    CanvasCommand<H> updatePosition(final Node<View<?>, Edge> element,
-                                    final Point2D location);
+    CanvasCommand<H> updatePropertyValue(Element element,
+                                         String propertyId,
+                                         Object value);
 
-    CanvasCommand<H> updatePropertyValue(final Element element,
-                                         final String propertyId,
-                                         final Object value);
+    CanvasCommand<H> updateDomainObjectPropertyValue(DomainObject domainObject,
+                                                     String propertyId,
+                                                     Object value);
 
-    CanvasCommand<H> updateDomainObjectPropertyValue(final DomainObject domainObject,
-                                                     final String propertyId,
-                                                     final Object value);
+    CanvasCommand<H> setSourceNode(Node<? extends View<?>, Edge> node,
+                                   Edge<? extends ViewConnector<?>, Node> edge,
+                                   Connection connection);
+
+    CanvasCommand<H> setTargetNode(Node<? extends View<?>, Edge> node,
+                                   Edge<? extends ViewConnector<?>, Node> edge,
+                                   Connection connection);
+
+    CanvasCommand<H> addControlPoint(Edge candidate,
+                                     ControlPoint controlPoint,
+                                     int index);
+
+    CanvasCommand<H> deleteControlPoint(Edge candidate,
+                                        int index);
+
+    CanvasCommand<H> updateControlPointPosition(Edge candidate,
+                                                ControlPoint[] controlPoints);
 
     CanvasCommand<H> clearCanvas();
-
-    CanvasCommand<H> cloneNode(Node candidate, String parentUuid, Point2D cloneLocation, Consumer<Node> callback);
-
-    CanvasCommand<H> cloneConnector(Edge candidate, String sourceUUID, String targetUUID, String shapeSetId, Consumer<Edge> callback);
-
-    CanvasCommand<H> addControlPoint(Edge candidate, ControlPoint... controlPoints);
-
-    CanvasCommand<H> deleteControlPoint(Edge candidate, ControlPoint... controlPoints);
-
-    CanvasCommand<H> updateControlPointPosition(Edge candidate, ControlPoint controlPoint, Point2D position);
 }

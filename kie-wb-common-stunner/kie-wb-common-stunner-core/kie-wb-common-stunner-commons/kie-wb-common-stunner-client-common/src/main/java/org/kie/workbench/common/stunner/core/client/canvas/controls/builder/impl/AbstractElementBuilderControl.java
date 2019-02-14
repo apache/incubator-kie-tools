@@ -46,6 +46,7 @@ import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.index.bounds.GraphBoundsIndexer;
@@ -58,8 +59,6 @@ import org.kie.workbench.common.stunner.core.rule.context.CardinalityContext;
 import org.kie.workbench.common.stunner.core.rule.context.impl.RuleContextBuilder;
 import org.kie.workbench.common.stunner.core.rule.violations.DefaultRuleViolations;
 import org.kie.workbench.common.stunner.core.util.UUID;
-
-import static org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection.Builder.forElement;
 
 public abstract class AbstractElementBuilderControl extends AbstractCanvasHandlerControl<AbstractCanvasHandler>
         implements ElementBuilderControl<AbstractCanvasHandler> {
@@ -268,15 +267,17 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
                                    final double x,
                                    final double y,
                                    final CommandsCallback commandsCallback) {
-        //Command<AbstractCanvasHandler, CanvasViolation> command = null;
         final List<Command<AbstractCanvasHandler, CanvasViolation>> commandList = new LinkedList<>();
         if (element instanceof Node) {
             final Node<View<?>, Edge> node = (Node<View<?>, Edge>) element;
             commandList.addAll(getNodeBuildCommands(node, parent, parentAssignment, x, y));
         } else if (element instanceof Edge && null != parent) {
-            commandList.add(canvasCommandFactory.addConnector(parent, (Edge) element, forElement(parent), getShapeSetId()));
+            commandList.add(canvasCommandFactory.addConnector(parent,
+                                                              (Edge) element,
+                                                              MagnetConnection.Builder.atCenter(parent),
+                                                              getShapeSetId()));
         } else {
-            throw new RuntimeException("Unrecognized element type for " + element);
+            throw new IllegalStateException("Unrecognized element type for " + element);
         }
 
         commandsCallback.onComplete(element.getUUID(), commandList);

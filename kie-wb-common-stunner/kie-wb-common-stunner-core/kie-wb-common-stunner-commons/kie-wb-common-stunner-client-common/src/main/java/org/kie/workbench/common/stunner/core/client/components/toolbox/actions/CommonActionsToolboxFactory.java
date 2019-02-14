@@ -44,14 +44,14 @@ public class CommonActionsToolboxFactory
         extends AbstractActionsToolboxFactory {
 
     private final CanvasCommandFactory<AbstractCanvasHandler> commandFactory;
-    private final Supplier<DeleteNodeAction> deleteNodeActions;
+    private final Supplier<DeleteNodeToolboxAction> deleteNodeActions;
     private final Command deleteNodeActionsDestroyer;
     private final Supplier<ActionsToolboxView> views;
     private final Command viewsDestroyer;
 
     @Inject
     public CommonActionsToolboxFactory(final CanvasCommandFactory<AbstractCanvasHandler> commandFactory,
-                                       final @Any ManagedInstance<DeleteNodeAction> deleteNodeActions,
+                                       final @Any ManagedInstance<DeleteNodeToolboxAction> deleteNodeActions,
                                        final @Any @CommonActionsToolbox ManagedInstance<ActionsToolboxView> views) {
         this(commandFactory,
              deleteNodeActions::get,
@@ -61,7 +61,7 @@ public class CommonActionsToolboxFactory
     }
 
     CommonActionsToolboxFactory(final CanvasCommandFactory<AbstractCanvasHandler> commandFactory,
-                                final Supplier<DeleteNodeAction> deleteNodeActions,
+                                final Supplier<DeleteNodeToolboxAction> deleteNodeActions,
                                 final Command deleteNodeActionsDestroyer,
                                 final Supplier<ActionsToolboxView> views,
                                 final Command viewsDestroyer) {

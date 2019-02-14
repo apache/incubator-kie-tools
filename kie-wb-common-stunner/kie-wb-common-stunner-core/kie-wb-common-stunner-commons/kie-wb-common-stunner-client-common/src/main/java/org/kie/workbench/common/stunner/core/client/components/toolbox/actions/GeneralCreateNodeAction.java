@@ -62,6 +62,7 @@ public abstract class GeneralCreateNodeAction implements CreateNodeAction<Abstra
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void executeAction(final AbstractCanvasHandler canvasHandler,
                               final String sourceNodeId,
                               final String targetNodeId,
@@ -126,8 +127,13 @@ public abstract class GeneralCreateNodeAction implements CreateNodeAction<Abstra
                                                          final Edge<? extends ViewConnector<?>, Node> connector) {
         return canvasCommandFactory.addConnector(sourceNode,
                                                  connector,
-                                                 MagnetConnection.Builder.forElement(sourceNode, targetNode),
+                                                 buildConnectionBetween(sourceNode, targetNode),
                                                  canvasHandler.getDiagram().getMetadata().getShapeSetId());
+    }
+
+    protected MagnetConnection buildConnectionBetween(final Node<View<?>, Edge> sourceNode,
+                                                      final Node<View<?>, Edge> targetNode) {
+        return MagnetConnection.Builder.forTarget(sourceNode, targetNode);
     }
 
     private CanvasCommand<AbstractCanvasHandler> setEdgeTarget(final Edge<? extends ViewConnector<?>, Node> connector,
@@ -135,7 +141,7 @@ public abstract class GeneralCreateNodeAction implements CreateNodeAction<Abstra
                                                                final Node<View<?>, Edge> sourceNode) {
         return canvasCommandFactory.setTargetNode(targetNode,
                                                   connector,
-                                                  MagnetConnection.Builder.forElement(targetNode, sourceNode));
+                                                  buildConnectionBetween(targetNode, sourceNode));
     }
 
     private CanvasCommand<AbstractCanvasHandler> addNode(final CanvasHandler canvasHandler,

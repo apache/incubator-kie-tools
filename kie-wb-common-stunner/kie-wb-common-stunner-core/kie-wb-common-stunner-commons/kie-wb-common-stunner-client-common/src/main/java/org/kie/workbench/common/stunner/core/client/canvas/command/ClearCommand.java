@@ -37,4 +37,9 @@ public class ClearCommand extends AbstractCanvasGraphCommand {
     protected AbstractCanvasCommand newCanvasCommand(final AbstractCanvasHandler context) {
         return new ClearCanvasCommand();
     }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName();
+    }
 }

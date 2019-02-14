@@ -62,8 +62,8 @@ public class RemoveCanvasChildCommand extends AbstractCanvasCommand {
 
     @Override
     public String toString() {
-        return getClass().getName() +
+        return getClass().getSimpleName() +
                 " [parent=" + getUUID(parent) + "," +
-                " child=" + getUUID(child) + "]";
+                "child=" + getUUID(child) + "]";
     }
 }

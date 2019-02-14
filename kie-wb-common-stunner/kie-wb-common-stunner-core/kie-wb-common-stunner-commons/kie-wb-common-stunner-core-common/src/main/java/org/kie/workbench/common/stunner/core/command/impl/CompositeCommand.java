@@ -56,7 +56,7 @@ public class CompositeCommand<T, V> extends AbstractCompositeCommand<T, V> {
     }
 
     @Override
-    protected boolean isUndoReverse() {
+    public boolean isUndoReverse() {
         return reverse;
     }
 

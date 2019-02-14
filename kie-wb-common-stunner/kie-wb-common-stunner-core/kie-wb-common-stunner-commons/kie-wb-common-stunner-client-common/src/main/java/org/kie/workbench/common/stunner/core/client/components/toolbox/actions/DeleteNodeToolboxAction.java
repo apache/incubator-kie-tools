@@ -40,19 +40,19 @@ import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
  * A toolbox action/operation for deleting an Element.
  */
 @Dependent
-public class DeleteNodeAction implements ToolboxAction<AbstractCanvasHandler> {
+public class DeleteNodeToolboxAction implements ToolboxAction<AbstractCanvasHandler> {
 
     private final ClientTranslationService translationService;
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
     private final CanvasCommandFactory<AbstractCanvasHandler> commandFactory;
-    private final Predicate<DeleteNodeAction> confirmDelete;
+    private final Predicate<DeleteNodeToolboxAction> confirmDelete;
     private final Event<CanvasClearSelectionEvent> clearSelectionEvent;
 
     @Inject
-    public DeleteNodeAction(final ClientTranslationService translationService,
-                            final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                            final CanvasCommandFactory<AbstractCanvasHandler> commandFactory,
-                            final Event<CanvasClearSelectionEvent> clearSelectionEvent) {
+    public DeleteNodeToolboxAction(final ClientTranslationService translationService,
+                                   final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
+                                   final CanvasCommandFactory<AbstractCanvasHandler> commandFactory,
+                                   final Event<CanvasClearSelectionEvent> clearSelectionEvent) {
         this(translationService,
              sessionCommandManager,
              commandFactory,
@@ -60,11 +60,11 @@ public class DeleteNodeAction implements ToolboxAction<AbstractCanvasHandler> {
              clearSelectionEvent);
     }
 
-    DeleteNodeAction(final ClientTranslationService translationService,
-                     final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                     final CanvasCommandFactory<AbstractCanvasHandler> commandFactory,
-                     final Predicate<DeleteNodeAction> confirmDelete,
-                     final Event<CanvasClearSelectionEvent> clearSelectionEvent) {
+    DeleteNodeToolboxAction(final ClientTranslationService translationService,
+                            final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
+                            final CanvasCommandFactory<AbstractCanvasHandler> commandFactory,
+                            final Predicate<DeleteNodeToolboxAction> confirmDelete,
+                            final Event<CanvasClearSelectionEvent> clearSelectionEvent) {
         this.translationService = translationService;
         this.sessionCommandManager = sessionCommandManager;
         this.commandFactory = commandFactory;

@@ -16,8 +16,6 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties;
 
-import java.util.List;
-
 import org.eclipse.bpmn2.Association;
 import org.eclipse.bpmn2.AssociationDirection;
 import org.eclipse.bpmn2.di.BPMNEdge;
@@ -46,7 +44,7 @@ public class AssociationPropertyWriter extends BasePropertyWriter {
             Connection sourceConnection = connector.getSourceConnection().get();
             Connection targetConnection = connector.getTargetConnection().get();
 
-            List<ControlPoint> controlPoints = connector.getControlPoints();
+            ControlPoint[] controlPoints = connector.getControlPoints();
             bpmnEdge = PropertyWriterUtils.createBPMNEdge(source,
                                                           target,
                                                           sourceConnection,

@@ -21,7 +21,7 @@ import com.ait.lienzo.client.core.shape.wires.IContainmentAcceptor;
 import com.ait.lienzo.client.core.shape.wires.IDockingAcceptor;
 import com.ait.lienzo.client.core.shape.wires.ILocationAcceptor;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
-import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresParentPickerCachedControl;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresParentPickerControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresShapeControlImpl;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
@@ -45,7 +45,7 @@ public class StunnerWiresShapeControlTest {
     private WiresShapeControlImpl delegate;
 
     @Mock
-    private WiresParentPickerCachedControl parentPickerControl;
+    private WiresParentPickerControl parentPickerControl;
 
     @Mock
     private WiresShapeView shapeView;

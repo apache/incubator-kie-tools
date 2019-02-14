@@ -28,12 +28,12 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.AddConnectorCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.command.AddNodeCommand;
-import org.kie.workbench.common.stunner.core.client.canvas.command.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.command.SetConnectionTargetNodeCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.command.UpdateElementPositionCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactoryStub;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.impl.DeferredCommand;
@@ -74,8 +74,7 @@ public class GeneralCreateNodeActionTest {
     @Mock
     private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
 
-    private CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory = new DefaultCanvasCommandFactory(null,
-                                                                                                               null);
+    private CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory = new CanvasCommandFactoryStub();
 
     private GeneralCreateNodeAction createNodeAction;
 

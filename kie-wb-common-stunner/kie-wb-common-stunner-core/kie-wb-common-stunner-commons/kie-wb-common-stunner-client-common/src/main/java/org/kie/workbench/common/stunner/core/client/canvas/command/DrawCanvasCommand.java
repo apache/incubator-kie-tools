@@ -191,4 +191,9 @@ public class DrawCanvasCommand extends AbstractCanvasCommand {
                 .build()
                 .execute(context);
     }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName();
+    }
 }

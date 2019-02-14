@@ -25,9 +25,9 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.kie.workbench.common.stunner.client.lienzo.canvas.command.LienzoCanvasCommandFactory;
 import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.command.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
@@ -39,7 +39,7 @@ import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.V
 
 @ApplicationScoped
 @CaseManagementEditor
-public class CaseManagementCanvasCommandFactory extends DefaultCanvasCommandFactory {
+public class CaseManagementCanvasCommandFactory extends LienzoCanvasCommandFactory {
 
     @Inject
     public CaseManagementCanvasCommandFactory(final ManagedInstance<ChildrenTraverseProcessor> childrenTraverseProcessors,

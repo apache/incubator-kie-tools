@@ -173,8 +173,7 @@ public abstract class AbstractSessionCommandManager
         this.listener = listener;
     }
 
-    @SuppressWarnings("unchecked")
-    protected CommandManager<AbstractCanvasHandler, CanvasViolation> setDelegateListener(final CommandListener<AbstractCanvasHandler, CanvasViolation> listener) {
+    protected CanvasCommandManager<AbstractCanvasHandler> getDelegateCommandManager() {
         final ClientSession<AbstractCanvas, AbstractCanvasHandler> session = getCurrentSession();
         CanvasCommandManager<AbstractCanvasHandler> commandManager = null;
         if (session instanceof EditorSession) {
@@ -182,6 +181,12 @@ public abstract class AbstractSessionCommandManager
         } else if (session instanceof ViewerSession) {
             commandManager = ((ViewerSession) session).getCommandManager();
         }
+        return commandManager;
+    }
+
+    @SuppressWarnings("unchecked")
+    protected CommandManager<AbstractCanvasHandler, CanvasViolation> setDelegateListener(final CommandListener<AbstractCanvasHandler, CanvasViolation> listener) {
+        CanvasCommandManager<AbstractCanvasHandler> commandManager = getDelegateCommandManager();
         if (commandManager != null) {
             final HasCommandListener<CommandListener<AbstractCanvasHandler, CanvasViolation>> hasCommandListener =
                     (HasCommandListener<CommandListener<AbstractCanvasHandler, CanvasViolation>>) commandManager;

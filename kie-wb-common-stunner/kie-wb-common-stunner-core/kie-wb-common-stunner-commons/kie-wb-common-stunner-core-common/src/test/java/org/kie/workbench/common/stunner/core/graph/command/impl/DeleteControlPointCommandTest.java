@@ -21,45 +21,133 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
+import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
+import org.mockito.ArgumentCaptor;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.mockito.Mockito.spy;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DeleteControlPointCommandTest extends AbstractControlPointCommandTest {
 
-    private DeleteControlPointCommand deleteControlPointCommand;
+    private DeleteControlPointCommand tested;
 
     @Before
     public void setUp() {
         super.setUp();
-        deleteControlPointCommand = spy(new DeleteControlPointCommand(edge, controlPoint1));
     }
 
     @Test
-    public void check() {
-        CommandResult<RuleViolation> result = deleteControlPointCommand.check(graphCommandExecutionContext);
+    public void testChecks() {
+        tested = new DeleteControlPointCommand(EDGE_UUID, 0);
+        CommandResult<RuleViolation> result = tested.check(graphCommandExecutionContext);
+        assertFalse(CommandUtils.isError(result));
+        tested = new DeleteControlPointCommand(EDGE_UUID, 1);
+        result = tested.check(graphCommandExecutionContext);
+        assertFalse(CommandUtils.isError(result));
+        tested = new DeleteControlPointCommand(EDGE_UUID, 2);
+        result = tested.check(graphCommandExecutionContext);
         assertFalse(CommandUtils.isError(result));
     }
 
-    @Test
-    public void execute() {
-        assertEquals(controlPointList.size(), 3);
-        deleteControlPointCommand.execute(graphCommandExecutionContext);
-        assertEquals(controlPointList.size(), 2);
-        assertEquals(controlPointList.get(0), controlPoint2);
-        assertEquals(controlPointList.get(1), controlPoint3);
-        assertEquals(controlPoint2.getIndex(), 0, 0);
-        assertEquals(controlPoint3.getIndex(), 1, 0);
+    @Test(expected = IllegalArgumentException.class)
+    public void testInvalidIndex() {
+        tested = new DeleteControlPointCommand(EDGE_UUID, -1);
+        tested.check(graphCommandExecutionContext);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testIndexForbidden() {
+        tested = new DeleteControlPointCommand(EDGE_UUID, 3);
+        tested.check(graphCommandExecutionContext);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testInvalidIndexDuringExecute() {
+        tested = new DeleteControlPointCommand(EDGE_UUID, -1);
+        tested.execute(graphCommandExecutionContext);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testIndexForbiddenDuringExecute() {
+        tested = new DeleteControlPointCommand(EDGE_UUID, 3);
+        tested.execute(graphCommandExecutionContext);
     }
 
     @Test
-    public void undo() {
-        deleteControlPointCommand.undo(graphCommandExecutionContext);
-        verify(deleteControlPointCommand).newUndoCommand();
+    public void testDeleteControlPointAt0() {
+        tested = new DeleteControlPointCommand(EDGE_UUID, 0);
+        CommandResult<RuleViolation> result = tested.execute(graphCommandExecutionContext);
+        ArgumentCaptor<ControlPoint[]> pointsCaptor = ArgumentCaptor.forClass(ControlPoint[].class);
+        assertFalse(CommandUtils.isError(result));
+        verify(viewConnector, times(1)).setControlPoints(pointsCaptor.capture());
+        ControlPoint[] controlPoints = pointsCaptor.getValue();
+        assertNotNull(controlPoints);
+        assertEquals(2, controlPoints.length);
+        assertEquals(controlPoint2, controlPoints[0]);
+        assertEquals(controlPoint3, controlPoints[1]);
+    }
+
+    @Test
+    public void testDeleteControlPointAt1() {
+        tested = new DeleteControlPointCommand(EDGE_UUID, 1);
+        CommandResult<RuleViolation> result = tested.execute(graphCommandExecutionContext);
+        ArgumentCaptor<ControlPoint[]> pointsCaptor = ArgumentCaptor.forClass(ControlPoint[].class);
+        assertFalse(CommandUtils.isError(result));
+        verify(viewConnector, times(1)).setControlPoints(pointsCaptor.capture());
+        ControlPoint[] controlPoints = pointsCaptor.getValue();
+        assertNotNull(controlPoints);
+        assertEquals(2, controlPoints.length);
+        assertEquals(controlPoint1, controlPoints[0]);
+        assertEquals(controlPoint3, controlPoints[1]);
+    }
+
+    @Test
+    public void testDeleteControlPointAt2() {
+        tested = new DeleteControlPointCommand(EDGE_UUID, 2);
+        CommandResult<RuleViolation> result = tested.execute(graphCommandExecutionContext);
+        ArgumentCaptor<ControlPoint[]> pointsCaptor = ArgumentCaptor.forClass(ControlPoint[].class);
+        assertFalse(CommandUtils.isError(result));
+        verify(viewConnector, times(1)).setControlPoints(pointsCaptor.capture());
+        ControlPoint[] controlPoints = pointsCaptor.getValue();
+        assertNotNull(controlPoints);
+        assertEquals(2, controlPoints.length);
+        assertEquals(controlPoint1, controlPoints[0]);
+        assertEquals(controlPoint2, controlPoints[1]);
+    }
+
+    @Test
+    public void testDeleteControlPointAndUndoIt() {
+        // Delete CP at 0.
+        tested = new DeleteControlPointCommand(EDGE_UUID, 0);
+        CommandResult<RuleViolation> result = tested.execute(graphCommandExecutionContext);
+        ArgumentCaptor<ControlPoint[]> pointsCaptor = ArgumentCaptor.forClass(ControlPoint[].class);
+        assertFalse(CommandUtils.isError(result));
+        verify(viewConnector, atLeastOnce()).setControlPoints(pointsCaptor.capture());
+        ControlPoint[] controlPoints = pointsCaptor.getValue();
+        assertNotNull(controlPoints);
+        assertEquals(2, controlPoints.length);
+        assertEquals(controlPoint2, controlPoints[0]);
+        assertEquals(controlPoint3, controlPoints[1]);
+        // Undo it.
+        when(viewConnector.getControlPoints())
+                .thenReturn(new ControlPoint[]{controlPoint2, controlPoint3});
+        result = tested.undo(graphCommandExecutionContext);
+        assertFalse(CommandUtils.isError(result));
+        pointsCaptor = ArgumentCaptor.forClass(ControlPoint[].class);
+        verify(viewConnector, atLeastOnce()).setControlPoints(pointsCaptor.capture());
+        controlPoints = pointsCaptor.getValue();
+        assertNotNull(controlPoints);
+        assertEquals(3, controlPoints.length);
+        assertEquals(controlPoint1, controlPoints[0]);
+        assertEquals(controlPoint2, controlPoints[1]);
+        assertEquals(controlPoint3, controlPoints[2]);
     }
 }

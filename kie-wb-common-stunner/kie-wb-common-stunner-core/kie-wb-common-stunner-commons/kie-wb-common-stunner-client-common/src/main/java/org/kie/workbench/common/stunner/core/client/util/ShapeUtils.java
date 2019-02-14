@@ -29,17 +29,17 @@ import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.shape.EdgeShape;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
-import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
 import org.kie.workbench.common.stunner.core.client.shape.impl.ConnectorShape;
 import org.kie.workbench.common.stunner.core.client.shape.view.BoundingBox;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasDragBounds;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasRadius;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasSize;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
 import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
-import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
 import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
@@ -51,8 +51,8 @@ import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.Tree
 public class ShapeUtils {
 
     @SuppressWarnings("unchecked")
-    public static void applyConnections(final Edge<?, ?> edge,
-                                        final CanvasHandler canvasHandler,
+    public static void applyConnections(final Edge<? extends ViewConnector<?>, Node> edge,
+                                        final AbstractCanvasHandler canvasHandler,
                                         final MutationContext mutationContext) {
         final Canvas<?> canvas = canvasHandler.getCanvas();
         final Node sourceNode = edge.getSourceNode();
@@ -64,37 +64,12 @@ public class ShapeUtils {
                                    source != null ? source.getShapeView() : null,
                                    target != null ? target.getShapeView() : null,
                                    mutationContext);
+        updateEdgeConnections(edge, canvasHandler);
     }
 
-    public static List<ControlPoint> addControlPoints(final Edge edge, final CanvasHandler canvasHandler, final ControlPoint... controlPoints) {
-        return getConnectorShape(edge, canvasHandler).addControlPoints(controlPoints);
-    }
-
-    private static ConnectorShape getConnectorShape(Edge edge, CanvasHandler canvasHandler) {
+    public static ConnectorShape getConnectorShape(Edge edge, CanvasHandler canvasHandler) {
         validateConnector(edge);
         return (ConnectorShape) canvasHandler.getCanvas().getShape(edge.getUUID());
-    }
-
-    public static void removeControlPoints(final Edge edge, final CanvasHandler canvasHandler, final ControlPoint... controlPoints) {
-        getConnectorShape(edge, canvasHandler).removeControlPoints(controlPoints);
-    }
-
-    public static void updateControlPoint(final Edge edge,
-                                          final CanvasHandler canvasHandler,
-                                          final ControlPoint controlPoint) {
-        getConnectorShape(edge, canvasHandler).updateControlPoint(controlPoint);
-    }
-
-    public static List<ControlPoint> getControlPoints(final Edge edge, final CanvasHandler canvasHandler) {
-        return getConnectorShape(edge, canvasHandler).getControlPoints();
-    }
-
-    public static void hideControlPoints(final Edge edge, final CanvasHandler canvasHandler) {
-        getConnectorShape(edge, canvasHandler).applyState(ShapeState.NONE);
-    }
-
-    public static void showControlPoints(final Edge edge, final CanvasHandler canvasHandler) {
-        getConnectorShape(edge, canvasHandler).applyState(ShapeState.SELECTED);
     }
 
     private static void validateConnector(Edge edge) {
@@ -166,6 +141,24 @@ public class ShapeUtils {
         // Update connector's view.
         connectorIds.forEach(id -> moveShapeToTop(canvasHandler,
                                                   id));
+    }
+
+    public static double getRadiusForBoundingBox(final double width,
+                                                 final double height) {
+        return (width > height ?
+                width / 2 :
+                height / 2);
+    }
+
+    public static void setSizeFromBoundingBox(final ShapeView view,
+                                              final double boundingBoxWidth,
+                                              final double boundingBoxHeight) {
+        if (view instanceof HasSize) {
+            ((HasSize) view).setSize(boundingBoxWidth, boundingBoxHeight);
+        } else if (view instanceof HasRadius) {
+            final double radius = getRadiusForBoundingBox(boundingBoxWidth, boundingBoxHeight);
+            ((HasRadius) view).setRadius(radius);
+        }
     }
 
     /**

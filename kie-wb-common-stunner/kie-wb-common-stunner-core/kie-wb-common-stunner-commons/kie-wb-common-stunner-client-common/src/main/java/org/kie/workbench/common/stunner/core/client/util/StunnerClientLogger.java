@@ -221,12 +221,34 @@ public class StunnerClientLogger {
         }
     }
 
+    public static void logTask(Level toLevel,
+                               Runnable task) {
+        Level level = getStunnerLogger().getLevel();
+        getStunnerLogger().setLevel(toLevel);
+        task.run();
+        getStunnerLogger().setLevel(level);
+    }
+
+    public static int switchToLogLevel(Level toLevel) {
+        final int idx = getCurrentLoggerLevelIndex();
+        getStunnerLogger().setLevel(toLevel);
+        return idx;
+    }
+
     public static void switchLogLevel() {
-        final Level level = Logger.getLogger("org.kie.workbench.common.stunner").getLevel();
-        final int idx = getLevelIndex(level);
+        final int idx = getCurrentLoggerLevelIndex();
         final Level newLevel = (idx > -1 && ((idx + 1) < LOG_LEVELS.length)) ? LOG_LEVELS[idx + 1] : LOG_LEVELS[0];
         GWT.log("*** Switching to log level: " + newLevel.toString());
-        Logger.getLogger("org.kie.workbench.common.stunner").setLevel(newLevel);
+        getStunnerLogger().setLevel(newLevel);
+    }
+
+    private static int getCurrentLoggerLevelIndex() {
+        final Level level = getStunnerLogger().getLevel();
+        return getLevelIndex(level);
+    }
+
+    private static Logger getStunnerLogger() {
+        return Logger.getLogger("org.kie.workbench.common.stunner");
     }
 
     private static final Level[] LOG_LEVELS = new Level[]{

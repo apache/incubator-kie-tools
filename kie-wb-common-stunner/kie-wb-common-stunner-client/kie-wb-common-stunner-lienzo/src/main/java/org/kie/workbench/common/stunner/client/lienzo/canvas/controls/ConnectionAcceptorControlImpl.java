@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.client.lienzo.canvas.controls;
 
 import java.util.Optional;
+import java.util.function.Function;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -59,13 +60,23 @@ public class ConnectionAcceptorControlImpl
 
     private final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
     private final Event<CancelCanvasAction> cancelCanvasActionEvent;
+    private final Function<AbstractCanvasHandler, CanvasHighlight> highlightFactory;
     private CanvasHighlight canvasHighlight;
 
     @Inject
     public ConnectionAcceptorControlImpl(final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
                                          final Event<CancelCanvasAction> cancelCanvasActionEvent) {
+        this(canvasCommandFactory,
+             cancelCanvasActionEvent,
+             CanvasHighlight::new);
+    }
+
+    ConnectionAcceptorControlImpl(final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
+                                  final Event<CancelCanvasAction> cancelCanvasActionEvent,
+                                  final Function<AbstractCanvasHandler, CanvasHighlight> highlightFactory) {
         this.canvasCommandFactory = canvasCommandFactory;
         this.cancelCanvasActionEvent = cancelCanvasActionEvent;
+        this.highlightFactory = highlightFactory;
     }
 
     @Override
@@ -82,7 +93,7 @@ public class ConnectionAcceptorControlImpl
 
     @Override
     protected void onInit(final WiresCanvas canvas) {
-        this.canvasHighlight = new CanvasHighlight(getCanvasHandler());
+        this.canvasHighlight = highlightFactory.apply(getCanvasHandler());
         canvas.getWiresManager().setConnectionAcceptor(CONNECTION_ACCEPTOR);
     }
 
@@ -279,7 +290,9 @@ public class ConnectionAcceptorControlImpl
                            final boolean valid) {
         canvasHighlight.unhighLight();
         if (null != node && valid) {
-            canvasHighlight.highLight(node);
+            if (!node.getInEdges().contains(connector)) {
+                canvasHighlight.highLight(node);
+            }
         } else if (null != node) {
             canvasHighlight.invalid(node);
         }
@@ -311,7 +324,7 @@ public class ConnectionAcceptorControlImpl
     @SuppressWarnings("unchecked")
     public static MagnetConnection createConnection(final Element element) {
         return null != element ?
-                MagnetConnection.Builder.forElement(element) :
+                MagnetConnection.Builder.atCenter(element) :
                 null;
     }
 

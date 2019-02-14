@@ -22,8 +22,10 @@ import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.Bpmn2Ory
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
+import org.kie.workbench.common.stunner.core.command.impl.DeferredCompositeCommand;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.command.impl.AddControlPointCommand;
 import org.kie.workbench.common.stunner.core.graph.command.impl.AddNodeCommand;
 import org.kie.workbench.common.stunner.core.graph.command.impl.GraphCommandFactory;
 import org.kie.workbench.common.stunner.core.graph.command.impl.SetConnectionTargetNodeCommand;
@@ -142,17 +144,21 @@ public abstract class AbstractEdgeBuilder<W, T extends Edge<View<W>, Node>>
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void buildControlPoints(BuilderContext context, T edge, GraphCommandFactory commandFactory) {
         if (dockers.size() > 2) {
-            Counter indexCounter = new Counter(0);
-            ControlPoint[] controlPoints = dockers.subList(1, dockers.size() - 1).stream()
+            final DeferredCompositeCommand.Builder commandBuilder = new DeferredCompositeCommand.Builder();
+            final Counter indexCounter = new Counter(-1);
+            dockers.subList(1, dockers.size() - 1).stream()
                     .sequential()
                     .map(docker -> (docker.length == 2 ? new Point2D(docker[0], docker[1]) : null))
                     .filter(Objects::nonNull)
-                    .map(point -> ControlPoint.build(point, indexCounter.increment()))
-                    .toArray(ControlPoint[]::new);
-
-            CommandResult<RuleViolation> addControlPointsResult = context.execute(commandFactory.addControlPoint(edge, controlPoints));
+                    .forEachOrdered(point -> {
+                        final AddControlPointCommand command =
+                                commandFactory.addControlPoint(edge, ControlPoint.build(point), indexCounter.increment());
+                        commandBuilder.deferCommand(() -> command);
+                    });
+            CommandResult<RuleViolation> addControlPointsResult = context.execute(commandBuilder.build());
             if (hasErrors(addControlPointsResult)) {
                 throw new RuntimeException("Error building BPMN graph. Command 'AddControlPointCommand' execution failed." + addControlPointsResult);
             }

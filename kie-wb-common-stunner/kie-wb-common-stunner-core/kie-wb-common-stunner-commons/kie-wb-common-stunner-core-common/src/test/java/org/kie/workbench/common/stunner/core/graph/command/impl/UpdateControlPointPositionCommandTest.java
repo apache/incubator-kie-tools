@@ -16,98 +16,100 @@
 
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
-import java.util.Collections;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
-import org.kie.workbench.common.stunner.core.graph.Edge;
-import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
-import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
-import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
-import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnectorImpl;
-import org.kie.workbench.common.stunner.core.graph.impl.EdgeImpl;
-import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
-import org.mockito.Mock;
+import org.mockito.ArgumentCaptor;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class UpdateControlPointPositionCommandTest {
+public class UpdateControlPointPositionCommandTest extends AbstractControlPointCommandTest {
 
-    private static final Point2D TARGET_LOCATION = Point2D.create(7, 5);
-
-    @Mock
-    private GraphCommandExecutionContext commandExecutionContext;
-
-    @Mock
-    private RuleManager ruleManager;
-
-    private Edge edge;
-    private ViewConnectorImpl content;
-    private ControlPoint controlPoint;
+    private static final ControlPoint newControlPoint1 = ControlPoint.build(0.1, 0.2);
+    private static final ControlPoint newControlPoint2 = ControlPoint.build(0.3, 0.4);
+    private static final ControlPoint newControlPoint3 = ControlPoint.build(0.4, 0.5);
 
     private UpdateControlPointPositionCommand tested;
+    private ControlPoint[] newControlPoints;
 
     @Before
-    @SuppressWarnings("unchecked")
     public void setUp() {
-        controlPoint = ControlPoint.build(1, 4, 0);
-        when(commandExecutionContext.getRuleManager()).thenReturn(ruleManager);
-        content = new ViewConnectorImpl<>(mock(Object.class),
-                                          Bounds.create(0, 0, 10, 10));
-        edge = new EdgeImpl<>("edge1");
-        edge.setContent(content);
-        content.setControlPoints(Collections.singletonList(controlPoint));
-        tested = new UpdateControlPointPositionCommand(edge,
-                                                       controlPoint,
-                                                       TARGET_LOCATION);
+        super.setUp();
+        newControlPoints = new ControlPoint[]{newControlPoint1, newControlPoint2, newControlPoint3};
     }
 
     @Test
-    public void testAllow() {
-        final CommandResult<RuleViolation> allow1 = tested.allow(commandExecutionContext);
-        assertFalse(CommandUtils.isError(allow1));
-        content.setControlPoints(Collections.singletonList(mock(ControlPoint.class)));
-
-        tested = new UpdateControlPointPositionCommand(edge, null, TARGET_LOCATION);
-        final CommandResult<RuleViolation> allow2 = tested.allow(commandExecutionContext);
-        assertTrue(CommandUtils.isError(allow2));
-    }
-
-    @Test
-    public void testExecute() {
-        final CommandResult<RuleViolation> result = tested.execute(commandExecutionContext);
+    public void testCheck() {
+        tested = new UpdateControlPointPositionCommand(EDGE_UUID, newControlPoints);
+        CommandResult<RuleViolation> result = tested.check(graphCommandExecutionContext);
         assertFalse(CommandUtils.isError(result));
-        assertEquals(7, controlPoint.getLocation().getX(), 0);
-        assertEquals(5, controlPoint.getLocation().getY(), 0);
-        assertEquals(Point2D.create(1, 4), tested.getOldPosition());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testCannotUpdateCPs() {
+        newControlPoints = new ControlPoint[]{newControlPoint1, newControlPoint2};
+        tested = new UpdateControlPointPositionCommand(EDGE_UUID, newControlPoints);
+        tested.check(graphCommandExecutionContext);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testCannotUpdateCPs2() {
+        when(viewConnector.getControlPoints()).thenReturn(new ControlPoint[]{controlPoint1, controlPoint2});
+        tested = new UpdateControlPointPositionCommand(EDGE_UUID, newControlPoints);
+        tested.check(graphCommandExecutionContext);
     }
 
     @Test
-    public void testExecuteInvalid() {
-        content.setControlPoints(Collections.singletonList(mock(ControlPoint.class)));
-        final CommandResult<RuleViolation> result = tested.execute(commandExecutionContext);
-        assertTrue(CommandUtils.isError(result));
-        assertEquals(1, controlPoint.getLocation().getX(), 0);
-        assertEquals(4, controlPoint.getLocation().getY(), 0);
-    }
-
-    @Test
-    public void testUndo() {
-        tested.execute(commandExecutionContext);
-        final CommandResult<RuleViolation> result = tested.undo(commandExecutionContext);
+    public void testUpdateControlPoints() {
+        tested = new UpdateControlPointPositionCommand(EDGE_UUID, newControlPoints);
+        CommandResult<RuleViolation> result = tested.execute(graphCommandExecutionContext);
         assertFalse(CommandUtils.isError(result));
-        assertEquals(1, controlPoint.getLocation().getX(), 0);
-        assertEquals(4, controlPoint.getLocation().getY(), 0);
+        ArgumentCaptor<ControlPoint[]> pointsCaptor = ArgumentCaptor.forClass(ControlPoint[].class);
+        verify(viewConnector, times(1)).setControlPoints(pointsCaptor.capture());
+        ControlPoint[] controlPoints = pointsCaptor.getValue();
+        assertNotNull(controlPoints);
+        assertEquals(3, controlPoints.length);
+        assertEquals(newControlPoint1, controlPoints[0]);
+        assertEquals(newControlPoint2, controlPoints[1]);
+        assertEquals(newControlPoint3, controlPoints[2]);
+    }
+
+    @Test
+    public void testUpdateControlPointsAndUndoIt() {
+        // Update the CPs.
+        tested = new UpdateControlPointPositionCommand(EDGE_UUID, newControlPoints);
+        CommandResult<RuleViolation> result = tested.execute(graphCommandExecutionContext);
+        assertFalse(CommandUtils.isError(result));
+        ArgumentCaptor<ControlPoint[]> pointsCaptor = ArgumentCaptor.forClass(ControlPoint[].class);
+        verify(viewConnector, atLeastOnce()).setControlPoints(pointsCaptor.capture());
+        ControlPoint[] controlPoints = pointsCaptor.getValue();
+        assertNotNull(controlPoints);
+        assertEquals(3, controlPoints.length);
+        assertEquals(newControlPoint1, controlPoints[0]);
+        assertEquals(newControlPoint2, controlPoints[1]);
+        assertEquals(newControlPoint3, controlPoints[2]);
+        // Undo it.
+        result = tested.undo(graphCommandExecutionContext);
+        assertFalse(CommandUtils.isError(result));
+        pointsCaptor = ArgumentCaptor.forClass(ControlPoint[].class);
+        verify(viewConnector, atLeastOnce()).setControlPoints(pointsCaptor.capture());
+        controlPoints = pointsCaptor.getValue();
+        assertNotNull(controlPoints);
+        assertEquals(3, controlPoints.length);
+        assertEquals(controlPoint1, controlPoints[0]);
+        assertEquals(controlPoint2, controlPoints[1]);
+        assertEquals(controlPoint3, controlPoints[2]);
     }
 }

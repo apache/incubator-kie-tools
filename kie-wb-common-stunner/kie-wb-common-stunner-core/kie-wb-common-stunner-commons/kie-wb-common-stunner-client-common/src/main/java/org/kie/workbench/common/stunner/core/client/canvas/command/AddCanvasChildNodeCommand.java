@@ -72,9 +72,9 @@ public class AddCanvasChildNodeCommand extends AbstractRegistrationCanvasNodeCom
 
     @Override
     public String toString() {
-        return getClass().getName() +
+        return getClass().getSimpleName() +
                 " [parent=" + getUUID(parent) + "," +
-                " candidate=" + getUUID(getCandidate()) + "," +
-                " shapeSet=" + getShapeSetId() + "]";
+                "candidate=" + getUUID(getCandidate()) + "," +
+                "shapeSet=" + getShapeSetId() + "]";
     }
 }

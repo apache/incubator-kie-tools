@@ -22,6 +22,7 @@ import javax.inject.Inject;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.commands.factory.canvas.AddChildNodeCommand;
+import org.kie.workbench.common.stunner.client.lienzo.canvas.command.LienzoCanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -30,7 +31,7 @@ import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.V
 
 @DMNEditor
 @ApplicationScoped
-public class DefaultCanvasCommandFactory extends org.kie.workbench.common.stunner.core.client.canvas.command.DefaultCanvasCommandFactory {
+public class DefaultCanvasCommandFactory extends LienzoCanvasCommandFactory {
 
     protected DefaultCanvasCommandFactory() {
         super();

@@ -83,12 +83,13 @@ public class NotificationsView extends Composite implements Notifications.View {
     @Override
     @SuppressWarnings("unchecked")
     public Notifications.View addColumn(final Column<Notification, String> column,
+                                        final double pixelsWidth,
                                         final String name) {
         logsGrid.addColumn(column,
                            name);
         logsGrid.setColumnWidth(column,
-                                5,
-                                Style.Unit.PCT);
+                                pixelsWidth,
+                                Style.Unit.PX);
         return this;
     }
 

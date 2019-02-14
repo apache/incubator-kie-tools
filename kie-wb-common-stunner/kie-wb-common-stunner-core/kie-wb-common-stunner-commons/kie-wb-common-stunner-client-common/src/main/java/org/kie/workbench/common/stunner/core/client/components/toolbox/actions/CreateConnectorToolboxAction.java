@@ -57,9 +57,9 @@ import org.kie.workbench.common.stunner.core.util.UUID;
  * toolbox's related node, to any other candidate canvas' node.
  */
 @Dependent
-public class CreateConnectorAction extends AbstractToolboxAction {
+public class CreateConnectorToolboxAction extends AbstractToolboxAction {
 
-    private static Logger LOGGER = Logger.getLogger(CreateConnectorAction.class.getName());
+    private static Logger LOGGER = Logger.getLogger(CreateConnectorToolboxAction.class.getName());
     static final String KEY_TITLE = "org.kie.workbench.common.stunner.core.client.toolbox.createNewConnector";
 
     private final ClientFactoryManager clientFactoryManager;
@@ -74,13 +74,13 @@ public class CreateConnectorAction extends AbstractToolboxAction {
     private DragProxy<AbstractCanvasHandler, ConnectorDragProxy.Item, DragProxyCallback> dragProxy;
 
     @Inject
-    public CreateConnectorAction(final DefinitionUtils definitionUtils,
-                                 final ClientFactoryManager clientFactoryManager,
-                                 final GraphBoundsIndexer graphBoundsIndexer,
-                                 final ConnectorDragProxy<AbstractCanvasHandler> connectorDragProxyFactory,
-                                 final EdgeBuilderControl<AbstractCanvasHandler> edgeBuilderControl,
-                                 final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                                 final ClientTranslationService translationService) {
+    public CreateConnectorToolboxAction(final DefinitionUtils definitionUtils,
+                                        final ClientFactoryManager clientFactoryManager,
+                                        final GraphBoundsIndexer graphBoundsIndexer,
+                                        final ConnectorDragProxy<AbstractCanvasHandler> connectorDragProxyFactory,
+                                        final EdgeBuilderControl<AbstractCanvasHandler> edgeBuilderControl,
+                                        final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
+                                        final ClientTranslationService translationService) {
         this(definitionUtils,
              clientFactoryManager,
              graphBoundsIndexer,
@@ -91,14 +91,14 @@ public class CreateConnectorAction extends AbstractToolboxAction {
              CanvasHighlight::new);
     }
 
-    CreateConnectorAction(final DefinitionUtils definitionUtils,
-                          final ClientFactoryManager clientFactoryManager,
-                          final GraphBoundsIndexer graphBoundsIndexer,
-                          final ConnectorDragProxy<AbstractCanvasHandler> connectorDragProxyFactory,
-                          final EdgeBuilderControl<AbstractCanvasHandler> edgeBuilderControl,
-                          final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                          final ClientTranslationService translationService,
-                          final Function<AbstractCanvasHandler, CanvasHighlight> canvasHighlightBuilder) {
+    CreateConnectorToolboxAction(final DefinitionUtils definitionUtils,
+                                 final ClientFactoryManager clientFactoryManager,
+                                 final GraphBoundsIndexer graphBoundsIndexer,
+                                 final ConnectorDragProxy<AbstractCanvasHandler> connectorDragProxyFactory,
+                                 final EdgeBuilderControl<AbstractCanvasHandler> edgeBuilderControl,
+                                 final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
+                                 final ClientTranslationService translationService,
+                                 final Function<AbstractCanvasHandler, CanvasHighlight> canvasHighlightBuilder) {
         super(definitionUtils,
               translationService);
         this.clientFactoryManager = clientFactoryManager;
@@ -109,7 +109,7 @@ public class CreateConnectorAction extends AbstractToolboxAction {
         this.canvasHighlightBuilder = canvasHighlightBuilder;
     }
 
-    public CreateConnectorAction setEdgeId(final String edgeId) {
+    public CreateConnectorToolboxAction setEdgeId(final String edgeId) {
         this.edgeId = edgeId;
         return this;
     }
@@ -341,8 +341,8 @@ public class CreateConnectorAction extends AbstractToolboxAction {
 
     @Override
     public boolean equals(final Object o) {
-        if (o instanceof CreateConnectorAction) {
-            CreateConnectorAction other = (CreateConnectorAction) o;
+        if (o instanceof CreateConnectorToolboxAction) {
+            CreateConnectorToolboxAction other = (CreateConnectorToolboxAction) o;
             return other.edgeId.equals(edgeId);
         }
         return false;

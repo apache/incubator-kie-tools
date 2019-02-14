@@ -16,12 +16,19 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.command;
 
+import java.util.Arrays;
+import java.util.stream.Stream;
+
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
-import org.kie.workbench.common.stunner.core.client.util.ShapeUtils;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
+import org.kie.workbench.common.stunner.core.graph.util.ControlPointValidations;
+
+import static org.kie.workbench.common.stunner.core.client.canvas.command.AddCanvasControlPointCommand.consumeControlPoints;
+import static org.kie.workbench.common.stunner.core.client.canvas.command.AddCanvasControlPointCommand.getControlPoints;
 
 /**
  * Update a given {@link ControlPoint} position on Canvas.
@@ -29,24 +36,44 @@ import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
 public class UpdateCanvasControlPointPositionCommand extends AbstractCanvasCommand {
 
     private final Edge edge;
-    private final ControlPoint controlPoint;
+    private final ControlPoint[] controlPoints;
+    private ControlPoint[] oldControlPoints;
 
     public UpdateCanvasControlPointPositionCommand(final Edge edge,
-                                                   final ControlPoint controlPoint) {
+                                                   final ControlPoint[] controlPoints) {
         this.edge = edge;
-        this.controlPoint = controlPoint;
+        this.controlPoints = controlPoints;
+        // Actual control points must be cloned at this point, before execution.
+        oldControlPoints = Stream.of(getControlPoints(edge))
+                .map(ControlPoint::copy)
+                .toArray(ControlPoint[]::new);
+    }
+
+    @Override
+    public CommandResult<CanvasViolation> allow(final AbstractCanvasHandler context) {
+        ControlPointValidations.checkUpdateControlPoint(getControlPoints(edge),
+                                                        controlPoints);
+        return CanvasCommandResultBuilder.SUCCESS;
     }
 
     @Override
     public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
-        ShapeUtils.updateControlPoint(edge,
-                                      context,
-                                      controlPoint);
+        allow(context);
+        consumeControlPoints(context,
+                             edge,
+                             view -> view.updateControlPoints(controlPoints));
         return buildResult();
     }
 
     @Override
     public CommandResult<CanvasViolation> undo(final AbstractCanvasHandler context) {
-        return new UpdateCanvasControlPointPositionCommand(edge, controlPoint).execute(context);
+        return new UpdateCanvasControlPointPositionCommand(edge, oldControlPoints).execute(context);
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() +
+                " [edge=" + getUUID(edge) + "," +
+                "controlPoints=" + Arrays.toString(controlPoints) + "]";
     }
 }

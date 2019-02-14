@@ -43,7 +43,7 @@ public class CanvasUtils {
                                                                              .setUUID(canvasHandler.getUuid()));
 
         return new CommandResultImpl<>(
-                CommandResult.Type.ERROR,
+                CommandResult.Type.WARNING,
                 Collections.singleton(cv)
         );
     }

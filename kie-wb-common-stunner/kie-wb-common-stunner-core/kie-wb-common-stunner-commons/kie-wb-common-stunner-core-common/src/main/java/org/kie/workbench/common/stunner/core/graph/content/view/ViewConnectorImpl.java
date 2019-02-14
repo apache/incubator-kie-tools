@@ -16,9 +16,9 @@
 
 package org.kie.workbench.common.stunner.core.graph.content.view;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -32,7 +32,7 @@ public final class ViewConnectorImpl<W> implements ViewConnector<W> {
     protected Bounds bounds;
     private Connection sourceConnection;
     private Connection targetConnection;
-    private List<ControlPoint> controlPoints;
+    private ControlPoint[] controlPoints;
 
     public ViewConnectorImpl(final @MapsTo("definition") W definition,
                              final @MapsTo("bounds") Bounds bounds) {
@@ -40,8 +40,7 @@ public final class ViewConnectorImpl<W> implements ViewConnector<W> {
         this.bounds = bounds;
         this.sourceConnection = null;
         this.targetConnection = null;
-        this.controlPoints = new ArrayList<>();
-
+        this.controlPoints = new ControlPoint[0];
     }
 
     @Override
@@ -81,23 +80,22 @@ public final class ViewConnectorImpl<W> implements ViewConnector<W> {
     }
 
     @Override
-    public List<ControlPoint> getControlPoints() {
+    public ControlPoint[] getControlPoints() {
         return controlPoints;
     }
 
     @Override
-    public void setControlPoints(List<ControlPoint> controlPoints) {
+    public void setControlPoints(ControlPoint[] controlPoints) {
         this.controlPoints = controlPoints;
     }
 
     @Override
     public int hashCode() {
-        getControlPoints().stream().map(ControlPoint::hashCode).toArray(Integer[]::new);
         return HashUtil.combineHashCodes(definition.hashCode(),
                                          bounds.hashCode(),
                                          getSourceConnection().hashCode(),
                                          getTargetConnection().hashCode(),
-                                         HashUtil.combineHashCodes(getControlPoints().stream()
+                                         HashUtil.combineHashCodes(Stream.of(getControlPoints())
                                                                            .map(ControlPoint::hashCode)
                                                                            .mapToInt(i -> i)
                                                                            .toArray()));
@@ -111,7 +109,7 @@ public final class ViewConnectorImpl<W> implements ViewConnector<W> {
                     bounds.equals(other.getBounds()) &&
                     getSourceConnection().equals(other.getSourceConnection()) &&
                     getTargetConnection().equals(other.getTargetConnection()) &&
-                    getControlPoints().equals(other.getControlPoints());
+                    Arrays.equals(getControlPoints(), other.getControlPoints());
         }
         return false;
     }

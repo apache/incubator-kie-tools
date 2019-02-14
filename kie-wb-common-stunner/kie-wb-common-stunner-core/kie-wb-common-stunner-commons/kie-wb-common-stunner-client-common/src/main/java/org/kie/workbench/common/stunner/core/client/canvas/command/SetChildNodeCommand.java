@@ -52,4 +52,11 @@ public class SetChildNodeCommand extends AbstractCanvasGraphCommand {
     public Node getCandidate() {
         return candidate;
     }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() +
+                " [candidate=" + getUUID(getCandidate()) + "," +
+                "parent=" + getUUID(getParent()) + "]";
+    }
 }

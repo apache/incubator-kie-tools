@@ -62,4 +62,11 @@ public class DockNodeCommand extends AbstractCanvasGraphCommand {
     public Node getCandidate() {
         return candidate;
     }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() +
+                " [candidate=" + getUUID(getCandidate()) + "," +
+                "parent=" + getUUID(getParent()) + "]";
+    }
 }

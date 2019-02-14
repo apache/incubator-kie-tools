@@ -16,57 +16,73 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.command;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.junit.Before;
+import org.kie.workbench.common.stunner.core.client.shape.ConnectorViewStub;
 import org.kie.workbench.common.stunner.core.client.shape.impl.ConnectorShape;
-import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasControlPoints;
 import org.kie.workbench.common.stunner.core.graph.Edge;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
-import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
+import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnectorImpl;
+import org.kie.workbench.common.stunner.core.graph.impl.EdgeImpl;
 import org.kie.workbench.common.stunner.core.util.UUID;
 import org.mockito.Mock;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public abstract class AbstractCanvasControlPointCommandTest extends AbstractCanvasCommandTest {
 
-    protected ControlPoint controlPoint1;
-
-    protected ControlPoint controlPoint2;
-
-    protected Point2D location1;
-
     private static final String EDGE_UUID = UUID.uuid();
-
-    @Mock
-    protected Edge edge;
 
     @Mock
     protected ConnectorShape shape;
 
-    @Mock
-    protected ShapeView shapeView;
-
-    @Mock
-    private ViewConnector viewConnector;
-
-    protected List<ControlPoint> controlPointList;
+    protected Edge edge;
+    protected ViewConnector viewConnector;
+    protected ControlPoint[] controlPoints;
+    protected ControlPoint controlPoint1;
+    protected ControlPoint controlPoint2;
+    protected ControlPoint controlPoint3;
+    protected ConnectorViewStub connectorView;
 
     @Before
+    @SuppressWarnings("unchecked")
     public void setUp() throws Exception {
         super.setUp();
-        location1 = new Point2D(0, 0);
-        controlPoint1 = ControlPoint.build(location1);
-        controlPoint2 = ControlPoint.build(location1, 1);
-        controlPointList = Arrays.asList(controlPoint1);
 
-        when(shape.getShapeView()).thenReturn(shapeView);
-        when(shape.addControlPoints(controlPoint1)).thenReturn(Arrays.asList(controlPoint2));
-        when(edge.getUUID()).thenReturn(EDGE_UUID);
-        when(edge.getContent()).thenReturn(viewConnector);
+        edge = new EdgeImpl<>(EDGE_UUID);
+        viewConnector = new ViewConnectorImpl<>(mock(Object.class), Bounds.createEmpty());
+        edge.setContent(viewConnector);
+
+        connectorView = spy(new ConnectorViewStub());
+        when(shape.getShapeView()).thenReturn(connectorView);
+        when(canvasHandler.getGraphIndex().get(EDGE_UUID)).thenReturn(edge);
         when(canvasHandler.getCanvas().getShape(EDGE_UUID)).thenReturn(shape);
+
+        controlPoint1 = ControlPoint.build(1, 1);
+        controlPoint2 = ControlPoint.build(2, 2);
+        controlPoint3 = ControlPoint.build(3, 3);
+        controlPoints = new ControlPoint[]{controlPoint1, controlPoint2, controlPoint3};
+        viewConnector.setControlPoints(controlPoints);
+        when(connectorView.getManageableControlPoints()).thenReturn(controlPoints);
+        when(connectorView.areControlsVisible()).thenReturn(true);
+    }
+
+    protected void checkControlPointsVisibilitySwitch(boolean areControlPointsVisible) {
+        if (areControlPointsVisible) {
+            verify(connectorView, times(1)).hideControlPoints();
+            verify(connectorView, times(1)).showControlPoints(eq(HasControlPoints.ControlPointType.POINTS));
+        } else {
+            verify(connectorView, never()).hideControlPoints();
+            verify(connectorView, never()).showControlPoints(any(HasControlPoints.ControlPointType.class));
+        }
     }
 }

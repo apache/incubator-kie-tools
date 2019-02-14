@@ -26,7 +26,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
@@ -34,17 +33,18 @@ import static org.mockito.Mockito.when;
 public class MagnetConnectionTest {
 
     @Mock
-    private Element element;
+    private Element<? extends View<?>> element;
 
     @Mock
-    private Element element2;
+    private Element<? extends View<?>> element2;
 
     @Mock
-    private View<?> content;
+    private View content;
     @Mock
-    private View<?> content2;
+    private View content2;
 
     @Before
+    @SuppressWarnings("unchecked")
     public void setUp() {
         Bounds bounds = Bounds.create(10d, 20d, 100d, 200d);
         when(element.getContent()).thenReturn(content);
@@ -65,8 +65,8 @@ public class MagnetConnectionTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testForElement() {
-        MagnetConnection m1 = MagnetConnection.Builder.forElement(element);
+    public void testAtCenter() {
+        MagnetConnection m1 = MagnetConnection.Builder.atCenter(element);
 
         assertEquals(45,
                      m1.getLocation().getX(),
@@ -81,30 +81,30 @@ public class MagnetConnectionTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testForElementWithReferenceRight() {
+    public void testForTargetARight() {
         Bounds bounds2 = Bounds.create(20d, 30d, 200d, 300d);
         when(element2.getContent()).thenReturn(content2);
         when(content2.getBounds()).thenReturn(bounds2);
 
-        MagnetConnection m1 = MagnetConnection.Builder.forElement(element, element2);
-        assertNull(m1.getLocation());
+        MagnetConnection m1 = MagnetConnection.Builder.forTarget(element, element2);
+        assertEquals(Point2D.create(90, 90), m1.getLocation());
         assertEquals(MagnetConnection.MAGNET_RIGHT,
                      m1.getMagnetIndex().getAsInt());
-        assertFalse(m1.isAuto());
+        assertTrue(m1.isAuto());
     }
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testForElementWithReferenceLeft() {
+    public void testForTargetAtLeft() {
         Bounds bounds2 = Bounds.create(5d, 10d, 200d, 300d);
         when(element2.getContent()).thenReturn(content2);
         when(content2.getBounds()).thenReturn(bounds2);
 
-        MagnetConnection m1 = MagnetConnection.Builder.forElement(element, element2);
-        assertNull(m1.getLocation());
+        MagnetConnection m1 = MagnetConnection.Builder.forTarget(element, element2);
+        assertEquals(Point2D.create(0, 90), m1.getLocation());
         assertEquals(MagnetConnection.MAGNET_LEFT,
                      m1.getMagnetIndex().getAsInt());
-        assertFalse(m1.isAuto());
+        assertTrue(m1.isAuto());
     }
 
     @Test

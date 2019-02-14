@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.bpmn.backend.marshall.json.builder;
 
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -28,6 +27,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.Widt
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
+import org.kie.workbench.common.stunner.core.command.impl.DeferredCompositeCommand;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
@@ -179,13 +179,16 @@ public abstract class AbstractNodeBuilder<W, T extends Node<View<W>, Edge>>
                 if (outgoingBuilder == null) {
                     throw new RuntimeException("No outgoing edge builder for " + outgoingNodeId);
                 }
-                final List<Command<GraphCommandExecutionContext, RuleViolation>> commands = new LinkedList<>();
+
+                final DeferredCompositeCommand.Builder<GraphCommandExecutionContext, RuleViolation> commandBuilder =
+                        new DeferredCompositeCommand.Builder<>();
+
                 // If outgoing element it's a node means that it's docked.
                 if (outgoingBuilder instanceof AbstractNodeBuilder) {
                     // Command - Create the docked node.
                     Node docked = (Node) outgoingBuilder.build(context);
-                    commands.add(context.getCommandFactory().addDockedNode(node,
-                                                                           docked));
+                    commandBuilder.deferCommand(() -> context.getCommandFactory().addDockedNode(node,
+                                                                                                docked));
                     // Obtain docked position and use those for the docked node.
                     final List<Double[]> dockers = ((AbstractNodeBuilder) outgoingBuilder).dockers;
                     if (!dockers.isEmpty()) {
@@ -193,9 +196,9 @@ public abstract class AbstractNodeBuilder<W, T extends Node<View<W>, Edge>>
                         Double[] dCoords = dockers.get(0);
                         double x = dCoords[0];
                         double y = dCoords[1];
-                        commands.add(context.getCommandFactory().updatePosition(docked,
-                                                                                new Point2D(x,
-                                                                                            y)));
+                        commandBuilder.deferCommand(() -> context.getCommandFactory().updatePosition(docked,
+                                                                                                     new Point2D(x,
+                                                                                                                 y)));
                     }
                 } else {
                     // Create the outgoing edge.
@@ -210,23 +213,22 @@ public abstract class AbstractNodeBuilder<W, T extends Node<View<W>, Edge>>
                             sourceDocker = dockers.get(0);
                         }
 
-                        Connection sourceConnection = null;
+                        final Connection[] sourceConnection = new Connection[1];
                         if (null != sourceDocker) {
-                            sourceConnection = MagnetConnection.Builder
+                            sourceConnection[0] = MagnetConnection.Builder
                                     .at(sourceDocker[0],
                                         sourceDocker[1])
                                     .setAuto(edgeBuilder.isSourceAutoConnection());
                         }
-                        commands.add(context.getCommandFactory().setSourceNode(node,
-                                                                               edge,
-                                                                               sourceConnection));
+                        commandBuilder.deferCommand(() -> context.getCommandFactory().setSourceNode(node,
+                                                                                                    edge,
+                                                                                                    sourceConnection[0]));
                     }
                 }
-                if (!commands.isEmpty()) {
-                    for (Command<GraphCommandExecutionContext, RuleViolation> command : commands) {
-                        doExecuteCommand(context,
-                                         command);
-                    }
+
+                if (commandBuilder.size() > 0) {
+                    doExecuteCommand(context,
+                                     commandBuilder.build());
                 }
             }
         }

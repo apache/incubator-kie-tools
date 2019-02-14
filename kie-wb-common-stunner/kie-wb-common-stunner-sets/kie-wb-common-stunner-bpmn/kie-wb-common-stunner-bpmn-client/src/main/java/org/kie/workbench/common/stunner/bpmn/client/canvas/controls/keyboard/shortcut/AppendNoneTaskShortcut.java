@@ -39,7 +39,7 @@ public class AppendNoneTaskShortcut extends AbstractAppendNodeShortcut {
     @Inject
     public AppendNoneTaskShortcut(final ToolboxDomainLookups toolboxDomainLookups,
                                   final DefinitionsCacheRegistry definitionsCacheRegistry,
-                                  final GeneralCreateNodeAction generalCreateNodeAction) {
+                                  final @BPMN GeneralCreateNodeAction generalCreateNodeAction) {
         super(toolboxDomainLookups, definitionsCacheRegistry, generalCreateNodeAction);
     }
 

@@ -43,4 +43,10 @@ public class DeleteConnectorCommand extends AbstractCanvasGraphCommand {
     protected AbstractCanvasCommand newCanvasCommand(final AbstractCanvasHandler context) {
         return new DeleteCanvasConnectorCommand(candidate);
     }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() +
+                " [candidate=" + candidate + "]";
+    }
 }

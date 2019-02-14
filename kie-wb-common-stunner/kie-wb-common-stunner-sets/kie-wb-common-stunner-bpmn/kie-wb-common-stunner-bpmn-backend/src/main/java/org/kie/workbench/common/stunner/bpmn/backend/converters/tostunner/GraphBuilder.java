@@ -28,20 +28,17 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.VoidMatch;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
+import org.kie.workbench.common.stunner.core.command.impl.DeferredCompositeCommand;
 import org.kie.workbench.common.stunner.core.graph.Edge;
-import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.EmptyRulesCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandManager;
 import org.kie.workbench.common.stunner.core.graph.command.impl.AddChildNodeCommand;
-import org.kie.workbench.common.stunner.core.graph.command.impl.AddControlPointCommand;
 import org.kie.workbench.common.stunner.core.graph.command.impl.AddDockedNodeCommand;
 import org.kie.workbench.common.stunner.core.graph.command.impl.AddNodeCommand;
 import org.kie.workbench.common.stunner.core.graph.command.impl.GraphCommandFactory;
-import org.kie.workbench.common.stunner.core.graph.command.impl.SetConnectionSourceNodeCommand;
-import org.kie.workbench.common.stunner.core.graph.command.impl.SetConnectionTargetNodeCommand;
 import org.kie.workbench.common.stunner.core.graph.command.impl.UpdateElementPositionCommand;
 import org.kie.workbench.common.stunner.core.graph.content.Bound;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
@@ -209,6 +206,7 @@ public class GraphBuilder {
         execute(addNodeCommand);
     }
 
+    @SuppressWarnings("unchecked")
     private void addEdge(
             Edge<? extends View<?>, Node> edge,
             Node source,
@@ -216,34 +214,41 @@ public class GraphBuilder {
             List<Point2D> controlPoints,
             Node target,
             Connection targetConnection) {
-        SetConnectionSourceNodeCommand setSourceNode =
-                commandFactory.setSourceNode(source, edge, sourceConnection);
-
-        ControlPoint[] cps = new ControlPoint[controlPoints.size()];
+        final DeferredCompositeCommand.Builder<GraphCommandExecutionContext, RuleViolation> commandBuilder =
+                new DeferredCompositeCommand.Builder<>();
+        addConnector(commandBuilder, source, edge, sourceConnection);
+        final ControlPoint[] cps = new ControlPoint[controlPoints.size()];
         for (int i = 0; i < cps.length; i++) {
-            cps[i] = ControlPoint.build(controlPoints.get(i), i + 1);
+            final ControlPoint cp = ControlPoint.build(controlPoints.get(i));
+            addControlPoint(commandBuilder, edge, cp, i);
         }
-        AddControlPointCommand addControlPoint = commandFactory.addControlPoint(edge, cps);
-
-        SetConnectionTargetNodeCommand setTargetNode =
-                commandFactory.setTargetNode(target, edge, targetConnection);
-
-        execute(setSourceNode);
-        execute(setTargetNode);
-        execute(addControlPoint);
+        setTargetNode(commandBuilder, target, edge, targetConnection);
+        execute(commandBuilder.build());
     }
 
-    private void setBounds(String elementId, int x1, int y1, int x2, int y2) {
-        Element<? extends View<?>> element = executionContext.getGraphIndex().get(elementId);
-        element.getContent().setBounds(Bounds.create(x1, y1, x2, y2));
+    private void addConnector(final DeferredCompositeCommand.Builder<GraphCommandExecutionContext, RuleViolation> commandBuilder,
+                              final Node<? extends View<?>, Edge> sourceNode,
+                              final Edge<? extends View<?>, Node> edge,
+                              final Connection connection) {
+        commandBuilder.deferCommand(() -> commandFactory.addConnector(sourceNode, edge, connection));
+    }
+
+    private void setTargetNode(final DeferredCompositeCommand.Builder<GraphCommandExecutionContext, RuleViolation> commandBuilder,
+                               final Node<? extends View<?>, Edge> targetNode,
+                               final Edge<? extends View<?>, Node> edge,
+                               final Connection connection) {
+        commandBuilder.deferCommand(() -> commandFactory.setTargetNode(targetNode, edge, connection));
+    }
+
+    private void addControlPoint(final DeferredCompositeCommand.Builder<GraphCommandExecutionContext, RuleViolation> commandBuilder,
+                                 final Edge edge,
+                                 final ControlPoint controlPoint,
+                                 final int index) {
+        commandBuilder.deferCommand(() -> commandFactory.addControlPoint(edge, controlPoint, index));
     }
 
     private CommandResult<RuleViolation> execute(Command<GraphCommandExecutionContext, RuleViolation> command) {
         return commandManager.execute(executionContext, command);
-    }
-
-    private GraphCommandExecutionContext executionContext() {
-        return executionContext;
     }
 
     private CommandResult<RuleViolation> clearGraph() {

@@ -22,10 +22,9 @@ import com.ait.lienzo.client.core.shape.wires.WiresLayer;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresContainmentControl;
-import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresParentPickerCachedControl;
+import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresParentPickerControlImpl;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresShapeControlImpl;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresShapeLocationControlImpl;
-import com.ait.lienzo.client.core.shape.wires.picker.ColorMapBackedPicker;
 import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
@@ -34,8 +33,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
@@ -71,7 +68,7 @@ public class CaseManagementShapeControlTest {
         when(shape.getWiresManager()).thenReturn(wiresManager);
         when(wiresManager.getLayer()).thenReturn(wiresLayer);
         when(wiresLayer.getLayer()).thenReturn(layer);
-        when(wiresLayer.getChildShapes()).thenReturn(new NFastArrayList<WiresShape>());
+        when(wiresLayer.getChildShapes()).thenReturn(new NFastArrayList<>());
         when(layer.getScratchPad()).thenReturn(scratchPad);
         when(scratchPad.getContext()).thenReturn(context);
         tested = new CaseManagementShapeControl(shape,
@@ -80,16 +77,10 @@ public class CaseManagementShapeControlTest {
 
     @Test
     public void checkRightDelegates() {
-        final WiresShapeControlImpl delegate = (WiresShapeControlImpl) tested.getDelegate();
-        final ColorMapBackedPicker.PickerOptions pickerOptions = delegate.getParentPickerControl().getPickerOptions();
-        assertFalse(pickerOptions.isHotspotsEnabled());
-        assertEquals(0d, pickerOptions.getHotspotWidth(), 0d);
-        final WiresParentPickerCachedControl parentPickerControl = delegate.getParentPickerControl();
+        final WiresShapeControlImpl delegate = tested.getDelegate();
+        final WiresParentPickerControlImpl parentPickerControl = (WiresParentPickerControlImpl) delegate.getParentPickerControl();
         final WiresShapeLocationControlImpl shapeLocationControl = parentPickerControl.getShapeLocationControl();
         assertTrue(shapeLocationControl instanceof CaseManagementShapeLocationControl);
-        parentPickerControl.rebuildPicker();
-        final ColorMapBackedPicker picker = parentPickerControl.getPicker();
-        assertTrue(picker instanceof CaseManagementColorMapBackedPicker);
         final WiresContainmentControl containmentControl = delegate.getContainmentControl();
         assertTrue(containmentControl instanceof CaseManagementContainmentControl);
         assertNull(delegate.getDockingControl());

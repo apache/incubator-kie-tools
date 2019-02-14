@@ -61,9 +61,7 @@ public class EdgeCardinalityEvaluationHandler implements RuleEvaluationHandler<E
         final int candidatesCount = context.getCandidateCount();
         final Optional<CardinalityContext.Operation> operation = context.getOperation();
         final EdgeCardinalityContext.Direction direction = rule.getDirection();
-        final Violation.Type type = operation
-                .filter(CardinalityContext.Operation.ADD::equals)
-                .isPresent() ? Violation.Type.ERROR : Violation.Type.WARNING;
+        final Violation.Type type = Violation.Type.WARNING;
         final int _count = !operation.isPresent() ? candidatesCount :
                 (operation.get().equals(CardinalityContext.Operation.ADD) ? candidatesCount + 1 :
                         (candidatesCount > 0 ? candidatesCount - 1 : 0)

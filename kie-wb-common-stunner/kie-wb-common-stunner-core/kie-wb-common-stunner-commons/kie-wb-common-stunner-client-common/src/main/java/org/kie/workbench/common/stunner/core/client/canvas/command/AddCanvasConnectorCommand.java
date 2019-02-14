@@ -18,13 +18,15 @@ package org.kie.workbench.common.stunner.core.client.canvas.command;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasManageableControlPoints;
 import org.kie.workbench.common.stunner.core.client.util.ShapeUtils;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
-import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
+
+import static org.kie.workbench.common.stunner.core.client.util.ShapeUtils.applyConnections;
 
 /**
  * Adds a new connector shape into the canvas and updates its connections.
@@ -44,19 +46,18 @@ public class AddCanvasConnectorCommand extends AbstractCanvasCommand {
     @SuppressWarnings("unchecked")
     public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
         context.register(shapeSetId, candidate);
-        context.applyElementMutation(candidate, MutationContext.STATIC);
-
         if (candidate.getContent() instanceof ViewConnector) {
-            ControlPoint[] controlPoints = ((ViewConnector) candidate.getContent()).getControlPoints().stream().toArray(ControlPoint[]::new);
-            CommandResult<CanvasViolation> addControlPointsResult = new AddCanvasControlPointCommand(candidate, controlPoints).execute(context);
-            ShapeUtils.hideControlPoints(candidate, context);
-            if (CommandUtils.isError(addControlPointsResult)) {
-                return addControlPointsResult;
+            final HasManageableControlPoints<?> view =
+                    (HasManageableControlPoints<?>) ShapeUtils.getConnectorShape(candidate, context).getShapeView();
+            final ControlPoint[] controlPoints = ((ViewConnector) candidate.getContent()).getControlPoints();
+            if (null != controlPoints) {
+                for (int i = 0; i < controlPoints.length; i++) {
+                    view.addControlPoint(controlPoints[i], i);
+                }
             }
         }
-
-        ShapeUtils.updateEdgeConnections(candidate, context);
-        ShapeUtils.applyConnections(candidate, context, MutationContext.STATIC);
+        applyConnections(candidate, context, MutationContext.STATIC);
+        context.applyElementMutation(candidate, MutationContext.STATIC);
         final Node source = candidate.getSourceNode();
         if (null != source) {
             context.notifyCanvasElementUpdated(source);
@@ -79,8 +80,8 @@ public class AddCanvasConnectorCommand extends AbstractCanvasCommand {
 
     @Override
     public String toString() {
-        return getClass().getName() +
+        return getClass().getSimpleName() +
                 " [candidate=" + getUUID(candidate) + "," +
-                " shapeSet=" + getShapeSetId() + "]";
+                "shapeSet=" + getShapeSetId() + "]";
     }
 }

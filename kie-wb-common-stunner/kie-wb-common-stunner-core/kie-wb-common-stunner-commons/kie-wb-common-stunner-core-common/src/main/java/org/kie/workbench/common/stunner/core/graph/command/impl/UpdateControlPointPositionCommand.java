@@ -15,78 +15,50 @@
  */
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
-import java.util.Objects;
-
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.soup.commons.validation.PortablePreconditions;
-import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
-import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
+import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
+import org.kie.workbench.common.stunner.core.graph.content.HasControlPoints;
 import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
-import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
-import static org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder.FAILED;
 import static org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder.SUCCESS;
+import static org.kie.workbench.common.stunner.core.graph.util.ControlPointValidations.checkUpdateControlPoint;
 
-/**
- * A Command to update a given {@link ControlPoint} position on graph.
- */
 @Portable
 public class UpdateControlPointPositionCommand extends AbstractControlPointCommand {
 
-    private final Point2D position;
-    private transient Point2D oldPosition;
+    private final ControlPoint[] controlPoints;
+    private transient ControlPoint[] oldControlPoints;
 
-    public UpdateControlPointPositionCommand(final @MapsTo("candidate") Edge candidate,
-                                             final @MapsTo("controlPoint") ControlPoint controlPoint,
-                                             final @MapsTo("position") Point2D position) {
-        super(candidate, controlPoint);
-        this.position = PortablePreconditions.checkNotNull("position", position);
+    public UpdateControlPointPositionCommand(final @MapsTo("edgeUUID") String edgeUUID,
+                                             final @MapsTo("controlPoints") ControlPoint[] controlPoints) {
+        super(edgeUUID);
+        this.controlPoints = PortablePreconditions.checkNotNull("controlPoints", controlPoints);
     }
 
     @Override
     protected CommandResult<RuleViolation> check(final GraphCommandExecutionContext context) {
-        return checkArguments();
-    }
-
-    @Override
-    protected CommandResult<RuleViolation> checkArguments() {
-        //just checking arguments, avoid checking it the edge contains the CPs, necessary in case of composite with AddControlPointCommand
-        return (Objects.nonNull(getControlPoint()) &&
-                Objects.nonNull(getControlPoint().getLocation()) &&
-                Objects.nonNull(position)) ? SUCCESS : FAILED;
+        checkUpdateControlPoint(getEdgeControlPoints(context).getControlPoints(),
+                                controlPoints);
+        return GraphCommandResultBuilder.SUCCESS;
     }
 
     @Override
     public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext context) {
-        if (areArgumentsValid()) {
-            final int index = getControlPoint().getIndex();
-            oldPosition = Point2D.clone(getControlPoint().getLocation());
-            getEdgeContent().getControlPoints().get(index).setLocation(position);
-            return SUCCESS;
-        }
-        return FAILED;
-    }
-
-    private ControlPoint getControlPoint() {
-        return controlPoints[0];
-    }
-
-    public Point2D getPosition() {
-        return position;
-    }
-
-    Point2D getOldPosition() {
-        return oldPosition;
+        final HasControlPoints hasControlPoints = getEdgeControlPoints(context);
+        oldControlPoints = hasControlPoints.getControlPoints();
+        hasControlPoints.setControlPoints(controlPoints);
+        return SUCCESS;
     }
 
     @Override
-    protected Command<GraphCommandExecutionContext, RuleViolation> newUndoCommand() {
-        return new UpdateControlPointPositionCommand(edge,
-                                                     getControlPoint(),
-                                                     oldPosition);
+    public CommandResult<RuleViolation> undo(final GraphCommandExecutionContext context) {
+        return new UpdateControlPointPositionCommand(getEdgeUUID(),
+                                                     oldControlPoints)
+                .execute(context);
     }
 }

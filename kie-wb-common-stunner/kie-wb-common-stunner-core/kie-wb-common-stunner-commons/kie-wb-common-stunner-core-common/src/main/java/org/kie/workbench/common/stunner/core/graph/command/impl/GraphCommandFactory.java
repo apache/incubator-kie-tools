@@ -179,7 +179,9 @@ public class GraphCommandFactory {
         return new ClearGraphCommand(rootUUID);
     }
 
-    public AddControlPointCommand addControlPoint(Edge edge, ControlPoint... controlPoints){
-        return new AddControlPointCommand(edge, controlPoints);
+    public AddControlPointCommand addControlPoint(final Edge edge,
+                                                  final ControlPoint controlPoint,
+                                                  final int index) {
+        return new AddControlPointCommand(edge.getUUID(), controlPoint, index);
     }
 }

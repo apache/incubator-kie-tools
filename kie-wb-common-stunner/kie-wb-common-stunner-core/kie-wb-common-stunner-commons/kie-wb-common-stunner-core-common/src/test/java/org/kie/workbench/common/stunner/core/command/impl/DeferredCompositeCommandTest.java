@@ -25,6 +25,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
+import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -178,6 +179,7 @@ public class DeferredCompositeCommandTest {
         Command command = mock(Command.class);
         when(command.allow(commandExecutionContext)).thenReturn(allowResult);
         when(command.execute(commandExecutionContext)).thenReturn(executeResult);
+        when(command.undo(commandExecutionContext)).thenReturn(GraphCommandResultBuilder.SUCCESS);
         return command;
     }
 

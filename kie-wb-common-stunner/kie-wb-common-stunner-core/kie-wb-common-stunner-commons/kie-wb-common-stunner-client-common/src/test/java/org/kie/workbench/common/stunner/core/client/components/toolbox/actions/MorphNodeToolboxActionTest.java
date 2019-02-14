@@ -50,7 +50,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class MorphNodeActionTest {
+public class MorphNodeToolboxActionTest {
 
     private static final String E_UUID = "e1";
     private static final String SSID_UUID = "ss1";
@@ -101,7 +101,7 @@ public class MorphNodeActionTest {
     @Mock
     private CanvasCommand<AbstractCanvasHandler> morphNodeCommand;
 
-    private MorphNodeAction tested;
+    private MorphNodeToolboxAction tested;
 
     @Before
     @SuppressWarnings("unchecked")
@@ -120,12 +120,12 @@ public class MorphNodeActionTest {
         when(metadata.getShapeSetId()).thenReturn(SSID_UUID);
         when(graphIndex.get(eq(E_UUID))).thenReturn(element);
         when(element.asNode()).thenReturn((Node) element);
-        this.tested = new MorphNodeAction(definitionUtils,
-                                          sessionCommandManager,
-                                          commandFactory,
-                                          translationService,
-                                          canvasElementSelectedEvent,
-                                          canvasClearSelectionEventEventSourceMock)
+        this.tested = new MorphNodeToolboxAction(definitionUtils,
+                                                 sessionCommandManager,
+                                                 commandFactory,
+                                                 translationService,
+                                                 canvasElementSelectedEvent,
+                                                 canvasClearSelectionEventEventSourceMock)
                 .setMorphDefinition(morphDefinition)
                 .setTargetDefinitionId(MORPH_TARGET_ID);
     }
@@ -135,7 +135,7 @@ public class MorphNodeActionTest {
         tested.getTitle(canvasHandler,
                         E_UUID);
         verify(translationService,
-               times(1)).getValue(eq(MorphNodeAction.KEY_TITLE));
+               times(1)).getValue(eq(MorphNodeToolboxAction.KEY_TITLE));
     }
 
     @Test

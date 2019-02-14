@@ -57,6 +57,10 @@ public abstract class AbstractToolboxAction implements ToolboxAction<AbstractCan
                 definitionUtils.getTitle(titleDefinitionId);
     }
 
+    protected DefinitionUtils getDefinitionUtils() {
+        return definitionUtils;
+    }
+
     @Override
     public Glyph getGlyph(final AbstractCanvasHandler canvasHandler,
                           final String uuid) {

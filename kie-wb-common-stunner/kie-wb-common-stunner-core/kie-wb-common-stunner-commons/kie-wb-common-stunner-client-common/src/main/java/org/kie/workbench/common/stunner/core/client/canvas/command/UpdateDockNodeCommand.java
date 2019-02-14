@@ -111,9 +111,8 @@ public class UpdateDockNodeCommand extends AbstractCanvasCompositeCommand {
 
     @Override
     public String toString() {
-        return getClass().getName()
-                + " [parent=" + getUUID(parent)
-                + " [candidate=" + getUUID(candidate)
-                + " {" + super.toString() + "}";
+        return getClass().getSimpleName() +
+                " [parent=" + getUUID(parent) + "," +
+                "candidate=" + getUUID(candidate) + "]";
     }
 }

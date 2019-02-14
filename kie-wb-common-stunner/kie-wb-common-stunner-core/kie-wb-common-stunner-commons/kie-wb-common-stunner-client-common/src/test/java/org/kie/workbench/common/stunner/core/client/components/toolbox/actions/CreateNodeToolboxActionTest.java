@@ -16,17 +16,19 @@
 
 package org.kie.workbench.common.stunner.core.client.components.toolbox.actions;
 
+import java.lang.annotation.Annotation;
+
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.core.client.ManagedInstanceStub;
 import org.kie.workbench.common.stunner.core.client.api.ClientFactoryManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.command.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
-import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
@@ -58,8 +60,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class CreateNodeActionTest {
+public class CreateNodeToolboxActionTest {
 
+    private static final String DEF_SET_ID = "ds1";
     private static final String NODE_UUID = "node1";
     private static final String EDGE_UUID = "edge1";
     private static final String TARGET_NODE_UUID = "targetNode1";
@@ -123,21 +126,28 @@ public class CreateNodeActionTest {
     private Index<Node<View<?>, Edge>, Edge<ViewConnector<?>, Node>> graphIndex;
 
     @Mock
-    private BPMNCreateNodeAction bpmnCreateNodeAction;
+    private GeneralCreateNodeAction action;
+    private ManagedInstance<GeneralCreateNodeAction> actions;
 
-    private CreateNodeAction tested;
+    @Mock
+    private Annotation qualifier;
+
+    private CreateNodeToolboxAction tested;
 
     @Before
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
+        actions = new ManagedInstanceStub<>(action);
         when(canvasHandler.getGraphIndex()).thenReturn(graphIndex);
         when(canvasHandler.getDiagram()).thenReturn(diagram);
         when(canvasHandler.getCanvas()).thenReturn(canvas);
         when(canvasHandler.getShapeFactory(eq(SSID_UUID))).thenReturn(shapeFactory);
         when(diagram.getGraph()).thenReturn(graph);
         when(diagram.getMetadata()).thenReturn(metadata);
+        when(metadata.getDefinitionSetId()).thenReturn(DEF_SET_ID);
         when(metadata.getShapeSetId()).thenReturn(SSID_UUID);
         when(metadata.getCanvasRootUUID()).thenReturn(ROOT_UUID);
+        when(definitionUtils.getQualifier(eq(DEF_SET_ID))).thenReturn(qualifier);
         when(graphIndex.get(eq(NODE_UUID))).thenReturn(element);
         when(graphIndex.getNode(eq(NODE_UUID))).thenReturn(element);
         when(graphIndex.get(eq(EDGE_UUID))).thenReturn(edge);
@@ -164,11 +174,10 @@ public class CreateNodeActionTest {
         when(clientFactoryManager.newElement(anyString(),
                                              eq(TARGET_NODE_ID)))
                 .thenReturn((Element) targetNode);
-        CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory = new DefaultCanvasCommandFactory(null,
-                                                                                                           null);
-        this.tested = new CreateNodeAction(definitionUtils,
-                                           translationService,
-                                           bpmnCreateNodeAction)
+
+        this.tested = new CreateNodeToolboxAction(definitionUtils,
+                                                  translationService,
+                                                  actions)
                 .setEdgeId(EDGE_ID)
                 .setNodeId(TARGET_NODE_ID);
     }
@@ -181,7 +190,7 @@ public class CreateNodeActionTest {
         tested.getTitle(canvasHandler,
                         NODE_UUID);
         verify(translationService,
-               times(1)).getValue(eq(CreateNodeAction.KEY_TITLE));
+               times(1)).getValue(eq(CreateNodeToolboxAction.KEY_TITLE));
     }
 
     @Test
@@ -215,9 +224,9 @@ public class CreateNodeActionTest {
         assertEquals(tested,
                      cascade);
 
-        verify(bpmnCreateNodeAction).executeAction(canvasHandler,
-                                                   NODE_UUID,
-                                                   TARGET_NODE_ID,
-                                                   EDGE_ID);
+        verify(action).executeAction(canvasHandler,
+                                     NODE_UUID,
+                                     TARGET_NODE_ID,
+                                     EDGE_ID);
     }
 }

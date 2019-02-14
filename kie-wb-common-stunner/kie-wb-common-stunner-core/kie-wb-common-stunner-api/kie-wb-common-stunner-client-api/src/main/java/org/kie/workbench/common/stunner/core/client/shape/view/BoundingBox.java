@@ -56,4 +56,9 @@ public final class BoundingBox {
     public double getHeight() {
         return maxY - minY;
     }
+
+    @Override
+    public String toString() {
+        return "{" + minX + ", " + minY + ", " + maxX + ", " + maxY + "}";
+    }
 }

@@ -47,9 +47,9 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
  * A toolbox action/operation for an Element in order to morph it into another one.
  */
 @Dependent
-public class MorphNodeAction extends AbstractToolboxAction {
+public class MorphNodeToolboxAction extends AbstractToolboxAction {
 
-    private static Logger LOGGER = Logger.getLogger(MorphNodeAction.class.getName());
+    private static Logger LOGGER = Logger.getLogger(MorphNodeToolboxAction.class.getName());
     static final String KEY_TITLE = "org.kie.workbench.common.stunner.core.client.toolbox.morphInto";
 
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
@@ -61,12 +61,12 @@ public class MorphNodeAction extends AbstractToolboxAction {
     private String targetDefinitionId;
 
     @Inject
-    public MorphNodeAction(final DefinitionUtils definitionUtils,
-                           final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                           final CanvasCommandFactory<AbstractCanvasHandler> commandFactory,
-                           final ClientTranslationService translationService,
-                           final Event<CanvasSelectionEvent> selectionEvent,
-                           final Event<CanvasClearSelectionEvent> clearSelectionEventEvent) {
+    public MorphNodeToolboxAction(final DefinitionUtils definitionUtils,
+                                  final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
+                                  final CanvasCommandFactory<AbstractCanvasHandler> commandFactory,
+                                  final ClientTranslationService translationService,
+                                  final Event<CanvasSelectionEvent> selectionEvent,
+                                  final Event<CanvasClearSelectionEvent> clearSelectionEventEvent) {
         super(definitionUtils,
               translationService);
         this.sessionCommandManager = sessionCommandManager;
@@ -75,12 +75,12 @@ public class MorphNodeAction extends AbstractToolboxAction {
         this.clearSelectionEventEvent = clearSelectionEventEvent;
     }
 
-    public MorphNodeAction setMorphDefinition(final MorphDefinition morphDefinition) {
+    public MorphNodeToolboxAction setMorphDefinition(final MorphDefinition morphDefinition) {
         this.morphDefinition = morphDefinition;
         return this;
     }
 
-    public MorphNodeAction setTargetDefinitionId(final String targetDefinitionId) {
+    public MorphNodeToolboxAction setTargetDefinitionId(final String targetDefinitionId) {
         this.targetDefinitionId = targetDefinitionId;
         return this;
     }
@@ -148,8 +148,8 @@ public class MorphNodeAction extends AbstractToolboxAction {
 
     @Override
     public boolean equals(final Object o) {
-        if (o instanceof MorphNodeAction) {
-            MorphNodeAction other = (MorphNodeAction) o;
+        if (o instanceof MorphNodeToolboxAction) {
+            MorphNodeToolboxAction other = (MorphNodeToolboxAction) o;
             return other.morphDefinition.equals(morphDefinition) &&
                     other.targetDefinitionId.equals(targetDefinitionId);
         }

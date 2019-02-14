@@ -15,13 +15,14 @@
  */
 package org.kie.workbench.common.stunner.core.client.canvas.command;
 
+import java.util.Arrays;
+
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
-import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
 /**
@@ -30,36 +31,32 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 public class UpdateControlPointPositionCommand extends AbstractCanvasGraphCommand {
 
     private final Edge candidate;
-    private final ControlPoint controlPoint;
-    private final Point2D position;
+    private final ControlPoint[] controlPoints;
 
     public UpdateControlPointPositionCommand(final Edge candidate,
-                                             final ControlPoint controlPoint,
-                                             final Point2D position) {
+                                             final ControlPoint[] controlPoints) {
         this.candidate = candidate;
-        this.controlPoint = controlPoint;
-        this.position = position;
+        this.controlPoints = controlPoints;
     }
 
     @Override
     protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand(final AbstractCanvasHandler context) {
-        return new org.kie.workbench.common.stunner.core.graph.command.impl.UpdateControlPointPositionCommand(candidate, controlPoint, position);
+        return new org.kie.workbench.common.stunner.core.graph.command.impl.UpdateControlPointPositionCommand(candidate.getUUID(), controlPoints);
     }
 
     @Override
     protected Command<AbstractCanvasHandler, CanvasViolation> newCanvasCommand(final AbstractCanvasHandler context) {
-        return new UpdateCanvasControlPointPositionCommand(candidate, controlPoint);
+        return new UpdateCanvasControlPointPositionCommand(candidate, controlPoints);
     }
 
     public Edge getCandidate() {
         return candidate;
     }
 
-    public ControlPoint getControlPoint() {
-        return controlPoint;
-    }
-
-    public Point2D getPosition() {
-        return position;
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() +
+                " [candidate=" + getUUID(getCandidate()) + "," +
+                "controlPoints=" + Arrays.toString(controlPoints) + "]";
     }
 }

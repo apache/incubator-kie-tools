@@ -33,7 +33,7 @@ import org.kie.workbench.common.stunner.core.client.components.toolbox.Toolbox;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ActionsToolbox;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ActionsToolboxFactory;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ActionsToolboxView;
-import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.DeleteNodeAction;
+import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.DeleteNodeToolboxAction;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ToolboxAction;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -64,7 +64,7 @@ public class DMNCommonActionsToolboxFactoryTest {
     private ActionsToolboxFactory commonActionsToolboxFactory;
 
     @Mock
-    private DeleteNodeAction deleteNodeAction;
+    private DeleteNodeToolboxAction deleteNodeAction;
 
     @Mock
     private DMNEditDecisionToolboxAction editDecisionToolboxActionInstance;

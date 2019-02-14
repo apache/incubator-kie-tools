@@ -15,9 +15,6 @@
  */
 package org.kie.workbench.common.stunner.core.client.canvas.command;
 
-import java.util.Objects;
-import java.util.stream.Stream;
-
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -31,27 +28,32 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 public class AddControlPointCommand extends AbstractCanvasGraphCommand {
 
     private final Edge edge;
-    private final ControlPoint[] controlPoints;
+    private final ControlPoint controlPoint;
+    private final int index;
 
     public AddControlPointCommand(final Edge edge,
-                                  final ControlPoint[] controlPoints) {
-        //check if canvas should be executed before graph (when user add it not the marshaller)
-        super(isCanvasCommandFirst(controlPoints));
+                                  final ControlPoint controlPoint,
+                                  final int index) {
         this.edge = edge;
-        this.controlPoints = controlPoints;
-    }
-
-    private static boolean isCanvasCommandFirst(ControlPoint[] controlPoints) {
-        return Stream.of(controlPoints).map(ControlPoint::getIndex).anyMatch(Objects::isNull);
+        this.controlPoint = controlPoint;
+        this.index = index;
     }
 
     @Override
     protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand(final AbstractCanvasHandler context) {
-        return new org.kie.workbench.common.stunner.core.graph.command.impl.AddControlPointCommand(edge, controlPoints);
+        return new org.kie.workbench.common.stunner.core.graph.command.impl.AddControlPointCommand(edge.getUUID(), controlPoint, index);
     }
 
     @Override
     protected AbstractCanvasCommand newCanvasCommand(final AbstractCanvasHandler context) {
-        return new AddCanvasControlPointCommand(edge, controlPoints);
+        return new AddCanvasControlPointCommand(edge, controlPoint, index);
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() +
+                " [edge=" + getUUID(edge) + "," +
+                "controlPoint=" + controlPoint + "," +
+                "index=" + index + "]";
     }
 }

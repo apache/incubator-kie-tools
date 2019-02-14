@@ -39,7 +39,7 @@ public class AppendParallelGatewayShortcut extends AbstractAppendNodeShortcut {
     @Inject
     public AppendParallelGatewayShortcut(final ToolboxDomainLookups toolboxDomainLookups,
                                          final DefinitionsCacheRegistry definitionsCacheRegistry,
-                                         final GeneralCreateNodeAction generalCreateNodeAction) {
+                                         final @BPMN GeneralCreateNodeAction generalCreateNodeAction) {
         super(toolboxDomainLookups, definitionsCacheRegistry, generalCreateNodeAction);
     }
 

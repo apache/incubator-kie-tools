@@ -26,32 +26,18 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 public class ControlPoint {
 
     private Point2D location;
-    private Integer index;
 
     public static ControlPoint build(final Point2D location) {
-        return new ControlPoint(location, null);
-    }
-
-    public static ControlPoint build(final Point2D location,
-                                     final int index) {
-        return new ControlPoint(location, index);
+        return new ControlPoint(location);
     }
 
     public static ControlPoint build(final double x,
                                      final double y) {
-        return new ControlPoint(Point2D.create(x, y), null);
+        return new ControlPoint(Point2D.create(x, y));
     }
 
-    public static ControlPoint build(final double x,
-                                     final double y,
-                                     final int index) {
-        return new ControlPoint(Point2D.create(x, y), index);
-    }
-
-    public ControlPoint(final @MapsTo("location") Point2D location,
-                        final @MapsTo("index") Integer index) {
+    public ControlPoint(final @MapsTo("location") Point2D location) {
         this.location = location;
-        this.index = index;
     }
 
     public Point2D getLocation() {
@@ -62,12 +48,8 @@ public class ControlPoint {
         this.location = location;
     }
 
-    public Integer getIndex() {
-        return index;
-    }
-
-    public void setIndex(final Integer index) {
-        this.index = index;
+    public ControlPoint copy() {
+        return new ControlPoint(location.copy());
     }
 
     @Override
@@ -79,21 +61,16 @@ public class ControlPoint {
             return false;
         }
         final ControlPoint that = (ControlPoint) o;
-        return Objects.equals(location, that.location)
-                && Objects.equals(index, that.index);
+        return Objects.equals(location, that.location);
     }
 
     @Override
     public int hashCode() {
-        return HashUtil.combineHashCodes(Objects.hash(location),
-                                         null != index ? Objects.hash(index) : 0);
+        return HashUtil.combineHashCodes(Objects.hash(location));
     }
 
     @Override
     public String toString() {
-        return "ControlPoint{" +
-                "location=" + location +
-                ", index=" + index +
-                '}';
+        return "ControlPoint [" + location + "]";
     }
 }

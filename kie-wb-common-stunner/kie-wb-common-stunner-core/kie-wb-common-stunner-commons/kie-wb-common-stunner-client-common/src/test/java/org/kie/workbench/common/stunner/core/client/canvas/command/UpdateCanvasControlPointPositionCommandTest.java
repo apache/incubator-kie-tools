@@ -22,38 +22,80 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
+import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertFalse;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UpdateCanvasControlPointPositionCommandTest extends AbstractCanvasControlPointCommandTest {
 
+    private static final ControlPoint newControlPoint1 = ControlPoint.build(0.1, 0.2);
+    private static final ControlPoint newControlPoint2 = ControlPoint.build(0.3, 0.4);
+    private static final ControlPoint newControlPoint3 = ControlPoint.build(0.4, 0.5);
+
     private UpdateCanvasControlPointPositionCommand tested;
+    private ControlPoint[] newControlPoints;
 
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        this.tested = spy(new UpdateCanvasControlPointPositionCommand(edge, controlPoint1));
+        newControlPoints = new ControlPoint[]{newControlPoint1, newControlPoint2, newControlPoint3};
+    }
+
+    @Test
+    public void testCheck() {
+        tested = new UpdateCanvasControlPointPositionCommand(edge, newControlPoints);
+        CommandResult<CanvasViolation> result = tested.allow(canvasHandler);
+        assertFalse(CommandUtils.isError(result));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testCannotUpdateCPs() {
+        newControlPoints = new ControlPoint[]{newControlPoint1, newControlPoint2};
+        tested = new UpdateCanvasControlPointPositionCommand(edge, newControlPoints);
+        tested.allow(canvasHandler);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testCannotUpdateCPsDuringExecute() {
+        newControlPoints = new ControlPoint[]{newControlPoint1, newControlPoint2};
+        tested = new UpdateCanvasControlPointPositionCommand(edge, newControlPoints);
+        tested.execute(canvasHandler);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testCannotUpdateCPs2() {
+        viewConnector.setControlPoints(new ControlPoint[]{controlPoint1, controlPoint2});
+        tested = new UpdateCanvasControlPointPositionCommand(edge, newControlPoints);
+        tested.allow(canvasHandler);
     }
 
     @Test
     public void execute() {
-        CommandResult<CanvasViolation> result = tested.execute(canvasHandler);
-        assertFalse(CommandUtils.isError(result));
-        verify(shape, times(1)).updateControlPoint(eq(controlPoint1));
+        checkExecution(true);
     }
 
     @Test
-    public void executeAndUndo() {
+    public void executeWhenCPsNotVisible() {
+        checkExecution(false);
+    }
+
+    private void checkExecution(boolean areControlPointsVisible) {
+        when(connectorView.areControlsVisible()).thenReturn(areControlPointsVisible);
+        tested = new UpdateCanvasControlPointPositionCommand(edge, newControlPoints);
         CommandResult<CanvasViolation> result = tested.execute(canvasHandler);
         assertFalse(CommandUtils.isError(result));
-        CommandResult<CanvasViolation> undo = tested.undo(canvasHandler);
-        assertFalse(CommandUtils.isError(undo));
-        verify(shape, times(2)).updateControlPoint(eq(controlPoint1));
+        checkControlPointsVisibilitySwitch(areControlPointsVisible);
+        verify(connectorView, times(1)).updateControlPoints(eq(newControlPoints));
+        verify(connectorView, never()).addControlPoint(any(ControlPoint.class), anyInt());
+        verify(connectorView, never()).deleteControlPoint(anyInt());
     }
 }

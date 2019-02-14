@@ -41,6 +41,6 @@ public class LogGraphDevCommand extends AbstractMenuDevCommand {
 
     @Override
     public void execute() {
-        StunnerLogger.log(getGraph());
+        logTask(() -> StunnerLogger.log(getGraph()));
     }
 }

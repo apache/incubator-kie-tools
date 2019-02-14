@@ -20,8 +20,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
 import java.util.function.Supplier;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.NonPortable;
@@ -41,8 +39,6 @@ import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
  */
 @Portable
 public class DeferredCompositeCommand<T, V> extends AbstractCompositeCommand<T, V> {
-
-    private static Logger LOGGER = Logger.getLogger(AbstractCompositeCommand.class.getName());
 
     private final boolean reverse;
 
@@ -80,20 +76,18 @@ public class DeferredCompositeCommand<T, V> extends AbstractCompositeCommand<T, 
         for (final Command<T, V> command : commands) {
             violations = doAllow(context,
                                  command);
-            LOGGER.log(Level.FINEST,
-                       "Allow of command [" + command + "] finished - Violations [" + violations + "]");
             if (!CommandUtils.isError(violations)) {
                 violations = doExecute(context,
                                        command);
                 executedCommands.push(command);
             }
 
-            LOGGER.log(Level.FINEST,
-                       "Execution of command [" + command + "] finished - Violations [" + violations + "]");
             results.add(violations);
             if (CommandUtils.isError(violations)) {
-                undoMultipleExecutedCommands(context,
-                                             executedCommands);
+                processMultipleFunctions(executedCommands,
+                                         executed -> doUndo(context, executed),
+                                         reverted -> {
+                                         });
                 break;
             }
         }
@@ -101,7 +95,7 @@ public class DeferredCompositeCommand<T, V> extends AbstractCompositeCommand<T, 
     }
 
     @Override
-    protected boolean isUndoReverse() {
+    public boolean isUndoReverse() {
         return reverse;
     }
 

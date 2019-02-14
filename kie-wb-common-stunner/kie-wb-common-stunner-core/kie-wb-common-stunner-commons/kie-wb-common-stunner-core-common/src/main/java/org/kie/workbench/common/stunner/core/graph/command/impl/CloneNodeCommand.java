@@ -170,8 +170,14 @@ public class CloneNodeCommand extends AbstractGraphCompositeCommand {
         //in case of any error than rollback all commands
         CommandResult<RuleViolation> finalResult = buildResult(commandResults);
         if (CommandUtils.isError(finalResult)) {
-            undoMultipleExecutedCommands(context, childrenCommands);
-            undoMultipleExecutedCommands(context, getCommands());
+            processMultipleFunctions(childrenCommands,
+                                     c -> doUndo(context, c),
+                                     reverted -> {
+                                     });
+            processMultipleFunctions(getCommands(),
+                                     c -> doUndo(context, c),
+                                     reverted -> {
+                                     });
             return finalResult;
         }
 

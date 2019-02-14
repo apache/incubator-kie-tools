@@ -795,8 +795,8 @@ public class DMNMarshallerTest {
         assertEquals(552.2411708831787d, ((View) decision.getContent()).getBounds().getUpperLeft().getX() + targetLocation.getX(), 0.1d);
         assertEquals(226d, ((View) decision.getContent()).getBounds().getUpperLeft().getY() + targetLocation.getY(), 0.1d);
 
-        assertEquals(1, connectionContent.getControlPoints().size());
-        Point2D controlPointLocation = connectionContent.getControlPoints().get(0).getLocation();
+        assertEquals(1, connectionContent.getControlPoints().length);
+        Point2D controlPointLocation = connectionContent.getControlPoints()[0].getLocation();
         assertEquals(398.61898612976074d, controlPointLocation.getX(), 0.1d);
         assertEquals(116.99999809265137d, controlPointLocation.getY(), 0.1d);
     }
@@ -1737,8 +1737,8 @@ public class DMNMarshallerTest {
         ViewConnector connectionContent = (ViewConnector) myEdge.getContent();
         // DROOLS-3184: If the "connection source/target location is null" assume it's the centre of the shape.
         // keep Stunner behavior of constellation button
-        connectionContent.setSourceConnection(MagnetConnection.Builder.forElement(inputDataNode).setLocation(null).setAuto(true));
-        connectionContent.setTargetConnection(MagnetConnection.Builder.forElement(decisionNode).setLocation(null).setAuto(true));
+        connectionContent.setSourceConnection(MagnetConnection.Builder.atCenter(inputDataNode).setLocation(null).setAuto(true));
+        connectionContent.setTargetConnection(MagnetConnection.Builder.atCenter(decisionNode).setLocation(null).setAuto(true));
 
         DMNMarshaller.connectRootWithChild(diagramRoot, inputDataNode);
         DMNMarshaller.connectRootWithChild(diagramRoot, decisionNode);
@@ -1798,8 +1798,8 @@ public class DMNMarshallerTest {
         inputDataNode.getOutEdges().add(myEdge);
         textAnnotationNode.getInEdges().add(myEdge);
         ViewConnector connectionContent = (ViewConnector) myEdge.getContent();
-        connectionContent.setSourceConnection(MagnetConnection.Builder.forElement(inputDataNode));
-        connectionContent.setTargetConnection(MagnetConnection.Builder.forElement(textAnnotationNode));
+        connectionContent.setSourceConnection(MagnetConnection.Builder.atCenter(inputDataNode));
+        connectionContent.setTargetConnection(MagnetConnection.Builder.atCenter(textAnnotationNode));
 
         DMNMarshaller.connectRootWithChild(diagramRoot, inputDataNode);
         DMNMarshaller.connectRootWithChild(diagramRoot, textAnnotationNode);

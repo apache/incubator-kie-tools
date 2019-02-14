@@ -63,6 +63,10 @@ public final class Point2D {
         this.y = y;
     }
 
+    public Point2D copy() {
+        return new Point2D(x, y);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

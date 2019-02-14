@@ -17,40 +17,55 @@
 package org.kie.workbench.common.stunner.core.client.canvas.command;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
-import org.kie.workbench.common.stunner.core.client.util.ShapeUtils;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
+import org.kie.workbench.common.stunner.core.graph.util.ControlPointValidations;
+
+import static org.kie.workbench.common.stunner.core.client.canvas.command.AddCanvasControlPointCommand.consumeControlPoints;
+import static org.kie.workbench.common.stunner.core.client.canvas.command.AddCanvasControlPointCommand.getViewControlPoints;
 
 public class DeleteCanvasControlPointCommand extends AbstractCanvasCommand {
 
     private final Edge candidate;
-    private final ControlPoint[] controlPoints;
+    private final int index;
+    private ControlPoint deletedControlPoint;
 
-    public DeleteCanvasControlPointCommand(final Edge candidate, final ControlPoint... controlPoints) {
+    public DeleteCanvasControlPointCommand(final Edge candidate,
+                                           final int index) {
         this.candidate = candidate;
-        this.controlPoints = controlPoints;
+        this.index = index;
     }
 
     @Override
-    public CommandResult<CanvasViolation> execute(AbstractCanvasHandler context) {
-        ShapeUtils.hideControlPoints(candidate, context);
-        ShapeUtils.removeControlPoints(candidate, context, controlPoints);
-        ShapeUtils.showControlPoints(candidate, context);
+    public CommandResult<CanvasViolation> allow(final AbstractCanvasHandler context) {
+        ControlPointValidations.checkDeleteControlPoint(getViewControlPoints(context, candidate), index);
+        return CanvasCommandResultBuilder.SUCCESS;
+    }
+
+    @Override
+    public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
+        allow(context);
+        consumeControlPoints(context,
+                             candidate,
+                             view -> {
+                                 this.deletedControlPoint = view.getManageableControlPoints()[index];
+                                 view.deleteControlPoint(index);
+                             });
         return buildResult();
     }
 
     @Override
-    public CommandResult<CanvasViolation> undo(AbstractCanvasHandler context) {
-        return newUndoCommand().execute(context);
+    public CommandResult<CanvasViolation> undo(final AbstractCanvasHandler context) {
+        return new AddCanvasControlPointCommand(candidate, deletedControlPoint, index).execute(context);
     }
 
-    protected AddCanvasControlPointCommand newUndoCommand() {
-        return new AddCanvasControlPointCommand(candidate, controlPoints);
-    }
-
-    protected ControlPoint[] getControlPoints() {
-        return controlPoints;
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() +
+                " [candidate=" + getUUID(candidate) + "," +
+                "index=" + index + "]";
     }
 }

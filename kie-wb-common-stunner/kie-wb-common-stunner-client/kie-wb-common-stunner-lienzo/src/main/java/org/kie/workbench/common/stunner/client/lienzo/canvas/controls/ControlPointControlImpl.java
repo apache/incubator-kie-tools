@@ -16,12 +16,9 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.canvas.controls;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.function.Function;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -32,43 +29,36 @@ import com.ait.lienzo.client.core.shape.wires.IControlPointsAcceptor;
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.types.Point2DArray;
+import com.google.gwt.event.shared.HandlerRegistration;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.WiresConnectorView;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanvasHandlerRegistrationControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ControlPointControl;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
-import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
-import org.kie.workbench.common.stunner.core.client.shape.Shape;
-import org.kie.workbench.common.stunner.core.client.shape.view.HasControlPoints;
-import org.kie.workbench.common.stunner.core.client.shape.view.IsConnector;
-import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
-import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
+import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
-import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 
 @Dependent
 @Default
 public class ControlPointControlImpl
         extends AbstractCanvasHandlerRegistrationControl<AbstractCanvasHandler>
-        implements ControlPointControl<AbstractCanvasHandler>,
-                   CanvasControl.SessionAware<EditorSession> {
+        implements ControlPointControl<AbstractCanvasHandler> {
 
-    public static final int DRAG_BOUNDS_MARGIN = 10;
+    private static Logger LOGGER = Logger.getLogger(ControlPointControlImpl.class.getName());
 
     private final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
-    private final IControlPointsAcceptor cpAcceptor;
-    private CommandManagerProvider<AbstractCanvasHandler> commandManagerProvider;
+    private final StunnerControlPointsAcceptor cpAcceptor;
     private final Event<CanvasSelectionEvent> selectionEvent;
+    private CommandManagerProvider<AbstractCanvasHandler> commandManagerProvider;
 
     @Inject
     public ControlPointControlImpl(final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
@@ -86,16 +76,34 @@ public class ControlPointControlImpl
     }
 
     @Override
-    @SuppressWarnings("unchecked")
+    protected void doDestroy() {
+        super.doDestroy();
+        getWiresManager().setControlPointsAcceptor(IControlPointsAcceptor.ALL);
+        commandManagerProvider = null;
+    }
+
+    @Override
     public void register(final Element element) {
     }
 
-    private boolean isConnector(Shape<?> shape) {
-        return shape.getShapeView() instanceof IsConnector;
+    @Override
+    public void addControlPoint(final Edge candidate,
+                                final ControlPoint controlPoint,
+                                final int index) {
+        selectionEvent.fire(new CanvasSelectionEvent(canvasHandler, candidate.getUUID()));
+        execute(canvasCommandFactory.addControlPoint(candidate, controlPoint, index));
     }
 
-    private boolean supportsControlPoints(Shape<?> shape) {
-        return shape.getShapeView() instanceof HasControlPoints;
+    @Override
+    public void updateControlPoints(final Edge candidate,
+                                    final ControlPoint[] controlPoints) {
+        execute(canvasCommandFactory.updateControlPointPosition(candidate, controlPoints));
+    }
+
+    @Override
+    public void deleteControlPoint(final Edge candidate,
+                                   final int index) {
+        execute(canvasCommandFactory.deleteControlPoint(candidate, index));
     }
 
     @Override
@@ -103,62 +111,19 @@ public class ControlPointControlImpl
         this.commandManagerProvider = provider;
     }
 
-    @Override
-    public void addControlPoints(Edge candidate, ControlPoint... controlPoint) {
-        selectionEvent.fire(new CanvasSelectionEvent(canvasHandler, candidate.getUUID()));
-        execute(canvasCommandFactory.addControlPoint(candidate, controlPoint));
-    }
-
-    @Override
-    public void bind(final EditorSession session) {
-    }
-
     private CanvasCommandManager<AbstractCanvasHandler> getCommandManager() {
         return commandManagerProvider.getCommandManager();
-    }
-
-    @Override
-    public void moveControlPoints(final Edge candidate,
-                                  final Map<ControlPoint, Point2D> pointsLocation) {
-        Command<AbstractCanvasHandler, CanvasViolation> command = null;
-        if (pointsLocation.size() == 1) {
-            final Map.Entry<ControlPoint, Point2D> entry = pointsLocation.entrySet().iterator().next();
-            command = newUpdateCPCommand(candidate,
-                                         entry.getKey(),
-                                         entry.getValue());
-        } else if (pointsLocation.size() > 0) {
-            final CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation> builder =
-                    new CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation>().forward();
-            pointsLocation
-                    .forEach((cp, location) -> builder.addCommand(newUpdateCPCommand(candidate,
-                                                                                     cp,
-                                                                                     location)));
-            command = builder.build();
-        }
-        if (null != command) {
-            execute(command);
-        }
-    }
-
-    private CanvasCommand<AbstractCanvasHandler> newUpdateCPCommand(final Edge candidate,
-                                                                    final ControlPoint controlPoint,
-                                                                    final Point2D location) {
-        return canvasCommandFactory.updateControlPointPosition(candidate,
-                                                               controlPoint,
-                                                               Point2D.clone(location));
-    }
-
-    public void removeControlPoint(final Edge candidate,
-                                   final ControlPoint controlPoint) {
-        if (validateControlPointState(candidate)) {
-            execute(canvasCommandFactory.deleteControlPoint(candidate, controlPoint));
-        }
     }
 
     public static class StunnerControlPointsAcceptor implements IControlPointsAcceptor {
 
         private final ControlPointControl control;
         private final Function<String, Edge> connectorSupplier;
+
+        private HandlerRegistration handlerRegistration;
+        private WiresConnector connector;
+        private int index;
+        private com.ait.lienzo.client.core.types.Point2D location;
 
         public StunnerControlPointsAcceptor(final ControlPointControl control,
                                             final Function<String, Edge> connectorSupplier) {
@@ -169,50 +134,88 @@ public class ControlPointControlImpl
         @Override
         public boolean add(final WiresConnector connector,
                            final int index,
-                           final com.ait.lienzo.client.core.types.Point2D locatoin) {
-            final Edge edge = getEdge(connector);
-            if (validateControlPointState(edge)) {
-                control.addControlPoints(edge, ControlPoint.build(locatoin.getX(), locatoin.getY(),
-                                                                  index - 1));
-                return true;
-            }
-            return false;
+                           final com.ait.lienzo.client.core.types.Point2D location) {
+            resetAddingOp();
+            proposeAdd(connector, index, location);
+            return true;
         }
 
         @Override
         public boolean move(final WiresConnector connector,
                             final Point2DArray pointsLocation) {
-            final Edge edge = getEdge(connector);
-            if (validateControlPointState(edge)) {
-                final ViewConnector viewConnector = (ViewConnector) edge.getContent();
-                final List<ControlPoint> controlPoints = viewConnector.getControlPoints();
-                final Map<ControlPoint, Point2D> updatedCPs = new HashMap<>(controlPoints.size());
-                for (int i = 1; i < (pointsLocation.size() - 1); i++) {
-                    final com.ait.lienzo.client.core.types.Point2D targetLocation = pointsLocation.get(i);
-                    final ControlPoint controlPoint = controlPoints.get(i - 1);
-                    if (!isAt(controlPoint, targetLocation)) {
-                        updatedCPs.put(controlPoint,
-                                       Point2D.create(targetLocation.getX(),
-                                                      targetLocation.getY()));
-                    }
-                }
-                control.moveControlPoints(edge,
-                                          updatedCPs);
-                return true;
-            }
-            return false;
+            completeAddOrMove(connector, pointsLocation);
+            resetAddingOp();
+            return true;
         }
 
         @Override
         public boolean delete(final WiresConnector connector,
                               final int index) {
-            final Edge edge = getEdge(connector);
-            if (validateControlPointState(edge)) {
-                final Optional<ControlPoint> cp = getControlPointyByIndex(edge,
-                                                                          index);
-                cp.ifPresent(instance -> control.removeControlPoint(edge, instance));
+            deleteAtIndex(connector, index);
+            resetAddingOp();
+            return true;
+        }
+
+        /**
+         * Instead of executing a command once just adding a new CP, let's
+         * delay the command execution until mouse is up, as it may be that the new CP
+         * is also being dragged, so moved to a different target location.
+         * The goal is to fire the execution of a single command, even if the new CP is also
+         * being dragged (so the IControlPointsAcceptor#move() called as well).
+         */
+        private void proposeAdd(final WiresConnector connector,
+                                final int index,
+                                final com.ait.lienzo.client.core.types.Point2D location) {
+            this.connector = connector;
+            this.index = index;
+            this.location = location.copy();
+            this.handlerRegistration = connector.getGroup().getLayer().addNodeMouseUpHandler(event -> performAdd());
+            connector.addControlPoint(location.getX(), location.getY(), index);
+        }
+
+        private void completeAddOrMove(final WiresConnector connector,
+                                       final Point2DArray pointsLocation) {
+            if (null != this.connector && this.connector.equals(connector)) {
+                location = pointsLocation.get(index).copy();
+                performAdd();
+            } else {
+                final int size = pointsLocation.size() - 2;
+                final Edge edge = getEdge(connector);
+                final ControlPoint[] controlPoints = new ControlPoint[size];
+                for (int i = 1; i <= size; i++) {
+                    com.ait.lienzo.client.core.types.Point2D point = pointsLocation.get(i);
+                    controlPoints[i - 1] = ControlPoint.build(Point2D.create(point.getX(),
+                                                                             point.getY()));
+                }
+                control.updateControlPoints(edge,
+                                            controlPoints);
             }
-            return false;
+        }
+
+        private void performAdd() {
+            if (null != connector) {
+                connector.destroyControlPoints(new int[]{index});
+                final Edge edge = getEdge(connector);
+                control.addControlPoint(edge,
+                                        ControlPoint.build(location.getX(), location.getY()),
+                                        index - 1);
+                resetAddingOp();
+            }
+        }
+
+        private void deleteAtIndex(final WiresConnector connector,
+                                   final int index) {
+            final Edge edge = getEdge(connector);
+            control.deleteControlPoint(edge, index - 1);
+        }
+
+        private void resetAddingOp() {
+            connector = null;
+            index = -1;
+            location = null;
+            if (null != handlerRegistration) {
+                handlerRegistration.removeHandler();
+            }
         }
 
         private Edge getEdge(final WiresConnector connector) {
@@ -223,12 +226,6 @@ public class ControlPointControlImpl
             return connectorSupplier.apply(uuid);
         }
 
-        private static boolean isAt(final ControlPoint controlPoint,
-                                    final com.ait.lienzo.client.core.types.Point2D location) {
-            final Point2D cpLocation = controlPoint.getLocation();
-            return cpLocation.getX() == location.getX() && cpLocation.getY() == location.getY();
-        }
-
         private static String getUUID(final WiresConnector connector) {
             return connector instanceof WiresConnectorView ?
                     ((WiresConnectorView) connector).getUUID() :
@@ -236,36 +233,18 @@ public class ControlPointControlImpl
         }
     }
 
-    CommandManagerProvider<AbstractCanvasHandler> getCommandManagerProvider() {
-        return commandManagerProvider;
-    }
-
-    private CommandResult<CanvasViolation> execute(Command<AbstractCanvasHandler, CanvasViolation> command) {
-        return getCommandManager().execute(canvasHandler, command);
-    }
-
-    private static Optional<ControlPoint> getControlPointyByIndex(final Edge edge,
-                                                                  final int index) {
-        ViewConnector viewConnector = (ViewConnector) edge.getContent();
-        return viewConnector.getControlPoints().stream()
-                .filter(cp -> Objects.nonNull(cp.getIndex()))
-                .filter(cp -> cp.getIndex() == index - 1)
-                .findFirst();
-    }
-
-    private static boolean validateControlPointState(final Edge edge) {
-        return (Objects.nonNull(edge) && (edge.getContent() instanceof ViewConnector));
+    private void execute(final CanvasCommand<AbstractCanvasHandler> command) {
+        final CommandResult<CanvasViolation> result = getCommandManager().execute(canvasHandler, command);
+        if (CommandUtils.isError(result)) {
+            LOGGER.log(Level.SEVERE,
+                       "Cannot execute command " +
+                               "[command= " + command + ", " +
+                               "result=" + result + "]");
+        }
     }
 
     private Edge getEdge(final String uuid) {
         return canvasHandler.getGraphIndex().getEdge(uuid);
-    }
-
-    @Override
-    protected void doDestroy() {
-        super.doDestroy();
-        getWiresManager().setControlPointsAcceptor(IControlPointsAcceptor.ALL);
-        commandManagerProvider = null;
     }
 
     private WiresManager getWiresManager() {

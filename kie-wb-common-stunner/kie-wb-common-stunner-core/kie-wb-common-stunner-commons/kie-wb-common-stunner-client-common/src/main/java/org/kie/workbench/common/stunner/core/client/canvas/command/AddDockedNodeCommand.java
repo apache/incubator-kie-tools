@@ -51,4 +51,12 @@ public class AddDockedNodeCommand extends AbstractCanvasGraphCommand {
                                               candidate,
                                               ssid);
     }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() +
+                " [parent=" + getUUID(parent) + "," +
+                "candidate=" + getUUID(candidate) + "," +
+                "shapeSet=" + ssid + "]";
+    }
 }

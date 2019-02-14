@@ -112,9 +112,9 @@ public abstract class AbstractCloneCommandTest extends AbstractGraphCommandTest 
 
         //edge mock
         connectorContent = new ViewConnectorImpl(connectorDefinition, Bounds.create(1d, 1d, 1d, 1d));
-        sourceConnection = MagnetConnection.Builder.forElement(graphInstance.startNode);
+        sourceConnection = MagnetConnection.Builder.atCenter(graphInstance.startNode);
         connectorContent.setSourceConnection(sourceConnection);
-        targetConnection = MagnetConnection.Builder.forElement(graphInstance.intermNode);
+        targetConnection = MagnetConnection.Builder.atCenter(graphInstance.intermNode);
         connectorContent.setTargetConnection(targetConnection);
         graphInstance.edge1.setContent(connectorContent);
         graphInstance.edge2.setContent(connectorContent);

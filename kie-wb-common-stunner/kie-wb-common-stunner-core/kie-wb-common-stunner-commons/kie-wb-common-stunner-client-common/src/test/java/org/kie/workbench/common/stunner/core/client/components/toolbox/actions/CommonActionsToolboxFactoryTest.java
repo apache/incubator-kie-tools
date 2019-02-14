@@ -52,7 +52,7 @@ public class CommonActionsToolboxFactoryTest {
     private CanvasCommandFactory<AbstractCanvasHandler> commandFactory;
 
     @Mock
-    private DeleteNodeAction deleteNodeAction;
+    private DeleteNodeToolboxAction deleteNodeAction;
 
     @Mock
     private Command deleteNodeActionDestroyer;

@@ -49,13 +49,6 @@ public class DelegateWiresCompositeControlTest {
     }
 
     @Test
-    public void testContext() {
-        WiresCompositeControl.Context context = mock(WiresCompositeControl.Context.class);
-        tested.setContext(context);
-        verify(delegate, times(1)).setContext(eq(context));
-    }
-
-    @Test
     public void testControlMethods() {
         tested.execute();
         verify(delegate, times(1)).execute();

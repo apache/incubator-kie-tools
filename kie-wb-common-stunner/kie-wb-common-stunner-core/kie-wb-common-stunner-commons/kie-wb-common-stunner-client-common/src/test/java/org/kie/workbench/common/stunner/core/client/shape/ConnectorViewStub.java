@@ -17,13 +17,16 @@
 package org.kie.workbench.common.stunner.core.client.shape;
 
 import org.kie.workbench.common.stunner.core.client.shape.view.BoundingBox;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasManageableControlPoints;
 import org.kie.workbench.common.stunner.core.client.shape.view.IsConnector;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
+import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 
 public class ConnectorViewStub implements ShapeView<Object>,
-                                          IsConnector {
+                                          IsConnector,
+                                          HasManageableControlPoints<Object> {
 
     public final static String UUID = "cv-stub";
 
@@ -174,5 +177,40 @@ public class ConnectorViewStub implements ShapeView<Object>,
     @Override
     public void setUserData(Object userData) {
 
+    }
+
+    @Override
+    public Object addControlPoint(ControlPoint controlPoint, int index) {
+        return this;
+    }
+
+    @Override
+    public Object updateControlPoints(ControlPoint[] controlPoints) {
+        return this;
+    }
+
+    @Override
+    public Object deleteControlPoint(int index) {
+        return this;
+    }
+
+    @Override
+    public ControlPoint[] getManageableControlPoints() {
+        return new ControlPoint[0];
+    }
+
+    @Override
+    public Object showControlPoints(ControlPointType type) {
+        return this;
+    }
+
+    @Override
+    public Object hideControlPoints() {
+        return this;
+    }
+
+    @Override
+    public boolean areControlsVisible() {
+        return false;
     }
 }

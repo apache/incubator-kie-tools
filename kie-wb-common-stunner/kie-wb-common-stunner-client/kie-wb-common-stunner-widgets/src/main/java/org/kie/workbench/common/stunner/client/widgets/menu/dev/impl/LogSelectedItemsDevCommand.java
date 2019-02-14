@@ -43,6 +43,10 @@ public class LogSelectedItemsDevCommand extends AbstractSelectionDevCommand {
 
     @Override
     protected void execute(final Collection<Element<? extends View<?>>> items) {
+        logTask(() -> logItems(items));
+    }
+
+    private void logItems(final Collection<Element<? extends View<?>>> items) {
         if (items.isEmpty()) {
             log("No items selected");
         } else {

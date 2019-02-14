@@ -150,8 +150,8 @@ public class CaseManagementDirectDiagramMarshaller extends BaseDirectDiagramMars
         targetNode.getInEdges().add(edge);
 
         ViewConnector<SequenceFlow> content = (ViewConnector<SequenceFlow>) edge.getContent();
-        content.setSourceConnection(MagnetConnection.Builder.forElement(sourceNode));
-        content.setTargetConnection(MagnetConnection.Builder.forElement(targetNode));
+        content.setSourceConnection(MagnetConnection.Builder.atCenter(sourceNode));
+        content.setTargetConnection(MagnetConnection.Builder.atCenter(targetNode));
     }
 
     @SuppressWarnings("unchecked")

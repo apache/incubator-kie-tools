@@ -71,4 +71,13 @@ public class AddConnectorCommand extends AbstractCanvasGraphCommand {
     public String getShapeSetId() {
         return shapeSetId;
     }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() +
+                " [source=" + getUUID(getSource()) + "," +
+                "candidate=" + getUUID(getCandidate()) + "," +
+                "connection=" + connection + "," +
+                "shapeSet=" + getShapeSetId() + "]";
+    }
 }

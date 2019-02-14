@@ -22,6 +22,7 @@ import org.kie.workbench.common.stunner.core.client.shape.view.HasRadius;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasSize;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeViewHandler;
+import org.kie.workbench.common.stunner.core.client.util.ShapeUtils;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
 /**
@@ -105,9 +106,7 @@ public class SizeHandler<W, V extends ShapeView> implements ShapeViewHandler<Vie
         if (view instanceof HasRadius) {
             final Double beanRadius = radiusProvider.apply(bean);
             final double radius = null != beanRadius ? beanRadius :
-                    (boundsWidth > boundsHeight ?
-                            boundsWidth / 2 :
-                            boundsHeight / 2);
+                    ShapeUtils.getRadiusForBoundingBox(boundsWidth, boundsHeight);
             final Double minRadius = minRadiusProvider.apply(bean);
             final Double maxRadius = maxRadiusProvider.apply(bean);
             if (radius > 0) {

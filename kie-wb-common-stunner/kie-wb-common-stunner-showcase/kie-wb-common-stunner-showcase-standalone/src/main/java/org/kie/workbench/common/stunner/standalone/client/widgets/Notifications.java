@@ -42,6 +42,7 @@ public class Notifications implements IsWidget {
         View setColumnSortHandler(final ColumnSortEvent.ListHandler<Notification> sortHandler);
 
         View addColumn(final com.google.gwt.user.cellview.client.Column<Notification, String> column,
+                       final double pixelsWidth,
                        final String name);
 
         View removeColumn(final int index);
@@ -57,7 +58,6 @@ public class Notifications implements IsWidget {
     private final NotificationsObserver notificationsObserver;
 
     final ListDataProvider<Notification> logsProvider = new ListDataProvider<Notification>();
-    private boolean notifyErrors = true;
 
     @Inject
     public Notifications(final View view,
@@ -71,10 +71,6 @@ public class Notifications implements IsWidget {
         view.init(this);
         notificationsObserver.onNotification(this::add);
         buildViewColumns();
-    }
-
-    public void setNotifyErrors(boolean notifyErrors) {
-        this.notifyErrors = notifyErrors;
     }
 
     @Override
@@ -120,18 +116,21 @@ public class Notifications implements IsWidget {
         final com.google.gwt.user.cellview.client.Column<Notification, String> typeColumn = createTypeColumn(sortHandler);
         if (typeColumn != null) {
             view.addColumn(typeColumn,
-                           "Type");
+                           100,
+                           "Severity");
         }
         // Log element's UUID.
         final com.google.gwt.user.cellview.client.Column<Notification, String> contextColumn = createContextColumn(sortHandler);
         if (contextColumn != null) {
             view.addColumn(contextColumn,
+                           300,
                            "Context");
         }
         // Log's message.
         final com.google.gwt.user.cellview.client.Column<Notification, String> messageColumn = createMessageColumn(sortHandler);
         if (messageColumn != null) {
             view.addColumn(messageColumn,
+                           600,
                            "Message");
         }
     }
@@ -186,7 +185,7 @@ public class Notifications implements IsWidget {
     @SuppressWarnings("unchecked")
     private String getNotificationSourceMessage(final Notification notification) {
         return notification.getSource().isPresent() ?
-                notification.getSource().toString() :
+                notification.getSource().get().toString() :
                 "-- No source --";
     }
 
@@ -200,7 +199,7 @@ public class Notifications implements IsWidget {
     @SuppressWarnings("unchecked")
     private String getNotificationTypeMessage(final Notification notification) {
         return notification.getType() != null ?
-                notification.getType().name() :
-                "-- No type --";
+                "[" + notification.getType().name() + "]" :
+                "[ ]";
     }
 }

@@ -21,7 +21,7 @@ import com.ait.lienzo.client.core.shape.wires.handlers.MouseEvent;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresContainmentControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresDockingControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresMagnetsControl;
-import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresParentPickerCachedControl;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresParentPickerControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresShapeControlImpl;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
@@ -58,7 +58,7 @@ public class DelegateWiresShapeControlTest {
     private WiresContainmentControl containmentControl;
 
     @Mock
-    private WiresParentPickerCachedControl parentPickerControl;
+    private WiresParentPickerControl parentPickerControl;
 
     private DelegateWiresShapeControl tested;
 

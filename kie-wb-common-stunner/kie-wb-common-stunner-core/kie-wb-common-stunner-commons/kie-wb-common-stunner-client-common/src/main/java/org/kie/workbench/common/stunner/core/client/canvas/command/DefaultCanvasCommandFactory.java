@@ -19,9 +19,6 @@ package org.kie.workbench.common.stunner.core.client.canvas.command;
 import java.util.Collection;
 import java.util.function.Consumer;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
@@ -40,20 +37,13 @@ import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.ChildrenTraverseProcessor;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.ViewTraverseProcessor;
 
-@ApplicationScoped
-public class DefaultCanvasCommandFactory implements CanvasCommandFactory<AbstractCanvasHandler> {
+public abstract class DefaultCanvasCommandFactory implements CanvasCommandFactory<AbstractCanvasHandler> {
 
     private final ManagedInstance<ChildrenTraverseProcessor> childrenTraverseProcessors;
     private final ManagedInstance<ViewTraverseProcessor> viewTraverseProcessors;
 
-    protected DefaultCanvasCommandFactory() {
-        this(null,
-             null);
-    }
-
-    @Inject
-    public DefaultCanvasCommandFactory(final ManagedInstance<ChildrenTraverseProcessor> childrenTraverseProcessors,
-                                       final ManagedInstance<ViewTraverseProcessor> viewTraverseProcessors) {
+    protected DefaultCanvasCommandFactory(final ManagedInstance<ChildrenTraverseProcessor> childrenTraverseProcessors,
+                                          final ManagedInstance<ViewTraverseProcessor> viewTraverseProcessors) {
         this.childrenTraverseProcessors = childrenTraverseProcessors;
         this.viewTraverseProcessors = viewTraverseProcessors;
     }
@@ -234,18 +224,18 @@ public class DefaultCanvasCommandFactory implements CanvasCommandFactory<Abstrac
     }
 
     @Override
-    public CanvasCommand<AbstractCanvasHandler> addControlPoint(Edge candidate, ControlPoint... controlPoints) {
-        return new AddControlPointCommand(candidate, controlPoints);
+    public CanvasCommand<AbstractCanvasHandler> addControlPoint(Edge candidate, ControlPoint controlPoint, int index) {
+        return new AddControlPointCommand(candidate, controlPoint, index);
     }
 
     @Override
-    public CanvasCommand<AbstractCanvasHandler> deleteControlPoint(Edge candidate, ControlPoint... controlPoints) {
-        return new DeleteControlPointCommand(candidate, controlPoints);
+    public CanvasCommand<AbstractCanvasHandler> deleteControlPoint(Edge candidate, int index) {
+        return new DeleteControlPointCommand(candidate, index);
     }
 
     @Override
-    public CanvasCommand<AbstractCanvasHandler> updateControlPointPosition(Edge candidate, ControlPoint controlPoint, Point2D position) {
-        return new UpdateControlPointPositionCommand(candidate, controlPoint, position);
+    public CanvasCommand<AbstractCanvasHandler> updateControlPointPosition(Edge candidate, ControlPoint[] controlPoints) {
+        return new UpdateControlPointPositionCommand(candidate, controlPoints);
     }
 
     protected ChildrenTraverseProcessor newChildrenTraverseProcessor() {

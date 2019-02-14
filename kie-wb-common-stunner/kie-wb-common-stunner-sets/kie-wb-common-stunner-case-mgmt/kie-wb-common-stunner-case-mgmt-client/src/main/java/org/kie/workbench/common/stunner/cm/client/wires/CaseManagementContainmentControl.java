@@ -23,6 +23,7 @@ import com.ait.lienzo.client.core.shape.wires.WiresLayer;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresContainmentControl;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresLayerIndex;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresParentPickerControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresContainmentControlImpl;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresParentPickerControlImpl;
@@ -36,9 +37,9 @@ public class CaseManagementContainmentControl implements WiresContainmentControl
     private final WiresContainmentControlImpl containmentControl;
     private final CaseManagementContainmentStateHolder state;
 
-    public CaseManagementContainmentControl(final WiresParentPickerControlImpl parentPickerControl,
+    public CaseManagementContainmentControl(final WiresParentPickerControl parentPickerControl,
                                             final CaseManagementContainmentStateHolder state) {
-        this(new WiresContainmentControlImpl(parentPickerControl),
+        this(new WiresContainmentControlImpl(() -> parentPickerControl),
              state);
     }
 
@@ -69,8 +70,7 @@ public class CaseManagementContainmentControl implements WiresContainmentControl
         state.setOriginalIndex(getShapeIndex());
         state.setGhost(Optional.ofNullable(((CaseManagementShapeView) getShape()).getGhost()));
 
-        final WiresParentPickerControl.Index index = containmentControl.getParentPickerControl().getIndex();
-        index.clear();
+        final WiresLayerIndex index = containmentControl.getParentPickerControl().getIndex();
         if (state.getGhost().isPresent()) {
             index.exclude(state.getGhost().get());
         }
@@ -91,8 +91,9 @@ public class CaseManagementContainmentControl implements WiresContainmentControl
         if (ghost.isPresent() && null != getParent() && null != getParent().getGroup()) {
             if (getWiresManager().getContainmentAcceptor().containmentAllowed(getParent(),
                                                                               new WiresShape[]{getShape()})) {
-                final double mouseX = containmentControl.getParentPickerControl().getShapeLocationControl().getMouseStartX() + dx;
-                final double mouseY = containmentControl.getParentPickerControl().getShapeLocationControl().getMouseStartY() + dy;
+                final WiresParentPickerControlImpl parentPickerControl = (WiresParentPickerControlImpl) containmentControl.getParentPickerControl();
+                final double mouseX = parentPickerControl.getMouseStartX() + dx;
+                final double mouseY = parentPickerControl.getMouseStartY() + dy;
                 final Point2D parentAbsLoc = getParent().getGroup().getComputedLocation();
                 final Point2D mouseRelativeLoc = new Point2D(mouseX - parentAbsLoc.getX(),
                                                              mouseY - parentAbsLoc.getY());
@@ -102,7 +103,7 @@ public class CaseManagementContainmentControl implements WiresContainmentControl
                                                    getParent(),
                                                    mouseRelativeLoc);
 
-                containmentControl.getParentPickerControl().rebuildPicker();
+                containmentControl.getParentPickerControl().getIndex().build(getWiresManager().getLayer());
             }
         }
 
@@ -110,8 +111,8 @@ public class CaseManagementContainmentControl implements WiresContainmentControl
     }
 
     @Override
-    public boolean onMoveComplete() {
-        return containmentControl.onMoveComplete();
+    public void onMoveComplete() {
+        containmentControl.onMoveComplete();
     }
 
     @Override
@@ -198,11 +199,11 @@ public class CaseManagementContainmentControl implements WiresContainmentControl
     }
 
     private WiresContainer getParent() {
-        return containmentControl.getParent();
+        return containmentControl.getParentPickerControl().getParent();
     }
 
     private WiresShape getShape() {
-        return containmentControl.getShape();
+        return containmentControl.getParentPickerControl().getShape();
     }
 
     private WiresManager getWiresManager() {

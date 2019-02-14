@@ -87,7 +87,7 @@ public class MorphActionsToolboxFactoryTest {
     private MorphAdapter morphAdapter;
 
     @Mock
-    private MorphNodeAction morphNodeAction;
+    private MorphNodeToolboxAction morphNodeAction;
 
     @Mock
     private Command morphNodeActionDestroyer;

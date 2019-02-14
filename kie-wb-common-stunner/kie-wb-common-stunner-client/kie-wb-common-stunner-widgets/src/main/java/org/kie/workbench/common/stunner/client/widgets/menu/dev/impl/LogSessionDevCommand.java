@@ -41,6 +41,6 @@ public class LogSessionDevCommand extends AbstractMenuDevCommand {
 
     @Override
     public void execute() {
-        StunnerClientLogger.logSessionInfo(getSession());
+        logTask(() -> StunnerClientLogger.logSessionInfo(getSession()));
     }
 }

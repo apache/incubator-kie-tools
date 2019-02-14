@@ -76,7 +76,7 @@ public class EdgeBuilderControlImpl
             final CommandResult<CanvasViolation> cr1 = getCommandManager().allow(wch,
                                                                                  commandFactory.setSourceNode(inNode,
                                                                                                               edge,
-                                                                                                              MagnetConnection.Builder.forElement(inNode)));
+                                                                                                              MagnetConnection.Builder.forTarget(inNode, outNode)));
             allowsSourceConn = isAllowed(cr1);
         }
         boolean allowsTargetConn = true;
@@ -84,7 +84,7 @@ public class EdgeBuilderControlImpl
             final CommandResult<CanvasViolation> cr2 = getCommandManager().allow(wch,
                                                                                  commandFactory.setTargetNode(outNode,
                                                                                                               edge,
-                                                                                                              MagnetConnection.Builder.forElement(outNode)));
+                                                                                                              MagnetConnection.Builder.forTarget(outNode, inNode)));
             allowsTargetConn = isAllowed(cr2);
         }
         return allowsSourceConn & allowsTargetConn;
@@ -108,12 +108,12 @@ public class EdgeBuilderControlImpl
         final CompositeCommand.Builder commandBuilder = new CompositeCommand.Builder()
                 .addCommand(commandFactory.addConnector(inNode,
                                                         edge,
-                                                        MagnetConnection.Builder.forElement(inNode),
+                                                        MagnetConnection.Builder.forTarget(inNode, outNode),
                                                         ssid));
         if (null != outNode) {
             commandBuilder.addCommand(commandFactory.setTargetNode(outNode,
                                                                    edge,
-                                                                   MagnetConnection.Builder.forElement(outNode)));
+                                                                   MagnetConnection.Builder.forTarget(outNode, inNode)));
         }
         final CommandResult<CanvasViolation> results = getCommandManager().execute(wch,
                                                                                    commandBuilder.build());

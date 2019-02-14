@@ -30,8 +30,8 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.components.toolbox.Toolbox;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ActionsToolbox;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ActionsToolboxView;
-import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.CreateConnectorAction;
-import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.CreateNodeAction;
+import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.CreateConnectorToolboxAction;
+import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.CreateNodeToolboxAction;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ToolboxDomainLookups;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
@@ -80,12 +80,12 @@ public class DMNFlowActionsToolboxFactoryTest {
     private CommonDomainLookups domainLookups;
 
     @Mock
-    private CreateConnectorAction createConnectorActionInstance;
-    private ManagedInstanceStub<CreateConnectorAction> createConnectorAction;
+    private CreateConnectorToolboxAction createConnectorActionInstance;
+    private ManagedInstanceStub<CreateConnectorToolboxAction> createConnectorAction;
 
     @Mock
-    private CreateNodeAction createNodeActionInstance;
-    private ManagedInstanceStub<CreateNodeAction> createNodeAction;
+    private CreateNodeToolboxAction createNodeActionInstance;
+    private ManagedInstanceStub<CreateNodeToolboxAction> createNodeAction;
 
     @Mock
     private ActionsToolboxView viewInstance;

@@ -26,6 +26,7 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 
 import static org.kie.workbench.common.stunner.core.client.canvas.util.CanvasUtils.areBoundsExceeded;
 import static org.kie.workbench.common.stunner.core.client.canvas.util.CanvasUtils.createBoundsExceededCommandResult;
@@ -60,7 +61,7 @@ public class UpdateCanvasElementPositionCommand extends AbstractCanvasCommand {
         }
         context.updateElementPosition(element, MutationContext.STATIC);
         moveConnectorsToTop(context);
-        return buildResult();
+        return allowResult;
     }
 
     @SuppressWarnings("unchecked")
@@ -86,7 +87,8 @@ public class UpdateCanvasElementPositionCommand extends AbstractCanvasCommand {
 
     @Override
     public String toString() {
-        return getClass().getName() +
-                " [element=" + getUUID(element) + "]";
+        return getClass().getSimpleName() +
+                " [element=" + getUUID(element) + "," +
+                "position=" + GraphUtils.getPosition(element.getContent()) + "]";
     }
 }

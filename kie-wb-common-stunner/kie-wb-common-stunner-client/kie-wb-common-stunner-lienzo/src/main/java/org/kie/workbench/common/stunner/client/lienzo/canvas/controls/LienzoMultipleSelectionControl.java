@@ -246,6 +246,7 @@ public class LienzoMultipleSelectionControl<H extends AbstractCanvasHandler>
                                                       final double height) {
             provider.setSize(width,
                              height);
+            moveShapeToTop();
             return this;
         }
 

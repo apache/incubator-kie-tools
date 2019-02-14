@@ -76,4 +76,13 @@ public class CloneConnectorCommand extends AbstractCanvasGraphCommand {
     protected Command<AbstractCanvasHandler, CanvasViolation> newCanvasCommand(final AbstractCanvasHandler context) {
         return command;
     }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() +
+                " [candidate=" + getUUID(candidate) + "," +
+                "source=" + sourceUUID + "," +
+                "target=" + targetUUID + "," +
+                "shapeSet=" + shapeSetId + "]";
+    }
 }

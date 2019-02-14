@@ -38,8 +38,6 @@ public class SetCanvasConnectionCommand extends AbstractCanvasCommand {
     public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
         final Node source = edge.getSourceNode();
         final Node target = edge.getTargetNode();
-        ShapeUtils.updateEdgeConnections(edge,
-                                         context);
         ShapeUtils.applyConnections(edge,
                                     context,
                                     MutationContext.STATIC);
@@ -63,9 +61,9 @@ public class SetCanvasConnectionCommand extends AbstractCanvasCommand {
 
     @Override
     public String toString() {
-        return getClass().getName() +
+        return getClass().getSimpleName() +
                 " [candidate=" + getUUID(edge) + "," +
-                " sourceNode=" + getUUID(edge.getSourceNode()) + "," +
-                " targetNode=" + getUUID(edge.getTargetNode()) + "]";
+                "sourceNode=" + getUUID(edge.getSourceNode()) + "," +
+                "targetNode=" + getUUID(edge.getTargetNode()) + "]";
     }
 }

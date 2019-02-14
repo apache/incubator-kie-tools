@@ -43,7 +43,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class DeleteNodeActionTest {
+public class DeleteNodeToolboxActionTest {
 
     private static final String E_UUID = "e1";
 
@@ -68,7 +68,7 @@ public class DeleteNodeActionTest {
     @Mock
     private CanvasCommand<AbstractCanvasHandler> deleteNodeCommand;
 
-    private DeleteNodeAction tested;
+    private DeleteNodeToolboxAction tested;
 
     @Mock
     private EventSourceMock<CanvasClearSelectionEvent> clearSelectionEventEventSourceMock;
@@ -79,11 +79,11 @@ public class DeleteNodeActionTest {
         when(canvasHandler.getGraphIndex()).thenReturn(graphIndex);
         when(graphIndex.get(eq(E_UUID))).thenReturn(element);
         when(element.asNode()).thenReturn(element);
-        this.tested = new DeleteNodeAction(translationService,
-                                           sessionCommandManager,
-                                           commandFactory,
-                                           action -> true,
-                                           clearSelectionEventEventSourceMock);
+        this.tested = new DeleteNodeToolboxAction(translationService,
+                                                  sessionCommandManager,
+                                                  commandFactory,
+                                                  action -> true,
+                                                  clearSelectionEventEventSourceMock);
     }
 
     @Test
@@ -105,11 +105,11 @@ public class DeleteNodeActionTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testSkipAction() {
-        this.tested = new DeleteNodeAction(translationService,
-                                           sessionCommandManager,
-                                           commandFactory,
-                                           action -> false,
-                                           clearSelectionEventEventSourceMock);
+        this.tested = new DeleteNodeToolboxAction(translationService,
+                                                  sessionCommandManager,
+                                                  commandFactory,
+                                                  action -> false,
+                                                  clearSelectionEventEventSourceMock);
         final MouseClickEvent event = mock(MouseClickEvent.class);
         final ToolboxAction<AbstractCanvasHandler> cascade = tested.onMouseClick(canvasHandler, E_UUID, event);
         assertEquals(tested, cascade);

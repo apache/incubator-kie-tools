@@ -51,7 +51,7 @@ public class ClearCommandHistoryDevCommand extends AbstractMenuDevCommand {
         try {
             final EditorSession session = (EditorSession) getSession();
             if (null != session) {
-                session.getCommandRegistry().getCommandHistory().clear();
+                session.getCommandRegistry().clear();
             }
         } catch (ClassCastException e) {
             LOGGER.log(Level.WARNING,

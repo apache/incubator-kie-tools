@@ -59,9 +59,9 @@ public class FlowActionsToolboxFactory
 
     private final ToolboxDomainLookups toolboxDomainLookups;
     private final DomainProfileManager profileManager;
-    private final Supplier<CreateConnectorAction> createConnectorActions;
+    private final Supplier<CreateConnectorToolboxAction> createConnectorActions;
     private final Command createConnectorActionsDestroyer;
-    private final Supplier<CreateNodeAction> createNodeActions;
+    private final Supplier<CreateNodeToolboxAction> createNodeActions;
     private final Command createNodeActionsDestroyer;
     private final Supplier<ActionsToolboxView> views;
     private final Command viewsDestroyer;
@@ -69,8 +69,8 @@ public class FlowActionsToolboxFactory
     @Inject
     public FlowActionsToolboxFactory(final ToolboxDomainLookups toolboxDomainLookups,
                                      final DomainProfileManager profileManager,
-                                     final @Any ManagedInstance<CreateConnectorAction> createConnectorActions,
-                                     final @Any @FlowActionsToolbox ManagedInstance<CreateNodeAction> createNodeActions,
+                                     final @Any ManagedInstance<CreateConnectorToolboxAction> createConnectorActions,
+                                     final @Any @FlowActionsToolbox ManagedInstance<CreateNodeToolboxAction> createNodeActions,
                                      final @Any @FlowActionsToolbox ManagedInstance<ActionsToolboxView> views) {
         this(toolboxDomainLookups,
              profileManager,
@@ -84,9 +84,9 @@ public class FlowActionsToolboxFactory
 
     FlowActionsToolboxFactory(final ToolboxDomainLookups toolboxDomainLookups,
                               final DomainProfileManager profileManager,
-                              final Supplier<CreateConnectorAction> createConnectorActions,
+                              final Supplier<CreateConnectorToolboxAction> createConnectorActions,
                               final Command createConnectorActionsDestroyer,
-                              final Supplier<CreateNodeAction> createNodeActions,
+                              final Supplier<CreateNodeToolboxAction> createNodeActions,
                               final Command createNodeActionsDestroyer,
                               final Supplier<ActionsToolboxView> views,
                               final Command viewsDestroyer) {

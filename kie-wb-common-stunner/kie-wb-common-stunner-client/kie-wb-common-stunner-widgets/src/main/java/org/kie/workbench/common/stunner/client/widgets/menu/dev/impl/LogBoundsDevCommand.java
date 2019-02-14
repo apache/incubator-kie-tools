@@ -48,6 +48,6 @@ public class LogBoundsDevCommand extends AbstractSelectedNodeDevCommand {
 
     @Override
     protected void execute(final Node<? extends View<?>, Edge> node) {
-        StunnerClientLogger.logBounds(node);
+        logTask(() -> StunnerClientLogger.logBounds(node));
     }
 }

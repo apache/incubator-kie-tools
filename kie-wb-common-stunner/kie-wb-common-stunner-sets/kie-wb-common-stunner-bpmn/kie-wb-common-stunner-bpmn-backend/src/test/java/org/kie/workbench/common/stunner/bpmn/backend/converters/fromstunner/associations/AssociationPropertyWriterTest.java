@@ -16,9 +16,6 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.associations;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eclipse.bpmn2.Association;
 import org.eclipse.bpmn2.AssociationDirection;
 import org.eclipse.bpmn2.BaseElement;
@@ -83,20 +80,17 @@ public class AssociationPropertyWriterTest {
         BPMNShape targetShape = mockShape(TARGET_SHAPE_ID, 10, 10, 4, 4);
         when(sourceWriter.getShape()).thenReturn(sourceShape);
         when(targetWriter.getShape()).thenReturn(targetShape);
-
-        List<ControlPoint> controlPoints = new ArrayList<>();
-        controlPoints.add(new ControlPoint(Point2D.create(3,3),0));
-        controlPoints.add(new ControlPoint(Point2D.create(4,4),0));
-        controlPoints.add(new ControlPoint(Point2D.create(5,5),0));
-
-        ViewConnector <? extends BPMNViewDefinition> connector = mockConnector(1, 1, 10, 10, controlPoints);
-
+        ControlPoint[] controlPoints = new ControlPoint[]{
+                new ControlPoint(Point2D.create(3, 3)),
+                new ControlPoint(Point2D.create(4, 4)),
+                new ControlPoint(Point2D.create(5, 5))
+        };
+        ViewConnector<? extends BPMNViewDefinition> connector = mockConnector(1, 1, 10, 10, controlPoints);
         associationWriter.setSource(sourceWriter);
         associationWriter.setTarget(targetWriter);
         associationWriter.setConnection(connector);
 
         assertNotNull(associationWriter.getEdge());
-
         assertEquals(association, associationWriter.getEdge().getBpmnElement());
         assertEquals("edge_SOURCE_SHAPE_ID_to_TARGET_SHAPE_ID", associationWriter.getEdge().getId());
         assertWaypoint(2, 2, 0, associationWriter.getEdge().getWaypoint());
