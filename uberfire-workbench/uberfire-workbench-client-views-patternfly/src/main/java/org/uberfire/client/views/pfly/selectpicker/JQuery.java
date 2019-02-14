@@ -21,12 +21,16 @@ import elemental2.dom.Element;
 import elemental2.dom.Node;
 import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsMethod;
+import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 
 import static jsinterop.annotations.JsPackage.GLOBAL;
 
 @JsType(isNative = true)
 public abstract class JQuery {
+
+    @JsProperty(namespace = GLOBAL, name = "jQuery")
+    public static JQuery $;
 
     @JsMethod(namespace = GLOBAL, name = "jQuery")
     public native static JQuery $(final Node selector);
@@ -47,6 +51,9 @@ public abstract class JQuery {
     public native JQuery detach();
 
     public native JQueryList<Element> filter(final String selector);
+
+    public native boolean contains(final Element container,
+                                   final Element contained);
 
     @JsFunction
     public interface CallbackFunction {
