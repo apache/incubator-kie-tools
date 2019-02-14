@@ -163,7 +163,14 @@ public class AssignmentListItemWidgetTest {
                      regExp.test("a1 -_+-*?'/1@"));
         assertEquals(true,
                      regExp.test("a1"));
-
+        assertEquals(true,
+                     regExp.test("multiple words name"));
+        assertEquals(true,
+                     regExp.test("multiple-words-name"));
+        assertEquals(true,
+                     regExp.test("UpperCase"));
+        assertEquals(true,
+                     regExp.test("_car"));
         verify(customDataType,
                times(1)).addKeyDownHandler(any(KeyDownHandler.class));
         verify(name,
