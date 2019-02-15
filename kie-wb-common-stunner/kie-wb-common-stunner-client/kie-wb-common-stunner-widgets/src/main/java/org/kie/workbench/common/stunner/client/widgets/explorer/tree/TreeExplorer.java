@@ -19,6 +19,8 @@ package org.kie.workbench.common.stunner.client.widgets.explorer.tree;
 import java.util.List;
 import java.util.OptionalInt;
 import java.util.function.Predicate;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
@@ -61,6 +63,8 @@ import org.uberfire.mvp.Command;
 
 @Dependent
 public class TreeExplorer implements IsWidget {
+
+    private static final Logger LOGGER = Logger.getLogger(TreeExplorer.class.getName());
 
     static final String NO_NAME = "-- No name --";
 
@@ -107,8 +111,7 @@ public class TreeExplorer implements IsWidget {
     }
 
     private void doShow(final Graph<org.kie.workbench.common.stunner.core.graph.content.view.View, Node<org.kie.workbench.common.stunner.core.graph.content.view.View, Edge>> graph) {
-        traverseChildrenEdges(graph,
-                              true);
+        runWithErrorHandling(() -> traverseChildrenEdges(graph, true));
     }
 
     private void traverseChildrenEdges(final Graph<org.kie.workbench.common.stunner.core.graph.content.view.View, Node<org.kie.workbench.common.stunner.core.graph.content.view.View, Edge>> graph,
@@ -379,8 +382,17 @@ public class TreeExplorer implements IsWidget {
 
     private void runEventInContext(final Command runnable) {
         eventInProgress = true;
-        runnable.execute();
+        runWithErrorHandling(runnable::execute);
         eventInProgress = false;
+    }
+
+    private void runWithErrorHandling(Runnable runnable) {
+        try {
+            runnable.run();
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, "An error occurred while updating tree explorer.", ex);
+            view.clear();
+        }
     }
 
     private void initView() {

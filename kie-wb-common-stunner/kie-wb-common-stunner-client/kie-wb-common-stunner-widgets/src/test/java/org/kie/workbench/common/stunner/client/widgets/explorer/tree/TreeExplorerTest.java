@@ -66,6 +66,7 @@ import org.uberfire.mvp.Command;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.any;
@@ -73,6 +74,7 @@ import static org.mockito.Mockito.anyBoolean;
 import static org.mockito.Mockito.anyDouble;
 import static org.mockito.Mockito.anyObject;
 import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -303,6 +305,21 @@ public class TreeExplorerTest {
         testedTree.onCanvasElementUpdatedEvent(event);
 
         verify(view, times(1)).setSelectedItem(eq("CHILD_UUID"));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testErrorHandling() {
+        doThrow(new RuntimeException()).when(childrenTraverseProcessor)
+                .traverse(any(Graph.class), any(AbstractChildrenTraverseCallback.class));
+
+        try {
+            testedTree.show(canvasHandler);
+        } catch (Exception ex) {
+            fail();
+        }
+
+        verify(view, times(2)).clear();
     }
 
     private TreeExplorer createTestInstance() {
