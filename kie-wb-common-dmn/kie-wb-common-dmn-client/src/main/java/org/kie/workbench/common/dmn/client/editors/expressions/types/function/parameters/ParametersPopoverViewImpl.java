@@ -69,10 +69,6 @@ public class ParametersPopoverViewImpl extends AbstractPopoverViewImpl implement
         this.parametersContainer = parametersContainer;
         this.addParameter = addParameter;
         this.parameterViews = parameterViews;
-
-        this.popoverElement = popoverElement;
-        this.popoverContentElement = popoverContentElement;
-        this.jQueryPopover = jQueryPopover;
     }
 
     @Override
