@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -247,17 +248,26 @@ public class BackendDefinitionAdapter<T>
 
     @Override
     public String getBaseType(final Class<?> type) {
-        if (null != type) {
-            Definition annotation = getClassAnnotation(type,
-                                                       Definition.class);
-            if (null != annotation) {
-                Class<?> parentType = type.getSuperclass();
-                if (isBaseType(parentType)) {
-                    return getDefinitionId(parentType);
-                }
-            }
-        }
-        return null;
+        return Optional.ofNullable(type)
+                .filter(t -> !t.isPrimitive())
+                .filter(t -> Objects.nonNull(getClassAnnotation(t, Definition.class)))
+                .map(this::findBaseParent)
+                .map(this::getDefinitionId)
+                .orElse(null);
+    }
+
+    /**
+     * Find on the parent hierarchy of the given type the Class that is a BaseType
+     * @param type
+     * @return
+     */
+    private Class findBaseParent(final Class type) {
+        return (Objects.isNull(type) || Object.class.equals(type)
+                ? null
+                : Optional.ofNullable(type)
+                .map(Class::getSuperclass)
+                .filter(this::isBaseType)
+                .orElse(findBaseParent(type.getSuperclass())));
     }
 
     @Override

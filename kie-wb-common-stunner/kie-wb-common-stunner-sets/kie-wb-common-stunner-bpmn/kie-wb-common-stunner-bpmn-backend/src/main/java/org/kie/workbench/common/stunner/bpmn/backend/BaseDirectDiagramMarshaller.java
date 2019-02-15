@@ -132,7 +132,11 @@ public abstract class BaseDirectDiagramMarshaller implements DiagramMarshaller<G
 
     private String renderToString(Bpmn2Resource resource) throws IOException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        resource.save(outputStream, new HashMap<>());
+        try {
+            resource.save(outputStream, new HashMap<>());
+        } finally {
+            outputStream.close();
+        }
         return StringEscapeUtils.unescapeHtml4(outputStream.toString("UTF-8"));
     }
 
@@ -141,9 +145,14 @@ public abstract class BaseDirectDiagramMarshaller implements DiagramMarshaller<G
                                                  final InputStream inputStream) throws IOException {
         LOG.debug("Starting diagram unmarshalling...");
 
-        // definition resolver provides utlities to access elements of the BPMN datamodel
-        DefinitionResolver definitionResolver = new DefinitionResolver(parseDefinitions(inputStream),
-                                                                       workItemDefinitionService.execute(metadata));
+        DefinitionResolver definitionResolver;
+        try {
+            // definition resolver provides utlities to access elements of the BPMN datamodel
+            definitionResolver = new DefinitionResolver(parseDefinitions(inputStream),
+                                                        workItemDefinitionService.execute(metadata));
+        } finally {
+            inputStream.close();
+        }
 
         metadata.setCanvasRootUUID(definitionResolver.getDefinitions().getId());
         metadata.setTitle(definitionResolver.getProcess().getName());
@@ -223,7 +232,11 @@ public abstract class BaseDirectDiagramMarshaller implements DiagramMarshaller<G
         options.put(JBPMBpmn2ResourceImpl.OPTION_PROCESS_DANGLING_HREF,
                     JBPMBpmn2ResourceImpl.OPTION_PROCESS_DANGLING_HREF_RECORD);
 
-        resource.load(inputStream, options);
+        try {
+            resource.load(inputStream, options);
+        } finally {
+            inputStream.close();
+        }
 
         final DocumentRoot root = (DocumentRoot) resource.getContents().get(0);
 
