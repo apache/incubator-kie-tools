@@ -18,6 +18,7 @@ package org.kie.workbench.common.dmn.client.decision.factories;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.TreeSet;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -51,6 +52,7 @@ import org.uberfire.mvp.Command;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
+import static java.util.Optional.empty;
 import static org.junit.Assert.assertEquals;
 import static org.kie.workbench.common.dmn.client.decision.DecisionNavigatorItem.Type.ITEM;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DecisionNavigatorBaseItemFactory_NoName;
@@ -139,6 +141,7 @@ public class DecisionNavigatorBaseItemFactoryTest {
         doReturn(label).when(factory).getLabel(node);
         doReturn(onClick).when(factory).makeOnClickCommand(node);
         doReturn(nestedItems).when(factory).makeNestedItems(node);
+        when(decisionNavigatorPresenter.getGraph()).thenReturn(Optional.of(graph));
 
         when(graph.nodes()).thenReturn(Collections.singletonList(diagramNode));
         when(diagramNode.getContent()).thenReturn(diagramDefinition);
@@ -152,6 +155,37 @@ public class DecisionNavigatorBaseItemFactoryTest {
         assertEquals(onClick, item.getOnClick());
         assertEquals(graphUUID, item.getParentUUID());
         assertEquals(asTreeSet(child), item.getChildren());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testDiagramUUIDWhenGraphIsPresent() {
+
+        final String expectedUUID = "graphUUID";
+        final Node<Definition, Edge> diagramNode = mock(Node.class);
+        final Definition diagramDefinition = mock(Definition.class);
+        final DMNDiagram diagram = mock(DMNDiagram.class);
+
+        when(decisionNavigatorPresenter.getGraph()).thenReturn(Optional.of(graph));
+        when(graph.nodes()).thenReturn(Collections.singletonList(diagramNode));
+        when(diagramNode.getContent()).thenReturn(diagramDefinition);
+        when(diagramDefinition.getDefinition()).thenReturn(diagram);
+        when(diagramNode.getUUID()).thenReturn(expectedUUID);
+
+        final String actualUUID = factory.diagramUUID();
+
+        assertEquals(expectedUUID, actualUUID);
+    }
+
+    @Test
+    public void testDiagramUUIDWhenGraphIsNotPresent() {
+
+        when(decisionNavigatorPresenter.getGraph()).thenReturn(empty());
+
+        final String actualUUID = factory.diagramUUID();
+        final String expectedUUID = "";
+
+        assertEquals(expectedUUID, actualUUID);
     }
 
     @Test

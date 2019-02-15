@@ -23,7 +23,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
-import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.mockito.Mock;
 import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
@@ -78,16 +77,6 @@ public class DecisionNavigatorDockTest {
 
         assertEquals(expectedPerspective, actualPerspective);
         assertEquals(expectedUberfireDock, actualUberfireDock);
-    }
-
-    @Test
-    public void testSetupDiagram() {
-
-        final Diagram diagram = mock(Diagram.class);
-
-        dock.setupDiagram(diagram);
-
-        verify(decisionNavigatorPresenter).setDiagram(diagram);
     }
 
     @Test

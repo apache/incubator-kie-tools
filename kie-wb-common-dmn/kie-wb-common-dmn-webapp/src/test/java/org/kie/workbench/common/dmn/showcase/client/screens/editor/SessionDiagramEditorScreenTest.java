@@ -177,7 +177,6 @@ public class SessionDiagramEditorScreenTest {
         editor.open(diagram, callback);
 
         final InOrder inOrder = inOrder(decisionNavigatorDock);
-        inOrder.verify(decisionNavigatorDock).setupDiagram(diagram);
         inOrder.verify(decisionNavigatorDock).setupCanvasHandler(canvasHandler);
         inOrder.verify(decisionNavigatorDock).open();
 

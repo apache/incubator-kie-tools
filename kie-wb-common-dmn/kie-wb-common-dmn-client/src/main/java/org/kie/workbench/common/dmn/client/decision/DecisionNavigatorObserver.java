@@ -31,6 +31,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.registration.Ca
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementRemovedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementUpdatedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasFocusedShapeEvent;
+import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 
 @ApplicationScoped
@@ -67,17 +68,20 @@ public class DecisionNavigatorObserver {
         setActiveParent(event);
     }
 
-    @SuppressWarnings("unused")
     void onNestedElementAdded(final @Observes ExpressionEditorChanged event) {
+        presenter.getGraph().ifPresent(this::updateNode);
+    }
 
-        final Node node = presenter.getGraph().getNode(getActiveParent().getUUID());
+    private void updateNode(final Graph graph) {
+
+        final String activeParent = getActiveParent().getUUID();
+        final Node node = graph.getNode(activeParent);
 
         presenter.updateElement(node);
 
         getActiveParent().getChildren().forEach(e -> getTreePresenter().selectItem(e.getUUID()));
     }
 
-    @SuppressWarnings("unused")
     void onNestedElementLostFocus(final @Observes CanvasFocusedShapeEvent event) {
         getTreePresenter().deselectItem();
     }

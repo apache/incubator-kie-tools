@@ -17,6 +17,8 @@
 package org.kie.workbench.common.dmn.client.decision;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -40,6 +42,8 @@ import org.uberfire.client.mvp.UberElemental;
 import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.Position;
 
+import static java.util.Collections.emptyList;
+import static java.util.Optional.ofNullable;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DecisionNavigatorPresenter_DecisionNavigator;
 
 @ApplicationScoped
@@ -59,8 +63,6 @@ public class DecisionNavigatorPresenter {
     private final DecisionNavigatorItemFactory itemFactory;
 
     private final TranslationService translationService;
-
-    private Diagram diagram;
 
     private CanvasHandler handler;
 
@@ -105,11 +107,7 @@ public class DecisionNavigatorPresenter {
     }
 
     public Diagram getDiagram() {
-        return diagram;
-    }
-
-    public void setDiagram(final Diagram diagram) {
-        this.diagram = diagram;
+        return handler.getDiagram();
     }
 
     public CanvasHandler getHandler() {
@@ -167,12 +165,13 @@ public class DecisionNavigatorPresenter {
     }
 
     List<DecisionNavigatorItem> getItems() {
-        return navigatorChildrenTraverse.getItems(getGraph());
+        return getGraph().map(navigatorChildrenTraverse::getItems).orElse(emptyList());
     }
 
-    protected Graph getGraph() {
-        final Diagram diagram = handler.getDiagram();
-        return diagram.getGraph();
+    public Optional<Graph> getGraph() {
+        return ofNullable(handler)
+                .map((Function<CanvasHandler, Diagram>) CanvasHandler::getDiagram)
+                .map(Diagram::getGraph);
     }
 
     DecisionNavigatorItem makeItem(final Element<?> element) {

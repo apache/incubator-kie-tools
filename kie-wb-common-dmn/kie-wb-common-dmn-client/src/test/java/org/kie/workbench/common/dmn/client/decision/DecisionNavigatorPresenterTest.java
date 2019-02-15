@@ -18,6 +18,7 @@ package org.kie.workbench.common.dmn.client.decision;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
@@ -36,7 +37,11 @@ import org.mockito.Mock;
 import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.Position;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DecisionNavigatorPresenter_DecisionNavigator;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
@@ -77,6 +82,22 @@ public class DecisionNavigatorPresenterTest {
                                                        navigatorChildrenTraverse,
                                                        itemFactory,
                                                        translationService));
+    }
+
+    @Test
+    public void testGetDiagram() {
+
+        final CanvasHandler handler = mock(CanvasHandler.class);
+        final Diagram expectedDiagram = mock(Diagram.class);
+
+        doNothing().when(presenter).refreshTreeView();
+        doReturn(expectedDiagram).when(handler).getDiagram();
+
+        presenter.setHandler(handler);
+
+        final Diagram actual = presenter.getDiagram();
+
+        assertEquals(expectedDiagram, actual);
     }
 
     @Test
@@ -179,7 +200,7 @@ public class DecisionNavigatorPresenterTest {
         final CanvasHandler canvasHandler = mock(CanvasHandler.class);
         final Diagram diagram = mock(Diagram.class);
         final Graph graph = mock(Graph.class);
-        final ArrayList<DecisionNavigatorItem> expectedItems = new ArrayList<>();
+        final List<DecisionNavigatorItem> expectedItems = singletonList(mock(DecisionNavigatorItem.class));
 
         doNothing().when(presenter).refreshTreeView();
         when(canvasHandler.getDiagram()).thenReturn(diagram);
@@ -191,6 +212,63 @@ public class DecisionNavigatorPresenterTest {
         final List<DecisionNavigatorItem> actualItems = presenter.getItems();
 
         assertEquals(expectedItems, actualItems);
+    }
+
+    @Test
+    public void testGetItemsWhenDiagramIsNull() {
+
+        final CanvasHandler canvasHandler = mock(CanvasHandler.class);
+        final List<DecisionNavigatorItem> expectedItems = emptyList();
+
+        when(canvasHandler.getDiagram()).thenReturn(null);
+
+        presenter.setHandler(canvasHandler);
+
+        final List<DecisionNavigatorItem> actualItems = presenter.getItems();
+
+        assertEquals(expectedItems, actualItems);
+    }
+
+    @Test
+    public void testGetGraphWhenDiagramIsNull() {
+
+        final CanvasHandler canvasHandler = mock(CanvasHandler.class);
+
+        when(canvasHandler.getDiagram()).thenReturn(null);
+
+        presenter.setHandler(canvasHandler);
+
+        final Optional<Graph> actualGraph = presenter.getGraph();
+
+        assertFalse(actualGraph.isPresent());
+    }
+
+    @Test
+    public void testGetGraphWhenHandlerIsNull() {
+
+        presenter.setHandler(null);
+
+        final Optional<Graph> actualGraph = presenter.getGraph();
+
+        assertFalse(actualGraph.isPresent());
+    }
+
+    @Test
+    public void testGetGraphWhenGraphExists() {
+
+        final CanvasHandler canvasHandler = mock(CanvasHandler.class);
+        final Diagram diagram = mock(Diagram.class);
+        final Graph expectedGraph = mock(Graph.class);
+
+        when(canvasHandler.getDiagram()).thenReturn(diagram);
+        when(diagram.getGraph()).thenReturn(expectedGraph);
+
+        presenter.setHandler(canvasHandler);
+
+        final Optional<Graph> actualGraph = presenter.getGraph();
+
+        assertTrue(actualGraph.isPresent());
+        assertEquals(expectedGraph, actualGraph.get());
     }
 
     @Test

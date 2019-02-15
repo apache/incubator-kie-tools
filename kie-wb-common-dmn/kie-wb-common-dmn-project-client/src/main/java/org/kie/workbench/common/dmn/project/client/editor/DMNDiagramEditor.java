@@ -156,7 +156,6 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
 
     @Override
     protected void initialiseKieEditorForSession(final ProjectDiagram diagram) {
-        decisionNavigatorDock.setupDiagram(diagram);
         superInitialiseKieEditorForSession(diagram);
 
         kieView.getMultiPage().addPage(dataTypesPage);

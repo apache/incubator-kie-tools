@@ -224,7 +224,7 @@ public class DecisionNavigatorObserverTest {
         final Graph graph = mock(Graph.class);
         final Node node = mock(Node.class);
 
-        when(presenter.getGraph()).thenReturn(graph);
+        when(presenter.getGraph()).thenReturn(Optional.of(graph));
         when(graph.getNode(uuid1)).thenReturn(node);
         doReturn(item).when(observer).getActiveParent();
 

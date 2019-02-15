@@ -213,7 +213,6 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
         open();
 
         final InOrder inOrder = inOrder(decisionNavigatorDock);
-        inOrder.verify(decisionNavigatorDock).setupDiagram(diagram);
         inOrder.verify(decisionNavigatorDock).setupCanvasHandler(eq(canvasHandler));
         inOrder.verify(decisionNavigatorDock).open();
 

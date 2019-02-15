@@ -22,7 +22,6 @@ import javax.inject.Inject;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
-import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
 import org.uberfire.client.workbench.docks.UberfireDocks;
@@ -63,10 +62,6 @@ public class DecisionNavigatorDock {
     public void init(final String perspective) {
         this.perspective = perspective;
         this.uberfireDock = makeUberfireDock();
-    }
-
-    public void setupDiagram(final Diagram diagram) {
-        decisionNavigatorPresenter.setDiagram(diagram);
     }
 
     public void setupCanvasHandler(final CanvasHandler handler) {

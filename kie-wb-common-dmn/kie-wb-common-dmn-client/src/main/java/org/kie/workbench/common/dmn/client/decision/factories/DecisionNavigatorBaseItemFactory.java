@@ -35,7 +35,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.selection.Canva
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
-import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Graph;
@@ -98,15 +97,19 @@ public class DecisionNavigatorBaseItemFactory {
 
     @SuppressWarnings("unchecked")
     String diagramUUID() {
-        final Diagram diagram = decisionNavigatorPresenter.getDiagram();
-        final Graph<?, Node> graph = diagram.getGraph();
-
-        return StreamSupport.stream(graph.nodes().spliterator(), false)
-                .filter(n -> n.getContent() instanceof Definition)
-                .filter(n -> ((Definition) n.getContent()).getDefinition() instanceof DMNDiagram)
-                .findFirst()
-                .map(Node::getUUID)
-                .orElse("");
+        final String defaultUUID = "";
+        return decisionNavigatorPresenter
+                .getGraph()
+                .map(graph -> ((Graph<?, Node>) graph).nodes())
+                .map(nodes -> StreamSupport.stream(nodes.spliterator(), false))
+                .map(stream -> stream
+                        .filter(n -> n.getContent() instanceof Definition)
+                        .filter(n -> ((Definition) n.getContent()).getDefinition() instanceof DMNDiagram)
+                        .findFirst()
+                        .map(Node::getUUID)
+                        .orElse(defaultUUID)
+                )
+                .orElse(defaultUUID);
     }
 
     Command makeOnClickCommand(final Node<View, Edge> node) {

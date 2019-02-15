@@ -337,7 +337,6 @@ public class SessionDiagramEditorScreen implements KieEditorWrapperView.KieEdito
 
     void open(final Diagram diagram,
               final Command callback) {
-        setupDiagram(diagram);
         screenPanelView.setWidget(presenter.getView());
         layoutHelper.applyLayout(diagram);
         presenter
@@ -375,10 +374,6 @@ public class SessionDiagramEditorScreen implements KieEditorWrapperView.KieEdito
         destroyDock();
         destroySession();
         dataTypesPage.disableShortcuts();
-    }
-
-    void setupDiagram(final Diagram diagram) {
-        decisionNavigatorDock.setupDiagram(diagram);
     }
 
     void setupCanvasHandler(final EditorSession session) {
