@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.shape.impl;
 
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
@@ -26,6 +27,7 @@ import org.kie.workbench.common.stunner.client.lienzo.shape.view.LienzoShapeView
 import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
 import org.kie.workbench.common.stunner.core.client.shape.impl.ShapeStateAttributeHandler;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.uberfire.mvp.Command;
 
@@ -38,6 +40,7 @@ import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -57,6 +60,9 @@ public class ShapeStateDefaultHandlerTest {
     @Mock
     private LienzoShapeView<?> backgroundShape;
 
+    @Captor
+    private ArgumentCaptor<Function<ShapeState, ShapeStateAttributeHandler.ShapeStateAttributes>> stateAttributesProviderCaptor;
+
     private ShapeStateDefaultHandler tested;
     private Command onComplete;
 
@@ -68,6 +74,40 @@ public class ShapeStateDefaultHandlerTest {
         }).when(handler).onComplete(any(Command.class));
         when(handler.getAttributesHandler()).thenReturn(delegateHandler);
         tested = new ShapeStateDefaultHandler(handler);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testSelectedStateStroke() {
+        reset(delegateHandler);
+
+        when(handler.getShapeState()).thenReturn(ShapeState.SELECTED);
+
+        tested.setRenderType(ShapeStateDefaultHandler.RenderType.STROKE);
+
+        verify(delegateHandler).useAttributes(stateAttributesProviderCaptor.capture());
+
+        final Function<ShapeState, ShapeStateAttributeHandler.ShapeStateAttributes> stateAttributesProvider = stateAttributesProviderCaptor.getValue();
+        final ShapeStateAttributeHandler.ShapeStateAttributes attributes = stateAttributesProvider.apply(ShapeState.SELECTED);
+
+        assertNotNull(attributes.getValues().get(ShapeStateAttributeHandler.ShapeStateAttribute.STROKE_COLOR));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testSelectedStateFill() {
+        reset(delegateHandler);
+
+        when(handler.getShapeState()).thenReturn(ShapeState.SELECTED);
+
+        tested.setRenderType(ShapeStateDefaultHandler.RenderType.FILL);
+
+        verify(delegateHandler).useAttributes(stateAttributesProviderCaptor.capture());
+
+        final Function<ShapeState, ShapeStateAttributeHandler.ShapeStateAttributes> stateAttributesProvider = stateAttributesProviderCaptor.getValue();
+        final ShapeStateAttributeHandler.ShapeStateAttributes attributes = stateAttributesProvider.apply(ShapeState.SELECTED);
+
+        assertNotNull(attributes.getValues().get(ShapeStateAttributeHandler.ShapeStateAttribute.FILL_COLOR));
     }
 
     @Test

@@ -25,7 +25,6 @@ import com.ait.lienzo.shared.core.types.ColorName;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.LienzoShapeView;
 import org.kie.workbench.common.stunner.client.lienzo.util.ShapeViewUserDataEncoder;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
-import org.kie.workbench.common.stunner.core.client.shape.impl.ShapeStateAttributeHandler;
 import org.kie.workbench.common.stunner.core.client.shape.impl.ShapeStateAttributeHandler.ShapeStateAttributes;
 import org.kie.workbench.common.stunner.core.client.shape.impl.ShapeStateAttributesFactory;
 import org.kie.workbench.common.stunner.core.client.shape.impl.ShapeStateHandler;
@@ -42,15 +41,7 @@ public class ShapeStateDefaultHandler
         private final Function<ShapeState, ShapeStateAttributes> stateAttributesProvider;
 
         RenderType(final Function<ShapeState, ShapeStateAttributes> stateAttributesProvider) {
-            this.stateAttributesProvider = state -> {
-                final ShapeStateAttributes attributes = stateAttributesProvider.apply(state);
-                if (isStateSelected(state)) {
-                    attributes
-                            .unset(ShapeStateAttributeHandler.ShapeStateAttribute.FILL_COLOR)
-                            .unset(ShapeStateAttributeHandler.ShapeStateAttribute.STROKE_COLOR);
-                }
-                return attributes;
-            };
+            this.stateAttributesProvider = stateAttributesProvider::apply;
         }
 
         public Function<ShapeState, ShapeStateAttributes> stateAttributesProvider() {
