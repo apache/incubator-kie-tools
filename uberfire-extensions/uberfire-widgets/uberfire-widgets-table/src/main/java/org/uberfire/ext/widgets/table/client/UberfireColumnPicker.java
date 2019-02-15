@@ -136,6 +136,7 @@ public class UberfireColumnPicker<T> {
         if (!columnMetaList.contains(columnMeta)) {
             columnMetaList.add(columnMeta);
         }
+        Collections.sort(columnMetaList);
         if (columnMeta.isVisible()) {
             dataGrid.insertColumn(getVisibleColumnIndex(columnMeta),
                                   columnMeta.getColumn(),

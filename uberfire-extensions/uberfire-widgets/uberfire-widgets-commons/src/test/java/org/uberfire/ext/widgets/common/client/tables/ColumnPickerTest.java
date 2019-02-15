@@ -141,8 +141,8 @@ public class ColumnPickerTest {
         columnPicker.addColumns(Arrays.asList(meta1, meta0));
 
         assertEquals(2, columnPicker.getColumnMetaList().size());
-        verify(dataGrid).insertColumn(1, column0, meta0.getHeader());
-        verify(dataGrid).insertColumn(0, column1, meta1.getHeader());
+        verify(dataGrid).insertColumn(0, column0, meta0.getHeader());
+        verify(dataGrid).insertColumn(1, column1, meta1.getHeader());
         assertEquals(2, dataGrid.getColumnCount());
     }
 
@@ -236,9 +236,9 @@ public class ColumnPickerTest {
     @Test
     public void testAddColumnsIncrementally() {
         final Column column1 = createColumn("col1", "col1");
-        final ColumnMeta meta1 = new ColumnMeta(column1, "caption1", true, 1);
+        final ColumnMeta meta1 = new ColumnMeta(column1, "caption1", true, 0);
         final Column column2 = createColumn("col2", "col2");
-        final ColumnMeta meta2 = new ColumnMeta(column2, "caption2", true, 0);
+        final ColumnMeta meta2 = new ColumnMeta(column2, "caption2", true, 1);
 
         when(dataGrid.getColumn(0)).thenReturn(column1);
         when(dataGrid.getColumn(1)).thenReturn(column2);
