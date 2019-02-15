@@ -22,6 +22,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Defi
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.DefinitionsConverter;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.AdHoc;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Executable;
+import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.GlobalVariables;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Id;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Documentation;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
@@ -53,6 +54,7 @@ public class DefinitionsConverterTest {
                                           new Version("1.0"),
                                           new AdHoc(false),
                                           new ProcessInstanceDescription("descr"),
+                                          new GlobalVariables(""),
                                           new Executable(true)
         ));
         x.setContent(new ViewImpl<>(diag, Bounds.create()));

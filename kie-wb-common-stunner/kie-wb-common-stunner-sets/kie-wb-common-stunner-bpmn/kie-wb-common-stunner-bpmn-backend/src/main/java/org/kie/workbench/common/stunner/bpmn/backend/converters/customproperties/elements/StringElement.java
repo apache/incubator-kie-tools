@@ -13,15 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.workbench.common.stunner.cm.backend.converters.customproperties;
 
-import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.elements.MetadataTypeDefinition;
-import org.kie.workbench.common.stunner.cm.backend.converters.customproperties.elements.CaseManagementBooleanElement;
+package org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.elements;
 
-public class CaseManagementCustomElement {
+import org.eclipse.bpmn2.BaseElement;
 
-    public static final MetadataTypeDefinition<Boolean> isCase = new CaseManagementBooleanElement("case", Boolean.FALSE);
+public class StringElement extends MetadataTypeDefinition<String> {
+
+    public StringElement(String name, java.lang.String defaultValue) {
+        super(name, defaultValue);
+    }
+
+    @Override
+    public java.lang.String getValue(BaseElement element) {
+        return getStringValue(element)
+                .orElse(getDefaultValue());
+    }
+
+    @Override
+    public void setValue(BaseElement element, String value) {
+        setStringValue(element, value);
+    }
 }
-
-
-

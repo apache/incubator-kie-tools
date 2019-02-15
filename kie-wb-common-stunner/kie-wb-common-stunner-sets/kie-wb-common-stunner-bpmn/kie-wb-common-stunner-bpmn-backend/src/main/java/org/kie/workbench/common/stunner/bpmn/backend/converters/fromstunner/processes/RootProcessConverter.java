@@ -71,6 +71,7 @@ public class RootProcessConverter {
         p.setVersion(diagramSet.getVersion().getValue());
         p.setAdHoc(diagramSet.getAdHoc().getValue());
         p.setDescription(diagramSet.getProcessInstanceDescription().getValue());
+        p.setGlobalVariables(diagramSet.getGlobalVariables());
         p.setExecutable(diagramSet.getExecutable().getValue());
 
         BaseProcessData processData = definition.getProcessData();

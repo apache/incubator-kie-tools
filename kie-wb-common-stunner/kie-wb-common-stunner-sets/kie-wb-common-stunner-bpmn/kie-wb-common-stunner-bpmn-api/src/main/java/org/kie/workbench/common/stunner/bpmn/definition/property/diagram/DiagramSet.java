@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.bpmn.definition.property.diagram;
 
+import java.util.Objects;
+
 import javax.validation.Valid;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
@@ -27,6 +29,7 @@ import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.type.TextAreaFieldType;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Documentation;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
+import org.kie.workbench.common.stunner.bpmn.forms.model.VariablesEditorFieldType;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
@@ -91,6 +94,16 @@ public class DiagramSet implements BaseDiagramSet {
     private ProcessInstanceDescription processInstanceDescription;
 
     @Property
+    @FormField(
+            type = VariablesEditorFieldType.class
+    )
+    @Valid
+    private GlobalVariables globalVariables;
+
+    @Property
+    @FormField(
+            afterElement = "globalVariables"
+    )
     private Executable executable;
 
     public DiagramSet() {
@@ -101,6 +114,7 @@ public class DiagramSet implements BaseDiagramSet {
              new Version(),
              new AdHoc(),
              new ProcessInstanceDescription(),
+             new GlobalVariables(),
              new Executable());
     }
 
@@ -111,6 +125,7 @@ public class DiagramSet implements BaseDiagramSet {
                       final @MapsTo("version") Version version,
                       final @MapsTo(ADHOC) AdHoc adHoc,
                       final @MapsTo("processInstanceDescription") ProcessInstanceDescription processInstanceDescription,
+                      final @MapsTo("globalVariables") GlobalVariables globalVariables,
                       final @MapsTo("executable") Executable executable) {
         this.name = name;
         this.documentation = documentation;
@@ -119,6 +134,7 @@ public class DiagramSet implements BaseDiagramSet {
         this.version = version;
         this.adHoc = adHoc;
         this.processInstanceDescription = processInstanceDescription;
+        this.globalVariables = globalVariables;
         this.executable = executable;
     }
 
@@ -130,6 +146,7 @@ public class DiagramSet implements BaseDiagramSet {
              new Version(),
              new AdHoc(),
              new ProcessInstanceDescription(),
+             new GlobalVariables(),
              new Executable());
     }
 
@@ -169,6 +186,11 @@ public class DiagramSet implements BaseDiagramSet {
     }
 
     @Override
+    public GlobalVariables getGlobalVariables() {
+        return globalVariables;
+    }
+
+    @Override
     public Executable getExecutable() {
         return executable;
     }
@@ -201,6 +223,10 @@ public class DiagramSet implements BaseDiagramSet {
         this.processInstanceDescription = processInstanceDescription;
     }
 
+    public void setGlobalVariables(GlobalVariables globalVariables) {
+        this.globalVariables = globalVariables;
+    }
+
     public void setExecutable(final Executable executable) {
         this.executable = executable;
     }
@@ -214,6 +240,7 @@ public class DiagramSet implements BaseDiagramSet {
                                          version.hashCode(),
                                          adHoc.hashCode(),
                                          processInstanceDescription.hashCode(),
+                                         globalVariables.hashCode(),
                                          executable.hashCode());
     }
 
@@ -221,14 +248,15 @@ public class DiagramSet implements BaseDiagramSet {
     public boolean equals(Object o) {
         if (o instanceof DiagramSet) {
             DiagramSet other = (DiagramSet) o;
-            return name.equals(other.name) &&
-                    documentation.equals(other.documentation) &&
-                    id.equals(other.id) &&
-                    packageProperty.equals(other.packageProperty) &&
-                    version.equals(other.version) &&
-                    adHoc.equals(other.adHoc) &&
-                    processInstanceDescription.equals(other.processInstanceDescription) &&
-                    executable.equals(other.executable);
+            return Objects.equals(name, other.name) &&
+                    Objects.equals(documentation, other.documentation) &&
+                    Objects.equals(id, other.id) &&
+                    Objects.equals(packageProperty, other.packageProperty) &&
+                    Objects.equals(version, other.version) &&
+                    Objects.equals(adHoc, other.adHoc) &&
+                    Objects.equals(processInstanceDescription, other.processInstanceDescription) &&
+                    Objects.equals(globalVariables, other.globalVariables) &&
+                    Objects.equals(executable, other.executable);
         }
         return false;
     }

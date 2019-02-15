@@ -95,6 +95,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.AssignmentsInfo;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.DiagramSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.GlobalVariables;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.IsInterrupting;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.error.InterruptingErrorEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.message.MessageRef;
@@ -174,6 +175,7 @@ public class BPMNDirectDiagramMarshallerTest {
     private static final String BPMN_BOUNDARY_EVENTS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/boundaryIntmEvent.bpmn";
     private static final String BPMN_NOT_BOUNDARY_EVENTS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/notBoundaryIntmEvent.bpmn";
     private static final String BPMN_PROCESSVARIABLES = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/processVariables.bpmn";
+    private static final String BPMN_GLOBALVARIABLES = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/globalVariables.bpmn";
     private static final String BPMN_USERTASKASSIGNMENTS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/userTaskAssignments.bpmn";
     private static final String BPMN_USERTASK_MI = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/userTaskMI.bpmn";
     private static final String BPMN_BUSINESSRULETASKASSIGNMENTS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/businessRuleTaskAssignments.bpmn";
@@ -329,6 +331,14 @@ public class BPMNDirectDiagramMarshallerTest {
                       4);
         assertEquals("Basic process",
                      diagram.getMetadata().getTitle());
+
+        Node<? extends Definition, ?> diagramNode = diagram.getGraph().getNode("_8nbnEfbPEeWV2qFDuocQ6Q");
+        assertTrue(diagramNode.getContent().getDefinition() instanceof BPMNDiagram);
+        BPMNDiagramImpl bpmnDiagram = (BPMNDiagramImpl) diagramNode.getContent().getDefinition();
+        assertTrue(bpmnDiagram.getDiagramSet() != null);
+        assertTrue(bpmnDiagram.getDiagramSet().getExecutable() != null);
+        assertTrue(bpmnDiagram.getDiagramSet().getExecutable().getValue());
+
         Node<? extends Definition, ?> task1 = diagram.getGraph().getNode("810797AB-7D09-4E1F-8A5B-96C424E4B031");
         assertTrue(task1.getContent().getDefinition() instanceof NoneTask);
     }
@@ -369,33 +379,62 @@ public class BPMNDirectDiagramMarshallerTest {
     @SuppressWarnings("unchecked")
     public void testUnmarshallProcessVariables() throws Exception {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_PROCESSVARIABLES);
-        assertDiagram(diagram,
-                      8);
-        assertEquals("ProcessVariables",
-                     diagram.getMetadata().getTitle());
-        ProcessVariables variables = null;
+        assertDiagram(diagram, 8);
+        assertEquals("ProcessVariables", diagram.getMetadata().getTitle());
+
+        BPMNDiagramImpl bpmnDiagram = getBpmnDiagram(diagram);
+        ProcessVariables variables = bpmnDiagram.getProcessData().getProcessVariables();
+        assertEquals(variables.getValue(),
+                     "employee:java.lang.String,reason:java.lang.String,performance:java.lang.String");
+
+        Node<? extends Definition, ?> diagramNode = diagram.getGraph().getNode("_luRBMdEjEeWXpsZ1tNStKQ");
+        assertTrue(diagramNode.getContent().getDefinition() instanceof BPMNDiagram);
+        bpmnDiagram = (BPMNDiagramImpl) diagramNode.getContent().getDefinition();
+        assertTrue(bpmnDiagram.getProcessData() != null);
+        assertTrue(bpmnDiagram.getProcessData().getProcessVariables() != null);
+
+        variables = bpmnDiagram.getProcessData().getProcessVariables();
+        assertEquals(variables.getValue(),
+                     "employee:java.lang.String,reason:java.lang.String,performance:java.lang.String");
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testUnmarshallGlobalVariables() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_GLOBALVARIABLES);
+        assertDiagram(diagram, 1);
+        assertEquals("Global Variables", diagram.getMetadata().getTitle());
+
+        BPMNDiagramImpl bpmnDiagram = getBpmnDiagram(diagram);
+        GlobalVariables variables = bpmnDiagram.getDiagramSet().getGlobalVariables();
+        assertEquals("GV1:Boolean,GV2:Boolean,GV3:Integer",
+                     variables.getValue());
+
+        Node<? extends Definition, ?> diagramNode = diagram.getGraph().getNode("__-CvwCveEemCffTTkSwXXQ");
+        assertTrue(diagramNode.getContent().getDefinition() instanceof BPMNDiagram);
+        bpmnDiagram = (BPMNDiagramImpl) diagramNode.getContent().getDefinition();
+        assertTrue(bpmnDiagram.getDiagramSet() != null);
+        assertTrue(bpmnDiagram.getDiagramSet().getGlobalVariables() != null);
+
+        variables = bpmnDiagram.getDiagramSet().getGlobalVariables();
+        assertEquals("GV1:Boolean,GV2:Boolean,GV3:Integer",
+                     variables.getValue());
+    }
+
+    private BPMNDiagramImpl getBpmnDiagram(Diagram<Graph, Metadata> diagram) {
+        BPMNDiagramImpl bpmnDiagram = null;
         Iterator<Element> it = nodesIterator(diagram);
         while (it.hasNext()) {
             Element element = it.next();
             if (element.getContent() instanceof View) {
                 Object oDefinition = ((View) element.getContent()).getDefinition();
                 if (oDefinition instanceof BPMNDiagram) {
-                    BPMNDiagramImpl bpmnDiagram = (BPMNDiagramImpl) oDefinition;
-                    variables = bpmnDiagram.getProcessData().getProcessVariables();
+                    bpmnDiagram = (BPMNDiagramImpl) oDefinition;
                     break;
                 }
             }
         }
-        assertEquals(variables.getValue(),
-                     "employee:java.lang.String,reason:java.lang.String,performance:java.lang.String");
-        Node<? extends Definition, ?> diagramNode = diagram.getGraph().getNode("_luRBMdEjEeWXpsZ1tNStKQ");
-        assertTrue(diagramNode.getContent().getDefinition() instanceof BPMNDiagram);
-        BPMNDiagramImpl bpmnDiagram = (BPMNDiagramImpl) diagramNode.getContent().getDefinition();
-        assertTrue(bpmnDiagram.getProcessData() != null);
-        assertTrue(bpmnDiagram.getProcessData().getProcessVariables() != null);
-        variables = bpmnDiagram.getProcessData().getProcessVariables();
-        assertEquals(variables.getValue(),
-                     "employee:java.lang.String,reason:java.lang.String,performance:java.lang.String");
+        return bpmnDiagram;
     }
 
     @Test

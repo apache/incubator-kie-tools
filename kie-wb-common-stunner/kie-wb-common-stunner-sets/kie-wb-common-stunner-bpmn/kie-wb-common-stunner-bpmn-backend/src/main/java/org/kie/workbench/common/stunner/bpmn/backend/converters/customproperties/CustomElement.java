@@ -18,29 +18,35 @@ package org.kie.workbench.common.stunner.bpmn.backend.converters.custompropertie
 
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.FlowElement;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.elements.BooleanElement;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.elements.ElementDefinition;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.elements.GlobalVariablesElement;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.elements.MetadataTypeDefinition;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.elements.StringElement;
 
 public class CustomElement<T> {
 
-    public static final ElementDefinition<Boolean> async = new BooleanElement("customAsync", false);
-    public static final ElementDefinition<Boolean> autoStart = new BooleanElement("customAutoStart", false);
-    public static final ElementDefinition<Boolean> autoConnectionSource = new BooleanElement("isAutoConnection.source", false);
-    public static final ElementDefinition<Boolean> autoConnectionTarget = new BooleanElement("isAutoConnection.target", false);
-    public static final ElementDefinition<String> description = new StringElement("customDescription", "");
-    public static final ElementDefinition<String> scope = new StringElement("customScope", "");
-    public static final ElementDefinition<String> name = new StringElement("elementname", "") {
+    public static final MetadataTypeDefinition<Boolean> async = new BooleanElement("customAsync", false);
+    public static final MetadataTypeDefinition<Boolean> autoStart = new BooleanElement("customAutoStart", false);
+    public static final MetadataTypeDefinition<Boolean> autoConnectionSource = new BooleanElement("isAutoConnection.source", false);
+    public static final MetadataTypeDefinition<Boolean> autoConnectionTarget = new BooleanElement("isAutoConnection.target", false);
+    public static final MetadataTypeDefinition<String> description = new StringElement("customDescription", "");
+    public static final MetadataTypeDefinition<String> scope = new StringElement("customScope", "");
+    public static final MetadataTypeDefinition<String> name = new StringElement("elementname", "") {
         @Override
         public java.lang.String getValue(BaseElement element) {
             String defaultValue =
                     element instanceof FlowElement ?
                             ((FlowElement) element).getName()
-                            : this.defaultValue;
+                            : this.getDefaultValue();
 
             return getStringValue(element).orElse(defaultValue);
         }
     };
-    public static final ElementDefinition<String> caseIdPrefix = new StringElement("customCaseIdPrefix", "");
-    public static final ElementDefinition<String> caseRole = new StringElement("customCaseRoles", "");
-    public static final ElementDefinition<String> slaDueDate = new StringElement("customSLADueDate", "");
+    public static final MetadataTypeDefinition<String> caseIdPrefix = new StringElement("customCaseIdPrefix", "");
+    public static final MetadataTypeDefinition<String> caseRole = new StringElement("customCaseRoles", "");
+    public static final MetadataTypeDefinition<String> slaDueDate = new StringElement("customSLADueDate", "");
+    public static final GlobalVariablesElement globalVariables = new GlobalVariablesElement("customGlobalVariables");
 
     private final ElementDefinition<T> elementDefinition;
     private final BaseElement element;
@@ -55,7 +61,7 @@ public class CustomElement<T> {
     }
 
     public void set(T value) {
-        if (value != null && !value.equals(elementDefinition.defaultValue)) {
+        if (value != null && !value.equals(elementDefinition.getDefaultValue())) {
             elementDefinition.setValue(element, value);
         }
     }

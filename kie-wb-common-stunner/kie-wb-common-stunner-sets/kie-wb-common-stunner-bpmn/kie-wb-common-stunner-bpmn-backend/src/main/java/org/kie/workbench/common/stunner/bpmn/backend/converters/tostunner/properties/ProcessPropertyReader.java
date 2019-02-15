@@ -77,4 +77,8 @@ public class ProcessPropertyReader extends BasePropertyReader {
     public FlowElement getFlowElement(String id) {
         return flowElements.get(id);
     }
+
+    public String getGlobalVariables() {
+        return CustomElement.globalVariables.of(process).get();
+    }
 }

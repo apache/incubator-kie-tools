@@ -48,6 +48,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Elem
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseFileVariables;
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseIdPrefix;
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseRoles;
+import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.GlobalVariables;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.BaseProcessVariables;
 
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpmn2;
@@ -211,6 +212,10 @@ public class ProcessPropertyWriter extends BasePropertyWriter implements Element
 
     public void setCaseRoles(CaseRoles roles) {
         CustomElement.caseRole.of(process).set(roles.getValue());
+    }
+
+    public void setGlobalVariables(GlobalVariables globalVariables) {
+        CustomElement.globalVariables.of(process).set(globalVariables.getValue());
     }
 
     public void addLaneSet(Collection<LanePropertyWriter> lanes) {

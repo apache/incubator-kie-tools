@@ -13,15 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.workbench.common.stunner.cm.backend.converters.customproperties;
+package org.kie.workbench.common.stunner.cm.backend.converters.customproperties.elements;
 
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.elements.MetadataTypeDefinition;
-import org.kie.workbench.common.stunner.cm.backend.converters.customproperties.elements.CaseManagementBooleanElement;
 
-public class CaseManagementCustomElement {
+public abstract class CaseManagementElementDefinition<T> extends MetadataTypeDefinition<T> {
 
-    public static final MetadataTypeDefinition<Boolean> isCase = new CaseManagementBooleanElement("case", Boolean.FALSE);
+    public CaseManagementElementDefinition(String name, T defaultValue) {
+        super(name, defaultValue);
+    }
 }
-
-
-

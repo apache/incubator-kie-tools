@@ -37,12 +37,14 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseIdPrefix
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseManagementSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseRoles;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.DiagramSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.GlobalVariables;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -98,7 +100,7 @@ public class RootProcessConverterTest {
         context = new DefinitionsBuildingContext(node, Stream.of(new AbstractMap.SimpleEntry("uuid", node)).collect(Collectors.toMap(Map.Entry<String, Node>::getKey, Map.Entry<String, Node>::getValue))).withRootNode(node);
         converter = new RootProcessConverter(context, propertyWriterFactory, converterFactory);
 
-        when(propertyWriterFactory.of(Matchers.any(Process.class))).thenReturn(processPropertyWriter);
+        when(propertyWriterFactory.of(any(Process.class))).thenReturn(processPropertyWriter);
         when(node.getContent()).thenReturn(content);
         when(content.getDefinition()).thenReturn(diagram);
         when(caseManagementSet.getCaseIdPrefix()).thenReturn(caseIdPrefix);
@@ -115,5 +117,17 @@ public class RootProcessConverterTest {
         verify(propertyWriter).setCaseIdPrefix(caseIdPrefix);
         verify(propertyWriter).setCaseRoles(caseRoles);
         verify(propertyWriter).setCaseFileVariables(caseFileVariables);
+    }
+
+    @Test
+    public void convertProcessWithExecutable() {
+        final ProcessPropertyWriter propertyWriter = converter.convertProcess();
+        verify(propertyWriter).setExecutable(anyBoolean());
+    }
+
+    @Test
+    public void convertProcessWithGlobalVariables() {
+        final ProcessPropertyWriter propertyWriter = converter.convertProcess();
+        verify(propertyWriter).setGlobalVariables(any(GlobalVariables.class));
     }
 }

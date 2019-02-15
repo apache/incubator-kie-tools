@@ -26,12 +26,15 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseFileVariables;
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseIdPrefix;
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseRoles;
+import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.GlobalVariables;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpmn2;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.di;
 
@@ -114,6 +117,22 @@ public class ProcessPropertyWriterTest {
         CaseFileVariables caseFileVariables = new CaseFileVariables("CFV1:Boolean,CFV2:Boolean,CFV3:Boolean");
         p.setCaseFileVariables(caseFileVariables);
         assertThat(p.itemDefinitions.size() == 3);
+    }
+
+    @Test
+    public void executable() {
+        p.setExecutable(true);
+        assertTrue(p.getProcess().isIsExecutable());
+        p.setExecutable(false);
+        assertFalse(p.getProcess().isIsExecutable());
+    }
+
+    @Test
+    public void globalVariables() {
+        GlobalVariables globalVariables = new GlobalVariables("GV1:Boolean,GV2:Boolean,GV3:Integer");
+        p.setGlobalVariables(globalVariables);
+        String globalVariablesString = CustomElement.globalVariables.of(p.getProcess()).get();
+        assertThat(globalVariablesString).isEqualTo("GV1:Boolean,GV2:Boolean,GV3:Integer");
     }
 
     @Test
