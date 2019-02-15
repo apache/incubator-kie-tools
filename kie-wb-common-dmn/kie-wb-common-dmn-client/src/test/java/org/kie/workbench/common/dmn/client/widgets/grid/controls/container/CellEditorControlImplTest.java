@@ -16,15 +16,25 @@
 
 package org.kie.workbench.common.dmn.client.widgets.grid.controls.container;
 
+import java.util.Optional;
+import java.util.function.Supplier;
+
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
+import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class CellEditorControlImplTest {
@@ -33,37 +43,45 @@ public class CellEditorControlImplTest {
     private DMNSession session;
 
     @Mock
-    private CellEditorControlsView view;
+    private DMNGridPanel gridPanel;
+
+    @Mock
+    private CellEditorControls editorControls;
+
+    @Captor
+    private ArgumentCaptor<Optional<Supplier<DMNGridPanel>>> gridPanelSupplierArgumentCaptor;
 
     private CellEditorControlImpl control;
 
     @Before
     public void setup() {
-        this.control = new CellEditorControlImpl(view);
+        this.control = new CellEditorControlImpl(editorControls);
+
+        when(session.getGridPanel()).thenReturn(gridPanel);
     }
 
     @Test
     public void testBind() {
         control.bind(session);
 
-        assertNotNull(control.getCellEditorControls());
-    }
+        verify(editorControls).setGridPanelSupplier(gridPanelSupplierArgumentCaptor.capture());
 
-    @Test
-    public void testDoInit() {
-        assertNull(control.getCellEditorControls());
-
-        control.doInit();
-
-        assertNull(control.getCellEditorControls());
+        final Optional<Supplier<DMNGridPanel>> gridPanelSupplier = gridPanelSupplierArgumentCaptor.getValue();
+        assertTrue(gridPanelSupplier.isPresent());
+        assertEquals(gridPanel, gridPanelSupplier.get().get());
     }
 
     @Test
     public void testDoDestroy() {
         control.bind(session);
 
+        reset(editorControls);
+
         control.doDestroy();
 
-        assertNull(control.getCellEditorControls());
+        verify(editorControls).setGridPanelSupplier(gridPanelSupplierArgumentCaptor.capture());
+
+        final Optional<Supplier<DMNGridPanel>> gridPanelSupplier = gridPanelSupplierArgumentCaptor.getValue();
+        assertFalse(gridPanelSupplier.isPresent());
     }
 }

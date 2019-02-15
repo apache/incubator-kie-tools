@@ -29,7 +29,6 @@ import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellE
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.mockito.Mock;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
@@ -58,8 +57,9 @@ public class CellEditorControlsTest {
 
     @Before
     public void setup() {
-        this.controls = new CellEditorControls(() -> gridPanel,
-                                               view);
+        this.controls = new CellEditorControls(view);
+
+        this.controls.setGridPanelSupplier(Optional.of(() -> gridPanel));
 
         doReturn(viewport).when(gridPanel).getViewport();
         doReturn(transform).when(viewport).getTransform();
@@ -67,12 +67,20 @@ public class CellEditorControlsTest {
 
     @Test
     public void testShow() {
+        doReturn(0.5).when(transform).getScaleX();
+        doReturn(-100.0).when(transform).getTranslateX();
+        doReturn(-50).when(gridPanel).getAbsoluteLeft();
+
+        doReturn(0.25).when(transform).getScaleY();
+        doReturn(-200.0).when(transform).getTranslateY();
+        doReturn(-75).when(gridPanel).getAbsoluteTop();
+
         controls.show(editor, EDITOR_TITLE, 10, 20);
 
         verify(view).show(eq(editor),
                           eq(EDITOR_TITLE),
-                          eq(10),
-                          eq(20));
+                          eq(-145),
+                          eq(-270));
     }
 
     @Test
@@ -80,27 +88,5 @@ public class CellEditorControlsTest {
         controls.hide();
 
         verify(view).hide();
-    }
-
-    @Test
-    public void testGetTransformedX() {
-        doReturn(0.5).when(transform).getScaleX();
-        doReturn(-100.0).when(transform).getTranslateX();
-        doReturn(-50).when(gridPanel).getAbsoluteLeft();
-
-        final int tx = controls.getTransformedX(10);
-
-        assertThat(tx).isEqualTo(-145);
-    }
-
-    @Test
-    public void testGetTransformedY() {
-        doReturn(0.25).when(transform).getScaleY();
-        doReturn(-200.0).when(transform).getTranslateY();
-        doReturn(-75).when(gridPanel).getAbsoluteTop();
-
-        final int ty = controls.getTransformedY(20);
-
-        assertThat(ty).isEqualTo(-270);
     }
 }

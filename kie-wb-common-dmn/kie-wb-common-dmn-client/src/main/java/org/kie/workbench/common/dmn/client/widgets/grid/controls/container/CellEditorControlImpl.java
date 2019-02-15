@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.dmn.client.widgets.grid.controls.container;
 
+import java.util.Optional;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -26,18 +28,20 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanv
 @Dependent
 public class CellEditorControlImpl extends AbstractCanvasControl<AbstractCanvas> implements CellEditorControl {
 
-    private CellEditorControlsView view;
     private CellEditorControls editorControls;
 
+    public CellEditorControlImpl() {
+        //CDI proxy
+    }
+
     @Inject
-    public CellEditorControlImpl(final CellEditorControlsView view) {
-        this.view = view;
+    public CellEditorControlImpl(final CellEditorControls editorControls) {
+        this.editorControls = editorControls;
     }
 
     @Override
     public void bind(final DMNSession session) {
-        this.editorControls = new CellEditorControls(session::getGridPanel,
-                                                     view);
+        this.editorControls.setGridPanelSupplier(Optional.of(session::getGridPanel));
     }
 
     @Override
@@ -46,8 +50,7 @@ public class CellEditorControlImpl extends AbstractCanvasControl<AbstractCanvas>
 
     @Override
     protected void doDestroy() {
-        view = null;
-        editorControls = null;
+        this.editorControls.setGridPanelSupplier(Optional.empty());
     }
 
     @Override

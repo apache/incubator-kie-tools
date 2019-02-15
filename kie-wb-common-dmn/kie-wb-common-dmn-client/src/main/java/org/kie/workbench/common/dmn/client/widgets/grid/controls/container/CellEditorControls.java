@@ -19,20 +19,31 @@ package org.kie.workbench.common.dmn.client.widgets.grid.controls.container;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import com.ait.lienzo.client.core.types.Transform;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.HasCellEditorControls;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 
+@Dependent
 public class CellEditorControls implements CellEditorControlsView.Presenter {
 
-    private Supplier<DMNGridPanel> gridPanelSupplier;
+    private Optional<Supplier<DMNGridPanel>> gridPanelSupplier;
     private CellEditorControlsView view;
 
-    public CellEditorControls(final Supplier<DMNGridPanel> gridPanelSupplier,
-                              final CellEditorControlsView view) {
-        this.gridPanelSupplier = gridPanelSupplier;
+    public CellEditorControls() {
+        //CDI proxy
+    }
+
+    @Inject
+    public CellEditorControls(final CellEditorControlsView view) {
         this.view = view;
-        this.view.init(this);
+    }
+
+    @Override
+    public void setGridPanelSupplier(final Optional<Supplier<DMNGridPanel>> gridPanelSupplier) {
+        this.gridPanelSupplier = gridPanelSupplier;
     }
 
     @Override
@@ -40,10 +51,17 @@ public class CellEditorControls implements CellEditorControlsView.Presenter {
                      final Optional<String> editorTitle,
                      final int x,
                      final int y) {
+        if (!gridPanelSupplier.isPresent()) {
+            throw new IllegalStateException("A DMNGridPanel needs to have been set.");
+        }
+
+        final int tx = getTransformedX(x);
+        final int ty = getTransformedY(y);
+
         view.show(editor,
                   editorTitle,
-                  x,
-                  y);
+                  tx,
+                  ty);
     }
 
     @Override
@@ -51,16 +69,14 @@ public class CellEditorControls implements CellEditorControlsView.Presenter {
         view.hide();
     }
 
-    @Override
-    public int getTransformedX(final int x) {
-        final DMNGridPanel gridPanel = gridPanelSupplier.get();
+    private int getTransformedX(final int x) {
+        final DMNGridPanel gridPanel = gridPanelSupplier.get().get();
         final Transform transform = gridPanel.getViewport().getTransform();
         return (int) ((x * transform.getScaleX()) + transform.getTranslateX()) + gridPanel.getAbsoluteLeft();
     }
 
-    @Override
-    public int getTransformedY(final int y) {
-        final DMNGridPanel gridPanel = gridPanelSupplier.get();
+    private int getTransformedY(final int y) {
+        final DMNGridPanel gridPanel = gridPanelSupplier.get().get();
         final Transform transform = gridPanel.getViewport().getTransform();
         return (int) ((y * transform.getScaleY()) + transform.getTranslateY()) + gridPanel.getAbsoluteTop();
     }

@@ -17,12 +17,12 @@
 package org.kie.workbench.common.dmn.client.widgets.grid.controls.container;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.HasCellEditorControls;
-import org.uberfire.client.mvp.UberElement;
+import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 
-public interface CellEditorControlsView extends org.jboss.errai.ui.client.local.api.IsElement,
-                                                UberElement<CellEditorControlsView.Presenter> {
+public interface CellEditorControlsView extends org.jboss.errai.ui.client.local.api.IsElement {
 
     void show(final HasCellEditorControls.Editor<?> editor,
               final Optional<String> editorTitle,
@@ -33,15 +33,13 @@ public interface CellEditorControlsView extends org.jboss.errai.ui.client.local.
 
     interface Presenter {
 
+        void setGridPanelSupplier(final Optional<Supplier<DMNGridPanel>> gridPanelSupplier);
+
         void show(final HasCellEditorControls.Editor<?> editor,
                   final Optional<String> editorTitle,
                   final int x,
                   final int y);
 
         void hide();
-
-        int getTransformedX(final int x);
-
-        int getTransformedY(final int y);
     }
 }

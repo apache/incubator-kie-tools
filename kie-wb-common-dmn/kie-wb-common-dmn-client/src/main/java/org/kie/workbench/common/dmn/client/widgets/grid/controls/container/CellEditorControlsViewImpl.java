@@ -20,7 +20,7 @@ import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.enterprise.context.Dependent;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import com.google.gwt.dom.client.BrowserEvents;
@@ -40,7 +40,7 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.HasCellEditorControls;
 
 @Templated
-@Dependent
+@ApplicationScoped
 public class CellEditorControlsViewImpl implements CellEditorControlsView {
 
     private static final String CONTAINER_CLASS = "kie-dmn-cell-editor-controls";
@@ -66,8 +66,6 @@ public class CellEditorControlsViewImpl implements CellEditorControlsView {
     private Optional<HasCellEditorControls.Editor> activeEditor = Optional.empty();
 
     private Optional<ElementWrapperWidget<?>> elementWrapperWidget = Optional.empty();
-
-    private Presenter presenter;
 
     public CellEditorControlsViewImpl() {
         //CDI proxy
@@ -122,11 +120,6 @@ public class CellEditorControlsViewImpl implements CellEditorControlsView {
     }
 
     @Override
-    public void init(final Presenter presenter) {
-        this.presenter = presenter;
-    }
-
-    @Override
     public void show(final HasCellEditorControls.Editor<?> editor,
                      final Optional<String> editorTitle,
                      final int x,
@@ -134,11 +127,9 @@ public class CellEditorControlsViewImpl implements CellEditorControlsView {
         DOMUtil.removeAllChildren(cellEditorControlsContainer);
         cellEditorControlsContainer.appendChild(editor.getElement());
 
-        final int tx = presenter.getTransformedX(x);
-        final int ty = presenter.getTransformedY(y);
         final CSSStyleDeclaration style = getElement().getStyle();
-        style.setProperty("left", tx + "px");
-        style.setProperty("top", ty + "px");
+        style.setProperty("left", x + "px");
+        style.setProperty("top", y + "px");
 
         activeEditor = Optional.of(editor);
 
