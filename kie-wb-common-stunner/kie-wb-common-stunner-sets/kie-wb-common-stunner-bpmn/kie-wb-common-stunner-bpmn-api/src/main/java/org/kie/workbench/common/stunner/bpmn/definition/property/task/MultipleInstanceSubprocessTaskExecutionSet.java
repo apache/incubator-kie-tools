@@ -31,6 +31,7 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.field.selector
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.type.ListBoxFieldType;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.type.TextAreaFieldType;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
+import org.kie.workbench.common.stunner.bpmn.forms.model.MultipleInstanceVariableFieldType;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
@@ -54,6 +55,7 @@ public class MultipleInstanceSubprocessTaskExecutionSet implements BPMNPropertyS
 
     @Property
     @FormField(
+            type = MultipleInstanceVariableFieldType.class,
             afterElement = "multipleInstanceCollectionInput"
     )
     @Valid
@@ -73,6 +75,7 @@ public class MultipleInstanceSubprocessTaskExecutionSet implements BPMNPropertyS
 
     @Property
     @FormField(
+            type = MultipleInstanceVariableFieldType.class,
             afterElement = "multipleInstanceCollectionOutput"
     )
     @Valid

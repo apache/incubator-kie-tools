@@ -34,6 +34,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.connectors.Prio
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.AssignmentsInfo;
 import org.kie.workbench.common.stunner.bpmn.forms.model.AssigneeEditorFieldType;
 import org.kie.workbench.common.stunner.bpmn.forms.model.AssignmentsEditorFieldType;
+import org.kie.workbench.common.stunner.bpmn.forms.model.MultipleInstanceVariableFieldType;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
@@ -136,6 +137,7 @@ public class UserTaskExecutionSet implements BaseUserTaskExecutionSet {
 
     @Property
     @FormField(
+            type = MultipleInstanceVariableFieldType.class,
             afterElement = "multipleInstanceCollectionInput"
     )
     @Valid
@@ -155,6 +157,7 @@ public class UserTaskExecutionSet implements BaseUserTaskExecutionSet {
 
     @Property
     @FormField(
+            type = MultipleInstanceVariableFieldType.class,
             afterElement = "multipleInstanceCollectionOutput"
     )
     @Valid

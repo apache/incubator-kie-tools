@@ -22,6 +22,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.eclipse.bpmn2.Activity;
+import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.DataAssociation;
 import org.eclipse.bpmn2.DataInput;
 import org.eclipse.bpmn2.DataInputAssociation;
@@ -45,7 +46,7 @@ public class MultipleInstanceActivityPropertyReader extends ActivityPropertyRead
         return super.getDataInputAssociations().stream()
                 .filter(dia -> hasTargetRef(dia, ieDataInputId))
                 .filter(MultipleInstanceActivityPropertyReader::hasSourceRefs)
-                .map(dia -> getVariableName((Property) dia.getSourceRef().get(0)))
+                .map(dia -> ItemNameReader.from(dia.getSourceRef().get(0)).getName())
                 .findFirst()
                 .orElse(null);
     }
@@ -54,7 +55,7 @@ public class MultipleInstanceActivityPropertyReader extends ActivityPropertyRead
         String ieDataOutputId = getLoopDataOutputRefId();
         return super.getDataOutputAssociations().stream()
                 .filter(doa -> hasSourceRef(doa, ieDataOutputId))
-                .map(doa -> getVariableName((Property) doa.getTargetRef()))
+                .map(doa -> ItemNameReader.from(doa.getTargetRef()).getName())
                 .findFirst()
                 .orElse(null);
     }
@@ -103,7 +104,7 @@ public class MultipleInstanceActivityPropertyReader extends ActivityPropertyRead
 
     @Override
     protected List<DataOutput> getDataOutputs() {
-        if(getMultiInstanceLoopCharacteristics().isPresent()) {
+        if (getMultiInstanceLoopCharacteristics().isPresent()) {
             String dataOuputIdForOutputVariable = getDataOutputIdForDataOutputVariable();
             String dataOutputIdForCollection = getLoopDataOutputRefId();
             return super.getDataOutputs().stream()
@@ -141,20 +142,36 @@ public class MultipleInstanceActivityPropertyReader extends ActivityPropertyRead
     }
 
     protected String getDataInputIdForDataInputVariable() {
-        String dataInputVariable = getDataInput();
-        String dataInputVariableId = super.getDataInputAssociations().stream()
-                .filter(dia -> hasSourceRef(dia, dataInputVariable))
-                .map(dia -> dia.getTargetRef().getId())
-                .findFirst().orElse(null);
+        String dataInputVariableId = null;
+        DataInput variableDataInput = getMultiInstanceLoopCharacteristics()
+                .map(MultiInstanceLoopCharacteristics::getInputDataItem)
+                .orElse(null);
+        if (variableDataInput != null) {
+            String itemSubjectRef = getItemSubjectRef(variableDataInput);
+            String variableId = ItemNameReader.from(variableDataInput).getName();
+            dataInputVariableId = super.getDataInputs().stream()
+                    .filter(input -> Objects.equals(variableId, input.getName()))
+                    .filter(input -> hasItemSubjectRef(input, itemSubjectRef))
+                    .map(BaseElement::getId)
+                    .findFirst().orElse(null);
+        }
         return dataInputVariableId;
     }
 
     protected String getDataOutputIdForDataOutputVariable() {
-        String dataOutputVariable = getDataOutput();
-        String dataOutputVariableId = super.getDataOutputAssociations().stream()
-                .filter(doa -> hasTargetRef(doa, dataOutputVariable))
-                .map(doa -> doa.getSourceRef().get(0).getId())
-                .findFirst().orElse(null);
+        String dataOutputVariableId = null;
+        DataOutput variableDataOutput = getMultiInstanceLoopCharacteristics()
+                .map(MultiInstanceLoopCharacteristics::getOutputDataItem)
+                .orElse(null);
+        if (variableDataOutput != null) {
+            String itemSubjectRef = getItemSubjectRef(variableDataOutput);
+            String variableId = ItemNameReader.from(variableDataOutput).getName();
+            dataOutputVariableId = super.getDataOutputs().stream()
+                    .filter(output -> Objects.equals(variableId, output.getName()))
+                    .filter(output -> hasItemSubjectRef(output, itemSubjectRef))
+                    .map(BaseElement::getId)
+                    .findFirst().orElse(null);
+        }
         return dataOutputVariableId;
     }
 
@@ -182,5 +199,13 @@ public class MultipleInstanceActivityPropertyReader extends ActivityPropertyRead
 
     static boolean hasTargetRef(DataAssociation dataAssociation, String id) {
         return dataAssociation.getTargetRef() != null && Objects.equals(dataAssociation.getTargetRef().getId(), id);
+    }
+
+    static boolean hasItemSubjectRef(ItemAwareElement element, String itemSubjectRef) {
+        return element.getItemSubjectRef() != null && Objects.equals(element.getItemSubjectRef().getId(), itemSubjectRef);
+    }
+
+    static String getItemSubjectRef(ItemAwareElement element) {
+        return element.getItemSubjectRef() != null ? element.getItemSubjectRef().getId() : null;
     }
 }

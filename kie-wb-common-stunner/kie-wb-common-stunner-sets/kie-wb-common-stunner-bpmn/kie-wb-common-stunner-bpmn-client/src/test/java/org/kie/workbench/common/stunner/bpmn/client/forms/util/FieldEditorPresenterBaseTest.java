@@ -19,7 +19,6 @@ package org.kie.workbench.common.stunner.bpmn.client.forms.util;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeValue;
 import org.mockito.ArgumentCaptor;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.client.mvp.UberElement;
@@ -69,8 +68,7 @@ public abstract class FieldEditorPresenterBaseTest<T, E extends FieldEditorPrese
                      editor.getView());
     }
 
-    protected void verifyValueChange(ScriptTypeValue expectedOldValue,
-                                     ScriptTypeValue expectedNewValue) {
+    protected void verifyValueChange(T expectedOldValue, T expectedNewValue) {
         verify(changeHandler,
                times(1)).onValueChange(oldValueCaptor.capture(),
                                        newValueCaptor.capture());

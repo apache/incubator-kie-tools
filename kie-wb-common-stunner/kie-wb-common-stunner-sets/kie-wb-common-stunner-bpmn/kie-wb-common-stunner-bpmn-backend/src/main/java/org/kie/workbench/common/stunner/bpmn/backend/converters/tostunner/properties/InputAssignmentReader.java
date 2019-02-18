@@ -25,7 +25,6 @@ import org.eclipse.bpmn2.DataInput;
 import org.eclipse.bpmn2.DataInputAssociation;
 import org.eclipse.bpmn2.FormalExpression;
 import org.eclipse.bpmn2.ItemAwareElement;
-import org.eclipse.bpmn2.Property;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.AssociationDeclaration;
 
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.AssignmentsInfos.isReservedIdentifier;
@@ -63,11 +62,10 @@ public class InputAssignmentReader {
     }
 
     InputAssignmentReader(ItemAwareElement source, String targetName) {
-        String propertyName = getPropertyName((Property) source);
         this.associationDeclaration = new AssociationDeclaration(
                 AssociationDeclaration.Direction.Input,
                 AssociationDeclaration.Type.SourceTarget,
-                propertyName,
+                ItemNameReader.from(source).getName(),
                 targetName);
     }
 
@@ -82,11 +80,4 @@ public class InputAssignmentReader {
     public AssociationDeclaration getAssociationDeclaration() {
         return associationDeclaration;
     }
-
-    // fallback to ID for https://issues.jboss.org/browse/JBPM-6708
-    private static String getPropertyName(Property prop) {
-        return prop.getName() == null ? prop.getId() : prop.getName();
-    }
-
-
 }
