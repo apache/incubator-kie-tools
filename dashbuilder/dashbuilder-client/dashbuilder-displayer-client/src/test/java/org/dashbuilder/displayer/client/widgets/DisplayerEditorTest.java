@@ -19,6 +19,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -42,6 +43,7 @@ import org.dashbuilder.displayer.client.RendererManager;
 import org.dashbuilder.displayer.client.events.DataSetLookupChangedEvent;
 import org.dashbuilder.displayer.client.events.DisplayerEditorClosedEvent;
 import org.dashbuilder.displayer.client.events.DisplayerEditorSavedEvent;
+import org.dashbuilder.displayer.client.events.DisplayerSettingsChangedEvent;
 import org.dashbuilder.displayer.client.prototypes.DisplayerPrototypes;
 import org.junit.Before;
 import org.junit.Test;
@@ -111,6 +113,9 @@ public class DisplayerEditorTest {
 
     @Mock
     DataSetLookupConstraints lookupConstraints;
+    
+    @Mock
+    DisplayerSettingsChangedEvent displayerSettingsChangedEvent;
 
     DisplayerEditor presenter = null;
 
@@ -269,5 +274,25 @@ public class DisplayerEditorTest {
         presenter.onDataSetLookupChanged(new DataSetLookupChangedEvent(settings2.getDataSetLookup()));
         verify(settingsEditor).init(any());
         assertEquals(presenter.getDisplayerSettings().getColumnSettingsList().size(), 0);
+    }
+    
+    @Test
+    public void rendererSettingChangedTest() {
+        String otherRenderer = "otherRenderer";
+        when(displayerSettingsChangedEvent.getDisplayerSettings()).thenReturn(displayerSettings);
+        
+        presenter.onDisplayerSettingsChanged(displayerSettingsChangedEvent);
+        verify(settingsEditor, times(0)).init(any());
+        
+        when(displayerSettings.getRenderer()).thenReturn(otherRenderer);
+        presenter.onDisplayerSettingsChanged(displayerSettingsChangedEvent);
+        verify(settingsEditor).init(any());
+        assertEquals(otherRenderer, presenter.getCurrentRenderer());
+        
+        reset(displayerSettings);
+        when(displayerSettings.getRenderer()).thenReturn(null);
+        presenter.onDisplayerSettingsChanged(displayerSettingsChangedEvent);
+        assertEquals(otherRenderer, presenter.getCurrentRenderer());
+        
     }
 }
