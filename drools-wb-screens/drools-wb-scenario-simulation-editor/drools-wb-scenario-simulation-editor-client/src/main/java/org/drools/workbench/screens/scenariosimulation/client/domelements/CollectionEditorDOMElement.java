@@ -108,6 +108,8 @@ public class CollectionEditorDOMElement extends BaseDOMElement<String, Collectio
         final double widgetHeight = (shownHeight * 0.5);
         widget.setFixedHeight(widgetHeight, Style.Unit.PX);
         widgetContainer.getElement().getStyle().setTop(0, Style.Unit.PX);
+        // Verify Collection editor is always shown on center of the widget, even when clicked cell left margin is outside of the grid
+        widgetContainer.getElement().getStyle().clearProperty("clip");
     }
 
     @Override
