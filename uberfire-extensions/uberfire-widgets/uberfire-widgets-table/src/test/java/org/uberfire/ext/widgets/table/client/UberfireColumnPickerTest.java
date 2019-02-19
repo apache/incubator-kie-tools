@@ -210,5 +210,25 @@ public class UberfireColumnPickerTest {
         assertEquals("etc", columnPicker.getDataGrid().getColumn(2).getDataStoreName());
         assertEquals("actions", columnPicker.getDataGrid().getColumn(3).getDataStoreName());
     }
+
+    @Test
+    public void testRemoveColumns() {
+        UberfireColumnPicker<String> columnPicker = new UberfireColumnPicker<>(new DataGrid<>());
+        ColumnMeta<String> name = createColumnMeta("Name", "name", true, true, 0);
+        ColumnMeta<String> age = createColumnMeta("Age", "age", true, true, 3);
+        ColumnMeta<String> description = createColumnMeta("Description", "description", false, true, 1);
+        ColumnMeta<String> actions = createColumnMeta("Actions", "actions", true, false, 2);
+        ColumnMeta<String> etc = createColumnMeta("Etc", "etc", true, true, 4);
+
+        columnPicker.addColumns(Arrays.asList(name, age, description, actions, etc));
+
+        columnPicker.removeColumn(name);
+        columnPicker.removeColumn(description);
+
+        assertEquals(3, columnPicker.getDataGrid().getColumnCount());
+        assertEquals("age", columnPicker.getDataGrid().getColumn(0).getDataStoreName());
+        assertEquals("etc", columnPicker.getDataGrid().getColumn(1).getDataStoreName());
+        assertEquals("actions", columnPicker.getDataGrid().getColumn(2).getDataStoreName());
+    }
 }
 
