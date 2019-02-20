@@ -125,6 +125,8 @@ public class JGitFileSystemsEventsManager {
     }
 
     public void shutdown() {
+        fsWatchServices.keySet().forEach(key -> this.close(key));
+
         if (jGitEventsBroadcast != null) {
             jGitEventsBroadcast.close();
         }

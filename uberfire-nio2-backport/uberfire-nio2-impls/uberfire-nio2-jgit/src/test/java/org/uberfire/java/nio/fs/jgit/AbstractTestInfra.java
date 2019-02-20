@@ -51,6 +51,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.uberfire.commons.cluster.ClusterParameters;
+import org.uberfire.commons.cluster.ConnectionMode;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.fs.jgit.util.Git;
@@ -59,7 +61,7 @@ import org.uberfire.java.nio.fs.jgit.util.model.CommitInfo;
 import org.uberfire.java.nio.fs.jgit.util.model.DefaultCommitContent;
 
 import static java.util.stream.Collectors.toMap;
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 public abstract class AbstractTestInfra {
 
@@ -68,7 +70,8 @@ public abstract class AbstractTestInfra {
         final String path;
         final String content;
 
-        TestFile(final String path, final String content) {
+        TestFile(final String path,
+                 final String content) {
             this.path = path;
             this.content = content;
         }
@@ -92,6 +95,8 @@ public abstract class AbstractTestInfra {
      * override this method and provide own map of preferences.
      */
     public Map<String, String> getGitPreferences() {
+        System.setProperty(ClusterParameters.APPFORMER_JMS_CONNECTION_MODE,
+                           ConnectionMode.NONE.toString());
         Map<String, String> gitPrefs = new HashMap<>();
         // disable the daemons by default as they not needed in most of the cases
         gitPrefs.put("org.uberfire.nio.git.daemon.enabled",
@@ -227,9 +232,13 @@ public abstract class AbstractTestInfra {
         return writer.toString().getBytes();
     }
 
-    static void commit(final Git origin, final String branchName, final String message, final TestFile... testFiles) throws IOException {
+    static void commit(final Git origin,
+                       final String branchName,
+                       final String message,
+                       final TestFile... testFiles) throws IOException {
         final Map<String, File> data = Arrays.stream(testFiles)
-                .collect(toMap(f -> f.path, f -> tmpFile(f.content)));
+                .collect(toMap(f -> f.path,
+                               f -> tmpFile(f.content)));
         new Commit(origin,
                    branchName,
                    "name",
@@ -249,8 +258,10 @@ public abstract class AbstractTestInfra {
         }
     }
 
-    static TestFile content(final String path, final String content) {
-        return new TestFile(path, content);
+    static TestFile content(final String path,
+                            final String content) {
+        return new TestFile(path,
+                            content);
     }
 
     /**
@@ -295,7 +306,7 @@ public abstract class AbstractTestInfra {
                 if (hookName.equals(testedHookName)) {
                     hookExecuted.set(true);
                 }
-                return null;
+                return new ProcessResult(ProcessResult.Status.OK);
             }
         });
 

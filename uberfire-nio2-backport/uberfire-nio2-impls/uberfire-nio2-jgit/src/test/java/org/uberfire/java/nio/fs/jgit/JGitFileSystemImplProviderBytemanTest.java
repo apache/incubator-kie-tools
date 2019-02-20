@@ -333,7 +333,7 @@ public class JGitFileSystemImplProviderBytemanTest extends AbstractTestInfra {
         } catch (Exception e) {
             fail(e.getMessage());
         }
-        assertFalse(((Boolean) isLocked));
+        assertTrue(((Boolean) isLocked));
     }
 
     private VersionRecord makeVersionRecord(final String author,

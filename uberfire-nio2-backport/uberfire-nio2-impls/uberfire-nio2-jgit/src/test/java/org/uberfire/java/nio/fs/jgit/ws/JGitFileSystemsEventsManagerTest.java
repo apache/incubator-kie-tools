@@ -237,14 +237,14 @@ public class JGitFileSystemsEventsManagerTest {
         manager.newWatchService("fsPetra");
         manager.newWatchService("fsEureka");
 
-        JGitFileSystemWatchServices fsDoraWServices = manager.getFsWatchServices().get("fsPetra");
-        JGitFileSystemWatchServices fsBentoWServices = manager.getFsWatchServices().get("fsEureka");
+        JGitFileSystemWatchServices fsPetraWatchService = manager.getFsWatchServices().get("fsPetra");
+        JGitFileSystemWatchServices fsEurekaWatchService = manager.getFsWatchServices().get("fsEureka");
 
         manager.shutdown();
 
-        verify(fsDoraWServices).close();
-        verify(fsBentoWServices).close();
-        verify(manager.jGitEventsBroadcast).close();
+        verify(fsPetraWatchService).close();
+        verify(fsEurekaWatchService).close();
+        verify(jGitEventsBroadcastMock).close();
     }
 
     private void setupClusterParameters() {

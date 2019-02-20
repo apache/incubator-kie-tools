@@ -155,9 +155,6 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <includes>
-            <include>org/uberfire/java/nio/fs/jgit/JGitFileSystemProviderBytemanTest</include>
-          </includes>
           <useSystemClassLoader>true</useSystemClassLoader>
           <useManifestOnlyJar>true</useManifestOnlyJar>
           <forkMode>once</forkMode>

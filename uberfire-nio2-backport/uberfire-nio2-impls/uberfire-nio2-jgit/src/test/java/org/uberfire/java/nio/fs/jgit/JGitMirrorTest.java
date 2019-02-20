@@ -64,17 +64,14 @@ public class JGitMirrorTest extends AbstractTestInfra {
             @Override
             public boolean matches(final Map<String, Ref> refs) {
                 final boolean hasMasterRef = refs.get("refs/heads/master") != null;
-                final boolean hasPullRequestRef = refs.get("refs/pull/1/head") != null;
+                final boolean hasNewWebsiteRef = refs.get("refs/heads/new-website") != null;
+                final boolean hasRemoteOriginMaster = refs.get("refs/remotes/origin/master") != null;
+                final boolean hasRemoteOriginNewWebSite = refs.get("refs/remotes/origin/master") != null;
 
-                return hasMasterRef && hasPullRequestRef;
+                return hasMasterRef && hasNewWebsiteRef && hasRemoteOriginMaster & hasRemoteOriginNewWebSite;
             }
         });
 
-        final boolean isMirror = cloned.getRepository().getConfig().getBoolean("remote",
-                                                                               "origin",
-                                                                               "mirror",
-                                                                               false);
-        assertTrue(isMirror);
 
         URIish remoteUri = cloned.remoteList().call().get(0).getURIs().get(0);
         String remoteUrl = remoteUri.getScheme() + "://" + remoteUri.getHost() + remoteUri.getPath();
@@ -101,9 +98,11 @@ public class JGitMirrorTest extends AbstractTestInfra {
             @Override
             public boolean matches(final Map<String, Ref> refs) {
                 final boolean hasMasterRef = refs.get("refs/heads/master") != null;
-                final boolean hasPullRequestRef = refs.get("refs/pull/1/head") != null;
+                final boolean hasNewWebsiteRef = refs.get("refs/heads/new-website") != null;
+                final boolean hasRemoteOriginMaster = refs.get("refs/remotes/origin/master") != null;
+                final boolean hasRemoteOriginNewWebSite = refs.get("refs/remotes/origin/master") != null;
 
-                return hasMasterRef && !hasPullRequestRef;
+                return hasMasterRef && hasNewWebsiteRef && hasRemoteOriginMaster & hasRemoteOriginNewWebSite;
             }
         });
 

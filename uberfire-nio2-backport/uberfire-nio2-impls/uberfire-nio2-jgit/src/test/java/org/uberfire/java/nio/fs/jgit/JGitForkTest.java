@@ -267,7 +267,7 @@ public class JGitForkTest extends AbstractTestInfra {
 
         writeMockHook(hooksDir, PostCommitHook.NAME);
         writeMockHook(hooksDir, PreCommitHook.NAME);
-        
+
         final File parentFolder = createTempDirectory();
 
         final File gitSource = new File(parentFolder,
@@ -287,15 +287,12 @@ public class JGitForkTest extends AbstractTestInfra {
                            tempFile("temp2222"));
                    }}).execute();
 
-        new Fork(parentFolder,
+        final Git cloned  = new Fork(parentFolder,
                  SOURCE_GIT,
                  TARGET_GIT,
                  CredentialsProvider.getDefault(),
                  null,
-                 null).execute();
-
-        final File gitCloned = new File(parentFolder, TARGET_GIT + ".git");
-        final Git cloned = Git.createRepository(gitCloned, hooksDir);
+                 hooksDir).execute();
 
         assertThat(cloned).isNotNull();
 
@@ -305,7 +302,7 @@ public class JGitForkTest extends AbstractTestInfra {
 
         final String remotePath = ((GitImpl) cloned)._remoteList().call().get(0).getURIs().get(0).getPath();
         assertThat(remotePath).isEqualTo(gitSource.getPath() + "/");
-        
+
         boolean foundPreCommitHook = false;
         boolean foundPostCommitHook = false;
         File[] hooks = new File(cloned.getRepository().getDirectory(), "hooks").listFiles();
