@@ -178,7 +178,7 @@ public class TemplateDataTableWidget extends Composite
 
     public void onInsertRow(InsertRowEvent event) {
         List<String> data = cellValueFactory.makeRowData();
-        model.addRow(Integer.toString(event.getIndex()),
+        model.addRow(event.getIndex(),
                      data.toArray(new String[data.size()]));
     }
 
