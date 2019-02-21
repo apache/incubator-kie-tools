@@ -148,10 +148,12 @@ public class TemplateDataTableWidget extends Composite
                             height);
     }
 
+    @Override
     public void onDeleteRow(DeleteRowEvent event) {
         model.removeRow(event.getIndex());
     }
 
+    @Override
     public void onCopyRows(CopyRowsEvent event) {
         copiedRows.clear();
         for (Integer iRow : event.getRowIndexes()) {
@@ -160,6 +162,7 @@ public class TemplateDataTableWidget extends Composite
         }
     }
 
+    @Override
     public void onPasteRows(PasteRowsEvent event) {
         if (copiedRows == null || copiedRows.size() == 0) {
             return;
@@ -176,17 +179,20 @@ public class TemplateDataTableWidget extends Composite
         }
     }
 
+    @Override
     public void onInsertRow(InsertRowEvent event) {
         List<String> data = cellValueFactory.makeRowData();
         model.addRow(event.getIndex(),
                      data.toArray(new String[data.size()]));
     }
 
+    @Override
     public void onAppendRow(AppendRowEvent event) {
         List<String> data = cellValueFactory.makeRowData();
         model.addRow(data.toArray(new String[data.size()]));
     }
 
+    @Override
     public void onUpdateModel(UpdateModelEvent event) {
 
         //Copy data into the underlying model
