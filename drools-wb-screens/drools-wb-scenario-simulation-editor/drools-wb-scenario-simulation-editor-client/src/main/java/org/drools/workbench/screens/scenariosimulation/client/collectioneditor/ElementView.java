@@ -37,6 +37,13 @@ public interface ElementView<T extends ElementView.Presenter> extends HasPresent
         void onToggleRowExpansion(E itemElementView, boolean shown);
 
         /**
+         * Update the toggle status of the main collection container if all the contained <code>ElementView</code>
+         * have the same one
+         * @param shown
+         */
+        void updateCommonToggleStatus(boolean shown);
+
+        /**
          * Start editing properties of the given <code>itemElementView</code>
          * @param itemElementView
          */

@@ -24,7 +24,7 @@ import org.junit.runner.RunWith;
 import static org.mockito.Mockito.spy;
 
 @RunWith(LienzoMockitoTestRunner.class)
-public class ConfirmPopupViewTest extends ScenarioConfirmationPopupViewTest {
+public class ConfirmPopupViewTest extends AbstractScenarioConfirmationPopupViewTest {
 
 
     private final String MAIN_TEXT = "MAIN_TEXT";

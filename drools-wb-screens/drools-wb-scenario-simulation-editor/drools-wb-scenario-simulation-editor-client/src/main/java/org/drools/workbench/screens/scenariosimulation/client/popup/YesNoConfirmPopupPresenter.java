@@ -27,7 +27,7 @@ import org.uberfire.mvp.Command;
 public class YesNoConfirmPopupPresenter implements YesNoConfirmPopup.Presenter {
 
     @Inject
-    YesNoConfirmPopupView yesNoConfirmPopupView;
+    protected YesNoConfirmPopupView yesNoConfirmPopupView;
 
     @Override
     public void show(final String title,

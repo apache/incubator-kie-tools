@@ -26,6 +26,9 @@ import org.junit.Test;
 import org.mockito.Mock;
 
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -87,6 +90,18 @@ public abstract class ElementPresenterTest<E extends ElementView, T extends Elem
     }
 
     @Test
+    public void updateCommonToggleStatusNotIsShown() {
+        commonUpdateCommonToggleStatus(false, true);
+        commonUpdateCommonToggleStatus(false, false);
+    }
+
+    @Test
+    public void updateCommonToggleStatusIsShown() {
+        commonUpdateCommonToggleStatus(true, true);
+        commonUpdateCommonToggleStatus(true, false);
+    }
+
+    @Test
     public void remove() {
         elementPresenter.remove();
         elementViewListLocal.forEach(elementViewMock -> {
@@ -114,6 +129,22 @@ public abstract class ElementPresenterTest<E extends ElementView, T extends Elem
         });
         verify(editItemButtonMock, times(2)).setDisabled(false);
         verify(deleteItemButtonMock, times(2)).setDisabled(false);
+    }
+
+    private void commonUpdateCommonToggleStatus(boolean isShown, boolean allEquals) {
+        if (allEquals) {
+            elementViewListLocal.forEach(elementViewMock -> doReturn(!isShown).when(elementViewMock).isShown());
+        } else {
+            doReturn(!isShown).when(elementView1Mock).isShown();
+            doReturn(isShown).when(elementView2Mock).isShown();
+        }
+        elementPresenter.updateCommonToggleStatus(isShown);
+        if (allEquals) {
+            verify(collectionPresenterMock, times(1)).updateRowExpansionStatus(eq(isShown));
+        } else {
+            verify(collectionPresenterMock, never()).updateRowExpansionStatus(eq(isShown));
+        }
+        reset(collectionPresenterMock);
     }
 
     private void commonOnToggleRowExpansion(boolean isShown) {

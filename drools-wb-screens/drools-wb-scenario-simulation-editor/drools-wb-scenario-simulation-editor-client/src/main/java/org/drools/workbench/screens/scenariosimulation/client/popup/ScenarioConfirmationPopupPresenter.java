@@ -16,11 +16,13 @@
 
 package org.drools.workbench.screens.scenariosimulation.client.popup;
 
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.uberfire.mvp.Command;
 
-public abstract class ScenarioConfirmationPopupPresenter implements ScenarioConfirmationPopup.Presenter {
+@Dependent
+public class ScenarioConfirmationPopupPresenter implements ScenarioConfirmationPopup.Presenter {
 
     @Inject
     protected ScenarioConfirmationPopupView scenarioConfirmationPopupView;
@@ -30,9 +32,10 @@ public abstract class ScenarioConfirmationPopupPresenter implements ScenarioConf
                      final String mainQuestionText,
                      final String text1Text,
                      final String textQuestionText,
+                     final String textWarningText,
                      final String okDeleteButtonText,
                      final Command okDeleteCommand) {
-        scenarioConfirmationPopupView.show(mainTitleText, mainQuestionText, text1Text, textQuestionText, okDeleteButtonText, okDeleteCommand);
+        scenarioConfirmationPopupView.show(mainTitleText, mainQuestionText, text1Text, textQuestionText, textWarningText, okDeleteButtonText, okDeleteCommand);
     }
 
     @Override

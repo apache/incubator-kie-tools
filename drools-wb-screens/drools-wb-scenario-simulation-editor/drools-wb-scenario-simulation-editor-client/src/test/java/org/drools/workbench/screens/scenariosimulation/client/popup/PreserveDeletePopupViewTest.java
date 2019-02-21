@@ -34,7 +34,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(LienzoMockitoTestRunner.class)
-public class PreserveDeletePopupViewTest extends ScenarioConfirmationPopupViewTest {
+public class PreserveDeletePopupViewTest extends AbstractScenarioConfirmationPopupViewTest {
 
     @Mock
     private LIElement option1Mock;
@@ -69,15 +69,15 @@ public class PreserveDeletePopupViewTest extends ScenarioConfirmationPopupViewTe
     @Test
     public void show() {
         ((PreserveDeletePopupView)popupView).show(MAIN_TITLE_TEXT,
-                                     MAIN_QUESTION_TEXT,
-                                     TEXT1_TEXT,
-                                     TEXT_QUESTION_TEXT,
-                                     OPTION1_TEXT,
-                                     OPTION2_TEXT,
-                                     OKPRESERVE_BUTTON_TEXT,
-                                     OKDELETE_BUTTON_TEXT,
-                                     okPreserveCommandMock,
-                                     okDeleteCommandMock);
+                                                          MAIN_QUESTION_TEXT,
+                                                          TEXT1_TEXT,
+                                                          TEXT_QUESTION_TEXT,
+                                                          OPTION1_TEXT,
+                                                          OPTION2_TEXT,
+                                                          OKPRESERVE_BUTTON_TEXT,
+                                                          OKDELETE_BUTTON_TEXT,
+                                                          okPreserveCommandMock,
+                                                          okDeleteCommandMock);
         verifyShow(MAIN_TITLE_TEXT,
                    MAIN_QUESTION_TEXT,
                    TEXT1_TEXT,

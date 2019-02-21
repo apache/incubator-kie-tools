@@ -25,7 +25,7 @@ import org.uberfire.mvp.Command;
 
 @Dependent
 @Templated
-public class DeletePopupView extends ScenarioConfirmationPopupView implements DeletePopup {
+public class DeletePopupView extends AbstractScenarioConfirmationPopupView implements DeletePopup {
 
     @Inject
     @DataField("text-danger")

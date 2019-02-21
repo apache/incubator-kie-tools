@@ -32,6 +32,9 @@ import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONValue;
 import org.drools.workbench.screens.scenariosimulation.client.collectioneditor.editingbox.ItemEditingBoxPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.collectioneditor.editingbox.KeyValueEditingBoxPresenter;
+import org.drools.workbench.screens.scenariosimulation.client.popup.ConfirmPopupPresenter;
+import org.drools.workbench.screens.scenariosimulation.client.popup.ScenarioConfirmationPopupPresenter;
+import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.drools.workbench.screens.scenariosimulation.client.utils.ViewsProvider;
 
 public class CollectionPresenter implements CollectionView.Presenter {
@@ -51,6 +54,12 @@ public class CollectionPresenter implements CollectionView.Presenter {
     @Inject
     protected KeyValueEditingBoxPresenter mapEditingBoxPresenter;
 
+    @Inject
+    protected ScenarioConfirmationPopupPresenter scenarioConfirmationPopupPresenter;
+
+    @Inject
+    protected ConfirmPopupPresenter confirmPopupPresenter;
+
     /**
      * <code>Map</code> used to pair the <code>Map</code> with instance' properties classes with a specific <b>key</b> representing the property, i.e Classname#propertyname (e.g Author#books)
      */
@@ -59,8 +68,6 @@ public class CollectionPresenter implements CollectionView.Presenter {
     protected CollectionView collectionView;
 
     protected LIElement objectSeparatorLI;
-
-    protected boolean toRemove = false;
 
     @Override
     public void initListStructure(String key, Map<String, String> instancePropertyMap, CollectionView collectionView) {
@@ -83,7 +90,6 @@ public class CollectionPresenter implements CollectionView.Presenter {
 
     @Override
     public void setValue(String jsonString) {
-        toRemove = false;
         if (jsonString == null || jsonString.isEmpty()) {
             return;
         }
@@ -121,6 +127,11 @@ public class CollectionPresenter implements CollectionView.Presenter {
     }
 
     @Override
+    public void updateRowExpansionStatus(boolean isShown) {
+        collectionView.updateRowExpansionStatus(isShown);
+    }
+
+    @Override
     public void addListItem(Map<String, String> propertiesValues) {
         final UListElement elementsContainer = collectionView.getElementsContainer();
         String itemId = String.valueOf(elementsContainer.getChildCount() - 1);
@@ -140,38 +151,53 @@ public class CollectionPresenter implements CollectionView.Presenter {
 
     @Override
     public void save() {
-        String updatedValue;
-        if (toRemove) {
-            updatedValue = null;
-        } else {
+        try {
+            String updatedValue;
             if (collectionView.isListWidget()) {
                 updatedValue = getListValue();
             } else {
                 updatedValue = getMapValue();
             }
+            collectionView.updateValue(updatedValue);
+        } catch (IllegalStateException e) {
+            confirmPopupPresenter.show(ScenarioSimulationEditorConstants.INSTANCE.collectionError(), e.getMessage());
         }
-        collectionView.updateValue(updatedValue);
     }
 
     @Override
     public void remove() {
-        if (collectionView.isListWidget()) {
-            listElementPresenter.remove();
-        } else {
-            mapElementPresenter.remove();
-        }
-        toRemove = true;
+        org.uberfire.mvp.Command okRemoveCommand = this::okRemoveCommandMethod;
+        scenarioConfirmationPopupPresenter.show(ScenarioSimulationEditorConstants.INSTANCE.removeCollectionMainTitle(),
+                                                ScenarioSimulationEditorConstants.INSTANCE.removeCollectionMainQuestion(),
+                                                ScenarioSimulationEditorConstants.INSTANCE.removeCollectionText1(),
+                                                ScenarioSimulationEditorConstants.INSTANCE.removeCollectionQuestion(),
+                                                ScenarioSimulationEditorConstants.INSTANCE.removeCollectionWarningText(),
+                                                ScenarioSimulationEditorConstants.INSTANCE.remove(),
+                                                okRemoveCommand);
     }
 
     @Override
     public void toggleEditingStatus(boolean toDisable) {
         collectionView.getAddItemButton().setDisabled(toDisable);
+        collectionView.getCancelButton().setDisabled(toDisable);
+        collectionView.getRemoveButton().setDisabled(toDisable);
+        collectionView.getSaveButton().setDisabled(toDisable);
         mapElementPresenter.toggleEditingStatus(toDisable);
         listElementPresenter.toggleEditingStatus(toDisable);
     }
 
+    // Indirection add for test
+    protected void okRemoveCommandMethod() {
+        if (collectionView.isListWidget()) {
+            listElementPresenter.remove();
+        } else {
+            mapElementPresenter.remove();
+        }
+        collectionView.updateValue(null);
+        collectionView.close();
+    }
+
     protected void commonInit(String key, CollectionView collectionView) {
-        toRemove = false;
         this.collectionView = collectionView;
         String propertyName = key.substring(key.lastIndexOf("#") + 1);
         this.collectionView.getEditorTitle().setInnerText(key);
@@ -245,7 +271,7 @@ public class CollectionPresenter implements CollectionView.Presenter {
     /**
      * @return
      */
-    protected String getMapValue() {
+    protected String getMapValue() throws IllegalStateException {
         Map<Map<String, String>, Map<String, String>> itemsProperties = mapElementPresenter.getItemsProperties();
         JSONObject toReturnModel = new JSONObject();
         itemsProperties.forEach((keyPropertiesValues, valuePropertiesMap) -> {

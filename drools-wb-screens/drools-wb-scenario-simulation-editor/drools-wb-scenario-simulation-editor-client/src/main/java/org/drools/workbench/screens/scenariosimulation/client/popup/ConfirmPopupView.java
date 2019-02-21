@@ -21,7 +21,7 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 @Dependent
 @Templated
-public class ConfirmPopupView extends ScenarioConfirmationPopupView implements ConfirmPopup {
+public class ConfirmPopupView extends AbstractScenarioConfirmationPopupView implements ConfirmPopup {
 
     @Override
     public void show(String mainTitleText, String mainText) {

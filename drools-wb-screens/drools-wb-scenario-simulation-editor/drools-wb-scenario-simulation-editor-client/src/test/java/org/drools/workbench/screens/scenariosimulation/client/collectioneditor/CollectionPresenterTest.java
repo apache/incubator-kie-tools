@@ -34,10 +34,14 @@ import com.google.gwt.json.client.JSONValue;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.screens.scenariosimulation.client.collectioneditor.editingbox.ItemEditingBoxPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.collectioneditor.editingbox.KeyValueEditingBoxPresenter;
+import org.drools.workbench.screens.scenariosimulation.client.popup.ConfirmPopupPresenter;
+import org.drools.workbench.screens.scenariosimulation.client.popup.ScenarioConfirmationPopupPresenter;
+import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.uberfire.mvp.Command;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -143,6 +147,22 @@ public class CollectionPresenterTest extends AbstractCollectionEditorTest {
     @Mock
     private ButtonElement addItemButtonMock;
 
+
+    @Mock
+    private ButtonElement cancelButtonMock;
+
+    @Mock
+    private ButtonElement removeButtonMock;
+
+    @Mock
+    private ButtonElement saveButtonMock;
+
+    @Mock
+    private ScenarioConfirmationPopupPresenter scenarioConfirmationPopupPresenterMock;
+
+    @Mock
+    private ConfirmPopupPresenter confirmPopupPresenterMock;
+
     private CollectionPresenter collectionEditorPresenter;
 
     @Before
@@ -154,6 +174,9 @@ public class CollectionPresenterTest extends AbstractCollectionEditorTest {
         when(collectionViewMock.getPropertyTitle()).thenReturn(propertyTitleMock);
         when(collectionViewMock.getObjectSeparator()).thenReturn(objectSeparatorLIMock);
         when(collectionViewMock.getAddItemButton()).thenReturn(addItemButtonMock);
+        when(collectionViewMock.getCancelButton()).thenReturn(cancelButtonMock);
+        when(collectionViewMock.getRemoveButton()).thenReturn(removeButtonMock);
+        when(collectionViewMock.getSaveButton()).thenReturn(saveButtonMock);
         when(objectSeparatorLIMock.getStyle()).thenReturn(styleMock);
 
         when(nestedValue1Mock.keySet()).thenReturn(KEY_SET);
@@ -188,6 +211,8 @@ public class CollectionPresenterTest extends AbstractCollectionEditorTest {
                 this.instancePropertiesMap = instancePropertiesMapLocal;
                 this.collectionView = collectionViewMock;
                 this.objectSeparatorLI = objectSeparatorLIMock;
+                this.scenarioConfirmationPopupPresenter = scenarioConfirmationPopupPresenterMock;
+                this.confirmPopupPresenter = confirmPopupPresenterMock;
             }
 
             @Override
@@ -251,9 +276,6 @@ public class CollectionPresenterTest extends AbstractCollectionEditorTest {
         verify(collectionViewMock, times(1)).getElementsContainer();
         verify(listEditingBoxPresenterMock, times(1)).getEditingBox(eq(TEST_KEY), anyMap());
         verify(elementsContainerMock, times(1)).appendChild(eq(listEditingBoxMock));
-//        verify(collectionEditorPresenter, times(1)).toggleEditingStatus(eq(true));
-//        verify(listElementPresenterMock, times(1)).toggleEditingStatus(eq(true));
-//        verify(mapElementPresenterMock, times(1)).toggleEditingStatus(eq(true));
     }
 
     @Test
@@ -302,30 +324,34 @@ public class CollectionPresenterTest extends AbstractCollectionEditorTest {
 
     @Test
     public void saveIsListWidgetTrue() {
-        commonSave(true, true);
         commonSave(true, false);
+        commonSave(true, true);
     }
 
     @Test
     public void saveIsListWidgetFalse() {
-        commonSave(true, true);
-        commonSave(true, false);
+        commonSave(false, false);
+        commonSave(false, true);
     }
 
     @Test
     public void removeIsListWidgetTrue() {
-        when(collectionViewMock.isListWidget()).thenReturn(true);
-        collectionEditorPresenter.remove();
-        verify(listElementPresenterMock, times(1)).remove();
-        verify(mapElementPresenterMock, never()).remove();
+        commonRemove(true);
     }
 
     @Test
     public void removeIsListWidgetFalse() {
-        when(collectionViewMock.isListWidget()).thenReturn(false);
-        collectionEditorPresenter.remove();
-        verify(mapElementPresenterMock, times(1)).remove();
-        verify(listElementPresenterMock, never()).remove();
+        commonRemove(false);
+    }
+
+    @Test
+    public void okRemoveCommandMethodIsListWidgetTrue() {
+        commonOkRemoveCommandMethod(true);
+    }
+
+    @Test
+    public void okRemoveCommandMethodIsListWidgetFalse() {
+        commonOkRemoveCommandMethod(false);
     }
 
     @Test
@@ -365,6 +391,9 @@ public class CollectionPresenterTest extends AbstractCollectionEditorTest {
         collectionEditorPresenter.toggleEditingStatus(true);
         verify(collectionViewMock, times(1)).getAddItemButton();
         verify(addItemButtonMock, times(1)).setDisabled(eq(true));
+        verify(cancelButtonMock, times(1)).setDisabled(eq(true));
+        verify(removeButtonMock, times(1)).setDisabled(eq(true));
+        verify(saveButtonMock, times(1)).setDisabled(eq(true));
         verify(listElementPresenterMock, times(1)).toggleEditingStatus(eq(true));
         verify(mapElementPresenterMock, times(1)).toggleEditingStatus(eq(true));
     }
@@ -374,8 +403,40 @@ public class CollectionPresenterTest extends AbstractCollectionEditorTest {
         collectionEditorPresenter.toggleEditingStatus(false);
         verify(collectionViewMock, times(1)).getAddItemButton();
         verify(addItemButtonMock, times(1)).setDisabled(eq(false));
+        verify(cancelButtonMock, times(1)).setDisabled(eq(false));
+        verify(removeButtonMock, times(1)).setDisabled(eq(false));
+        verify(saveButtonMock, times(1)).setDisabled(eq(false));
         verify(listElementPresenterMock, times(1)).toggleEditingStatus(eq(false));
         verify(mapElementPresenterMock, times(1)).toggleEditingStatus(eq(false));
+    }
+
+    private void commonRemove(boolean isWidget) {
+        when(collectionViewMock.isListWidget()).thenReturn(isWidget);
+        collectionEditorPresenter.remove();
+        verify(scenarioConfirmationPopupPresenterMock, times(1)).show(
+                eq(ScenarioSimulationEditorConstants.INSTANCE.removeCollectionMainTitle()),
+                eq(ScenarioSimulationEditorConstants.INSTANCE.removeCollectionMainQuestion()),
+                eq(ScenarioSimulationEditorConstants.INSTANCE.removeCollectionText1()),
+                eq(ScenarioSimulationEditorConstants.INSTANCE.removeCollectionQuestion()),
+                eq(ScenarioSimulationEditorConstants.INSTANCE.removeCollectionWarningText()),
+                eq(ScenarioSimulationEditorConstants.INSTANCE.remove()),
+                isA(Command.class));
+        verify(mapElementPresenterMock, never()).remove();
+        verify(listElementPresenterMock, never()).remove();
+    }
+
+    private void commonOkRemoveCommandMethod(boolean isListWidget) {
+        when(collectionViewMock.isListWidget()).thenReturn(isListWidget);
+        collectionEditorPresenter.okRemoveCommandMethod();
+        if (isListWidget) {
+            verify(listElementPresenterMock, times(1)).remove();
+            verify(mapElementPresenterMock, never()).remove();
+        } else {
+            verify(mapElementPresenterMock, times(1)).remove();
+            verify(listElementPresenterMock, never()).remove();
+        }
+        verify(collectionViewMock, times(1)).updateValue(eq(null));
+        verify(collectionViewMock, times(1)).close();
     }
 
     private void commonSetValue(boolean isListWidget) {
@@ -410,21 +471,31 @@ public class CollectionPresenterTest extends AbstractCollectionEditorTest {
         reset(mapElementPresenterMock);
     }
 
-    private void commonSave(boolean isListWidget, boolean toRemove) {
+    private void commonSave(boolean isListWidget, boolean throwException) {
         when(collectionViewMock.isListWidget()).thenReturn(isListWidget);
-        collectionEditorPresenter.toRemove = toRemove;
-        collectionEditorPresenter.save();
-        if (toRemove) {
-            verify(collectionViewMock, times(1)).updateValue(eq(null));
-        } else {
+        if (throwException) {
             if (isListWidget) {
-                verify(collectionEditorPresenter, times(1)).getListValue();
+                when(collectionEditorPresenter.getListValue()).thenThrow(IllegalStateException.class);
             } else {
-                verify(collectionEditorPresenter, times(1)).getMapValue();
+                when(collectionEditorPresenter.getMapValue()).thenThrow(IllegalStateException.class);
             }
+        }
+        collectionEditorPresenter.save();
+        if (isListWidget) {
+            verify(collectionEditorPresenter, times(1)).getListValue();
+        } else {
+            verify(collectionEditorPresenter, times(1)).getMapValue();
+        }
+        if (throwException) {
+            verify(confirmPopupPresenterMock, times(1)).show(eq(ScenarioSimulationEditorConstants.INSTANCE.collectionError()), anyString());
+            verify(collectionViewMock, never()).updateValue(anyString());
+        } else {
+            verify(confirmPopupPresenterMock, never()).show(eq(ScenarioSimulationEditorConstants.INSTANCE.collectionError()), anyString());
             verify(collectionViewMock, times(1)).updateValue(eq(UPDATED_VALUE));
         }
-        reset(collectionEditorPresenter);
+        reset(confirmPopupPresenterMock);
         reset(collectionViewMock);
+        reset(collectionEditorPresenter);
+
     }
 }

@@ -29,7 +29,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(LienzoMockitoTestRunner.class)
-public class DeletePopupViewTest extends ScenarioConfirmationPopupViewTest {
+public class DeletePopupViewTest extends AbstractScenarioConfirmationPopupViewTest {
 
     @Mock
     private ParagraphElement textDangerMock;

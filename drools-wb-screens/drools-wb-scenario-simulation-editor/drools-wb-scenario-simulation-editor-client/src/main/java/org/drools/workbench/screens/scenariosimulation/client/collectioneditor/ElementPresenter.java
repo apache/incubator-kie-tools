@@ -48,9 +48,17 @@ public abstract class ElementPresenter<E extends ElementView> implements Element
     }
 
     @Override
+    public void updateCommonToggleStatus(boolean isShown) {
+        if (elementViewList.stream()
+                .allMatch(elementView ->  !isShown == elementView.isShown())) {
+            collectionEditorPresenter.updateRowExpansionStatus(isShown);
+        }
+    }
+
+    @Override
     public void remove() {
         List<E> newList = new ArrayList<>(elementViewList);
-        newList.forEach(elementView -> onDeleteItem(elementView));
+        newList.forEach(this::onDeleteItem);
     }
 
     @Override

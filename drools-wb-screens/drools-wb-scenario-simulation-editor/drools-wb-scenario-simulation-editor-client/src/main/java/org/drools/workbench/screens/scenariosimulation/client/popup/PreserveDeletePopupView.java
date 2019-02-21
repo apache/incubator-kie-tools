@@ -29,7 +29,7 @@ import org.uberfire.mvp.Command;
 
 @Dependent
 @Templated
-public class PreserveDeletePopupView extends ScenarioConfirmationPopupView implements PreserveDeletePopup {
+public class PreserveDeletePopupView extends AbstractScenarioConfirmationPopupView implements PreserveDeletePopup {
 
     @Inject
     @DataField("option-1")

@@ -50,6 +50,7 @@ public class KeyValueElementPresenter extends ElementPresenter<KeyValueElementVi
         CollectionEditorUtils.toggleRowExpansion(keyValueElementView.getValueLabel(), isShown);
         List<String> keyValueIds = getKeyValueIds( keyValueElementView.getItemId());
         keyValueIds.forEach(id -> propertyPresenter.onToggleRowExpansion(id, isShown));
+        updateCommonToggleStatus(isShown);
     }
 
     @Override

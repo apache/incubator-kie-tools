@@ -23,7 +23,7 @@ import com.google.gwt.dom.client.LIElement;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.UListElement;
 
-public class ItemElementPresenter extends ElementPresenter<ItemElementView> implements ItemElementView.Presenter  {
+public class ItemElementPresenter extends ElementPresenter<ItemElementView> implements ItemElementView.Presenter {
 
     @Override
     public LIElement getItemContainer(String itemId, Map<String, String> propertiesMap) {
@@ -42,6 +42,7 @@ public class ItemElementPresenter extends ElementPresenter<ItemElementView> impl
     public void onToggleRowExpansion(ItemElementView itemElementView, boolean isShown) {
         CollectionEditorUtils.toggleRowExpansion(itemElementView.getFaAngleRight(), !isShown);
         propertyPresenter.onToggleRowExpansion(itemElementView.getItemId(), isShown);
+        updateCommonToggleStatus(isShown);
     }
 
     @Override
