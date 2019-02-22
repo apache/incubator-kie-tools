@@ -28,6 +28,7 @@ import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.UListElement;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.DomEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.FocusWidget;
 import org.drools.workbench.screens.scenariosimulation.client.events.CloseCompositeEvent;
@@ -117,6 +118,7 @@ public class CollectionViewImpl extends FocusWidget implements HasCloseComposite
 
     public CollectionViewImpl() {
         setElement(collectionEditor);
+        addKeyDownHandler(DomEvent::stopPropagation);
     }
 
     /**

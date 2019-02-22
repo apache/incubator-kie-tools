@@ -59,10 +59,6 @@ public class TitledAttachmentFileWidget extends Composite implements ValueChange
     protected WorkspaceProject workspaceProject;
     protected String selectedPath;
 
-    public TitledAttachmentFileWidget() {
-        this("", null, null);
-    }
-
     public TitledAttachmentFileWidget(String title, LibraryPlaces libraryPlaces, AssetQueryService assetQueryService) {
         titleLabel.setStyleName("control-label");
         titleLabel.setText(title);
