@@ -28,11 +28,13 @@ import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
+import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.service.ClientDiagramServiceImpl;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.client.session.command.event.SaveDiagramSessionCommandExecutedEvent;
 import org.kie.workbench.common.stunner.core.service.DiagramLookupService;
+import org.kie.workbench.common.stunner.project.client.resources.i18n.StunnerProjectClientMessages;
 import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
 import org.kie.workbench.common.stunner.project.diagram.ProjectMetadata;
 import org.kie.workbench.common.stunner.project.service.ProjectDiagramService;
@@ -44,6 +46,9 @@ import org.uberfire.backend.vfs.Path;
 @Dependent
 @Specializes
 public class ClientProjectDiagramService extends ClientDiagramServiceImpl<ProjectMetadata, ProjectDiagram, ProjectDiagramService> {
+
+    @Inject
+    private ClientTranslationService translationService;
 
     protected ClientProjectDiagramService() {
         this(null,
@@ -70,9 +75,10 @@ public class ClientProjectDiagramService extends ClientDiagramServiceImpl<Projec
                        final Package projectPkg,
                        final Optional<String> projectType,
                        final ServiceCallback<Path> callback) {
+
         diagramServiceCaller.call((RemoteCallback<Path>) callback::onSuccess,
                                   (message, throwable) -> {
-                                      callback.onError(new ClientRuntimeError(throwable));
+                                      callback.onError(createOnErrorHandler(throwable, name, projectPkg));
                                       return false;
                                   }).create(path,
                                             name,
@@ -115,4 +121,18 @@ public class ClientProjectDiagramService extends ClientDiagramServiceImpl<Projec
                                                metadata,
                                                comment);
     }
+
+    private ClientRuntimeError createOnErrorHandler(final Throwable throwable,
+                                                    final String name,
+                                                    final Package projectPkg){
+      String FileAlreadyExistsExceptionClassName = "org.uberfire.java.nio.file.FileAlreadyExistsException";
+      if(throwable.getClass().getCanonicalName().equals(FileAlreadyExistsExceptionClassName)){
+          String message = translationService.getValue(StunnerProjectClientMessages.BUSINESS_PROCESS_ALREADY_EXISTS,
+                                                 projectPkg.getPackageName()+"."+name);
+          return new ClientRuntimeError(message, throwable);
+      }else{
+          return new ClientRuntimeError(throwable);
+      }
+    }
+
 }

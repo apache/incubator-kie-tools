@@ -101,10 +101,12 @@ public abstract class AbstractVFSDiagramService<M extends Metadata, D extends Di
         final String fName = buildFileName(name,
                                            services.getResourceType());
         final org.uberfire.java.nio.file.Path kiePath = Paths.convert(path).resolve(fName);
+
+        if (getIoService().exists(kiePath)) {
+            throw new FileAlreadyExistsException(kiePath.toString());
+        }
+
         try {
-            if (getIoService().exists(kiePath)) {
-                throw new FileAlreadyExistsException(kiePath.toString());
-            }
             final D diagram = factoryManager.newDiagram(name,
                                                         defSetId,
                                                         metadata);

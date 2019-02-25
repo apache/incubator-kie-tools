@@ -21,7 +21,9 @@ import java.util.Optional;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.common.client.api.Caller;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.service.AbstractClientDiagramServiceTest;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
@@ -32,11 +34,13 @@ import org.kie.workbench.common.stunner.project.diagram.ProjectMetadata;
 import org.kie.workbench.common.stunner.project.service.ProjectDiagramService;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.java.nio.file.FileAlreadyExistsException;
 import org.uberfire.mocks.CallerMock;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -123,5 +127,33 @@ public class ClientProjectDiagramServiceTest extends AbstractClientDiagramServic
                times(1)).onSuccess(anyString());
         verify(callback,
                times(0)).onError(any(ClientRuntimeError.class));
+    }
+
+    @Rule
+    public final ExpectedException exception = ExpectedException.none();
+
+    @Test
+    public void testDuplicatedBusinessProcess(){
+        final String name = "d1";
+        final String defSetId = "id1";
+        final String projName = "project-name";
+        final Package projPackage = new Package();
+        final Optional<String> projectType = Optional.of("type");
+
+        ProjectDiagramService projectDiagramService = mock(ProjectDiagramService.class);
+
+        doThrow(new FileAlreadyExistsException(path.toString())).when(projectDiagramService).create(path,
+                                                                                                    name,
+                                                                                                    defSetId,
+                                                                                                    projName,
+                                                                                                    projPackage,
+                                                                                                    projectType);
+        exception.expect(FileAlreadyExistsException.class);
+        projectDiagramService.create(path,
+                                     name,
+                                     defSetId,
+                                     projName,
+                                     projPackage,
+                                     projectType);
     }
 }
