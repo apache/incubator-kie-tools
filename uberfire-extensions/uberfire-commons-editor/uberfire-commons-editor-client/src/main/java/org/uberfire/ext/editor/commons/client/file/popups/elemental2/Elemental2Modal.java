@@ -97,4 +97,8 @@ public abstract class Elemental2Modal<V extends Elemental2Modal.View> {
     public V getView() {
         return view;
     }
+
+    public BaseModal getModal() {
+        return modal;
+    }
 }
