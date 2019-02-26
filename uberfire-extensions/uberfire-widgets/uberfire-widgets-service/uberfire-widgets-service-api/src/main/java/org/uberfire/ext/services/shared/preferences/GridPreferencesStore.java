@@ -29,6 +29,7 @@ public class GridPreferencesStore extends UserPreference {
     private int pageSizePreferences;
     private String selectedFilterKey;
     private HashMap<String, HashMap> customFilters = new HashMap<String, HashMap>();
+    private GridSortedColumnPreference gridSortedColumnPreference;
 
     public GridPreferencesStore() {
     }
@@ -52,6 +53,14 @@ public class GridPreferencesStore extends UserPreference {
 
     public void addGridColumnPreference(GridColumnPreference preference) {
         columnPreferences.add(preference);
+    }
+
+    public GridSortedColumnPreference getGridSortedColumnPreference() {
+        return gridSortedColumnPreference;
+    }
+
+    public void setGridSortedColumnPreference(GridSortedColumnPreference gridSortedColumnPreference) {
+        this.gridSortedColumnPreference = gridSortedColumnPreference;
     }
 
     public void resetGridColumnPreferences() {
