@@ -43,6 +43,7 @@ public class ServiceTaskTest extends BPMNDiagramMarshallerBase {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testBasicUnmarshall() throws Exception {
         Diagram<Graph, Metadata> d = unmarshall(newMarshaller, BPMN_SERVICE_TASK_PROPERTIES_FILE_PATH);
         Node<View<ServiceTask>, ?> node = d.getGraph().getNode(SERVICE_TASK_ID);
@@ -70,6 +71,7 @@ public class ServiceTaskTest extends BPMNDiagramMarshallerBase {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testBasicBidi() throws Exception {
         Diagram<Graph, Metadata> d = unmarshall(newMarshaller, BPMN_SERVICE_TASK_PROPERTIES_FILE_PATH);
         String marshall = newMarshaller.marshall(d);

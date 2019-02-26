@@ -87,13 +87,21 @@ public class UserTaskTest extends Task<UserTask> {
 
     private final Marshaller _marshallerType;
 
-    public UserTaskTest(Marshaller marshallerType) {
-        super(marshallerType);
+    private static Diagram<Graph, Metadata> oldDiagram;
+    private static Diagram<Graph, Metadata> oldRoundTripDiagram;
+
+    private static Diagram<Graph, Metadata> newDiagram;
+    private static Diagram<Graph, Metadata> newRoundTripDiagram;
+
+    public UserTaskTest(Marshaller marshallerType) throws Exception {
+        super(marshallerType, marshallers());
         this._marshallerType = marshallerType;
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void RHBA607() throws Exception {
+        super.init();
         final String BPMN_USER_TASK_PROPERTIES_FILE_PATH =
                 "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/userTaskProperties.bpmn";
         final String DIAGRAM_ID = "_pfJ-8O50EeiVSc03Fghuww";
@@ -106,24 +114,63 @@ public class UserTaskTest extends Task<UserTask> {
         assertTrue(declarationList.getDeclarations().isEmpty());
     }
 
-    @Ignore("Test is ignored, because new and old marshaler User Task nodes will differ anyway. Because different " +
+    @Override
+    Diagram<Graph, Metadata> getOldDiagram() {
+        return oldDiagram;
+    }
+
+    @Override
+    void setOldDiagram(Diagram<Graph, Metadata> diagram) {
+        oldDiagram = diagram;
+    }
+
+    @Override
+    Diagram<Graph, Metadata> getOldRoundTripDiagram() {
+        return oldRoundTripDiagram;
+    }
+
+    @Override
+    void setOldRoundTripDiagram(Diagram<Graph, Metadata> diagram) {
+        oldRoundTripDiagram = diagram;
+    }
+
+    @Override
+    Diagram<Graph, Metadata> getNewDiagram() {
+        return newDiagram;
+    }
+
+    @Override
+    void setNewDiagram(Diagram<Graph, Metadata> diagram) {
+        newDiagram = diagram;
+    }
+
+    @Override
+    Diagram<Graph, Metadata> getNewRoundTripDiagram() {
+        return newRoundTripDiagram;
+    }
+
+    @Override
+    void setNewRoundTripDiagram(Diagram<Graph, Metadata> diagram) {
+        newRoundTripDiagram = diagram;
+    }
+
+    @Ignore("Test is ignored, because new and old marshaller User Task nodes will differ anyway. Because different " +
             "properties supported by them")
     @Test
-    public void testMigration() throws Exception {
+    public void testMigration() {
     }
 
     @Test
     @Override
-    public void testUnmarshallTopLevelEmptyTaskProperties() throws Exception {
+    public void testUnmarshallTopLevelEmptyTaskProperties() {
         // cannot be empty
         final String TASK_NAME = "Task_1";
         // cannot be empty
         final String TASK_TASK_NAME = "Task";
 
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_TASK_FILE_PATH);
-        assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
+        assertDiagram(getDiagram(), AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        UserTask emptyTopLevelTask = getTaskNodeById(diagram,
+        UserTask emptyTopLevelTask = getTaskNodeById(getDiagram(),
                                                      EMPTY_TOP_LEVEL_TASK_ID,
                                                      ZERO_INCOME_EDGES,
                                                      HAS_NO_OUTCOME_EDGE);
@@ -151,16 +198,15 @@ public class UserTaskTest extends Task<UserTask> {
 
     @Test
     @Override
-    public void testUnmarshallTopLevelTaskOneIncomeEmptyProperties() throws Exception {
+    public void testUnmarshallTopLevelTaskOneIncomeEmptyProperties() {
         // cannot be empty
         final String TASK_NAME = "Task_2";
         // cannot be empty
         final String TASK_TASK_NAME = "Task";
 
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_TASK_FILE_PATH);
-        assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
+        assertDiagram(getDiagram(), AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        UserTask emptyTopLevelTask = getTaskNodeById(diagram,
+        UserTask emptyTopLevelTask = getTaskNodeById(getDiagram(),
                                                      EMPTY_ONE_INCOME_TOP_LEVEL_TASK_ID,
                                                      ONE_INCOME_EDGE,
                                                      HAS_OUTCOME_EDGE);
@@ -188,16 +234,15 @@ public class UserTaskTest extends Task<UserTask> {
 
     @Test
     @Override
-    public void testUnmarshallTopLevelTaskTwoIncomesEmptyProperties() throws Exception {
+    public void testUnmarshallTopLevelTaskTwoIncomesEmptyProperties() {
         // cannot be empty
         final String TASK_NAME = "Task_3";
         // cannot be empty
         final String TASK_TASK_NAME = "Task";
 
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_TASK_FILE_PATH);
-        assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
+        assertDiagram(getDiagram(), AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        UserTask emptyTopLevelTask = getTaskNodeById(diagram,
+        UserTask emptyTopLevelTask = getTaskNodeById(getDiagram(),
                                                      EMPTY_TWO_INCOMES_TOP_LEVEL_TASK_ID,
                                                      TWO_INCOME_EDGES,
                                                      HAS_OUTCOME_EDGE);
@@ -225,7 +270,7 @@ public class UserTaskTest extends Task<UserTask> {
 
     @Test
     @Override
-    public void testUnmarshallTopLevelTaskFilledProperties() throws Exception {
+    public void testUnmarshallTopLevelTaskFilledProperties() {
         final String TASK_NAME_JAVA = "Task01 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
         final String TASK_DOCUMENTATION_JAVA = "Task01 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
         final String TASK_TASK_NAME_JAVA = "Task01ImplExecName";
@@ -271,10 +316,9 @@ public class UserTaskTest extends Task<UserTask> {
         final String TASK_CONTENT_MVEL = "Content example. Top level. MVEL.";
         final String SLA_DUE_DATE = "25/12/1983";
 
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_TASK_FILE_PATH);
-        assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
+        assertDiagram(getDiagram(), AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        UserTask filledTopLevelTaskJava = getTaskNodeById(diagram,
+        UserTask filledTopLevelTaskJava = getTaskNodeById(getDiagram(),
                                                           FILLED_TOP_LEVEL_TASK_JAVA_ID,
                                                           ZERO_INCOME_EDGES,
                                                           HAS_NO_OUTCOME_EDGE);
@@ -298,7 +342,7 @@ public class UserTaskTest extends Task<UserTask> {
                                    TASK_CONTENT_JAVA,
                                    SLA_DUE_DATE);
 
-        UserTask filledTopLevelTaskJavascript = getTaskNodeById(diagram,
+        UserTask filledTopLevelTaskJavascript = getTaskNodeById(getDiagram(),
                                                                 FILLED_TOP_LEVEL_TASK_JAVASCRIPT_ID,
                                                                 ZERO_INCOME_EDGES,
                                                                 HAS_NO_OUTCOME_EDGE);
@@ -322,7 +366,7 @@ public class UserTaskTest extends Task<UserTask> {
                                    TASK_CONTENT_JAVASCRIPT,
                                    SLA_DUE_DATE);
 
-        UserTask filledTopLevelTaskMvel = getTaskNodeById(diagram,
+        UserTask filledTopLevelTaskMvel = getTaskNodeById(getDiagram(),
                                                           FILLED_TOP_LEVEL_TASK_MVEL_ID,
                                                           ZERO_INCOME_EDGES,
                                                           HAS_NO_OUTCOME_EDGE);
@@ -349,7 +393,7 @@ public class UserTaskTest extends Task<UserTask> {
 
     @Test
     @Override
-    public void testUnmarshallTopLevelTaskOneIncomeFilledProperties() throws Exception {
+    public void testUnmarshallTopLevelTaskOneIncomeFilledProperties() {
         final String TASK_NAME_JAVA = "Task02 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
         final String TASK_DOCUMENTATION_JAVA = "Task02 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
         final String TASK_TASK_NAME_JAVA = "Task02ImplExecName";
@@ -395,10 +439,9 @@ public class UserTaskTest extends Task<UserTask> {
         final String TASK_CONTENT_MVEL = "Content example. Top level. One income. MVEL.";
         final String SLA_DUE_DATE = "25/12/1983";
 
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_TASK_FILE_PATH);
-        assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
+        assertDiagram(getDiagram(), AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        UserTask filledTopLevelTaskJava = getTaskNodeById(diagram,
+        UserTask filledTopLevelTaskJava = getTaskNodeById(getDiagram(),
                                                           FILLED_ONE_INCOME_TOP_LEVEL_TASK_JAVA_ID,
                                                           ONE_INCOME_EDGE,
                                                           HAS_OUTCOME_EDGE);
@@ -422,7 +465,7 @@ public class UserTaskTest extends Task<UserTask> {
                                    TASK_CONTENT_JAVA,
                                    SLA_DUE_DATE);
 
-        UserTask filledTopLevelTaskJavascript = getTaskNodeById(diagram,
+        UserTask filledTopLevelTaskJavascript = getTaskNodeById(getDiagram(),
                                                                 FILLED_ONE_INCOME_TOP_LEVEL_TASK_JAVASCRIPT_ID,
                                                                 ONE_INCOME_EDGE,
                                                                 HAS_OUTCOME_EDGE);
@@ -446,7 +489,7 @@ public class UserTaskTest extends Task<UserTask> {
                                    TASK_CONTENT_JAVASCRIPT,
                                    SLA_DUE_DATE);
 
-        UserTask filledTopLevelTaskMvel = getTaskNodeById(diagram,
+        UserTask filledTopLevelTaskMvel = getTaskNodeById(getDiagram(),
                                                           FILLED_ONE_INCOME_TOP_LEVEL_TASK_MVEL_ID,
                                                           ONE_INCOME_EDGE,
                                                           HAS_OUTCOME_EDGE);
@@ -473,7 +516,7 @@ public class UserTaskTest extends Task<UserTask> {
 
     @Test
     @Override
-    public void testUnmarshallTopLevelTaskTwoIncomesFilledProperties() throws Exception {
+    public void testUnmarshallTopLevelTaskTwoIncomesFilledProperties() {
         final String TASK_NAME_JAVA = "Task03 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
         final String TASK_DOCUMENTATION_JAVA = "Task03 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
         final String TASK_TASK_NAME_JAVA = "Task03ImplExecName";
@@ -519,10 +562,9 @@ public class UserTaskTest extends Task<UserTask> {
         final String TASK_CONTENT_MVEL = "Content example. Top level. Two incomes. MVEL.";
         final String SLA_DUE_DATE = "25/12/1983";
 
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_TASK_FILE_PATH);
-        assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
+        assertDiagram(getDiagram(), AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        UserTask filledTopLevelTaskJava = getTaskNodeById(diagram,
+        UserTask filledTopLevelTaskJava = getTaskNodeById(getDiagram(),
                                                           FILLED_TWO_INCOMES_TOP_LEVEL_TASK_JAVA_ID,
                                                           TWO_INCOME_EDGES,
                                                           HAS_OUTCOME_EDGE);
@@ -546,7 +588,7 @@ public class UserTaskTest extends Task<UserTask> {
                                    TASK_CONTENT_JAVA,
                                    SLA_DUE_DATE);
 
-        UserTask filledTopLevelTaskJavascript = getTaskNodeById(diagram,
+        UserTask filledTopLevelTaskJavascript = getTaskNodeById(getDiagram(),
                                                                 FILLED_TWO_INCOMES_TOP_LEVEL_TASK_JAVASCRIPT_ID,
                                                                 TWO_INCOME_EDGES,
                                                                 HAS_OUTCOME_EDGE);
@@ -570,7 +612,7 @@ public class UserTaskTest extends Task<UserTask> {
                                    TASK_CONTENT_JAVASCRIPT,
                                    SLA_DUE_DATE);
 
-        UserTask filledTopLevelTaskMvel = getTaskNodeById(diagram,
+        UserTask filledTopLevelTaskMvel = getTaskNodeById(getDiagram(),
                                                           FILLED_TWO_INCOMES_TOP_LEVEL_TASK_MVEL_ID,
                                                           TWO_INCOME_EDGES,
                                                           HAS_OUTCOME_EDGE);
@@ -597,16 +639,15 @@ public class UserTaskTest extends Task<UserTask> {
 
     @Test
     @Override
-    public void testUnmarshallSubprocessLevelTaskEmptyProperties() throws Exception {
+    public void testUnmarshallSubprocessLevelTaskEmptyProperties() {
         // cannot be empty
         final String TASK_NAME = "Task_4";
         // cannot be empty
         final String TASK_TASK_NAME = "Task";
 
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_TASK_FILE_PATH);
-        assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
+        assertDiagram(getDiagram(), AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        UserTask emptySubprocessLevelTask = getTaskNodeById(diagram,
+        UserTask emptySubprocessLevelTask = getTaskNodeById(getDiagram(),
                                                             EMPTY_SUBPROCESS_LEVEL_TASK_ID,
                                                             ZERO_INCOME_EDGES,
                                                             HAS_NO_OUTCOME_EDGE);
@@ -634,16 +675,15 @@ public class UserTaskTest extends Task<UserTask> {
 
     @Test
     @Override
-    public void testUnmarshallSubprocessLevelTaskOneIncomeEmptyProperties() throws Exception {
+    public void testUnmarshallSubprocessLevelTaskOneIncomeEmptyProperties() {
         // cannot be empty
         final String TASK_NAME = "Task_5";
         // cannot be empty
         final String TASK_TASK_NAME = "Task";
 
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_TASK_FILE_PATH);
-        assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
+        assertDiagram(getDiagram(), AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        UserTask emptySubprocessLevelTask = getTaskNodeById(diagram,
+        UserTask emptySubprocessLevelTask = getTaskNodeById(getDiagram(),
                                                             EMPTY_ONE_INCOME_SUBPROCESS_LEVEL_TASK_ID,
                                                             ONE_INCOME_EDGE,
                                                             HAS_OUTCOME_EDGE);
@@ -671,16 +711,15 @@ public class UserTaskTest extends Task<UserTask> {
 
     @Test
     @Override
-    public void testUnmarshallSubprocessLevelTaskTwoIncomesEmptyProperties() throws Exception {
+    public void testUnmarshallSubprocessLevelTaskTwoIncomesEmptyProperties() {
         // cannot be empty
         final String TASK_NAME = "Task_6";
         // cannot be empty
         final String TASK_TASK_NAME = "Task";
 
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_TASK_FILE_PATH);
-        assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
+        assertDiagram(getDiagram(), AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        UserTask emptySubprocessLevelTask = getTaskNodeById(diagram,
+        UserTask emptySubprocessLevelTask = getTaskNodeById(getDiagram(),
                                                             EMPTY_TWO_INCOMES_SUBPROCESS_LEVEL_TASK_ID,
                                                             TWO_INCOME_EDGES,
                                                             HAS_OUTCOME_EDGE);
@@ -708,7 +747,7 @@ public class UserTaskTest extends Task<UserTask> {
 
     @Test
     @Override
-    public void testUnmarshallSubprocessLevelTaskFilledProperties() throws Exception {
+    public void testUnmarshallSubprocessLevelTaskFilledProperties() {
         final String TASK_NAME_JAVA = "Task10 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
         final String TASK_DOCUMENTATION_JAVA = "Task10 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
         final String TASK_TASK_NAME_JAVA = "Task10ImplExecName";
@@ -754,10 +793,9 @@ public class UserTaskTest extends Task<UserTask> {
         final String TASK_CONTENT_MVEL = "Content example. Sub-Process level. MVEL.";
         final String SLA_DUE_DATE = "25/12/1983";
 
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_TASK_FILE_PATH);
-        assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
+        assertDiagram(getDiagram(), AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        UserTask filledSubprocessLevelTaskJava = getTaskNodeById(diagram,
+        UserTask filledSubprocessLevelTaskJava = getTaskNodeById(getDiagram(),
                                                                  FILLED_SUBPROCESS_LEVEL_TASK_JAVA_ID,
                                                                  ZERO_INCOME_EDGES,
                                                                  HAS_NO_OUTCOME_EDGE);
@@ -781,7 +819,7 @@ public class UserTaskTest extends Task<UserTask> {
                                    TASK_CONTENT_JAVA,
                                    SLA_DUE_DATE);
 
-        UserTask filledSubprocessLevelTaskJavascript = getTaskNodeById(diagram,
+        UserTask filledSubprocessLevelTaskJavascript = getTaskNodeById(getDiagram(),
                                                                        FILLED_SUBPROCESS_LEVEL_TASK_JAVASCRIPT_ID,
                                                                        ZERO_INCOME_EDGES,
                                                                        HAS_NO_OUTCOME_EDGE);
@@ -805,7 +843,7 @@ public class UserTaskTest extends Task<UserTask> {
                                    TASK_CONTENT_JAVASCRIPT,
                                    SLA_DUE_DATE);
 
-        UserTask filledSubprocessLevelTaskMvel = getTaskNodeById(diagram,
+        UserTask filledSubprocessLevelTaskMvel = getTaskNodeById(getDiagram(),
                                                                  FILLED_SUBPROCESS_LEVEL_TASK_MVEL_ID,
                                                                  ZERO_INCOME_EDGES,
                                                                  HAS_NO_OUTCOME_EDGE);
@@ -832,7 +870,7 @@ public class UserTaskTest extends Task<UserTask> {
 
     @Test
     @Override
-    public void testUnmarshallSubprocessLevelTaskOneIncomeFilledProperties() throws Exception {
+    public void testUnmarshallSubprocessLevelTaskOneIncomeFilledProperties() {
         final String TASK_NAME_JAVA = "Task11 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
         final String TASK_DOCUMENTATION_JAVA = "Task11 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
         final String TASK_TASK_NAME_JAVA = "Task11ImplExecName";
@@ -878,10 +916,9 @@ public class UserTaskTest extends Task<UserTask> {
         final String TASK_CONTENT_MVEL = "Content example. Sub-Process level. One income. MVEL.";
         final String SLA_DUE_DATE = "25/12/1983";
 
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_TASK_FILE_PATH);
-        assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
+        assertDiagram(getDiagram(), AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        UserTask filledSubprocessLevelTaskJava = getTaskNodeById(diagram,
+        UserTask filledSubprocessLevelTaskJava = getTaskNodeById(getDiagram(),
                                                                  FILLED_ONE_INCOME_SUBPROCESS_LEVEL_TASK_JAVA_ID,
                                                                  ONE_INCOME_EDGE,
                                                                  HAS_OUTCOME_EDGE);
@@ -905,7 +942,7 @@ public class UserTaskTest extends Task<UserTask> {
                                    TASK_CONTENT_JAVA,
                                    SLA_DUE_DATE);
 
-        UserTask filledSubprocessLevelTaskJavascript = getTaskNodeById(diagram,
+        UserTask filledSubprocessLevelTaskJavascript = getTaskNodeById(getDiagram(),
                                                                        FILLED_ONE_INCOME_SUBPROCESS_LEVEL_TASK_JAVASCRIPT_ID,
                                                                        ONE_INCOME_EDGE,
                                                                        HAS_OUTCOME_EDGE);
@@ -929,7 +966,7 @@ public class UserTaskTest extends Task<UserTask> {
                                    TASK_CONTENT_JAVASCRIPT,
                                    SLA_DUE_DATE);
 
-        UserTask filledSubprocessLevelTaskMvel = getTaskNodeById(diagram,
+        UserTask filledSubprocessLevelTaskMvel = getTaskNodeById(getDiagram(),
                                                                  FILLED_ONE_INCOME_SUBPROCESS_LEVEL_TASK_MVEL_ID,
                                                                  ONE_INCOME_EDGE,
                                                                  HAS_OUTCOME_EDGE);
@@ -956,7 +993,7 @@ public class UserTaskTest extends Task<UserTask> {
 
     @Test
     @Override
-    public void testUnmarshallSubprocessLevelTaskTwoIncomesFilledProperties() throws Exception {
+    public void testUnmarshallSubprocessLevelTaskTwoIncomesFilledProperties() {
         final String TASK_NAME_JAVA = "Task12 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
         final String TASK_DOCUMENTATION_JAVA = "Task12 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
         final String TASK_TASK_NAME_JAVA = "Task12ImplExecName";
@@ -1002,10 +1039,9 @@ public class UserTaskTest extends Task<UserTask> {
         final String TASK_CONTENT_MVEL = "Content example. Sub-Process level. Two incomes. MVEL.";
         final String SLA_DUE_DATE = "25/12/1983";
 
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_TASK_FILE_PATH);
-        assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
+        assertDiagram(getDiagram(), AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        UserTask filledSubprocessLevelTaskJava = getTaskNodeById(diagram,
+        UserTask filledSubprocessLevelTaskJava = getTaskNodeById(getDiagram(),
                                                                  FILLED_TWO_INCOMES_SUBPROCESS_LEVEL_TASK_JAVA_ID,
                                                                  TWO_INCOME_EDGES,
                                                                  HAS_OUTCOME_EDGE);
@@ -1029,7 +1065,7 @@ public class UserTaskTest extends Task<UserTask> {
                                    TASK_CONTENT_JAVA,
                                    SLA_DUE_DATE);
 
-        UserTask filledSubprocessLevelTaskJavascript = getTaskNodeById(diagram,
+        UserTask filledSubprocessLevelTaskJavascript = getTaskNodeById(getDiagram(),
                                                                        FILLED_TWO_INCOMES_SUBPROCESS_LEVEL_TASK_JAVASCRIPT_ID,
                                                                        TWO_INCOME_EDGES,
                                                                        HAS_OUTCOME_EDGE);
@@ -1053,7 +1089,7 @@ public class UserTaskTest extends Task<UserTask> {
                                    TASK_CONTENT_JAVASCRIPT,
                                    SLA_DUE_DATE);
 
-        UserTask filledSubprocessLevelTaskMvel = getTaskNodeById(diagram,
+        UserTask filledSubprocessLevelTaskMvel = getTaskNodeById(getDiagram(),
                                                                  FILLED_TWO_INCOMES_SUBPROCESS_LEVEL_TASK_MVEL_ID,
                                                                  TWO_INCOME_EDGES,
                                                                  HAS_OUTCOME_EDGE);
@@ -1080,7 +1116,7 @@ public class UserTaskTest extends Task<UserTask> {
 
     @Test
     @Override
-    public void testMarshallTopLevelTaskFilledProperties() throws Exception {
+    public void testMarshallTopLevelTaskFilledProperties() {
         checkTaskMarshalling(FILLED_TOP_LEVEL_TASK_JAVA_ID, ZERO_INCOME_EDGES, HAS_NO_OUTCOME_EDGE);
         checkTaskMarshalling(FILLED_TOP_LEVEL_TASK_JAVASCRIPT_ID, ZERO_INCOME_EDGES, HAS_NO_OUTCOME_EDGE);
         checkTaskMarshalling(FILLED_TOP_LEVEL_TASK_MVEL_ID, ZERO_INCOME_EDGES, HAS_NO_OUTCOME_EDGE);
@@ -1088,7 +1124,7 @@ public class UserTaskTest extends Task<UserTask> {
 
     @Test
     @Override
-    public void testMarshallSubprocessLevelTaskFilledProperties() throws Exception {
+    public void testMarshallSubprocessLevelTaskFilledProperties() {
         checkTaskMarshalling(FILLED_SUBPROCESS_LEVEL_TASK_JAVA_ID, ZERO_INCOME_EDGES, HAS_NO_OUTCOME_EDGE);
         checkTaskMarshalling(FILLED_SUBPROCESS_LEVEL_TASK_JAVASCRIPT_ID, ZERO_INCOME_EDGES, HAS_NO_OUTCOME_EDGE);
         checkTaskMarshalling(FILLED_SUBPROCESS_LEVEL_TASK_MVEL_ID, ZERO_INCOME_EDGES, HAS_NO_OUTCOME_EDGE);
@@ -1096,7 +1132,7 @@ public class UserTaskTest extends Task<UserTask> {
 
     @Test
     @Override
-    public void testMarshallTopLevelTaskOneIncomeFilledProperties() throws Exception {
+    public void testMarshallTopLevelTaskOneIncomeFilledProperties() {
         checkTaskMarshalling(FILLED_ONE_INCOME_TOP_LEVEL_TASK_JAVA_ID, ONE_INCOME_EDGE, HAS_OUTCOME_EDGE);
         checkTaskMarshalling(FILLED_ONE_INCOME_TOP_LEVEL_TASK_JAVASCRIPT_ID, ONE_INCOME_EDGE, HAS_OUTCOME_EDGE);
         checkTaskMarshalling(FILLED_ONE_INCOME_TOP_LEVEL_TASK_MVEL_ID, ONE_INCOME_EDGE, HAS_OUTCOME_EDGE);
@@ -1104,7 +1140,7 @@ public class UserTaskTest extends Task<UserTask> {
 
     @Test
     @Override
-    public void testMarshallSubprocessLevelTaskOneIncomeFilledProperties() throws Exception {
+    public void testMarshallSubprocessLevelTaskOneIncomeFilledProperties() {
         checkTaskMarshalling(FILLED_ONE_INCOME_SUBPROCESS_LEVEL_TASK_JAVA_ID, ONE_INCOME_EDGE, HAS_OUTCOME_EDGE);
         checkTaskMarshalling(FILLED_ONE_INCOME_SUBPROCESS_LEVEL_TASK_JAVASCRIPT_ID, ONE_INCOME_EDGE, HAS_OUTCOME_EDGE);
         checkTaskMarshalling(FILLED_ONE_INCOME_SUBPROCESS_LEVEL_TASK_MVEL_ID, ONE_INCOME_EDGE, HAS_OUTCOME_EDGE);
@@ -1112,7 +1148,7 @@ public class UserTaskTest extends Task<UserTask> {
 
     @Test
     @Override
-    public void testMarshallTopLevelTaskTwoIncomesFilledProperties() throws Exception {
+    public void testMarshallTopLevelTaskTwoIncomesFilledProperties() {
         checkTaskMarshalling(FILLED_TWO_INCOMES_TOP_LEVEL_TASK_JAVA_ID, TWO_INCOME_EDGES, HAS_OUTCOME_EDGE);
         checkTaskMarshalling(FILLED_TWO_INCOMES_TOP_LEVEL_TASK_JAVASCRIPT_ID, TWO_INCOME_EDGES, HAS_OUTCOME_EDGE);
         checkTaskMarshalling(FILLED_TWO_INCOMES_TOP_LEVEL_TASK_MVEL_ID, TWO_INCOME_EDGES, HAS_OUTCOME_EDGE);
@@ -1120,7 +1156,7 @@ public class UserTaskTest extends Task<UserTask> {
 
     @Test
     @Override
-    public void testMarshallSubprocessLevelTaskTwoIncomesFilledProperties() throws Exception {
+    public void testMarshallSubprocessLevelTaskTwoIncomesFilledProperties() {
         checkTaskMarshalling(FILLED_TWO_INCOMES_SUBPROCESS_LEVEL_TASK_JAVA_ID, TWO_INCOME_EDGES, HAS_OUTCOME_EDGE);
         checkTaskMarshalling(FILLED_TWO_INCOMES_SUBPROCESS_LEVEL_TASK_JAVASCRIPT_ID, TWO_INCOME_EDGES, HAS_OUTCOME_EDGE);
         checkTaskMarshalling(FILLED_TWO_INCOMES_SUBPROCESS_LEVEL_TASK_MVEL_ID, TWO_INCOME_EDGES, HAS_OUTCOME_EDGE);

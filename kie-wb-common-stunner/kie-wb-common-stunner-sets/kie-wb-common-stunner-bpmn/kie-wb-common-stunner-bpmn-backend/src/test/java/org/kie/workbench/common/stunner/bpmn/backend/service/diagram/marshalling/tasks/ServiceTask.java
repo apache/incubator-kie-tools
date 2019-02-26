@@ -43,8 +43,8 @@ public abstract class ServiceTask<T extends BaseServiceTask> extends Task<T> {
         });
     }
 
-    ServiceTask(Marshaller marshallerType) {
-        super(marshallerType);
+    ServiceTask(Marshaller marshallerType) throws Exception {
+        super(marshallerType, marshallers());
     }
 
     @Ignore("Test is ignored, because does not make sense, since there is only new Marhsaller tested.")
@@ -53,13 +53,13 @@ public abstract class ServiceTask<T extends BaseServiceTask> extends Task<T> {
     public void testMigration() {
     }
 
-    protected void assertServiceTaskExecutionSet(ServiceTaskExecutionSet executionSet,
-                                                 String onEntryActionScriptValue,
-                                                 String onEntryActionScriptLanguage,
-                                                 String onExitActionScriptValue,
-                                                 String onExitActionScriptLanguage,
-                                                 boolean isAsync,
-                                                 boolean adHocAutostart) {
+    void assertServiceTaskExecutionSet(ServiceTaskExecutionSet executionSet,
+                                       String onEntryActionScriptValue,
+                                       String onEntryActionScriptLanguage,
+                                       String onExitActionScriptValue,
+                                       String onExitActionScriptLanguage,
+                                       boolean isAsync,
+                                       boolean adHocAutostart) {
         assertNotNull(executionSet);
         assertNotNull(executionSet.getOnEntryAction());
         assertNotNull(executionSet.getOnExitAction());
@@ -94,42 +94,42 @@ public abstract class ServiceTask<T extends BaseServiceTask> extends Task<T> {
     // The test is already defined in parent Task test class.
     @Test
     @Override
-    public void testMarshallTopLevelTaskEmptyProperties() throws Exception {
+    public void testMarshallTopLevelTaskEmptyProperties() {
         checkTaskMarshalling(getEmptyTopLevelTaskId(), ZERO_INCOME_EDGES, HAS_NO_OUTCOME_EDGE);
     }
 
     // The test is already defined in parent Task test class.
     @Test
     @Override
-    public void testMarshallSubprocessLevelTaskOneIncomeEmptyProperties() throws Exception {
+    public void testMarshallSubprocessLevelTaskOneIncomeEmptyProperties() {
         checkTaskMarshalling(getEmptySubprocessLevelTaskOneIncomeId(), ONE_INCOME_EDGE, HAS_OUTCOME_EDGE);
     }
 
     // The test is already defined in parent Task test class.
     @Test
     @Override
-    public void testMarshallSubprocessLevelTaskTwoIncomesEmptyProperties() throws Exception {
+    public void testMarshallSubprocessLevelTaskTwoIncomesEmptyProperties() {
         checkTaskMarshalling(getEmptySubprocessLevelTaskTwoIncomesId(), TWO_INCOME_EDGES, HAS_OUTCOME_EDGE);
     }
 
     // The test is already defined in parent Task test class.
     @Test
     @Override
-    public void testMarshallTopLevelTaskOneIncomeEmptyProperties() throws Exception {
+    public void testMarshallTopLevelTaskOneIncomeEmptyProperties() {
         checkTaskMarshalling(getEmptyTopLevelTaskOneIncomeId(), ONE_INCOME_EDGE, HAS_OUTCOME_EDGE);
     }
 
     // The test is already defined in parent Task test class.
     @Test
     @Override
-    public void testMarshallTopLevelTaskTwoIncomesEmptyProperties() throws Exception {
+    public void testMarshallTopLevelTaskTwoIncomesEmptyProperties() {
         checkTaskMarshalling(getEmptyTopLevelTaskTwoIncomesId(), TWO_INCOME_EDGES, HAS_OUTCOME_EDGE);
     }
 
     // The test is already defined in parent Task test class.
     @Test
     @Override
-    public void testMarshallSubprocessLevelTaskEmptyProperties() throws Exception {
+    public void testMarshallSubprocessLevelTaskEmptyProperties() {
         checkTaskMarshalling(getEmptySubprocessLevelTaskId(), ZERO_INCOME_EDGES, HAS_NO_OUTCOME_EDGE);
     }
 }

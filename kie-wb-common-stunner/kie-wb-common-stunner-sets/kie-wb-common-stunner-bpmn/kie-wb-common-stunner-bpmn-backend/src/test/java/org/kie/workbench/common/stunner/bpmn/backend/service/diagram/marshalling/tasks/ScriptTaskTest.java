@@ -70,13 +70,19 @@ public class ScriptTaskTest extends Task<ScriptTask> {
     private static final boolean IS_ASYNC = true;
     private static final boolean IS_NOT_ASYNC = false;
 
-    public ScriptTaskTest(Marshaller marshallerType) {
-        super(marshallerType);
+    private static Diagram<Graph, Metadata> oldDiagram;
+    private static Diagram<Graph, Metadata> oldRoundTripDiagram;
+
+    private static Diagram<Graph, Metadata> newDiagram;
+    private static Diagram<Graph, Metadata> newRoundTripDiagram;
+
+    public ScriptTaskTest(Marshaller marshallerType) throws Exception {
+        super(marshallerType, marshallers());
     }
 
     @Test
     @Override
-    public void testUnmarshallTopLevelTaskFilledProperties() throws Exception {
+    public void testUnmarshallTopLevelTaskFilledProperties() {
         final String TASK_NAME_JAVA = "Task01 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
         final String TASK_DOCUMENTATION_JAVA = "Task01 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
         final String TASK_SCRIPT_JAVA = "System.out.println(\"Called from Script Task.\");";
@@ -89,24 +95,23 @@ public class ScriptTaskTest extends Task<ScriptTask> {
         final String TASK_DOCUMENTATION_MVEL = "Task10 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
         final String TASK_SCRIPT_MVEL = "System.out.println(\"Called from Script Task.\");";
 
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_TASK_FILE_PATH);
-        assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
+        assertDiagram(getDiagram(), AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        ScriptTask filledTopLevelTaskJava = getTaskNodeById(diagram,
+        ScriptTask filledTopLevelTaskJava = getTaskNodeById(getDiagram(),
                                                             FILLED_TOP_LEVEL_TASK_JAVA_ID,
                                                             ZERO_INCOME_EDGES,
                                                             HAS_NO_OUTCOME_EDGE);
         assertGeneralSet(filledTopLevelTaskJava.getGeneral(), TASK_NAME_JAVA, TASK_DOCUMENTATION_JAVA);
         assertScriptTaskExecutionSet(filledTopLevelTaskJava.getExecutionSet(), TASK_SCRIPT_JAVA, TASK_SCRIPT_JAVA_LANGUAGE, IS_ASYNC);
 
-        ScriptTask filledTopLevelTaskJavascript = getTaskNodeById(diagram,
+        ScriptTask filledTopLevelTaskJavascript = getTaskNodeById(getDiagram(),
                                                                   FILLED_TOP_LEVEL_TASK_JAVASCRIPT_ID,
                                                                   ZERO_INCOME_EDGES,
                                                                   HAS_NO_OUTCOME_EDGE);
         assertGeneralSet(filledTopLevelTaskJavascript.getGeneral(), TASK_NAME_JAVASCRIPT, TASK_DOCUMENTATION_JAVASCRIPT);
         assertScriptTaskExecutionSet(filledTopLevelTaskJavascript.getExecutionSet(), TASK_SCRIPT_JAVASCRIPT, TASK_SCRIPT_JAVASCRIPT_LANGUAGE, IS_ASYNC);
 
-        ScriptTask filledTopLevelTaskMvel = getTaskNodeById(diagram,
+        ScriptTask filledTopLevelTaskMvel = getTaskNodeById(getDiagram(),
                                                             FILLED_TOP_LEVEL_TASK_MVEL_ID,
                                                             ZERO_INCOME_EDGES,
                                                             HAS_NO_OUTCOME_EDGE);
@@ -116,11 +121,10 @@ public class ScriptTaskTest extends Task<ScriptTask> {
 
     @Test
     @Override
-    public void testUnmarshallTopLevelEmptyTaskProperties() throws Exception {
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_TASK_FILE_PATH);
-        assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
+    public void testUnmarshallTopLevelEmptyTaskProperties() {
+        assertDiagram(getDiagram(), AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        ScriptTask filledTopLevelTask = getTaskNodeById(diagram,
+        ScriptTask filledTopLevelTask = getTaskNodeById(getDiagram(),
                                                         EMPTY_TOP_LEVEL_TASK_ID,
                                                         ZERO_INCOME_EDGES,
                                                         HAS_NO_OUTCOME_EDGE);
@@ -130,7 +134,7 @@ public class ScriptTaskTest extends Task<ScriptTask> {
 
     @Test
     @Override
-    public void testUnmarshallSubprocessLevelTaskFilledProperties() throws Exception {
+    public void testUnmarshallSubprocessLevelTaskFilledProperties() {
         final String TASK_NAME_JAVA = "Task03 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
         final String TASK_DOCUMENTATION_JAVA = "Task03 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
         final String TASK_SCRIPT_JAVA = "System.out.println(\"Called from Script Task.\");";
@@ -143,24 +147,23 @@ public class ScriptTaskTest extends Task<ScriptTask> {
         final String TASK_DOCUMENTATION_MVEL = "Task16 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
         final String TASK_SCRIPT_MVEL = "System.out.println(\"Called from Script Task.\");";
 
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_TASK_FILE_PATH);
-        assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
+        assertDiagram(getDiagram(), AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        ScriptTask filledSubprocessLevelTaskJava = getTaskNodeById(diagram,
+        ScriptTask filledSubprocessLevelTaskJava = getTaskNodeById(getDiagram(),
                                                                    FILLED_SUBPROCESS_LEVEL_TASK_JAVA_ID,
                                                                    ZERO_INCOME_EDGES,
                                                                    HAS_NO_OUTCOME_EDGE);
         assertGeneralSet(filledSubprocessLevelTaskJava.getGeneral(), TASK_NAME_JAVA, TASK_DOCUMENTATION_JAVA);
         assertScriptTaskExecutionSet(filledSubprocessLevelTaskJava.getExecutionSet(), TASK_SCRIPT_JAVA, TASK_SCRIPT_JAVA_LANGUAGE, IS_ASYNC);
 
-        ScriptTask filledSubprocessLevelTaskJavascript = getTaskNodeById(diagram,
+        ScriptTask filledSubprocessLevelTaskJavascript = getTaskNodeById(getDiagram(),
                                                                          FILLED_SUBPROCESS_LEVEL_TASK_JAVASCRIPT_ID,
                                                                          ZERO_INCOME_EDGES,
                                                                          HAS_NO_OUTCOME_EDGE);
         assertGeneralSet(filledSubprocessLevelTaskJavascript.getGeneral(), TASK_NAME_JAVASCRIPT, TASK_DOCUMENTATION_JAVASCRIPT);
         assertScriptTaskExecutionSet(filledSubprocessLevelTaskJavascript.getExecutionSet(), TASK_SCRIPT_JAVASCRIPT, TASK_SCRIPT_JAVASCRIPT_LANGUAGE, IS_ASYNC);
 
-        ScriptTask filledSubprocessLevelTaskMvel = getTaskNodeById(diagram,
+        ScriptTask filledSubprocessLevelTaskMvel = getTaskNodeById(getDiagram(),
                                                                    FILLED_SUBPROCESS_LEVEL_TASK_MVEL_ID,
                                                                    ZERO_INCOME_EDGES,
                                                                    HAS_NO_OUTCOME_EDGE);
@@ -170,11 +173,10 @@ public class ScriptTaskTest extends Task<ScriptTask> {
 
     @Test
     @Override
-    public void testUnmarshallSubprocessLevelTaskEmptyProperties() throws Exception {
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_TASK_FILE_PATH);
-        assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
+    public void testUnmarshallSubprocessLevelTaskEmptyProperties() {
+        assertDiagram(getDiagram(), AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        ScriptTask filledSubprocessLevelTaskJava = getTaskNodeById(diagram,
+        ScriptTask filledSubprocessLevelTaskJava = getTaskNodeById(getDiagram(),
                                                                    EMPTY_SUBPROCESS_LEVEL_TASK_ID,
                                                                    ZERO_INCOME_EDGES,
                                                                    HAS_NO_OUTCOME_EDGE);
@@ -184,7 +186,7 @@ public class ScriptTaskTest extends Task<ScriptTask> {
 
     @Test
     @Override
-    public void testUnmarshallTopLevelTaskOneIncomeFilledProperties() throws Exception {
+    public void testUnmarshallTopLevelTaskOneIncomeFilledProperties() {
         final String TASK_NAME_JAVA = "Task02 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
         final String TASK_DOCUMENTATION_JAVA = "Task02 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
         final String TASK_SCRIPT_JAVA = "System.out.println(\"Called from Script Task.\");";
@@ -197,24 +199,23 @@ public class ScriptTaskTest extends Task<ScriptTask> {
         final String TASK_DOCUMENTATION_MVEL = "Task11 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
         final String TASK_SCRIPT_MVEL = "System.out.println(\"Called from Script Task.\");";
 
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_TASK_FILE_PATH);
-        assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
+        assertDiagram(getDiagram(), AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        ScriptTask filledTopLevelTaskJava = getTaskNodeById(diagram,
+        ScriptTask filledTopLevelTaskJava = getTaskNodeById(getDiagram(),
                                                             FILLED_ONE_INCOME_TOP_LEVEL_TASK_JAVA_ID,
                                                             ONE_INCOME_EDGE,
                                                             HAS_OUTCOME_EDGE);
         assertGeneralSet(filledTopLevelTaskJava.getGeneral(), TASK_NAME_JAVA, TASK_DOCUMENTATION_JAVA);
         assertScriptTaskExecutionSet(filledTopLevelTaskJava.getExecutionSet(), TASK_SCRIPT_JAVA, TASK_SCRIPT_JAVA_LANGUAGE, IS_ASYNC);
 
-        ScriptTask filledTopLevelTaskJavascript = getTaskNodeById(diagram,
+        ScriptTask filledTopLevelTaskJavascript = getTaskNodeById(getDiagram(),
                                                                   FILLED_ONE_INCOME_TOP_LEVEL_TASK_JAVASCRIPT_ID,
                                                                   ONE_INCOME_EDGE,
                                                                   HAS_OUTCOME_EDGE);
         assertGeneralSet(filledTopLevelTaskJavascript.getGeneral(), TASK_NAME_JAVASCRIPT, TASK_DOCUMENTATION_JAVASCRIPT);
         assertScriptTaskExecutionSet(filledTopLevelTaskJavascript.getExecutionSet(), TASK_SCRIPT_JAVASCRIPT, TASK_SCRIPT_JAVASCRIPT_LANGUAGE, IS_ASYNC);
 
-        ScriptTask filledTopLevelTaskMvel = getTaskNodeById(diagram,
+        ScriptTask filledTopLevelTaskMvel = getTaskNodeById(getDiagram(),
                                                             FILLED_ONE_INCOME_TOP_LEVEL_TASK_MVEL_ID,
                                                             ONE_INCOME_EDGE,
                                                             HAS_OUTCOME_EDGE);
@@ -224,11 +225,10 @@ public class ScriptTaskTest extends Task<ScriptTask> {
 
     @Test
     @Override
-    public void testUnmarshallTopLevelTaskOneIncomeEmptyProperties() throws Exception {
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_TASK_FILE_PATH);
-        assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
+    public void testUnmarshallTopLevelTaskOneIncomeEmptyProperties() {
+        assertDiagram(getDiagram(), AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        ScriptTask filledTopLevelTask = getTaskNodeById(diagram,
+        ScriptTask filledTopLevelTask = getTaskNodeById(getDiagram(),
                                                         EMPTY_ONE_INCOME_TOP_LEVEL_TASK_ID,
                                                         ONE_INCOME_EDGE,
                                                         HAS_OUTCOME_EDGE);
@@ -238,11 +238,10 @@ public class ScriptTaskTest extends Task<ScriptTask> {
 
     @Test
     @Override
-    public void testUnmarshallSubprocessLevelTaskOneIncomeEmptyProperties() throws Exception {
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_TASK_FILE_PATH);
-        assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
+    public void testUnmarshallSubprocessLevelTaskOneIncomeEmptyProperties() {
+        assertDiagram(getDiagram(), AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        ScriptTask filledSubprocessLevelTaskJava = getTaskNodeById(diagram,
+        ScriptTask filledSubprocessLevelTaskJava = getTaskNodeById(getDiagram(),
                                                                    EMPTY_ONE_INCOME_SUBPROCESS_LEVEL_TASK_ID,
                                                                    ONE_INCOME_EDGE,
                                                                    HAS_OUTCOME_EDGE);
@@ -252,7 +251,7 @@ public class ScriptTaskTest extends Task<ScriptTask> {
 
     @Test
     @Override
-    public void testUnmarshallSubprocessLevelTaskOneIncomeFilledProperties() throws Exception {
+    public void testUnmarshallSubprocessLevelTaskOneIncomeFilledProperties() {
         final String TASK_NAME_JAVA = "Task04 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
         final String TASK_DOCUMENTATION_JAVA = "Task04 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
         final String TASK_SCRIPT_JAVA = "System.out.println(\"Called from Script Task.\");";
@@ -265,24 +264,23 @@ public class ScriptTaskTest extends Task<ScriptTask> {
         final String TASK_DOCUMENTATION_MVEL = "Task17 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
         final String TASK_SCRIPT_MVEL = "System.out.println(\"Called from Script Task.\");";
 
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_TASK_FILE_PATH);
-        assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
+        assertDiagram(getDiagram(), AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        ScriptTask filledSubprocessLevelTaskJava = getTaskNodeById(diagram,
+        ScriptTask filledSubprocessLevelTaskJava = getTaskNodeById(getDiagram(),
                                                                    FILLED_ONE_INCOME_SUBPROCESS_LEVEL_TASK_JAVA_ID,
                                                                    ONE_INCOME_EDGE,
                                                                    HAS_OUTCOME_EDGE);
         assertGeneralSet(filledSubprocessLevelTaskJava.getGeneral(), TASK_NAME_JAVA, TASK_DOCUMENTATION_JAVA);
         assertScriptTaskExecutionSet(filledSubprocessLevelTaskJava.getExecutionSet(), TASK_SCRIPT_JAVA, TASK_SCRIPT_JAVA_LANGUAGE, IS_ASYNC);
 
-        ScriptTask filledSubprocessLevelTaskJavascript = getTaskNodeById(diagram,
+        ScriptTask filledSubprocessLevelTaskJavascript = getTaskNodeById(getDiagram(),
                                                                          FILLED_ONE_INCOME_SUBPROCESS_LEVEL_TASK_JAVASCRIPT_ID,
                                                                          ONE_INCOME_EDGE,
                                                                          HAS_OUTCOME_EDGE);
         assertGeneralSet(filledSubprocessLevelTaskJavascript.getGeneral(), TASK_NAME_JAVASCRIPT, TASK_DOCUMENTATION_JAVASCRIPT);
         assertScriptTaskExecutionSet(filledSubprocessLevelTaskJavascript.getExecutionSet(), TASK_SCRIPT_JAVASCRIPT, TASK_SCRIPT_JAVASCRIPT_LANGUAGE, IS_ASYNC);
 
-        ScriptTask filledSubprocessLevelTaskMvel = getTaskNodeById(diagram,
+        ScriptTask filledSubprocessLevelTaskMvel = getTaskNodeById(getDiagram(),
                                                                    FILLED_ONE_INCOME_SUBPROCESS_LEVEL_TASK_MVEL_ID,
                                                                    ONE_INCOME_EDGE,
                                                                    HAS_OUTCOME_EDGE);
@@ -292,7 +290,7 @@ public class ScriptTaskTest extends Task<ScriptTask> {
 
     @Test
     @Override
-    public void testUnmarshallTopLevelTaskTwoIncomesFilledProperties() throws Exception {
+    public void testUnmarshallTopLevelTaskTwoIncomesFilledProperties() {
         final String TASK_NAME_JAVA = "Task05 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
         final String TASK_DOCUMENTATION_JAVA = "Task05 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
         final String TASK_SCRIPT_JAVA = "System.out.println(\"Called from Script Task.\");";
@@ -305,24 +303,23 @@ public class ScriptTaskTest extends Task<ScriptTask> {
         final String TASK_DOCUMENTATION_MVEL = "Task12 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
         final String TASK_SCRIPT_MVEL = "System.out.println(\"Called from Script Task.\");";
 
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_TASK_FILE_PATH);
-        assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
+        assertDiagram(getDiagram(), AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        ScriptTask filledTopLevelTaskJava = getTaskNodeById(diagram,
+        ScriptTask filledTopLevelTaskJava = getTaskNodeById(getDiagram(),
                                                             FILLED_TWO_INCOMES_TOP_LEVEL_TASK_JAVA_ID,
                                                             TWO_INCOME_EDGES,
                                                             HAS_OUTCOME_EDGE);
         assertGeneralSet(filledTopLevelTaskJava.getGeneral(), TASK_NAME_JAVA, TASK_DOCUMENTATION_JAVA);
         assertScriptTaskExecutionSet(filledTopLevelTaskJava.getExecutionSet(), TASK_SCRIPT_JAVA, TASK_SCRIPT_JAVA_LANGUAGE, IS_ASYNC);
 
-        ScriptTask filledTopLevelTaskJavascript = getTaskNodeById(diagram,
+        ScriptTask filledTopLevelTaskJavascript = getTaskNodeById(getDiagram(),
                                                                   FILLED_TWO_INCOMES_TOP_LEVEL_TASK_JAVASCRIPT_ID,
                                                                   TWO_INCOME_EDGES,
                                                                   HAS_OUTCOME_EDGE);
         assertGeneralSet(filledTopLevelTaskJavascript.getGeneral(), TASK_NAME_JAVASCRIPT, TASK_DOCUMENTATION_JAVASCRIPT);
         assertScriptTaskExecutionSet(filledTopLevelTaskJavascript.getExecutionSet(), TASK_SCRIPT_JAVASCRIPT, TASK_SCRIPT_JAVASCRIPT_LANGUAGE, IS_ASYNC);
 
-        ScriptTask filledTopLevelTaskMvel = getTaskNodeById(diagram,
+        ScriptTask filledTopLevelTaskMvel = getTaskNodeById(getDiagram(),
                                                             FILLED_TWO_INCOMES_TOP_LEVEL_TASK_MVEL_ID,
                                                             TWO_INCOME_EDGES,
                                                             HAS_OUTCOME_EDGE);
@@ -332,11 +329,10 @@ public class ScriptTaskTest extends Task<ScriptTask> {
 
     @Test
     @Override
-    public void testUnmarshallTopLevelTaskTwoIncomesEmptyProperties() throws Exception {
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_TASK_FILE_PATH);
-        assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
+    public void testUnmarshallTopLevelTaskTwoIncomesEmptyProperties() {
+        assertDiagram(getDiagram(), AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        ScriptTask filledTopLevelTask = getTaskNodeById(diagram,
+        ScriptTask filledTopLevelTask = getTaskNodeById(getDiagram(),
                                                         EMPTY_TWO_INCOMES_TOP_LEVEL_TASK_ID,
                                                         TWO_INCOME_EDGES,
                                                         HAS_OUTCOME_EDGE);
@@ -346,11 +342,10 @@ public class ScriptTaskTest extends Task<ScriptTask> {
 
     @Test
     @Override
-    public void testUnmarshallSubprocessLevelTaskTwoIncomesEmptyProperties() throws Exception {
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_TASK_FILE_PATH);
-        assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
+    public void testUnmarshallSubprocessLevelTaskTwoIncomesEmptyProperties() {
+        assertDiagram(getDiagram(), AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        ScriptTask filledSubprocessLevelTaskJava = getTaskNodeById(diagram,
+        ScriptTask filledSubprocessLevelTaskJava = getTaskNodeById(getDiagram(),
                                                                    EMPTY_TWO_INCOMES_SUBPROCESS_LEVEL_TASK_ID,
                                                                    TWO_INCOME_EDGES,
                                                                    HAS_OUTCOME_EDGE);
@@ -360,7 +355,7 @@ public class ScriptTaskTest extends Task<ScriptTask> {
 
     @Test
     @Override
-    public void testUnmarshallSubprocessLevelTaskTwoIncomesFilledProperties() throws Exception {
+    public void testUnmarshallSubprocessLevelTaskTwoIncomesFilledProperties() {
         final String TASK_NAME_JAVA = "Task06 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
         final String TASK_DOCUMENTATION_JAVA = "Task06 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
         final String TASK_SCRIPT_JAVA = "System.out.println(\"Called from Script Task.\");";
@@ -373,24 +368,23 @@ public class ScriptTaskTest extends Task<ScriptTask> {
         final String TASK_DOCUMENTATION_MVEL = "Task18 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
         final String TASK_SCRIPT_MVEL = "System.out.println(\"Called from Script Task.\");";
 
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_TASK_FILE_PATH);
-        assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
+        assertDiagram(getDiagram(), AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        ScriptTask filledSubprocessLevelTaskJava = getTaskNodeById(diagram,
+        ScriptTask filledSubprocessLevelTaskJava = getTaskNodeById(getDiagram(),
                                                                    FILLED_TWO_INCOMES_SUBPROCESS_LEVEL_TASK_JAVA_ID,
                                                                    TWO_INCOME_EDGES,
                                                                    HAS_OUTCOME_EDGE);
         assertGeneralSet(filledSubprocessLevelTaskJava.getGeneral(), TASK_NAME_JAVA, TASK_DOCUMENTATION_JAVA);
         assertScriptTaskExecutionSet(filledSubprocessLevelTaskJava.getExecutionSet(), TASK_SCRIPT_JAVA, TASK_SCRIPT_JAVA_LANGUAGE, IS_ASYNC);
 
-        ScriptTask filledSubprocessLevelTaskJavascript = getTaskNodeById(diagram,
+        ScriptTask filledSubprocessLevelTaskJavascript = getTaskNodeById(getDiagram(),
                                                                          FILLED_TWO_INCOMES_SUBPROCESS_LEVEL_TASK_JAVASCRIPT_ID,
                                                                          TWO_INCOME_EDGES,
                                                                          HAS_OUTCOME_EDGE);
         assertGeneralSet(filledSubprocessLevelTaskJavascript.getGeneral(), TASK_NAME_JAVASCRIPT, TASK_DOCUMENTATION_JAVASCRIPT);
         assertScriptTaskExecutionSet(filledSubprocessLevelTaskJavascript.getExecutionSet(), TASK_SCRIPT_JAVASCRIPT, TASK_SCRIPT_JAVASCRIPT_LANGUAGE, IS_ASYNC);
 
-        ScriptTask filledSubprocessLevelTaskMvel = getTaskNodeById(diagram,
+        ScriptTask filledSubprocessLevelTaskMvel = getTaskNodeById(getDiagram(),
                                                                    FILLED_TWO_INCOMES_SUBPROCESS_LEVEL_TASK_MVEL_ID,
                                                                    TWO_INCOME_EDGES,
                                                                    HAS_OUTCOME_EDGE);
@@ -398,9 +392,49 @@ public class ScriptTaskTest extends Task<ScriptTask> {
         assertScriptTaskExecutionSet(filledSubprocessLevelTaskMvel.getExecutionSet(), TASK_SCRIPT_MVEL, TASK_SCRIPT_MVEL_LANGUAGE, IS_ASYNC);
     }
 
+    @Override
+    Diagram<Graph, Metadata> getOldDiagram() {
+        return oldDiagram;
+    }
+
+    @Override
+    void setOldDiagram(Diagram<Graph, Metadata> diagram) {
+        oldDiagram = diagram;
+    }
+
+    @Override
+    Diagram<Graph, Metadata> getOldRoundTripDiagram() {
+        return oldRoundTripDiagram;
+    }
+
+    @Override
+    void setOldRoundTripDiagram(Diagram<Graph, Metadata> diagram) {
+        oldRoundTripDiagram = diagram;
+    }
+
+    @Override
+    Diagram<Graph, Metadata> getNewDiagram() {
+        return newDiagram;
+    }
+
+    @Override
+    void setNewDiagram(Diagram<Graph, Metadata> diagram) {
+        newDiagram = diagram;
+    }
+
+    @Override
+    Diagram<Graph, Metadata> getNewRoundTripDiagram() {
+        return newRoundTripDiagram;
+    }
+
+    @Override
+    void setNewRoundTripDiagram(Diagram<Graph, Metadata> diagram) {
+        newRoundTripDiagram = diagram;
+    }
+
     @Test
     @Override
-    public void testMarshallTopLevelTaskFilledProperties() throws Exception {
+    public void testMarshallTopLevelTaskFilledProperties() {
         checkTaskMarshalling(FILLED_TOP_LEVEL_TASK_JAVA_ID, ZERO_INCOME_EDGES, HAS_NO_OUTCOME_EDGE);
         checkTaskMarshalling(FILLED_TOP_LEVEL_TASK_JAVASCRIPT_ID, ZERO_INCOME_EDGES, HAS_NO_OUTCOME_EDGE);
         checkTaskMarshalling(FILLED_TOP_LEVEL_TASK_MVEL_ID, ZERO_INCOME_EDGES, HAS_NO_OUTCOME_EDGE);
@@ -408,7 +442,7 @@ public class ScriptTaskTest extends Task<ScriptTask> {
 
     @Test
     @Override
-    public void testMarshallSubprocessLevelTaskFilledProperties() throws Exception {
+    public void testMarshallSubprocessLevelTaskFilledProperties() {
         checkTaskMarshalling(FILLED_SUBPROCESS_LEVEL_TASK_JAVA_ID, ZERO_INCOME_EDGES, HAS_NO_OUTCOME_EDGE);
         checkTaskMarshalling(FILLED_SUBPROCESS_LEVEL_TASK_JAVASCRIPT_ID, ZERO_INCOME_EDGES, HAS_NO_OUTCOME_EDGE);
         checkTaskMarshalling(FILLED_SUBPROCESS_LEVEL_TASK_MVEL_ID, ZERO_INCOME_EDGES, HAS_NO_OUTCOME_EDGE);
@@ -416,7 +450,7 @@ public class ScriptTaskTest extends Task<ScriptTask> {
 
     @Test
     @Override
-    public void testMarshallTopLevelTaskOneIncomeFilledProperties() throws Exception {
+    public void testMarshallTopLevelTaskOneIncomeFilledProperties() {
         checkTaskMarshalling(FILLED_ONE_INCOME_TOP_LEVEL_TASK_JAVA_ID, ONE_INCOME_EDGE, HAS_OUTCOME_EDGE);
         checkTaskMarshalling(FILLED_ONE_INCOME_TOP_LEVEL_TASK_JAVASCRIPT_ID, ONE_INCOME_EDGE, HAS_OUTCOME_EDGE);
         checkTaskMarshalling(FILLED_ONE_INCOME_TOP_LEVEL_TASK_MVEL_ID, ONE_INCOME_EDGE, HAS_OUTCOME_EDGE);
@@ -424,7 +458,7 @@ public class ScriptTaskTest extends Task<ScriptTask> {
 
     @Test
     @Override
-    public void testMarshallSubprocessLevelTaskOneIncomeFilledProperties() throws Exception {
+    public void testMarshallSubprocessLevelTaskOneIncomeFilledProperties() {
         checkTaskMarshalling(FILLED_ONE_INCOME_SUBPROCESS_LEVEL_TASK_JAVA_ID, ONE_INCOME_EDGE, HAS_OUTCOME_EDGE);
         checkTaskMarshalling(FILLED_ONE_INCOME_SUBPROCESS_LEVEL_TASK_JAVASCRIPT_ID, ONE_INCOME_EDGE, HAS_OUTCOME_EDGE);
         checkTaskMarshalling(FILLED_ONE_INCOME_SUBPROCESS_LEVEL_TASK_MVEL_ID, ONE_INCOME_EDGE, HAS_OUTCOME_EDGE);
@@ -432,7 +466,7 @@ public class ScriptTaskTest extends Task<ScriptTask> {
 
     @Test
     @Override
-    public void testMarshallTopLevelTaskTwoIncomesFilledProperties() throws Exception {
+    public void testMarshallTopLevelTaskTwoIncomesFilledProperties() {
         checkTaskMarshalling(FILLED_TWO_INCOMES_TOP_LEVEL_TASK_JAVA_ID, TWO_INCOME_EDGES, HAS_OUTCOME_EDGE);
         checkTaskMarshalling(FILLED_TWO_INCOMES_TOP_LEVEL_TASK_JAVASCRIPT_ID, TWO_INCOME_EDGES, HAS_OUTCOME_EDGE);
         checkTaskMarshalling(FILLED_TWO_INCOMES_TOP_LEVEL_TASK_MVEL_ID, TWO_INCOME_EDGES, HAS_OUTCOME_EDGE);
@@ -440,7 +474,7 @@ public class ScriptTaskTest extends Task<ScriptTask> {
 
     @Test
     @Override
-    public void testMarshallSubprocessLevelTaskTwoIncomesFilledProperties() throws Exception {
+    public void testMarshallSubprocessLevelTaskTwoIncomesFilledProperties() {
         checkTaskMarshalling(FILLED_TWO_INCOMES_SUBPROCESS_LEVEL_TASK_JAVA_ID, TWO_INCOME_EDGES, HAS_OUTCOME_EDGE);
         checkTaskMarshalling(FILLED_TWO_INCOMES_SUBPROCESS_LEVEL_TASK_JAVASCRIPT_ID, TWO_INCOME_EDGES, HAS_OUTCOME_EDGE);
         checkTaskMarshalling(FILLED_TWO_INCOMES_SUBPROCESS_LEVEL_TASK_MVEL_ID, TWO_INCOME_EDGES, HAS_OUTCOME_EDGE);

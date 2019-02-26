@@ -53,6 +53,7 @@ public class AssociationsTest extends BPMNDiagramMarshallerBase {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void parseAssociations() throws Exception {
         Diagram<Graph, Metadata> d = unmarshall(newMarshaller, BPMN_FILE_PATH);
         Node<View<UserTask>, ?> node = d.getGraph().getNode(TASK_ID);
@@ -63,7 +64,7 @@ public class AssociationsTest extends BPMNDiagramMarshallerBase {
     }
 
     @Test
-    public void marshallUnassignedDeclaration() throws Exception {
+    public void marshallUnassignedDeclaration() {
         String id = "PARENT";
         String decl = "||Foo:String||";
         StartEvent startEvent = bpmn2.createStartEvent();
@@ -83,8 +84,6 @@ public class AssociationsTest extends BPMNDiagramMarshallerBase {
     @Test
     public void marshallAssociations() throws Exception {
         Diagram<Graph, Metadata> d = unmarshall(newMarshaller, BPMN_FILE_PATH);
-        Node<View<UserTask>, ?> node = d.getGraph().getNode(TASK_ID);
-        UserTask definition = node.getContent().getDefinition();
 
         DefinitionsConverter definitionsConverter =
                 new DefinitionsConverter(d.getGraph());
@@ -100,7 +99,7 @@ public class AssociationsTest extends BPMNDiagramMarshallerBase {
         assertEquals("<![CDATA[HELLO]]>", findAssignment(associations, "Body"));
     }
 
-    public String findVar(List<DataInputAssociation> associations, String varName) {
+    private String findVar(List<DataInputAssociation> associations, String varName) {
         return associations.stream()
                 .filter(a -> {
                     DataInput in = (DataInput) a.getTargetRef();
@@ -114,7 +113,7 @@ public class AssociationsTest extends BPMNDiagramMarshallerBase {
                 .get();
     }
 
-    public String findAssignment(List<DataInputAssociation> associations, String varName) {
+    private String findAssignment(List<DataInputAssociation> associations, String varName) {
         return associations.stream()
                 .filter(a -> {
                     DataInput in = (DataInput) a.getTargetRef();
