@@ -17,6 +17,7 @@
 package org.uberfire.java.nio.fs.jgit;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,7 +26,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.extensions.FileSystemHookExecutionContext;
 import org.uberfire.java.nio.file.extensions.FileSystemHooks;
@@ -138,14 +138,20 @@ public class JGitFileSystemImplProviderPostCommitHookTest extends AbstractTestIn
 
         FileUtils.write(destHookFile, SCRIPT + code, Charset.defaultCharset());
 
-        Set<PosixFilePermission> perms = new HashSet<>();
-        perms.add(PosixFilePermission.OWNER_READ);
-        perms.add(PosixFilePermission.OWNER_WRITE);
-        perms.add(PosixFilePermission.GROUP_EXECUTE);
-        perms.add(PosixFilePermission.OTHERS_EXECUTE);
-        perms.add(PosixFilePermission.OWNER_EXECUTE);
+        if (SystemUtils.IS_OS_WINDOWS) {
+            destHookFile.setReadable(true);
+            destHookFile.setWritable(true);
+            destHookFile.setExecutable(true);
+        } else {
+            Set<PosixFilePermission> perms = new HashSet<>();
+            perms.add(PosixFilePermission.OWNER_READ);
+            perms.add(PosixFilePermission.OWNER_WRITE);
+            perms.add(PosixFilePermission.GROUP_EXECUTE);
+            perms.add(PosixFilePermission.OTHERS_EXECUTE);
+            perms.add(PosixFilePermission.OWNER_EXECUTE);
 
-        Files.setPosixFilePermissions(destHookFile.toPath(), perms);
+            Files.setPosixFilePermissions(destHookFile.toPath(), perms);
+        }
     }
 
     private void commitFile() throws IOException {

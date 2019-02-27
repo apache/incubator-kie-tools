@@ -112,8 +112,8 @@ public class JGitForkTest extends AbstractTestInfra {
         assertThat(new ListRefs(cloned.getRepository()).execute().get(0).getName()).isEqualTo("refs/heads/master");
         assertThat(new ListRefs(cloned.getRepository()).execute().get(1).getName()).isEqualTo("refs/heads/user_branch");
 
-        final String remotePath = ((GitImpl) cloned)._remoteList().call().get(0).getURIs().get(0).getPath();
-        assertThat(remotePath).isEqualTo(gitSource.getPath() + "/");
+        final String remotePath = new File(((GitImpl) cloned)._remoteList().call().get(0).getURIs().get(0).getPath()).getAbsolutePath();
+        assertThat(remotePath).isEqualTo(new File(gitSource.getPath()).getAbsolutePath());
     }
 
     @Test(expected = GitException.class)
@@ -300,8 +300,8 @@ public class JGitForkTest extends AbstractTestInfra {
 
         assertThat(new ListRefs(cloned.getRepository()).execute().get(0).getName()).isEqualTo("refs/heads/user_branch");
 
-        final String remotePath = ((GitImpl) cloned)._remoteList().call().get(0).getURIs().get(0).getPath();
-        assertThat(remotePath).isEqualTo(gitSource.getPath() + "/");
+        final String remotePath = new File(((GitImpl) cloned)._remoteList().call().get(0).getURIs().get(0).getPath()).getAbsolutePath();
+        assertThat(remotePath).isEqualTo(new File(gitSource.getPath()).getAbsolutePath());
 
         boolean foundPreCommitHook = false;
         boolean foundPostCommitHook = false;

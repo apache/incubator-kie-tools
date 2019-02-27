@@ -150,5 +150,8 @@ public class JGitCacheInvalidationTest extends AbstractTestInfra {
         realInstanceFs1.lock();
         assertThat(realInstanceFs1.hasBeenInUse()).isTrue();
         assertThat(anotherInstanceOfFs1.hasBeenInUse()).isTrue();
+
+        // Unlock the lock so that cleanup can finish on Windows
+        realInstanceFs1.unlock();
     }
 }
