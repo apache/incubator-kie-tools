@@ -60,7 +60,8 @@ public class AssigneeLiveSearchService implements EntryCreationLiveSearchService
     private Consumer<Throwable> searchErrorHandler;
 
     public AssigneeLiveSearchService() {
-        this(null, null);
+    /* due to spotbugs error commented out
+       this(null, null); */
     }
 
     @Inject

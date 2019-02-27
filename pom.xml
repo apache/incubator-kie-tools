@@ -32,7 +32,7 @@
   </modules>
 
   <properties>
-    <findbugs.failOnViolation>true</findbugs.failOnViolation>
+    <spotbugs.failOnViolation>true</spotbugs.failOnViolation>
     <checkstyle.header.template><![CDATA[
 ^\/\*$\n^
 \* Copyright \d\d\d\d Red Hat, Inc\. and\/or its affiliates\.$\n^
