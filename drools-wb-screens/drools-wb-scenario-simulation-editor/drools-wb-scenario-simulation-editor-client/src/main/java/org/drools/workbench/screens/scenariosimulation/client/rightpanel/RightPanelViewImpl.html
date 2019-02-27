@@ -117,48 +117,37 @@
              style="padding: 1em">
 
             <div id="ruleCheatSheet">
-                <p>To start off, right-click a cell in the table and use the contextual menus to insert new columns and rows.</p>
-                <p>Before defining the individual test scenarios, set the instance and field mappings for each column. Select a header cell and in the <b>Test Editor</b> tab, choose the required field. Click <b>Add</b> to set the mapping.</p>
-                <p>Now, define the test scenarios. Each cell of the table must contain a valid expression.</p>
-
-                <p>In rule-based scenarios, the following expressions are supported:</p>
-
+                <p id="ruleCheatSheetParagraph1"></p>
+                <p id="ruleCheatSheetParagraph2"></p>
+                <p id="ruleCheatSheetParagraph3"></p>
+                <p id="ruleCheatSheetParagraph4"></p>
                 <ul>
-                    <li><tt>=</tt> (or no symbol) specifies equality of a value. This is the default operator of each column and the only operator that is supported in the GIVEN section of the table.</li>
-                    <li><tt>!</tt>, <tt>!=</tt>, <tt>&lt;&gt;</tt> specify inequality of a value. This operator can be combined with other operators.</li>
-                    <li><tt>&lt;</tt>, <tt>&gt;</tt>, <tt>&lt;=</tt>, <tt>&gt;=</tt> specify a comparison: less than, greater than, less or equals than, and greater or equals than.</li>
-                    <li><tt>[value1, value2, value3]</tt> specifies a list of values. If <b>one or more</b> values are valid, the scenario definition is evaluated as true.</li>
-                    <li><tt>expression1; expression2; expression3</tt> specifies a list of expressions. If <b>all</b> expressions are valid, the scenario definition is evaluated as true.</li>
-                    <li>To define an empty string, use <tt>=</tt>, <tt>[]</tt>, or <tt>;</tt>. To define a null value, use <tt>null</tt>. An empty cell is skipped from the evaluation.</li>
+                    <li id="ruleCheatSheetList1"></li>
+                    <li id="ruleCheatSheetList2"></li>
+                    <li id="ruleCheatSheetList3"></li>
+                    <li id="ruleCheatSheetList4"></li>
+                    <li id="ruleCheatSheetList5"></li>
+                    <li id="ruleCheatSheetList6"></li>
                 </ul>
-
-                <p>Example expressions:</p>
-
-                <ul>
-                    <li><tt>&lt; 1</tt></li>
-                    <li><tt>&lt; 1; ! [-1, 0]</tt></li>
-                    <li><tt>[Jane, Doe]</tt></li>
-                    <li><tt>&lt;&gt; [1, -1]; = 0</tt></li>
+                <p id="ruleCheatSheetParagraph5"></p>
+                <ul id="ruleCheatSheetExampleExpressions">
                 </ul>
             </div>
             <div id="dmnCheatSheet">
-                <p>To start off, right-click a cell in the table and use the contextual menus to modify the generated table as required.</p>
-                <p>Before defining the individual test scenarios, verify the instance and field mappings for each column. If any changes are necessary, use the <b>Test Editor</b> tab to update the mapping.</p>
-                <p>Now, define the test scenarios. Each cell of the table must contain a valid expression.</p>
-
-                <p>Values in the GIVEN part of the table are evaluated as literal expressions, whereas values in the EXPECT section are evaluated as unary expressions. The correctness of these unary tests is verified using the results from a DMN evaluation.</p>
-                <p>DMN-based scenarios use the FEEL expression language. Supported data types are:</p>
-
+                <p id="dmnCheatSheetParagraph1"></p>
+                <p id="dmnCheatSheetParagraph2"></p>
+                <p id="dmnCheatSheetParagraph3"></p>
+                <p id="dmnCheatSheetParagraph4"></p>
+                <p id="dmnCheatSheetParagraph5"></p>
                 <ul>
-                    <li><i>numbers</i> and <i>strings</i> (strings must be delimited by quotation marks), for example <tt>"John Doe"</tt> or <tt>""</tt></li>
-                    <li><i>boolean values</i> (<tt>true</tt>, <tt>false</tt>, and <tt>null</tt>)</li>
-                    <li><i>dates</i> and <i>time</i>, for example <tt>date("2019-05-13")</tt> or <tt>time("14:10:00+02:00")</tt></li>
-                    <li><i>functions</i></li>
-                    <li><i>contexts</i>, for example <tt>{x : 5, y : 3}</tt></li>
-                    <li><i>ranges</i> and <i>lists</i>, for example <tt>[1 .. 10]</tt> or <tt>[2, 3, 4, 5]</tt></li>
+                    <li id="dmnCheatSheetList1"></li>
+                    <li id="dmnCheatSheetList2"></li>
+                    <li id="dmnCheatSheetList3"></li>
+                    <li id="dmnCheatSheetList4"></li>
+                    <li id="dmnCheatSheetList5"></li>
+                    <li id="dmnCheatSheetList6"></li>
                 </ul>
-
-                <p>An empty cell is skipped from the evaluation.</p>
+                <p id="dmnCheatSheetParagraph6"></p>
             </div>
         </div>
     </div>
