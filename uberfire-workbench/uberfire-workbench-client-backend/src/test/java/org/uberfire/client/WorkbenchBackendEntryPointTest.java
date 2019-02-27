@@ -16,6 +16,8 @@
 
 package org.uberfire.client;
 
+import java.util.stream.IntStream;
+
 import org.jboss.errai.bus.client.api.BusLifecycleEvent;
 import org.jboss.errai.bus.client.api.BusLifecycleListener;
 import org.jboss.errai.bus.client.api.ClientMessageBus;
@@ -24,14 +26,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 import org.slf4j.Logger;
 import org.uberfire.client.workbench.WorkbenchServicesProxy;
 import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
+import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -51,19 +54,25 @@ public class WorkbenchBackendEntryPointTest {
 
     @Test
     public void testErrorDisplay() {
-        final WorkbenchBackendEntryPoint workbenchBackendEntryPoint = new WorkbenchBackendEntryPoint(logger,
-                                                                                                     bus,
-                                                                                                     workbenchServices,
-                                                                                                     errorPopupPresenter);
+        final WorkbenchBackendEntryPoint workbenchBackendEntryPoint = spy(new WorkbenchBackendEntryPoint(logger,
+                                                                                                         bus,
+                                                                                                         workbenchServices,
+                                                                                                         errorPopupPresenter));
 
-        doAnswer(new Answer<Void>() {
-            @Override
-            public Void answer(InvocationOnMock invocation) throws Throwable {
-                final Object[] args = invocation.getArguments();
-                final ParameterizedCommand<Boolean> obj = (ParameterizedCommand<Boolean>) args[0];
-                obj.execute(false);
-                return null;
-            }
+        doAnswer(invocation -> {
+            final Object[] args = invocation.getArguments();
+            final Command afterShow = (Command) args[1];
+            afterShow.execute();
+            return null;
+        }).when(errorPopupPresenter).showMessage(anyString(),
+                                                 any(),
+                                                 any());
+
+        doAnswer((Answer<Void>) invocation -> {
+            final Object[] args = invocation.getArguments();
+            final ParameterizedCommand<Boolean> obj = (ParameterizedCommand<Boolean>) args[0];
+            obj.execute(false);
+            return null;
         }).when(workbenchServices).isWorkbenchOnCluster(any(ParameterizedCommand.class));
 
         workbenchBackendEntryPoint.init();
@@ -75,34 +84,58 @@ public class WorkbenchBackendEntryPointTest {
         final TransportError error = mock(TransportError.class);
         final BusLifecycleEvent event = new BusLifecycleEvent(bus,
                                                               error);
+
+        assertTrue(workbenchBackendEntryPoint.hasMoreRetries());
+
+        IntStream.range(0,
+                        5).forEach(i -> listener.busOffline(event));
+
+        verify(logger,
+               times(5)).error((anyString()));
+        verify(errorPopupPresenter,
+               never()).showMessage(anyString());
+        assertFalse(workbenchBackendEntryPoint.hasMoreRetries());
+
+        assertFalse(workbenchBackendEntryPoint.isOpen());
+
         listener.busOffline(event);
 
         verify(logger,
-               times(1)).error((anyString()));
+               times(6)).error((anyString()));
+        assertFalse(workbenchBackendEntryPoint.hasMoreRetries());
         verify(errorPopupPresenter,
-               times(1)).showMessage(anyString());
+               times(1)).showMessage(anyString(),
+                                     any(),
+                                     any());
 
-        listener.busOffline(event);
-
-        verify(logger,
-               times(1)).error((anyString()));
-        verify(errorPopupPresenter,
-               times(1)).showMessage(anyString());
+        assertTrue(workbenchBackendEntryPoint.isOpen());
 
         listener.busOnline(event);
 
         verify(logger,
                times(1)).info((anyString()));
         verify(errorPopupPresenter,
-               times(1)).showMessage(anyString());
+               times(1)).showMessage(anyString(),
+                                     any(),
+                                     any());
 
         listener.busOffline(event);
         listener.busOffline(event);
 
         verify(logger,
-               times(2)).error((anyString()));
+               times(8)).error((anyString()));
         verify(errorPopupPresenter,
-               times(2)).showMessage(anyString());
+               times(1)).showMessage(anyString(),
+                                     any(),
+                                     any());
+
+        IntStream.range(0,
+                        5).forEach(i -> listener.busOffline(event));
+
+        verify(errorPopupPresenter,
+               times(1)).showMessage(anyString(),
+                                     any(),
+                                     any());
     }
 
     @Test
@@ -112,14 +145,11 @@ public class WorkbenchBackendEntryPointTest {
                                                                                                      workbenchServices,
                                                                                                      errorPopupPresenter);
 
-        doAnswer(new Answer<Void>() {
-            @Override
-            public Void answer(InvocationOnMock invocation) throws Throwable {
-                final Object[] args = invocation.getArguments();
-                final ParameterizedCommand<Boolean> obj = (ParameterizedCommand<Boolean>) args[0];
-                obj.execute(true);
-                return null;
-            }
+        doAnswer((Answer<Void>) invocation -> {
+            final Object[] args = invocation.getArguments();
+            final ParameterizedCommand<Boolean> obj = (ParameterizedCommand<Boolean>) args[0];
+            obj.execute(true);
+            return null;
         }).when(workbenchServices).isWorkbenchOnCluster(any(ParameterizedCommand.class));
 
         workbenchBackendEntryPoint.init();
@@ -141,7 +171,7 @@ public class WorkbenchBackendEntryPointTest {
         listener.busOffline(event);
 
         verify(logger,
-               times(1)).error((anyString()));
+               times(2)).error((anyString()));
         verify(errorPopupPresenter,
                times(0)).showMessage(anyString());
 
@@ -156,7 +186,7 @@ public class WorkbenchBackendEntryPointTest {
         listener.busOffline(event);
 
         verify(logger,
-               times(2)).error((anyString()));
+               times(4)).error((anyString()));
         verify(errorPopupPresenter,
                times(0)).showMessage(anyString());
     }

@@ -26,10 +26,11 @@ import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.slf4j.Logger;
 import org.uberfire.client.workbench.WorkbenchServicesProxy;
 import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
-import org.uberfire.mvp.ParameterizedCommand;
 
 @EntryPoint
 public class WorkbenchBackendEntryPoint {
+
+    private static final int MAX_RETRIES = 5;
 
     private Logger logger;
 
@@ -41,6 +42,9 @@ public class WorkbenchBackendEntryPoint {
 
     private boolean isWorkbenchOnCluster = false;
     private boolean showedError = false;
+    private boolean isOpen = false;
+
+    private int retries = MAX_RETRIES;
 
     public WorkbenchBackendEntryPoint() {
 
@@ -60,29 +64,56 @@ public class WorkbenchBackendEntryPoint {
     @PostConstruct
     public void init() {
         bus.addLifecycleListener(new BusLifecycleAdapter() {
+
             @Override
             public void busOnline(final BusLifecycleEvent e) {
                 logger.info("Bus is back online.");
-                showedError = false;
+                setShowedError(false);
+                resetRetries();
             }
 
             @Override
             public void busOffline(final BusLifecycleEvent e) {
-                if (showedError) {
+                if (isShowedError()) {
                     return;
                 }
                 logger.error("Bus is offline. [" + e.getReason().getErrorMessage() + "]");
-                if (!isWorkbenchOnCluster) {
-                    errorPopupPresenter.showMessage("You've been disconnected.");
+                if (!isWorkbenchOnCluster && !hasMoreRetries() && !isOpen()) {
+
+                    errorPopupPresenter.showMessage("You've been disconnected.",
+                                                    () -> isOpen = true,
+                                                    () -> isOpen = false);
+                    setShowedError(true);
                 }
-                showedError = true;
+                decrementRetries();
             }
         });
-        workbenchServices.isWorkbenchOnCluster(new ParameterizedCommand<Boolean>() {
-            @Override
-            public void execute(final Boolean parameter) {
-                isWorkbenchOnCluster = !(parameter == null || parameter.equals(Boolean.FALSE));
-            }
-        });
+        workbenchServices.isWorkbenchOnCluster(parameter -> isWorkbenchOnCluster = !(parameter == null || parameter.equals(Boolean.FALSE)));
+    }
+
+    protected boolean isOpen() {
+        return isOpen;
+    }
+
+    protected void setShowedError(boolean value) {
+        showedError = value;
+    }
+
+    protected boolean isShowedError() {
+        return this.showedError;
+    }
+
+    protected boolean hasMoreRetries() {
+        return this.retries > 0;
+    }
+
+    protected void decrementRetries() {
+        if (retries > 0) {
+            this.retries--;
+        }
+    }
+
+    protected void resetRetries() {
+        this.retries = MAX_RETRIES;
     }
 }
