@@ -38,7 +38,7 @@
     <checkstyle.failOnViolation>true</checkstyle.failOnViolation>
     <checkstyle.logViolationsToConsole>true</checkstyle.logViolationsToConsole>
     <jacoco.haltOnFailure>true</jacoco.haltOnFailure>
-    <findbugs.failOnViolation>true</findbugs.failOnViolation>
+    <spotbugs.failOnViolation>true</spotbugs.failOnViolation>
   </properties>
 
   <repositories>

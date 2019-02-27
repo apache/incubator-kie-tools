@@ -117,7 +117,7 @@ public class GuidedDecisionTableModellerContextMenuSupport {
                 // selected cells of UIModel whose column index is that of the context menu selected cell
                 final Stream<SelectedCell> modelColumnSelectedCells = gridModel.getSelectedCells().stream().filter(cell -> cell.getColumnIndex() == modelColumnIndex);
                 // does row index of context menu selected cell match one in UIModel selected cells?
-                final boolean isContextMenuCellSelectedCell = modelColumnSelectedCells.map(GridData.SelectedCell::getRowIndex).anyMatch(rowIndex -> rowIndex == uiRowIndex);
+                final boolean isContextMenuCellSelectedCell = modelColumnSelectedCells.map(GridData.SelectedCell::getRowIndex).anyMatch(rowIndex -> uiRowIndex.equals(rowIndex));
                 // if cell selected for context menu is not one of the selected cells from CTRL or SHIFT then handle the selected cell
                 if (!isContextMenuCellSelectedCell) {
                     selectCell(uiRowIndex,
