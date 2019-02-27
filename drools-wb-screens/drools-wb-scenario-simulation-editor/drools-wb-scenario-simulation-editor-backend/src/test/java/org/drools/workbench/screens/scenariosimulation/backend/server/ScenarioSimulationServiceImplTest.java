@@ -15,13 +15,11 @@
  */
 package org.drools.workbench.screens.scenariosimulation.backend.server;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.inject.Named;
 
-import org.assertj.core.api.Assertions;
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.ScenarioJunitActivator;
 import org.drools.workbench.screens.scenariosimulation.backend.server.util.ScenarioSimulationBuilder;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
@@ -77,85 +75,88 @@ public class ScenarioSimulationServiceImplTest {
 
     @Mock
     @Named("ioStrategy")
-    private IOService ioService;
+    private IOService ioServiceMock;
 
     @Mock
-    private CommentedOptionFactory commentedOptionFactory;
+    private CommentedOptionFactory commentedOptionFactoryMock;
 
     @Mock
-    private SaveAndRenameServiceImpl<ScenarioSimulationModel, Metadata> saveAndRenameService;
+    private SaveAndRenameServiceImpl<ScenarioSimulationModel, Metadata> saveAndRenameServiceMock;
 
     @Mock
-    private PathResolver pathResolver;
+    private PathResolver pathResolverMock;
 
     @Mock
-    protected KieServiceOverviewLoader overviewLoader;
+    protected KieServiceOverviewLoader overviewLoaderMock;
 
     @Mock
-    protected MetadataServerSideService metadataService;
+    protected MetadataServerSideService metadataServiceMock;
 
     @Mock
-    private DeleteService deleteService;
+    private DeleteService deleteServiceMock;
 
     @Mock
-    private RenameService renameService;
+    private RenameService renameServiceMock;
 
     @Mock
-    private CopyService copyService;
+    private CopyService copyServiceMock;
 
     @Mock
-    private User user;
+    private User userMock;
 
     @Mock
-    private ScenarioRunnerServiceImpl scenarioRunnerService;
+    private ScenarioRunnerServiceImpl scenarioRunnerServiceMock;
 
     @Mock
-    private POMService pomService;
+    private POMService pomServiceMock;
 
     @Mock
-    private org.uberfire.java.nio.file.Path activatorPath;
+    private org.uberfire.java.nio.file.Path activatorPathMock;
 
     @Mock
-    private KieModuleService kieModuleService;
+    private KieModuleService kieModuleServiceMock;
 
     @Mock
-    private KieModule module;
+    private KieModule kieModuleMock;
 
     @Mock
-    private POM projectPom;
+    private POM projectPomMock;
 
     @Mock
-    private GAV gav;
+    private GAV gavMock;
 
     @Mock
-    private Dependencies dependencies;
+    private Dependencies dependenciesMock;
 
     @Mock
-    private Package mockedPackage;
-
-    @InjectMocks
-    private ScenarioSimulationServiceImpl service = new ScenarioSimulationServiceImpl(mock(SafeSessionInfo.class));
+    private Package packageMock;
 
     @Mock
     private ScenarioSimulationBuilder scenarioSimulationBuilderMock;
 
-    private Path path = PathFactory.newPath("contextpath", "file:///contextpath");
+    @InjectMocks
+    private ScenarioSimulationServiceImpl service = new ScenarioSimulationServiceImpl(mock(SafeSessionInfo.class));
+
+    private Path path = PathFactory.newPath("contextPath", "file:///contextPath");
 
     @Before
     public void setup() throws Exception {
-        Set<Package> packages = new HashSet<>();
-        packages.add(new Package(path, path, path, path, path, "Test", "", ""));
-        when(kieModuleService.resolveModule(any())).thenReturn(module);
-        when(kieModuleService.resolvePackages(any(KieModule.class))).thenReturn(packages);
-        when(ioService.exists(activatorPath)).thenReturn(false);
+        Set<Package> testPackages = new HashSet<>();
+        Package testPackage = new Package(path, path, path, path, path, "Test", "", "");
+        testPackages.add(testPackage);
+        when(kieModuleServiceMock.resolveModule(any())).thenReturn(kieModuleMock);
+        when(kieModuleServiceMock.resolvePackages(any(KieModule.class))).thenReturn(testPackages);
+        when(kieModuleServiceMock.newPackage(any(), anyString())).thenReturn(testPackage);
+        when(kieModuleServiceMock.resolveDefaultPackage(any())).thenReturn(testPackage);
+        when(ioServiceMock.exists(activatorPathMock)).thenReturn(false);
 
-        when(kieModuleService.resolveModule(any())).thenReturn(module);
-        when(module.getPom()).thenReturn(projectPom);
-        when(projectPom.getGav()).thenReturn(gav);
-        when(gav.getGroupId()).thenReturn("Test");
-        when(projectPom.getDependencies()).thenReturn(dependencies);
-        when(ioService.exists(any(org.uberfire.java.nio.file.Path.class))).thenReturn(false);
-        when(mockedPackage.getPackageTestSrcPath()).thenReturn(path);
+        when(kieModuleServiceMock.resolveModule(any())).thenReturn(kieModuleMock);
+        when(kieModuleMock.getPom()).thenReturn(projectPomMock);
+        when(projectPomMock.getGav()).thenReturn(gavMock);
+        when(gavMock.getGroupId()).thenReturn("Test");
+        when(projectPomMock.getDependencies()).thenReturn(dependenciesMock);
+        when(ioServiceMock.exists(any(org.uberfire.java.nio.file.Path.class))).thenReturn(false);
+        when(packageMock.getPackageTestSrcPath()).thenReturn(path);
         when(scenarioSimulationBuilderMock.createSimulation(any(), any(), any())).thenReturn(new Simulation());
         service.scenarioSimulationBuilder = scenarioSimulationBuilderMock;
     }
@@ -164,15 +165,15 @@ public class ScenarioSimulationServiceImplTest {
     public void init() throws Exception {
         service.init();
 
-        verify(saveAndRenameService).init(service);
+        verify(saveAndRenameServiceMock).init(service);
     }
 
     @Test
     public void delete() throws Exception {
         service.delete(path,
                        "Removing this");
-        verify(deleteService).delete(path,
-                                     "Removing this");
+        verify(deleteServiceMock).delete(path,
+                                         "Removing this");
     }
 
     @Test
@@ -180,9 +181,9 @@ public class ScenarioSimulationServiceImplTest {
         service.rename(path,
                        "newName.scesim",
                        "comment");
-        verify(renameService).rename(path,
-                                     "newName.scesim",
-                                     "comment");
+        verify(renameServiceMock).rename(path,
+                                         "newName.scesim",
+                                         "comment");
     }
 
     @Test
@@ -190,9 +191,9 @@ public class ScenarioSimulationServiceImplTest {
         service.copy(path,
                      "newName.scesim",
                      "comment");
-        verify(copyService).copy(path,
-                                 "newName.scesim",
-                                 "comment");
+        verify(copyServiceMock).copy(path,
+                                     "newName.scesim",
+                                     "comment");
     }
 
     @Test
@@ -202,10 +203,10 @@ public class ScenarioSimulationServiceImplTest {
                      "newName.scesim",
                      folder,
                      "comment");
-        verify(copyService).copy(path,
-                                 "newName.scesim",
-                                 folder,
-                                 "comment");
+        verify(copyServiceMock).copy(path,
+                                     "newName.scesim",
+                                     folder,
+                                     "comment");
     }
 
     @Test
@@ -217,11 +218,11 @@ public class ScenarioSimulationServiceImplTest {
                               metadata,
                               model,
                               "comment");
-        verify(saveAndRenameService).saveAndRename(path,
-                                                   "newName.scesim",
-                                                   metadata,
-                                                   model,
-                                                   "comment");
+        verify(saveAndRenameServiceMock).saveAndRename(path,
+                                                       "newName.scesim",
+                                                       metadata,
+                                                       model,
+                                                       "comment");
     }
 
     @Test
@@ -233,15 +234,15 @@ public class ScenarioSimulationServiceImplTest {
                                              "Commit comment");
 
         assertNotNull(returnPath);
-        verify(ioService).write(any(org.uberfire.java.nio.file.Path.class),
-                                anyString(),
-                                anyMap(),
-                                any(CommentedOption.class));
+        verify(ioServiceMock).write(any(org.uberfire.java.nio.file.Path.class),
+                                    anyString(),
+                                    anyMap(),
+                                    any(CommentedOption.class));
     }
 
     @Test
     public void createRULEScenario() throws Exception {
-        doReturn(false).when(ioService).exists(any());
+        doReturn(false).when(ioServiceMock).exists(any());
         ScenarioSimulationModel model = new ScenarioSimulationModel();
         assertNull(model.getSimulation());
         final Path returnPath = service.create(this.path,
@@ -253,14 +254,14 @@ public class ScenarioSimulationServiceImplTest {
 
         assertNotNull(returnPath);
         assertNotNull(model.getSimulation());
-        verify(ioService, times(2)).write(any(org.uberfire.java.nio.file.Path.class),
-                                          anyString(),
-                                          any(CommentedOption.class));
+        verify(ioServiceMock, times(2)).write(any(org.uberfire.java.nio.file.Path.class),
+                                              anyString(),
+                                              any(CommentedOption.class));
     }
 
     @Test
     public void createDMNScenario() throws Exception {
-        doReturn(false).when(ioService).exists(any());
+        doReturn(false).when(ioServiceMock).exists(any());
         ScenarioSimulationModel model = new ScenarioSimulationModel();
         assertNull(model.getSimulation());
         final Path returnPath = service.create(this.path,
@@ -272,14 +273,14 @@ public class ScenarioSimulationServiceImplTest {
 
         assertNotNull(returnPath);
         assertNotNull(model.getSimulation());
-        verify(ioService, times(2)).write(any(org.uberfire.java.nio.file.Path.class),
-                                          anyString(),
-                                          any(CommentedOption.class));
+        verify(ioServiceMock, times(2)).write(any(org.uberfire.java.nio.file.Path.class),
+                                              anyString(),
+                                              any(CommentedOption.class));
     }
 
     @Test(expected = FileAlreadyExistsException.class)
     public void createFileExists() throws Exception {
-        doReturn(true).when(ioService).exists(any());
+        doReturn(true).when(ioServiceMock).exists(any());
         ScenarioSimulationModel model = new ScenarioSimulationModel();
         service.create(this.path,
                        "test.scesim",
@@ -289,51 +290,78 @@ public class ScenarioSimulationServiceImplTest {
 
     @Test
     public void runScenario() throws Exception {
-        doReturn("test user").when(user).getIdentifier();
+        doReturn("test userMock").when(userMock).getIdentifier();
 
         final Path path = mock(Path.class);
         final ScenarioSimulationModel model = new ScenarioSimulationModel();
 
         service.runScenario(path, model);
 
-        verify(scenarioRunnerService).runTest("test user",
-                                              path,
-                                              model);
+        verify(scenarioRunnerServiceMock).runTest("test userMock",
+                                                  path,
+                                                  model);
     }
 
     @Test
     public void createActivatorIfNotExistTest() {
         service.createActivatorIfNotExist(path);
 
-        verify(ioService, times(1))
+        verify(ioServiceMock, times(1))
                 .write(any(org.uberfire.java.nio.file.Path.class),
                        anyString(),
                        any(OpenOption.class));
 
-        when(kieModuleService.resolvePackages(any(KieModule.class))).thenReturn(Collections.emptySet());
-        Assertions.assertThatThrownBy(() -> service.createActivatorIfNotExist(path))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Impossible to retrieve package information from path: file:///contextpath");
+        reset(ioServiceMock);
+        when(ioServiceMock.exists(any())).thenReturn(true);
+        service.createActivatorIfNotExist(path);
+
+        verify(ioServiceMock, never())
+                .write(any(org.uberfire.java.nio.file.Path.class),
+                       anyString(),
+                       any(OpenOption.class));
+    }
+
+    @Test
+    public void getOrCreateJunitActivatorPackageTest() {
+        service.getOrCreateJunitActivatorPackage(kieModuleMock);
+        verify(kieModuleServiceMock, times(1)).newPackage(any(), anyString());
+
+        reset(kieModuleServiceMock);
+        when(kieModuleServiceMock.resolveDefaultPackage(any())).thenReturn(packageMock);
+        when(kieModuleServiceMock.resolvePackage(any())).thenReturn(packageMock);
+        service.getOrCreateJunitActivatorPackage(kieModuleMock);
+        verify(kieModuleServiceMock, never()).newPackage(any(), anyString());
+    }
+
+    @Test
+    public void removeOldActivatorIfExistsTest() {
+        service.removeOldActivatorIfExists(kieModuleMock);
+        verify(ioServiceMock, times(1)).deleteIfExists(any());
+
+        reset(ioServiceMock);
+        when(kieModuleServiceMock.resolvePackages(any(KieModule.class))).thenReturn(new HashSet<>());
+        service.removeOldActivatorIfExists(kieModuleMock);
+        verify(ioServiceMock, never()).deleteIfExists(any());
     }
 
     @Test
     public void ensureDependenciesTest() {
-        service.ensureDependencies(module);
+        service.ensureDependencies(kieModuleMock);
 
-        verify(pomService, times(1)).save(any(Path.class),
-                                          any(POM.class),
-                                          any(Metadata.class),
-                                          anyString());
+        verify(pomServiceMock, times(1)).save(any(Path.class),
+                                              any(POM.class),
+                                              any(Metadata.class),
+                                              anyString());
 
-        reset(pomService);
-        when(dependencies.containsDependency(any())).thenReturn(true);
+        reset(pomServiceMock);
+        when(dependenciesMock.containsDependency(any())).thenReturn(true);
 
-        service.ensureDependencies(module);
+        service.ensureDependencies(kieModuleMock);
 
-        verify(pomService, never()).save(any(Path.class),
-                                         any(POM.class),
-                                         any(Metadata.class),
-                                         anyString());
+        verify(pomServiceMock, never()).save(any(Path.class),
+                                             any(POM.class),
+                                             any(Metadata.class),
+                                             anyString());
     }
 
     @Test
@@ -351,6 +379,6 @@ public class ScenarioSimulationServiceImplTest {
 
     @Test
     public void getActivatorPathTest() {
-        assertTrue(service.getActivatorPath(mockedPackage).endsWith(ScenarioJunitActivator.ACTIVATOR_CLASS_NAME + ".java"));
+        assertTrue(service.getActivatorPath(packageMock).endsWith(ScenarioJunitActivator.ACTIVATOR_CLASS_NAME + ".java"));
     }
 }
