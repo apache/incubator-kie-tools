@@ -22,9 +22,10 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGen
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.BaseAdHocSubprocessTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.BaseProcessData;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.HasProcessData;
 
 public abstract class BaseAdHocSubprocess<P extends BaseProcessData, S extends BaseAdHocSubprocessTaskExecutionSet>
-        extends BaseSubprocess {
+        extends BaseSubprocess implements HasProcessData<P> {
 
     public BaseAdHocSubprocess(BPMNGeneralSet general,
                                BackgroundSet backgroundSet,

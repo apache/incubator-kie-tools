@@ -33,6 +33,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.subProcess.execution.EventSubprocessExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.HasProcessData;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessData;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
@@ -57,7 +58,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
         defaultFieldSettings = {@FieldParam(name = FIELD_CONTAINER_PARAM, value = COLLAPSIBLE_CONTAINER)}
 )
 
-public class EventSubprocess extends BaseSubprocess {
+public class EventSubprocess extends BaseSubprocess implements HasProcessData<ProcessData> {
 
     @PropertySet
     @FormField(afterElement = "general")
@@ -104,6 +105,7 @@ public class EventSubprocess extends BaseSubprocess {
         labels.remove("sequence_end");
     }
 
+    @Override
     public ProcessData getProcessData() {
         return processData;
     }

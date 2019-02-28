@@ -16,31 +16,28 @@
 
 package org.kie.workbench.common.stunner.bpmn.documentation.model.general;
 
-import java.util.Map;
-
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
-import org.kie.workbench.common.stunner.core.client.util.js.JsConverter;
 import org.kie.workbench.common.stunner.core.client.util.js.KeyValue;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
-public class DataTotal {
+public class ProcessVariablesTotal {
 
     private Integer total;
     private Integer totalVariables;
     private KeyValue[] variables;
 
-    private DataTotal() {
+    private ProcessVariablesTotal() {
 
     }
 
     @JsOverlay
-    public static final DataTotal create(Integer total, Integer totalVariables, Map<String, String> variables) {
-        final DataTotal instance = new DataTotal();
+    public static final ProcessVariablesTotal create(Integer total, Integer totalVariables, KeyValue[] variables) {
+        final ProcessVariablesTotal instance = new ProcessVariablesTotal();
         instance.total = total;
         instance.totalVariables = totalVariables;
-        instance.variables = JsConverter.fromMap(variables);
+        instance.variables = variables;
         return instance;
     }
 }

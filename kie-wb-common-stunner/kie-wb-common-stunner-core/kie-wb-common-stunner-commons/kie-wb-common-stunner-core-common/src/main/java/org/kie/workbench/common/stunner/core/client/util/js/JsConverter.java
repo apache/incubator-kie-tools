@@ -16,16 +16,21 @@
 
 package org.kie.workbench.common.stunner.core.client.util.js;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 public class JsConverter {
 
-    public static KeyValue[] fromMap(Map<?, ?> map) {
-        return map.entrySet()
+    public static KeyValue[] fromMap(Map map) {
+        return fromEntries(map.entrySet());
+    }
+
+    public static KeyValue[] fromEntries(Collection<Map.Entry> entries) {
+        return entries
                 .stream()
                 .map(v -> KeyValue.create(v.getKey(), v.getValue()))
                 .collect(Collectors.toList())
-                .toArray(new KeyValue[map.size()]);
+                .toArray(new KeyValue[entries.size()]);
     }
 }

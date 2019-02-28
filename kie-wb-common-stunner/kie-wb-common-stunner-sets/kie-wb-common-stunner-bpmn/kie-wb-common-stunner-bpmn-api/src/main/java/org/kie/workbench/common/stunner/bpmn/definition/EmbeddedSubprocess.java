@@ -34,6 +34,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.subProcess.execution.EmbeddedSubprocessExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.HasProcessData;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessData;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
@@ -57,7 +58,8 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
         policy = FieldPolicy.ONLY_MARKED,
         defaultFieldSettings = {@FieldParam(name = FIELD_CONTAINER_PARAM, value = COLLAPSIBLE_CONTAINER)}
 )
-public class EmbeddedSubprocess extends BaseSubprocess implements DataIOModel {
+public class EmbeddedSubprocess extends BaseSubprocess implements DataIOModel,
+                                                                  HasProcessData<ProcessData> {
 
     @PropertySet
     @FormField(afterElement = "general")
@@ -116,6 +118,7 @@ public class EmbeddedSubprocess extends BaseSubprocess implements DataIOModel {
         return false;
     }
 
+    @Override
     public ProcessData getProcessData() {
         return processData;
     }

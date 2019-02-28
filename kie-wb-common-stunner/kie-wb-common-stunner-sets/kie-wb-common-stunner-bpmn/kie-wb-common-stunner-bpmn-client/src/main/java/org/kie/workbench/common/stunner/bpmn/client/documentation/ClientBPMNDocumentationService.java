@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.documentation;
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +49,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.background.Bord
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.AdHoc;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.DiagramSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Executable;
+import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.GlobalVariables;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Id;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Package;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Version;
@@ -77,7 +77,9 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.DecisionNa
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.DmnModelName;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.IsMultipleInstance;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.Namespace;
-import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessData;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.BaseProcessData;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.BaseProcessVariables;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.HasProcessData;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessVariableSerializer;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessVariables;
 import org.kie.workbench.common.stunner.bpmn.documentation.BPMNDocumentationService;
@@ -85,9 +87,9 @@ import org.kie.workbench.common.stunner.bpmn.documentation.model.BPMNDocumentati
 import org.kie.workbench.common.stunner.bpmn.documentation.model.element.Element;
 import org.kie.workbench.common.stunner.bpmn.documentation.model.element.ElementDetails;
 import org.kie.workbench.common.stunner.bpmn.documentation.model.element.ElementTotal;
-import org.kie.workbench.common.stunner.bpmn.documentation.model.general.DataTotal;
 import org.kie.workbench.common.stunner.bpmn.documentation.model.general.General;
 import org.kie.workbench.common.stunner.bpmn.documentation.model.general.ProcessOverview;
+import org.kie.workbench.common.stunner.bpmn.documentation.model.general.ProcessVariablesTotal;
 import org.kie.workbench.common.stunner.bpmn.workitem.IconDefinition;
 import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTask;
 import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinition;
@@ -99,6 +101,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasFileExport
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.shape.ImageStripGlyph;
+import org.kie.workbench.common.stunner.core.client.util.js.JsConverter;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionId;
 import org.kie.workbench.common.stunner.core.definition.adapter.PropertyAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
@@ -130,8 +133,7 @@ public class ClientBPMNDocumentationService implements BPMNDocumentationService 
     private final ClientTranslationService translationService;
     private final WorkItemDefinitionClientRegistry workItemDefinitionClientRegistry;
     private final DefinitionHelper definitionHelper;
-    @Inject
-    private PropertyDecorators propertyDecorators;
+    private final PropertyDecorators propertyDecorators;
 
     @Inject
     public ClientBPMNDocumentationService(final ClientMustacheTemplateRenderer mustacheTemplateRenderer,
@@ -143,7 +145,8 @@ public class ClientBPMNDocumentationService implements BPMNDocumentationService 
                                           final BPMNCategoryDefinitionProvider categoryDefinitionProvider,
                                           final DOMGlyphRenderers glyphRenderer,
                                           final ClientTranslationService translationService,
-                                          final WorkItemDefinitionClientRegistry workItemDefinitionClientRegistry
+                                          final WorkItemDefinitionClientRegistry workItemDefinitionClientRegistry,
+                                          final PropertyDecorators propertyDecorators
 
     ) {
         this.mustacheTemplateRenderer = mustacheTemplateRenderer;
@@ -156,6 +159,7 @@ public class ClientBPMNDocumentationService implements BPMNDocumentationService 
         this.glyphRenderer = glyphRenderer;
         this.translationService = translationService;
         this.workItemDefinitionClientRegistry = workItemDefinitionClientRegistry;
+        this.propertyDecorators = propertyDecorators;
         definitionHelper = new DefinitionHelper();
     }
 
@@ -163,16 +167,9 @@ public class ClientBPMNDocumentationService implements BPMNDocumentationService 
     public BPMNDocumentation processDocumentation(Diagram diagram) {
         final Graph<?, Node> graph = diagram.getGraph();
 
-        final Optional<BPMNDiagramImpl> diagramModel = StreamSupport.stream(graph.nodes().spliterator(), false)
-                .map(Node::getContent)
-                .filter(c -> c instanceof Definition)
-                .map(c -> (Definition) c)
-                .map(Definition::getDefinition)
-                .filter(d -> d instanceof BPMNDiagramImpl)
-                .map(d -> (BPMNDiagramImpl) d)
-                .findFirst();
+        final Optional<BPMNDiagramImpl> diagramModel = getDiagramModel(graph).findFirst();
 
-        return BPMNDocumentation.create(getProcessOverview(diagramModel),
+        return BPMNDocumentation.create(getProcessOverview(diagramModel, graph),
                                         getElementsDetails(graph),
                                         getDiagramImage(Optional.ofNullable(sessionManager.getCurrentSession())
                                                                 .map(s -> ((ClientSession) s).getCanvasHandler())
@@ -180,8 +177,19 @@ public class ClientBPMNDocumentationService implements BPMNDocumentationService 
                                                                 .map(c -> (AbstractCanvasHandler) c)));
     }
 
-    private ProcessOverview getProcessOverview(Optional<BPMNDiagramImpl> diagramModel) {
-        return ProcessOverview.create(getGeneral(diagramModel), getDataTotal(diagramModel));
+    private Stream<BPMNDiagramImpl> getDiagramModel(Graph<?, Node> graph) {
+        return StreamSupport.stream(graph.nodes().spliterator(), false)
+                .map(Node::getContent)
+                .filter(c -> c instanceof Definition)
+                .map(c -> (Definition) c)
+                .map(Definition::getDefinition)
+                .filter(d -> d instanceof BPMNDiagramImpl)
+                .map(d -> (BPMNDiagramImpl) d);
+    }
+
+    private ProcessOverview getProcessOverview(final Optional<BPMNDiagramImpl> diagramModel,
+                                               final Graph<?, Node> graph) {
+        return ProcessOverview.create(getGeneral(diagramModel), getAllProcessVariables(graph));
     }
 
     private General getGeneral(Optional<BPMNDiagramImpl> diagramModel) {
@@ -244,12 +252,28 @@ public class ClientBPMNDocumentationService implements BPMNDocumentationService 
                 .build();
     }
 
-    private DataTotal getDataTotal(Optional<BPMNDiagramImpl> diagramModel) {
-        final Optional<ProcessVariables> processVariables =
-                diagramModel.map(BPMNDiagramImpl::getProcessData).map(ProcessData::getProcessVariables);
-        final Map<String, String> variablesMap =
-                processVariables.map(ProcessVariables::getValue).map(ProcessVariableSerializer::deserialize).orElse(Collections.emptyMap());
-        return DataTotal.create(variablesMap.size(), variablesMap.size(), variablesMap);
+    private ProcessVariablesTotal getAllProcessVariables(final Graph<?, Node> graph) {
+        //Computing Global, Process, Sub-Processes variables
+        final List<Map.Entry> variables = Stream.concat(
+                getDiagramModel(graph)
+                        .map(BPMNDiagram::getDiagramSet)
+                        .map(DiagramSet::getGlobalVariables)
+                        .map(GlobalVariables::getValue),
+                StreamSupport.stream(graph.nodes().spliterator(), false)
+                        .map(Node::getContent)
+                        .filter(c -> c instanceof Definition)
+                        .map(c -> (Definition) c)
+                        .map(Definition::getDefinition)
+                        .filter(o -> o instanceof HasProcessData)
+                        .map(o -> (HasProcessData<BaseProcessData>) o)
+                        .map(HasProcessData::getProcessData)
+                        .map(BaseProcessData::getProcessVariables)
+                        .map(BaseProcessVariables::getValue))
+                .map(ProcessVariableSerializer::deserialize)
+                .flatMap(v -> v.entrySet().stream())
+                .collect(Collectors.toList());
+
+        return ProcessVariablesTotal.create(variables.size(), variables.size(), JsConverter.fromEntries(variables));
     }
 
     private ElementDetails getElementsDetails(final Graph<?, Node> graph) {
