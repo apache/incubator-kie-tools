@@ -22,10 +22,12 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.api.io.ResourceType;
 import org.kie.workbench.common.forms.jbpm.model.authoring.JBPMProcessModel;
 import org.kie.workbench.common.services.backend.project.ModuleClassLoaderHelper;
 import org.kie.workbench.common.services.shared.project.KieModule;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
@@ -37,9 +39,16 @@ import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -113,9 +122,9 @@ public class BPMFinderServiceImplTest {
         bpmnFormModelGenerator = new BPMNFormModelGeneratorImpl(moduleService,
                                                                 moduleClassLoaderHelper);
 
-        finderService = new BPMFinderServiceImpl(ioService,
-                                                 moduleService,
-                                                 bpmnFormModelGenerator);
+        finderService = spy(new BPMFinderServiceImpl(ioService,
+                                                     moduleService,
+                                                     bpmnFormModelGenerator));
 
         finderService.init();
     }
@@ -150,6 +159,12 @@ public class BPMFinderServiceImplTest {
                 fail("Unexpected process: " + model.getProcessFormModel().getProcessId());
             }
         });
+
+        ResourceType.getResourceType("BPMN2").getAllExtensions().stream()
+                .forEach(ext -> verify(finderService, times(1))
+                        .scannProcessesForType(any(org.uberfire.backend.vfs.Path.class),
+                                               eq(ext),
+                                               any(BPMFinderServiceImpl.GenerationConfig.class)));
     }
 
     @Test
@@ -188,5 +203,13 @@ public class BPMFinderServiceImplTest {
                      model.getProcessFormModel().getProcessId());
         assertEquals(expectedTasks,
                      model.getTaskFormModels().size());
+
+        final ArgumentCaptor<String> extCaptor = ArgumentCaptor.forClass(String.class);
+        verify(finderService, atLeast(0)).scannProcessesForType(any(org.uberfire.backend.vfs.Path.class),
+                                                                extCaptor.capture(),
+                                                                any(BPMFinderServiceImpl.GenerationConfig.class));
+        final List<String> extValues = extCaptor.getAllValues();
+        assertFalse(extValues.isEmpty());
+        assertTrue(ResourceType.getResourceType("BPMN2").getAllExtensions().containsAll(extValues));
     }
 }

@@ -20,33 +20,20 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Typed;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.ButtonGroup;
-import org.gwtbootstrap3.client.ui.DropDownMenu;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
-import org.gwtbootstrap3.client.ui.constants.IconPosition;
-import org.gwtbootstrap3.client.ui.constants.IconType;
-import org.gwtbootstrap3.client.ui.constants.Pull;
-import org.gwtbootstrap3.client.ui.constants.Toggle;
 import org.kie.workbench.common.stunner.bpmn.project.client.resources.BPMNClientConstants;
 import org.kie.workbench.common.stunner.client.widgets.menu.MenuUtils;
-import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
-import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
-import org.kie.workbench.common.stunner.core.client.session.command.ClientSessionCommand;
-import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectEditorMenuSessionItems;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.menu.MenuItem;
 
 @Dependent
 @Typed(BPMNProjectEditorMenuSessionItems.class)
-public class BPMNProjectEditorMenuSessionItems extends AbstractProjectEditorMenuSessionItems<BPMNProjectDiagramEditorMenuItemsBuilder> {
+public class BPMNProjectEditorMenuSessionItems extends AbstractProcessProjectEditorMenuSessionItems<BPMNProjectDiagramEditorMenuItemsBuilder> {
 
     private Command onMigrate;
     private MenuItem migrateMenuItem;
-    private MenuItem formsItem;
 
     @Inject
     public BPMNProjectEditorMenuSessionItems(final BPMNProjectDiagramEditorMenuItemsBuilder itemsBuilder,
@@ -66,17 +53,12 @@ public class BPMNProjectEditorMenuSessionItems extends AbstractProjectEditorMenu
     public void populateMenu(final FileMenuBuilder menu) {
         super.populateMenu(menu);
         migrateMenuItem = newMigrateMenuItem();
-        formsItem = newFormsGenerationMenuItem(() -> executeFormsCommand(getBPMNCommands().getGenerateProcessFormsSessionCommand()),
-                                               () -> executeFormsCommand(getBPMNCommands().getGenerateDiagramFormsSessionCommand()),
-                                               () -> executeFormsCommand(getBPMNCommands().getGenerateSelectedFormsSessionCommand()));
-        menu.addNewTopLevelMenu(formsItem)
-                .addNewTopLevelMenu(migrateMenuItem);
+        menu.addNewTopLevelMenu(migrateMenuItem);
     }
 
     @Override
     public void setEnabled(final boolean enabled) {
         super.setEnabled(enabled);
-        formsItem.setEnabled(enabled);
         migrateMenuItem.setEnabled(enabled);
     }
 
@@ -84,8 +66,27 @@ public class BPMNProjectEditorMenuSessionItems extends AbstractProjectEditorMenu
     public void destroy() {
         super.destroy();
         onMigrate = null;
-        formsItem = null;
         migrateMenuItem = null;
+    }
+
+    @Override
+    protected String getEditorGenerateProcessFormPropertyKey() {
+        return BPMNClientConstants.EditorGenerateProcessForm;
+    }
+
+    @Override
+    protected String getEditorGenerateAllFormsPropertyKey() {
+        return BPMNClientConstants.EditorGenerateAllForms;
+    }
+
+    @Override
+    protected String getEditorGenerateSelectionFormsPropertyKey() {
+        return BPMNClientConstants.EditorGenerateSelectionForms;
+    }
+
+    @Override
+    protected String getEditorFormGenerationTitlePropertyKey() {
+        return BPMNClientConstants.EditorFormGenerationTitle;
     }
 
     private MenuItem newMigrateMenuItem() {
@@ -95,65 +96,5 @@ public class BPMNProjectEditorMenuSessionItems extends AbstractProjectEditorMenu
             addClickHandler(clickEvent -> onMigrate.execute());
         }});
         return MenuUtils.buildItem(buttonWrapper);
-    }
-
-    private MenuItem newFormsGenerationMenuItem(final Command generateProcessForm,
-                                                final Command generateAllForms,
-                                                final Command generateSelectedForms) {
-        final DropDownMenu menu = new DropDownMenu() {{
-            setPull(Pull.RIGHT);
-        }};
-
-        menu.add(new AnchorListItem(getTranslationService().getValue(BPMNClientConstants.EditorGenerateProcessForm)) {{
-            setIcon(IconType.LIST_ALT);
-            setIconPosition(IconPosition.LEFT);
-            setTitle(getTranslationService().getValue(BPMNClientConstants.EditorGenerateProcessForm));
-            addClickHandler(event -> generateProcessForm.execute());
-        }});
-        menu.add(new AnchorListItem(getTranslationService().getValue(BPMNClientConstants.EditorGenerateAllForms)) {{
-            setIcon(IconType.LIST_ALT);
-            setIconPosition(IconPosition.LEFT);
-            setTitle(getTranslationService().getValue(BPMNClientConstants.EditorGenerateAllForms));
-            addClickHandler(event -> generateAllForms.execute());
-        }});
-        menu.add(new AnchorListItem(getTranslationService().getValue(BPMNClientConstants.EditorGenerateSelectionForms)) {{
-            setIcon(IconType.LIST_ALT);
-            setIconPosition(IconPosition.LEFT);
-            setTitle(getTranslationService().getValue(BPMNClientConstants.EditorGenerateSelectionForms));
-            addClickHandler(event -> generateSelectedForms.execute());
-        }});
-
-        final Button button = new Button() {{
-            setToggleCaret(true);
-            setDataToggle(Toggle.DROPDOWN);
-            setIcon(IconType.LIST_ALT);
-            setSize(ButtonSize.SMALL);
-            setTitle(getTranslationService().getValue(BPMNClientConstants.EditorFormGenerationTitle));
-        }};
-        final IsWidget group = MenuUtils.buildHasEnabledWidget(new ButtonGroup() {{
-                                                                   add(button);
-                                                                   add(menu);
-                                                               }},
-                                                               button);
-        return MenuUtils.buildItem(group);
-    }
-
-    private void executeFormsCommand(final AbstractClientSessionCommand command) {
-        loadingStarts();
-        command.execute(new ClientSessionCommand.Callback<ClientRuntimeError>() {
-            @Override
-            public void onSuccess() {
-                loadingCompleted();
-            }
-
-            @Override
-            public void onError(final ClientRuntimeError error) {
-                BPMNProjectEditorMenuSessionItems.this.onError(error.getMessage());
-            }
-        });
-    }
-
-    private BPMNEditorSessionCommands getBPMNCommands() {
-        return (BPMNEditorSessionCommands) getCommands();
     }
 }

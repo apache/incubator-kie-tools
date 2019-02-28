@@ -20,17 +20,37 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Typed;
 import javax.inject.Inject;
 
+import org.kie.workbench.common.stunner.bpmn.project.client.editor.AbstractProcessProjectEditorMenuSessionItems;
+import org.kie.workbench.common.stunner.cm.project.client.resources.i18n.CaseManagementProjectClientConstants;
 import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
-import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectEditorMenuSessionItems;
 
 @Dependent
 @Typed(CaseManagementProjectEditorMenuSessionItems.class)
-public class CaseManagementProjectEditorMenuSessionItems extends AbstractProjectEditorMenuSessionItems<CaseManagementProjectDiagramEditorMenuItemsBuilder> {
+public class CaseManagementProjectEditorMenuSessionItems extends AbstractProcessProjectEditorMenuSessionItems<CaseManagementProjectDiagramEditorMenuItemsBuilder> {
 
     @Inject
     public CaseManagementProjectEditorMenuSessionItems(final CaseManagementProjectDiagramEditorMenuItemsBuilder itemsBuilder,
                                                        final @CaseManagementEditor CaseManagementEditorSessionCommands sessionCommands) {
-        super(itemsBuilder,
-              sessionCommands);
+        super(itemsBuilder, sessionCommands);
+    }
+
+    @Override
+    protected String getEditorGenerateProcessFormPropertyKey() {
+        return CaseManagementProjectClientConstants.CaseManagementEditorGenerateProcessForm;
+    }
+
+    @Override
+    protected String getEditorGenerateAllFormsPropertyKey() {
+        return CaseManagementProjectClientConstants.CaseManagementEditorGenerateAllForms;
+    }
+
+    @Override
+    protected String getEditorGenerateSelectionFormsPropertyKey() {
+        return CaseManagementProjectClientConstants.CaseManagementEditorGenerateSelectionForms;
+    }
+
+    @Override
+    protected String getEditorFormGenerationTitlePropertyKey() {
+        return CaseManagementProjectClientConstants.CaseManagementEditorFormGenerationTitle;
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,21 +14,18 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.cm.project.client.editor;
+package org.kie.workbench.common.stunner.bpmn.backend.forms.gen.util;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.stunner.bpmn.project.client.editor.AbstractProcessEditorSessionCommands;
-import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
-import org.kie.workbench.common.stunner.core.client.session.command.ManagedClientSessionCommands;
+import org.kie.workbench.common.stunner.bpmn.backend.BPMNBackendService;
 
 @Dependent
-@CaseManagementEditor
-public class CaseManagementEditorSessionCommands extends AbstractProcessEditorSessionCommands {
+public class BPMNFormGenerationModelProviderHelper extends FormGenerationModelProviderHelper {
 
     @Inject
-    public CaseManagementEditorSessionCommands(final ManagedClientSessionCommands commands) {
-        super(commands);
+    public BPMNFormGenerationModelProviderHelper(final BPMNBackendService backendService) {
+        super(backendService);
     }
 }

@@ -17,7 +17,7 @@
 package org.kie.workbench.common.stunner.bpmn.client.forms.util;
 
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
-import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
+import org.kie.workbench.common.stunner.bpmn.definition.BaseUserTask;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
@@ -39,10 +39,6 @@ public class ContextUtils {
     public static boolean isFormGenerationSupported(final Element<?> element) {
         return null != element.asNode() &&
                 element.getContent() instanceof View &&
-                ((Element<View<?>>) element)
-                        .getContent()
-                        .getDefinition()
-                        .getClass()
-                        .equals(UserTask.class);
+                ((Element<View<?>>) element).getContent().getDefinition() instanceof BaseUserTask;
     }
 }

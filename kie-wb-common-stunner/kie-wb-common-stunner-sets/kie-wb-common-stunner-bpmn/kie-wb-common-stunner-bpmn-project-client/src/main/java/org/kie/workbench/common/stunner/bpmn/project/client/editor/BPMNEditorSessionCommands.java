@@ -20,49 +20,14 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Typed;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.stunner.bpmn.client.forms.util.ContextUtils;
-import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.command.ManagedClientSessionCommands;
-import org.kie.workbench.common.stunner.forms.client.session.command.GenerateDiagramFormsSessionCommand;
-import org.kie.workbench.common.stunner.forms.client.session.command.GenerateProcessFormsSessionCommand;
-import org.kie.workbench.common.stunner.forms.client.session.command.GenerateSelectedFormsSessionCommand;
-import org.kie.workbench.common.stunner.project.client.session.EditorSessionCommands;
 
 @Dependent
 @Typed(BPMNEditorSessionCommands.class)
-public class BPMNEditorSessionCommands extends EditorSessionCommands {
+public class BPMNEditorSessionCommands extends AbstractProcessEditorSessionCommands {
 
     @Inject
     public BPMNEditorSessionCommands(final ManagedClientSessionCommands commands) {
         super(commands);
-    }
-
-    @Override
-    public void init() {
-        super.init();
-        getCommands()
-                .register(GenerateProcessFormsSessionCommand.class)
-                .register(GenerateDiagramFormsSessionCommand.class)
-                .register(GenerateSelectedFormsSessionCommand.class);
-    }
-
-    @Override
-    public EditorSessionCommands bind(final ClientSession session) {
-        super.bind(session);
-        getGenerateSelectedFormsSessionCommand()
-                .setElementAcceptor(ContextUtils::isFormGenerationSupported);
-        return this;
-    }
-
-    public GenerateProcessFormsSessionCommand getGenerateProcessFormsSessionCommand() {
-        return get(16);
-    }
-
-    public GenerateDiagramFormsSessionCommand getGenerateDiagramFormsSessionCommand() {
-        return get(17);
-    }
-
-    public GenerateSelectedFormsSessionCommand getGenerateSelectedFormsSessionCommand() {
-        return get(18);
     }
 }

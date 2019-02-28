@@ -34,10 +34,6 @@ public interface FormsMigrationConstants {
 
     String NEW_FOMRS_EXTENSION = "frm";
 
-    String BPMN_EXTENSION = "bpmn";
-
-    String BPMN2_EXTENSION = "bpmn2";
-
     String BPMN_PARSING_ERROR = "%s Cannot read process %s: something wrong happened reading the process file. The " +
             "migration will continue but forms related to this process won't be migrated. If you want to migrate its forms" +
             " please fix the process file and start the migration again\n";

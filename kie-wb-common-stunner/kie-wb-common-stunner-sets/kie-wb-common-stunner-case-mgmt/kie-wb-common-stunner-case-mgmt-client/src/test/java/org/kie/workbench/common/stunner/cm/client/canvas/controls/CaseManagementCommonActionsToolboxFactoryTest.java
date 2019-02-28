@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.bpmn.client.canvas.controls;
+package org.kie.workbench.common.stunner.cm.client.canvas.controls;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -49,7 +49,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class BPMNCommonActionsToolboxFactoryTest {
+public class CaseManagementCommonActionsToolboxFactoryTest {
 
     @Mock
     private AbstractCanvasHandler canvasHandler;
@@ -70,35 +70,27 @@ public class BPMNCommonActionsToolboxFactoryTest {
     @Mock
     private ActionsToolboxView view;
 
-    private BPMNCommonActionsToolboxFactory tested;
+    private CaseManagementCommonActionsToolboxFactory tested;
+
     private Node element;
+
     private ActionsToolboxHelper actionsToolboxHelper;
 
     @Before
-    public void init() {
+    public void setUp() throws Exception {
         element = new NodeImpl<>("node1");
-        when(commonActionToolbox.getActions(eq(canvasHandler),
-                                            eq(element))).thenReturn(Collections.singletonList(action1));
+        when(commonActionToolbox.getActions(eq(canvasHandler), eq(element))).thenReturn(Collections.singletonList(action1));
         generateFormsActions = spy(new ManagedInstanceStub<>(formGenerationToolboxAction));
         views = spy(new ManagedInstanceStub<>(view));
         actionsToolboxHelper = new ActionsToolboxHelper(commonActionToolbox, generateFormsActions);
-        tested = new BPMNCommonActionsToolboxFactory(generateFormsActions,
-                                                     views,
-                                                     actionsToolboxHelper);
-    }
-
-    @Test
-    public void testNewViewInstance() {
-        assertEquals(view, tested.newViewInstance());
+        tested = new CaseManagementCommonActionsToolboxFactory(generateFormsActions, views, actionsToolboxHelper);
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testGetActionsForSupportedNode() {
-        element.setContent(new ViewImpl<>(new UserTask(),
-                                          Bounds.create()));
-        final Collection<ToolboxAction<AbstractCanvasHandler>> actions = tested.getActions(canvasHandler,
-                                                                                           element);
+        element.setContent(new ViewImpl<>(new UserTask(), Bounds.create()));
+        final Collection<ToolboxAction<AbstractCanvasHandler>> actions = tested.getActions(canvasHandler, element);
         assertEquals(2, actions.size());
         assertTrue(actions.contains(action1));
         assertTrue(actions.contains(formGenerationToolboxAction));
@@ -107,10 +99,8 @@ public class BPMNCommonActionsToolboxFactoryTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testGetActionsForNotSupportedNode() {
-        element.setContent(new ViewImpl<>(new ScriptTask(),
-                                          Bounds.create()));
-        final Collection<ToolboxAction<AbstractCanvasHandler>> actions = tested.getActions(canvasHandler,
-                                                                                           element);
+        element.setContent(new ViewImpl<>(new ScriptTask(), Bounds.create()));
+        final Collection<ToolboxAction<AbstractCanvasHandler>> actions = tested.getActions(canvasHandler, element);
         assertEquals(1, actions.size());
         assertTrue(actions.contains(action1));
         assertFalse(actions.contains(formGenerationToolboxAction));

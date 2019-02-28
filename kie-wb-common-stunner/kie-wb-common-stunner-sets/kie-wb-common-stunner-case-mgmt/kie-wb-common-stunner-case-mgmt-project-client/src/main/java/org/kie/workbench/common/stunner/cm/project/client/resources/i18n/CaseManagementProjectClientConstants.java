@@ -28,4 +28,16 @@ public interface CaseManagementProjectClientConstants {
 
     @TranslationKey(defaultValue = "")
     String CaseManagementDiagramResourceTypeDownload = "CaseManagementDiagramResourceType.download";
+
+    @TranslationKey(defaultValue = "Form Generation")
+    String CaseManagementEditorFormGenerationTitle = "cm.editor.forms.title";
+
+    @TranslationKey(defaultValue = "Generate process form")
+    String CaseManagementEditorGenerateProcessForm = "cm.editor.forms.generateProcessForm";
+
+    @TranslationKey(defaultValue = "Generate all forms")
+    String CaseManagementEditorGenerateAllForms = "cm.editor.forms.generateAllForms";
+
+    @TranslationKey(defaultValue = "Generate forms for selection")
+    String CaseManagementEditorGenerateSelectionForms = "cm.editor.forms.generateSelectionForms";
 }

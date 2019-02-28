@@ -18,6 +18,8 @@ package org.kie.workbench.common.stunner.bpmn.client.forms.util;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.kie.workbench.common.stunner.bpmn.definition.BaseTask;
+import org.kie.workbench.common.stunner.bpmn.definition.BaseUserTask;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
 import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
@@ -30,11 +32,15 @@ import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewImpl;
 import org.kie.workbench.common.stunner.core.graph.impl.NodeImpl;
 
+import static org.mockito.Mockito.mock;
+
 public class ContextUtilsTest {
 
     @Test
     public void testIsFormGenerationSupported() {
         Assert.assertTrue(ContextUtils.isFormGenerationSupported(createNode(new UserTask())));
+        Assert.assertTrue(ContextUtils.isFormGenerationSupported(createNode(mock(BaseUserTask.class))));
+        Assert.assertFalse(ContextUtils.isFormGenerationSupported(createNode(mock(BaseTask.class))));
         Assert.assertFalse(ContextUtils.isFormGenerationSupported(createNode(new ScriptTask())));
         Assert.assertFalse(ContextUtils.isFormGenerationSupported(createNode(new BusinessRuleTask())));
         Assert.assertFalse(ContextUtils.isFormGenerationSupported(createNode(new NoneTask())));
