@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-@blockHeight_returnToDRGHeight: 32;
-@blockHeight_expressionType: 32;
-@blockHeight_total: @blockHeight_returnToDRGHeight + @blockHeight_expressionType;
+@blockHeight_returnToDRGHeight: 32px;
+@blockHeight_expressionType: 32px;
+@blockHeight_total: 64px;
 
 .kie-dmn-container {
   display: flex;
@@ -26,25 +26,35 @@
   height: 100%;
 }
 
-.kie-dmn-return-to-DRG {
-  height: @blockHeight_returnToDRGHeight px;
+.kie-dmn-return-to-link {
+  height: @blockHeight_returnToDRGHeight;
   display: block;
 }
 
-.kie-dmn-return-to-DRG i {
+.kie-dmn-return-to-link i {
   //This duplicates Bootstraps spacing for breadcrumbs
   padding: 0 9px 0 7px;
 }
 
 .kie-dmn-expression-type {
-  height: @blockHeight_expressionType px;
+  height: @blockHeight_expressionType;
   display: block;
+
+  #name {
+    font-size: large;
+  }
+
+  #type {
+    font-size: larger;
+    font-style: italic;
+    color: grey;
+  }
 }
 
 .kie-dmn-expression-editor {
   display: flex;
   width: 100%;
-  height: ~"calc(100% - @{blockHeight_total}px)";
+  height: ~"calc(100% - @{blockHeight_total})";
   top: @blockHeight_total px;
 }
 

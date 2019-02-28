@@ -26,8 +26,11 @@ import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.BusinessKnowledgeModel;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
+import org.kie.workbench.common.dmn.api.definition.v1_1.Definitions;
+import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorPresenter;
 import org.kie.workbench.common.dmn.client.editors.toolbar.ToolbarStateHandler;
+import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCache;
 import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCacheImpl;
@@ -58,6 +61,8 @@ public class ExpressionEditorTest {
 
     private static final String NODE_UUID = "uuid";
 
+    private static final String DRG_NAME = "drg-name";
+
     @Mock
     private ExpressionEditorView view;
 
@@ -66,6 +71,9 @@ public class ExpressionEditorTest {
 
     @Mock
     private DecisionNavigatorPresenter decisionNavigator;
+
+    @Mock
+    private DMNGraphUtils dmnGraphUtils;
 
     @Mock
     private DMNSession dmnSession;
@@ -97,16 +105,23 @@ public class ExpressionEditorTest {
 
     private ExpressionGridCache expressionGridCache;
 
+    private Definitions definitions;
+
     @Before
     @SuppressWarnings("unchecked")
     public void setUp() throws Exception {
         this.decision = new Decision();
         this.expressionGridCache = new ExpressionGridCacheImpl();
+        this.definitions = new Definitions();
+        this.definitions.setName(new Name(DRG_NAME));
 
         testedEditor = spy(new ExpressionEditor(view,
-                                                decisionNavigator));
+                                                decisionNavigator,
+                                                dmnGraphUtils));
         testedEditor.bind(dmnSession);
+
         when(session.getCanvasControl(eq(ExpressionGridCache.class))).thenReturn(expressionGridCache);
+        when(dmnGraphUtils.getDefinitions()).thenReturn(definitions);
     }
 
     @Test
@@ -123,6 +138,7 @@ public class ExpressionEditorTest {
         verify(view).setExpression(eq(NODE_UUID),
                                    eq(decision),
                                    eq(Optional.of(decision)));
+        verify(view).setReturnToLinkText(eq(DRG_NAME));
         verify(toolbarStateHandler).enterGridView();
     }
 
@@ -190,12 +206,31 @@ public class ExpressionEditorTest {
 
         testedEditor.handleCanvasElementUpdated(event);
 
-        verify(view).setReturnToDRGText(optionalHasNameCaptor.capture());
+        verify(view).setExpressionNameText(optionalHasNameCaptor.capture());
 
         final Optional<HasName> optionalHasName = optionalHasNameCaptor.getValue();
         assertTrue(optionalHasName.isPresent());
         assertEquals(decision,
                      optionalHasName.get());
+    }
+
+    @Test
+    public void testOnCanvasElementUpdatedDefinitions() {
+        final CanvasElementUpdatedEvent event = new CanvasElementUpdatedEvent(canvasHandler, node);
+        final String NEW_DRG_NAME = "new-drg-name";
+
+        when(node.getContent()).thenReturn(definition);
+        when(definition.getDefinition()).thenReturn(definitions);
+
+        setupExpression(decision, decision, toolbarStateHandler);
+
+        verify(view).setReturnToLinkText(eq(DRG_NAME));
+
+        this.definitions.getName().setValue(NEW_DRG_NAME);
+
+        testedEditor.handleCanvasElementUpdated(event);
+
+        verify(view).setReturnToLinkText(eq(NEW_DRG_NAME));
     }
 
     @Test
@@ -210,7 +245,7 @@ public class ExpressionEditorTest {
 
         testedEditor.handleCanvasElementUpdated(event);
 
-        verify(view).setReturnToDRGText(optionalHasNameCaptor.capture());
+        verify(view).setExpressionNameText(optionalHasNameCaptor.capture());
 
         final Optional<HasName> optionalHasName = optionalHasNameCaptor.getValue();
         assertTrue(optionalHasName.isPresent());
@@ -219,6 +254,7 @@ public class ExpressionEditorTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testOnCanvasElementUpdatedDifferentNode() {
         final CanvasElementUpdatedEvent event = new CanvasElementUpdatedEvent(canvasHandler, node);
 
@@ -231,6 +267,6 @@ public class ExpressionEditorTest {
 
         testedEditor.handleCanvasElementUpdated(event);
 
-        verify(view, never()).setReturnToDRGText(any(Optional.class));
+        verify(view, never()).setExpressionNameText(any(Optional.class));
     }
 }

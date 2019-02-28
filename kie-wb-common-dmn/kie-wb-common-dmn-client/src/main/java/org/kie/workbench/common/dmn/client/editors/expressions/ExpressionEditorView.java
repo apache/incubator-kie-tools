@@ -22,6 +22,7 @@ import com.google.gwt.user.client.ui.RequiresResize;
 import org.jboss.errai.common.client.api.IsElement;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
+import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.client.editors.toolbar.ToolbarStateHandler;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControl;
@@ -53,11 +54,15 @@ public interface ExpressionEditorView extends org.jboss.errai.ui.client.local.ap
         void exit();
     }
 
+    void setReturnToLinkText(final String text);
+
     void setExpression(final String nodeUUID,
                        final HasExpression hasExpression,
                        final Optional<HasName> hasName);
 
-    void setReturnToDRGText(final Optional<HasName> hasName);
+    void setExpressionNameText(final Optional<HasName> hasName);
+
+    void setExpressionTypeText(final Optional<Expression> expression);
 
     void setFocus();
 }

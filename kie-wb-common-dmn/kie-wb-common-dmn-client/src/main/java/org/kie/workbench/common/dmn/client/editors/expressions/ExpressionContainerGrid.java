@@ -225,7 +225,7 @@ public class ExpressionContainerGrid extends BaseGrid<Expression> {
 
     /**
      * Proxy {@link HasName} to be able intercept interactions with the original to update the
-     * navigation label in {@link ExpressionEditorView#setReturnToDRGText(Optional)} when the {@link Name}
+     * navigation label in {@link ExpressionEditorView#setExpressionNameText(Optional)} when the {@link Name}
      * changes. The {@link Name} changes by a {@link SetHasNameCommand#execute(AbstractCanvasHandler)} or
      * {@link SetHasNameCommand#undo(AbstractCanvasHandler)} that ensures the {@link HasName#setName(Name)}
      * method is called.

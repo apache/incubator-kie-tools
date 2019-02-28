@@ -25,6 +25,7 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorPresenter;
+import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
@@ -43,6 +44,7 @@ public class ExpressionEditorControlImpl extends AbstractCanvasControl<AbstractC
 
     private ExpressionEditorView view;
     private DecisionNavigatorPresenter decisionNavigator;
+    private DMNGraphUtils dmnGraphUtils;
     private Event<CanvasElementUpdatedEvent> canvasElementUpdatedEvent;
 
     private Optional<DMNSession> session = Optional.empty();
@@ -82,16 +84,19 @@ public class ExpressionEditorControlImpl extends AbstractCanvasControl<AbstractC
     @Inject
     public ExpressionEditorControlImpl(final ExpressionEditorView view,
                                        final DecisionNavigatorPresenter decisionNavigator,
+                                       final DMNGraphUtils dmnGraphUtils,
                                        final Event<CanvasElementUpdatedEvent> canvasElementUpdatedEvent) {
         this.view = view;
         this.decisionNavigator = decisionNavigator;
+        this.dmnGraphUtils = dmnGraphUtils;
         this.canvasElementUpdatedEvent = canvasElementUpdatedEvent;
     }
 
     @Override
     public void bind(final DMNSession session) {
         final ExpressionEditorView.Presenter editor = makeExpressionEditor(view,
-                                                                           decisionNavigator);
+                                                                           decisionNavigator,
+                                                                           dmnGraphUtils);
         editor.bind(session);
         this.session = Optional.of(session);
         this.expressionEditor = Optional.of(editor);
@@ -100,9 +105,11 @@ public class ExpressionEditorControlImpl extends AbstractCanvasControl<AbstractC
     }
 
     ExpressionEditorView.Presenter makeExpressionEditor(final ExpressionEditorView view,
-                                                        final DecisionNavigatorPresenter decisionNavigator) {
+                                                        final DecisionNavigatorPresenter decisionNavigator,
+                                                        final DMNGraphUtils dmnGraphUtils) {
         return new ExpressionEditor(view,
-                                    decisionNavigator);
+                                    decisionNavigator,
+                                    dmnGraphUtils);
     }
 
     @Override

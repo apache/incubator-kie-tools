@@ -21,12 +21,11 @@ import java.util.function.Supplier;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import com.ait.lienzo.client.core.types.Transform;
 import com.google.gwt.event.dom.client.ClickEvent;
 import org.jboss.errai.common.client.dom.Anchor;
-import org.jboss.errai.common.client.dom.Heading;
+import org.jboss.errai.common.client.dom.Span;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
@@ -71,11 +70,14 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
 
     private ExpressionEditorView.Presenter presenter;
 
-    @DataField("returnToDRG")
-    private Anchor returnToDRG;
+    @DataField("returnToLink")
+    private Anchor returnToLink;
+
+    @DataField("expressionName")
+    private Span expressionName;
 
     @DataField("expressionType")
-    private Heading expressionType;
+    private Span expressionType;
 
     @DataField("dmn-table")
     private DMNGridPanelContainer gridPanelContainer;
@@ -100,8 +102,9 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
     }
 
     @Inject
-    public ExpressionEditorViewImpl(final Anchor returnToDRG,
-                                    final @Named("h2") Heading expressionType,
+    public ExpressionEditorViewImpl(final Anchor returnToLink,
+                                    final Span expressionName,
+                                    final Span expressionType,
                                     final @DMNEditor DMNGridPanelContainer gridPanelContainer,
                                     final TranslationService translationService,
                                     final ListSelectorView.Presenter listSelector,
@@ -111,7 +114,8 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                                     final @DMNEditor Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
                                     final Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent,
                                     final Event<DomainObjectSelectionEvent> domainObjectSelectionEvent) {
-        this.returnToDRG = returnToDRG;
+        this.returnToLink = returnToLink;
+        this.expressionName = expressionName;
         this.expressionType = expressionType;
         this.gridPanelContainer = gridPanelContainer;
 
@@ -178,7 +182,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                                                               expressionEditorDefinitionsSupplier,
                                                               getExpressionGridCacheSupplier(),
                                                               this::setExpressionTypeText,
-                                                              this::setReturnToDRGText,
+                                                              this::setExpressionNameText,
                                                               refreshFormPropertiesEvent,
                                                               domainObjectSelectionEvent);
         gridLayer.removeAll();
@@ -204,32 +208,38 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
     }
 
     @Override
+    public void setReturnToLinkText(final String text) {
+        returnToLink.setTextContent(translationService.format(DMNEditorConstants.ExpressionEditor_ReturnToLink, text));
+    }
+
+    @Override
     public void setExpression(final String nodeUUID,
                               final HasExpression hasExpression,
                               final Optional<HasName> hasName) {
         expressionContainerGrid.setExpression(nodeUUID,
                                               hasExpression,
                                               hasName);
-
-        setReturnToDRGText(hasName);
+        setExpressionNameText(hasName);
         setExpressionTypeText(Optional.ofNullable(hasExpression.getExpression()));
     }
 
     @Override
-    public void setReturnToDRGText(final Optional<HasName> hasName) {
-        hasName.ifPresent(name -> returnToDRG.setTextContent(translationService.format(DMNEditorConstants.ExpressionEditor_ReturnToDRG,
-                                                                                       name.getName().getValue())));
+    public void setExpressionNameText(final Optional<HasName> hasName) {
+        hasName.ifPresent(name -> expressionName.setTextContent(name.getName().getValue()));
     }
 
-    private void setExpressionTypeText(final Optional<Expression> expression) {
-        expressionType.setTextContent(expression.isPresent() ?
-                                              expressionEditorDefinitionsSupplier.get().getExpressionEditorDefinition(expression).get().getName() :
-                                              "<" + translationService.getTranslation(DMNEditorConstants.ExpressionEditor_UndefinedExpressionType) + ">");
+    @Override
+    public void setExpressionTypeText(final Optional<Expression> expression) {
+        final String expressionTypeText = expressionEditorDefinitionsSupplier.get().getExpressionEditorDefinition(expression).get().getName();
+        expressionType.setTextContent(translationService.format(DMNEditorConstants.ExpressionEditor_ExpressionTypeText,
+                                                                expression.isPresent() ?
+                                                                        expressionTypeText :
+                                                                        "<" + expressionTypeText + ">"));
     }
 
     @SuppressWarnings("unused")
-    @EventHandler("returnToDRG")
-    void onClickReturnToDRG(final ClickEvent event) {
+    @EventHandler("returnToLink")
+    void onClickReturnToLink(final ClickEvent event) {
         presenter.exit();
     }
 

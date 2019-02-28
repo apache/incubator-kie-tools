@@ -20,7 +20,10 @@ import org.jboss.errai.ui.shared.api.annotations.TranslationKey;
 public class DMNEditorConstants {
 
     @TranslationKey(defaultValue = "")
-    public static final String ExpressionEditor_ReturnToDRG = "ExpressionEditor.ReturnToDRG";
+    public static final String ExpressionEditor_ReturnToLink = "ExpressionEditor.ReturnToLink";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ExpressionEditor_ExpressionTypeText = "ExpressionEditor.ExpressionTypeText";
 
     @TranslationKey(defaultValue = "")
     public static final String ExpressionEditor_UndefinedExpressionType = "ExpressionEditor.UndefinedExpressionType";

@@ -23,6 +23,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorPresenter;
+import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementUpdatedEvent;
@@ -63,6 +64,9 @@ public class ExpressionEditorControlImplTest {
     private DecisionNavigatorPresenter decisionNavigator;
 
     @Mock
+    private DMNGraphUtils dmnGraphUtils;
+
+    @Mock
     private EventSourceMock<CanvasElementUpdatedEvent> canvasElementUpdatedEvent;
 
     @Mock
@@ -98,9 +102,11 @@ public class ExpressionEditorControlImplTest {
     public void setup() {
         this.control = spy(new ExpressionEditorControlImpl(view,
                                                            decisionNavigator,
+                                                           dmnGraphUtils,
                                                            canvasElementUpdatedEvent));
         doReturn(editor).when(control).makeExpressionEditor(any(ExpressionEditorView.class),
-                                                            any(DecisionNavigatorPresenter.class));
+                                                            any(DecisionNavigatorPresenter.class),
+                                                            any(DMNGraphUtils.class));
         when(session.getCanvasHandler()).thenReturn(canvasHandler);
         when(canvasHandler.getDiagram()).thenReturn(diagram);
         when(diagram.getGraph()).thenReturn(graph);
