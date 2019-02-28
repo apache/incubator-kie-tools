@@ -174,7 +174,8 @@ public class GeometryTest {
         final double[] ly = new double[]{0, 100};
         Point2DArray result = Geometry.intersectLineCurve(xval, yval, lx, ly);
         assertEquals(2, result.size());
-        assertEquals(new Point2D(50d, 20d), result.get(0));
+        assertEquals(50d, result.get(0).getX(), 0.00001);
+        assertEquals(20d, result.get(0).getY(), 0.00001);
         assertEquals(new Point2D(144.49725985049355d, 57.79890394019752d), result.get(1));
     }
 
