@@ -18,6 +18,8 @@ package org.kie.workbench.common.screens.projecteditor.client.build.exec.impl.ex
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -38,17 +40,21 @@ import org.kie.workbench.common.screens.projecteditor.client.build.exec.BuildExe
 import org.kie.workbench.common.screens.projecteditor.client.build.exec.dialog.BuildDialog;
 import org.kie.workbench.common.screens.projecteditor.client.build.exec.impl.executors.AbstractExecutor;
 import org.kie.workbench.common.screens.projecteditor.client.build.exec.impl.executors.ContextValidator;
+import org.kie.workbench.common.screens.projecteditor.client.build.exec.impl.executors.utils.BuildUtils;
 import org.kie.workbench.common.screens.projecteditor.client.editor.DeploymentPopup;
 import org.kie.workbench.common.screens.server.management.service.SpecManagementService;
 import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources.CONSTANTS;
+import static org.uberfire.workbench.events.NotificationEvent.NotificationType.ERROR;
+import static org.uberfire.workbench.events.NotificationEvent.NotificationType.SUCCESS;
 
 public abstract class AbstractBuildAndDeployExecutor extends AbstractExecutor {
 
     protected final DeploymentPopup deploymentPopup;
     protected final Caller<SpecManagementService> specManagementService;
     protected final KieServerMode preferedKieServerMode;
+    protected Predicate<ServerTemplate> templateFilter = template -> true;
 
     public AbstractBuildAndDeployExecutor(final Caller<BuildService> buildServiceCaller,
                                           final Event<BuildResults> buildResultsEvent,
@@ -86,7 +92,7 @@ public abstract class AbstractBuildAndDeployExecutor extends AbstractExecutor {
 
         if (templateList != null) {
             return Stream.of(templateList.getServerTemplates())
-                    .filter(template -> template.getMode().equals(preferedKieServerMode))
+                    .filter(templateFilter)
                     .collect(Collectors.toList());
         }
 
@@ -115,6 +121,59 @@ public abstract class AbstractBuildAndDeployExecutor extends AbstractExecutor {
             buildDeployWithoutServerTemplate(context, DeploymentMode.FORCED);
             return false;
         }).buildAndDeploy(context.getModule(), mode);
+    }
+
+    protected void onBuildDeploySuccess(final BuildExecutionContext context, final BuildResults result) {
+        if (result.getErrorMessages().isEmpty()) {
+            notificationEvent.fire(new NotificationEvent(CONSTANTS.BuildSuccessful(), SUCCESS));
+
+            ServerTemplate serverTemplate = context.getServerTemplate();
+
+            if (serverTemplate != null && serverTemplate.getId() != null) {
+
+                ContainerSpec containerSpec = BuildUtils.makeContainerSpec(context, result.getParameters());
+
+                Optional<ContainerSpec> optional = Optional.ofNullable(context.getServerTemplate().getContainerSpec(containerSpec.getId()));
+
+                if (optional.isPresent()) {
+                    updateContainerSpec(context, containerSpec);
+                } else {
+                    saveContainerSpecAndMaybeStartContainer(context, containerSpec);
+                }
+            }
+        } else {
+            notificationEvent.fire(new NotificationEvent(CONSTANTS.BuildFailed(), ERROR));
+            finish();
+        }
+
+        buildResultsEvent.fire(result);
+    }
+
+    protected void updateContainerSpec(final BuildExecutionContext context, final ContainerSpec containerSpec) {
+        ServerTemplate serverTemplate = context.getServerTemplate();
+
+        if (serverTemplate.getMode().equals(KieServerMode.DEVELOPMENT)) {
+            containerSpec.setStatus(serverTemplate.getContainerSpec(containerSpec.getId()).getStatus());
+            specManagementService.call(ignore -> {
+                notifyUpdateSuccess();
+            }, (o, throwable) -> {
+                notifyUpdateError();
+                return false;
+            }).updateContainerSpec(context.getServerTemplate().getId(), containerSpec);
+        } else {
+            notificationEvent.fire(new NotificationEvent(CONSTANTS.DeploymentSkippedCannotUpdateDeploymentsOnProduction(), ERROR));
+            finish();
+        }
+    }
+
+    protected void notifyUpdateSuccess() {
+        notificationEvent.fire(new NotificationEvent(CONSTANTS.DeploySuccessfulAndContainerUpdated(), NotificationEvent.NotificationType.SUCCESS));
+        finish();
+    }
+
+    protected void notifyUpdateError() {
+        notificationEvent.fire(new NotificationEvent(CONSTANTS.DeployFailed(), NotificationEvent.NotificationType.ERROR));
+        finish();
     }
 
     protected void saveContainerSpecAndMaybeStartContainer(final BuildExecutionContext context, final ContainerSpec containerSpec) {

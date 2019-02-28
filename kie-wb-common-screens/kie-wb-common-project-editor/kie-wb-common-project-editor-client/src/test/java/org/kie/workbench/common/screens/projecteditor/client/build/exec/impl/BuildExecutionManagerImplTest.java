@@ -29,9 +29,9 @@ import org.kie.workbench.common.screens.projecteditor.client.build.exec.BuildExe
 import org.kie.workbench.common.screens.projecteditor.client.build.exec.BuildType;
 import org.kie.workbench.common.screens.projecteditor.client.build.exec.impl.executors.Executor;
 import org.kie.workbench.common.screens.projecteditor.client.build.exec.impl.executors.build.BuildExecutor;
-import org.kie.workbench.common.screens.projecteditor.client.build.exec.impl.executors.deploy.DefaultBuildAndDeployExecutor;
+import org.kie.workbench.common.screens.projecteditor.client.build.exec.impl.executors.deploy.ProductionBuildAndDeployExecutor;
 import org.kie.workbench.common.screens.projecteditor.client.build.exec.impl.executors.deploy.SnapshotBuildAndDeployExecutor;
-import org.kie.workbench.common.screens.projecteditor.client.build.exec.impl.executors.install.DefaultInstallExecutor;
+import org.kie.workbench.common.screens.projecteditor.client.build.exec.impl.executors.install.ProductionInstallExecutor;
 import org.kie.workbench.common.screens.projecteditor.client.build.exec.impl.executors.install.SnapshotInstallExecutor;
 import org.kie.workbench.common.screens.projecteditor.client.build.exec.impl.executors.redeploy.SnapshotRedeployExecutor;
 import org.kie.workbench.common.services.shared.project.KieModule;
@@ -53,10 +53,10 @@ public class BuildExecutionManagerImplTest {
     private BuildExecutor defaultBuildExecutor;
 
     @Mock
-    private DefaultBuildAndDeployExecutor defaultBuildAndDeployExecutor;
+    private ProductionBuildAndDeployExecutor productionBuildAndDeployExecutor;
 
     @Mock
-    private DefaultInstallExecutor defaultInstallExecutor;
+    private ProductionInstallExecutor productionInstallExecutor;
 
     @Mock
     private BuildExecutor snapshotBuildExecutor;
@@ -93,8 +93,8 @@ public class BuildExecutionManagerImplTest {
             protected void init() {
                 defaultRunners = new HashMap<>();
                 defaultRunners.put(BuildType.BUILD, defaultBuildExecutor);
-                defaultRunners.put(BuildType.DEPLOY, defaultBuildAndDeployExecutor);
-                defaultRunners.put(BuildType.INSTALL, defaultInstallExecutor);
+                defaultRunners.put(BuildType.DEPLOY, productionBuildAndDeployExecutor);
+                defaultRunners.put(BuildType.INSTALL, productionInstallExecutor);
 
                 snapshotRunners = new HashMap<>();
                 snapshotRunners.put(BuildType.BUILD, snapshotBuildExecutor);
@@ -114,12 +114,12 @@ public class BuildExecutionManagerImplTest {
 
     @Test
     public void testDefaultBuildAndDeploy() {
-        testExecutor(BuildType.DEPLOY, defaultBuildAndDeployExecutor);
+        testExecutor(BuildType.DEPLOY, productionBuildAndDeployExecutor);
     }
 
     @Test
     public void testDefaultInstall() {
-        testExecutor(BuildType.INSTALL, defaultInstallExecutor);
+        testExecutor(BuildType.INSTALL, productionInstallExecutor);
     }
 
     @Test

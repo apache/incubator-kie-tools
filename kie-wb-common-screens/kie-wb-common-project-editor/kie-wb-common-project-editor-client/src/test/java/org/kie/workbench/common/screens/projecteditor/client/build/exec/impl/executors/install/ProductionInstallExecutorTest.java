@@ -40,7 +40,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class DefaultInstallExecutorTest extends AbstractInstallExecutorTest<DefaultInstallExecutor> {
+public class ProductionInstallExecutorTest extends AbstractInstallExecutorTest<ProductionInstallExecutor> {
 
     @Captor
     private ArgumentCaptor<GAV> gavArgumentCaptor;
@@ -57,7 +57,7 @@ public class DefaultInstallExecutorTest extends AbstractInstallExecutorTest<Defa
 
         context = getDefaultContext();
 
-        runner = spy(new DefaultInstallExecutor(buildService, buildResultsEvent, notificationEvent, buildDialog, conflictingRepositoriesPopup));
+        runner = spy(new ProductionInstallExecutor(buildService, buildResultsEvent, notificationEvent, buildDialog, conflictingRepositoriesPopup));
     }
 
     @Test

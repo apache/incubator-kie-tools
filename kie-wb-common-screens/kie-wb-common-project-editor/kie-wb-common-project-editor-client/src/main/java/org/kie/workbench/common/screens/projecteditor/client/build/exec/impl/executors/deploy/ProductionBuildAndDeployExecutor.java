@@ -33,7 +33,6 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.server.api.model.KieServerMode;
-import org.kie.server.controller.api.model.spec.ContainerSpec;
 import org.kie.server.controller.api.model.spec.ServerTemplate;
 import org.kie.workbench.common.screens.projecteditor.client.build.exec.BuildExecutionContext;
 import org.kie.workbench.common.screens.projecteditor.client.build.exec.dialog.BuildDialog;
@@ -45,23 +44,19 @@ import org.kie.workbench.common.screens.server.management.service.SpecManagement
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.events.NotificationEvent;
 
-import static org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources.CONSTANTS;
-import static org.uberfire.workbench.events.NotificationEvent.NotificationType.ERROR;
-import static org.uberfire.workbench.events.NotificationEvent.NotificationType.SUCCESS;
-
-public class DefaultBuildAndDeployExecutor extends AbstractBuildAndDeployExecutor {
+public class ProductionBuildAndDeployExecutor extends AbstractBuildAndDeployExecutor {
 
     private final ConflictingRepositoriesPopup conflictingRepositoriesPopup;
 
-    public DefaultBuildAndDeployExecutor(final Caller<BuildService> buildServiceCaller,
-                                         final Event<BuildResults> buildResultsEvent,
-                                         final Event<NotificationEvent> notificationEvent,
-                                         final BuildDialog buildDialog,
-                                         final DeploymentPopup deploymentPopup,
-                                         final Caller<SpecManagementService> specManagementService,
-                                         final ConflictingRepositoriesPopup conflictingRepositoriesPopup) {
+    public ProductionBuildAndDeployExecutor(final Caller<BuildService> buildServiceCaller,
+                                            final Event<BuildResults> buildResultsEvent,
+                                            final Event<NotificationEvent> notificationEvent,
+                                            final BuildDialog buildDialog,
+                                            final DeploymentPopup deploymentPopup,
+                                            final Caller<SpecManagementService> specManagementService,
+                                            final ConflictingRepositoriesPopup conflictingRepositoriesPopup) {
 
-        super(buildServiceCaller, buildResultsEvent, notificationEvent, buildDialog, new DefaultContextValidator(), deploymentPopup, specManagementService, KieServerMode.REGULAR);
+        super(buildServiceCaller, buildResultsEvent, notificationEvent, buildDialog, new DefaultContextValidator(), deploymentPopup, specManagementService, KieServerMode.PRODUCTION);
         this.conflictingRepositoriesPopup = conflictingRepositoriesPopup;
     }
 
@@ -108,23 +103,6 @@ public class DefaultBuildAndDeployExecutor extends AbstractBuildAndDeployExecuto
                                                 () -> finish(),
                                                 command);
         conflictingRepositoriesPopup.show();
-    }
-
-    private void onBuildDeploySuccess(final BuildExecutionContext context, final BuildResults result) {
-        if (result.getErrorMessages().isEmpty()) {
-            notificationEvent.fire(new NotificationEvent(CONSTANTS.BuildSuccessful(), SUCCESS));
-
-            if (context.getContainerId() != null && context.getServerTemplate() != null && context.getServerTemplate().getId() != null) {
-                ContainerSpec containerSpec = BuildUtils.makeContainerSpec(context, result.getParameters());
-
-                saveContainerSpecAndMaybeStartContainer(context, containerSpec);
-            }
-        } else {
-            notificationEvent.fire(new NotificationEvent(CONSTANTS.BuildFailed(), ERROR));
-        }
-
-        buildResultsEvent.fire(result);
-        finish();
     }
 
     private void onBuildDeployError(final BuildExecutionContext context, Throwable throwable) {

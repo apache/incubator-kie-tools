@@ -33,15 +33,15 @@ import org.kie.workbench.common.screens.projecteditor.client.build.exec.dialog.B
 import org.kie.workbench.common.screens.projecteditor.client.build.exec.impl.executors.validators.DefaultContextValidator;
 import org.uberfire.workbench.events.NotificationEvent;
 
-public class DefaultInstallExecutor extends AbstractInstallExecutor {
+public class ProductionInstallExecutor extends AbstractInstallExecutor {
 
     private final ConflictingRepositoriesPopup conflictingRepositoriesPopup;
 
-    public DefaultInstallExecutor(final Caller<BuildService> buildServiceCaller,
-                                  final Event<BuildResults> buildResultsEvent,
-                                  final Event<NotificationEvent> notificationEvent,
-                                  final BuildDialog buildDialog,
-                                  final ConflictingRepositoriesPopup conflictingRepositoriesPopup) {
+    public ProductionInstallExecutor(final Caller<BuildService> buildServiceCaller,
+                                     final Event<BuildResults> buildResultsEvent,
+                                     final Event<NotificationEvent> notificationEvent,
+                                     final BuildDialog buildDialog,
+                                     final ConflictingRepositoriesPopup conflictingRepositoriesPopup) {
 
         super(buildServiceCaller, buildResultsEvent, notificationEvent, buildDialog, new DefaultContextValidator());
         this.conflictingRepositoriesPopup = conflictingRepositoriesPopup;

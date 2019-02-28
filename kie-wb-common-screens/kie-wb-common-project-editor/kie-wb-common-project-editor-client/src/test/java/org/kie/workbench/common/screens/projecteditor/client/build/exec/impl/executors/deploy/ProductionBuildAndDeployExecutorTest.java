@@ -42,6 +42,7 @@ import static org.kie.workbench.common.screens.projecteditor.client.build.exec.i
 import static org.kie.workbench.common.screens.projecteditor.client.build.exec.impl.util.BuildExecutionTestConstants.SERVER_TEMPLATE_NAME2;
 import static org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources.CONSTANTS;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
@@ -52,7 +53,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class DefaultBuildAndDeployExecutorTest extends AbstractBuildAndDeployExecutorTest<DefaultBuildAndDeployExecutor> {
+public class ProductionBuildAndDeployExecutorTest extends AbstractBuildAndDeployExecutorTest<ProductionBuildAndDeployExecutor> {
 
     @Before
     public void setup() {
@@ -60,18 +61,18 @@ public class DefaultBuildAndDeployExecutorTest extends AbstractBuildAndDeployExe
 
         context = getDefaultContext();
 
-        runner = spy(new DefaultBuildAndDeployExecutor(buildService, buildResultsEvent, notificationEvent, buildDialog, deploymentPopup, specManagementService, conflictingRepositoriesPopup));
+        runner = spy(new ProductionBuildAndDeployExecutor(buildService, buildResultsEvent, notificationEvent, buildDialog, deploymentPopup, specManagementService, conflictingRepositoriesPopup));
     }
 
     @Override
     protected KieServerMode getPreferredKieServerMode() {
-        return KieServerMode.REGULAR;
+        return KieServerMode.PRODUCTION;
     }
 
     @Test
     public void testBuildAndDeploySingleServerTemplate() {
         final ServerTemplate serverTemplate = new ServerTemplate(SERVER_TEMPLATE_ID, SERVER_TEMPLATE_NAME);
-        serverTemplate.setMode(KieServerMode.REGULAR);
+        serverTemplate.setMode(KieServerMode.PRODUCTION);
 
         when(specManagementServiceMock.listServerTemplates()).thenReturn(new ServerTemplateList(Collections.singletonList(serverTemplate)));
 
@@ -103,7 +104,7 @@ public class DefaultBuildAndDeployExecutorTest extends AbstractBuildAndDeployExe
     @Test
     public void testBuildAndDeploySingleServerTemplateWithoutStart() {
         final ServerTemplate serverTemplate = new ServerTemplate(SERVER_TEMPLATE_ID, SERVER_TEMPLATE_NAME);
-        serverTemplate.setMode(KieServerMode.REGULAR);
+        serverTemplate.setMode(KieServerMode.PRODUCTION);
 
         when(specManagementServiceMock.listServerTemplates()).thenReturn(new ServerTemplateList(Collections.singletonList(serverTemplate)));
 
@@ -136,7 +137,7 @@ public class DefaultBuildAndDeployExecutorTest extends AbstractBuildAndDeployExe
     @Test
     public void testBuildDeploySingleServerTemplateExistingContainer() {
         final ServerTemplate serverTemplate = new ServerTemplate(SERVER_TEMPLATE_ID, SERVER_TEMPLATE_NAME);
-        serverTemplate.setMode(KieServerMode.REGULAR);
+        serverTemplate.setMode(KieServerMode.PRODUCTION);
 
         ContainerSpec spec = mock(ContainerSpec.class);
         when(spec.getId()).thenReturn(context.getContainerId());
@@ -160,20 +161,64 @@ public class DefaultBuildAndDeployExecutorTest extends AbstractBuildAndDeployExe
         verify(buildDialog).showBusyIndicator(CONSTANTS.Building());
 
         verifyNotification(ProjectEditorResources.CONSTANTS.BuildSuccessful(), NotificationEvent.NotificationType.SUCCESS);
-        verifyNotification(ProjectEditorResources.CONSTANTS.DeploySuccessfulAndContainerStarted(), NotificationEvent.NotificationType.SUCCESS);
+
+        verify(specManagementServiceMock, never()).saveContainerSpec(anyString(), any());
+        verify(specManagementServiceMock, never()).updateContainerSpec(anyString(), any());
+
+        verifyNotification(ProjectEditorResources.CONSTANTS.DeploymentSkippedCannotUpdateDeploymentsOnProduction(), NotificationEvent.NotificationType.ERROR);
         verify(notificationEvent, times(2)).fire(any(NotificationEvent.class));
 
-        verify(buildDialog, times(2)).stopBuild();
+        verify(buildDialog, times(1)).stopBuild();
 
         driver.cancel();
 
-        verify(buildDialog, times(3)).stopBuild();
+        verify(buildDialog, times(2)).stopBuild();
+    }
+
+    @Test
+    public void testBuildDeploySingleServerTemplateUpdatingExistingContainer() {
+        final ServerTemplate serverTemplate = new ServerTemplate(SERVER_TEMPLATE_ID, SERVER_TEMPLATE_NAME);
+        serverTemplate.setMode(KieServerMode.DEVELOPMENT);
+
+        ContainerSpec spec = mock(ContainerSpec.class);
+        when(spec.getId()).thenReturn(context.getContainerId());
+
+        serverTemplate.setContainersSpec(Collections.singletonList(spec));
+
+        when(specManagementServiceMock.listServerTemplates()).thenReturn(new ServerTemplateList(new ServerTemplate[]{serverTemplate}));
+
+        runner.run(context);
+
+        verify(buildDialog).startBuild();
+
+        ArgumentCaptor<DeploymentPopup.Driver> driverArgumentCaptor = ArgumentCaptor.forClass(DeploymentPopup.Driver.class);
+
+        verify(deploymentPopup).show(driverArgumentCaptor.capture());
+
+        DeploymentPopup.Driver driver = driverArgumentCaptor.getValue();
+
+        driver.finish(context.getContainerId(), context.getContainerAlias(), SERVER_TEMPLATE_ID, true);
+
+        verify(buildDialog).showBusyIndicator(CONSTANTS.Building());
+
+        verifyNotification(ProjectEditorResources.CONSTANTS.BuildSuccessful(), NotificationEvent.NotificationType.SUCCESS);
+
+        verify(specManagementServiceMock).updateContainerSpec(anyString(), any());
+
+        verifyNotification(ProjectEditorResources.CONSTANTS.DeploySuccessfulAndContainerUpdated(), NotificationEvent.NotificationType.SUCCESS);
+        verify(notificationEvent, times(2)).fire(any(NotificationEvent.class));
+
+        verify(buildDialog, times(1)).stopBuild();
+
+        driver.cancel();
+
+        verify(buildDialog, times(2)).stopBuild();
     }
 
     @Test
     public void testBuildAndDeploySingleServerTemplateWithExistingGav() {
         final ServerTemplate serverTemplate = new ServerTemplate(SERVER_TEMPLATE_ID, SERVER_TEMPLATE_NAME);
-        serverTemplate.setMode(KieServerMode.REGULAR);
+        serverTemplate.setMode(KieServerMode.PRODUCTION);
 
         when(specManagementServiceMock.listServerTemplates()).thenReturn(new ServerTemplateList(Collections.singletonList(serverTemplate)));
         when(buildServiceMock.buildAndDeploy(any(Module.class), any(DeploymentMode.class))).thenAnswer(invocationOnMock -> {
@@ -191,7 +236,7 @@ public class DefaultBuildAndDeployExecutorTest extends AbstractBuildAndDeployExe
     @Test
     public void testBuildAndDeploySingleServerTemplateWithException() {
         final ServerTemplate serverTemplate = new ServerTemplate(SERVER_TEMPLATE_ID, SERVER_TEMPLATE_NAME);
-        serverTemplate.setMode(KieServerMode.REGULAR);
+        serverTemplate.setMode(KieServerMode.PRODUCTION);
 
         when(specManagementServiceMock.listServerTemplates()).thenReturn(new ServerTemplateList(Arrays.asList(serverTemplate)));
 
@@ -212,10 +257,10 @@ public class DefaultBuildAndDeployExecutorTest extends AbstractBuildAndDeployExe
     @Test
     public void testBuildAndDeployWithMultipleTemplates() {
         final ServerTemplate serverTemplate = new ServerTemplate(SERVER_TEMPLATE_ID, SERVER_TEMPLATE_NAME);
-        serverTemplate.setMode(KieServerMode.REGULAR);
+        serverTemplate.setMode(KieServerMode.PRODUCTION);
 
         final ServerTemplate serverTemplate2 = new ServerTemplate(SERVER_TEMPLATE_ID2, SERVER_TEMPLATE_NAME2);
-        serverTemplate2.setMode(KieServerMode.REGULAR);
+        serverTemplate2.setMode(KieServerMode.PRODUCTION);
 
         when(specManagementServiceMock.listServerTemplates()).thenReturn(new ServerTemplateList(Arrays.asList(serverTemplate, serverTemplate2)));
 
@@ -237,10 +282,10 @@ public class DefaultBuildAndDeployExecutorTest extends AbstractBuildAndDeployExe
         verifyNotification(ProjectEditorResources.CONSTANTS.DeploySuccessfulAndContainerStarted(), NotificationEvent.NotificationType.SUCCESS);
         verify(notificationEvent, times(2)).fire(any(NotificationEvent.class));
 
-        verify(buildDialog, times(2)).stopBuild();
+        verify(buildDialog, times(1)).stopBuild();
 
         driver.cancel();
 
-        verify(buildDialog, times(3)).stopBuild();
+        verify(buildDialog, times(2)).stopBuild();
     }
 }

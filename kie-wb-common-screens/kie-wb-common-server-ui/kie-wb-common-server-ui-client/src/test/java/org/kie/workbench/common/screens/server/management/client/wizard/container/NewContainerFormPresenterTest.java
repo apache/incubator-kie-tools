@@ -182,48 +182,57 @@ public class NewContainerFormPresenterTest {
     }
 
     @Test
-    public void testIsValidWithTemplateDevelopmentMode() {
+    public void testIsValidWithTemplateProductionMode() {
         when(view.getContainerName()).thenReturn("containerName");
         when(view.getGroupId()).thenReturn("groupId");
         when(view.getArtifactId()).thenReturn("artifactId");
         when(view.getVersion()).thenReturn("1.0");
+
+        ServerTemplate serverTemplate = new ServerTemplate();
+        serverTemplate.setMode(KieServerMode.PRODUCTION);
+
+        presenter.setServerTemplate(serverTemplate);
+
+        assertTrue(presenter.isValid());
+
+        verify(view).noErrorOnContainerName();
+        verify(view).noErrorOnGroupId();
+        verify(view).noErrorOnArtifactId();
+        verify(view).noErrorOnVersion();
+
+        when(view.getVersion()).thenReturn("1.0" + SNAPSHOT);
+
+        assertFalse(presenter.isValid());
+
+        verify(view, times(2)).noErrorOnContainerName();
+        verify(view, times(2)).noErrorOnGroupId();
+        verify(view, times(2)).noErrorOnArtifactId();
+
+        verify(view).errorOnVersion();
+        verify(view).errorProductionModeSupportsDoesntSnapshots();
+    }
+
+    @Test
+    public void testIsValidWithTemplateDevelopmentModeSNAPSHOT() {
+        testIsValidDevelopmentMode("1.0" + SNAPSHOT);
+    }
+
+    @Test
+    public void testIsValidWithTemplateDevelopmentModeNonSNAPSHOT() {
+        testIsValidDevelopmentMode("1.0");
+    }
+
+    private void testIsValidDevelopmentMode(String version) {
+        when(view.getContainerName()).thenReturn("containerName");
+        when(view.getGroupId()).thenReturn("groupId");
+        when(view.getArtifactId()).thenReturn("artifactId");
+        when(view.getVersion()).thenReturn(version);
 
         ServerTemplate serverTemplate = new ServerTemplate();
         serverTemplate.setMode(KieServerMode.DEVELOPMENT);
 
         presenter.setServerTemplate(serverTemplate);
 
-        assertFalse(presenter.isValid());
-
-        verify(view).noErrorOnContainerName();
-        verify(view).noErrorOnGroupId();
-        verify(view).noErrorOnArtifactId();
-
-        verify(view).errorOnVersion();
-        verify(view).errorDevelopmentModeSupportsSnapshots();
-
-        when(view.getVersion()).thenReturn("1.0" + SNAPSHOT);
-
-        assertTrue(presenter.isValid());
-
-        verify(view, times(2)).noErrorOnContainerName();
-        verify(view, times(2)).noErrorOnGroupId();
-        verify(view, times(2)).noErrorOnArtifactId();
-        verify(view).noErrorOnVersion();
-    }
-
-    @Test
-    public void testIsValidWithTemplateRegularMode() {
-        when(view.getContainerName()).thenReturn("containerName");
-        when(view.getGroupId()).thenReturn("groupId");
-        when(view.getArtifactId()).thenReturn("artifactId");
-        when(view.getVersion()).thenReturn("1.0");
-
-        ServerTemplate serverTemplate = new ServerTemplate();
-        serverTemplate.setMode(KieServerMode.REGULAR);
-
-        presenter.setServerTemplate(serverTemplate);
-
         assertTrue(presenter.isValid());
 
         verify(view).noErrorOnContainerName();
@@ -231,16 +240,14 @@ public class NewContainerFormPresenterTest {
         verify(view).noErrorOnArtifactId();
         verify(view).noErrorOnVersion();
 
-        when(view.getVersion()).thenReturn("1.0" + SNAPSHOT);
-
-        assertFalse(presenter.isValid());
+        assertTrue(presenter.isValid());
 
         verify(view, times(2)).noErrorOnContainerName();
         verify(view, times(2)).noErrorOnGroupId();
         verify(view, times(2)).noErrorOnArtifactId();
 
-        verify(view).errorOnVersion();
-        verify(view).errorRegularModeSupportsDoesntSnapshots();
+        verify(view, never()).errorOnVersion();
+        verify(view, never()).errorProductionModeSupportsDoesntSnapshots();
     }
 
     @Test

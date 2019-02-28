@@ -24,7 +24,7 @@ import org.kie.workbench.common.screens.projecteditor.client.build.exec.impl.exe
 import static org.mockito.Mockito.spy;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class DefaultBuildExecutorTest extends AbstractBuildExecutorTest {
+public class ProductionBuildExecutorTest extends AbstractBuildExecutorTest {
 
     @Before
     public void setup() {

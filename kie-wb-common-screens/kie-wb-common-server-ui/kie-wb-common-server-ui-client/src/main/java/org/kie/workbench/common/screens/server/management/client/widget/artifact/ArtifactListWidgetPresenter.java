@@ -39,7 +39,7 @@ public class ArtifactListWidgetPresenter {
 
     private final View view;
 
-    private final List<String> FORMATS = Arrays.asList( "*.jar" );
+    private final List<String> FORMATS = Arrays.asList("jar");
 
     private final ArtifactListPresenter artifactListPresenter;
 

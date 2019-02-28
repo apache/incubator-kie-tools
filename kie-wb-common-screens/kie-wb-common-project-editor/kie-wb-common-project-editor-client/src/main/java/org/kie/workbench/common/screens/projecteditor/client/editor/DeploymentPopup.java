@@ -16,15 +16,17 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.editor;
 
+import java.util.Collection;
+import java.util.Optional;
+
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
+import org.kie.server.api.model.KieServerMode;
 import org.kie.server.controller.api.model.spec.ServerTemplate;
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
-
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-import java.util.Collection;
-import java.util.Optional;
 
 @Dependent
 public class DeploymentPopup implements DeploymentPopupView.Presenter {
@@ -106,7 +108,9 @@ public class DeploymentPopup implements DeploymentPopupView.Presenter {
                     .findAny();
 
             if (optional.isPresent()) {
-                return optional.get().getContainerSpec(containerId) != null;
+                ServerTemplate template = optional.get();
+
+                return template.getMode().equals(KieServerMode.PRODUCTION) && template.getContainerSpec(containerId) != null;
             }
         }
 
@@ -147,7 +151,9 @@ public class DeploymentPopup implements DeploymentPopupView.Presenter {
     }
 
     public enum Mode {
-        SINGLE_SERVER(true, false), MULTIPLE_SERVER(true, true), MULTIPLE_SERVER_FORCED(false, true);
+        SINGLE_SERVER(true, false),
+        MULTIPLE_SERVER(true, true),
+        MULTIPLE_SERVER_FORCED(false, true);
 
         private boolean modifyConfig;
         private boolean selectTemplate;

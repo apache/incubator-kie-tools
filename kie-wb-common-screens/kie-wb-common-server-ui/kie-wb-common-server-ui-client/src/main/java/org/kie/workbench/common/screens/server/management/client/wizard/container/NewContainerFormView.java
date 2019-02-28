@@ -322,13 +322,8 @@ public class NewContainerFormView extends Composite
     }
 
     @Override
-    public void errorRegularModeSupportsDoesntSnapshots() {
-        versionHelp.setInnerText(translationService.getTranslation(Constants.NewContainerFormView_RegularModeSupportsDoesntSnapshots));
-    }
-
-    @Override
-    public void errorDevelopmentModeSupportsSnapshots() {
-        versionHelp.setInnerText(translationService.getTranslation(Constants.NewContainerFormView_DevelopmentModeSupportsSnapshots));
+    public void errorProductionModeSupportsDoesntSnapshots() {
+        versionHelp.setInnerText(translationService.getTranslation(Constants.NewContainerFormView_ProductionModeSupportsDoesntSnapshots));
     }
 
     @Override

@@ -231,14 +231,9 @@ public class NewContainerFormPresenter implements WizardPage {
     public boolean isArtifactSupportedByServer() {
         String version = view.getVersion().trim();
         if (!version.isEmpty()) {
-
-            boolean isSnapshot = isSnapshot(version);
-
-            if (serverTemplate.getMode().equals(KieServerMode.DEVELOPMENT)) {
-                return isSnapshot;
+            if(serverTemplate.getMode().equals(KieServerMode.PRODUCTION)) {
+                return !isSnapshot(version);
             }
-
-            return !isSnapshot;
         }
         return true;
     }
@@ -279,11 +274,9 @@ public class NewContainerFormPresenter implements WizardPage {
                 view.noErrorOnVersion();
             } else {
                 view.errorOnVersion();
-                if (serverTemplate.getMode().equals(KieServerMode.DEVELOPMENT)) {
-                    view.errorDevelopmentModeSupportsSnapshots();
-                } else {
-                    view.errorRegularModeSupportsDoesntSnapshots();
-                }
+
+                view.errorProductionModeSupportsDoesntSnapshots();
+
                 hasError = true;
             }
         } else {
@@ -367,9 +360,7 @@ public class NewContainerFormPresenter implements WizardPage {
 
         void errorOnVersion();
 
-        void errorRegularModeSupportsDoesntSnapshots();
-
-        void errorDevelopmentModeSupportsSnapshots();
+        void errorProductionModeSupportsDoesntSnapshots();
 
         void setArtifactListWidgetView(ArtifactListWidgetPresenter.View view);
 

@@ -20,6 +20,7 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.server.api.model.KieServerMode;
 import org.kie.server.controller.api.model.spec.ContainerSpec;
 import org.kie.server.controller.api.model.spec.ServerTemplate;
 import org.kie.workbench.common.screens.projecteditor.client.build.exec.BuildExecutionContext;
@@ -69,10 +70,12 @@ public class DeploymentPopupTest {
     @Before
     public void init() {
         template1 = new ServerTemplate(TEMPLATE1_ID, TEMPLATE1_NAME);
+        template1.setMode(KieServerMode.PRODUCTION);
         template1.addContainerSpec(new ContainerSpec(CONTAINER1, CONTAINER1, null, null, null, null));
 
         template2 = new ServerTemplate(TEMPLATE2_ID, TEMPLATE2_NAME);
         template2.addContainerSpec(new ContainerSpec(CONTAINER2, CONTAINER2, null, null, null, null));
+        template2.setMode(KieServerMode.DEVELOPMENT);
 
         templates = Arrays.asList(template1, template2);
 

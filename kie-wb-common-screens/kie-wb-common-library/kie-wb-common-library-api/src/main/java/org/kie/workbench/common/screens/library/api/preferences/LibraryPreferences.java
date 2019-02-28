@@ -42,7 +42,7 @@ public class LibraryPreferences implements BasePreference<LibraryPreferences> {
         defaultValue.organizationalUnitPreferences.aliasInSingular = "";
         defaultValue.organizationalUnitPreferences.aliasInPlural = "";
 
-        defaultValue.projectPreferences.version = "1.0.0";
+        defaultValue.projectPreferences.version = "1.0.0-SNAPSHOT";
         defaultValue.projectPreferences.description = "";
         defaultValue.projectPreferences.branch = "master";
 

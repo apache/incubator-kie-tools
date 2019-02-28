@@ -331,6 +331,8 @@ public interface ProjectEditorConstants
 
     String DeploymentSkippedDueToNoServerTemplateConfiguredForMode(String mode);
 
+    String DeploymentSkippedCannotUpdateDeploymentsOnProduction();
+
     String DeploySuccessfulButContainerFailedToStart();
 
     String DeploySuccessfulAndContainerStarted();

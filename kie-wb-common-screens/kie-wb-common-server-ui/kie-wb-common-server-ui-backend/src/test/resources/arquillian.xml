@@ -9,14 +9,14 @@
   <container qualifier="wildfly-managed" default="true">
     <configuration>
       <property name="jbossHome">${jboss.home}</property>
-      <property name="javaVmArguments">-Xmx1500m -Dorg.uberfire.nio.git.daemon.enabled=false -Dorg.uberfire.nio.git.ssh.enabled=false -Dorg.kie.server.mode=REGULAR</property>
+      <property name="javaVmArguments">-Xmx1500m -Dorg.uberfire.nio.git.daemon.enabled=false -Dorg.uberfire.nio.git.ssh.enabled=false -Dorg.kie.server.mode=PRODUCTION</property>
     </configuration>
   </container>
 
   <container qualifier="wildfly-embedded-rest">
     <configuration>
       <property name="jbossHome">${jboss.home}</property>
-      <property name="javaVmArguments">-Xmx1500m -Dorg.kie.server.id=it-test-kie-server -Dorg.kie.server.location=http://localhost:8080/kie-server/services/rest/server -Dorg.kie.server.repo=target/ -Dorg.kie.server.controller=http://localhost:8080/workbench/rest/controller -Dorg.uberfire.nio.git.daemon.enabled=false -Dorg.uberfire.nio.git.ssh.enabled=false  -Dorg.kie.server.mode=REGULAR</property>
+      <property name="javaVmArguments">-Xmx1500m -Dorg.kie.server.id=it-test-kie-server -Dorg.kie.server.location=http://localhost:8080/kie-server/services/rest/server -Dorg.kie.server.repo=target/ -Dorg.kie.server.controller=http://localhost:8080/workbench/rest/controller -Dorg.uberfire.nio.git.daemon.enabled=false -Dorg.uberfire.nio.git.ssh.enabled=false  -Dorg.kie.server.mode=PRODUCTION</property>
       <property name="serverConfig">standalone-full.xml</property>
     </configuration>
   </container>
@@ -24,7 +24,7 @@
   <container qualifier="wildfly-embedded-websocket">
     <configuration>
       <property name="jbossHome">${jboss.home}</property>
-      <property name="javaVmArguments">-Xmx1500m -Dorg.kie.server.id=it-test-kie-server -Dorg.kie.server.location=http://localhost:8080/kie-server/services/rest/server -Dorg.kie.server.repo=target/ -Dorg.kie.server.controller=ws://localhost:8080/workbench/websocket/controller -Dorg.uberfire.nio.git.daemon.enabled=false -Dorg.uberfire.nio.git.ssh.enabled=false -Dorg.kie.server.mode=REGULAR</property>
+      <property name="javaVmArguments">-Xmx1500m -Dorg.kie.server.id=it-test-kie-server -Dorg.kie.server.location=http://localhost:8080/kie-server/services/rest/server -Dorg.kie.server.repo=target/ -Dorg.kie.server.controller=ws://localhost:8080/workbench/websocket/controller -Dorg.uberfire.nio.git.daemon.enabled=false -Dorg.uberfire.nio.git.ssh.enabled=false -Dorg.kie.server.mode=PRODUCTION</property>
       <property name="serverConfig">standalone-full.xml</property>
     </configuration>
   </container>
@@ -32,7 +32,7 @@
   <container qualifier="wildfly-standalone-websocket">
     <configuration>
       <property name="jbossHome">${jboss.home}</property>
-      <property name="javaVmArguments">-Xmx1500m -Dorg.kie.server.id=it-test-kie-server -Dorg.kie.server.location=http://localhost:8080/kie-server/services/rest/server -Dorg.kie.server.repo=target/ -Dorg.kie.server.controller=ws://localhost:8080/kie-server-controller/websocket/controller -Dorg.kie.workbench.controller=ws://localhost:8080/kie-server-controller/websocket/controller -Dorg.kie.server.controller.templatefile=target/template_store.xml -Dorg.uberfire.nio.git.daemon.enabled=false -Dorg.uberfire.nio.git.ssh.enabled=false  -Dorg.kie.server.mode=REGULAR</property>
+      <property name="javaVmArguments">-Xmx1500m -Dorg.kie.server.id=it-test-kie-server -Dorg.kie.server.location=http://localhost:8080/kie-server/services/rest/server -Dorg.kie.server.repo=target/ -Dorg.kie.server.controller=ws://localhost:8080/kie-server-controller/websocket/controller -Dorg.kie.workbench.controller=ws://localhost:8080/kie-server-controller/websocket/controller -Dorg.kie.server.controller.templatefile=target/template_store.xml -Dorg.uberfire.nio.git.daemon.enabled=false -Dorg.uberfire.nio.git.ssh.enabled=false  -Dorg.kie.server.mode=PRODUCTION</property>
       <property name="serverConfig">standalone-full.xml</property>
     </configuration>
   </container>

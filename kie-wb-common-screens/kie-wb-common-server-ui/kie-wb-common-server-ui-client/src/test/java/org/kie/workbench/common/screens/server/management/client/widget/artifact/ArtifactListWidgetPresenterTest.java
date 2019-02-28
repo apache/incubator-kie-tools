@@ -35,7 +35,7 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class ArtifactListWidgetPresenterTest {
 
-    private List<String> FORMATS = Arrays.asList( "*.jar" );
+    private List<String> FORMATS = Arrays.asList("jar");
 
     @Mock
     ArtifactListWidgetPresenter.View view;

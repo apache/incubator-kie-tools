@@ -36,9 +36,9 @@ import org.kie.workbench.common.screens.projecteditor.client.build.exec.BuildTyp
 import org.kie.workbench.common.screens.projecteditor.client.build.exec.dialog.BuildDialog;
 import org.kie.workbench.common.screens.projecteditor.client.build.exec.impl.executors.Executor;
 import org.kie.workbench.common.screens.projecteditor.client.build.exec.impl.executors.build.BuildExecutor;
-import org.kie.workbench.common.screens.projecteditor.client.build.exec.impl.executors.deploy.DefaultBuildAndDeployExecutor;
+import org.kie.workbench.common.screens.projecteditor.client.build.exec.impl.executors.deploy.ProductionBuildAndDeployExecutor;
 import org.kie.workbench.common.screens.projecteditor.client.build.exec.impl.executors.deploy.SnapshotBuildAndDeployExecutor;
-import org.kie.workbench.common.screens.projecteditor.client.build.exec.impl.executors.install.DefaultInstallExecutor;
+import org.kie.workbench.common.screens.projecteditor.client.build.exec.impl.executors.install.ProductionInstallExecutor;
 import org.kie.workbench.common.screens.projecteditor.client.build.exec.impl.executors.install.SnapshotInstallExecutor;
 import org.kie.workbench.common.screens.projecteditor.client.build.exec.impl.executors.redeploy.SnapshotRedeployExecutor;
 import org.kie.workbench.common.screens.projecteditor.client.build.exec.impl.executors.validators.DefaultContextValidator;
@@ -90,8 +90,8 @@ public class BuildExecutionManagerImpl implements BuildExecutionManager {
     protected void init() {
         defaultRunners = new HashMap<>();
         defaultRunners.put(BuildType.BUILD, new BuildExecutor(buildServiceCaller, buildResultsEvent, notificationEvent, buildDialog, new DefaultContextValidator()));
-        defaultRunners.put(BuildType.DEPLOY, new DefaultBuildAndDeployExecutor(buildServiceCaller, buildResultsEvent, notificationEvent, buildDialog, deploymentPopup, specManagementService, conflictingRepositoriesPopup));
-        defaultRunners.put(BuildType.INSTALL, new DefaultInstallExecutor(buildServiceCaller, buildResultsEvent, notificationEvent, buildDialog, conflictingRepositoriesPopup));
+        defaultRunners.put(BuildType.DEPLOY, new ProductionBuildAndDeployExecutor(buildServiceCaller, buildResultsEvent, notificationEvent, buildDialog, deploymentPopup, specManagementService, conflictingRepositoriesPopup));
+        defaultRunners.put(BuildType.INSTALL, new ProductionInstallExecutor(buildServiceCaller, buildResultsEvent, notificationEvent, buildDialog, conflictingRepositoriesPopup));
 
         settings.load();
 

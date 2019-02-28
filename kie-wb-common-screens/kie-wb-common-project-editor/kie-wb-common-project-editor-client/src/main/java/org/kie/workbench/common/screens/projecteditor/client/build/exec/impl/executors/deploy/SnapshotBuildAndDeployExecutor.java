@@ -18,7 +18,6 @@ package org.kie.workbench.common.screens.projecteditor.client.build.exec.impl.ex
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import javax.enterprise.event.Event;
 
@@ -31,22 +30,16 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.server.api.model.KieServerMode;
-import org.kie.server.controller.api.model.spec.ContainerSpec;
 import org.kie.server.controller.api.model.spec.ServerTemplate;
 import org.kie.workbench.common.screens.projecteditor.build.exec.SnapshotDeployment;
 import org.kie.workbench.common.screens.projecteditor.build.exec.SnapshotDeploymentSettings;
 import org.kie.workbench.common.screens.projecteditor.client.build.exec.BuildExecutionContext;
 import org.kie.workbench.common.screens.projecteditor.client.build.exec.dialog.BuildDialog;
-import org.kie.workbench.common.screens.projecteditor.client.build.exec.impl.executors.utils.BuildUtils;
 import org.kie.workbench.common.screens.projecteditor.client.build.exec.impl.executors.validators.SnapshotContextValidator;
 import org.kie.workbench.common.screens.projecteditor.client.editor.DefaultDeploymentPopupDriver;
 import org.kie.workbench.common.screens.projecteditor.client.editor.DeploymentPopup;
 import org.kie.workbench.common.screens.server.management.service.SpecManagementService;
 import org.uberfire.workbench.events.NotificationEvent;
-
-import static org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources.CONSTANTS;
-import static org.uberfire.workbench.events.NotificationEvent.NotificationType.ERROR;
-import static org.uberfire.workbench.events.NotificationEvent.NotificationType.SUCCESS;
 
 public class SnapshotBuildAndDeployExecutor extends AbstractBuildAndDeployExecutor {
 
@@ -61,6 +54,7 @@ public class SnapshotBuildAndDeployExecutor extends AbstractBuildAndDeployExecut
                                           final SnapshotDeploymentSettings settings) {
         super(buildServiceCaller, buildResultsEvent, notificationEvent, buildDialog, new SnapshotContextValidator(), deploymentPopup, specManagementService, KieServerMode.DEVELOPMENT);
         this.settings = settings;
+        templateFilter = template -> template.getMode().equals(preferedKieServerMode);
     }
 
     @Override
@@ -73,35 +67,15 @@ public class SnapshotBuildAndDeployExecutor extends AbstractBuildAndDeployExecut
         showBuildMessage();
 
         context.setServerTemplate(serverTemplate);
-        Set<String> containers = BuildUtils.extractExistingContainers(serverTemplate);
 
         buildServiceCaller.call((RemoteCallback<BuildResults>) result -> {
             if (result.getErrorMessages().isEmpty()) {
-                notificationEvent.fire(new NotificationEvent(CONSTANTS.BuildSuccessful(), SUCCESS));
+                GAV gav = context.getModule().getPom().getGav();
 
-                if (serverTemplate != null && serverTemplate.getId() != null) {
-                    GAV gav = context.getModule().getPom().getGav();
-
-                    settings.addDeployment(gav.getGroupId(), gav.getArtifactId(), serverTemplate.getId());
-                    settings.save();
-
-                    ContainerSpec containerSpec = BuildUtils.makeContainerSpec(context, result.getParameters());
-
-                    if (containers.contains(context.getContainerId())) {
-                        Optional<ContainerSpec> originalSpec = Optional.ofNullable(context.getServerTemplate().getContainerSpec(containerSpec.getId()));
-                        originalSpec.ifPresent(original -> containerSpec.setStatus(original.getStatus()));
-
-                        updateContainerSpec(context, containerSpec);
-                    } else {
-                        saveContainerSpecAndMaybeStartContainer(context, containerSpec);
-                    }
-                }
-            } else {
-                notificationEvent.fire(new NotificationEvent(CONSTANTS.BuildFailed(), ERROR));
-                finish();
+                settings.addDeployment(gav.getGroupId(), gav.getArtifactId(), serverTemplate.getId());
+                settings.save();
             }
-
-            buildResultsEvent.fire(result);
+            onBuildDeploySuccess(context, result);
         }, (ErrorCallback<Message>) (message, e) -> {
             finish();
             return false;
@@ -138,25 +112,5 @@ public class SnapshotBuildAndDeployExecutor extends AbstractBuildAndDeployExecut
                                                               () -> serverTemplates,
                                                               () -> buildDeployWithOneServerTemplate(context, context.getServerTemplate()),
                                                               () -> finish()));
-    }
-
-    protected void updateContainerSpec(final BuildExecutionContext context, final ContainerSpec containerSpec) {
-
-        specManagementService.call(ignore -> {
-            notifyUpdateSuccess();
-        }, (o, throwable) -> {
-            notifyUpdateError();
-            return false;
-        }).updateContainerSpec(context.getServerTemplate().getId(), containerSpec);
-    }
-
-    protected void notifyUpdateSuccess() {
-        notificationEvent.fire(new NotificationEvent(CONSTANTS.DeploySuccessfulAndContainerUpdated(), NotificationEvent.NotificationType.SUCCESS));
-        finish();
-    }
-
-    protected void notifyUpdateError() {
-        notificationEvent.fire(new NotificationEvent(CONSTANTS.DeployFailed(), NotificationEvent.NotificationType.ERROR));
-        finish();
     }
 }
