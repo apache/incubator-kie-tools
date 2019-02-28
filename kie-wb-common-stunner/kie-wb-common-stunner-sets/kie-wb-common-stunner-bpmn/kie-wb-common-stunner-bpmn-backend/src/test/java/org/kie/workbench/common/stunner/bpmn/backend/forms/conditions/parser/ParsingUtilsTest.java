@@ -19,7 +19,9 @@ package org.kie.workbench.common.stunner.bpmn.backend.forms.conditions.parser;
 import java.text.ParseException;
 import java.util.Arrays;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -29,15 +31,30 @@ public class ParsingUtilsTest {
     @Test
     public void testParseJavaNameSuccessfulWithStopCharacters() throws Exception {
         char[] stopCharacters = {' ', '.', '('};
-        String[] expectedValues = {"_", "$", "_name", "_näme", "näme", "näme1"};
-        String[] inputs = {"_    blabla", "$. more things", "_name(", "_näme(other stuff", "näme.ABCD", "näme1"};
+        String[] expectedValues = {"x", "$", "_name", "_näme", "näme", "näme1"};
+        String[] inputs = {"x    blabla", "$. more things", "_name(", "_näme(other stuff", "näme.ABCD", "näme1"};
         testParseJavaNameSuccessful(expectedValues, inputs, stopCharacters);
+    }
+
+    @Test
+    public void testParseJavaNameOnlyUnderscore() throws Exception {
+        Assume.assumeTrue(isJavaVersionOlderThan9());
+        char[] stopCharacters = {' ', '.', '('};
+        String[] expectedValues = {"_", "_", "_", "_"};
+        String[] inputs = {"_    blabla", "_", "_.text", "_(l"};
+        testParseJavaNameSuccessful(expectedValues, inputs, stopCharacters);
+    }
+
+    private boolean isJavaVersionOlderThan9() {
+        return (SystemUtils.IS_JAVA_1_8 || SystemUtils.IS_JAVA_1_7 || SystemUtils.IS_JAVA_1_6 ||
+                SystemUtils.IS_JAVA_1_5 || SystemUtils.IS_JAVA_1_4 || SystemUtils.IS_JAVA_1_3 ||
+                SystemUtils.IS_JAVA_1_2 || SystemUtils.IS_JAVA_1_1);
     }
 
     @Test
     public void testParseJavaNameSuccessfulWithoutStopCharacters() throws Exception {
         char[] stopCharacters = {};
-        String[] inputs = {"_", "$", "_name", "_näme", "näme", "näme1"};
+        String[] inputs = {"x", "$", "_name", "_näme", "näme", "näme1"};
         String[] expectedValues = inputs;
         testParseJavaNameSuccessful(expectedValues, inputs, stopCharacters);
     }
