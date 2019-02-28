@@ -65,6 +65,7 @@ public class CoreTranslationMessages {
     public static final String CLEAR_DIAGRAM = "org.kie.workbench.common.stunner.core.client.toolbox.ClearDiagram";
     public static final String CLEAR_SHAPES = "org.kie.workbench.common.stunner.core.client.toolbox.ClearShapes";
     public static final String CONFIRM_CLEAR_DIAGRAM = "org.kie.workbench.common.stunner.core.client.toolbox.ConfirmClearDiagram";
+    public static final String PERFORM_AUTOMATIC_LAYOUT = "org.kie.workbench.common.stunner.core.client.toolbox.PerformAutomaticLayout";
     public static final String NEW_LINE = "\n";
     public static final String DOT = ".";
     public static final String COLON = ": ";

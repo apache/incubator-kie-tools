@@ -188,6 +188,10 @@ public abstract class AbstractProjectEditorMenuSessionItems<BUILDER extends Abst
         errorConsumer = null;
     }
 
+    protected void addMenuItem(final Class clazz, final MenuItem menuItem){
+        this.menuItems.put(clazz, menuItem);
+    }
+
     private void validate() {
         loadingStarts();
         sessionCommands.getValidateSessionCommand().execute(new ClientSessionCommand.Callback<Collection<DiagramElementViolation<RuleViolation>>>() {

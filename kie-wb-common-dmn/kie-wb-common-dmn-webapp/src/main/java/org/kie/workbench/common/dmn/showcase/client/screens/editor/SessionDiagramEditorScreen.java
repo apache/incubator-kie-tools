@@ -53,6 +53,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.components.layout.LayoutHelper;
+import org.kie.workbench.common.stunner.core.client.components.layout.OpenDiagramLayoutExecutor;
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
@@ -110,6 +111,7 @@ public class SessionDiagramEditorScreen implements KieEditorWrapperView.KieEdito
     private final ScreenErrorView screenErrorView;
     private final DecisionNavigatorDock decisionNavigatorDock;
     private final LayoutHelper layoutHelper;
+    private final OpenDiagramLayoutExecutor layoutExecutor;
     private final KieEditorWrapperView kieView;
     private final DataTypesPage dataTypesPage;
 
@@ -133,7 +135,8 @@ public class SessionDiagramEditorScreen implements KieEditorWrapperView.KieEdito
                                       final DecisionNavigatorDock decisionNavigatorDock,
                                       final LayoutHelper layoutHelper,
                                       final KieEditorWrapperView kieView,
-                                      final DataTypesPage dataTypesPage) {
+                                      final DataTypesPage dataTypesPage,
+                                      final OpenDiagramLayoutExecutor layoutExecutor) {
         this.definitionManager = definitionManager;
         this.clientFactoryServices = clientFactoryServices;
         this.diagramService = diagramService;
@@ -150,6 +153,7 @@ public class SessionDiagramEditorScreen implements KieEditorWrapperView.KieEdito
         this.layoutHelper = layoutHelper;
         this.kieView = kieView;
         this.dataTypesPage = dataTypesPage;
+        this.layoutExecutor = layoutExecutor;
     }
 
     @PostConstruct
@@ -338,7 +342,7 @@ public class SessionDiagramEditorScreen implements KieEditorWrapperView.KieEdito
     void open(final Diagram diagram,
               final Command callback) {
         screenPanelView.setWidget(presenter.getView());
-        layoutHelper.applyLayout(diagram);
+        layoutHelper.applyLayout(diagram, layoutExecutor);
         presenter
                 .withToolbar(true)
                 .withPalette(true)

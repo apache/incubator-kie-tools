@@ -43,6 +43,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.components.layout.LayoutHelper;
+import org.kie.workbench.common.stunner.core.client.components.layout.OpenDiagramLayoutExecutor;
 import org.kie.workbench.common.stunner.core.client.error.DiagramClientErrorHandler;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.session.Session;
@@ -95,6 +96,7 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
     private final DecisionNavigatorDock decisionNavigatorDock;
     private final LayoutHelper layoutHelper;
     private final DataTypesPage dataTypesPage;
+    private final OpenDiagramLayoutExecutor openDiagramLayoutExecutor;
 
     @Inject
     public DMNDiagramEditor(final View view,
@@ -120,7 +122,8 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
                             final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                             final DecisionNavigatorDock decisionNavigatorDock,
                             final LayoutHelper layoutHelper,
-                            final DataTypesPage dataTypesPage) {
+                            final DataTypesPage dataTypesPage,
+                            final OpenDiagramLayoutExecutor openDiagramLayoutExecutor) {
         super(view,
               documentationView,
               placeManager,
@@ -145,6 +148,7 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
         this.decisionNavigatorDock = decisionNavigatorDock;
         this.layoutHelper = layoutHelper;
         this.dataTypesPage = dataTypesPage;
+        this.openDiagramLayoutExecutor = openDiagramLayoutExecutor;
     }
 
     @OnStartup
@@ -171,7 +175,7 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
 
     @Override
     public void open(final ProjectDiagram diagram) {
-        this.layoutHelper.applyLayout(diagram);
+        this.layoutHelper.applyLayout(diagram, openDiagramLayoutExecutor);
         super.open(diagram);
     }
 

@@ -32,6 +32,7 @@ import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportT
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportToPngSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportToSvgSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.PasteSelectionSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.command.impl.PerformAutomaticLayoutCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.RedoSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.SwitchGridSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.UndoSessionCommand;
@@ -65,6 +66,11 @@ public class DMNEditorSessionCommands extends EditorSessionCommands {
                 .register(CopySelectionSessionCommand.class)
                 .register(PasteSelectionSessionCommand.class)
                 .register(CutSelectionSessionCommand.class)
-                .register(SaveDiagramSessionCommand.class);
+                .register(SaveDiagramSessionCommand.class)
+                .register(PerformAutomaticLayoutCommand.class);
+    }
+
+    public PerformAutomaticLayoutCommand getPerformAutomaticLayoutCommand(){
+        return getCommands().get(16);
     }
 }

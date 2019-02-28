@@ -31,20 +31,23 @@ import org.kie.workbench.common.stunner.core.graph.processing.layout.LayoutServi
 public final class LayoutHelper {
 
     private final LayoutService layoutService;
-    private final LayoutExecutor layoutExecutor;
 
     @Inject
-    public LayoutHelper(final LayoutService layoutService,
-                        final LayoutExecutor layoutExecutor) {
+    public LayoutHelper(final LayoutService layoutService) {
         this.layoutService = layoutService;
-        this.layoutExecutor = layoutExecutor;
     }
 
-    public void applyLayout(final Diagram diagram) {
+    public void applyLayout(final Diagram diagram, final LayoutExecutor layoutExecutor) {
+        applyLayout(diagram, layoutExecutor, false);
+    }
+
+    public void applyLayout(final Diagram diagram,
+                            final LayoutExecutor layoutExecutor,
+                            final boolean overrideCurrentLayout) {
         final Graph<?, Node> graph = diagram.getGraph();
-        if (graph != null && !this.layoutService.hasLayoutInformation(graph)) {
+        if (graph != null && (overrideCurrentLayout || !this.layoutService.hasLayoutInformation(graph))) {
             final Layout layout = this.layoutService.createLayout(graph);
-            this.layoutExecutor.applyLayout(layout, graph);
+            layoutExecutor.applyLayout(layout, graph);
 
             for (final Node node : graph.nodes()) {
                 if (CanvasLayoutUtils.isCanvasRoot(diagram, node)) {
@@ -54,5 +57,9 @@ public final class LayoutHelper {
                 }
             }
         }
+    }
+
+    public LayoutService getLayoutService() {
+        return this.layoutService;
     }
 }

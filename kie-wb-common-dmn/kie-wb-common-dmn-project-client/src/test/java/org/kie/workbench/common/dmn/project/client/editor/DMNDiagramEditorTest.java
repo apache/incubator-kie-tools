@@ -34,6 +34,7 @@ import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.components.layout.LayoutHelper;
+import org.kie.workbench.common.stunner.core.client.components.layout.OpenDiagramLayoutExecutor;
 import org.kie.workbench.common.stunner.core.documentation.DocumentationView;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectDiagramEditor;
@@ -96,6 +97,9 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
     private LayoutHelper layoutHelper;
 
     @Mock
+    private OpenDiagramLayoutExecutor layoutExecutor;
+
+    @Mock
     private DataTypesPage dataTypesPage;
 
     @Mock
@@ -152,7 +156,8 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
                                                  sessionCommandManager,
                                                  decisionNavigatorDock,
                                                  layoutHelper,
-                                                 dataTypesPage) {
+                                                 dataTypesPage,
+                                                 layoutExecutor) {
             {
                 fileMenuBuilder = DMNDiagramEditorTest.this.fileMenuBuilder;
                 workbenchContext = DMNDiagramEditorTest.this.workbenchContext;
@@ -218,7 +223,7 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
 
         verify(expressionEditor).setToolbarStateHandler(any(ProjectToolbarStateHandler.class));
         verify(dataTypesPage).reload();
-        verify(layoutHelper).applyLayout(diagram);
+        verify(layoutHelper).applyLayout(diagram, layoutExecutor);
     }
 
     @Test
