@@ -108,8 +108,8 @@ public class DefaultWorkbenchErrorCallback {
             return;
         }
 
-        genericErrorPopup.setup("Uncaught exception: " + extractMessageRecursively(throwable));
         genericErrorPopup.show();
+        genericErrorPopup.setup("Uncaught exception: " + extractMessageRecursively(throwable));
     }
 
 

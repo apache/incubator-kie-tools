@@ -45,7 +45,6 @@ public abstract class DefaultWorkbenchEntryPoint {
 
     private DefaultWorkbenchErrorCallback defaultWorkbenchErrorCallback;
 
-    @Inject
     private GenericErrorPopup genericErrorPopup;
 
     @Inject
@@ -56,6 +55,11 @@ public abstract class DefaultWorkbenchEntryPoint {
         this.appConfigService = appConfigService;
         this.activityBeansCache = activityBeansCache;
         this.defaultWorkbenchErrorCallback = defaultWorkbenchErrorCallback;
+    }
+
+    @Inject
+    public void setGenericErrorPopup(final GenericErrorPopup genericErrorPopup) {
+        this.genericErrorPopup = genericErrorPopup;
     }
 
     protected abstract void setupMenu();
@@ -112,7 +116,7 @@ public abstract class DefaultWorkbenchEntryPoint {
         loadStyles();
     }
 
-    private void setupRpcDefaultErrorCallback() {
+    protected void setupRpcDefaultErrorCallback() {
         //FIXME: Some RPC calls are made before this callback has the chance to be registered. Investigate and fix.
         final ErrorCallback<Message> originalRpcErrorCallback = AbstractRpcProxy.DEFAULT_RPC_ERROR_CALLBACK;
 
@@ -124,7 +128,6 @@ public abstract class DefaultWorkbenchEntryPoint {
             m.remove("MethodReply");
 
             genericErrorPopup.setup(BusToolsCli.encodeMessage(m));
-            genericErrorPopup.show();
 
             //This will send a message to Errai Bus' error channel.
             return originalRpcErrorCallback.error(m, t);

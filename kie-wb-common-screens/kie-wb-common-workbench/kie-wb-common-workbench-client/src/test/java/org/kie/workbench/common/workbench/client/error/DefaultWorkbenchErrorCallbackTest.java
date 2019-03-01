@@ -19,15 +19,30 @@ package org.kie.workbench.common.workbench.client.error;
 import org.dashbuilder.dataset.exception.*;
 import org.jboss.errai.bus.client.api.InvalidBusContentException;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.kie.server.api.exception.KieServicesHttpException;
+import org.kie.workbench.common.workbench.client.entrypoint.GenericErrorPopup;
+import org.mockito.InOrder;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
 import static org.kie.workbench.common.workbench.client.error.DefaultWorkbenchErrorCallback.isInvalidBusContentException;
 import static org.kie.workbench.common.workbench.client.error.DefaultWorkbenchErrorCallback.isKieServerForbiddenException;
 import static org.kie.workbench.common.workbench.client.error.DefaultWorkbenchErrorCallback.isKieServerUnauthorizedException;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.inOrder;
 
+@RunWith(MockitoJUnitRunner.class)
 public class DefaultWorkbenchErrorCallbackTest {
 
+    @Mock
+    private GenericErrorPopup genericErrorPopup;
+
+    @InjectMocks
+    private DefaultWorkbenchErrorCallback callback;
+    
     @Test
     public void testForbiddenException() {
         assertTrue(isKieServerForbiddenException(new KieServicesHttpException(null,
@@ -71,5 +86,14 @@ public class DefaultWorkbenchErrorCallbackTest {
         assertTrue(isInvalidBusContentException(new InvalidBusContentException("text/html", "content")));
 
         assertFalse(isInvalidBusContentException(new RuntimeException()));
+    }
+    
+    @Test
+    public void testGenericPopup(){
+        callback.error(new RuntimeException("ex"));
+
+        InOrder inOrder = inOrder(genericErrorPopup);
+        inOrder.verify(genericErrorPopup).show();
+        inOrder.verify(genericErrorPopup).setup(any());
     }
 }

@@ -82,6 +82,7 @@ public class GenericErrorPopup extends Elemental2Modal<GenericErrorPopup> implem
     @PostConstruct
     public void init() {
         super.setup();
+        this.getModal().addHiddenHandler(e -> errorDetails.textContent = "");
     }
 
     @Override
