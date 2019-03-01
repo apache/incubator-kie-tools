@@ -197,6 +197,17 @@ public class RightPanelPresenter implements RightPanelView.Presenter {
     }
 
     @Override
+    public void hideProperties(Map<String, List<String>> propertiesToHide) {
+        listGroupItemPresenter.showAll();
+        propertiesToHide.entrySet().stream().forEach(
+                stringListEntry -> stringListEntry.getValue().forEach(s -> {
+                    List<String> propertyParts = s.contains(".") ? Arrays.asList(s.split("\\.")) : Collections.singletonList(s);
+                    listGroupItemPresenter.hideProperty(stringListEntry.getKey(), propertyParts);
+                })
+        );
+    }
+
+    @Override
     public void setSimpleJavaInstanceFieldsMap(SortedMap<String, FactModelTree> simpleJavaInstanceFieldsMap) {
         clearSimpleJavaInstanceFieldList();
         this.simpleJavaInstanceFieldsMap = simpleJavaInstanceFieldsMap;

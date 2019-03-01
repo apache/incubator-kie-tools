@@ -62,6 +62,11 @@ public class ListGroupItemPresenter implements ListGroupItemView.Presenter {
     }
 
     @Override
+    public void showAll() {
+        fieldItemPresenter.showAll();
+    }
+
+    @Override
     public void selectProperty(String factName, List<String> propertyParts) {
         final ListGroupItemView listGroupItemView = listGroupItemViewMap.get(factName);
         if (!listGroupItemView.isShown()) {
@@ -83,6 +88,14 @@ public class ListGroupItemPresenter implements ListGroupItemView.Presenter {
     }
 
     @Override
+    public void hideProperty(String factName, List<String> propertyParts) {
+        String key = factName + "." + String.join(".", propertyParts);
+        if (fieldItemPresenter.fieldItemMap.containsKey(key)) {
+            fieldItemPresenter.fieldItemMap.get(key).hide();
+        }
+    }
+
+    @Override
     public void disable() {
         this.disabled.set(true);
         factName = null;
@@ -99,25 +112,16 @@ public class ListGroupItemPresenter implements ListGroupItemView.Presenter {
 
     @Override
     public DivElement getDivElement(String factName, FactModelTree factModelTree) {
-        if (listGroupItemViewMap.containsKey(factName)) {
-            return listGroupItemViewMap.get(factName).getListGroupItem();
-        } else {
-            final ListGroupItemView listGroupItemView = commonGetListGroupItemView("", factName, false);
-            populateListGroupItemView(listGroupItemView, "", factName, factModelTree);
-            return listGroupItemView.getListGroupItem();
-        }
+        final ListGroupItemView listGroupItemView = commonGetListGroupItemView("", factName, false);
+        populateListGroupItemView(listGroupItemView, "", factName, factModelTree);
+        return listGroupItemView.getListGroupItem();
     }
 
     @Override
     public DivElement getDivElement(String fullPath, String factName, String factModelTreeClass) {
-        String key = fullPath.isEmpty() ? factName : fullPath + "." + factName;
-        if (listGroupItemViewMap.containsKey(key)) {
-            return listGroupItemViewMap.get(key).getListGroupItem();
-        } else {
-            final ListGroupItemView listGroupItemView = commonGetListGroupItemView(fullPath, factName, true);
-            populateListGroupItemView(listGroupItemView, factName, factModelTreeClass);
-            return listGroupItemView.getListGroupExpansion();
-        }
+        final ListGroupItemView listGroupItemView = commonGetListGroupItemView(fullPath, factName, true);
+        populateListGroupItemView(listGroupItemView, factName, factModelTreeClass);
+        return listGroupItemView.getListGroupExpansion();
     }
 
     @Override

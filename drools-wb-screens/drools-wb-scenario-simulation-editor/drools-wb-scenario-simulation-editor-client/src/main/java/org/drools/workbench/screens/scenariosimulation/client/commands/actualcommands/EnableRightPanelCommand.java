@@ -34,6 +34,7 @@ public class EnableRightPanelCommand extends AbstractScenarioSimulationCommand {
         final ScenarioSimulationContext.Status status = context.getStatus();
         if (context.getScenarioSimulationEditorPresenter() != null) {
             context.getScenarioSimulationEditorPresenter().expandToolsDock();
+            context.getScenarioSimulationEditorPresenter().reloadRightPanel(false);
         }
         if (context.getRightPanelPresenter() != null) {
             if (status.getFilterTerm() == null) {

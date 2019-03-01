@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import java.util.stream.Collectors;
 
 import com.google.gwt.event.shared.EventBus;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
@@ -39,9 +38,7 @@ import org.uberfire.backend.vfs.Path;
 
 public class DMNDataManagementStrategy extends AbstractDataManagementStrategy {
 
-    protected ResultHolder factModelTreeHolder = new ResultHolder();
     private final Caller<DMNTypeService> dmnTypeService;
-    protected ScenarioSimulationContext scenarioSimulationContext;
     private final EventBus eventBus;
     protected Path currentPath;
 
@@ -85,24 +82,8 @@ public class DMNDataManagementStrategy extends AbstractDataManagementStrategy {
 
     protected void getSuccessCallbackMethod(final FactModelTuple factModelTuple, final RightPanelView.Presenter rightPanelPresenter, final ScenarioGridModel scenarioGridModel) {
         // Instantiate a map of already assigned properties
-        final Map<String, List<String>> alreadyAssignedProperties = getPropertiesToHide(scenarioGridModel);
         factModelTreeHolder.setFactModelTuple(factModelTuple);
-        final SortedMap<String, FactModelTree> visibleFacts = factModelTuple.getVisibleFacts();
-        final Map<Boolean, List<Map.Entry<String, FactModelTree>>> partitionBy = visibleFacts.entrySet().stream()
-                .collect(Collectors.partitioningBy(stringFactModelTreeEntry -> stringFactModelTreeEntry.getValue().isSimple()));
-        final SortedMap<String, FactModelTree> complexDataObjects = new TreeMap<>(partitionBy.get(false).stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
-        final SortedMap<String, FactModelTree> simpleDataObjects = new TreeMap<>(partitionBy.get(true).stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
-        filterFactModelTreeMap(complexDataObjects, alreadyAssignedProperties);
-        filterFactModelTreeMap(simpleDataObjects, alreadyAssignedProperties);
-        rightPanelPresenter.setDataObjectFieldsMap(complexDataObjects);
-        rightPanelPresenter.setSimpleJavaTypeFieldsMap(simpleDataObjects);
-        rightPanelPresenter.setHiddenFieldsMap(factModelTuple.getHiddenFacts());
-
-        SortedMap<String, FactModelTree> context = new TreeMap<>();
-        context.putAll(factModelTuple.getVisibleFacts());
-        context.putAll(factModelTuple.getHiddenFacts());
-        scenarioSimulationContext.setDataObjectFieldsMap(context);
-
+        storeData(factModelTuple, rightPanelPresenter, scenarioGridModel);
         showErrorsAndCleanupState(factModelTuple);
     }
 
@@ -151,16 +132,4 @@ public class DMNDataManagementStrategy extends AbstractDataManagementStrategy {
         };
     }
 
-    static protected class ResultHolder {
-
-        FactModelTuple factModelTuple;
-
-        public FactModelTuple getFactModelTuple() {
-            return factModelTuple;
-        }
-
-        public void setFactModelTuple(FactModelTuple factModelTuple) {
-            this.factModelTuple = factModelTuple;
-        }
-    }
 }

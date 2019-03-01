@@ -20,21 +20,15 @@ import java.util.Objects;
 import com.ait.lienzo.client.core.event.AbstractNodeMouseEvent;
 import com.ait.lienzo.client.core.types.Point2D;
 import org.drools.workbench.screens.scenariosimulation.client.metadata.ScenarioHeaderMetaData;
-import org.drools.workbench.screens.scenariosimulation.client.utils.ScenarioSimulationGridHeaderUtilities;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGrid;
-import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridCell;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellEditAction;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
-import org.uberfire.ext.wires.core.grids.client.util.CellContextUtilities;
-import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellEditContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.DefaultGridWidgetEditCellMouseEventHandler;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
-
-import static org.drools.workbench.screens.scenariosimulation.client.utils.ScenarioSimulationGridHeaderUtilities.isHeaderEditable;
 
 public class ScenarioSimulationGridWidgetMouseEventHandler extends DefaultGridWidgetEditCellMouseEventHandler {
 
@@ -47,27 +41,15 @@ public class ScenarioSimulationGridWidgetMouseEventHandler extends DefaultGridWi
         //Get column information
         final double cx = relativeLocation.getX();
         final BaseGridRendererHelper rendererHelper = gridWidget.getRendererHelper();
-        final BaseGridRendererHelper.RenderingInformation ri = rendererHelper.getRenderingInformation();
         final BaseGridRendererHelper.ColumnInformation ci = rendererHelper.getColumnInformation(cx);
         final GridColumn<?> column = ci.getColumn();
         if (column == null) {
             return false;
         }
-        if (!isEditableHeaderLocal(column, uiHeaderRowIndex)) {
-            return true;
-        }
         final ScenarioHeaderMetaData headerMetaData = (ScenarioHeaderMetaData) column.getHeaderMetaData().get(uiHeaderRowIndex);
         final GridData gridData = gridWidget.getModel();
-        if (gridData.getSelectedHeaderCells().size() == 1 &&
-                Objects.equals(headerMetaData.getSupportedEditAction(), GridCellEditAction.getSupportedEditAction(event)) &&
-                isHeaderEditable(rendererHelper, headerMetaData, (ScenarioGridColumn) column)) {
-            final Point2D gridWidgetComputedLocation = gridWidget.getComputedLocation();
-            final GridBodyCellEditContext context = CellContextUtilities.makeRenderContext(gridWidget,
-                                                                                           ri,
-                                                                                           ci,
-                                                                                           relativeLocation.add(gridWidgetComputedLocation),
-                                                                                           uiHeaderRowIndex);
-            headerMetaData.edit(context);
+        if (gridData.getSelectedHeaderCells().size() == 1 && editSupportedLocal(headerMetaData.getSupportedEditAction(), event)) {
+            return startEditLocal((ScenarioGrid) gridWidget, uiHeaderColumnIndex, (ScenarioGridColumn) column, uiHeaderRowIndex, true);
         }
         return true;
     }
@@ -88,43 +70,27 @@ public class ScenarioSimulationGridWidgetMouseEventHandler extends DefaultGridWi
         if (gridData.getSelectedCells().size() == 1) {
             final GridCell<?> cell = gridData.getCell(uiRowIndex, uiColumnIndex);
             final GridCellEditAction cellEditAction = cell == null ? GridCell.DEFAULT_EDIT_ACTION : cell.getSupportedEditAction();
-            if (Objects.equals(cellEditAction, getSupportedEditActionLocal(event))) {
+            if (editSupportedLocal(cellEditAction, event)) {
                 ScenarioGridColumn scenarioGridColumn = (ScenarioGridColumn) gridWidget.getModel().getColumns().get(uiColumnIndex);
-                return manageStartEditingGridCell((ScenarioGrid) gridWidget, uiRowIndex, uiColumnIndex, scenarioGridColumn);
+                return startEditLocal((ScenarioGrid) gridWidget, uiColumnIndex, scenarioGridColumn, uiRowIndex, false);
             }
         }
         return false;
     }
 
-    /**
-     * This method check if the click happened on an <i>writable</i> column of a <b>grid row</b>. If it is so, start editing the cell,
-     * otherwise returns <code>false</code>
-     *
-     * @param scenarioGrid
-     * @param uiRowIndex
-     * @param uiColumnIndex
-     * @param scenarioGridColumn
-     * @return
-     */
-    protected boolean manageStartEditingGridCell(ScenarioGrid scenarioGrid, Integer uiRowIndex, Integer uiColumnIndex, ScenarioGridColumn scenarioGridColumn) {
-        final GridCell<?> cell = scenarioGrid.getModel().getCell(uiRowIndex, uiColumnIndex);
-        if (cell == null) {
-            return false;
-        }
-        if (((ScenarioGridCell) cell).isEditingMode()) {
-            return true;
-        }
-        ((ScenarioGridCell) cell).setEditingMode((!scenarioGridColumn.isReadOnly()) && scenarioGrid.startEditingCell(uiRowIndex, uiColumnIndex));
-        return ((ScenarioGridCell) cell).isEditingMode();
-    }
+
 
     // Indirection add for test
-    protected boolean isEditableHeaderLocal(GridColumn<?> scenarioGridColumn, Integer uiHeaderRowIndex) {
-        return ScenarioSimulationGridHeaderUtilities.isEditableHeader(scenarioGridColumn, uiHeaderRowIndex);
+    protected boolean editSupportedLocal(GridCellEditAction gridCellEditAction, final AbstractNodeMouseEvent event) {
+        return Objects.equals(gridCellEditAction, GridCellEditAction.getSupportedEditAction(event));
     }
 
-    // Indirection add for test
+
     protected GridCellEditAction getSupportedEditActionLocal(final AbstractNodeMouseEvent event) {
         return GridCellEditAction.getSupportedEditAction(event);
+    }
+
+    protected boolean startEditLocal(ScenarioGrid scenarioGrid, int uiHeaderColumnIndex, ScenarioGridColumn scenarioGridColumn, int uiHeaderRowIndex, boolean isHeader) {
+        return CommonEditHandler.startEdit(scenarioGrid, uiHeaderColumnIndex, scenarioGridColumn, uiHeaderRowIndex, isHeader);
     }
 }

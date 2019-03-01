@@ -77,7 +77,7 @@ public class ScenarioSimulationProducer {
     public void init() {
         final ScenarioGridPanel scenarioGridPanel = getScenarioSimulationView().getScenarioGridPanel();
         final ScenarioGridLayer scenarioGridLayer = scenarioGridPanel.getScenarioGridLayer();
-        final ScenarioSimulationKeyboardEditHandler scenarioSimulationKeyboardEditHandler = new ScenarioSimulationKeyboardEditHandler(scenarioGridLayer, getEventBus());
+        final ScenarioSimulationKeyboardEditHandler scenarioSimulationKeyboardEditHandler = new ScenarioSimulationKeyboardEditHandler(scenarioGridLayer);
         final BaseGridWidgetKeyboardHandler handler = new BaseGridWidgetKeyboardHandler(scenarioGridLayer);
         handler.addOperation(scenarioSimulationKeyboardEditHandler,
                              new KeyboardOperationSelectTopLeftCell(scenarioGridLayer),

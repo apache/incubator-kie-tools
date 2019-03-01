@@ -123,6 +123,8 @@ public interface ListGroupItemView extends IsWidget,
 
         void unselectAll();
 
+        void showAll();
+
         /**
          * Expand the node and select the given property
          * @param factName
@@ -130,6 +132,11 @@ public interface ListGroupItemView extends IsWidget,
          */
         void selectProperty(String factName, List<String> propertyParts);
 
-
+        /**
+         * Hide the node of the given property
+         * @param factName
+         * @param propertyParts
+         */
+        void hideProperty(String factName, List<String> propertyParts);
     }
 }

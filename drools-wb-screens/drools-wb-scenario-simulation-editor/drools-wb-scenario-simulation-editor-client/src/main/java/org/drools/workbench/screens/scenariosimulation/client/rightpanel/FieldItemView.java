@@ -36,6 +36,8 @@ public interface FieldItemView {
         void setListGroupItemPresenter(ListGroupItemView.Presenter listGroupItemPresenter);
 
         void unselectAll();
+
+        void showAll();
     }
 
     String getFullPath();
@@ -61,5 +63,9 @@ public interface FieldItemView {
     LIElement getLIElement();
 
     void unselect();
+
+    void hide();
+
+    void show();
 
 }

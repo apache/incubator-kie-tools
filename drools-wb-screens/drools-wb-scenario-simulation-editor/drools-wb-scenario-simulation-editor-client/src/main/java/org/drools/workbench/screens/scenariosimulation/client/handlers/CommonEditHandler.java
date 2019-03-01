@@ -16,19 +16,19 @@
 package org.drools.workbench.screens.scenariosimulation.client.handlers;
 
 import com.ait.lienzo.client.core.types.Point2D;
-import com.google.gwt.event.shared.EventBus;
-import org.drools.workbench.screens.scenariosimulation.client.events.EnableRightPanelEvent;
-import org.drools.workbench.screens.scenariosimulation.client.events.ReloadRightPanelEvent;
 import org.drools.workbench.screens.scenariosimulation.client.metadata.ScenarioHeaderMetaData;
+import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
 import org.drools.workbench.screens.scenariosimulation.client.utils.ScenarioSimulationGridHeaderUtilities;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGrid;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridCell;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
+import org.uberfire.ext.wires.core.grids.client.util.CellContextUtilities;
+import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellEditContext;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
 
 import static org.drools.workbench.screens.scenariosimulation.client.utils.ScenarioSimulationGridHeaderUtilities.getColumnScenarioHeaderMetaData;
-import static org.drools.workbench.screens.scenariosimulation.client.utils.ScenarioSimulationGridHeaderUtilities.getEnableRightPanelEvent;
 import static org.uberfire.ext.wires.core.grids.client.util.CoordinateUtilities.getUiHeaderRowIndex;
 
 /**
@@ -43,12 +43,11 @@ public class CommonEditHandler {
      * @param scenarioGridColumn
      * @param uiRowIndex
      * @param isHeader
-     * @param eventBus
      * @return
      */
-    public static boolean startEdit(ScenarioGrid scenarioGrid, Integer uiColumnIndex, ScenarioGridColumn scenarioGridColumn, Integer uiRowIndex, boolean isHeader, EventBus eventBus) {
+    public static boolean startEdit(ScenarioGrid scenarioGrid, Integer uiColumnIndex, ScenarioGridColumn scenarioGridColumn, Integer uiRowIndex, boolean isHeader) {
         if (isHeader) {
-            return manageHeaderLeftClick(scenarioGrid, uiColumnIndex, scenarioGridColumn, uiRowIndex, eventBus);
+            return manageHeaderLeftClick(scenarioGrid, uiColumnIndex, scenarioGridColumn, uiRowIndex);
         } else {
             return manageGridLeftClick(scenarioGrid, uiRowIndex, uiColumnIndex, scenarioGridColumn);
         }
@@ -61,10 +60,9 @@ public class CommonEditHandler {
      * @param uiColumnIndex
      * @param scenarioGridColumn
      * @param uiHeaderRowIndex
-     * @param eventBus
      * @return
      */
-    protected static boolean manageHeaderLeftClick(ScenarioGrid scenarioGrid, Integer uiColumnIndex, ScenarioGridColumn scenarioGridColumn, Integer uiHeaderRowIndex, EventBus eventBus) {
+    protected static boolean manageHeaderLeftClick(ScenarioGrid scenarioGrid, Integer uiColumnIndex, ScenarioGridColumn scenarioGridColumn, Integer uiHeaderRowIndex/*, EventBus eventBus*/) {
         if (!isEditableHeaderLocal(scenarioGridColumn, uiHeaderRowIndex)) {
             return false;
         }
@@ -79,10 +77,7 @@ public class CommonEditHandler {
         switch (group) {
             case "GIVEN":
             case "EXPECT":
-                return manageGivenExpectHeaderLeftClick(scenarioGrid, clickedScenarioHeaderMetadata,
-                                                        scenarioGridColumn,
-                                                        group,
-                                                        uiColumnIndex, eventBus);
+                return manageGivenExpectHeaderLeftClick(scenarioGrid, clickedScenarioHeaderMetadata, uiColumnIndex, uiHeaderRowIndex);
             default:
                 return false;
         }
@@ -91,27 +86,21 @@ public class CommonEditHandler {
     /**
      * This method manage the click happened on an <i>GIVEN</i> or <i>EXPECT</i> header, starting editing it if not already did.
      * @param clickedScenarioHeaderMetadata
-     * @param scenarioGridColumn
-     * @param group
-     * @param uiColumnIndex
      * @return
      */
-    protected static boolean manageGivenExpectHeaderLeftClick(ScenarioGrid scenarioGrid, ScenarioHeaderMetaData clickedScenarioHeaderMetadata,
-                                                              ScenarioGridColumn scenarioGridColumn,
-                                                              String group,
-                                                              Integer uiColumnIndex, EventBus eventBus) {
-        scenarioGrid.setSelectedColumnAndHeader(scenarioGridColumn.getHeaderMetaData().indexOf(clickedScenarioHeaderMetadata), uiColumnIndex);
-
-        if (scenarioGridColumn.isInstanceAssigned() && clickedScenarioHeaderMetadata.isInstanceHeader()) {
-            eventBus.fireEvent(new ReloadRightPanelEvent(true, true));
-            return true;
-        }
-        EnableRightPanelEvent toFire = getEnableRightPanelEvent(scenarioGrid,
-                                                                scenarioGridColumn,
-                                                                clickedScenarioHeaderMetadata,
-                                                                uiColumnIndex,
-                                                                group);
-        eventBus.fireEvent(toFire);
+    protected static boolean manageGivenExpectHeaderLeftClick(ScenarioGrid scenarioGrid, ScenarioHeaderMetaData clickedScenarioHeaderMetadata, int uiColumnIndex, int uiHeaderRowIndex) {
+        final ScenarioGridModel gridModel = scenarioGrid.getModel();
+        final GridColumn<?> column = gridModel.getColumns().get(uiColumnIndex);
+        final BaseGridRendererHelper rendererHelper = scenarioGrid.getRendererHelper();
+        final BaseGridRendererHelper.RenderingInformation ri = rendererHelper.getRenderingInformation();
+        final double columnXCoordinate = rendererHelper.getColumnOffset(column) + column.getWidth() / 2;
+        final BaseGridRendererHelper.ColumnInformation ci = rendererHelper.getColumnInformation(columnXCoordinate);
+        final GridBodyCellEditContext context = CellContextUtilities.makeRenderContext(scenarioGrid,
+                                                                                       ri,
+                                                                                       ci,
+                                                                                       null,
+                                                                                       uiHeaderRowIndex);
+        clickedScenarioHeaderMetadata.edit(context);
         return true;
     }
 

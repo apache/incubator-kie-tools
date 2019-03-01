@@ -62,4 +62,9 @@ public class FieldItemPresenter implements FieldItemView.Presenter {
     public void unselectAll() {
         fieldItemMap.values().forEach(FieldItemView::unselect);
     }
+
+    @Override
+    public void showAll() {
+        fieldItemMap.values().forEach(FieldItemView::show);
+    }
 }

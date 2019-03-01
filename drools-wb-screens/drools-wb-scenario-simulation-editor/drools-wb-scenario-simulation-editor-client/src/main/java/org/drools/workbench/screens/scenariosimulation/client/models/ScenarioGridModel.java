@@ -373,7 +373,7 @@ public class ScenarioGridModel extends BaseGridData {
 
     /**
      * This methods returns the <code>List&lt;ScenarioGridColumn&gt;</code> of a <b>single</b> block of columns of the same instance/data object.
-     * A <code>single</code> block is made of all the columns immediately to the left and right of the selected one with the same "label".
+     * A <code>single</code> block contains the selected column and all the columns immediately to the left and right of it with the same "label".
      * If there is another column with the same "label" but separated by a different column, it is not part of the group.
      * @param selectedColumn
      * @return

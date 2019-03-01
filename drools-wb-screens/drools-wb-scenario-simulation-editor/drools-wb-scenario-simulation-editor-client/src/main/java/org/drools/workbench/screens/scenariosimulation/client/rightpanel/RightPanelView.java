@@ -16,6 +16,8 @@
 
 package org.drools.workbench.screens.scenariosimulation.client.rightpanel;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.SortedMap;
 
@@ -116,6 +118,8 @@ public interface RightPanelView
         void setHiddenFieldsMap(SortedMap<String, FactModelTree> hiddenFieldsMap);
 
         void setInstanceFieldsMap(SortedMap<String, FactModelTree> factTypeFieldsMap);
+
+        void hideProperties(Map<String, List<String>> propertiesToHide);
 
         void setSimpleJavaInstanceFieldsMap(SortedMap<String, FactModelTree> factTypeFieldsMap);
 

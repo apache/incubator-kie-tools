@@ -142,7 +142,6 @@ public class DMNDataManagementStrategyTest extends AbstractDataManagementStrateg
         dmnDataManagementStrategySpy.getSuccessCallbackMethod(factModelTupleLocal, rightPanelPresenterMock, scenarioGridModelMock);
         verify(dmnDataManagementStrategySpy, times(1)).getPropertiesToHide(eq(scenarioGridModelMock));
         assertEquals(factModelTupleLocal, factModelTreeHolderlocal.getFactModelTuple());
-        verify(dmnDataManagementStrategySpy, times(2)).filterFactModelTreeMap(isA(SortedMap.class), eq(alreadyAssignedProperties));
         verify(rightPanelPresenterMock, times(1)).setDataObjectFieldsMap(isA(SortedMap.class));
         verify(rightPanelPresenterMock, times(1)).setSimpleJavaTypeFieldsMap(isA(SortedMap.class));
         verify(rightPanelPresenterMock, times(1)).setHiddenFieldsMap(eq(hiddenFactsLocal));

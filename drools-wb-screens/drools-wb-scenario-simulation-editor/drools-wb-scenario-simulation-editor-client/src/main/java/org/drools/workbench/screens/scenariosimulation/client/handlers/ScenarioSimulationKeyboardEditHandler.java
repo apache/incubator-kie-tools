@@ -15,7 +15,6 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.handlers;
 
-import com.google.gwt.event.shared.EventBus;
 import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGrid;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
@@ -27,11 +26,8 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 
 public class ScenarioSimulationKeyboardEditHandler extends KeyboardOperationEditCell {
 
-    protected EventBus eventBus;
-
-    public ScenarioSimulationKeyboardEditHandler(GridLayer gridLayer, EventBus eventBus) {
+    public ScenarioSimulationKeyboardEditHandler(GridLayer gridLayer) {
         super(gridLayer);
-        this.eventBus = eventBus;
     }
 
     @Override
@@ -68,6 +64,6 @@ public class ScenarioSimulationKeyboardEditHandler extends KeyboardOperationEdit
         if (scenarioGridColumn == null) {
             return false;
         }
-        return CommonEditHandler.startEdit(scenarioGrid, uiColumnIndex, scenarioGridColumn, uiRowIndex, isHeader, eventBus);
+        return CommonEditHandler.startEdit(scenarioGrid, uiColumnIndex, scenarioGridColumn, uiRowIndex, isHeader);
     }
 }

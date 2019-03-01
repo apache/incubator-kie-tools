@@ -22,7 +22,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
@@ -91,14 +90,13 @@ public class DMODataManagementStrategyTest extends AbstractDataManagementStrateg
         String[] emptyFactTypes = {};
         when(oracleMock.getFactTypes()).thenReturn(emptyFactTypes);
         dmoDataManagementStrategy.populateRightPanel(rightPanelPresenterMock, scenarioGridModelMock);
-        verify(dmoDataManagementStrategy, never()).aggregatorCallback(eq(rightPanelPresenterMock), anyInt(), any(SortedMap.class), eq(alreadyAssignedProperties), eq(scenarioGridModelMock));
+        verify(dmoDataManagementStrategy, never()).aggregatorCallback(eq(rightPanelPresenterMock), anyInt(), any(SortedMap.class), eq(scenarioGridModelMock), isA(List.class));
         verify(oracleMock, never()).getFieldCompletions(anyString(), any(Callback.class));
         //
         String[] notEmptyFactTypes = getRandomStringArray();
         when(oracleMock.getFactTypes()).thenReturn(notEmptyFactTypes);
         dmoDataManagementStrategy.populateRightPanel(rightPanelPresenterMock, scenarioGridModelMock);
-        verify(dmoDataManagementStrategy, times(1)).getPropertiesToHide(eq(scenarioGridModelMock));
-        verify(dmoDataManagementStrategy, times(1)).aggregatorCallback(eq(rightPanelPresenterMock), anyInt(), any(SortedMap.class), eq(alreadyAssignedProperties), eq(scenarioGridModelMock));
+        verify(dmoDataManagementStrategy, times(1)).aggregatorCallback(eq(rightPanelPresenterMock), anyInt(), any(SortedMap.class), eq(scenarioGridModelMock), isA(List.class));
         for (String factType : notEmptyFactTypes) {
             verify(oracleMock, times(1)).getFieldCompletions(eq(factType), any(Callback.class));
         }
@@ -136,23 +134,6 @@ public class DMODataManagementStrategyTest extends AbstractDataManagementStrateg
         assertNotNull(retrieved);
         assertEquals(FACT_NAME, retrieved.getFactName());
         assertEquals("", retrieved.getFullPackage());
-    }
-
-    @Test
-    public void populateFactModelTree() {
-        FactModelTree toPopulate = getFactModelTreeInner(randomAlphabetic(3));
-        final FactModelTree spied = spy(toPopulate);
-        final Map<String, String> simpleProperties = toPopulate.getSimpleProperties();
-        final Set<String> keys = simpleProperties.keySet();
-        final Collection<String> values = simpleProperties.values();
-        SortedMap<String, FactModelTree> factTypeFieldsMap = getFactTypeFieldsMapInner(values);
-        dmoDataManagementStrategy.populateFactModelTree(toPopulate, factTypeFieldsMap, new HashMap<>());
-        keys.forEach(key -> {
-            final String value = simpleProperties.get(key);
-            final String factName = factTypeFieldsMap.get(value).getFactName();
-            verify(spied, times(1)).addExpandableProperty(eq(key), eq(factName));
-        });
-        assertTrue(toPopulate.getSimpleProperties().isEmpty());
     }
 
     @Test
@@ -215,10 +196,8 @@ public class DMODataManagementStrategyTest extends AbstractDataManagementStrateg
         if (!isList) {
             assertEquals(String.class.getName(), retrieved.get(0));
         }
-        assertEquals(fullFactType, retrieved.get(retrieved.size()-1));
-
+        assertEquals(fullFactType, retrieved.get(retrieved.size() - 1));
     }
-
 
     private ModelField[] getModelFieldsInner(Map<String, String> simpleProperties) {
         List<ModelField> toReturn = new ArrayList<>();

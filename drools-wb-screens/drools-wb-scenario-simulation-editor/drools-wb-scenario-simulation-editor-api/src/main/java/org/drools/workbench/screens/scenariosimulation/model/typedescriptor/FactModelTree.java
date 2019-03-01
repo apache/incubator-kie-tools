@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 
@@ -49,7 +50,6 @@ public class FactModelTree {
 
     /**
      * Call this constructor to have a <code>FactModelTree</code> with <b>UNDEFINED</b> <code>Type</code>
-     *
      * @param factName
      * @param fullPackage
      * @param simpleProperties
@@ -61,7 +61,6 @@ public class FactModelTree {
 
     /**
      * Call this constructor to specify the <code>FactModelTree</code>' <code>Type</code>
-     *
      * @param factName
      * @param fullPackage
      * @param simpleProperties
@@ -123,6 +122,26 @@ public class FactModelTree {
 
     public Type getType() {
         return type;
+    }
+
+    public FactModelTree cloneFactModelTree() {
+        Map<String, String> clonedSimpleProperties = new HashMap<>(simpleProperties);
+        Map<String, List<String>> clonedGenericTypesMap =
+                genericTypesMap.entrySet()
+                        .stream()
+                        .collect(Collectors.toMap(
+                                Map.Entry::getKey,
+                                e -> {
+                                    List<String> toReturn =  new ArrayList<>();
+                                    toReturn.addAll(e.getValue());
+                                    return toReturn;
+                                }
+
+                        ));
+        FactModelTree toReturn = new FactModelTree(factName, fullPackage, clonedSimpleProperties, clonedGenericTypesMap, type);
+        toReturn.expandableProperties = new HashMap<>(expandableProperties);
+        toReturn.isSimple = isSimple;
+        return toReturn;
     }
 
     @Override

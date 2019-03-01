@@ -17,16 +17,25 @@ package org.drools.workbench.screens.scenariosimulation.client.editor.strategies
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
 import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
+import org.drools.workbench.screens.scenariosimulation.client.rightpanel.RightPanelView;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
 import org.drools.workbench.screens.scenariosimulation.model.ExpressionElement;
+import org.drools.workbench.screens.scenariosimulation.model.FactMappingType;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
 import org.drools.workbench.screens.scenariosimulation.model.SimulationDescriptor;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree;
+import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTuple;
 
 /**
  * Abstract class to provide common methods to be used by actual implementations.
@@ -34,6 +43,8 @@ import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.Fact
 public abstract class AbstractDataManagementStrategy implements DataManagementStrategy {
 
     protected ScenarioSimulationModel model;
+    protected ScenarioSimulationContext scenarioSimulationContext;
+    protected ResultHolder factModelTreeHolder = new ResultHolder();
 
     @Override
     public void setModel(ScenarioSimulationModel model) {
@@ -93,15 +104,94 @@ public abstract class AbstractDataManagementStrategy implements DataManagementSt
                 List<ScenarioGridColumn> instanceColumns = scenarioGridModel.getInstanceScenarioGridColumns(selectedColumn);
                 toReturn.addAll(instanceColumns.stream()
                                         .filter(ScenarioGridColumn::isPropertyAssigned)
-                                        .map(instanceColumn ->  scenarioGridModel.getColumns().indexOf(instanceColumn))
+                                        .map(instanceColumn -> scenarioGridModel.getColumns().indexOf(instanceColumn))
                                         .map(columnIndex -> {
-                                            final List<ExpressionElement> expressionElements = simulationDescriptor.getFactMappingByIndex(columnIndex).getExpressionElements();
-                                            expressionElements.get(expressionElements.size() -1);
-                                            return expressionElements.get(expressionElements.size() -1).getStep();
+                                            String propertyString = String.join(".", simulationDescriptor.getFactMappingByIndex(columnIndex).getExpressionElementsWithoutClass()
+                                                    .stream()
+                                                    .map(ExpressionElement::getStep)
+                                                    .collect(Collectors.toList()));
+                                            propertyString = propertyString.isEmpty() ? "value" : propertyString;
+                                            return propertyString;
                                         })
                                         .collect(Collectors.toList()));
             });
         }
         return toReturn;
+    }
+
+    /**
+     * Store data in required target objects
+     */
+    protected void storeData(final FactModelTuple factModelTuple, final RightPanelView.Presenter rightPanelPresenter, final ScenarioGridModel scenarioGridModel) {
+        // Instantiate a map of already assigned properties
+        final Map<String, List<String>> propertiesToHide = getPropertiesToHide(scenarioGridModel);
+        final SortedMap<String, FactModelTree> visibleFacts = factModelTuple.getVisibleFacts();
+        final Map<Boolean, List<Map.Entry<String, FactModelTree>>> partitionBy = visibleFacts.entrySet().stream()
+                .collect(Collectors.partitioningBy(stringFactModelTreeEntry -> stringFactModelTreeEntry.getValue().isSimple()));
+        final SortedMap<String, FactModelTree> complexDataObjects = new TreeMap<>(partitionBy.get(false).stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+        final SortedMap<String, FactModelTree> simpleDataObjects = new TreeMap<>(partitionBy.get(true).stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+        final SortedMap<String, FactModelTree> instanceFieldsMap = getInstanceMap(visibleFacts);
+        // Update right panel
+        rightPanelPresenter.setInstanceFieldsMap(instanceFieldsMap);
+        rightPanelPresenter.setDataObjectFieldsMap(complexDataObjects);
+        rightPanelPresenter.setSimpleJavaTypeFieldsMap(simpleDataObjects);
+        rightPanelPresenter.setHiddenFieldsMap(factModelTuple.getHiddenFacts());
+        rightPanelPresenter.hideProperties(propertiesToHide);
+        // Update context
+        SortedMap<String, FactModelTree> context = new TreeMap<>();
+        context.putAll(visibleFacts);
+        context.putAll(factModelTuple.getHiddenFacts());
+        scenarioSimulationContext.setDataObjectFieldsMap(context);
+        // Update model
+        Set<String> dataObjectsInstancesName = new HashSet<>(visibleFacts.keySet());
+        dataObjectsInstancesName.addAll(instanceFieldsMap.keySet());
+        scenarioGridModel.setDataObjectsInstancesName(dataObjectsInstancesName);
+        SortedMap<String, FactModelTree> simpleJavaTypeInstanceFieldsMap = getInstanceMap(simpleDataObjects);
+        Set<String> simpleJavaTypeInstancesName = new HashSet<>(simpleDataObjects.keySet());
+        simpleJavaTypeInstancesName.addAll(simpleJavaTypeInstanceFieldsMap.keySet());
+        scenarioGridModel.setSimpleJavaTypeInstancesName(simpleJavaTypeInstancesName);
+    }
+
+    /**
+     * Returns a <code>Map</code> of the <b>instances</b> as defined in the grid and the mapped <code>FactModelTree</code>
+     * @param sourceMap
+     * @return
+     */
+    protected SortedMap<String, FactModelTree> getInstanceMap(SortedMap<String, FactModelTree> sourceMap) {
+        SortedMap<String, FactModelTree> toReturn = new TreeMap<>();
+        // map instance name to base class
+        if (model != null) {
+            final SimulationDescriptor simulationDescriptor = model.getSimulation().getSimulationDescriptor();
+            simulationDescriptor.getUnmodifiableFactMappings()
+                    .stream()
+                    .filter(factMapping -> !Objects.equals(FactMappingType.OTHER, factMapping.getExpressionIdentifier().getType()))
+                    .forEach(factMapping -> {
+                        String dataObjectName = factMapping.getFactIdentifier().getClassName();
+                        if (dataObjectName.contains(".")) {
+                            dataObjectName = dataObjectName.substring(dataObjectName.lastIndexOf(".") + 1);
+                        }
+                        final String instanceName = factMapping.getFactAlias();
+                        if (!instanceName.equals(dataObjectName)) {
+                            final FactModelTree factModelTree = sourceMap.get(dataObjectName);
+                            if (factModelTree != null) {
+                                toReturn.put(instanceName, factModelTree);
+                            }
+                        }
+                    });
+        }
+        return toReturn;
+    }
+
+    static protected class ResultHolder {
+
+        FactModelTuple factModelTuple;
+
+        public FactModelTuple getFactModelTuple() {
+            return factModelTuple;
+        }
+
+        public void setFactModelTuple(FactModelTuple factModelTuple) {
+            this.factModelTuple = factModelTuple;
+        }
     }
 }

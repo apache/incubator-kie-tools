@@ -20,6 +20,7 @@ import java.util.Objects;
 
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.LIElement;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
@@ -105,6 +106,16 @@ public class FieldItemViewImpl implements FieldItemView {
     @Override
     public void unselect() {
         fieldElement.removeClassName("selected");
+    }
+
+    @Override
+    public void hide() {
+        fieldElement.getStyle().setDisplay(Style.Display.NONE);
+    }
+
+    @Override
+    public void show() {
+        fieldElement.getStyle().setDisplay(Style.Display.BLOCK);
     }
 
     @Override
