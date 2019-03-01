@@ -52,31 +52,16 @@ public class ClassPathMavenGenerator {
 
     public static void main(String[] args) throws Exception {
         String kieVersion = args[0];
-        String mavenRepo = getMavenRepo();
-        Path pwd = Paths.get("").toAbsolutePath();
-        StringBuilder sb = new StringBuilder();
-        sb.append(pwd.toAbsolutePath()).append(SEP).
-                append(servicesMod).append(SEP).
-                append(compilerMod).append(SEP).
-                append(offprocessMod).append(SEP).
-                append(cpathPathFile);
-        Path filePath = Paths.get(sb.toString());
+        String baseDir = args[1];
 
-        String content = new String(Files.readAllBytes(filePath));
-        String replaced = content.replace(mavenRepo, MAVEN_REPO_PLACEHOLDER);
+        String content = new String(Files.readAllBytes(Paths.get(baseDir + SEP + cpathPathFile)));
+        String replaced = content.replace(getMavenRepo(), MAVEN_REPO_PLACEHOLDER);
         replaced = replaceTargetInTheClassPathFile(kieVersion, replaced);
 
-        StringBuilder sbo = new StringBuilder();
-                    sbo.append(pwd.toAbsolutePath()).append(SEP).
-                            append(servicesMod).append(SEP).
-                            append(compilerMod).append(SEP).
-                            append(offprocessMod).append(SEP).
-                            append(TARGET).append(SEP).
-                            append("classes").append(SEP).
-                            append(classPathFile);
-        Path offProcessModule = Paths.get(sbo.toString());
+        Path offProcessModule = Paths.get(baseDir + SEP + "target" + SEP + "classes" + SEP + classPathFile);
         write(offProcessModule.toAbsolutePath().toString(), replaced);
-        logger.info("\n************************************\nSaving {} to {} \n************************************\n\n",classPathFile, offProcessModule.toAbsolutePath().toString());
+
+        logger.info("\n************************************\nSaving {} to {} \n************************************\n\n", classPathFile, offProcessModule.toAbsolutePath().toString());
     }
 
     private static String replaceTargetInTheClassPathFile(String kieVersion, String replaced) {
