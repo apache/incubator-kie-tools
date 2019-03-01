@@ -18,26 +18,25 @@ package org.drools.workbench.screens.scenariosimulation.client.commands.actualco
 import javax.enterprise.context.Dependent;
 
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
+import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
+import org.drools.workbench.screens.scenariosimulation.client.values.ScenarioGridCellValue;
 
 /**
- * <code>Command</code> to to set the <i>value</i> of a header' cell
+ * <code>Command</code> to set the <i>value</i> of a grid' cell
  */
 @Dependent
-public class SetHeaderValueCommand extends AbstractScenarioSimulationCommand {
+public class SetGridCellValueCommand extends AbstractScenarioSimulationCommand {
 
-    public SetHeaderValueCommand() {
+    public SetGridCellValueCommand() {
         super(true);
     }
 
     @Override
-    protected void internalExecute(ScenarioSimulationContext context) throws Exception {
+    protected void internalExecute(ScenarioSimulationContext context) {
         final ScenarioSimulationContext.Status status = context.getStatus();
-        final String headerValue = status.getCellValue();
-        boolean isADataType = context.getScenarioSimulationEditorPresenter().getDataManagementStrategy() != null &&  context.getScenarioSimulationEditorPresenter().getDataManagementStrategy().isADataType(headerValue);
-        if (context.getModel().validateHeaderUpdate(headerValue, status.getRowIndex(), status.getColumnIndex(), isADataType)) {
-            context.getModel().updateHeader(status.getColumnIndex(), status.getRowIndex(), headerValue);
-        } else {
-            throw new Exception("Name \"" + headerValue + "\" cannot be used");
-        }
+        context.getModel().setCellValue(status.getRowIndex(),
+                                        status.getColumnIndex(),
+                                        new ScenarioGridCellValue(status.getCellValue(), ScenarioSimulationEditorConstants.INSTANCE.insertValue()));
+        context.getModel().resetErrors(status.getRowIndex());
     }
 }

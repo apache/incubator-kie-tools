@@ -21,7 +21,7 @@ import java.util.Objects;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.TakesValue;
 import com.google.gwt.user.client.ui.Focusable;
-import org.drools.workbench.screens.scenariosimulation.client.events.SetCellValueEvent;
+import org.drools.workbench.screens.scenariosimulation.client.events.SetGridCellValueEvent;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGrid;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridCell;
 import org.gwtbootstrap3.client.ui.TextArea;
@@ -127,6 +127,6 @@ public class ScenarioCellTextAreaDOMElement extends BaseDOMElement<String, TextA
     protected void internalFlush(final String value) {
         final int rowIndex = context.getRowIndex();
         final int columnIndex = context.getColumnIndex();
-        ((ScenarioGrid) gridWidget).getEventBus().fireEvent(new SetCellValueEvent(rowIndex, columnIndex, value, false));
+        ((ScenarioGrid) gridWidget).getEventBus().fireEvent(new SetGridCellValueEvent(rowIndex, columnIndex, value));
     }
 }

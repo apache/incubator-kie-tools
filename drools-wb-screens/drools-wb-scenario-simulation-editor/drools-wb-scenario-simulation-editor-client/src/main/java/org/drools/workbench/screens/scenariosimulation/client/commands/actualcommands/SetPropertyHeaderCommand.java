@@ -17,6 +17,8 @@ package org.drools.workbench.screens.scenariosimulation.client.commands.actualco
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.SortedMap;
 import java.util.stream.IntStream;
 
@@ -43,10 +45,10 @@ public class SetPropertyHeaderCommand extends AbstractSetHeaderCommand {
     protected void executeIfSelectedColumn(ScenarioSimulationContext context, ScenarioGridColumn selectedColumn) {
         int columnIndex = context.getModel().getColumns().indexOf(selectedColumn);
         String value = context.getStatus().getValue();
-        String propertyHeaderTitle = value.contains(".") ? value.substring(value.indexOf(".") + 1) : "value";
         String className = value.split("\\.")[0];
         String canonicalClassName = getFullPackage(context) + className;
         FactIdentifier factIdentifier = setEditableHeadersAndGetFactIdentifier(context, selectedColumn, className, canonicalClassName);
+        String propertyHeaderTitle = getPropertyHeaderTitle(context, factIdentifier);
         final GridData.Range instanceLimits = context.getModel().getInstanceLimits(columnIndex);
         IntStream.range(instanceLimits.getMinRowIndex(), instanceLimits.getMaxRowIndex() + 1)
                 .forEach(index -> {
@@ -91,5 +93,18 @@ public class SetPropertyHeaderCommand extends AbstractSetHeaderCommand {
             }
         }
         return nestedFactModelTree;
+    }
+
+    protected String getPropertyHeaderTitle(ScenarioSimulationContext context, FactIdentifier factIdentifier) {
+        String value = context.getStatus().getValue();
+        String toReturn = value.contains(".") ? value.substring(value.indexOf(".") + 1) : "value";
+        final List<FactMapping> factMappingsByFactName = context.getStatus().getSimulation().getSimulationDescriptor().getFactMappingsByFactName(factIdentifier.getName());
+        final Optional<FactMapping> matchingFactMapping = factMappingsByFactName.stream()
+                .filter(factMapping -> Objects.equals(factMapping.getFullExpression(), value))
+                .findFirst();
+        if (matchingFactMapping.isPresent()) {
+            toReturn = matchingFactMapping.get().getExpressionAlias();
+        }
+        return toReturn;
     }
 }

@@ -30,12 +30,12 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class SetCellValueCommandTest extends AbstractScenarioSimulationCommandTest {
+public class SetGridCellValueCommandTest extends AbstractScenarioSimulationCommandTest {
 
     @Before
     public void setup() {
         super.setup();
-        command = spy(new SetCellValueCommand());
+        command = spy(new SetGridCellValueCommand());
         assertTrue(command.isUndoable());
     }
 

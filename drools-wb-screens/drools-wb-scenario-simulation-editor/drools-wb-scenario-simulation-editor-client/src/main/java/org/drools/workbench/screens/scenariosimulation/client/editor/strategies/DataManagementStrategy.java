@@ -39,7 +39,7 @@ public interface DataManagementStrategy {
             new AbstractMap.SimpleEntry<>(Integer.class.getSimpleName(), Integer.class),
             new AbstractMap.SimpleEntry<>(Number.class.getSimpleName(), Number.class),
             new AbstractMap.SimpleEntry<>(String.class.getSimpleName(), String.class)).
-            collect(Collectors.toMap((e) -> e.getKey(), (e) -> e.getValue())));
+            collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue)));
 
     void populateRightPanel(final RightPanelView.Presenter rightPanelPresenter, final ScenarioGridModel scenarioGridModel);
 

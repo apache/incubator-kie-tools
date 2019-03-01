@@ -41,8 +41,8 @@ import org.drools.workbench.screens.scenariosimulation.client.commands.actualcom
 import org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands.PrependColumnCommand;
 import org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands.PrependRowCommand;
 import org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands.ReloadRightPanelCommand;
-import org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands.SetCellValueCommand;
-import org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands.SetHeaderValueCommand;
+import org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands.SetGridCellValueCommand;
+import org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands.SetHeaderCellValueCommand;
 import org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands.SetInstanceHeaderCommand;
 import org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands.SetPropertyHeaderCommand;
 import org.drools.workbench.screens.scenariosimulation.client.events.AppendColumnEvent;
@@ -60,7 +60,8 @@ import org.drools.workbench.screens.scenariosimulation.client.events.RedoEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.ReloadRightPanelEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.ScenarioGridReloadEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.ScenarioNotificationEvent;
-import org.drools.workbench.screens.scenariosimulation.client.events.SetCellValueEvent;
+import org.drools.workbench.screens.scenariosimulation.client.events.SetGridCellValueEvent;
+import org.drools.workbench.screens.scenariosimulation.client.events.SetHeaderCellValueEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.SetInstanceHeaderEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.SetPropertyHeaderEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.UndoEvent;
@@ -80,7 +81,8 @@ import org.drools.workbench.screens.scenariosimulation.client.handlers.RedoEvent
 import org.drools.workbench.screens.scenariosimulation.client.handlers.ReloadRightPanelEventHandler;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioGridReloadEventHandler;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioNotificationEventHandler;
-import org.drools.workbench.screens.scenariosimulation.client.handlers.SetCellValueEventHandler;
+import org.drools.workbench.screens.scenariosimulation.client.handlers.SetGridCellValueEventHandler;
+import org.drools.workbench.screens.scenariosimulation.client.handlers.SetHeaderCellValueEventHandler;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.SetInstanceHeaderEventHandler;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.SetPropertyHeaderEventHandler;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.UndoEventHandler;
@@ -115,7 +117,8 @@ public class ScenarioSimulationEventHandler implements AppendColumnEventHandler,
                                                        ReloadRightPanelEventHandler,
                                                        ScenarioGridReloadEventHandler,
                                                        ScenarioNotificationEventHandler,
-                                                       SetCellValueEventHandler,
+                                                       SetGridCellValueEventHandler,
+                                                       SetHeaderCellValueEventHandler,
                                                        SetInstanceHeaderEventHandler,
                                                        SetPropertyHeaderEventHandler,
                                                        UndoEventHandler,
@@ -276,15 +279,19 @@ public class ScenarioSimulationEventHandler implements AppendColumnEventHandler,
     }
 
     @Override
-    public void onEvent(SetCellValueEvent event) {
+    public void onEvent(SetGridCellValueEvent event) {
         context.getStatus().setRowIndex(event.getRowIndex());
         context.getStatus().setColumnIndex(event.getColumnIndex());
         context.getStatus().setCellValue(event.getCellValue());
-        if (event.isHeader()) {
-            commonExecution(context, new SetHeaderValueCommand());
-        } else {
-            commonExecution(context, new SetCellValueCommand());
-        }
+        commonExecution(context, new SetGridCellValueCommand());
+    }
+
+    @Override
+    public void onEvent(SetHeaderCellValueEvent event) {
+        context.getStatus().setRowIndex(event.getRowIndex());
+        context.getStatus().setColumnIndex(event.getColumnIndex());
+        context.getStatus().setCellValue(event.getCellValue());
+        commonExecution(context, new SetHeaderCellValueCommand(event.isInstanceHeader(), event.isPropertyHeader()));
     }
 
     @Override
@@ -426,7 +433,8 @@ public class ScenarioSimulationEventHandler implements AppendColumnEventHandler,
         handlerRegistrationList.add(eventBus.addHandler(ReloadRightPanelEvent.TYPE, this));
         handlerRegistrationList.add(eventBus.addHandler(ScenarioGridReloadEvent.TYPE, this));
         handlerRegistrationList.add(eventBus.addHandler(ScenarioNotificationEvent.TYPE, this));
-        handlerRegistrationList.add(eventBus.addHandler(SetCellValueEvent.TYPE, this));
+        handlerRegistrationList.add(eventBus.addHandler(SetGridCellValueEvent.TYPE, this));
+        handlerRegistrationList.add(eventBus.addHandler(SetHeaderCellValueEvent.TYPE, this));
         handlerRegistrationList.add(eventBus.addHandler(SetInstanceHeaderEvent.TYPE, this));
         handlerRegistrationList.add(eventBus.addHandler(SetPropertyHeaderEvent.TYPE, this));
         handlerRegistrationList.add(eventBus.addHandler(UndoEvent.TYPE, this));

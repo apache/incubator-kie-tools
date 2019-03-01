@@ -17,7 +17,6 @@ package org.drools.workbench.screens.scenariosimulation.client.models;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -40,6 +39,7 @@ import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.Sce
 import org.drools.workbench.screens.scenariosimulation.client.values.ScenarioGridCellValue;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridCell;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
+import org.drools.workbench.screens.scenariosimulation.model.ExpressionElement;
 import org.drools.workbench.screens.scenariosimulation.model.ExpressionIdentifier;
 import org.drools.workbench.screens.scenariosimulation.model.FactIdentifier;
 import org.drools.workbench.screens.scenariosimulation.model.FactMapping;
@@ -444,14 +444,10 @@ public class ScenarioGridModel extends BaseGridData {
         }
         SimulationDescriptor simulationDescriptor = simulation.getSimulationDescriptor();
         FactMapping factMappingToEdit = simulationDescriptor.getFactMappingByIndex(columnIndex);
-        if (editedMetadata.isInstanceHeader()) { // we have to update title and value for every column of the group
-            IntStream.range(0, getColumnCount()).forEach(index -> {
-                updateFactMapping(simulationDescriptor, factMappingToEdit, index, value);
-            });
+        ScenarioHeaderMetaData.MetadataType metadataType = editedMetadata.getMetadataType();
+        IntStream.range(0, getColumnCount()).forEach(index -> updateFactMapping(simulationDescriptor, factMappingToEdit, index, value, metadataType));
+        if (editedMetadata.isInstanceHeader()) {
             eventBus.fireEvent(new ReloadRightPanelEvent(false));
-        } else {
-            editedMetadata.setTitle(value);
-            factMappingToEdit.setExpressionAlias(value);
         }
     }
 
@@ -553,7 +549,7 @@ public class ScenarioGridModel extends BaseGridData {
     public boolean isAlreadyAssignedProperty(int columnIndex, String propertyName) {
         Range instanceLimits = getInstanceLimits(columnIndex);
         SimulationDescriptor simulationDescriptor = simulation.getSimulationDescriptor();
-        return IntStream.range(instanceLimits.getMinRowIndex(), instanceLimits.getMaxRowIndex()+1)
+        return IntStream.range(instanceLimits.getMinRowIndex(), instanceLimits.getMaxRowIndex() + 1)
                 .filter(index -> index != columnIndex)
                 .mapToObj(simulationDescriptor::getFactMappingByIndex)
                 .anyMatch(factMapping -> {
@@ -608,7 +604,7 @@ public class ScenarioGridModel extends BaseGridData {
     }
 
     /**
-     * Returns <code>true</code> if type given <b>headerName</b> is the same as the <b>Fact</b> mapped to the
+     * Returns <code>true</code> if given <b>headerName</b> is the same as the <b>Fact</b> mapped to the
      * column at given index
      * @param columnIndex
      * @param headerName
@@ -624,10 +620,20 @@ public class ScenarioGridModel extends BaseGridData {
         return Objects.equals(columnClassName, headerName);
     }
 
-    public boolean validateHeaderUpdate(String value, int rowIndex, int columnIndex, boolean isADataType) {
-        ScenarioHeaderMetaData headerToEdit = (ScenarioHeaderMetaData) getColumns().get(columnIndex).getHeaderMetaData().get(rowIndex);
-        boolean isSameInstanceHeader = isSameInstanceHeader(columnIndex, value);
-        return !headerToEdit.isInstanceHeader() || (isADataType && isSameInstanceHeader && isUniqueInstanceHeaderTitle(value, rowIndex, columnIndex)) || (!isADataType && isUniqueInstanceHeaderTitle(value, rowIndex, columnIndex));
+    /**
+     * Returns <code>true</code> if given <b>headerName</b> is the same as the <b>element steps</b> mapped to any other column of the same group
+     * @param columnIndex
+     * @param headerName
+     * @return
+     */
+    public boolean isSamePropertyHeader(int columnIndex, String headerName) {
+        SimulationDescriptor simulationDescriptor = simulation.getSimulationDescriptor();
+        final FactMapping factMapping = simulationDescriptor.getFactMappingByIndex(columnIndex);
+        String columnPropertyName = factMapping.getExpressionElements().stream().map(ExpressionElement::getStep).collect(Collectors.joining("."));
+        if (columnPropertyName.contains(".")) {
+            columnPropertyName = columnPropertyName.substring(columnPropertyName.indexOf(".") + 1);
+        }
+        return Objects.equals(columnPropertyName, headerName);
     }
 
     public void resetErrors() {
@@ -660,6 +666,15 @@ public class ScenarioGridModel extends BaseGridData {
         this.simpleJavaTypeInstancesName = simpleJavaTypeInstancesName;
     }
 
+    public boolean validateInstanceHeaderUpdate(String value, int columnIndex, boolean isADataType) {
+        boolean isSameInstanceHeader = isSameInstanceHeader(columnIndex, value);
+        return (isADataType && isSameInstanceHeader && isUniqueInstanceHeaderTitle(value, columnIndex)) || (!isADataType && isUniqueInstanceHeaderTitle(value, columnIndex));
+    }
+
+    public boolean validatePropertyHeaderUpdate(String value, int columnIndex, boolean isPropertyType) {
+        return (isPropertyType && isSamePropertyHeader(columnIndex, value) && isUniquePropertyHeaderTitle(value, columnIndex)) || (!isPropertyType && !isAlreadyAssignedProperty(columnIndex, value) && isUniquePropertyHeaderTitle(value, columnIndex));
+    }
+
     /**
      * If the <code>FactIdentifier</code> of the given <code>FactMapping</code> equals the one at <b>index</b>, update the <code>FactMapping.FactAlias</code> at <b>index</b>
      * position with the provided <b>value</b>
@@ -668,18 +683,28 @@ public class ScenarioGridModel extends BaseGridData {
      * @param index
      * @param value
      */
-    protected void updateFactMapping(SimulationDescriptor simulationDescriptor, FactMapping factMappingReference, int index, String value) {
+    protected void updateFactMapping(SimulationDescriptor simulationDescriptor, FactMapping factMappingReference, int index, String value, ScenarioHeaderMetaData.MetadataType metadataType) {
         final FactIdentifier factIdentifierReference = factMappingReference.getFactIdentifier();
         FactMapping factMappingToCheck = simulationDescriptor.getFactMappingByIndex(index);
         final FactIdentifier factIdentifierToCheck = factMappingToCheck.getFactIdentifier();
-        if (Objects.equals(FactIdentifier.EMPTY, factIdentifierReference)) {
-            if (Objects.equals(factIdentifierToCheck, factIdentifierReference) && Objects.equals(factMappingReference.getFactAlias(), factMappingToCheck.getFactAlias())) {
-                ((ScenarioGridColumn) columns.get(index)).getInformationHeaderMetaData().setTitle(value);
-                factMappingToCheck.setFactAlias(value);
+        boolean toUpdate = (Objects.equals(FactIdentifier.EMPTY, factIdentifierReference) &&
+                (Objects.equals(factIdentifierToCheck, factIdentifierReference) && Objects.equals(factMappingReference.getFactAlias(), factMappingToCheck.getFactAlias())))
+                || (Objects.equals(factIdentifierToCheck, factIdentifierReference));
+        if (toUpdate) {
+            switch (metadataType) {
+                case INSTANCE:
+                    ((ScenarioGridColumn) columns.get(index)).getInformationHeaderMetaData().setTitle(value);
+                    factMappingToCheck.setFactAlias(value);
+                    break;
+                case PROPERTY:
+                    if (Objects.equals(factMappingToCheck.getFullExpression(), factMappingReference.getFullExpression())) {
+                        ((ScenarioGridColumn) columns.get(index)).getPropertyHeaderMetaData().setTitle(value);
+                        factMappingToCheck.setExpressionAlias(value);
+                    }
+                    break;
+                default:
+                    break;
             }
-        } else if (Objects.equals(factIdentifierToCheck, factIdentifierReference)) {
-            ((ScenarioGridColumn) columns.get(index)).getInformationHeaderMetaData().setTitle(value);
-            factMappingToCheck.setFactAlias(value);
         }
     }
 
@@ -770,22 +795,39 @@ public class ScenarioGridModel extends BaseGridData {
     }
 
     /**
-     * Verify the given value is not already used as instance header name
+     * Verify the given value is not already used as instance header name <b>between different groups</b>
      * @param value
-     * @param rowIndex
      * @param columnIndex
      * @return
      */
-    protected boolean isUniqueInstanceHeaderTitle(String value, int rowIndex, int columnIndex) {
+    protected boolean isUniqueInstanceHeaderTitle(String value, int columnIndex) {
         Range instanceLimits = getInstanceLimits(columnIndex);
         SimulationDescriptor simulationDescriptor = simulation.getSimulationDescriptor();
         FactIdentifier factIdentifier = simulationDescriptor.getFactMappingByIndex(columnIndex).getFactIdentifier();
         return IntStream.range(0, getColumnCount())
                 .filter(index -> index < instanceLimits.getMinRowIndex() || index > instanceLimits.getMaxRowIndex())
                 .filter(index -> !Objects.equals(factIdentifier, simulationDescriptor.getFactMappingByIndex(index).getFactIdentifier()))
-                .mapToObj(index -> getColumns().get(index))
-                .filter(elem -> elem.getHeaderMetaData().size() > rowIndex)
-                .map(elem -> (ScenarioHeaderMetaData) elem.getHeaderMetaData().get(rowIndex))
+                .mapToObj(index -> (ScenarioGridColumn) getColumns().get(index))
+                .filter(elem -> elem.getInformationHeaderMetaData() != null)
+                .map(ScenarioGridColumn::getInformationHeaderMetaData)
+                .noneMatch(elem -> Objects.equals(elem.getTitle(), value));
+    }
+
+    /**
+     * Verify the given value is not already used as property header name <b>inside the same group</b>
+     * @param value
+     * @param columnIndex
+     * @return
+     */
+    protected boolean isUniquePropertyHeaderTitle(String value, int columnIndex) {
+        SimulationDescriptor simulationDescriptor = simulation.getSimulationDescriptor();
+        FactIdentifier factIdentifier = simulationDescriptor.getFactMappingByIndex(columnIndex).getFactIdentifier();
+        return IntStream.range(0, getColumnCount())
+                .filter(index -> index != columnIndex)
+                .filter(index -> Objects.equals(factIdentifier, simulationDescriptor.getFactMappingByIndex(index).getFactIdentifier()))
+                .mapToObj(index -> (ScenarioGridColumn) getColumns().get(index))
+                .filter(elem -> elem.getPropertyHeaderMetaData() != null)
+                .map(ScenarioGridColumn::getPropertyHeaderMetaData)
                 .noneMatch(elem -> Objects.equals(elem.getTitle(), value));
     }
 
@@ -801,22 +843,6 @@ public class ScenarioGridModel extends BaseGridData {
                 .map(elem -> ((ScenarioGridColumn) elem).getPropertyHeaderMetaData())
                 .filter(Objects::nonNull)
                 .noneMatch(elem -> Objects.equals(elem.getTitle(), value));
-    }
-
-    /**
-     * Verify if the given name is the name of an already existing instance.
-     * @param value
-     * @return
-     */
-    protected boolean isInstanceName(String value) {
-        Set<String> aggregated = new HashSet<>();
-        if (dataObjectsInstancesName != null) {
-            aggregated.addAll(dataObjectsInstancesName);
-        }
-        if (simpleJavaTypeInstancesName != null) {
-            aggregated.addAll(simpleJavaTypeInstancesName);
-        }
-        return aggregated.contains(value);
     }
 
     protected void refreshErrorsRow(int rowIndex) {

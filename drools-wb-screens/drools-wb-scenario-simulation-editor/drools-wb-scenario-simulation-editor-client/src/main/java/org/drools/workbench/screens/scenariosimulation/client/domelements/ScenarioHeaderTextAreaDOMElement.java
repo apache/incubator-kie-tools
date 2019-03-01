@@ -19,7 +19,7 @@ package org.drools.workbench.screens.scenariosimulation.client.domelements;
 import java.util.Objects;
 
 import org.drools.workbench.screens.scenariosimulation.client.events.ReloadRightPanelEvent;
-import org.drools.workbench.screens.scenariosimulation.client.events.SetCellValueEvent;
+import org.drools.workbench.screens.scenariosimulation.client.events.SetHeaderCellValueEvent;
 import org.drools.workbench.screens.scenariosimulation.client.metadata.ScenarioHeaderMetaData;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGrid;
 import org.gwtbootstrap3.client.ui.TextArea;
@@ -57,7 +57,9 @@ public class ScenarioHeaderTextAreaDOMElement extends ScenarioCellTextAreaDOMEle
         final int rowIndex = context.getRowIndex();
         final int columnIndex = context.getColumnIndex();
         try {
-            ((ScenarioGrid)gridWidget).getEventBus().fireEvent(new SetCellValueEvent(rowIndex, columnIndex, value, true));
+            boolean isInstanceHeader = scenarioHeaderMetaData != null && scenarioHeaderMetaData.isInstanceHeader();
+            boolean isPropertyHeader = scenarioHeaderMetaData != null && scenarioHeaderMetaData.isPropertyHeader();
+            ((ScenarioGrid)gridWidget).getEventBus().fireEvent(new SetHeaderCellValueEvent(rowIndex, columnIndex, value, isInstanceHeader, isPropertyHeader));
             ((ScenarioGrid)gridWidget).getEventBus().fireEvent(new ReloadRightPanelEvent(true));
         } catch (Exception e) {
             throw new IllegalArgumentException(new StringBuilder().append("Impossible to update header (").append(rowIndex)

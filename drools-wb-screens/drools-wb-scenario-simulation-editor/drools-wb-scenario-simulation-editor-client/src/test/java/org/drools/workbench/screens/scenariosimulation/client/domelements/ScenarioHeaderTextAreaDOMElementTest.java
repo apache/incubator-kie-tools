@@ -17,7 +17,7 @@
 package org.drools.workbench.screens.scenariosimulation.client.domelements;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import org.drools.workbench.screens.scenariosimulation.client.events.SetCellValueEvent;
+import org.drools.workbench.screens.scenariosimulation.client.events.SetHeaderCellValueEvent;
 import org.drools.workbench.screens.scenariosimulation.client.factories.AbstractFactoriesTest;
 import org.drools.workbench.screens.scenariosimulation.client.metadata.ScenarioHeaderMetaData;
 import org.junit.Before;
@@ -25,7 +25,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
-import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.never;
@@ -79,16 +78,14 @@ public class ScenarioHeaderTextAreaDOMElementTest extends AbstractFactoriesTest 
 
     @Test
     public void internalFlushInvalidHeader() {
-        when(scenarioGridModelMock.validateHeaderUpdate(eq(VALUE), eq(ROW_INDEX), eq(COLUMN_INDEX), anyBoolean())).thenReturn(false);
         scenarioHeaderTextAreaDOMElement.internalFlush(VALUE);
         verify(scenarioGridModelMock, never()).updateHeader(eq(COLUMN_INDEX), eq(ROW_INDEX), eq(VALUE));
     }
 
     @Test
     public void internalFlushValidHeader() {
-        when(scenarioGridModelMock.validateHeaderUpdate(eq(VALUE), eq(ROW_INDEX), eq(COLUMN_INDEX), anyBoolean())).thenReturn(true);
         scenarioHeaderTextAreaDOMElement.internalFlush(VALUE);
-        verify(eventBusMock, times(1)).fireEvent(isA(SetCellValueEvent.class));
+        verify(eventBusMock, times(1)).fireEvent(isA(SetHeaderCellValueEvent.class));
     }
 
 }

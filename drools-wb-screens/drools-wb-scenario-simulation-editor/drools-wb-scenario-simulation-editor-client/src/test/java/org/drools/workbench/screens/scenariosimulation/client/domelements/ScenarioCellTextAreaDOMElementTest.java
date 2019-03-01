@@ -17,7 +17,7 @@
 package org.drools.workbench.screens.scenariosimulation.client.domelements;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import org.drools.workbench.screens.scenariosimulation.client.events.SetCellValueEvent;
+import org.drools.workbench.screens.scenariosimulation.client.events.SetGridCellValueEvent;
 import org.drools.workbench.screens.scenariosimulation.client.factories.AbstractFactoriesTest;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridCell;
 import org.junit.Before;
@@ -94,6 +94,6 @@ public class ScenarioCellTextAreaDOMElementTest extends AbstractFactoriesTest {
     @Test
     public void internalFlush() {
         scenarioCellTextAreaDOMElement.internalFlush(VALUE);
-        verify(eventBusMock, times(1)).fireEvent(isA(SetCellValueEvent.class));
+        verify(eventBusMock, times(1)).fireEvent(isA(SetGridCellValueEvent.class));
     }
 }

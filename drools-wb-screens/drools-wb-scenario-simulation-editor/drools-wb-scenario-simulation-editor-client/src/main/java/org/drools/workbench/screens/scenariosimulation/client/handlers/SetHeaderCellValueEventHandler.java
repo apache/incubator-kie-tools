@@ -16,11 +16,11 @@
 package org.drools.workbench.screens.scenariosimulation.client.handlers;
 
 import com.google.gwt.event.shared.EventHandler;
-import org.drools.workbench.screens.scenariosimulation.client.events.SetCellValueEvent;
+import org.drools.workbench.screens.scenariosimulation.client.events.SetHeaderCellValueEvent;
 
 /**
- * <code>EventHandler</code> for {@link SetCellValueEvent}
+ * <code>EventHandler</code> for {@link SetHeaderCellValueEvent}
  */
-public interface SetCellValueEventHandler extends EventHandler {
-    void onEvent(SetCellValueEvent event);
+public interface SetHeaderCellValueEventHandler extends EventHandler {
+    void onEvent(SetHeaderCellValueEvent event);
 }

@@ -16,36 +16,38 @@
 package org.drools.workbench.screens.scenariosimulation.client.events;
 
 import com.google.gwt.event.shared.GwtEvent;
-import org.drools.workbench.screens.scenariosimulation.client.handlers.SetCellValueEventHandler;
+import org.drools.workbench.screens.scenariosimulation.client.handlers.SetHeaderCellValueEventHandler;
 
 /**
  * <code>GwtEvent</code> to set the <code>GridCellValue</code> at a given rox/column position
  */
-public class SetCellValueEvent extends GwtEvent<SetCellValueEventHandler> {
+public class SetHeaderCellValueEvent extends GwtEvent<SetHeaderCellValueEventHandler> {
 
-    public static Type<SetCellValueEventHandler> TYPE = new Type<>();
+    public static Type<SetHeaderCellValueEventHandler> TYPE = new Type<>();
 
     private int rowIndex;
     private int columnIndex;
     private String cellValue;
-    private final boolean isHeader;
+    private final boolean isInstanceHeader;
+    private final boolean isPropertyHeader;
 
     /**
-     * 
+     *
      * @param rowIndex
      * @param columnIndex
      * @param cellValue
-     * @param isHeader set to <code>true</code> if the edited cell is inside the header
+     * @param isPropertyHeader set to <code>true</code> if the edited cell is inside the header
      */
-    public SetCellValueEvent(int rowIndex, int columnIndex, String cellValue, boolean isHeader) {
+    public SetHeaderCellValueEvent(int rowIndex, int columnIndex, String cellValue, boolean isInstanceHeader, boolean isPropertyHeader) {
         this.rowIndex = rowIndex;
         this.columnIndex = columnIndex;
         this.cellValue = cellValue;
-        this.isHeader = isHeader;
+        this.isInstanceHeader = isInstanceHeader;
+        this.isPropertyHeader = isPropertyHeader;
     }
 
     @Override
-    public Type<SetCellValueEventHandler> getAssociatedType() {
+    public Type<SetHeaderCellValueEventHandler> getAssociatedType() {
         return TYPE;
     }
 
@@ -61,12 +63,16 @@ public class SetCellValueEvent extends GwtEvent<SetCellValueEventHandler> {
         return cellValue;
     }
 
-    public boolean isHeader() {
-        return isHeader;
+    public boolean isInstanceHeader() {
+        return isInstanceHeader;
+    }
+
+    public boolean isPropertyHeader() {
+        return isPropertyHeader;
     }
 
     @Override
-    protected void dispatch(SetCellValueEventHandler handler) {
+    protected void dispatch(SetHeaderCellValueEventHandler handler) {
         handler.onEvent(this);
     }
 }

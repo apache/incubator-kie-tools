@@ -16,6 +16,7 @@
 
 package org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -26,6 +27,7 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
 import org.drools.workbench.screens.scenariosimulation.client.utils.ScenarioSimulationBuilders;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
+import org.drools.workbench.screens.scenariosimulation.model.FactMapping;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree;
 import org.junit.Before;
@@ -123,5 +125,23 @@ public class SetPropertyHeaderCommandTest extends AbstractScenarioSimulationComm
         FactModelTree target = ((SetPropertyHeaderCommand) command).navigateComplexObject(book, elements, sortedMap);
         assertEquals(target, author);
         verify(sortedMap, times(1)).get("Author");
+    }
+
+    @Test
+    public void getPropertyHeaderTitle() {
+        String retrieved = ((SetPropertyHeaderCommand) command).getPropertyHeaderTitle(scenarioSimulationContextLocal, factIdentifierMock);
+        assertEquals(VALUE, retrieved);
+        List<FactMapping> factMappingList = new ArrayList<>();
+        when(simulationDescriptorMock.getFactMappingsByFactName(FACT_IDENTIFIER_NAME)).thenReturn(factMappingList);
+        retrieved = ((SetPropertyHeaderCommand) command).getPropertyHeaderTitle(scenarioSimulationContextLocal, factIdentifierMock);
+        assertEquals(VALUE, retrieved);
+        factMappingList.add(factMappingMock);
+        retrieved = ((SetPropertyHeaderCommand) command).getPropertyHeaderTitle(scenarioSimulationContextLocal, factIdentifierMock);
+        assertEquals(VALUE, retrieved);
+        String EXPRESSION_ALIAS = "EXPRESSION_ALIAS";
+        when(factMappingMock.getFullExpression()).thenReturn(VALUE);
+        when(factMappingMock.getExpressionAlias()).thenReturn(EXPRESSION_ALIAS);
+        retrieved = ((SetPropertyHeaderCommand) command).getPropertyHeaderTitle(scenarioSimulationContextLocal, factIdentifierMock);
+        assertEquals(EXPRESSION_ALIAS, retrieved);
     }
 }
