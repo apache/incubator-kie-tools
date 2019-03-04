@@ -53,8 +53,8 @@ public class CaseManagementStageShapeView extends CaseManagementShapeView {
     @Override
     public Optional<MultiPath> getDropZone() {
         this.getCanvas()
-                .ifPresent(c -> c.getPanelBoundsHeight().
-                        ifPresent(this::createDropZone));
+                .ifPresent(c -> c.getPanelBounds().
+                        ifPresent(b -> this.createDropZone(b.getHeight())));
 
         return super.getDropZone();
     }

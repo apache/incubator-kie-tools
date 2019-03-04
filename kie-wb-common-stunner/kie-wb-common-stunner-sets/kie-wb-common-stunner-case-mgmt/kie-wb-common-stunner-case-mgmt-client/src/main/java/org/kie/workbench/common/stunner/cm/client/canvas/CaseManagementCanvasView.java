@@ -16,12 +16,12 @@
 package org.kie.workbench.common.stunner.cm.client.canvas;
 
 import java.util.Optional;
-import java.util.OptionalDouble;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
+import com.ait.lienzo.client.widget.panel.Bounds;
 import com.ait.lienzo.client.widget.panel.LienzoBoundsPanel;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvasView;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
@@ -76,9 +76,9 @@ public class CaseManagementCanvasView extends WiresCanvasView {
         return this;
     }
 
-    OptionalDouble getPanelBoundsHeight() {
+    Optional<Bounds> getPanelBounds() {
         return boundsPanel
-                .map(bp -> OptionalDouble.of(bp.getBounds().getHeight()))
-                .orElse(OptionalDouble.empty());
+                .map(bp -> Optional.of(bp.getBounds()))
+                .orElse(Optional.empty());
     }
 }

@@ -16,22 +16,32 @@
 
 package org.kie.workbench.common.stunner.cm.client.shape.view;
 
+import java.util.Optional;
 import java.util.UUID;
 
+import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.Rectangle;
 import com.ait.lienzo.client.core.shape.Shape;
+import com.ait.lienzo.client.widget.panel.Bounds;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.cm.client.canvas.CaseManagementCanvas;
 import org.kie.workbench.common.stunner.cm.client.wires.HorizontalStackLayoutManager;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGPrimitiveShape;
+import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class CaseManagementDiagramShapeViewTest {
+
+    @Mock
+    private CaseManagementCanvas canvas;
 
     private CaseManagementDiagramShapeView tested;
 
@@ -42,10 +52,13 @@ public class CaseManagementDiagramShapeViewTest {
 
         tested = new CaseManagementDiagramShapeView("",
                                                     new SVGPrimitiveShape(primitiveShapes),
-                                                    0d,
-                                                    0d,
+                                                    10d,
+                                                    10d,
                                                     false);
         tested.setUUID(UUID.randomUUID().toString());
+
+        when(canvas.getPanelBounds()).thenReturn(Optional.empty());
+        tested.setCanvas(canvas);
     }
 
     @Test
@@ -85,6 +98,20 @@ public class CaseManagementDiagramShapeViewTest {
         assertTrue(ghostChild.getChildShapes().size() == 1);
         CaseManagementShapeView ghostGrandchild = (CaseManagementShapeView) ghostChild.getChildShapes().toList().get(0);
         assertEquals(ghostGrandchild.getUUID(), grandchild.getUUID());
+    }
+
+    @Test
+    public void testGetDropZone() throws Exception {
+        Optional<MultiPath> dropZone1 = tested.getDropZone();
+
+        assertTrue(dropZone1.isPresent());
+
+        when(canvas.getPanelBounds()).thenReturn(Optional.of(Bounds.build(0.0, 0.0, 2000.0, 1000.0)));
+
+        Optional<MultiPath> dropZone2 = tested.getDropZone();
+
+        assertTrue(dropZone2.isPresent());
+        assertNotEquals(dropZone1, dropZone2);
     }
 
     private static class MockShape extends Rectangle {

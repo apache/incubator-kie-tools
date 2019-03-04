@@ -19,6 +19,8 @@ package org.kie.workbench.common.stunner.cm.client.shape.def;
 import java.util.Optional;
 
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.BaseDimensionedShapeDef;
+import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.Height;
+import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.Width;
 import org.kie.workbench.common.stunner.cm.client.resources.CaseManagementSVGViewFactory;
 import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
 import org.kie.workbench.common.stunner.core.client.shape.view.handler.SizeHandler;
@@ -38,8 +40,6 @@ public class CaseManagementSvgDiagramShapeDef extends BaseDimensionedShapeDef
     @Override
     public SVGShapeView<?> newViewInstance(final CaseManagementSVGViewFactory factory,
                                            final CaseManagementDiagram diagram) {
-        return newViewInstance(Optional.ofNullable(diagram.getDimensionsSet().getWidth()),
-                               Optional.ofNullable(diagram.getDimensionsSet().getHeight()),
-                               factory.rectangle());
+        return newViewInstance(Optional.of(new Width(0d)), Optional.of(new Height(0d)), factory.rectangle());
     }
 }

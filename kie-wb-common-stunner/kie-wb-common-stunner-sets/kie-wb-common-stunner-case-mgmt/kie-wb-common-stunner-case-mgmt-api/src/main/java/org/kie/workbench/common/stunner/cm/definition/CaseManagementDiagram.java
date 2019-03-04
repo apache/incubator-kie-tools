@@ -67,8 +67,7 @@ public class CaseManagementDiagram implements BPMNDiagram<DiagramSet, ProcessDat
     public static final String DIAGRAM_SET = "diagramSet";
     public static final String PROCESS_DATA = "processData";
     public static final String CASE_MANAGEMENT_SET = "caseManagementSet";
-    public static final Double WIDTH = 2800d;
-    public static final Double HEIGHT = 1400d;
+
     @Labels
     private final Set<String> labels = new Sets.Builder<String>()
             .add("canContainArtifacts")
@@ -102,7 +101,7 @@ public class CaseManagementDiagram implements BPMNDiagram<DiagramSet, ProcessDat
              new CaseManagementSet(),
              new BackgroundSet(),
              new FontSet(),
-             new RectangleDimensionsSet(WIDTH, HEIGHT));
+             new RectangleDimensionsSet());
     }
 
     public CaseManagementDiagram(final @MapsTo(DIAGRAM_SET) DiagramSet diagramSet,

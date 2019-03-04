@@ -16,6 +16,10 @@
 
 package org.kie.workbench.common.stunner.cm.client.canvas;
 
+import java.util.Collections;
+import java.util.Optional;
+import java.util.function.Consumer;
+
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,6 +31,7 @@ import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
 import org.kie.workbench.common.stunner.core.client.api.ClientDefinitionManager;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.Transform;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.TextPropertyProvider;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.TextPropertyProviderFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementAddedEvent;
@@ -36,6 +41,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.registration.Ca
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
+import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.PropertyAdapter;
@@ -44,21 +50,28 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
+import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewImpl;
 import org.kie.workbench.common.stunner.core.graph.impl.NodeImpl;
 import org.kie.workbench.common.stunner.core.graph.processing.index.GraphIndexBuilder;
+import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.core.graph.processing.index.MutableIndex;
+import org.kie.workbench.common.stunner.core.graph.processing.index.map.MapIndex;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.mockito.Mock;
 import org.uberfire.mocks.EventSourceMock;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyDouble;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyObject;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -118,6 +131,12 @@ public class CaseManagementCanvasHandlerTest {
     @Mock
     private CaseManagementCanvas canvas;
 
+    @Mock
+    private Transform transform;
+
+    private static final double X = 10.0d;
+    private static final double Y = 20.0d;
+
     private CaseManagementCanvasHandler handler;
 
     @Before
@@ -137,6 +156,10 @@ public class CaseManagementCanvasHandlerTest {
                                                        canvasCommandFactory);
         this.handler.handle(canvas);
         when(textPropertyProviderFactory.getProvider(any(Element.class))).thenReturn(textPropertyProvider);
+
+        when((canvas.getTransform())).thenReturn(transform);
+        when(transform.transform(anyDouble(), anyDouble())).thenAnswer(
+                invocation -> new Point2D(invocation.getArgumentAt(0, Double.class), invocation.getArgumentAt(1, Double.class)));
     }
 
     @Test
@@ -176,6 +199,7 @@ public class CaseManagementCanvasHandlerTest {
         final Node<View<BPMNViewDefinition>, Edge> node = new NodeImpl<>(uuid);
         node.setContent(new ViewImpl(new CaseManagementDiagram(),
                                      Bounds.create(0d, 0d, 10d, 20d)));
+        shape.setUUID(uuid);
         when(canvas.getShape(eq(uuid))).thenReturn(shape);
         when(clientDefinitionManager.adapters()).thenReturn(adapterManager);
         when(adapterManager.forDefinition()).thenReturn(definitionAdapter);
@@ -365,5 +389,102 @@ public class CaseManagementCanvasHandlerTest {
 
         verify(canvasElementUpdatedEvent,
                times(1)).fire(any());
+    }
+
+    @SuppressWarnings("unchecked")
+    private Node<View<BPMNViewDefinition>, Edge> mockCanvasDiagramNode(String uuid,
+                                                                       Consumer<CaseManagementShape> canvasMockCallback) {
+        final CaseManagementShape shape = spy(makeShape());
+        final Node<View<BPMNViewDefinition>, Edge> node = makeNode(uuid, shape);
+        canvasMockCallback.accept(shape);
+
+        final MapIndex index = mock(MapIndex.class);
+        when(index.getNode(eq(uuid))).thenReturn(node);
+
+        this.handler = new CaseManagementCanvasHandler(clientDefinitionManager,
+                                                       clientFactoryServices,
+                                                       ruleManager,
+                                                       graphUtils,
+                                                       indexBuilder,
+                                                       shapeManager,
+                                                       textPropertyProviderFactory,
+                                                       canvasElementAddedEvent,
+                                                       canvasElementRemovedEvent,
+                                                       canvasElementUpdatedEvent,
+                                                       canvasElementsClearEvent,
+                                                       canvasCommandFactory) {
+            @Override
+            public Index<?, ?> getGraphIndex() {
+                return index;
+            }
+        };
+        this.handler.handle(canvas);
+
+        return node;
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void checkGetDiagramNode() throws Exception {
+        final Node<View<BPMNViewDefinition>, Edge> node =
+                mockCanvasDiagramNode("uuid",
+                                      shape -> when(canvas.getShapes()).thenReturn(Collections.<Shape>singletonList(shape)));
+
+        final Optional<Node<View<?>, Edge>> root = handler.getDiagramNode();
+
+        assertTrue(root.isPresent());
+        assertEquals(node, root.get());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testGetElementAt_empty() throws Exception {
+        when(canvas.getShapeAt(eq(X), eq(Y))).thenReturn(Optional.empty());
+        when(canvas.getShapes()).thenReturn(Collections.emptyList());
+
+        final Optional<Element> node = handler.getElementAt(X, Y);
+
+        verify(transform, times(1)).transform(eq(X), eq(Y));
+        verify(canvas, times(1)).getShapeAt(eq(X), eq(Y));
+        verify(canvas, times(1)).getShapes();
+
+        assertFalse(node.isPresent());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testGetElementAt_element() throws Exception {
+        final Node<View<BPMNViewDefinition>, Edge> node =
+                mockCanvasDiagramNode("uuid",
+                                      shape -> when(canvas.getShapeAt(eq(X), eq(Y)))
+                                              .thenReturn(Optional.of(shape)));
+        when(canvas.getShapes()).thenReturn(Collections.emptyList());
+
+        final Optional<Element> result = handler.getElementAt(X, Y);
+
+        verify(transform, times(1)).transform(eq(X), eq(Y));
+        verify(canvas, times(1)).getShapeAt(eq(X), eq(Y));
+        verify(canvas, never()).getShapes();
+
+        assertTrue(result.isPresent());
+        assertEquals(node, result.get());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testGetElementAt_root() throws Exception {
+        when(canvas.getShapeAt(eq(X), eq(Y))).thenReturn(Optional.empty());
+        final Node<View<BPMNViewDefinition>, Edge> root =
+                mockCanvasDiagramNode("uuid",
+                                      shape -> when(canvas.getShapes()).thenReturn(Collections.<Shape>singletonList(shape)));
+
+        final Optional<Element> node = handler.getElementAt(X, Y);
+
+        verify(transform, times(1)).transform(eq(X), eq(Y));
+        verify(canvas, times(1)).getShapeAt(eq(X), eq(Y));
+        verify(canvas, times(1)).getShapes();
+
+        assertTrue(node.isPresent());
+        assertEquals(root, node.get());
     }
 }

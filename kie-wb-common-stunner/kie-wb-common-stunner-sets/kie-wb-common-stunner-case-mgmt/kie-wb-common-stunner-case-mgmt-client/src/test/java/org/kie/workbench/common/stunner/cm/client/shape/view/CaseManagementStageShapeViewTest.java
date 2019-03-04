@@ -17,12 +17,12 @@
 package org.kie.workbench.common.stunner.cm.client.shape.view;
 
 import java.util.Optional;
-import java.util.OptionalDouble;
 import java.util.UUID;
 
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.Rectangle;
 import com.ait.lienzo.client.core.shape.Shape;
+import com.ait.lienzo.client.widget.panel.Bounds;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
@@ -57,7 +57,7 @@ public class CaseManagementStageShapeViewTest {
                                                   false);
         tested.setUUID(UUID.randomUUID().toString());
 
-        when(canvas.getPanelBoundsHeight()).thenReturn(OptionalDouble.empty());
+        when(canvas.getPanelBounds()).thenReturn(Optional.empty());
         tested.setCanvas(canvas);
     }
 
@@ -72,7 +72,7 @@ public class CaseManagementStageShapeViewTest {
     public void testGetDropZone() throws Exception {
         Optional<MultiPath> dropZone1 = tested.getDropZone();
 
-        when(canvas.getPanelBoundsHeight()).thenReturn(OptionalDouble.of(9999.0));
+        when(canvas.getPanelBounds()).thenReturn(Optional.of(Bounds.build(0.0, 0.0, 0.0, 9999.0)));
 
         Optional<MultiPath> dropZone2 = tested.getDropZone();
 

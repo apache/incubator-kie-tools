@@ -17,13 +17,14 @@
 package org.kie.workbench.common.stunner.cm.client.canvas;
 
 import java.util.List;
-import java.util.OptionalDouble;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import com.ait.lienzo.client.widget.panel.Bounds;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvasView;
 import org.kie.workbench.common.stunner.client.lienzo.wires.WiresManagerFactory;
@@ -88,7 +89,7 @@ public class CaseManagementCanvas extends WiresCanvas {
         childShapes.forEach(this::clearShape);
     }
 
-    public OptionalDouble getPanelBoundsHeight() {
-        return ((CaseManagementCanvasView) getView()).getPanelBoundsHeight();
+    public Optional<Bounds> getPanelBounds() {
+        return ((CaseManagementCanvasView) getView()).getPanelBounds();
     }
 }

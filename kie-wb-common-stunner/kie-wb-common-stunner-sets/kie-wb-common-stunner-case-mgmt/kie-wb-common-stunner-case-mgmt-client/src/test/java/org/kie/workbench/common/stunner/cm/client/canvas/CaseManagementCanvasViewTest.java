@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.stunner.cm.client.canvas;
 
-import java.util.OptionalDouble;
+import java.util.Optional;
 
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Rectangle;
@@ -121,11 +121,11 @@ public class CaseManagementCanvasViewTest {
     }
 
     @Test
-    public void testGetPanelBoundsHeight() throws Exception {
-        final double height = 7788.0;
+    public void testGetPanelBounds() throws Exception {
+        final Bounds bounds = Bounds.build(1.0d, 2.0d, 3.0d, 4.0d);
 
         final LienzoBoundsPanel boundsPanel = mock(LienzoBoundsPanel.class);
-        when(boundsPanel.getBounds()).thenReturn(Bounds.build(0.0, 0.0, 100.0, height));
+        when(boundsPanel.getBounds()).thenReturn(bounds);
 
         final Widget widget = mock(Widget.class);
         final Element element = mock(Element.class);
@@ -141,9 +141,10 @@ public class CaseManagementCanvasViewTest {
 
         view.initialize(lienzoPanel, new CanvasSettings(false));
 
-        final OptionalDouble result = view.getPanelBoundsHeight();
+        final Optional<Bounds> result = view.getPanelBounds();
 
         assertTrue(result.isPresent());
-        assertEquals(height, result.getAsDouble(), 0.00001);
+        assertEquals(bounds.getHeight(), result.get().getHeight(), 0.00001);
+        assertEquals(bounds, result.get());
     }
 }
