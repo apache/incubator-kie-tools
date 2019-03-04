@@ -17,12 +17,12 @@
 package org.kie.workbench.common.dmn.client.editors.types.listview.confirmation;
 
 import org.jboss.errai.ui.client.local.spi.TranslationService;
+import org.kie.workbench.common.dmn.client.editors.common.messages.FlashMessage;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
-import org.kie.workbench.common.dmn.client.editors.types.messages.DataTypeFlashMessage;
 import org.uberfire.mvp.Command;
 
+import static org.kie.workbench.common.dmn.client.editors.common.messages.FlashMessage.Type.WARNING;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItemView.UUID_ATTR;
-import static org.kie.workbench.common.dmn.client.editors.types.messages.DataTypeFlashMessage.Type.WARNING;
 
 abstract class WarningMessage {
 
@@ -32,10 +32,10 @@ abstract class WarningMessage {
         this.translationService = translationService;
     }
 
-    DataTypeFlashMessage getFlashMessage(final DataType dataType,
-                                         final Command onSuccess,
-                                         final Command onError) {
-        return new DataTypeFlashMessage(WARNING, getStrongMessage(dataType), getRegularMessage(), getErrorElementSelector(dataType), onSuccess, onError);
+    FlashMessage getFlashMessage(final DataType dataType,
+                                 final Command onSuccess,
+                                 final Command onError) {
+        return new FlashMessage(WARNING, getStrongMessage(dataType), getRegularMessage(), getErrorElementSelector(dataType), onSuccess, onError);
     }
 
     private String getErrorElementSelector(final DataType dataType) {

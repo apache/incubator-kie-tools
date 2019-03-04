@@ -23,9 +23,9 @@ import javax.inject.Inject;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.dmn.api.editors.types.DMNValidationService;
+import org.kie.workbench.common.dmn.client.editors.common.messages.FlashMessage;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
-import org.kie.workbench.common.dmn.client.editors.types.common.errors.NameIsInvalidErrorMessage;
-import org.kie.workbench.common.dmn.client.editors.types.messages.DataTypeFlashMessage;
+import org.kie.workbench.common.dmn.client.editors.types.common.errors.DataTypeNameIsInvalidErrorMessage;
 import org.uberfire.mvp.Command;
 
 @Dependent
@@ -33,14 +33,14 @@ public class DataTypeNameFormatValidator {
 
     private final Caller<DMNValidationService> service;
 
-    private final Event<DataTypeFlashMessage> flashMessageEvent;
+    private final Event<FlashMessage> flashMessageEvent;
 
-    private final NameIsInvalidErrorMessage nameIsInvalidErrorMessage;
+    private final DataTypeNameIsInvalidErrorMessage nameIsInvalidErrorMessage;
 
     @Inject
     public DataTypeNameFormatValidator(final Caller<DMNValidationService> service,
-                                       final Event<DataTypeFlashMessage> flashMessageEvent,
-                                       final NameIsInvalidErrorMessage nameIsInvalidErrorMessage) {
+                                       final Event<FlashMessage> flashMessageEvent,
+                                       final DataTypeNameIsInvalidErrorMessage nameIsInvalidErrorMessage) {
         this.service = service;
         this.flashMessageEvent = flashMessageEvent;
         this.nameIsInvalidErrorMessage = nameIsInvalidErrorMessage;

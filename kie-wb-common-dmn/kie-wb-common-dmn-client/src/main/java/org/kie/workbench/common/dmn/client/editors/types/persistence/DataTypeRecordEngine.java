@@ -18,8 +18,8 @@ package org.kie.workbench.common.dmn.client.editors.types.persistence;
 
 import java.util.List;
 
+import org.kie.workbench.common.dmn.client.editors.common.persistence.RecordEngine;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
-import org.kie.workbench.common.dmn.client.editors.types.persistence.common.RecordEngine;
 
 /**
  * A Data Type Record Engine persists a given data type.

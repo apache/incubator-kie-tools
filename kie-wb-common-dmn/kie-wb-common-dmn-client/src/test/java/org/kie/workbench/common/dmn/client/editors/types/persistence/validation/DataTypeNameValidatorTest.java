@@ -23,11 +23,11 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.client.editors.common.messages.FlashMessage;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
-import org.kie.workbench.common.dmn.client.editors.types.common.errors.NameIsBlankErrorMessage;
-import org.kie.workbench.common.dmn.client.editors.types.common.errors.NameIsDefaultTypeMessage;
-import org.kie.workbench.common.dmn.client.editors.types.common.errors.NameIsNotUniqueErrorMessage;
-import org.kie.workbench.common.dmn.client.editors.types.messages.DataTypeFlashMessage;
+import org.kie.workbench.common.dmn.client.editors.types.common.errors.DataTypeNameIsBlankErrorMessage;
+import org.kie.workbench.common.dmn.client.editors.types.common.errors.DataTypeNameIsDefaultTypeMessage;
+import org.kie.workbench.common.dmn.client.editors.types.common.errors.DataTypeNameIsNotUniqueErrorMessage;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.DataTypeStore;
 import org.mockito.Mock;
 import org.uberfire.mocks.EventSourceMock;
@@ -48,16 +48,16 @@ import static org.mockito.Mockito.when;
 public class DataTypeNameValidatorTest {
 
     @Mock
-    private EventSourceMock<DataTypeFlashMessage> flashMessageEvent;
+    private EventSourceMock<FlashMessage> flashMessageEvent;
 
     @Mock
-    private NameIsBlankErrorMessage blankErrorMessage;
+    private DataTypeNameIsBlankErrorMessage blankErrorMessage;
 
     @Mock
-    private NameIsNotUniqueErrorMessage notUniqueErrorMessage;
+    private DataTypeNameIsNotUniqueErrorMessage notUniqueErrorMessage;
 
     @Mock
-    private NameIsDefaultTypeMessage nameIsDefaultTypeMessage;
+    private DataTypeNameIsDefaultTypeMessage nameIsDefaultTypeMessage;
 
     @Mock
     private DataTypeStore dataTypeStore;
@@ -73,7 +73,7 @@ public class DataTypeNameValidatorTest {
     public void testIsValidWhenDataTypeNameIsBlank() {
 
         final DataType dataType = mock(DataType.class);
-        final DataTypeFlashMessage blankMessage = mock(DataTypeFlashMessage.class);
+        final FlashMessage blankMessage = mock(FlashMessage.class);
 
         doReturn(true).when(validator).isBlank(dataType);
         doReturn(true).when(validator).isNotUnique(dataType);
@@ -89,7 +89,7 @@ public class DataTypeNameValidatorTest {
     public void testIsValidWhenDataTypeNameIsNotUnique() {
 
         final DataType dataType = mock(DataType.class);
-        final DataTypeFlashMessage notUniqueMessage = mock(DataTypeFlashMessage.class);
+        final FlashMessage notUniqueMessage = mock(FlashMessage.class);
 
         doReturn(false).when(validator).isBlank(dataType);
         doReturn(true).when(validator).isNotUnique(dataType);
@@ -105,7 +105,7 @@ public class DataTypeNameValidatorTest {
     public void testIsValidWhenDataTypeNameIsDefault() {
 
         final DataType dataType = mock(DataType.class);
-        final DataTypeFlashMessage nameIsDefaultMessage = mock(DataTypeFlashMessage.class);
+        final FlashMessage nameIsDefaultMessage = mock(FlashMessage.class);
 
         doReturn(false).when(validator).isBlank(dataType);
         doReturn(false).when(validator).isNotUnique(dataType);

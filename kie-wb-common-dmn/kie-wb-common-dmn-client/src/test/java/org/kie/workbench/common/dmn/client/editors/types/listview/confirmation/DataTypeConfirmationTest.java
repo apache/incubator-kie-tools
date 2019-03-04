@@ -24,8 +24,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
+import org.kie.workbench.common.dmn.client.editors.common.messages.FlashMessage;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
-import org.kie.workbench.common.dmn.client.editors.types.messages.DataTypeFlashMessage;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.DataTypeStore;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.ItemDefinitionStore;
 import org.mockito.Mock;
@@ -54,7 +54,7 @@ public class DataTypeConfirmationTest {
     private ItemDefinitionStore itemDefinitionStore;
 
     @Mock
-    private EventSourceMock<DataTypeFlashMessage> flashMessageEvent;
+    private EventSourceMock<FlashMessage> flashMessageEvent;
 
     @Mock
     private DataTypeHasFieldsWarningMessage dataTypeHasFieldsWarningMessage;
@@ -120,7 +120,7 @@ public class DataTypeConfirmationTest {
         final List<ItemDefinition> itemComponent = singletonList(mock(ItemDefinition.class));
         final Command onSuccess = mock(Command.class);
         final Command onError = mock(Command.class);
-        final DataTypeFlashMessage warningMessage = mock(DataTypeFlashMessage.class);
+        final FlashMessage warningMessage = mock(FlashMessage.class);
         final String uuid = "uuid";
 
         when(dataType.getUUID()).thenReturn(uuid);
@@ -165,7 +165,7 @@ public class DataTypeConfirmationTest {
         final DataType dataType1 = mock(DataType.class);
         final DataType dataType2 = mock(DataType.class);
         final List<DataType> allDataTypes = asList(dataType1, dataType2);
-        final DataTypeFlashMessage warningMessage = mock(DataTypeFlashMessage.class);
+        final FlashMessage warningMessage = mock(FlashMessage.class);
         final Command onSuccess = mock(Command.class);
         final String tCity = "tCity";
         final String tPerson = "tPerson";

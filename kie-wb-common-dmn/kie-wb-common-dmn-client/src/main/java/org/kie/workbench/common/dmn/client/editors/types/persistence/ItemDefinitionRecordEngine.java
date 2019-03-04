@@ -23,8 +23,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
+import org.kie.workbench.common.dmn.client.editors.common.persistence.RecordEngine;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
-import org.kie.workbench.common.dmn.client.editors.types.persistence.common.RecordEngine;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.handlers.DataTypeCreateHandler;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.handlers.DataTypeDestroyHandler;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.handlers.DataTypeUpdateHandler;

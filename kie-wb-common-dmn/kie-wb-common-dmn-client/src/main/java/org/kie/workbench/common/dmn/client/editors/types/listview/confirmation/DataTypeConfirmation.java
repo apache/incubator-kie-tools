@@ -24,8 +24,8 @@ import javax.inject.Inject;
 
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
+import org.kie.workbench.common.dmn.client.editors.common.messages.FlashMessage;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
-import org.kie.workbench.common.dmn.client.editors.types.messages.DataTypeFlashMessage;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.DataTypeStore;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.ItemDefinitionStore;
 import org.uberfire.mvp.Command;
@@ -42,7 +42,7 @@ public class DataTypeConfirmation {
 
     private final ItemDefinitionStore itemDefinitionStore;
 
-    private final Event<DataTypeFlashMessage> flashMessageEvent;
+    private final Event<FlashMessage> flashMessageEvent;
 
     private final DataTypeHasFieldsWarningMessage dataTypeHasFieldsWarningMessage;
 
@@ -53,7 +53,7 @@ public class DataTypeConfirmation {
     @Inject
     public DataTypeConfirmation(final DataTypeStore dataTypeStore,
                                 final ItemDefinitionStore itemDefinitionStore,
-                                final Event<DataTypeFlashMessage> flashMessageEvent,
+                                final Event<FlashMessage> flashMessageEvent,
                                 final DataTypeHasFieldsWarningMessage dataTypeHasFieldsWarningMessage,
                                 final ReferencedDataTypeWarningMessage referencedDataTypeWarningMessage,
                                 final TranslationService translationService) {

@@ -15,18 +15,9 @@
  */
 
 [data-i18n-prefix="DataTypeListView."] {
-  padding: 0 20px 10px;
-  height: 100%;
-  flex: 1 1 auto;
-  display: flex;
-  flex-direction: column;
   min-width: 835px;
-
-  h3 {
-    font-weight: 600;
-    font-size: 14px;
-    margin: 5px 0 10px;
-  }
+  padding: 1px 20px 10px;
+  height: ~"calc(100% - 15px)";
 
   .description-buttons {
     text-align: right;
@@ -102,30 +93,9 @@
     overflow-y: hidden;
     flex: 1 1 auto;
 
-    p {
-      font-size: 12px;
-    }
-
     i {
       color: #999999;
       font-size: 5em;
-    }
-  }
-}
-
-.tab-content {
-  .data-types-page {
-    /* "overflow: auto" is set inline by UberFire/AppFormer since since most of editors have scroll bars.
-     * However the DMN Data Types has a fixed header with internal scrollbars. */
-    overflow: hidden !important;
-
-    & > div {
-      height: 100%;
-      overflow-x: auto;
-
-      & > div {
-        height: ~"calc(100% - 30px)";
-      }
     }
   }
 }

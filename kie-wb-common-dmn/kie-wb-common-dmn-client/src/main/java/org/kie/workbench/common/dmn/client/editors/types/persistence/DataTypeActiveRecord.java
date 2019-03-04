@@ -18,9 +18,9 @@ package org.kie.workbench.common.dmn.client.editors.types.persistence;
 
 import java.util.List;
 
+import org.kie.workbench.common.dmn.client.editors.common.persistence.ActiveRecord;
+import org.kie.workbench.common.dmn.client.editors.common.persistence.RecordEngine;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
-import org.kie.workbench.common.dmn.client.editors.types.persistence.common.ActiveRecord;
-import org.kie.workbench.common.dmn.client.editors.types.persistence.common.RecordEngine;
 
 /**
  * Implements base specific operations for a Data Type Active Record.

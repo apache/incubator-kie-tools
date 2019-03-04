@@ -23,9 +23,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.editors.types.DMNValidationService;
+import org.kie.workbench.common.dmn.client.editors.common.messages.FlashMessage;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
-import org.kie.workbench.common.dmn.client.editors.types.common.errors.NameIsInvalidErrorMessage;
-import org.kie.workbench.common.dmn.client.editors.types.messages.DataTypeFlashMessage;
+import org.kie.workbench.common.dmn.client.editors.types.common.errors.DataTypeNameIsInvalidErrorMessage;
 import org.mockito.Mock;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
@@ -47,10 +47,10 @@ public class DataTypeNameFormatValidatorTest {
     private DMNValidationService service;
 
     @Mock
-    private EventSourceMock<DataTypeFlashMessage> flashMessageEvent;
+    private EventSourceMock<FlashMessage> flashMessageEvent;
 
     @Mock
-    private NameIsInvalidErrorMessage nameIsInvalidErrorMessage;
+    private DataTypeNameIsInvalidErrorMessage nameIsInvalidErrorMessage;
 
     private DataTypeNameFormatValidator validator;
 
@@ -81,7 +81,7 @@ public class DataTypeNameFormatValidatorTest {
 
         final DataType dataType = mock(DataType.class);
         final Command onSuccess = mock(Command.class);
-        final DataTypeFlashMessage flashMessage = mock(DataTypeFlashMessage.class);
+        final FlashMessage flashMessage = mock(FlashMessage.class);
 
         when(nameIsInvalidErrorMessage.getFlashMessage(dataType)).thenReturn(flashMessage);
 
@@ -96,7 +96,7 @@ public class DataTypeNameFormatValidatorTest {
 
         final DataType dataType = mock(DataType.class);
         final Command onSuccess = mock(Command.class);
-        final DataTypeFlashMessage flashMessage = mock(DataTypeFlashMessage.class);
+        final FlashMessage flashMessage = mock(FlashMessage.class);
 
         when(nameIsInvalidErrorMessage.getFlashMessage(dataType)).thenReturn(flashMessage);
 

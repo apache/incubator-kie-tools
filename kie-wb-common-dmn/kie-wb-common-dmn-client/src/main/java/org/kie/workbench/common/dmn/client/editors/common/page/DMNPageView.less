@@ -1,0 +1,52 @@
+/*
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.tab-content {
+  .kie-dmn-page {
+    /* "overflow: auto" is set inline by UberFire/AppFormer since since most of editors have scroll bars.
+     * However the DMN Data Types has a fixed header with internal scrollbars. */
+    overflow: hidden !important;
+
+    display: flex;
+    height: 100%;
+    flex: 1 1 auto;
+    flex-direction: column;
+
+    & > div {
+      height: 100%;
+      overflow-x: auto;
+
+      & > div {
+        height: ~"calc(100% - 20px)";
+      }
+    }
+
+    h3 {
+      font-weight: 600;
+      font-size: 14px;
+      margin: 5px 0 10px;
+    }
+  }
+}
+
+/* Applies only on kie-wb-common-dmn-webapp */
+.qe-list-bar-content-Authoring-Screen {
+  .kie-dmn-page {
+    & > div {
+      overflow: hidden;
+    }
+  }
+}

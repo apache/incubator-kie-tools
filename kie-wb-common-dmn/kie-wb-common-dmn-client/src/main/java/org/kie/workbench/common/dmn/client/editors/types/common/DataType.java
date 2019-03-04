@@ -21,8 +21,8 @@ import java.util.List;
 import java.util.Objects;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType;
+import org.kie.workbench.common.dmn.client.editors.common.persistence.RecordEngine;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.DataTypeActiveRecord;
-import org.kie.workbench.common.dmn.client.editors.types.persistence.common.RecordEngine;
 
 import static org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType.NONE;
 

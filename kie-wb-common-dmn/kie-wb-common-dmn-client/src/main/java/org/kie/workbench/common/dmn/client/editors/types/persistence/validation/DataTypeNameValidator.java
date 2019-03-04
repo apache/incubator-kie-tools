@@ -23,33 +23,33 @@ import java.util.Optional;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import org.kie.workbench.common.dmn.client.editors.common.messages.FlashMessage;
 import org.kie.workbench.common.dmn.client.editors.types.common.BuiltInTypeUtils;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
-import org.kie.workbench.common.dmn.client.editors.types.common.errors.NameIsBlankErrorMessage;
-import org.kie.workbench.common.dmn.client.editors.types.common.errors.NameIsDefaultTypeMessage;
-import org.kie.workbench.common.dmn.client.editors.types.common.errors.NameIsNotUniqueErrorMessage;
-import org.kie.workbench.common.dmn.client.editors.types.messages.DataTypeFlashMessage;
+import org.kie.workbench.common.dmn.client.editors.types.common.errors.DataTypeNameIsBlankErrorMessage;
+import org.kie.workbench.common.dmn.client.editors.types.common.errors.DataTypeNameIsDefaultTypeMessage;
+import org.kie.workbench.common.dmn.client.editors.types.common.errors.DataTypeNameIsNotUniqueErrorMessage;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.DataTypeStore;
 
 import static org.kie.workbench.common.stunner.core.util.StringUtils.isEmpty;
 
 public class DataTypeNameValidator {
 
-    private final Event<DataTypeFlashMessage> flashMessageEvent;
+    private final Event<FlashMessage> flashMessageEvent;
 
-    private final NameIsBlankErrorMessage blankErrorMessage;
+    private final DataTypeNameIsBlankErrorMessage blankErrorMessage;
 
-    private final NameIsNotUniqueErrorMessage notUniqueErrorMessage;
+    private final DataTypeNameIsNotUniqueErrorMessage notUniqueErrorMessage;
 
-    private final NameIsDefaultTypeMessage nameIsDefaultTypeMessage;
+    private final DataTypeNameIsDefaultTypeMessage nameIsDefaultTypeMessage;
 
     private final DataTypeStore dataTypeStore;
 
     @Inject
-    public DataTypeNameValidator(final Event<DataTypeFlashMessage> flashMessageEvent,
-                                 final NameIsBlankErrorMessage blankErrorMessage,
-                                 final NameIsNotUniqueErrorMessage notUniqueErrorMessage,
-                                 final NameIsDefaultTypeMessage nameIsDefaultTypeMessage,
+    public DataTypeNameValidator(final Event<FlashMessage> flashMessageEvent,
+                                 final DataTypeNameIsBlankErrorMessage blankErrorMessage,
+                                 final DataTypeNameIsNotUniqueErrorMessage notUniqueErrorMessage,
+                                 final DataTypeNameIsDefaultTypeMessage nameIsDefaultTypeMessage,
                                  final DataTypeStore dataTypeStore) {
         this.flashMessageEvent = flashMessageEvent;
         this.blankErrorMessage = blankErrorMessage;

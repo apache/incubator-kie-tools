@@ -25,33 +25,29 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import elemental2.dom.Element;
 import elemental2.dom.HTMLDivElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Definitions;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
 import org.kie.workbench.common.dmn.api.property.dmn.Text;
+import org.kie.workbench.common.dmn.client.editors.common.messages.FlashMessages;
+import org.kie.workbench.common.dmn.client.editors.common.page.DMNPage;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManager;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManagerStackStore;
 import org.kie.workbench.common.dmn.client.editors.types.common.ItemDefinitionUtils;
 import org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeList;
-import org.kie.workbench.common.dmn.client.editors.types.messages.DataTypeFlashMessages;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.DataTypeStore;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.ItemDefinitionStore;
 import org.kie.workbench.common.dmn.client.editors.types.search.DataTypeSearchBar;
 import org.kie.workbench.common.dmn.client.editors.types.shortcuts.DataTypeShortcuts;
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
-import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
-import org.uberfire.client.views.pfly.multipage.PageImpl;
 
 import static java.util.Optional.ofNullable;
-import static org.jboss.errai.common.client.ui.ElementWrapperWidget.getWidget;
+import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypesPage_Title;
 
 @Dependent
-public class DataTypesPage extends PageImpl {
-
-    static final String DATA_TYPES_PAGE_CSS_CLASS = "data-types-page";
+public class DataTypesPage extends DMNPage {
 
     private final DataTypeList treeList;
 
@@ -65,13 +61,11 @@ public class DataTypesPage extends PageImpl {
 
     private final DataTypeManagerStackStore stackIndex;
 
-    private final DataTypeFlashMessages flashMessages;
+    private final FlashMessages flashMessages;
 
     private final DataTypeSearchBar searchBar;
 
     private final DMNGraphUtils dmnGraphUtils;
-
-    private final HTMLDivElement pageView;
 
     private final DataTypeShortcuts dataTypeShortcuts;
 
@@ -84,14 +78,14 @@ public class DataTypesPage extends PageImpl {
                          final DataTypeStore dataTypeStore,
                          final DataTypeManager dataTypeManager,
                          final DataTypeManagerStackStore stackIndex,
-                         final DataTypeFlashMessages flashMessages,
+                         final FlashMessages flashMessages,
                          final DataTypeSearchBar searchBar,
                          final DMNGraphUtils dmnGraphUtils,
                          final TranslationService translationService,
                          final DataTypeShortcuts dataTypeShortcuts,
                          final HTMLDivElement pageView) {
 
-        super(getWidget(pageView), getPageTitle(translationService));
+        super(DataTypesPage_Title, pageView, translationService);
 
         this.treeList = treeList;
         this.itemDefinitionUtils = itemDefinitionUtils;
@@ -103,22 +97,11 @@ public class DataTypesPage extends PageImpl {
         this.searchBar = searchBar;
         this.dmnGraphUtils = dmnGraphUtils;
         this.dataTypeShortcuts = dataTypeShortcuts;
-        this.pageView = pageView;
-    }
-
-    private static String getPageTitle(final TranslationService translationService) {
-        return translationService.format(DMNEditorConstants.DataTypesPage_Label);
     }
 
     @PostConstruct
     public void init() {
         dataTypeShortcuts.init(treeList);
-        setupPage();
-    }
-
-    void setupPage() {
-        final Element dataTypesPage = (Element) pageView.parentNode.parentNode;
-        dataTypesPage.classList.add(DATA_TYPES_PAGE_CSS_CLASS);
     }
 
     @Override
@@ -143,6 +126,7 @@ public class DataTypesPage extends PageImpl {
     }
 
     void refreshPageView() {
+        final HTMLDivElement pageView = getPageView();
         pageView.innerHTML = "";
         pageView.appendChild(flashMessages.getElement());
         pageView.appendChild(treeList.getElement());

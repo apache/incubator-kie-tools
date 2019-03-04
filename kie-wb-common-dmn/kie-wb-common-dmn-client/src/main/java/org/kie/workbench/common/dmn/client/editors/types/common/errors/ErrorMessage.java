@@ -19,12 +19,12 @@ package org.kie.workbench.common.dmn.client.editors.types.common.errors;
 import java.util.Optional;
 
 import org.jboss.errai.ui.client.local.spi.TranslationService;
+import org.kie.workbench.common.dmn.client.editors.common.messages.FlashMessage;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
-import org.kie.workbench.common.dmn.client.editors.types.messages.DataTypeFlashMessage;
 
+import static org.kie.workbench.common.dmn.client.editors.common.messages.FlashMessage.Type.ERROR;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItemView.NAME_DATA_FIELD;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItemView.UUID_ATTR;
-import static org.kie.workbench.common.dmn.client.editors.types.messages.DataTypeFlashMessage.Type.ERROR;
 
 public abstract class ErrorMessage {
 
@@ -34,8 +34,8 @@ public abstract class ErrorMessage {
         this.translationService = translationService;
     }
 
-    public DataTypeFlashMessage getFlashMessage(final DataType dataType) {
-        return new DataTypeFlashMessage(ERROR, getStrongMessage(dataType), getRegularMessage(), getErrorElementSelector(dataType));
+    public FlashMessage getFlashMessage(final DataType dataType) {
+        return new FlashMessage(ERROR, getStrongMessage(dataType), getRegularMessage(), getErrorElementSelector(dataType));
     }
 
     private String getErrorElementSelector(final DataType dataType) {

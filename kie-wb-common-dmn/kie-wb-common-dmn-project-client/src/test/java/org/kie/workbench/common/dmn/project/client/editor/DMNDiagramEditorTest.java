@@ -24,6 +24,8 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.commands.general.NavigateToExpressionEditorCommand;
 import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorDock;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
+import org.kie.workbench.common.dmn.client.editors.included.IncludedModelsPage;
+import org.kie.workbench.common.dmn.client.editors.included.imports.IncludedModelsPageStateProviderImpl;
 import org.kie.workbench.common.dmn.client.editors.types.DataTypePageTabActiveEvent;
 import org.kie.workbench.common.dmn.client.editors.types.DataTypesPage;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.DataTypeEditModeToggleEvent;
@@ -103,6 +105,12 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
     private DataTypesPage dataTypesPage;
 
     @Mock
+    private IncludedModelsPage includedModelsPage;
+
+    @Mock
+    private IncludedModelsPageStateProviderImpl importsPageProvider;
+
+    @Mock
     private MultiPageEditor multiPage;
 
     private DMNDiagramEditor diagramEditor;
@@ -157,7 +165,9 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
                                                  decisionNavigatorDock,
                                                  layoutHelper,
                                                  dataTypesPage,
-                                                 layoutExecutor) {
+                                                 layoutExecutor,
+                                                 includedModelsPage,
+                                                 importsPageProvider) {
             {
                 fileMenuBuilder = DMNDiagramEditorTest.this.fileMenuBuilder;
                 workbenchContext = DMNDiagramEditorTest.this.workbenchContext;
@@ -208,12 +218,15 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
         diagramEditor.initialiseKieEditorForSession(diagram);
 
         verify(multiPage).addPage(dataTypesPage);
+        verify(multiPage).addPage(includedModelsPage);
     }
 
     @Test
     public void testOnDiagramLoadWhenCanvasHandlerIsNotNull() {
         when(sessionManager.getCurrentSession()).thenReturn(dmnEditorSession);
         when(dmnEditorSession.getCanvasHandler()).thenReturn(canvasHandler);
+        when(canvasHandler.getDiagram()).thenReturn(diagram);
+        when(importsPageProvider.withDiagram(diagram)).thenReturn(importsPageProvider);
 
         open();
 
@@ -224,6 +237,7 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
         verify(expressionEditor).setToolbarStateHandler(any(ProjectToolbarStateHandler.class));
         verify(dataTypesPage).reload();
         verify(layoutHelper).applyLayout(diagram, layoutExecutor);
+        verify(includedModelsPage).setup(importsPageProvider);
     }
 
     @Test
@@ -235,6 +249,7 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
         verify(decisionNavigatorDock, never()).setupCanvasHandler(any());
         verify(decisionNavigatorDock, never()).open();
         verify(dataTypesPage, never()).reload();
+        verify(includedModelsPage, never()).setup(any());
     }
 
     @Test

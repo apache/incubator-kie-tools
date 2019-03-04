@@ -20,13 +20,13 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.client.editors.common.messages.FlashMessage;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
-import org.kie.workbench.common.dmn.client.editors.types.messages.DataTypeFlashMessage;
 import org.mockito.Mock;
 import org.uberfire.mvp.Command;
 
 import static org.junit.Assert.assertEquals;
-import static org.kie.workbench.common.dmn.client.editors.types.messages.DataTypeFlashMessage.Type.WARNING;
+import static org.kie.workbench.common.dmn.client.editors.common.messages.FlashMessage.Type.WARNING;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -40,7 +40,7 @@ public class WarningMessageTest {
     public void testGetFlashMessage() {
 
         final String uuid = "uuid";
-        final DataTypeFlashMessage.Type expectedType = WARNING;
+        final FlashMessage.Type expectedType = WARNING;
         final String expectedStrongMessage = "expectedStrongMessage";
         final String expectedRegularMessage = "expectedRegularMessage";
         final String expectedErrorElementSelector = "[data-row-uuid=\"uuid\"] .bootstrap-select";
@@ -62,12 +62,12 @@ public class WarningMessageTest {
 
         when(dataType.getUUID()).thenReturn(uuid);
 
-        final DataTypeFlashMessage flashMessage = errorMessage.getFlashMessage(dataType, expectedOnSuccessCallback, expectedOnErrorCallback);
+        final FlashMessage flashMessage = errorMessage.getFlashMessage(dataType, expectedOnSuccessCallback, expectedOnErrorCallback);
 
-        final DataTypeFlashMessage.Type actualType = flashMessage.getType();
+        final FlashMessage.Type actualType = flashMessage.getType();
         final String actualStrongMessage = flashMessage.getStrongMessage();
         final String actualRegularMessage = flashMessage.getRegularMessage();
-        final String actualErrorElementSelector = flashMessage.getErrorElementSelector();
+        final String actualErrorElementSelector = flashMessage.getElementSelector();
         final Command actualOnSuccessCallback = flashMessage.getOnSuccess();
         final Command actualOnErrorCallback = flashMessage.getOnError();
 

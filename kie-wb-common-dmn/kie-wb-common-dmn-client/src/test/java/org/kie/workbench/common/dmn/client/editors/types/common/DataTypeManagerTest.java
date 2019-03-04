@@ -33,10 +33,10 @@ import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.property.dmn.Text;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
-import org.kie.workbench.common.dmn.client.editors.types.common.errors.NameIsBlankErrorMessage;
-import org.kie.workbench.common.dmn.client.editors.types.common.errors.NameIsDefaultTypeMessage;
-import org.kie.workbench.common.dmn.client.editors.types.common.errors.NameIsNotUniqueErrorMessage;
-import org.kie.workbench.common.dmn.client.editors.types.messages.DataTypeFlashMessage;
+import org.kie.workbench.common.dmn.client.editors.common.messages.FlashMessage;
+import org.kie.workbench.common.dmn.client.editors.types.common.errors.DataTypeNameIsBlankErrorMessage;
+import org.kie.workbench.common.dmn.client.editors.types.common.errors.DataTypeNameIsDefaultTypeMessage;
+import org.kie.workbench.common.dmn.client.editors.types.common.errors.DataTypeNameIsNotUniqueErrorMessage;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.DataTypeStore;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.ItemDefinitionRecordEngine;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.ItemDefinitionStore;
@@ -96,16 +96,16 @@ public class DataTypeManagerTest {
     private DataTypeManagerStackStore typeStack;
 
     @Mock
-    private EventSourceMock<DataTypeFlashMessage> flashMessageEvent;
+    private EventSourceMock<FlashMessage> flashMessageEvent;
 
     @Mock
-    private NameIsBlankErrorMessage blankErrorMessage;
+    private DataTypeNameIsBlankErrorMessage blankErrorMessage;
 
     @Mock
-    private NameIsNotUniqueErrorMessage notUniqueErrorMessage;
+    private DataTypeNameIsNotUniqueErrorMessage notUniqueErrorMessage;
 
     @Mock
-    private NameIsDefaultTypeMessage nameIsDefaultTypeMessage;
+    private DataTypeNameIsDefaultTypeMessage nameIsDefaultTypeMessage;
 
     private DataTypeNameValidator dataTypeNameValidator;
 

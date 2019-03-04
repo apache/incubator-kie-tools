@@ -20,12 +20,12 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.client.editors.common.messages.FlashMessage;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
-import org.kie.workbench.common.dmn.client.editors.types.messages.DataTypeFlashMessage;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
-import static org.kie.workbench.common.dmn.client.editors.types.messages.DataTypeFlashMessage.Type.ERROR;
+import static org.kie.workbench.common.dmn.client.editors.common.messages.FlashMessage.Type.ERROR;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -39,7 +39,7 @@ public class ErrorMessageTest {
     public void testGetFlashMessage() {
 
         final String uuid = "uuid";
-        final DataTypeFlashMessage.Type expectedType = ERROR;
+        final FlashMessage.Type expectedType = ERROR;
         final String expectedStrongMessage = "expectedStrongMessage";
         final String expectedRegularMessage = "expectedRegularMessage";
         final String expectedErrorElementSelector = "[data-row-uuid=\"uuid\"] [data-type-field=\"name-input\"]";
@@ -59,12 +59,12 @@ public class ErrorMessageTest {
 
         when(dataType.getUUID()).thenReturn(uuid);
 
-        final DataTypeFlashMessage flashMessage = errorMessage.getFlashMessage(dataType);
+        final FlashMessage flashMessage = errorMessage.getFlashMessage(dataType);
 
-        final DataTypeFlashMessage.Type actualType = flashMessage.getType();
+        final FlashMessage.Type actualType = flashMessage.getType();
         final String actualStrongMessage = flashMessage.getStrongMessage();
         final String actualRegularMessage = flashMessage.getRegularMessage();
-        final String actualErrorElementSelector = flashMessage.getErrorElementSelector();
+        final String actualErrorElementSelector = flashMessage.getElementSelector();
 
         assertEquals(expectedType, actualType);
         assertEquals(expectedStrongMessage, actualStrongMessage);
