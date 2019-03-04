@@ -274,32 +274,26 @@ public class WiresShapeControlHandleList implements IControlHandleList
             {
                 m_wires_shape.getMagnets().hide();
             }
-        }
 
-        final double[] r = this.resizeWhileDrag(dragEvent);
-
-        if (m_wires_shape.isResizable())
-        {
+            final double[] r = this.resizeWhileDrag(dragEvent);
             m_wires_shape.getHandlerManager().fireEvent(new WiresResizeStartEvent(m_wires_shape, dragEvent, (int) r[0], (int) r[1], r[2], r[3]));
         }
     }
 
     protected void resizeMove(final AbstractNodeDragEvent<?> dragEvent)
     {
-        final double[] r = this.resizeWhileDrag(dragEvent);
-
         if (m_wires_shape.isResizable())
         {
+            final double[] r = this.resizeWhileDrag(dragEvent);
             m_wires_shape.getHandlerManager().fireEvent(new WiresResizeStepEvent(m_wires_shape, dragEvent, (int) r[0], (int) r[1], r[2], r[3]));
         }
     }
 
     protected void resizeEnd(final AbstractNodeDragEvent<?> dragEvent)
     {
-        final double[] r = this.resizeWhileDrag(dragEvent);
-
         if (m_wires_shape.isResizable())
         {
+            final double[] r = this.resizeWhileDrag(dragEvent);
             m_wires_shape.getHandlerManager().fireEvent(new WiresResizeEndEvent(m_wires_shape, dragEvent, (int) r[0], (int) r[1], r[2], r[3]));
         }
     }

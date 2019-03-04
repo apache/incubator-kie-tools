@@ -606,11 +606,11 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
                         (dx > 0 && lastDirection == EAST) ||
                         (dx < 0 && lastDirection == WEST) )
                     {
-                        // A mid point is needed to ensure an attrictive line is drawn.
+                        // A mid point is needed to ensure an attractive line is drawn.
                         x = p0x + (dx / 2);
                         addPoint(buffer, x, y, write);
 
-                        if ( lastDirection == NORTH || lastDirection == NORTH)
+                        if (lastDirection == NORTH || lastDirection == SOUTH)
                         {
                             corners++;
                         }
@@ -642,7 +642,7 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
                         y = p0y + (dy / 2);
                         addPoint(buffer, x, y, write);
 
-                        if ( lastDirection == EAST || lastDirection == WEST)
+                        if (lastDirection == EAST || lastDirection == WEST)
                         {
                             corners++;
                         }

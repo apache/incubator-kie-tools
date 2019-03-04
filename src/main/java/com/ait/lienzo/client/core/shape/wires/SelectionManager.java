@@ -16,6 +16,14 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import com.ait.lienzo.client.core.event.NodeDragEndEvent;
 import com.ait.lienzo.client.core.event.NodeDragEndHandler;
 import com.ait.lienzo.client.core.event.NodeMouseClickEvent;
@@ -52,14 +60,6 @@ import com.google.gwt.event.dom.client.MouseMoveEvent;
 import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * The SelectionManager is quite an intricate class and changes should be made with care.
@@ -543,11 +543,11 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
 
     public static class ChangedItems
     {
-        private final NFastArrayList<WiresShape>     m_removedShapes = new NFastArrayList<WiresShape>();
-        private final NFastArrayList<WiresShape>     m_addedShapes = new NFastArrayList<WiresShape>();
+        private final NFastArrayList<WiresShape>     m_removedShapes = new NFastArrayList<>();
+        private final NFastArrayList<WiresShape>     m_addedShapes = new NFastArrayList<>();
 
-        private final NFastArrayList<WiresConnector> m_removedConnectors = new NFastArrayList<WiresConnector>();
-        private final NFastArrayList<WiresConnector> m_addedConnectors = new NFastArrayList<WiresConnector>();
+        private final NFastArrayList<WiresConnector> m_removedConnectors = new NFastArrayList<>();
+        private final NFastArrayList<WiresConnector> m_addedConnectors = new NFastArrayList<>();
 
         public NFastArrayList<WiresShape> getRemovedShapes()
         {
@@ -595,10 +595,10 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
         // external coupled connectors are connectors who are connected to a shape, not part of the selection
         // these will not be part of selection rectangle BoundingBox, but would be part of any copy/paste
         private final Set<WiresConnector> m_externallyConnected;
-        private boolean             selectionGroup;
+        private boolean                   selectionGroup;
         private final Layer               m_layer;
         private final SelectionManager    m_selManager;
-        private BoundingBox         m_bbox;
+        private BoundingBox               m_bbox;
 
         private ChangedItems m_changed = new ChangedItems();
 
@@ -606,9 +606,9 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
         {
             m_selManager = selManager;
             m_layer = layer;
-            m_shapes = new HashSet<WiresShape>();
-            m_connectors = new HashSet<WiresConnector>();
-            m_externallyConnected = new HashSet<WiresConnector>();
+            m_shapes = new HashSet<>();
+            m_connectors = new HashSet<>();
+            m_externallyConnected = new HashSet<>();
             m_bbox = new BoundingBox();
         }
 
@@ -690,22 +690,20 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
             return false;
         }
 
-        private boolean removeChildShape(NFastArrayList<WiresShape> shapes)
+        private void removeChildShape(NFastArrayList<WiresShape> shapes)
         {
             for (WiresShape childShape : shapes)
             {
                 for (WiresShape existingShape : m_shapes)
                 {
-                    if ( childShape == existingShape)
+                    if (childShape == existingShape)
                     {
                         // must remove any existing child shape of the parent currently being added
                         remove(existingShape);
-                        return true;
                     }
                     removeChildShape(childShape.getChildShapes());
                 }
             }
-            return false;
         }
 
         public void selected(WiresConnector connector, boolean isSelectionMultiple)
@@ -754,7 +752,7 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
 
             for(WiresConnector connector : m_connectors)
             {
-                if ( !m_externallyConnected.contains(connector))
+                if (!m_externallyConnected.contains(connector))
                 {
                     BoundingBox nodeBox = connector.getGroup().getComputedBoundingPoints().getBoundingBox();
                     m_bbox.add(nodeBox);
@@ -764,10 +762,11 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
 
         public boolean add(WiresShape shape)
         {
-
-            // For any Shape being added that also has an added a WiresConnector we must check if the WiresConnector is still connected externally or not
-            // At this stage we know it must be in m_externallyConnected, if the other connection is in the selection, then it should be removed from m_externallyConnected
-            if ( shape.getMagnets() != null)
+            // For any Shape being added that also has an added a WiresConnector we must check if the WiresConnector is
+            // still connected externally or not.
+            // At this stage we know it must be in m_externallyConnected, if the other connection is in the selection,
+            // then it should be removed from m_externallyConnected.
+            if (shape.getMagnets() != null)
             {
                 for (int i = 0; i < shape.getMagnets().size(); i++)
                 {
@@ -777,7 +776,7 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
                         for (WiresConnection connection : magnet.getConnections())
                         {
                             WiresConnector wiresConnector = connection.getConnector();
-                            if (isConnectorSelected(wiresConnector) && m_externallyConnected.contains(wiresConnector))
+                            if (isConnectorSelected(wiresConnector) && getExternallyConnected().contains(wiresConnector))
                             {
                                 WiresConnection otherConnection =  connection.getOppositeConnection();
                                 if (otherConnection != null && otherConnection.getMagnet() != null)
@@ -785,12 +784,12 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
                                     WiresShape otherShape = otherConnection.getMagnet().getMagnets().getWiresShape();
                                     if (findParentIfInSelection(otherShape) != null)
                                     {
-                                        m_externallyConnected.remove(wiresConnector);
+                                        getExternallyConnected().remove(wiresConnector);
                                     }
                                 }
-                                else if (otherConnection.getMagnet() == null)
+                                else if (otherConnection != null)
                                 {
-                                    m_externallyConnected.remove(wiresConnector);
+                                    getExternallyConnected().remove(wiresConnector);
                                 }
 
                             }
@@ -811,13 +810,13 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
             return m_shapes.remove(shape);
         }
 
-        /**I*  if a shape is removed, any connectors need to be checked in case they are not externally connected
+        /** If a shape is removed, any connectors need to be checked in case they are not externally connected
          *  this must be done for the current shape and all children shapes, as the child could have a connector in the selection
          * @param shape
          */
         private void updateExternallyConnectedOnShapeRemove(WiresShape shape)
         {
-            if ( shape.getMagnets() != null)
+            if (shape.getMagnets() != null)
             {
                 for (int i = 0; i < shape.getMagnets().size(); i++)
                 {
@@ -973,7 +972,7 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
             if (isEmpty())
             {
                 selectionGroup = false;
-                // nothign left, so properly clean things up.
+                // nothing left, so properly clean things up.
                 m_selManager.destroySelectionShape();
                 clear();
             }
@@ -986,12 +985,11 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
         m_selected.setSelectionGroup(true);
         BoundingBox box = m_selected.getBoundingBox();
 
-        BoundingBox      nodeBox    = null;
-        List<WiresShape> shapesList = new ArrayList<WiresShape>();
-        List<WiresShape> toBeRemoved = new ArrayList<WiresShape>();
+        BoundingBox      nodeBox;
+        List<WiresShape> toBeRemoved = new ArrayList<>();
 
-        Map<String, WiresShape> shapesMap = new HashMap<String, WiresShape>();
-        Map<String, BoundingBox> uuidMap = new HashMap<String, BoundingBox>();
+        Map<String, WiresShape> shapesMap = new HashMap<>();
+        Map<String, BoundingBox> uuidMap = new HashMap<>();
 
         // first build a map of all shapes that intersect with teh selection rectangle. Nested shapes will be used later.
         for (WiresShape shape : m_wiresManager.getShapesMap().values())
@@ -1004,7 +1002,6 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
             nodeBox = shape.getContainer().getComputedBoundingPoints().getBoundingBox();
             if (selectionBox.intersects(nodeBox))
             {
-                shapesList.add(shape);
                 shapesMap.put(shape.getContainer().uuid(), shape);
                 uuidMap.put(shape.getContainer().uuid(), nodeBox);
             }

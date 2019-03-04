@@ -17,6 +17,8 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
+import java.util.Objects;
+
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IDirectionalMultiPointShape;
@@ -43,8 +45,6 @@ import com.ait.tooling.nativetools.client.collection.NFastDoubleArrayJSO;
 import com.ait.tooling.nativetools.client.collection.NFastStringMap;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
-
-import java.util.Objects;
 
 import static com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleStandardType.POINT;
 
@@ -428,13 +428,15 @@ public class WiresConnector
         BoundingBox firstBB = new BoundingBox(pAfterHead, pAfterHead);
         BoundingBox lastBB = new BoundingBox(pBeforeTail, pBeforeTail);
 
-        WiresMagnet headM;
-        WiresMagnet tailM;
+        WiresMagnet headM = null;
+        WiresMagnet tailM = null;
         if (headBox != null && !headBox.intersects(firstBB))
         {
             WiresMagnet[] magnets = getMagnetsNonOverlappedShapes(headS, null, headBox, firstBB);
-            headM = magnets[0];
-
+            if (magnets.length > 0)
+            {
+                headM = magnets[0];
+            }
         }
         else
         {
@@ -445,7 +447,10 @@ public class WiresConnector
         if (tailBox != null && !tailBox.intersects(lastBB))
         {
             WiresMagnet[] magnets = getMagnetsNonOverlappedShapes(null, tailS, lastBB, tailBox);
-            tailM = magnets[1];
+            if (magnets.length > 1)
+            {
+                tailM = magnets[1];
+            }
         }
         else
         {

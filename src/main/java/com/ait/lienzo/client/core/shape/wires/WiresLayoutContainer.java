@@ -442,6 +442,12 @@ public class WiresLayoutContainer implements LayoutContainer
 
             return uuid.equals(that.uuid);
         }
+
+        @Override
+        public int hashCode()
+        {
+            return uuid.hashCode();
+        }
     }
 
     private final static class ObjectAttribute

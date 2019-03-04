@@ -94,7 +94,7 @@ public class TextUtils
 
         ctxt.setFillColor(ColorName.WHITE);
 
-        ctxt.fillText("Mg", 0, m * 2);
+        ctxt.fillText("Mg", 0, m * 2.0);
 
         return getTextOffsets(ctxt.getImageData(0, 0, w, h).getData(), w, h, m * 2);
     }

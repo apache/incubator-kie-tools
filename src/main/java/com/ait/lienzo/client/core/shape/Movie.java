@@ -277,7 +277,7 @@ public class Movie extends Shape<Movie>implements ImageDataFilterable<Movie>
 
                 context.clip();
 
-                context.fillText(m_error, wide / 2, high / 2);
+                context.fillText(m_error, wide / 2.0, high / 2.0);
 
                 context.restore();
             }

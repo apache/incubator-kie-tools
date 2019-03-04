@@ -162,7 +162,11 @@ public abstract class AbstractPathClipper implements IPathClipper
             }
             else
             {
-                jso.setValue_0(deep(path).getJSO());
+                PathPartList list = deep(path);
+                if (list != null)
+                {
+                    jso.setValue_0(list.getJSO());
+                }
             }
             jso.setX_0(0);
 
