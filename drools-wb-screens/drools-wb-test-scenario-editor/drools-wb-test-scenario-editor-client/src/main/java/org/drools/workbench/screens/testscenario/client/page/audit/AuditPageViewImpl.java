@@ -16,7 +16,7 @@
 
 package org.drools.workbench.screens.testscenario.client.page.audit;
 
-import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 import javax.enterprise.context.Dependent;
@@ -24,7 +24,6 @@ import javax.inject.Inject;
 
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
-import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
@@ -67,8 +66,8 @@ public class AuditPageViewImpl implements AuditPage.AuditPageView {
     }
 
     @Override
-    public void showFiredRules(final ExecutionTrace executionTrace) {
-        firedRulesTable.showItems(Arrays.asList(executionTrace.getRulesFired()));
+    public void showFiredRules(final List<String> ruleNames) {
+        firedRulesTable.showItems(ruleNames);
     }
 
     @Override

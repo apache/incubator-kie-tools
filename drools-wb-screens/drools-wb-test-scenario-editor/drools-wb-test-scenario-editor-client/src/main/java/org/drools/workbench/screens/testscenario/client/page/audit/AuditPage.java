@@ -16,6 +16,9 @@
 
 package org.drools.workbench.screens.testscenario.client.page.audit;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 import javax.enterprise.context.Dependent;
@@ -32,11 +35,11 @@ public class AuditPage extends PageImpl {
 
     public interface AuditPageView extends UberElemental<AuditPage> {
 
-        void showFiredRules(final ExecutionTrace executionTrace);
+        void showFiredRules(final List<String> ruleNames);
 
         void showAuditLog(final Set<String> auditLogMessages);
     }
-
+    
     private AuditPageView auditPageView;
 
     @Inject
@@ -50,6 +53,14 @@ public class AuditPage extends PageImpl {
     }
 
     public void showFiredRules(final ExecutionTrace executionTrace) {
-        auditPageView.showFiredRules(executionTrace);
+        auditPageView.showFiredRules(getRuleNames(executionTrace));
+    }
+
+    private List<String> getRuleNames(final ExecutionTrace executionTrace) {
+        if (executionTrace.getRulesFired() == null) {
+            return Collections.emptyList();
+        } else {
+            return Arrays.asList(executionTrace.getRulesFired());
+        }
     }
 }

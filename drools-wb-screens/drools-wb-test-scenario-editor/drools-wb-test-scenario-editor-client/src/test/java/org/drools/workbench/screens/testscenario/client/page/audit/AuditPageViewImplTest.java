@@ -16,14 +16,14 @@
 
 package org.drools.workbench.screens.testscenario.client.page.audit;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import elemental2.dom.HTMLDivElement;
 import org.assertj.core.api.Assertions;
-import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,7 +46,7 @@ public class AuditPageViewImplTest {
     private AuditTable auditLogTable;
 
     @Captor
-    private ArgumentCaptor<Collection<String>> collectionCaptor;
+    private ArgumentCaptor<List<String>> collectionCaptor;
 
     private AuditPageViewImpl testedView;
 
@@ -66,14 +66,13 @@ public class AuditPageViewImplTest {
 
     @Test
     public void testFiredRules() throws Exception {
-        final ExecutionTrace executionTrace = new ExecutionTrace();
-        final String[] rulesFired = new String[]{"rule 1", "rule 2"};
-        executionTrace.setRulesFired(rulesFired);
 
-
-        testedView.showFiredRules(executionTrace);
+        ArrayList<String> rulesFired = new ArrayList<>();
+        rulesFired.add("rule 1");
+        rulesFired.add("rule 2");
+        testedView.showFiredRules(rulesFired);
 
         verify(firedRulesTable).showItems(collectionCaptor.capture());
-        Assertions.assertThat(collectionCaptor.getValue()).contains(rulesFired);
+        Assertions.assertThat(collectionCaptor.getValue()).containsAll(rulesFired);
     }
 }

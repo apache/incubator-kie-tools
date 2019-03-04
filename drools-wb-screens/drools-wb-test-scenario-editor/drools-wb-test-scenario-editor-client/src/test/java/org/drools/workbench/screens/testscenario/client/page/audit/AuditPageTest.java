@@ -17,6 +17,7 @@
 package org.drools.workbench.screens.testscenario.client.page.audit;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.google.gwt.user.client.ui.RootPanel;
@@ -26,18 +27,22 @@ import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 
-import static org.mockito.Mockito.mock;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 
 @WithClassesToStub(RootPanel.class)
 @RunWith(GwtMockitoTestRunner.class)
 public class AuditPageTest {
 
+    @Captor
+    ArgumentCaptor<List> listArgumentCaptor;
     @Mock
     private AuditPage.AuditPageView auditPageView;
-
     private AuditPage auditPage;
 
     @Before
@@ -59,10 +64,27 @@ public class AuditPageTest {
 
     @Test
     public void testShowFiredRules() {
-        final ExecutionTrace executionTrace = mock(ExecutionTrace.class);
+        final ExecutionTrace executionTrace = new ExecutionTrace();
+        final String[] rulesFired = new String[1];
+        rulesFired[0] = "rule name";
+        executionTrace.setRulesFired(rulesFired);
 
         auditPage.showFiredRules(executionTrace);
 
-        verify(auditPageView).showFiredRules(executionTrace);
+        verify(auditPageView).showFiredRules(listArgumentCaptor.capture());
+        final List list = listArgumentCaptor.getValue();
+        assertEquals(1, list.size());
+        assertEquals("rule name", list.get(0));
+    }
+
+    @Test
+    public void testShowFiredRulesDontShowIfThereIsNoRules() {
+        final ExecutionTrace executionTrace = new ExecutionTrace();
+        executionTrace.setRulesFired(null);
+
+        auditPage.showFiredRules(executionTrace);
+
+        verify(auditPageView).showFiredRules(listArgumentCaptor.capture());
+        assertTrue(listArgumentCaptor.getValue().isEmpty());
     }
 }
