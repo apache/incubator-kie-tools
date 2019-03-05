@@ -37,7 +37,9 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.lienzo.shape.animation.ShapeViewDecoratorAnimation;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.LienzoShapeView;
 import org.kie.workbench.common.stunner.core.client.animation.Animation;
+import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasUnhighlightEvent;
 import org.mockito.Mock;
+import org.uberfire.mocks.EventSourceMock;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -71,6 +73,9 @@ public class StunnerWiresShapeHighlightTest {
     @Mock
     private WiresShapeHighlightImpl delegate;
 
+    @Mock
+    private EventSourceMock<CanvasUnhighlightEvent> unhighlightEvent;
+
     private StunnerWiresShapeHighlight tested;
 
     @Before
@@ -84,7 +89,7 @@ public class StunnerWiresShapeHighlightTest {
         when(stunnerShape.getStrokeWidth()).thenReturn(width);
         when(stunnerShape.getStrokeAlpha()).thenReturn(alpha);
         when(stunnerShape.getDecorators()).thenReturn(Collections.singletonList(decorator));
-        tested = new StunnerWiresShapeHighlight(delegate);
+        tested = new StunnerWiresShapeHighlight(unhighlightEvent, delegate);
     }
 
     @Test
@@ -123,6 +128,7 @@ public class StunnerWiresShapeHighlightTest {
         tested.highlightBody(stunnerShape,
                              "color");
         tested.restore();
+        verify(unhighlightEvent, times(1)).fire(any(CanvasUnhighlightEvent.class));
         verify(delegate, times(1)).restore();
         verify(decorator, times(2)).animate(any(AnimationTweener.class),
                                             any(AnimationProperties.class),

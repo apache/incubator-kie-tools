@@ -23,14 +23,16 @@ import org.kie.workbench.common.stunner.core.command.impl.AbstractCompositeComma
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.command.EmptyRulesCommandExecutionContext;
+import org.kie.workbench.common.stunner.core.graph.command.DirectGraphCommandExecutionContext;
+import org.kie.workbench.common.stunner.core.graph.command.GraphCommand;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
-import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.index.MutableIndex;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
-public abstract class AbstractGraphCompositeCommand extends AbstractCompositeCommand<GraphCommandExecutionContext, RuleViolation> {
+public abstract class AbstractGraphCompositeCommand
+        extends AbstractCompositeCommand<GraphCommandExecutionContext, RuleViolation>
+        implements GraphCommand {
 
     /**
      * Each child command operation can be done by:
@@ -55,10 +57,6 @@ public abstract class AbstractGraphCompositeCommand extends AbstractCompositeCom
     @Override
     protected CommandResult<RuleViolation> doAllow(final GraphCommandExecutionContext context,
                                                    final Command<GraphCommandExecutionContext, RuleViolation> command) {
-        // Check if rules are present.
-        if (null == context.getRuleManager()) {
-            return GraphCommandResultBuilder.SUCCESS;
-        }
         return command.allow(context);
     }
 
@@ -96,10 +94,9 @@ public abstract class AbstractGraphCompositeCommand extends AbstractCompositeCom
         return e;
     }
 
-    private EmptyRulesCommandExecutionContext buildEmptyExecutionContext(final GraphCommandExecutionContext context) {
-        return new EmptyRulesCommandExecutionContext(context.getDefinitionManager(),
-                                                     context.getFactoryManager(),
-                                                     context.getRuleManager(),
-                                                     context.getGraphIndex());
+    private DirectGraphCommandExecutionContext buildEmptyExecutionContext(final GraphCommandExecutionContext context) {
+        return new DirectGraphCommandExecutionContext(context.getDefinitionManager(),
+                                                      context.getFactoryManager(),
+                                                      context.getGraphIndex());
     }
 }

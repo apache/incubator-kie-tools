@@ -16,28 +16,27 @@
 
 package org.kie.workbench.common.stunner.core.rule.context.impl;
 
-import org.kie.workbench.common.stunner.core.graph.Graph;
-import org.kie.workbench.common.stunner.core.graph.Node;
+import java.util.function.Supplier;
+
 import org.kie.workbench.common.stunner.core.rule.context.GraphEvaluationContext;
+import org.kie.workbench.common.stunner.core.rule.context.GraphEvaluationState;
 
-abstract class AbstractGraphEvaluationContext implements GraphEvaluationContext {
+public abstract class AbstractGraphEvaluationContext<T extends AbstractGraphEvaluationContext> implements GraphEvaluationContext {
 
-    private final String name;
-    private final Graph<?, ? extends Node> graph;
+    private Supplier<GraphEvaluationState> state;
 
-    protected AbstractGraphEvaluationContext(final String name,
-                                             final Graph<?, ? extends Node> graph) {
-        this.name = name;
-        this.graph = graph;
+    public T setState(final Supplier<GraphEvaluationState> state) {
+        this.state = state;
+        return cast();
     }
 
     @Override
-    public Graph<?, ? extends Node> getGraph() {
-        return graph;
+    public GraphEvaluationState getState() {
+        return state.get();
     }
 
-    @Override
-    public String getName() {
-        return name;
+    @SuppressWarnings("unchecked")
+    private T cast() {
+        return (T) this;
     }
 }

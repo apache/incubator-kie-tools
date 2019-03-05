@@ -15,6 +15,7 @@
  */
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,7 +47,7 @@ import static org.kie.workbench.common.stunner.core.TestingGraphUtils.verifyConn
 import static org.kie.workbench.common.stunner.core.TestingGraphUtils.verifyConnectorCardinality;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -129,7 +130,7 @@ public class DeleteConnectorCommandTest extends AbstractGraphCommandTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testAllowNoRules() {
-        when(graphCommandExecutionContext.getRuleManager()).thenReturn(null);
+        useAllowedExecutionContext();
         CommandResult<RuleViolation> result = tested.allow(graphCommandExecutionContext);
         assertEquals(CommandResult.Type.INFO,
                      result.getType());
@@ -154,8 +155,8 @@ public class DeleteConnectorCommandTest extends AbstractGraphCommandTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testExecute() {
-        final List sourceOutEdges = mock(List.class);
-        final List targetInEdges = mock(List.class);
+        final List sourceOutEdges = spy(new ArrayList());
+        final List targetInEdges = spy(new ArrayList());
         when(source.getOutEdges()).thenReturn(sourceOutEdges);
         when(target.getInEdges()).thenReturn(targetInEdges);
         CommandResult<RuleViolation> result = tested.execute(graphCommandExecutionContext);
@@ -183,8 +184,8 @@ public class DeleteConnectorCommandTest extends AbstractGraphCommandTest {
                                                            UUID));
         when(ruleManager.evaluate(any(RuleSet.class),
                                   any(RuleEvaluationContext.class))).thenReturn(FAILED_VIOLATIONS);
-        final List sourceOutEdges = mock(List.class);
-        final List targetInEdges = mock(List.class);
+        final List sourceOutEdges = spy(new ArrayList());
+        final List targetInEdges = spy(new ArrayList());
         when(source.getOutEdges()).thenReturn(sourceOutEdges);
         when(target.getInEdges()).thenReturn(targetInEdges);
         CommandResult<RuleViolation> result = tested.execute(graphCommandExecutionContext);

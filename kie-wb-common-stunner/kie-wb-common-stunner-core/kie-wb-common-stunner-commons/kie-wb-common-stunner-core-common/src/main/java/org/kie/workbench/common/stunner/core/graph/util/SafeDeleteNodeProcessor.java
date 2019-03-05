@@ -21,8 +21,6 @@ import java.util.Deque;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -35,9 +33,11 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.AbstractChildrenTraverseCallback;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.ChildrenTraverseProcessor;
 
-public class SafeDeleteNodeProcessor {
+import static org.kie.workbench.common.stunner.core.graph.util.GraphUtils.getDockParent;
+import static org.kie.workbench.common.stunner.core.graph.util.GraphUtils.getDockedNodes;
+import static org.kie.workbench.common.stunner.core.graph.util.GraphUtils.isDockedNode;
 
-    private static Logger LOGGER = Logger.getLogger(SafeDeleteNodeProcessor.class.getName());
+public class SafeDeleteNodeProcessor {
 
     public interface Callback {
 
@@ -81,7 +81,7 @@ public class SafeDeleteNodeProcessor {
                               @Override
                               public void startNodeTraversal(final Node<View, Edge> node) {
                                   super.startNodeTraversal(node);
-                                  if (GraphUtils.isDockedNode(node)) {
+                                  if (isDockedNode(node)) {
                                       //docked nodes will be handled on the #processNode
                                       return;
                                   }
@@ -93,7 +93,7 @@ public class SafeDeleteNodeProcessor {
                                                                 final Node<View, Edge> node) {
                                   super.startNodeTraversal(parents,
                                                            node);
-                                  if (GraphUtils.isDockedNode(node)) {
+                                  if (isDockedNode(node)) {
                                       //docked nodes will be handled on the #processNode
                                       return true;
                                   }
@@ -116,25 +116,23 @@ public class SafeDeleteNodeProcessor {
     @SuppressWarnings("unchecked")
     private void processNode(final Node<?, Edge> node,
                              final Callback callback,
-                             final boolean candidate) {
-        log("Deleting node [" + node.getUUID() + "]");
-
+                             final boolean isTheCandidate) {
         //processing recursively docked nodes relative to the current node
-        GraphUtils.getDockedNodes(node).forEach(docked -> processNode(docked, callback, false));
+        getDockedNodes(node).forEach(docked -> processNode(docked, callback, false));
 
-        GraphUtils.getDockParent(node).ifPresent(parent -> callback.removeDock(parent, node));
+        getDockParent(node).ifPresent(parent -> callback.removeDock(parent, node));
 
         Stream.concat(node.getOutEdges().stream(),
                       node.getInEdges().stream())
                 .filter(e -> e.getContent() instanceof View)
                 .forEach(e -> deleteConnector(callback,
                                               e,
-                                              candidate));
+                                              isTheCandidate));
         node.getInEdges().stream()
                 .filter(e -> e.getContent() instanceof Child)
                 .forEach(e -> callback.removeChild(e.getSourceNode(),
                                                    node));
-        if (candidate) {
+        if (isTheCandidate) {
             callback.deleteCandidateNode(node);
         } else {
             callback.deleteNode(node);
@@ -143,19 +141,14 @@ public class SafeDeleteNodeProcessor {
 
     private void deleteConnector(final Callback callback,
                                  final Edge<? extends View<?>, Node> edge,
-                                 final boolean candidate) {
+                                 final boolean isTheCandidate) {
         if (!processedConnectors.contains(edge.getUUID())) {
-            if (candidate) {
+            if (isTheCandidate) {
                 callback.deleteCandidateConnector(edge);
             } else {
                 callback.deleteConnector(edge);
             }
             processedConnectors.add(edge.getUUID());
         }
-    }
-
-    private void log(final String message) {
-        LOGGER.log(Level.FINE,
-                   message);
     }
 }

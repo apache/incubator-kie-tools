@@ -56,7 +56,7 @@ import org.kie.workbench.common.stunner.core.rule.RuleSet;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 import org.kie.workbench.common.stunner.core.rule.context.CardinalityContext;
-import org.kie.workbench.common.stunner.core.rule.context.impl.RuleContextBuilder;
+import org.kie.workbench.common.stunner.core.rule.context.impl.RuleEvaluationContextBuilder;
 import org.kie.workbench.common.stunner.core.rule.violations.DefaultRuleViolations;
 import org.kie.workbench.common.stunner.core.util.UUID;
 
@@ -107,13 +107,13 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
             final Set<String> parentLabels = parent.getLabels();
 
             final RuleViolations dockingViolations =
-                    ruleManager.evaluate(ruleSet, RuleContextBuilder.DomainContexts.docking(parentLabels, labels));
+                    ruleManager.evaluate(ruleSet, RuleEvaluationContextBuilder.DomainContexts.docking(parentLabels, labels));
             if (isValid(dockingViolations)) {
                 return ParentAssignment.DOCKING;
             }
 
             final RuleViolations containmentViolations =
-                    ruleManager.evaluate(ruleSet, RuleContextBuilder.DomainContexts.containment(parentLabels, labels));
+                    ruleManager.evaluate(ruleSet, RuleEvaluationContextBuilder.DomainContexts.containment(parentLabels, labels));
             if (isValid(containmentViolations)) {
                 return ParentAssignment.CONTAINMENT;
             }
@@ -145,9 +145,9 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
             final Integer roleCount = Optional.ofNullable(graphLabelCount.get(role)).orElse(0);
             final RuleViolations violations =
                     ruleManager.evaluate(ruleSet,
-                                         RuleContextBuilder.DomainContexts.cardinality(Collections.singleton(role),
-                                                                                       roleCount,
-                                                                                       Optional.of(CardinalityContext.Operation.ADD)));
+                                         RuleEvaluationContextBuilder.DomainContexts.cardinality(Collections.singleton(role),
+                                                                                                 roleCount,
+                                                                                                 Optional.of(CardinalityContext.Operation.ADD)));
             cardinalityViolations.addViolations(violations);
         });
         labels.stream().forEach(role -> {

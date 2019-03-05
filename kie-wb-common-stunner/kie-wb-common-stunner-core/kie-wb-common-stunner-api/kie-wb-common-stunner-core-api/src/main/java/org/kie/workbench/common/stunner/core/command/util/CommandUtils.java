@@ -15,16 +15,41 @@
  */
 package org.kie.workbench.common.stunner.core.command.util;
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.kie.workbench.common.stunner.core.command.CommandResult;
+import org.kie.workbench.common.stunner.core.graph.Edge;
+import org.kie.workbench.common.stunner.core.graph.Element;
+import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
+import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
 public class CommandUtils {
 
+    public static String[] toUUIDs(final Collection<Node<?, Edge>> nodes) {
+        return nodes.stream().map(Element::getUUID).toArray(String[]::new);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static Collection<Node<?, Edge>> getCandidates(final GraphCommandExecutionContext context,
+                                                          final String[] candidateUUIDs) {
+        final Index<Node<?, Edge>, ?> graphIndex = (Index<Node<?, Edge>, ?>) context.getGraphIndex();
+        return Stream.of(candidateUUIDs)
+                .map(graphIndex::getNode)
+                .collect(Collectors.toSet());
+    }
+
     public static boolean isError(final CommandResult<?> result) {
         return isCommandResultError(result);
+    }
+
+    public static boolean isWarn(final CommandResult<?> result) {
+        return isCommandResultWarn(result);
     }
 
     public static CommandResult.Type getType(final RuleViolation violation) {
@@ -45,5 +70,9 @@ public class CommandUtils {
 
     private static boolean isCommandResultError(final CommandResult<?> result) {
         return result != null && CommandResult.Type.ERROR.equals(result.getType());
+    }
+
+    private static boolean isCommandResultWarn(final CommandResult<?> result) {
+        return result != null && CommandResult.Type.WARNING.equals(result.getType());
     }
 }

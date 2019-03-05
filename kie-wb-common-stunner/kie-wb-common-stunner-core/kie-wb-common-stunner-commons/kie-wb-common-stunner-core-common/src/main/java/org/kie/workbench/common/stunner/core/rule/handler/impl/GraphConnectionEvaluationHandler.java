@@ -29,7 +29,8 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.rule.RuleEvaluationHandler;
 import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 import org.kie.workbench.common.stunner.core.rule.context.GraphConnectionContext;
-import org.kie.workbench.common.stunner.core.rule.context.impl.RuleContextBuilder;
+import org.kie.workbench.common.stunner.core.rule.context.GraphEvaluationState;
+import org.kie.workbench.common.stunner.core.rule.context.impl.RuleEvaluationContextBuilder;
 import org.kie.workbench.common.stunner.core.rule.impl.CanConnect;
 import org.kie.workbench.common.stunner.core.rule.violations.DefaultRuleViolations;
 
@@ -62,6 +63,7 @@ public class GraphConnectionEvaluationHandler implements RuleEvaluationHandler<C
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public boolean accepts(final CanConnect rule,
                            final GraphConnectionContext context) {
         final Edge<? extends View<?>, ? extends Node> connector = context.getConnector();
@@ -71,19 +73,25 @@ public class GraphConnectionEvaluationHandler implements RuleEvaluationHandler<C
                         // As for acceptance the delegated handler only needs the connector id, no need
                         // to calculate roles for current source/target nodes.
                         connectionEvaluationHandler.accepts(rule,
-                                                            RuleContextBuilder.DomainContexts.connection(cr,
-                                                                                                         Optional.empty(),
-                                                                                                         Optional.empty())))
+                                                            RuleEvaluationContextBuilder.DomainContexts.connection(cr,
+                                                                                                                   Optional.empty(),
+                                                                                                                   Optional.empty())))
                 .findAny()
                 .isPresent();
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public RuleViolations evaluate(final CanConnect rule,
                                    final GraphConnectionContext context) {
+        final GraphEvaluationState.ConnectionState connectionState = context.getState().getConnectionState();
         final Edge<? extends View<?>, ? extends Node> connector = context.getConnector();
-        final Node<? extends View<?>, ? extends Edge> source = context.getSource().orElse(null);
-        final Node<? extends View<?>, ? extends Edge> target = context.getTarget().orElse(null);
+        final Node<? extends View<?>, ? extends Edge> source =
+                (Node<? extends View<?>, ? extends Edge>) context.getSource()
+                        .orElse(connectionState.getSource(connector));
+        final Node<? extends View<?>, ? extends Edge> target =
+                (Node<? extends View<?>, ? extends Edge>) context.getTarget()
+                        .orElse(connectionState.getTarget(connector));
         if (source == null || target == null) {
             return new DefaultRuleViolations();
         }
@@ -95,9 +103,9 @@ public class GraphConnectionEvaluationHandler implements RuleEvaluationHandler<C
                 .filter(pr -> rule.getRole().equals(pr))
                 .forEach(pr -> result.addViolations(connectionEvaluationHandler
                                                             .evaluate(rule,
-                                                                      RuleContextBuilder.DomainContexts.connection(pr,
-                                                                                                                   sourceLabels,
-                                                                                                                   targetLabels))));
+                                                                      RuleEvaluationContextBuilder.DomainContexts.connection(pr,
+                                                                                                                             sourceLabels,
+                                                                                                                             targetLabels))));
         return GraphEvaluationHandlerUtils.addViolationsSourceUUID(connector.getUUID(),
                                                                    result);
     }

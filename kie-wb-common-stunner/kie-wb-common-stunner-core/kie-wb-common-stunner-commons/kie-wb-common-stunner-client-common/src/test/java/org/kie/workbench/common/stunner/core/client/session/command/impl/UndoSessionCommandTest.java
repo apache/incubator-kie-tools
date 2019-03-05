@@ -37,7 +37,9 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -101,6 +103,8 @@ public class UndoSessionCommandTest extends BaseSessionCommandKeyboardTest {
                times(1)).clearSelection();
         verify(callback,
                times(1)).onSuccess();
+        verify(commandRegistry,
+               never()).clear();
     }
 
     @Test
@@ -118,6 +122,8 @@ public class UndoSessionCommandTest extends BaseSessionCommandKeyboardTest {
                times(1)).clearSelection();
         verify(callback,
                times(1)).onError(commandResult);
+        verify(commandRegistry,
+               times(1)).clear();
     }
 
     @Test
@@ -134,6 +140,8 @@ public class UndoSessionCommandTest extends BaseSessionCommandKeyboardTest {
         ((UndoSessionCommand) command).onCommandAdded(new RegisterChangedEvent());
         assertTrue(command.isEnabled());
         verify(statusCallback,
-               times(2)).execute();
+               atLeastOnce()).execute();
+        verify(commandRegistry,
+               never()).clear();
     }
 }

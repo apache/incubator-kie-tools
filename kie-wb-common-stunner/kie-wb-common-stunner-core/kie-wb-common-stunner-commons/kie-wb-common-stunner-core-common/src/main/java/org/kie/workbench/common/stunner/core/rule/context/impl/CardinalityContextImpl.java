@@ -24,18 +24,24 @@ import org.kie.workbench.common.stunner.core.rule.context.CardinalityContext;
 
 class CardinalityContextImpl implements CardinalityContext {
 
-    private final String name;
     private final Set<String> roles;
-    private final int count;
+    private final int currentCount;
+    private final int candidateCount;
     private final Optional<Operation> operation;
 
-    CardinalityContextImpl(final String name,
-                           final Set<String> roles,
+    CardinalityContextImpl(final Set<String> roles,
                            final int count,
                            final Optional<Operation> operation) {
-        this.name = name;
+        this(roles, count, 1, operation);
+    }
+
+    CardinalityContextImpl(final Set<String> roles,
+                           final int currentCount,
+                           final int candidateCount,
+                           final Optional<Operation> operation) {
         this.roles = roles;
-        this.count = count;
+        this.currentCount = currentCount;
+        this.candidateCount = candidateCount;
         this.operation = operation;
     }
 
@@ -45,8 +51,13 @@ class CardinalityContextImpl implements CardinalityContext {
     }
 
     @Override
+    public int getCurrentCount() {
+        return currentCount;
+    }
+
+    @Override
     public int getCandidateCount() {
-        return count;
+        return candidateCount;
     }
 
     @Override
@@ -56,7 +67,7 @@ class CardinalityContextImpl implements CardinalityContext {
 
     @Override
     public String getName() {
-        return name;
+        return "Cardinality";
     }
 
     @Override

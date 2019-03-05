@@ -50,6 +50,6 @@ public class AddChildNodeCommandTest {
     @Test
     public void testSubCommandRegistration() {
         assertThat(command.getRegisterNodeCommand(candidate)).isExactlyInstanceOf(RegisterNodeCommand.class);
-        assertThat(command.getSetChildNodeCommand(parent, candidate)).isExactlyInstanceOf(SetChildNodeCommand.class);
+        assertThat(command.getSetChildNodeCommand(parent, candidate)).isExactlyInstanceOf(SetChildrenCommand.class);
     }
 }

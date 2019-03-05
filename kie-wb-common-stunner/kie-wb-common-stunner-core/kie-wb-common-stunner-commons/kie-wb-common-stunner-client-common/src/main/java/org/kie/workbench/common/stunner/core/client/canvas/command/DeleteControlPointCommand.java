@@ -48,7 +48,7 @@ public class DeleteControlPointCommand extends AbstractCanvasGraphCommand {
     @Override
     public String toString() {
         return getClass().getSimpleName() +
-                " [candidate=" + getUUID(candidate) + "," +
+                " [candidate=" + toUUID(candidate) + "," +
                 "index=" + index + "]";
     }
 }

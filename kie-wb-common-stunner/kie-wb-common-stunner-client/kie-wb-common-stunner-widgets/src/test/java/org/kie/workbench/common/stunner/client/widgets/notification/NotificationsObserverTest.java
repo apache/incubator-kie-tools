@@ -24,6 +24,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandExecutedEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandUndoneEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.validation.canvas.CanvasValidationFailEvent;
@@ -117,7 +118,7 @@ public class NotificationsObserverTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testNotifyCommandSuccess() {
+    public void testNotifyCommandExecutionSuccess() {
         final Command command = mock(Command.class);
         final CommandResult<CanvasViolation> result = mock(CommandResult.class);
         final CanvasCommandExecutedEvent<? extends CanvasHandler> commandExecutedEvent =
@@ -144,7 +145,7 @@ public class NotificationsObserverTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testNotifyCommandFailed() {
+    public void testNotifyCommandExecutionFailed() {
         final Command command = mock(Command.class);
         final CommandResult<CanvasViolation> result = mock(CommandResult.class);
         final CanvasCommandExecutedEvent<? extends CanvasHandler> commandExecutedEvent =
@@ -157,6 +158,60 @@ public class NotificationsObserverTest {
                                         command,
                                         "message1");
         tested.onGraphCommandExecuted(commandExecutedEvent);
+        verify(onNotification,
+               times(1)).execute(eq(commandNotification));
+        verify(commandFailed,
+               times(1)).execute(eq(commandNotification));
+        verify(commandSuccess,
+               never()).execute(any(CommandNotification.class));
+        verify(validationSuccess,
+               never()).execute(any(ValidationSuccessNotification.class));
+        verify(validationFailed,
+               never()).execute(any(ValidationFailedNotification.class));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testNotifyCommandUndoSuccess() {
+        final Command command = mock(Command.class);
+        final CommandResult<CanvasViolation> result = mock(CommandResult.class);
+        final CanvasCommandUndoneEvent<CanvasHandler> commandExecutedEvent =
+                new CanvasCommandUndoneEvent<>(canvasHandler,
+                                               command,
+                                               result);
+        commandNotification =
+                new CommandNotification(Notification.Type.INFO,
+                                        notificationContext,
+                                        command,
+                                        "message1");
+        tested.onCanvasCommandUndoneEvent(commandExecutedEvent);
+        verify(onNotification,
+               times(1)).execute(eq(commandNotification));
+        verify(commandSuccess,
+               times(1)).execute(eq(commandNotification));
+        verify(commandFailed,
+               never()).execute(any(CommandNotification.class));
+        verify(validationSuccess,
+               never()).execute(any(ValidationSuccessNotification.class));
+        verify(validationFailed,
+               never()).execute(any(ValidationFailedNotification.class));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testNotifyCommandUndoFailed() {
+        final Command command = mock(Command.class);
+        final CommandResult<CanvasViolation> result = mock(CommandResult.class);
+        final CanvasCommandUndoneEvent<? extends CanvasHandler> commandExecutedEvent =
+                new CanvasCommandUndoneEvent<>(canvasHandler,
+                                               command,
+                                               result);
+        commandNotification =
+                new CommandNotification(Notification.Type.ERROR,
+                                        notificationContext,
+                                        command,
+                                        "message1");
+        tested.onCanvasCommandUndoneEvent(commandExecutedEvent);
         verify(onNotification,
                times(1)).execute(eq(commandNotification));
         verify(commandFailed,

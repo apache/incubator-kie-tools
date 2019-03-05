@@ -28,12 +28,17 @@ import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.Abst
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.TreeWalkTraverseProcessor;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.TreeWalkTraverseProcessorImpl;
 import org.kie.workbench.common.stunner.core.graph.store.GraphNodeStore;
+import org.kie.workbench.common.stunner.core.graph.store.GraphNodeStoreImpl;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 public class GraphImpl<C> extends AbstractElement<C> implements Graph<C, Node> {
 
     private final GraphNodeStore<Node> nodeStore;
+
+    public static <C> GraphImpl<C> build(final String uuid) {
+        return new GraphImpl<>(uuid, new GraphNodeStoreImpl());
+    }
 
     public GraphImpl(final @MapsTo("uuid") String uuid,
                      final @MapsTo("nodeStore") GraphNodeStore<Node> nodeStore) {

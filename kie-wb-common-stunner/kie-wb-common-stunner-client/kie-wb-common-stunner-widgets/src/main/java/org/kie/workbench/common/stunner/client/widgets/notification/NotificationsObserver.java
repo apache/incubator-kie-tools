@@ -27,6 +27,7 @@ import javax.inject.Inject;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.AbstractCanvasCommandEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandExecutedEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandUndoneEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.validation.canvas.CanvasValidationFailEvent;
@@ -98,6 +99,16 @@ public class NotificationsObserver {
     @SuppressWarnings("unchecked")
     void onGraphCommandExecuted(final @Observes CanvasCommandExecutedEvent<? extends CanvasHandler> commandExecutedEvent) {
         final Notification notification = translateCommand(commandExecutedEvent);
+        fireCommandNotification(notification);
+    }
+
+    @SuppressWarnings("unchecked")
+    void onCanvasCommandUndoneEvent(final @Observes CanvasCommandUndoneEvent<? extends CanvasHandler> commandUndoneEvent) {
+        final Notification notification = translateCommand(commandUndoneEvent);
+        fireCommandNotification(notification);
+    }
+
+    private void fireCommandNotification(final Notification notification) {
         final boolean isError = Notification.Type.ERROR.equals(notification.getType());
         fireNotification(notification);
         if (isError) {

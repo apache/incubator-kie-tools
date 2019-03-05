@@ -98,7 +98,7 @@ public class AddChildNodeCommandTest extends AbstractGraphCommandTest {
         assertNotNull(commands);
         assertTrue(commands.size() == 3);
         assertTrue(commands.get(0) instanceof RegisterNodeCommand);
-        assertTrue(commands.get(1) instanceof SetChildNodeCommand);
+        assertTrue(commands.get(1) instanceof SetChildrenCommand);
         assertTrue(commands.get(2) instanceof UpdateElementPositionCommand);
     }
 
@@ -116,7 +116,7 @@ public class AddChildNodeCommandTest extends AbstractGraphCommandTest {
         assertNotNull(commands);
         assertTrue(commands.size() == 2);
         assertTrue(commands.get(0) instanceof RegisterNodeCommand);
-        assertTrue(commands.get(1) instanceof SetChildNodeCommand);
+        assertTrue(commands.get(1) instanceof SetChildrenCommand);
     }
 
     @Test
@@ -148,7 +148,7 @@ public class AddChildNodeCommandTest extends AbstractGraphCommandTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testAllowNoRules() {
-        when(graphCommandExecutionContext.getRuleManager()).thenReturn(null);
+        useAllowedExecutionContext();
         CommandResult<RuleViolation> result = tested.allow(graphCommandExecutionContext);
         assertEquals(CommandResult.Type.INFO,
                      result.getType());

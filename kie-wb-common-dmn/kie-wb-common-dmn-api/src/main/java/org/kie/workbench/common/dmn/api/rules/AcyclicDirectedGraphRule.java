@@ -29,6 +29,7 @@ import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.Tree
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.TreeWalkTraverseProcessor;
 import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 import org.kie.workbench.common.stunner.core.rule.context.GraphConnectionContext;
+import org.kie.workbench.common.stunner.core.rule.context.GraphEvaluationState;
 import org.kie.workbench.common.stunner.core.rule.ext.RuleExtension;
 import org.kie.workbench.common.stunner.core.rule.ext.RuleExtensionHandler;
 import org.kie.workbench.common.stunner.core.rule.violations.DefaultRuleViolations;
@@ -61,7 +62,8 @@ public class AcyclicDirectedGraphRule extends RuleExtensionHandler<AcyclicDirect
     @SuppressWarnings("unchecked")
     public RuleViolations evaluate(final RuleExtension rule,
                                    final GraphConnectionContext context) {
-        final Graph<?, Node> graph = (Graph<?, Node>) context.getGraph();
+        final GraphEvaluationState state = context.getState();
+        final Graph<?, Node> graph = (Graph<?, Node>) state.getGraph();
 
         final Optional<Node<? extends View<?>, ? extends Edge>> oSource = context.getSource();
         final Optional<Node<? extends View<?>, ? extends Edge>> oTarget = context.getTarget();

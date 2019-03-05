@@ -16,8 +16,11 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.util;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Observes;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -27,13 +30,19 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 
+@Dependent
 public class CanvasHighlight {
 
-    private final AbstractCanvasHandler canvasHandler;
-    private final List<String> uuids = new LinkedList<>();
+    private final Set<String> uuids;
+    private AbstractCanvasHandler canvasHandler;
 
-    public CanvasHighlight(final AbstractCanvasHandler canvasHandler) {
+    public CanvasHighlight() {
+        this.uuids = new HashSet<>();
+    }
+
+    public CanvasHighlight setCanvasHandler(final AbstractCanvasHandler canvasHandler) {
         this.canvasHandler = canvasHandler;
+        return this;
     }
 
     public CanvasHighlight highLight(final Element<?> node) {
@@ -70,21 +79,23 @@ public class CanvasHighlight {
 
     public CanvasHighlight unhighLight() {
         if (!uuids.isEmpty()) {
-            uuids.forEach(uuid -> {
+            HashSet<String> copy = new HashSet<>(uuids);
+            uuids.clear();
+            copy.forEach(uuid -> {
                 final Shape shape = getShape(uuid);
                 if (null != shape) {
                     shape.applyState(ShapeState.NONE);
                 }
             });
-            uuids.clear();
         }
         setValidCursor();
         return this;
     }
 
     public void destroy() {
-        this.uuids.clear();
         setValidCursor();
+        this.uuids.clear();
+        this.canvasHandler = null;
     }
 
     private void applyState(final Element<?> node,
@@ -107,6 +118,10 @@ public class CanvasHighlight {
         }
     }
 
+    void onCanvasUnhighlightEvent(final @Observes CanvasUnhighlightEvent event) {
+        unhighLight();
+    }
+
     private void setInvalidCursor() {
         setCursor(AbstractCanvas.Cursors.NOT_ALLOWED);
     }
@@ -116,14 +131,17 @@ public class CanvasHighlight {
     }
 
     private void setCursor(final AbstractCanvas.Cursors cursor) {
-        getCanvas().getView().setCursor(cursor);
+        if (null != getCanvas()) {
+            getCanvas().getView().setCursor(cursor);
+        }
     }
 
     private Shape getShape(final String uuid) {
-        return getCanvas().getShape(uuid);
+        return null != getCanvas() ? getCanvas().getShape(uuid) : null;
     }
 
     private AbstractCanvas getCanvas() {
-        return canvasHandler.getAbstractCanvas();
+        return null != canvasHandler ? canvasHandler.getAbstractCanvas() : null;
     }
+
 }

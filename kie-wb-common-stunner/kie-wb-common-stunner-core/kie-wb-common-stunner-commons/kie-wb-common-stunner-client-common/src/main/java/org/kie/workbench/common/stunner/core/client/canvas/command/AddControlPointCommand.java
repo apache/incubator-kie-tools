@@ -52,7 +52,7 @@ public class AddControlPointCommand extends AbstractCanvasGraphCommand {
     @Override
     public String toString() {
         return getClass().getSimpleName() +
-                " [edge=" + getUUID(edge) + "," +
+                " [edge=" + toUUID(edge) + "," +
                 "controlPoint=" + controlPoint + "," +
                 "index=" + index + "]";
     }

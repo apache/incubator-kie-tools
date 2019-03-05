@@ -53,6 +53,6 @@ public interface RuleManager {
      * - If no rules are present in the rule set for the given context, it depends on the context
      * type if produce any rule violations.
      */
-    RuleViolations evaluate(final RuleSet ruleSet,
-                            final RuleEvaluationContext context);
+    RuleViolations evaluate(RuleSet ruleSet,
+                            RuleEvaluationContext context);
 }

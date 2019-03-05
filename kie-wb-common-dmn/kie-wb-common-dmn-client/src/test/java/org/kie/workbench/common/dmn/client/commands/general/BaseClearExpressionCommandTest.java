@@ -27,7 +27,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
-import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
@@ -66,9 +65,6 @@ public abstract class BaseClearExpressionCommandTest<C extends BaseClearExpressi
     protected GraphCommandExecutionContext graphCommandExecutionContext;
 
     @Mock
-    protected RuleManager ruleManager;
-
-    @Mock
     protected HasExpression hasExpression;
 
     @Mock
@@ -94,7 +90,6 @@ public abstract class BaseClearExpressionCommandTest<C extends BaseClearExpressi
         when(gridWidget.getModel()).thenReturn(gridData);
         when(gridData.getCell(eq(ROW_INDEX), eq(COLUMN_INDEX))).thenReturn(gridCell);
         when(gridCell.getValue()).thenReturn(gridCellValue);
-        when(graphCommandExecutionContext.getRuleManager()).thenReturn(ruleManager);
 
         this.command = makeTestCommand();
     }

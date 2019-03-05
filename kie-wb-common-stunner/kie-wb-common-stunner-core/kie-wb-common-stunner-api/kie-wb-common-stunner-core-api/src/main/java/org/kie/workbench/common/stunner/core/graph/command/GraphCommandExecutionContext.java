@@ -19,8 +19,9 @@ package org.kie.workbench.common.stunner.core.graph.command;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
-import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.kie.workbench.common.stunner.core.rule.RuleSet;
+import org.kie.workbench.common.stunner.core.rule.RuleViolations;
+import org.kie.workbench.common.stunner.core.rule.context.GraphEvaluationContext;
 
 /**
  * The context beans for the execution of graph commands.
@@ -31,9 +32,9 @@ public interface GraphCommandExecutionContext {
 
     FactoryManager getFactoryManager();
 
-    RuleManager getRuleManager();
-
-    Index<?, ?> getGraphIndex();
+    RuleViolations evaluate(GraphEvaluationContext context);
 
     RuleSet getRuleSet();
+
+    Index<?, ?> getGraphIndex();
 }

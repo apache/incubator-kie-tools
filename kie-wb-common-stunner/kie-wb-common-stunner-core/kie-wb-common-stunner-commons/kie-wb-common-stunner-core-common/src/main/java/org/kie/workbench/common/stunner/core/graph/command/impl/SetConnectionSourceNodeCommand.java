@@ -32,7 +32,6 @@ import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.rule.context.CardinalityContext;
 import org.kie.workbench.common.stunner.core.rule.context.EdgeCardinalityContext;
-import org.kie.workbench.common.stunner.core.rule.context.impl.RuleContextBuilder;
 
 /**
  * A Command to set the outgoing connection for an edge.
@@ -121,33 +120,30 @@ public final class SetConnectionSourceNodeCommand extends AbstractGraphCommand {
                 (null != lastSourceNode && (!lastSourceNode.equals(sourceNode)))) {
             // New connection being made
             final Collection<RuleViolation> connectionRuleViolations =
-                    doEvaluate(context,
-                               RuleContextBuilder.GraphContexts.connection(getGraph(context),
-                                                                           edge,
-                                                                           Optional.ofNullable(sourceNode),
-                                                                           Optional.ofNullable(targetNode)));
+                    evaluate(context,
+                             contextBuilder -> contextBuilder.connection(edge,
+                                                                         Optional.ofNullable(sourceNode),
+                                                                         Optional.ofNullable(targetNode)));
             resultBuilder.addViolations(connectionRuleViolations);
             final Node<View<?>, Edge> currentSource = edge.getSourceNode();
             // If the edge has an outoutgoing source node, check cardinality for removing it.
             if (null != currentSource) {
                 final Collection<RuleViolation> cardinalityRuleViolations =
-                        doEvaluate(context,
-                                   RuleContextBuilder.GraphContexts.edgeCardinality(getGraph(context),
-                                                                                    currentSource,
-                                                                                    edge,
-                                                                                    EdgeCardinalityContext.Direction.OUTGOING,
-                                                                                    Optional.of(CardinalityContext.Operation.DELETE)));
+                        evaluate(context,
+                                 contextBuilder -> contextBuilder.edgeCardinality(currentSource,
+                                                                                  edge,
+                                                                                  EdgeCardinalityContext.Direction.OUTGOING,
+                                                                                  Optional.of(CardinalityContext.Operation.DELETE)));
                 resultBuilder.addViolations(cardinalityRuleViolations);
             }
             // If the new source node exist, evaluate cardinality rules for this edge.
             if (null != sourceNode) {
                 final Collection<RuleViolation> cardinalityRuleViolations =
-                        doEvaluate(context,
-                                   RuleContextBuilder.GraphContexts.edgeCardinality(getGraph(context),
-                                                                                    sourceNode,
-                                                                                    edge,
-                                                                                    EdgeCardinalityContext.Direction.OUTGOING,
-                                                                                    Optional.of(CardinalityContext.Operation.ADD)));
+                        evaluate(context,
+                                 contextBuilder -> contextBuilder.edgeCardinality(sourceNode,
+                                                                                  edge,
+                                                                                  EdgeCardinalityContext.Direction.OUTGOING,
+                                                                                  Optional.of(CardinalityContext.Operation.ADD)));
                 resultBuilder.addViolations(cardinalityRuleViolations);
             }
         }

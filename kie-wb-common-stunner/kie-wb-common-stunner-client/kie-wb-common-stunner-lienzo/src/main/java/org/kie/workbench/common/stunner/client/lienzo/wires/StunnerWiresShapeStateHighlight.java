@@ -18,10 +18,13 @@ package org.kie.workbench.common.stunner.client.lienzo.wires;
 
 import java.util.Objects;
 
+import javax.enterprise.event.Event;
+
 import com.ait.lienzo.client.core.shape.wires.PickerPart;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeHighlight;
+import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasUnhighlightEvent;
 import org.kie.workbench.common.stunner.core.client.shape.HasShapeState;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
 
@@ -31,8 +34,9 @@ public class StunnerWiresShapeStateHighlight implements WiresShapeHighlight<Pick
     private HasShapeState current;
     private PickerPart.ShapePart currentPartState;
 
-    public StunnerWiresShapeStateHighlight(final WiresManager wiresManager) {
-        this(new StunnerWiresShapeHighlight(wiresManager));
+    public StunnerWiresShapeStateHighlight(final WiresManager wiresManager,
+                                           final Event<CanvasUnhighlightEvent> unhighlightEvent) {
+        this(new StunnerWiresShapeHighlight(wiresManager, unhighlightEvent));
     }
 
     StunnerWiresShapeStateHighlight(final StunnerWiresShapeHighlight delegate) {

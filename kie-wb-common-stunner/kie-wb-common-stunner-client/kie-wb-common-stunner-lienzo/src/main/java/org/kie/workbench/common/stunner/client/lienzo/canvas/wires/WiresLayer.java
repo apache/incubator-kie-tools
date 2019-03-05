@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.canvas.wires;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.enterprise.context.Dependent;
 
 import com.ait.lienzo.client.core.shape.wires.MagnetManager;
@@ -31,6 +34,8 @@ import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoLayer;
 @Dependent
 public class WiresLayer extends LienzoLayer {
 
+    private static Logger LOGGER = Logger.getLogger(WiresLayer.class.getName());
+
     static final Direction[] MAGNET_CARDINALS = MagnetManager.FOUR_CARDINALS;
 
     private WiresManager wiresManager;
@@ -41,12 +46,20 @@ public class WiresLayer extends LienzoLayer {
     }
 
     public LienzoLayer add(final WiresShape wiresShape) {
-        wiresManager.register(wiresShape);
-        wiresManager.getMagnetManager().createMagnets(wiresShape,
-                                                      MAGNET_CARDINALS);
-        WiresUtils.assertShapeGroup(wiresShape.getGroup(),
-                                    WiresCanvas.WIRES_CANVAS_GROUP_ID);
+        if (contains(wiresShape)) {
+            LOGGER.log(Level.WARNING, "Cannot add a WiresShape into the WiresLayer twice!");
+        } else {
+            wiresManager.register(wiresShape);
+            wiresManager.getMagnetManager().createMagnets(wiresShape,
+                                                          MAGNET_CARDINALS);
+            WiresUtils.assertShapeGroup(wiresShape.getGroup(),
+                                        WiresCanvas.WIRES_CANVAS_GROUP_ID);
+        }
         return this;
+    }
+
+    private boolean contains(final WiresShape wiresShape) {
+        return null != wiresManager.getShape(wiresShape.uuid());
     }
 
     public LienzoLayer add(final WiresConnector wiresConnector) {

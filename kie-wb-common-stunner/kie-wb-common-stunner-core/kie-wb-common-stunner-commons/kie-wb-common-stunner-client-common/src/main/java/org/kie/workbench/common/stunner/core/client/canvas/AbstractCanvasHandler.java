@@ -20,6 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.TextPropertyProviderFactory;
@@ -59,6 +60,7 @@ public abstract class AbstractCanvasHandler<D extends Diagram, C extends Abstrac
     private final String uuid;
     private final List<CanvasElementListener> listeners = new LinkedList<>();
     private final List<CanvasDomainObjectListener> domainObjectListeners = new LinkedList<>();
+    private Supplier<GraphCommandExecutionContext> commandExecutionContextSupplier;
 
     public AbstractCanvasHandler() {
         this.uuid = UUID.uuid();
@@ -97,7 +99,9 @@ public abstract class AbstractCanvasHandler<D extends Diagram, C extends Abstrac
      * If the implementation is not going to perform model updates, the graph execution context can be
      * either <code>null</code> or an empty context type.
      */
-    public abstract GraphCommandExecutionContext getGraphExecutionContext();
+    public GraphCommandExecutionContext getGraphExecutionContext() {
+        return commandExecutionContextSupplier.get();
+    }
 
     /**
      * This method sets the given <code>child</code> instance as children for the given
@@ -318,6 +322,10 @@ public abstract class AbstractCanvasHandler<D extends Diagram, C extends Abstrac
         }
     }
 
+    public void setGraphExecutionContext(final Supplier<GraphCommandExecutionContext> commandExecutionContextSupplier) {
+        this.commandExecutionContextSupplier = commandExecutionContextSupplier;
+    }
+
     /**
      * Adds a listener instance in order to be notified about graph element structure updates.
      * @param instance The listener instance.
@@ -468,6 +476,7 @@ public abstract class AbstractCanvasHandler<D extends Diagram, C extends Abstrac
         doDestroy();
         listeners.clear();
         domainObjectListeners.clear();
+        commandExecutionContextSupplier = null;
     }
 
     /**

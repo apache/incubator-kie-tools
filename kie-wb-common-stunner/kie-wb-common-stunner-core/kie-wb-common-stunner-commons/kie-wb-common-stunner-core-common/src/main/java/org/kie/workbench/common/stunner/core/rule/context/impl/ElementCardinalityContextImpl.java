@@ -16,36 +16,36 @@
 
 package org.kie.workbench.common.stunner.core.rule.context.impl;
 
+import java.util.Collection;
 import java.util.Optional;
 
 import org.kie.workbench.common.stunner.core.graph.Element;
-import org.kie.workbench.common.stunner.core.graph.Graph;
-import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.rule.RuleEvaluationContext;
 import org.kie.workbench.common.stunner.core.rule.context.CardinalityContext;
 import org.kie.workbench.common.stunner.core.rule.context.ElementCardinalityContext;
 
 class ElementCardinalityContextImpl
-        extends AbstractGraphEvaluationContext
+        extends AbstractGraphEvaluationContext<ElementCardinalityContextImpl>
         implements ElementCardinalityContext {
 
-    private final Optional<Element<? extends View<?>>> candidate;
+    private final Collection<Element<? extends View<?>>> candidates;
     private final Optional<CardinalityContext.Operation> operation;
 
-    ElementCardinalityContextImpl(final String name,
-                                  final Graph<?, ? extends Node> graph,
-                                  final Optional<Element<? extends View<?>>> candidate,
+    ElementCardinalityContextImpl(final Collection<Element<? extends View<?>>> candidates,
                                   final Optional<CardinalityContext.Operation> operation) {
-        super(name,
-              graph);
-        this.candidate = candidate;
+        this.candidates = candidates;
         this.operation = operation;
     }
 
     @Override
-    public Optional<Element<? extends View<?>>> getCandidate() {
-        return candidate;
+    public String getName() {
+        return "Cardinality";
+    }
+
+    @Override
+    public Collection<Element<? extends View<?>>> getCandidates() {
+        return candidates;
     }
 
     @Override

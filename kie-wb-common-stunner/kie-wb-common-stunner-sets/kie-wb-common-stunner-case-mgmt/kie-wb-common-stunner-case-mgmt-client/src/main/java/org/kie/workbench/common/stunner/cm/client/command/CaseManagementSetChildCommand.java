@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.cm.client.command;
 
+import java.util.Collections;
 import java.util.Optional;
 import java.util.OptionalInt;
 
@@ -28,7 +29,7 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
-public class CaseManagementSetChildCommand extends org.kie.workbench.common.stunner.core.client.canvas.command.SetChildNodeCommand {
+public class CaseManagementSetChildCommand extends org.kie.workbench.common.stunner.core.client.canvas.command.SetChildrenCommand {
 
     protected final OptionalInt index;
     protected final Optional<Node> originalParent;
@@ -49,17 +50,21 @@ public class CaseManagementSetChildCommand extends org.kie.workbench.common.stun
                                          final Optional<Node> originalParent,
                                          final OptionalInt originalIndex) {
         super(parent,
-              child);
+              Collections.singleton(child));
         this.index = index;
         this.originalParent = originalParent;
         this.originalIndex = originalIndex;
+    }
+
+    public Node getCandidate() {
+        return getCandidates().iterator().next();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand(final AbstractCanvasHandler context) {
         return new CaseManagementSetChildNodeGraphCommand(parent,
-                                                          candidate,
+                                                          getCandidate(),
                                                           index,
                                                           originalParent,
                                                           originalIndex);
@@ -68,7 +73,7 @@ public class CaseManagementSetChildCommand extends org.kie.workbench.common.stun
     @Override
     protected AbstractCanvasCommand newCanvasCommand(final AbstractCanvasHandler context) {
         return new CaseManagementSetChildNodeCanvasCommand(parent,
-                                                           candidate,
+                                                           getCandidate(),
                                                            index,
                                                            originalParent,
                                                            originalIndex);

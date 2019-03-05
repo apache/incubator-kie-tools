@@ -32,7 +32,7 @@ import org.kie.workbench.common.stunner.core.command.impl.DeferredCompositeComma
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.command.EmptyRulesCommandExecutionContext;
+import org.kie.workbench.common.stunner.core.graph.command.DirectGraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandManager;
 import org.kie.workbench.common.stunner.core.graph.command.impl.AddChildNodeCommand;
@@ -91,10 +91,9 @@ public class GraphBuilder {
             GraphCommandFactory commandFactory,
             GraphCommandManager commandManager) {
         this.graph = graph;
-        this.executionContext = new EmptyRulesCommandExecutionContext(
+        this.executionContext = new DirectGraphCommandExecutionContext(
                 definitionManager,
                 typedFactoryManager.untyped(),
-                ruleManager,
                 new MapIndexBuilder().build(graph));
         this.commandFactory = commandFactory;
         this.commandManager = commandManager;

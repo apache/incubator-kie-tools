@@ -30,10 +30,11 @@ import java.util.stream.Collectors;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
+import org.kie.workbench.common.stunner.core.graph.command.AbstractGraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
-import org.kie.workbench.common.stunner.core.rule.RuleEvaluationContext;
-import org.kie.workbench.common.stunner.core.rule.RuleSet;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
+import org.kie.workbench.common.stunner.core.rule.context.GraphEvaluationContext;
+import org.kie.workbench.common.stunner.core.rule.context.impl.RuleEvaluationContextBuilder;
 
 public abstract class AbstractCompositeCommand<T, V> implements Command<T, V> {
 
@@ -73,11 +74,8 @@ public abstract class AbstractCompositeCommand<T, V> implements Command<T, V> {
 
     @Override
     public CommandResult<V> execute(final T context) {
-        final CommandResult<V> allowResult = this.allow(context);
-        if (!CommandUtils.isError(allowResult)) {
-            return executeCommands(context);
-        }
-        return allowResult;
+        ensureInitialized(context);
+        return executeCommands(context);
     }
 
     protected CommandResult<V> executeCommands(final T context) {
@@ -122,13 +120,9 @@ public abstract class AbstractCompositeCommand<T, V> implements Command<T, V> {
                                        command -> doExecute(context, command));
     }
 
-    @SuppressWarnings("unchecked")
-    protected Collection<RuleViolation> doEvaluate(final GraphCommandExecutionContext context,
-                                                   final RuleEvaluationContext ruleEvaluationContext) {
-        final RuleSet ruleSet = context.getRuleSet();
-        return (Collection<RuleViolation>) context.getRuleManager().evaluate(ruleSet,
-                                                                             ruleEvaluationContext)
-                .violations();
+    protected Collection<RuleViolation> evaluate(final GraphCommandExecutionContext context,
+                                                 final Function<RuleEvaluationContextBuilder.GraphContextBuilder, GraphEvaluationContext> contextBuilder) {
+        return (Collection<RuleViolation>) ((AbstractGraphCommandExecutionContext) context).evaluate(contextBuilder).violations();
     }
 
     protected boolean isInitialized() {

@@ -77,6 +77,9 @@ public interface CanvasCommandFactory<H extends CanvasHandler> {
     CanvasCommand<H> updateChildNode(Node parent,
                                      Node candidate);
 
+    CanvasCommand<H> updateChildren(Node parent,
+                                    Collection<Node> candidates);
+
     CanvasCommand<H> dockNode(Node parent,
                               Node candidate);
 

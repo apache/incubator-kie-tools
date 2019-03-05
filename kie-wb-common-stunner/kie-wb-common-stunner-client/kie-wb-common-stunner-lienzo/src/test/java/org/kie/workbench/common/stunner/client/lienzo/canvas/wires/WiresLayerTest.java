@@ -41,6 +41,8 @@ import static org.mockito.Mockito.when;
 @RunWith(LienzoMockitoTestRunner.class)
 public class WiresLayerTest {
 
+    private static final String SHAPE_UUID = "shape1";
+
     @Mock
     private WiresManager wiresManager;
     @Mock
@@ -55,6 +57,7 @@ public class WiresLayerTest {
     @Before
     public void setUp() throws Exception {
         Group shapeGroup = new Group();
+        when(shape.uuid()).thenReturn(SHAPE_UUID);
         when(shape.getGroup()).thenReturn(shapeGroup);
         Group connectorGroup = new Group();
         when(connector.getGroup()).thenReturn(connectorGroup);
@@ -69,6 +72,15 @@ public class WiresLayerTest {
         verify(wiresManager, times(1)).register(eq(shape));
         verify(magnetManager, times(1)).createMagnets(eq(shape),
                                                       eq(WiresLayer.MAGNET_CARDINALS));
+    }
+
+    @Test
+    public void testAddShapeTwice() {
+        when(wiresManager.getShape(eq(SHAPE_UUID))).thenReturn(shape);
+        tested.add(shape);
+        verify(wiresManager, never()).register(eq(shape));
+        verify(magnetManager, never()).createMagnets(eq(shape),
+                                                     eq(WiresLayer.MAGNET_CARDINALS));
     }
 
     @Test

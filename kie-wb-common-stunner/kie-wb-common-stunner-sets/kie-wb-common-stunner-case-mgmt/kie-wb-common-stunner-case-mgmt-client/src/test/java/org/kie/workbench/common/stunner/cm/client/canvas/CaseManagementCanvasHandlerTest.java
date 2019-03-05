@@ -39,7 +39,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.registration.Ca
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementUpdatedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementsClearEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
-import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
@@ -82,9 +81,6 @@ public class CaseManagementCanvasHandlerTest {
 
     @Mock
     private ClientDefinitionManager clientDefinitionManager;
-
-    @Mock
-    private ClientFactoryService clientFactoryServices;
 
     @Mock
     private RuleManager ruleManager;
@@ -143,7 +139,6 @@ public class CaseManagementCanvasHandlerTest {
     @SuppressWarnings("unchecked")
     public void setup() {
         this.handler = new CaseManagementCanvasHandler(clientDefinitionManager,
-                                                       clientFactoryServices,
                                                        ruleManager,
                                                        graphUtils,
                                                        indexBuilder,
@@ -402,7 +397,6 @@ public class CaseManagementCanvasHandlerTest {
         when(index.getNode(eq(uuid))).thenReturn(node);
 
         this.handler = new CaseManagementCanvasHandler(clientDefinitionManager,
-                                                       clientFactoryServices,
                                                        ruleManager,
                                                        graphUtils,
                                                        indexBuilder,

@@ -64,8 +64,8 @@ public class AddChildNodeCommand extends AbstractCanvasGraphCommand {
     @Override
     public String toString() {
         return getClass().getSimpleName() +
-                " [parent=" + getUUID(getParent()) + "," +
-                "candidate=" + getUUID(getCandidate()) + "," +
+                " [parent=" + toUUID(getParent()) + "," +
+                "candidate=" + toUUID(getCandidate()) + "," +
                 "shapeSet=" + getShapeSetId() + "]";
     }
 }

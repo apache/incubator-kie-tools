@@ -33,6 +33,7 @@ import org.kie.workbench.common.stunner.core.graph.command.impl.GraphCommandFact
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.processing.index.GraphIndexBuilder;
+import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
@@ -68,7 +69,10 @@ public class BPMNGraphFactoryImplTest {
     private BPMNGraphFactoryImpl tested;
 
     @Before
+    @SuppressWarnings("unchecked")
     public void init() {
+        Index index = mock(Index.class);
+        when(indexBuilder.build(any(Graph.class))).thenReturn(index);
         tested = new BPMNGraphFactoryImpl(definitionManager,
                                           factoryManager,
                                           ruleManager,

@@ -16,23 +16,17 @@
 
 package org.kie.workbench.common.stunner.core.rule.ext.impl;
 
-import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.graph.Edge;
-import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
-import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
-import org.kie.workbench.common.stunner.core.graph.util.ParentsTypeMatcher;
+import org.kie.workbench.common.stunner.core.graph.util.ParentTypesMatcher;
 import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 import org.kie.workbench.common.stunner.core.rule.context.GraphConnectionContext;
+import org.kie.workbench.common.stunner.core.rule.context.GraphEvaluationState;
 import org.kie.workbench.common.stunner.core.rule.ext.RuleExtension;
 import org.kie.workbench.common.stunner.core.rule.handler.impl.GraphEvaluationHandlerUtils;
 import org.kie.workbench.common.stunner.core.rule.violations.DefaultRuleViolations;
@@ -60,8 +54,6 @@ import org.kie.workbench.common.stunner.core.rule.violations.DefaultRuleViolatio
 @ApplicationScoped
 public class ConnectorParentsMatchConnectionHandler
         extends AbstractParentsMatchHandler<ConnectorParentsMatchConnectionHandler, GraphConnectionContext> {
-
-    private static Logger LOGGER = Logger.getLogger(ConnectorParentsMatchConnectionHandler.class.getName());
 
     private final DefinitionManager definitionManager;
     private final GraphEvaluationHandlerUtils evalUtils;
@@ -106,25 +98,25 @@ public class ConnectorParentsMatchConnectionHandler
         return evalUtils.getElementDefinitionId(connector).equals(rule.getId());
     }
 
+    @SuppressWarnings("unchecked")
     private RuleViolations evaluateConnection(final RuleExtension rule,
                                               final GraphConnectionContext context) {
-        LOGGER.log(Level.INFO,
-                   "Evaluating rule handler [" + getClass().getName() + "]...");
-        final Optional<Node<? extends View<?>, ? extends Edge>> sourceNode = context.getSource();
-        final Optional<Node<? extends View<?>, ? extends Edge>> targetNode = context.getTarget();
-
+        final Edge connector = context.getConnector();
+        final GraphEvaluationState.ConnectionState connectionState = context.getState().getConnectionState();
+        final Node<? extends View<?>, ? extends Edge> sourceNode =
+                (Node<? extends View<?>, ? extends Edge>) context.getSource()
+                        .orElse(connectionState.getSource(connector));
+        final Node<? extends View<?>, ? extends Edge> targetNode =
+                (Node<? extends View<?>, ? extends Edge>) context.getTarget()
+                        .orElse(connectionState.getTarget(connector));
         final DefaultRuleViolations result = new DefaultRuleViolations();
-        boolean isValid = true;
-        if (sourceNode.isPresent() && targetNode.isPresent()) {
-            final Node<? extends View<?>, ? extends Edge> source = sourceNode.get();
-            final Node<? extends View<?>, ? extends Edge> target = targetNode.get();
-            final Element<? extends Definition> parentTarget = (Element<? extends Definition>) GraphUtils.getParent(target);
-            final Element<? extends Definition> parentSource = (Element<? extends Definition>) GraphUtils.getParent(source);
-            final Optional<Class<?>> parentType = getParentType(rule, parentTarget, parentSource);
-
-            isValid = new ParentsTypeMatcher(definitionManager, parentType.orElse(null))
-                    .test(source, target);
-        }
+        final GraphEvaluationState.ContainmentState containmentState = context.getState().getContainmentState();
+        final boolean isValid = new ParentTypesMatcher(() -> definitionManager,
+                                                       containmentState::getParent,
+                                                       rule.getTypeArguments())
+                .matcher()
+                .test(sourceNode,
+                      targetNode);
         if (!isValid) {
             addViolation(context.getConnector().getUUID(),
                          rule,

@@ -24,20 +24,17 @@ import org.kie.workbench.common.stunner.core.rule.context.EdgeCardinalityContext
 
 class EdgeCardinalityContextImpl implements EdgeCardinalityContext {
 
-    private final String name;
     private final String edgeRole;
     private final Set<String> roles;
     private final int count;
     private final Optional<Operation> operation;
     private final EdgeCardinalityContext.Direction direction;
 
-    EdgeCardinalityContextImpl(final String name,
-                               final String edgeRole,
+    EdgeCardinalityContextImpl(final String edgeRole,
                                final Set<String> roles,
                                final int count,
                                final Optional<Operation> operation,
                                final EdgeCardinalityContext.Direction direction) {
-        this.name = name;
         this.edgeRole = edgeRole;
         this.roles = roles;
         this.count = count;
@@ -51,7 +48,7 @@ class EdgeCardinalityContextImpl implements EdgeCardinalityContext {
     }
 
     @Override
-    public int getCandidateCount() {
+    public int getCurrentCount() {
         return count;
     }
 
@@ -62,7 +59,7 @@ class EdgeCardinalityContextImpl implements EdgeCardinalityContext {
 
     @Override
     public String getName() {
-        return name;
+        return "Connector cardinality";
     }
 
     @Override

@@ -109,7 +109,7 @@ public class CloneNodeCommand extends AbstractCanvasGraphCommand {
     @Override
     public String toString() {
         return getClass().getSimpleName() +
-                " [candidate=" + getUUID(getCandidate()) + "," +
+                " [candidate=" + toUUID(getCandidate()) + "," +
                 "parent=" + parentUuid + "," +
                 "cloneLocation=" + cloneLocation + "]";
     }

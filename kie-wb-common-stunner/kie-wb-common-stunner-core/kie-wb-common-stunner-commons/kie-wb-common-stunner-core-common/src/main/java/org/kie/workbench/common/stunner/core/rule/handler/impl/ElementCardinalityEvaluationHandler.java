@@ -16,17 +16,21 @@
 
 package org.kie.workbench.common.stunner.core.rule.handler.impl;
 
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.graph.Element;
-import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
@@ -34,9 +38,12 @@ import org.kie.workbench.common.stunner.core.rule.RuleEvaluationHandler;
 import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 import org.kie.workbench.common.stunner.core.rule.context.CardinalityContext;
 import org.kie.workbench.common.stunner.core.rule.context.ElementCardinalityContext;
-import org.kie.workbench.common.stunner.core.rule.context.impl.RuleContextBuilder;
+import org.kie.workbench.common.stunner.core.rule.context.GraphEvaluationState;
+import org.kie.workbench.common.stunner.core.rule.context.impl.RuleEvaluationContextBuilder;
 import org.kie.workbench.common.stunner.core.rule.impl.Occurrences;
 import org.kie.workbench.common.stunner.core.rule.violations.DefaultRuleViolations;
+
+import static org.kie.workbench.common.stunner.core.rule.handler.impl.GraphEvaluationHandlerUtils.addViolationsSourceUUID;
 
 @ApplicationScoped
 public class ElementCardinalityEvaluationHandler implements RuleEvaluationHandler<Occurrences, ElementCardinalityContext> {
@@ -70,49 +77,81 @@ public class ElementCardinalityEvaluationHandler implements RuleEvaluationHandle
     @SuppressWarnings("unchecked")
     public boolean accepts(final Occurrences rule,
                            final ElementCardinalityContext context) {
-        if (context.getCandidate().isPresent()) {
-            final Set<String> candidateLabels = evalUtils.getLabels(context.getCandidate().get());
-            return cardinalityEvaluationHandler
-                    .accepts(rule,
-                             RuleContextBuilder.DomainContexts.cardinality(
-                                     candidateLabels,
-                                     -1,
-                                     context.getOperation()));
-        }
-        return true;
+        final Collection<Element<? extends View<?>>> candidates = context.getCandidates();
+        return candidates.isEmpty() || candidates.stream().anyMatch(candidate -> accepts(rule, context, candidate));
+    }
+
+    @SuppressWarnings("unchecked")
+    private boolean accepts(final Occurrences rule,
+                            final ElementCardinalityContext context,
+                            final Element<? extends View<?>> candidate) {
+        final Set<String> candidateLabels = evalUtils.getLabels(candidate);
+        return cardinalityEvaluationHandler
+                .accepts(rule,
+                         RuleEvaluationContextBuilder.DomainContexts.cardinality(
+                                 candidateLabels,
+                                 -1,
+                                 context.getOperation()));
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public RuleViolations evaluate(final Occurrences rule,
                                    final ElementCardinalityContext context) {
-        final DefaultRuleViolations results = new DefaultRuleViolations();
-        final Optional<Element<? extends View<?>>> candidate = context.getCandidate();
+        final GraphEvaluationState state = context.getState();
         final String role = rule.getRole();
         final Set<String> roles = Collections.singleton(role);
-        final Map<String, Integer> graphLabelCount = countLabels(context.getGraph(),
-                                                                 roles);
-        // Ensure processing the role even if not used along the graph, so
-        // cardinality min rules can be evaluated.
+        final Map<String, Integer> graphLabelCount = countLabels(state, roles);
+        final Collection<Element<? extends View<?>>> candidates = context.getCandidates();
+        final Collection<Element<? extends View<?>>> filteredCandidates = candidates.stream()
+                .filter(candidate -> accepts(rule, context, candidate))
+                .collect(Collectors.toSet());
+        final int size = filteredCandidates.size();
         final int count = graphLabelCount.isEmpty() ? 0 : graphLabelCount.get(role);
         final Optional<CardinalityContext.Operation> operation = context.getOperation();
-        results.addViolations(
-                cardinalityEvaluationHandler
-                        .evaluate(rule,
-                                  RuleContextBuilder.DomainContexts.cardinality(roles,
-                                                                                count,
-                                                                                operation))
-        );
-        if (candidate.isPresent()) {
-            return GraphEvaluationHandlerUtils.addViolationsSourceUUID(candidate.get().getUUID(),
-                                                                       results);
+        final DefaultRuleViolations results = new DefaultRuleViolations();
+        // Ensure processing the role even if not used along the graph, so
+        // cardinality min rules can be evaluated.
+        final Function<String, RuleViolations> evaluator =
+                uuid -> evaluate(rule,
+                                 uuid,
+                                 roles,
+                                 count,
+                                 size,
+                                 operation);
+        if (size == 0) {
+            results.addViolations(evaluator.apply(null));
+        } else {
+            filteredCandidates.forEach(candidate -> results.addViolations(evaluator.apply(candidate.getUUID())));
         }
         return results;
     }
 
-    Map<String, Integer> countLabels(final Graph<?, ? extends Node> target,
-                                     final Set<String> filter) {
-        return GraphUtils.getLabelsCount(target,
-                                         filter);
+    private RuleViolations evaluate(final Occurrences rule,
+                                    final String candidateUUID,
+                                    final Set<String> roles,
+                                    final int currentCount,
+                                    final int candidateCount,
+                                    final Optional<CardinalityContext.Operation> operation) {
+        final RuleViolations violations = cardinalityEvaluationHandler
+                .evaluate(rule,
+                          RuleEvaluationContextBuilder.DomainContexts.cardinality(roles,
+                                                                                  currentCount,
+                                                                                  candidateCount,
+                                                                                  operation));
+        return null != candidateUUID ?
+                addViolationsSourceUUID(candidateUUID, violations) :
+                violations;
+    }
+
+    Map<String, Integer> countLabels(final GraphEvaluationState state,
+                                     final Set<String> roleFilter) {
+        final GraphEvaluationState.CardinalityState cardinalityState = state.getCardinalityState();
+
+        final Iterable<Node> nodes = cardinalityState.nodes();
+        final Map<String, Integer> labelsCount = new HashMap<>();
+        StreamSupport.stream(nodes.spliterator(), false)
+                .forEach(node -> GraphUtils.computeLabelsCount(node, labelsCount, roleFilter));
+        return labelsCount;
     }
 }

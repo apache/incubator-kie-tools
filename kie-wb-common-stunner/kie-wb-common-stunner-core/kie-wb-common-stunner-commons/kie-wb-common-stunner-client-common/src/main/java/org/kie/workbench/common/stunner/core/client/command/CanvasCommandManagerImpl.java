@@ -16,21 +16,24 @@
 
 package org.kie.workbench.common.stunner.core.client.command;
 
+import java.util.function.Supplier;
+
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import org.kie.workbench.common.stunner.core.client.api.ClientFactoryManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandAllowedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandExecutedEvent;
-import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasUndoCommandExecutedEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandUndoneEvent;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandListener;
 import org.kie.workbench.common.stunner.core.command.CommandManager;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
-import org.kie.workbench.common.stunner.core.command.DelegateCommandManager;
 import org.kie.workbench.common.stunner.core.command.HasCommandListener;
 import org.kie.workbench.common.stunner.core.command.impl.CommandManagerImpl;
+import org.kie.workbench.common.stunner.core.graph.command.ContextualGraphCommandExecutionContext;
 
 /**
  * The default canvas command manager implementation.
@@ -38,14 +41,14 @@ import org.kie.workbench.common.stunner.core.command.impl.CommandManagerImpl;
  */
 @Dependent
 public class CanvasCommandManagerImpl<H extends AbstractCanvasHandler>
-        extends DelegateCommandManager<H, CanvasViolation>
         implements
         CanvasCommandManager<H>,
         HasCommandListener<CommandListener<H, CanvasViolation>> {
 
+    private final ClientFactoryManager clientFactoryManager;
     private final Event<CanvasCommandAllowedEvent> isCanvasCommandAllowedEvent;
     private final Event<CanvasCommandExecutedEvent> canvasCommandExecutedEvent;
-    private final Event<CanvasUndoCommandExecutedEvent> canvasUndoCommandExecutedEvent;
+    private final Event<CanvasCommandUndoneEvent> canvasUndoCommandExecutedEvent;
 
     private final CommandManager<H, CanvasViolation> commandManager;
     private CommandListener<H, CanvasViolation> listener;
@@ -53,13 +56,16 @@ public class CanvasCommandManagerImpl<H extends AbstractCanvasHandler>
     protected CanvasCommandManagerImpl() {
         this(null,
              null,
+             null,
              null);
     }
 
     @Inject
-    public CanvasCommandManagerImpl(final Event<CanvasCommandAllowedEvent> isCanvasCommandAllowedEvent,
+    public CanvasCommandManagerImpl(final ClientFactoryManager clientFactoryManager,
+                                    final Event<CanvasCommandAllowedEvent> isCanvasCommandAllowedEvent,
                                     final Event<CanvasCommandExecutedEvent> canvasCommandExecutedEvent,
-                                    final Event<CanvasUndoCommandExecutedEvent> canvasUndoCommandExecutedEvent) {
+                                    final Event<CanvasCommandUndoneEvent> canvasUndoCommandExecutedEvent) {
+        this.clientFactoryManager = clientFactoryManager;
         this.isCanvasCommandAllowedEvent = isCanvasCommandAllowedEvent;
         this.canvasCommandExecutedEvent = canvasCommandExecutedEvent;
         this.canvasUndoCommandExecutedEvent = canvasUndoCommandExecutedEvent;
@@ -68,18 +74,53 @@ public class CanvasCommandManagerImpl<H extends AbstractCanvasHandler>
     }
 
     @Override
-    protected CommandManager<H, CanvasViolation> getDelegate() {
-        return commandManager;
+    public CommandResult<CanvasViolation> allow(final H context,
+                                                final Command<H, CanvasViolation> command) {
+        return runInContext(context,
+                            () -> postAllow(context, command, commandManager.allow(context, command)));
     }
 
     @Override
+    public CommandResult<CanvasViolation> execute(final H context,
+                                                  final Command<H, CanvasViolation> command) {
+        return runInContext(context,
+                            () -> postExecute(context, command, commandManager.execute(context, command)));
+    }
+
+    @Override
+    public CommandResult<CanvasViolation> undo(final H context,
+                                               final Command<H, CanvasViolation> command) {
+        return runInContext(context,
+                            () -> postUndo(context, command, commandManager.undo(context, command)));
+    }
+
+    @Override
+    public void setCommandListener(final CommandListener<H, CanvasViolation> listener) {
+        this.listener = listener;
+    }
+
+    private CommandResult<CanvasViolation> runInContext(final AbstractCanvasHandler context,
+                                                        final Supplier<CommandResult<CanvasViolation>> function) {
+        final ContextualGraphCommandExecutionContext graphExecutionContext = newGraphExecutionContext(context);
+        context.setGraphExecutionContext(() -> newGraphExecutionContext(context));
+        final CommandResult<CanvasViolation> result = function.get();
+        graphExecutionContext.clear();
+        context.setGraphExecutionContext(() -> null);
+        return result;
+    }
+
+    private ContextualGraphCommandExecutionContext newGraphExecutionContext(final AbstractCanvasHandler context) {
+        return new ContextualGraphCommandExecutionContext(context.getDefinitionManager(),
+                                                          clientFactoryManager,
+                                                          context.getRuleManager(),
+                                                          context.getGraphIndex(),
+                                                          context.getRuleSet());
+    }
+
     @SuppressWarnings("unchecked")
-    protected void postAllow(final H context,
-                             final Command<H, CanvasViolation> command,
-                             final CommandResult<CanvasViolation> result) {
-        super.postAllow(context,
-                        command,
-                        result);
+    private CommandResult<CanvasViolation> postAllow(final H context,
+                                                     final Command<H, CanvasViolation> command,
+                                                     final CommandResult<CanvasViolation> result) {
         if (null != this.listener) {
             listener.onAllow(context,
                              command,
@@ -90,16 +131,13 @@ public class CanvasCommandManagerImpl<H extends AbstractCanvasHandler>
                                                                            command,
                                                                            result));
         }
+        return result;
     }
 
-    @Override
     @SuppressWarnings("unchecked")
-    protected void postExecute(final H context,
-                               final Command<H, CanvasViolation> command,
-                               final CommandResult<CanvasViolation> result) {
-        super.postExecute(context,
-                          command,
-                          result);
+    private CommandResult<CanvasViolation> postExecute(final H context,
+                                                       final Command<H, CanvasViolation> command,
+                                                       final CommandResult<CanvasViolation> result) {
         if (null != this.listener) {
             listener.onExecute(context,
                                command,
@@ -110,31 +148,24 @@ public class CanvasCommandManagerImpl<H extends AbstractCanvasHandler>
                                                                            command,
                                                                            result));
         }
+        return result;
     }
 
-    @Override
     @SuppressWarnings("unchecked")
-    protected void postUndo(final H context,
-                            final Command<H, CanvasViolation> command,
-                            final CommandResult<CanvasViolation> result) {
-        super.postUndo(context,
-                       command,
-                       result);
+    private CommandResult<CanvasViolation> postUndo(final H context,
+                                                    final Command<H, CanvasViolation> command,
+                                                    final CommandResult<CanvasViolation> result) {
         if (null != this.listener) {
             listener.onUndo(context,
                             command,
                             result);
         }
         if (null != canvasUndoCommandExecutedEvent) {
-            canvasUndoCommandExecutedEvent.fire(new CanvasUndoCommandExecutedEvent(context,
-                                                                                   command,
-                                                                                   result));
+            canvasUndoCommandExecutedEvent.fire(new CanvasCommandUndoneEvent(context,
+                                                                             command,
+                                                                             result));
         }
-    }
-
-    @Override
-    public void setCommandListener(final CommandListener<H, CanvasViolation> listener) {
-        this.listener = listener;
+        return result;
     }
 }
 

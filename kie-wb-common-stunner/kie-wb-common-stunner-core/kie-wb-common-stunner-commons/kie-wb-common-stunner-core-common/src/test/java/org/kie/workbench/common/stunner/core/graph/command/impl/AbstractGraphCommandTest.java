@@ -26,6 +26,8 @@ import org.kie.workbench.common.stunner.core.definition.adapter.PropertyAdapter;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.command.ContextualGraphCommandExecutionContext;
+import org.kie.workbench.common.stunner.core.graph.command.DirectGraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.content.Bound;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
@@ -43,6 +45,7 @@ import org.mockito.MockitoAnnotations;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 public abstract class AbstractGraphCommandTest {
@@ -50,8 +53,6 @@ public abstract class AbstractGraphCommandTest {
     private static final String GRAPH_UUID = "graphUUID";
     protected final RuleViolations EMPTY_VIOLATIONS = new DefaultRuleViolations();
 
-    @Mock
-    protected GraphCommandExecutionContext graphCommandExecutionContext;
     @Mock
     protected DefinitionManager definitionManager;
     @Mock
@@ -75,6 +76,7 @@ public abstract class AbstractGraphCommandTest {
     @Mock
     protected DefinitionSet graphContent;
 
+    protected GraphCommandExecutionContext graphCommandExecutionContext;
     protected Collection<Node> graphNodes = new LinkedList<>();
 
     @SuppressWarnings("unchecked")
@@ -89,14 +91,18 @@ public abstract class AbstractGraphCommandTest {
         when(adapterManager.forProperty()).thenReturn(propertyAdapter);
         when(adapterRegistry.getDefinitionAdapter(any(Class.class))).thenReturn(definitionAdapter);
         when(adapterRegistry.getPropertyAdapter(any(Class.class))).thenReturn(propertyAdapter);
-        when(graphCommandExecutionContext.getDefinitionManager()).thenReturn(definitionManager);
-        when(graphCommandExecutionContext.getFactoryManager()).thenReturn(factoryManager);
-        when(graphCommandExecutionContext.getRuleManager()).thenReturn(ruleManager);
-        when(graphCommandExecutionContext.getGraphIndex()).thenReturn(graphIndex);
-        when(graphCommandExecutionContext.getRuleSet()).thenReturn(ruleSet);
+        graphCommandExecutionContext = spy(new ContextualGraphCommandExecutionContext(definitionManager, factoryManager, ruleManager, graphIndex, ruleSet));
         when(graphIndex.getGraph()).thenReturn(graph);
         when(ruleManager.evaluate(any(RuleSet.class),
                                   any(RuleEvaluationContext.class))).thenReturn(EMPTY_VIOLATIONS);
+    }
+
+    protected DirectGraphCommandExecutionContext createAllowedExecutionContext() {
+        return new DirectGraphCommandExecutionContext(definitionManager, factoryManager, graphIndex);
+    }
+
+    protected void useAllowedExecutionContext() {
+        graphCommandExecutionContext = createAllowedExecutionContext();
     }
 
     public static Node mockNode(String uuid) {

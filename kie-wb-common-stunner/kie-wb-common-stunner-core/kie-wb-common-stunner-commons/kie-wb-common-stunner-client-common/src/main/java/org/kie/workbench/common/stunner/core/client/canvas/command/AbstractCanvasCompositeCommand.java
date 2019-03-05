@@ -22,7 +22,6 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.impl.AbstractCompositeCommand;
-import org.kie.workbench.common.stunner.core.graph.Element;
 
 public abstract class AbstractCanvasCompositeCommand
         extends AbstractCompositeCommand<AbstractCanvasHandler, CanvasViolation>
@@ -44,9 +43,5 @@ public abstract class AbstractCanvasCompositeCommand
     protected CommandResult<CanvasViolation> doUndo(final AbstractCanvasHandler context,
                                                     final Command<AbstractCanvasHandler, CanvasViolation> command) {
         return command.undo(context);
-    }
-
-    protected String getUUID(final Element<?> element) {
-        return null != element ? element.getUUID() : "null";
     }
 }

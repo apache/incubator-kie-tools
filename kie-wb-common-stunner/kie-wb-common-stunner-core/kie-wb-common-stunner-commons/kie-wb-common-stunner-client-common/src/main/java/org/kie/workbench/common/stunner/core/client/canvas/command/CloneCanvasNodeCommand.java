@@ -152,8 +152,8 @@ public class CloneCanvasNodeCommand extends AbstractCanvasCommand {
     @Override
     public String toString() {
         return getClass().getSimpleName() +
-                " [candidate=" + getUUID(getCandidate()) + "," +
-                "parent=" + getUUID(getParent()) + "," +
+                " [candidate=" + toUUID(getCandidate()) + "," +
+                "parent=" + toUUID(getParent()) + "," +
                 "shapeSet=" + getShapeSetId() + "]";
     }
 }

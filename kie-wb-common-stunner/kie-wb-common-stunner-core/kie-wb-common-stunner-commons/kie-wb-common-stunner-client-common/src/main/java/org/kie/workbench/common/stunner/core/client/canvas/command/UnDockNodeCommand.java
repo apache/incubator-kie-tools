@@ -59,7 +59,7 @@ public class UnDockNodeCommand extends AbstractCanvasGraphCommand {
     @Override
     public String toString() {
         return getClass().getSimpleName() +
-                " [parent=" + getUUID(getParent()) + "," +
-                "child=" + getUUID(getCandidate()) + "]";
+                " [parent=" + toUUID(getParent()) + "," +
+                "child=" + toUUID(getCandidate()) + "]";
     }
 }

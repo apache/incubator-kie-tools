@@ -24,16 +24,13 @@ import org.kie.workbench.common.stunner.core.rule.context.ConnectionContext;
 
 class ConnectionContextImpl implements ConnectionContext {
 
-    private final String name;
     private final String connectorRole;
     private final Optional<Set<String>> sourceRoles;
     private final Optional<Set<String>> targetRoles;
 
-    ConnectionContextImpl(final String name,
-                          final String connectorRole,
+    ConnectionContextImpl(final String connectorRole,
                           final Optional<Set<String>> sourceRoles,
                           final Optional<Set<String>> targetRoles) {
-        this.name = name;
         this.connectorRole = connectorRole;
         this.sourceRoles = sourceRoles;
         this.targetRoles = targetRoles;
@@ -56,7 +53,7 @@ class ConnectionContextImpl implements ConnectionContext {
 
     @Override
     public String getName() {
-        return name;
+        return "Connection";
     }
 
     @Override

@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.rule.handler.impl;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 
 import org.junit.Before;
@@ -49,12 +51,14 @@ public class NodeContainmentEvaluationHandlerTest extends AbstractGraphRuleHandl
     @Mock
     NodeContainmentContext context;
     private NodeContainmentEvaluationHandler tested;
+    private Collection candidates;
 
     @Before
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
         super.setup();
         when(context.getParent()).thenReturn(element);
+        candidates = Collections.singletonList(candidate);
         tested = new NodeContainmentEvaluationHandler(definitionManager,
                                                       CONTAINMENT_HANDLER);
     }
@@ -63,7 +67,7 @@ public class NodeContainmentEvaluationHandlerTest extends AbstractGraphRuleHandl
     @SuppressWarnings("unchecked")
     public void testAcceptSuccess() {
         when(context.getParent()).thenReturn(element);
-        when(context.getCandidate()).thenReturn(candidate);
+        when(context.getCandidates()).thenReturn(candidates);
         final boolean accepts = tested.accepts(RULE,
                                                context);
         assertTrue(accepts);
@@ -73,7 +77,7 @@ public class NodeContainmentEvaluationHandlerTest extends AbstractGraphRuleHandl
     @SuppressWarnings("unchecked")
     public void testAcceptFailed() {
         when(context.getParent()).thenReturn(parent);
-        when(context.getCandidate()).thenReturn(candidate);
+        when(context.getCandidates()).thenReturn(candidates);
         final boolean accepts = tested.accepts(RULE,
                                                context);
         assertFalse(accepts);
@@ -82,7 +86,7 @@ public class NodeContainmentEvaluationHandlerTest extends AbstractGraphRuleHandl
     @Test
     @SuppressWarnings("unchecked")
     public void testEvaluateSuccess() {
-        when(context.getCandidate()).thenReturn(candidate);
+        when(context.getCandidates()).thenReturn(candidates);
         final RuleViolations violations = tested.evaluate(RULE,
                                                           context);
         assertNotNull(violations);
@@ -92,7 +96,7 @@ public class NodeContainmentEvaluationHandlerTest extends AbstractGraphRuleHandl
     @Test
     @SuppressWarnings("unchecked")
     public void testEvaluateFailed() {
-        when(context.getCandidate()).thenReturn(candidate);
+        when(context.getCandidates()).thenReturn(candidates);
         final RuleViolations violations = tested.evaluate(RULE_INVALID,
                                                           context);
         assertNotNull(violations);

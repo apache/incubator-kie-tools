@@ -98,10 +98,10 @@ public class SafeDeleteNodeCommandRulesTest extends AbstractGraphCommandTest {
                      result.getType());
         final ArgumentCaptor<RuleEvaluationContext> contextCaptor = ArgumentCaptor.forClass(RuleEvaluationContext.class);
         verify(ruleManager,
-               times(2)).evaluate(eq(ruleSet),
+               times(1)).evaluate(eq(ruleSet),
                                   contextCaptor.capture());
         final List<RuleEvaluationContext> contexts = contextCaptor.getAllValues();
-        assertEquals(2,
+        assertEquals(1,
                      contexts.size());
         verifyCardinality((ElementCardinalityContext) contexts.get(0),
                           graph,
@@ -117,14 +117,14 @@ public class SafeDeleteNodeCommandRulesTest extends AbstractGraphCommandTest {
         List<Command<GraphCommandExecutionContext, RuleViolation>> commands = tested.getCommands();
         assertNotNull(commands);
         assertTrue(3 == commands.size());
-        final RemoveChildCommand removeChildCommand = (RemoveChildCommand) commands.get(0);
+        final RemoveChildrenCommand removeChildCommand = (RemoveChildrenCommand) commands.get(0);
         assertNotNull(removeChildCommand);
         final DeregisterNodeCommand deregisterNode1Command = (DeregisterNodeCommand) commands.get(1);
         assertNotNull(deregisterNode1Command);
         final DeregisterNodeCommand deregisterNodeCommand = (DeregisterNodeCommand) commands.get(2);
         assertNotNull(deregisterNodeCommand);
         assertEquals(node1,
-                     removeChildCommand.getCandidate());
+                     removeChildCommand.getCandidates().iterator().next());
         assertEquals(node,
                      removeChildCommand.getParent());
         assertEquals(node1,
@@ -135,12 +135,12 @@ public class SafeDeleteNodeCommandRulesTest extends AbstractGraphCommandTest {
                      result.getType());
         final ArgumentCaptor<RuleEvaluationContext> contextCaptor = ArgumentCaptor.forClass(RuleEvaluationContext.class);
         verify(ruleManager,
-               times(5)).evaluate(eq(ruleSet),
+               times(2)).evaluate(eq(ruleSet),
                                   contextCaptor.capture());
         final List<RuleEvaluationContext> contexts = contextCaptor.getAllValues();
-        assertEquals(5,
+        assertEquals(2,
                      contexts.size());
-        verifyCardinality((ElementCardinalityContext) contexts.get(4),
+        verifyCardinality((ElementCardinalityContext) contexts.get(1),
                           graph,
                           node,
                           CardinalityContext.Operation.DELETE);
@@ -149,7 +149,7 @@ public class SafeDeleteNodeCommandRulesTest extends AbstractGraphCommandTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testAllowNoRules() {
-        when(graphCommandExecutionContext.getRuleManager()).thenReturn(null);
+        useAllowedExecutionContext();
         CommandResult<RuleViolation> result = tested.allow(graphCommandExecutionContext);
         assertEquals(CommandResult.Type.INFO,
                      result.getType());

@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,6 +45,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -128,7 +130,7 @@ public class SetConnectionTargetNodeCommandTest extends AbstractGraphCommandTest
     @Test
     @SuppressWarnings("unchecked")
     public void testAllowNoRules() {
-        when(graphCommandExecutionContext.getRuleManager()).thenReturn(null);
+        useAllowedExecutionContext();
         CommandResult<RuleViolation> result = tested.allow(graphCommandExecutionContext);
         assertEquals(CommandResult.Type.INFO,
                      result.getType());
@@ -182,9 +184,9 @@ public class SetConnectionTargetNodeCommandTest extends AbstractGraphCommandTest
     @Test
     @SuppressWarnings("unchecked")
     public void testExecute() {
-        final List lastTargetInEdges = mock(List.class);
-        final List sourceOutEdges = mock(List.class);
-        final List targetInEdges = mock(List.class);
+        final List lastTargetInEdges = spy(new ArrayList());
+        final List sourceOutEdges = spy(new ArrayList());
+        final List targetInEdges = spy(new ArrayList());
         when(source.getOutEdges()).thenReturn(sourceOutEdges);
         when(lastTargetNode.getInEdges()).thenReturn(lastTargetInEdges);
         when(node.getInEdges()).thenReturn(targetInEdges);

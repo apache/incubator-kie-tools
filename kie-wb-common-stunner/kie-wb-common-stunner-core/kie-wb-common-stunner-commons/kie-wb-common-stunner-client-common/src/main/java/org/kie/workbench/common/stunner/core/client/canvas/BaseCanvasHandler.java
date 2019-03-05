@@ -326,7 +326,7 @@ public abstract class BaseCanvasHandler<D extends Diagram, C extends AbstractCan
     }
 
     protected Optional<Element> getElement(String uuid) {
-        return Optional.of(getGraphExecutionContext().getGraphIndex().getNode(uuid));
+        return Optional.of(getGraphIndex().getNode(uuid));
     }
 
     protected boolean isCanvasRoot(final String pUUID) {

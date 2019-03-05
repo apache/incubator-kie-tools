@@ -31,7 +31,7 @@ import org.kie.workbench.common.stunner.core.factory.impl.AbstractGraphFactory;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.command.EmptyRulesCommandExecutionContext;
+import org.kie.workbench.common.stunner.core.graph.command.DirectGraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandManager;
 import org.kie.workbench.common.stunner.core.graph.command.impl.GraphCommandFactory;
@@ -39,7 +39,6 @@ import org.kie.workbench.common.stunner.core.graph.content.definition.Definition
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.graph.processing.index.GraphIndexBuilder;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
-import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.kie.workbench.common.stunner.core.util.UUID;
 
 @ApplicationScoped
@@ -54,11 +53,9 @@ public class DMNGraphFactoryImpl
     private final GraphCommandFactory graphCommandFactory;
     private final FactoryManager factoryManager;
     private final GraphIndexBuilder<?> indexBuilder;
-    private final RuleManager ruleManager;
 
     protected DMNGraphFactoryImpl() {
         this(null,
-             null,
              null,
              null,
              null,
@@ -70,14 +67,12 @@ public class DMNGraphFactoryImpl
                                final FactoryManager factoryManager,
                                final GraphCommandManager graphCommandManager,
                                final GraphCommandFactory graphCommandFactory,
-                               final GraphIndexBuilder<?> indexBuilder,
-                               final RuleManager ruleManager) {
+                               final GraphIndexBuilder<?> indexBuilder) {
         this.definitionManager = definitionManager;
         this.factoryManager = factoryManager;
         this.graphCommandManager = graphCommandManager;
         this.graphCommandFactory = graphCommandFactory;
         this.indexBuilder = indexBuilder;
-        this.ruleManager = ruleManager;
     }
 
     @Override
@@ -126,9 +121,8 @@ public class DMNGraphFactoryImpl
     @SuppressWarnings("unchecked")
     protected GraphCommandExecutionContext createGraphContext(final Graph graph) {
         final Index<?, ?> index = (Index<?, ?>) indexBuilder.build(graph);
-        return new EmptyRulesCommandExecutionContext(definitionManager,
-                                                     factoryManager,
-                                                     ruleManager,
-                                                     index);
+        return new DirectGraphCommandExecutionContext(definitionManager,
+                                                      factoryManager,
+                                                      index);
     }
 }

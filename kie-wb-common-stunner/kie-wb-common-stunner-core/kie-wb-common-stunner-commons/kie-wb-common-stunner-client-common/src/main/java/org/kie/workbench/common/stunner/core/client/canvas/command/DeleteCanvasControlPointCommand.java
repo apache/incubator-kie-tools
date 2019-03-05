@@ -65,7 +65,7 @@ public class DeleteCanvasControlPointCommand extends AbstractCanvasCommand {
     @Override
     public String toString() {
         return getClass().getSimpleName() +
-                " [candidate=" + getUUID(candidate) + "," +
+                " [candidate=" + toUUID(candidate) + "," +
                 "index=" + index + "]";
     }
 }

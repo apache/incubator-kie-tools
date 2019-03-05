@@ -32,7 +32,6 @@ import org.kie.workbench.common.stunner.core.graph.content.relationship.Dock;
 import org.kie.workbench.common.stunner.core.graph.impl.EdgeImpl;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
-import org.kie.workbench.common.stunner.core.rule.context.impl.RuleContextBuilder;
 import org.kie.workbench.common.stunner.core.rule.violations.DockingRuleViolation;
 import org.kie.workbench.common.stunner.core.util.UUID;
 
@@ -94,10 +93,9 @@ public final class DockNodeCommand extends AbstractGraphCommand {
 
         //checking rules
         final Collection<RuleViolation> dockingRuleViolations =
-                doEvaluate(context,
-                           RuleContextBuilder.GraphContexts.docking(getGraph(context),
-                                                                    parent,
-                                                                    candidate));
+                evaluate(context,
+                         contextBuilder -> contextBuilder.docking(parent,
+                                                                  candidate));
 
         return new GraphCommandResultBuilder(dockingRuleViolations).build();
     }

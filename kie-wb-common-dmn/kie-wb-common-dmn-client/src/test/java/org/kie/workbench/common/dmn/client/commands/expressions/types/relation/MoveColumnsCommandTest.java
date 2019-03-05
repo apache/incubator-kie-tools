@@ -93,7 +93,7 @@ public class MoveColumnsCommandTest extends BaseMoveCommandsTest<MoveColumnsComm
 
         final Command<GraphCommandExecutionContext, RuleViolation> c = command.newGraphCommand(handler);
 
-        assertEquals(GraphCommandResultBuilder.SUCCESS,
+        assertEquals(GraphCommandResultBuilder.FAILED,
                      c.allow(gce));
     }
 

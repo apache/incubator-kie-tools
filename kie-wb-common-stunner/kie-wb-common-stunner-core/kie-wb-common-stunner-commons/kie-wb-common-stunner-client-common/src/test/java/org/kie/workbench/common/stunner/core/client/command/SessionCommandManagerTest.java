@@ -24,11 +24,14 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.command.Command;
+import org.kie.workbench.common.stunner.core.graph.command.ContextualGraphCommandExecutionContext;
+import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -50,6 +53,8 @@ public class SessionCommandManagerTest {
     @Mock
     EditorSession editorSession;
     @Mock
+    ContextualGraphCommandExecutionContext executionContext;
+    @Mock
     Command<AbstractCanvasHandler, CanvasViolation> command;
     @Mock
     CommandRegistry<Command<AbstractCanvasHandler, CanvasViolation>> commandRegistry;
@@ -59,6 +64,8 @@ public class SessionCommandManagerTest {
     @Before
     public void setup() throws Exception {
         CanvasCommandManagerImpl commandManager = new CanvasCommandManagerImpl();
+        when(canvasHandler.getGraphIndex()).thenReturn(mock(Index.class));
+        when(canvasHandler.getGraphExecutionContext()).thenReturn(executionContext);
         when(canvasHandler.getCanvas()).thenReturn(canvas);
         when(clientSessionManager.getCurrentSession()).thenReturn(editorSession);
         when(editorSession.getCommandRegistry()).thenReturn(commandRegistry);

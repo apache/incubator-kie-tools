@@ -29,6 +29,7 @@ import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.Tree
 import org.kie.workbench.common.stunner.core.graph.store.GraphNodeStoreImpl;
 import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 import org.kie.workbench.common.stunner.core.rule.context.GraphConnectionContext;
+import org.kie.workbench.common.stunner.core.rule.context.impl.StatelessGraphEvaluationState;
 import org.kie.workbench.common.stunner.core.rule.ext.RuleExtension;
 import org.kie.workbench.common.stunner.core.rule.ext.RuleExtensionHandler;
 import org.mockito.Mock;
@@ -68,7 +69,8 @@ public abstract class BaseGraphRuleTest<T extends RuleExtensionHandler> {
     @SuppressWarnings("unchecked")
     public void setup() {
         this.check = spy(getRule());
-        when(context.getGraph()).thenReturn(graph);
+        StatelessGraphEvaluationState evaluationState = new StatelessGraphEvaluationState(graph);
+        when(context.getState()).thenReturn(evaluationState);
         when(context.getConnector()).thenReturn(connector);
         when(connector.getContent()).thenReturn(connectorView);
         when(connectorView.getDefinition()).thenReturn(new Definition());

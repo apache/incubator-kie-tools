@@ -16,29 +16,31 @@
 
 package org.kie.workbench.common.stunner.cm.client.command.canvas;
 
+import java.util.Collections;
 import java.util.Optional;
 import java.util.OptionalInt;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.command.RemoveCanvasChildCommand;
+import org.kie.workbench.common.stunner.core.client.canvas.command.RemoveCanvasChildrenCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Node;
 
-public class CaseManagementSetChildNodeCanvasCommand extends org.kie.workbench.common.stunner.core.client.canvas.command.SetCanvasChildNodeCommand {
+public class CaseManagementSetChildNodeCanvasCommand extends org.kie.workbench.common.stunner.core.client.canvas.command.SetCanvasChildrenCommand {
 
     protected final OptionalInt index;
     protected final Optional<Node> originalParent;
     protected final OptionalInt originalIndex;
 
+    @SuppressWarnings("unchecked")
     public CaseManagementSetChildNodeCanvasCommand(final Node parent,
                                                    final Node child,
                                                    final OptionalInt index,
                                                    final Optional<Node> originalParent,
                                                    final OptionalInt originalIndex) {
         super(parent,
-              child);
+              Collections.singleton(child));
         this.index = index;
         this.originalParent = originalParent;
         this.originalIndex = originalIndex;
@@ -57,8 +59,8 @@ public class CaseManagementSetChildNodeCanvasCommand extends org.kie.workbench.c
     @Override
     public CommandResult<CanvasViolation> undo(final AbstractCanvasHandler context) {
         if (!(originalParent.isPresent() && originalIndex.isPresent())) {
-            return new RemoveCanvasChildCommand(getParent(),
-                                                getCandidate()).execute(context);
+            return new RemoveCanvasChildrenCommand(getParent(),
+                                                   getCandidate()).execute(context);
         } else {
             context.addChild(originalParent.get(),
                              getCandidate(),
@@ -67,5 +69,9 @@ public class CaseManagementSetChildNodeCanvasCommand extends org.kie.workbench.c
                                             MutationContext.STATIC);
         }
         return buildResult();
+    }
+
+    private Node getCandidate() {
+        return getCandidates().iterator().next();
     }
 }

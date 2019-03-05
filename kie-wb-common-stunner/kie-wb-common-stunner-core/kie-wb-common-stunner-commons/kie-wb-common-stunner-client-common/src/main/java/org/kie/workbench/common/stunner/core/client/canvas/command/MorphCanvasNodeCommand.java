@@ -155,8 +155,8 @@ public class MorphCanvasNodeCommand extends AbstractCanvasCommand {
     @Override
     public String toString() {
         return getClass().getSimpleName() +
-                " [parent=" + getUUID(getParent().orElse(null)) + "," +
-                "candidate=" + getUUID(candidate) + "," +
+                " [parent=" + toUUID(getParent().orElse(null)) + "," +
+                "candidate=" + toUUID(candidate) + "," +
                 "shapeSet=" + shapeSetId + "]";
     }
 }

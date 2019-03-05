@@ -106,7 +106,7 @@ public class AddDockedNodeCommandTest extends AbstractGraphCommandTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testAllowNoRules() {
-        when(graphCommandExecutionContext.getRuleManager()).thenReturn(null);
+        useAllowedExecutionContext();
         CommandResult<RuleViolation> result = tested.allow(graphCommandExecutionContext);
         assertEquals(CommandResult.Type.INFO,
                      result.getType());

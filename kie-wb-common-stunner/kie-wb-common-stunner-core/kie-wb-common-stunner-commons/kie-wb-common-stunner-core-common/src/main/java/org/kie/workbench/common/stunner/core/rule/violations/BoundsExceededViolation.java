@@ -32,11 +32,6 @@ public class BoundsExceededViolation extends AbstractRuleViolation {
     }
 
     @Override
-    public Type getViolationType() {
-        return Type.WARNING;
-    }
-
-    @Override
     public Optional<Object[]> getArguments() {
         return Optional.of(new Object[]{getUUID(),
                 bounds.getLowerRight().getX(),

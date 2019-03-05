@@ -16,32 +16,39 @@
 
 package org.kie.workbench.common.stunner.cm.client.command;
 
+import java.util.Collections;
+
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasCommand;
-import org.kie.workbench.common.stunner.core.client.canvas.command.RemoveCanvasChildCommand;
+import org.kie.workbench.common.stunner.core.client.canvas.command.RemoveCanvasChildrenCommand;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
-public class CaseManagementRemoveChildCommand extends org.kie.workbench.common.stunner.core.client.canvas.command.RemoveChildCommand {
+public class CaseManagementRemoveChildCommand extends org.kie.workbench.common.stunner.core.client.canvas.command.RemoveChildrenCommand {
 
+    @SuppressWarnings("unchecked")
     public CaseManagementRemoveChildCommand(final Node parent,
                                             final Node child) {
         super(parent,
-              child);
+              Collections.singleton(child));
+    }
+
+    public Node getCandidate() {
+        return getChildren().iterator().next();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand(final AbstractCanvasHandler context) {
         return new org.kie.workbench.common.stunner.cm.client.command.graph.CaseManagementRemoveChildCommand(parent,
-                                                                                                             child);
+                                                                                                             getCandidate());
     }
 
     @Override
     protected AbstractCanvasCommand newCanvasCommand(final AbstractCanvasHandler context) {
-        return new RemoveCanvasChildCommand(parent,
-                                            child);
+        return new RemoveCanvasChildrenCommand(parent,
+                                               getCandidate());
     }
 }

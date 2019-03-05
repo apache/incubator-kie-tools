@@ -36,7 +36,7 @@ import org.kie.workbench.common.stunner.core.factory.impl.AbstractGraphFactory;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.command.EmptyRulesCommandExecutionContext;
+import org.kie.workbench.common.stunner.core.graph.command.DirectGraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandManager;
 import org.kie.workbench.common.stunner.core.graph.command.impl.GraphCommandFactory;
@@ -145,6 +145,6 @@ public class CaseManagementGraphFactoryImpl extends AbstractGraphFactory impleme
     }
 
     protected GraphCommandExecutionContext createGraphContext(final Graph graph) {
-        return new EmptyRulesCommandExecutionContext(definitionManager, factoryManager, ruleManager, indexBuilder.build(graph));
+        return new DirectGraphCommandExecutionContext(definitionManager, factoryManager, indexBuilder.build(graph));
     }
 }

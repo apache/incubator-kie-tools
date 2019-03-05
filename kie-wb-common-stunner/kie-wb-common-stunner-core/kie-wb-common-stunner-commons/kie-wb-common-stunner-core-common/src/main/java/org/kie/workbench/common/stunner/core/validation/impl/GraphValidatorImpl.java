@@ -23,7 +23,6 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import java.util.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -45,15 +44,13 @@ import org.kie.workbench.common.stunner.core.rule.RuleSet;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 import org.kie.workbench.common.stunner.core.rule.context.EdgeCardinalityContext;
-import org.kie.workbench.common.stunner.core.rule.context.impl.RuleContextBuilder;
+import org.kie.workbench.common.stunner.core.rule.context.impl.RuleEvaluationContextBuilder.StatelessGraphContextBuilder;
 import org.kie.workbench.common.stunner.core.rule.violations.EmptyConnectionViolation;
 import org.kie.workbench.common.stunner.core.validation.GraphValidator;
 
 @ApplicationScoped
 public class GraphValidatorImpl
         implements GraphValidator<Graph, RuleViolation> {
-
-    private static Logger LOGGER = Logger.getLogger(GraphValidatorImpl.class.getName());
 
     private final DefinitionManager definitionManager;
     private final TreeWalkTraverseProcessor treeWalkTraverseProcessor;
@@ -116,6 +113,8 @@ public class GraphValidatorImpl
                   Consumer<Collection<RuleViolation>> resultConsumer) {
         final RuleSet ruleSet = aRuleSet.orElse(getRuleSet(graph));
         final ViolationsSet violations = new ViolationsSet();
+        final StatelessGraphContextBuilder contextBuilder =
+                new StatelessGraphContextBuilder(graph);
         treeWalkTraverseProcessor
                 .traverse(graph,
                           new AbstractTreeTraverseCallback<org.kie.workbench.common.stunner.core.graph.Graph, Node, Edge>() {
@@ -129,8 +128,8 @@ public class GraphValidatorImpl
                                   currentParents.clear();
                                   // Evaluate the graph's cardinality rules.
                                   final Set<RuleViolation> graphCardinalityViolations =
-                                          violations.addViolations(evaluateCardinality(ruleSet,
-                                                                                       graph));
+                                          violations.addViolations(evaluateCardinality(contextBuilder,
+                                                                                       ruleSet));
                                   graphValidatorConsumer.ifPresent(g -> g.accept(graph,
                                                                                  graphCardinalityViolations));
                               }
@@ -150,15 +149,14 @@ public class GraphValidatorImpl
                                               Optional.ofNullable(edge.getTargetNode());
                                       // Check not empty connections.
                                       final Optional<RuleViolation> emptyConnectionViolation =
-                                              evaluateNotEmptyConnections(graph,
-                                                                          edge,
+                                              evaluateNotEmptyConnections(edge,
                                                                           sourceOpt,
                                                                           targetOpt);
                                       emptyConnectionViolation.ifPresent(edgeViolations::add);
                                       // Evaluate connection rules.
                                       edgeViolations.addViolations(
-                                              evaluateConnection(ruleSet,
-                                                                 graph,
+                                              evaluateConnection(contextBuilder,
+                                                                 ruleSet,
                                                                  edge,
                                                                  sourceOpt,
                                                                  targetOpt)
@@ -166,15 +164,15 @@ public class GraphValidatorImpl
                                       // Evaluate connector cardinality rules for this edge.
                                       if (null != edge.getTargetNode()) {
                                           edgeViolations.addViolations(
-                                                  evaluateIncomingEdgeCardinality(ruleSet,
-                                                                                  graph,
+                                                  evaluateIncomingEdgeCardinality(contextBuilder,
+                                                                                  ruleSet,
                                                                                   edge)
                                           );
                                       }
                                       if (null != edge.getSourceNode()) {
                                           edgeViolations.addViolations(
-                                                  evaluateOutgoingEdgeCardinality(ruleSet,
-                                                                                  graph,
+                                                  evaluateOutgoingEdgeCardinality(contextBuilder,
+                                                                                  ruleSet,
                                                                                   edge)
                                           );
                                       }
@@ -182,8 +180,8 @@ public class GraphValidatorImpl
                                       final Node parent = edge.getSourceNode();
                                       final Node docked = edge.getTargetNode();
                                       // Evaluate docking rules for the source & target nodes.
-                                      edgeViolations.addViolations(evaluateDocking(ruleSet,
-                                                                                   graph,
+                                      edgeViolations.addViolations(evaluateDocking(contextBuilder,
+                                                                                   ruleSet,
                                                                                    parent,
                                                                                    docked));
                                   }
@@ -226,7 +224,7 @@ public class GraphValidatorImpl
                                                                              final Node parent) {
                                   // Evaluate containment rules for this node.
                                   return violations.addViolations(evaluateContainment(ruleSet,
-                                                                                      graph,
+                                                                                      contextBuilder,
                                                                                       null != parent ? parent : graph,
                                                                                       node));
                               }
@@ -241,43 +239,32 @@ public class GraphValidatorImpl
 
     @SuppressWarnings("unchecked")
     private RuleViolations evaluateContainment(final RuleSet ruleSet,
-                                               final Graph graph,
+                                               final StatelessGraphContextBuilder contextBuilder,
                                                final Element<? extends Definition<?>> parent,
                                                final Node candidate) {
-        log(" CONTAINMENT " +
-                    "[parent=" + parent +
-                    ",candidate=" + candidate + "]");
         return ruleManager
                 .evaluate(ruleSet,
-                          RuleContextBuilder.GraphContexts.containment(graph,
-                                                                       parent,
-                                                                       candidate));
+                          contextBuilder.containment(parent,
+                                                     candidate));
     }
 
     @SuppressWarnings("unchecked")
-    private RuleViolations evaluateCardinality(final RuleSet ruleSet,
-                                               final Graph graph) {
-        log(" CARDINALITY [graph=" + graph + "]");
+    private RuleViolations evaluateCardinality(final StatelessGraphContextBuilder contextBuilder,
+                                               final RuleSet ruleSet) {
         return ruleManager
                 .evaluate(ruleSet,
-                          RuleContextBuilder.GraphContexts.cardinality(graph,
-                                                                       Optional.empty(),
-                                                                       Optional.empty()));
+                          contextBuilder.graphCardinality());
     }
 
     @SuppressWarnings("unchecked")
-    private RuleViolations evaluateDocking(final RuleSet ruleSet,
-                                           final Graph graph,
+    private RuleViolations evaluateDocking(final StatelessGraphContextBuilder contextBuilder,
+                                           final RuleSet ruleSet,
                                            final Element<? extends Definition<?>> parent,
                                            final Node candidate) {
-        log(" DOCKING " +
-                    "[parent=" + (parent.getUUID()) +
-                    ",candidate=" + candidate.getUUID() + "]");
         return ruleManager
                 .evaluate(ruleSet,
-                          RuleContextBuilder.GraphContexts.docking(graph,
-                                                                   parent,
-                                                                   candidate));
+                          contextBuilder.docking(parent,
+                                                 candidate));
     }
 
     /**
@@ -288,15 +275,10 @@ public class GraphValidatorImpl
      * So there exist no rule for empty connections, actually it's just a common validation.
      */
     @SuppressWarnings("unchecked")
-    private Optional<RuleViolation> evaluateNotEmptyConnections(final Graph<?, ? extends Node> graph,
-                                                                final Edge<? extends View<?>, ? extends Node> connector,
+    private Optional<RuleViolation> evaluateNotEmptyConnections(final Edge<? extends View<?>, ? extends Node> connector,
                                                                 final Optional<Node<? extends View<?>, ? extends Edge>> sourceNode,
                                                                 final Optional<Node<? extends View<?>, ? extends Edge>> targetNode) {
 
-        log(" NOT_EMPTY_CONNECTIONS " +
-                    "[edge=" + connector +
-                    ",source=" + sourceNode.orElse(null) +
-                    ",target=" + targetNode.orElse(null) + "]");
         if (!sourceNode.isPresent() || !targetNode.isPresent()) {
             return Optional.of(EmptyConnectionViolation.Builder.build(connector,
                                                                       sourceNode,
@@ -306,49 +288,40 @@ public class GraphValidatorImpl
     }
 
     @SuppressWarnings("unchecked")
-    private RuleViolations evaluateConnection(final RuleSet ruleSet,
-                                              final Graph<?, ? extends Node> graph,
+    private RuleViolations evaluateConnection(final StatelessGraphContextBuilder contextBuilder,
+                                              final RuleSet ruleSet,
                                               final Edge<? extends View<?>, ? extends Node> connector,
                                               final Optional<Node<? extends View<?>, ? extends Edge>> sourceNode,
                                               final Optional<Node<? extends View<?>, ? extends Edge>> targetNode) {
-        log(" CONNECTION " +
-                    "[edge=" + connector +
-                    ",source=" + sourceNode.orElse(null) +
-                    ",target=" + targetNode.orElse(null) + "]");
         return ruleManager
                 .evaluate(ruleSet,
-                          RuleContextBuilder.GraphContexts.connection(graph,
-                                                                      connector,
-                                                                      sourceNode,
-                                                                      targetNode));
+                          contextBuilder.connection(connector,
+                                                    sourceNode,
+                                                    targetNode));
     }
 
     @SuppressWarnings("unchecked")
-    private RuleViolations evaluateIncomingEdgeCardinality(final RuleSet ruleSet,
-                                                           final org.kie.workbench.common.stunner.core.graph.Graph graph,
+    private RuleViolations evaluateIncomingEdgeCardinality(final StatelessGraphContextBuilder contextBuilder,
+                                                           final RuleSet ruleSet,
                                                            final Edge<? extends View, Node> edge) {
-        log(" IN-EDGE CARDINALITY [edge=" + edge + "]");
         return ruleManager
                 .evaluate(ruleSet,
-                          RuleContextBuilder.GraphContexts.edgeCardinality(graph,
-                                                                           edge.getTargetNode(),
-                                                                           (Edge<? extends View<?>, Node>) edge,
-                                                                           EdgeCardinalityContext.Direction.INCOMING,
-                                                                           Optional.empty()));
+                          contextBuilder.edgeCardinality(edge.getTargetNode(),
+                                                         (Edge<? extends View<?>, Node>) edge,
+                                                         EdgeCardinalityContext.Direction.INCOMING,
+                                                         Optional.empty()));
     }
 
     @SuppressWarnings("unchecked")
-    private RuleViolations evaluateOutgoingEdgeCardinality(final RuleSet ruleSet,
-                                                           final org.kie.workbench.common.stunner.core.graph.Graph graph,
+    private RuleViolations evaluateOutgoingEdgeCardinality(final StatelessGraphContextBuilder contextBuilder,
+                                                           final RuleSet ruleSet,
                                                            final Edge<? extends View, Node> edge) {
-        log(" OUT-EDGE CARDINALITY [edge=" + edge + "]");
         return ruleManager
                 .evaluate(ruleSet,
-                          RuleContextBuilder.GraphContexts.edgeCardinality(graph,
-                                                                           edge.getSourceNode(),
-                                                                           (Edge<? extends View<?>, Node>) edge,
-                                                                           EdgeCardinalityContext.Direction.OUTGOING,
-                                                                           Optional.empty()));
+                          contextBuilder.edgeCardinality(edge.getSourceNode(),
+                                                         (Edge<? extends View<?>, Node>) edge,
+                                                         EdgeCardinalityContext.Direction.OUTGOING,
+                                                         Optional.empty()));
     }
 
     private class ViolationsSet extends LinkedHashSet<RuleViolation> {
@@ -361,9 +334,5 @@ public class GraphValidatorImpl
             });
             return result;
         }
-    }
-
-    private void log(final String message) {
-        LOGGER.info(message);
     }
 }

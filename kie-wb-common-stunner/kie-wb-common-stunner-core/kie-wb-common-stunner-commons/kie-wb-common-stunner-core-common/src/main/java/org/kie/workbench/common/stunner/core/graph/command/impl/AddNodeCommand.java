@@ -26,7 +26,6 @@ import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecution
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
-import org.kie.workbench.common.stunner.core.rule.context.impl.RuleContextBuilder;
 
 /**
  * A Command to add a node as a child for the main graph instance.
@@ -46,10 +45,9 @@ public class AddNodeCommand extends RegisterNodeCommand {
         parentResult.getViolations().forEach(builder::addViolation);
         final Element<? extends Definition<?>> graph = (Element<? extends Definition<?>>) getGraph(context);
         final Collection<RuleViolation> containmentRuleViolations =
-                doEvaluate(context,
-                           RuleContextBuilder.GraphContexts.containment(getGraph(context),
-                                                                        graph,
-                                                                        getCandidate()));
+                evaluate(context,
+                         contextBuilder -> contextBuilder.containment(graph,
+                                                                      getCandidate()));
         builder.addViolations(containmentRuleViolations);
         return builder.build();
     }

@@ -175,7 +175,7 @@ public class CreateConnectorToolboxActionTest {
                                                        edgeBuilderControl,
                                                        sessionCommandManager,
                                                        translationService,
-                                                handler -> canvasHighlight)
+                                                       canvasHighlight)
                 .setEdgeId(EDGE_ID);
     }
 
@@ -288,6 +288,7 @@ public class CreateConnectorToolboxActionTest {
         callback.onStart(0,
                          0);
         assertNotNull(tested.getCanvasHighlight());
+        verify(canvasHighlight, times(1)).setCanvasHandler(eq(canvasHandler));
         verify(graphBoundsIndexer,
                times(1)).setRootUUID(eq(ROOT_UUID));
         verify(graphBoundsIndexer,

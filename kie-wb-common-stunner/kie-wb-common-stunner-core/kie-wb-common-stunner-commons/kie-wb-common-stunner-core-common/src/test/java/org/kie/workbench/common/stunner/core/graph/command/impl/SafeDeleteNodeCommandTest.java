@@ -66,16 +66,16 @@ public class SafeDeleteNodeCommandTest {
         final List<Command<GraphCommandExecutionContext, RuleViolation>> commands = tested.getCommands();
         assertNotNull(commands);
         assertTrue(3 == commands.size());
-        final RemoveChildCommand removeChild = (RemoveChildCommand) commands.get(0);
+        final DeleteConnectorCommand delete1 = (DeleteConnectorCommand) commands.get(0);
+        assertNotNull(delete1);
+        assertEquals(graphHolder.edge1,
+                     delete1.getEdge());
+        final RemoveChildrenCommand removeChild = (RemoveChildrenCommand) commands.get(1);
         assertNotNull(removeChild);
         assertEquals(graphHolder.parentNode,
                      removeChild.getParent());
         assertEquals(graphHolder.startNode,
-                     removeChild.getCandidate());
-        final DeleteConnectorCommand delete1 = (DeleteConnectorCommand) commands.get(1);
-        assertNotNull(delete1);
-        assertEquals(graphHolder.edge1,
-                     delete1.getEdge());
+                     removeChild.getCandidates().iterator().next());
         final DeregisterNodeCommand deleteNode = (DeregisterNodeCommand) commands.get(2);
         assertNotNull(deleteNode);
         assertEquals(graphHolder.startNode,
@@ -92,17 +92,16 @@ public class SafeDeleteNodeCommandTest {
         final List<Command<GraphCommandExecutionContext, RuleViolation>> commands = tested.getCommands();
         assertNotNull(commands);
         assertTrue(3 == commands.size());
-        final RemoveChildCommand removeChild = (RemoveChildCommand) commands.get(0);
+        final DeleteConnectorCommand delete2 = (DeleteConnectorCommand) commands.get(0);
+        assertNotNull(delete2);
+        assertEquals(graphHolder.edge2,
+                     delete2.getEdge());
+        final RemoveChildrenCommand removeChild = (RemoveChildrenCommand) commands.get(1);
         assertNotNull(removeChild);
         assertEquals(graphHolder.parentNode,
                      removeChild.getParent());
         assertEquals(graphHolder.endNode,
-                     removeChild.getCandidate());
-        final DeleteConnectorCommand delete2 = (DeleteConnectorCommand) commands.get(1);
-        assertNotNull(delete2);
-        assertEquals(graphHolder.edge2,
-                     delete2.getEdge());
-
+                     removeChild.getCandidates().iterator().next());
         final DeregisterNodeCommand deleteNode = (DeregisterNodeCommand) commands.get(2);
         assertNotNull(deleteNode);
         assertEquals(graphHolder.endNode,
@@ -120,17 +119,11 @@ public class SafeDeleteNodeCommandTest {
         final List<Command<GraphCommandExecutionContext, RuleViolation>> commands = tested.getCommands();
         assertNotNull(commands);
         assertTrue(4 == commands.size());
-        final RemoveChildCommand removeChild = (RemoveChildCommand) commands.get(0);
-        assertNotNull(removeChild);
-        assertEquals(graphHolder.parentNode,
-                     removeChild.getParent());
-        assertEquals(graphHolder.intermNode,
-                     removeChild.getCandidate());
-        final DeleteConnectorCommand delete2 = (DeleteConnectorCommand) commands.get(1);
+        final DeleteConnectorCommand delete2 = (DeleteConnectorCommand) commands.get(0);
         assertNotNull(delete2);
         assertEquals(graphHolder.edge2,
                      delete2.getEdge());
-        final SetConnectionTargetNodeCommand setConnectionNewTarget = (SetConnectionTargetNodeCommand) commands.get(2);
+        final SetConnectionTargetNodeCommand setConnectionNewTarget = (SetConnectionTargetNodeCommand) commands.get(1);
         assertNotNull(setConnectionNewTarget);
         assertEquals(graphHolder.edge1,
                      setConnectionNewTarget.getEdge());
@@ -138,6 +131,12 @@ public class SafeDeleteNodeCommandTest {
                      setConnectionNewTarget.getSourceNode());
         assertEquals(graphHolder.endNode,
                      setConnectionNewTarget.getTargetNode());
+        final RemoveChildrenCommand removeChild = (RemoveChildrenCommand) commands.get(2);
+        assertNotNull(removeChild);
+        assertEquals(graphHolder.parentNode,
+                     removeChild.getParent());
+        assertEquals(graphHolder.intermNode,
+                     removeChild.getCandidates().iterator().next());
         final DeregisterNodeCommand deleteNode = (DeregisterNodeCommand) commands.get(3);
         assertNotNull(deleteNode);
         assertEquals(graphHolder.intermNode,
@@ -162,12 +161,12 @@ public class SafeDeleteNodeCommandTest {
         final List<Command<GraphCommandExecutionContext, RuleViolation>> commands = tested.getCommands();
         assertNotNull(commands);
         assertTrue(2 == commands.size());
-        final RemoveChildCommand removeChild = (RemoveChildCommand) commands.get(0);
+        final RemoveChildrenCommand removeChild = (RemoveChildrenCommand) commands.get(0);
         assertNotNull(removeChild);
         assertEquals(graphHolder.parentNode,
                      removeChild.getParent());
         assertEquals(graphHolder.intermNode,
-                     removeChild.getCandidate());
+                     removeChild.getCandidates().iterator().next());
         final DeregisterNodeCommand deleteNode = (DeregisterNodeCommand) commands.get(1);
         assertNotNull(deleteNode);
         assertEquals(graphHolder.intermNode,

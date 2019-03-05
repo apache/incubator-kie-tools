@@ -50,6 +50,12 @@ public class RuleManagerImpl implements RuleManager {
         this.ruleEvaluator = new DefaultRuleEvaluator();
     }
 
+    public RuleManagerImpl(final RuleHandlerRegistry registry) {
+        this.registry = registry;
+        this.rulesProvider = new RulesFromRuleSetProvider();
+        this.ruleEvaluator = new DefaultRuleEvaluator();
+    }
+
     public RuleManagerImpl setRulesProvider(final RulesProvider rulesProvider) {
         this.rulesProvider = rulesProvider;
         return this;
@@ -60,38 +66,52 @@ public class RuleManagerImpl implements RuleManager {
         return this;
     }
 
+    /*
+        Consider:
+        - If no rules present on the rule set, no resulting rule violation instances
+        are expected
+        - If rules present but no rule accepts the runtime context inputs, the context type
+        defines if allow/or deny the evaluation
+        - Otherwise return the rule violations produced by the handlers or extensions
+     */
     @Override
     public RuleViolations evaluate(final RuleSet ruleSet,
                                    final RuleEvaluationContext context) {
-        /*
-            Consider:
-            - If no rules present on the rule set, no resulting rule violation instances
-            are expected
-            - If rules present but no rule accepts the runtime context inputs, the context type
-            defines if allow/or deny the evaluation
-            - Otherwise return the rule violations produced by the handlers or extensions
-         */
         final DefaultRuleViolations results = new DefaultRuleViolations();
-        final Collection<Rule> rules = rulesProvider.get(ruleSet,
-                                                         context);
+        final Collection<Rule> rules = rulesProvider.get(ruleSet, context);
+
+        // If no rules - no evaluations required - no resulting violations.
         if (rules.isEmpty()) {
             return results;
         }
+
+        // Evaluate context against handlers.
         final Collection<RuleEvaluationHandler> handlers = registry.getHandlersByContext(context.getType());
         final List<Optional<RuleViolations>> handlersViolations = rules.stream()
-                .map(rule -> evaluate(rule,
-                                      handlers,
-                                      context))
+                .filter(rule -> !isRuleExtension().test(rule))
+                .map(rule -> evaluate(rule, handlers, context))
                 .collect(Collectors.toList());
-        final List<RuleViolations> violations = handlersViolations.stream()
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(Collectors.toList());
-        final boolean anyHandlerProcessed = handlersViolations.size() > 0 && violations.size() > 0;
-        if (!anyHandlerProcessed && context.isDefaultDeny()) {
+
+        // Check default accept or deny for the context, in case no handlers accepted the evaluation.
+        if (context.isDefaultDeny() &&
+                !handlersViolations.stream().anyMatch(Optional::isPresent)) {
             return getDefaultViolationForContext(context);
         }
-        violations.forEach(results::addViolations);
+
+        // Populate resulting violations with the ones from handlers' evaluation results.
+        handlersViolations.stream()
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .forEach(results::addViolations);
+
+        // Populate resulting violations with the ones from extension handlers' evaluation results.
+        rules.stream()
+                .filter(rule -> isRuleExtension().test(rule))
+                .map(rule -> evaluateExtension((RuleExtension) rule, context))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .forEach(results::addViolations);
+
         return results;
     }
 

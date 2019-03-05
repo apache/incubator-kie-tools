@@ -34,7 +34,7 @@ import org.kie.workbench.common.stunner.core.factory.impl.AbstractGraphFactory;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.command.EmptyRulesCommandExecutionContext;
+import org.kie.workbench.common.stunner.core.graph.command.DirectGraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandManager;
 import org.kie.workbench.common.stunner.core.graph.command.impl.GraphCommandFactory;
@@ -146,10 +146,9 @@ public class BPMNGraphFactoryImpl
     @SuppressWarnings("unchecked")
     protected GraphCommandExecutionContext createGraphContext(final Graph graph) {
         final Index<?, ?> index = indexBuilder.build(graph);
-        return new EmptyRulesCommandExecutionContext(definitionManager,
-                                                     factoryManager,
-                                                     ruleManager,
-                                                     index);
+        return new DirectGraphCommandExecutionContext(definitionManager,
+                                                      factoryManager,
+                                                      index);
     }
 
     @Override

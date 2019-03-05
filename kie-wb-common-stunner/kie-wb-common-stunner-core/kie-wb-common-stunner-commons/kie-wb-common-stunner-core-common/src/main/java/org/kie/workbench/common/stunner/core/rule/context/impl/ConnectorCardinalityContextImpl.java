@@ -20,7 +20,6 @@ import java.util.Optional;
 
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
-import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.rule.RuleEvaluationContext;
@@ -29,7 +28,7 @@ import org.kie.workbench.common.stunner.core.rule.context.ConnectorCardinalityCo
 import org.kie.workbench.common.stunner.core.rule.context.EdgeCardinalityContext;
 
 public class ConnectorCardinalityContextImpl
-        extends AbstractGraphEvaluationContext
+        extends AbstractGraphEvaluationContext<ConnectorCardinalityContextImpl>
         implements ConnectorCardinalityContext {
 
     private final Element<? extends View<?>> candidate;
@@ -37,18 +36,19 @@ public class ConnectorCardinalityContextImpl
     private final EdgeCardinalityContext.Direction direction;
     private final Optional<CardinalityContext.Operation> operation;
 
-    protected ConnectorCardinalityContextImpl(final String name,
-                                              final Graph<?, ? extends Node> graph,
-                                              final Element<? extends View<?>> candidate,
+    protected ConnectorCardinalityContextImpl(final Element<? extends View<?>> candidate,
                                               final Edge<? extends View<?>, Node> edge,
                                               final EdgeCardinalityContext.Direction direction,
                                               final Optional<CardinalityContext.Operation> operation) {
-        super(name,
-              graph);
         this.candidate = candidate;
         this.edge = edge;
         this.direction = direction;
         this.operation = operation;
+    }
+
+    @Override
+    public String getName() {
+        return "Connector cardinality";
     }
 
     @Override

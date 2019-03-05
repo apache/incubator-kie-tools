@@ -26,6 +26,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.Toolbox;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
@@ -47,6 +48,9 @@ import static org.mockito.Mockito.when;
 public class CommonActionsToolboxFactoryTest {
 
     private static final String E_UUID = "e1";
+
+    @Mock
+    private CanvasCommandManager<AbstractCanvasHandler> commandManager;
 
     @Mock
     private CanvasCommandFactory<AbstractCanvasHandler> commandFactory;
@@ -79,7 +83,8 @@ public class CommonActionsToolboxFactoryTest {
         when(element.getUUID()).thenReturn(E_UUID);
         when(element.asNode()).thenReturn(element);
         when(commandFactory.deleteNode(eq(element))).thenReturn(deleteNodeCommand);
-        this.tested = new CommonActionsToolboxFactory(commandFactory,
+        this.tested = new CommonActionsToolboxFactory(commandManager,
+                                                      commandFactory,
                                                       () -> deleteNodeAction,
                                                       deleteNodeActionDestroyer,
                                                       () -> view,
@@ -89,7 +94,7 @@ public class CommonActionsToolboxFactoryTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testBuildToolbox() {
-        when(deleteNodeCommand.allow(eq(canvasHandler))).thenReturn(CanvasCommandResultBuilder.SUCCESS);
+        when(commandManager.allow(eq(canvasHandler), eq(deleteNodeCommand))).thenReturn(CanvasCommandResultBuilder.SUCCESS);
         final Optional<Toolbox<?>> _toolbox =
                 tested.build(canvasHandler,
                              element);
@@ -113,7 +118,7 @@ public class CommonActionsToolboxFactoryTest {
 
     @Test
     public void testBuildToolboxNotAllowed() {
-        when(deleteNodeCommand.allow(eq(canvasHandler))).thenReturn(CanvasCommandResultBuilder.FAILED);
+        when(commandManager.allow(eq(canvasHandler), eq(deleteNodeCommand))).thenReturn(CanvasCommandResultBuilder.FAILED);
         final Optional<Toolbox<?>> toolbox =
                 tested.build(canvasHandler,
                              element);

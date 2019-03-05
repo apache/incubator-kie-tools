@@ -18,7 +18,6 @@ package org.kie.workbench.common.stunner.core.command.impl;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Stack;
 import java.util.function.Supplier;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
@@ -40,6 +39,8 @@ import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 @Portable
 public class DeferredCompositeCommand<T, V> extends AbstractCompositeCommand<T, V> {
 
+    static final String ILLEGAL_ALLOW_MESSAGE = "Deferred commands cannot be evaluated previous to the execution";
+
     private final boolean reverse;
 
     public DeferredCompositeCommand(final @MapsTo("reverse") boolean reverse) {
@@ -48,7 +49,7 @@ public class DeferredCompositeCommand<T, V> extends AbstractCompositeCommand<T, 
 
     @Override
     public CommandResult<V> allow(final T context) {
-        throw new IllegalStateException("Deferred commands cannot be evaluated previous to execution.");
+        throw new IllegalStateException(ILLEGAL_ALLOW_MESSAGE);
     }
 
     @Override
@@ -59,39 +60,17 @@ public class DeferredCompositeCommand<T, V> extends AbstractCompositeCommand<T, 
     @Override
     protected CommandResult<V> doExecute(final T context,
                                          final Command<T, V> command) {
-        return command.execute(context);
+        CommandResult<V> violations = doAllow(context, command);
+        if (!CommandUtils.isError(violations)) {
+            violations = command.execute(context);
+        }
+        return violations;
     }
 
     @Override
     protected CommandResult<V> doUndo(final T context,
                                       final Command<T, V> command) {
         return command.undo(context);
-    }
-
-    @Override
-    protected CommandResult<V> executeCommands(final T context) {
-        final Stack<Command<T, V>> executedCommands = new Stack<>();
-        final List<CommandResult<V>> results = new LinkedList<>();
-        CommandResult<V> violations;
-        for (final Command<T, V> command : commands) {
-            violations = doAllow(context,
-                                 command);
-            if (!CommandUtils.isError(violations)) {
-                violations = doExecute(context,
-                                       command);
-                executedCommands.push(command);
-            }
-
-            results.add(violations);
-            if (CommandUtils.isError(violations)) {
-                processMultipleFunctions(executedCommands,
-                                         executed -> doUndo(context, executed),
-                                         reverted -> {
-                                         });
-                break;
-            }
-        }
-        return buildResult(results);
     }
 
     @Override

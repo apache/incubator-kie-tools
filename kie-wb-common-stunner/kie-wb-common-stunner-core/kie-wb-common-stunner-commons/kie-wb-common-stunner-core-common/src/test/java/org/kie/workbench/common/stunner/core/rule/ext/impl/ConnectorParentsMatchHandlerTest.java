@@ -80,25 +80,7 @@ public class ConnectorParentsMatchHandlerTest {
                      tested.getContextType());
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testAcceptNoParentType() {
-        final RuleExtension ruleExtension = mock(RuleExtension.class);
-        when(ruleExtension.getArguments()).thenReturn(new String[]{});
-        final RuleEvaluationContext context = mock(RuleEvaluationContext.class);
-        tested.accepts(ruleExtension,
-                       context);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testEvaluateNoParentType() {
-        final RuleExtension ruleExtension = mock(RuleExtension.class);
-        when(ruleExtension.getArguments()).thenReturn(new String[]{});
-        final RuleEvaluationContext context = mock(RuleEvaluationContext.class);
-        tested.evaluate(ruleExtension,
-                        context);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testAccept() {
         final RuleExtension ruleExtension = mock(RuleExtension.class);
         when(ruleExtension.getArguments()).thenReturn(new String[]{"parentType"});
@@ -110,7 +92,7 @@ public class ConnectorParentsMatchHandlerTest {
                                  eq(context));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testEvaluate() {
         final RuleExtension ruleExtension = mock(RuleExtension.class);
         when(ruleExtension.getArguments()).thenReturn(new String[]{"parentType"});

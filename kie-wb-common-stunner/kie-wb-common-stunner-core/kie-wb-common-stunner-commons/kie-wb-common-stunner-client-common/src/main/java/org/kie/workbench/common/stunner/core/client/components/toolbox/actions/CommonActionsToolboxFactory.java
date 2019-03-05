@@ -29,6 +29,7 @@ import javax.inject.Inject;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -43,6 +44,7 @@ import org.uberfire.mvp.Command;
 public class CommonActionsToolboxFactory
         extends AbstractActionsToolboxFactory {
 
+    private final CanvasCommandManager<AbstractCanvasHandler> commandManager;
     private final CanvasCommandFactory<AbstractCanvasHandler> commandFactory;
     private final Supplier<DeleteNodeToolboxAction> deleteNodeActions;
     private final Command deleteNodeActionsDestroyer;
@@ -50,21 +52,25 @@ public class CommonActionsToolboxFactory
     private final Command viewsDestroyer;
 
     @Inject
-    public CommonActionsToolboxFactory(final CanvasCommandFactory<AbstractCanvasHandler> commandFactory,
+    public CommonActionsToolboxFactory(final CanvasCommandManager<AbstractCanvasHandler> commandManager,
+                                       final CanvasCommandFactory<AbstractCanvasHandler> commandFactory,
                                        final @Any ManagedInstance<DeleteNodeToolboxAction> deleteNodeActions,
                                        final @Any @CommonActionsToolbox ManagedInstance<ActionsToolboxView> views) {
-        this(commandFactory,
+        this(commandManager,
+             commandFactory,
              deleteNodeActions::get,
              deleteNodeActions::destroyAll,
              views::get,
              views::destroyAll);
     }
 
-    CommonActionsToolboxFactory(final CanvasCommandFactory<AbstractCanvasHandler> commandFactory,
+    CommonActionsToolboxFactory(final CanvasCommandManager<AbstractCanvasHandler> commandManager,
+                                final CanvasCommandFactory<AbstractCanvasHandler> commandFactory,
                                 final Supplier<DeleteNodeToolboxAction> deleteNodeActions,
                                 final Command deleteNodeActionsDestroyer,
                                 final Supplier<ActionsToolboxView> views,
                                 final Command viewsDestroyer) {
+        this.commandManager = commandManager;
         this.commandFactory = commandFactory;
         this.deleteNodeActions = deleteNodeActions;
         this.deleteNodeActionsDestroyer = deleteNodeActionsDestroyer;
@@ -97,9 +103,13 @@ public class CommonActionsToolboxFactory
 
     private boolean isSupported(final AbstractCanvasHandler canvasHandler,
                                 final Element<?> element) {
-        return null != element.asNode()
-                && !CommandUtils.isError(
-                commandFactory.deleteNode((Node) element).allow(canvasHandler)
-        );
+        return null != element.asNode() && isAllowed(canvasHandler,
+                                                     (Node) element);
+    }
+
+    private boolean isAllowed(final AbstractCanvasHandler canvasHandler,
+                              final Node node) {
+        return !CommandUtils.isError(commandManager.allow(canvasHandler,
+                                                          commandFactory.deleteNode(node)));
     }
 }

@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.canvas.controls;
 
+import java.util.Collection;
+
 import com.ait.lienzo.client.core.shape.wires.IConnectionAcceptor;
 import com.ait.lienzo.client.core.shape.wires.IContainmentAcceptor;
 import com.ait.lienzo.client.core.shape.wires.IDockingAcceptor;
@@ -27,7 +29,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvasView;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.command.UpdateChildNodeCommand;
+import org.kie.workbench.common.stunner.core.client.canvas.command.UpdateChildrenCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasHighlight;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
@@ -81,10 +83,11 @@ public class ContainmentAcceptorControlImplTest {
     private Node candidate;
 
     private ContainmentAcceptorControlImpl tested;
-    private UpdateChildNodeCommand updateChildNodeCommand;
+    private UpdateChildrenCommand updateChildrenCommand;
     private final CommandResult<CanvasViolation> result = CanvasCommandResultBuilder.SUCCESS;
 
     @Before
+    @SuppressWarnings("unchecked")
     public void setup() {
         when(canvas.getWiresManager()).thenReturn(wiresManager);
         when(canvas.getView()).thenReturn(canvasView);
@@ -95,24 +98,25 @@ public class ContainmentAcceptorControlImplTest {
         when(metadata.getCanvasRootUUID()).thenReturn(null);
         doAnswer(invocationOnMock -> {
             final Node parent1 = (Node) invocationOnMock.getArguments()[0];
-            final Node candidate1 = (Node) invocationOnMock.getArguments()[1];
-            updateChildNodeCommand = new UpdateChildNodeCommand(parent1,
-                                                                candidate1);
-            return updateChildNodeCommand;
-        }).when(canvasCommandFactory).updateChildNode(any(Node.class),
-                                                      any(Node.class));
+            final Collection candidates = (Collection) invocationOnMock.getArguments()[1];
+            updateChildrenCommand = new UpdateChildrenCommand(parent1,
+                                                              candidates);
+            return updateChildrenCommand;
+        }).when(canvasCommandFactory).updateChildren(any(Node.class),
+                                                     any(Collection.class));
         when(commandManager.allow(eq(canvasHandler),
-                                  eq(updateChildNodeCommand))).thenReturn(result);
+                                  eq(updateChildrenCommand))).thenReturn(result);
         when(commandManager.execute(eq(canvasHandler),
-                                    eq(updateChildNodeCommand))).thenReturn(result);
+                                    eq(updateChildrenCommand))).thenReturn(result);
         this.tested = new ContainmentAcceptorControlImpl(canvasCommandFactory,
-                                                         canvasHandler1 -> highlight);
+                                                         highlight);
         this.tested.setCommandManagerProvider(() -> commandManager);
     }
 
     @Test
     public void testEnable() {
         tested.init(canvasHandler);
+        verify(highlight, times(1)).setCanvasHandler(eq(canvasHandler));
         assertEquals(canvasHandler,
                      tested.getCanvasHandler());
         verify(wiresManager,
@@ -131,11 +135,10 @@ public class ContainmentAcceptorControlImplTest {
         assertTrue(allow);
         verify(commandManager,
                times(1)).allow(eq(canvasHandler),
-                               eq(updateChildNodeCommand));
+                               eq(updateChildrenCommand));
         assertEquals(parent,
-                     updateChildNodeCommand.getParent());
-        assertEquals(candidate,
-                     updateChildNodeCommand.getCandidate());
+                     updateChildrenCommand.getParent());
+        assertEquals(candidate, updateChildrenCommand.getCandidates().iterator().next());
         verify(highlight, times(1)).unhighLight();
     }
 
@@ -147,11 +150,10 @@ public class ContainmentAcceptorControlImplTest {
         assertTrue(accept);
         verify(commandManager,
                times(1)).execute(eq(canvasHandler),
-                                 eq(updateChildNodeCommand));
+                                 eq(updateChildrenCommand));
         assertEquals(parent,
-                     updateChildNodeCommand.getParent());
-        assertEquals(candidate,
-                     updateChildNodeCommand.getCandidate());
+                     updateChildrenCommand.getParent());
+        assertEquals(candidate, updateChildrenCommand.getCandidates().iterator().next());
         verify(highlight, times(1)).unhighLight();
     }
 

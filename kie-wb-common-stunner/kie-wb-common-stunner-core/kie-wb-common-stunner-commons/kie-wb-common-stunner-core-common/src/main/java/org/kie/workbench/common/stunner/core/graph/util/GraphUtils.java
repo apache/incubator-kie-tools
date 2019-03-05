@@ -16,9 +16,9 @@
 
 package org.kie.workbench.common.stunner.core.graph.util;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -26,10 +26,12 @@ import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.Set;
 import java.util.function.BiPredicate;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -122,7 +124,7 @@ public class GraphUtils {
 
     public static int countEdges(final DefinitionManager definitionManager,
                                  final String edgeId,
-                                 final List<? extends Edge> edges) {
+                                 final Collection<? extends Edge> edges) {
         if (null == edges) {
             return 0;
         }
@@ -137,43 +139,43 @@ public class GraphUtils {
      * Does not returns labels not being used on the graph,
      * even if included in the <code>filter</code>.
      */
-    @SuppressWarnings("unchecked")
     public static Map<String, Integer> getLabelsCount(final Graph<?, ? extends Node> target,
-                                                      final Set<String> filter) {
-        final Map<String, Integer> labels = new LinkedHashMap<>();
-        target.nodes().forEach(node -> {
-            final Set<String> nodeRoles = node.getLabels();
-            if (null != nodeRoles) {
-                nodeRoles
-                        .stream()
-                        .filter(role -> null == filter || filter.contains(role))
-                        .forEach(role -> {
-                            final Integer i = labels.get(role);
-                            labels.put(role,
-                                       null != i ? i + 1 : 1);
-                        });
-            }
-        });
-        return labels;
+                                                      final Set<String> roleFilter) {
+        return getLabelsCount(target,
+                              e -> true,
+                              roleFilter);
     }
 
     @SuppressWarnings("unchecked")
-    public static List<String> getParentIds(final DefinitionManager definitionManager,
-                                            final Graph<? extends DefinitionSet, ? extends Node> graph,
-                                            final Element<?> element) {
-        final List<String> result = new ArrayList<>(5);
-        Element<?> p = element;
-        while (p instanceof Node && p.getContent() instanceof Definition) {
-            p = getParent((Node<? extends Definition<?>, ? extends Edge>) p);
-            if (null != p) {
-                final Object definition = ((Definition) p.getContent()).getDefinition();
-                final String id = definitionManager.adapters().forDefinition().getId(definition).value();
-                result.add(id);
-            }
-        }
-        final String graphId = graph.getContent().getDefinition();
-        result.add(graphId);
-        return result;
+    public static Map<String, Integer> getLabelsCount(final Graph<?, ? extends Node> target,
+                                                      final Predicate<Element<?>> elementFilter,
+                                                      final Set<String> roleFilter) {
+
+        final Map<String, Integer> labelsCount = new HashMap<>();
+        final Iterable<Node> nodes = (Iterable<Node>) target.nodes();
+        StreamSupport.stream(nodes.spliterator(), false)
+                .filter(elementFilter::test)
+                .forEach(node -> computeLabelsCount(node, labelsCount, roleFilter));
+        return labelsCount;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static void computeLabelsCount(final Node node,
+                                          final Map<String, Integer> labelsCount,
+                                          final Set<String> roleFilter) {
+        final Set<String> labels = getLabels(node);
+        labels
+                .stream()
+                .filter(role -> null == roleFilter || roleFilter.contains(role))
+                .forEach(role -> {
+                    final Integer i = labelsCount.get(role);
+                    labelsCount.put(role,
+                                    null != i ? i + 1 : 1);
+                });
+    }
+
+    public static Set<String> getLabels(final Element<? extends Definition<?>> element) {
+        return element != null && null != element.getLabels() ? element.getLabels() : Collections.emptySet();
     }
 
     @SuppressWarnings("unchecked")
@@ -189,24 +191,36 @@ public class GraphUtils {
     }
 
     @SuppressWarnings("unchecked")
-    public static Optional<Element<?>> getParentByDefinitionId(final DefinitionManager definitionManager,
-                                                               final Node<?, ? extends Edge> candidate,
-                                                               final String parentDefId) {
+    public static Optional<Element<? extends Definition>> getParentByDefinitionId(final DefinitionManager definitionManager,
+                                                                                  final Function<Node, Element> parentSupplier,
+                                                                                  final Node<?, ? extends Edge> candidate,
+                                                                                  final Predicate<String> parentDefIdFilter) {
+        checkNotNull("candidate",
+                     candidate);
+        Element<?> p = parentSupplier.apply(candidate);
+        while (null != p && null != p.asNode() && p.getContent() instanceof Definition) {
+            final String cID = getElementDefinitionId(definitionManager, p);
+            if (parentDefIdFilter.test(cID)) {
+                return Optional.of((Element<? extends Definition>) p);
+            }
+            p = parentSupplier.apply(p.asNode());
+        }
+        return Optional.empty();
+    }
+
+    @SuppressWarnings("unchecked")
+    public static Optional<Element<? extends Definition>> getParentByDefinitionId(final DefinitionManager definitionManager,
+                                                                                  final Function<Node, Element> parentSupplier,
+                                                                                  final Node<?, ? extends Edge> candidate,
+                                                                                  final String parentDefId) {
         checkNotNull("candidate",
                      candidate);
         checkNotNull("parentDefId",
                      parentDefId);
-        Element<?> p = getParent(candidate);
-        while (p instanceof Node
-                && p.getContent() instanceof Definition) {
-            final String cID = getElementDefinitionId(definitionManager,
-                                                      p);
-            if (parentDefId.equals(cID)) {
-                return Optional.of(p);
-            }
-            p = getParent((Node<?, ? extends Edge>) p);
-        }
-        return Optional.empty();
+        return getParentByDefinitionId(definitionManager,
+                                       parentSupplier,
+                                       candidate,
+                                       parentDefId::equals);
     }
 
     public static Point2D getPosition(final View element) {
@@ -326,6 +340,10 @@ public class GraphUtils {
         return node.getInEdges().stream().anyMatch(hasConnectionFilter());
     }
 
+    public static Predicate<Element> isContentSomeDefinition() {
+        return e -> e.getContent() instanceof Definition;
+    }
+
     private static Predicate<Edge> hasConnectionFilter() {
         return edge -> edge.getContent() instanceof ViewConnector;
     }
@@ -407,16 +425,29 @@ public class GraphUtils {
         return null != item && item.getClass().equals(clazz);
     }
 
-    public static class HasParentPredicate implements BiPredicate<Node<?, ? extends Edge>, Element<?>> {
+    public static class ParentPredicate {
 
-        @Override
-        public boolean test(final Node<?, ? extends Edge> candidate,
-                            final Element<?> parent) {
-            if (null != candidate) {
-                Element<?> p = getParent(candidate);
-                return Objects.equals(p, parent);
-            }
-            return false;
+        private final Function<Node, Element> parentSupplier;
+
+        public ParentPredicate(final Function<Node, Element> parentSupplier) {
+            this.parentSupplier = parentSupplier;
+        }
+
+        public BiPredicate<Node<?, ? extends Edge>, Element<?>> isChildOf() {
+            return (candidate, parent) -> {
+                if (null != candidate) {
+                    Element<?> p = parentSupplier.apply(candidate);
+                    while (null != p) {
+                        if (Objects.equals(p, parent)) {
+                            return true;
+                        }
+                        if (p instanceof Node) {
+                            p = parentSupplier.apply((Node) p);
+                        }
+                    }
+                }
+                return false;
+            };
         }
     }
 

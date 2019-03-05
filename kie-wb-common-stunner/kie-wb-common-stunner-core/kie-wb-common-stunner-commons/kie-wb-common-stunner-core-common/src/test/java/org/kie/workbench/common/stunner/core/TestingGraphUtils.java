@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.core;
 
+import java.util.Collection;
 import java.util.Optional;
 
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -34,26 +35,30 @@ import org.kie.workbench.common.stunner.core.rule.context.NodeDockingContext;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Some testing utils for graph stuff.
  */
 public class TestingGraphUtils {
 
+    @SuppressWarnings("unchecked")
     public static void verifyContainment(final NodeContainmentContext containmentContext,
                                          final Element<? extends Definition<?>> parent,
                                          final Node<? extends Definition<?>, ? extends Edge> candidate) {
         assertNotNull(containmentContext);
         final Element<? extends Definition<?>> source = containmentContext.getParent();
-        final Node<? extends Definition<?>, ? extends Edge> target = containmentContext.getCandidate();
+        final Collection<Node<? extends Definition<?>, ? extends Edge>> targets = containmentContext.getCandidates();
         assertNotNull(source);
         assertEquals(parent,
                      source);
-        assertNotNull(target);
+        assertNotNull(targets);
+        assertEquals(1, targets.size());
         assertEquals(candidate,
-                     target);
+                     targets.iterator().next());
     }
 
+    @SuppressWarnings("unchecked")
     public static void verifyDocking(final NodeDockingContext context,
                                      final Element<? extends Definition<?>> parent,
                                      final Node<? extends Definition<?>, ? extends Edge> candidate) {
@@ -68,6 +73,7 @@ public class TestingGraphUtils {
                      target);
     }
 
+    @SuppressWarnings("unchecked")
     public static void verifyConnection(final GraphConnectionContext context,
                                         final Edge<? extends View<?>, ? extends Node> connector,
                                         final Node<? extends View<?>, ? extends Edge> sourceNode,
@@ -89,36 +95,41 @@ public class TestingGraphUtils {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public static void verifyCardinality(final ElementCardinalityContext context,
                                          final Graph graph,
                                          final Element<? extends View<?>> candidate,
                                          final CardinalityContext.Operation operation) {
         assertNotNull(context);
-        final Graph graph1 = context.getGraph();
-        final Optional<Element<? extends View<?>>> candidate1 = context.getCandidate();
+        final Collection<Element<? extends View<?>>> candidates = context.getCandidates();
         final Optional<CardinalityContext.Operation> operation1 = context.getOperation();
-        assertNotNull(graph1);
+        assertNotNull(graph);
         assertNotNull(operation1);
         assertEquals(graph,
-                     graph1);
-        assertEquals(candidate,
-                     candidate1.orElse(null));
+                     graph);
+        if (null != candidate) {
+            assertEquals(1, candidates.size());
+            assertEquals(candidate,
+                         candidates.iterator().next());
+        } else {
+            assertTrue(candidates.isEmpty());
+        }
         assertEquals(operation,
                      operation1.orElse(null));
     }
 
+    @SuppressWarnings("unchecked")
     public static void verifyCardinality(final ElementCardinalityContext context,
                                          final Graph graph) {
         assertNotNull(context);
-        final Graph graph1 = context.getGraph();
-        final Optional<Element<? extends View<?>>> candidate1 = context.getCandidate();
         final Optional<CardinalityContext.Operation> operation1 = context.getOperation();
-        assertNotNull(graph1);
+        assertNotNull(graph);
         assertNotNull(operation1);
         assertEquals(graph,
-                     graph1);
+                     graph);
     }
 
+    @SuppressWarnings("unchecked")
     public static void verifyConnectorCardinality(final ConnectorCardinalityContext context,
                                                   final Graph graph,
                                                   final Element<? extends View<?>> candidate,
@@ -129,12 +140,11 @@ public class TestingGraphUtils {
         final EdgeCardinalityContext.Direction direction1 = context.getDirection();
         final Edge<? extends View<?>, Node> edge1 = context.getEdge();
         final Element<? extends View<?>> candidate1 = context.getCandidate();
-        final Graph graph1 = context.getGraph();
         final Optional<CardinalityContext.Operation> operation1 = context.getOperation();
         assertNotNull(direction1);
         assertNotNull(edge1);
         assertNotNull(candidate1);
-        assertNotNull(graph1);
+        assertNotNull(graph);
         assertNotNull(operation1);
         assertEquals(direction,
                      direction1);
@@ -145,7 +155,7 @@ public class TestingGraphUtils {
         assertEquals(candidate,
                      candidate1);
         assertEquals(graph,
-                     graph1);
+                     graph);
         assertEquals(operation,
                      operation1);
     }

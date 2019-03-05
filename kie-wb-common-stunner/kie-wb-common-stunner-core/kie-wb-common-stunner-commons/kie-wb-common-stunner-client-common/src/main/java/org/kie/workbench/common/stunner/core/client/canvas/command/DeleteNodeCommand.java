@@ -78,7 +78,7 @@ public class DeleteNodeCommand extends AbstractCanvasGraphCommand {
     @Override
     public String toString() {
         return getClass().getSimpleName() +
-                " [candidate=" + getUUID(getCandidate()) + "]";
+                " [candidate=" + toUUID(getCandidate()) + "]";
     }
 
     public static class CanvasDeleteProcessor implements SafeDeleteNodeCommand.SafeDeleteNodeCommandCallback {
@@ -112,8 +112,8 @@ public class DeleteNodeCommand extends AbstractCanvasGraphCommand {
         @Override
         public void removeChild(final Element<?> parent,
                                 final Node<?, Edge> candidate) {
-            getCommand().addCommand(new RemoveCanvasChildCommand((Node) parent,
-                                                                 candidate));
+            getCommand().addCommand(new RemoveCanvasChildrenCommand((Node) parent,
+                                                                    candidate));
         }
 
         @Override

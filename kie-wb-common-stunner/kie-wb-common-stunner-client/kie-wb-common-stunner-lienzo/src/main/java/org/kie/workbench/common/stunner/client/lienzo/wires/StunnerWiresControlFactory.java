@@ -17,7 +17,9 @@
 package org.kie.workbench.common.stunner.client.lienzo.wires;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.enterprise.inject.Default;
+import javax.inject.Inject;
 
 import com.ait.lienzo.client.core.shape.wires.PickerPart;
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
@@ -34,18 +36,24 @@ import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresConnectorContro
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresControlFactoryImpl;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresShapeControlImpl;
 import org.kie.workbench.common.stunner.client.lienzo.wires.decorator.StunnerPointHandleDecorator;
+import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasUnhighlightEvent;
 
 @ApplicationScoped
 @Default
 public class StunnerWiresControlFactory implements WiresControlFactory {
 
+    private final Event<CanvasUnhighlightEvent> unhighlightEvent;
     private final WiresControlFactoryImpl delegate;
 
-    public StunnerWiresControlFactory() {
-        this(new WiresControlFactoryImpl());
+    @Inject
+    public StunnerWiresControlFactory(final Event<CanvasUnhighlightEvent> unhighlightEvent) {
+        this(new WiresControlFactoryImpl(),
+             unhighlightEvent);
     }
 
-    StunnerWiresControlFactory(final WiresControlFactoryImpl delegate) {
+    StunnerWiresControlFactory(final WiresControlFactoryImpl delegate,
+                               final Event<CanvasUnhighlightEvent> unhighlightEvent) {
+        this.unhighlightEvent = unhighlightEvent;
         this.delegate = delegate;
     }
 
@@ -82,7 +90,7 @@ public class StunnerWiresControlFactory implements WiresControlFactory {
 
     @Override
     public WiresShapeHighlight<PickerPart.ShapePart> newShapeHighlight(final WiresManager wiresManager) {
-        return new StunnerWiresShapeStateHighlight(wiresManager);
+        return new StunnerWiresShapeStateHighlight(wiresManager, unhighlightEvent);
     }
 
     @Override

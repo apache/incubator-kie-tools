@@ -23,14 +23,11 @@ import org.kie.workbench.common.stunner.core.rule.context.DockingContext;
 
 class DockingContextImpl implements DockingContext {
 
-    private final String name;
     private final Set<String> roles;
     private final Set<String> allowedRoles;
 
-    DockingContextImpl(final String name,
-                       final Set<String> roles,
+    DockingContextImpl(final Set<String> roles,
                        final Set<String> allowedRoles) {
-        this.name = name;
         this.roles = roles;
         this.allowedRoles = allowedRoles;
     }
@@ -47,7 +44,7 @@ class DockingContextImpl implements DockingContext {
 
     @Override
     public String getName() {
-        return name;
+        return "Docking";
     }
 
     @Override

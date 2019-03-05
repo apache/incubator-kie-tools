@@ -56,7 +56,7 @@ public class UpdateControlPointPositionCommand extends AbstractCanvasGraphComman
     @Override
     public String toString() {
         return getClass().getSimpleName() +
-                " [candidate=" + getUUID(getCandidate()) + "," +
+                " [candidate=" + toUUID(getCandidate()) + "," +
                 "controlPoints=" + Arrays.toString(controlPoints) + "]";
     }
 }

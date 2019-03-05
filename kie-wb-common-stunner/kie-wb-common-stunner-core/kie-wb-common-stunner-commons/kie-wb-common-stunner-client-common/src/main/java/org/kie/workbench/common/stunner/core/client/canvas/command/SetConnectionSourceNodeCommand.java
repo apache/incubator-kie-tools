@@ -66,8 +66,8 @@ public class SetConnectionSourceNodeCommand extends AbstractCanvasGraphCommand {
     @Override
     public String toString() {
         return getClass().getSimpleName() +
-                " [node=" + getUUID(getNode()) + "," +
-                "edge=" + getUUID(getEdge()) + "," +
+                " [node=" + toUUID(getNode()) + "," +
+                "edge=" + toUUID(getEdge()) + "," +
                 "connection=" + connection + "]";
     }
 }

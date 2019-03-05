@@ -29,7 +29,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.registry.RegistryFactory;
 import org.kie.workbench.common.stunner.core.registry.rule.RuleHandlerRegistry;
 import org.kie.workbench.common.stunner.core.rule.context.ContainmentContext;
-import org.kie.workbench.common.stunner.core.rule.context.impl.RuleContextBuilder;
+import org.kie.workbench.common.stunner.core.rule.context.impl.RuleEvaluationContextBuilder;
 import org.kie.workbench.common.stunner.core.rule.ext.RuleExtension;
 import org.kie.workbench.common.stunner.core.rule.ext.RuleExtensionHandler;
 import org.kie.workbench.common.stunner.core.rule.impl.CanContain;
@@ -44,6 +44,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -93,10 +96,10 @@ public class RuleManagerImplTest {
                                    add("role1");
                                    add("role2");
                                }});
-        ruleEvaluationContext = RuleContextBuilder.DomainContexts.containment(Collections.singleton("r1-cId"),
-                                                                              new HashSet<String>(1) {{
-                                                                                  add("r2-cId");
-                                                                              }});
+        ruleEvaluationContext = RuleEvaluationContextBuilder.DomainContexts.containment(Collections.singleton("r1-cId"),
+                                                                                        new HashSet<String>(1) {{
+                                                                                            add("r2-cId");
+                                                                                        }});
         ruleViolation1 = new RuleViolationImpl("error - v1");
         ruleViolation2 = new RuleViolationImpl("error - v2");
         ruleViolation3 = new RuleViolationImpl("error - v3");
@@ -137,8 +140,7 @@ public class RuleManagerImplTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testDefaultPolicyAccept() {
-        when(registry.getExtensionHandler(any(Class.class))).thenReturn(null);
+    public void testDefaultPolicyAcceptAndCallExtensionHandler() {
         when(handler1.accepts(eq(rule1),
                               eq(ruleEvaluationContext))).thenReturn(true);
         final RuleViolations result = tested.evaluate(ruleSet,
@@ -146,12 +148,14 @@ public class RuleManagerImplTest {
         assertNotNull(result);
         final Collection<RuleViolation> violations = (Collection<RuleViolation>) result.violations();
         assertTrue(violations.isEmpty());
+        verify(registry, atLeastOnce()).getExtensionHandler(eq(RuleExtensionHandler.class));
     }
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testDefaultPolicyDeny() {
-        when(registry.getExtensionHandler(any(Class.class))).thenReturn(null);
+    public void testDefaultPolicyDenySoDoNotEvenCallExtensionHandler() {
+        when(handler2.accepts(eq(rule1),
+                              eq(ruleEvaluationContext))).thenReturn(false);
         when(handler1.accepts(eq(rule1),
                               eq(ruleEvaluationContext))).thenReturn(false);
         final RuleViolations result = tested.evaluate(ruleSet,
@@ -162,6 +166,7 @@ public class RuleManagerImplTest {
                      violations.size());
         assertEquals(ContextOperationNotAllowedViolation.class,
                      violations.stream().findFirst().get().getClass());
+        verify(registry, never()).getExtensionHandler(any(Class.class));
     }
 
     @Test

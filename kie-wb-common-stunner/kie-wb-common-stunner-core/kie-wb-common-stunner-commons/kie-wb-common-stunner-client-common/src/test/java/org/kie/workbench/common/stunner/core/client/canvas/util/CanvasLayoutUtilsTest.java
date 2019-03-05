@@ -166,9 +166,7 @@ public class CanvasLayoutUtilsTest {
         when(canvasHandler.getCanvas().getHeightPx()).thenReturn((int) canvasMax.getY());
         when(canvasHandler.getCanvas().getWidthPx()).thenReturn((int) canvasMax.getX());
 
-        canvasLayoutUtils = new CanvasLayoutUtils(graphBoundsIndexer,
-                                                  ruleManager,
-                                                  definitionManager);
+        canvasLayoutUtils = new CanvasLayoutUtils(graphBoundsIndexer);
 
         when(metadata.getDefinitionSetId()).thenReturn("definitionSetId");
         when(definitionManager.definitionSets()).thenReturn(typeDefinitionSetRegistry);

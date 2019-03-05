@@ -17,42 +17,35 @@
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
 import java.util.Collection;
+import java.util.function.Function;
 
-import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.exception.BadCommandArgumentsException;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.command.AbstractGraphCommandExecutionContext;
+import org.kie.workbench.common.stunner.core.graph.command.GraphCommand;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
-import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.index.MutableIndex;
-import org.kie.workbench.common.stunner.core.rule.RuleEvaluationContext;
-import org.kie.workbench.common.stunner.core.rule.RuleSet;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
+import org.kie.workbench.common.stunner.core.rule.context.GraphEvaluationContext;
+import org.kie.workbench.common.stunner.core.rule.context.impl.RuleEvaluationContextBuilder;
 
-public abstract class AbstractGraphCommand implements Command<GraphCommandExecutionContext, RuleViolation> {
+public abstract class AbstractGraphCommand implements GraphCommand {
 
     protected abstract CommandResult<RuleViolation> check(final GraphCommandExecutionContext context);
 
     @Override
     public CommandResult<RuleViolation> allow(final GraphCommandExecutionContext context) {
-        // Check if rules are present.
-        if (null == context.getRuleManager()) {
-            return GraphCommandResultBuilder.SUCCESS;
-        }
         return check(context);
     }
 
-    @SuppressWarnings("unchecked")
-    protected Collection<RuleViolation> doEvaluate(final GraphCommandExecutionContext context,
-                                                   final RuleEvaluationContext ruleEvaluationContext) {
-        final RuleSet ruleSet = context.getRuleSet();
-        return (Collection<RuleViolation>) context.getRuleManager().evaluate(ruleSet,
-                                                                             ruleEvaluationContext)
-                .violations();
+    protected Collection<RuleViolation> evaluate(final GraphCommandExecutionContext context,
+                                                 final Function<RuleEvaluationContextBuilder.GraphContextBuilder, GraphEvaluationContext> contextBuilder) {
+        return (Collection<RuleViolation>) ((AbstractGraphCommandExecutionContext) context).evaluate(contextBuilder).violations();
     }
 
     @SuppressWarnings("unchecked")

@@ -34,11 +34,11 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 import org.kie.workbench.common.stunner.core.rule.context.CardinalityContext;
 import org.kie.workbench.common.stunner.core.rule.context.EdgeCardinalityContext;
-import org.kie.workbench.common.stunner.core.rule.context.impl.RuleContextBuilder;
+import org.kie.workbench.common.stunner.core.rule.context.impl.RuleEvaluationContextBuilder;
 import org.kie.workbench.common.stunner.core.rule.impl.CanConnect;
 
-import static org.kie.workbench.common.stunner.core.rule.context.impl.RuleContextBuilder.DomainContexts.cardinality;
-import static org.kie.workbench.common.stunner.core.rule.context.impl.RuleContextBuilder.DomainContexts.edgeCardinality;
+import static org.kie.workbench.common.stunner.core.rule.context.impl.RuleEvaluationContextBuilder.DomainContexts.cardinality;
+import static org.kie.workbench.common.stunner.core.rule.context.impl.RuleEvaluationContextBuilder.DomainContexts.edgeCardinality;
 
 public class DomainLookupFunctions {
 
@@ -106,11 +106,11 @@ public class DomainLookupFunctions {
                 final RuleViolations violations =
                         context.getRuleManager()
                                 .evaluate(cache.getRuleSet(),
-                                          RuleContextBuilder.DomainContexts.edgeCardinality(labels,
-                                                                                            edgeId,
-                                                                                            0,
-                                                                                            EdgeCardinalityContext.Direction.INCOMING,
-                                                                                            Optional.of(CardinalityContext.Operation.ADD)));
+                                          RuleEvaluationContextBuilder.DomainContexts.edgeCardinality(labels,
+                                                                                                      edgeId,
+                                                                                                      0,
+                                                                                                      EdgeCardinalityContext.Direction.INCOMING,
+                                                                                                      Optional.of(CardinalityContext.Operation.ADD)));
                 if (isValid(violations)) {
                     result.add(definitionId);
                 }

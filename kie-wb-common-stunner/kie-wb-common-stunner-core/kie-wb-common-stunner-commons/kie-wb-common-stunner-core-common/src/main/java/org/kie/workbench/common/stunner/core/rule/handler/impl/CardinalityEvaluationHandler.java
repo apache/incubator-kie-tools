@@ -54,22 +54,27 @@ public class CardinalityEvaluationHandler implements RuleEvaluationHandler<Occur
         final DefaultRuleViolations results = new DefaultRuleViolations();
         final int minOccurrences = rule.getMinOccurrences();
         final int maxOccurrences = rule.getMaxOccurrences();
-        final int candidatesCount = context.getCandidateCount();
+        final int currentCount = context.getCurrentCount();
+        final int candidateCount = context.getCandidateCount();
         final Optional<CardinalityContext.Operation> operation = context.getOperation();
         final Violation.Type type = operation
                 .filter(CardinalityContext.Operation.ADD::equals)
                 .isPresent() ? Violation.Type.ERROR : Violation.Type.WARNING;
-        final int count = !operation.isPresent() ? candidatesCount :
-                (operation.get().equals(CardinalityContext.Operation.ADD) ? candidatesCount + 1 : candidatesCount - 1);
+        final int count =
+                !operation.isPresent() ?
+                        currentCount :
+                        (operation.get().equals(CardinalityContext.Operation.ADD) ?
+                                currentCount + candidateCount :
+                                currentCount - candidateCount);
         if (count < minOccurrences) {
             results.addViolation(new CardinalityMinRuleViolation(context.getRoles().toString(),
                                                                  minOccurrences,
-                                                                 candidatesCount,
+                                                                 currentCount,
                                                                  type));
         } else if (maxOccurrences > -1 && count > maxOccurrences) {
             results.addViolation(new CardinalityMaxRuleViolation(context.getRoles().toString(),
                                                                  maxOccurrences,
-                                                                 candidatesCount,
+                                                                 currentCount,
                                                                  type));
         }
         return results;

@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.client.lienzo.canvas.controls;
 
 import java.util.Optional;
-import java.util.function.Function;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -60,23 +59,15 @@ public class ConnectionAcceptorControlImpl
 
     private final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
     private final Event<CancelCanvasAction> cancelCanvasActionEvent;
-    private final Function<AbstractCanvasHandler, CanvasHighlight> highlightFactory;
-    private CanvasHighlight canvasHighlight;
+    private final CanvasHighlight canvasHighlight;
 
     @Inject
     public ConnectionAcceptorControlImpl(final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
-                                         final Event<CancelCanvasAction> cancelCanvasActionEvent) {
-        this(canvasCommandFactory,
-             cancelCanvasActionEvent,
-             CanvasHighlight::new);
-    }
-
-    ConnectionAcceptorControlImpl(final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
-                                  final Event<CancelCanvasAction> cancelCanvasActionEvent,
-                                  final Function<AbstractCanvasHandler, CanvasHighlight> highlightFactory) {
+                                         final Event<CancelCanvasAction> cancelCanvasActionEvent,
+                                         final CanvasHighlight canvasHighlight) {
         this.canvasCommandFactory = canvasCommandFactory;
         this.cancelCanvasActionEvent = cancelCanvasActionEvent;
-        this.highlightFactory = highlightFactory;
+        this.canvasHighlight = canvasHighlight;
     }
 
     @Override
@@ -93,7 +84,7 @@ public class ConnectionAcceptorControlImpl
 
     @Override
     protected void onInit(final WiresCanvas canvas) {
-        this.canvasHighlight = highlightFactory.apply(getCanvasHandler());
+        this.canvasHighlight.setCanvasHandler(getCanvasHandler());
         canvas.getWiresManager().setConnectionAcceptor(CONNECTION_ACCEPTOR);
     }
 
@@ -299,9 +290,7 @@ public class ConnectionAcceptorControlImpl
     }
 
     private void ensureUnHighLight() {
-        if (null != canvasHighlight) {
-            canvasHighlight.unhighLight();
-        }
+        canvasHighlight.unhighLight();
     }
 
     public static Connection createConnection(final WiresConnection wiresConnection,
@@ -332,6 +321,5 @@ public class ConnectionAcceptorControlImpl
     protected void onDestroy(final WiresCanvas canvas) {
         canvas.getWiresManager().setConnectionAcceptor(IConnectionAcceptor.NONE);
         this.canvasHighlight.destroy();
-        this.canvasHighlight = null;
     }
 }

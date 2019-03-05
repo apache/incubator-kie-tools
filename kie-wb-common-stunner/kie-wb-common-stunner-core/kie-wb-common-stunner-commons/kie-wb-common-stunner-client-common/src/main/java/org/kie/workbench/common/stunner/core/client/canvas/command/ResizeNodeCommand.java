@@ -265,7 +265,7 @@ public class ResizeNodeCommand extends AbstractCanvasCompositeCommand {
     @Override
     public String toString() {
         return getClass().getSimpleName() +
-                " [candidate=" + getUUID(candidate) + "," +
+                " [candidate=" + AbstractCanvasCommand.toUUID(candidate) + "," +
                 "box=" + boundingBox + "]";
     }
 }

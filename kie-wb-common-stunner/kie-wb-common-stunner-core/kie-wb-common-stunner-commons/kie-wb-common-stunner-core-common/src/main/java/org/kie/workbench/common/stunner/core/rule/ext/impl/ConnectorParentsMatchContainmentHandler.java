@@ -16,30 +16,31 @@
 
 package org.kie.workbench.common.stunner.core.rule.ext.impl;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.logging.Logger;
+import java.util.stream.Stream;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
-import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 import org.kie.workbench.common.stunner.core.graph.Edge;
-import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.AbstractTreeTraverseCallback;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.TreeWalkTraverseProcessor;
-import org.kie.workbench.common.stunner.core.graph.util.FilteredParentsTypeMatcher;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
+import org.kie.workbench.common.stunner.core.graph.util.ParentTypesMatcher;
 import org.kie.workbench.common.stunner.core.rule.RuleViolations;
+import org.kie.workbench.common.stunner.core.rule.context.GraphEvaluationState;
 import org.kie.workbench.common.stunner.core.rule.context.NodeContainmentContext;
 import org.kie.workbench.common.stunner.core.rule.ext.RuleExtension;
 import org.kie.workbench.common.stunner.core.rule.handler.impl.GraphEvaluationHandlerUtils;
 import org.kie.workbench.common.stunner.core.rule.violations.DefaultRuleViolations;
+
+import static org.kie.workbench.common.stunner.core.rule.context.impl.StatefulGraphEvaluationState.StatefulContainmentState.getParent;
 
 /**
  * A rule handler that checks if both source and target nodes for a given connector
@@ -64,8 +65,6 @@ import org.kie.workbench.common.stunner.core.rule.violations.DefaultRuleViolatio
 @ApplicationScoped
 public class ConnectorParentsMatchContainmentHandler
         extends AbstractParentsMatchHandler<ConnectorParentsMatchContainmentHandler, NodeContainmentContext> {
-
-    private static Logger LOGGER = Logger.getLogger(ConnectorParentsMatchContainmentHandler.class.getName());
 
     private final DefinitionManager definitionManager;
     private final TreeWalkTraverseProcessor treeWalkTraverseProcessor;
@@ -95,14 +94,22 @@ public class ConnectorParentsMatchContainmentHandler
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public boolean accepts(final RuleExtension rule,
                            final NodeContainmentContext context) {
-        if (!GraphUtils.hasConnections(context.getCandidate())) {
-            //this is not necessary to check rules in case there is no connections
-            return false;
-        }
-        return acceptsContainment(rule,
-                                  context);
+        final Collection<Node<? extends Definition<?>, ? extends Edge>> candidates = context.getCandidates();
+        return candidates.stream()
+                .anyMatch(node -> hasAnyEdgeOfInterest(node, rule.getId()));
+    }
+
+    @SuppressWarnings("unchecked")
+    private boolean hasAnyEdgeOfInterest(final Node candidate,
+                                         final String edgeDefId) {
+        final Node<? extends Definition<?>, ? extends Edge> node = candidate;
+        return Stream.concat(node.getInEdges().stream(),
+                             node.getOutEdges().stream())
+                .filter(e -> GraphUtils.isContentSomeDefinition().test(e))
+                .anyMatch(edge -> evalUtils.getElementDefinitionId(edge).equals(edgeDefId));
     }
 
     @Override
@@ -112,29 +119,26 @@ public class ConnectorParentsMatchContainmentHandler
                                    context);
     }
 
-    private boolean acceptsContainment(final RuleExtension rule,
-                                       final NodeContainmentContext context) {
-        final Optional<Class<?>> parentType = getParentType(rule, context.getParent());
-        if (!hasParentType(rule) || !parentType.isPresent()) {
-            return true;
-        }
-
-        final String expectedParentId = parentType.map(BindableAdapterUtils::getDefinitionId).orElse(null);
-        final Element<? extends Definition<?>> parent = context.getParent();
-        final Node<? extends Definition<?>, ? extends Edge> candidate = context.getCandidate();
-        final String parentId = evalUtils.getElementDefinitionId(parent);
-        return parentId.equals(expectedParentId) || hasOldParentType(candidate, expectedParentId);
-    }
-
     @SuppressWarnings("unchecked")
     private RuleViolations evaluateContainment(final RuleExtension rule,
                                                final NodeContainmentContext context) {
-        final String connectorId = rule.getId();
-        final Graph<?, ? extends Node> graph = context.getGraph();
-        final Element<? extends Definition<?>> parent = context.getParent();
-        final Node<? extends Definition<?>, ? extends Edge> candidate = context.getCandidate();
-
         final DefaultRuleViolations result = new DefaultRuleViolations();
+        final Collection<Node<? extends Definition<?>, ? extends Edge>> candidates = context.getCandidates();
+        candidates.forEach(candidate -> evaluateSingleContainment(result,
+                                                                  rule,
+                                                                  context,
+                                                                  candidate));
+        return result;
+    }
+
+    @SuppressWarnings("unchecked")
+    private void evaluateSingleContainment(final DefaultRuleViolations result,
+                                           final RuleExtension rule,
+                                           final NodeContainmentContext context,
+                                           final Node<? extends Definition<?>, ? extends Edge> candidate) {
+        final GraphEvaluationState state = context.getState();
+        final Graph<?, ? extends Node> graph = context.getState().getGraph();
+        final String connectorId = rule.getId();
 
         // Walk throw the graph and evaluate connector source and target nodes parent match.
         treeWalkTraverseProcessor
@@ -158,23 +162,16 @@ public class ConnectorParentsMatchContainmentHandler
                               }
 
                               private boolean process(final Edge edge) {
-
                                   final Optional<String> eId = getId(definitionManager,
                                                                      edge);
                                   if (eId.isPresent() && connectorId.equals(eId.get())) {
-                                      final Node sourceNode = edge.getSourceNode();
-                                      final Node targetNode = edge.getTargetNode();
-                                      boolean valid = true;
-                                      if (null != sourceNode && null != targetNode) {
-                                          //get parent from the connected node to the candidate
-                                          final Element connectedParent = Objects.equals(candidate, sourceNode)
-                                                  ? GraphUtils.getParent(targetNode)
-                                                  : GraphUtils.getParent(sourceNode);
-
-                                          final Optional<Class<?>> parentType = getParentType(rule, context.getParent(), connectedParent);
-                                          valid = new FilteredParentsTypeMatcher(definitionManager, parent, candidate, parentType)
-                                                  .test(sourceNode, targetNode);
-                                      }
+                                      final Node sourceNode = state.getConnectionState().getSource(edge);
+                                      final Node targetNode = state.getConnectionState().getTarget(edge);
+                                      final boolean valid = new ParentTypesMatcher(() -> definitionManager,
+                                                                                   e -> getParent(context, e),
+                                                                                   rule.getTypeArguments())
+                                              .matcher()
+                                              .test(sourceNode, targetNode);
                                       if (!valid) {
                                           addViolation(edge.getUUID(),
                                                        rule,
@@ -184,13 +181,5 @@ public class ConnectorParentsMatchContainmentHandler
                                   return true;
                               }
                           });
-        return result;
-    }
-
-    private boolean hasOldParentType(final Node<? extends Definition<?>, ? extends Edge> candidate,
-                                     final String pId) {
-        return GraphUtils.getParentByDefinitionId(definitionManager,
-                                                  candidate,
-                                                  pId).isPresent();
     }
 }

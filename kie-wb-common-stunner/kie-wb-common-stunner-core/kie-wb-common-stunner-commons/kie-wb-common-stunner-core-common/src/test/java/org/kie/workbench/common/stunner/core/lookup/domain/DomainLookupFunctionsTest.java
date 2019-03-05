@@ -48,6 +48,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.stunner.core.lookup.domain.DomainLookupFunctions.isSourceConnectionAllowed;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -170,12 +171,12 @@ public class DomainLookupFunctionsTest {
         Set<String> result = function.execute(context);
         assertTrue(result.contains(TestingGraphInstanceBuilder.DEF1_ID));
         ArgumentCaptor<RuleEvaluationContext> ruleEvaluationContextCaptor = ArgumentCaptor.forClass(RuleEvaluationContext.class);
-        verify(ruleManager, times(1)).evaluate(eq(RULE_SET),
-                                               ruleEvaluationContextCaptor.capture());
+        verify(ruleManager, atLeastOnce()).evaluate(eq(RULE_SET),
+                                                    ruleEvaluationContextCaptor.capture());
         RuleEvaluationContext evaluationContext = ruleEvaluationContextCaptor.getValue();
         assertTrue(evaluationContext instanceof CardinalityContext);
         CardinalityContext cardinalityContext = (CardinalityContext) evaluationContext;
-        assertEquals(1, cardinalityContext.getCandidateCount());
+        assertEquals(1, cardinalityContext.getCurrentCount());
         assertEquals(CardinalityContext.Operation.ADD, cardinalityContext.getOperation().get());
     }
 
@@ -221,7 +222,7 @@ public class DomainLookupFunctionsTest {
         assertTrue(evaluationContext instanceof EdgeCardinalityContext);
         EdgeCardinalityContext cardinalityContext = (EdgeCardinalityContext) evaluationContext;
         assertEquals(DEF_ID2, cardinalityContext.getEdgeRole());
-        assertEquals(0, cardinalityContext.getCandidateCount());
+        assertEquals(0, cardinalityContext.getCurrentCount());
         assertTrue(cardinalityContext.getRoles().contains(ROLE1));
         assertEquals(EdgeCardinalityContext.Direction.INCOMING, cardinalityContext.getDirection());
         assertEquals(CardinalityContext.Operation.ADD, cardinalityContext.getOperation().get());

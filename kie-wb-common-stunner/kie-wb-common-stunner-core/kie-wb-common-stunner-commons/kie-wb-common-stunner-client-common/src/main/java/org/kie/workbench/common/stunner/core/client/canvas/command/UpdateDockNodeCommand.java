@@ -71,7 +71,7 @@ public class UpdateDockNodeCommand extends AbstractCanvasCompositeCommand {
         // Dock the candidate into the parent node, and update candidate's parent, if necessary,
         // to match the parent for 'target'.
         if (mustUpdateParent) {
-            addCommand(new UpdateChildNodeCommand((Node) parentParent, candidate));
+            addCommand(new UpdateChildrenCommand((Node) parentParent, candidate));
         } else {
             // UnDock any existing source node from the candidate.
             // The UpdateChildNodeCommand already peforms the UnDockNodeCommand
@@ -112,7 +112,7 @@ public class UpdateDockNodeCommand extends AbstractCanvasCompositeCommand {
     @Override
     public String toString() {
         return getClass().getSimpleName() +
-                " [parent=" + getUUID(parent) + "," +
-                "candidate=" + getUUID(candidate) + "]";
+                " [parent=" + AbstractCanvasCommand.toUUID(parent) + "," +
+                "candidate=" + AbstractCanvasCommand.toUUID(candidate) + "]";
     }
 }

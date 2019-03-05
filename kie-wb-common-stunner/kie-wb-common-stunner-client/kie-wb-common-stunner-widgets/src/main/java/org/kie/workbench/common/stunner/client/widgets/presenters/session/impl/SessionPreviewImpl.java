@@ -47,7 +47,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.select.Selec
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SingleSelection;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandExecutedEvent;
-import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasUndoCommandExecutedEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandUndoneEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
@@ -299,7 +299,7 @@ public class SessionPreviewImpl<S extends AbstractSession>
     }
 
     @SuppressWarnings("unchecked")
-    void commandUndoExecutedFired(@Observes CanvasUndoCommandExecutedEvent commandUndoExecutedEvent) {
+    void commandUndoExecutedFired(@Observes CanvasCommandUndoneEvent commandUndoExecutedEvent) {
         checkNotNull("commandUndoExecutedEvent",
                      commandUndoExecutedEvent);
         final Command<AbstractCanvasHandler, CanvasViolation> command = commandUndoExecutedEvent.getCommand();

@@ -16,29 +16,31 @@
 
 package org.kie.workbench.common.stunner.core.rule.context.impl;
 
+import java.util.Collection;
+
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
-import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.rule.RuleEvaluationContext;
 import org.kie.workbench.common.stunner.core.rule.context.NodeContainmentContext;
 
 class NodeContainmentContextImpl
-        extends AbstractGraphEvaluationContext
+        extends AbstractGraphEvaluationContext<NodeContainmentContextImpl>
         implements NodeContainmentContext {
 
     private final Element<? extends Definition<?>> parent;
-    private final Node<? extends Definition<?>, ? extends Edge> candidate;
+    private final Collection<Node<? extends Definition<?>, ? extends Edge>> candidates;
 
-    NodeContainmentContextImpl(final String name,
-                               final Graph<?, ? extends Node> graph,
-                               final Element<? extends Definition<?>> parent,
-                               final Node<? extends Definition<?>, ? extends Edge> candidate) {
-        super(name,
-              graph);
+    NodeContainmentContextImpl(final Element<? extends Definition<?>> parent,
+                               final Collection<Node<? extends Definition<?>, ? extends Edge>> candidates) {
         this.parent = parent;
-        this.candidate = candidate;
+        this.candidates = candidates;
+    }
+
+    @Override
+    public String getName() {
+        return "Containment";
     }
 
     @Override
@@ -47,8 +49,8 @@ class NodeContainmentContextImpl
     }
 
     @Override
-    public Node<? extends Definition<?>, ? extends Edge> getCandidate() {
-        return candidate;
+    public Collection<Node<? extends Definition<?>, ? extends Edge>> getCandidates() {
+        return candidates;
     }
 
     @Override

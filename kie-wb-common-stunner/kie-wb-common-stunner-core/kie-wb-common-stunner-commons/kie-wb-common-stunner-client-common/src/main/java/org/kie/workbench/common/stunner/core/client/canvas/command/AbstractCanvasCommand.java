@@ -15,7 +15,9 @@
  */
 package org.kie.workbench.common.stunner.core.client.canvas.command;
 
+import java.util.Collection;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
@@ -38,12 +40,17 @@ public abstract class AbstractCanvasCommand implements CanvasCommand<AbstractCan
         return CanvasCommandResultBuilder.SUCCESS;
     }
 
-    protected String getUUID(final
-                             Element<?> element) {
+    public static String toUUIDs(final Collection<? extends Element> elements) {
+        return elements.stream()
+                .map(AbstractCanvasCommand::toUUID)
+                .collect(Collectors.joining(","));
+    }
+
+    public static String toUUID(final Element<?> element) {
         return null != element ? element.getUUID() : "null";
     }
 
-    protected boolean checkShapeNotNull(final AbstractCanvasHandler context, final String uuid){
+    protected boolean checkShapeNotNull(final AbstractCanvasHandler context, final String uuid) {
         return Objects.nonNull(context.getCanvas().getShape(uuid));
     }
 }

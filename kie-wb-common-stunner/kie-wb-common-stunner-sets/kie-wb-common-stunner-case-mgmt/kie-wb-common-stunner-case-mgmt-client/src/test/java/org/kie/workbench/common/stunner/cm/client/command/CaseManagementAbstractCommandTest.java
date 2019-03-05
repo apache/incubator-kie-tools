@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Function;
 
 import org.kie.workbench.common.stunner.cm.client.canvas.CaseManagementCanvas;
 import org.kie.workbench.common.stunner.cm.client.canvas.CaseManagementCanvasHandler;
@@ -29,16 +30,19 @@ import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
+import org.kie.workbench.common.stunner.core.graph.command.AbstractGraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.impl.GraphImpl;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.core.graph.processing.index.map.MapIndex;
 import org.kie.workbench.common.stunner.core.graph.store.GraphNodeStoreImpl;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
+import org.kie.workbench.common.stunner.core.rule.context.GraphEvaluationContext;
+import org.kie.workbench.common.stunner.core.rule.violations.EmptyRuleViolations;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
@@ -61,7 +65,7 @@ public abstract class CaseManagementAbstractCommandTest {
     protected Metadata metadata;
 
     @Mock
-    protected GraphCommandExecutionContext context;
+    protected AbstractGraphCommandExecutionContext context;
 
     protected Graph<String, Node> graph;
     protected Index index;
@@ -102,10 +106,12 @@ public abstract class CaseManagementAbstractCommandTest {
                                   new HashMap<>(),
                                   new HashMap<>());
 
+        when(context.evaluate(any(Function.class))).thenReturn(new EmptyRuleViolations());
         when(canvasHandler.getDiagram()).thenReturn(diagram);
         when(canvasHandler.getCanvas()).thenReturn(canvas);
         when(canvasHandler.getGraphExecutionContext()).thenReturn(context);
         when(context.getGraphIndex()).thenReturn(index);
+        when(context.evaluate(any(GraphEvaluationContext.class))).thenReturn(new EmptyRuleViolations());
         when(canvasHandler.getGraphIndex()).thenReturn(index);
         when(diagram.getMetadata()).thenReturn(metadata);
         when(diagram.getGraph()).thenReturn(graph);

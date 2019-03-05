@@ -16,13 +16,10 @@
 
 package org.kie.workbench.common.stunner.core.rule.ext.impl;
 
-import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.graph.Edge;
-import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.rule.RuleEvaluationContext;
 import org.kie.workbench.common.stunner.core.rule.ext.RuleExtension;
@@ -32,28 +29,6 @@ import org.kie.workbench.common.stunner.core.rule.violations.RuleViolationImpl;
 
 public abstract class AbstractParentsMatchHandler<T extends AbstractParentsMatchHandler, C extends RuleEvaluationContext>
         extends RuleExtensionHandler<T, C> {
-
-    /**
-     * Returns the match parent type that matches the {@link RuleExtension#getTypeArguments()} considering the given parents.
-     * @param rule
-     * @param parent
-     * @return
-     */
-    public static Optional<Class<?>> getParentType(final RuleExtension rule, Element<? extends Definition>... parent) {
-        final Class<?>[] typeArguments = rule.getTypeArguments();
-        return Stream.of(parent)
-                .filter(Objects::nonNull)
-                .map(Element::getContent)
-                .map(Definition::getDefinition)
-                .map(Object::getClass)
-                .filter(parentClass -> Stream.of(typeArguments).anyMatch(type -> Objects.equals(type, parentClass)))
-                .findFirst()
-                .map(c -> (Class<?>) c);
-    }
-
-    public static boolean hasParentType(final RuleExtension rule) {
-        return Objects.nonNull(rule.getTypeArguments()) && rule.getTypeArguments().length > 0;
-    }
 
     protected String getViolationMessage(final RuleExtension rule) {
         final String[] arguments = rule.getArguments();

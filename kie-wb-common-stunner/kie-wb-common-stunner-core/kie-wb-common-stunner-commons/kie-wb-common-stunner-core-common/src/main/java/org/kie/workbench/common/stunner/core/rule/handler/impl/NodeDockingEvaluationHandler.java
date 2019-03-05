@@ -29,7 +29,7 @@ import org.kie.workbench.common.stunner.core.graph.content.definition.Definition
 import org.kie.workbench.common.stunner.core.rule.RuleEvaluationHandler;
 import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 import org.kie.workbench.common.stunner.core.rule.context.NodeDockingContext;
-import org.kie.workbench.common.stunner.core.rule.context.impl.RuleContextBuilder;
+import org.kie.workbench.common.stunner.core.rule.context.impl.RuleEvaluationContextBuilder;
 import org.kie.workbench.common.stunner.core.rule.impl.CanDock;
 import org.kie.workbench.common.stunner.core.rule.violations.DefaultRuleViolations;
 
@@ -68,8 +68,8 @@ public class NodeDockingEvaluationHandler implements RuleEvaluationHandler<CanDo
         // As for acceptance checking, the delegated handler only needs the parent node id, no need
         // to calculate roles for the candidate node, so using an empty set.
         return dockingHandler.accepts(rule,
-                                      RuleContextBuilder.DomainContexts.docking(parentLabels,
-                                                                                Collections.emptySet()));
+                                      RuleEvaluationContextBuilder.DomainContexts.docking(parentLabels,
+                                                                                          Collections.emptySet()));
     }
 
     @Override
@@ -82,8 +82,8 @@ public class NodeDockingEvaluationHandler implements RuleEvaluationHandler<CanDo
         result.addViolations(
                 dockingHandler
                         .evaluate(rule,
-                                  RuleContextBuilder.DomainContexts.docking(parentLabels,
-                                                                            candidateLabels))
+                                  RuleEvaluationContextBuilder.DomainContexts.docking(parentLabels,
+                                                                                      candidateLabels))
         );
         return GraphEvaluationHandlerUtils.addViolationsSourceUUID(target.getUUID(),
                                                                    result);

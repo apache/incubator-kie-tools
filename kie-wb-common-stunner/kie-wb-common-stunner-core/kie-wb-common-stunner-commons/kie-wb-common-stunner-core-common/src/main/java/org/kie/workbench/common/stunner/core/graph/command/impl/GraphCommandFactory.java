@@ -71,17 +71,17 @@ public class GraphCommandFactory {
     }
 
     @SuppressWarnings("unchecked")
-    public SetChildNodeCommand setChildNode(final Node parent,
-                                            final Node candidate) {
-        return new SetChildNodeCommand(parent,
-                                       candidate);
+    public SetChildrenCommand setChild(final Node parent,
+                                       final Node candidate) {
+        return new SetChildrenCommand(parent,
+                                      candidate);
     }
 
     @SuppressWarnings("unchecked")
-    public SetParentNodeCommand setParentNode(final Node parent,
-                                              final Node candidate) {
-        return new SetParentNodeCommand(parent,
-                                        candidate);
+    public SetChildrenCommand setChildren(final Node parent,
+                                          final Collection candidates) {
+        return new SetChildrenCommand(parent,
+                                      candidates);
     }
 
     @SuppressWarnings("unchecked")
@@ -146,17 +146,17 @@ public class GraphCommandFactory {
     }
 
     @SuppressWarnings("unchecked")
-    public RemoveChildCommand removeChild(final Node parent,
-                                          final Node candidate) {
-        return new RemoveChildCommand(parent,
-                                      candidate);
+    public RemoveChildrenCommand removeChild(final Node parent,
+                                             final Node candidate) {
+        return new RemoveChildrenCommand(parent,
+                                         candidate);
     }
 
     @SuppressWarnings("unchecked")
-    public RemoveParentCommand removeFromParent(final Node parent,
-                                                final Node candidate) {
-        return new RemoveParentCommand(parent,
-                                       candidate);
+    public RemoveChildrenCommand removeChildren(final Node parent,
+                                                final Collection candidates) {
+        return new RemoveChildrenCommand(parent,
+                                         candidates);
     }
 
     @SuppressWarnings("unchecked")

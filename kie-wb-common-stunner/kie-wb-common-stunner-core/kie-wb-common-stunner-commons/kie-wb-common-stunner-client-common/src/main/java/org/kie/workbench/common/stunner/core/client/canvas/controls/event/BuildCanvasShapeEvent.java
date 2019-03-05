@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.controls.event;
 
-import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
@@ -24,7 +23,6 @@ import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 /**
  * Event for requesting the canvas builder control to add a new shape.
  */
-@NonPortable
 public final class BuildCanvasShapeEvent extends AbstractCanvasHandlerEvent<AbstractCanvasHandler> {
 
     private Object definition;

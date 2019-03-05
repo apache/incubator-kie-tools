@@ -62,6 +62,7 @@ public class CardinalityEvaluationHandlerTest {
     @Before
     public void setup() throws Exception {
         when(context.getRoles()).thenReturn(ROLES);
+        when(context.getCandidateCount()).thenReturn(1);
         tested = new CardinalityEvaluationHandler();
     }
 
@@ -79,14 +80,14 @@ public class CardinalityEvaluationHandlerTest {
 
     @Test
     public void testEvaluateNoLimit() {
-        when(context.getCandidateCount()).thenReturn(0);
+        when(context.getCurrentCount()).thenReturn(0);
         when(context.getOperation()).thenReturn(Optional.of(CardinalityContext.Operation.ADD));
         RuleViolations violations = tested.evaluate(RULE_NO_LIMIT,
                                                     context);
         assertNotNull(violations);
         assertFalse(violations.violations(RuleViolation.Type.ERROR).iterator().hasNext());
 
-        when(context.getCandidateCount()).thenReturn(100);
+        when(context.getCurrentCount()).thenReturn(100);
         when(context.getOperation()).thenReturn(Optional.of(CardinalityContext.Operation.ADD));
         violations = tested.evaluate(RULE_NO_LIMIT,
                                      context);
@@ -96,7 +97,7 @@ public class CardinalityEvaluationHandlerTest {
 
     @Test
     public void testMinOneSuccess() {
-        when(context.getCandidateCount()).thenReturn(0);
+        when(context.getCurrentCount()).thenReturn(0);
         when(context.getOperation()).thenReturn(Optional.of(CardinalityContext.Operation.ADD));
         RuleViolations violations = tested.evaluate(RULE_MIN_1,
                                                     context);
@@ -106,7 +107,7 @@ public class CardinalityEvaluationHandlerTest {
 
     @Test
     public void testMinOneFailed1() {
-        when(context.getCandidateCount()).thenReturn(1);
+        when(context.getCurrentCount()).thenReturn(1);
         when(context.getOperation()).thenReturn(Optional.of(CardinalityContext.Operation.DELETE));
         RuleViolations violations = tested.evaluate(RULE_MIN_1,
                                                     context);
@@ -116,7 +117,7 @@ public class CardinalityEvaluationHandlerTest {
 
     @Test
     public void testMaxOneSuccess() {
-        when(context.getCandidateCount()).thenReturn(0);
+        when(context.getCurrentCount()).thenReturn(0);
         when(context.getOperation()).thenReturn(Optional.of(CardinalityContext.Operation.ADD));
         RuleViolations violations = tested.evaluate(RULE_MAX_1,
                                                     context);
@@ -126,7 +127,7 @@ public class CardinalityEvaluationHandlerTest {
 
     @Test
     public void testMaxOneFailed1() {
-        when(context.getCandidateCount()).thenReturn(1);
+        when(context.getCurrentCount()).thenReturn(1);
         when(context.getOperation()).thenReturn(Optional.of(CardinalityContext.Operation.ADD));
         RuleViolations violations = tested.evaluate(RULE_MAX_1,
                                                     context);

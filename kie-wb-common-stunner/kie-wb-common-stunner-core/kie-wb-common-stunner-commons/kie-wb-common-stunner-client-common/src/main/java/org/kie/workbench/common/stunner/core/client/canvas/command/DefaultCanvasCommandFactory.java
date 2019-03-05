@@ -100,24 +100,33 @@ public abstract class DefaultCanvasCommandFactory implements CanvasCommandFactor
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public CanvasCommand<AbstractCanvasHandler> setChildNode(final Node parent,
                                                              final Node candidate) {
-        return new SetChildNodeCommand(parent,
-                                       candidate);
+        return new SetChildrenCommand(parent,
+                                      candidate);
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public CanvasCommand<AbstractCanvasHandler> removeChild(final Node parent,
                                                             final Node candidate) {
-        return new RemoveChildCommand(parent,
-                                      candidate);
+        return new RemoveChildrenCommand(parent,
+                                         candidate);
     }
 
     @Override
     public CanvasCommand<AbstractCanvasHandler> updateChildNode(final Node parent,
                                                                 final Node candidate) {
-        return new UpdateChildNodeCommand(parent,
-                                          candidate);
+        return new UpdateChildrenCommand(parent,
+                                         candidate);
+    }
+
+    @Override
+    public CanvasCommand<AbstractCanvasHandler> updateChildren(final Node parent,
+                                                               final Collection<Node> candidates) {
+        return new UpdateChildrenCommand(parent,
+                                         candidates);
     }
 
     @Override

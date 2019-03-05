@@ -27,6 +27,8 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.mouse.CanvasMou
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
+import org.kie.workbench.common.stunner.core.graph.command.ContextualGraphCommandExecutionContext;
+import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
@@ -38,6 +40,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -51,33 +54,38 @@ import static org.mockito.Mockito.when;
 public class RequestCommandManagerTest {
 
     @Mock
-    SessionManager clientSessionManager;
+    private SessionManager clientSessionManager;
     @Mock
-    AbstractCanvasHandler canvasHandler;
+    private AbstractCanvasHandler canvasHandler;
     @Mock
-    AbstractCanvas canvas;
+    private AbstractCanvas canvas;
     @Mock
-    EditorSession editorSession;
+    private EditorSession editorSession;
     @Mock
-    Command<AbstractCanvasHandler, CanvasViolation> command;
+    private ContextualGraphCommandExecutionContext executionContext;
     @Mock
-    Command<AbstractCanvasHandler, CanvasViolation> command1;
+    private Command<AbstractCanvasHandler, CanvasViolation> command;
     @Mock
-    Command<AbstractCanvasHandler, CanvasViolation> command2;
+    private Command<AbstractCanvasHandler, CanvasViolation> command1;
     @Mock
-    CommandRegistry<Command<AbstractCanvasHandler, CanvasViolation>> commandRegistry;
+    private Command<AbstractCanvasHandler, CanvasViolation> command2;
     @Mock
-    CanvasMouseDownEvent mouseDownEvent;
+    private CommandRegistry<Command<AbstractCanvasHandler, CanvasViolation>> commandRegistry;
     @Mock
-    CanvasMouseUpEvent mouseUpEvent;
+    private CanvasMouseDownEvent mouseDownEvent;
+    @Mock
+    private CanvasMouseUpEvent mouseUpEvent;
 
     private RequestCommandManager tested;
+    private CanvasCommandManager<AbstractCanvasHandler> commandManager;
 
     @Before
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
-        CanvasCommandManagerImpl commandManager = new CanvasCommandManagerImpl();
+        commandManager = new CanvasCommandManagerImpl<>();
         when(canvasHandler.getCanvas()).thenReturn(canvas);
+        when(canvasHandler.getGraphIndex()).thenReturn(mock(Index.class));
+        when(canvasHandler.getGraphExecutionContext()).thenReturn(executionContext);
         when(clientSessionManager.getCurrentSession()).thenReturn(editorSession);
         when(editorSession.getCanvasHandler()).thenReturn(canvasHandler);
         when(editorSession.getCommandRegistry()).thenReturn(commandRegistry);
@@ -163,8 +171,6 @@ public class RequestCommandManagerTest {
                times(0)).peek();
         verify(commandRegistry,
                times(0)).pop();
-        verify(command, times(1)).undo(eq(canvasHandler));
-        verify(command1, times(1)).undo(eq(canvasHandler));
     }
 
     @Test

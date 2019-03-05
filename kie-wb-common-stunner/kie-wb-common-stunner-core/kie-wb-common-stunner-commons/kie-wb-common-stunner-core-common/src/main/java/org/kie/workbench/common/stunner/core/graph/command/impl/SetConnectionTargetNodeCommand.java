@@ -32,7 +32,6 @@ import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.rule.context.CardinalityContext;
 import org.kie.workbench.common.stunner.core.rule.context.EdgeCardinalityContext;
-import org.kie.workbench.common.stunner.core.rule.context.impl.RuleContextBuilder;
 
 /**
  * A Command to set the incoming connection for an edge.
@@ -121,31 +120,28 @@ public final class SetConnectionTargetNodeCommand extends AbstractGraphCommand {
         if ((null == lastTargetNode && null != targetNode) ||
                 (null != lastTargetNode && (!lastTargetNode.equals(targetNode)))) {
             final Collection<RuleViolation> connectionRuleViolations =
-                    doEvaluate(context,
-                               RuleContextBuilder.GraphContexts.connection(getGraph(context),
-                                                                           edge,
-                                                                           Optional.ofNullable(sourceNode),
-                                                                           Optional.ofNullable(targetNode)));
+                    evaluate(context,
+                             contextBuilder -> contextBuilder.connection(edge,
+                                                                         Optional.ofNullable(sourceNode),
+                                                                         Optional.ofNullable(targetNode)));
             resultBuilder.addViolations(connectionRuleViolations);
             final Node<? extends View<?>, Edge> currentTarget = edge.getTargetNode();
             if (null != currentTarget) {
                 final Collection<RuleViolation> cardinalityRuleViolations =
-                        doEvaluate(context,
-                                   RuleContextBuilder.GraphContexts.edgeCardinality(getGraph(context),
-                                                                                    currentTarget,
-                                                                                    edge,
-                                                                                    EdgeCardinalityContext.Direction.INCOMING,
-                                                                                    Optional.of(CardinalityContext.Operation.DELETE)));
+                        evaluate(context,
+                                 contextBuilder -> contextBuilder.edgeCardinality(currentTarget,
+                                                                                  edge,
+                                                                                  EdgeCardinalityContext.Direction.INCOMING,
+                                                                                  Optional.of(CardinalityContext.Operation.DELETE)));
                 resultBuilder.addViolations(cardinalityRuleViolations);
             }
             if (null != targetNode) {
                 final Collection<RuleViolation> cardinalityRuleViolations =
-                        doEvaluate(context,
-                                   RuleContextBuilder.GraphContexts.edgeCardinality(getGraph(context),
-                                                                                    targetNode,
-                                                                                    edge,
-                                                                                    EdgeCardinalityContext.Direction.INCOMING,
-                                                                                    Optional.of(CardinalityContext.Operation.ADD)));
+                        evaluate(context,
+                                 contextBuilder -> contextBuilder.edgeCardinality(targetNode,
+                                                                                  edge,
+                                                                                  EdgeCardinalityContext.Direction.INCOMING,
+                                                                                  Optional.of(CardinalityContext.Operation.ADD)));
 
                 resultBuilder.addViolations(cardinalityRuleViolations);
             }

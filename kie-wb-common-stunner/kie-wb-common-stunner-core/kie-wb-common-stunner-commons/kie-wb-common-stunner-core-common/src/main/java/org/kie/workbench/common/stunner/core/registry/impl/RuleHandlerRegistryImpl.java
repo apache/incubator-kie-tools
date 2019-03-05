@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.core.registry.impl;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -43,7 +44,8 @@ public class RuleHandlerRegistryImpl implements RuleHandlerRegistry {
 
     @Override
     public Collection<RuleEvaluationHandler> getHandlersByContext(final Class<?> contextType) {
-        return handlers.get(contextType);
+        return handlers.getOrDefault(contextType,
+                                     Collections.emptyList());
     }
 
     @Override

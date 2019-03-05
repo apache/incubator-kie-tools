@@ -22,7 +22,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.BaseCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasGraphCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandExecutedEvent;
-import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasUndoCommandExecutedEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandUndoneEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.command.Command;
@@ -43,8 +43,8 @@ public abstract class BaseCommandsTest {
     }
 
     @SuppressWarnings("unchecked")
-    protected CanvasUndoCommandExecutedEvent makeCommandUndoContext(final Command command) {
-        return new CanvasUndoCommandExecutedEvent(canvasHandler,
+    protected CanvasCommandUndoneEvent makeCommandUndoContext(final Command command) {
+        return new CanvasCommandUndoneEvent(canvasHandler,
                                                   command,
                                                   CanvasCommandResultBuilder.SUCCESS);
     }

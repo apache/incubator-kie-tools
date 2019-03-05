@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.controls.event;
 
-import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
@@ -25,7 +24,6 @@ import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 /**
  * Event for the start of a drag operation for a prospective new shape.
  */
-@NonPortable
 public final class CanvasShapeDragStartEvent extends AbstractCanvasHandlerEvent<AbstractCanvasHandler> {
 
     private Object definition;

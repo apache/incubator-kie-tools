@@ -73,7 +73,7 @@ public class UpdateCanvasControlPointPositionCommand extends AbstractCanvasComma
     @Override
     public String toString() {
         return getClass().getSimpleName() +
-                " [edge=" + getUUID(edge) + "," +
+                " [edge=" + toUUID(edge) + "," +
                 "controlPoints=" + Arrays.toString(controlPoints) + "]";
     }
 }

@@ -20,9 +20,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
+import org.kie.soup.commons.util.Sets;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -39,17 +38,18 @@ import org.kie.workbench.common.stunner.core.rule.impl.Occurrences;
 public class TestingGraphInstanceBuilder {
 
     public static final String DEF0_ID = "def0";
-    public static final Set<String> DEF0_LABELS = Collections.singleton("label0");
+    public static final Set<String> DEF0_LABELS = new Sets.Builder<String>().add("label0").add("all").build();
+    //public static final Set<String> DEF0_LABELS = Collections.singleton("label0");
     public static final String DEF1_ID = "def1";
-    public static final Set<String> DEF1_LABELS = Collections.singleton("label1");
+    public static final Set<String> DEF1_LABELS = new Sets.Builder<String>().add("label1").add("all").build();
     public static final String DEF2_ID = "def2";
-    public static final Set<String> DEF2_LABELS = Stream.of("label2, dockLabel").collect(Collectors.toSet());
+    public static final Set<String> DEF2_LABELS = new Sets.Builder<String>().add("label2").add("dockLabel").add("all").build();
     public static final String DEF3_ID = "def3";
-    public static final Set<String> DEF3_LABELS = Collections.singleton("label3");
+    public static final Set<String> DEF3_LABELS = new Sets.Builder<String>().add("label3").add("all").build();
     public static final String DEF4_ID = "def4";
-    public static final Set<String> DEF4_LABELS = Collections.singleton("label4");
+    public static final Set<String> DEF4_LABELS = new Sets.Builder<String>().add("label4").add("all").build();
     public static final String DEF5_ID = "def5";
-    public static final Set<String> DEF5_LABELS = Stream.of("label4", "dockLabel").collect(Collectors.toSet());
+    public static final Set<String> DEF5_LABELS = new Sets.Builder<String>().add("label4").add("dockLabel").add("all").build();
 
     public static final String EDGE1_ID = "edge11d";
     public static final String EDGE2_ID = "edge21d";
@@ -257,15 +257,15 @@ public class TestingGraphInstanceBuilder {
                          result.intermNode)
                 .connectTo(result.edge2,
                            result.endNode);
-        result.evaluationsCount = 18;
+        result.evaluationsCount = 14;
         return result;
     }
 
     @SuppressWarnings("unchecked")
     public static void createDefaultRulesForGraph1(RuleSet ruleSet) {
         List rules = (List) ruleSet.getRules();
-        String def1Label = DEF1_LABELS.iterator().next();
-        String def2Label = DEF2_LABELS.iterator().next();
+        String def1Label = "label1";
+        String def2Label = "label2";
         rules.add(new CanConnect("connectionFromStartToIntermediateForEdge1",
                                  EDGE1_ID,
                                  Collections.singletonList(new CanConnect.PermittedConnection(def1Label,
@@ -328,7 +328,7 @@ public class TestingGraphInstanceBuilder {
                          result.intermNode)
                 .connectTo(result.edge2,
                            result.endNode);
-        result.evaluationsCount = 23;
+        result.evaluationsCount = 19;
         return result;
     }
 
@@ -343,7 +343,6 @@ public class TestingGraphInstanceBuilder {
                 graphTestHandler.newNode(CONTAINER_NODE_UUID,
                                          DEF4_ID,
                                          Optional.of(DEF4_LABELS));
-
         result.startNode =
                 graphTestHandler.newNode(START_NODE_UUID,
                                          DEF1_ID,
@@ -441,7 +440,7 @@ public class TestingGraphInstanceBuilder {
                          result.intermNode)
                 .connectTo(result.edge2,
                            result.intermNode);
-        result.evaluationsCount = 23;
+        result.evaluationsCount = 19;
         return result;
     }
 }

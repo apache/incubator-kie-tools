@@ -28,7 +28,7 @@ import org.kie.workbench.common.stunner.core.registry.RegistryFactory;
 import org.kie.workbench.common.stunner.core.registry.rule.RuleHandlerRegistry;
 import org.kie.workbench.common.stunner.core.rule.context.ConnectionContext;
 import org.kie.workbench.common.stunner.core.rule.context.ContainmentContext;
-import org.kie.workbench.common.stunner.core.rule.context.impl.RuleContextBuilder;
+import org.kie.workbench.common.stunner.core.rule.context.impl.RuleEvaluationContextBuilder;
 import org.kie.workbench.common.stunner.core.rule.handler.impl.ConnectionEvaluationHandler;
 import org.kie.workbench.common.stunner.core.rule.handler.impl.ContainmentEvaluationHandler;
 import org.kie.workbench.common.stunner.core.rule.impl.CanConnect;
@@ -62,15 +62,15 @@ public class CachedRuleManagerTest {
     @Mock
     private RuleSet ruleSet;
 
-    private ContainmentContext containmentContext = RuleContextBuilder.DomainContexts.containment(Collections.emptySet(),
-                                                                                                  Collections.emptySet());
+    private ContainmentContext containmentContext = RuleEvaluationContextBuilder.DomainContexts.containment(Collections.emptySet(),
+                                                                                                            Collections.emptySet());
 
     @Mock
     private ContainmentEvaluationHandler containmentHandler;
 
-    private ConnectionContext connectionContext = RuleContextBuilder.DomainContexts.connection("role1",
-                                                                                               Optional.empty(),
-                                                                                               Optional.empty());
+    private ConnectionContext connectionContext = RuleEvaluationContextBuilder.DomainContexts.connection("role1",
+                                                                                                         Optional.empty(),
+                                                                                                         Optional.empty());
 
     @Mock
     private ConnectionEvaluationHandler connectionHandler;

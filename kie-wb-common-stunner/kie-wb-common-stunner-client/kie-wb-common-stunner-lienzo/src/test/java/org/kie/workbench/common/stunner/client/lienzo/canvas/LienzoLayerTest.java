@@ -23,6 +23,7 @@ import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.OnLayerAfterDraw;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,6 +35,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -58,6 +60,7 @@ public class LienzoLayerTest {
     @Before
     public void setUp() throws Exception {
         transform = new Transform();
+        when(layer.getChildNodes()).thenReturn(new NFastArrayList<>());
         when(layer.getScene()).thenReturn(scene);
         when(layer.getViewport()).thenReturn(viewport);
         when(scene.getTopLayer()).thenReturn(topLayer);
@@ -70,6 +73,13 @@ public class LienzoLayerTest {
     public void testAdd() {
         tested.add(shape);
         verify(layer, times(1)).add(eq(shape));
+    }
+
+    @Test
+    public void testAddTwice() {
+        when(layer.getChildNodes()).thenReturn(new NFastArrayList<>(shape));
+        tested.add(shape);
+        verify(layer, never()).add(eq(shape));
     }
 
     @Test

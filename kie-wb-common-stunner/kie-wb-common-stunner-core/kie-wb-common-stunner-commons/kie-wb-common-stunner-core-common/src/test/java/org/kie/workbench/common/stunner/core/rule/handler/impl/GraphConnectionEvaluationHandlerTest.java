@@ -28,9 +28,11 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionId;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
+import org.kie.workbench.common.stunner.core.graph.impl.GraphImpl;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 import org.kie.workbench.common.stunner.core.rule.context.GraphConnectionContext;
+import org.kie.workbench.common.stunner.core.rule.context.impl.StatefulGraphEvaluationState;
 import org.kie.workbench.common.stunner.core.rule.impl.CanConnect;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -85,6 +87,8 @@ public class GraphConnectionEvaluationHandlerTest extends AbstractGraphRuleHandl
         when(context.getConnector()).thenReturn(edge);
         when(context.getSource()).thenReturn(Optional.of(parent));
         when(context.getTarget()).thenReturn(Optional.of(candidate));
+        StatefulGraphEvaluationState state = new StatefulGraphEvaluationState(GraphImpl.build("graphUUID"));
+        when(context.getState()).thenReturn(state);
         tested = new GraphConnectionEvaluationHandler(definitionManager,
                                                       HANDLER);
     }

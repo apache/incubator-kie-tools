@@ -69,7 +69,7 @@ public class UpdateElementPropertyCommand extends AbstractCanvasGraphCommand {
     @Override
     public String toString() {
         return getClass().getSimpleName() +
-                " [element=" + getUUID(element) + "," +
+                " [element=" + toUUID(element) + "," +
                 "propertyId=" + propertyId + "," +
                 "value=" + value + "]";
     }

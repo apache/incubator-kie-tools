@@ -45,7 +45,7 @@ import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.command.EmptyRulesCommandExecutionContext;
+import org.kie.workbench.common.stunner.core.graph.command.DirectGraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.impl.GraphCommandFactory;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
@@ -234,10 +234,9 @@ public class BPMNGraphGenerator extends JsonGenerator {
         @SuppressWarnings("unchecked")
         public CommandResult<RuleViolation> execute(final Command<GraphCommandExecutionContext, RuleViolation> command) {
             GraphCommandExecutionContext executionContext =
-                    new EmptyRulesCommandExecutionContext(definitionManager,
-                                                          factoryManager,
-                                                          ruleManager,
-                                                          index);
+                    new DirectGraphCommandExecutionContext(definitionManager,
+                                                           factoryManager,
+                                                           index);
             return commandManager.execute(executionContext,
                                           command);
         }

@@ -113,7 +113,7 @@ public class AddConnectorCommandTest extends AbstractGraphCommandTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testAllowNoRules() {
-        when(graphCommandExecutionContext.getRuleManager()).thenReturn(null);
+        useAllowedExecutionContext();
         CommandResult<RuleViolation> result = tested.allow(graphCommandExecutionContext);
         assertEquals(CommandResult.Type.INFO,
                      result.getType());
@@ -132,7 +132,7 @@ public class AddConnectorCommandTest extends AbstractGraphCommandTest {
         assertEquals(edge,
                      node.getOutEdges().get(0));
         verify(graphIndex,
-               times(2)).addEdge(eq(edge));
+               times(1)).addEdge(eq(edge));
         verify(graphIndex,
                times(0)).addNode(any(Node.class));
     }

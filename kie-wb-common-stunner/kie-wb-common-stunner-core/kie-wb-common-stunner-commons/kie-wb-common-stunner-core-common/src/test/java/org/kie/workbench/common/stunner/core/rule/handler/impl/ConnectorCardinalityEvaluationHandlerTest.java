@@ -26,12 +26,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionId;
 import org.kie.workbench.common.stunner.core.graph.Edge;
+import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 import org.kie.workbench.common.stunner.core.rule.context.CardinalityContext;
 import org.kie.workbench.common.stunner.core.rule.context.ConnectorCardinalityContext;
 import org.kie.workbench.common.stunner.core.rule.context.EdgeCardinalityContext;
+import org.kie.workbench.common.stunner.core.rule.context.impl.StatefulGraphEvaluationState;
 import org.kie.workbench.common.stunner.core.rule.impl.EdgeOccurrences;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -42,6 +44,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
@@ -95,6 +98,8 @@ public class ConnectorCardinalityEvaluationHandlerTest extends AbstractGraphRule
         super.setup();
         final Set<String> edgeLabels = Collections.singleton(EDGE_ID);
         evalUtils = spy(new GraphEvaluationHandlerUtils(definitionManager));
+        StatefulGraphEvaluationState graphEvaluationState = new StatefulGraphEvaluationState(mock(Graph.class));
+        when(context.getState()).thenReturn(graphEvaluationState);
         when(context.getCandidate()).thenReturn(candidate);
         when(context.getEdge()).thenReturn(edge);
         when(edge.getContent()).thenReturn(edgeContent);
@@ -156,7 +161,7 @@ public class ConnectorCardinalityEvaluationHandlerTest extends AbstractGraphRule
         RuleViolations violations = tested.evaluate(RULE_IN_MAX_1,
                                                     context);
         assertNotNull(violations);
-        assertTrue(violations.violations(RuleViolation.Type.WARNING).iterator().hasNext());
+        assertTrue(violations.violations(RuleViolation.Type.ERROR).iterator().hasNext());
     }
 
     @Test

@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.wires;
 
+import javax.enterprise.event.Event;
+
 import com.ait.lienzo.client.core.shape.wires.PickerPart;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
@@ -25,6 +27,7 @@ import org.kie.workbench.common.stunner.client.lienzo.shape.animation.ShapeViewD
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.LienzoShapeView;
 import org.kie.workbench.common.stunner.core.client.animation.Animation;
 import org.kie.workbench.common.stunner.core.client.animation.AnimationHandle;
+import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasUnhighlightEvent;
 import org.uberfire.mvp.Command;
 
 public class StunnerWiresShapeHighlight implements WiresShapeHighlight<PickerPart.ShapePart> {
@@ -34,15 +37,20 @@ public class StunnerWiresShapeHighlight implements WiresShapeHighlight<PickerPar
     private static final double HIGHLIGHT_STROKE_PCT = 10d;
     private static final double HIGHLIGHT_ALPHA = 1d;
 
+    private final Event<CanvasUnhighlightEvent> unhighlightEvent;
     private final WiresShapeHighlightImpl delegate;
     private AnimationHandle restoreAnimationHandle;
     private Animation restoreAnimation;
 
-    public StunnerWiresShapeHighlight(final WiresManager wiresManager) {
-        this(new WiresShapeHighlightImpl(wiresManager.getDockingAcceptor().getHotspotSize()));
+    public StunnerWiresShapeHighlight(final WiresManager wiresManager,
+                                      final Event<CanvasUnhighlightEvent> unhighlightEvent) {
+        this(unhighlightEvent,
+             new WiresShapeHighlightImpl(wiresManager.getDockingAcceptor().getHotspotSize()));
     }
 
-    StunnerWiresShapeHighlight(final WiresShapeHighlightImpl delegate) {
+    StunnerWiresShapeHighlight(final Event<CanvasUnhighlightEvent> unhighlightEvent,
+                               final WiresShapeHighlightImpl delegate) {
+        this.unhighlightEvent = unhighlightEvent;
         this.delegate = delegate;
     }
 
@@ -67,6 +75,7 @@ public class StunnerWiresShapeHighlight implements WiresShapeHighlight<PickerPar
         restoreAnimation(() -> {
         });
         delegate.restore();
+        unhighlightEvent.fire(new CanvasUnhighlightEvent());
     }
 
     Animation getRestoreAnimation() {

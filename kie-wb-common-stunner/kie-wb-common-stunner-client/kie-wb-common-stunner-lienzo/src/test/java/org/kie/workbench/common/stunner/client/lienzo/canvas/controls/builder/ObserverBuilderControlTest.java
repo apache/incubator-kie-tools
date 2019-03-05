@@ -60,6 +60,7 @@ import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
@@ -245,7 +246,6 @@ public class ObserverBuilderControlTest {
         when(canvasView.getPanel()).thenReturn(canvasPanel);
         canvasHandler = new CanvasHandlerImpl(clientDefinitionManager,
                                               canvasCommandFactory,
-                                              clientFactoryServices,
                                               ruleManager,
                                               graphUtils,
                                               graphIndexBuilder,
@@ -255,6 +255,9 @@ public class ObserverBuilderControlTest {
                                               null,
                                               null,
                                               null);
+        GraphCommandExecutionContext graphCommandExecutionContext = mock(GraphCommandExecutionContext.class);
+        when(graphCommandExecutionContext.getGraphIndex()).thenReturn(index);
+        canvasHandler.setGraphExecutionContext(() -> graphCommandExecutionContext);
         canvasHandler.handle(canvas);
         canvasHandler.draw(diagram, mock(ParameterizedCommand.class));
 

@@ -17,8 +17,8 @@
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
-import java.util.Optional;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -33,7 +33,6 @@ import org.kie.workbench.common.stunner.core.graph.content.definition.Definition
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.rule.context.CardinalityContext;
-import org.kie.workbench.common.stunner.core.rule.context.impl.RuleContextBuilder;
 
 /**
  * Creates a new node on the target graph and creates/defines a new parent-child connection so new node will be added as a child of
@@ -89,9 +88,9 @@ public class AddChildNodeCommand extends AbstractGraphCompositeCommand {
         return new RegisterNodeCommand(candidate);
     }
 
-    protected SetChildNodeCommand getSetChildNodeCommand(final Node<?, Edge> parent,
-                                                         final Node candidate) {
-        return new SetChildNodeCommand(parent, candidate);
+    protected SetChildrenCommand getSetChildNodeCommand(final Node<?, Edge> parent,
+                                                        final Node candidate) {
+        return new SetChildrenCommand(parent, candidate);
     }
 
     protected UpdateElementPositionCommand getUpdateElementPositionCommand(final Node candidate,
@@ -103,21 +102,15 @@ public class AddChildNodeCommand extends AbstractGraphCompositeCommand {
     @SuppressWarnings("unchecked")
     public CommandResult<RuleViolation> allow(final GraphCommandExecutionContext context) {
         ensureInitialized(context);
-        // Check if rules are present.
-        if (null == context.getRuleManager()) {
-            return GraphCommandResultBuilder.SUCCESS;
-        }
         final Element<? extends Definition<?>> parent = (Element<? extends Definition<?>>) getParent(context);
         final Collection<RuleViolation> containmentRuleViolations =
-                doEvaluate(context,
-                           RuleContextBuilder.GraphContexts.containment(getGraph(context),
-                                                                        parent,
-                                                                        candidate));
+                evaluate(context,
+                         contextBuilder -> contextBuilder.containment(parent,
+                                                                      candidate));
         final Collection<RuleViolation> cardinalityRuleViolations =
-                doEvaluate(context,
-                           RuleContextBuilder.GraphContexts.cardinality(getGraph(context),
-                                                                        Optional.of(candidate),
-                                                                        Optional.of(CardinalityContext.Operation.ADD)));
+                evaluate(context,
+                         contextBuilder -> contextBuilder.cardinality(Collections.singleton(candidate),
+                                                                      CardinalityContext.Operation.ADD));
         final Collection<RuleViolation> violations = new LinkedList<RuleViolation>();
         violations.addAll(containmentRuleViolations);
         violations.addAll(cardinalityRuleViolations);

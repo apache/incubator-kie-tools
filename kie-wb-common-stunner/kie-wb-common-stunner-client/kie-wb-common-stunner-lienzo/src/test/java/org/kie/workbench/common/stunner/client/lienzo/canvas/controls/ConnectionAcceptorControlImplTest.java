@@ -149,7 +149,7 @@ public class ConnectionAcceptorControlImplTest {
                                     eq(setConnectionTargetNodeCommand))).thenReturn(result);
         this.tested = new ConnectionAcceptorControlImpl(canvasCommandFactory,
                                                         cancelCanvasActionEvent,
-                                                        canvasHandler1 -> highlight);
+                                                        highlight);
         this.tested.setCommandManagerProvider(() -> commandManager);
     }
 
@@ -158,6 +158,7 @@ public class ConnectionAcceptorControlImplTest {
         tested.init(canvasHandler);
         assertEquals(canvasHandler,
                      tested.getCanvasHandler());
+        verify(highlight, times(1)).setCanvasHandler(eq(canvasHandler));
         verify(wiresManager,
                times(1)).setConnectionAcceptor(any(IConnectionAcceptor.class));
         verify(wiresManager,

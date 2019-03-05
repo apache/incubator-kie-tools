@@ -23,14 +23,11 @@ import org.kie.workbench.common.stunner.core.rule.context.ContainmentContext;
 
 class ContainmentContextImpl implements ContainmentContext {
 
-    private final String name;
     private final Set<String> roles;
     private final Set<String> allowedRoles;
 
-    ContainmentContextImpl(final String name,
-                           final Set<String> roles,
+    ContainmentContextImpl(final Set<String> roles,
                            final Set<String> allowedRoles) {
-        this.name = name;
         this.roles = roles;
         this.allowedRoles = allowedRoles;
     }
@@ -47,7 +44,7 @@ class ContainmentContextImpl implements ContainmentContext {
 
     @Override
     public String getName() {
-        return name;
+        return "Containment";
     }
 
     @Override

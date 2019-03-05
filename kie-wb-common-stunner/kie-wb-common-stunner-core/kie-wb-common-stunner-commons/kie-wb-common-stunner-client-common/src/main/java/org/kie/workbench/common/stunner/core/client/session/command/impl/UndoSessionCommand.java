@@ -88,6 +88,8 @@ public class UndoSessionCommand extends AbstractClientSessionCommand<EditorSessi
             checkState();
             if (CommandUtils.isError(result)) {
                 callback.onError((V) result);
+                // Clear the actual command registry otherwise the undo will continuously fail as it's same command.
+                getSessionCommandManager().getRegistry().clear();
             } else {
                 callback.onSuccess();
             }

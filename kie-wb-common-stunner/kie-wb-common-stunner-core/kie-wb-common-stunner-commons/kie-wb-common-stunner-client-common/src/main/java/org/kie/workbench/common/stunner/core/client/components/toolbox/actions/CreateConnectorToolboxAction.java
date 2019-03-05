@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.core.client.components.toolbox.actions;
 
 import java.util.Objects;
-import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -67,10 +66,9 @@ public class CreateConnectorToolboxAction extends AbstractToolboxAction {
     private final ConnectorDragProxy<AbstractCanvasHandler> connectorDragProxyFactory;
     private final EdgeBuilderControl<AbstractCanvasHandler> edgeBuilderControl;
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
-    private final Function<AbstractCanvasHandler, CanvasHighlight> canvasHighlightBuilder;
+    private final CanvasHighlight canvasHighlight;
 
     private String edgeId;
-    private CanvasHighlight canvasHighlight;
     private DragProxy<AbstractCanvasHandler, ConnectorDragProxy.Item, DragProxyCallback> dragProxy;
 
     @Inject
@@ -80,25 +78,8 @@ public class CreateConnectorToolboxAction extends AbstractToolboxAction {
                                         final ConnectorDragProxy<AbstractCanvasHandler> connectorDragProxyFactory,
                                         final EdgeBuilderControl<AbstractCanvasHandler> edgeBuilderControl,
                                         final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                                        final ClientTranslationService translationService) {
-        this(definitionUtils,
-             clientFactoryManager,
-             graphBoundsIndexer,
-             connectorDragProxyFactory,
-             edgeBuilderControl,
-             sessionCommandManager,
-             translationService,
-             CanvasHighlight::new);
-    }
-
-    CreateConnectorToolboxAction(final DefinitionUtils definitionUtils,
-                                 final ClientFactoryManager clientFactoryManager,
-                                 final GraphBoundsIndexer graphBoundsIndexer,
-                                 final ConnectorDragProxy<AbstractCanvasHandler> connectorDragProxyFactory,
-                                 final EdgeBuilderControl<AbstractCanvasHandler> edgeBuilderControl,
-                                 final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                                 final ClientTranslationService translationService,
-                                 final Function<AbstractCanvasHandler, CanvasHighlight> canvasHighlightBuilder) {
+                                        final ClientTranslationService translationService,
+                                        final CanvasHighlight canvasHighlight) {
         super(definitionUtils,
               translationService);
         this.clientFactoryManager = clientFactoryManager;
@@ -106,7 +87,7 @@ public class CreateConnectorToolboxAction extends AbstractToolboxAction {
         this.connectorDragProxyFactory = connectorDragProxyFactory;
         this.edgeBuilderControl = edgeBuilderControl;
         this.sessionCommandManager = sessionCommandManager;
-        this.canvasHighlightBuilder = canvasHighlightBuilder;
+        this.canvasHighlight = canvasHighlight;
     }
 
     public CreateConnectorToolboxAction setEdgeId(final String edgeId) {
@@ -246,7 +227,7 @@ public class CreateConnectorToolboxAction extends AbstractToolboxAction {
 
     @SuppressWarnings("unchecked")
     private void start(final AbstractCanvasHandler canvasHandler) {
-        canvasHighlight = canvasHighlightBuilder.apply(canvasHandler);
+        canvasHighlight.setCanvasHandler(canvasHandler);
         graphBoundsIndexer.setRootUUID(canvasHandler.getDiagram().getMetadata().getCanvasRootUUID());
         graphBoundsIndexer.build(canvasHandler.getDiagram().getGraph());
         edgeBuilderControl.init(canvasHandler);
@@ -323,10 +304,7 @@ public class CreateConnectorToolboxAction extends AbstractToolboxAction {
         graphBoundsIndexer.destroy();
         connectorDragProxyFactory.destroy();
         edgeBuilderControl.destroy();
-        if (null != canvasHighlight) {
-            canvasHighlight.destroy();
-            canvasHighlight = null;
-        }
+        canvasHighlight.destroy();
         if (null != dragProxy) {
             dragProxy.destroy();
             dragProxy = null;

@@ -45,9 +45,9 @@ public class AddChildNodeCommand extends org.kie.workbench.common.stunner.core.g
     }
 
     @Override
-    protected SetChildNodeCommand getSetChildNodeCommand(final Node<?, Edge> parent,
-                                                         final Node candidate) {
-        return new SetChildNodeCommand(parent,
-                                       candidate);
+    protected SetChildrenCommand getSetChildNodeCommand(final Node<?, Edge> parent,
+                                                        final Node candidate) {
+        return new SetChildrenCommand(parent,
+                                      candidate);
     }
 }

@@ -19,30 +19,30 @@ package org.kie.workbench.common.stunner.core.rule.context.impl;
 import java.util.Optional;
 
 import org.kie.workbench.common.stunner.core.graph.Edge;
-import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.rule.RuleEvaluationContext;
 import org.kie.workbench.common.stunner.core.rule.context.GraphConnectionContext;
 
 class GraphConnectionContextImpl
-        extends AbstractGraphEvaluationContext
+        extends AbstractGraphEvaluationContext<GraphConnectionContextImpl>
         implements GraphConnectionContext {
 
     private final Edge<? extends View<?>, ? extends Node> connector;
     private final Optional<Node<? extends View<?>, ? extends Edge>> source;
     private final Optional<Node<? extends View<?>, ? extends Edge>> target;
 
-    GraphConnectionContextImpl(final String name,
-                               final Graph<?, ? extends Node> graph,
-                               final Edge<? extends View<?>, ? extends Node> connector,
+    GraphConnectionContextImpl(final Edge<? extends View<?>, ? extends Node> connector,
                                final Optional<Node<? extends View<?>, ? extends Edge>> source,
                                final Optional<Node<? extends View<?>, ? extends Edge>> target) {
-        super(name,
-              graph);
         this.connector = connector;
         this.source = source;
         this.target = target;
+    }
+
+    @Override
+    public String getName() {
+        return "Connection";
     }
 
     @Override

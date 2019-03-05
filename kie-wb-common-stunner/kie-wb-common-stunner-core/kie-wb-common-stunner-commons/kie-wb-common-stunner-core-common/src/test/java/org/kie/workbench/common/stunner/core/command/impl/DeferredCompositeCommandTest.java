@@ -63,7 +63,7 @@ public class DeferredCompositeCommandTest {
     @SuppressWarnings("unchecked")
     public void testAllow() {
         compositeCommand = buildCompositeCommand();
-        expectedException.expectMessage("Deferred commands cannot be evaluated previous to execution.");
+        expectedException.expectMessage(DeferredCompositeCommand.ILLEGAL_ALLOW_MESSAGE);
         compositeCommand.allow(commandExecutionContext);
     }
 
@@ -160,7 +160,7 @@ public class DeferredCompositeCommandTest {
         verifyAllowedExecutedAndUnDone(c1);
 
         //c2 must have been allowed, executed and undone
-        verifyAllowedExecutedAndUnDone(c2);
+        verifyAllowedAndExecuted(c2);
 
         verifyNeverUsed(c3);
         verifyNeverUsed(c4);

@@ -16,46 +16,35 @@
 
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.soup.commons.validation.PortablePreconditions;
-import org.kie.workbench.common.stunner.core.command.Command;
-import org.kie.workbench.common.stunner.core.command.CommandResult;
-import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
-import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.ChildrenTraverseProcessorImpl;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.TreeWalkTraverseProcessorImpl;
 import org.kie.workbench.common.stunner.core.graph.util.SafeDeleteNodeProcessor;
-import org.kie.workbench.common.stunner.core.rule.RuleViolation;
-import org.kie.workbench.common.stunner.core.rule.context.CardinalityContext;
-import org.kie.workbench.common.stunner.core.rule.context.impl.RuleContextBuilder;
 
 /**
  * Deletes a node taking into account its ingoing / outgoing edges and safe remove all node's children as well, if any.
  */
 @Portable
 public class SafeDeleteNodeCommand extends AbstractGraphCompositeCommand {
-
-    private static Logger LOGGER = Logger.getLogger(SafeDeleteNodeCommand.class.getName());
 
     @Portable
     public static final class Options {
@@ -67,7 +56,7 @@ public class SafeDeleteNodeCommand extends AbstractGraphCompositeCommand {
             return new Options(true, new HashSet<>());
         }
 
-        public static Options doNotShortcutConnector() {
+        public static Options doNotShortcutConnectors() {
             return new Options(false, new HashSet<>());
         }
 
@@ -147,8 +136,9 @@ public class SafeDeleteNodeCommand extends AbstractGraphCompositeCommand {
 
                     @Override
                     public void deleteCandidateConnector(final Edge<? extends View<?>, Node> edge) {
-                        // This command will delete candidate's connectors once deleting the candidate node later on,
-                        // as it potentially performs the connectors shortcut operation.
+                        if (!processedConnectors.contains(edge.getUUID())) {
+                            processCandidateConnectors();
+                        }
                     }
 
                     @Override
@@ -175,7 +165,6 @@ public class SafeDeleteNodeCommand extends AbstractGraphCompositeCommand {
 
                     @Override
                     public void deleteCandidateNode(final Node<?, Edge> node) {
-                        processCandidateConnectors();
                         deleteNode(node);
                     }
 
@@ -217,6 +206,8 @@ public class SafeDeleteNodeCommand extends AbstractGraphCompositeCommand {
                                                                       outContent.getTargetConnection().orElse(null)));
                         safeDeleteCallback.ifPresent(c -> c.setEdgeTargetNode(targetNode,
                                                                               in));
+                        processedConnectors.add(in.getUUID());
+                        processedConnectors.add(out.getUUID());
                     }
 
                     private boolean doDeleteConnector(final Edge<? extends View<?>, Node> edge) {
@@ -233,10 +224,10 @@ public class SafeDeleteNodeCommand extends AbstractGraphCompositeCommand {
         return this;
     }
 
-    protected RemoveChildCommand createRemoveChildCommand(final Element<?> parent,
-                                                          final Node<?, Edge> candidate) {
-        return new RemoveChildCommand((Node<?, Edge>) parent,
-                                      candidate);
+    protected AbstractGraphCommand createRemoveChildCommand(final Element<?> parent,
+                                                            final Node<?, Edge> candidate) {
+        return new RemoveChildrenCommand((Node<?, Edge>) parent,
+                                         candidate);
     }
 
     private boolean isElementExcluded(final Element<?> e) {
@@ -246,32 +237,6 @@ public class SafeDeleteNodeCommand extends AbstractGraphCompositeCommand {
     @Override
     protected boolean delegateRulesContextToChildren() {
         return true;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    protected CommandResult<RuleViolation> doAllow(final GraphCommandExecutionContext context,
-                                                   final Command<GraphCommandExecutionContext, RuleViolation> command) {
-        final CommandResult<RuleViolation> result = super.doAllow(context,
-                                                                  command);
-        if (!CommandUtils.isError(result) && hasRules(context)) {
-            final Graph target = getGraph(context);
-            final Node<View<?>, Edge> candidate = (Node<View<?>, Edge>) getCandidate(context);
-            final GraphCommandResultBuilder builder = new GraphCommandResultBuilder();
-            final Collection<RuleViolation> cardinalityRuleViolations =
-                    doEvaluate(context,
-                               RuleContextBuilder.GraphContexts.cardinality(target,
-                                                                            Optional.of(candidate),
-                                                                            Optional.of(CardinalityContext.Operation.DELETE)));
-            builder.addViolations(cardinalityRuleViolations);
-            for (final RuleViolation violation : cardinalityRuleViolations) {
-                if (builder.isError(violation)) {
-                    return builder.build();
-                }
-            }
-            return builder.build();
-        }
-        return result;
     }
 
     @SuppressWarnings("unchecked")
@@ -289,10 +254,6 @@ public class SafeDeleteNodeCommand extends AbstractGraphCompositeCommand {
 
     public Options getOptions() {
         return options;
-    }
-
-    private boolean hasRules(final GraphCommandExecutionContext context) {
-        return null != context.getRuleManager();
     }
 
     private static Predicate<Node<Definition<?>, Edge>> hasSingleIncomingEdge() {

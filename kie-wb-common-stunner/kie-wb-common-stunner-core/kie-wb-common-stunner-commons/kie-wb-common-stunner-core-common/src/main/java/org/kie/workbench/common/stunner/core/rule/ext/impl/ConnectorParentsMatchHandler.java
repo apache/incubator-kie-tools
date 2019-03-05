@@ -91,7 +91,6 @@ public class ConnectorParentsMatchHandler
     @Override
     public boolean accepts(final RuleExtension rule,
                            final RuleEvaluationContext context) {
-        checkParentTypeExists(rule);
         return multiHandler.accepts(rule,
                                     context);
     }
@@ -99,15 +98,7 @@ public class ConnectorParentsMatchHandler
     @Override
     public RuleViolations evaluate(final RuleExtension rule,
                                    final RuleEvaluationContext context) {
-        checkParentTypeExists(rule);
         return multiHandler.evaluate(rule,
                                      context);
-    }
-
-    private void checkParentTypeExists(final RuleExtension rule) {
-        if (!AbstractParentsMatchHandler.hasParentType(rule)) {
-            throw new IllegalArgumentException("No parent type specified in @RuleExtension " +
-                                                       "for handler [" + this.getClass().getName() + "]");
-        }
     }
 }

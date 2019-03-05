@@ -23,7 +23,7 @@ import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandExecutedEvent;
-import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasUndoCommandExecutedEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandUndoneEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
@@ -115,7 +115,7 @@ public class RedoSessionCommand extends AbstractClientSessionCommand<EditorSessi
     }
 
     @SuppressWarnings("unchecked")
-    void onCommandUndoExecuted(final @Observes CanvasUndoCommandExecutedEvent commandUndoExecutedEvent) {
+    void onCommandUndoExecuted(final @Observes CanvasCommandUndoneEvent commandUndoExecutedEvent) {
         checkNotNull("commandUndoExecutedEvent",
                      commandUndoExecutedEvent);
         if (null != commandUndoExecutedEvent.getCommand()) {

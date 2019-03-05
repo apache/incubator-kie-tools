@@ -69,8 +69,8 @@ public class DeleteCanvasConnectorCommand extends AbstractCanvasCommand {
     @Override
     public String toString() {
         return getClass().getSimpleName() +
-                " [candidate=" + getUUID(candidate) + "," +
-                "sourceNode=" + getUUID(candidate.getSourceNode()) + "," +
-                "targetNode=" + getUUID(candidate.getTargetNode()) + "]";
+                " [candidate=" + toUUID(candidate) + "," +
+                "sourceNode=" + toUUID(candidate.getSourceNode()) + "," +
+                "targetNode=" + toUUID(candidate.getTargetNode()) + "]";
     }
 }

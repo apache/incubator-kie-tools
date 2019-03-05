@@ -187,7 +187,7 @@ public class UpdateElementPositionCommandTest extends AbstractGraphCommandTest {
         tested = new UpdateElementPositionCommand(candidate,
                                                   Point2D.create(550d, 550d));
         CommandResult<RuleViolation> result = tested.execute(graphCommandExecutionContext);
-        assertEquals(CommandResult.Type.WARNING, result.getType());
+        assertEquals(CommandResult.Type.ERROR, result.getType());
         assertEquals(view.getBounds().getUpperLeft(), Bound.create(550d, 550d));
         assertEquals(view.getBounds().getLowerRight(), Bound.create(650d, 650d));
     }

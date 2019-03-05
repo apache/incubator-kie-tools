@@ -35,7 +35,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.lienzo.wires.decorator.StunnerPointHandleDecorator;
+import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasUnhighlightEvent;
 import org.mockito.Mock;
+import org.uberfire.mocks.EventSourceMock;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -76,6 +78,9 @@ public class StunnerWiresControlFactoryTest {
     @Mock
     private WiresCompositeControl compositeControl;
 
+    @Mock
+    private EventSourceMock<CanvasUnhighlightEvent> unhighlightEvent;
+
     private StunnerWiresControlFactory tested;
 
     @Before
@@ -94,7 +99,7 @@ public class StunnerWiresControlFactoryTest {
                                            eq(wiresManager))).thenReturn(connectionControl);
         when(delegate.newCompositeControl(eq(compositeContext),
                                           eq(wiresManager))).thenReturn(compositeControl);
-        tested = new StunnerWiresControlFactory(delegate);
+        tested = new StunnerWiresControlFactory(delegate, unhighlightEvent);
     }
 
     @Test

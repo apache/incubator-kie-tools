@@ -54,7 +54,7 @@ public class GraphCommandManagerImpl
     public GraphCommandManagerImpl(final Event<IsCommandAllowedEvent> isCommandAllowedEvent,
                                    final Event<CommandExecutedEvent> commandExecutedEvent,
                                    final Event<CommandUndoExecutedEvent> commandUndoExecutedEvent) {
-        this.commandManager = new CommandManagerImpl<GraphCommandExecutionContext, RuleViolation>();
+        this.commandManager = new CommandManagerImpl<>();
         this.isCommandAllowedEvent = isCommandAllowedEvent;
         this.commandExecutedEvent = commandExecutedEvent;
         this.commandUndoExecutedEvent = commandUndoExecutedEvent;

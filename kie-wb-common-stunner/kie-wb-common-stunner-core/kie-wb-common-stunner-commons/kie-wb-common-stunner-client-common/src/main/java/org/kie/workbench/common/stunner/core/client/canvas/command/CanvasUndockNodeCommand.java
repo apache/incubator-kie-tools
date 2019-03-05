@@ -86,7 +86,7 @@ public class CanvasUndockNodeCommand extends AbstractCanvasCommand {
     @Override
     public String toString() {
         return getClass().getSimpleName() +
-                " [parent=" + getUUID(parent) + "," +
-                "candidate=" + getUUID(child) + "]";
+                " [parent=" + toUUID(parent) + "," +
+                "candidate=" + toUUID(child) + "]";
     }
 }

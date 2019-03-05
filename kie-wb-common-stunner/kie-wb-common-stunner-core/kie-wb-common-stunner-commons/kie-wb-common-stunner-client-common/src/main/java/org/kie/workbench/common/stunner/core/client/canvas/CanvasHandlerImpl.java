@@ -20,7 +20,6 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.client.api.ClientDefinitionManager;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.TextPropertyProviderFactory;
@@ -29,15 +28,12 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.registration.Ca
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementUpdatedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementsClearEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
-import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
-import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContextImpl;
 import org.kie.workbench.common.stunner.core.graph.processing.index.GraphIndexBuilder;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.core.graph.processing.index.MutableIndex;
@@ -46,16 +42,9 @@ import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 
-/**
- * The default canvas handler type implementation for any sutype of <code>AbstractCanvas</code> view and any
- * subtype of <code>Diagram</code> model.
- * @param <D> The diagram type.
- * @param <C> The handled canvas type.
- */
 @Dependent
 public class CanvasHandlerImpl<D extends Diagram, C extends AbstractCanvas> extends BaseCanvasHandler<D, C> {
 
-    private final ClientFactoryService clientFactoryServices;
     private final CanvasCommandFactory<AbstractCanvasHandler> commandFactory;
     private final GraphIndexBuilder<? extends MutableIndex<Node, Edge>> indexBuilder;
     private final RuleManager ruleManager;
@@ -69,7 +58,6 @@ public class CanvasHandlerImpl<D extends Diagram, C extends AbstractCanvas> exte
     @Inject
     public CanvasHandlerImpl(final ClientDefinitionManager clientDefinitionManager,
                              final CanvasCommandFactory<AbstractCanvasHandler> commandFactory,
-                             final ClientFactoryService clientFactoryServices,
                              final RuleManager ruleManager,
                              final GraphUtils graphUtils,
                              final GraphIndexBuilder<? extends MutableIndex<Node, Edge>> indexBuilder,
@@ -86,7 +74,6 @@ public class CanvasHandlerImpl<D extends Diagram, C extends AbstractCanvas> exte
         this.commandFactory = commandFactory;
         this.indexBuilder = indexBuilder;
         this.ruleManager = ruleManager;
-        this.clientFactoryServices = clientFactoryServices;
         this.canvasElementAddedEvent = canvasElementAddedEvent;
         this.canvasElementRemovedEvent = canvasElementRemovedEvent;
         this.canvasElementUpdatedEvent = canvasElementUpdatedEvent;
@@ -101,15 +88,6 @@ public class CanvasHandlerImpl<D extends Diagram, C extends AbstractCanvas> exte
     @Override
     public Index<?, ?> getGraphIndex() {
         return graphIndex;
-    }
-
-    @Override
-    public GraphCommandExecutionContext getGraphExecutionContext() {
-        return new GraphCommandExecutionContextImpl(getDefinitionManager(),
-                                                    getFactoryManager(),
-                                                    getRuleManager(),
-                                                    getGraphIndex(),
-                                                    getRuleSet());
     }
 
     @Override
@@ -175,9 +153,5 @@ public class CanvasHandlerImpl<D extends Diagram, C extends AbstractCanvas> exte
 
     private GraphIndexBuilder<? extends MutableIndex<Node, Edge>> getIndexBuilder() {
         return indexBuilder;
-    }
-
-    private FactoryManager getFactoryManager() {
-        return clientFactoryServices.getClientFactoryManager();
     }
 }

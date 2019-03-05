@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.rule.handler.impl;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 
@@ -30,9 +31,11 @@ import org.kie.workbench.common.stunner.core.graph.content.definition.Definition
 import org.kie.workbench.common.stunner.core.rule.RuleEvaluationHandler;
 import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 import org.kie.workbench.common.stunner.core.rule.context.NodeContainmentContext;
-import org.kie.workbench.common.stunner.core.rule.context.impl.RuleContextBuilder;
+import org.kie.workbench.common.stunner.core.rule.context.impl.RuleEvaluationContextBuilder;
 import org.kie.workbench.common.stunner.core.rule.impl.CanContain;
 import org.kie.workbench.common.stunner.core.rule.violations.DefaultRuleViolations;
+
+import static org.kie.workbench.common.stunner.core.rule.handler.impl.GraphEvaluationHandlerUtils.addViolationsSourceUUID;
 
 @ApplicationScoped
 public class NodeContainmentEvaluationHandler implements RuleEvaluationHandler<CanContain, NodeContainmentContext> {
@@ -69,25 +72,34 @@ public class NodeContainmentEvaluationHandler implements RuleEvaluationHandler<C
         // As for acceptance checking, the delegated handler only needs the parent node id, no need
         // to calculate roles for the candidate node.
         return containmentHandler.accepts(rule,
-                                          RuleContextBuilder.DomainContexts.containment(parenteLabels,
-                                                                                        Collections.emptySet()));
+                                          RuleEvaluationContextBuilder.DomainContexts.containment(parenteLabels,
+                                                                                                  Collections.emptySet()));
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public RuleViolations evaluate(final CanContain rule,
                                    final NodeContainmentContext context) {
-        final Element<? extends Definition<?>> source = context.getParent();
-        final Node<? extends Definition<?>, ? extends Edge> target = context.getCandidate();
-        final Set<String> candidateLabels = evalUtils.getLabels(target);
-        final Set<String> parentLabels = evalUtils.getLabels(source);
+        final Element<? extends Definition<?>> parent = context.getParent();
+        final Set<String> parentLabels = evalUtils.getLabels(parent);
         final DefaultRuleViolations result = new DefaultRuleViolations();
-        result.addViolations(
-                containmentHandler
-                        .evaluate(rule,
-                                  RuleContextBuilder.DomainContexts.containment(parentLabels,
-                                                                                candidateLabels))
-        );
-        return GraphEvaluationHandlerUtils.addViolationsSourceUUID(target.getUUID(),
-                                                                   result);
+        final Collection<Node<? extends Definition<?>, ? extends Edge>> candidates = context.getCandidates();
+        candidates.forEach(candidate -> result.addViolations(evaluate(rule,
+                                                                      candidate.getUUID(),
+                                                                      evalUtils.getLabels(candidate),
+                                                                      parentLabels)));
+        return result;
+    }
+
+    private RuleViolations evaluate(final CanContain rule,
+                                    final String candidateUUID,
+                                    final Set<String> candidateLabels,
+                                    final Set<String> parentLabels) {
+        RuleViolations result = containmentHandler
+                .evaluate(rule,
+                          RuleEvaluationContextBuilder.DomainContexts.containment(parentLabels,
+                                                                                  candidateLabels));
+        return addViolationsSourceUUID(candidateUUID,
+                                       result);
     }
 }

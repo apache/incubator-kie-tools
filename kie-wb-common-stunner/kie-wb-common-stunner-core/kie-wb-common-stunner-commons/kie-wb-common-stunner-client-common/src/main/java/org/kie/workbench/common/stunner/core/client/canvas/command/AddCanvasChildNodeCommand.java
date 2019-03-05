@@ -56,10 +56,11 @@ public class AddCanvasChildNodeCommand extends AbstractRegistrationCanvasNodeCom
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public CommandResult<CanvasViolation> undo(final AbstractCanvasHandler context) {
         return new CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation>()
-                .addCommand(new RemoveCanvasChildCommand(parent,
-                                                         getCandidate()))
+                .addCommand(new RemoveCanvasChildrenCommand(parent,
+                                                            getCandidate()))
                 .addCommand(new DeleteCanvasNodeCommand(getCandidate(),
                                                         parent))
                 .build()
@@ -73,8 +74,8 @@ public class AddCanvasChildNodeCommand extends AbstractRegistrationCanvasNodeCom
     @Override
     public String toString() {
         return getClass().getSimpleName() +
-                " [parent=" + getUUID(parent) + "," +
-                "candidate=" + getUUID(getCandidate()) + "," +
+                " [parent=" + toUUID(parent) + "," +
+                "candidate=" + toUUID(getCandidate()) + "," +
                 "shapeSet=" + getShapeSetId() + "]";
     }
 }

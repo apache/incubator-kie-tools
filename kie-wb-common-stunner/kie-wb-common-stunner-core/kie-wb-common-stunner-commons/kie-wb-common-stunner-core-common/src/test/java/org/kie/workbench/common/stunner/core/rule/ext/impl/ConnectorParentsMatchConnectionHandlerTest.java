@@ -29,6 +29,8 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 import org.kie.workbench.common.stunner.core.rule.context.GraphConnectionContext;
+import org.kie.workbench.common.stunner.core.rule.context.GraphEvaluationState;
+import org.kie.workbench.common.stunner.core.rule.context.impl.StatefulGraphEvaluationState;
 import org.kie.workbench.common.stunner.core.rule.ext.RuleExtension;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -67,7 +69,8 @@ public class ConnectorParentsMatchConnectionHandlerTest extends AbstractGraphDef
         when(graphHandler.definitionAdapter.getId(eq(connectorDef))).thenReturn(DefinitionId.build(DEF_EDGE_ID));
         this.connector = graphHandler.newEdge(EDGE_UUID,
                                               Optional.of(connectorDef));
-        when(connectionContext.getGraph()).thenReturn(graph);
+        GraphEvaluationState state = new StatefulGraphEvaluationState(graph);
+        when(connectionContext.getState()).thenReturn(state);
         when(connectionContext.getConnector()).thenReturn(connector);
         when(ruleExtension.getId()).thenReturn(DEF_EDGE_ID);
         when(ruleExtension.getArguments()).thenReturn(new String[]{"violation1"});

@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.canvas;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.enterprise.context.Dependent;
 
 import com.ait.lienzo.client.core.shape.IPrimitive;
@@ -29,6 +32,8 @@ import org.uberfire.mvp.Command;
 @Dependent
 public class LienzoLayer {
 
+    private static Logger LOGGER = Logger.getLogger(LienzoLayer.class.getName());
+
     private final Layer layer;
 
     public LienzoLayer() {
@@ -40,7 +45,11 @@ public class LienzoLayer {
     }
 
     public LienzoLayer add(final IPrimitive<?> shape) {
-        layer.add(shape);
+        if (layer.getChildNodes().contains(shape)) {
+            LOGGER.log(Level.WARNING, "Cannot add a primitive shape into the layer twice!");
+        } else {
+            layer.add(shape);
+        }
         return this;
     }
 

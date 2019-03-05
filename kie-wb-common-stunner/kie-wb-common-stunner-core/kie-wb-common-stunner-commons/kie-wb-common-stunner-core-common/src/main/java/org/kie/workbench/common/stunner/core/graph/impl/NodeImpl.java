@@ -27,8 +27,8 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 @Portable
 public class NodeImpl<C> extends AbstractElement<C> implements Node<C, Edge> {
 
-    private List<Edge> inEdges = new ArrayList<Edge>();
-    private List<Edge> outEdges = new ArrayList<Edge>();
+    private final List<Edge> inEdges = new ArrayList<Edge>();
+    private final List<Edge> outEdges = new ArrayList<Edge>();
 
     public NodeImpl(final @MapsTo("uuid") String uuid) {
         super(uuid);

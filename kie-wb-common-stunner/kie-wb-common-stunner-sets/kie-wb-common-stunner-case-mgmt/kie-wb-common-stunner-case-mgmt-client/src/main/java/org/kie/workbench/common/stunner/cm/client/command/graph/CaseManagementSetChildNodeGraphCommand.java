@@ -30,7 +30,6 @@ import org.kie.workbench.common.stunner.core.graph.command.impl.AbstractGraphCom
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
 import org.kie.workbench.common.stunner.core.graph.impl.EdgeImpl;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
-import org.kie.workbench.common.stunner.core.rule.context.impl.RuleContextBuilder;
 import org.kie.workbench.common.stunner.core.util.UUID;
 
 public class CaseManagementSetChildNodeGraphCommand extends AbstractGraphCommand {
@@ -127,10 +126,9 @@ public class CaseManagementSetChildNodeGraphCommand extends AbstractGraphCommand
 
     @SuppressWarnings("unchecked")
     protected CommandResult<RuleViolation> check(final GraphCommandExecutionContext context) {
-        final Collection<RuleViolation> violations = doEvaluate(context,
-                                                                RuleContextBuilder.GraphContexts.containment(getGraph(context),
-                                                                                                             parent,
-                                                                                                             child));
+        final Collection<RuleViolation> violations = evaluate(context,
+                                                              contextBuilder -> contextBuilder.containment(parent,
+                                                                                                           child));
         return new GraphCommandResultBuilder(violations).build();
     }
 

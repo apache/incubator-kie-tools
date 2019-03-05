@@ -25,7 +25,6 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.Timer;
-import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
@@ -42,7 +41,6 @@ import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.core.graph.processing.index.bounds.GraphBoundsIndexer;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
-import org.kie.workbench.common.stunner.core.rule.RuleManager;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
@@ -51,26 +49,12 @@ public class CanvasLayoutUtils {
 
     private static final int PADDING_X = 40;
     private static final int PADDING_Y = 40;
-    private static final int CANVAS_BOTTOM_MARGIN = 15;
+
+    private final GraphBoundsIndexer graphBoundsIndexer;
 
     @Inject
-    private GraphBoundsIndexer graphBoundsIndexer;
-
-    @Inject
-    private RuleManager ruleManager;
-
-    @Inject
-    private DefinitionManager definitionManager;
-
-    public CanvasLayoutUtils() {
-    }
-
-    CanvasLayoutUtils(final GraphBoundsIndexer graphBoundsIndexer,
-                      final RuleManager ruleManager,
-                      final DefinitionManager definitionManager) {
+    public CanvasLayoutUtils(final GraphBoundsIndexer graphBoundsIndexer) {
         this.graphBoundsIndexer = graphBoundsIndexer;
-        this.ruleManager = ruleManager;
-        this.definitionManager = definitionManager;
     }
 
     public static boolean isCanvasRoot(final Diagram diagram,
@@ -162,16 +146,11 @@ public class CanvasLayoutUtils {
         checkNotNull("root",
                      root);
 
-        final int canvasHeight = canvasHandler.getCanvas().getHeightPx();
-        final int canvasWidth = canvasHandler.getCanvas().getWidthPx();
-
-        Point2D newPositionUL = getNextPositionWithOffset(rootNodeCoordinates,
-                                                          offset);
-
         graphBoundsIndexer.build(canvasHandler.getDiagram().getGraph());
 
         Element parentNode = GraphUtils.getParent(root.asNode());
 
+        Point2D newPositionUL = null;
         boolean checkParent = false;
         if (parentNode != null) {
             if (!(isCanvasRoot(canvasHandler.getDiagram(),
@@ -180,29 +159,19 @@ public class CanvasLayoutUtils {
             }
         }
 
-        if (isOutOfCanvas(newPositionUL,
-                          newNodeHeight,
-                          canvasHeight) || checkParent) {
+        if (checkParent) {
 
-            if (checkParent) {
-                newPositionUL = getNextPositionFromParent(rootNodeCoordinates,
-                                                          offset,
-                                                          parentNode,
-                                                          rootNodeHeight,
-                                                          rootNodeWidth,
-                                                          newNodeWidth);
-            }
+            newPositionUL = getNextPositionFromParent(rootNodeCoordinates,
+                                                      offset,
+                                                      parentNode,
+                                                      rootNodeHeight,
+                                                      rootNodeWidth,
+                                                      newNodeWidth);
             while (((!isCanvasPositionAvailable(graphBoundsIndexer,
                                                 newPositionUL,
                                                 newNodeWidth,
                                                 newNodeHeight,
-                                                parentNode)))
-                    &&
-                    (newPositionUL.getY() < canvasHeight) && (newPositionUL.getX() < canvasWidth)
-                    ||
-                    isOutOfCanvas(newPositionUL,
-                                  newNodeHeight,
-                                  canvasHeight)) {
+                                                parentNode)))) {
 
                 parentNode = GraphUtils.getParent(root.asNode());
                 checkParent = false;
@@ -222,6 +191,8 @@ public class CanvasLayoutUtils {
                                                    newNodeHeight,
                                                    parentNode);
 
+                nodeAtPositionSize = null != nodeAtPositionSize ? nodeAtPositionSize : new double[]{0, 0};
+
                 if (checkParent) {
                     final Node targetNodeNewPos = graphBoundsIndexer.getAt(newPositionUL.getX(),
                                                                            newPositionUL.getY(),
@@ -232,26 +203,10 @@ public class CanvasLayoutUtils {
                         offset.setY(offset.getY() + PADDING_Y);
                     }
                 } else {
-
-                    if (nodeAtPositionSize == null) {
-                        nodeAtPositionSize = new double[]{0.0d};
-                        offset.setY(offset.getY() + PADDING_Y);
-                    } else {
-                        offset.setY(offset.getY() + nodeAtPositionSize[1] + PADDING_Y);
-                    }
+                    offset.setY(offset.getY() + nodeAtPositionSize[1] + PADDING_Y);
                 }
                 newPositionUL = getNextPositionWithOffset(rootNodeCoordinates,
                                                           offset);
-
-                if (isOutOfCanvas(newPositionUL,
-                                  newNodeHeight,
-                                  canvasHeight)) {
-                    rootNodeCoordinates.setY(0);
-                    offset.setY(PADDING_Y);
-                    offset.setX(offset.getX() + nodeAtPositionSize[0] + PADDING_X);
-                    newPositionUL = getNextPositionWithOffset(rootNodeCoordinates,
-                                                              offset);
-                }
 
                 if (checkParent) {
                     newPositionUL = getNextPositionFromParent(rootNodeCoordinates,
@@ -263,17 +218,8 @@ public class CanvasLayoutUtils {
                 }
             }
         } else {
-            if (checkParent) {
-                newPositionUL = getNextPositionFromParent(rootNodeCoordinates,
-                                                          offset,
-                                                          parentNode,
-                                                          rootNodeHeight,
-                                                          rootNodeWidth,
-                                                          newNodeWidth);
-            } else {
-                newPositionUL = getNextPositionWithOffset(rootNodeCoordinates,
-                                                          offset);
-            }
+            newPositionUL = getNextPositionWithOffset(rootNodeCoordinates,
+                                                      offset);
         }
 
         return newPositionUL;
@@ -299,12 +245,6 @@ public class CanvasLayoutUtils {
         }
 
         return nextPosition;
-    }
-
-    private boolean isOutOfCanvas(Point2D newPositionUL,
-                                  double newNodeHeight,
-                                  double canvasHeight) {
-        return newPositionUL.getY() + newNodeHeight > canvasHeight - CANVAS_BOTTOM_MARGIN;
     }
 
     private Point2D getNextPositionWithOffset(final Point2D nextPosition,

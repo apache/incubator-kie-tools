@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.rule.handler.impl;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -23,11 +25,11 @@ import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 import org.kie.workbench.common.stunner.core.rule.context.CardinalityContext;
 import org.kie.workbench.common.stunner.core.rule.context.ElementCardinalityContext;
+import org.kie.workbench.common.stunner.core.rule.context.GraphEvaluationState;
 import org.kie.workbench.common.stunner.core.rule.impl.Occurrences;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -67,11 +69,13 @@ public class ElementCardinalityEvaluationHandlerTest extends AbstractGraphRuleHa
     ElementCardinalityContext context;
 
     private ElementCardinalityEvaluationHandler tested;
+    private Collection candidates;
 
     @Before
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
         super.setup();
+        candidates = Collections.singleton(candidate);
         tested = spy(new ElementCardinalityEvaluationHandler(definitionManager,
                                                              HANDLER));
     }
@@ -79,7 +83,7 @@ public class ElementCardinalityEvaluationHandlerTest extends AbstractGraphRuleHa
     @Test
     @SuppressWarnings("unchecked")
     public void testAcceptsNoOp() {
-        when(context.getCandidate()).thenReturn(Optional.empty());
+        when(context.getCandidates()).thenReturn(Collections.emptyList());
         assertTrue(tested.accepts(RULE_NO_LIMIT,
                                   context));
     }
@@ -88,10 +92,10 @@ public class ElementCardinalityEvaluationHandlerTest extends AbstractGraphRuleHa
     @SuppressWarnings("unchecked")
     public void testAccepts() {
         when(context.getOperation()).thenReturn(Optional.of(CardinalityContext.Operation.ADD));
-        when(context.getCandidate()).thenReturn(Optional.of(candidate));
+        when(context.getCandidates()).thenReturn(candidates);
         assertTrue(tested.accepts(RULE_NO_LIMIT,
                                   context));
-        when(context.getCandidate()).thenReturn(Optional.of(parent));
+        when(context.getCandidates()).thenReturn(Collections.singleton(parent));
         assertFalse(tested.accepts(RULE_NO_LIMIT,
                                    context));
     }
@@ -105,9 +109,9 @@ public class ElementCardinalityEvaluationHandlerTest extends AbstractGraphRuleHa
             put(CANDIDATE_ROLE2,
                 0);
         }};
-        doReturn(count).when(tested).countLabels(any(Graph.class),
+        doReturn(count).when(tested).countLabels(any(GraphEvaluationState.class),
                                                  anySet());
-        when(context.getCandidate()).thenReturn(Optional.of(candidate));
+        when(context.getCandidates()).thenReturn(candidates);
         when(context.getOperation()).thenReturn(Optional.of(CardinalityContext.Operation.ADD));
         final RuleViolations violations = tested.evaluate(RULE_NO_LIMIT,
                                                           context);
@@ -124,9 +128,9 @@ public class ElementCardinalityEvaluationHandlerTest extends AbstractGraphRuleHa
             put(CANDIDATE_ROLE2,
                 0);
         }};
-        doReturn(count).when(tested).countLabels(any(Graph.class),
+        doReturn(count).when(tested).countLabels(any(GraphEvaluationState.class),
                                                  anySet());
-        when(context.getCandidate()).thenReturn(Optional.of(candidate));
+        when(context.getCandidates()).thenReturn(candidates);
         when(context.getOperation()).thenReturn(Optional.of(CardinalityContext.Operation.ADD));
         final RuleViolations violations = tested.evaluate(RULE_NO_LIMIT,
                                                           context);
@@ -141,9 +145,9 @@ public class ElementCardinalityEvaluationHandlerTest extends AbstractGraphRuleHa
             put(CANDIDATE_ROLE1,
                 0);
         }};
-        doReturn(count).when(tested).countLabels(any(Graph.class),
+        doReturn(count).when(tested).countLabels(any(GraphEvaluationState.class),
                                                  anySet());
-        when(context.getCandidate()).thenReturn(Optional.empty());
+        when(context.getCandidates()).thenReturn(Collections.emptyList());
         when(context.getOperation()).thenReturn(Optional.empty());
         final RuleViolations violations = tested.evaluate(RULE_MIN_1,
                                                           context);
@@ -158,9 +162,9 @@ public class ElementCardinalityEvaluationHandlerTest extends AbstractGraphRuleHa
             put(CANDIDATE_ROLE1,
                 0);
         }};
-        doReturn(count).when(tested).countLabels(any(Graph.class),
+        doReturn(count).when(tested).countLabels(any(GraphEvaluationState.class),
                                                  anySet());
-        when(context.getCandidate()).thenReturn(Optional.of(candidate));
+        when(context.getCandidates()).thenReturn(candidates);
         when(context.getOperation()).thenReturn(Optional.of(CardinalityContext.Operation.ADD));
         final RuleViolations violations = tested.evaluate(RULE_MIN_1,
                                                           context);
@@ -175,9 +179,9 @@ public class ElementCardinalityEvaluationHandlerTest extends AbstractGraphRuleHa
             put(CANDIDATE_ROLE1,
                 2);
         }};
-        doReturn(count).when(tested).countLabels(any(Graph.class),
+        doReturn(count).when(tested).countLabels(any(GraphEvaluationState.class),
                                                  anySet());
-        when(context.getCandidate()).thenReturn(Optional.of(candidate));
+        when(context.getCandidates()).thenReturn(candidates);
         when(context.getOperation()).thenReturn(Optional.of(CardinalityContext.Operation.DELETE));
         final RuleViolations violations = tested.evaluate(RULE_MIN_1,
                                                           context);
@@ -194,9 +198,9 @@ public class ElementCardinalityEvaluationHandlerTest extends AbstractGraphRuleHa
             put(CANDIDATE_ROLE2,
                 0);
         }};
-        doReturn(count).when(tested).countLabels(any(Graph.class),
+        doReturn(count).when(tested).countLabels(any(GraphEvaluationState.class),
                                                  anySet());
-        when(context.getCandidate()).thenReturn(Optional.of(candidate));
+        when(context.getCandidates()).thenReturn(candidates);
         when(context.getOperation()).thenReturn(Optional.of(CardinalityContext.Operation.DELETE));
         final RuleViolations violations = tested.evaluate(RULE_MIN_1,
                                                           context);
@@ -213,9 +217,9 @@ public class ElementCardinalityEvaluationHandlerTest extends AbstractGraphRuleHa
             put(CANDIDATE_ROLE2,
                 0);
         }};
-        doReturn(count).when(tested).countLabels(any(Graph.class),
+        doReturn(count).when(tested).countLabels(any(GraphEvaluationState.class),
                                                  anySet());
-        when(context.getCandidate()).thenReturn(Optional.of(candidate));
+        when(context.getCandidates()).thenReturn(candidates);
         when(context.getOperation()).thenReturn(Optional.of(CardinalityContext.Operation.ADD));
         final RuleViolations violations = tested.evaluate(RULE_MAX_1,
                                                           context);
@@ -232,9 +236,9 @@ public class ElementCardinalityEvaluationHandlerTest extends AbstractGraphRuleHa
             put(CANDIDATE_ROLE2,
                 0);
         }};
-        doReturn(count).when(tested).countLabels(any(Graph.class),
+        doReturn(count).when(tested).countLabels(any(GraphEvaluationState.class),
                                                  anySet());
-        when(context.getCandidate()).thenReturn(Optional.of(candidate));
+        when(context.getCandidates()).thenReturn(candidates);
         when(context.getOperation()).thenReturn(Optional.of(CardinalityContext.Operation.ADD));
         final RuleViolations violations = tested.evaluate(RULE_MAX_1,
                                                           context);
@@ -249,9 +253,9 @@ public class ElementCardinalityEvaluationHandlerTest extends AbstractGraphRuleHa
             put(CANDIDATE_ROLE1,
                 0);
         }};
-        doReturn(count).when(tested).countLabels(any(Graph.class),
+        doReturn(count).when(tested).countLabels(any(GraphEvaluationState.class),
                                                  anySet());
-        when(context.getCandidate()).thenReturn(Optional.of(candidate));
+        when(context.getCandidates()).thenReturn(candidates);
         when(context.getOperation()).thenReturn(Optional.of(CardinalityContext.Operation.ADD));
         final RuleViolations violations = tested.evaluate(RULE_MAX_0,
                                                           context);
@@ -266,9 +270,9 @@ public class ElementCardinalityEvaluationHandlerTest extends AbstractGraphRuleHa
             put(CANDIDATE_ROLE1,
                 0);
         }};
-        doReturn(count).when(tested).countLabels(any(Graph.class),
+        doReturn(count).when(tested).countLabels(any(GraphEvaluationState.class),
                                                  anySet());
-        when(context.getCandidate()).thenReturn(Optional.empty());
+        when(context.getCandidates()).thenReturn(Collections.emptyList());
         when(context.getOperation()).thenReturn(Optional.empty());
         final RuleViolations violations = tested.evaluate(RULE_MAX_0,
                                                           context);
@@ -283,9 +287,9 @@ public class ElementCardinalityEvaluationHandlerTest extends AbstractGraphRuleHa
             put(CANDIDATE_ROLE1,
                 1);
         }};
-        doReturn(count).when(tested).countLabels(any(Graph.class),
+        doReturn(count).when(tested).countLabels(any(GraphEvaluationState.class),
                                                  anySet());
-        when(context.getCandidate()).thenReturn(Optional.empty());
+        when(context.getCandidates()).thenReturn(Collections.emptyList());
         when(context.getOperation()).thenReturn(Optional.empty());
         final RuleViolations violations = tested.evaluate(RULE_MAX_0,
                                                           context);

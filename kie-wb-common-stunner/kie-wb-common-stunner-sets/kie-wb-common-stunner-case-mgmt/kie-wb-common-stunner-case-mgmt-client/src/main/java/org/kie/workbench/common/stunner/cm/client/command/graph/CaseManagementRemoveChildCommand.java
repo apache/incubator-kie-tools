@@ -24,26 +24,29 @@ import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
-import org.kie.workbench.common.stunner.core.graph.command.impl.RemoveChildCommand;
+import org.kie.workbench.common.stunner.core.graph.command.impl.RemoveChildrenCommand;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
 import static org.kie.workbench.common.stunner.cm.client.command.util.CaseManagementCommandUtil.getChildIndex;
 
 @Portable
-public class CaseManagementRemoveChildCommand extends RemoveChildCommand {
+public class CaseManagementRemoveChildCommand extends RemoveChildrenCommand {
 
     private int index;
 
     public CaseManagementRemoveChildCommand(@MapsTo("parentUUID") String parentUUID,
                                             @MapsTo("candidateUUID") String candidateUUID) {
-        super(parentUUID, candidateUUID);
+        super(parentUUID, new String[]{candidateUUID});
     }
 
     public CaseManagementRemoveChildCommand(Node<?, Edge> parent,
                                             Node<?, Edge> candidate) {
         super(parent, candidate);
-
         this.index = getChildIndex(parent, candidate);
+    }
+
+    public Node<?, Edge> getCandidate() {
+        return getCandidates().iterator().next();
     }
 
     @Override
@@ -58,5 +61,9 @@ public class CaseManagementRemoveChildCommand extends RemoveChildCommand {
                                                            Optional.empty(),
                                                            OptionalInt.empty());
         return undoCommand.execute(context);
+    }
+
+    private Node<?, Edge> getCandidate(GraphCommandExecutionContext context) {
+        return getCandidates(context).iterator().next();
     }
 }
