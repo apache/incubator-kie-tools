@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,47 +14,49 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.bpmn.project.client.handlers;
+package org.kie.workbench.common.stunner.cm.project.client.handlers;
 
 import java.util.Optional;
 
-import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.google.gwt.core.client.Callback;
-import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.WorkspaceProject;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.stunner.bpmn.BPMNDefinitionSet;
 import org.kie.workbench.common.stunner.bpmn.project.client.handlers.util.CaseHelper;
-import org.kie.workbench.common.stunner.bpmn.project.client.type.BPMNDiagramResourceType;
 import org.kie.workbench.common.stunner.bpmn.service.BPMNDiagramService;
 import org.kie.workbench.common.stunner.bpmn.service.ProjectType;
+import org.kie.workbench.common.stunner.cm.CaseManagementDefinitionSet;
+import org.kie.workbench.common.stunner.cm.project.client.type.CaseManagementDiagramResourceType;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
-import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
+import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.project.client.service.ClientProjectDiagramService;
-import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.mockito.Mock;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.mocks.CallerMock;
+import org.uberfire.rpc.SessionInfo;
+import org.uberfire.security.ResourceAction;
+import org.uberfire.security.ResourceRef;
+import org.uberfire.security.authz.AuthorizationManager;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(LienzoMockitoTestRunner.class)
-public class CaseDefinitionNewResourceHandlerTest {
-
-    public static final String DESCRIPTION = "description";
-    private CaseDefinitionNewResourceHandler tested;
+@RunWith(GwtMockitoTestRunner.class)
+public class CaseManagementDiagramNewResourceHandlerTest {
 
     @Mock
     private DefinitionManager definitionManager;
@@ -66,10 +68,16 @@ public class CaseDefinitionNewResourceHandlerTest {
     private BusyIndicatorView indicatorView;
 
     @Mock
-    private BPMNDiagramResourceType projectDiagramResourceType;
+    private CaseManagementDiagramResourceType projectDiagramResourceType;
 
     @Mock
-    private ClientTranslationService translationService;
+    private AuthorizationManager authorizationManager;
+
+    @Mock
+    private SessionInfo sessionInfo;
+
+    @Mock
+    private User user;
 
     @Mock
     private BPMNDiagramService bpmnDiagramService;
@@ -86,57 +94,61 @@ public class CaseDefinitionNewResourceHandlerTest {
     @Mock
     private Callback<Boolean, Void> callback;
 
+    private CaseManagementDiagramNewResourceHandler tested;
+
     private CaseHelper caseHelper;
 
     @Before
     public void setUp() throws Exception {
-        when(translationService.getDefinitionDescription(CaseDefinitionNewResourceHandler.CASE_DEFINITION)).thenReturn(DESCRIPTION);
         when(projectContext.getActiveWorkspaceProject()).thenReturn(Optional.of(workspaceProject));
         when(workspaceProject.getRootPath()).thenReturn(rootPath);
+        when(sessionInfo.getIdentity()).thenReturn(user);
 
         caseHelper = new CaseHelper(new CallerMock<>(bpmnDiagramService), projectContext);
 
-        tested = new CaseDefinitionNewResourceHandler(definitionManager, projectDiagramService, indicatorView,
-                                                      projectDiagramResourceType, translationService, caseHelper);
+        tested = new CaseManagementDiagramNewResourceHandler(definitionManager,
+                                                             projectDiagramService,
+                                                             indicatorView,
+                                                             projectDiagramResourceType,
+                                                             authorizationManager,
+                                                             sessionInfo,
+                                                             caseHelper);
     }
 
     @Test
-    public void getDescription() {
-        final String description = tested.getDescription();
-        verify(translationService).getDefinitionDescription(CaseDefinitionNewResourceHandler.CASE_DEFINITION);
-        assertThat(description).isEqualTo(DESCRIPTION);
+    public void testGetDefinitionSetType() throws Exception {
+        assertEquals(CaseManagementDefinitionSet.class, tested.getDefinitionSetType());
     }
 
     @Test
-    public void getIcon() {
-        final IsWidget icon = tested.getIcon();
-        assertThat(icon).isEqualTo(CaseDefinitionNewResourceHandler.ICON);
+    public void testCanCreate_disabled() {
+        when(authorizationManager.authorize(any(ResourceRef.class),
+                                            eq(ResourceAction.READ),
+                                            eq(user))).thenReturn(false);
+
+        assertFalse(tested.canCreate());
     }
 
     @Test
-    public void getDefinitionSetType() {
-        final Class<?> definitionSetType = tested.getDefinitionSetType();
-        assertThat(definitionSetType).isEqualTo(BPMNDefinitionSet.class);
+    public void testCanCreate_enabled() {
+        when(authorizationManager.authorize(any(ResourceRef.class),
+                                            eq(ResourceAction.READ),
+                                            eq(user))).thenReturn(true);
+
+        assertTrue(tested.canCreate());
     }
 
     @Test
-    public void createDiagram() {
-        Package pkg = mock(Package.class);
-        String name = "project";
-        NewResourcePresenter presenter = mock(NewResourcePresenter.class);
-        Path path = mock(Path.class);
-        String setId = BPMNDefinitionSet.class.getName();
-        String moduleName = "module";
-        Optional<String> projectType = Optional.of(ProjectType.CASE.name());
+    @SuppressWarnings("unchecked")
+    public void testCreateDiagram() throws Exception {
+        tested.createDiagram(null, null, null, null, null, null, Optional.empty());
 
-        tested.createDiagram(pkg, name, presenter, path, setId, moduleName, projectType);
-
-        verify(projectDiagramService).create(eq(path), eq(name), eq(setId), eq(moduleName), eq(pkg), eq(projectType),
-                                             any());
+        verify(projectDiagramService).create(isNull(Path.class), isNull(String.class), isNull(String.class), isNull(String.class),
+                                             isNull(Package.class), eq(Optional.of(ProjectType.CASE.name())), any(ServiceCallback.class));
     }
 
     @Test
-    public void acceptContextTrue() {
+    public void acceptContext_true() {
         when(bpmnDiagramService.getProjectType(rootPath)).thenReturn(ProjectType.CASE);
 
         tested.acceptContext(callback);
@@ -145,7 +157,7 @@ public class CaseDefinitionNewResourceHandlerTest {
     }
 
     @Test
-    public void acceptContextFalse() {
+    public void acceptContext_false() {
         when(bpmnDiagramService.getProjectType(rootPath)).thenReturn(ProjectType.BPMN);
 
         tested.acceptContext(callback);

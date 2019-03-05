@@ -25,15 +25,12 @@ import javax.inject.Inject;
 import com.google.gwt.core.client.Callback;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.project.model.Package;
-import org.guvnor.common.services.project.model.WorkspaceProject;
-import org.jboss.errai.common.client.api.Caller;
 import org.kie.workbench.common.profile.api.preferences.Profile;
 import org.kie.workbench.common.stunner.bpmn.BPMNDefinitionSet;
+import org.kie.workbench.common.stunner.bpmn.project.client.handlers.util.CaseHelper;
 import org.kie.workbench.common.stunner.bpmn.project.client.resources.BPMNProjectImageResources;
 import org.kie.workbench.common.stunner.bpmn.project.client.type.BPMNDiagramResourceType;
-import org.kie.workbench.common.stunner.bpmn.service.BPMNDiagramService;
 import org.kie.workbench.common.stunner.bpmn.service.ProjectType;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
@@ -43,18 +40,16 @@ import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 
-
 @ApplicationScoped
 public class CaseDefinitionNewResourceHandler extends AbstractProjectDiagramNewResourceHandler<BPMNDiagramResourceType> {
 
     protected static final Image ICON = new Image(BPMNProjectImageResources.INSTANCE.bpmn2Icon());
     protected static final String CASE_DEFINITION = "org.kie.workbench.common.stunner.bpmn.CaseDefinition";
     private final ClientTranslationService translationService;
-    private final Caller<BPMNDiagramService> bpmnDiagramService;
-    private final WorkspaceProjectContext projectContext;
+    private final CaseHelper caseHelper;
 
     CaseDefinitionNewResourceHandler() {
-        this(null, null, null, null, null, null, null);
+        this(null, null, null, null, null, null);
     }
 
     @Inject
@@ -63,12 +58,10 @@ public class CaseDefinitionNewResourceHandler extends AbstractProjectDiagramNewR
                                             final BusyIndicatorView indicatorView,
                                             final BPMNDiagramResourceType projectDiagramResourceType,
                                             final ClientTranslationService translationService,
-                                            final Caller<BPMNDiagramService> bpmnDiagramService,
-                                            final WorkspaceProjectContext projectContext) {
+                                            final CaseHelper caseHelper) {
         super(definitionManager, projectDiagramService, indicatorView, projectDiagramResourceType);
         this.translationService = translationService;
-        this.bpmnDiagramService = bpmnDiagramService;
-        this.projectContext = projectContext;
+        this.caseHelper = caseHelper;
     }
 
     @Override
@@ -94,15 +87,9 @@ public class CaseDefinitionNewResourceHandler extends AbstractProjectDiagramNewR
 
     @Override
     public void acceptContext(Callback<Boolean, Void> callback) {
-        projectContext.getActiveWorkspaceProject()
-                .map(WorkspaceProject::getRootPath)
-                .ifPresent(path -> bpmnDiagramService.call(projectType -> {
-                    Optional.ofNullable(projectType)
-                            .filter(ProjectType.CASE::equals)
-                            .ifPresent(p -> callback.onSuccess(true));
-                }).getProjectType(path));
+        caseHelper.acceptContext(callback);
     }
-    
+
     public List<Profile> getProfiles() {
         return Arrays.asList(Profile.FULL);
     }
