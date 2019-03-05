@@ -87,7 +87,7 @@ public class ExpressionPropertyConverter {
         // SPECIAL CASE: to represent a partially edited DMN file.
         // reference above.
         if (wb == null) {
-            org.kie.dmn.model.api.LiteralExpression mockedExpression = new org.kie.dmn.model.v1_2.TLiteralExpression();
+            final org.kie.dmn.model.api.LiteralExpression mockedExpression = new org.kie.dmn.model.v1_2.TLiteralExpression();
             return mockedExpression;
         }
 

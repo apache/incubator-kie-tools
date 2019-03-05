@@ -21,9 +21,9 @@ import org.kie.dmn.model.api.dmndi.Color;
 public class ColorUtils {
 
     public static Color dmnFromWB(String colorString) {
-        Color result = new org.kie.dmn.model.v1_2.dmndi.Color();
+        final Color result = new org.kie.dmn.model.v1_2.dmndi.Color();
 
-        java.awt.Color decode = java.awt.Color.decode(colorString);
+        final java.awt.Color decode = java.awt.Color.decode(colorString);
 
         result.setRed(decode.getRed());
         result.setBlue(decode.getBlue());

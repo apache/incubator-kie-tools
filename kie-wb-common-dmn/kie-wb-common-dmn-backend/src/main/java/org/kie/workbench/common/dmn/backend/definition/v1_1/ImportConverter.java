@@ -28,16 +28,16 @@ import org.kie.workbench.common.dmn.api.property.dmn.QName;
 public final class ImportConverter {
 
     public static Import wbFromDMN(org.kie.dmn.model.api.Import dmn) {
-        LocationURI locationURI = new LocationURI(dmn.getLocationURI());
-        Import result = new Import(dmn.getNamespace(), locationURI, dmn.getImportType());
-        Map<QName, String> additionalAttributes = new HashMap<>();
+        final LocationURI locationURI = new LocationURI(dmn.getLocationURI());
+        final Import result = new Import(dmn.getNamespace(), locationURI, dmn.getImportType());
+        final Map<QName, String> additionalAttributes = new HashMap<>();
         for (Map.Entry<javax.xml.namespace.QName, String> entry : dmn.getAdditionalAttributes().entrySet()) {
             additionalAttributes.put(QNamePropertyConverter.wbFromDMN(entry.getKey(), dmn), entry.getValue());
         }
         result.setAdditionalAttributes(additionalAttributes);
-        String id = dmn.getId();
-        String name = dmn.getName();
-        String description = dmn.getDescription();
+        final String id = dmn.getId();
+        final String name = dmn.getName();
+        final String description = dmn.getDescription();
         result.setId(new Id(id != null ? id : UUID.randomUUID().toString()));
         result.setName(new Name(name));
         result.setDescription(DescriptionPropertyConverter.wbFromDMN(description));
@@ -45,11 +45,11 @@ public final class ImportConverter {
     }
 
     public static org.kie.dmn.model.api.Import dmnFromWb(Import wb) {
-        org.kie.dmn.model.api.Import result = new org.kie.dmn.model.v1_2.TImport();
+        final org.kie.dmn.model.api.Import result = new org.kie.dmn.model.v1_2.TImport();
         result.setImportType(wb.getImportType());
         result.setLocationURI(wb.getLocationURI().getValue());
         result.setNamespace(wb.getNamespace());
-        Map<javax.xml.namespace.QName, String> additionalAttributes = new HashMap<>();
+        final Map<javax.xml.namespace.QName, String> additionalAttributes = new HashMap<>();
         for (Map.Entry<QName, String> entry : wb.getAdditionalAttributes().entrySet()) {
             QNamePropertyConverter.dmnFromWB(entry.getKey())
                     .ifPresent(qName -> additionalAttributes.put(qName, entry.getValue()));

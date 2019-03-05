@@ -35,25 +35,25 @@ public class InvocationPropertyConverter {
         if (dmn == null) {
             return null;
         }
-        Id id = new Id(dmn.getId());
-        Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
-        QName typeRef = QNamePropertyConverter.wbFromDMN(dmn.getTypeRef(), dmn);
+        final Id id = new Id(dmn.getId());
+        final Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
+        final QName typeRef = QNamePropertyConverter.wbFromDMN(dmn.getTypeRef(), dmn);
 
-        Invocation result = new Invocation();
+        final Invocation result = new Invocation();
         result.setId(id);
         result.setDescription(description);
         result.setTypeRef(typeRef);
 
-        Expression convertedExpression = ExpressionPropertyConverter.wbFromDMN(dmn.getExpression(),
-                                                                               hasComponentWidthsConsumer);
+        final Expression convertedExpression = ExpressionPropertyConverter.wbFromDMN(dmn.getExpression(),
+                                                                                     hasComponentWidthsConsumer);
         result.setExpression(convertedExpression);
         if (convertedExpression != null) {
             convertedExpression.setParent(result);
         }
 
         for (org.kie.dmn.model.api.Binding b : dmn.getBinding()) {
-            Binding bConverted = BindingPropertyConverter.wbFromDMN(b,
-                                                                    hasComponentWidthsConsumer);
+            final Binding bConverted = BindingPropertyConverter.wbFromDMN(b,
+                                                                          hasComponentWidthsConsumer);
             if (bConverted != null) {
                 bConverted.setParent(result);
             }
@@ -68,22 +68,22 @@ public class InvocationPropertyConverter {
         if (wb == null) {
             return null;
         }
-        org.kie.dmn.model.api.Invocation result = new org.kie.dmn.model.v1_2.TInvocation();
+        final org.kie.dmn.model.api.Invocation result = new org.kie.dmn.model.v1_2.TInvocation();
         result.setId(wb.getId().getValue());
         result.setDescription(DescriptionPropertyConverter.dmnFromWB(wb.getDescription()));
         QNamePropertyConverter.setDMNfromWB(wb.getTypeRef(),
                                             result::setTypeRef);
 
-        org.kie.dmn.model.api.Expression convertedExpression = ExpressionPropertyConverter.dmnFromWB(wb.getExpression(),
-                                                                                                     componentWidthsConsumer);
+        final org.kie.dmn.model.api.Expression convertedExpression = ExpressionPropertyConverter.dmnFromWB(wb.getExpression(),
+                                                                                                           componentWidthsConsumer);
         if (convertedExpression != null) {
             convertedExpression.setParent(result);
         }
         result.setExpression(convertedExpression);
 
         for (Binding b : wb.getBinding()) {
-            org.kie.dmn.model.api.Binding bConverted = BindingPropertyConverter.dmnFromWB(b,
-                                                                                          componentWidthsConsumer);
+            final org.kie.dmn.model.api.Binding bConverted = BindingPropertyConverter.dmnFromWB(b,
+                                                                                                componentWidthsConsumer);
             if (bConverted != null) {
                 bConverted.setParent(result);
             }

@@ -30,20 +30,20 @@ public class ImportedValuesConverter {
         if (dmn == null) {
             return null;
         }
-        String namespace = dmn.getNamespace();
-        LocationURI locationURI = new LocationURI(dmn.getLocationURI());
-        String importType = dmn.getImportType();
-        String importedElement = dmn.getImportedElement();
-        ExpressionLanguage expressionLanguage = ExpressionLanguagePropertyConverter.wbFromDMN(dmn.getExpressionLanguage());
-        ImportedValues wb = new ImportedValues(namespace,
-                                               locationURI,
-                                               importType,
-                                               importedElement,
-                                               expressionLanguage);
-        String id = dmn.getId();
-        String name = dmn.getName();
-        String description = dmn.getDescription();
-        String fallbackUUID = UUID.randomUUID().toString();
+        final String namespace = dmn.getNamespace();
+        final LocationURI locationURI = new LocationURI(dmn.getLocationURI());
+        final String importType = dmn.getImportType();
+        final String importedElement = dmn.getImportedElement();
+        final ExpressionLanguage expressionLanguage = ExpressionLanguagePropertyConverter.wbFromDMN(dmn.getExpressionLanguage());
+        final ImportedValues wb = new ImportedValues(namespace,
+                                                     locationURI,
+                                                     importType,
+                                                     importedElement,
+                                                     expressionLanguage);
+        final String id = dmn.getId();
+        final String name = dmn.getName();
+        final String description = dmn.getDescription();
+        final String fallbackUUID = UUID.randomUUID().toString();
         wb.setId(new Id(id != null ? id : fallbackUUID));
         wb.setName(new Name(name != null ? name : fallbackUUID));
         wb.setDescription(DescriptionPropertyConverter.wbFromDMN(description));
@@ -54,7 +54,7 @@ public class ImportedValuesConverter {
         if (wb == null) {
             return null;
         }
-        org.kie.dmn.model.api.ImportedValues dmn = new org.kie.dmn.model.v1_2.TImportedValues();
+        final org.kie.dmn.model.api.ImportedValues dmn = new org.kie.dmn.model.v1_2.TImportedValues();
         dmn.setNamespace(wb.getNamespace());
         dmn.setLocationURI(wb.getLocationURI().getValue());
         dmn.setImportType(wb.getImportType());

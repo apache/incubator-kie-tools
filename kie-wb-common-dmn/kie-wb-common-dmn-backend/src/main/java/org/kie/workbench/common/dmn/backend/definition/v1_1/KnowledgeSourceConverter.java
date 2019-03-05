@@ -52,21 +52,21 @@ public class KnowledgeSourceConverter implements NodeConverter<org.kie.dmn.model
     public Node<View<KnowledgeSource>, ?> nodeFromDMN(final org.kie.dmn.model.api.KnowledgeSource dmn,
                                                       final BiConsumer<String, HasComponentWidths> hasComponentWidthsConsumer) {
         @SuppressWarnings("unchecked")
-        Node<View<KnowledgeSource>, ?> node = (Node<View<KnowledgeSource>, ?>) factoryManager.newElement(dmn.getId(),
-                                                                                                         KnowledgeSource.class).asNode();
-        Id id = new Id(dmn.getId());
-        Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
-        Name name = new Name(dmn.getName());
-        KnowledgeSourceType ksType = new KnowledgeSourceType(dmn.getType());
-        LocationURI locationURI = new LocationURI(dmn.getLocationURI());
-        KnowledgeSource ks = new KnowledgeSource(id,
-                                                 description,
-                                                 name,
-                                                 ksType,
-                                                 locationURI,
-                                                 new BackgroundSet(),
-                                                 new FontSet(),
-                                                 new GeneralRectangleDimensionsSet());
+        final Node<View<KnowledgeSource>, ?> node = (Node<View<KnowledgeSource>, ?>) factoryManager.newElement(dmn.getId(),
+                                                                                                               KnowledgeSource.class).asNode();
+        final Id id = new Id(dmn.getId());
+        final Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
+        final Name name = new Name(dmn.getName());
+        final KnowledgeSourceType ksType = new KnowledgeSourceType(dmn.getType());
+        final LocationURI locationURI = new LocationURI(dmn.getLocationURI());
+        final KnowledgeSource ks = new KnowledgeSource(id,
+                                                       description,
+                                                       name,
+                                                       ksType,
+                                                       locationURI,
+                                                       new BackgroundSet(),
+                                                       new FontSet(),
+                                                       new GeneralRectangleDimensionsSet());
         node.getContent().setDefinition(ks);
         return node;
     }
@@ -74,39 +74,39 @@ public class KnowledgeSourceConverter implements NodeConverter<org.kie.dmn.model
     @Override
     public org.kie.dmn.model.api.KnowledgeSource dmnFromNode(final Node<View<KnowledgeSource>, ?> node,
                                                              final Consumer<ComponentWidths> componentWidthsConsumer) {
-        KnowledgeSource source = node.getContent().getDefinition();
-        org.kie.dmn.model.api.KnowledgeSource result = new org.kie.dmn.model.v1_2.TKnowledgeSource();
+        final KnowledgeSource source = node.getContent().getDefinition();
+        final org.kie.dmn.model.api.KnowledgeSource result = new org.kie.dmn.model.v1_2.TKnowledgeSource();
         result.setId(source.getId().getValue());
         result.setDescription(DescriptionPropertyConverter.dmnFromWB(source.getDescription()));
         result.setName(source.getName().getValue());
         result.setType(source.getType().getValue());
         result.setLocationURI(source.getLocationURI().getValue());
         // DMN spec table 2: Requirements connection rules
-        List<Edge<?, ?>> inEdges = (List<Edge<?, ?>>) node.getInEdges();
+        final List<Edge<?, ?>> inEdges = (List<Edge<?, ?>>) node.getInEdges();
         for (Edge<?, ?> e : inEdges) {
-            Node<?, ?> sourceNode = e.getSourceNode();
+            final Node<?, ?> sourceNode = e.getSourceNode();
             if (sourceNode.getContent() instanceof View<?>) {
-                View<?> view = (View<?>) sourceNode.getContent();
+                final View<?> view = (View<?>) sourceNode.getContent();
                 if (view.getDefinition() instanceof DRGElement) {
-                    DRGElement drgElement = (DRGElement) view.getDefinition();
+                    final DRGElement drgElement = (DRGElement) view.getDefinition();
                     if (drgElement instanceof Decision) {
-                        org.kie.dmn.model.api.AuthorityRequirement iReq = new org.kie.dmn.model.v1_2.TAuthorityRequirement();
+                        final org.kie.dmn.model.api.AuthorityRequirement iReq = new org.kie.dmn.model.v1_2.TAuthorityRequirement();
                         iReq.setId(e.getUUID());
-                        org.kie.dmn.model.api.DMNElementReference ri = new org.kie.dmn.model.v1_2.TDMNElementReference();
+                        final org.kie.dmn.model.api.DMNElementReference ri = new org.kie.dmn.model.v1_2.TDMNElementReference();
                         ri.setHref(new StringBuilder("#").append(drgElement.getId().getValue()).toString());
                         iReq.setRequiredDecision(ri);
                         result.getAuthorityRequirement().add(iReq);
                     } else if (drgElement instanceof KnowledgeSource) {
-                        org.kie.dmn.model.api.AuthorityRequirement iReq = new org.kie.dmn.model.v1_2.TAuthorityRequirement();
+                        final org.kie.dmn.model.api.AuthorityRequirement iReq = new org.kie.dmn.model.v1_2.TAuthorityRequirement();
                         iReq.setId(e.getUUID());
-                        org.kie.dmn.model.api.DMNElementReference ri = new org.kie.dmn.model.v1_2.TDMNElementReference();
+                        final org.kie.dmn.model.api.DMNElementReference ri = new org.kie.dmn.model.v1_2.TDMNElementReference();
                         ri.setHref(new StringBuilder("#").append(drgElement.getId().getValue()).toString());
                         iReq.setRequiredAuthority(ri);
                         result.getAuthorityRequirement().add(iReq);
                     } else if (drgElement instanceof InputData) {
-                        org.kie.dmn.model.api.AuthorityRequirement iReq = new org.kie.dmn.model.v1_2.TAuthorityRequirement();
+                        final org.kie.dmn.model.api.AuthorityRequirement iReq = new org.kie.dmn.model.v1_2.TAuthorityRequirement();
                         iReq.setId(e.getUUID());
-                        org.kie.dmn.model.api.DMNElementReference ri = new org.kie.dmn.model.v1_2.TDMNElementReference();
+                        final org.kie.dmn.model.api.DMNElementReference ri = new org.kie.dmn.model.v1_2.TDMNElementReference();
                         ri.setHref(new StringBuilder("#").append(drgElement.getId().getValue()).toString());
                         iReq.setRequiredInput(ri);
                         result.getAuthorityRequirement().add(iReq);

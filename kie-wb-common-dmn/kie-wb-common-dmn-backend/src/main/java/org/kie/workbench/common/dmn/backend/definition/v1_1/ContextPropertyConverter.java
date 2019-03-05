@@ -34,15 +34,15 @@ public class ContextPropertyConverter {
 
     public static Context wbFromDMN(final org.kie.dmn.model.api.Context dmn,
                                     final BiConsumer<String, HasComponentWidths> hasComponentWidthsConsumer) {
-        Id id = new Id(dmn.getId());
-        Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
-        QName typeRef = QNamePropertyConverter.wbFromDMN(dmn.getTypeRef(), dmn);
-        Context result = new Context(id,
-                                     description,
-                                     typeRef);
+        final Id id = new Id(dmn.getId());
+        final Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
+        final QName typeRef = QNamePropertyConverter.wbFromDMN(dmn.getTypeRef(), dmn);
+        final Context result = new Context(id,
+                                           description,
+                                           typeRef);
         for (org.kie.dmn.model.api.ContextEntry ce : dmn.getContextEntry()) {
-            ContextEntry ceConverted = ContextEntryPropertyConverter.wbFromDMN(ce,
-                                                                               hasComponentWidthsConsumer);
+            final ContextEntry ceConverted = ContextEntryPropertyConverter.wbFromDMN(ce,
+                                                                                     hasComponentWidthsConsumer);
             if (ceConverted != null) {
                 ceConverted.setParent(result);
             }
@@ -70,14 +70,14 @@ public class ContextPropertyConverter {
 
     public static org.kie.dmn.model.api.Context dmnFromWB(final Context wb,
                                                           final Consumer<ComponentWidths> componentWidthsConsumer) {
-        org.kie.dmn.model.api.Context result = new org.kie.dmn.model.v1_2.TContext();
+        final org.kie.dmn.model.api.Context result = new org.kie.dmn.model.v1_2.TContext();
         result.setId(wb.getId().getValue());
         result.setDescription(DescriptionPropertyConverter.dmnFromWB(wb.getDescription()));
         QNamePropertyConverter.setDMNfromWB(wb.getTypeRef(),
                                             result::setTypeRef);
         for (ContextEntry ce : wb.getContextEntry()) {
-            org.kie.dmn.model.api.ContextEntry ceConverted = ContextEntryPropertyConverter.dmnFromWB(ce,
-                                                                                                     componentWidthsConsumer);
+            final org.kie.dmn.model.api.ContextEntry ceConverted = ContextEntryPropertyConverter.dmnFromWB(ce,
+                                                                                                           componentWidthsConsumer);
             if (ceConverted != null) {
                 ceConverted.setParent(result);
             }

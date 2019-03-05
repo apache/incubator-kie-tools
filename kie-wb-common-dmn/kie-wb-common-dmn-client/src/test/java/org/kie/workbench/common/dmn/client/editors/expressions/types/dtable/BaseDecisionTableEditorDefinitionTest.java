@@ -28,6 +28,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTableOrientation;
 import org.kie.workbench.common.dmn.api.definition.v1_1.HitPolicy;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InputClause;
+import org.kie.workbench.common.dmn.api.definition.v1_1.InputClauseLiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.OutputClause;
 import org.kie.workbench.common.dmn.api.definition.v1_1.UnaryTests;
@@ -165,7 +166,7 @@ public abstract class BaseDecisionTableEditorDefinitionTest {
     protected void assertStandardInputClauseEnrichment(final DecisionTable model) {
         final List<InputClause> input = model.getInput();
         assertThat(input.size()).isEqualTo(1);
-        assertThat(input.get(0).getInputExpression()).isInstanceOf(LiteralExpression.class);
+        assertThat(input.get(0).getInputExpression()).isInstanceOf(InputClauseLiteralExpression.class);
         assertThat(input.get(0).getInputExpression().getText().getValue()).isEqualTo(DecisionTableDefaultValueUtilities.INPUT_CLAUSE_PREFIX + "1");
     }
 

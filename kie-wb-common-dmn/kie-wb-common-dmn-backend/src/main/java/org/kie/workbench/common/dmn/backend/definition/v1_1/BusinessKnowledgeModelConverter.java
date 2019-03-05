@@ -53,22 +53,22 @@ public class BusinessKnowledgeModelConverter implements NodeConverter<org.kie.dm
     public Node<View<BusinessKnowledgeModel>, ?> nodeFromDMN(final org.kie.dmn.model.api.BusinessKnowledgeModel dmn,
                                                              final BiConsumer<String, HasComponentWidths> hasComponentWidthsConsumer) {
         @SuppressWarnings("unchecked")
-        Node<View<BusinessKnowledgeModel>, ?> node = (Node<View<BusinessKnowledgeModel>, ?>) factoryManager.newElement(dmn.getId(),
-                                                                                                                       BusinessKnowledgeModel.class).asNode();
-        Id id = new Id(dmn.getId());
-        Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
-        Name name = new Name(dmn.getName());
-        InformationItemPrimary informationItem = InformationItemPrimaryPropertyConverter.wbFromDMN(dmn.getVariable());
-        FunctionDefinition functionDefinition = FunctionDefinitionPropertyConverter.wbFromDMN(dmn.getEncapsulatedLogic(),
-                                                                                              hasComponentWidthsConsumer);
-        BusinessKnowledgeModel bkm = new BusinessKnowledgeModel(id,
-                                                                description,
-                                                                name,
-                                                                informationItem,
-                                                                functionDefinition,
-                                                                new BackgroundSet(),
-                                                                new FontSet(),
-                                                                new GeneralRectangleDimensionsSet());
+        final Node<View<BusinessKnowledgeModel>, ?> node = (Node<View<BusinessKnowledgeModel>, ?>) factoryManager.newElement(dmn.getId(),
+                                                                                                                             BusinessKnowledgeModel.class).asNode();
+        final Id id = new Id(dmn.getId());
+        final Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
+        final Name name = new Name(dmn.getName());
+        final InformationItemPrimary informationItem = InformationItemPrimaryPropertyConverter.wbFromDMN(dmn.getVariable());
+        final FunctionDefinition functionDefinition = FunctionDefinitionPropertyConverter.wbFromDMN(dmn.getEncapsulatedLogic(),
+                                                                                                    hasComponentWidthsConsumer);
+        final BusinessKnowledgeModel bkm = new BusinessKnowledgeModel(id,
+                                                                      description,
+                                                                      name,
+                                                                      informationItem,
+                                                                      functionDefinition,
+                                                                      new BackgroundSet(),
+                                                                      new FontSet(),
+                                                                      new GeneralRectangleDimensionsSet());
         node.getContent().setDefinition(bkm);
 
         if (informationItem != null) {
@@ -84,49 +84,49 @@ public class BusinessKnowledgeModelConverter implements NodeConverter<org.kie.dm
     @Override
     public org.kie.dmn.model.api.BusinessKnowledgeModel dmnFromNode(final Node<View<BusinessKnowledgeModel>, ?> node,
                                                                     final Consumer<ComponentWidths> componentWidthsConsumer) {
-        BusinessKnowledgeModel source = node.getContent().getDefinition();
-        org.kie.dmn.model.api.BusinessKnowledgeModel result = new org.kie.dmn.model.v1_2.TBusinessKnowledgeModel();
+        final BusinessKnowledgeModel source = node.getContent().getDefinition();
+        final org.kie.dmn.model.api.BusinessKnowledgeModel result = new org.kie.dmn.model.v1_2.TBusinessKnowledgeModel();
         result.setId(source.getId().getValue());
         result.setDescription(DescriptionPropertyConverter.dmnFromWB(source.getDescription()));
         result.setName(source.getName().getValue());
-        org.kie.dmn.model.api.InformationItem variable = InformationItemPrimaryPropertyConverter.dmnFromWB(source.getVariable());
+        final org.kie.dmn.model.api.InformationItem variable = InformationItemPrimaryPropertyConverter.dmnFromWB(source.getVariable());
         if (variable != null) {
             variable.setParent(result);
         }
         result.setVariable(variable);
-        org.kie.dmn.model.api.FunctionDefinition functionDefinition = FunctionDefinitionPropertyConverter.dmnFromWB(source.getEncapsulatedLogic(),
-                                                                                                                    componentWidthsConsumer);
+        final org.kie.dmn.model.api.FunctionDefinition functionDefinition = FunctionDefinitionPropertyConverter.dmnFromWB(source.getEncapsulatedLogic(),
+                                                                                                                          componentWidthsConsumer);
         if (functionDefinition != null) {
             functionDefinition.setParent(result);
         }
         result.setEncapsulatedLogic(functionDefinition);
         // DMN spec table 2: Requirements connection rules
-        List<Edge<?, ?>> inEdges = (List<Edge<?, ?>>) node.getInEdges();
+        final List<Edge<?, ?>> inEdges = (List<Edge<?, ?>>) node.getInEdges();
         for (Edge<?, ?> e : inEdges) {
-            Node<?, ?> sourceNode = e.getSourceNode();
+            final Node<?, ?> sourceNode = e.getSourceNode();
             if (sourceNode.getContent() instanceof View<?>) {
-                View<?> view = (View<?>) sourceNode.getContent();
+                final View<?> view = (View<?>) sourceNode.getContent();
                 if (view.getDefinition() instanceof DRGElement) {
-                    DRGElement drgElement = (DRGElement) view.getDefinition();
+                    final DRGElement drgElement = (DRGElement) view.getDefinition();
                     if (drgElement instanceof BusinessKnowledgeModel) {
-                        org.kie.dmn.model.api.KnowledgeRequirement iReq = new org.kie.dmn.model.v1_2.TKnowledgeRequirement();
+                        final org.kie.dmn.model.api.KnowledgeRequirement iReq = new org.kie.dmn.model.v1_2.TKnowledgeRequirement();
                         iReq.setId(e.getUUID());
-                        org.kie.dmn.model.api.DMNElementReference ri = new org.kie.dmn.model.v1_2.TDMNElementReference();
+                        final org.kie.dmn.model.api.DMNElementReference ri = new org.kie.dmn.model.v1_2.TDMNElementReference();
                         ri.setHref(new StringBuilder("#").append(drgElement.getId().getValue()).toString());
                         iReq.setRequiredKnowledge(ri);
                         result.getKnowledgeRequirement().add(iReq);
                     } else if (drgElement instanceof KnowledgeSource) {
-                        org.kie.dmn.model.api.AuthorityRequirement iReq = new org.kie.dmn.model.v1_2.TAuthorityRequirement();
+                        final org.kie.dmn.model.api.AuthorityRequirement iReq = new org.kie.dmn.model.v1_2.TAuthorityRequirement();
                         iReq.setId(e.getUUID());
-                        org.kie.dmn.model.api.DMNElementReference ri = new org.kie.dmn.model.v1_2.TDMNElementReference();
+                        final org.kie.dmn.model.api.DMNElementReference ri = new org.kie.dmn.model.v1_2.TDMNElementReference();
                         ri.setHref(new StringBuilder("#").append(drgElement.getId().getValue()).toString());
                         iReq.setRequiredAuthority(ri);
                         result.getAuthorityRequirement().add(iReq);
                     } else if (drgElement instanceof DecisionService) {
                         if (e.getContent() instanceof View && ((View) e.getContent()).getDefinition() instanceof KnowledgeRequirement) {
-                            org.kie.dmn.model.api.KnowledgeRequirement iReq = new org.kie.dmn.model.v1_2.TKnowledgeRequirement();
+                            final org.kie.dmn.model.api.KnowledgeRequirement iReq = new org.kie.dmn.model.v1_2.TKnowledgeRequirement();
                             iReq.setId(e.getUUID());
-                            org.kie.dmn.model.api.DMNElementReference ri = new org.kie.dmn.model.v1_2.TDMNElementReference();
+                            final org.kie.dmn.model.api.DMNElementReference ri = new org.kie.dmn.model.v1_2.TDMNElementReference();
                             ri.setHref(new StringBuilder("#").append(drgElement.getId().getValue()).toString());
                             iReq.setRequiredKnowledge(ri);
                             result.getKnowledgeRequirement().add(iReq);

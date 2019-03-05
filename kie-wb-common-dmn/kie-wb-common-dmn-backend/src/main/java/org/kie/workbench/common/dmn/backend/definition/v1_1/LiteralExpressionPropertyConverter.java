@@ -31,18 +31,18 @@ public class LiteralExpressionPropertyConverter {
         if (dmn == null) {
             return null;
         }
-        Id id = new Id(dmn.getId());
-        Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
-        QName typeRef = QNamePropertyConverter.wbFromDMN(dmn.getTypeRef(), dmn);
-        Text text = new Text(dmn.getText() != null ? dmn.getText() : "");
-        ExpressionLanguage expressionLanguage = ExpressionLanguagePropertyConverter.wbFromDMN(dmn.getExpressionLanguage());
-        ImportedValues importedValues = ImportedValuesConverter.wbFromDMN(dmn.getImportedValues());
-        LiteralExpression result = new LiteralExpression(id,
-                                                         description,
-                                                         typeRef,
-                                                         text,
-                                                         importedValues,
-                                                         expressionLanguage);
+        final Id id = new Id(dmn.getId());
+        final Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
+        final QName typeRef = QNamePropertyConverter.wbFromDMN(dmn.getTypeRef(), dmn);
+        final Text text = new Text(dmn.getText() != null ? dmn.getText() : "");
+        final ExpressionLanguage expressionLanguage = ExpressionLanguagePropertyConverter.wbFromDMN(dmn.getExpressionLanguage());
+        final ImportedValues importedValues = ImportedValuesConverter.wbFromDMN(dmn.getImportedValues());
+        final LiteralExpression result = new LiteralExpression(id,
+                                                               description,
+                                                               typeRef,
+                                                               text,
+                                                               importedValues,
+                                                               expressionLanguage);
         if (importedValues != null) {
             importedValues.setParent(result);
         }
@@ -53,12 +53,12 @@ public class LiteralExpressionPropertyConverter {
         if (wb == null) {
             return null;
         }
-        org.kie.dmn.model.api.LiteralExpression result = new org.kie.dmn.model.v1_2.TLiteralExpression();
+        final org.kie.dmn.model.api.LiteralExpression result = new org.kie.dmn.model.v1_2.TLiteralExpression();
         result.setId(wb.getId().getValue());
         QNamePropertyConverter.setDMNfromWB(wb.getTypeRef(),
                                             result::setTypeRef);
         result.setText(wb.getText().getValue());
-        org.kie.dmn.model.api.ImportedValues importedValues = ImportedValuesConverter.dmnFromWB(wb.getImportedValues());
+        final org.kie.dmn.model.api.ImportedValues importedValues = ImportedValuesConverter.dmnFromWB(wb.getImportedValues());
         if (importedValues != null) {
             importedValues.setParent(result);
         }

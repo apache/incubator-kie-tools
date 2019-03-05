@@ -22,7 +22,7 @@ import org.kie.workbench.common.dmn.api.property.font.FontSet;
 public class FontSetPropertyConverter {
 
     public static FontSet wbFromDMN(final DMNStyle dmn) {
-        FontSet result = new FontSet();
+        final FontSet result = new FontSet();
         if (null != dmn.getFontFamily()) {
             result.getFontFamily().setValue(dmn.getFontFamily());
         }
@@ -36,7 +36,7 @@ public class FontSetPropertyConverter {
     }
 
     public static DMNStyle dmnFromWB(final FontSet wb) {
-        DMNStyle result = new org.kie.dmn.model.v1_2.dmndi.DMNStyle();
+        final DMNStyle result = new org.kie.dmn.model.v1_2.dmndi.DMNStyle();
         if (null != wb.getFontFamily().getValue()) {
             result.setFontFamily(wb.getFontFamily().getValue());
         }

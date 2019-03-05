@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.api.definition.v1_1;
 
+import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.property.dmn.Text;
@@ -23,6 +24,8 @@ import org.kie.workbench.common.dmn.api.property.dmn.Text;
 public interface IsLiteralExpression {
 
     Id getId();
+
+    Description getDescription();
 
     QName getTypeRef();
 

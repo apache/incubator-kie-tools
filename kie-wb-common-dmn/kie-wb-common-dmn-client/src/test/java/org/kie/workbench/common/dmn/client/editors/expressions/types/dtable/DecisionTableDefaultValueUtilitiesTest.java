@@ -20,7 +20,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InputClause;
-import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
+import org.kie.workbench.common.dmn.api.definition.v1_1.InputClauseLiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.OutputClause;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,14 +37,14 @@ public class DecisionTableDefaultValueUtilitiesTest {
     @Test
     public void testGetNewInputClauseName() {
         final InputClause inputClause1 = new InputClause() {{
-            setInputExpression(new LiteralExpression());
+            setInputExpression(new InputClauseLiteralExpression());
         }};
         dtable.getInput().add(inputClause1);
         inputClause1.getInputExpression().getText().setValue(DecisionTableDefaultValueUtilities.getNewInputClauseName(dtable));
         assertThat(inputClause1.getInputExpression().getText().getValue()).isEqualTo(DecisionTableDefaultValueUtilities.INPUT_CLAUSE_PREFIX + "1");
 
         final InputClause inputClause2 = new InputClause() {{
-            setInputExpression(new LiteralExpression());
+            setInputExpression(new InputClauseLiteralExpression());
         }};
         dtable.getInput().add(inputClause2);
         inputClause2.getInputExpression().getText().setValue(DecisionTableDefaultValueUtilities.getNewInputClauseName(dtable));
@@ -54,13 +54,13 @@ public class DecisionTableDefaultValueUtilitiesTest {
     @Test
     public void testGetNewInputClauseNameWithExistingInputClauses() {
         final InputClause inputClause1 = new InputClause() {{
-            setInputExpression(new LiteralExpression());
+            setInputExpression(new InputClauseLiteralExpression());
         }};
         dtable.getInput().add(inputClause1);
         inputClause1.getInputExpression().getText().setValue("input");
 
         final InputClause inputClause2 = new InputClause() {{
-            setInputExpression(new LiteralExpression());
+            setInputExpression(new InputClauseLiteralExpression());
         }};
         dtable.getInput().add(inputClause2);
         inputClause2.getInputExpression().getText().setValue(DecisionTableDefaultValueUtilities.getNewInputClauseName(dtable));
@@ -70,14 +70,14 @@ public class DecisionTableDefaultValueUtilitiesTest {
     @Test
     public void testGetNewInputClauseNameWithDeletion() {
         final InputClause inputClause1 = new InputClause() {{
-            setInputExpression(new LiteralExpression());
+            setInputExpression(new InputClauseLiteralExpression());
         }};
         dtable.getInput().add(inputClause1);
         inputClause1.getInputExpression().getText().setValue(DecisionTableDefaultValueUtilities.getNewInputClauseName(dtable));
         assertThat(inputClause1.getInputExpression().getText().getValue()).isEqualTo(DecisionTableDefaultValueUtilities.INPUT_CLAUSE_PREFIX + "1");
 
         final InputClause inputClause2 = new InputClause() {{
-            setInputExpression(new LiteralExpression());
+            setInputExpression(new InputClauseLiteralExpression());
         }};
         dtable.getInput().add(inputClause2);
         inputClause2.getInputExpression().getText().setValue(DecisionTableDefaultValueUtilities.getNewInputClauseName(dtable));
@@ -86,7 +86,7 @@ public class DecisionTableDefaultValueUtilitiesTest {
         dtable.getInput().remove(inputClause1);
 
         final InputClause inputClause3 = new InputClause() {{
-            setInputExpression(new LiteralExpression());
+            setInputExpression(new InputClauseLiteralExpression());
         }};
         dtable.getInput().add(inputClause3);
         inputClause3.getInputExpression().getText().setValue(DecisionTableDefaultValueUtilities.getNewInputClauseName(dtable));

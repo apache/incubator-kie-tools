@@ -32,11 +32,11 @@ public class BindingPropertyConverter {
         if (dmn == null) {
             return null;
         }
-        InformationItem convertedParameter = InformationItemPropertyConverter.wbFromDMN(dmn.getParameter());
-        Expression convertedExpression = ExpressionPropertyConverter.wbFromDMN(dmn.getExpression(),
-                                                                               hasComponentWidthsConsumer);
+        final InformationItem convertedParameter = InformationItemPropertyConverter.wbFromDMN(dmn.getParameter());
+        final Expression convertedExpression = ExpressionPropertyConverter.wbFromDMN(dmn.getExpression(),
+                                                                                     hasComponentWidthsConsumer);
 
-        Binding result = new Binding();
+        final Binding result = new Binding();
         if (convertedParameter != null) {
             convertedParameter.setParent(result);
         }
@@ -53,10 +53,10 @@ public class BindingPropertyConverter {
         if (wb == null) {
             return null;
         }
-        org.kie.dmn.model.api.Binding result = new org.kie.dmn.model.v1_2.TBinding();
-        org.kie.dmn.model.api.InformationItem convertedParameter = InformationItemPropertyConverter.dmnFromWB(wb.getParameter());
-        org.kie.dmn.model.api.Expression convertedExpression = ExpressionPropertyConverter.dmnFromWB(wb.getExpression(),
-                                                                                                     componentWidthsConsumer);
+        final org.kie.dmn.model.api.Binding result = new org.kie.dmn.model.v1_2.TBinding();
+        final org.kie.dmn.model.api.InformationItem convertedParameter = InformationItemPropertyConverter.dmnFromWB(wb.getParameter());
+        final org.kie.dmn.model.api.Expression convertedExpression = ExpressionPropertyConverter.dmnFromWB(wb.getExpression(),
+                                                                                                           componentWidthsConsumer);
 
         if (convertedParameter != null) {
             convertedParameter.setParent(result);

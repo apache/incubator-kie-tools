@@ -46,19 +46,19 @@ public class TextAnnotationConverter implements NodeConverter<org.kie.dmn.model.
     public Node<View<TextAnnotation>, ?> nodeFromDMN(final org.kie.dmn.model.api.TextAnnotation dmn,
                                                      final BiConsumer<String, HasComponentWidths> hasComponentWidthsConsumer) {
         @SuppressWarnings("unchecked")
-        Node<View<TextAnnotation>, ?> node = (Node<View<TextAnnotation>, ?>) factoryManager.newElement(dmn.getId(),
-                                                                                                       TextAnnotation.class).asNode();
-        Id id = new Id(dmn.getId());
-        Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
-        Text text = new Text(dmn.getText());
-        TextFormat textFormat = new TextFormat(dmn.getTextFormat());
-        TextAnnotation textAnnotation = new TextAnnotation(id,
-                                                           description,
-                                                           text,
-                                                           textFormat,
-                                                           new BackgroundSet(),
-                                                           new FontSet(),
-                                                           new GeneralRectangleDimensionsSet());
+        final Node<View<TextAnnotation>, ?> node = (Node<View<TextAnnotation>, ?>) factoryManager.newElement(dmn.getId(),
+                                                                                                             TextAnnotation.class).asNode();
+        final Id id = new Id(dmn.getId());
+        final Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
+        final Text text = new Text(dmn.getText());
+        final TextFormat textFormat = new TextFormat(dmn.getTextFormat());
+        final TextAnnotation textAnnotation = new TextAnnotation(id,
+                                                                 description,
+                                                                 text,
+                                                                 textFormat,
+                                                                 new BackgroundSet(),
+                                                                 new FontSet(),
+                                                                 new GeneralRectangleDimensionsSet());
         node.getContent().setDefinition(textAnnotation);
         return node;
     }
@@ -66,8 +66,8 @@ public class TextAnnotationConverter implements NodeConverter<org.kie.dmn.model.
     @Override
     public org.kie.dmn.model.api.TextAnnotation dmnFromNode(final Node<View<TextAnnotation>, ?> node,
                                                             final Consumer<ComponentWidths> componentWidthsConsumer) {
-        TextAnnotation source = node.getContent().getDefinition();
-        org.kie.dmn.model.api.TextAnnotation result = new org.kie.dmn.model.v1_2.TTextAnnotation();
+        final TextAnnotation source = node.getContent().getDefinition();
+        final org.kie.dmn.model.api.TextAnnotation result = new org.kie.dmn.model.v1_2.TTextAnnotation();
         result.setId(source.getId().getValue());
         result.setDescription(DescriptionPropertyConverter.dmnFromWB(source.getDescription()));
         result.setText(source.getText().getValue());

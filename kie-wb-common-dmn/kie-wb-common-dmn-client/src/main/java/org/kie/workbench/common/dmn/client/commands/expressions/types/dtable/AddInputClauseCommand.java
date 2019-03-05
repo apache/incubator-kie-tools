@@ -21,7 +21,7 @@ import java.util.function.Supplier;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InputClause;
-import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
+import org.kie.workbench.common.dmn.api.definition.v1_1.InputClauseLiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.UnaryTests;
 import org.kie.workbench.common.dmn.client.commands.VetoExecutionCommand;
 import org.kie.workbench.common.dmn.client.commands.VetoUndoCommand;
@@ -91,7 +91,7 @@ public class AddInputClauseCommand extends AbstractCanvasGraphCommand implements
 
                 final int clauseIndex = uiColumnIndex - DecisionTableUIModelMapperHelper.ROW_INDEX_COLUMN_COUNT;
                 dtable.getInput().add(clauseIndex, inputClause);
-                final LiteralExpression le = new LiteralExpression();
+                final InputClauseLiteralExpression le = new InputClauseLiteralExpression();
                 inputClause.setInputExpression(le);
                 le.getText().setValue(name);
 

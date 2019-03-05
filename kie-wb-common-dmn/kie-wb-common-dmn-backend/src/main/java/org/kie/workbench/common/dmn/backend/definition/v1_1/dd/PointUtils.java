@@ -35,14 +35,14 @@ public class PointUtils {
     }
 
     public static org.kie.dmn.model.api.dmndi.Point point2dToDMNDIPoint(org.kie.workbench.common.stunner.core.graph.content.view.Point2D point2d) {
-        org.kie.dmn.model.api.dmndi.Point result = new org.kie.dmn.model.v1_2.dmndi.Point();
+        final org.kie.dmn.model.api.dmndi.Point result = new org.kie.dmn.model.v1_2.dmndi.Point();
         result.setX(point2d.getX());
         result.setY(point2d.getY());
         return result;
     }
 
     public static org.kie.workbench.common.stunner.core.graph.content.view.Point2D dmndiPointToPoint2D(org.kie.dmn.model.api.dmndi.Point dmndiPoint) {
-        org.kie.workbench.common.stunner.core.graph.content.view.Point2D result = new org.kie.workbench.common.stunner.core.graph.content.view.Point2D(dmndiPoint.getX(), dmndiPoint.getY());
+        final org.kie.workbench.common.stunner.core.graph.content.view.Point2D result = new org.kie.workbench.common.stunner.core.graph.content.view.Point2D(dmndiPoint.getX(), dmndiPoint.getY());
         return result;
     }
 

@@ -29,13 +29,13 @@ import org.kie.workbench.common.stunner.core.util.StringUtils;
 public class OutputClausePropertyConverter {
 
     public static OutputClause wbFromDMN(final org.kie.dmn.model.api.OutputClause dmn) {
-        Id id = new Id(dmn.getId());
-        Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
-        OutputClauseUnaryTests outputValues = OutputClauseUnaryTestsPropertyConverter.wbFromDMN(dmn.getOutputValues());
-        OutputClauseLiteralExpression defaultOutputEntry = OutputClauseLiteralExpressionPropertyConverter.wbFromDMN(dmn.getDefaultOutputEntry());
-        QName typeRef = QNamePropertyConverter.wbFromDMN(dmn.getTypeRef(), dmn);
+        final Id id = new Id(dmn.getId());
+        final Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
+        final OutputClauseUnaryTests outputValues = OutputClauseUnaryTestsPropertyConverter.wbFromDMN(dmn.getOutputValues());
+        final OutputClauseLiteralExpression defaultOutputEntry = OutputClauseLiteralExpressionPropertyConverter.wbFromDMN(dmn.getDefaultOutputEntry());
+        final QName typeRef = QNamePropertyConverter.wbFromDMN(dmn.getTypeRef(), dmn);
 
-        OutputClause result = new OutputClause();
+        final OutputClause result = new OutputClause();
         result.setId(id);
         result.setName(dmn.getName());
         result.setDescription(description);
@@ -54,18 +54,18 @@ public class OutputClausePropertyConverter {
     }
 
     public static org.kie.dmn.model.api.OutputClause dmnFromWB(final OutputClause wb) {
-        org.kie.dmn.model.api.OutputClause result = new org.kie.dmn.model.v1_2.TOutputClause();
+        final org.kie.dmn.model.api.OutputClause result = new org.kie.dmn.model.v1_2.TOutputClause();
         result.setId(wb.getId().getValue());
         result.setName(wb.getName());
         result.setDescription(DescriptionPropertyConverter.dmnFromWB(wb.getDescription()));
 
-        UnaryTests outputValues = UnaryTestsPropertyConverter.dmnFromWB(wb.getOutputValues());
+        final UnaryTests outputValues = UnaryTestsPropertyConverter.dmnFromWB(wb.getOutputValues());
         if (outputValues != null && StringUtils.nonEmpty(outputValues.getText())) {
             outputValues.setParent(result);
             result.setOutputValues(outputValues);
         }
 
-        LiteralExpression defaultOutputEntry = LiteralExpressionPropertyConverter.dmnFromWB(wb.getDefaultOutputEntry());
+        final LiteralExpression defaultOutputEntry = LiteralExpressionPropertyConverter.dmnFromWB(wb.getDefaultOutputEntry());
         if (defaultOutputEntry != null && StringUtils.nonEmpty(defaultOutputEntry.getText())) {
             defaultOutputEntry.setParent(result);
             result.setDefaultOutputEntry(defaultOutputEntry);

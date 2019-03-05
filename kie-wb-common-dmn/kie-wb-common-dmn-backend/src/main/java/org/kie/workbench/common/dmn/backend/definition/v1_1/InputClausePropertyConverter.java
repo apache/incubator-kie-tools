@@ -18,8 +18,8 @@ package org.kie.workbench.common.dmn.backend.definition.v1_1;
 
 import org.kie.dmn.model.api.UnaryTests;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InputClause;
+import org.kie.workbench.common.dmn.api.definition.v1_1.InputClauseLiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InputClauseUnaryTests;
-import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.stunner.core.util.StringUtils;
@@ -27,15 +27,15 @@ import org.kie.workbench.common.stunner.core.util.StringUtils;
 public class InputClausePropertyConverter {
 
     public static InputClause wbFromDMN(final org.kie.dmn.model.api.InputClause dmn) {
-        Id id = new Id(dmn.getId());
-        Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
-        LiteralExpression inputExpression = LiteralExpressionPropertyConverter.wbFromDMN(dmn.getInputExpression());
-        InputClauseUnaryTests inputValues = InputClauseUnaryTestsPropertyConverter.wbFromDMN(dmn.getInputValues());
+        final Id id = new Id(dmn.getId());
+        final Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
+        final InputClauseLiteralExpression inputExpression = InputClauseLiteralExpressionPropertyConverter.wbFromDMN(dmn.getInputExpression());
+        final InputClauseUnaryTests inputValues = InputClauseUnaryTestsPropertyConverter.wbFromDMN(dmn.getInputValues());
 
-        InputClause result = new InputClause(id,
-                                             description,
-                                             inputExpression,
-                                             inputValues);
+        final InputClause result = new InputClause(id,
+                                                   description,
+                                                   inputExpression,
+                                                   inputValues);
 
         if (inputExpression != null) {
             inputExpression.setParent(result);
@@ -48,11 +48,11 @@ public class InputClausePropertyConverter {
     }
 
     public static org.kie.dmn.model.api.InputClause dmnFromWB(final InputClause wb) {
-        org.kie.dmn.model.api.InputClause result = new org.kie.dmn.model.v1_2.TInputClause();
+        final org.kie.dmn.model.api.InputClause result = new org.kie.dmn.model.v1_2.TInputClause();
         result.setId(wb.getId().getValue());
         result.setDescription(DescriptionPropertyConverter.dmnFromWB(wb.getDescription()));
-        org.kie.dmn.model.api.LiteralExpression expression = LiteralExpressionPropertyConverter.dmnFromWB(wb.getInputExpression());
-        UnaryTests inputValues = UnaryTestsPropertyConverter.dmnFromWB(wb.getInputValues());
+        final org.kie.dmn.model.api.LiteralExpression expression = LiteralExpressionPropertyConverter.dmnFromWB(wb.getInputExpression());
+        final UnaryTests inputValues = UnaryTestsPropertyConverter.dmnFromWB(wb.getInputValues());
 
         if (expression != null) {
             expression.setParent(result);

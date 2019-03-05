@@ -39,6 +39,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.Definitions;
 import org.kie.workbench.common.dmn.api.definition.v1_1.HitPolicy;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InputClause;
+import org.kie.workbench.common.dmn.api.definition.v1_1.InputClauseLiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InputData;
 import org.kie.workbench.common.dmn.api.definition.v1_1.IsInformationItem;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
@@ -95,7 +96,7 @@ public class DecisionTableEditorDefinitionEnricher implements ExpressionEditorMo
             dtable.setPreferredOrientation(DecisionTableOrientation.RULE_AS_ROW);
 
             final InputClause inputClause = new InputClause();
-            final LiteralExpression literalExpression = new LiteralExpression();
+            final InputClauseLiteralExpression literalExpression = new InputClauseLiteralExpression();
             literalExpression.getText().setValue(DecisionTableDefaultValueUtilities.getNewInputClauseName(dtable));
             inputClause.setInputExpression(literalExpression);
             dtable.getInput().add(inputClause);
@@ -176,7 +177,7 @@ public class DecisionTableEditorDefinitionEnricher implements ExpressionEditorMo
                 .sorted(Comparator.comparing(inputClauseRequirement -> inputClauseRequirement.text))
                 .forEach(inputClauseRequirement -> {
                     final InputClause inputClause = new InputClause();
-                    final LiteralExpression literalExpression = new LiteralExpression();
+                    final InputClauseLiteralExpression literalExpression = new InputClauseLiteralExpression();
                     literalExpression.getText().setValue(inputClauseRequirement.text);
                     literalExpression.setTypeRef(inputClauseRequirement.typeRef);
                     inputClause.setInputExpression(literalExpression);

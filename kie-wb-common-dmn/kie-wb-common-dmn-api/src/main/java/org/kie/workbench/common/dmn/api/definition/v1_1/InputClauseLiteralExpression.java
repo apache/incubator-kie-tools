@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import javax.validation.Valid;
+
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.soup.commons.util.Sets;
@@ -27,6 +29,8 @@ import org.kie.workbench.common.dmn.api.property.DMNPropertySet;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.kie.workbench.common.dmn.api.property.dmn.QNameFieldType;
+import org.kie.workbench.common.dmn.api.property.dmn.QNameHolder;
 import org.kie.workbench.common.dmn.api.property.dmn.Text;
 import org.kie.workbench.common.dmn.api.resource.i18n.DMNAPIConstants;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
@@ -48,9 +52,9 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers.nestedForms.AbstractEmbeddedFormsInitializer.FIELD_CONTAINER_PARAM;
 
 /**
- * This is in essence a clone of {@link LiteralExpression} specifically for {@link OutputClause}
- * to expose the {@link Text} as a Form Property to the Dynamic Forms Engine with a specific
- * label for "Default Output value".
+ * This is in essence a clone of {@link LiteralExpression} specifically for {@link InputClause}
+ * to expose both {@link Text} and {@link QName} as Form Properties to the Dynamic Forms Engine with specific
+ * labels for "Input expression" and its "TypeRef".
  */
 @Portable
 @Bindable
@@ -58,12 +62,12 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 @Definition(graphFactory = NodeFactory.class)
 @FormDefinition(policy = FieldPolicy.ONLY_MARKED,
         defaultFieldSettings = {@FieldParam(name = FIELD_CONTAINER_PARAM, value = COLLAPSIBLE_CONTAINER)},
-        i18n = @I18nSettings(keyPreffix = "org.kie.workbench.common.dmn.api.definition.v1_1.OutputClauseLiteralExpression"),
-        startElement = "id")
-public class OutputClauseLiteralExpression extends DMNModelInstrumentedBase implements IsLiteralExpression,
-                                                                                       HasTypeRef,
-                                                                                       DMNPropertySet,
-                                                                                       DomainObject {
+        i18n = @I18nSettings(keyPreffix = "org.kie.workbench.common.dmn.api.definition.v1_1.InputClauseLiteralExpression"),
+        startElement = "text")
+public class InputClauseLiteralExpression extends DMNModelInstrumentedBase implements IsLiteralExpression,
+                                                                                      HasTypeRef,
+                                                                                      DMNPropertySet,
+                                                                                      DomainObject {
 
     @Category
     private static final String stunnerCategory = Categories.DOMAIN_OBJECTS;
@@ -78,12 +82,17 @@ public class OutputClauseLiteralExpression extends DMNModelInstrumentedBase impl
     protected QName typeRef;
 
     @Property
+    @FormField(afterElement = "text", type = QNameFieldType.class)
+    @Valid
+    protected QNameHolder typeRefHolder;
+
+    @Property
     @FormField(afterElement = "description", labelKey = "text")
     protected Text text;
 
     protected ImportedValues importedValues;
 
-    public OutputClauseLiteralExpression() {
+    public InputClauseLiteralExpression() {
         this(new Id(),
              new Description(),
              new QName(),
@@ -91,14 +100,15 @@ public class OutputClauseLiteralExpression extends DMNModelInstrumentedBase impl
              null);
     }
 
-    public OutputClauseLiteralExpression(final Id id,
-                                         final Description description,
-                                         final QName typeRef,
-                                         final Text text,
-                                         final ImportedValues importedValues) {
+    public InputClauseLiteralExpression(final Id id,
+                                        final Description description,
+                                        final QName typeRef,
+                                        final Text text,
+                                        final ImportedValues importedValues) {
         this.id = id;
         this.description = description;
         this.typeRef = typeRef;
+        this.typeRefHolder = new QNameHolder(typeRef);
         this.text = text;
         this.importedValues = importedValues;
     }
@@ -140,12 +150,12 @@ public class OutputClauseLiteralExpression extends DMNModelInstrumentedBase impl
 
     @Override
     public QName getTypeRef() {
-        return typeRef;
+        return typeRefHolder.getValue();
     }
 
     @Override
     public void setTypeRef(final QName typeRef) {
-        this.typeRef = typeRef;
+        this.typeRefHolder.setValue(typeRef);
     }
 
     @Override
@@ -171,6 +181,17 @@ public class OutputClauseLiteralExpression extends DMNModelInstrumentedBase impl
         return this;
     }
 
+    // ------------------
+    // Errai Data Binding
+    // ------------------
+    public QNameHolder getTypeRefHolder() {
+        return typeRefHolder;
+    }
+
+    public void setTypeRefHolder(final QNameHolder typeRefHolder) {
+        this.typeRefHolder = typeRefHolder;
+    }
+
     // ------------------------------------------------------
     // DomainObject requirements - to use in Properties Panel
     // ------------------------------------------------------
@@ -190,11 +211,11 @@ public class OutputClauseLiteralExpression extends DMNModelInstrumentedBase impl
         if (this == o) {
             return true;
         }
-        if (!(o instanceof OutputClauseLiteralExpression)) {
+        if (!(o instanceof InputClauseLiteralExpression)) {
             return false;
         }
 
-        final OutputClauseLiteralExpression that = (OutputClauseLiteralExpression) o;
+        final InputClauseLiteralExpression that = (InputClauseLiteralExpression) o;
 
         if (id != null ? !id.equals(that.id) : that.id != null) {
             return false;

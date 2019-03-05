@@ -21,13 +21,13 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.DMNElementReference;
 public class DMNElementReferenceConverter {
 
     public static DMNElementReference wbFromDMN(final org.kie.dmn.model.api.DMNElementReference dmn) {
-        DMNElementReference result = new DMNElementReference();
+        final DMNElementReference result = new DMNElementReference();
         result.setHref(dmn.getHref());
         return result;
     }
 
     public static org.kie.dmn.model.api.DMNElementReference dmnFromWB(final DMNElementReference wb) {
-        org.kie.dmn.model.api.DMNElementReference result = new org.kie.dmn.model.v1_2.TDMNElementReference();
+        final org.kie.dmn.model.api.DMNElementReference result = new org.kie.dmn.model.v1_2.TDMNElementReference();
         result.setHref(wb.getHref());
 
         return result;

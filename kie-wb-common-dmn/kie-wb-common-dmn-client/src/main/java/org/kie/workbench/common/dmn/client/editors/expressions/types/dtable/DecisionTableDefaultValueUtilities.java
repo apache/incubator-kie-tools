@@ -20,7 +20,7 @@ import java.util.Optional;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InputClause;
-import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
+import org.kie.workbench.common.dmn.api.definition.v1_1.InputClauseLiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.OutputClause;
 import org.kie.workbench.common.dmn.client.property.dmn.DefaultValueUtilities;
 
@@ -43,7 +43,7 @@ public class DecisionTableDefaultValueUtilities {
     private static int getMaxUnusedInputClauseIndex(final DecisionTable dtable) {
         int maxIndex = 0;
         for (InputClause ic : dtable.getInput()) {
-            final LiteralExpression le = ic.getInputExpression();
+            final InputClauseLiteralExpression le = ic.getInputExpression();
             if (le != null) {
                 final Optional<Integer> index = DefaultValueUtilities.extractIndex(le.getText().getValue(), INPUT_CLAUSE_PREFIX);
                 if (index.isPresent()) {

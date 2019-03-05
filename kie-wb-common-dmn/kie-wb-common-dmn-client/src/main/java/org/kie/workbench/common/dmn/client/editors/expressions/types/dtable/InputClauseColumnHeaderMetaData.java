@@ -23,7 +23,7 @@ import java.util.function.Supplier;
 
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
-import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
+import org.kie.workbench.common.dmn.api.definition.v1_1.InputClauseLiteralExpression;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
@@ -35,7 +35,7 @@ public class InputClauseColumnHeaderMetaData extends NameAndDataTypeHeaderMetaDa
     private static final String NAME_DATA_TYPE_COLUMN_GROUP = "InputClauseColumnHeaderMetaData$NameAndDataTypeColumn";
 
     public InputClauseColumnHeaderMetaData(final HasName hasName,
-                                           final Supplier<LiteralExpression> hasTypeRef,
+                                           final Supplier<InputClauseLiteralExpression> hasTypeRef,
                                            final Consumer<HasName> clearDisplayNameConsumer,
                                            final BiConsumer<HasName, Name> setDisplayNameConsumer,
                                            final BiConsumer<HasTypeRef, QName> setTypeRefConsumer,

@@ -37,20 +37,20 @@ public class FunctionDefinitionPropertyConverter {
         if (dmn == null) {
             return null;
         }
-        Id id = new Id(dmn.getId());
-        Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
-        QName typeRef = QNamePropertyConverter.wbFromDMN(dmn.getTypeRef(), dmn);
-        Expression expression = ExpressionPropertyConverter.wbFromDMN(dmn.getExpression(),
-                                                                      hasComponentWidthsConsumer);
-        FunctionDefinition result = new FunctionDefinition(id,
-                                                           description,
-                                                           typeRef,
-                                                           expression);
+        final Id id = new Id(dmn.getId());
+        final Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
+        final QName typeRef = QNamePropertyConverter.wbFromDMN(dmn.getTypeRef(), dmn);
+        final Expression expression = ExpressionPropertyConverter.wbFromDMN(dmn.getExpression(),
+                                                                            hasComponentWidthsConsumer);
+        final FunctionDefinition result = new FunctionDefinition(id,
+                                                                 description,
+                                                                 typeRef,
+                                                                 expression);
         if (expression != null) {
             expression.setParent(result);
         }
 
-        FunctionKind kind = dmn.getKind();
+        final FunctionKind kind = dmn.getKind();
         switch (kind) {
             case FEEL:
                 result.setKind(Kind.FEEL);
@@ -67,7 +67,7 @@ public class FunctionDefinitionPropertyConverter {
         }
 
         for (org.kie.dmn.model.api.InformationItem ii : dmn.getFormalParameter()) {
-            InformationItem iiConverted = InformationItemPropertyConverter.wbFromDMN(ii);
+            final InformationItem iiConverted = InformationItemPropertyConverter.wbFromDMN(ii);
             if (iiConverted != null) {
                 iiConverted.setParent(result);
             }
@@ -82,7 +82,7 @@ public class FunctionDefinitionPropertyConverter {
         if (wb == null) {
             return null;
         }
-        org.kie.dmn.model.api.FunctionDefinition result = new org.kie.dmn.model.v1_2.TFunctionDefinition();
+        final org.kie.dmn.model.api.FunctionDefinition result = new org.kie.dmn.model.v1_2.TFunctionDefinition();
         result.setId(wb.getId().getValue());
         result.setDescription(DescriptionPropertyConverter.dmnFromWB(wb.getDescription()));
         QNamePropertyConverter.setDMNfromWB(wb.getTypeRef(),
@@ -90,7 +90,7 @@ public class FunctionDefinitionPropertyConverter {
         result.setExpression(ExpressionPropertyConverter.dmnFromWB(wb.getExpression(),
                                                                    componentWidthsConsumer));
 
-        Kind kind = wb.getKind();
+        final Kind kind = wb.getKind();
         switch (kind) {
             case FEEL:
                 result.setKind(FunctionKind.FEEL);
@@ -107,7 +107,7 @@ public class FunctionDefinitionPropertyConverter {
         }
 
         for (InformationItem ii : wb.getFormalParameter()) {
-            org.kie.dmn.model.api.InformationItem iiConverted = InformationItemPropertyConverter.dmnFromWB(ii);
+            final org.kie.dmn.model.api.InformationItem iiConverted = InformationItemPropertyConverter.dmnFromWB(ii);
             if (iiConverted != null) {
                 iiConverted.setParent(result);
             }

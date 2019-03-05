@@ -46,19 +46,19 @@ public class InputDataConverter implements NodeConverter<org.kie.dmn.model.api.I
     public Node<View<InputData>, ?> nodeFromDMN(final org.kie.dmn.model.api.InputData dmn,
                                                 final BiConsumer<String, HasComponentWidths> hasComponentWidthsConsumer) {
         @SuppressWarnings("unchecked")
-        Node<View<InputData>, ?> node = (Node<View<InputData>, ?>) factoryManager.newElement(dmn.getId(),
-                                                                                             InputData.class).asNode();
-        Id id = new Id(dmn.getId());
-        Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
-        Name name = new Name(dmn.getName());
-        InformationItemPrimary informationItem = InformationItemPrimaryPropertyConverter.wbFromDMN(dmn.getVariable());
-        InputData inputData = new InputData(id,
-                                            description,
-                                            name,
-                                            informationItem,
-                                            new BackgroundSet(),
-                                            new FontSet(),
-                                            new GeneralRectangleDimensionsSet());
+        final Node<View<InputData>, ?> node = (Node<View<InputData>, ?>) factoryManager.newElement(dmn.getId(),
+                                                                                                   InputData.class).asNode();
+        final Id id = new Id(dmn.getId());
+        final Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
+        final Name name = new Name(dmn.getName());
+        final InformationItemPrimary informationItem = InformationItemPrimaryPropertyConverter.wbFromDMN(dmn.getVariable());
+        final InputData inputData = new InputData(id,
+                                                  description,
+                                                  name,
+                                                  informationItem,
+                                                  new BackgroundSet(),
+                                                  new FontSet(),
+                                                  new GeneralRectangleDimensionsSet());
         node.getContent().setDefinition(inputData);
 
         if (informationItem != null) {
@@ -71,12 +71,12 @@ public class InputDataConverter implements NodeConverter<org.kie.dmn.model.api.I
     @Override
     public org.kie.dmn.model.api.InputData dmnFromNode(final Node<View<InputData>, ?> node,
                                                        final Consumer<ComponentWidths> componentWidthsConsumer) {
-        InputData source = node.getContent().getDefinition();
-        org.kie.dmn.model.api.InputData result = new org.kie.dmn.model.v1_2.TInputData();
+        final InputData source = node.getContent().getDefinition();
+        final org.kie.dmn.model.api.InputData result = new org.kie.dmn.model.v1_2.TInputData();
         result.setId(source.getId().getValue());
         result.setDescription(DescriptionPropertyConverter.dmnFromWB(source.getDescription()));
         result.setName(source.getName().getValue());
-        org.kie.dmn.model.api.InformationItem variable = InformationItemPrimaryPropertyConverter.dmnFromWB(source.getVariable());
+        final org.kie.dmn.model.api.InformationItem variable = InformationItemPrimaryPropertyConverter.dmnFromWB(source.getVariable());
         if (variable != null) {
             variable.setParent(result);
         }

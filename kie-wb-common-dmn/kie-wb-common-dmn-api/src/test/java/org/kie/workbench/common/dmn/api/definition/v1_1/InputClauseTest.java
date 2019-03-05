@@ -47,7 +47,7 @@ public class InputClauseTest {
 
     @Test
     public void testGetHasTypeRefs() {
-        final LiteralExpression literalExpression = mock(LiteralExpression.class);
+        final InputClauseLiteralExpression literalExpression = mock(InputClauseLiteralExpression.class);
         final HasTypeRef hasTypeRef1 = mock(HasTypeRef.class);
         final HasTypeRef hasTypeRef2 = mock(HasTypeRef.class);
 

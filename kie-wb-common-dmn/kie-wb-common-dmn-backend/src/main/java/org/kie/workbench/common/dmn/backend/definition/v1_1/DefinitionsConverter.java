@@ -35,11 +35,11 @@ public class DefinitionsConverter {
         if (dmn == null) {
             return null;
         }
-        Id id = new Id(dmn.getId());
-        Name name = new Name(dmn.getName());
-        String namespace = dmn.getNamespace();
-        Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
-        Definitions result = new Definitions();
+        final Id id = new Id(dmn.getId());
+        final Name name = new Name(dmn.getName());
+        final String namespace = dmn.getNamespace();
+        final Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
+        final Definitions result = new Definitions();
         result.setId(id);
         result.setName(name);
         result.setNamespace(new Text(namespace));
@@ -63,7 +63,7 @@ public class DefinitionsConverter {
         }
 
         for (org.kie.dmn.model.api.ItemDefinition itemDef : dmn.getItemDefinition()) {
-            ItemDefinition itemDefConverted = ItemDefinitionPropertyConverter.wbFromDMN(itemDef);
+            final ItemDefinition itemDefConverted = ItemDefinitionPropertyConverter.wbFromDMN(itemDef);
             if (itemDefConverted != null) {
                 itemDefConverted.setParent(result);
             }
@@ -71,7 +71,7 @@ public class DefinitionsConverter {
         }
 
         for (org.kie.dmn.model.api.Import i : dmn.getImport()) {
-            Import importConverted = ImportConverter.wbFromDMN(i);
+            final Import importConverted = ImportConverter.wbFromDMN(i);
             if (importConverted != null) {
                 importConverted.setParent(result);
             }
@@ -85,12 +85,12 @@ public class DefinitionsConverter {
         if (wb == null) {
             return null;
         }
-        org.kie.dmn.model.api.Definitions result = new org.kie.dmn.model.v1_2.TDefinitions();
+        final org.kie.dmn.model.api.Definitions result = new org.kie.dmn.model.v1_2.TDefinitions();
 
         // TODO currently DMN wb UI does not offer feature to set these required DMN properties, setting some hardcoded defaults for now.
-        String defaultId = (wb.getId() != null) ? wb.getId().getValue() : UUID.uuid();
-        String defaultName = (wb.getName() != null) ? wb.getName().getValue() : UUID.uuid(8);
-        String defaultNamespace = !StringUtils.isEmpty(wb.getNamespace().getValue())
+        final String defaultId = (wb.getId() != null) ? wb.getId().getValue() : UUID.uuid();
+        final String defaultName = (wb.getName() != null) ? wb.getName().getValue() : UUID.uuid(8);
+        final String defaultNamespace = !StringUtils.isEmpty(wb.getNamespace().getValue())
                 ? wb.getNamespace().getValue()
                 : DMNModelInstrumentedBase.Namespace.DEFAULT.getUri() + UUID.uuid();
 
@@ -103,7 +103,7 @@ public class DefinitionsConverter {
                                           defaultNamespace);
 
         for (ItemDefinition itemDef : wb.getItemDefinition()) {
-            org.kie.dmn.model.api.ItemDefinition itemDefConverted = ItemDefinitionPropertyConverter.dmnFromWB(itemDef);
+            final org.kie.dmn.model.api.ItemDefinition itemDefConverted = ItemDefinitionPropertyConverter.dmnFromWB(itemDef);
             if (itemDefConverted != null) {
                 itemDefConverted.setParent(result);
             }
@@ -111,7 +111,7 @@ public class DefinitionsConverter {
         }
 
         for (Import i : wb.getImport()) {
-            org.kie.dmn.model.api.Import importConverted = ImportConverter.dmnFromWb(i);
+            final org.kie.dmn.model.api.Import importConverted = ImportConverter.dmnFromWb(i);
             if (importConverted != null) {
                 importConverted.setParent(result);
             }

@@ -60,22 +60,24 @@ public class InputClause extends DMNElement implements HasTypeRefs,
     @Labels
     private static final Set<String> stunnerLabels = new Sets.Builder<String>().build();
 
-    private LiteralExpression inputExpression;
+    @PropertySet
+    @FormField(afterElement = "description", labelKey = "inputExpression")
+    protected InputClauseLiteralExpression inputExpression;
 
     @PropertySet
-    @FormField(afterElement = "description", labelKey = "inputValues")
+    @FormField(afterElement = "inputExpression", labelKey = "inputValues")
     protected InputClauseUnaryTests inputValues;
 
     public InputClause() {
         this(new Id(),
              new Description(),
-             new LiteralExpression(),
+             new InputClauseLiteralExpression(),
              new InputClauseUnaryTests());
     }
 
     public InputClause(final Id id,
                        final Description description,
-                       final LiteralExpression inputExpression,
+                       final InputClauseLiteralExpression inputExpression,
                        final InputClauseUnaryTests inputValues) {
         super(id,
               description);
@@ -104,11 +106,11 @@ public class InputClause extends DMNElement implements HasTypeRefs,
     // DMN properties
     // -----------------------
 
-    public LiteralExpression getInputExpression() {
+    public InputClauseLiteralExpression getInputExpression() {
         return inputExpression;
     }
 
-    public void setInputExpression(final LiteralExpression value) {
+    public void setInputExpression(final InputClauseLiteralExpression value) {
         this.inputExpression = value;
     }
 

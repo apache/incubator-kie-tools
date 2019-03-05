@@ -28,14 +28,14 @@ public class InformationItemPropertyConverter {
         if (dmn == null) {
             return null;
         }
-        Id id = new Id(dmn.getId());
-        Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
-        Name name = new Name(dmn.getName());
-        QName typeRef = QNamePropertyConverter.wbFromDMN(dmn.getTypeRef(), dmn);
-        InformationItem result = new InformationItem(id,
-                                                     description,
-                                                     name,
-                                                     typeRef);
+        final Id id = new Id(dmn.getId());
+        final Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
+        final Name name = new Name(dmn.getName());
+        final QName typeRef = QNamePropertyConverter.wbFromDMN(dmn.getTypeRef(), dmn);
+        final InformationItem result = new InformationItem(id,
+                                                           description,
+                                                           name,
+                                                           typeRef);
         return result;
     }
 
@@ -43,7 +43,7 @@ public class InformationItemPropertyConverter {
         if (wb == null) {
             return null;
         }
-        org.kie.dmn.model.api.InformationItem result = new org.kie.dmn.model.v1_2.TInformationItem();
+        final org.kie.dmn.model.api.InformationItem result = new org.kie.dmn.model.v1_2.TInformationItem();
         result.setId(wb.getId().getValue());
         result.setDescription(DescriptionPropertyConverter.dmnFromWB(wb.getDescription()));
         result.setName(wb.getName().getValue());

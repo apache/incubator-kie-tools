@@ -25,22 +25,22 @@ import org.kie.workbench.common.dmn.api.property.dmn.Id;
 public class DecisionRulePropertyConverter {
 
     public static DecisionRule wbFromDMN(final org.kie.dmn.model.api.DecisionRule dmn) {
-        Id id = new Id(dmn.getId());
-        Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
+        final Id id = new Id(dmn.getId());
+        final Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
 
-        DecisionRule result = new DecisionRule();
+        final DecisionRule result = new DecisionRule();
         result.setId(id);
         result.setDescription(description);
 
         for (org.kie.dmn.model.api.UnaryTests ie : dmn.getInputEntry()) {
-            UnaryTests inputEntryConverted = UnaryTestsPropertyConverter.wbFromDMN(ie);
+            final UnaryTests inputEntryConverted = UnaryTestsPropertyConverter.wbFromDMN(ie);
             if (inputEntryConverted != null) {
                 inputEntryConverted.setParent(inputEntryConverted);
             }
             result.getInputEntry().add(inputEntryConverted);
         }
         for (org.kie.dmn.model.api.LiteralExpression oe : dmn.getOutputEntry()) {
-            LiteralExpression outputEntryConverted = LiteralExpressionPropertyConverter.wbFromDMN(oe);
+            final LiteralExpression outputEntryConverted = LiteralExpressionPropertyConverter.wbFromDMN(oe);
             if (outputEntryConverted != null) {
                 outputEntryConverted.setParent(result);
             }
@@ -51,19 +51,19 @@ public class DecisionRulePropertyConverter {
     }
 
     public static org.kie.dmn.model.api.DecisionRule dmnFromWB(final DecisionRule wb) {
-        org.kie.dmn.model.api.DecisionRule result = new org.kie.dmn.model.v1_2.TDecisionRule();
+        final org.kie.dmn.model.api.DecisionRule result = new org.kie.dmn.model.v1_2.TDecisionRule();
         result.setId(wb.getId().getValue());
         result.setDescription(DescriptionPropertyConverter.dmnFromWB(wb.getDescription()));
 
         for (UnaryTests ie : wb.getInputEntry()) {
-            org.kie.dmn.model.api.UnaryTests inputEntryConverted = UnaryTestsPropertyConverter.dmnFromWB(ie);
+            final org.kie.dmn.model.api.UnaryTests inputEntryConverted = UnaryTestsPropertyConverter.dmnFromWB(ie);
             if (inputEntryConverted != null) {
                 inputEntryConverted.setParent(inputEntryConverted);
             }
             result.getInputEntry().add(inputEntryConverted);
         }
         for (LiteralExpression oe : wb.getOutputEntry()) {
-            org.kie.dmn.model.api.LiteralExpression outputEntryConverted = LiteralExpressionPropertyConverter.dmnFromWB(oe);
+            final org.kie.dmn.model.api.LiteralExpression outputEntryConverted = LiteralExpressionPropertyConverter.dmnFromWB(oe);
             if (outputEntryConverted != null) {
                 outputEntryConverted.setParent(result);
             }

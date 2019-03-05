@@ -41,7 +41,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionRule;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable;
 import org.kie.workbench.common.dmn.api.definition.v1_1.HitPolicy;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItemPrimary;
-import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
+import org.kie.workbench.common.dmn.api.definition.v1_1.InputClauseLiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.OutputClause;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
@@ -1470,7 +1470,7 @@ public class DecisionTableGridTest {
     public void testAsDMNModelInstrumentedBase() {
         setupGrid(makeHasNameForDecision(), 0);
 
-        assertThat(extractHeaderMetaData(0, 1).asDMNModelInstrumentedBase()).isInstanceOf(LiteralExpression.class);
+        assertThat(extractHeaderMetaData(0, 1).asDMNModelInstrumentedBase()).isInstanceOf(InputClauseLiteralExpression.class);
         assertThat(extractHeaderMetaData(0, 2).asDMNModelInstrumentedBase()).isInstanceOf(InformationItemPrimary.class);
     }
 

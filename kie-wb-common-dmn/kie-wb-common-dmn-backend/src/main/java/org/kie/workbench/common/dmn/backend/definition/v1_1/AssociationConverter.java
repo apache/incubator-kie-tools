@@ -29,23 +29,23 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 public class AssociationConverter {
 
     public static List<org.kie.dmn.model.api.Association> dmnFromWB(final Node<View<TextAnnotation>, ?> node) {
-        TextAnnotation ta = node.getContent().getDefinition();
-        org.kie.dmn.model.api.DMNElementReference ta_elementReference = new org.kie.dmn.model.v1_2.TDMNElementReference();
+        final TextAnnotation ta = node.getContent().getDefinition();
+        final org.kie.dmn.model.api.DMNElementReference ta_elementReference = new org.kie.dmn.model.v1_2.TDMNElementReference();
         ta_elementReference.setHref(new StringBuilder("#").append(ta.getId().getValue()).toString());
 
-        List<org.kie.dmn.model.api.Association> result = new ArrayList<>();
+        final List<org.kie.dmn.model.api.Association> result = new ArrayList<>();
 
-        List<Edge<?, ?>> inEdges = (List<Edge<?, ?>>) node.getInEdges();
+        final List<Edge<?, ?>> inEdges = (List<Edge<?, ?>>) node.getInEdges();
         for (Edge<?, ?> e : inEdges) {
             Node<?, ?> sourceNode = e.getSourceNode();
             if (sourceNode.getContent() instanceof View<?>) {
-                View<?> view = (View<?>) sourceNode.getContent();
+                final View<?> view = (View<?>) sourceNode.getContent();
                 if (view.getDefinition() instanceof DRGElement) {
-                    DRGElement drgElement = (DRGElement) view.getDefinition();
-                    org.kie.dmn.model.api.DMNElementReference sourceRef = new org.kie.dmn.model.v1_2.TDMNElementReference();
+                    final DRGElement drgElement = (DRGElement) view.getDefinition();
+                    final org.kie.dmn.model.api.DMNElementReference sourceRef = new org.kie.dmn.model.v1_2.TDMNElementReference();
                     sourceRef.setHref(new StringBuilder("#").append(drgElement.getId().getValue()).toString());
 
-                    org.kie.dmn.model.api.Association adding = new org.kie.dmn.model.v1_2.TAssociation();
+                    final org.kie.dmn.model.api.Association adding = new org.kie.dmn.model.v1_2.TAssociation();
                     adding.setId(((View<Association>) e.getContent()).getDefinition().getId().getValue());
                     adding.setDescription(DescriptionPropertyConverter.dmnFromWB(((View<Association>) e.getContent()).getDefinition().getDescription()));
                     adding.setSourceRef(sourceRef);
@@ -54,17 +54,17 @@ public class AssociationConverter {
                 }
             }
         }
-        List<Edge<?, ?>> outEdges = (List<Edge<?, ?>>) node.getOutEdges();
+        final List<Edge<?, ?>> outEdges = (List<Edge<?, ?>>) node.getOutEdges();
         for (Edge<?, ?> e : outEdges) {
-            Node<?, ?> targetNode = e.getTargetNode();
+            final Node<?, ?> targetNode = e.getTargetNode();
             if (targetNode.getContent() instanceof View<?>) {
-                View<?> view = (View<?>) targetNode.getContent();
+                final View<?> view = (View<?>) targetNode.getContent();
                 if (view.getDefinition() instanceof DRGElement) {
-                    DRGElement drgElement = (DRGElement) view.getDefinition();
-                    org.kie.dmn.model.api.DMNElementReference targetRef = new org.kie.dmn.model.v1_2.TDMNElementReference();
+                    final DRGElement drgElement = (DRGElement) view.getDefinition();
+                    final org.kie.dmn.model.api.DMNElementReference targetRef = new org.kie.dmn.model.v1_2.TDMNElementReference();
                     targetRef.setHref(new StringBuilder("#").append(drgElement.getId().getValue()).toString());
 
-                    org.kie.dmn.model.api.Association adding = new org.kie.dmn.model.v1_2.TAssociation();
+                    final org.kie.dmn.model.api.Association adding = new org.kie.dmn.model.v1_2.TAssociation();
                     adding.setId(((View<Association>) e.getContent()).getDefinition().getId().getValue());
                     adding.setDescription(DescriptionPropertyConverter.dmnFromWB(((View<Association>) e.getContent()).getDefinition().getDescription()));
                     adding.setSourceRef(ta_elementReference);

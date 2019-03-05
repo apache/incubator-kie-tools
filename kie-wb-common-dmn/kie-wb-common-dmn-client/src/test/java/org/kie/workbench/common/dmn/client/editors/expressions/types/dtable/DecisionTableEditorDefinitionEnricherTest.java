@@ -31,9 +31,9 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.Definitions;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItemPrimary;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InputClause;
+import org.kie.workbench.common.dmn.api.definition.v1_1.InputClauseLiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InputData;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
-import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.OutputClause;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
@@ -93,10 +93,10 @@ public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTable
 
         final List<InputClause> input = model.getInput();
         assertThat(input.size()).isEqualTo(2);
-        assertThat(input.get(0).getInputExpression()).isInstanceOf(LiteralExpression.class);
+        assertThat(input.get(0).getInputExpression()).isInstanceOf(InputClauseLiteralExpression.class);
         assertThat(input.get(0).getInputExpression().getText().getValue()).isEqualTo(INPUT_DATA_NAME_2);
         assertThat(input.get(0).getInputExpression().getTypeRef()).isEqualTo(INPUT_DATA_QNAME_2);
-        assertThat(input.get(1).getInputExpression()).isInstanceOf(LiteralExpression.class);
+        assertThat(input.get(1).getInputExpression()).isInstanceOf(InputClauseLiteralExpression.class);
         assertThat(input.get(1).getInputExpression().getText().getValue()).isEqualTo(INPUT_DATA_NAME_1);
         assertThat(input.get(1).getInputExpression().getTypeRef()).isEqualTo(INPUT_DATA_QNAME_1);
 
@@ -130,10 +130,10 @@ public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTable
 
         final List<InputClause> input = model.getInput();
         assertThat(input.size()).isEqualTo(2);
-        assertThat(input.get(0).getInputExpression()).isInstanceOf(LiteralExpression.class);
+        assertThat(input.get(0).getInputExpression()).isInstanceOf(InputClauseLiteralExpression.class);
         assertThat(input.get(0).getInputExpression().getText().getValue()).isEqualTo(INPUT_DATA_NAME_2);
         assertThat(input.get(0).getInputExpression().getTypeRef()).isEqualTo(INPUT_DATA_QNAME_2);
-        assertThat(input.get(1).getInputExpression()).isInstanceOf(LiteralExpression.class);
+        assertThat(input.get(1).getInputExpression()).isInstanceOf(InputClauseLiteralExpression.class);
         assertThat(input.get(1).getInputExpression().getText().getValue()).isEqualTo(INPUT_DATA_NAME_1);
         assertThat(input.get(1).getInputExpression().getTypeRef()).isEqualTo(simpleItemDefinitionTypeRef);
 
@@ -178,13 +178,13 @@ public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTable
 
         final List<InputClause> input = model.getInput();
         assertThat(input.size()).isEqualTo(3);
-        assertThat(input.get(0).getInputExpression()).isInstanceOf(LiteralExpression.class);
+        assertThat(input.get(0).getInputExpression()).isInstanceOf(InputClauseLiteralExpression.class);
         assertThat(input.get(0).getInputExpression().getText().getValue()).isEqualTo(INPUT_DATA_NAME_2);
         assertThat(input.get(0).getInputExpression().getTypeRef()).isEqualTo(INPUT_DATA_QNAME_2);
-        assertThat(input.get(1).getInputExpression()).isInstanceOf(LiteralExpression.class);
+        assertThat(input.get(1).getInputExpression()).isInstanceOf(InputClauseLiteralExpression.class);
         assertThat(input.get(1).getInputExpression().getText().getValue()).isEqualTo(INPUT_DATA_NAME_1 + "." + complexItemDefinitionPart1Name);
         assertThat(input.get(1).getInputExpression().getTypeRef()).isEqualTo(complexItemDefinitionPart1TypeRef);
-        assertThat(input.get(2).getInputExpression()).isInstanceOf(LiteralExpression.class);
+        assertThat(input.get(2).getInputExpression()).isInstanceOf(InputClauseLiteralExpression.class);
         assertThat(input.get(2).getInputExpression().getText().getValue()).isEqualTo(INPUT_DATA_NAME_1 + "." + complexItemDefinitionPart2Name);
         assertThat(input.get(2).getInputExpression().getTypeRef()).isEqualTo(complexItemDefinitionPart2TypeRef);
 
@@ -235,16 +235,16 @@ public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTable
 
         final List<InputClause> input = model.getInput();
         assertThat(input.size()).isEqualTo(4);
-        assertThat(input.get(0).getInputExpression()).isInstanceOf(LiteralExpression.class);
+        assertThat(input.get(0).getInputExpression()).isInstanceOf(InputClauseLiteralExpression.class);
         assertThat(input.get(0).getInputExpression().getText().getValue()).isEqualTo(INPUT_DATA_NAME_2);
         assertThat(input.get(0).getInputExpression().getTypeRef()).isEqualTo(INPUT_DATA_QNAME_2);
-        assertThat(input.get(1).getInputExpression()).isInstanceOf(LiteralExpression.class);
+        assertThat(input.get(1).getInputExpression()).isInstanceOf(InputClauseLiteralExpression.class);
         assertThat(input.get(1).getInputExpression().getText().getValue()).isEqualTo(INPUT_DATA_NAME_1 + "." + tDateOfBirthName);
         assertThat(input.get(1).getInputExpression().getTypeRef()).isEqualTo(dateBuiltInType);
-        assertThat(input.get(2).getInputExpression()).isInstanceOf(LiteralExpression.class);
+        assertThat(input.get(2).getInputExpression()).isInstanceOf(InputClauseLiteralExpression.class);
         assertThat(input.get(2).getInputExpression().getText().getValue()).isEqualTo(INPUT_DATA_NAME_1 + "." + tIsBlueName);
         assertThat(input.get(2).getInputExpression().getTypeRef()).isEqualTo(booleanBuiltInType);
-        assertThat(input.get(3).getInputExpression()).isInstanceOf(LiteralExpression.class);
+        assertThat(input.get(3).getInputExpression()).isInstanceOf(InputClauseLiteralExpression.class);
         assertThat(input.get(3).getInputExpression().getText().getValue()).isEqualTo(INPUT_DATA_NAME_1 + "." + tParentName);
         assertThat(input.get(3).getInputExpression().getTypeRef()).isEqualTo(parentCustomType);
 
@@ -300,16 +300,16 @@ public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTable
 
         final List<InputClause> input = model.getInput();
         assertThat(input.size()).isEqualTo(4);
-        assertThat(input.get(0).getInputExpression()).isInstanceOf(LiteralExpression.class);
+        assertThat(input.get(0).getInputExpression()).isInstanceOf(InputClauseLiteralExpression.class);
         assertThat(input.get(0).getInputExpression().getText().getValue()).isEqualTo(INPUT_DATA_NAME_2);
         assertThat(input.get(0).getInputExpression().getTypeRef()).isEqualTo(INPUT_DATA_QNAME_2);
-        assertThat(input.get(1).getInputExpression()).isInstanceOf(LiteralExpression.class);
+        assertThat(input.get(1).getInputExpression()).isInstanceOf(InputClauseLiteralExpression.class);
         assertThat(input.get(1).getInputExpression().getText().getValue()).isEqualTo(INPUT_DATA_NAME_1 + ".address." + tSmurfAddress + ".line1");
         assertThat(input.get(1).getInputExpression().getTypeRef()).isEqualTo(stringBuiltInType);
-        assertThat(input.get(2).getInputExpression()).isInstanceOf(LiteralExpression.class);
+        assertThat(input.get(2).getInputExpression()).isInstanceOf(InputClauseLiteralExpression.class);
         assertThat(input.get(2).getInputExpression().getText().getValue()).isEqualTo(INPUT_DATA_NAME_1 + ".address." + tSmurfAddress + ".line2");
         assertThat(input.get(2).getInputExpression().getTypeRef()).isEqualTo(stringBuiltInType);
-        assertThat(input.get(3).getInputExpression()).isInstanceOf(LiteralExpression.class);
+        assertThat(input.get(3).getInputExpression()).isInstanceOf(InputClauseLiteralExpression.class);
         assertThat(input.get(3).getInputExpression().getText().getValue()).isEqualTo(INPUT_DATA_NAME_1 + ".dob");
         assertThat(input.get(3).getInputExpression().getTypeRef()).isEqualTo(dateBuiltInType);
 
