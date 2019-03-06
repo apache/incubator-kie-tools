@@ -106,7 +106,7 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
 
     private final WiresManager         m_wiresManager;
 
-    private final SelectedItems        m_selected;
+    private SelectedItems              m_selected;
 
     private final WiresCompositeControl m_shapeControl;
 
@@ -180,6 +180,10 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
         return m_selectionCreationInProcess;
     }
 
+    protected void setSelectionCreationInProcess(boolean inProgress) {
+        this.m_selectionCreationInProcess = inProgress;
+    }
+
     public SelectionManager setSelectionShapeProvider(SelectionShapeProvider m_selectionShapeProvider) {
         this.m_selectionShapeProvider = m_selectionShapeProvider;
         return this;
@@ -203,6 +207,10 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
 
     public SelectedItems getSelectedItems() {
         return m_selected;
+    }
+
+    public void setSelectedItems(SelectedItems items) {
+        this.m_selected = items;
     }
 
     public class OnMouseXEventHandler implements OnMouseEventHandler
@@ -348,12 +356,12 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
                     }
                     layer.draw();
                 }
-                m_selected.notifyListener();
-
                 m_selectionCreationInProcess = false;
 
                 return false;
             }
+            getSelectedItems().notifyListener();
+
             return true;
         }
 
