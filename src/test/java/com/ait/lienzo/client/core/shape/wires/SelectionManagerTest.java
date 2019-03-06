@@ -17,6 +17,7 @@ package com.ait.lienzo.client.core.shape.wires;
 
 import com.ait.lienzo.client.core.event.NodeMouseDownEvent;
 import com.ait.lienzo.client.core.event.OnEventHandlers;
+import com.ait.lienzo.client.core.event.OnMouseEventHandler;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.client.core.shape.Viewport;
@@ -24,7 +25,10 @@ import com.ait.lienzo.client.core.shape.wires.handlers.WiresControlFactory;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.event.dom.client.MouseEvent;
 import com.google.gwt.event.dom.client.MouseMoveEvent;
+import com.google.gwt.event.dom.client.MouseUpEvent;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -71,9 +75,6 @@ public class SelectionManagerTest
     @Mock
     private Layer layer;
 
-    @Mock
-    private Viewport viewport;
-
     private OnEventHandlers onEventHandlers;
 
     @Mock
@@ -92,9 +93,12 @@ public class SelectionManagerTest
 
     private SelectionManager manager;
 
+    private SelectionManager realManager;
+
     @Before
     public void setup()
     {
+        Viewport viewport = spy(new Viewport());
         onEventHandlers = spy(new OnEventHandlers());
 
         when(wiresManager.getLayer()).thenReturn(wiresLayer);
@@ -108,7 +112,8 @@ public class SelectionManagerTest
         when(selectionShapeProvider.setSize(anyDouble(), anyDouble())).thenReturn(selectionShapeProvider);
         when(selectionShapeProvider.getShape()).thenReturn(selectionShape);
 
-        manager = spy(new SelectionManager(wiresManager));
+        realManager = new SelectionManager(wiresManager);
+        manager = spy(realManager);
         manager.setSelectionShapeProvider(selectionShapeProvider);
 
         verify(onEventHandlers).setOnMouseMoveEventHandle(onMouseXEventHandlerArgumentCaptor.capture());
@@ -128,6 +133,24 @@ public class SelectionManagerTest
         manager.onNodeMouseDown(mouseEvent);
         assertTrue("Selection should be started by Left mouse button", manager.isSelectionCreationInProcess());
         verify(layer, times(1)).draw();
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testDoNotCleanSelectionForNodeDuringSelectionMove()
+    {
+        realManager.setSelectionShapeProvider(selectionShapeProvider);
+        realManager.setSelectionCreationInProcess(false);
+
+        SelectionManager.SelectedItems selectedItems = spy(realManager.getSelectedItems());
+        realManager.setSelectedItems(selectedItems);
+
+        final MouseEvent mouseEvent = mock(MouseEvent.class);
+        when(mouseEvent.getNativeButton()).thenReturn(NativeEvent.BUTTON_LEFT);
+        when(mouseEvent.getAssociatedType()).thenReturn(MouseUpEvent.getType());
+        onMouseXEventHandler.onMouseEventBefore(mouseEvent);
+
+        verify(selectedItems, times(1)).notifyListener();
     }
 
     @Test
@@ -196,8 +219,8 @@ public class SelectionManagerTest
         final double scaleX = 2d;
         final Transform transform = new Transform(scaleX, 0, 0, 1, translateX, 1);
 
-        doReturn(transform).when(manager).getViewportTransform();
-        doReturn(start).when(manager).getStart();
+        when(manager.getViewportTransform()).thenReturn(transform);
+        when(manager.getStart()).thenReturn(start);
 
         final double relativeStartX = manager.relativeStartX();
 
@@ -214,8 +237,8 @@ public class SelectionManagerTest
         final double scaleY = 2d;
         final Transform transform = new Transform(1, 0, 0, scaleY, 1, translateY);
 
-        doReturn(transform).when(manager).getViewportTransform();
-        doReturn(start).when(manager).getStart();
+        when(manager.getViewportTransform()).thenReturn(transform);
+        when(manager.getStart()).thenReturn(start);
 
         final double relativeStartY = manager.relativeStartY();
 
