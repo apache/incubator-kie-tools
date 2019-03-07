@@ -17,18 +17,25 @@
 package org.kie.workbench.common.dmn.client.editors.types.listview.constraint.range;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import elemental2.dom.Element;
 import elemental2.dom.Event;
+import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLInputElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.DataTypeConstraintModal;
+import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.TypedValueComponentSelector;
+import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.TypedValueSelector;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class DataTypeConstraintRangeViewTest {
@@ -40,10 +47,10 @@ public class DataTypeConstraintRangeViewTest {
     private Event event;
 
     @Mock
-    private HTMLInputElement startValue;
+    private HTMLDivElement startValueContainer;
 
     @Mock
-    private HTMLInputElement endValue;
+    private HTMLDivElement endValueContainer;
 
     @Mock
     private HTMLInputElement includeStartValue;
@@ -54,16 +61,42 @@ public class DataTypeConstraintRangeViewTest {
     @Mock
     private DataTypeConstraintRange presenter;
 
+    @Mock
+    private TypedValueComponentSelector startValueComponentSelector;
+
+    @Mock
+    private TypedValueComponentSelector endValueComponentSelector;
+
+    @Mock
+    private TypedValueSelector startValueComponent;
+
+    @Mock
+    private TypedValueSelector endValueComponent;
+
+    @Mock
+    private Element startValueElement;
+
+    @Mock
+    private Element endValueElement;
+
     private DataTypeConstraintRangeView view;
 
     @Before
     public void setup() {
-        view = spy(new DataTypeConstraintRangeView(startValue,
-                                                   endValue,
+        view = spy(new DataTypeConstraintRangeView(startValueContainer,
+                                                   endValueContainer,
                                                    includeStartValue,
-                                                   includeEndValue));
+                                                   includeEndValue,
+                                                   startValueComponentSelector,
+                                                   endValueComponentSelector));
+
+        when(startValueComponentSelector.makeSelectorForType(Matchers.any())).thenReturn(startValueComponent);
+        when(endValueComponentSelector.makeSelectorForType(Matchers.any())).thenReturn(endValueComponent);
+        when(startValueComponent.getElement()).thenReturn(startValueElement);
+        when(endValueComponent.getElement()).thenReturn(endValueElement);
 
         view.init(presenter);
+        view.setComponentSelector("someType");
         presenter.setModal(modal);
     }
 
@@ -75,7 +108,7 @@ public class DataTypeConstraintRangeViewTest {
     @Test
     public void testGetStartValue() {
         final String expected = "someString";
-        startValue.value = expected;
+        when(startValueComponent.getValue()).thenReturn(expected);
         final String actual = view.getStartValue();
         assertEquals(expected, actual);
     }
@@ -83,7 +116,7 @@ public class DataTypeConstraintRangeViewTest {
     @Test
     public void testGetEndValue() {
         final String expected = "someString";
-        endValue.value = expected;
+        when(endValueComponent.getValue()).thenReturn(expected);
         final String actual = view.getEndValue();
         assertEquals(expected, actual);
     }
@@ -92,16 +125,14 @@ public class DataTypeConstraintRangeViewTest {
     public void testSetStartValue() {
         final String expected = "someString";
         view.setStartValue(expected);
-        final String actual = startValue.value;
-        assertEquals(expected, actual);
+        verify(startValueComponent).setValue(expected);
     }
 
     @Test
     public void testSetEndValue() {
         final String expected = "someString";
         view.setEndValue(expected);
-        final String actual = endValue.value;
-        assertEquals(expected, actual);
+        verify(endValueComponent).setValue(expected);
     }
 
     @Test
@@ -138,36 +169,36 @@ public class DataTypeConstraintRangeViewTest {
 
     @Test
     public void testOnKeyUpEmptyValues() {
-        startValue.value = "";
-        endValue.value = "";
-        view.onKeyUp(event);
+        when(startValueComponent.getValue()).thenReturn("");
+        when(endValueComponent.getValue()).thenReturn("");
+        view.onValueChanged(event);
         verify(presenter).disableOkButton();
         verify(presenter, never()).enableOkButton();
     }
 
     @Test
     public void testOnKeyUpNonEmptyValues() {
-        startValue.value = "1";
-        endValue.value = "2";
-        view.onKeyUp(event);
+        when(startValueComponent.getValue()).thenReturn("1");
+        when(endValueComponent.getValue()).thenReturn("2");
+        view.onValueChanged(event);
         verify(presenter).enableOkButton();
         verify(presenter, never()).disableOkButton();
     }
 
     @Test
     public void testOnKeyUpNonEmptyStartValue() {
-        startValue.value = "123456";
-        endValue.value = "";
-        view.onKeyUp(event);
+        when(startValueComponent.getValue()).thenReturn("123456");
+        when(endValueComponent.getValue()).thenReturn("");
+        view.onValueChanged(event);
         verify(presenter).disableOkButton();
         verify(presenter, never()).enableOkButton();
     }
 
     @Test
     public void testOnKeyUpNonEmptyEndValue() {
-        startValue.value = "";
-        endValue.value = "123456";
-        view.onKeyUp(event);
+        when(startValueComponent.getValue()).thenReturn("");
+        when(endValueComponent.getValue()).thenReturn("123456");
+        view.onValueChanged(event);
         verify(presenter).disableOkButton();
         verify(presenter, never()).enableOkButton();
     }
@@ -175,12 +206,27 @@ public class DataTypeConstraintRangeViewTest {
     @Test
     public void testSetPlaceholders() {
 
-        final String attribute = "placeholder";
         final String value = "value";
 
         view.setPlaceholders(value);
 
-        verify(startValue).setAttribute(attribute, value);
-        verify(endValue).setAttribute(attribute, value);
+        verify(startValueComponent).setPlaceholder(value);
+        verify(endValueComponent).setPlaceholder(value);
+    }
+
+    @Test
+    public void testSetComponentSelector() {
+
+        final String type = "type";
+
+        view.setComponentSelector(type);
+
+        verify(startValueComponentSelector).makeSelectorForType(type);
+        verify(startValueContainer, times(2)).appendChild(startValueElement); // One time is in setup()
+
+        verify(endValueComponentSelector).makeSelectorForType(type);
+        verify(endValueContainer, times(2)).appendChild(endValueElement); // One time is in setup()
+
+        verify(view, times(2)).setupInputFields(); // One time is in setup()
     }
 }

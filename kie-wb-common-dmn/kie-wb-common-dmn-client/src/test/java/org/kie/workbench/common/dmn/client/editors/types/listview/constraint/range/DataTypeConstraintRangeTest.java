@@ -210,5 +210,6 @@ public class DataTypeConstraintRangeTest {
         constraintRange.setConstraintValueType(type);
 
         verify(view).setPlaceholders(placeholder);
+        verify(view).setComponentSelector(type);
     }
 }

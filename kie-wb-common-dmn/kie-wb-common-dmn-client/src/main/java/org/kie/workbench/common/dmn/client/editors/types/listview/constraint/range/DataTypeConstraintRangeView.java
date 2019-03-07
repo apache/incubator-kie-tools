@@ -20,22 +20,33 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import elemental2.dom.Event;
+import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLInputElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.TypedValueComponentSelector;
+import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.TypedValueSelector;
 import org.kie.workbench.common.stunner.core.util.StringUtils;
 
 @Templated
 @Dependent
 public class DataTypeConstraintRangeView implements DataTypeConstraintRange.View {
 
+    private final TypedValueComponentSelector startValueComponentSelector;
+
+    private final TypedValueComponentSelector endValueComponentSelector;
+
+    private TypedValueSelector startValueComponent;
+
+    private TypedValueSelector endValueComponent;
+
     private DataTypeConstraintRange presenter;
 
-    @DataField("start-value")
-    private final HTMLInputElement startValue;
+    @DataField("end-value-container")
+    private final HTMLDivElement endValueContainer;
 
-    @DataField("end-value")
-    private final HTMLInputElement endValue;
+    @DataField("start-value-container")
+    private final HTMLDivElement startValueContainer;
 
     @DataField("include-end-value")
     private final HTMLInputElement includeEndValue;
@@ -44,12 +55,16 @@ public class DataTypeConstraintRangeView implements DataTypeConstraintRange.View
     private final HTMLInputElement includeStartValue;
 
     @Inject
-    public DataTypeConstraintRangeView(final HTMLInputElement startValue,
-                                       final HTMLInputElement endValue,
+    public DataTypeConstraintRangeView(final HTMLDivElement startValueContainer,
+                                       final HTMLDivElement endValueContainer,
                                        final HTMLInputElement includeStartValue,
-                                       final HTMLInputElement includeEndValue) {
-        this.startValue = startValue;
-        this.endValue = endValue;
+                                       final HTMLInputElement includeEndValue,
+                                       final TypedValueComponentSelector startValueComponentSelector,
+                                       final TypedValueComponentSelector endValueComponentSelector) {
+        this.startValueComponentSelector = startValueComponentSelector;
+        this.endValueComponentSelector = endValueComponentSelector;
+        this.startValueContainer = startValueContainer;
+        this.endValueContainer = endValueContainer;
         this.includeStartValue = includeStartValue;
         this.includeEndValue = includeEndValue;
     }
@@ -57,32 +72,31 @@ public class DataTypeConstraintRangeView implements DataTypeConstraintRange.View
     @Override
     public void init(final DataTypeConstraintRange presenter) {
         this.presenter = presenter;
-        setupInputFields();
     }
 
     void setupInputFields() {
-        startValue.onkeyup = this::onKeyUp;
-        endValue.onkeyup = this::onKeyUp;
+        startValueComponent.onValueChanged(this::onValueChanged);
+        endValueComponent.onValueChanged(this::onValueChanged);
     }
 
     @Override
     public String getStartValue() {
-        return startValue.value;
+        return startValueComponent.getValue();
     }
 
     @Override
     public String getEndValue() {
-        return endValue.value;
+        return endValueComponent.getValue();
     }
 
     @Override
     public void setStartValue(final String value) {
-        startValue.value = value;
+        startValueComponent.setValue(value);
     }
 
     @Override
     public void setEndValue(final String value) {
-        endValue.value = value;
+        endValueComponent.setValue(value);
     }
 
     @Override
@@ -107,16 +121,28 @@ public class DataTypeConstraintRangeView implements DataTypeConstraintRange.View
 
     @Override
     public void setPlaceholders(final String placeholder) {
-        startValue.setAttribute("placeholder", placeholder);
-        endValue.setAttribute("placeholder", placeholder);
+        startValueComponent.setPlaceholder(placeholder);
+        endValueComponent.setPlaceholder(placeholder);
     }
 
-    Object onKeyUp(final Event event) {
-        if (StringUtils.isEmpty(startValue.value) || StringUtils.isEmpty(endValue.value)) {
+    @Override
+    public void setComponentSelector(final String type) {
+        startValueComponent = this.startValueComponentSelector.makeSelectorForType(type);
+        startValueContainer.innerHTML = "";
+        startValueContainer.appendChild(startValueComponent.getElement());
+
+        endValueComponent = this.endValueComponentSelector.makeSelectorForType(type);
+        endValueContainer.innerHTML = "";
+        endValueContainer.appendChild(endValueComponent.getElement());
+
+        setupInputFields();
+    }
+
+    void onValueChanged(final Event event) {
+        if (StringUtils.isEmpty(startValueComponent.getValue()) || StringUtils.isEmpty(endValueComponent.getValue())) {
             presenter.disableOkButton();
         } else {
             presenter.enableOkButton();
         }
-        return this;
     }
 }

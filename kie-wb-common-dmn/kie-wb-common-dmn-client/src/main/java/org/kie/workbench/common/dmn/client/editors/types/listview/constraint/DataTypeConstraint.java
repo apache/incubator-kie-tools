@@ -44,7 +44,6 @@ public class DataTypeConstraint {
     private String constraintValue = NONE;
 
     private ConstraintType constraintType = ConstraintType.NONE;
-    ;
 
     private DataTypeListItem listItem;
 

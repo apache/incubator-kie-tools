@@ -247,5 +247,6 @@ public class DataTypeConstraintEnumerationItemTest {
         enumerationItem.setConstraintValueType(type);
 
         verify(view).setPlaceholder(placeholder);
+        verify(view).setComponentSelector(type);
     }
 }

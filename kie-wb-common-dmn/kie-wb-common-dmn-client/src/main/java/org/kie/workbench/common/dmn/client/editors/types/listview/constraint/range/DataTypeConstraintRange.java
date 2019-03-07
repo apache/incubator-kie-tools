@@ -76,6 +76,7 @@ public class DataTypeConstraintRange implements DataTypeConstraintComponent {
 
     @Override
     public void setConstraintValueType(final String type) {
+        view.setComponentSelector(type);
         view.setPlaceholders(placeholderHelper.getPlaceholderSample(type));
     }
 
@@ -159,5 +160,7 @@ public class DataTypeConstraintRange implements DataTypeConstraintComponent {
         void setIncludeEndValue(final boolean includeEndValue);
 
         void setPlaceholders(final String placeholder);
+
+        void setComponentSelector(final String type);
     }
 }

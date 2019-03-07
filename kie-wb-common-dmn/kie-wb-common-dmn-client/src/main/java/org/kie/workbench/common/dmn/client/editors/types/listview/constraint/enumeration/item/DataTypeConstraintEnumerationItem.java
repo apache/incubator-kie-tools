@@ -161,6 +161,7 @@ public class DataTypeConstraintEnumerationItem {
     }
 
     public void setConstraintValueType(final String constraintValueType) {
+        view.setComponentSelector(constraintValueType);
         view.setPlaceholder(placeholderHelper.getPlaceholderSample(constraintValueType));
     }
 
@@ -184,5 +185,7 @@ public class DataTypeConstraintEnumerationItem {
         void setValue(final String value);
 
         void setPlaceholder(final String placeholder);
+
+        void setComponentSelector(final String type);
     }
 }

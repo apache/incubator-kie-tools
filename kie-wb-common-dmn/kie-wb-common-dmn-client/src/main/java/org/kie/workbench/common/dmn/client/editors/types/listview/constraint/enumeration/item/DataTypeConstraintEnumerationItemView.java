@@ -28,12 +28,13 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import elemental2.dom.HTMLAnchorElement;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
-import elemental2.dom.HTMLInputElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.MenuInitializer;
+import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.TypedValueComponentSelector;
+import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.TypedValueSelector;
 
 import static org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper.hide;
 import static org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper.show;
@@ -48,11 +49,15 @@ public class DataTypeConstraintEnumerationItemView implements DataTypeConstraint
 
     static final String NONE_CSS_CLASS = "none";
 
+    private final TypedValueComponentSelector componentSelector;
+
+    private TypedValueSelector typedValueSelector;
+
     @DataField("value-text")
     private final HTMLElement valueText;
 
-    @DataField("value-input")
-    private final HTMLInputElement valueInput;
+    @DataField("value-input-container")
+    private final HTMLDivElement valueInputContainer;
 
     @DataField("save-anchor")
     private final HTMLAnchorElement saveAnchor;
@@ -78,16 +83,17 @@ public class DataTypeConstraintEnumerationItemView implements DataTypeConstraint
 
     @Inject
     public DataTypeConstraintEnumerationItemView(final @Named("span") HTMLElement valueText,
-                                                 final HTMLInputElement valueInput,
+                                                 final HTMLDivElement valueInput,
                                                  final HTMLAnchorElement saveAnchor,
                                                  final HTMLAnchorElement editAnchor,
                                                  final HTMLAnchorElement removeAnchor,
                                                  final HTMLAnchorElement moveUpAnchor,
                                                  final HTMLAnchorElement moveDownAnchor,
                                                  final HTMLDivElement kebabMenu,
-                                                 final TranslationService translationService) {
+                                                 final TranslationService translationService,
+                                                 final TypedValueComponentSelector valueComponentSelector) {
         this.valueText = valueText;
-        this.valueInput = valueInput;
+        this.valueInputContainer = valueInput;
         this.saveAnchor = saveAnchor;
         this.editAnchor = editAnchor;
         this.removeAnchor = removeAnchor;
@@ -95,6 +101,7 @@ public class DataTypeConstraintEnumerationItemView implements DataTypeConstraint
         this.moveDownAnchor = moveDownAnchor;
         this.kebabMenu = kebabMenu;
         this.translationService = translationService;
+        this.componentSelector = valueComponentSelector;
     }
 
     @Override
@@ -110,18 +117,18 @@ public class DataTypeConstraintEnumerationItemView implements DataTypeConstraint
     @Override
     public void showValueText() {
         show(valueText);
-        hide(valueInput);
+        hide(valueInputContainer);
     }
 
     @Override
     public void showValueInput() {
-        show(valueInput);
+        show(valueInputContainer);
         hide(valueText);
     }
 
     @Override
     public void focusValueInput() {
-        valueInput.select();
+        typedValueSelector.select();
     }
 
     @Override
@@ -151,7 +158,7 @@ public class DataTypeConstraintEnumerationItemView implements DataTypeConstraint
 
     @EventHandler("save-anchor")
     public void onSaveAnchorClick(final ClickEvent e) {
-        presenter.save(valueInput.value);
+        presenter.save(typedValueSelector.getValue());
     }
 
     @EventHandler("edit-anchor")
@@ -174,7 +181,6 @@ public class DataTypeConstraintEnumerationItemView implements DataTypeConstraint
         presenter.moveDown();
     }
 
-    @EventHandler("value-input")
     public void onValueInputBlur(final BlurEvent blurEvent) {
 
         final boolean isNotSaveButtonClick = !Objects.equals(getEventTarget(blurEvent), getSaveAnchorTarget());
@@ -192,7 +198,15 @@ public class DataTypeConstraintEnumerationItemView implements DataTypeConstraint
 
     @Override
     public void setPlaceholder(final String placeholder) {
-        valueInput.setAttribute("placeholder", placeholder);
+        typedValueSelector.setPlaceholder(placeholder);
+    }
+
+    @Override
+    public void setComponentSelector(final String type) {
+        typedValueSelector = this.componentSelector.makeSelectorForType(type);
+        valueInputContainer.innerHTML = "";
+        valueInputContainer.appendChild(typedValueSelector.getElement());
+        typedValueSelector.onValueInputBlur(this::onValueInputBlur);
     }
 
     private void setText(final String value) {
@@ -201,15 +215,15 @@ public class DataTypeConstraintEnumerationItemView implements DataTypeConstraint
             valueText.textContent = none();
         } else {
             valueText.classList.remove(NONE_CSS_CLASS);
-            valueText.textContent = value;
+            valueText.textContent = typedValueSelector.toDisplay(value);
         }
     }
 
     private void setInput(final String value) {
         if (isNULL(value)) {
-            valueInput.value = "";
+            typedValueSelector.setValue("");
         } else {
-            valueInput.value = value;
+            typedValueSelector.setValue(value);
         }
     }
 

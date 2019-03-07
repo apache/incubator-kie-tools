@@ -25,12 +25,13 @@ import elemental2.dom.DOMTokenList;
 import elemental2.dom.HTMLAnchorElement;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
-import elemental2.dom.HTMLInputElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.MenuInitializer;
+import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.TypedValueComponentSelector;
+import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.TypedValueSelector;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
@@ -55,7 +56,7 @@ public class DataTypeConstraintEnumerationItemViewTest {
     private HTMLElement valueText;
 
     @Mock
-    private HTMLInputElement valueInput;
+    private HTMLDivElement valueInput;
 
     @Mock
     private HTMLAnchorElement saveAnchor;
@@ -81,12 +82,21 @@ public class DataTypeConstraintEnumerationItemViewTest {
     @Mock
     private DataTypeConstraintEnumerationItem presenter;
 
+    @Mock
+    private TypedValueComponentSelector componentSelector;
+
+    @Mock
+    private TypedValueSelector typedValueSelector;
+
     private DataTypeConstraintEnumerationItemView view;
 
     @Before
     public void setup() {
-        view = spy(new DataTypeConstraintEnumerationItemView(valueText, valueInput, saveAnchor, editAnchor, removeAnchor, moveUpAnchor, moveDownAnchor, kebabMenu, translationService));
+        view = spy(new DataTypeConstraintEnumerationItemView(valueText, valueInput, saveAnchor, editAnchor, removeAnchor, moveUpAnchor, moveDownAnchor, kebabMenu, translationService, componentSelector));
         view.init(presenter);
+
+        when(componentSelector.makeSelectorForType(any())).thenReturn(typedValueSelector);
+        view.setComponentSelector("someType");
     }
 
     @Test
@@ -130,7 +140,7 @@ public class DataTypeConstraintEnumerationItemViewTest {
     public void testFocusValueInput() {
         view.focusValueInput();
 
-        verify(valueInput).select();
+        verify(typedValueSelector).select();
     }
 
     @Test
@@ -189,7 +199,10 @@ public class DataTypeConstraintEnumerationItemViewTest {
     public void testOnSaveAnchorClick() {
 
         final String value = "value";
-        valueInput.value = value;
+
+        typedValueSelector.setValue(value);
+
+        when(typedValueSelector.getValue()).thenReturn(value);
 
         view.onSaveAnchorClick(mock(ClickEvent.class));
 
@@ -265,18 +278,21 @@ public class DataTypeConstraintEnumerationItemViewTest {
     @Test
     public void testSetValue() {
 
-        final String expectedValue = "123";
+        final String inputValue = "123";
+        final String expected = "display:" + inputValue;
 
+        when(typedValueSelector.toDisplay(inputValue)).thenReturn(expected);
         valueText.classList = mock(DOMTokenList.class);
-        valueInput.value = "something";
 
-        view.setValue(expectedValue);
+        view.setValue(inputValue);
 
         final String actualContent = valueText.textContent;
 
         verify(valueText.classList).remove(NONE_CSS_CLASS);
-        assertEquals(expectedValue, actualContent);
-        assertEquals(expectedValue, valueInput.value);
+        verify(typedValueSelector).toDisplay(inputValue);
+
+        assertEquals(expected, actualContent);
+        verify(typedValueSelector).setValue(inputValue);
     }
 
     @Test
@@ -286,7 +302,6 @@ public class DataTypeConstraintEnumerationItemViewTest {
 
         when(translationService.format(DataTypeConstraintEnumerationItemView_None)).thenReturn(expectedValue);
         valueText.classList = mock(DOMTokenList.class);
-        valueInput.value = "something";
 
         view.setValue(NULL);
 
@@ -294,17 +309,30 @@ public class DataTypeConstraintEnumerationItemViewTest {
 
         verify(valueText.classList).add(NONE_CSS_CLASS);
         assertEquals(expectedValue, actualContent);
-        assertEquals("", valueInput.value);
+        verify(typedValueSelector).setValue("");
     }
 
     @Test
     public void testSetPlaceholder() {
 
-        final String attribute = "placeholder";
         final String value = "value";
 
         view.setPlaceholder(value);
 
-        verify(valueInput).setAttribute(attribute, value);
+        verify(typedValueSelector).setPlaceholder(value);
+    }
+
+    @Test
+    public void testSetComponentSelector() {
+
+        final HTMLElement element = mock(HTMLElement.class);
+        final String type = "type";
+
+        doReturn(element).when(typedValueSelector).getElement();
+
+        view.setComponentSelector(type);
+
+        verify(componentSelector).makeSelectorForType(type);
+        verify(valueInput).appendChild(element);
     }
 }

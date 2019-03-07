@@ -154,8 +154,8 @@ public class DataTypeConstraintEnumeration implements DataTypeConstraintComponen
 
         final DataTypeConstraintEnumerationItem enumerationItem = enumerationItemInstances.get();
 
-        enumerationItem.setValue(value);
         enumerationItem.setConstraintValueType(getConstraintValueType());
+        enumerationItem.setValue(value);
         enumerationItem.setDataTypeConstraintEnumeration(this);
 
         return enumerationItem;
