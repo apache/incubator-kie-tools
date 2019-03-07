@@ -16,6 +16,7 @@
 package org.kie.workbench.common.widgets.decoratedgrid.client.widget;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +27,7 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.soup.commons.util.Lists;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.Coordinate;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.DynamicData;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.DynamicDataRow;
@@ -180,5 +182,179 @@ public class AbstractMergableGridWidgetSortingTest {
         assertEquals(1, updates00.get(1).size());
         assertEquals(cellTwo, updates00.get(0).get(0));
         assertEquals(cellOne, updates00.get(1).get(0));
+    }
+
+    @Test
+    public void testOnSortDataTwoColumns() {
+        final Coordinate origin = new Coordinate(0, 0);
+        final DynamicData data = new DynamicData();
+        data.addRow();
+        data.addRow();
+        data.addRow();
+        final List<CellValue<? extends Comparable<?>>> columnOneData = new ArrayList<>();
+        final CellValue<String> cell_00 = new CellValue<>("a");
+        final CellValue<String> cell_01 = new CellValue<>("b");
+        final CellValue<String> cell_02 = new CellValue<>("c");
+        columnOneData.add(cell_00);
+        columnOneData.add(cell_01);
+        columnOneData.add(cell_02);
+        data.addColumn(0, columnOneData, true);
+
+        final List<CellValue<? extends Comparable<?>>> columnTwoData = new ArrayList<>();
+        final CellValue<String> cell_10 = new CellValue<>("x");
+        final CellValue<String> cell_11 = new CellValue<>("y");
+        final CellValue<String> cell_12 = new CellValue<>("x");
+        columnTwoData.add(cell_10);
+        columnTwoData.add(cell_11);
+        columnTwoData.add(cell_12);
+        data.addColumn(1, columnTwoData, true);
+
+        widget.setData(data);
+
+        final SortConfiguration columnOneSortConfiguration = new SortConfiguration();
+        columnOneSortConfiguration.setColumnIndex(0);
+        columnOneSortConfiguration.setSortIndex(0);
+        columnOneSortConfiguration.setSortDirection(SortDirection.DESCENDING);
+        final SortConfiguration columnTwoSortConfiguration = new SortConfiguration();
+        columnTwoSortConfiguration.setColumnIndex(1);
+        columnTwoSortConfiguration.setSortIndex(1);
+        columnTwoSortConfiguration.setSortDirection(SortDirection.ASCENDING);
+        final SortDataEvent sortEvent = new SortDataEvent(Arrays.asList(columnOneSortConfiguration, columnTwoSortConfiguration));
+
+        widget.onSortData(sortEvent);
+
+        verify(eventBus).fireEvent(updateModelEventCaptor.capture());
+
+        final UpdateModelEvent updateModelEvent = updateModelEventCaptor.getValue();
+        final Map<Coordinate, List<List<CellValue<? extends Comparable<?>>>>> updates = updateModelEvent.getUpdates();
+        assertNotNull(updates);
+        assertEquals(1, updates.size());
+        assertTrue(updates.containsKey(origin));
+
+        final List<List<CellValue<? extends Comparable<?>>>> updates00 = updates.get(origin);
+        final List<CellValue<? extends Comparable<?>>> sortedRow0 = new Lists.Builder().add(cell_02).add(cell_12).build();
+        final List<CellValue<? extends Comparable<?>>> sortedRow1 = new Lists.Builder().add(cell_01).add(cell_11).build();
+        final List<CellValue<? extends Comparable<?>>> sortedRow2 = new Lists.Builder().add(cell_00).add(cell_10).build();
+
+        assertEquals(3, updates00.size());
+        assertEquals(sortedRow0, updates00.get(0));
+        assertEquals(sortedRow1, updates00.get(1));
+        assertEquals(sortedRow2, updates00.get(2));
+    }
+
+    @Test
+    public void testOnSortDataAfterFirstColumnSortedNoChangesNeeded() {
+        final Coordinate origin = new Coordinate(0, 0);
+        final DynamicData data = new DynamicData();
+        data.addRow();
+        data.addRow();
+        data.addRow();
+        final List<CellValue<? extends Comparable<?>>> columnOneData = new ArrayList<>();
+        final CellValue<String> cell_00 = new CellValue<>("a");
+        final CellValue<String> cell_01 = new CellValue<>("a");
+        final CellValue<String> cell_02 = new CellValue<>("b");
+        columnOneData.add(cell_00);
+        columnOneData.add(cell_01);
+        columnOneData.add(cell_02);
+        data.addColumn(0, columnOneData, true);
+
+        final List<CellValue<? extends Comparable<?>>> columnTwoData = new ArrayList<>();
+        final CellValue<String> cell_10 = new CellValue<>("y");
+        final CellValue<String> cell_11 = new CellValue<>("y");
+        final CellValue<String> cell_12 = new CellValue<>("x");
+        columnTwoData.add(cell_10);
+        columnTwoData.add(cell_11);
+        columnTwoData.add(cell_12);
+        data.addColumn(1, columnTwoData, true);
+
+        widget.setData(data);
+
+        final SortConfiguration columnOneSortConfiguration = new SortConfiguration();
+        columnOneSortConfiguration.setColumnIndex(0);
+        columnOneSortConfiguration.setSortIndex(0);
+        columnOneSortConfiguration.setSortDirection(SortDirection.DESCENDING);
+        final SortConfiguration columnTwoSortConfiguration = new SortConfiguration();
+        columnTwoSortConfiguration.setColumnIndex(1);
+        columnTwoSortConfiguration.setSortIndex(1);
+        columnTwoSortConfiguration.setSortDirection(SortDirection.ASCENDING);
+        final SortDataEvent sortEvent = new SortDataEvent(Arrays.asList(columnOneSortConfiguration, columnTwoSortConfiguration));
+
+        widget.onSortData(sortEvent);
+
+        verify(eventBus).fireEvent(updateModelEventCaptor.capture());
+
+        final UpdateModelEvent updateModelEvent = updateModelEventCaptor.getValue();
+        final Map<Coordinate, List<List<CellValue<? extends Comparable<?>>>>> updates = updateModelEvent.getUpdates();
+        assertNotNull(updates);
+        assertEquals(1, updates.size());
+        assertTrue(updates.containsKey(origin));
+
+        final List<List<CellValue<? extends Comparable<?>>>> updates00 = updates.get(origin);
+        final List<CellValue<? extends Comparable<?>>> sortedRow0 = new Lists.Builder().add(cell_02).add(cell_12).build();
+        final List<CellValue<? extends Comparable<?>>> sortedRow1 = new Lists.Builder().add(cell_00).add(cell_10).build();
+        final List<CellValue<? extends Comparable<?>>> sortedRow2 = new Lists.Builder().add(cell_01).add(cell_11).build();
+
+        assertEquals(3, updates00.size());
+        assertEquals(sortedRow0, updates00.get(0));
+        assertEquals(sortedRow1, updates00.get(1));
+        assertEquals(sortedRow2, updates00.get(2));
+    }
+
+    @Test
+    public void testOnSortDataChangesCausedByBothSortingConfigurations() {
+        final Coordinate origin = new Coordinate(0, 0);
+        final DynamicData data = new DynamicData();
+        data.addRow();
+        data.addRow();
+        data.addRow();
+        final List<CellValue<? extends Comparable<?>>> columnOneData = new ArrayList<>();
+        final CellValue<String> cell_00 = new CellValue<>("a");
+        final CellValue<String> cell_01 = new CellValue<>("a");
+        final CellValue<String> cell_02 = new CellValue<>("b");
+        columnOneData.add(cell_00);
+        columnOneData.add(cell_01);
+        columnOneData.add(cell_02);
+        data.addColumn(0, columnOneData, true);
+
+        final List<CellValue<? extends Comparable<?>>> columnTwoData = new ArrayList<>();
+        final CellValue<String> cell_10 = new CellValue<>("y");
+        final CellValue<String> cell_11 = new CellValue<>("x");
+        final CellValue<String> cell_12 = new CellValue<>("y");
+        columnTwoData.add(cell_10);
+        columnTwoData.add(cell_11);
+        columnTwoData.add(cell_12);
+        data.addColumn(1, columnTwoData, true);
+
+        widget.setData(data);
+
+        final SortConfiguration columnOneSortConfiguration = new SortConfiguration();
+        columnOneSortConfiguration.setColumnIndex(0);
+        columnOneSortConfiguration.setSortIndex(0);
+        columnOneSortConfiguration.setSortDirection(SortDirection.DESCENDING);
+        final SortConfiguration columnTwoSortConfiguration = new SortConfiguration();
+        columnTwoSortConfiguration.setColumnIndex(1);
+        columnTwoSortConfiguration.setSortIndex(1);
+        columnTwoSortConfiguration.setSortDirection(SortDirection.ASCENDING);
+        final SortDataEvent sortEvent = new SortDataEvent(Arrays.asList(columnOneSortConfiguration, columnTwoSortConfiguration));
+
+        widget.onSortData(sortEvent);
+
+        verify(eventBus).fireEvent(updateModelEventCaptor.capture());
+
+        final UpdateModelEvent updateModelEvent = updateModelEventCaptor.getValue();
+        final Map<Coordinate, List<List<CellValue<? extends Comparable<?>>>>> updates = updateModelEvent.getUpdates();
+        assertNotNull(updates);
+        assertEquals(1, updates.size());
+        assertTrue(updates.containsKey(origin));
+
+        final List<List<CellValue<? extends Comparable<?>>>> updates00 = updates.get(origin);
+        final List<CellValue<? extends Comparable<?>>> sortedRow0 = new Lists.Builder().add(cell_02).add(cell_12).build();
+        final List<CellValue<? extends Comparable<?>>> sortedRow1 = new Lists.Builder().add(cell_01).add(cell_11).build();
+        final List<CellValue<? extends Comparable<?>>> sortedRow2 = new Lists.Builder().add(cell_00).add(cell_10).build();
+
+        assertEquals(3, updates00.size());
+        assertEquals(sortedRow0, updates00.get(0));
+        assertEquals(sortedRow1, updates00.get(1));
+        assertEquals(sortedRow2, updates00.get(2));
     }
 }
