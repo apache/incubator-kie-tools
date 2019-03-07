@@ -35,6 +35,8 @@
   <properties>
     <!-- Add the absolute path for $JBOSS_HOME below to manage another instance -->
     <errai.jboss.home>${project.build.directory}/wildfly-${version.org.jboss.errai.wildfly}</errai.jboss.home>
+    <gwt.helper.includes>Client</gwt.helper.includes>
+    <gwt.helper.rootDirectories>${project.parent.basedir}/drools-wb-screens</gwt.helper.rootDirectories>
   </properties>
 
   <dependencies>
@@ -1432,60 +1434,17 @@
     <plugins>
       <!-- Include additional sources path for hot reload -->
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-gwthelper-maven-plugin</artifactId>
         <executions>
           <execution>
             <id>add-source</id>
-            <phase>generate-sources</phase>
             <goals>
               <goal>add-source</goal>
             </goals>
             <configuration>
-              <sources>
-                <!-- Include screens sources !-->
-                <source>../drools-wb-screens/drools-wb-drl-text-editor/drools-wb-drl-text-editor-client/src/main/java</source>
-                <source>../drools-wb-screens/drools-wb-drl-text-editor/drools-wb-drl-text-editor-client/src/main/resources</source>
-
-                <source>../drools-wb-screens/drools-wb-dsl-text-editor/drools-wb-dsl-text-editor-client/src/main/java</source>
-                <source>../drools-wb-screens/drools-wb-dsl-text-editor/drools-wb-dsl-text-editor-client/src/main/resources</source>
-
-                <source>../drools-wb-screens/drools-wb-dtable-xls-editor/drools-wb-dtable-xls-editor-client/src/main/java</source>
-                <source>../drools-wb-screens/drools-wb-dtable-xls-editor/drools-wb-dtable-xls-editor-client/src/main/resources</source>
-
-                <source>../drools-wb-screens/drools-wb-enum-editor/drools-wb-enum-editor-client/src/main/java</source>
-                <source>../drools-wb-screens/drools-wb-enum-editor/drools-wb-enum-editor-client/src/main/resources</source>
-
-                <source>../drools-wb-screens/drools-wb-globals-editor/drools-wb-globals-editor-client/src/main/java</source>
-                <source>../drools-wb-screens/drools-wb-globals-editor/drools-wb-globals-editor-client/src/main/resources</source>
-
-                <source>../drools-wb-screens/drools-wb-guided-dtable-editor/drools-wb-guided-dtable-editor-client/src/main/java</source>
-                <source>../drools-wb-screens/drools-wb-guided-dtable-editor/drools-wb-guided-dtable-editor-client/src/main/resources</source>
-
-                <source>../drools-wb-screens/drools-wb-guided-dtree-editor/drools-wb-guided-dtree-editor-client/src/main/java</source>
-                <source>../drools-wb-screens/drools-wb-guided-dtree-editor/drools-wb-guided-dtree-editor-client/src/main/resources</source>
-
-                <source>../drools-wb-screens/drools-wb-guided-rule-editor/drools-wb-guided-rule-editor-client/src/main/java</source>
-                <source>../drools-wb-screens/drools-wb-guided-rule-editor/drools-wb-guided-rule-editor-client/src/main/resources</source>
-
-                <source>../drools-wb-screens/drools-wb-guided-scorecard-editor/drools-wb-guided-scorecard-editor-client/src/main/java</source>
-                <source>../drools-wb-screens/drools-wb-guided-scorecard-editor/drools-wb-guided-scorecard-editor-client/src/main/resources</source>
-
-                <source>../drools-wb-screens/drools-wb-guided-template-editor/drools-wb-guided-template-editor-client/src/main/java</source>
-                <source>../drools-wb-screens/drools-wb-guided-template-editor/drools-wb-guided-template-editor-client/src/main/resources</source>
-
-                <source>../drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-client/src/main/java</source>
-                <source>../drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-client/src/main/resources</source>
-
-                <source>../drools-wb-screens/drools-wb-scorecard-xls-editor/drools-wb-scorecard-xls-editor-client/src/main/java</source>
-                <source>../drools-wb-screens/drools-wb-scorecard-xls-editor/drools-wb-scorecard-xls-editor-client/src/main/resources</source>
-
-                <source>../drools-wb-screens/drools-wb-test-scenario-editor/drools-wb-test-scenario-editor-client/src/main/java</source>
-                <source>../drools-wb-screens/drools-wb-test-scenario-editor/drools-wb-test-scenario-editor-client/src/main/resources</source>
-
-                <source>../drools-wb-screens/drools-wb-workitems-editor/drools-wb-workitems-editor-client/src/main/java</source>
-                <source>../drools-wb-screens/drools-wb-workitems-editor/drools-wb-workitems-editor-client/src/main/resources</source>
-              </sources>
+              <includes>${gwt.helper.includes}</includes> <!-- will include all GWT module whose configuration file name match that pattern -->
+              <rootDirectories>${gwt.helper.rootDirectories}</rootDirectories> <!-- will search inside those directories -->
             </configuration>
           </execution>
         </executions>
