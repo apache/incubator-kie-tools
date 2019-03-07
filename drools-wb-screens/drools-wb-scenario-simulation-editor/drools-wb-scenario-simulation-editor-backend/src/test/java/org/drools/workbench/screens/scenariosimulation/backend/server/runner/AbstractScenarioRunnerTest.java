@@ -17,18 +17,18 @@
 package org.drools.workbench.screens.scenariosimulation.backend.server.runner;
 
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
-import org.drools.workbench.screens.scenariosimulation.model.Simulation;
+import org.drools.workbench.screens.scenariosimulation.model.SimulationDescriptor;
 import org.junit.Test;
 
 public class AbstractScenarioRunnerTest {
 
     @Test
     public void getSpecificRunnerProvider() {
-        Simulation simulation = new Simulation();
+        SimulationDescriptor simulationDescriptor = new SimulationDescriptor();
         // all existing types should have a dedicated runner
         for (ScenarioSimulationModel.Type value : ScenarioSimulationModel.Type.values()) {
-            simulation.getSimulationDescriptor().setType(value);
-            AbstractScenarioRunner.getSpecificRunnerProvider(simulation);
+            simulationDescriptor.setType(value);
+            AbstractScenarioRunner.getSpecificRunnerProvider(simulationDescriptor);
         }
     }
 }

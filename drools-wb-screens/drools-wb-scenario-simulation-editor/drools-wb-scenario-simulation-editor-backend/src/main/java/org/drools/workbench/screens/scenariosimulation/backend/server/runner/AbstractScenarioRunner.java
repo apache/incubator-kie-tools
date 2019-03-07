@@ -16,11 +16,9 @@
 
 package org.drools.workbench.screens.scenariosimulation.backend.server.runner;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import org.drools.workbench.screens.scenariosimulation.backend.server.expression.ExpressionEvaluator;
@@ -51,7 +49,7 @@ public abstract class AbstractScenarioRunner extends Runner {
                                   Simulation simulation,
                                   String fileName,
                                   Function<ClassLoader, ExpressionEvaluator> expressionEvaluatorFactory) {
-        this(kieContainer, simulation.getSimulationDescriptor(), toScenarioMap(simulation), fileName, expressionEvaluatorFactory);
+        this(kieContainer, simulation.getSimulationDescriptor(), simulation.getScenarioMap(), fileName, expressionEvaluatorFactory);
     }
 
     public AbstractScenarioRunner(KieContainer kieContainer,
@@ -144,7 +142,7 @@ public abstract class AbstractScenarioRunner extends Runner {
     }
 
     public static Description getDescriptionForSimulation(Optional<String> filename, Simulation simulation) {
-        return getDescriptionForSimulation(filename, simulation.getSimulationDescriptor(), toScenarioMap(simulation));
+        return getDescriptionForSimulation(filename, simulation.getSimulationDescriptor(), simulation.getScenarioMap());
     }
 
     public static Description getDescriptionForSimulation(Optional<String> filename, SimulationDescriptor simulationDescriptor, Map<Integer, Scenario> scenarios) {
@@ -153,27 +151,18 @@ public abstract class AbstractScenarioRunner extends Runner {
         return suiteDescription;
     }
 
-    public static Map<Integer, Scenario> toScenarioMap(Simulation simulation) {
-        List<Scenario> scenarios = simulation.getUnmodifiableScenarios();
-        Map<Integer, Scenario> indexToScenario = new HashMap<>();
-        for (int index = 0; index < scenarios.size(); index += 1) {
-            indexToScenario.put(index + 1, scenarios.get(index));
-        }
-        return indexToScenario;
-    }
-
     public static Description getDescriptionForScenario(Optional<String> className, int index, Scenario scenario) {
         return Description.createTestDescription(className.orElse(AbstractScenarioRunner.class.getCanonicalName()),
                                                  String.format("#%d: %s", index, scenario.getDescription()));
     }
 
-    public static BiFunction<KieContainer, Simulation, AbstractScenarioRunner> getSpecificRunnerProvider(Simulation simulation) {
-        if (Type.RULE.equals(simulation.getSimulationDescriptor().getType())) {
+    public static ScenarioRunnerProvider getSpecificRunnerProvider(SimulationDescriptor simulationDescriptor) {
+        if (Type.RULE.equals(simulationDescriptor.getType())) {
             return RuleScenarioRunner::new;
-        } else if (Type.DMN.equals(simulation.getSimulationDescriptor().getType())) {
+        } else if (Type.DMN.equals(simulationDescriptor.getType())) {
             return DMNScenarioRunner::new;
         } else {
-            throw new IllegalArgumentException("Impossible to run simulation of type " + simulation.getSimulationDescriptor().getType());
+            throw new IllegalArgumentException("Impossible to run simulation of type " + simulationDescriptor.getType());
         }
     }
 

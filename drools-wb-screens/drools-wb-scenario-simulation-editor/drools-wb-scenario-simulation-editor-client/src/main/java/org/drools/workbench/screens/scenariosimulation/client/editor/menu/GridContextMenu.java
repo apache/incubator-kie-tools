@@ -23,6 +23,7 @@ import com.google.gwt.dom.client.LIElement;
 import org.drools.workbench.screens.scenariosimulation.client.events.DeleteRowEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.DuplicateRowEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.InsertRowEvent;
+import org.drools.workbench.screens.scenariosimulation.client.events.RunSingleScenarioEvent;
 
 /**
  * The contextual menu of a a <i>ROW</i> cell whose <b>GROUP</b> does <b>allow</b> column modification (insert/delete). It has the same items has {@link AbstractColumnMenuPresenter} and specific ones (?)
@@ -39,11 +40,13 @@ public class GridContextMenu extends AbstractColumnMenuPresenter {
     private final String GRIDCONTEXTMENU_INSERT_ROW_BELOW = "gridcontextmenu-insert-row-below";
     private final String GRIDCONTEXTMENU_DELETE_ROW = "gridcontextmenu-delete-row";
     private final String GRIDCONTEXTMENU_DUPLICATE_ROW = "gridcontextmenu-duplicate-row";
+    private final String GRIDCONTEXTMENU_RUN_SINGLE_SCENARIO = "gridcontextmenu-run-single-scenario";
 
     private LIElement insertRowAboveLIElement;
     private LIElement insertRowBelowLIElement;
     private LIElement duplicateRowLIElement;
     private LIElement deleteRowLIElement;
+    private LIElement runSingleScenarioElement;
 
     @PostConstruct
     @Override
@@ -62,6 +65,7 @@ public class GridContextMenu extends AbstractColumnMenuPresenter {
         insertRowBelowLIElement = addExecutableMenuItem(GRIDCONTEXTMENU_INSERT_ROW_BELOW, constants.insertRowBelow(), "insertRowBelow");
         duplicateRowLIElement = addExecutableMenuItem(GRIDCONTEXTMENU_DUPLICATE_ROW, constants.duplicateRow(), "duplicateRow");
         deleteRowLIElement = addExecutableMenuItem(GRIDCONTEXTMENU_DELETE_ROW, constants.deleteRow(), "deleteRow");
+        runSingleScenarioElement = addExecutableMenuItem(GRIDCONTEXTMENU_RUN_SINGLE_SCENARIO, constants.runSingleScenario(), "runSingleScenario");
     }
 
     public void show(final int mx, final int my, int columnIndex, int rowIndex, String group, boolean asProperty) {
@@ -76,5 +80,6 @@ public class GridContextMenu extends AbstractColumnMenuPresenter {
         mapEvent(insertRowBelowLIElement, new InsertRowEvent(rowIndex + 1));
         mapEvent(duplicateRowLIElement, new DuplicateRowEvent(rowIndex));
         mapEvent(deleteRowLIElement, new DeleteRowEvent(rowIndex));
+        mapEvent(runSingleScenarioElement, new RunSingleScenarioEvent(rowIndex));
     }
 }

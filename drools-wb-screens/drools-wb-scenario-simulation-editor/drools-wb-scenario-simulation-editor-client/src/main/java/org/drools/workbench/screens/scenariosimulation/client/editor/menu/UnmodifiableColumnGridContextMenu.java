@@ -23,6 +23,7 @@ import com.google.gwt.dom.client.LIElement;
 import org.drools.workbench.screens.scenariosimulation.client.events.DeleteRowEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.DuplicateRowEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.InsertRowEvent;
+import org.drools.workbench.screens.scenariosimulation.client.events.RunSingleScenarioEvent;
 
 /**
  * The contextual menu of a <i>ROW</i> cell whose <b>GROUP</b> does <b>not allow</b> column modification (insert/delete). It has the same items has {@link AbstractColumnMenuPresenter} and specific ones (?)
@@ -35,11 +36,13 @@ public class UnmodifiableColumnGridContextMenu extends AbstractHeaderMenuPresent
     private final String UCGRIDCONTEXTMENU_INSERT_ROW_BELOW = "ucgridcontextmenu-insert-row-below";
     private final String UCGRIDCONTEXTMENU_DELETE_ROW = "ucgridcontextmenu-delete-row";
     private final String UCGRIDCONTEXTMENU_DUPLICATE_ROW = "ucgridcontextmenu-duplicate-row";
+    private final String UCGRIDCONTEXTMENU_RUN_SINGLE_SCENARIO = "ucgridcontextmenu-run-single-scenario";
 
     private LIElement insertRowAboveLIElement;
     private LIElement insertRowBelowLIElement;
     private LIElement duplicateRowLIElement;
     private LIElement deleteRowLIElement;
+    private LIElement runSingleScenarioElement;
 
     @PostConstruct
     @Override
@@ -49,6 +52,8 @@ public class UnmodifiableColumnGridContextMenu extends AbstractHeaderMenuPresent
         insertRowBelowLIElement = addExecutableMenuItem(UCGRIDCONTEXTMENU_INSERT_ROW_BELOW, constants.insertRowBelow(), "insertRowBelow");
         duplicateRowLIElement = addExecutableMenuItem(UCGRIDCONTEXTMENU_DUPLICATE_ROW, constants.duplicateRow(), "duplicateRow");
         deleteRowLIElement = addExecutableMenuItem(UCGRIDCONTEXTMENU_DELETE_ROW, constants.deleteRow(), "deleteRow");
+        runSingleScenarioElement = addExecutableMenuItem(UCGRIDCONTEXTMENU_RUN_SINGLE_SCENARIO, constants.runSingleScenario(), "runSingleScenario");
+
     }
 
     public void show(final int mx, final int my, int rowIndex) {
@@ -57,5 +62,6 @@ public class UnmodifiableColumnGridContextMenu extends AbstractHeaderMenuPresent
         mapEvent(insertRowBelowLIElement, new InsertRowEvent(rowIndex + 1));
         mapEvent(duplicateRowLIElement, new DuplicateRowEvent(rowIndex));
         mapEvent(deleteRowLIElement, new DeleteRowEvent(rowIndex));
+        mapEvent(runSingleScenarioElement, new RunSingleScenarioEvent(rowIndex));
     }
 }

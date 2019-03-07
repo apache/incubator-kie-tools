@@ -162,6 +162,8 @@ public interface ScenarioSimulationEditorConstants
 
     String duplicateRow();
 
+    String runSingleScenario();
+
     String prependRow();
 
     String appendRow();

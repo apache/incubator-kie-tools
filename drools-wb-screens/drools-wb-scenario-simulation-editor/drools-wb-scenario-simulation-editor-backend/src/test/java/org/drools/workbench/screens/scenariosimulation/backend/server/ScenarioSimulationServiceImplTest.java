@@ -293,13 +293,14 @@ public class ScenarioSimulationServiceImplTest {
         doReturn("test userMock").when(userMock).getIdentifier();
 
         final Path path = mock(Path.class);
-        final ScenarioSimulationModel model = new ScenarioSimulationModel();
+        Simulation simulation = new Simulation();
 
-        service.runScenario(path, model);
+        service.runScenario(path, simulation.getSimulationDescriptor(), simulation.getScenarioMap());
 
         verify(scenarioRunnerServiceMock).runTest("test userMock",
                                                   path,
-                                                  model);
+                                                  simulation.getSimulationDescriptor(),
+                                                  simulation.getScenarioMap());
     }
 
     @Test

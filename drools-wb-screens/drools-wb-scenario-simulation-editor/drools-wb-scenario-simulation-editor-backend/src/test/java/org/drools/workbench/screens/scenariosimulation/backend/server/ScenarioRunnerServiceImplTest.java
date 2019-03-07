@@ -15,16 +15,19 @@
  */
 package org.drools.workbench.screens.scenariosimulation.backend.server;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.assertj.core.api.Assertions;
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.AbstractScenarioRunner;
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.RuleScenarioRunner;
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.ScenarioException;
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.ScenarioRunnerData;
-import org.drools.workbench.screens.scenariosimulation.backend.server.util.RULESimulationCreationStrategy;
 import org.drools.workbench.screens.scenariosimulation.model.Scenario;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
+import org.drools.workbench.screens.scenariosimulation.model.Simulation;
+import org.drools.workbench.screens.scenariosimulation.model.SimulationDescriptor;
 import org.guvnor.common.services.shared.test.TestResultMessage;
 import org.junit.Before;
 import org.junit.Test;
@@ -100,10 +103,26 @@ public class ScenarioRunnerServiceImplTest {
     public void runTest() throws Exception {
         when(buildInfoServiceMock.getBuildInfo(any())).thenReturn(buildInfoMock);
         when(buildInfoMock.getKieContainer()).thenReturn(kieContainerMock);
-        ScenarioSimulationModel scenarioSimulationModel = new ScenarioSimulationModel();
-        scenarioSimulationModel.setSimulation(new RULESimulationCreationStrategy().createSimulation(this.path, "default"));
+        Simulation simulation = new Simulation();
+        simulation.getSimulationDescriptor().setType(ScenarioSimulationModel.Type.RULE);
 
-        scenarioRunnerService.runTest("test", mock(Path.class), scenarioSimulationModel);
+        scenarioRunnerService.runTest("test",
+                                      mock(Path.class),
+                                      simulation.getSimulationDescriptor(),
+                                      simulation.getScenarioMap());
+
+        verify(defaultTestResultMessageEventMock).fire(any());
+    }
+
+    @Test
+    public void runTestWithScenarioMap() throws Exception {
+        when(buildInfoServiceMock.getBuildInfo(any())).thenReturn(buildInfoMock);
+        when(buildInfoMock.getKieContainer()).thenReturn(kieContainerMock);
+        SimulationDescriptor simulationDescriptor = new SimulationDescriptor();
+        simulationDescriptor.setType(ScenarioSimulationModel.Type.RULE);
+        Map<Integer, Scenario> scenarioMap = new HashMap<>();
+
+        scenarioRunnerService.runTest("test", mock(Path.class), simulationDescriptor, scenarioMap);
 
         verify(defaultTestResultMessageEventMock).fire(any());
     }
@@ -112,7 +131,7 @@ public class ScenarioRunnerServiceImplTest {
     public void runAllTestsSpecifiedEvent() throws Exception {
         final EventSourceMock customTestResultEvent = mock(EventSourceMock.class);
 
-        scenarioRunnerService.setRunnerSupplier((kieContainer, simulation) -> runnerMock);
+        scenarioRunnerService.setRunnerSupplier((kieContainer, simulationDescriptor, scenarioMap) -> runnerMock);
 
         scenarioRunnerService.runAllTests("test", mock(Path.class), customTestResultEvent);
 
@@ -124,20 +143,22 @@ public class ScenarioRunnerServiceImplTest {
     public void runFailed() throws Exception {
         when(buildInfoServiceMock.getBuildInfo(any())).thenReturn(buildInfoMock);
         when(buildInfoMock.getKieContainer()).thenReturn(kieContainerMock);
-        ScenarioSimulationModel scenarioSimulationModel = new ScenarioSimulationModel();
-        scenarioSimulationModel.setSimulation(new RULESimulationCreationStrategy().createSimulation(this.path, "default"));
-        Scenario scenario = scenarioSimulationModel.getSimulation().getScenarioByIndex(0);
+        Simulation simulation = new Simulation();
+        simulation.addScenario();
+        Scenario scenario = simulation.getScenarioByIndex(0);
         scenario.setDescription("Test Scenario");
         String errorMessage = "Test Error";
 
-        scenarioRunnerService.setRunnerSupplier((kieContainer, simulation) -> new RuleScenarioRunner(kieContainer, simulation, "") {
+        scenarioRunnerService.setRunnerSupplier(
+                (kieContainer, simulationDescriptor, scenarioMap) ->
+                        new RuleScenarioRunner(kieContainer, simulationDescriptor, scenarioMap, "") {
 
-            @Override
-            protected void internalRunScenario(Scenario scenario, ScenarioRunnerData scenarioRunnerData) {
-                throw new ScenarioException(errorMessage);
-            }
-        });
-        scenarioRunnerService.runTest("test", mock(Path.class), scenarioSimulationModel);
+                            @Override
+                            protected void internalRunScenario(Scenario scenario, ScenarioRunnerData scenarioRunnerData) {
+                                throw new ScenarioException(errorMessage);
+                            }
+                        });
+        scenarioRunnerService.runTest("test", mock(Path.class), simulation.getSimulationDescriptor(), simulation.getScenarioMap());
         verify(defaultTestResultMessageEventMock, times(1)).fire(testResultMessageArgumentCaptor.capture());
         TestResultMessage value = testResultMessageArgumentCaptor.getValue();
         List<org.guvnor.common.services.shared.test.Failure> failures = value.getFailures();

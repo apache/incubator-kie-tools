@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,20 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.workbench.screens.scenariosimulation.service;
+package org.drools.workbench.screens.scenariosimulation.backend.server.runner;
 
 import java.util.Map;
 
 import org.drools.workbench.screens.scenariosimulation.model.Scenario;
 import org.drools.workbench.screens.scenariosimulation.model.SimulationDescriptor;
-import org.guvnor.common.services.shared.test.TestService;
-import org.uberfire.backend.vfs.Path;
+import org.kie.api.runtime.KieContainer;
 
-public interface ScenarioRunnerService
-        extends TestService {
+@FunctionalInterface
+public interface ScenarioRunnerProvider {
 
-    Map<Integer, Scenario> runTest(final String identifier,
-                                   final Path path,
-                                   final SimulationDescriptor simulationDescriptor,
-                                   final Map<Integer, Scenario> scenarioMap);
+    AbstractScenarioRunner create(KieContainer kieContainer,
+                                  SimulationDescriptor simulationDescriptor,
+                                  Map<Integer, Scenario> scenarioMap);
 }

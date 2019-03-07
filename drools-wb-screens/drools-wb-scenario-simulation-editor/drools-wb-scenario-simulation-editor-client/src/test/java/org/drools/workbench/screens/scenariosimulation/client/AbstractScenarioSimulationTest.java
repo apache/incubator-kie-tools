@@ -17,6 +17,7 @@ package org.drools.workbench.screens.scenariosimulation.client;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.SortedMap;
 import java.util.stream.IntStream;
 
@@ -118,10 +119,11 @@ public abstract class AbstractScenarioSimulationTest {
     @Mock
     protected ScenarioSimulationModel scenarioSimulationModelMock;
     @Mock
+    protected Map<Integer, Scenario> scenarioMapMock;
+    @Mock
     protected DataManagementStrategy dataManagementStrategyMock;
     @Mock
     protected SortedMap<String, FactModelTree> dataObjectFieldsMapMock;
-
 
     @Mock
     protected ViewsProvider viewsProviderMock;
@@ -168,6 +170,7 @@ public abstract class AbstractScenarioSimulationTest {
     @Before
     public void setup() {
         when(simulationMock.getSimulationDescriptor()).thenReturn(simulationDescriptorMock);
+        when(simulationMock.getScenarioMap()).thenReturn(scenarioMapMock);
         GridData.Range range = new GridData.Range(FIRST_INDEX_LEFT, FIRST_INDEX_RIGHT - 1);
         collectionEditorSingletonDOMElementFactoryTest = new CollectionEditorSingletonDOMElementFactory(scenarioGridPanelMock,
                                                                                                         scenarioGridLayerMock,
@@ -179,7 +182,6 @@ public abstract class AbstractScenarioSimulationTest {
         scenarioHeaderTextBoxSingletonDOMElementFactoryTest = new ScenarioHeaderTextBoxSingletonDOMElementFactory(scenarioGridPanelMock,
                                                                                                                   scenarioGridLayerMock,
                                                                                                                   scenarioGridMock);
-
 
         scenarioGridModelMock = spy(new ScenarioGridModel(false) {
             {
@@ -330,7 +332,5 @@ public abstract class AbstractScenarioSimulationTest {
         when(factIdentifierMock.getName()).thenReturn(FACT_IDENTIFIER_NAME);
         when(factMappingMock.getFactIdentifier()).thenReturn(factIdentifierMock);
         doReturn(factMappingMock).when(simulationDescriptorMock).addFactMapping(anyInt(), anyString(), anyObject(), anyObject());
-
-
     }
 }

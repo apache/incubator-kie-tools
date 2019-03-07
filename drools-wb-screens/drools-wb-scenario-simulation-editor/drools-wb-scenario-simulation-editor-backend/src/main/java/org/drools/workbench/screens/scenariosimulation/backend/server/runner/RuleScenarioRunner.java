@@ -31,7 +31,11 @@ public class RuleScenarioRunner extends AbstractScenarioRunner {
     }
 
     public RuleScenarioRunner(KieContainer kieContainer, Simulation simulation, String fileName) {
-        this(kieContainer, simulation.getSimulationDescriptor(), toScenarioMap(simulation), fileName);
+        this(kieContainer, simulation.getSimulationDescriptor(), simulation.getScenarioMap(), fileName);
+    }
+
+    public RuleScenarioRunner(KieContainer kieContainer, SimulationDescriptor simulationDescriptor, Map<Integer, Scenario> scenarios) {
+        this(kieContainer, simulationDescriptor, scenarios, null);
     }
 
     public RuleScenarioRunner(KieContainer kieContainer, SimulationDescriptor simulationDescriptor, Map<Integer, Scenario> scenarios, String fileName) {

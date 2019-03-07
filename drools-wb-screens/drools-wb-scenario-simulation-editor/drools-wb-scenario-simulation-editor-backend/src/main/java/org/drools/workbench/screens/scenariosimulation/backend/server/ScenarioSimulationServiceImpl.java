@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
@@ -32,8 +33,10 @@ import javax.inject.Named;
 
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.ScenarioJunitActivator;
 import org.drools.workbench.screens.scenariosimulation.backend.server.util.ScenarioSimulationBuilder;
+import org.drools.workbench.screens.scenariosimulation.model.Scenario;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModelContent;
+import org.drools.workbench.screens.scenariosimulation.model.SimulationDescriptor;
 import org.drools.workbench.screens.scenariosimulation.service.ScenarioRunnerService;
 import org.drools.workbench.screens.scenariosimulation.service.ScenarioSimulationService;
 import org.drools.workbench.screens.scenariosimulation.type.ScenarioSimulationResourceTypeDefinition;
@@ -147,11 +150,13 @@ public class ScenarioSimulationServiceImpl
     }
 
     @Override
-    public ScenarioSimulationModel runScenario(final Path path,
-                                               final ScenarioSimulationModel model) {
+    public Map<Integer, Scenario> runScenario(final Path path,
+                                               final SimulationDescriptor simulationDescriptor,
+                                               final Map<Integer, Scenario> scenarioMap) {
         return scenarioRunnerService.runTest(user.getIdentifier(),
                                              path,
-                                             model);
+                                             simulationDescriptor,
+                                             scenarioMap);
     }
 
     @Override

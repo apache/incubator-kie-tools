@@ -15,8 +15,12 @@
  */
 package org.drools.workbench.screens.scenariosimulation.utils;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.drools.workbench.screens.scenariosimulation.model.Scenario;
+import org.drools.workbench.screens.scenariosimulation.model.Simulation;
 
 public class ScenarioSimulationSharedUtils {
 
@@ -46,5 +50,14 @@ public class ScenarioSimulationSharedUtils {
      */
     public static boolean isMap(String className) {
         return Map.class.getName().equals(className);
+    }
+
+    public static Map<Integer, Scenario> toScenarioMap(Simulation simulation) {
+        List<Scenario> scenarios = simulation.getUnmodifiableScenarios();
+        Map<Integer, Scenario> indexToScenario = new HashMap<>();
+        for (int index = 0; index < scenarios.size(); index += 1) {
+            indexToScenario.put(index + 1, scenarios.get(index));
+        }
+        return indexToScenario;
     }
 }

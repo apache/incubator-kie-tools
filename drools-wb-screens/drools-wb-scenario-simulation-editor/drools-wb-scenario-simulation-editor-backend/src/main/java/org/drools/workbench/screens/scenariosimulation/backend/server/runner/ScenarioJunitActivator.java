@@ -92,7 +92,8 @@ public class ScenarioJunitActivator extends ParentRunner<SimulationWithFileName>
     }
 
     AbstractScenarioRunner newRunner(KieContainer kieContainer, Simulation simulation, String fileName) {
-        AbstractScenarioRunner runner = AbstractScenarioRunner.getSpecificRunnerProvider(simulation).apply(kieContainer, simulation);
+        AbstractScenarioRunner runner = AbstractScenarioRunner.getSpecificRunnerProvider(simulation.getSimulationDescriptor())
+                .create(kieContainer, simulation.getSimulationDescriptor(), simulation.getScenarioMap());
         runner.setFileName(fileName);
         return runner;
     }
