@@ -61,10 +61,7 @@ public class JGitFileSystemImplProviderBytemanTest extends AbstractTestInfra {
 
     @Before
     public void createGitFsProvider() {
-        Map<String, String> gitPreferences = getGitPreferences();
-        gitPreferences.put(JGIT_CACHE_EVICT_THRESHOLD_DURATION, "1");
-        gitPreferences.put(JGIT_CACHE_EVICT_THRESHOLD_TIME_UNIT, TimeUnit.MILLISECONDS.name());
-        provider = new JGitFileSystemProvider(gitPreferences);
+        provider = new JGitFileSystemProvider();
     }
 
     @Ignore("This test produces a strange behaviour that locks the other test. Is ignored until a solution is found.")
