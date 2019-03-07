@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://github.com/kiegroup/drools/kie-dmn/_D81081D6-FF3F-4A8E-8B83-4933FC9C8EA5" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_B79CC6DB-31BF-4A37-A819-339E976CF0BE" name="simple sum" expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://github.com/kiegroup/drools/kie-dmn/_D81081D6-FF3F-4A8E-8B83-4933FC9C8EA5">
+  <dmn:extensionElements/>
+  <dmn:decision id="_92B63F9C-D886-4117-BF6E-072F3EA389F9" name="sumOfNumbers">
+    <dmn:variable id="_5C9880FB-C9F4-4F70-9F43-A4442CFDB9F4" name="sumOfNumbers" typeRef="number"/>
+    <dmn:informationRequirement id="_DBE16B44-C7A5-4837-8920-541A7CF68285">
+      <dmn:requiredInput href="#_EE14A929-1716-4473-BD17-C92C1F3C61DA"/>
+    </dmn:informationRequirement>
+    <dmn:informationRequirement id="_977EBD35-25A1-4F6C-92AE-B6CEA5ED3279">
+      <dmn:requiredInput href="#_E3F6C05B-6C98-4D04-ADB6-77792A93F485"/>
+    </dmn:informationRequirement>
+    <dmn:literalExpression id="_7C93CA38-580B-466A-89D9-EB497891F4B0">
+      <dmn:text>a + wrong variable</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:inputData id="_EE14A929-1716-4473-BD17-C92C1F3C61DA" name="b">
+    <dmn:variable id="_1D6474A0-C1AD-4B14-BFB8-50D8A1C0579D" name="b" typeRef="number"/>
+  </dmn:inputData>
+  <dmn:inputData id="_E3F6C05B-6C98-4D04-ADB6-77792A93F485" name="a">
+    <dmn:variable id="_997FCAB1-31CA-4C32-8C55-9ADDDEF3EB62" name="a" typeRef="number"/>
+  </dmn:inputData>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_7C93CA38-580B-466A-89D9-EB497891F4B0">
+            <kie:width>130.0</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-_92B63F9C-D886-4117-BF6E-072F3EA389F9" dmnElementRef="_92B63F9C-D886-4117-BF6E-072F3EA389F9" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="217" y="249" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-_EE14A929-1716-4473-BD17-C92C1F3C61DA" dmnElementRef="_EE14A929-1716-4473-BD17-C92C1F3C61DA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="337" y="352" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-_E3F6C05B-6C98-4D04-ADB6-77792A93F485" dmnElementRef="_E3F6C05B-6C98-4D04-ADB6-77792A93F485" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="107" y="352" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="dmnedge-_DBE16B44-C7A5-4837-8920-541A7CF68285" dmnElementRef="_DBE16B44-C7A5-4837-8920-541A7CF68285">
+        <di:waypoint x="337" y="377"/>
+        <di:waypoint x="317" y="274"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-_977EBD35-25A1-4F6C-92AE-B6CEA5ED3279" dmnElementRef="_977EBD35-25A1-4F6C-92AE-B6CEA5ED3279">
+        <di:waypoint x="207" y="377"/>
+        <di:waypoint x="217" y="274"/>
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

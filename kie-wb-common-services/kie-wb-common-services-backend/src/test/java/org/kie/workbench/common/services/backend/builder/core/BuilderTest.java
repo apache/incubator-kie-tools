@@ -384,6 +384,33 @@ public class BuilderTest
         assertTrue(errorMessages.get(0).getText().contains("mismatched input 'Build' expecting one of the following tokens:"));
     }
 
+    @Test
+    public void testBuildProjectWithDmn() throws Exception {
+        final LRUPomModelCache pomModelCache = getReference(LRUPomModelCache.class);
+
+        final URL url = this.getClass().getResource("/ProjectWithDmn");
+        final SimpleFileSystemProvider p = new SimpleFileSystemProvider();
+        final org.uberfire.java.nio.file.Path path = p.getPath(url.toURI());
+
+        final Module module = moduleService.resolveModule(Paths.convert(path));
+
+        final Builder builder = new Builder(module,
+                                            ioService,
+                                            moduleService,
+                                            importsService,
+                                            new ArrayList<>(),
+                                            dependenciesClassLoaderCache,
+                                            pomModelCache,
+                                            getPackageNameWhiteListService(),
+                                            alwaysTrue);
+
+        final BuildResults buildResults = builder.build();
+        final List<BuildMessage> errorMessages = buildResults.getErrorMessages();
+        assertEquals(1,
+                     errorMessages.size());
+        assertTrue(errorMessages.get(0).getText().contains("Error compiling FEEL expression"));
+    }
+
     private PackageNameWhiteListService getPackageNameWhiteListService() {
         return new PackageNameWhiteListServiceImpl(ioService,
                                                    mock(KieModuleService.class),
