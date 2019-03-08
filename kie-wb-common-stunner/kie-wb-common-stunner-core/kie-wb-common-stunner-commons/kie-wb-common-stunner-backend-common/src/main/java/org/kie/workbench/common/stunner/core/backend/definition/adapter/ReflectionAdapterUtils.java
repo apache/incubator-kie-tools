@@ -34,7 +34,7 @@ public class ReflectionAdapterUtils {
     public static <T, A extends Annotation, V> V getAnnotatedFieldValue(final T object,
                                                                         final Class<A> annotationType) throws IllegalAccessException {
         Class<?> c = object.getClass();
-        while (!c.getName().equals(Object.class.getName())) {
+        while (!(c.isAssignableFrom(Object.class))) {
             V result = getAnnotatedFieldValue(object,
                                               c,
                                               annotationType);
@@ -52,7 +52,7 @@ public class ReflectionAdapterUtils {
         if (null != fieldNames) {
             for (String fieldName : fieldNames) {
                 Class<?> c = object.getClass();
-                while (!c.getName().equals(Object.class.getName())) {
+                while (!(c.isAssignableFrom(Object.class))) {
                     V result1 = getFieldValue(object,
                                               c,
                                               fieldName);
@@ -69,7 +69,7 @@ public class ReflectionAdapterUtils {
     public static <T, V> V getFieldValue(final T object,
                                          final String fieldName) throws IllegalAccessException {
         Class<?> c = object.getClass();
-        while (!c.getName().equals(Object.class.getName())) {
+        while (!(c.isAssignableFrom(Object.class))) {
             V result = getFieldValue(object,
                                      c,
                                      fieldName);
@@ -121,7 +121,7 @@ public class ReflectionAdapterUtils {
     public static <T> Field getField(final T object,
                                      final String fieldName) throws SecurityException {
         Class<?> c = object.getClass();
-        while (!c.getName().equals(Object.class.getName())) {
+        while (!(c.isAssignableFrom(Object.class))) {
             Field result = getField(c,
                                     fieldName);
             if (null != result) {
@@ -152,7 +152,7 @@ public class ReflectionAdapterUtils {
     public static <T extends Annotation> T getClassAnnotation(final Class<?> type,
                                                               final Class<T> annotationType) {
         Class<?> c = type;
-        while (!c.getName().equals(Object.class.getName())) {
+        while (!(c.isAssignableFrom(Object.class))) {
             T result = c.getAnnotation(annotationType);
             if (null != result) {
                 return result;
@@ -167,7 +167,7 @@ public class ReflectionAdapterUtils {
         if (null != type && null != annotationType) {
             Collection<Field> result = new LinkedList<>();
             Class<?> c = type;
-            while (!c.getName().equals(Object.class.getName())) {
+            while (!(c.isAssignableFrom(Object.class))) {
                 Collection<Field> fields = _getFieldAnnotations(c,
                                                                 annotationType);
                 if (null != fields && !fields.isEmpty()) {

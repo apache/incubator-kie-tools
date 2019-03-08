@@ -130,7 +130,7 @@ public class BackendPropertyAdapter<T> extends AbstractReflectAdapter<T> impleme
     public Object getValue(final T property) {
         if (null != property) {
             Class<?> c = property.getClass();
-            while (!c.getName().equals(Object.class.getName())) {
+            while (!(c.isAssignableFrom(Object.class))) {
                 Field[] fields = c.getDeclaredFields();
                 if (null != fields) {
                     for (Field field : fields) {
@@ -159,7 +159,7 @@ public class BackendPropertyAdapter<T> extends AbstractReflectAdapter<T> impleme
         if (null != property) {
             Class<?> c = property.getClass();
             boolean done = false;
-            while (!done && !c.getName().equals(Object.class.getName())) {
+            while (!done && !(c.isAssignableFrom(Object.class))) {
                 Field[] fields = c.getDeclaredFields();
                 if (null != fields) {
                     for (Field field : fields) {
@@ -212,7 +212,7 @@ public class BackendPropertyAdapter<T> extends AbstractReflectAdapter<T> impleme
             }
             Class<?> c = property.getClass();
             boolean done = false;
-            while (!done && !c.getName().equals(Object.class.getName())) {
+            while (!done && !(c.isAssignableFrom(Object.class))) {
                 Field[] fields = c.getDeclaredFields();
                 if (null != fields) {
                     for (Field field : fields) {
