@@ -17,7 +17,9 @@
 package org.kie.workbench.common.dmn.client.widgets.layer;
 
 import com.ait.lienzo.client.core.Context2D;
+import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridTheme;
@@ -59,10 +61,14 @@ public class InverseGridWidgetClipperTest {
 
     private InverseGridWidgetClipper clipper;
 
+    @Before
+    public void setUp() throws Exception {
+        setupClipper(OUTER_WIDTH, OUTER_HEIGHT, OUTER_ABSOLUTE_X, OUTER_ABSOLUTE_Y,
+                     INNER_WIDTH, INNER_HEIGHT, INNER_ABSOLUTE_X, INNER_ABSOLUTE_Y);
+    }
+
     @Test
     public void testIsActive() {
-        clipper = new InverseGridWidgetClipper(outer, inner);
-
         clipper.setActive(true);
 
         assertThat(clipper.isActive()).isTrue();
@@ -74,9 +80,6 @@ public class InverseGridWidgetClipperTest {
 
     @Test
     public void testClip() {
-        setupClipper(OUTER_WIDTH, OUTER_HEIGHT, OUTER_ABSOLUTE_X, OUTER_ABSOLUTE_Y,
-                     INNER_WIDTH, INNER_HEIGHT, INNER_ABSOLUTE_X, INNER_ABSOLUTE_Y);
-
         clipper.clip(context2D);
 
         verify(context2D).beginPath();
@@ -118,13 +121,13 @@ public class InverseGridWidgetClipperTest {
                               final double innerAbsoluteY) {
         when(outer.getWidth()).thenReturn(outerWidth);
         when(outer.getHeight()).thenReturn(outerHeight);
-        when(outer.getAbsoluteX()).thenReturn(outerAbsoluteX);
-        when(outer.getAbsoluteY()).thenReturn(outerAbsoluteY);
+        final Point2D outerComputedLocation = new Point2D(outerAbsoluteX, outerAbsoluteY);
+        when(outer.getComputedLocation()).thenReturn(outerComputedLocation);
 
         when(inner.getWidth()).thenReturn(innerWidth);
         when(inner.getHeight()).thenReturn(innerHeight);
-        when(inner.getAbsoluteX()).thenReturn(innerAbsoluteX);
-        when(inner.getAbsoluteY()).thenReturn(innerAbsoluteY);
+        final Point2D innerComputedLocation = new Point2D(innerAbsoluteX, innerAbsoluteY);
+        when(inner.getComputedLocation()).thenReturn(innerComputedLocation);
 
         clipper = new InverseGridWidgetClipper(outer, inner);
     }

@@ -420,6 +420,7 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
 
         gridPanel.refreshScrollPosition();
         gridPanel.updatePanelSize();
+        gridPanel.setFocus(true);
         parent.onResize();
 
         gridLayer.batch(command);

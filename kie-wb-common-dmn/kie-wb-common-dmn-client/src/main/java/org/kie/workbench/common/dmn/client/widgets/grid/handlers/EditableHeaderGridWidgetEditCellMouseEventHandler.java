@@ -63,11 +63,11 @@ public class EditableHeaderGridWidgetEditCellMouseEventHandler extends DefaultGr
         final Point2D gridWidgetComputedLocation = gridWidget.getComputedLocation();
         final BaseGridRendererHelper.RenderingInformation ri = rendererHelper.getRenderingInformation();
         final EditableHeaderMetaData headerMetaData = (EditableHeaderMetaData) column.getHeaderMetaData().get(uiHeaderRowIndex);
-        final GridBodyCellEditContext context = CellContextUtilities.makeRenderContext(gridWidget,
-                                                                                       ri,
-                                                                                       ci,
-                                                                                       relativeLocation.add(gridWidgetComputedLocation),
-                                                                                       uiHeaderRowIndex);
+        final GridBodyCellEditContext context = CellContextUtilities.makeHeaderCellRenderContext(gridWidget,
+                                                                                                 ri,
+                                                                                                 ci,
+                                                                                                 relativeLocation.add(gridWidgetComputedLocation),
+                                                                                                 uiHeaderRowIndex);
 
         if (isHeaderSelectionValid(gridWidget)) {
             if (Objects.equals(headerMetaData.getSupportedEditAction(), GridCellEditAction.getSupportedEditAction(event))) {

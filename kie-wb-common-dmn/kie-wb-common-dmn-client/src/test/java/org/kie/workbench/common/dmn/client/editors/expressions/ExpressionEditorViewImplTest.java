@@ -65,6 +65,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.BaseGridWidgetKeyboardHandler;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperation;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationEditCell;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationInvokeContextMenuForSelectedCell;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationMoveDown;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationMoveLeft;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationMoveRight;
@@ -286,7 +287,7 @@ public class ExpressionEditorViewImplTest {
         verify(gridPanelContainer).clear();
         verify(gridPanelContainer).setWidget(gridPanel);
 
-        verify(view, times(6)).addKeyboardOperation(any(BaseGridWidgetKeyboardHandler.class),
+        verify(view, times(7)).addKeyboardOperation(any(BaseGridWidgetKeyboardHandler.class),
                                                     keyboardOperationArgumentCaptor.capture());
         final List<KeyboardOperation> operations = keyboardOperationArgumentCaptor.getAllValues();
         assertThat(operations.get(0)).isInstanceOf(KeyboardOperationEditCell.class);
@@ -295,6 +296,7 @@ public class ExpressionEditorViewImplTest {
         assertThat(operations.get(3)).isInstanceOf(KeyboardOperationMoveRight.class);
         assertThat(operations.get(4)).isInstanceOf(KeyboardOperationMoveUp.class);
         assertThat(operations.get(5)).isInstanceOf(KeyboardOperationMoveDown.class);
+        assertThat(operations.get(6)).isInstanceOf(KeyboardOperationInvokeContextMenuForSelectedCell.class);
     }
 
     @Test

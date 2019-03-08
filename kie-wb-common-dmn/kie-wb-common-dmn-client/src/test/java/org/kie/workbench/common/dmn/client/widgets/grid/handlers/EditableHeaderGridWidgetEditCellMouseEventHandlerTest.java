@@ -139,6 +139,7 @@ public class EditableHeaderGridWidgetEditCellMouseEventHandlerTest {
 
         when(renderer.getHeaderHeight()).thenReturn((double) MOUSE_EVENT_Y);
         when(renderer.getHeaderRowHeight()).thenReturn((double) MOUSE_EVENT_Y);
+        when(renderingInformation.getAllColumns()).thenReturn(uiModel.getColumns());
         when(renderingInformation.getBodyBlockInformation()).thenReturn(renderingBlockInformation);
         when(renderingInformation.getFloatingBlockInformation()).thenReturn(renderingBlockInformation);
 

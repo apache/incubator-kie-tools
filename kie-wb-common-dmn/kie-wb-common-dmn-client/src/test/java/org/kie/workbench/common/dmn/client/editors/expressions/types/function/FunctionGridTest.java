@@ -493,6 +493,7 @@ public class FunctionGridTest {
 
         ((HasListSelectorControl.ListSelectorTextItem) items.get(CLEAR_EXPRESSION_TYPE)).getCommand().execute();
         verify(cellEditorControls).hide();
+        verify(gridPanel).setFocus(true);
         verify(sessionCommandManager).execute(eq(canvasHandler),
                                               any(ClearExpressionTypeCommand.class));
     }
@@ -559,6 +560,7 @@ public class FunctionGridTest {
 
         verify(gridLayer).batch();
         verify(onSuccess).execute();
+        verify(gridPanel).setFocus(true);
     }
 
     @Test
@@ -576,6 +578,7 @@ public class FunctionGridTest {
 
         verify(gridLayer).batch();
         verify(onSuccess).execute();
+        verify(gridPanel).setFocus(true);
     }
 
     @Test

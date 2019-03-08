@@ -61,6 +61,10 @@ public class UndefinedExpressionColumnTest {
 
     private static final double RY = 42.0;
 
+    private static final double GRID_WIDTH = 60.0;
+
+    private static final double GRID_HEIGHT = 30.0;
+
     @Mock
     private UndefinedExpressionGrid gridWidget;
 
@@ -101,6 +105,8 @@ public class UndefinedExpressionColumnTest {
     public void setup() {
         when(gridWidget.getExpression()).thenReturn(Optional::empty);
         when(gridWidget.getParentInformation()).thenReturn(parent);
+        when(gridWidget.getHeight()).thenReturn(GRID_HEIGHT);
+        when(gridWidget.getWidth()).thenReturn(GRID_WIDTH);
         when(parent.getGridWidget()).thenReturn(parentGridWidget);
         when(parentGridWidget.getModel()).thenReturn(parentGridData);
         when(parentGridData.getColumns()).thenReturn(Collections.singletonList(parentGridColumn));
@@ -189,8 +195,8 @@ public class UndefinedExpressionColumnTest {
 
         verify(cellEditorControls).show(eq(undefinedExpressionSelector),
                                         any(Optional.class),
-                                        eq((int) (ABSOLUTE_CELL_X)),
-                                        eq((int) (ABSOLUTE_CELL_Y)));
+                                        eq((int) (ABSOLUTE_CELL_X + GRID_WIDTH / 2)),
+                                        eq((int) (ABSOLUTE_CELL_Y + GRID_HEIGHT / 2)));
     }
 
     @Test

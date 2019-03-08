@@ -81,10 +81,14 @@ public class UndefinedExpressionColumn extends DMNGridColumn<UndefinedExpression
                                          uiColumnIndex);
         final double[] dxy = {absoluteCellX, absoluteCellY};
         final Optional<com.ait.lienzo.client.core.types.Point2D> rx = context.getRelativeLocation();
-        rx.ifPresent(r -> {
-            dxy[0] = r.getX();
-            dxy[1] = r.getY();
-        });
+        if (!rx.isPresent()) {
+            dxy[0] += gridWidget.getWidth() / 2.0;
+            dxy[1] += gridWidget.getHeight() / 2.0;
+        } else {
+            dxy[0] = rx.get().getX();
+            dxy[1] = rx.get().getY();
+        }
+
         cellEditorControls.show(undefinedExpressionSelector,
                                 Optional.of(translationService.getTranslation(DMNEditorConstants.UndefinedExpressionEditor_SelectorTitle)),
                                 (int) (dxy[0]),

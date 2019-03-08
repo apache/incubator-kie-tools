@@ -224,6 +224,7 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGrid
                                              true,
                                              () -> {
                                                  cellEditorControls.hide();
+                                                 gridPanel.setFocus(true);
                                                  clearExpressionType();
                                              }));
 
@@ -254,6 +255,7 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGrid
                                                                   parameter,
                                                                   () -> {
                                                                       gridLayer.batch();
+                                                                      gridPanel.setFocus(true);
                                                                       onSuccess.execute();
                                                                   }));
         });
@@ -268,6 +270,7 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGrid
                                                                      parameter,
                                                                      () -> {
                                                                          gridLayer.batch();
+                                                                         gridPanel.setFocus(true);
                                                                          onSuccess.execute();
                                                                      }));
         });

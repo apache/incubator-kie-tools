@@ -19,8 +19,10 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.context;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
@@ -30,11 +32,13 @@ import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
+import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellEditContext;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.HasDOMElementResources;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.impl.BaseGridColumnRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridWidgetRegistry;
 
-public class ExpressionEditorColumn extends DMNGridColumn<BaseGrid<? extends Expression>, Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>>> implements HasDOMElementResources {
+public class ExpressionEditorColumn extends DMNGridColumn<BaseGrid<? extends Expression>, Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>>>
+        implements HasDOMElementResources {
 
     public ExpressionEditorColumn(final GridWidgetRegistry registry,
                                   final HeaderMetaData headerMetaData,
@@ -103,6 +107,18 @@ public class ExpressionEditorColumn extends DMNGridColumn<BaseGrid<? extends Exp
     public void setWidthInternal(final double width) {
         super.setWidth(width);
         updateWidthOfChildren();
+    }
+
+    @Override
+    public void edit(final GridCell<Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>>> cell,
+                     final GridBodyCellEditContext context,
+                     final Consumer<GridCellValue<Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>>>> callback) {
+        cell.getValue().getValue()
+                .filter(nestedGrid -> nestedGrid instanceof UndefinedExpressionGrid)
+                .ifPresent(nestedGrid -> nestedGrid.startEditingCell(0, 0));
+        cell.getValue().getValue()
+                .filter(nestedGrid -> !(nestedGrid instanceof UndefinedExpressionGrid))
+                .ifPresent(nestedGrid -> nestedGrid.selectFirstCell());
     }
 
     protected void updateWidthOfChildren() {

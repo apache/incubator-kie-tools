@@ -55,6 +55,7 @@ import org.kie.workbench.common.stunner.forms.client.event.RefreshFormProperties
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.BaseGridWidgetKeyboardHandler;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperation;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationEditCell;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationInvokeContextMenuForSelectedCell;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationMoveDown;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationMoveLeft;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationMoveRight;
@@ -160,6 +161,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         addKeyboardOperation(handler, new KeyboardOperationMoveRight(gridLayer));
         addKeyboardOperation(handler, new KeyboardOperationMoveUp(gridLayer));
         addKeyboardOperation(handler, new KeyboardOperationMoveDown(gridLayer));
+        addKeyboardOperation(handler, new KeyboardOperationInvokeContextMenuForSelectedCell(gridLayer));
         gridPanel.addKeyDownHandler(handler);
 
         gridPanelContainer.clear();

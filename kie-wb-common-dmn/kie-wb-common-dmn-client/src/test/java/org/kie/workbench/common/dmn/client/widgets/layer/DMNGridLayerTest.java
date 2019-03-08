@@ -27,6 +27,7 @@ import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.shape.Rectangle;
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.BoundingBox;
+import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.shared.core.types.ColorName;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
@@ -77,6 +78,10 @@ public class DMNGridLayerTest {
 
     private static final double CONTAINER_Y = 50.0;
 
+    private static final double PARENT_X = 0.0;
+
+    private static final double PARENT_Y = 0.0;
+
     private static final double VIEWPORT_TRANSLATE_X = 15.0;
 
     private static final double VIEWPORT_TRANSLATE_Y = 35.0;
@@ -117,6 +122,9 @@ public class DMNGridLayerTest {
         when(container.getHeight()).thenReturn(CONTAINER_HEIGHT);
         when(container.getX()).thenReturn(CONTAINER_X);
         when(container.getY()).thenReturn(CONTAINER_Y);
+        when(container.getComputedLocation()).thenReturn(new Point2D(PARENT_X, PARENT_Y));
+        when(expressionGrid.getComputedLocation()).thenReturn(new Point2D(PARENT_X, PARENT_Y));
+
         when(transform.getTranslateX()).thenReturn(VIEWPORT_TRANSLATE_X);
         when(transform.getTranslateY()).thenReturn(VIEWPORT_TRANSLATE_Y);
     }

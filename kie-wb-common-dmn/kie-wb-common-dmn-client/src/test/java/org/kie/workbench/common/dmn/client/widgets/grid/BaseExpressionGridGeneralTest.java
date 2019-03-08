@@ -46,8 +46,10 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.context.Exp
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableHeaderMetaData;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextBoxSingletonDOMElementFactory;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.HasCellEditorControls;
 import org.kie.workbench.common.dmn.client.widgets.grid.handlers.EditableHeaderGridWidgetEditCellMouseEventHandler;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridCell;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
@@ -73,6 +75,7 @@ import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.NodeMouseEventHandler;
@@ -636,6 +639,7 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
 
         verify(gridPanel).refreshScrollPosition();
         verify(gridPanel).updatePanelSize();
+        verify(gridPanel).setFocus(true);
         verify(parentCell).onResize();
         verify(gridLayer).batch(redrawCommandCaptor.capture());
 
@@ -840,6 +844,51 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
         grid.destroyResources();
 
         verify(cellEditorControls).hide();
+    }
+
+    @Test
+    public void testShowContextMenu() {
+        final double columnWidth = 100.0;
+        grid.getModel().appendColumn(new BaseGridColumn<Object>(mock(GridColumn.HeaderMetaData.class),
+                                                                mock(GridColumnRenderer.class),
+                                                                columnWidth));
+        final BaseGridRow gridRow = new BaseGridRow();
+        grid.getModel().appendRow(gridRow);
+
+        final DMNGridCell<?> dmnGridCellMock = mock(DMNGridCell.class);
+        final HasCellEditorControls.Editor cellControlsEditorMock = mock(HasCellEditorControls.Editor.class);
+        doReturn(Optional.of(cellControlsEditorMock)).when(dmnGridCellMock).getEditor();
+
+        grid.getModel().setCell(0, 0, () -> dmnGridCellMock);
+
+        assertThat(grid.showContextMenuForCell(0, 0)).isTrue();
+
+        verify(cellEditorControls).show(eq(cellControlsEditorMock),
+                                        eq(Optional.empty()),
+                                        eq((int) columnWidth / 2),
+                                        eq((int) (gridRow.getHeight() / 2 + HEADER_HEIGHT)));
+    }
+
+    @Test
+    public void testShowContextMenuMissingEditor() {
+        final double columnWidth = 100.0;
+        grid.getModel().appendColumn(new BaseGridColumn<Object>(mock(GridColumn.HeaderMetaData.class),
+                                                                mock(GridColumnRenderer.class),
+                                                                columnWidth));
+        final BaseGridRow gridRow = new BaseGridRow();
+        grid.getModel().appendRow(gridRow);
+
+        final DMNGridCell<?> dmnGridCellMock = mock(DMNGridCell.class);
+        doReturn(Optional.empty()).when(dmnGridCellMock).getEditor();
+
+        grid.getModel().setCell(0, 0, () -> dmnGridCellMock);
+
+        assertThat(grid.showContextMenuForCell(0, 0)).isFalse();
+
+        verify(cellEditorControls, never()).show(any(HasCellEditorControls.Editor.class),
+                                                 any(Optional.class),
+                                                 anyInt(),
+                                                 anyInt());
     }
 
     @SuppressWarnings("unchecked")

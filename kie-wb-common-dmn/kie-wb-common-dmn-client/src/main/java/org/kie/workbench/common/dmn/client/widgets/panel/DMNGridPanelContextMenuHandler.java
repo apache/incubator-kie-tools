@@ -137,8 +137,8 @@ public class DMNGridPanelContextMenuHandler implements ContextMenuHandler {
                    uiColumnIndex);
             cellEditorControls.show(e,
                                     EDITOR_TITLE,
-                                    (int) (ap.getX() + gridWidget.getAbsoluteX()),
-                                    (int) (ap.getY() + gridWidget.getAbsoluteY()));
+                                    (int) (ap.getX() + gridWidget.getComputedLocation().getX()),
+                                    (int) (ap.getY() + gridWidget.getComputedLocation().getY()));
         });
     }
 }

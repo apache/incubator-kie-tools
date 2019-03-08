@@ -32,8 +32,10 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.dmn.client.commands.factory.canvas.SetComponentWidthCommand;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.HasCellEditorControls;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridCell;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
@@ -49,9 +51,14 @@ import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
+import org.uberfire.ext.wires.core.grids.client.model.GridCell;
+import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
+import org.uberfire.ext.wires.core.grids.client.util.CellContextUtilities;
+import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellEditContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.BaseGridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
 
 public abstract class BaseGrid<E extends Expression> extends BaseGridWidget implements HasListSelectorControl {
 
@@ -230,5 +237,39 @@ public abstract class BaseGrid<E extends Expression> extends BaseGridWidget impl
                                                                                               uiColumn.getWidth());
             sessionCommandManager.execute(abstractCanvasHandler, command);
         });
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public boolean showContextMenuForCell(final int uiRowIndex, final int uiColumnIndex) {
+        final GridCell<?> cell = model.getCell(uiRowIndex, uiColumnIndex);
+        if (cell instanceof DMNGridCell<?>) {
+            if (((DMNGridCell<?>) cell).getEditor().isPresent()) {
+                final HasCellEditorControls.Editor editor = ((DMNGridCell<?>) cell).getEditor().get();
+                final GridColumn<?> column = model.getColumns().get(uiColumnIndex);
+                final BaseGridRendererHelper.RenderingInformation ri = rendererHelper.getRenderingInformation();
+                final double columnXCoordinate = rendererHelper.getColumnOffset(column) + column.getWidth() / 2;
+                final BaseGridRendererHelper.ColumnInformation ci = rendererHelper.getColumnInformation(columnXCoordinate);
+
+                final GridBodyCellEditContext context = CellContextUtilities.makeCellRenderContext(this,
+                                                                                                   ri,
+                                                                                                   ci,
+                                                                                                   uiRowIndex);
+
+                final double cellWidth = context.getCellWidth();
+                final double cellHeight = context.getCellHeight();
+
+                editor.bind(this,
+                            uiRowIndex,
+                            uiColumnIndex);
+                cellEditorControls.show(editor,
+                                        Optional.empty(),
+                                        (int) (context.getAbsoluteCellX() + cellWidth / 2),
+                                        (int) (context.getAbsoluteCellY() + cellHeight / 2));
+
+                return true;
+            }
+        }
+        return super.showContextMenuForCell(uiRowIndex, uiColumnIndex);
     }
 }
