@@ -99,6 +99,7 @@ public abstract class BaseGridWidgetMouseDoubleClickHandlerTest {
         when(gridWidget.getRendererHelper()).thenReturn(helper);
         when(gridWidget.getLayer()).thenReturn(layer);
         when(gridWidget.getHeader()).thenReturn(header);
+        when(gridWidget.getComputedLocation()).thenReturn(new Point2D(0.0, 0.0));
         when(renderer.getHeaderHeight()).thenReturn(64.0);
         when(renderer.getHeaderRowHeight()).thenReturn(32.0);
         when(uiModel.getHeaderRowCount()).thenReturn(2);

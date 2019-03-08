@@ -18,6 +18,7 @@ package org.uberfire.ext.wires.core.grids.client.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import com.ait.lienzo.client.core.shape.Viewport;
@@ -46,6 +47,7 @@ import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 @RunWith(LienzoMockitoTestRunner.class)
@@ -61,9 +63,6 @@ public class CellContextUtilitiesTest {
     private GridRenderer gridRenderer;
 
     @Mock
-    private BaseGridRendererHelper gridRendererHelper;
-
-    @Mock
     private BaseGridRendererHelper.RenderingInformation ri;
 
     @Mock
@@ -76,14 +75,21 @@ public class CellContextUtilitiesTest {
     private ArgumentCaptor<GridBodyCellEditContext> gridBodyCellEditContextCaptor;
 
     private Point2D rp = new Point2D(0, 0);
+    private Point2D computedLocation = new Point2D(0, 0);
+    private BaseGridRendererHelper gridRendererHelper;
 
     @Before
     public void setup() {
+        gridRendererHelper = spy(new BaseGridRendererHelper(gridWidget));
+
+        doReturn(computedLocation).when(gridWidget).getComputedLocation();
         doReturn(gridRenderer).when(gridWidget).getRenderer();
         doReturn(gridRendererHelper).when(gridWidget).getRendererHelper();
         doReturn(ri).when(gridRendererHelper).getRenderingInformation();
         doReturn(HEADER_HEIGHT).when(gridRenderer).getHeaderHeight();
         doReturn(HEADER_ROW_HEIGHT).when(gridRenderer).getHeaderRowHeight();
+        doReturn(HEADER_HEIGHT).when(ri).getHeaderRowsHeight();
+        doReturn(HEADER_ROW_HEIGHT).when(ri).getHeaderRowHeight();
 
         doReturn(floatingBlockInformation).when(ri).getFloatingBlockInformation();
         doReturn(0.0).when(floatingBlockInformation).getX();
@@ -95,7 +101,7 @@ public class CellContextUtilitiesTest {
     }
 
     @Test
-    public void testMakeRenderContextNoBlockMultipleColumns() {
+    public void testMakeHeaderRenderContextNoBlockMultipleColumns() {
         final List<GridColumn<?>> allColumns = new ArrayList<>();
         final GridColumn<?> uiColumn1 = mockGridColumn(25.0);
         final GridColumn<?> uiColumn2 = mockGridColumn(50.0);
@@ -109,11 +115,11 @@ public class CellContextUtilitiesTest {
         doReturn(25.0).when(ci).getOffsetX();
         doReturn(1).when(ci).getUiColumnIndex();
 
-        final GridBodyCellRenderContext context = CellContextUtilities.makeRenderContext(gridWidget,
-                                                                                         ri,
-                                                                                         ci,
-                                                                                         rp,
-                                                                                         0);
+        final GridBodyCellRenderContext context = CellContextUtilities.makeHeaderCellRenderContext(gridWidget,
+                                                                                                   ri,
+                                                                                                   ci,
+                                                                                                   rp,
+                                                                                                   0);
 
         assertNotNull(context);
         assertEquals(25.0,
@@ -125,7 +131,79 @@ public class CellContextUtilitiesTest {
     }
 
     @Test
-    public void testMakeRenderContextLeadBlock() {
+    public void testMakeCellRenderContextOneRow() {
+        final double headerRowsHeight = 100.0;
+        final BaseGridRow row = new BaseGridRow();
+        final List<GridColumn<?>> allColumns = new ArrayList<>();
+        final GridColumn<?> uiColumn1 = mockGridColumn(25.0);
+        final GridColumn<?> uiColumn2 = mockGridColumn(60.0);
+        final GridColumn<?> uiColumn3 = mockGridColumn(100.0);
+        allColumns.add(uiColumn1);
+        allColumns.add(uiColumn2);
+        allColumns.add(uiColumn3);
+        gridWidget.getModel().appendRow(row);
+
+        doReturn(allColumns).when(ri).getAllColumns();
+        doReturn(headerRowsHeight).when(ri).getHeaderRowsHeight();
+        doReturn(uiColumn2).when(ci).getColumn();
+        doReturn(25.0).when(ci).getOffsetX();
+        doReturn(1).when(ci).getUiColumnIndex();
+
+        final GridBodyCellEditContext context = CellContextUtilities.makeCellRenderContext(gridWidget,
+                                                                                           ri,
+                                                                                           ci,
+                                                                                           0);
+
+        assertNotNull(context);
+        assertThat(context.getAbsoluteCellX())
+                .as("Should be column offset")
+                .isEqualTo(25.0);
+
+        assertThat(context.getAbsoluteCellY())
+                .as("Should be headers height")
+                .isEqualTo(headerRowsHeight);
+    }
+
+    @Test
+    public void testMakeCellRenderContextThreeRows() {
+        final double headerRowsHeight = 100.0;
+        final BaseGridRow row1 = new BaseGridRow();
+        final BaseGridRow row2 = new BaseGridRow();
+        final BaseGridRow row3 = new BaseGridRow();
+        final List<GridColumn<?>> allColumns = new ArrayList<>();
+        final GridColumn<?> uiColumn1 = mockGridColumn(25.0);
+        final GridColumn<?> uiColumn2 = mockGridColumn(60.0);
+        final GridColumn<?> uiColumn3 = mockGridColumn(100.0);
+        allColumns.add(uiColumn1);
+        allColumns.add(uiColumn2);
+        allColumns.add(uiColumn3);
+        gridWidget.getModel().appendRow(row1);
+        gridWidget.getModel().appendRow(row2);
+        gridWidget.getModel().appendRow(row3);
+
+        doReturn(allColumns).when(ri).getAllColumns();
+        doReturn(headerRowsHeight).when(ri).getHeaderRowsHeight();
+        doReturn(uiColumn3).when(ci).getColumn();
+        doReturn(25.0).when(ci).getOffsetX();
+        doReturn(3).when(ci).getUiColumnIndex();
+
+        final GridBodyCellEditContext context = CellContextUtilities.makeCellRenderContext(gridWidget,
+                                                                                           ri,
+                                                                                           ci,
+                                                                                           2);
+
+        assertNotNull(context);
+        assertThat(context.getAbsoluteCellX())
+                .as("Should be column offset")
+                .isEqualTo(25.0);
+
+        assertThat(context.getAbsoluteCellY())
+                .as("Should be sum of header height plus preceding row heights")
+                .isEqualTo(headerRowsHeight + row1.getHeight() + row2.getHeight());
+    }
+
+    @Test
+    public void testMakeHeaderRenderContextLeadBlock() {
         final List<GridColumn<?>> allColumns = new ArrayList<>();
         final GridColumn<?> uiColumn1 = mockGridColumn(25.0);
         final GridColumn<?> uiColumn2 = mockGridColumn(50.0,
@@ -138,14 +216,14 @@ public class CellContextUtilitiesTest {
         doReturn(25.0).when(ci).getOffsetX();
         doReturn(1).when(ci).getUiColumnIndex();
 
-        final GridBodyCellRenderContext context = CellContextUtilities.makeRenderContext(gridWidget,
-                                                                                         ri,
-                                                                                         ci,
-                                                                                         rp,
-                                                                                         0);
+        final GridBodyCellRenderContext context = CellContextUtilities.makeHeaderCellRenderContext(gridWidget,
+                                                                                                   ri,
+                                                                                                   ci,
+                                                                                                   rp,
+                                                                                                   0);
 
         assertNotNull(context);
-        assertEquals(0.0,
+        assertEquals(25.0,
                      context.getAbsoluteCellX(),
                      0.0);
         assertEquals(75.0,
@@ -154,7 +232,110 @@ public class CellContextUtilitiesTest {
     }
 
     @Test
-    public void testMakeRenderContextLeadBlockWithExtraLeadNonBlockColumn() {
+    public void testMakeHeaderRenderContextDifferentColumnHeaderMetaDataRows_Column0_Row0() {
+        final List<GridColumn<?>> allColumns = setupHeadersWithDifferentColumnHeaderMetaDataRows();
+
+        doReturn(allColumns).when(ri).getAllColumns();
+        doReturn(allColumns.get(0)).when(ci).getColumn();
+        doReturn(0.0).when(ci).getOffsetX();
+        doReturn(0).when(ci).getUiColumnIndex();
+
+        final GridBodyCellRenderContext context = CellContextUtilities.makeHeaderCellRenderContext(gridWidget,
+                                                                                                   ri,
+                                                                                                   ci,
+                                                                                                   rp,
+                                                                                                   0);
+
+        assertNotNull(context);
+        assertEquals(0.0,
+                     context.getAbsoluteCellX(),
+                     0.0);
+        assertEquals(0.0,
+                     context.getAbsoluteCellY(),
+                     0.0);
+        assertEquals(50.0,
+                     context.getCellWidth(),
+                     0.0);
+        assertEquals(HEADER_ROW_HEIGHT,
+                     context.getCellHeight(),
+                     0.0);
+    }
+
+    @Test
+    public void testMakeHeaderRenderContextDifferentColumnHeaderMetaDataRows_Column0_Row1() {
+        final List<GridColumn<?>> allColumns = setupHeadersWithDifferentColumnHeaderMetaDataRows();
+
+        doReturn(allColumns).when(ri).getAllColumns();
+        doReturn(allColumns.get(0)).when(ci).getColumn();
+        doReturn(0.0).when(ci).getOffsetX();
+        doReturn(0).when(ci).getUiColumnIndex();
+
+        final GridBodyCellRenderContext context = CellContextUtilities.makeHeaderCellRenderContext(gridWidget,
+                                                                                                   ri,
+                                                                                                   ci,
+                                                                                                   rp,
+                                                                                                   1);
+
+        assertNotNull(context);
+        assertEquals(0.0,
+                     context.getAbsoluteCellX(),
+                     0.0);
+        assertEquals(25.0,
+                     context.getAbsoluteCellY(),
+                     0.0);
+        assertEquals(50.0,
+                     context.getCellWidth(),
+                     0.0);
+        assertEquals(HEADER_ROW_HEIGHT,
+                     context.getCellHeight(),
+                     0.0);
+    }
+
+    @Test
+    public void testMakeHeaderRenderContextDifferentColumnHeaderMetaDataRows_Column1_Row0() {
+        final List<GridColumn<?>> allColumns = setupHeadersWithDifferentColumnHeaderMetaDataRows();
+
+        doReturn(allColumns).when(ri).getAllColumns();
+        doReturn(allColumns.get(1)).when(ci).getColumn();
+        doReturn(50.0).when(ci).getOffsetX();
+        doReturn(1).when(ci).getUiColumnIndex();
+
+        final GridBodyCellRenderContext context = CellContextUtilities.makeHeaderCellRenderContext(gridWidget,
+                                                                                                   ri,
+                                                                                                   ci,
+                                                                                                   rp,
+                                                                                                   0);
+
+        assertNotNull(context);
+        assertEquals(50.0,
+                     context.getAbsoluteCellX(),
+                     0.0);
+        assertEquals(0.0,
+                     context.getAbsoluteCellY(),
+                     0.0);
+        assertEquals(50.0,
+                     context.getCellWidth(),
+                     0.0);
+        assertEquals(HEADER_HEIGHT,
+                     context.getCellHeight(),
+                     0.0);
+    }
+
+    private List<GridColumn<?>> setupHeadersWithDifferentColumnHeaderMetaDataRows() {
+        final List<GridColumn<?>> allColumns = new ArrayList<>();
+        //Two Header rows
+        final GridColumn<?> uiColumn1 = mockGridColumn(50.0);
+        //Single Header row
+        final GridColumn<?> uiColumn2 = mockGridColumn(50.0,
+                                                       Collections.singletonList(mock(GridColumn.HeaderMetaData.class)));
+        allColumns.add(uiColumn1);
+        allColumns.add(uiColumn2);
+
+        return allColumns;
+    }
+
+    @Test
+    public void testMakeHeaderRenderContextLeadBlockWithExtraLeadNonBlockColumn() {
         final List<GridColumn<?>> allColumns = new ArrayList<>();
         final GridColumn<?> uiColumn1 = mockGridColumn(25.0);
         final GridColumn<?> uiColumn2 = mockGridColumn(50.0);
@@ -169,14 +350,14 @@ public class CellContextUtilitiesTest {
         doReturn(75.0).when(ci).getOffsetX();
         doReturn(2).when(ci).getUiColumnIndex();
 
-        final GridBodyCellRenderContext context = CellContextUtilities.makeRenderContext(gridWidget,
-                                                                                         ri,
-                                                                                         ci,
-                                                                                         rp,
-                                                                                         0);
+        final GridBodyCellRenderContext context = CellContextUtilities.makeHeaderCellRenderContext(gridWidget,
+                                                                                                   ri,
+                                                                                                   ci,
+                                                                                                   rp,
+                                                                                                   0);
 
         assertNotNull(context);
-        assertEquals(25.0,
+        assertEquals(75.0,
                      context.getAbsoluteCellX(),
                      0.0);
         assertEquals(125.0,
@@ -185,7 +366,7 @@ public class CellContextUtilitiesTest {
     }
 
     @Test
-    public void testMakeRenderContextTailBlock() {
+    public void testMakeHeaderRenderContextTailBlock() {
         final List<GridColumn<?>> allColumns = new ArrayList<>();
         final GridColumn<?> uiColumn1 = mockGridColumn(25.0);
         final GridColumn<?> uiColumn2 = mockGridColumn(50.0,
@@ -198,11 +379,11 @@ public class CellContextUtilitiesTest {
         doReturn(0.0).when(ci).getOffsetX();
         doReturn(0).when(ci).getUiColumnIndex();
 
-        final GridBodyCellRenderContext context = CellContextUtilities.makeRenderContext(gridWidget,
-                                                                                         ri,
-                                                                                         ci,
-                                                                                         rp,
-                                                                                         0);
+        final GridBodyCellRenderContext context = CellContextUtilities.makeHeaderCellRenderContext(gridWidget,
+                                                                                                   ri,
+                                                                                                   ci,
+                                                                                                   rp,
+                                                                                                   0);
 
         assertNotNull(context);
         assertEquals(0.0,
@@ -214,7 +395,7 @@ public class CellContextUtilitiesTest {
     }
 
     @Test
-    public void testMakeRenderContextTailBlockWithExtraTailNonBlockColumn() {
+    public void testMakeHeaderRenderContextTailBlockWithExtraTailNonBlockColumn() {
         final List<GridColumn<?>> allColumns = new ArrayList<>();
         final GridColumn<?> uiColumn1 = mockGridColumn(25.0);
         final GridColumn<?> uiColumn2 = mockGridColumn(50.0,
@@ -229,11 +410,11 @@ public class CellContextUtilitiesTest {
         doReturn(0.0).when(ci).getOffsetX();
         doReturn(0).when(ci).getUiColumnIndex();
 
-        final GridBodyCellRenderContext context = CellContextUtilities.makeRenderContext(gridWidget,
-                                                                                         ri,
-                                                                                         ci,
-                                                                                         rp,
-                                                                                         0);
+        final GridBodyCellRenderContext context = CellContextUtilities.makeHeaderCellRenderContext(gridWidget,
+                                                                                                   ri,
+                                                                                                   ci,
+                                                                                                   rp,
+                                                                                                   0);
 
         assertNotNull(context);
         assertEquals(0.0,
@@ -245,7 +426,7 @@ public class CellContextUtilitiesTest {
     }
 
     @Test
-    public void testMakeRenderContextNoBlock() {
+    public void testMakeHeaderRenderContextNoBlock() {
         final List<GridColumn<?>> allColumns = new ArrayList<>();
         final GridColumn<?> uiColumn = mockGridColumn(100.0);
         allColumns.add(uiColumn);
@@ -255,11 +436,11 @@ public class CellContextUtilitiesTest {
         doReturn(0.0).when(ci).getOffsetX();
         doReturn(0).when(ci).getUiColumnIndex();
 
-        final GridBodyCellRenderContext context = CellContextUtilities.makeRenderContext(gridWidget,
-                                                                                         ri,
-                                                                                         ci,
-                                                                                         rp,
-                                                                                         0);
+        final GridBodyCellRenderContext context = CellContextUtilities.makeHeaderCellRenderContext(gridWidget,
+                                                                                                   ri,
+                                                                                                   ci,
+                                                                                                   rp,
+                                                                                                   0);
 
         assertNotNull(context);
         assertEquals(0.0,

@@ -89,8 +89,8 @@ public class DefaultGridWidgetLinkedColumnMouseEventHandlerTest extends BaseGrid
         when(event.getX()).thenReturn(100);
         when(event.getY()).thenReturn(100);
 
-        when(gridWidget.getAbsoluteX()).thenReturn(100.0);
-        when(gridWidget.getAbsoluteY()).thenReturn(100.0);
+        final Point2D computedLocation = new Point2D(100.0, 100.0);
+        when(gridWidget.getComputedLocation()).thenReturn(computedLocation);
         when(uiColumn.isLinked()).thenReturn(true);
         when(uiColumn.getLink()).thenAnswer(invocation -> uiLinkedColumn);
 

@@ -126,8 +126,8 @@ public class GridWidgetDnDMouseDownHandler implements NodeMouseDownHandler {
 
         state.getEventColumnHighlight().setWidth(highlightWidth)
                 .setHeight(highlightHeight)
-                .setX(view.getAbsoluteX() + activeColumnX)
-                .setY(view.getAbsoluteY() + headerMinY);
+                .setX(view.getComputedLocation().getX() + activeColumnX)
+                .setY(view.getComputedLocation().getY() + headerMinY);
         layer.add(state.getEventColumnHighlight());
         layer.getLayer().batch();
     }
@@ -143,7 +143,7 @@ public class GridWidgetDnDMouseDownHandler implements NodeMouseDownHandler {
     private double getHighlightHeight(final Bounds bounds,
                                       final GridWidget view,
                                       final double headerMinY) {
-        final double highlightHeight = Math.min(bounds.getY() + bounds.getHeight() - view.getAbsoluteY(),
+        final double highlightHeight = Math.min(bounds.getY() + bounds.getHeight() - view.getComputedLocation().getY(),
                                                 view.getHeight()) - headerMinY;
         return highlightHeight;
     }
@@ -160,14 +160,14 @@ public class GridWidgetDnDMouseDownHandler implements NodeMouseDownHandler {
         final GridRow row = activeGridRows.get(0);
         final double rowOffsetY = rendererHelper.getRowOffset(row) + view.getRenderer().getHeaderHeight();
 
-        final double highlightWidth = Math.min(bounds.getX() + bounds.getWidth() - view.getAbsoluteX(),
+        final double highlightWidth = Math.min(bounds.getX() + bounds.getWidth() - view.getComputedLocation().getX(),
                                                view.getWidth());
         final double highlightHeight = row.getHeight();
 
         state.getEventColumnHighlight().setWidth(highlightWidth)
                 .setHeight(highlightHeight)
-                .setX(view.getAbsoluteX())
-                .setY(view.getAbsoluteY() + rowOffsetY);
+                .setX(view.getComputedLocation().getX())
+                .setY(view.getComputedLocation().getY() + rowOffsetY);
         layer.add(state.getEventColumnHighlight());
         layer.getLayer().batch();
     }

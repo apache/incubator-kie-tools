@@ -73,14 +73,14 @@ public class BaseGridWidgetKeyboardHandler implements KeyDownHandler {
             return;
         }
 
+        flushDOMElements(selectedGridWidget);
+
         final boolean redraw = operation.perform(selectedGridWidget,
                                                  event.isShiftKeyDown(),
                                                  event.isControlKeyDown());
 
         event.preventDefault();
         event.stopPropagation();
-
-        flushDOMElements(selectedGridWidget);
 
         if (redraw) {
             gridLayer.draw();

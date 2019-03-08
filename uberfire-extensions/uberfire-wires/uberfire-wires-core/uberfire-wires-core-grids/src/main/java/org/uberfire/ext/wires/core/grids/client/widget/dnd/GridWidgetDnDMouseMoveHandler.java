@@ -553,14 +553,14 @@ public class GridWidgetDnDMouseMoveHandler implements NodeMouseMoveHandler {
                                     destroyColumns(allGridColumns);
                                     activeGridModel.moveColumnsTo(candidateBlockEndColumnIndex,
                                                                   activeGridColumns);
-                                    state.getEventColumnHighlight().setX(activeGridWidget.getAbsoluteX() + rendererHelper.getColumnOffset(activeGridColumns.get(0)));
+                                    state.getEventColumnHighlight().setX(activeGridWidget.getComputedLocation().getX() + rendererHelper.getColumnOffset(activeGridColumns.get(0)));
                                     layer.batch();
                                     return;
                                 } else {
                                     destroyColumns(allGridColumns);
                                     activeGridModel.moveColumnsTo(candidateBlockStartColumnIndex,
                                                                   activeGridColumns);
-                                    state.getEventColumnHighlight().setX(activeGridWidget.getAbsoluteX() + rendererHelper.getColumnOffset(activeGridColumns.get(0)));
+                                    state.getEventColumnHighlight().setX(activeGridWidget.getComputedLocation().getX() + rendererHelper.getColumnOffset(activeGridColumns.get(0)));
                                     layer.batch();
                                     return;
                                 }
@@ -640,7 +640,7 @@ public class GridWidgetDnDMouseMoveHandler implements NodeMouseMoveHandler {
                                    activeGridRows);
 
         final double rowOffsetY = rendererHelper.getRowOffset(leadRow) + headerHeight;
-        state.getEventColumnHighlight().setY(activeGridWidget.getAbsoluteY() + rowOffsetY);
+        state.getEventColumnHighlight().setY(activeGridWidget.getComputedLocation().getY() + rowOffsetY);
         layer.batch();
     }
 

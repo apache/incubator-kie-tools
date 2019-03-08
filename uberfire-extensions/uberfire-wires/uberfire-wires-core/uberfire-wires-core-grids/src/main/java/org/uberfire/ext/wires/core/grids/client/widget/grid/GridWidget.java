@@ -100,6 +100,16 @@ public interface GridWidget extends IPrimitive<Group>,
     boolean isSelected();
 
     /**
+     * Show context menu of a cell at coordinates 'uiRowIndex' and 'uiColumnIndex'.
+     * If the provided Canvas coordinate does not resolve to a cell in the Grid no operation is performed.
+     * @param uiRowIndex Row index of cell to invoke context menu
+     * @param uiColumnIndex Column index of cell to invoke context menu
+     * @return true if menu was shown.
+     */
+    boolean showContextMenuForCell(final int uiRowIndex,
+                                   final int uiColumnIndex);
+
+    /**
      * Returns the {@link CellSelectionManager} associated with the {@link GridWidget}
      * @return
      */
@@ -129,20 +139,4 @@ public interface GridWidget extends IPrimitive<Group>,
     default boolean onDragHandle(final INodeXYEvent event) {
         return false;
     }
-
-    /**
-     * Returns the Grid's absolute X coordinate relative to the Layer on which it is placed.
-     * The absolute coordinate only differs to the relative {@link IPrimitive#getX()} method
-     * return value when a Grid is nested inside a {@link GroupOf}.
-     * @return The absolute X coordinate of the Grid.
-     */
-    double getAbsoluteX();
-
-    /**
-     * Returns the Grid's absolute Y coordinate relative to the Layer on which it is placed.
-     * The absolute coordinate only differs to the relative {@link IPrimitive#getY()} method
-     * return value when a Grid is nested inside a {@link GroupOf}.
-     * @return The absolute Y coordinate of the Grid.
-     */
-    double getAbsoluteY();
 }

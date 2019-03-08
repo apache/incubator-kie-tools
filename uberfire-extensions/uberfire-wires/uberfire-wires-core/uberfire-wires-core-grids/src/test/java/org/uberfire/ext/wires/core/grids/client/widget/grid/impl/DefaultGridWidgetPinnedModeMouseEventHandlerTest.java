@@ -17,6 +17,7 @@ package org.uberfire.ext.wires.core.grids.client.widget.grid.impl;
 
 import java.util.Optional;
 
+import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.google.gwt.user.client.Command;
 import org.junit.Before;
@@ -58,8 +59,8 @@ public class DefaultGridWidgetPinnedModeMouseEventHandlerTest extends BaseGridWi
         when(doubleClickEvent.getX()).thenReturn(100);
         when(doubleClickEvent.getY()).thenReturn(100);
 
-        when(gridWidget.getAbsoluteX()).thenReturn(100.0);
-        when(gridWidget.getAbsoluteY()).thenReturn(100.0);
+        final Point2D computedLocation = new Point2D(100.0, 100.0);
+        when(gridWidget.getComputedLocation()).thenReturn(computedLocation);
 
         handler.onNodeMouseEvent(gridWidget,
                                  relativeLocation,
@@ -90,8 +91,8 @@ public class DefaultGridWidgetPinnedModeMouseEventHandlerTest extends BaseGridWi
         when(doubleClickEvent.getX()).thenReturn(100);
         when(doubleClickEvent.getY()).thenReturn(100);
 
-        when(gridWidget.getAbsoluteX()).thenReturn(100.0);
-        when(gridWidget.getAbsoluteY()).thenReturn(100.0);
+        final Point2D computedLocation = new Point2D(100.0, 100.0);
+        when(gridWidget.getComputedLocation()).thenReturn(computedLocation);
 
         handler.onNodeMouseEvent(gridWidget,
                                  relativeLocation,

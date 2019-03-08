@@ -95,8 +95,8 @@ public class GridWidgetDnDMouseDownHandlerTest {
         when(element.getStyle()).thenReturn(style);
         when(gridWidget.getViewport()).thenReturn(viewport);
         when(gridWidget.getRendererHelper()).thenReturn(helper);
-        when(gridWidget.getLocation()).thenReturn(new Point2D(100,
-                                                              100));
+        when(gridWidget.getComputedLocation()).thenReturn(new Point2D(100,
+                                                                      100));
 
         final GridWidgetDnDHandlersState wrappedState = new GridWidgetDnDHandlersState();
         this.state = spy(wrappedState);

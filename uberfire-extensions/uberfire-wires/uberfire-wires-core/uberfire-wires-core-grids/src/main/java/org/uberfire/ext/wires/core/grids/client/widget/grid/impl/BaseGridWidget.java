@@ -32,9 +32,6 @@ import com.ait.lienzo.client.core.event.NodeMouseClickEvent;
 import com.ait.lienzo.client.core.event.NodeMouseClickHandler;
 import com.ait.lienzo.client.core.event.NodeMouseDoubleClickHandler;
 import com.ait.lienzo.client.core.shape.Group;
-import com.ait.lienzo.client.core.shape.GroupOf;
-import com.ait.lienzo.client.core.shape.Layer;
-import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
@@ -245,32 +242,6 @@ public class BaseGridWidget extends Group implements GridWidget {
         double height = renderer.getHeaderHeight();
         height = height + rendererHelper.getRowOffset(model.getRowCount());
         return height;
-    }
-
-    @Override
-    public double getAbsoluteX() {
-        double x = getX();
-        Node<?> parent = getParent();
-        while (!(parent == null || parent instanceof Layer)) {
-            if (parent instanceof GroupOf) {
-                x = x + ((GroupOf) parent).getX();
-            }
-            parent = parent.getParent();
-        }
-        return x;
-    }
-
-    @Override
-    public double getAbsoluteY() {
-        double y = getY();
-        Node<?> parent = getParent();
-        while (!(parent == null || parent instanceof Layer)) {
-            if (parent instanceof GroupOf) {
-                y = y + ((GroupOf) parent).getY();
-            }
-            parent = parent.getParent();
-        }
-        return y;
     }
 
     @Override
@@ -681,10 +652,10 @@ public class BaseGridWidget extends Group implements GridWidget {
         final double floatingX = floatingBlockInformation.getX();
         final double floatingWidth = floatingBlockInformation.getWidth();
 
-        final double clipMinY = getAbsoluteY() + (header == null ? 0.0 : header.getY() + getRenderer().getHeaderHeight());
-        final double clipMinX = getAbsoluteX() + floatingX + floatingWidth;
-        final GridBodyRenderContext context = new GridBodyRenderContext(getAbsoluteX(),
-                                                                        getAbsoluteY(),
+        final double clipMinY = getComputedLocation().getY() + (header == null ? 0.0 : header.getY() + getRenderer().getHeaderHeight());
+        final double clipMinX = getComputedLocation().getX() + floatingX + floatingWidth;
+        final GridBodyRenderContext context = new GridBodyRenderContext(getComputedLocation().getX(),
+                                                                        getComputedLocation().getY(),
                                                                         absoluteColumnOffsetX,
                                                                         clipMinY,
                                                                         clipMinX,
@@ -759,10 +730,10 @@ public class BaseGridWidget extends Group implements GridWidget {
         final double floatingX = floatingBlockInformation.getX();
         final double floatingWidth = floatingBlockInformation.getWidth();
 
-        final double clipMinY = getAbsoluteY() + (header == null ? 0.0 : header.getY() + getRenderer().getHeaderHeight());
-        final double clipMinX = getAbsoluteX() + floatingX + floatingWidth;
-        final GridBodyRenderContext context = new GridBodyRenderContext(getAbsoluteX(),
-                                                                        getAbsoluteY(),
+        final double clipMinY = getComputedLocation().getY() + (header == null ? 0.0 : header.getY() + getRenderer().getHeaderHeight());
+        final double clipMinX = getComputedLocation().getX() + floatingX + floatingWidth;
+        final GridBodyRenderContext context = new GridBodyRenderContext(getComputedLocation().getX(),
+                                                                        getComputedLocation().getY(),
                                                                         absoluteColumnOffsetX,
                                                                         clipMinY,
                                                                         clipMinX,
@@ -853,5 +824,12 @@ public class BaseGridWidget extends Group implements GridWidget {
     @Override
     public boolean startEditingCell(final Point2D rp) {
         return cellSelectionManager.startEditingCell(rp);
+    }
+
+    @Override
+    public boolean showContextMenuForCell(final int uiRowIndex,
+                                          final int uiColumnIndex) {
+        // no operation by default
+        return false;
     }
 }
