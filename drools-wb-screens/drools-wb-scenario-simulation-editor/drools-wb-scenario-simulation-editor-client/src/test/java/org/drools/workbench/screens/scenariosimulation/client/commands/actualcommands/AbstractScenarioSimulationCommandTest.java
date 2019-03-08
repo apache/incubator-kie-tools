@@ -40,11 +40,9 @@ public abstract class AbstractScenarioSimulationCommandTest extends AbstractScen
 
     protected AbstractScenarioSimulationCommand command;
 
-
     @Before
     public void setup() {
         super.setup();
-
     }
 
     @Test
@@ -114,7 +112,7 @@ public abstract class AbstractScenarioSimulationCommandTest extends AbstractScen
             command.commonExecution(scenarioSimulationContextLocal);
             verify(scenarioGridPanelMock, times(1)).onResize();
             verify(scenarioGridPanelMock, times(1)).select();
+            verify(scenarioGridPanelMock, times(1)).setFocus(eq(true));
         }
     }
-
 }

@@ -33,10 +33,13 @@ public class ScenarioSimulationKeyboardEditHandler extends KeyboardOperationEdit
     @Override
     public boolean isExecutable(final GridWidget gridWidget) {
         final GridData model = gridWidget.getModel();
-        if (model.getSelectedHeaderCells().size() > 0 && model.getSelectedCells().size() > 0) {
-            return false;
+        if (model.getSelectedHeaderCells().size() == 1 && model.getSelectedCells().size() == 0) {
+            return true;
         }
-        return model.getSelectedHeaderCells().size() == 1 || model.getSelectedCells().size() == 1;
+        if (model.getSelectedHeaderCells().size() == 0 && model.getSelectedCells().size() == 1) {
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -50,12 +53,12 @@ public class ScenarioSimulationKeyboardEditHandler extends KeyboardOperationEdit
         boolean isHeader = true;
         if (scenarioGridModel.getSelectedHeaderCells().size() > 0) {
             selectedCell = scenarioGridModel.getSelectedHeaderCells().get(0);
-        } else if (scenarioGridModel.getSelectedCells().size() >0) {
+        } else if (scenarioGridModel.getSelectedCells().size() > 0) {
             selectedCell = scenarioGridModel.getSelectedCellsOrigin();
             isHeader = false;
         }
         if (selectedCell == null) {
-            return  false;
+            return false;
         }
         final int uiRowIndex = selectedCell.getRowIndex();
         final int uiColumnIndex = ColumnIndexUtilities.findUiColumnIndex(scenarioGridModel.getColumns(),

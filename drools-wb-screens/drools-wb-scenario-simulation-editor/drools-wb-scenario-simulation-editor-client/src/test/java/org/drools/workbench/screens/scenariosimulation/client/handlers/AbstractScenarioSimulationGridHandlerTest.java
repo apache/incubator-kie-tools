@@ -82,6 +82,7 @@ public abstract class AbstractScenarioSimulationGridHandlerTest extends Abstract
         when(scenarioGridMock.getRenderer()).thenReturn(scenarioGridRendererMock);
         when(scenarioGridMock.getRendererHelper()).thenReturn(scenarioGridRendererHelperMock);
         when(scenarioGridMock.getViewport()).thenReturn(viewportMock);
+        when(scenarioGridMock.getComputedLocation()).thenReturn(new Point2D(0.0, 0.0));
         when(scenarioGridRendererMock.getHeaderHeight()).thenReturn(HEADER_HEIGHT);
         when(scenarioGridRendererMock.getHeaderRowHeight()).thenReturn(HEADER_ROW_HEIGHT);
         when(scenarioGridRendererHelperMock.getRenderingInformation()).thenReturn(scenarioRenderingInformationMock);

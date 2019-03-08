@@ -38,9 +38,6 @@ public class ScenarioSimulationViewProducerTest extends AbstractProducerTest {
     private ScenarioGridPanelProducer scenarioGridPanelProducerMock;
 
     @Mock
-    private ScenarioSimulationGridPanelClickHandlerProducer scenarioSimulationGridPanelClickHandlerProducerMock;
-
-    @Mock
     private ScenarioSimulationGridPanelClickHandler scenarioSimulationGridPanelClickHandlerMock;
 
     private ScenarioSimulationViewProducer scenarioSimulationViewProducer;
@@ -49,12 +46,11 @@ public class ScenarioSimulationViewProducerTest extends AbstractProducerTest {
     public void setUp() {
         super.setup();
         when(scenarioGridPanelProducerMock.getScenarioGridPanel()).thenReturn(scenarioGridPanelMock);
-        when(scenarioSimulationGridPanelClickHandlerProducerMock.getScenarioSimulationGridPanelClickHandler()).thenReturn(scenarioSimulationGridPanelClickHandlerMock);
+        when(scenarioGridPanelProducerMock.getScenarioSimulationGridPanelClickHandler()).thenReturn(scenarioSimulationGridPanelClickHandlerMock);
         scenarioSimulationViewProducer = spy(new ScenarioSimulationViewProducer() {
             {
                 this.scenarioSimulationView = scenarioSimulationViewMock;
                 this.scenarioGridPanelProducer = scenarioGridPanelProducerMock;
-                this.scenarioSimulationGridPanelClickHandlerProducer = scenarioSimulationGridPanelClickHandlerProducerMock;
             }
         });
     }

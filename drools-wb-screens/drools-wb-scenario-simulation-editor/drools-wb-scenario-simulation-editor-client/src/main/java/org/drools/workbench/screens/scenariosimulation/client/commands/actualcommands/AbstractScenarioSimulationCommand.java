@@ -181,6 +181,7 @@ public abstract class AbstractScenarioSimulationCommand extends AbstractCommand<
     protected CommandResult<ScenarioSimulationViolation> commonExecution(ScenarioSimulationContext context) {
         context.getScenarioGridPanel().onResize();
         context.getScenarioGridPanel().select();
+        context.getScenarioGridPanel().setFocus(true);
         return CommandResultBuilder.SUCCESS;
     }
 }

@@ -23,6 +23,8 @@ import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioS
 import org.drools.workbench.screens.scenariosimulation.client.factories.CollectionEditorSingletonDOMElementFactory;
 import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioCellTextAreaSingletonDOMElementFactory;
 import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioHeaderTextBoxSingletonDOMElementFactory;
+import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioSimulationGridPanelClickHandler;
+import org.drools.workbench.screens.scenariosimulation.client.menu.ScenarioContextMenuRegistry;
 import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
 import org.drools.workbench.screens.scenariosimulation.client.renderers.ScenarioGridRenderer;
 import org.drools.workbench.screens.scenariosimulation.client.utils.ViewsProvider;
@@ -37,6 +39,9 @@ import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGr
 public class ScenarioGridPanelProducer {
 
     @Inject
+    protected ScenarioContextMenuRegistry scenarioContextMenuRegistry;
+
+    @Inject
     protected ScenarioGridLayer scenarioGridLayer;
 
     @Inject
@@ -45,6 +50,9 @@ public class ScenarioGridPanelProducer {
     @Inject
     protected ViewsProvider viewsProvider;
 
+    @Inject
+    protected ScenarioSimulationGridPanelClickHandler scenarioSimulationGridPanelClickHandler;
+
     protected ScenarioSimulationContext scenarioSimulationContext;
 
     @PostConstruct
@@ -52,7 +60,8 @@ public class ScenarioGridPanelProducer {
         ScenarioGridModel scenarioGridModel = new ScenarioGridModel(false);
         final ScenarioGrid scenarioGrid = new ScenarioGrid(scenarioGridModel,
                                                            scenarioGridLayer,
-                                                           new ScenarioGridRenderer(false));
+                                                           new ScenarioGridRenderer(false),
+                                                           scenarioContextMenuRegistry);
         scenarioGridLayer.addScenarioGrid(scenarioGrid);
         scenarioGridPanel.add(scenarioGridLayer);
         scenarioSimulationContext = new ScenarioSimulationContext(scenarioGridPanel);
@@ -67,7 +76,10 @@ public class ScenarioGridPanelProducer {
         scenarioGridModel.setScenarioHeaderTextBoxSingletonDOMElementFactory(new ScenarioHeaderTextBoxSingletonDOMElementFactory(scenarioGridPanel,
                                                                                                                                  scenarioGridLayer,
                                                                                                                                  scenarioGridLayer.getScenarioGrid()));
+    }
 
+    public ScenarioSimulationGridPanelClickHandler getScenarioSimulationGridPanelClickHandler() {
+        return scenarioSimulationGridPanelClickHandler;
     }
 
     public ScenarioGridPanel getScenarioGridPanel() {
@@ -77,4 +89,9 @@ public class ScenarioGridPanelProducer {
     public ScenarioSimulationContext getScenarioSimulationContext() {
         return scenarioSimulationContext;
     }
+
+    public ScenarioContextMenuRegistry getScenarioContextMenuRegistry() {
+        return scenarioContextMenuRegistry;
+    }
 }
+

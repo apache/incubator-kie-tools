@@ -95,11 +95,11 @@ public class CommonEditHandler {
         final BaseGridRendererHelper.RenderingInformation ri = rendererHelper.getRenderingInformation();
         final double columnXCoordinate = rendererHelper.getColumnOffset(column) + column.getWidth() / 2;
         final BaseGridRendererHelper.ColumnInformation ci = rendererHelper.getColumnInformation(columnXCoordinate);
-        final GridBodyCellEditContext context = CellContextUtilities.makeRenderContext(scenarioGrid,
-                                                                                       ri,
-                                                                                       ci,
-                                                                                       null,
-                                                                                       uiHeaderRowIndex);
+        final GridBodyCellEditContext context = CellContextUtilities.makeHeaderCellRenderContext(scenarioGrid,
+                                                                                                 ri,
+                                                                                                 ci,
+                                                                                                 null,
+                                                                                                 uiHeaderRowIndex);
         clickedScenarioHeaderMetadata.edit(context);
         return true;
     }

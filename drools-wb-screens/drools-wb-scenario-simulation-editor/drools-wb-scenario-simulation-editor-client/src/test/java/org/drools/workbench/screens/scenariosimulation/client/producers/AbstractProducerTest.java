@@ -24,6 +24,7 @@ import com.google.gwt.event.shared.EventBus;
 import org.drools.workbench.screens.scenariosimulation.client.AbstractScenarioSimulationTest;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationEventHandler;
 import org.drools.workbench.screens.scenariosimulation.client.editor.ScenarioSimulationView;
+import org.drools.workbench.screens.scenariosimulation.client.menu.ScenarioContextMenuRegistry;
 import org.drools.workbench.screens.scenariosimulation.client.popup.ConfirmPopupPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.popup.DeletePopupPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.popup.PreserveDeletePopupPresenter;
@@ -50,7 +51,8 @@ public abstract class AbstractProducerTest extends AbstractScenarioSimulationTes
     protected ScenarioSimulationEventHandler scenarioSimulationEventHandlerMock;
     @Mock
     protected ScenarioSimulationView scenarioSimulationViewMock;
-
+    @Mock
+    protected ScenarioContextMenuRegistry scenarioContextMenuRegistryMock;
 
     protected Event<NotificationEvent> notificationEventNew;
 
@@ -77,5 +79,6 @@ public abstract class AbstractProducerTest extends AbstractScenarioSimulationTes
         when(scenarioSimulationViewMock.getScenarioGridPanel()).thenReturn(scenarioGridPanelMock);
         when(scenarioSimulationViewProducerMock.getScenarioSimulationView(isA(EventBus.class))).thenReturn(scenarioSimulationViewMock);
         when(scenarioSimulationViewProducerMock.getScenarioSimulationContext()).thenReturn(scenarioSimulationContextLocal);
+        when(scenarioSimulationViewProducerMock.getScenarioContextMenuRegistry()).thenReturn(scenarioContextMenuRegistryMock);
     }
 }

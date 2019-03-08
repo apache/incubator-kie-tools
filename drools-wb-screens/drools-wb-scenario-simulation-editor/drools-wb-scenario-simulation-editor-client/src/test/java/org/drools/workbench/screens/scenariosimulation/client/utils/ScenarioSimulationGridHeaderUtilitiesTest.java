@@ -71,7 +71,7 @@ public class ScenarioSimulationGridHeaderUtilitiesTest extends AbstractScenarioS
 
     @Mock
     private BaseGridRendererHelper.RenderingBlockInformation floatingBlockInformation;
-    
+
     @Mock
     private ScenarioHeaderMetaData clickedScenarioHeaderMetadataMock;
 
@@ -119,11 +119,11 @@ public class ScenarioSimulationGridHeaderUtilitiesTest extends AbstractScenarioS
         doReturn(0.0).when(ci).getOffsetX();
         doReturn(0).when(ci).getUiColumnIndex();
 
-        final GridBodyCellRenderContext context = CellContextUtilities.makeRenderContext(scenarioGridMock,
-                                                                                         ri,
-                                                                                         ci,
-                                                                                         rp,
-                                                                                         0);
+        final GridBodyCellRenderContext context = CellContextUtilities.makeHeaderCellRenderContext(scenarioGridMock,
+                                                                                                   ri,
+                                                                                                   ci,
+                                                                                                   rp,
+                                                                                                   0);
 
         assertNotNull(context);
         assertEquals(0.0,

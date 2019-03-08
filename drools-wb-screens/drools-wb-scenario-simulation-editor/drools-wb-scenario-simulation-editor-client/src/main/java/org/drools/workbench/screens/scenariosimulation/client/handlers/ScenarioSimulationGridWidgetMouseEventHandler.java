@@ -78,16 +78,9 @@ public class ScenarioSimulationGridWidgetMouseEventHandler extends DefaultGridWi
         return false;
     }
 
-
-
     // Indirection add for test
     protected boolean editSupportedLocal(GridCellEditAction gridCellEditAction, final AbstractNodeMouseEvent event) {
         return Objects.equals(gridCellEditAction, GridCellEditAction.getSupportedEditAction(event));
-    }
-
-
-    protected GridCellEditAction getSupportedEditActionLocal(final AbstractNodeMouseEvent event) {
-        return GridCellEditAction.getSupportedEditAction(event);
     }
 
     protected boolean startEditLocal(ScenarioGrid scenarioGrid, int uiHeaderColumnIndex, ScenarioGridColumn scenarioGridColumn, int uiHeaderRowIndex, boolean isHeader) {

@@ -449,9 +449,7 @@ public class GuidedDecisionTableModellerContextMenuSupportTest {
 
         when(dtView.getViewport()).thenReturn(viewport);
         when(dtView.getLayer()).thenReturn(layer);
-        when(dtView.getLocation()).thenReturn(new Point2D(x, y));
-        when(dtView.getAbsoluteX()).thenReturn(x);
-        when(dtView.getAbsoluteY()).thenReturn(y);
+        when(dtView.getComputedLocation()).thenReturn(new Point2D(x, y));
         when(dtView.getWidth()).thenReturn(50.0);
         when(dtView.getHeight()).thenReturn(52.0);
         when(dtView.getModel()).thenReturn(uiModel);

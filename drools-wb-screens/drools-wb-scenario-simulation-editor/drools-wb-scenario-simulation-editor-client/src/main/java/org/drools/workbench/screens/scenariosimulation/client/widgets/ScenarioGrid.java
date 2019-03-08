@@ -24,6 +24,7 @@ import com.google.gwt.event.shared.EventBus;
 import org.drools.workbench.screens.scenariosimulation.client.events.DisableRightPanelEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.EnableRightPanelEvent;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioSimulationGridWidgetMouseEventHandler;
+import org.drools.workbench.screens.scenariosimulation.client.menu.ScenarioContextMenuRegistry;
 import org.drools.workbench.screens.scenariosimulation.client.metadata.ScenarioHeaderMetaData;
 import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
 import org.drools.workbench.screens.scenariosimulation.client.renderers.ScenarioGridRenderer;
@@ -53,10 +54,15 @@ import static org.drools.workbench.screens.scenariosimulation.client.utils.Scena
 
 public class ScenarioGrid extends BaseGridWidget {
 
+    private ScenarioContextMenuRegistry scenarioContextMenuRegistry;
     private EventBus eventBus;
 
-    public ScenarioGrid(ScenarioGridModel model, ScenarioGridLayer scenarioGridLayer, ScenarioGridRenderer renderer) {
+    public ScenarioGrid(ScenarioGridModel model,
+                        ScenarioGridLayer scenarioGridLayer,
+                        ScenarioGridRenderer renderer,
+                        ScenarioContextMenuRegistry scenarioContextMenuRegistry) {
         super(model, scenarioGridLayer, scenarioGridLayer, renderer);
+        this.scenarioContextMenuRegistry = scenarioContextMenuRegistry;
         setDraggable(false);
         setEventPropagationMode(EventPropagationMode.NO_ANCESTORS);
     }
@@ -75,6 +81,7 @@ public class ScenarioGrid extends BaseGridWidget {
     public void setEventBus(EventBus eventBus) {
         this.eventBus = eventBus;
         ((ScenarioGridModel) model).setEventBus(eventBus);
+        scenarioContextMenuRegistry.setEventBus(eventBus);
     }
 
     @Override
@@ -240,6 +247,7 @@ public class ScenarioGrid extends BaseGridWidget {
         final boolean selectionChanged = super.adjustSelection(direction, isShiftKeyDown);
 
         signalRightPanelAboutSelectedHeaderCells();
+        scenarioContextMenuRegistry.hideMenus();
 
         return selectionChanged;
     }

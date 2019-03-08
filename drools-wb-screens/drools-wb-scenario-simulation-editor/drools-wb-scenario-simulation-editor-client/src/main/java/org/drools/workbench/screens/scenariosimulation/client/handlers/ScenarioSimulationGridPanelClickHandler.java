@@ -15,8 +15,6 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.handlers;
 
-import java.util.HashSet;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.enterprise.context.Dependent;
@@ -27,18 +25,10 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.ContextMenuEvent;
 import com.google.gwt.event.dom.client.ContextMenuHandler;
 import com.google.gwt.event.shared.EventBus;
-import org.drools.workbench.screens.scenariosimulation.client.editor.menu.AbstractHeaderMenuPresenter;
-import org.drools.workbench.screens.scenariosimulation.client.editor.menu.BaseMenu;
-import org.drools.workbench.screens.scenariosimulation.client.editor.menu.ExpectedContextMenu;
-import org.drools.workbench.screens.scenariosimulation.client.editor.menu.GivenContextMenu;
-import org.drools.workbench.screens.scenariosimulation.client.editor.menu.GridContextMenu;
-import org.drools.workbench.screens.scenariosimulation.client.editor.menu.HeaderExpectedContextMenu;
-import org.drools.workbench.screens.scenariosimulation.client.editor.menu.HeaderGivenContextMenu;
-import org.drools.workbench.screens.scenariosimulation.client.editor.menu.OtherContextMenu;
-import org.drools.workbench.screens.scenariosimulation.client.editor.menu.UnmodifiableColumnGridContextMenu;
 import org.drools.workbench.screens.scenariosimulation.client.events.DisableRightPanelEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.EnableRightPanelEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.ReloadRightPanelEvent;
+import org.drools.workbench.screens.scenariosimulation.client.menu.ScenarioContextMenuRegistry;
 import org.drools.workbench.screens.scenariosimulation.client.metadata.ScenarioHeaderMetaData;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGrid;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
@@ -57,14 +47,7 @@ public class ScenarioSimulationGridPanelClickHandler implements ClickHandler,
                                                                 ContextMenuHandler {
 
     protected ScenarioGrid scenarioGrid;
-    protected OtherContextMenu otherContextMenu;
-    protected HeaderGivenContextMenu headerGivenContextMenu;
-    protected HeaderExpectedContextMenu headerExpectedContextMenu;
-    protected GivenContextMenu givenContextMenu;
-    protected ExpectedContextMenu expectedContextMenu;
-    protected GridContextMenu gridContextMenu;
-    protected UnmodifiableColumnGridContextMenu unmodifiableColumnGridContextMenu;
-    protected Set<AbstractHeaderMenuPresenter> managedMenus = new HashSet<>();
+    protected ScenarioContextMenuRegistry scenarioContextMenuRegistry;
     protected EventBus eventBus;
     protected AtomicInteger clickReceived = new AtomicInteger(0);
     protected BaseGridRendererHelper rendererHelper;
@@ -77,39 +60,8 @@ public class ScenarioSimulationGridPanelClickHandler implements ClickHandler,
         this.rendererHelper = scenarioGrid.getRendererHelper();
     }
 
-    public void setOtherContextMenu(OtherContextMenu otherContextMenu) {
-        this.otherContextMenu = otherContextMenu;
-        managedMenus.add(otherContextMenu);
-    }
-
-    public void setHeaderGivenContextMenu(HeaderGivenContextMenu headerGivenContextMenu) {
-        this.headerGivenContextMenu = headerGivenContextMenu;
-        managedMenus.add(headerGivenContextMenu);
-    }
-
-    public void setHeaderExpectedContextMenu(HeaderExpectedContextMenu headerExpectedContextMenu) {
-        this.headerExpectedContextMenu = headerExpectedContextMenu;
-        managedMenus.add(headerExpectedContextMenu);
-    }
-
-    public void setGivenContextMenu(GivenContextMenu givenContextMenu) {
-        this.givenContextMenu = givenContextMenu;
-        managedMenus.add(givenContextMenu);
-    }
-
-    public void setExpectedContextMenu(ExpectedContextMenu expectedContextMenu) {
-        this.expectedContextMenu = expectedContextMenu;
-        managedMenus.add(expectedContextMenu);
-    }
-
-    public void setGridContextMenu(GridContextMenu gridContextMenu) {
-        this.gridContextMenu = gridContextMenu;
-        managedMenus.add(gridContextMenu);
-    }
-
-    public void setUnmodifiableColumnGridContextMenu(UnmodifiableColumnGridContextMenu unmodifiableColumnGridContextMenu) {
-        this.unmodifiableColumnGridContextMenu = unmodifiableColumnGridContextMenu;
-        managedMenus.add(unmodifiableColumnGridContextMenu);
+    public void setScenarioContextMenuRegistry(ScenarioContextMenuRegistry scenarioContextMenuRegistry) {
+        this.scenarioContextMenuRegistry = scenarioContextMenuRegistry;
     }
 
     /**
@@ -118,7 +70,7 @@ public class ScenarioSimulationGridPanelClickHandler implements ClickHandler,
      */
     public void setEventBus(EventBus eventBus) {
         this.eventBus = eventBus;
-        managedMenus.forEach(menu -> menu.setEventBus(eventBus));
+        this.scenarioContextMenuRegistry.setEventBus(eventBus);
     }
 
     @Override
@@ -126,7 +78,7 @@ public class ScenarioSimulationGridPanelClickHandler implements ClickHandler,
         clickReceived.getAndIncrement();
         final int canvasX = getRelativeXOfEvent(event);
         final int canvasY = getRelativeYOfEvent(event);
-        hideMenus();
+        scenarioContextMenuRegistry.hideMenus();
         scenarioGrid.clearSelections();
         if (!manageLeftClick(canvasX, canvasY)) { // It was not a grid click
             eventBus.fireEvent(new DisableRightPanelEvent());
@@ -136,123 +88,15 @@ public class ScenarioSimulationGridPanelClickHandler implements ClickHandler,
     @Override
     @SuppressWarnings("unchecked")
     public void onContextMenu(final ContextMenuEvent event) {
-        hideMenus();
-        if (manageRightClick(event)) {
+        scenarioContextMenuRegistry.hideMenus();
+        if (scenarioContextMenuRegistry.manageRightClick(scenarioGrid, event)) {
             event.preventDefault();
             event.stopPropagation();
         }
     }
 
     public void hideMenus() {
-        managedMenus.forEach(BaseMenu::hide);
-    }
-
-    protected boolean manageRightClick(final ContextMenuEvent event) {
-        final int canvasX = getRelativeXOfEvent(event);
-        final int canvasY = getRelativeYOfEvent(event);
-        final Point2D gridClickPoint = convertDOMToGridCoordinate(scenarioGrid,
-                                                                  new Point2D(canvasX,
-                                                                              canvasY));
-        final Integer uiColumnIndex = getUiColumnIndex(scenarioGrid,
-                                                       gridClickPoint.getX());
-        if (uiColumnIndex == null) {
-            return false;
-        }
-        if (!manageHeaderRightClick(scenarioGrid,
-                                    event.getNativeEvent().getClientX(),
-                                    event.getNativeEvent().getClientY(),
-                                    gridClickPoint,
-                                    uiColumnIndex)) {
-            return manageBodyRightClick(scenarioGrid,
-                                        event.getNativeEvent().getClientX(),
-                                        event.getNativeEvent().getClientY(),
-                                        gridClickPoint.getY(),
-                                        uiColumnIndex);
-        } else {
-            return true;
-        }
-    }
-
-    /**
-     * This method check if the click happened on an <b>header</b> cell. If it is so, manage it and returns <code>true</code>,
-     * otherwise returns <code>false</code>
-     * @param scenarioGrid
-     * @param left
-     * @param top
-     * @param clickPoint - coordinates relative to the grid top left corner
-     * @param uiColumnIndex
-     * @return
-     */
-    protected boolean manageHeaderRightClick(ScenarioGrid scenarioGrid, int left, int top, Point2D clickPoint, Integer uiColumnIndex) {
-        ScenarioHeaderMetaData columnMetadata = getColumnScenarioHeaderMetaDataLocal(clickPoint);
-        if (columnMetadata == null) {
-            return false;
-        }
-        //Get row index
-        final Integer uiHeaderRowIndex = getUiHeaderRowIndexLocal(clickPoint);
-        if (uiHeaderRowIndex == null) {
-            return false;
-        }
-        String group = columnMetadata.getColumnGroup();
-        if (group.contains("-")) {
-            group = group.substring(0, group.indexOf("-"));
-        }
-        switch (group) {
-            case "":
-                switch (columnMetadata.getTitle()) {
-                    case "GIVEN":
-                        headerGivenContextMenu.show(left, top);
-                        break;
-                    case "EXPECT":
-                        headerExpectedContextMenu.show(left, top);
-                        break;
-                    default:
-                        otherContextMenu.show(left, top);
-                }
-                break;
-            case "GIVEN":
-                givenContextMenu.show(left, top, uiColumnIndex, group, columnMetadata.isPropertyHeader());
-                break;
-            case "EXPECT":
-                expectedContextMenu.show(left, top, uiColumnIndex, group, columnMetadata.isPropertyHeader());
-                break;
-            default:
-                otherContextMenu.show(left, top);
-        }
-        scenarioGrid.setSelectedColumnAndHeader(uiHeaderRowIndex, uiColumnIndex);
-        return true;
-    }
-
-    /**
-     * This method check if the click happened on an <b>body</b> cell. If it is so, manage it and returns <code>true</code>,
-     * otherwise returns <code>false</code>
-     * @param scenarioGrid
-     * @param left
-     * @param top
-     * @param gridY
-     * @param uiColumnIndex
-     * @return
-     */
-    protected boolean manageBodyRightClick(ScenarioGrid scenarioGrid, int left, int top, double gridY, Integer uiColumnIndex) {
-        scenarioGrid.deselect();
-        final Integer uiRowIndex = getUiRowIndexLocal(gridY);
-        if (uiRowIndex == null) {
-            return false;
-        }
-        ScenarioGridColumn scenarioGridColumn = (ScenarioGridColumn) scenarioGrid.getModel().getColumns().get(uiColumnIndex);
-        if (scenarioGridColumn == null) {
-            return false;
-        }
-        String group = scenarioGridColumn.getInformationHeaderMetaData().getColumnGroup();
-        switch (group) {
-            case "GIVEN":
-            case "EXPECT":
-                gridContextMenu.show(left, top, uiColumnIndex, uiRowIndex, group, true);
-                break;
-            default:
-                unmodifiableColumnGridContextMenu.show(left, top, uiRowIndex);
-        }
-        return true;
+        scenarioContextMenuRegistry.hideMenus();
     }
 
     /**

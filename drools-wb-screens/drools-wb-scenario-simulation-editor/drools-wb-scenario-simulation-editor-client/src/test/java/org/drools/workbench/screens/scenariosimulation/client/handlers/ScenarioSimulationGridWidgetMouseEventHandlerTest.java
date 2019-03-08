@@ -102,6 +102,7 @@ public class ScenarioSimulationGridWidgetMouseEventHandlerTest extends AbstractS
         when(columnInformation.getColumn()).thenReturn((GridColumn) gridColumnMock);
         when(renderingInformation.getBodyBlockInformation()).thenReturn(renderingBlockInformation);
         when(renderingInformation.getFloatingBlockInformation()).thenReturn(renderingBlockInformation);
+        when(renderingInformation.getAllColumns()).thenReturn(columnsMock);
         when(informationHeaderMetaDataMock.getSupportedEditAction()).thenReturn(GridCellEditAction.SINGLE_CLICK);
         this.handler = spy(new ScenarioSimulationGridWidgetMouseEventHandler());
     }
