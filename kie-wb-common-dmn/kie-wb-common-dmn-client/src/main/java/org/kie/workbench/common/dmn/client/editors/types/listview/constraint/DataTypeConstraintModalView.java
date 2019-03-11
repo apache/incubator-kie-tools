@@ -32,6 +32,7 @@ import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType;
+import org.kie.workbench.common.dmn.client.editors.common.RemoveHelper;
 import org.uberfire.client.views.pfly.selectpicker.JQuery;
 import org.uberfire.client.views.pfly.selectpicker.JQuerySelectPicker;
 import org.uberfire.client.views.pfly.selectpicker.JQuerySelectPickerEvent;
@@ -177,14 +178,14 @@ public class DataTypeConstraintModalView implements DataTypeConstraintModal.View
 
     @Override
     public void setupEmptyContainer() {
-        componentContainer.innerHTML = "";
+        RemoveHelper.removeChildren(componentContainer);
         componentContainer.appendChild(selectConstraint);
     }
 
     @Override
     public void loadComponent(final ConstraintType constraintType) {
         presenter.setupComponent(constraintType);
-        componentContainer.innerHTML = "";
+        RemoveHelper.removeChildren(componentContainer);
         componentContainer.appendChild(presenter.getCurrentComponent().getElement());
     }
 

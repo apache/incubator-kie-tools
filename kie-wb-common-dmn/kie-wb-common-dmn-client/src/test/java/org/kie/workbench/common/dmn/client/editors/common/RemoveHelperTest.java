@@ -14,50 +14,34 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.editors.included;
+package org.kie.workbench.common.dmn.client.editors.common;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import elemental2.dom.Element;
-import elemental2.dom.HTMLDivElement;
-import elemental2.dom.HTMLElement;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class IncludedModelsPageViewTest {
-
-    @Mock
-    private HTMLDivElement grid;
-
-    private IncludedModelsPageView view;
-
-    @Before
-    public void setup() {
-        view = new IncludedModelsPageView(grid);
-    }
+public class RemoveHelperTest {
 
     @Test
-    public void testSetGrid() {
+    public void testRemoveChildren() {
 
-        final HTMLElement gridHTMLElement = mock(HTMLElement.class);
-        final Element currentElement = mock(Element.class);
+        final Element container = mock(Element.class);
+        final Element child = mock(Element.class);
+        container.firstChild = child;
 
-        grid.firstChild = currentElement;
-
-        when(grid.removeChild(currentElement)).then(a -> {
-            grid.firstChild = null;
-            return currentElement;
+        when(container.removeChild(child)).then(a -> {
+            container.firstChild = null;
+            return child;
         });
 
-        view.setGrid(gridHTMLElement);
+        RemoveHelper.removeChildren(container);
 
-        verify(grid).removeChild(currentElement);
-        verify(grid).appendChild(gridHTMLElement);
+        verify(container).removeChild(child);
     }
 }

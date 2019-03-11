@@ -22,6 +22,7 @@ import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.kie.workbench.common.dmn.client.editors.common.RemoveHelper;
 
 @Templated
 public class IncludedModelsPageView implements IncludedModelsPagePresenter.View {
@@ -43,7 +44,7 @@ public class IncludedModelsPageView implements IncludedModelsPagePresenter.View 
 
     @Override
     public void setGrid(final HTMLElement grid) {
-        this.grid.innerHTML = "";
+        RemoveHelper.removeChildren(this.grid);
         this.grid.appendChild(grid);
     }
 }

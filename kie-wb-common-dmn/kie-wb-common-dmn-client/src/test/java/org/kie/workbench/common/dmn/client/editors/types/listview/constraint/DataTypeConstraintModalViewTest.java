@@ -197,11 +197,16 @@ public class DataTypeConstraintModalViewTest {
     @Test
     public void testSetupEmptyContainer() {
 
-        componentContainer.innerHTML = "something";
+        final Element element = mock(Element.class);
+        componentContainer.firstChild = element;
+        when(componentContainer.removeChild(element)).then(a -> {
+            componentContainer.firstChild = null;
+            return element;
+        });
 
         view.setupEmptyContainer();
 
-        assertEquals("", componentContainer.innerHTML);
+        verify(componentContainer).removeChild(element);
         verify(componentContainer).appendChild(selectConstraint);
     }
 
@@ -211,14 +216,19 @@ public class DataTypeConstraintModalViewTest {
         final ConstraintType constraintType = ENUMERATION;
         final DataTypeConstraintComponent constrainComponent = mock(DataTypeConstraintComponent.class);
         final Element element = mock(Element.class);
+        final Element previous = mock(Element.class);
 
+        componentContainer.firstChild = previous;
         when(presenter.getCurrentComponent()).thenReturn(constrainComponent);
         when(constrainComponent.getElement()).thenReturn(element);
-        componentContainer.innerHTML = "something";
+        when(componentContainer.removeChild(previous)).then(a -> {
+            componentContainer.firstChild = null;
+            return element;
+        });
 
         view.loadComponent(constraintType);
 
-        assertEquals("", componentContainer.innerHTML);
+        verify(componentContainer).removeChild(previous);
         verify(presenter).setupComponent(constraintType);
         verify(componentContainer).appendChild(element);
     }

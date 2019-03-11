@@ -21,6 +21,7 @@ import java.util.List;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import com.google.gwtmockito.WithClassesToStub;
+import elemental2.dom.Element;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
@@ -47,10 +48,10 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 
 import static java.util.Arrays.asList;
+import static junit.framework.TestCase.assertTrue;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -183,17 +184,20 @@ public class DataTypesPageTest {
 
         final HTMLElement flashMessagesElement = mock(HTMLElement.class);
         final HTMLElement treeListElement = mock(HTMLElement.class);
+        final Element element = mock(Element.class);
+        pageView.firstChild = element;
 
-        pageView.innerHTML = "something";
+        when(pageView.removeChild(element)).then(a -> {
+            pageView.firstChild = null;
+            return element;
+        });
+
         when(flashMessages.getElement()).thenReturn(flashMessagesElement);
         when(treeList.getElement()).thenReturn(treeListElement);
 
         page.refreshPageView();
 
-        final String actual = pageView.innerHTML;
-        final String expected = "";
-
-        assertEquals(expected, actual);
+        verify(pageView).removeChild(element);
         verify(pageView).appendChild(flashMessagesElement);
         verify(pageView).appendChild(treeListElement);
     }

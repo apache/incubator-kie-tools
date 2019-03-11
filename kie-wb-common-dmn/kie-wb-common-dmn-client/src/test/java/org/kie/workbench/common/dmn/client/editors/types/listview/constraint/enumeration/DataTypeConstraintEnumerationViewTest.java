@@ -26,9 +26,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class DataTypeConstraintEnumerationViewTest {
@@ -58,9 +58,18 @@ public class DataTypeConstraintEnumerationViewTest {
 
     @Test
     public void testClear() {
-        items.innerHTML = "something";
+
+        final Element element = mock(Element.class);
+        items.firstChild = element;
+
+        when(items.removeChild(element)).then(a -> {
+            items.firstChild = null;
+            return element;
+        });
+
         view.clear();
-        assertTrue(items.innerHTML.isEmpty());
+
+        verify(items).removeChild(element);
     }
 
     @Test

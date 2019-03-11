@@ -31,6 +31,7 @@ import elemental2.dom.HTMLSelectElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.kie.workbench.common.dmn.client.editors.common.RemoveHelper;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.uberfire.client.views.pfly.selectpicker.JQuerySelectPickerEvent;
 
@@ -94,7 +95,7 @@ public class DataTypeSelectView implements DataTypeSelect.View {
     }
 
     void setupDropdownItems() {
-        typeSelect.innerHTML = "";
+        RemoveHelper.removeChildren(typeSelect);
         typeSelect.appendChild(makeOptionGroup(defaultTitle(), presenter.getDefaultDataTypes(), DataType::getType));
         typeSelect.appendChild(makeOptionGroup(customTitle(), presenter.getCustomDataTypes(), DataType::getName));
         typeSelect.appendChild(makeOptionStructureGroup());

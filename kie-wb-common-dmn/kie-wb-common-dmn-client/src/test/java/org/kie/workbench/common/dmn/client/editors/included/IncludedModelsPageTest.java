@@ -19,6 +19,7 @@ package org.kie.workbench.common.dmn.client.editors.included;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import com.google.gwtmockito.WithClassesToStub;
+import elemental2.dom.Element;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
@@ -29,7 +30,6 @@ import org.kie.workbench.common.dmn.client.editors.common.messages.FlashMessages
 import org.kie.workbench.common.dmn.client.editors.included.common.IncludedModelsPageStateProvider;
 import org.mockito.Mock;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -70,14 +70,21 @@ public class IncludedModelsPageTest {
 
         final HTMLElement flashMessagesElement = mock(HTMLElement.class);
         final HTMLElement includedModelsPresenterElement = mock(HTMLElement.class);
+        final Element currentElement = mock(Element.class);
 
         when(flashMessages.getElement()).thenReturn(flashMessagesElement);
         when(includedModelsPresenter.getElement()).thenReturn(includedModelsPresenterElement);
-        pageView.innerHTML = "something";
+
+        pageView.firstChild = currentElement;
+
+        when(pageView.removeChild(currentElement)).then(a -> {
+            pageView.firstChild = null;
+            return currentElement;
+        });
 
         page.onFocus();
 
-        assertEquals("", pageView.innerHTML);
+        verify(pageView).removeChild(currentElement);
         verify(pageView).appendChild(flashMessagesElement);
         verify(pageView).appendChild(includedModelsPresenterElement);
     }

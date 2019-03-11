@@ -34,6 +34,7 @@ import elemental2.dom.NodeList;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.kie.workbench.common.dmn.client.editors.common.RemoveHelper;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.ScrollHelper;
 import org.uberfire.client.views.pfly.selectpicker.ElementHelper;
@@ -133,7 +134,7 @@ public class DataTypeListView implements DataTypeList.View {
 
     @Override
     public void setupListItems(final List<DataTypeListItem> listItems) {
-        this.listItems.innerHTML = "";
+        RemoveHelper.removeChildren(this.listItems);
         listItems.forEach(this::appendItem);
         showOrHideNoCustomItemsMessage();
     }

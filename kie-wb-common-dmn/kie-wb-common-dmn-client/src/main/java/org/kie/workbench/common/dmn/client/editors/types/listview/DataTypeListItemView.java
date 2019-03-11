@@ -34,6 +34,7 @@ import elemental2.dom.Text;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.kie.workbench.common.dmn.client.editors.common.RemoveHelper;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper;
@@ -261,19 +262,19 @@ public class DataTypeListItemView implements DataTypeListItem.View {
 
         final HTMLElement element = typeSelect.getElement();
 
-        getType().innerHTML = "";
+        RemoveHelper.removeChildren(getType());
         getType().appendChild(element);
     }
 
     @Override
     public void setupConstraintComponent(final DataTypeConstraint dataTypeConstraintComponent) {
-        getConstraintContainer().innerHTML = "";
+        RemoveHelper.removeChildren(getConstraintContainer());
         getConstraintContainer().appendChild(dataTypeConstraintComponent.getElement());
     }
 
     @Override
     public void setupListComponent(final SmallSwitchComponent dataTypeListComponent) {
-        getListContainer().innerHTML = "";
+        RemoveHelper.removeChildren(getListContainer());
         getListContainer().appendChild(listTextNode());
         getListContainer().appendChild(dataTypeListComponent.getElement());
     }

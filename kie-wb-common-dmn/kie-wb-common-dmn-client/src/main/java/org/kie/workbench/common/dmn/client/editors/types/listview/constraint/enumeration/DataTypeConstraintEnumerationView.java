@@ -26,6 +26,7 @@ import elemental2.dom.HTMLDivElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.kie.workbench.common.dmn.client.editors.common.RemoveHelper;
 
 @Templated
 @Dependent
@@ -58,7 +59,7 @@ public class DataTypeConstraintEnumerationView implements DataTypeConstraintEnum
 
     @Override
     public void clear() {
-        items.innerHTML = "";
+        RemoveHelper.removeChildren(items);
     }
 
     @Override

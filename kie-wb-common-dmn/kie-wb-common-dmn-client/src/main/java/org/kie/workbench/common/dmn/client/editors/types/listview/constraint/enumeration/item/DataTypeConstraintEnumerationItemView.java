@@ -32,6 +32,7 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.kie.workbench.common.dmn.client.editors.common.RemoveHelper;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.MenuInitializer;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.TypedValueComponentSelector;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.TypedValueSelector;
@@ -204,7 +205,7 @@ public class DataTypeConstraintEnumerationItemView implements DataTypeConstraint
     @Override
     public void setComponentSelector(final String type) {
         typedValueSelector = this.componentSelector.makeSelectorForType(type);
-        valueInputContainer.innerHTML = "";
+        RemoveHelper.removeChildren(valueInputContainer);
         valueInputContainer.appendChild(typedValueSelector.getElement());
         typedValueSelector.onValueInputBlur(this::onValueInputBlur);
     }

@@ -21,7 +21,6 @@ import elemental2.dom.DOMTokenList;
 import elemental2.dom.Element;
 import elemental2.dom.Element.OnclickCallbackFn;
 import elemental2.dom.Event;
-import elemental2.dom.HTMLAnchorElement;
 import elemental2.dom.HTMLButtonElement;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
@@ -70,9 +69,6 @@ public class DataTypeListItemViewTest {
     private HTMLElement nameText;
 
     @Mock
-    private HTMLElement constraintText;
-
-    @Mock
     private HTMLInputElement nameInput;
 
     @Mock
@@ -88,9 +84,6 @@ public class DataTypeListItemViewTest {
     private HTMLDivElement listYes;
 
     @Mock
-    private HTMLDivElement constraintContainer;
-
-    @Mock
     private HTMLButtonElement editButton;
 
     @Mock
@@ -104,21 +97,6 @@ public class DataTypeListItemViewTest {
 
     @Mock
     private HTMLElement dataTypeListElement;
-
-    @Mock
-    private HTMLAnchorElement removeButton;
-
-    @Mock
-    private HTMLAnchorElement insertFieldAbove;
-
-    @Mock
-    private HTMLAnchorElement insertFieldBelow;
-
-    @Mock
-    private HTMLAnchorElement insertNestedField;
-
-    @Mock
-    private HTMLDivElement kebabMenu;
 
     @Mock
     private TranslationService translationService;
@@ -488,15 +466,19 @@ public class DataTypeListItemViewTest {
 
         final DataTypeSelect select = mock(DataTypeSelect.class);
         final HTMLElement htmlElement = mock(HTMLElement.class);
+        final Element element = mock(Element.class);
 
+        type.firstChild = element;
         doReturn(type).when(view).getType();
         when(select.getElement()).thenReturn(htmlElement);
-
-        type.innerHTML = "previous content";
+        when(type.removeChild(element)).then(a -> {
+            type.firstChild = null;
+            return element;
+        });
 
         view.setupSelectComponent(select);
 
-        assertFalse(type.innerHTML.contains("previous content"));
+        verify(type).removeChild(element);
         verify(type).appendChild(htmlElement);
     }
 
@@ -505,14 +487,19 @@ public class DataTypeListItemViewTest {
 
         final DataTypeConstraint constraintComponent = mock(DataTypeConstraint.class);
         final HTMLElement htmlElement = mock(HTMLElement.class);
+        final Element element = mock(Element.class);
 
+        constraint.firstChild = element;
         doReturn(constraint).when(view).getConstraintContainer();
         when(constraintComponent.getElement()).thenReturn(htmlElement);
-        constraint.innerHTML = "previous content";
+        when(constraint.removeChild(element)).then(a -> {
+            constraint.firstChild = null;
+            return element;
+        });
 
         view.setupConstraintComponent(constraintComponent);
 
-        assertFalse(constraint.innerHTML.contains("previous content"));
+        verify(constraint).removeChild(element);
         verify(constraint).appendChild(htmlElement);
     }
 
@@ -522,15 +509,20 @@ public class DataTypeListItemViewTest {
         final SmallSwitchComponent switchComponent = mock(SmallSwitchComponent.class);
         final HTMLElement htmlElement = mock(HTMLElement.class);
         final Text listTextNode = mock(Text.class);
+        final Element element = mock(Element.class);
 
+        listContainer.firstChild = element;
         when(switchComponent.getElement()).thenReturn(htmlElement);
         doReturn(listTextNode).when(view).listTextNode();
         doReturn(listContainer).when(view).getListContainer();
-        listContainer.innerHTML = "previous content";
+        when(listContainer.removeChild(element)).then(a -> {
+            listContainer.firstChild = null;
+            return element;
+        });
 
         view.setupListComponent(switchComponent);
 
-        assertFalse(listContainer.innerHTML.contains("previous content"));
+        verify(listContainer).removeChild(element);
         verify(listContainer).appendChild(listTextNode);
         verify(listContainer).appendChild(htmlElement);
     }

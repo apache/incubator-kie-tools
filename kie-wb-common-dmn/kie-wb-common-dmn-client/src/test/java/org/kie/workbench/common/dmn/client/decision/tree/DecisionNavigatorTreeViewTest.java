@@ -88,11 +88,17 @@ public class DecisionNavigatorTreeViewTest {
     @Test
     public void testClean() {
 
-        items.innerHTML = "123";
+        final Element element = mock(Element.class);
+        items.firstChild = element;
+
+        when(items.removeChild(element)).then(a -> {
+            items.firstChild = null;
+            return element;
+        });
 
         treeView.clean();
 
-        assertEquals("", items.innerHTML);
+        verify(items).removeChild(element);
     }
 
     @Test

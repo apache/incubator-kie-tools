@@ -37,6 +37,7 @@ import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorItem;
+import org.kie.workbench.common.dmn.client.editors.common.RemoveHelper;
 import org.uberfire.client.views.pfly.selectpicker.ElementHelper;
 
 import static java.util.Optional.ofNullable;
@@ -81,7 +82,7 @@ public class DecisionNavigatorTreeView implements DecisionNavigatorTreePresenter
 
     @Override
     public void clean() {
-        items.innerHTML = "";
+        RemoveHelper.removeChildren(items);
     }
 
     @Override

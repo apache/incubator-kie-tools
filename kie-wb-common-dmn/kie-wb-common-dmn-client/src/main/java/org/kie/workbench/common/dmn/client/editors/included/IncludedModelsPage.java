@@ -21,6 +21,7 @@ import javax.inject.Inject;
 
 import elemental2.dom.HTMLDivElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
+import org.kie.workbench.common.dmn.client.editors.common.RemoveHelper;
 import org.kie.workbench.common.dmn.client.editors.common.messages.FlashMessages;
 import org.kie.workbench.common.dmn.client.editors.common.page.DMNPage;
 import org.kie.workbench.common.dmn.client.editors.included.common.IncludedModelsPageStateProvider;
@@ -50,7 +51,7 @@ public class IncludedModelsPage extends DMNPage {
 
     @Override
     public void onFocus() {
-        getPageView().innerHTML = "";
+        RemoveHelper.removeChildren(getPageView());
         getPageView().appendChild(getFlashMessages().getElement());
         getPageView().appendChild(getIncludedModelsPresenter().getElement());
     }

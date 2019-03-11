@@ -30,6 +30,7 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Definitions;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
 import org.kie.workbench.common.dmn.api.property.dmn.Text;
+import org.kie.workbench.common.dmn.client.editors.common.RemoveHelper;
 import org.kie.workbench.common.dmn.client.editors.common.messages.FlashMessages;
 import org.kie.workbench.common.dmn.client.editors.common.page.DMNPage;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
@@ -127,7 +128,7 @@ public class DataTypesPage extends DMNPage {
 
     void refreshPageView() {
         final HTMLDivElement pageView = getPageView();
-        pageView.innerHTML = "";
+        RemoveHelper.removeChildren(pageView);
         pageView.appendChild(flashMessages.getElement());
         pageView.appendChild(treeList.getElement());
     }
