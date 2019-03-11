@@ -17,7 +17,6 @@ package com.ait.lienzo.client.core.shape.wires;
 
 import com.ait.lienzo.client.core.event.NodeMouseDownEvent;
 import com.ait.lienzo.client.core.event.OnEventHandlers;
-import com.ait.lienzo.client.core.event.OnMouseEventHandler;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.client.core.shape.Viewport;
@@ -151,6 +150,30 @@ public class SelectionManagerTest
         onMouseXEventHandler.onMouseEventBefore(mouseEvent);
 
         verify(selectedItems, times(1)).notifyListener();
+    }
+
+    @Test
+    public void testNodesHighlightedAfterSelection() {
+        realManager.setSelectionShapeProvider(selectionShapeProvider);
+        realManager.setSelectionCreationInProcess(true);
+
+        SelectionManager.SelectedItems selectedItems = spy(realManager.getSelectedItems());
+        realManager.setSelectedItems(selectedItems);
+        when(selectionShape.getLayer()).thenReturn(layer);
+
+        final NodeMouseDownEvent nodeMouseEvent = mock(NodeMouseDownEvent.class);
+        when(nodeMouseEvent.isButtonLeft()).thenReturn(true);
+        when(nodeMouseEvent.getX()).thenReturn(0);
+        when(nodeMouseEvent.getY()).thenReturn(0);
+        realManager.onNodeMouseDown(nodeMouseEvent);
+
+        final MouseEvent mouseEvent = mock(MouseEvent.class);
+        when(mouseEvent.getNativeButton()).thenReturn(NativeEvent.BUTTON_LEFT);
+        when(mouseEvent.getAssociatedType()).thenReturn(MouseUpEvent.getType());
+        onMouseXEventHandler.onMouseEventBefore(mouseEvent);
+
+        verify(selectedItems, never()).notifyListener();
+        verify(selectedItems, times(1)).selectShapes();
     }
 
     @Test
