@@ -356,6 +356,8 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
                     }
                     layer.draw();
                 }
+                getSelectedItems().selectShapes();
+
                 m_selectionCreationInProcess = false;
 
                 return false;
@@ -975,7 +977,7 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
 
         public void notifyListener()
         {
-            m_selManager.m_selectionListener.onChanged(this);
+            selectShapes();
             m_changed.clear();
             if (isEmpty())
             {
@@ -985,6 +987,10 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
                 clear();
             }
             m_layer.draw();
+        }
+
+        public void selectShapes() {
+            m_selManager.m_selectionListener.onChanged(this);
         }
     }
 
