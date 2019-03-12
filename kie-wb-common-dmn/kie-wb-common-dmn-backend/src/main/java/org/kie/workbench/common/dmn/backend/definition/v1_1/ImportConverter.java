@@ -41,6 +41,9 @@ public final class ImportConverter {
         result.setId(new Id(id != null ? id : UUID.randomUUID().toString()));
         result.setName(new Name(name));
         result.setDescription(DescriptionPropertyConverter.wbFromDMN(description));
+
+        dmn.getNsContext().forEach((key, value) -> result.getNsContext().put(key, value));
+
         return result;
     }
 
@@ -58,6 +61,9 @@ public final class ImportConverter {
         result.setName(wb.getName().getValue());
         result.setDescription(DescriptionPropertyConverter.dmnFromWB(wb.getDescription()));
         result.setAdditionalAttributes(additionalAttributes);
+
+        wb.getNsContext().forEach((key, value) -> result.getNsContext().put(key, value));
+
         return result;
     }
 }
