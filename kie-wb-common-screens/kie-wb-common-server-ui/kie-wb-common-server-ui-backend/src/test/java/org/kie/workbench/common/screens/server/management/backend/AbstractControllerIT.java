@@ -17,19 +17,14 @@
 package org.kie.workbench.common.screens.server.management.backend;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
-import javax.inject.Inject;
 
-import org.jboss.arquillian.container.test.api.OperateOnDeployment;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
-import org.junit.After;
-import org.junit.Test;
 import org.kie.server.controller.api.model.spec.ServerTemplateList;
-import org.kie.server.controller.client.KieServerControllerClient;
+import org.kie.server.controller.impl.KieServerHealthCheckControllerImpl;
 import org.kie.workbench.common.screens.server.management.backend.rest.StandaloneControllerDynamicFeature;
 import org.kie.workbench.common.screens.server.management.backend.rest.StandaloneControllerFilter;
 import org.kie.workbench.common.screens.server.management.backend.runtime.AsyncKieServerInstanceManager;
@@ -41,18 +36,18 @@ import org.kie.workbench.common.screens.server.management.backend.storage.Server
 import org.kie.workbench.common.screens.server.management.backend.storage.ServerTemplateVFSStorage;
 import org.kie.workbench.common.screens.server.management.backend.storage.migration.ServerTemplateMigration;
 import org.kie.workbench.common.screens.server.management.backend.utils.ControllerExtension;
-import org.kie.workbench.common.screens.server.management.utils.ControllerUtils;
 import org.kie.workbench.common.screens.server.management.backend.utils.EmbeddedController;
 import org.kie.workbench.common.screens.server.management.backend.utils.MVELEvaluatorProducer;
 import org.kie.workbench.common.screens.server.management.backend.utils.MockTestService;
 import org.kie.workbench.common.screens.server.management.backend.utils.StandaloneController;
 import org.kie.workbench.common.screens.server.management.backend.websocket.StandaloneControllerApplicationConfig;
 import org.kie.workbench.common.screens.server.management.backend.websocket.StandaloneNotificationService;
-import org.kie.workbench.common.screens.server.management.service.SpecManagementService;
+import org.kie.workbench.common.screens.server.management.utils.ControllerUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public abstract class AbstractControllerIT {
 
@@ -62,10 +57,7 @@ public abstract class AbstractControllerIT {
     protected static final String PASSWORD = "admin";
     protected static final String SERVER_TEMPLATE_ID = "it-test-kie-server";
 
-    @Inject
-    SpecManagementService specManagementService;
 
-    KieServerControllerClient client;
 
     public static WebArchive createWorkbenchWar() {
         final File[] libraries = Maven.configureResolver().workOffline().loadPomFromFile("pom.xml")
@@ -85,6 +77,7 @@ public abstract class AbstractControllerIT {
                         "org.uberfire:uberfire-metadata-backend-lucene",
                         "org.uberfire:uberfire-ssh-api",
                         "org.uberfire:uberfire-ssh-backend",
+                                               "org.uberfire:uberfire-commons",
                         "org.jboss.errai:errai-jboss-as-support",
                         "org.jboss.errai:errai-security-server",
                         "org.jboss.errai:errai-cdi-server",
@@ -124,6 +117,9 @@ public abstract class AbstractControllerIT {
                 .addClass(MVELEvaluatorProducer.class)
 
                 .addClass(AbstractControllerIT.class)
+                .addClass(AbstractAutoControllerIT.class)
+                .addClass(KieServerHealthCheckControllerImpl.class)
+                .addClass(HealthCheckControllerBootstrap.class)
 
                 .addAsLibraries(libraries)
 
@@ -192,24 +188,5 @@ public abstract class AbstractControllerIT {
                      serverTemplateList.getServerTemplates()[0].getId());
     }
 
-    @After
-    public void closeControllerClient() {
-        if (client != null) {
-            try {
-                LOGGER.info("Closing Kie Server Management Controller client");
-                client.close();
-            } catch (IOException e) {
-                LOGGER.warn("Error trying to close Kie Server Management Controller Client: {}",
-                            e.getMessage(),
-                            e);
-            }
-        }
-    }
 
-    @Test
-    @OperateOnDeployment("workbench")
-    public void testSpecManagementService() throws Exception {
-        final ServerTemplateList serverTemplateList = specManagementService.listServerTemplates();
-        assertServerTemplateList(serverTemplateList);
-    }
 }

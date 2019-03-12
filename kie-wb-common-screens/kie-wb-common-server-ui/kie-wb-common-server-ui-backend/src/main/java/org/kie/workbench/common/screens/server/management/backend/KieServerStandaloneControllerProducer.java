@@ -26,7 +26,10 @@ import org.kie.workbench.common.screens.server.management.backend.utils.Standalo
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.workbench.common.screens.server.management.utils.ControllerUtils.*;
+import static org.kie.workbench.common.screens.server.management.utils.ControllerUtils.getControllerPassword;
+import static org.kie.workbench.common.screens.server.management.utils.ControllerUtils.getControllerToken;
+import static org.kie.workbench.common.screens.server.management.utils.ControllerUtils.getControllerURL;
+import static org.kie.workbench.common.screens.server.management.utils.ControllerUtils.getControllerUser;
 
 @ApplicationScoped
 @StandaloneController

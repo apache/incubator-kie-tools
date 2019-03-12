@@ -19,6 +19,8 @@
     <java.module.name>org.kie.wb.common.server.ui.backend</java.module.name>
     <!-- Add the absolute path for $JBOSS_HOME below to manage another instance -->
     <jboss.home>${project.build.directory}/wildfly-${version.org.jboss.errai.wildfly}</jboss.home>
+    <jboss.home.instance1>${project.build.directory}/instance1/wildfly-${version.org.jboss.errai.wildfly}</jboss.home.instance1>
+    <jboss.home.instance2>${project.build.directory}/instance2/wildfly-${version.org.jboss.errai.wildfly}</jboss.home.instance2>
   </properties>
 
   <dependencies>
@@ -386,6 +388,22 @@
                   <overWrite>false</overWrite>
                   <outputDirectory>${project.build.directory}</outputDirectory>
                 </artifactItem>
+                <artifactItem>
+                  <groupId>org.wildfly</groupId>
+                  <artifactId>wildfly-dist</artifactId>
+                  <version>${version.org.jboss.errai.wildfly}</version>
+                  <type>zip</type>
+                  <overWrite>false</overWrite>
+                  <outputDirectory>${project.build.directory}/instance1</outputDirectory>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.wildfly</groupId>
+                  <artifactId>wildfly-dist</artifactId>
+                  <version>${version.org.jboss.errai.wildfly}</version>
+                  <type>zip</type>
+                  <overWrite>false</overWrite>
+                  <outputDirectory>${project.build.directory}/instance2</outputDirectory>
+                </artifactItem>
               </artifactItems>
             </configuration>
           </execution>
@@ -411,6 +429,40 @@
               </resources>
             </configuration>
           </execution>
+          <execution>
+            <id>copy-resources-instance1</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${jboss.home.instance1}/standalone/configuration</outputDirectory>
+              <overwrite>true</overwrite>
+              <resources>
+                <resource>
+                  <directory>src/test/config</directory>
+                  <filtering>false</filtering>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-resources-instance2</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${jboss.home.instance2}/standalone/configuration</outputDirectory>
+              <overwrite>true</overwrite>
+              <resources>
+                <resource>
+                  <directory>src/test/config</directory>
+                  <filtering>false</filtering>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
       <plugin>
@@ -419,12 +471,26 @@
         <configuration>
           <systemPropertyVariables>
             <jboss.home>${jboss.home}</jboss.home>
+            <jboss.home.instance1>${jboss.home.instance1}</jboss.home.instance1>
+            <jboss.home.instance2>${jboss.home.instance2}</jboss.home.instance2>
             <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
           </systemPropertyVariables>
           <redirectTestOutputToFile>false</redirectTestOutputToFile>
         </configuration>
         <executions>
           <execution>
+          	<id>default</id>
+          	<goals>
+          	   <goal>integration-test</goal>
+          	</goals>
+          	<configuration>
+          		<excludes>
+          		   <exclude>**/**</exclude>
+          		</excludes>
+          	</configuration>
+          </execution>
+          <execution>
+            <id>wildfly-embedded-rest</id>
             <goals>
               <goal>integration-test</goal>
             </goals>
@@ -469,6 +535,21 @@
             </configuration>
           </execution>
           <execution>
+            <id>wildfly-multinode</id>
+            <goals>
+              <goal>integration-test</goal>
+            </goals>
+            <configuration>
+              <includes>
+                <include>**/StandaloneControllerMultinodeIT</include>
+              </includes>
+              <systemPropertyVariables>
+                <arquillian.launch>wildfly-multinode</arquillian.launch>
+              </systemPropertyVariables>
+              <summaryFile>target/failsafe-reports/failsafe-summary-wildfly-multinode.xml</summaryFile>
+            </configuration>
+          </execution>
+          <execution>
             <id>verify</id>
             <goals>
               <goal>verify</goal>
@@ -478,6 +559,7 @@
                 <summaryFile>target/failsafe-reports/failsafe-summary-wildfly-embedded-rest.xml</summaryFile>
                 <summaryFile>target/failsafe-reports/failsafe-summary-wildfly-embedded-websocket.xml</summaryFile>
                 <summaryFile>target/failsafe-reports/failsafe-summary-wildfly-standalone-websocket.xml</summaryFile>
+                <summaryFile>target/failsafe-reports/failsafe-summary-wildfly-multinode.xml</summaryFile>
               </summaryFiles>
             </configuration>
           </execution>

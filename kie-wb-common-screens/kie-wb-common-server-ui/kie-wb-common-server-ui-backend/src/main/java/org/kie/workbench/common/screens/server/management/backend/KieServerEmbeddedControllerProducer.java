@@ -16,12 +16,15 @@
 
 package org.kie.workbench.common.screens.server.management.backend;
 
+import java.util.concurrent.ExecutorService;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 
 import org.kie.server.controller.api.service.NotificationService;
 import org.kie.server.controller.api.service.RuleCapabilitiesService;
 import org.kie.server.controller.api.storage.KieServerTemplateStorage;
+import org.kie.server.controller.impl.KieServerHealthCheckControllerImpl;
 import org.kie.server.controller.impl.KieServerInstanceManager;
 import org.kie.server.controller.impl.service.RuleCapabilitiesServiceImpl;
 import org.kie.server.controller.impl.service.RuntimeManagementServiceImpl;
@@ -32,6 +35,7 @@ import org.kie.server.controller.rest.RestSpecManagementServiceImpl;
 import org.kie.workbench.common.screens.server.management.backend.utils.EmbeddedController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.uberfire.commons.concurrent.Managed;
 
 @ApplicationScoped
 @EmbeddedController
@@ -115,4 +119,19 @@ public class KieServerEmbeddedControllerProducer {
         controller.setTemplateStorage(kieServerTemplateStorage);
         return controller;
     }
+
+    @Produces
+    @EmbeddedController
+    public KieServerHealthCheckControllerImpl produceKieServerHealthCheckController(
+                                                                                final @EmbeddedController NotificationService notificationService,
+                                                                                final @EmbeddedController KieServerTemplateStorage kieServerTemplateStorage,
+                                                                                final @Managed ExecutorService executorService) {
+        LOGGER.debug("Creating KieServerHealthCheckController...");
+        final KieServerHealthCheckControllerImpl controller = new KieServerHealthCheckControllerImpl();
+        controller.setNotificationService(notificationService);
+        controller.setTemplateStorage(kieServerTemplateStorage);
+        controller.setExecutorService(executorService);
+        return controller;
+    }
+
 }

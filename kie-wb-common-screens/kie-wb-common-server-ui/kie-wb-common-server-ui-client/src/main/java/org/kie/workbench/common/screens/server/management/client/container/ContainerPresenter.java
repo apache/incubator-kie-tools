@@ -30,6 +30,7 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.server.api.model.KieContainerStatus;
+import org.kie.server.controller.api.model.events.ServerInstanceUpdated;
 import org.kie.server.controller.api.model.runtime.Container;
 import org.kie.server.controller.api.model.spec.Capability;
 import org.kie.server.controller.api.model.spec.ContainerConfig;
@@ -126,6 +127,12 @@ public class ContainerPresenter {
             load(containerSpecSelected.getContainerSpecKey());
         } else {
             logger.warn("Illegal event argument.");
+        }
+    }
+
+    public void onInstanceUpdated(@Observes ServerInstanceUpdated instanceUpdated) {
+        if (instanceUpdated != null && containerSpec.getServerTemplateKey().getId().equals(instanceUpdated.getServerInstance().getServerTemplateId())) {
+            load(containerSpec);
         }
     }
 

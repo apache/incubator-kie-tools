@@ -18,6 +18,7 @@ package org.kie.workbench.common.screens.server.management.client.navigation.tem
 
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -229,6 +230,7 @@ public class ServerTemplatePresenter {
         if ( serverInstanceDeleted != null &&
                 serverInstanceDeleted.getServerInstanceId() != null ) {
             serverInstances.remove( serverInstanceDeleted.getServerInstanceId() );
+            serverTemplateListRefreshEvent.fire(new ServerTemplateListRefresh(serverInstanceDeleted.getServerInstanceId()));
         } else {
             logger.warn( "Illegal event argument." );
         }

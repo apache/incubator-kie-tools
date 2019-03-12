@@ -45,12 +45,16 @@ import org.kie.server.integrationtests.shared.KieServerDeployer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.timeout;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 @RunWith(Arquillian.class)
-public class EmbeddedControllerIT extends AbstractControllerIT {
+public class EmbeddedControllerIT extends AbstractAutoControllerIT {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EmbeddedControllerIT.class);
 

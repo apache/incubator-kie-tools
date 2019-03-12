@@ -18,6 +18,7 @@ package org.kie.workbench.common.screens.server.management.backend;
 
 import java.net.URI;
 import java.net.URL;
+
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
@@ -36,10 +37,12 @@ import org.junit.runner.RunWith;
 import org.kie.server.controller.client.KieServerControllerClientFactory;
 import org.kie.server.controller.client.exception.KieServerControllerHTTPClientException;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 @RunWith(Arquillian.class)
-public class StandaloneControllerIT extends AbstractControllerIT {
+public class StandaloneControllerIT extends AbstractAutoControllerIT {
 
     @Deployment(name = "kie-server-controller", order = 1, testable = false)
     public static WebArchive createKieServerControllerWarDeployment() {
