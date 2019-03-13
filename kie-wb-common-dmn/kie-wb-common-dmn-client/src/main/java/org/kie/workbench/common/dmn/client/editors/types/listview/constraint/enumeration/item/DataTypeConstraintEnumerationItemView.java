@@ -18,7 +18,6 @@ package org.kie.workbench.common.dmn.client.editors.types.listview.constraint.en
 
 import java.util.Objects;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -33,7 +32,6 @@ import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.dmn.client.editors.common.RemoveHelper;
-import org.kie.workbench.common.dmn.client.editors.types.listview.common.MenuInitializer;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.TypedValueComponentSelector;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.TypedValueSelector;
 
@@ -63,20 +61,11 @@ public class DataTypeConstraintEnumerationItemView implements DataTypeConstraint
     @DataField("save-anchor")
     private final HTMLAnchorElement saveAnchor;
 
-    @DataField("edit-anchor")
-    private final HTMLAnchorElement editAnchor;
-
     @DataField("remove-anchor")
     private final HTMLAnchorElement removeAnchor;
 
-    @DataField("move-up-anchor")
-    private final HTMLAnchorElement moveUpAnchor;
-
-    @DataField("move-down-anchor")
-    private final HTMLAnchorElement moveDownAnchor;
-
-    @DataField("kebab-menu")
-    private final HTMLDivElement kebabMenu;
+    @DataField("clear-field-anchor")
+    private final HTMLAnchorElement clearFieldAnchor;
 
     private final TranslationService translationService;
 
@@ -86,21 +75,15 @@ public class DataTypeConstraintEnumerationItemView implements DataTypeConstraint
     public DataTypeConstraintEnumerationItemView(final @Named("span") HTMLElement valueText,
                                                  final HTMLDivElement valueInput,
                                                  final HTMLAnchorElement saveAnchor,
-                                                 final HTMLAnchorElement editAnchor,
                                                  final HTMLAnchorElement removeAnchor,
-                                                 final HTMLAnchorElement moveUpAnchor,
-                                                 final HTMLAnchorElement moveDownAnchor,
-                                                 final HTMLDivElement kebabMenu,
+                                                 final HTMLAnchorElement clearFieldAnchor,
                                                  final TranslationService translationService,
                                                  final TypedValueComponentSelector valueComponentSelector) {
         this.valueText = valueText;
         this.valueInputContainer = valueInput;
         this.saveAnchor = saveAnchor;
-        this.editAnchor = editAnchor;
         this.removeAnchor = removeAnchor;
-        this.moveUpAnchor = moveUpAnchor;
-        this.moveDownAnchor = moveDownAnchor;
-        this.kebabMenu = kebabMenu;
+        this.clearFieldAnchor = clearFieldAnchor;
         this.translationService = translationService;
         this.componentSelector = valueComponentSelector;
     }
@@ -108,11 +91,6 @@ public class DataTypeConstraintEnumerationItemView implements DataTypeConstraint
     @Override
     public void init(final DataTypeConstraintEnumerationItem presenter) {
         this.presenter = presenter;
-    }
-
-    @PostConstruct
-    public void setupKebabElement() {
-        makeMenuInitializer(kebabMenu, ".dropdown").init();
     }
 
     @Override
@@ -162,31 +140,24 @@ public class DataTypeConstraintEnumerationItemView implements DataTypeConstraint
         presenter.save(typedValueSelector.getValue());
     }
 
-    @EventHandler("edit-anchor")
-    public void onEditAnchorClick(final ClickEvent e) {
-        presenter.enableEditMode();
-    }
-
     @EventHandler("remove-anchor")
     public void onRemoveAnchorClick(final ClickEvent e) {
         presenter.remove();
     }
 
-    @EventHandler("move-up-anchor")
-    public void onMoveUpAnchorClick(final ClickEvent e) {
-        presenter.moveUp();
-    }
-
-    @EventHandler("move-down-anchor")
-    public void onMoveDownAnchorClick(final ClickEvent e) {
-        presenter.moveDown();
+    @EventHandler("clear-field-anchor")
+    public void onClearFieldAnchorClick(final ClickEvent e) {
+        presenter.setValue("");
+        typedValueSelector.select();
     }
 
     public void onValueInputBlur(final BlurEvent blurEvent) {
 
-        final boolean isNotSaveButtonClick = !Objects.equals(getEventTarget(blurEvent), getSaveAnchorTarget());
+        final Object target = getEventTarget(blurEvent);
+        final boolean isNotSaveButtonClick = !Objects.equals(target, getSaveAnchorTarget());
+        final boolean isNotClearButtonClick = !Objects.equals(target, getClearAnchorTarget());
 
-        if (isNotSaveButtonClick) {
+        if (isNotSaveButtonClick && isNotClearButtonClick) {
             presenter.discardEditMode();
         }
     }
@@ -208,6 +179,26 @@ public class DataTypeConstraintEnumerationItemView implements DataTypeConstraint
         RemoveHelper.removeChildren(valueInputContainer);
         valueInputContainer.appendChild(typedValueSelector.getElement());
         typedValueSelector.onValueInputBlur(this::onValueInputBlur);
+    }
+
+    @Override
+    public void showClearButton() {
+        show(clearFieldAnchor);
+    }
+
+    @Override
+    public void hideDeleteButton() {
+        hide(removeAnchor);
+    }
+
+    @Override
+    public void hideClearButton() {
+        hide(clearFieldAnchor);
+    }
+
+    @Override
+    public void showDeleteButton() {
+        show(removeAnchor);
     }
 
     private void setText(final String value) {
@@ -244,8 +235,7 @@ public class DataTypeConstraintEnumerationItemView implements DataTypeConstraint
         return saveAnchor;
     }
 
-    MenuInitializer makeMenuInitializer(final HTMLDivElement kebabMenu,
-                                        final String dropDownClass) {
-        return new MenuInitializer(kebabMenu, dropDownClass);
+    Object getClearAnchorTarget() {
+        return clearFieldAnchor;
     }
 }

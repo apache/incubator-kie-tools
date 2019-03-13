@@ -24,24 +24,30 @@ import javax.inject.Inject;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.date.DateSelector;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.generic.GenericSelector;
+import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.years.months.YearsMonthsSelector;
 
 @Dependent
 public class TypedValueComponentSelector {
 
     private final GenericSelector genericSelector;
     private final DateSelector dateSelector;
+    private final YearsMonthsSelector yearsMosSelector;
 
     @Inject
     public TypedValueComponentSelector(final GenericSelector genericSelector,
-                                       final DateSelector dateSelector) {
+                                       final DateSelector dateSelector,
+                                       final YearsMonthsSelector yearsMosSelector) {
         this.genericSelector = genericSelector;
         this.dateSelector = dateSelector;
+        this.yearsMosSelector = yearsMosSelector;
     }
 
     public TypedValueSelector makeSelectorForType(final String type) {
 
         if (Objects.equals(BuiltInType.DATE.getName(), type)) {
             return dateSelector;
+        } else if (Objects.equals(BuiltInType.DURATION_YEAR_MONTH.getName(), type)) {
+            return yearsMosSelector;
         }
 
         return genericSelector;

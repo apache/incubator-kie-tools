@@ -17,37 +17,38 @@
 <div class="container-fluid" data-field="body">
     <div class="row">
         <div class="col-md-12">
-            <div class="col-md-8">
-                <span class="required-pf">*</span>
-                <label>
-                    <span data-field="startValueLabel" data-i18n-key="StartValue"></span>
-                </label>
+            <div class="col-md-6">
+                <div class="controls-container">
+                    <div>
+                        <span class="required-pf">*</span><label><span data-field="startValueLabel" data-i18n-key="StartValue"></span>
+                    </label>
+                    </div>
+                    <div data-field="start-value-container"></div>
+                    <div class="checkbox-container">
+                        <input type="checkbox" data-field="include-start-value" id="include-start-value"/>
+                        <label for="include-start-value" data-i18n-key="IncludeStartValue"></label>
+                    </div>
+                </div>
             </div>
-            <div class="col-md-4">
-                <span class="required-pf">*</span>
-                <label>
-                    <span data-field="endValueLabel" data-i18n-key="EndValue"> </span>
-                </label>
+
+            <div class="col-md-6">
+                <div class="controls-container">
+                    <div>
+                        <span class="required-pf">*</span>
+                        <label>
+                            <span data-field="endValueLabel" data-i18n-key="EndValue"> </span>
+                        </label>
+                    </div>
+                    <div data-field="end-value-container"></div>
+                    <div class="checkbox-container">
+                        <input type="checkbox" data-field="include-end-value" id="include-end-value"/>
+                        <label for="include-end-value" data-i18n-key="IncludeEndValue"></label>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="col-md-12">
-            <div class="col-md-4" data-field="start-value-container"></div>
-            <div class="col-md-4 text-center"><span data-i18n-key="To"></span></div>
-            <div class="col-md-4" data-field="end-value-container"></div>
-        </div>
-
-        <div class="col-md-12">
-            <div class="col-md-8">
-                <input type="checkbox" data-field="include-start-value" id="include-start-value"/>
-                <label for="include-start-value" data-i18n-key="IncludeStartValue"></label>
-            </div>
-            <div class="col-md-4">
-                <input type="checkbox" data-field="include-end-value" id="include-end-value"/>
-                <label for="include-end-value" data-i18n-key="IncludeEndValue"></label>
-            </div>
-        </div>
-        <div class="col-md-12">
+        <div class="col-md-12 tips">
             <hr/>
             <div class="tip" data-i18n-key="RequiredValue"></div>
             <div class="tip" data-i18n-key="ProTip"></div>

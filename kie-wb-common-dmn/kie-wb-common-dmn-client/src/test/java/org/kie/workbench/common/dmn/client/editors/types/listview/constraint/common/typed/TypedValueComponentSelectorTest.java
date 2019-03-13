@@ -23,6 +23,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.date.DateSelector;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.generic.GenericSelector;
+import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.years.months.YearsMonthsSelector;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
@@ -36,12 +37,15 @@ public class TypedValueComponentSelectorTest {
     @Mock
     private GenericSelector genericSelector;
 
+    @Mock
+    private YearsMonthsSelector yearsMosSelector;
+
     private TypedValueComponentSelector selector;
 
     @Before
     public void setup() {
 
-        selector = new TypedValueComponentSelector(genericSelector, dateSelector);
+        selector = new TypedValueComponentSelector(genericSelector, dateSelector, yearsMosSelector);
     }
 
     @Test
@@ -58,5 +62,13 @@ public class TypedValueComponentSelectorTest {
         final TypedValueSelector actual = selector.makeSelectorForType("unknown");
 
         assertEquals(genericSelector, actual);
+    }
+
+    @Test
+    public void testGetDurationSelector() {
+
+        final TypedValueSelector actual = selector.makeSelectorForType(BuiltInType.DURATION_YEAR_MONTH.getName());
+
+        assertEquals(yearsMosSelector, actual);
     }
 }

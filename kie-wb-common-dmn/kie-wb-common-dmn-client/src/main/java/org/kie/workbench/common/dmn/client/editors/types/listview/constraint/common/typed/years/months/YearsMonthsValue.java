@@ -14,16 +14,31 @@
  * limitations under the License.
  */
 
-[data-i18n-prefix="DateSelectorView."] {
-  [data-field="calendar-date-icon"] {
-    z-index: 1;
-    left: 10px;
-    color: #7B7B7B;
-    cursor: pointer;
-    width: 0;
-  }
+package org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.years.months;
 
-  .date-input-field {
-    padding-left: 21px;
-  }
+class YearsMonthsValue {
+
+    private String years;
+    private String months;
+
+    YearsMonthsValue() {
+        this.years = "";
+        this.months = "";
+    }
+
+    String getYears() {
+        return years;
+    }
+
+    void setYears(final String years) {
+        this.years = years;
+    }
+
+    String getMonths() {
+        return months;
+    }
+
+    void setMonths(final String months) {
+        this.months = months;
+    }
 }

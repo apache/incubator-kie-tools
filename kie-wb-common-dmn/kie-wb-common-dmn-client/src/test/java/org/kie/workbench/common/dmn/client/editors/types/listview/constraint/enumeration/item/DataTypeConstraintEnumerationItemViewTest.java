@@ -29,7 +29,6 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.dmn.client.editors.types.listview.common.MenuInitializer;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.TypedValueComponentSelector;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.TypedValueSelector;
 import org.mockito.Mock;
@@ -41,7 +40,6 @@ import static org.kie.workbench.common.dmn.client.editors.types.listview.constra
 import static org.kie.workbench.common.dmn.client.editors.types.listview.constraint.enumeration.item.DataTypeConstraintEnumerationItemView.NONE_CSS_CLASS;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeConstraintEnumerationItemView_None;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -62,19 +60,10 @@ public class DataTypeConstraintEnumerationItemViewTest {
     private HTMLAnchorElement saveAnchor;
 
     @Mock
-    private HTMLAnchorElement editAnchor;
+    private HTMLAnchorElement clearFieldAnchor;
 
     @Mock
     private HTMLAnchorElement removeAnchor;
-
-    @Mock
-    private HTMLAnchorElement moveUpAnchor;
-
-    @Mock
-    private HTMLAnchorElement moveDownAnchor;
-
-    @Mock
-    private HTMLDivElement kebabMenu;
 
     @Mock
     private TranslationService translationService;
@@ -92,24 +81,14 @@ public class DataTypeConstraintEnumerationItemViewTest {
 
     @Before
     public void setup() {
-        view = spy(new DataTypeConstraintEnumerationItemView(valueText, valueInput, saveAnchor, editAnchor, removeAnchor, moveUpAnchor, moveDownAnchor, kebabMenu, translationService, componentSelector));
+        view = spy(new DataTypeConstraintEnumerationItemView(valueText, valueInput, saveAnchor, removeAnchor, clearFieldAnchor, translationService, componentSelector));
         view.init(presenter);
+
+        clearFieldAnchor.classList = mock(DOMTokenList.class);
+        removeAnchor.classList = mock(DOMTokenList.class);
 
         when(componentSelector.makeSelectorForType(any())).thenReturn(typedValueSelector);
         view.setComponentSelector("someType");
-    }
-
-    @Test
-    public void testSetupKebabElement() {
-
-        final MenuInitializer menuInitializer = mock(MenuInitializer.class);
-
-        doReturn(menuInitializer).when(view).makeMenuInitializer(any(), anyString());
-
-        view.setupKebabElement();
-
-        verify(view).makeMenuInitializer(kebabMenu, ".dropdown");
-        verify(menuInitializer).init();
     }
 
     @Test
@@ -210,27 +189,9 @@ public class DataTypeConstraintEnumerationItemViewTest {
     }
 
     @Test
-    public void testOnEditAnchorClick() {
-        view.onEditAnchorClick(mock(ClickEvent.class));
-        verify(presenter).enableEditMode();
-    }
-
-    @Test
     public void testOnRemoveAnchorClick() {
         view.onRemoveAnchorClick(mock(ClickEvent.class));
         verify(presenter).remove();
-    }
-
-    @Test
-    public void testOnMoveUpAnchorClick() {
-        view.onMoveUpAnchorClick(mock(ClickEvent.class));
-        verify(presenter).moveUp();
-    }
-
-    @Test
-    public void testOnMoveDownAnchorClick() {
-        view.onMoveDownAnchorClick(mock(ClickEvent.class));
-        verify(presenter).moveDown();
     }
 
     @Test
@@ -254,6 +215,33 @@ public class DataTypeConstraintEnumerationItemViewTest {
 
         doReturn(saveAnchor).when(view).getEventTarget(blurEvent);
         doReturn(saveAnchor).when(view).getSaveAnchorTarget();
+
+        view.onValueInputBlur(blurEvent);
+
+        verify(presenter, never()).discardEditMode();
+    }
+
+    @Test
+    public void testOnValueInputBlurWhenRelatedTargetIsNotClearButton() {
+
+        final BlurEvent blurEvent = mock(BlurEvent.class);
+        final EventTarget mock = mock(EventTarget.class);
+
+        doReturn(mock).when(view).getEventTarget(blurEvent);
+        doReturn(clearFieldAnchor).when(view).getClearAnchorTarget();
+
+        view.onValueInputBlur(blurEvent);
+
+        verify(presenter).discardEditMode();
+    }
+
+    @Test
+    public void testOnValueInputBlurWhenRelatedTargetIsClearButton() {
+
+        final BlurEvent blurEvent = mock(BlurEvent.class);
+
+        doReturn(clearFieldAnchor).when(view).getEventTarget(blurEvent);
+        doReturn(clearFieldAnchor).when(view).getClearAnchorTarget();
 
         view.onValueInputBlur(blurEvent);
 
@@ -320,6 +308,47 @@ public class DataTypeConstraintEnumerationItemViewTest {
         view.setPlaceholder(value);
 
         verify(typedValueSelector).setPlaceholder(value);
+    }
+
+    @Test
+    public void testShowClearButton() {
+
+        view.showClearButton();
+
+        verify(clearFieldAnchor.classList).remove(HIDDEN_CSS_CLASS);
+    }
+
+    @Test
+    public void hideClearButton() {
+
+        view.hideClearButton();
+
+        verify(clearFieldAnchor.classList).add(HIDDEN_CSS_CLASS);
+    }
+
+    @Test
+    public void hideDeleteButton() {
+
+        view.hideDeleteButton();
+
+        verify(removeAnchor.classList).add(HIDDEN_CSS_CLASS);
+    }
+
+    @Test
+    public void showDeleteButton() {
+
+        view.showDeleteButton();
+
+        verify(removeAnchor.classList).remove(HIDDEN_CSS_CLASS);
+    }
+
+    @Test
+    public void testOnClearFieldAnchorClick(){
+
+        view.onClearFieldAnchorClick(mock(ClickEvent.class));
+
+        verify(presenter).setValue("");
+        verify(typedValueSelector).select();
     }
 
     @Test

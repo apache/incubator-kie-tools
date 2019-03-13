@@ -19,7 +19,6 @@ package org.kie.workbench.common.dmn.client.editors.types.listview.constraint.ra
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import elemental2.dom.Event;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLInputElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
@@ -139,7 +138,7 @@ public class DataTypeConstraintRangeView implements DataTypeConstraintRange.View
         setupInputFields();
     }
 
-    void onValueChanged(final Event event) {
+    void onValueChanged(final Object event) {
         if (StringUtils.isEmpty(startValueComponent.getValue()) || StringUtils.isEmpty(endValueComponent.getValue())) {
             presenter.disableOkButton();
         } else {
