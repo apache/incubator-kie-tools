@@ -81,40 +81,6 @@ minutes. it is now 24 hours. -->
     <session-timeout>1440</session-timeout>
   </session-config>
 
-  <!-- Basic Auth Filter for REST repo -->
-  <filter>
-    <filter-name>REST Basic Auth Filter</filter-name>
-    <filter-class>org.uberfire.ext.security.server.BasicAuthSecurityFilter</filter-class>
-    <init-param>
-      <param-name>realmName</param-name>
-      <param-value>KIE Workbench Realm</param-value>
-    </init-param>
-  </filter>
-
-  <filter-mapping>
-    <filter-name>REST Basic Auth Filter</filter-name>
-    <url-pattern>/rest/*</url-pattern>
-  </filter-mapping>
-
-  <!-- Basic Auth Filter for WebSocket endpoints -->
-  <filter>
-    <filter-name>WebSocket Basic Auth Filter</filter-name>
-    <filter-class>org.uberfire.ext.security.server.BasicAuthSecurityFilter</filter-class>
-    <init-param>
-      <param-name>realmName</param-name>
-      <param-value>KIE Workbench Realm</param-value>
-    </init-param>
-    <init-param>
-      <param-name>invalidate</param-name>
-      <param-value>false</param-value>
-    </init-param>
-  </filter>
-
-  <filter-mapping>
-    <filter-name>WebSocket Basic Auth Filter</filter-name>
-    <url-pattern>/websocket/*</url-pattern>
-  </filter-mapping>
-
   <security-constraint>
     <web-resource-collection>
       <web-resource-name>wb</web-resource-name>
