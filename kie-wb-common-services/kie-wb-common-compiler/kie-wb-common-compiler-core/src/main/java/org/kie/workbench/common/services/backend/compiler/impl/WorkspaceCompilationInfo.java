@@ -46,7 +46,7 @@ public class WorkspaceCompilationInfo {
             return Boolean.TRUE;
         }
         if (present != null) {
-            kiePluginPresent = kiePluginPresent | present;
+            kiePluginPresent = kiePluginPresent || present;
             return Boolean.TRUE;
         }
         return Boolean.FALSE;

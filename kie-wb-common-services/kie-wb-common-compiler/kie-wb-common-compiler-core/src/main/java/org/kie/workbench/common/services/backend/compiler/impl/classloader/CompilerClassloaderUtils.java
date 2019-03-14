@@ -100,7 +100,7 @@ public class CompilerClassloaderUtils {
              * */
             if (!res.getDependencies().isEmpty()) {
                 Optional<ClassLoader> urlClassLoader = CompilerClassloaderUtils.createClassloaderFromStringDeps(res.getDependencies());
-                if (urlClassLoader != null) {
+                if (urlClassLoader.isPresent()) {
                     return urlClassLoader;
                 }
             }

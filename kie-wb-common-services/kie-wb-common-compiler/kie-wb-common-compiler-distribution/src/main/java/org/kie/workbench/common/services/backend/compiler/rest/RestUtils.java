@@ -45,7 +45,7 @@ public class RestUtils {
             Object newObj = in.readObject();
             return (HttpCompilationResponse) newObj;
         } catch (NotSerializableException nse) {
-            nse.printStackTrace();
+            logger.warn("Object is not serializable {}", nse.getMessage());
             StringBuilder sb = new StringBuilder("NotSerializableException:").append(nse.getMessage());
             logger.error(sb.toString());
         } catch (IOException ioe) {

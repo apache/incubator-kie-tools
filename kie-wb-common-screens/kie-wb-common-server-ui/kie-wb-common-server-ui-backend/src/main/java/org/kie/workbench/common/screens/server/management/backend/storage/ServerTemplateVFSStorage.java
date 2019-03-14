@@ -79,7 +79,7 @@ public class ServerTemplateVFSStorage implements KieServerTemplateStorage {
             } finally {
                 ioService.endBatch();
             }
-            logger.debug("Server template {} stored successfully");
+            logger.debug("Server template {} stored successfully", serverTemplate.getId());
             return serverTemplate;
         } else {
             throw new IllegalArgumentException("Server template with id " + serverTemplate.getId() + " is already stored");

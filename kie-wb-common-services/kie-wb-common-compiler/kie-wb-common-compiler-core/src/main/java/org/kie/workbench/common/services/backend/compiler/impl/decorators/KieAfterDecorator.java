@@ -184,7 +184,7 @@ public class KieAfterDecorator<T extends CompilationResponse, C extends AFCompil
             Object newObj = in.readObject();
             return new KieTuple(newObj);
         } catch (NotSerializableException nse) {
-            nse.printStackTrace();
+            logger.warn("Object it not serializable {}", nse.getMessage());
             StringBuilder sb = new StringBuilder("NotSerializableException:").append(nse.getMessage());
             return new KieTuple(sb.toString());
         } catch (IOException ioe) {
