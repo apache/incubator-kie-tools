@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.generic;
+package org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.common;
 
 import java.util.function.Consumer;
 
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import elemental2.dom.Event;
 import elemental2.dom.HTMLInputElement;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,16 +33,26 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class GenericSelectorViewTest {
+public class BaseSelectorViewTest {
 
     @Mock
     private HTMLInputElement input;
 
-    private GenericSelectorView selectorView;
+    @Mock
+    private Consumer<BlurEvent> blurEventConsumer;
+
+    @Mock
+    private Consumer<Event> eventConsumer;
+
+    @Mock
+    private BaseSelector presenter;
+
+    private BaseSelectorView selectorView;
 
     @Before
     public void setup() {
-        selectorView = spy(new GenericSelectorView(input));
+        selectorView = spy(new BaseSelectorView(input));
+        selectorView.init(presenter);
     }
 
     @Test
@@ -49,6 +60,7 @@ public class GenericSelectorViewTest {
 
         final String expected = "expected";
         input.value = expected;
+
         final String actual = selectorView.getValue();
 
         assertEquals(expected, actual);
@@ -58,9 +70,11 @@ public class GenericSelectorViewTest {
     public void testSetValue() {
 
         final String expected = "expected";
-        selectorView.setValue(expected);
-        final String actual = input.value;
+        input.value = "something";
 
+        selectorView.setValue(expected);
+
+        final String actual = input.value;
         assertEquals(expected, actual);
     }
 
@@ -76,6 +90,17 @@ public class GenericSelectorViewTest {
     }
 
     @Test
+    public void testSetInputType() {
+
+        final String attribute = "type";
+        final String value = "number";
+
+        selectorView.setInputType(value);
+
+        verify(input).setAttribute(attribute, value);
+    }
+
+    @Test
     public void testSelect() {
 
         selectorView.select();
@@ -86,11 +111,33 @@ public class GenericSelectorViewTest {
     @Test
     public void testOnGenericInputBlur() {
 
-        final Consumer consumer = mock(Consumer.class);
         final BlurEvent blurEvent = mock(BlurEvent.class);
-        selectorView.onValueInputBlur(consumer);
+
+        selectorView.setOnInputBlurCallback(blurEventConsumer);
         selectorView.onGenericInputBlur(blurEvent);
 
-        verify(consumer).accept(blurEvent);
+        verify(blurEventConsumer).accept(blurEvent);
+    }
+
+    @Test
+    public void testSetOnInputChangeCallbackWithKeyUpEvent() {
+
+        final Event event = mock(Event.class);
+
+        selectorView.setOnInputChangeCallback(eventConsumer);
+        input.onkeyup.onInvoke(event);
+
+        verify(eventConsumer).accept(event);
+    }
+
+    @Test
+    public void testSetOnInputChangeCallbackWithChangeEvent() {
+
+        final Event event = mock(Event.class);
+
+        selectorView.setOnInputChangeCallback(eventConsumer);
+        input.onchange.onInvoke(event);
+
+        verify(eventConsumer).accept(event);
     }
 }

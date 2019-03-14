@@ -24,32 +24,64 @@ import javax.inject.Inject;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.date.DateSelector;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.generic.GenericSelector;
+import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.number.NumberSelector;
+import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.string.StringSelector;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.years.months.YearsMonthsSelector;
+
+import static org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType.DATE;
+import static org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType.DURATION_YEAR_MONTH;
+import static org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType.NUMBER;
+import static org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType.STRING;
 
 @Dependent
 public class TypedValueComponentSelector {
 
     private final GenericSelector genericSelector;
+
     private final DateSelector dateSelector;
+
     private final YearsMonthsSelector yearsMosSelector;
+
+    private final StringSelector stringSelector;
+
+    private final NumberSelector numberSelector;
 
     @Inject
     public TypedValueComponentSelector(final GenericSelector genericSelector,
                                        final DateSelector dateSelector,
-                                       final YearsMonthsSelector yearsMosSelector) {
+                                       final YearsMonthsSelector yearsMosSelector,
+                                       final StringSelector stringSelector,
+                                       final NumberSelector numberSelector) {
         this.genericSelector = genericSelector;
         this.dateSelector = dateSelector;
         this.yearsMosSelector = yearsMosSelector;
+        this.stringSelector = stringSelector;
+        this.numberSelector = numberSelector;
     }
 
     public TypedValueSelector makeSelectorForType(final String type) {
 
-        if (Objects.equals(BuiltInType.DATE.getName(), type)) {
+        if (isEqual(type, DATE)) {
             return dateSelector;
-        } else if (Objects.equals(BuiltInType.DURATION_YEAR_MONTH.getName(), type)) {
+        }
+
+        if (isEqual(type, DURATION_YEAR_MONTH)) {
             return yearsMosSelector;
         }
 
+        if (isEqual(type, STRING)) {
+            return stringSelector;
+        }
+
+        if (isEqual(type, NUMBER)) {
+            return numberSelector;
+        }
+
         return genericSelector;
+    }
+
+    private boolean isEqual(final String type,
+                            final BuiltInType builtInType) {
+        return Objects.equals(builtInType.getName(), type);
     }
 }

@@ -18,8 +18,10 @@ package org.kie.workbench.common.dmn.client.editors.types.listview.constraint.co
 
 import java.util.function.Consumer;
 
+import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import elemental2.dom.Element;
+import elemental2.dom.Event;
 import elemental2.dom.HTMLElement;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,6 +41,12 @@ public class YearsMonthsSelectorTest {
 
     @Mock
     private YearsMonthsValueConverter converter;
+
+    @Mock
+    private Consumer<Event> onValueChanged;
+
+    @Mock
+    private Consumer<BlurEvent> onValueInputBlur;
 
     private YearsMonthsSelector selector;
 
@@ -98,26 +106,19 @@ public class YearsMonthsSelectorTest {
     }
 
     @Test
-    public void testOnValueChanged() {
-
-        final Consumer onValueChanged = mock(Consumer.class);
-        selector.onValueChanged(onValueChanged);
-
+    public void testSetOnInputChangeCallback() {
+        selector.setOnInputChangeCallback(onValueChanged);
         verify(view).onValueChanged(onValueChanged);
     }
 
     @Test
-    public void testOnValueInputBlur() {
-
-        final Consumer onValueInputBlur = mock(Consumer.class);
-        selector.onValueInputBlur(onValueInputBlur);
-
+    public void testSetOnInputBlurCallback() {
+        selector.setOnInputBlurCallback(onValueInputBlur);
         verify(view).onValueInputBlur(onValueInputBlur);
     }
 
     @Test
     public void testSelect() {
-
         selector.select();
         verify(view).select();
     }

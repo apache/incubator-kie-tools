@@ -75,8 +75,8 @@ public class DataTypeConstraintRangeView implements DataTypeConstraintRange.View
     }
 
     void setupInputFields() {
-        startValueComponent.onValueChanged(this::onValueChanged);
-        endValueComponent.onValueChanged(this::onValueChanged);
+        startValueComponent.setOnInputChangeCallback(this::onValueChanged);
+        endValueComponent.setOnInputChangeCallback(this::onValueChanged);
     }
 
     @Override

@@ -58,7 +58,7 @@ public class DataTypeConstraintEnumerationItem {
     }
 
     public void setValue(final String newValue) {
-        value = isEmpty(newValue) ? NULL : newValue;
+        setNonNullValue(newValue);
         view.setValue(getValue());
     }
 
@@ -90,8 +90,8 @@ public class DataTypeConstraintEnumerationItem {
         view.showDeleteButton();
     }
 
-    public void save(final String value) {
-        setValue(value);
+    public void save(final String newValue) {
+        setNonNullValue(newValue);
         refreshEnumerationList();
     }
 
@@ -128,6 +128,10 @@ public class DataTypeConstraintEnumerationItem {
     public void setConstraintValueType(final String constraintValueType) {
         view.setComponentSelector(constraintValueType);
         view.setPlaceholder(placeholderHelper.getPlaceholderSample(constraintValueType));
+    }
+
+    private void setNonNullValue(final String newValue) {
+        value = isEmpty(newValue) ? NULL : newValue;
     }
 
     public interface View extends UberElemental<DataTypeConstraintEnumerationItem>,

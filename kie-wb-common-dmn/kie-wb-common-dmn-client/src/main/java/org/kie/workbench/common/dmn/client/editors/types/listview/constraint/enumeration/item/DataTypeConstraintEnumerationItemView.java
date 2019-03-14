@@ -178,7 +178,7 @@ public class DataTypeConstraintEnumerationItemView implements DataTypeConstraint
         typedValueSelector = this.componentSelector.makeSelectorForType(type);
         RemoveHelper.removeChildren(valueInputContainer);
         valueInputContainer.appendChild(typedValueSelector.getElement());
-        typedValueSelector.onValueInputBlur(this::onValueInputBlur);
+        typedValueSelector.setOnInputBlurCallback(this::onValueInputBlur);
     }
 
     @Override

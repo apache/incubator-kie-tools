@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.generic;
+package org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.common;
 
 import java.util.function.Consumer;
 
+import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import elemental2.dom.Element;
+import elemental2.dom.Event;
 import elemental2.dom.HTMLElement;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,81 +35,80 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class GenericSelectorTest {
+public class BaseSelectorTest {
 
-    private GenericSelector genericSelector;
+    private BaseSelector baseSelector;
 
     @Mock
-    private GenericSelector.View view;
+    private BaseSelector.View view;
 
     @Before
-    public void setup() {
-        genericSelector = spy(new GenericSelector(view));
+    public void testSetup() {
+        baseSelector = spy(new BaseSelector(view) {
+        });
     }
 
     @Test
-    public void getValue() {
+    public void testSetupInputType() {
+        final String defaultInputType = BaseSelector.InputType.TEXT.getHtmlInputType();
+        baseSelector.setupInputType();
+        verify(view).setInputType(defaultInputType);
+    }
 
+    @Test
+    public void testGetValue() {
         final String expected = "value";
         when(view.getValue()).thenReturn(expected);
-        final String actual = genericSelector.getValue();
+        final String actual = baseSelector.getValue();
         assertEquals(expected, actual);
     }
 
     @Test
-    public void setValue() {
-
+    public void testSetValue() {
         final String value = "value";
-        genericSelector.setValue(value);
+        baseSelector.setValue(value);
         verify(view).setValue(value);
     }
 
     @Test
-    public void setPlaceholder() {
-
+    public void testSetPlaceholder() {
         final String value = "value";
-        genericSelector.setPlaceholder(value);
+        baseSelector.setPlaceholder(value);
         verify(view).setPlaceholder(value);
     }
 
     @Test
-    public void getElement() {
-
+    public void testGetElement() {
         final HTMLElement expected = mock(HTMLElement.class);
         when(view.getElement()).thenReturn(expected);
-        final Element actual = genericSelector.getElement();
+        final Element actual = baseSelector.getElement();
         assertEquals(expected, actual);
     }
 
     @Test
-    public void onValueChanged() {
-
-        final Consumer consumer = mock(Consumer.class);
-        genericSelector.onValueChanged(consumer);
-        verify(view).onValueChanged(consumer);
+    public void testSetOnInputChangeCallback() {
+        final Consumer<Event> consumer = (e) -> {/* Nothing/ */};
+        baseSelector.setOnInputChangeCallback(consumer);
+        verify(view).setOnInputChangeCallback(consumer);
     }
 
     @Test
-    public void onValueInputBlur() {
-
-        final Consumer consumer = mock(Consumer.class);
-        genericSelector.onValueInputBlur(consumer);
-        verify(view).onValueInputBlur(consumer);
+    public void testSetOnInputBlurCallback() {
+        final Consumer<BlurEvent> consumer = (e) -> {/* Nothing/ */};
+        baseSelector.setOnInputBlurCallback(consumer);
+        verify(view).setOnInputBlurCallback(consumer);
     }
 
     @Test
-    public void select() {
-
-        genericSelector.select();
+    public void testSelect() {
+        baseSelector.select();
         verify(view).select();
     }
 
     @Test
-    public void toDisplay() {
-
+    public void testToDisplay() {
         final String expected = "rawValue";
-        final String actual = genericSelector.toDisplay(expected);
-
+        final String actual = baseSelector.toDisplay(expected);
         assertEquals(expected, actual);
     }
 }

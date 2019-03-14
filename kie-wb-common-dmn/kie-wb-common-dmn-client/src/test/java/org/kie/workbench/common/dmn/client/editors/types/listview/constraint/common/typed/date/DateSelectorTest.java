@@ -18,8 +18,10 @@ package org.kie.workbench.common.dmn.client.editors.types.listview.constraint.co
 
 import java.util.function.Consumer;
 
+import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import elemental2.dom.Element;
+import elemental2.dom.Event;
 import elemental2.dom.HTMLElement;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,6 +42,12 @@ public class DateSelectorTest {
 
     @Mock
     private DateValueFormatter valueFormatter;
+
+    @Mock
+    private Consumer<Event> onValueChanged;
+
+    @Mock
+    private Consumer<BlurEvent> onValueInputBlur;
 
     private DateSelector dateSelector;
 
@@ -87,20 +95,14 @@ public class DateSelectorTest {
     }
 
     @Test
-    public void testOnValueChanged() {
-
-        final Consumer onValueChanged = mock(Consumer.class);
-        dateSelector.onValueChanged(onValueChanged);
-
+    public void testSetOnInputChangeCallback() {
+        dateSelector.setOnInputChangeCallback(onValueChanged);
         verify(view).onValueChanged(onValueChanged);
     }
 
     @Test
-    public void testOnValueInputBlur() {
-
-        final Consumer onValueInputBlur = mock(Consumer.class);
-        dateSelector.onValueInputBlur(onValueInputBlur);
-
+    public void testSetOnInputBlurCallback() {
+        dateSelector.setOnInputBlurCallback(onValueInputBlur);
         verify(view).onValueInputBlur(onValueInputBlur);
     }
 

@@ -64,12 +64,12 @@ public class DateSelector implements TypedValueSelector {
     }
 
     @Override
-    public void onValueChanged(final Consumer<Event> onValueChanged) {
+    public void setOnInputChangeCallback(final Consumer<Event> onValueChanged) {
         view.onValueChanged(onValueChanged);
     }
 
     @Override
-    public void onValueInputBlur(final Consumer<BlurEvent> blurEvent) {
+    public void setOnInputBlurCallback(final Consumer<BlurEvent> blurEvent) {
         view.onValueInputBlur(blurEvent);
     }
 

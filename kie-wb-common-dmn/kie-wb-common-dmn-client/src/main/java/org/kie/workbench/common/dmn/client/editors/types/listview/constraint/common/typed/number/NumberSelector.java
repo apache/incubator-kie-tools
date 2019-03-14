@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.generic;
+package org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.number;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -22,10 +22,15 @@ import javax.inject.Inject;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.common.BaseSelector;
 
 @Dependent
-public class GenericSelector extends BaseSelector {
+public class NumberSelector extends BaseSelector {
 
     @Inject
-    public GenericSelector(final View view) {
+    public NumberSelector(final View view) {
         super(view);
+    }
+
+    @Override
+    protected InputType getInputType() {
+        return InputType.NUMBER;
     }
 }

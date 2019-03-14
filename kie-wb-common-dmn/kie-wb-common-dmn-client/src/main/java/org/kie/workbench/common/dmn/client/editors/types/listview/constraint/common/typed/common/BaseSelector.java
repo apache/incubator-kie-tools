@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.years.months;
+package org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.common;
 
 import java.util.function.Consumer;
 
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
+import javax.annotation.PostConstruct;
 
 import com.google.gwt.event.dom.client.BlurEvent;
 import elemental2.dom.Element;
@@ -28,34 +27,32 @@ import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.TypedValueSelector;
 import org.uberfire.client.mvp.UberElemental;
 
-@Dependent
-public class YearsMonthsSelector implements TypedValueSelector {
+public abstract class BaseSelector implements TypedValueSelector {
 
     private final View view;
-    private final YearsMonthsValueConverter converter;
 
-    @Inject
-    public YearsMonthsSelector(final YearsMonthsSelector.View view,
-                               final YearsMonthsValueConverter converter) {
+    public BaseSelector(final View view) {
         this.view = view;
-        this.converter = converter;
+    }
+
+    @PostConstruct
+    public void setupInputType() {
+        view.setInputType(getInputType().getHtmlInputType());
     }
 
     @Override
     public String getValue() {
-        final YearsMonthsValue value = view.getValue();
-        return converter.toDMNString(value.getYears(), value.getMonths());
+        return view.getValue();
     }
 
     @Override
     public void setValue(final String value) {
-        final YearsMonthsValue yearsMonths = converter.fromDMNString(value);
-        view.setValue(yearsMonths);
+        view.setValue(value);
     }
 
     @Override
     public void setPlaceholder(final String placeholder) {
-        view.setPlaceHolder(placeholder);
+        view.setPlaceholder(placeholder);
     }
 
     @Override
@@ -65,12 +62,12 @@ public class YearsMonthsSelector implements TypedValueSelector {
 
     @Override
     public void setOnInputChangeCallback(final Consumer<Event> onValueChanged) {
-        view.onValueChanged(onValueChanged);
+        view.setOnInputChangeCallback(onValueChanged);
     }
 
     @Override
-    public void setOnInputBlurCallback(final Consumer<BlurEvent> blurEvent) {
-        view.onValueInputBlur(blurEvent);
+    public void setOnInputBlurCallback(final Consumer<BlurEvent> onValueInputBlur) {
+        view.setOnInputBlurCallback(onValueInputBlur);
     }
 
     @Override
@@ -80,22 +77,44 @@ public class YearsMonthsSelector implements TypedValueSelector {
 
     @Override
     public String toDisplay(final String rawValue) {
-        return converter.toDisplayValue(rawValue);
+        return rawValue;
     }
 
-    public interface View extends UberElemental<YearsMonthsSelectorView>,
+    protected InputType getInputType() {
+        return InputType.TEXT;
+    }
+
+    public interface View extends UberElemental<BaseSelector>,
                                   IsElement {
 
-        YearsMonthsValue getValue();
+        String getValue();
 
-        void setValue(final YearsMonthsValue value);
+        void setValue(final String value);
 
-        void setPlaceHolder(final String placeholder);
+        void setPlaceholder(final String placeholder);
 
-        void onValueChanged(final Consumer<Event> onValueChanged);
+        void setOnInputChangeCallback(final Consumer<Event> onValueChanged);
 
-        void onValueInputBlur(final Consumer<BlurEvent> blurEvent);
+        void setOnInputBlurCallback(final Consumer<BlurEvent> onValueInputBlur);
 
         void select();
+
+        void setInputType(final String type);
+    }
+
+    public enum InputType {
+
+        NUMBER("number"),
+        TEXT("text");
+
+        private final String htmlInputType;
+
+        InputType(final String htmlInputType) {
+            this.htmlInputType = htmlInputType;
+        }
+
+        public String getHtmlInputType() {
+            return htmlInputType;
+        }
     }
 }

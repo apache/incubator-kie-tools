@@ -23,6 +23,8 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.date.DateSelector;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.generic.GenericSelector;
+import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.number.NumberSelector;
+import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.string.StringSelector;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.years.months.YearsMonthsSelector;
 import org.mockito.Mock;
 
@@ -40,12 +42,17 @@ public class TypedValueComponentSelectorTest {
     @Mock
     private YearsMonthsSelector yearsMosSelector;
 
+    @Mock
+    private StringSelector stringSelector;
+
+    @Mock
+    private NumberSelector numberSelector;
+
     private TypedValueComponentSelector selector;
 
     @Before
     public void setup() {
-
-        selector = new TypedValueComponentSelector(genericSelector, dateSelector, yearsMosSelector);
+        selector = new TypedValueComponentSelector(genericSelector, dateSelector, yearsMosSelector, stringSelector, numberSelector);
     }
 
     @Test
@@ -57,11 +64,19 @@ public class TypedValueComponentSelectorTest {
     }
 
     @Test
-    public void testGetGenericSelector() {
+    public void testGetNumberSelector() {
 
-        final TypedValueSelector actual = selector.makeSelectorForType("unknown");
+        final TypedValueSelector actual = selector.makeSelectorForType(BuiltInType.NUMBER.getName());
 
-        assertEquals(genericSelector, actual);
+        assertEquals(numberSelector, actual);
+    }
+
+    @Test
+    public void testGetStringSelector() {
+
+        final TypedValueSelector actual = selector.makeSelectorForType(BuiltInType.STRING.getName());
+
+        assertEquals(stringSelector, actual);
     }
 
     @Test
@@ -70,5 +85,13 @@ public class TypedValueComponentSelectorTest {
         final TypedValueSelector actual = selector.makeSelectorForType(BuiltInType.DURATION_YEAR_MONTH.getName());
 
         assertEquals(yearsMosSelector, actual);
+    }
+
+    @Test
+    public void testGetGenericSelector() {
+
+        final TypedValueSelector actual = selector.makeSelectorForType("unknown");
+
+        assertEquals(genericSelector, actual);
     }
 }

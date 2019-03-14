@@ -32,9 +32,9 @@ public interface TypedValueSelector {
 
     Element getElement();
 
-    void onValueChanged(final Consumer<Event> onValueChanged);
+    void setOnInputChangeCallback(final Consumer<Event> onValueChanged);
 
-    void onValueInputBlur(final Consumer<BlurEvent> blurEvent);
+    void setOnInputBlurCallback(final Consumer<BlurEvent> onValueInputBlur);
 
     void select();
 

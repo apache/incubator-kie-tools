@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.generic;
+package org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.common;
 
-import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import javax.enterprise.context.Dependent;
@@ -29,11 +29,11 @@ import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
-@Templated
 @Dependent
-public class GenericSelectorView implements GenericSelector.View {
+@Templated
+public class BaseSelectorView implements BaseSelector.View {
 
-    private GenericSelectorView presenter;
+    private BaseSelector presenter;
 
     @DataField("generic-input")
     private final HTMLInputElement input;
@@ -41,8 +41,13 @@ public class GenericSelectorView implements GenericSelector.View {
     private Consumer<BlurEvent> onValueInputBlur;
 
     @Inject
-    public GenericSelectorView(final HTMLInputElement input) {
+    public BaseSelectorView(final HTMLInputElement input) {
         this.input = input;
+    }
+
+    @Override
+    public void init(final BaseSelector presenter) {
+        this.presenter = presenter;
     }
 
     @Override
@@ -61,11 +66,9 @@ public class GenericSelectorView implements GenericSelector.View {
     }
 
     @Override
-    public void onValueChanged(final Consumer<Event> onValueChanged) {
-        input.onkeyup = event -> {
-            onValueChanged.accept(event);
-            return this;
-        };
+    public void setOnInputChangeCallback(final Consumer<Event> onValueChangeConsumer) {
+        input.onkeyup = event -> consume(event, onValueChangeConsumer);
+        input.onchange = event -> consume(event, onValueChangeConsumer);
     }
 
     @Override
@@ -74,20 +77,27 @@ public class GenericSelectorView implements GenericSelector.View {
     }
 
     @Override
-    public void onValueInputBlur(final Consumer<BlurEvent> blurEvent) {
-        this.onValueInputBlur = blurEvent;
+    public void setOnInputBlurCallback(final Consumer<BlurEvent> onValueInputBlur) {
+        this.onValueInputBlur = onValueInputBlur;
     }
 
     @Override
-    public void init(final GenericSelectorView presenter) {
-        this.presenter = presenter;
+    public void setInputType(final String type) {
+        input.setAttribute("type", type);
     }
 
     @EventHandler("generic-input")
-    public void onGenericInputBlur(final BlurEvent blurEvent) {
+    void onGenericInputBlur(final BlurEvent blurEvent) {
+        getOnValueInputBlur().ifPresent(consumer -> consumer.accept(blurEvent));
+    }
 
-        if (!Objects.isNull(onValueInputBlur)) {
-            onValueInputBlur.accept(blurEvent);
-        }
+    Optional<Consumer<BlurEvent>> getOnValueInputBlur() {
+        return Optional.ofNullable(onValueInputBlur);
+    }
+
+    private boolean consume(final Event event,
+                            final Consumer<Event> onValueChange) {
+        onValueChange.accept(event);
+        return true;
     }
 }

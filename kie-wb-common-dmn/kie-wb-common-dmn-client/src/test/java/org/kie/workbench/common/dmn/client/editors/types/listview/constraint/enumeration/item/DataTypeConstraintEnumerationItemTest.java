@@ -146,7 +146,24 @@ public class DataTypeConstraintEnumerationItemTest {
 
         enumerationItem.save(value);
 
-        verify(enumerationItem).setValue(value);
+        final String actual = enumerationItem.getValue();
+        final String expected = "123";
+
+        assertEquals(expected, actual);
+        verify(dataTypeConstraintEnumeration).refreshView();
+    }
+
+    @Test
+    public void testSaveWhenTheValueIsBlank() {
+
+        final String value = "";
+
+        enumerationItem.save(value);
+
+        final String actual = enumerationItem.getValue();
+        final String expected = NULL;
+
+        assertEquals(expected, actual);
         verify(dataTypeConstraintEnumeration).refreshView();
     }
 
