@@ -23,7 +23,6 @@ import java.util.List;
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import org.assertj.core.api.Assertions;
 import org.drools.workbench.screens.scenariosimulation.client.AbstractScenarioSimulationTest;
 import org.drools.workbench.screens.scenariosimulation.client.events.EnableRightPanelEvent;
 import org.drools.workbench.screens.scenariosimulation.client.metadata.ScenarioHeaderMetaData;
@@ -38,6 +37,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRende
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.doReturn;
@@ -142,8 +142,8 @@ public class ScenarioSimulationGridHeaderUtilitiesTest extends AbstractScenarioS
                                                                                                            uiColumnIndex,
                                                                                                            columnGroup);
 
-        Assertions.assertThat(event.getFilterTerm()).isEqualTo(columnOneTitle + ";" + columnTwoTitle);
-        Assertions.assertThat(event.isNotEqualsSearch()).isTrue();
+        assertThat(event.getFilterTerm()).isEqualTo(columnOneTitle + ";" + columnTwoTitle);
+        assertThat(event.isNotEqualsSearch()).isTrue();
     }
 
     @Test
@@ -156,8 +156,8 @@ public class ScenarioSimulationGridHeaderUtilitiesTest extends AbstractScenarioS
                                                                                                            uiColumnIndex,
                                                                                                            columnGroup);
 
-        Assertions.assertThat(event.getFilterTerm()).isEqualTo(columnOneTitle + ";" + columnTwoTitle);
-        Assertions.assertThat(event.isNotEqualsSearch()).isTrue();
+        assertThat(event.getFilterTerm()).isEqualTo(columnOneTitle + ";" + columnTwoTitle);
+        assertThat(event.isNotEqualsSearch()).isTrue();
     }
 
     @Test
@@ -171,16 +171,16 @@ public class ScenarioSimulationGridHeaderUtilitiesTest extends AbstractScenarioS
                                                                                                            uiColumnIndex,
                                                                                                            columnGroup);
 
-        Assertions.assertThat(event.getFilterTerm()).isEqualTo(columnOneTitle);
-        Assertions.assertThat(event.getPropertyName()).isNull();
-        Assertions.assertThat(event.isNotEqualsSearch()).isFalse();
+        assertThat(event.getFilterTerm()).isEqualTo(columnOneTitle);
+        assertThat(event.getPropertyName()).isNull();
+        assertThat(event.isNotEqualsSearch()).isFalse();
     }
 
     @Test
     public void testIsHeaderEditableNorInstanceNorPropertyAssigned() {
         final boolean result = ScenarioSimulationGridHeaderUtilities.isEditableHeader(scenarioGridColumnOne, 0);
 
-        Assertions.assertThat(result).as("Nor Instance nor Property assigned").isFalse();
+        assertThat(result).as("Nor Instance nor Property assigned").isFalse();
     }
 
     @Test
@@ -192,7 +192,7 @@ public class ScenarioSimulationGridHeaderUtilitiesTest extends AbstractScenarioS
 
         final boolean result = ScenarioSimulationGridHeaderUtilities.isEditableHeader(scenarioGridColumnOne, 0);
 
-        Assertions.assertThat(result).as("Instance Assigned and selected").isTrue();
+        assertThat(result).as("Instance Assigned and selected").isTrue();
     }
 
     @Test
@@ -204,7 +204,7 @@ public class ScenarioSimulationGridHeaderUtilitiesTest extends AbstractScenarioS
 
         final boolean result = ScenarioSimulationGridHeaderUtilities.isEditableHeader(scenarioGridColumnOne, 0);
 
-        Assertions.assertThat(result).as("Instance Assigned but Property selected").isFalse();
+        assertThat(result).as("Instance Assigned but Property selected").isFalse();
     }
 
     @Test
@@ -218,7 +218,7 @@ public class ScenarioSimulationGridHeaderUtilitiesTest extends AbstractScenarioS
 
         final boolean result = ScenarioSimulationGridHeaderUtilities.isEditableHeader(scenarioGridColumnOne, 0);
 
-        Assertions.assertThat(result).as("Instance and Property Assigned but not selected").isFalse();
+        assertThat(result).as("Instance and Property Assigned but not selected").isFalse();
     }
 
     @Test
@@ -231,7 +231,7 @@ public class ScenarioSimulationGridHeaderUtilitiesTest extends AbstractScenarioS
 
         final boolean result = ScenarioSimulationGridHeaderUtilities.isEditableHeader(scenarioGridColumnOne, 0);
 
-        Assertions.assertThat(result).as("Instance and Property Assigned and Property selected").isTrue();
+        assertThat(result).as("Instance and Property Assigned and Property selected").isTrue();
     }
 
     private ScenarioGridColumn mockGridColumn(final double width) {
