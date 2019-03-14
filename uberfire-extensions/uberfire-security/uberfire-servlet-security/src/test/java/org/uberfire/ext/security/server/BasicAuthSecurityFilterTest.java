@@ -16,8 +16,11 @@
 
 package org.uberfire.ext.security.server;
 
+import java.io.IOException;
+
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -51,6 +54,70 @@ public class BasicAuthSecurityFilterTest {
 
     @Mock
     private HttpSession httpSession;
+
+    @Test
+    public void excludedPathsWithNonEmptyContextSkipsAuthentication() throws IOException, ServletException {
+        final BasicAuthSecurityFilter filter = new BasicAuthSecurityFilter();
+
+        final FilterConfig config = mock(FilterConfig.class);
+        when(config.getInitParameter(BasicAuthSecurityFilter.EXCEPTION_PATHS)).thenReturn("/test/foo");
+        filter.init(config);
+
+        when(request.getRequestURI()).thenReturn("/my-context/test/foo");
+        when(request.getContextPath()).thenReturn("/my-context");
+        filter.doFilter(request,response, chain);
+
+        verify(chain).doFilter(request, response);
+        verify(request, never()).getSession(anyBoolean());
+    }
+
+    @Test
+    public void excludedPathsWithEmptyPathSkipsAuthentication() throws IOException, ServletException {
+        final BasicAuthSecurityFilter filter = new BasicAuthSecurityFilter();
+
+        final FilterConfig config = mock(FilterConfig.class);
+        when(config.getInitParameter(BasicAuthSecurityFilter.EXCEPTION_PATHS)).thenReturn("/test/foo,,");
+        filter.init(config);
+
+        when(request.getRequestURI()).thenReturn("/test/foo");
+        when(request.getContextPath()).thenReturn("");
+        filter.doFilter(request,response, chain);
+
+        verify(chain).doFilter(request, response);
+        verify(request, never()).getSession(anyBoolean());
+    }
+
+    @Test
+    public void excludedPathSkipsAuthentication() throws IOException, ServletException {
+        final BasicAuthSecurityFilter filter = new BasicAuthSecurityFilter();
+
+        final FilterConfig config = mock(FilterConfig.class);
+        when(config.getInitParameter(BasicAuthSecurityFilter.EXCEPTION_PATHS)).thenReturn("/test/foo,/test/bar");
+        filter.init(config);
+
+        when(request.getRequestURI()).thenReturn("/test/foo");
+        when(request.getContextPath()).thenReturn("");
+        filter.doFilter(request,response, chain);
+
+        verify(chain).doFilter(request, response);
+        verify(request, never()).getSession(anyBoolean());
+    }
+
+    @Test
+    public void excludedPathWithTrailingSlashSkipsAuthentication() throws IOException, ServletException {
+        final BasicAuthSecurityFilter filter = new BasicAuthSecurityFilter();
+
+        final FilterConfig config = mock(FilterConfig.class);
+        when(config.getInitParameter(BasicAuthSecurityFilter.EXCEPTION_PATHS)).thenReturn("/test/foo,/test/bar");
+        filter.init(config);
+
+        when(request.getRequestURI()).thenReturn("/test/bar/");
+        when(request.getContextPath()).thenReturn("");
+        filter.doFilter(request,response, chain);
+
+        verify(chain).doFilter(request, response);
+        verify(request, never()).getSession(anyBoolean());
+    }
 
     @Test
     public void testIndependentSessionInvalidated() throws Exception {
