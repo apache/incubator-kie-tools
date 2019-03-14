@@ -60,12 +60,13 @@ public class PackageNameWhiteListServiceImpl
         this.saver = saver;
     }
 
-    public void createModuleWhiteList(final Path packageNamesWhiteListPath) {
+    public void createModuleWhiteList(final Path packageNamesWhiteListPath,
+                                                            final String initialContent) {
         if (ioService.exists(Paths.convert(packageNamesWhiteListPath))) {
             throw new FileAlreadyExistsException(packageNamesWhiteListPath.toString());
         } else {
             ioService.write(Paths.convert(packageNamesWhiteListPath),
-                            "");
+                                                           initialContent);
         }
     }
 

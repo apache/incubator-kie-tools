@@ -31,5 +31,5 @@ public interface PackageNameWhiteListService
     WhiteList filterPackageNames(final Module module,
                                  final Collection<String> packageNames);
 
-    void createModuleWhiteList(final Path packageNamesWhiteListPath);
+    void createModuleWhiteList(final Path packageNamesWhiteListPath, String initialContent);
 }
