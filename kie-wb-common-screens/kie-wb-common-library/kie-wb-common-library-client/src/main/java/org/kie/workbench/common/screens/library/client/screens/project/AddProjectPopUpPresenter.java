@@ -18,6 +18,7 @@ package org.kie.workbench.common.screens.library.client.screens.project;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -67,11 +68,11 @@ public class AddProjectPopUpPresenter {
         String getVersion();
 
         void setDescription(String description);
-        
+
         void setGroupId(String groupId);
-        
+
         void setArtifactId(String artifactId);
-        
+
         void setVersion(String version);
 
         boolean isAdvancedOptionsSelected();
@@ -106,7 +107,7 @@ public class AddProjectPopUpPresenter {
 
         void setAddButtonEnabled(boolean enabled);
     }
-    
+
     private Caller<LibraryService> libraryService;
 
     private BusyIndicatorView busyIndicatorView;
@@ -167,7 +168,7 @@ public class AddProjectPopUpPresenter {
                 AddProjectPopUpPresenter.this.libraryInfo = libraryInfo;
             }
         }).getLibraryInfo(projectContext.getActiveOrganizationalUnit()
-                                        .orElseThrow(() -> new IllegalStateException("Cannot get library info without an active organizational unit.")));
+                                  .orElseThrow(() -> new IllegalStateException("Cannot get library info without an active organizational unit.")));
     }
 
     public void setSuccessCallback(ParameterizedCommand<WorkspaceProject> successCallback) {
@@ -178,8 +179,8 @@ public class AddProjectPopUpPresenter {
         libraryPreferences.load(loadedLibraryPreferences -> {
                                     view.setDescription(loadedLibraryPreferences.getProjectPreferences().getDescription());
                                     view.setVersion(loadedLibraryPreferences.getProjectPreferences().getVersion());
-                                    view.setGroupId(projectContext.getActiveOrganizationalUnit().isPresent() ? projectContext.getActiveOrganizationalUnit().get().getDefaultGroupId() 
-                                                                                                             : loadedLibraryPreferences.getOrganizationalUnitPreferences().getGroupId());
+                                    view.setGroupId(projectContext.getActiveOrganizationalUnit().isPresent() ? projectContext.getActiveOrganizationalUnit().get().getDefaultGroupId()
+                                                            : loadedLibraryPreferences.getOrganizationalUnitPreferences().getGroupId());
                                     view.show();
                                 },
                                 error -> {
@@ -198,7 +199,7 @@ public class AddProjectPopUpPresenter {
         final String groupId = view.getGroupId();
         final String artifactId = view.getArtifactId();
         final String version = view.getVersion();
-        
+
         validateFields(name,
                        groupId,
                        artifactId,
@@ -212,11 +213,11 @@ public class AddProjectPopUpPresenter {
                            final POM pom = setDefaultPOM(groupId,
                                                          artifactId,
                                                          version,
-                                                         name, 
+                                                         name,
                                                          description);
                            libraryService.call((WorkspaceProject project) -> successCallback.execute(project),
                                                errorCallback).createProject(projectContext.getActiveOrganizationalUnit()
-                                                                                          .orElseThrow(() -> new IllegalStateException("Cannot create new project without an active organizational unit.")),
+                                                                                    .orElseThrow(() -> new IllegalStateException("Cannot create new project without an active organizational unit.")),
                                                                             pom,
                                                                             mode);
                        });
@@ -393,29 +394,29 @@ public class AddProjectPopUpPresenter {
     public void cancel() {
         view.hide();
     }
-    
+
     public void restoreDefaultAdvancedOptions() {
         libraryPreferences.load(loadedLibraryPreferences -> {
-            view.setDescription(loadedLibraryPreferences.getProjectPreferences().getDescription());
-            view.setVersion(loadedLibraryPreferences.getProjectPreferences().getVersion());
-            view.setGroupId(projectContext.getActiveOrganizationalUnit().isPresent() ? projectContext.getActiveOrganizationalUnit().get().getDefaultGroupId() 
-                                                                                     : loadedLibraryPreferences.getOrganizationalUnitPreferences().getGroupId());
-        },
-        error -> {
-        });
+                                    view.setDescription(loadedLibraryPreferences.getProjectPreferences().getDescription());
+                                    view.setVersion(loadedLibraryPreferences.getProjectPreferences().getVersion());
+                                    view.setGroupId(projectContext.getActiveOrganizationalUnit().isPresent() ? projectContext.getActiveOrganizationalUnit().get().getDefaultGroupId()
+                                                            : loadedLibraryPreferences.getOrganizationalUnitPreferences().getGroupId());
+                                },
+                                error -> {
+                                });
     }
-    
+
     private POM setDefaultPOM(String groupId, String artifactId, String version, String name, String description) {
         final POM pom = new POM(new GAV(groupId,
                                         artifactId,
                                         version));
         pom.setName(name);
         pom.setDescription(description);
-        
+
         POMBuilder pomBuilder = new POMBuilder(pom);
         KiePOMDefaultOptions pomDefaultOptions = new KiePOMDefaultOptions();
         pomBuilder.setBuildPlugins(pomDefaultOptions.getBuildPlugins());
-        
+
         return pomBuilder.build();
     }
 }

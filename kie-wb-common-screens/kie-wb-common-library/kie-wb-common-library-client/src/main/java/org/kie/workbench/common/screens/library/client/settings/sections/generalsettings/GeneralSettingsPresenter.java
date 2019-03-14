@@ -95,8 +95,6 @@ public class GeneralSettingsPresenter extends Section<ProjectScreenModel> {
         String getDuplicatedProjectNameMessage();
     }
 
-
-
     private final View view;
     private final Caller<ValidationService> validationService;
     private final Caller<WorkspaceProjectService> projectService;

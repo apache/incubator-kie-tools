@@ -222,6 +222,5 @@ public class ValidationServiceImplTest {
         assertFalse(validationService.isBranchNameValid("-test"));
         assertTrue(validationService.isBranchNameValid("te-st"));
         assertTrue(validationService.isBranchNameValid("test-"));
-
     }
 }

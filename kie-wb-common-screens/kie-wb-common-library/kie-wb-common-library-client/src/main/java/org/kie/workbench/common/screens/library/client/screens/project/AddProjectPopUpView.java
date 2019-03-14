@@ -130,23 +130,20 @@ public class AddProjectPopUpView implements AddProjectPopUpPresenter.View,
     public void setDescription(String description) {
         this.description.setValue(description);
     }
-    
+
     @Override
     public void setGroupId(String groupId) {
         this.groupId.setValue(groupId);
-        
     }
 
     @Override
     public void setArtifactId(String artifactId) {
-        this.artifactId.setValue(artifactId); 
-        
+        this.artifactId.setValue(artifactId);
     }
 
     @Override
     public void setVersion(String version) {
         this.version.setValue(version);
-        
     }
 
     @Override
@@ -258,8 +255,8 @@ public class AddProjectPopUpView implements AddProjectPopUpPresenter.View,
 
     private Button addButton() {
         addButton = button(ts.format(LibraryConstants.Add),
-                                     () -> presenter.add(),
-                                     ButtonType.PRIMARY);
+                           () -> presenter.add(),
+                           ButtonType.PRIMARY);
         return addButton;
     }
 
@@ -303,10 +300,9 @@ public class AddProjectPopUpView implements AddProjectPopUpPresenter.View,
             presenter.restoreDefaultAdvancedOptions();
         }
     }
-    
+
     @EventHandler("name")
     public void setProjectNameAndArtifactId(final KeyUpEvent keyUpEvent) {
         artifactId.setValue(name.getValue());
     }
-
 }
