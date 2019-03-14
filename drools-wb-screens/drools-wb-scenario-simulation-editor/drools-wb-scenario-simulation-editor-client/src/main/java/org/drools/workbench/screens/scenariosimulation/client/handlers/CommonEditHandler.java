@@ -135,7 +135,7 @@ public class CommonEditHandler {
     }
 
     // Indirection add for test
-    protected static boolean isEditableHeaderLocal(GridColumn<?> scenarioGridColumn, Integer uiHeaderRowIndex) {
+    protected static boolean isEditableHeaderLocal(ScenarioGridColumn scenarioGridColumn, Integer uiHeaderRowIndex) {
         return ScenarioSimulationGridHeaderUtilities.isEditableHeader(scenarioGridColumn, uiHeaderRowIndex);
     }
 }

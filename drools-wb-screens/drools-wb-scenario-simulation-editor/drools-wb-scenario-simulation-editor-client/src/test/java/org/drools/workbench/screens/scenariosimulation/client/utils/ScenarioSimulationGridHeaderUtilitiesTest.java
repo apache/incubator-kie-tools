@@ -176,6 +176,64 @@ public class ScenarioSimulationGridHeaderUtilitiesTest extends AbstractScenarioS
         Assertions.assertThat(event.isNotEqualsSearch()).isFalse();
     }
 
+    @Test
+    public void testIsHeaderEditableNorInstanceNorPropertyAssigned() {
+        final boolean result = ScenarioSimulationGridHeaderUtilities.isEditableHeader(scenarioGridColumnOne, 0);
+
+        Assertions.assertThat(result).as("Nor Instance nor Property assigned").isFalse();
+    }
+
+    @Test
+    public void testIsHeaderEditableInstanceAssignedAndSelected() {
+        when(scenarioGridColumnOne.isInstanceAssigned()).thenReturn(true);
+
+        final ScenarioHeaderMetaData metaDataMock = (ScenarioHeaderMetaData) scenarioGridColumnOne.getHeaderMetaData().get(0);
+        when(metaDataMock.isInstanceHeader()).thenReturn(true);
+
+        final boolean result = ScenarioSimulationGridHeaderUtilities.isEditableHeader(scenarioGridColumnOne, 0);
+
+        Assertions.assertThat(result).as("Instance Assigned and selected").isTrue();
+    }
+
+    @Test
+    public void testIsHeaderEditableInstanceAssignedButPropertySelected() {
+        when(scenarioGridColumnOne.isInstanceAssigned()).thenReturn(true);
+
+        final ScenarioHeaderMetaData metaDataMock = (ScenarioHeaderMetaData) scenarioGridColumnOne.getHeaderMetaData().get(0);
+        when(metaDataMock.isPropertyHeader()).thenReturn(true);
+
+        final boolean result = ScenarioSimulationGridHeaderUtilities.isEditableHeader(scenarioGridColumnOne, 0);
+
+        Assertions.assertThat(result).as("Instance Assigned but Property selected").isFalse();
+    }
+
+    @Test
+    public void testIsHeaderEditableInstanceAndPropertyAssignedButNotSelected() {
+        when(scenarioGridColumnOne.isInstanceAssigned()).thenReturn(true);
+        when(scenarioGridColumnOne.isPropertyAssigned()).thenReturn(true);
+
+        final ScenarioHeaderMetaData metaDataMock = (ScenarioHeaderMetaData) scenarioGridColumnOne.getHeaderMetaData().get(0);
+        when(metaDataMock.isPropertyHeader()).thenReturn(false);
+        when(metaDataMock.isInstanceHeader()).thenReturn(false);
+
+        final boolean result = ScenarioSimulationGridHeaderUtilities.isEditableHeader(scenarioGridColumnOne, 0);
+
+        Assertions.assertThat(result).as("Instance and Property Assigned but not selected").isFalse();
+    }
+
+    @Test
+    public void testIsHeaderEditableInstanceAndPropertyAssignedAndPropertySelected() {
+        when(scenarioGridColumnOne.isInstanceAssigned()).thenReturn(true);
+        when(scenarioGridColumnOne.isPropertyAssigned()).thenReturn(true);
+
+        final ScenarioHeaderMetaData metaDataMock = (ScenarioHeaderMetaData) scenarioGridColumnOne.getHeaderMetaData().get(0);
+        when(metaDataMock.isPropertyHeader()).thenReturn(true);
+
+        final boolean result = ScenarioSimulationGridHeaderUtilities.isEditableHeader(scenarioGridColumnOne, 0);
+
+        Assertions.assertThat(result).as("Instance and Property Assigned and Property selected").isTrue();
+    }
+
     private ScenarioGridColumn mockGridColumn(final double width) {
         final List<GridColumn.HeaderMetaData> headerMetaData = new ArrayList<>();
         headerMetaData.add(mock(GridColumn.HeaderMetaData.class));
@@ -204,6 +262,7 @@ public class ScenarioSimulationGridHeaderUtilitiesTest extends AbstractScenarioS
         when(informationHeader.getTitle()).thenReturn(columnTitle);
 
         when(uiColumn.getInformationHeaderMetaData()).thenReturn(informationHeader);
+        when(uiColumn.isEditableHeaders()).thenReturn(true);
 
         return uiColumn;
     }
