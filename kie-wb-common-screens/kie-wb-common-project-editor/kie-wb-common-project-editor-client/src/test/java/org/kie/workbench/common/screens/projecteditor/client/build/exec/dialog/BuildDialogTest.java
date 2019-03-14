@@ -56,20 +56,6 @@ public class BuildDialogTest {
     }
 
     @Test
-    public void testShowBuildIsAlreadyRunning() {
-
-        dialog.showBuildIsAlreadyRunning();
-
-        verify(view, never()).showABuildIsAlreadyRunning();
-
-        checkStartBuild();
-
-        dialog.showBuildIsAlreadyRunning();
-
-        verify(view).showABuildIsAlreadyRunning();
-    }
-
-    @Test
     public void testStartBuildWithBuidAlreadyRunning() {
 
         checkStartBuild();

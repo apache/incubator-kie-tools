@@ -47,12 +47,6 @@ public class BuildDialog {
         building = false;
     }
 
-    public void showBuildIsAlreadyRunning() {
-        if (building) {
-            view.showABuildIsAlreadyRunning();
-        }
-    }
-
     public void showBusyIndicator(String message) {
         view.showBusyIndicator(message);
     }

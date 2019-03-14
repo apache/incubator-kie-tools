@@ -16,9 +16,21 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.build.exec.dialog;
 
+import javax.enterprise.context.Dependent;
+
+import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
 
-public interface BuildDialogView extends HasBusyIndicator {
+@Dependent
+public class BuildDialogView implements HasBusyIndicator {
 
-    void showABuildIsAlreadyRunning();
+    @Override
+    public void showBusyIndicator(String message) {
+        BusyPopup.showMessage(message);
+    }
+
+    @Override
+    public void hideBusyIndicator() {
+        BusyPopup.close();
+    }
 }

@@ -139,8 +139,6 @@ public abstract class AbstractExecutorTest<RUNNER extends AbstractExecutor> {
 
         runner.run(context);
 
-        verify(buildDialog).showBuildIsAlreadyRunning();
-
         verify(runner, never()).start(eq(context));
     }
 

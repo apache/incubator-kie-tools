@@ -47,7 +47,6 @@ public abstract class AbstractExecutor implements Executor {
     public void run(BuildExecutionContext context) {
 
         if (buildDialog.isBuilding()) {
-            buildDialog.showBuildIsAlreadyRunning();
             return;
         }
 
