@@ -100,7 +100,7 @@ public class ScenarioSimulationGridHeaderUtilities {
                                            final Integer uiHeaderRowIndex) {
         final GridColumn.HeaderMetaData headerMetaData = column.getHeaderMetaData().get(uiHeaderRowIndex);
         if (!(headerMetaData instanceof ScenarioHeaderMetaData)) {
-            return false;
+            throw new IllegalStateException("Header metadata has to be an instance of ScenarioHeaderMetaData");
         }
 
         final ScenarioHeaderMetaData scenarioHeaderMetaData = (ScenarioHeaderMetaData) headerMetaData;

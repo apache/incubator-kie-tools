@@ -38,6 +38,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.Grid
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.doReturn;
@@ -232,6 +233,17 @@ public class ScenarioSimulationGridHeaderUtilitiesTest extends AbstractScenarioS
         final boolean result = ScenarioSimulationGridHeaderUtilities.isEditableHeader(scenarioGridColumnOne, 0);
 
         assertThat(result).as("Instance and Property Assigned and Property selected").isTrue();
+    }
+
+    @Test
+    public void testHeaderMetadataInstanceOf() {
+        final ScenarioGridColumn invalidColumn = mockGridColumn(100,
+                                                                Collections.singletonList(mock(GridColumn.HeaderMetaData.class)));
+
+        assertThatThrownBy(() -> ScenarioSimulationGridHeaderUtilities.isEditableHeader(invalidColumn,
+                                                                                        0))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("Header metadata has to be an instance of ScenarioHeaderMetaData");
     }
 
     private ScenarioGridColumn mockGridColumn(final double width) {
