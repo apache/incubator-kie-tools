@@ -22,7 +22,7 @@
     <groupId>org.jboss.integration-platform</groupId>
     <artifactId>jboss-integration-platform-bom</artifactId>
     <!-- Keep in sync with the parent version of uberfire-bom/pom.xml -->
-    <version>8.4.0.Final</version>
+    <version>8.5.0.Final</version>
   </parent>
 
   <groupId>org.uberfire</groupId>

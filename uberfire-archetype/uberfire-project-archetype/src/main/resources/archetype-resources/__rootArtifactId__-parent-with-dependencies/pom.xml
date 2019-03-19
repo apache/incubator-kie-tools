@@ -72,7 +72,7 @@
     <version.org.jboss.spec.javax.servlet.jsp.jboss-jsp-api_2.3_spec>${version.org.jboss.spec.javax.servlet.jsp.jboss-jsp-api_2.3_spec}</version.org.jboss.spec.javax.servlet.jsp.jboss-jsp-api_2.3_spec>
     <version.org.jboss.spec.javax.annotation.jboss-annotations-api_1_2_spec>${version.org.jboss.spec.javax.annotation.jboss-annotations-api_1.2_spec}</version.org.jboss.spec.javax.annotation.jboss-annotations-api_1_2_spec>
     <version.org.jboss.spec.javax_ejb_3_2_spec>${version.org.jboss.spec.javax.ejb.jboss-ejb-api_3.2_spec}</version.org.jboss.spec.javax_ejb_3_2_spec>
-    <version.org.jboss.spec.javax.ws.rs.jboss-jaxrs-api_2_0_spec>${version.org.jboss.spec.javax.ws.rs.jboss-jaxrs-api_2.0_spec}</version.org.jboss.spec.javax.ws.rs.jboss-jaxrs-api_2_0_spec>
+    <version.org.jboss.spec.javax.ws.rs.jboss-jaxrs-api_2_1_spec>${version.org.jboss.spec.javax.ws.rs.jboss-jaxrs-api_2.1_spec}</version.org.jboss.spec.javax.ws.rs.jboss-jaxrs-api_2_1_spec>
 
     <version.org.webjars.bower.org.patternfly>${version.org.webjars.bower.org.patternfly}</version.org.webjars.bower.org.patternfly>
     <version.org.webjars.bower.google-code-prettify>${version.org.webjars.bower.google-code-prettify}</version.org.webjars.bower.google-code-prettify>
@@ -578,8 +578,8 @@
 
       <dependency>
         <groupId>org.jboss.spec.javax.ws.rs</groupId>
-        <artifactId>jboss-jaxrs-api_2.0_spec</artifactId>
-        <version>\${version.org.jboss.spec.javax.ws.rs.jboss-jaxrs-api_2_0_spec}</version>
+        <artifactId>jboss-jaxrs-api_2.1_spec</artifactId>
+        <version>\${version.org.jboss.spec.javax.ws.rs.jboss-jaxrs-api_2_1_spec}</version>
       </dependency>
 
       <dependency>
