@@ -25,6 +25,11 @@
     </dependency>
 
     <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
     </dependency>
@@ -95,8 +100,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.kie.workbench.screens</groupId>
-      <artifactId>kie-wb-common-data-modeller-api</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-ci</artifactId>
     </dependency>
 
     <dependency>
@@ -107,11 +112,6 @@
     <dependency>
       <groupId>org.kie.workbench.services</groupId>
       <artifactId>kie-wb-common-services-api</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.workbench.services</groupId>
-      <artifactId>kie-wb-common-data-modeller-core</artifactId>
     </dependency>
 
     <dependency>
@@ -156,6 +156,12 @@
 
     <!-- tests -->
     <dependency>
+      <groupId>org.jboss.weld.se</groupId>
+      <artifactId>weld-se-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
       <groupId>org.jboss.spec.javax.enterprise.concurrent</groupId>
       <artifactId>jboss-concurrency-api_1.0_spec</artifactId>
       <scope>test</scope>
@@ -165,6 +171,12 @@
       <groupId>org.kie.workbench.forms</groupId>
       <artifactId>kie-wb-common-forms-fields</artifactId>
       <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.workbench.forms</groupId>
+      <artifactId>kie-wb-common-forms-adf-engine-backend</artifactId>
       <scope>test</scope>
     </dependency>
 

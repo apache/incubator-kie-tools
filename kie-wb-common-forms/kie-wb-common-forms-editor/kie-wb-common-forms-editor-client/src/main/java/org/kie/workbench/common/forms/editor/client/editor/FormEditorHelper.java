@@ -35,11 +35,11 @@ import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.kie.workbench.common.forms.editor.client.editor.rendering.EditorFieldLayoutComponent;
 import org.kie.workbench.common.forms.editor.model.FormModelerContent;
 import org.kie.workbench.common.forms.editor.service.shared.FormEditorRenderingContext;
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.HasPlaceHolder;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FieldType;
 import org.kie.workbench.common.forms.model.FormDefinition;
 import org.kie.workbench.common.forms.model.FormModel;
+import org.kie.workbench.common.forms.model.HasPlaceHolder;
 import org.kie.workbench.common.forms.model.ModelProperty;
 import org.kie.workbench.common.forms.service.shared.FieldManager;
 import org.uberfire.commons.data.Pair;
@@ -117,7 +117,7 @@ public class FormEditorHelper {
     }
 
     public void addAvailableFields() {
-        if(content.getDefinition() != null) {
+        if (content.getDefinition() != null) {
             FormModel model = getFormModel();
             FormDefinition formDefinition = getFormDefinition();
 

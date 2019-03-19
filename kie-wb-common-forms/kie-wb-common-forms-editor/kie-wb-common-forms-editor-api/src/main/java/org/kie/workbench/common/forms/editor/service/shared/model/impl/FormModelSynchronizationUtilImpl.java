@@ -28,7 +28,7 @@ import javax.inject.Inject;
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.forms.commons.shared.layout.FormLayoutTemplateGenerator;
 import org.kie.workbench.common.forms.editor.model.FormModelSynchronizationResult;
-import org.kie.workbench.common.forms.editor.model.impl.TypeConflictImpl;
+import org.kie.workbench.common.forms.editor.model.TypeConflict;
 import org.kie.workbench.common.forms.editor.service.shared.model.FormModelSynchronizationUtil;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
@@ -93,7 +93,7 @@ public class FormModelSynchronizationUtilImpl implements FormModelSynchronizatio
         }
     }
 
-    protected void resolveConflict(TypeConflictImpl typeConflict) {
+    protected void resolveConflict(TypeConflict typeConflict) {
         /*
         If there are type conflicts (a property that has changed the type) we are going to solve it by trying to
         update the binded field to the right FieldDefinition.

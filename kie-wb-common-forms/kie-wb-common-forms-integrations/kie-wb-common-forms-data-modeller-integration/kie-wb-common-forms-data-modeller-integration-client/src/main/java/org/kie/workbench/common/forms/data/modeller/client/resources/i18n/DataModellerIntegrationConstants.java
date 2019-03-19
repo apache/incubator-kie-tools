@@ -25,5 +25,8 @@ public interface DataModellerIntegrationConstants {
     String DataObject = DataObjectFormModel.class.getName();
 
     @TranslationKey(defaultValue = "There's no Data Object selected")
-    public static final String InvalidDataObject = "DataObjectFormModelCreationPresenter.InvalidDataObject";
+    String InvalidDataObject = "DataObjectFormModelCreationPresenter.InvalidDataObject";
+
+    @TranslationKey(defaultValue = " (dependency)")
+    String DataObjectFormModelCreationViewImplDependency = "DataObjectFormModelCreationViewImpl.Dependency";
 }

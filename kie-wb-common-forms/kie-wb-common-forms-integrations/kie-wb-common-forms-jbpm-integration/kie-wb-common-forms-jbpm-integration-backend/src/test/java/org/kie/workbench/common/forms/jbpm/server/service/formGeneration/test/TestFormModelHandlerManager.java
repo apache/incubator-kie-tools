@@ -16,8 +16,8 @@
 
 package org.kie.workbench.common.forms.jbpm.server.service.formGeneration.test;
 
-import org.kie.workbench.common.forms.data.modeller.service.DataObjectFinderService;
 import org.kie.workbench.common.forms.data.modeller.service.impl.DataObjectFormModelHandler;
+import org.kie.workbench.common.forms.data.modeller.service.shared.ModelFinderService;
 import org.kie.workbench.common.forms.editor.service.backend.FormModelHandler;
 import org.kie.workbench.common.forms.editor.service.backend.FormModelHandlerManager;
 import org.kie.workbench.common.forms.jbpm.model.authoring.process.BusinessProcessFormModel;
@@ -37,12 +37,12 @@ public class TestFormModelHandlerManager implements FormModelHandlerManager {
 
     private FieldManager fieldManager;
 
-    private DataObjectFinderService finderService;
+    private ModelFinderService finderService;
 
     public TestFormModelHandlerManager(KieModuleService projectService,
                                        ModuleClassLoaderHelper projectClassLoaderHelper,
                                        FieldManager fieldManager,
-                                       DataObjectFinderService finderService) {
+                                       ModelFinderService finderService) {
         this.projectService = projectService;
         this.projectClassLoaderHelper = projectClassLoaderHelper;
         this.fieldManager = fieldManager;
@@ -50,7 +50,7 @@ public class TestFormModelHandlerManager implements FormModelHandlerManager {
     }
 
     public TestFormModelHandlerManager(FieldManager fieldManager,
-                                       DataObjectFinderService finderService) {
+                                       ModelFinderService finderService) {
         this.fieldManager = fieldManager;
         this.finderService = finderService;
     }

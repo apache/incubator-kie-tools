@@ -26,7 +26,7 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.forms.data.modeller.client.resources.i18n.DataModellerIntegrationConstants;
 import org.kie.workbench.common.forms.data.modeller.model.DataObjectFormModel;
-import org.kie.workbench.common.forms.data.modeller.service.DataObjectFormModelCreationService;
+import org.kie.workbench.common.forms.data.modeller.service.shared.ModelFinderService;
 import org.kie.workbench.common.forms.editor.client.handler.formModel.FormModelCreationViewManager;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.UberElement;
@@ -35,17 +35,17 @@ import org.uberfire.client.mvp.UberElement;
 public class DataObjectFormModelCreationPresenterManager implements FormModelCreationViewManager<DataObjectFormModel>,
                                                                     DataObjectFormModelCreationView.Presenter {
 
-    protected Caller<DataObjectFormModelCreationService> dataObjectFormModelCreationService;
+    protected Caller<ModelFinderService> modelFinderService;
 
     protected DataObjectFormModelCreationView view;
 
     protected TranslationService translationService;
 
     @Inject
-    public DataObjectFormModelCreationPresenterManager(Caller<DataObjectFormModelCreationService> dataObjectFormModelCreationService,
+    public DataObjectFormModelCreationPresenterManager(Caller<ModelFinderService> modelFinderService,
                                                        DataObjectFormModelCreationView view,
                                                        TranslationService translationService) {
-        this.dataObjectFormModelCreationService = dataObjectFormModelCreationService;
+        this.modelFinderService = modelFinderService;
         this.view = view;
         this.translationService = translationService;
     }
@@ -62,8 +62,8 @@ public class DataObjectFormModelCreationPresenterManager implements FormModelCre
 
     @Override
     public void init(Path projectPath) {
-        dataObjectFormModelCreationService.call(dataObjectFormModels -> view.setFormModels((List<DataObjectFormModel>) dataObjectFormModels)).getAvailableDataObjects(
-                projectPath);
+        modelFinderService.call(dataObjectFormModels -> view.setFormModels((List<DataObjectFormModel>) dataObjectFormModels))
+                .getModuleModels(projectPath);
     }
 
     @Override

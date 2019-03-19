@@ -22,29 +22,26 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.kie.workbench.common.forms.data.modeller.service.impl.AbstractDataObjectFinderTest;
-import org.kie.workbench.common.forms.data.modeller.service.impl.DataObjectFormModelHandler;
+import org.kie.workbench.common.forms.data.modeller.service.impl.AbstractModelFinderTest;
+import org.kie.workbench.common.forms.data.modeller.service.shared.ModelFinderService;
 import org.kie.workbench.common.forms.dynamic.model.config.SelectorData;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.forms.editor.service.shared.FormEditorRenderingContext;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.TableColumnMeta;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.multipleSubform.definition.MultipleSubFormFieldDefinition;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
+import static org.kie.workbench.common.forms.data.modeller.service.impl.ext.util.ModelReaderUtil.SERIAL_VERSION_UID;
 
-@RunWith(MockitoJUnitRunner.class)
-public class BeanPropertiesProviderTest extends AbstractDataObjectFinderTest {
+public class BeanPropertiesProviderTest extends AbstractModelFinderTest {
+
+    protected ModelFinderService modelFinderService;
 
     protected FormEditorRenderingContext parentContext;
 
@@ -58,17 +55,22 @@ public class BeanPropertiesProviderTest extends AbstractDataObjectFinderTest {
 
     protected int expectedFields;
 
+    @BeforeClass
+    public static void setUp() throws Exception {
+        initialize();
+
+        buildModules("module1", "module2");
+    }
+
     @Before
     public void init() {
-        super.init();
+        modelFinderService = weldContainer.select(ModelFinderService.class).get();
 
-        service = spy(service);
-
-        provider = new BeanPropertiesProvider(service);
+        provider = new BeanPropertiesProvider(modelFinderService);
 
         currentEditedMeta = new TableColumnMeta();
 
-        context = new FormEditorRenderingContext("", path);
+        context = new FormEditorRenderingContext("", currentModulePath);
 
         context.setModel(currentEditedMeta);
     }
@@ -80,23 +82,21 @@ public class BeanPropertiesProviderTest extends AbstractDataObjectFinderTest {
 
     @Test
     public void testGetAllModelPropertiesWithExistingColumn() {
-        currentEditedMeta.setProperty(NAME_PROPERTY);
-        currentEditedMeta.setLabel(NAME_PROPERTY);
+        currentEditedMeta.setProperty(ADDRESS_STREET);
+        currentEditedMeta.setLabel(ADDRESS_STREET_LABEL);
         testGetModelProperties();
     }
 
     @Test
     public void testSomeModelProperties() {
-        testGetModelProperties(NAME_PROPERTY,
-                               LAST_NAME_PROPERTY);
+        testGetModelProperties(ADDRESS_CITY, ADDRESS_CP);
     }
 
     @Test
     public void testSomeModelPropertiesWithExistingColumn() {
-        currentEditedMeta.setProperty(MARRIED_PROPERTY);
-        currentEditedMeta.setLabel(MARRIED_PROPERTY);
-        testGetModelProperties(NAME_PROPERTY,
-                               LAST_NAME_PROPERTY);
+        currentEditedMeta.setProperty(ADDRESS_MAIN_ADDRESS);
+        currentEditedMeta.setLabel(ADDRESS_MAIN_ADDRESS_LABEL);
+        testGetModelProperties(ADDRESS_STREET, ADDRESS_NUM);
     }
 
     protected void testGetModelProperties(String... columns) {
@@ -113,20 +113,17 @@ public class BeanPropertiesProviderTest extends AbstractDataObjectFinderTest {
             bannedColumns.remove(currentEditedMeta.getProperty());
         }
 
-        field.setStandaloneClassName(TYPE_NAME);
+        field.setStandaloneClassName(ADDRESS_TYPE);
 
-        parentContext = new FormEditorRenderingContext("", path);
+        parentContext = new FormEditorRenderingContext("", currentModulePath);
 
         parentContext.setModel(field);
 
         context.setParentContext(parentContext);
 
-        expectedFields = DATA_OBJECT_VALID_FIELDS - bannedColumns.size();
+        expectedFields = ADDRESS_VALID_FIELDS - bannedColumns.size();
 
         SelectorData data = provider.getSelectorData(context);
-
-        verify(service).getDataObjectProperties(any(),
-                                                any());
 
         assertNotNull(data);
         assertNotNull(data.getValues());
@@ -140,18 +137,14 @@ public class BeanPropertiesProviderTest extends AbstractDataObjectFinderTest {
             assertNull(data.getValues().get(column));
         }
 
-        assertNull(data.getValues().get(DataObjectFormModelHandler.SERIAL_VERSION_UID));
+        assertNull(data.getValues().get(SERIAL_VERSION_UID));
         assertNull(data.getValues().get(PERSISTENCE_ID_PROPERTY));
     }
 
     @Test
     public void testWithoutParentContext() {
         SelectorData data = provider.getSelectorData(context);
-
-        verify(service,
-               never()).getDataObjectProperties(any(),
-                                                any());
-
+        /**/
         assertNotNull(data);
         assertNotNull(data.getValues());
         assertTrue(data.getValues().isEmpty());

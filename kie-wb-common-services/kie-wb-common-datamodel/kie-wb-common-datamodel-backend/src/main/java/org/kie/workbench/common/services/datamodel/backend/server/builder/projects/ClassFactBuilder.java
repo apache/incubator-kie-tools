@@ -25,6 +25,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 
 import org.kie.soup.project.datamodel.commons.oracle.ModuleDataModelOracleImpl;
 import org.kie.soup.project.datamodel.oracle.Annotation;
@@ -53,27 +54,26 @@ public class ClassFactBuilder extends BaseFactBuilder {
     public ClassFactBuilder(final ModuleDataModelOracleBuilder builder,
                             final Class<?> clazz,
                             final boolean isEvent,
-                            final TypeSource typeSource) throws IOException {
+                            final Function<String, TypeSource> typeSourceResolver) throws IOException {
         this(builder,
-             new HashMap<String, FactBuilder>(),
+             new HashMap<>(),
              clazz,
              isEvent,
-             typeSource);
+             typeSourceResolver);
     }
 
     public ClassFactBuilder(final ModuleDataModelOracleBuilder builder,
                             final Map<String, FactBuilder> discoveredFieldFactBuilders,
                             final Class<?> clazz,
                             final boolean isEvent,
-                            final TypeSource typeSource) throws IOException {
+                            final Function<String, TypeSource> typeSourceResolver) throws IOException {
         super(builder,
               clazz,
               isEvent,
-              typeSource);
+              typeSourceResolver);
         this.superTypes = getSuperTypes(clazz);
         this.annotations.addAll(AnnotationUtils.getClassAnnotations(clazz));
-        loadClassFields(clazz,
-                        discoveredFieldFactBuilders);
+        loadClassFields(clazz, discoveredFieldFactBuilders);
     }
 
     @Override
@@ -190,7 +190,7 @@ public class ClassFactBuilder extends BaseFactBuilder {
                                                                  discoveredFieldFactBuilders,
                                                                  genericType,
                                                                  false,
-                                                                 typeSource));
+                                                                 typeSourceResolver));
         }
         if (discoveredFieldFactBuilders.get(genericTypeName) != null) {
             fieldFactBuilders.put(genericTypeName,

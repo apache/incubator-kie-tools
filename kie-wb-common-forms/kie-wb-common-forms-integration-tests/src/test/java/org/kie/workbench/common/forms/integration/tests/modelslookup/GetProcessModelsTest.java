@@ -17,7 +17,6 @@
 package org.kie.workbench.common.forms.integration.tests.modelslookup;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
@@ -34,20 +33,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.jbpm.model.authoring.JBPMProcessModel;
 import org.kie.workbench.common.forms.jbpm.model.authoring.task.TaskFormModel;
-import org.kie.workbench.common.forms.jbpm.server.service.BPMNFormModelGenerator;
 import org.kie.workbench.common.forms.jbpm.server.service.impl.BPMFinderServiceImpl;
-import org.kie.workbench.common.forms.jbpm.server.service.impl.BPMNFormModelGeneratorImpl;
 import org.kie.workbench.common.forms.model.ModelProperty;
-import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.uberfire.io.IOService;
-import org.uberfire.java.nio.file.DirectoryStream;
-import org.uberfire.java.nio.file.Files;
-import org.uberfire.java.nio.file.Path;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class GetProcessModelsTest extends AbstractGetModelsTest {
@@ -91,10 +81,6 @@ public class GetProcessModelsTest extends AbstractGetModelsTest {
         put("hire", Collections.emptyMap());
     }};
 
-    @Mock
-    private static IOService ioService;
-    private static BPMNFormModelGenerator bpmnFormModelGenerator;
-
     private static BPMFinderServiceImpl finderService;
     private final String ORDER_RENAMED = "order-renamed";
 
@@ -102,16 +88,7 @@ public class GetProcessModelsTest extends AbstractGetModelsTest {
 
     @Before
     public void init() {
-        when(ioService.newDirectoryStream(any(),
-                                          any())).thenAnswer(invocationOnMock -> Files.newDirectoryStream((Path) invocationOnMock.getArguments()[0],
-                                                                                                          (DirectoryStream.Filter<Path>) invocationOnMock.getArguments()[1]));
-        when(ioService.newInputStream(any())).thenAnswer(invocationOnMock -> new FileInputStream(((Path) invocationOnMock.getArguments()[0]).toFile()));
-
-        bpmnFormModelGenerator = new BPMNFormModelGeneratorImpl(moduleService,
-                                                                classLoaderHelper);
-
-        finderService = new BPMFinderServiceImpl(ioService, moduleService, bpmnFormModelGenerator);
-        finderService.init();
+        finderService = weldContainer.select(BPMFinderServiceImpl.class).get();
     }
 
     @Test
@@ -190,6 +167,7 @@ public class GetProcessModelsTest extends AbstractGetModelsTest {
     private void copyProcess(String oldName, String newName) throws IOException {
         copyResource(getProcessPath(oldName), newName + ".bpmn2");
         changeProcessId(newName, "src.order", "src." + newName);
+        clearCache();
     }
 
     private void deleteProcess(String process) throws IOException, URISyntaxException {

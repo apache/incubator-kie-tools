@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -36,13 +37,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.workbench.common.forms.data.modeller.model.DataObjectFormModel;
-import org.kie.workbench.common.forms.data.modeller.service.DataObjectFinderService;
-import org.kie.workbench.common.forms.data.modeller.service.DataObjectFormModelCreationService;
-import org.kie.workbench.common.forms.data.modeller.service.impl.DataObjectFinderServiceImpl;
-import org.kie.workbench.common.forms.data.modeller.service.impl.DataObjectFormModelCreationServiceImpl;
-import org.kie.workbench.common.forms.data.modeller.service.impl.DataObjectFormModelHandler;
+import org.kie.workbench.common.forms.data.modeller.service.shared.ModelFinderService;
 import org.kie.workbench.common.forms.model.ModelProperty;
-import org.kie.workbench.common.forms.service.shared.FieldManager;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
@@ -52,11 +48,7 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 public class GetDataObjectModelsTest extends AbstractGetModelsTest {
 
     private static DataModelerService dataModelerService;
-    private static FieldManager fieldManager;
-
-    private static DataObjectFinderService finderService;
-    private static DataObjectFormModelHandler handler;
-    private static DataObjectFormModelCreationService creationService;
+    private static ModelFinderService modelFinderService;
 
     private static final String
             DO_PACKAGE_PATH = "/src/main/java/com/myteam/modelslookup/",
@@ -87,11 +79,8 @@ public class GetDataObjectModelsTest extends AbstractGetModelsTest {
     @BeforeClass
     public static void setup() throws Exception {
         dataModelerService = weldContainer.select(DataModelerService.class).get();
-        fieldManager = weldContainer.select(FieldManager.class).get();
 
-        finderService = new DataObjectFinderServiceImpl(moduleService, dataModelerService);
-        handler = new DataObjectFormModelHandler(moduleService, classLoaderHelper, finderService, fieldManager);
-        creationService = new DataObjectFormModelCreationServiceImpl(finderService, handler);
+        modelFinderService = weldContainer.select(ModelFinderService.class).get();
     }
 
     @Test
@@ -135,7 +124,7 @@ public class GetDataObjectModelsTest extends AbstractGetModelsTest {
     }
 
     private void assertExpectedLoaded(Map<String, Set<String>> expectedDataObjects) {
-        final List<DataObjectFormModel> dataObjects = creationService.getAvailableDataObjects(rootPath);
+        final Collection<DataObjectFormModel> dataObjects = modelFinderService.getAllModels(rootPath);
         final Map<String, Set<String>> actualDataObjects = getDataObjectsMap(dataObjects);
         assertThat(actualDataObjects).isEqualTo(expectedDataObjects);
     }
@@ -145,11 +134,13 @@ public class GetDataObjectModelsTest extends AbstractGetModelsTest {
         refactorClass(targetPath.toFile(), oldName, newName);
         File[] files = targetPath.getParent().toFile().listFiles();
         refactorReferencesInOtherClasses(files, oldName, newName);
+        clearCache();
     }
 
     private void copyDO(String source, String newName) throws URISyntaxException, IOException {
         final java.nio.file.Path targetPath = copyResource(String.format(DO_PATH_FORMAT, source), newName + ".java");
         refactorClass(targetPath.toFile(), source, newName);
+        clearCache();
     }
 
     private void deleteDO(String dataObject) throws URISyntaxException, IOException {
@@ -157,10 +148,10 @@ public class GetDataObjectModelsTest extends AbstractGetModelsTest {
     }
 
     private void createDO(String name) throws URISyntaxException {
-        //DataObject dataObject = new DataObjectImpl(name, pkg);
         Path dataObjectPath = PathFactory.newPath(name + ".java",
                                                   "file://" + ROOT_URL.toURI().getPath() + DO_PACKAGE_PATH);
         dataModelerService.createJavaFile(dataObjectPath, name + ".java", "comment");
+        clearCache();
     }
 
     private void refactorClass(File file, String oldName, String newName) throws IOException {
@@ -223,7 +214,7 @@ public class GetDataObjectModelsTest extends AbstractGetModelsTest {
         return String.format(DO_PATH_FORMAT, dataObject);
     }
 
-    private Map<String, Set<String>> getDataObjectsMap(List<DataObjectFormModel> dataObjects) {
+    private Map<String, Set<String>> getDataObjectsMap(Collection<DataObjectFormModel> dataObjects) {
         return dataObjects.stream().collect(Collectors.toMap(
                 DataObjectFormModel::getClassName,
                 getModelPropertyNameSet()

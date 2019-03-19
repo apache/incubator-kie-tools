@@ -21,8 +21,8 @@ import javax.enterprise.context.Dependent;
 import org.kie.workbench.common.forms.adf.engine.shared.formGeneration.FormGenerationContext;
 import org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.FieldInitializer;
 import org.kie.workbench.common.forms.adf.service.definitions.elements.FieldElement;
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.HasPlaceHolder;
 import org.kie.workbench.common.forms.model.FieldDefinition;
+import org.kie.workbench.common.forms.model.HasPlaceHolder;
 
 @Dependent
 public class HasPlaceHolderFieldInitializer implements FieldInitializer {

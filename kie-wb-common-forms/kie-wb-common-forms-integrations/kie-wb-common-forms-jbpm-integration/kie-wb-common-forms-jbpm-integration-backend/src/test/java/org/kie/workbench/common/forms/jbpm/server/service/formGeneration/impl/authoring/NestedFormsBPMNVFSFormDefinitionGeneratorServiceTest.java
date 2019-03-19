@@ -33,8 +33,7 @@ import org.kie.workbench.common.forms.jbpm.server.service.formGeneration.model.L
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
 import org.kie.workbench.common.forms.model.FormModel;
-import org.kie.workbench.common.services.datamodeller.core.DataObject;
-import org.kie.workbench.common.services.datamodeller.core.impl.DataObjectImpl;
+import org.kie.workbench.common.forms.model.TypeKind;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -58,8 +57,8 @@ public class NestedFormsBPMNVFSFormDefinitionGeneratorServiceTest extends BPMNVF
     public void setup() throws IOException {
         super.setup();
 
-        when(dataObjectFinderService.getDataObject(anyString(),
-                                                   any())).then(this::getDataObject);
+        when(modelFinderService.getModel(anyString(), any())).then(this::getModel);
+        when(modelReader.readFormModel(anyString())).then(this::getModel);
     }
 
     @Test
@@ -69,10 +68,7 @@ public class NestedFormsBPMNVFSFormDefinitionGeneratorServiceTest extends BPMNVF
 
         launchNestedFormTestWithGeneratedFormsValidation();
 
-        verify(ioService,
-               times(3)).write(any(),
-                               anyString(),
-                               any());
+        verify(ioService, times(3)).write(any(), anyString(), any());
     }
 
     @Test
@@ -143,85 +139,49 @@ public class NestedFormsBPMNVFSFormDefinitionGeneratorServiceTest extends BPMNVF
         return null;
     }
 
-    private DataObject getDataObject(InvocationOnMock invocationOnMock) {
+    private DataObjectFormModel getModel(InvocationOnMock invocationOnMock) {
         String className = invocationOnMock.getArguments()[0].toString();
 
         if (Expense.class.getName().equals(className)) {
-            return getExpenseDataObject();
+            return getExpenseFormModel();
         }
 
         if (Client.class.getName().equals(className)) {
-            return getClientDataObject();
+            return getClientFormModel();
         }
 
         if (Line.class.getName().equals(className)) {
-            return getLineDataObject();
+            return getLineFormModel();
         }
         return null;
     }
 
-    protected DataObject getExpenseDataObject() {
-        DataObject expense = new DataObjectImpl(Expense.class.getPackage().toString(),
-                                                Expense.class.getSimpleName());
+    protected DataObjectFormModel getExpenseFormModel() {
+        DataObjectFormModel model = new DataObjectFormModel(Expense.class.getSimpleName(), Expense.class.getName());
 
-        expense.addProperty("id",
-                            Long.class.getName(),
-                            false,
-                            null);
-        expense.addProperty("date",
-                            Date.class.getName(),
-                            false,
-                            null);
-        expense.addProperty("client",
-                            Client.class.getName(),
-                            false,
-                            null);
-        expense.addProperty("lines",
-                            Line.class.getName(),
-                            true,
-                            List.class.getName());
-        return expense;
+        model.addProperty("date", Date.class.getName(), TypeKind.BASE, false);
+        model.addProperty("client", Client.class.getName(), TypeKind.OBJECT, false);
+        model.addProperty("lines", Line.class.getName(), TypeKind.OBJECT, true);
+
+        return model;
     }
 
-    protected DataObject getLineDataObject() {
-        DataObject expense = new DataObjectImpl(Line.class.getPackage().toString(),
-                                                Line.class.getSimpleName());
+    protected DataObjectFormModel getLineFormModel() {
+        DataObjectFormModel model = new DataObjectFormModel(Line.class.getSimpleName(), Line.class.getName());
 
-        expense.addProperty("id",
-                            Long.class.getName(),
-                            false,
-                            null);
-        expense.addProperty("date",
-                            Date.class.getName(),
-                            false,
-                            null);
-        expense.addProperty("product",
-                            String.class.getName(),
-                            false,
-                            null);
-        expense.addProperty("price",
-                            Double.class.getName(),
-                            false,
-                            null);
-        return expense;
+        model.addProperty("date", Date.class.getName(), TypeKind.BASE, false);
+        model.addProperty("product", String.class.getName(), TypeKind.BASE, false);
+        model.addProperty("price", Double.class.getName(), TypeKind.BASE, false);
+
+        return model;
     }
 
-    protected DataObject getClientDataObject() {
-        DataObject client = new DataObjectImpl(Client.class.getPackage().toString(),
-                                               Client.class.getSimpleName());
+    protected DataObjectFormModel getClientFormModel() {
+        DataObjectFormModel model = new DataObjectFormModel(Client.class.getSimpleName(), Client.class.getName());
 
-        client.addProperty("id",
-                           Long.class.getName(),
-                           false,
-                           null);
-        client.addProperty("name",
-                           String.class.getName(),
-                           false,
-                           null);
-        client.addProperty("lastName",
-                           String.class.getName(),
-                           false,
-                           null);
-        return client;
+        model.addProperty("name", String.class.getName(), TypeKind.BASE, false);
+        model.addProperty("lastName", String.class.getName(), TypeKind.BASE, false);
+
+        return model;
     }
 }

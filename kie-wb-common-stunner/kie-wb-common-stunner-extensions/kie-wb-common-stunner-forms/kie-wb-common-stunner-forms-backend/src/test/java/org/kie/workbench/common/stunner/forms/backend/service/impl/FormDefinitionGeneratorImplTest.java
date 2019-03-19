@@ -27,9 +27,12 @@ import org.jbpm.simulation.util.BPMN2Utils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.forms.data.modeller.service.DataObjectFinderService;
+import org.kie.soup.project.datamodel.commons.util.RawMVELEvaluator;
+import org.kie.workbench.common.forms.data.modeller.service.ext.ModelReaderService;
+import org.kie.workbench.common.forms.data.modeller.service.impl.ext.dmo.runtime.RuntimeDMOModelReader;
+import org.kie.workbench.common.forms.data.modeller.service.shared.ModelFinderService;
 import org.kie.workbench.common.forms.editor.service.backend.FormModelHandlerManager;
-import org.kie.workbench.common.forms.editor.service.shared.VFSFormFinderService;
+import org.kie.workbench.common.forms.editor.service.shared.ModuleFormFinderService;
 import org.kie.workbench.common.forms.editor.service.shared.model.FormModelSynchronizationUtil;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.checkBox.definition.CheckBoxFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.decimalBox.definition.DecimalBoxFieldDefinition;
@@ -132,13 +135,15 @@ public class FormDefinitionGeneratorImplTest {
     @Mock
     private FormDefinitionSerializer formDefinitionSerializer;
     @Mock
-    private VFSFormFinderService formFinderService;
+    private ModuleFormFinderService formFinderService;
     @Mock
     private CommentedOptionFactory commentedOptionFactory;
     @Mock
     private FormModelSynchronizationUtil synchronizationUtil;
     @Mock
-    private DataObjectFinderService dataObjectFinderService;
+    private ModelFinderService modelFinderService;
+    @Mock
+    private ModelReaderService<Path> modelReaderService;
 
     private FormDefinitionGeneratorImpl generator;
 
@@ -170,6 +175,7 @@ public class FormDefinitionGeneratorImplTest {
         when(module.getRootPath()).thenReturn(path);
         when(moduleClassLoaderHelper.getModuleClassLoader(module)).thenReturn(moduleClassLoader);
         when(moduleClassLoader.loadClass(anyString())).thenAnswer(invocation -> Object.class);
+        when(modelReaderService.getModelReader(any())).thenReturn(new RuntimeDMOModelReader(moduleClassLoader, new RawMVELEvaluator()));
         BPMNFormModelGenerator bpmnFormModelGenerator = spy(new BPMNFormModelGeneratorImpl(kieModuleService, moduleClassLoaderHelper));
 
         FormModelHandlerManager formModelHandlerManager = new TestFormModelHandlerManager(kieModuleService,
@@ -178,6 +184,7 @@ public class FormDefinitionGeneratorImplTest {
         );
 
         BPMNFormGeneratorService<Path> bpmnFormGeneratorService = new BPMNVFSFormDefinitionGeneratorService(new TestFieldManager(),
+                                                                                                            modelReaderService,
                                                                                                             formModelHandlerManager,
                                                                                                             formFinderService,
                                                                                                             formDefinitionSerializer,
@@ -425,7 +432,7 @@ public class FormDefinitionGeneratorImplTest {
             assertNotNull(property);
             assertEquals(value, property.getTypeInfo().getClassName());
 
-            if(readOnly) {
+            if (readOnly) {
                 MetaDataEntry readOnlyEntry = property.getMetaData().getEntry(FieldReadOnlyEntry.NAME);
                 Assertions.assertThat(readOnlyEntry)
                         .isNotNull()

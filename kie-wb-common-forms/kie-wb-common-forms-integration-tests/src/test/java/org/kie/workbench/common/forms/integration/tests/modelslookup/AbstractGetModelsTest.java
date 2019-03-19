@@ -21,15 +21,23 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 
+import org.guvnor.common.services.project.builder.events.InvalidateDMOModuleCacheEvent;
+import org.guvnor.common.services.project.builder.service.BuildService;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
+import org.jboss.weld.literal.NamedLiteral;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.kie.workbench.common.forms.data.modeller.service.ext.ModelReaderService;
+import org.kie.workbench.common.forms.data.modeller.service.impl.ext.dmo.authoring.ModuleDMOModelReaderService;
 import org.kie.workbench.common.services.backend.project.ModuleClassLoaderHelper;
+import org.kie.workbench.common.services.datamodel.backend.server.cache.LRUModuleDataModelOracleCache;
+import org.kie.workbench.common.services.shared.project.KieModule;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
+import org.uberfire.rpc.SessionInfo;
 
 public abstract class AbstractGetModelsTest {
 
@@ -48,20 +56,31 @@ public abstract class AbstractGetModelsTest {
 
     protected static final URL ROOT_URL = AbstractGetModelsTest.class.getResource(PROJECT_ROOT);
 
+    protected static KieModule module;
     protected static Path rootPath;
 
     protected static WeldContainer weldContainer;
 
+    protected static ModelReaderService<Path> pathModelReaderService;
+
     protected static KieModuleService moduleService;
+    protected static LRUModuleDataModelOracleCache modelOracleCache;
     protected static ModuleClassLoaderHelper classLoaderHelper;
+    protected static SessionInfo sessionInfo;
+    protected static BuildService buildService;
 
     @BeforeClass
     public static void containerSetup() throws Exception {
         weldContainer = new Weld().initialize();
+        pathModelReaderService = weldContainer.select(ModuleDMOModelReaderService.class).get();
         moduleService = weldContainer.select(KieModuleService.class).get();
         classLoaderHelper = weldContainer.select(ModuleClassLoaderHelper.class).get();
+        modelOracleCache = weldContainer.select(LRUModuleDataModelOracleCache.class, new NamedLiteral("ModuleDataModelOracleCache")).get();
+        sessionInfo = weldContainer.select(SessionInfo.class).get();
+        buildService = weldContainer.select(BuildService.class).get();
 
         rootPath = getRootPath(PROJECT_ROOT);
+        module = moduleService.resolveModule(rootPath);
     }
 
     @AfterClass
@@ -78,13 +97,26 @@ public abstract class AbstractGetModelsTest {
     }
 
     protected java.nio.file.Path renameResource(String resourcePath, String newName) throws IOException {
-        final java.nio.file.Path sourcePath = getNioPath(resourcePath);
-        final java.nio.file.Path targetPath = sourcePath.resolveSibling(newName);
-        return Files.move(sourcePath, targetPath);
+        try {
+            final java.nio.file.Path sourcePath = getNioPath(resourcePath);
+            final java.nio.file.Path targetPath = sourcePath.resolveSibling(newName);
+            return Files.move(sourcePath, targetPath);
+        } finally {
+            clearCache();
+        }
     }
 
     protected void deleteResource(String resourcePath) throws URISyntaxException, IOException {
-        Files.delete(getNioPath(resourcePath));
+        try {
+            Files.delete(getNioPath(resourcePath));
+        } finally {
+            clearCache();
+        }
+    }
+
+    protected void clearCache() {
+        modelOracleCache.invalidateModuleCache(new InvalidateDMOModuleCacheEvent(sessionInfo, module, rootPath));
+        buildService.build(module);
     }
 
     protected java.nio.file.Path getNioPath(String pathToConvert) {

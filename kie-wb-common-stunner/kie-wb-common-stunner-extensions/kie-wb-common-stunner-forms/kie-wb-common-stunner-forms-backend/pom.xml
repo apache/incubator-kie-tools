@@ -220,6 +220,12 @@
     </dependency>
 
     <dependency>
+      <groupId>org.kie.workbench.forms</groupId>
+      <artifactId>kie-wb-common-forms-data-modeller-integration-backend</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
       <groupId>org.drools</groupId>
       <artifactId>jbpm-simulation</artifactId>
       <scope>test</scope>

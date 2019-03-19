@@ -22,8 +22,8 @@ import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.property.dmn.QNameFieldType;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.fields.shared.AbstractFieldDefinition;
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.HasPlaceHolder;
 import org.kie.workbench.common.forms.model.FieldDefinition;
+import org.kie.workbench.common.forms.model.HasPlaceHolder;
 
 @Portable
 @Bindable

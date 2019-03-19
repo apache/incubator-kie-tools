@@ -39,7 +39,7 @@ import org.kie.workbench.common.forms.editor.service.backend.FormModelHandlerMan
 import org.kie.workbench.common.forms.editor.service.backend.SourceFormModelNotFoundException;
 import org.kie.workbench.common.forms.editor.service.shared.FormEditorRenderingContext;
 import org.kie.workbench.common.forms.editor.service.shared.FormEditorService;
-import org.kie.workbench.common.forms.editor.service.shared.VFSFormFinderService;
+import org.kie.workbench.common.forms.editor.service.shared.ModuleFormFinderService;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
 import org.kie.workbench.common.forms.model.FormModel;
@@ -71,7 +71,7 @@ public class FormEditorServiceImpl extends KieService<FormModelerContent> implem
     private FieldManager fieldManager;
     private FormModelHandlerManager modelHandlerManager;
     private FormDefinitionSerializer formDefinitionSerializer;
-    private VFSFormFinderService vfsFormFinderService;
+    private ModuleFormFinderService moduleFormFinderService;
     private DeleteService deleteService;
     private RenameService renameService;
     private CopyService copyService;
@@ -89,7 +89,7 @@ public class FormEditorServiceImpl extends KieService<FormModelerContent> implem
                                  FormModelHandlerManager modelHandlerManager,
                                  KieModuleService moduleService,
                                  FormDefinitionSerializer formDefinitionSerializer,
-                                 VFSFormFinderService vfsFormFinderService,
+                                 ModuleFormFinderService moduleFormFinderService,
                                  DeleteService deleteService,
                                  CommentedOptionFactory commentedOptionFactory,
                                  RenameService renameService,
@@ -101,7 +101,7 @@ public class FormEditorServiceImpl extends KieService<FormModelerContent> implem
         this.modelHandlerManager = modelHandlerManager;
         this.moduleService = moduleService;
         this.formDefinitionSerializer = formDefinitionSerializer;
-        this.vfsFormFinderService = vfsFormFinderService;
+        this.moduleFormFinderService = moduleFormFinderService;
         this.commentedOptionFactory = commentedOptionFactory;
         this.deleteService = deleteService;
         this.renameService = renameService;
@@ -234,7 +234,7 @@ public class FormEditorServiceImpl extends KieService<FormModelerContent> implem
                     try {
                         FormModelHandler formModelHandler = modelHandlerOptional.get();
 
-                        formModelHandler.init(form.getModel(), path);
+                        formModelHandler.init(formModel, path);
 
                         formModelHandler.checkSourceModel();
 
@@ -271,7 +271,7 @@ public class FormEditorServiceImpl extends KieService<FormModelerContent> implem
         context.setRootForm(form);
         context.setRenderMode(RenderMode.READ_ONLY_MODE);
 
-        List<FormDefinition> allForms = vfsFormFinderService.findAllForms(formPath);
+        List<FormDefinition> allForms = moduleFormFinderService.findAllForms(formPath);
 
         for (FormDefinition vfsForm : allForms) {
             if (!vfsForm.getId().equals(form.getId())) {

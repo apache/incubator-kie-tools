@@ -58,7 +58,7 @@ public class PackageDataModelFactAnnotationsTest {
         final ClassFactBuilder cb = new ClassFactBuilder(moduleBuilder,
                                                          Product.class,
                                                          false,
-                                                         TypeSource.JAVA_PROJECT);
+                                                         type -> TypeSource.JAVA_PROJECT);
         cb.build(moduleLoader);
 
         //Build PackageDMO
@@ -107,7 +107,7 @@ public class PackageDataModelFactAnnotationsTest {
         final ClassFactBuilder cb = new ClassFactBuilder(moduleBuilder,
                                                          Smurf.class,
                                                          false,
-                                                         TypeSource.JAVA_PROJECT);
+                                                         type -> TypeSource.JAVA_PROJECT);
         cb.build(moduleLoader);
 
         //Build PackageDMO
@@ -166,7 +166,7 @@ public class PackageDataModelFactAnnotationsTest {
         final ClassFactBuilder cb = new ClassFactBuilder(moduleBuilder,
                                                          RoleSmurf.class,
                                                          false,
-                                                         TypeSource.JAVA_PROJECT);
+                                                         type -> TypeSource.JAVA_PROJECT);
         cb.build(moduleLoader);
 
         //Build PackageDMO
@@ -221,7 +221,7 @@ public class PackageDataModelFactAnnotationsTest {
         final ClassFactBuilder cb = new ClassFactBuilder(moduleBuilder,
                                                          Product.class,
                                                          false,
-                                                         TypeSource.JAVA_PROJECT);
+                                                         type -> TypeSource.JAVA_PROJECT);
         cb.build(moduleLoader);
 
         //Build PackageDMO. Defaults to defaultpkg
@@ -267,7 +267,7 @@ public class PackageDataModelFactAnnotationsTest {
         final ClassFactBuilder cb = new ClassFactBuilder(moduleBuilder,
                                                          Smurf.class,
                                                          false,
-                                                         TypeSource.JAVA_PROJECT);
+                                                         type -> TypeSource.JAVA_PROJECT);
         cb.build(moduleLoader);
 
         //Build PackageDMO. Defaults to defaultpkg

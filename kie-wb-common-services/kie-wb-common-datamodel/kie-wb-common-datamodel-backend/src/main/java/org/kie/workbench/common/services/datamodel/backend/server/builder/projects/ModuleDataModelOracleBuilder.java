@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import org.kie.soup.project.datamodel.commons.oracle.ModuleDataModelOracleImpl;
 import org.kie.soup.project.datamodel.commons.util.MVELEvaluator;
@@ -74,32 +75,34 @@ public final class ModuleDataModelOracleBuilder {
         final SimpleFactBuilder builder = new SimpleFactBuilder(this,
                                                                 factType,
                                                                 isEvent,
-                                                                typeSource);
+                                                                type -> typeSource);
         factTypeBuilders.put(factType,
                              builder);
         return builder;
     }
 
+    //Used by tests
     public ModuleDataModelOracleBuilder addClass(final Class clazz) throws IOException {
         return addClass(clazz,
                         false);
     }
 
+    //Used by tests
     public ModuleDataModelOracleBuilder addClass(final Class clazz,
                                                  final boolean isEvent) throws IOException {
         return addClass(clazz,
                         isEvent,
-                        TypeSource.JAVA_PROJECT);
+                        type -> TypeSource.JAVA_PROJECT);
     }
 
     public ModuleDataModelOracleBuilder addClass(final Class clazz,
                                                  final boolean isEvent,
-                                                 final TypeSource typeSource) throws IOException {
+                                                 final Function<String, TypeSource> resolver) throws IOException {
         final FactBuilder builder = new ClassFactBuilder(this,
                                                          discoveredFieldFactBuilders,
                                                          clazz,
                                                          isEvent,
-                                                         typeSource);
+                                                         resolver);
         factTypeBuilders.put(clazz.getName(),
                              builder);
         return this;

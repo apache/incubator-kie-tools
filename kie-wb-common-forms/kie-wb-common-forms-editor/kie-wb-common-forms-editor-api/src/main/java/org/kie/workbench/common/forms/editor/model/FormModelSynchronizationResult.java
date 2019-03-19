@@ -19,7 +19,6 @@ package org.kie.workbench.common.forms.editor.model;
 import java.util.Collection;
 import java.util.List;
 
-import org.kie.workbench.common.forms.editor.model.impl.TypeConflictImpl;
 import org.kie.workbench.common.forms.model.FormModel;
 import org.kie.workbench.common.forms.model.ModelProperty;
 
@@ -56,12 +55,12 @@ public interface FormModelSynchronizationResult {
     /**
      * Returns all type conflicts.
      */
-    Collection<TypeConflictImpl> getPropertyConflicts();
+    Collection<TypeConflict> getPropertyConflicts();
 
     /**
      * Returns the specific conflict for a given property
      */
-    TypeConflictImpl getConflict(String propertyName);
+    TypeConflict getConflict(String propertyName);
 
     /**
      * Removes the conflict for a given propertyName

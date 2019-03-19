@@ -16,9 +16,9 @@
 
 package org.kie.workbench.common.forms.fields.test;
 
-import org.kie.workbench.common.forms.fields.shared.model.meta.entries.FieldPlaceHolderEntryProcessor;
 import org.kie.workbench.common.forms.service.shared.meta.processing.impl.AbstractMetaDataEntryManager;
 import org.kie.workbench.common.forms.service.shared.meta.processing.impl.processors.FieldLabelEntryProcessor;
+import org.kie.workbench.common.forms.service.shared.meta.processing.impl.processors.FieldPlaceHolderEntryProcessor;
 import org.kie.workbench.common.forms.service.shared.meta.processing.impl.processors.FieldReadOnlyEntryProcessor;
 import org.kie.workbench.common.forms.service.shared.meta.processing.impl.processors.FieldRequiredEntryProcessor;
 import org.kie.workbench.common.forms.service.shared.meta.processing.impl.processors.FieldTypeEntryProcessor;

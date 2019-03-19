@@ -27,6 +27,7 @@ import org.kie.workbench.common.services.datamodel.backend.server.service.DataMo
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
+import org.uberfire.java.nio.fs.jgit.JGitFileSystemProviderConfiguration;
 
 abstract public class AbstractDataModelWeldTest {
 
@@ -36,8 +37,8 @@ abstract public class AbstractDataModelWeldTest {
     @Before
     public void setUp() throws Exception {
         // disable git and ssh daemons as they are not needed for the tests
-        System.setProperty("org.uberfire.nio.git.daemon.enabled", "false");
-        System.setProperty("org.uberfire.nio.git.ssh.enabled", "false");
+        System.setProperty(JGitFileSystemProviderConfiguration.GIT_DAEMON_ENABLED, "false");
+        System.setProperty(JGitFileSystemProviderConfiguration.GIT_SSH_ENABLED, "false");
         System.setProperty("org.uberfire.sys.repo.monitor.disabled", "true");
 
         //Bootstrap WELD container

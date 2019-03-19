@@ -15,46 +15,31 @@
  */
 package org.kie.workbench.common.forms.jbpm.server.service.impl;
 
-import java.io.FileInputStream;
-import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.List;
 
-import org.junit.Before;
+import org.guvnor.common.services.project.builder.service.BuildService;
+import org.guvnor.m2repo.backend.server.repositories.ArtifactRepositoryService;
+import org.jboss.weld.environment.se.Weld;
+import org.jboss.weld.environment.se.WeldContainer;
+import org.jboss.weld.literal.NamedLiteral;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.kie.api.io.ResourceType;
 import org.kie.workbench.common.forms.jbpm.model.authoring.JBPMProcessModel;
 import org.kie.workbench.common.services.backend.project.ModuleClassLoaderHelper;
 import org.kie.workbench.common.services.shared.project.KieModule;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
-import org.mockito.stubbing.Answer;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.io.IOService;
-import org.uberfire.java.nio.file.DirectoryStream;
-import org.uberfire.java.nio.file.Files;
-import org.uberfire.java.nio.file.Path;
-import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
+import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
+import org.uberfire.java.nio.fs.jgit.JGitFileSystemProviderConfiguration;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.atLeast;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
 public class BPMFinderServiceImplTest {
-
-    public static final String RESOURCES_PATH = "/definitions/";
 
     private static final int EXPECTED_PROCESSES = 5;
 
@@ -73,70 +58,47 @@ public class BPMFinderServiceImplTest {
     private static final String PROCESS_WITH_WRONG_TYPES = "myProject.process-with-wrong-types";
     private static final int PROCESS_WITH_WRONG_TYPES_TASKS = 1;
 
-    private SimpleFileSystemProvider simpleFileSystemProvider = null;
+    private static final JGitFileSystemProvider fs = new JGitFileSystemProvider();
 
-    private Path rootPath;
+    protected static WeldContainer weldContainer;
 
-    @Mock
-    private IOService ioService;
+    protected static IOService ioService;
+    protected static BuildService buildService;
+    protected static KieModuleService moduleService;
+    protected static ModuleClassLoaderHelper classLoaderHelper;
 
-    @Mock
-    private KieModule module;
+    protected static KieModule currentModule;
+    protected static org.uberfire.backend.vfs.Path currentModulePath;
 
-    @Mock
-    private KieModuleService moduleService;
+    private static BPMFinderServiceImpl bpmFinderService;
 
-    @Mock
-    private ModuleClassLoaderHelper moduleClassLoaderHelper;
+    @BeforeClass
+    public static void setUp() throws Exception {
 
-    @Mock
-    private ClassLoader classLoader;
+        System.setProperty(JGitFileSystemProviderConfiguration.GIT_DAEMON_ENABLED, "false");
+        System.setProperty(JGitFileSystemProviderConfiguration.GIT_SSH_ENABLED, "false");
+        System.setProperty("org.uberfire.sys.repo.monitor.disabled", "true");
 
-    private BPMNFormModelGeneratorImpl bpmnFormModelGenerator;
+        weldContainer = new Weld().initialize();
 
-    private BPMFinderServiceImpl finderService;
+        ioService = weldContainer.select(IOService.class, new NamedLiteral("ioStrategy")).get();
 
-    @Mock
-    private org.uberfire.backend.vfs.Path testPath;
+        moduleService = weldContainer.select(KieModuleService.class).get();
+        classLoaderHelper = weldContainer.select(ModuleClassLoaderHelper.class).get();
+        bpmFinderService = weldContainer.select(BPMFinderServiceImpl.class).get();
 
-    @Before
-    public void initialize() throws URISyntaxException, ClassNotFoundException {
+        fs.forceAsDefault();
 
-        when(ioService.newDirectoryStream(any(),
-                                          any())).thenAnswer(invocationOnMock -> Files.newDirectoryStream((Path) invocationOnMock.getArguments()[0],
-                                                                                                          (DirectoryStream.Filter<Path>) invocationOnMock.getArguments()[1]));
-        when(ioService.newInputStream(any())).thenAnswer(invocationOnMock -> new FileInputStream(((Path) invocationOnMock.getArguments()[0]).toFile()));
-
-        simpleFileSystemProvider = new SimpleFileSystemProvider();
-        simpleFileSystemProvider.forceAsDefault();
-
-        rootPath = simpleFileSystemProvider.getPath(this.getClass().getResource(RESOURCES_PATH).toURI());
-
-        when(moduleService.resolveModule(any())).thenReturn(module);
-        when(module.getRootPath()).thenReturn(Paths.convert(rootPath));
-
-        when(classLoader.loadClass(any())).thenAnswer((Answer<Class>) invocation -> String.class);
-
-        when(moduleClassLoaderHelper.getModuleClassLoader(any())).thenReturn(classLoader);
-
-        bpmnFormModelGenerator = new BPMNFormModelGeneratorImpl(moduleService,
-                                                                moduleClassLoaderHelper);
-
-        finderService = spy(new BPMFinderServiceImpl(ioService,
-                                                     moduleService,
-                                                     bpmnFormModelGenerator));
-
-        finderService.init();
+        buildModules("module");
     }
 
     @Test
     public void testFindAllProcessFormModels() {
-        List<JBPMProcessModel> models = finderService.getAvailableProcessModels(testPath);
+        List<JBPMProcessModel> models = bpmFinderService.getAvailableProcessModels(currentModulePath);
 
         assertNotNull(models);
 
-        assertEquals(EXPECTED_PROCESSES,
-                     models.size());
+        assertEquals(EXPECTED_PROCESSES, models.size());
 
         models.forEach(model -> {
             assertNotNull(model.getProcessFormModel());
@@ -159,12 +121,6 @@ public class BPMFinderServiceImplTest {
                 fail("Unexpected process: " + model.getProcessFormModel().getProcessId());
             }
         });
-
-        ResourceType.getResourceType("BPMN2").getAllExtensions().stream()
-                .forEach(ext -> verify(finderService, times(1))
-                        .scannProcessesForType(any(org.uberfire.backend.vfs.Path.class),
-                                               eq(ext),
-                                               any(BPMFinderServiceImpl.GenerationConfig.class)));
     }
 
     @Test
@@ -193,23 +149,35 @@ public class BPMFinderServiceImplTest {
 
     protected void testFindProcess(String processId,
                                    int expectedTasks) {
-        JBPMProcessModel model = finderService.getModelForProcess(processId,
-                                                                  testPath);
+        JBPMProcessModel model = bpmFinderService.getModelForProcess(processId, currentModulePath);
 
         assertNotNull(model);
 
         assertNotNull(model.getProcessFormModel());
-        assertEquals(processId,
-                     model.getProcessFormModel().getProcessId());
-        assertEquals(expectedTasks,
-                     model.getTaskFormModels().size());
+        assertEquals(processId, model.getProcessFormModel().getProcessId());
+        assertEquals(expectedTasks, model.getTaskFormModels().size());
+    }
 
-        final ArgumentCaptor<String> extCaptor = ArgumentCaptor.forClass(String.class);
-        verify(finderService, atLeast(0)).scannProcessesForType(any(org.uberfire.backend.vfs.Path.class),
-                                                                extCaptor.capture(),
-                                                                any(BPMFinderServiceImpl.GenerationConfig.class));
-        final List<String> extValues = extCaptor.getAllValues();
-        assertFalse(extValues.isEmpty());
-        assertTrue(ResourceType.getResourceType("BPMN2").getAllExtensions().containsAll(extValues));
+    protected static void buildModules(String... moduleFolders) throws Exception {
+        for (String moduleFolder : moduleFolders) {
+            final URL pomUrl = BPMFinderServiceImplTest.class.getResource("/" + moduleFolder + "/pom.xml");
+            final org.uberfire.java.nio.file.Path nioPomPath = ioService.get(pomUrl.toURI());
+
+            currentModulePath = Paths.convert(nioPomPath);
+
+            currentModule = moduleService.resolveModule(currentModulePath);
+        }
+    }
+
+    @AfterClass
+    public static void tearDown() {
+        if (weldContainer != null) {
+            weldContainer.shutdown();
+        }
+
+        System.clearProperty(JGitFileSystemProviderConfiguration.GIT_DAEMON_ENABLED);
+        System.clearProperty(JGitFileSystemProviderConfiguration.GIT_SSH_ENABLED);
+        System.clearProperty("org.uberfire.sys.repo.monitor.disabled");
+        System.clearProperty(ArtifactRepositoryService.ORG_GUVNOR_M2REPO_DIR_PROPERTY);
     }
 }

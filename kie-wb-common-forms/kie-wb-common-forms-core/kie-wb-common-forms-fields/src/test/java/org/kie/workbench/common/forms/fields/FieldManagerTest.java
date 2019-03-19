@@ -33,7 +33,6 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.BasicTypeFi
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.definition.TextAreaFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.type.TextAreaFieldType;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textBox.definition.TextBoxFieldDefinition;
-import org.kie.workbench.common.forms.fields.shared.model.meta.entries.FieldPlaceHolderEntry;
 import org.kie.workbench.common.forms.fields.test.TestFieldManager;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.ModelProperty;
@@ -42,6 +41,7 @@ import org.kie.workbench.common.forms.model.TypeKind;
 import org.kie.workbench.common.forms.model.impl.ModelPropertyImpl;
 import org.kie.workbench.common.forms.model.impl.TypeInfoImpl;
 import org.kie.workbench.common.forms.model.impl.meta.entries.FieldLabelEntry;
+import org.kie.workbench.common.forms.model.impl.meta.entries.FieldPlaceHolderEntry;
 import org.kie.workbench.common.forms.model.impl.meta.entries.FieldReadOnlyEntry;
 import org.kie.workbench.common.forms.model.impl.meta.entries.FieldRequiredEntry;
 import org.kie.workbench.common.forms.model.impl.meta.entries.FieldTypeEntry;

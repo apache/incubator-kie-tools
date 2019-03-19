@@ -18,6 +18,7 @@ package org.kie.workbench.common.services.datamodel.backend.server.cache;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
+
 import javax.inject.Inject;
 
 import org.kie.scanner.KieModuleMetaData;
@@ -131,7 +132,7 @@ public class ModuleDataModelOracleBuilderProvider {
                 Class clazz = this.getClass().getClassLoader().loadClass(item.getType());
                 pdBuilder.addClass(clazz,
                                    false,
-                                   TypeSource.JAVA_DEPENDENCY);
+                                   this::resolveTypeSource);
             } catch (ClassNotFoundException cnfe) {
                 //Class resolution would have happened in Builder and reported as warnings so log error here at debug level to avoid flooding logs
                 log.debug(cnfe.getMessage());
@@ -140,14 +141,13 @@ public class ModuleDataModelOracleBuilderProvider {
             }
         }
 
-        private void addClass(final String packageName,
-                              final String className) {
+        private void addClass(final String packageName, final String className) {
             try {
                 final Class clazz = kieModuleMetaData.getClass(packageName,
                                                                className);
                 pdBuilder.addClass(clazz,
                                    kieModuleMetaData.getTypeMetaInfo(clazz).isEvent(),
-                                   typeSourceResolver.getTypeSource(clazz));
+                                   this::resolveTypeSource);
             } catch (Throwable e) {
                 //Class resolution would have happened in Builder and reported as warnings so log error here at debug level to avoid flooding logs
                 log.debug(e.getMessage());
@@ -156,6 +156,21 @@ public class ModuleDataModelOracleBuilderProvider {
 
         private List<Import> getImports() {
             return importsService.load(project.getImportsPath()).getImports().getImports();
+        }
+
+        private TypeSource resolveTypeSource(String type) {
+            String pkg = "";
+
+            int index = type.lastIndexOf(".");
+
+            if (index != -1) {
+                pkg = type.substring(0, index);
+                type = type.substring(index + 1);
+            }
+
+            final Class clazz = kieModuleMetaData.getClass(pkg, type);
+
+            return typeSourceResolver.getTypeSource(clazz);
         }
     }
 }

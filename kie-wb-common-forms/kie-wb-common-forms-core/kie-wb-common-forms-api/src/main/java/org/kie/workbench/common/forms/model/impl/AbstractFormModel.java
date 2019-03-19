@@ -19,6 +19,7 @@ package org.kie.workbench.common.forms.model.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.forms.model.FormModel;
 import org.kie.workbench.common.forms.model.ModelProperty;
 import org.kie.workbench.common.forms.model.TypeKind;
@@ -48,23 +49,29 @@ public abstract class AbstractFormModel implements FormModel {
     }
 
     @Override
-    public ModelProperty getProperty(String name) {
+    public ModelProperty getProperty(final String name) {
         return properties.stream().filter(property -> property.getName().equals(name)).findFirst().orElse(null);
     }
 
-    public void addProperty(String name,
-                            String className) {
-        properties.add(new ModelPropertyImpl(name,
-                                             new TypeInfoImpl(className)));
+    public void addProperty(final String name,
+                            final String className) {
+        addProperty(new ModelPropertyImpl(name, new TypeInfoImpl(className)));
     }
 
-    public void addProperty(String name,
-                            String className,
-                            TypeKind typeKind,
-                            boolean multiple) {
-        properties.add(new ModelPropertyImpl(name,
-                                             new TypeInfoImpl(typeKind,
-                                                              className,
-                                                              multiple)));
+    public void addProperty(final String name,
+                            final String className,
+                            final TypeKind typeKind,
+                            final boolean multiple) {
+        addProperty(new ModelPropertyImpl(name, new TypeInfoImpl(typeKind, className, multiple)));
+    }
+
+    public void addProperty(final ModelProperty property) {
+        PortablePreconditions.checkNotNull("property", property);
+
+        if (getProperty(property.getName()) != null) {
+            throw new IllegalArgumentException("The model already has a '" + property.getName() + "' property.");
+        }
+
+        properties.add(property);
     }
 }

@@ -25,6 +25,8 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.soup.project.datamodel.commons.util.RawMVELEvaluator;
+import org.kie.workbench.common.forms.data.modeller.service.ext.ModelReaderService;
+import org.kie.workbench.common.forms.data.modeller.service.impl.ext.dmo.runtime.RuntimeDMOModelReader;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.definition.EnumListBoxFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.multipleSubform.definition.MultipleSubFormFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.subForm.definition.SubFormFieldDefinition;
@@ -51,6 +53,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -62,6 +65,9 @@ public abstract class BPMNFormGenerationTest<MODEL extends JBPMFormModel> {
     @Mock
     private ClassLoader classLoader;
 
+    @Mock
+    private ModelReaderService<ClassLoader> modelReaderService;
+
     protected BPMNRuntimeFormGeneratorService generatorService;
 
     protected DynamicBPMNFormGeneratorImpl generator;
@@ -70,8 +76,9 @@ public abstract class BPMNFormGenerationTest<MODEL extends JBPMFormModel> {
 
     @Before
     public void initTest() {
-        generatorService = new BPMNRuntimeFormGeneratorService(new TestFieldManager(),
-                                                               new RawMVELEvaluator());
+        when(modelReaderService.getModelReader(any())).thenReturn(new RuntimeDMOModelReader(classLoader, new RawMVELEvaluator()));
+
+        generatorService = new BPMNRuntimeFormGeneratorService(modelReaderService, new TestFieldManager());
 
         generator = new DynamicBPMNFormGeneratorImpl(generatorService);
     }

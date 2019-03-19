@@ -204,12 +204,6 @@
     <dependency>
       <groupId>org.kie.workbench.forms</groupId>
       <artifactId>kie-wb-common-forms-editor-api</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.kie.workbench.services</groupId>
-          <artifactId>kie-wb-common-data-modeller-core</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
 
     <dependency>

@@ -25,7 +25,6 @@ public class FieldLabelEntry extends AbstractMetaDataEntry<String> {
     public static final String NAME = "field-label";
 
     public FieldLabelEntry(@MapsTo("value") String value) {
-        super(NAME,
-              value);
+        super(NAME, value);
     }
 }

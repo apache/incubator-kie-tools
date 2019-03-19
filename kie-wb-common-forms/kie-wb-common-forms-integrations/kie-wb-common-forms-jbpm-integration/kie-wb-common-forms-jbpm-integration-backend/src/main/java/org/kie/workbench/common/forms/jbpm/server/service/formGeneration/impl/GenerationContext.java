@@ -19,6 +19,7 @@ package org.kie.workbench.common.forms.jbpm.server.service.formGeneration.impl;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.kie.workbench.common.forms.data.modeller.service.ext.ModelReader;
 import org.kie.workbench.common.forms.jbpm.model.authoring.JBPMFormModel;
 import org.kie.workbench.common.forms.model.FormDefinition;
 
@@ -32,10 +33,14 @@ public class GenerationContext<SOURCE> {
 
     private SOURCE source;
 
+    private ModelReader modelReader;
+
     public GenerationContext(JBPMFormModel formModel,
-                             SOURCE source) {
+                             SOURCE source,
+                             ModelReader modelReader) {
         this.formModel = formModel;
         this.source = source;
+        this.modelReader = modelReader;
     }
 
     public JBPMFormModel getFormModel() {
@@ -44,6 +49,10 @@ public class GenerationContext<SOURCE> {
 
     public SOURCE getSource() {
         return source;
+    }
+
+    public ModelReader getModelReader() {
+        return modelReader;
     }
 
     public Map<String, FormDefinition> getContextForms() {

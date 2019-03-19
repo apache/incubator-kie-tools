@@ -17,6 +17,7 @@ package org.kie.workbench.common.services.datamodel.backend.server.builder.proje
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.function.Function;
 
 import org.kie.soup.project.datamodel.oracle.ModelField;
 import org.kie.soup.project.datamodel.oracle.TypeSource;
@@ -29,12 +30,12 @@ public class SimpleFactBuilder extends BaseFactBuilder {
     public SimpleFactBuilder(final ModuleDataModelOracleBuilder builder,
                              final String factType,
                              final boolean isEvent,
-                             final TypeSource typeSource) {
+                             final Function<String, TypeSource> typeSourceResolver) {
         super(builder,
               factType,
               false,
               isEvent,
-              typeSource);
+              typeSourceResolver);
     }
 
     public SimpleFactBuilder addField(final ModelField field) {

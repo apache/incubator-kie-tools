@@ -18,11 +18,16 @@ package org.kie.workbench.common.forms.jbpm.server.service.formGeneration.impl.r
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.soup.project.datamodel.commons.util.RawMVELEvaluator;
+import org.kie.workbench.common.forms.data.modeller.service.ext.ModelReader;
+import org.kie.workbench.common.forms.data.modeller.service.impl.ext.dmo.runtime.RuntimeDMOModelReader;
 import org.kie.workbench.common.forms.jbpm.server.service.formGeneration.model.Client;
 import org.kie.workbench.common.forms.jbpm.server.service.formGeneration.model.Expense;
 import org.kie.workbench.common.forms.jbpm.server.service.formGeneration.model.Line;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.stubbing.Answer;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -31,6 +36,8 @@ public class NestedFormsBPMNRuntimeFormDefinitionGeneratorServiceTest extends BP
 
     @Override
     public void setup() {
+        when(modelReaderService.getModelReader(any())).thenAnswer((Answer<ModelReader>) invocationOnMock -> new RuntimeDMOModelReader((ClassLoader) invocationOnMock.getArguments()[0], new RawMVELEvaluator()));
+
         super.setup();
     }
 

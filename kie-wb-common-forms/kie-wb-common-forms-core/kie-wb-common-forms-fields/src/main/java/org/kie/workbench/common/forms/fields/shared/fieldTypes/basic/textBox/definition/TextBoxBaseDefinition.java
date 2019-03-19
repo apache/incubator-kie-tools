@@ -19,9 +19,9 @@ package org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textBox.de
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.fields.shared.AbstractFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.HasMaxLength;
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.HasPlaceHolder;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textBox.type.TextBoxFieldType;
 import org.kie.workbench.common.forms.model.FieldDefinition;
+import org.kie.workbench.common.forms.model.HasPlaceHolder;
 
 public abstract class TextBoxBaseDefinition extends AbstractFieldDefinition implements HasMaxLength,
                                                                                        HasPlaceHolder {

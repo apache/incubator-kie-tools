@@ -25,9 +25,9 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSettings;
 import org.kie.workbench.common.forms.fields.shared.AbstractFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.HasMaxLength;
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.HasPlaceHolder;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.integerBox.type.IntegerBoxFieldType;
 import org.kie.workbench.common.forms.model.FieldDefinition;
+import org.kie.workbench.common.forms.model.HasPlaceHolder;
 
 @Portable
 @Bindable

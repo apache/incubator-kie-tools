@@ -30,12 +30,12 @@ import java.util.function.Predicate;
 
 import org.jboss.errai.common.client.api.Assert;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.BasicTypeFieldProvider;
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.HasPlaceHolder;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.EntityRelationField;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.multipleSubform.definition.MultipleSubFormFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.subForm.definition.SubFormFieldDefinition;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FieldType;
+import org.kie.workbench.common.forms.model.HasPlaceHolder;
 import org.kie.workbench.common.forms.model.MetaDataEntry;
 import org.kie.workbench.common.forms.model.ModelProperty;
 import org.kie.workbench.common.forms.model.TypeInfo;

@@ -26,7 +26,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.data.modeller.client.resources.i18n.DataModellerIntegrationConstants;
 import org.kie.workbench.common.forms.data.modeller.model.DataObjectFormModel;
-import org.kie.workbench.common.forms.data.modeller.service.DataObjectFormModelCreationService;
+import org.kie.workbench.common.forms.data.modeller.service.shared.ModelFinderService;
+import org.mockito.Mock;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.mocks.CallerMock;
 
@@ -39,9 +40,10 @@ import static org.mockito.Mockito.when;
 @RunWith(GwtMockitoTestRunner.class)
 public class DataObjectFormModelCreationPresenterTest {
 
-    private DataObjectFormModelCreationService dataObjectFormModelCreationService;
+    @Mock
+    private ModelFinderService modelFinderService;
 
-    private CallerMock<DataObjectFormModelCreationService> dataObjectFormModelCreationServiceCallerMock;
+    private CallerMock<ModelFinderService> modelFinderServiceCallerMock;
 
     private DataObjectFormModelCreationView view;
 
@@ -58,26 +60,20 @@ public class DataObjectFormModelCreationPresenterTest {
 
         path = mock(Path.class);
 
-        formModels.add(new DataObjectFormModel("employee",
-                                               "org.kie.wb.test.Employee"));
-        formModels.add(new DataObjectFormModel("address",
-                                               "org.kie.wb.test.Address"));
-        formModels.add(new DataObjectFormModel("company",
-                                               "org.kie.wb.test.Company"));
-        formModels.add(new DataObjectFormModel("department",
-                                               "org.kie.wb.test.Department"));
+        formModels.add(new DataObjectFormModel("employee", "org.kie.wb.test.Employee"));
+        formModels.add(new DataObjectFormModel("address", "org.kie.wb.test.Address"));
+        formModels.add(new DataObjectFormModel("company", "org.kie.wb.test.Company"));
+        formModels.add(new DataObjectFormModel("department", "org.kie.wb.test.Department"));
 
-        dataObjectFormModelCreationService = mock(DataObjectFormModelCreationService.class);
+        when(modelFinderService.getModuleModels(path)).thenReturn(formModels);
 
-        when(dataObjectFormModelCreationService.getAvailableDataObjects(path)).thenReturn(formModels);
-
-        dataObjectFormModelCreationServiceCallerMock = new CallerMock<>(dataObjectFormModelCreationService);
+        modelFinderServiceCallerMock = new CallerMock<>(modelFinderService);
 
         view = mock(DataObjectFormModelCreationView.class);
 
         translationService = mock(TranslationService.class);
 
-        presenter = new DataObjectFormModelCreationPresenterManager(dataObjectFormModelCreationServiceCallerMock,
+        presenter = new DataObjectFormModelCreationPresenterManager(modelFinderServiceCallerMock,
                                                                     view,
                                                                     translationService);
     }
@@ -94,7 +90,7 @@ public class DataObjectFormModelCreationPresenterTest {
         presenter.getLabel();
         verify(translationService).getTranslation(DataModellerIntegrationConstants.DataObject);
 
-        verify(dataObjectFormModelCreationService).getAvailableDataObjects(path);
+        verify(modelFinderService).getModuleModels(path);
         verify(view).setFormModels(formModels);
 
         boolean valid = presenter.isValid();
@@ -103,7 +99,6 @@ public class DataObjectFormModelCreationPresenterTest {
         verify(translationService).getTranslation(DataModellerIntegrationConstants.InvalidDataObject);
 
         presenter.getFormModel();
-        verify(view,
-               times(2)).getSelectedFormModel();
+        verify(view, times(2)).getSelectedFormModel();
     }
 }

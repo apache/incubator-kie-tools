@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import org.kie.soup.project.datamodel.commons.oracle.ModuleDataModelOracleImpl;
 import org.kie.soup.project.datamodel.oracle.DataType;
@@ -39,17 +40,17 @@ public abstract class BaseFactBuilder implements FactBuilder {
 
     private final boolean isCollection;
     private final boolean isEvent;
-    protected final TypeSource typeSource;
+    protected final Function<String, TypeSource> typeSourceResolver;
 
     public BaseFactBuilder(final ModuleDataModelOracleBuilder builder,
                            final Class<?> clazz,
                            final boolean isEvent,
-                           final TypeSource typeSource) {
+                           final Function<String, TypeSource> typeSourceResolver) {
         this.builder = builder;
         this.type = getFullClassName(clazz);
         this.isCollection = isCollection(clazz);
         this.isEvent = isEvent;
-        this.typeSource = typeSource;
+        this.typeSourceResolver = typeSourceResolver;
 
         addField(new ModelField(DataType.TYPE_THIS,
                                 type,
@@ -63,12 +64,12 @@ public abstract class BaseFactBuilder implements FactBuilder {
                            final String type,
                            final boolean isCollection,
                            final boolean isEvent,
-                           final TypeSource typeSource) {
+                           final Function<String, TypeSource> typeSourceResolver) {
         this.builder = builder;
         this.type = type;
         this.isCollection = isCollection;
         this.isEvent = isEvent;
-        this.typeSource = typeSource;
+        this.typeSourceResolver = typeSourceResolver;
 
         addField(new ModelField(DataType.TYPE_THIS,
                                 type,
@@ -137,8 +138,7 @@ public abstract class BaseFactBuilder implements FactBuilder {
 
     private Map<String, TypeSource> buildTypeSources() {
         final Map<String, TypeSource> loadableTypeSources = new HashMap<String, TypeSource>();
-        loadableTypeSources.put(type,
-                                typeSource);
+        loadableTypeSources.put(type, typeSourceResolver.apply(type));
         return loadableTypeSources;
     }
 }

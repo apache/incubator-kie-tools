@@ -19,8 +19,8 @@ package org.kie.workbench.common.dmn.client.property.dmn;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.HasPlaceHolder;
 import org.kie.workbench.common.forms.model.FieldDefinition;
+import org.kie.workbench.common.forms.model.HasPlaceHolder;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 

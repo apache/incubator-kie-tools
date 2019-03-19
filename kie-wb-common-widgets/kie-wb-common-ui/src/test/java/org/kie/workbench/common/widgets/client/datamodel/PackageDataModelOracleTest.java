@@ -765,7 +765,7 @@ public class PackageDataModelOracleTest {
                                                          new HashMap<String, FactBuilder>(),
                                                          TestDirectRecursionClass.class,
                                                          false,
-                                                         TypeSource.JAVA_PROJECT);
+                                                         type -> TypeSource.JAVA_PROJECT);
         cb.build(moduleLoader);
 
         //Build PackageDMO
@@ -822,7 +822,7 @@ public class PackageDataModelOracleTest {
                                                          new HashMap<String, FactBuilder>(),
                                                          TestIndirectRecursionClassA.class,
                                                          false,
-                                                         TypeSource.JAVA_PROJECT);
+                                                         type -> TypeSource.JAVA_PROJECT);
         cb.build(moduleLoader);
 
         //Build PackageDMO

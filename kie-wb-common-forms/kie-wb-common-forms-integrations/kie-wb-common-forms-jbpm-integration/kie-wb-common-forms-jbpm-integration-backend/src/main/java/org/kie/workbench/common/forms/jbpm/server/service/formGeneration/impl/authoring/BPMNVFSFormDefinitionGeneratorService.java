@@ -25,17 +25,16 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
+import org.kie.workbench.common.forms.data.modeller.service.ext.ModelReaderService;
 import org.kie.workbench.common.forms.editor.model.FormModelSynchronizationResult;
 import org.kie.workbench.common.forms.editor.service.backend.FormModelHandler;
 import org.kie.workbench.common.forms.editor.service.backend.FormModelHandlerManager;
-import org.kie.workbench.common.forms.editor.service.shared.VFSFormFinderService;
+import org.kie.workbench.common.forms.editor.service.shared.ModuleFormFinderService;
 import org.kie.workbench.common.forms.editor.service.shared.model.FormModelSynchronizationUtil;
 import org.kie.workbench.common.forms.editor.type.FormResourceTypeDefinition;
 import org.kie.workbench.common.forms.jbpm.server.service.formGeneration.impl.AbstractBPMNFormGeneratorService;
 import org.kie.workbench.common.forms.jbpm.server.service.formGeneration.impl.GenerationContext;
-import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
-import org.kie.workbench.common.forms.model.JavaFormModel;
 import org.kie.workbench.common.forms.service.shared.FieldManager;
 import org.kie.workbench.common.forms.services.backend.serialization.FormDefinitionSerializer;
 import org.kie.workbench.common.forms.services.backend.util.UIDGenerator;
@@ -53,7 +52,7 @@ public class BPMNVFSFormDefinitionGeneratorService extends AbstractBPMNFormGener
 
     private FormModelHandlerManager formModelHandlerManager;
 
-    private VFSFormFinderService formFinderService;
+    private ModuleFormFinderService formFinderService;
 
     private FormDefinitionSerializer formSerializer;
 
@@ -64,14 +63,15 @@ public class BPMNVFSFormDefinitionGeneratorService extends AbstractBPMNFormGener
     private FormModelSynchronizationUtil formModelSynchronizationUtil;
 
     @Inject
-    public BPMNVFSFormDefinitionGeneratorService(FieldManager fieldManager,
-                                                 FormModelHandlerManager formModelHandlerManager,
-                                                 VFSFormFinderService formFinderService,
-                                                 FormDefinitionSerializer formSerializer,
-                                                 @Named("ioStrategy") IOService ioService,
-                                                 CommentedOptionFactory commentedOptionFactory,
-                                                 FormModelSynchronizationUtil formModelSynchronizationUtil) {
-        super(fieldManager);
+    public BPMNVFSFormDefinitionGeneratorService(final FieldManager fieldManager,
+                                                 final ModelReaderService<Path> modelReaderService,
+                                                 final FormModelHandlerManager formModelHandlerManager,
+                                                 final ModuleFormFinderService formFinderService,
+                                                 final FormDefinitionSerializer formSerializer,
+                                                 final @Named("ioStrategy") IOService ioService,
+                                                 final CommentedOptionFactory commentedOptionFactory,
+                                                 final FormModelSynchronizationUtil formModelSynchronizationUtil) {
+        super(modelReaderService, fieldManager);
         this.formModelHandlerManager = formModelHandlerManager;
         this.formFinderService = formFinderService;
         this.formSerializer = formSerializer;
@@ -149,18 +149,6 @@ public class BPMNVFSFormDefinitionGeneratorService extends AbstractBPMNFormGener
                         commentedOptionFactory.makeCommentedOption("Automatically generated form"));
 
         return form;
-    }
-
-    @Override
-    protected List<FieldDefinition> extractModelFields(JavaFormModel formModel,
-                                                       GenerationContext<Path> context) {
-        FormModelHandler handler = formModelHandlerManager.getFormModelHandler(formModel.getClass());
-
-        handler.init(formModel, context.getSource());
-
-        handler.synchronizeFormModel();
-
-        return formModel.getProperties().stream().map(fieldManager::getDefinitionByModelProperty).collect(Collectors.toList());
     }
 
     @Override

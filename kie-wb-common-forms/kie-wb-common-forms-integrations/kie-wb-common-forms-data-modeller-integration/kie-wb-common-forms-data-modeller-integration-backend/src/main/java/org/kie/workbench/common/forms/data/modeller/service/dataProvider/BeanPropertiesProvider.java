@@ -24,7 +24,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
-import org.kie.workbench.common.forms.data.modeller.service.DataObjectFinderService;
+import org.kie.workbench.common.forms.data.modeller.service.shared.ModelFinderService;
 import org.kie.workbench.common.forms.dynamic.model.config.SelectorData;
 import org.kie.workbench.common.forms.dynamic.model.config.SystemSelectorDataProvider;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
@@ -36,11 +36,11 @@ import org.uberfire.backend.vfs.Path;
 @Dependent
 public class BeanPropertiesProvider implements SystemSelectorDataProvider {
 
-    private DataObjectFinderService dataObjectFinderService;
+    private ModelFinderService modelFinderService;
 
     @Inject
-    public BeanPropertiesProvider(DataObjectFinderService dataObjectFinderService) {
-        this.dataObjectFinderService = dataObjectFinderService;
+    public BeanPropertiesProvider(ModelFinderService modelFinderService) {
+        this.modelFinderService = modelFinderService;
     }
 
     @Override
@@ -72,13 +72,12 @@ public class BeanPropertiesProvider implements SystemSelectorDataProvider {
                         unavailableProperties.remove(currentMeta.getProperty());
                     }
 
-                    dataObjectFinderService.getDataObjectProperties(typeName,
-                                                                    path).stream().filter(property -> !unavailableProperties.contains(property.getName())).forEachOrdered(property -> values.put(property.getName(),
-                                                                                                                                                                                                 property.getName()));
+                    modelFinderService.getModel(typeName, path).getProperties().stream()
+                            .filter(property -> !unavailableProperties.contains(property.getName()))
+                            .forEachOrdered(property -> values.put(property.getName(), property.getName()));
                 }
             }
         }
-        return new SelectorData(values,
-                                null);
+        return new SelectorData(values,null);
     }
 }

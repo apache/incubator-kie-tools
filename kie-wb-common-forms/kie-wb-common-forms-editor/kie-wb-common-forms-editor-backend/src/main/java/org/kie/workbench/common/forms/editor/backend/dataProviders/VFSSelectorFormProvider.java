@@ -26,7 +26,7 @@ import org.kie.workbench.common.forms.dynamic.model.config.SelectorData;
 import org.kie.workbench.common.forms.dynamic.model.config.SystemSelectorDataProvider;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.forms.editor.service.shared.FormEditorRenderingContext;
-import org.kie.workbench.common.forms.editor.service.shared.VFSFormFinderService;
+import org.kie.workbench.common.forms.editor.service.shared.ModuleFormFinderService;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.EntityRelationField;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
@@ -34,7 +34,7 @@ import org.kie.workbench.common.forms.model.FormDefinition;
 public class VFSSelectorFormProvider implements SystemSelectorDataProvider {
 
     @Inject
-    private VFSFormFinderService vfsFormFinderService;
+    private ModuleFormFinderService moduleFormFinderService;
 
     @Override
     public String getProviderName() {
@@ -52,10 +52,10 @@ public class VFSSelectorFormProvider implements SystemSelectorDataProvider {
 
             List<FormDefinition> forms;
             if (field != null) {
-                forms = vfsFormFinderService.findFormsForType(field.getStandaloneClassName(),
-                                                              editorContext.getFormPath());
+                forms = moduleFormFinderService.findFormsForType(field.getStandaloneClassName(),
+                                                                 editorContext.getFormPath());
             } else {
-                forms = vfsFormFinderService.findAllForms(editorContext.getFormPath());
+                forms = moduleFormFinderService.findAllForms(editorContext.getFormPath());
             }
 
             for (FormDefinition form : forms) {

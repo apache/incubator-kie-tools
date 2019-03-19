@@ -34,7 +34,7 @@ public class ModuleDataModelFactFieldsGenericsTest {
         final ModuleDataModelOracleBuilder builder = ModuleDataModelOracleBuilder.newModuleOracleBuilder(new RawMVELEvaluator());
         final ModuleDataModelOracleImpl oracle = new ModuleDataModelOracleImpl();
 
-        final ClassFactBuilder cb = new ClassFactBuilder(builder, ProductOrder.class, false, TypeSource.JAVA_PROJECT);
+        final ClassFactBuilder cb = new ClassFactBuilder(builder, ProductOrder.class, false, type -> TypeSource.JAVA_PROJECT);
         cb.build(oracle);
 
         assertEquals(1, oracle.getModuleModelFields().size());

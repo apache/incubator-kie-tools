@@ -29,21 +29,17 @@ public interface BPMNFormModelGenerator {
     /**
      * Generates a {@link BusinessProcessFormModel} for the given Definitions
      */
-    BusinessProcessFormModel generateProcessFormModel(Definitions source,
-                                                      Path path);
+    BusinessProcessFormModel generateProcessFormModel(Definitions source, Path path);
 
     /**
      * Generates a List with all the {@link TaskFormModel} on the given Definitions
      */
-    List<TaskFormModel> generateTaskFormModels(Definitions source,
-                                               Path path);
+    List<TaskFormModel> generateTaskFormModels(Definitions source, Path path);
 
     /**
      * Generates the {@link TaskFormModel} on the Definitions for a given taskId
      */
-    TaskFormModel generateTaskFormModel(Definitions source,
-                                        String taskId,
-                                        Path path);
+    TaskFormModel generateTaskFormModel(Definitions source, String taskId, Path path);
 
     /**
      * Gets the Process from the Definitions

@@ -16,32 +16,22 @@
 
 package org.kie.workbench.common.forms.data.modeller.service.impl;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.kie.workbench.common.forms.data.modeller.model.DataObjectFormModel;
-import org.kie.workbench.common.forms.data.modeller.service.DataObjectFinderService;
+import org.kie.workbench.common.forms.data.modeller.service.shared.ModelFinderService;
 import org.kie.workbench.common.forms.editor.backend.service.impl.AbstractFormModelHandler;
 import org.kie.workbench.common.forms.editor.service.backend.FormModelHandler;
 import org.kie.workbench.common.forms.editor.service.backend.SourceFormModelNotFoundException;
-import org.kie.workbench.common.forms.fields.shared.model.meta.entries.FieldPlaceHolderEntry;
 import org.kie.workbench.common.forms.model.ModelProperty;
-import org.kie.workbench.common.forms.model.impl.meta.entries.FieldLabelEntry;
 import org.kie.workbench.common.forms.service.shared.FieldManager;
-import org.kie.workbench.common.screens.datamodeller.model.maindomain.MainDomainAnnotations;
 import org.kie.workbench.common.services.backend.project.ModuleClassLoaderHelper;
-import org.kie.workbench.common.services.datamodeller.core.Annotation;
-import org.kie.workbench.common.services.datamodeller.core.DataObject;
-import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.uberfire.backend.vfs.Path;
 
 @Dependent
 public class DataObjectFormModelHandler extends AbstractFormModelHandler<DataObjectFormModel> {
@@ -50,44 +40,23 @@ public class DataObjectFormModelHandler extends AbstractFormModelHandler<DataObj
     private static final String FULL_KEY = "DataObjectFormModelHandler.fullMessage";
     private static final String DATA_OBJECT_KEY = "DataObjectFormModelHandler.dataObject";
 
-    public static final String SERIAL_VERSION_UID = "serialVersionUID";
-    public static final String[] RESTRICTED_PROPERTY_NAMES = new String[]{SERIAL_VERSION_UID};
-
-    public static final String PERSISTENCE_ANNOTATION = "javax.persistence.Id";
-    public static final String[] RESTRICTED_ANNOTATIONS = new String[]{PERSISTENCE_ANNOTATION};
-
     private static final Logger logger = LoggerFactory.getLogger(DataObjectFormModelHandler.class);
 
-    protected DataObjectFinderService finderService;
+    private ModelFinderService finderService;
 
-    protected DataObject dataObject;
+    private DataObjectFormModel updatedFormModel;
 
     protected FieldManager fieldManager;
 
     @Inject
-    public DataObjectFormModelHandler(KieModuleService moduleService,
-                                      ModuleClassLoaderHelper classLoaderHelper,
-                                      DataObjectFinderService finderService,
-                                      FieldManager fieldManager) {
-        super(moduleService,
-              classLoaderHelper);
+    public DataObjectFormModelHandler(final KieModuleService moduleService,
+                                      final ModuleClassLoaderHelper classLoaderHelper,
+                                      final ModelFinderService finderService,
+                                      final FieldManager fieldManager) {
+        super(moduleService, classLoaderHelper);
 
-        this.finderService = finderService;
         this.fieldManager = fieldManager;
-    }
-
-    public static boolean isValidDataObjectProperty(final ObjectProperty property) {
-        if (ArrayUtils.contains(RESTRICTED_PROPERTY_NAMES,
-                                property.getName())) {
-            return false;
-        }
-
-        for (String annotation : RESTRICTED_ANNOTATIONS) {
-            if (property.getAnnotation(annotation) != null) {
-                return false;
-            }
-        }
-        return true;
+        this.finderService = finderService;
     }
 
     @Override
@@ -99,14 +68,14 @@ public class DataObjectFormModelHandler extends AbstractFormModelHandler<DataObj
     protected void initialize() {
         checkInitialized();
 
-        dataObject = finderService.getDataObject(formModel.getClassName(), path);
+        updatedFormModel = finderService.getModel(formModel.getClassName(), path);
     }
 
     @Override
     public void checkSourceModel() throws SourceFormModelNotFoundException {
         checkInitialized();
 
-        if (dataObject == null) {
+        if (updatedFormModel == null) {
             String[] params = new String[]{formModel.getClassName()};
 
             throw new SourceFormModelNotFoundException(SHORT_KEY, params, FULL_KEY, params, DATA_OBJECT_KEY, formModel);
@@ -114,50 +83,13 @@ public class DataObjectFormModelHandler extends AbstractFormModelHandler<DataObj
     }
 
     @Override
-    protected void log(String message,
-                       Exception e) {
+    protected void log(String message, Exception e) {
         logger.warn(message, e);
     }
 
     @Override
     protected List<ModelProperty> getCurrentModelProperties() {
-        return getDataObjectProperties(dataObject);
-    }
-
-    public DataObjectFormModel createFormModel(DataObject dataObject, Path path) {
-        this.path = path;
-
-        initClassLoader();
-
-        DataObjectFormModel formModel = new DataObjectFormModel(dataObject.getName(),
-                                                                dataObject.getClassName());
-
-        formModel.getProperties().clear();
-
-        formModel.getProperties().addAll(getDataObjectProperties(dataObject));
-
-        return formModel;
-    }
-
-    protected List<ModelProperty> getDataObjectProperties(DataObject dataObject) {
-        List<ModelProperty> properties = new ArrayList<>();
-        dataObject.getProperties().forEach(property -> {
-            if (isValidDataObjectProperty(property)) {
-                Optional<ModelProperty> optional = createModelProperty(property.getName(),
-                                                                       property.getClassName(),
-                                                                       property.isMultiple());
-
-                if (optional.isPresent()) {
-                    ModelProperty modelProperty = optional.get();
-
-                    extractMetaData(property,
-                                    modelProperty);
-
-                    properties.add(modelProperty);
-                }
-            }
-        });
-        return properties;
+        return updatedFormModel.getProperties();
     }
 
     @Override
@@ -166,15 +98,5 @@ public class DataObjectFormModelHandler extends AbstractFormModelHandler<DataObj
                                               classLoaderHelper,
                                               finderService,
                                               fieldManager);
-    }
-
-    private void extractMetaData(ObjectProperty property,
-                                 ModelProperty modelProperty) {
-        Annotation labelAnnotation = property.getAnnotation(MainDomainAnnotations.LABEL_ANNOTATION);
-        if (labelAnnotation != null) {
-            String label = labelAnnotation.getValue(MainDomainAnnotations.VALUE_PARAM).toString();
-            modelProperty.getMetaData().addEntry(new FieldLabelEntry(label));
-            modelProperty.getMetaData().addEntry(new FieldPlaceHolderEntry(label));
-        }
     }
 }

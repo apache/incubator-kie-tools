@@ -45,7 +45,7 @@ public class ModuleDataModelFactFieldsAnnotationsTest {
         final ClassFactBuilder cb = new ClassFactBuilder(builder,
                                                          Product.class,
                                                          false,
-                                                         TypeSource.JAVA_PROJECT);
+                                                         type -> TypeSource.JAVA_PROJECT);
         cb.build(oracle);
 
         assertEquals(1,
@@ -67,7 +67,7 @@ public class ModuleDataModelFactFieldsAnnotationsTest {
         final ClassFactBuilder cb = new ClassFactBuilder(builder,
                                                          SmurfHouse.class,
                                                          false,
-                                                         TypeSource.JAVA_PROJECT);
+                                                         type -> TypeSource.JAVA_PROJECT);
         cb.build(oracle);
 
         assertEquals(1,
@@ -121,7 +121,7 @@ public class ModuleDataModelFactFieldsAnnotationsTest {
         final ClassFactBuilder cb = new ClassFactBuilder(builder,
                                                          SmurfMajorHouse.class,
                                                          false,
-                                                         TypeSource.JAVA_PROJECT);
+                                                         type -> TypeSource.JAVA_PROJECT);
         cb.build(oracle);
 
         assertEquals(1,

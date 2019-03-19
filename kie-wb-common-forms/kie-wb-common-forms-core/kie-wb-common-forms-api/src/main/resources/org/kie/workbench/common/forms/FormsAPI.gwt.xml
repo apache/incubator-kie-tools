@@ -10,5 +10,7 @@
   <inherits name="org.uberfire.ext.layout.editor.UberfireLayoutEditorAPI"/>
   <inherits name="org.kie.workbench.common.forms.service.FormsAPIServiceShared"/>
 
+  <inherits name="org.kie.soup.commons.KIESoupCommons"/>
+
   <source path="model"/>
 </module>

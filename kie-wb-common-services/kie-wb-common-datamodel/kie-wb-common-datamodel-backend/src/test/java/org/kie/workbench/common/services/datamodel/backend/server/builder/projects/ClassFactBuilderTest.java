@@ -33,7 +33,7 @@ public class ClassFactBuilderTest {
         final ClassFactBuilder cb = new ClassFactBuilder(builder,
                                                          PapaSmurf.class,
                                                          false,
-                                                         TypeSource.JAVA_PROJECT);
+                                                         type -> TypeSource.JAVA_PROJECT);
         cb.build(oracle);
 
         assertEquals(2, oracle.getModuleSuperTypes().get(PapaSmurf.class.getName()).size());

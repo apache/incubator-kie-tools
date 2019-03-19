@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.forms.integration.tests.formgeneration;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -23,21 +25,23 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.google.common.collect.Iterables;
+import org.apache.commons.io.IOUtils;
 import org.eclipse.bpmn2.Definitions;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.soup.project.datamodel.commons.util.RawMVELEvaluator;
 import org.kie.workbench.common.forms.commons.shared.layout.FormLayoutTemplateGenerator;
 import org.kie.workbench.common.forms.commons.shared.layout.impl.StaticFormLayoutTemplateGenerator;
-import org.kie.workbench.common.forms.data.modeller.service.DataObjectFinderService;
-import org.kie.workbench.common.forms.data.modeller.service.impl.DataObjectFinderServiceImpl;
-import org.kie.workbench.common.forms.editor.backend.service.impl.VFSFormFinderServiceImpl;
+import org.kie.workbench.common.forms.data.modeller.service.ext.ModelReaderService;
+import org.kie.workbench.common.forms.data.modeller.service.impl.ext.dmo.runtime.RuntimeDMOModelReader;
+import org.kie.workbench.common.forms.data.modeller.service.shared.ModelFinderService;
 import org.kie.workbench.common.forms.editor.client.editor.FormEditorHelper;
 import org.kie.workbench.common.forms.editor.model.FormModelerContent;
 import org.kie.workbench.common.forms.editor.service.backend.FormModelHandlerManager;
-import org.kie.workbench.common.forms.editor.service.shared.VFSFormFinderService;
+import org.kie.workbench.common.forms.editor.service.shared.ModuleFormFinderService;
 import org.kie.workbench.common.forms.editor.service.shared.model.FormModelSynchronizationUtil;
 import org.kie.workbench.common.forms.editor.service.shared.model.impl.FormModelSynchronizationUtilImpl;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.checkBox.type.CheckBoxFieldType;
@@ -52,6 +56,8 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.subForm
 import org.kie.workbench.common.forms.fields.test.TestFieldManager;
 import org.kie.workbench.common.forms.fields.test.TestMetaDataEntryManager;
 import org.kie.workbench.common.forms.integration.tests.TestUtils;
+import org.kie.workbench.common.forms.integration.tests.formgeneration.model.FormGenerationTest_DataObject;
+import org.kie.workbench.common.forms.integration.tests.formgeneration.model.FormGenerationTest_NestedObject;
 import org.kie.workbench.common.forms.jbpm.model.authoring.AbstractJBPMFormModel;
 import org.kie.workbench.common.forms.jbpm.model.authoring.document.provider.DocumentFieldProvider;
 import org.kie.workbench.common.forms.jbpm.model.authoring.document.type.DocumentFieldType;
@@ -69,20 +75,12 @@ import org.kie.workbench.common.forms.services.backend.serialization.FormDefinit
 import org.kie.workbench.common.forms.services.backend.serialization.impl.FieldSerializer;
 import org.kie.workbench.common.forms.services.backend.serialization.impl.FormDefinitionSerializerImpl;
 import org.kie.workbench.common.forms.services.backend.serialization.impl.FormModelSerializer;
-import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
-import org.kie.workbench.common.screens.datamodeller.service.ServiceException;
 import org.kie.workbench.common.services.backend.project.ModuleClassLoaderHelper;
-import org.kie.workbench.common.services.datamodeller.core.DataModel;
-import org.kie.workbench.common.services.datamodeller.driver.FilterHolder;
-import org.kie.workbench.common.services.datamodeller.driver.ModelDriver;
-import org.kie.workbench.common.services.datamodeller.driver.ModelDriverException;
-import org.kie.workbench.common.services.datamodeller.driver.impl.JavaRoasterModelDriver;
-import org.kie.workbench.common.services.datamodeller.driver.model.ModelDriverResult;
 import org.kie.workbench.common.services.shared.project.KieModule;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.uberfire.backend.server.util.Paths;
+import org.mockito.stubbing.Answer;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.ext.layout.editor.api.editor.LayoutRow;
@@ -92,36 +90,43 @@ import org.uberfire.java.nio.base.options.CommentedOption;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.workbench.common.forms.jbpm.model.authoring.document.type.DocumentFieldType.DOCUMENT_TYPE;
+import static org.kie.workbench.common.forms.jbpm.server.service.formGeneration.impl.AbstractBPMNFormGeneratorService.generateNestedFormName;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FormGenerationIntegrationTest {
 
-    private static final String
-            TEXTBOX_FIELDTYPE = new TextBoxFieldType().getTypeName(),
-            INTEGERBOX_FIELDTYPE = new IntegerBoxFieldType().getTypeName(),
-            CHECKBOX_FIELDTYPE = new CheckBoxFieldType().getTypeName(),
-            DECIMALBOX_FIELDTYPE = new DecimalBoxFieldType().getTypeName(),
-            TEXTAREA_FIELDTYPE = new TextAreaFieldType().getTypeName(),
-            SUBFORM_FIELDTYPE = new SubFormFieldType().getTypeName(),
-            DOCUMENT_FIELDTYPE = new DocumentFieldType().getTypeName(),
-            MULTIPLESUBFORM_FIELDTYPE = new MultipleSubFormFieldType().getTypeName(),
-            TEXBOX_FIELDTYPE = new TextBoxFieldType().getTypeName(),
-            DATEPICKER_FIELDTYPE = new DatePickerFieldType().getTypeName(),
-            PROCESS_NAME = "FormGenerationTest_Process",
-            DATAOBJECT_FORM_ID = "ff9db399-fb46-4b3f-894a-81673dd5421c",
-            DATA_OBJECTS_FOLDER = "model",
-            PREPARED_NESTED_FORMS_FOLDER = "nestedforms",
-            JAVA_MODEL_FOLDER = "data-object-sources",
-            DEFINITIONS_FOLDER = "definitions",
-            DEFINITION_PATH = DEFINITIONS_FOLDER + "/" + PROCESS_NAME + ".bpmn2";
+    private static final String TEXTBOX_FIELDTYPE = new TextBoxFieldType().getTypeName();
+    private static final String INTEGERBOX_FIELDTYPE = new IntegerBoxFieldType().getTypeName();
+    private static final String CHECKBOX_FIELDTYPE = new CheckBoxFieldType().getTypeName();
+    private static final String DECIMALBOX_FIELDTYPE = new DecimalBoxFieldType().getTypeName();
+    private static final String TEXTAREA_FIELDTYPE = new TextAreaFieldType().getTypeName();
+    private static final String SUBFORM_FIELDTYPE = new SubFormFieldType().getTypeName();
+    private static final String DOCUMENT_FIELDTYPE = new DocumentFieldType().getTypeName();
+    private static final String MULTIPLESUBFORM_FIELDTYPE = new MultipleSubFormFieldType().getTypeName();
+    private static final String TEXBOX_FIELDTYPE = new TextBoxFieldType().getTypeName();
+    private static final String DATEPICKER_FIELDTYPE = new DatePickerFieldType().getTypeName();
+    private static final String PROCESS_NAME = "FormGenerationTest_Process";
+    private static final String DATAOBJECT_FORM_ID = "ff9db399-fb46-4b3f-894a-81673dd5421c";
+    private static final String DATA_OBJECTS_FOLDER = "model";
+    private static final String PREPARED_NESTED_FORMS_FOLDER = "nestedforms";
+    private static final String DEFINITIONS_FOLDER = "definitions";
+    private static final String DEFINITION_PATH = DEFINITIONS_FOLDER + "/" + PROCESS_NAME + ".bpmn2";
+
+    private static final String DATA_OBJECT_FORM = PREPARED_NESTED_FORMS_FOLDER + "/FormGenerationTest_DataObject.frm";
+    private static final String NESTED_OBJECT_FORM = PREPARED_NESTED_FORMS_FOLDER + "/FormGenerationTest_NestedObject.frm";
 
     private static BPMNVFSFormDefinitionGeneratorService service;
 
     private static FieldManager fieldManager;
     private static FormModelHandlerManager formModelHandlerManager;
-    private static VFSFormFinderService formFinderService;
+    @Mock
+    private static ModelReaderService<Path> pathModelReaderService;
+
+    @Mock
+    private static ModuleFormFinderService formFinderService;
     private static FormDefinitionSerializer formSerializer;
     private static IOService ioService;
     @Mock
@@ -137,8 +142,6 @@ public class FormGenerationIntegrationTest {
     private static ModuleClassLoaderHelper moduleClassLoaderHelper;
     private static FormLayoutTemplateGenerator templateGenerator;
     private static BPMNFormModelGeneratorImpl generator;
-    private static Path rootPathWithNestedForms;
-    private static Path rootPathWithoutNestedForms;
     private static Definitions formGenerationProcessDefinitions;
 
     @Mock
@@ -150,15 +153,10 @@ public class FormGenerationIntegrationTest {
     private static List<TaskFormModel> taskFormModels;
 
     @Mock
-    private static DataModelerService dataModelerService;
-    private static DataObjectFinderService finderService;
-    private static DataModel dataModel;
-
-    @Mock
-    private static FilterHolder filterHolder;
+    private static ModelFinderService finderService;
 
     @BeforeClass
-    public static void setup() throws ClassNotFoundException {
+    public static void setup() {
         FormModelPropertiesUtil.registerBaseType(DOCUMENT_TYPE);
         FormModelPropertiesUtil.registerBaseType(DocumentFieldType.DOCUMENT_IMPL_TYPE);
         fieldManager = new TestFieldManager() {{
@@ -185,24 +183,21 @@ public class FormGenerationIntegrationTest {
 
     @Before
     public void init() {
-        final String nestedformsUri = getUriOfResource(PREPARED_NESTED_FORMS_FOLDER);
-        final String modelUri = getUriOfResource(JAVA_MODEL_FOLDER);
-
-        rootPathWithNestedForms = PathFactory.newPath(DATA_OBJECTS_FOLDER, nestedformsUri);
-        rootPathWithoutNestedForms = PathFactory.newPath(DATA_OBJECTS_FOLDER, modelUri);
-
-        finderService = new DataObjectFinderServiceImpl(moduleService, dataModelerService);
 
         formModelHandlerManager = new TestFormModelHandlerManager(moduleService,
                                                                   moduleClassLoaderHelper,
                                                                   fieldManager,
                                                                   finderService);
 
-        formFinderService = new VFSFormFinderServiceImpl(ioService,
-                                                         moduleService,
-                                                         formSerializer);
+        when(pathModelReaderService.getModelReader(any())).thenReturn(new RuntimeDMOModelReader(moduleClassLoader, new RawMVELEvaluator()));
+
+        when(formFinderService.findFormsForType(anyString(), any())).then((Answer<List<FormDefinition>>) invocationOnMock -> {
+            String type = invocationOnMock.getArguments()[0].toString();
+            return Collections.singletonList(readFormDefinitionForType(type));
+        });
 
         service = new BPMNVFSFormDefinitionGeneratorService(fieldManager,
+                                                            pathModelReaderService,
                                                             formModelHandlerManager,
                                                             formFinderService,
                                                             formSerializer,
@@ -213,10 +208,12 @@ public class FormGenerationIntegrationTest {
         when(moduleService.resolveModule(any())).thenReturn(module);
         when(moduleClassLoaderHelper.getModuleClassLoader(any())).thenReturn(moduleClassLoader);
 
-        generator = new BPMNFormModelGeneratorImpl(moduleService,
-                                                   moduleClassLoaderHelper);
-        processFormModel = generator.generateProcessFormModel(formGenerationProcessDefinitions,
-                                                              rootPathWithNestedForms);
+        generator = new BPMNFormModelGeneratorImpl(moduleService, moduleClassLoaderHelper);
+
+        final Path rootPathWithNestedForms = PathFactory.newPath(DATA_OBJECTS_FOLDER, getUriOfResource(PREPARED_NESTED_FORMS_FOLDER));
+        ;
+
+        processFormModel = generator.generateProcessFormModel(formGenerationProcessDefinitions, rootPathWithNestedForms);
         taskFormModels = generator.generateTaskFormModels(formGenerationProcessDefinitions, rootPathWithNestedForms);
     }
 
@@ -226,7 +223,6 @@ public class FormGenerationIntegrationTest {
 
     @Test
     public void ProcessFormIsCorrectlyGenerated() {
-        when(module.getRootPath()).thenReturn(rootPathWithNestedForms);
 
         final FormGenerationResult formGenerationResult = generateForm("new_formmodeler.FormGenerationTest_Process-taskform.frm", processFormModel);
 
@@ -248,7 +244,6 @@ public class FormGenerationIntegrationTest {
 
     @Test
     public void inputTaskFormIsCorrectlyGenerated() {
-        when(module.getRootPath()).thenReturn(rootPathWithNestedForms);
 
         final FormGenerationResult formGenerationResult = generateForm("FormGenerationTest_TaskOnlyWithInputs-taskform.frm", taskFormModels.get(2));
 
@@ -279,7 +274,6 @@ public class FormGenerationIntegrationTest {
 
     @Test
     public void differentIOTaskFormIsCorrectlyGenerated() {
-        when(module.getRootPath()).thenReturn(rootPathWithNestedForms);
 
         final FormGenerationResult formGenerationResult = generateForm("FormGenerationTest_TaskWithDifferentInputsAndOutputs-taskform.frm", taskFormModels.get(0));
 
@@ -311,7 +305,6 @@ public class FormGenerationIntegrationTest {
 
     @Test
     public void sameIOTaskFormIsCorrectlyGenerated() {
-        when(module.getRootPath()).thenReturn(rootPathWithNestedForms);
 
         final FormGenerationResult formGenerationResult = generateForm("FormGenerationTest_TaskWithTheSameInputsAndOutputs-taskform.frm", taskFormModels.get(3));
 
@@ -333,7 +326,6 @@ public class FormGenerationIntegrationTest {
 
     @Test
     public void twinTaskFormIsCorrectlyGenerated() {
-        when(module.getRootPath()).thenReturn(rootPathWithNestedForms);
 
         final FormGenerationResult formGenerationResult = generateForm("FormGenerationTest_TwinTasks-taskform.frm", taskFormModels.get(4));
 
@@ -358,19 +350,8 @@ public class FormGenerationIntegrationTest {
 
     @Test
     public void testNestedFormsGeneration() {
-        when(module.getRootPath()).thenReturn(rootPathWithoutNestedForms);
+        when(formFinderService.findFormsForType(anyString(), any())).thenReturn(Collections.EMPTY_LIST);
 
-        ModelDriver modelDriver = new JavaRoasterModelDriver(ioService,
-                                                             Paths.convert(rootPathWithoutNestedForms),
-                                                             moduleClassLoader,
-                                                             filterHolder);
-        try {
-            ModelDriverResult result = modelDriver.loadModel();
-            dataModel = result.getDataModel();
-        } catch (ModelDriverException e) {
-            throw new ServiceException("It was not possible to load model for URI: " + rootPathWithoutNestedForms.toURI(), e);
-        }
-        when(dataModelerService.loadModel(module)).thenReturn(dataModel);
         when(commentedOptionFactory.makeCommentedOption(any())).thenReturn(commentedOption);
 
         final FormGenerationResult formGenerationResult = generateForm("FormGenerationTest_TwinTasks-taskform.frm", taskFormModels.get(4));
@@ -426,11 +407,11 @@ public class FormGenerationIntegrationTest {
         assertThat(nestedForms.size()).as("Unexpected number of nested forms").isEqualTo(2);
 
         final FormDefinition dataObjectForm = Iterables.getOnlyElement(nestedForms.stream()
-                                                                               .filter(f -> f.getName().equals("FormGenerationTest_DataObject"))
+                                                                               .filter(f -> f.getName().equals(generateNestedFormName(FormGenerationTest_DataObject.class.getName())))
                                                                                .collect(Collectors.toList()));
 
         final FormDefinition nestedDataObjectForm = Iterables.getOnlyElement(nestedForms.stream()
-                                                                                     .filter(f -> f.getName().equals("FormGenerationTest_NestedObject"))
+                                                                                     .filter(f -> f.getName().equals(generateNestedFormName(FormGenerationTest_NestedObject.class.getName())))
                                                                                      .collect(Collectors.toList()));
 
         final String dataObjectFormID = dataObjectForm.getId();
@@ -463,7 +444,7 @@ public class FormGenerationIntegrationTest {
         List<String> actualRootFormFields = form.getFields().stream()
                 .flatMap(field -> Stream.of(field.getName(), field.getFieldType().getTypeName()))
                 .collect(Collectors.toList());
-        assertThat(actualRootFormFields).containsExactlyElementsOf(expectedFormFields);
+        assertThat(actualRootFormFields).containsExactlyInAnyOrder(expectedFormFields.stream().toArray(String[]::new));
     }
 
     private void testAllFieldsAreAddedToLayout(FormDefinition form) {
@@ -501,5 +482,23 @@ public class FormGenerationIntegrationTest {
 
     private String getUriOfResource(String resourceName) {
         return FormGenerationIntegrationTest.class.getResource(resourceName).toString();
+    }
+
+    private FormDefinition readFormDefinitionForType(String type) {
+        if (type.equals(FormGenerationTest_DataObject.class.getName())) {
+            return readFormDefinition(DATA_OBJECT_FORM);
+        } else if (type.equals(FormGenerationTest_NestedObject.class.getName())) {
+            return readFormDefinition(NESTED_OBJECT_FORM);
+        }
+        return null;
+    }
+
+    private FormDefinition readFormDefinition(String path) {
+        try {
+            String content = IOUtils.toString(getClass().getResourceAsStream(path), Charset.defaultCharset());
+            return formSerializer.deserialize(content);
+        } catch (IOException e) {
+        }
+        return null;
     }
 }

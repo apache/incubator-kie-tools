@@ -58,7 +58,7 @@ public class PackageDataModelFactFieldsAnnotationsTest {
         final ClassFactBuilder cb = new ClassFactBuilder(moduleBuilder,
                                                          Product.class,
                                                          false,
-                                                         TypeSource.JAVA_PROJECT);
+                                                         type -> TypeSource.JAVA_PROJECT);
         cb.build(moduleLoader);
 
         //Build PackageDMO
@@ -107,7 +107,7 @@ public class PackageDataModelFactFieldsAnnotationsTest {
         final ClassFactBuilder cb = new ClassFactBuilder(moduleBuilder,
                                                          SmurfHouse.class,
                                                          false,
-                                                         TypeSource.JAVA_PROJECT);
+                                                         type -> TypeSource.JAVA_PROJECT);
         cb.build(moduleLoader);
 
         //Build PackageDMO
@@ -183,7 +183,7 @@ public class PackageDataModelFactFieldsAnnotationsTest {
         final ClassFactBuilder cb = new ClassFactBuilder(moduleBuilder,
                                                          Product.class,
                                                          false,
-                                                         TypeSource.JAVA_PROJECT);
+                                                         type -> TypeSource.JAVA_PROJECT);
         cb.build(moduleLoader);
 
         //Build PackageDMO. Defaults to defaultpkg
@@ -229,7 +229,7 @@ public class PackageDataModelFactFieldsAnnotationsTest {
         final ClassFactBuilder cb = new ClassFactBuilder(moduleBuilder,
                                                          SmurfHouse.class,
                                                          false,
-                                                         TypeSource.JAVA_PROJECT);
+                                                         type -> TypeSource.JAVA_PROJECT);
         cb.build(moduleLoader);
 
         //Build PackageDMO. Defaults to defaultpkg

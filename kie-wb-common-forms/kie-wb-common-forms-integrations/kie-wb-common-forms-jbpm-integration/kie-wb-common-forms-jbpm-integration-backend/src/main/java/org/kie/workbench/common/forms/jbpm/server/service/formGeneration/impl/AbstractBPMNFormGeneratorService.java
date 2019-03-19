@@ -28,7 +28,7 @@ import org.kie.workbench.common.forms.adf.engine.shared.formGeneration.layout.La
 import org.kie.workbench.common.forms.adf.service.definitions.layout.LayoutColumnDefinition;
 import org.kie.workbench.common.forms.adf.service.definitions.layout.LayoutSettings;
 import org.kie.workbench.common.forms.commons.shared.layout.impl.StaticFormLayoutTemplateGenerator;
-import org.kie.workbench.common.forms.data.modeller.model.DataObjectFormModel;
+import org.kie.workbench.common.forms.data.modeller.service.ext.ModelReaderService;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.EntityRelationField;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.HasNestedForm;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.IsCRUDDefinition;
@@ -58,13 +58,15 @@ public abstract class AbstractBPMNFormGeneratorService<SOURCE> implements BPMNFo
     private static final String INPUTS = "<h3>Inputs:</h3>";
     private static final String OUTPUTS = "<h3>Outputs:</h3>";
 
+    protected ModelReaderService<SOURCE> modelReaderService;
     protected FieldManager fieldManager;
 
     static {
         bannedModelTypes.add(Object.class.getName());
     }
 
-    public AbstractBPMNFormGeneratorService(FieldManager fieldManager) {
+    public AbstractBPMNFormGeneratorService(ModelReaderService<SOURCE> modelReaderService, FieldManager fieldManager) {
+        this.modelReaderService = modelReaderService;
         this.fieldManager = fieldManager;
     }
 
@@ -75,7 +77,7 @@ public abstract class AbstractBPMNFormGeneratorService<SOURCE> implements BPMNFo
             throw new IllegalArgumentException("FormModel cannot be null");
         }
 
-        GenerationContext<SOURCE> context = new GenerationContext<>(formModel, source);
+        GenerationContext<SOURCE> context = new GenerationContext<>(formModel, source, modelReaderService.getModelReader(source));
 
         FormDefinition rootForm = createRootFormDefinition(context);
 
@@ -276,49 +278,48 @@ public abstract class AbstractBPMNFormGeneratorService<SOURCE> implements BPMNFo
 
     protected FormDefinition createModelFormDefinition(final String modelType, final GenerationContext<SOURCE> context) {
 
-        FormDefinition form = context.getContextForms().get(modelType);
+        Optional<FormDefinition> optional = Optional.ofNullable(context.getContextForms().get(modelType));
 
-        if (form == null) {
+        return optional.orElseGet(() -> createNewFormDefinition(modelType, context));
+    }
 
-            if(bannedModelTypes.contains(modelType)) {
-                throw new IllegalArgumentException("Cannot extract fields for '" + modelType + "'");
-            }
+    private FormDefinition createNewFormDefinition(final String modelType, final GenerationContext<SOURCE> context) {
 
-            String modelName = modelType.substring(modelType.lastIndexOf(".") + 1);
-
-            String formModelName = modelName;
-            formModelName = formModelName.substring(0, 1).toLowerCase() + formModelName.substring(1);
-
-            DataObjectFormModel formModel = new DataObjectFormModel(formModelName, modelType);
-
-            form = new FormDefinition(formModel);
-
-            form.setId(UIDGenerator.generateUID());
-            form.setName(modelName);
-
-            // TODO: extract model properties & generate fields
-            List<FieldDefinition> fields = extractModelFields(formModel, context);
-
-            List<FieldDefinition> fieldsToRemove = fields.stream()
-                    .filter(field -> !processFieldDefinition(field, context))
-                    .collect(Collectors.toList());
-
-            fields.removeAll(fieldsToRemove);
-
-            form.getFields().addAll(fields);
-
-            createFormLayout(form);
-
-            context.getContextForms().put(modelType, form);
+        if(bannedModelTypes.contains(modelType)) {
+            throw new IllegalArgumentException("Cannot extract fields for '" + modelType + "'");
         }
+
+        JavaFormModel formModel = context.getModelReader().readFormModel(modelType);
+
+        final FormDefinition form = new FormDefinition(formModel);
+
+        form.setId(UIDGenerator.generateUID());
+        form.setName(generateNestedFormName(formModel.getType()));
+
+        formModel.getProperties().forEach(property -> {
+            form.getFields().add(fieldManager.getDefinitionByModelProperty(property));
+        });
+
+        List<FieldDefinition> fieldsToRemove = form.getFields().stream()
+                .filter(field -> !processFieldDefinition(field, context))
+                .collect(Collectors.toList());
+
+        form.getFields().removeAll(fieldsToRemove);
+
+        createFormLayout(form);
+
+        context.getContextForms().put(modelType, form);
+
         return form;
+    }
+
+    public static String generateNestedFormName(String className) {
+        return className.replaceAll("\\.", "_");
     }
 
     protected abstract boolean supportsEmptyNestedForms();
 
     protected abstract FormDefinition createRootFormDefinition(GenerationContext<SOURCE> context);
-
-    protected abstract List<FieldDefinition> extractModelFields(JavaFormModel formModel, GenerationContext<SOURCE> context);
 
     protected abstract void log(String message, Exception ex);
 

@@ -52,7 +52,7 @@ public class ModuleDataModelDeclaredTypesTest extends AbstractDataModelWeldTest 
                      oracle.getModuleTypeSources().get("t1p1.DRLBean"));
         assertEquals(TypeSource.JAVA_PROJECT,
                      oracle.getModuleTypeSources().get("t1p2.Bean2"));
-        assertEquals(TypeSource.JAVA_PROJECT,
+        assertEquals(TypeSource.JAVA_DEPENDENCY,
                      oracle.getModuleTypeSources().get("java.lang.String"));
     }
 }

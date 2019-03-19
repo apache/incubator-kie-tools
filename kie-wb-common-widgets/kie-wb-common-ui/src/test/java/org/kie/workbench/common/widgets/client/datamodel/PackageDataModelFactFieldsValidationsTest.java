@@ -64,7 +64,7 @@ public class PackageDataModelFactFieldsValidationsTest {
         final ClassFactBuilder cb = new ClassFactBuilder(moduleBuilder,
                                                          clazz,
                                                          false,
-                                                         TypeSource.JAVA_PROJECT);
+                                                         type -> TypeSource.JAVA_PROJECT);
         cb.build(moduleLoader);
 
         //Build PackageDMO

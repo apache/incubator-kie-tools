@@ -19,13 +19,13 @@ package org.kie.workbench.common.forms.migration.tool.pipelines.basic.impl.adapt
 import java.util.function.Consumer;
 
 import org.apache.commons.lang3.StringUtils;
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.HasPlaceHolder;
 import org.kie.workbench.common.forms.migration.legacy.model.Field;
 import org.kie.workbench.common.forms.migration.tool.FormMigrationSummary;
 import org.kie.workbench.common.forms.migration.tool.pipelines.basic.FieldAdapter;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
 import org.kie.workbench.common.forms.model.FormLayoutComponent;
+import org.kie.workbench.common.forms.model.HasPlaceHolder;
 import org.kie.workbench.common.forms.model.impl.ModelPropertyImpl;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 

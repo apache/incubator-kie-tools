@@ -24,6 +24,7 @@ import java.util.Map;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.forms.editor.model.FormModelSynchronizationResult;
+import org.kie.workbench.common.forms.editor.model.TypeConflict;
 import org.kie.workbench.common.forms.model.ModelProperty;
 
 @Portable
@@ -33,7 +34,7 @@ public class FormModelSynchronizationResultImpl implements FormModelSynchronizat
 
     private List<ModelProperty> removedProperties = new ArrayList<>();
 
-    private Map<String, TypeConflictImpl> conflicts = new HashMap<>();
+    private Map<String, TypeConflict> conflicts = new HashMap<>();
 
     private List<ModelProperty> previousProperties;
 
@@ -62,16 +63,16 @@ public class FormModelSynchronizationResultImpl implements FormModelSynchronizat
         return removedProperties;
     }
 
-    public Collection<TypeConflictImpl> getPropertyConflicts() {
+    public Collection<TypeConflict> getPropertyConflicts() {
         return conflicts.values();
     }
 
-    public Map<String, TypeConflictImpl> getConflicts() {
+    public Map<String, TypeConflict> getConflicts() {
         return conflicts;
     }
 
     @Override
-    public TypeConflictImpl getConflict(String propertyName) {
+    public TypeConflict getConflict(String propertyName) {
         return conflicts.get(propertyName);
     }
 

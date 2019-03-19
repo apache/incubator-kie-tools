@@ -18,9 +18,9 @@ package org.kie.workbench.common.forms.fields.shared.fieldTypes;
 
 import org.junit.Test;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.HasMaxLength;
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.HasPlaceHolder;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.HasRows;
 import org.kie.workbench.common.forms.model.FieldDefinition;
+import org.kie.workbench.common.forms.model.HasPlaceHolder;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

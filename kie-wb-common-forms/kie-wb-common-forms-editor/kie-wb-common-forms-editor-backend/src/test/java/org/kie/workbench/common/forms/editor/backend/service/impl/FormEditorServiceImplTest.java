@@ -37,7 +37,7 @@ import org.kie.workbench.common.forms.editor.model.FormModelerContent;
 import org.kie.workbench.common.forms.editor.service.backend.FormModelHandler;
 import org.kie.workbench.common.forms.editor.service.backend.FormModelHandlerManager;
 import org.kie.workbench.common.forms.editor.service.backend.SourceFormModelNotFoundException;
-import org.kie.workbench.common.forms.editor.service.shared.VFSFormFinderService;
+import org.kie.workbench.common.forms.editor.service.shared.ModuleFormFinderService;
 import org.kie.workbench.common.forms.editor.type.FormResourceTypeDefinition;
 import org.kie.workbench.common.forms.fields.test.TestFieldManager;
 import org.kie.workbench.common.forms.fields.test.TestMetaDataEntryManager;
@@ -125,7 +125,7 @@ public class FormEditorServiceImplTest {
     private FormDefinitionSerializer formDefinitionSerializer;
 
     @Mock
-    private VFSFormFinderService vfsFormFinderService;
+    private ModuleFormFinderService moduleFormFinderService;
 
     @Mock
     private DeleteService deleteService;
@@ -166,7 +166,7 @@ public class FormEditorServiceImplTest {
                                                           modelHandlerManager,
                                                           moduleService,
                                                           formDefinitionSerializer,
-                                                          vfsFormFinderService,
+                                                          moduleFormFinderService,
                                                           deleteService,
                                                           commentedOptionFactory,
                                                           renameService,

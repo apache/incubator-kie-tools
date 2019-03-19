@@ -56,10 +56,10 @@ public class ModuleDataModelOracleUtilsTest {
             ModuleDataModelOracleBuilder dmoBuilder = ModuleDataModelOracleBuilder.newModuleOracleBuilder(new RawMVELEvaluator());
 
             dmoBuilder.addPackage(TEST_PACKAGE);
-            dmoBuilder.addClass(ExternalPojo1.class, false, TypeSource.JAVA_DEPENDENCY);
-            dmoBuilder.addClass(ExternalPojo2.class, false, TypeSource.JAVA_DEPENDENCY);
-            dmoBuilder.addClass(ExternalEnum1.class, false, TypeSource.JAVA_DEPENDENCY);
-            dmoBuilder.addClass(ExternalEnum2.class, false, TypeSource.JAVA_DEPENDENCY);
+            dmoBuilder.addClass(ExternalPojo1.class, false, type -> TypeSource.JAVA_DEPENDENCY);
+            dmoBuilder.addClass(ExternalPojo2.class, false, type -> TypeSource.JAVA_DEPENDENCY);
+            dmoBuilder.addClass(ExternalEnum1.class, false, type -> TypeSource.JAVA_DEPENDENCY);
+            dmoBuilder.addClass(ExternalEnum2.class, false, type -> TypeSource.JAVA_DEPENDENCY);
 
             dataModelOracle = dmoBuilder.build();
         } catch (Exception e) {

@@ -153,7 +153,7 @@ public class FormModelSynchronizationUtilImplTest {
     @Test
     public void testTypeConflictProperties() {
 
-        Map<String, TypeConflictImpl> conflicts = formModelSynchronizationResult.getConflicts();
+        Map<String, TypeConflict> conflicts = formModelSynchronizationResult.getConflicts();
 
         ModelProperty name = formModel.getProperty("name");
         assertNotNull(name);

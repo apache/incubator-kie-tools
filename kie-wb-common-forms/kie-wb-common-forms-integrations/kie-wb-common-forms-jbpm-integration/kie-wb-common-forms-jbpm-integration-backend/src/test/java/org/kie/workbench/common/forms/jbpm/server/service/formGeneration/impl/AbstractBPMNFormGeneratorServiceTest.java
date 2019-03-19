@@ -21,9 +21,9 @@ import java.util.Date;
 import java.util.List;
 
 import org.kie.workbench.common.forms.data.modeller.model.DataObjectFormModel;
+import org.kie.workbench.common.forms.data.modeller.service.ext.ModelReaderService;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.datePicker.definition.DatePickerFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.decimalBox.definition.DecimalBoxFieldDefinition;
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.integerBox.definition.IntegerBoxFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textBox.definition.TextBoxFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.multipleSubform.definition.MultipleSubFormFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.subForm.definition.SubFormFieldDefinition;
@@ -41,6 +41,7 @@ import org.kie.workbench.common.forms.model.TypeKind;
 import org.kie.workbench.common.forms.model.impl.ModelPropertyImpl;
 import org.kie.workbench.common.forms.model.impl.TypeInfoImpl;
 import org.kie.workbench.common.forms.service.shared.FieldManager;
+import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -65,34 +66,27 @@ public abstract class AbstractBPMNFormGeneratorServiceTest<SERVICE extends Abstr
 
     protected SOURCE source;
 
+    @Mock
+    protected ModelReaderService<SOURCE> modelReaderService;
+
     protected void checkSimpleVariableForms() {
         List<ModelProperty> properties = new ArrayList<>();
 
-        properties.add(new ModelPropertyImpl(TEXT_VARIABLE,
-                                             new TypeInfoImpl(String.class.getName())));
-        properties.add(new ModelPropertyImpl(INTEGER_VARIABLE,
-                                             new TypeInfoImpl(Integer.class.getName())));
-        properties.add(new ModelPropertyImpl(DOUBLE_VARIABLE,
-                                             new TypeInfoImpl(Double.class.getName())));
-        properties.add(new ModelPropertyImpl(BOOLEAN_VARIABLE,
-                                             new TypeInfoImpl(Boolean.class.getName())));
-        properties.add(new ModelPropertyImpl(DATE_VARIABLE,
-                                             new TypeInfoImpl(Date.class.getName())));
+        properties.add(new ModelPropertyImpl(TEXT_VARIABLE, new TypeInfoImpl(String.class.getName())));
+        properties.add(new ModelPropertyImpl(INTEGER_VARIABLE, new TypeInfoImpl(Integer.class.getName())));
+        properties.add(new ModelPropertyImpl(DOUBLE_VARIABLE, new TypeInfoImpl(Double.class.getName())));
+        properties.add(new ModelPropertyImpl(BOOLEAN_VARIABLE, new TypeInfoImpl(Boolean.class.getName())));
+        properties.add(new ModelPropertyImpl(DATE_VARIABLE, new TypeInfoImpl(Date.class.getName())));
 
-        BusinessProcessFormModel model = new BusinessProcessFormModel(PROCESS_ID,
-                                                                      PROCESS_ID,
-                                                                      properties);
+        BusinessProcessFormModel model = new BusinessProcessFormModel(PROCESS_ID, PROCESS_ID, properties);
 
-        FormGenerationResult result = service.generateForms(model,
-                                                            source);
+        FormGenerationResult result = service.generateForms(model, source);
 
         assertNotNull(result);
         assertNotNull(result.getRootForm());
         assertTrue(result.getNestedForms().isEmpty());
 
-        checkRootForm(model,
-                      result,
-                      properties);
+        checkRootForm(model, result, properties);
     }
 
     protected void checkRootForm(JBPMFormModel model,
@@ -181,67 +175,46 @@ public abstract class AbstractBPMNFormGeneratorServiceTest<SERVICE extends Abstr
     }
 
     protected void testExpenseForm(FormDefinition form) {
-        assertEquals(4,
-                     form.getFields().size());
-        IntegerBoxFieldDefinition id = (IntegerBoxFieldDefinition) form.getFieldByBinding("id");
-        assertNotNull(id);
-        assertEquals(Long.class.getName(),
-                     id.getStandaloneClassName());
+        assertEquals(3, form.getFields().size());
         DatePickerFieldDefinition date = (DatePickerFieldDefinition) form.getFieldByBinding("date");
         assertNotNull(date);
-        assertEquals(Date.class.getName(),
-                     date.getStandaloneClassName());
+        assertEquals(Date.class.getName(), date.getStandaloneClassName());
         SubFormFieldDefinition client = (SubFormFieldDefinition) form.getFieldByBinding("client");
         assertNotNull(client);
         assertNotNull(client.getNestedForm());
-        assertEquals(Client.class.getName(),
-                     client.getStandaloneClassName());
+        assertEquals(Client.class.getName(), client.getStandaloneClassName());
         MultipleSubFormFieldDefinition lines = (MultipleSubFormFieldDefinition) form.getFieldByBinding("lines");
         assertNotNull(lines);
         assertNotNull(lines.getCreationForm());
         assertNotNull(lines.getEditionForm());
-        assertEquals(lines.getEditionForm(),
-                     lines.getCreationForm());
+        assertEquals(lines.getEditionForm(), lines.getCreationForm());
         assertFalse(lines.getColumnMetas().isEmpty());
-        assertEquals(Line.class.getName(),
-                     lines.getStandaloneClassName());
+        assertEquals(Line.class.getName(), lines.getStandaloneClassName());
     }
 
     protected void testClientForm(FormDefinition form) {
-        assertEquals(3,
-                     form.getFields().size());
-        IntegerBoxFieldDefinition id = (IntegerBoxFieldDefinition) form.getFieldByBinding("id");
-        assertNotNull(id);
-        assertEquals(Long.class.getName(),
-                     id.getStandaloneClassName());
+        assertEquals(2, form.getFields().size());
+
         TextBoxFieldDefinition name = (TextBoxFieldDefinition) form.getFieldByBinding("name");
         assertNotNull(name);
-        assertEquals(String.class.getName(),
-                     name.getStandaloneClassName());
+        assertEquals(String.class.getName(), name.getStandaloneClassName());
+
         TextBoxFieldDefinition lastName = (TextBoxFieldDefinition) form.getFieldByBinding("lastName");
         assertNotNull(lastName);
-        assertEquals(String.class.getName(),
-                     lastName.getStandaloneClassName());
+        assertEquals(String.class.getName(), lastName.getStandaloneClassName());
     }
 
     protected void testLineForm(FormDefinition form) {
-        assertEquals(4,
-                     form.getFields().size());
-        IntegerBoxFieldDefinition id = (IntegerBoxFieldDefinition) form.getFieldByBinding("id");
-        assertNotNull(id);
-        assertEquals(Long.class.getName(),
-                     id.getStandaloneClassName());
+        assertEquals(3, form.getFields().size());
+
         TextBoxFieldDefinition product = (TextBoxFieldDefinition) form.getFieldByBinding("product");
         assertNotNull(product);
-        assertEquals(String.class.getName(),
-                     product.getStandaloneClassName());
+        assertEquals(String.class.getName(), product.getStandaloneClassName());
         DatePickerFieldDefinition date = (DatePickerFieldDefinition) form.getFieldByBinding("date");
         assertNotNull(date);
-        assertEquals(Date.class.getName(),
-                     date.getStandaloneClassName());
+        assertEquals(Date.class.getName(), date.getStandaloneClassName());
         DecimalBoxFieldDefinition price = (DecimalBoxFieldDefinition) form.getFieldByBinding("price");
         assertNotNull(price);
-        assertEquals(Double.class.getName(),
-                     price.getStandaloneClassName());
+        assertEquals(Double.class.getName(), price.getStandaloneClassName());
     }
 }

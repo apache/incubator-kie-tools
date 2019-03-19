@@ -16,16 +16,15 @@
 
 package org.kie.workbench.common.forms.jbpm.server.service.impl;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.function.Consumer;
+import java.util.Objects;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -49,7 +48,7 @@ import org.kie.workbench.common.forms.jbpm.model.authoring.process.BusinessProce
 import org.kie.workbench.common.forms.jbpm.model.authoring.task.TaskFormModel;
 import org.kie.workbench.common.forms.jbpm.server.service.BPMNFormModelGenerator;
 import org.kie.workbench.common.forms.jbpm.service.shared.BPMFinderService;
-import org.kie.workbench.common.services.datamodeller.util.FileUtils;
+import org.kie.workbench.common.forms.services.backend.util.VFSScanner;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,7 +67,6 @@ public class BPMFinderServiceImpl implements BPMFinderService {
     private KieModuleService moduleService;
 
     private BPMNFormModelGenerator bpmnFormModelGenerator;
-    private FileUtils fileUtils;
 
     @Inject
     public BPMFinderServiceImpl(@Named("ioStrategy") IOService ioService,
@@ -79,81 +77,54 @@ public class BPMFinderServiceImpl implements BPMFinderService {
         this.bpmnFormModelGenerator = bpmnFormModelGenerator;
     }
 
-    @PostConstruct
-    public void init() {
-        fileUtils = FileUtils.getInstance();
-    }
-
     @Override
     public List<JBPMProcessModel> getAvailableProcessModels(final Path path) {
 
-        final GenerationConfig<List<JBPMProcessModel>> operations = new GenerationConfig<>(new ArrayList<>());
-
-        operations.setPredicate(definitions -> definitions.isPresent());
-
-        operations.setConsumer(processModel -> operations.getValue().add(processModel));
-
-        Path rootPath = moduleService.resolveModule(path).getRootPath();
-
-        ResourceType.getResourceType("BPMN2").getAllExtensions().stream().forEach(ext -> scannProcessesForType(rootPath, ext, operations));
-
-        return operations.getValue();
+        return findModels(path, definitions -> true)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public JBPMProcessModel getModelForProcess(final String processId,
-                                               final Path path) {
+    public JBPMProcessModel getModelForProcess(final String processId, final Path path) {
 
-        GenerationConfig<Optional<JBPMProcessModel>> operations = new GenerationConfig<>(Optional.empty());
+        return findModels(path, definitions -> matchProcessId(definitions, processId))
+                .findFirst()
+                .orElse(null);
+    }
 
-        operations.setPredicate(definitions -> {
-            if (definitions.isPresent()) {
-                if (!operations.getValue().isPresent()) {
-                    Optional<Process> optional = Optional.of(bpmnFormModelGenerator.getProcess(definitions.get()));
-                    return optional.isPresent() && optional.get().getId().equals(processId);
-                }
-            }
+    private boolean matchProcessId(final Definitions definitions, final String processId) {
+        if (definitions == null) {
             return false;
-        });
+        }
 
-        operations.setConsumer(processModel -> operations.setValue(Optional.ofNullable(processModel)));
+        Process process = bpmnFormModelGenerator.getProcess(definitions);
+
+        if (process == null) {
+            return false;
+        }
+
+        return process.getId().equals(processId);
+    }
+
+    private Stream<JBPMProcessModel> findModels(final Path path, final Predicate<Definitions> filter) {
 
         Path rootPath = moduleService.resolveModule(path).getRootPath();
 
-        ResourceType.getResourceType("BPMN2").getAllExtensions().stream()
-                .filter(ext -> {
-                    scannProcessesForType(rootPath, ext, operations);
-                    return operations.getValue().isPresent();
-                }).findAny();
-
-        return operations.getValue().orElse(null);
+        return VFSScanner.scan(ioService, Paths.convert(rootPath), ResourceType.getResourceType("BPMN2").getAllExtensions(), this::toDefinitions, filter)
+                .stream()
+                .filter(Objects::nonNull)
+                .map(VFSScanner.ScanResult::getResource)
+                .map(definitions -> parseToModel(definitions, path));
     }
 
-    protected void scannProcessesForType(final Path path,
-                                         final String extension,
-                                         final GenerationConfig generationConfig) {
-        List<org.uberfire.java.nio.file.Path> nioPaths = new ArrayList<>();
+    private JBPMProcessModel parseToModel(final Definitions definitions, final Path path) {
 
-        nioPaths.add(Paths.convert(path));
-
-        Collection<FileUtils.ScanResult> processes = fileUtils.scan(ioService,
-                                                                    nioPaths,
-                                                                    extension,
-                                                                    true);
-
-        processes.stream().map(scanResult -> parse(scanResult)).filter(definitions -> definitions != null && generationConfig.getPredicate().test(definitions)).forEach(definitions -> {
-            BusinessProcessFormModel processFormModel = bpmnFormModelGenerator.generateProcessFormModel(definitions.get(),
-                                                                                                        path);
-            List<TaskFormModel> taskModels = bpmnFormModelGenerator.generateTaskFormModels(definitions.get(),
-                                                                                           path);
-            generationConfig.getConsumer().accept(new JBPMProcessModel(processFormModel,
-                                                                       taskModels));
-        });
+        BusinessProcessFormModel processFormModel = bpmnFormModelGenerator.generateProcessFormModel(definitions, path);
+        List<TaskFormModel> taskModels = bpmnFormModelGenerator.generateTaskFormModels(definitions, path);
+        return new JBPMProcessModel(processFormModel, taskModels);
     }
 
-    protected Optional<Definitions> parse(FileUtils.ScanResult process) {
-        org.uberfire.java.nio.file.Path formPath = process.getFile();
-
+    private Definitions toDefinitions(final InputStream in) {
         try {
             ResourceSet resourceSet = new ResourceSetImpl();
 
@@ -178,52 +149,15 @@ public class BPMFinderServiceImpl implements BPMFinderService {
             Map<String, Object> options = new HashMap<String, Object>();
             options.put(XMLResource.OPTION_ENCODING,
                         "UTF-8");
-            outResource.load(ioService.newInputStream(formPath),
-                             options);
+            outResource.load(in, options);
 
             DocumentRoot root = (DocumentRoot) outResource.getContents().get(0);
 
-            return Optional.of(root.getDefinitions());
+            return root.getDefinitions();
         } catch (Exception ex) {
-            logger.warn("Error reading process '" + process.getFile().getFileName(),
-                        ex);
-        }
-        return Optional.empty();
-    }
-
-    class GenerationConfig<T> {
-
-        private Predicate<Optional<Definitions>> predicate;
-        private Consumer<JBPMProcessModel> consumer;
-
-        private T value;
-
-        public GenerationConfig(T value) {
-            this.value = value;
+            logger.warn("Cannot parse definitions due to", ex);
         }
 
-        public Predicate<Optional<Definitions>> getPredicate() {
-            return predicate;
-        }
-
-        public void setPredicate(Predicate<Optional<Definitions>> predicate) {
-            this.predicate = predicate;
-        }
-
-        public Consumer<JBPMProcessModel> getConsumer() {
-            return consumer;
-        }
-
-        public void setConsumer(Consumer<JBPMProcessModel> consumer) {
-            this.consumer = consumer;
-        }
-
-        public T getValue() {
-            return value;
-        }
-
-        public void setValue(T value) {
-            this.value = value;
-        }
+        return null;
     }
 }
