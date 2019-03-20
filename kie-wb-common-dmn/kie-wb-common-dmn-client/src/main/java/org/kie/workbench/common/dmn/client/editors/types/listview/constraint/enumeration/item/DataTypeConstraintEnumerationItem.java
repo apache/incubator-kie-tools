@@ -66,6 +66,10 @@ public class DataTypeConstraintEnumerationItem {
         return value;
     }
 
+    public int getOrder(){
+        return view.getOrder();
+    }
+
     public Element getElement() {
         return view.getElement();
     }
@@ -134,6 +138,10 @@ public class DataTypeConstraintEnumerationItem {
         value = isEmpty(newValue) ? NULL : newValue;
     }
 
+    public void setOrder(final int order) {
+        view.setOrder(order);
+    }
+
     public interface View extends UberElemental<DataTypeConstraintEnumerationItem>,
                                   IsElement {
 
@@ -164,5 +172,9 @@ public class DataTypeConstraintEnumerationItem {
         void hideClearButton();
 
         void showDeleteButton();
+
+        int getOrder();
+
+        void setOrder(final int order);
     }
 }

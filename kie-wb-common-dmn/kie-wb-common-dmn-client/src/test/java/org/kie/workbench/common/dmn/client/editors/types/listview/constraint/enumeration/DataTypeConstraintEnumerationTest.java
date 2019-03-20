@@ -33,7 +33,9 @@ import org.kie.workbench.common.dmn.api.editors.types.DMNParseService;
 import org.kie.workbench.common.dmn.client.editors.types.common.ScrollHelper;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.DataTypeConstraintParserWarningEvent;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.enumeration.item.DataTypeConstraintEnumerationItem;
+import org.mockito.InOrder;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.uberfire.mocks.EventSourceMock;
 
 import static java.util.Arrays.asList;
@@ -186,6 +188,11 @@ public class DataTypeConstraintEnumerationTest {
         final Element element1 = mock(Element.class);
         final Element element2 = mock(Element.class);
 
+        final InOrder inorder = Mockito.inOrder(view);
+
+        when(item1.getOrder()).thenReturn(1);
+        when(item2.getOrder()).thenReturn(0);
+
         when(item1.getElement()).thenReturn(element1);
         when(item2.getElement()).thenReturn(element2);
         doReturn(asList(item1, item2)).when(constraintEnumeration).getEnumerationItems();
@@ -193,8 +200,8 @@ public class DataTypeConstraintEnumerationTest {
         constraintEnumeration.render();
 
         verify(view).clear();
-        verify(view).addItem(element1);
-        verify(view).addItem(element2);
+        inorder.verify(view).addItem(element2);
+        inorder.verify(view).addItem(element1);
     }
 
     @Test
@@ -214,6 +221,7 @@ public class DataTypeConstraintEnumerationTest {
         verify(constraintEnumeration).render();
         verify(scrollHelper).scrollToBottom(element);
         verify(item).enableEditMode();
+        verify(item).setOrder(items.size() - 1);
     }
 
     @Test
@@ -232,5 +240,28 @@ public class DataTypeConstraintEnumerationTest {
         verify(expectedItem).setConstraintValueType(constraintValueType);
         verify(expectedItem).setDataTypeConstraintEnumeration(constraintEnumeration);
         assertEquals(expectedItem, actualItem);
+    }
+
+    @Test
+    public void testGetValueOrdered() {
+
+        final DataTypeConstraintEnumerationItem item1 = mock(DataTypeConstraintEnumerationItem.class);
+        final DataTypeConstraintEnumerationItem item2 = mock(DataTypeConstraintEnumerationItem.class);
+        final DataTypeConstraintEnumerationItem item3 = mock(DataTypeConstraintEnumerationItem.class);
+
+        when(item1.getValue()).thenReturn("123");
+        when(item2.getValue()).thenReturn("456");
+        when(item3.getValue()).thenReturn("789");
+
+        when(item3.getOrder()).thenReturn(0);
+        when(item2.getOrder()).thenReturn(1);
+        when(item1.getOrder()).thenReturn(2);
+
+        doReturn(asList(item1, item2, item3)).when(constraintEnumeration).getEnumerationItems();
+
+        final String actualValue = constraintEnumeration.getValue();
+        final String expectedValue = "789, 456, 123";
+
+        assertEquals(expectedValue, actualValue);
     }
 }

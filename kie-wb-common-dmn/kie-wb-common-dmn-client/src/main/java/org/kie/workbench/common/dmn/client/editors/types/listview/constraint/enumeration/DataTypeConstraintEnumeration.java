@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.client.editors.types.listview.constraint.enumeration;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -83,6 +84,7 @@ public class DataTypeConstraintEnumeration implements DataTypeConstraintComponen
     public String getValue() {
         return getEnumerationItems()
                 .stream()
+                .sorted(Comparator.comparingInt(DataTypeConstraintEnumerationItem::getOrder))
                 .map(DataTypeConstraintEnumerationItem::getValue)
                 .filter(itemValue -> !isEmpty(itemValue))
                 .collect(joining(SEPARATOR));
@@ -136,12 +138,16 @@ public class DataTypeConstraintEnumeration implements DataTypeConstraintComponen
 
     public void render() {
         view.clear();
-        getEnumerationItems().forEach(enumerationItem -> view.addItem(enumerationItem.getElement()));
+        getEnumerationItems().stream()
+            .sorted(Comparator.comparingInt(DataTypeConstraintEnumerationItem::getOrder))
+            .forEach(enumerationItem -> view.addItem(enumerationItem.getElement()));
     }
 
     void addEnumerationItem() {
 
         final DataTypeConstraintEnumerationItem enumerationItem = makeEnumerationItem("");
+
+        enumerationItem.setOrder(getEnumerationItems().size());
 
         getEnumerationItems().add(enumerationItem);
 

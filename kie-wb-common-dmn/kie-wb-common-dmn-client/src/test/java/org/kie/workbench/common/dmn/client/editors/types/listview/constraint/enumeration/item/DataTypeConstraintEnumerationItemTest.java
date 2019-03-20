@@ -193,4 +193,16 @@ public class DataTypeConstraintEnumerationItemTest {
         verify(view).setPlaceholder(placeholder);
         verify(view).setComponentSelector(type);
     }
+
+    @Test
+    public void testGetOrder(){
+
+        final int expected = 1;
+
+        when(view.getOrder()).thenReturn(1);
+
+        final int actual = enumerationItem.getOrder();
+
+        assertEquals(expected, actual);
+    }
 }

@@ -28,6 +28,8 @@ import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.dmn.client.editors.common.RemoveHelper;
 
+import static org.kie.workbench.common.dmn.client.editors.types.listview.constraint.enumeration.item.DataTypeConstraintEnumerationItemView.DATA_POSITION;
+
 @Templated
 @Dependent
 public class DataTypeConstraintEnumerationView implements DataTypeConstraintEnumeration.View {
@@ -38,13 +40,21 @@ public class DataTypeConstraintEnumerationView implements DataTypeConstraintEnum
     @DataField("add-icon")
     private final HTMLAnchorElement addIcon;
 
+    @DataField("add-button-container")
+    private final HTMLDivElement addButtonContainer;
+
+    private final DragAndDropHelper dragAndDrop;
+
     private DataTypeConstraintEnumeration presenter;
 
     @Inject
     public DataTypeConstraintEnumerationView(final HTMLDivElement items,
-                                             final HTMLAnchorElement addIcon) {
+                                             final HTMLAnchorElement addIcon,
+                                             final HTMLDivElement addButtonContainer) {
         this.items = items;
         this.addIcon = addIcon;
+        this.addButtonContainer = addButtonContainer;
+        this.dragAndDrop = new DragAndDropHelper(items, addButtonContainer);
     }
 
     @Override
@@ -64,6 +74,13 @@ public class DataTypeConstraintEnumerationView implements DataTypeConstraintEnum
 
     @Override
     public void addItem(final Element enumerationItem) {
+
+        enumerationItem.setAttribute(DATA_POSITION, items.childNodes.length);
         items.appendChild(enumerationItem);
+        getDragAndDropHelper().refreshItemsPosition();
+    }
+
+    DragAndDropHelper getDragAndDropHelper() {
+        return dragAndDrop;
     }
 }

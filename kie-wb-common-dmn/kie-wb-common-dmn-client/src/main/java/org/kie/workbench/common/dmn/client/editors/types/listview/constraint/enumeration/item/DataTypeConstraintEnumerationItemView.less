@@ -32,8 +32,8 @@
   [data-field="value-text"] {
     cursor: pointer;
     white-space: nowrap;
-    overflow: hidden;
     text-overflow: ellipsis;
+    height: 20px;
   }
 
   [data-field="value-text"].none {
@@ -57,6 +57,22 @@
   .dropdown-kebab-container {
     float: right;
     margin-top: -1px;
+  }
+
+  .drag-grabber {
+    color: #777777;
+    margin: 2px 5px 5px -5px;
+    cursor: pointer;
+    height: 20px;
+    display: inline-block;
+  }
+
+  .drag-grabber:hover {
+    cursor: grab;
+  }
+
+  .drag-grabber:active {
+    cursor: grabbing;
   }
 }
 
