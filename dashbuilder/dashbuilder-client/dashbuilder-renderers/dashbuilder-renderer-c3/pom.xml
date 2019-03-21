@@ -22,6 +22,11 @@
         <artifactId>c3</artifactId>
         <version>${version.org.webjars.bower.c3}</version>
       </dependency>
+      <dependency>
+        <groupId>org.webjars.npm</groupId>
+        <artifactId>d3-geo-projection</artifactId>
+        <version>${version.org.webjars.bower.d3geoprojection}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -29,6 +34,10 @@
     <dependency>
       <groupId>org.webjars</groupId>
       <artifactId>c3</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.webjars.npm</groupId>
+        <artifactId>d3-geo-projection</artifactId>
     </dependency>
     <dependency>
       <groupId>com.google.gwt</groupId>
@@ -174,6 +183,27 @@
               <overWriteSnapshots>true</overWriteSnapshots>
             </configuration>
           </execution>
+          <execution>
+            <id>unpack-d3-geo-projection</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.webjars.npm</groupId>
+                  <artifactId>d3-geo-projection</artifactId>
+                  <version>${version.org.webjars.bower.d3geoprojection}</version>
+                  <type>jar</type>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.build.directory}/d3geoprojection</outputDirectory>
+                </artifactItem>
+              </artifactItems>
+              <overWriteReleases>false</overWriteReleases>
+              <overWriteSnapshots>true</overWriteSnapshots>
+            </configuration>
+          </execution>                    
         </executions>
       </plugin>
       <plugin>
@@ -192,7 +222,25 @@
                 <resource>
                   <directory>${project.build.directory}/c3/META-INF/resources/webjars/c3/${version.org.webjars.bower.c3}</directory>
                   <includes>
-                    <include>c3.js</include>
+                    <include>c3.min.js</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-d3geoprojection-resources-js</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.outputDirectory}/org/dashbuilder/renderer/c3/client/exports/js</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${project.build.directory}/d3geoprojection/META-INF/resources/webjars/d3-geo-projection/${version.org.webjars.bower.d3geoprojection}/dist/</directory>
+                  <includes>
+                    <include>d3-geo-projection.min.js</include>
                   </includes>
                 </resource>
               </resources>

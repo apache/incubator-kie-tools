@@ -1,11 +1,11 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,27 +16,23 @@
 package org.dashbuilder.renderer.c3.client;
 
 import java.util.List;
-import java.util.Set;
 
-import org.dashbuilder.common.client.widgets.FilterLabel;
 import org.dashbuilder.common.client.widgets.FilterLabelSet;
 import org.dashbuilder.dataset.ColumnType;
 import org.dashbuilder.dataset.DataColumn;
 import org.dashbuilder.dataset.DataSetLookupConstraints;
-import org.dashbuilder.dataset.group.Interval;
 import org.dashbuilder.displayer.ColumnSettings;
 import org.dashbuilder.displayer.DisplayerAttributeDef;
 import org.dashbuilder.displayer.DisplayerAttributeGroupDef;
 import org.dashbuilder.displayer.DisplayerConstraints;
 import org.dashbuilder.displayer.Position;
-import org.dashbuilder.displayer.client.AbstractGwtDisplayer;
 import org.dashbuilder.renderer.c3.client.jsbinding.C3AxisInfo;
 import org.dashbuilder.renderer.c3.client.jsbinding.C3AxisX;
 import org.dashbuilder.renderer.c3.client.jsbinding.C3AxisY;
 import org.dashbuilder.renderer.c3.client.jsbinding.C3ChartConf;
 import org.dashbuilder.renderer.c3.client.jsbinding.C3ChartData;
-import org.dashbuilder.renderer.c3.client.jsbinding.C3Color;
 import org.dashbuilder.renderer.c3.client.jsbinding.C3ChartSize;
+import org.dashbuilder.renderer.c3.client.jsbinding.C3Color;
 import org.dashbuilder.renderer.c3.client.jsbinding.C3DataInfo;
 import org.dashbuilder.renderer.c3.client.jsbinding.C3JsTypesFactory;
 import org.dashbuilder.renderer.c3.client.jsbinding.C3Legend;
@@ -49,17 +45,16 @@ import com.google.gwt.i18n.client.NumberFormat;
 
 import elemental2.core.JsObject;
 
-public abstract class C3Displayer<V extends C3Displayer.View> extends AbstractGwtDisplayer<V> {
+public abstract class C3Displayer<V extends C3Displayer.View> extends C3AbstractDisplayer<V> {
     
     private static final double DEFAULT_POINT_RADIUS = 2.5;
-    private FilterLabelSet filterLabelSet;
     protected C3JsTypesFactory factory;
     
     public static final String[] COLOR_PATTERN = {
                                     "#0088CE", "#CC0000", "#EC7A08", "#3F9C35", "#F0AB00", "#703FEC", "#007A87", "#92D400", "#35CAED",
                                     "#00659C", "#A30000", "#B35C00", "#B58100", "#6CA100", "#2D7623", "#005C66", "#008BAD", "#40199A"};
 
-    public interface View<P extends C3Displayer> extends AbstractGwtDisplayer.View<P> {
+    public interface View<P extends C3AbstractDisplayer> extends C3AbstractDisplayer.View<P> {
 
         void updateChart(C3ChartConf conf);
         
@@ -75,19 +70,13 @@ public abstract class C3Displayer<V extends C3Displayer.View> extends AbstractGw
         
         void setBackgroundColor(String color);
         
-        void noData();
-        
-        void setSize(int width, int height);
-
         void setResizable(int maxWidth, int maxHeight);
 
     }
     
     public C3Displayer(FilterLabelSet filterLabelSet, C3JsTypesFactory builder) {
-        super();
-        this.filterLabelSet = filterLabelSet;
+        super(filterLabelSet);
         this.factory = builder;
-        this.filterLabelSet.setOnClearAllCommand(this::onFilterClearAll);
     }
     
     @Override
@@ -119,28 +108,15 @@ public abstract class C3Displayer<V extends C3Displayer.View> extends AbstractGw
     }
 
     @Override
-    protected void createVisualization() {
-        getView().setFilterLabelSet(filterLabelSet);
-        updateVisualization();
-    }
+    protected void updateVisualizationWithData() {
+        if (displayerSettings.isResizable()) {
+            getView().setResizable(displayerSettings.getChartWidth(),
+                                   displayerSettings.getChartHeight());
+        } 
 
-    @Override
-    protected void updateVisualization() {
-        if(dataSet.getRowCount() == 0) {
-            getView().setSize(displayerSettings.getChartWidth(), 
-                              displayerSettings.getChartHeight());
-            getView().noData();
-        } else {
-            if (displayerSettings.isResizable()) {
-                getView().setResizable(displayerSettings.getChartWidth(),
-                                       displayerSettings.getChartHeight());
-            } 
-
-            C3ChartConf conf = buildConfiguration();
-            getView().updateChart(conf);
-            updateFilterStatus();
-            applyPropertiesToView();
-        }
+        C3ChartConf conf = buildConfiguration();
+        getView().updateChart(conf);
+        applyPropertiesToView();
     }
 
     protected C3ChartConf buildConfiguration() {
@@ -296,45 +272,6 @@ public abstract class C3Displayer<V extends C3Displayer.View> extends AbstractGw
         return data;
     }
     
-    void onFilterClearAll() {
-        super.filterReset();
-
-        // Update the displayer view in order to reflect the current selection
-        // (only if not has already been redrawn in the previous filterUpdate() call)
-        if (!displayerSettings.isFilterSelfApplyEnabled()) {
-            updateVisualization();
-        }
-    }
-    
-    void onFilterLabelRemoved(String columnId, int row) {
-        super.filterUpdate(columnId, row);
-
-        // Update the displayer view in order to reflect the current selection
-        // (only if not has already been redrawn in the previous filterUpdate() call)
-        if (!displayerSettings.isFilterSelfApplyEnabled()) {
-            updateVisualization();
-        }
-    }
-    
-    protected void updateFilterStatus() {
-        filterLabelSet.clear();
-        Set<String> columnFilters = filterColumns();
-        if (displayerSettings.isFilterEnabled() && !columnFilters.isEmpty()) {
-
-            for (String columnId : columnFilters) {
-                List<Interval> selectedValues = filterIntervals(columnId);
-                DataColumn column = dataSet.getColumnById(columnId);
-                for (Interval interval : selectedValues) {
-                    String formattedValue = formatInterval(interval, column);
-                    FilterLabel filterLabel = filterLabelSet.addLabel(formattedValue);
-                    filterLabel.setOnRemoveCommand(() -> onFilterLabelRemoved(columnId, interval.getIndex()));
-                }
-            }
-        }
-    }
-    
-    // FILTERS HANDLING
-    
     protected int getSelectedRowIndex(C3DataInfo info) {
         return info.getIndex();
     }
@@ -347,15 +284,9 @@ public abstract class C3Displayer<V extends C3Displayer.View> extends AbstractGw
     
     private void addToSelection(C3DataInfo data) {
         int row = getSelectedRowIndex(data);
-        String columnId =  dataSet.getColumns().get(0).getId();
-        Integer maxSelections = displayerSettings.isFilterSelfApplyEnabled() ? null : dataSet.getRowCount();
-        filterUpdate(columnId, row, maxSelections);
-
-        if (!displayerSettings.isFilterSelfApplyEnabled()) {
-            updateVisualization();
-        }
+        addToSelection(row);
     }
-    
+
     private void applyPropertiesToView() {
         if (displayerSettings.isTitleVisible()) {
             getView().showTitle(displayerSettings.getTitle());
@@ -367,10 +298,6 @@ public abstract class C3Displayer<V extends C3Displayer.View> extends AbstractGw
         Position legendPosition = displayerSettings.getChartLegendPosition();
         String c3LegendPosition = C3Legend.convertPosition(legendPosition);
         return c3LegendPosition;
-    }
-    
-    protected String columnValueToString(Object mightBeNull) {
-        return mightBeNull == null ? "" : mightBeNull.toString();
     }
     
 }

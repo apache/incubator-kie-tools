@@ -81,11 +81,6 @@ public class GoogleRenderer extends AbstractRendererLibrary {
     }
 
     @Override
-    public boolean isDefault(DisplayerType type) {
-        return MAP.equals(type);
-    }
-
-    @Override
     public List<DisplayerType> getSupportedTypes() {
         return _supportedTypes;
     }

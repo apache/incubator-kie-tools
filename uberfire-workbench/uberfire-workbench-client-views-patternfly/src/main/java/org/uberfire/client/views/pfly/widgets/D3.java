@@ -16,6 +16,8 @@
 
 package org.uberfire.client.views.pfly.widgets;
 
+import com.google.gwt.dom.client.Element;
+
 import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
@@ -35,23 +37,39 @@ public interface D3 {
     Zoom zoom();
 
     CallbackFunction on(String event, CallbackFunction callbackFn);
+    
+    D3 on(String event, CallbackFunctionWithData callbackFn);
 
     D3 call(CallbackFunction function, Object... args);
 
     D3 attr(String name, Object value);
+    
+    D3 attr(String name, CallbackFunctionWithData callbackFn);
 
     Object attr(String name);
 
     Object style(String name);
 
     D3 style(String name, Object value);
+    
+    D3 style(String name, CallbackFunctionWithData callbackFn);
 
     D3 append(String content);
 
     D3 html(String content);
 
     D3 text(String content);
-
+    
+    D3 text(CallbackFunctionWithData callbackFn);
+    
+    D3 enter();
+    
+    D3 join(String obj);
+    
+    D3 data(Object[] data);
+    
+    D3 data(Object data);
+    
     Node node();
 
     @JsProperty
@@ -61,12 +79,34 @@ public interface D3 {
     <T extends Event> T getEvent();
 
     Transition transition();
+    
+    Scale scaleQuantize();
+    
+    Scale scaleLinear();
+    
+    Scale scaleSqrt();
+    
+    @JsProperty
+    String[][] getSchemeBlues();
+    
+    @JsProperty
+    String[][] getSchemeReds();
+    
+    @JsProperty
+    String[][] getSchemeGreens();
 
     @JsFunction
     @FunctionalInterface
     interface CallbackFunction {
 
         void execute();
+    }
+    
+    @JsFunction
+    @FunctionalInterface
+    interface CallbackFunctionWithData {
+
+        Object execute(Object data, int index, Element[] elements);
     }
 
     @JsType(isNative = true)
@@ -124,6 +164,12 @@ public interface D3 {
 
         @JsProperty
         Object getCurrentTarget();
+        
+        @JsProperty
+        int getPageX();
+        
+        @JsProperty
+        int getPageY();
     }
 
     @JsType(isNative = true)
@@ -155,6 +201,24 @@ public interface D3 {
         @JsProperty
         double getHeight();
     }
+    
+    @JsType(isNative = true)
+    interface Scale {
+
+        Scale domain(Object[] domain);
+        
+        Object[] domain();
+        
+        Scale range(Object[] colors);
+        
+        Scale rangeRound(Object[] colors);
+        
+        Object[] range();
+        
+        String call(Scale self, Object... args);
+        
+        Object[] invertExtent(Object value);
+    }    
 
     class Builder {
 

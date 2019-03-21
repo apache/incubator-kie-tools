@@ -1,3 +1,18 @@
+/*
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.dashbuilder.renderer.c3.client.charts.bar;
 
 import javax.enterprise.context.Dependent;
@@ -12,9 +27,11 @@ import org.dashbuilder.displayer.DisplayerConstraints;
 import org.dashbuilder.renderer.c3.client.C3Displayer;
 import org.dashbuilder.renderer.c3.client.C3XYDisplayer;
 import org.dashbuilder.renderer.c3.client.charts.CommonC3DisplayerConstants;
-import org.dashbuilder.renderer.c3.client.charts.area.C3AreaChartDisplayer;
 import org.dashbuilder.renderer.c3.client.jsbinding.C3AxisInfo;
 import org.dashbuilder.renderer.c3.client.jsbinding.C3JsTypesFactory;
+import org.dashbuilder.renderer.c3.client.jsbinding.C3Tick;
+
+import com.google.gwt.i18n.client.NumberFormat;
 
 @Dependent
 public class C3BarChartDisplayer extends C3XYDisplayer<C3BarChartDisplayer.View> {
@@ -84,6 +101,17 @@ public class C3BarChartDisplayer extends C3XYDisplayer<C3BarChartDisplayer.View>
         C3AxisInfo axis = super.createAxis();
         axis.setRotated(isRotated());
         return axis;
+    }
+    
+    protected C3Tick createTickX() {
+        return factory.createC3Tick(f -> {
+            try {
+                double doubleFormat = Double.parseDouble(f);
+                return NumberFormat.getFormat("#,###.##").format(doubleFormat);
+            } catch(NumberFormatException e) {
+                return f;
+            }
+        });
     }
 
     public boolean isRotated() {
