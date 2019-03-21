@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -92,6 +93,14 @@ public class AddOutputClauseCommandTest {
     private DecisionTableUIModelMapper uiModelMapper;
 
     private AddOutputClauseCommand command;
+
+    @Before
+    public void doNotRunTestsOnJdkEleven() {
+
+        final String javaVersion = "11";
+        final String javaVersionPropertyKey = "java.version";
+        Assume.assumeFalse(System.getProperty(javaVersionPropertyKey).contains(javaVersion));
+    }
 
     @Before
     public void setUp() throws Exception {
@@ -252,8 +261,16 @@ public class AddOutputClauseCommandTest {
                      outputClause.getParent());
     }
 
+    /**
+     * The test is skipped on jdk 11 due to https://issues.jboss.org/browse/DROOLS-3777
+     */
     @Test(expected = ArrayIndexOutOfBoundsException.class)
     public void testGraphCommandUndoNoOutputClauseColumns() throws Exception {
+
+        final String javaVersion = "11";
+        final String javaVersionPropertyKey = "java.version";
+        Assume.assumeFalse(System.getProperty(javaVersionPropertyKey).contains(javaVersion));
+
         makeCommand(DecisionTableUIModelMapperHelper.ROW_INDEX_COLUMN_COUNT);
 
         dtable.getRule().add(new DecisionRule());
