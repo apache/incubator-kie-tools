@@ -28,6 +28,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.ConstraintPlaceholderHelper;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.enumeration.DataTypeConstraintEnumeration;
 import org.mockito.Mock;
+import org.uberfire.mvp.Command;
 
 import static org.junit.Assert.assertEquals;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.constraint.enumeration.item.DataTypeConstraintEnumerationItem.NULL;
@@ -143,6 +144,9 @@ public class DataTypeConstraintEnumerationItemTest {
     public void testSave() {
 
         final String value = "123";
+        final Command command = mock(Command.class);
+
+        doReturn(command).when(enumerationItem).getScrollToThisItemCallback();
 
         enumerationItem.save(value);
 
@@ -150,13 +154,16 @@ public class DataTypeConstraintEnumerationItemTest {
         final String expected = "123";
 
         assertEquals(expected, actual);
-        verify(dataTypeConstraintEnumeration).refreshView();
+        verify(dataTypeConstraintEnumeration).refreshView(command);
     }
 
     @Test
     public void testSaveWhenTheValueIsBlank() {
 
         final String value = "";
+        final Command command = mock(Command.class);
+
+        doReturn(command).when(enumerationItem).getScrollToThisItemCallback();
 
         enumerationItem.save(value);
 
@@ -164,7 +171,18 @@ public class DataTypeConstraintEnumerationItemTest {
         final String expected = NULL;
 
         assertEquals(expected, actual);
-        verify(dataTypeConstraintEnumeration).refreshView();
+        verify(dataTypeConstraintEnumeration).refreshView(command);
+    }
+
+    @Test
+    public void testGetScrollToThisItemCallback() {
+
+        final int order = 42;
+        when(enumerationItem.getOrder()).thenReturn(order);
+
+        enumerationItem.getScrollToThisItemCallback().execute();
+
+        verify(dataTypeConstraintEnumeration).scrollToPosition(order);
     }
 
     @Test
@@ -195,7 +213,7 @@ public class DataTypeConstraintEnumerationItemTest {
     }
 
     @Test
-    public void testGetOrder(){
+    public void testGetOrder() {
 
         final int expected = 1;
 

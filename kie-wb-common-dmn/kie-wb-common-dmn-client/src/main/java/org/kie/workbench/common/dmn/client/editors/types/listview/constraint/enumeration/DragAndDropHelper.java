@@ -34,8 +34,6 @@ class DragAndDropHelper {
     private int clickedYPosition;
     private int startYPosition;
     private HTMLElement draggingElement;
-
-    static final int ITEM_HEIGHT = 40;
     static final String DRAGGABLE_ITEM_CLASS = ".draggable";
     static final String TOP = "top";
     static final String PX = "px";
@@ -59,11 +57,13 @@ class DragAndDropHelper {
         final NodeList<Element> draggableItems = dragArea.querySelectorAll(DRAGGABLE_ITEM_CLASS);
         final int addButtonTop;
 
-        if (!Objects.isNull(draggableItems)) {
-            addButtonTop = (int) draggableItems.length * ITEM_HEIGHT;
+        if (!Objects.isNull(draggableItems) && draggableItems.length > 0) {
+            final double itemHeight = getItemHeight((HTMLElement) draggableItems.getAt(0));
+            addButtonTop = (int) (draggableItems.length * itemHeight);
+
             for (int i = 0; i < draggableItems.length; i++) {
                 final HTMLElement element = (HTMLElement) draggableItems.getAt(i);
-                final int top = position(element) * ITEM_HEIGHT;
+                final int top = (int) (position(element) * itemHeight);
                 setTop(element, top);
             }
         } else {
@@ -138,7 +138,7 @@ class DragAndDropHelper {
     int getTop(final HTMLElement element) {
 
         final String topString = element.style.getPropertyValue(TOP)
-                                     .replace(PX, "");
+                .replace(PX, "");
 
         if (StringUtils.isEmpty(topString)) {
             return 0;
@@ -171,6 +171,10 @@ class DragAndDropHelper {
         return this;
     }
 
+    private double getItemHeight(final HTMLElement element) {
+        return element.offsetHeight;
+    }
+
     /**
      * Gets the new position of the object being dragged.
      * The position is changed when the half of item being dragged is after/before
@@ -178,8 +182,9 @@ class DragAndDropHelper {
      * @return The position of the item being dragged
      */
     int getNewPosition() {
-        final int topReference = getTop(getDragging()) + ITEM_HEIGHT / 2;
-        final int newPosition = topReference / ITEM_HEIGHT;
+        final int itemHeight = (int) getItemHeight(getDragging());
+        final int topReference = getTop(getDragging()) + itemHeight / 2;
+        final int newPosition = topReference / (itemHeight == 0 ? 1 : itemHeight);
         return newPosition;
     }
 

@@ -123,14 +123,24 @@ public class DataTypeConstraintModal extends Elemental2Modal<DataTypeConstraintM
     }
 
     void setupComponent(final ConstraintType type) {
+
         constraintType = isNone(type) ? inferComponentType(getConstraintValue()) : type;
         currentComponent = getComponentByType(getConstraintType());
         currentComponent.setValue(getConstraintValue());
         currentComponent.setConstraintValueType(getConstraintValueType());
+        currentComponent.getElement().setAttribute("class", componentCssClass());
 
         if (constraintType != RANGE) {
             enableOkButton();
         }
+    }
+
+    private String componentCssClass() {
+        return asCssClass(getConstraintValueType());
+    }
+
+    private String asCssClass(final String type) {
+        return "kie-" + type.replaceAll(" ", "-").toLowerCase();
     }
 
     boolean isNone(final ConstraintType type) {

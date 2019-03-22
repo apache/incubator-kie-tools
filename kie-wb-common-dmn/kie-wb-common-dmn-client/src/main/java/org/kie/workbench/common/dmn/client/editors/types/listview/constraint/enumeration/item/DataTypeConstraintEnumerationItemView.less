@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,8 +16,7 @@
 
 [data-i18n-prefix="DataTypeConstraintEnumerationItemView."] {
   border-bottom: 1px solid #DDD;
-  padding: 7px 10px;
-  height: 40px;
+  padding: 6px 10px 0;
 
   &.highlighted {
     background-color: #E8F4FB;
@@ -44,14 +43,30 @@
   [data-field="remove-anchor"],
   [data-field="clear-field-anchor"],
   [data-field="save-anchor"] {
-    float: right;
-    margin: -5px 6px 0;
+    text-align: center;
+    position: absolute;
+    right: 0;
+    top: 0;
     font-size: 20px;
+    width: 30px;
+    height: 100%;
+
+    .fa {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      top: ~"calc(50% - 10px)";
+      left: ~"calc(50% - 10px)";
+    }
   }
 
   [data-field="remove-anchor"],
   [data-field="clear-field-anchor"] {
     color: #777777;
+  }
+
+  [data-field="save-anchor"] {
+    right: 30px;
   }
 
   .dropdown-kebab-container {
@@ -61,10 +76,21 @@
 
   .drag-grabber {
     color: #777777;
-    margin: 2px 5px 5px -5px;
+    position: absolute;
     cursor: pointer;
-    height: 20px;
-    display: inline-block;
+    height: 100%;
+    width: 10px;
+    left: 5px;
+    top: 0;
+
+    .fa {
+      position: absolute;
+      top: ~"calc(50% - 5px)";
+
+      & + .fa {
+        left: 5px;
+      }
+    }
   }
 
   .drag-grabber:hover {

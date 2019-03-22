@@ -18,13 +18,11 @@ package org.kie.workbench.common.dmn.client.editors.types.listview.constraint.co
 
 import javax.inject.Inject;
 
+import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.common.DurationHelper;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.util.StringUtils;
 
 public class YearsMonthsValueConverter {
-
-    static final String PREFIX = "duration(\"P";
-    static final String SUFFIX = "\")";
 
     private static final String YEARS = "Y";
     private static final String MONTHS = "M";
@@ -152,11 +150,11 @@ public class YearsMonthsValueConverter {
         return displayValue;
     }
 
-    String removePrefixAndSuffix(final String rawValue) {
-        return rawValue.replace(PREFIX, "").replace(SUFFIX, "");
+    static String addPrefixAndSuffix(final String value) {
+        return DurationHelper.addPrefixAndSuffix("P" + value);
     }
 
-    String addPrefixAndSuffix(final String value) {
-        return PREFIX + value + SUFFIX;
+    String removePrefixAndSuffix(final String dmnString) {
+        return DurationHelper.removePrefixAndSuffix(dmnString).substring(1);
     }
 }

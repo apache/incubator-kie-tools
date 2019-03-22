@@ -47,8 +47,8 @@ public class ScrollHelper {
         container.scrollTop = targetOffsetTop - containerOffsetTop - padding;
     }
 
-    void scrollTo(final Element target,
-                  final Element container) {
+    public void scrollTo(final Element target,
+                         final Element container) {
         scrollTo(target, container, 0);
     }
 

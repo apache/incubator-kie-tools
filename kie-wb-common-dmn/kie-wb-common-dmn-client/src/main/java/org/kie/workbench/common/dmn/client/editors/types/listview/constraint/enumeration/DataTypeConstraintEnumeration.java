@@ -19,6 +19,7 @@ package org.kie.workbench.common.dmn.client.editors.types.listview.constraint.en
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -38,9 +39,12 @@ import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.com
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.DataTypeConstraintParserWarningEvent;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.enumeration.item.DataTypeConstraintEnumerationItem;
 import org.uberfire.client.mvp.UberElemental;
+import org.uberfire.mvp.Command;
 
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
+import static org.kie.workbench.common.dmn.client.editors.types.listview.constraint.enumeration.item.DataTypeConstraintEnumerationItemView.DATA_POSITION;
 import static org.kie.workbench.common.stunner.core.util.StringUtils.isEmpty;
 
 @Dependent
@@ -62,6 +66,8 @@ public class DataTypeConstraintEnumeration implements DataTypeConstraintComponen
 
     private String constraintValueType;
 
+    private Command onCompleteCallback = defaultOnCompleteCallback();
+
     @Inject
     public DataTypeConstraintEnumeration(final View view,
                                          final Caller<DMNParseService> service,
@@ -82,9 +88,9 @@ public class DataTypeConstraintEnumeration implements DataTypeConstraintComponen
 
     @Override
     public String getValue() {
+        refreshEnumerationItemsOrder();
         return getEnumerationItems()
                 .stream()
-                .sorted(Comparator.comparingInt(DataTypeConstraintEnumerationItem::getOrder))
                 .map(DataTypeConstraintEnumerationItem::getValue)
                 .filter(itemValue -> !isEmpty(itemValue))
                 .collect(joining(SEPARATOR));
@@ -102,17 +108,34 @@ public class DataTypeConstraintEnumeration implements DataTypeConstraintComponen
 
     public void refreshView() {
         setValue(getValue());
-        render();
+    }
+
+    public void refreshView(final Command onCompleteCallback) {
+        registerOnCompleteCallback(onCompleteCallback);
+        setValue(getValue());
+    }
+
+    void executeOnCompleteCallback() {
+        onCompleteCallback.execute();
+        registerOnCompleteCallback(defaultOnCompleteCallback());
+    }
+
+    void registerOnCompleteCallback(final Command onCompleteCallback) {
+        this.onCompleteCallback = onCompleteCallback;
     }
 
     RemoteCallback<List<String>> getSuccessCallback() {
-        return this::loadConstraintValues;
+        return constraintValues -> {
+            loadConstraintValues(constraintValues);
+            executeOnCompleteCallback();
+        };
     }
 
     ErrorCallback<Object> getErrorCallback() {
         return (message, throwable) -> {
             showWarningMessage();
             loadConstraintValues(emptyList());
+            executeOnCompleteCallback();
             return false;
         };
     }
@@ -138,22 +161,30 @@ public class DataTypeConstraintEnumeration implements DataTypeConstraintComponen
 
     public void render() {
         view.clear();
-        getEnumerationItems().stream()
-            .sorted(Comparator.comparingInt(DataTypeConstraintEnumerationItem::getOrder))
-            .forEach(enumerationItem -> view.addItem(enumerationItem.getElement()));
+        getEnumerationItems()
+                .stream()
+                .sorted(Comparator.comparingInt(DataTypeConstraintEnumerationItem::getOrder))
+                .forEach(enumerationItem -> view.addItem(enumerationItem.getElement()));
     }
 
     void addEnumerationItem() {
 
         final DataTypeConstraintEnumerationItem enumerationItem = makeEnumerationItem("");
-
         enumerationItem.setOrder(getEnumerationItems().size());
 
+        refreshEnumerationItemsOrder();
         getEnumerationItems().add(enumerationItem);
 
         render();
         scrollToBottom();
         enumerationItem.enableEditMode();
+    }
+
+    void refreshEnumerationItemsOrder() {
+        setEnumerationItems(getEnumerationItems()
+                                    .stream()
+                                    .sorted(Comparator.comparingInt(DataTypeConstraintEnumerationItem::getOrder))
+                                    .collect(toList()));
     }
 
     DataTypeConstraintEnumerationItem makeEnumerationItem(final String value) {
@@ -175,8 +206,18 @@ public class DataTypeConstraintEnumeration implements DataTypeConstraintComponen
         return convert.stream().map(this::makeEnumerationItem).collect(Collectors.toList());
     }
 
-    private void scrollToBottom() {
-        scrollHelper.scrollToBottom(getElement());
+    public void scrollToPosition(final int position) {
+        getElementByPosition(position).ifPresent(element -> scrollHelper.scrollTo(element, getElement()));
+    }
+
+    void scrollToBottom() {
+        getLastEnumerationItem().ifPresent(last -> scrollToPosition(last.getOrder()));
+    }
+
+    private Optional<DataTypeConstraintEnumerationItem> getLastEnumerationItem() {
+        return getEnumerationItems()
+                .stream()
+                .reduce((prev, next) -> next);
     }
 
     void setEnumerationItems(final List<DataTypeConstraintEnumerationItem> enumerationItems) {
@@ -187,11 +228,19 @@ public class DataTypeConstraintEnumeration implements DataTypeConstraintComponen
         return enumerationItems;
     }
 
+    private Optional<Element> getElementByPosition(final int position) {
+        return Optional.ofNullable(getElement().querySelector("[" + DATA_POSITION + "=\"" + position + "\""));
+    }
+
     public interface View extends UberElemental<DataTypeConstraintEnumeration>,
                                   IsElement {
 
         void clear();
 
         void addItem(final Element enumerationItem);
+    }
+
+    Command defaultOnCompleteCallback() {
+        return this::scrollToBottom;
     }
 }

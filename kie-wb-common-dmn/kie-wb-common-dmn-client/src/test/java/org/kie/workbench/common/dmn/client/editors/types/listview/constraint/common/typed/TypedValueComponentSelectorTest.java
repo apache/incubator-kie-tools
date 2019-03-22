@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.date.DateSelector;
+import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.day.time.DayTimeSelector;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.generic.GenericSelector;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.number.NumberSelector;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.string.StringSelector;
@@ -35,6 +36,9 @@ public class TypedValueComponentSelectorTest {
 
     @Mock
     private DateSelector dateSelector;
+
+    @Mock
+    private DayTimeSelector dayTimeSelector;
 
     @Mock
     private GenericSelector genericSelector;
@@ -52,7 +56,7 @@ public class TypedValueComponentSelectorTest {
 
     @Before
     public void setup() {
-        selector = new TypedValueComponentSelector(genericSelector, dateSelector, yearsMosSelector, stringSelector, numberSelector);
+        selector = new TypedValueComponentSelector(genericSelector, dateSelector, dayTimeSelector, yearsMosSelector, stringSelector, numberSelector);
     }
 
     @Test
@@ -80,11 +84,19 @@ public class TypedValueComponentSelectorTest {
     }
 
     @Test
-    public void testGetDurationSelector() {
+    public void testGetDurationYearMonthSelector() {
 
         final TypedValueSelector actual = selector.makeSelectorForType(BuiltInType.DURATION_YEAR_MONTH.getName());
 
         assertEquals(yearsMosSelector, actual);
+    }
+
+    @Test
+    public void testGetDurationDayTimeSelector() {
+
+        final TypedValueSelector actual = selector.makeSelectorForType(BuiltInType.DURATION_DAYS_TIME.getName());
+
+        assertEquals(dayTimeSelector, actual);
     }
 
     @Test

@@ -19,6 +19,7 @@ package org.kie.workbench.common.dmn.client.editors.types.listview.constraint;
 import java.util.function.BiConsumer;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import elemental2.dom.Element;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -68,6 +69,9 @@ public class DataTypeConstraintModalTest {
 
     @Mock
     private DataTypeConstraintRange constraintRange;
+
+    @Mock
+    private Element element;
 
     private DataTypeConstraintModal modal;
 
@@ -215,6 +219,7 @@ public class DataTypeConstraintModalTest {
 
         doReturn(constraint).when(modal).getConstraintValue();
         doReturn(constraintValueType).when(modal).getConstraintValueType();
+        when(constraintExpression.getElement()).thenReturn(element);
 
         modal.setupComponent(type);
 
@@ -222,6 +227,7 @@ public class DataTypeConstraintModalTest {
         verify(constraintExpression).setValue(constraint);
         verify(constraintExpression).setConstraintValueType(constraintValueType);
         verify(modal).enableOkButton();
+        verify(element).setAttribute("class", "kie-string");
     }
 
     @Test
@@ -233,12 +239,14 @@ public class DataTypeConstraintModalTest {
 
         doReturn(constraint).when(modal).getConstraintValue();
         doReturn(constraintValueType).when(modal).getConstraintValueType();
+        when(constraintRange.getElement()).thenReturn(element);
 
         modal.setupComponent(type);
 
         assertEquals(constraintRange, modal.getCurrentComponent());
         verify(constraintRange).setValue(constraint);
         verify(constraintRange).setConstraintValueType(constraintValueType);
+        verify(element).setAttribute("class", "kie-number");
     }
 
     @Test
@@ -250,6 +258,7 @@ public class DataTypeConstraintModalTest {
 
         doReturn(constraint).when(modal).getConstraintValue();
         doReturn(constraintValueType).when(modal).getConstraintValueType();
+        when(constraintRange.getElement()).thenReturn(element);
 
         modal.setupComponent(type);
 
@@ -257,6 +266,7 @@ public class DataTypeConstraintModalTest {
         verify(constraintRange).setValue(constraint);
         verify(constraintRange).setConstraintValueType(constraintValueType);
         verify(modal, never()).enableOkButton();
+        verify(element).setAttribute("class", "kie-number");
     }
 
     @Test
@@ -269,12 +279,14 @@ public class DataTypeConstraintModalTest {
         doReturn(ENUMERATION).when(modal).inferComponentType(constraint);
         doReturn(constraint).when(modal).getConstraintValue();
         doReturn(constraintValueType).when(modal).getConstraintValueType();
+        when(constraintEnumeration.getElement()).thenReturn(element);
 
         modal.setupComponent(type);
 
         assertEquals(constraintEnumeration, modal.getCurrentComponent());
         verify(constraintEnumeration).setValue(constraint);
         verify(constraintEnumeration).setConstraintValueType(constraintValueType);
+        verify(element).setAttribute("class", "kie-number");
     }
 
     @Test

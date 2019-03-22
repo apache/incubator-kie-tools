@@ -72,8 +72,10 @@ public class DragAndDropHelperTest {
         element1.style = element1Style;
         element2.style = element2Style;
         element3.style = element3Style;
+        element1.offsetHeight = 50;
 
         final NodeList<Element> draggableItems = spy(new NodeList<>());
+
         doReturn(element1).when(draggableItems).getAt(0);
         doReturn(element2).when(draggableItems).getAt(1);
         doReturn(element3).when(draggableItems).getAt(2);
@@ -88,10 +90,10 @@ public class DragAndDropHelperTest {
 
         helper.refreshItemsPosition();
 
-        verify(element1Style).setProperty(TOP, "0" + PX);
-        verify(element2Style).setProperty(TOP, DragAndDropHelper.ITEM_HEIGHT + PX);
-        verify(element3Style).setProperty(TOP, 2 * DragAndDropHelper.ITEM_HEIGHT + PX);
-        verify(addButtonContainerStyle).setProperty(TOP, 3 * DragAndDropHelper.ITEM_HEIGHT + PX);
+        verify(element1Style).setProperty(TOP, 0 + PX);
+        verify(element2Style).setProperty(TOP, 50 + PX);
+        verify(element3Style).setProperty(TOP, 100 + PX);
+        verify(addButtonContainerStyle).setProperty(TOP, 150 + PX);
     }
 
     @Test
@@ -233,6 +235,7 @@ public class DragAndDropHelperTest {
 
         final int expected = 1;
         final HTMLElement dragging = mock(HTMLElement.class);
+        dragging.offsetHeight = 40;
         doReturn(dragging).when(helper).getDragging();
         doReturn(59).when(helper).getTop(dragging);
 
@@ -246,6 +249,7 @@ public class DragAndDropHelperTest {
 
         final int expected = 2;
         final HTMLElement dragging = mock(HTMLElement.class);
+        dragging.offsetHeight = 40;
         doReturn(dragging).when(helper).getDragging();
         doReturn(60).when(helper).getTop(dragging);
 

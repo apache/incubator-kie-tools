@@ -27,6 +27,7 @@ import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.ConstraintPlaceholderHelper;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.enumeration.DataTypeConstraintEnumeration;
 import org.uberfire.client.mvp.UberElemental;
+import org.uberfire.mvp.Command;
 
 import static org.kie.workbench.common.stunner.core.util.StringUtils.isEmpty;
 
@@ -66,7 +67,7 @@ public class DataTypeConstraintEnumerationItem {
         return value;
     }
 
-    public int getOrder(){
+    public int getOrder() {
         return view.getOrder();
     }
 
@@ -96,7 +97,7 @@ public class DataTypeConstraintEnumerationItem {
 
     public void save(final String newValue) {
         setNonNullValue(newValue);
-        refreshEnumerationList();
+        refreshEnumerationListAndScrollToThisItem();
     }
 
     public void remove() {
@@ -109,12 +110,20 @@ public class DataTypeConstraintEnumerationItem {
         disableEditMode();
     }
 
-    List<DataTypeConstraintEnumerationItem> getEnumerationItems() {
+    private List<DataTypeConstraintEnumerationItem> getEnumerationItems() {
         return dataTypeConstraintEnumeration.getEnumerationItems();
     }
 
     private void refreshEnumerationList() {
         dataTypeConstraintEnumeration.refreshView();
+    }
+
+    private void refreshEnumerationListAndScrollToThisItem() {
+        dataTypeConstraintEnumeration.refreshView(getScrollToThisItemCallback());
+    }
+
+    Command getScrollToThisItemCallback() {
+        return () -> dataTypeConstraintEnumeration.scrollToPosition(getOrder());
     }
 
     void setOldValue(final String value) {

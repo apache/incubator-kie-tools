@@ -309,4 +309,28 @@ public class DMNEditorConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String IncludedModelNameIsBlankErrorMessage_RegularMessage = "IncludedModelNameIsBlankErrorMessage.RegularMessage";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DayTimeValueConverter_Days = "DayTimeValueConverter.Days";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DayTimeValueConverter_Hours = "DayTimeValueConverter.Hours";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DayTimeValueConverter_Minutes = "DayTimeValueConverter.Minutes";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DayTimeValueConverter_Seconds = "DayTimeValueConverter.Seconds";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DayTimeValueConverter_Day = "DayTimeValueConverter.Day";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DayTimeValueConverter_Hour = "DayTimeValueConverter.Hour";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DayTimeValueConverter_Minute = "DayTimeValueConverter.Minute";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DayTimeValueConverter_Second = "DayTimeValueConverter.Second";
 }

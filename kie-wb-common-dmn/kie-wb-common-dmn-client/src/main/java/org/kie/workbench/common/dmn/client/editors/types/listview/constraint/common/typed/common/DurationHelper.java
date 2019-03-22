@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,20 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.workbench.common.dmn.client;
 
-import javax.annotation.PostConstruct;
+package org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.common;
 
-import org.jboss.errai.ioc.client.api.EntryPoint;
-import org.jboss.errai.ui.shared.api.annotations.Bundle;
-import org.uberfire.client.views.pfly.sys.PatternFlyBootstrapper;
+public class DurationHelper {
 
-@EntryPoint
-@Bundle("resources/i18n/DMNClientConstants.properties")
-public class DMNClientEntryPoint {
+    private static final String PREFIX = "duration(\"";
 
-    @PostConstruct
-    public void init() {
-        PatternFlyBootstrapper.ensureMomentIsAvailable();
+    private static final String SUFFIX = "\")";
+
+    public static String addPrefixAndSuffix(final String value) {
+        return PREFIX + value + SUFFIX;
+    }
+
+    public static String removePrefixAndSuffix(final String rawValue) {
+        return rawValue.replace(PREFIX, "").replace(SUFFIX, "");
     }
 }
