@@ -50,6 +50,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyDouble;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
@@ -133,7 +134,7 @@ public class ScenarioGridModelTest extends AbstractScenarioSimulationTest {
         when(scenarioIndexGridColumnMock.getInformationHeaderMetaData()).thenReturn(indexHeaderMetaDataMock);
 
         when(gridColumnMock.getHeaderMetaData()).thenReturn(headerMetaDataList);
-        
+
         when(gridCellMock.getValue()).thenReturn(gridCellValueMock);
         when(gridCellValueMock.getValue()).thenReturn(GRID_CELL_TEXT);
 
@@ -280,6 +281,15 @@ public class ScenarioGridModelTest extends AbstractScenarioSimulationTest {
         verify(scenarioGridModel, times(1)).deleteColumn(eq(COLUMN_INDEX));
         verify(scenarioGridModel, times(1)).commonAddColumn(eq(COLUMN_INDEX), eq(gridColumnMock), isA(ExpressionIdentifier.class));
         verify(scenarioGridModel, atLeast(ROW_COUNT - 1)).setCellValue(anyInt(), eq(COLUMN_INDEX), isA(ScenarioGridCellValue.class));
+    }
+
+    @Test
+    public void replaceColumnTest() {
+        scenarioGridModel.replaceColumn(ROW_INDEX, gridColumnMock);
+        verify(gridColumnMock, times(COLUMN_NUMBER)).getWidth();
+        verify(gridColumnMock, times(COLUMN_NUMBER)).setWidth(anyDouble());
+        verify(scenarioGridModel, times(1)).deleteColumn(eq(ROW_INDEX));
+        verify(scenarioGridModel, times(1)).commonAddColumn(eq(ROW_INDEX), eq(gridColumnMock), isA(ExpressionIdentifier.class));
     }
 
     @Test
