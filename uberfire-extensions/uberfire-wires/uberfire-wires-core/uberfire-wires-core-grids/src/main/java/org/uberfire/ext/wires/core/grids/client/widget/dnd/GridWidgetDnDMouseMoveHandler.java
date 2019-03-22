@@ -468,13 +468,16 @@ public class GridWidgetDnDMouseMoveHandler implements NodeMouseMoveHandler {
             if (rightGridColumn.isPresent()) {
                 GridColumn<?> rightColumn = rightGridColumn.get();
                 double originalRightColumnWidth = rightColumn.getWidth();
-                double newWidth = originalRightColumnWidth + delta;
+                double widthWithoutColumn = gridWidgetWidth - originalRightColumnWidth;
+
+                double newWidth = visibleWidth - widthWithoutColumn + delta;
 
                 rightColumn.setWidth(newWidth);
             }
             // or revert column resizing if the column itself has AUTO width
             else if (GridColumn.ColumnWidthMode.isAuto(activeGridColumn)) {
-                columnNewWidth = originalLeftColumnWidth;
+                double widthWithoutColumn = gridWidgetWidth - originalLeftColumnWidth;
+                columnNewWidth = visibleWidth - widthWithoutColumn;
             }
         }
         return columnNewWidth;

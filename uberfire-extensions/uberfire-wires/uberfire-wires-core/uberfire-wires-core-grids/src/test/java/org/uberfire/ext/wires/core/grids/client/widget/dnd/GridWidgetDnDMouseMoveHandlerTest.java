@@ -494,16 +494,28 @@ public class GridWidgetDnDMouseMoveHandlerTest {
         proposedNewWidth = 300;
         assertEquals(proposedNewWidth, handler.adjustColumnWidth(proposedNewWidth, column, gridWidget), 0.1);
 
-        proposedNewWidth = 100;
-        column.setColumnWidthMode(GridColumn.ColumnWidthMode.AUTO);
-        assertEquals(originalColumnWidth, handler.adjustColumnWidth(proposedNewWidth, column, gridWidget), 0.1);
+        proposedNewWidth = 50;
+        uiColumn2.setColumnWidthMode(GridColumn.ColumnWidthMode.AUTO);
+        int visibleWidth = gridWidget.getModel().getVisibleWidth();
+        double adjustedWidth = handler.adjustColumnWidth(proposedNewWidth, uiColumn2, gridWidget);
+
+        double widthWithoutColumn = gridWidget.getModel()
+                .getColumns().stream()
+                .filter(col -> !col.equals(uiColumn2))
+                .mapToDouble(GridColumn::getWidth)
+                .sum();
+
+        assertEquals(visibleWidth - widthWithoutColumn, adjustedWidth, 0.1);
 
         column.setColumnWidthMode(GridColumn.ColumnWidthMode.FIXED);
         uiModel.appendColumn(column);
         uiModel.appendColumn(rightColumn);
         rightColumn.setColumnWidthMode(GridColumn.ColumnWidthMode.AUTO);
         assertEquals(proposedNewWidth, handler.adjustColumnWidth(proposedNewWidth, column, gridWidget), 0.1);
-        assertEquals(originalRightColumnWidth + (originalColumnWidth - proposedNewWidth), rightColumn.getWidth(), 0.1);
+        double columnDelta = column.getWidth() - proposedNewWidth;
+        double widthWithoutRightColumn = gridWidget.getWidth() - originalRightColumnWidth;
+        double newRightColumnWidth = visibleWidth - widthWithoutRightColumn + columnDelta;
+        assertEquals(newRightColumnWidth, rightColumn.getWidth(), 0.1);
     }
 
     @Test
