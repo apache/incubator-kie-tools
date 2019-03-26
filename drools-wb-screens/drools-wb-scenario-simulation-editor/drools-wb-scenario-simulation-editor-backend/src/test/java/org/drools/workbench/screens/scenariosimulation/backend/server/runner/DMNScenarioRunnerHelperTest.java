@@ -28,6 +28,7 @@ import org.drools.workbench.screens.scenariosimulation.backend.server.expression
 import org.drools.workbench.screens.scenariosimulation.backend.server.model.Dispute;
 import org.drools.workbench.screens.scenariosimulation.backend.server.model.Person;
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.ScenarioExpect;
+import org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.ScenarioGiven;
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.ScenarioRunnerData;
 import org.drools.workbench.screens.scenariosimulation.model.ExpressionIdentifier;
 import org.drools.workbench.screens.scenariosimulation.model.FactIdentifier;
@@ -39,19 +40,28 @@ import org.drools.workbench.screens.scenariosimulation.model.Simulation;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.api.builder.Message;
 import org.kie.api.runtime.RequestContext;
 import org.kie.dmn.api.core.DMNDecisionResult;
+import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNResult;
+import org.kie.dmn.model.api.NamedElement;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
+import static java.util.stream.Collectors.toList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -72,8 +82,8 @@ public class DMNScenarioRunnerHelperTest {
     private static final String TEST_DESCRIPTION = "Test description";
     private static final ClassLoader classLoader = RuleScenarioRunnerHelperTest.class.getClassLoader();
     private static final ExpressionEvaluator expressionEvaluator = new DMNFeelExpressionEvaluator(classLoader);
-    private static final DMNScenarioRunnerHelper runnerHelper = new DMNScenarioRunnerHelper();
 
+    private DMNScenarioRunnerHelper runnerHelper;
     private Simulation simulation;
     private FactIdentifier personFactIdentifier;
     private ExpressionIdentifier firstNameGivenExpressionIdentifier;
@@ -92,6 +102,8 @@ public class DMNScenarioRunnerHelperTest {
 
     @Before
     public void init() {
+        runnerHelper = spy(new DMNScenarioRunnerHelper());
+
         simulation = new Simulation();
         personFactIdentifier = FactIdentifier.create("Fact 1", Person.class.getCanonicalName());
         firstNameGivenExpressionIdentifier = ExpressionIdentifier.create("First Name Given", FactMappingType.GIVEN);
@@ -191,5 +203,59 @@ public class DMNScenarioRunnerHelperTest {
         Map<String, Object> creator = (Map<String, Object>) object.get("creator");
         assertEquals("TestName", creator.get("name"));
         assertEquals("TestSurname", creator.get("surname"));
+    }
+
+    @Test
+    public void verifyInputConstraints() {
+        DMNMessage dmnMessageMock = mock(DMNMessage.class);
+        NamedElement namedElementMock = mock(NamedElement.class);
+        when(namedElementMock.getName()).thenReturn("");
+
+        List<DMNMessage> dmnMessages = singletonList(dmnMessageMock);
+        runnerHelper.verifyInputConstraints(dmnMessages, Collections.emptyList());
+
+        verify(runnerHelper, never()).retrieveInputNodeName(any());
+        verify(runnerHelper, never()).reportErrorIfUsed(any(), any());
+
+        when(dmnMessageMock.getSourceReference()).thenReturn(namedElementMock);
+        when(dmnMessageMock.getLevel()).thenReturn(Message.Level.ERROR);
+        runnerHelper.verifyInputConstraints(dmnMessages, Collections.emptyList());
+
+        verify(runnerHelper, times(1)).retrieveInputNodeName(any());
+        verify(runnerHelper, times(1)).reportErrorIfUsed(any(), any());
+    }
+
+    @Test
+    public void retrieveInputNodeName() {
+        final String INPUT_NAME = "INPUT_NAME";
+        DMNMessage dmnMessageMock = mock(DMNMessage.class);
+        NamedElement nodeMock = mock(NamedElement.class);
+        when(dmnMessageMock.getSourceReference()).thenReturn(nodeMock);
+        when(nodeMock.getName()).thenReturn(INPUT_NAME);
+        List<String> result = runnerHelper.retrieveInputNodeName(dmnMessageMock).collect(toList());
+        assertEquals(1, result.size());
+        assertEquals(INPUT_NAME, result.get(0));
+
+        result = runnerHelper.retrieveInputNodeName(mock(DMNMessage.class)).collect(toList());
+        assertEquals(0, result.size());
+    }
+
+    @Test
+    public void reportErrorIfUsed() {
+        String TEST = "TEST";
+        FactIdentifier factIdentifier = FactIdentifier.create(TEST, String.class.getCanonicalName());
+        FactMappingValue fmv = new FactMappingValue(factIdentifier, mock(ExpressionIdentifier.class), "");
+
+        List<FactMappingValue> factMappingValues = singletonList(fmv);
+
+        List<ScenarioGiven> scenarioGivens = singletonList(new ScenarioGiven(factIdentifier, "", factMappingValues));
+
+        runnerHelper.reportErrorIfUsed("noMatch", scenarioGivens);
+
+        assertFalse(fmv.isError());
+
+        runnerHelper.reportErrorIfUsed(TEST, scenarioGivens);
+
+        assertTrue(fmv.isError());
     }
 }

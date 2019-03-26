@@ -216,7 +216,7 @@ public class RuleScenarioRunnerHelperTest {
 
         Person person = new Person();
         person.setFirstName("ANOTHER STRING");
-        ScenarioGiven newInput = new ScenarioGiven(personFactIdentifier, person);
+        ScenarioGiven newInput = new ScenarioGiven(personFactIdentifier, person, Collections.emptyList());
 
         List<ScenarioResult> scenario3Results = runnerHelper.getScenarioResultsFromGivenFacts(simulation.getSimulationDescriptor(), scenario1Outputs, newInput, expressionEvaluator);
         assertTrue(scenario1Outputs.get(0).getExpectedResult().get(0).isError());

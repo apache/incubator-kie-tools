@@ -24,6 +24,8 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.RequestContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.dmn.core.compiler.RuntimeTypeCheckOption;
+import org.kie.dmn.core.impl.DMNRuntimeImpl;
 import org.kie.internal.builder.fluent.DMNRuntimeFluent;
 import org.kie.internal.builder.fluent.ExecutableBuilder;
 import org.kie.internal.command.RegistryContext;
@@ -42,7 +44,16 @@ public class DMNScenarioExecutableBuilder {
 
         dmnRuntimeFluent = executableBuilder.newApplicationContext(applicationName)
                 .setKieContainer(kieContainer)
-                .newDMNRuntime();
+                .newDMNRuntime()
+                .addCommand(context -> {
+                    RegistryContext registryContext = (RegistryContext) context;
+
+                    DMNRuntime dmnRuntime = registryContext.lookup(DMNRuntime.class);
+
+                    // force typeCheck to enable constraints
+                    ((DMNRuntimeImpl) dmnRuntime).setOption(new RuntimeTypeCheckOption(true));
+                    return dmnRuntime;
+                });
     }
 
     private DMNScenarioExecutableBuilder(KieContainer kieContainer) {

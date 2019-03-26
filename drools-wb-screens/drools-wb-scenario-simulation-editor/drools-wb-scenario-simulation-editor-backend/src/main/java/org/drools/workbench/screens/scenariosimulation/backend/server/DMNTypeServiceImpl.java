@@ -164,9 +164,9 @@ public class DMNTypeServiceImpl
     }
 
     private void visitType(DMNType type,
-                             boolean alreadyInCollection,
-                             ErrorHolder errorHolder,
-                             String path) {
+                           boolean alreadyInCollection,
+                           ErrorHolder errorHolder,
+                           String path) {
         if (type.isComposite()) {
             for (Map.Entry<String, DMNType> entry : type.getFields().entrySet()) {
                 String name = entry.getKey();
