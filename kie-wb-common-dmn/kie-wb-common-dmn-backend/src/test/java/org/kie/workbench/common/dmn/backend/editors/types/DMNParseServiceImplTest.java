@@ -27,6 +27,7 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 public class DMNParseServiceImplTest {
@@ -111,6 +112,23 @@ public class DMNParseServiceImplTest {
         assertTrue(rangeValue.getIncludeEndValue());
         assertEquals("\"abc..\"", rangeValue.getStartValue());
         assertEquals("\"d..ef\"", rangeValue.getEndValue());
+    }
+
+    @Test
+    public void testParseFunctionInvocation() {
+
+        final RangeValue rangeValue = service.parseRangeValue("[ date ( \"2018-01-01\" ) .. date( \"2018-02-02\" ) ]");
+        assertEquals("date(\"2018-01-01\")", rangeValue.getStartValue());
+        assertEquals("date(\"2018-02-02\")", rangeValue.getEndValue());
+    }
+
+    @Test
+    public void testParseFunctionInvocation_MissingEnd() {
+
+        final RangeValue rangeValue = service.parseRangeValue("[date(\"2018-01-01\")..]");
+        assertNotNull(rangeValue);
+        assertEquals("", rangeValue.getStartValue());
+        assertEquals("", rangeValue.getEndValue());
     }
 
     @Test

@@ -22,6 +22,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.kie.dmn.feel.lang.ast.BaseNode;
+import org.kie.dmn.feel.lang.ast.FunctionInvocationNode;
 import org.kie.dmn.feel.lang.ast.ListNode;
 import org.kie.dmn.feel.lang.ast.RangeNode;
 import org.kie.dmn.feel.parser.feel11.ASTBuilderVisitor;
@@ -38,8 +39,8 @@ public class DMNParseServiceImpl implements DMNParseService {
     @Override
     public List<String> parseFEELList(final String source) {
         return parse(source)
-            .map(this::getTextElements)
-            .orElseGet(ArrayList::new);
+                .map(this::getTextElements)
+                .orElseGet(ArrayList::new);
     }
 
     @Override
@@ -51,21 +52,33 @@ public class DMNParseServiceImpl implements DMNParseService {
 
         if (baseNode instanceof RangeNode) {
             final RangeNode rangeNode = (RangeNode) baseNode;
-            rangeValue.setStartValue(rangeNode.getStart().getText());
+            rangeValue.setStartValue(parseRangeValue(rangeNode.getStart()));
             rangeValue.setIncludeStartValue(rangeNode.getLowerBound() == RangeNode.IntervalBoundary.CLOSED);
-            rangeValue.setEndValue(rangeNode.getEnd().getText());
+            rangeValue.setEndValue(parseRangeValue(rangeNode.getEnd()));
             rangeValue.setIncludeEndValue(rangeNode.getUpperBound() == RangeNode.IntervalBoundary.CLOSED);
         }
 
         return rangeValue;
     }
 
+    private String parseRangeValue(final BaseNode baseNode) {
+        if (baseNode instanceof FunctionInvocationNode) {
+            final FunctionInvocationNode functionInvocation = (FunctionInvocationNode) baseNode;
+            final String functionName = functionInvocation.getName().getText();
+            final String functionParams = functionInvocation.getParams().getText();
+
+            return functionName + "(" + functionParams + ")";
+        } else {
+            return baseNode.getText();
+        }
+    }
+
     private List<String> getTextElements(final ListNode list) {
         return list
-            .getElements()
-            .stream()
-            .map(BaseNode::getText)
-            .collect(Collectors.toList());
+                .getElements()
+                .stream()
+                .map(BaseNode::getText)
+                .collect(Collectors.toList());
     }
 
     private Optional<ListNode> parse(final String source) {
