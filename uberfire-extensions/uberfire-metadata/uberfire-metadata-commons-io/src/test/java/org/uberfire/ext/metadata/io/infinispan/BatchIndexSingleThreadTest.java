@@ -58,7 +58,7 @@ public class BatchIndexSingleThreadTest extends BaseIndexTest {
         final FileSystem fs3 = ioService().getFileSystem(fsURI);
         assertNotNull(fs3);
 
-        waitForCountDown(10000);
+        waitForCountDown(1000);
 
         assertEquals(1,
                      getStartBatchCount());

@@ -17,7 +17,7 @@
 package org.uberfire.ext.metadata.analyzer;
 
 public enum ElasticSearchAnalyzer {
-    SIMPLE,
+    FILENAME,
     STANDARD;
 
     @Override

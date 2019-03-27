@@ -108,7 +108,7 @@ public class IOSearchServiceImpl implements IOSearchService {
             clusterSegments[i] = new ClusterSegment() {
                 @Override
                 public String getClusterId() {
-                    return fsId.id();
+                    return fsId.id()+"/"+segmentedPath.getSegmentId();
                 }
 
                 @Override

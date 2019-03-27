@@ -119,7 +119,7 @@ public class ComplexFieldsTest extends BaseIndexTest {
         waitForCountDown(5000);
 
         {
-            List<KObject> result = config.getIndexProvider().findByQuery(Arrays.asList("elastic_complex_fields_test"),
+            List<KObject> result = config.getIndexProvider().findByQuery(Arrays.asList("elastic_complex_fields_test__master"),
                                                                          new WildcardQuery(new Term("file",
                                                                                                     "default://master@files/kie")),
                                                                          null,
@@ -130,7 +130,7 @@ public class ComplexFieldsTest extends BaseIndexTest {
         }
 
         {
-            List<KObject> result = config.getIndexProvider().findByQuery(Arrays.asList("elastic_complex_fields_test"),
+            List<KObject> result = config.getIndexProvider().findByQuery(Arrays.asList("elastic_complex_fields_test__master"),
                                                                          new WildcardQuery(new Term("file",
                                                                                                     "default://master@file/kie")),
                                                                          null,
@@ -141,7 +141,7 @@ public class ComplexFieldsTest extends BaseIndexTest {
         }
 
         {
-            List<KObject> result = config.getIndexProvider().findByQuery(Arrays.asList("elastic_complex_fields_test"),
+            List<KObject> result = config.getIndexProvider().findByQuery(Arrays.asList("elastic_complex_fields_test__master"),
                                                                          new WildcardQuery(new Term("file",
                                                                                                     "default://master@notFound")),
                                                                          null,

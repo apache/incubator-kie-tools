@@ -53,12 +53,18 @@ import org.uberfire.ext.metadata.io.infinispan.ReplaceIndexedObjectTest;
 })
 public class InfinispanTestSuite {
 
-    @ClassRule
-    public static ContainerDslRule infinispan = new ContainerDslRule("jboss/infinispan-server:9.3.2.Final")
-            .withEnvironment("APP_USER",
-                             "user")
-            .withEnvironment("APP_PASS",
-                             "user")
-            .withPortBinding(8080,
-                             11222);
+    private static InfinispanTestProperties props = InfinispanTestProperties.getInstance();
+
+    private static String imageName = props.getImage()
+            + ":"
+            + props.getVersion();
+
+//    @ClassRule
+//    public static ContainerDslRule infinispan = new ContainerDslRule(imageName)
+//            .withEnvironment("APP_USER",
+//                             props.getUser())
+//            .withEnvironment("APP_PASS",
+//                             props.getPassword())
+//            .withPortBinding(8080,
+//                             11222);
 }

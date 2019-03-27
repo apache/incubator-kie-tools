@@ -38,6 +38,7 @@ import org.uberfire.java.nio.file.OpenOption;
 import org.uberfire.java.nio.file.Path;
 
 import static org.junit.Assert.*;
+import static org.uberfire.ext.metadata.backend.infinispan.utils.AttributesUtil.toProtobufFormat;
 import static org.uberfire.ext.metadata.io.KObjectUtil.toKCluster;
 
 @RunWith(org.jboss.byteman.contrib.bmunit.BMUnitRunner.class)
@@ -58,7 +59,7 @@ public class IOServiceIndexedSortingTest extends BaseIndexTest {
         writeFile("bFile.txt");
         writeFile("aFile.txt");
 
-        List<String> indices = Arrays.asList(toKCluster(base).getClusterId());
+        List<String> indices = Arrays.asList(toProtobufFormat(toKCluster(base).getClusterId()));
         IndexProvider provider = this.config.getIndexProvider();
 
         {
@@ -104,7 +105,7 @@ public class IOServiceIndexedSortingTest extends BaseIndexTest {
         ioService().write(path,
                           "content",
                           Collections.<OpenOption>emptySet());
-        waitForCountDown(10000);
+        waitForCountDown(1000);
         return path;
     }
 }

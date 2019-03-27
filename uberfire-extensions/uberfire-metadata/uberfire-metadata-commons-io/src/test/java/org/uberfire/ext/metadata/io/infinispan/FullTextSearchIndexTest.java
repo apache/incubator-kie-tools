@@ -43,6 +43,7 @@ import org.uberfire.java.nio.base.version.VersionAttributeView;
 import org.uberfire.java.nio.file.Path;
 
 import static org.junit.Assert.*;
+import static org.uberfire.ext.metadata.backend.infinispan.utils.AttributesUtil.toProtobufFormat;
 import static org.uberfire.ext.metadata.engine.MetaIndexEngine.FULL_TEXT_FIELD;
 import static org.uberfire.ext.metadata.io.KObjectUtil.toKCluster;
 
@@ -85,7 +86,7 @@ public class FullTextSearchIndexTest extends BaseIndexTest {
 
         waitForCountDown(10000);
 
-        List<String> indices = Arrays.asList(toKCluster(path1).getClusterId());
+        List<String> indices = Arrays.asList(toProtobufFormat(toKCluster(path1).getClusterId()));
         IndexProvider provider = this.config.getIndexProvider();
 
         {

@@ -116,7 +116,7 @@
     <version.org.elasticsearch>5.6.1</version.org.elasticsearch>
     <version.org.apache.lucene>6.6.1</version.org.apache.lucene>
     <version.com.unboundid>3.2.0</version.com.unboundid>
-    <version.org.infinispan>9.3.2.Final</version.org.infinispan>
+    <version.org.infinispan>9.4.9.Final</version.org.infinispan>
     <version.org.infinispan.protostream>4.2.2.Final</version.org.infinispan.protostream>
 
     <!-- Newer version in ip-bom causes ServiceLoader error -->
@@ -150,6 +150,8 @@
     <version.org.arquillian.cube>1.15.3</version.org.arquillian.cube>
 
     <version.org.jboss.shrinkwrap>1.2.6</version.org.jboss.shrinkwrap>
+
+    <version.org.jboss.marshalling.api>1.2.3.GA</version.org.jboss.marshalling.api>
 
   </properties>
 
@@ -1471,6 +1473,13 @@
             <artifactId>docker-java</artifactId>
           </exclusion>
         </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.marshalling</groupId>
+        <artifactId>marshalling-api</artifactId>
+        <version>${version.org.jboss.marshalling.api}</version>
+        <scope>test</scope>
       </dependency>
 
       <dependency>

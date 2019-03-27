@@ -44,6 +44,7 @@ import static java.util.Collections.emptyList;
 import static org.apache.lucene.search.BooleanClause.Occur.MUST;
 import static org.apache.lucene.search.BooleanClause.Occur.SHOULD;
 import static org.apache.lucene.search.LegacyNumericRangeQuery.newLongRange;
+import static org.uberfire.ext.metadata.backend.infinispan.utils.AttributesUtil.toProtobufFormat;
 import static org.uberfire.ext.metadata.engine.MetaIndexEngine.FULL_TEXT_FIELD;
 
 public class InfinispanSearchIndex implements SearchIndex {
@@ -247,6 +248,6 @@ public class InfinispanSearchIndex implements SearchIndex {
     }
 
     private String format(final String term) {
-        return term.toLowerCase();
+        return toProtobufFormat(term.toLowerCase());
     }
 }

@@ -34,6 +34,7 @@ import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.attribute.FileAttribute;
 
 import static org.junit.Assert.*;
+import static org.uberfire.ext.metadata.backend.infinispan.utils.AttributesUtil.toProtobufFormat;
 import static org.uberfire.ext.metadata.io.KObjectUtil.toKCluster;
 
 @RunWith(org.jboss.byteman.contrib.bmunit.BMUnitRunner.class)
@@ -54,7 +55,7 @@ public class IOServiceIndexedDotFileGitImplTest extends BaseIndexTest {
                           "ooooo!",
                           Collections.<OpenOption>emptySet());
 
-        waitForCountDown(10000);
+        waitForCountDown(1000);
         setupCountDown(1);
         //Write an unmodified "real path" with attributes. This leads to only the "dot path" being indexed.
         ioService().write(path,
@@ -62,7 +63,7 @@ public class IOServiceIndexedDotFileGitImplTest extends BaseIndexTest {
                           Collections.<OpenOption>emptySet(),
                           getFileAttributes());
 
-        waitForCountDown(10000);
+        waitForCountDown(1000);
 
         final MetaObject mo = config.getMetaModelStore().getMetaObject(Path.class.getName());
 
@@ -72,7 +73,7 @@ public class IOServiceIndexedDotFileGitImplTest extends BaseIndexTest {
                      mo.getProperty("name").get().getTypes().size());
         assertTrue(mo.getProperty("name").get().getTypes().contains(String.class));
 
-        List<String> indices = Arrays.asList(toKCluster(path).getClusterId());
+        List<String> indices = Arrays.asList(toProtobufFormat(toKCluster(path).getClusterId()));
         IndexProvider provider = this.config.getIndexProvider();
 
         //Check the file has been indexed

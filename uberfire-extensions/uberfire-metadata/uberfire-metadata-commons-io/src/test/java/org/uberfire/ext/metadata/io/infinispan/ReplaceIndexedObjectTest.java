@@ -31,6 +31,7 @@ import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.attribute.FileAttribute;
 
 import static org.junit.Assert.*;
+import static org.uberfire.ext.metadata.backend.infinispan.utils.AttributesUtil.toProtobufFormat;
 
 @RunWith(org.jboss.byteman.contrib.bmunit.BMUnitRunner.class)
 @BMScript(dir = "byteman", value = "infinispan.btm")
@@ -62,7 +63,7 @@ public class ReplaceIndexedObjectTest extends BaseIndexTest {
                                   }
                               });
 
-            waitForCountDown(10000);
+            waitForCountDown(1000);
             setupCountDown(2);
             ioService().write(file,
                               "some content here",
@@ -78,10 +79,10 @@ public class ReplaceIndexedObjectTest extends BaseIndexTest {
                                       return "default://master@file/kies";
                                   }
                               });
-            waitForCountDown(10000);
+            waitForCountDown(1000);
         }
 
-        List<KObject> result = config.getIndexProvider().findByQuery(Arrays.asList(getSimpleName()),
+        List<KObject> result = config.getIndexProvider().findByQuery(Arrays.asList(toProtobufFormat(getSimpleName()+"/master")),
                                                                      new MatchAllDocsQuery(),
                                                                      null,
                                                                      0);

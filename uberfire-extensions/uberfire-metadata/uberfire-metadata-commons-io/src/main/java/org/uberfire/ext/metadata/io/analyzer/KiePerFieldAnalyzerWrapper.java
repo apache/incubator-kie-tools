@@ -56,7 +56,7 @@ public class KiePerFieldAnalyzerWrapper extends DelegatingAnalyzerWrapper implem
         Analyzer analyzer = this.getWrappedAnalyzer(fieldName);
         Class<?> analyzerClass = analyzer.getClass();
         if (analyzerClass.equals(FilenameAnalyzer.class)) {
-            return ElasticSearchAnalyzer.SIMPLE.toString();
+            return ElasticSearchAnalyzer.FILENAME.toString();
         } else {
             return ElasticSearchAnalyzer.STANDARD.toString();
         }

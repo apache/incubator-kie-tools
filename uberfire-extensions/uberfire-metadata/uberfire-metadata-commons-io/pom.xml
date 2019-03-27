@@ -147,6 +147,11 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.jboss.marshalling</groupId>
+      <artifactId>marshalling-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>com.spotify</groupId>
       <artifactId>docker-client</artifactId>
       <scope>test</scope>
@@ -172,6 +177,12 @@
   </dependencies>
 
   <build>
+    <testResources>
+      <testResource>
+        <directory>src/test/resources</directory>
+        <filtering>true</filtering>
+      </testResource>
+    </testResources>
     <plugins>
       <plugin>
         <artifactId>maven-clean-plugin</artifactId>

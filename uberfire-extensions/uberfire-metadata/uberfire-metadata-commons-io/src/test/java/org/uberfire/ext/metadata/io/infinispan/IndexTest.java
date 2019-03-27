@@ -58,7 +58,7 @@ public class IndexTest extends BaseIndexTest {
         final ClusterSegment cs1 = new ClusterSegment() {
             @Override
             public String getClusterId() {
-                return ((FileSystemId) getBasePath(getSimpleName() + "_1").getFileSystem()).id();
+                return (((FileSystemId) getBasePath(getSimpleName() + "_1").getFileSystem()).id() + "/master");
             }
 
             @Override
@@ -69,7 +69,7 @@ public class IndexTest extends BaseIndexTest {
         final ClusterSegment cs2 = new ClusterSegment() {
             @Override
             public String getClusterId() {
-                return ((FileSystemId) getBasePath(getSimpleName() + "_2").getFileSystem()).id();
+                return ((FileSystemId) getBasePath(getSimpleName() + "_2").getFileSystem()).id() + "/master";
             }
 
             @Override
@@ -82,7 +82,7 @@ public class IndexTest extends BaseIndexTest {
 
         final Map<String, Object> attributes = new HashMap<String, Object>() {{
             put("filename",
-                "txt");
+                "*txt");
         }};
 
         //Attribute Search

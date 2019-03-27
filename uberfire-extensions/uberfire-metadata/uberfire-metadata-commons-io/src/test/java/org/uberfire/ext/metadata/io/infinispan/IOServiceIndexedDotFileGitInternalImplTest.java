@@ -32,6 +32,7 @@ import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.attribute.FileAttribute;
 
 import static org.junit.Assert.*;
+import static org.uberfire.ext.metadata.backend.infinispan.utils.AttributesUtil.toProtobufFormat;
 import static org.uberfire.ext.metadata.io.KObjectUtil.toKCluster;
 
 @RunWith(org.jboss.byteman.contrib.bmunit.BMUnitRunner.class)
@@ -60,7 +61,7 @@ public class IOServiceIndexedDotFileGitInternalImplTest extends BaseIndexTest {
 
         waitForCountDown(5000);
 
-        final String index = toKCluster(path1).getClusterId();
+        final String index = toProtobufFormat(toKCluster(path1).getClusterId());
 
         TermQuery query = new TermQuery(new Term("name",
                                                  "value"));

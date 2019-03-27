@@ -33,6 +33,7 @@ import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.attribute.FileAttribute;
 
 import static org.junit.Assert.*;
+import static org.uberfire.ext.metadata.backend.infinispan.utils.AttributesUtil.toProtobufFormat;
 import static org.uberfire.ext.metadata.io.KObjectUtil.toKCluster;
 
 @RunWith(BMUnitRunner.class)
@@ -64,9 +65,9 @@ public class IOServiceIndexedDeleteFileTest extends BaseIndexTest {
                               }
                           });
 
-        waitForCountDown(10000);
+        waitForCountDown(1000);
 
-        List<String> indices = Arrays.asList(toKCluster(path).getClusterId());
+        List<String> indices = Arrays.asList(toProtobufFormat(toKCluster(path).getClusterId()));
         IndexProvider provider = this.config.getIndexProvider();
 
         //Check the file has been indexed
@@ -82,7 +83,7 @@ public class IOServiceIndexedDeleteFileTest extends BaseIndexTest {
         //Delete and re-check the index
         ioService().delete(path);
 
-        waitForCountDown(10000);
+        waitForCountDown(1000);
 
         hits = provider.findHitsByQuery(indices,
                                         new TermQuery(new Term("delete",

@@ -104,7 +104,7 @@ public class BatchIndexConcurrencyTest extends BaseIndexTest {
         }
         startSignal.countDown();
 
-        waitForCountDown(10000);
+        waitForCountDown(1000);
 
         assertEquals(1,
                      getStartBatchCount());

@@ -35,6 +35,7 @@ import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.attribute.FileAttribute;
 
 import static org.junit.Assert.*;
+import static org.uberfire.ext.metadata.backend.infinispan.utils.AttributesUtil.toProtobufFormat;
 import static org.uberfire.ext.metadata.io.KObjectUtil.toKCluster;
 
 @RunWith(org.jboss.byteman.contrib.bmunit.BMUnitRunner.class)
@@ -94,9 +95,9 @@ public class IOServiceIndexedGitImplTest extends BaseIndexTest {
                               }
                           });
 
-        waitForCountDown(10000);
+        waitForCountDown(1000);
 
-        Thread.sleep(2000l);
+        Thread.sleep(2000);
 
         assertNotNull(config.getMetaModelStore().getMetaObject(Path.class.getName()));
 
@@ -114,7 +115,7 @@ public class IOServiceIndexedGitImplTest extends BaseIndexTest {
         assertTrue(config.getMetaModelStore().getMetaObject(Path.class.getName()).getProperty("int.hello").get().getTypes().contains(String.class));
         assertTrue(config.getMetaModelStore().getMetaObject(Path.class.getName()).getProperty("custom").get().getTypes().contains(Date.class));
 
-        List<String> indices = Arrays.asList(toKCluster(path2).getClusterId());
+        List<String> indices = Arrays.asList(toProtobufFormat(toKCluster(path2).getClusterId()));
         IndexProvider provider = this.config.getIndexProvider();
 
         {
