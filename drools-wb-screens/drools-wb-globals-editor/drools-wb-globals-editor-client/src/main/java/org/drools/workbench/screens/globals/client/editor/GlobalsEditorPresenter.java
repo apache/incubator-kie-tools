@@ -53,9 +53,11 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
 
-@WorkbenchEditor(identifier = "org.kie.guvnor.globals", supportedTypes = {GlobalResourceType.class}, priority = 101)
+@WorkbenchEditor(identifier = GlobalsEditorPresenter.EDITOR_ID, supportedTypes = {GlobalResourceType.class}, priority = 101)
 public class GlobalsEditorPresenter
         extends KieEditor<GlobalsModel> {
+
+    public static final String EDITOR_ID = "org.kie.guvnor.globals";
 
     @Inject
     protected Caller<GlobalsEditorService> globalsEditorService;
@@ -241,8 +243,15 @@ public class GlobalsEditorPresenter
     }
 
     @OnClose
+    @Override
     public void onClose() {
         this.versionRecordManager.clear();
+        super.onClose();
+    }
+
+    @Override
+    protected String getEditorIdentifier() {
+        return EDITOR_ID;
     }
 
     @OnMayClose

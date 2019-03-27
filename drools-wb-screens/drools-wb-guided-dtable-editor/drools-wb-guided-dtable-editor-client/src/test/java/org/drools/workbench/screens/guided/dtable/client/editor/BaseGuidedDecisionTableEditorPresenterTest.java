@@ -38,6 +38,7 @@ import org.junit.runner.RunWith;
 import org.kie.soup.project.datamodel.imports.Imports;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
@@ -59,6 +60,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
@@ -72,8 +74,9 @@ import static org.mockito.Mockito.when;
 @RunWith(GwtMockitoTestRunner.class)
 public class BaseGuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisionTablePresenterTest<BaseGuidedDecisionTableEditorPresenter> {
 
+    @Captor
+    ArgumentCaptor<PlaceRequest> placeRequestArgumentCaptor;
     private GuidedDTableResourceType resourceType = new GuidedDTableResourceType(new Decision());
-
     @Mock
     private SaveAndRenameCommandBuilder<GuidedDecisionTable52, Metadata> saveAndRenameCommandBuilder;
 
@@ -81,6 +84,8 @@ public class BaseGuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisi
     protected GuidedDecisionTableEditorPresenter getPresenter() {
         return new GuidedDecisionTableEditorPresenter(view,
                                                       dtServiceCaller,
+                                                      docks,
+                                                      perspectiveManager,
                                                       notification,
                                                       decisionTableSelectedEvent,
                                                       validationPopup,
@@ -96,6 +101,7 @@ public class BaseGuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisi
                                                       saveAndRenameCommandBuilder,
                                                       alertsButtonMenuItemBuilder,
                                                       downloadMenuItem) {
+
             @Override
             protected Command getSaveAndRenameCommand() {
                 return mock(Command.class);
@@ -159,6 +165,37 @@ public class BaseGuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisi
         assertTrue(dtSelectedEvent.getPresenter().isPresent());
         assertEquals(dtPresenter,
                      dtSelectedEvent.getPresenter().get());
+    }
+
+    @Test
+    public void setupTheDocks() {
+
+        doReturn("perspectiveId").when(currentPerspective).getIdentifier();
+        doReturn(false).when(docks).isSetup();
+
+        final GuidedDecisionTableView.Presenter activeDtable = mock(GuidedDecisionTableView.Presenter.class);
+        when(modeller.getActiveDecisionTable()).thenReturn(Optional.of(activeDtable));
+
+        presenter.onFocus();
+
+        verify(docks).setup(eq("perspectiveId"),
+                            placeRequestArgumentCaptor.capture());
+        assertEquals("org.kie.guvnor.explorer", placeRequestArgumentCaptor.getValue().getIdentifier());
+    }
+
+    @Test
+    public void doNotSetupTheDocksTwice() {
+
+        doReturn("perspectiveId").when(currentPerspective).getIdentifier();
+        doReturn(true).when(docks).isSetup();
+
+        final GuidedDecisionTableView.Presenter activeDtable = mock(GuidedDecisionTableView.Presenter.class);
+        when(modeller.getActiveDecisionTable()).thenReturn(Optional.of(activeDtable));
+
+        presenter.onFocus();
+
+        verify(docks, never()).setup(anyString(),
+                                     any());
     }
 
     @Test

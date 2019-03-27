@@ -51,6 +51,7 @@ import org.kie.soup.project.datamodel.imports.HasImports;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleFactory;
+import org.kie.workbench.common.widgets.client.docks.DefaultEditorDock;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilderImpl;
 import org.kie.workbench.common.widgets.configresource.client.widget.bound.ImportsWidgetPresenter;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorWrapperView;
@@ -66,6 +67,8 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.mvp.PerspectiveActivity;
+import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
 import org.uberfire.client.workbench.events.PlaceHiddenEvent;
 import org.uberfire.client.workbench.widgets.multipage.MultiPageEditor;
@@ -102,74 +105,56 @@ import static org.mockito.Mockito.when;
 public class ScenarioEditorPresenterTest {
 
     @Mock
+    protected AlertsButtonMenuItemBuilder alertsButtonMenuItemBuilder;
+    @Mock
+    protected MenuItem alertsButtonMenuItem;
+    @Mock
+    CommonConstants commonConstants;
+    @Mock
+    TestRunnerReportingScreen testRunnerReportingScreen;
+    @Mock
+    TestReportingDocksHandler testReportingDocksHandler;
+    @Mock
+    DefaultEditorDock docks;
+    @Mock
     private EventSourceMock showTestPanelEvent;
     @Mock
     private EventSourceMock hideTestPanelEvent;
-
-    @Mock
-    CommonConstants commonConstants;
-
     @Captor
     private ArgumentCaptor<Scenario> scenarioArgumentCaptor;
-
     @Mock
     private KieEditorWrapperView kieView;
-
     @Mock
     private ScenarioEditorView view;
-
     @Mock
     private VersionRecordManager versionRecordManager;
-
     @Mock
     private OverviewWidgetPresenter overviewWidget;
-
     @Mock
     private MultiPageEditor multiPage;
-
     @Mock
     private ImportsWidgetPresenter importsWidget;
-
     @Mock
     private User user;
-
     @Mock
     private ScenarioTestEditorService service;
-
     @Mock
     private TestRunnerService testService;
-
     @Mock
     private BasicFileMenuBuilder menuBuilder;
-
     @Spy
     @InjectMocks
     private FileMenuBuilderImpl fileMenuBuilder;
-
     @Mock
     private ProjectController projectController;
-
     @Mock
     private WorkspaceProjectContext workbenchContext;
-
     @Mock
     private SettingsPage settingsPage;
-
     @Mock
     private AuditPage auditPage;
-
     @Mock
-    protected AlertsButtonMenuItemBuilder alertsButtonMenuItemBuilder;
-
-    @Mock
-    protected MenuItem alertsButtonMenuItem;
-
-    @Mock
-    TestRunnerReportingScreen testRunnerReportingScreen;
-
-    @Mock
-    TestReportingDocksHandler testReportingDocksHandler;
-
+    private PerspectiveManager perspectiveManager;
     private CallerMock<ScenarioTestEditorService> fakeService;
     private ScenarioEditorPresenter editor;
     private Scenario scenario;
@@ -196,6 +181,7 @@ public class ScenarioEditorPresenterTest {
                                                  showTestPanelEvent,
                                                  hideTestPanelEvent) {
             {
+                docks = ScenarioEditorPresenterTest.this.docks;
                 kieView = ScenarioEditorPresenterTest.this.kieView;
                 versionRecordManager = ScenarioEditorPresenterTest.this.versionRecordManager;
                 overviewWidget = ScenarioEditorPresenterTest.this.overviewWidget;
@@ -205,6 +191,7 @@ public class ScenarioEditorPresenterTest {
                 workbenchContext = ScenarioEditorPresenterTest.this.workbenchContext;
                 versionRecordManager = ScenarioEditorPresenterTest.this.versionRecordManager;
                 alertsButtonMenuItemBuilder = ScenarioEditorPresenterTest.this.alertsButtonMenuItemBuilder;
+                perspectiveManager = ScenarioEditorPresenterTest.this.perspectiveManager;
             }
 
             @Override
@@ -244,6 +231,7 @@ public class ScenarioEditorPresenterTest {
         ).thenReturn(dmo);
 
         when(alertsButtonMenuItemBuilder.build()).thenReturn(alertsButtonMenuItem);
+        when(perspectiveManager.getCurrentPerspective()).thenReturn(mock(PerspectiveActivity.class));
     }
 
     @Test
@@ -253,7 +241,8 @@ public class ScenarioEditorPresenterTest {
         editor.onStartup(mock(ObservablePath.class),
                          place);
 
-        editor.showDiagramEditorDocks(new PlaceGainFocusEvent(place));
+        editor.onShowDiagramEditorDocks(new PlaceGainFocusEvent(place));
+
         verify(showTestPanelEvent).fire(any());
     }
 
@@ -262,7 +251,8 @@ public class ScenarioEditorPresenterTest {
         editor.onStartup(mock(ObservablePath.class),
                          new DefaultPlaceRequest(ScenarioEditorPresenter.IDENTIFIER));
 
-        editor.showDiagramEditorDocks(new PlaceGainFocusEvent(new DefaultPlaceRequest("wrong name")));
+        editor.onShowDiagramEditorDocks(new PlaceGainFocusEvent(new DefaultPlaceRequest("wrong name")));
+
         verify(showTestPanelEvent, never()).fire(any());
     }
 
@@ -278,7 +268,7 @@ public class ScenarioEditorPresenterTest {
         editor.onStartup(mock(ObservablePath.class),
                          place);
 
-        editor.hideDiagramEditorDocks(new PlaceHiddenEvent(place));
+        editor.onHideDocks(new PlaceHiddenEvent(place));
         verify(hideTestPanelEvent).fire(any());
         verify(testRunnerReportingScreen).reset();
     }
@@ -288,7 +278,7 @@ public class ScenarioEditorPresenterTest {
         editor.onStartup(mock(ObservablePath.class),
                          new DefaultPlaceRequest(ScenarioEditorPresenter.IDENTIFIER));
 
-        editor.hideDiagramEditorDocks(new PlaceHiddenEvent(new DefaultPlaceRequest("wrong name")));
+        editor.onHideDocks(new PlaceHiddenEvent(new DefaultPlaceRequest("wrong name")));
         verify(hideTestPanelEvent, never()).fire(any());
     }
 

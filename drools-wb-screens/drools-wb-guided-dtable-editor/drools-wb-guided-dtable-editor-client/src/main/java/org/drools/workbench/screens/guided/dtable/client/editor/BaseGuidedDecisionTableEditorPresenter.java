@@ -21,6 +21,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.ProvidesResize;
@@ -54,10 +55,13 @@ import org.kie.workbench.common.widgets.metadata.client.KieMultipleDocumentEdito
 import org.kie.workbench.common.widgets.metadata.client.menu.RegisteredDocumentsMenuBuilder;
 import org.kie.workbench.common.widgets.metadata.client.validation.AssetUpdateValidator;
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
+import org.kie.workbench.common.workbench.client.docks.AuthoringWorkbenchDocks;
 import org.uberfire.backend.vfs.ObservablePath;
+import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UpdatedLockStatusEvent;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
+import org.uberfire.client.workbench.events.PlaceHiddenEvent;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.client.workbench.widgets.multipage.MultiPageEditor;
 import org.uberfire.client.workbench.widgets.multipage.Page;
@@ -68,6 +72,7 @@ import org.uberfire.ext.editor.commons.client.menu.MenuItems;
 import org.uberfire.ext.editor.commons.client.validation.DefaultFileNameValidator;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuItem;
 
@@ -99,13 +104,15 @@ public abstract class BaseGuidedDecisionTableEditorPresenter extends KieMultiple
 
     protected SyncBeanManager beanManager;
     protected PlaceManager placeManager;
-
-    private ColumnsPage columnsPage;
-
     protected AlertsButtonMenuItemBuilder alertsButtonMenuItemBuilder;
+    protected PerspectiveManager perspectiveManager;
+    private ColumnsPage columnsPage;
+    private AuthoringWorkbenchDocks docks;
 
     public BaseGuidedDecisionTableEditorPresenter(final View view,
                                                   final Caller<GuidedDecisionTableEditorService> service,
+                                                  final AuthoringWorkbenchDocks docks,
+                                                  final PerspectiveManager perspectiveManager,
                                                   final Event<NotificationEvent> notification,
                                                   final Event<DecisionTableSelectedEvent> decisionTableSelectedEvent,
                                                   final ValidationPopup validationPopup,
@@ -123,6 +130,8 @@ public abstract class BaseGuidedDecisionTableEditorPresenter extends KieMultiple
         super(view);
         this.view = view;
         this.service = service;
+        this.docks = docks;
+        this.perspectiveManager = perspectiveManager;
         this.notification = notification;
         this.decisionTableSelectedEvent = decisionTableSelectedEvent;
         this.validationPopup = validationPopup;
@@ -231,10 +240,21 @@ public abstract class BaseGuidedDecisionTableEditorPresenter extends KieMultiple
     }
 
     protected void onFocus() {
+
+        if (!docks.isSetup()) {
+            docks.setup(perspectiveManager.getCurrentPerspective().getIdentifier(),
+                        new DefaultPlaceRequest("org.kie.guvnor.explorer"));
+        }
+        docks.show();
+
         modeller.getActiveDecisionTable().ifPresent(dt -> {
             decisionTableSelectedEvent.fire(new DecisionTableSelectedEvent(dt));
             dt.initialiseAnalysis();
         });
+    }
+
+    private void hideDataModellerDocks(@Observes PlaceHiddenEvent event) {
+        docks.hide();
     }
 
     protected String getTitleText() {

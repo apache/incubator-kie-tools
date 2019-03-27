@@ -55,12 +55,15 @@ import org.kie.workbench.common.widgets.metadata.client.KieMultipleDocumentEdito
 import org.kie.workbench.common.widgets.metadata.client.menu.RegisteredDocumentsMenuBuilder;
 import org.kie.workbench.common.widgets.metadata.client.validation.AssetUpdateValidator;
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
+import org.kie.workbench.common.workbench.client.docks.AuthoringWorkbenchDocks;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.mvp.PerspectiveActivity;
+import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.client.workbench.widgets.multipage.MultiPageEditor;
@@ -100,6 +103,13 @@ public abstract class BaseGuidedDecisionTablePresenterTest<P extends BaseGuidedD
 
     @Mock
     protected GuidedDecisionTableEditorService dtService;
+
+    @Mock
+    protected AuthoringWorkbenchDocks docks;
+
+    @Mock
+    protected PerspectiveManager perspectiveManager;
+
     protected Caller<GuidedDecisionTableEditorService> dtServiceCaller;
 
     protected Event<NotificationEvent> notification = spy(new EventSourceMock<NotificationEvent>() {
@@ -243,6 +253,9 @@ public abstract class BaseGuidedDecisionTablePresenterTest<P extends BaseGuidedD
     @Mock
     protected ProjectController projectController;
 
+    @Mock
+    protected PerspectiveActivity currentPerspective;
+
     @Captor
     protected ArgumentCaptor<DecisionTableSelectedEvent> dtSelectedEventCaptor;
 
@@ -295,6 +308,8 @@ public abstract class BaseGuidedDecisionTablePresenterTest<P extends BaseGuidedD
         when(downloadMenuItem.build(any())).thenReturn(downloadMenuItemButton);
 
         doReturn(alertsButtonMenuItem).when(alertsButtonMenuItemBuilder).build();
+
+        doReturn(currentPerspective).when(perspectiveManager).getCurrentPerspective();
 
         presenter.init();
         presenter.setupMenuBar();

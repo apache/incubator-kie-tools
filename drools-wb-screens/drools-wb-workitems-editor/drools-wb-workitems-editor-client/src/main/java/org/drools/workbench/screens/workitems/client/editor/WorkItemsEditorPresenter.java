@@ -56,9 +56,11 @@ import org.uberfire.workbench.model.menu.Menus;
  * Editor for Work Item definitions
  */
 @Dependent
-@WorkbenchEditor(identifier = "WorkItemsEditor", supportedTypes = {WorkItemsResourceType.class})
+@WorkbenchEditor(identifier = WorkItemsEditorPresenter.EDITOR_ID, supportedTypes = {WorkItemsResourceType.class})
 public class WorkItemsEditorPresenter
         extends KieEditor<String> {
+
+    public static final String EDITOR_ID = "WorkItemsEditor";
 
     @Inject
     protected Caller<WorkItemsEditorService> workItemsService;
@@ -157,9 +159,16 @@ public class WorkItemsEditorPresenter
                                                                                    commitMessage);
     }
 
+    @Override
+    protected String getEditorIdentifier() {
+        return EDITOR_ID;
+    }
+
     @OnClose
+    @Override
     public void onClose() {
         this.versionRecordManager.clear();
+        super.onClose();
     }
 
     @OnMayClose

@@ -58,10 +58,12 @@ import org.uberfire.workbench.model.menu.impl.BaseMenuCustom;
 import static org.uberfire.ext.widgets.common.client.common.ConcurrentChangePopup.newConcurrentUpdate;
 
 @Dependent
-@WorkbenchEditor(identifier = "DecisionTableXLSEditor", supportedTypes = {DecisionTableXLSResourceType.class, DecisionTableXLSXResourceType.class})
+@WorkbenchEditor(identifier = DecisionTableXLSEditorPresenter.EDITOR_ID, supportedTypes = {DecisionTableXLSResourceType.class, DecisionTableXLSXResourceType.class})
 public class DecisionTableXLSEditorPresenter
         extends KieEditor<DecisionTableXLSContent>
         implements DecisionTableXLSEditorView.Presenter {
+
+    public static final String EDITOR_ID = "DecisionTableXLSEditor";
 
     private Caller<DecisionTableXLSService> decisionTableXLSService;
 
@@ -260,9 +262,16 @@ public class DecisionTableXLSEditorPresenter
         }.build();
     }
 
+    @Override
+    protected String getEditorIdentifier() {
+        return EDITOR_ID;
+    }
+
     @OnClose
+    @Override
     public void onClose() {
         this.versionRecordManager.clear();
+        super.onClose();
     }
 
     @WorkbenchPartTitleDecoration

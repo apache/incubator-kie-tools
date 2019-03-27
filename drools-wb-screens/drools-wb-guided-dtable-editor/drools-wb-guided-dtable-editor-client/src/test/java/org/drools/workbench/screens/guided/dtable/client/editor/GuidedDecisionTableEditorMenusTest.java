@@ -57,8 +57,10 @@ import org.kie.workbench.common.widgets.metadata.client.menu.RegisteredDocuments
 import org.kie.workbench.common.widgets.metadata.client.menu.RegisteredDocumentsMenuView;
 import org.kie.workbench.common.widgets.metadata.client.menu.RegisteredDocumentsMenuView.DocumentMenuItem;
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
+import org.kie.workbench.common.workbench.client.docks.AuthoringWorkbenchDocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
+import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.ext.editor.commons.client.file.popups.CopyPopUpPresenter;
@@ -260,6 +262,12 @@ public class GuidedDecisionTableEditorMenusTest {
     @Mock
     protected MenuItem alertsButtonMenuItem;
 
+    @Mock
+    protected AuthoringWorkbenchDocks docks;
+
+    @Mock
+    protected PerspectiveManager perspectiveManager;
+
     private GuidedDecisionTableEditorPresenter presenter;
     private GuidedDTableResourceType resourceType = new GuidedDTableResourceType(new Decision());
 
@@ -338,6 +346,8 @@ public class GuidedDecisionTableEditorMenusTest {
 
         final GuidedDecisionTableEditorPresenter wrapped = new GuidedDecisionTableEditorPresenter(view,
                                                                                                   dtServiceCaller,
+                                                                                                  docks,
+                                                                                                  perspectiveManager,
                                                                                                   notification,
                                                                                                   decisionTableSelectedEvent,
                                                                                                   validationPopup,

@@ -52,9 +52,11 @@ import org.uberfire.workbench.model.menu.Menus;
  * DSL Editor Presenter.
  */
 @Dependent
-@WorkbenchEditor(identifier = "DSLEditor", supportedTypes = {DSLResourceType.class})
+@WorkbenchEditor(identifier = DSLEditorPresenter.EDITOR_ID, supportedTypes = {DSLResourceType.class})
 public class DSLEditorPresenter
         extends KieEditor<String> {
+
+    public static final String EDITOR_ID = "DSLEditor";
 
     @Inject
     protected Caller<DSLTextEditorService> dslTextEditorService;
@@ -140,9 +142,16 @@ public class DSLEditorPresenter
                                                                                        commitMessage);
     }
 
+    @Override
+    protected String getEditorIdentifier() {
+        return EDITOR_ID;
+    }
+
     @OnClose
+    @Override
     public void onClose() {
         this.versionRecordManager.clear();
+        super.onClose();
     }
 
     @OnMayClose

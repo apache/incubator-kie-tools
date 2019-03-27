@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
@@ -70,8 +69,6 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.mvp.AbstractWorkbenchActivity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.PlaceStatus;
-import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
-import org.uberfire.client.workbench.events.PlaceHiddenEvent;
 import org.uberfire.ext.editor.commons.service.support.SupportsCopy;
 import org.uberfire.ext.editor.commons.service.support.SupportsDelete;
 import org.uberfire.ext.editor.commons.service.support.SupportsRename;
@@ -83,7 +80,6 @@ import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
-import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.workbench.model.menu.Menus;
 
 import static org.drools.workbench.screens.scenariosimulation.client.editor.ScenarioSimulationEditorPresenter.IDENTIFIER;
@@ -105,23 +101,14 @@ public class ScenarioSimulationEditorPresenter
     protected ScenarioGridPanel scenarioGridPanel;
 
     protected DataManagementStrategy dataManagementStrategy;
-
-    protected ScenarioSimulationModel model;
-
-    private ImportsWidgetPresenter importsWidget;
-
-    private AsyncPackageDataModelOracleFactory oracleFactory;
-
-    private Caller<ScenarioSimulationService> service;
-
-    private Caller<DMNTypeService> dmnTypeService;
-
-    private ScenarioSimulationResourceType type;
-
-    private ScenarioSimulationView view;
-
     protected ScenarioSimulationContext context;
-
+    private ImportsWidgetPresenter importsWidget;
+    private AsyncPackageDataModelOracleFactory oracleFactory;
+    protected ScenarioSimulationModel model;
+    private Caller<ScenarioSimulationService> service;
+    private Caller<DMNTypeService> dmnTypeService;
+    private ScenarioSimulationResourceType type;
+    private ScenarioSimulationView view;
     private Command populateRightPanelCommand;
 
     private TestRunnerReportingScreen testRunnerReportingScreen;
@@ -171,9 +158,11 @@ public class ScenarioSimulationEditorPresenter
     }
 
     @OnClose
+    @Override
     public void onClose() {
         this.versionRecordManager.clear();
         scenarioGridPanel.unregister();
+        super.onClose();
     }
 
     @OnMayClose
@@ -201,35 +190,23 @@ public class ScenarioSimulationEditorPresenter
         return menus;
     }
 
-    // Observing to show RightPanel when ScenarioSimulationScreen is put in foreground
-    public void onPlaceGainFocusEvent(@Observes PlaceGainFocusEvent placeGainFocusEvent) {
-        if (!(placeGainFocusEvent.getPlace() instanceof PathPlaceRequest)) {  // Ignoring other requests
-            return;
-        }
-        PathPlaceRequest placeRequest = (PathPlaceRequest) placeGainFocusEvent.getPlace();
-        if (placeRequest.getIdentifier().equals(ScenarioSimulationEditorPresenter.IDENTIFIER)
-                && placeRequest.getPath().equals(this.path)) {
-            scenarioSimulationDocksHandler.addDocks();
-            expandToolsDock();
-            registerRightPanelCallback();
-            populateRightPanel();
-        }
+    @Override
+    public void showDocks() {
+        super.showDocks();
+        scenarioSimulationDocksHandler.addDocks();
+        expandToolsDock();
+        registerRightPanelCallback();
+        populateRightPanel();
     }
 
-    // Observing to hide RightPanel when ScenarioSimulationScreen is put in background
-    public void onPlaceHiddenEvent(@Observes PlaceHiddenEvent placeHiddenEvent) {
-        if (!(placeHiddenEvent.getPlace() instanceof PathPlaceRequest)) {  // Ignoring other requests
-            return;
-        }
-        PathPlaceRequest placeRequest = (PathPlaceRequest) placeHiddenEvent.getPlace();
-        if (placeRequest.getIdentifier().equals(ScenarioSimulationEditorPresenter.IDENTIFIER)
-                && placeRequest.getPath().equals(this.path)) {
-            scenarioSimulationDocksHandler.removeDocks();
-            view.getScenarioGridLayer().getScenarioGrid().clearSelections();
-            unRegisterRightPanelCallback();
-            clearRightPanelStatus();
-            testRunnerReportingScreen.reset();
-        }
+    @Override
+    public void hideDocks() {
+        super.hideDocks();
+        scenarioSimulationDocksHandler.removeDocks();
+        view.getScenarioGridLayer().getScenarioGrid().clearSelections();
+        unRegisterRightPanelCallback();
+        clearRightPanelStatus();
+        testRunnerReportingScreen.reset();
     }
 
     public void expandToolsDock() {
@@ -490,5 +467,10 @@ public class ScenarioSimulationEditorPresenter
 
     private Command getPopulateRightPanelCommand() {
         return this::populateRightPanel;
+    }
+
+    @Override
+    protected String getEditorIdentifier() {
+        return IDENTIFIER;
     }
 }

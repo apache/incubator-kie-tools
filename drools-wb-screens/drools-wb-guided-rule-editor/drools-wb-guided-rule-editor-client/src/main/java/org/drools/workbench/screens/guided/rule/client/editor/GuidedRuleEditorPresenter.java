@@ -68,9 +68,11 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.menu.Menus;
 
 @Dependent
-@WorkbenchEditor(identifier = "GuidedRuleEditor", supportedTypes = {GuidedRuleDRLResourceType.class, GuidedRuleDSLRResourceType.class}, priority = 102)
+@WorkbenchEditor(identifier = GuidedRuleEditorPresenter.EDITOR_ID, supportedTypes = {GuidedRuleDRLResourceType.class, GuidedRuleDSLRResourceType.class}, priority = 102)
 public class GuidedRuleEditorPresenter
         extends KieEditor<RuleModel> {
+
+    public static final String EDITOR_ID = "GuidedRuleEditor";
 
     @Inject
     private ImportsWidgetPresenter importsWidget;
@@ -242,10 +244,17 @@ public class GuidedRuleEditorPresenter
                                                                                metadata, commitMessage);
     }
 
+    @Override
+    protected String getEditorIdentifier() {
+        return EDITOR_ID;
+    }
+
     @OnClose
+    @Override
     public void onClose() {
         this.versionRecordManager.clear();
         this.oracleFactory.destroy(oracle);
+        super.onClose();
     }
 
     @OnMayClose

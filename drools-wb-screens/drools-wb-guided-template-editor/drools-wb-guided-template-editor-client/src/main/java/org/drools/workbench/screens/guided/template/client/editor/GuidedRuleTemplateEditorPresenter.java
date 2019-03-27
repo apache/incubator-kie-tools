@@ -62,9 +62,11 @@ import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
 
 @Dependent
-@WorkbenchEditor(identifier = "GuidedRuleTemplateEditor", supportedTypes = {GuidedRuleTemplateResourceType.class})
+@WorkbenchEditor(identifier = GuidedRuleTemplateEditorPresenter.EDITOR_ID, supportedTypes = {GuidedRuleTemplateResourceType.class})
 public class GuidedRuleTemplateEditorPresenter
         extends KieEditor<TemplateModel> {
+
+    public static final String EDITOR_ID = "GuidedRuleTemplateEditor";
 
     private GuidedRuleTemplateEditorView view;
 
@@ -221,10 +223,17 @@ public class GuidedRuleTemplateEditorPresenter
         }).toSource(versionRecordManager.getCurrentPath(), model);
     }
 
+    @Override
+    protected String getEditorIdentifier() {
+        return EDITOR_ID;
+    }
+
     @OnClose
+    @Override
     public void onClose() {
         this.versionRecordManager.clear();
         this.oracleFactory.destroy(oracle);
+        super.onClose();
     }
 
     @OnMayClose

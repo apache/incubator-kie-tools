@@ -49,6 +49,7 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
+import org.kie.workbench.common.workbench.client.docks.AuthoringWorkbenchDocks;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.WorkbenchEditor;
@@ -56,6 +57,7 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.callbacks.Callback;
+import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UpdatedLockStatusEvent;
 import org.uberfire.ext.editor.commons.client.menu.DownloadMenuItem;
@@ -83,6 +85,8 @@ public class GuidedDecisionTableEditorPresenter extends BaseGuidedDecisionTableE
     @Inject
     public GuidedDecisionTableEditorPresenter(final View view,
                                               final Caller<GuidedDecisionTableEditorService> service,
+                                              final AuthoringWorkbenchDocks docks,
+                                              final PerspectiveManager perspectiveManager,
                                               final Event<NotificationEvent> notification,
                                               final Event<DecisionTableSelectedEvent> decisionTableSelectedEvent,
                                               final ValidationPopup validationPopup,
@@ -100,6 +104,8 @@ public class GuidedDecisionTableEditorPresenter extends BaseGuidedDecisionTableE
                                               final DownloadMenuItem downloadMenuItem) {
         super(view,
               service,
+              docks,
+              perspectiveManager,
               notification,
               decisionTableSelectedEvent,
               validationPopup,
