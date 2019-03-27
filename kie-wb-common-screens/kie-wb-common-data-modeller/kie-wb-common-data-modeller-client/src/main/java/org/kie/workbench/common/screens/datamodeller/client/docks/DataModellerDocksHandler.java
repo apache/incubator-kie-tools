@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.workbench.client.docks.impl;
+package org.kie.workbench.common.screens.datamodeller.client.docks;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -27,9 +28,10 @@ import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
 import org.kie.workbench.common.screens.datamodeller.client.context.DataModelerWorkbenchContext;
 import org.kie.workbench.common.screens.datamodeller.client.context.DataModelerWorkbenchContextChangeEvent;
 import org.kie.workbench.common.screens.datamodeller.client.context.DataModelerWorkbenchFocusEvent;
-import org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures;
-import org.kie.workbench.common.workbench.client.resources.i18n.DefaultWorkbenchConstants;
-import org.kie.workbench.common.workbench.client.resources.images.WorkbenchImageResources;
+import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
+import org.kie.workbench.common.screens.datamodeller.client.resources.images.ImagesResources;
+import org.kie.workbench.common.screens.datamodeller.security.DataModelerFeatures;
+import org.kie.workbench.common.widgets.client.docks.AbstractWorkbenchDocksHandler;
 import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
@@ -39,7 +41,7 @@ import org.uberfire.security.authz.AuthorizationManager;
 @Dependent
 public class DataModellerDocksHandler extends AbstractWorkbenchDocksHandler {
 
-    protected DefaultWorkbenchConstants constants = DefaultWorkbenchConstants.INSTANCE;
+    protected Constants constants = Constants.INSTANCE;
 
     protected SessionInfo sessionInfo;
 
@@ -90,11 +92,11 @@ public class DataModellerDocksHandler extends AbstractWorkbenchDocksHandler {
                                         new DefaultPlaceRequest("AdvancedDomainScreen"),
                                         perspectiveIdentifier).withSize(450).withLabel(constants.DocksAdvancedTitle()));
 
-            if (authorizationManager.authorize(WorkbenchFeatures.PLANNER_AVAILABLE,
+            if (authorizationManager.authorize(DataModelerFeatures.PLANNER_AVAILABLE,
                                                sessionInfo.getIdentity())) {
                 result.add(new UberfireDock(UberfireDockPosition.EAST,
-                                            WorkbenchImageResources.INSTANCE.optaPlannerDisabledIcon(),
-                                            WorkbenchImageResources.INSTANCE.optaPlannerEnabledIcon(),
+                                            ImagesResources.INSTANCE.optaPlannerDisabledIcon(),
+                                            ImagesResources.INSTANCE.optaPlannerEnabledIcon(),
                                             new DefaultPlaceRequest("PlannerDomainScreen"),
                                             perspectiveIdentifier)
                                    .withSize(450).withLabel(constants.DocksOptaPlannerTitle()));

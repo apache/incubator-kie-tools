@@ -29,12 +29,21 @@ import org.jboss.errai.common.client.api.Caller;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.widgets.client.docks.DefaultEditorDock;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilderImpl;
 import org.kie.workbench.common.widgets.metadata.client.validation.AssetUpdateValidator;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.uberfire.backend.vfs.ObservablePath;
+import org.uberfire.client.mvp.PerspectiveActivity;
+import org.uberfire.client.mvp.PerspectiveManager;
+import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
+import org.uberfire.client.workbench.events.PlaceHiddenEvent;
+import org.uberfire.client.workbench.type.ClientResourceType;
+import org.uberfire.ext.editor.commons.client.BaseEditorView;
 import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
 import org.uberfire.ext.editor.commons.client.menu.BasicFileMenuBuilder;
 import org.uberfire.ext.editor.commons.client.menu.common.SaveAndRenameCommandBuilder;
@@ -42,11 +51,14 @@ import org.uberfire.ext.editor.commons.client.validation.Validator;
 import org.uberfire.ext.editor.commons.service.support.SupportsSaveAndRename;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
+import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuItem;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -59,43 +71,37 @@ public class KieEditorTest {
 
     @Mock
     protected BasicFileMenuBuilder menuBuilder;
-
     @Mock
     protected VersionRecordManager versionRecordManager;
-
     @Spy
     @InjectMocks
     protected FileMenuBuilderImpl fileMenuBuilder;
-
     @Mock
     protected ProjectController projectController;
-
     @Mock
     protected WorkspaceProjectContext workbenchContext;
-
     @Mock
     protected EventSourceMock<NotificationEvent> notification;
-
     @Mock
     protected SaveAndRenameCommandBuilder<String, Metadata> saveAndRenameCommandBuilder;
-
     @Mock
     protected Metadata metadata;
-
     @Mock
     protected KieEditorWrapperView kieView;
-
     @Mock
     protected AlertsButtonMenuItemBuilder alertsButtonMenuItemBuilder;
-
     @Mock
     protected MenuItem alertsButtonMenuItem;
-
     @Spy
     @InjectMocks
     protected AssetUpdateValidator assetUpdateValidator;
-
     protected KieEditorFake presenter;
+    @Captor
+    ArgumentCaptor<PlaceRequest> placeRequestArgumentCaptor;
+    @Mock
+    private DefaultEditorDock docks;
+    @Mock
+    private PerspectiveManager perspectiveManager;
 
     @Before
     public void setup() {
@@ -262,6 +268,106 @@ public class KieEditorTest {
     }
 
     @Test
+    public void testShowDiagramEditorDocks() {
+
+        doReturn(Optional.of(mock(WorkspaceProject.class))).when(workbenchContext).getActiveWorkspaceProject();
+
+        PlaceRequest placeRequest = mock(PlaceRequest.class);
+        when(placeRequest.getIdentifier()).thenReturn(KieEditorFake.EDITOR_ID);
+
+        presenter.init(mock(ObservablePath.class),
+                       placeRequest,
+                       mock(ClientResourceType.class));
+
+        when(docks.isSetup()).thenReturn(false);
+        PerspectiveActivity perspectiveActivity = mock(PerspectiveActivity.class);
+        when(perspectiveActivity.getIdentifier()).thenReturn("perspectiveId");
+        when(perspectiveManager.getCurrentPerspective()).thenReturn(perspectiveActivity);
+
+        presenter.onShowDiagramEditorDocks(new PlaceGainFocusEvent(placeRequest));
+
+        verify(docks).setup(eq("perspectiveId"),
+                            placeRequestArgumentCaptor.capture());
+        assertEquals("org.kie.guvnor.explorer", placeRequestArgumentCaptor.getValue().getIdentifier());
+        verify(docks).show();
+    }
+
+    @Test
+    public void testShowDiagramEditorDocksInitDone() {
+
+        doReturn(Optional.of(mock(WorkspaceProject.class))).when(workbenchContext).getActiveWorkspaceProject();
+
+        PlaceRequest placeRequest = mock(PlaceRequest.class);
+        when(placeRequest.getIdentifier()).thenReturn(KieEditorFake.EDITOR_ID);
+
+        presenter.init(mock(ObservablePath.class),
+                       placeRequest,
+                       mock(ClientResourceType.class));
+
+        when(docks.isSetup()).thenReturn(true);
+        PerspectiveActivity perspectiveActivity = mock(PerspectiveActivity.class);
+        when(perspectiveActivity.getIdentifier()).thenReturn("perspectiveId");
+        when(perspectiveManager.getCurrentPerspective()).thenReturn(perspectiveActivity);
+
+        presenter.onShowDiagramEditorDocks(new PlaceGainFocusEvent(placeRequest));
+
+        verify(docks, never()).setup(anyString(),
+                                     any());
+        verify(docks).show();
+    }
+
+    @Test
+    public void testShowDiagramEditorDocksPlaceDoesNotMatch() {
+
+        doReturn(Optional.of(mock(WorkspaceProject.class))).when(workbenchContext).getActiveWorkspaceProject();
+
+        PlaceRequest placeRequest = mock(PlaceRequest.class);
+        when(placeRequest.getIdentifier()).thenReturn(KieEditorFake.EDITOR_ID);
+
+        presenter.init(mock(ObservablePath.class),
+                       mock(PlaceRequest.class),
+                       mock(ClientResourceType.class));
+
+        presenter.onShowDiagramEditorDocks(new PlaceGainFocusEvent(placeRequest));
+
+        verify(docks, never()).show();
+    }
+
+    @Test
+    public void testHideDiagramEditorDocks() {
+
+        doReturn(Optional.of(mock(WorkspaceProject.class))).when(workbenchContext).getActiveWorkspaceProject();
+
+        PlaceRequest placeRequest = mock(PlaceRequest.class);
+        when(placeRequest.getIdentifier()).thenReturn(KieEditorFake.EDITOR_ID);
+
+        presenter.init(mock(ObservablePath.class),
+                       placeRequest,
+                       mock(ClientResourceType.class));
+
+        presenter.onHideDocks(new PlaceHiddenEvent(placeRequest));
+
+        verify(docks).hide();
+    }
+
+    @Test
+    public void testHideDiagramEditorDocksDifferentPlace() {
+
+        doReturn(Optional.of(mock(WorkspaceProject.class))).when(workbenchContext).getActiveWorkspaceProject();
+
+        PlaceRequest placeRequest = mock(PlaceRequest.class);
+        when(placeRequest.getIdentifier()).thenReturn(KieEditorFake.EDITOR_ID);
+
+        presenter.init(mock(ObservablePath.class),
+                       mock(PlaceRequest.class),
+                       mock(ClientResourceType.class));
+
+        presenter.onHideDocks(new PlaceHiddenEvent(placeRequest));
+
+        verify(docks, never()).hide();
+    }
+
+    @Test
     public void testGetRenameValidator() {
 
         final Validator renameValidator = presenter.getRenameValidator();
@@ -271,7 +377,12 @@ public class KieEditorTest {
 
     class KieEditorFake extends KieEditor<String> {
 
+        public static final String EDITOR_ID = "KieEditorFake";
+
         public KieEditorFake() {
+            projectController = mock(ProjectController.class);
+            baseView = mock(BaseEditorView.class);
+            docks = KieEditorTest.this.docks;
             fileMenuBuilder = KieEditorTest.this.fileMenuBuilder;
             projectController = KieEditorTest.this.projectController;
             workbenchContext = KieEditorTest.this.workbenchContext;
@@ -282,6 +393,12 @@ public class KieEditorTest {
             saveAndRenameCommandBuilder = KieEditorTest.this.saveAndRenameCommandBuilder;
             metadata = KieEditorTest.this.metadata;
             alertsButtonMenuItemBuilder = KieEditorTest.this.alertsButtonMenuItemBuilder;
+            perspectiveManager = KieEditorTest.this.perspectiveManager;
+        }
+
+        @Override
+        protected String getEditorIdentifier() {
+            return EDITOR_ID;
         }
 
         @Override

@@ -147,6 +147,8 @@ public class BPMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
                                                   popupUtil,
                                                   xmlEditorView) {
             {
+                docks = defaultEditorDock;
+                perspectiveManager = perspectiveManagerMock;
                 fileMenuBuilder = BPMNDiagramEditorTest.this.fileMenuBuilder;
                 workbenchContext = BPMNDiagramEditorTest.this.workbenchContext;
                 projectController = BPMNDiagramEditorTest.this.projectController;

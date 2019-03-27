@@ -42,8 +42,19 @@ import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.workbench.model.menu.MenuItem;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyListOf;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class DataModelerScreenPresenterTest
         extends DataModelerScreenPresenterTestBase {
@@ -51,18 +62,13 @@ public class DataModelerScreenPresenterTest
     private static final String FILE_NAME = "FILE_NAME";
 
     private static final String COMMIT_MESSAGE = "COMMIT_MESSAGE";
-
-    private ArgumentCaptor<Path> pathArgumentCaptor;
-
-    private ArgumentCaptor<Validator> validatorArgumentCaptor;
-
-    private ArgumentCaptor<CommandWithFileNameAndCommitMessage> commandWithFileNameArgumentCaptor;
-
-    @Mock
-    private FileNameAndCommitMessage commitMessage;
-
     @Mock
     protected CopyPopUpPresenter.View copyPopUpPresenterView;
+    private ArgumentCaptor<Path> pathArgumentCaptor;
+    private ArgumentCaptor<Validator> validatorArgumentCaptor;
+    private ArgumentCaptor<CommandWithFileNameAndCommitMessage> commandWithFileNameArgumentCaptor;
+    @Mock
+    private FileNameAndCommitMessage commitMessage;
 
     @Before
     public void setUp() throws Exception {
@@ -662,6 +668,30 @@ public class DataModelerScreenPresenterTest
 
         verify(view).redraw();
         verify(dataModelerWBContext).setActiveContext(any());
+    }
+
+    @Test
+    public void testShowDocks() {
+        presenter.showDocks();
+
+        verify(docks).show();
+        verify(dataModelerFocusEvent).fire(any());
+    }
+
+    @Test
+    public void testHideDocksNoContext() {
+        presenter.hideDocks();
+
+        verify(docks).hide();
+        verify(dataModelerFocusEvent, never()).fire(any());
+    }
+
+    @Test
+    public void testHideDocksHasContext() {
+        presenter.context = mock(DataModelerContext.class);
+        presenter.hideDocks();
+
+        verify(docks).hide();
         verify(dataModelerFocusEvent).fire(any());
     }
 }

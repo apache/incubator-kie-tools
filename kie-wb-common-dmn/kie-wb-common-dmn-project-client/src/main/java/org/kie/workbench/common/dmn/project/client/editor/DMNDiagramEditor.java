@@ -174,6 +174,19 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
         kieView.getMultiPage().addPage(includedModelsPage);
     }
 
+    @Override
+    public void showDocks() {
+        super.showDocks();
+        decisionNavigatorDock.open();
+    }
+
+    @Override
+    public void hideDocks() {
+        super.hideDocks();
+        decisionNavigatorDock.close();
+        decisionNavigatorDock.resetContent();
+    }
+
     public void onDataTypePageNavTabActiveEvent(final @Observes DataTypePageTabActiveEvent event) {
         kieView.getMultiPage().selectPage(DATA_TYPES_PAGE_INDEX);
     }
@@ -194,11 +207,11 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
     }
 
     @OnClose
+    @Override
     public void onClose() {
-        superOnClose();
-        decisionNavigatorDock.close();
-        decisionNavigatorDock.resetContent();
+        superDoClose();
         dataTypesPage.disableShortcuts();
+        super.onClose();
     }
 
     @Override
@@ -209,7 +222,6 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
             final ExpressionEditorView.Presenter expressionEditor = ((DMNSession) sessionManager.getCurrentSession()).getExpressionEditor();
             expressionEditor.setToolbarStateHandler(new ProjectToolbarStateHandler(getMenuSessionItems()));
             decisionNavigatorDock.setupCanvasHandler(c);
-            decisionNavigatorDock.open();
             dataTypesPage.reload();
             includedModelsPage.setup(importsPageProvider.withDiagram(c.getDiagram()));
         });
@@ -299,7 +311,7 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
         super.doFocus();
     }
 
-    void superOnClose() {
+    void superDoClose() {
         super.doClose();
     }
 

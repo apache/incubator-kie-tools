@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.workbench.client.docks.impl;
+package org.kie.workbench.common.widgets.client.docks;
 
-import org.kie.workbench.common.workbench.client.docks.WorkbenchDocksHandler;
+import org.kie.workbench.common.widgets.client.docks.WorkbenchDocksHandler;
 import org.uberfire.mvp.Command;
 
 public abstract class AbstractWorkbenchDocksHandler implements WorkbenchDocksHandler {

@@ -26,6 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.library.api.preferences.LibraryInternalPreferences;
+import org.kie.workbench.common.widgets.client.docks.WorkbenchDocksHandler;
 import org.kie.workbench.common.workbench.client.docks.test.TestWorkbenchDocksHandler;
 import org.kie.workbench.common.workbench.client.events.LayoutEditorFocusEvent;
 import org.mockito.Mock;
@@ -94,6 +95,8 @@ public class AuthoringWorkbenchDocksTest {
         authoringWorkbenchDocks.initialize();
 
         verify(handlers).iterator();
+
+        assertFalse(authoringWorkbenchDocks.isSetup());
 
         authoringWorkbenchDocks.setup(AUTHORING_PERSPECTIVE,
                                       placeRequest);
@@ -297,6 +300,11 @@ public class AuthoringWorkbenchDocksTest {
 
         verify(uberfireDocks).show(UberfireDockPosition.EAST, AUTHORING_PERSPECTIVE);
         verify(uberfireDocks, never()).open(any());
+    }
+
+    @Test
+    public void isSetup() {
+        assertTrue(authoringWorkbenchDocks.isSetup());
     }
 
     private UberfireDocksInteractionEvent createUberfireDocksInteractionEvent(final UberfireDock uberfireDock,

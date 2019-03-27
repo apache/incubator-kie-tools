@@ -99,6 +99,11 @@ public class KieTextEditorPresenterTest {
             }
 
             @Override
+            protected String getEditorIdentifier() {
+                return "KieTextEditorPresenter";
+            }
+
+            @Override
             public void addDownloadMenuItem(final FileMenuBuilder fileMenuBuilder) {
                 // Do nothing.
             }

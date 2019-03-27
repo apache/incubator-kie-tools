@@ -45,9 +45,11 @@ import org.uberfire.workbench.model.menu.Menus;
  * A text based editor for Domain Specific Language definitions
  */
 @Dependent
-@WorkbenchEditor(identifier = "GuvnorDefaultFileEditor", supportedTypes = {AnyResourceType.class}, priority = -1)
+@WorkbenchEditor(identifier = GuvnorDefaultEditorPresenter.EDITOR_ID, supportedTypes = {AnyResourceType.class}, priority = -1)
 public class GuvnorDefaultEditorPresenter
         extends KieEditor<String> {
+
+    public static final String EDITOR_ID = "GuvnorDefaultFileEditor";
 
     private final GuvnorDefaultEditorView view;
 
@@ -105,9 +107,16 @@ public class GuvnorDefaultEditorPresenter
         return menus;
     }
 
+    @Override
+    protected String getEditorIdentifier() {
+        return EDITOR_ID;
+    }
+
     @OnClose
+    @Override
     public void onClose() {
         versionRecordManager.clear();
+        super.onClose();
     }
 
     @WorkbenchPartTitle
@@ -141,5 +150,4 @@ public class GuvnorDefaultEditorPresenter
     public IsWidget getWidget() {
         return super.getWidget();
     }
-
 }

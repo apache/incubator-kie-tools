@@ -87,7 +87,6 @@ public class LibraryPerspective {
 
     @OnClose
     public void onClose() {
-        libraryPlaces.hideDocks();
         projectContextChangeEvent.fire(new WorkspaceProjectContextChangeEvent());
     }
 

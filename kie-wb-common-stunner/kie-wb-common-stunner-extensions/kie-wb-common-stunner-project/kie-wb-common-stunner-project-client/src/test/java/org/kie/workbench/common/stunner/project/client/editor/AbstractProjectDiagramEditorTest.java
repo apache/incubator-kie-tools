@@ -69,6 +69,7 @@ import org.kie.workbench.common.stunner.project.editor.ProjectDiagramResource;
 import org.kie.workbench.common.stunner.project.editor.impl.ProjectDiagramResourceImpl;
 import org.kie.workbench.common.stunner.project.service.ProjectDiagramResourceService;
 import org.kie.workbench.common.stunner.project.service.ProjectDiagramService;
+import org.kie.workbench.common.widgets.client.docks.DefaultEditorDock;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilderImpl;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorWrapperView;
 import org.kie.workbench.common.widgets.metadata.client.validation.AssetUpdateValidator;
@@ -80,6 +81,8 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.mvp.PerspectiveActivity;
+import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.client.workbench.type.ClientResourceType;
@@ -122,6 +125,9 @@ import static org.mockito.Mockito.when;
 public class AbstractProjectDiagramEditorTest {
 
     private static final String TITLE = "title";
+
+    @Mock
+    protected PerspectiveManager perspectiveManagerMock;
 
     @Mock
     protected ProjectDiagram diagram;
@@ -179,65 +185,44 @@ public class AbstractProjectDiagramEditorTest {
 
     @Mock
     protected WorkspaceProjectContext workbenchContext;
-
     @Mock
     protected ProjectMessagesListener projectMessagesListener;
-
     protected ClientResourceType resourceType;
-
     @Mock
     protected DiagramClientErrorHandler diagramClientErrorHandler;
-
     @Mock
     protected ClientTranslationService translationService;
-
     @Mock
     protected AlertsButtonMenuItemBuilder alertsButtonMenuItemBuilder;
-
     @Mock
     protected SessionPresenter.View sessionPresenterView;
-
     @Mock
     protected EditorSession editorSession;
-
     @Mock
     protected ViewerSession viewerSession;
-
     @Mock
     protected ObservablePath filePath;
-
     @Mock
     protected KieEditorWrapperView kieView;
-
     @Mock
     protected OverviewWidgetPresenter overviewWidget;
-
     @Mock
     protected TextEditorView xmlEditorView;
-
     @Mock
     protected Caller<ProjectDiagramResourceService> projectDiagramResourceServiceCaller;
-
     @Mock
     protected StunnerDiagramEditorPreferences diagramEditorPreferences;
-
     @Mock
     protected Caller<ProjectDiagramService> diagramServiceCaller;
-
+    protected AbstractProjectDiagramEditor<ClientResourceTypeMock> presenter;
+    @Mock
+    protected DefaultEditorDock defaultEditorDock;
     @Captor
     private ArgumentCaptor<Consumer<EditorSession>> clientSessionConsumerCaptor;
-
     @Captor
     private ArgumentCaptor<SessionPresenter.SessionPresenterCallback> clientSessionPresenterCallbackCaptor;
-
     @Mock
     private DocumentationView viewDocumentation;
-
-    abstract class ClientResourceTypeMock implements ClientResourceType {
-
-    }
-
-    protected AbstractProjectDiagramEditor<ClientResourceTypeMock> presenter;
 
     @Before
     @SuppressWarnings("unchecked")
@@ -317,6 +302,8 @@ public class AbstractProjectDiagramEditorTest {
                                                                             xmlEditorView,
                                                                             projectDiagramResourceServiceCaller) {
             {
+                docks = AbstractProjectDiagramEditorTest.this.defaultEditorDock;
+                perspectiveManager = AbstractProjectDiagramEditorTest.this.perspectiveManagerMock;
                 fileMenuBuilder = AbstractProjectDiagramEditorTest.this.fileMenuBuilder;
                 workbenchContext = AbstractProjectDiagramEditorTest.this.workbenchContext;
                 projectController = AbstractProjectDiagramEditorTest.this.projectController;
@@ -786,5 +773,29 @@ public class AbstractProjectDiagramEditorTest {
 
         assertEquals(xml.hashCode(),
                      presenter.getCurrentDiagramHash());
+    }
+
+    @Test
+    public void testHideDocks() {
+        presenter.hideDocks();
+
+        verify(onDiagramLostFocusEvent).fire(any());
+        verify(defaultEditorDock).hide();
+    }
+
+    @Test
+    public void testShowDocks() {
+        PerspectiveActivity perspectiveActivity = mock(PerspectiveActivity.class);
+        when(perspectiveActivity.getIdentifier()).thenReturn("perspectiveId");
+        when(perspectiveManagerMock.getCurrentPerspective()).thenReturn(perspectiveActivity);
+
+        presenter.showDocks();
+
+        verify(onDiagramFocusEvent).fire(any());
+        verify(defaultEditorDock).show();
+    }
+
+    abstract class ClientResourceTypeMock implements ClientResourceType {
+
     }
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.workbench.client.docks.impl;
+package org.kie.workbench.common.screens.datamodeller.client.docks;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
@@ -33,7 +33,9 @@ import static org.jgroups.util.Util.assertEquals;
 import static org.jgroups.util.Util.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class DataModellerDocksHandlerTest {

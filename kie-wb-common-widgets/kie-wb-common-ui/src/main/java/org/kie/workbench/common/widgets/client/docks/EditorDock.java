@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.kie.workbench.common.widgets.client.docks;
 
-package org.kie.workbench.common.screens.datamodeller.security;
+import org.uberfire.mvp.PlaceRequest;
 
-public interface DataModelerFeatures {
+public interface EditorDock {
 
-    String EDIT_SOURCES = "dataobject.edit" ;
+    boolean isSetup();
 
-    String PLANNER_AVAILABLE = "planner.available";
+    void setup(final String identifier,
+               final PlaceRequest defaultPlaceRequest);
 
+    void show();
+
+    void hide();
 }

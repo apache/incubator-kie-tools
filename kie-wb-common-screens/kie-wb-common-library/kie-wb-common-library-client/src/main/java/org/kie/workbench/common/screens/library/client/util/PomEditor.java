@@ -54,15 +54,16 @@ import static org.guvnor.common.services.project.service.DeploymentMode.VALIDATE
 import static org.uberfire.workbench.events.NotificationEvent.NotificationType.ERROR;
 
 @WorkbenchEditor(
-        identifier = "PomEditor",
+        identifier = PomEditor.EDITOR_ID,
         supportedTypes = {POMResourceType.class},
         priority = 2)
 public class PomEditor extends KieTextEditorPresenter {
 
-    private final Caller<PomEditorService> pomEditorService;
-    private final ConflictingRepositoriesPopup conflictingRepositoriesPopup;
+    public static final String EDITOR_ID = "PomEditor";
     public final Event<NotificationEvent> notificationEvent;
     public final TranslationService translationService;
+    private final Caller<PomEditorService> pomEditorService;
+    private final ConflictingRepositoriesPopup conflictingRepositoriesPopup;
 
     @Inject
     public PomEditor(final KieTextEditorView baseView,
@@ -107,6 +108,11 @@ public class PomEditor extends KieTextEditorPresenter {
     @Override
     public AceEditorMode getAceEditorMode() {
         return AceEditorMode.XML;
+    }
+
+    @Override
+    protected String getEditorIdentifier() {
+        return EDITOR_ID;
     }
 
     @Override

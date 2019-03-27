@@ -77,15 +77,7 @@ public interface DefaultWorkbenchConstants
 
     String Group();
 
-    String DocksOptaPlannerTitle();
-
     String DocksProjectExplorerTitle();
-
-    String DocksDroolsJBPMTitle();
-
-    String DocksPersistenceTitle();
-
-    String DocksAdvancedTitle();
 
     String DocksStunnerPropertiesTitle();
 

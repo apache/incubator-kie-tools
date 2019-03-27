@@ -19,7 +19,7 @@ package org.kie.workbench.common.workbench.client.docks.test;
 import java.util.Collection;
 import java.util.List;
 
-import org.kie.workbench.common.workbench.client.docks.impl.AbstractWorkbenchDocksHandler;
+import org.kie.workbench.common.widgets.client.docks.AbstractWorkbenchDocksHandler;
 import org.uberfire.client.workbench.docks.UberfireDock;
 
 public class TestWorkbenchDocksHandler extends AbstractWorkbenchDocksHandler {

@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.widgets.metadata.client;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -34,11 +35,16 @@ import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.kie.workbench.common.widgets.client.callbacks.CommandBuilder;
 import org.kie.workbench.common.widgets.client.callbacks.CommandDrivenErrorCallback;
+import org.kie.workbench.common.widgets.client.docks.DefaultEditorDock;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.source.ViewDRLSourceWidget;
 import org.kie.workbench.common.widgets.metadata.client.validation.AssetUpdateValidator;
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
 import org.uberfire.backend.vfs.ObservablePath;
+import org.uberfire.client.mvp.PerspectiveManager;
+import org.uberfire.client.workbench.events.AbstractPlaceEvent;
+import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
+import org.uberfire.client.workbench.events.PlaceHiddenEvent;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.client.workbench.widgets.multipage.Page;
 import org.uberfire.ext.editor.commons.client.BaseEditor;
@@ -51,8 +57,10 @@ import org.uberfire.ext.editor.commons.client.validation.ValidationErrorReason;
 import org.uberfire.ext.editor.commons.client.validation.Validator;
 import org.uberfire.ext.editor.commons.client.validation.ValidatorWithReasonCallback;
 import org.uberfire.ext.editor.commons.service.support.SupportsSaveAndRename;
+import org.uberfire.lifecycle.OnClose;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuItem;
 
@@ -89,6 +97,10 @@ public abstract class KieEditor<T>
     protected AlertsButtonMenuItemBuilder alertsButtonMenuItemBuilder;
 
     protected Metadata metadata;
+    @Inject
+    protected DefaultEditorDock docks;
+    @Inject
+    protected PerspectiveManager perspectiveManager;
     private ViewDRLSourceWidget sourceWidget;
 
     //The default implementation delegates to the HashCode comparison in BaseEditor
@@ -168,6 +180,40 @@ public abstract class KieEditor<T>
                    displayShowMoreVersions,
                    menuItems);
     }
+
+    public void onShowDiagramEditorDocks(@Observes PlaceGainFocusEvent event) {
+
+        if (verifyEventIdentifier(event)) {
+            if (!docks.isSetup()) {
+                docks.setup(perspectiveManager.getCurrentPerspective().getIdentifier(),
+                            new DefaultPlaceRequest("org.kie.guvnor.explorer"));
+            }
+            showDocks();
+        }
+    }
+
+    public void onHideDocks(@Observes PlaceHiddenEvent event) {
+        if (verifyEventIdentifier(event)) {
+            hideDocks();
+        }
+    }
+
+    public void showDocks() {
+        docks.show();
+    }
+
+    public void hideDocks() {
+        docks.hide();
+    }
+
+    public boolean verifyEventIdentifier(AbstractPlaceEvent event) {
+        return (Objects.equals(getEditorIdentifier(),
+                               event.getPlace().getIdentifier()) &&
+                Objects.equals(place,
+                               event.getPlace()));
+    }
+
+    protected abstract String getEditorIdentifier();
 
     @Override
     protected void showVersions() {
@@ -253,7 +299,8 @@ public abstract class KieEditor<T>
         }
     }
 
-    protected void OnClose() {
+    @OnClose
+    public void onClose() {
         kieView.clear();
     }
 

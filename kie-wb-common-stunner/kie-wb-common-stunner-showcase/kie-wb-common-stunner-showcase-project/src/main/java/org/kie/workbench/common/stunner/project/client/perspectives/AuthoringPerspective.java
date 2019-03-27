@@ -27,10 +27,10 @@ import org.kie.workbench.common.screens.examples.service.ExamplesService;
 import org.kie.workbench.common.screens.projecteditor.client.menu.ProjectMenu;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.stunner.project.client.resources.i18n.AppConstants;
+import org.kie.workbench.common.widgets.client.docks.DefaultEditorDock;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcesMenu;
 import org.kie.workbench.common.widgets.client.menu.RepositoryMenu;
-import org.kie.workbench.common.workbench.client.docks.AuthoringWorkbenchDocks;
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPerspective;
@@ -69,7 +69,7 @@ public class AuthoringPerspective {
     private PlaceManager placeManager;
 
     @Inject
-    private AuthoringWorkbenchDocks docks;
+    private DefaultEditorDock docks;
 
     @Inject
     private ExamplesWizard wizard;

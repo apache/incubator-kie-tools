@@ -32,9 +32,11 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.menu.Menus;
 
 @Dependent
-@WorkbenchEditor(identifier = "GuvnorTextEditor", supportedTypes = { TextResourceType.class, XmlResourceType.class, PackageNameWhiteListResourceType.class }, priority = 1)
+@WorkbenchEditor(identifier = KieTextEditorScreenPresenter.EDITOR_ID, supportedTypes = {TextResourceType.class, XmlResourceType.class, PackageNameWhiteListResourceType.class}, priority = 1)
 public class KieTextEditorScreenPresenter
         extends KieTextEditorPresenter {
+
+    public static final String EDITOR_ID = "GuvnorTextEditor";
 
     @Inject
     private TextResourceType typeText;
@@ -44,31 +46,31 @@ public class KieTextEditorScreenPresenter
 
     @Inject
     private PackageNameWhiteListResourceType typeWhiteList;
-
-    @Inject
-    public KieTextEditorScreenPresenter( final KieTextEditorView baseView ) {
-        super( baseView );
-    }
-
     private AceEditorMode mode;
 
+    @Inject
+    public KieTextEditorScreenPresenter(final KieTextEditorView baseView) {
+        super(baseView);
+    }
+
     @OnStartup
-    public void onStartup( final ObservablePath path,
-                           final PlaceRequest place ) {
-        super.onStartup( path,
-                         place );
-        if ( typeText.accept( path ) ) {
+    @Override
+    public void onStartup(final ObservablePath path,
+                          final PlaceRequest place) {
+        super.onStartup(path,
+                        place);
+        if (typeText.accept(path)) {
             mode = AceEditorMode.TEXT;
-        } else if ( typeXML.accept( path ) ) {
+        } else if (typeXML.accept(path)) {
             mode = AceEditorMode.XML;
-        } else if ( typeWhiteList.accept( path ) ) {
+        } else if (typeWhiteList.accept(path)) {
             mode = AceEditorMode.TEXT;
         } else {
             mode = AceEditorMode.TEXT;
         }
 
         // set xml mode for business processes
-        if(path.getFileName().endsWith(".bpmn") || path.getFileName().endsWith(".bpmn2")) {
+        if (path.getFileName().endsWith(".bpmn") || path.getFileName().endsWith(".bpmn2")) {
             mode = AceEditorMode.XML;
         }
     }
@@ -98,4 +100,8 @@ public class KieTextEditorScreenPresenter
         return mode;
     }
 
+    @Override
+    protected String getEditorIdentifier() {
+        return EDITOR_ID;
+    }
 }

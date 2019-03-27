@@ -42,6 +42,7 @@ import org.kie.workbench.common.stunner.forms.client.event.RefreshFormProperties
 import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectDiagramEditor;
 import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectDiagramEditorTest;
 import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectEditorMenuSessionItems;
+import org.kie.workbench.common.widgets.client.docks.DefaultEditorDock;
 import org.kie.workbench.common.workbench.client.PerspectiveIds;
 import org.mockito.InOrder;
 import org.mockito.Mock;
@@ -118,6 +119,9 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
     @Mock
     private DocumentationView documentationView;
 
+    @Mock
+    private DefaultEditorDock docks;
+
     @Before
     public void before() {
         when(kieView.getMultiPage()).thenReturn(multiPage);
@@ -169,6 +173,7 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
                                                  includedModelsPage,
                                                  importsPageProvider) {
             {
+                docks = DMNDiagramEditorTest.this.docks;
                 fileMenuBuilder = DMNDiagramEditorTest.this.fileMenuBuilder;
                 workbenchContext = DMNDiagramEditorTest.this.workbenchContext;
                 projectController = DMNDiagramEditorTest.this.projectController;
@@ -201,14 +206,13 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
 
     @Test
     public void testOnClose() {
-        doNothing().when(diagramEditor).superOnClose();
+        doNothing().when(diagramEditor).superDoClose();
 
         diagramEditor.onClose();
 
-        verify(diagramEditor).superOnClose();
-        verify(decisionNavigatorDock).close();
-        verify(decisionNavigatorDock).resetContent();
+        verify(diagramEditor).superDoClose();
         verify(dataTypesPage).disableShortcuts();
+        verify(kieView).clear();
     }
 
     @Test
@@ -232,7 +236,6 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
 
         final InOrder inOrder = inOrder(decisionNavigatorDock);
         inOrder.verify(decisionNavigatorDock).setupCanvasHandler(eq(canvasHandler));
-        inOrder.verify(decisionNavigatorDock).open();
 
         verify(expressionEditor).setToolbarStateHandler(any(ProjectToolbarStateHandler.class));
         verify(dataTypesPage).reload();
@@ -317,5 +320,22 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
         diagramEditor.getOnDataTypeEditModeToggleCallback(editModeToggleEvent).onInvoke();
 
         verify(diagramEditor).enableMenuItem(MenuItems.SAVE);
+    }
+
+    @Test
+    public void testShowDocks() {
+        diagramEditor.showDocks();
+
+        verify(decisionNavigatorDock).open();
+        verify(docks).show();
+    }
+
+    @Test
+    public void testHideDocks() {
+        diagramEditor.hideDocks();
+
+        verify(decisionNavigatorDock).close();
+        verify(decisionNavigatorDock).resetContent();
+        verify(docks).hide();
     }
 }

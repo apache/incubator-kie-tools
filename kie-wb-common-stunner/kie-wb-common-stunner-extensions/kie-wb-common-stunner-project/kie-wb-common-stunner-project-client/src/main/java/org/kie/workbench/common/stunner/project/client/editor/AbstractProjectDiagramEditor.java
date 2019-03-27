@@ -79,10 +79,7 @@ import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
-import org.uberfire.client.workbench.events.AbstractPlaceEvent;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
-import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
-import org.uberfire.client.workbench.events.PlaceHiddenEvent;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
@@ -102,38 +99,24 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
 
     private static final Logger LOGGER = Logger.getLogger(AbstractProjectDiagramEditor.class.getName());
     private static final String TITLE_FORMAT_TEMPLATE = "#title.#suffix - #type";
-
-    public interface View extends UberView<AbstractProjectDiagramEditor>,
-                                  KieEditorView,
-                                  RequiresResize,
-                                  ProvidesResize,
-                                  IsWidget {
-
-        void setWidget(IsWidget widget);
-    }
-
+    private final ManagedInstance<SessionEditorPresenter<EditorSession>> editorSessionPresenterInstances;
+    private final ManagedInstance<SessionViewerPresenter<ViewerSession>> viewerSessionPresenterInstances;
+    private final DiagramClientErrorHandler diagramClientErrorHandler;
+    private final ClientTranslationService translationService;
+    private final Caller<ProjectDiagramResourceService> projectDiagramResourceServiceCaller;
+    private final TextEditorView xmlEditorView;
+    protected ClientProjectDiagramService projectDiagramServices;
+    protected ProjectDiagramEditorProxy editorProxy = ProjectDiagramEditorProxy.NULL_EDITOR;
     private ErrorPopupPresenter errorPopupPresenter;
     private Event<ChangeTitleWidgetEvent> changeTitleNotificationEvent;
     private R resourceType;
-    protected ClientProjectDiagramService projectDiagramServices;
-    private final ManagedInstance<SessionEditorPresenter<EditorSession>> editorSessionPresenterInstances;
-    private final ManagedInstance<SessionViewerPresenter<ViewerSession>> viewerSessionPresenterInstances;
     private AbstractProjectEditorMenuSessionItems<?> menuSessionItems;
     private ProjectMessagesListener projectMessagesListener;
-
     private Event<OnDiagramFocusEvent> onDiagramFocusEvent;
     private Event<OnDiagramLoseFocusEvent> onDiagramLostFocusEvent;
     private Optional<SessionEditorPresenter<EditorSession>> editorSessionPresenter = Optional.empty();
     private Optional<SessionViewerPresenter<ViewerSession>> viewerSessionPresenter = Optional.empty();
-    private final DiagramClientErrorHandler diagramClientErrorHandler;
-    private final ClientTranslationService translationService;
-    private final Caller<ProjectDiagramResourceService> projectDiagramResourceServiceCaller;
-
     private String title = "Project Diagram Editor";
-
-    private final TextEditorView xmlEditorView;
-
-    protected ProjectDiagramEditorProxy editorProxy = ProjectDiagramEditorProxy.NULL_EDITOR;
     private boolean menuBarInitialzed = false;
     private DocumentationView documentationView;
 
@@ -485,16 +468,16 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         };
     }
 
-    public void hideDiagramEditorDocks(@Observes PlaceHiddenEvent event) {
-        if (verifyEventIdentifier(event)) {
-            onDiagramLostFocusEvent.fire(new OnDiagramLoseFocusEvent());
-        }
+    @Override
+    public void hideDocks() {
+        super.hideDocks();
+        onDiagramLostFocusEvent.fire(new OnDiagramLoseFocusEvent());
     }
 
-    public void showDiagramEditorDocks(@Observes PlaceGainFocusEvent event) {
-        if (verifyEventIdentifier(event)) {
-            onDiagramFocusEvent.fire(new OnDiagramFocusEvent());
-        }
+    @Override
+    public void showDocks() {
+        onDiagramFocusEvent.fire(new OnDiagramFocusEvent());
+        super.showDocks();
     }
 
     @Override
@@ -589,8 +572,6 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     protected boolean isSameSession(final ClientSession other) {
         return null != other && null != getSession() && other.equals(getSession());
     }
-
-    protected abstract String getEditorIdentifier();
 
     public String getTitleText() {
         return title;
@@ -772,13 +753,6 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         return getCurrentDiagramHash() != originalHash;
     }
 
-    private boolean verifyEventIdentifier(AbstractPlaceEvent event) {
-        return (Objects.equals(getEditorIdentifier(),
-                               event.getPlace().getIdentifier()) &&
-                Objects.equals(place,
-                               event.getPlace()));
-    }
-
     protected ClientTranslationService getTranslationService() {
         return translationService;
     }
@@ -807,5 +781,14 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     //For Unit Testing
     protected void setReadOnlySessionPresenter(final SessionViewerPresenter<ViewerSession> presenter) {
         this.viewerSessionPresenter = Optional.ofNullable(presenter);
+    }
+
+    public interface View extends UberView<AbstractProjectDiagramEditor>,
+                                  KieEditorView,
+                                  RequiresResize,
+                                  ProvidesResize,
+                                  IsWidget {
+
+        void setWidget(IsWidget widget);
     }
 }

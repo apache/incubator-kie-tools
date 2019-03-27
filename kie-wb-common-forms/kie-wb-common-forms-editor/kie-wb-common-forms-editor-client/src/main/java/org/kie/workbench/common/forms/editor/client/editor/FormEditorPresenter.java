@@ -154,6 +154,11 @@ public class FormEditorPresenter extends KieEditor<FormModelerContent> {
         }
     }
 
+    @Override
+    protected String getEditorIdentifier() {
+        return ID;
+    }
+
     private void setActiveInstance() {
         formEditorContext.setActiveEditorHelper(editorHelper);
 

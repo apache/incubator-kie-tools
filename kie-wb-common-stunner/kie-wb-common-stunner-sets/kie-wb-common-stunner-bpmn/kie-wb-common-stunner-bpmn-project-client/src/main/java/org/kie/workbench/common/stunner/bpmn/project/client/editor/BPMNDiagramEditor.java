@@ -143,8 +143,10 @@ public class BPMNDiagramEditor extends AbstractProjectDiagramEditor<BPMNDiagramR
     }
 
     @OnClose
+    @Override
     public void onClose() {
         super.doClose();
+        super.onClose();
     }
 
     @OnFocus

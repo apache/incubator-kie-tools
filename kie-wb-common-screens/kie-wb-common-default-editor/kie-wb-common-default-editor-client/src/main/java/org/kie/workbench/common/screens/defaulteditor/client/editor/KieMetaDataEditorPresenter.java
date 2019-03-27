@@ -34,9 +34,11 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.menu.Menus;
 
 @Dependent
-@WorkbenchEditor(identifier = "KieMetaFileTextEditor", supportedTypes = { DotResourceType.class }, priority = Integer.MAX_VALUE - 1)
+@WorkbenchEditor(identifier = KieMetaDataEditorPresenter.EDITOR_ID, supportedTypes = {DotResourceType.class}, priority = Integer.MAX_VALUE - 1)
 public class KieMetaDataEditorPresenter
         extends KieTextEditorPresenter {
+
+    public static final String EDITOR_ID = "KieMetaFileTextEditor";
 
     @Inject
     private DotResourceType type;
@@ -45,24 +47,25 @@ public class KieMetaDataEditorPresenter
     private User identity;
 
     @Inject
-    public KieMetaDataEditorPresenter( final KieTextEditorView baseView ) {
-        super( baseView );
+    public KieMetaDataEditorPresenter(final KieTextEditorView baseView) {
+        super(baseView);
     }
 
     @OnStartup
-    public void onStartup( final ObservablePath path,
-                           final PlaceRequest place ) {
-        if ( !identity.getRoles().contains( new RoleImpl( AppRoles.ADMIN.getName() ) ) ) {
-            makeReadOnly( place );
+    @Override
+    public void onStartup(final ObservablePath path,
+                          final PlaceRequest place) {
+        if (!identity.getRoles().contains(new RoleImpl(AppRoles.ADMIN.getName()))) {
+            makeReadOnly(place);
         }
 
-        super.onStartup( path,
-                         place );
+        super.onStartup(path,
+                        place);
     }
 
-    private void makeReadOnly( final PlaceRequest place ) {
-        place.getParameters().put( "readOnly",
-                                   "true" );
+    private void makeReadOnly(final PlaceRequest place) {
+        place.getParameters().put("readOnly",
+                                  "true");
     }
 
     @WorkbenchPartTitle
@@ -85,4 +88,8 @@ public class KieMetaDataEditorPresenter
         return menus;
     }
 
+    @Override
+    protected String getEditorIdentifier() {
+        return EDITOR_ID;
+    }
 }

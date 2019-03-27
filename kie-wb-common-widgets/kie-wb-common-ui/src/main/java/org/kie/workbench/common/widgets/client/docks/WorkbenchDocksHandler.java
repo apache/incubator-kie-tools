@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.workbench.client.docks;
+package org.kie.workbench.common.widgets.client.docks;
 
 import java.util.Collection;
 

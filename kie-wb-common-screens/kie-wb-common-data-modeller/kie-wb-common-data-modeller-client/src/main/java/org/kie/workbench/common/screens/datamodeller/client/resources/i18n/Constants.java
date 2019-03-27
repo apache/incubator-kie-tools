@@ -541,4 +541,11 @@ public interface Constants extends Messages {
 
     String character_value_pair_editor_invalid_character_message();
 
+    String DocksOptaPlannerTitle();
+
+    String DocksDroolsJBPMTitle();
+
+    String DocksPersistenceTitle();
+
+    String DocksAdvancedTitle();
 }

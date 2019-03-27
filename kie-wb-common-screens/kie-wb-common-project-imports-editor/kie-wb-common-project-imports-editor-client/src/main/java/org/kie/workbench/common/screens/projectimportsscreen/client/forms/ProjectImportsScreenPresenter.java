@@ -47,9 +47,11 @@ import org.uberfire.workbench.category.Others;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
 
-@WorkbenchEditor(identifier = "projectConfigScreen", supportedTypes = {ProjectImportsResourceType.class})
+@WorkbenchEditor(identifier = ProjectImportsScreenPresenter.EDITOR_ID, supportedTypes = {ProjectImportsResourceType.class})
 public class ProjectImportsScreenPresenter
         extends KieEditor<ProjectImports> {
+
+    public static final String EDITOR_ID = "projectConfigScreen";
 
     private ProjectImportsScreenView view;
 
@@ -59,6 +61,11 @@ public class ProjectImportsScreenPresenter
     private ProjectImports model;
 
     public ProjectImportsScreenPresenter() {
+    }
+
+    @Override
+    protected String getEditorIdentifier() {
+        return EDITOR_ID;
     }
 
     @Inject
@@ -176,8 +183,10 @@ public class ProjectImportsScreenPresenter
     }
 
     @OnClose
+    @Override
     public void onClose() {
         versionRecordManager.clear();
+        super.onClose();
     }
 
     @WorkbenchMenu

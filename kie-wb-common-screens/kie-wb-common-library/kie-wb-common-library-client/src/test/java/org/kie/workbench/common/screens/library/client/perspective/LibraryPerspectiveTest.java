@@ -100,10 +100,9 @@ public class LibraryPerspectiveTest {
     }
 
     @Test
-    public void libraryHidesDocksOnCloseTest() {
+    public void libraryResetsContextOnCloseTest() {
         perspective.onClose();
 
-        verify(libraryPlaces).hideDocks();
         verify(projectContextChangeEvent).fire(new WorkspaceProjectContextChangeEvent());
     }
 }

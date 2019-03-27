@@ -58,6 +58,7 @@ import org.kie.workbench.common.stunner.project.client.session.EditorSessionComm
 import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
 import org.kie.workbench.common.stunner.project.diagram.ProjectMetadata;
 import org.kie.workbench.common.stunner.project.service.ProjectDiagramResourceService;
+import org.kie.workbench.common.widgets.client.docks.DefaultEditorDock;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorWrapperView;
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
@@ -67,6 +68,8 @@ import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.uberfire.backend.vfs.ObservablePath;
+import org.uberfire.client.mvp.PerspectiveActivity;
+import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
@@ -103,6 +106,9 @@ public class ProjectDiagramEditorTest {
     private static final String SAVE_MESSAGE = "save";
 
     private static final String ERROR_MESSAGE = "error";
+
+    @Mock
+    private PerspectiveManager perspectiveManager;
 
     @Mock
     private VersionRecordManager versionRecordManager;
@@ -293,6 +299,8 @@ public class ProjectDiagramEditorTest {
                                                    projectDiagramResourceServiceCaller
         ) {
             {
+                docks = mock(DefaultEditorDock.class);
+                perspectiveManager = ProjectDiagramEditorTest.this.perspectiveManager;
                 overviewWidget = overviewWidgetMock;
                 versionRecordManager = versionRecordManagerMock;
                 place = placeRequest;
@@ -380,7 +388,7 @@ public class ProjectDiagramEditorTest {
     public void testOnPlaceHiddenEvent() {
         PlaceHiddenEvent event = new PlaceHiddenEvent(placeRequest);
 
-        tested.hideDiagramEditorDocks(event);
+        tested.onHideDocks(event);
 
         verify(onDiagramLostFocusEven).fire(any(OnDiagramLoseFocusEvent.class));
     }
@@ -393,7 +401,7 @@ public class ProjectDiagramEditorTest {
 
         PlaceHiddenEvent event = new PlaceHiddenEvent(anotherRequest);
 
-        tested.hideDiagramEditorDocks(event);
+        tested.onHideDocks(event);
 
         verify(onDiagramLostFocusEven,
                never()).fire(any(OnDiagramLoseFocusEvent.class));
@@ -401,9 +409,13 @@ public class ProjectDiagramEditorTest {
 
     @Test
     public void testOnPlaceGainFocusEvent() {
+        PerspectiveActivity perspectiveActivity = mock(PerspectiveActivity.class);
+        when(perspectiveActivity.getIdentifier()).thenReturn("perspectiveId");
+        when(perspectiveManager.getCurrentPerspective()).thenReturn(perspectiveActivity);
+
         PlaceGainFocusEvent event = new PlaceGainFocusEvent(placeRequest);
 
-        tested.showDiagramEditorDocks(event);
+        tested.onShowDiagramEditorDocks(event);
 
         verify(onDiagramFocusEvent).fire(any(OnDiagramFocusEvent.class));
     }
@@ -416,7 +428,7 @@ public class ProjectDiagramEditorTest {
 
         PlaceGainFocusEvent event = new PlaceGainFocusEvent(anotherRequest);
 
-        tested.showDiagramEditorDocks(event);
+        tested.onShowDiagramEditorDocks(event);
 
         verify(onDiagramFocusEvent,
                never()).fire(any(OnDiagramFocusEvent.class));

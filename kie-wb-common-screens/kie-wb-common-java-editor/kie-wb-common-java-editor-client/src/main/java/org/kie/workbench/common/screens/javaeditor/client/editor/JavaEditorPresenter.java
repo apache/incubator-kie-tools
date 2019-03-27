@@ -30,12 +30,13 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.lifecycle.OnStartup;
-import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 
-@WorkbenchEditor(identifier = "JavaEditor", supportedTypes = {JavaResourceType.class})
+@WorkbenchEditor(identifier = JavaEditorPresenter.EDITOR_ID, supportedTypes = {JavaResourceType.class})
 public class JavaEditorPresenter
         extends KieEditor<String> {
+
+    public static final String EDITOR_ID = "JavaEditor";
 
     @Inject
     private Caller<VFSService> vfsServices;
@@ -83,6 +84,11 @@ public class JavaEditorPresenter
     }
 
     @Override
+    protected String getEditorIdentifier() {
+        return EDITOR_ID;
+    }
+
+    @Override
     protected void makeMenuBar() {
         fileMenuBuilder.addNewTopLevelMenu(versionRecordManager.buildMenu())
                 .addNewTopLevelMenu(alertsButtonMenuItemBuilder.build());
@@ -92,5 +98,4 @@ public class JavaEditorPresenter
     public IsWidget getWidget() {
         return super.getWidget();
     }
-
 }

@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+
 import javax.enterprise.event.Event;
 
 import org.ext.uberfire.social.activities.model.ExtendedTypes;
@@ -61,7 +62,6 @@ import org.kie.workbench.common.screens.library.client.screens.project.close.Clo
 import org.kie.workbench.common.screens.library.client.util.breadcrumb.LibraryBreadcrumbs;
 import org.kie.workbench.common.screens.library.client.util.breadcrumb.ProjectBranchBreadcrumb;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
-import org.kie.workbench.common.workbench.client.docks.AuthoringWorkbenchDocks;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InOrder;
@@ -74,8 +74,6 @@ import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.PlaceStatus;
 import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
-import org.uberfire.client.workbench.events.PlaceMaximizedEvent;
-import org.uberfire.client.workbench.events.PlaceMinimizedEvent;
 import org.uberfire.ext.preferences.client.central.screen.PreferencesRootScreen;
 import org.uberfire.ext.preferences.client.event.PreferencesCentralSaveEvent;
 import org.uberfire.ext.preferences.client.event.PreferencesCentralUndoChangesEvent;
@@ -95,11 +93,23 @@ import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singleton;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class LibraryPlacesTest {
@@ -125,9 +135,6 @@ public class LibraryPlacesTest {
 
     @Mock
     private WorkspaceProjectContext projectContext;
-
-    @Mock
-    private AuthoringWorkbenchDocks docks;
 
     @Mock
     private Event<WorkspaceProjectContextChangeEvent> projectContextChangeEvent;
@@ -224,7 +231,6 @@ public class LibraryPlacesTest {
                                               new CallerMock<>(moduleService),
                                               placeManager,
                                               projectContext,
-                                              docks,
                                               projectContextChangeEvent,
                                               notificationEvent,
                                               translationUtils,
@@ -384,7 +390,6 @@ public class LibraryPlacesTest {
         libraryPlaces.onSelectPlaceEvent(placeGainFocusEvent);
 
         verify(libraryBreadcrumbs).setupForAsset(libraryPlaces.getActiveWorkspace(), path);
-        verify(libraryPlaces).showDocks();
     }
 
     @Test
@@ -397,7 +402,6 @@ public class LibraryPlacesTest {
 
         libraryPlaces.onSelectPlaceEvent(placeGainFocusEvent);
 
-        verify(libraryPlaces).hideDocks();
         verify(libraryBreadcrumbs).setupForProject(libraryPlaces.getActiveWorkspace());
     }
 
@@ -411,60 +415,7 @@ public class LibraryPlacesTest {
 
         libraryPlaces.onSelectPlaceEvent(placeGainFocusEvent);
 
-        verify(libraryPlaces).hideDocks();
         verify(libraryBreadcrumbs).setupForSpace(libraryPlaces.getActiveWorkspace().getOrganizationalUnit());
-    }
-
-    @Test
-    public void hideDocksTest() {
-        libraryPlaces.showDocks();
-
-        reset(docks);
-
-        libraryPlaces.hideDocks();
-        libraryPlaces.hideDocks();
-
-        verify(docks,
-               times(1)).hide();
-        verify(docks,
-               never()).setup(anyString(),
-                              any(PlaceRequest.class));
-        verify(docks,
-               never()).show();
-        verify(docks,
-               never()).expandProjectExplorer();
-    }
-
-    @Test
-    public void showDocksWithEditorMinimizedTest() {
-        libraryPlaces.hideDocksWhenMaximizingEditor(mock(PlaceMaximizedEvent.class));
-        libraryPlaces.showDocksWhenMinimizingEditor(mock(PlaceMinimizedEvent.class));
-
-        libraryPlaces.showDocks();
-        libraryPlaces.showDocks();
-
-        verify(docks,
-               times(1)).setup(LibraryPlaces.LIBRARY_PERSPECTIVE,
-                               new DefaultPlaceRequest(LibraryPlaces.PROJECT_EXPLORER));
-        verify(docks,
-               times(1)).show();
-        verify(docks,
-               never()).hide();
-    }
-
-    @Test
-    public void doNotShowDocksWithEditorMaximizedTest() {
-        libraryPlaces.hideDocksWhenMaximizingEditor(mock(PlaceMaximizedEvent.class));
-
-        libraryPlaces.showDocks();
-
-        verify(docks,
-               never()).setup(LibraryPlaces.LIBRARY_PERSPECTIVE,
-                               new DefaultPlaceRequest(LibraryPlaces.PROJECT_EXPLORER));
-        verify(docks,
-               never()).show();
-        verify(docks,
-               never()).hide();
     }
 
     @Test
