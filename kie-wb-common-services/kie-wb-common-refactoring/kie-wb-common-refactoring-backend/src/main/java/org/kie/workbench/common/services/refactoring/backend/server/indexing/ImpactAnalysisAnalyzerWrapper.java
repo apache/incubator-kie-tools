@@ -149,7 +149,7 @@ public final class ImpactAnalysisAnalyzerWrapper extends DelegatingAnalyzerWrapp
         Class<?> analyzerClass = analyzer.getClass();
         if (analyzerClass.equals(LowerCaseOnlyAnalyzer.class) ||
                 analyzerClass.equals(FilenameAnalyzer.class)) {
-            return ElasticSearchAnalyzer.SIMPLE.toString();
+            return ElasticSearchAnalyzer.FILENAME.toString();
         } else {
             return ElasticSearchAnalyzer.STANDARD.toString();
         }
