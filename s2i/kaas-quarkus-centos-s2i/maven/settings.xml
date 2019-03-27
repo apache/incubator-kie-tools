@@ -7,13 +7,9 @@
       <id>default</id>
       <repositories>
         <repository>
-          <id>nexus</id>
-          <url>http://192.168.100.15:8081/nexus/content/repositories/snapshots/</url>
-        </repository>
-        <repository>
-         <id>local-nexus</id>
-         <name>Local Nexus repository</name>
-         <url>http://192.168.100.15:8081/nexus/content/repositories/snapshots/</url>
+         <id>jboss-public-repository-group</id>
+         <name>JBoss Public Repository Group</name>
+         <url>https://repository.jboss.org/nexus/content/groups/public/</url>
          <releases>
            <enabled>true</enabled>
            <updatePolicy>never</updatePolicy>
@@ -26,9 +22,9 @@
       </repositories>
       <pluginRepositories>
       <pluginRepository>
-        <id>local-nexus</id>
-        <name>Local Nexus repository</name>
-        <url>http://192.168.100.15:8081/nexus/content/repositories/snapshots/</url>
+        <id>jboss-public-repository-group</id>
+        <name>JBoss Public Repository Group</name>
+        <url>https://repository.jboss.org/nexus/content/groups/public/</url>
         <releases>
           <enabled>true</enabled>
           <updatePolicy>never</updatePolicy>
