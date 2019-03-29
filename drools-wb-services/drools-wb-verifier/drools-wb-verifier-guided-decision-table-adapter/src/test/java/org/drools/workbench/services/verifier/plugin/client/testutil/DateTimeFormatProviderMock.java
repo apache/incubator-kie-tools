@@ -29,4 +29,10 @@ public class DateTimeFormatProviderMock
         return DateTimeFormat.getFormat("dd-MMM-yyyy")
                 .format(dateValue);
     }
+
+    @Override
+    public Date parse(String dateValue) {
+        return DateTimeFormat.getFormat("dd-MMM-yyyy")
+                .parse(dateValue);
+    }
 }

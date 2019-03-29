@@ -63,6 +63,36 @@ public class ExtendedGuidedDecisionTableBuilder
         return brlConditionColumn;
     }
 
+    public static ActionSetFieldCol52 createActionSetField(String boundName,
+                                                           String factField,
+                                                           String typeNumericInteger) {
+        ActionSetFieldCol52 column = new ActionSetFieldCol52();
+        column.setBoundName(boundName);
+        column.setFactField(factField);
+        column.setType(typeNumericInteger);
+        return column;
+    }
+
+    public static BRLActionColumn createBRLActionColumn() {
+        final BRLActionColumn brlActionColumn = new BRLActionColumn();
+        final ArrayList<IAction> definition = new ArrayList<IAction>();
+        definition.add(mock(IAction.class));
+        brlActionColumn.setDefinition(definition);
+        return brlActionColumn;
+    }
+
+    public static ActionInsertFactCol52 createActionInsertFact(String factType,
+                                                               String boundName,
+                                                               String factField,
+                                                               String type) {
+        ActionInsertFactCol52 column = new ActionInsertFactCol52();
+        column.setFactType(factType);
+        column.setBoundName(boundName);
+        column.setFactField(factField);
+        column.setType(type);
+        return column;
+    }
+
     public AbstractDecisionTableBuilder withActionBRLFragment() {
 
         final BRLActionColumn brlActionColumn = createBRLActionColumn();
@@ -126,6 +156,24 @@ public class ExtendedGuidedDecisionTableBuilder
         con1.setFactField(field);
         con1.setHeader("Applicant age");
         con1.setOperator(operator);
+        pattern.getChildColumns().add(con1);
+
+        addPattern(pattern);
+
+        return this;
+    }
+
+    public ExtendedGuidedDecisionTableBuilder withNoOperatorConditionIntegerColumn(String boundName,
+                                                                                   String factType,
+                                                                                   String field) {
+        Pattern52 pattern = findPattern(boundName, factType);
+
+        ConditionCol52 con1 = new ConditionCol52();
+        con1.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
+        con1.setFieldType(DataType.TYPE_NUMERIC_INTEGER);
+        con1.setFactField(field);
+        con1.setHeader("Applicant age");
+        con1.setOperator("");
         pattern.getChildColumns().add(con1);
 
         addPattern(pattern);
@@ -216,41 +264,11 @@ public class ExtendedGuidedDecisionTableBuilder
         return this;
     }
 
-    public static ActionSetFieldCol52 createActionSetField(String boundName,
-                                                           String factField,
-                                                           String typeNumericInteger) {
-        ActionSetFieldCol52 column = new ActionSetFieldCol52();
-        column.setBoundName(boundName);
-        column.setFactField(factField);
-        column.setType(typeNumericInteger);
-        return column;
-    }
-
     public ExtendedGuidedDecisionTableBuilder withConditionBRLColumn() {
         final BRLConditionColumn column = createBRLConditionColumn();
 
         table.getConditions().add(column);
 
         return this;
-    }
-
-    public static BRLActionColumn createBRLActionColumn() {
-        final BRLActionColumn brlActionColumn = new BRLActionColumn();
-        final ArrayList<IAction> definition = new ArrayList<IAction>();
-        definition.add(mock(IAction.class));
-        brlActionColumn.setDefinition(definition);
-        return brlActionColumn;
-    }
-
-    public static ActionInsertFactCol52 createActionInsertFact(String factType,
-                                                               String boundName,
-                                                               String factField,
-                                                               String type) {
-        ActionInsertFactCol52 column = new ActionInsertFactCol52();
-        column.setFactType(factType);
-        column.setBoundName(boundName);
-        column.setFactField(factField);
-        column.setType(type);
-        return column;
     }
 }

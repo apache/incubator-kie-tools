@@ -264,6 +264,12 @@ public abstract class AnalyzerUpdateTestBase {
                              column,
                              value);
                 }
+
+                public void toValue(final Boolean value) {
+                    setValue(row,
+                             column,
+                             value);
+                }
             }
         }
     }

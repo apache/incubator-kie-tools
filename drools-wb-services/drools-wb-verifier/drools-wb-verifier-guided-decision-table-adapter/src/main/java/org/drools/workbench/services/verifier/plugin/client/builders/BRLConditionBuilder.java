@@ -53,8 +53,10 @@ public class BRLConditionBuilder {
 
         try {
             return new BRLCondition(getColumn(),
-                                    new ValuesResolver(utils,
-                                                       columnIndex,
+                                    new ValuesResolver(configuration,
+                                                       new UtilsTypeResolver(utils,
+                                                                             columnIndex,
+                                                                             conditionColumn),
                                                        conditionColumn,
                                                        realCellValue).getValues(),
                                     configuration);

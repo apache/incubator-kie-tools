@@ -15,37 +15,50 @@
  */
 package org.drools.workbench.services.verifier.plugin.client;
 
+import java.util.Optional;
+
+import org.drools.verifier.core.configuration.AnalyzerConfiguration;
 import org.drools.verifier.core.index.Index;
 import org.drools.verifier.core.index.keys.Values;
 import org.drools.verifier.core.index.model.Action;
 import org.drools.verifier.core.index.model.Condition;
+import org.drools.verifier.core.index.model.FieldCondition;
+import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
+import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.services.verifier.plugin.client.builders.ActionBuilder;
+import org.drools.workbench.services.verifier.plugin.client.builders.TypeResolver;
+import org.drools.workbench.services.verifier.plugin.client.builders.Utils;
+import org.drools.workbench.services.verifier.plugin.client.builders.ValueResolveException;
+import org.drools.workbench.services.verifier.plugin.client.builders.ValuesResolver;
+
+import static org.drools.workbench.services.verifier.plugin.client.builders.Utils.getRealCellValue;
 
 public class RegularCellUpdateManager
         extends CellUpdateManagerBase {
 
-    private final Values values;
+    private final AnalyzerConfiguration configuration;
 
     public RegularCellUpdateManager(final Index index,
+                                    final AnalyzerConfiguration configuration,
                                     final GuidedDecisionTable52 model,
-                                    final Coordinate coordinate) throws
-            UpdateException {
+                                    final Coordinate coordinate) throws UpdateException {
         super(index,
               model,
               coordinate);
-
-        values = getValue(model.getData()
-                                  .get(coordinate.getRow())
-                                  .get(coordinate.getCol()));
+        this.configuration = configuration;
     }
 
     @Override
     protected boolean updateAction(final Action action) {
-        final Values comparable = action.getValues();
+        final Values oldValues = action.getValues();
 
-        if (values.isThereChanges(comparable)) {
+        final Values values = getValue(model.getData()
+                                               .get(coordinate.getRow())
+                                               .get(coordinate.getCol()));
+
+        if (values.isThereChanges(oldValues)) {
             action.setValue(values);
             return true;
         } else {
@@ -57,6 +70,32 @@ public class RegularCellUpdateManager
     protected boolean updateCondition(final Condition condition) {
         final Values oldValues = condition.getValues();
 
+        Values values = null;
+
+        final DTCellValue52 cell = model.getData()
+                .get(coordinate.getRow())
+                .get(coordinate.getCol());
+        final BaseColumn baseColumn = model.getExpandedColumns()
+                .get(coordinate.getCol());
+
+        if (baseColumn instanceof ConditionCol52 && condition instanceof FieldCondition) {
+
+            final DTCellValue52 realCellValue = getRealCellValue((ConditionCol52) baseColumn,
+                                                                 cell);
+
+            final Optional<String> operatorFromCell = Utils.findOperatorFromCell(realCellValue);
+            if (operatorFromCell.isPresent()) {
+                ((FieldCondition) condition).setOperator(operatorFromCell.get());
+            }
+
+            values = useResolver(configuration,
+                                 (FieldCondition) condition,
+                                 realCellValue,
+                                 (ConditionCol52) baseColumn);
+        } else {
+            values = getValue(cell);
+        }
+
         if (values == null && oldValues == null) {
             return false;
         } else if (values == null || oldValues == null) {
@@ -67,6 +106,25 @@ public class RegularCellUpdateManager
             return true;
         } else {
             return false;
+        }
+    }
+
+    private Values useResolver(final AnalyzerConfiguration configuration,
+                               final FieldCondition condition,
+                               final DTCellValue52 realCellValue,
+                               final ConditionCol52 baseColumn) {
+        try {
+            return new ValuesResolver(configuration,
+                                      new TypeResolver() {
+                                          @Override
+                                          public String getType(final Optional<String> operatorFromCell) throws ValueResolveException {
+                                              return condition.getField().getFieldType();
+                                          }
+                                      },
+                                      baseColumn,
+                                      realCellValue).getValues();
+        } catch (ValueResolveException e) {
+            return getValue(realCellValue);
         }
     }
 

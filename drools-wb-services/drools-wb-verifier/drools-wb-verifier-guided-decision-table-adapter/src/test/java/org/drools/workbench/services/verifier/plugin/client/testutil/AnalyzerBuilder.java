@@ -82,6 +82,15 @@ public class AnalyzerBuilder
     }
 
     @Override
+    public AnalyzerBuilder withNoOperatorConditionIntegerColumn(final String boundName,
+                                                                final String factType,
+                                                                final String field) {
+        return (AnalyzerBuilder) super.withNoOperatorConditionIntegerColumn(boundName,
+                                                                            factType,
+                                                                            field);
+    }
+
+    @Override
     public AnalyzerBuilder withConditionIntegerColumn(final String boundName,
                                                       final String factType,
                                                       final String field,

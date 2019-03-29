@@ -83,6 +83,12 @@ public class AnalyzerBuilder {
                             return DateTimeFormat.getFormat(initialize.getDateFormat())
                                     .format(dateValue);
                         }
+
+                        @Override
+                        public Date parse(String dateValue) {
+                            return DateTimeFormat.getFormat(initialize.getDateFormat())
+                                    .parse(dateValue);
+                        }
                     },
                     new UUIDKeyProvider() {
                         @Override

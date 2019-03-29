@@ -18,7 +18,9 @@ package org.drools.workbench.services.verifier.plugin.client.builders;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
+import java.util.Optional;
 
+import org.drools.verifier.core.configuration.AnalyzerConfiguration;
 import org.drools.verifier.core.index.keys.Values;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
@@ -26,25 +28,35 @@ import org.drools.workbench.services.verifier.plugin.client.Logger;
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.soup.project.datamodel.oracle.DataType;
 
+import static org.drools.workbench.services.verifier.plugin.client.builders.Utils.tryBigDecimal;
+import static org.drools.workbench.services.verifier.plugin.client.builders.Utils.tryBigInteger;
+import static org.drools.workbench.services.verifier.plugin.client.builders.Utils.tryBoolean;
+import static org.drools.workbench.services.verifier.plugin.client.builders.Utils.tryDouble;
+import static org.drools.workbench.services.verifier.plugin.client.builders.Utils.tryInteger;
+import static org.drools.workbench.services.verifier.plugin.client.builders.Utils.tryLong;
+import static org.drools.workbench.services.verifier.plugin.client.builders.Utils.tryShort;
+
 public class ValuesResolver {
 
-    private final VerifierColumnUtilities utils;
-    private final int columnIndex;
+    private final TypeResolver typeResolver;
     private final ConditionCol52 conditionColumn;
     private final DTCellValue52 realCellValue;
+    private final Optional<String> operatorFromCell;
+    private final AnalyzerConfiguration configuration;
 
-    public ValuesResolver(final VerifierColumnUtilities utils,
-                          final int columnIndex,
+    public ValuesResolver(final AnalyzerConfiguration configuration,
+                          final TypeResolver typeResolver,
                           final ConditionCol52 conditionColumn,
                           final DTCellValue52 realCellValue) {
-        this.utils = PortablePreconditions.checkNotNull("utils",
-                                                        utils);
-        this.columnIndex = PortablePreconditions.checkNotNull("columnIndex",
-                                                              columnIndex);
+        this.configuration = PortablePreconditions.checkNotNull("configuration",
+                                                                configuration);
+        this.typeResolver = PortablePreconditions.checkNotNull("typeResolver",
+                                                               typeResolver);
         this.conditionColumn = PortablePreconditions.checkNotNull("conditionColumn",
                                                                   conditionColumn);
         this.realCellValue = PortablePreconditions.checkNotNull("realCellValue",
                                                                 realCellValue);
+        operatorFromCell = Utils.findOperatorFromCell(realCellValue);
     }
 
     public Values getValues() throws
@@ -99,26 +111,14 @@ public class ValuesResolver {
 
     private String getType() throws
             ValueResolveException {
-        try {
-            Logger.add("Getting type from utils");
-
-            final String type = utils.getType(conditionColumn,
-                                              columnIndex);
-
-            Logger.add("Resolver type from utils: " + type);
-
-            return type;
-        } catch (final Exception e) {
-            throw new ValueResolveException("Failed to get type for " + ToString.toString(conditionColumn) + " columnIndex: " + columnIndex,
-                                            e);
-        }
+        return typeResolver.getType(operatorFromCell);
     }
 
     private Values<Boolean> getBooleanValue() throws
             ValueResolveException {
         try {
 
-            final Boolean booleanValue = realCellValue.getBooleanValue();
+            final Boolean booleanValue = getBoolean();
 
             if (booleanValue != null) {
                 return new Values<>(booleanValue);
@@ -130,11 +130,19 @@ public class ValuesResolver {
         }
     }
 
+    private Boolean getBoolean() {
+        if (operatorFromCell.isPresent()) {
+            return tryBoolean(getCellValueFromCellWithOperator());
+        } else {
+            return realCellValue.getBooleanValue();
+        }
+    }
+
     private Values<Date> getDateValue() throws
             ValueResolveException {
         try {
 
-            final Date date = realCellValue.getDateValue();
+            final Date date = getDate();
             if (date != null) {
                 return new Values<>(date);
             } else {
@@ -142,6 +150,14 @@ public class ValuesResolver {
             }
         } catch (final Exception e) {
             throw new ValueResolveException("Failed to resolve Date Value");
+        }
+    }
+
+    private Date getDate() {
+        if (operatorFromCell.isPresent()) {
+            return configuration.parse(getCellValueFromCellWithOperator());
+        } else {
+            return realCellValue.getDateValue();
         }
     }
 
@@ -162,29 +178,40 @@ public class ValuesResolver {
             ValueResolveException {
         try {
 
-            final String stringValue = realCellValue.getStringValue();
-
-            if (stringValue != null && !stringValue.isEmpty()) {
-                if (conditionColumn.getOperator() != null
-                        && (conditionColumn.getOperator()
-                        .equals("in") || conditionColumn.getOperator()
-                        .equals("not in"))) {
-                    final Values values = new Values();
-
-                    for (final String item : stringValue.split(",")) {
-                        values.add(item.trim());
-                    }
-
-                    return values;
-                } else {
-                    return new Values<>(stringValue);
-                }
+            if (operatorFromCell.isPresent()) {
+                return resolveValue(getCellValueFromCellWithOperator());
             } else {
-                return new Values<>();
+                return resolveValue(realCellValue.getStringValue());
             }
         } catch (final Exception e) {
             throw new ValueResolveException("Failed to resolve String Value");
         }
+    }
+
+    private String getCellValueFromCellWithOperator() {
+        return realCellValue.getStringValue().trim().substring(operatorFromCell.get().length()).trim();
+    }
+
+    private Values<String> resolveValue(final String stringValue) {
+        if (stringValue != null && !stringValue.isEmpty()) {
+            if (conditionColumn.getOperator() != null && isOperatorForList()) {
+                final Values values = new Values();
+
+                for (final String item : stringValue.split(",")) {
+                    values.add(item.trim());
+                }
+
+                return values;
+            } else {
+                return new Values<>(stringValue);
+            }
+        } else {
+            return new Values<>();
+        }
+    }
+
+    private boolean isOperatorForList() {
+        return conditionColumn.getOperator().equals("in") || conditionColumn.getOperator().equals("not in");
     }
 
     private Values<Short> getShortValue() throws
@@ -203,17 +230,15 @@ public class ValuesResolver {
     }
 
     private Short getShort() {
-        if (realCellValue.getNumericValue() != null) {
+        if (operatorFromCell.isPresent()) {
+            return tryShort(getCellValueFromCellWithOperator());
+        } else if (realCellValue.getNumericValue() != null) {
             return (Short) realCellValue.getNumericValue();
         } else if (realCellValue.getStringValue() == null || realCellValue.getStringValue()
                 .isEmpty()) {
             return null;
         } else {
-            try {
-                return new Short(realCellValue.getStringValue());
-            } catch (final NumberFormatException nfe) {
-                return null;
-            }
+            return tryShort(realCellValue.getStringValue());
         }
     }
 
@@ -233,17 +258,15 @@ public class ValuesResolver {
     }
 
     private Long getLong() {
-        if (realCellValue.getNumericValue() != null) {
+        if (operatorFromCell.isPresent()) {
+            return tryLong(getCellValueFromCellWithOperator());
+        } else if (realCellValue.getNumericValue() != null) {
             return (Long) realCellValue.getNumericValue();
         } else if (realCellValue.getStringValue() == null || realCellValue.getStringValue()
                 .isEmpty()) {
             return null;
         } else {
-            try {
-                return new Long(realCellValue.getStringValue());
-            } catch (final NumberFormatException nfe) {
-                return null;
-            }
+            return tryLong(realCellValue.getStringValue());
         }
     }
 
@@ -257,17 +280,15 @@ public class ValuesResolver {
     }
 
     private Double getDouble() {
-        if (realCellValue.getNumericValue() != null) {
+        if (operatorFromCell.isPresent()) {
+            return tryDouble(getCellValueFromCellWithOperator());
+        } else if (realCellValue.getNumericValue() != null) {
             return (Double) realCellValue.getNumericValue();
         } else if (realCellValue.getStringValue() == null || realCellValue.getStringValue()
                 .isEmpty()) {
             return null;
         } else {
-            try {
-                return new Double(realCellValue.getStringValue());
-            } catch (final NumberFormatException nfe) {
-                return null;
-            }
+            return tryDouble(realCellValue.getStringValue());
         }
     }
 
@@ -287,17 +308,15 @@ public class ValuesResolver {
     }
 
     private BigInteger getBigInteger() {
-        if (realCellValue.getNumericValue() != null) {
+        if (operatorFromCell.isPresent()) {
+            return tryBigInteger(getCellValueFromCellWithOperator());
+        } else if (realCellValue.getNumericValue() != null) {
             return (BigInteger) realCellValue.getNumericValue();
         } else if (realCellValue.getStringValue() == null || realCellValue.getStringValue()
                 .isEmpty()) {
             return null;
         } else {
-            try {
-                return new BigInteger(realCellValue.getStringValue());
-            } catch (final NumberFormatException nfe) {
-                return null;
-            }
+            return tryBigInteger(realCellValue.getStringValue());
         }
     }
 
@@ -316,17 +335,15 @@ public class ValuesResolver {
     }
 
     private BigDecimal getBigDecimal() {
-        if (realCellValue.getNumericValue() != null) {
+        if (operatorFromCell.isPresent()) {
+            return tryBigDecimal(getCellValueFromCellWithOperator());
+        } else if (realCellValue.getNumericValue() != null) {
             return (BigDecimal) realCellValue.getNumericValue();
         } else if (realCellValue.getStringValue() == null || realCellValue.getStringValue()
                 .isEmpty()) {
             return null;
         } else {
-            try {
-                return new BigDecimal(realCellValue.getStringValue());
-            } catch (final NumberFormatException nfe) {
-                return null;
-            }
+            return tryBigDecimal(realCellValue.getStringValue());
         }
     }
 
@@ -345,17 +362,15 @@ public class ValuesResolver {
     }
 
     private Integer getInteger() {
-        if (realCellValue.getNumericValue() != null) {
+        if (operatorFromCell.isPresent()) {
+            return tryInteger(getCellValueFromCellWithOperator());
+        } else if (realCellValue.getNumericValue() != null) {
             return (Integer) realCellValue.getNumericValue();
         } else if (realCellValue.getStringValue() == null || realCellValue.getStringValue()
                 .isEmpty()) {
             return null;
         } else {
-            try {
-                return new Integer(realCellValue.getStringValue());
-            } catch (final NumberFormatException nfe) {
-                return null;
-            }
+            return tryInteger(realCellValue.getStringValue());
         }
     }
 

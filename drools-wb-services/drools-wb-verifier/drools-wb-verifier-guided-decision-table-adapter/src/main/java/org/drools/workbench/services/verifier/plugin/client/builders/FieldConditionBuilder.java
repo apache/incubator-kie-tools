@@ -15,6 +15,8 @@
  */
 package org.drools.workbench.services.verifier.plugin.client.builders;
 
+import java.util.Optional;
+
 import org.drools.verifier.core.configuration.AnalyzerConfiguration;
 import org.drools.verifier.core.index.Index;
 import org.drools.verifier.core.index.keys.Values;
@@ -96,8 +98,8 @@ public class FieldConditionBuilder {
 
             return new FieldCondition(field,
                                       column,
-                                      resolveOperator(conditionCol52.getOperator()),
-                                      resolveValues(conditionCol52.getOperator()),
+                                      resolveOperator(),
+                                      resolveValues(),
                                       configuration);
         } catch (final BuildException e) {
             throw e;
@@ -106,10 +108,10 @@ public class FieldConditionBuilder {
         }
     }
 
-    private Values resolveValues(final String operator) throws
+    private Values resolveValues() throws
             BuildException {
 
-        if (NullEqualityOperator.contains(operator)) {
+        if (NullEqualityOperator.contains(conditionCol52.getOperator())) {
             if (realCellValue.getBooleanValue() != null && realCellValue.getBooleanValue()) {
                 return Values.nullValue();
             } else {
@@ -117,8 +119,10 @@ public class FieldConditionBuilder {
             }
         } else {
             try {
-                Values values = new ValuesResolver(utils,
-                                                   columnIndex,
+                Values values = new ValuesResolver(configuration,
+                                                   new UtilsTypeResolver(utils,
+                                                                         columnIndex,
+                                                                         conditionCol52),
                                                    conditionCol52,
                                                    realCellValue).getValues();
                 return values;
@@ -128,12 +132,18 @@ public class FieldConditionBuilder {
         }
     }
 
-    private String resolveOperator(final String operator) {
-        if (NullEqualityOperator.contains(operator)) {
-            return NullEqualityOperator.resolveOperator(operator);
-        } else {
-            return operator;
+    private String resolveOperator() {
+        if (conditionCol52.getOperator() == null || conditionCol52.getOperator().trim().isEmpty()) {
+
+            final Optional<String> operatorFromCell = Utils.findOperatorFromCell(realCellValue);
+            if (operatorFromCell.isPresent()) {
+                return operatorFromCell.get();
+            }
+        } else if (NullEqualityOperator.contains(conditionCol52.getOperator())) {
+            return NullEqualityOperator.resolveOperator(conditionCol52.getOperator());
         }
+
+        return conditionCol52.getOperator();
     }
 
     private Column getColumn() throws

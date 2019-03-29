@@ -102,6 +102,7 @@ public class DTableUpdateManager {
                                                              coordinate);
         } else {
             return new RegularCellUpdateManager(index,
+                                                configuration,
                                                 model,
                                                 coordinate);
         }
