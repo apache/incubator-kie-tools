@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ Copyright 2012 Red Hat, Inc. and/or its affiliates.
+  ~ Copyright 2019 Red Hat, Inc. and/or its affiliates.
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -15,9 +15,9 @@
   ~ limitations under the License.
 -->
 <kmodule xmlns="http://jboss.org/kie/6.0.0/kmodule">
-  <kbase name="org.kie.example1">
-    <ksession name="ksession1" type="stateful" default="true" clockType="realtime">
-      <fileLogger name="response-builder_filelogger" file="/tmp/response-builder_filelogger.log" threaded="true" interval="1500"/>
+  <kbase name="org.kie.example2">
+    <ksession name="ksession2" type="stateless" default="false" clockType="pseudo">
+      <consoleLogger/>
     </ksession>
   </kbase>
 </kmodule>

@@ -21,10 +21,12 @@ import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.drools.core.util.AbstractXStreamConverter;
+import org.guvnor.common.services.project.model.WorkItemHandlerModel;
 import org.kie.workbench.common.services.shared.kmodule.ClockTypeOption;
+import org.kie.workbench.common.services.shared.kmodule.ConsoleLogger;
+import org.kie.workbench.common.services.shared.kmodule.FileLogger;
 import org.kie.workbench.common.services.shared.kmodule.KSessionModel;
 import org.kie.workbench.common.services.shared.kmodule.ListenerModel;
-import org.guvnor.common.services.project.model.WorkItemHandlerModel;
 
 public class KSessionConverter
         extends AbstractXStreamConverter {
@@ -47,18 +49,17 @@ public class KSessionConverter
 
         writeObjectList(writer, context, "workItemHandlers", "workItemHandler", kSession.getWorkItemHandelerModels());
 
-//        if (kSession.getLogger() instanceof ConsoleLogger) {
-//            writeObject(writer, context, "consoleLogger", kSession.getLogger());
-//        } else if (kSession.getLogger() instanceof FileLogger) {
-//            writeObject(writer, context, "fileLogger", kSession.getLogger());
-//        }
+        if (kSession.getLogger() instanceof ConsoleLogger) {
+            writeObject(writer, context, "consoleLogger", kSession.getLogger());
+        } else if (kSession.getLogger() instanceof FileLogger) {
+            writeObject(writer, context, "fileLogger", kSession.getLogger());
+        }
 
         if (!kSession.getListeners().isEmpty()) {
             writer.startNode("listeners");
 
             for (ListenerModel listener : kSession.getListeners()) {
                 writeObject(writer, context, listener.getKind().toString(), listener);
-
             }
             writer.endNode();
         }
@@ -84,8 +85,8 @@ public class KSessionConverter
 
         readNodes(reader, new AbstractXStreamConverter.NodeReader() {
             public void onNode(HierarchicalStreamReader reader,
-                    String name,
-                    String value) {
+                               String name,
+                               String value) {
                 if ("listeners".equals(name)) {
                     while (reader.hasMoreChildren()) {
                         reader.moveDown();
@@ -94,12 +95,11 @@ public class KSessionConverter
                     }
                 } else if ("workItemHandlers".equals(name)) {
                     kSession.getWorkItemHandelerModels().addAll(readObjectList(reader, context, WorkItemHandlerModel.class));
+                } else if ("consoleLogger".equals(name)) {
+                    kSession.setLogger(readObject(reader, context, ConsoleLogger.class));
+                } else if ("fileLogger".equals(name)) {
+                    kSession.setLogger(readObject(reader, context, FileLogger.class));
                 }
-//                else if ("consoleLogger".equals(name)){
-//                    kSession.setLogger(readObject(reader, context, ConsoleLogger.class));
-//                } else if ("fileLogger".equals(name)){
-//                    kSession.setLogger(readObject(reader, context, FileLogger.class));
-//                }
             }
         });
 

@@ -21,6 +21,7 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 import org.guvnor.common.services.project.model.WorkItemHandlerModel;
 import org.kie.soup.commons.xstream.XStreamUtils;
 import org.kie.workbench.common.services.backend.kmodule.converters.ClockTypeConverter;
+import org.kie.workbench.common.services.backend.kmodule.converters.FileLoggerConverter;
 import org.kie.workbench.common.services.backend.kmodule.converters.KBaseConverter;
 import org.kie.workbench.common.services.backend.kmodule.converters.KModuleConverter;
 import org.kie.workbench.common.services.backend.kmodule.converters.KSessionConverter;
@@ -54,6 +55,7 @@ public class KModuleContentHandler {
         xStream.registerConverter(new ListenerConverter());
         xStream.registerConverter(new QualifierConverter());
         xStream.registerConverter(new WorkItemHandlerConverter());
+        xStream.registerConverter(new FileLoggerConverter());
 
         xStream.alias("kmodule", KModuleModel.class);
         xStream.alias("kbase", KBaseModel.class);
