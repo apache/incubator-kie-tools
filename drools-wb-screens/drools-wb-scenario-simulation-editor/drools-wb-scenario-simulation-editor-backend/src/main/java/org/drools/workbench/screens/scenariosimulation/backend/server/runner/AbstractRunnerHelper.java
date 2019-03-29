@@ -89,7 +89,7 @@ public abstract class AbstractRunnerHelper {
             Object bean = getDirectMapping(paramsForBean)
                     .orElseGet(() -> createObject(factIdentifier.getClassName(), paramsForBean, classLoader));
 
-            scenarioGiven.add(new ScenarioGiven(factIdentifier, bean, entry.getValue()));
+            scenarioGiven.add(new ScenarioGiven(factIdentifier, bean));
         }
 
         return scenarioGiven;

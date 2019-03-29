@@ -16,27 +16,16 @@
 
 package org.drools.workbench.screens.scenariosimulation.backend.server.runner.model;
 
-import java.util.List;
-
 import org.drools.workbench.screens.scenariosimulation.model.FactIdentifier;
-import org.drools.workbench.screens.scenariosimulation.model.FactMappingValue;
 
-/**
- * This class wrap an entire given fact. It contains factIdentifier, instance of the
- * bean and list of values (columns) used to create it
- */
 public class ScenarioGiven {
 
     private final FactIdentifier factIdentifier;
     private final Object value;
-    private final List<FactMappingValue> factMappingValues;
 
-    public ScenarioGiven(FactIdentifier factIdentifier,
-                         Object value,
-                         List<FactMappingValue> factMappingValues) {
+    public ScenarioGiven(FactIdentifier factIdentifier, Object value) {
         this.factIdentifier = factIdentifier;
         this.value = value;
-        this.factMappingValues = factMappingValues;
     }
 
     public FactIdentifier getFactIdentifier() {
@@ -45,9 +34,5 @@ public class ScenarioGiven {
 
     public Object getValue() {
         return value;
-    }
-
-    public List<FactMappingValue> getFactMappingValues() {
-        return factMappingValues;
     }
 }

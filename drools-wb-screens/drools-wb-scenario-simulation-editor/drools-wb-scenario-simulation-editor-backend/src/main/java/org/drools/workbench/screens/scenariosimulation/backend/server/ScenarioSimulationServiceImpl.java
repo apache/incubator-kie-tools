@@ -151,8 +151,8 @@ public class ScenarioSimulationServiceImpl
 
     @Override
     public Map<Integer, Scenario> runScenario(final Path path,
-                                              final SimulationDescriptor simulationDescriptor,
-                                              final Map<Integer, Scenario> scenarioMap) {
+                                               final SimulationDescriptor simulationDescriptor,
+                                               final Map<Integer, Scenario> scenarioMap) {
         return scenarioRunnerService.runTest(user.getIdentifier(),
                                              path,
                                              simulationDescriptor,
