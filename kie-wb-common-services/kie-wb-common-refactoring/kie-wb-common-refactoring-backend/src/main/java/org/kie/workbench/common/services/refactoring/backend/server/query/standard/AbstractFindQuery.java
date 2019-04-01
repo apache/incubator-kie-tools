@@ -55,11 +55,6 @@ public abstract class AbstractFindQuery {
         }
     }
 
-    public static interface NamedPredicate extends Predicate<ValueIndexTerm> {
-
-        public String getTermName();
-    }
-
     /**
      * Checks<ol>
      * <li>Whether all terms are valid or not (see parameter <code>validTermTests</code>)</li>
