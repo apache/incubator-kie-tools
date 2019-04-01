@@ -50,16 +50,24 @@ public class ScriptTaskExecutionSet implements BPMNPropertySet {
     @Valid
     private IsAsync isAsync;
 
+    @Property
+    @FormField(afterElement = "isAsync")
+    @Valid
+    private AdHocAutostart adHocAutostart;
+
     public ScriptTaskExecutionSet() {
         this(new Script(new ScriptTypeValue("java",
                                             "")),
-             new IsAsync());
+             new IsAsync(),
+             new AdHocAutostart());
     }
 
     public ScriptTaskExecutionSet(final @MapsTo("script") Script script,
-                                  final @MapsTo("isAsync") IsAsync isAsync) {
+                                  final @MapsTo("isAsync") IsAsync isAsync,
+                                  final @MapsTo("adHocAutostart") AdHocAutostart adHocAutostart) {
         this.script = script;
         this.isAsync = isAsync;
+        this.adHocAutostart = adHocAutostart;
     }
 
     public Script getScript() {
@@ -78,20 +86,28 @@ public class ScriptTaskExecutionSet implements BPMNPropertySet {
         this.isAsync = isAsync;
     }
 
+    public AdHocAutostart getAdHocAutostart() {
+        return adHocAutostart;
+    }
+
+    public void setAdHocAutostart(AdHocAutostart adHocAutostart) {
+        this.adHocAutostart = adHocAutostart;
+    }
+
     @Override
     public int hashCode() {
         return HashUtil.combineHashCodes(Objects.hashCode(script),
-                                         Objects.hashCode(isAsync));
+                                         Objects.hashCode(isAsync),
+                                         Objects.hashCode(adHocAutostart));
     }
 
     @Override
     public boolean equals(Object o) {
         if (o instanceof ScriptTaskExecutionSet) {
             ScriptTaskExecutionSet other = (ScriptTaskExecutionSet) o;
-            return Objects.equals(script,
-                                  other.script) &&
-                    Objects.equals(isAsync,
-                                   other.isAsync);
+            return Objects.equals(script, other.script) &&
+                   Objects.equals(isAsync, other.isAsync) &&
+                   Objects.equals(adHocAutostart, other.adHocAutostart);
         }
         return false;
     }

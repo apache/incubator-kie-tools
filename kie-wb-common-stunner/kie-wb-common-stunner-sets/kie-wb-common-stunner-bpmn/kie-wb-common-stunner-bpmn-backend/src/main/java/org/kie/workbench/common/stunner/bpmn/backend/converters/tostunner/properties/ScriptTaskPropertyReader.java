@@ -43,4 +43,8 @@ public class ScriptTaskPropertyReader extends TaskPropertyReader {
     public boolean isAsync() {
         return CustomElement.async.of(element).get();
     }
+
+    public boolean isAdHocAutoStart() {
+        return CustomElement.autoStart.of(element).get();
+    }
 }

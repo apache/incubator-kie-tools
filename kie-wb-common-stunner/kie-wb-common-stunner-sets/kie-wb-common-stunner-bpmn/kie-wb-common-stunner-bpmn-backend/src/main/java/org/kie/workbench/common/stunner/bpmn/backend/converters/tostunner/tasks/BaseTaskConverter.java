@@ -185,7 +185,8 @@ public abstract class BaseTaskConverter<U extends BaseUserTask<S>, S extends Bas
 
         definition.setExecutionSet(new ScriptTaskExecutionSet(
                 new Script(p.getScript()),
-                new IsAsync(p.isAsync())
+                new IsAsync(p.isAsync()),
+                new AdHocAutostart(p.isAdHocAutoStart())
         ));
 
         node.getContent().setBounds(p.getBounds());

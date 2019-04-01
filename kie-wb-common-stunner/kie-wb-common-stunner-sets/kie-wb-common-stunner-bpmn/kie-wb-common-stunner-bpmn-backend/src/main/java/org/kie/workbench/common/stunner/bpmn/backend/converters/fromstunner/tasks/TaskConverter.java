@@ -188,6 +188,7 @@ public class TaskConverter {
 
         p.setScript(executionSet.getScript().getValue());
         p.setAsync(executionSet.getIsAsync().getValue());
+        p.setAdHocAutostart(executionSet.getAdHocAutostart().getValue());
 
         p.setSimulationSet(definition.getSimulationSet());
 

@@ -69,6 +69,8 @@ public class ScriptTaskTest extends Task<ScriptTask> {
     private static final String TASK_SCRIPT_MVEL_LANGUAGE = "mvel";
     private static final boolean IS_ASYNC = true;
     private static final boolean IS_NOT_ASYNC = false;
+    private static final boolean IS_ADHOC_AUTOSTART = true;
+    private static final boolean IS_NOT_ADHOC_AUTOSTART = false;
 
     private static Diagram<Graph, Metadata> oldDiagram;
     private static Diagram<Graph, Metadata> oldRoundTripDiagram;
@@ -102,21 +104,33 @@ public class ScriptTaskTest extends Task<ScriptTask> {
                                                             ZERO_INCOME_EDGES,
                                                             HAS_NO_OUTCOME_EDGE);
         assertGeneralSet(filledTopLevelTaskJava.getGeneral(), TASK_NAME_JAVA, TASK_DOCUMENTATION_JAVA);
-        assertScriptTaskExecutionSet(filledTopLevelTaskJava.getExecutionSet(), TASK_SCRIPT_JAVA, TASK_SCRIPT_JAVA_LANGUAGE, IS_ASYNC);
+        assertScriptTaskExecutionSet(filledTopLevelTaskJava.getExecutionSet(),
+                                     TASK_SCRIPT_JAVA,
+                                     TASK_SCRIPT_JAVA_LANGUAGE,
+                                     IS_ASYNC,
+                                     IS_ADHOC_AUTOSTART);
 
         ScriptTask filledTopLevelTaskJavascript = getTaskNodeById(getDiagram(),
                                                                   FILLED_TOP_LEVEL_TASK_JAVASCRIPT_ID,
                                                                   ZERO_INCOME_EDGES,
                                                                   HAS_NO_OUTCOME_EDGE);
         assertGeneralSet(filledTopLevelTaskJavascript.getGeneral(), TASK_NAME_JAVASCRIPT, TASK_DOCUMENTATION_JAVASCRIPT);
-        assertScriptTaskExecutionSet(filledTopLevelTaskJavascript.getExecutionSet(), TASK_SCRIPT_JAVASCRIPT, TASK_SCRIPT_JAVASCRIPT_LANGUAGE, IS_ASYNC);
+        assertScriptTaskExecutionSet(filledTopLevelTaskJavascript.getExecutionSet(),
+                                     TASK_SCRIPT_JAVASCRIPT,
+                                     TASK_SCRIPT_JAVASCRIPT_LANGUAGE,
+                                     IS_ASYNC,
+                                     IS_ADHOC_AUTOSTART);
 
         ScriptTask filledTopLevelTaskMvel = getTaskNodeById(getDiagram(),
                                                             FILLED_TOP_LEVEL_TASK_MVEL_ID,
                                                             ZERO_INCOME_EDGES,
                                                             HAS_NO_OUTCOME_EDGE);
         assertGeneralSet(filledTopLevelTaskMvel.getGeneral(), TASK_NAME_MVEL, TASK_DOCUMENTATION_MVEL);
-        assertScriptTaskExecutionSet(filledTopLevelTaskMvel.getExecutionSet(), TASK_SCRIPT_MVEL, TASK_SCRIPT_MVEL_LANGUAGE, IS_ASYNC);
+        assertScriptTaskExecutionSet(filledTopLevelTaskMvel.getExecutionSet(),
+                                     TASK_SCRIPT_MVEL,
+                                     TASK_SCRIPT_MVEL_LANGUAGE,
+                                     IS_ASYNC,
+                                     IS_ADHOC_AUTOSTART);
     }
 
     @Test
@@ -129,7 +143,11 @@ public class ScriptTaskTest extends Task<ScriptTask> {
                                                         ZERO_INCOME_EDGES,
                                                         HAS_NO_OUTCOME_EDGE);
         assertGeneralSet(filledTopLevelTask.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
-        assertScriptTaskExecutionSet(filledTopLevelTask.getExecutionSet(), TASK_SCRIPT_DEFAULT_VALUE, TASK_SCRIPT_JAVA_LANGUAGE, IS_NOT_ASYNC);
+        assertScriptTaskExecutionSet(filledTopLevelTask.getExecutionSet(),
+                                     TASK_SCRIPT_DEFAULT_VALUE,
+                                     TASK_SCRIPT_JAVA_LANGUAGE,
+                                     IS_NOT_ASYNC,
+                                     IS_NOT_ADHOC_AUTOSTART);
     }
 
     @Test
@@ -154,21 +172,33 @@ public class ScriptTaskTest extends Task<ScriptTask> {
                                                                    ZERO_INCOME_EDGES,
                                                                    HAS_NO_OUTCOME_EDGE);
         assertGeneralSet(filledSubprocessLevelTaskJava.getGeneral(), TASK_NAME_JAVA, TASK_DOCUMENTATION_JAVA);
-        assertScriptTaskExecutionSet(filledSubprocessLevelTaskJava.getExecutionSet(), TASK_SCRIPT_JAVA, TASK_SCRIPT_JAVA_LANGUAGE, IS_ASYNC);
+        assertScriptTaskExecutionSet(filledSubprocessLevelTaskJava.getExecutionSet(),
+                                     TASK_SCRIPT_JAVA,
+                                     TASK_SCRIPT_JAVA_LANGUAGE,
+                                     IS_ASYNC,
+                                     IS_ADHOC_AUTOSTART);
 
         ScriptTask filledSubprocessLevelTaskJavascript = getTaskNodeById(getDiagram(),
                                                                          FILLED_SUBPROCESS_LEVEL_TASK_JAVASCRIPT_ID,
                                                                          ZERO_INCOME_EDGES,
                                                                          HAS_NO_OUTCOME_EDGE);
         assertGeneralSet(filledSubprocessLevelTaskJavascript.getGeneral(), TASK_NAME_JAVASCRIPT, TASK_DOCUMENTATION_JAVASCRIPT);
-        assertScriptTaskExecutionSet(filledSubprocessLevelTaskJavascript.getExecutionSet(), TASK_SCRIPT_JAVASCRIPT, TASK_SCRIPT_JAVASCRIPT_LANGUAGE, IS_ASYNC);
+        assertScriptTaskExecutionSet(filledSubprocessLevelTaskJavascript.getExecutionSet(),
+                                     TASK_SCRIPT_JAVASCRIPT,
+                                     TASK_SCRIPT_JAVASCRIPT_LANGUAGE,
+                                     IS_ASYNC,
+                                     IS_ADHOC_AUTOSTART);
 
         ScriptTask filledSubprocessLevelTaskMvel = getTaskNodeById(getDiagram(),
                                                                    FILLED_SUBPROCESS_LEVEL_TASK_MVEL_ID,
                                                                    ZERO_INCOME_EDGES,
                                                                    HAS_NO_OUTCOME_EDGE);
         assertGeneralSet(filledSubprocessLevelTaskMvel.getGeneral(), TASK_NAME_MVEL, TASK_DOCUMENTATION_MVEL);
-        assertScriptTaskExecutionSet(filledSubprocessLevelTaskMvel.getExecutionSet(), TASK_SCRIPT_MVEL, TASK_SCRIPT_MVEL_LANGUAGE, IS_ASYNC);
+        assertScriptTaskExecutionSet(filledSubprocessLevelTaskMvel.getExecutionSet(),
+                                     TASK_SCRIPT_MVEL,
+                                     TASK_SCRIPT_MVEL_LANGUAGE,
+                                     IS_ASYNC,
+                                     IS_ADHOC_AUTOSTART);
     }
 
     @Test
@@ -181,7 +211,11 @@ public class ScriptTaskTest extends Task<ScriptTask> {
                                                                    ZERO_INCOME_EDGES,
                                                                    HAS_NO_OUTCOME_EDGE);
         assertGeneralSet(filledSubprocessLevelTaskJava.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
-        assertScriptTaskExecutionSet(filledSubprocessLevelTaskJava.getExecutionSet(), TASK_SCRIPT_DEFAULT_VALUE, TASK_SCRIPT_JAVA_LANGUAGE, IS_NOT_ASYNC);
+        assertScriptTaskExecutionSet(filledSubprocessLevelTaskJava.getExecutionSet(),
+                                     TASK_SCRIPT_DEFAULT_VALUE,
+                                     TASK_SCRIPT_JAVA_LANGUAGE,
+                                     IS_NOT_ASYNC,
+                                     IS_NOT_ADHOC_AUTOSTART);
     }
 
     @Test
@@ -206,21 +240,33 @@ public class ScriptTaskTest extends Task<ScriptTask> {
                                                             ONE_INCOME_EDGE,
                                                             HAS_OUTCOME_EDGE);
         assertGeneralSet(filledTopLevelTaskJava.getGeneral(), TASK_NAME_JAVA, TASK_DOCUMENTATION_JAVA);
-        assertScriptTaskExecutionSet(filledTopLevelTaskJava.getExecutionSet(), TASK_SCRIPT_JAVA, TASK_SCRIPT_JAVA_LANGUAGE, IS_ASYNC);
+        assertScriptTaskExecutionSet(filledTopLevelTaskJava.getExecutionSet(),
+                                     TASK_SCRIPT_JAVA,
+                                     TASK_SCRIPT_JAVA_LANGUAGE,
+                                     IS_ASYNC,
+                                     IS_ADHOC_AUTOSTART);
 
         ScriptTask filledTopLevelTaskJavascript = getTaskNodeById(getDiagram(),
                                                                   FILLED_ONE_INCOME_TOP_LEVEL_TASK_JAVASCRIPT_ID,
                                                                   ONE_INCOME_EDGE,
                                                                   HAS_OUTCOME_EDGE);
         assertGeneralSet(filledTopLevelTaskJavascript.getGeneral(), TASK_NAME_JAVASCRIPT, TASK_DOCUMENTATION_JAVASCRIPT);
-        assertScriptTaskExecutionSet(filledTopLevelTaskJavascript.getExecutionSet(), TASK_SCRIPT_JAVASCRIPT, TASK_SCRIPT_JAVASCRIPT_LANGUAGE, IS_ASYNC);
+        assertScriptTaskExecutionSet(filledTopLevelTaskJavascript.getExecutionSet(),
+                                     TASK_SCRIPT_JAVASCRIPT,
+                                     TASK_SCRIPT_JAVASCRIPT_LANGUAGE,
+                                     IS_ASYNC,
+                                     IS_ADHOC_AUTOSTART);
 
         ScriptTask filledTopLevelTaskMvel = getTaskNodeById(getDiagram(),
                                                             FILLED_ONE_INCOME_TOP_LEVEL_TASK_MVEL_ID,
                                                             ONE_INCOME_EDGE,
                                                             HAS_OUTCOME_EDGE);
         assertGeneralSet(filledTopLevelTaskMvel.getGeneral(), TASK_NAME_MVEL, TASK_DOCUMENTATION_MVEL);
-        assertScriptTaskExecutionSet(filledTopLevelTaskMvel.getExecutionSet(), TASK_SCRIPT_MVEL, TASK_SCRIPT_MVEL_LANGUAGE, IS_ASYNC);
+        assertScriptTaskExecutionSet(filledTopLevelTaskMvel.getExecutionSet(),
+                                     TASK_SCRIPT_MVEL,
+                                     TASK_SCRIPT_MVEL_LANGUAGE,
+                                     IS_ASYNC,
+                                     IS_ADHOC_AUTOSTART);
     }
 
     @Test
@@ -233,7 +279,11 @@ public class ScriptTaskTest extends Task<ScriptTask> {
                                                         ONE_INCOME_EDGE,
                                                         HAS_OUTCOME_EDGE);
         assertGeneralSet(filledTopLevelTask.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
-        assertScriptTaskExecutionSet(filledTopLevelTask.getExecutionSet(), TASK_SCRIPT_DEFAULT_VALUE, TASK_SCRIPT_JAVA_LANGUAGE, IS_NOT_ASYNC);
+        assertScriptTaskExecutionSet(filledTopLevelTask.getExecutionSet(),
+                                     TASK_SCRIPT_DEFAULT_VALUE,
+                                     TASK_SCRIPT_JAVA_LANGUAGE,
+                                     IS_NOT_ASYNC,
+                                     IS_NOT_ADHOC_AUTOSTART);
     }
 
     @Test
@@ -246,7 +296,11 @@ public class ScriptTaskTest extends Task<ScriptTask> {
                                                                    ONE_INCOME_EDGE,
                                                                    HAS_OUTCOME_EDGE);
         assertGeneralSet(filledSubprocessLevelTaskJava.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
-        assertScriptTaskExecutionSet(filledSubprocessLevelTaskJava.getExecutionSet(), TASK_SCRIPT_DEFAULT_VALUE, TASK_SCRIPT_JAVA_LANGUAGE, IS_NOT_ASYNC);
+        assertScriptTaskExecutionSet(filledSubprocessLevelTaskJava.getExecutionSet(),
+                                     TASK_SCRIPT_DEFAULT_VALUE,
+                                     TASK_SCRIPT_JAVA_LANGUAGE,
+                                     IS_NOT_ASYNC,
+                                     IS_NOT_ADHOC_AUTOSTART);
     }
 
     @Test
@@ -271,21 +325,33 @@ public class ScriptTaskTest extends Task<ScriptTask> {
                                                                    ONE_INCOME_EDGE,
                                                                    HAS_OUTCOME_EDGE);
         assertGeneralSet(filledSubprocessLevelTaskJava.getGeneral(), TASK_NAME_JAVA, TASK_DOCUMENTATION_JAVA);
-        assertScriptTaskExecutionSet(filledSubprocessLevelTaskJava.getExecutionSet(), TASK_SCRIPT_JAVA, TASK_SCRIPT_JAVA_LANGUAGE, IS_ASYNC);
+        assertScriptTaskExecutionSet(filledSubprocessLevelTaskJava.getExecutionSet(),
+                                     TASK_SCRIPT_JAVA,
+                                     TASK_SCRIPT_JAVA_LANGUAGE,
+                                     IS_ASYNC,
+                                     IS_ADHOC_AUTOSTART);
 
         ScriptTask filledSubprocessLevelTaskJavascript = getTaskNodeById(getDiagram(),
                                                                          FILLED_ONE_INCOME_SUBPROCESS_LEVEL_TASK_JAVASCRIPT_ID,
                                                                          ONE_INCOME_EDGE,
                                                                          HAS_OUTCOME_EDGE);
         assertGeneralSet(filledSubprocessLevelTaskJavascript.getGeneral(), TASK_NAME_JAVASCRIPT, TASK_DOCUMENTATION_JAVASCRIPT);
-        assertScriptTaskExecutionSet(filledSubprocessLevelTaskJavascript.getExecutionSet(), TASK_SCRIPT_JAVASCRIPT, TASK_SCRIPT_JAVASCRIPT_LANGUAGE, IS_ASYNC);
+        assertScriptTaskExecutionSet(filledSubprocessLevelTaskJavascript.getExecutionSet(),
+                                     TASK_SCRIPT_JAVASCRIPT,
+                                     TASK_SCRIPT_JAVASCRIPT_LANGUAGE,
+                                     IS_ASYNC,
+                                     IS_ADHOC_AUTOSTART);
 
         ScriptTask filledSubprocessLevelTaskMvel = getTaskNodeById(getDiagram(),
                                                                    FILLED_ONE_INCOME_SUBPROCESS_LEVEL_TASK_MVEL_ID,
                                                                    ONE_INCOME_EDGE,
                                                                    HAS_OUTCOME_EDGE);
         assertGeneralSet(filledSubprocessLevelTaskMvel.getGeneral(), TASK_NAME_MVEL, TASK_DOCUMENTATION_MVEL);
-        assertScriptTaskExecutionSet(filledSubprocessLevelTaskMvel.getExecutionSet(), TASK_SCRIPT_MVEL, TASK_SCRIPT_MVEL_LANGUAGE, IS_ASYNC);
+        assertScriptTaskExecutionSet(filledSubprocessLevelTaskMvel.getExecutionSet(),
+                                     TASK_SCRIPT_MVEL,
+                                     TASK_SCRIPT_MVEL_LANGUAGE,
+                                     IS_ASYNC,
+                                     IS_ADHOC_AUTOSTART);
     }
 
     @Test
@@ -310,21 +376,33 @@ public class ScriptTaskTest extends Task<ScriptTask> {
                                                             TWO_INCOME_EDGES,
                                                             HAS_OUTCOME_EDGE);
         assertGeneralSet(filledTopLevelTaskJava.getGeneral(), TASK_NAME_JAVA, TASK_DOCUMENTATION_JAVA);
-        assertScriptTaskExecutionSet(filledTopLevelTaskJava.getExecutionSet(), TASK_SCRIPT_JAVA, TASK_SCRIPT_JAVA_LANGUAGE, IS_ASYNC);
+        assertScriptTaskExecutionSet(filledTopLevelTaskJava.getExecutionSet(),
+                                     TASK_SCRIPT_JAVA,
+                                     TASK_SCRIPT_JAVA_LANGUAGE,
+                                     IS_ASYNC,
+                                     IS_ADHOC_AUTOSTART);
 
         ScriptTask filledTopLevelTaskJavascript = getTaskNodeById(getDiagram(),
                                                                   FILLED_TWO_INCOMES_TOP_LEVEL_TASK_JAVASCRIPT_ID,
                                                                   TWO_INCOME_EDGES,
                                                                   HAS_OUTCOME_EDGE);
         assertGeneralSet(filledTopLevelTaskJavascript.getGeneral(), TASK_NAME_JAVASCRIPT, TASK_DOCUMENTATION_JAVASCRIPT);
-        assertScriptTaskExecutionSet(filledTopLevelTaskJavascript.getExecutionSet(), TASK_SCRIPT_JAVASCRIPT, TASK_SCRIPT_JAVASCRIPT_LANGUAGE, IS_ASYNC);
+        assertScriptTaskExecutionSet(filledTopLevelTaskJavascript.getExecutionSet(),
+                                     TASK_SCRIPT_JAVASCRIPT,
+                                     TASK_SCRIPT_JAVASCRIPT_LANGUAGE,
+                                     IS_ASYNC,
+                                     IS_ADHOC_AUTOSTART);
 
         ScriptTask filledTopLevelTaskMvel = getTaskNodeById(getDiagram(),
                                                             FILLED_TWO_INCOMES_TOP_LEVEL_TASK_MVEL_ID,
                                                             TWO_INCOME_EDGES,
                                                             HAS_OUTCOME_EDGE);
         assertGeneralSet(filledTopLevelTaskMvel.getGeneral(), TASK_NAME_MVEL, TASK_DOCUMENTATION_MVEL);
-        assertScriptTaskExecutionSet(filledTopLevelTaskMvel.getExecutionSet(), TASK_SCRIPT_MVEL, TASK_SCRIPT_MVEL_LANGUAGE, IS_ASYNC);
+        assertScriptTaskExecutionSet(filledTopLevelTaskMvel.getExecutionSet(),
+                                     TASK_SCRIPT_MVEL,
+                                     TASK_SCRIPT_MVEL_LANGUAGE,
+                                     IS_ASYNC,
+                                     IS_ADHOC_AUTOSTART);
     }
 
     @Test
@@ -337,7 +415,11 @@ public class ScriptTaskTest extends Task<ScriptTask> {
                                                         TWO_INCOME_EDGES,
                                                         HAS_OUTCOME_EDGE);
         assertGeneralSet(filledTopLevelTask.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
-        assertScriptTaskExecutionSet(filledTopLevelTask.getExecutionSet(), TASK_SCRIPT_DEFAULT_VALUE, TASK_SCRIPT_JAVA_LANGUAGE, IS_NOT_ASYNC);
+        assertScriptTaskExecutionSet(filledTopLevelTask.getExecutionSet(),
+                                     TASK_SCRIPT_DEFAULT_VALUE,
+                                     TASK_SCRIPT_JAVA_LANGUAGE,
+                                     IS_NOT_ASYNC,
+                                     IS_NOT_ADHOC_AUTOSTART);
     }
 
     @Test
@@ -350,7 +432,11 @@ public class ScriptTaskTest extends Task<ScriptTask> {
                                                                    TWO_INCOME_EDGES,
                                                                    HAS_OUTCOME_EDGE);
         assertGeneralSet(filledSubprocessLevelTaskJava.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
-        assertScriptTaskExecutionSet(filledSubprocessLevelTaskJava.getExecutionSet(), TASK_SCRIPT_DEFAULT_VALUE, TASK_SCRIPT_JAVA_LANGUAGE, IS_NOT_ASYNC);
+        assertScriptTaskExecutionSet(filledSubprocessLevelTaskJava.getExecutionSet(),
+                                     TASK_SCRIPT_DEFAULT_VALUE,
+                                     TASK_SCRIPT_JAVA_LANGUAGE,
+                                     IS_NOT_ASYNC,
+                                     IS_NOT_ADHOC_AUTOSTART);
     }
 
     @Test
@@ -375,21 +461,33 @@ public class ScriptTaskTest extends Task<ScriptTask> {
                                                                    TWO_INCOME_EDGES,
                                                                    HAS_OUTCOME_EDGE);
         assertGeneralSet(filledSubprocessLevelTaskJava.getGeneral(), TASK_NAME_JAVA, TASK_DOCUMENTATION_JAVA);
-        assertScriptTaskExecutionSet(filledSubprocessLevelTaskJava.getExecutionSet(), TASK_SCRIPT_JAVA, TASK_SCRIPT_JAVA_LANGUAGE, IS_ASYNC);
+        assertScriptTaskExecutionSet(filledSubprocessLevelTaskJava.getExecutionSet(),
+                                     TASK_SCRIPT_JAVA,
+                                     TASK_SCRIPT_JAVA_LANGUAGE,
+                                     IS_ASYNC,
+                                     IS_ADHOC_AUTOSTART);
 
         ScriptTask filledSubprocessLevelTaskJavascript = getTaskNodeById(getDiagram(),
                                                                          FILLED_TWO_INCOMES_SUBPROCESS_LEVEL_TASK_JAVASCRIPT_ID,
                                                                          TWO_INCOME_EDGES,
                                                                          HAS_OUTCOME_EDGE);
         assertGeneralSet(filledSubprocessLevelTaskJavascript.getGeneral(), TASK_NAME_JAVASCRIPT, TASK_DOCUMENTATION_JAVASCRIPT);
-        assertScriptTaskExecutionSet(filledSubprocessLevelTaskJavascript.getExecutionSet(), TASK_SCRIPT_JAVASCRIPT, TASK_SCRIPT_JAVASCRIPT_LANGUAGE, IS_ASYNC);
+        assertScriptTaskExecutionSet(filledSubprocessLevelTaskJavascript.getExecutionSet(),
+                                     TASK_SCRIPT_JAVASCRIPT,
+                                     TASK_SCRIPT_JAVASCRIPT_LANGUAGE,
+                                     IS_ASYNC,
+                                     IS_ADHOC_AUTOSTART);
 
         ScriptTask filledSubprocessLevelTaskMvel = getTaskNodeById(getDiagram(),
                                                                    FILLED_TWO_INCOMES_SUBPROCESS_LEVEL_TASK_MVEL_ID,
                                                                    TWO_INCOME_EDGES,
                                                                    HAS_OUTCOME_EDGE);
         assertGeneralSet(filledSubprocessLevelTaskMvel.getGeneral(), TASK_NAME_MVEL, TASK_DOCUMENTATION_MVEL);
-        assertScriptTaskExecutionSet(filledSubprocessLevelTaskMvel.getExecutionSet(), TASK_SCRIPT_MVEL, TASK_SCRIPT_MVEL_LANGUAGE, IS_ASYNC);
+        assertScriptTaskExecutionSet(filledSubprocessLevelTaskMvel.getExecutionSet(),
+                                     TASK_SCRIPT_MVEL,
+                                     TASK_SCRIPT_MVEL_LANGUAGE,
+                                     IS_ASYNC,
+                                     IS_ADHOC_AUTOSTART);
     }
 
     @Override
@@ -556,14 +654,20 @@ public class ScriptTaskTest extends Task<ScriptTask> {
         return EMPTY_TWO_INCOMES_SUBPROCESS_LEVEL_TASK_ID;
     }
 
-    private void assertScriptTaskExecutionSet(ScriptTaskExecutionSet executionSet, String script, String scriptLanguage, boolean isAsync) {
+    private void assertScriptTaskExecutionSet(ScriptTaskExecutionSet executionSet,
+                                              String script,
+                                              String scriptLanguage,
+                                              boolean isAsync,
+                                              boolean isAdHocAutostart) {
         assertNotNull(executionSet);
         assertNotNull(executionSet.getScript());
         assertNotNull(executionSet.getScript().getValue());
         assertNotNull(executionSet.getIsAsync());
+        assertNotNull(executionSet.getAdHocAutostart());
 
         assertEquals(script, executionSet.getScript().getValue().getScript());
         assertEquals(scriptLanguage, executionSet.getScript().getValue().getLanguage());
         assertEquals(isAsync, executionSet.getIsAsync().getValue());
+        assertEquals(isAdHocAutostart, executionSet.getIsAsync().getValue());
     }
 }

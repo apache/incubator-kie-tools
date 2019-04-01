@@ -98,7 +98,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
-
 import static org.kie.workbench.common.stunner.core.util.EqualsAndHashCodeTestUtils.TestCaseBuilder;
 
 public class HashCodeAndEqualityTest {
@@ -1345,10 +1344,12 @@ public class HashCodeAndEqualityTest {
                              new ScriptTaskExecutionSet())
 
                 .addTrueCase(new ScriptTaskExecutionSet(new Script(),
-                                                        new IsAsync()),
+                                                        new IsAsync(),
+                                                        new AdHocAutostart()),
 
                              new ScriptTaskExecutionSet(new Script(),
-                                                        new IsAsync()))
+                                                        new IsAsync(),
+                                                        new AdHocAutostart()))
                 .test();
     }
 
