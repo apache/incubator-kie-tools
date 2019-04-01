@@ -17,7 +17,10 @@
 package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.eclipse.bpmn2.ConditionalEventDefinition;
 import org.eclipse.bpmn2.Event;
@@ -31,7 +34,6 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
 import org.kie.workbench.common.stunner.bpmn.definition.property.common.ConditionExpression;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.AssignmentsInfo;
-import org.kie.workbench.common.stunner.bpmn.definition.property.event.timer.TimerSettings;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.timer.TimerSettingsValue;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationAttributeSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeValue;
@@ -44,19 +46,10 @@ public abstract class EventPropertyReader extends FlowElementPropertyReader {
     static final double HEIGHT = 56d;
 
     private final DefinitionResolver definitionResolver;
-    private String signalRefId = null;
 
-    EventPropertyReader(Event element, BPMNDiagram diagram, DefinitionResolver definitionResolver, String eventDefinition) {
+    EventPropertyReader(Event element, BPMNDiagram diagram, DefinitionResolver definitionResolver) {
         super(element, diagram, definitionResolver.getShape(element.getId()), definitionResolver.getResolutionFactor());
         this.definitionResolver = definitionResolver;
-        this.signalRefId = eventDefinition;
-    }
-
-    static String getSignalRefId(List<EventDefinition> eventDefinitions) {
-        if (eventDefinitions.size() == 1 && eventDefinitions.get(0) instanceof SignalEventDefinition) {
-            return ((SignalEventDefinition) eventDefinitions.get(0)).getSignalRef();
-        }
-        return null;
     }
 
     @Override
@@ -70,10 +63,12 @@ public abstract class EventPropertyReader extends FlowElementPropertyReader {
         return CustomElement.scope.of(element).get();
     }
 
+    public abstract List<EventDefinition> getEventDefinitions();
+
     public abstract AssignmentsInfo getAssignmentsInfo();
 
-    public TimerSettingsValue getTimerSettings(TimerEventDefinition eventDefinition) {
-        TimerSettingsValue timerSettingsValue = new TimerSettings().getValue();
+    public static TimerSettingsValue getTimerSettings(TimerEventDefinition eventDefinition) {
+        TimerSettingsValue timerSettingsValue = new TimerSettingsValue();
         toFormalExpression(eventDefinition.getTimeCycle()).ifPresent(timeCycle -> {
             timerSettingsValue.setTimeCycle(timeCycle.getBody());
             timerSettingsValue.setTimeCycleLanguage(timeCycle.getLanguage());
@@ -89,7 +84,7 @@ public abstract class EventPropertyReader extends FlowElementPropertyReader {
         return timerSettingsValue;
     }
 
-    private Optional<FormalExpression> toFormalExpression(Expression e) {
+    private static Optional<FormalExpression> toFormalExpression(Expression e) {
         if (e instanceof FormalExpression) {
             return Optional.of((FormalExpression) e);
         } else {
@@ -98,10 +93,12 @@ public abstract class EventPropertyReader extends FlowElementPropertyReader {
     }
 
     public String getSignalRef() {
-        if (signalRefId == null) {
-            return "";
+        List<EventDefinition> eventDefinitions = getEventDefinitions();
+        if (eventDefinitions.size() == 1 && eventDefinitions.get(0) instanceof SignalEventDefinition) {
+            String signalRefId = ((SignalEventDefinition) eventDefinitions.get(0)).getSignalRef();
+            return signalRefId != null ? definitionResolver.resolveSignalName(signalRefId) : "";
         }
-        return definitionResolver.resolveSignalName(signalRefId);
+        return "";
     }
 
     public SimulationAttributeSet getSimulationSet() {
@@ -110,13 +107,25 @@ public abstract class EventPropertyReader extends FlowElementPropertyReader {
                 .orElse(new SimulationAttributeSet());
     }
 
-    public ConditionExpression getConditionExpression(ConditionalEventDefinition conditionalEvent) {
-        FormalExpression formalExpression = (FormalExpression) conditionalEvent.getCondition();
-        if (formalExpression == null) {
-            return null;
+    public static ConditionExpression getConditionExpression(ConditionalEventDefinition conditionalEvent) {
+        if (conditionalEvent.getCondition() instanceof FormalExpression) {
+            FormalExpression formalExpression = (FormalExpression) conditionalEvent.getCondition();
+            String language = Scripts.scriptLanguageFromUri(formalExpression.getLanguage(), Scripts.LANGUAGE.DROOLS.language());
+            String script = formalExpression.getBody();
+            return new ConditionExpression(new ScriptTypeValue(language, script));
+        } else {
+            return new ConditionExpression(new ScriptTypeValue(Scripts.LANGUAGE.DROOLS.language(), ""));
         }
-        String language = Scripts.scriptLanguageFromUri(formalExpression.getLanguage(), Scripts.LANGUAGE.DROOLS.language());
-        String script = formalExpression.getBody();
-        return new ConditionExpression(new ScriptTypeValue(language, script));
+    }
+
+    protected static List<EventDefinition> combineEventDefinitions(List<EventDefinition> eventDefinitions, List<EventDefinition> eventDefinitionRefs) {
+        //combine the event definitions by filtering the eventDefinitionRefs that points to nowhere for avoiding edge
+        //cases detected when importing bpmn files generated in ARIS (https://issues.jboss.org/browse/JBPM-6758).
+        //Stunner doesn't generate eventDefinitionRefs so this filtering can't introduce issues in Stunner.
+        return Stream.concat(eventDefinitions.stream(),
+                             eventDefinitionRefs.stream()
+                                     .filter(Objects::nonNull)
+                                     .filter(eventDefinition -> Objects.nonNull(eventDefinition.getId())))
+                .collect(Collectors.toList());
     }
 }

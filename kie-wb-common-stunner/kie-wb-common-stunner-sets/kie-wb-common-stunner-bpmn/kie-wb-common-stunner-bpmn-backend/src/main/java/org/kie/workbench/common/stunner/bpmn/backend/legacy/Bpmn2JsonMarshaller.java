@@ -1043,10 +1043,10 @@ public class Bpmn2JsonMarshaller {
         String language = null;
         if (scriptTask.getScriptFormat() != null && !scriptTask.getScriptFormat().isEmpty()) {
             language = Utils.getScriptLanguage(scriptTask.getScriptFormat());
-            if (language == null) {
-                // default to java
-                language = "java";
-            }
+        }
+        if (language == null || language.isEmpty()) {
+            // default to java
+            language = "java";
         }
         properties.put("script",
                        new ScriptTypeTypeSerializer().serialize(new ScriptTypeValue(language,

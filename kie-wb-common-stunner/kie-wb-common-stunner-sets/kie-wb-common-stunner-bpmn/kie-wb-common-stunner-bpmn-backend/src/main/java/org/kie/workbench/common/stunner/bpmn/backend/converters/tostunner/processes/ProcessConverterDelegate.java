@@ -16,12 +16,15 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.processes;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.FlowElement;
+import org.eclipse.bpmn2.Lane;
 import org.eclipse.bpmn2.LaneSet;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.Result;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.TypedFactoryManager;
@@ -95,15 +98,27 @@ final class ProcessConverterDelegate {
     }
 
     private void convertLaneSets(List<LaneSet> laneSets, Map<String, BpmnNode> freeFloatingNodes, BpmnNode firstDiagramNode) {
-        laneSets.stream()
-                .flatMap(laneSet -> laneSet.getLanes().stream())
-                .forEach(lane -> {
-                    BpmnNode laneNode = converterFactory.laneConverter().convert(lane);
-                    laneNode.setParent(firstDiagramNode);
+        laneSets.forEach(laneSet -> convertLaneSet(laneSet, new ArrayList<>(), freeFloatingNodes, firstDiagramNode));
+    }
 
-                    lane.getFlowNodeRefs().forEach(node -> {
-                        freeFloatingNodes.get(node.getId()).setParent(laneNode);
-                    });
-                });
+    private void convertLane(Lane lane, List<Lane> parents, Map<String, BpmnNode> freeFloatingNodes, BpmnNode firstDiagramNode) {
+        if (lane.getChildLaneSet() != null) {
+            parents.add(lane);
+            convertLaneSet(lane.getChildLaneSet(), parents, freeFloatingNodes, firstDiagramNode);
+            parents.removeIf(parent -> Objects.equals(parent.getId(), lane.getId()));
+        } else {
+            BpmnNode laneNode;
+            if (!parents.isEmpty() && lane != parents.get(0)) {
+                laneNode = converterFactory.laneConverter().convert(lane, parents.get(0));
+            } else {
+                laneNode = converterFactory.laneConverter().convert(lane);
+            }
+            laneNode.setParent(firstDiagramNode);
+            lane.getFlowNodeRefs().forEach(node -> freeFloatingNodes.get(node.getId()).setParent(laneNode));
+        }
+    }
+
+    private void convertLaneSet(LaneSet laneSet, List<Lane> parents, Map<String, BpmnNode> freeFloatingNodes, BpmnNode firstDiagramNode) {
+        laneSet.getLanes().forEach(lane -> convertLane(lane, parents, freeFloatingNodes, firstDiagramNode));
     }
 }

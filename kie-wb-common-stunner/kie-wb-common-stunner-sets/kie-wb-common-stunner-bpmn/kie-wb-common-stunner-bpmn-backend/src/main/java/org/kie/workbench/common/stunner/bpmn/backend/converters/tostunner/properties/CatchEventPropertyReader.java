@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -31,7 +30,7 @@ public class CatchEventPropertyReader extends EventPropertyReader {
     private final CatchEvent catchEvent;
 
     public CatchEventPropertyReader(CatchEvent catchEvent, BPMNDiagram diagram, DefinitionResolver definitionResolver) {
-        super(catchEvent, diagram, definitionResolver, EventPropertyReader.getSignalRefId(catchEvent.getEventDefinitions()));
+        super(catchEvent, diagram, definitionResolver);
         this.catchEvent = catchEvent;
     }
 
@@ -50,12 +49,8 @@ public class CatchEventPropertyReader extends EventPropertyReader {
                 false);
     }
 
+    @Override
     public List<EventDefinition> getEventDefinitions() {
-        List<EventDefinition> eventDefinitions = catchEvent.getEventDefinitions();
-        List<EventDefinition> eventDefinitionRefs = catchEvent.getEventDefinitionRefs();
-        ArrayList<EventDefinition> result = new ArrayList<>();
-        result.addAll(eventDefinitions);
-        result.addAll(eventDefinitionRefs);
-        return result;
+        return combineEventDefinitions(catchEvent.getEventDefinitions(), catchEvent.getEventDefinitionRefs());
     }
 }

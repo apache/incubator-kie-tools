@@ -32,11 +32,15 @@ public class AdHocSubProcessPropertyReader extends SubProcessPropertyReader {
     }
 
     public ScriptTypeValue getAdHocCompletionCondition() {
-        FormalExpression completionCondition = (FormalExpression) process.getCompletionCondition();
-        return new ScriptTypeValue(
-                Scripts.scriptLanguageFromUri(completionCondition.getLanguage()),
-                completionCondition.getBody()
-        );
+        if (process.getCompletionCondition() instanceof FormalExpression) {
+            FormalExpression completionCondition = (FormalExpression) process.getCompletionCondition();
+            return new ScriptTypeValue(
+                    Scripts.scriptLanguageFromUri(completionCondition.getLanguage(), Scripts.LANGUAGE.MVEL.language()),
+                    completionCondition.getBody()
+            );
+        } else {
+            return new ScriptTypeValue(Scripts.LANGUAGE.MVEL.language(), "autocomplete");
+        }
     }
 
     public String getAdHocOrdering() {

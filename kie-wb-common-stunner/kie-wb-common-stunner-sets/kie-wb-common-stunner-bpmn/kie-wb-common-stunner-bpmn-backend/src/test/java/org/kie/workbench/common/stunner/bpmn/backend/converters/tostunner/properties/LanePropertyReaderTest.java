@@ -16,17 +16,73 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties;
 
+import java.util.List;
+
+import org.eclipse.bpmn2.ExtensionAttributeValue;
 import org.eclipse.bpmn2.Lane;
+import org.eclipse.bpmn2.di.BPMNDiagram;
+import org.eclipse.bpmn2.di.BPMNShape;
+import org.jboss.drools.DroolsPackage;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.TestDefinitionsWriter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.LanePropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.PropertyWriterFactory;
+import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.RectangleDimensionsSet;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.kie.workbench.common.stunner.bpmn.backend.converters.TestUtils.assertBounds;
+import static org.kie.workbench.common.stunner.bpmn.backend.converters.TestUtils.mockBounds;
+import static org.kie.workbench.common.stunner.bpmn.backend.converters.TestUtils.mockExtensionValues;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpmn2;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.Scripts.asCData;
+import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public class LanePropertyReaderTest {
+
+    private static final String NAME = "NAME";
+    private static final String METADATA_ELEMENT_NAME = "elementname";
+    private static final float X = 5;
+    private static final float Y = 6f;
+    private static final float WIDTH = 7f;
+    private static final float HEIGHT = 8f;
+
+    private static final float PARENT_X = 1f;
+    private static final float PARENT_Y = 2f;
+    private static final float PARENT_WIDTH = 10f;
+    private static final float PARENT_HEIGHT = 11f;
+
+    private static double RESOLUTION_FACTOR = 1.234;
+
+    @Mock
+    private Lane lane;
+
+    @Mock
+    private BPMNDiagram diagram;
+
+    @Mock
+    private BPMNShape shape;
+
+    private org.eclipse.dd.dc.Bounds bounds;
+
+    @Mock
+    private BPMNShape parentLaneShape;
+
+    private org.eclipse.dd.dc.Bounds parentBounds;
+
+    @Before
+    public void setUp() {
+        bounds = mockBounds(X, Y, WIDTH, HEIGHT);
+        when(shape.getBounds()).thenReturn(bounds);
+        parentBounds = mockBounds(PARENT_X, PARENT_Y, PARENT_WIDTH, PARENT_HEIGHT);
+        when(parentLaneShape.getBounds()).thenReturn(parentBounds);
+    }
 
     @Test
     public void JBPM_7523_shouldPreserveNameChars() {
@@ -45,5 +101,63 @@ public class LanePropertyReaderTest {
         LanePropertyReader r = factory.of(lane);
         assertThat(r.getName()).isEqualTo(asCData(aWeirdName));
         assertThat(r.getDocumentation()).isEqualTo(asCData(aWeirdDoc));
+    }
+
+    @Test
+    public void testGetBounds() {
+        LanePropertyReader propertyReader = new LanePropertyReader(lane, diagram, shape, RESOLUTION_FACTOR);
+        Bounds result = propertyReader.getBounds();
+        assertBounds(X * RESOLUTION_FACTOR,
+                     Y * RESOLUTION_FACTOR,
+                     X * RESOLUTION_FACTOR + WIDTH * RESOLUTION_FACTOR,
+                     Y * RESOLUTION_FACTOR + HEIGHT * RESOLUTION_FACTOR,
+                     result);
+    }
+
+    @Test
+    public void testGetBoundsWithParentLaneShape() {
+        LanePropertyReader propertyReader = new LanePropertyReader(lane, diagram, shape, parentLaneShape, RESOLUTION_FACTOR);
+        Bounds result = propertyReader.getBounds();
+        assertBounds(PARENT_X * RESOLUTION_FACTOR,
+                     Y * RESOLUTION_FACTOR,
+                     PARENT_X * RESOLUTION_FACTOR + PARENT_WIDTH * RESOLUTION_FACTOR,
+                     Y * RESOLUTION_FACTOR + HEIGHT * RESOLUTION_FACTOR,
+                     result);
+    }
+
+    @Test
+    public void testGetRectangleDimensionsSet() {
+        LanePropertyReader propertyReader = new LanePropertyReader(lane, diagram, shape, RESOLUTION_FACTOR);
+        RectangleDimensionsSet dimensionsSet = propertyReader.getRectangleDimensionsSet();
+        assertRectangleDimensions(WIDTH * RESOLUTION_FACTOR, HEIGHT * RESOLUTION_FACTOR, dimensionsSet);
+    }
+
+    @Test
+    public void testGetRectangleDimensionsSetWithParentShape() {
+        LanePropertyReader propertyReader = new LanePropertyReader(lane, diagram, shape, parentLaneShape, RESOLUTION_FACTOR);
+        RectangleDimensionsSet dimensionsSet = propertyReader.getRectangleDimensionsSet();
+        assertRectangleDimensions(PARENT_WIDTH * RESOLUTION_FACTOR, HEIGHT * RESOLUTION_FACTOR, dimensionsSet);
+    }
+
+    @Test
+    public void testGetNameFromExtensionElement() {
+        List<ExtensionAttributeValue> extensionValues = mockExtensionValues(DroolsPackage.Literals.DOCUMENT_ROOT__META_DATA, METADATA_ELEMENT_NAME, NAME);
+        when(lane.getName()).thenReturn(null);
+        when(lane.getExtensionValues()).thenReturn(extensionValues);
+        LanePropertyReader propertyReader = new LanePropertyReader(lane, diagram, shape, RESOLUTION_FACTOR);
+        assertEquals(NAME, propertyReader.getName());
+    }
+
+    @Test
+    public void testGetNameFromNameValue() {
+        LanePropertyReader propertyReader = new LanePropertyReader(lane, diagram, shape, RESOLUTION_FACTOR);
+        when(lane.getExtensionValues()).thenReturn(null);
+        when(lane.getName()).thenReturn(NAME);
+        assertEquals(NAME, propertyReader.getName());
+    }
+
+    private void assertRectangleDimensions(double width, double height, RectangleDimensionsSet dimensionsSet) {
+        assertEquals(width, dimensionsSet.getWidth().getValue(), 0);
+        assertEquals(height, dimensionsSet.getHeight().getValue(), 0);
     }
 }

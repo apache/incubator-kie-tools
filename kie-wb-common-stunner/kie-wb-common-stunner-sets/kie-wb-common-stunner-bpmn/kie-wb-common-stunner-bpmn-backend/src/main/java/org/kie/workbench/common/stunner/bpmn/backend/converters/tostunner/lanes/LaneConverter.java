@@ -39,10 +39,16 @@ public class LaneConverter {
     }
 
     public BpmnNode convert(org.eclipse.bpmn2.Lane lane) {
+        return convert(lane, propertyReaderFactory.of(lane));
+    }
+
+    public BpmnNode convert(org.eclipse.bpmn2.Lane lane, org.eclipse.bpmn2.Lane parent) {
+        return convert(lane, propertyReaderFactory.of(lane, parent));
+    }
+
+    private BpmnNode convert(org.eclipse.bpmn2.Lane lane, LanePropertyReader p) {
         Node<View<Lane>, Edge> node = typedFactoryManager.newNode(lane.getId(), Lane.class);
         Lane definition = node.getContent().getDefinition();
-
-        LanePropertyReader p = propertyReaderFactory.of(lane);
 
         definition.setGeneral(new BPMNGeneralSet(
                 new Name(p.getName()),

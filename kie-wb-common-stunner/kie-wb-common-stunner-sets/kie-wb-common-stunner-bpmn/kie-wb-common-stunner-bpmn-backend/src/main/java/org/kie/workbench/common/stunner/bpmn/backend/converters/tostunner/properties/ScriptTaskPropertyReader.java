@@ -35,7 +35,7 @@ public class ScriptTaskPropertyReader extends TaskPropertyReader {
 
     public ScriptTypeValue getScript() {
         return new ScriptTypeValue(
-                Scripts.scriptLanguageFromUri(task.getScriptFormat()),
+                Scripts.scriptLanguageFromUri(task.getScriptFormat(), Scripts.LANGUAGE.JAVA.language()),
                 Optional.ofNullable(task.getScript()).orElse(null)
         );
     }

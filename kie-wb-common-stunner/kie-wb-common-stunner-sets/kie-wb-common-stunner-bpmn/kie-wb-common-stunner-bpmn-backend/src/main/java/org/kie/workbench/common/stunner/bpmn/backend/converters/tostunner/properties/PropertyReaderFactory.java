@@ -58,6 +58,10 @@ public class PropertyReaderFactory {
         return new LanePropertyReader(el, diagram, definitionResolver.getShape(el.getId()), definitionResolver.getResolutionFactor());
     }
 
+    public LanePropertyReader of(Lane el, Lane elParent) {
+        return new LanePropertyReader(el, diagram, definitionResolver.getShape(el.getId()), definitionResolver.getShape(elParent.getId()), definitionResolver.getResolutionFactor());
+    }
+
     public SequenceFlowPropertyReader of(SequenceFlow el) {
         return new SequenceFlowPropertyReader(el, diagram, definitionResolver);
     }

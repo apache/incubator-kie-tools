@@ -22,14 +22,22 @@ import org.eclipse.bpmn2.Lane;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
+import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.RectangleDimensionsSet;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 
 public class LanePropertyReader extends BasePropertyReader {
 
     private final Lane lane;
+    private final BPMNShape parentLaneShape;
 
-    public LanePropertyReader(Lane el, BPMNDiagram diagram, BPMNShape shape, double resolutionFactor) {
+    public LanePropertyReader(Lane el, BPMNDiagram diagram, BPMNShape shape, BPMNShape parentLaneShape, double resolutionFactor) {
         super(el, diagram, shape, resolutionFactor);
         this.lane = el;
+        this.parentLaneShape = parentLaneShape;
+    }
+
+    public LanePropertyReader(Lane el, BPMNDiagram diagram, BPMNShape shape, double resolutionFactor) {
+        this(el, diagram, shape, null, resolutionFactor);
     }
 
     public String getName() {
@@ -37,5 +45,29 @@ public class LanePropertyReader extends BasePropertyReader {
         return extendedName.isEmpty() ?
                 Optional.ofNullable(lane.getName()).orElse("")
                 : extendedName;
+    }
+
+    @Override
+    protected Bounds computeBounds(org.eclipse.dd.dc.Bounds bounds) {
+        if (shape == null || parentLaneShape == null) {
+            return super.computeBounds(bounds);
+        } else {
+            org.eclipse.dd.dc.Bounds parentLaneBounds = parentLaneShape.getBounds();
+            final double x = parentLaneBounds.getX() * resolutionFactor;
+            final double y = bounds.getY() * resolutionFactor;
+            final double width = parentLaneBounds.getWidth() * resolutionFactor;
+            final double height = bounds.getHeight() * resolutionFactor;
+            return Bounds.create(x, y, x + width, y + height);
+        }
+    }
+
+    @Override
+    public RectangleDimensionsSet getRectangleDimensionsSet() {
+        if (shape == null || parentLaneShape == null) {
+            return super.getRectangleDimensionsSet();
+        }
+        org.eclipse.dd.dc.Bounds bounds = shape.getBounds();
+        return new RectangleDimensionsSet(parentLaneShape.getBounds().getWidth() * resolutionFactor,
+                                          bounds.getHeight() * resolutionFactor);
     }
 }

@@ -78,6 +78,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEvent
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventThrowing;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.Lane;
 import org.kie.workbench.common.stunner.bpmn.definition.MultipleInstanceSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
 import org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess;
@@ -228,23 +229,27 @@ public class BPMNDirectDiagramMarshallerTest {
     private static final String BPMN_EVENT_DEFINITION_REF = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/eventDefinitionRef.bpmn";
     private static final String BPMN_SERVICE_TASKS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/serviceTasks.bpmn";
 
+    private static final String BPMN_ARIS_LANES_1 = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/aris/ARIS_LANES_1.bpmn";
+    private static final String BPMN_ARIS_LANES_2 = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/aris/ARIS_LANES_2.bpmn";
+    private static final String BPMN_ARIS_LANES_3 = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/aris/ARIS_LANES_3.bpmn";
+
     private static final String NEW_LINE = System.lineSeparator();
 
     @Mock
-    DefinitionManager definitionManager;
+    private DefinitionManager definitionManager;
 
     @Mock
-    AdapterManager adapterManager;
+    private AdapterManager adapterManager;
 
     @Mock
-    AdapterRegistry adapterRegistry;
+    private AdapterRegistry adapterRegistry;
 
     @Mock
-    RuleManager rulesManager;
+    private RuleManager rulesManager;
 
-    BackendFactoryManager applicationFactoryManager;
+    private BackendFactoryManager applicationFactoryManager;
 
-    WorkItemDefinitionRegistry workItemDefinitionMockRegistry;
+    private WorkItemDefinitionRegistry workItemDefinitionMockRegistry;
 
     private BPMNDirectDiagramMarshaller tested;
 
@@ -258,7 +263,7 @@ public class BPMNDirectDiagramMarshallerTest {
 
     @Before
     @SuppressWarnings("unchecked")
-    public void setup() throws Exception {
+    public void setup() {
         // Work Items.
         workItemDefinitionMockRegistry = new WorkItemDefinitionMockRegistry();
 
@@ -2729,7 +2734,7 @@ public class BPMNDirectDiagramMarshallerTest {
     public void testMarshallReusableSubprocessMI() throws Exception {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_REUSABLE_SUBPROCESS_MI);
         String result = tested.marshall(diagram);
-        assertDiagram(result, 1,3, 2);
+        assertDiagram(result, 1, 3, 2);
         assertTrue(result.contains("<bpmn2:callActivity id=\"_CACC5C21-CE79-4445-9411-BE8C7A75E860\""));
         assertTrue(result.contains("name=\"TheReusableSubProcess\" calledElement=\"test.SubProcess\">"));
 
@@ -3394,6 +3399,83 @@ public class BPMNDirectDiagramMarshallerTest {
                      log.getGeneral().getName().getValue());
         assertEquals(WorkItemDefinitionMockRegistry.LOG.getDocumentation(),
                      log.getGeneral().getDocumentation().getValue());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testUnmarshall_ARIS_LANES_1() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_ARIS_LANES_1);
+        Node<? extends Definition, ?> bpmnDiagramNode = diagram.getGraph().getNode("Definitions_ID-ef3bd1b1-35d2-11e9-21c1-02b28450efee");
+        assertNotNull(bpmnDiagramNode);
+        BPMNDiagramImpl bpmnDiagram = (BPMNDiagramImpl) bpmnDiagramNode.getContent().getDefinition();
+        assertDiagram(diagram, 7);
+        assertEquals("ARIS_LANES_1", bpmnDiagram.getDiagramSet().getName().getValue());
+        //Lane1 contains Task1
+        assertExpectedLane(diagram, "ID-fba59d50-35d2-11e9-21c1-02b28450efee", "Lane1", bpmnDiagramNode, "ID-fba59d56-35d2-11e9-21c1-02b28450efee");
+        //Lane2 contains Task2
+        assertExpectedLane(diagram, "ID-fba59d52-35d2-11e9-21c1-02b28450efee", "Lane2", bpmnDiagramNode, "ID-fba59d59-35d2-11e9-21c1-02b28450efee");
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testUnmarshall_ARIS_LANES_2() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_ARIS_LANES_2);
+        Node<? extends Definition, ?> bpmnDiagramNode = diagram.getGraph().getNode("Definitions_ID-4c9756c0-35da-11e9-21c1-02b28450efee");
+        assertNotNull(bpmnDiagramNode);
+        BPMNDiagramImpl bpmnDiagram = (BPMNDiagramImpl) bpmnDiagramNode.getContent().getDefinition();
+        assertDiagram(diagram, 12);
+        assertEquals("ARIS_LANES_2", bpmnDiagram.getDiagramSet().getName().getValue());
+        //Lane1.1 contains Task3 and Task4
+        assertExpectedLane(diagram, "ID-57e50405-35da-11e9-21c1-02b28450efee", "Lane1.1", bpmnDiagramNode, "ID-57e5041a-35da-11e9-21c1-02b28450efee", "ID-57e5041d-35da-11e9-21c1-02b28450efee");
+        //Lane1.2 contains Task1 and Task2
+        assertExpectedLane(diagram, "ID-57e50402-35da-11e9-21c1-02b28450efee", "Lane1.2", bpmnDiagramNode, "ID-57e50414-35da-11e9-21c1-02b28450efee", "ID-57e50417-35da-11e9-21c1-02b28450efee");
+        //Lane2.1 contains no tasks
+        assertExpectedLane(diagram, "ID-57e5040e-35da-11e9-21c1-02b28450efee", "Lane2.1", bpmnDiagramNode);
+        //Lane2.2 contains Task5
+        assertExpectedLane(diagram, "ID-57e5040b-35da-11e9-21c1-02b28450efee", "Lane2.2", bpmnDiagramNode, "ID-57e50420-35da-11e9-21c1-02b28450efee");
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testUnmarshall_ARIS_LANES_3() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_ARIS_LANES_3);
+        Node<? extends Definition, ?> bpmnDiagramNode = diagram.getGraph().getNode("Definitions_ID-3cad84c1-35dd-11e9-21c1-02b28450efee");
+        assertNotNull(bpmnDiagramNode);
+        BPMNDiagramImpl bpmnDiagram = (BPMNDiagramImpl) bpmnDiagramNode.getContent().getDefinition();
+        assertDiagram(diagram, 17);
+        assertEquals("ARIS_LANES_3", bpmnDiagram.getDiagramSet().getName().getValue());
+        //LaneA1.1 contains Task4
+        assertExpectedLane(diagram, "ID-43452405-35dd-11e9-21c1-02b28450efee", "LaneA1.1", bpmnDiagramNode, "ID-43452430-35dd-11e9-21c1-02b28450efee");
+        //LaneA1.2.2 contains Task1
+        assertExpectedLane(diagram, "ID-43452409-35dd-11e9-21c1-02b28450efee", "LaneA1.2.2", bpmnDiagramNode, "ID-43452424-35dd-11e9-21c1-02b28450efee");
+        //LaneA1.2.1.1 contains Task3
+        assertExpectedLane(diagram, "ID-43452410-35dd-11e9-21c1-02b28450efee", "LaneA1.2.1.1", bpmnDiagramNode, "ID-4345242d-35dd-11e9-21c1-02b28450efee");
+        //LaneA1.2.1.2 contains Task2
+        assertExpectedLane(diagram, "ID-43452413-35dd-11e9-21c1-02b28450efee", "LaneA1.2.1.2", bpmnDiagramNode, "ID-4345242a-35dd-11e9-21c1-02b28450efee");
+        //LaneA5 contains Task5
+        assertExpectedLane(diagram, "ID-43452417-35dd-11e9-21c1-02b28450efee", "LaneA2", bpmnDiagramNode, "ID-69882521-35df-11e9-21c1-02b28450efee");
+        //LaneA3.1 contains Task7
+        assertExpectedLane(diagram, "ID-4345241e-35dd-11e9-21c1-02b28450efee", "LaneA3.1", bpmnDiagramNode, "ID-69882527-35df-11e9-21c1-02b28450efee");
+        //LaneA3.2 contains Task6
+        assertExpectedLane(diagram, "ID-4345241b-35dd-11e9-21c1-02b28450efee", "LaneA3.2", bpmnDiagramNode, "ID-69882524-35df-11e9-21c1-02b28450efee");
+    }
+
+    @SuppressWarnings("unchecked")
+    private void assertExpectedLane(Diagram<Graph, Metadata> diagram, String laneId, String laneName, Node<? extends Definition, ?> parentNode, String... expectedChildrenIds) {
+        Node<? extends Definition, ?> laneNode = diagram.getGraph().getNode(laneId);
+        assertNotNull("Node: " + laneId + " was not found in diagram", laneNode);
+        assertTrue("Node: " + laneId + " is not a Lane", laneNode.getContent().getDefinition() instanceof Lane);
+        Lane lane = (Lane) laneNode.getContent().getDefinition();
+        assertEquals(laneName, lane.getGeneral().getName().getValue());
+        assertEquals(1, laneNode.getInEdges().size());
+        assertEquals(parentNode, laneNode.getInEdges().get(0).getSourceNode());
+
+        if (expectedChildrenIds == null) {
+            assertEquals(0, laneNode.getOutEdges().size());
+        } else {
+            assertEquals(expectedChildrenIds.length, laneNode.getOutEdges().size());
+            Arrays.stream(expectedChildrenIds).forEach(expectedChildrenId -> assertTrue(laneNode.getOutEdges().stream().anyMatch(outEdge -> outEdge.getTargetNode().getUUID().equals(expectedChildrenId))));
+        }
     }
 
     @Test
