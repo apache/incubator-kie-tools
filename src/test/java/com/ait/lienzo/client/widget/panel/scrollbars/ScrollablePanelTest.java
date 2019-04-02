@@ -30,6 +30,7 @@ import com.ait.lienzo.client.widget.panel.event.LienzoPanelScrollEvent;
 import com.ait.lienzo.client.widget.panel.event.LienzoPanelScrollEventHandler;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseUpHandler;
@@ -88,6 +89,12 @@ public class ScrollablePanelTest {
         Layer layer = mock(Layer.class);
         tested.set(layer);
         verify(scrollHandler, times(1)).init();
+    }
+
+    @Test
+    public void testSetCursor() {
+        tested.setCursor(Style.Cursor.HELP);
+        verify(lienzoPanel, times(1)).setCursor(eq(Style.Cursor.HELP));
     }
 
     @Test

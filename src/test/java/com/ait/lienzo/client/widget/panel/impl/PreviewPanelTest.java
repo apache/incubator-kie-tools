@@ -31,6 +31,7 @@ import com.ait.lienzo.client.widget.panel.scrollbars.ScrollablePanel;
 import com.ait.lienzo.client.widget.panel.scrollbars.ScrollablePanelHandler;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
 import org.junit.Before;
@@ -130,6 +131,12 @@ public class PreviewPanelTest
         tested.set(layer);
         verify(previewLayer, times(1)).add(eq(prim));
         verify(lienzoPanel, times(2)).add(eq(previewLayer));
+    }
+
+    @Test
+    public void testSetCursor() {
+        tested.setCursor(Style.Cursor.HELP);
+        verify(lienzoPanel, times(1)).setCursor(eq(Style.Cursor.HELP));
     }
 
     @Test

@@ -20,7 +20,6 @@ import com.ait.lienzo.client.core.event.NodeMouseDownEvent;
 import com.ait.lienzo.client.core.event.NodeMouseMoveEvent;
 import com.ait.lienzo.client.core.event.NodeMouseUpEvent;
 import com.ait.lienzo.client.core.mediator.IEventFilter;
-import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Scene;
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Point2D;
@@ -59,38 +58,6 @@ public class RestrictedMousePanMediatorTest {
     }
 
     @Test
-    public void testGetLayerViewport() {
-
-        final Layer layer = mock(Layer.class);
-        final Viewport expectedViewport = mock(Viewport.class);
-
-        doReturn(expectedViewport).when(layer).getViewport();
-        doReturn(layer).when(mediator).getLayer();
-
-        final Viewport actualViewport = mediator.getLayerViewport();
-
-        assertEquals(expectedViewport,
-                     actualViewport);
-    }
-
-    @Test
-    public void testSetCursor() {
-
-        final Viewport viewport = mock(Viewport.class);
-        final DivElement divElement = mock(DivElement.class);
-        final Style.Cursor cursor = mock(Style.Cursor.class);
-        final Style style = mock(Style.class);
-
-        doReturn(style).when(divElement).getStyle();
-        doReturn(divElement).when(viewport).getElement();
-        doReturn(viewport).when(mediator).getLayerViewport();
-
-        mediator.setCursor(cursor);
-
-        verify(style).setCursor(cursor);
-    }
-
-    @Test
     public void testCancel() throws Exception {
         final Viewport viewport = mock(Viewport.class);
         final DivElement divElement = mock(DivElement.class);
@@ -98,11 +65,8 @@ public class RestrictedMousePanMediatorTest {
 
         doReturn(style).when(divElement).getStyle();
         doReturn(divElement).when(viewport).getElement();
-        doReturn(viewport).when(mediator).getLayerViewport();
 
         mediator.cancel();
-
-        verify(style).setCursor(Style.Cursor.DEFAULT);
     }
 
     @Test
@@ -156,7 +120,6 @@ public class RestrictedMousePanMediatorTest {
 
         doReturn(element).when(viewport).getElement();
 
-        doReturn(viewport).when(mediator).getLayerViewport();
         doReturn(viewport).when(mediator).getViewport();
 
         mediator.handleEvent(downEvent);
@@ -180,7 +143,6 @@ public class RestrictedMousePanMediatorTest {
 
         doReturn(false).when(iEventFilter).isEnabled();
 
-        doReturn(viewport).when(mediator).getLayerViewport();
         doReturn(viewport).when(mediator).getViewport();
         doReturn(iEventFilter).when(mediator).getEventFilter();
 
@@ -206,7 +168,6 @@ public class RestrictedMousePanMediatorTest {
         doReturn(true).when(iEventFilter).isEnabled();
         doReturn(true).when(iEventFilter).test(Matchers.any(GwtEvent.class));
 
-        doReturn(viewport).when(mediator).getLayerViewport();
         doReturn(viewport).when(mediator).getViewport();
         doReturn(iEventFilter).when(mediator).getEventFilter();
 
@@ -232,7 +193,6 @@ public class RestrictedMousePanMediatorTest {
         doReturn(true).when(iEventFilter).isEnabled();
         doReturn(false).when(iEventFilter).test(Matchers.any(GwtEvent.class));
 
-        doReturn(viewport).when(mediator).getLayerViewport();
         doReturn(viewport).when(mediator).getViewport();
         doReturn(iEventFilter).when(mediator).getEventFilter();
 
@@ -271,7 +231,6 @@ public class RestrictedMousePanMediatorTest {
 
         doReturn(element).when(viewport).getElement();
 
-        doReturn(viewport).when(mediator).getLayerViewport();
         doReturn(true).when(mediator).isDragging();
 
         mediator.handleEvent(upEvent);
@@ -301,7 +260,6 @@ public class RestrictedMousePanMediatorTest {
         doReturn(element).when(viewport).getElement();
 
         doReturn(viewport).when(mediator).getViewport();
-        doReturn(viewport).when(mediator).getLayerViewport();
 
         mediator.onMouseDown(downEvent);
 
@@ -321,7 +279,6 @@ public class RestrictedMousePanMediatorTest {
                      point.getAllValues().get(0),
                      point.getAllValues().get(1));
 
-        verify(mediator).setCursor(Style.Cursor.MOVE);
     }
 
     @Test

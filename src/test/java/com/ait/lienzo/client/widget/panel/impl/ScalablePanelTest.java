@@ -23,6 +23,7 @@ import com.ait.lienzo.client.widget.panel.Bounds;
 import com.ait.lienzo.client.widget.panel.BoundsProvider;
 import com.ait.lienzo.client.widget.panel.LienzoPanel;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import com.google.gwt.dom.client.Style;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -90,5 +91,11 @@ public class ScalablePanelTest
         assertEquals(0d, transform.getTranslateX(), 0);
         assertEquals(0d, transform.getTranslateY(), 0);
         verify(layer, times(1)).batch();
+    }
+
+    @Test
+    public void testSetCursor() {
+        tested.setCursor(Style.Cursor.HELP);
+        verify(lienzoPanel, times(1)).setCursor(eq(Style.Cursor.HELP));
     }
 }
