@@ -42,10 +42,10 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.BaseCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasPanel;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.MediatorsControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.TextPropertyProviderFactory;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SingleSelection;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandExecutedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandUndoneEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
@@ -87,7 +87,7 @@ public class SessionPreviewImpl<S extends AbstractSession>
     private final ManagedInstance<WiresCanvas> canvases;
     private final ManagedInstance<PreviewLienzoPanel> canvasPanels;
     private final ManagedInstance<BaseCanvasHandler> canvasHandlers;
-    private final ManagedInstance<ZoomControl<AbstractCanvas>> zoomControls;
+    private final ManagedInstance<MediatorsControl<AbstractCanvas>> mediatorControls;
     private final ManagedInstance<SelectionControl<AbstractCanvasHandler, Element>> selectionControls;
     private final ManagedInstance<CanvasCommandFactory> canvasCommandFactories;
     private final ManagedInstance<CanvasCommandManager<AbstractCanvasHandler>> canvasCommandManagers;
@@ -95,7 +95,7 @@ public class SessionPreviewImpl<S extends AbstractSession>
     private WiresCanvas canvas;
     private PreviewLienzoPanel canvasPanel;
     private SessionPreviewCanvasHandlerProxy canvasHandler;
-    private ZoomControl<AbstractCanvas> zoomControl;
+    private MediatorsControl<AbstractCanvas> mediatorsControl;
     private SelectionControl<AbstractCanvasHandler, Element> selectionControl;
     private CanvasCommandFactory commandFactory;
     private CanvasCommandManager<AbstractCanvasHandler> commandManager;
@@ -111,7 +111,7 @@ public class SessionPreviewImpl<S extends AbstractSession>
                               final @Any ManagedInstance<WiresCanvas> canvases,
                               final @Any ManagedInstance<PreviewLienzoPanel> canvasPanels,
                               final @Any ManagedInstance<BaseCanvasHandler> canvasHandlers,
-                              final @Any ManagedInstance<ZoomControl<AbstractCanvas>> zoomControls,
+                              final @Any ManagedInstance<MediatorsControl<AbstractCanvas>> mediatorControls,
                               final @Any @SingleSelection ManagedInstance<SelectionControl<AbstractCanvasHandler, Element>> selectionControls,
                               final @Any ManagedInstance<CanvasCommandFactory> canvasCommandFactories,
                               final @Any ManagedInstance<CanvasCommandManager<AbstractCanvasHandler>> canvasCommandManagers,
@@ -124,7 +124,7 @@ public class SessionPreviewImpl<S extends AbstractSession>
         this.canvases = canvases;
         this.canvasPanels = canvasPanels;
         this.canvasHandlers = canvasHandlers;
-        this.zoomControls = zoomControls;
+        this.mediatorControls = mediatorControls;
         this.selectionControls = selectionControls;
         this.canvasCommandFactories = canvasCommandFactories;
         this.canvasCommandManagers = canvasCommandManagers;
@@ -138,8 +138,8 @@ public class SessionPreviewImpl<S extends AbstractSession>
                     }
 
                     @Override
-                    public <C extends Canvas> ZoomControl<C> getZoomControl() {
-                        return (ZoomControl<C>) zoomControl;
+                    public <C extends Canvas> MediatorsControl<C> getMediatorsControl() {
+                        return (MediatorsControl<C>) mediatorsControl;
                     }
 
                     @Override
@@ -193,7 +193,7 @@ public class SessionPreviewImpl<S extends AbstractSession>
                     }
                 };
         this.canvas = null;
-        this.zoomControl = null;
+        this.mediatorsControl = null;
     }
 
     public SessionPreviewImpl setCommandAllowed(final Predicate<Command<AbstractCanvasHandler, CanvasViolation>> isCommandAllowed) {
@@ -212,7 +212,7 @@ public class SessionPreviewImpl<S extends AbstractSession>
                                                              graphUtils,
                                                              shapeManager,
                                                              textPropertyProviderFactory);
-        zoomControl = InstanceUtils.lookup(zoomControls, qualifier);
+        mediatorsControl = InstanceUtils.lookup(mediatorControls, qualifier);
         selectionControl = InstanceUtils.lookup(selectionControls, qualifier);
         commandFactory = InstanceUtils.lookup(canvasCommandFactories, qualifier);
         commandManager = InstanceUtils.lookup(canvasCommandManagers, qualifier);
@@ -238,8 +238,8 @@ public class SessionPreviewImpl<S extends AbstractSession>
         canvasPanels.destroyAll();
         canvasHandlers.destroy(canvasHandler.getWrapped());
         canvasHandlers.destroyAll();
-        zoomControls.destroy(zoomControl);
-        zoomControls.destroyAll();
+        mediatorControls.destroy(mediatorsControl);
+        mediatorControls.destroyAll();
         selectionControls.destroy(selectionControl);
         selectionControls.destroyAll();
         canvasCommandFactories.destroy(commandFactory);
@@ -249,7 +249,7 @@ public class SessionPreviewImpl<S extends AbstractSession>
         canvas = null;
         canvasPanel = null;
         canvasHandler = null;
-        zoomControl = null;
+        mediatorsControl = null;
         selectionControl = null;
         commandFactory = null;
         commandManager = null;
@@ -344,7 +344,7 @@ public class SessionPreviewImpl<S extends AbstractSession>
 
     @Override
     @SuppressWarnings("unchecked")
-    public ZoomControl<AbstractCanvas> getZoomControl() {
-        return zoomControl;
+    public MediatorsControl<AbstractCanvas> getMediatorsControl() {
+        return mediatorsControl;
     }
 }

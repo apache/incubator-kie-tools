@@ -30,9 +30,9 @@ import org.kie.workbench.common.stunner.client.widgets.views.WidgetWrapperView;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasPanel;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.MediatorsControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SingleSelection;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
 import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasElementListener;
 import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasShapeListener;
 import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistries;
@@ -57,7 +57,7 @@ public class DefaultDiagramViewer
     private final ManagedInstance<AbstractCanvas> canvasInstances;
     private final ManagedInstance<CanvasPanel> canvasPanelInstances;
     private final ManagedInstance<AbstractCanvasHandler> canvasHandlerInstances;
-    private final ManagedInstance<ZoomControl<AbstractCanvas>> zoomControlInstances;
+    private final ManagedInstance<MediatorsControl<AbstractCanvas>> mediatorsControlInstances;
     private final ManagedInstance<SelectionControl<AbstractCanvasHandler, Element>> selectionControlInstances;
     private final StunnerPreferencesRegistries preferencesRegistries;
 
@@ -66,7 +66,7 @@ public class DefaultDiagramViewer
     private CanvasElementListener elementListener;
     private CanvasPanel canvasPanel;
     private AbstractCanvasHandler canvasHandler;
-    private ZoomControl<AbstractCanvas> zoomControl;
+    private MediatorsControl<AbstractCanvas> mediatorsControl;
     private SelectionControl<AbstractCanvasHandler, Element> selectionControl;
 
     @Inject
@@ -74,7 +74,7 @@ public class DefaultDiagramViewer
                                 final @Any ManagedInstance<AbstractCanvas> canvasInstances,
                                 final @Any ManagedInstance<CanvasPanel> canvasPanelInstances,
                                 final @Any ManagedInstance<AbstractCanvasHandler> canvasHandlerInstances,
-                                final @Any ManagedInstance<ZoomControl<AbstractCanvas>> zoomControlInstances,
+                                final @Any ManagedInstance<MediatorsControl<AbstractCanvas>> mediatorsControlInstances,
                                 final @Any @SingleSelection ManagedInstance<SelectionControl<AbstractCanvasHandler, Element>> selectionControlInstances,
                                 final WidgetWrapperView view,
                                 final StunnerPreferencesRegistries preferencesRegistries) {
@@ -83,7 +83,7 @@ public class DefaultDiagramViewer
         this.canvasInstances = canvasInstances;
         this.canvasPanelInstances = canvasPanelInstances;
         this.canvasHandlerInstances = canvasHandlerInstances;
-        this.zoomControlInstances = zoomControlInstances;
+        this.mediatorsControlInstances = mediatorsControlInstances;
         this.selectionControlInstances = selectionControlInstances;
         this.preferencesRegistries = preferencesRegistries;
     }
@@ -106,9 +106,9 @@ public class DefaultDiagramViewer
         canvasPanel = InstanceUtils.lookup(canvasPanelInstances, qualifier);
         canvas = InstanceUtils.lookup(canvasInstances, qualifier);
         canvasHandler = InstanceUtils.lookup(canvasHandlerInstances, qualifier);
-        zoomControl = InstanceUtils.lookup(zoomControlInstances, qualifier);
+        mediatorsControl = InstanceUtils.lookup(mediatorsControlInstances, qualifier);
         selectionControl = InstanceUtils.lookup(selectionControlInstances, qualifier);
-        shapeListener = new DefaultCanvasShapeListener(Collections.singletonList(zoomControl));
+        shapeListener = new DefaultCanvasShapeListener(Collections.singletonList(mediatorsControl));
         canvas.addRegistrationListener(shapeListener);
         elementListener = new DefaultCanvasElementListener(Collections.singletonList(selectionControl));
         canvasHandler.addRegistrationListener(elementListener);
@@ -116,19 +116,19 @@ public class DefaultDiagramViewer
 
     @Override
     protected void enableControls() {
-        zoomControl.init(getCanvas());
+        mediatorsControl.init(getCanvas());
         selectionControl.init(getHandler());
     }
 
     @Override
     protected void destroyControls() {
-        zoomControl.destroy();
+        mediatorsControl.destroy();
         selectionControl.destroy();
-        zoomControlInstances.destroy(zoomControl);
-        zoomControlInstances.destroyAll();
+        mediatorsControlInstances.destroy(mediatorsControl);
+        mediatorsControlInstances.destroyAll();
         selectionControlInstances.destroy(selectionControl);
         selectionControlInstances.destroyAll();
-        zoomControl = null;
+        mediatorsControl = null;
         selectionControl = null;
     }
 
@@ -181,8 +181,8 @@ public class DefaultDiagramViewer
 
     @Override
     @SuppressWarnings("unchecked")
-    public ZoomControl<AbstractCanvas> getZoomControl() {
-        return zoomControl;
+    public MediatorsControl<AbstractCanvas> getMediatorsControl() {
+        return mediatorsControl;
     }
 
     @Override

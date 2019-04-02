@@ -24,6 +24,7 @@ import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.annotation.DiagramEditor;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.ClipboardControl;
 import org.uberfire.client.mvp.ActivityBeansCache;
 import org.uberfire.client.workbench.events.AbstractPlaceEvent;
 import org.uberfire.client.workbench.events.PlaceLostFocusEvent;

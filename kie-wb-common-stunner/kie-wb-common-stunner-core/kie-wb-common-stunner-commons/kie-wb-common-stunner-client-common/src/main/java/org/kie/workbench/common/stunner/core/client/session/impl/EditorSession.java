@@ -18,14 +18,13 @@ package org.kie.workbench.common.stunner.core.client.session.impl;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.clipboard.ClipboardControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.ClipboardControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.ContainmentAcceptorControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.DockingAcceptorControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.MediatorsControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyboardControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.pan.PanControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
@@ -43,9 +42,7 @@ public abstract class EditorSession
 
     public abstract CommandRegistry<org.kie.workbench.common.stunner.core.command.Command<AbstractCanvasHandler, CanvasViolation>> getCommandRegistry();
 
-    public abstract ZoomControl<AbstractCanvas> getZoomControl();
-
-    public abstract PanControl<AbstractCanvas> getPanControl();
+    public abstract MediatorsControl<AbstractCanvas> getMediatorsControl();
 
     public abstract KeyboardControl<AbstractCanvas, ClientSession> getKeyboardControl();
 

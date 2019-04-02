@@ -32,25 +32,24 @@ import org.kie.workbench.common.dmn.client.widgets.layer.MousePanMediatorControl
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanelControl;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.ClipboardControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.ContainmentAcceptorControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.DockingAcceptorControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.LocationControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.MediatorsControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.ResizeControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.SelectionControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.ToolboxControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasInPlaceTextEditorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.SingleLineTextEditorBox;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.EdgeBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.ElementBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.NodeBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.impl.Observer;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.clipboard.ClipboardControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.drag.LocationControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.AbstractCanvasShortcutsControlImpl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyboardControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.pan.PanControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.resize.ResizeControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.MultipleSelection;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.ToolboxControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.Request;
@@ -88,8 +87,7 @@ public class DMNEditorSession extends DefaultEditorSession implements DMNSession
     @Override
     public void init(final Metadata metadata,
                      final Command callback) {
-        super.init(s -> s.registerCanvasControl(ZoomControl.class)
-                           .registerCanvasControl(PanControl.class)
+        super.init(s -> s.registerCanvasControl(MediatorsControl.class)
                            .registerCanvasHandlerControl(SelectionControl.class,
                                                          MultipleSelection.class)
                            .registerCanvasHandlerControl(ResizeControl.class)

@@ -24,8 +24,6 @@ public abstract class AbstractCanvasControl<C extends AbstractCanvas> implements
 
     protected abstract void doInit();
 
-    protected abstract void doDestroy();
-
     @Override
     public void init(final C canvas) {
         this.canvas = canvas;
@@ -36,5 +34,8 @@ public abstract class AbstractCanvasControl<C extends AbstractCanvas> implements
     public void destroy() {
         doDestroy();
         this.canvas = null;
+    }
+
+    protected void doDestroy() {
     }
 }

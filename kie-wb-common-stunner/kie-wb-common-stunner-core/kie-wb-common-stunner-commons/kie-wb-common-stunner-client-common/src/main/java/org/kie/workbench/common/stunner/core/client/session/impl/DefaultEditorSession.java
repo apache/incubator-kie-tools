@@ -25,26 +25,25 @@ import javax.inject.Inject;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.ClipboardControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.ContainmentAcceptorControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.DockingAcceptorControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.LocationControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.MediatorsControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.ResizeControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.SelectionControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.ToolboxControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasInPlaceTextEditorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.MultiLineTextEditorBox;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.EdgeBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.ElementBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.NodeBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.impl.Observer;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.clipboard.ClipboardControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ControlPointControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.drag.LocationControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.AbstractCanvasShortcutsControlImpl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyboardControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.pan.PanControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.resize.ResizeControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.MultipleSelection;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.ToolboxControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.Request;
@@ -92,27 +91,25 @@ public class DefaultEditorSession
     @Override
     public void init(final Metadata metadata,
                      final Command callback) {
-        init(s ->
-                     s.registerCanvasControl(ZoomControl.class)
-                             .registerCanvasControl(PanControl.class)
-                             .registerCanvasHandlerControl(SelectionControl.class,
-                                                           MultipleSelection.class)
-                             .registerCanvasHandlerControl(ResizeControl.class)
-                             .registerCanvasHandlerControl(ConnectionAcceptorControl.class)
-                             .registerCanvasHandlerControl(ContainmentAcceptorControl.class)
-                             .registerCanvasHandlerControl(DockingAcceptorControl.class)
-                             .registerCanvasHandlerControl(CanvasInPlaceTextEditorControl.class,
-                                                           MultiLineTextEditorBox.class)
-                             .registerCanvasHandlerControl(LocationControl.class)
-                             .registerCanvasHandlerControl(ToolboxControl.class)
-                             .registerCanvasHandlerControl(ElementBuilderControl.class,
-                                                           Observer.class)
-                             .registerCanvasHandlerControl(NodeBuilderControl.class)
-                             .registerCanvasHandlerControl(EdgeBuilderControl.class)
-                             .registerCanvasHandlerControl(AbstractCanvasShortcutsControlImpl.class)
-                             .registerCanvasControl(KeyboardControl.class)
-                             .registerCanvasControl(ClipboardControl.class)
-                             .registerCanvasHandlerControl(ControlPointControl.class),
+        init(s -> s.registerCanvasControl(MediatorsControl.class)
+                     .registerCanvasHandlerControl(SelectionControl.class,
+                                                   MultipleSelection.class)
+                     .registerCanvasHandlerControl(ResizeControl.class)
+                     .registerCanvasHandlerControl(ConnectionAcceptorControl.class)
+                     .registerCanvasHandlerControl(ContainmentAcceptorControl.class)
+                     .registerCanvasHandlerControl(DockingAcceptorControl.class)
+                     .registerCanvasHandlerControl(CanvasInPlaceTextEditorControl.class,
+                                                   MultiLineTextEditorBox.class)
+                     .registerCanvasHandlerControl(LocationControl.class)
+                     .registerCanvasHandlerControl(ToolboxControl.class)
+                     .registerCanvasHandlerControl(ElementBuilderControl.class,
+                                                   Observer.class)
+                     .registerCanvasHandlerControl(NodeBuilderControl.class)
+                     .registerCanvasHandlerControl(EdgeBuilderControl.class)
+                     .registerCanvasHandlerControl(AbstractCanvasShortcutsControlImpl.class)
+                     .registerCanvasControl(KeyboardControl.class)
+                     .registerCanvasControl(ClipboardControl.class)
+                     .registerCanvasHandlerControl(ControlPointControl.class),
              metadata,
              callback);
     }
@@ -166,13 +163,8 @@ public class DefaultEditorSession
     }
 
     @Override
-    public ZoomControl<AbstractCanvas> getZoomControl() {
-        return (ZoomControl<AbstractCanvas>) session.getCanvasControl(ZoomControl.class);
-    }
-
-    @Override
-    public PanControl<AbstractCanvas> getPanControl() {
-        return (PanControl<AbstractCanvas>) session.getCanvasControl(PanControl.class);
+    public MediatorsControl<AbstractCanvas> getMediatorsControl() {
+        return (MediatorsControl<AbstractCanvas>) session.getCanvasControl(MediatorsControl.class);
     }
 
     @Override

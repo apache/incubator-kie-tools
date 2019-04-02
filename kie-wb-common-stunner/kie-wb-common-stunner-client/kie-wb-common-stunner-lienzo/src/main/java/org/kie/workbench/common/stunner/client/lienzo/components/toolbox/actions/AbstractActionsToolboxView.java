@@ -168,7 +168,7 @@ public abstract class AbstractActionsToolboxView<V extends AbstractActionsToolbo
 
     protected void onMouseExit() {
         if (null != canvas) {
-            canvas.getView().setCursor(AbstractCanvas.Cursors.AUTO);
+            canvas.getView().setCursor(AbstractCanvas.Cursors.DEFAULT);
         }
     }
 

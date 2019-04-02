@@ -25,6 +25,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.annotation.DiagramEditor;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.ClipboardControl;
 import org.kie.workbench.common.stunner.core.util.UUID;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;

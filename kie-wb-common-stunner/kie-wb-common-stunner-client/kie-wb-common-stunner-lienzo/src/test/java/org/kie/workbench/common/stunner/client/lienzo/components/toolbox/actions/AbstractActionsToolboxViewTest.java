@@ -172,7 +172,7 @@ public abstract class AbstractActionsToolboxViewTest {
         final NodeMouseExitEvent mouseExitEvent = mock(NodeMouseExitEvent.class);
         exitHandler.onNodeMouseExit(mouseExitEvent);
         verify(canvasView,
-               times(1)).setCursor(eq(AbstractCanvas.Cursors.AUTO));
+               times(1)).setCursor(eq(AbstractCanvas.Cursors.DEFAULT));
         // Verify mouse click.
         final ArgumentCaptor<NodeMouseClickHandler> clickHandlerArgumentCaptor =
                 ArgumentCaptor.forClass(NodeMouseClickHandler.class);

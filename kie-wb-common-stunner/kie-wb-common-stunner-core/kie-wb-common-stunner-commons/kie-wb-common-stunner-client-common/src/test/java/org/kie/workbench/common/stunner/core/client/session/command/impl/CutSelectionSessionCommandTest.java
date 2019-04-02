@@ -21,7 +21,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.command.DeleteNodeCommand;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.clipboard.ClipboardControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.ClipboardControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.clipboard.LocalClipboardControl;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent.Key;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;

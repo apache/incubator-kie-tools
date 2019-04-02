@@ -28,7 +28,7 @@ import org.kie.workbench.common.stunner.client.widgets.presenters.session.Sessio
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionPreviewImpl;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.MediatorsControl;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 
@@ -49,9 +49,8 @@ public class DMNSessionPreview implements SessionDiagramPreview<AbstractSession>
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public <C extends Canvas> ZoomControl<C> getZoomControl() {
-        return (ZoomControl<C>) delegate.getZoomControl();
+    public <C extends Canvas> MediatorsControl<C> getMediatorsControl() {
+        return delegate.getMediatorsControl();
     }
 
     @Override

@@ -21,10 +21,9 @@ import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.pan.PanControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.MediatorsControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SingleSelection;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.impl.DefaultViewerSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.ManagedSession;
@@ -45,8 +44,7 @@ public class CaseManagementViewerSession
     @Override
     public void init(final Metadata metadata,
                      final Command callback) {
-        super.init(s -> s.registerCanvasControl(ZoomControl.class)
-                           .registerCanvasControl(PanControl.class)
+        super.init(s -> s.registerCanvasControl(MediatorsControl.class)
                            .registerCanvasHandlerControl(SelectionControl.class,
                                                          SingleSelection.class),
                    metadata,

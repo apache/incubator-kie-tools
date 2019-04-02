@@ -26,6 +26,7 @@ import java.util.stream.Stream;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanvasHandlerRegistrationControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.ToolboxControl;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.Toolbox;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.ToolboxFactory;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;

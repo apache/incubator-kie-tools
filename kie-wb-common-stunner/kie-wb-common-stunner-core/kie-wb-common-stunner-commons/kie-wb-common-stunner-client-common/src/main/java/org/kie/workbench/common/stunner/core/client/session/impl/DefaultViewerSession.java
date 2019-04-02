@@ -24,10 +24,9 @@ import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.pan.PanControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.MediatorsControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.MultipleSelection;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Element;
@@ -58,11 +57,9 @@ public class DefaultViewerSession
     @Override
     public void init(final Metadata metadata,
                      final Command callback) {
-        init(s ->
-                     s.registerCanvasControl(ZoomControl.class)
-                             .registerCanvasControl(PanControl.class)
-                             .registerCanvasHandlerControl(SelectionControl.class,
-                                                           MultipleSelection.class),
+        init(s -> s.registerCanvasControl(MediatorsControl.class)
+                     .registerCanvasHandlerControl(SelectionControl.class,
+                                                   MultipleSelection.class),
              metadata,
              callback);
     }
@@ -110,13 +107,8 @@ public class DefaultViewerSession
     }
 
     @Override
-    public ZoomControl<AbstractCanvas> getZoomControl() {
-        return (ZoomControl<AbstractCanvas>) session.getCanvasControl(ZoomControl.class);
-    }
-
-    @Override
-    public PanControl<AbstractCanvas> getPanControl() {
-        return (PanControl<AbstractCanvas>) session.getCanvasControl(PanControl.class);
+    public MediatorsControl<AbstractCanvas> getMediatorsControl() {
+        return (MediatorsControl<AbstractCanvas>) session.getCanvasControl(MediatorsControl.class);
     }
 
     @Override

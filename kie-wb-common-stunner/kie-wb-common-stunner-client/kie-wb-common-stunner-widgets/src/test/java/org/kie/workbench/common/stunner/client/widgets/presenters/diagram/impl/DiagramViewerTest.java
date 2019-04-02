@@ -33,8 +33,8 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasPanel;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasSettings;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.MediatorsControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasElementListener;
 import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasShapeListener;
 import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistries;
@@ -68,8 +68,8 @@ public class DiagramViewerTest extends AbstractCanvasHandlerViewerTest {
     private DefinitionUtils definitionUtils;
 
     @Mock
-    private ZoomControl<AbstractCanvas> zoomControlInstance;
-    private ManagedInstance<ZoomControl<AbstractCanvas>> zoomControl;
+    private MediatorsControl<AbstractCanvas> mediatorsControlInstance;
+    private ManagedInstance<MediatorsControl<AbstractCanvas>> mediatorsControl;
 
     @Mock
     private SelectionControl<AbstractCanvasHandler, Element> selectionControlInstance;
@@ -107,7 +107,7 @@ public class DiagramViewerTest extends AbstractCanvasHandlerViewerTest {
         canvases = spy(new ManagedInstanceStub<>(canvas));
         canvasPanels = spy(new ManagedInstanceStub<>(canvasPanel));
         canvasHandlers = spy(new ManagedInstanceStub<>(canvasHandler));
-        zoomControl = spy(new ManagedInstanceStub<>(zoomControlInstance));
+        mediatorsControl = spy(new ManagedInstanceStub<>(mediatorsControlInstance));
         selectionControl = spy(new ManagedInstanceStub<>(selectionControlInstance));
         when(metadata.getDefinitionSetId()).thenReturn(DEFINITION_SET_ID);
         when(preferencesRegistries.get(DEFINITION_SET_ID, StunnerPreferences.class)).thenReturn(stunnerPreferences);
@@ -116,7 +116,7 @@ public class DiagramViewerTest extends AbstractCanvasHandlerViewerTest {
                                          canvases,
                                          canvasPanels,
                                          canvasHandlers,
-                                         zoomControl,
+                                         mediatorsControl,
                                          selectionControl,
                                          view,
                                          preferencesRegistries);
@@ -136,7 +136,7 @@ public class DiagramViewerTest extends AbstractCanvasHandlerViewerTest {
                               any(ParameterizedCommand.class));
         verify(callback,
                times(1)).afterCanvasInitialized();
-        verify(zoomControlInstance,
+        verify(mediatorsControlInstance,
                times(1)).init(eq(canvas));
         verify(selectionControlInstance,
                times(1)).init(eq(canvasHandler));
@@ -148,7 +148,7 @@ public class DiagramViewerTest extends AbstractCanvasHandlerViewerTest {
         verify(canvasHandler, times(1)).addRegistrationListener(elementListenerArgumentCaptor.capture());
         DefaultCanvasShapeListener shapeListener = (DefaultCanvasShapeListener) shapeListenerArgumentCaptor.getValue();
         Iterator<CanvasControl<AbstractCanvas>> canvasControls = shapeListener.getCanvasControls().iterator();
-        assertTrue(canvasControls.next() instanceof ZoomControl);
+        assertTrue(canvasControls.next() instanceof MediatorsControl);
         assertFalse(canvasControls.hasNext());
         DefaultCanvasElementListener elementListener = (DefaultCanvasElementListener) elementListenerArgumentCaptor.getValue();
         Iterator<CanvasControl<AbstractCanvasHandler>> canvasHandlerControls1 = elementListener.getCanvasControls().iterator();
@@ -167,7 +167,7 @@ public class DiagramViewerTest extends AbstractCanvasHandlerViewerTest {
                      50);
         assertEquals(diagram,
                      tested.getInstance());
-        verify(zoomControlInstance,
+        verify(mediatorsControlInstance,
                times(1)).scale(eq(0.5d),
                                eq(0.5d));
         verify(canvasView,
@@ -195,7 +195,7 @@ public class DiagramViewerTest extends AbstractCanvasHandlerViewerTest {
                     callback);
         tested.destroy();
         assertNull(tested.getInstance());
-        verify(zoomControl,
+        verify(mediatorsControl,
                times(1)).destroyAll();
         verify(selectionControl,
                times(1)).destroyAll();

@@ -28,6 +28,7 @@ import javax.inject.Inject;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.client.widgets.event.SessionDiagramOpenedEvent;
 import org.kie.workbench.common.stunner.client.widgets.event.SessionFocusedEvent;
+import org.kie.workbench.common.stunner.client.widgets.event.SessionLostFocusEvent;
 import org.kie.workbench.common.stunner.client.widgets.notification.NotificationsObserver;
 import org.kie.workbench.common.stunner.client.widgets.palette.DefaultPaletteFactory;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.RequestSessionRefreshEvent;
@@ -38,11 +39,12 @@ import org.kie.workbench.common.stunner.client.widgets.toolbar.impl.EditorToolba
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.AbstractCanvasHandlerEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasFocusedEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasLostFocusEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandExecutedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandUndoneEvent;
 import org.kie.workbench.common.stunner.core.client.event.screen.ScreenMaximizedEvent;
 import org.kie.workbench.common.stunner.core.client.event.screen.ScreenMinimizedEvent;
-import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistries;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.InstanceUtils;
@@ -77,7 +79,9 @@ public class SessionEditorPresenter<S extends EditorSession>
                                   final DefaultPaletteFactory<AbstractCanvasHandler> paletteWidgetFactory,
                                   final NotificationsObserver notificationsObserver,
                                   final Event<SessionFocusedEvent> sessionFocusedEvent,
-                                  final StunnerPreferencesRegistries preferencesRegistries,
+                                  Event<CanvasFocusedEvent> canvasFocusedEvent,
+                                  final Event<SessionLostFocusEvent> sessionLostFocusEvent,
+                                  final Event<CanvasLostFocusEvent> canvasLostFocusEventEvent,
                                   final View view) {
         super(definitionUtils,
               sessionManager,
@@ -85,7 +89,9 @@ public class SessionEditorPresenter<S extends EditorSession>
               paletteWidgetFactory,
               notificationsObserver,
               sessionFocusedEvent,
-              preferencesRegistries);
+              canvasFocusedEvent,
+              sessionLostFocusEvent,
+              canvasLostFocusEventEvent);
         this.sessionDiagramOpenedEvent = sessionDiagramOpenedEvent;
         this.editor = editor;
         this.toolbars = toolbars;

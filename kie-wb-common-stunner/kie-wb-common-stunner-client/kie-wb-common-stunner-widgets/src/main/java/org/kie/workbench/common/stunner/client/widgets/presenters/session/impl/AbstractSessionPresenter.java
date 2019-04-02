@@ -23,6 +23,7 @@ import java.util.function.Predicate;
 import javax.enterprise.event.Event;
 
 import org.kie.workbench.common.stunner.client.widgets.event.SessionFocusedEvent;
+import org.kie.workbench.common.stunner.client.widgets.event.SessionLostFocusEvent;
 import org.kie.workbench.common.stunner.client.widgets.notification.CommandNotification;
 import org.kie.workbench.common.stunner.client.widgets.notification.Notification;
 import org.kie.workbench.common.stunner.client.widgets.notification.NotificationContext;
@@ -35,9 +36,11 @@ import org.kie.workbench.common.stunner.client.widgets.presenters.session.Sessio
 import org.kie.workbench.common.stunner.client.widgets.toolbar.Toolbar;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasFocusedEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasLostFocusEvent;
 import org.kie.workbench.common.stunner.core.client.components.palette.PaletteDefinition;
-import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistries;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
@@ -52,7 +55,9 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
     private final SessionPresenter.View view;
     private final NotificationsObserver notificationsObserver;
     private final Event<SessionFocusedEvent> sessionFocusedEvent;
-    private final StunnerPreferencesRegistries preferencesRegistries;
+    private final Event<CanvasFocusedEvent> canvasFocusedEvent;
+    private final Event<SessionLostFocusEvent> sessionLostFocusEvent;
+    private final Event<CanvasLostFocusEvent> canvasLostFocusEventEvent;
 
     private D diagram;
     private Toolbar<S> toolbar;
@@ -68,14 +73,18 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
                                        final DefaultPaletteFactory<H> paletteFactory,
                                        final NotificationsObserver notificationsObserver,
                                        final Event<SessionFocusedEvent> sessionFocusedEvent,
-                                       final StunnerPreferencesRegistries preferencesRegistries) {
+                                       final Event<CanvasFocusedEvent> canvasFocusedEvent,
+                                       final Event<SessionLostFocusEvent> sessionLostFocusEvent,
+                                       final Event<CanvasLostFocusEvent> canvasLostFocusEventEvent) {
         this.definitionUtils = definitionUtils;
         this.sessionManager = sessionManager;
         this.paletteFactory = paletteFactory;
         this.notificationsObserver = notificationsObserver;
         this.sessionFocusedEvent = sessionFocusedEvent;
+        this.sessionLostFocusEvent = sessionLostFocusEvent;
+        this.canvasFocusedEvent = canvasFocusedEvent;
+        this.canvasLostFocusEventEvent = canvasLostFocusEventEvent;
         this.view = view;
-        this.preferencesRegistries = preferencesRegistries;
         this.hasToolbar = true;
         this.hasPalette = true;
         this.typePredicate = Optional.empty();
@@ -186,11 +195,12 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
     @Override
     public void focus() {
         getSession().ifPresent(sessionManager::open);
-        getSession().ifPresent(s -> sessionFocusedEvent.fire(new SessionFocusedEvent(s)));
+        getSession().ifPresent(this::fireSessionFocused);
     }
 
     @Override
     public void lostFocus() {
+        getSession().ifPresent(this::fireSessionLostFocus);
     }
 
     public void scale(final int width,
@@ -263,6 +273,16 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
         initPalette(session);
         getView().setCanvasWidget(getDisplayer().getView());
         getView().showLoading(false);
+    }
+
+    private void fireSessionLostFocus(final ClientSession session) {
+        sessionLostFocusEvent.fire(new SessionLostFocusEvent(session));
+        canvasLostFocusEventEvent.fire(new CanvasLostFocusEvent(session.getCanvas()));
+    }
+
+    private void fireSessionFocused(final ClientSession session) {
+        sessionFocusedEvent.fire(new SessionFocusedEvent(session));
+        canvasFocusedEvent.fire(new CanvasFocusedEvent(session.getCanvas()));
     }
 
     @SuppressWarnings("unchecked")
@@ -384,5 +404,4 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
                 .or(Notification.Type.WARNING::equals)
                 .test(Notification.Type.ERROR);
     }
-
 }

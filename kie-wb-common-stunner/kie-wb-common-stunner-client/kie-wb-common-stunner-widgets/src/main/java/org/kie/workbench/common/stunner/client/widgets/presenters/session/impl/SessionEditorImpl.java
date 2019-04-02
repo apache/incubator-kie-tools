@@ -30,11 +30,11 @@ import org.kie.workbench.common.stunner.client.widgets.views.WidgetWrapperView;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasPanel;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.ContainmentAcceptorControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.DockingAcceptorControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.MediatorsControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistries;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
@@ -101,8 +101,8 @@ public class SessionEditorImpl<S extends EditorSession>
 
     @Override
     @SuppressWarnings("unchecked")
-    public ZoomControl<AbstractCanvas> getZoomControl() {
-        return getSession().getZoomControl();
+    public MediatorsControl<AbstractCanvas> getMediatorsControl() {
+        return getSession().getMediatorsControl();
     }
 
     private S getSession() {
@@ -177,8 +177,8 @@ public class SessionEditorImpl<S extends EditorSession>
 
         @Override
         @SuppressWarnings("unchecked")
-        public ZoomControl<AbstractCanvas> getZoomControl() {
-            return SessionEditorImpl.this.getZoomControl();
+        public MediatorsControl<AbstractCanvas> getMediatorsControl() {
+            return SessionEditorImpl.this.getMediatorsControl();
         }
 
         @Override

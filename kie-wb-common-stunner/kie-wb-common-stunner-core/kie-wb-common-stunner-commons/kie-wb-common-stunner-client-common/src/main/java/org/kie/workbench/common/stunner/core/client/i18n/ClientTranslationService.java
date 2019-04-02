@@ -39,6 +39,14 @@ public class ClientTranslationService extends AbstractTranslationService {
         return erraiTranslationService.getTranslation(key);
     }
 
+    public String getNotNullValue(final String key) {
+        final String value = getValue(key);
+        if (null == value) {
+            return key;
+        }
+        return value;
+    }
+
     @Override
     public String getValue(final String key,
                            final Object... args) {

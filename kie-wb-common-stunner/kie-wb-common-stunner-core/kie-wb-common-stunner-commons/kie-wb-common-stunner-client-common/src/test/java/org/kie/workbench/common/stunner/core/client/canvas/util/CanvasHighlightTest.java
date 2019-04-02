@@ -90,7 +90,7 @@ public class CanvasHighlightTest {
         verify(shape2,
                times(0)).applyState(any(ShapeState.class));
         verify(canvasView,
-               times(1)).setCursor(eq(AbstractCanvas.Cursors.AUTO));
+               times(1)).setCursor(eq(AbstractCanvas.Cursors.DEFAULT));
     }
 
     @Test
@@ -102,7 +102,7 @@ public class CanvasHighlightTest {
         verify(shape2,
                times(1)).applyState(eq(ShapeState.INVALID));
         verify(canvasView,
-               times(1)).setCursor(eq(AbstractCanvas.Cursors.AUTO));
+               times(1)).setCursor(eq(AbstractCanvas.Cursors.DEFAULT));
         verify(canvasView,
                times(1)).setCursor(eq(AbstractCanvas.Cursors.NOT_ALLOWED));
     }
@@ -139,7 +139,7 @@ public class CanvasHighlightTest {
         verify(shape2,
                times(1)).applyState(eq(ShapeState.NONE));
         verify(canvasView,
-               atLeastOnce()).setCursor(eq(AbstractCanvas.Cursors.AUTO));
+               atLeastOnce()).setCursor(eq(AbstractCanvas.Cursors.DEFAULT));
     }
 
     @Test
@@ -156,7 +156,7 @@ public class CanvasHighlightTest {
         verify(shape2,
                times(1)).applyState(eq(ShapeState.NONE));
         verify(canvasView,
-               atLeastOnce()).setCursor(eq(AbstractCanvas.Cursors.AUTO));
+               atLeastOnce()).setCursor(eq(AbstractCanvas.Cursors.DEFAULT));
     }
 
     @Test
@@ -173,6 +173,6 @@ public class CanvasHighlightTest {
         verify(shape2,
                times(0)).applyState(eq(ShapeState.NONE));
         verify(canvasView,
-               atLeastOnce()).setCursor(eq(AbstractCanvas.Cursors.AUTO));
+               atLeastOnce()).setCursor(eq(AbstractCanvas.Cursors.DEFAULT));
     }
 }

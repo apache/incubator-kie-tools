@@ -28,8 +28,8 @@ import org.kie.workbench.common.stunner.client.widgets.views.WidgetWrapperView;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasPanel;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.MediatorsControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistries;
 import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -58,7 +58,7 @@ public class SessionViewerTest extends AbstractCanvasHandlerViewerTest {
     @Mock
     SessionViewer.SessionViewerCallback<Diagram> callback;
     @Mock
-    ZoomControl<AbstractCanvas> zoomControl;
+    MediatorsControl<AbstractCanvas> mediatorsControl;
     @Mock
     SelectionControl<AbstractCanvasHandler, Element> selectionControl;
     @Mock
@@ -78,7 +78,7 @@ public class SessionViewerTest extends AbstractCanvasHandlerViewerTest {
         when(preferencesRegistries.get(DEFINITION_SET_ID, StunnerPreferences.class)).thenReturn(stunnerPreferences);
         when(session.getCanvasHandler()).thenReturn(canvasHandler);
         when(session.getCanvas()).thenReturn(canvas);
-        when(session.getZoomControl()).thenReturn(zoomControl);
+        when(session.getMediatorsControl()).thenReturn(mediatorsControl);
         when(session.getSelectionControl()).thenReturn(selectionControl);
         this.tested = new SessionViewerImpl<>(view, canvasPanel, preferencesRegistries);
     }
@@ -94,8 +94,8 @@ public class SessionViewerTest extends AbstractCanvasHandlerViewerTest {
                      tested.getSessionHandler());
         assertEquals(diagram,
                      tested.getHandler().getDiagram());
-        assertEquals(zoomControl,
-                     tested.getDiagramViewer().getZoomControl());
+        assertEquals(mediatorsControl,
+                     tested.getDiagramViewer().getMediatorsControl());
         assertEquals(selectionControl,
                      tested.getDiagramViewer().getSelectionControl());
         verify(canvasHandler,

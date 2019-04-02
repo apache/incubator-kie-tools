@@ -21,6 +21,7 @@ import java.util.function.BiFunction;
 
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Layer;
+import com.ait.lienzo.client.widget.panel.LienzoBoundsPanel;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.Element;
@@ -28,6 +29,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasGrid;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasPanel;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasSettings;
@@ -93,6 +95,15 @@ public class LienzoCanvasViewTest {
         tested.initialize(panel, settings);
         tested.setGrid(CanvasGrid.DEFAULT_GRID);
         verify(panel, times(1)).setBackgroundLayer(any(Layer.class));
+    }
+
+    @Test
+    public void testCursor() {
+        LienzoBoundsPanel panelView = mock(LienzoBoundsPanel.class);
+        when(panel.getView()).thenReturn(panelView);
+        tested.initialize(panel, settings);
+        tested.setCursor(AbstractCanvas.Cursors.MOVE);
+        verify(panelView, times(1)).setCursor(eq(Style.Cursor.MOVE));
     }
 
     @Test

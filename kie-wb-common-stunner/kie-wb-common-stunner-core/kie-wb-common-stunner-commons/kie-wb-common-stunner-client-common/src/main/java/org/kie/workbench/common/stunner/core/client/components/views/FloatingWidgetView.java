@@ -65,24 +65,28 @@ public class FloatingWidgetView implements FloatingView<IsWidget> {
     @Override
     public FloatingView<IsWidget> setOffsetX(final double ox) {
         this.ox = ox;
+        reposition();
         return this;
     }
 
     @Override
     public FloatingView<IsWidget> setOffsetY(final double oy) {
         this.oy = oy;
+        reposition();
         return this;
     }
 
     @Override
     public FloatingWidgetView setX(final double x) {
         this.x = x;
+        reposition();
         return this;
     }
 
     @Override
     public FloatingWidgetView setY(final double y) {
         this.y = y;
+        reposition();
         return this;
     }
 
@@ -113,14 +117,11 @@ public class FloatingWidgetView implements FloatingView<IsWidget> {
 
     @Override
     public FloatingWidgetView show() {
-        if (!visible) {
+        if (!isVisible()) {
             visible = true;
             attach();
             startTimeout();
-            panel.getElement().getStyle().setLeft(ox + x,
-                                                  Style.Unit.PX);
-            panel.getElement().getStyle().setTop(oy + y,
-                                                 Style.Unit.PX);
+            reposition();
             doShow();
         }
         return this;
@@ -128,7 +129,7 @@ public class FloatingWidgetView implements FloatingView<IsWidget> {
 
     @Override
     public FloatingWidgetView hide() {
-        if (visible) {
+        if (isVisible()) {
             this.visible = false;
             stopTimeout();
             doHide();
@@ -170,6 +171,17 @@ public class FloatingWidgetView implements FloatingView<IsWidget> {
             RootPanel.get().remove(panel);
             attached = false;
         }
+    }
+
+    private void reposition() {
+        panel.getElement().getStyle().setLeft(ox + x,
+                                              Style.Unit.PX);
+        panel.getElement().getStyle().setTop(oy + y,
+                                             Style.Unit.PX);
+    }
+
+    private boolean isVisible() {
+        return visible;
     }
 
     public void startTimeout() {

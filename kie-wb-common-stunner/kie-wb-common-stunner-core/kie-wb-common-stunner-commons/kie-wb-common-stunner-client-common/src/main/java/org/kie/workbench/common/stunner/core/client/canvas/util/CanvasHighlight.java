@@ -127,7 +127,7 @@ public class CanvasHighlight {
     }
 
     private void setValidCursor() {
-        setCursor(AbstractCanvas.Cursors.AUTO);
+        setCursor(AbstractCanvas.Cursors.DEFAULT);
     }
 
     private void setCursor(final AbstractCanvas.Cursors cursor) {
@@ -143,5 +143,4 @@ public class CanvasHighlight {
     private AbstractCanvas getCanvas() {
         return null != canvasHandler ? canvasHandler.getAbstractCanvas() : null;
     }
-
 }

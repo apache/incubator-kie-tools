@@ -27,13 +27,13 @@ public interface CanvasControl<C> {
 
     interface SessionAware<S extends ClientSession> {
 
-        void bind(final S session);
+        void bind(S session);
     }
 
     /**
      * This method is called when the control is initialized for a given context.
      */
-    void init(final C context);
+    void init(C context);
 
     /**
      * This method is called when the control is being destroyed.

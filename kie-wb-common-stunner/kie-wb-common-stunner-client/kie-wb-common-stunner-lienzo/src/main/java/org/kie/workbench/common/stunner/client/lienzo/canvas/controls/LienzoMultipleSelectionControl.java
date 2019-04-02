@@ -45,10 +45,10 @@ import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.WiresShap
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.AbstractSelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.MapSelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.MultipleSelection;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.event.ShapeLocationsChangedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
@@ -231,7 +231,7 @@ public class LienzoMultipleSelectionControl<H extends AbstractCanvasHandler>
                             .addNodeMouseEnterHandler(event -> canvasHandlerSupplier.get().getAbstractCanvas().getView().setCursor(AbstractCanvas.Cursors.MOVE));
             mouseExitHandlerReg =
                     provider.getShape()
-                            .addNodeMouseExitHandler(event -> canvasHandlerSupplier.get().getAbstractCanvas().getView().setCursor(AbstractCanvas.Cursors.AUTO));
+                            .addNodeMouseExitHandler(event -> canvasHandlerSupplier.get().getAbstractCanvas().getView().setCursor(AbstractCanvas.Cursors.DEFAULT));
             return this;
         }
 

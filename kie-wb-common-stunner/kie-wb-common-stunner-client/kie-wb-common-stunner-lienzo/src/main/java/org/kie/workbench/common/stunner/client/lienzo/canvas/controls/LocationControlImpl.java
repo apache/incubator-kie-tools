@@ -40,7 +40,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanvasHandlerRegistrationControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.drag.LocationControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.LocationControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeysMatcher;
 import org.kie.workbench.common.stunner.core.client.canvas.event.ShapeLocationsChangedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
@@ -219,7 +219,7 @@ public class LocationControlImpl
                     final MouseExitHandler outHandler = new MouseExitHandler() {
                         @Override
                         public void handle(MouseExitEvent event) {
-                            canvasHandler.getAbstractCanvas().getView().setCursor(AbstractCanvas.Cursors.AUTO);
+                            canvasHandler.getAbstractCanvas().getView().setCursor(AbstractCanvas.Cursors.DEFAULT);
                         }
                     };
                     hasEventHandlers.addHandler(ViewEventType.MOUSE_EXIT,

@@ -45,13 +45,16 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.CanvasView>
                    HasCanvasListeners<CanvasShapeListener> {
 
     public enum Cursors {
+        DEFAULT,
         AUTO,
         MOVE,
         POINTER,
         TEXT,
         NOT_ALLOWED,
         WAIT,
-        CROSSHAIR;
+        CROSSHAIR,
+        ROW_RESIZE,
+        COL_RESIZE;
     }
 
     public interface CanvasView<C extends CanvasView> extends IsWidget {

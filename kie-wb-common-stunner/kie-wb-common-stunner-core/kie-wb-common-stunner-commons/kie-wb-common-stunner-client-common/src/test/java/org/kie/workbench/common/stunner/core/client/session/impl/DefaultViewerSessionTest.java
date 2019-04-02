@@ -22,10 +22,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.pan.PanControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.MediatorsControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.MultipleSelection;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.mockito.Mock;
@@ -81,8 +80,7 @@ public class DefaultViewerSessionTest {
         Command command = mock(Command.class);
         tested.init(metadata,
                     command);
-        verify(managedSession, times(1)).registerCanvasControl(eq(ZoomControl.class));
-        verify(managedSession, times(1)).registerCanvasControl(eq(PanControl.class));
+        verify(managedSession, times(1)).registerCanvasControl(eq(MediatorsControl.class));
         verify(managedSession, times(1)).registerCanvasHandlerControl(eq(SelectionControl.class),
                                                                       eq(MultipleSelection.class));
         verify(managedSession, times(1)).init(eq(metadata),

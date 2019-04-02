@@ -22,8 +22,8 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.BaseCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasPanel;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.MediatorsControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistries;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -52,8 +52,8 @@ public abstract class DiagramPreviewProxy<D extends Diagram>
                     }
 
                     @Override
-                    public <C extends Canvas> ZoomControl<C> getZoomControl() {
-                        return (ZoomControl<C>) DiagramPreviewProxy.this.getZoomControl();
+                    public <C extends Canvas> MediatorsControl<C> getMediatorsControl() {
+                        return (MediatorsControl<C>) DiagramPreviewProxy.this.getMediatorsControl();
                     }
 
                     @Override

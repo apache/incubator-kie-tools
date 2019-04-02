@@ -36,7 +36,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.CloneConnectorCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.command.CloneNodeCommand;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.clipboard.ClipboardControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.ClipboardControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.clipboard.LocalClipboardControl;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;

@@ -39,10 +39,9 @@ import org.kie.workbench.common.stunner.core.client.ManagedInstanceStub;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.pan.PanControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.MediatorsControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.MultipleSelection;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.ManagedSession;
@@ -92,10 +91,7 @@ public abstract class BaseDMNSessionTest<S extends AbstractSession<AbstractCanva
     protected AbstractCanvasHandler canvasHandler;
 
     @Mock
-    protected ZoomControl zoomControl;
-
-    @Mock
-    protected PanControl panControl;
+    protected MediatorsControl mediatorsControl;
 
     @Mock
     protected SelectionControl selectionControl;
@@ -157,8 +153,7 @@ public abstract class BaseDMNSessionTest<S extends AbstractSession<AbstractCanva
 
         this.canvasControlRegistrations = new HashMap<>();
         this.canvasControlRegistrations.putAll(getCanvasControlRegistrations());
-        this.canvasControlRegistrations.put(zoomControl, ZoomControl.class);
-        this.canvasControlRegistrations.put(panControl, PanControl.class);
+        this.canvasControlRegistrations.put(mediatorsControl, MediatorsControl.class);
         this.canvasControlRegistrations.put(expressionGridCache, ExpressionGridCache.class);
         this.canvasControlRegistrations.put(gridLayerControl, DMNGridLayerControl.class);
         this.canvasControlRegistrations.put(gridPanelControl, DMNGridPanelControl.class);

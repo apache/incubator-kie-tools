@@ -28,11 +28,11 @@ import org.kie.workbench.common.stunner.client.widgets.views.WidgetWrapperView;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasPanel;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.ContainmentAcceptorControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.DockingAcceptorControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.MediatorsControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
 import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistries;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -62,7 +62,7 @@ public class SessionEditorTest extends AbstractCanvasHandlerViewerTest {
     @Mock
     ScrollableLienzoPanel canvasPanel;
     @Mock
-    ZoomControl<AbstractCanvas> zoomControl;
+    MediatorsControl<AbstractCanvas> mediatorsControl;
     @Mock
     SelectionControl<AbstractCanvasHandler, Element> selectionControl;
     @Mock
@@ -86,7 +86,7 @@ public class SessionEditorTest extends AbstractCanvasHandlerViewerTest {
         when(canvasHandler.getDiagram()).thenReturn(diagram);
         when(session.getCanvasHandler()).thenReturn(canvasHandler);
         when(session.getCanvas()).thenReturn(canvas);
-        when(session.getZoomControl()).thenReturn(zoomControl);
+        when(session.getMediatorsControl()).thenReturn(mediatorsControl);
         when(session.getSelectionControl()).thenReturn(selectionControl);
         when(session.getConnectionAcceptorControl()).thenReturn(connectionAcceptorControl);
         when(session.getContainmentAcceptorControl()).thenReturn(containmentAcceptorControl);
@@ -107,8 +107,8 @@ public class SessionEditorTest extends AbstractCanvasHandlerViewerTest {
                      tested.getSessionHandler());
         assertEquals(diagram,
                      tested.getHandler().getDiagram());
-        assertEquals(zoomControl,
-                     tested.getDiagramEditor().getZoomControl());
+        assertEquals(mediatorsControl,
+                     tested.getDiagramEditor().getMediatorsControl());
         assertEquals(selectionControl,
                      tested.getDiagramEditor().getSelectionControl());
         assertEquals(connectionAcceptorControl,

@@ -36,12 +36,12 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.BaseCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasPanel;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.ContainmentAcceptorControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.DockingAcceptorControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.MediatorsControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.TextPropertyProviderFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
@@ -116,8 +116,8 @@ public class SessionPreviewImplTest extends AbstractCanvasHandlerViewerTest {
     private SessionViewer.SessionViewerCallback<Diagram> callback;
 
     @Mock
-    private ZoomControl<AbstractCanvas> zoomControl;
-    private ManagedInstance<ZoomControl<AbstractCanvas>> zoomControls;
+    private MediatorsControl<AbstractCanvas> mediatorsControl;
+    private ManagedInstance<MediatorsControl<AbstractCanvas>> mediatorsControls;
 
     @Mock
     private ConnectionAcceptorControl<AbstractCanvasHandler> connectionAcceptorControl;
@@ -182,7 +182,7 @@ public class SessionPreviewImplTest extends AbstractCanvasHandlerViewerTest {
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
         super.init();
-        zoomControls = new ManagedInstanceStub<>(zoomControl);
+        mediatorsControls = new ManagedInstanceStub<>(mediatorsControl);
         selectionControls = new ManagedInstanceStub<>(selectionControl);
         canvasCommandManagers = new ManagedInstanceStub<>(canvasCommandManager);
         canvases = new ManagedInstanceStub<>(canvas);
@@ -190,7 +190,7 @@ public class SessionPreviewImplTest extends AbstractCanvasHandlerViewerTest {
         when(canvasHandler.getDiagram()).thenReturn(diagram);
         when(session.getCanvasHandler()).thenReturn(canvasHandler);
         when(session.getCanvas()).thenReturn(canvas);
-        when(session.getZoomControl()).thenReturn(zoomControl);
+        when(session.getMediatorsControl()).thenReturn(mediatorsControl);
         when(session.getConnectionAcceptorControl()).thenReturn(connectionAcceptorControl);
         when(session.getContainmentAcceptorControl()).thenReturn(containmentAcceptorControl);
         when(session.getDockingAcceptorControl()).thenReturn(dockingAcceptorControl);
@@ -223,7 +223,7 @@ public class SessionPreviewImplTest extends AbstractCanvasHandlerViewerTest {
                                               canvases,
                                               canvasPanels,
                                               canvasHandlerFactories,
-                                              zoomControls,
+                                              mediatorsControls,
                                               selectionControls,
                                               canvasCommandFactories,
                                               canvasCommandManagers,

@@ -20,7 +20,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.stunner.client.widgets.presenters.Viewer;
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.MediatorsControl;
 
 /**
  * A viewer type for generic instances based on any subtypes for <code>Canvas</code> view types and <code>CanvasHandler</code> types..
@@ -32,7 +32,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomCon
 public interface CanvasViewer<T, H extends CanvasHandler, V extends IsWidget, K extends Viewer.Callback> extends Viewer<T, H, V, K> {
 
     /**
-     * Returns a canvas zoom control enabled and available to use.
+     * Returns a canvas mediators control enabled and available to use.
      */
-    <C extends Canvas> ZoomControl<C> getZoomControl();
+    <C extends Canvas> MediatorsControl<C> getMediatorsControl();
 }

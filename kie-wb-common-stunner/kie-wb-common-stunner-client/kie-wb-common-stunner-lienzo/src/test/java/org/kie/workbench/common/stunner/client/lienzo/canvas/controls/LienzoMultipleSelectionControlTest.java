@@ -212,7 +212,7 @@ public class LienzoMultipleSelectionControlTest {
         enterHandlerArgumentCaptor.getValue().onNodeMouseEnter(mock(NodeMouseEnterEvent.class));
         verify(canvasView, times(1)).setCursor(eq(AbstractCanvas.Cursors.MOVE));
         enterExitArgumentCaptor.getValue().onNodeMouseExit(mock(NodeMouseExitEvent.class));
-        verify(canvasView, times(1)).setCursor(eq(AbstractCanvas.Cursors.AUTO));
+        verify(canvasView, times(1)).setCursor(eq(AbstractCanvas.Cursors.DEFAULT));
         // Test shape move to top.
         selectionShapeProvider.moveShapeToTop();
         verify(shape, times(1)).moveToTop();

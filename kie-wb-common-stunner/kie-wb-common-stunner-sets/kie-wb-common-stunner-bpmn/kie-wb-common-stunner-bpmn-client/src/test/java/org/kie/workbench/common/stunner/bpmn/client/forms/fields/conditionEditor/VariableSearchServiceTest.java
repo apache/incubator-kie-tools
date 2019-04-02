@@ -43,7 +43,7 @@ import org.kie.workbench.common.stunner.bpmn.forms.conditions.FieldMetadata;
 import org.kie.workbench.common.stunner.bpmn.forms.conditions.TypeMetadata;
 import org.kie.workbench.common.stunner.bpmn.forms.conditions.TypeMetadataQueryResult;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;

@@ -318,7 +318,7 @@ public abstract class AbstractCanvasInPlaceTextEditorControlTest<C extends Abstr
                                          textExitHandlerCaptor.capture());
         final TextExitHandler textExitHandler = textExitHandlerCaptor.getValue();
         textExitHandler.handle(new TextExitEvent(0, 1, X, Y));
-        verify(abstractCanvasView).setCursor(eq(AbstractCanvas.Cursors.AUTO));
+        verify(abstractCanvasView).setCursor(eq(AbstractCanvas.Cursors.DEFAULT));
     }
 
     @Test

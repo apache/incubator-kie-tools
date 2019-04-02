@@ -25,17 +25,16 @@ public interface CanvasRegistrationControl<C, E> extends CanvasControl<C> {
     /**
      * An element is registered on the canvas.
      */
-    void register(final E element);
+    void register(E element);
 
     /**
      * An element is de-registered from the canvas.
      */
-    void deregister(final E element);
+    void deregister(E element);
 
     /**
      * This method is called when the control registration state needs to be cleared. The control might be used after
      * the clear method is invoked.
      */
     void clear();
-
 }

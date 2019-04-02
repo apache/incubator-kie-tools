@@ -31,10 +31,9 @@ import org.kie.workbench.common.dmn.client.widgets.layer.MousePanMediatorControl
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanelControl;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.pan.PanControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.MediatorsControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.MultipleSelection;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.impl.DefaultViewerSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.ManagedSession;
@@ -61,8 +60,7 @@ public class DMNViewerSession extends DefaultViewerSession implements DMNSession
     @Override
     public void init(final Metadata metadata,
                      final Command callback) {
-        init(s -> s.registerCanvasControl(ZoomControl.class)
-                     .registerCanvasControl(PanControl.class)
+        init(s -> s.registerCanvasControl(MediatorsControl.class)
                      .registerCanvasHandlerControl(SelectionControl.class,
                                                    MultipleSelection.class)
                      .registerCanvasControl(ExpressionGridCache.class)

@@ -135,7 +135,7 @@ public abstract class AbstractCanvasInPlaceTextEditorControl
                         final TextExitHandler exitHandler = new TextExitHandler() {
                             @Override
                             public void handle(TextExitEvent event) {
-                                canvasHandler.getAbstractCanvas().getView().setCursor(AbstractCanvas.Cursors.AUTO);
+                                canvasHandler.getAbstractCanvas().getView().setCursor(AbstractCanvas.Cursors.DEFAULT);
                             }
                         };
                         hasEventHandlers.addHandler(ViewEventType.TEXT_EXIT,

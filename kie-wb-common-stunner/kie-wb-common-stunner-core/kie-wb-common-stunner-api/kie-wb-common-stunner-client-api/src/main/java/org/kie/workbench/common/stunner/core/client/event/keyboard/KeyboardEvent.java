@@ -16,26 +16,29 @@
 
 package org.kie.workbench.common.stunner.core.client.event.keyboard;
 
+import com.google.gwt.event.dom.client.KeyCodes;
+
 public interface KeyboardEvent {
 
     enum Key {
-        ESC(27),
-        CONTROL(17),
-        SHIFT(16),
-        DELETE(46),
-        ARROW_UP(38),
-        ARROW_DOWN(40),
-        ARROW_LEFT(37),
-        ARROW_RIGHT(39),
-        C(67),
-        D(68),
-        E(69),
-        G(71),
-        S(83),
-        T(84),
-        V(86),
-        X(88),
-        Z(90);
+        ESC(KeyCodes.KEY_ESCAPE),
+        CONTROL(KeyCodes.KEY_CTRL),
+        ALT(KeyCodes.KEY_ALT),
+        SHIFT(KeyCodes.KEY_SHIFT),
+        DELETE(KeyCodes.KEY_DELETE),
+        ARROW_UP(KeyCodes.KEY_UP),
+        ARROW_DOWN(KeyCodes.KEY_DOWN),
+        ARROW_LEFT(KeyCodes.KEY_LEFT),
+        ARROW_RIGHT(KeyCodes.KEY_RIGHT),
+        C(KeyCodes.KEY_C),
+        D(KeyCodes.KEY_D),
+        E(KeyCodes.KEY_E),
+        G(KeyCodes.KEY_G),
+        S(KeyCodes.KEY_S),
+        T(KeyCodes.KEY_T),
+        V(KeyCodes.KEY_V),
+        X(KeyCodes.KEY_X),
+        Z(KeyCodes.KEY_Z);
 
         private final int unicharCode;
 

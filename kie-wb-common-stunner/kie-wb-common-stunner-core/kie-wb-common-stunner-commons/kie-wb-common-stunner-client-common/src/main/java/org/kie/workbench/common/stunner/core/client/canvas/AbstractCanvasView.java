@@ -64,31 +64,18 @@ public abstract class AbstractCanvasView<V extends AbstractCanvasView>
 
     @Override
     public V setCursor(final AbstractCanvas.Cursors cursor) {
-        Style style = canvasPanel.asWidget().getElement().getStyle();
-        switch (cursor) {
-            case AUTO:
-                style.setCursor(Style.Cursor.AUTO);
-                break;
-            case MOVE:
-                style.setCursor(Style.Cursor.MOVE);
-                break;
-            case TEXT:
-                style.setCursor(Style.Cursor.TEXT);
-                break;
-            case POINTER:
-                style.setCursor(Style.Cursor.POINTER);
-                break;
-            case NOT_ALLOWED:
-                style.setProperty(CURSOR, CURSOR_NOT_ALLOWED);
-                break;
-            case WAIT:
-                style.setCursor(Style.Cursor.WAIT);
-                break;
-            case CROSSHAIR:
-                style.setCursor(Style.Cursor.CROSSHAIR);
-                break;
+        if (AbstractCanvas.Cursors.NOT_ALLOWED.equals(cursor)) {
+            Style style = canvasPanel.asWidget().getElement().getStyle();
+            style.setProperty(CURSOR, CURSOR_NOT_ALLOWED);
+        } else {
+            setViewCursor(cursor);
         }
         return cast();
+    }
+
+    protected void setViewCursor(final AbstractCanvas.Cursors cursor) {
+        final Style style = canvasPanel.asWidget().getElement().getStyle();
+        style.setCursor(toViewCursor(cursor));
     }
 
     @Override
@@ -107,6 +94,30 @@ public abstract class AbstractCanvasView<V extends AbstractCanvasView>
         canvasPanel.destroy();
         mainPanel.clear();
         canvasPanel = null;
+    }
+
+    public static Style.Cursor toViewCursor(final AbstractCanvas.Cursors cursor) {
+        switch (cursor) {
+            case DEFAULT:
+                return Style.Cursor.DEFAULT;
+            case AUTO:
+                return Style.Cursor.AUTO;
+            case MOVE:
+                return Style.Cursor.MOVE;
+            case TEXT:
+                return Style.Cursor.TEXT;
+            case POINTER:
+                return Style.Cursor.POINTER;
+            case WAIT:
+                return Style.Cursor.WAIT;
+            case CROSSHAIR:
+                return Style.Cursor.CROSSHAIR;
+            case ROW_RESIZE:
+                return Style.Cursor.ROW_RESIZE;
+            case COL_RESIZE:
+                return Style.Cursor.COL_RESIZE;
+        }
+        return Style.Cursor.DEFAULT;
     }
 
     @SuppressWarnings("unchecked")

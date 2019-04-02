@@ -126,8 +126,8 @@ public abstract class AbstractCanvasViewer<T, H extends AbstractCanvasHandler, V
                 final double[] factor = getScaleFactor(sfactor,
                                                        keepAspectRatio);
                 // Scale the canvas/layer using scale method from the zoom control.
-                getZoomControl().scale(factor[0],
-                                       factor[1]);
+                getMediatorsControl().scale(factor[0],
+                                            factor[1]);
                 // Scale the panel widget - delegated to implementations.
                 scalePanel(toWidth,
                            toHeight);

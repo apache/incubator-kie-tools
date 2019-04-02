@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 
@@ -47,11 +48,19 @@ public class KeyEventHandler {
     private boolean enabled = true;
     private KeyboardEvent.Key[] _keys;
     private Timer timer;
+    private int delay = KEYS_TIMER_DELAY;
 
-    public void addKeyShortcutCallback(final KeyboardControl.KeyShortcutCallback shortcutCallback) {
+    public KeyEventHandler addKeyShortcutCallback(final KeyboardControl.KeyShortcutCallback shortcutCallback) {
         this.shortcutCallbacks.add(shortcutCallback);
+        return this;
     }
 
+    public KeyEventHandler setTimerDelay(final int millis) {
+        this.delay = millis;
+        return this;
+    }
+
+    @PreDestroy
     public void clear() {
         if (null != timer && timer.isRunning()) {
             timer.cancel();
@@ -90,6 +99,7 @@ public class KeyEventHandler {
             return;
         }
         keys.remove(key);
+        shortcutCallbacks.stream().forEach(s -> s.onKeyUp(key));
     }
 
     private void startKeysTimer(final KeyboardEvent.Key key) {
@@ -103,7 +113,7 @@ public class KeyEventHandler {
                 }
             };
         }
-        timer.schedule(KEYS_TIMER_DELAY);
+        timer.schedule(delay);
     }
 
     void keysTimerTimeIsUp() {

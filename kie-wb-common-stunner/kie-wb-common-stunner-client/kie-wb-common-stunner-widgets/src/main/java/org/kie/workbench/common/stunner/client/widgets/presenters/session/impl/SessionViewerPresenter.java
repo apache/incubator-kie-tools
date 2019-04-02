@@ -27,6 +27,7 @@ import javax.inject.Inject;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.client.widgets.event.SessionDiagramOpenedEvent;
 import org.kie.workbench.common.stunner.client.widgets.event.SessionFocusedEvent;
+import org.kie.workbench.common.stunner.client.widgets.event.SessionLostFocusEvent;
 import org.kie.workbench.common.stunner.client.widgets.notification.NotificationsObserver;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionDiagramPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionDiagramViewer;
@@ -35,7 +36,8 @@ import org.kie.workbench.common.stunner.client.widgets.toolbar.Toolbar;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.impl.ViewerToolbar;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistries;
+import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasFocusedEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasLostFocusEvent;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -68,7 +70,9 @@ public class SessionViewerPresenter<S extends ViewerSession>
                                   final Event<SessionDiagramOpenedEvent> sessionDiagramOpenedEvent,
                                   final NotificationsObserver notificationsObserver,
                                   final Event<SessionFocusedEvent> sessionFocusedEvent,
-                                  final StunnerPreferencesRegistries preferencesRegistries,
+                                  Event<CanvasFocusedEvent> canvasFocusedEvent,
+                                  final Event<SessionLostFocusEvent> sessionLostFocusEvent,
+                                  final Event<CanvasLostFocusEvent> canvasLostFocusEventEvent,
                                   final View view) {
         super(definitionUtils,
               sessionManager,
@@ -76,7 +80,9 @@ public class SessionViewerPresenter<S extends ViewerSession>
               null,
               notificationsObserver,
               sessionFocusedEvent,
-              preferencesRegistries);
+              canvasFocusedEvent,
+              sessionLostFocusEvent,
+              canvasLostFocusEventEvent);
         this.viewer = viewer;
         this.toolbars = toolbars;
         this.sessionDiagramOpenedEvent = sessionDiagramOpenedEvent;
