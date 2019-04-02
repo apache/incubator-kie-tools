@@ -144,11 +144,6 @@ public class ScrollablePanelHandler
                 refreshScrollPosition();
             }
 
-            @Override
-            protected Viewport getLayerViewport()
-            {
-                return getViewport();
-            }
         };
     }
 

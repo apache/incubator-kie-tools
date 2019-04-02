@@ -37,6 +37,10 @@ public class MousePanMediator extends AbstractMediator
 
     private boolean   m_dragging         = false;
 
+    private boolean   m_xconstrained     = false;
+
+    private boolean   m_yconstrained     = false;
+
     private Transform m_inverseTransform = null;
 
     public MousePanMediator()
@@ -46,6 +50,28 @@ public class MousePanMediator extends AbstractMediator
     public MousePanMediator(final IEventFilter... filters)
     {
         setEventFilter(EventFilter.and(filters));
+    }
+
+    public MousePanMediator setXConstrained(final boolean m_constrained)
+    {
+        this.m_xconstrained = m_constrained;
+        return this;
+    }
+
+    public boolean isXConstrained()
+    {
+        return m_xconstrained;
+    }
+
+    public MousePanMediator setYConstrained(final boolean m_constrained)
+    {
+        this.m_yconstrained = m_constrained;
+        return this;
+    }
+
+    public boolean isYConstrained()
+    {
+        return m_yconstrained;
     }
 
     @Override
@@ -110,11 +136,15 @@ public class MousePanMediator extends AbstractMediator
 
     protected void onMouseMove(final NodeMouseMoveEvent event)
     {
+        final Transform transform = getTransform();
         final Point2D curr = new Point2D(event.getX(), event.getY());
 
         m_inverseTransform.transform(curr, curr);
 
-        setTransform(getTransform().copy().translate(curr.getX() - m_last.getX(), curr.getY() - m_last.getY()));
+        final double x = m_xconstrained && transform.getTranslateX() > 0 ? getTransform().getTranslateX() * -1 : curr.getX() - m_last.getX();
+        final double y = m_yconstrained && transform.getTranslateY() > 0 ? getTransform().getTranslateY() * -1 : curr.getY() - m_last.getY();
+
+        setTransform(getTransform().copy().translate(x, y));
 
         m_last = curr;
 

@@ -443,7 +443,7 @@ public class ScrollablePanel extends LienzoBoundsPanel
         return scrollHandler;
     }
 
-    AbsolutePanel getRootPanel()
+    public AbsolutePanel getRootPanel()
     {
         return rootPanel;
     }

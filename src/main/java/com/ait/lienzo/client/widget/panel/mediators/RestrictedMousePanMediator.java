@@ -22,11 +22,9 @@ import com.ait.lienzo.client.core.event.NodeMouseUpEvent;
 import com.ait.lienzo.client.core.mediator.AbstractMediator;
 import com.ait.lienzo.client.core.mediator.IEventFilter;
 import com.ait.lienzo.client.core.shape.Layer;
-import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.client.widget.panel.LienzoBoundsPanel;
-import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.shared.GwtEvent;
 
 /**
@@ -71,17 +69,6 @@ public class RestrictedMousePanMediator extends AbstractMediator
     public void cancel()
     {
         m_dragging = false;
-        setCursor(Style.Cursor.DEFAULT);
-    }
-
-    protected void setCursor(final Style.Cursor cursor)
-    {
-        getLayerViewport().getElement().getStyle().setCursor(cursor);
-    }
-
-    protected Viewport getLayerViewport()
-    {
-        return getLayer().getViewport();
     }
 
     Layer getLayer()
@@ -140,8 +127,6 @@ public class RestrictedMousePanMediator extends AbstractMediator
 
         m_inverseTransform.transform(m_last,
                                      m_last);
-
-        setCursor(Style.Cursor.MOVE);
     }
 
     protected void onMouseMove(final NodeMouseMoveEvent event)

@@ -586,14 +586,7 @@ public final class LienzoCore
 
     public final LienzoCore setDefaultNormalCursor(final Cursor cursor)
     {
-        if (null != cursor)
-        {
-            m_normal_cursor = cursor;
-        }
-        else
-        {
-            m_normal_cursor = Cursor.DEFAULT;
-        }
+        m_normal_cursor = cursor;
         return this;
     }
 
@@ -602,16 +595,9 @@ public final class LienzoCore
         return m_normal_cursor;
     }
 
-    public final LienzoCore setSefaultSelectCursor(final Cursor cursor)
+    public final LienzoCore setDefaultSelectCursor(final Cursor cursor)
     {
-        if (null != cursor)
-        {
-            m_select_cursor = cursor;
-        }
-        else
-        {
-            m_select_cursor = Cursor.CROSSHAIR;
-        }
+        m_select_cursor = cursor;
         return this;
     }
 

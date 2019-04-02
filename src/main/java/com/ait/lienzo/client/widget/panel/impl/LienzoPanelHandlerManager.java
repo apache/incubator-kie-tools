@@ -31,7 +31,6 @@ import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.dom.client.Touch;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.shared.GwtEvent;
@@ -489,23 +488,7 @@ public final class LienzoPanelHandlerManager
         {
             doDragMove(event);
 
-            Cursor cursor = m_lienzo.getNormalCursor();
-
-            if (null == cursor)
-            {
-                cursor = LienzoCore.get().getDefaultNormalCursor();
-
-                if (null == cursor)
-                {
-                    cursor = m_lienzo.getWidgetCursor();
-
-                    if (null == cursor)
-                    {
-                        cursor = Cursor.DEFAULT;
-                    }
-                }
-            }
-            m_lienzo.setCursor(cursor);
+            m_lienzo.setCursor(LienzoCore.get().getDefaultNormalCursor());
 
             m_drag_node.fireEvent(new NodeDragEndEvent(m_dragContext));
 
@@ -540,18 +523,8 @@ public final class LienzoPanelHandlerManager
         {
             doDragCancel(event);
         }
-        Cursor cursor = m_lienzo.getSelectCursor();
 
-        if (null == cursor)
-        {
-            cursor = LienzoCore.get().getDefaultSelectCursor();
-
-            if (null == cursor)
-            {
-                cursor = Cursor.CROSSHAIR;
-            }
-        }
-        m_lienzo.setCursor(cursor);
+        m_lienzo.setCursor(LienzoCore.get().getDefaultSelectCursor());
 
         m_drag_node = node;
 

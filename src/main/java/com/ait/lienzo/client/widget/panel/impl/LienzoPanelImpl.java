@@ -24,7 +24,6 @@ import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.shape.Scene;
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Transform;
-import com.ait.lienzo.client.core.util.CursorMap;
 import com.ait.lienzo.client.widget.DragMouseControl;
 import com.ait.lienzo.client.widget.panel.LienzoPanel;
 import com.ait.lienzo.shared.core.types.AutoScaleType;
@@ -59,14 +58,6 @@ public class LienzoPanelImpl extends LienzoPanel<LienzoPanelImpl>
     private       AutoScaleType             m_auto;
 
     private       LienzoPanelHandlerManager m_events;
-
-    private       Cursor                    m_widget_cursor;
-
-    private       Cursor                    m_active_cursor;
-
-    private       Cursor                    m_normal_cursor;
-
-    private       Cursor                    m_select_cursor;
 
     private       DragMouseControl          m_drag_mouse_control;
 
@@ -127,8 +118,6 @@ public class LienzoPanelImpl extends LienzoPanel<LienzoPanelImpl>
 
             setPixelSize(wide, high);
 
-            m_widget_cursor = CursorMap.get().lookup(getElement().getStyle().getCursor());
-
             m_events = new LienzoPanelHandlerManager(this);
         }
         else
@@ -176,10 +165,6 @@ public class LienzoPanelImpl extends LienzoPanel<LienzoPanelImpl>
         m_auto = null;
         m_events.destroy();
         m_events = null;
-        m_widget_cursor = null;
-        m_active_cursor = null;
-        m_normal_cursor = null;
-        m_select_cursor = null;
         m_drag_mouse_control = null;
     }
 
@@ -316,56 +301,18 @@ public class LienzoPanelImpl extends LienzoPanel<LienzoPanelImpl>
      */
     public LienzoPanelImpl setCursor(final Cursor cursor)
     {
-        if ((cursor != null) && (cursor != m_active_cursor))
+        getElement().getStyle().setCursor(cursor);
+
+        // Need to defer this, sometimes, if the browser is busy, etc, changing cursors does not take effect till events are done processing
+        Scheduler.get().scheduleDeferred(new ScheduledCommand()
         {
-            m_active_cursor = cursor;
-
-            // Need to defer this, sometimes, if the browser is busy, etc, changing cursors does not take effect till events are done processing
-
-            Scheduler.get().scheduleDeferred(new ScheduledCommand()
+            @Override
+            public void execute()
             {
-                @Override
-                public void execute()
-                {
-                    getElement().getStyle().setCursor(m_active_cursor);
-                }
-            });
-        }
+                getElement().getStyle().setCursor(cursor);
+            }
+        });
         return this;
-    }
-
-    public LienzoPanelImpl setNormalCursor(final Cursor cursor)
-    {
-        m_normal_cursor = cursor;
-
-        return this;
-    }
-
-    public Cursor getNormalCursor()
-    {
-        return m_normal_cursor;
-    }
-
-    public LienzoPanelImpl setSelectCursor(final Cursor cursor)
-    {
-        m_select_cursor = cursor;
-
-        return this;
-    }
-
-    public Cursor getSelectCursor()
-    {
-        return m_select_cursor;
-    }
-
-    public Cursor getActiveCursor()
-    {
-        return m_active_cursor;
-    }
-
-    public Cursor getWidgetCursor()
-    {
-        return m_widget_cursor;
     }
 
     /**

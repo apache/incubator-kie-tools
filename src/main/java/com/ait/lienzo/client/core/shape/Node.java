@@ -89,6 +89,7 @@ import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.lienzo.shared.core.types.NodeType;
 import com.ait.tooling.common.api.java.util.UUID;
+import com.ait.tooling.common.api.java.util.function.Supplier;
 import com.ait.tooling.nativetools.client.NObject;
 import com.ait.tooling.nativetools.client.NObjectJSO;
 import com.ait.tooling.nativetools.client.collection.MetaData;
@@ -480,7 +481,19 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
     @Override
     public void drawWithTransforms(final Context2D context, final double alpha, final BoundingBox bounds)
     {
-        if ((context.isSelection()) && (false == isListening()))
+        drawWithTransforms(context,
+                           alpha,
+                           bounds,
+                           new Supplier<Transform>() {
+                               @Override
+                               public Transform get() {
+                                   return getPossibleNodeTransform();
+                               }});
+    }
+
+    public void drawWithTransforms(final Context2D context, final double alpha, final BoundingBox bounds, final Supplier<Transform> transformSupplier)
+    {
+        if ((context.isSelection()) && (!isListening()))
         {
             return;
         }
@@ -488,7 +501,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>
         {
             context.saveContainer(getID());
 
-            final Transform xfrm = getPossibleNodeTransform();
+            final Transform xfrm = transformSupplier.get();
 
             if (null != xfrm)
             {

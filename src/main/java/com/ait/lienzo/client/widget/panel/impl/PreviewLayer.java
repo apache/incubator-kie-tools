@@ -19,6 +19,7 @@ package com.ait.lienzo.client.widget.panel.impl;
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.types.BoundingBox;
+import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.client.widget.panel.Bounds;
 import com.ait.lienzo.shared.core.types.ColorName;
 import com.ait.tooling.common.api.java.util.function.Supplier;
@@ -42,13 +43,15 @@ public class PreviewLayer extends Layer
         setListening(true);
     }
 
+
     @Override
     public void drawWithTransforms(final Context2D context,
                                    final double alpha,
-                                   final BoundingBox bounds)
+                                   final BoundingBox bounds,
+                                   final Supplier<Transform> transformSupplier)
     {
         drawBackground(context);
-        super.drawWithTransforms(context, alpha, bounds);
+        super.drawWithTransforms(context, alpha, bounds, transformSupplier);
     }
 
     private void drawBackground(final Context2D context)

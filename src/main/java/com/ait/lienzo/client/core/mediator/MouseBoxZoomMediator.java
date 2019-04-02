@@ -24,6 +24,7 @@ import com.ait.lienzo.client.core.shape.Rectangle;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.shared.core.types.Color;
+import com.ait.tooling.common.api.java.util.function.Consumer;
 import com.google.gwt.event.shared.GwtEvent;
 
 /**
@@ -58,6 +59,21 @@ public class MouseBoxZoomMediator extends AbstractMediator
     private Rectangle m_rectangle        = null;
 
     private boolean   m_addedRectangle   = false;
+
+    private Runnable m_onCancel          = new Runnable()
+    {
+        @Override
+        public void run() {
+
+        }
+    };
+
+    private Consumer<Transform> m_onTransform     = new Consumer<Transform>()
+    {
+        @Override
+        public void accept(Transform transform) {
+        }
+    };
 
     public MouseBoxZoomMediator()
     {
@@ -118,6 +134,30 @@ public class MouseBoxZoomMediator extends AbstractMediator
         m_rectangle = r;
 
         return this;
+    }
+
+    public MouseBoxZoomMediator setOnTransform(final Consumer<Transform> m_onTransform)
+    {
+        this.m_onTransform = m_onTransform;
+
+        return this;
+    }
+
+    public Consumer<Transform> getOnTransform()
+    {
+        return m_onTransform;
+    }
+
+    public MouseBoxZoomMediator setOnCancel(final Runnable m_onCancel)
+    {
+        this.m_onCancel = m_onCancel;
+
+        return this;
+    }
+
+    public Runnable getOnCancel()
+    {
+        return m_onCancel;
     }
 
     @Override
@@ -269,9 +309,15 @@ public class MouseBoxZoomMediator extends AbstractMediator
 
         if (scale > m_maxScale)
         {
-            return;// zoomed in too far
+            m_onCancel.run();
+            return;
         }
-        setTransform(createTransform(x, y, dx, dy));
+
+        Transform transform = createTransform(x, y, dx, dy);
+
+        setTransform(transform);
+
+        m_onTransform.accept(transform);
 
         if (isBatchDraw())
         {
