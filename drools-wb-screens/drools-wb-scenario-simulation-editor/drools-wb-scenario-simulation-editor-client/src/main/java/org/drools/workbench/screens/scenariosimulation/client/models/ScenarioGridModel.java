@@ -454,7 +454,7 @@ public class ScenarioGridModel extends BaseGridData {
         FactMapping factMappingToEdit = simulationDescriptor.getFactMappingByIndex(columnIndex);
         ScenarioHeaderMetaData.MetadataType metadataType = editedMetadata.getMetadataType();
         IntStream.range(0, getColumnCount()).forEach(index -> updateFactMapping(simulationDescriptor, factMappingToEdit, index, value, metadataType));
-        if (editedMetadata.isInstanceHeader()) {
+        if (editedMetadata.getMetadataType().equals(ScenarioHeaderMetaData.MetadataType.INSTANCE)) {
             eventBus.fireEvent(new ReloadRightPanelEvent(false));
         }
     }

@@ -57,8 +57,8 @@ public class ScenarioHeaderTextAreaDOMElement extends ScenarioCellTextAreaDOMEle
         final int rowIndex = context.getRowIndex();
         final int columnIndex = context.getColumnIndex();
         try {
-            boolean isInstanceHeader = scenarioHeaderMetaData != null && scenarioHeaderMetaData.isInstanceHeader();
-            boolean isPropertyHeader = scenarioHeaderMetaData != null && scenarioHeaderMetaData.isPropertyHeader();
+            boolean isInstanceHeader = scenarioHeaderMetaData != null && Objects.equals(scenarioHeaderMetaData.getMetadataType(), ScenarioHeaderMetaData.MetadataType.INSTANCE);
+            boolean isPropertyHeader = scenarioHeaderMetaData != null && Objects.equals(scenarioHeaderMetaData.getMetadataType(), ScenarioHeaderMetaData.MetadataType.PROPERTY);
             ((ScenarioGrid)gridWidget).getEventBus().fireEvent(new SetHeaderCellValueEvent(rowIndex, columnIndex, value, isInstanceHeader, isPropertyHeader));
             ((ScenarioGrid)gridWidget).getEventBus().fireEvent(new ReloadRightPanelEvent(true));
         } catch (Exception e) {

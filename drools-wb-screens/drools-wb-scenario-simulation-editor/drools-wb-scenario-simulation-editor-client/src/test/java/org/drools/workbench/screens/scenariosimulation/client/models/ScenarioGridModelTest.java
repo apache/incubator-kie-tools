@@ -117,15 +117,11 @@ public class ScenarioGridModelTest extends AbstractScenarioSimulationTest {
         doReturn(gridCellValueMock).when(gridCellMock).getValue();
 
         when(informationHeaderMetaDataMock.getMetadataType()).thenReturn(ScenarioHeaderMetaData.MetadataType.INSTANCE);
-        when(informationHeaderMetaDataMock.isInstanceHeader()).thenReturn(true);
-        when(informationHeaderMetaDataMock.isPropertyHeader()).thenReturn(false);
         when(informationHeaderMetaDataMock.getTitle()).thenReturn(GRID_COLUMN_TITLE);
         when(informationHeaderMetaDataMock.getColumnGroup()).thenReturn(GRID_COLUMN_GROUP);
         when(informationHeaderMetaDataMock.getColumnId()).thenReturn(GRID_COLUMN_ID);
 
         when(propertyHeaderMetaDataMock.getMetadataType()).thenReturn(ScenarioHeaderMetaData.MetadataType.PROPERTY);
-        when(propertyHeaderMetaDataMock.isInstanceHeader()).thenReturn(false);
-        when(propertyHeaderMetaDataMock.isPropertyHeader()).thenReturn(true);
         when(propertyHeaderMetaDataMock.getTitle()).thenReturn(GRID_PROPERTY_TITLE);
         when(propertyHeaderMetaDataMock.getColumnGroup()).thenReturn(GRID_COLUMN_GROUP);
         when(propertyHeaderMetaDataMock.getColumnId()).thenReturn(GRID_COLUMN_ID);

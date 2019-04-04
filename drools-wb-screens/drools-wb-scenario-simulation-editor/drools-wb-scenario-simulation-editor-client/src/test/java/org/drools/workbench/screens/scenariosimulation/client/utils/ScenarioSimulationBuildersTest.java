@@ -67,7 +67,7 @@ public class ScenarioSimulationBuildersTest extends AbstractUtilsTest {
         assertNotNull(headerMetaData);
         assertEquals(COLUMN_INSTANCE_TITLE_FIRST, headerMetaData.getTitle());
         assertEquals(COLUMN_GROUP_FIRST, headerMetaData.getColumnGroup());
-        assertTrue(headerMetaData.isInstanceHeader());
+        assertTrue(headerMetaData.getMetadataType().equals(ScenarioHeaderMetaData.MetadataType.INSTANCE));
         assertFalse(headerMetaData.isReadOnly());
     }
 }

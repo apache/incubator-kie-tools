@@ -16,6 +16,8 @@
 
 package org.drools.workbench.screens.scenariosimulation.client.menu;
 
+import java.util.Objects;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -239,10 +241,10 @@ public class ScenarioContextMenuRegistry {
                 }
                 break;
             case "GIVEN":
-                givenContextMenu.show(left, top, uiColumnIndex, group, columnMetadata.isPropertyHeader());
+                givenContextMenu.show(left, top, uiColumnIndex, group, Objects.equals(columnMetadata.getMetadataType(), ScenarioHeaderMetaData.MetadataType.PROPERTY));
                 break;
             case "EXPECT":
-                expectedContextMenu.show(left, top, uiColumnIndex, group, columnMetadata.isPropertyHeader());
+                expectedContextMenu.show(left, top, uiColumnIndex, group, Objects.equals(columnMetadata.getMetadataType(), ScenarioHeaderMetaData.MetadataType.PROPERTY));
                 break;
             default:
                 otherContextMenu.show(left, top);

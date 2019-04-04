@@ -163,7 +163,7 @@ public class ScenarioSimulationGridHeaderUtilitiesTest extends AbstractScenarioS
 
     @Test
     public void testEnableRightPanelEventPropertyHeaderPropertyNotAssigned() {
-        when(clickedScenarioHeaderMetadataMock.isPropertyHeader()).thenReturn(true);
+        when(clickedScenarioHeaderMetadataMock.getMetadataType()).thenReturn(ScenarioHeaderMetaData.MetadataType.PROPERTY);
         when(scenarioGridColumnOne.isInstanceAssigned()).thenReturn(true);
 
         final EnableRightPanelEvent event = ScenarioSimulationGridHeaderUtilities.getEnableRightPanelEvent(scenarioGridMock,
