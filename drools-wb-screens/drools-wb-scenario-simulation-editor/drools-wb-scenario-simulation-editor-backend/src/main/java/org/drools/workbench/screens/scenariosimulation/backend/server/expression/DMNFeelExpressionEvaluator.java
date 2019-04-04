@@ -38,21 +38,21 @@ public class DMNFeelExpressionEvaluator extends AbstractExpressionEvaluator {
     }
 
     @Override
-    public boolean evaluate(Object rawExpression, Object resultValue, Class<?> resultClass) {
+    public boolean evaluateUnaryExpression(Object rawExpression, Object resultValue, Class<?> resultClass) {
         if (rawExpression != null && !(rawExpression instanceof String)) {
             throw new IllegalArgumentException("Raw expression should be a string");
         }
 
-        return internalEvaluate(rawExpression, resultValue, resultClass);
+        return commonEvaluateUnaryExpression(rawExpression, resultValue, resultClass);
     }
 
     @Override
-    public Object getValueForGiven(String className, List<String> genericClasses, Object raw) {
+    public Object evaluateLiteralExpression(String className, List<String> genericClasses, Object raw) {
         if (!(raw instanceof String)) {
             return raw;
         }
 
-        return internalGetValueForGiven(className, genericClasses, (String) raw);
+        return commonEvaluationLiteralExpression(className, genericClasses, (String) raw);
     }
 
     private EvaluationContext newEvaluationContext() {
@@ -60,7 +60,7 @@ public class DMNFeelExpressionEvaluator extends AbstractExpressionEvaluator {
     }
 
     @Override
-    protected Object internalLiteralEvaluate(String raw, String className) {
+    protected Object internalLiteralEvaluation(String raw, String className) {
         EvaluationContext evaluationContext = newEvaluationContext();
         return feel.evaluate(raw, evaluationContext);
     }

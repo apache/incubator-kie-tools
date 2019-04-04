@@ -20,7 +20,7 @@ import java.util.List;
 
 public interface ExpressionEvaluator {
 
-    boolean evaluate(Object rawExpression, Object resultValue, Class<?> resultClass);
+    boolean evaluateUnaryExpression(Object rawExpression, Object resultValue, Class<?> resultClass);
 
-    Object getValueForGiven(String className, List<String> genericClasses, Object raw);
+    Object evaluateLiteralExpression(String className, List<String> genericClasses, Object raw);
 }

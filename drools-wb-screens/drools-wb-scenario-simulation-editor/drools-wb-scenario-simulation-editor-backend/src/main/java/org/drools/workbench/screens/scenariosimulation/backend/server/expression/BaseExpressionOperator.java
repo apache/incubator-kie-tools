@@ -70,7 +70,7 @@ public enum BaseExpressionOperator {
     },
     EQUALS(2, "=") {
         @Override
-        protected Object getValueForGiven(String className, String value, ClassLoader classLoader) {
+        protected Object evaluateLiteralExpression(String className, String value, ClassLoader classLoader) {
             String returnValue = removeOperator(value);
 
             // "null" string is converted to null
@@ -84,7 +84,7 @@ public enum BaseExpressionOperator {
         public boolean eval(Object rawValue, Object resultValue, Class<?> resultClass, ClassLoader classLoader) {
             Object parsedResults = rawValue;
             if (parsedResults instanceof String) {
-                parsedResults = getValueForGiven(resultClass != null ? resultClass.getCanonicalName() : null, (String) rawValue, classLoader);
+                parsedResults = evaluateLiteralExpression(resultClass != null ? resultClass.getCanonicalName() : null, (String) rawValue, classLoader);
             }
             if (parsedResults == null) {
                 return resultValue == null;
@@ -168,7 +168,7 @@ public enum BaseExpressionOperator {
 
     protected abstract boolean eval(Object rawValue, Object resultValue, Class<?> resultClass, ClassLoader classLoader);
 
-    protected Object getValueForGiven(String className, String value, ClassLoader classLoader) {
+    protected Object evaluateLiteralExpression(String className, String value, ClassLoader classLoader) {
         throw new IllegalStateException("This operator cannot be used into a Given clause");
     }
 

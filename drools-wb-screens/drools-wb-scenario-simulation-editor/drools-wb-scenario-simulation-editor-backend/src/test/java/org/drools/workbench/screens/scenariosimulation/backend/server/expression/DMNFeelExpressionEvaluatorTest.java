@@ -33,23 +33,23 @@ public class DMNFeelExpressionEvaluatorTest {
     DMNFeelExpressionEvaluator expressionEvaluator = new DMNFeelExpressionEvaluator(this.getClass().getClassLoader());
 
     @Test
-    public void evaluate() {
-        assertTrue(expressionEvaluator.evaluate("not( true )", false, boolean.class));
-        assertTrue(expressionEvaluator.evaluate(">2, >5", BigDecimal.valueOf(6), BigDecimal.class));
-        assertThatThrownBy(() -> expressionEvaluator.evaluate(new Object(), null, Object.class))
+    public void evaluateUnaryExpression() {
+        assertTrue(expressionEvaluator.evaluateUnaryExpression("not( true )", false, boolean.class));
+        assertTrue(expressionEvaluator.evaluateUnaryExpression(">2, >5", BigDecimal.valueOf(6), BigDecimal.class));
+        assertThatThrownBy(() -> expressionEvaluator.evaluateUnaryExpression(new Object(), null, Object.class))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Raw expression should be a string");
 
-        assertThatThrownBy(() -> expressionEvaluator.evaluate("! true", null, null))
+        assertThatThrownBy(() -> expressionEvaluator.evaluateUnaryExpression("! true", null, null))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Impossible to parse the expression '! true'");
     }
 
     @Test
-    public void getValueForGiven() {
-        assertEquals(BigDecimal.valueOf(5), expressionEvaluator.getValueForGiven(BigDecimal.class.getCanonicalName(), null, "2 + 3"));
+    public void evaluateLiteralExpression() {
+        assertEquals(BigDecimal.valueOf(5), expressionEvaluator.evaluateLiteralExpression(BigDecimal.class.getCanonicalName(), null, "2 + 3"));
         Object nonStringObject = new Object();
-        assertEquals(nonStringObject, expressionEvaluator.getValueForGiven("class", null, nonStringObject));
+        assertEquals(nonStringObject, expressionEvaluator.evaluateLiteralExpression("class", null, nonStringObject));
     }
 
     @SuppressWarnings("unchecked")

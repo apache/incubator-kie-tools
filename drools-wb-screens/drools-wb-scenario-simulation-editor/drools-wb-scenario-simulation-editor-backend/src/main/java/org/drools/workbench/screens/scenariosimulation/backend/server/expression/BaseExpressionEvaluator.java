@@ -37,21 +37,21 @@ public class BaseExpressionEvaluator extends AbstractExpressionEvaluator {
 
     @SuppressWarnings("unchecked")
     @Override
-    public boolean evaluate(Object raw, Object resultValue, Class<?> resultClass) {
+    public boolean evaluateUnaryExpression(Object raw, Object resultValue, Class<?> resultClass) {
         if (!(raw instanceof String)) {
             return BaseExpressionOperator.EQUALS.eval(raw, resultValue, resultClass, classLoader);
         }
 
-        return internalEvaluate(raw, resultValue, resultClass);
+        return commonEvaluateUnaryExpression(raw, resultValue, resultClass);
     }
 
     @Override
-    public Object getValueForGiven(String className, List<String> genericClasses, Object raw) {
+    public Object evaluateLiteralExpression(String className, List<String> genericClasses, Object raw) {
         if (!(raw instanceof String)) {
             return raw;
         }
 
-        return internalGetValueForGiven(className, genericClasses, (String) raw);
+        return commonEvaluationLiteralExpression(className, genericClasses, (String) raw);
     }
 
     @Override
@@ -63,8 +63,8 @@ public class BaseExpressionEvaluator extends AbstractExpressionEvaluator {
     }
 
     @Override
-    protected Object internalLiteralEvaluate(String rawValue, String className) {
-        return BaseExpressionOperator.findOperator(rawValue).getValueForGiven(className, rawValue, classLoader);
+    protected Object internalLiteralEvaluation(String rawValue, String className) {
+        return BaseExpressionOperator.findOperator(rawValue).evaluateLiteralExpression(className, rawValue, classLoader);
     }
 
     @Override

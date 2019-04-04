@@ -101,13 +101,13 @@ public class ParameterizedBaseExpressionEvaluatorTest {
     public Class<?> clazz;
 
     @Test
-    public void evaluate() {
+    public void evaluateUnaryExpression() {
 
         if (!(resultValue instanceof Class)) {
-            assertEquals(expectedResult, baseExpressionEvaluator.evaluate(exprToTest, resultValue, clazz));
+            assertEquals(expectedResult, baseExpressionEvaluator.evaluateUnaryExpression(exprToTest, resultValue, clazz));
         } else {
             try {
-                baseExpressionEvaluator.evaluate(exprToTest, true, clazz);
+                baseExpressionEvaluator.evaluateUnaryExpression(exprToTest, true, clazz);
                 fail();
             } catch (Exception ignored) {
             }

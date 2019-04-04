@@ -108,12 +108,12 @@ public class AbstractExpressionEvaluatorTest {
     AbstractExpressionEvaluator expressionEvaluatorMock = new AbstractExpressionEvaluator() {
 
         @Override
-        public boolean evaluate(Object rawExpression, Object resultValue, Class<?> resultClass) {
+        public boolean evaluateUnaryExpression(Object rawExpression, Object resultValue, Class<?> resultClass) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public Object getValueForGiven(String className, List<String> genericClasses, Object raw) {
+        public Object evaluateLiteralExpression(String className, List<String> genericClasses, Object raw) {
             throw new UnsupportedOperationException();
         }
 
@@ -128,7 +128,7 @@ public class AbstractExpressionEvaluatorTest {
         }
 
         @Override
-        protected Object internalLiteralEvaluate(String raw, String className) {
+        protected Object internalLiteralEvaluation(String raw, String className) {
             return raw;
         }
 

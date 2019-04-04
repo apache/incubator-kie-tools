@@ -32,19 +32,19 @@ public class BaseExpressionEvaluatorTest {
     private final static ClassLoader classLoader = BaseExpressionEvaluatorTest.class.getClassLoader();
 
     @Test
-    public void getValueForGiven() {
+    public void evaluateLiteralExpression() {
         BaseExpressionEvaluator baseExpressionEvaluator = new BaseExpressionEvaluator(classLoader);
 
         Object raw = new Object();
-        assertEquals(raw, baseExpressionEvaluator.getValueForGiven(Object.class.getCanonicalName(), Collections.emptyList(), raw));
+        assertEquals(raw, baseExpressionEvaluator.evaluateLiteralExpression(Object.class.getCanonicalName(), Collections.emptyList(), raw));
 
         raw = "SimpleString";
-        assertEquals(raw, baseExpressionEvaluator.getValueForGiven(String.class.getCanonicalName(), Collections.emptyList(), raw));
+        assertEquals(raw, baseExpressionEvaluator.evaluateLiteralExpression(String.class.getCanonicalName(), Collections.emptyList(), raw));
 
         raw = "= SimpleString";
-        assertEquals("SimpleString", baseExpressionEvaluator.getValueForGiven(String.class.getCanonicalName(), Collections.emptyList(), raw));
+        assertEquals("SimpleString", baseExpressionEvaluator.evaluateLiteralExpression(String.class.getCanonicalName(), Collections.emptyList(), raw));
 
-        assertNull(baseExpressionEvaluator.getValueForGiven(String.class.getCanonicalName(), Collections.emptyList(), null));
+        assertNull(baseExpressionEvaluator.evaluateLiteralExpression(String.class.getCanonicalName(), Collections.emptyList(), null));
     }
 
     @SuppressWarnings("unchecked")

@@ -168,9 +168,9 @@ public abstract class AbstractRunnerHelper {
                     .map(ExpressionElement::getStep).collect(toList());
 
             try {
-                Object value = expressionEvaluator.getValueForGiven(factMapping.getClassName(),
-                                                                    factMapping.getGenericTypes(),
-                                                                    factMappingValue.getRawValue());
+                Object value = expressionEvaluator.evaluateLiteralExpression(factMapping.getClassName(),
+                                                                             factMapping.getGenericTypes(),
+                                                                             factMappingValue.getRawValue());
                 paramsForBean.put(pathToField, value);
             } catch (IllegalArgumentException e) {
                 factMappingValue.setError(true);

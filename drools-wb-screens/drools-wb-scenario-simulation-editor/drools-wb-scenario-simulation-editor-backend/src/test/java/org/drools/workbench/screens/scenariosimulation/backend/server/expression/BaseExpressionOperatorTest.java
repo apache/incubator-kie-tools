@@ -31,21 +31,21 @@ public class BaseExpressionOperatorTest {
     private static final ClassLoader classLoader = BaseExpressionOperatorTest.class.getClassLoader();
 
     @Test
-    public void getValueForGivenTest() {
+    public void evaluateLiteralExpression() {
 
         Arrays.stream(BaseExpressionOperator.values())
                 .filter(e -> !BaseExpressionOperator.EQUALS.equals(e))
                 .forEach(operator -> {
-                    assertThatThrownBy(() -> operator.getValueForGiven(String.class.getCanonicalName(), " Test ", classLoader))
+                    assertThatThrownBy(() -> operator.evaluateLiteralExpression(String.class.getCanonicalName(), " Test ", classLoader))
                             .isInstanceOf(IllegalStateException.class)
                             .hasMessage("This operator cannot be used into a Given clause");
                 });
 
-        Assert.assertEquals("Test", BaseExpressionOperator.EQUALS.getValueForGiven(String.class.getCanonicalName(), "= Test", classLoader));
-        Assert.assertEquals("", BaseExpressionOperator.EQUALS.getValueForGiven(String.class.getCanonicalName(), "= ", classLoader));
-        Assert.assertEquals(null, BaseExpressionOperator.EQUALS.getValueForGiven(String.class.getCanonicalName(), "null", classLoader));
-        Assert.assertEquals(null, BaseExpressionOperator.EQUALS.getValueForGiven(String.class.getCanonicalName(), "= null", classLoader));
-        Assert.assertEquals(null, BaseExpressionOperator.EQUALS.getValueForGiven(String.class.getCanonicalName(), null, classLoader));
+        Assert.assertEquals("Test", BaseExpressionOperator.EQUALS.evaluateLiteralExpression(String.class.getCanonicalName(), "= Test", classLoader));
+        Assert.assertEquals("", BaseExpressionOperator.EQUALS.evaluateLiteralExpression(String.class.getCanonicalName(), "= ", classLoader));
+        Assert.assertEquals(null, BaseExpressionOperator.EQUALS.evaluateLiteralExpression(String.class.getCanonicalName(), "null", classLoader));
+        Assert.assertEquals(null, BaseExpressionOperator.EQUALS.evaluateLiteralExpression(String.class.getCanonicalName(), "= null", classLoader));
+        Assert.assertEquals(null, BaseExpressionOperator.EQUALS.evaluateLiteralExpression(String.class.getCanonicalName(), null, classLoader));
     }
 
     @Test

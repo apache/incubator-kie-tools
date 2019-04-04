@@ -112,7 +112,7 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
         Class<?> resultClass = resultRaw != null ? resultRaw.getClass() : null;
 
         try {
-            return expressionEvaluator.evaluate(expectedResult.getRawValue(), resultRaw, resultClass) ?
+            return expressionEvaluator.evaluateUnaryExpression(expectedResult.getRawValue(), resultRaw, resultClass) ?
                     createResult(resultRaw) :
                     createErrorResult();
         } catch (Exception e) {

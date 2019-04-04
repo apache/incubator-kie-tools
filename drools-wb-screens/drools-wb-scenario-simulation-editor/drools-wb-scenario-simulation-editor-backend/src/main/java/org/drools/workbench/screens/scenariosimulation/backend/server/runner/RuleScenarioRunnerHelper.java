@@ -142,7 +142,7 @@ public class RuleScenarioRunnerHelper extends AbstractRunnerHelper {
             Object resultValue = scenarioBeanWrapper.getBean();
 
             try {
-                return expressionEvaluator.evaluate(expectedResult.getRawValue(), resultValue, scenarioBeanWrapper.getBeanClass()) ?
+                return expressionEvaluator.evaluateUnaryExpression(expectedResult.getRawValue(), resultValue, scenarioBeanWrapper.getBeanClass()) ?
                         createResult(resultValue) :
                         createErrorResult();
             } catch (Exception e) {

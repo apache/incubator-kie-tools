@@ -30,7 +30,7 @@ import org.drools.workbench.screens.scenariosimulation.utils.ScenarioSimulationS
 
 public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator {
 
-    protected boolean internalEvaluate(Object rawExpression, Object resultValue, Class<?> resultClass) {
+    protected boolean commonEvaluateUnaryExpression(Object rawExpression, Object resultValue, Class<?> resultClass) {
         if (resultClass != null && ScenarioSimulationSharedUtils.isCollection(resultClass.getCanonicalName())) {
             return verifyResult(rawExpression, resultValue, resultClass);
         } else {
@@ -38,11 +38,11 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
         }
     }
 
-    protected Object internalGetValueForGiven(String className, List<String> genericClasses, String raw) {
+    protected Object commonEvaluationLiteralExpression(String className, List<String> genericClasses, String raw) {
         if (ScenarioSimulationSharedUtils.isCollection(className)) {
             return convertResult(raw, className, genericClasses);
         } else {
-            return internalLiteralEvaluate(raw, className);
+            return internalLiteralEvaluation(raw, className);
         }
     }
 
@@ -84,7 +84,7 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
             JsonNode jsonNode = element.getValue();
             // if is a simple value just return the parsed result
             if (numberOfFields == 1 && "value".equals(key)) {
-                return internalLiteralEvaluate(jsonNode.textValue(), genericClasses.get(0));
+                return internalLiteralEvaluation(jsonNode.textValue(), genericClasses.get(0));
             }
 
             if (jsonNode.isArray()) {
@@ -99,7 +99,7 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
                 setField(toReturn, key, returnedObject);
             } else if (jsonNode.textValue() != null && !jsonNode.textValue().isEmpty()) {
                 Map.Entry<String, List<String>> fieldDescriptor = getFieldClassNameAndGenerics(toReturn, key, className, genericClasses);
-                setField(toReturn, key, internalLiteralEvaluate(jsonNode.textValue(), fieldDescriptor.getKey()));
+                setField(toReturn, key, internalLiteralEvaluation(jsonNode.textValue(), fieldDescriptor.getKey()));
             } else {
                 // empty strings are skipped
             }
@@ -178,7 +178,7 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
 
     abstract protected boolean internalUnaryEvaluation(String rawExpression, Object resultValue, Class<?> resultClass, boolean skipEmptyString);
 
-    abstract protected Object internalLiteralEvaluate(String raw, String className);
+    abstract protected Object internalLiteralEvaluation(String raw, String className);
 
     abstract protected Object extractFieldValue(Object result, String fieldName);
 
