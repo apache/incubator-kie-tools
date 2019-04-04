@@ -132,6 +132,16 @@
       <artifactId>kie-wb-common-ui</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-project-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-project-client</artifactId>
+    </dependency>
+
     <!-- DMN Editor -->
     <dependency>
       <groupId>org.kie.workbench</groupId>

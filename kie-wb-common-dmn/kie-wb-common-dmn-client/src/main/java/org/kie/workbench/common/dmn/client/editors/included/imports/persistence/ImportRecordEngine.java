@@ -27,6 +27,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.editors.common.messages.FlashMessage;
 import org.kie.workbench.common.dmn.client.editors.common.persistence.RecordEngine;
 import org.kie.workbench.common.dmn.client.editors.included.IncludedModel;
+import org.kie.workbench.common.dmn.client.editors.included.imports.ImportFactory;
 import org.kie.workbench.common.dmn.client.editors.included.imports.IncludedModelsIndex;
 import org.kie.workbench.common.dmn.client.editors.included.imports.IncludedModelsPageStateProviderImpl;
 import org.kie.workbench.common.dmn.client.editors.included.imports.messages.IncludedModelErrorMessageFactory;
@@ -42,16 +43,20 @@ public class ImportRecordEngine implements RecordEngine<IncludedModel> {
 
     private final IncludedModelErrorMessageFactory messageFactory;
 
+    private final ImportFactory importFactory;
+
     private final Event<FlashMessage> flashMessageEvent;
 
     @Inject
     public ImportRecordEngine(final IncludedModelsPageStateProviderImpl stateProvider,
                               final IncludedModelsIndex includedModelsIndex,
                               final IncludedModelErrorMessageFactory messageFactory,
+                              final ImportFactory importFactory,
                               final Event<FlashMessage> flashMessageEvent) {
         this.stateProvider = stateProvider;
         this.includedModelsIndex = includedModelsIndex;
         this.messageFactory = messageFactory;
+        this.importFactory = importFactory;
         this.flashMessageEvent = flashMessageEvent;
     }
 
@@ -72,7 +77,7 @@ public class ImportRecordEngine implements RecordEngine<IncludedModel> {
 
     @Override
     public List<IncludedModel> create(final IncludedModel record) {
-        // TODO: https://issues.jboss.org/browse/DROOLS-3719
+        stateProvider.getImports().add(importFactory.makeImport(record));
         return singletonList(record);
     }
 

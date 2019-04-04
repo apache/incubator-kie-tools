@@ -22,6 +22,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Import;
+import org.kie.workbench.common.dmn.api.property.dmn.LocationURI;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.editors.included.IncludedModel;
 import org.kie.workbench.common.dmn.client.editors.included.imports.persistence.ImportRecordEngine;
@@ -68,6 +69,8 @@ public class IncludedModelsFactoryTest {
         final String path2 = "path2";
         final String uuid1 = "123";
         final String uuid2 = "456";
+        final String uri1 = "/src/main/kie/dmn/1";
+        final String uri2 = "/src/main/kie/dmn/2";
 
         when(nameMock1.getValue()).thenReturn(name1);
         when(nameMock2.getValue()).thenReturn(name2);
@@ -75,6 +78,8 @@ public class IncludedModelsFactoryTest {
         when(import2.getName()).thenReturn(nameMock2);
         when(import1.getNamespace()).thenReturn(path1);
         when(import2.getNamespace()).thenReturn(path2);
+        when(import1.getLocationURI()).thenReturn(new LocationURI(uri1));
+        when(import2.getLocationURI()).thenReturn(new LocationURI(uri2));
         mockStatic(UUID.class);
         when(UUID.uuid()).thenReturn(uuid1, uuid2);
 
@@ -90,8 +95,10 @@ public class IncludedModelsFactoryTest {
         assertEquals(uuid2, includedModel2.getUUID());
         assertEquals(name1, includedModel1.getName());
         assertEquals(name2, includedModel2.getName());
-        assertEquals(path1, includedModel1.getPath());
-        assertEquals(path2, includedModel2.getPath());
+        assertEquals(path1, includedModel1.getNamespace());
+        assertEquals(path2, includedModel2.getNamespace());
+        assertEquals(uri1, includedModel1.getPath());
+        assertEquals(uri2, includedModel2.getPath());
         assertEquals(recordEngine, includedModel1.getRecordEngine());
         assertEquals(recordEngine, includedModel2.getRecordEngine());
     }

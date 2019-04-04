@@ -64,4 +64,7 @@ public interface KieWorkbenchWidgetsConstants {
 
     @TranslationKey(defaultValue = "")
     String AboutPopupView_License = "AboutPopupView.License";
+
+    @TranslationKey(defaultValue = "")
+    String KieAssetsDropdownView_Select = "KieAssetsDropdownView.Select";
 }

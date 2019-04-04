@@ -37,6 +37,12 @@ public class IncludedModelsPageState {
         this.pageProvider = pageProvider;
     }
 
+    public String getCurrentDiagramNamespace() {
+        return getPageProvider()
+                .map(IncludedModelsPageStateProvider::getCurrentDiagramNamespace)
+                .orElse("");
+    }
+
     public List<IncludedModel> generateIncludedModels() {
         return getPageProvider()
                 .map(IncludedModelsPageStateProvider::generateIncludedModels)

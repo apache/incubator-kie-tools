@@ -22,6 +22,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.editors.included.grid.DMNCardsGridComponent;
+import org.kie.workbench.common.dmn.client.editors.included.modal.IncludedModelModal;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
@@ -38,11 +39,14 @@ public class IncludedModelsPagePresenterTest {
     @Mock
     private DMNCardsGridComponent gridComponent;
 
+    @Mock
+    private IncludedModelModal modal;
+
     private IncludedModelsPagePresenter pagePresenter;
 
     @Before
     public void setup() {
-        pagePresenter = new IncludedModelsPagePresenter(view, gridComponent);
+        pagePresenter = new IncludedModelsPagePresenter(view, gridComponent, modal);
     }
 
     @Test
@@ -55,6 +59,7 @@ public class IncludedModelsPagePresenterTest {
 
         verify(view).init(pagePresenter);
         verify(view).setGrid(htmlElement);
+        verify(modal).init(pagePresenter);
     }
 
     @Test
@@ -72,5 +77,11 @@ public class IncludedModelsPagePresenterTest {
     public void testRefresh() {
         pagePresenter.refresh();
         verify(gridComponent).refresh();
+    }
+
+    @Test
+    public void testOpenIncludeModelModal() {
+        pagePresenter.openIncludeModelModal();
+        verify(modal).show();
     }
 }

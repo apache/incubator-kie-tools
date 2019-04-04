@@ -27,6 +27,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.Import;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.editors.common.messages.FlashMessage;
 import org.kie.workbench.common.dmn.client.editors.included.IncludedModel;
+import org.kie.workbench.common.dmn.client.editors.included.imports.ImportFactory;
 import org.kie.workbench.common.dmn.client.editors.included.imports.IncludedModelsIndex;
 import org.kie.workbench.common.dmn.client.editors.included.imports.IncludedModelsPageStateProviderImpl;
 import org.kie.workbench.common.dmn.client.editors.included.imports.messages.IncludedModelErrorMessageFactory;
@@ -59,13 +60,16 @@ public class ImportRecordEngineTest {
     private IncludedModelErrorMessageFactory messageFactory;
 
     @Mock
+    private ImportFactory importFactory;
+
+    @Mock
     private EventSourceMock<FlashMessage> flashMessageEvent;
 
     private ImportRecordEngine recordEngine;
 
     @Before
     public void setup() {
-        recordEngine = spy(new ImportRecordEngine(stateProvider, includedModelsIndex, messageFactory, flashMessageEvent));
+        recordEngine = spy(new ImportRecordEngine(stateProvider, includedModelsIndex, messageFactory, importFactory, flashMessageEvent));
     }
 
     @Test
@@ -223,5 +227,25 @@ public class ImportRecordEngineTest {
 
         assertTrue(valid);
         verifyZeroInteractions(flashMessageEvent);
+    }
+
+    @Test
+    public void testCreate() {
+
+        final IncludedModel record = mock(IncludedModel.class);
+        final Import import1 = mock(Import.class);
+        final Import import2 = mock(Import.class);
+        final Import import3 = mock(Import.class);
+        final List<Import> expectedImports = asList(import1, import2, import3);
+        final List<Import> actualImports = new ArrayList<>(asList(import1, import2));
+
+        when(importFactory.makeImport(record)).thenReturn(import3);
+        when(stateProvider.getImports()).thenReturn(actualImports);
+
+        final List<IncludedModel> actualResult = recordEngine.create(record);
+        final List<IncludedModel> expectedResult = singletonList(record);
+
+        assertEquals(expectedImports, actualImports);
+        assertEquals(expectedResult, actualResult);
     }
 }

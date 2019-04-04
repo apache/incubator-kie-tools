@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.dmn.feel.lang.ast.BaseNode;
 import org.kie.dmn.feel.lang.ast.FunctionInvocationNode;
 import org.kie.dmn.feel.lang.ast.ListNode;
@@ -34,6 +35,7 @@ import org.kie.workbench.common.dmn.api.editors.types.RangeValue;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 
+@Service
 public class DMNParseServiceImpl implements DMNParseService {
 
     @Override

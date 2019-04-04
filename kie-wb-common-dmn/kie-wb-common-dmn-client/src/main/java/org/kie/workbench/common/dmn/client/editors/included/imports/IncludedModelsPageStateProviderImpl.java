@@ -22,6 +22,7 @@ import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.kie.workbench.common.dmn.api.definition.v1_1.Definitions;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Import;
 import org.kie.workbench.common.dmn.client.editors.included.IncludedModel;
 import org.kie.workbench.common.dmn.client.editors.included.IncludedModelsPage;
@@ -51,6 +52,11 @@ public class IncludedModelsPageStateProviderImpl implements IncludedModelsPageSt
     }
 
     @Override
+    public String getCurrentDiagramNamespace() {
+        return getDiagram().map(diagram -> getDefinitions(diagram).getNamespace().getValue()).orElse("");
+    }
+
+    @Override
     public List<IncludedModel> generateIncludedModels() {
         return factory.makeIncludedModels(getImports());
     }
@@ -67,9 +73,11 @@ public class IncludedModelsPageStateProviderImpl implements IncludedModelsPageSt
     }
 
     private List<Import> getImports(final Diagram diagram) {
-        return dmnGraphUtils
-                .getDefinitions(diagram)
-                .getImport();
+        return getDefinitions(diagram).getImport();
+    }
+
+    private Definitions getDefinitions(final Diagram diagram) {
+        return dmnGraphUtils.getDefinitions(diagram);
     }
 
     private Optional<Diagram> getDiagram() {

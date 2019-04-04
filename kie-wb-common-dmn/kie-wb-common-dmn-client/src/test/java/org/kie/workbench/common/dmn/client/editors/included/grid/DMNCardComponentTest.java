@@ -63,6 +63,8 @@ public class DMNCardComponentTest {
         final DMNCardsGridComponent expectedGrid = mock(DMNCardsGridComponent.class);
         final IncludedModel expectedIncludedModel = mock(IncludedModel.class);
 
+        when(expectedIncludedModel.getNamespace()).thenReturn("://namespace");
+
         dmnCard.setup(expectedGrid, expectedIncludedModel);
 
         final DMNCardsGridComponent actualGrid = dmnCard.getGrid();
@@ -81,7 +83,7 @@ public class DMNCardComponentTest {
         final int dataTypesCount = 12;
         final int drgElementsCount = 34;
 
-        when(includedModel.getPath()).thenReturn(path);
+        when(includedModel.getNamespace()).thenReturn(path);
         when(includedModel.getDataTypesCount()).thenReturn(dataTypesCount);
         when(includedModel.getDrgElementsCount()).thenReturn(drgElementsCount);
         doReturn(includedModel).when(dmnCard).getIncludedModel();
@@ -214,5 +216,34 @@ public class DMNCardComponentTest {
 
         verify(includedModel).destroy();
         verify(grid).refresh();
+    }
+
+    @Test
+    public void testGetSubTitleWhenPathIsNotEmpty() {
+
+        final IncludedModel includedModel = mock(IncludedModel.class);
+        final String expected = "/src/path/kie/dmn";
+
+        doReturn(includedModel).when(dmnCard).getIncludedModel();
+        when(includedModel.getPath()).thenReturn(expected);
+
+        final String actual = dmnCard.getSubTitle();
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testGetSubTitleWhenPathIsEmpty() {
+
+        final IncludedModel includedModel = mock(IncludedModel.class);
+        final String expected = "://namespace";
+
+        doReturn(includedModel).when(dmnCard).getIncludedModel();
+        when(includedModel.getPath()).thenReturn("");
+        when(includedModel.getNamespace()).thenReturn(expected);
+
+        final String actual = dmnCard.getSubTitle();
+
+        assertEquals(expected, actual);
     }
 }

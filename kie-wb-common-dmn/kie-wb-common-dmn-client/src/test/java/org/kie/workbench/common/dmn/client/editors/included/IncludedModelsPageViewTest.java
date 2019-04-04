@@ -16,8 +16,10 @@
 
 package org.kie.workbench.common.dmn.client.editors.included;
 
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import elemental2.dom.Element;
+import elemental2.dom.HTMLButtonElement;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 import org.junit.Before;
@@ -35,11 +37,18 @@ public class IncludedModelsPageViewTest {
     @Mock
     private HTMLDivElement grid;
 
+    @Mock
+    private HTMLButtonElement includeModelButton;
+
+    @Mock
+    private IncludedModelsPagePresenter presenter;
+
     private IncludedModelsPageView view;
 
     @Before
     public void setup() {
-        view = new IncludedModelsPageView(grid);
+        view = new IncludedModelsPageView(grid, includeModelButton);
+        view.init(presenter);
     }
 
     @Test
@@ -59,5 +68,11 @@ public class IncludedModelsPageViewTest {
 
         verify(grid).removeChild(currentElement);
         verify(grid).appendChild(gridHTMLElement);
+    }
+
+    @Test
+    public void testOnIncludeModelButtonClick() {
+        view.onIncludeModelButtonClick(mock(ClickEvent.class));
+        verify(presenter).openIncludeModelModal();
     }
 }

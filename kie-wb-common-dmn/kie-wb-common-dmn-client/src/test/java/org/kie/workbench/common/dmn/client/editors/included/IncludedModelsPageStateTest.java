@@ -23,6 +23,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.editors.included.common.IncludedModelsPageStateProvider;
+import org.mockito.Mock;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
@@ -33,6 +34,9 @@ import static org.mockito.Mockito.when;
 @RunWith(GwtMockitoTestRunner.class)
 public class IncludedModelsPageStateTest {
 
+    @Mock
+    private IncludedModelsPageStateProvider pageProvider;
+
     private IncludedModelsPageState state;
 
     @Before
@@ -41,7 +45,32 @@ public class IncludedModelsPageStateTest {
     }
 
     @Test
-    public void testGenerateIncludedModelsWhenPageProviderIsPresent() {
+    public void testGetCurrentDiagramNamespaceWhenPageProviderIsPresent() {
+
+        final String expectedNamespace = "://namespace";
+        when(pageProvider.getCurrentDiagramNamespace()).thenReturn(expectedNamespace);
+
+        state.init(pageProvider);
+
+        final String actualNamespace = state.getCurrentDiagramNamespace();
+
+        assertEquals(expectedNamespace, actualNamespace);
+    }
+
+    @Test
+    public void testGetCurrentDiagramNamespaceWhenPageProviderIsNotPresent() {
+
+        final String expectedNamespace = "";
+
+        state.init(null);
+
+        final String actualNamespace = state.getCurrentDiagramNamespace();
+
+        assertEquals(expectedNamespace, actualNamespace);
+    }
+
+    @Test
+    public void testGenerateIncludedModelsWhenPageProviderIsNotPresent() {
 
         state.init(null);
 
@@ -52,9 +81,8 @@ public class IncludedModelsPageStateTest {
     }
 
     @Test
-    public void testGenerateIncludedModelsWhenPageProviderIsNotPresent() {
+    public void testGenerateIncludedModelsWhenPageProviderIsPresent() {
 
-        final IncludedModelsPageStateProvider pageProvider = mock(IncludedModelsPageStateProvider.class);
         final List<IncludedModel> expectedIncludedModels = asList(mock(IncludedModel.class), mock(IncludedModel.class));
 
         when(pageProvider.generateIncludedModels()).thenReturn(expectedIncludedModels);

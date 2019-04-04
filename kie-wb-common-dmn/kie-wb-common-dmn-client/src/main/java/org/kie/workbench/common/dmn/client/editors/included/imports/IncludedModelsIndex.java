@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.editors.included.imports;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,6 +37,10 @@ public class IncludedModelsIndex {
 
     public Import getImport(final IncludedModel includedModel) {
         return index.get(key(includedModel));
+    }
+
+    public Collection<Import> getIndexedImports() {
+        return index.values();
     }
 
     public void clear() {

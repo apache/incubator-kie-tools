@@ -56,6 +56,7 @@ public class IncludedModelsFactory {
 
         includedModel.setUuid(uuid());
         includedModel.setName(getName(anImport));
+        includedModel.setNamespace(getNamespace(anImport));
         includedModel.setPath(getPath(anImport));
         includedModel.setDataTypesCount(getDataTypesCount());
         includedModel.setDrgElementsCount(getDrgElementsCount());
@@ -78,7 +79,10 @@ public class IncludedModelsFactory {
     }
 
     private String getPath(final Import anImport) {
-        // TODO: The 'namespace' is temporary - https://issues.jboss.org/browse/DROOLS-3722
+        return anImport.getLocationURI().getValue();
+    }
+
+    private String getNamespace(final Import anImport) {
         return anImport.getNamespace();
     }
 

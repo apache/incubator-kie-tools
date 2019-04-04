@@ -24,6 +24,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Definitions;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Import;
+import org.kie.workbench.common.dmn.api.property.dmn.Text;
 import org.kie.workbench.common.dmn.client.editors.included.IncludedModel;
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -92,5 +93,21 @@ public class IncludedModelsPageStateProviderImplTest {
         final List<Import> expectedImports = emptyList();
 
         assertEquals(expectedImports, actualImports);
+    }
+
+    @Test
+    public void testGetCurrentDiagramNamespace() {
+
+        final Diagram diagram = mock(Diagram.class);
+        final Definitions definitions = mock(Definitions.class);
+        final String expectedNamespace = "://namespace";
+
+        stateProvider.withDiagram(diagram);
+        when(dmnGraphUtils.getDefinitions(diagram)).thenReturn(definitions);
+        when(definitions.getNamespace()).thenReturn(new Text(expectedNamespace));
+
+        final String actualNamespace = stateProvider.getCurrentDiagramNamespace();
+
+        assertEquals(expectedNamespace, actualNamespace);
     }
 }

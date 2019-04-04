@@ -24,14 +24,30 @@
     padding: 0 20px;
   }
 
-  [data-field="grid"] {
-    overflow-y: auto;
-    border-top: 1px solid #DEDEDE;
-    margin-top: 15px;
-    display: flex;
+  .content {
+    position: relative;
+    padding-top: 25px;
+
+    [data-field="include-model"] {
+      position: absolute;
+      right: 15px;
+      top: 0;
+    }
+
+    [data-field="grid"] {
+      border-top: 1px solid #DEDEDE;
+      margin-top: 15px;
+    }
 
     &,
-    & > div {
+    [data-field="grid"] {
+      display: flex;
+      overflow-y: auto;
+    }
+
+    &,
+    & > div,
+    & > div > div {
       flex: 1;
     }
   }

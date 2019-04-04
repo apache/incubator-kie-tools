@@ -27,5 +27,7 @@ import org.kie.workbench.common.dmn.client.editors.included.IncludedModelsPage;
  */
 public interface IncludedModelsPageStateProvider {
 
+    String getCurrentDiagramNamespace();
+
     List<IncludedModel> generateIncludedModels();
 }

@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.dmn.client.editors.included.grid;
 
-import java.util.Optional;
 import java.util.function.Function;
 
 import javax.annotation.PostConstruct;
@@ -30,6 +29,7 @@ import org.kie.workbench.common.widgets.client.cards.CardComponent;
 import org.uberfire.client.mvp.UberElemental;
 
 import static org.gwtbootstrap3.client.ui.constants.IconType.DOWNLOAD;
+import static org.kie.workbench.common.stunner.core.util.StringUtils.isEmpty;
 
 public class DMNCardComponent implements CardComponent {
 
@@ -57,7 +57,7 @@ public class DMNCardComponent implements CardComponent {
     }
 
     void refreshView() {
-        contentView.setPath(getTruncatedPath());
+        contentView.setPath(getTruncatedSubTitle());
         contentView.setDataTypesCount(getDataTypesCount());
         contentView.setDrgElementsCount(getDrgElementsCount());
     }
@@ -101,9 +101,16 @@ public class DMNCardComponent implements CardComponent {
         };
     }
 
-    private String getTruncatedPath() {
-        final String path = getIncludedModel().getPath();
-        return Optional.ofNullable(path).map(p -> truncate(path, 60)).orElse("");
+    private String getTruncatedSubTitle() {
+        return truncate(getSubTitle(), 60);
+    }
+
+    String getSubTitle() {
+        if (isEmpty(getIncludedModel().getPath())) {
+            return getIncludedModel().getNamespace();
+        } else {
+            return getIncludedModel().getPath();
+        }
     }
 
     String truncate(final String value,

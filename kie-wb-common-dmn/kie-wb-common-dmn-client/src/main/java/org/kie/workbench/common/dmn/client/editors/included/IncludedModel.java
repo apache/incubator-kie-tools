@@ -23,6 +23,8 @@ public class IncludedModel extends ActiveRecord<IncludedModel> {
 
     private String uuid;
 
+    private String namespace;
+
     private String path;
 
     private String name;
@@ -33,6 +35,14 @@ public class IncludedModel extends ActiveRecord<IncludedModel> {
 
     public IncludedModel(final RecordEngine<IncludedModel> recordEngine) {
         super(recordEngine);
+    }
+
+    public String getNamespace() {
+        return namespace;
+    }
+
+    public void setNamespace(final String namespace) {
+        this.namespace = namespace;
     }
 
     public String getPath() {

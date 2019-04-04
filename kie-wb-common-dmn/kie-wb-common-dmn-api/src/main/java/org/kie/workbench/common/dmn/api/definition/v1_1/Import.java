@@ -81,6 +81,15 @@ public class Import extends NamedElement {
 
         final Import that = (Import) o;
 
+        if (id != null ? !id.equals(that.id) : that.id != null) {
+            return false;
+        }
+        if (description != null ? !description.equals(that.description) : that.description != null) {
+            return false;
+        }
+        if (name != null ? !name.equals(that.name) : that.name != null) {
+            return false;
+        }
         if (namespace != null ? !namespace.equals(that.namespace) : that.namespace != null) {
             return false;
         }
@@ -92,7 +101,10 @@ public class Import extends NamedElement {
 
     @Override
     public int hashCode() {
-        return HashUtil.combineHashCodes(namespace != null ? namespace.hashCode() : 0,
+        return HashUtil.combineHashCodes(id != null ? id.hashCode() : 0,
+                                         description != null ? description.hashCode() : 0,
+                                         name != null ? name.hashCode() : 0,
+                                         namespace != null ? namespace.hashCode() : 0,
                                          locationURI != null ? locationURI.hashCode() : 0,
                                          importType != null ? importType.hashCode() : 0);
     }

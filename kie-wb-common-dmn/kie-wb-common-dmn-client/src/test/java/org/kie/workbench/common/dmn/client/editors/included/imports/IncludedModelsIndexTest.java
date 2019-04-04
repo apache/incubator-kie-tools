@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.dmn.client.editors.included.imports;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
@@ -70,6 +73,15 @@ public class IncludedModelsIndexTest {
     public void testGetImport() {
         final Import anImport = modelsIndex.getImport(includedModel);
         assertEquals(this.anImport, anImport);
+    }
+
+    @Test
+    public void testGetIndexedImports() {
+
+        final List<Import> imports = new ArrayList<>(modelsIndex.getIndexedImports());
+
+        assertEquals(1, imports.size());
+        assertEquals(anImport, imports.get(0));
     }
 
     @Test

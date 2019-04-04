@@ -22,6 +22,7 @@ import javax.inject.Inject;
 import elemental2.dom.HTMLElement;
 import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
 import org.kie.workbench.common.dmn.client.editors.included.grid.DMNCardsGridComponent;
+import org.kie.workbench.common.dmn.client.editors.included.modal.IncludedModelModal;
 import org.uberfire.client.mvp.UberElemental;
 
 public class IncludedModelsPagePresenter {
@@ -30,17 +31,22 @@ public class IncludedModelsPagePresenter {
 
     private final DMNCardsGridComponent gridComponent;
 
+    private final IncludedModelModal modal;
+
     @Inject
     public IncludedModelsPagePresenter(final View view,
-                                       final DMNCardsGridComponent gridComponent) {
+                                       final DMNCardsGridComponent gridComponent,
+                                       final IncludedModelModal modal) {
         this.view = view;
         this.gridComponent = gridComponent;
+        this.modal = modal;
     }
 
     @PostConstruct
     public void init() {
         getView().init(this);
         getView().setGrid(getGridComponent().getElement());
+        getModal().init(this);
     }
 
     public HTMLElement getElement() {
@@ -57,6 +63,14 @@ public class IncludedModelsPagePresenter {
 
     private View getView() {
         return view;
+    }
+
+    void openIncludeModelModal() {
+        getModal().show();
+    }
+
+    private IncludedModelModal getModal() {
+        return modal;
     }
 
     public interface View extends UberElemental<IncludedModelsPagePresenter>,

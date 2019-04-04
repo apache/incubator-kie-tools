@@ -18,23 +18,32 @@ package org.kie.workbench.common.dmn.client.editors.included;
 
 import javax.inject.Inject;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import elemental2.dom.HTMLButtonElement;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.dmn.client.editors.common.RemoveHelper;
 
 @Templated
 public class IncludedModelsPageView implements IncludedModelsPagePresenter.View {
 
+
     @DataField("grid")
     private final HTMLDivElement grid;
+
+    @DataField("include-model")
+    private final HTMLButtonElement includeModelButton;
 
     private IncludedModelsPagePresenter presenter;
 
     @Inject
-    public IncludedModelsPageView(final HTMLDivElement grid) {
+    public IncludedModelsPageView(final HTMLDivElement grid,
+                                  final HTMLButtonElement includeModelButton) {
         this.grid = grid;
+        this.includeModelButton = includeModelButton;
     }
 
     @Override
@@ -46,5 +55,10 @@ public class IncludedModelsPageView implements IncludedModelsPagePresenter.View 
     public void setGrid(final HTMLElement grid) {
         RemoveHelper.removeChildren(this.grid);
         this.grid.appendChild(grid);
+    }
+
+    @EventHandler("include-model")
+    public void onIncludeModelButtonClick(final ClickEvent event) {
+        presenter.openIncludeModelModal();
     }
 }
