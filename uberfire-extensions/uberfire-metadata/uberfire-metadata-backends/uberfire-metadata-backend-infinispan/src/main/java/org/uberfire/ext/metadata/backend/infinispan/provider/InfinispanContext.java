@@ -20,6 +20,7 @@ package org.uberfire.ext.metadata.backend.infinispan.provider;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -31,6 +32,7 @@ import org.infinispan.client.hotrod.RemoteCache;
 import org.infinispan.client.hotrod.RemoteCacheManager;
 import org.infinispan.client.hotrod.configuration.AuthenticationConfigurationBuilder;
 import org.infinispan.client.hotrod.configuration.ConfigurationBuilder;
+import org.infinispan.client.hotrod.configuration.SaslQop;
 import org.infinispan.client.hotrod.exceptions.HotRodClientException;
 import org.infinispan.client.hotrod.marshall.ProtoStreamMarshaller;
 import org.infinispan.commons.CacheConfigurationException;
@@ -58,6 +60,8 @@ public class InfinispanContext implements Disposable {
     private static final String USERNAME = "org.appformer.ext.metadata.infinispan.username";
     private static final String PASSWORD = "org.appformer.ext.metadata.infinispan.password";
     private static final String REALM = "org.appformer.ext.metadata.infinispan.realm";
+    private static final String SERVER_NAME = "org.appformer.ext.metadata.infinispan.server.name";
+    private static final String SASL_QOP = "org.appformer.ext.metadata.infinispan.sasl.qop";
 
     private static final String TYPES_CACHE = "types";
     private static final String SCHEMAS_CACHE = "schemas";
@@ -92,6 +96,12 @@ public class InfinispanContext implements Disposable {
             put(REALM,
                 System.getProperty(REALM,
                                    "ApplicationRealm"));
+            put(SERVER_NAME,
+                System.getProperty(SERVER_NAME,
+                                   ""));
+            put(SASL_QOP,
+                System.getProperty(SASL_QOP,
+                                   ""));
         }};
         static final InfinispanContext INSTANCE = new InfinispanContext(PROPERTIES);
     }
@@ -151,15 +161,12 @@ public class InfinispanContext implements Disposable {
     }
 
     private RemoteCacheManager createRemoteCache(Map<String, String> properties) {
-        String username = properties.get(USERNAME);
-        String password = properties.get(PASSWORD);
-        String realm = properties.get(REALM);
+
         String host = properties.get(HOST);
         String port = properties.get(PORT);
+
         try {
-            ConfigurationBuilder builder = getMaybeSecurityBuilder(username,
-                                                                   password,
-                                                                   realm)
+            ConfigurationBuilder builder = getMaybeSecurityBuilder(properties)
                     .addServer()
                     .host(host)
                     .port(Integer.parseInt(port))
@@ -174,9 +181,13 @@ public class InfinispanContext implements Disposable {
         }
     }
 
-    private AuthenticationConfigurationBuilder getMaybeSecurityBuilder(String username,
-                                                                       String password,
-                                                                       String realm) {
+    private AuthenticationConfigurationBuilder getMaybeSecurityBuilder(Map<String, String> properties) {
+
+        String username = properties.get(USERNAME);
+        String password = properties.get(PASSWORD);
+        String realm = properties.get(REALM);
+        String saslQop = properties.get(SASL_QOP);
+        String serverName = properties.get(SERVER_NAME);
 
         ConfigurationBuilder b = new ConfigurationBuilder();
 
@@ -185,14 +196,41 @@ public class InfinispanContext implements Disposable {
                           password);
             checkNotEmpty("realm",
                           realm);
+            checkNotEmpty("qop",
+                          saslQop);
+            checkNotEmpty("serverName",
+                          serverName);
             return b.security().authentication()
                     .enable()
                     .saslMechanism(SASL_MECHANISM)
+                    .saslQop(buildSaslQop(saslQop))
+                    .serverName(serverName)
                     .callbackHandler(new LoginHandler(username,
                                                       password.toCharArray(),
                                                       realm));
         } else {
             return b.security().authentication().disable();
+        }
+    }
+
+    protected static SaslQop[] buildSaslQop(String saslQop) {
+        return Arrays.asList(saslQop.split(",")).stream()
+                .map(InfinispanContext::toSaslQop)
+                .toArray(size -> new SaslQop[size]);
+    }
+
+    protected static SaslQop toSaslQop(String value) {
+        try {
+            return SaslQop.valueOf(value.trim()
+                                           .replace('-',
+                                                    '_')
+                                           .toUpperCase());
+        } catch (IllegalArgumentException e) {
+            List<String> values = Arrays.asList(SaslQop.values()).stream().map(SaslQop::toString).collect(toList());
+            throw new InfinispanException(MessageFormat.format("SaslQoP option <{0}> is not present in one of this possible values {1}",
+                                                               value,
+                                                               values),
+                                          e);
         }
     }
 
