@@ -22,5 +22,12 @@ import org.uberfire.backend.vfs.Path;
 @Remote
 public interface DMNTypeService {
 
-    FactModelTuple retrieveType(Path path, String dmnPath);
+    /**
+     * Retrieves a <code>FactModelTuple</code> representing the given <b>dmn</b> file
+     * @param path
+     * @param dmnPath
+     * @return
+     * @throws Exception
+     */
+    FactModelTuple retrieveFactModelTuple(Path path, String dmnPath);
 }

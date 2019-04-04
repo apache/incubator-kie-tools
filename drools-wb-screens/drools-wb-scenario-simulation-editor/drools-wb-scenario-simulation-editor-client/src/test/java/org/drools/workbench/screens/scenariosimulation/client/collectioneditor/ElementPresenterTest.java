@@ -74,8 +74,8 @@ public abstract class ElementPresenterTest<E extends ElementView, T extends Elem
         elementViewListLocal.add(elementView1Mock);
         elementViewListLocal.add(elementView2Mock);
         for (String el : Arrays.asList(ELEMENT1_ID, ELEMENT2_ID)) {
-            when(propertyPresenterMock.getProperties(eq(el + "#KEY"))).thenReturn(new HashMap<>());
-            when(propertyPresenterMock.getProperties(eq(el + "#VALUE"))).thenReturn(new HashMap<>());
+            when(propertyPresenterMock.getSimpleProperties(eq(el + "#KEY"))).thenReturn(new HashMap<>());
+            when(propertyPresenterMock.getSimpleProperties(eq(el + "#VALUE"))).thenReturn(new HashMap<>());
         }
     }
 

@@ -69,7 +69,11 @@ public class DMNDataManagementStrategyTest extends AbstractDataManagementStrateg
         factModelTupleLocal = new FactModelTuple(visibleFactsLocal, hiddenFactsLocal);
         factModelTreeHolderlocal = new DMNDataManagementStrategy.ResultHolder();
         factModelTreeHolderlocal.factModelTuple = factModelTupleLocal;
-        when(dmnTypeServiceMock.retrieveType(any(), anyString())).thenReturn(factModelTupleLocal);
+        try {
+            when(dmnTypeServiceMock.retrieveFactModelTuple(any(), anyString())).thenReturn(factModelTupleLocal);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         modelLocal.getSimulation().getSimulationDescriptor().setDmnFilePath("dmn_file_path");
         dmnDataManagementStrategySpy = spy(new DMNDataManagementStrategy(new CallerMock<>(dmnTypeServiceMock),
                                                                          scenarioSimulationContextLocal,
@@ -85,19 +89,19 @@ public class DMNDataManagementStrategyTest extends AbstractDataManagementStrateg
     }
 
     @Test
-    public void populateRightPanelWithoutFactModelTuple() {
+    public void populateRightPanelWithoutFactModelTuple() throws Exception {
         factModelTreeHolderlocal.factModelTuple = null;
         dmnDataManagementStrategySpy.populateRightPanel(rightPanelPresenterMock, scenarioGridModelMock);
-        verify(dmnTypeServiceMock, times(1)).retrieveType(any(), anyString());
+        verify(dmnTypeServiceMock, times(1)).retrieveFactModelTuple(any(), anyString());
         verify(dmnDataManagementStrategySpy, times(1)).getSuccessCallback(rightPanelPresenterMock, scenarioGridModelMock);
         verify(dmnDataManagementStrategySpy, times(1)).getSuccessCallbackMethod(eq(factModelTupleLocal), eq(rightPanelPresenterMock), eq(scenarioGridModelMock));
 
     }
 
     @Test
-    public void populateRightPanelWithFactModelTuple() {
+    public void populateRightPanelWithFactModelTuple() throws Exception {
         dmnDataManagementStrategySpy.populateRightPanel(rightPanelPresenterMock, scenarioGridModelMock);
-        verify(dmnTypeServiceMock, never()).retrieveType(any(), anyString());
+        verify(dmnTypeServiceMock, never()).retrieveFactModelTuple(any(), anyString());
         verify(dmnDataManagementStrategySpy, times(1)).getSuccessCallback(rightPanelPresenterMock, scenarioGridModelMock);
         verify(dmnDataManagementStrategySpy, times(1)).getSuccessCallbackMethod(eq(factModelTupleLocal), eq(rightPanelPresenterMock), eq(scenarioGridModelMock));
 

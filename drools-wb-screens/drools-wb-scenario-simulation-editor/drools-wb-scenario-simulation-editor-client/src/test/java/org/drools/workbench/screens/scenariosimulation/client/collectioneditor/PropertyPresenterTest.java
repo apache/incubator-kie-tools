@@ -142,7 +142,7 @@ public class PropertyPresenterTest extends AbstractCollectionEditorTest {
 
     @Test
     public void getProperties() {
-        assertNotNull(propertyEditorPresenter.getProperties(ITEM_ID));
+        assertNotNull(propertyEditorPresenter.getSimpleProperties(ITEM_ID));
     }
 
     @Test

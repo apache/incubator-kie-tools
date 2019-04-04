@@ -43,4 +43,6 @@ public interface EditingBox<T extends EditingBox.Presenter> extends HasPresenter
     HeadingElement getEditingBoxTitle();
 
     UListElement getPropertiesContainer();
+
+    void removeButtonToolbar();
 }

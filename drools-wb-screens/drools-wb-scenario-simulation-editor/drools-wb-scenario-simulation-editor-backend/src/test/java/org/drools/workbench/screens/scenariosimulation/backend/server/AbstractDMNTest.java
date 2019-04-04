@@ -16,81 +16,221 @@
 
 package org.drools.workbench.screens.scenariosimulation.backend.server;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import org.kie.dmn.api.core.DMNModel;
+import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.api.core.ast.InputDataNode;
-import org.mockito.Mock;
+import org.kie.dmn.core.ast.DecisionNodeImpl;
+import org.kie.dmn.core.ast.InputDataNodeImpl;
+import org.kie.dmn.core.impl.CompositeTypeImpl;
+import org.kie.dmn.core.impl.SimpleTypeImpl;
+import org.kie.dmn.core.util.DMNRuntimeUtil;
+import org.kie.dmn.model.v1_2.TDecision;
+import org.kie.dmn.model.v1_2.TInputData;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
 
 public class AbstractDMNTest {
 
-    @Mock
-    protected DMNModel dmnModelMock;
+    protected DMNModel dmnModelLocal;
 
-    protected static final String SIMPLE_TYPE_NAME = "SIMPLE_TYPE_NAME";
-    protected static final String SIMPLE_DECISION_TYPE_NAME = "SIMPLE_DECISION_TYPE_NAME";
-    protected static final String COMPLEX_DECISION_TYPE_NAME = "COMPLEX_DECISION_TYPE_NAME";
-    protected static final String BASE_TYPE = "BASE_TYPE";
-    protected static final String COMPLEX_TYPE = "COMPLEX_TYPE";
+    protected static final String SIMPLE_INPUT_DATA_NAME_NO_COLLECTION = "SIMPLE_INPUT_DATA_NAME_NO_COLLECTION";
+    protected static final String SIMPLE_INPUT_DATA_NAME_SIMPLE_COLLECTION_OF_SIMPLE = "SIMPLE_INPUT_DATA_NAME_SIMPLE_COLLECTION_OF_SIMPLE";
+    protected static final String SIMPLE_INPUT_DATA_NAME_SIMPLE_COLLECTION_OF_COMPOSITE = "SIMPLE_INPUT_DATA_NAME_SIMPLE_COLLECTION_OF_COMPOSITE";
+    protected static final String COMPOSITE_INPUT_DATA_NAME_COLLECTION = "COMPOSITE_INPUT_DATA_NAME_COLLECTION";
+    protected static final String SIMPLE_DECISION_DATA_NAME = "SIMPLE_DECISION_DATA_NAME";
+    protected static final String COMPOSITE_DECISION_DATA_NAME = "COMPOSITE_DECISION_DATA_NAME";
+    protected static final String SIMPLE_TYPE_NAME = "string";
+    protected static final String COMPOSITE_TYPE_NAME = "COMPOSITE_TYPE_NAME";
+    protected static final String EXPANDABLE_PROPERTY_PHONENUMBERS = "phoneNumbers";
+    protected static final String EXPANDABLE_PROPERTY_DETAILS = "details";
+    protected static final String PHONENUMBER_NUMBER = "number";
+    protected static final String PHONENUMBER_PREFIX = "prefix";
 
-    protected DMNType simpleTypeMock;
-    protected DMNType complexTypeMock;
-    protected DMNType nestedComplexTypeMock;
-    protected Map<String, DMNType> complexFields;
-    protected Map<String, DMNType> nestedComplexFields;
+    protected DMNType simpleTypeNoCollection;
+    protected DMNType simpleTypeSimpleCollectionOfSimple;
+    protected DMNType simpleTypeSimpleCollectionOfComposite;
+    protected DMNType compositeTypeNoCollection;
+    protected DMNType compositeTypeCollection;
     protected Set<InputDataNode> inputDataNodes;
     protected Set<DecisionNode> decisionNodes;
 
     protected void init() {
         inputDataNodes = new HashSet<>();
-
-        InputDataNode inputDataNodeSimpleMock = mock(InputDataNode.class);
-        DMNType simpleTypeMock = mock(DMNType.class);
-        when(simpleTypeMock.isComposite()).thenReturn(false);
-        when(simpleTypeMock.getName()).thenReturn(BASE_TYPE);
-        when(inputDataNodeSimpleMock.getType()).thenReturn(simpleTypeMock);
-        when(inputDataNodeSimpleMock.getName()).thenReturn(SIMPLE_TYPE_NAME);
-
-        inputDataNodes.add(inputDataNodeSimpleMock);
-        when(dmnModelMock.getInputs()).thenReturn(inputDataNodes);
+        simpleTypeNoCollection = getSimpleNoCollection();
+        InputDataNode inputDataNodeSimpleNoCollection = getInputDataNode(simpleTypeNoCollection, SIMPLE_INPUT_DATA_NAME_NO_COLLECTION);
+        inputDataNodes.add(inputDataNodeSimpleNoCollection);
+        simpleTypeSimpleCollectionOfSimple = getSimpleCollection();
+        InputDataNode inputDataNodeSimpleCollectionOfSimple = getInputDataNode(simpleTypeSimpleCollectionOfSimple, SIMPLE_INPUT_DATA_NAME_SIMPLE_COLLECTION_OF_SIMPLE);
+        inputDataNodes.add(inputDataNodeSimpleCollectionOfSimple);
+        compositeTypeNoCollection = getSingleCompositeWithSimpleCollection();
+        simpleTypeSimpleCollectionOfComposite = getSimpleCollection(compositeTypeNoCollection);
+        InputDataNode inputDataNodeSimpleCollectionOfComposite = getInputDataNode(simpleTypeSimpleCollectionOfComposite, SIMPLE_INPUT_DATA_NAME_SIMPLE_COLLECTION_OF_COMPOSITE);
+        inputDataNodes.add(inputDataNodeSimpleCollectionOfComposite);
+        compositeTypeCollection = getCompositeCollection();
+        InputDataNode inputDataNodeCompositeCollection = getInputDataNode(compositeTypeCollection, COMPOSITE_INPUT_DATA_NAME_COLLECTION);
+        inputDataNodes.add(inputDataNodeCompositeCollection);
 
         decisionNodes = new HashSet<>();
+        DecisionNode decisionNodeSimpleNoCollection = getDecisionNode(simpleTypeNoCollection, SIMPLE_DECISION_DATA_NAME);
+        decisionNodes.add(decisionNodeSimpleNoCollection);
+        DecisionNode decisionNodeCompositeNoCollection = getDecisionNode(compositeTypeNoCollection, COMPOSITE_DECISION_DATA_NAME);
+        decisionNodes.add(decisionNodeCompositeNoCollection);
+        setDmnModelLocal("dmn-list.dmn", "https://github.com/kiegroup/drools/kie-dmn/_CC8924B0-D729-4D70-9588-039B5824FFE9", "dmn-list");
+    }
 
-        DecisionNode decisionNodeSimpleMock = mock(DecisionNode.class);
-        when(decisionNodeSimpleMock.getResultType()).thenReturn(simpleTypeMock);
-        when(decisionNodeSimpleMock.getName()).thenReturn(SIMPLE_DECISION_TYPE_NAME);
-        decisionNodes.add(decisionNodeSimpleMock);
+    protected void setDmnModelLocal(String resourceName, String namespace, String modelName) {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime(resourceName, AbstractDMNTest.class);
+        dmnModelLocal = runtime.getModel(namespace, modelName);
+        assertThat(dmnModelLocal, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModelLocal.getMessages()), dmnModelLocal.hasErrors(), is(false));
+    }
 
-        DecisionNode decisionNodeComplexMock = mock(DecisionNode.class);
+    protected InputDataNode getInputDataNode(DMNType dmnType, String name) {
+        TInputData inputData = new TInputData();
+        inputData.setName(name);
+        InputDataNode toReturn = new InputDataNodeImpl(inputData, dmnType);
+        return toReturn;
+    }
 
-        DMNType complexTypeMock = mock(DMNType.class);
-        when(complexTypeMock.isComposite()).thenReturn(true);
-        when(complexTypeMock.getName()).thenReturn(COMPLEX_TYPE);
+    protected DecisionNode getDecisionNode(DMNType dmnType, String name) {
+        TDecision decision = new TDecision();
+        decision.setName(name);
+        DecisionNode toReturn = new DecisionNodeImpl(decision, dmnType);
+        return toReturn;
+    }
 
-        Map<String, DMNType> complexFields = new HashMap<>();
-        complexFields.put(SIMPLE_DECISION_TYPE_NAME, simpleTypeMock);
-        when(complexTypeMock.getFields()).thenReturn(complexFields);
+    /**
+     * Returns a <b>single</b> <code>SimpleTypeImpl</code>
+     * @return
+     */
+    protected SimpleTypeImpl getSimpleNoCollection() {
+        return new SimpleTypeImpl("simpleNameSpace", SIMPLE_TYPE_NAME, null);
+    }
 
-        DMNType nestedComplexTypeMock = mock(DMNType.class);
-        when(nestedComplexTypeMock.isComposite()).thenReturn(true);
-        when(nestedComplexTypeMock.getName()).thenReturn(COMPLEX_TYPE);
-        complexFields.put(COMPLEX_DECISION_TYPE_NAME, nestedComplexTypeMock);
+    /**
+     * Returns a <b>string collection</b> <code>SimpleTypeImpl</code>
+     * @return
+     */
+    protected SimpleTypeImpl getSimpleCollection() {
+        // Single property collection retrieve
+        SimpleTypeImpl simpleCollectionString = new SimpleTypeImpl("simpleNameSpace", SIMPLE_TYPE_NAME, null);
+        simpleCollectionString.setCollection(true);
+        return simpleCollectionString;
+    }
 
-        Map<String, DMNType> nestedComplexFields = new HashMap<>();
-        nestedComplexFields.put(SIMPLE_DECISION_TYPE_NAME, simpleTypeMock);
-        when(nestedComplexTypeMock.getFields()).thenReturn(nestedComplexFields);
+    /**
+     * Returns a <code>DMNType</code>  <b>collection</b> <code>SimpleTypeImpl</code>
+     * @param typeOfCollection the <b>type</b> of this collection
+     * @return
+     */
+    protected SimpleTypeImpl getSimpleCollection(DMNType typeOfCollection) {
+        // Single property collection retrieve
+        String name = typeOfCollection.getName() + "list";
+        SimpleTypeImpl simpleCollectionString = new SimpleTypeImpl("simpleNameSpace", name, null);
+        simpleCollectionString.setCollection(true);
+        simpleCollectionString.setBaseType(typeOfCollection);
+        return simpleCollectionString;
+    }
 
-        when(decisionNodeComplexMock.getResultType()).thenReturn(complexTypeMock);
-        when(decisionNodeComplexMock.getName()).thenReturn(COMPLEX_DECISION_TYPE_NAME);
-        decisionNodes.add(decisionNodeComplexMock);
-        when(dmnModelMock.getDecisions()).thenReturn(decisionNodes);
+    /**
+     * Returns a <b>single</b>  <b>person</b> <code>CompositeTypeImpl</code> that in turns contains other <code>CompositeTypeImpl</code>s properties
+     * @return
+     */
+    protected CompositeTypeImpl getSingleCompositeWithSimpleCollection() {
+        // Complex object retrieve
+        CompositeTypeImpl toReturn = new CompositeTypeImpl("compositeNameSpace", COMPOSITE_TYPE_NAME, null);
+
+        CompositeTypeImpl phoneNumberComposite = getPhoneNumberComposite(false);
+
+        CompositeTypeImpl detailsComposite = new CompositeTypeImpl(null, "tDetails", "tDetails");
+        detailsComposite.addField("gender", new SimpleTypeImpl(null, SIMPLE_TYPE_NAME, null));
+        detailsComposite.addField("weight", new SimpleTypeImpl(null, SIMPLE_TYPE_NAME, null));
+
+        SimpleTypeImpl nameSimple = new SimpleTypeImpl(null, SIMPLE_TYPE_NAME, null);
+
+        SimpleTypeImpl friendsSimpleCollection = new SimpleTypeImpl(null, SIMPLE_TYPE_NAME, null);
+        friendsSimpleCollection.setCollection(true);
+
+        toReturn.addField("friends", friendsSimpleCollection);
+        toReturn.addField(EXPANDABLE_PROPERTY_PHONENUMBERS, phoneNumberComposite);
+        toReturn.addField(EXPANDABLE_PROPERTY_DETAILS, detailsComposite);
+        toReturn.addField("name", nameSimple);
+
+        return toReturn;
+    }
+
+    /**
+     * Returns a <b>single</b>  <b>person</b> <code>CompositeTypeImpl</code> that in turns contains other <code>CompositeTypeImpl</code>s properties
+     * @return
+     */
+    protected CompositeTypeImpl getSingleCompositeWithNestedCollection() {
+        // Complex object retrieve
+        CompositeTypeImpl toReturn = new CompositeTypeImpl("compositeNameSpace", COMPOSITE_TYPE_NAME, null);
+
+        CompositeTypeImpl phoneNumberCompositeCollection = new CompositeTypeImpl(null, "tPhoneNumber", null, true);
+        phoneNumberCompositeCollection.addField(PHONENUMBER_PREFIX, new SimpleTypeImpl(null, SIMPLE_TYPE_NAME, null));
+        SimpleTypeImpl numbers = new SimpleTypeImpl(null, SIMPLE_TYPE_NAME, null);
+        numbers.setCollection(true);
+        phoneNumberCompositeCollection.addField("numbers", numbers);
+
+        CompositeTypeImpl detailsComposite = new CompositeTypeImpl(null, "tDetails", "tDetails");
+        detailsComposite.addField("gender", new SimpleTypeImpl(null, SIMPLE_TYPE_NAME, null));
+        detailsComposite.addField("weight", new SimpleTypeImpl(null, SIMPLE_TYPE_NAME, null));
+
+        SimpleTypeImpl nameSimple = new SimpleTypeImpl(null, SIMPLE_TYPE_NAME, null);
+
+        SimpleTypeImpl friendsSimple = new SimpleTypeImpl(null, SIMPLE_TYPE_NAME, null);
+
+        toReturn.addField("friends", friendsSimple);
+        toReturn.addField(EXPANDABLE_PROPERTY_PHONENUMBERS, phoneNumberCompositeCollection);
+        toReturn.addField(EXPANDABLE_PROPERTY_DETAILS, detailsComposite);
+        toReturn.addField("name", nameSimple);
+
+        return toReturn;
+    }
+
+    /**
+     * Returns a <b>person collection</b> <code>CompositeTypeImpl</code> that in turns contains other <code>CompositeTypeImpl</code>s properties
+     * @return
+     */
+    protected CompositeTypeImpl getCompositeCollection() {
+        // Complex object retrieve
+        CompositeTypeImpl toReturn = new CompositeTypeImpl("compositeNameSpace", COMPOSITE_TYPE_NAME, null);
+        toReturn.setCollection(true);
+        CompositeTypeImpl phoneNumberCompositeCollection = getPhoneNumberComposite(true);
+
+        CompositeTypeImpl detailsComposite = new CompositeTypeImpl(null, "tDetails", "tDetails");
+        detailsComposite.addField("gender", new SimpleTypeImpl(null, SIMPLE_TYPE_NAME, null));
+        detailsComposite.addField("weight", new SimpleTypeImpl(null, SIMPLE_TYPE_NAME, null));
+
+        SimpleTypeImpl nameSimple = new SimpleTypeImpl(null, SIMPLE_TYPE_NAME, null);
+
+        SimpleTypeImpl friendsSimpleCollection = new SimpleTypeImpl(null, SIMPLE_TYPE_NAME, null);
+        friendsSimpleCollection.setCollection(true);
+
+        toReturn.addField("friends", friendsSimpleCollection);
+        toReturn.addField(EXPANDABLE_PROPERTY_PHONENUMBERS, phoneNumberCompositeCollection);
+        toReturn.addField(EXPANDABLE_PROPERTY_DETAILS, detailsComposite);
+        toReturn.addField("name", nameSimple);
+
+        return toReturn;
+    }
+
+    /**
+     * Returns a <b>phone number</b> <code>CompositeTypeImpl</code>
+     * @return
+     */
+    protected CompositeTypeImpl getPhoneNumberComposite(boolean isCollection) {
+        CompositeTypeImpl toReturn = new CompositeTypeImpl(null, "tPhoneNumber", null, isCollection);
+        toReturn.addField(PHONENUMBER_PREFIX, new SimpleTypeImpl(null, SIMPLE_TYPE_NAME, null));
+        toReturn.addField(PHONENUMBER_NUMBER, new SimpleTypeImpl(null, SIMPLE_TYPE_NAME, null));
+        return toReturn;
     }
 }

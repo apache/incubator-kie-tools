@@ -15,6 +15,9 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.collectioneditor.editingbox;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.dom.client.LIElement;
@@ -22,24 +25,57 @@ import com.google.gwt.dom.client.LIElement;
 public class ItemEditingBoxPresenter extends EditingBoxPresenter implements ItemEditingBox.Presenter {
 
 
+    protected List<String> nestedPropertiesNamesList = new ArrayList<>(); // Map a given ItemEditingBox' key with its nested properties
+
     @Override
-    public LIElement getEditingBox(String key, Map<String, String> instancePropertyMap) {
+    public LIElement getEditingBox(String key, Map<String, String> simplePropertiesMap, Map<String, Map<String, String>> expandablePropertiesMap) {
         String propertyName = key.substring(key.lastIndexOf("#") + 1);
         final ItemEditingBox listEditingBox = viewsProvider.getItemEditingBox();
         listEditingBox.init(this);
         listEditingBox.setKey(key);
         listEditingBox.getEditingBoxTitle().setInnerText("Edit " + propertyName);
-        for (Map.Entry<String, String> entry : instancePropertyMap.entrySet()) {
+        nestedPropertiesNamesList.clear();
+        for (Map.Entry<String, String> entry : simplePropertiesMap.entrySet()) {
             String propertyKey = entry.getKey();
             listEditingBox.getPropertiesContainer().appendChild(propertyPresenter.getEditingPropertyFields("value", propertyKey, ""));
+        }
+        for (Map.Entry<String, Map<String, String>> entry : expandablePropertiesMap.entrySet()) {
+            String nestedPropertyName = entry.getKey();
+            String nestedPropertyKey = key + "#" + propertyName;
+            addExpandableItemEditingBox(listEditingBox, entry.getValue(), nestedPropertyKey, nestedPropertyName);
         }
         return listEditingBox.getEditingBox();
     }
 
     @Override
     public void save() {
-        Map<String, String> propertiesValues = propertyPresenter.updateProperties("value");
-        collectionEditorPresenter.addListItem(propertiesValues);
+        Map<String, String> simplePropertiesValues = propertyPresenter.updateProperties("value");
+        Map<String, Map<String, String>> expandablePropertiesValues = new HashMap<>();
+        for (String nestedPropertyName : nestedPropertiesNamesList) {
+            expandablePropertiesValues.put(nestedPropertyName, propertyPresenter.updateProperties(nestedPropertyName));
+        }
+        collectionEditorPresenter.addListItem(simplePropertiesValues, expandablePropertiesValues);
+    }
+
+    /**
+     *
+     * @param containerItemEditingBox
+     * @param propertiesMap
+     * @param key
+     * @param propertyName
+     */
+    protected void addExpandableItemEditingBox(ItemEditingBox containerItemEditingBox, Map<String, String> propertiesMap, String key, String propertyName) {
+        final ItemEditingBox listEditingBox = viewsProvider.getItemEditingBox();
+        listEditingBox.init(this);
+        listEditingBox.setKey(key);
+        listEditingBox.getEditingBoxTitle().setInnerText(propertyName);
+        listEditingBox.removeButtonToolbar();
+        nestedPropertiesNamesList.add(propertyName);
+        for (Map.Entry<String, String> entry : propertiesMap.entrySet()) {
+            String propertyKey = entry.getKey();
+            listEditingBox.getPropertiesContainer().appendChild(propertyPresenter.getEditingPropertyFields(propertyName, propertyKey, ""));
+        }
+        containerItemEditingBox.getPropertiesContainer().appendChild(listEditingBox.getEditingBox());
     }
 
 }

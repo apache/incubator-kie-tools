@@ -1,0 +1,100 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://github.com/kiegroup/drools/kie-dmn/_25BF2679-3109-488F-9AD1-DDBCCEBBE5F1" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_2C706284-DC7B-4CD5-8DB8-5923DABCFEE8" name="dmn-list-composite" expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://github.com/kiegroup/drools/kie-dmn/_25BF2679-3109-488F-9AD1-DDBCCEBBE5F1">
+  <dmn:extensionElements/>
+    <dmn:itemDefinition id="_CCA572C0-FAD8-4245-9CB6-C7ADF20682F8" name="superPerson" isCollection="false">
+        <dmn:typeRef>tPerson</dmn:typeRef>
+     </dmn:itemDefinition>
+  <dmn:itemDefinition id="_CCA572C0-FAD8-4245-9CB6-C7ADF20682F7" name="tPerson" isCollection="false">
+    <dmn:itemComponent id="_2F2357C0-D2D1-4C37-BA35-A48918FD7306" name="age" isCollection="false">
+      <dmn:typeRef>number</dmn:typeRef>
+      <dmn:allowedValues id="_311A363A-1496-4E16-93BB-33ACB2CDDBA6">
+        <dmn:text>&gt;0</dmn:text>
+      </dmn:allowedValues>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_D229D630-935E-4CE5-B6EA-6C7BB96F32BE" name="address" isCollection="false">
+      <dmn:typeRef>tPlace</dmn:typeRef>
+    </dmn:itemComponent>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_EC766E89-C8D8-44E5-9664-1ED954EF86D5" name="tPlace" isCollection="false">
+    <dmn:itemComponent id="_8BA1072A-6B52-4BAC-800A-A8E0A4C1D2F7" name="specificAddress" isCollection="false">
+      <dmn:typeRef>tSpecificPlace</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_2927A923-FB82-4236-B961-243ABAB2F495" name="city" isCollection="false">
+      <dmn:typeRef>string</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_D79D6090-DB84-40B0-A63C-CDD35779137C" name="state" isCollection="false">
+      <dmn:typeRef>string</dmn:typeRef>
+    </dmn:itemComponent>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_C93A4770-1D48-460C-9A51-769ED21E07D8" name="tSpecificPlace" isCollection="false">
+    <dmn:itemComponent id="_6266D92A-8EC1-42EA-B6D9-503BCBC0C6CB" name="houseNumber" isCollection="false">
+      <dmn:typeRef>number</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_CBC71286-8C3B-46B0-A29C-C20DB397B778" name="street" isCollection="false">
+      <dmn:typeRef>string</dmn:typeRef>
+    </dmn:itemComponent>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_F91EE2F7-440C-43F1-9E6D-D41792A65CCD" name="klaraslist" isCollection="true">
+    <dmn:typeRef>superPerson</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:inputData id="_0BE897AD-CDF7-462B-91CB-B7E18953BBE4" name="node-string">
+    <dmn:variable id="_E0590168-D17D-4E84-9754-452CE539E6A1" name="node-string" typeRef="string"/>
+  </dmn:inputData>
+  <dmn:inputData id="_122768F9-F85B-4ABB-BCA1-C5FDCA15DB18" name="node-list">
+    <dmn:variable id="_569FA866-C10A-48C8-87E9-B8C9D96F4F67" name="node-list" typeRef="klaraslist"/>
+  </dmn:inputData>
+  <dmn:inputData id="_122768F9-F85B-4ABB-BCA1-C5FDCA15DB81" name="node-person">
+    <dmn:variable id="_CCA572C0-FAD8-4245-9CB6-C7ADF20682F7" name="node-person" typeRef="tPerson"/>
+  </dmn:inputData>
+  <dmn:decision id="_F9AC781A-BF9C-4B9F-9229-17E7A6B9E117" name="Is an item in the list?">
+    <dmn:variable id="_BFBF7AEE-1134-4540-B045-AF376D8B63E5" name="Is an item in the list?" typeRef="boolean"/>
+    <dmn:informationRequirement id="_DC35EB0E-2B48-42EF-99F8-154352E4807D">
+      <dmn:requiredInput href="#_0BE897AD-CDF7-462B-91CB-B7E18953BBE4"/>
+    </dmn:informationRequirement>
+    <dmn:informationRequirement id="_22C7EA11-0BE2-4002-A916-7539266419C6">
+      <dmn:requiredInput href="#_122768F9-F85B-4ABB-BCA1-C5FDCA15DB18"/>
+    </dmn:informationRequirement>
+    <dmn:literalExpression id="_2F5597CB-1FD2-4FA7-90C9-064A858FDEBF">
+      <dmn:text>list contains(node-list, node-string)</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape id="dmnshape-_0BE897AD-CDF7-462B-91CB-B7E18953BBE4" dmnElementRef="_0BE897AD-CDF7-462B-91CB-B7E18953BBE4" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="488" y="47" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-_122768F9-F85B-4ABB-BCA1-C5FDCA15DB18" dmnElementRef="_122768F9-F85B-4ABB-BCA1-C5FDCA15DB18" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="488" y="266" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-_F9AC781A-BF9C-4B9F-9229-17E7A6B9E117" dmnElementRef="_F9AC781A-BF9C-4B9F-9229-17E7A6B9E117" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="489" y="157" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="dmnedge-_DC35EB0E-2B48-42EF-99F8-154352E4807D" dmnElementRef="_DC35EB0E-2B48-42EF-99F8-154352E4807D">
+        <di:waypoint x="538" y="72"/>
+        <di:waypoint x="539" y="182"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-_22C7EA11-0BE2-4002-A916-7539266419C6" dmnElementRef="_22C7EA11-0BE2-4002-A916-7539266419C6">
+        <di:waypoint x="538" y="291"/>
+        <di:waypoint x="539" y="182"/>
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

@@ -16,7 +16,6 @@
 package org.drools.workbench.screens.scenariosimulation.client.collectioneditor;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -61,18 +60,24 @@ public class CollectionPresenter implements CollectionView.Presenter {
     protected ConfirmPopupPresenter confirmPopupPresenter;
 
     /**
-     * <code>Map</code> used to pair the <code>Map</code> with instance' properties classes with a specific <b>key</b> representing the property, i.e Classname#propertyname (e.g Author#books)
+     * <code>Map</code> used to pair the <code>Map</code> with instance' <b>simple properties</b> classes with a specific <b>key</b> representing the property, i.e Classname#propertyname (e.g Author#books)
      */
-    protected Map<String, Map<String, String>> instancePropertiesMap = new HashMap<>();
+    protected Map<String, Map<String, String>> simplePropertiesMap = new HashMap<>();
+
+    /**
+     * <code>Map</code> used to pair the <code>Map</code> with instance' <b>expandable properties</b> classes with a specific <b>key</b> representing the property, i.e Classname#propertyname (e.g Author#books)
+     */
+    protected Map<String, Map<String, Map<String, String>>> expandablePropertiesMap = new HashMap<>();
 
     protected CollectionView collectionView;
 
     protected LIElement objectSeparatorLI;
 
     @Override
-    public void initListStructure(String key, Map<String, String> instancePropertyMap, CollectionView collectionView) {
+    public void initListStructure(String key, Map<String, String> simplePropertiesMap, Map<String, Map<String, String>> expandablePropertiesMap, CollectionView collectionView) {
         commonInit(key, collectionView);
-        instancePropertiesMap.put(key, instancePropertyMap);
+        this.simplePropertiesMap.put(key, simplePropertiesMap);
+        this.expandablePropertiesMap.put(key, expandablePropertiesMap);
         listEditingBoxPresenter.setCollectionEditorPresenter(this);
         listElementPresenter.setCollectionEditorPresenter(this);
         listElementPresenter.onToggleRowExpansion(false);
@@ -81,8 +86,8 @@ public class CollectionPresenter implements CollectionView.Presenter {
     @Override
     public void initMapStructure(String key, Map<String, String> keyPropertyMap, Map<String, String> valuePropertyMap, CollectionView collectionView) {
         commonInit(key, collectionView);
-        instancePropertiesMap.put(key + "#key", keyPropertyMap);
-        instancePropertiesMap.put(key + "#value", valuePropertyMap);
+        simplePropertiesMap.put(key + "#key", keyPropertyMap);
+        simplePropertiesMap.put(key + "#value", valuePropertyMap);
         mapEditingBoxPresenter.setCollectionEditorPresenter(this);
         mapElementPresenter.setCollectionEditorPresenter(this);
         mapElementPresenter.onToggleRowExpansion(false);
@@ -105,11 +110,11 @@ public class CollectionPresenter implements CollectionView.Presenter {
     public void showEditingBox() {
         String key = collectionView.getEditorTitle().getInnerText();
         if (collectionView.isListWidget()) {
-            LIElement editingBox = listEditingBoxPresenter.getEditingBox(key, instancePropertiesMap.get(key));
+            LIElement editingBox = listEditingBoxPresenter.getEditingBox(key, simplePropertiesMap.get(key), expandablePropertiesMap.get(key));
             collectionView.getElementsContainer()
                     .appendChild(editingBox);
         } else {
-            LIElement editingBox = mapEditingBoxPresenter.getEditingBox(key, instancePropertiesMap.get(key + "#key"), instancePropertiesMap.get(key + "#value"));
+            LIElement editingBox = mapEditingBoxPresenter.getEditingBox(key, simplePropertiesMap.get(key + "#key"), simplePropertiesMap.get(key + "#value"));
             collectionView.getElementsContainer()
                     .appendChild(editingBox);
         }
@@ -132,10 +137,10 @@ public class CollectionPresenter implements CollectionView.Presenter {
     }
 
     @Override
-    public void addListItem(Map<String, String> propertiesValues) {
+    public void addListItem(Map<String, String> simplePropertiesValues, Map<String, Map<String, String>> expandablePropertiesValues) {
         final UListElement elementsContainer = collectionView.getElementsContainer();
         String itemId = String.valueOf(elementsContainer.getChildCount() - 1);
-        final LIElement itemElement = listElementPresenter.getItemContainer(itemId, propertiesValues);
+        final LIElement itemElement = listElementPresenter.getItemContainer(itemId, simplePropertiesValues, expandablePropertiesValues);
         elementsContainer.appendChild(itemElement);
         toggleEditingStatus(false);
     }
@@ -210,11 +215,10 @@ public class CollectionPresenter implements CollectionView.Presenter {
     protected void populateList(JSONValue jsonValue) {
         final JSONArray array = jsonValue.isArray();
         for (int i = 0; i < array.size(); i++) {
-            Map<String, String> propertiesValues = new HashMap<>();
             final JSONObject jsonObject = array.get(i).isObject();
-            jsonObject.keySet().forEach(propertyName -> propertiesValues.put(propertyName, jsonObject.get(propertyName).isString().stringValue())
-            );
-            addListItem(propertiesValues);
+            final Map<String, String> propertiesValues = getSimplePropertiesMap(jsonObject);
+            final Map<String, Map<String, String>> expandablePropertiesValues = getExpandablePropertiesValues(jsonObject);
+            addListItem(propertiesValues, expandablePropertiesValues);
         }
     }
 
@@ -257,15 +261,67 @@ public class CollectionPresenter implements CollectionView.Presenter {
     }
 
     protected String getListValue() {
-        List<Map<String, String>> itemsProperties = listElementPresenter.getItemsProperties();
+        Map<String, Map<String, String>> simpleItemsProperties = listElementPresenter.getSimpleItemsProperties();
+        Map<String, Map<String, Map<String, String>>> nestedItemsProperties = listElementPresenter.getExpandableItemsProperties();
         JSONArray jsonArray = new JSONArray();
         AtomicInteger counter = new AtomicInteger();
-        itemsProperties.forEach(stringStringMap -> {
-            JSONObject nestedObject = new JSONObject();
-            stringStringMap.forEach((propertyName, propertyValue) -> nestedObject.put(propertyName, new JSONString(propertyValue)));
-            jsonArray.set(counter.getAndIncrement(), nestedObject);
+        simpleItemsProperties.forEach((itemId, simpleProperties) -> {
+            final JSONObject jsonObject = getJSONObject(simpleProperties);
+            Map<String, Map<String, String>> nestedProperties = nestedItemsProperties.get(itemId);
+            if (nestedProperties != null) {
+                nestedProperties.forEach((nestedPropertyName, nestedPropertyValues) -> {
+                    JSONObject nestedJSONObject = getJSONObject(nestedPropertyValues);
+                    jsonObject.put(nestedPropertyName, nestedJSONObject);
+                });
+            }
+            jsonArray.set(counter.getAndIncrement(), jsonObject);
         });
         return jsonArray.toString();
+    }
+
+    /**
+     * Translates a <code>Map</code> to a <code>JSONObject</code>
+     * @param properties
+     * @return
+     */
+    protected JSONObject getJSONObject(Map<String, String> properties) {
+        JSONObject toReturn = new JSONObject();
+        properties.forEach((propertyName, propertyValue) -> toReturn.put(propertyName, new JSONString(propertyValue)));
+        return toReturn;
+    }
+
+    /**
+     *
+     * @param jsonObject
+     * @return a <code>Map</code> with <b>propertyName/propertyValue</b>
+     */
+    protected Map<String, String> getSimplePropertiesMap(JSONObject jsonObject) {
+        Map<String, String> toReturn = new HashMap<>();
+        jsonObject.keySet().forEach(propertyName -> {
+                                        final JSONValue jsonValue = jsonObject.get(propertyName);
+                                        if (jsonValue.isString() != null) {
+                                            toReturn.put(propertyName, jsonValue.isString().stringValue());
+                                        }
+                                    });
+        return toReturn;
+    }
+
+    /**
+     *
+     * @param jsonObject
+     * @return a <code>Map</code> where the <b>key</b> is the name of the complex property, and the value is a a <code>Map</code> with
+     * the nested <b>propertyName/propertyValue</b>
+     */
+    protected Map<String, Map<String, String>> getExpandablePropertiesValues(JSONObject jsonObject) {
+        Map<String, Map<String, String>> toReturn = new HashMap<>();
+        jsonObject.keySet().forEach(propertyName -> {
+                                        final JSONValue jsonValue = jsonObject.get(propertyName);
+                                        if (jsonValue.isObject() != null) {
+                                            final Map<String, String> simplePropertiesMap = getSimplePropertiesMap(jsonValue.isObject());
+                                            toReturn.put(propertyName, simplePropertiesMap);
+                                        }
+                                    });
+        return toReturn;
     }
 
     /**

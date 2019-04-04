@@ -111,12 +111,22 @@ public class CollectionEditorSingletonDOMElementFactory extends BaseSingletonDOM
         String propertyName = factMapping.getExpressionAlias();
         List<String> genericTypes = factMapping.getGenericTypes();
         String key = className + "#" + propertyName;
+        String genericTypeName0 = genericTypes.get(0);
+        Optional<Simulation> simulation = scenarioSimulationContext.getModel().getSimulation();
+        boolean isRule = RULE.equals(simulation.get().getSimulationDescriptor().getType());
+        if (isRule) {
+            genericTypeName0 = genericTypeName0.substring(genericTypeName0.lastIndexOf(".") + 1);
+        }
         if (ScenarioSimulationSharedUtils.isList(propertyClass)) {
             collectionEditorView.setListWidget(true);
-            collectionEditorView.initListStructure(key, getPropertiesMap(genericTypes.get(0)));
+            collectionEditorView.initListStructure(key, getSimplePropertiesMap(genericTypeName0), getExpandablePropertiesMap(genericTypeName0));
         } else {
+            String genericTypeName1 = genericTypes.get(1);
+            if (isRule) {
+                genericTypeName1 = genericTypeName1.substring(genericTypeName1.lastIndexOf(".") + 1);
+            }
             collectionEditorView.setListWidget(false);
-            collectionEditorView.initMapStructure(key, getPropertiesMap(genericTypes.get(0)), getPropertiesMap(genericTypes.get(1)));
+            collectionEditorView.initMapStructure(key, getSimplePropertiesMap(genericTypeName0), getSimplePropertiesMap(genericTypeName1));
         }
     }
 
@@ -131,18 +141,28 @@ public class CollectionEditorSingletonDOMElementFactory extends BaseSingletonDOM
      * @param typeName
      * @return
      */
-    protected Map<String, String> getPropertiesMap(String typeName) {
+    protected Map<String, String> getSimplePropertiesMap(String typeName) {
         Map<String, String> toReturn;
         if (isSimpleJavaType(typeName)) {
             toReturn = new HashMap<>();
             toReturn.put("value", typeName);
         } else {
-            Optional<Simulation> simulation = scenarioSimulationContext.getModel().getSimulation();
-            if(simulation.isPresent() && RULE.equals(simulation.get().getSimulationDescriptor().getType())) {
-                typeName = typeName.substring(typeName.lastIndexOf(".") + 1);
-            }
             toReturn = scenarioSimulationContext.getDataObjectFieldsMap().get(typeName).getSimpleProperties();
         }
+        return toReturn;
+    }
+
+    protected Map<String, Map<String, String>> getExpandablePropertiesMap(String typeName) {
+        Map<String, Map<String, String>> toReturn = new HashMap<>();
+        Optional<Simulation> simulation = scenarioSimulationContext.getModel().getSimulation();
+        boolean isRule = RULE.equals(simulation.get().getSimulationDescriptor().getType());
+        final Map<String, String> expandableProperties = scenarioSimulationContext.getDataObjectFieldsMap().get(typeName).getExpandableProperties();
+        expandableProperties.forEach((key, nestedTypeName) -> {
+            if (isRule) {
+                nestedTypeName = nestedTypeName.substring(nestedTypeName.lastIndexOf(".") + 1);
+            }
+            toReturn.put(key, getSimplePropertiesMap(nestedTypeName));
+        });
         return toReturn;
     }
 

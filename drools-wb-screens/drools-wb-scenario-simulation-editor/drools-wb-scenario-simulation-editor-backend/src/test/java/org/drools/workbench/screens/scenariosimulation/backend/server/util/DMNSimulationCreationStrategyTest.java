@@ -68,12 +68,12 @@ public class DMNSimulationCreationStrategyTest extends AbstractDMNTest {
         SortedMap<String, FactModelTree> visibleFacts = new TreeMap<>();
         SortedMap<String, FactModelTree> hiddenFacts = new TreeMap<>();
 
-        for (InputDataNode input : dmnModelMock.getInputs()) {
+        for (InputDataNode input : dmnModelLocal.getInputs()) {
             DMNType type = input.getType();
             visibleFacts.put(input.getName(), createFactModelTree(input.getName(), input.getName(), type, hiddenFacts, FactModelTree.Type.INPUT));
         }
 
-        for (DecisionNode decision : dmnModelMock.getDecisions()) {
+        for (DecisionNode decision : dmnModelLocal.getDecisions()) {
             DMNType type = decision.getResultType();
             visibleFacts.put(decision.getName(), createFactModelTree(decision.getName(), decision.getName(), type, hiddenFacts, FactModelTree.Type.DECISION));
         }

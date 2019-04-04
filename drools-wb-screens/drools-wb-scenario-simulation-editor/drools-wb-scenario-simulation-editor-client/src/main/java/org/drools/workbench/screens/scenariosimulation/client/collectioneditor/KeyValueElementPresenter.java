@@ -99,11 +99,11 @@ public class KeyValueElementPresenter extends ElementPresenter<KeyValueElementVi
                 .collect(Collectors.toMap(
                         keyValueElementView -> {
                             String itemId = keyValueElementView.getItemId() + "#key";
-                            return propertyPresenter.getProperties(itemId);
+                            return propertyPresenter.getSimpleProperties(itemId);
                         },
                         keyValueElementView -> {
                             String itemId = keyValueElementView.getItemId() + "#value";
-                            return propertyPresenter.getProperties(itemId);
+                            return propertyPresenter.getSimpleProperties(itemId);
                         }));
     }
 

@@ -16,6 +16,7 @@
 package org.drools.workbench.screens.scenariosimulation.client.collectioneditor;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,6 +36,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -45,7 +47,17 @@ public class ItemElementPresenterTest extends ElementPresenterTest<ItemElementVi
 
     private static final String TEST_ITEM_ID = "TEST-ITEM-ID";
 
+    private static final String EXPANDABLE_PROPERTY = "EXPANDABLE_PROPERTY";
+
     private Map<String, String> testPropertiesMap = Collections.singletonMap("TEST-KEY", "TEST-VALUE");
+
+    private Map<String, String> expandablePropertiesMap = Collections.singletonMap("EXPANDABLE-KEY", "EXPANDABLE-VALUE");
+
+    private Map<String, Map<String, String>> expandablePropertiesValues = Collections.singletonMap(EXPANDABLE_PROPERTY, expandablePropertiesMap);
+
+    private Map<String, List<String>> itemIdExpandablePropertiesMapLocal = new HashMap<>();
+
+    private List<String> expandableProperties = Collections.singletonList(EXPANDABLE_PROPERTY);
 
     @Mock
     private LIElement propertyFieldsMock;
@@ -63,19 +75,33 @@ public class ItemElementPresenterTest extends ElementPresenterTest<ItemElementVi
                 this.propertyPresenter = propertyPresenterMock;
                 this.elementViewList = elementViewListLocal;
                 this.collectionEditorPresenter = collectionPresenterMock;
+                this.itemIdExpandablePropertiesMap = itemIdExpandablePropertiesMapLocal;
             }
         });
+        itemIdExpandablePropertiesMapLocal.put(elementView1Mock.getItemId(), expandableProperties);
+        itemIdExpandablePropertiesMapLocal.put(elementView2Mock.getItemId(), expandableProperties);
     }
 
     @Test
     public void getItemContainer() {
         elementViewListLocal.clear();
-        LIElement itemContainer = elementPresenter.getItemContainer(TEST_ITEM_ID, testPropertiesMap);
-        verify(elementView1Mock, times(1)).init(elementPresenter);
+        itemIdExpandablePropertiesMapLocal.clear();
+        LIElement itemContainer = elementPresenter.getItemContainer(TEST_ITEM_ID, testPropertiesMap, expandablePropertiesValues);
+        verify(elementView1Mock, times(1 + expandablePropertiesValues.size())).init(elementPresenter); // Add invocation inside expandablePropertiesValues loop
         verify(elementView1Mock, times(1)).setItemId(TEST_ITEM_ID);
-        verify(elementView1Mock, times(1)).getItemContainer();
-        verify(elementView1Mock, times(1)).getSaveChange();
-        verify(innerItemContainerMock, times(1)).insertBefore(propertyFieldsMock, saveChangeMock);
+        verify(elementView1Mock, times(1 + expandablePropertiesValues.size())).getItemContainer(); // Add invocation inside expandablePropertiesValues loop
+        verify(elementView1Mock, times(3)).getSaveChange(); // Three times because invoked also inside expandablePropertiesValues loop
+        testPropertiesMap.forEach((propertyName, propertyValue) -> {
+            verify(propertyPresenterMock, times(1))
+                    .getPropertyFields(eq(TEST_ITEM_ID), eq(propertyName), eq(propertyValue));
+            verify(innerItemContainerMock, times(1)).insertBefore(propertyFieldsMock, saveChangeMock);
+            reset(innerItemContainerMock);
+        });
+        assertTrue(itemIdExpandablePropertiesMapLocal.containsKey(TEST_ITEM_ID));
+        expandablePropertiesValues.forEach((nestedPropertyName, nestedPropertiesValues) -> {
+            assertTrue(itemIdExpandablePropertiesMapLocal.get(TEST_ITEM_ID).contains(nestedPropertyName));
+            verify((ItemElementPresenter) elementPresenter, times(1)).addExpandableItemElementView(eq(elementView1Mock), eq(nestedPropertiesValues), eq(nestedPropertyName));
+        });
         assertNotNull(itemContainer);
         assertTrue(elementViewListLocal.contains(elementView1Mock));
     }
@@ -85,7 +111,10 @@ public class ItemElementPresenterTest extends ElementPresenterTest<ItemElementVi
         doReturn(true).when(elementView1Mock).isShown();
         elementPresenter.onEditItem(elementView1Mock);
         verify(elementPresenter, never()).onToggleRowExpansion(eq(elementView1Mock), eq((false)));
-        verify(propertyPresenterMock, times(1)).editProperties(anyString());
+        verify(propertyPresenterMock, times(1)).editProperties(eq(elementView1Mock.getItemId()));
+        for (String expandableProperty : expandableProperties) {
+            verify(propertyPresenterMock, times(1)).editProperties(eq(expandableProperty));
+        }
         verify(styleMock, times(1)).setDisplay(Style.Display.INLINE);
         verify(collectionPresenterMock, times(1)).toggleEditingStatus(eq(true));
     }
@@ -95,7 +124,10 @@ public class ItemElementPresenterTest extends ElementPresenterTest<ItemElementVi
         doReturn(false).when(elementView1Mock).isShown();
         elementPresenter.onEditItem(elementView1Mock);
         verify(elementPresenter, times(1)).onToggleRowExpansion(eq(elementView1Mock), eq((false)));
-        verify(propertyPresenterMock, times(1)).editProperties(anyString());
+        verify(propertyPresenterMock, times(1)).editProperties(eq(elementView1Mock.getItemId()));
+        for (String expandableProperty : expandableProperties) {
+            verify(propertyPresenterMock, times(1)).editProperties(eq(expandableProperty));
+        }
         verify(styleMock, times(1)).setDisplay(Style.Display.INLINE);
         verify(collectionPresenterMock, times(1)).toggleEditingStatus(eq(true));
     }
@@ -121,14 +153,17 @@ public class ItemElementPresenterTest extends ElementPresenterTest<ItemElementVi
     @Test
     public void updateItem() {
         elementPresenter.updateItem(elementView1Mock);
-        verify(propertyPresenterMock, times(1)).updateProperties(anyString());
+        verify(propertyPresenterMock, times(1)).updateProperties(eq(elementView1Mock.getItemId()));
+        for (String expandableProperty : expandableProperties) {
+            verify(propertyPresenterMock, times(1)).updateProperties(eq(expandableProperty));
+        }
         verify(styleMock, times(1)).setDisplay(Style.Display.NONE);
         verify(collectionPresenterMock, times(1)).toggleEditingStatus(eq(false));
     }
 
     @Test
     public void getItemsProperties() {
-        List<Map<String, String>> itemsProperties = elementPresenter.getItemsProperties();
+        Map<String, Map<String, String>> itemsProperties = elementPresenter.getSimpleItemsProperties();
         assertNotNull(itemsProperties);
     }
 }

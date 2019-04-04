@@ -16,6 +16,7 @@
 package org.drools.workbench.screens.scenariosimulation.client.collectioneditor.editingbox;
 
 import com.google.gwt.dom.client.ButtonElement;
+import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.HeadingElement;
 import com.google.gwt.dom.client.LIElement;
@@ -40,6 +41,9 @@ public abstract class EditingBoxImpl<T extends EditingBox.Presenter> implements 
 
     @DataField("discardItem")
     protected ButtonElement discardItem = Document.get().createButtonElement();
+
+    @DataField("buttonsToolbar")
+    protected DivElement buttonsToolbar = Document.get().createDivElement();
 
     protected Presenter presenter;
 
@@ -81,6 +85,11 @@ public abstract class EditingBoxImpl<T extends EditingBox.Presenter> implements 
     public void onDiscardItemClickEvent(ClickEvent clickEvent) {
         close(clickEvent);
         clickEvent.stopPropagation();
+    }
+
+    @Override
+    public void removeButtonToolbar() {
+        buttonsToolbar.removeFromParent();
     }
 
     protected void close(ClickEvent clickEvent) {

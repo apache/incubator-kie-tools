@@ -26,10 +26,11 @@ public interface ItemEditingBox extends EditingBox<ItemEditingBox.Presenter> {
         /**
          *
          * @param key The key representing the property, i.e Classname#propertyname (e.g Author#books)
-         * @param instancePropertyMap
+         * @param simplePropertiesMap the simple properties tho show
+         * @param expandablePropertiesMap the expandable properties to show
          * @return
          */
-        LIElement getEditingBox(String key, Map<String, String> instancePropertyMap);
+        LIElement getEditingBox(String key, Map<String, String> simplePropertiesMap, Map<String, Map<String, String>> expandablePropertiesMap);
     }
 
 }

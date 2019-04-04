@@ -39,9 +39,18 @@ public class FactModelTree {
     private String fullPackage;  // The package of the asset
     private boolean isSimple = false;
 
-    private Map<String, String> simpleProperties; // Map of the properties: key = property name, value = property value
-    private Map<String, List<String>> genericTypesMap; // Map of the collection' properties generic-type: key = property name (ex "books"), value = generic type (ex "com.Book")
-    private Map<String, String> expandableProperties = new HashMap<>(); // Map of the expandable properties: key = property name, value = property value
+    /**
+     * Map of the properties: key = property name, value = property' simple type
+     */
+    private Map<String, String> simpleProperties;
+    /**
+     * Map of the collection' properties generic-type: key = property name (ex "books"), value = list of property' generic types (ex "com.Book")
+     */
+    private Map<String, List<String>> genericTypesMap;
+    /**
+     * Map of the expandable properties: key = property name, value = property' expandable/complex type
+     */
+    private Map<String, String> expandableProperties = new HashMap<>();
     private Type type;
 
     public FactModelTree() {
@@ -89,6 +98,10 @@ public class FactModelTree {
 
     public Map<String, String> getExpandableProperties() {
         return expandableProperties;
+    }
+
+    public Map<String, List<String>> getGenericTypesMap() {
+        return genericTypesMap;
     }
 
     public void addSimpleProperty(String propertyName, String propertyType) {

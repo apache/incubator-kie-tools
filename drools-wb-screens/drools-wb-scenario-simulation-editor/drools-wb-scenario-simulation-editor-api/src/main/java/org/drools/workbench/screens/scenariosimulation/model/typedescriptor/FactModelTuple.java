@@ -29,7 +29,6 @@ public class FactModelTuple {
 
     private SortedMap<String, FactModelTree> visibleFacts;
     private SortedMap<String, FactModelTree> hiddenFacts;
-    private List<String> topLevelCollectionError = new ArrayList<>();
     private List<String> multipleNestedCollectionError = new ArrayList<>();
     private List<String> multipleNestedObjectError = new ArrayList<>();
 
@@ -50,20 +49,12 @@ public class FactModelTuple {
         return hiddenFacts;
     }
 
-    public void addTopLevelCollectionError(String error) {
-        this.topLevelCollectionError.add(error);
-    }
-
     public void addMultipleNestedCollectionError(String error) {
         this.multipleNestedCollectionError.add(error);
     }
 
     public void addMultipleNestedObjectError(String error) {
         this.multipleNestedObjectError.add(error);
-    }
-
-    public List<String> getTopLevelCollectionError() {
-        return topLevelCollectionError;
     }
 
     public List<String> getMultipleNestedCollectionError() {

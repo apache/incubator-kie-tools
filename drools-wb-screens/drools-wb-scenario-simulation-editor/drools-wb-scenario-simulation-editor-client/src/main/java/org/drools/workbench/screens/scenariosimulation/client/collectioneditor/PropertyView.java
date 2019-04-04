@@ -46,12 +46,12 @@ public interface PropertyView {
         void stopEditProperties(String itemId);
 
         /**
-         * Retrieve the properties shown at the given <b>itemId</b>
+         * Retrieve the <b>simple</b> properties shown at the given <b>itemId</b>
          *
          * @param itemId the id of the item containing the <code>LIElement</code>
          * @return the map with updated values
          */
-        Map<String, String> getProperties(String itemId);
+        Map<String, String> getSimpleProperties(String itemId);
 
         /**
          * Show the <code>SpanElement</code>s of the properties shown at the given <b>baseNodeId</b> with the value of their <code>InputElement</code>s, and hide the latters

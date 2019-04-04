@@ -15,7 +15,6 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.collectioneditor;
 
-import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.dom.client.LIElement;
@@ -28,18 +27,26 @@ public interface ItemElementView extends ElementView<ItemElementView.Presenter> 
         /**
          *
          * @param itemId the id of the current item
-         * @param propertiesMap the properties to be put inside the <code>UListElement</code>
+         * @param simplePropertiesMap the properties to be put inside the <code>UListElement</code>
+         * @param expandablePropertiesValues
          * representing a single item of the list
          *
          * @return the <code>LIElement</code> representing all the items of the list
          */
-        LIElement getItemContainer(String itemId, Map<String, String> propertiesMap);
+        LIElement getItemContainer(String itemId, Map<String, String> simplePropertiesMap, Map<String, Map<String, String>> expandablePropertiesValues);
 
         /**
-         * Retrieves a <code>List</code> with the <code>Map</code>s of all the items' properties
-         * @return
+         * Retrieves a <code>Map</code> with the <code>Map</code>s of all the items' <b>simple</b> properties
+         *
+         * @return a <code>Map</code> where the <b>key</b> is the itemId of the item container, and the value is the map <b>propertyName/propertyValue</b>
          */
-        List<Map<String, String>> getItemsProperties();
+        Map<String, Map<String, String>> getSimpleItemsProperties();
+
+        /**
+         * Retrieves a <code>Map</code> with the <code>Map</code>s of all the items' <b>nested</b> properties
+         * @return a <code>Map</code> where the <b>key</b> is the itemId of the item container, and the value is the map of <b>nested</b> properties
+         */
+        Map<String, Map<String, Map<String, String>>> getExpandableItemsProperties();
 
     }
 

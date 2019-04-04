@@ -75,7 +75,7 @@ public class DMNSimulationCreationStrategy implements SimulationCreationStrategy
 
     // Indirection for test
     protected FactModelTuple getFactModelTuple(Path context, String dmnFilePath) throws Exception {
-        return dmnTypeService.retrieveType(context, dmnFilePath);
+        return dmnTypeService.retrieveFactModelTuple(context, dmnFilePath);
     }
 
     private void addToScenario(FactMappingExtractor factMappingExtractor, FactModelTree factModelTree, List<String> previousSteps, Map<String, FactModelTree> hiddenValues) {
@@ -144,6 +144,7 @@ public class DMNSimulationCreationStrategy implements SimulationCreationStrategy
                                                          localPreviousStep.subList(1, localPreviousStep.size()) :
                                                          localPreviousStep);
             factMapping.setExpressionAlias(expressionAlias);
+            factMapping.setGenericTypes(factModelTree.getGenericTypeInfo("value"));
 
             previousSteps.forEach(step -> factMapping.addExpressionElement(step, factType));
 
