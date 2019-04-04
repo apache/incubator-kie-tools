@@ -14,7 +14,7 @@ Images are grouped by the runtime that will run the binaries and the OS level
 Builder image that is responsible for building the project
 with Apache Maven and generate native image using GraalVM/SubstrateVM
 
-For more details have a loot at [README.md](kaas-quarkus-centos-s2i/README.md)
+For more details have a look at [README.md](kaas-quarkus-centos-s2i/README.md)
 
 ### kaas-quarkus-centos
 
@@ -22,7 +22,7 @@ Runtime image that is responsible for just running the binaries taken from the
 builder image. That approach is giving small and compact image that does not
 not carry on any of the build tools or artefacts (like local maven repository).
 
-For more details have a loot at [README.md](kaas-quarkus-centos/README.md)
+For more details have a look at [README.md](kaas-quarkus-centos/README.md)
 
 ## SpringBoot
 
@@ -31,7 +31,7 @@ For more details have a loot at [README.md](kaas-quarkus-centos/README.md)
 Builder image that is responsible for building the project
 with Apache Maven and generate fat jar.
 
-For more details have a loot at [README.md](kaas-springboot-centos-s2i/README.md)
+For more details have a look at [README.md](kaas-springboot-centos-s2i/README.md)
 
 ### kaas-springboot-centos
 
@@ -40,7 +40,7 @@ builder image. It has JRE installed on the container to allow java executable.
 That approach is giving small and compact image that does not
 not carry on any of the build tools or artefacts (like local maven repository).
 
-For more details have a loot at [README.md](kaas-springboot-centos/README.md)
+For more details have a look at [README.md](kaas-springboot-centos/README.md)
 
 # Supported source structure
 
