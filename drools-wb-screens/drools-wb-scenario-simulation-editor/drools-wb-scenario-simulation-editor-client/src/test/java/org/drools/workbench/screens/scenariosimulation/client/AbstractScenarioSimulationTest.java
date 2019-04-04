@@ -165,6 +165,8 @@ public abstract class AbstractScenarioSimulationTest {
 
     protected final String VALUE_CLASS_NAME = String.class.getName();
 
+    protected final String LIST_CLASS_NAME = List.class.getName();
+
     protected final String FACT_IDENTIFIER_NAME = "FACT_IDENTIFIER_NAME";
 
     protected final FactMappingType factMappingType = FactMappingType.valueOf(COLUMN_GROUP);

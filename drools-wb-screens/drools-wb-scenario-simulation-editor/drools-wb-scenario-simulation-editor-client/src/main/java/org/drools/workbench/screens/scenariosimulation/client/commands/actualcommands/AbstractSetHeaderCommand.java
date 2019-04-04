@@ -89,25 +89,25 @@ public abstract class AbstractSetHeaderCommand extends AbstractScenarioSimulatio
      * Sets the editable headers on a given <code>ScenarioGridColumn</code> and returns a <code>FactIdentifier</code>.
      * @param context
      * @param selectedColumn
-     * @param className
+     * @param aliasName
      * @param canonicalClassName
      * @return
      */
-    protected FactIdentifier setEditableHeadersAndGetFactIdentifier(ScenarioSimulationContext context, ScenarioGridColumn selectedColumn, String className, String canonicalClassName) {
+    protected FactIdentifier setEditableHeadersAndGetFactIdentifier(ScenarioSimulationContext context, ScenarioGridColumn selectedColumn, String aliasName, String canonicalClassName) {
         final ScenarioSimulationModel.Type simulationModelType = context.getModel().getSimulation().get().getSimulationDescriptor().getType();
         selectedColumn.setEditableHeaders(!simulationModelType.equals(ScenarioSimulationModel.Type.DMN));
-        String nameToUseForCreation = simulationModelType.equals(ScenarioSimulationModel.Type.DMN) ? className : selectedColumn.getInformationHeaderMetaData().getColumnId();
-        return getFactIdentifierByColumnTitle(className, context).orElse(FactIdentifier.create(nameToUseForCreation, canonicalClassName));
+        String nameToUseForCreation = simulationModelType.equals(ScenarioSimulationModel.Type.DMN) ? aliasName : selectedColumn.getInformationHeaderMetaData().getColumnId();
+        return getFactIdentifierByColumnTitle(aliasName, context).orElse(FactIdentifier.create(nameToUseForCreation, canonicalClassName));
     }
 
     /**
      * Sets the metadata for an instance header on a given <code>ScenarioGridColumn</code>.
      * @param scenarioGridColumn
-     * @param className
+     * @param aliasName
      * @param factIdentifier
      */
-    protected void setInstanceHeaderMetaData(ScenarioGridColumn scenarioGridColumn, String className, FactIdentifier factIdentifier) {
-        scenarioGridColumn.getInformationHeaderMetaData().setTitle(className);
+    protected void setInstanceHeaderMetaData(ScenarioGridColumn scenarioGridColumn, String aliasName, FactIdentifier factIdentifier) {
+        scenarioGridColumn.getInformationHeaderMetaData().setTitle(aliasName);
         scenarioGridColumn.setInstanceAssigned(true);
         scenarioGridColumn.setFactIdentifier(factIdentifier);
     }

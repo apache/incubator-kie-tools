@@ -45,16 +45,18 @@ public class SetPropertyHeaderCommand extends AbstractSetHeaderCommand {
     protected void executeIfSelectedColumn(ScenarioSimulationContext context, ScenarioGridColumn selectedColumn) {
         int columnIndex = context.getModel().getColumns().indexOf(selectedColumn);
         String value = context.getStatus().getValue();
-        String className = value.split("\\.")[0];
-        String canonicalClassName = getFullPackage(context) + className;
-        FactIdentifier factIdentifier = setEditableHeadersAndGetFactIdentifier(context, selectedColumn, className, canonicalClassName);
+        final List<String> valuesElements = Arrays.asList(value.split("\\."));
+        String aliasName = valuesElements.get(0);
+        String canonicalClassName = getFullPackage(context) + aliasName;
+        FactIdentifier factIdentifier = setEditableHeadersAndGetFactIdentifier(context, selectedColumn, aliasName, canonicalClassName);
+        String className = factIdentifier.getClassName();
         String propertyHeaderTitle = getPropertyHeaderTitle(context, factIdentifier);
         final GridData.Range instanceLimits = context.getModel().getInstanceLimits(columnIndex);
         IntStream.range(instanceLimits.getMinRowIndex(), instanceLimits.getMaxRowIndex() + 1)
                 .forEach(index -> {
                     final ScenarioGridColumn scenarioGridColumn = (ScenarioGridColumn) context.getModel().getColumns().get(index);
                     if (!scenarioGridColumn.isInstanceAssigned()) { // We have not defined the instance, yet
-                        setInstanceHeaderMetaData(scenarioGridColumn, className, factIdentifier);
+                        setInstanceHeaderMetaData(scenarioGridColumn, aliasName, factIdentifier);
                     }
                 });
         selectedColumn.getPropertyHeaderMetaData().setColumnGroup(getPropertyMetaDataGroup(selectedColumn.getInformationHeaderMetaData().getColumnGroup()));
@@ -67,14 +69,14 @@ public class SetPropertyHeaderCommand extends AbstractSetHeaderCommand {
                                                 propertyClass, context.getStatus().isKeepData());
         if (ScenarioSimulationSharedUtils.isCollection(propertyClass)) {
             final SortedMap<String, FactModelTree> dataObjectFieldsMap = context.getDataObjectFieldsMap();
-            final List<String> elements = Arrays.asList(context.getStatus().getValue().split("\\."));
-            final FactModelTree nestedFactModelTree = navigateComplexObject(dataObjectFieldsMap.get(className),
-                                                                            elements,
+            final List<String> classNameElements = Arrays.asList(className.split("\\."));
+            final FactModelTree nestedFactModelTree = navigateComplexObject(dataObjectFieldsMap.get(classNameElements.get(classNameElements.size() - 1)),
+                                                                            classNameElements,
                                                                             dataObjectFieldsMap);
 
             selectedColumn.setFactory(context.getCollectionEditorSingletonDOMElementFactory());
             final FactMapping factMappingByIndex = context.getModel().getSimulation().get().getSimulationDescriptor().getFactMappingByIndex(columnIndex);
-            factMappingByIndex.setGenericTypes(nestedFactModelTree.getGenericTypeInfo(elements.get(elements.size() - 1)));
+            factMappingByIndex.setGenericTypes(nestedFactModelTree.getGenericTypeInfo(valuesElements.get(valuesElements.size() - 1)));
         } else {
             selectedColumn.setFactory(context.getScenarioCellTextAreaSingletonDOMElementFactory());
         }

@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -38,10 +39,12 @@ import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -51,8 +54,12 @@ import static org.mockito.Mockito.when;
 @RunWith(GwtMockitoTestRunner.class)
 public class SetPropertyHeaderCommandTest extends AbstractScenarioSimulationCommandTest {
 
+    final protected String FULL_CLASSNAME_CREATED = FULL_PACKAGE + "." + VALUE;
+
     @Mock
     private List<GridColumn<?>> gridColumnsMock;
+    @Mock
+    protected FactModelTree factModelTreeMock;
 
     @Before
     public void setup() {
@@ -70,6 +77,11 @@ public class SetPropertyHeaderCommandTest extends AbstractScenarioSimulationComm
         scenarioSimulationContextLocal.getStatus().setValueClassName(VALUE_CLASS_NAME);
         assertTrue(command.isUndoable());
         when(simulationDescriptorMock.getType()).thenReturn(ScenarioSimulationModel.Type.RULE);
+
+        Map<String, String> simplePropertiesMock = mock(SortedMap.class);
+        when(factModelTreeMock.getSimpleProperties()).thenReturn(simplePropertiesMock);
+        when(factModelTreeMock.getExpandableProperties()).thenReturn(mock(SortedMap.class));
+        when(dataObjectFieldsMapMock.get(anyString())).thenReturn(factModelTreeMock);
     }
 
     @Test
@@ -111,6 +123,18 @@ public class SetPropertyHeaderCommandTest extends AbstractScenarioSimulationComm
         verify(propertyHeaderMetaDataMock, times(1)).setTitle(VALUE);
         verify(propertyHeaderMetaDataMock, times(1)).setReadOnly(false);
         verify(scenarioGridModelMock, times(1)).updateColumnProperty(anyInt(), eq(gridColumnMock), eq(VALUE), eq(VALUE_CLASS_NAME), eq(true));
+    }
+
+    @Test
+    public void executeWithPropertyAsCollection() {
+        scenarioSimulationContextLocal.getStatus().setValueClassName(LIST_CLASS_NAME);
+        command.execute(scenarioSimulationContextLocal);
+        verify(propertyHeaderMetaDataMock, times(1)).setColumnGroup(anyString());
+        verify(propertyHeaderMetaDataMock, times(1)).setTitle(VALUE);
+        verify(propertyHeaderMetaDataMock, times(1)).setReadOnly(false);
+        verify(scenarioGridModelMock, times(1)).updateColumnProperty(anyInt(), eq(gridColumnMock), eq(VALUE), eq(LIST_CLASS_NAME), anyBoolean());
+        List<String> elements = Arrays.asList((FULL_CLASSNAME_CREATED).split("\\."));
+        verify((SetPropertyHeaderCommand) command, times(1)).navigateComplexObject(eq(factModelTreeMock), eq(elements), eq(scenarioSimulationContextLocal.getDataObjectFieldsMap()));
     }
 
     @Test
