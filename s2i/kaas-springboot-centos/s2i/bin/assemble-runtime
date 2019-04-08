@@ -8,6 +8,10 @@
 #
 if [ -d "$SUBMARINE_HOME/bin" ]; then
   echo "---> Application binaries found and ready to use"
+  
+  echo "---> Adding custom labels..."
+  mkdir /tmp/.s2i
+  mv -v $SUBMARINE_HOME/bin/image_metadata.json /tmp/.s2i/image_metadata.json
 else
   echo "---> Application binaries NOT found, failing build..."
   exit 1

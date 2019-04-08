@@ -50,7 +50,17 @@ else
 
 fi
 
+
 echo "---> Installing application binaries"
 mkdir $SUBMARINE_HOME/bin
 cp -v target/*-runner $SUBMARINE_HOME/bin
 chmod +x $SUBMARINE_HOME/bin/*-runner
+
+
+echo "---> Copy image metadata file..."
+mkdir /tmp/.s2i
+cp -v target/image_metadata.json /tmp/.s2i
+cp -v target/image_metadata.json $SUBMARINE_HOME/bin
+
+echo "---> Copy native java libraries for ssl handling..."
+cp -v $GRAALVM_HOME/jre/lib/amd64/libsunec.so $SUBMARINE_HOME/bin
