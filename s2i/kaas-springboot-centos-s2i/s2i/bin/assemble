@@ -48,9 +48,11 @@ else
 	$MAVEN_HOME/bin/mvn clean package -s $SUBMARINE_HOME/settings.xml -DskipTests
 fi
 
-echo "---> Copy image metadata file..."
-cp -v target/image_metadata.json /tmp/.s2i/image_metadata.json
-
 echo "---> Installing application binaries"
 mkdir $SUBMARINE_HOME/bin
 cp -v target/*.jar $SUBMARINE_HOME/bin
+
+echo "---> Copy image metadata file..."
+mkdir /tmp/.s2i
+cp -v target/image_metadata.json /tmp/.s2i/image_metadata.json
+cp -v target/image_metadata.json $SUBMARINE_HOME/bin
