@@ -102,6 +102,8 @@ public class ScenarioSimulationXMLPersistence {
                 migrator = migrator.andThen(getMigrationStrategy().from1_1to1_2());
             case "1.2":
                 migrator = migrator.andThen(getMigrationStrategy().from1_2to1_3());
+            case "1.3":
+                migrator = migrator.andThen(getMigrationStrategy().from1_3to1_4());
                 supported = true;
         }
         if (!supported) {

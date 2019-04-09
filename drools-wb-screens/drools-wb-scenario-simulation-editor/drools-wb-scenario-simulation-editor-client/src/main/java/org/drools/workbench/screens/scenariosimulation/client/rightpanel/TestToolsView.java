@@ -22,15 +22,11 @@ import java.util.Optional;
 import java.util.SortedMap;
 
 import com.google.gwt.dom.client.DivElement;
+import com.google.gwt.dom.client.HRElement;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.user.client.ui.IsWidget;
-import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree;
-import org.uberfire.client.mvp.HasPresenter;
 
-public interface RightPanelView
-        extends IsWidget,
-                HasPresenter<RightPanelView.Presenter> {
+public interface TestToolsView extends SubDockView<TestToolsView.Presenter> {
 
     void clearInputSearch();
 
@@ -42,9 +38,15 @@ public interface RightPanelView
 
     DivElement getDataObjectListContainer();
 
+    HRElement getSimpleJavaTypeListContainerSeparator();
+
     DivElement getSimpleJavaTypeListContainer();
 
+    HRElement getInstanceListContainerSeparator();
+
     DivElement getInstanceListContainer();
+
+    HRElement getSimpleJavaInstanceListContainerSeparator();
 
     DivElement getSimpleJavaInstanceListContainer();
 
@@ -68,11 +70,7 @@ public interface RightPanelView
      */
     void enableAddButton();
 
-    void setRuleCheatSheetContent();
-
-    void setDMNCheatSheetContent();
-
-    interface Presenter {
+    interface Presenter extends SubDockView.Presenter {
 
         void onClearSearch();
 
@@ -148,7 +146,6 @@ public interface RightPanelView
          * Use this when click on grid' <i>property</i> header.
          * Call this method to show only the data model with the given name, <b>disabled</b> (i.e. <b>not double-clickable</b>)
          * and their properties <b>enabled</b> (i.e. <b>double-clickable</b> to map to a <i>property</i> header/column below the belonging data model instance one)
-         *
          * @param factName
          * @param propertyName the string to <b>eventually</b> use to select the property in the right panel
          * @param notEqualsSearch set to <code>true</code> to perform a <b>not</b> filter, i.e. to show only results <b>different</b> than filterTerm
@@ -178,11 +175,5 @@ public interface RightPanelView
          * @param selected
          */
         void setSelectedElement(FieldItemView selected);
-
-        /**
-         * Method to initialize cheat sheet content based on <code>ScenarioSimulationModel.Type</code>
-         * @param type
-         */
-        void initCheatSheet(ScenarioSimulationModel.Type type);
     }
 }

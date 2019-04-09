@@ -16,14 +16,14 @@
 package org.drools.workbench.screens.scenariosimulation.client.events;
 
 import com.google.gwt.event.shared.GwtEvent;
-import org.drools.workbench.screens.scenariosimulation.client.handlers.ReloadRightPanelEventHandler;
+import org.drools.workbench.screens.scenariosimulation.client.handlers.ReloadTestToolsEventHandler;
 
 /**
- * <code>GwtEvent</code> to <b>reload</b> the <code>RightPanelView</code>
+ * <code>GwtEvent</code> to <b>reload</b> the <code>TestToolsView</code>
  */
-public class ReloadRightPanelEvent extends GwtEvent<ReloadRightPanelEventHandler> {
+public class ReloadTestToolsEvent extends GwtEvent<ReloadTestToolsEventHandler> {
 
-    public static Type<ReloadRightPanelEventHandler> TYPE = new Type<>();
+    public static Type<ReloadTestToolsEventHandler> TYPE = new Type<>();
 
     private final boolean disable;
 
@@ -34,7 +34,7 @@ public class ReloadRightPanelEvent extends GwtEvent<ReloadRightPanelEventHandler
      *
      * @param disable set this to <code>true</code> to <b>also</b> disable the panel.
      */
-    public ReloadRightPanelEvent(boolean disable) {
+    public ReloadTestToolsEvent(boolean disable) {
         this.disable = disable;
         openDock = false;
     }
@@ -45,14 +45,14 @@ public class ReloadRightPanelEvent extends GwtEvent<ReloadRightPanelEventHandler
      * @param disable set this to <code>true</code> to <b>also</b> disable the panel.
      * @param openDock set this to <code>true</code> to <b>also</b> open the dock in case it is closed
      */
-    public ReloadRightPanelEvent(boolean disable, boolean openDock) {
+    public ReloadTestToolsEvent(boolean disable, boolean openDock) {
         this.disable = disable;
         this.openDock = openDock;
     }
 
 
     @Override
-    public Type<ReloadRightPanelEventHandler> getAssociatedType() {
+    public Type<ReloadTestToolsEventHandler> getAssociatedType() {
         return TYPE;
     }
 
@@ -65,7 +65,7 @@ public class ReloadRightPanelEvent extends GwtEvent<ReloadRightPanelEventHandler
     }
 
     @Override
-    protected void dispatch(ReloadRightPanelEventHandler handler) {
+    protected void dispatch(ReloadTestToolsEventHandler handler) {
         handler.onEvent(this);
     }
 }

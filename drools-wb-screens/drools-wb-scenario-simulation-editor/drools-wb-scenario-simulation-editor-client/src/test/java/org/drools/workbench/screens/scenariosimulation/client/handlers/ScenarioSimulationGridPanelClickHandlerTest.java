@@ -19,7 +19,7 @@ package org.drools.workbench.screens.scenariosimulation.client.handlers;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.google.gwt.event.shared.EventBus;
-import org.drools.workbench.screens.scenariosimulation.client.events.EnableRightPanelEvent;
+import org.drools.workbench.screens.scenariosimulation.client.events.EnableTestToolsEvent;
 import org.drools.workbench.screens.scenariosimulation.client.menu.ScenarioContextMenuRegistry;
 import org.junit.Before;
 import org.junit.Test;
@@ -107,7 +107,7 @@ public class ScenarioSimulationGridPanelClickHandlerTest extends AbstractScenari
                    scenarioSimulationGridPanelClickHandler.manageLeftClick((int) CLICK_POINT_X,
                                                                            (int) CLICK_POINT_Y));
         verify(scenarioGridMock, times(1)).setSelectedColumnAndHeader(anyInt(), anyInt());
-        verify(eventBusMock, times(1)).fireEvent(any(EnableRightPanelEvent.class));
+        verify(eventBusMock, times(1)).fireEvent(any(EnableTestToolsEvent.class));
     }
 
     @Test
@@ -116,7 +116,7 @@ public class ScenarioSimulationGridPanelClickHandlerTest extends AbstractScenari
                     scenarioSimulationGridPanelClickHandler.manageLeftClick(GRID_WIDTH.intValue() + (int) CLICK_POINT_X,
                                                                             (int) CLICK_POINT_Y));
         verify(scenarioGridMock, never()).setSelectedColumnAndHeader(anyInt(), anyInt());
-        verify(eventBusMock, never()).fireEvent(any(EnableRightPanelEvent.class));
+        verify(eventBusMock, never()).fireEvent(any(EnableTestToolsEvent.class));
     }
 
     @Test
@@ -125,7 +125,7 @@ public class ScenarioSimulationGridPanelClickHandlerTest extends AbstractScenari
                     scenarioSimulationGridPanelClickHandler.manageLeftClick((int) CLICK_POINT_X,
                                                                             HEADER_HEIGHT.intValue() + (int) CLICK_POINT_Y));
         verify(scenarioGridMock, never()).setSelectedColumnAndHeader(anyInt(), anyInt());
-        verify(eventBusMock, never()).fireEvent(any(EnableRightPanelEvent.class));
+        verify(eventBusMock, never()).fireEvent(any(EnableTestToolsEvent.class));
     }
 
     @Test
@@ -197,7 +197,7 @@ public class ScenarioSimulationGridPanelClickHandlerTest extends AbstractScenari
         if (assertExpected) {
             assertTrue(message, scenarioSimulationGridPanelClickHandler.manageLeftClick((int) CLICK_POINT_X, (int) CLICK_POINT_Y));
             verify(scenarioGridMock, times(1)).setSelectedColumnAndHeader(eq(0), eq(0));
-            verify(eventBusMock, times(1)).fireEvent(isA(EnableRightPanelEvent.class));
+            verify(eventBusMock, times(1)).fireEvent(isA(EnableTestToolsEvent.class));
         } else {
             assertFalse(message, scenarioSimulationGridPanelClickHandler.manageLeftClick((int) CLICK_POINT_X, (int) CLICK_POINT_Y));
             verify(scenarioGridMock, never()).setSelectedColumnAndHeader(eq(0), eq(0));

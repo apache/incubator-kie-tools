@@ -29,7 +29,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class FieldItemPresenterTest extends AbstractRightPanelTest {
+public class FieldItemPresenterTest extends AbstractTestToolsTest {
 
     @Mock
     protected FieldItemView mockFieldItemView;

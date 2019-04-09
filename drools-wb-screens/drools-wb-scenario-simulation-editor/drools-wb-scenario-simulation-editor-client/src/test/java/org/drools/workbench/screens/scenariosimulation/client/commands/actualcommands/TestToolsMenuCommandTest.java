@@ -20,26 +20,47 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.uberfire.backend.vfs.ObservablePath;
+import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.mvp.PlaceStatus;
+import org.uberfire.mvp.impl.PathPlaceRequest;
 
 import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class DisableRightPanelCommandTest extends AbstractScenarioSimulationCommandTest {
+public class TestToolsMenuCommandTest extends AbstractScenarioSimulationCommandTest {
+
+    @Mock
+    private PlaceManager placeManagerMock;
+
+    @Mock
+    private PathPlaceRequest placeRequestMock;
+
+    @Mock
+    private ObservablePath pathMock;
 
     @Before
     public void setup() {
         super.setup();
-        command = spy(new DisableRightPanelCommand());
+        when(placeRequestMock.getPath()).thenReturn(pathMock);
+        command = spy(new TestToolsMenuCommand());
         assertFalse(command.isUndoable());
     }
 
     @Test
     public void execute() {
-        scenarioSimulationContextLocal.setRightPanelPresenter(rightPanelPresenterMock);
+        scenarioSimulationContextLocal.setPlaceManager(placeManagerMock);
+        scenarioSimulationContextLocal.setTestToolsRequest(placeRequestMock);
+        when(placeManagerMock.getStatus(placeRequestMock)).thenReturn(PlaceStatus.OPEN);
         command.execute(scenarioSimulationContextLocal);
-        verify(rightPanelPresenterMock, times(1)).onDisableEditorTab();
+        verify(placeManagerMock, times(1)).closePlace(placeRequestMock);
+        when(placeManagerMock.getStatus(placeRequestMock)).thenReturn(PlaceStatus.CLOSE);
+        command.execute(scenarioSimulationContextLocal);
+        verify(placeManagerMock, times(1)).goTo(placeRequestMock);
     }
 }

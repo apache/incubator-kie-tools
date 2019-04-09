@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
-import org.drools.workbench.screens.scenariosimulation.client.rightpanel.RightPanelView;
+import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsView;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModelContent;
 import org.uberfire.backend.vfs.ObservablePath;
@@ -41,7 +41,7 @@ public interface DataManagementStrategy {
             new AbstractMap.SimpleEntry<>(String.class.getSimpleName(), String.class)).
             collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue)));
 
-    void populateRightPanel(final RightPanelView.Presenter rightPanelPresenter, final ScenarioGridModel scenarioGridModel);
+    void populateTestTools(final TestToolsView.Presenter testToolsPresenter, final ScenarioGridModel scenarioGridModel);
 
     void manageScenarioSimulationModelContent(ObservablePath currentPath, ScenarioSimulationModelContent toManage);
 

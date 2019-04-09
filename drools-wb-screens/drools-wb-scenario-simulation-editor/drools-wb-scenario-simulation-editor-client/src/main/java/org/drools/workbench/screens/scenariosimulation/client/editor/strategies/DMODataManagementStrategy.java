@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
 import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
-import org.drools.workbench.screens.scenariosimulation.client.rightpanel.RightPanelView;
+import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsView;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModelContent;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTuple;
@@ -51,9 +51,9 @@ public class DMODataManagementStrategy extends AbstractDataManagementStrategy {
     }
 
     @Override
-    public void populateRightPanel(final RightPanelView.Presenter rightPanelPresenter, final ScenarioGridModel scenarioGridModel) {
+    public void populateTestTools(final TestToolsView.Presenter testToolsPresenter, final ScenarioGridModel scenarioGridModel) {
         if (factModelTreeHolder.getFactModelTuple() != null) {
-            storeData(factModelTreeHolder.getFactModelTuple(), rightPanelPresenter, scenarioGridModel);
+            storeData(factModelTreeHolder.getFactModelTuple(), testToolsPresenter, scenarioGridModel);
         } else {
             // Execute only when oracle has been set
             if (oracle == null || oracle.getFactTypes().length == 0) {
@@ -73,7 +73,7 @@ public class DMODataManagementStrategy extends AbstractDataManagementStrategy {
             final SortedMap<String, FactModelTree> dataObjectsFieldsMap = new TreeMap<>();
 
             // Instantiate the aggregator callback
-            Callback<FactModelTree> aggregatorCallback = aggregatorCallback(rightPanelPresenter, expectedElements, dataObjectsFieldsMap, scenarioGridModel, simpleJavaTypes);
+            Callback<FactModelTree> aggregatorCallback = aggregatorCallback(testToolsPresenter, expectedElements, dataObjectsFieldsMap, scenarioGridModel, simpleJavaTypes);
             // Iterate over all dataObjects to retrieve their modelfields
             dataObjectsTypes.forEach(factType ->
                                              oracle.getFieldCompletions(factType, fieldCompletionsCallback(factType, aggregatorCallback)));
@@ -175,25 +175,25 @@ public class DMODataManagementStrategy extends AbstractDataManagementStrategy {
     /**
      * This <code>Callback</code> will receive data from other callbacks and when the retrieved results get to the
      * expected ones it will recursively elaborate the map
-     * @param rightPanelPresenter
+     * @param testToolsPresenter
      * @param expectedElements
      * @param factTypeFieldsMap
      * @param scenarioGridModel
      * @return
      */
-    protected Callback<FactModelTree> aggregatorCallback(final RightPanelView.Presenter rightPanelPresenter, final int expectedElements, final SortedMap<String, FactModelTree> factTypeFieldsMap, final ScenarioGridModel scenarioGridModel, final List<String> simpleJavaTypes) {
-        return result -> aggregatorCallbackMethod(rightPanelPresenter, expectedElements, factTypeFieldsMap, scenarioGridModel, result, simpleJavaTypes);
+    protected Callback<FactModelTree> aggregatorCallback(final TestToolsView.Presenter testToolsPresenter, final int expectedElements, final SortedMap<String, FactModelTree> factTypeFieldsMap, final ScenarioGridModel scenarioGridModel, final List<String> simpleJavaTypes) {
+        return result -> aggregatorCallbackMethod(testToolsPresenter, expectedElements, factTypeFieldsMap, scenarioGridModel, result, simpleJavaTypes);
     }
 
     /**
      * Actual code of the <b>aggregatorCallback</b>; isolated for testing
-     * @param rightPanelPresenter
+     * @param testToolsPresenter
      * @param expectedElements
      * @param factTypeFieldsMap
      * @param scenarioGridModel
      * @param result
      */
-    protected void aggregatorCallbackMethod(final RightPanelView.Presenter rightPanelPresenter, final int expectedElements, SortedMap<String, FactModelTree> factTypeFieldsMap, final ScenarioGridModel scenarioGridModel, final FactModelTree result, final List<String> simpleJavaTypes) {
+    protected void aggregatorCallbackMethod(final TestToolsView.Presenter testToolsPresenter, final int expectedElements, SortedMap<String, FactModelTree> factTypeFieldsMap, final ScenarioGridModel scenarioGridModel, final FactModelTree result, final List<String> simpleJavaTypes) {
         factTypeFieldsMap.put(result.getFactName(), result);
         if (factTypeFieldsMap.size() == expectedElements) {
             factTypeFieldsMap.values().forEach(factModelTree -> populateFactModelTree(factModelTree, factTypeFieldsMap));
@@ -206,7 +206,7 @@ public class DMODataManagementStrategy extends AbstractDataManagementStrategy {
             visibleFacts.putAll(simpleJavaTypeFieldsMap);
             FactModelTuple factModelTuple = new FactModelTuple(visibleFacts, new TreeMap<>());
             factModelTreeHolder.setFactModelTuple(factModelTuple);
-            storeData(factModelTuple, rightPanelPresenter, scenarioGridModel);
+            storeData(factModelTuple, testToolsPresenter, scenarioGridModel);
         }
     }
 

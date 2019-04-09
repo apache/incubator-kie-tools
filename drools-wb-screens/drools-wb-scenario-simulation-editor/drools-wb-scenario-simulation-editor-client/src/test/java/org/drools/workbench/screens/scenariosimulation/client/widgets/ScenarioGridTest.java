@@ -22,7 +22,7 @@ import java.util.stream.IntStream;
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.google.gwt.event.shared.EventBus;
-import org.drools.workbench.screens.scenariosimulation.client.events.EnableRightPanelEvent;
+import org.drools.workbench.screens.scenariosimulation.client.events.EnableTestToolsEvent;
 import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioHeaderTextBoxSingletonDOMElementFactory;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioSimulationGridWidgetMouseEventHandler;
 import org.drools.workbench.screens.scenariosimulation.client.menu.ScenarioContextMenuRegistry;
@@ -305,9 +305,9 @@ public class ScenarioGridTest {
 
         scenarioGrid.adjustSelection(mock(SelectionExtension.class), false);
 
-        verify(scenarioGrid).signalRightPanelAboutSelectedHeaderCells();
+        verify(scenarioGrid).signalTestToolsAboutSelectedHeaderCells();
         verify(scenarioGrid).setSelectedColumnAndHeader(uiRowIndex, uiColumnIndex);
-        verify(eventBusMock).fireEvent(any(EnableRightPanelEvent.class));
+        verify(eventBusMock).fireEvent(any(EnableTestToolsEvent.class));
 
         // context menus could be shown
         verify(scenarioContextMenuRegistryMock).hideMenus();

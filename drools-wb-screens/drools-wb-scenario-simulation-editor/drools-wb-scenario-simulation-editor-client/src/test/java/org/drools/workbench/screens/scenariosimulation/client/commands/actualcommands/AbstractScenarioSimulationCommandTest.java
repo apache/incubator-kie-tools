@@ -19,7 +19,7 @@ package org.drools.workbench.screens.scenariosimulation.client.commands.actualco
 import com.google.gwt.event.shared.EventBus;
 import org.drools.workbench.screens.scenariosimulation.client.AbstractScenarioSimulationTest;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
-import org.drools.workbench.screens.scenariosimulation.client.rightpanel.RightPanelPresenter;
+import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsPresenter;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -35,7 +35,7 @@ import static org.mockito.Mockito.verify;
 public abstract class AbstractScenarioSimulationCommandTest extends AbstractScenarioSimulationTest {
 
     @Mock
-    protected RightPanelPresenter rightPanelPresenterMock;
+    protected TestToolsPresenter testToolsPresenterMock;
 
     @Mock
     protected EventBus eventBusMock;
@@ -103,7 +103,7 @@ public abstract class AbstractScenarioSimulationCommandTest extends AbstractScen
             command.setCurrentContext(scenarioSimulationContextLocal);
             verify(scenarioSimulationViewMock, times(1)).setContent(eq(simulationMock));
             verify(scenarioSimulationModelMock, times(1)).setSimulation(eq(simulationMock));
-            verify(scenarioSimulationEditorPresenterMock, times(1)).reloadRightPanel(eq(true));
+            verify(scenarioSimulationEditorPresenterMock, times(1)).reloadTestTools(eq(true));
             assertNotEquals(status, command.restorableStatus);
         }
     }

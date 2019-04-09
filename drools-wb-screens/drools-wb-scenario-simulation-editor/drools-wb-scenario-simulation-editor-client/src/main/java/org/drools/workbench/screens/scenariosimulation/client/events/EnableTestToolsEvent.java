@@ -16,28 +16,28 @@
 package org.drools.workbench.screens.scenariosimulation.client.events;
 
 import com.google.gwt.event.shared.GwtEvent;
-import org.drools.workbench.screens.scenariosimulation.client.handlers.EnableRightPanelEventHandler;
+import org.drools.workbench.screens.scenariosimulation.client.handlers.EnableTestToolsEventHandler;
 
 /**
- * <code>GwtEvent</code> to <b>enable</b> the <code>RightPanelView</code>
+ * <code>GwtEvent</code> to <b>enable</b> the <code>TestToolsView</code>
  */
-public class EnableRightPanelEvent extends GwtEvent<EnableRightPanelEventHandler> {
+public class EnableTestToolsEvent extends GwtEvent<EnableTestToolsEventHandler> {
 
-    public static Type<EnableRightPanelEventHandler> TYPE = new Type<>();
+    public static Type<EnableTestToolsEventHandler> TYPE = new Type<>();
 
     /**
-     * The string to use for filtering in right panel
+     * The string to use for filtering in test tools panel
      */
     private final String filterTerm;
 
     /**
-     * flag to decide which kind of filter (<b>equals</b> or <b>not euals</b>) is to be applied.
+     * flag to decide which kind of filter (<b>equals</b> or <b>not equals</b>) is to be applied.
      * Default to false (= <b>equals</b> filter)
      */
     private final boolean notEqualsSearch;
 
     /**
-     * The string to <b>eventually</b> use to select the prooperty in the right panel
+     * The string to <b>eventually</b> use to select the property in the test tools  panel
      */
     private final String propertyName;
 
@@ -45,7 +45,7 @@ public class EnableRightPanelEvent extends GwtEvent<EnableRightPanelEventHandler
      * Fire this event to show all the first-level data models <b>enabled</b> (i.e. <b>double-clickable</b> to map to an <i>instance</i> header/column)
      * and their properties <b>disabled</b> (i.e. <b>not double-clickable</b>)
      */
-    public EnableRightPanelEvent() {
+    public EnableTestToolsEvent() {
         filterTerm = null;
         notEqualsSearch = false;
         propertyName = null;
@@ -57,7 +57,7 @@ public class EnableRightPanelEvent extends GwtEvent<EnableRightPanelEventHandler
      * It show only results <b>equals</b> to filterTerm
      * @param filterTerm
      */
-    public EnableRightPanelEvent(String filterTerm) {
+    public EnableTestToolsEvent(String filterTerm) {
         this.filterTerm = filterTerm;
         notEqualsSearch = false;
         propertyName = null;
@@ -70,7 +70,7 @@ public class EnableRightPanelEvent extends GwtEvent<EnableRightPanelEventHandler
      * @param filterTerm
      * @param propertyName
      */
-    public EnableRightPanelEvent(String filterTerm, String propertyName) {
+    public EnableTestToolsEvent(String filterTerm, String propertyName) {
         this.filterTerm = filterTerm;
         notEqualsSearch = false;
         this.propertyName = propertyName;
@@ -82,14 +82,14 @@ public class EnableRightPanelEvent extends GwtEvent<EnableRightPanelEventHandler
      * @param
      * @param notEqualsSearch set to <code>true</code> to perform a <b>not</b> filter, i.e. to show only results <b>different</b> than filterTerm
      */
-    public EnableRightPanelEvent(String filterTerm, boolean notEqualsSearch) {
+    public EnableTestToolsEvent(String filterTerm, boolean notEqualsSearch) {
         this.filterTerm = filterTerm;
         this.notEqualsSearch = notEqualsSearch;
         propertyName = null;
     }
 
     @Override
-    public Type<EnableRightPanelEventHandler> getAssociatedType() {
+    public Type<EnableTestToolsEventHandler> getAssociatedType() {
         return TYPE;
     }
 
@@ -106,7 +106,7 @@ public class EnableRightPanelEvent extends GwtEvent<EnableRightPanelEventHandler
     }
 
     @Override
-    protected void dispatch(EnableRightPanelEventHandler handler) {
+    protected void dispatch(EnableTestToolsEventHandler handler) {
         handler.onEvent(this);
     }
 }

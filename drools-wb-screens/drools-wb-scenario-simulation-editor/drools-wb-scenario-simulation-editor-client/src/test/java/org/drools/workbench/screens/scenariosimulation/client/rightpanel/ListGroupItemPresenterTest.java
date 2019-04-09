@@ -40,7 +40,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class ListGroupItemPresenterTest extends AbstractRightPanelTest {
+public class ListGroupItemPresenterTest extends AbstractTestToolsTest {
 
     private ListGroupItemPresenter listGroupItemPresenter;
 
@@ -60,7 +60,7 @@ public class ListGroupItemPresenterTest extends AbstractRightPanelTest {
     private List<ListGroupItemView> listGroupItemViewValuesMock;
 
     @Mock
-    private RightPanelPresenter rightPanelPresenterMock;
+    private TestToolsPresenter testToolsPresenterMock;
 
     @Before
     public void setup() {
@@ -74,7 +74,7 @@ public class ListGroupItemPresenterTest extends AbstractRightPanelTest {
                 listGroupItemViewMap = listGroupItemViewMapMock;
                 fieldItemPresenter = fieldItemPresenterMock;
                 viewsProvider = viewsProviderMock;
-                rightPanelPresenter = rightPanelPresenterMock;
+                testToolsPresenter = testToolsPresenterMock;
             }
         });
     }
@@ -145,10 +145,10 @@ public class ListGroupItemPresenterTest extends AbstractRightPanelTest {
     public void onToggleRowExpansionWithFactNameHidden() {
         listGroupItemPresenter.enable(FACT_NAME);
         when(listGroupItemViewMock.isToExpand()).thenReturn(true);
-        when(rightPanelPresenterMock.getFactModelTreeFromFactTypeMap(anyString())).thenReturn(Optional.empty());
+        when(testToolsPresenterMock.getFactModelTreeFromFactTypeMap(anyString())).thenReturn(Optional.empty());
         listGroupItemPresenter.onToggleRowExpansion(listGroupItemViewMock, false);
-        verify(rightPanelPresenterMock, times(1)).getFactModelTreeFromFactTypeMap(anyString());
-        verify(rightPanelPresenterMock, times(1)).getFactModelTreeFromHiddenMap(anyString());
+        verify(testToolsPresenterMock, times(1)).getFactModelTreeFromFactTypeMap(anyString());
+        verify(testToolsPresenterMock, times(1)).getFactModelTreeFromHiddenMap(anyString());
         verify(listGroupItemViewMock, times(1)).expandRow();
     }
 

@@ -25,9 +25,9 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.ContextMenuEvent;
 import com.google.gwt.event.dom.client.ContextMenuHandler;
 import com.google.gwt.event.shared.EventBus;
-import org.drools.workbench.screens.scenariosimulation.client.events.DisableRightPanelEvent;
-import org.drools.workbench.screens.scenariosimulation.client.events.EnableRightPanelEvent;
-import org.drools.workbench.screens.scenariosimulation.client.events.ReloadRightPanelEvent;
+import org.drools.workbench.screens.scenariosimulation.client.events.DisableTestToolsEvent;
+import org.drools.workbench.screens.scenariosimulation.client.events.EnableTestToolsEvent;
+import org.drools.workbench.screens.scenariosimulation.client.events.ReloadTestToolsEvent;
 import org.drools.workbench.screens.scenariosimulation.client.menu.ScenarioContextMenuRegistry;
 import org.drools.workbench.screens.scenariosimulation.client.metadata.ScenarioHeaderMetaData;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGrid;
@@ -35,7 +35,7 @@ import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGr
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
 
-import static org.drools.workbench.screens.scenariosimulation.client.utils.ScenarioSimulationGridHeaderUtilities.getEnableRightPanelEvent;
+import static org.drools.workbench.screens.scenariosimulation.client.utils.ScenarioSimulationGridHeaderUtilities.getEnableTestToolsEvent;
 import static org.uberfire.ext.wires.core.grids.client.util.CoordinateUtilities.convertDOMToGridCoordinate;
 import static org.uberfire.ext.wires.core.grids.client.util.CoordinateUtilities.getRelativeXOfEvent;
 import static org.uberfire.ext.wires.core.grids.client.util.CoordinateUtilities.getRelativeYOfEvent;
@@ -81,7 +81,7 @@ public class ScenarioSimulationGridPanelClickHandler implements ClickHandler,
         scenarioContextMenuRegistry.hideMenus();
         scenarioGrid.clearSelections();
         if (!manageLeftClick(canvasX, canvasY)) { // It was not a grid click
-            eventBus.fireEvent(new DisableRightPanelEvent());
+            eventBus.fireEvent(new DisableTestToolsEvent());
         }
     }
 
@@ -181,14 +181,14 @@ public class ScenarioSimulationGridPanelClickHandler implements ClickHandler,
         scenarioGrid.setSelectedColumnAndHeader(scenarioGridColumn.getHeaderMetaData().indexOf(clickedScenarioHeaderMetadata), uiColumnIndex);
 
         if (scenarioGridColumn.isInstanceAssigned() && clickedScenarioHeaderMetadata.getMetadataType().equals(ScenarioHeaderMetaData.MetadataType.INSTANCE)) {
-            eventBus.fireEvent(new ReloadRightPanelEvent(true, true));
+            eventBus.fireEvent(new ReloadTestToolsEvent(true, true));
             return true;
         }
-        EnableRightPanelEvent toFire = getEnableRightPanelEvent(scenarioGrid,
-                                                                scenarioGridColumn,
-                                                                clickedScenarioHeaderMetadata,
-                                                                uiColumnIndex,
-                                                                group);
+        EnableTestToolsEvent toFire = getEnableTestToolsEvent(scenarioGrid,
+                                                              scenarioGridColumn,
+                                                              clickedScenarioHeaderMetadata,
+                                                              uiColumnIndex,
+                                                              group);
         eventBus.fireEvent(toFire);
         return true;
     }

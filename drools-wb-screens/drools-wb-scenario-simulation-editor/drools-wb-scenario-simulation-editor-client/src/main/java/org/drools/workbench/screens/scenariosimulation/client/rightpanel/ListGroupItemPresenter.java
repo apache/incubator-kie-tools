@@ -36,7 +36,7 @@ public class ListGroupItemPresenter implements ListGroupItemView.Presenter {
     @Inject
     protected FieldItemPresenter fieldItemPresenter;
 
-    protected RightPanelView.Presenter rightPanelPresenter;
+    protected TestToolsView.Presenter testToolsPresenter;
 
     protected Map<String, ListGroupItemView> listGroupItemViewMap = new HashMap<>();
 
@@ -105,8 +105,8 @@ public class ListGroupItemPresenter implements ListGroupItemView.Presenter {
     }
 
     @Override
-    public void init(RightPanelView.Presenter rightPanelPresenter) {
-        this.rightPanelPresenter = rightPanelPresenter;
+    public void init(TestToolsView.Presenter testToolsPresenter) {
+        this.testToolsPresenter = testToolsPresenter;
         fieldItemPresenter.setListGroupItemPresenter(this);
     }
 
@@ -134,8 +134,8 @@ public class ListGroupItemPresenter implements ListGroupItemView.Presenter {
         } else {
             if (listGroupItemView.isToExpand()) {
                 FactModelTree factModelTree =
-                        rightPanelPresenter.getFactModelTreeFromFactTypeMap(listGroupItemView.getFactType())
-                                .orElseGet(() -> rightPanelPresenter.getFactModelTreeFromHiddenMap(listGroupItemView.getFactType()));
+                        testToolsPresenter.getFactModelTreeFromFactTypeMap(listGroupItemView.getFactType())
+                                .orElseGet(() -> testToolsPresenter.getFactModelTreeFromHiddenMap(listGroupItemView.getFactType()));
                 if (factModelTree != null) {
                     populateListGroupItemView(listGroupItemView, listGroupItemView.getParentPath(), listGroupItemView.getFactName(), factModelTree);
                     listGroupItemView.setToExpand(false);
@@ -147,14 +147,14 @@ public class ListGroupItemPresenter implements ListGroupItemView.Presenter {
 
     @Override
     public void onSelectedElement(ListGroupItemView selected) {
-        rightPanelPresenter.setSelectedElement(selected);
+        testToolsPresenter.setSelectedElement(selected);
         listGroupItemViewMap.values().stream().filter(listGroupItemView -> !listGroupItemView.equals(selected)).forEach(ListGroupItemView::unselect);
         fieldItemPresenter.unselectAll();
     }
 
     @Override
     public void onSelectedElement(FieldItemView selected) {
-        rightPanelPresenter.setSelectedElement(selected);
+        testToolsPresenter.setSelectedElement(selected);
         listGroupItemViewMap.values().forEach(ListGroupItemView::unselect);
     }
 

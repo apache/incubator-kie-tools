@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<!--
+  ~ Copyright 2019 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!-- GLOBAL SETTINGS -->
+<div id="settings-panel" class="uf-scroll-panel">
+    <div id="kieSettingsContent" class="tab-pane kie-tab-pane--scesim-panel">
+        <div class="pf-c-form__group">
+            <label for="kieScenarioSettingsName" data-field="nameLabel">
+                Name
+            </label>
+            <span class="form-control" data-field="fileName" id="kieScenarioSettingsName"></span>
+        </div>
+        <br/>
+        <div class="pf-c-form__group">
+            <label for="kieScenarioSettingsType" data-field="typeLabel">
+                Type
+            </label>
+            <span data-field="scenarioType" id="kieScenarioSettingsType"></span>
+        </div>
+        <br/>
+        <div data-field="ruleSettings">
+            <div class="pf-c-form__group">
+                <label for="kieScenarioSettingsKieSession">
+                    KieSession
+                </label>
+                <input class="form-control" data-field="kieSession" id="kieScenarioSettingsKieSession">
+            </div>
+            <br/>
+            <div class="pf-c-form__group">
+                <label for="kieScenarioSettingsKieBase">
+                    KieBase
+                </label>
+                <input class="form-control" data-field="kieBase" id="kieScenarioSettingsKieBase">
+            </div>
+            <br/>
+            <div class="pf-c-form__group">
+                <label for="kieScenarioSettingsRuleFlowGroup">
+                    RuleFlowGroup
+                </label>
+                <input class="form-control" data-field="ruleFlowGroup" id="kieScenarioSettingsRuleFlowGroup">
+            </div>
+            <br/>
+            <div class="pf-c-form__group">
+                <label for="kieScenarioSettingsDMOSession">
+                    DMOSession
+                </label>
+                <input class="form-control" data-field="dmoSession" id="kieScenarioSettingsDMOSession">
+            </div>
+        </div>
+        <div data-field="dmnSettings">
+            <div class="pf-c-form__group">
+                <label for="kieScenarioSettingsModelPath" data-field="dmnFileLabel">
+                    DMN model
+                </label>
+                <span class="form-control" data-field="dmnFilePath" id="kieScenarioSettingsModelPath"></span>
+            </div>
+            <br/>
+            <div class="pf-c-form__group">
+                <label for="kieScenarioSettingsDMNNamespace" data-field="dmnNamespaceLabel">
+                    DMN namespace
+                </label>
+                <span class="form-control" data-field="dmnNamespace" id="kieScenarioSettingsDMNNamespace"></span>
+            </div>
+            <br/>
+            <div class="pf-c-form__group">
+                <label for="kieScenarioSettingsDMNName" data-field="dmnNameLabel">
+                    DMN name
+                </label>
+                <span class="form-control" data-field="dmnName" id="kieScenarioSettingsDMNName"></span>
+            </div>
+        </div>
+        <br/>
+        <div class="checkbox">
+            <label for="kieScenarioSettingsSkipFromBuild">
+                <input type="checkbox" data-field="skipFromBuild" id="kieScenarioSettingsSkipFromBuild">Skip this simulation during the build
+            </label>
+        </div>
+        <br/>
+        <p data-field="toBeRemoved" style="font-style: italic">Only the default values are currently supported. Changing them will not have any impact on test execution.</p>
+        <button class="btn btn-default" type="button" data-field="saveButton">Save</button>
+    </div>
+</div>

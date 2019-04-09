@@ -75,4 +75,7 @@ public interface ScenarioSimulationEditorStylesCss extends CssResource {
 
     @ClassName("kie-object-list__expander")
     String kieObjectList__expander();
+
+    @ClassName("kie-tab-pane--scesim-panel")
+    String kieTabPaneScesimPanel();
 }

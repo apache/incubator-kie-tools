@@ -33,14 +33,14 @@ import org.drools.workbench.screens.scenariosimulation.client.commands.actualcom
 import org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands.AppendRowCommand;
 import org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands.DeleteColumnCommand;
 import org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands.DeleteRowCommand;
-import org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands.DisableRightPanelCommand;
+import org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands.DisableTestToolsCommand;
 import org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands.DuplicateRowCommand;
-import org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands.EnableRightPanelCommand;
+import org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands.EnableTestToolsCommand;
 import org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands.InsertColumnCommand;
 import org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands.InsertRowCommand;
 import org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands.PrependColumnCommand;
 import org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands.PrependRowCommand;
-import org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands.ReloadRightPanelCommand;
+import org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands.ReloadTestToolsCommand;
 import org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands.RunSingleScenarioCommand;
 import org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands.SetGridCellValueCommand;
 import org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands.SetHeaderCellValueCommand;
@@ -50,15 +50,15 @@ import org.drools.workbench.screens.scenariosimulation.client.events.AppendColum
 import org.drools.workbench.screens.scenariosimulation.client.events.AppendRowEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.DeleteColumnEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.DeleteRowEvent;
-import org.drools.workbench.screens.scenariosimulation.client.events.DisableRightPanelEvent;
+import org.drools.workbench.screens.scenariosimulation.client.events.DisableTestToolsEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.DuplicateRowEvent;
-import org.drools.workbench.screens.scenariosimulation.client.events.EnableRightPanelEvent;
+import org.drools.workbench.screens.scenariosimulation.client.events.EnableTestToolsEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.InsertColumnEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.InsertRowEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.PrependColumnEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.PrependRowEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.RedoEvent;
-import org.drools.workbench.screens.scenariosimulation.client.events.ReloadRightPanelEvent;
+import org.drools.workbench.screens.scenariosimulation.client.events.ReloadTestToolsEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.RunSingleScenarioEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.ScenarioGridReloadEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.ScenarioNotificationEvent;
@@ -72,15 +72,15 @@ import org.drools.workbench.screens.scenariosimulation.client.handlers.AppendCol
 import org.drools.workbench.screens.scenariosimulation.client.handlers.AppendRowEventHandler;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.DeleteColumnEventHandler;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.DeleteRowEventHandler;
-import org.drools.workbench.screens.scenariosimulation.client.handlers.DisableRightPanelEventHandler;
+import org.drools.workbench.screens.scenariosimulation.client.handlers.DisableTestToolsEventHandler;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.DuplicateRowEventHandler;
-import org.drools.workbench.screens.scenariosimulation.client.handlers.EnableRightPanelEventHandler;
+import org.drools.workbench.screens.scenariosimulation.client.handlers.EnableTestToolsEventHandler;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.InsertColumnEventHandler;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.InsertRowEventHandler;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.PrependColumnEventHandler;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.PrependRowEventHandler;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.RedoEventHandler;
-import org.drools.workbench.screens.scenariosimulation.client.handlers.ReloadRightPanelEventHandler;
+import org.drools.workbench.screens.scenariosimulation.client.handlers.ReloadTestToolsEventHandler;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.RunSingleScenarioEventHandler;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioGridReloadEventHandler;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioNotificationEventHandler;
@@ -109,15 +109,15 @@ public class ScenarioSimulationEventHandler implements AppendColumnEventHandler,
                                                        AppendRowEventHandler,
                                                        DeleteColumnEventHandler,
                                                        DeleteRowEventHandler,
-                                                       DisableRightPanelEventHandler,
+                                                       DisableTestToolsEventHandler,
                                                        DuplicateRowEventHandler,
-                                                       EnableRightPanelEventHandler,
+                                                       EnableTestToolsEventHandler,
                                                        InsertColumnEventHandler,
                                                        InsertRowEventHandler,
                                                        PrependColumnEventHandler,
                                                        PrependRowEventHandler,
                                                        RedoEventHandler,
-                                                       ReloadRightPanelEventHandler,
+                                                       ReloadTestToolsEventHandler,
                                                        RunSingleScenarioEventHandler,
                                                        ScenarioGridReloadEventHandler,
                                                        ScenarioNotificationEventHandler,
@@ -212,8 +212,8 @@ public class ScenarioSimulationEventHandler implements AppendColumnEventHandler,
     }
 
     @Override
-    public void onEvent(DisableRightPanelEvent event) {
-        commonExecution(context, new DisableRightPanelCommand());
+    public void onEvent(DisableTestToolsEvent event) {
+        commonExecution(context, new DisableTestToolsCommand());
     }
 
     @Override
@@ -223,11 +223,11 @@ public class ScenarioSimulationEventHandler implements AppendColumnEventHandler,
     }
 
     @Override
-    public void onEvent(EnableRightPanelEvent event) {
+    public void onEvent(EnableTestToolsEvent event) {
         context.getStatus().setFilterTerm(event.getFilterTerm());
         context.getStatus().setPropertyName(event.getPropertyName());
         context.getStatus().setNotEqualsSearch(event.isNotEqualsSearch());
-        commonExecution(context, new EnableRightPanelCommand());
+        commonExecution(context, new EnableTestToolsCommand());
     }
 
     @Override
@@ -266,10 +266,10 @@ public class ScenarioSimulationEventHandler implements AppendColumnEventHandler,
     }
 
     @Override
-    public void onEvent(ReloadRightPanelEvent event) {
+    public void onEvent(ReloadTestToolsEvent event) {
         context.getStatus().setDisable(event.isDisable());
         context.getStatus().setOpenDock(event.isOpenDock());
-        commonExecution(context, new ReloadRightPanelCommand());
+        commonExecution(context, new ReloadTestToolsCommand());
     }
 
     @Override
@@ -432,15 +432,15 @@ public class ScenarioSimulationEventHandler implements AppendColumnEventHandler,
         handlerRegistrationList.add(eventBus.addHandler(AppendRowEvent.TYPE, this));
         handlerRegistrationList.add(eventBus.addHandler(DeleteColumnEvent.TYPE, this));
         handlerRegistrationList.add(eventBus.addHandler(DeleteRowEvent.TYPE, this));
-        handlerRegistrationList.add(eventBus.addHandler(DisableRightPanelEvent.TYPE, this));
+        handlerRegistrationList.add(eventBus.addHandler(DisableTestToolsEvent.TYPE, this));
         handlerRegistrationList.add(eventBus.addHandler(DuplicateRowEvent.TYPE, this));
-        handlerRegistrationList.add(eventBus.addHandler(EnableRightPanelEvent.TYPE, this));
+        handlerRegistrationList.add(eventBus.addHandler(EnableTestToolsEvent.TYPE, this));
         handlerRegistrationList.add(eventBus.addHandler(InsertColumnEvent.TYPE, this));
         handlerRegistrationList.add(eventBus.addHandler(InsertRowEvent.TYPE, this));
         handlerRegistrationList.add(eventBus.addHandler(PrependColumnEvent.TYPE, this));
         handlerRegistrationList.add(eventBus.addHandler(PrependRowEvent.TYPE, this));
         handlerRegistrationList.add(eventBus.addHandler(RedoEvent.TYPE, this));
-        handlerRegistrationList.add(eventBus.addHandler(ReloadRightPanelEvent.TYPE, this));
+        handlerRegistrationList.add(eventBus.addHandler(ReloadTestToolsEvent.TYPE, this));
         handlerRegistrationList.add(eventBus.addHandler(RunSingleScenarioEvent.TYPE, this));
         handlerRegistrationList.add(eventBus.addHandler(ScenarioGridReloadEvent.TYPE, this));
         handlerRegistrationList.add(eventBus.addHandler(ScenarioNotificationEvent.TYPE, this));

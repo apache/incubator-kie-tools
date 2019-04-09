@@ -18,38 +18,56 @@ package org.drools.workbench.screens.scenariosimulation.client.handlers;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
-import org.drools.workbench.screens.scenariosimulation.client.rightpanel.RightPanelPresenter;
+import org.drools.workbench.screens.scenariosimulation.client.rightpanel.CheatSheetPresenter;
+import org.drools.workbench.screens.scenariosimulation.client.rightpanel.SettingsPresenter;
+import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsPresenter;
 import org.kie.workbench.common.widgets.client.docks.AbstractWorkbenchDocksHandler;
 import org.kie.workbench.common.workbench.client.docks.AuthoringWorkbenchDocks;
 import org.kie.workbench.common.workbench.client.resources.i18n.DefaultWorkbenchConstants;
 import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
+import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
 @ApplicationScoped
 public class ScenarioSimulationDocksHandler
         extends AbstractWorkbenchDocksHandler {
 
-    @Inject
-  private   AuthoringWorkbenchDocks authoringWorkbenchDocks;
+    public static final String SCESIMEDITOR_ID = "scesimeditorid";
 
+    @Inject
+    private AuthoringWorkbenchDocks authoringWorkbenchDocks;
+
+    private UberfireDock settingsDock;
     private UberfireDock toolsDock;
+    private UberfireDock cheatSheetDock;
     private UberfireDock reportDock;
 
     @Override
     public Collection<UberfireDock> provideDocks(final String perspectiveIdentifier) {
         List<UberfireDock> result = new ArrayList<>();
-
+        settingsDock = new UberfireDock(UberfireDockPosition.EAST,
+                                     "SLIDERS",
+                                     new DefaultPlaceRequest(SettingsPresenter.IDENTIFIER),
+                                     perspectiveIdentifier);
+        result.add(settingsDock.withSize(450).withLabel(ScenarioSimulationEditorConstants.INSTANCE.settings()));
         toolsDock = new UberfireDock(UberfireDockPosition.EAST,
                                      "INFO_CIRCLE",
-                                     new DefaultPlaceRequest(RightPanelPresenter.IDENTIFIER),
+                                     new DefaultPlaceRequest(TestToolsPresenter.IDENTIFIER),
                                      perspectiveIdentifier);
         result.add(toolsDock.withSize(450).withLabel(ScenarioSimulationEditorConstants.INSTANCE.testTools()));
+        cheatSheetDock = new UberfireDock(UberfireDockPosition.EAST,
+                                          "FILE_TEXT",
+                                          new DefaultPlaceRequest(CheatSheetPresenter.IDENTIFIER),
+                                          perspectiveIdentifier);
+        result.add(cheatSheetDock.withSize(450).withLabel(ScenarioSimulationEditorConstants.INSTANCE.scenarioCheatSheet()));
         reportDock = new UberfireDock(UberfireDockPosition.EAST,
                                       "PLAY_CIRCLE",
                                       new DefaultPlaceRequest("org.kie.guvnor.TestResults"),
@@ -75,5 +93,23 @@ public class ScenarioSimulationDocksHandler
 
     public void expandTestResultsDock() {
         authoringWorkbenchDocks.expandAuthoringDock(reportDock);
+    }
+
+    public void setScesimEditorId(String scesimEditorId) {
+        settingsDock.getPlaceRequest().addParameter(SCESIMEDITOR_ID, scesimEditorId);
+        toolsDock.getPlaceRequest().addParameter(SCESIMEDITOR_ID, scesimEditorId);
+        cheatSheetDock.getPlaceRequest().addParameter(SCESIMEDITOR_ID, scesimEditorId);
+    }
+
+    public Optional<UberfireDock> getSettingsDock(PlaceRequest placeRequest) {
+        return Objects.equals(settingsDock.getPlaceRequest(), placeRequest) ? Optional.of(settingsDock) : Optional.empty();
+    }
+
+    public Optional<UberfireDock> getToolsDock(PlaceRequest placeRequest) {
+        return Objects.equals(toolsDock.getPlaceRequest(), placeRequest) ? Optional.of(toolsDock) : Optional.empty();
+    }
+
+    public Optional<UberfireDock> getCheatSheetDock(PlaceRequest placeRequest) {
+        return Objects.equals(cheatSheetDock.getPlaceRequest(), placeRequest) ? Optional.of(cheatSheetDock) : Optional.empty();
     }
 }

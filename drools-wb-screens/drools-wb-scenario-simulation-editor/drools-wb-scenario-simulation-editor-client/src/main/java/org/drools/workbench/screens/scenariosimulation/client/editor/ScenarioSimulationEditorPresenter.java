@@ -19,11 +19,13 @@ package org.drools.workbench.screens.scenariosimulation.client.editor;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
@@ -39,8 +41,12 @@ import org.drools.workbench.screens.scenariosimulation.client.events.UndoEvent;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioSimulationDocksHandler;
 import org.drools.workbench.screens.scenariosimulation.client.popup.CustomBusyPopup;
 import org.drools.workbench.screens.scenariosimulation.client.producers.ScenarioSimulationProducer;
-import org.drools.workbench.screens.scenariosimulation.client.rightpanel.RightPanelPresenter;
-import org.drools.workbench.screens.scenariosimulation.client.rightpanel.RightPanelView;
+import org.drools.workbench.screens.scenariosimulation.client.rightpanel.CheatSheetPresenter;
+import org.drools.workbench.screens.scenariosimulation.client.rightpanel.CheatSheetView;
+import org.drools.workbench.screens.scenariosimulation.client.rightpanel.SettingsPresenter;
+import org.drools.workbench.screens.scenariosimulation.client.rightpanel.SettingsView;
+import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsPresenter;
+import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsView;
 import org.drools.workbench.screens.scenariosimulation.client.type.ScenarioSimulationResourceType;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridPanel;
 import org.drools.workbench.screens.scenariosimulation.model.Scenario;
@@ -67,8 +73,10 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.mvp.AbstractWorkbenchActivity;
+import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.PlaceStatus;
+import org.uberfire.client.workbench.docks.UberfireDocksInteractionEvent;
 import org.uberfire.ext.editor.commons.service.support.SupportsCopy;
 import org.uberfire.ext.editor.commons.service.support.SupportsDelete;
 import org.uberfire.ext.editor.commons.service.support.SupportsRename;
@@ -83,6 +91,7 @@ import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.menu.Menus;
 
 import static org.drools.workbench.screens.scenariosimulation.client.editor.ScenarioSimulationEditorPresenter.IDENTIFIER;
+import static org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioSimulationDocksHandler.SCESIMEDITOR_ID;
 
 @Dependent
 @WorkbenchEditor(identifier = IDENTIFIER, supportedTypes = {ScenarioSimulationResourceType.class})
@@ -109,11 +118,15 @@ public class ScenarioSimulationEditorPresenter
     private Caller<DMNTypeService> dmnTypeService;
     private ScenarioSimulationResourceType type;
     private ScenarioSimulationView view;
-    private Command populateRightPanelCommand;
+    private Command populateTestToolsCommand;
 
     private TestRunnerReportingScreen testRunnerReportingScreen;
 
     private ScenarioSimulationDocksHandler scenarioSimulationDocksHandler;
+
+    private static final AtomicLong SCENARIO_PRESENTER_COUNTER = new AtomicLong();
+    protected long scenarioPresenterId;
+
 
     public ScenarioSimulationEditorPresenter() {
         //Zero-parameter constructor for CDI proxies
@@ -144,8 +157,9 @@ public class ScenarioSimulationEditorPresenter
         scenarioGridPanel = view.getScenarioGridPanel();
         context.setScenarioSimulationEditorPresenter(this);
         view.init(this);
-        populateRightPanelCommand = getPopulateRightPanelCommand();
+        populateTestToolsCommand = getPopulateTestToolsCommand();
         scenarioGridPanel.select();
+        scenarioPresenterId = SCENARIO_PRESENTER_COUNTER.getAndIncrement();
     }
 
     @OnStartup
@@ -194,9 +208,10 @@ public class ScenarioSimulationEditorPresenter
     public void showDocks() {
         super.showDocks();
         scenarioSimulationDocksHandler.addDocks();
+        scenarioSimulationDocksHandler.setScesimEditorId(String.valueOf(scenarioPresenterId));
         expandToolsDock();
-        registerRightPanelCallback();
-        populateRightPanel();
+        registerTestToolsCallback();
+        populateRightDocks(TestToolsPresenter.IDENTIFIER);
     }
 
     @Override
@@ -204,13 +219,19 @@ public class ScenarioSimulationEditorPresenter
         super.hideDocks();
         scenarioSimulationDocksHandler.removeDocks();
         view.getScenarioGridLayer().getScenarioGrid().clearSelections();
-        unRegisterRightPanelCallback();
-        clearRightPanelStatus();
+        unRegisterTestToolsCallback();
+        clearTestToolsStatus();
         testRunnerReportingScreen.reset();
     }
 
+    public void onUberfireDocksInteractionEvent(@Observes final UberfireDocksInteractionEvent uberfireDocksInteractionEvent) {
+        if (isUberfireDocksInteractionEventToManage(uberfireDocksInteractionEvent) && !TestToolsPresenter.IDENTIFIER.equals(uberfireDocksInteractionEvent.getTargetDock().getIdentifier())) {
+            populateRightDocks(uberfireDocksInteractionEvent.getTargetDock().getIdentifier());
+        }
+    }
+
     public void expandToolsDock() {
-        final DefaultPlaceRequest placeRequest = new DefaultPlaceRequest(RightPanelPresenter.IDENTIFIER);
+        final DefaultPlaceRequest placeRequest = new DefaultPlaceRequest(TestToolsPresenter.IDENTIFIER);
         if (!PlaceStatus.OPEN.equals(placeManager.getStatus(placeRequest))) {
             scenarioSimulationDocksHandler.expandToolsDock();
         }
@@ -225,13 +246,13 @@ public class ScenarioSimulationEditorPresenter
     }
 
     /**
-     * To be called to force right panel reload
+     * To be called to force test tools panel reload
      * @param disable set this to <code>true</code> to <b>also</b> disable the panel
      */
-    public void reloadRightPanel(boolean disable) {
-        populateRightPanelCommand.execute();
+    public void reloadTestTools(boolean disable) {
+        populateTestToolsCommand.execute();
         if (disable) {
-            getRightPanelPresenter().ifPresent(RightPanelView.Presenter::onDisableEditorTab);
+            getTestToolsPresenter(getCurrentRightDockPlaceRequest(TestToolsPresenter.IDENTIFIER)).ifPresent(TestToolsView.Presenter::onDisableEditorTab);
         }
     }
 
@@ -283,6 +304,17 @@ public class ScenarioSimulationEditorPresenter
         return dataManagementStrategy;
     }
 
+    /**
+     * Method to verify if the given <code>UberfireDocksInteractionEvent</code> is to be processed by current instance.
+     * @param uberfireDocksInteractionEvent
+     * @return <code>true</code> if <code>UberfireDocksInteractionEvent.getTargetDock() != null</code> <b>and</b>
+     * the <b>scesimpath</b> parameter of <code>UberfireDocksInteractionEvent.getTargetDock().getPlaceRequest()</code>
+     * is equals to the <b>path</b> (toString) of the current instance; <code>false</code> otherwise
+     */
+    protected boolean isUberfireDocksInteractionEventToManage(UberfireDocksInteractionEvent uberfireDocksInteractionEvent) {
+        return uberfireDocksInteractionEvent.getTargetDock() != null && uberfireDocksInteractionEvent.getTargetDock().getPlaceRequest().getParameter(SCESIMEDITOR_ID, "").equals(String.valueOf(scenarioPresenterId));
+    }
+
     protected RemoteCallback<Map<Integer, Scenario>> getRefreshModelCallback() {
         return this::refreshModelContent;
     }
@@ -302,12 +334,12 @@ public class ScenarioSimulationEditorPresenter
         dataManagementStrategy.setModel(model);
     }
 
-    protected void registerRightPanelCallback() {
-        placeManager.registerOnOpenCallback(new DefaultPlaceRequest(RightPanelPresenter.IDENTIFIER), populateRightPanelCommand);
+    protected void registerTestToolsCallback() {
+        placeManager.registerOnOpenCallback(new DefaultPlaceRequest(TestToolsPresenter.IDENTIFIER), populateTestToolsCommand);
     }
 
-    protected void unRegisterRightPanelCallback() {
-        placeManager.getOnOpenCallbacks(new DefaultPlaceRequest(RightPanelPresenter.IDENTIFIER)).remove(populateRightPanelCommand);
+    protected void unRegisterTestToolsCallback() {
+        placeManager.getOnOpenCallbacks(new DefaultPlaceRequest(TestToolsPresenter.IDENTIFIER)).remove(populateTestToolsCommand);
     }
 
     /**
@@ -360,25 +392,50 @@ public class ScenarioSimulationEditorPresenter
         DomGlobal.window.open(downloadURL);
     }
 
-    protected void populateRightPanel() {
-        // Execute only when DatamanagementStrategy already set and  RightPanelPresenter is actually available
+    protected void populateRightDocks(String identifier) {
         if (dataManagementStrategy != null) {
-            getRightPanelPresenter().ifPresent(presenter -> {
-                setRightPanel(presenter);
-            });
+            final PlaceRequest currentRightDockPlaceRequest = getCurrentRightDockPlaceRequest(identifier);
+            switch (identifier) {
+                case SettingsPresenter.IDENTIFIER:
+                    getSettingsPresenter(currentRightDockPlaceRequest).ifPresent(presenter -> {
+                        setSettings(presenter);
+                        presenter.setCurrentPath(path);
+                    });
+                    break;
+                case TestToolsPresenter.IDENTIFIER:
+                    getTestToolsPresenter(currentRightDockPlaceRequest).ifPresent(this::setTestTools);
+                    break;
+                case CheatSheetPresenter.IDENTIFIER:
+                    getCheatSheetPresenter(currentRightDockPlaceRequest).ifPresent(presenter -> {
+                        if (!presenter.isCurrentlyShow(path)) {
+                            setCheatSheet(presenter);
+                            presenter.setCurrentPath(path);
+                        }
+                    });
+                    break;
+            }
         }
     }
 
-    protected void setRightPanel(RightPanelView.Presenter presenter) {
-        context.setRightPanelPresenter(presenter);
+    protected void setTestTools(TestToolsView.Presenter presenter) {
+        context.setTestToolsPresenter(presenter);
         presenter.setEventBus(eventBus);
-        dataManagementStrategy.populateRightPanel(presenter, scenarioGridPanel.getScenarioGrid().getModel());
+        dataManagementStrategy.populateTestTools(presenter, scenarioGridPanel.getScenarioGrid().getModel());
+    }
+
+    protected void clearTestToolsStatus() {
+        getTestToolsPresenter(getCurrentRightDockPlaceRequest(TestToolsPresenter.IDENTIFIER)).ifPresent(TestToolsView.Presenter::onClearStatus);
+    }
+
+    protected void setCheatSheet(CheatSheetView.Presenter presenter) {
         ScenarioSimulationModel.Type type = dataManagementStrategy instanceof DMODataManagementStrategy ? ScenarioSimulationModel.Type.RULE : ScenarioSimulationModel.Type.DMN;
         presenter.initCheatSheet(type);
     }
 
-    protected void clearRightPanelStatus() {
-        getRightPanelPresenter().ifPresent(RightPanelView.Presenter::onClearStatus);
+    protected void setSettings(SettingsView.Presenter presenter) {
+        ScenarioSimulationModel.Type type = dataManagementStrategy instanceof DMODataManagementStrategy ? ScenarioSimulationModel.Type.RULE : ScenarioSimulationModel.Type.DMN;
+        presenter.setScenarioType(type, model.getSimulation().getSimulationDescriptor(), path.getFileName());
+        presenter.setSaveCommand(getSaveCommand());
     }
 
     protected String getJsonModel(ScenarioSimulationModel model) {
@@ -415,6 +472,11 @@ public class ScenarioSimulationEditorPresenter
         return service;
     }
 
+    @Override
+    protected String getEditorIdentifier() {
+        return IDENTIFIER;
+    }
+
     protected void getModelSuccessCallbackMethod(ScenarioSimulationModelContent content) {
         //Path is set to null when the Editor is closed (which can happen before async calls complete).
         if (versionRecordManager.getCurrentPath() == null) {
@@ -428,7 +490,8 @@ public class ScenarioSimulationEditorPresenter
             dataManagementStrategy = new DMNDataManagementStrategy(dmnTypeService, context, eventBus);
         }
         dataManagementStrategy.manageScenarioSimulationModelContent(versionRecordManager.getCurrentPath(), content);
-        populateRightPanel();
+        populateRightDocks(TestToolsPresenter.IDENTIFIER);
+        populateRightDocks(SettingsPresenter.IDENTIFIER);
         model = content.getModel();
         if (dataManagementStrategy instanceof DMODataManagementStrategy) {
             importsWidget.setContent(((DMODataManagementStrategy) dataManagementStrategy).getOracle(),
@@ -443,6 +506,36 @@ public class ScenarioSimulationEditorPresenter
         CustomBusyPopup.close();
     }
 
+    protected Optional<CheatSheetView.Presenter> getCheatSheetPresenter(PlaceRequest placeRequest) {
+        final Optional<CheatSheetView> cheatSheetView = getCheatSheetView(placeRequest);
+        return cheatSheetView.map(CheatSheetView::getPresenter);
+    }
+
+    protected Optional<TestToolsView.Presenter> getTestToolsPresenter(PlaceRequest placeRequest) {
+        final Optional<TestToolsView> testToolsView = getTestToolsView(placeRequest);
+        return testToolsView.map(TestToolsView::getPresenter);
+    }
+
+    protected Optional<SettingsView.Presenter> getSettingsPresenter(PlaceRequest placeRequest) {
+        final Optional<SettingsView> settingsView = getSettingsView(placeRequest);
+        return settingsView.map(SettingsView::getPresenter);
+    }
+
+    protected Command getSaveCommand() {
+        return () -> this.save("Save");
+    }
+
+    /**
+     * Returns a <code>PlaceRequest</code> for the <b>status</b> of the right dock with the given <b>identifier</b>
+     * relative to the current instance of <code>ScenarioSimulationEditorPresenter</code>
+     * @return
+     */
+    protected PlaceRequest getCurrentRightDockPlaceRequest(String identifier) {
+        PlaceRequest toReturn = new DefaultPlaceRequest(identifier);
+        toReturn.addParameter(SCESIMEDITOR_ID, String.valueOf(scenarioPresenterId));
+        return toReturn;
+    }
+
     private String getFileDownloadURL(final Supplier<Path> pathSupplier) {
         return GWT.getModuleBaseURL() + "defaulteditor/download?path=" + pathSupplier.get().toURI();
     }
@@ -451,26 +544,37 @@ public class ScenarioSimulationEditorPresenter
         return this::getModelSuccessCallbackMethod;
     }
 
-    private Optional<RightPanelView> getRightPanelView() {
-        final DefaultPlaceRequest placeRequest = new DefaultPlaceRequest(RightPanelPresenter.IDENTIFIER);
-        if (PlaceStatus.OPEN.equals(placeManager.getStatus(placeRequest))) {
-            final AbstractWorkbenchActivity rightPanelActivity = (AbstractWorkbenchActivity) placeManager.getActivity(placeRequest);
-            return Optional.of((RightPanelView) rightPanelActivity.getWidget());
+    private Optional<TestToolsView> getTestToolsView(PlaceRequest placeRequest) {
+        final Activity activity = placeManager.getActivity(placeRequest);
+        if (activity != null) {
+            final AbstractWorkbenchActivity testToolsActivity = (AbstractWorkbenchActivity) activity;
+            return Optional.of((TestToolsView) testToolsActivity.getWidget());
         } else {
             return Optional.empty();
         }
     }
 
-    private Optional<RightPanelView.Presenter> getRightPanelPresenter() {
-        return getRightPanelView().isPresent() ? Optional.of(getRightPanelView().get().getPresenter()) : Optional.empty();
+    private Optional<CheatSheetView> getCheatSheetView(PlaceRequest placeRequest) {
+        final Activity activity = placeManager.getActivity(placeRequest);
+        if (activity != null) {
+            final AbstractWorkbenchActivity cheatSheetActivity = (AbstractWorkbenchActivity) activity;
+            return Optional.of((CheatSheetView) cheatSheetActivity.getWidget());
+        } else {
+            return Optional.empty();
+        }
     }
 
-    private Command getPopulateRightPanelCommand() {
-        return this::populateRightPanel;
+    private Optional<SettingsView> getSettingsView(PlaceRequest placeRequest) {
+        final Activity activity = placeManager.getActivity(placeRequest);
+        if (activity != null) {
+            final AbstractWorkbenchActivity settingsActivity = (AbstractWorkbenchActivity) activity;
+            return Optional.of((SettingsView) settingsActivity.getWidget());
+        } else {
+            return Optional.empty();
+        }
     }
 
-    @Override
-    protected String getEditorIdentifier() {
-        return IDENTIFIER;
+    private Command getPopulateTestToolsCommand() {
+        return () -> populateRightDocks(TestToolsPresenter.IDENTIFIER);
     }
 }

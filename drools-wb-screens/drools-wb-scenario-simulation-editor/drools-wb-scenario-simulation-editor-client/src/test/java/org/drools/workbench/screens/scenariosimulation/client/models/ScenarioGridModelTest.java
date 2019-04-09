@@ -25,7 +25,7 @@ import java.util.stream.IntStream;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import junit.framework.TestCase;
 import org.drools.workbench.screens.scenariosimulation.client.AbstractScenarioSimulationTest;
-import org.drools.workbench.screens.scenariosimulation.client.events.ReloadRightPanelEvent;
+import org.drools.workbench.screens.scenariosimulation.client.events.ReloadTestToolsEvent;
 import org.drools.workbench.screens.scenariosimulation.client.metadata.ScenarioHeaderMetaData;
 import org.drools.workbench.screens.scenariosimulation.client.values.ScenarioGridCellValue;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridCell;
@@ -319,7 +319,7 @@ public class ScenarioGridModelTest extends AbstractScenarioSimulationTest {
     public void updateHeader() {
         String newValue = "NEW_VALUE";
         scenarioGridModel.updateHeader(COLUMN_INDEX, 1, newValue); // This is instance header
-        verify(eventBusMock, times(1)).fireEvent(isA(ReloadRightPanelEvent.class));
+        verify(eventBusMock, times(1)).fireEvent(isA(ReloadTestToolsEvent.class));
         reset(eventBusMock);
         scenarioGridModel.updateHeader(COLUMN_INDEX, 2, newValue); // This is property header
         verify(eventBusMock, never()).fireEvent(any());

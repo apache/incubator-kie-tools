@@ -107,7 +107,7 @@ public interface ListGroupItemView extends IsWidget,
 
         void onToggleRowExpansion(ListGroupItemView listGroupItemView, boolean currentlyShown);
 
-        void init(RightPanelView.Presenter rightPanelPresenter);
+        void init(TestToolsView.Presenter testToolsPresenter);
 
         /**
          * Method to set the "selected" information - use this to set the <i>instance</i> level header

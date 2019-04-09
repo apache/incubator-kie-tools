@@ -23,7 +23,7 @@ import javax.enterprise.context.Dependent;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
 
 /**
- * <code>Command</code> to <b>reload</b> the <code>RightPanelView</code>, <b>eventually</b> showing it (if required by original event)
+ * <code>Command</code> to <b>run</b> a single <b>Scenario</b>
  */
 @Dependent
 public class RunSingleScenarioCommand extends AbstractScenarioSimulationCommand {

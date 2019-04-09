@@ -31,7 +31,7 @@ import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.Fact
 import org.junit.Before;
 import org.mockito.Mock;
 
-abstract class AbstractRightPanelTest {
+abstract class AbstractTestToolsTest {
 
     @Mock
     protected LIElement lIElementMock;

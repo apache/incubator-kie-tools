@@ -21,7 +21,7 @@ import com.google.gwt.event.shared.EventBus;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
 import org.drools.workbench.screens.scenariosimulation.client.events.UnsupportedDMNEvent;
 import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
-import org.drools.workbench.screens.scenariosimulation.client.rightpanel.RightPanelView;
+import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsView;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModelContent;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTuple;
 import org.drools.workbench.screens.scenariosimulation.service.DMNTypeService;
@@ -46,13 +46,13 @@ public class DMNDataManagementStrategy extends AbstractDataManagementStrategy {
     }
 
     @Override
-    public void populateRightPanel(final RightPanelView.Presenter rightPanelPresenter, final ScenarioGridModel scenarioGridModel) {
+    public void populateTestTools(final TestToolsView.Presenter testToolsPresenter, final ScenarioGridModel scenarioGridModel) {
         String dmnFilePath = model.getSimulation().getSimulationDescriptor().getDmnFilePath();
         if (factModelTreeHolder.getFactModelTuple() != null) {
-            getSuccessCallback(rightPanelPresenter, scenarioGridModel).callback(factModelTreeHolder.getFactModelTuple());
+            getSuccessCallback(testToolsPresenter, scenarioGridModel).callback(factModelTreeHolder.getFactModelTuple());
         } else {
-            dmnTypeService.call(getSuccessCallback(rightPanelPresenter, scenarioGridModel),
-                                getErrorCallback(rightPanelPresenter))
+            dmnTypeService.call(getSuccessCallback(testToolsPresenter, scenarioGridModel),
+                                getErrorCallback(testToolsPresenter))
                     .retrieveFactModelTuple(currentPath, dmnFilePath);
         }
     }
@@ -68,14 +68,14 @@ public class DMNDataManagementStrategy extends AbstractDataManagementStrategy {
         return factModelTreeHolder.factModelTuple.getHiddenFacts().keySet().contains(value) || factModelTreeHolder.factModelTuple.getVisibleFacts().keySet().contains(value);
     }
 
-    protected RemoteCallback<FactModelTuple> getSuccessCallback(RightPanelView.Presenter rightPanelPresenter, final ScenarioGridModel scenarioGridModel) {
-        return factMappingTuple -> getSuccessCallbackMethod(factMappingTuple, rightPanelPresenter, scenarioGridModel);
+    protected RemoteCallback<FactModelTuple> getSuccessCallback(TestToolsView.Presenter testToolsPresenter, final ScenarioGridModel scenarioGridModel) {
+        return factMappingTuple -> getSuccessCallbackMethod(factMappingTuple, testToolsPresenter, scenarioGridModel);
     }
 
-    protected void getSuccessCallbackMethod(final FactModelTuple factModelTuple, final RightPanelView.Presenter rightPanelPresenter, final ScenarioGridModel scenarioGridModel) {
+    protected void getSuccessCallbackMethod(final FactModelTuple factModelTuple, final TestToolsView.Presenter testToolsPresenter, final ScenarioGridModel scenarioGridModel) {
         // Instantiate a map of already assigned properties
         factModelTreeHolder.setFactModelTuple(factModelTuple);
-        storeData(factModelTuple, rightPanelPresenter, scenarioGridModel);
+        storeData(factModelTuple, testToolsPresenter, scenarioGridModel);
         showErrorsAndCleanupState(factModelTuple);
     }
 
@@ -100,9 +100,9 @@ public class DMNDataManagementStrategy extends AbstractDataManagementStrategy {
         }
     }
 
-    private ErrorCallback<Object> getErrorCallback(RightPanelView.Presenter rightPanelPresenter) {
+    private ErrorCallback<Object> getErrorCallback(TestToolsView.Presenter testToolsPresenter) {
         return (error, exception) -> {
-            rightPanelPresenter.setDataObjectFieldsMap(new TreeMap<>());
+            testToolsPresenter.setDataObjectFieldsMap(new TreeMap<>());
             return false;
         };
     }

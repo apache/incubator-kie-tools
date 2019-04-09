@@ -16,25 +16,25 @@
 package org.drools.workbench.screens.scenariosimulation.client.events;
 
 import com.google.gwt.event.shared.GwtEvent;
-import org.drools.workbench.screens.scenariosimulation.client.handlers.DisableRightPanelEventHandler;
+import org.drools.workbench.screens.scenariosimulation.client.handlers.DisableTestToolsEventHandler;
 
 /**
- * <code>GwtEvent</code> to <b>disable</b> the <code>RightPanelView</code>
+ * <code>GwtEvent</code> to <b>disable</b> the <code>TestToolsView</code>
  */
-public class DisableRightPanelEvent extends GwtEvent<DisableRightPanelEventHandler> {
+public class DisableTestToolsEvent extends GwtEvent<DisableTestToolsEventHandler> {
 
-    public static Type<DisableRightPanelEventHandler> TYPE = new Type<>();
+    public static Type<DisableTestToolsEventHandler> TYPE = new Type<>();
 
-    public DisableRightPanelEvent() {
+    public DisableTestToolsEvent() {
     }
 
     @Override
-    public Type<DisableRightPanelEventHandler> getAssociatedType() {
+    public Type<DisableTestToolsEventHandler> getAssociatedType() {
         return TYPE;
     }
 
     @Override
-    protected void dispatch(DisableRightPanelEventHandler handler) {
+    protected void dispatch(DisableTestToolsEventHandler handler) {
         handler.onEvent(this);
     }
 }

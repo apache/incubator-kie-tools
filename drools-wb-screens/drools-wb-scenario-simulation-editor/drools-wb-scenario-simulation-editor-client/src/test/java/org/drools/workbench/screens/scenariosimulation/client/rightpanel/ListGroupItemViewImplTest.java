@@ -40,7 +40,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class ListGroupItemViewImplTest extends AbstractRightPanelTest {
+public class ListGroupItemViewImplTest extends AbstractTestToolsTest {
 
     @Mock
     private ListGroupItemPresenter listGroupItemPresenterMock;

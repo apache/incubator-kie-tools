@@ -23,7 +23,7 @@ import org.drools.workbench.screens.scenariosimulation.client.factories.Collecti
 import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioCellTextAreaSingletonDOMElementFactory;
 import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioHeaderTextBoxSingletonDOMElementFactory;
 import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
-import org.drools.workbench.screens.scenariosimulation.client.rightpanel.RightPanelView;
+import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsView;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridLayer;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridPanel;
 import org.drools.workbench.screens.scenariosimulation.model.Simulation;
@@ -43,7 +43,7 @@ public class ScenarioSimulationContext {
     protected ScenarioGridPanel scenarioGridPanel;
     protected ScenarioGridLayer scenarioGridLayer;
     protected ScenarioSimulationEditorPresenter scenarioSimulationEditorPresenter;
-    protected RightPanelView.Presenter rightPanelPresenter;
+    protected TestToolsView.Presenter testToolsPresenter;
     protected SortedMap<String, FactModelTree> dataObjectFieldsMap;
 
     protected Status status = new Status();
@@ -66,7 +66,7 @@ public class ScenarioSimulationContext {
 
     protected PlaceManager placeManager;
 
-    protected PlaceRequest rightPanelRequest;
+    protected PlaceRequest testToolsRequest;
 
     /**
      * Auto-generated incremental identifier used  to uniquely identify each context
@@ -93,12 +93,12 @@ public class ScenarioSimulationContext {
         this.scenarioSimulationEditorPresenter = scenarioSimulationEditorPresenter;
     }
 
-    public RightPanelView.Presenter getRightPanelPresenter() {
-        return rightPanelPresenter;
+    public TestToolsView.Presenter getTestToolsPresenter() {
+        return testToolsPresenter;
     }
 
-    public void setRightPanelPresenter(RightPanelView.Presenter rightPanelPresenter) {
-        this.rightPanelPresenter = rightPanelPresenter;
+    public void setTestToolsPresenter(TestToolsView.Presenter testToolsPresenter) {
+        this.testToolsPresenter = testToolsPresenter;
     }
 
     public SortedMap<String, FactModelTree> getDataObjectFieldsMap() {
@@ -129,12 +129,12 @@ public class ScenarioSimulationContext {
         this.placeManager = placeManager;
     }
 
-    public PlaceRequest getRightPanelRequest() {
-        return rightPanelRequest;
+    public PlaceRequest getTestToolsRequest() {
+        return testToolsRequest;
     }
 
-    public void setRightPanelRequest(PlaceRequest rightPanelRequest) {
-        this.rightPanelRequest = rightPanelRequest;
+    public void setTestToolsRequest(PlaceRequest testToolsRequest) {
+        this.testToolsRequest = testToolsRequest;
     }
 
     /**
@@ -210,7 +210,7 @@ public class ScenarioSimulationContext {
         protected String propertyName;
 
         /**
-         * Disable the <b>RightPanel</b>
+         * Disable the <b>TestTools</b>
          */
         protected boolean disable = true;
 

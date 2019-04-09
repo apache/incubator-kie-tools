@@ -24,7 +24,7 @@ import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.drools.workbench.screens.scenariosimulation.client.AbstractScenarioSimulationTest;
-import org.drools.workbench.screens.scenariosimulation.client.events.EnableRightPanelEvent;
+import org.drools.workbench.screens.scenariosimulation.client.events.EnableTestToolsEvent;
 import org.drools.workbench.screens.scenariosimulation.client.metadata.ScenarioHeaderMetaData;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
 import org.junit.Before;
@@ -136,41 +136,41 @@ public class ScenarioSimulationGridHeaderUtilitiesTest extends AbstractScenarioS
     }
 
     @Test
-    public void testEnableRightPanelEventInstanceNotAssigned() {
-        final EnableRightPanelEvent event = ScenarioSimulationGridHeaderUtilities.getEnableRightPanelEvent(scenarioGridMock,
-                                                                                                           scenarioGridColumnOne,
-                                                                                                           clickedScenarioHeaderMetadataMock,
-                                                                                                           uiColumnIndex,
-                                                                                                           columnGroup);
+    public void testEnableTestToolsEventInstanceNotAssigned() {
+        final EnableTestToolsEvent event = ScenarioSimulationGridHeaderUtilities.getEnableTestToolsEvent(scenarioGridMock,
+                                                                                                         scenarioGridColumnOne,
+                                                                                                         clickedScenarioHeaderMetadataMock,
+                                                                                                         uiColumnIndex,
+                                                                                                         columnGroup);
 
         assertThat(event.getFilterTerm()).isEqualTo(columnOneTitle + ";" + columnTwoTitle);
         assertThat(event.isNotEqualsSearch()).isTrue();
     }
 
     @Test
-    public void testEnableRightPanelEventInstanceAssigned() {
+    public void testEnableTestToolsEventInstanceAssigned() {
         when(scenarioGridColumnOne.isInstanceAssigned()).thenReturn(true);
 
-        final EnableRightPanelEvent event = ScenarioSimulationGridHeaderUtilities.getEnableRightPanelEvent(scenarioGridMock,
-                                                                                                           scenarioGridColumnOne,
-                                                                                                           clickedScenarioHeaderMetadataMock,
-                                                                                                           uiColumnIndex,
-                                                                                                           columnGroup);
+        final EnableTestToolsEvent event = ScenarioSimulationGridHeaderUtilities.getEnableTestToolsEvent(scenarioGridMock,
+                                                                                                         scenarioGridColumnOne,
+                                                                                                         clickedScenarioHeaderMetadataMock,
+                                                                                                         uiColumnIndex,
+                                                                                                         columnGroup);
 
         assertThat(event.getFilterTerm()).isEqualTo(columnOneTitle + ";" + columnTwoTitle);
         assertThat(event.isNotEqualsSearch()).isTrue();
     }
 
     @Test
-    public void testEnableRightPanelEventPropertyHeaderPropertyNotAssigned() {
+    public void testEnableTestToolsEventPropertyHeaderPropertyNotAssigned() {
         when(clickedScenarioHeaderMetadataMock.getMetadataType()).thenReturn(ScenarioHeaderMetaData.MetadataType.PROPERTY);
         when(scenarioGridColumnOne.isInstanceAssigned()).thenReturn(true);
 
-        final EnableRightPanelEvent event = ScenarioSimulationGridHeaderUtilities.getEnableRightPanelEvent(scenarioGridMock,
-                                                                                                           scenarioGridColumnOne,
-                                                                                                           clickedScenarioHeaderMetadataMock,
-                                                                                                           uiColumnIndex,
-                                                                                                           columnGroup);
+        final EnableTestToolsEvent event = ScenarioSimulationGridHeaderUtilities.getEnableTestToolsEvent(scenarioGridMock,
+                                                                                                         scenarioGridColumnOne,
+                                                                                                         clickedScenarioHeaderMetadataMock,
+                                                                                                         uiColumnIndex,
+                                                                                                         columnGroup);
 
         assertThat(event.getFilterTerm()).isEqualTo(columnOneTitle);
         assertThat(event.getPropertyName()).isNull();

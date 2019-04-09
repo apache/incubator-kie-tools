@@ -16,11 +16,11 @@
 package org.drools.workbench.screens.scenariosimulation.client.handlers;
 
 import com.google.gwt.event.shared.EventHandler;
-import org.drools.workbench.screens.scenariosimulation.client.events.ReloadRightPanelEvent;
+import org.drools.workbench.screens.scenariosimulation.client.events.ReloadTestToolsEvent;
 
 /**
- * <code>EventHandler</code> for {@link ReloadRightPanelEvent}
+ * <code>EventHandler</code> for {@link ReloadTestToolsEvent}
  */
-public interface ReloadRightPanelEventHandler extends EventHandler {
-    void onEvent(ReloadRightPanelEvent event);
+public interface ReloadTestToolsEventHandler extends EventHandler {
+    void onEvent(ReloadTestToolsEvent event);
 }

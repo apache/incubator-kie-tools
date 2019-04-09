@@ -52,4 +52,51 @@ public class InMemoryMigrationStrategy implements MigrationStrategy {
             return xmlPersistence.marshal(model).replaceAll("<ScenarioSimulationModel version=\"1.2\">", "<ScenarioSimulationModel version=\"1.3\">");
         };
     }
+
+    @Override
+    public Function<String, String> from1_3to1_4() {
+        return rawXml -> {
+            if (rawXml.contains("<type>")) {
+                StringBuilder replacementBuilder = new StringBuilder();
+                String toReplace = null;
+                if (rawXml.contains("<type>RULE</type>")) {
+                    toReplace = "<type>RULE</type>";
+                    if (!rawXml.contains("<kieSession>")) {
+                        replacementBuilder.append("<kieSession>default</kieSession>\n");
+                    }
+                    if (!rawXml.contains("<kieBase>")) {
+                        replacementBuilder.append("<kieBase>default</kieBase>\n");
+                    }
+                    if (!rawXml.contains("<ruleFlowGroup>")) {
+                        replacementBuilder.append("<ruleFlowGroup>default</ruleFlowGroup>\n");
+                    }
+                    if (!rawXml.contains("<skipFromBuild>")) {
+                        replacementBuilder.append("<skipFromBuild>false</skipFromBuild>\n");
+                    }
+                    replacementBuilder.append("<type>RULE</type>");
+                } else  if (rawXml.contains("<type>DMN</type>")) {
+                    toReplace = "<type>DMN</type>";
+                    if (!rawXml.contains("<dmnNamespace>")) {
+                        replacementBuilder.append("<dmnNamespace></dmnNamespace>\n");
+                    }
+                    if (!rawXml.contains("<dmnName>")) {
+                        replacementBuilder.append("<dmnName></dmnName>\n");
+                    }
+                    if (!rawXml.contains("<skipFromBuild>")) {
+                        replacementBuilder.append("<skipFromBuild>false</skipFromBuild>\n");
+                    }
+                    replacementBuilder.append("<type>DMN</type>");
+                }
+                String toReturn = rawXml.replaceAll("<ScenarioSimulationModel version=\"1.3\">", "<ScenarioSimulationModel version=\"1.4\">")
+                        .replaceAll("<simulationDescriptor>", "<simulationDescriptor>\n  <fileName></fileName>");
+                String replacement = replacementBuilder.toString();
+                if (toReplace!= null && !toReplace.equals(replacement)) {
+                    toReturn = toReturn.replaceAll(toReplace, replacement);
+                }
+                return toReturn;
+            } else {
+                return rawXml;
+            }
+        };
+    }
 }

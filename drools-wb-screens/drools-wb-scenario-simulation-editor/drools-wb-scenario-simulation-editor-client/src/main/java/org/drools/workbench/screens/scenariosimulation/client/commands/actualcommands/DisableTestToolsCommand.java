@@ -20,19 +20,19 @@ import javax.enterprise.context.Dependent;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
 
 /**
- * <code>Command</code> to <b>disable</b> the <code>RightPanelView</code>
+ * <code>Command</code> to <b>disable</b> the <code>TestToolsView</code>
  */
 @Dependent
-public class DisableRightPanelCommand extends AbstractScenarioSimulationCommand {
+public class DisableTestToolsCommand extends AbstractScenarioSimulationCommand {
 
-    public DisableRightPanelCommand() {
+    public DisableTestToolsCommand() {
         super(false);
     }
 
     @Override
     protected void internalExecute(ScenarioSimulationContext context) {
-        if (context.getRightPanelPresenter() != null) {
-            context.getRightPanelPresenter().onDisableEditorTab();
+        if (context.getTestToolsPresenter() != null) {
+            context.getTestToolsPresenter().onDisableEditorTab();
         }
     }
 }

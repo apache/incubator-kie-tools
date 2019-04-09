@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<!--
+  ~ Copyright 2018 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!-- TEST TOOLS -->
+<div id="testtools-panel" class="uf-scroll-panel">
+    <div id="kieTestToolsContent" class="tab-pane kie-tab-pane--scesim-panel">
+        <br/>
+        <p>To create a test template, define the "Given" and "Expect" columns by using the expression editor below.</p>
+
+        <label for="kie-search">Select Data Object</label>
+        <div id="kie-search" class="kie-test-tools-content__box"><!-- outlined data object box -->
+            <!-- search box -->
+            <div class="search-pf has-button">
+                <div class="form-group has-clear">
+                    <div class="search-pf-input-group">
+                        <!-- <label for="search1" class="sr-only">Search</label> -->
+                        <input id="search1" type="search" class="form-control" data-field="inputSearch" placeholder="Search">
+                        <button type="button" class="clear" data-field="clearSearchButton" aria-hidden="true">
+                            <span class="pficon pficon-close"></span>
+                        </button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-default" type="button" data-field="searchButton">
+                        <span class="fa fa-search"></span></button>
+                </div>
+            </div>
+            <!-- end search box -->
+
+            <!-- data object list expansion -->
+            <div id="data-object-pf-list-simple-expansion" class="list-group tree-list-view-pf-view kie-tree-list-view-pf-view--compact" data-field="dataObjectListContainer"></div>
+            <!-- end list expansion -->
+            <hr data-field="simpleJavaTypeListContainer-separator" style="display: none">
+            <!-- simple java type list expansion -->
+            <div id="simple-java-type-pf-list-simple-expansion" class="list-group tree-list-view-pf-view kie-tree-list-view-pf-view--compact" data-field="simpleJavaTypeListContainer"></div>
+            <!-- end list expansion -->
+            <hr data-field="instanceListContainer-separator" style="display: none">
+            <!-- instance list expansion -->
+            <div id="instance-pf-list-simple-expansion" class="list-group tree-list-view-pf-view kie-tree-list-view-pf-view--compact" data-field="instanceListContainer"></div>
+            <!-- end list expansion -->
+            <hr data-field="simpleJavaInstanceListContainer-separator" style="display: none">
+            <!-- instance list expansion -->
+            <div id="simple-java-instance-pf-list-simple-expansion" class="list-group tree-list-view-pf-view kie-tree-list-view-pf-view--compact" data-field="simpleJavaInstanceListContainer"></div>
+            <!-- end list expansion -->
+
+        </div><!-- end outlined data object box -->
+
+        <div>
+            <label for="kie-name" style="display: none">Name Field</label>
+            <input id="kie-name" type="text" class="form-control" placeholder="Name" data-field="nameField" style="display: none">
+
+            <br/>
+
+            <label for="kieDropdownConditions" style="display: none">Set Conditions</label>
+            <div class="dropdown" style="display: none">
+                <button class="btn btn-default dropdown-toggle" type="button" id="kieDropdownConditions" data-toggle="dropdown" data-field="conditionsButton">
+                    Condition
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="kieDropdownConditions" data-field="conditionsDropdown">
+                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Required</a></li>
+                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Preferred</a></li>
+                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Other options here</a></li>
+                </ul>
+            </div>
+
+            <hr/>
+            <button class="btn btn-default" type="button" data-field="addButton">Add</button>
+            <a href="#0" role="button" style="display: none">Clear</a>
+        </div>
+    </div>
+</div>

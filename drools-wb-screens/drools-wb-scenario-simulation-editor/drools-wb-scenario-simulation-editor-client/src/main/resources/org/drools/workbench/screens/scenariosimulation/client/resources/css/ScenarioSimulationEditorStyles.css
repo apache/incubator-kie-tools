@@ -131,4 +131,8 @@ li.list-group-item.kie-object-list__separator, li.list-group-item.kie-object-lis
     font-weight: normal;
 }
 
+.kie-tab-pane--scesim-panel {
+    padding: 1em;
+}
+
 

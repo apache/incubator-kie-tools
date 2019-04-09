@@ -21,8 +21,8 @@ import java.util.stream.IntStream;
 
 import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import com.google.gwt.event.shared.EventBus;
-import org.drools.workbench.screens.scenariosimulation.client.events.DisableRightPanelEvent;
-import org.drools.workbench.screens.scenariosimulation.client.events.EnableRightPanelEvent;
+import org.drools.workbench.screens.scenariosimulation.client.events.DisableTestToolsEvent;
+import org.drools.workbench.screens.scenariosimulation.client.events.EnableTestToolsEvent;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioSimulationGridWidgetMouseEventHandler;
 import org.drools.workbench.screens.scenariosimulation.client.menu.ScenarioContextMenuRegistry;
 import org.drools.workbench.screens.scenariosimulation.client.metadata.ScenarioHeaderMetaData;
@@ -246,14 +246,14 @@ public class ScenarioGrid extends BaseGridWidget {
     public boolean adjustSelection(final SelectionExtension direction, final boolean isShiftKeyDown) {
         final boolean selectionChanged = super.adjustSelection(direction, isShiftKeyDown);
 
-        signalRightPanelAboutSelectedHeaderCells();
+        signalTestToolsAboutSelectedHeaderCells();
         scenarioContextMenuRegistry.hideMenus();
 
         return selectionChanged;
     }
 
-    public void signalRightPanelAboutSelectedHeaderCells() {
-        eventBus.fireEvent(new DisableRightPanelEvent());
+    public void signalTestToolsAboutSelectedHeaderCells() {
+        eventBus.fireEvent(new DisableTestToolsEvent());
 
         if (model.getSelectedHeaderCells().size() > 0) {
             final GridData.SelectedCell cell = model.getSelectedHeaderCells().get(0);
@@ -266,33 +266,33 @@ public class ScenarioGrid extends BaseGridWidget {
 
             final GridColumn column = model.getColumns().get(uiColumnIndex);
             if (uiRowIndex > 0 && column instanceof ScenarioGridColumn) {
-                signalRightPanelHeaderCellSelected((ScenarioGridColumn) column,
-                                                   cell,
-                                                   uiColumnIndex);
+                signalTestToolsHeaderCellSelected((ScenarioGridColumn) column,
+                                                  cell,
+                                                  uiColumnIndex);
             }
         }
     }
 
-    private void signalRightPanelHeaderCellSelected(final ScenarioGridColumn scenarioGridColumn,
-                                                    final GridData.SelectedCell selectedHeaderCell,
-                                                    final int uiColumnIndex) {
-        final EnableRightPanelEvent enableRightPanelEvent = getEnableRightPanelEvent(scenarioGridColumn,
-                                                                                     selectedHeaderCell,
-                                                                                     uiColumnIndex);
-        eventBus.fireEvent(enableRightPanelEvent);
+    private void signalTestToolsHeaderCellSelected(final ScenarioGridColumn scenarioGridColumn,
+                                                   final GridData.SelectedCell selectedHeaderCell,
+                                                   final int uiColumnIndex) {
+        final EnableTestToolsEvent enableTestToolsEvent = getEnableTestToolsEvent(scenarioGridColumn,
+                                                                                  selectedHeaderCell,
+                                                                                  uiColumnIndex);
+        eventBus.fireEvent(enableTestToolsEvent);
     }
 
-    private EnableRightPanelEvent getEnableRightPanelEvent(final ScenarioGridColumn scenarioGridColumn,
-                                                           final GridData.SelectedCell selectedHeaderCell,
-                                                           final int uiColumnIndex) {
+    private EnableTestToolsEvent getEnableTestToolsEvent(final ScenarioGridColumn scenarioGridColumn,
+                                                         final GridData.SelectedCell selectedHeaderCell,
+                                                         final int uiColumnIndex) {
         final ScenarioHeaderMetaData scenarioHeaderMetaData =
                 ScenarioSimulationGridHeaderUtilities.getColumnScenarioHeaderMetaData(scenarioGridColumn,
                                                                                       selectedHeaderCell.getRowIndex());
 
-        return ScenarioSimulationGridHeaderUtilities.getEnableRightPanelEvent(this,
-                                                                              scenarioGridColumn,
-                                                                              scenarioHeaderMetaData,
-                                                                              uiColumnIndex,
-                                                                              scenarioHeaderMetaData.getColumnGroup());
+        return ScenarioSimulationGridHeaderUtilities.getEnableTestToolsEvent(this,
+                                                                             scenarioGridColumn,
+                                                                             scenarioHeaderMetaData,
+                                                                             uiColumnIndex,
+                                                                             scenarioHeaderMetaData.getColumnGroup());
     }
 }

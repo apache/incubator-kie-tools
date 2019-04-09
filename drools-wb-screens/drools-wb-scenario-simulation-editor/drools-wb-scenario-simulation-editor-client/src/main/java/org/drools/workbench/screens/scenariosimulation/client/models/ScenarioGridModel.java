@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import com.google.gwt.event.shared.EventBus;
-import org.drools.workbench.screens.scenariosimulation.client.events.ReloadRightPanelEvent;
+import org.drools.workbench.screens.scenariosimulation.client.events.ReloadTestToolsEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.ScenarioGridReloadEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.ScenarioNotificationEvent;
 import org.drools.workbench.screens.scenariosimulation.client.factories.CollectionEditorSingletonDOMElementFactory;
@@ -455,7 +455,7 @@ public class ScenarioGridModel extends BaseGridData {
         ScenarioHeaderMetaData.MetadataType metadataType = editedMetadata.getMetadataType();
         IntStream.range(0, getColumnCount()).forEach(index -> updateFactMapping(simulationDescriptor, factMappingToEdit, index, value, metadataType));
         if (editedMetadata.getMetadataType().equals(ScenarioHeaderMetaData.MetadataType.INSTANCE)) {
-            eventBus.fireEvent(new ReloadRightPanelEvent(false));
+            eventBus.fireEvent(new ReloadTestToolsEvent(false));
         }
     }
 

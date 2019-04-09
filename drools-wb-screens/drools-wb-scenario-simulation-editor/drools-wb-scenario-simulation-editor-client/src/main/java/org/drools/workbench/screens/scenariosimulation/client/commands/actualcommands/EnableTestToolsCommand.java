@@ -20,12 +20,12 @@ import javax.enterprise.context.Dependent;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
 
 /**
- * <code>Command</code> to <b>enable</b> the <code>RightPanelView</code>
+ * <code>Command</code> to <b>enable</b> the <code>TestToolsView</code>
  */
 @Dependent
-public class EnableRightPanelCommand extends AbstractScenarioSimulationCommand {
+public class EnableTestToolsCommand extends AbstractScenarioSimulationCommand {
 
-    public EnableRightPanelCommand() {
+    public EnableTestToolsCommand() {
         super(false);
     }
 
@@ -34,13 +34,13 @@ public class EnableRightPanelCommand extends AbstractScenarioSimulationCommand {
         final ScenarioSimulationContext.Status status = context.getStatus();
         if (context.getScenarioSimulationEditorPresenter() != null) {
             context.getScenarioSimulationEditorPresenter().expandToolsDock();
-            context.getScenarioSimulationEditorPresenter().reloadRightPanel(false);
+            context.getScenarioSimulationEditorPresenter().reloadTestTools(false);
         }
-        if (context.getRightPanelPresenter() != null) {
+        if (context.getTestToolsPresenter() != null) {
             if (status.getFilterTerm() == null) {
-                context.getRightPanelPresenter().onEnableEditorTab();
+                context.getTestToolsPresenter().onEnableEditorTab();
             } else {
-                context.getRightPanelPresenter().onEnableEditorTab(status.getFilterTerm(), status.getPropertyName(), status.isNotEqualsSearch());
+                context.getTestToolsPresenter().onEnableEditorTab(status.getFilterTerm(), status.getPropertyName(), status.isNotEqualsSearch());
             }
         }
     }

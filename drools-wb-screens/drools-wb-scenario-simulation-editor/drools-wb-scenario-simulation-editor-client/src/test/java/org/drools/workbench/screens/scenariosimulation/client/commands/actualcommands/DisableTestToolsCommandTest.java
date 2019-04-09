@@ -20,47 +20,26 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.uberfire.backend.vfs.ObservablePath;
-import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.mvp.PlaceStatus;
-import org.uberfire.mvp.impl.PathPlaceRequest;
 
 import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class RightPanelMenuCommandTest extends AbstractScenarioSimulationCommandTest {
-
-    @Mock
-    private PlaceManager placeManagerMock;
-
-    @Mock
-    private PathPlaceRequest placeRequestMock;
-
-    @Mock
-    private ObservablePath pathMock;
+public class DisableTestToolsCommandTest extends AbstractScenarioSimulationCommandTest {
 
     @Before
     public void setup() {
         super.setup();
-        when(placeRequestMock.getPath()).thenReturn(pathMock);
-        command = spy(new RightPanelMenuCommand());
+        command = spy(new DisableTestToolsCommand());
         assertFalse(command.isUndoable());
     }
 
     @Test
     public void execute() {
-        scenarioSimulationContextLocal.setPlaceManager(placeManagerMock);
-        scenarioSimulationContextLocal.setRightPanelRequest(placeRequestMock);
-        when(placeManagerMock.getStatus(placeRequestMock)).thenReturn(PlaceStatus.OPEN);
+        scenarioSimulationContextLocal.setTestToolsPresenter(testToolsPresenterMock);
         command.execute(scenarioSimulationContextLocal);
-        verify(placeManagerMock, times(1)).closePlace(placeRequestMock);
-        when(placeManagerMock.getStatus(placeRequestMock)).thenReturn(PlaceStatus.CLOSE);
-        command.execute(scenarioSimulationContextLocal);
-        verify(placeManagerMock, times(1)).goTo(placeRequestMock);
+        verify(testToolsPresenterMock, times(1)).onDisableEditorTab();
     }
 }

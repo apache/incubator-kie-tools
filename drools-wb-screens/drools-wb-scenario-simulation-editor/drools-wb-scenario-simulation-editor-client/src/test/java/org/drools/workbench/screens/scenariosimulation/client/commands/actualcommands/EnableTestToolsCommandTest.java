@@ -29,26 +29,26 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class EnableRightPanelCommandTest extends AbstractScenarioSimulationCommandTest {
+public class EnableTestToolsCommandTest extends AbstractScenarioSimulationCommandTest {
 
     private static final String FACT_NAME = "FACT_NAME";
 
     @Before
     public void setup() {
         super.setup();
-        command = spy(new EnableRightPanelCommand());
+        command = spy(new EnableTestToolsCommand());
         assertFalse(command.isUndoable());
     }
 
 
     @Test
     public void executeWithFactName() {
-        scenarioSimulationContextLocal.setRightPanelPresenter(rightPanelPresenterMock);
+        scenarioSimulationContextLocal.setTestToolsPresenter(testToolsPresenterMock);
         scenarioSimulationContextLocal.getStatus().setFilterTerm(FACT_NAME);
         scenarioSimulationContextLocal.getStatus().setPropertyName(null);
         scenarioSimulationContextLocal.getStatus().setNotEqualsSearch(true);
         command.execute(scenarioSimulationContextLocal);
-        verify(rightPanelPresenterMock, times(1)).onEnableEditorTab(eq(FACT_NAME), eq(null), eq(true));
-        verify(rightPanelPresenterMock, never()).onEnableEditorTab();
+        verify(testToolsPresenterMock, times(1)).onEnableEditorTab(eq(FACT_NAME), eq(null), eq(true));
+        verify(testToolsPresenterMock, never()).onEnableEditorTab();
     }
 }

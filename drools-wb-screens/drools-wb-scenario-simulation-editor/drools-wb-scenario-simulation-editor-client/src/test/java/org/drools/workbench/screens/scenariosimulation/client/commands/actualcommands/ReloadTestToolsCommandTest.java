@@ -29,12 +29,12 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class ReloadRightPanelCommandTest extends AbstractScenarioSimulationCommandTest {
+public class ReloadTestToolsCommandTest extends AbstractScenarioSimulationCommandTest {
 
     @Before
     public void setup() {
         super.setup();
-        command = spy(new ReloadRightPanelCommand());
+        command = spy(new ReloadTestToolsCommand());
         scenarioSimulationContextLocal.setScenarioSimulationEditorPresenter(scenarioSimulationEditorPresenterMock);
         assertFalse(command.isUndoable());
     }
@@ -45,7 +45,7 @@ public class ReloadRightPanelCommandTest extends AbstractScenarioSimulationComma
         scenarioSimulationContextLocal.getStatus().setOpenDock(true);
         command.execute(scenarioSimulationContextLocal);
         verify(scenarioSimulationEditorPresenterMock, times(1)).expandToolsDock();
-        verify(scenarioSimulationEditorPresenterMock, times(1)).reloadRightPanel(eq(true));
+        verify(scenarioSimulationEditorPresenterMock, times(1)).reloadTestTools(eq(true));
     }
 
     @Test
@@ -54,7 +54,7 @@ public class ReloadRightPanelCommandTest extends AbstractScenarioSimulationComma
         scenarioSimulationContextLocal.getStatus().setOpenDock(true);
         command.execute(scenarioSimulationContextLocal);
         verify(scenarioSimulationEditorPresenterMock, times(1)).expandToolsDock();
-        verify(scenarioSimulationEditorPresenterMock, times(1)).reloadRightPanel(eq(false));
+        verify(scenarioSimulationEditorPresenterMock, times(1)).reloadTestTools(eq(false));
     }
 
     @Test
@@ -63,6 +63,6 @@ public class ReloadRightPanelCommandTest extends AbstractScenarioSimulationComma
         scenarioSimulationContextLocal.getStatus().setOpenDock(false);
         command.execute(scenarioSimulationContextLocal);
         verify(scenarioSimulationEditorPresenterMock, never()).expandToolsDock();
-        verify(scenarioSimulationEditorPresenterMock, times(1)).reloadRightPanel(eq(true));
+        verify(scenarioSimulationEditorPresenterMock, times(1)).reloadTestTools(eq(true));
     }
 }

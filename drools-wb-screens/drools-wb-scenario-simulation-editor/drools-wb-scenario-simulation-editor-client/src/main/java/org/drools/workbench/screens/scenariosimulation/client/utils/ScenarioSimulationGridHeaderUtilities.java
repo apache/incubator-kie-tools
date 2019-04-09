@@ -21,7 +21,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.ait.lienzo.client.core.types.Point2D;
-import org.drools.workbench.screens.scenariosimulation.client.events.EnableRightPanelEvent;
+import org.drools.workbench.screens.scenariosimulation.client.events.EnableTestToolsEvent;
 import org.drools.workbench.screens.scenariosimulation.client.metadata.ScenarioHeaderMetaData;
 import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGrid;
@@ -116,25 +116,25 @@ public class ScenarioSimulationGridHeaderUtilities {
         return scenarioHeaderMetaData.isInstanceHeader() || (scenarioHeaderMetaData.isPropertyHeader() && column.isPropertyAssigned());
     }
 
-    public static EnableRightPanelEvent getEnableRightPanelEvent(final ScenarioGrid scenarioGrid,
-                                                                 final ScenarioGridColumn scenarioGridColumn,
-                                                                 final ScenarioHeaderMetaData clickedScenarioHeaderMetadata,
-                                                                 final Integer uiColumnIndex,
-                                                                 final String columnGroup) {
+    public static EnableTestToolsEvent getEnableTestToolsEvent(final ScenarioGrid scenarioGrid,
+                                                               final ScenarioGridColumn scenarioGridColumn,
+                                                               final ScenarioHeaderMetaData clickedScenarioHeaderMetadata,
+                                                               final Integer uiColumnIndex,
+                                                               final String columnGroup) {
         if (!scenarioGridColumn.isInstanceAssigned()) {
             String complexSearch = getExistingInstances(columnGroup, scenarioGrid.getModel());
-            return new EnableRightPanelEvent(complexSearch, true);
+            return new EnableTestToolsEvent(complexSearch, true);
         } else if (Objects.equals(clickedScenarioHeaderMetadata.getMetadataType(), ScenarioHeaderMetaData.MetadataType.PROPERTY)) {
             String propertyName = null;
             if (scenarioGridColumn.isPropertyAssigned()) {
                 final Optional<Simulation> optionalSimulation = scenarioGrid.getModel().getSimulation();
                 propertyName = optionalSimulation.map(simulation -> getPropertyName(simulation, uiColumnIndex)).orElse(null);
             }
-            return propertyName != null ? new EnableRightPanelEvent(scenarioGridColumn.getInformationHeaderMetaData()
-                                                                            .getTitle(), propertyName) : new EnableRightPanelEvent(scenarioGridColumn.getInformationHeaderMetaData().getTitle());
+            return propertyName != null ? new EnableTestToolsEvent(scenarioGridColumn.getInformationHeaderMetaData()
+                                                                            .getTitle(), propertyName) : new EnableTestToolsEvent(scenarioGridColumn.getInformationHeaderMetaData().getTitle());
         } else {
             String complexSearch = getExistingInstances(columnGroup, scenarioGrid.getModel());
-            return new EnableRightPanelEvent(complexSearch, true);
+            return new EnableTestToolsEvent(complexSearch, true);
         }
     }
 

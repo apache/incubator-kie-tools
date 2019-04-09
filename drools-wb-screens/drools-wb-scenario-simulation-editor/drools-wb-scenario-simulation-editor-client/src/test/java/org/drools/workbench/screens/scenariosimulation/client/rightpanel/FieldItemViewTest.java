@@ -27,7 +27,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class FieldItemViewTest extends AbstractRightPanelTest {
+public class FieldItemViewTest extends AbstractTestToolsTest {
 
     private FieldItemViewImpl fieldItemView;
 

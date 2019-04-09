@@ -46,10 +46,6 @@ public interface ScenarioSimulationEditorConstants
 
     String invalidDefinitionDisabled();
 
-    String showRightPanel();
-
-    String hideRightPanel();
-
     String testTools();
 
     String testEditor();
@@ -237,4 +233,6 @@ public interface ScenarioSimulationEditorConstants
     String removeCollectionWarningText();
 
     String collectionError();
+
+    String settings();
 }

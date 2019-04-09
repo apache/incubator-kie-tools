@@ -84,19 +84,19 @@ public class DMODataManagementStrategyTest extends AbstractDataManagementStrateg
     }
 
     @Test
-    public void populateRightPanel() {
+    public void populateTestTools() {
         Map<String, List<String>> alreadyAssignedProperties = new HashMap<>();
         doReturn(alreadyAssignedProperties).when(dmoDataManagementStrategy).getPropertiesToHide(scenarioGridModelMock);
         String[] emptyFactTypes = {};
         when(oracleMock.getFactTypes()).thenReturn(emptyFactTypes);
-        dmoDataManagementStrategy.populateRightPanel(rightPanelPresenterMock, scenarioGridModelMock);
-        verify(dmoDataManagementStrategy, never()).aggregatorCallback(eq(rightPanelPresenterMock), anyInt(), any(SortedMap.class), eq(scenarioGridModelMock), isA(List.class));
+        dmoDataManagementStrategy.populateTestTools(testToolsPresenterMock, scenarioGridModelMock);
+        verify(dmoDataManagementStrategy, never()).aggregatorCallback(eq(testToolsPresenterMock), anyInt(), any(SortedMap.class), eq(scenarioGridModelMock), isA(List.class));
         verify(oracleMock, never()).getFieldCompletions(anyString(), any(Callback.class));
         //
         String[] notEmptyFactTypes = getRandomStringArray();
         when(oracleMock.getFactTypes()).thenReturn(notEmptyFactTypes);
-        dmoDataManagementStrategy.populateRightPanel(rightPanelPresenterMock, scenarioGridModelMock);
-        verify(dmoDataManagementStrategy, times(1)).aggregatorCallback(eq(rightPanelPresenterMock), anyInt(), any(SortedMap.class), eq(scenarioGridModelMock), isA(List.class));
+        dmoDataManagementStrategy.populateTestTools(testToolsPresenterMock, scenarioGridModelMock);
+        verify(dmoDataManagementStrategy, times(1)).aggregatorCallback(eq(testToolsPresenterMock), anyInt(), any(SortedMap.class), eq(scenarioGridModelMock), isA(List.class));
         for (String factType : notEmptyFactTypes) {
             verify(oracleMock, times(1)).getFieldCompletions(eq(factType), any(Callback.class));
         }

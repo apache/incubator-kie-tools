@@ -16,11 +16,11 @@
 package org.drools.workbench.screens.scenariosimulation.client.handlers;
 
 import com.google.gwt.event.shared.EventHandler;
-import org.drools.workbench.screens.scenariosimulation.client.events.DisableRightPanelEvent;
+import org.drools.workbench.screens.scenariosimulation.client.events.EnableTestToolsEvent;
 
 /**
- * <code>EventHandler</code> for {@link DisableRightPanelEvent}
+ * <code>EventHandler</code> for {@link EnableTestToolsEvent}
  */
-public interface DisableRightPanelEventHandler extends EventHandler {
-    void onEvent(DisableRightPanelEvent event);
+public interface EnableTestToolsEventHandler extends EventHandler {
+    void onEvent(EnableTestToolsEvent event);
 }

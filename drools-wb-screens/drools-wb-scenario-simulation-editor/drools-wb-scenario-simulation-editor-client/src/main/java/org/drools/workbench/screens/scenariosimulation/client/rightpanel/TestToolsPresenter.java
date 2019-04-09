@@ -24,37 +24,26 @@ import java.util.Optional;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import com.google.gwt.dom.client.DivElement;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.screens.scenariosimulation.client.events.SetInstanceHeaderEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.SetPropertyHeaderEvent;
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
-import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree;
-import org.uberfire.client.annotations.DefaultPosition;
-import org.uberfire.client.annotations.WorkbenchPartTitle;
-import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.workbench.model.CompassPosition;
-import org.uberfire.workbench.model.Position;
 
-import static org.drools.workbench.screens.scenariosimulation.client.rightpanel.RightPanelPresenter.DEFAULT_PREFERRED_WIDHT;
-import static org.drools.workbench.screens.scenariosimulation.client.rightpanel.RightPanelPresenter.IDENTIFIER;
+import static org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsPresenter.DEFAULT_PREFERRED_WIDHT;
+import static org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsPresenter.IDENTIFIER;
 
-@Dependent
+@ApplicationScoped
 @WorkbenchScreen(identifier = IDENTIFIER, preferredWidth = DEFAULT_PREFERRED_WIDHT)
-public class RightPanelPresenter implements RightPanelView.Presenter {
+public class TestToolsPresenter extends AbstractSubDockPresenter<TestToolsView> implements TestToolsView.Presenter {
 
-    public static final int DEFAULT_PREFERRED_WIDHT = 300;
-
-    public static final String IDENTIFIER = "org.drools.scenariosimulation.RightPanel";
-
-    private RightPanelView view;
+    public static final String IDENTIFIER = "org.drools.scenariosimulation.TestTools";
 
     private ListGroupItemPresenter listGroupItemPresenter;
 
@@ -75,36 +64,17 @@ public class RightPanelPresenter implements RightPanelView.Presenter {
     protected ListGroupItemView selectedListGroupItemView;
     protected FieldItemView selectedFieldItemView;
 
-    public RightPanelPresenter() {
+    public TestToolsPresenter() {
         //Zero argument constructor for CDI
+        title = ScenarioSimulationEditorConstants.INSTANCE.testTools();
     }
 
     @Inject
-    public RightPanelPresenter(RightPanelView view, ListGroupItemPresenter listGroupItemPresenter) {
-        this.view = view;
+    public TestToolsPresenter(TestToolsView view, ListGroupItemPresenter listGroupItemPresenter) {
+        super(view);
         this.listGroupItemPresenter = listGroupItemPresenter;
         this.listGroupItemPresenter.init(this);
-    }
-
-    @PostConstruct
-    public void setup() {
-        view.init(this);
-        view.disableEditorTab();
-    }
-
-    @DefaultPosition
-    public Position getDefaultPosition() {
-        return CompassPosition.EAST;
-    }
-
-    @WorkbenchPartTitle
-    public String getTitle() {
-        return ScenarioSimulationEditorConstants.INSTANCE.testTools();
-    }
-
-    @WorkbenchPartView
-    public Widget asWidget() {
-        return view.asWidget();
+        title = ScenarioSimulationEditorConstants.INSTANCE.testTools();
     }
 
     @Override
@@ -132,16 +102,19 @@ public class RightPanelPresenter implements RightPanelView.Presenter {
 
     @Override
     public void clearSimpleJavaTypeList() {
+        view.getSimpleJavaTypeListContainerSeparator().getStyle().setDisplay(Style.Display.NONE);
         view.getSimpleJavaTypeListContainer().removeAllChildren();
     }
 
     @Override
     public void clearInstanceList() {
+        view.getInstanceListContainerSeparator().getStyle().setDisplay(Style.Display.NONE);
         view.getInstanceListContainer().removeAllChildren();
     }
 
     @Override
     public void clearSimpleJavaInstanceFieldList() {
+        view.getSimpleJavaInstanceListContainerSeparator().getStyle().setDisplay(Style.Display.NONE);
         view.getSimpleJavaInstanceListContainer().removeAllChildren();
     }
 
@@ -181,6 +154,9 @@ public class RightPanelPresenter implements RightPanelView.Presenter {
     public void setSimpleJavaTypeFieldsMap(SortedMap<String, FactModelTree> simpleJavaTypeFieldsMap) {
         clearSimpleJavaTypeList();
         this.simpleJavaTypeFieldsMap = simpleJavaTypeFieldsMap;
+        if (!simpleJavaTypeFieldsMap.isEmpty()) {
+            view.getSimpleJavaTypeListContainer().getStyle().setDisplay(Style.Display.NONE);
+        }
         this.simpleJavaTypeFieldsMap.forEach(this::addSimpleJavaTypeListGroupItemView);
     }
 
@@ -193,6 +169,9 @@ public class RightPanelPresenter implements RightPanelView.Presenter {
     public void setInstanceFieldsMap(SortedMap<String, FactModelTree> instanceFieldsMap) {
         clearInstanceList();
         this.instanceFieldsMap = instanceFieldsMap;
+        if (!instanceFieldsMap.isEmpty()) {
+            view.getInstanceListContainerSeparator().getStyle().setDisplay(Style.Display.NONE);
+        }
         this.instanceFieldsMap.forEach(this::addInstanceListGroupItemView);
     }
 
@@ -211,6 +190,9 @@ public class RightPanelPresenter implements RightPanelView.Presenter {
     public void setSimpleJavaInstanceFieldsMap(SortedMap<String, FactModelTree> simpleJavaInstanceFieldsMap) {
         clearSimpleJavaInstanceFieldList();
         this.simpleJavaInstanceFieldsMap = simpleJavaInstanceFieldsMap;
+        if (!simpleJavaInstanceFieldsMap.isEmpty()) {
+            view.getSimpleJavaInstanceListContainerSeparator().getStyle().setDisplay(Style.Display.NONE);
+        }
         this.simpleJavaInstanceFieldsMap.forEach(this::addSimpleJavaInstanceListGroupItemView);
     }
 
@@ -389,15 +371,6 @@ public class RightPanelPresenter implements RightPanelView.Presenter {
             return !terms.contains(key);
         } else {
             return terms.contains(key);
-        }
-    }
-
-    public void initCheatSheet(ScenarioSimulationModel.Type type) {
-        if (type.equals(ScenarioSimulationModel.Type.RULE)) {
-            view.setRuleCheatSheetContent();
-        }
-        if (type.equals(ScenarioSimulationModel.Type.DMN)) {
-            view.setDMNCheatSheetContent();
         }
     }
 }
