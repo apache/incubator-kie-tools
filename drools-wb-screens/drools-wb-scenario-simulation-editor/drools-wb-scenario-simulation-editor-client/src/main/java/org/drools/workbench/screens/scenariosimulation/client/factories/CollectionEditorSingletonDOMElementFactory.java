@@ -74,11 +74,11 @@ public class CollectionEditorSingletonDOMElementFactory extends BaseSingletonDOM
         this.widget = createWidget();
         final ScenarioGridModel model = ((ScenarioGrid) gridWidget).getModel();
         final GridData.SelectedCell selectedCellsOrigin = model.getSelectedCellsOrigin();
-        final Optional<GridColumn<?>> selectedColumn = model.getColumns().stream().filter(col -> col.getIndex() ==
-                selectedCellsOrigin.getColumnIndex())
+        final Optional<GridColumn<?>> selectedColumn = model.getColumns().stream()
+                .filter(col -> col.getIndex() == selectedCellsOrigin.getColumnIndex())
                 .findFirst();
         selectedColumn.ifPresent(col -> {
-            int actualIndex = model.getColumns().indexOf(col);
+            final int actualIndex = model.getColumns().indexOf(col);
             final FactMapping factMapping = model.getSimulation().get().getSimulationDescriptor().getFactMappingByIndex(actualIndex);
             setCollectionEditorStructureData(this.widget, factMapping);
             this.e = internalCreateDomElement(widget, gridLayer, gridWidget);
@@ -89,15 +89,6 @@ public class CollectionEditorSingletonDOMElementFactory extends BaseSingletonDOM
             widget.addSaveEditorEventHandler(event -> flush());
         });
         return e;
-    }
-
-    @Override
-    public void destroyResources() {
-        if (e != null) {
-            e.detach();
-            widget = null;
-            e = null;
-        }
     }
 
     @Override

@@ -129,4 +129,12 @@ public class ScenarioCellTextAreaDOMElement extends BaseDOMElement<String, TextA
         final int columnIndex = context.getColumnIndex();
         ((ScenarioGrid) gridWidget).getEventBus().fireEvent(new SetGridCellValueEvent(rowIndex, columnIndex, value));
     }
+
+    @Override
+    public void detach() {
+        super.detach();
+        if (scenarioGridCell != null) {
+            scenarioGridCell.setEditingMode(false);
+        }
+    }
 }

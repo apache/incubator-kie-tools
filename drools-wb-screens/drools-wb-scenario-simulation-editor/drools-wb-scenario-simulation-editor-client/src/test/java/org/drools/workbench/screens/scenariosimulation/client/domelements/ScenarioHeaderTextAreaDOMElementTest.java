@@ -17,6 +17,7 @@
 package org.drools.workbench.screens.scenariosimulation.client.domelements;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import com.google.gwt.user.client.ui.AbsolutePanel;
 import org.drools.workbench.screens.scenariosimulation.client.events.SetHeaderCellValueEvent;
 import org.drools.workbench.screens.scenariosimulation.client.factories.AbstractFactoriesTest;
 import org.drools.workbench.screens.scenariosimulation.client.metadata.ScenarioHeaderMetaData;
@@ -46,6 +47,7 @@ public class ScenarioHeaderTextAreaDOMElementTest extends AbstractFactoriesTest 
     @Before
     public void setup() {
         super.setup();
+        when(scenarioGridLayerMock.getDomElementContainer()).thenReturn(new AbsolutePanel());
         scenarioHeaderTextAreaDOMElement = spy(new ScenarioHeaderTextAreaDOMElement(textAreaMock, scenarioGridLayerMock, scenarioGridMock) {
             {
                 this.context = contextMock;
@@ -88,4 +90,11 @@ public class ScenarioHeaderTextAreaDOMElementTest extends AbstractFactoriesTest 
         verify(eventBusMock, times(1)).fireEvent(isA(SetHeaderCellValueEvent.class));
     }
 
+    @Test
+    public void testDetachCancelEditMode() {
+        scenarioHeaderTextAreaDOMElement.setScenarioHeaderMetaData(scenarioHeaderMetaDataMock);
+        scenarioHeaderTextAreaDOMElement.detach();
+
+        verify(scenarioHeaderMetaDataMock).setEditingMode(false);
+    }
 }

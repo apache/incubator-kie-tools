@@ -17,6 +17,7 @@
 package org.drools.workbench.screens.scenariosimulation.client.domelements;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import com.google.gwt.user.client.ui.AbsolutePanel;
 import org.drools.workbench.screens.scenariosimulation.client.events.SetGridCellValueEvent;
 import org.drools.workbench.screens.scenariosimulation.client.factories.AbstractFactoriesTest;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridCell;
@@ -49,6 +50,7 @@ public class ScenarioCellTextAreaDOMElementTest extends AbstractFactoriesTest {
     @Before
     public void setup() {
         super.setup();
+        when(scenarioGridLayerMock.getDomElementContainer()).thenReturn(new AbsolutePanel());
         when(scenarioGridCellMock.getValue()).thenReturn(gridCellValueMock);
         scenarioCellTextAreaDOMElement = spy(new ScenarioCellTextAreaDOMElement(textAreaMock, scenarioGridLayerMock, scenarioGridMock) {
             {
@@ -95,5 +97,12 @@ public class ScenarioCellTextAreaDOMElementTest extends AbstractFactoriesTest {
     public void internalFlush() {
         scenarioCellTextAreaDOMElement.internalFlush(VALUE);
         verify(eventBusMock, times(1)).fireEvent(isA(SetGridCellValueEvent.class));
+    }
+
+    @Test
+    public void testDetachCancelEditMode() {
+        scenarioCellTextAreaDOMElement.detach();
+
+        verify(scenarioGridCellMock).setEditingMode(false);
     }
 }

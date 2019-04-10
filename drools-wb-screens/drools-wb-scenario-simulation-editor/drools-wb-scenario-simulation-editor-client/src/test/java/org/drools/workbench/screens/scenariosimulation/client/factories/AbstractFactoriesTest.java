@@ -16,10 +16,15 @@
 package org.drools.workbench.screens.scenariosimulation.client.factories;
 
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.user.client.Element;
+import com.google.gwtmockito.GwtMockito;
+import com.google.gwtmockito.fakes.FakeProvider;
 import org.drools.workbench.screens.scenariosimulation.client.AbstractScenarioSimulationTest;
 import org.gwtbootstrap3.client.ui.TextArea;
 import org.junit.Before;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 
@@ -35,6 +40,8 @@ public abstract class AbstractFactoriesTest extends AbstractScenarioSimulationTe
     protected Element elementMock;
     @Mock
     protected Style styleMock;
+    @Captor
+    protected ArgumentCaptor<KeyDownHandler> keyDownHandlerArgumentCaptor;
 
     protected final static int ROW_INDEX = 1;
     protected final static int COLUMN_INDEX = 2;
@@ -46,5 +53,7 @@ public abstract class AbstractFactoriesTest extends AbstractScenarioSimulationTe
         when(textAreaMock.getElement()).thenReturn(elementMock);
         when(contextMock.getRowIndex()).thenReturn(ROW_INDEX);
         when(contextMock.getColumnIndex()).thenReturn(COLUMN_INDEX);
+
+        GwtMockito.useProviderForType(TextArea.class, (FakeProvider<TextArea>) aClass -> textAreaMock);
     }
 }

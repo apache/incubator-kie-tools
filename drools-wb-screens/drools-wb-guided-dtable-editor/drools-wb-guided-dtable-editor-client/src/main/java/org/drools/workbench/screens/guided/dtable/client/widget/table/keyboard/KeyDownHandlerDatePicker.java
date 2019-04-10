@@ -20,6 +20,7 @@ import com.google.gwt.event.dom.client.KeyDownEvent;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.single.HasSingletonDOMElementResource;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.keyboard.KeyDownHandlerCommon;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPanel;
 

@@ -16,16 +16,16 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.listbox;
 
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.BaseDTSingletonDOMElementFactory;
 import org.gwtbootstrap3.client.ui.ListBox;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
+import org.uberfire.ext.wires.core.grids.client.widget.dom.single.impl.BaseSingletonDOMElementFactory;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPanel;
 
 /**
  * A DOMElement Factory for single-instance multi-value DOMElements.
  */
-public abstract class MultiValueSingletonDOMElementFactory<T, W extends ListBox, E extends MultiValueDOMElement<T, W>> extends BaseDTSingletonDOMElementFactory<T, W, E> {
+public abstract class MultiValueSingletonDOMElementFactory<T, W extends ListBox, E extends MultiValueDOMElement<T, W>> extends BaseSingletonDOMElementFactory<T, W, E> {
 
     public MultiValueSingletonDOMElementFactory(final GridLienzoPanel gridPanel,
                                                 final GridLayer gridLayer,

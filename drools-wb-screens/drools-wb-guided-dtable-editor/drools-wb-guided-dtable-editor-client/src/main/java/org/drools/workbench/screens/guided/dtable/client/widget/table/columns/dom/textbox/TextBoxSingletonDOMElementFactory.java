@@ -16,10 +16,10 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.textbox;
 
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.keyboard.KeyDownHandlerCommon;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.keyboard.KeyDownHandlerCommon;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPanel;
 

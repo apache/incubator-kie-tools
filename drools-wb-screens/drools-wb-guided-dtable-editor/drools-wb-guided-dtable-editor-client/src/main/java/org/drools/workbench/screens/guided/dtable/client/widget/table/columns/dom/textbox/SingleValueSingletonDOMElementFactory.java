@@ -17,14 +17,14 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table.columns.d
 
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.BaseDTSingletonDOMElementFactory;
+import org.uberfire.ext.wires.core.grids.client.widget.dom.single.impl.BaseSingletonDOMElementFactory;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPanel;
 
 /**
  * A DOMElement Factory for single-instance single-value DOMElements.
  */
-public abstract class SingleValueSingletonDOMElementFactory<T, W extends Widget, E extends SingleValueDOMElement<T, W>> extends BaseDTSingletonDOMElementFactory<T, W, E> {
+public abstract class SingleValueSingletonDOMElementFactory<T, W extends Widget, E extends SingleValueDOMElement<T, W>> extends BaseSingletonDOMElementFactory<T, W, E> {
 
     public SingleValueSingletonDOMElementFactory(final GridLienzoPanel gridPanel,
                                                  final GridLayer gridLayer,

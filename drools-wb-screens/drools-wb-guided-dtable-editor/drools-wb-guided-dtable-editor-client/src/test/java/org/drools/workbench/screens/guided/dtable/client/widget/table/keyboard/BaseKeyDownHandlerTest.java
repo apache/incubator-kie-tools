@@ -27,6 +27,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.single.HasSingletonDOMElementResource;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.SelectionExtension;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPanel;
 
 import static org.mockito.Mockito.anyBoolean;
@@ -80,10 +81,8 @@ public abstract class BaseKeyDownHandlerTest extends BaseKeyboardTest {
 
         handler.onKeyDown(e);
 
-        verify(gridWidget).selectCell(eq(0),
-                                      eq(0),
-                                      eq(false),
-                                      eq(false));
+        verify(gridWidget).adjustSelection(eq(SelectionExtension.LEFT),
+                                           eq(false));
     }
 
     @Test
@@ -96,10 +95,8 @@ public abstract class BaseKeyDownHandlerTest extends BaseKeyboardTest {
 
         handler.onKeyDown(e);
 
-        verify(gridWidget).selectCell(eq(0),
-                                      eq(2),
-                                      eq(false),
-                                      eq(false));
+        verify(gridWidget).adjustSelection(eq(SelectionExtension.RIGHT),
+                                           eq(false));
     }
 
     @Test
@@ -112,10 +109,8 @@ public abstract class BaseKeyDownHandlerTest extends BaseKeyboardTest {
 
         handler.onKeyDown(e);
 
-        verify(gridWidget).selectCell(eq(0),
-                                      eq(0),
-                                      eq(false),
-                                      eq(false));
+        verify(gridWidget).adjustSelection(eq(SelectionExtension.UP),
+                                           eq(false));
     }
 
     @Test
@@ -128,10 +123,8 @@ public abstract class BaseKeyDownHandlerTest extends BaseKeyboardTest {
 
         handler.onKeyDown(e);
 
-        verify(gridWidget).selectCell(eq(2),
-                                      eq(0),
-                                      eq(false),
-                                      eq(false));
+        verify(gridWidget).adjustSelection(eq(SelectionExtension.DOWN),
+                                           eq(false));
     }
 
     @Test
