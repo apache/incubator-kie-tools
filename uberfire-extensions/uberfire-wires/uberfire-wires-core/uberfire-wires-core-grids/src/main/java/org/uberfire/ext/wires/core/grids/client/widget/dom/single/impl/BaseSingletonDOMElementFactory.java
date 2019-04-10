@@ -74,7 +74,11 @@ public abstract class BaseSingletonDOMElementFactory<T, W extends Widget, E exte
 
     @Override
     public void destroyResources() {
-        flush();
+        if (e != null) {
+            e.detach();
+            widget = null;
+            e = null;
+        }
     }
 
     @Override
