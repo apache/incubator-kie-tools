@@ -23,20 +23,17 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
-import org.kie.workbench.common.dmn.api.definition.v1_1.common.HasTypeRefHelper;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({HasTypeRefHelper.class})
+@RunWith(MockitoJUnitRunner.class)
+
 public class DecisionTableTest {
 
     private DecisionTable decisionTable;
@@ -54,9 +51,15 @@ public class DecisionTableTest {
 
     @Test
     public void testGetHasTypeRefs() {
-        final List<InputClause> inputClauses = asList(mock(InputClause.class), mock(InputClause.class));
-        final List<OutputClause> outputClauses = asList(mock(OutputClause.class), mock(OutputClause.class));
-        final List<DecisionRule> decisionRules = asList(mock(DecisionRule.class), mock(DecisionRule.class));
+        final InputClause inputClauses1 = mock(InputClause.class);
+        final InputClause inputClauses2 = mock(InputClause.class);
+        final List<InputClause> inputClauses = asList(inputClauses1, inputClauses2);
+        final OutputClause outputClauses1 = mock(OutputClause.class);
+        final OutputClause outputClauses2 = mock(OutputClause.class);
+        final List<OutputClause> outputClauses = asList(outputClauses1, outputClauses2);
+        final DecisionRule decisionRules1 = mock(DecisionRule.class);
+        final DecisionRule decisionRules2 = mock(DecisionRule.class);
+        final List<DecisionRule> decisionRules = asList(decisionRules1, decisionRules2);
         final HasTypeRef hasTypeRef1 = mock(HasTypeRef.class);
         final HasTypeRef hasTypeRef2 = mock(HasTypeRef.class);
         final HasTypeRef hasTypeRef3 = mock(HasTypeRef.class);
@@ -68,10 +71,12 @@ public class DecisionTableTest {
         doReturn(outputClauses).when(decisionTable).getOutput();
         doReturn(decisionRules).when(decisionTable).getRule();
 
-        mockStatic(HasTypeRefHelper.class);
-        when(HasTypeRefHelper.getFlatHasTypeRefs(inputClauses)).thenReturn(asList(hasTypeRef1, hasTypeRef2));
-        when(HasTypeRefHelper.getFlatHasTypeRefs(outputClauses)).thenReturn(asList(hasTypeRef3, hasTypeRef4));
-        when(HasTypeRefHelper.getFlatHasTypeRefs(decisionRules)).thenReturn(asList(hasTypeRef5, hasTypeRef6));
+        when(inputClauses1.getHasTypeRefs()).thenReturn(asList(hasTypeRef1));
+        when(inputClauses2.getHasTypeRefs()).thenReturn(asList(hasTypeRef2));
+        when(outputClauses1.getHasTypeRefs()).thenReturn(asList(hasTypeRef3));
+        when(outputClauses2.getHasTypeRefs()).thenReturn(asList(hasTypeRef4));
+        when(decisionRules1.getHasTypeRefs()).thenReturn(asList(hasTypeRef5));
+        when(decisionRules2.getHasTypeRefs()).thenReturn(asList(hasTypeRef6));
 
         final List<HasTypeRef> actualHasTypeRefs = decisionTable.getHasTypeRefs();
         final List<HasTypeRef> expectedHasTypeRefs = asList(decisionTable, hasTypeRef1, hasTypeRef2, hasTypeRef3, hasTypeRef4, hasTypeRef5, hasTypeRef6);

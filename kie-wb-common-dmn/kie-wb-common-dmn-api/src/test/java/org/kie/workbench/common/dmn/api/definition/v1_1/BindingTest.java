@@ -23,9 +23,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.kie.workbench.common.dmn.api.definition.HasVariable;
-import org.kie.workbench.common.dmn.api.definition.v1_1.common.HasTypeRefHelper;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
@@ -33,11 +31,10 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.when;
+import static org.mockito.Mockito.when;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({HasTypeRefHelper.class})
+@RunWith(MockitoJUnitRunner.class)
+
 public class BindingTest {
 
     private Binding binding;
@@ -88,9 +85,8 @@ public class BindingTest {
         doReturn(expression).when(binding).getExpression();
         doReturn(parameter).when(binding).getParameter();
 
-        mockStatic(HasTypeRefHelper.class);
-        when(HasTypeRefHelper.getNotNullHasTypeRefs(expression)).thenReturn(asList(hasTypeRef1, hasTypeRef2));
-        when(HasTypeRefHelper.getNotNullHasTypeRefs(parameter)).thenReturn(asList(hasTypeRef3, hasTypeRef4));
+        when(expression.getHasTypeRefs()).thenReturn(asList(hasTypeRef1, hasTypeRef2));
+        when(parameter.getHasTypeRefs()).thenReturn(asList(hasTypeRef3, hasTypeRef4));
 
         final List<HasTypeRef> actualHasTypeRefs = binding.getHasTypeRefs();
         final List<HasTypeRef> expectedHasTypeRefs = asList(hasTypeRef1, hasTypeRef2, hasTypeRef3, hasTypeRef4);

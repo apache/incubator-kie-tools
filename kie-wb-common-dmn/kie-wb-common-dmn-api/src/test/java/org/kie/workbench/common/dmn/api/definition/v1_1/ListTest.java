@@ -23,20 +23,17 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
-import org.kie.workbench.common.dmn.api.definition.v1_1.common.HasTypeRefHelper;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({HasTypeRefHelper.class})
+@RunWith(MockitoJUnitRunner.class)
+//@PrepareForTest({HasTypeRefHelper.class})
 public class ListTest {
 
     private org.kie.workbench.common.dmn.api.definition.v1_1.List list;
@@ -48,14 +45,18 @@ public class ListTest {
 
     @Test
     public void testGetHasTypeRefs() {
-        final List<Expression> expression = asList(mock(Expression.class), mock(Expression.class));
+        final Expression expression1 = mock(Expression.class); //added
+        final Expression expression2 = mock(Expression.class); //added
+        final List<Expression> expression = asList(expression1, expression2);
         final HasTypeRef hasTypeRef1 = mock(HasTypeRef.class);
         final HasTypeRef hasTypeRef2 = mock(HasTypeRef.class);
 
         doReturn(expression).when(list).getExpression();
 
-        mockStatic(HasTypeRefHelper.class);
-        when(HasTypeRefHelper.getFlatHasTypeRefs(expression)).thenReturn(asList(hasTypeRef1, hasTypeRef2));
+        // mockStatic(HasTypeRefHelper.class);
+        //when(HasTypeRefHelper.getFlatHasTypeRefs(expression)).thenReturn(asList(hasTypeRef1, hasTypeRef2));
+        when(expression1.getHasTypeRefs()).thenReturn(asList(hasTypeRef1));
+        when(expression2.getHasTypeRefs()).thenReturn(asList(hasTypeRef2));
 
         final List<HasTypeRef> actualHasTypeRefs = list.getHasTypeRefs();
         final List<HasTypeRef> expectedHasTypeRefs = asList(list, hasTypeRef1, hasTypeRef2);

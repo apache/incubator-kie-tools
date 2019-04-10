@@ -23,20 +23,17 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
-import org.kie.workbench.common.dmn.api.definition.v1_1.common.HasTypeRefHelper;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({HasTypeRefHelper.class})
+@RunWith(MockitoJUnitRunner.class)
+
 public class FunctionDefinitionTest {
 
     private FunctionDefinition functionDefinition;
@@ -60,9 +57,9 @@ public class FunctionDefinitionTest {
         doReturn(expression).when(functionDefinition).getExpression();
         doReturn(formalParameter).when(functionDefinition).getFormalParameter();
 
-        mockStatic(HasTypeRefHelper.class);
-        when(HasTypeRefHelper.getNotNullHasTypeRefs(expression)).thenReturn(asList(hasTypeRef1, hasTypeRef2));
-        when(HasTypeRefHelper.getFlatHasTypeRefs(formalParameter)).thenReturn(asList(hasTypeRef3, hasTypeRef4));
+        when(expression.getHasTypeRefs()).thenReturn(asList(hasTypeRef1, hasTypeRef2));
+        when(informationItem1.getHasTypeRefs()).thenReturn(asList(hasTypeRef3));
+        when(informationItem2.getHasTypeRefs()).thenReturn(asList(hasTypeRef4));
 
         final List<HasTypeRef> actualHasTypeRefs = functionDefinition.getHasTypeRefs();
         final List<HasTypeRef> expectedHasTypeRefs = asList(functionDefinition, hasTypeRef1, hasTypeRef2, hasTypeRef3, hasTypeRef4);

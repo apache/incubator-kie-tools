@@ -22,20 +22,16 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
-import org.kie.workbench.common.dmn.api.definition.v1_1.common.HasTypeRefHelper;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({HasTypeRefHelper.class})
+@RunWith(MockitoJUnitRunner.class)
 public class DecisionRuleTest {
 
     private DecisionRule decisionRule;
@@ -53,8 +49,8 @@ public class DecisionRuleTest {
 
         doReturn(outputEntry).when(decisionRule).getOutputEntry();
 
-        mockStatic(HasTypeRefHelper.class);
-        when(HasTypeRefHelper.getFlatHasTypeRefs(outputEntry)).thenReturn(asList(literalExpression1, literalExpression2));
+        when(literalExpression1.getHasTypeRefs()).thenReturn(asList(literalExpression1));
+        when(literalExpression2.getHasTypeRefs()).thenReturn(asList(literalExpression2));
 
         final List<HasTypeRef> actualHasTypeRefs = decisionRule.getHasTypeRefs();
         final List<HasTypeRef> expectedHasTypeRefs = asList(literalExpression1, literalExpression2);

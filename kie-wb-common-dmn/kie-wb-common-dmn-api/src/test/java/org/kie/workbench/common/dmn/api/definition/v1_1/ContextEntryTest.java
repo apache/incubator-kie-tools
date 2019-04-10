@@ -22,20 +22,16 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
-import org.kie.workbench.common.dmn.api.definition.v1_1.common.HasTypeRefHelper;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({HasTypeRefHelper.class})
+@RunWith(MockitoJUnitRunner.class)
 public class ContextEntryTest {
 
     private ContextEntry contextEntry;
@@ -57,9 +53,8 @@ public class ContextEntryTest {
         doReturn(expression).when(contextEntry).getExpression();
         doReturn(variable).when(contextEntry).getVariable();
 
-        mockStatic(HasTypeRefHelper.class);
-        when(HasTypeRefHelper.getNotNullHasTypeRefs(expression)).thenReturn(asList(hasTypeRef1, hasTypeRef2));
-        when(HasTypeRefHelper.getNotNullHasTypeRefs(variable)).thenReturn(asList(hasTypeRef3, hasTypeRef4));
+        when(expression.getHasTypeRefs()).thenReturn(asList(hasTypeRef1, hasTypeRef2));
+        when(variable.getHasTypeRefs()).thenReturn(asList(hasTypeRef3, hasTypeRef4));
 
         final List<HasTypeRef> actualHasTypeRefs = contextEntry.getHasTypeRefs();
         final List<HasTypeRef> expectedHasTypeRefs = asList(hasTypeRef1, hasTypeRef2, hasTypeRef3, hasTypeRef4);
