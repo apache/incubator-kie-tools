@@ -18,7 +18,6 @@ package org.kie.workbench.common.stunner.project.client.perspectives;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -27,7 +26,6 @@ import org.kie.workbench.common.screens.examples.service.ExamplesService;
 import org.kie.workbench.common.screens.projecteditor.client.menu.ProjectMenu;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.stunner.project.client.resources.i18n.AppConstants;
-import org.kie.workbench.common.widgets.client.docks.DefaultEditorDock;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcesMenu;
 import org.kie.workbench.common.widgets.client.menu.RepositoryMenu;
@@ -36,7 +34,6 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPerspective;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.panels.impl.MultiListWorkbenchPanelPresenter;
-import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 import org.uberfire.workbench.model.menu.MenuFactory;
@@ -69,15 +66,7 @@ public class AuthoringPerspective {
     private PlaceManager placeManager;
 
     @Inject
-    private DefaultEditorDock docks;
-
-    @Inject
     private ExamplesWizard wizard;
-
-    @PostConstruct
-    public void setup() {
-        docks.setup("AuthoringPerspective", new DefaultPlaceRequest("org.kie.guvnor.explorer"));
-    }
 
     @Perspective
     public PerspectiveDefinition buildPerspective() {
