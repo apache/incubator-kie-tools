@@ -52,6 +52,8 @@ public abstract class JQuery {
 
     public native JQueryList<Element> filter(final String selector);
 
+    public native JQueryElementOffset offset();
+
     public native boolean contains(final Element container,
                                    final Element contained);
 

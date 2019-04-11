@@ -57,6 +57,14 @@ public interface Moment {
 
     Double valueOf();
 
+    int hours();
+
+    int minutes();
+
+    int seconds();
+
+    boolean isValid();
+
     @JsOverlay
     default Long asLong(){
         return valueOf().longValue();
@@ -79,6 +87,9 @@ public interface Moment {
         public static Moment moment(Long time) {
             return moment(new Double(time));
         }
+
+        @JsMethod(namespace = JsPackage.GLOBAL)
+        public static native Moment moment(String time, String format);
 
         @JsMethod(namespace = JsPackage.GLOBAL)
         protected static native Moment moment(Double time);
