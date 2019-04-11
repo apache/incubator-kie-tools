@@ -26,6 +26,7 @@ import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.com
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.generic.GenericSelector;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.number.NumberSelector;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.string.StringSelector;
+import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.time.TimeSelector;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.years.months.YearsMonthsSelector;
 import org.mockito.Mock;
 
@@ -52,11 +53,20 @@ public class TypedValueComponentSelectorTest {
     @Mock
     private NumberSelector numberSelector;
 
+    @Mock
+    private TimeSelector timeSelector;
+
     private TypedValueComponentSelector selector;
 
     @Before
     public void setup() {
-        selector = new TypedValueComponentSelector(genericSelector, dateSelector, dayTimeSelector, yearsMosSelector, stringSelector, numberSelector);
+        selector = new TypedValueComponentSelector(genericSelector,
+                                                   dateSelector,
+                                                   dayTimeSelector,
+                                                   yearsMosSelector,
+                                                   stringSelector,
+                                                   numberSelector,
+                                                   timeSelector);
     }
 
     @Test
@@ -105,5 +115,13 @@ public class TypedValueComponentSelectorTest {
         final TypedValueSelector actual = selector.makeSelectorForType("unknown");
 
         assertEquals(genericSelector, actual);
+    }
+
+    @Test
+    public void testGetTimeSelector() {
+
+        final TypedValueSelector actual = selector.makeSelectorForType(BuiltInType.TIME.getName());
+
+        assertEquals(timeSelector, actual);
     }
 }

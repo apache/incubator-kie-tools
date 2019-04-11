@@ -20,9 +20,12 @@
     padding-top: 10px;
   }
 
+  .col-md-6,
   .col-md-12 {
     padding-left: 0;
     padding-right: 0;
+    position: relative;
+    z-index: 1;
   }
 
   .input-field {
@@ -32,7 +35,7 @@
   }
 
   .btn.dropdown-toggle.btn-default {
-    width: 120px;
+    width: 183px;
   }
 
   hr {
@@ -49,6 +52,7 @@
     padding-top: 0;
     padding-left: 10px;
     padding-right: 10px;
+    z-index: 0;
   }
 
   .controls-container {
@@ -91,5 +95,29 @@
         display: inline-block;
       }
     }
+  }
+
+  input.time-input-field {
+    width: 210px;
+    margin-top: -5px;
+  }
+
+  .btn-toggle-timezone {
+    margin-left: 0;
+    display: inline-block;
+  }
+
+  .dropdown-toggle {
+    width: 160px;
+  }
+
+  .btn-group {
+    width: 160px;
+  }
+
+  .bootstrap-select.form-control:not([class*=col-]) {
+    width: 160px;
+    margin-top: -5px;
+    margin-left: -2px;
   }
 }

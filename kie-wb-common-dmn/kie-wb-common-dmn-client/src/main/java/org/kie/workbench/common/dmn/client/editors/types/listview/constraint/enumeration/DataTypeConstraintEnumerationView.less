@@ -47,16 +47,16 @@
     user-select: none;
     height: 40px;
 
+    &.highlighted {
+      z-index: 2;
+    }
+
     [data-field="value-text"] {
       display: inline-block;
       padding: 5px 0;
       height: 30px;
       margin-top: -2px;
     }
-  }
-
-  .draggable:hover {
-    opacity: .9;
   }
 
   [data-field="add-button-container"] {

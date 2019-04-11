@@ -27,6 +27,7 @@ import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.com
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.generic.GenericSelector;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.number.NumberSelector;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.string.StringSelector;
+import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.time.TimeSelector;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.years.months.YearsMonthsSelector;
 
 import static org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType.DATE;
@@ -34,6 +35,7 @@ import static org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType.DU
 import static org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType.DURATION_YEAR_MONTH;
 import static org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType.NUMBER;
 import static org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType.STRING;
+import static org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType.TIME;
 
 @Dependent
 public class TypedValueComponentSelector {
@@ -46,6 +48,8 @@ public class TypedValueComponentSelector {
 
     private final YearsMonthsSelector yearsMosSelector;
 
+    private final TimeSelector timeSelector;
+
     private final StringSelector stringSelector;
 
     private final NumberSelector numberSelector;
@@ -56,13 +60,15 @@ public class TypedValueComponentSelector {
                                        final DayTimeSelector dayTimeSelector,
                                        final YearsMonthsSelector yearsMosSelector,
                                        final StringSelector stringSelector,
-                                       final NumberSelector numberSelector) {
+                                       final NumberSelector numberSelector,
+                                       final TimeSelector timeSelector) {
         this.genericSelector = genericSelector;
         this.dateSelector = dateSelector;
         this.dayTimeSelector = dayTimeSelector;
         this.yearsMosSelector = yearsMosSelector;
         this.stringSelector = stringSelector;
         this.numberSelector = numberSelector;
+        this.timeSelector = timeSelector;
     }
 
     public TypedValueSelector makeSelectorForType(final String type) {
@@ -85,6 +91,10 @@ public class TypedValueComponentSelector {
 
         if (isEqual(type, NUMBER)) {
             return numberSelector;
+        }
+
+        if (isEqual(type, TIME)) {
+            return timeSelector;
         }
 
         return genericSelector;
