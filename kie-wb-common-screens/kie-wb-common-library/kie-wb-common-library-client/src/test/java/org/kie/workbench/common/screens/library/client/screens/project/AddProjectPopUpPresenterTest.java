@@ -196,13 +196,13 @@ public class AddProjectPopUpPresenterTest {
         assertEquals("groupId", pom.getGav().getGroupId());
         assertEquals("artifactId", pom.getGav().getArtifactId());
         assertEquals("version", pom.getGav().getVersion());
-
+        
         //Checking default kie-server options
         assertEquals("kjar", pom.getPackaging());
         assertEquals("org.kie", pom.getBuild().getPlugins().get(0).getGroupId());
         assertEquals("kie-maven-plugin", pom.getBuild().getPlugins().get(0).getArtifactId());
     }
-
+    
     @Test
     public void newWorkbenchProjectWithQuickSettingsIsCreated() throws Exception {
         final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
@@ -224,7 +224,7 @@ public class AddProjectPopUpPresenterTest {
                                              pomArgumentCaptor.capture(),
                                              eq(DeploymentMode.VALIDATED));
         verify(view).setAddButtonEnabled(true);
-
+        
         final POM pom = pomArgumentCaptor.getValue();
 
         assertEquals("test", pom.getName());
@@ -232,7 +232,7 @@ public class AddProjectPopUpPresenterTest {
         assertEquals("groupId", pom.getGav().getGroupId());
         assertEquals("artifactId", pom.getGav().getArtifactId());
         assertEquals("version", pom.getGav().getVersion());
-
+        
         //Checking default kie-server options
         assertEquals("kjar", pom.getPackaging());
         assertEquals("org.kie", pom.getBuild().getPlugins().get(0).getGroupId());
@@ -480,6 +480,7 @@ public class AddProjectPopUpPresenterTest {
                never()).goToProject(any(WorkspaceProject.class));
         verify(view).setAddButtonEnabled(true);
     }
+
 
     @Test
     public void createProjectWithExternalSuccessCallbackTest() {
