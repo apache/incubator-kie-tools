@@ -16,22 +16,46 @@
 
 package org.kie.workbench.common.stunner.core.client.session.command.impl;
 
+import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandlerImpl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyboardControl;
+import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandUndoneEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
+import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.command.Command;
+import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
 import org.kie.workbench.common.stunner.core.command.util.RedoCommandHandler;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.internal.verification.VerificationModeFactory.times;
+import static org.powermock.api.mockito.PowerMockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RedoSessionCommandTest extends BaseSessionCommandKeyboardTest {
 
     @Mock
     private RedoCommandHandler<Command<AbstractCanvasHandler, CanvasViolation>> redoCommandHandler;
+
+    @Mock
+    private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
+
+    @Mock
+    private CanvasHandlerImpl canvasHandler;
+
+    @Mock
+    private KeyboardControl<AbstractCanvas, ClientSession> keyboardControl;
 
     @Override
     protected AbstractClientSessionCommand<EditorSession> getCommand() {
@@ -47,5 +71,56 @@ public class RedoSessionCommandTest extends BaseSessionCommandKeyboardTest {
     @Override
     protected KeyboardEvent.Key[] getUnexpectedKeys() {
         return new KeyboardEvent.Key[]{KeyboardEvent.Key.ESC};
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testNotifyRedoSuccess() {
+        RedoSessionCommand command = spy(new RedoSessionCommand(sessionCommandManager, redoCommandHandler));
+
+        doCallRealMethod().when(command).onCommandUndoExecuted(any(CanvasCommandUndoneEvent.class));
+        doCallRealMethod().when(command).bind(any(EditorSession.class));
+
+        when(session.getCanvasHandler()).thenReturn(canvasHandler);
+        when(session.getKeyboardControl()).thenReturn(keyboardControl);
+        when(keyboardControl.addKeyShortcutCallback(any(KeyboardControl.KeyShortcutCallback.class))).thenReturn(keyboardControl);
+        ((AbstractClientSessionCommand) command).bind(session);
+
+        CanvasCommandUndoneEvent event = new CanvasCommandUndoneEvent(canvasHandler,
+                                                                      new CompositeCommand(true),
+                                                                      null);
+        command.onCommandUndoExecuted(event);
+        verify(redoCommandHandler, times(1)).onUndoCommandExecuted(event.getCommand());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testNotifyRedoFails() {
+        RedoSessionCommand command = spy(new RedoSessionCommand(sessionCommandManager, redoCommandHandler));
+
+        doCallRealMethod().when(command).onCommandUndoExecuted(any(CanvasCommandUndoneEvent.class));
+        doCallRealMethod().when(command).bind(any(EditorSession.class));
+
+        when(session.getCanvasHandler()).thenReturn(new CanvasHandlerImpl(null,
+                                                                          null,
+                                                                          null,
+                                                                          null,
+                                                                          null,
+                                                                          null,
+                                                                          null,
+                                                                          null,
+                                                                          null,
+                                                                          null,
+                                                                          null));
+        when(session.getKeyboardControl()).thenReturn(keyboardControl);
+        when(keyboardControl.addKeyShortcutCallback(any(KeyboardControl.KeyShortcutCallback.class))).thenReturn(keyboardControl);
+        ((AbstractClientSessionCommand) command).bind(session);
+
+        CanvasCommandUndoneEvent event = new CanvasCommandUndoneEvent(canvasHandler,
+                                                                      new CompositeCommand(true),
+                                                                      null);
+        command.onCommandUndoExecuted(event);
+
+        verify(redoCommandHandler, times(0)).onUndoCommandExecuted(event.getCommand());
     }
 }
