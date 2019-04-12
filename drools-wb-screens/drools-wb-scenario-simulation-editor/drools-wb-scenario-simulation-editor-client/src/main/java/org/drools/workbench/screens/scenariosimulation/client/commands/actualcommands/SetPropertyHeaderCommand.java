@@ -44,9 +44,9 @@ public class SetPropertyHeaderCommand extends AbstractSetHeaderCommand {
     @Override
     protected void executeIfSelectedColumn(ScenarioSimulationContext context, ScenarioGridColumn selectedColumn) {
         int columnIndex = context.getModel().getColumns().indexOf(selectedColumn);
-        String value = context.getStatus().getValue();
-        final List<String> valuesElements = Arrays.asList(value.split("\\."));
-        String aliasName = valuesElements.get(0);
+        String fullPropertyPath = context.getStatus().getValue();
+        final List<String> fullPropertyPathElements = Arrays.asList(fullPropertyPath.split("\\."));
+        String aliasName = fullPropertyPathElements.get(0);
         String canonicalClassName = getFullPackage(context) + aliasName;
         FactIdentifier factIdentifier = setEditableHeadersAndGetFactIdentifier(context, selectedColumn, aliasName, canonicalClassName);
         String className = factIdentifier.getClassName();
@@ -65,18 +65,10 @@ public class SetPropertyHeaderCommand extends AbstractSetHeaderCommand {
         String propertyClass = context.getStatus().getValueClassName();
         context.getModel().updateColumnProperty(columnIndex,
                                                 selectedColumn,
-                                                value,
+                                                fullPropertyPath,
                                                 propertyClass, context.getStatus().isKeepData());
         if (ScenarioSimulationSharedUtils.isCollection(propertyClass)) {
-            final SortedMap<String, FactModelTree> dataObjectFieldsMap = context.getDataObjectFieldsMap();
-            final List<String> classNameElements = Arrays.asList(className.split("\\."));
-            final FactModelTree nestedFactModelTree = navigateComplexObject(dataObjectFieldsMap.get(classNameElements.get(classNameElements.size() - 1)),
-                                                                            classNameElements,
-                                                                            dataObjectFieldsMap);
-
-            selectedColumn.setFactory(context.getCollectionEditorSingletonDOMElementFactory());
-            final FactMapping factMappingByIndex = context.getModel().getSimulation().get().getSimulationDescriptor().getFactMappingByIndex(columnIndex);
-            factMappingByIndex.setGenericTypes(nestedFactModelTree.getGenericTypeInfo(valuesElements.get(valuesElements.size() - 1)));
+            manageCollectionProperty(context, selectedColumn, className, columnIndex, fullPropertyPathElements);
         } else {
             selectedColumn.setFactory(context.getScenarioCellTextAreaSingletonDOMElementFactory());
         }
@@ -85,10 +77,36 @@ public class SetPropertyHeaderCommand extends AbstractSetHeaderCommand {
         }
     }
 
-    protected FactModelTree navigateComplexObject(FactModelTree factModelTree, List<String> elements, SortedMap<String, FactModelTree> dataObjectFieldsMap) {
+    /**
+     * @param context
+     * @param selectedColumn
+     * @param className The name of the class to be used to retrieve the corresponding <code>FactModelTree</code>, i.e. without the <b>package</b>
+     * @param columnIndex
+     * @param fullPropertyPathElements This is the <code>List</code> of all the elements pointing to the final property (ex. Book.author.books)
+     */
+    protected void manageCollectionProperty(ScenarioSimulationContext context, ScenarioGridColumn selectedColumn, String className, int columnIndex, List<String> fullPropertyPathElements) {
+        final SortedMap<String, FactModelTree> dataObjectFieldsMap = context.getDataObjectFieldsMap();
+        if (className.contains(".")) {
+            className = className.substring(className.lastIndexOf(".") + 1);
+        }
+        final FactModelTree nestedFactModelTree = navigateComplexObject(dataObjectFieldsMap.get(className),
+                                                                        fullPropertyPathElements,
+                                                                        dataObjectFieldsMap);
+        selectedColumn.setFactory(context.getCollectionEditorSingletonDOMElementFactory());
+        final FactMapping factMappingByIndex = context.getModel().getSimulation().get().getSimulationDescriptor().getFactMappingByIndex(columnIndex);
+        factMappingByIndex.setGenericTypes(nestedFactModelTree.getGenericTypeInfo(fullPropertyPathElements.get(fullPropertyPathElements.size() - 1)));
+    }
+
+    /**
+     * @param factModelTree
+     * @param pathElements This is the <code>List</code> of all the elements pointing to the final property (ex. Book.author.books)
+     * @param dataObjectFieldsMap
+     * @return
+     */
+    protected FactModelTree navigateComplexObject(FactModelTree factModelTree, List<String> pathElements, SortedMap<String, FactModelTree> dataObjectFieldsMap) {
         FactModelTree nestedFactModelTree = factModelTree;
-        if (elements.size() > 2) {
-            for (String step : elements.subList(1, elements.size() - 1)) {
+        if (pathElements.size() > 2) {
+            for (String step : pathElements.subList(1, pathElements.size() - 1)) {
                 if (nestedFactModelTree.getExpandableProperties().containsKey(step)) {
                     nestedFactModelTree = dataObjectFieldsMap.get(factModelTree.getExpandableProperties().get(step));
                 }

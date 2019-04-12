@@ -101,24 +101,38 @@ public class CollectionEditorSingletonDOMElementFactory extends BaseSingletonDOM
         String className = factMapping.getFactAlias();
         String propertyName = factMapping.getExpressionAlias();
         List<String> genericTypes = factMapping.getGenericTypes();
+        if (propertyClass == null || className == null || propertyName == null || genericTypes == null || genericTypes.isEmpty()) {
+            throw new IllegalStateException("Missing required properties inside FactMapping");
+        }
         String key = className + "#" + propertyName;
         String genericTypeName0 = genericTypes.get(0);
         Optional<Simulation> simulation = scenarioSimulationContext.getModel().getSimulation();
         boolean isRule = RULE.equals(simulation.get().getSimulationDescriptor().getType());
-        if (isRule) {
-            genericTypeName0 = genericTypeName0.substring(genericTypeName0.lastIndexOf(".") + 1);
+        if (isRule && !isSimpleJavaType(genericTypeName0)) {
+            genericTypeName0 = getRuleComplexType(genericTypeName0);
         }
         if (ScenarioSimulationSharedUtils.isList(propertyClass)) {
-            collectionEditorView.setListWidget(true);
-            collectionEditorView.initListStructure(key, getSimplePropertiesMap(genericTypeName0), getExpandablePropertiesMap(genericTypeName0));
+            manageList(collectionEditorView, key, genericTypeName0);
         } else {
-            String genericTypeName1 = genericTypes.get(1);
-            if (isRule) {
-                genericTypeName1 = genericTypeName1.substring(genericTypeName1.lastIndexOf(".") + 1);
-            }
-            collectionEditorView.setListWidget(false);
-            collectionEditorView.initMapStructure(key, getSimplePropertiesMap(genericTypeName0), getSimplePropertiesMap(genericTypeName1));
+            manageMap(collectionEditorView, key, genericTypeName0, genericTypes.get(1), isRule);
         }
+    }
+
+    protected String getRuleComplexType(String genericTypeName0) {
+        return genericTypeName0.substring(genericTypeName0.lastIndexOf(".") + 1);
+    }
+
+    protected void manageList(CollectionViewImpl collectionEditorView, String key, String genericTypeName0) {
+        collectionEditorView.setListWidget(true);
+        collectionEditorView.initListStructure(key, getSimplePropertiesMap(genericTypeName0), getExpandablePropertiesMap(genericTypeName0));
+    }
+
+    protected void manageMap(CollectionViewImpl collectionEditorView, String key, String genericTypeName0, String genericTypeName1, boolean isRule) {
+        if (isRule && !isSimpleJavaType(genericTypeName1)) {
+            genericTypeName1 = getRuleComplexType(genericTypeName1);
+        }
+        collectionEditorView.setListWidget(false);
+        collectionEditorView.initMapStructure(key, getSimplePropertiesMap(genericTypeName0), getSimplePropertiesMap(genericTypeName1));
     }
 
     protected CollectionEditorDOMElement internalCreateDomElement(CollectionViewImpl collectionEditorView, GridLayer gridLayer, GridWidget gridWidget) {
