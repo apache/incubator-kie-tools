@@ -47,7 +47,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 
 @Portable
 @Bindable
-@CanContain(roles = {"cm_activity", "cm_stage", "IntermediateEventsMorph", "GatewaysMorph"})
+@CanContain(roles = {"cm_activity", "cm_stage", "IntermediateEventsMorph", "GatewaysMorph", "EndEventsMorph"})
 @CanDock(roles = {"IntermediateEventOnSubprocessBoundary"})
 @Definition(graphFactory = NodeFactory.class)
 @Morph(base = BaseSubprocess.class)

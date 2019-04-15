@@ -46,7 +46,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 
 @Portable
 @Bindable
-@CanContain(roles = {"cm_activity", "IntermediateEventsMorph", "GatewaysMorph"})
+@CanContain(roles = {"cm_activity", "IntermediateEventsMorph", "GatewaysMorph", "EndEventsMorph"})
 @Definition(graphFactory = NodeFactory.class)
 @FormDefinition(
         startElement = "general",
