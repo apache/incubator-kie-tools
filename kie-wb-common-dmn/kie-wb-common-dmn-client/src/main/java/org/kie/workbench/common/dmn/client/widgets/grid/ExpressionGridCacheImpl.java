@@ -33,6 +33,10 @@ public class ExpressionGridCacheImpl extends AbstractCanvasControl<AbstractCanva
 
     private Map<String, Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>>> cache = new HashMap<>();
 
+    public ExpressionGridCacheImpl() {
+        //Errai seems to need a zero parameter constructor to be explicitly declared
+    }
+
     @Override
     protected void doInit() {
         cache = new HashMap<>();
