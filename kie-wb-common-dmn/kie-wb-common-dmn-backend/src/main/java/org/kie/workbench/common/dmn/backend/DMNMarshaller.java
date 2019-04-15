@@ -509,7 +509,7 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
                 final View<?> sourceView = (View<?>) sourceNode.getContent();
                 final double xSource = xOfBound(upperLeftBound(sourceView));
                 final double ySource = yOfBound(upperLeftBound(sourceView));
-                connectionContent.setSourceConnection(MagnetConnection.Builder.at(source.getX() - xSource, source.getY() - ySource)); // Stunner connection x,y is relative to shape
+                connectionContent.setSourceConnection(MagnetConnection.Builder.at(source.getX() - xSource, source.getY() - ySource).setAuto(true)); // Stunner connection x,y is relative to shape
             }
             Point target = e.getWaypoint().get(e.getWaypoint().size() - 1);
             final Node targetNode = edge.getTargetNode();
@@ -517,7 +517,7 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
                 final View<?> targetView = (View<?>) targetNode.getContent();
                 final double xTarget = xOfBound(upperLeftBound(targetView));
                 final double yTarget = yOfBound(upperLeftBound(targetView));
-                connectionContent.setTargetConnection(MagnetConnection.Builder.at(target.getX() - xTarget, target.getY() - yTarget)); // Stunner connection x,y is relative to shape
+                connectionContent.setTargetConnection(MagnetConnection.Builder.at(target.getX() - xTarget, target.getY() - yTarget).setAuto(true)); // Stunner connection x,y is relative to shape
             }
             if (e.getWaypoint().size() > 2) {
                 connectionContent.setControlPoints(e.getWaypoint()

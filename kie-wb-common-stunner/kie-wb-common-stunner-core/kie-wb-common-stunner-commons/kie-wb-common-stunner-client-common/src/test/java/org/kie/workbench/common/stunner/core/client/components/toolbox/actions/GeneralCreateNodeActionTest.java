@@ -124,7 +124,7 @@ public class GeneralCreateNodeActionTest {
         final Node targetNode = mock(Node.class);
         final View targetElementContent = mock(View.class);
         doReturn(targetElementContent).when(targetNode).getContent();
-        doReturn(Bounds.create(0d, 0d, 100d, 100d)).when(targetElementContent).getBounds();
+        doReturn(Bounds.create(-100d, 0d, 0d, 100d)).when(targetElementContent).getBounds();
         doReturn(targetNode).when(targetNodeElement).asNode();
         final String targetNodeUuid = "target-uuid";
         doReturn(targetNodeUuid).when(targetNode).getUUID();

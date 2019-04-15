@@ -81,8 +81,36 @@ public class MagnetConnectionTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testForTargetARight() {
-        Bounds bounds2 = Bounds.create(20d, 30d, 200d, 300d);
+    public void testForTargetAtTop() {
+        Bounds bounds2 = Bounds.create(0d, -100d, 200d, 0d);
+        when(element2.getContent()).thenReturn(content2);
+        when(content2.getBounds()).thenReturn(bounds2);
+
+        MagnetConnection m1 = MagnetConnection.Builder.forTarget(element, element2);
+        assertEquals(Point2D.create(45, 0), m1.getLocation());
+        assertEquals(MagnetConnection.MAGNET_TOP,
+                     m1.getMagnetIndex().getAsInt());
+        assertTrue(m1.isAuto());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testForTargetAtBottom() {
+        Bounds bounds2 = Bounds.create(0d, 210d, 200d, 310d);
+        when(element2.getContent()).thenReturn(content2);
+        when(content2.getBounds()).thenReturn(bounds2);
+
+        MagnetConnection m1 = MagnetConnection.Builder.forTarget(element, element2);
+        assertEquals(Point2D.create(45, 180), m1.getLocation());
+        assertEquals(MagnetConnection.MAGNET_BOTTOM,
+                     m1.getMagnetIndex().getAsInt());
+        assertTrue(m1.isAuto());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testForTargetAtRight() {
+        Bounds bounds2 = Bounds.create(120d, 30d, 200d, 300d);
         when(element2.getContent()).thenReturn(content2);
         when(content2.getBounds()).thenReturn(bounds2);
 
@@ -96,7 +124,7 @@ public class MagnetConnectionTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testForTargetAtLeft() {
-        Bounds bounds2 = Bounds.create(5d, 10d, 200d, 300d);
+        Bounds bounds2 = Bounds.create(-40d, 10d, 0d, 300d);
         when(element2.getContent()).thenReturn(content2);
         when(content2.getBounds()).thenReturn(bounds2);
 

@@ -33,7 +33,9 @@ import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull
 public class MagnetConnection extends DiscreteConnection {
 
     public static final int MAGNET_CENTER = 0;
+    public static final int MAGNET_TOP = 1;
     public static final int MAGNET_RIGHT = 2;
+    public static final int MAGNET_BOTTOM = 3;
     public static final int MAGNET_LEFT = 4;
 
     private Point2D location;
@@ -99,6 +101,14 @@ public class MagnetConnection extends DiscreteConnection {
     @NonPortable
     public static class Builder {
 
+        private enum RelativePosition {
+            ABOVE,
+            BELOW,
+            LEFT,
+            RIGHT,
+            CENTRE
+        }
+
         private Double x;
         private Double y;
 
@@ -151,10 +161,48 @@ public class MagnetConnection extends DiscreteConnection {
 
         public static MagnetConnection forTarget(final Element<? extends View<?>> source,
                                                  final Element<? extends View<?>> target) {
+            final RelativePosition relativePosition = getTargetPositionRelativeToSource(source, target);
+            switch (relativePosition) {
+                case ABOVE:
+                    return atTop(source);
+                case BELOW:
+                    return atBottom(source);
+                case LEFT:
+                    return atLeft(source);
+                case RIGHT:
+                    return atRight(source);
+                default:
+                    return atCenter(source);
+            }
+        }
+
+        //        | ABOVE |
+        // -------+-------+-------
+        // LEFT   |       + RIGHT
+        // -------+-------+-------
+        //        | BELOW +
+        private static RelativePosition getTargetPositionRelativeToSource(final Element<? extends View<?>> source,
+                                                                          final Element<? extends View<?>> target) {
             final Point2D sourcePosition = GraphUtils.getPosition(source.getContent());
             final Point2D targetPosition = (Objects.nonNull(target) ? GraphUtils.getPosition(target.getContent()) : sourcePosition);
-            final boolean isLeft = sourcePosition.getX() > targetPosition.getX();
-            return isLeft ? atLeft(source) : atRight(source);
+            final Bounds sourceBounds = source.getContent().getBounds();
+            final Bounds targetBounds = target.getContent().getBounds();
+
+            //Simple non-overlapping cases...
+            if (targetPosition.getY() + targetBounds.getHeight() < sourcePosition.getY()) {
+                return RelativePosition.ABOVE;
+            }
+            if (targetPosition.getY() > sourcePosition.getY() + sourceBounds.getHeight()) {
+                return RelativePosition.BELOW;
+            }
+            if (targetPosition.getX() + targetBounds.getWidth() < sourcePosition.getX()) {
+                return RelativePosition.LEFT;
+            }
+            if (targetPosition.getX() > sourcePosition.getX() + sourceBounds.getWidth()) {
+                return RelativePosition.RIGHT;
+            }
+
+            return RelativePosition.CENTRE;
         }
 
         public static MagnetConnection atCenter(final Element<? extends View<?>> element) {
@@ -165,6 +213,24 @@ public class MagnetConnection extends DiscreteConnection {
                                                   bounds.getHeight() / 2) :
                                       null,
                               false);
+        }
+
+        public static MagnetConnection atTop(final Element<? extends View<?>> element) {
+            return atLocation(element,
+                              MAGNET_TOP,
+                              bounds -> bounds.getWidth() > 0 ?
+                                      new Point2D(bounds.getWidth() / 2,
+                                                  0) :
+                                      null);
+        }
+
+        public static MagnetConnection atBottom(final Element<? extends View<?>> element) {
+            return atLocation(element,
+                              MAGNET_BOTTOM,
+                              bounds -> bounds.getWidth() > 0 && bounds.getHeight() > 0 ?
+                                      new Point2D(bounds.getWidth() / 2,
+                                                  bounds.getHeight()) :
+                                      null);
         }
 
         public static MagnetConnection atRight(final Element<? extends View<?>> element) {

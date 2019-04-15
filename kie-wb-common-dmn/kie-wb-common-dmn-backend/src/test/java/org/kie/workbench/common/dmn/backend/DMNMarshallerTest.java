@@ -140,6 +140,7 @@ import org.kie.workbench.common.stunner.core.graph.command.impl.GraphCommandFact
 import org.kie.workbench.common.stunner.core.graph.content.Bound;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
+import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
 import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
@@ -799,6 +800,14 @@ public class DMNMarshallerTest {
         Point2D controlPointLocation = connectionContent.getControlPoints()[0].getLocation();
         assertEquals(398.61898612976074d, controlPointLocation.getX(), 0.1d);
         assertEquals(116.99999809265137d, controlPointLocation.getY(), 0.1d);
+
+        final Connection sourceConnection = connectionContent.getSourceConnection().get();
+        assertTrue(sourceConnection instanceof MagnetConnection);
+        assertTrue(((MagnetConnection) sourceConnection).isAuto());
+
+        final Connection targetConnection = connectionContent.getTargetConnection().get();
+        assertTrue(targetConnection instanceof MagnetConnection);
+        assertTrue(((MagnetConnection) targetConnection).isAuto());
     }
 
     @SuppressWarnings("unchecked")
