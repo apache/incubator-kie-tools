@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.tasks;
 
+import java.util.NoSuchElementException;
+import java.util.Optional;
+
 import org.eclipse.bpmn2.Task;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.Match;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.TypedFactoryManager;
@@ -55,6 +58,7 @@ import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTaskExecutionSet;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.util.StringUtils;
 
 public abstract class BaseTaskConverter<U extends BaseUserTask<S>, S extends BaseUserTaskExecutionSet> {
 
@@ -71,6 +75,7 @@ public abstract class BaseTaskConverter<U extends BaseUserTask<S>, S extends Bas
                 .when(org.eclipse.bpmn2.BusinessRuleTask.class, this::businessRuleTask)
                 .when(org.eclipse.bpmn2.ScriptTask.class, this::scriptTask)
                 .when(org.eclipse.bpmn2.UserTask.class, this::userTask)
+                .when(org.eclipse.bpmn2.ServiceTask.class, this::serviceTask)
                 .missing(org.eclipse.bpmn2.ManualTask.class)
                 .orElse(this::fallback)
                 .apply(task).value();
@@ -80,7 +85,8 @@ public abstract class BaseTaskConverter<U extends BaseUserTask<S>, S extends Bas
         Node<View<ServiceTask>, Edge> node = factoryManager.newNode(task.getId(), ServiceTask.class);
 
         ServiceTask definition = node.getContent().getDefinition();
-        ServiceTaskPropertyReader p = propertyReaderFactory.ofCustom(task);
+        ServiceTaskPropertyReader p = propertyReaderFactory.ofCustom(task)
+                .orElseThrow(() -> new NoSuchElementException("Cannot find WorkItemDefinition for " + task.getName()));
 
         definition.setName(p.getServiceTaskName());
         definition.getTaskType().setRawType(p.getServiceTaskName());
@@ -227,14 +233,11 @@ public abstract class BaseTaskConverter<U extends BaseUserTask<S>, S extends Bas
     }
 
     private BpmnNode fallback(Task task) {
-        String taskName = CustomAttribute.serviceTaskName.of(task).get();
-        if (taskName.isEmpty()) {
-            return noneTask(task);
-        } else if (taskName.equals("BusinessRuleTask")) {
-            return noneTask(task);
-        } else {
-            return serviceTask(task);
-        }
+        return Optional.ofNullable(CustomAttribute.serviceTaskName.of(task).get())
+                .filter(StringUtils::nonEmpty)
+                .filter(name -> propertyReaderFactory.ofCustom(task).isPresent())
+                .map(name -> serviceTask(task))
+                .orElseGet(() -> noneTask(task));
     }
 
     private BpmnNode noneTask(Task task) {

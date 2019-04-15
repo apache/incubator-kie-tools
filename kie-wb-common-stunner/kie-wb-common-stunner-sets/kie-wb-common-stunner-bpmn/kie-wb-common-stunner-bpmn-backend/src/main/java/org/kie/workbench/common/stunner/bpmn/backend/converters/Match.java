@@ -122,7 +122,7 @@ public class Match<In, Out> {
                 .map(c -> c.match(value))
                 .filter(Result::nonFailure)
                 .findFirst()
-                .orElse(applyFallback(value));
+                .orElseGet(() -> applyFallback(value));
     }
 
     private Result<Out> applyFallback(In value) {

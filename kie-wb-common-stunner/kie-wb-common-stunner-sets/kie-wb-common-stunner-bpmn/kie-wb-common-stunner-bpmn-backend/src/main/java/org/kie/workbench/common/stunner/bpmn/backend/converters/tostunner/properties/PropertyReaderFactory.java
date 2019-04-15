@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties;
 
-import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.eclipse.bpmn2.AdHocSubProcess;
@@ -38,7 +38,6 @@ import org.eclipse.bpmn2.UserTask;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomAttribute;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
-import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinition;
 
 public class PropertyReaderFactory {
 
@@ -90,18 +89,14 @@ public class PropertyReaderFactory {
         return new BusinessRuleTaskPropertyReader(el, diagram, definitionResolver);
     }
 
-    public ServiceTaskPropertyReader ofCustom(Task el) {
+    public Optional<ServiceTaskPropertyReader> ofCustom(Task el) {
         String serviceTaskName = CustomAttribute.serviceTaskName.of(el).get();
-        Optional<WorkItemDefinition> def = definitionResolver
+        return definitionResolver
                 .getWorkItemDefinitions()
                 .stream()
-                .filter(wid -> wid.getName().equals(serviceTaskName))
-                .findFirst();
-        if (def.isPresent()) {
-            return new ServiceTaskPropertyReader(el, def.get(), diagram, definitionResolver);
-        } else {
-            throw new NoSuchElementException("Cannot find WorkItemDefinition for " + serviceTaskName);
-        }
+                .filter(wid -> Objects.equals(wid.getName(), serviceTaskName))
+                .findFirst()
+                .map(def -> new ServiceTaskPropertyReader(el, def, diagram, definitionResolver));
     }
 
     public CallActivityPropertyReader of(CallActivity el) {
