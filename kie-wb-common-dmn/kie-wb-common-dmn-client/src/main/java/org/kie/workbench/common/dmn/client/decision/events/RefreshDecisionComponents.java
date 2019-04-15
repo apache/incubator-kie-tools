@@ -14,15 +14,10 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.api.editors.types;
+package org.kie.workbench.common.dmn.client.decision.events;
 
-import java.util.List;
+import org.uberfire.workbench.events.UberFireEvent;
 
-import org.guvnor.common.services.project.model.WorkspaceProject;
-import org.jboss.errai.bus.server.annotations.Remote;
-
-@Remote
-public interface DMNIncludeModelsService {
-
-    List<DMNIncludeModel> loadModels(final WorkspaceProject rootPath);
+public class RefreshDecisionComponents implements UberFireEvent {
+    // empty
 }

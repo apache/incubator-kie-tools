@@ -24,6 +24,7 @@ import org.kie.workbench.common.dmn.api.definition.DMNViewDefinition;
 import org.kie.workbench.common.dmn.api.definition.v1_1.BusinessKnowledgeModel;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNDiagram;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
+import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionService;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InputData;
 import org.kie.workbench.common.dmn.api.definition.v1_1.KnowledgeSource;
 import org.kie.workbench.common.dmn.api.definition.v1_1.TextAnnotation;
@@ -76,6 +77,8 @@ public class DMNSVGShapeDefImpl implements DMNSVGShapeDef<DMNViewDefinition, DMN
                          DMNSVGGlyphFactory.DECISION_PALETTE)
                     .put(InputData.class,
                          DMNSVGGlyphFactory.INPUT_DATA_PALETTE)
+                    .put(DecisionService.class,
+                         DMNSVGGlyphFactory.DECISION_SERVICE_PALETTE)
                     .put(KnowledgeSource.class,
                          DMNSVGGlyphFactory.KNOWLEDGE_SOURCE_PALETTE)
                     .put(TextAnnotation.class,

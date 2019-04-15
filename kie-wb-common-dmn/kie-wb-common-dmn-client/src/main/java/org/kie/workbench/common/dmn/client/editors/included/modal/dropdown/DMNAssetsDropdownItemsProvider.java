@@ -26,10 +26,10 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.kie.soup.commons.util.Maps;
-import org.kie.workbench.common.dmn.api.editors.types.DMNIncludeModel;
+import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedModel;
+import org.kie.workbench.common.dmn.client.api.included.legacy.DMNIncludeModelsClient;
 import org.kie.workbench.common.dmn.client.editors.included.IncludedModelsPageState;
 import org.kie.workbench.common.dmn.client.editors.included.imports.IncludedModelsIndex;
-import org.kie.workbench.common.dmn.client.editors.included.modal.dropdown.legacy.DMNIncludeModelsClient;
 import org.kie.workbench.common.widgets.client.assets.dropdown.KieAssetsDropdownItem;
 import org.kie.workbench.common.widgets.client.assets.dropdown.KieAssetsDropdownItemsProvider;
 
@@ -58,7 +58,7 @@ public class DMNAssetsDropdownItemsProvider implements KieAssetsDropdownItemsPro
         client.loadModels(wrap(assetListConsumer));
     }
 
-    Consumer<List<DMNIncludeModel>> wrap(final Consumer<List<KieAssetsDropdownItem>> assetListConsumer) {
+    Consumer<List<DMNIncludedModel>> wrap(final Consumer<List<KieAssetsDropdownItem>> assetListConsumer) {
         return dmnIncludeModels -> assetListConsumer.accept(dmnIncludeModels
                                                                     .stream()
                                                                     .filter(this::isNotExisting)
@@ -67,31 +67,31 @@ public class DMNAssetsDropdownItemsProvider implements KieAssetsDropdownItemsPro
                                                                     .collect(Collectors.toList()));
     }
 
-    private boolean isNotExisting(final DMNIncludeModel data) {
+    private boolean isNotExisting(final DMNIncludedModel data) {
         return modelsIndex
                 .getIndexedImports()
                 .stream()
                 .noneMatch(anImport -> Objects.equals(data.getNamespace(), anImport.getNamespace()));
     }
 
-    private boolean isNotCurrentDiagram(final DMNIncludeModel data) {
+    private boolean isNotCurrentDiagram(final DMNIncludedModel data) {
         return !Objects.equals(data.getNamespace(), pageState.getCurrentDiagramNamespace());
     }
 
-    KieAssetsDropdownItem asKieAsset(final DMNIncludeModel dmnIncludeModel) {
+    KieAssetsDropdownItem asKieAsset(final DMNIncludedModel dmnIncludedModel) {
 
-        final String text = dmnIncludeModel.getModelName();
-        final String subText = dmnIncludeModel.getModelPackage();
-        final String value = dmnIncludeModel.getNamespace();
-        final Map<String, String> metaData = buildMetaData(dmnIncludeModel);
+        final String text = dmnIncludedModel.getModelName();
+        final String subText = dmnIncludedModel.getModelPackage();
+        final String value = dmnIncludedModel.getNamespace();
+        final Map<String, String> metaData = buildMetaData(dmnIncludedModel);
 
         return new KieAssetsDropdownItem(text, subText, value, metaData);
     }
 
-    private Map<String, String> buildMetaData(final DMNIncludeModel dmnIncludeModel) {
+    private Map<String, String> buildMetaData(final DMNIncludedModel dmnIncludedModel) {
         return new Maps
                 .Builder<String, String>()
-                .put(PATH_METADATA, dmnIncludeModel.getPath())
+                .put(PATH_METADATA, dmnIncludedModel.getPath())
                 .build();
     }
 }

@@ -21,19 +21,25 @@ import javax.inject.Inject;
 import elemental2.dom.HTMLDivElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.kie.workbench.common.dmn.client.decision.included.components.DecisionComponents;
 import org.kie.workbench.common.dmn.client.decision.tree.DecisionNavigatorTreePresenter;
 
 @Templated
 public class DecisionNavigatorView implements DecisionNavigatorPresenter.View {
 
     @DataField("main-tree")
-    private HTMLDivElement mainTree;
+    private final HTMLDivElement mainTree;
+
+    @DataField("decision-components")
+    private final HTMLDivElement decisionComponents;
 
     private DecisionNavigatorPresenter presenter;
 
     @Inject
-    public DecisionNavigatorView(final HTMLDivElement mainTree) {
+    public DecisionNavigatorView(final HTMLDivElement mainTree,
+                                 final HTMLDivElement decisionComponents) {
         this.mainTree = mainTree;
+        this.decisionComponents = decisionComponents;
     }
 
     @Override
@@ -44,5 +50,10 @@ public class DecisionNavigatorView implements DecisionNavigatorPresenter.View {
     @Override
     public void setupMainTree(final DecisionNavigatorTreePresenter.View mainTreeComponent) {
         mainTree.appendChild(mainTreeComponent.getElement());
+    }
+
+    @Override
+    public void setupDecisionComponents(final DecisionComponents.View decisionComponentsComponent) {
+        decisionComponents.appendChild(decisionComponentsComponent.getElement());
     }
 }

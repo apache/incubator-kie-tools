@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.editors.included.modal.dropdown.legacy;
+package org.kie.workbench.common.dmn.client.api.included.legacy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,11 +29,13 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.dmn.api.editors.types.DMNIncludeModel;
-import org.kie.workbench.common.dmn.api.editors.types.DMNIncludeModelsService;
+import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedModel;
+import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedModelsService;
+import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedNode;
 import org.mockito.Mock;
 import org.uberfire.mocks.CallerMock;
 
+import static java.util.Arrays.asList;
 import static org.junit.Assert.assertFalse;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -45,25 +47,28 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class DMNIncludeModelsClientTest {
+public class DMNIncludedModelsClientTest {
 
     @Mock
-    private CallerMock<DMNIncludeModelsService> service;
+    private CallerMock<DMNIncludedModelsService> service;
 
     @Mock
     private WorkspaceProjectContext projectContext;
 
     @Mock
-    private Consumer<List<DMNIncludeModel>> listConsumer;
+    private Consumer<List<DMNIncludedModel>> listConsumerDMNModels;
+
+    @Mock
+    private Consumer<List<DMNIncludedNode>> listConsumerDMNNodes;
 
     @Mock
     private ErrorCallback<Object> onError;
 
     @Mock
-    private RemoteCallback<List<DMNIncludeModel>> onSuccess;
+    private RemoteCallback<List<DMNIncludedModel>> onSuccess;
 
     @Mock
-    private DMNIncludeModelsService dmnService;
+    private DMNIncludedModelsService dmnService;
 
     @Mock
     private WorkspaceProject workspaceProject;
@@ -85,31 +90,49 @@ public class DMNIncludeModelsClientTest {
         when(service.call(onSuccess, onError)).thenReturn(dmnService);
         when(projectContext.getActiveWorkspaceProject()).thenReturn(optionalWorkspaceProject);
 
-        client.loadModels(listConsumer);
+        client.loadModels(listConsumerDMNModels);
 
         verify(dmnService).loadModels(workspaceProject);
     }
 
     @Test
+    public void testLoadNodesFromImports() {
+
+        final Optional<WorkspaceProject> optionalWorkspaceProject = Optional.of(workspaceProject);
+        final DMNIncludedModel includedModel1 = mock(DMNIncludedModel.class);
+        final DMNIncludedModel includedModel2 = mock(DMNIncludedModel.class);
+        final List<DMNIncludedModel> imports = asList(includedModel1, includedModel2);
+
+        doReturn(onSuccess).when(client).onSuccess(any());
+        doReturn(onError).when(client).onError(any());
+        when(service.call(onSuccess, onError)).thenReturn(dmnService);
+        when(projectContext.getActiveWorkspaceProject()).thenReturn(optionalWorkspaceProject);
+
+        client.loadNodesFromImports(imports, listConsumerDMNNodes);
+
+        verify(dmnService).loadNodesFromImports(workspaceProject, imports);
+    }
+
+    @Test
     public void testOnError() {
 
-        final Object error = mock(Object.class);
+        final boolean error = true;
         final Throwable throwable = mock(Throwable.class);
         doNothing().when(client).warn(any());
 
-        final boolean result = client.onError(listConsumer).error(error, throwable);
+        final boolean result = client.onError(listConsumerDMNModels).error(error, throwable);
 
         assertFalse(result);
         verify(client).warn(eq("[WARNING] DMNIncludeModelsClient could not get the asset list."));
-        verify(listConsumer).accept(eq(new ArrayList<>()));
+        verify(listConsumerDMNModels).accept(eq(new ArrayList<>()));
     }
 
     @Test
     public void testOnSuccess() {
-        final List<DMNIncludeModel> dmnIncludeModels = new ArrayList<>();
+        final List<DMNIncludedModel> dmnIncludedModels = new ArrayList<>();
 
-        client.onSuccess(listConsumer).callback(dmnIncludeModels);
+        client.onSuccess(listConsumerDMNModels).callback(dmnIncludedModels);
 
-        verify(listConsumer).accept(dmnIncludeModels);
+        verify(listConsumerDMNModels).accept(dmnIncludedModels);
     }
 }

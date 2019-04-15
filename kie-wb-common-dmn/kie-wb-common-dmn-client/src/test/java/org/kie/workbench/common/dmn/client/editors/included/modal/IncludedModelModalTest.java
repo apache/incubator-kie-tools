@@ -25,12 +25,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.soup.commons.util.Maps;
+import org.kie.workbench.common.dmn.client.decision.events.RefreshDecisionComponents;
 import org.kie.workbench.common.dmn.client.editors.included.IncludedModel;
 import org.kie.workbench.common.dmn.client.editors.included.IncludedModelsPagePresenter;
 import org.kie.workbench.common.dmn.client.editors.included.imports.persistence.ImportRecordEngine;
 import org.kie.workbench.common.dmn.client.editors.included.modal.dropdown.DMNAssetsDropdown;
 import org.kie.workbench.common.widgets.client.assets.dropdown.KieAssetsDropdownItem;
 import org.mockito.Mock;
+import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
 
 import static org.junit.Assert.assertEquals;
@@ -59,6 +61,9 @@ public class IncludedModelModalTest {
 
     @Mock
     private IncludedModelsPagePresenter grid;
+
+    @Mock
+    private EventSourceMock<RefreshDecisionComponents> refreshDecisionComponentsEvent;
 
     private IncludedModelModalFake modal;
 
@@ -126,6 +131,7 @@ public class IncludedModelModalTest {
         verify(modal).createIncludedModel(dropdownItem);
         verify(grid).refresh();
         verify(modal).hide();
+        verify(refreshDecisionComponentsEvent).fire(any(RefreshDecisionComponents.class));
     }
 
     @Test
@@ -202,7 +208,7 @@ public class IncludedModelModalTest {
         IncludedModelModalFake(final View view,
                                final DMNAssetsDropdown dropdown,
                                final ImportRecordEngine recordEngine) {
-            super(view, dropdown, recordEngine);
+            super(view, dropdown, recordEngine, refreshDecisionComponentsEvent);
         }
 
         @Override

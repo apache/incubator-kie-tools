@@ -24,10 +24,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Import;
-import org.kie.workbench.common.dmn.api.editors.types.DMNIncludeModel;
+import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedModel;
+import org.kie.workbench.common.dmn.client.api.included.legacy.DMNIncludeModelsClient;
 import org.kie.workbench.common.dmn.client.editors.included.IncludedModelsPageState;
 import org.kie.workbench.common.dmn.client.editors.included.imports.IncludedModelsIndex;
-import org.kie.workbench.common.dmn.client.editors.included.modal.dropdown.legacy.DMNIncludeModelsClient;
 import org.kie.workbench.common.widgets.client.assets.dropdown.KieAssetsDropdownItem;
 import org.mockito.Mock;
 
@@ -52,7 +52,7 @@ public class DMNAssetsDropdownItemsProviderTest {
     private IncludedModelsIndex modelsIndex;
 
     @Mock
-    private Consumer<List<DMNIncludeModel>> wrappedConsumer;
+    private Consumer<List<DMNIncludedModel>> wrappedConsumer;
 
     private DMNAssetsDropdownItemsProvider itemsProvider;
 
@@ -75,23 +75,23 @@ public class DMNAssetsDropdownItemsProviderTest {
     @Test
     public void testWrap() {
 
-        final DMNIncludeModel dmnIncludeModel1 = new DMNIncludeModel("name1", "com.kie.dmn", "/src/main/kie1", "://namespace1");
-        final DMNIncludeModel dmnIncludeModel2 = new DMNIncludeModel("name2", "com.kie.dmn", "/src/main/kie2", "://namespace2");
-        final DMNIncludeModel dmnIncludeModel3 = new DMNIncludeModel("name3", "com.kie.dmn", "/src/main/kie3", "://namespace3");
-        final DMNIncludeModel dmnIncludeModel4 = new DMNIncludeModel("name4", "com.kie.dmn", "/src/main/kie4", "://namespace4");
-        final DMNIncludeModel dmnIncludeModel5 = new DMNIncludeModel("name5", "com.kie.dmn", "/src/main/kie5", "://namespace5");
+        final DMNIncludedModel dmnIncludedModel1 = new DMNIncludedModel("name1", "com.kie.dmn", "/src/main/kie1", "://namespace1");
+        final DMNIncludedModel dmnIncludedModel2 = new DMNIncludedModel("name2", "com.kie.dmn", "/src/main/kie2", "://namespace2");
+        final DMNIncludedModel dmnIncludedModel3 = new DMNIncludedModel("name3", "com.kie.dmn", "/src/main/kie3", "://namespace3");
+        final DMNIncludedModel dmnIncludedModel4 = new DMNIncludedModel("name4", "com.kie.dmn", "/src/main/kie4", "://namespace4");
+        final DMNIncludedModel dmnIncludedModel5 = new DMNIncludedModel("name5", "com.kie.dmn", "/src/main/kie5", "://namespace5");
         final Import import1 = mock(Import.class);
         final Import import2 = mock(Import.class);
         final KieAssetsDropdownItem dropdownItem1 = mock(KieAssetsDropdownItem.class);
         final KieAssetsDropdownItem dropdownItem5 = mock(KieAssetsDropdownItem.class);
-        final List<DMNIncludeModel> t = asList(dmnIncludeModel1, dmnIncludeModel2, dmnIncludeModel3, dmnIncludeModel4, dmnIncludeModel5);
+        final List<DMNIncludedModel> t = asList(dmnIncludedModel1, dmnIncludedModel2, dmnIncludedModel3, dmnIncludedModel4, dmnIncludedModel5);
 
         when(import1.getNamespace()).thenReturn("://namespace3");
         when(import2.getNamespace()).thenReturn("://namespace4");
         when(modelsIndex.getIndexedImports()).thenReturn(asList(import1, import2));
         when(pageState.getCurrentDiagramNamespace()).thenReturn("://namespace2");
-        doReturn(dropdownItem1).when(itemsProvider).asKieAsset(dmnIncludeModel1);
-        doReturn(dropdownItem5).when(itemsProvider).asKieAsset(dmnIncludeModel5);
+        doReturn(dropdownItem1).when(itemsProvider).asKieAsset(dmnIncludedModel1);
+        doReturn(dropdownItem5).when(itemsProvider).asKieAsset(dmnIncludedModel5);
 
         itemsProvider.wrap(actualList -> {
             final List<KieAssetsDropdownItem> expectedList = asList(dropdownItem1, dropdownItem5);
@@ -102,7 +102,7 @@ public class DMNAssetsDropdownItemsProviderTest {
     @Test
     public void testAsKieAsset() {
 
-        final DMNIncludeModel model = new DMNIncludeModel("name1", "com.kie.dmn", "/src/main/kie1", "://namespace1");
+        final DMNIncludedModel model = new DMNIncludedModel("name1", "com.kie.dmn", "/src/main/kie1", "://namespace1");
 
         final KieAssetsDropdownItem dropdownItem = itemsProvider.asKieAsset(model);
 

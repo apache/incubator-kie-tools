@@ -43,6 +43,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.HitPolicy;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItemPrimary;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InputClauseLiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.OutputClause;
+import org.kie.workbench.common.dmn.api.graph.DMNDiagramUtils;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.property.dmn.Text;
@@ -195,6 +196,9 @@ public class DecisionTableGridTest {
     private SessionManager sessionManager;
 
     @Mock
+    private DMNDiagramUtils dmnDiagramUtils;
+
+    @Mock
     private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
 
     @Mock
@@ -332,7 +336,7 @@ public class DecisionTableGridTest {
                                                             hitPolicyEditor,
                                                             headerEditor,
                                                             new DecisionTableEditorDefinitionEnricher(sessionManager,
-                                                                                                      new DMNGraphUtils(sessionManager)));
+                                                                                                      new DMNGraphUtils(sessionManager, dmnDiagramUtils)));
 
         expression = definition.getModelClass();
         definition.enrich(Optional.empty(), hasExpression, expression);

@@ -47,17 +47,21 @@ public class ImportRecordEngine implements RecordEngine<IncludedModel> {
 
     private final Event<FlashMessage> flashMessageEvent;
 
+    private final DefinitionsHandler definitionsHandler;
+
     @Inject
     public ImportRecordEngine(final IncludedModelsPageStateProviderImpl stateProvider,
                               final IncludedModelsIndex includedModelsIndex,
                               final IncludedModelErrorMessageFactory messageFactory,
                               final ImportFactory importFactory,
-                              final Event<FlashMessage> flashMessageEvent) {
+                              final Event<FlashMessage> flashMessageEvent,
+                              final DefinitionsHandler definitionsHandler) {
         this.stateProvider = stateProvider;
         this.includedModelsIndex = includedModelsIndex;
         this.messageFactory = messageFactory;
         this.importFactory = importFactory;
         this.flashMessageEvent = flashMessageEvent;
+        this.definitionsHandler = definitionsHandler;
     }
 
     @Override
@@ -65,18 +69,26 @@ public class ImportRecordEngine implements RecordEngine<IncludedModel> {
         if (!record.isValid()) {
             throw new UnsupportedOperationException("An invalid Included Model cannot be updated.");
         }
-        getImport(record).setName(new Name(record.getName()));
+
+        final Import anImport = getImport(record);
+        final String oldModelName = anImport.getName().getValue();
+
+        definitionsHandler.update(oldModelName, record);
+        anImport.setName(new Name(record.getName()));
+
         return singletonList(record);
     }
 
     @Override
     public List<IncludedModel> destroy(final IncludedModel record) {
+        definitionsHandler.destroy(record);
         stateProvider.getImports().remove(getImport(record));
         return singletonList(record);
     }
 
     @Override
     public List<IncludedModel> create(final IncludedModel record) {
+        definitionsHandler.create(record);
         stateProvider.getImports().add(importFactory.makeImport(record));
         return singletonList(record);
     }

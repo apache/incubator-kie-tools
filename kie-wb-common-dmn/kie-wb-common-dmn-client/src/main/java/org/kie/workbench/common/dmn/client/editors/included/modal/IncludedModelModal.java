@@ -20,9 +20,11 @@ import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import elemental2.dom.HTMLElement;
+import org.kie.workbench.common.dmn.client.decision.events.RefreshDecisionComponents;
 import org.kie.workbench.common.dmn.client.editors.included.IncludedModel;
 import org.kie.workbench.common.dmn.client.editors.included.IncludedModelsPagePresenter;
 import org.kie.workbench.common.dmn.client.editors.included.imports.persistence.ImportRecordEngine;
@@ -43,15 +45,19 @@ public class IncludedModelModal extends Elemental2Modal<IncludedModelModal.View>
 
     private final ImportRecordEngine recordEngine;
 
+    private final Event<RefreshDecisionComponents> refreshDecisionComponentsEvent;
+
     private IncludedModelsPagePresenter grid;
 
     @Inject
     public IncludedModelModal(final View view,
                               final DMNAssetsDropdown dropdown,
-                              final ImportRecordEngine recordEngine) {
+                              final ImportRecordEngine recordEngine,
+                              final Event<RefreshDecisionComponents> refreshDecisionComponentsEvent) {
         super(view);
         this.dropdown = dropdown;
         this.recordEngine = recordEngine;
+        this.refreshDecisionComponentsEvent = refreshDecisionComponentsEvent;
     }
 
     @PostConstruct
@@ -90,8 +96,13 @@ public class IncludedModelModal extends Elemental2Modal<IncludedModelModal.View>
                 .ifPresent(value -> {
                     createIncludedModel(value);
                     refreshGrid();
+                    refreshDecisionComponents();
                     hide();
                 });
+    }
+
+    private void refreshDecisionComponents() {
+        refreshDecisionComponentsEvent.fire(new RefreshDecisionComponents());
     }
 
     @Override

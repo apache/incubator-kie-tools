@@ -25,7 +25,9 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.client.decision.events.RefreshDecisionComponents;
 import org.kie.workbench.common.dmn.client.decision.factories.DecisionNavigatorItemFactory;
+import org.kie.workbench.common.dmn.client.decision.included.components.DecisionComponents;
 import org.kie.workbench.common.dmn.client.decision.tree.DecisionNavigatorTreePresenter;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -61,6 +63,9 @@ public class DecisionNavigatorPresenterTest {
     private DecisionNavigatorTreePresenter treePresenter;
 
     @Mock
+    private DecisionComponents decisionComponents;
+
+    @Mock
     private DecisionNavigatorObserver decisionNavigatorObserver;
 
     @Mock
@@ -78,6 +83,7 @@ public class DecisionNavigatorPresenterTest {
     public void setup() {
         presenter = spy(new DecisionNavigatorPresenter(view,
                                                        treePresenter,
+                                                       decisionComponents,
                                                        decisionNavigatorObserver,
                                                        navigatorChildrenTraverse,
                                                        itemFactory,
@@ -122,11 +128,15 @@ public class DecisionNavigatorPresenterTest {
     public void testSetupView() {
 
         final DecisionNavigatorTreePresenter.View treeView = mock(DecisionNavigatorTreePresenter.View.class);
+        final DecisionComponents.View decisionComponentsView = mock(DecisionComponents.View.class);
+
         when(treePresenter.getView()).thenReturn(treeView);
+        when(decisionComponents.getView()).thenReturn(decisionComponentsView);
 
         presenter.setupView();
 
         verify(view).setupMainTree(treeView);
+        verify(view).setupDecisionComponents(decisionComponentsView);
     }
 
     @Test
@@ -180,6 +190,7 @@ public class DecisionNavigatorPresenterTest {
         presenter.setHandler(expectedCanvasHandler);
 
         verify(presenter).refreshTreeView();
+        verify(presenter).refreshComponentsView();
         assertEquals(expectedCanvasHandler, presenter.getHandler());
     }
 
@@ -361,6 +372,7 @@ public class DecisionNavigatorPresenterTest {
         presenter.removeAllElements();
 
         verify(treePresenter).removeAllItems();
+        verify(decisionComponents).removeAllItems();
     }
 
     @Test
@@ -368,5 +380,29 @@ public class DecisionNavigatorPresenterTest {
         presenter.clearSelections();
 
         verify(treePresenter).deselectItem();
+    }
+
+    @Test
+    public void testOnRefreshDecisionComponents() {
+        presenter.onRefreshDecisionComponents(mock(RefreshDecisionComponents.class));
+
+        verify(presenter).refreshComponentsView();
+    }
+
+    @Test
+    public void testRefreshComponentsView() {
+
+        final CanvasHandler canvasHandler = mock(CanvasHandler.class);
+        final Diagram diagram = mock(Diagram.class);
+        final Graph expectedGraph = mock(Graph.class);
+
+        when(canvasHandler.getDiagram()).thenReturn(diagram);
+        when(diagram.getGraph()).thenReturn(expectedGraph);
+
+        doReturn(Optional.of(canvasHandler)).when(presenter).getOptionalHandler();
+
+        presenter.refreshComponentsView();
+
+        verify(decisionComponents).refresh(diagram);
     }
 }

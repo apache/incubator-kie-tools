@@ -72,15 +72,15 @@ public class IncludedModelsPageStateProviderImpl implements IncludedModelsPageSt
                 .orElse(emptyList());
     }
 
+    public Optional<Diagram> getDiagram() {
+        return Optional.ofNullable(diagram);
+    }
+
     private List<Import> getImports(final Diagram diagram) {
         return getDefinitions(diagram).getImport();
     }
 
     private Definitions getDefinitions(final Diagram diagram) {
         return dmnGraphUtils.getDefinitions(diagram);
-    }
-
-    private Optional<Diagram> getDiagram() {
-        return Optional.ofNullable(diagram);
     }
 }

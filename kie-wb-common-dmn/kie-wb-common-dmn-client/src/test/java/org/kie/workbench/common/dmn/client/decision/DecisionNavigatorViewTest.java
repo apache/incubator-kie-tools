@@ -22,6 +22,7 @@ import elemental2.dom.HTMLElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.client.decision.included.components.DecisionComponents;
 import org.kie.workbench.common.dmn.client.decision.tree.DecisionNavigatorTreePresenter;
 import org.mockito.Mock;
 
@@ -37,13 +38,19 @@ public class DecisionNavigatorViewTest {
     private HTMLDivElement divMainTree;
 
     @Mock
+    private HTMLDivElement decisionComponents;
+
+    @Mock
     private DecisionNavigatorTreePresenter.View treeView;
+
+    @Mock
+    private DecisionComponents.View decisionComponentsView;
 
     private DecisionNavigatorView view;
 
     @Before
     public void setup() {
-        view = spy(new DecisionNavigatorView(divMainTree));
+        view = spy(new DecisionNavigatorView(divMainTree, decisionComponents));
     }
 
     @Test
@@ -55,5 +62,16 @@ public class DecisionNavigatorViewTest {
         view.setupMainTree(treeView);
 
         verify(divMainTree).appendChild(element);
+    }
+
+    @Test
+    public void testSetupDecisionComponents() {
+
+        final HTMLElement element = mock(HTMLElement.class);
+        when(decisionComponentsView.getElement()).thenReturn(element);
+
+        view.setupDecisionComponents(decisionComponentsView);
+
+        verify(decisionComponents).appendChild(element);
     }
 }

@@ -22,11 +22,14 @@ import java.util.function.Function;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
+import org.kie.workbench.common.dmn.client.decision.events.RefreshDecisionComponents;
 import org.kie.workbench.common.dmn.client.decision.factories.DecisionNavigatorItemFactory;
+import org.kie.workbench.common.dmn.client.decision.included.components.DecisionComponents;
 import org.kie.workbench.common.dmn.client.decision.tree.DecisionNavigatorTreePresenter;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -56,6 +59,8 @@ public class DecisionNavigatorPresenter {
 
     private final DecisionNavigatorTreePresenter treePresenter;
 
+    private final DecisionComponents decisionComponents;
+
     private final DecisionNavigatorObserver decisionNavigatorObserver;
 
     private final DecisionNavigatorChildrenTraverse navigatorChildrenTraverse;
@@ -69,12 +74,14 @@ public class DecisionNavigatorPresenter {
     @Inject
     public DecisionNavigatorPresenter(final View view,
                                       final DecisionNavigatorTreePresenter treePresenter,
+                                      final DecisionComponents decisionComponents,
                                       final DecisionNavigatorObserver decisionNavigatorObserver,
                                       final DecisionNavigatorChildrenTraverse navigatorChildrenTraverse,
                                       final DecisionNavigatorItemFactory itemFactory,
                                       final TranslationService translationService) {
         this.view = view;
         this.treePresenter = treePresenter;
+        this.decisionComponents = decisionComponents;
         this.decisionNavigatorObserver = decisionNavigatorObserver;
         this.navigatorChildrenTraverse = navigatorChildrenTraverse;
         this.itemFactory = itemFactory;
@@ -102,6 +109,10 @@ public class DecisionNavigatorPresenter {
         setupView();
     }
 
+    public void onRefreshDecisionComponents(final @Observes RefreshDecisionComponents events) {
+        refreshComponentsView();
+    }
+
     public DecisionNavigatorTreePresenter getTreePresenter() {
         return treePresenter;
     }
@@ -118,6 +129,7 @@ public class DecisionNavigatorPresenter {
         this.handler = handler;
 
         refreshTreeView();
+        refreshComponentsView();
     }
 
     public void addOrUpdateElement(final Element<?> element) {
@@ -149,6 +161,7 @@ public class DecisionNavigatorPresenter {
 
     public void removeAllElements() {
         treePresenter.removeAllItems();
+        decisionComponents.removeAllItems();
     }
 
     void initialize() {
@@ -158,10 +171,15 @@ public class DecisionNavigatorPresenter {
 
     void setupView() {
         view.setupMainTree(treePresenter.getView());
+        view.setupDecisionComponents(decisionComponents.getView());
     }
 
     public void refreshTreeView() {
         treePresenter.setupItems(getItems());
+    }
+
+    public void refreshComponentsView() {
+        getOptionalHandler().ifPresent(handler -> decisionComponents.refresh(handler.getDiagram()));
     }
 
     List<DecisionNavigatorItem> getItems() {
@@ -169,9 +187,13 @@ public class DecisionNavigatorPresenter {
     }
 
     public Optional<Graph> getGraph() {
-        return ofNullable(handler)
+        return getOptionalHandler()
                 .map((Function<CanvasHandler, Diagram>) CanvasHandler::getDiagram)
                 .map(Diagram::getGraph);
+    }
+
+    Optional<CanvasHandler> getOptionalHandler() {
+        return ofNullable(this.handler);
     }
 
     DecisionNavigatorItem makeItem(final Element<?> element) {
@@ -194,5 +216,7 @@ public class DecisionNavigatorPresenter {
                                   IsElement {
 
         void setupMainTree(final DecisionNavigatorTreePresenter.View mainTreeComponent);
+
+        void setupDecisionComponents(final DecisionComponents.View decisionComponentsComponent);
     }
 }

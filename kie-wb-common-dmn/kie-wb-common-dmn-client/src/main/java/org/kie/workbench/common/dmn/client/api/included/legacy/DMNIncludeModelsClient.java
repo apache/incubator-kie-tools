@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.editors.included.modal.dropdown.legacy;
+package org.kie.workbench.common.dmn.client.api.included.legacy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,28 +29,34 @@ import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.kie.workbench.common.dmn.api.editors.types.DMNIncludeModel;
-import org.kie.workbench.common.dmn.api.editors.types.DMNIncludeModelsService;
+import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedModel;
+import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedModelsService;
+import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedNode;
 
 @Dependent
 public class DMNIncludeModelsClient {
 
-    private final Caller<DMNIncludeModelsService> service;
+    private final Caller<DMNIncludedModelsService> service;
 
     private final WorkspaceProjectContext projectContext;
 
     @Inject
-    public DMNIncludeModelsClient(final Caller<DMNIncludeModelsService> service,
+    public DMNIncludeModelsClient(final Caller<DMNIncludedModelsService> service,
                                   final WorkspaceProjectContext projectContext) {
         this.service = service;
         this.projectContext = projectContext;
     }
 
-    public void loadModels(final Consumer<List<DMNIncludeModel>> listConsumer) {
+    public void loadModels(final Consumer<List<DMNIncludedModel>> listConsumer) {
         service.call(onSuccess(listConsumer), onError(listConsumer)).loadModels(getWorkspaceProject());
     }
 
-    ErrorCallback<Object> onError(final Consumer<List<DMNIncludeModel>> listConsumer) {
+    public void loadNodesFromImports(final List<DMNIncludedModel> includeModels,
+                                     final Consumer<List<DMNIncludedNode>> listConsumer) {
+        service.call(onSuccess(listConsumer), onError(listConsumer)).loadNodesFromImports(getWorkspaceProject(), includeModels);
+    }
+
+    <T> ErrorCallback<Boolean> onError(final Consumer<List<T>> listConsumer) {
         return (message, throwable) -> {
             logWarning();
             listConsumer.accept(new ArrayList<>());
@@ -58,11 +64,11 @@ public class DMNIncludeModelsClient {
         };
     }
 
-    RemoteCallback<List<DMNIncludeModel>> onSuccess(final Consumer<List<DMNIncludeModel>> listConsumer) {
+    <T> RemoteCallback<List<T>> onSuccess(final Consumer<List<T>> listConsumer) {
         return listConsumer::accept;
     }
 
-    WorkspaceProject getWorkspaceProject() {
+    private WorkspaceProject getWorkspaceProject() {
         return projectContext.getActiveWorkspaceProject().orElse(null);
     }
 

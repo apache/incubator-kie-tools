@@ -23,6 +23,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.DMNViewDefinition;
 import org.kie.workbench.common.dmn.api.definition.v1_1.BusinessKnowledgeModel;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
+import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionService;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InputData;
 import org.kie.workbench.common.dmn.api.definition.v1_1.KnowledgeSource;
 import org.kie.workbench.common.dmn.api.definition.v1_1.TextAnnotation;
@@ -127,6 +128,8 @@ public class DMNSVGShapeDefImplTest {
                      shapeDef.getGlyph(BusinessKnowledgeModel.class, PaletteGlyphConsumer.class, DEFINITION_ID));
         assertEquals(DMNSVGGlyphFactory.DECISION_PALETTE,
                      shapeDef.getGlyph(Decision.class, PaletteGlyphConsumer.class, DEFINITION_ID));
+        assertEquals(DMNSVGGlyphFactory.DECISION_SERVICE_PALETTE,
+                     shapeDef.getGlyph(DecisionService.class, PaletteGlyphConsumer.class, DEFINITION_ID));
         assertEquals(DMNSVGGlyphFactory.INPUT_DATA_PALETTE,
                      shapeDef.getGlyph(InputData.class, PaletteGlyphConsumer.class, DEFINITION_ID));
         assertEquals(DMNSVGGlyphFactory.KNOWLEDGE_SOURCE_PALETTE,

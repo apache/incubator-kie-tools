@@ -333,4 +333,7 @@ public class DMNEditorConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String DayTimeValueConverter_Second = "DayTimeValueConverter.Second";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DecisionComponentsView_EnterText = "DecisionComponentsView.EnterText";
 }

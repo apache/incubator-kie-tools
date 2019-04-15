@@ -19,11 +19,13 @@ package org.kie.workbench.common.dmn.client.editors.included.grid;
 import java.util.function.Function;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.dom.client.Style.HasCssName;
 import elemental2.dom.HTMLElement;
 import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
+import org.kie.workbench.common.dmn.client.decision.events.RefreshDecisionComponents;
 import org.kie.workbench.common.dmn.client.editors.included.IncludedModel;
 import org.kie.workbench.common.widgets.client.cards.CardComponent;
 import org.uberfire.client.mvp.UberElemental;
@@ -35,13 +37,17 @@ public class DMNCardComponent implements CardComponent {
 
     private final ContentView contentView;
 
+    private final Event<RefreshDecisionComponents> refreshDecisionComponentsEvent;
+
     private DMNCardsGridComponent grid;
 
     private IncludedModel includedModel;
 
     @Inject
-    public DMNCardComponent(final ContentView contentView) {
+    public DMNCardComponent(final ContentView contentView,
+                            final Event<RefreshDecisionComponents> refreshDecisionComponentsEvent) {
         this.contentView = contentView;
+        this.refreshDecisionComponentsEvent = refreshDecisionComponentsEvent;
     }
 
     @PostConstruct
@@ -134,6 +140,11 @@ public class DMNCardComponent implements CardComponent {
     public void remove() {
         getIncludedModel().destroy();
         getGrid().refresh();
+        refreshDecisionComponents();
+    }
+
+    private void refreshDecisionComponents() {
+        refreshDecisionComponentsEvent.fire(new RefreshDecisionComponents());
     }
 
     IncludedModel getIncludedModel() {

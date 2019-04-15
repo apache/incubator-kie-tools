@@ -65,11 +65,14 @@ public class ImportRecordEngineTest {
     @Mock
     private EventSourceMock<FlashMessage> flashMessageEvent;
 
+    @Mock
+    private DefinitionsHandler definitionsHandler;
+
     private ImportRecordEngine recordEngine;
 
     @Before
     public void setup() {
-        recordEngine = spy(new ImportRecordEngine(stateProvider, includedModelsIndex, messageFactory, importFactory, flashMessageEvent));
+        recordEngine = spy(new ImportRecordEngine(stateProvider, includedModelsIndex, messageFactory, importFactory, flashMessageEvent, definitionsHandler));
     }
 
     @Test
@@ -79,15 +82,18 @@ public class ImportRecordEngineTest {
         final ArgumentCaptor<Name> nameCaptor = ArgumentCaptor.forClass(Name.class);
         final Import anImport = mock(Import.class);
         final String name = "name";
+        final String oldName = "oldName";
 
         when(record.getName()).thenReturn(name);
         when(record.isValid()).thenReturn(true);
         when(includedModelsIndex.getImport(record)).thenReturn(anImport);
+        when(anImport.getName()).thenReturn(new Name(oldName));
 
         final List<IncludedModel> actualResult = recordEngine.update(record);
         final List<IncludedModel> expectedResult = singletonList(record);
 
         verify(anImport).setName(nameCaptor.capture());
+        verify(definitionsHandler).update(oldName, record);
 
         final Name actualName = nameCaptor.getValue();
         final Name expectedName = new Name(name);
@@ -125,6 +131,7 @@ public class ImportRecordEngineTest {
         final List<IncludedModel> actualResult = recordEngine.destroy(record);
         final List<IncludedModel> expectedResult = singletonList(record);
 
+        verify(definitionsHandler).destroy(record);
         assertEquals(expectedImports, actualImports);
         assertEquals(expectedResult, actualResult);
     }
@@ -245,6 +252,7 @@ public class ImportRecordEngineTest {
         final List<IncludedModel> actualResult = recordEngine.create(record);
         final List<IncludedModel> expectedResult = singletonList(record);
 
+        verify(definitionsHandler).create(record);
         assertEquals(expectedImports, actualImports);
         assertEquals(expectedResult, actualResult);
     }
