@@ -15,64 +15,32 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands;
 
-import java.util.List;
-import java.util.Map;
-
 import javax.enterprise.context.Dependent;
 
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
-import org.drools.workbench.screens.scenariosimulation.client.metadata.ScenarioHeaderMetaData;
-import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
-import org.drools.workbench.screens.scenariosimulation.model.FactMappingType;
-import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 
 /**
  * <code>Command</code> to <b>insert</b> a column.
  */
 @Dependent
-public class InsertColumnCommand extends AbstractScenarioSimulationCommand {
-
-    public InsertColumnCommand() {
-        super(true);
-    }
+public class InsertColumnCommand extends AbstractSelectedColumnCommand {
 
     @Override
-    protected void internalExecute(ScenarioSimulationContext context) {
-        final ScenarioSimulationContext.Status status = context.getStatus();
-        final List<GridColumn<?>> columns = context.getModel().getColumns();
-        final ScenarioGridColumn selectedColumn = (ScenarioGridColumn) columns.get(status.getColumnIndex());
-        final ScenarioHeaderMetaData selectedInformationHeaderMetaData = selectedColumn.getInformationHeaderMetaData();
-        String columnGroup = selectedInformationHeaderMetaData.getColumnGroup();
-        String originalInstanceTitle = selectedInformationHeaderMetaData.getTitle();
-        FactMappingType factMappingType = FactMappingType.valueOf(columnGroup.toUpperCase());
-        Map.Entry<String, String> validPlaceholders = context.getModel().getValidPlaceholders();
-        boolean cloneInstance = status.isAsProperty() && selectedColumn.isInstanceAssigned();
-        String instanceTitle = cloneInstance ? originalInstanceTitle : validPlaceholders.getKey();
-        String propertyTitle = validPlaceholders.getValue();
-        String placeHolder = ScenarioSimulationEditorConstants.INSTANCE.defineValidType();
-        final ScenarioGridColumn scenarioGridColumnLocal = getScenarioGridColumnLocal(instanceTitle,
-                                                                                      propertyTitle,
-                                                                                      status.getColumnId(),
-                                                                                      columnGroup,
-                                                                                      factMappingType,
-                                                                                      context.getScenarioHeaderTextBoxSingletonDOMElementFactory(),
-                                                                                      context.getScenarioCellTextAreaSingletonDOMElementFactory(),
-                                                                                      placeHolder);
-        scenarioGridColumnLocal.setPropertyAssigned(false);
-        if (cloneInstance) {
-            scenarioGridColumnLocal.setFactIdentifier(selectedColumn.getFactIdentifier());
-        }
-        int columnPosition = -1;
-        if (status.isAsProperty()) {
-            columnPosition = status.isRight() ? status.getColumnIndex() + 1 : status.getColumnIndex();
+    protected void executeIfSelectedColumn(ScenarioSimulationContext context, ScenarioGridColumn selectedColumn) {
+        /* Here, it calculates the position where the column will be added, according to the selected column position,
+           if it should be added in the right or on the left of the selected position and if is a property (i.e. is a new
+           property column which have to be added on the same instance group of the selected one */
+        int columnPosition;
+        if (context.getStatus().isAsProperty()) {
+            columnPosition = context.getStatus().isRight() ? context.getStatus().getColumnIndex() + 1 : context.getStatus().getColumnIndex();
         } else {
-            GridData.Range instanceRange = context.getModel().getInstanceLimits(status.getColumnIndex());
-            columnPosition = status.isRight() ? instanceRange.getMaxRowIndex() + 1 : instanceRange.getMinRowIndex();
+            GridData.Range instanceRange = context.getModel().getInstanceLimits(context.getStatus().getColumnIndex());
+            columnPosition = context.getStatus().isRight() ? instanceRange.getMaxRowIndex() + 1 : instanceRange.getMinRowIndex();
         }
-        scenarioGridColumnLocal.setInstanceAssigned(cloneInstance);
-        scenarioGridColumnLocal.setPropertyAssigned(false);
-        context.getModel().insertColumn(columnPosition, scenarioGridColumnLocal);
+        boolean cloneInstance = context.getStatus().isAsProperty() && selectedColumn.isInstanceAssigned();
+
+        insertNewColumn(context, selectedColumn, columnPosition, cloneInstance);
     }
 }

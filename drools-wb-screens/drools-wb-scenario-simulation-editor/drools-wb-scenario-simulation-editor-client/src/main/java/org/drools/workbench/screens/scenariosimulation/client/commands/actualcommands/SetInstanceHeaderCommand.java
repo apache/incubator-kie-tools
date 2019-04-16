@@ -24,10 +24,10 @@ import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGr
  * <code>Command</code> to set the <i>instance</i> level header for a given column
  */
 @Dependent
-public class SetInstanceHeaderCommand extends AbstractSetHeaderCommand {
+public class SetInstanceHeaderCommand extends AbstractSelectedColumnCommand {
 
     @Override
     protected void executeIfSelectedColumn(ScenarioSimulationContext context, ScenarioGridColumn selectedColumn) {
-        setInstanceHeader(context, selectedColumn);
+        setInstanceHeader(context, selectedColumn, context.getStatus().getClassName(), getFullPackage(context) + context.getStatus().getClassName());
     }
 }

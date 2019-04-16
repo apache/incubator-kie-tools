@@ -146,6 +146,8 @@ public interface ScenarioSimulationEditorConstants
 
     String deleteColumn();
 
+    String duplicateInstance();
+
     String insertRowBelow();
 
     String scenario();

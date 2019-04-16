@@ -31,6 +31,7 @@ public class GivenContextMenu extends AbstractColumnMenuPresenter {
     private final String GIVENCONTEXTMENU_INSERT_COLUMN_LEFT = "givencontextmenu-insert-column-left";
     private final String GIVENCONTEXTMENU_INSERT_COLUMN_RIGHT = "givencontextmenu-insert-column-right";
     private final String GIVENCONTEXTMENU_DELETE_COLUMN = "givencontextmenu-delete-column";
+    private final String GIVENCONTEXTMENU_DUPLICATE_INSTANCE = "givencontextmenu-duplicate-instance";
 
     @PostConstruct
     @Override
@@ -40,6 +41,7 @@ public class GivenContextMenu extends AbstractColumnMenuPresenter {
         COLUMNCONTEXTMENU_INSERT_COLUMN_LEFT = GIVENCONTEXTMENU_INSERT_COLUMN_LEFT;
         COLUMNCONTEXTMENU_INSERT_COLUMN_RIGHT = GIVENCONTEXTMENU_INSERT_COLUMN_RIGHT;
         COLUMNCONTEXTMENU_DELETE_COLUMN = GIVENCONTEXTMENU_DELETE_COLUMN;
+        COLUMNCONTEXTMENU_DUPLICATE_INSTANCE = GIVENCONTEXTMENU_DUPLICATE_INSTANCE;
         COLUMNCONTEXTMENU_LABEL = constants.given().toUpperCase();
         COLUMNCONTEXTMENU_I18N = "given";
         // SCENARIO MENU

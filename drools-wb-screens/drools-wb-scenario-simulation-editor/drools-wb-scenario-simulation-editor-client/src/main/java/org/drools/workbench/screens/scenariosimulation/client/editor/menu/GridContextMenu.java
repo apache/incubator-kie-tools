@@ -68,8 +68,8 @@ public class GridContextMenu extends AbstractColumnMenuPresenter {
         runSingleScenarioElement = addExecutableMenuItem(GRIDCONTEXTMENU_RUN_SINGLE_SCENARIO, constants.runSingleScenario(), "runSingleScenario");
     }
 
-    public void show(final int mx, final int my, int columnIndex, int rowIndex, String group, boolean asProperty) {
-        super.show(mx, my, columnIndex, group, asProperty);
+    public void show(final int mx, final int my, int columnIndex, int rowIndex, String group, boolean asProperty, boolean showDuplicate) {
+        super.show(mx, my, columnIndex, group, asProperty, showDuplicate);
         columnContextLIElement
                 .getChild(1) //  a  element
                 .getChild(3) // span element

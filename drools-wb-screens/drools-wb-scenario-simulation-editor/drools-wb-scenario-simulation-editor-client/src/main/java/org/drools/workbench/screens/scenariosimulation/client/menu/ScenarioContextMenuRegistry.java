@@ -35,6 +35,7 @@ import org.drools.workbench.screens.scenariosimulation.client.metadata.ScenarioH
 import org.drools.workbench.screens.scenariosimulation.client.utils.ScenarioSimulationGridHeaderUtilities;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGrid;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
+import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
 import org.uberfire.ext.wires.core.grids.client.util.CoordinateUtilities;
 
 @Dependent
@@ -185,11 +186,12 @@ public class ScenarioContextMenuRegistry {
         if (scenarioGridColumn == null) {
             return false;
         }
+        boolean showDuplicateInstance = scenarioGrid.getModel().getSimulation().get().getSimulationDescriptor().getType().equals(ScenarioSimulationModel.Type.RULE);
         String group = scenarioGridColumn.getInformationHeaderMetaData().getColumnGroup();
         switch (group) {
             case "GIVEN":
             case "EXPECT":
-                gridContextMenu.show(left, top, uiColumnIndex, uiRowIndex, group, true);
+                gridContextMenu.show(left, top, uiColumnIndex, uiRowIndex, group, true, showDuplicateInstance);
                 break;
             default:
                 unmodifiableColumnGridContextMenu.show(left, top, uiRowIndex);
@@ -223,6 +225,7 @@ public class ScenarioContextMenuRegistry {
         if (uiHeaderRowIndex == null) {
             return false;
         }
+        boolean showDuplicateInstance = scenarioGrid.getModel().getSimulation().get().getSimulationDescriptor().getType().equals(ScenarioSimulationModel.Type.RULE);
         String group = columnMetadata.getColumnGroup();
         if (group.contains("-")) {
             group = group.substring(0, group.indexOf("-"));
@@ -241,10 +244,10 @@ public class ScenarioContextMenuRegistry {
                 }
                 break;
             case "GIVEN":
-                givenContextMenu.show(left, top, uiColumnIndex, group, Objects.equals(columnMetadata.getMetadataType(), ScenarioHeaderMetaData.MetadataType.PROPERTY));
+                givenContextMenu.show(left, top, uiColumnIndex, group, Objects.equals(columnMetadata.getMetadataType(), ScenarioHeaderMetaData.MetadataType.PROPERTY), showDuplicateInstance);
                 break;
             case "EXPECT":
-                expectedContextMenu.show(left, top, uiColumnIndex, group, Objects.equals(columnMetadata.getMetadataType(), ScenarioHeaderMetaData.MetadataType.PROPERTY));
+                expectedContextMenu.show(left, top, uiColumnIndex, group, Objects.equals(columnMetadata.getMetadataType(), ScenarioHeaderMetaData.MetadataType.PROPERTY), showDuplicateInstance);
                 break;
             default:
                 otherContextMenu.show(left, top);

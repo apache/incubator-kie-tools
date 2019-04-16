@@ -216,6 +216,21 @@ public class ScenarioGridModel extends BaseGridData {
     }
 
     /**
+     * This method <i>duplicates</i> the row values at the source column index from both the grid <b>and</b> the underlying model
+     * and inserts at the target column index
+     * @param originalColumnIndex
+     * @param newColumnIndex
+     */
+    public void duplicateColumnValues(int originalColumnIndex, int newColumnIndex) {
+        checkSimulation();
+        List<GridCellValue<?>> originalValues = new ArrayList<>();
+        IntStream.range(0, getRowCount())
+                 .forEach(rowIndex -> originalValues.add(getCell(rowIndex, originalColumnIndex).getValue()));
+        IntStream.range(0, getRowCount())
+                 .forEach(rowIndex -> setCellValue(rowIndex, newColumnIndex, originalValues.get(rowIndex)));
+    }
+
+    /**
      * This method <i>insert</i> a new column to the grid <b>without</b> modify underlying model
      * @param index
      * @param column
@@ -442,6 +457,19 @@ public class ScenarioGridModel extends BaseGridData {
                 .stream()
                 .filter(gridColumn -> ((ScenarioGridColumn) gridColumn).getInformationHeaderMetaData().getColumnGroup().equals(groupName))
                 .count();
+    }
+
+    /**
+     * Returns the count of instantiated facts given a classname.
+     * @param className
+     * @return
+     */
+    public int getInstancesCount(String className) {
+        return simulation.getSimulationDescriptor().getUnmodifiableFactMappings()
+                .stream()
+                .filter(factMapping-> factMapping.getFactIdentifier().getClassName().equals(className))
+                .collect(Collectors.groupingBy(FactMapping::getFactAlias))
+                .size();
     }
 
     public void updateHeader(int columnIndex, int headerRowIndex, String value) {

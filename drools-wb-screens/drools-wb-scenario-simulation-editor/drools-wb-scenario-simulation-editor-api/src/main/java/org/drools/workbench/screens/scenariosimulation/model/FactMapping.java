@@ -77,6 +77,10 @@ public class FactMapping {
         this.factIdentifier = factIdentifier;
     }
 
+    /**
+     * It <b>clones</b> the given <code>FactMapping</code>
+     * @param original The original <code>FactMapping</code>
+     */
     private FactMapping(FactMapping original) {
         original.expressionElements.forEach(expressionElement -> this.addExpressionElement(expressionElement.getStep(), original.className));
         this.expressionIdentifier = original.expressionIdentifier;
@@ -143,6 +147,9 @@ public class FactMapping {
         this.genericTypes = genericTypes;
     }
 
+    /**
+     * It creates a new <code>FactMapping</code> cloning the instanced one.
+     */
     public FactMapping cloneFactMapping() {
         return new FactMapping(this);
     }
