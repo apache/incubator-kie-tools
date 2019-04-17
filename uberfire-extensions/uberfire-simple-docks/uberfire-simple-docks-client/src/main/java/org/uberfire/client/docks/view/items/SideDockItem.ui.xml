@@ -16,8 +16,15 @@
 
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:g="urn:import:com.google.gwt.user.client.ui"
              xmlns:b="urn:import:org.gwtbootstrap3.client.ui">
 
-  <b:Button ui:field="itemButton"/>
+  <g:HTMLPanel>
+
+    <b:Tooltip ui:field="itemTooltip">
+      <b:Button ui:field="itemButton"/>
+    </b:Tooltip>
+
+  </g:HTMLPanel>
 
 </ui:UiBinder>

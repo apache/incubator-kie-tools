@@ -19,17 +19,23 @@ package org.uberfire.client.docks.view.items;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.Tooltip;
+import org.gwtbootstrap3.client.ui.constants.Placement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class SideDockItemTest {
@@ -81,19 +87,6 @@ public class SideDockItemTest {
     }
 
     @Test
-    public void createSideDockItemFocusedWithFontIconTest() {
-        sideDockWithFontIcon.getPopup().createButton(sideDockWithFontIcon);
-
-        verify(sideDockWithFontIcon).configureIcon(any(Button.class),
-                                                   eq((ImageResource) null));
-        verify(sideDockWithFontIcon).configureIcon(any(Button.class),
-                                                   eq((ImageResource) null));
-        verify(sideDockWithFontIcon,
-               never()).configureImageIcon(any(Button.class),
-                                           any(ImageResource.class));
-    }
-
-    @Test
     public void openSideDockItemWithFontIconTest() {
         sideDockWithFontIcon.open();
 
@@ -122,19 +115,6 @@ public class SideDockItemTest {
     }
 
     @Test
-    public void createSideDockItemFocusedWithImageIconTest() {
-        sideDockWithImageIcon.getPopup().createButton(sideDockWithImageIcon);
-
-        InOrder ordenatedVerification = inOrder(sideDockWithImageIcon);
-        ordenatedVerification.verify(sideDockWithImageIcon).configureText(any(Button.class),
-                                                                          anyString());
-        ordenatedVerification.verify(sideDockWithImageIcon).configureIcon(any(Button.class),
-                                                                          eq(imageResourceFocused));
-        ordenatedVerification.verify(sideDockWithImageIcon).configureImageIcon(any(Button.class),
-                                                                               eq(imageResourceFocused));
-    }
-
-    @Test
     public void openSouthDockItemWithImageIconTest() {
         sideDockWithImageIcon.open();
 
@@ -147,6 +127,16 @@ public class SideDockItemTest {
         sideDockWithImageIcon.close();
 
         verify(sideDockWithImageIcon).configureImageIcon(any(Button.class),
+
                                                          eq(imageResource));
+    }
+
+    @Test
+    public void createSideDockItemWithTooltipTest() {
+
+        Tooltip tooltip = new Tooltip();
+        sideDockWithImageIcon.configureTooltip(tooltip, sideDockWithImageIcon.getLabel());
+        assertEquals(sideDockWithImageIcon.getLabel(), tooltip.getTitle());
+        assertEquals(Placement.LEFT, tooltip.getPlacement());
     }
 }
