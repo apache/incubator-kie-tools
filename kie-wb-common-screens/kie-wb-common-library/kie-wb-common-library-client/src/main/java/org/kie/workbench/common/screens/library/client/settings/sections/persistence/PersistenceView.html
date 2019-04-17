@@ -22,7 +22,6 @@
     <hr>
 
     <form role="form">
-
         <div class="form-group">
             <label data-i18n-key="PersistenceUnit"></label>
             <input type="text" class="form-control" data-field="persistence-unit">
@@ -39,6 +38,10 @@
         </div>
 
         <h3 data-i18n-key="Properties"></h3>
+        <div data-field="error" class="alert alert-danger">
+            <span class="pficon pficon-error-circle-o"></span>
+            <span data-field="error-message"></span>
+        </div>
         <table class="table table-hover  kie-tablelist">
             <thead>
             <tr class="kie-tablelist__row kie-tablelist__row--header">

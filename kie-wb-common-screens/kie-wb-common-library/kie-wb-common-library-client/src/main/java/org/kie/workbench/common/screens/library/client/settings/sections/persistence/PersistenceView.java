@@ -23,13 +23,17 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import elemental2.dom.Element;
 import elemental2.dom.HTMLButtonElement;
+import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLHeadingElement;
 import elemental2.dom.HTMLInputElement;
 import elemental2.dom.HTMLTableSectionElement;
+import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
 
 import static org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants.PersistenceXmlConcurrentUpdate;
 
@@ -76,13 +80,26 @@ public class PersistenceView implements PersistencePresenter.View {
     private HTMLHeadingElement title;
 
     @Inject
+    @Named("span")
+    @DataField("error-message")
+    private HTMLElement errorMessage;
+
+    @Inject
+    @DataField("error")
+    private HTMLDivElement error;
+
+    @Inject
     private TranslationService translationService;
+
+    @Inject
+    private Elemental2DomUtil elemental2DomUtil;
 
     private PersistencePresenter presenter;
 
     @Override
     public void init(final PersistencePresenter presenter) {
         this.presenter = presenter;
+        hideError();
     }
 
     @EventHandler("data-source")
@@ -148,5 +165,24 @@ public class PersistenceView implements PersistencePresenter.View {
     @Override
     public String getTitle() {
         return title.textContent;
+    }
+
+    @Override
+    public void hideError() {
+        elemental2DomUtil.removeAllElementChildren(errorMessage);
+        this.error.hidden = true;
+    }
+
+    @Override
+    public String getEmptyPropertiesMessage() {
+        return translationService.format(LibraryConstants.EmptyFieldValidation,
+                                         translationService.getTranslation(LibraryConstants.Properties));
+    }
+
+    @Override
+    public void showError(final String errorMessage) {
+        this.errorMessage.innerHTML += errorMessage;
+        this.errorMessage.innerHTML += "<br/>";
+        this.error.hidden = false;
     }
 }

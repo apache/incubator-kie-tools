@@ -17,6 +17,7 @@
 package org.kie.workbench.common.screens.library.client.settings.sections.persistence;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.function.Supplier;
 
 import javax.enterprise.context.Dependent;
@@ -78,6 +79,12 @@ public class PersistencePresenter extends Section<ProjectScreenModel> {
         Element getPropertiesTable();
 
         Element getPersistableDataObjectsTable();
+
+        void hideError();
+
+        String getEmptyPropertiesMessage();
+
+        void showError(String message);
     }
 
     @Inject
@@ -140,6 +147,15 @@ public class PersistencePresenter extends Section<ProjectScreenModel> {
 
             return promises.resolve();
         });
+    }
+
+    @Override
+    public Promise<Object> validate() {
+        view.hideError();
+        return promises.all(
+                validatePropertyIsNotEmpty(propertiesListPresenter.getObjectsList(), view.getEmptyPropertiesMessage())
+                        .catch_(this::showErrorAndReject)
+        );
     }
 
     private void setupPropertiesTable() {
@@ -254,5 +270,39 @@ public class PersistencePresenter extends Section<ProjectScreenModel> {
         public PropertiesListPresenter(final ManagedInstance<PropertiesItemPresenter> itemPresenters) {
             super(itemPresenters);
         }
+    }
+
+    Promise<Object> showErrorAndReject(final Object o) {
+        return promises.catchOrExecute(o, e -> {
+            view.showError(e.getMessage());
+            return promises.reject(this);
+        }, (final String errorMessage) -> {
+            view.showError(errorMessage);
+            return promises.reject(this);
+        });
+    }
+
+    Promise<Boolean> validatePropertyIsNotEmpty(final List<Property> listProperty,
+                                                final String errorMessage) {
+        return promises.create((resolve, reject) -> {
+            if (isEmpty(listProperty)) {
+                reject.onInvoke(errorMessage);
+            } else {
+                resolve.onInvoke(true);
+            }
+        });
+    }
+
+    private boolean isEmpty(List<Property> listProperty) {
+        boolean isEmpty = false;
+        for (Property property : listProperty) {
+            if (property.getName() == null || property.getName().trim().isEmpty()) {
+                isEmpty = true;
+            }
+            if (property.getValue() == null || property.getValue().trim().isEmpty()) {
+                isEmpty = true;
+            }
+        }
+        return isEmpty;
     }
 }

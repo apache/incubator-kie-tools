@@ -1,10 +1,14 @@
 package org.kie.workbench.common.screens.library.client.settings.sections.persistence;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import javax.enterprise.event.Event;
 
+import elemental2.dom.HTMLElement;
+import elemental2.promise.Promise;
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.WorkspaceProject;
@@ -23,6 +27,7 @@ import org.kie.workbench.common.screens.datamodeller.model.persistence.Transacti
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.kie.workbench.common.screens.datamodeller.service.PersistenceDescriptorEditorService;
 import org.kie.workbench.common.screens.library.client.settings.SettingsSectionChange;
+import org.kie.workbench.common.screens.library.client.settings.sections.persistence.properties.PropertiesItemPresenter;
 import org.kie.workbench.common.screens.library.client.settings.util.sections.MenuItem;
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
 import org.mockito.Mock;
@@ -37,6 +42,7 @@ import org.uberfire.workbench.events.NotificationEvent;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
@@ -83,7 +89,11 @@ public class PersistencePresenterTest {
     @Mock
     private Module module;
 
+    @Mock
+    private ManagedInstance<PropertiesItemPresenter> propertiesItemPresenters;
+
     private final Promises promises = new SyncPromises();
+    private PersistencePresenter.PropertiesListPresenter listPresenter;
 
     @Before
     public void before() {
@@ -110,6 +120,7 @@ public class PersistencePresenterTest {
                                                             propertiesListPresenter,
                                                             persistableDataObjectsListPresenter));
 
+        listPresenter = spy(new PersistencePresenter.PropertiesListPresenter(propertiesItemPresenters));
     }
 
     @Test
@@ -192,7 +203,7 @@ public class PersistencePresenterTest {
     @Test
     public void testAddNewProperty() {
         persistencePresenter.addNewProperty();
-        verify(propertiesListPresenter).add(eq(new Property("","")));
+        verify(propertiesListPresenter).add(eq(new Property("", "")));
     }
 
     @Test
@@ -306,5 +317,83 @@ public class PersistencePresenterTest {
         content.setOverview(new Overview());
 
         return content;
+    }
+
+    @Test
+    public void testShowErrorAndRejectWithException() {
+        final RuntimeException testException = new RuntimeException("Test message");
+        doNothing().when(view).showError(any());
+
+        showErrorAndRejectFn(persistencePresenter.showErrorAndReject(testException));
+    }
+
+    @Test
+    public void testShowErrorAndRejectWithRejection() {
+        showErrorAndRejectFn(persistencePresenter.showErrorAndReject("Test message"));
+    }
+
+    @Test
+    public void testValidatePropertyIsNotEmpty() {
+        setupProperty("foo", "bar");
+        validatePropertyIsNotEmptyOnFulfilledCallback();
+    }
+
+    @Test
+    public void testValidatePropertyIsNotEmptyWithEmptyName() {
+        setupProperty("", "bar");
+        validatePropertyIsNotEmptyOnCatch();
+    }
+
+    @Test
+    public void testValidatePropertyIsNotEmptyWithEmptyValue() {
+        setupProperty("foo", "    ");
+        validatePropertyIsNotEmptyOnCatch();
+    }
+
+    @Test
+    public void testValidatePropertyIsNotEmptyWithNullString() {
+        setupProperty("foo", null);
+        validatePropertyIsNotEmptyOnCatch();
+    }
+
+    private void setupProperty(String name, String value) {
+        doNothing().when(listPresenter).addToListElement(any());
+        final List<Property> objs = Collections.singletonList(new Property(name, value));
+
+        listPresenter.setup(mock(HTMLElement.class), objs, (a, b) -> {
+        });
+    }
+
+    private void showErrorAndRejectFn(Promise<Object> objectPromise) {
+        objectPromise.then(onFulfilledCallback -> {
+            Assert.fail("Promise should've not been resolved!");
+            return promises.resolve();
+        }).catch_(catchOnRejectedCallback -> {
+            verify(view).showError(eq("Test message"));
+            Assert.assertEquals(persistencePresenter, catchOnRejectedCallback);
+            return promises.resolve();
+        });
+    }
+
+    private void validatePropertyIsNotEmptyOnFulfilledCallback() {
+        persistencePresenter.validatePropertyIsNotEmpty(listPresenter.getObjectsList(),
+                                                        "Message").then(onFulfilledCallback -> {
+            Assert.assertEquals(true, onFulfilledCallback);
+            return promises.resolve();
+        }).catch_(catchOnRejectedCallback -> {
+            Assert.fail("Promise should've been resolved!");
+            return promises.resolve();
+        });
+    }
+
+    private void validatePropertyIsNotEmptyOnCatch() {
+        persistencePresenter.validatePropertyIsNotEmpty(listPresenter.getObjectsList(),
+                                                        "Message").then(onFulfilledCallback -> {
+            Assert.fail("Promise should've not been resolved!");
+            return promises.resolve();
+        }).catch_(catchOnRejectedCallbackMessage -> {
+            Assert.assertEquals("Message", catchOnRejectedCallbackMessage);
+            return promises.resolve();
+        });
     }
 }
