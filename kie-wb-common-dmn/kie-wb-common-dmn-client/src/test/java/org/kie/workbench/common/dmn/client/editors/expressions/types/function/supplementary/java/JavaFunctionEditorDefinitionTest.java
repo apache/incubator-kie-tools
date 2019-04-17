@@ -187,6 +187,7 @@ public class JavaFunctionEditorDefinitionTest {
                                                                                                                                                  Optional.empty(),
                                                                                                                                                  hasExpression,
                                                                                                                                                  hasName,
+                                                                                                                                                 false,
                                                                                                                                                  0);
 
         assertTrue(oEditor.isPresent());

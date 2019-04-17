@@ -22,6 +22,7 @@ import java.util.function.Supplier;
 
 import com.ait.lienzo.client.core.event.AbstractNodeMouseEvent;
 import com.ait.lienzo.client.core.types.Point2D;
+import org.kie.workbench.common.dmn.client.editors.expressions.util.DynamicReadOnlyUtils;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellEditAction;
@@ -48,6 +49,10 @@ public class DelegatingGridWidgetEditCellMouseEventHandler extends DefaultGridWi
                                     final Optional<Integer> uiRowIndex,
                                     final Optional<Integer> uiColumnIndex,
                                     final AbstractNodeMouseEvent event) {
+        if (DynamicReadOnlyUtils.isOnlyVisualChangeAllowed(gridWidget)) {
+            return false;
+        }
+
         if (nestingSupplier.get() == 0) {
             return doSuperOnNodeMouseEvent(gridWidget,
                                            relativeLocation,

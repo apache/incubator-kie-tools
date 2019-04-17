@@ -267,6 +267,6 @@ public class DecisionNavigatorObserverTest {
 
     private EditExpressionEvent makeEditExpressionEvent() {
         final Optional<HasName> optionalName = Optional.of(hasName);
-        return new EditExpressionEvent(clientSession, uuid, hasExpression, optionalName);
+        return new EditExpressionEvent(clientSession, uuid, hasExpression, optionalName, false);
     }
 }

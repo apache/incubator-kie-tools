@@ -69,6 +69,7 @@ public abstract class BaseDelegatingExpressionGrid<E extends Expression, D exten
                                         final CellEditorControlsView.Presenter cellEditorControls,
                                         final ListSelectorView.Presenter listSelector,
                                         final TranslationService translationService,
+                                        final boolean isOnlyVisualChangeAllowed,
                                         final int nesting) {
         super(parent,
               nodeUUID,
@@ -88,6 +89,7 @@ public abstract class BaseDelegatingExpressionGrid<E extends Expression, D exten
               cellEditorControls,
               listSelector,
               translationService,
+              isOnlyVisualChangeAllowed,
               nesting);
     }
 

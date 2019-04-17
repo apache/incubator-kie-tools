@@ -112,6 +112,7 @@ public abstract class BaseSupplementaryFunctionEditorDefinition extends BaseEdit
                                                                                                                          final Optional<String> nodeUUID,
                                                                                                                          final HasExpression hasExpression,
                                                                                                                          final Optional<HasName> hasName,
+                                                                                                                         final boolean isOnlyVisualChangeAllowed,
                                                                                                                          final int nesting) {
         return Optional.of(new FunctionSupplementaryGrid(parent,
                                                          nodeUUID,
@@ -130,6 +131,7 @@ public abstract class BaseSupplementaryFunctionEditorDefinition extends BaseEdit
                                                          getCellEditorControls(),
                                                          listSelector,
                                                          translationService,
+                                                         isOnlyVisualChangeAllowed,
                                                          nesting,
                                                          expressionEditorDefinitionsSupplier));
     }

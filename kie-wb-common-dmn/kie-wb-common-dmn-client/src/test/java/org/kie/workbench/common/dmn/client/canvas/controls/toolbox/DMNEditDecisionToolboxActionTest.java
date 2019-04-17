@@ -41,6 +41,7 @@ import org.mockito.Mock;
 import org.uberfire.mocks.EventSourceMock;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -122,5 +123,6 @@ public class DMNEditDecisionToolboxActionTest {
                      editExprEvent.getHasName().get());
         assertEquals(session,
                      editExprEvent.getSession());
+        assertFalse(editExprEvent.isOnlyVisualChangeAllowed());
     }
 }

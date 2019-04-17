@@ -43,7 +43,8 @@ public interface ExpressionEditorView extends org.jboss.errai.ui.client.local.ap
 
         void setExpression(final String nodeUUID,
                            final HasExpression hasExpression,
-                           final Optional<HasName> hasName);
+                           final Optional<HasName> hasName,
+                           final boolean isOnlyVisualChangeAllowed);
 
         void handleCanvasElementUpdated(final CanvasElementUpdatedEvent event);
 
@@ -58,7 +59,8 @@ public interface ExpressionEditorView extends org.jboss.errai.ui.client.local.ap
 
     void setExpression(final String nodeUUID,
                        final HasExpression hasExpression,
-                       final Optional<HasName> hasName);
+                       final Optional<HasName> hasName,
+                       final boolean isOnlyVisualChangeAllowed);
 
     void setExpressionNameText(final Optional<HasName> hasName);
 

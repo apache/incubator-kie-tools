@@ -73,6 +73,7 @@ public class FunctionSupplementaryGrid extends BaseExpressionGrid<Context, Funct
                                      final CellEditorControlsView.Presenter cellEditorControls,
                                      final ListSelectorView.Presenter listSelector,
                                      final TranslationService translationService,
+                                     final boolean isOnlyVisualChangeAllowed,
                                      final int nesting,
                                      final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier) {
         super(parent,
@@ -93,6 +94,7 @@ public class FunctionSupplementaryGrid extends BaseExpressionGrid<Context, Funct
               cellEditorControls,
               listSelector,
               translationService,
+              isOnlyVisualChangeAllowed,
               nesting);
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
 
@@ -112,6 +114,7 @@ public class FunctionSupplementaryGrid extends BaseExpressionGrid<Context, Funct
         return new FunctionSupplementaryGridUIModelMapper(this,
                                                           this::getModel,
                                                           getExpression(),
+                                                          () -> isOnlyVisualChangeAllowed,
                                                           expressionEditorDefinitionsSupplier,
                                                           listSelector,
                                                           nesting);

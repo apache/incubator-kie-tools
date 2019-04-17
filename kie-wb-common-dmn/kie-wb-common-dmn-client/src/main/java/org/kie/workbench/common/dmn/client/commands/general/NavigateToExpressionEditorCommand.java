@@ -48,7 +48,8 @@ public class NavigateToExpressionEditorCommand extends BaseNavigateCommand imple
                                              final Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent,
                                              final String nodeUUID,
                                              final HasExpression hasExpression,
-                                             final Optional<HasName> hasName) {
+                                             final Optional<HasName> hasName,
+                                             final boolean isOnlyVisualChangeAllowed) {
         super(editor,
               presenter,
               sessionManager,
@@ -56,7 +57,8 @@ public class NavigateToExpressionEditorCommand extends BaseNavigateCommand imple
               refreshFormPropertiesEvent,
               nodeUUID,
               hasExpression,
-              hasName);
+              hasName,
+              isOnlyVisualChangeAllowed);
     }
 
     @Override
@@ -73,7 +75,8 @@ public class NavigateToExpressionEditorCommand extends BaseNavigateCommand imple
                 hidePaletteWidget(true);
                 editor.setExpression(nodeUUID,
                                      hasExpression,
-                                     hasName);
+                                     hasName,
+                                     isOnlyVisualChangeAllowed);
                 editor.setExitCommand(() -> navigateToDRGEditor(hasExpression,
                                                                 hasName));
                 addExpressionEditorToCanvasWidget();

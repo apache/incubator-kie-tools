@@ -70,6 +70,7 @@ public class DecisionTableEditorDefinitionTest extends BaseDecisionTableEditorDe
                                                                                                                                                  Optional.empty(),
                                                                                                                                                  decision,
                                                                                                                                                  hasName,
+                                                                                                                                                 false,
                                                                                                                                                  0);
 
         assertThat(oEditor).isPresent();

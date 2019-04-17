@@ -130,6 +130,7 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
                              final CellEditorControlsView.Presenter cellEditorControls,
                              final ListSelectorView.Presenter listSelector,
                              final TranslationService translationService,
+                             final boolean isOnlyVisualChangeAllowed,
                              final int nesting,
                              final HitPolicyPopoverView.Presenter hitPolicyEditor,
                              final NameAndDataTypePopoverView.Presenter headerEditor) {
@@ -151,6 +152,7 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
               cellEditorControls,
               listSelector,
               translationService,
+              isOnlyVisualChangeAllowed,
               nesting);
         this.hitPolicyEditor = hitPolicyEditor;
         this.headerEditor = headerEditor;

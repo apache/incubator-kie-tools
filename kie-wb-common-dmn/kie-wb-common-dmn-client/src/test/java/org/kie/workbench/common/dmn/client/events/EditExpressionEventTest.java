@@ -50,7 +50,8 @@ public class EditExpressionEventTest {
         this.event = new EditExpressionEvent(session,
                                              NODE_UUID,
                                              hasExpression,
-                                             Optional.of(hasName));
+                                             Optional.of(hasName),
+                                             false);
     }
 
     @Test
@@ -59,5 +60,6 @@ public class EditExpressionEventTest {
         assertThat(event.getNodeUUID()).isEqualTo(NODE_UUID);
         assertThat(event.getHasExpression()).isEqualTo(hasExpression);
         assertThat(event.getHasName()).isEqualTo(Optional.of(hasName));
+        assertThat(event.isOnlyVisualChangeAllowed()).isFalse();
     }
 }

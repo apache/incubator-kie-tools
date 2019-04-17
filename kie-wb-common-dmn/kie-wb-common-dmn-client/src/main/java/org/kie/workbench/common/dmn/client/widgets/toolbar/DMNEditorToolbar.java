@@ -71,7 +71,6 @@ public class DMNEditorToolbar
                 .register(PasteToolbarCommand.class)
                 .register(SaveToolbarCommand.class)
                 .register(PerformAutomaticLayoutToolbarCommand.class);
-
     }
 
     public VisitGraphToolbarCommand getVisitGraphToolbarCommand() {

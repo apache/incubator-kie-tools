@@ -90,6 +90,7 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
                         final CellEditorControlsView.Presenter cellEditorControls,
                         final ListSelectorView.Presenter listSelector,
                         final TranslationService translationService,
+                        final boolean isOnlyVisualChangeAllowed,
                         final int nesting,
                         final NameAndDataTypePopoverView.Presenter headerEditor) {
         super(parent,
@@ -110,6 +111,7 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
               cellEditorControls,
               listSelector,
               translationService,
+              isOnlyVisualChangeAllowed,
               nesting);
         this.headerEditor = headerEditor;
 

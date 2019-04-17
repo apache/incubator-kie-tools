@@ -116,6 +116,7 @@ public class DecisionTableEditorDefinition extends BaseEditorDefinition<Decision
                                                                                                                          final Optional<String> nodeUUID,
                                                                                                                          final HasExpression hasExpression,
                                                                                                                          final Optional<HasName> hasName,
+                                                                                                                         final boolean isOnlyVisualChangeAllowed,
                                                                                                                          final int nesting) {
         return Optional.of(new DecisionTableGrid(parent,
                                                  nodeUUID,
@@ -134,6 +135,7 @@ public class DecisionTableEditorDefinition extends BaseEditorDefinition<Decision
                                                  getCellEditorControls(),
                                                  listSelector,
                                                  translationService,
+                                                 isOnlyVisualChangeAllowed,
                                                  nesting,
                                                  hitPolicyEditor,
                                                  headerEditor));

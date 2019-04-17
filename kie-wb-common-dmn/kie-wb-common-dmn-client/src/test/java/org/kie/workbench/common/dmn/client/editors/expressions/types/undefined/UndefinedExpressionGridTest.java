@@ -86,6 +86,7 @@ import org.uberfire.mvp.Command;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertFalse;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -261,6 +262,7 @@ public class UndefinedExpressionGridTest {
                                                          any(Optional.class),
                                                          any(HasExpression.class),
                                                          any(Optional.class),
+                                                         anyBoolean(),
                                                          anyInt())).thenReturn(Optional.of(literalExpressionEditor));
 
         when(session.getCanvasHandler()).thenReturn(canvasHandler);
@@ -283,6 +285,7 @@ public class UndefinedExpressionGridTest {
                                                                        nesting == 0 ? Optional.of(NODE_UUID) : Optional.empty(),
                                                                        hasExpression,
                                                                        hasName,
+                                                                       false,
                                                                        nesting).get());
     }
 
@@ -561,6 +564,7 @@ public class UndefinedExpressionGridTest {
                                                             eq(nesting == 0 ? Optional.of(NODE_UUID) : Optional.empty()),
                                                             eq(hasExpression),
                                                             eq(hasName),
+                                                            eq(false),
                                                             eq(nesting));
 
         assertResize(BaseExpressionGrid.RESIZE_EXISTING);

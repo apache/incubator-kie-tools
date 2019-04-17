@@ -214,6 +214,7 @@ public class FunctionEditorDefinitionTest {
                                                                                                                                                  Optional.empty(),
                                                                                                                                                  hasExpression,
                                                                                                                                                  hasName,
+                                                                                                                                                 false,
                                                                                                                                                  0);
 
         assertTrue(oEditor.isPresent());

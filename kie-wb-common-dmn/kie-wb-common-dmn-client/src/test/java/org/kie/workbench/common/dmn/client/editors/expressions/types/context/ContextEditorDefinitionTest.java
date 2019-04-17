@@ -210,6 +210,7 @@ public class ContextEditorDefinitionTest {
                                                                                                                                                  Optional.empty(),
                                                                                                                                                  hasExpression,
                                                                                                                                                  hasName,
+                                                                                                                                                 false,
                                                                                                                                                  0);
 
         assertTrue(oEditor.isPresent());

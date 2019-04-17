@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.widgets.grid.columns;
+package org.kie.workbench.common.dmn.client.widgets.grid.keyboard;
 
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;

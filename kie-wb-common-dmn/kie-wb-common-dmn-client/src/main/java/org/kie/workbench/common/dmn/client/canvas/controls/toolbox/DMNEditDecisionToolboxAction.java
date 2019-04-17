@@ -81,10 +81,12 @@ public class DMNEditDecisionToolboxAction implements ToolboxAction<AbstractCanva
                                                                                       uuid)
                 .asNode();
         final Decision decision = decisionNode.getContent().getDefinition();
+        final boolean isOnlyVisualChangeAllowed = false; //TODO {manstis} Read from Decision
         editExpressionEvent.fire(new EditExpressionEvent(sessionManager.getCurrentSession(),
                                                          uuid,
                                                          decision,
-                                                         Optional.of(decision)));
+                                                         Optional.of(decision),
+                                                         isOnlyVisualChangeAllowed));
 
         return this;
     }

@@ -45,9 +45,9 @@ import org.kie.workbench.common.dmn.client.session.DMNEditorSession;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCache;
 import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCacheImpl;
-import org.kie.workbench.common.dmn.client.widgets.grid.columns.KeyboardOperationEscapeGridCell;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
+import org.kie.workbench.common.dmn.client.widgets.grid.keyboard.KeyboardOperationEscapeGridCell;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
@@ -76,7 +76,10 @@ import org.uberfire.mocks.EventSourceMock;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
@@ -217,6 +220,7 @@ public class ExpressionEditorViewImplTest {
                                                                        any(Optional.class),
                                                                        any(HasExpression.class),
                                                                        any(Optional.class),
+                                                                       anyBoolean(),
                                                                        anyInt());
         doReturn(new BaseGridData()).when(editor).getModel();
 
@@ -247,6 +251,7 @@ public class ExpressionEditorViewImplTest {
                                                            any(Optional.class),
                                                            any(HasExpression.class),
                                                            any(Optional.class),
+                                                           anyBoolean(),
                                                            anyInt())).thenReturn(Optional.of(undefinedExpressionEditor));
 
         when(literalExpressionEditorDefinition.getModelClass()).thenReturn(Optional.of(new LiteralExpression()));
@@ -256,6 +261,7 @@ public class ExpressionEditorViewImplTest {
                                                          any(Optional.class),
                                                          any(HasExpression.class),
                                                          any(Optional.class),
+                                                         anyBoolean(),
                                                          anyInt())).thenReturn(Optional.of(literalExpressionEditor));
 
         doAnswer((i) -> i.getArguments()[1]).when(translationService).format(anyString(), anyObject());
@@ -340,6 +346,34 @@ public class ExpressionEditorViewImplTest {
     }
 
     @Test
+    public void testSetExpression() {
+        final Optional<HasName> hasName = Optional.empty();
+
+        view.setExpression(NODE_UUID,
+                           hasExpression,
+                           hasName,
+                           false);
+
+        verify(gridLayer).add(expressionContainerArgumentCaptor.capture());
+        final ExpressionContainerGrid expressionContainer = (ExpressionContainerGrid) expressionContainerArgumentCaptor.getValue();
+        assertFalse(expressionContainer.isOnlyVisualChangeAllowed());
+    }
+
+    @Test
+    public void testSetExpressionWhenOnlyVisualChangeAllowed() {
+        final Optional<HasName> hasName = Optional.empty();
+
+        view.setExpression(NODE_UUID,
+                           hasExpression,
+                           hasName,
+                           true);
+
+        verify(gridLayer).add(expressionContainerArgumentCaptor.capture());
+        final ExpressionContainerGrid expressionContainer = (ExpressionContainerGrid) expressionContainerArgumentCaptor.getValue();
+        assertTrue(expressionContainer.isOnlyVisualChangeAllowed());
+    }
+
+    @Test
     public void testSetExpressionDoesUpdateExpressionNameTextWhenHasNameIsNotEmpty() {
         final String NAME = "NAME";
         final Name name = new Name(NAME);
@@ -349,7 +383,8 @@ public class ExpressionEditorViewImplTest {
 
         view.setExpression(NODE_UUID,
                            hasExpression,
-                           hasName);
+                           hasName,
+                           false);
 
         verify(expressionName).setTextContent(eq(NAME));
     }
@@ -360,7 +395,8 @@ public class ExpressionEditorViewImplTest {
 
         view.setExpression(NODE_UUID,
                            hasExpression,
-                           hasName);
+                           hasName,
+                           false);
 
         verify(expressionName, never()).setTextContent(any(String.class));
     }
@@ -373,7 +409,8 @@ public class ExpressionEditorViewImplTest {
 
         view.setExpression(NODE_UUID,
                            hasExpression,
-                           hasName);
+                           hasName,
+                           false);
 
         verify(expressionType).setTextContent(eq(LITERAL_EXPRESSION_DEFINITION_NAME));
     }
@@ -384,7 +421,8 @@ public class ExpressionEditorViewImplTest {
 
         view.setExpression(NODE_UUID,
                            hasExpression,
-                           hasName);
+                           hasName,
+                           false);
 
         verify(expressionType).setTextContent(eq("<" + UNDEFINED_EXPRESSION_DEFINITION_NAME + ">"));
     }

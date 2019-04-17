@@ -133,11 +133,25 @@ public class ExpressionEditorTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testSetExpression() {
-        setupExpression(decision, decision, toolbarStateHandler);
+        setupExpression(decision, decision, toolbarStateHandler, false);
 
         verify(view).setExpression(eq(NODE_UUID),
                                    eq(decision),
-                                   eq(Optional.of(decision)));
+                                   eq(Optional.of(decision)),
+                                   eq(false));
+        verify(view).setReturnToLinkText(eq(DRG_NAME));
+        verify(toolbarStateHandler).enterGridView();
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testSetExpressionWhenOnlyVisualChangeAllowed() {
+        setupExpression(decision, decision, toolbarStateHandler, true);
+
+        verify(view).setExpression(eq(NODE_UUID),
+                                   eq(decision),
+                                   eq(Optional.of(decision)),
+                                   eq(true));
         verify(view).setReturnToLinkText(eq(DRG_NAME));
         verify(toolbarStateHandler).enterGridView();
     }
@@ -145,7 +159,7 @@ public class ExpressionEditorTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testExitWithCommand() {
-        setupExpression(decision, decision, toolbarStateHandler);
+        setupExpression(decision, decision, toolbarStateHandler, false);
 
         testedEditor.setExitCommand(command);
 
@@ -160,7 +174,7 @@ public class ExpressionEditorTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testSetExpressionWithoutToolbar() {
-        setupExpression(decision, decision, null);
+        setupExpression(decision, decision, null, false);
 
         verifyNoMoreInteractions(toolbarStateHandler);
     }
@@ -168,7 +182,7 @@ public class ExpressionEditorTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testExitWithCommandWithoutToolbar() {
-        setupExpression(decision, decision, null);
+        setupExpression(decision, decision, null, false);
 
         testedEditor.setExitCommand(command);
 
@@ -183,16 +197,19 @@ public class ExpressionEditorTest {
     @SuppressWarnings("unchecked")
     private void setupExpression(final HasExpression hasExpression,
                                  final HasName hasName,
-                                 final ToolbarStateHandler toolbarStateHandler) {
+                                 final ToolbarStateHandler toolbarStateHandler,
+                                 final boolean isOnlyVisualChangeAllowed) {
         testedEditor.setToolbarStateHandler(toolbarStateHandler);
 
         testedEditor.setExpression(NODE_UUID,
                                    hasExpression,
-                                   Optional.of(hasName));
+                                   Optional.of(hasName),
+                                   isOnlyVisualChangeAllowed);
 
         verify(view).setExpression(eq(NODE_UUID),
                                    eq(hasExpression),
-                                   eq(Optional.of(hasName)));
+                                   eq(Optional.of(hasName)),
+                                   eq(isOnlyVisualChangeAllowed));
     }
 
     @Test
@@ -202,7 +219,7 @@ public class ExpressionEditorTest {
         when(node.getContent()).thenReturn(definition);
         when(definition.getDefinition()).thenReturn(decision);
 
-        setupExpression(decision, decision, toolbarStateHandler);
+        setupExpression(decision, decision, toolbarStateHandler, false);
 
         testedEditor.handleCanvasElementUpdated(event);
 
@@ -222,7 +239,7 @@ public class ExpressionEditorTest {
         when(node.getContent()).thenReturn(definition);
         when(definition.getDefinition()).thenReturn(definitions);
 
-        setupExpression(decision, decision, toolbarStateHandler);
+        setupExpression(decision, decision, toolbarStateHandler, false);
 
         verify(view).setReturnToLinkText(eq(DRG_NAME));
 
@@ -241,7 +258,7 @@ public class ExpressionEditorTest {
         when(node.getContent()).thenReturn(definition);
         when(definition.getDefinition()).thenReturn(bkm);
 
-        setupExpression(bkm.asHasExpression(), bkm, toolbarStateHandler);
+        setupExpression(bkm.asHasExpression(), bkm, toolbarStateHandler, false);
 
         testedEditor.handleCanvasElementUpdated(event);
 
@@ -263,7 +280,7 @@ public class ExpressionEditorTest {
         when(node.getContent()).thenReturn(definition);
         when(definition.getDefinition()).thenReturn(differentNodeDefinition);
 
-        setupExpression(decision, decision, toolbarStateHandler);
+        setupExpression(decision, decision, toolbarStateHandler, false);
 
         testedEditor.handleCanvasElementUpdated(event);
 

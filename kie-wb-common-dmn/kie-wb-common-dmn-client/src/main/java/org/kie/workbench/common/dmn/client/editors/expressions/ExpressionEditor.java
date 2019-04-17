@@ -104,10 +104,11 @@ public class ExpressionEditor implements ExpressionEditorView.Presenter {
     @Override
     public void setExpression(final String nodeUUID,
                               final HasExpression hasExpression,
-                              final Optional<HasName> hasName) {
+                              final Optional<HasName> hasName,
+                              final boolean isOnlyVisualChangeAllowed) {
         this.hasExpression = Optional.ofNullable(hasExpression);
 
-        view.setExpression(nodeUUID, hasExpression, hasName);
+        view.setExpression(nodeUUID, hasExpression, hasName, isOnlyVisualChangeAllowed);
         view.setReturnToLinkText(returnToLinkTextSupplier.get());
 
         toolbarStateHandler.ifPresent(ToolbarStateHandler::enterGridView);

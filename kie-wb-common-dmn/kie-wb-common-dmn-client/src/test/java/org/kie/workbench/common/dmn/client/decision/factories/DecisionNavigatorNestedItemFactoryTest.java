@@ -176,6 +176,7 @@ public class DecisionNavigatorNestedItemFactoryTest {
         assertEquals(currentSession, expressionEvent.getSession());
         assertEquals(Optional.of(hasName), expressionEvent.getHasName());
         assertEquals(hasExpression, expressionEvent.getHasExpression());
+        assertFalse(expressionEvent.isOnlyVisualChangeAllowed());
     }
 
     @Test

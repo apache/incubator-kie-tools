@@ -77,6 +77,8 @@ public abstract class BaseGrid<E extends Expression> extends BaseGridWidget impl
     protected final CellEditorControlsView.Presenter cellEditorControls;
     protected final TranslationService translationService;
 
+    protected boolean isOnlyVisualChangeAllowed;
+
     public BaseGrid(final DMNGridLayer gridLayer,
                     final GridData gridData,
                     final GridRenderer gridRenderer,
@@ -99,7 +101,8 @@ public abstract class BaseGrid<E extends Expression> extends BaseGridWidget impl
              refreshFormPropertiesEvent,
              domainObjectSelectionEvent,
              cellEditorControls,
-             translationService);
+             translationService,
+             false);
     }
 
     public BaseGrid(final Optional<String> nodeUUID,
@@ -114,7 +117,8 @@ public abstract class BaseGrid<E extends Expression> extends BaseGridWidget impl
                     final Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent,
                     final Event<DomainObjectSelectionEvent> domainObjectSelectionEvent,
                     final CellEditorControlsView.Presenter cellEditorControls,
-                    final TranslationService translationService) {
+                    final TranslationService translationService,
+                    final boolean isOnlyVisualChangeAllowed) {
         super(gridData,
               gridLayer,
               gridLayer,
@@ -131,6 +135,7 @@ public abstract class BaseGrid<E extends Expression> extends BaseGridWidget impl
         this.domainObjectSelectionEvent = domainObjectSelectionEvent;
         this.cellEditorControls = cellEditorControls;
         this.translationService = translationService;
+        this.isOnlyVisualChangeAllowed = isOnlyVisualChangeAllowed;
     }
 
     protected double getAndSetInitialWidth(final int uiColumnIndex,
@@ -241,7 +246,8 @@ public abstract class BaseGrid<E extends Expression> extends BaseGridWidget impl
 
     @Override
     @SuppressWarnings("unchecked")
-    public boolean showContextMenuForCell(final int uiRowIndex, final int uiColumnIndex) {
+    public boolean showContextMenuForCell(final int uiRowIndex,
+                                          final int uiColumnIndex) {
         final GridCell<?> cell = model.getCell(uiRowIndex, uiColumnIndex);
         if (cell instanceof DMNGridCell<?>) {
             if (((DMNGridCell<?>) cell).getEditor().isPresent()) {
@@ -271,5 +277,9 @@ public abstract class BaseGrid<E extends Expression> extends BaseGridWidget impl
             }
         }
         return super.showContextMenuForCell(uiRowIndex, uiColumnIndex);
+    }
+
+    public boolean isOnlyVisualChangeAllowed() {
+        return isOnlyVisualChangeAllowed;
     }
 }

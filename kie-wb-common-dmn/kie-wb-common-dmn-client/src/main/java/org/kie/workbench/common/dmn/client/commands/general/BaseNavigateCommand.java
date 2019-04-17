@@ -53,6 +53,7 @@ public abstract class BaseNavigateCommand extends AbstractCanvasGraphCommand {
     protected final String nodeUUID;
     protected final HasExpression hasExpression;
     protected final Optional<HasName> hasName;
+    protected final boolean isOnlyVisualChangeAllowed;
 
     public BaseNavigateCommand(final ExpressionEditorView.Presenter editor,
                                final SessionPresenter<? extends ClientSession, ?, Diagram> presenter,
@@ -61,7 +62,8 @@ public abstract class BaseNavigateCommand extends AbstractCanvasGraphCommand {
                                final Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent,
                                final String nodeUUID,
                                final HasExpression hasExpression,
-                               final Optional<HasName> hasName) {
+                               final Optional<HasName> hasName,
+                               final boolean isOnlyVisualChangeAllowed) {
         this.editor = editor;
         this.presenter = presenter;
         this.sessionManager = sessionManager;
@@ -70,6 +72,7 @@ public abstract class BaseNavigateCommand extends AbstractCanvasGraphCommand {
         this.nodeUUID = nodeUUID;
         this.hasExpression = hasExpression;
         this.hasName = hasName;
+        this.isOnlyVisualChangeAllowed = isOnlyVisualChangeAllowed;
     }
 
     protected void navigateToExpressionEditor(final HasExpression hasExpression,
@@ -82,7 +85,8 @@ public abstract class BaseNavigateCommand extends AbstractCanvasGraphCommand {
                                                                             refreshFormPropertiesEvent,
                                                                             nodeUUID,
                                                                             hasExpression,
-                                                                            hasName));
+                                                                            hasName,
+                                                                            isOnlyVisualChangeAllowed));
     }
 
     protected void navigateToDRGEditor(final HasExpression hasExpression,
@@ -95,7 +99,8 @@ public abstract class BaseNavigateCommand extends AbstractCanvasGraphCommand {
                                                                      refreshFormPropertiesEvent,
                                                                      nodeUUID,
                                                                      hasExpression,
-                                                                     hasName));
+                                                                     hasName,
+                                                                     isOnlyVisualChangeAllowed));
     }
 
     protected void enableHandlers(final boolean enabled) {

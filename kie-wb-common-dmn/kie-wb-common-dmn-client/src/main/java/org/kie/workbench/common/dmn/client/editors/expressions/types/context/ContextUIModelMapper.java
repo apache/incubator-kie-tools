@@ -41,22 +41,22 @@ public class ContextUIModelMapper extends BaseUIModelMapper<Context> {
     public static final String DEFAULT_ROW_CAPTION = "<result>";
 
     private final GridWidget gridWidget;
-
+    private final Supplier<Boolean> isOnlyVisualChangeAllowedSupplier;
     private final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
-
     private final ListSelectorView.Presenter listSelector;
-
     private final int nesting;
 
     public ContextUIModelMapper(final GridWidget gridWidget,
                                 final Supplier<GridData> uiModel,
                                 final Supplier<Optional<Context>> dmnModel,
+                                final Supplier<Boolean> isOnlyVisualChangeAllowedSupplier,
                                 final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
                                 final ListSelectorView.Presenter listSelector,
                                 final int nesting) {
         super(uiModel,
               dmnModel);
         this.gridWidget = gridWidget;
+        this.isOnlyVisualChangeAllowedSupplier = isOnlyVisualChangeAllowedSupplier;
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
         this.listSelector = listSelector;
         this.nesting = nesting;
@@ -93,6 +93,7 @@ public class ContextUIModelMapper extends BaseUIModelMapper<Context> {
                 case EXPRESSION:
                     final ContextEntry ce = context.getContextEntry().get(rowIndex);
                     final Optional<Expression> expression = Optional.ofNullable(ce.getExpression());
+                    final boolean isOnlyVisualChangeAllowed = this.isOnlyVisualChangeAllowedSupplier.get();
 
                     final Optional<ExpressionEditorDefinition<Expression>> expressionEditorDefinition = expressionEditorDefinitionsSupplier.get().getExpressionEditorDefinition(expression);
                     expressionEditorDefinition.ifPresent(ed -> {
@@ -102,6 +103,7 @@ public class ContextUIModelMapper extends BaseUIModelMapper<Context> {
                                                                                                                                                         Optional.empty(),
                                                                                                                                                         ce,
                                                                                                                                                         Optional.ofNullable(ce.getVariable()),
+                                                                                                                                                        isOnlyVisualChangeAllowed,
                                                                                                                                                         nesting + 1);
 
                         uiModel.get().setCell(rowIndex,

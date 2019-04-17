@@ -92,6 +92,7 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGri
                           final CellEditorControlsView.Presenter cellEditorControls,
                           final ListSelectorView.Presenter listSelector,
                           final TranslationService translationService,
+                          final boolean isOnlyVisualChangeAllowed,
                           final int nesting,
                           final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
                           final NameAndDataTypePopoverView.Presenter headerEditor) {
@@ -113,6 +114,7 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGri
               cellEditorControls,
               listSelector,
               translationService,
+              isOnlyVisualChangeAllowed,
               nesting);
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
         this.headerEditor = headerEditor;
@@ -133,6 +135,7 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGri
         return new InvocationUIModelMapper(this,
                                            this::getModel,
                                            getExpression(),
+                                           () -> isOnlyVisualChangeAllowed,
                                            expressionEditorDefinitionsSupplier,
                                            listSelector,
                                            nesting);

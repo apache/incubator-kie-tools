@@ -40,6 +40,7 @@ public class ExpressionContainerUIModelMapper extends BaseUIModelMapper<Expressi
     private final Supplier<String> nodeUUID;
     private final Supplier<HasExpression> hasExpression;
     private final Supplier<Optional<HasName>> hasName;
+    private final Supplier<Boolean> isOnlyVisualChangeAllowedSupplier;
     private final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitions;
     private final Supplier<ExpressionGridCache> expressionGridCache;
     private final ListSelectorView.Presenter listSelector;
@@ -50,6 +51,7 @@ public class ExpressionContainerUIModelMapper extends BaseUIModelMapper<Expressi
                                             final Supplier<String> nodeUUID,
                                             final Supplier<HasExpression> hasExpression,
                                             final Supplier<Optional<HasName>> hasName,
+                                            final Supplier<Boolean> isOnlyVisualChangeAllowedSupplier,
                                             final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitions,
                                             final Supplier<ExpressionGridCache> expressionGridCache,
                                             final ListSelectorView.Presenter listSelector) {
@@ -59,6 +61,7 @@ public class ExpressionContainerUIModelMapper extends BaseUIModelMapper<Expressi
         this.nodeUUID = nodeUUID;
         this.hasExpression = hasExpression;
         this.hasName = hasName;
+        this.isOnlyVisualChangeAllowedSupplier = isOnlyVisualChangeAllowedSupplier;
         this.expressionEditorDefinitions = expressionEditorDefinitions;
         this.expressionGridCache = expressionGridCache;
         this.listSelector = listSelector;
@@ -71,6 +74,7 @@ public class ExpressionContainerUIModelMapper extends BaseUIModelMapper<Expressi
         final GridData uiModel = this.uiModel.get();
         final Optional<Expression> expression = dmnModel.get();
         final Optional<HasName> hasName = this.hasName.get();
+        final boolean isOnlyVisualChangeAllowed = this.isOnlyVisualChangeAllowedSupplier.get();
         final HasExpression hasExpression = this.hasExpression.get();
 
         final Optional<ExpressionEditorDefinition<Expression>> expressionEditorDefinition = expressionEditorDefinitions.get().getExpressionEditorDefinition(expression);
@@ -81,6 +85,7 @@ public class ExpressionContainerUIModelMapper extends BaseUIModelMapper<Expressi
                                                                                                                                                          Optional.of(uuid),
                                                                                                                                                          hasExpression,
                                                                                                                                                          hasName,
+                                                                                                                                                         isOnlyVisualChangeAllowed,
                                                                                                                                                          0);
                 expressionGridCache.get().putExpressionGrid(uuid, oEditor);
                 editor = oEditor;

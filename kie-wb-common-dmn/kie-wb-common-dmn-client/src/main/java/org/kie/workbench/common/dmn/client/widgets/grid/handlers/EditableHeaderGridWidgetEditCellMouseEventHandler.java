@@ -18,10 +18,12 @@ package org.kie.workbench.common.dmn.client.widgets.grid.handlers;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.ait.lienzo.client.core.event.AbstractNodeMouseEvent;
 import com.ait.lienzo.client.core.types.Point2D;
+import org.kie.workbench.common.dmn.client.editors.expressions.util.DynamicReadOnlyUtils;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableHeaderMetaData;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableHeaderUtilities;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellEditAction;
@@ -35,6 +37,27 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.DefaultGridWidg
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
 
 public class EditableHeaderGridWidgetEditCellMouseEventHandler extends DefaultGridWidgetEditCellMouseEventHandler {
+
+    @Override
+    public boolean onNodeMouseEvent(final GridWidget gridWidget,
+                                    final Point2D relativeLocation,
+                                    final Optional<Integer> uiHeaderRowIndex,
+                                    final Optional<Integer> uiHeaderColumnIndex,
+                                    final Optional<Integer> uiRowIndex,
+                                    final Optional<Integer> uiColumnIndex,
+                                    final AbstractNodeMouseEvent event) {
+        if (DynamicReadOnlyUtils.isOnlyVisualChangeAllowed(gridWidget)) {
+            return false;
+        }
+
+        return super.onNodeMouseEvent(gridWidget,
+                                      relativeLocation,
+                                      uiHeaderRowIndex,
+                                      uiHeaderColumnIndex,
+                                      uiRowIndex,
+                                      uiColumnIndex,
+                                      event);
+    }
 
     @Override
     public boolean handleHeaderCell(final GridWidget gridWidget,

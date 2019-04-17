@@ -88,6 +88,7 @@ public class UndefinedExpressionGrid extends BaseDelegatingExpressionGrid<Expres
                                    final CellEditorControlsView.Presenter cellEditorControls,
                                    final ListSelectorView.Presenter listSelector,
                                    final TranslationService translationService,
+                                   final boolean isOnlyVisualChangeAllowed,
                                    final int nesting,
                                    final UndefinedExpressionSelectorPopoverView.Presenter undefinedExpressionSelector,
                                    final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
@@ -110,6 +111,7 @@ public class UndefinedExpressionGrid extends BaseDelegatingExpressionGrid<Expres
               cellEditorControls,
               listSelector,
               translationService,
+              isOnlyVisualChangeAllowed,
               nesting);
         this.undefinedExpressionSelector = undefinedExpressionSelector;
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
@@ -222,6 +224,7 @@ public class UndefinedExpressionGrid extends BaseDelegatingExpressionGrid<Expres
                                                                                                 nodeUUID,
                                                                                                 hasExpression,
                                                                                                 hasName,
+                                                                                                isOnlyVisualChangeAllowed,
                                                                                                 nesting);
                                                                       }
                                                                       return editor;

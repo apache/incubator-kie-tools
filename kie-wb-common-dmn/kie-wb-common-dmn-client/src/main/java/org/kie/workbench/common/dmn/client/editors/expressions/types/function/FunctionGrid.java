@@ -103,6 +103,7 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGrid
                         final CellEditorControlsView.Presenter cellEditorControls,
                         final ListSelectorView.Presenter listSelector,
                         final TranslationService translationService,
+                        final boolean isOnlyVisualChangeAllowed,
                         final int nesting,
                         final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
                         final Supplier<ExpressionEditorDefinitions> supplementaryEditorDefinitionsSupplier,
@@ -127,6 +128,7 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGrid
               cellEditorControls,
               listSelector,
               translationService,
+              isOnlyVisualChangeAllowed,
               nesting);
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
         this.supplementaryEditorDefinitionsSupplier = supplementaryEditorDefinitionsSupplier;
@@ -150,6 +152,7 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGrid
         return new FunctionUIModelMapper(this,
                                          this::getModel,
                                          getExpression(),
+                                         () -> isOnlyVisualChangeAllowed,
                                          expressionEditorDefinitionsSupplier,
                                          supplementaryEditorDefinitionsSupplier,
                                          listSelector,
@@ -346,6 +349,7 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGrid
                                                                                                Optional.empty(),
                                                                                                getExpression().get().get(),
                                                                                                hasName,
+                                                                                               isOnlyVisualChangeAllowed,
                                                                                                nesting + 1);
                                                                  return editor;
                                                              }));

@@ -46,22 +46,22 @@ public class InvocationUIModelMapper extends BaseUIModelMapper<Invocation> {
     public static final int BINDING_EXPRESSION_COLUMN_INDEX = 2;
 
     private final GridWidget gridWidget;
-
+    private final Supplier<Boolean> isOnlyVisualChangeAllowedSupplier;
     private final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
-
     private final ListSelectorView.Presenter listSelector;
-
     private final int nesting;
 
     public InvocationUIModelMapper(final GridWidget gridWidget,
                                    final Supplier<GridData> uiModel,
                                    final Supplier<Optional<Invocation>> dmnModel,
+                                   final Supplier<Boolean> isOnlyVisualChangeAllowedSupplier,
                                    final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
                                    final ListSelectorView.Presenter listSelector,
                                    final int nesting) {
         super(uiModel,
               dmnModel);
         this.gridWidget = gridWidget;
+        this.isOnlyVisualChangeAllowedSupplier = isOnlyVisualChangeAllowedSupplier;
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
         this.listSelector = listSelector;
         this.nesting = nesting;
@@ -90,6 +90,7 @@ public class InvocationUIModelMapper extends BaseUIModelMapper<Invocation> {
                 case BINDING_EXPRESSION_COLUMN_INDEX:
                     final Binding binding = invocation.getBinding().get(rowIndex);
                     final Optional<Expression> expression = Optional.ofNullable(binding.getExpression());
+                    final boolean isOnlyVisualChangeAllowed = this.isOnlyVisualChangeAllowedSupplier.get();
 
                     final Optional<ExpressionEditorDefinition<Expression>> expressionEditorDefinition = expressionEditorDefinitionsSupplier.get().getExpressionEditorDefinition(expression);
                     expressionEditorDefinition.ifPresent(ed -> {
@@ -99,6 +100,7 @@ public class InvocationUIModelMapper extends BaseUIModelMapper<Invocation> {
                                                                                                                                                         Optional.empty(),
                                                                                                                                                         binding,
                                                                                                                                                         Optional.ofNullable(binding.getParameter()),
+                                                                                                                                                        isOnlyVisualChangeAllowed,
                                                                                                                                                         nesting + 1);
                         uiModel.get().setCell(rowIndex,
                                               columnIndex,

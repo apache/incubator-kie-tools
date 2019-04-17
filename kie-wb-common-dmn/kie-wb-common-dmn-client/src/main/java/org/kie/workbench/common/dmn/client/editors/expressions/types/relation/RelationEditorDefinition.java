@@ -124,6 +124,7 @@ public class RelationEditorDefinition extends BaseEditorDefinition<Relation, Rel
                                                                                                                          final Optional<String> nodeUUID,
                                                                                                                          final HasExpression hasExpression,
                                                                                                                          final Optional<HasName> hasName,
+                                                                                                                         final boolean isOnlyVisualChangeAllowed,
                                                                                                                          final int nesting) {
         return Optional.of(new RelationGrid(parent,
                                             nodeUUID,
@@ -142,6 +143,7 @@ public class RelationEditorDefinition extends BaseEditorDefinition<Relation, Rel
                                             getCellEditorControls(),
                                             listSelector,
                                             translationService,
+                                            isOnlyVisualChangeAllowed,
                                             nesting,
                                             headerEditor));
     }

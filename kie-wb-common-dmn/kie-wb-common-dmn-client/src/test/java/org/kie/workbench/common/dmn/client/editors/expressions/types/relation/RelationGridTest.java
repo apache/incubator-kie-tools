@@ -299,6 +299,7 @@ public class RelationGridTest {
                                                             nesting == 0 ? Optional.of(NODE_UUID) : Optional.empty(),
                                                             hasExpression,
                                                             hasName,
+                                                            false,
                                                             nesting).get());
     }
 

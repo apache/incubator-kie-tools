@@ -303,7 +303,8 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
                                                                                 refreshFormPropertiesEvent,
                                                                                 event.getNodeUUID(),
                                                                                 event.getHasExpression(),
-                                                                                event.getHasName()));
+                                                                                event.getHasName(),
+                                                                                event.isOnlyVisualChangeAllowed()));
         }
     }
 

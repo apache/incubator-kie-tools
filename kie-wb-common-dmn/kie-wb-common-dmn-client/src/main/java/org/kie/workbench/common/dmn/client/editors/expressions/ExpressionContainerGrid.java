@@ -128,6 +128,7 @@ public class ExpressionContainerGrid extends BaseGrid<Expression> {
                                                                   () -> nodeUUID.get(),
                                                                   () -> hasExpression,
                                                                   () -> hasName,
+                                                                  () -> isOnlyVisualChangeAllowed,
                                                                   expressionEditorDefinitions,
                                                                   expressionGridCache,
                                                                   listSelector);
@@ -160,10 +161,12 @@ public class ExpressionContainerGrid extends BaseGrid<Expression> {
 
     public void setExpression(final String nodeUUID,
                               final HasExpression hasExpression,
-                              final Optional<HasName> hasName) {
+                              final Optional<HasName> hasName,
+                              final boolean isOnlyVisualChangeAllowed) {
         this.nodeUUID = Optional.of(nodeUUID);
         this.hasExpression = spyHasExpression(hasExpression);
         this.hasName = spyHasName(hasName);
+        this.isOnlyVisualChangeAllowed = isOnlyVisualChangeAllowed;
 
         uiModelMapper.fromDMNModel(0, 0);
 

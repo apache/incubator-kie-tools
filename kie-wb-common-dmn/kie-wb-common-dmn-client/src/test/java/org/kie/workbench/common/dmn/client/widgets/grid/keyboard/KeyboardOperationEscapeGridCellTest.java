@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.widgets.grid.columns;
+package org.kie.workbench.common.dmn.client.widgets.grid.keyboard;
 
 import java.util.Optional;
 
@@ -42,7 +42,7 @@ public class KeyboardOperationEscapeGridCellTest {
     private KeyboardOperationEscapeGridCell operation;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         operation = new KeyboardOperationEscapeGridCell(gridLayer);
     }
 

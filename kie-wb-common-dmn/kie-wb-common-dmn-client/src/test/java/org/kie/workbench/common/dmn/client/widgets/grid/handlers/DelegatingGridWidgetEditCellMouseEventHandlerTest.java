@@ -38,6 +38,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -96,6 +97,23 @@ public class DelegatingGridWidgetEditCellMouseEventHandlerTest {
         when(parent.getRowIndex()).thenReturn(PARENT_ROW_INDEX);
         when(parent.getColumnIndex()).thenReturn(PARENT_COLUMN_INDEX);
         when(parentGridWidget.getModel()).thenReturn(parentGridData);
+    }
+
+    @Test
+    public void testOnNodeMouseEventWhenOnlyVisualChangeAllowed() {
+        when(gridWidget.isOnlyVisualChangeAllowed()).thenReturn(true);
+
+        setupGrid(() -> null, () -> 0);
+
+        assertThat(handler.onNodeMouseEvent(gridWidget,
+                                            relativeLocation,
+                                            uiHeaderRowIndex,
+                                            uiHeaderColumnIndex,
+                                            uiRowIndex,
+                                            uiColumnIndex,
+                                            event)).isFalse();
+
+        verify(gridWidget, never()).startEditingCell(any(Point2D.class));
     }
 
     @Test

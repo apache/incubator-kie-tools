@@ -82,6 +82,7 @@ public class LiteralExpressionGrid extends BaseDelegatingExpressionGrid<LiteralE
                                  final CellEditorControlsView.Presenter cellEditorControls,
                                  final ListSelectorView.Presenter listSelector,
                                  final TranslationService translationService,
+                                 final boolean isOnlyVisualChangeAllowed,
                                  final int nesting,
                                  final NameAndDataTypePopoverView.Presenter headerEditor) {
         super(parent,
@@ -102,6 +103,7 @@ public class LiteralExpressionGrid extends BaseDelegatingExpressionGrid<LiteralE
               cellEditorControls,
               listSelector,
               translationService,
+              isOnlyVisualChangeAllowed,
               nesting);
         this.headerEditor = headerEditor;
 

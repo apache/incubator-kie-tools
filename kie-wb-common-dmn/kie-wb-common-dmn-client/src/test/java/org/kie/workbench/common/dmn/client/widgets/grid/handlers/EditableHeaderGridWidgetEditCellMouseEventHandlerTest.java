@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.client.widgets.grid.handlers;
 
 import java.util.Collections;
+import java.util.Optional;
 
 import com.ait.lienzo.client.core.event.NodeMouseClickEvent;
 import com.ait.lienzo.client.core.event.NodeMouseDoubleClickEvent;
@@ -29,6 +30,7 @@ import com.google.gwt.event.dom.client.MouseEvent;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.client.widgets.grid.BaseGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableHeaderMetaData;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -39,10 +41,8 @@ import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellEditContext;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
-import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.GridPinnedModeManager;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
@@ -64,7 +64,7 @@ public class EditableHeaderGridWidgetEditCellMouseEventHandlerTest {
     private static final double GRID_COMPUTED_LOCATION_Y = 200.0;
 
     @Mock
-    private GridWidget gridWidget;
+    private BaseGrid gridWidget;
 
     @Mock
     private Group gridWidgetHeader;
@@ -74,9 +74,6 @@ public class EditableHeaderGridWidgetEditCellMouseEventHandlerTest {
 
     @Mock
     private Viewport viewport;
-
-    @Mock
-    private GridPinnedModeManager pinnedModeManager;
 
     @Mock
     private GridRenderer renderer;
@@ -146,6 +143,22 @@ public class EditableHeaderGridWidgetEditCellMouseEventHandlerTest {
         when(editableHeaderMetaData.getSupportedEditAction()).thenReturn(GridCellEditAction.SINGLE_CLICK);
 
         this.handler = new EditableHeaderGridWidgetEditCellMouseEventHandler();
+    }
+
+    @Test
+    public void testOnNodeMouseEventWhenOnlyVisualChangeAllowed() {
+        when(gridWidget.isOnlyVisualChangeAllowed()).thenReturn(true);
+
+        assertThat(handler.onNodeMouseEvent(gridWidget,
+                                            relativeLocation,
+                                            Optional.empty(),
+                                            Optional.empty(),
+                                            Optional.empty(),
+                                            Optional.empty(),
+                                            clickEvent)).isFalse();
+
+        verify(gridWidget, never()).startEditingCell(any(Point2D.class));
+        verify(editableHeaderMetaData, never()).edit(any(GridBodyCellEditContext.class));
     }
 
     @Test

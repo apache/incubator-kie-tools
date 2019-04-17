@@ -129,6 +129,7 @@ public class ContextEditorDefinition extends BaseEditorDefinition<Context, Conte
                                                                                                                          final Optional<String> nodeUUID,
                                                                                                                          final HasExpression hasExpression,
                                                                                                                          final Optional<HasName> hasName,
+                                                                                                                         final boolean isOnlyVisualChangeAllowed,
                                                                                                                          final int nesting) {
         return Optional.of(new ContextGrid(parent,
                                            nodeUUID,
@@ -147,6 +148,7 @@ public class ContextEditorDefinition extends BaseEditorDefinition<Context, Conte
                                            getCellEditorControls(),
                                            listSelector,
                                            translationService,
+                                           isOnlyVisualChangeAllowed,
                                            nesting,
                                            expressionEditorDefinitionsSupplier,
                                            headerEditor));

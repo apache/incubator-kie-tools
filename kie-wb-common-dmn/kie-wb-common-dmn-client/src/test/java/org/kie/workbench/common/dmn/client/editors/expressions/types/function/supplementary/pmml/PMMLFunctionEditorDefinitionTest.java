@@ -187,6 +187,7 @@ public class PMMLFunctionEditorDefinitionTest {
                                                                                                                                                  Optional.empty(),
                                                                                                                                                  hasExpression,
                                                                                                                                                  hasName,
+                                                                                                                                                 false,
                                                                                                                                                  0);
 
         assertTrue(oEditor.isPresent());

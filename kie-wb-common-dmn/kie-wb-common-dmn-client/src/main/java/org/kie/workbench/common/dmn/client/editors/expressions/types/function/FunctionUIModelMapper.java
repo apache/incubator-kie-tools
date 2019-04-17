@@ -35,6 +35,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 public class FunctionUIModelMapper extends BaseUIModelMapper<FunctionDefinition> {
 
     private final GridWidget gridWidget;
+    private final Supplier<Boolean> isOnlyVisualChangeAllowedSupplier;
     private final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
     private final Supplier<ExpressionEditorDefinitions> supplementaryEditorDefinitionsSupplier;
     private final ListSelectorView.Presenter listSelector;
@@ -43,6 +44,7 @@ public class FunctionUIModelMapper extends BaseUIModelMapper<FunctionDefinition>
     public FunctionUIModelMapper(final GridWidget gridWidget,
                                  final Supplier<GridData> uiModel,
                                  final Supplier<Optional<FunctionDefinition>> dmnModel,
+                                 final Supplier<Boolean> isOnlyVisualChangeAllowedSupplier,
                                  final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
                                  final Supplier<ExpressionEditorDefinitions> supplementaryEditorDefinitionsSupplier,
                                  final ListSelectorView.Presenter listSelector,
@@ -50,6 +52,7 @@ public class FunctionUIModelMapper extends BaseUIModelMapper<FunctionDefinition>
         super(uiModel,
               dmnModel);
         this.gridWidget = gridWidget;
+        this.isOnlyVisualChangeAllowedSupplier = isOnlyVisualChangeAllowedSupplier;
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
         this.supplementaryEditorDefinitionsSupplier = supplementaryEditorDefinitionsSupplier;
         this.listSelector = listSelector;
@@ -97,10 +100,12 @@ public class FunctionUIModelMapper extends BaseUIModelMapper<FunctionDefinition>
         final GridCellTuple expressionParent = new GridCellTuple(rowIndex,
                                                                  columnIndex,
                                                                  gridWidget);
+        final boolean isOnlyVisualChangeAllowed = this.isOnlyVisualChangeAllowedSupplier.get();
         final Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>> editor = ed.getEditor(expressionParent,
                                                                                                                                         Optional.empty(),
                                                                                                                                         function,
                                                                                                                                         Optional.empty(),
+                                                                                                                                        isOnlyVisualChangeAllowed,
                                                                                                                                         nesting);
         uiModel.get().setCell(rowIndex,
                               columnIndex,

@@ -124,6 +124,7 @@ public class AddParameterBindingCommandTest {
         this.uiModelMapper = new InvocationUIModelMapper(gridWidget,
                                                          () -> uiModel,
                                                          () -> Optional.of(invocation),
+                                                         () -> false,
                                                          () -> expressionEditorDefinitions,
                                                          listSelector,
                                                          0);

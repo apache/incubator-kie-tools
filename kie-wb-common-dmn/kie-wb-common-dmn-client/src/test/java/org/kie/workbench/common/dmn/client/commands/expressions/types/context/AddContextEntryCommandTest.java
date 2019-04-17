@@ -58,6 +58,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.reset;
@@ -162,10 +163,12 @@ public class AddContextEntryCommandTest {
                                                                                                              any(Optional.class),
                                                                                                              any(HasExpression.class),
                                                                                                              any(Optional.class),
+                                                                                                             anyBoolean(),
                                                                                                              anyInt());
         this.uiModelMapper = new ContextUIModelMapper(gridWidget,
                                                       () -> uiModel,
                                                       () -> Optional.of(context),
+                                                      () -> false,
                                                       () -> expressionEditorDefinitions,
                                                       listSelector,
                                                       0);

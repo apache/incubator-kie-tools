@@ -48,7 +48,8 @@ public class NavigateToDRGEditorCommand extends BaseNavigateCommand implements V
                                       final Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent,
                                       final String nodeUUID,
                                       final HasExpression hasExpression,
-                                      final Optional<HasName> hasName) {
+                                      final Optional<HasName> hasName,
+                                      final boolean isOnlyVisualChangeAllowed) {
         super(editor,
               presenter,
               sessionManager,
@@ -56,7 +57,8 @@ public class NavigateToDRGEditorCommand extends BaseNavigateCommand implements V
               refreshFormPropertiesEvent,
               nodeUUID,
               hasExpression,
-              hasName);
+              hasName,
+              isOnlyVisualChangeAllowed);
     }
 
     @Override
@@ -85,7 +87,8 @@ public class NavigateToDRGEditorCommand extends BaseNavigateCommand implements V
                 hidePaletteWidget(true);
                 editor.setExpression(nodeUUID,
                                      hasExpression,
-                                     hasName);
+                                     hasName,
+                                     isOnlyVisualChangeAllowed);
                 editor.setExitCommand(() -> navigateToExpressionEditor(hasExpression,
                                                                        hasName));
                 addExpressionEditorToCanvasWidget();

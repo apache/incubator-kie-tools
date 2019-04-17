@@ -36,7 +36,7 @@ public class NavigateToExpressionEditorCommandTest extends BaseNavigationCommand
 
     @Override
     @SuppressWarnings("unchecked")
-    protected BaseNavigateCommand getCommand() {
+    protected BaseNavigateCommand getCommand(final boolean isOnlyVisualChangeAllowed) {
         return new NavigateToExpressionEditorCommand(editor,
                                                      sessionPresenter,
                                                      sessionManager,
@@ -44,12 +44,26 @@ public class NavigateToExpressionEditorCommandTest extends BaseNavigationCommand
                                                      refreshFormPropertiesEvent,
                                                      NODE_UUID,
                                                      hasExpression,
-                                                     Optional.of(hasName));
+                                                     Optional.of(hasName),
+                                                     isOnlyVisualChangeAllowed);
     }
 
     @Test
     @Override
     public void executeCanvasCommand() {
+        setup(false);
+
+        assertUndoCanvasCommand(false);
+    }
+
+    @Test
+    public void executeCanvasCommandWhenOnlyVisualChangeAllowed() {
+        setup(true);
+
+        assertUndoCanvasCommand(true);
+    }
+
+    private void assertUndoCanvasCommand(final boolean isOnlyVisualChangeAllowed) {
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      command.getCanvasCommand(canvasHandler).execute(canvasHandler));
 
@@ -59,13 +73,16 @@ public class NavigateToExpressionEditorCommandTest extends BaseNavigationCommand
         verify(sessionPresenterView).setCanvasWidget(editorContainerForErrai1090);
         verify(editor).setExpression(eq(NODE_UUID),
                                      eq(hasExpression),
-                                     eq(Optional.of(hasName)));
+                                     eq(Optional.of(hasName)),
+                                     eq(isOnlyVisualChangeAllowed));
         verify(expressionEditorView).setFocus();
     }
 
     @Test
     @Override
     public void undoCanvasCommand() {
+        setup(false);
+
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      command.getCanvasCommand(canvasHandler).undo(canvasHandler));
 
@@ -79,6 +96,8 @@ public class NavigateToExpressionEditorCommandTest extends BaseNavigationCommand
 
     @Test
     public void checkCommandDefinition() {
+        setup(false);
+
         assertTrue(command instanceof VetoExecutionCommand);
     }
 }

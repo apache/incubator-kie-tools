@@ -456,6 +456,7 @@ public class ExpressionEditorColumnTest {
                                       cellEditorControls,
                                       listSelector,
                                       translationService,
+                                      false,
                                       0) {
             @Override
             protected BaseUIModelMapper makeUiModelMapper() {

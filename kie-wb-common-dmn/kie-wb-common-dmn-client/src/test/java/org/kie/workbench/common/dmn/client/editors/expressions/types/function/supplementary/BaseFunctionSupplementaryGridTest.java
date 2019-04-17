@@ -60,6 +60,7 @@ import org.uberfire.mocks.EventSourceMock;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.when;
 
@@ -152,6 +153,7 @@ public abstract class BaseFunctionSupplementaryGridTest<D extends ExpressionEdit
                                                          any(Optional.class),
                                                          any(HasExpression.class),
                                                          any(Optional.class),
+                                                         anyBoolean(),
                                                          anyInt())).thenReturn(Optional.of(literalExpressionEditor));
     }
 
@@ -161,6 +163,7 @@ public abstract class BaseFunctionSupplementaryGridTest<D extends ExpressionEdit
                                                                      Optional.empty(),
                                                                      hasExpression,
                                                                      hasName,
+                                                                     false,
                                                                      nesting).get();
     }
 

@@ -38,10 +38,11 @@ import static org.kie.workbench.common.dmn.client.editors.expressions.types.cont
 public class ContextUIModelMapperTest extends BaseContextUIModelMapperTest<ContextUIModelMapper> {
 
     @Override
-    protected ContextUIModelMapper getMapper() {
+    protected ContextUIModelMapper getMapper(final boolean isOnlyVisualChangeAllowedSupplier) {
         return new ContextUIModelMapper(gridWidget,
                                         () -> uiModel,
                                         () -> Optional.of(context),
+                                        () -> isOnlyVisualChangeAllowedSupplier,
                                         expressionEditorDefinitionsSupplier,
                                         listSelector,
                                         0);
@@ -49,6 +50,8 @@ public class ContextUIModelMapperTest extends BaseContextUIModelMapperTest<Conte
 
     @Test
     public void testFromDMNModelRowNumber() {
+        setup(false);
+
         mapper.fromDMNModel(0, ROW_COLUMN_INDEX);
         mapper.fromDMNModel(1, ROW_COLUMN_INDEX);
 
@@ -61,6 +64,8 @@ public class ContextUIModelMapperTest extends BaseContextUIModelMapperTest<Conte
 
     @Test
     public void testFromDMNModelName() {
+        setup(false);
+
         mapper.fromDMNModel(0, NAME_COLUMN_INDEX);
         mapper.fromDMNModel(1, NAME_COLUMN_INDEX);
 
@@ -73,6 +78,8 @@ public class ContextUIModelMapperTest extends BaseContextUIModelMapperTest<Conte
 
     @Test
     public void testFromDMNModelExpression() {
+        setup(false);
+
         mapper.fromDMNModel(0, EXPRESSION_COLUMN_INDEX);
         mapper.fromDMNModel(1, EXPRESSION_COLUMN_INDEX);
 
@@ -93,6 +100,8 @@ public class ContextUIModelMapperTest extends BaseContextUIModelMapperTest<Conte
 
     @Test
     public void testFromDMNModelCellTypes() {
+        setup(false);
+
         IntStream.range(0, 2).forEach(rowIndex -> {
             mapper.fromDMNModel(rowIndex, ROW_COLUMN_INDEX);
             mapper.fromDMNModel(rowIndex, NAME_COLUMN_INDEX);

@@ -157,6 +157,7 @@ public class LiteralExpressionEditorDefinitionTest {
                                                                                                                                                  Optional.empty(),
                                                                                                                                                  hasExpression,
                                                                                                                                                  hasName,
+                                                                                                                                                 false,
                                                                                                                                                  0);
 
         assertThat(oEditor).isPresent();

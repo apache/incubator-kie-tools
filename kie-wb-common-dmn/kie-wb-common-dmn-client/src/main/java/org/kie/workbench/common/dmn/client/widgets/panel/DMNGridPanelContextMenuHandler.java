@@ -22,6 +22,7 @@ import java.util.Optional;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.google.gwt.event.dom.client.ContextMenuEvent;
 import com.google.gwt.event.dom.client.ContextMenuHandler;
+import org.kie.workbench.common.dmn.client.editors.expressions.util.DynamicReadOnlyUtils;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.HasCellEditorControls;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
@@ -84,6 +85,11 @@ public class DMNGridPanelContextMenuHandler implements ContextMenuHandler {
 
         final List<CandidateGridWidget> candidateGridWidgets = new ArrayList<>();
         for (GridWidget gridWidget : gridLayer.getGridWidgets()) {
+            
+            if (DynamicReadOnlyUtils.isOnlyVisualChangeAllowed(gridWidget)) {
+                continue;
+            }
+
             final GridData gridModel = gridWidget.getModel();
             final Point2D ap = convertDOMToGridCoordinate(gridWidget,
                                                           new Point2D(canvasX,

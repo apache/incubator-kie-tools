@@ -101,6 +101,7 @@ public class LiteralExpressionEditorDefinition extends BaseEditorDefinition<Lite
                                                                                                                          final Optional<String> nodeUUID,
                                                                                                                          final HasExpression hasExpression,
                                                                                                                          final Optional<HasName> hasName,
+                                                                                                                         final boolean isOnlyVisualChangeAllowed,
                                                                                                                          final int nesting) {
         return Optional.of(new LiteralExpressionGrid(parent,
                                                      nodeUUID,
@@ -119,6 +120,7 @@ public class LiteralExpressionEditorDefinition extends BaseEditorDefinition<Lite
                                                      getCellEditorControls(),
                                                      listSelector,
                                                      translationService,
+                                                     isOnlyVisualChangeAllowed,
                                                      nesting,
                                                      headerEditor));
     }

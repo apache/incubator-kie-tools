@@ -19,7 +19,6 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.context;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
@@ -49,6 +48,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberCol
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
@@ -103,9 +103,8 @@ public abstract class BaseContextUIModelMapperTest<M extends ContextUIModelMappe
 
     protected M mapper;
 
-    @Before
     @SuppressWarnings("unchecked")
-    public void setup() {
+    public void setup(final boolean isOnlyVisualChangeAllowedSupplier) {
         this.uiModel = new BaseGridData();
         this.uiModel.appendRow(new BaseGridRow());
         this.uiModel.appendRow(new BaseGridRow());
@@ -127,6 +126,7 @@ public abstract class BaseContextUIModelMapperTest<M extends ContextUIModelMappe
                                                          any(Optional.class),
                                                          any(HasExpression.class),
                                                          any(Optional.class),
+                                                         anyBoolean(),
                                                          anyInt())).thenReturn(Optional.of(literalExpressionEditor));
 
         when(undefinedExpressionEditorDefinition.getModelClass()).thenReturn(Optional.empty());
@@ -134,6 +134,7 @@ public abstract class BaseContextUIModelMapperTest<M extends ContextUIModelMappe
                                                            any(Optional.class),
                                                            any(HasExpression.class),
                                                            any(Optional.class),
+                                                           anyBoolean(),
                                                            anyInt())).thenReturn(Optional.of(undefinedExpressionEditor));
 
         this.context = new Context();
@@ -146,16 +147,31 @@ public abstract class BaseContextUIModelMapperTest<M extends ContextUIModelMappe
             setExpression(new LiteralExpression());
         }});
 
-        this.mapper = getMapper();
+        this.mapper = getMapper(isOnlyVisualChangeAllowedSupplier);
         this.cellValueSupplier = Optional::empty;
     }
 
-    protected abstract M getMapper();
+    protected abstract M getMapper(final boolean isOnlyVisualChangeAllowedSupplier);
 
     @Test
     public void testFromDMNModelUndefinedExpression() {
+        setup(false);
+
         mapper.fromDMNModel(0, 2);
 
+        assertFromDMNModelUndefinedExpression(false);
+    }
+
+    @Test
+    public void testFromDMNModelUndefinedExpressionWhenOnlyVisualChangeAllowed() {
+        setup(true);
+
+        mapper.fromDMNModel(0, 2);
+
+        assertFromDMNModelUndefinedExpression(true);
+    }
+
+    private void assertFromDMNModelUndefinedExpression(final boolean isOnlyVisualChangeAllowed) {
         assertTrue(uiModel.getCell(0, 2).getValue() instanceof ExpressionCellValue);
         final ExpressionCellValue dcv0 = (ExpressionCellValue) uiModel.getCell(0, 2).getValue();
         assertEquals(undefinedExpressionEditor,
@@ -165,6 +181,7 @@ public abstract class BaseContextUIModelMapperTest<M extends ContextUIModelMappe
                                                               eq(Optional.empty()),
                                                               eq(context.getContextEntry().get(0)),
                                                               eq(Optional.of(context.getContextEntry().get(0).getVariable())),
+                                                              eq(isOnlyVisualChangeAllowed),
                                                               eq(1));
         final GridCellTuple parent = parentCaptor.getValue();
         assertEquals(0, parent.getRowIndex());
@@ -173,10 +190,24 @@ public abstract class BaseContextUIModelMapperTest<M extends ContextUIModelMappe
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void testFromDMNModelLiteralExpression() {
+        setup(false);
+
         mapper.fromDMNModel(1, 2);
 
+        assertFromDMNModelLiteralExpression(false);
+    }
+
+    @Test
+    public void testFromDMNModelLiteralExpressionWhenOnlyVisualChangeAllowed() {
+        setup(true);
+
+        mapper.fromDMNModel(1, 2);
+
+        assertFromDMNModelLiteralExpression(true);
+    }
+
+    private void assertFromDMNModelLiteralExpression(final boolean isOnlyVisualChangeAllowed) {
         assertTrue(uiModel.getCell(1, 2).getValue() instanceof ExpressionCellValue);
         final ExpressionCellValue dcv1 = (ExpressionCellValue) uiModel.getCell(1, 2).getValue();
         assertEquals(literalExpressionEditor,
@@ -186,6 +217,7 @@ public abstract class BaseContextUIModelMapperTest<M extends ContextUIModelMappe
                                                             eq(Optional.empty()),
                                                             eq(context.getContextEntry().get(1)),
                                                             eq(Optional.empty()),
+                                                            eq(isOnlyVisualChangeAllowed),
                                                             eq(1));
         final GridCellTuple parent = parentCaptor.getValue();
         assertEquals(1, parent.getRowIndex());
@@ -195,6 +227,8 @@ public abstract class BaseContextUIModelMapperTest<M extends ContextUIModelMappe
 
     @Test
     public void testToDMNModelName() {
+        setup(false);
+
         cellValueSupplier = () -> Optional.of(new BaseGridCellValue<>("ii2"));
 
         mapper.toDMNModel(0,
@@ -207,6 +241,8 @@ public abstract class BaseContextUIModelMapperTest<M extends ContextUIModelMappe
 
     @Test
     public void testToDMNModelExpression() {
+        setup(false);
+
         cellValueSupplier = () -> Optional.of(new ExpressionCellValue(Optional.of(literalExpressionEditor)));
 
         mapper.toDMNModel(0,

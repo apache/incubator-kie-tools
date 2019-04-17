@@ -85,6 +85,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -258,6 +259,7 @@ public class ExpressionContainerGridTest {
                                                          any(Optional.class),
                                                          any(HasExpression.class),
                                                          any(Optional.class),
+                                                         anyBoolean(),
                                                          anyInt())).thenReturn(Optional.of(literalExpressionEditor));
 
         when(undefinedExpressionEditor.getParentInformation()).thenReturn(parent);
@@ -267,6 +269,7 @@ public class ExpressionContainerGridTest {
                                                            any(Optional.class),
                                                            any(HasExpression.class),
                                                            any(Optional.class),
+                                                           anyBoolean(),
                                                            anyInt())).thenReturn(Optional.of(undefinedExpressionEditor));
 
         when(sessionManager.getCurrentSession()).thenReturn(session);
@@ -315,13 +318,15 @@ public class ExpressionContainerGridTest {
     public void testSetUndefinedExpression() {
         grid.setExpression(NODE_UUID,
                            hasExpression,
-                           Optional.of(hasName));
+                           Optional.of(hasName),
+                           false);
 
         final GridCellValue<?> gridCellValue = grid.getModel().getCell(0, 0).getValue();
         assertThat(gridCellValue).isInstanceOf(ExpressionCellValue.class);
         final ExpressionCellValue expressionCellValue = (ExpressionCellValue) gridCellValue;
         assertThat(expressionCellValue.getValue().isPresent()).isTrue();
         assertThat(expressionCellValue.getValue().get()).isSameAs(undefinedExpressionEditor);
+        assertThat(grid.isOnlyVisualChangeAllowed()).isFalse();
 
         verify(undefinedExpressionEditor).selectFirstCell();
         verify(gridLayer).batch();
@@ -333,16 +338,28 @@ public class ExpressionContainerGridTest {
 
         grid.setExpression(NODE_UUID,
                            hasExpression,
-                           Optional.of(hasName));
+                           Optional.of(hasName),
+                           false);
 
         final GridCellValue<?> gridCellValue = grid.getModel().getCell(0, 0).getValue();
         assertThat(gridCellValue).isInstanceOf(ExpressionCellValue.class);
         final ExpressionCellValue expressionCellValue = (ExpressionCellValue) gridCellValue;
         assertThat(expressionCellValue.getValue().isPresent()).isTrue();
         assertThat(expressionCellValue.getValue().get()).isSameAs(literalExpressionEditor);
+        assertThat(grid.isOnlyVisualChangeAllowed()).isFalse();
 
         verify(literalExpressionEditor).selectFirstCell();
         verify(gridLayer).batch();
+    }
+
+    @Test
+    public void testSetExpressionWhenOnlyVisualChangeAllowed() {
+        grid.setExpression(NODE_UUID,
+                           hasExpression,
+                           Optional.of(hasName),
+                           true);
+
+        assertThat(grid.isOnlyVisualChangeAllowed()).isTrue();
     }
 
     @Test
@@ -361,7 +378,8 @@ public class ExpressionContainerGridTest {
 
         grid.setExpression(NODE_UUID,
                            hasExpression,
-                           Optional.of(hasName));
+                           Optional.of(hasName),
+                           false);
         grid.getModel().getColumns().get(0).setWidth(COLUMN_NEW_WIDTH);
 
         assertThat(literalExpression.getComponentWidths().get(0)).isEqualTo(COLUMN_NEW_WIDTH - LITERAL_EXPRESSION_EDITOR_PADDING * 2);
@@ -374,13 +392,15 @@ public class ExpressionContainerGridTest {
 
         grid.setExpression(NODE_UUID,
                            hasExpression,
-                           Optional.of(hasName));
+                           Optional.of(hasName),
+                           false);
         when(literalExpressionEditor.getWidth()).thenReturn(COLUMN_NEW_WIDTH);
 
         //Emulate re-opening editor
         grid.setExpression(NODE_UUID,
                            hasExpression,
-                           Optional.of(hasName));
+                           Optional.of(hasName),
+                           false);
 
         //Verify width is preserved
         assertThat(grid.getModel().getColumns().get(0).getWidth()).isEqualTo(COLUMN_NEW_WIDTH);
@@ -393,7 +413,8 @@ public class ExpressionContainerGridTest {
 
         grid.setExpression(NODE_UUID,
                            hasExpression,
-                           Optional.of(hasName));
+                           Optional.of(hasName),
+                           false);
 
         //Emulate re-starting the Workbench and re-opening the editor
         when(literalExpressionEditor.getWidth()).thenReturn(DMNGridColumn.DEFAULT_WIDTH);
@@ -401,7 +422,8 @@ public class ExpressionContainerGridTest {
         expressionGridCache.removeExpressionGrid(NODE_UUID);
         grid.setExpression(NODE_UUID,
                            hasExpression,
-                           Optional.of(hasName));
+                           Optional.of(hasName),
+                           false);
 
         //Verify width is equal to the minimum required
         assertThat(grid.getModel().getColumns().get(0).getWidth()).isEqualTo(UndefinedExpressionColumn.DEFAULT_WIDTH);
@@ -413,7 +435,8 @@ public class ExpressionContainerGridTest {
 
         grid.setExpression(NODE_UUID,
                            hasExpression,
-                           Optional.of(hasName));
+                           Optional.of(hasName),
+                           false);
         final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 0);
 
         assertThat(items.size()).isEqualTo(1);
@@ -435,7 +458,8 @@ public class ExpressionContainerGridTest {
 
         grid.setExpression(NODE_UUID,
                            hasExpression,
-                           Optional.of(hasName));
+                           Optional.of(hasName),
+                           false);
         final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 0);
 
         assertThat(items).isEmpty();
@@ -461,7 +485,8 @@ public class ExpressionContainerGridTest {
 
         grid.setExpression(NODE_UUID,
                            hasExpression,
-                           Optional.of(hasName));
+                           Optional.of(hasName),
+                           false);
         verify(gridLayer).select(literalExpressionEditor);
         verify(literalExpressionEditor).selectFirstCell();
         verify(gridLayer).batch();
@@ -503,7 +528,8 @@ public class ExpressionContainerGridTest {
     public void testSpyHasNameWithHasNameGet() {
         grid.setExpression(NODE_UUID,
                            hasExpression,
-                           Optional.of(hasName));
+                           Optional.of(hasName),
+                           false);
 
         final Optional<HasName> spy = grid.spyHasName(Optional.of(hasName));
 
@@ -519,7 +545,8 @@ public class ExpressionContainerGridTest {
 
         grid.setExpression(NODE_UUID,
                            hasExpression,
-                           Optional.of(hasName));
+                           Optional.of(hasName),
+                           false);
 
         final Optional<HasName> spy = grid.spyHasName(Optional.of(hasName));
 
@@ -535,7 +562,8 @@ public class ExpressionContainerGridTest {
     public void testSpyHasNameWithoutHasNameGet() {
         grid.setExpression(NODE_UUID,
                            hasExpression,
-                           Optional.empty());
+                           Optional.empty(),
+                           false);
 
         final Optional<HasName> spy = grid.spyHasName(Optional.empty());
 
@@ -552,7 +580,8 @@ public class ExpressionContainerGridTest {
 
         grid.setExpression(NODE_UUID,
                            hasExpression,
-                           Optional.empty());
+                           Optional.empty(),
+                           false);
 
         final Optional<HasName> spy = grid.spyHasName(Optional.empty());
 
@@ -567,7 +596,8 @@ public class ExpressionContainerGridTest {
     public void testSpyHasNameUpdateUndoWithSetHasNameCommand() {
         grid.setExpression(NODE_UUID,
                            hasExpression,
-                           Optional.of(hasName));
+                           Optional.of(hasName),
+                           false);
 
         final Optional<HasName> spy = grid.spyHasName(Optional.of(hasName));
 
@@ -592,7 +622,8 @@ public class ExpressionContainerGridTest {
 
         grid.setExpression(NODE_UUID,
                            hasExpression,
-                           Optional.of(hasName));
+                           Optional.of(hasName),
+                           false);
 
         final HasExpression spy = grid.spyHasExpression(hasExpression);
 
@@ -603,7 +634,8 @@ public class ExpressionContainerGridTest {
     public void testSpyHasExpressionWithoutExpressionGet() {
         grid.setExpression(NODE_UUID,
                            hasExpression,
-                           Optional.of(hasName));
+                           Optional.of(hasName),
+                           false);
 
         final HasExpression spy = grid.spyHasExpression(hasExpression);
 
@@ -634,7 +666,8 @@ public class ExpressionContainerGridTest {
 
         grid.setExpression(NODE_UUID,
                            hasExpression,
-                           Optional.of(hasName));
+                           Optional.of(hasName),
+                           false);
 
         final HasExpression spy = grid.spyHasExpression(hasExpression);
 
@@ -649,7 +682,8 @@ public class ExpressionContainerGridTest {
 
         grid.setExpression(NODE_UUID,
                            hasExpression,
-                           Optional.of(hasName));
+                           Optional.of(hasName),
+                           false);
 
         final HasExpression spy = grid.spyHasExpression(hasExpression);
 
@@ -664,7 +698,8 @@ public class ExpressionContainerGridTest {
 
         grid.setExpression(NODE_UUID,
                            hasExpression,
-                           Optional.of(hasName));
+                           Optional.of(hasName),
+                           false);
 
         grid.selectCell(point, false, true);
 
@@ -687,7 +722,8 @@ public class ExpressionContainerGridTest {
 
         grid.setExpression(NODE_UUID,
                            hasExpression,
-                           Optional.of(hasName));
+                           Optional.of(hasName),
+                           false);
 
         grid.selectCell(uiRowIndex, uiColumnIndex, false, true);
 
@@ -708,7 +744,8 @@ public class ExpressionContainerGridTest {
 
         grid.setExpression(NODE_UUID,
                            hasExpression,
-                           Optional.of(hasName));
+                           Optional.of(hasName),
+                           false);
 
         grid.selectCell(uiRowIndex, uiColumnIndex, false, true);
 
@@ -737,7 +774,8 @@ public class ExpressionContainerGridTest {
 
         grid.setExpression(NODE_UUID,
                            hasExpression,
-                           Optional.of(hasName));
+                           Optional.of(hasName),
+                           false);
 
         grid.selectCell(uiRowIndex, uiColumnIndex, false, true);
 

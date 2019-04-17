@@ -131,6 +131,7 @@ public class FunctionEditorDefinition extends BaseEditorDefinition<FunctionDefin
                                                                                                                          final Optional<String> nodeUUID,
                                                                                                                          final HasExpression hasExpression,
                                                                                                                          final Optional<HasName> hasName,
+                                                                                                                         final boolean isOnlyVisualChangeAllowed,
                                                                                                                          final int nesting) {
         return Optional.of(new FunctionGrid(parent,
                                             nodeUUID,
@@ -149,6 +150,7 @@ public class FunctionEditorDefinition extends BaseEditorDefinition<FunctionDefin
                                             getCellEditorControls(),
                                             listSelector,
                                             translationService,
+                                            isOnlyVisualChangeAllowed,
                                             nesting,
                                             expressionEditorDefinitionsSupplier,
                                             supplementaryEditorDefinitionsSupplier,

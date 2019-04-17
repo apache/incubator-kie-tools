@@ -19,7 +19,6 @@ package org.kie.workbench.common.dmn.client.editors.expressions;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
@@ -51,6 +50,7 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -110,9 +110,8 @@ public class ExpressionContainerUIModelMapperTest {
 
     private ExpressionContainerUIModelMapper mapper;
 
-    @Before
     @SuppressWarnings("unchecked")
-    public void setup() {
+    public void setup(final boolean isOnlyVisualChangeAllowed) {
         uiModel = new BaseGridData();
         uiModel.appendRow(new BaseGridRow());
         uiModel.appendColumn(uiExpressionColumn);
@@ -133,6 +132,7 @@ public class ExpressionContainerUIModelMapperTest {
                                                          any(Optional.class),
                                                          any(HasExpression.class),
                                                          any(Optional.class),
+                                                         anyBoolean(),
                                                          anyInt())).thenReturn(Optional.of(literalExpressionEditor));
 
         when(undefinedExpressionEditorDefinition.getModelClass()).thenReturn(Optional.empty());
@@ -140,6 +140,7 @@ public class ExpressionContainerUIModelMapperTest {
                                                            any(Optional.class),
                                                            any(HasExpression.class),
                                                            any(Optional.class),
+                                                           anyBoolean(),
                                                            anyInt())).thenReturn(Optional.of(undefinedExpressionEditor));
 
         expressionGridCache = spy(new ExpressionGridCacheImpl());
@@ -149,6 +150,7 @@ public class ExpressionContainerUIModelMapperTest {
                                                       () -> NODE_UUID,
                                                       () -> hasExpression,
                                                       () -> Optional.of(hasName),
+                                                      () -> isOnlyVisualChangeAllowed,
                                                       expressionEditorDefinitionsSupplier,
                                                       () -> expressionGridCache,
                                                       listSelector);
@@ -156,10 +158,27 @@ public class ExpressionContainerUIModelMapperTest {
 
     @Test
     public void testFromDMNModelUndefinedExpressionType() {
+        setup(false);
+
         expression = null;
 
         mapper.fromDMNModel(0, 0);
 
+        assertFromDMNModelUndefinedExpressionType(false);
+    }
+
+    @Test
+    public void testFromDMNModelWhenOnlyVisualChangeAllowed() {
+        setup(true);
+
+        expression = null;
+
+        mapper.fromDMNModel(0, 0);
+
+        assertFromDMNModelUndefinedExpressionType(true);
+    }
+
+    private void assertFromDMNModelUndefinedExpressionType(final boolean isOnlyVisualChangeAllowed) {
         assertUiModel();
         assertEditorType(undefinedExpressionEditor.getClass());
 
@@ -167,6 +186,7 @@ public class ExpressionContainerUIModelMapperTest {
                                                               nodeUUIDCaptor.capture(),
                                                               eq(hasExpression),
                                                               eq(Optional.of(hasName)),
+                                                              eq(isOnlyVisualChangeAllowed),
                                                               eq(0));
         final Optional<String> nodeUUID = nodeUUIDCaptor.getValue();
         assertThat(nodeUUID.isPresent()).isTrue();
@@ -176,6 +196,8 @@ public class ExpressionContainerUIModelMapperTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testFromDMNModelLiteralExpressionType() {
+        setup(false);
+
         expression = new LiteralExpression();
 
         mapper.fromDMNModel(0, 0);
@@ -187,6 +209,7 @@ public class ExpressionContainerUIModelMapperTest {
                                                             nodeUUIDCaptor.capture(),
                                                             eq(hasExpression),
                                                             eq(Optional.of(hasName)),
+                                                            eq(false),
                                                             eq(0));
         final Optional<String> nodeUUID = nodeUUIDCaptor.getValue();
         assertThat(nodeUUID.isPresent()).isTrue();
@@ -196,6 +219,8 @@ public class ExpressionContainerUIModelMapperTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testFromDMNModelExpressionGridCacheIsHit() {
+        setup(false);
+
         expression = new LiteralExpression();
 
         mapper.fromDMNModel(0, 0);
@@ -204,6 +229,7 @@ public class ExpressionContainerUIModelMapperTest {
                                                             nodeUUIDCaptor.capture(),
                                                             eq(hasExpression),
                                                             eq(Optional.of(hasName)),
+                                                            eq(false),
                                                             eq(0));
 
         verify(expressionGridCache).putExpressionGrid(nodeUUIDCaptor.getValue().get(),
@@ -216,6 +242,7 @@ public class ExpressionContainerUIModelMapperTest {
                                                             any(Optional.class),
                                                             any(HasExpression.class),
                                                             any(Optional.class),
+                                                            anyBoolean(),
                                                             anyInt());
         verify(expressionGridCache).putExpressionGrid(anyString(),
                                                       any(Optional.class));
@@ -223,6 +250,8 @@ public class ExpressionContainerUIModelMapperTest {
 
     @Test(expected = UnsupportedOperationException.class)
     public void testToDMNModelIsUnsupported() {
+        setup(false);
+
         mapper.toDMNModel(0, 0, () -> null);
     }
 

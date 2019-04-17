@@ -112,6 +112,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -325,6 +326,7 @@ public class InvocationGridTest {
                                                          any(Optional.class),
                                                          any(HasExpression.class),
                                                          any(Optional.class),
+                                                         anyBoolean(),
                                                          anyInt())).thenReturn(Optional.of(literalExpressionEditor));
 
         when(undefinedExpressionEditor.getParentInformation()).thenReturn(parent);
@@ -333,6 +335,7 @@ public class InvocationGridTest {
                                                            any(Optional.class),
                                                            any(HasExpression.class),
                                                            any(Optional.class),
+                                                           anyBoolean(),
                                                            anyInt())).thenReturn(Optional.of(undefinedExpressionEditor));
 
         when(sessionManager.getCurrentSession()).thenReturn(session);
@@ -372,6 +375,7 @@ public class InvocationGridTest {
                                                               nesting == 0 ? Optional.of(NODE_UUID) : Optional.empty(),
                                                               hasExpression,
                                                               hasName,
+                                                              false,
                                                               nesting).get());
 
         when(parent.getGridWidget()).thenReturn(gridWidget);

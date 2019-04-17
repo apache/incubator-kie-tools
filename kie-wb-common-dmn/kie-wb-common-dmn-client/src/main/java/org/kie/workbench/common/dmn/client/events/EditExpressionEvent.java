@@ -30,15 +30,18 @@ public class EditExpressionEvent extends AbstractSessionEvent {
     private final String nodeUUID;
     private final HasExpression hasExpression;
     private final Optional<HasName> hasName;
+    private final boolean isOnlyVisualChangeAllowed;
 
     public EditExpressionEvent(final ClientSession session,
                                final String nodeUUID,
                                final HasExpression hasExpression,
-                               final Optional<HasName> hasName) {
+                               final Optional<HasName> hasName,
+                               final boolean isOnlyVisualChangeAllowed) {
         super(session);
         this.nodeUUID = nodeUUID;
         this.hasExpression = hasExpression;
         this.hasName = hasName;
+        this.isOnlyVisualChangeAllowed = isOnlyVisualChangeAllowed;
     }
 
     public String getNodeUUID() {
@@ -51,5 +54,9 @@ public class EditExpressionEvent extends AbstractSessionEvent {
 
     public Optional<HasName> getHasName() {
         return hasName;
+    }
+
+    public boolean isOnlyVisualChangeAllowed() {
+        return isOnlyVisualChangeAllowed;
     }
 }

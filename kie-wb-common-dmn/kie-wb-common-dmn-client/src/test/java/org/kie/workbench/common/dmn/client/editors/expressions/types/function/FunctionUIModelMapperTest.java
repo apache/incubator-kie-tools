@@ -19,7 +19,6 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.function;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
@@ -47,6 +46,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
@@ -97,9 +97,8 @@ public class FunctionUIModelMapperTest {
 
     private FunctionUIModelMapper mapper;
 
-    @Before
     @SuppressWarnings("unchecked")
-    public void setup() {
+    public void setup(final boolean isOnlyVisualChangeAllowedSupplier) {
         this.uiModel = new BaseGridData();
         this.uiModel.appendRow(new BaseGridRow());
         this.uiModel.appendRow(new BaseGridRow());
@@ -118,6 +117,7 @@ public class FunctionUIModelMapperTest {
                                                          any(Optional.class),
                                                          any(HasExpression.class),
                                                          any(Optional.class),
+                                                         anyBoolean(),
                                                          anyInt())).thenReturn(Optional.of(literalExpressionEditor));
 
         //Supplementary Editor definitions
@@ -131,6 +131,7 @@ public class FunctionUIModelMapperTest {
                                                      any(Optional.class),
                                                      any(HasExpression.class),
                                                      any(Optional.class),
+                                                     anyBoolean(),
                                                      anyInt())).thenReturn(Optional.of(supplementaryEditor));
 
         this.function = new FunctionDefinition();
@@ -138,6 +139,7 @@ public class FunctionUIModelMapperTest {
         this.mapper = new FunctionUIModelMapper(gridWidget,
                                                 () -> uiModel,
                                                 () -> Optional.of(function),
+                                                () -> isOnlyVisualChangeAllowedSupplier,
                                                 expressionEditorDefinitionsSupplier,
                                                 supplementaryEditorDefinitionsSupplier,
                                                 listSelector,
@@ -147,40 +149,92 @@ public class FunctionUIModelMapperTest {
 
     @Test
     public void testFromDMNModelExpressionKindFEEL() {
+        setup(false);
+
         this.function.setExpression(literalExpression);
         this.function.setKind(FunctionDefinition.Kind.FEEL);
 
         mapper.fromDMNModel(0, 0);
 
         assertFromDMNModelEditor(literalExpressionEditor,
-                                 literalExpressionEditorDefinition);
+                                 literalExpressionEditorDefinition,
+                                 false);
     }
 
     @Test
     public void testFromDMNModelExpressionKindJava() {
+        setup(false);
+
         this.function.setExpression(context);
         this.function.setKind(FunctionDefinition.Kind.JAVA);
 
         mapper.fromDMNModel(0, 0);
 
         assertFromDMNModelEditor(supplementaryEditor,
-                                 supplementaryEditorDefinition);
+                                 supplementaryEditorDefinition,
+                                 false);
     }
 
     @Test
     public void testFromDMNModelExpressionKindPMML() {
+        setup(false);
+
         this.function.setExpression(context);
         this.function.setKind(FunctionDefinition.Kind.PMML);
 
         mapper.fromDMNModel(0, 0);
 
         assertFromDMNModelEditor(supplementaryEditor,
-                                 supplementaryEditorDefinition);
+                                 supplementaryEditorDefinition,
+                                 false);
+    }
+
+    @Test
+    public void testFromDMNModelExpressionKindFEELWhenOnlyVisualChangeAllowed() {
+        setup(true);
+
+        this.function.setExpression(literalExpression);
+        this.function.setKind(FunctionDefinition.Kind.FEEL);
+
+        mapper.fromDMNModel(0, 0);
+
+        assertFromDMNModelEditor(literalExpressionEditor,
+                                 literalExpressionEditorDefinition,
+                                 true);
+    }
+
+    @Test
+    public void testFromDMNModelExpressionKindJavaWhenOnlyVisualChangeAllowed() {
+        setup(true);
+
+        this.function.setExpression(context);
+        this.function.setKind(FunctionDefinition.Kind.JAVA);
+
+        mapper.fromDMNModel(0, 0);
+
+        assertFromDMNModelEditor(supplementaryEditor,
+                                 supplementaryEditorDefinition,
+                                 true);
+    }
+
+    @Test
+    public void testFromDMNModelExpressionKindPMMLWhenOnlyVisualChangeAllowed() {
+        setup(true);
+
+        this.function.setExpression(context);
+        this.function.setKind(FunctionDefinition.Kind.PMML);
+
+        mapper.fromDMNModel(0, 0);
+
+        assertFromDMNModelEditor(supplementaryEditor,
+                                 supplementaryEditorDefinition,
+                                 true);
     }
 
     @SuppressWarnings("unchecked")
     private void assertFromDMNModelEditor(final BaseExpressionGrid editor,
-                                          final ExpressionEditorDefinition definition) {
+                                          final ExpressionEditorDefinition definition,
+                                          final boolean isOnlyVisualChangeAllowedSupplier) {
         assertTrue(uiModel.getCell(0, 0).getValue() instanceof ExpressionCellValue);
         final ExpressionCellValue dcv = (ExpressionCellValue) uiModel.getCell(0, 0).getValue();
         assertEquals(editor,
@@ -190,6 +244,7 @@ public class FunctionUIModelMapperTest {
                                      eq(Optional.empty()),
                                      eq(function),
                                      eq(Optional.empty()),
+                                     eq(isOnlyVisualChangeAllowedSupplier),
                                      eq(1));
         final GridCellTuple parent = parentCaptor.getValue();
         assertEquals(0, parent.getRowIndex());
@@ -199,6 +254,8 @@ public class FunctionUIModelMapperTest {
 
     @Test
     public void testToDMNModelExpressionKindFEEL() {
+        setup(false);
+
         cellValueSupplier = () -> Optional.of(new ExpressionCellValue(Optional.of(literalExpressionEditor)));
 
         mapper.toDMNModel(0,
@@ -211,6 +268,8 @@ public class FunctionUIModelMapperTest {
 
     @Test
     public void testToDMNModelExpressionKindJavaAndPMML() {
+        setup(false);
+
         cellValueSupplier = () -> Optional.of(new ExpressionCellValue(Optional.of(supplementaryEditor)));
 
         mapper.toDMNModel(0,

@@ -30,7 +30,6 @@ import org.kie.workbench.common.dmn.client.editors.common.RemoveHelper;
 @Templated
 public class IncludedModelsPageView implements IncludedModelsPagePresenter.View {
 
-
     @DataField("grid")
     private final HTMLDivElement grid;
 

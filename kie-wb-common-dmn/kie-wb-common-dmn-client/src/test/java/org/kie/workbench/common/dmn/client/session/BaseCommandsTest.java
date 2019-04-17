@@ -45,8 +45,8 @@ public abstract class BaseCommandsTest {
     @SuppressWarnings("unchecked")
     protected CanvasCommandUndoneEvent makeCommandUndoContext(final Command command) {
         return new CanvasCommandUndoneEvent(canvasHandler,
-                                                  command,
-                                                  CanvasCommandResultBuilder.SUCCESS);
+                                            command,
+                                            CanvasCommandResultBuilder.SUCCESS);
     }
 
     public static class MockCommand extends AbstractCanvasGraphCommand {

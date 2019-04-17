@@ -103,6 +103,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -337,6 +338,7 @@ public class FunctionGridTest {
                                                                                                          any(Optional.class),
                                                                                                          any(HasExpression.class),
                                                                                                          any(Optional.class),
+                                                                                                         anyBoolean(),
                                                                                                          anyInt());
         when(literalExpressionEditor.getLayer()).thenReturn(gridLayer);
         when(literalExpressionEditor.getModel()).thenReturn(new BaseGridData(false));
@@ -348,6 +350,7 @@ public class FunctionGridTest {
                                                                any(Optional.class),
                                                                any(HasExpression.class),
                                                                any(Optional.class),
+                                                               anyBoolean(),
                                                                anyInt())).thenReturn(Optional.of(supplementaryExpressionEditor));
         when(supplementaryExpressionEditor.getLayer()).thenReturn(gridLayer);
         when(supplementaryExpressionEditor.getModel()).thenReturn(new BaseGridData(false));
@@ -378,6 +381,7 @@ public class FunctionGridTest {
                                                             nesting == 0 ? Optional.of(NODE_UUID) : Optional.empty(),
                                                             hasExpression,
                                                             hasName,
+                                                            false,
                                                             nesting).get());
 
         when(parent.getGridWidget()).thenReturn(gridWidget);
@@ -631,6 +635,7 @@ public class FunctionGridTest {
                                                             eq(Optional.empty()),
                                                             eq(expression.get()),
                                                             eq(hasName),
+                                                            eq(false),
                                                             eq(1));
 
         final GridCellTuple parent = parentCaptor.getValue();
@@ -658,6 +663,7 @@ public class FunctionGridTest {
                                                                   eq(Optional.empty()),
                                                                   eq(expression.get()),
                                                                   eq(hasName),
+                                                                  eq(false),
                                                                   eq(1));
 
         final GridCellTuple parent = parentCaptor.getValue();
@@ -685,6 +691,7 @@ public class FunctionGridTest {
                                                                   eq(Optional.empty()),
                                                                   eq(expression.get()),
                                                                   eq(hasName),
+                                                                  eq(false),
                                                                   eq(1));
 
         final GridCellTuple parent = parentCaptor.getValue();
@@ -744,6 +751,7 @@ public class FunctionGridTest {
                                                                                                          any(Optional.class),
                                                                                                          any(HasExpression.class),
                                                                                                          any(Optional.class),
+                                                                                                         anyBoolean(),
                                                                                                          anyInt());
 
         setupGrid(0);
@@ -908,6 +916,7 @@ public class FunctionGridTest {
                                                                                                          any(Optional.class),
                                                                                                          any(HasExpression.class),
                                                                                                          any(Optional.class),
+                                                                                                         anyBoolean(),
                                                                                                          anyInt());
 
         setupGrid(0);

@@ -37,7 +37,7 @@ public class NavigateToDRGEditorCommandTest extends BaseNavigationCommandTest {
 
     @Override
     @SuppressWarnings("unchecked")
-    protected BaseNavigateCommand getCommand() {
+    protected BaseNavigateCommand getCommand(final boolean isOnlyVisualChangeAllowed) {
         return new NavigateToDRGEditorCommand(editor,
                                               sessionPresenter,
                                               sessionManager,
@@ -45,12 +45,15 @@ public class NavigateToDRGEditorCommandTest extends BaseNavigationCommandTest {
                                               refreshFormPropertiesEvent,
                                               NODE_UUID,
                                               hasExpression,
-                                              Optional.of(hasName));
+                                              Optional.of(hasName),
+                                              isOnlyVisualChangeAllowed);
     }
 
     @Test
     @Override
     public void executeCanvasCommand() {
+        setup(false);
+
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      command.getCanvasCommand(canvasHandler).execute(canvasHandler));
 
@@ -68,6 +71,19 @@ public class NavigateToDRGEditorCommandTest extends BaseNavigationCommandTest {
     @Test
     @Override
     public void undoCanvasCommand() {
+        setup(false);
+
+        assertUndoCanvasCommand(false);
+    }
+
+    @Test
+    public void undoCanvasCommandWhenOnlyVisualChangeAllowed() {
+        setup(true);
+
+        assertUndoCanvasCommand(true);
+    }
+
+    private void assertUndoCanvasCommand(final boolean isOnlyVisualChangeAllowed) {
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      command.getCanvasCommand(canvasHandler).undo(canvasHandler));
 
@@ -77,12 +93,15 @@ public class NavigateToDRGEditorCommandTest extends BaseNavigationCommandTest {
         verify(sessionPresenterView).setCanvasWidget(editorContainerForErrai1090);
         verify(editor).setExpression(eq(NODE_UUID),
                                      eq(hasExpression),
-                                     eq(Optional.of(hasName)));
+                                     eq(Optional.of(hasName)),
+                                     eq(isOnlyVisualChangeAllowed));
         verify(expressionEditorView).setFocus();
     }
 
     @Test
     public void checkCommandDefinition() {
+        setup(false);
+
         assertTrue(command instanceof VetoUndoCommand);
     }
 }

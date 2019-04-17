@@ -95,6 +95,7 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextGridData, Co
                        final CellEditorControlsView.Presenter cellEditorControls,
                        final ListSelectorView.Presenter listSelector,
                        final TranslationService translationService,
+                       final boolean isOnlyVisualChangeAllowed,
                        final int nesting,
                        final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
                        final NameAndDataTypePopoverView.Presenter headerEditor) {
@@ -116,6 +117,7 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextGridData, Co
               cellEditorControls,
               listSelector,
               translationService,
+              isOnlyVisualChangeAllowed,
               nesting);
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
         this.headerEditor = headerEditor;
@@ -136,6 +138,7 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextGridData, Co
         return new ContextUIModelMapper(this,
                                         this::getModel,
                                         getExpression(),
+                                        () -> isOnlyVisualChangeAllowed,
                                         expressionEditorDefinitionsSupplier,
                                         listSelector,
                                         nesting);

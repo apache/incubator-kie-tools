@@ -31,10 +31,11 @@ import static org.junit.Assert.assertEquals;
 public class FunctionSupplementaryGridUIModelMapperTest extends BaseContextUIModelMapperTest<FunctionSupplementaryGridUIModelMapper> {
 
     @Override
-    protected FunctionSupplementaryGridUIModelMapper getMapper() {
+    protected FunctionSupplementaryGridUIModelMapper getMapper(final boolean isOnlyVisualChangeAllowedSupplier) {
         return new FunctionSupplementaryGridUIModelMapper(gridWidget,
                                                           () -> uiModel,
                                                           () -> Optional.of(context),
+                                                          () -> isOnlyVisualChangeAllowedSupplier,
                                                           expressionEditorDefinitionsSupplier,
                                                           listSelector,
                                                           0);
@@ -42,6 +43,8 @@ public class FunctionSupplementaryGridUIModelMapperTest extends BaseContextUIMod
 
     @Test
     public void testFromDMNModelRowNumber() {
+        setup(false);
+
         mapper.fromDMNModel(0, 0);
         mapper.fromDMNModel(1, 0);
 
@@ -58,6 +61,8 @@ public class FunctionSupplementaryGridUIModelMapperTest extends BaseContextUIMod
 
     @Test
     public void testFromDMNModelName() {
+        setup(false);
+
         mapper.fromDMNModel(0, 1);
 
         assertEquals("ii1",

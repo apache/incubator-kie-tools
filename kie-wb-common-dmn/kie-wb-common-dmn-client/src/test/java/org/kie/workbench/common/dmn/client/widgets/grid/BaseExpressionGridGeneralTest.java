@@ -215,6 +215,7 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
                                       cellEditorControls,
                                       listSelector,
                                       translationService,
+                                      false,
                                       0) {
             @Override
             protected BaseUIModelMapper makeUiModelMapper() {

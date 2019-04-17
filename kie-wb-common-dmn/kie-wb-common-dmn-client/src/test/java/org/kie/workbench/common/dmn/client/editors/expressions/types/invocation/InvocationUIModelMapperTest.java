@@ -19,7 +19,6 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.invocation
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
@@ -52,6 +51,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
@@ -97,9 +97,8 @@ public class InvocationUIModelMapperTest {
 
     private InvocationUIModelMapper mapper;
 
-    @Before
     @SuppressWarnings("unchecked")
-    public void setup() {
+    public void setup(final boolean isOnlyVisualChangeAllowedSupplier) {
         this.uiModel = new BaseGridData();
         this.uiModel.appendRow(new BaseGridRow());
         this.uiModel.appendRow(new BaseGridRow());
@@ -121,6 +120,7 @@ public class InvocationUIModelMapperTest {
                                                          any(Optional.class),
                                                          any(HasExpression.class),
                                                          any(Optional.class),
+                                                         anyBoolean(),
                                                          anyInt())).thenReturn(Optional.of(literalExpressionEditor));
 
         final LiteralExpression invocationExpression = new LiteralExpression();
@@ -140,6 +140,7 @@ public class InvocationUIModelMapperTest {
         this.mapper = new InvocationUIModelMapper(gridWidget,
                                                   () -> uiModel,
                                                   () -> Optional.of(invocation),
+                                                  () -> isOnlyVisualChangeAllowedSupplier,
                                                   expressionEditorDefinitionsSupplier,
                                                   listSelector,
                                                   0);
@@ -148,6 +149,8 @@ public class InvocationUIModelMapperTest {
 
     @Test
     public void testFromDMNModelRowNumber() {
+        setup(false);
+
         mapper.fromDMNModel(0, 0);
 
         assertEquals(1,
@@ -158,6 +161,8 @@ public class InvocationUIModelMapperTest {
 
     @Test
     public void testFromDMNModelBindingParameter() {
+        setup(false);
+
         mapper.fromDMNModel(0, 1);
 
         assertEquals("p0",
@@ -165,8 +170,20 @@ public class InvocationUIModelMapperTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void testFromDMNModelBindingExpression() {
+        setup(false);
+
+        assertFromDMNModelBindingExpression(false);
+    }
+
+    @Test
+    public void testFromDMNModelBindingExpressionWhenOnlyVisualChangeAllowed() {
+        setup(true);
+
+        assertFromDMNModelBindingExpression(true);
+    }
+
+    private void assertFromDMNModelBindingExpression(final boolean isOnlyVisualChangeAllowed) {
         mapper.fromDMNModel(0, 2);
 
         assertNotNull(uiModel.getCell(0, 2));
@@ -180,6 +197,7 @@ public class InvocationUIModelMapperTest {
                                                             eq(Optional.empty()),
                                                             eq(invocation.getBinding().get(0)),
                                                             eq(Optional.of(invocation.getBinding().get(0).getParameter())),
+                                                            eq(isOnlyVisualChangeAllowed),
                                                             eq(1));
         final GridCellTuple parent = parentCaptor.getValue();
         assertEquals(0, parent.getRowIndex());
@@ -189,6 +207,8 @@ public class InvocationUIModelMapperTest {
 
     @Test
     public void testToDMNModelBindingParameter() {
+        setup(false);
+
         cellValueSupplier = () -> Optional.of(new BaseGridCellValue<>("updated"));
 
         mapper.toDMNModel(0,
@@ -201,6 +221,8 @@ public class InvocationUIModelMapperTest {
 
     @Test
     public void testToDMNModelBindingExpression() {
+        setup(false);
+
         cellValueSupplier = () -> Optional.of(new ExpressionCellValue(Optional.of(literalExpressionEditor)));
 
         mapper.toDMNModel(0,

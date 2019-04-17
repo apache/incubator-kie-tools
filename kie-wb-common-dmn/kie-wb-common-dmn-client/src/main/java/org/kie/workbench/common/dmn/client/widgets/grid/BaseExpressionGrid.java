@@ -124,6 +124,7 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
                               final CellEditorControlsView.Presenter cellEditorControls,
                               final ListSelectorView.Presenter listSelector,
                               final TranslationService translationService,
+                              final boolean isOnlyVisualChangeAllowed,
                               final int nesting) {
         super(nodeUUID,
               hasExpression,
@@ -137,7 +138,8 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
               refreshFormPropertiesEvent,
               domainObjectSelectionEvent,
               cellEditorControls,
-              translationService);
+              translationService,
+              isOnlyVisualChangeAllowed);
         this.parent = parent;
         this.gridPanel = gridPanel;
         this.definitionUtils = definitionUtils;

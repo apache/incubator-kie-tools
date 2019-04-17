@@ -113,6 +113,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -326,6 +327,7 @@ public class ContextGridTest {
                                                          any(Optional.class),
                                                          any(HasExpression.class),
                                                          any(Optional.class),
+                                                         anyBoolean(),
                                                          anyInt())).thenReturn(Optional.of(literalExpressionEditor));
 
         when(undefinedExpressionEditor.getParentInformation()).thenReturn(parent);
@@ -334,6 +336,7 @@ public class ContextGridTest {
                                                            any(Optional.class),
                                                            any(HasExpression.class),
                                                            any(Optional.class),
+                                                           anyBoolean(),
                                                            anyInt())).thenReturn(Optional.of(undefinedExpressionEditor));
 
         when(session.getCanvasHandler()).thenReturn(canvasHandler);
@@ -367,6 +370,7 @@ public class ContextGridTest {
                                                            nesting == 0 ? Optional.of(NODE_UUID) : Optional.empty(),
                                                            hasExpression,
                                                            hasName,
+                                                           false,
                                                            nesting).get());
 
         when(parent.getGridWidget()).thenReturn(gridWidget);

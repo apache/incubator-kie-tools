@@ -105,6 +105,7 @@ public class UndefinedExpressionEditorDefinition extends BaseEditorDefinition<Ex
                                                                                                                          final Optional<String> nodeUUID,
                                                                                                                          final HasExpression hasExpression,
                                                                                                                          final Optional<HasName> hasName,
+                                                                                                                         final boolean isOnlyVisualChangeAllowed,
                                                                                                                          final int nesting) {
         return Optional.of(new UndefinedExpressionGrid(parent,
                                                        nodeUUID,
@@ -123,6 +124,7 @@ public class UndefinedExpressionEditorDefinition extends BaseEditorDefinition<Ex
                                                        getCellEditorControls(),
                                                        listSelector,
                                                        translationService,
+                                                       isOnlyVisualChangeAllowed,
                                                        nesting,
                                                        undefinedExpressionSelector,
                                                        expressionEditorDefinitionsSupplier,

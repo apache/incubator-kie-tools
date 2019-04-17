@@ -131,6 +131,7 @@ public class DMNEditBusinessKnowledgeModelToolboxActionTest {
                      editExprEvent.getHasName().get());
         assertEquals(session,
                      editExprEvent.getSession());
+        assertFalse(editExprEvent.isOnlyVisualChangeAllowed());
     }
 
     @Test

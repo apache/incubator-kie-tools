@@ -17,7 +17,6 @@
 package org.kie.workbench.common.dmn.client.commands.general;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
@@ -101,9 +100,8 @@ public abstract class BaseNavigationCommandTest {
 
     protected BaseNavigateCommand command;
 
-    @Before
     @SuppressWarnings("unchecked")
-    public void setup() {
+    public void setup(final boolean isOnlyVisualChangeAllowed) {
         when(sessionManager.getCurrentSession()).thenReturn(session);
         when(session.getCanvasHandler()).thenReturn(canvasHandler);
         when(canvasHandler.getCanvas()).thenReturn(canvas);
@@ -112,22 +110,26 @@ public abstract class BaseNavigationCommandTest {
         when(sessionView.getView()).thenReturn(view);
         when(editor.getView()).thenReturn(expressionEditorView);
 
-        this.command = spy(getCommand());
+        this.command = spy(getCommand(isOnlyVisualChangeAllowed));
 
         doNothing().when(command).hidePaletteWidget(any(Boolean.class));
         doReturn(editorContainerForErrai1090).when(command).wrapElementForErrai1090();
     }
 
-    protected abstract BaseNavigateCommand getCommand();
+    protected abstract BaseNavigateCommand getCommand(final boolean isOnlyVisualChangeAllowed);
 
     @Test
     public void verifyGraphCommandIsNoOperation() {
+        setup(false);
+
         assertEquals(BaseNavigateCommand.NOP_GRAPH_COMMAND,
                      command.getGraphCommand(canvasHandler));
     }
 
     @Test
     public void allowCanvasCommand() {
+        setup(false);
+
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      command.getCanvasCommand(canvasHandler).allow(canvasHandler));
     }

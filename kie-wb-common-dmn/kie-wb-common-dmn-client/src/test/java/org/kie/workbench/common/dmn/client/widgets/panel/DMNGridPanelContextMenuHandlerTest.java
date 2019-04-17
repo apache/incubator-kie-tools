@@ -18,6 +18,7 @@ package org.kie.workbench.common.dmn.client.widgets.panel;
 
 import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -27,13 +28,21 @@ import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.ContextMenuEvent;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
+import org.kie.workbench.common.dmn.client.widgets.grid.BaseGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.HasCellEditorControls;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
+import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
@@ -43,16 +52,15 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.BaseGridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.CellSelectionStrategy;
-import org.uberfire.ext.wires.core.grids.client.widget.layer.GridSelectionManager;
-import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.GridPinnedModeManager;
+import org.uberfire.mocks.EventSourceMock;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -84,12 +92,6 @@ public class DMNGridPanelContextMenuHandlerTest {
     private DMNGridLayer gridLayer;
 
     @Mock
-    private GridSelectionManager selectionManager;
-
-    @Mock
-    private GridPinnedModeManager pinnedModeManager;
-
-    @Mock
     private GridRenderer renderer;
 
     @Mock
@@ -100,6 +102,24 @@ public class DMNGridPanelContextMenuHandlerTest {
 
     @Mock
     private HasCellEditorControls.Editor editor;
+
+    @Mock
+    private SessionManager sessionManager;
+
+    @Mock
+    private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
+
+    @Mock
+    private DefaultCanvasCommandFactory canvasCommandFactory;
+
+    @Mock
+    private EventSourceMock<RefreshFormPropertiesEvent> refreshFormPropertiesEvent;
+
+    @Mock
+    private EventSourceMock<DomainObjectSelectionEvent> domainObjectSelectionEvent;
+
+    @Mock
+    private TranslationService translationService;
 
     private DMNGridPanelContextMenuHandler handler;
 
@@ -148,7 +168,7 @@ public class DMNGridPanelContextMenuHandlerTest {
         when(nativeEvent.getClientX()).thenReturn((int) (COLUMN0_WIDTH + COLUMN1_WIDTH + 50));
         when(nativeEvent.getClientY()).thenReturn((int) ROW_HEIGHT + 50);
 
-        final GridWidget gridWidget = mockGridWidget();
+        final BaseGrid gridWidget = mockGridWidget();
         when(gridLayer.getGridWidgets()).thenReturn(Collections.singleton(gridWidget));
 
         handler.onContextMenu(event);
@@ -165,7 +185,7 @@ public class DMNGridPanelContextMenuHandlerTest {
         when(nativeEvent.getClientX()).thenReturn((int) (COLUMN0_WIDTH / 2));
         when(nativeEvent.getClientY()).thenReturn((int) (ROW_HEIGHT + ROW_HEIGHT / 2));
 
-        final GridWidget gridWidget = mockGridWidget();
+        final BaseGrid gridWidget = mockGridWidget();
         when(gridLayer.getGridWidgets()).thenReturn(Collections.singleton(gridWidget));
 
         handler.onContextMenu(event);
@@ -182,7 +202,7 @@ public class DMNGridPanelContextMenuHandlerTest {
         when(nativeEvent.getClientX()).thenReturn((int) (COLUMN0_WIDTH / 2));
         when(nativeEvent.getClientY()).thenReturn((int) (ROW_HEIGHT + ROW_HEIGHT / 2));
 
-        final GridWidget gridWidget = mockGridWidget();
+        final BaseGrid gridWidget = mockGridWidget();
         when(gridLayer.getGridWidgets()).thenReturn(Collections.singleton(gridWidget));
 
         gridWidget.getModel().setCellValue(1, 0, new ExpressionCellValue(Optional.empty()));
@@ -203,7 +223,7 @@ public class DMNGridPanelContextMenuHandlerTest {
         when(nativeEvent.getClientX()).thenReturn(EVENT_X);
         when(nativeEvent.getClientY()).thenReturn(EVENT_Y);
 
-        final GridWidget gridWidget = mockGridWidget();
+        final BaseGrid gridWidget = mockGridWidget();
         when(gridLayer.getGridWidgets()).thenReturn(Collections.singleton(gridWidget));
 
         final MockCell cell = mock(MockCell.class);
@@ -224,11 +244,30 @@ public class DMNGridPanelContextMenuHandlerTest {
 
     @Test
     @SuppressWarnings("unchecked")
+    public void onContextMenu_WithGridWidget_WithCellValue_WithOnlyVisualChangeAllowed() {
+        final int EVENT_X = (int) (COLUMN0_WIDTH / 2);
+        final int EVENT_Y = (int) (ROW_HEIGHT + ROW_HEIGHT / 2);
+        when(nativeEvent.getClientX()).thenReturn(EVENT_X);
+        when(nativeEvent.getClientY()).thenReturn(EVENT_Y);
+
+        final BaseGrid gridWidget = mockGridWidget();
+        doReturn(true).when(gridWidget).isOnlyVisualChangeAllowed();
+        when(gridLayer.getGridWidgets()).thenReturn(Collections.singleton(gridWidget));
+
+        handler.onContextMenu(event);
+
+        verify(cellEditorControls, never()).show(any(HasCellEditorControls.Editor.class),
+                                                 any(Optional.class),
+                                                 anyInt(),
+                                                 anyInt());
+    }
+
+    @Test
     public void onContextMenu_WithGridWidget_WithCellSelectionStrategy_CellNotSelected() {
         when(nativeEvent.getClientX()).thenReturn((int) (COLUMN0_WIDTH / 2));
         when(nativeEvent.getClientY()).thenReturn((int) (ROW_HEIGHT + ROW_HEIGHT / 2));
 
-        final GridWidget gridWidget = mockGridWidget();
+        final BaseGrid gridWidget = mockGridWidget();
         when(gridLayer.getGridWidgets()).thenReturn(Collections.singleton(gridWidget));
 
         final MockCell cell = mock(MockCell.class);
@@ -247,12 +286,11 @@ public class DMNGridPanelContextMenuHandlerTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void onContextMenu_WithGridWidget_WithCellSelectionStrategy_CellAlreadySelected() {
         when(nativeEvent.getClientX()).thenReturn((int) (COLUMN0_WIDTH / 2));
         when(nativeEvent.getClientY()).thenReturn((int) (ROW_HEIGHT + ROW_HEIGHT / 2));
 
-        final GridWidget gridWidget = mockGridWidget();
+        final BaseGrid gridWidget = mockGridWidget();
         when(gridLayer.getGridWidgets()).thenReturn(Collections.singleton(gridWidget));
         gridWidget.selectCell(1, 0, false, false);
 
@@ -279,8 +317,8 @@ public class DMNGridPanelContextMenuHandlerTest {
         when(nativeEvent.getClientX()).thenReturn(EVENT_X);
         when(nativeEvent.getClientY()).thenReturn(EVENT_Y);
 
-        final GridWidget gridWidget1 = mockGridWidget();
-        final GridWidget gridWidget2 = mockGridWidget();
+        final BaseGrid gridWidget1 = mockGridWidget();
+        final BaseGrid gridWidget2 = mockGridWidget();
         // Without stubbing mocks to death this requires some knowledge of the internals of
         // DefaultGridLayer that maintains a LinkedHashSet of GridWidgets added to the Layer.
         // LinkedHashSet returns items in the order in which they were added.
@@ -310,14 +348,31 @@ public class DMNGridPanelContextMenuHandlerTest {
                                         eq(EVENT_Y));
     }
 
-    private GridWidget mockGridWidget() {
-        final GridWidget gridWidget = spy(new BaseGridWidget(new BaseGridData(false),
-                                                             selectionManager,
-                                                             pinnedModeManager,
-                                                             renderer) {
+    private BaseGrid mockGridWidget() {
+        final BaseGrid gridWidget = spy(new BaseGrid(gridLayer,
+                                                     new BaseGridData(false),
+                                                     renderer,
+                                                     sessionManager,
+                                                     sessionCommandManager,
+                                                     canvasCommandFactory,
+                                                     refreshFormPropertiesEvent,
+                                                     domainObjectSelectionEvent,
+                                                     cellEditorControls,
+                                                     translationService) {
             @Override
             public Layer getLayer() {
                 return gridLayer;
+            }
+
+            @Override
+            public List<ListSelectorItem> getItems(final int uiRowIndex,
+                                                   final int uiColumnIndex) {
+                return Collections.emptyList();
+            }
+
+            @Override
+            public void onItemSelected(final ListSelectorItem item) {
+
             }
         });
         final GridColumn gridColumn = mock(GridColumn.class);

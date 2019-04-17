@@ -38,5 +38,6 @@ public interface ExpressionEditorDefinition<T extends Expression> extends Expres
                                                                                                                   final Optional<String> nodeUUID,
                                                                                                                   final HasExpression hasExpression,
                                                                                                                   final Optional<HasName> hasName,
+                                                                                                                  final boolean isOnlyVisualChangeAllowed,
                                                                                                                   final int nesting);
 }

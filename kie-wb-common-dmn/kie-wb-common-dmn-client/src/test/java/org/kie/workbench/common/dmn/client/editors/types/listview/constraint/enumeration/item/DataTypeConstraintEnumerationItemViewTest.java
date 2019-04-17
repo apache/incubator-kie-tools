@@ -395,7 +395,7 @@ public class DataTypeConstraintEnumerationItemViewTest {
     }
 
     @Test
-    public void testSetOrder(){
+    public void testSetOrder() {
 
         final HTMLElement element = mock(HTMLElement.class);
 
@@ -404,6 +404,5 @@ public class DataTypeConstraintEnumerationItemViewTest {
         view.setOrder(1);
 
         verify(element).setAttribute(DATA_POSITION, 1);
-
     }
 }

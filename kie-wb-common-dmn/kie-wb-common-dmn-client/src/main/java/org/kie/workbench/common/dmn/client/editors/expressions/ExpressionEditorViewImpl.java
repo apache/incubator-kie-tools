@@ -40,9 +40,11 @@ import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.dmn.client.widgets.grid.BoundaryTransformMediator;
 import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCache;
-import org.kie.workbench.common.dmn.client.widgets.grid.columns.KeyboardOperationEscapeGridCell;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
+import org.kie.workbench.common.dmn.client.widgets.grid.keyboard.KeyboardOperationEditCell;
+import org.kie.workbench.common.dmn.client.widgets.grid.keyboard.KeyboardOperationEscapeGridCell;
+import org.kie.workbench.common.dmn.client.widgets.grid.keyboard.KeyboardOperationInvokeContextMenuForSelectedCell;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanelContainer;
@@ -54,8 +56,6 @@ import org.kie.workbench.common.stunner.core.client.session.Session;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.BaseGridWidgetKeyboardHandler;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperation;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationEditCell;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationInvokeContextMenuForSelectedCell;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationMoveDown;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationMoveLeft;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationMoveRight;
@@ -217,10 +217,12 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
     @Override
     public void setExpression(final String nodeUUID,
                               final HasExpression hasExpression,
-                              final Optional<HasName> hasName) {
+                              final Optional<HasName> hasName,
+                              final boolean isOnlyVisualChangeAllowed) {
         expressionContainerGrid.setExpression(nodeUUID,
                                               hasExpression,
-                                              hasName);
+                                              hasName,
+                                              isOnlyVisualChangeAllowed);
         setExpressionNameText(hasName);
         setExpressionTypeText(Optional.ofNullable(hasExpression.getExpression()));
     }

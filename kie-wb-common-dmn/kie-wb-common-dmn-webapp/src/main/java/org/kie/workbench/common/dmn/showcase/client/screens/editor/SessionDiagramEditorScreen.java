@@ -492,7 +492,8 @@ public class SessionDiagramEditorScreen implements KieEditorWrapperView.KieEdito
                                                                                 refreshFormPropertiesEvent,
                                                                                 event.getNodeUUID(),
                                                                                 event.getHasExpression(),
-                                                                                event.getHasName()));
+                                                                                event.getHasName(),
+                                                                                event.isOnlyVisualChangeAllowed()));
         }
     }
 

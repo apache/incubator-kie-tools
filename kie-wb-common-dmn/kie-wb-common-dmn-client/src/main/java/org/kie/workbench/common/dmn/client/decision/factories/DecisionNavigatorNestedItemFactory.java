@@ -131,10 +131,12 @@ public class DecisionNavigatorNestedItemFactory {
     EditExpressionEvent makeEditExpressionEvent(final Node<View, Edge> node) {
 
         final ClientSession currentSession = sessionManager.getCurrentSession();
-        final Optional<HasName> hasName = Optional.of((HasName) getDefinition(node));
+        final Object definition = getDefinition(node);
+        final Optional<HasName> hasName = Optional.of((HasName) definition);
         final HasExpression hasExpression = getHasExpression(node);
+        final boolean isOnlyVisualChangeAllowed = false; //TODO {manstis} Read from the definition
 
-        return new EditExpressionEvent(currentSession, node.getUUID(), hasExpression, hasName);
+        return new EditExpressionEvent(currentSession, node.getUUID(), hasExpression, hasName, isOnlyVisualChangeAllowed);
     }
 
     String getUUID(final Node<View, Edge> node) {
