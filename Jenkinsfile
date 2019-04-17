@@ -50,12 +50,6 @@ pipeline {
                 }
             }
         }
-        // Currently there are no tests in submarine-cloud
-//        stage('Publish test results') {
-//            steps {
-//                junit '**/target/surefire-reports/**/*.xml'
-//            }
-//        }
     }
     post {
         unstable {
@@ -69,6 +63,8 @@ pipeline {
             }
         }
         always {
+            // Currently there are no tests in submarine-cloud
+//            junit '**/target/surefire-reports/**/*.xml'
             cleanWs()
         }
     }
