@@ -25,8 +25,8 @@ import org.kie.workbench.common.forms.model.FieldType;
 
 public class JBPMEditorFieldTypeProviderImplTest {
 
-    private static final int PALETTE_FIELD_TYPES_SIZE = 1;
-    private static final int EDITOR_FIELD_TYPES_SIZE = 1;
+    private static final int PALETTE_FIELD_TYPES_SIZE = 2;
+    private static final int EDITOR_FIELD_TYPES_SIZE = 2;
 
     private JBPMEditorFieldTypeProviderImpl provider;
 

@@ -124,12 +124,4 @@ public class CollapsibleFormGroupViewImpl implements IsElement,
     public void onClick(ClickEvent clickEvent) {
         presenter.notifyClick();
     }
-
-    @Override
-    public void clearError() {
-    }
-
-    @Override
-    public void showError(String error) {
-    }
 }

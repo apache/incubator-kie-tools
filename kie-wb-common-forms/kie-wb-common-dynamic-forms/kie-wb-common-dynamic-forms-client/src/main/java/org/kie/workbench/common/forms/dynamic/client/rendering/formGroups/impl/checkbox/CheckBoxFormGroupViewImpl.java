@@ -19,9 +19,8 @@ package org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Widget;
-import org.gwtbootstrap3.client.ui.constants.ValidationState;
-import org.jboss.errai.common.client.dom.DOMUtil;
 import org.jboss.errai.common.client.dom.Div;
+import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
@@ -48,20 +47,7 @@ public class CheckBoxFormGroupViewImpl implements IsElement,
     }
 
     @Override
-    public void clearError() {
-        DOMUtil.removeEnumStyleName(getElement(),
-                                    ValidationState.ERROR);
-        DOMUtil.addEnumStyleName(getElement(),
-                                 ValidationState.NONE);
-        helpBlock.setTextContent("");
-    }
-
-    @Override
-    public void showError(String error) {
-        DOMUtil.removeEnumStyleName(getElement(),
-                                    ValidationState.NONE);
-        DOMUtil.addEnumStyleName(getElement(),
-                                 ValidationState.ERROR);
-        helpBlock.setTextContent(error);
+    public HTMLElement getHelpBlock() {
+        return helpBlock;
     }
 }

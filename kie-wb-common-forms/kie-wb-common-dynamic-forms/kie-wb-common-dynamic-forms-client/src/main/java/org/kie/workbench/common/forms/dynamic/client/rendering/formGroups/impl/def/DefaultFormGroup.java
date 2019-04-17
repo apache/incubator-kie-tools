@@ -20,11 +20,11 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.AbstractFormGroup;
+import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.AbstractValidableFormGroup;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 
 @Dependent
-public class DefaultFormGroup extends AbstractFormGroup<DefaultFormGroupView> {
+public class DefaultFormGroup extends AbstractValidableFormGroup<DefaultFormGroupView> {
 
     @Inject
     public DefaultFormGroup(DefaultFormGroupView view) {

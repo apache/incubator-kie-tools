@@ -1,0 +1,36 @@
+.kie-wb-common-forms-docs-upload {
+    border: 1px dashed #CCCCCC;
+    height: 100px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 5px;
+}
+
+.kie-wb-common-forms-docs-upload-empty {
+    display: table;
+    width: 100%;
+    height: 100%;
+}
+
+.kie-wb-common-forms-docs-upload-empty-content {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.kie-wb-common-forms-docs-upload-dropHere {
+    display: table;
+    width: 100%;
+    height: 100%;
+}
+
+.kie-wb-common-forms-docs-upload-dropHere-content {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+    color: #0088ce;
+}
+
+.kie-wb-common-forms-docs-upload-dragover {
+    border: 1px solid #0088ce;
+}

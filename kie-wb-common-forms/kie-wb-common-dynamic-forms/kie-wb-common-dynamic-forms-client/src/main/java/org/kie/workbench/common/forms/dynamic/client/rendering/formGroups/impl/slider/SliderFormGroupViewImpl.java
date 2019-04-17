@@ -19,9 +19,9 @@ package org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Widget;
-import org.gwtbootstrap3.client.ui.constants.ValidationState;
 import org.jboss.errai.common.client.dom.DOMUtil;
 import org.jboss.errai.common.client.dom.Div;
+import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.labels.label.FieldLabel;
@@ -46,38 +46,18 @@ public class SliderFormGroupViewImpl implements SliderFormGroupView {
     public void render(Widget widget,
                        FieldDefinition fieldDefinition) {
 
-        render("",
-               widget,
-               fieldDefinition);
+        render("", widget, fieldDefinition);
     }
 
-    public void render(String inputId,
-                       Widget widget,
-                       FieldDefinition fieldDefinition) {
+    public void render(String inputId, Widget widget, FieldDefinition fieldDefinition) {
 
-        fieldLabel.renderForInputId(inputId,
-                                    fieldDefinition);
+        fieldLabel.renderForInputId(inputId, fieldDefinition);
 
-        DOMUtil.appendWidgetToElement(fieldContainer,
-                                      widget);
+        DOMUtil.appendWidgetToElement(fieldContainer, widget);
     }
 
     @Override
-    public void clearError() {
-
-        DOMUtil.removeEnumStyleName(getElement(),
-                                    ValidationState.ERROR);
-        DOMUtil.addEnumStyleName(getElement(),
-                                 ValidationState.NONE);
-        helpBlock.setTextContent("");
-    }
-
-    @Override
-    public void showError(String error) {
-        DOMUtil.removeEnumStyleName(getElement(),
-                                    ValidationState.NONE);
-        DOMUtil.addEnumStyleName(getElement(),
-                                 ValidationState.ERROR);
-        helpBlock.setTextContent(error);
+    public HTMLElement getHelpBlock() {
+        return helpBlock;
     }
 }

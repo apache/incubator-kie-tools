@@ -32,12 +32,10 @@ public abstract class AbstractFormGroup<VIEW extends FormGroupView> implements F
         this.view = view;
     }
 
-    public void render(Widget bindable,
-                       FieldDefinition fieldDefinition) {
+    public void render(Widget bindable, FieldDefinition fieldDefinition) {
         this.bindable = bindable;
 
-        view.render(bindable,
-                    fieldDefinition);
+        view.render(bindable, fieldDefinition);
     }
 
     @Override
@@ -48,16 +46,6 @@ public abstract class AbstractFormGroup<VIEW extends FormGroupView> implements F
     @Override
     public void setVisible(boolean visible) {
         view.setVisible(visible);
-    }
-
-    @Override
-    public void clearError() {
-        view.clearError();
-    }
-
-    @Override
-    public void showError(String error) {
-        view.showError(error);
     }
 
     @Override

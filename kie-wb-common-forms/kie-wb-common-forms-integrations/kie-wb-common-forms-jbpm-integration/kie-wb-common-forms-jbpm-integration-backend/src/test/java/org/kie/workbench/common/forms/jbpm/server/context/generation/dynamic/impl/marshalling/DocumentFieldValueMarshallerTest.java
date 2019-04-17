@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.forms.jbpm.server.context.generation.dynamic.impl.marshalling;
 
-import java.io.File;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,11 +26,11 @@ import org.jbpm.document.service.impl.util.DocumentDownloadLinkGenerator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.forms.dynamic.backend.server.document.UploadedDocumentManager;
-import org.kie.workbench.common.forms.dynamic.model.document.DocumentData;
-import org.kie.workbench.common.forms.dynamic.model.document.DocumentStatus;
 import org.kie.workbench.common.forms.dynamic.service.context.generation.dynamic.BackendFormRenderingContext;
 import org.kie.workbench.common.forms.jbpm.model.authoring.document.definition.DocumentFieldDefinition;
+import org.kie.workbench.common.forms.jbpm.model.document.DocumentData;
+import org.kie.workbench.common.forms.jbpm.model.document.DocumentStatus;
+import org.kie.workbench.common.forms.jbpm.server.service.impl.documents.storage.UploadedDocumentStorage;
 import org.kie.workbench.common.forms.model.FormDefinition;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -54,10 +53,7 @@ public class DocumentFieldValueMarshallerTest {
     private static final String EXPECTED_DOWNLOAD_LINK = DocumentDownloadLinkGenerator.generateDownloadLink(SERVER_TEMPLATE_ID, DOCUMENT_ID);
 
     @Mock
-    protected UploadedDocumentManager uploadedDocumentManager;
-
-    @Mock
-    protected File uploaded;
+    protected UploadedDocumentStorage documentStorage;
 
     @Mock
     private FormDefinition form;
@@ -69,18 +65,16 @@ public class DocumentFieldValueMarshallerTest {
 
     protected DocumentFieldDefinition field;
 
-
     @Before
     public void initTest() {
-        when(uploadedDocumentManager.getFile(anyString())).thenReturn(uploaded);
-        when(uploaded.length()).thenReturn(new Long(1024));
+        when(documentStorage.getContent(anyString())).thenReturn(new byte[]{});
 
         field = new DocumentFieldDefinition();
         field.setBinding("document");
         field.setName("document");
         field.setLabel("document");
 
-        marshaller = new TestDocumentFieldValueProcessor(uploadedDocumentManager);
+        marshaller = new DocumentFieldValueMarshaller(documentStorage);
     }
 
     @Test
@@ -158,9 +152,9 @@ public class DocumentFieldValueMarshallerTest {
 
         Document doc = marshaller.toRawValue(data);
 
-        verify(uploadedDocumentManager).getFile(anyString());
+        verify(documentStorage).getContent(anyString());
 
-        verify(uploadedDocumentManager).removeFile(anyString());
+        verify(documentStorage).removeContent(anyString());
 
         assertNotNull("Document cannot be null!", doc);
 
@@ -183,8 +177,8 @@ public class DocumentFieldValueMarshallerTest {
 
         assertEquals("Documents must be equal!", doc, rawDoc);
 
-        verify(uploadedDocumentManager, never()).getFile(anyString());
+        verify(documentStorage, never()).getContent(anyString());
 
-        verify(uploadedDocumentManager, never()).removeFile(anyString());
+        verify(documentStorage, never()).removeContent(anyString());
     }
 }

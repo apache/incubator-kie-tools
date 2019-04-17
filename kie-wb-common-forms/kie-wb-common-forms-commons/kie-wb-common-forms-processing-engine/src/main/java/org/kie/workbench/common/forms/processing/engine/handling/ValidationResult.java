@@ -19,17 +19,24 @@ package org.kie.workbench.common.forms.processing.engine.handling;
 public class ValidationResult {
 
     public enum State {
-        VALID(true),
-        ERROR(false);
+        VALID(true, false),
+        WARNING(true, true),
+        ERROR(false, true);
 
         private boolean valid;
+        private boolean hasMessage;
 
-        State(boolean valid) {
+        State(boolean valid, boolean hasMessage) {
             this.valid = valid;
+            this.hasMessage = hasMessage;
         }
 
         public boolean isValid() {
             return valid;
+        }
+
+        public boolean hasMessage() {
+            return hasMessage;
         }
     }
 
@@ -51,6 +58,10 @@ public class ValidationResult {
 
     public static ValidationResult error(String message) {
         return new ValidationResult(State.ERROR, message);
+    }
+
+    public static ValidationResult warning(String message) {
+        return new ValidationResult(State.WARNING, message);
     }
 
     public static ValidationResult valid() {

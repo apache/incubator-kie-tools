@@ -17,9 +17,9 @@
 package org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.checkbox;
 
 import org.jboss.errai.common.client.api.IsElement;
-import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.FormGroupView;
+import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.ValidableFormGroupView;
 
-public interface CheckBoxFormGroupView extends FormGroupView,
+public interface CheckBoxFormGroupView extends ValidableFormGroupView,
                                                IsElement {
 
 }

@@ -24,15 +24,9 @@ import org.kie.workbench.common.forms.model.FieldDefinition;
 
 public interface FormGroupView extends IsElement {
 
-    void render(Widget widget,
-                FieldDefinition field);
-
-    void clearError();
-
-    void showError(String error);
+    void render(Widget widget, FieldDefinition field);
 
     default void setVisible(boolean visible) {
-        DOMUtil.addEnumStyleName(getElement(),
-                                 visible ? Style.Visibility.VISIBLE : Style.Visibility.HIDDEN);
+        DOMUtil.addEnumStyleName(getElement(), visible ? Style.Visibility.VISIBLE : Style.Visibility.HIDDEN);
     }
 }

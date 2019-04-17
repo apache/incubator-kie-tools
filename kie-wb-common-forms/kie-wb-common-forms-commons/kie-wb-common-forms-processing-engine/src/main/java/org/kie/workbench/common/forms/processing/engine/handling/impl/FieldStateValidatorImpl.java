@@ -69,8 +69,7 @@ public class FieldStateValidatorImpl implements FieldStateValidator {
     public boolean validate(FormField field) {
 
         Object value = getFieldValue(field);
-        return validateFieldValue(field,
-                                  value) && field.isContentValid();
+        return validateFieldValue(field, value) && field.isContentValid();
     }
 
     protected Object getFieldValue(FormField field) {
@@ -87,15 +86,20 @@ public class FieldStateValidatorImpl implements FieldStateValidator {
     protected boolean validateFieldValue(FormField field,
                                          Object value) {
         if (field.isRequired()) {
-            return validateFieldValueRequired(field,
-                                              value);
+            if (!validateFieldValueRequired(field, value)) {
+                return false;
+            }
         }
 
-        for(CustomFieldValidator validator : field.getCustomValidators()) {
+        for (CustomFieldValidator validator : field.getCustomValidators()) {
             ValidationResult result = validator.validate(value);
-            if(!result.getStatus().isValid()) {
-                field.showError(result.getMessage());
-                return false;
+            if (result.getStatus().hasMessage()) {
+                if (!result.getStatus().isValid()) {
+                    field.showError(result.getMessage());
+                    return false;
+                } else {
+                    field.showWarning(result.getMessage());
+                }
             }
         }
 

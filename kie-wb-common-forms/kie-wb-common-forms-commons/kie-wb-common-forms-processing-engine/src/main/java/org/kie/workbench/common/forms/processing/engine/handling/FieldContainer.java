@@ -24,8 +24,4 @@ import org.jboss.errai.common.client.api.IsElement;
 public interface FieldContainer extends IsElement {
 
     void setVisible(boolean visible);
-
-    void clearError();
-
-    void showError(String error);
 }

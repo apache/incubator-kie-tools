@@ -18,6 +18,7 @@ package org.kie.workbench.common.forms.processing.engine.handling.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -29,13 +30,17 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.forms.processing.engine.handling.CustomFieldValidator;
 import org.kie.workbench.common.forms.processing.engine.handling.FormField;
+import org.kie.workbench.common.forms.processing.engine.handling.ValidationResult;
 import org.mockito.Mock;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -43,6 +48,8 @@ import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class FieldStateValidatorImplTest extends AbstractFormEngineTest {
+
+    private static final String MESSAGE = "message";
 
     @Mock
     TranslationService translationService;
@@ -55,6 +62,9 @@ public class FieldStateValidatorImplTest extends AbstractFormEngineTest {
 
     @Mock
     FormField textBoxField;
+
+    @Mock
+    TextBox textBox;
 
     List<FormField> fieldCollection;
 
@@ -75,7 +85,7 @@ public class FieldStateValidatorImplTest extends AbstractFormEngineTest {
         when(labelField.isRequired()).thenReturn(true);
         when(labelField.isContentValid()).thenReturn(true);
 
-        when(textBoxField.getWidget()).thenReturn(mock(TextBox.class));
+        when(textBoxField.getWidget()).thenReturn(textBox);
         when(textBoxField.isRequired()).thenReturn(true);
         when(textBoxField.isContentValid()).thenReturn(true);
 
@@ -174,5 +184,44 @@ public class FieldStateValidatorImplTest extends AbstractFormEngineTest {
         });
         boolean result = fieldStateValidator.validate(fieldCollection);
         assertTrue(result);
+    }
+
+    @Test
+    public void testValidateCustomValidatorsWithError() {
+        when(textBox.getValue()).thenReturn("abcd");
+
+        CustomFieldValidator validator = o -> ValidationResult.error(MESSAGE);
+        when(textBoxField.getCustomValidators()).thenReturn(Collections.singletonList(validator));
+
+        assertFalse(fieldStateValidator.validate(textBoxField));
+
+        verify(textBoxField).showError(eq(MESSAGE));
+        verify(textBoxField, never()).showWarning(any());
+    }
+
+    @Test
+    public void testValidateCustomValidatorsWithWarning() {
+        when(textBox.getValue()).thenReturn("abcd");
+
+        CustomFieldValidator validator = o -> ValidationResult.warning(MESSAGE);
+        when(textBoxField.getCustomValidators()).thenReturn(Collections.singletonList(validator));
+
+        assertTrue(fieldStateValidator.validate(textBoxField));
+
+        verify(textBoxField).showWarning(eq(MESSAGE));
+        verify(textBoxField, never()).showError(any());
+    }
+
+    @Test
+    public void testValidateCustomValidatorsWithSucces() {
+        when(textBox.getValue()).thenReturn("abcd");
+
+        CustomFieldValidator validator = o -> ValidationResult.valid();
+        when(textBoxField.getCustomValidators()).thenReturn(Collections.singletonList(validator));
+
+        assertTrue(fieldStateValidator.validate(textBoxField));
+
+        verify(textBoxField, never()).showWarning(any());
+        verify(textBoxField, never()).showError(any());
     }
 }

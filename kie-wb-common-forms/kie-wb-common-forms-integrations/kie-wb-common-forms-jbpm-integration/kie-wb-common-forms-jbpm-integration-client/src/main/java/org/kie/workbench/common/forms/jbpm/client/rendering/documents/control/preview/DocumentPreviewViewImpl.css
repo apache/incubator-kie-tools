@@ -1,0 +1,7 @@
+.kie-wb-common-forms-docs-upload-content {
+    padding: 5px;
+}
+
+.pficon-pending:before {
+    content: "\e930";
+}

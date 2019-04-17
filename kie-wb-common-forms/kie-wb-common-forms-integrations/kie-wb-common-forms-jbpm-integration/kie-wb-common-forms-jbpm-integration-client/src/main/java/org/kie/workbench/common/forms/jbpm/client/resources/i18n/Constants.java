@@ -36,4 +36,22 @@ public interface Constants {
 
     @TranslationKey(defaultValue = "There's no process or task selected")
     String InvalidFormModel = "JBPMFormModelCreationPresenter.InvalidFormModel";
+
+    @TranslationKey(defaultValue = "")
+    String DocumentUploadViewImplAbort = "DocumentUploadViewImpl.abort";
+
+    @TranslationKey(defaultValue = "")
+    String DocumentUploadViewImplRemove = "DocumentUploadViewImpl.remove";
+
+    @TranslationKey(defaultValue = "")
+    String DocumentUploadViewImplRetry = "DocumentUploadViewImpl.retry";
+
+    @TranslationKey(defaultValue = "")
+    String DocumentUploadViewImplMaxDocuments = "DocumentUploadViewImpl.maxDocuments";
+
+    @TranslationKey(defaultValue = "")
+    String DocumentListFieldRendererMaxContentLengthWarning = "DocumentListFieldRenderer.maxContentLengthWarning";
+
+    @TranslationKey(defaultValue = "")
+    String DocumentListFieldRendererMaxDocumentsReached = "DocumentListFieldRenderer.maxDocumentsReached";
 }

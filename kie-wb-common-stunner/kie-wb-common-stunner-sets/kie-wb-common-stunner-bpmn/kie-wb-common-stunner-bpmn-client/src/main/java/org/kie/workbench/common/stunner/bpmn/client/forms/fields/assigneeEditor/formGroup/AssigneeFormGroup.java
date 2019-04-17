@@ -20,11 +20,11 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.AbstractFormGroup;
+import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.AbstractValidableFormGroup;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 
 @Dependent
-public class AssigneeFormGroup extends AbstractFormGroup<AssigneeFormGroupView> {
+public class AssigneeFormGroup extends AbstractValidableFormGroup<AssigneeFormGroupView> {
 
     @Inject
     public AssigneeFormGroup(AssigneeFormGroupView view) {

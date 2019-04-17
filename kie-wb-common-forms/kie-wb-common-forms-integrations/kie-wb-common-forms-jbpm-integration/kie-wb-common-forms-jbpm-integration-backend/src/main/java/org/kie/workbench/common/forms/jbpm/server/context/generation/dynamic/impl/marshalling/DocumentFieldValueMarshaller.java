@@ -16,25 +16,22 @@
 
 package org.kie.workbench.common.forms.jbpm.server.context.generation.dynamic.impl.marshalling;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Date;
 import java.util.function.Supplier;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jbpm.document.Document;
 import org.jbpm.document.service.impl.DocumentImpl;
 import org.jbpm.document.service.impl.util.DocumentDownloadLinkGenerator;
 import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.dynamic.impl.marshalling.AbstractFieldValueMarshaller;
 import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.dynamic.impl.marshalling.FieldValueMarshaller;
-import org.kie.workbench.common.forms.dynamic.backend.server.document.UploadedDocumentManager;
-import org.kie.workbench.common.forms.dynamic.model.document.DocumentData;
-import org.kie.workbench.common.forms.dynamic.model.document.DocumentStatus;
 import org.kie.workbench.common.forms.jbpm.model.authoring.document.definition.DocumentFieldDefinition;
+import org.kie.workbench.common.forms.jbpm.model.document.DocumentData;
+import org.kie.workbench.common.forms.jbpm.model.document.DocumentStatus;
+import org.kie.workbench.common.forms.jbpm.server.service.impl.documents.storage.UploadedDocumentStorage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,11 +42,11 @@ public class DocumentFieldValueMarshaller extends AbstractFieldValueMarshaller<D
 
     private static final Logger logger = LoggerFactory.getLogger(DocumentFieldValueMarshaller.class);
 
-    protected UploadedDocumentManager uploadedDocumentManager;
+    private UploadedDocumentStorage documentStorage;
 
     @Inject
-    public DocumentFieldValueMarshaller(UploadedDocumentManager uploadedDocumentManager) {
-        this.uploadedDocumentManager = uploadedDocumentManager;
+    public DocumentFieldValueMarshaller(UploadedDocumentStorage documentStorage) {
+        this.documentStorage = documentStorage;
     }
 
     @Override
@@ -59,7 +56,7 @@ public class DocumentFieldValueMarshaller extends AbstractFieldValueMarshaller<D
 
     @Override
     public Supplier<FieldValueMarshaller<Document, DocumentData, DocumentFieldDefinition>> newInstanceSupplier() {
-        return () -> new DocumentFieldValueMarshaller(uploadedDocumentManager);
+        return () -> new DocumentFieldValueMarshaller(documentStorage);
     }
 
     @Override
@@ -71,17 +68,23 @@ public class DocumentFieldValueMarshaller extends AbstractFieldValueMarshaller<D
 
         String templateId = (String) context.getAttributes().get(SERVER_TEMPLATE_ID);
 
+        return fromDocument(originalValue, templateId);
+    }
+
+    static DocumentData fromDocument(Document document, String templateId) {
+
         String link;
 
-        if (!StringUtils.isEmpty(templateId) & !StringUtils.isEmpty(originalValue.getIdentifier())) {
-            link = DocumentDownloadLinkGenerator.generateDownloadLink(templateId, originalValue.getIdentifier());
+        if (!StringUtils.isEmpty(templateId) && !StringUtils.isEmpty(document.getIdentifier())) {
+            link = DocumentDownloadLinkGenerator.generateDownloadLink(templateId, document.getIdentifier());
         } else {
-            link = originalValue.getLink();
+            link = document.getLink();
         }
 
-        DocumentData data = new DocumentData(originalValue.getIdentifier(), originalValue.getName(), originalValue.getSize(), link);
+        DocumentData data = new DocumentData(document.getIdentifier(), document.getName(), document.getSize(), link, document.getLastModified().getTime());
 
         data.setStatus(DocumentStatus.STORED);
+
         return data;
     }
 
@@ -96,26 +99,30 @@ public class DocumentFieldValueMarshaller extends AbstractFieldValueMarshaller<D
             return originalValue;
         }
 
-        File content = uploadedDocumentManager.getFile(documentData.getContentId());
-
-        if (content != null) {
-
-            try {
-                Document doc = new DocumentImpl(documentData.getFileName(),
-                                                content.length(),
-                                                new Date(content.lastModified()));
-                doc.setContent(getFileContent(content));
-                uploadedDocumentManager.removeFile(documentData.getContentId());
-                return doc;
-            } catch (IOException e) {
-                logger.warn("Error reading file content: ",
-                            e);
-            }
-        }
-        return null;
+        return toDocument(documentData, documentStorage);
     }
 
-    protected byte[] getFileContent(File content) throws IOException {
-        return FileUtils.readFileToByteArray(content);
+    static Document toDocument(DocumentData documentData, UploadedDocumentStorage documentStorage) {
+
+        DocumentImpl document = new DocumentImpl();
+
+        document.setIdentifier(documentData.getContentId());
+        document.setName(documentData.getFileName());
+        document.setSize(documentData.getSize());
+        document.setLastModified(new Date(documentData.getLastModified()));
+
+        if (documentData.getStatus().equals(DocumentStatus.NEW)) {
+            try {
+                byte[] content = documentStorage.getContent(documentData.getContentId());
+                document.setContent(content);
+            } catch (Exception ex) {
+                logger.warn("Error getting content for document '{}' ({}): {}", document.getIdentifier(), document.getName(), ex);
+            } finally {
+                documentStorage.removeContent(documentData.getContentId());
+            }
+        } else {
+            document.setLink(documentData.getLink());
+        }
+        return document;
     }
 }

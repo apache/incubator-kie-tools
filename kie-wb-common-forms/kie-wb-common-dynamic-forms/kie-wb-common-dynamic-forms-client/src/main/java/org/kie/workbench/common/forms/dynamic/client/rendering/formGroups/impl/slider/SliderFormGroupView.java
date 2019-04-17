@@ -17,9 +17,9 @@
 package org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.slider;
 
 import org.jboss.errai.common.client.api.IsElement;
-import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.FormGroupView;
+import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.ValidableFormGroupView;
 
-public interface SliderFormGroupView extends FormGroupView,
+public interface SliderFormGroupView extends ValidableFormGroupView,
                                              IsElement {
 
 }

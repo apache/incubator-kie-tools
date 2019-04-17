@@ -19,10 +19,10 @@ package org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.AbstractFormGroup;
+import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.AbstractValidableFormGroup;
 
 @Dependent
-public class SliderFormGroup extends AbstractFormGroup<SliderFormGroupView> {
+public class SliderFormGroup extends AbstractValidableFormGroup<SliderFormGroupView> {
 
     @Inject
     public SliderFormGroup(SliderFormGroupView view) {

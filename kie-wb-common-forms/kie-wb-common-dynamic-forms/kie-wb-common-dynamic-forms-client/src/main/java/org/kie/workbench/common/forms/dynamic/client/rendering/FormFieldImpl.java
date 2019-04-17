@@ -22,6 +22,7 @@ import java.util.List;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.common.client.api.Assert;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.FormGroup;
+import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.ValidableFormGroup;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.processing.engine.handling.CustomFieldValidator;
 import org.kie.workbench.common.forms.processing.engine.handling.FieldContainer;
@@ -91,12 +92,23 @@ public abstract class FormFieldImpl<F extends FieldDefinition> implements FormFi
 
     @Override
     public void clearError() {
-        formGroup.clearError();
+        if (formGroup instanceof ValidableFormGroup) {
+            ((ValidableFormGroup) formGroup).clearError();
+        }
     }
 
     @Override
     public void showError(String error) {
-        formGroup.showError(error);
+        if (formGroup instanceof ValidableFormGroup) {
+            ((ValidableFormGroup) formGroup).showError(error);
+        }
+    }
+
+    @Override
+    public void showWarning(String warning) {
+        if (formGroup instanceof ValidableFormGroup) {
+            ((ValidableFormGroup) formGroup).showWarning(warning);
+        }
     }
 
     @Override

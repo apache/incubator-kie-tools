@@ -84,12 +84,4 @@ public class FieldSetFormGroupViewImpl implements IsElement,
 
         fieldContainer.add(widget);
     }
-
-    @Override
-    public void clearError() {
-    }
-
-    @Override
-    public void showError(String error) {
-    }
 }

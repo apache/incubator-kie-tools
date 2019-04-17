@@ -40,6 +40,8 @@ public interface FormField {
 
     void showError(String error);
 
+    void showWarning(String warning);
+
     FieldContainer getContainer();
 
     IsWidget getWidget();

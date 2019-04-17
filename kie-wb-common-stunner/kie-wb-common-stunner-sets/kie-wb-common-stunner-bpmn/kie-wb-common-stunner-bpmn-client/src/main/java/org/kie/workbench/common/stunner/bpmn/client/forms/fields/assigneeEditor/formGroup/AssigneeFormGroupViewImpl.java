@@ -19,9 +19,9 @@ package org.kie.workbench.common.stunner.bpmn.client.forms.fields.assigneeEditor
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Widget;
-import org.gwtbootstrap3.client.ui.constants.ValidationState;
 import org.jboss.errai.common.client.dom.DOMUtil;
 import org.jboss.errai.common.client.dom.Div;
+import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
@@ -70,16 +70,7 @@ public class AssigneeFormGroupViewImpl implements IsElement,
     }
 
     @Override
-    public void clearError() {
-        DOMUtil.removeEnumStyleName(formGroup, ValidationState.ERROR);
-        DOMUtil.addEnumStyleName(formGroup, ValidationState.NONE);
-        helpBlock.setTextContent("");
-    }
-
-    @Override
-    public void showError(String error) {
-        DOMUtil.removeEnumStyleName(formGroup, ValidationState.NONE);
-        DOMUtil.addEnumStyleName(formGroup, ValidationState.ERROR);
-        helpBlock.setTextContent(error);
+    public HTMLElement getHelpBlock() {
+        return helpBlock;
     }
 }

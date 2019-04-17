@@ -19,10 +19,10 @@ package org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.AbstractFormGroup;
+import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.AbstractValidableFormGroup;
 
 @Dependent
-public class CheckBoxFormGroup extends AbstractFormGroup<CheckBoxFormGroupView> {
+public class CheckBoxFormGroup extends AbstractValidableFormGroup<CheckBoxFormGroupView> {
 
     @Inject
     public CheckBoxFormGroup(CheckBoxFormGroupView view) {

@@ -18,10 +18,10 @@ package org.kie.workbench.common.stunner.bpmn.client.forms.fields.assigneeEditor
 
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.common.client.api.IsElement;
-import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.FormGroupView;
+import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.ValidableFormGroupView;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 
-public interface AssigneeFormGroupView extends FormGroupView,
+public interface AssigneeFormGroupView extends ValidableFormGroupView,
                                                IsElement {
 
     void render(String inputId,
