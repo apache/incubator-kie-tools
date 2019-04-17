@@ -16,6 +16,7 @@
 
 package org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedMap;
 
@@ -25,6 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -94,6 +96,32 @@ public class SetHeaderCellValueCommandTest extends AbstractScenarioSimulationCom
     @Test
     public void validatePropertyHeaderFactModelMappedProperty() {
         commonValidatePropertyHeader(true, true);
+    }
+
+    @Test
+    public void recursivelyFindIsPropertyType() {
+        Map<String, String> bookSimpleProperties = new HashMap<>();
+        bookSimpleProperties.put("name", "String");
+        Map<String, String> bookExpandableProperties = new HashMap<>();
+        bookExpandableProperties.put("author", "Author");
+        Map<String, String> authorSimpleProperties = new HashMap<>();
+        authorSimpleProperties.put("books", "List");
+        Map<String, String> authorExpandableProperties = new HashMap<>();
+        FactModelTree bookFactModelTreeMock = getMockedFactModelTree(bookSimpleProperties, bookExpandableProperties);
+        FactModelTree authorFactModelTreeMock = getMockedFactModelTree(authorSimpleProperties, authorExpandableProperties);
+        when(dataObjectFieldsMapMock.get("Author")).thenReturn(authorFactModelTreeMock);
+        when(dataObjectFieldsMapMock.get("Book")).thenReturn(bookFactModelTreeMock);
+        assertFalse(((SetHeaderCellValueCommand) command).recursivelyFindIsPropertyType(scenarioSimulationContextLocal, bookFactModelTreeMock, "not-existing"));
+        assertTrue(((SetHeaderCellValueCommand) command).recursivelyFindIsPropertyType(scenarioSimulationContextLocal, bookFactModelTreeMock, "name"));
+        assertFalse(((SetHeaderCellValueCommand) command).recursivelyFindIsPropertyType(scenarioSimulationContextLocal, bookFactModelTreeMock, "author.not-existing"));
+        assertTrue(((SetHeaderCellValueCommand) command).recursivelyFindIsPropertyType(scenarioSimulationContextLocal, bookFactModelTreeMock, "author.books"));
+    }
+
+    private FactModelTree getMockedFactModelTree(Map<String, String> simpleProperties, Map<String, String> expandableProperties) {
+        FactModelTree toReturn = mock(FactModelTree.class);
+        when(toReturn.getSimpleProperties()).thenReturn(simpleProperties);
+        when(toReturn.getExpandableProperties()).thenReturn(expandableProperties);
+        return toReturn;
     }
 
     private void commonExecute(boolean isInstanceHeader, boolean isPropertyHeader, boolean isValid) {

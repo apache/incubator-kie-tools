@@ -69,7 +69,21 @@ public class SetHeaderCellValueCommand extends AbstractScenarioSimulationCommand
             className = className.substring(className.lastIndexOf(".")+1);
         }
         final FactModelTree factModelTree = context.getDataObjectFieldsMap().get(className);
-        boolean isPropertyType = factModelTree != null && (factModelTree.getSimpleProperties().containsKey(headerValue) || factModelTree.getExpandableProperties().containsKey(headerValue));
+        boolean isPropertyType = factModelTree != null && recursivelyFindIsPropertyType(context, factModelTree, headerValue);
         return context.getModel().validatePropertyHeaderUpdate(headerValue, columnIndex, isPropertyType);
+    }
+
+    protected boolean recursivelyFindIsPropertyType(ScenarioSimulationContext context, FactModelTree factModelTree, String propertyName) {
+        boolean toReturn = factModelTree.getSimpleProperties().containsKey(propertyName) || factModelTree.getExpandableProperties().containsKey(propertyName);
+        if (!toReturn && propertyName.contains(".")) {
+            String propertyParent = propertyName.substring(0, propertyName.indexOf("."));
+            if (factModelTree.getExpandableProperties().containsKey(propertyParent)) {
+                String nestedHeaderValue = propertyName.substring(propertyName.lastIndexOf(".") + 1);
+                String className = factModelTree.getExpandableProperties().get(propertyParent);
+                final FactModelTree nestedFactModelTree = context.getDataObjectFieldsMap().get(className);
+                toReturn =  recursivelyFindIsPropertyType(context, nestedFactModelTree, nestedHeaderValue);
+            }
+        }
+        return toReturn;
     }
 }

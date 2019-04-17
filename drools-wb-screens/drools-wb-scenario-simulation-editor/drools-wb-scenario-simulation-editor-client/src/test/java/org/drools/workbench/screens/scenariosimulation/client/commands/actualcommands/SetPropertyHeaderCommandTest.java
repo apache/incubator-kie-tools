@@ -64,6 +64,11 @@ public class SetPropertyHeaderCommandTest extends AbstractSelectedColumnCommandT
     }
 
     @Test
+    public void getMatchingExpressionAlias(){
+        super.getMatchingExpressionAlias();
+    }
+
+    @Test
     public void navigateComplexObject(){
         super.navigateComplexObject();
     }

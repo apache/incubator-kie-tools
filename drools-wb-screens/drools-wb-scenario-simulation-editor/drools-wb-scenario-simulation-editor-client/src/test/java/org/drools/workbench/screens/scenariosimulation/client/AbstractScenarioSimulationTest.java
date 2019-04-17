@@ -164,7 +164,13 @@ public abstract class AbstractScenarioSimulationTest {
 
     protected final String VALUE = "value";
 
-    protected final String FULL_CLASS_NAME = FULL_PACKAGE + ".testclass";
+    protected final String CLASS_NAME = "TestClass";
+
+    protected final String PROPERTY_NAME = "testProperty";
+
+    protected final String FULL_CLASS_NAME = FULL_PACKAGE + "." + CLASS_NAME;
+
+    protected final String FULL_PROPERTY_NAME = CLASS_NAME + "." + PROPERTY_NAME;
 
     protected final String VALUE_CLASS_NAME = String.class.getName();
 
@@ -173,7 +179,7 @@ public abstract class AbstractScenarioSimulationTest {
 
     protected final String FACT_IDENTIFIER_NAME = "FACT_IDENTIFIER_NAME";
 
-    protected static final String FACT_ALIAS = "FACT_ALIAS" ;
+    protected static final String FACT_ALIAS = "FACT_ALIAS";
 
     protected final String GRID_PROPERTY_TITLE = "GRID_PROPERTY_TITLE";
     protected final String GRID_COLUMN_GROUP = "GIVEN";
@@ -372,9 +378,9 @@ public abstract class AbstractScenarioSimulationTest {
      * Common method to add a new column in the model
      */
     protected void addNewColumn(ScenarioGridColumn gridColumn, List<GridColumn.HeaderMetaData> metaData, ScenarioHeaderMetaData informationHeaderMetaData,
-                             ScenarioHeaderMetaData propertyHeaderMetaData, FactIdentifier factIdentifier, FactMapping factMapping, FactMappingValue factMappingValue,
-                             int factStartingRange, int factEndingRange, int columnIndex, String value, String propertyTitle, String columnId, String factAlias,
-                             String valueClassName, String propertyAlias, String fullClassName, String factIdentfierName) {
+                                ScenarioHeaderMetaData propertyHeaderMetaData, FactIdentifier factIdentifier, FactMapping factMapping, FactMappingValue factMappingValue,
+                                int factStartingRange, int factEndingRange, int columnIndex, String value, String propertyTitle, String columnId, String factAlias,
+                                String valueClassName, String propertyAlias, String fullClassName, String factIdentfierName) {
         when(gridColumn.getHeaderMetaData()).thenReturn(metaData);
         when(gridColumn.getInformationHeaderMetaData()).thenReturn(informationHeaderMetaData);
         when(gridColumn.getPropertyHeaderMetaData()).thenReturn(propertyHeaderMetaData);
@@ -413,5 +419,4 @@ public abstract class AbstractScenarioSimulationTest {
         when(simulationDescriptorMock.getFactMappingByIndex(columnIndex)).thenReturn(factMapping);
         when(scenarioGridModelMock.nextColumnCount()).thenReturn(factMappingValuesLocal.size());
     }
-
 }

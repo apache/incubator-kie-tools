@@ -140,7 +140,7 @@ public abstract class AbstractSelectedColumnCommand extends AbstractScenarioSimu
         final ScenarioSimulationModel.Type simulationModelType = context.getModel().getSimulation().get().getSimulationDescriptor().getType();
         selectedColumn.setEditableHeaders(!simulationModelType.equals(ScenarioSimulationModel.Type.DMN));
         String nameToUseForCreation = simulationModelType.equals(ScenarioSimulationModel.Type.DMN) ? aliasName : selectedColumn.getInformationHeaderMetaData().getColumnId();
-        return getFactIdentifierByColumnTitle(aliasName, context).orElse(FactIdentifier.create(nameToUseForCreation, canonicalClassName));
+        return getFactIdentifierByColumnTitle(aliasName, context).orElseGet(() -> FactIdentifier.create(nameToUseForCreation, canonicalClassName));
     }
 
     /**
@@ -171,7 +171,7 @@ public abstract class AbstractSelectedColumnCommand extends AbstractScenarioSimu
         String canonicalClassName = getFullPackage(context) + aliasName;
         final FactIdentifier factIdentifier = setEditableHeadersAndGetFactIdentifier(context, selectedColumn, aliasName, canonicalClassName);
         String className = factIdentifier.getClassName();
-        String propertyTitle = propertyHeaderTitle.isPresent() ? propertyHeaderTitle.get() : getPropertyHeaderTitle(context, value, factIdentifier);
+        String propertyTitle = propertyHeaderTitle.orElseGet(() -> getPropertyHeaderTitle(context, value, factIdentifier));
         final GridData.Range instanceLimits = context.getModel().getInstanceLimits(columnIndex);
         IntStream.range(instanceLimits.getMinRowIndex(), instanceLimits.getMaxRowIndex() + 1)
                 .forEach(index -> {
@@ -250,14 +250,22 @@ public abstract class AbstractSelectedColumnCommand extends AbstractScenarioSimu
     }
 
     protected String getPropertyHeaderTitle(ScenarioSimulationContext context, String value, FactIdentifier factIdentifier) {
-        String toReturn = value.contains(".") ? value.substring(value.indexOf(".") + 1) : "value";
-        final List<FactMapping> factMappingsByFactName = context.getStatus().getSimulation().getSimulationDescriptor().getFactMappingsByFactName(factIdentifier.getName());
-        final Optional<FactMapping> matchingFactMapping = factMappingsByFactName.stream()
-                .filter(factMapping -> Objects.equals(factMapping.getFullExpression(), value))
-                .findFirst();
-        if (matchingFactMapping.isPresent()) {
-            toReturn = matchingFactMapping.get().getExpressionAlias();
+        String propertyPathPart = value.contains(".") ? value.substring(value.indexOf(".") + 1) : "value";
+        String actualClassName = factIdentifier.getClassName();
+        if (actualClassName.contains(".")) {
+            actualClassName = actualClassName.substring(actualClassName.lastIndexOf(".") + 1);
         }
-        return toReturn;
+        String fullExpressionToCheck = value.contains(".") ? actualClassName + "." + value.substring(value.indexOf(".") + 1) : value;
+        // This is because the propertyName starts with the alias of the fact; i.e. it may be Book.name but also Bookkk.name,
+        // while the first element of ExpressionElements is always the class name
+        return getMatchingExpressionAlias(context, fullExpressionToCheck, factIdentifier).orElse(propertyPathPart);
+    }
+
+    protected Optional<String> getMatchingExpressionAlias(ScenarioSimulationContext context, String fullExpressionToCheck, FactIdentifier factIdentifier) {
+        final List<FactMapping> factMappingsByFactName = context.getStatus().getSimulation().getSimulationDescriptor().getFactMappingsByFactName(factIdentifier.getName());
+        return factMappingsByFactName.stream()
+                .filter(factMapping -> Objects.equals(factMapping.getFullExpression(), fullExpressionToCheck))
+                .findFirst()
+                .map(FactMapping::getExpressionAlias);
     }
 }
