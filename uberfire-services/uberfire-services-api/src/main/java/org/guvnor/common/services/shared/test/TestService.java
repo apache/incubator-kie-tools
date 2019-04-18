@@ -16,9 +16,8 @@
 
 package org.guvnor.common.services.shared.test;
 
-import javax.enterprise.event.Event;
+import java.util.List;
 
-import org.jboss.errai.bus.server.annotations.Remote;
 import org.uberfire.backend.vfs.Path;
 
 /**
@@ -26,10 +25,6 @@ import org.uberfire.backend.vfs.Path;
  */
 public interface TestService {
 
-    void runAllTests(final String identifier,
-                     final Path path);
-
-    void runAllTests(final String identifier,
-                     final Path path,
-                     final Event<TestResultMessage> customTestResultEvent);
+    List<TestResultMessage> runAllTests(final String identifier,
+                                        final Path path);
 }

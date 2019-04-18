@@ -11,12 +11,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 package org.guvnor.common.services.backend.test;
-
-import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -24,7 +20,6 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import org.guvnor.common.services.shared.test.Failure;
 import org.guvnor.common.services.shared.test.TestResultMessage;
 import org.guvnor.common.services.shared.test.TestRunnerService;
 import org.guvnor.common.services.shared.test.TestService;
@@ -57,65 +52,17 @@ public class TestRunnerServiceImpl
     }
 
     @Override
-    public void runAllTests(final String identifier,
-                            final Path path,
+    public void runAllTests(final String identifier, Path path,
                             final Event<TestResultMessage> customTestResultEvent) {
-
-        final TestRunEventCollection testResultEvent = new TestRunEventCollection();
+        final TestResultMessageAggregator testResultEvent = new TestResultMessageAggregator();
 
         for (final TestService testService : testServices) {
-            testService.runAllTests(identifier,
-                                    path,
-                                    testResultEvent);
-        }
-        customTestResultEvent.fire(new TestResultMessage(identifier,
-                                                         testResultEvent.getRunCountSum(),
-                                                         testResultEvent.getRuntimeSum(),
-                                                         testResultEvent.getFailures()));
-    }
-
-    private class TestRunEventCollection
-            implements Event<TestResultMessage> {
-
-        private List<TestResultMessage> resultMessages = new ArrayList<>();
-
-        @Override
-        public void fire(TestResultMessage testResultMessage) {
-            resultMessages.add(testResultMessage);
-        }
-
-        @Override
-        public Event<TestResultMessage> select(Annotation... annotations) {
-            return null;
-        }
-
-        @Override
-        public <U extends TestResultMessage> Event<U> select(Class<U> aClass, Annotation... annotations) {
-            return null;
-        }
-
-        public int getRunCountSum() {
-            int result = 0;
-            for (final TestResultMessage message : resultMessages) {
-                result += message.getRunCount();
+            for (final TestResultMessage testResultMessage : testService.runAllTests(identifier,
+                                                                                     path)) {
+                testResultEvent.add(testResultMessage);
             }
-            return result;
         }
 
-        public long getRuntimeSum() {
-            long result = 0;
-            for (final TestResultMessage message : resultMessages) {
-                result += message.getRunTime();
-            }
-            return result;
-        }
-
-        public List<Failure> getFailures() {
-            List<Failure> result = new ArrayList<>();
-            for (final TestResultMessage message : resultMessages) {
-                result.addAll(message.getFailures());
-            }
-            return result;
-        }
+        customTestResultEvent.fire(testResultEvent.getSummary(identifier));
     }
 }

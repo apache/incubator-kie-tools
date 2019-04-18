@@ -11,10 +11,11 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 package org.guvnor.common.services.backend.test;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
@@ -38,6 +39,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.only;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -80,7 +82,7 @@ public class TestRunnerServiceImplTest {
         final Path path = mock(Path.class);
         testRunnerService.runAllTests("id", path);
 
-        verify(defaultTestResultMessageEvent).fire(testResultMessageArgumentCaptor.capture());
+        verify(defaultTestResultMessageEvent, only()).fire(testResultMessageArgumentCaptor.capture());
 
         final TestResultMessage testResultMessage = testResultMessageArgumentCaptor.getValue();
         assertEquals("id", testResultMessage.getIdentifier());
@@ -88,8 +90,8 @@ public class TestRunnerServiceImplTest {
         assertEquals(500, testResultMessage.getRunTime());
         assertEquals(3, testResultMessage.getFailures().size());
 
-        verify(testService1).runAllTests(eq("id"), eq(path), any());
-        verify(testService2).runAllTests(eq("id"), eq(path), any());
+        verify(testService1).runAllTests(eq("id"), eq(path));
+        verify(testService2).runAllTests(eq("id"), eq(path));
     }
 
     @Test
@@ -109,8 +111,8 @@ public class TestRunnerServiceImplTest {
         assertEquals(800, testResultMessage.getRunTime());
         assertEquals(1, testResultMessage.getFailures().size());
 
-        verify(testService1).runAllTests(eq("id"), eq(path), any());
-        verify(testService2).runAllTests(eq("id"), eq(path), any());
+        verify(testService1).runAllTests(eq("id"), eq(path));
+        verify(testService2).runAllTests(eq("id"), eq(path));
     }
 
     private void setUpTestService(final TestService testService,
@@ -118,19 +120,17 @@ public class TestRunnerServiceImplTest {
                                   final int runTime,
                                   final int failureCount) {
         doAnswer(invocationOnMock -> {
-            final Event<TestResultMessage> event = (Event<TestResultMessage>) invocationOnMock.getArguments()[2];
 
             final ArrayList<Failure> failures = new ArrayList<>();
 
             for (int i = 0; i < failureCount; i++) {
                 failures.add(new Failure());
             }
-            event.fire(new TestResultMessage((String) invocationOnMock.getArguments()[0],
-                                             runCount,
-                                             runTime,
-                                             failures));
 
-            return null;
-        }).when(testService).runAllTests(anyString(), any(), any());
+            return Collections.singletonList(new TestResultMessage((String) invocationOnMock.getArguments()[0],
+                                                                   runCount,
+                                                                   runTime,
+                                                                   failures));
+        }).when(testService).runAllTests(anyString(), any());
     }
 }
