@@ -171,7 +171,7 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
         superInitialiseKieEditorForSession(diagram);
 
         kieView.getMultiPage().addPage(dataTypesPage);
-        kieView.getMultiPage().addPage(includedModelsPage);
+        // TODO: {karreiro} Enable Included Models feature. # kieView.getMultiPage().addPage(includedModelsPage);
     }
 
     @Override

@@ -171,7 +171,7 @@ public class DecisionNavigatorPresenter {
 
     void setupView() {
         view.setupMainTree(treePresenter.getView());
-        view.setupDecisionComponents(decisionComponents.getView());
+        // TODO: {karreiro} Enable Included Models feature. # view.setupDecisionComponents(decisionComponents.getView());
     }
 
     public void refreshTreeView() {

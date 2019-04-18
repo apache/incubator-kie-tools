@@ -171,7 +171,7 @@ public class SessionDiagramEditorScreen implements KieEditorWrapperView.KieEdito
         kieView.clear();
         kieView.addMainEditorPage(screenPanelView.asWidget());
         kieView.getMultiPage().addPage(dataTypesPage);
-        kieView.getMultiPage().addPage(includedModelsPage);
+        // TODO: {karreiro} Enable Included Models feature. # kieView.getMultiPage().addPage(includedModelsPage);
     }
 
     public void onDataTypePageNavTabActiveEvent(final @Observes DataTypePageTabActiveEvent event) {

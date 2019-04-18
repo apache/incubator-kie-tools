@@ -136,7 +136,7 @@ public class DecisionNavigatorPresenterTest {
         presenter.setupView();
 
         verify(view).setupMainTree(treeView);
-        verify(view).setupDecisionComponents(decisionComponentsView);
+        // TODO: {karreiro} Enable Included Models feature. # verify(view).setupDecisionComponents(decisionComponentsView);
     }
 
     @Test
