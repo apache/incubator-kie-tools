@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,18 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.drools.workbench.screens.scenariosimulation.backend.server;
 
-package org.drools.workbench.screens.testscenario.backend.server;
-
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.drools.workbench.models.testscenarios.shared.Scenario;
-import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorService;
-import org.drools.workbench.screens.testscenario.type.TestScenarioResourceTypeDefinition;
+import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
+import org.drools.workbench.screens.scenariosimulation.service.ScenarioSimulationService;
+import org.drools.workbench.screens.scenariosimulation.type.ScenarioSimulationResourceTypeDefinition;
 import org.kie.workbench.common.services.refactoring.backend.server.query.FileLoader;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
@@ -32,20 +31,20 @@ import org.uberfire.io.IOService;
 public class ScenarioLoader {
 
     @Inject
-    TestScenarioResourceTypeDefinition testScenarioResourceTypeDefinition;
+    ScenarioSimulationResourceTypeDefinition testScenarioResourceTypeDefinition;
     @Inject
     @Named("ioStrategy")
     private IOService ioService;
     @Inject
-    private ScenarioTestEditorService scenarioTestEditorService;
+    private ScenarioSimulationService scenarioTestEditorService;
     @Inject
     private FileLoader fileLoader;
 
-    public List<Scenario> loadScenarios(final Path testResourcePath) {
-        final List<Scenario> scenarios = new ArrayList<>();
+    public Map<Path, ScenarioSimulationModel> loadScenarios(final Path testResourcePath) {
+        final Map<Path, ScenarioSimulationModel> scenarios = new HashMap<>();
 
         for (Path path : fileLoader.loadPaths(testResourcePath, testScenarioResourceTypeDefinition.getSuffix())) {
-            scenarios.add(scenarioTestEditorService.load(path));
+            scenarios.put(path, scenarioTestEditorService.load(path));
         }
         return scenarios;
     }

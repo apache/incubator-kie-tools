@@ -22,6 +22,7 @@ import org.drools.workbench.screens.scenariosimulation.model.Scenario;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModelContent;
 import org.drools.workbench.screens.scenariosimulation.model.SimulationDescriptor;
+import org.drools.workbench.screens.scenariosimulation.model.TestRunResult;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.uberfire.backend.vfs.Path;
@@ -42,9 +43,9 @@ public interface ScenarioSimulationService
 
     ScenarioSimulationModelContent loadContent(final Path path);
 
-    Map<Integer, Scenario> runScenario(Path path,
-                                       SimulationDescriptor simulationDescriptor,
-                                       Map<Integer, Scenario> scenarioMap);
+    TestRunResult runScenario(Path path,
+                              SimulationDescriptor simulationDescriptor,
+                              Map<Integer, Scenario> scenarioMap);
 
     Path create(final Path context,
                 final String fileName,

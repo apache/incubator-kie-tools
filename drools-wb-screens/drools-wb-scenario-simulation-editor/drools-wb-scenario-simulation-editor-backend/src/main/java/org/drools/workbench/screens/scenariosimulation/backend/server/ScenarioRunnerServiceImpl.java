@@ -21,13 +21,14 @@ import java.util.List;
 import java.util.Map;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.AbstractScenarioRunner;
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.ScenarioRunnerProvider;
 import org.drools.workbench.screens.scenariosimulation.model.Scenario;
+import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
 import org.drools.workbench.screens.scenariosimulation.model.SimulationDescriptor;
+import org.drools.workbench.screens.scenariosimulation.model.TestRunResult;
 import org.drools.workbench.screens.scenariosimulation.service.ScenarioRunnerService;
 import org.guvnor.common.services.shared.test.Failure;
 import org.guvnor.common.services.shared.test.TestResultMessage;
@@ -45,58 +46,49 @@ public class ScenarioRunnerServiceImpl extends AbstractKieContainerService
         implements ScenarioRunnerService {
 
     @Inject
-    private Event<TestResultMessage> defaultTestResultMessageEvent;
+    private ScenarioLoader scenarioLoader;
 
     private ScenarioRunnerProvider runnerSupplier = null;
 
     @Override
-    public void runAllTests(final String identifier,
-                            final Path path) {
+    public List<TestResultMessage> runAllTests(final String identifier,
+                                               final Path path) {
+        final List<TestResultMessage> testResultMessages = new ArrayList<>();
 
-        defaultTestResultMessageEvent.fire(
-                new TestResultMessage(
-                        identifier,
-                        1,
-                        1,
-                        new ArrayList<>()));
+        for (Map.Entry<Path, ScenarioSimulationModel> entry : scenarioLoader.loadScenarios(path).entrySet()) {
+
+            final ScenarioSimulationModel scenarioSimulationModel = entry.getValue();
+
+            testResultMessages.add(runTest(identifier,
+                                           entry.getKey(),
+                                           scenarioSimulationModel.getSimulation().getSimulationDescriptor(),
+                                           scenarioSimulationModel.getSimulation().getScenarioMap()).getTestResultMessage());
+        }
+
+        return testResultMessages;
     }
 
     @Override
-    public void runAllTests(final String identifier,
-                            final Path path,
-                            final Event<TestResultMessage> customTestResultEvent) {
-
-        customTestResultEvent.fire(
-                new TestResultMessage(
-                        identifier,
-                        1,
-                        1,
-                        new ArrayList<>()));
-    }
-
-    @Override
-    public Map<Integer, Scenario> runTest(final String identifier,
-                                          final Path path,
-                                          final SimulationDescriptor simulationDescriptor,
-                                          final Map<Integer, Scenario> scenarioMap) {
-        KieContainer kieContainer = getKieContainer(path);
-        Runner scenarioRunner = getOrCreateRunnerSupplier(simulationDescriptor)
+    public TestRunResult runTest(final String identifier,
+                                 final Path path,
+                                 final SimulationDescriptor simulationDescriptor,
+                                 final Map<Integer, Scenario> scenarioMap) {
+        final KieContainer kieContainer = getKieContainer(path);
+        final Runner scenarioRunner = getOrCreateRunnerSupplier(simulationDescriptor)
                 .create(kieContainer, simulationDescriptor, scenarioMap);
 
         final List<Failure> failures = new ArrayList<>();
 
         final List<Failure> failureDetails = new ArrayList<>();
 
-        Result result = runWithJunit(scenarioRunner, failures, failureDetails);
+        final Result result = runWithJunit(scenarioRunner, failures, failureDetails);
 
-        defaultTestResultMessageEvent.fire(
-                new TestResultMessage(
-                        identifier,
-                        result.getRunCount(),
-                        result.getRunTime(),
-                        failures));
-
-        return scenarioMap;
+        return new TestRunResult(scenarioMap,
+                                 new TestResultMessage(
+                                         identifier,
+                                         result.getRunCount(),
+                                         result.getRunTime(),
+                                         failures));
     }
 
     public ScenarioRunnerProvider getOrCreateRunnerSupplier(SimulationDescriptor simulationDescriptor) {

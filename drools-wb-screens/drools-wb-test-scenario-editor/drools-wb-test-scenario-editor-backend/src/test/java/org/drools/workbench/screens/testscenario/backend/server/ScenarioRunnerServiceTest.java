@@ -16,12 +16,10 @@
 
 package org.drools.workbench.screens.testscenario.backend.server;
 
-import java.lang.annotation.Annotation;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
-
-import javax.enterprise.event.Event;
 
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.model.TestScenarioResult;
@@ -45,8 +43,6 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.workbench.common.services.backend.session.SessionService;
 import org.kie.workbench.common.services.shared.project.KieModule;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
@@ -62,8 +58,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -74,9 +68,6 @@ public class ScenarioRunnerServiceTest {
 
     private ScenarioRunnerService service;
 
-    @Captor
-    private ArgumentCaptor<TestResultMessage> testResultMessageCaptor;
-
     @Spy
     private IOService ioService = new IOServiceDotFileImpl("testIoService");
 
@@ -86,8 +77,6 @@ public class ScenarioRunnerServiceTest {
     @Mock
     private SessionService sessionService;
 
-    private TestResultMessageEventMock defaultTestResultMessageEvent;
-
     private KieSession kieSession;
     private KieContainer kieContainer;
 
@@ -96,10 +85,7 @@ public class ScenarioRunnerServiceTest {
         final ConfigurationService configurationService = mock(ConfigurationService.class);
         final KieModuleService moduleService = mock(KieModuleService.class);
 
-        defaultTestResultMessageEvent = spy(new TestResultMessageEventMock());
-
         service = new ScenarioRunnerService(configurationService,
-                                            defaultTestResultMessageEvent,
                                             sessionService,
                                             moduleService,
                                             scenarioLoader);
@@ -125,10 +111,8 @@ public class ScenarioRunnerServiceTest {
 
         assertNotNull(result);
 
-        ArgumentCaptor<TestResultMessage> argumentCaptor = ArgumentCaptor.forClass(TestResultMessage.class);
-        verify(defaultTestResultMessageEvent).fire(argumentCaptor.capture());
         assertEquals("userName",
-                     argumentCaptor.getValue().getIdentifier());
+                     result.getTestResultMessage().getIdentifier());
     }
 
     @Test
@@ -222,13 +206,14 @@ public class ScenarioRunnerServiceTest {
         scenarios.add(makeScenario("test3.scenario"));
         when(scenarioLoader.loadScenarios(path)).thenReturn(scenarios);
 
-        service.runAllTests("userName",
-                            path);
+        List<TestResultMessage> testResultMessages = service.runAllTests("userName",
+                                                                         path);
 
-        ArgumentCaptor<TestResultMessage> argumentCaptor = ArgumentCaptor.forClass(TestResultMessage.class);
-        verify(defaultTestResultMessageEvent).fire(argumentCaptor.capture());
-        assertEquals("userName",
-                     argumentCaptor.getValue().getIdentifier());
+        for (TestResultMessage testResultMessage : testResultMessages) {
+
+            assertEquals("userName",
+                         testResultMessage.getIdentifier());
+        }
     }
 
     @Test
@@ -252,8 +237,7 @@ public class ScenarioRunnerServiceTest {
         assertEquals(isExpectedSuccess, scenario.wasSuccessful());
         assertEquals(isExpectedSuccess, result.getScenario().wasSuccessful());
 
-        verify(defaultTestResultMessageEvent).fire(testResultMessageCaptor.capture());
-        final TestResultMessage resultMessage = testResultMessageCaptor.getValue();
+        final TestResultMessage resultMessage = result.getTestResultMessage();
         assertEquals(isExpectedSuccess, resultMessage.getFailures().size() == 0);
         assertEquals(isExpectedSuccess, resultMessage.wasSuccessful());
     }
@@ -291,25 +275,5 @@ public class ScenarioRunnerServiceTest {
         kieContainer = kieServices.newKieContainer(kieServices.getRepository().getDefaultReleaseId());
         kieSession = kieContainer.newKieSession();
         doReturn(kieSession).when(sessionService).newDefaultKieSessionWithPseudoClock(any(KieModule.class));
-    }
-
-    class TestResultMessageEventMock
-            implements Event<TestResultMessage> {
-
-        @Override
-        public void fire(TestResultMessage testResultMessage) {
-
-        }
-
-        @Override
-        public Event<TestResultMessage> select(Annotation... annotations) {
-            return null;
-        }
-
-        @Override
-        public <U extends TestResultMessage> Event<U> select(Class<U> aClass,
-                                                             Annotation... annotations) {
-            return null;
-        }
     }
 }

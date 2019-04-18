@@ -34,10 +34,9 @@ import static org.mockito.Mockito.verify;
 public class ScenarioSimulationDocksHandlerTest {
 
     @Mock
-    AuthoringWorkbenchDocks authoringWorkbenchDocks;
-
+    private AuthoringWorkbenchDocks authoringWorkbenchDocks;
     @InjectMocks
-    ScenarioSimulationDocksHandler scenarioSimulationDocksHandler;
+    private ScenarioSimulationDocksHandler scenarioSimulationDocksHandler;
 
 
     private enum MANAGED_DOCKS {

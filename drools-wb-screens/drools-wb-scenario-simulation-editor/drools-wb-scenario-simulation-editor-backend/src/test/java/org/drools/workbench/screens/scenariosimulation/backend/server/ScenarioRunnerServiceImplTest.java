@@ -28,6 +28,7 @@ import org.drools.workbench.screens.scenariosimulation.model.Scenario;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
 import org.drools.workbench.screens.scenariosimulation.model.Simulation;
 import org.drools.workbench.screens.scenariosimulation.model.SimulationDescriptor;
+import org.drools.workbench.screens.scenariosimulation.model.TestRunResult;
 import org.guvnor.common.services.shared.test.TestResultMessage;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,55 +38,38 @@ import org.kie.workbench.common.services.backend.builder.service.BuildInfo;
 import org.kie.workbench.common.services.backend.builder.service.BuildInfoService;
 import org.kie.workbench.common.services.backend.project.ModuleClassLoaderHelper;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.PathFactory;
-import org.uberfire.mocks.EventSourceMock;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ScenarioRunnerServiceImplTest {
 
     @Mock
-    private EventSourceMock<TestResultMessage> defaultTestResultMessageEventMock;
-
+    ScenarioLoader scenarioLoader;
     @Mock
     private AbstractScenarioRunner runnerMock;
-
     @Mock
     private KieModuleService moduleServiceMock;
-
     @Mock
     private BuildInfoService buildInfoServiceMock;
-
     @Mock
     private BuildInfo buildInfoMock;
-
     @Mock
     private KieContainer kieContainerMock;
-
     @Mock
     private ModuleClassLoaderHelper classLoaderHelperMock;
 
-    @Captor
-    private ArgumentCaptor<TestResultMessage> testResultMessageArgumentCaptor;
-
     @InjectMocks
     private ScenarioRunnerServiceImpl scenarioRunnerService = new ScenarioRunnerServiceImpl();
-
-    private Path path = PathFactory.newPath("contextpath", "file:///contextpath");
 
     @Before
     public void setup() {
@@ -94,9 +78,9 @@ public class ScenarioRunnerServiceImplTest {
 
     @Test
     public void runAllTests() throws Exception {
-        scenarioRunnerService.runAllTests("test", mock(Path.class));
+        List<TestResultMessage> testResultMessages = scenarioRunnerService.runAllTests("test", mock(Path.class));
 
-        verify(defaultTestResultMessageEventMock).fire(any());
+        assertNotNull(testResultMessages);
     }
 
     @Test
@@ -106,12 +90,13 @@ public class ScenarioRunnerServiceImplTest {
         Simulation simulation = new Simulation();
         simulation.getSimulationDescriptor().setType(ScenarioSimulationModel.Type.RULE);
 
-        scenarioRunnerService.runTest("test",
-                                      mock(Path.class),
-                                      simulation.getSimulationDescriptor(),
-                                      simulation.getScenarioMap());
+        TestRunResult test = scenarioRunnerService.runTest("test",
+                                                           mock(Path.class),
+                                                           simulation.getSimulationDescriptor(),
+                                                           simulation.getScenarioMap());
 
-        verify(defaultTestResultMessageEventMock).fire(any());
+        assertNotNull(test.getTestResultMessage());
+        assertNotNull(test.getMap());
     }
 
     @Test
@@ -122,21 +107,10 @@ public class ScenarioRunnerServiceImplTest {
         simulationDescriptor.setType(ScenarioSimulationModel.Type.RULE);
         Map<Integer, Scenario> scenarioMap = new HashMap<>();
 
-        scenarioRunnerService.runTest("test", mock(Path.class), simulationDescriptor, scenarioMap);
+        TestRunResult test = scenarioRunnerService.runTest("test", mock(Path.class), simulationDescriptor, scenarioMap);
 
-        verify(defaultTestResultMessageEventMock).fire(any());
-    }
-
-    @Test
-    public void runAllTestsSpecifiedEvent() throws Exception {
-        final EventSourceMock customTestResultEvent = mock(EventSourceMock.class);
-
-        scenarioRunnerService.setRunnerSupplier((kieContainer, simulationDescriptor, scenarioMap) -> runnerMock);
-
-        scenarioRunnerService.runAllTests("test", mock(Path.class), customTestResultEvent);
-
-        verify(defaultTestResultMessageEventMock, never()).fire(any());
-        verify(customTestResultEvent).fire(any());
+        assertNotNull(test.getTestResultMessage());
+        assertNotNull(test.getMap());
     }
 
     @Test
@@ -158,9 +132,8 @@ public class ScenarioRunnerServiceImplTest {
                                 throw new ScenarioException(errorMessage);
                             }
                         });
-        scenarioRunnerService.runTest("test", mock(Path.class), simulation.getSimulationDescriptor(), simulation.getScenarioMap());
-        verify(defaultTestResultMessageEventMock, times(1)).fire(testResultMessageArgumentCaptor.capture());
-        TestResultMessage value = testResultMessageArgumentCaptor.getValue();
+        TestRunResult testRunResult = scenarioRunnerService.runTest("test", mock(Path.class), simulation.getSimulationDescriptor(), simulation.getScenarioMap());
+        TestResultMessage value = testRunResult.getTestResultMessage();
         List<org.guvnor.common.services.shared.test.Failure> failures = value.getFailures();
         assertEquals(1, failures.size());
 

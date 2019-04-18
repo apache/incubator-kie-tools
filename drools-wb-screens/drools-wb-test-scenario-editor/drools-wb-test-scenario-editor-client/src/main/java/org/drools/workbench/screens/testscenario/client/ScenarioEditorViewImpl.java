@@ -78,16 +78,6 @@ public class ScenarioEditorViewImpl
         });
     }
 
-    @Override
-    public MenuItem getRunAllScenariosMenuItem() {
-        return new SimpleMenuItem(TestScenarioConstants.INSTANCE.RunAllScenarios(), new com.google.gwt.user.client.Command() {
-            @Override
-            public void execute() {
-                presenter.onRunAllScenarios();
-            }
-        });
-    }
-
     public void renderEditor() {
         presenter.onRedraw();
     }

@@ -17,12 +17,12 @@
 package org.drools.workbench.screens.testscenario.backend.server;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.drools.workbench.models.testscenarios.backend.ScenarioRunner4JUnit;
@@ -61,7 +61,6 @@ public class ScenarioRunnerService
     protected KieModuleService moduleService;
     private ScenarioLoader scenarioLoader;
     private SessionService sessionService;
-    private Event<TestResultMessage> defaultTestResultMessageEvent;
     private ConfigurationService configurationService;
 
     public ScenarioRunnerService() {
@@ -69,12 +68,10 @@ public class ScenarioRunnerService
 
     @Inject
     public ScenarioRunnerService(final ConfigurationService configurationService,
-                                 final Event<TestResultMessage> defaultTestResultMessageEvent,
                                  final SessionService sessionService,
                                  final KieModuleService moduleService,
                                  final ScenarioLoader scenarioLoader) {
         this.configurationService = configurationService;
-        this.defaultTestResultMessageEvent = defaultTestResultMessageEvent;
         this.sessionService = sessionService;
         this.moduleService = moduleService;
         this.scenarioLoader = scenarioLoader;
@@ -98,29 +95,20 @@ public class ScenarioRunnerService
                     ksessions,
                     getMaxRuleFirings());
 
-            run(identifier,
-                scenarioRunner,
-                defaultTestResultMessageEvent);
+            final TestResultMessage testResultMessage = run(identifier,
+                                                            scenarioRunner);
 
             return new TestScenarioResult(scenario,
-                                          auditLogger.getLog());
+                                          auditLogger.getLog(),
+                                          testResultMessage);
         } catch (InitializationError initializationError) {
             throw new GenericPortableException(initializationError.getMessage());
         }
     }
 
     @Override
-    public void runAllTests(final String indentifier,
-                            final Path path) {
-        runAllTests(indentifier,
-                    path,
-                    defaultTestResultMessageEvent);
-    }
-
-    @Override
-    public void runAllTests(final String identifier,
-                            final Path path,
-                            final Event<TestResultMessage> customTestResultEvent) {
+    public List<TestResultMessage> runAllTests(final String identifier,
+                                               final Path path) {
         try {
             final List<Scenario> scenarios = scenarioLoader.loadScenarios(path);
 
@@ -130,21 +118,19 @@ public class ScenarioRunnerService
                                  scenarios),
                     getMaxRuleFirings());
 
-            run(identifier,
-                scenarioRunner,
-                customTestResultEvent);
+            return Collections.singletonList(run(identifier,
+                                                 scenarioRunner));
         } catch (Exception e) {
             throw ExceptionUtilities.handleException(e);
         }
     }
 
-    private void run(final String identifier,
-                     final ScenarioRunner4JUnit scenarioRunner,
-                     final Event<TestResultMessage> testResultMessageEvent) {
+    private TestResultMessage run(final String identifier,
+                                  final ScenarioRunner4JUnit scenarioRunner) {
 
         final List<org.guvnor.common.services.shared.test.Failure> failures = new ArrayList<org.guvnor.common.services.shared.test.Failure>();
 
-        JUnitCore jUnitCore = new JUnitCore();
+        final JUnitCore jUnitCore = new JUnitCore();
 
         jUnitCore.addListener(new RunListener() {
             @Override
@@ -153,16 +139,14 @@ public class ScenarioRunnerService
             }
         });
 
-        Result result = jUnitCore.run(scenarioRunner);
+        final Result result = jUnitCore.run(scenarioRunner);
 
         failures.addAll(failuresToFailures(result.getFailures()));
 
-        testResultMessageEvent.fire(
-                new TestResultMessage(
-                        identifier,
-                        result.getRunCount(),
-                        result.getRunTime(),
-                        failures));
+        return new TestResultMessage(identifier,
+                                     result.getRunCount(),
+                                     result.getRunTime(),
+                                     failures);
     }
 
     private int getMaxRuleFirings() {

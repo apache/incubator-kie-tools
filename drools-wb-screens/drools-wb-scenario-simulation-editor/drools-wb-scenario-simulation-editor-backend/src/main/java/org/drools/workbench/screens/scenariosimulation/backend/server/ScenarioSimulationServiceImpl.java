@@ -37,6 +37,7 @@ import org.drools.workbench.screens.scenariosimulation.model.Scenario;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModelContent;
 import org.drools.workbench.screens.scenariosimulation.model.SimulationDescriptor;
+import org.drools.workbench.screens.scenariosimulation.model.TestRunResult;
 import org.drools.workbench.screens.scenariosimulation.service.ScenarioRunnerService;
 import org.drools.workbench.screens.scenariosimulation.service.ScenarioSimulationService;
 import org.drools.workbench.screens.scenariosimulation.type.ScenarioSimulationResourceTypeDefinition;
@@ -150,9 +151,9 @@ public class ScenarioSimulationServiceImpl
     }
 
     @Override
-    public Map<Integer, Scenario> runScenario(final Path path,
-                                               final SimulationDescriptor simulationDescriptor,
-                                               final Map<Integer, Scenario> scenarioMap) {
+    public TestRunResult runScenario(final Path path,
+                                     final SimulationDescriptor simulationDescriptor,
+                                     final Map<Integer, Scenario> scenarioMap) {
         return scenarioRunnerService.runTest(user.getIdentifier(),
                                              path,
                                              simulationDescriptor,

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,39 +14,29 @@
  * limitations under the License.
  */
 
-package org.drools.workbench.screens.testscenario.model;
+package org.drools.workbench.screens.scenariosimulation.model;
 
-import java.util.Set;
+import java.util.Map;
 
-import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.guvnor.common.services.shared.test.TestResultMessage;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
-public class TestScenarioResult {
+public class TestRunResult {
 
-    private Scenario scenario;
-    private Set<String> log;
-    private TestResultMessage testResultMessage;
+    private final Map<Integer, Scenario> map;
 
-    public TestScenarioResult() {
-    }
+    private final TestResultMessage testResultMessage;
 
-    public TestScenarioResult(@MapsTo("scenario")Scenario scenario,
-                              @MapsTo("log")   Set<String> log,
-                              @MapsTo("testResultMessage")  TestResultMessage testResultMessage) {
-        this.scenario = scenario;
-        this.log = log;
+    public TestRunResult(@MapsTo("map") Map<Integer, Scenario> map,
+                         @MapsTo("testResultMessage") TestResultMessage testResultMessage) {
+        this.map = map;
         this.testResultMessage = testResultMessage;
     }
 
-    public Scenario getScenario() {
-        return scenario;
-    }
-
-    public Set<String> getLog() {
-        return log;
+    public Map<Integer, Scenario> getMap() {
+        return map;
     }
 
     public TestResultMessage getTestResultMessage() {

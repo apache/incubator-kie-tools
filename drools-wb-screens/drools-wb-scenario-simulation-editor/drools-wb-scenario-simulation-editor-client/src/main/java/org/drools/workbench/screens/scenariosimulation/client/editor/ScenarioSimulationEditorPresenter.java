@@ -53,6 +53,7 @@ import org.drools.workbench.screens.scenariosimulation.model.Scenario;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModelContent;
 import org.drools.workbench.screens.scenariosimulation.model.Simulation;
+import org.drools.workbench.screens.scenariosimulation.model.TestRunResult;
 import org.drools.workbench.screens.scenariosimulation.service.DMNTypeService;
 import org.drools.workbench.screens.scenariosimulation.service.ScenarioSimulationService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
@@ -64,7 +65,7 @@ import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.configresource.client.widget.bound.ImportsWidgetPresenter;
 import org.kie.workbench.common.widgets.metadata.client.KieEditor;
-import org.kie.workbench.common.workbench.client.test.TestRunnerReportingScreen;
+import org.kie.workbench.common.workbench.client.test.TestRunnerReportingPanel;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.WorkbenchEditor;
@@ -111,16 +112,15 @@ public class ScenarioSimulationEditorPresenter
 
     protected DataManagementStrategy dataManagementStrategy;
     protected ScenarioSimulationContext context;
+    protected ScenarioSimulationModel model;
+    protected TestRunnerReportingPanel testRunnerReportingPanel;
     private ImportsWidgetPresenter importsWidget;
     private AsyncPackageDataModelOracleFactory oracleFactory;
-    protected ScenarioSimulationModel model;
     private Caller<ScenarioSimulationService> service;
     private Caller<DMNTypeService> dmnTypeService;
     private ScenarioSimulationResourceType type;
     private ScenarioSimulationView view;
     private Command populateTestToolsCommand;
-
-    private TestRunnerReportingScreen testRunnerReportingScreen;
 
     private ScenarioSimulationDocksHandler scenarioSimulationDocksHandler;
 
@@ -139,11 +139,11 @@ public class ScenarioSimulationEditorPresenter
                                              final ImportsWidgetPresenter importsWidget,
                                              final AsyncPackageDataModelOracleFactory oracleFactory,
                                              final PlaceManager placeManager,
-                                             final TestRunnerReportingScreen testRunnerReportingScreen,
+                                             final TestRunnerReportingPanel testRunnerReportingPanel,
                                              final ScenarioSimulationDocksHandler scenarioSimulationDocksHandler,
                                              final Caller<DMNTypeService> dmnTypeService) {
         super(scenarioSimulationProducer.getScenarioSimulationView());
-        this.testRunnerReportingScreen = testRunnerReportingScreen;
+        this.testRunnerReportingPanel = testRunnerReportingPanel;
         this.scenarioSimulationDocksHandler = scenarioSimulationDocksHandler;
         this.dmnTypeService = dmnTypeService;
         this.view = (ScenarioSimulationView) baseView;
@@ -169,6 +169,8 @@ public class ScenarioSimulationEditorPresenter
                    place,
                    type);
         this.path = path;
+
+        testRunnerReportingPanel.reset();
     }
 
     @OnClose
@@ -207,6 +209,7 @@ public class ScenarioSimulationEditorPresenter
     @Override
     public void showDocks() {
         super.showDocks();
+        registerDock(ScenarioSimulationDocksHandler.TEST_RUNNER_REPORTING_PANEL, testRunnerReportingPanel.asWidget());
         scenarioSimulationDocksHandler.addDocks();
         scenarioSimulationDocksHandler.setScesimEditorId(String.valueOf(scenarioPresenterId));
         expandToolsDock();
@@ -221,7 +224,7 @@ public class ScenarioSimulationEditorPresenter
         view.getScenarioGridLayer().getScenarioGrid().clearSelections();
         unRegisterTestToolsCallback();
         clearTestToolsStatus();
-        testRunnerReportingScreen.reset();
+        testRunnerReportingPanel.reset();
     }
 
     public void onUberfireDocksInteractionEvent(@Observes final UberfireDocksInteractionEvent uberfireDocksInteractionEvent) {
@@ -315,22 +318,23 @@ public class ScenarioSimulationEditorPresenter
         return uberfireDocksInteractionEvent.getTargetDock() != null && uberfireDocksInteractionEvent.getTargetDock().getPlaceRequest().getParameter(SCESIMEDITOR_ID, "").equals(String.valueOf(scenarioPresenterId));
     }
 
-    protected RemoteCallback<Map<Integer, Scenario>> getRefreshModelCallback() {
+    protected RemoteCallback<TestRunResult> getRefreshModelCallback() {
         return this::refreshModelContent;
     }
 
-    protected void refreshModelContent(Map<Integer, Scenario> newData) {
+    protected void refreshModelContent(TestRunResult testRunResult) {
         if (this.model == null) {
             return;
         }
         Simulation simulation = this.model.getSimulation();
-        for (Map.Entry<Integer, Scenario> entry : newData.entrySet()) {
+        for (Map.Entry<Integer, Scenario> entry : testRunResult.getMap().entrySet()) {
             int index = entry.getKey() - 1;
             simulation.replaceScenario(index, entry.getValue());
         }
         view.refreshContent(simulation);
         context.getStatus().setSimulation(simulation);
         scenarioSimulationDocksHandler.expandTestResultsDock();
+        testRunnerReportingPanel.onTestRun(testRunResult.getTestResultMessage()); // TODO TEST
         dataManagementStrategy.setModel(model);
     }
 

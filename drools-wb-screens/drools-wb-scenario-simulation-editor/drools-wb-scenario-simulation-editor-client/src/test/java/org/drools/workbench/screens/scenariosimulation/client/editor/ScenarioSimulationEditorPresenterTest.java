@@ -41,7 +41,9 @@ import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGr
 import org.drools.workbench.screens.scenariosimulation.model.Scenario;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModelContent;
+import org.drools.workbench.screens.scenariosimulation.model.TestRunResult;
 import org.guvnor.common.services.shared.metadata.model.Overview;
+import org.guvnor.common.services.shared.test.TestResultMessage;
 import org.guvnor.messageconsole.client.console.widget.button.AlertsButtonMenuItemBuilder;
 import org.junit.Before;
 import org.junit.Test;
@@ -52,7 +54,7 @@ import org.kie.workbench.common.widgets.client.docks.DefaultEditorDock;
 import org.kie.workbench.common.widgets.configresource.client.widget.bound.ImportsWidgetPresenter;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorWrapperView;
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
-import org.kie.workbench.common.workbench.client.test.TestRunnerReportingScreen;
+import org.kie.workbench.common.workbench.client.test.TestRunnerReportingPanel;
 import org.mockito.Mock;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
@@ -134,7 +136,7 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
     @Mock
     private ScenarioSimulationContext.Status statusMock;
     @Mock
-    private TestRunnerReportingScreen testRunnerReportingScreenMock;
+    private TestRunnerReportingPanel testRunnerReportingPanel;
     @Mock
     private ScenarioSimulationDocksHandler scenarioSimulationDocksHandlerMock;
     @Mock
@@ -178,7 +180,7 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
                                                                importsWidgetPresenterMock,
                                                                oracleFactoryMock,
                                                                placeManagerMock,
-                                                               testRunnerReportingScreenMock,
+                                                               testRunnerReportingPanel,
                                                                scenarioSimulationDocksHandlerMock,
                                                                new CallerMock<>(dmnTypeServiceMock)) {
             {
@@ -238,6 +240,7 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
                                                                eq(content.getDataModel()))).thenReturn(oracle);
         presenter.onStartup(mock(ObservablePath.class),
                             mock(PlaceRequest.class));
+        verify(testRunnerReportingPanel).reset();
         verify(importsWidgetPresenterMock).setContent(oracle,
                                                       modelLocal.getImports(),
                                                       false);
@@ -332,7 +335,7 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
         verify(scenarioGridMock, times(1)).clearSelections();
         verify(presenterSpy).unRegisterTestToolsCallback();
         verify(presenterSpy).clearTestToolsStatus();
-        verify(testRunnerReportingScreenMock).reset();
+        verify(testRunnerReportingPanel).reset();
     }
 
     @Test
@@ -472,7 +475,8 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
         doReturn(new ScenarioSimulationModelContent(modelLocal,
                                                     new Overview(),
                                                     new PackageDataModelOracleBaselinePayload())).when(scenarioSimulationServiceMock).loadContent(any());
-        when(scenarioSimulationServiceMock.runScenario(any(), any(), any())).thenReturn(scenarioMapMock);
+        when(scenarioSimulationServiceMock.runScenario(any(), any(), any())).thenReturn(new TestRunResult(scenarioMapMock,
+                                                                                                          new TestResultMessage()));
         when(statusMock.getSimulation()).thenReturn(simulationMock);
         when(contextMock.getStatus()).thenReturn(statusMock);
         assertFalse(modelLocal.getSimulation().equals(simulationMock));
@@ -487,6 +491,8 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
 
     @Test
     public void onRunTestById() throws Exception {
+        when(scenarioSimulationServiceMock.runScenario(any(), any(), any())).thenReturn(new TestRunResult(Collections.EMPTY_MAP,
+                                                                                                          new TestResultMessage()));
         when(simulationMock.getScenarioByIndex(anyInt())).thenReturn(mock(Scenario.class));
         presenter.onRunScenario(Collections.singletonList(0));
         verify(scenarioSimulationServiceMock, times(1)).runScenario(any(), any(), any());
@@ -503,7 +509,8 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
         int scenarioIndex = scenarioNumber - 1;
         entries.add(new AbstractMap.SimpleEntry<>(scenarioNumber, new Scenario()));
         when(scenarioMapMock.entrySet()).thenReturn(entries);
-        presenter.refreshModelContent(scenarioMapMock);
+        presenter.refreshModelContent(new TestRunResult(scenarioMapMock,
+                                                        new TestResultMessage()));
         verify(simulationMock, times(1)).replaceScenario(eq(scenarioIndex), any());
         assertEquals(scenarioSimulationModelMock, presenter.getModel());
         verify(scenarioSimulationViewMock, times(1)).refreshContent(eq(simulationMock));

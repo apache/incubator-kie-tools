@@ -29,6 +29,7 @@ import org.drools.workbench.screens.scenariosimulation.client.rightpanel.CheatSh
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.SettingsPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsPresenter;
 import org.kie.workbench.common.widgets.client.docks.AbstractWorkbenchDocksHandler;
+import org.kie.workbench.common.widgets.client.docks.DockPlaceHolderPlace;
 import org.kie.workbench.common.workbench.client.docks.AuthoringWorkbenchDocks;
 import org.kie.workbench.common.workbench.client.resources.i18n.DefaultWorkbenchConstants;
 import org.uberfire.client.workbench.docks.UberfireDock;
@@ -42,6 +43,8 @@ public class ScenarioSimulationDocksHandler
 
     public static final String SCESIMEDITOR_ID = "scesimeditorid";
 
+    public final static String TEST_RUNNER_REPORTING_PANEL = "testRunnerReportingPanel";
+
     @Inject
     private AuthoringWorkbenchDocks authoringWorkbenchDocks;
 
@@ -52,6 +55,7 @@ public class ScenarioSimulationDocksHandler
 
     @Override
     public Collection<UberfireDock> provideDocks(final String perspectiveIdentifier) {
+
         List<UberfireDock> result = new ArrayList<>();
         settingsDock = new UberfireDock(UberfireDockPosition.EAST,
                                      "SLIDERS",
@@ -70,7 +74,7 @@ public class ScenarioSimulationDocksHandler
         result.add(cheatSheetDock.withSize(450).withLabel(ScenarioSimulationEditorConstants.INSTANCE.scenarioCheatSheet()));
         reportDock = new UberfireDock(UberfireDockPosition.EAST,
                                       "PLAY_CIRCLE",
-                                      new DefaultPlaceRequest("org.kie.guvnor.TestResults"),
+                                      new DockPlaceHolderPlace(TEST_RUNNER_REPORTING_PANEL),
                                       perspectiveIdentifier);
         result.add(reportDock.withSize(450).withLabel(DefaultWorkbenchConstants.INSTANCE.TestReport()));
 

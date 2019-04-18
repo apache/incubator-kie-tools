@@ -33,15 +33,11 @@ public interface ScenarioEditorView
         void onRunScenario();
 
         void onRedraw();
-
-        void onRunAllScenarios();
     }
 
     void setPresenter(Presenter presenter);
 
     MenuItem getRunScenarioMenuItem();
-
-    MenuItem getRunAllScenariosMenuItem();
 
     void showResults();
 

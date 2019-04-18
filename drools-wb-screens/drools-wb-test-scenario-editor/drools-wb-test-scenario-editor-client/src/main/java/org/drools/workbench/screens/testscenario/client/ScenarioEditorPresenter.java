@@ -34,7 +34,6 @@ import org.drools.workbench.screens.testscenario.model.TestScenarioModelContent;
 import org.drools.workbench.screens.testscenario.model.TestScenarioResult;
 import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
-import org.guvnor.common.services.shared.test.TestRunnerService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.security.shared.api.identity.User;
@@ -45,7 +44,7 @@ import org.kie.workbench.common.widgets.metadata.client.KieEditor;
 import org.kie.workbench.common.workbench.client.test.OnHideTestPanelEvent;
 import org.kie.workbench.common.workbench.client.test.OnShowTestPanelEvent;
 import org.kie.workbench.common.workbench.client.test.TestReportingDocksHandler;
-import org.kie.workbench.common.workbench.client.test.TestRunnerReportingScreen;
+import org.kie.workbench.common.workbench.client.test.TestRunnerReportingPanel;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
@@ -71,7 +70,6 @@ public class ScenarioEditorPresenter
     private final ScenarioEditorView view;
     private final Caller<ScenarioTestEditorService> service;
     private final AsyncPackageDataModelOracleFactory oracleFactory;
-    private final Caller<TestRunnerService> testService;
     private final ImportsWidgetPresenter importsWidget;
     private final SettingsPage settingsPage;
     private final AuditPage auditPage;
@@ -85,19 +83,18 @@ public class ScenarioEditorPresenter
     private Event<OnShowTestPanelEvent> showTestPanelEvent;
     private Event<OnHideTestPanelEvent> hideTestPanelEvent;
 
-    private TestRunnerReportingScreen testRunnerReportingScreen;
+    private TestRunnerReportingPanel testRunnerReportingPanel;
 
     @Inject
     public ScenarioEditorPresenter(final ScenarioEditorView view,
                                    final User user,
                                    final ImportsWidgetPresenter importsWidget,
                                    final Caller<ScenarioTestEditorService> service,
-                                   final Caller<TestRunnerService> testService,
                                    final TestScenarioResourceType type,
                                    final AsyncPackageDataModelOracleFactory oracleFactory,
                                    final SettingsPage settingsPage,
                                    final AuditPage auditPage,
-                                   final TestRunnerReportingScreen testRunnerReportingScreen,
+                                   final TestRunnerReportingPanel testRunnerReportingPanel,
                                    final TestReportingDocksHandler testReportingDocksHandler,
                                    final Event<OnShowTestPanelEvent> showTestPanelEvent,
                                    final Event<OnHideTestPanelEvent> hideTestPanelEvent) {
@@ -106,12 +103,11 @@ public class ScenarioEditorPresenter
         this.user = user;
         this.importsWidget = importsWidget;
         this.service = service;
-        this.testService = testService;
         this.type = type;
         this.oracleFactory = oracleFactory;
         this.settingsPage = settingsPage;
         this.auditPage = auditPage;
-        this.testRunnerReportingScreen = testRunnerReportingScreen;
+        this.testRunnerReportingPanel = testRunnerReportingPanel;
         this.testReportingDocksHandler = testReportingDocksHandler;
         this.showTestPanelEvent = showTestPanelEvent;
         this.hideTestPanelEvent = hideTestPanelEvent;
@@ -125,19 +121,22 @@ public class ScenarioEditorPresenter
         super.init(path,
                    place,
                    type);
+
+        testRunnerReportingPanel.reset();
     }
 
     @Override
     public void hideDocks() {
         super.hideDocks();
         hideTestPanelEvent.fire(new OnHideTestPanelEvent());
-        testRunnerReportingScreen.reset();
+        testRunnerReportingPanel.reset();
     }
 
     @Override
     public void showDocks() {
         super.showDocks();
         showTestPanelEvent.fire(new OnShowTestPanelEvent());
+        registerDock(TestReportingDocksHandler.TEST_RUNNER_REPORTING_PANEL, testRunnerReportingPanel.asWidget());
     }
 
     protected void loadContent() {
@@ -192,23 +191,22 @@ public class ScenarioEditorPresenter
     @Override
     public void onRunScenario() {
         view.showBusyIndicator(TestScenarioConstants.INSTANCE.BuildingAndRunningScenario());
-        service.call(new RemoteCallback<TestScenarioResult>() {
-                         @Override
-                         public void callback(TestScenarioResult result) {
+        service.call((RemoteCallback<TestScenarioResult>) result -> {
 
-                             scenario = result.getScenario();
+                         scenario = result.getScenario();
 
-                             view.showResults();
+                         view.showResults();
 
-                             auditPage.showFiredRulesAuditLog(result.getLog());
+                         auditPage.showFiredRulesAuditLog(result.getLog());
 
-                             auditPage.showFiredRules(ScenarioUtils.findExecutionTrace(scenario));
+                         auditPage.showFiredRules(ScenarioUtils.findExecutionTrace(scenario));
 
-                             view.hideBusyIndicator();
+                         view.hideBusyIndicator();
 
-                             redraw();
-                             testReportingDocksHandler.expandTestResultsDock();
-                         }
+                         redraw();
+
+                         testRunnerReportingPanel.onTestRun(result.getTestResultMessage());
+                         testReportingDocksHandler.expandTestResultsDock();
                      },
                      getTestRunFailedCallback()).runScenario(user.getIdentifier(),
                                                              versionRecordManager.getCurrentPath(),
@@ -229,19 +227,6 @@ public class ScenarioEditorPresenter
         view.renderFixtures(versionRecordManager.getCurrentPath(),
                             dmo,
                             scenario);
-    }
-
-    @Override
-    public void onRunAllScenarios() {
-        view.showBusyIndicator(TestScenarioConstants.INSTANCE.BuildingAndRunningScenarios());
-        testService.call(new RemoteCallback<Void>() {
-                             @Override
-                             public void callback(Void v) {
-                                 view.hideBusyIndicator();
-                             }
-                         },
-                         getTestRunFailedCallback()).runAllTests(user.getIdentifier(),
-                                                                 versionRecordManager.getCurrentPath());
     }
 
     @Override
@@ -296,7 +281,6 @@ public class ScenarioEditorPresenter
 
         fileMenuBuilder
                 .addNewTopLevelMenu(view.getRunScenarioMenuItem())
-                .addNewTopLevelMenu(view.getRunAllScenariosMenuItem())
                 .addNewTopLevelMenu(versionRecordManager.buildMenu())
                 .addNewTopLevelMenu(alertsButtonMenuItemBuilder.build());
     }
