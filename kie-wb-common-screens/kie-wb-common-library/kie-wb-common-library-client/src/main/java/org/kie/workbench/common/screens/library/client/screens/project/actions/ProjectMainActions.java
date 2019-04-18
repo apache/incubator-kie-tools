@@ -16,13 +16,25 @@
 
 package org.kie.workbench.common.screens.library.client.screens.project.actions;
 
+import java.util.Optional;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import elemental2.dom.HTMLElement;
+import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
+import org.guvnor.common.services.project.model.Module;
+import org.guvnor.common.services.shared.test.TestRunnerService;
+import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.common.client.api.elemental2.IsElement;
+import org.jboss.errai.security.shared.api.identity.User;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
+import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
 import org.kie.workbench.common.screens.projecteditor.client.build.BuildExecutor;
+import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
 @Dependent
 public class ProjectMainActions implements ProjectMainActionsView.Presenter,
@@ -30,15 +42,31 @@ public class ProjectMainActions implements ProjectMainActionsView.Presenter,
 
     private final BuildExecutor buildExecutor;
     private final ProjectMainActionsView view;
+    private final Caller<TestRunnerService> testRunnerService;
+    private final User user;
+    private TranslationService ts;
+    private PlaceManager placeManager;
+    private WorkspaceProjectContext workspaceProjectContext;
 
     private boolean buildEnabled;
     private boolean deployEnabled;
     private boolean redeployEnabled;
 
     @Inject
-    public ProjectMainActions(BuildExecutor buildExecutor, ProjectMainActionsView view) {
+    public ProjectMainActions(final BuildExecutor buildExecutor,
+                              final ProjectMainActionsView view,
+                              final Caller<TestRunnerService> testRunnerService,
+                              final WorkspaceProjectContext workspaceProjectContext,
+                              final PlaceManager placeManager,
+                              final TranslationService ts,
+                              final User user) {
         this.buildExecutor = buildExecutor;
         this.view = view;
+        this.testRunnerService = testRunnerService;
+        this.workspaceProjectContext = workspaceProjectContext;
+        this.placeManager = placeManager;
+        this.ts = ts;
+        this.user = user;
     }
 
     @PostConstruct
@@ -86,6 +114,22 @@ public class ProjectMainActions implements ProjectMainActionsView.Presenter,
     public void triggerRedeploy() {
         if (deployEnabled && redeployEnabled) {
             this.buildExecutor.triggerRedeploy();
+        }
+    }
+
+    @Override
+    public void onRunTest() {
+        final Optional<Module> activeModule = workspaceProjectContext.getActiveModule();
+
+        if (activeModule.isPresent()) {
+            view.showBusyIndicator(ts.getTranslation(LibraryConstants.Testing));
+
+            placeManager.goTo(new DefaultPlaceRequest("org.kie.guvnor.TestResults"));
+
+            testRunnerService.call(
+                    (RemoteCallback<Void>) response -> view.hideBusyIndicator()
+            ).runAllTests(user.getIdentifier(),
+                          activeModule.get().getRootPath());
         }
     }
 

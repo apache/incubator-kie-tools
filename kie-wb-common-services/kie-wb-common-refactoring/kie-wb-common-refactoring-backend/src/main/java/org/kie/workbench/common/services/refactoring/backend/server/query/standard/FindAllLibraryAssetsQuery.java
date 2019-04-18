@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.workbench.common.screens.impl;
+package org.kie.workbench.common.services.refactoring.backend.server.query.standard;
 
 import java.util.Set;
 
@@ -23,14 +23,9 @@ import javax.inject.Inject;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
-import org.kie.workbench.common.screens.library.api.index.LibraryFileExtensionIndexTerm;
-import org.kie.workbench.common.screens.library.api.index.LibraryRepositoryRootIndexTerm;
-import org.kie.workbench.common.screens.library.api.index.LibraryValueFileNameIndexTerm;
-import org.kie.workbench.common.screens.library.api.index.LibraryValueRepositoryRootIndexTerm;
 import org.kie.workbench.common.services.refactoring.backend.server.query.NamedQuery;
 import org.kie.workbench.common.services.refactoring.backend.server.query.response.FileDetailsResponseBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.query.response.ResponseBuilder;
-import org.kie.workbench.common.services.refactoring.backend.server.query.standard.AbstractFindQuery;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm;
 import org.uberfire.ext.metadata.backend.lucene.fields.FieldFactory;
 

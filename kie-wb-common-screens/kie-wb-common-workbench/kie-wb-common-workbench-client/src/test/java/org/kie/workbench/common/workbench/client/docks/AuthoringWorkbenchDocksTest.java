@@ -38,7 +38,6 @@ import org.uberfire.client.workbench.docks.UberfireDocksInteractionEvent;
 import org.uberfire.client.workbench.events.PlaceHiddenEvent;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
-import org.uberfire.rpc.SessionInfo;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -60,9 +59,6 @@ public class AuthoringWorkbenchDocksTest {
 
     @Mock
     private UberfireDocks uberfireDocks;
-
-    @Mock
-    private SessionInfo sessionInfo;
 
     @Mock
     private PlaceRequest placeRequest;

@@ -26,8 +26,8 @@ import javax.inject.Inject;
 
 import org.guvnor.common.services.project.model.Package;
 import org.kie.workbench.common.screens.library.api.index.Constants;
-import org.kie.workbench.common.screens.library.api.index.LibraryFileNameIndexTerm;
-import org.kie.workbench.common.screens.library.api.index.LibraryRepositoryRootIndexTerm;
+import org.kie.workbench.common.services.refactoring.backend.server.query.standard.LibraryFileNameIndexTerm;
+import org.kie.workbench.common.services.refactoring.backend.server.query.standard.LibraryRepositoryRootIndexTerm;
 import org.kie.workbench.common.services.refactoring.KPropertyImpl;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.AbstractFileIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.IndexBuilder;

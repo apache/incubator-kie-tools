@@ -16,14 +16,32 @@
 
 package org.kie.workbench.common.screens.library.client.screens.project.actions;
 
+import java.util.Optional;
+
+import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
+import org.guvnor.common.services.project.model.Module;
+import org.guvnor.common.services.shared.test.TestRunnerService;
+import org.jboss.errai.security.shared.api.identity.User;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.projecteditor.client.build.BuildExecutor;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.mocks.CallerMock;
+import org.uberfire.mvp.PlaceRequest;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -32,16 +50,32 @@ import static org.mockito.Mockito.verify;
 public class ProjectMainActionsTest {
 
     @Mock
+    TestRunnerService testRunnerService;
+    @Mock
+    WorkspaceProjectContext workspaceProjectContext;
+    @Mock
+    PlaceManager placeManager;
+    @Mock
+    User user;
+    @Captor
+    ArgumentCaptor<PlaceRequest> placeRequestArgumentCaptor;
+    @Mock
     private ProjectMainActionsView view;
-
     @Mock
     private BuildExecutor executor;
-
+    @Mock
+    private TranslationService ts;
     private ProjectMainActions presenter;
 
     @Before
     public void init() {
-        presenter = new ProjectMainActions(executor, view);
+        presenter = new ProjectMainActions(executor,
+                                           view,
+                                           new CallerMock<>(testRunnerService),
+                                           workspaceProjectContext,
+                                           placeManager,
+                                           ts,
+                                           user);
 
         presenter.init();
 
@@ -127,5 +161,33 @@ public class ProjectMainActionsTest {
 
         presenter.triggerRedeploy();
         verify(executor, never()).triggerRedeploy();
+    }
+
+    @Test
+    public void testRunTestNoActiveModule() {
+        doReturn(Optional.empty()).when(workspaceProjectContext).getActiveModule();
+
+        presenter.onRunTest();
+
+        verify(view, never()).showBusyIndicator(any());
+        verify(placeManager, never()).goTo(any(PlaceRequest.class));
+        verify(testRunnerService, never()).runAllTests(anyString(), any());
+    }
+
+    @Test
+    public void testRunTest() {
+        final Module module = mock(Module.class);
+        final Path path = mock(Path.class);
+        doReturn(path).when(module).getRootPath();
+        doReturn(Optional.of(module)).when(workspaceProjectContext).getActiveModule();
+        doReturn("mr. Trout").when(user).getIdentifier();
+
+        presenter.onRunTest();
+
+        verify(view).showBusyIndicator(any());
+        verify(view).hideBusyIndicator();
+        verify(placeManager).goTo(placeRequestArgumentCaptor.capture());
+        verify(testRunnerService).runAllTests("mr. Trout", path);
+        assertEquals("org.kie.guvnor.TestResults", placeRequestArgumentCaptor.getValue().getIdentifier());
     }
 }

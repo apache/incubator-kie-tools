@@ -25,8 +25,8 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Named;
 
 import org.apache.lucene.analysis.Analyzer;
-import org.kie.workbench.common.screens.library.api.index.LibraryFileNameIndexTerm;
-import org.kie.workbench.common.screens.library.api.index.LibraryRepositoryRootIndexTerm;
+import org.kie.workbench.common.services.refactoring.backend.server.query.standard.LibraryFileNameIndexTerm;
+import org.kie.workbench.common.services.refactoring.backend.server.query.standard.LibraryRepositoryRootIndexTerm;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.ImpactAnalysisAnalyzerWrapperFactory;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.LowerCaseOnlyAnalyzer;
 import org.kie.workbench.common.services.refactoring.model.index.terms.ModuleRootPathIndexTerm;

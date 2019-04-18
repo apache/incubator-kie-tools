@@ -13,38 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.workbench.common.screens.library.api.index;
+package org.kie.workbench.common.services.refactoring.backend.server.query.standard;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm;
 
 @Portable
-public class LibraryValueFileNameIndexTerm extends LibraryFileNameIndexTerm implements ValueIndexTerm {
+public class LibraryValueRepositoryRootIndexTerm extends LibraryRepositoryRootIndexTerm implements ValueIndexTerm {
 
-    private String fileName;
+    private String repoRootPath;
     private TermSearchType searchType;
 
-    public LibraryValueFileNameIndexTerm() {
+    public LibraryValueRepositoryRootIndexTerm() {
         //Errai marshalling
     }
 
-    public LibraryValueFileNameIndexTerm(final String fileName) {
-        this(fileName,
-             TermSearchType.NORMAL);
+    public LibraryValueRepositoryRootIndexTerm(final String repoRootPath) {
+        this(repoRootPath, TermSearchType.NORMAL);
     }
 
-    public LibraryValueFileNameIndexTerm(final String fileName,
-                                         final TermSearchType searchType) {
-        this.fileName = PortablePreconditions.checkNotNull("fileName",
-                                                           fileName);
-        this.searchType = PortablePreconditions.checkNotNull("searchType",
-                                                             searchType);
+    public LibraryValueRepositoryRootIndexTerm(final String fileName, final TermSearchType searchType) {
+        this.repoRootPath = PortablePreconditions.checkNotNull("fileName", fileName);
+        this.searchType = PortablePreconditions.checkNotNull("searchType", searchType);
     }
 
     @Override
     public String getValue() {
-        return fileName;
+        return repoRootPath;
     }
 
     @Override

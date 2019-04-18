@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.junit.Test;
+import org.kie.workbench.common.services.refactoring.backend.server.query.standard.LibraryValueFileExtensionIndexTerm;
 
 import static org.junit.Assert.*;
 

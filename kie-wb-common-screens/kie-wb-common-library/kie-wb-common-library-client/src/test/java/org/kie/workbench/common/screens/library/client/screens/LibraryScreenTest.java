@@ -84,10 +84,6 @@ public class LibraryScreenTest {
     private LibraryPlaces libraryPlaces;
 
     @Mock
-    private OrganizationalUnitService organizationalUnitService;
-    private Caller<OrganizationalUnitService> organizationalUnitServiceCaller;
-
-    @Mock
     private SpaceContributorsListServiceImpl spaceContributorsListService;
 
     @Mock
@@ -103,7 +99,6 @@ public class LibraryScreenTest {
 
     @Before
     public void setup() {
-        organizationalUnitServiceCaller = new CallerMock<>(organizationalUnitService);
 
         doReturn(deleteOrganizationalUnitPopUpPresenter).when(deleteOrganizationalUnitPopUpPresenters).get();
         doReturn(orgUnitsMetricsView).when(orgUnitsMetricsScreen).getView();
@@ -137,7 +132,6 @@ public class LibraryScreenTest {
                                               contributorsListPresenter,
                                               new CallerMock<>(libraryService),
                                               libraryPlaces,
-                                              organizationalUnitServiceCaller,
                                               spaceContributorsListService));
     }
 

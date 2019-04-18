@@ -16,8 +16,10 @@
 
 package org.kie.workbench.common.screens.server.management.backend.utils;
 
+import java.util.Collections;
+import java.util.List;
+
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
 
 import org.guvnor.common.services.shared.test.TestResultMessage;
 import org.guvnor.common.services.shared.test.TestService;
@@ -29,15 +31,8 @@ import org.uberfire.backend.vfs.Path;
 public class MockTestService implements TestService {
 
     @Override
-    public void runAllTests(String identifier,
-                            Path path) {
-
-    }
-
-    @Override
-    public void runAllTests(String identifier,
-                            Path path,
-                            Event<TestResultMessage> customTestResultEvent) {
-
+    public List<TestResultMessage> runAllTests(String identifier,
+                                               Path path) {
+        return Collections.emptyList();
     }
 }

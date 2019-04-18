@@ -16,23 +16,12 @@
 
 package org.kie.workbench.common.workbench.client.test;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.ui.Widget;
-import org.guvnor.common.services.shared.message.Level;
-import org.guvnor.common.services.shared.test.Failure;
 import org.guvnor.common.services.shared.test.TestResultMessage;
-import org.guvnor.messageconsole.events.PublishBatchMessagesEvent;
-import org.guvnor.messageconsole.events.SystemMessage;
 import org.uberfire.client.annotations.DefaultPosition;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
@@ -42,26 +31,13 @@ import org.uberfire.workbench.model.Position;
 
 @ApplicationScoped
 @WorkbenchScreen(identifier = "org.kie.guvnor.TestResults", preferredWidth = 437)
-public class TestRunnerReportingScreen
-        implements TestRunnerReportingView.Presenter {
+public class TestRunnerReportingScreen {
 
-    private TestRunnerReportingView view;
-    private List<SystemMessage> systemMessages = new ArrayList<>();
-
-    private Event<PublishBatchMessagesEvent> publishBatchMessagesEvent;
+    @Inject
+    private TestRunnerReportingPanel panel;
 
     public TestRunnerReportingScreen() {
         //Zero argument constructor for CDI
-    }
-
-    @Inject
-    public TestRunnerReportingScreen(final TestRunnerReportingView view,
-                                     final Event<PublishBatchMessagesEvent> publishBatchMessagesEvent) {
-        this.view = view;
-        this.publishBatchMessagesEvent = publishBatchMessagesEvent;
-        view.setPresenter(this);
-
-        view.resetDonut();
     }
 
     @DefaultPosition
@@ -76,86 +52,10 @@ public class TestRunnerReportingScreen
 
     @WorkbenchPartView
     public Widget asWidget() {
-        return view.asWidget();
-    }
-
-    public void reset() {
-        systemMessages = new ArrayList<>();
-        view.reset();
-    }
-
-    @Override
-    public void onViewAlerts() {
-
-        PublishBatchMessagesEvent messagesEvent = new PublishBatchMessagesEvent();
-        messagesEvent.setCleanExisting(true);
-        messagesEvent.setMessagesToPublish(systemMessages);
-        publishBatchMessagesEvent.fire(messagesEvent);
+        return panel.asWidget();
     }
 
     public void onTestRun(final @Observes TestResultMessage testResultMessage) {
-        reset();
-
-        if (testResultMessage.wasSuccessful()) {
-            view.showSuccess();
-        } else {
-            if (testResultMessage.getFailures() != null) {
-                systemMessages = testResultMessage.getFailures().stream().map(this::convert).collect(Collectors.toList());
-
-            }
-            view.showFailure();
-        }
-
-        int failures = testResultMessage.getFailures().size();
-        view.showSuccessFailureDiagram((testResultMessage.getRunCount() - failures),
-                                       failures);
-
-        view.setRunStatus(getCompletedAt(),
-                          getScenariosRun(testResultMessage),
-                          getDuration(testResultMessage));
-    }
-
-    private SystemMessage convert(final Failure failure) {
-        SystemMessage systemMessage = new SystemMessage();
-        systemMessage.setMessageType("TestResults");
-        systemMessage.setLevel(Level.ERROR);
-        systemMessage.setText(makeMessage(failure));
-        return systemMessage;
-    }
-
-    private String getCompletedAt() {
-        DateTimeFormat timeFormat = DateTimeFormat.getFormat("HH:mm:ss.SSS");
-        return timeFormat.format(new Date());
-    }
-
-    private String getScenariosRun(final TestResultMessage testResultMessage) {
-        return String.valueOf(testResultMessage.getRunCount());
-    }
-
-    private String getDuration(final TestResultMessage testResultMessage) {
-        final Long runTime = testResultMessage.getRunTime();
-        final Date runtime = new Date(runTime);
-
-        String milliseconds = formatMilliseconds(DateTimeFormat.getFormat("SSS").format(runtime)) + " milliseconds";
-        String seconds = DateTimeFormat.getFormat("s").format(runtime) + " seconds";
-        String minutes = DateTimeFormat.getFormat("m").format(runtime) + " minutes";
-
-        if (runTime < 1000) {
-            return milliseconds;
-        } else if (runTime < 60000) {
-            return seconds + " and " + milliseconds;
-        } else {
-            return minutes + " and " + seconds;
-        }
-    }
-
-    String formatMilliseconds(final String originalFormat) {
-        return originalFormat.replaceFirst("^0+(?!$)", "");
-    }
-
-    private String makeMessage(Failure failure) {
-        final String displayName = failure.getDisplayName();
-        final String message = failure.getMessage();
-        return displayName + (!(message == null || message.isEmpty()) ? " : " + message : "");
+        panel.onTestRun(testResultMessage);
     }
 }

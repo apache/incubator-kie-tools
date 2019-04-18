@@ -29,6 +29,8 @@ public interface TestRunnerReportingView
         void onViewAlerts();
     }
 
+    Presenter getPresenter();
+
     void reset();
 
     void setPresenter(Presenter presenter);

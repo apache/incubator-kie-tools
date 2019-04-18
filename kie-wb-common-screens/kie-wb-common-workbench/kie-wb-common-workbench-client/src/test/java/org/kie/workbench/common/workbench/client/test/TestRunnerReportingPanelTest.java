@@ -40,7 +40,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class TestRunnerReportingScreenTest {
+public class TestRunnerReportingPanelTest {
 
     @Captor
     private ArgumentCaptor<PublishBatchMessagesEvent> publishEventCaptor;
@@ -51,11 +51,11 @@ public class TestRunnerReportingScreenTest {
     @Mock
     private EventSourceMock event;
 
-    private TestRunnerReportingScreen screen;
+    private TestRunnerReportingPanel screen;
 
     @Before
     public void setUp() {
-        screen = new TestRunnerReportingScreen(view, event);
+        screen = new TestRunnerReportingPanel(view, event);
     }
 
     @Test

@@ -5,54 +5,46 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
-
-package org.kie.workbench.common.screens.library.api.index;
-
-import java.util.List;
-import java.util.stream.Collectors;
+package org.kie.workbench.common.services.refactoring.backend.server.query.standard;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm;
 
 @Portable
-public class LibraryValueFileExtensionIndexTerm extends LibraryFileExtensionIndexTerm implements ValueIndexTerm {
+public class LibraryValueFileNameIndexTerm extends LibraryFileNameIndexTerm implements ValueIndexTerm {
 
-    private List<String> extensions;
+    private String fileName;
     private TermSearchType searchType;
 
-    public LibraryValueFileExtensionIndexTerm() {
+    public LibraryValueFileNameIndexTerm() {
         //Errai marshalling
     }
 
-    public LibraryValueFileExtensionIndexTerm(final List<String> extensions) {
-        this(extensions,
-             TermSearchType.REGEXP);
+    public LibraryValueFileNameIndexTerm(final String fileName) {
+        this(fileName,
+             TermSearchType.NORMAL);
     }
 
-    public LibraryValueFileExtensionIndexTerm(final List<String> extensions,
-                                              final TermSearchType searchType) {
-        this.extensions = PortablePreconditions.checkNotEmpty("extension",
-                                                              extensions);
+    public LibraryValueFileNameIndexTerm(final String fileName,
+                                         final TermSearchType searchType) {
+        this.fileName = PortablePreconditions.checkNotNull("fileName",
+                                                           fileName);
         this.searchType = PortablePreconditions.checkNotNull("searchType",
                                                              searchType);
     }
 
     @Override
     public String getValue() {
-        String orQuery = this.extensions.stream()
-                .filter(extension -> extension != null && !extension.isEmpty())
-                .collect(Collectors.joining("|"));
-        return ".*(" + orQuery + ")";
+        return fileName;
     }
 
     @Override

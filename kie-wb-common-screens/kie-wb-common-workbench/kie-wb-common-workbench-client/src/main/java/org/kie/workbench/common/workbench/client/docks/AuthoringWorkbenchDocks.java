@@ -80,6 +80,7 @@ public class AuthoringWorkbenchDocks
 
     @PostConstruct
     public void initialize() {
+
         // Initializing the handlers
         installedHandlers.iterator().forEachRemaining(handler ->
                                                               handler.init(() -> setActiveHandler(handler)));
@@ -119,10 +120,6 @@ public class AuthoringWorkbenchDocks
 
     public void setActiveHandler(WorkbenchDocksHandler handler) {
 
-        if (!isAuthoringActive()) {
-            return;
-        }
-
         // If there's an active handler let's check if it should refresh docks
         if (activeHandler != null) {
             if (activeHandler.equals(handler) && !activeHandler.shouldRefreshDocks()) {
@@ -138,6 +135,7 @@ public class AuthoringWorkbenchDocks
             uberfireDocks.hide(UberfireDockPosition.EAST,
                                currentPerspectiveIdentifier);
         } else {
+
             // first remove the existing docks
             if (activeDocks != null) {
                 uberfireDocks.remove(activeDocks);

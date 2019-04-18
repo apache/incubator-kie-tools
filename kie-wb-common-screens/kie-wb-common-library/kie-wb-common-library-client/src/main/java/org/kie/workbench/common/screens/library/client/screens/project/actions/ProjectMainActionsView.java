@@ -26,6 +26,10 @@ public interface ProjectMainActionsView extends UberElemental<ProjectMainActions
 
     void setRedeployEnabled(boolean redeploy);
 
+    void showBusyIndicator(String message);
+
+    void hideBusyIndicator();
+
     interface Presenter {
 
         void triggerBuild();
@@ -35,5 +39,7 @@ public interface ProjectMainActionsView extends UberElemental<ProjectMainActions
         void triggerBuildAndDeploy();
 
         void triggerRedeploy();
+
+        void onRunTest();
     }
 }

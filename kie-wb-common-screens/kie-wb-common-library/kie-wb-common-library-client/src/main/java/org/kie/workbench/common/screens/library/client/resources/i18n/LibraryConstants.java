@@ -523,4 +523,10 @@ public class LibraryConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String Properties = "Properties";
+
+    @TranslationKey(defaultValue = "")
+    public static final String Testing = "Testing";
+
+    @TranslationKey(defaultValue = "")
+    public static final String Test = "Test";
 }

@@ -23,8 +23,9 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.workbench.client.docks.AuthoringWorkbenchDocks;
 import org.kie.workbench.common.widgets.client.docks.AbstractWorkbenchDocksHandler;
+import org.kie.workbench.common.widgets.client.docks.DockPlaceHolderPlace;
+import org.kie.workbench.common.workbench.client.docks.AuthoringWorkbenchDocks;
 import org.kie.workbench.common.workbench.client.resources.i18n.DefaultWorkbenchConstants;
 import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
@@ -34,6 +35,8 @@ import org.uberfire.mvp.impl.DefaultPlaceRequest;
 public class TestReportingDocksHandler
         extends AbstractWorkbenchDocksHandler {
 
+    public final static String TEST_RUNNER_REPORTING_PANEL = "testRunnerReportingPanel";
+
     @Inject
     private AuthoringWorkbenchDocks authoringWorkbenchDocks;
 
@@ -41,15 +44,26 @@ public class TestReportingDocksHandler
 
     @Override
     public Collection<UberfireDock> provideDocks(String perspectiveIdentifier) {
+
         List<UberfireDock> result = new ArrayList<>();
 
         testReportDock = new UberfireDock(UberfireDockPosition.EAST,
                                           "PLAY_CIRCLE",
-                                          new DefaultPlaceRequest("org.kie.guvnor.TestResults"),
+                                          new DockPlaceHolderPlace(TEST_RUNNER_REPORTING_PANEL),
                                           perspectiveIdentifier);
         result.add(testReportDock.withSize(450).withLabel(DefaultWorkbenchConstants.INSTANCE.TestReport()));
 
         return result;
+    }
+
+    public void addDocks() {
+        refreshDocks(true,
+                     false);
+    }
+
+    public void removeDocks() {
+        refreshDocks(true,
+                     true);
     }
 
     public void onDiagramFocusEvent(@Observes OnShowTestPanelEvent event) {

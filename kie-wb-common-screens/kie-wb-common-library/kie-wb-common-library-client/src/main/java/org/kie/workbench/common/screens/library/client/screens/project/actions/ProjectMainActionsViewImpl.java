@@ -29,6 +29,7 @@ import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 
 @Templated
 public class ProjectMainActionsViewImpl implements ProjectMainActionsView,
@@ -67,6 +68,10 @@ public class ProjectMainActionsViewImpl implements ProjectMainActionsView,
     @Inject
     @DataField
     private HTMLAnchorElement redeploy;
+
+    @Inject
+    @DataField
+    private HTMLButtonElement runTests;
 
     @Inject
     private ViewHideAlertsButtonPresenter viewHideAlertsButtonPresenter;
@@ -112,6 +117,16 @@ public class ProjectMainActionsViewImpl implements ProjectMainActionsView,
         redeployEnabled = enabled;
     }
 
+    @Override
+    public void showBusyIndicator(String message) {
+        BusyPopup.showMessage(message);
+    }
+
+    @Override
+    public void hideBusyIndicator() {
+        BusyPopup.close();
+    }
+
     @EventHandler("build")
     public void onBuild(ClickEvent clickEvent) {
         presenter.triggerBuild();
@@ -125,6 +140,11 @@ public class ProjectMainActionsViewImpl implements ProjectMainActionsView,
     @EventHandler("deploy")
     public void onDeploy(ClickEvent clickEvent) {
         presenter.triggerBuildAndDeploy();
+    }
+
+    @EventHandler("runTests")
+    public void onRunTests(ClickEvent clickEvent) {
+        presenter.onRunTest();
     }
 
     @EventHandler("redeploy")

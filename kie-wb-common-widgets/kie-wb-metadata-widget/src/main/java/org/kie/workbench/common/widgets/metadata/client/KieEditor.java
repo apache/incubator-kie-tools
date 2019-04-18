@@ -36,12 +36,16 @@ import org.jboss.errai.common.client.api.Caller;
 import org.kie.workbench.common.widgets.client.callbacks.CommandBuilder;
 import org.kie.workbench.common.widgets.client.callbacks.CommandDrivenErrorCallback;
 import org.kie.workbench.common.widgets.client.docks.DefaultEditorDock;
+import org.kie.workbench.common.widgets.client.docks.DockPlaceHolderPlace;
+import org.kie.workbench.common.widgets.client.docks.DockPlaceHolderView;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.source.ViewDRLSourceWidget;
 import org.kie.workbench.common.widgets.metadata.client.validation.AssetUpdateValidator;
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
 import org.uberfire.backend.vfs.ObservablePath;
+import org.uberfire.client.mvp.AbstractWorkbenchActivity;
 import org.uberfire.client.mvp.PerspectiveManager;
+import org.uberfire.client.mvp.PlaceStatus;
 import org.uberfire.client.workbench.events.AbstractPlaceEvent;
 import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
 import org.uberfire.client.workbench.events.PlaceHiddenEvent;
@@ -68,41 +72,17 @@ public abstract class KieEditor<T>
         extends BaseEditor<T, Metadata>
         implements KieEditorWrapperView.KieEditorWrapperPresenter {
 
+    //This implementation always permits closure as something went wrong loading the Editor's content
+    private final MayCloseHandler EXCEPTION_MAY_CLOSE_HANDLER = new MayCloseHandler() {
+        @Override
+        public boolean mayClose(final Object object) {
+            return true;
+        }
+    };
     @Inject
     protected KieEditorWrapperView kieView;
     @Inject
     protected OverviewWidgetPresenter overviewWidget;
-
-    @Inject
-    protected FileMenuBuilder fileMenuBuilder;
-
-    @Inject
-    protected WorkspaceProjectContext workbenchContext;
-    @Inject
-    protected SavePopUpPresenter savePopUpPresenter;
-    @Inject
-    protected DeletePopUpPresenter deletePopUpPresenter;
-    @Inject
-    protected RenamePopUpPresenter renamePopUpPresenter;
-    @Inject
-    protected CopyPopUpPresenter copyPopUpPresenter;
-
-    @Inject
-    protected ProjectController projectController;
-
-    @Inject
-    protected AssetUpdateValidator assetUpdateValidator;
-
-    @Inject
-    protected AlertsButtonMenuItemBuilder alertsButtonMenuItemBuilder;
-
-    protected Metadata metadata;
-    @Inject
-    protected DefaultEditorDock docks;
-    @Inject
-    protected PerspectiveManager perspectiveManager;
-    private ViewDRLSourceWidget sourceWidget;
-
     //The default implementation delegates to the HashCode comparison in BaseEditor
     private final MayCloseHandler DEFAULT_MAY_CLOSE_HANDLER = new MayCloseHandler() {
 
@@ -115,14 +95,30 @@ public abstract class KieEditor<T>
             }
         }
     };
-    //This implementation always permits closure as something went wrong loading the Editor's content
-    private final MayCloseHandler EXCEPTION_MAY_CLOSE_HANDLER = new MayCloseHandler() {
-        @Override
-        public boolean mayClose(final Object object) {
-            return true;
-        }
-    };
-
+    @Inject
+    protected FileMenuBuilder fileMenuBuilder;
+    @Inject
+    protected WorkspaceProjectContext workbenchContext;
+    @Inject
+    protected SavePopUpPresenter savePopUpPresenter;
+    @Inject
+    protected DeletePopUpPresenter deletePopUpPresenter;
+    @Inject
+    protected RenamePopUpPresenter renamePopUpPresenter;
+    @Inject
+    protected CopyPopUpPresenter copyPopUpPresenter;
+    @Inject
+    protected ProjectController projectController;
+    @Inject
+    protected AssetUpdateValidator assetUpdateValidator;
+    @Inject
+    protected AlertsButtonMenuItemBuilder alertsButtonMenuItemBuilder;
+    protected Metadata metadata;
+    @Inject
+    protected DefaultEditorDock docks;
+    @Inject
+    protected PerspectiveManager perspectiveManager;
+    private ViewDRLSourceWidget sourceWidget;
     private MayCloseHandler mayCloseHandler = DEFAULT_MAY_CLOSE_HANDLER;
 
     protected KieEditor() {
@@ -483,12 +479,33 @@ public abstract class KieEditor<T>
 
     }
 
+    protected void registerDock(final String id,
+                                final IsWidget widget) {
+
+        final DockPlaceHolderPlace placeRequest = new DockPlaceHolderPlace(id);
+        placeManager.registerOnOpenCallback(placeRequest, () -> {
+            if (getDockPresenter(placeRequest).isPresent()) {
+                getDockPresenter(placeRequest).get().setWidget(widget);
+            }
+        });
+    }
+
+    private Optional<DockPlaceHolderView> getDockPresenter(final PlaceRequest placeRequest) {
+        if (PlaceStatus.OPEN.equals(placeManager.getStatus(placeRequest))) {
+            final AbstractWorkbenchActivity panelActivity = (AbstractWorkbenchActivity) placeManager.getActivity(placeRequest);
+            return Optional.of((DockPlaceHolderView) panelActivity.getWidget());
+        } else {
+            return Optional.empty();
+        }
+    }
+
     @Override
     public void onOverviewSelected() {
     }
 
     @Override
     public void onSourceTabSelected() {
+
     }
 
     /**

@@ -97,6 +97,11 @@ public class TestRunnerReportingViewImpl
     }
 
     @Override
+    public Presenter getPresenter() {
+        return presenter;
+    }
+
+    @Override
     public void reset() {
         testResultIcon.className = "";
         testResultText.textContent = "";

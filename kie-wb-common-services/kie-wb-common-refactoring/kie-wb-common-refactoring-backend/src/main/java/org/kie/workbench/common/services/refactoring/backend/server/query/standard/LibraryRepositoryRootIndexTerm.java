@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.workbench.common.screens.library.api.index;
+package org.kie.workbench.common.services.refactoring.backend.server.query.standard;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.services.refactoring.model.index.terms.IndexTerm;
 
 @Portable
-public class LibraryFileNameIndexTerm implements IndexTerm {
+public class LibraryRepositoryRootIndexTerm implements IndexTerm {
 
-    public static final String TERM = "libraryFileName";
+    public static final String TERM = "libraryRepositoryRoot";
 
     @Override
     public String getTerm() {
