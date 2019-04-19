@@ -58,7 +58,7 @@ public class PreserveDeletePopupViewTest extends AbstractScenarioConfirmationPop
                 this.option2 = option2Mock;
                 this.cancelButton = cancelButtonMock;
                 this.okPreserveButton = okPreserveButtonMock;
-                this.okDeleteButton = okDeleteButtonMock;
+                this.okButton = okDeleteButtonMock;
                 this.modal = modalMock;
                 this.translationService = translationServiceMock;
             }

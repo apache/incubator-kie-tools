@@ -39,7 +39,7 @@ public class ConfirmPopupViewTest extends AbstractScenarioConfirmationPopupViewT
                 this.text1 = text1Mock;
                 this.textQuestion = textQuestionMock;
                 this.cancelButton = cancelButtonMock;
-                this.okDeleteButton = okDeleteButtonMock;
+                this.okButton = okDeleteButtonMock;
                 this.modal = modalMock;
                 this.translationService = translationServiceMock;
             }

@@ -67,7 +67,7 @@ public class FactMapping {
     }
 
     public FactMapping(FactIdentifier factIdentifier, ExpressionIdentifier expressionIdentifier) {
-        this(expressionIdentifier.getName(), factIdentifier, expressionIdentifier);
+        this(factIdentifier.getName(), factIdentifier, expressionIdentifier);
     }
 
     public FactMapping(String factAlias, FactIdentifier factIdentifier, ExpressionIdentifier expressionIdentifier) {

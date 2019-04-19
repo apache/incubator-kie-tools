@@ -21,6 +21,7 @@ import java.util.function.Supplier;
 import javax.enterprise.context.Dependent;
 
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridLayer;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridPanel;
 import org.drools.workbench.screens.scenariosimulation.model.Simulation;
@@ -52,6 +53,10 @@ public class ScenarioSimulationViewImpl
     private ScenarioMenuItem redoMenuItem;
 
     private ScenarioMenuItem downloadMenuItem;
+
+    private ScenarioMenuItem importMenuItem;
+
+    private ScenarioMenuItem exportToCsvMenuItem;
 
     /**
      * This method also set <code>ScenarioGridLayer</code> taken the instance from given <code>ScenarioGridPanel</code>
@@ -119,6 +124,24 @@ public class ScenarioSimulationViewImpl
                                                     () -> presenter.onDownload(pathSupplier));
         }
         return downloadMenuItem;
+    }
+
+    @Override
+    public MenuItem getExportToCsvMenuItem() {
+        if (exportToCsvMenuItem == null) {
+            exportToCsvMenuItem = new ScenarioMenuItem("Export",
+                                                       () -> presenter.onExportToCsv());
+        }
+        return exportToCsvMenuItem;
+    }
+
+    @Override
+    public MenuItem getImportMenuItem() {
+        if (importMenuItem == null) {
+            importMenuItem = new ScenarioMenuItem(ScenarioSimulationEditorConstants.INSTANCE.importLabel(),
+                                                  () -> presenter.showImportDialog());
+        }
+        return importMenuItem;
     }
 
     @Override

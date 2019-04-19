@@ -47,7 +47,7 @@ public class DeletePopupViewTest extends AbstractScenarioConfirmationPopupViewTe
                 this.textQuestion = textQuestionMock;
                 this.textDanger = textDangerMock;
                 this.cancelButton = cancelButtonMock;
-                this.okDeleteButton = okDeleteButtonMock;
+                this.okButton = okDeleteButtonMock;
                 this.modal = modalMock;
                 this.translationService = translationServiceMock;
             }

@@ -27,6 +27,7 @@ import org.drools.workbench.screens.scenariosimulation.client.editor.ScenarioSim
 import org.drools.workbench.screens.scenariosimulation.client.menu.ScenarioContextMenuRegistry;
 import org.drools.workbench.screens.scenariosimulation.client.popup.ConfirmPopupPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.popup.DeletePopupPresenter;
+import org.drools.workbench.screens.scenariosimulation.client.popup.FileUploadPopupPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.popup.PreserveDeletePopupPresenter;
 import org.junit.Before;
 import org.mockito.Mock;
@@ -47,6 +48,8 @@ public abstract class AbstractProducerTest extends AbstractScenarioSimulationTes
     protected PreserveDeletePopupPresenter preserveDeletePopupPresenterMock;
     @Mock
     protected ConfirmPopupPresenter confirmPopupPresenterMock;
+    @Mock
+    protected FileUploadPopupPresenter fileUploadPopupPresenterMock;
     @Mock
     protected ScenarioSimulationEventHandler scenarioSimulationEventHandlerMock;
     @Mock

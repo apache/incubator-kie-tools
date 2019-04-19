@@ -46,6 +46,7 @@ public class ScenarioSimulationProducerTest extends AbstractProducerTest {
                 this.deletePopupPresenter = deletePopupPresenterMock;
                 this.preserveDeletePopupPresenter = preserveDeletePopupPresenterMock;
                 this.confirmPopupPresenter = confirmPopupPresenterMock;
+                this.fileUploadPopupPresenter = fileUploadPopupPresenterMock;
                 this.eventBusProducer = eventBusProducerMock;
                 this.scenarioSimulationViewProducer = scenarioSimulationViewProducerMock;
                 this.notificationEvent = notificationEventNew;
@@ -66,6 +67,7 @@ public class ScenarioSimulationProducerTest extends AbstractProducerTest {
         verify(scenarioSimulationEventHandlerMock, times(1)).setDeletePopupPresenter(eq(deletePopupPresenterMock));
         verify(scenarioSimulationEventHandlerMock, times(1)).setPreserveDeletePopupPresenter(eq(preserveDeletePopupPresenterMock));
         verify(scenarioSimulationEventHandlerMock, times(1)).setConfirmPopupPresenter(eq(confirmPopupPresenterMock));
+        verify(scenarioSimulationEventHandlerMock, times(1)).setFileUploadPopupPresenter(eq(fileUploadPopupPresenterMock));
         verify(scenarioSimulationEventHandlerMock, times(1)).setNotificationEvent(eq(notificationEventNew));
         verify(scenarioSimulationEventHandlerMock, times(1)).setContext(eq(retrieved));
         verify(scenarioSimulationEventHandlerMock, times(1)).setScenarioCommandManager(eq(scenarioCommandManagerMock));

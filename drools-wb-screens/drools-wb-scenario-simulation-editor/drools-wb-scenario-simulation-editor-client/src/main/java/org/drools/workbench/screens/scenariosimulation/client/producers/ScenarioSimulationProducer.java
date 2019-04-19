@@ -31,6 +31,7 @@ import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioS
 import org.drools.workbench.screens.scenariosimulation.client.menu.ScenarioContextMenuRegistry;
 import org.drools.workbench.screens.scenariosimulation.client.popup.ConfirmPopupPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.popup.DeletePopupPresenter;
+import org.drools.workbench.screens.scenariosimulation.client.popup.FileUploadPopupPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.popup.PreserveDeletePopupPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridLayer;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridPanel;
@@ -60,6 +61,8 @@ public class ScenarioSimulationProducer {
     protected PreserveDeletePopupPresenter preserveDeletePopupPresenter;
     @Inject
     protected ConfirmPopupPresenter confirmPopupPresenter;
+    @Inject
+    protected FileUploadPopupPresenter fileUploadPopupPresenter;
 
     @Inject
     protected ScenarioSimulationEventHandler scenarioSimulationEventHandler;
@@ -101,6 +104,7 @@ public class ScenarioSimulationProducer {
         scenarioSimulationEventHandler.setDeletePopupPresenter(deletePopupPresenter);
         scenarioSimulationEventHandler.setPreserveDeletePopupPresenter(preserveDeletePopupPresenter);
         scenarioSimulationEventHandler.setConfirmPopupPresenter(confirmPopupPresenter);
+        scenarioSimulationEventHandler.setFileUploadPopupPresenter(fileUploadPopupPresenter);
         scenarioSimulationEventHandler.setNotificationEvent(notificationEvent);
         scenarioSimulationEventHandler.setContext(getScenarioSimulationContext());
         scenarioSimulationEventHandler.setScenarioCommandManager(scenarioCommandManager);

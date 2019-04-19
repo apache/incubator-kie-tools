@@ -16,6 +16,7 @@
 package org.drools.workbench.screens.scenariosimulation.client.commands;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -37,6 +38,7 @@ import org.drools.workbench.screens.scenariosimulation.client.commands.actualcom
 import org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands.DuplicateInstanceCommand;
 import org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands.DuplicateRowCommand;
 import org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands.EnableTestToolsCommand;
+import org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands.ImportCommand;
 import org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands.InsertColumnCommand;
 import org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands.InsertRowCommand;
 import org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands.PrependColumnCommand;
@@ -55,6 +57,7 @@ import org.drools.workbench.screens.scenariosimulation.client.events.DisableTest
 import org.drools.workbench.screens.scenariosimulation.client.events.DuplicateInstanceEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.DuplicateRowEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.EnableTestToolsEvent;
+import org.drools.workbench.screens.scenariosimulation.client.events.ImportEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.InsertColumnEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.InsertRowEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.PrependColumnEvent;
@@ -78,6 +81,7 @@ import org.drools.workbench.screens.scenariosimulation.client.handlers.DisableTe
 import org.drools.workbench.screens.scenariosimulation.client.handlers.DuplicateInstanceEventHandler;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.DuplicateRowEventHandler;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.EnableTestToolsEventHandler;
+import org.drools.workbench.screens.scenariosimulation.client.handlers.ImportEventHandler;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.InsertColumnEventHandler;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.InsertRowEventHandler;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.PrependColumnEventHandler;
@@ -95,12 +99,15 @@ import org.drools.workbench.screens.scenariosimulation.client.handlers.UndoEvent
 import org.drools.workbench.screens.scenariosimulation.client.handlers.UnsupportedDMNEventHandler;
 import org.drools.workbench.screens.scenariosimulation.client.popup.ConfirmPopupPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.popup.DeletePopupPresenter;
+import org.drools.workbench.screens.scenariosimulation.client.popup.FileUploadPopupPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.popup.PreserveDeletePopupPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
 import org.kie.workbench.common.command.client.CommandResult;
 import org.kie.workbench.common.command.client.CommandResultBuilder;
 import org.uberfire.workbench.events.NotificationEvent;
+
+import static org.drools.workbench.screens.scenariosimulation.service.ImportExportType.CSV;
 
 /**
  * This class is meant to be a centralized listener for events fired up by UI, responding to them issuing specific <code>Command</code>s.
@@ -116,6 +123,7 @@ public class ScenarioSimulationEventHandler implements AppendColumnEventHandler,
                                                        DuplicateInstanceEventHandler,
                                                        DuplicateRowEventHandler,
                                                        EnableTestToolsEventHandler,
+                                                       ImportEventHandler,
                                                        InsertColumnEventHandler,
                                                        InsertRowEventHandler,
                                                        PrependColumnEventHandler,
@@ -135,6 +143,7 @@ public class ScenarioSimulationEventHandler implements AppendColumnEventHandler,
     protected DeletePopupPresenter deletePopupPresenter;
     protected PreserveDeletePopupPresenter preserveDeletePopupPresenter;
     protected ConfirmPopupPresenter confirmPopupPresenter;
+    protected FileUploadPopupPresenter fileUploadPopupPresenter;
 
     protected EventBus eventBus;
 
@@ -167,6 +176,10 @@ public class ScenarioSimulationEventHandler implements AppendColumnEventHandler,
 
     public void setConfirmPopupPresenter(ConfirmPopupPresenter confirmPopupPresenter) {
         this.confirmPopupPresenter = confirmPopupPresenter;
+    }
+
+    public void setFileUploadPopupPresenter(FileUploadPopupPresenter fileUploadPopupPresenter) {
+        this.fileUploadPopupPresenter = fileUploadPopupPresenter;
     }
 
     public void setNotificationEvent(Event<NotificationEvent> notificationEvent) {
@@ -241,6 +254,19 @@ public class ScenarioSimulationEventHandler implements AppendColumnEventHandler,
         context.getStatus().setPropertyName(event.getPropertyName());
         context.getStatus().setNotEqualsSearch(event.isNotEqualsSearch());
         commonExecution(context, new EnableTestToolsCommand());
+    }
+
+    @Override
+    public void onEvent(ImportEvent event) {
+        org.uberfire.mvp.Command okImportCommand = () -> {
+            ImportCommand importCommand = new ImportCommand();
+            importCommand.setFileContent(fileUploadPopupPresenter.getFileContents());
+            commonExecution(context, importCommand);
+        };
+        fileUploadPopupPresenter.show(Collections.singletonList(CSV.getExtension()),
+                                      ScenarioSimulationEditorConstants.INSTANCE.selectImportFile(),
+                                      ScenarioSimulationEditorConstants.INSTANCE.importLabel(),
+                                      okImportCommand);
     }
 
     @Override
@@ -449,6 +475,7 @@ public class ScenarioSimulationEventHandler implements AppendColumnEventHandler,
         handlerRegistrationList.add(eventBus.addHandler(DuplicateInstanceEvent.TYPE, this));
         handlerRegistrationList.add(eventBus.addHandler(DuplicateRowEvent.TYPE, this));
         handlerRegistrationList.add(eventBus.addHandler(EnableTestToolsEvent.TYPE, this));
+        handlerRegistrationList.add(eventBus.addHandler(ImportEvent.TYPE, this));
         handlerRegistrationList.add(eventBus.addHandler(InsertColumnEvent.TYPE, this));
         handlerRegistrationList.add(eventBus.addHandler(InsertRowEvent.TYPE, this));
         handlerRegistrationList.add(eventBus.addHandler(PrependColumnEvent.TYPE, this));
