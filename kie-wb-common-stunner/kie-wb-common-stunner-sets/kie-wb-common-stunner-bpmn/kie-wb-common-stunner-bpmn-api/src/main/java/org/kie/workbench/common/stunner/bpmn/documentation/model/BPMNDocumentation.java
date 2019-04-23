@@ -45,4 +45,24 @@ public class BPMNDocumentation implements DiagramDocumentation {
         instance.moduleName = GWT.getModuleName();
         return instance;
     }
+
+    @JsOverlay
+    public final ProcessOverview getProcess() {
+        return process;
+    }
+
+    @JsOverlay
+    public final ElementDetails getElementsDetails() {
+        return elementsDetails;
+    }
+
+    @JsOverlay
+    public final String getDiagramImage() {
+        return diagramImage;
+    }
+
+    @JsOverlay
+    public final String getModuleName() {
+        return moduleName;
+    }
 }

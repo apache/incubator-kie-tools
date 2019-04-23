@@ -22,6 +22,7 @@ import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.jboss.errai.common.client.api.IsElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
@@ -92,9 +93,9 @@ public class ImageStripDOMGlyphRendererTest {
 
     @Test
     public void testRender() {
-        tested.render(GLYPH,
-                      SIZE,
-                      SIZE);
+        IsElement rendered = tested.render(GLYPH,
+                                           SIZE,
+                                           SIZE);
         verify(cssResource, times(1)).ensureInjected();
         ArgumentCaptor<Integer[]> clipCaptor = ArgumentCaptor.forClass(Integer[].class);
         verify(panelBuilder, times(1)).apply(eq("testClass"),
@@ -102,6 +103,13 @@ public class ImageStripDOMGlyphRendererTest {
         Integer[] clip = clipCaptor.getValue();
         assertEquals(SIZE, clip[0], 0);
         assertEquals(0, clip[1], 0);
+        assertEquals(rendered, view);
+    }
+
+    @Test
+    public void testBackGroundPosition() {
+        final String backGroundPosition = ImageStripDOMGlyphRenderer.backGroundPosition(123, 321);
+        assertEquals(backGroundPosition, "background-position: 123px 321px !important");
     }
 
     private static class ImageStripTestType implements ImageStrip {

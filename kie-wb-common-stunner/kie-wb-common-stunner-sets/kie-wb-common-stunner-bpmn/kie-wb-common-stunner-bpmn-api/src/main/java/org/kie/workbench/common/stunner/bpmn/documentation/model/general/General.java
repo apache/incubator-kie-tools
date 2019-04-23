@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.bpmn.documentation.model.general;
 
+import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 
@@ -31,7 +32,47 @@ public class General {
     String documentation;
     String description;
 
-    public General() {
+    private General() {
+    }
+
+    @JsOverlay
+    public final String getId() {
+        return id;
+    }
+
+    @JsOverlay
+    public final String getPkg() {
+        return pkg;
+    }
+
+    @JsOverlay
+    public final String getName() {
+        return name;
+    }
+
+    @JsOverlay
+    public final String getIsExecutable() {
+        return isExecutable;
+    }
+
+    @JsOverlay
+    public final String getIsAdhoc() {
+        return isAdhoc;
+    }
+
+    @JsOverlay
+    public final String getVersion() {
+        return version;
+    }
+
+    @JsOverlay
+    public final String getDocumentation() {
+        return documentation;
+    }
+
+    @JsOverlay
+    public final String getDescription() {
+        return description;
     }
 
     public static class Builder {

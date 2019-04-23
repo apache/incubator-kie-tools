@@ -87,7 +87,11 @@ public class ImageStripDOMGlyphRenderer implements DOMGlyphRenderer<ImageStripGl
                                         final int clipY) {
         final FlowPanel panel = new FlowPanel();
         panel.addStyleName(className);
-        panel.getElement().setAttribute("style", "background-position: " + clipX + "px " + clipY + "px !important");
+        panel.getElement().setAttribute("style", backGroundPosition(clipX, clipY));
         return panel;
+    }
+
+    protected static String backGroundPosition(int clipX, int clipY) {
+        return "background-position: " + clipX + "px " + clipY + "px !important";
     }
 }

@@ -271,6 +271,7 @@ public class ClientBPMNDocumentationService implements BPMNDocumentationService 
                         .map(BaseProcessVariables::getValue))
                 .map(ProcessVariableSerializer::deserialize)
                 .flatMap(v -> v.entrySet().stream())
+                .sorted((e1, e2) -> e1.getKey().compareTo(e2.getKey()))
                 .collect(Collectors.toList());
 
         return ProcessVariablesTotal.create(variables.size(), variables.size(), JsConverter.fromEntries(variables));

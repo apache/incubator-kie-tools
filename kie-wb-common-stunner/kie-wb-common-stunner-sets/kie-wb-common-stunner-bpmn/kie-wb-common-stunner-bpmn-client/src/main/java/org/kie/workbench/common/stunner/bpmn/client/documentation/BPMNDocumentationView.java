@@ -58,6 +58,16 @@ public class BPMNDocumentationView extends DefaultDiagramDocumentationView {
 
     private Supplier<Boolean> isSelected;
 
+    protected BPMNDocumentationView(final BPMNDocumentationService documentationService,
+                                    final ClientTranslationService clientTranslationService,
+                                    final HTMLElement documentationDiv,
+                                    final Button printButton) {
+        this.documentationService = documentationService;
+        this.clientTranslationService = clientTranslationService;
+        this.documentationDiv = documentationDiv;
+        this.printButton = printButton;
+    }
+
     @Inject
     public BPMNDocumentationView(final BPMNDocumentationService documentationService,
                                  final ClientTranslationService clientTranslationService) {

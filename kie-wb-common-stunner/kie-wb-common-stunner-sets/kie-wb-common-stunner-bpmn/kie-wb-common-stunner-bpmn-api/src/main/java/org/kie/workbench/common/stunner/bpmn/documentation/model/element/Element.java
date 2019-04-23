@@ -66,4 +66,14 @@ public class Element {
     public final String getTitle() {
         return title;
     }
+
+    @JsOverlay
+    public final String getName() {
+        return name;
+    }
+
+    @JsOverlay
+    public final KeyValue[] getProperties() {
+        return properties;
+    }
 }

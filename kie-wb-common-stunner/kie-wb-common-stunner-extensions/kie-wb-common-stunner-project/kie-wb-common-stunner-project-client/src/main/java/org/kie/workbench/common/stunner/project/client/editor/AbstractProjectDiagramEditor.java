@@ -381,7 +381,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         onDiagramLoad();
     }
 
-    private void addDocumentationPage(ProjectDiagram diagram) {
+    protected void addDocumentationPage(ProjectDiagram diagram) {
         Optional.ofNullable(documentationView.isEnabled())
                 .filter(Boolean.TRUE::equals)
                 .ifPresent(enabled -> {

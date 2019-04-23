@@ -37,7 +37,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.components.layout.LayoutHelper;
 import org.kie.workbench.common.stunner.core.client.components.layout.OpenDiagramLayoutExecutor;
-import org.kie.workbench.common.stunner.core.documentation.DocumentationView;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectDiagramEditor;
 import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectDiagramEditorTest;
@@ -115,9 +114,6 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
     private MultiPageEditor multiPage;
 
     private DMNDiagramEditor diagramEditor;
-
-    @Mock
-    private DocumentationView documentationView;
 
     @Mock
     private DefaultEditorDock docks;

@@ -40,4 +40,19 @@ public class ProcessVariablesTotal {
         instance.variables = variables;
         return instance;
     }
+
+    @JsOverlay
+    public final Integer getTotal() {
+        return total;
+    }
+
+    @JsOverlay
+    public final Integer getTotalVariables() {
+        return totalVariables;
+    }
+
+    @JsOverlay
+    public final KeyValue[] getVariables() {
+        return variables;
+    }
 }

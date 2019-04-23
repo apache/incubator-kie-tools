@@ -37,4 +37,9 @@ public class ElementDetails {
         instance.totals = totals.toArray(new ElementTotal[totals.size()]);
         return instance;
     }
+
+    @JsOverlay
+    public final ElementTotal[] getTotals() {
+        return totals;
+    }
 }

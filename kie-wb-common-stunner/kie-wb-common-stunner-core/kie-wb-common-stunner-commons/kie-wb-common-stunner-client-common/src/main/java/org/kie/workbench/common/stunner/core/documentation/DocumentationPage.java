@@ -38,4 +38,8 @@ public class DocumentationPage extends PageImpl {
         onFocus.execute();
         view.refresh();
     }
+
+    public DocumentationView getDocumentationView() {
+        return view;
+    }
 }

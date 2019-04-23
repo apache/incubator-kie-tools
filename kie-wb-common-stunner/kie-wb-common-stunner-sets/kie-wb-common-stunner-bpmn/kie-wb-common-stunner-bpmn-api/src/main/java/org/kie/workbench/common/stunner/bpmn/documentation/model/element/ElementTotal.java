@@ -48,4 +48,19 @@ public class ElementTotal {
     public final String getType() {
         return type;
     }
+
+    @JsOverlay
+    public final Element[] getElements() {
+        return elements;
+    }
+
+    @JsOverlay
+    public final int getQuantity() {
+        return quantity;
+    }
+
+    @JsOverlay
+    public final String getTypeIcon() {
+        return typeIcon;
+    }
 }

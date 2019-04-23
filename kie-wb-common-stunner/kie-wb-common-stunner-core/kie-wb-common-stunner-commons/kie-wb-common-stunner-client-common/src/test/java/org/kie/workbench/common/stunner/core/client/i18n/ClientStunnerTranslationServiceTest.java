@@ -23,10 +23,14 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static org.junit.Assert.assertEquals;
 import static org.kie.workbench.common.stunner.core.i18n.AbstractTranslationService.CAPTION_SUFFIX;
 import static org.kie.workbench.common.stunner.core.i18n.AbstractTranslationService.DESCRIPTION_SUFFIX;
+import static org.kie.workbench.common.stunner.core.i18n.AbstractTranslationService.LABEL_SUFFIX;
 import static org.kie.workbench.common.stunner.core.i18n.AbstractTranslationService.TITLE_SUFFIX;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ClientStunnerTranslationServiceTest {
@@ -78,6 +82,62 @@ public class ClientStunnerTranslationServiceTest {
 
         verify(translationService).getTranslation(getKey(PROPERTY,
                                                          DESCRIPTION_SUFFIX));
+    }
+
+    @Test
+    public void testGetPropertyCaptionNull() {
+        when(translationService.getTranslation(getKey(PROPERTY, CAPTION_SUFFIX))).thenReturn(null);
+        when(translationService.getTranslation(getKey(PROPERTY, LABEL_SUFFIX))).thenReturn("labelCaption");
+
+        final String propertyCaption = stunnerTranslationService.getPropertyCaption(PROPERTY);
+
+        verify(translationService).getTranslation(getKey(PROPERTY, CAPTION_SUFFIX));
+        verify(translationService).getTranslation(getKey(PROPERTY, LABEL_SUFFIX));
+        verify(translationService, never()).getTranslation(getKey(PROPERTY, TITLE_SUFFIX));
+
+        assertEquals(propertyCaption, "labelCaption");
+    }
+
+    @Test
+    public void testGetPropertyCaptionLabelNull() {
+        when(translationService.getTranslation(getKey(PROPERTY, CAPTION_SUFFIX))).thenReturn(null);
+        when(translationService.getTranslation(getKey(PROPERTY, LABEL_SUFFIX))).thenReturn(null);
+        when(translationService.getTranslation(getKey(PROPERTY, TITLE_SUFFIX))).thenReturn("titleCaption");
+
+        final String propertyCaption = stunnerTranslationService.getPropertyCaption(PROPERTY);
+
+        verify(translationService).getTranslation(getKey(PROPERTY, CAPTION_SUFFIX));
+        verify(translationService).getTranslation(getKey(PROPERTY, LABEL_SUFFIX));
+        verify(translationService).getTranslation(getKey(PROPERTY, TITLE_SUFFIX));
+        assertEquals(propertyCaption, "titleCaption");
+    }
+
+    @Test
+    public void testGetPropertyCaptionTitleNull() {
+        when(translationService.getTranslation(getKey(PROPERTY, CAPTION_SUFFIX))).thenReturn(null);
+        when(translationService.getTranslation(getKey(PROPERTY, LABEL_SUFFIX))).thenReturn(null);
+        when(translationService.getTranslation(getKey(PROPERTY, TITLE_SUFFIX))).thenReturn(null);
+
+        final String propertyCaption = stunnerTranslationService.getPropertyCaption(PROPERTY);
+
+        verify(translationService).getTranslation(getKey(PROPERTY, CAPTION_SUFFIX));
+        verify(translationService).getTranslation(getKey(PROPERTY, LABEL_SUFFIX));
+        verify(translationService).getTranslation(getKey(PROPERTY, TITLE_SUFFIX));
+
+        assertEquals(propertyCaption, PROPERTY);
+    }
+
+    @Test
+    public void testGetPropertyCaption() {
+        when(translationService.getTranslation(getKey(PROPERTY, CAPTION_SUFFIX))).thenReturn("caption");
+
+        final String propertyCaption = stunnerTranslationService.getPropertyCaption(PROPERTY);
+
+        verify(translationService).getTranslation(getKey(PROPERTY, CAPTION_SUFFIX));
+        verify(translationService, never()).getTranslation(getKey(PROPERTY, LABEL_SUFFIX));
+        verify(translationService, never()).getTranslation(getKey(PROPERTY, TITLE_SUFFIX));
+
+        assertEquals(propertyCaption, "caption");
     }
 
     protected String getKey(String modelName,

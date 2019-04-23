@@ -28,7 +28,6 @@ import org.kie.workbench.common.stunner.client.widgets.popups.PopupUtil;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.client.session.command.ClientSessionCommand;
-import org.kie.workbench.common.stunner.core.documentation.DocumentationView;
 import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectDiagramEditor;
 import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectDiagramEditorTest;
 import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectEditorMenuSessionItems;
@@ -87,9 +86,6 @@ public class BPMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
     private ArgumentCaptor<ServiceCallback> serviceCallbackCaptor;
 
     private BPMNDiagramEditor diagramEditor;
-
-    @Mock
-    private DocumentationView documentationView;
 
     @Before
     @SuppressWarnings("unchecked")
