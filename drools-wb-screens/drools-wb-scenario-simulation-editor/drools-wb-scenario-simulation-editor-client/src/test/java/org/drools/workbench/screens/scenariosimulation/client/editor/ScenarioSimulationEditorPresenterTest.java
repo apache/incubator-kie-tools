@@ -73,6 +73,7 @@ import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.PlaceStatus;
+import org.uberfire.client.promise.Promises;
 import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.client.workbench.docks.UberfireDocksInteractionEvent;
 import org.uberfire.ext.editor.commons.client.file.exports.TextFileExport;
@@ -82,6 +83,7 @@ import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
+import org.uberfire.promise.SyncPromises;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuItem;
 
@@ -152,6 +154,7 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
     private TestRunnerReportingPanel testRunnerReportingPanel;
     @Mock
     private ScenarioSimulationDocksHandler scenarioSimulationDocksHandlerMock;
+    private Promises promises;
     @Mock
     private ScenarioMenuItem runScenarioMenuItemMock;
     @Mock
@@ -173,6 +176,7 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
 
     @Before
     public void setup() {
+        promises = new SyncPromises();
         super.setup();
         when(scenarioGridLayerMock.getScenarioGrid()).thenReturn(scenarioGridMock);
         when(scenarioSimulationViewMock.getScenarioGridPanel()).thenReturn(scenarioGridPanelMock);
@@ -222,6 +226,7 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
                 this.model = scenarioSimulationModelMock;
                 this.docks = docksMock;
                 this.perspectiveManager = perspectiveManagerMock;
+                this.promises = ScenarioSimulationEditorPresenterTest.this.promises;
             }
 
             @Override

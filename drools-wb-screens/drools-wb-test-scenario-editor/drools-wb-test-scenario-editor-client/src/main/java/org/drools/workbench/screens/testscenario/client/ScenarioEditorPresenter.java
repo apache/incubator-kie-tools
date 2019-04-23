@@ -17,12 +17,14 @@
 package org.drools.workbench.screens.testscenario.client;
 
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import elemental2.promise.Promise;
 import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.client.page.audit.AuditPage;
@@ -33,6 +35,7 @@ import org.drools.workbench.screens.testscenario.client.utils.ScenarioUtils;
 import org.drools.workbench.screens.testscenario.model.TestScenarioModelContent;
 import org.drools.workbench.screens.testscenario.model.TestScenarioResult;
 import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorService;
+import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -261,28 +264,37 @@ public class ScenarioEditorPresenter
     }
 
     @WorkbenchMenu
-    public Menus getMenus() {
-        return menus;
+    public void getMenus(final Consumer<Menus> menusConsumer) {
+        super.getMenus(menusConsumer);
     }
 
     @Override
-    protected void makeMenuBar() {
-        if (canUpdateProject()) {
-            fileMenuBuilder
-                    .addSave(this::saveAction)
-                    .addCopy(versionRecordManager.getCurrentPath(),
-                             assetUpdateValidator)
-                    .addRename(getSaveAndRename())
-                    .addDelete(versionRecordManager.getPathToLatest(),
-                               assetUpdateValidator);
+    protected Promise<Void> makeMenuBar() {
+        if (workbenchContext.getActiveWorkspaceProject().isPresent()) {
+            final WorkspaceProject activeProject = workbenchContext.getActiveWorkspaceProject().get();
+            return projectController.canUpdateProject(activeProject).then(canUpdateProject -> {
+                if (canUpdateProject) {
+                    fileMenuBuilder
+                            .addSave(this::saveAction)
+                            .addCopy(versionRecordManager.getCurrentPath(),
+                                     assetUpdateValidator)
+                            .addRename(getSaveAndRename())
+                            .addDelete(versionRecordManager.getPathToLatest(),
+                                       assetUpdateValidator);
+                }
+
+                addDownloadMenuItem(fileMenuBuilder);
+
+                fileMenuBuilder
+                        .addNewTopLevelMenu(view.getRunScenarioMenuItem())
+                        .addNewTopLevelMenu(versionRecordManager.buildMenu())
+                        .addNewTopLevelMenu(alertsButtonMenuItemBuilder.build());
+
+                return promises.resolve();
+            });
         }
 
-        addDownloadMenuItem(fileMenuBuilder);
-
-        fileMenuBuilder
-                .addNewTopLevelMenu(view.getRunScenarioMenuItem())
-                .addNewTopLevelMenu(versionRecordManager.buildMenu())
-                .addNewTopLevelMenu(alertsButtonMenuItemBuilder.build());
+        return promises.resolve();
     }
 
     private void ifFixturesSizeZeroThenAddExecutionTrace() {

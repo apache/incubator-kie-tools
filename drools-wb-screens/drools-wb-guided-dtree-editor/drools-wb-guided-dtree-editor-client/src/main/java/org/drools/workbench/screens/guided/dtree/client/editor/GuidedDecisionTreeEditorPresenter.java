@@ -15,6 +15,7 @@
  */
 package org.drools.workbench.screens.guided.dtree.client.editor;
 
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import javax.annotation.PostConstruct;
@@ -242,8 +243,8 @@ public class GuidedDecisionTreeEditorPresenter
     }
 
     @WorkbenchMenu
-    public Menus getMenus() {
-        return menus;
+    public void getMenus(final Consumer<Menus> menusConsumer) {
+        super.getMenus(menusConsumer);
     }
 
     @Override

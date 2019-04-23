@@ -16,6 +16,7 @@
 
 package org.drools.workbench.screens.dsltext.client.editor;
 
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import javax.enterprise.context.Dependent;
@@ -175,7 +176,7 @@ public class DSLEditorPresenter
     }
 
     @WorkbenchMenu
-    public Menus getMenus() {
-        return menus;
+    public void getMenus(final Consumer<Menus> menusConsumer) {
+        super.getMenus(menusConsumer);
     }
 }

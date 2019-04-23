@@ -37,6 +37,7 @@ import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEdito
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEditorService;
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.project.client.security.ProjectController;
+import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.messageconsole.client.console.widget.button.AlertsButtonMenuItemBuilder;
@@ -65,6 +66,7 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.promise.Promises;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.client.workbench.widgets.multipage.MultiPageEditor;
 import org.uberfire.ext.editor.commons.client.file.popups.CopyPopUpPresenter;
@@ -85,6 +87,7 @@ import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.promise.SyncPromises;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuItem;
 
@@ -268,10 +271,13 @@ public abstract class BaseGuidedDecisionTablePresenterTest<P extends BaseGuidedD
     @Mock
     protected MenuItem alertsButtonMenuItem;
 
+    protected Promises promises;
+
     protected P presenter;
 
     @Before
     public void setup() {
+        this.promises = new SyncPromises();
         this.dtServiceCaller = new CallerMock<>(dtService);
         this.versionServiceCaller = new CallerMock<>(versionService);
 
@@ -304,12 +310,12 @@ public abstract class BaseGuidedDecisionTablePresenterTest<P extends BaseGuidedD
         when(presenter.getKieEditorWrapperMultiPage()).thenReturn(multiPageEditor);
 
         when(workbenchContext.getActiveOrganizationalUnit()).thenReturn(Optional.empty());
-        when(workbenchContext.getActiveWorkspaceProject()).thenReturn(Optional.empty());
+        when(workbenchContext.getActiveWorkspaceProject()).thenReturn(Optional.of(mock(WorkspaceProject.class)));
         when(downloadMenuItem.build(any())).thenReturn(downloadMenuItemButton);
 
         doReturn(alertsButtonMenuItem).when(alertsButtonMenuItemBuilder).build();
-
         doReturn(currentPerspective).when(perspectiveManager).getCurrentPerspective();
+        doReturn(promises.resolve(true)).when(projectController).canUpdateProject(any());
 
         presenter.init();
         presenter.setupMenuBar();

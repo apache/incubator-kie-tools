@@ -234,6 +234,7 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
             {
                 workbenchContext = GuidedDecisionTableGraphEditorPresenterTest.this.workbenchContext;
                 projectController = GuidedDecisionTableGraphEditorPresenterTest.this.projectController;
+                promises = GuidedDecisionTableGraphEditorPresenterTest.this.promises;
             }
 
             @Override
@@ -372,7 +373,7 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
     public void testMakeMenuBarWithoutUpdateProjectPermission() {
         reset(fileMenuBuilder);
         doReturn(Optional.of(mock(WorkspaceProject.class))).when(workbenchContext).getActiveWorkspaceProject();
-        doReturn(false).when(projectController).canUpdateProject(any());
+        doReturn(promises.resolve(false)).when(projectController).canUpdateProject(any());
 
         presenter.makeMenuBar();
 

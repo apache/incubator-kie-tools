@@ -17,6 +17,7 @@
 package org.drools.workbench.screens.drltext.client.editor;
 
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import javax.annotation.PostConstruct;
@@ -236,7 +237,7 @@ public class DRLEditorPresenter
     }
 
     @WorkbenchMenu
-    public Menus getMenus() {
-        return menus;
+    public void getMenus(final Consumer<Menus> menusConsumer) {
+        super.getMenus(menusConsumer);
     }
 }

@@ -1424,6 +1424,10 @@
       <artifactId>errai-jaxrs-client</artifactId>
       <scope>compile</scope>
     </dependency>
+    <dependency>
+      <groupId>com.google.elemental2</groupId>
+      <artifactId>elemental2-promise</artifactId>
+    </dependency>
 
   </dependencies>
 

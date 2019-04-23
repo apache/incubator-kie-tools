@@ -17,6 +17,7 @@
 package org.drools.workbench.screens.workitems.client.editor;
 
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import javax.enterprise.context.Dependent;
@@ -192,7 +193,7 @@ public class WorkItemsEditorPresenter
     }
 
     @WorkbenchMenu
-    public Menus getMenus() {
-        return menus;
+    public void getMenus(final Consumer<Menus> menusConsumer) {
+        super.getMenus(menusConsumer);
     }
 }

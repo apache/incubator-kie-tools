@@ -16,6 +16,7 @@
 
 package org.drools.workbench.screens.guided.scorecard.client.editor;
 
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import javax.enterprise.context.Dependent;
@@ -225,7 +226,7 @@ public class GuidedScoreCardEditorPresenter
     }
 
     @WorkbenchMenu
-    public Menus getMenus() {
-        return menus;
+    public void getMenus(final Consumer<Menus> menusConsumer) {
+        super.getMenus(menusConsumer);
     }
 }

@@ -46,6 +46,7 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.promise.Promises;
 import org.uberfire.ext.editor.commons.client.file.popups.DeletePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
@@ -53,6 +54,7 @@ import org.uberfire.ext.editor.commons.client.menu.BasicFileMenuBuilder;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
+import org.uberfire.promise.SyncPromises;
 import org.uberfire.workbench.model.menu.MenuItem;
 
 import static org.mockito.Matchers.any;
@@ -120,10 +122,13 @@ public class GlobalsEditorPresenterTest {
     @Mock
     protected MenuItem alertsButtonMenuItem;
 
+    private Promises promises;
+
     private GlobalsEditorPresenter presenter;
 
     @Before
     public void setUp() {
+        promises = new SyncPromises();
         when(alertsButtonMenuItemBuilder.build()).thenReturn(alertsButtonMenuItem);
         presenter = spy(new GlobalsEditorPresenter(view) {
             {
@@ -141,6 +146,7 @@ public class GlobalsEditorPresenterTest {
                 versionRecordManager = GlobalsEditorPresenterTest.this.versionRecordManager;
                 assetUpdateValidator = GlobalsEditorPresenterTest.this.assetUpdateValidator;
                 alertsButtonMenuItemBuilder = GlobalsEditorPresenterTest.this.alertsButtonMenuItemBuilder;
+                promises = GlobalsEditorPresenterTest.this.promises;
             }
 
             @Override
@@ -242,7 +248,7 @@ public class GlobalsEditorPresenterTest {
     @Test
     public void testMakeMenuBar() {
         doReturn(Optional.of(mock(WorkspaceProject.class))).when(workbenchContext).getActiveWorkspaceProject();
-        doReturn(true).when(projectController).canUpdateProject(any());
+        doReturn(promises.resolve(true)).when(projectController).canUpdateProject(any());
 
         presenter.makeMenuBar();
 
@@ -258,7 +264,7 @@ public class GlobalsEditorPresenterTest {
     @Test
     public void testMakeMenuBarWithoutUpdateProjectPermission() {
         doReturn(Optional.of(mock(WorkspaceProject.class))).when(workbenchContext).getActiveWorkspaceProject();
-        doReturn(false).when(projectController).canUpdateProject(any());
+        doReturn(promises.resolve(false)).when(projectController).canUpdateProject(any());
 
         presenter.makeMenuBar();
 

@@ -62,6 +62,7 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.promise.Promises;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.ext.editor.commons.client.file.popups.CopyPopUpPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.DeletePopUpPresenter;
@@ -88,6 +89,7 @@ import org.uberfire.ext.widgets.common.client.menu.MenuItemWithIconView;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
+import org.uberfire.promise.SyncPromises;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuCustom;
 import org.uberfire.workbench.model.menu.MenuGroup;
@@ -268,6 +270,8 @@ public class GuidedDecisionTableEditorMenusTest {
     @Mock
     protected PerspectiveManager perspectiveManager;
 
+    protected Promises promises;
+
     private GuidedDecisionTableEditorPresenter presenter;
     private GuidedDTableResourceType resourceType = new GuidedDTableResourceType(new Decision());
 
@@ -302,6 +306,7 @@ public class GuidedDecisionTableEditorMenusTest {
 
     @Before
     public void setup() {
+        promises = new SyncPromises();
         when(downloadMenuItem.build(any())).thenReturn(downloadMenuItemButton);
         when(alertsButtonMenuItemBuilder.build()).thenReturn(alertsButtonMenuItem);
         when(modeller.getView()).thenReturn(modellerView);
@@ -363,6 +368,10 @@ public class GuidedDecisionTableEditorMenusTest {
                                                                                                   saveAndRenameCommandBuilder,
                                                                                                   alertsButtonMenuItemBuilder,
                                                                                                   downloadMenuItem) {
+            {
+                promises = GuidedDecisionTableEditorMenusTest.this.promises;
+            }
+
             @Override
             protected Command getSaveAndRenameCommand() {
                 return mock(Command.class);
@@ -392,55 +401,56 @@ public class GuidedDecisionTableEditorMenusTest {
 
     @Test
     public void checkMenuStructure() {
-        final AtomicInteger i = new AtomicInteger(0);
-        final Menus menus = presenter.getMenus();
-        final MenuVisitor visitor = new MenuVisitor() {
-            @Override
-            public boolean visitEnter(final Menus menus) {
-                return true;
-            }
+        presenter.getMenus(menus -> {
+            final AtomicInteger i = new AtomicInteger(0);
+            final MenuVisitor visitor = new MenuVisitor() {
+                @Override
+                public boolean visitEnter(final Menus menus) {
+                    return true;
+                }
 
-            @Override
-            public void visitLeave(final Menus menus) {
-            }
+                @Override
+                public void visitLeave(final Menus menus) {
+                }
 
-            @Override
-            public boolean visitEnter(final MenuGroup menuGroup) {
-                assertEquals(menuItemIdentifiers[i.getAndIncrement()],
-                             menuGroup.getIdentifier());
-                return true;
-            }
+                @Override
+                public boolean visitEnter(final MenuGroup menuGroup) {
+                    assertEquals(menuItemIdentifiers[i.getAndIncrement()],
+                                 menuGroup.getIdentifier());
+                    return true;
+                }
 
-            @Override
-            public void visitLeave(final MenuGroup menuGroup) {
+                @Override
+                public void visitLeave(final MenuGroup menuGroup) {
 
-            }
+                }
 
-            @Override
-            public void visit(final MenuItemPlain menuItemPlain) {
-                assertEquals(menuItemIdentifiers[i.getAndIncrement()],
-                             menuItemPlain.getIdentifier());
-            }
+                @Override
+                public void visit(final MenuItemPlain menuItemPlain) {
+                    assertEquals(menuItemIdentifiers[i.getAndIncrement()],
+                                 menuItemPlain.getIdentifier());
+                }
 
-            @Override
-            public void visit(final MenuItemCommand menuItemCommand) {
-                assertEquals(menuItemIdentifiers[i.getAndIncrement()],
-                             menuItemCommand.getIdentifier());
-            }
+                @Override
+                public void visit(final MenuItemCommand menuItemCommand) {
+                    assertEquals(menuItemIdentifiers[i.getAndIncrement()],
+                                 menuItemCommand.getIdentifier());
+                }
 
-            @Override
-            public void visit(final MenuItemPerspective menuItemPerspective) {
-                assertEquals(menuItemIdentifiers[i.getAndIncrement()],
-                             menuItemPerspective.getIdentifier());
-            }
+                @Override
+                public void visit(final MenuItemPerspective menuItemPerspective) {
+                    assertEquals(menuItemIdentifiers[i.getAndIncrement()],
+                                 menuItemPerspective.getIdentifier());
+                }
 
-            @Override
-            public void visit(final MenuCustom<?> menuCustom) {
-                assertEquals(menuItemIdentifiers[i.getAndIncrement()],
-                             menuCustom.getIdentifier());
-            }
-        };
-        menus.accept(visitor);
+                @Override
+                public void visit(final MenuCustom<?> menuCustom) {
+                    assertEquals(menuItemIdentifiers[i.getAndIncrement()],
+                                 menuCustom.getIdentifier());
+                }
+            };
+            menus.accept(visitor);
+        });
     }
 
     private RestoreVersionCommandProvider getRestoreVersionCommandProvider() {

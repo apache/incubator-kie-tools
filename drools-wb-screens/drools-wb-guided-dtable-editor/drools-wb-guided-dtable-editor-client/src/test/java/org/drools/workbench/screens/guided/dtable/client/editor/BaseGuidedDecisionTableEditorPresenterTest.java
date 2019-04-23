@@ -101,6 +101,10 @@ public class BaseGuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisi
                                                       saveAndRenameCommandBuilder,
                                                       alertsButtonMenuItemBuilder,
                                                       downloadMenuItem) {
+            {
+                promises = BaseGuidedDecisionTableEditorPresenterTest.this.promises;
+                projectController = BaseGuidedDecisionTableEditorPresenterTest.this.projectController;
+            }
 
             @Override
             protected Command getSaveAndRenameCommand() {
@@ -293,8 +297,9 @@ public class BaseGuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisi
 
         verify(presenter,
                never()).activateDocument(any(GuidedDecisionTableView.Presenter.class));
-        assertTrue(getMenuState(presenter.getMenus(),
-                                MenuItems.VALIDATE));
+
+        presenter.getMenus(menus -> assertTrue(getMenuState(menus,
+                                                            MenuItems.VALIDATE)));
     }
 
     private boolean getMenuState(final Menus menus,
@@ -324,8 +329,9 @@ public class BaseGuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisi
                times(1)).activateDocument(any(GuidedDecisionTableView.Presenter.class));
         verify(radarMenuItem,
                atLeast(1)).setEnabled(eq(true));
-        assertTrue(getMenuState(presenter.getMenus(),
-                                MenuItems.VALIDATE));
+
+        presenter.getMenus(menus -> assertTrue(getMenuState(menus,
+                                                            MenuItems.VALIDATE)));
     }
 
     @Test
@@ -345,8 +351,8 @@ public class BaseGuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisi
 
         verify(presenter,
                never()).activateDocument(any(GuidedDecisionTableView.Presenter.class));
-        assertTrue(getMenuState(presenter.getMenus(),
-                                MenuItems.VALIDATE));
+        presenter.getMenus(menus -> assertTrue(getMenuState(menus,
+                                                            MenuItems.VALIDATE)));
     }
 
     @Test
@@ -357,8 +363,8 @@ public class BaseGuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisi
 
         verify(presenter,
                never()).activateDocument(any(GuidedDecisionTableView.Presenter.class));
-        assertFalse(getMenuState(presenter.getMenus(),
-                                 MenuItems.VALIDATE));
+        presenter.getMenus(menus -> assertTrue(getMenuState(menus,
+                                                            MenuItems.VALIDATE)));
     }
 
     @Test

@@ -47,6 +47,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.uberfire.backend.vfs.ObservablePath;
+import org.uberfire.client.promise.Promises;
 import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
 import org.uberfire.ext.editor.commons.client.menu.common.SaveAndRenameCommandBuilder;
 import org.uberfire.ext.editor.commons.client.validation.DefaultFileNameValidator;
@@ -55,6 +56,7 @@ import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.promise.SyncPromises;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuItem;
 
@@ -114,6 +116,8 @@ public class EnumEditorPresenterTest {
     @Mock
     private AlertsButtonMenuItemBuilder mockAlertsButtonMenuItemBuilder;
 
+    private Promises promises;
+
     @GwtMock
     private ViewDRLSourceWidget sourceWidget;
 
@@ -139,6 +143,8 @@ public class EnumEditorPresenterTest {
 
     @Before
     public void setup() {
+        promises = new SyncPromises();
+
         //Mock EnumResourceType
         this.type = GWT.create(EnumResourceType.class);
 
@@ -184,6 +190,7 @@ public class EnumEditorPresenterTest {
                 this.workbenchContext = mockWorkbenchContext;
                 this.saveAndRenameCommandBuilder = mockSaveAndRenameCommandBuilder;
                 this.alertsButtonMenuItemBuilder = mockAlertsButtonMenuItemBuilder;
+                this.promises = EnumEditorPresenterTest.this.promises;
             }
 
             @Override
