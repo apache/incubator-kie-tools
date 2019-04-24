@@ -28,17 +28,17 @@ import jsinterop.annotations.JsType;
  */
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
 public class C3ChartConf {  
-    
+  
     @JsOverlay
     static C3ChartConf create(C3ChartSize size, 
-                                     C3ChartData data, 
-                                     C3AxisInfo axis,
-                                     C3Grid grid,
-                                     C3Transition transition,
-                                     C3Point point,
-                                     C3Padding padding,
-                                     C3Legend legend,
-                                     C3Color color) {
+                              C3ChartData data, 
+                              C3AxisInfo axis,
+                              C3Grid grid,
+                              C3Transition transition,
+                              C3Point point,
+                              C3Padding padding,
+                              C3Legend legend,
+                              C3Color color) {
         C3ChartConf instance = new C3ChartConf();
         instance.setSize(size);
         instance.setData(data);
@@ -51,6 +51,31 @@ public class C3ChartConf {
         instance.setColor(color);
         return instance;
     }
+    
+    @JsOverlay
+    static C3ChartConf create(C3ChartSize size, 
+                              C3ChartData data, 
+                              C3AxisInfo axis,
+                              C3Grid grid,
+                              C3Transition transition,
+                              C3Point point,
+                              C3Padding padding,
+                              C3Legend legend,
+                              C3Color color,
+                              C3Tooltip tooltip) {
+        C3ChartConf instance = new C3ChartConf();
+        instance.setSize(size);
+        instance.setData(data);
+        instance.setAxis(axis);
+        instance.setGrid(grid);
+        instance.setTransition(transition);
+        instance.setPoint(point);
+        instance.setPadding(padding);
+        instance.setLegend(legend);
+        instance.setColor(color);
+        instance.setTooltip(tooltip);
+        return instance;
+    }    
     
     @JsProperty
     public native void setBindto(Element element);
@@ -81,6 +106,9 @@ public class C3ChartConf {
 
     @JsProperty
     public native void setLegend(C3Legend legend);
+    
+    @JsProperty
+    public native void setTooltip(C3Tooltip tooltip);    
     
     @JsProperty
     public native void setOnrendered(RenderedCallback callback);

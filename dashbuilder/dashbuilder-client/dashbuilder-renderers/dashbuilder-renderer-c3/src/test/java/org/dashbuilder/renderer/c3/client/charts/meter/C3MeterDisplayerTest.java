@@ -62,7 +62,13 @@ public class C3MeterDisplayerTest extends C3BaseTest {
             .filter(COLUMN_ID, FilterFactory.isNull())
             .group(COLUMN_DATE)
             .column(COLUMN_DATE)
-            .column(COLUMN_AMOUNT, SUM)
+            .column(COLUMN_AMOUNT, SUM).format("","0.0000")
+            .buildSettings();
+    
+    DisplayerSettings meterSettingsOneColumn = DisplayerSettingsFactory.newMeterChartSettings()
+            .dataset(EXPENSES)
+            .filter(COLUMN_ID, FilterFactory.isNull())
+            .column(COLUMN_AMOUNT).format("","0.0")
             .buildSettings();
 
     @Test
@@ -92,5 +98,21 @@ public class C3MeterDisplayerTest extends C3BaseTest {
         assertArrayEquals(new String[] {CL1, "1", "2"}, singleColumnValues);
         
     }
+    
+    @Test
+    public void columnFormatTest() throws ParseException {
+        C3MeterChartDisplayer c3MeterChartDisplayer = c3MeterChartDisplayer(meterSettings);
+        c3MeterChartDisplayer.draw();
+        
+        Object formattedTooltip = c3MeterChartDisplayer.formatTooltip(1l, null, null);
+        assertEquals("1.0000", formattedTooltip);
+        
+        c3MeterChartDisplayer = c3MeterChartDisplayer(meterSettingsOneColumn);
+        c3MeterChartDisplayer.draw();
+        
+        formattedTooltip = c3MeterChartDisplayer.formatTooltip(1l, null, null);
+        assertEquals("1.0", formattedTooltip);
+    }
+    
     
 }

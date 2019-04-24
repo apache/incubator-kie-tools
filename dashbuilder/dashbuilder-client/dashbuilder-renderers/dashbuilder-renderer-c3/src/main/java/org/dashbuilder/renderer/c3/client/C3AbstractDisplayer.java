@@ -22,6 +22,7 @@ import org.dashbuilder.common.client.widgets.FilterLabel;
 import org.dashbuilder.common.client.widgets.FilterLabelSet;
 import org.dashbuilder.dataset.DataColumn;
 import org.dashbuilder.dataset.group.Interval;
+import org.dashbuilder.displayer.ColumnSettings;
 import org.dashbuilder.displayer.client.AbstractGwtDisplayer;
 
 public abstract class C3AbstractDisplayer<V extends C3AbstractDisplayer.View> extends AbstractGwtDisplayer<V>  {
@@ -112,6 +113,12 @@ public abstract class C3AbstractDisplayer<V extends C3AbstractDisplayer.View> ex
                 }
             }
         }
+    }
+    
+    
+    protected String evaluateValueToString(Object mightBeNull, ColumnSettings settings) {
+        String value = columnValueToString(mightBeNull);
+        return getEvaluator().evalExpression(value, settings.getValueExpression());
     }
     
     protected String columnValueToString(Object mightBeNull) {

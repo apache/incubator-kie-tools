@@ -100,20 +100,10 @@ public class C3BarChartDisplayer extends C3XYDisplayer<C3BarChartDisplayer.View>
     protected C3AxisInfo createAxis() {
         C3AxisInfo axis = super.createAxis();
         axis.setRotated(isRotated());
+        axis.getY().getTick().setRotate(30);
         return axis;
     }
     
-    protected C3Tick createTickX() {
-        return factory.createC3Tick(f -> {
-            try {
-                double doubleFormat = Double.parseDouble(f);
-                return NumberFormat.getFormat("#,###.##").format(doubleFormat);
-            } catch(NumberFormatException e) {
-                return f;
-            }
-        });
-    }
-
     public boolean isRotated() {
         return rotated;
     }

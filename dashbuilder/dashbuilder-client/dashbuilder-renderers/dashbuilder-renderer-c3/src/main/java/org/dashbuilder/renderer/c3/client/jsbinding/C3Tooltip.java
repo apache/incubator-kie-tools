@@ -21,27 +21,17 @@ import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
-public class C3AxisY {
+public class C3Tooltip {
     
     @JsOverlay
-    static C3AxisY create(boolean show, C3Tick tick) {
-        C3AxisY instance = new C3AxisY();
-        instance.setShow(show);
-        instance.setTick(tick);
-        return instance;
+    static C3Tooltip create(C3Format format) {
+        C3Tooltip tooltip = new C3Tooltip();
+        tooltip.setFormat(format);
+        return tooltip;
     }
+    
+    @JsProperty
+    public native void setFormat(C3Format format); 
+    
 
-    @JsProperty
-    public native void setShow(boolean show);
-    
-    @JsProperty
-    public native void setTick(C3Tick tick);
-    
-    @JsProperty
-    public native C3Tick getTick();
-    
-    @JsProperty
-    public native void setLabel(C3AxisLabel label);    
-    
-        
 }

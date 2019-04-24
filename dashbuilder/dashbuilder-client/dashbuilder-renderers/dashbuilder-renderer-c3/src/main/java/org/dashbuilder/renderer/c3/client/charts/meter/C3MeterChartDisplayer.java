@@ -24,6 +24,7 @@ import org.dashbuilder.common.client.widgets.FilterLabelSet;
 import org.dashbuilder.dataset.ColumnType;
 import org.dashbuilder.dataset.DataColumn;
 import org.dashbuilder.dataset.DataSetLookupConstraints;
+import org.dashbuilder.displayer.ColumnSettings;
 import org.dashbuilder.displayer.DisplayerAttributeDef;
 import org.dashbuilder.displayer.DisplayerAttributeGroupDef;
 import org.dashbuilder.displayer.DisplayerConstraints;
@@ -33,6 +34,7 @@ import org.dashbuilder.renderer.c3.client.jsbinding.C3Color;
 import org.dashbuilder.renderer.c3.client.jsbinding.C3Gauge;
 import org.dashbuilder.renderer.c3.client.jsbinding.C3JsTypesFactory;
 import org.dashbuilder.renderer.c3.client.jsbinding.C3Threshold;
+import org.dashbuilder.renderer.c3.client.jsbinding.C3Tooltip;
 
 @Dependent
 public class C3MeterChartDisplayer extends C3Displayer<C3Displayer.View> {
@@ -90,7 +92,9 @@ public class C3MeterChartDisplayer extends C3Displayer<C3Displayer.View> {
     protected C3ChartConf buildConfiguration() {
         C3ChartConf conf = super.buildConfiguration();
         C3Gauge gaugeConf = createGauge();
+        C3Tooltip tooltip = factory.c3Tooltip(this::formatTooltip);
         conf.setGauge(gaugeConf);
+        conf.setTooltip(tooltip);
         return conf;
     }
     
@@ -131,26 +135,44 @@ public class C3MeterChartDisplayer extends C3Displayer<C3Displayer.View> {
 
     String[][] extractGroupingValues(DataColumn groupsColumn, DataColumn valuesColumn) {
         int n = groupsColumn.getValues().size();
+        ColumnSettings settings = displayerSettings.getColumnSettings(valuesColumn);
         String[][] output = new String[n][2];
         for (int i = 0; i < n; i++) {
             Object group = groupsColumn.getValues().get(i);
             Object value = valuesColumn.getValues().get(i);
             output[i][0] = columnValueToString(group);
-            output[i][1] = columnValueToString(value);
+            output[i][1] = evaluateValueToString(value, settings);
         }
         return output;
     }
 
     String[] extractSingleColumnValues(DataColumn dataColumn) {
         List<?> values = dataColumn.getValues();
+        ColumnSettings settings = displayerSettings.getColumnSettings(dataColumn);
         String[] data = new String[values.size() + 1];
         data[0] = dataColumn.getId();
         for (int i = 0; i < values.size(); i++) {
             Object value = values.get(i);
-            data[i + 1] = columnValueToString(value);
+            data[i + 1] = evaluateValueToString(value, settings);
         }
         return data;
     }
     
+    protected Object formatTooltip(Long value, Object threshold, String data) {
+        List<DataColumn> columns = dataSet.getColumns();
+        int size = columns.size();
+        if (size == 1) {
+            return formatValueForColumn(value, columns.get(0));
+        }
+        if (size > 1) {
+            return formatValueForColumn(value, columns.get(1));
+        } 
+        return value;
+    }
+
+    private Object formatValueForColumn(Long value, DataColumn targetColumn) {
+        String pattern = displayerSettings.getColumnSettings(targetColumn).getValuePattern();
+        return getFormatter().formatNumber(pattern, value);
+    }
     
 }
