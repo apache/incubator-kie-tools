@@ -28,6 +28,7 @@ public class MultiGridPreferencesStore extends UserPreference {
     private ArrayList<String> gridsIds = new ArrayList<String>();
     private String selectedGrid = "NONE";
     private int refreshInterval = 10;
+    private String defaultGridId = "";
 
     public MultiGridPreferencesStore() {
     }
@@ -117,5 +118,13 @@ public class MultiGridPreferencesStore extends UserPreference {
 
     public void setRefreshInterval(int refreshInterval) {
         this.refreshInterval = refreshInterval;
+    }
+
+    public String getDefaultGridId() {
+        return defaultGridId;
+    }
+
+    public void setDefaultGridId(String defaultGridId) {
+        this.defaultGridId = defaultGridId;
     }
 }
