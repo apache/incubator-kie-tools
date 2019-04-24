@@ -26,6 +26,7 @@ import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.Rectangle;
+import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.client.core.shape.wires.event.WiresResizeEndEvent;
 import com.ait.lienzo.client.core.shape.wires.event.WiresResizeEndHandler;
 import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStartEvent;
@@ -34,6 +35,8 @@ import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStepEvent;
 import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStepHandler;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresShapeHandler;
+import com.ait.lienzo.client.core.shape.wires.layout.label.LabelContainerLayout;
+import com.ait.lienzo.client.core.shape.wires.layout.label.LabelLayout;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.widget.DragConstraintEnforcer;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
@@ -85,11 +88,18 @@ public class WiresShapeTest
 
     private Group                      group;
 
+    private Text label;
+
+    @Mock
+    private LabelLayout labelLayout;
+
     @Before
     public void setup()
     {
         path = spy(new MultiPath().rect(3, 7, 100, 100));
         group = spy(new Group());
+        label = spy(new Text("label"));
+        labelLayout = new LabelLayout.Builder().build();
         when(layoutContainer.getGroup()).thenReturn(group);
         when(layoutContainer.setOffset(any(Point2D.class))).thenReturn(layoutContainer);
         when(layoutContainer.setSize(anyDouble(), anyDouble())).thenReturn(layoutContainer);
@@ -332,5 +342,13 @@ public class WiresShapeTest
         shape2 = new WiresShape(path, layoutContainer, handlerManager, handlerRegistrationManager, attributesChangedBatcher);
         assertNotEquals(shape1, shape2);
         assertNotEquals(shape2, shape1);
+    }
+
+    @Test
+    public void testAddLabel(){
+        final LabelContainerLayout labelContainerLayout = tested.addLabel(label, labelLayout);
+        verify(group).add(label);
+        final LabelLayout layout = labelContainerLayout.getLayout(label);
+        assertEquals(labelLayout, layout);
     }
 }

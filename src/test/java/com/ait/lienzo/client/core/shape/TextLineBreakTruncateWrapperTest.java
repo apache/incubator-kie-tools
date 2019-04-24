@@ -19,33 +19,23 @@ package com.ait.lienzo.client.core.shape;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.shared.core.types.TextAlign;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
-public class TextTruncateWrapperTest extends BaseTextTest {
-
-    @Test
-    public void testSingleCharText() {
-        testTextBoundsWrap("a",
-                           new Object[]{
-                                   new DrawnText("a     ",
-                                                 0,
-                                                 0.8)
-                           });
-    }
+public class TextLineBreakTruncateWrapperTest extends BaseTextTest {
 
     @Test
     public void testSingleShortWordText() {
         testTextBoundsWrap("short",
                            new Object[]{
-                                   new DrawnText("short ",
+                                   new DrawnText("short",
                                                  0,
                                                  0.8)
                            });
@@ -55,22 +45,12 @@ public class TextTruncateWrapperTest extends BaseTextTest {
     public void testMultipleShortWordsMultilinesText() {
         testTextBoundsWrap("short words",
                            new Object[]{
-                                   new DrawnText("short ",
+                                   new DrawnText("short",
                                                  0,
                                                  0.8),
-                                   new DrawnText("words ",
+                                   new DrawnText("words",
                                                  0,
                                                  1.8)
-                           });
-    }
-
-    @Test
-    public void testTwoWordsFitsSingleLineText() {
-        testTextBoundsWrap("ab cd",
-                           new Object[]{
-                                   new DrawnText("ab cd ",
-                                                 0,
-                                                 0.8)
                            });
     }
 
@@ -82,7 +62,7 @@ public class TextTruncateWrapperTest extends BaseTextTest {
                                                  0,
                                                  0.8)
                            },
-                           28);
+                           getWidth(8));
     }
 
     @Test
@@ -96,84 +76,88 @@ public class TextTruncateWrapperTest extends BaseTextTest {
                                                  0,
                                                  1.8)
                            },
-                           28);
-    }
-
-    @Test
-    public void testMultipleWordsText() {
-        testTextBoundsWrap("ab cd ef longlong gh ij",
-                           new Object[]{
-                                   new DrawnText("ab cd ef",
-                                                 0,
-                                                 0.8),
-                                   new DrawnText("longlong",
-                                                 0,
-                                                 1.8),
-                                   new DrawnText("gh ij   ",
-                                                 0,
-                                                 2.8)
-                           },
-                           28);
+                           getWidth(8));
     }
 
     @Test
     public void testTruncateSingleWord() {
         testTextBoundsWrap("LongWordThatDoesntFits",
                            new Object[]{
-                                   new DrawnText("Lo...",
+                                   new DrawnText("L...",
                                                  0,
                                                  0.8)
                            },
-                           22,
+                           getWidth(4),
                            2);
+    }
+
+    @Test
+    public void testTruncateSingleWordTruncatedWithNoDots() {
+        testTextBoundsWrap("LongWordThatDoesntFits",
+                           new Object[]{
+                                   new DrawnText("Lon",
+                                                 0,
+                                                 0.8),
+                                   new DrawnText("gWo",
+                                                 0,
+                                                 1.8),
+                                   new DrawnText("rdT",
+                                                 0,
+                                                 2.8)
+                           },
+                           getWidth(2),
+                           8);
     }
 
     @Test
     public void testTruncateAndWrapSingleWord() {
         testTextBoundsWrap("LongWordThatDoesntFits",
                            new Object[]{
-                                   new DrawnText("LongWord",
+                                   new DrawnText("LongWordT",
                                                  0,
                                                  0.8),
-                                   new DrawnText("ThatD...",
+                                   new DrawnText("hatDo...",
                                                  0,
                                                  1.8),
                            },
-                           28,
-                           6);
+                           getWidth(8),
+                           getLineHeight(2));
     }
 
     @Test
     public void testTruncateAndWrapWord() {
-        testTextBoundsWrap("Short VeryLooong Short",
+        testTextBoundsWrap("Short a VeryLong123456789 Text",
                            new Object[]{
-                                   new DrawnText("Short   ",
+                                   new DrawnText("Short a V",
                                                  0,
                                                  0.8),
-                                   new DrawnText("VeryLooo",
+                                   new DrawnText("eryLong12",
                                                  0,
                                                  1.8),
-                                   new DrawnText("ng Short",
+                                   new DrawnText("3456789",
                                                  0,
-                                                 2.8)
+                                                 2.8),
+                                   new DrawnText("Text",
+                                                 0,
+                                                 3.8)
                            },
-                           28,
-                           8);
+                           getWidth(8),
+                           getLineHeight(4));
     }
 
     @Test
     public void testTruncateAndWrapShortLongWord() {
         testTextBoundsWrap("Short VeryLooong Short",
                            new Object[]{
-                                   new DrawnText("Short   ",
+                                   new DrawnText("Short",
                                                  0,
                                                  0.8),
                                    new DrawnText("VeryL...",
                                                  0,
                                                  1.8)
                            },
-                           28,
-                           6);
+                           getWidth(8),
+                           getLineHeight(2));
     }
 
     @Test
@@ -187,19 +171,85 @@ public class TextTruncateWrapperTest extends BaseTextTest {
                                                  0,
                                                  1.8)
                            },
-                           25,
-                           6);
+                           getWidth(5),
+                           getLineHeight(2));
+    }
+
+    @Test
+    public void testLineBreak(){
+        testTextBoundsWrap("Word1\nWord2\nWord3 Word4 Word5 Word6 Word7",
+                           new Object[]{
+                        new DrawnText("Word1",
+                                0,
+                                0.8),
+                        new DrawnText("Word2",
+                                0,
+                                1.8),
+                        new DrawnText("Word3 Word4 Word5 Word6 Word7",
+                                0,
+                                2.8)
+                },
+                           getWidth(30),
+                           getLineHeight(3));
+    }
+
+    private int getLineHeight(int num) {
+        return num * 2 + 1;
+    }
+
+    @Test
+    public void testLineBreakWithSpaces(){
+        testTextBoundsWrap("Word 1   \n Word 2   \n   Word 3 Word 4",
+                           new Object[]{
+                                   new DrawnText("Word 1",
+                                                 0,
+                                                 0.8),
+                                   new DrawnText(" Word 2",
+                                                 0,
+                                                 1.8),
+                                   new DrawnText("   Word 3 Word 4",
+                                                 0,
+                                                 2.8)
+                },
+                           getWidth(30),
+                           getLineHeight(3));
+    }
+
+    @Test
+    public void testLineBreakTruncated(){
+        testTextBoundsWrap("Word1\nWord2\nWord3 Word4 Word5 Word6 Word7",
+                           new Object[]{
+                        new DrawnText("Word1",
+                                0,
+                                0.8),
+                        new DrawnText("Word2",
+                                0,
+                                1.8),
+                        new DrawnText("Word3",
+                                0,
+                                2.8),
+                        new DrawnText("Wo...",
+                                0,
+                                3.8)
+                },
+                           getWidth(5),
+                           getLineHeight(4));
     }
 
     private void testTextBoundsWrap(final String text,
                                     final Object[] results) {
-        testTextBoundsWrap(text, results, 26);
+        testTextBoundsWrap(text, results, getWidth(6));
+    }
+
+    private double getWidth(double width) {
+        //adding margin
+        return 10 + width;
     }
 
     private void testTextBoundsWrap(final String text,
                                     final Object[] results,
                                     final double width) {
-        testTextBoundsWrap(text, results, width, 10);
+        testTextBoundsWrap(text, results, width, 100);
     }
 
     private void testTextBoundsWrap(final String text,
@@ -209,8 +259,9 @@ public class TextTruncateWrapperTest extends BaseTextTest {
         final BoundingBox bbox = new BoundingBox().addX(0).addY(0).addX(width).addY(height);
         final Text tested = spy(new Text(text));
 
-        tested.setWrapper(new TextTruncateWrapper(tested,
-                                                  bbox));
+        TextLineBreakTruncateWrapper wrapper = new TextLineBreakTruncateWrapper(tested,
+                                                                                bbox);
+        tested.setWrapper(wrapper);
         tested.setTextAlign(TextAlign.LEFT);
 
         when(tested.getLineHeight(context)).thenReturn(1.0);
@@ -221,7 +272,15 @@ public class TextTruncateWrapperTest extends BaseTextTest {
                                   1,
                                   bbox);
 
-        assertArrayEquals(results,
-                          drawnTexts.toArray());
+        assertArrayEquals(results, getDrawnTextRemovePaddingChar());
+    }
+
+    private Object[] getDrawnTextRemovePaddingChar()
+    {
+        for(Object o : drawnTexts.toArray()){
+            DrawnText drawnText = (DrawnText) o;
+            drawnText.text = StringUtils.stripEnd(drawnText.text, " ");
+        }
+        return drawnTexts.toArray();
     }
 }
