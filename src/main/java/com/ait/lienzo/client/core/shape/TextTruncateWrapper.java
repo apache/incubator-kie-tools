@@ -24,14 +24,12 @@ import com.ait.lienzo.client.core.types.BoundingBox;
 /**
  * ITextWrapper implementation that truncates text and appends "..." if there is no space left.
  */
-@SuppressWarnings("Duplicates")
-public class TextTruncateWrapper extends TextNoWrap implements ITextWrapperWithBoundaries
+@SuppressWarnings("Duplicates") public class TextTruncateWrapper extends TextBoundsWrap
+        implements ITextWrapperWithBoundaries
 {
-    private static final double     Y_OFFSET           = 0.8;
-
     private BoundingBox             m_wrapBoundaries;
 
-    private static final double     m_margin           = 20;
+    private  double m_margin = 20;
 
     public TextTruncateWrapper(final Text text,
                                final BoundingBox wrapBoundaries)
@@ -55,20 +53,20 @@ public class TextTruncateWrapper extends TextNoWrap implements ITextWrapperWithB
     public BoundingBox getBoundingBox()
     {
         final double[] boundaries = calculateWrapBoundaries();
-        return new BoundingBox().addX(0).addX(m_wrapBoundaries.getWidth()).addY(0).addY(boundaries[1]);
+        return new BoundingBox(0, 0, boundaries[0], boundaries[1]);
     }
 
-    private double getWrapBoundariesWidth()
+    protected double getWrapBoundariesWidth()
     {
         return m_wrapBoundaries.getWidth() - m_margin;
     }
 
-    private double[] calculateWrapBoundaries()
+    protected double[] calculateWrapBoundaries()
     {
         final String[] words = textSupplier.get().split("\\s");
         if (words.length < 1)
         {
-            return new double[]{m_wrapBoundaries.getX(), m_wrapBoundaries.getY()};
+            return new double[] { getWrapBoundaries().getX(), getWrapBoundaries().getY() };
         }
 
         final double wrapWidth = getWrapBoundariesWidth();
@@ -86,34 +84,36 @@ public class TextTruncateWrapper extends TextNoWrap implements ITextWrapperWithB
             else
             {
                 nextLine.setLength(words[i].length());
-                nextLine.replace(0,
-                                 words[i].length(),
-                                 words[i]);
+                nextLine.replace(0, words[i].length(), words[i]);
                 numOfLines++;
             }
         }
 
+        final double height = getHeightByLines(numOfLines);
+        return new double[] { width, height };
+    }
+
+    protected double getHeightByLines(int numOfLines)
+    {
         final double lineHeight = getLineHeight();
 
-        while (!hasVerticalSpace(numOfLines, lineHeight, m_wrapBoundaries.getHeight() - (Y_OFFSET * numOfLines))
+        while (!hasVerticalSpace(numOfLines, lineHeight, getWrapBoundaries().getHeight() - (Y_OFFSET * numOfLines))
                 && numOfLines >= 0)
         {
             numOfLines--;
         }
 
-        final double height = lineHeight * numOfLines;
-
-        return new double[]{width, height};
+        return lineHeight * numOfLines;
     }
 
-    private boolean hasVerticalSpace(final int lineIndex,
+    protected boolean hasVerticalSpace(final int lineIndex,
                                      final double lineHeight,
                                      final double availableHeight)
     {
         return lineHeight * (lineIndex + Y_OFFSET) <= availableHeight;
     }
 
-    private double getLineHeight()
+    protected double getLineHeight()
     {
         return getBoundingBoxForString("Mg").getHeight();
     }
@@ -162,8 +162,8 @@ public class TextTruncateWrapper extends TextNoWrap implements ITextWrapperWithB
                     currentLine.append(currentWord);
                 }
 
-                if (i != words.length - 1
-                        && !hasVerticalSpace(lines.size() + 2, lineHeight, m_wrapBoundaries.getHeight() - (Y_OFFSET * lines.size() + 2)))
+                if (i != words.length - 1 && !hasVerticalSpace(lines.size() + 2, lineHeight,
+                        getWrapBoundaries().getHeight() - (Y_OFFSET * lines.size() + 2)))
                 {
                     if (currentLine.length() > 3)
                     {
@@ -195,7 +195,8 @@ public class TextTruncateWrapper extends TextNoWrap implements ITextWrapperWithB
 
                 currentLine.append(newWord);
 
-                if (!hasVerticalSpace(lines.size() + 2, lineHeight, m_wrapBoundaries.getHeight() - (Y_OFFSET * lines.size() + 2)))
+                if (!hasVerticalSpace(lines.size() + 2, lineHeight,
+                        getWrapBoundaries().getHeight() - (Y_OFFSET * lines.size() + 2)))
                 {
                     if (currentLine.length() > 3) {
                         currentLine = new StringBuilder(currentLine.substring(0, currentLine.length() - 3) + "...");
@@ -230,45 +231,10 @@ public class TextTruncateWrapper extends TextNoWrap implements ITextWrapperWithB
             }
         }
 
-        double xOffset = 0;
-
-        switch (textAlignSupplier.get())
-        {
-            case START:
-            case LEFT:
-                xOffset = 0;
-                break;
-
-            case CENTER:
-                xOffset = m_wrapBoundaries.getWidth() / 2;
-                break;
-
-            case END:
-            case RIGHT:
-                xOffset = m_wrapBoundaries.getWidth();
-                break;
-        }
-
-        for (int i = 0; i < lines.size(); i++)
-        {
-            String line = lines.get(i);
-            if (line.length() == 0)
-            {
-                continue;
-            }
-            final int toPad = (int) Math.round((boundariesWidth - getBoundingBoxForString(line).getWidth()) / getBoundingBoxForString(" ").getWidth());
-            line = TextUtils.padString(line,
-                                       line.length() + toPad,
-                                       ' ',
-                                       textAlignSupplier.get());
-            drawCommand.draw(context,
-                             line,
-                             xOffset,
-                             i + Y_OFFSET);
-        }
+        drawLines(context, drawCommand, lines, boundariesWidth);
     }
 
-    private boolean hasHorizontalSpaceToDraw(final String currentLine,
+    protected boolean hasHorizontalSpaceToDraw(final String currentLine,
                                              final String currentWord,
                                              final double boundariesWidth)
     {
@@ -276,5 +242,13 @@ public class TextTruncateWrapper extends TextNoWrap implements ITextWrapperWithB
         final BoundingBox currentLineSize = getBoundingBoxForString(currentLine);
         final double width = currentLineSize.getWidth() + currentWordSize.getWidth();
         return width <= boundariesWidth;
+    }
+
+    public double getMargin() {
+        return m_margin;
+    }
+
+    public void setMargin(double m_margin) {
+        this.m_margin = m_margin;
     }
 }

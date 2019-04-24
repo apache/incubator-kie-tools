@@ -16,9 +16,13 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
+import java.util.Map;
+import java.util.Objects;
+
 import com.ait.lienzo.client.core.event.IAttributesChangedBatcher;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.MultiPath;
+import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleType;
 import com.ait.lienzo.client.core.shape.wires.MagnetManager.Magnets;
 import com.ait.lienzo.client.core.shape.wires.event.WiresResizeEndEvent;
@@ -28,15 +32,14 @@ import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStartHandler;
 import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStepEvent;
 import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStepHandler;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeControl;
+import com.ait.lienzo.client.core.shape.wires.layout.label.LabelContainerLayout;
+import com.ait.lienzo.client.core.shape.wires.layout.label.LabelLayout;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
-
-import java.util.Map;
-import java.util.Objects;
 
 
 public class WiresShape extends WiresContainer
@@ -107,6 +110,12 @@ public class WiresShape extends WiresContainer
     {
         m_innerLayoutContainer.add(child, layout);
         return this;
+    }
+
+    public LabelContainerLayout addLabel(final Text label, final LabelLayout layout)
+    {
+        getGroup().add(label);
+        return new LabelContainerLayout(getPath()).add(label, layout);
     }
 
     public WiresShape removeChild(final IPrimitive<?> child)

@@ -1,6 +1,7 @@
 package com.ait.lienzo.client.core.shape.wires.util;
 
 import com.ait.lienzo.client.core.shape.IDestroyable;
+import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.shape.wires.event.WiresConnectorPointsChangedEvent;
@@ -88,7 +89,10 @@ public class WiresConnectorLabel implements IDestroyable
 
     private void batch()
     {
-        connector.getGroup().getLayer().batch();
+        final Layer layer = connector.getGroup().getLayer();
+        if(layer != null){
+            layer.batch();
+        }
     }
 
     private final WiresConnectorPointsChangedHandler pointsUpdatedHandler = new WiresConnectorPointsChangedHandler()
