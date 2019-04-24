@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Point2D;
@@ -70,6 +71,12 @@ public class CellContextUtilitiesTest {
 
     @Mock
     private BaseGridRendererHelper.RenderingBlockInformation floatingBlockInformation;
+
+    @Mock
+    private GridColumn.HeaderMetaData headerMetaDataC1;
+
+    @Mock
+    private GridColumn.HeaderMetaData headerMetaDataC2;
 
     @Captor
     private ArgumentCaptor<GridBodyCellEditContext> gridBodyCellEditContextCaptor;
@@ -466,8 +473,42 @@ public class CellContextUtilitiesTest {
 
     @Test
     public void testEditWhenHeaderCellSelected() {
-        final GridColumn.HeaderMetaData headerMetaDataC1 = mock(GridColumn.HeaderMetaData.class);
-        final GridColumn.HeaderMetaData headerMetaDataC2 = mock(GridColumn.HeaderMetaData.class);
+        setupHeaderMetadata();
+
+        CellContextUtilities.editSelectedCell(gridWidget);
+
+        verify(headerMetaDataC1, never()).edit(any(GridBodyCellEditContext.class));
+        verify(headerMetaDataC2).edit(gridBodyCellEditContextCaptor.capture());
+        final GridBodyCellEditContext gridBodyCellEditContext = gridBodyCellEditContextCaptor.getValue();
+        assertThat(gridBodyCellEditContext)
+                .hasFieldOrPropertyWithValue("columnIndex", 1)
+                .hasFieldOrPropertyWithValue("rowIndex", 0);
+
+        verify(gridWidget, never()).startEditingCell(anyInt(), anyInt());
+        verify(gridWidget, never()).startEditingCell(any(Point2D.class));
+    }
+
+    @Test
+    public void testEditWhenHeaderCellSelectedWithRelativeLocation() {
+        setupHeaderMetadata();
+
+        final Point2D relativeLocation = new Point2D(25.0, 35.0);
+
+        CellContextUtilities.editSelectedCell(gridWidget, relativeLocation);
+
+        verify(headerMetaDataC1, never()).edit(any(GridBodyCellEditContext.class));
+        verify(headerMetaDataC2).edit(gridBodyCellEditContextCaptor.capture());
+        final GridBodyCellEditContext gridBodyCellEditContext = gridBodyCellEditContextCaptor.getValue();
+        assertThat(gridBodyCellEditContext)
+                .hasFieldOrPropertyWithValue("columnIndex", 1)
+                .hasFieldOrPropertyWithValue("rowIndex", 0)
+                .hasFieldOrPropertyWithValue("relativeLocation", Optional.of(relativeLocation));
+
+        verify(gridWidget, never()).startEditingCell(anyInt(), anyInt());
+        verify(gridWidget, never()).startEditingCell(any(Point2D.class));
+    }
+
+    private void setupHeaderMetadata() {
         final GridColumn<?> gridColumnOne = mockGridColumn(100.0, Arrays.asList(headerMetaDataC1));
         final GridColumn<?> gridColumnTwo = mockGridColumn(100.0, Arrays.asList(headerMetaDataC2));
 
@@ -487,18 +528,6 @@ public class CellContextUtilitiesTest {
         gridWidget.getModel().appendColumn(gridColumnOne);
         gridWidget.getModel().appendColumn(gridColumnTwo);
         gridWidget.getModel().selectHeaderCell(0, 1);
-
-        CellContextUtilities.editSelectedCell(gridWidget);
-
-        verify(headerMetaDataC1, never()).edit(any(GridBodyCellEditContext.class));
-        verify(headerMetaDataC2).edit(gridBodyCellEditContextCaptor.capture());
-        final GridBodyCellEditContext gridBodyCellEditContext = gridBodyCellEditContextCaptor.getValue();
-        assertThat(gridBodyCellEditContext)
-                .hasFieldOrPropertyWithValue("columnIndex", 1)
-                .hasFieldOrPropertyWithValue("rowIndex", 0);
-
-        verify(gridWidget, never()).startEditingCell(anyInt(), anyInt());
-        verify(gridWidget, never()).startEditingCell(any(Point2D.class));
     }
 
     @Test

@@ -124,6 +124,11 @@ public class CellContextUtilities {
     }
 
     public static void editSelectedCell(final GridWidget gridWidget) {
+        editSelectedCell(gridWidget, null);
+    }
+
+    public static void editSelectedCell(final GridWidget gridWidget,
+                                        final Point2D relativeLocation) {
         final GridData gridModel = gridWidget.getModel();
 
         if (gridModel.getSelectedHeaderCells().size() > 0) {
@@ -143,6 +148,7 @@ public class CellContextUtilities {
             final GridBodyCellEditContext context = CellContextUtilities.makeHeaderCellRenderContext(gridWidget,
                                                                                                      ri,
                                                                                                      ci,
+                                                                                                     relativeLocation,
                                                                                                      uiHeaderRowIndex);
 
             headerMetaData.edit(context);
