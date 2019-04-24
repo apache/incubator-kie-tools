@@ -26,6 +26,18 @@ import static org.uberfire.client.views.pfly.sys.MomentUtils.setMomentLocale;
  */
 public class PatternFlyBootstrapper {
 
+    private static boolean isPrettifyLoaded = false;
+
+    private static boolean isBootstrapSelectLoaded = false;
+
+    private static boolean isBootstrapDateRangePickerLoaded = false;
+
+    private static boolean isMomentLoaded = false;
+
+    private static boolean isPatternFlyLoaded = false;
+
+    private static boolean isD3Loaded = false;
+
     /**
      * Uses GWT's ScriptInjector to put jQuery in the page if it isn't already. All Errai IOC beans that rely on
      * GWTBootstrap 3 widgets should call this before creating their first such widget.
@@ -39,54 +51,60 @@ public class PatternFlyBootstrapper {
     }
 
     public static void ensurePrettifyIsAvailable() {
-        if (!isPrettifyLoaded()) {
+        if (!isPrettifyLoaded) {
             ScriptInjector.fromString(PatternFlyClientBundle.INSTANCE.prettify().getText())
                     .setWindow(ScriptInjector.TOP_WINDOW)
                     .inject();
+            isPrettifyLoaded = true;
         }
     }
 
     public static void ensureBootstrapSelectIsAvailable() {
-        if (!isBootstrapSelectLoaded()) {
+        if (!isBootstrapSelectLoaded) {
             ScriptInjector.fromString(PatternFlyClientBundle.INSTANCE.bootstrapSelect().getText())
                     .setWindow(ScriptInjector.TOP_WINDOW)
                     .inject();
+            isBootstrapSelectLoaded = true;
         }
     }
 
     public static void ensurePatternFlyIsAvailable() {
         ensurejQueryIsAvailable();
         ensureBootstrapSelectIsAvailable();
-        if (!isPatternFlyLoaded()) {
+        if (!isPatternFlyLoaded) {
             ScriptInjector.fromString(PatternFlyClientBundle.INSTANCE.patternFly().getText())
                     .setWindow(ScriptInjector.TOP_WINDOW)
                     .inject();
+            isPatternFlyLoaded = true;
         }
     }
 
     public static void ensureMomentIsAvailable() {
-        if (!isMomentLoaded()) {
+        if (!isMomentLoaded) {
             ScriptInjector.fromString(PatternFlyClientBundle.INSTANCE.moment().getText())
                     .setWindow(ScriptInjector.TOP_WINDOW)
                     .inject();
+            isMomentLoaded = true;
         }
         setMomentLocale();
     }
 
     public static void ensureBootstrapDateRangePickerIsAvailable() {
         ensureMomentIsAvailable();
-        if (!isBootstrapDateRangePickerLoaded()) {
+        if (!isBootstrapDateRangePickerLoaded) {
             ScriptInjector.fromString(PatternFlyClientBundle.INSTANCE.bootstrapDateRangePicker().getText())
                     .setWindow(ScriptInjector.TOP_WINDOW)
                     .inject();
+            isBootstrapDateRangePickerLoaded = true;
         }
     }
 
     public static void ensureD3IsAvailable() {
-        if (!isD3Loaded()) {
+        if (!isD3Loaded) {
             ScriptInjector.fromString(PatternFlyClientBundle.INSTANCE.d3().getText())
                     .setWindow(ScriptInjector.TOP_WINDOW)
                     .inject();
+            isD3Loaded = true;
         }
     }
 
@@ -97,54 +115,5 @@ public class PatternFlyBootstrapper {
     private static native boolean isjQueryLoaded() /*-{
         return (typeof $wnd['jQuery'] !== 'undefined');
     }-*/;
-
-    /**
-     * Checks to see if Prettify is already present.
-     * @return true is Prettify is loaded, false otherwise.
-     */
-    private static native boolean isPrettifyLoaded() /*-{
-        return (typeof $wnd['prettyPrint'] !== 'undefined');
-    }-*/;
-
-    /**
-     * Checks to see if bootstrap-select is already present.
-     * @return true is bootstrap-select is loaded, false otherwise.
-     */
-    private static native boolean isBootstrapSelectLoaded() /*-{
-        return (typeof $wnd['Selectpicker'] !== 'undefined');
-    }-*/;
-
-    /**
-     * Checks to see if bootstrap-daterangepicker is already present.
-     * @return true is bootstrap-daterangepicker is loaded, false otherwise.
-     */
-    private static native boolean isBootstrapDateRangePickerLoaded() /*-{
-        return (typeof $wnd['DateRangePicker'] !== 'undefined');
-    }-*/;
-
-    /**
-     * Checks to see if moment is already present.
-     * @return true is moment is loaded, false otherwise.
-     */
-    public static native boolean isMomentLoaded() /*-{
-        return (typeof $wnd['moment'] !== 'undefined');
-    }-*/;
-
-    /**
-     * Checks to see if PatternFly is already present.
-     * @return true is PatternFly is loaded, false otherwise.
-     */
-    private static native boolean isPatternFlyLoaded() /*-{
-        return (typeof $wnd['patternfly'] !== 'undefined');
-    }-*/;
-
-    /**
-     * Checks to see if D3 is already present.
-     * @return true is D3 is loaded, false otherwise.
-     */
-    private static native boolean isD3Loaded() /*-{
-        return (typeof $wnd['d3'] !== 'undefined');
-    }-*/;
-
 }
 
