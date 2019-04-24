@@ -19,7 +19,6 @@ package org.kie.workbench.common.stunner.cm.client.shape.def;
 import java.util.Optional;
 
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.BaseDimensionedShapeDef;
-import org.kie.workbench.common.stunner.bpmn.definition.BaseTask;
 import org.kie.workbench.common.stunner.cm.client.resources.CaseManagementSVGGlyphFactory;
 import org.kie.workbench.common.stunner.cm.client.resources.CaseManagementSVGViewFactory;
 import org.kie.workbench.common.stunner.cm.definition.UserTask;
@@ -31,17 +30,6 @@ import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
 
 public final class CaseManagementSvgUserTaskShapeDef extends BaseDimensionedShapeDef
         implements CaseManagementSvgShapeDef<UserTask> {
-
-    private static HasTitle.Position getSubprocessTextPosition(final BaseTask bean) {
-        return HasTitle.Position.CENTER;
-    }
-
-    @Override
-    public FontHandler<UserTask, SVGShapeView> newFontHandler() {
-        return newFontHandlerBuilder()
-                .position(CaseManagementSvgUserTaskShapeDef::getSubprocessTextPosition)
-                .build();
-    }
 
     @Override
     public SizeHandler<UserTask, SVGShapeView> newSizeHandler() {
@@ -57,6 +45,13 @@ public final class CaseManagementSvgUserTaskShapeDef extends BaseDimensionedShap
     public SVGShapeView<?> newViewInstance(final CaseManagementSVGViewFactory factory, final UserTask obj) {
         // user task should not be resizable in case modeler
         return newViewInstance(Optional.empty(), Optional.empty(), factory.task());
+    }
+
+    @Override
+    public FontHandler<UserTask, SVGShapeView> newFontHandler() {
+        return newFontHandlerBuilder()
+                .margin(HasTitle.HorizontalAlignment.LEFT, 30d)
+                .build();
     }
 
     @Override

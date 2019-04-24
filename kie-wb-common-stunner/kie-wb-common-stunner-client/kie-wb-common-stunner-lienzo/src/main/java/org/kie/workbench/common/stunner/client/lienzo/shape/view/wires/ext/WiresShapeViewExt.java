@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.ext;
 
+import java.util.Map;
+import java.util.Optional;
+
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.client.core.shape.wires.IControlHandle;
@@ -24,6 +27,7 @@ import com.ait.lienzo.client.core.shape.wires.LayoutContainer;
 import com.ait.lienzo.client.core.shape.wires.WiresLayoutContainer;
 import com.ait.lienzo.client.core.shape.wires.event.AbstractWiresDragEvent;
 import com.ait.lienzo.client.core.shape.wires.event.AbstractWiresResizeEvent;
+import com.ait.lienzo.client.core.shape.wires.layout.label.LabelContainerLayout;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.LinearGradient;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -58,9 +62,10 @@ public class WiresShapeViewExt<T extends WiresShapeViewExt>
 
     private ViewEventHandlerManager eventHandlerManager;
     private WiresTextDecorator textViewDecorator;
-    private Type fillGradientType = null;
-    private String fillGradientStartColor = null;
-    private String fillGradientEndColor = null;
+    private Type fillGradientType;
+    private String fillGradientStartColor;
+    private String fillGradientEndColor;
+    private Optional<LabelContainerLayout> labelContainerLayout = Optional.empty();
 
     public WiresShapeViewExt(final ViewEventType[] supportedEventTypes,
                              final MultiPath path) {
@@ -80,8 +85,7 @@ public class WiresShapeViewExt<T extends WiresShapeViewExt>
 
     protected void setEventHandlerManager(final ViewEventHandlerManager eventHandlerManager) {
         this.eventHandlerManager = eventHandlerManager;
-        setTextViewDecorator(new WiresTextDecorator(() -> eventHandlerManager, getPath().getBoundingBox()));
-        addTextAsChild();
+        setTextViewDecorator(new WiresTextDecorator(() -> eventHandlerManager, this));
     }
 
     protected ViewEventHandlerManager getEventHandlerManager() {
@@ -106,16 +110,26 @@ public class WiresShapeViewExt<T extends WiresShapeViewExt>
     @SuppressWarnings("unchecked")
     public T setTitle(final String title) {
         textViewDecorator.setTitle(title);
+        addTextAsChild();
         return cast();
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public T setTitlePosition(final Position position) {
-        if (textViewDecorator.setTitlePosition(position)) {
-            removeChild(textViewDecorator.getView());
-            addTextAsChild();
-        }
+    public T setMargins(final Map<Enum, Double> margins) {
+        textViewDecorator.setMargins(margins);
+        return cast();
+    }
+
+    @Override
+    public T setTitlePosition(final VerticalAlignment verticalAlignment, final HorizontalAlignment horizontalAlignment,
+                              final ReferencePosition referencePosition, final Orientation orientation) {
+        textViewDecorator.setTitlePosition(verticalAlignment, horizontalAlignment, referencePosition, orientation);
+        return cast();
+    }
+
+    @Override
+    public T setTextSizeConstraints(final Size sizeConstraints) {
+        textViewDecorator.setTextSizeConstraints(sizeConstraints);
         return cast();
     }
 
@@ -180,15 +194,16 @@ public class WiresShapeViewExt<T extends WiresShapeViewExt>
     }
 
     @Override
-    public T setTitleStrokeAlpha(final double strokeAlpha){
+    public T setTitleStrokeAlpha(final double strokeAlpha) {
         textViewDecorator.setTitleStrokeAlpha(strokeAlpha);
         return cast();
     }
 
     @Override
-    public T setTextWrapper(final TextWrapperStrategy wrapperStrategy){
+    public T setTextWrapper(final TextWrapperStrategy wrapperStrategy) {
         textViewDecorator.setTextWrapper(wrapperStrategy);
-        return(cast());
+        labelContainerLayout.ifPresent(LabelContainerLayout::execute);
+        return (cast());
     }
 
     @Override
@@ -358,15 +373,23 @@ public class WiresShapeViewExt<T extends WiresShapeViewExt>
 
     protected void rebuildTextBoundaries(final double width,
                                          final double height) {
-        textViewDecorator.resize(width,
-                                 height);
+        textViewDecorator.setTextBoundaries(width, height);
+    }
+
+    @Override
+    public void setTextBoundaries(final double width, final double height) {
+        rebuildTextBoundaries(width, height);
     }
 
     private void addTextAsChild() {
-        this.addChild(textViewDecorator.getView(),
-                      textViewDecorator.getLayout());
+        labelContainerLayout = Optional.of(this.addLabel(textViewDecorator.getView(),
+                                                         textViewDecorator.getLabelLayout()));
         // Ensure text element is listening for events.
         textViewDecorator.getView().setListening(true);
+    }
+
+    public Optional<LabelContainerLayout> getLabelContainerLayout() {
+        return labelContainerLayout;
     }
 
     private IControlHandle.ControlHandleType translate(final ControlPointType type) {
@@ -403,7 +426,6 @@ public class WiresShapeViewExt<T extends WiresShapeViewExt>
         HandlerRegistration r0 = addWiresResizeStartHandler(wiresResizeStartEvent -> {
             final ResizeEvent event = buildResizeEvent(wiresResizeStartEvent);
             resizeHandler.start(event);
-            rebuildTextBoundaries(event.getWidth(), event.getHeight());
         });
         HandlerRegistration r1 = addWiresResizeStepHandler(wiresResizeStepEvent -> {
             final ResizeEvent event = buildResizeEvent(wiresResizeStepEvent);
@@ -413,7 +435,6 @@ public class WiresShapeViewExt<T extends WiresShapeViewExt>
         HandlerRegistration r2 = addWiresResizeEndHandler(wiresResizeEndEvent -> {
             final ResizeEvent event = buildResizeEvent(wiresResizeEndEvent);
             resizeHandler.end(event);
-            rebuildTextBoundaries(event.getWidth(), event.getHeight());
         });
         return new HandlerRegistration[]{r0, r1, r2};
     }

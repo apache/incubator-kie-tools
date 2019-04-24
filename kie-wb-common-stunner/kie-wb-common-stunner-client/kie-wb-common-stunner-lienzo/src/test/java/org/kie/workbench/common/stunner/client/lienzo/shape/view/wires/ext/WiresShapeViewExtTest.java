@@ -23,32 +23,24 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.shape.TextWrapperStrategy;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
-import org.mockito.Mock;
 
 import static org.mockito.Mockito.verify;
 
 @RunWith(LienzoMockitoTestRunner.class)
-public class WiresShapeViewExtTest {
+public class WiresShapeViewExtTest extends AbstractWiresShapeViewText {
 
     private static ViewEventType[] viewEventTypes = {};
     private final static MultiPath PATH = new MultiPath();
 
-    @Mock
-    private WiresTextDecorator textDecorator;
-
-    private WiresShapeViewExt<WiresShapeViewExt> tested;
-
     @Before
     public void setup() throws Exception {
-        this.tested = new WiresShapeViewExt<>(viewEventTypes,
-                                              PATH);
-        this.tested.setTextViewDecorator(textDecorator);
+        super.setUp();
     }
 
-    @Test
-    public void testTitle() {
-        //setTitle should not thrown an exception when called with a null argument
-        tested.setTitle(null);
+    @Override
+    public WiresShapeViewExt createInstance() {
+        return new WiresShapeViewExt<>(viewEventTypes,
+                                       PATH);
     }
 
     @Test
@@ -94,6 +86,11 @@ public class WiresShapeViewExtTest {
     @Test
     public void testSetTextWrapperTruncate() {
         testSetTextWrapperStrategy(TextWrapperStrategy.TRUNCATE);
+    }
+
+    @Test
+    public void testSetTextWrapperTruncateWithLineBreak() {
+        testSetTextWrapperStrategy(TextWrapperStrategy.TRUNCATE_WITH_LINE_BREAK);
     }
 
     private void testSetTextWrapperStrategy(final TextWrapperStrategy wrapperStrategy) {

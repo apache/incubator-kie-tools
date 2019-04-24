@@ -21,7 +21,6 @@ import java.util.Optional;
 
 import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.BaseDimensionedShapeDef;
-import org.kie.workbench.common.stunner.bpmn.definition.BaseSubprocess;
 import org.kie.workbench.common.stunner.cm.client.resources.CaseManagementSVGGlyphFactory;
 import org.kie.workbench.common.stunner.cm.client.resources.CaseManagementSVGViewFactory;
 import org.kie.workbench.common.stunner.cm.definition.CaseReusableSubprocess;
@@ -47,17 +46,6 @@ public final class CaseManagementSvgSubprocessShapeDef extends BaseDimensionedSh
                     .put(ProcessReusableSubprocess.class, CaseManagementSVGGlyphFactory.SUBPROCESS_GLYPH)
                     .put(CaseReusableSubprocess.class, CaseManagementSVGGlyphFactory.SUBCASE_GLYPH).build();
 
-    private static HasTitle.Position getSubprocessTextPosition(final BaseSubprocess bean) {
-        return HasTitle.Position.CENTER;
-    }
-
-    @Override
-    public FontHandler<ReusableSubprocess, SVGShapeView> newFontHandler() {
-        return newFontHandlerBuilder()
-                .position(CaseManagementSvgSubprocessShapeDef::getSubprocessTextPosition)
-                .build();
-    }
-
     @Override
     public SizeHandler<ReusableSubprocess, SVGShapeView> newSizeHandler() {
         return newSizeHandlerBuilder()
@@ -65,6 +53,13 @@ public final class CaseManagementSvgSubprocessShapeDef extends BaseDimensionedSh
                 .height(e -> e.getDimensionsSet().getHeight().getValue())
                 .minWidth(e -> 50d)
                 .minHeight(e -> 50d)
+                .build();
+    }
+
+    @Override
+    public FontHandler<ReusableSubprocess, SVGShapeView> newFontHandler() {
+        return newFontHandlerBuilder()
+                .margin(HasTitle.HorizontalAlignment.LEFT, 30d)
                 .build();
     }
 

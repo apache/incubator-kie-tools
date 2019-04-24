@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,8 @@ import java.util.Optional;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNGlyphFactory;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.Lane;
-import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle.HorizontalAlignment;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle.Orientation;
 import org.kie.workbench.common.stunner.core.client.shape.view.handler.FontHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.handler.SizeHandler;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
@@ -33,7 +34,8 @@ public class LaneShapeDef extends BaseDimensionedShapeDef
     @Override
     public FontHandler<Lane, SVGShapeView> newFontHandler() {
         return newFontHandlerBuilder()
-                .position(c -> HasTitle.Position.LEFT)
+                .horizontalAlignment(bean -> HorizontalAlignment.LEFT)
+                .orientation(bean -> Orientation.VERTICAL)
                 .rotation(c -> 270d)
                 .build();
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,21 +16,95 @@
 
 package org.kie.workbench.common.stunner.core.client.shape.view;
 
+import java.util.Map;
+import java.util.Objects;
+
 import org.kie.workbench.common.stunner.core.client.shape.TextWrapperStrategy;
 
 public interface HasTitle<T> {
 
-    enum Position {
-        CENTER,
-        LEFT,
+    enum HorizontalAlignment {
         RIGHT,
+        CENTER,
+        LEFT
+    }
+
+    enum VerticalAlignment {
         TOP,
+        MIDDLE,
         BOTTOM
     }
 
+    enum ReferencePosition {
+        INSIDE,
+        OUTSIDE
+    }
+
+    enum Orientation {
+        HORIZONTAL,
+        VERTICAL
+    }
+
+    class Size {
+
+        public enum SizeType {
+            PERCENTAGE,
+            RAW
+        }
+
+        private double height;
+        private double width;
+        private SizeType type;
+
+        public Size(final double width, final double height, final SizeType type) {
+            this.width = width;
+            this.height = height;
+            this.type = type;
+        }
+
+        public double getHeight() {
+            return height;
+        }
+
+        public double getWidth() {
+            return width;
+        }
+
+        public SizeType getType() {
+            return type;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            Size size = (Size) o;
+            return Double.compare(size.height, height) == 0 &&
+                    Double.compare(size.width, width) == 0 &&
+                    type == size.type;
+        }
+
+        @Override
+        public int hashCode() {
+
+            return Objects.hash(height, width, type);
+        }
+    }
+
+    T setTextSizeConstraints(final Size sizeConstraints);
+
+    T setTitlePosition(final VerticalAlignment verticalAlignment,
+                       final HorizontalAlignment horizontalAlignment,
+                       final ReferencePosition referencePosition,
+                       final Orientation orientation);
+
     T setTitle(final String title);
 
-    T setTitlePosition(final Position position);
+    T setMargins(final Map<Enum, Double> margins);
 
     T setTitleXOffsetPosition(final Double xOffset);
 
@@ -59,4 +133,8 @@ public interface HasTitle<T> {
     T setTitleStrokeColor(final String color);
 
     T moveTitleToTop();
+
+    default void setTextBoundaries(final double width, final double height) {
+
+    }
 }

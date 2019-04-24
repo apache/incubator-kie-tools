@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,7 +53,11 @@ public class ThrowingIntermediateEventShapeDef
     @Override
     public FontHandler<BaseThrowingIntermediateEvent, SVGShapeView> newFontHandler() {
         return newFontHandlerBuilder()
-                .position(event -> HasTitle.Position.BOTTOM)
+                .verticalAlignment(bean -> HasTitle.VerticalAlignment.BOTTOM)
+                .horizontalAlignment(bean -> HasTitle.HorizontalAlignment.CENTER)
+                .referencePosition(bean -> HasTitle.ReferencePosition.OUTSIDE)
+                .textSizeConstraints(bean -> new HasTitle.Size(400, 100, HasTitle.Size.SizeType.PERCENTAGE))
+                .margin(HasTitle.VerticalAlignment.BOTTOM, 5d)
                 .build();
     }
 

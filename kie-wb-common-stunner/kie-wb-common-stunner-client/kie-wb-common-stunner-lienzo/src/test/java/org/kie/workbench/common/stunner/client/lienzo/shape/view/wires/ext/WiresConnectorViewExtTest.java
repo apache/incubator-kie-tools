@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.ext;
 
+import java.util.Optional;
+
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.MultiPathDecorator;
@@ -34,6 +36,7 @@ import org.kie.workbench.common.stunner.core.client.shape.view.event.ShapeViewSu
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -74,23 +77,24 @@ public class WiresConnectorViewExtTest {
             ((Consumer) invocation.getArguments()[0]).accept(labelText);
             return label;
         }).when(label).configure(any(Consumer.class));
-        tested = new WiresConnectorViewExt(ShapeViewSupportedEvents.DESKTOP_CONNECTOR_EVENT_TYPES,
-                                           line,
-                                           HEAD_DECORATOR,
-                                           TAIL_DECORATOR) {
+        tested = spy(new WiresConnectorViewExt(ShapeViewSupportedEvents.DESKTOP_CONNECTOR_EVENT_TYPES,
+                                               line,
+                                               HEAD_DECORATOR,
+                                               TAIL_DECORATOR) {
             @Override
-            protected WiresConnectorLabel createLabel(String title) {
-                return WiresConnectorViewExtTest.this.label;
+            protected Optional<WiresConnectorLabel> createLabel(String title) {
+                return Optional.of(WiresConnectorViewExtTest.this.label);
             }
-        };
+        });
         tested.setControl(connectorControl);
         layer.add(tested.getGroup());
     }
 
     @Test
     public void testLabel() {
-        tested.setTitle("some label");
+        assertNotNull(tested.label);
         assertTrue(tested.label.isPresent());
+        tested.setTitle("some label");
         verify(labelText, times(1)).setText(eq("some label"));
         tested.setTitleAlpha(0.1d);
         verify(labelText, times(1)).setAlpha(eq(0.1d));

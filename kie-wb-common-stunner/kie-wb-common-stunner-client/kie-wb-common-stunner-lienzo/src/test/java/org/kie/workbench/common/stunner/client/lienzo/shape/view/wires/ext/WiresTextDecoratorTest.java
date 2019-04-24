@@ -16,28 +16,37 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.ext;
 
+import java.util.Arrays;
+import java.util.Optional;
 import java.util.function.Supplier;
 
+import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.ITextWrapper;
 import com.ait.lienzo.client.core.shape.ITextWrapperWithBoundaries;
+import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.client.core.shape.TextBoundsWrap;
+import com.ait.lienzo.client.core.shape.wires.WiresShape;
+import com.ait.lienzo.client.core.shape.wires.layout.label.LabelContainerLayout;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.ViewEventHandlerManager;
 import org.kie.workbench.common.stunner.core.client.shape.TextWrapperStrategy;
+import org.mockito.InOrder;
 import org.mockito.Mock;
+import org.mockito.internal.util.reflection.Whitebox;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyDouble;
-import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -45,6 +54,8 @@ import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class WiresTextDecoratorTest {
+
+    public static final BoundingBox NEW_SIZE = new BoundingBox(0, 0, 10, 10);
 
     @Mock
     private Supplier<ViewEventHandlerManager> eventHandlerManager;
@@ -58,40 +69,75 @@ public class WiresTextDecoratorTest {
     private final BoundingBox bb = new BoundingBox(new Point2D(0, 0),
                                                    new Point2D(100, 100));
 
+    @Mock
+    private WiresShapeViewExt shape;
+
+    @Mock
+    private MultiPath path;
+
+    @Mock
+    private LabelContainerLayout layout;
+
+    private WiresTextDecorator decorator;
+
+    @Mock
+    private NFastArrayList<WiresShape> children;
+
+    @Mock
+    private WiresShape child1;
+
+    @Mock
+    private WiresShape child2;
+
     @Before
     public void setup() {
         when(eventHandlerManager.get()).thenReturn(manager);
+        when(shape.getPath()).thenReturn(path);
+        when(shape.getLabelContainerLayout()).thenReturn(Optional.of(layout));
+        when(path.getBoundingBox()).thenReturn(bb);
+        when(layout.getMaxSize(any())).thenReturn(bb);
+        when(shape.getChildShapes()).thenReturn(children);
+        when(children.toList()).thenReturn(Arrays.asList(child1, child2));
+        when(child1.getGroup()).thenReturn(mock(Group.class));
+        when(child2.getGroup()).thenReturn(mock(Group.class));
+
+        decorator = spy(new WiresTextDecorator(eventHandlerManager, shape));
     }
 
     @Test
     public void ensureThatWrapBoundariesAreSet() {
+        assertBoundaries(bb.getWidth(), bb.getHeight());
+    }
 
-        final WiresTextDecorator decorator = new WiresTextDecorator(eventHandlerManager, bb);
-        final Text text = (Text) decorator.getView().asGroup().getChildNodes().get(0);
+    private void assertBoundaries(double width, double height) {
+        final Text text = decorator.getView();
         final BoundingBox wrapBoundaries = ((TextBoundsWrap) text.getWrapper()).getWrapBoundaries();
-
-        assertEquals(bb.getWidth(), wrapBoundaries.getWidth(), 0.01d);
-        assertEquals(bb.getHeight(), wrapBoundaries.getHeight(), 0.01d);
-        assertNotEquals(wrapBoundaries.getWidth(), 0.0d, 0.01d);
-        assertNotEquals(wrapBoundaries.getHeight(), 0.0d, 0.01d);
+        assertEquals(width, wrapBoundaries.getWidth(), 0d);
+        assertEquals(height, wrapBoundaries.getHeight(), 0d);
+        assertNotEquals(wrapBoundaries.getWidth(), 0d, 0.d);
+        assertNotEquals(wrapBoundaries.getHeight(), 0d, 0d);
     }
 
     @Test
-    public void ensureThatResizeUpdatesTheNode() {
-        final WiresTextDecorator decorator = mock(WiresTextDecorator.class);
-        doCallRealMethod().when(decorator).resize(anyDouble(), anyDouble());
+    public void ensureResizeUpdatesTheNode() {
+        when(layout.getMaxSize(any())).thenReturn(NEW_SIZE);
+        decorator.update();
+        verify(layout, atLeastOnce()).execute();
+        assertBoundaries(NEW_SIZE.getWidth(), NEW_SIZE.getHeight());
+    }
 
-        decorator.resize(0, 0);
-        verify(decorator).update();
+    @Test
+    public void assertWidthHeightWhenMaxSizeIsNull() {
+        when(layout.getMaxSize(any())).thenReturn(null);
+        decorator.setTextBoundaries(30, 30);
+        verify(layout, atLeastOnce()).execute();
+        assertBoundaries(30, 30);
     }
 
     @Test
     public void ensureThatUpdateRefreshTextBoundaries() {
-        final WiresTextDecorator decorator = mock(WiresTextDecorator.class);
-        doCallRealMethod().when(decorator).update();
-
         decorator.update();
-        verify(decorator).updateTextBoundaries();
+        verify(decorator).setTextBoundaries(any(BoundingBox.class));
     }
 
     @Test
@@ -119,27 +165,40 @@ public class WiresTextDecoratorTest {
         testSetTextWrapperStrategy(TextWrapperStrategy.TRUNCATE);
     }
 
-    private void testSetTextWrapperStrategy(final TextWrapperStrategy wrapperStrategy) {
-        final WiresTextDecorator decorator = spy(new WiresTextDecorator(eventHandlerManager, bb));
-        final Text text = (Text) decorator.getView().asGroup().getChildNodes().get(0);
-        final ITextWrapper expectedWrapper = TextWrapperProvider.get(wrapperStrategy, text);
+    @Test
+    public void testSetTextWrapperTruncateWithLineBreak() {
+        testSetTextWrapperStrategy(TextWrapperStrategy.TRUNCATE_WITH_LINE_BREAK);
+    }
 
-        doCallRealMethod().when(decorator).setTextWrapper(any());
+    private void testSetTextWrapperStrategy(final TextWrapperStrategy wrapperStrategy) {
+        final Text text = decorator.getView();
+        final ITextWrapper expectedWrapper = TextWrapperProvider.get(wrapperStrategy, text);
 
         decorator.setTextWrapper(wrapperStrategy);
 
-        verify(decorator).updateTextBoundaries();
+        verify(decorator).setTextBoundaries(any(BoundingBox.class));
         assertEquals(expectedWrapper.getClass(), text.getWrapper().getClass());
     }
 
     @Test
-    public void ensureSetWrapBoundariesIsCalled(){
-        final WiresTextDecorator decorator = spy(new WiresTextDecorator(eventHandlerManager, bb));
-        doCallRealMethod().when(decorator).setTextWrapper(any());
+    public void ensureSetWrapBoundariesIsCalled() {
         doReturn(textWrapperWithBoundaries).when(decorator).getTextWrapper(any());
 
         decorator.setTextWrapper(any());
 
         verify(textWrapperWithBoundaries).setWrapBoundaries(any());
+    }
+
+    @Test
+    public void testMoveTitleToFront() {
+        Text text = spy(new Text(""));
+        Whitebox.setInternalState(decorator, "text", text);
+
+        decorator.moveTitleToTop();
+
+        InOrder order = inOrder(text, child1.getGroup(), child2.getGroup());
+        order.verify(text).moveToTop();
+        order.verify(child1.getGroup()).moveToTop();
+        order.verify(child2.getGroup()).moveToTop();
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,16 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.shape.view.handler;
 
+import java.util.Optional;
+
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNViewDefinition;
+import org.kie.workbench.common.stunner.core.client.shape.TextWrapperStrategy;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle.HorizontalAlignment;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle.Orientation;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle.ReferencePosition;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle.Size;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle.Size.SizeType;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle.VerticalAlignment;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.client.shape.view.handler.FontHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.handler.TitleHandler;
@@ -34,7 +43,21 @@ public class BPMNShapeViewHandlers {
                     .fontColor(bean -> bean.getFontSet().getFontColor().getValue())
                     .fontSize(bean -> bean.getFontSet().getFontSize().getValue())
                     .strokeColor(bean -> bean.getFontSet().getFontBorderColor().getValue())
-                    .strokeSize(bean -> bean.getFontSet().getFontBorderSize().getValue());
+                    .strokeSize(bean -> bean.getFontSet().getFontBorderSize().getValue())
+                    .strokeAlpha(bean -> getStrokeAlpha(bean.getFontSet().getFontBorderSize().getValue()))
+                    .verticalAlignment(bean -> VerticalAlignment.MIDDLE)
+                    .horizontalAlignment(bean -> HorizontalAlignment.CENTER)
+                    .referencePosition(bean -> ReferencePosition.INSIDE)
+                    .orientation(bean -> Orientation.HORIZONTAL)
+                    .textSizeConstraints(bean -> new Size(100, 100, SizeType.PERCENTAGE))
+                    .textWrapperStrategy(bean -> TextWrapperStrategy.TRUNCATE_WITH_LINE_BREAK);
+        }
+
+        public static Double getStrokeAlpha(Double strokeWidth) {
+            return Optional.ofNullable(strokeWidth)
+                    .filter(value -> value > 0)
+                    .map(value -> 1.0)
+                    .orElse(0.0);
         }
     }
 

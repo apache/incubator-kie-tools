@@ -33,10 +33,12 @@ import org.kie.workbench.common.stunner.core.graph.content.Bound;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -77,6 +79,9 @@ public class NodeShapeImplTest {
 
     private ShapeViewExtStub view;
     private NodeShapeImpl<Object, ShapeViewDef<Object, ShapeView>, ShapeView> tested;
+
+    @Mock
+    private MutationContext context;
 
     @Before
     public void setup() throws Exception {
@@ -130,5 +135,13 @@ public class NodeShapeImplTest {
         tested.applyState(ShapeState.INVALID);
         verify(shapeStateHandler,
                times(1)).applyState(eq(ShapeState.INVALID));
+    }
+
+    @Test
+    public void testTitle() {
+        final InOrder order = inOrder(titleHandler, fontHandler);
+        tested.applyTitle("title", element, context);
+        order.verify(fontHandler).accept(definition, view);
+        order.verify(titleHandler).accept("title", view);
     }
 }

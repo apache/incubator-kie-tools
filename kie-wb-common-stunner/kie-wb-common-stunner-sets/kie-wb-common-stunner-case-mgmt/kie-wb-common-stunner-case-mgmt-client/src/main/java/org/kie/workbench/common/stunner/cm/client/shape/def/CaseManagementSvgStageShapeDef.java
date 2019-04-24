@@ -18,29 +18,15 @@ package org.kie.workbench.common.stunner.cm.client.shape.def;
 import java.util.Optional;
 
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.BaseDimensionedShapeDef;
-import org.kie.workbench.common.stunner.bpmn.definition.BaseSubprocess;
 import org.kie.workbench.common.stunner.cm.client.resources.CaseManagementSVGGlyphFactory;
 import org.kie.workbench.common.stunner.cm.client.resources.CaseManagementSVGViewFactory;
 import org.kie.workbench.common.stunner.cm.definition.AdHocSubprocess;
-import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
-import org.kie.workbench.common.stunner.core.client.shape.view.handler.FontHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.handler.SizeHandler;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
 
 public class CaseManagementSvgStageShapeDef extends BaseDimensionedShapeDef
         implements CaseManagementSvgShapeDef<AdHocSubprocess> {
-
-    private static HasTitle.Position getSubprocessTextPosition(final BaseSubprocess bean) {
-        return HasTitle.Position.CENTER;
-    }
-
-    @Override
-    public FontHandler<AdHocSubprocess, SVGShapeView> newFontHandler() {
-        return newFontHandlerBuilder()
-                .position(CaseManagementSvgStageShapeDef::getSubprocessTextPosition)
-                .build();
-    }
 
     @Override
     public SizeHandler<AdHocSubprocess, SVGShapeView> newSizeHandler() {

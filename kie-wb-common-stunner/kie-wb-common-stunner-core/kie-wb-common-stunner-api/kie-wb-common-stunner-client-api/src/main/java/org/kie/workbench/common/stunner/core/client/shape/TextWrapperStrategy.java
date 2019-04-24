@@ -40,5 +40,10 @@ public enum TextWrapperStrategy {
     /**
      * Wraps when exceeds the width. Truncates when the text exceeds the width and height appending "...".
      */
-    TRUNCATE
+    TRUNCATE,
+
+    /**
+     * Same as {@link TextWrapperStrategy#TRUNCATE} but consider line break.
+     */
+    TRUNCATE_WITH_LINE_BREAK
 }

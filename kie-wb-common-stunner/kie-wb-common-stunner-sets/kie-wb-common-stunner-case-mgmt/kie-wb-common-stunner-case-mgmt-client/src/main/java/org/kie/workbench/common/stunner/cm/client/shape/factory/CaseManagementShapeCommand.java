@@ -22,6 +22,7 @@ import java.util.Map;
 
 import com.ait.lienzo.client.core.shape.wires.ILayoutHandler;
 import org.kie.workbench.common.stunner.cm.client.shape.CaseManagementShape;
+import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementSvgShapeDef;
 import org.kie.workbench.common.stunner.cm.client.shape.view.CaseManagementShapeView;
 import org.kie.workbench.common.stunner.cm.client.wires.HorizontalStackLayoutManager;
 import org.kie.workbench.common.stunner.cm.client.wires.VerticalStackLayoutManager;
@@ -30,6 +31,7 @@ import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
 import org.kie.workbench.common.stunner.cm.definition.CaseReusableSubprocess;
 import org.kie.workbench.common.stunner.cm.definition.ProcessReusableSubprocess;
 import org.kie.workbench.common.stunner.cm.definition.UserTask;
+import org.kie.workbench.common.stunner.core.client.shape.view.ShapeViewHandlersDef;
 
 public class CaseManagementShapeCommand {
 
@@ -39,6 +41,8 @@ public class CaseManagementShapeCommand {
     private static final String SUBCASE = "subcase";
     private static final String SUBPROCESS = "subprocess";
     private static final String USER_TASK = "task";
+    private static final Map<CaseManagementSvgShapeDef,
+            ShapeViewHandlersDef<Object, CaseManagementShapeView, ?>> shapeViewHandlersDefMap = new HashMap();
 
     static {
         final Map<Class, Command> cmShapeTypes = new HashMap<>();
@@ -51,6 +55,7 @@ public class CaseManagementShapeCommand {
         cmShapeTypes.put(AdHocSubprocess.class, (CaseManagementShapeView shapeView) -> {
             shapeView.setLabel(STAGE);
             shapeView.setLayoutHandler(new VerticalStackLayoutManager());
+
             return new CaseManagementShape(shapeView);
         });
         cmShapeTypes.put(ProcessReusableSubprocess.class, (CaseManagementShapeView shapeView) -> {
@@ -71,12 +76,21 @@ public class CaseManagementShapeCommand {
         CM_SHAPE_TYPES = Collections.unmodifiableMap(cmShapeTypes);
     }
 
-    public static CaseManagementShape create(Class clazz, CaseManagementShapeView shapeView) {
-        Command command = CM_SHAPE_TYPES.get(clazz);
+    public static CaseManagementShape create(Object definition, CaseManagementShapeView shapeView, CaseManagementSvgShapeDef shapeDef) {
+        Command command = CM_SHAPE_TYPES.get(definition.getClass());
         if (command == null) {
-            throw new IllegalArgumentException("Unsupported shapeView type: " + clazz.getSimpleName());
+            throw new IllegalArgumentException("Unsupported shapeView type: " + definition.getClass().getSimpleName());
         }
+        applyShapeViewHandlers(definition, shapeView, shapeDef);
         return command.configure(shapeView);
+    }
+
+    private static void applyShapeViewHandlers(Object definition, CaseManagementShapeView shapeView, CaseManagementSvgShapeDef shapeDef) {
+        shapeViewHandlersDefMap.putIfAbsent(shapeDef, new ShapeViewHandlersDef<>(shapeDef));
+        //font handler
+        shapeViewHandlersDefMap.get(shapeDef)
+                .fontHandler()
+                .ifPresent(h -> h.accept(definition, shapeView));
     }
 
     interface Command {

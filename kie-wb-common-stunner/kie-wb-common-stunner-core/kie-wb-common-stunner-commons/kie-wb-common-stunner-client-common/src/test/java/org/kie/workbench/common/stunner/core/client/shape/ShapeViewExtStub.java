@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.core.client.shape;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.kie.workbench.common.stunner.core.client.shape.view.HasControlPoints;
@@ -74,7 +75,19 @@ public class ShapeViewExtStub
     }
 
     @Override
-    public Object setTitlePosition(final Position position) {
+    public Object setTitlePosition(final VerticalAlignment verticalAlignment,
+                                   final HorizontalAlignment horizontalAlignment, final ReferencePosition referencePosition,
+                                   final Orientation orientation) {
+        return this;
+    }
+
+    @Override
+    public Object setTextSizeConstraints(final Size sizeConstraints) {
+        return this;
+    }
+
+    @Override
+    public Object setMargins(final Map<Enum, Double> margins) {
         return this;
     }
 

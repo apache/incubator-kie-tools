@@ -20,6 +20,7 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionService;
 import org.kie.workbench.common.dmn.api.property.dimensions.GeneralRectangleDimensionsSet;
 import org.kie.workbench.common.dmn.client.resources.DMNDecisionServiceSVGViewFactory;
@@ -103,8 +104,9 @@ public class DMNDecisionServiceSVGShapeDefImplTest {
         final FontHandler<DecisionService, SVGShapeView> handler = shapeDef.newFontHandler();
         handler.handle(decisionService, shapeView);
 
-        verify(shapeView).setTitlePosition(HasTitle.Position.TOP);
-        verify(shapeView).setTitleYOffsetPosition(DMNDecisionServiceSVGShapeDefImpl.Y_OFFSET);
+        verify(shapeView).setTitlePosition(HasTitle.VerticalAlignment.TOP, HasTitle.HorizontalAlignment.CENTER,
+                                           HasTitle.ReferencePosition.INSIDE, HasTitle.Orientation.HORIZONTAL);
+        verify(shapeView).setMargins(new Maps.Builder().put(HasTitle.VerticalAlignment.TOP, 20.0).build());
         verify(shapeView).setTextWrapper(TextWrapperStrategy.TRUNCATE);
     }
 

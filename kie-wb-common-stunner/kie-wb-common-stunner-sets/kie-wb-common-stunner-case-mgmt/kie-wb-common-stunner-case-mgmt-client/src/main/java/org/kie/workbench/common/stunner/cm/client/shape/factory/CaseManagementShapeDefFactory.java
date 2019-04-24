@@ -78,6 +78,6 @@ public class CaseManagementShapeDefFactory implements ShapeDefFactory<BPMNDefini
     private Shape newCaseManagementShape(final Object instance, final CaseManagementSvgShapeDef svgShapeDef) {
         SVGShape shape = svgShapeFactory.newShape(instance, svgShapeDef);
         CaseManagementShapeView cmShapeView = (CaseManagementShapeView) shape.getShapeView();
-        return CaseManagementShapeCommand.create(instance.getClass(), cmShapeView);
+        return CaseManagementShapeCommand.create(instance, cmShapeView, svgShapeDef);
     }
 }

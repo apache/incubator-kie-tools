@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.EmbeddedSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.EventSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.MultipleInstanceSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess;
-import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle.VerticalAlignment;
 import org.kie.workbench.common.stunner.core.client.shape.view.handler.CompositeShapeViewHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.handler.FontHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.handler.SizeHandler;
@@ -58,18 +58,21 @@ public class SubprocessShapeDef extends BaseDimensionedShapeDef
                     .put(MultipleInstanceSubprocess.class, BPMNGlyphFactory.SUBPROCESS_MULTIPLE_INSTANCE)
                     .build();
 
-    private static HasTitle.Position getSubprocessTextPosition(final BaseSubprocess bean) {
-        if ((bean instanceof EmbeddedSubprocess) || (bean instanceof MultipleInstanceSubprocess) || (bean instanceof EventSubprocess) || (bean instanceof AdHocSubprocess)) {
-            return HasTitle.Position.TOP;
+    private static VerticalAlignment getSubprocessTextPosition(final BaseSubprocess bean) {
+        if ((bean instanceof EmbeddedSubprocess)
+                || (bean instanceof MultipleInstanceSubprocess)
+                || (bean instanceof EventSubprocess)
+                || (bean instanceof AdHocSubprocess)) {
+            return VerticalAlignment.TOP;
         } else {
-            return HasTitle.Position.CENTER;
+            return VerticalAlignment.MIDDLE;
         }
     }
 
     @Override
     public FontHandler<BaseSubprocess, SVGShapeView> newFontHandler() {
         return newFontHandlerBuilder()
-                .position(SubprocessShapeDef::getSubprocessTextPosition)
+                .verticalAlignment(SubprocessShapeDef::getSubprocessTextPosition)
                 .build();
     }
 

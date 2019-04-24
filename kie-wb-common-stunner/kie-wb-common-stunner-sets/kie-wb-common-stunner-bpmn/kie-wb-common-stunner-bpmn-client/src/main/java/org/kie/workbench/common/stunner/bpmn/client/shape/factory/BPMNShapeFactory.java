@@ -95,6 +95,8 @@ import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.shapes.client.factory.BasicShapesFactory;
 import org.kie.workbench.common.stunner.svg.client.shape.factory.SVGShapeFactory;
 
+import static org.kie.workbench.common.stunner.bpmn.client.shape.view.handler.BPMNShapeViewHandlers.FontHandlerBuilder.getStrokeAlpha;
+
 @Dependent
 public class BPMNShapeFactory
         implements ShapeFactory<BPMNDefinition, Shape> {
@@ -126,7 +128,7 @@ public class BPMNShapeFactory
         this.basicShapesFactory = basicShapesFactory;
         this.svgShapeFactory = svgShapeFactory;
         this.delegateShapeFactory = delegateShapeFactory;
-        this.workItemDefinitionRegistry =  workItemDefinitionRegistry::get;
+        this.workItemDefinitionRegistry = workItemDefinitionRegistry::get;
         this.definitionUtils = definitionUtils;
         this.preferencesRegistries = preferencesRegistries;
     }
@@ -289,7 +291,8 @@ public class BPMNShapeFactory
                 .fontSize(c -> preferences.getTextFontSize())
                 .fontColor(c -> preferences.getTextFillColor())
                 .strokeColor(c -> preferences.getTextStrokeColor())
-                .strokeSize(c -> preferences.getTextStrokeWidth());
+                .strokeSize(c -> preferences.getTextStrokeWidth())
+                .strokeAlpha(c -> getStrokeAlpha(preferences.getTextStrokeWidth()));
     }
 
     @Override

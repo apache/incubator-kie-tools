@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +33,10 @@ import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartSignalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartTimerEvent;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle.HorizontalAlignment;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle.ReferencePosition;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle.Size.SizeType;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle.VerticalAlignment;
 import org.kie.workbench.common.stunner.core.client.shape.view.handler.CompositeShapeViewHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.handler.FontHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.handler.SizeHandler;
@@ -84,7 +88,11 @@ public class StartEventShapeDef
     @Override
     public FontHandler<BaseStartEvent, SVGShapeView> newFontHandler() {
         return newFontHandlerBuilder()
-                .position(event -> HasTitle.Position.BOTTOM)
+                .verticalAlignment(bean -> VerticalAlignment.BOTTOM)
+                .horizontalAlignment(bean -> HorizontalAlignment.CENTER)
+                .referencePosition(bean -> ReferencePosition.OUTSIDE)
+                .textSizeConstraints(bean -> new HasTitle.Size(400, 100, SizeType.PERCENTAGE))
+                .margin(VerticalAlignment.BOTTOM, 5d)
                 .build();
     }
 

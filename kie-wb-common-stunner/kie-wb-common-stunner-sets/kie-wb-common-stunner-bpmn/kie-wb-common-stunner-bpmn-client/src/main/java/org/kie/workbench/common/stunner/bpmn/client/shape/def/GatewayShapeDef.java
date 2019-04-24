@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,12 @@ import org.kie.workbench.common.stunner.bpmn.definition.BaseGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.InclusiveGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.ParallelGateway;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle.HorizontalAlignment;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle.ReferencePosition;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle.Size.SizeType;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle.VerticalAlignment;
+import org.kie.workbench.common.stunner.core.client.shape.view.handler.FontHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.handler.SizeHandler;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.kie.workbench.common.stunner.svg.client.shape.factory.SVGShapeViewResources;
@@ -72,5 +78,16 @@ public class GatewayShapeDef
     public Glyph getGlyph(final Class<? extends BaseGateway> type,
                           final String defId) {
         return GLYPHS.get(type);
+    }
+
+    @Override
+    public FontHandler<BaseGateway, SVGShapeView> newFontHandler() {
+        return newFontHandlerBuilder()
+                .verticalAlignment(bean -> VerticalAlignment.BOTTOM)
+                .horizontalAlignment(bean -> HorizontalAlignment.CENTER)
+                .referencePosition(bean -> ReferencePosition.OUTSIDE)
+                .textSizeConstraints(bean -> new HasTitle.Size(400, 100, SizeType.PERCENTAGE))
+                .margin(VerticalAlignment.BOTTOM, 5d)
+                .build();
     }
 }

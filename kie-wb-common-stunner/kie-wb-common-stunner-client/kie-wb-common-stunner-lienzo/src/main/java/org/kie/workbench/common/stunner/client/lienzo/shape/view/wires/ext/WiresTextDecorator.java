@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,16 +16,26 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.ext;
 
+import java.util.AbstractMap.SimpleEntry;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import com.ait.lienzo.client.core.shape.Group;
-import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.ITextWrapper;
 import com.ait.lienzo.client.core.shape.ITextWrapperWithBoundaries;
-import com.ait.lienzo.client.core.shape.Line;
 import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.client.core.shape.TextBoundsWrap;
-import com.ait.lienzo.client.core.shape.wires.LayoutContainer;
+import com.ait.lienzo.client.core.shape.wires.WiresShape;
+import com.ait.lienzo.client.core.shape.wires.layout.direction.DirectionLayout;
+import com.ait.lienzo.client.core.shape.wires.layout.direction.DirectionLayout.Direction;
+import com.ait.lienzo.client.core.shape.wires.layout.label.LabelContainerLayout;
+import com.ait.lienzo.client.core.shape.wires.layout.label.LabelLayout;
+import com.ait.lienzo.client.core.shape.wires.layout.size.SizeConstraints;
+import com.ait.lienzo.client.core.shape.wires.layout.size.SizeConstraints.Type;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.shared.core.types.TextAlign;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -38,6 +48,7 @@ import org.kie.workbench.common.stunner.core.client.shape.view.event.TextEnterEv
 import org.kie.workbench.common.stunner.core.client.shape.view.event.TextExitEvent;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewHandler;
+import org.kie.workbench.common.stunner.core.graph.util.Exceptions;
 
 /**
  * A helper class for handling the wires shapes' text primitive
@@ -47,7 +58,7 @@ import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewHandler
  * type, can be reused for shapes or connectors.
  * <p>
  */
-public class WiresTextDecorator {
+public class WiresTextDecorator implements HasTitle<WiresTextDecorator> {
 
     // Default text attribute values.
     private static final double TEXT_ALPHA = 1d;
@@ -55,31 +66,26 @@ public class WiresTextDecorator {
     private static final double TEXT_FONT_SIZE = 10d;
     private static final String TEXT_FILL_COLOR = "#000000";
     private static final String TEXT_STROKE_COLOR = "#000000";
-    private static final double TEXT_STROKE_WIDTH = 0.5d;
+    private static final double TEXT_STROKE_WIDTH = 0;
     private static final TextAlign TEXT_ALIGN = TextAlign.CENTER;
-    private static final LayoutContainer.Layout TEXT_LAYOUT_ALIGN = LayoutContainer.Layout.CENTER;
 
     private final Supplier<ViewEventHandlerManager> eventHandlerManager;
-    private final Group textContainer = new Group();
     private ViewHandler<TextEnterEvent> textOverHandlerViewHandler;
     private ViewHandler<TextExitEvent> textOutEventViewHandler;
     private ViewHandler<TextClickEvent> textClickEventViewHandler;
     private ViewHandler<TextDoubleClickEvent> textDblClickEventViewHandler;
     private Text text;
     private ITextWrapper textWrapper;
-    private LayoutContainer.Layout currentTextLayout;
-    private double width;
-    private double height;
-
-    // WiresLayoutContainer lays out content based on the BoundingBox of the content. Therefore, even when the Text
-    // has its Location set to non-zero co-ordinates its BoundingBox does not change. This (almost invisible) Line is
-    // used to ensure the BoundingBox represents the positioning of the WiresTextDecorator
-    private Line textSpacer = new Line().setAlpha(0.1).setListening(false);
+    private LabelLayout labelLayout;
+    private Optional<Size> sizeConstraints = Optional.empty();
+    private Map<Enum, Double> margins = Collections.emptyMap();
+    private WiresShapeViewExt<WiresShapeViewExt> shape;
 
     public WiresTextDecorator(final Supplier<ViewEventHandlerManager> eventHandlerManager,
-                              final BoundingBox boundingBox) {
+                              final WiresShapeViewExt shape) {
         this.eventHandlerManager = eventHandlerManager;
-        initialize(boundingBox);
+        this.shape = shape;
+        initialize();
     }
 
     public void setTextClickHandler(final ViewHandler<TextClickEvent> textClickEventViewHandler) {
@@ -98,7 +104,7 @@ public class WiresTextDecorator {
         this.textOutEventViewHandler = textOutEventViewHandler;
     }
 
-    private void initialize(final BoundingBox boundingBox) {
+    private void initialize() {
         this.text = new Text("")
                 .setAlpha(TEXT_ALPHA)
                 .setFontFamily(TEXT_FONT_FAMILY)
@@ -108,19 +114,12 @@ public class WiresTextDecorator {
                 .setStrokeWidth(TEXT_STROKE_WIDTH)
                 .setTextAlign(TEXT_ALIGN)
                 .setDraggable(false);
-        this.textWrapper = new TextBoundsWrap(text,
-                                              new BoundingBox(0,
-                                                              0,
-                                                              1,
-                                                              1));
+        this.textWrapper = new TextBoundsWrap(text, shape.getPath().getBoundingBox());
         this.text.setWrapper(textWrapper);
-        this.currentTextLayout = TEXT_LAYOUT_ALIGN;
-        textContainer.add(text);
-        textContainer.add(textSpacer);
         // Ensure path bounds are available on the selection context.
         text.setFillBoundsForSelection(true);
         initializeHandlers();
-        resize(boundingBox.getWidth(), boundingBox.getHeight());
+        setTextBoundaries(shape.getPath().getBoundingBox());
     }
 
     private void initializeHandlers() {
@@ -191,89 +190,92 @@ public class WiresTextDecorator {
     }
 
     @SuppressWarnings("unchecked")
-    public void setTitle(final String title) {
+    public WiresTextDecorator setTitle(final String title) {
         if (null == title) {
             text.setText(null);
         } else {
             text.setText(title.trim());
         }
+        return this;
+    }
+
+    @Override
+    public WiresTextDecorator setMargins(final Map<Enum, Double> margins) {
+        this.margins = margins;
+        return this;
     }
 
     @SuppressWarnings("unchecked")
-    public boolean setTitlePosition(final HasTitle.Position position) {
-        LayoutContainer.Layout layout = LayoutContainer.Layout.CENTER;
-        switch (position) {
-            case BOTTOM:
-                layout = LayoutContainer.Layout.BOTTOM;
-                break;
-            case TOP:
-                layout = LayoutContainer.Layout.TOP;
-                break;
-            case LEFT:
-                layout = LayoutContainer.Layout.LEFT;
-                break;
-            case RIGHT:
-                layout = LayoutContainer.Layout.RIGHT;
-                break;
-        }
-        final boolean changed = !currentTextLayout.equals(layout);
-        this.currentTextLayout = layout;
-        return changed;
-    }
-
-    public void setTitleXOffsetPosition(final double xOffset) {
-        this.text.setX(xOffset);
-    }
-
-    public void setTitleYOffsetPosition(final double yOffset) {
-        this.text.setY(yOffset);
-    }
-
-    @SuppressWarnings("unchecked")
-    public void setTitleRotation(final double degrees) {
+    public WiresTextDecorator setTitleRotation(final double degrees) {
         text.setRotationDegrees(degrees);
+        return this;
     }
 
     @SuppressWarnings("unchecked")
-    public void setTitleStrokeColor(final String color) {
+    public WiresTextDecorator setTitleStrokeColor(final String color) {
         text.setStrokeColor(color);
+        return this;
     }
 
     @SuppressWarnings("unchecked")
-    public void setTitleFontFamily(final String fontFamily) {
+    public WiresTextDecorator setTitleFontFamily(final String fontFamily) {
         text.setFontFamily(fontFamily);
+        return this;
     }
 
     @SuppressWarnings("unchecked")
-    public void setTitleFontSize(final double fontSize) {
+    public WiresTextDecorator setTitleFontSize(final double fontSize) {
         text.setFontSize(fontSize);
+        return this;
     }
 
     @SuppressWarnings("unchecked")
-    public void setTitleFontColor(final String fillColor) {
+    public WiresTextDecorator setTitleFontColor(final String fillColor) {
         text.setFillColor(fillColor);
+        return this;
     }
 
     @SuppressWarnings("unchecked")
-    public void setTitleAlpha(final double alpha) {
+    public WiresTextDecorator setTitleAlpha(final double alpha) {
         text.setAlpha(alpha);
+        return this;
     }
 
     @SuppressWarnings("unchecked")
-    public void setTitleStrokeWidth(final double strokeWidth) {
+    public WiresTextDecorator setTitleStrokeWidth(final double strokeWidth) {
         text.setStrokeWidth(strokeWidth);
+        return this;
     }
 
-    public void setTitleStrokeAlpha(final double strokeAlpha) {
+    public WiresTextDecorator setTitleStrokeAlpha(final double strokeAlpha) {
         text.setStrokeAlpha(strokeAlpha);
+        return this;
     }
 
-    public void setTextWrapper(final TextWrapperStrategy strategy) {
+    public WiresTextDecorator setTextWrapper(final TextWrapperStrategy strategy) {
 
         final ITextWrapper wrapper = getTextWrapper(strategy);
         this.textWrapper = wrapper;
         text.setWrapper(textWrapper);
-        updateTextBoundaries();
+        update();
+        return this;
+    }
+
+    @Override
+    public WiresTextDecorator setTitleXOffsetPosition(final Double xOffset) {
+        this.text.setX(xOffset);
+        return this;
+    }
+
+    @Override
+    public WiresTextDecorator setTitleYOffsetPosition(final Double yOffset) {
+        this.text.setY(yOffset);
+        return this;
+    }
+
+    @Override
+    public void setTextBoundaries(final double width, final double height) {
+        setTextBoundaries(new BoundingBox(0, 0, width, height));
     }
 
     ITextWrapper getTextWrapper(final TextWrapperStrategy strategy) {
@@ -281,27 +283,79 @@ public class WiresTextDecorator {
     }
 
     @SuppressWarnings("unchecked")
-    public void moveTitleToTop() {
-        textContainer.moveToTop();
+    public WiresTextDecorator moveTitleToTop() {
+        text.moveToTop();
+        moveShapeChildrenToFront();
+        return this;
     }
 
-    public IPrimitive<?> getView() {
-        return textContainer;
+    private void moveShapeChildrenToFront() {
+        shape.getChildShapes()
+                .toList()
+                .stream()
+                .map(WiresShape::getGroup)
+                .forEach(Group::moveToTop);
     }
 
-    public LayoutContainer.Layout getLayout() {
-        return currentTextLayout;
+    public Text getView() {
+        return text;
+    }
+
+    /**
+     * Returns the label layout based on the model
+     * @return
+     */
+    public LabelLayout getLabelLayout() {
+        return Optional.ofNullable(labelLayout)
+                .orElseGet(() -> new LabelLayout.Builder().horizontalAlignment(
+                        DirectionLayout.HorizontalAlignment.CENTER)
+                        .verticalAlignment(DirectionLayout.VerticalAlignment.MIDDLE)
+                        .orientation(DirectionLayout.Orientation.HORIZONTAL)
+                        .referencePosition(DirectionLayout.ReferencePosition.INSIDE)
+                        .sizeConstraints(getDefaultSizeConstraints())
+                        .build());
+    }
+
+    private com.ait.lienzo.client.core.shape.wires.layout.size.SizeConstraints getDefaultSizeConstraints() {
+        return new com.ait.lienzo.client.core.shape.wires.layout.size.SizeConstraints(100, 100,
+                                                                                      Type.PERCENTAGE);
+    }
+
+    private <T extends Enum<T>> T convertEnum(Enum<?> input, Class<T> outputType) {
+        return Exceptions.swallow(() -> Enum.valueOf(outputType, input.name()), null);
+    }
+
+    public WiresTextDecorator setTitlePosition(final HasTitle.VerticalAlignment verticalAlignment, final HasTitle.HorizontalAlignment horizontalAlignment,
+                                               final HasTitle.ReferencePosition referencePosition, final HasTitle.Orientation orientation) {
+        labelLayout = new LabelLayout.Builder()
+                .horizontalAlignment(convertEnum(horizontalAlignment, DirectionLayout.HorizontalAlignment.class))
+                .verticalAlignment(convertEnum(verticalAlignment, DirectionLayout.VerticalAlignment.class))
+                .orientation(convertEnum(orientation, DirectionLayout.Orientation.class))
+                .referencePosition(convertEnum(referencePosition, DirectionLayout.ReferencePosition.class))
+                .margins(margins.entrySet()
+                                 .stream()
+                                 .map(e -> new SimpleEntry<>(
+                                         Optional.<Direction>ofNullable(convertEnum(e.getKey(), DirectionLayout.VerticalAlignment.class))
+                                                 .orElse(convertEnum(e.getKey(),
+                                                                     DirectionLayout.HorizontalAlignment.class)),
+                                         e.getValue()))
+                                 .collect(Collectors.toMap(Entry::getKey, Entry::getValue)))
+                .sizeConstraints(sizeConstraints
+                                         .map(s -> new SizeConstraints(s.getWidth(), s.getHeight(),
+                                                                       convertEnum(s.getType(), Type.class)))
+                                         .orElse(getDefaultSizeConstraints()))
+                .build();
+        return this;
+    }
+
+    @Override
+    public WiresTextDecorator setTextSizeConstraints(final Size sizeConstraints) {
+        this.sizeConstraints = Optional.ofNullable(sizeConstraints);
+        return this;
     }
 
     public void update() {
-        updateTextBoundaries();
-    }
-
-    public void resize(final double width,
-                       final double height) {
-        this.width = width;
-        this.height = height;
-        update();
+        setTextBoundaries(shape.getPath().getBoundingBox());
     }
 
     public void destroy() {
@@ -309,14 +363,17 @@ public class WiresTextDecorator {
             text.removeFromParent();
             this.text = null;
         }
-        textContainer.destroy();
         deregisterHandler(textOverHandlerViewHandler);
         deregisterHandler(textOutEventViewHandler);
         deregisterHandler(textClickEventViewHandler);
         deregisterHandler(textDblClickEventViewHandler);
         eventHandlerManager.get().destroy();
         textWrapper = null;
-        currentTextLayout = null;
+        labelLayout = null;
+        sizeConstraints = null;
+        margins.clear();
+        margins = null;
+        shape = null;
     }
 
     private void deregisterHandler(final ViewHandler<?> handler) {
@@ -330,45 +387,17 @@ public class WiresTextDecorator {
         return null != text && text.trim().length() > 0;
     }
 
-    void updateTextBoundaries() {
-        setTextBoundaries(new BoundingBox(0,
-                                          0,
-                                          width,
-                                          height));
-    }
-
     void setTextBoundaries(BoundingBox boundaries) {
-        if (!(textWrapper instanceof ITextWrapperWithBoundaries)) {
-            return;
-        }
+        //update text wrapper boundaries
+        Optional.ofNullable(textWrapper)
+                .filter(wrapper -> wrapper instanceof ITextWrapperWithBoundaries)
+                .map(wrapper -> (ITextWrapperWithBoundaries) wrapper)
+                .ifPresent(wrapper -> wrapper
+                        .setWrapBoundaries(shape.getLabelContainerLayout()
+                                                   .map(layout -> layout.getMaxSize(text))
+                                                   .orElse(boundaries)));
 
-        final ITextWrapperWithBoundaries textWrapperWithBoundaries = (ITextWrapperWithBoundaries) textWrapper;
-
-        switch (getLayout()) {
-            case LEFT:
-                if (null != boundaries) {
-                    textWrapperWithBoundaries.setWrapBoundaries(new BoundingBox(boundaries.getMinY(),
-                                                                                boundaries.getMaxX(),
-                                                                                boundaries.getMaxY(),
-                                                                                boundaries.getMaxX()));
-                }
-                break;
-
-            case RIGHT:
-                if (null != boundaries) {
-                    textWrapperWithBoundaries.setWrapBoundaries(new BoundingBox(boundaries.getMinY(),
-                                                                                boundaries.getMaxX(),
-                                                                                boundaries.getMaxY(),
-                                                                                boundaries.getMaxX()));
-                }
-                break;
-
-            case TOP:
-            case CENTER:
-            case BOTTOM:
-            default:
-                textWrapperWithBoundaries.setWrapBoundaries(boundaries);
-                break;
-        }
+        //update position
+        shape.getLabelContainerLayout().ifPresent(LabelContainerLayout::execute);
     }
 }

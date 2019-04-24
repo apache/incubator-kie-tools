@@ -337,6 +337,7 @@ public class BPMNShapeFactoryTest {
         verify(sequenceFlowView).setTitleFontSize(BPMNTextPreferences.TEXT_FONT_SIZE);
         verify(sequenceFlowView).setTitleStrokeColor(BPMNTextPreferences.TEXT_STROKE_COLOR);
         verify(sequenceFlowView).setTitleStrokeWidth(BPMNTextPreferences.TEXT_STROKE_WIDTH);
+        verify(sequenceFlowView).setTitleStrokeAlpha(0);
 
         final long svgFactoryCallCount = factoryArgumentCaptor.getAllValues().stream()
                 .filter(this::isSvgShapeFactory)

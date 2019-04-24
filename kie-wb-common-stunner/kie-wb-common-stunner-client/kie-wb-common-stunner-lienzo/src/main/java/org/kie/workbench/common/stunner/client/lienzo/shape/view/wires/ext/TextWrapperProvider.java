@@ -17,13 +17,12 @@
 package org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.ext;
 
 import com.ait.lienzo.client.core.shape.ITextWrapper;
-
 import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.client.core.shape.TextBoundsAndLineBreaksWrap;
 import com.ait.lienzo.client.core.shape.TextBoundsWrap;
+import com.ait.lienzo.client.core.shape.TextLineBreakTruncateWrapper;
 import com.ait.lienzo.client.core.shape.TextLineBreakWrap;
 import com.ait.lienzo.client.core.shape.TextNoWrap;
-import com.ait.lienzo.client.core.shape.TextTruncateWrapper;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import org.kie.workbench.common.stunner.core.client.shape.TextWrapperStrategy;
 
@@ -42,10 +41,11 @@ public final class TextWrapperProvider {
                 return new TextNoWrap(text);
 
             case TRUNCATE:
-                return new TextTruncateWrapper(text, new BoundingBox(0,
-                                                                     0,
-                                                                     1,
-                                                                     1));
+                return new TextLineBreakTruncateWrapper(text, new BoundingBox());
+
+            case TRUNCATE_WITH_LINE_BREAK:
+                return new TextLineBreakTruncateWrapper(text, new BoundingBox());
+
             default:
                 return new TextBoundsWrap(text);
         }

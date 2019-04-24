@@ -20,6 +20,7 @@ import com.ait.lienzo.client.core.shape.ITextWrapper;
 import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.client.core.shape.TextBoundsAndLineBreaksWrap;
 import com.ait.lienzo.client.core.shape.TextBoundsWrap;
+import com.ait.lienzo.client.core.shape.TextLineBreakTruncateWrapper;
 import com.ait.lienzo.client.core.shape.TextLineBreakWrap;
 import com.ait.lienzo.client.core.shape.TextNoWrap;
 import com.ait.lienzo.client.core.shape.TextTruncateWrapper;
@@ -65,5 +66,11 @@ public class TextWrapperProviderTest {
     public void testBounds() {
         final ITextWrapper wrapper = TextWrapperProvider.get(TextWrapperStrategy.BOUNDS, text);
         assertTrue(wrapper instanceof TextBoundsWrap);
+    }
+
+    @Test
+    public void testTruncateWithLineBreak() {
+        final ITextWrapper wrapper = TextWrapperProvider.get(TextWrapperStrategy.TRUNCATE_WITH_LINE_BREAK, text);
+        assertTrue(wrapper instanceof TextLineBreakTruncateWrapper);
     }
 }

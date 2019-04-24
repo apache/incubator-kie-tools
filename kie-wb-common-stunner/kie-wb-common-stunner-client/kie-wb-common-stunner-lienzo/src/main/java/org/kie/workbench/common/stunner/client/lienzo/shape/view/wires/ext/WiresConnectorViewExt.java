@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.ext;
 
+import java.util.Map;
 import java.util.Optional;
 
 import com.ait.lienzo.client.core.shape.AbstractDirectionalMultiPointShape;
@@ -68,7 +69,7 @@ public class WiresConnectorViewExt<T>
     }
 
     protected void init(final ViewEventType[] supportedEventTypes) {
-        this.label = Optional.empty();
+        this.label = createLabel("");
         this.textRotationDegrees = 0;
         this.eventHandlerManager = new ViewEventHandlerManager(getLine().asShape(),
                                                                getLine().asShape(),
@@ -118,20 +119,27 @@ public class WiresConnectorViewExt<T>
     @Override
     @SuppressWarnings("unchecked")
     public T setTitle(final String title) {
-        if (null == title || title.trim().length() == 0) {
-            destroyLabel();
-        } else {
-            if (!label.isPresent()) {
-                label = Optional.of(createLabel(title));
-            }
-            label.get().configure(text -> text.setText(title));
-        }
+        return Optional.ofNullable(title)
+                .map(t -> label.map(l -> l.configure(text -> text.setText(t))))
+                .map(l -> cast())
+                .orElse(cast());
+    }
+
+    @Override
+    public T setMargins(final Map<Enum, Double> margins) {
+        // Do not apply here...
         return cast();
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public T setTitlePosition(final Position position) {
+    public T setTitlePosition(final VerticalAlignment verticalAlignment, final HorizontalAlignment horizontalAlignment,
+                              final ReferencePosition referencePosition, final Orientation orientation) {
+        // Do not apply here...
+        return cast();
+    }
+
+    @Override
+    public T setTextSizeConstraints(final Size sizeConstraints) {
         // Do not apply here...
         return cast();
     }
@@ -203,6 +211,12 @@ public class WiresConnectorViewExt<T>
     }
 
     @Override
+    public T setTitleStrokeAlpha(double alpha) {
+        label.ifPresent(l -> l.configure(text -> text.setStrokeAlpha(alpha)));
+        return cast();
+    }
+
+    @Override
     public void destroy() {
         super.destroy();
         // Clear registered event handlers.
@@ -213,8 +227,8 @@ public class WiresConnectorViewExt<T>
         destroyLabel();
     }
 
-    protected WiresConnectorLabel createLabel(final String title) {
-        return WiresConnectorLabelFactory.newLabelOnFirstSegment(title, this);
+    protected Optional<WiresConnectorLabel> createLabel(final String title) {
+        return Optional.of(WiresConnectorLabelFactory.newLabelOnFirstSegment(title, this));
     }
 
     private void destroyLabel() {

@@ -22,6 +22,8 @@ import java.util.function.BiConsumer;
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.BPMNShapeDef;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNViewDefinition;
 import org.kie.workbench.common.stunner.cm.client.resources.CaseManagementSVGViewFactory;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
+import org.kie.workbench.common.stunner.core.client.shape.view.handler.FontHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.handler.SizeHandler;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.svg.client.shape.def.SVGShapeViewDef;
@@ -44,5 +46,20 @@ public interface CaseManagementSvgShapeDef<W extends BPMNViewDefinition>
 
     default Class<CaseManagementSVGViewFactory> getViewFactoryType() {
         return CaseManagementSVGViewFactory.class;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    default Optional<BiConsumer<W, SVGShapeView>> fontHandler() {
+        return Optional.of(newFontHandler()::handle);
+    }
+
+    @Override
+    default FontHandler<W, SVGShapeView> newFontHandler() {
+        return newFontHandlerBuilder()
+                .horizontalAlignment(o -> HasTitle.HorizontalAlignment.CENTER)
+                .verticalAlignment(o -> HasTitle.VerticalAlignment.MIDDLE)
+                .textSizeConstraints(o -> new HasTitle.Size(100, 100, HasTitle.Size.SizeType.PERCENTAGE))
+                .build();
     }
 }

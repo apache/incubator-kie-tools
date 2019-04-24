@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,9 @@ import org.kie.workbench.common.stunner.bpmn.client.workitem.WorkItemDefinitionC
 import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTask;
 import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinitionRegistry;
 import org.kie.workbench.common.stunner.core.client.shape.ImageDataUriGlyph;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle.HorizontalAlignment;
 import org.kie.workbench.common.stunner.core.client.shape.view.handler.CompositeShapeViewHandler;
+import org.kie.workbench.common.stunner.core.client.shape.view.handler.FontHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.handler.SizeHandler;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
@@ -35,6 +37,7 @@ import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
 public class ServiceTaskShapeDef extends BaseDimensionedShapeDef
         implements BPMNSvgShapeDef<ServiceTask> {
 
+    public static final double ICON_WIDTH = 30d;
     private final Supplier<WorkItemDefinitionRegistry> workItemDefinitionRegistry;
     private final Function<String, Glyph> iconDataGlyphGenerator;
 
@@ -89,5 +92,12 @@ public class ServiceTaskShapeDef extends BaseDimensionedShapeDef
                         .getIconData();
         final String iconData = null != itemIconData ? itemIconData : WorkItemDefinitionClientUtils.getDefaultIconData();
         return iconDataGlyphGenerator.apply(iconData);
+    }
+
+    @Override
+    public FontHandler<ServiceTask, SVGShapeView> newFontHandler() {
+        return newFontHandlerBuilder()
+                .margin(HorizontalAlignment.LEFT, ICON_WIDTH)
+                .build();
     }
 }

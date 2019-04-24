@@ -73,8 +73,11 @@ public class DMNDecisionServiceSVGShapeDefImpl implements DMNDecisionServiceSVGS
                 .fontSize(bean -> bean.getFontSet().getFontSize().getValue())
                 .textWrapperStrategy(bean -> TextWrapperStrategy.TRUNCATE)
                 .strokeAlpha(bean -> 0.0d)
-                .position(bean -> HasTitle.Position.TOP)
-                .positionYOffset(bean -> Y_OFFSET)
+                .verticalAlignment(bean -> HasTitle.VerticalAlignment.TOP)
+                .horizontalAlignment(bean -> HasTitle.HorizontalAlignment.CENTER)
+                .referencePosition(bean -> HasTitle.ReferencePosition.INSIDE)
+                .orientation(bean -> HasTitle.Orientation.HORIZONTAL)
+                .margin(HasTitle.VerticalAlignment.TOP, Y_OFFSET)
                 .build();
     }
 
