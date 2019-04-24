@@ -15,7 +15,6 @@
   <name>Dashbuilder Backend</name>
 
   <modules>
-    <module>dashbuilder-dataset-sql-tests</module>
     <module>dashbuilder-dataset-cdi</module>
     <module>dashbuilder-navigation-backend</module>
     <module>dashbuilder-services</module>
