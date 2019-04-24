@@ -19,7 +19,6 @@ package org.kie.workbench.common.dmn.client.widgets.grid.handlers;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import com.ait.lienzo.client.core.event.AbstractNodeMouseEvent;
 import com.ait.lienzo.client.core.types.Point2D;
@@ -28,13 +27,9 @@ import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableHeaderMe
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableHeaderUtilities;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellEditAction;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
-import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.util.CellContextUtilities;
-import org.uberfire.ext.wires.core.grids.client.util.ColumnIndexUtilities;
-import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellEditContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.DefaultGridWidgetEditCellMouseEventHandler;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
 
 public class EditableHeaderGridWidgetEditCellMouseEventHandler extends DefaultGridWidgetEditCellMouseEventHandler {
 
@@ -65,74 +60,32 @@ public class EditableHeaderGridWidgetEditCellMouseEventHandler extends DefaultGr
                                     final int uiHeaderRowIndex,
                                     final int uiHeaderColumnIndex,
                                     final AbstractNodeMouseEvent event) {
-        //Get column information
-        final double cx = relativeLocation.getX();
-        final BaseGridRendererHelper rendererHelper = gridWidget.getRendererHelper();
-        final BaseGridRendererHelper.ColumnInformation ci = rendererHelper.getColumnInformation(cx);
-        final GridColumn<?> column = ci.getColumn();
-        if (column == null) {
-            return false;
-        }
-        if (!EditableHeaderUtilities.hasEditableHeader(column)) {
+        final List<GridColumn<?>> gridColumns = gridWidget.getModel().getColumns();
+        final GridColumn<?> gridColumn = gridColumns.get(uiHeaderColumnIndex);
+        final List<GridColumn.HeaderMetaData> gridColumnHeaderMetaData = gridColumn.getHeaderMetaData();
+
+        if (Objects.isNull(gridColumnHeaderMetaData) || gridColumnHeaderMetaData.isEmpty()) {
             return false;
         }
 
-        if (!EditableHeaderUtilities.isEditableHeader(column,
+        if (!EditableHeaderUtilities.hasEditableHeader(gridColumn)) {
+            return false;
+        }
+
+        if (!EditableHeaderUtilities.isEditableHeader(gridColumn,
                                                       uiHeaderRowIndex)) {
             return false;
         }
 
-        //Get rendering information
-        final Point2D gridWidgetComputedLocation = gridWidget.getComputedLocation();
-        final BaseGridRendererHelper.RenderingInformation ri = rendererHelper.getRenderingInformation();
-        final EditableHeaderMetaData headerMetaData = (EditableHeaderMetaData) column.getHeaderMetaData().get(uiHeaderRowIndex);
-        final GridBodyCellEditContext context = CellContextUtilities.makeHeaderCellRenderContext(gridWidget,
-                                                                                                 ri,
-                                                                                                 ci,
-                                                                                                 relativeLocation.add(gridWidgetComputedLocation),
-                                                                                                 uiHeaderRowIndex);
+        final EditableHeaderMetaData editableHeaderMetaData = (EditableHeaderMetaData) gridColumn.getHeaderMetaData().get(uiHeaderRowIndex);
 
-        if (isHeaderSelectionValid(gridWidget)) {
-            if (Objects.equals(headerMetaData.getSupportedEditAction(), GridCellEditAction.getSupportedEditAction(event))) {
-                headerMetaData.edit(context);
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private boolean isHeaderSelectionValid(final GridWidget gridWidget) {
-        final GridData gridData = gridWidget.getModel();
-        final List<GridData.SelectedCell> selectedHeaderCells = gridData.getSelectedHeaderCells();
-
-        //No selections (should not happen) then cannot edit the header cell
-        if (selectedHeaderCells.isEmpty()) {
-            return false;
-        }
-
-        //Single selection, then can edit header cell
-        if (selectedHeaderCells.size() == 1) {
+        if (Objects.equals(editableHeaderMetaData.getSupportedEditAction(),
+                           GridCellEditAction.getSupportedEditAction(event))) {
+            final Point2D gridWidgetComputedLocation = gridWidget.getComputedLocation();
+            CellContextUtilities.editSelectedCell(gridWidget, relativeLocation.add(gridWidgetComputedLocation));
             return true;
         }
 
-        //Check if all selected cell MetaData are equal
-        final GridColumn.HeaderMetaData firstSelectedCellMetaData = getSelectedCellMetaData(gridData,
-                                                                                            selectedHeaderCells.get(0));
-        return selectedHeaderCells
-                .stream()
-                .map(selectedCell -> getSelectedCellMetaData(gridData, selectedCell))
-                .collect(Collectors.toList())
-                .stream()
-                .allMatch(selectedCell -> Objects.equals(selectedCell, firstSelectedCellMetaData));
-    }
-
-    private GridColumn.HeaderMetaData getSelectedCellMetaData(final GridData gridData,
-                                                              final GridData.SelectedCell selectedCell) {
-        final int _headerColumnIndex = ColumnIndexUtilities.findUiColumnIndex(gridData.getColumns(),
-                                                                              selectedCell.getColumnIndex());
-        final GridColumn<?> gridColumn = gridData.getColumns().get(_headerColumnIndex);
-        final List<GridColumn.HeaderMetaData> gridColumnMetaData = gridColumn.getHeaderMetaData();
-        return gridColumnMetaData.get(selectedCell.getRowIndex());
+        return false;
     }
 }

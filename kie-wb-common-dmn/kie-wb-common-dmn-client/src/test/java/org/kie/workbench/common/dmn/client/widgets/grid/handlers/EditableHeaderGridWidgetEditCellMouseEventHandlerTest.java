@@ -194,29 +194,40 @@ public class EditableHeaderGridWidgetEditCellMouseEventHandlerTest {
 
         uiModel.selectHeaderCell(0, 0);
 
-        assertHeaderCellEdited();
+        assertHeaderCellEdited(0);
     }
 
     @Test
-    public void testHandleHeaderCell_EditableMergedColumns_EditableRow_ClickEvent() {
-        final GridColumn gridColumn2 = mock(GridColumn.class);
-        uiModel.appendColumn(gridColumn2);
+    public void testHandleHeaderCell_EditableMergedColumns_EditableRow_Column0_ClickEvent() {
+        setupAdditionalColumn();
+
+        assertHeaderCellEdited(0);
+    }
+
+    @Test
+    public void testHandleHeaderCell_EditableMergedColumns_EditableRow_Column1_ClickEvent() {
+        setupAdditionalColumn();
+
+        assertHeaderCellEdited(1);
+    }
+
+    private void setupAdditionalColumn() {
+        final GridColumn additionalGridColumn = mock(GridColumn.class);
+        uiModel.appendColumn(additionalGridColumn);
         when(gridColumn.getHeaderMetaData()).thenReturn(Collections.singletonList(editableHeaderMetaData));
-        when(gridColumn2.getHeaderMetaData()).thenReturn(Collections.singletonList(editableHeaderMetaData));
         when(gridColumn.getIndex()).thenReturn(0);
-        when(gridColumn2.getIndex()).thenReturn(1);
+        when(additionalGridColumn.getHeaderMetaData()).thenReturn(Collections.singletonList(editableHeaderMetaData));
+        when(additionalGridColumn.getIndex()).thenReturn(1);
 
         uiModel.selectHeaderCell(0, 0);
         uiModel.selectHeaderCell(0, 1);
-
-        assertHeaderCellEdited();
     }
 
-    private void assertHeaderCellEdited() {
+    private void assertHeaderCellEdited(final int uiHeaderColumnIndex) {
         assertThat(handler.handleHeaderCell(gridWidget,
                                             relativeLocation,
                                             0,
-                                            0,
+                                            uiHeaderColumnIndex,
                                             clickEvent)).isTrue();
 
         verify(editableHeaderMetaData).edit(gridBodyCellEditContextCaptor.capture());
