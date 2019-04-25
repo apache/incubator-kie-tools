@@ -717,7 +717,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
             getView().setWidget(xmlEditorView.asWidget());
             editorProxy = makeXmlEditorProxy();
             hideLoadingViews();
-            notification.fire(new NotificationEvent(translationService.getValue(DIAGRAM_PARSING_ERROR, Objects.toString(e.getMessage(), "")),
+            notification.fire(new NotificationEvent(getDiagramParsingErrorMessage(dpe),
                                                     NotificationEvent.NotificationType.ERROR));
 
             Scheduler.get().scheduleDeferred(xmlEditorView::onResize);
@@ -729,6 +729,10 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
             placeManager.forceClosePlace(new PathPlaceRequest(versionRecordManager.getCurrentPath(),
                                                               getEditorIdentifier()));
         }
+    }
+
+    protected String getDiagramParsingErrorMessage(final DiagramParsingException e) {
+        return translationService.getValue(DIAGRAM_PARSING_ERROR, Objects.toString(e.getMessage(), ""));
     }
 
     protected void showError(final ClientRuntimeError error) {

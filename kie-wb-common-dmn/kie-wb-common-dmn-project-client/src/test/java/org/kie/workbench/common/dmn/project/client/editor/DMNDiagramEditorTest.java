@@ -31,6 +31,7 @@ import org.kie.workbench.common.dmn.client.editors.types.DataTypesPage;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.DataTypeEditModeToggleEvent;
 import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
 import org.kie.workbench.common.dmn.client.session.DMNEditorSession;
+import org.kie.workbench.common.dmn.project.client.resources.i18n.DMNProjectClientConstants;
 import org.kie.workbench.common.dmn.project.client.type.DMNDiagramResourceType;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -43,6 +44,7 @@ import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectDia
 import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectEditorMenuSessionItems;
 import org.kie.workbench.common.widgets.client.docks.DefaultEditorDock;
 import org.kie.workbench.common.workbench.client.PerspectiveIds;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.uberfire.client.workbench.widgets.multipage.MultiPageEditor;
@@ -50,9 +52,13 @@ import org.uberfire.ext.editor.commons.client.menu.MenuItems;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
+import org.uberfire.workbench.events.NotificationEvent;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
@@ -333,5 +339,22 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
         verify(decisionNavigatorDock).close();
         verify(decisionNavigatorDock).resetContent();
         verify(docks).hide();
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testParsingErrorMessage() {
+        doAnswer(i -> i.getArguments()[0]).when(translationService).getValue(anyString());
+
+        final String xml = "xml";
+
+        openInvalidBPMNFile(xml);
+
+        final ArgumentCaptor<NotificationEvent> notificationEventCaptor = ArgumentCaptor.forClass(NotificationEvent.class);
+        verify(notification).fire(notificationEventCaptor.capture());
+
+        final NotificationEvent notificationEvent = notificationEventCaptor.getValue();
+        assertEquals(DMNProjectClientConstants.DMNDiagramParsingErrorMessage,
+                     notificationEvent.getNotification());
     }
 }

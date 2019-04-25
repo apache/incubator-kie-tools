@@ -28,4 +28,8 @@ public interface DMNProjectClientConstants {
 
     @TranslationKey(defaultValue = "")
     String DMNDiagramResourceTypeDownload = "DMNDiagramResourceType.download";
+
+    @TranslationKey(defaultValue = "")
+    String DMNDiagramParsingErrorMessage = "DMNDiagramParsingErrorMessage";
+
 }
