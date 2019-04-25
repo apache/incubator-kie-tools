@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -48,14 +49,13 @@ import org.uberfire.ext.properties.editor.client.fields.BooleanField;
 import org.uberfire.ext.properties.editor.client.fields.TextField;
 import org.uberfire.ext.properties.editor.model.PropertyEditorCategory;
 import org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants;
-import org.uberfire.mvp.Command;
 
 @Dependent
 public class JPADataObjectEditor
         extends ObjectEditor
         implements JPADataObjectEditorView.Presenter {
 
-    private static Map<String, DataModelerPropertyEditorFieldInfo> propertyEditorFields = new HashMap<String, DataModelerPropertyEditorFieldInfo>();
+    private static Map<String, DataModelerPropertyEditorFieldInfo> propertyEditorFields = new HashMap<>();
 
     private JPADataObjectEditorView view;
 
@@ -68,16 +68,16 @@ public class JPADataObjectEditor
     private static final String TWO_BLANKS = BLANK + BLANK;
 
     @Inject
-    public JPADataObjectEditor( JPADataObjectEditorView view,
-            DomainHandlerRegistry handlerRegistry,
-            Event<DataModelerEvent> dataModelerEvent,
-            DataModelCommandBuilder commandBuilder ) {
-        super( handlerRegistry, dataModelerEvent, commandBuilder );
+    public JPADataObjectEditor(JPADataObjectEditorView view,
+                               DomainHandlerRegistry handlerRegistry,
+                               Event<DataModelerEvent> dataModelerEvent,
+                               DataModelCommandBuilder commandBuilder) {
+        super(handlerRegistry, dataModelerEvent, commandBuilder);
         this.view = view;
-        view.init( this );
-        List<String> domainQuery = new ArrayList<String>( );
-        domainQuery.add( getDomainName() );
-        handler = (JPADomainHandler) handlerRegistry.getDomainHandlers( domainQuery ).get( 0 );
+        view.init(this);
+        List<String> domainQuery = new ArrayList<>();
+        domainQuery.add(getDomainName());
+        handler = (JPADomainHandler) handlerRegistry.getDomainHandlers(domainQuery).get(0);
     }
 
     @PostConstruct
@@ -101,195 +101,181 @@ public class JPADataObjectEditor
     }
 
     @Override
-    protected void loadDataObject( DataObject dataObject ) {
+    protected void loadDataObject(DataObject dataObject) {
         clear();
-        setReadonly( true );
+        setReadonly(true);
         this.dataObject = dataObject;
 
-        if ( dataObject != null ) {
-            updateEntityField( dataObject.getAnnotation( JPADomainAnnotations.JAVAX_PERSISTENCE_ENTITY_ANNOTATION ) );
-            updateTableNameField( dataObject.getAnnotation( JPADomainAnnotations.JAVAX_PERSISTENCE_TABLE_ANNOTATION ) );
-            updateAuditedField( dataObject.getAnnotation( JPADomainAnnotations.HIBERNATE_ENVERS_AUDITED ) );
-            setReadonly( getContext() == null || getContext().isReadonly() );
+        if (dataObject != null) {
+            updateEntityField(dataObject.getAnnotation(JPADomainAnnotations.JAVAX_PERSISTENCE_ENTITY_ANNOTATION));
+            updateTableNameField(dataObject.getAnnotation(JPADomainAnnotations.JAVAX_PERSISTENCE_TABLE_ANNOTATION));
+            updateAuditedField(dataObject.getAnnotation(JPADomainAnnotations.HIBERNATE_ENVERS_AUDITED));
+            setReadonly(getContext() == null || getContext().isReadonly());
         }
         loadPropertyEditor();
     }
 
     @Override
-    public void onEntityFieldChange( String newValue ) {
-        if ( getDataObject() != null ) {
+    public void onEntityFieldChange(String newValue) {
+        if (getDataObject() != null) {
 
-            final Boolean doAdd = Boolean.parseBoolean( newValue );
+            final Boolean doAdd = Boolean.parseBoolean(newValue);
 
-            if ( doAdd ) {
+            if (doAdd) {
 
-                if ( !hasIdField( getDataObject() ) ) {
-                    List<ObjectProperty> configurableFields = persistenceConfigurableFields( getDataObject() );
-                    String message = buildOnSetPersistableRefactoringMessage( false, configurableFields );
+                if (!hasIdField(getDataObject())) {
+                    List<ObjectProperty> configurableFields = persistenceConfigurableFields(getDataObject());
+                    String message = buildOnSetPersistableRefactoringMessage(false, configurableFields);
 
-                    view.showYesNoCancelPopup( CommonConstants.INSTANCE.Warning(),
-                            message,
-                            new Command() {
-                                @Override
-                                public void execute() {
-                                    doEntityFieldChange( doAdd, true );
-                                }
-                            },
-                            Constants.INSTANCE.persistence_domain_objectEditor_add_identifier_action(),
-                            ButtonType.PRIMARY,
-                            new Command() {
-                                @Override
-                                public void execute() {
-                                    doEntityFieldChange( doAdd, false );
-                                }
-                            },
-                            Constants.INSTANCE.persistence_domain_objectEditor_dont_add_identifier_action(),
-                            ButtonType.DANGER,
-                            new Command() {
-                                @Override
-                                public void execute() {
-                                    updateEntityField( null );
-                                    loadPropertyEditor();
-                                }
-                            },
-                            CommonConstants.INSTANCE.Cancel(),
-                            ButtonType.DEFAULT );
+                    view.showYesNoCancelPopup(CommonConstants.INSTANCE.Warning(),
+                                              message,
+                                              () -> doEntityFieldChange(doAdd, true),
+                                              Constants.INSTANCE.persistence_domain_objectEditor_add_identifier_action(),
+                                              ButtonType.PRIMARY,
+                                              () -> doEntityFieldChange(doAdd, false),
+                                              Constants.INSTANCE.persistence_domain_objectEditor_dont_add_identifier_action(),
+                                              ButtonType.DANGER,
+                                              () -> {
+                                                  updateEntityField(null);
+                                                  loadPropertyEditor();
+                                              },
+                                              CommonConstants.INSTANCE.Cancel(),
+                                              ButtonType.DEFAULT);
                 } else {
-                    doEntityFieldChange( doAdd, false );
+                    doEntityFieldChange(doAdd, false);
                 }
             } else {
-                doEntityFieldChange( doAdd, false );
+                doEntityFieldChange(doAdd, false);
             }
         }
     }
 
     @Override
-    public void onTableNameChange( String newValue ) {
-        if ( getDataObject() != null ) {
+    public void onTableNameChange(String newValue) {
+        if (getDataObject() != null) {
 
-            String value = DataModelerUtils.nullTrim( newValue );
-            DataModelCommand command = commandBuilder.buildDataObjectAnnotationValueChangeCommand( getContext(),
-                    getName(), getDataObject(), JPADomainAnnotations.JAVAX_PERSISTENCE_TABLE_ANNOTATION, "name", value, true );
+            String value = DataModelerUtils.nullTrim(newValue);
+            DataModelCommand command = commandBuilder.buildDataObjectAnnotationValueChangeCommand(getContext(),
+                                                                                                  getName(), getDataObject(), JPADomainAnnotations.JAVAX_PERSISTENCE_TABLE_ANNOTATION, "name", value, true);
             command.execute();
         }
     }
 
     @Override
-    public void onAuditedFieldChange( String newValue ) {
-        if ( getDataObject() != null ) {
+    public void onAuditedFieldChange(String newValue) {
+        if (getDataObject() != null) {
 
-            Boolean doAdd = Boolean.parseBoolean( newValue );
+            Boolean doAdd = Boolean.parseBoolean(newValue);
             DataModelCommand command;
-            if ( doAdd ) {
-                List<ValuePair> defaultValues = new ArrayList<>( );
-                defaultValues.add( new ValuePair( "targetAuditMode", "NOT_AUDITED" ) );
-                command = commandBuilder.buildDataObjectAddAnnotationCommand( getContext(),
-                        getName(), getDataObject(), JPADomainAnnotations.HIBERNATE_ENVERS_AUDITED, defaultValues );
+            if (doAdd) {
+                List<ValuePair> defaultValues = new ArrayList<>();
+                defaultValues.add(new ValuePair("targetAuditMode", "NOT_AUDITED"));
+                command = commandBuilder.buildDataObjectAddAnnotationCommand(getContext(),
+                                                                             getName(), getDataObject(), JPADomainAnnotations.HIBERNATE_ENVERS_AUDITED, defaultValues);
             } else {
-                command = commandBuilder.buildDataObjectRemoveAnnotationCommand( getContext(),
-                        getName(), getDataObject(), JPADomainAnnotations.HIBERNATE_ENVERS_AUDITED );
+                command = commandBuilder.buildDataObjectRemoveAnnotationCommand(getContext(),
+                                                                                getName(), getDataObject(), JPADomainAnnotations.HIBERNATE_ENVERS_AUDITED);
             }
             command.execute();
         }
     }
 
     //convenient method for facilitating testing
-    protected void doEntityFieldChange( boolean isPersistable, boolean generateIdenfitier ) {
+    protected void doEntityFieldChange(boolean isPersistable, boolean generateIdenfitier) {
 
-        final DataModelCommand command = commandBuilder.buildDataObjectAddOrRemoveAnnotationCommand( getContext(),
-                getName(), getDataObject(), JPADomainAnnotations.JAVAX_PERSISTENCE_ENTITY_ANNOTATION, isPersistable );
+        final DataModelCommand command = commandBuilder.buildDataObjectAddOrRemoveAnnotationCommand(getContext(),
+                                                                                                    getName(), getDataObject(), JPADomainAnnotations.JAVAX_PERSISTENCE_ENTITY_ANNOTATION, isPersistable);
 
-        if ( generateIdenfitier ) {
-            addByDefaultId( dataObject );
+        if (generateIdenfitier) {
+            addByDefaultId(dataObject);
         }
         command.execute();
-
     }
 
-    private void updateEntityField( Annotation annotation ) {
+    private void updateEntityField(Annotation annotation) {
         clearEntityField();
-        if ( annotation != null ) {
-            updatePropertyEditorField( JPADataObjectEditorView.ENTITY_FIELD, annotation, "true" );
+        if (annotation != null) {
+            updatePropertyEditorField(JPADataObjectEditorView.ENTITY_FIELD, annotation, "true");
         }
     }
 
-    private void updateTableNameField( Annotation annotation ) {
+    private void updateTableNameField(Annotation annotation) {
         clearTableNameField();
-        if ( annotation != null ) {
-            String tableName = AnnotationValueHandler.getStringValue( annotation, "name", null );
-            updatePropertyEditorField( JPADataObjectEditorView.TABLE_NAME_FIELD, annotation, tableName );
+        if (annotation != null) {
+            String tableName = AnnotationValueHandler.getStringValue(annotation, "name", null);
+            updatePropertyEditorField(JPADataObjectEditorView.TABLE_NAME_FIELD, annotation, tableName);
         }
     }
 
-    private void updateAuditedField( Annotation annotation ) {
+    private void updateAuditedField(Annotation annotation) {
         clearAuditedField();
-        if ( annotation != null ) {
-            if ( propertyEditorFields.containsKey( JPADataObjectEditorView.AUDITED_FIELD ) ) {
-                updatePropertyEditorField( JPADataObjectEditorView.AUDITED_FIELD, annotation, "true" );
+        if (annotation != null) {
+            if (propertyEditorFields.containsKey(JPADataObjectEditorView.AUDITED_FIELD)) {
+                updatePropertyEditorField(JPADataObjectEditorView.AUDITED_FIELD, annotation, "true");
             }
         }
     }
 
     protected void loadPropertyEditor() {
-        view.loadPropertyEditorCategories( getPropertyEditorCategories() );
+        view.loadPropertyEditorCategories(getPropertyEditorCategories());
     }
 
     protected List<PropertyEditorCategory> getPropertyEditorCategories() {
 
         final List<PropertyEditorCategory> categories = new ArrayList<PropertyEditorCategory>();
 
-        PropertyEditorCategory category = new PropertyEditorCategory( getEntityCategoryName(), 1 );
-        categories.add( category );
+        PropertyEditorCategory category = new PropertyEditorCategory(getEntityCategoryName(), 1);
+        categories.add(category);
 
-        category.withField( createEntityField() );
-        category.withField( createTableNameField() );
-        if ( handler.isDataObjectAuditEnabled() ) {
-            category.withField( createAuditedField() );
+        category.withField(createEntityField());
+        category.withField(createTableNameField());
+        if (handler.isDataObjectAuditEnabled()) {
+            category.withField(createAuditedField());
         }
         return categories;
     }
 
     private DataModelerPropertyEditorFieldInfo createEntityField() {
-        return createField( Constants.INSTANCE.persistence_domain_objectEditor_entity_field_label(),
-                JPADataObjectEditorView.ENTITY_FIELD,
-                "false",
-                BooleanField.class,
-                Constants.INSTANCE.persistence_domain_objectEditor_entity_field_help_heading(),
-                Constants.INSTANCE.persistence_domain_objectEditor_entity_field_help() );
+        return createField(Constants.INSTANCE.persistence_domain_objectEditor_entity_field_label(),
+                           JPADataObjectEditorView.ENTITY_FIELD,
+                           "false",
+                           BooleanField.class,
+                           Constants.INSTANCE.persistence_domain_objectEditor_entity_field_help_heading(),
+                           Constants.INSTANCE.persistence_domain_objectEditor_entity_field_help(),
+                           readonly);
     }
 
     private DataModelerPropertyEditorFieldInfo createTableNameField() {
-        return createField( Constants.INSTANCE.persistence_domain_objectEditor_table_field_label(),
-                JPADataObjectEditorView.TABLE_NAME_FIELD,
-                "",
-                TextField.class,
-                Constants.INSTANCE.persistence_domain_objectEditor_table_field_help_heading(),
-                Constants.INSTANCE.persistence_domain_objectEditor_table_field_help() );
+        return createField(Constants.INSTANCE.persistence_domain_objectEditor_table_field_label(),
+                           JPADataObjectEditorView.TABLE_NAME_FIELD,
+                           "",
+                           TextField.class,
+                           Constants.INSTANCE.persistence_domain_objectEditor_table_field_help_heading(),
+                           Constants.INSTANCE.persistence_domain_objectEditor_table_field_help(),
+                           readonly);
     }
 
     private DataModelerPropertyEditorFieldInfo createAuditedField() {
-        return createField( Constants.INSTANCE.persistence_domain_objectEditor_audited_field_label(),
-                JPADataObjectEditorView.AUDITED_FIELD,
-                "false",
-                BooleanField.class,
-                Constants.INSTANCE.persistence_domain_objectEditor_audited_field_help_heading(),
-                Constants.INSTANCE.persistence_domain_objectEditor_audited_field_help() );
+        return createField(Constants.INSTANCE.persistence_domain_objectEditor_audited_field_label(),
+                           JPADataObjectEditorView.AUDITED_FIELD,
+                           "false",
+                           BooleanField.class,
+                           Constants.INSTANCE.persistence_domain_objectEditor_audited_field_help_heading(),
+                           Constants.INSTANCE.persistence_domain_objectEditor_audited_field_help(),
+                           readonly);
     }
 
-    private DataModelerPropertyEditorFieldInfo createField( String label, String key, String currentStringValue, Class<?> customFieldClass ) {
-        return createField( label, key, currentStringValue, customFieldClass, null, null );
-    }
-
-    private DataModelerPropertyEditorFieldInfo createField( String label, String key, String currentStringValue, Class<?> customFieldClass, String helpHeading, String helpText ) {
-        DataModelerPropertyEditorFieldInfo fieldInfo = propertyEditorFields.get( key );
-        if ( fieldInfo == null ) {
-            fieldInfo = new DataModelerPropertyEditorFieldInfo( label, currentStringValue, customFieldClass );
-            fieldInfo.withKey( key );
-            if ( helpHeading != null ) {
-                fieldInfo.withHelpInfo( helpHeading, helpText );
+    private DataModelerPropertyEditorFieldInfo createField(String label, String key, String currentStringValue, Class<?> customFieldClass, String helpHeading, String helpText, boolean readonly) {
+        DataModelerPropertyEditorFieldInfo fieldInfo = propertyEditorFields.get(key);
+        if (fieldInfo == null) {
+            fieldInfo = new DataModelerPropertyEditorFieldInfo(label, currentStringValue, customFieldClass);
+            fieldInfo.withKey(key);
+            if (helpHeading != null) {
+                fieldInfo.withHelpInfo(helpHeading, helpText);
             }
-            propertyEditorFields.put( key, fieldInfo );
+            propertyEditorFields.put(key, fieldInfo);
         }
+        fieldInfo.setDisabled(readonly);
         return fieldInfo;
     }
 
@@ -301,52 +287,52 @@ public class JPADataObjectEditor
     }
 
     private void clearEntityField() {
-        updatePropertyEditorField( JPADataObjectEditorView.ENTITY_FIELD, null, "false" );
+        updatePropertyEditorField(JPADataObjectEditorView.ENTITY_FIELD, null, "false");
     }
 
     private void clearTableNameField() {
-        updatePropertyEditorField( JPADataObjectEditorView.TABLE_NAME_FIELD, null, "" );
+        updatePropertyEditorField(JPADataObjectEditorView.TABLE_NAME_FIELD, null, "");
     }
 
     private void clearAuditedField() {
-        if ( propertyEditorFields.containsKey( JPADataObjectEditorView.AUDITED_FIELD ) ) {
-            updatePropertyEditorField( JPADataObjectEditorView.AUDITED_FIELD, null, "false" );
+        if (propertyEditorFields.containsKey(JPADataObjectEditorView.AUDITED_FIELD)) {
+            updatePropertyEditorField(JPADataObjectEditorView.AUDITED_FIELD, null, "false");
         }
     }
 
-    private void updatePropertyEditorField( String fieldId, Annotation currentValue, String currentStringValue ) {
-        DataModelerPropertyEditorFieldInfo fieldInfo = propertyEditorFields.get( fieldId );
-        fieldInfo.setCurrentValue( currentValue );
-        fieldInfo.setCurrentStringValue( currentStringValue );
+    private void updatePropertyEditorField(String fieldId, Annotation currentValue, String currentStringValue) {
+        DataModelerPropertyEditorFieldInfo fieldInfo = propertyEditorFields.get(fieldId);
+        fieldInfo.setCurrentValue(currentValue);
+        fieldInfo.setCurrentStringValue(currentStringValue);
     }
 
     private String getEntityCategoryName() {
         return Constants.INSTANCE.persistence_domain_objectEditor_entity_category();
     }
 
-    private boolean hasIdField( DataObject dataObject ) {
-        for ( ObjectProperty objectProperty : dataObject.getProperties() ) {
-            if ( objectProperty.getAnnotation( JPADomainAnnotations.JAVAX_PERSISTENCE_ID_ANNOTATION ) != null ) {
+    private boolean hasIdField(DataObject dataObject) {
+        for (ObjectProperty objectProperty : dataObject.getProperties()) {
+            if (objectProperty.getAnnotation(JPADomainAnnotations.JAVAX_PERSISTENCE_ID_ANNOTATION) != null) {
                 return true;
             }
         }
         return false;
     }
 
-    private List<ObjectProperty> persistenceConfigurableFields( DataObject dataObject ) {
-        List<ObjectProperty> result = new ArrayList<ObjectProperty>(  );
-        for ( ObjectProperty field : dataObject.getProperties() ) {
-            if ( DataModelerUtils.isManagedProperty( field ) && ( field.isMultiple() || !field.isBaseType() ) ) {
-                result.add( field );
+    private List<ObjectProperty> persistenceConfigurableFields(DataObject dataObject) {
+        List<ObjectProperty> result = new ArrayList<ObjectProperty>();
+        for (ObjectProperty field : dataObject.getProperties()) {
+            if (DataModelerUtils.isManagedProperty(field) && (field.isMultiple() || !field.isBaseType())) {
+                result.add(field);
             }
         }
         return result;
     }
 
-    private void addByDefaultId( DataObject dataObject ) {
+    private void addByDefaultId(DataObject dataObject) {
 
         //add the by default id field
-        String idFieldName = generateIdFieldName( dataObject );
+        String idFieldName = generateIdFieldName(dataObject);
 
         commandBuilder.buildAddPropertyCommand(
                 getContext(),
@@ -355,81 +341,81 @@ public class JPADataObjectEditor
                 idFieldName,
                 null,
                 Long.class.getName(),
-                false ).execute();
+                false).execute();
 
-        ObjectProperty idField = dataObject.getProperty( idFieldName );
+        ObjectProperty idField = dataObject.getProperty(idFieldName);
 
-        commandBuilder.buildFieldAnnotationAddCommand( getContext(),
-                getName(),
-                dataObject,
-                idField,
-                JPADomainAnnotations.JAVAX_PERSISTENCE_ID_ANNOTATION ).execute();
+        commandBuilder.buildFieldAnnotationAddCommand(getContext(),
+                                                      getName(),
+                                                      dataObject,
+                                                      idField,
+                                                      JPADomainAnnotations.JAVAX_PERSISTENCE_ID_ANNOTATION).execute();
 
         //set the by default generated value annotation.
         String generatorName = dataObject.getName().toUpperCase() + "_ID_GENERATOR";
-        Annotation generatedValue = new AnnotationImpl( context.getAnnotationDefinition(
-                JPADomainAnnotations.JAVAX_PERSISTENCE_GENERATED_VALUE_ANNOTATION ) );
-        generatedValue.setValue( "generator", generatorName );
-        generatedValue.setValue( "strategy", "AUTO" );
+        Annotation generatedValue = new AnnotationImpl(context.getAnnotationDefinition(
+                JPADomainAnnotations.JAVAX_PERSISTENCE_GENERATED_VALUE_ANNOTATION));
+        generatedValue.setValue("generator", generatorName);
+        generatedValue.setValue("strategy", "AUTO");
 
-        commandBuilder.buildFieldAnnotationAddCommand( getContext(),
-                getName(),
-                dataObject,
-                idField,
-                generatedValue ).execute();
+        commandBuilder.buildFieldAnnotationAddCommand(getContext(),
+                                                      getName(),
+                                                      dataObject,
+                                                      idField,
+                                                      generatedValue).execute();
 
         //set by default sequence generator
         String sequenceName = dataObject.getName().toUpperCase() + "_ID_SEQ";
-        Annotation sequenceGenerator = SequenceGeneratorValueHandler.createAnnotation( generatorName, sequenceName,
-                context.getAnnotationDefinitions() );
+        Annotation sequenceGenerator = SequenceGeneratorValueHandler.createAnnotation(generatorName, sequenceName,
+                                                                                      context.getAnnotationDefinitions());
 
-        commandBuilder.buildFieldAnnotationAddCommand( getContext(),
-                getName(),
-                dataObject,
-                idField,
-                sequenceGenerator ).execute();
+        commandBuilder.buildFieldAnnotationAddCommand(getContext(),
+                                                      getName(),
+                                                      dataObject,
+                                                      idField,
+                                                      sequenceGenerator).execute();
     }
 
-    private String generateIdFieldName( DataObject dataObject ) {
+    private String generateIdFieldName(DataObject dataObject) {
         String id = "id";
         int i = 1;
         boolean generated = false;
-        while ( !generated ) {
-            if ( dataObject.getProperty( id ) == null ) {
+        while (!generated) {
+            if (dataObject.getProperty(id) == null) {
                 generated = true;
             } else {
-                id = "id"+i;
+                id = "id" + i;
                 i++;
             }
         }
         return id;
     }
 
-    private String buildOnSetPersistableRefactoringMessage( boolean hasIdentifier,
-            List<ObjectProperty> configurableFields ) {
+    private String buildOnSetPersistableRefactoringMessage(boolean hasIdentifier,
+                                                           List<ObjectProperty> configurableFields) {
 
         StringBuilder message = new StringBuilder();
-        message.append( Constants.INSTANCE.persistence_domain_objectEditor_on_make_persistable_message() );
-        message.append( EOL );
+        message.append(Constants.INSTANCE.persistence_domain_objectEditor_on_make_persistable_message());
+        message.append(EOL);
 
-        if ( !hasIdentifier ) {
+        if (!hasIdentifier) {
             message.append(
-                    Constants.INSTANCE.persistence_domain_objectEditor_required_identifier_is_missing_message() );
+                    Constants.INSTANCE.persistence_domain_objectEditor_required_identifier_is_missing_message());
         }
 
-        if ( configurableFields.size() > 0 ) {
-            message.append( Constants.INSTANCE.persistence_domain_objectEditor_review_relationship_fields_message() );
-            message.append( TWO_BLANKS );
+        if (configurableFields.size() > 0) {
+            message.append(Constants.INSTANCE.persistence_domain_objectEditor_review_relationship_fields_message());
+            message.append(TWO_BLANKS);
 
             boolean isFirst = true;
-            for ( ObjectProperty field : configurableFields ) {
-                if ( !isFirst ) {
-                    message.append( "," + TWO_BLANKS );
+            for (ObjectProperty field : configurableFields) {
+                if (!isFirst) {
+                    message.append("," + TWO_BLANKS);
                 }
                 isFirst = false;
                 message.append(
                         Constants.INSTANCE.persistence_domain_objectEditor_review_relationship_field_for_review_message(
-                                field.getName() ) );
+                                field.getName()));
             }
         }
 

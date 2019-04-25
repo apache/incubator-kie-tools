@@ -21,13 +21,15 @@
              xmlns:b="urn:import:org.gwtbootstrap3.client.ui"
              xmlns:select="urn:import:org.gwtbootstrap3.extras.select.client.ui">
 
+    <ui:with field="i18n" type="org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants"/>
+
     <b:Container fluid="true">
         <b:Row>
             <b:Column size="MD_12">
                 <b:Form type="HORIZONTAL">
 
                     <b:FormGroup>
-                        <b:FormLabel for="generatorType" addStyleNames="col-md-3">
+                        <b:FormLabel for="generatorType" text="{i18n.persistence_domain_id_generator_dialog_generator_type}" addStyleNames="col-md-3">
                             Generator type
                         </b:FormLabel>
                         <b:Column size="MD_9">
@@ -36,11 +38,11 @@
                     </b:FormGroup>
 
                     <b:FormGroup>
-                        <b:FormLabel for="generatorName" addStyleNames="col-md-3">
+                        <b:FormLabel for="generatorName" text="{i18n.persistence_domain_id_generator_dialog_generator_name}" addStyleNames="col-md-3">
                             Generator name
                         </b:FormLabel>
                         <b:Column size="MD_9">
-                            <b:TextBox b:id="generatorNameLabel" ui:field="generatorName" placeholder="generator name"/>
+                            <b:TextBox b:id="generatorNameLabel" ui:field="generatorName" placeholder="{i18n.persistence_domain_id_generator_dialog_generator_name_placeholder}"/>
                         </b:Column>
                     </b:FormGroup>
 

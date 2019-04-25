@@ -17,6 +17,7 @@
 package org.kie.workbench.common.screens.datamodeller.client;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -24,6 +25,7 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.guvnor.messageconsole.events.PublishBaseEvent;
 import org.guvnor.messageconsole.events.PublishBatchMessagesEvent;
@@ -227,7 +229,7 @@ public class DataModelerScreenPresenter
             dataModelerFocusEvent.fire(new DataModelerWorkbenchFocusEvent().lostFocus());
         }
     }
-    
+
     @Override
     protected String getEditorIdentifier() {
         return EDITOR_ID;
@@ -727,7 +729,7 @@ public class DataModelerScreenPresenter
                 uiStarted = true;
 
                 initContext(content);
-                javaSourceEditor.setReadonly(isReadOnly || !sourceEditionEnabled);
+                javaSourceEditor.setReadonly(isReadOnly() || !sourceEditionEnabled);
                 javaSourceEditor.setContent(content.getSource());
 
                 view.hideBusyIndicator();
@@ -903,7 +905,7 @@ public class DataModelerScreenPresenter
             dataModelerWBContext.setPropertyTypes(content.getPropertyTypes());
         }
 
-        context.setReadonly(isReadOnly);
+        context.setReadonly(isReadOnly());
         context.setEditorModelContent(content);
         context.setAnnotationDefinitions(dataModelerWBContext.getAnnotationDefinitions());
         context.init(dataModelerWBContext.getPropertyTypes());
@@ -1251,6 +1253,15 @@ public class DataModelerScreenPresenter
                                                                  false,
                                                                  true));
         }
+    }
+
+    private boolean isReadOnly() {
+        boolean result = super.isReadOnly;
+        Optional<WorkspaceProject> workspaceProject = workbenchContext.getActiveWorkspaceProject();
+        if (workspaceProject.isPresent()) {
+            result = result || !projectController.canUpdateProject(workspaceProject.get());
+        }
+        return result;
     }
 
     public interface DataModelerScreenView

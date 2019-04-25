@@ -477,7 +477,77 @@ public interface Constants extends Messages {
 
     String persistence_domain_fieldEditor_relationship_field_help();
 
-    String persistence_domain_fieldEditor_relationship_field_relation_not_set_message();
+    String persistence_domain_id_generator_dialog_title();
+
+    String persistence_domain_id_generator_dialog_generator_type();
+
+    String persistence_domain_id_generator_dialog_generator_name();
+
+    String persistence_domain_id_generator_dialog_generator_name_placeholder();
+
+    String persistence_domain_id_generator_dialog_not_configured_label();
+
+    String persistence_domain_id_generator_dialog_not_configured_option_label();
+
+    String persistence_domain_relationship_edition_dialog_title();
+
+    String persistence_domain_relationship_edition_dialog_relationship_type();
+
+    String persistence_domain_relationship_edition_dialog_cascade_mode();
+
+    String persistence_domain_relationship_edition_dialog_cascade_all();
+
+    String persistence_domain_relationship_edition_dialog_cascade_persist();
+
+    String persistence_domain_relationship_edition_dialog_cascade_merge();
+
+    String persistence_domain_relationship_edition_dialog_cascade_remove();
+
+    String persistence_domain_relationship_edition_dialog_cascade_refresh();
+
+    String persistence_domain_relationship_edition_dialog_cascade_detach();
+
+    String persistence_domain_relationship_edition_dialog_fetch_mode();
+
+    String persistence_domain_relationship_edition_dialog_optional();
+
+    String persistence_domain_relationship_edition_dialog_mapped_by();
+
+    String persistence_domain_relationship_edition_dialog_mapped_by_placeholder();
+
+    String persistence_domain_relationship_edition_dialog_remove_orphans();
+
+    String persistence_domain_relationship_edition_dialog_value_one_to_one();
+
+    String persistence_domain_relationship_edition_dialog_value_one_to_many();
+
+    String persistence_domain_relationship_edition_dialog_value_many_to_one();
+
+    String persistence_domain_relationship_edition_dialog_value_many_to_many();
+
+    String persistence_domain_relationship_edition_dialog_not_configured_label();
+
+    String persistence_domain_relationship_edition_dialog_value_not_configured_option_label();
+
+    String persistence_domain_relationship_sequence_generator_dialog_title();
+
+    String persistence_domain_relationship_sequence_generator_dialog_generator_name();
+
+    String persistence_domain_relationship_sequence_generator_dialog_sequence_name();
+
+    String persistence_domain_relationship_sequence_generator_dialog_initial_value();
+
+    String persistence_domain_relationship_sequence_generator_dialog_initial_value_placeholder();
+
+    String persistence_domain_relationship_sequence_generator_dialog_allocation_size();
+
+    String persistence_domain_relationship_sequence_generator_dialog_allocation_size_placeholder();
+
+    String persistence_domain_relationship_sequence_generator_dialog_initial_value_error();
+
+    String persistence_domain_relationship_sequence_generator_dialog_allocation_size_error();
+
+    String persistence_domain_relationship_sequence_generator_dialog_not_configured_label();
 
     //persistence descriptor editor i18n
 

@@ -45,6 +45,7 @@ import org.uberfire.workbench.model.menu.MenuItem;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyListOf;
 import static org.mockito.Mockito.anyString;
@@ -693,5 +694,27 @@ public class DataModelerScreenPresenterTest
 
         verify(docks).hide();
         verify(dataModelerFocusEvent).fire(any());
+    }
+
+    @Test
+    public void testReadonlyForUpdatableProjectTrue() {
+        testReadonlyForUpdatableProject(true);
+    }
+
+    @Test
+    public void testReadonlyForUpdatableProjectFalse() {
+        testReadonlyForUpdatableProject(true);
+    }
+
+    public void testReadonlyForUpdatableProject(boolean isUpdatable) {
+        when(authorizationManager.authorize(anyString(), anyObject())).thenReturn(true);
+        WorkspaceProject workspaceProject = mock(WorkspaceProject.class);
+
+        Optional<WorkspaceProject> workspaceProjectOptional = Optional.of(workspaceProject);
+        when(workbenchContext.getActiveWorkspaceProject()).thenReturn(workspaceProjectOptional);
+        when(projectController.canUpdateProject(workspaceProject)).thenReturn(isUpdatable);
+        loadFileSuccessfulTest(true);
+        verify(javaSourceEditor).setReadonly(!isUpdatable);
+        assertEquals(!isUpdatable, presenter.context.isReadonly());
     }
 }

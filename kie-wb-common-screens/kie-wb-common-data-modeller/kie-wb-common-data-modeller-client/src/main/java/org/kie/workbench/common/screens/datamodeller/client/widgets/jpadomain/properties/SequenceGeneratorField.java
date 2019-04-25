@@ -17,24 +17,28 @@
 package org.kie.workbench.common.screens.datamodeller.client.widgets.jpadomain.properties;
 
 import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.GWT;
+import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.common.properties.BasePopupField;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.common.properties.BasePopupPropertyEditorWidget;
-import org.uberfire.ext.properties.editor.model.PropertyEditorChangeEvent;
 import org.uberfire.ext.properties.editor.model.PropertyEditorFieldInfo;
 
 @Dependent
 public class SequenceGeneratorField extends BasePopupField {
 
-    @Inject
-    Event<PropertyEditorChangeEvent> propertyEditorChangeEvent;
+    public static final String NOT_CONFIGURED_LABEL = Constants.INSTANCE.persistence_domain_relationship_sequence_generator_dialog_not_configured_label();
 
-    @Override protected BasePopupPropertyEditorWidget createPopupPropertyEditor( PropertyEditorFieldInfo property ) {
-        final BasePopupPropertyEditorWidget widget = GWT.create( SequenceGeneratorEditorWidget.class );
-        widget.setProperty( property );
+    private SequenceGeneratorEditorWidget widget;
+
+    @Inject
+    public SequenceGeneratorField(SequenceGeneratorEditorWidget widget) {
+        this.widget = widget;
+    }
+
+    @Override
+    protected BasePopupPropertyEditorWidget createPopupPropertyEditor(PropertyEditorFieldInfo property) {
+        widget.setProperty(property);
         return widget;
     }
 }

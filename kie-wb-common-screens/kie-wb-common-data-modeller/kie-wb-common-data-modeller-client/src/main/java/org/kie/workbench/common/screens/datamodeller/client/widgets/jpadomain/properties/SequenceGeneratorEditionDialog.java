@@ -15,181 +15,186 @@
  */
 package org.kie.workbench.common.screens.datamodeller.client.widgets.jpadomain.properties;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import org.gwtbootstrap3.client.shared.event.ModalHiddenEvent;
-import org.gwtbootstrap3.client.shared.event.ModalHiddenHandler;
-import org.gwtbootstrap3.client.ui.ModalBody;
-import org.gwtbootstrap3.client.ui.TextBox;
 import org.kie.workbench.common.screens.datamodeller.client.handlers.jpadomain.util.SequenceGeneratorValueHandler;
 import org.kie.workbench.common.screens.datamodeller.client.model.DataModelerPropertyEditorFieldInfo;
+import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.common.properties.PropertyEditionPopup;
 import org.uberfire.ext.properties.editor.model.PropertyEditorFieldInfo;
-import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
-import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
 
+@Dependent
 public class SequenceGeneratorEditionDialog
-        extends BaseModal implements PropertyEditionPopup {
+        implements PropertyEditionPopup {
 
-    @UiField
-    TextBox generatorName;
+    public interface View extends IsWidget {
 
-    @UiField
-    TextBox sequenceName;
+        void init(SequenceGeneratorEditionDialog presenter);
 
-    @UiField
-    TextBox initialValue;
+        String getGeneratorName();
 
-    @UiField
-    TextBox allocationSize;
+        void setGeneratorName(String generatorName);
 
-    private Boolean revertChanges = Boolean.TRUE;
+        String getSequenceName();
 
-    PropertyEditorFieldInfo property;
+        void setSequenceName(String sequenceName);
 
-    Command okCommand;
+        String getInitialValue();
 
-    interface Binder
-            extends
-            UiBinder<Widget, SequenceGeneratorEditionDialog> {
+        void setInitialValue(String initialValue);
 
+        void setInitialValueError(String error);
+
+        void clearInitialValueError();
+
+        String getAllocationSize();
+
+        void setAllocationSize(String allocationSize);
+
+        void setAllocationSizeError(String error);
+
+        void clearAllocationSizeError();
+
+        void setEnabled(boolean enabled);
+
+        void enableOkAction(boolean enabled);
+
+        void show();
+
+        void hide();
     }
 
-    private static Binder uiBinder = GWT.create( Binder.class );
+    private View view;
 
-    public SequenceGeneratorEditionDialog() {
-        setTitle( "Sequence Generator" );
-        //setMaxHeigth( "450px" );
-        add( new ModalBody() {{
-            add( uiBinder.createAndBindUi( SequenceGeneratorEditionDialog.this ) );
-        }} );
+    private PropertyEditorFieldInfo property;
 
-        add( new ModalFooterOKCancelButtons(
-                        new Command() {
-                            @Override
-                            public void execute() {
-                                okButton();
-                            }
-                        },
-                        new Command() {
-                            @Override
-                            public void execute() {
-                                cancelButton();
-                            }
-                        }
-                )
-        );
+    private Command okCommand;
 
+    @Inject
+    public SequenceGeneratorEditionDialog(View view) {
+        this.view = view;
     }
 
-    private void addHiddlenHandler() {
-        addHiddenHandler( new ModalHiddenHandler() {
-            @Override
-            public void onHidden( ModalHiddenEvent hiddenEvent ) {
-                if ( userPressCloseOrCancel() ) {
-                    revertChanges();
-                }
-            }
-        } );
+    @PostConstruct
+    void init() {
+        view.init(this);
     }
 
-    private void revertChanges() {
-
+    @Override
+    public Widget asWidget() {
+        return view.asWidget();
     }
 
-    private boolean userPressCloseOrCancel() {
-        return revertChanges;
-    }
-
+    @Override
     public void show() {
 
         DataModelerPropertyEditorFieldInfo fieldInfo = (DataModelerPropertyEditorFieldInfo) property;
 
-        String sequenceName = (String) fieldInfo.getCurrentValue( SequenceGeneratorValueHandler.SEQUENCE_NAME );
-        String generatorName = (String) fieldInfo.getCurrentValue( SequenceGeneratorValueHandler.NAME );
-        Object initialValue = fieldInfo.getCurrentValue( SequenceGeneratorValueHandler.INITIAL_VALUE );
-        Object allocationSize = fieldInfo.getCurrentValue( SequenceGeneratorValueHandler.ALLOCATION_SIZE );
+        String sequenceName = (String) fieldInfo.getCurrentValue(SequenceGeneratorValueHandler.SEQUENCE_NAME);
+        String generatorName = (String) fieldInfo.getCurrentValue(SequenceGeneratorValueHandler.NAME);
+        Object initialValue = fieldInfo.getCurrentValue(SequenceGeneratorValueHandler.INITIAL_VALUE);
+        Object allocationSize = fieldInfo.getCurrentValue(SequenceGeneratorValueHandler.ALLOCATION_SIZE);
 
-        this.sequenceName.setText( sequenceName );
-        this.generatorName.setText( generatorName );
-        this.initialValue.setText( initialValue != null ? initialValue.toString() : null );
-        this.allocationSize.setText( allocationSize != null ? allocationSize.toString() : null );
+        view.setSequenceName(sequenceName);
+        view.setGeneratorName(generatorName);
+        view.setInitialValue(initialValue != null ? initialValue.toString() : null);
+        view.clearInitialValueError();
+        view.setAllocationSize(allocationSize != null ? allocationSize.toString() : null);
+        view.clearAllocationSizeError();
 
-        super.show();
-    }
-
-    public void setOkCommand( Command okCommand ) {
-        this.okCommand = okCommand;
-    }
-
-    public void setProperty( PropertyEditorFieldInfo property ) {
-        this.property = property;
-    }
-
-    void okButton() {
-
-        //TODO add validation in order to establish if the ok operation can be performed. If validation is ok,
-        // then new current values can be set.
-
-        DataModelerPropertyEditorFieldInfo fieldInfo = (DataModelerPropertyEditorFieldInfo) property;
-
-        String sequenceName = this.sequenceName.getText();
-        String generatorName = this.generatorName.getText();
-
-        fieldInfo.setCurrentValue( SequenceGeneratorValueHandler.SEQUENCE_NAME, sequenceName );
-        fieldInfo.setCurrentValue( SequenceGeneratorValueHandler.NAME, generatorName );
-        fieldInfo.setCurrentValue( SequenceGeneratorValueHandler.INITIAL_VALUE, getInitialValue() );
-        fieldInfo.setCurrentValue( SequenceGeneratorValueHandler.ALLOCATION_SIZE, getAllocationSize() );
-
-        super.hide();
-        revertChanges = Boolean.FALSE;
-        if ( okCommand != null ) {
-            okCommand.execute();
-        }
-
-    }
-
-    private Integer getInitialValue() {
-        return parseInt( initialValue.getText() );
-    }
-
-    private Integer getAllocationSize() {
-        return parseInt( allocationSize.getText() );
-    }
-
-    private Integer parseInt( String value ) {
-        Integer result = null;
-        if ( value != null && !"".equals( value.trim() )) {
-            try {
-                result = Integer.parseInt( value.trim() );
-            } catch ( Exception e ) {
-            }
-        }
-        return result;
-    }
-
-    void cancelButton() {
-        super.hide();
+        view.setEnabled(!fieldInfo.isDisabled());
+        view.show();
     }
 
     @Override
-    public void hide() {
-        super.hide();
+    public void setOkCommand(Command okCommand) {
+        this.okCommand = okCommand;
+    }
+
+    @Override
+    public void setProperty(PropertyEditorFieldInfo property) {
+        this.property = property;
+    }
+
+    void onOK() {
+        DataModelerPropertyEditorFieldInfo fieldInfo = (DataModelerPropertyEditorFieldInfo) property;
+        fieldInfo.clearCurrentValues();
+        String generatorName = view.getGeneratorName();
+        if (generatorName != null && !generatorName.isEmpty()) {
+            fieldInfo.setCurrentValue(SequenceGeneratorValueHandler.NAME, generatorName);
+            fieldInfo.setCurrentValue(SequenceGeneratorValueHandler.SEQUENCE_NAME, view.getSequenceName());
+            fieldInfo.setCurrentValue(SequenceGeneratorValueHandler.INITIAL_VALUE, getInitialValue());
+            fieldInfo.setCurrentValue(SequenceGeneratorValueHandler.ALLOCATION_SIZE, getAllocationSize());
+        }
+
+        view.hide();
+        if (okCommand != null) {
+            okCommand.execute();
+        }
+    }
+
+    private Integer getInitialValue() {
+        return isNotEmpty(view.getInitialValue()) ? Integer.parseInt(view.getInitialValue().trim()) : null;
+    }
+
+    private Integer getAllocationSize() {
+        return isNotEmpty(view.getAllocationSize()) ? Integer.parseInt(view.getAllocationSize().trim()) : null;
+    }
+
+    void onCancel() {
+        view.hide();
+    }
+
+    void onInitialValueChange() {
+        view.clearInitialValueError();
+        view.enableOkAction(true);
+        if (isInvalidValidInteger(view.getInitialValue())) {
+            view.enableOkAction(false);
+            view.setInitialValueError(Constants.INSTANCE.persistence_domain_relationship_sequence_generator_dialog_initial_value_error());
+        }
+    }
+
+    void onAllocationSizeChange() {
+        view.clearAllocationSizeError();
+        view.enableOkAction(true);
+        if (isInvalidValidInteger(view.getAllocationSize())) {
+            view.enableOkAction(false);
+            view.setAllocationSizeError(Constants.INSTANCE.persistence_domain_relationship_sequence_generator_dialog_allocation_size_error());
+        }
     }
 
     @Override
     public String getStringValue() {
         //return the value to show in the property editor simple text field.
-        String value = generatorName.getText();
-        if ( value == null || "".equals( value ) ) value = "NOT_SET";
+        String value = view.getGeneratorName();
+        if (value == null || value.isEmpty()) {
+            value = SequenceGeneratorField.NOT_CONFIGURED_LABEL;
+        }
         return value;
     }
 
     @Override
-    public void setStringValue( String value ) {
+    public void setStringValue(String value) {
         //do nothing
+    }
+
+    private static boolean isInvalidValidInteger(String value) {
+        if (isNotEmpty(value)) {
+            try {
+                Integer.parseInt(value.trim());
+            } catch (Exception e) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean isNotEmpty(String value) {
+        return value != null && !value.isEmpty();
     }
 }

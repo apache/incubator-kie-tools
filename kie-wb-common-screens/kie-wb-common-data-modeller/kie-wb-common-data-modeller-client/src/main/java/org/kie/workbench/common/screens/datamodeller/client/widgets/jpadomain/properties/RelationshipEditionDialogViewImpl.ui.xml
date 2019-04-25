@@ -22,61 +22,63 @@
              xmlns:b="urn:import:org.gwtbootstrap3.client.ui"
              xmlns:select="urn:import:org.gwtbootstrap3.extras.select.client.ui">
 
+    <ui:with field="i18n" type="org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants"/>
+
     <b:Container fluid="true">
         <b:Row>
             <b:Column size="MD_12">
                 <b:Form type="HORIZONTAL">
 
                     <b:FormGroup>
-                        <b:FormLabel for="relationType" addStyleNames="col-md-3">Relationship type</b:FormLabel>
+                        <b:FormLabel for="relationType" text="{i18n.persistence_domain_relationship_edition_dialog_relationship_type}" addStyleNames="col-md-3">Relationship type</b:FormLabel>
                         <b:Column size="MD_9">
                             <select:Select b:id="relationTypeLabel" ui:field="relationType"/>
                         </b:Column>
                     </b:FormGroup>
 
                     <b:FormGroup>
-                        <b:FormLabel for="cascadeAll" addStyleNames="col-md-3">Cascade mode</b:FormLabel>
+                        <b:FormLabel for="cascadeAll" text="{i18n.persistence_domain_relationship_edition_dialog_cascade_mode}"  addStyleNames="col-md-3">Cascade mode</b:FormLabel>
                         <b:Column size="MD_9">
                             <g:HorizontalPanel>
-                                <b:CheckBox b:id="cascadeAllLabel" ui:field="cascadeAll" text="All"></b:CheckBox>
+                                <b:CheckBox b:id="cascadeAllLabel" ui:field="cascadeAll" text="{i18n.persistence_domain_relationship_edition_dialog_cascade_all}"></b:CheckBox>
                                 <g:HTML>&nbsp;&nbsp;</g:HTML>
-                                <b:CheckBox ui:field="cascadePersist" text="Persist"></b:CheckBox>
+                                <b:CheckBox ui:field="cascadePersist" text="{i18n.persistence_domain_relationship_edition_dialog_cascade_persist}"></b:CheckBox>
                                 <g:HTML>&nbsp;&nbsp;</g:HTML>
-                                <b:CheckBox ui:field="cascadeMerge" text="Merge"></b:CheckBox>
+                                <b:CheckBox ui:field="cascadeMerge" text="{i18n.persistence_domain_relationship_edition_dialog_cascade_merge}"></b:CheckBox>
                                 <g:HTML>&nbsp;&nbsp;</g:HTML>
-                                <b:CheckBox ui:field="cascadeRemove" text="Remove"></b:CheckBox>
+                                <b:CheckBox ui:field="cascadeRemove" text="{i18n.persistence_domain_relationship_edition_dialog_cascade_remove}"></b:CheckBox>
                                 <g:HTML>&nbsp;&nbsp;</g:HTML>
-                                <b:CheckBox ui:field="cascadeRefresh" text="Refresh"></b:CheckBox>
+                                <b:CheckBox ui:field="cascadeRefresh" text="{i18n.persistence_domain_relationship_edition_dialog_cascade_refresh}"></b:CheckBox>
                                 <g:HTML>&nbsp;&nbsp;</g:HTML>
-                                <b:CheckBox ui:field="cascadeDetach" text="Detach"></b:CheckBox>
+                                <b:CheckBox ui:field="cascadeDetach" text="{i18n.persistence_domain_relationship_edition_dialog_cascade_detach}"></b:CheckBox>
                                 <g:HTML>&nbsp;&nbsp;</g:HTML>
                             </g:HorizontalPanel>
                         </b:Column>
                     </b:FormGroup>
 
                     <b:FormGroup>
-                        <b:FormLabel for="fetchMode" addStyleNames="col-md-3">Fetch mode</b:FormLabel>
+                        <b:FormLabel for="fetchMode" text="{i18n.persistence_domain_relationship_edition_dialog_fetch_mode}" addStyleNames="col-md-3">Fetch mode</b:FormLabel>
                         <b:Column size="MD_9">
                             <select:Select b:id="fetchModeLabel" ui:field="fetchMode"/>
                         </b:Column>
                     </b:FormGroup>
 
                     <b:FormGroup>
-                        <b:FormLabel for="optional" ui:field="optionalLabel" text="Optional" addStyleNames="col-md-3"/>
+                        <b:FormLabel for="optional" ui:field="optionalLabel" text="{i18n.persistence_domain_relationship_edition_dialog_optional}" addStyleNames="col-md-3"/>
                         <b:Column size="MD_9">
                             <b:CheckBox b:id="optionalLabel" ui:field="optional"/>
                         </b:Column>
                     </b:FormGroup>
 
                     <b:FormGroup>
-                        <b:FormLabel for="mappedBy" ui:field="mappedByLabel" text="Mapped by" addStyleNames="col-md-3"/>
+                        <b:FormLabel for="mappedBy" ui:field="mappedByLabel" text="{i18n.persistence_domain_relationship_edition_dialog_mapped_by}" addStyleNames="col-md-3"/>
                         <b:Column size="MD_9">
-                            <b:TextBox b:id="mappedByLabel" ui:field="mappedBy" placeholder="field name"/>
+                            <b:TextBox b:id="mappedByLabel" ui:field="mappedBy" placeholder="{i18n.persistence_domain_relationship_edition_dialog_mapped_by_placeholder}"/>
                         </b:Column>
                     </b:FormGroup>
 
                     <b:FormGroup>
-                        <b:FormLabel for="orphanRemoval" ui:field="orphanRemovalLabel" text="Remove Orphans" addStyleNames="col-md-3"/>
+                        <b:FormLabel for="orphanRemoval" ui:field="orphanRemovalLabel" text="{i18n.persistence_domain_relationship_edition_dialog_remove_orphans}" addStyleNames="col-md-3"/>
                         <b:Column size="MD_9">
                             <b:CheckBox b:id="orphanRemovalLabel" ui:field="orphanRemoval"></b:CheckBox>
                         </b:Column>

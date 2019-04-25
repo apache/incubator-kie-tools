@@ -16,16 +16,26 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.widgets.jpadomain.properties;
 
-import com.google.gwt.core.client.GWT;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import org.kie.workbench.common.screens.datamodeller.client.widgets.common.properties.BasePopupPropertyEditorWidget;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.common.properties.PropertyEditionPopup;
 import org.uberfire.ext.properties.editor.model.PropertyEditorFieldInfo;
 
+@Dependent
 public class RelationshipEditorWidget extends BasePopupPropertyEditorWidget {
 
-    @Override protected PropertyEditionPopup createEditionPopup( PropertyEditorFieldInfo property ) {
-        final PropertyEditionPopup popup = GWT.create( RelationshipEditionDialog.class );
-        popup.setProperty( property );
+    private RelationshipEditionDialog popup;
+
+    @Inject
+    public RelationshipEditorWidget(RelationshipEditionDialog popup) {
+        this.popup = popup;
+    }
+
+    @Override
+    protected PropertyEditionPopup createEditionPopup(PropertyEditorFieldInfo property) {
+        popup.setProperty(property);
         return popup;
     }
 }

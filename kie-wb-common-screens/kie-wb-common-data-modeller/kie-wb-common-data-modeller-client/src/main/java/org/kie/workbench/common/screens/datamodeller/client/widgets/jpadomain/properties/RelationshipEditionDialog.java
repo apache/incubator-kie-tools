@@ -19,19 +19,13 @@ package org.kie.workbench.common.screens.datamodeller.client.widgets.jpadomain.p
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import org.gwtbootstrap3.client.shared.event.ModalHiddenEvent;
-import org.gwtbootstrap3.client.shared.event.ModalHiddenHandler;
-import org.gwtbootstrap3.client.ui.CheckBox;
-import org.gwtbootstrap3.client.ui.FormLabel;
-import org.gwtbootstrap3.client.ui.TextBox;
-import org.gwtbootstrap3.extras.select.client.ui.Select;
 import org.kie.workbench.common.screens.datamodeller.client.model.DataModelerPropertyEditorFieldInfo;
 import org.kie.workbench.common.screens.datamodeller.client.util.UIUtil;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.common.properties.PropertyEditionPopup;
@@ -39,360 +33,314 @@ import org.kie.workbench.common.screens.datamodeller.model.jpadomain.CascadeType
 import org.kie.workbench.common.screens.datamodeller.model.jpadomain.FetchMode;
 import org.kie.workbench.common.screens.datamodeller.model.jpadomain.RelationType;
 import org.uberfire.ext.properties.editor.model.PropertyEditorFieldInfo;
-import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
-import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
 
-import static org.kie.workbench.common.screens.datamodeller.client.handlers.jpadomain.util.RelationshipAnnotationValueHandler.*;
+import static org.kie.workbench.common.screens.datamodeller.client.handlers.jpadomain.util.RelationshipAnnotationValueHandler.CASCADE;
+import static org.kie.workbench.common.screens.datamodeller.client.handlers.jpadomain.util.RelationshipAnnotationValueHandler.FETCH;
+import static org.kie.workbench.common.screens.datamodeller.client.handlers.jpadomain.util.RelationshipAnnotationValueHandler.MAPPED_BY;
+import static org.kie.workbench.common.screens.datamodeller.client.handlers.jpadomain.util.RelationshipAnnotationValueHandler.OPTIONAL;
+import static org.kie.workbench.common.screens.datamodeller.client.handlers.jpadomain.util.RelationshipAnnotationValueHandler.ORPHAN_REMOVAL;
+import static org.kie.workbench.common.screens.datamodeller.client.handlers.jpadomain.util.RelationshipAnnotationValueHandler.RELATION_TYPE;
 
+@Dependent
 public class RelationshipEditionDialog
-        extends BaseModal implements PropertyEditionPopup {
+        implements PropertyEditionPopup {
 
-    @UiField
-    Select relationType;
+    public interface View extends IsWidget {
 
-    @UiField
-    Select fetchMode;
+        void init(RelationshipEditionDialog presenter);
 
-    @UiField
-    CheckBox optional;
+        String getRelationType();
 
-    @UiField
-    FormLabel optionalLabel;
+        void setRelationType(String relationType);
 
-    @UiField
-    FormLabel mappedByLabel;
+        String getFetchMode();
 
-    @UiField
-    TextBox mappedBy;
+        void setFetchMode(String fetchMode);
 
-    @UiField
-    FormLabel orphanRemovalLabel;
+        boolean getOptional();
 
-    @UiField
-    CheckBox orphanRemoval;
+        void setOptional(boolean optional);
 
-    @UiField
-    CheckBox cascadeAll;
+        String getMappedBy();
 
-    @UiField
-    CheckBox cascadePersist;
+        void setMappedBy(String mappedBy);
 
-    @UiField
-    CheckBox cascadeMerge;
+        boolean getOrphanRemoval();
 
-    @UiField
-    CheckBox cascadeRemove;
+        void setOrphanRemoval(boolean orphanRemoval);
 
-    @UiField
-    CheckBox cascadeRefresh;
+        boolean getCascadeAll();
 
-    @UiField
-    CheckBox cascadeDetach;
+        void setCascadeAll(boolean cascadeAll);
 
-    private Boolean revertChanges = Boolean.TRUE;
+        boolean getCascadePersist();
 
-    PropertyEditorFieldInfo property;
+        void setCascadePersist(boolean cascadePersist);
 
-    Command okCommand;
+        boolean getCascadeMerge();
+
+        void setCascadeMerge(boolean cascadeMerge);
+
+        boolean getCascadeRemove();
+
+        void setCascadeRemove(boolean cascadeRemove);
+
+        boolean getCascadeRefresh();
+
+        void setCascadeRefresh(boolean cascadeRefresh);
+
+        boolean getCascadeDetach();
+
+        void setCascadeDetach(boolean cascadeDetach);
+
+        void setEnabled(boolean enabled);
+
+        void enableCascadeAll(boolean enabled);
+
+        void enableCascadePersist(boolean enabled);
+
+        void enableCascadeMerge(boolean enabled);
+
+        void enableCascadeRemove(boolean enable);
+
+        void enableCascadeRefresh(boolean enable);
+
+        void enableCascadeDetach(boolean enable);
+
+        void setOptionalVisible(boolean visible);
+
+        void setOrphanRemovalVisible(boolean visible);
+
+        void setMappedByVisible(boolean visible);
+
+        void show();
+
+        void hide();
+    }
+
+    private View view;
+
+    private PropertyEditorFieldInfo property;
+
+    private Command okCommand;
 
     private boolean cascadeAllWasClicked = false;
 
-    interface Binder
-            extends
-            UiBinder<Widget, RelationshipEditionDialog> {
-
+    @Inject
+    public RelationshipEditionDialog(View view) {
+        this.view = view;
     }
 
-    private static Binder uiBinder = GWT.create( Binder.class );
-
-    public RelationshipEditionDialog() {
-        setTitle( "Relationship configuration" );
-
-        setBody( uiBinder.createAndBindUi( RelationshipEditionDialog.this ) );
-
-        add( new ModalFooterOKCancelButtons(
-                     new Command() {
-                         @Override
-                         public void execute() {
-                             okButton();
-                         }
-                     },
-                     new Command() {
-                         @Override
-                         public void execute() {
-                             cancelButton();
-                         }
-                     }
-             )
-           );
-
-        relationType.add( UIUtil.newOption( "Not set", UIUtil.NOT_SELECTED ) );
-        relationType.add( UIUtil.newOption( "One to One", RelationType.ONE_TO_ONE.name() ) );
-        relationType.add( UIUtil.newOption( "One to Many", RelationType.ONE_TO_MANY.name() ) );
-        relationType.add( UIUtil.newOption( "Many to One", RelationType.MANY_TO_ONE.name() ) );
-        relationType.add( UIUtil.newOption( "Many to Many", RelationType.MANY_TO_MANY.name() ) );
-
-        relationType.addValueChangeHandler( e -> relationTypeChanged() );
-
-        fetchMode.add( UIUtil.newOption( "EAGER", FetchMode.EAGER.name() ) );
-        fetchMode.add( UIUtil.newOption( "LAZY", FetchMode.LAZY.name() ) );
-
-    }
-
-    private void relationTypeChanged() {
-        String strValue = relationType.getValue();
-        if ( UIUtil.NOT_SELECTED.equals( strValue ) ) {
-            //clean();
-        } else {
-            RelationType type = RelationType.valueOf( relationType.getValue() );
-            enableRelationDependentFields( type );
-        }
-    }
-
-    private void enableRelationDependentFields( RelationType relationType ) {
-        if ( relationType != null ) {
-            switch ( relationType ) {
-                case ONE_TO_ONE:
-                    enableOptional( true );
-                    enableMappedBy( true );
-                    enableOrphanRemoval( true );
-                    break;
-                case ONE_TO_MANY:
-                    enableOptional( false );
-                    enableMappedBy( true );
-                    enableOrphanRemoval( true );
-                    break;
-                case MANY_TO_ONE:
-                    enableOptional( true );
-                    enableMappedBy( false );
-                    enableOrphanRemoval( false );
-                    break;
-                case MANY_TO_MANY:
-                    enableOptional( false );
-                    enableMappedBy( true );
-                    enableOrphanRemoval( false );
-            }
-        }
-    }
-
-    private void enableOptional( boolean value ) {
-        optionalLabel.setVisible( value );
-        optional.setVisible( value );
-    }
-
-    private void enableOrphanRemoval( boolean value ) {
-        orphanRemovalLabel.setVisible( value );
-        orphanRemoval.setVisible( value );
-    }
-
-    private void enableMappedBy( boolean value ) {
-        mappedByLabel.setVisible( value );
-        mappedBy.setVisible( value );
-    }
-
-    private void addHiddlenHandler() {
-        addHiddenHandler( new ModalHiddenHandler() {
-            @Override
-            public void onHidden( ModalHiddenEvent hiddenEvent ) {
-                if ( userPressCloseOrCancel() ) {
-                    revertChanges();
-                }
-            }
-        } );
-    }
-
-    private void revertChanges() {
-
-    }
-
-    private boolean userPressCloseOrCancel() {
-        return revertChanges;
-    }
-
-    public void show() {
-
-        DataModelerPropertyEditorFieldInfo fieldInfo = (DataModelerPropertyEditorFieldInfo) property;
-
-        RelationType relationTypeValue = (RelationType) fieldInfo.getCurrentValue( RELATION_TYPE );
-
-        if ( relationTypeValue != null ) {
-            UIUtil.setSelectedValue( relationType, relationTypeValue.name() );
-        } else {
-            UIUtil.setSelectedValue( relationType, UIUtil.NOT_SELECTED );
-        }
-
-        enableRelationDependentFields( relationTypeValue );
-
-        cascadeAllWasClicked = false;
-        setCascadeTypes( (List<CascadeType>) fieldInfo.getCurrentValue( CASCADE ) );
-        enableCascadeTypes( true, true );
-
-        FetchMode fetchModeValue = (FetchMode) fieldInfo.getCurrentValue( FETCH );
-
-        if ( fetchModeValue != null ) {
-            UIUtil.setSelectedValue( fetchMode, fetchModeValue.name() );
-        } else {
-            UIUtil.setSelectedValue( fetchMode, UIUtil.NOT_SELECTED );
-        }
-
-        String mappedBy = (String) fieldInfo.getCurrentValue( MAPPED_BY );
-        this.mappedBy.setText( mappedBy );
-
-        Boolean orphanRemovalValue = (Boolean) fieldInfo.getCurrentValue( ORPHAN_REMOVAL );
-        if ( orphanRemovalValue != null ) {
-            orphanRemoval.setValue( orphanRemovalValue );
-        }
-
-        super.show();
-    }
-
-    public void setOkCommand( Command okCommand ) {
-        this.okCommand = okCommand;
-    }
-
-    public void setProperty( PropertyEditorFieldInfo property ) {
-        this.property = property;
-    }
-
-    void okButton() {
-
-        //TODO add validation in order to establish if the ok operation can be performed. If validation is ok,
-        // then new current values can be set.
-
-        DataModelerPropertyEditorFieldInfo fieldInfo = (DataModelerPropertyEditorFieldInfo) property;
-
-        String relationTypeValueStr = relationType.getValue();
-
-        fieldInfo.removeCurrentValue( RELATION_TYPE );
-        fieldInfo.removeCurrentValue( CASCADE );
-        fieldInfo.removeCurrentValue( FETCH );
-        fieldInfo.removeCurrentValue( OPTIONAL );
-        fieldInfo.removeCurrentValue( MAPPED_BY );
-        fieldInfo.removeCurrentValue( ORPHAN_REMOVAL );
-
-        if ( !relationTypeValueStr.equals( UIUtil.NOT_SELECTED ) ) {
-            fieldInfo.setCurrentValue( RELATION_TYPE, RelationType.valueOf( relationType.getValue() ) );
-            fieldInfo.setCurrentValue( CASCADE, getCascadeTypes() );
-            fieldInfo.setCurrentValue( FETCH, FetchMode.valueOf( fetchMode.getValue() ) );
-
-            if ( relationType.getValue().equals( RelationType.ONE_TO_ONE.name() ) ||
-                    relationType.getValue().equals( RelationType.MANY_TO_ONE.name() ) ) {
-                fieldInfo.setCurrentValue( OPTIONAL, optional.getValue() );
-            }
-
-            if ( relationType.getValue().equals( RelationType.ONE_TO_ONE.name() ) ||
-                    relationType.getValue().equals( RelationType.ONE_TO_MANY.name() ) ||
-                    relationType.getValue().equals( RelationType.MANY_TO_MANY.name() ) ) {
-                fieldInfo.setCurrentValue( MAPPED_BY, mappedBy.getText() );
-            }
-
-            if ( relationType.getValue().equals( RelationType.ONE_TO_ONE.name() ) ||
-                    relationType.getValue().equals( RelationType.ONE_TO_MANY.name() ) ) {
-                fieldInfo.setCurrentValue( ORPHAN_REMOVAL, orphanRemoval.getValue() );
-            }
-        } else {
-            fieldInfo.setCurrentValue( RELATION_TYPE, null );
-        }
-
-        super.hide();
-        revertChanges = Boolean.FALSE;
-        if ( okCommand != null ) {
-            okCommand.execute();
-        }
-    }
-
-    void cancelButton() {
-        super.hide();
+    @PostConstruct
+    void init() {
+        view.init(this);
     }
 
     @Override
-    public void hide() {
-        super.hide();
+    public Widget asWidget() {
+        return view.asWidget();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public void show() {
+        DataModelerPropertyEditorFieldInfo fieldInfo = (DataModelerPropertyEditorFieldInfo) property;
+
+        RelationType relationTypeValue = (RelationType) fieldInfo.getCurrentValue(RELATION_TYPE);
+        if (relationTypeValue != null) {
+            view.setRelationType(relationTypeValue.name());
+        } else {
+            view.setRelationType(UIUtil.NOT_SELECTED);
+        }
+
+        enableRelationDependentFields(relationTypeValue);
+
+        cascadeAllWasClicked = false;
+        setCascadeTypes((List<CascadeType>) fieldInfo.getCurrentValue(CASCADE));
+        enableCascadeTypes(true, true);
+
+        FetchMode fetchModeValue = (FetchMode) fieldInfo.getCurrentValue(FETCH);
+
+        if (fetchModeValue != null) {
+            view.setFetchMode(fetchModeValue.name());
+        } else {
+            view.setFetchMode(UIUtil.NOT_SELECTED);
+        }
+
+        Boolean optionalValue = (Boolean) fieldInfo.getCurrentValue(OPTIONAL);
+        if (optionalValue != null) {
+            view.setOptional(optionalValue);
+        }
+
+        String mappedBy = (String) fieldInfo.getCurrentValue(MAPPED_BY);
+        view.setMappedBy(mappedBy);
+
+        Boolean orphanRemovalValue = (Boolean) fieldInfo.getCurrentValue(ORPHAN_REMOVAL);
+        if (orphanRemovalValue != null) {
+            view.setOrphanRemoval(orphanRemovalValue);
+        }
+
+        view.setEnabled(!fieldInfo.isDisabled());
+        view.show();
+    }
+
+    @Override
+    public void setOkCommand(Command okCommand) {
+        this.okCommand = okCommand;
+    }
+
+    @Override
+    public void setProperty(PropertyEditorFieldInfo property) {
+        this.property = property;
     }
 
     @Override
     public String getStringValue() {
         //return the value to show in the property editor simple text field.
-        String value = relationType.getValue();
-        if ( value == null || "".equals( value ) ) {
-            value = "NOT_SET";
-        }
-        return value;
+        return UIUtil.NOT_SELECTED.equals(view.getRelationType()) ? RelationshipField.NOT_CONFIGURED_LABEL : view.getRelationType();
     }
 
     @Override
-    public void setStringValue( String value ) {
+    public void setStringValue(String value) {
         //do nothing
     }
 
-    private void setCascadeTypes( List<CascadeType> cascadeTypes ) {
-        cascadeAll.setValue( cascadeTypes != null && cascadeTypes.contains( CascadeType.ALL ) );
-        cascadePersist.setValue( cascadeTypes != null && cascadeTypes.contains( CascadeType.PERSIST ) );
-        cascadeMerge.setValue( cascadeTypes != null && cascadeTypes.contains( CascadeType.MERGE ) );
-        cascadeRemove.setValue( cascadeTypes != null && cascadeTypes.contains( CascadeType.REMOVE ) );
-        cascadeRefresh.setValue( cascadeTypes != null && cascadeTypes.contains( CascadeType.REFRESH ) );
-        cascadeDetach.setValue( cascadeTypes != null && cascadeTypes.contains( CascadeType.DETACH ) );
+    void onRelationTypeChanged() {
+        String strValue = view.getRelationType();
+        if (!UIUtil.NOT_SELECTED.equals(strValue)) {
+            RelationType type = RelationType.valueOf(view.getRelationType());
+            enableRelationDependentFields(type);
+        }
     }
 
-    private List<CascadeType> getCascadeTypes() {
-        List<CascadeType> cascadeTypes = new ArrayList<CascadeType>();
-        if ( cascadeAll.getValue() ) {
-            cascadeTypes.add( CascadeType.ALL );
-            if ( cascadeAllWasClicked ) {
-                //when cascade ALL was selected in the UI by intention, then it's the only option that we will
-                //configure since it include the other available ones.
-                return cascadeTypes;
-            }
-        }
-        if ( cascadePersist.getValue() ) {
-            cascadeTypes.add( CascadeType.PERSIST );
-        }
-        if ( cascadeMerge.getValue() ) {
-            cascadeTypes.add( CascadeType.MERGE );
-        }
-        if ( cascadeRemove.getValue() ) {
-            cascadeTypes.add( CascadeType.REMOVE );
-        }
-        if ( cascadeRefresh.getValue() ) {
-            cascadeTypes.add( CascadeType.REFRESH );
-        }
-        if ( cascadeDetach.getValue() ) {
-            cascadeTypes.add( CascadeType.DETACH );
-        }
-        return cascadeTypes;
-    }
-
-    @UiHandler("cascadeAll")
-    void onCascadeAllChanged( ClickEvent clickEvent ) {
-        if ( cascadeAll.getValue() ) {
-            enableCascadeTypes( true, false );
-            cascadePersist.setValue( true );
-            cascadeMerge.setValue( true );
-            cascadeRemove.setValue( true );
-            cascadeRefresh.setValue( true );
-            cascadeDetach.setValue( true );
+    void onCascadeAllChanged() {
+        if (view.getCascadeAll()) {
+            enableCascadeTypes(true, false);
+            view.setCascadePersist(true);
+            view.setCascadeMerge(true);
+            view.setCascadeRemove(true);
+            view.setCascadeRefresh(true);
+            view.setCascadeDetach(true);
         } else {
-            enableCascadeTypes( true, true );
-            if ( cascadeAllWasClicked ) {
+            enableCascadeTypes(true, true);
+            if (cascadeAllWasClicked) {
                 //if cascade is clicked for second time then we can enable the auto disabling mode
-                cascadePersist.setValue( false );
-                cascadeMerge.setValue( false );
-                cascadeRemove.setValue( false );
-                cascadeRefresh.setValue( false );
-                cascadeDetach.setValue( false );
+                view.setCascadePersist(false);
+                view.setCascadeMerge(false);
+                view.setCascadeRemove(false);
+                view.setCascadeRefresh(false);
+                view.setCascadeDetach(false);
             }
         }
         cascadeAllWasClicked = true;
     }
 
-    private void enableCascadeTypes( boolean enableCascadeAll,
-                                     boolean enableTheRest ) {
-        cascadeAll.setEnabled( enableCascadeAll );
-        cascadePersist.setEnabled( enableTheRest );
-        cascadeMerge.setEnabled( enableTheRest );
-        cascadeRemove.setEnabled( enableTheRest );
-        cascadeRefresh.setEnabled( enableTheRest );
-        cascadeDetach.setEnabled( enableTheRest );
+    void onOK() {
+        DataModelerPropertyEditorFieldInfo fieldInfo = (DataModelerPropertyEditorFieldInfo) property;
+        fieldInfo.clearCurrentValues();
+        String relationType = view.getRelationType();
+        if (!relationType.equals(UIUtil.NOT_SELECTED)) {
+            fieldInfo.setCurrentValue(RELATION_TYPE, RelationType.valueOf(relationType));
+            fieldInfo.setCurrentValue(CASCADE, getCascadeTypes());
+            fieldInfo.setCurrentValue(FETCH, FetchMode.valueOf(view.getFetchMode()));
+
+            if (relationType.equals(RelationType.ONE_TO_ONE.name()) ||
+                    relationType.equals(RelationType.MANY_TO_ONE.name())) {
+                fieldInfo.setCurrentValue(OPTIONAL, view.getOptional());
+            }
+
+            if (relationType.equals(RelationType.ONE_TO_ONE.name()) ||
+                    relationType.equals(RelationType.ONE_TO_MANY.name()) ||
+                    relationType.equals(RelationType.MANY_TO_MANY.name())) {
+                fieldInfo.setCurrentValue(MAPPED_BY, view.getMappedBy());
+            }
+
+            if (relationType.equals(RelationType.ONE_TO_ONE.name()) ||
+                    relationType.equals(RelationType.ONE_TO_MANY.name())) {
+                fieldInfo.setCurrentValue(ORPHAN_REMOVAL, view.getOrphanRemoval());
+            }
+        }
+
+        view.hide();
+        if (okCommand != null) {
+            okCommand.execute();
+        }
     }
 
+    void onCancel() {
+        view.hide();
+    }
+
+    void enableRelationDependentFields(RelationType relationType) {
+        if (relationType != null) {
+            switch (relationType) {
+                case ONE_TO_ONE:
+                    view.setOptionalVisible(true);
+                    view.setMappedByVisible(true);
+                    view.setOrphanRemovalVisible(true);
+                    break;
+                case ONE_TO_MANY:
+                    view.setOptionalVisible(false);
+                    view.setMappedByVisible(true);
+                    view.setOrphanRemovalVisible(true);
+                    break;
+                case MANY_TO_ONE:
+                    view.setOptionalVisible(true);
+                    view.setMappedByVisible(false);
+                    view.setOrphanRemovalVisible(false);
+                    break;
+                case MANY_TO_MANY:
+                    view.setOptionalVisible(false);
+                    view.setMappedByVisible(true);
+                    view.setOrphanRemovalVisible(false);
+            }
+        }
+    }
+
+    private void setCascadeTypes(List<CascadeType> cascadeTypes) {
+        view.setCascadeAll(cascadeTypes != null && cascadeTypes.contains(CascadeType.ALL));
+        view.setCascadePersist(cascadeTypes != null && cascadeTypes.contains(CascadeType.PERSIST));
+        view.setCascadeMerge(cascadeTypes != null && cascadeTypes.contains(CascadeType.MERGE));
+        view.setCascadeRemove(cascadeTypes != null && cascadeTypes.contains(CascadeType.REMOVE));
+        view.setCascadeRefresh(cascadeTypes != null && cascadeTypes.contains(CascadeType.REFRESH));
+        view.setCascadeDetach(cascadeTypes != null && cascadeTypes.contains(CascadeType.DETACH));
+    }
+
+    private List<CascadeType> getCascadeTypes() {
+        List<CascadeType> cascadeTypes = new ArrayList<>();
+        if (view.getCascadeAll()) {
+            cascadeTypes.add(CascadeType.ALL);
+            if (cascadeAllWasClicked) {
+                //when cascade ALL was selected in the UI by intention, then it's the only option that we will
+                //configure since it include the other available ones.
+                return cascadeTypes;
+            }
+        }
+        if (view.getCascadePersist()) {
+            cascadeTypes.add(CascadeType.PERSIST);
+        }
+        if (view.getCascadeMerge()) {
+            cascadeTypes.add(CascadeType.MERGE);
+        }
+        if (view.getCascadeRemove()) {
+            cascadeTypes.add(CascadeType.REMOVE);
+        }
+        if (view.getCascadeRefresh()) {
+            cascadeTypes.add(CascadeType.REFRESH);
+        }
+        if (view.getCascadeDetach()) {
+            cascadeTypes.add(CascadeType.DETACH);
+        }
+        return cascadeTypes;
+    }
+
+    private void enableCascadeTypes(boolean enableCascadeAll,
+                                    boolean enableTheRest) {
+        view.enableCascadeAll(enableCascadeAll);
+        view.enableCascadePersist(enableTheRest);
+        view.enableCascadeMerge(enableTheRest);
+        view.enableCascadeRemove(enableTheRest);
+        view.enableCascadeRefresh(enableTheRest);
+        view.enableCascadeDetach(enableTheRest);
+    }
 }
