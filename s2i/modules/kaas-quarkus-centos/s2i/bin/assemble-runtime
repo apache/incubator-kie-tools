@@ -1,0 +1,23 @@
+#!/bin/bash -e
+#
+# S2I assemble-runtime script for the 'kaas-quarkus-centos' image.
+# The assemble-runtime script executes preparation for running the container on runtime image.
+#
+# For more information see the documentation:
+#	https://github.com/openshift/source-to-image/blob/master/docs/builder_image.md
+#
+
+if [ -d "$SUBMARINE_HOME/bin" ]; then
+  echo "---> Application binaries found and ready to use"
+  
+  echo "---> Adding custom labels..."
+  if [ -e "${SUBMARINE_HOME}/bin/image_metadata.json" ]; then
+    mkdir /tmp/.s2i
+    mv -v $SUBMARINE_HOME/bin/image_metadata.json /tmp/.s2i/image_metadata.json
+  else
+    echo "-----> Failed to copy metada file, $SUBMARINE_HOME/bin/image_metadata.json does not exist"
+  fi
+else
+  echo "---> Application binaries NOT found, failing build..."
+  exit 1
+fi

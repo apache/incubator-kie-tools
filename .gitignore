@@ -1,6 +1,7 @@
 bin/
 /target
 /local
+target/
 
 # Eclipse, Netbeans and IntelliJ files
 /.*
@@ -8,7 +9,8 @@ bin/
 /nbproject
 /*.ipr
 /*.iws
-/*.iml
+*/*.iml
+.idea/
 
 # Repository wide ignore mac DS_Store files
 .DS_Store

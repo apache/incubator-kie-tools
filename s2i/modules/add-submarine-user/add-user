@@ -1,0 +1,3 @@
+#!/bin/sh
+
+groupadd -r submarine -g 1001 && useradd -u 1001 -r -g 1001 -m -d ${SUBMARINE_HOME} -s /sbin/nologin -c "Submarine user" submarine

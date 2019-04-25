@@ -1,0 +1,8 @@
+schema_version: 1
+name: add-submarine-user
+execute:
+- script: add-user
+
+envs:
+- name: "SUBMARINE_HOME"
+  value: "/home/submarine"

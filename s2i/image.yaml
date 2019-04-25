@@ -1,0 +1,29 @@
+schema_version: 1
+
+name: "submarine-image-real-name-on-overrides-file"
+version: "1.0"
+from: "centos:latest"
+
+labels:
+- name: "maintainer"
+  value: "Submarine <submarine@kiegroup.com>"
+- name: "io.openshift.s2i.scripts-url"
+  value: "image:///usr/local/s2i"
+- name: "io.openshift.s2i.destination"
+  value: "/tmp"
+- name: "io.openshift.expose-services"
+  value: "8080:http"
+
+modules:
+  repositories:
+  - path: modules
+
+packages:
+  repositories:
+  - name: scl
+    rpm: centos-release-scl
+
+run:
+  user: 1001
+  cmd:
+  - "/usr/local/s2i/run"

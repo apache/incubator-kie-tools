@@ -1,0 +1,4 @@
+schema_version: 1
+name: kaas-springboot-centos-s2i
+execute:
+  - script: configure

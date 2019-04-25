@@ -1,0 +1,92 @@
+kind: ImageStreamList
+apiVersion: v1
+metadata:
+  name: submarine-image-streams
+  annotations:
+    description: ImageStream definitions for Submarine images
+    openshift.io/provider-display-name: Kie Group.
+items:
+- kind: ImageStream
+  apiVersion: v1
+  metadata:
+    name: kaas-quarkus-centos
+    annotations:
+      openshift.io/display-name: Runtime image for KaaS based on Quarkus native image
+      openshift.io/provider-display-name: Kie Group.
+  spec:
+    tags:
+    - name: '1.0'
+      annotations:
+        description: Runtime image for KaaS based on Quarkus native image
+        iconClass: icon-jbpm
+        tags: builder,runtime,kaas,quarkus
+        supports: quarkus
+        version: '1.0'
+      referencePolicy:
+        type: Local
+      from:
+        kind: DockerImage
+        name: quay.io/kiegroup/kaas-quarkus-centos:1.0
+- kind: ImageStream
+  apiVersion: v1
+  metadata:
+    name: kaas-quarkus-centos-s2i
+    annotations:
+      openshift.io/display-name: Platform for building KaaS based on Quarkus
+      openshift.io/provider-display-name: Kie Group.
+  spec:
+    tags:
+    - name: '1.0'
+      annotations:
+        description: Platform for building KaaS based on Quarkus
+        iconClass: icon-jbpm
+        tags: builder,kaas,quarkus
+        supports: quarkus
+        version: '1.0'
+      referencePolicy:
+        type: Local
+      from:
+        kind: DockerImage
+        name: quay.io/kiegroup/kaas-quarkus-centos-s2i:1.0
+- kind: ImageStream
+  apiVersion: v1
+  metadata:
+    name: kaas-springboot-centos
+    annotations:
+      openshift.io/display-name: Runtime image for KaaS based on SpringBoot native image
+      openshift.io/provider-display-name: Kie Group.
+  spec:
+    tags:
+    - name: '1.0'
+      annotations:
+        description: Platform for building KaaS based on Quarkus
+        iconClass: icon-jbpm
+        tags: builder,runtime,kaas,springboot
+        supports: springboot
+        version: '1.0'
+      referencePolicy:
+        type: Local
+      from:
+        kind: DockerImage
+        name: quay.io/kiegroup/kaas-springboot-centos:1.0
+- kind: ImageStream
+  apiVersion: v1
+  metadata:
+    name: kaas-springboot-centos-s2i
+    annotations:
+      openshift.io/display-name: Platform for building KaaS based on SpringBoot
+      openshift.io/provider-display-name: Kie Group.
+  spec:
+    tags:
+    - name: '1.0'
+      annotations:
+        description: Platform for building KaaS based on Quarkus
+        iconClass: icon-jbpm
+        tags: builder,kaas,springboot
+        supports: springboot
+        version: '1.0'
+      referencePolicy:
+        type: Local
+      from:
+        kind: DockerImage
+        name: quay.io/kiegroup/kaas-springboot-centos-s2i:1.0
