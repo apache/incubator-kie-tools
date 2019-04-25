@@ -22,6 +22,5 @@
     <module>kie-wb-common-ala-wildfly</module>
     <module>kie-wb-common-ala-openshift</module>
     <module>kie-wb-common-ala-provisioning-pipelines</module>
-    <module>kie-wb-common-ala-distribution</module>
   </modules>
 </project>
