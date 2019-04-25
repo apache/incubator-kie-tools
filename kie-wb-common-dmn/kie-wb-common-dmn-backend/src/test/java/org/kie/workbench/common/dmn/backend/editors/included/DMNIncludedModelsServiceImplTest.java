@@ -24,26 +24,17 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedModel;
 import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedNode;
+import org.kie.workbench.common.dmn.backend.common.DMNPathsHelperImpl;
 import org.kie.workbench.common.dmn.backend.editors.common.DMNIncludeModelFactory;
 import org.kie.workbench.common.dmn.backend.editors.common.DMNIncludedNodesFilter;
 import org.kie.workbench.common.dmn.backend.editors.types.exceptions.DMNIncludeModelCouldNotBeCreatedException;
-import org.kie.workbench.common.services.refactoring.backend.server.query.RefactoringQueryServiceImpl;
-import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRequest;
-import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRow;
-import org.kie.workbench.common.stunner.core.lookup.LookupManager.LookupResponse;
-import org.kie.workbench.common.stunner.core.lookup.diagram.DiagramLookupRequest;
-import org.kie.workbench.common.stunner.core.lookup.diagram.DiagramRepresentation;
-import org.kie.workbench.common.stunner.core.service.DiagramLookupService;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.paging.PageResponse;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
@@ -52,10 +43,7 @@ import static org.mockito.Mockito.when;
 public class DMNIncludedModelsServiceImplTest {
 
     @Mock
-    private RefactoringQueryServiceImpl refactoringQueryService;
-
-    @Mock
-    private DiagramLookupService diagramLookupService;
+    private DMNPathsHelperImpl pathsHelper;
 
     @Mock
     private DMNIncludeModelFactory includeModelFactory;
@@ -63,38 +51,24 @@ public class DMNIncludedModelsServiceImplTest {
     @Mock
     private DMNIncludedNodesFilter includedNodesFilter;
 
-    @Mock
-    private LookupResponse<DiagramRepresentation> lookupResponse;
-
-    @Mock
-    private PageResponse<RefactoringPageRow> pageResponse;
-
     private DMNIncludedModelsServiceImpl service;
 
     @Before
     public void setup() {
-        service = spy(new DMNIncludedModelsServiceImpl(refactoringQueryService, diagramLookupService, includeModelFactory, includedNodesFilter));
+        service = spy(new DMNIncludedModelsServiceImpl(pathsHelper, includeModelFactory, includedNodesFilter));
     }
 
     @Test
     public void testLoadModelsWhenWorkspaceProjectIsNull() throws Exception {
 
         final WorkspaceProject workspaceProject = null;
-        final DiagramRepresentation representation1 = mock(DiagramRepresentation.class);
-        final DiagramRepresentation representation2 = mock(DiagramRepresentation.class);
-        final DiagramRepresentation representation3 = mock(DiagramRepresentation.class);
         final Path path1 = mock(Path.class);
         final Path path2 = mock(Path.class);
         final Path path3 = mock(Path.class);
         final DMNIncludedModel dmnIncludedModel1 = mock(DMNIncludedModel.class);
         final DMNIncludedModel dmnIncludedModel2 = mock(DMNIncludedModel.class);
-        final List<DiagramRepresentation> results = asList(representation1, representation2, representation3);
 
-        when(diagramLookupService.lookup(any(DiagramLookupRequest.class))).thenReturn(lookupResponse);
-        when(lookupResponse.getResults()).thenReturn(results);
-        when(representation1.getPath()).thenReturn(path1);
-        when(representation2.getPath()).thenReturn(path2);
-        when(representation3.getPath()).thenReturn(path3);
+        when(pathsHelper.getDiagramsPaths(workspaceProject)).thenReturn(asList(path1, path2, path3));
         when(includeModelFactory.create(path1)).thenReturn(dmnIncludedModel1);
         when(includeModelFactory.create(path2)).thenReturn(dmnIncludedModel2);
         when(includeModelFactory.create(path3)).thenThrow(new DMNIncludeModelCouldNotBeCreatedException());
@@ -112,10 +86,6 @@ public class DMNIncludedModelsServiceImplTest {
         final WorkspaceProject workspaceProject = mock(WorkspaceProject.class);
         final Path rootPath = mock(Path.class);
         final String uri = "/src/path/file.dmn";
-        final RefactoringPageRow row1 = mock(RefactoringPageRow.class);
-        final RefactoringPageRow row2 = mock(RefactoringPageRow.class);
-        final RefactoringPageRow row3 = mock(RefactoringPageRow.class);
-        final List<RefactoringPageRow> rows = asList(row1, row2);
         final Path path1 = mock(Path.class);
         final Path path2 = mock(Path.class);
         final Path path3 = mock(Path.class);
@@ -124,11 +94,7 @@ public class DMNIncludedModelsServiceImplTest {
 
         when(workspaceProject.getRootPath()).thenReturn(rootPath);
         when(rootPath.toURI()).thenReturn(uri);
-        when(refactoringQueryService.query(any(RefactoringPageRequest.class))).thenReturn(pageResponse);
-        when(pageResponse.getPageRowList()).thenReturn(rows);
-        when(row1.getValue()).thenReturn(path1);
-        when(row2.getValue()).thenReturn(path2);
-        when(row3.getValue()).thenReturn(path3);
+        when(pathsHelper.getDiagramsPaths(workspaceProject)).thenReturn(asList(path1, path2, path3));
         when(includeModelFactory.create(path1)).thenReturn(dmnIncludedModel1);
         when(includeModelFactory.create(path2)).thenReturn(dmnIncludedModel2);
         when(includeModelFactory.create(path3)).thenThrow(new DMNIncludeModelCouldNotBeCreatedException());
@@ -163,7 +129,7 @@ public class DMNIncludedModelsServiceImplTest {
         final List<DMNIncludedModel> includedModels = asList(includedModel1, includedModel2, includedModel3);
         final List<Path> paths = asList(path1, path2, path3);
 
-        doReturn(paths).when(service).getPaths(workspaceProject);
+        when(pathsHelper.getDiagramsPaths(workspaceProject)).thenReturn(paths);
         when(includedNodesFilter.getNodesFromImports(path1, includedModels)).thenReturn(path1Nodes);
         when(includedNodesFilter.getNodesFromImports(path2, includedModels)).thenReturn(path2Nodes);
         when(includedNodesFilter.getNodesFromImports(path3, includedModels)).thenReturn(path3Nodes);
