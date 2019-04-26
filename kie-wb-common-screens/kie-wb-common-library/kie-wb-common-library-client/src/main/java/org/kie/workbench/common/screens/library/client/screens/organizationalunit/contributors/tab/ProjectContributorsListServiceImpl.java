@@ -23,6 +23,7 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
 
+import elemental2.promise.Promise;
 import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.structure.contributors.Contributor;
 import org.guvnor.structure.contributors.ContributorType;
@@ -32,6 +33,7 @@ import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
+import org.uberfire.client.promise.Promises;
 import org.uberfire.rpc.SessionInfo;
 
 public class ProjectContributorsListServiceImpl implements ContributorsListService {
@@ -48,19 +50,23 @@ public class ProjectContributorsListServiceImpl implements ContributorsListServi
 
     private ContributorsSecurityUtils contributorsSecurityUtils;
 
+    private Promises promises;
+
     @Inject
     public ProjectContributorsListServiceImpl(final LibraryPlaces libraryPlaces,
                                               final Caller<RepositoryService> repositoryService,
                                               final SpaceContributorsListServiceImpl spaceContributorsListService,
                                               final SessionInfo sessionInfo,
                                               final ProjectController projectController,
-                                              final ContributorsSecurityUtils contributorsSecurityUtils) {
+                                              final ContributorsSecurityUtils contributorsSecurityUtils,
+                                              final Promises promises) {
         this.libraryPlaces = libraryPlaces;
         this.repositoryService = repositoryService;
         this.spaceContributorsListService = spaceContributorsListService;
         this.sessionInfo = sessionInfo;
         this.projectController = projectController;
         this.contributorsSecurityUtils = contributorsSecurityUtils;
+        this.promises = promises;
     }
 
     @Override
@@ -80,19 +86,22 @@ public class ProjectContributorsListServiceImpl implements ContributorsListServi
     }
 
     @Override
-    public boolean canEditContributors(final List<Contributor> contributors,
-                                       final ContributorType type) {
-        boolean canEdit = false;
+    public Promise<Boolean> canEditContributors(final List<Contributor> contributors,
+                                                final ContributorType type) {
+        return projectController.canUpdateProject(libraryPlaces.getActiveWorkspace()).then(canUpdateProject -> {
+            if (canUpdateProject) {
+                return promises.resolve(true);
+            }
 
-        final Optional<Contributor> contributor = contributors.stream().filter(c -> c.getUsername().equals(sessionInfo.getIdentity().getIdentifier())).findFirst();
-        if (contributor.isPresent()) {
-            final ContributorType userContributorType = contributor.get().getType();
-            canEdit = contributorsSecurityUtils.canUserEditContributorOfType(userContributorType, type);
-        }
+            final Optional<Contributor> contributor = contributors.stream().filter(c -> c.getUsername().equals(sessionInfo.getIdentity().getIdentifier())).findFirst();
+            if (contributor.isPresent()) {
+                final ContributorType userContributorType = contributor.get().getType();
+                return promises.resolve(contributorsSecurityUtils.canUserEditContributorOfType(userContributorType,
+                                                                                               type));
+            }
 
-        canEdit = canEdit || projectController.canUpdateProject(libraryPlaces.getActiveWorkspace());
-
-        return canEdit;
+            return promises.resolve(false);
+        });
     }
 
 

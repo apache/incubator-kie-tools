@@ -19,6 +19,7 @@ package org.kie.workbench.common.screens.library.client.screens.organizationalun
 import java.util.List;
 import java.util.function.Consumer;
 
+import elemental2.promise.Promise;
 import org.guvnor.structure.contributors.Contributor;
 import org.guvnor.structure.contributors.ContributorType;
 import org.jboss.errai.bus.client.api.messaging.Message;
@@ -32,8 +33,8 @@ public interface ContributorsListService {
                           Runnable successCallback,
                           ErrorCallback<Message> errorCallback);
 
-    boolean canEditContributors(List<Contributor> contributors,
-                                ContributorType type);
+    Promise<Boolean> canEditContributors(List<Contributor> contributors,
+                                         ContributorType type);
 
     void getValidUsernames(Consumer<List<String>> validUsernamesConsumer);
 }

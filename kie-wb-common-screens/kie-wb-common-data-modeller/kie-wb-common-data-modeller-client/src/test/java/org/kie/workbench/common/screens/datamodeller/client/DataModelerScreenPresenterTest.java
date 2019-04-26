@@ -608,7 +608,7 @@ public class DataModelerScreenPresenterTest
         final DataModelerScreenPresenter presenter = spy(this.presenter);
 
         doReturn(Optional.of(mock(WorkspaceProject.class))).when(workbenchContext).getActiveWorkspaceProject();
-        doReturn(true).when(projectController).canUpdateProject(any());
+        doReturn(promises.resolve(true)).when(projectController).canUpdateProject(any());
 
         presenter.makeMenuBar();
 
@@ -623,7 +623,7 @@ public class DataModelerScreenPresenterTest
     @Test
     public void testMakeMenuBarWithoutUpdateProjectPermission() {
         doReturn(Optional.of(mock(WorkspaceProject.class))).when(workbenchContext).getActiveWorkspaceProject();
-        doReturn(false).when(projectController).canUpdateProject(any());
+        doReturn(promises.resolve(false)).when(projectController).canUpdateProject(any());
 
         presenter.makeMenuBar();
 
@@ -712,7 +712,7 @@ public class DataModelerScreenPresenterTest
 
         Optional<WorkspaceProject> workspaceProjectOptional = Optional.of(workspaceProject);
         when(workbenchContext.getActiveWorkspaceProject()).thenReturn(workspaceProjectOptional);
-        when(projectController.canUpdateProject(workspaceProject)).thenReturn(isUpdatable);
+        when(projectController.canUpdateProject(workspaceProject)).thenReturn(promises.resolve(isUpdatable));
         loadFileSuccessfulTest(true);
         verify(javaSourceEditor).setReadonly(!isUpdatable);
         assertEquals(!isUpdatable, presenter.context.isReadonly());

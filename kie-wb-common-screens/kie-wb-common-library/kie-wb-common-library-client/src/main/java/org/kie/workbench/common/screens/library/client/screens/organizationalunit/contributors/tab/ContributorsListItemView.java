@@ -183,8 +183,14 @@ public class ContributorsListItemView implements ContributorsListItemPresenter.V
 
     @Override
     public void showActions() {
-        edit.hidden = !presenter.canEditContributors();
-        remove.hidden = !presenter.canRemoveContributor();
+        presenter.canEditContributors().then(canEditContributors -> {
+            edit.hidden = !canEditContributors;
+            return presenter.promises.resolve();
+        });
+        presenter.canRemoveContributor().then(canRemoveContributor -> {
+            remove.hidden = !canRemoveContributor;
+            return presenter.promises.resolve();
+        });
     }
 
     @Override

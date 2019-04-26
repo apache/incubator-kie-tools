@@ -25,7 +25,6 @@ import org.guvnor.structure.events.AfterDeleteOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.jboss.errai.common.client.api.Caller;
-import org.kie.workbench.common.screens.library.client.util.LibraryPermissions;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
@@ -56,7 +55,7 @@ public class DeleteOrganizationalUnitPopUpPresenter {
 
     private Caller<OrganizationalUnitService> organizationalUnitService;
 
-    private LibraryPermissions libraryPermissions;
+    private OrganizationalUnitController organizationalUnitController;
 
     private Event<AfterDeleteOrganizationalUnitEvent> afterDeleteOrganizationalUnitEvent;
 
@@ -69,13 +68,13 @@ public class DeleteOrganizationalUnitPopUpPresenter {
     @Inject
     public DeleteOrganizationalUnitPopUpPresenter(final View view,
                                                   final Caller<OrganizationalUnitService> organizationalUnitService,
-                                                  final LibraryPermissions libraryPermissions,
+                                                  final OrganizationalUnitController organizationalUnitController,
                                                   final Event<AfterDeleteOrganizationalUnitEvent> afterDeleteOrganizationalUnitEvent,
                                                   final Event<NotificationEvent> notificationEvent,
                                                   final LibraryPlaces libraryPlaces) {
         this.view = view;
         this.organizationalUnitService = organizationalUnitService;
-        this.libraryPermissions = libraryPermissions;
+        this.organizationalUnitController = organizationalUnitController;
         this.afterDeleteOrganizationalUnitEvent = afterDeleteOrganizationalUnitEvent;
         this.notificationEvent = notificationEvent;
         this.libraryPlaces = libraryPlaces;
@@ -87,7 +86,7 @@ public class DeleteOrganizationalUnitPopUpPresenter {
     }
 
     public void show(final OrganizationalUnit organizationalUnit) {
-        if (libraryPermissions.userCanDeleteOrganizationalUnit(organizationalUnit)) {
+        if (organizationalUnitController.canDeleteOrgUnit(organizationalUnit)) {
             this.organizationalUnit = organizationalUnit;
             view.show(organizationalUnit.getName());
         }

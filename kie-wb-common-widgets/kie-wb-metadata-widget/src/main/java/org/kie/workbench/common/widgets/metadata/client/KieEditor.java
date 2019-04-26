@@ -25,8 +25,10 @@ import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.IsWidget;
+import elemental2.promise.Promise;
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.project.client.security.ProjectController;
+import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.messageconsole.client.console.widget.button.AlertsButtonMenuItemBuilder;
@@ -308,15 +310,24 @@ public abstract class KieEditor<T>
      * If you want to customize the menu override this method.
      */
     @Override
-    protected void makeMenuBar() {
-        if (canUpdateProject()) {
-            addSave(fileMenuBuilder);
-            addCopy(fileMenuBuilder);
-            addRename(fileMenuBuilder);
-            addDelete(fileMenuBuilder);
+    protected Promise<Void> makeMenuBar() {
+        if (workbenchContext.getActiveWorkspaceProject().isPresent()) {
+            final WorkspaceProject activeProject = workbenchContext.getActiveWorkspaceProject().get();
+            return projectController.canUpdateProject(activeProject).then(canUpdateProject -> {
+                if (canUpdateProject) {
+                    addSave(fileMenuBuilder);
+                    addCopy(fileMenuBuilder);
+                    addRename(fileMenuBuilder);
+                    addDelete(fileMenuBuilder);
+                }
+                addDownloadMenuItem(fileMenuBuilder);
+                addCommonActions(fileMenuBuilder);
+
+                return promises.resolve();
+            });
         }
-        addDownloadMenuItem(fileMenuBuilder);
-        addCommonActions(fileMenuBuilder);
+
+        return promises.resolve();
     }
 
     public void addDownloadMenuItem(final FileMenuBuilder fileMenuBuilder) {
@@ -400,13 +411,6 @@ public abstract class KieEditor<T>
     private void showError(final String error) {
         notification.fire(new NotificationEvent(error,
                                                 NotificationEvent.NotificationType.ERROR));
-    }
-
-    protected boolean canUpdateProject() {
-        return workbenchContext
-                .getActiveWorkspaceProject()
-                .map(activeProject -> projectController.canUpdateProject(activeProject))
-                .orElse(true);
     }
 
     @Override

@@ -39,7 +39,6 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.screens.library.client.settings.sections.SettingsSections;
 import org.kie.workbench.common.screens.library.client.settings.util.sections.Section;
 import org.kie.workbench.common.screens.library.client.settings.util.sections.SectionManager;
-import org.kie.workbench.common.screens.library.client.util.LibraryPermissions;
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
 import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenService;
 import org.uberfire.annotations.Customizable;
@@ -92,7 +91,7 @@ public class SettingsPresenter {
     private final ManagedInstance<ObservablePath> observablePaths;
     private final ConflictingRepositoriesPopup conflictingRepositoriesPopup;
     private final SectionManager<ProjectScreenModel> sectionManager;
-    private final LibraryPermissions libraryPermissions;
+    private final ProjectController projectController;
 
     private ObservablePath pathToPom;
 
@@ -110,7 +109,7 @@ public class SettingsPresenter {
                              final ManagedInstance<ObservablePath> observablePaths,
                              final ConflictingRepositoriesPopup conflictingRepositoriesPopup,
                              final SectionManager<ProjectScreenModel> sectionManager,
-                             final LibraryPermissions libraryPermissions) {
+                             final ProjectController projectController) {
         this.view = view;
         this.promises = promises;
         this.notificationEvent = notificationEvent;
@@ -122,7 +121,7 @@ public class SettingsPresenter {
         this.observablePaths = observablePaths;
         this.conflictingRepositoriesPopup = conflictingRepositoriesPopup;
         this.sectionManager = sectionManager;
-        this.libraryPermissions = libraryPermissions;
+        this.projectController = projectController;
     }
 
     @PostConstruct
@@ -130,8 +129,6 @@ public class SettingsPresenter {
         sectionManager.init(settingsSections.getList(),
                             view.getMenuItemsContainer(),
                             view.getContentContainer());
-
-        setupUsingCurrentSection();
     }
 
     public Promise<Void> setupUsingCurrentSection() {
@@ -143,9 +140,13 @@ public class SettingsPresenter {
 
         view.showBusyIndicator();
 
-        if (!userCanUpdateProject()) {
-            view.disableActions();
-        }
+        projectController.canUpdateProject(projectContext.getActiveWorkspaceProject().get()).then(userCanUpdateProject -> {
+            if (!userCanUpdateProject) {
+                view.disableActions();
+            }
+
+            return promises.resolve();
+        });
 
         if (pathToPom != null) {
             pathToPom.dispose();
@@ -214,18 +215,22 @@ public class SettingsPresenter {
     }
 
     public void showSaveModal() {
-        if (userCanUpdateProject()) {
-            sectionManager.validateAll().then(i -> {
-                savePopUpPresenter.show(this::save);
-                return promises.resolve();
-            }).catch_(o -> promises.catchOrExecute(o, e -> {
-                view.hideBusyIndicator();
-                return promises.reject(e);
-            }, (final Section<ProjectScreenModel> section) -> {
-                view.hideBusyIndicator();
-                return sectionManager.goTo(section);
-            }));
-        }
+        projectController.canUpdateProject(projectContext.getActiveWorkspaceProject().get()).then(userCanUpdateProject -> {
+            if (userCanUpdateProject) {
+                sectionManager.validateAll().then(i -> {
+                    savePopUpPresenter.show(this::save);
+                    return promises.resolve();
+                }).catch_(o -> promises.catchOrExecute(o, e -> {
+                    view.hideBusyIndicator();
+                    return promises.reject(e);
+                }, (final Section<ProjectScreenModel> section) -> {
+                    view.hideBusyIndicator();
+                    return sectionManager.goTo(section);
+                }));
+            }
+
+            return promises.resolve();
+        });
     }
 
     void save(final String comment) {
@@ -328,18 +333,18 @@ public class SettingsPresenter {
         sectionManager.updateDirtyIndicator(settingsSectionChange.getSection());
     }
 
-    public boolean userCanUpdateProject() {
-        return projectContext.getActiveWorkspaceProject().isPresent() && libraryPermissions.userCanUpdateProject(projectContext.getActiveWorkspaceProject().get());
-    }
-
     public boolean mayClose() {
         return !sectionManager.hasDirtySections();
     }
 
     public void reset() {
-        if (userCanUpdateProject()) {
-            setupUsingCurrentSection();
-        }
+        projectController.canUpdateProject(projectContext.getActiveWorkspaceProject().get()).then(userCanUpdateProject -> {
+            if (userCanUpdateProject) {
+                setupUsingCurrentSection();
+            }
+
+            return promises.resolve();
+        });
     }
 
     public View getView() {

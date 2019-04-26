@@ -122,7 +122,8 @@ public class AddBranchPopUpPresenter {
                            notifySuccess();
                            view.hide();
                        }, getErrorCallback()).addBranch(name,
-                                                        branchFrom, project));
+                                                        branchFrom,
+                                                        project));
     }
 
     private void validateFields(final String name,

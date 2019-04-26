@@ -16,6 +16,7 @@
 package org.kie.workbench.common.dmn.showcase.client.screens.editor;
 
 import java.util.Collection;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -222,15 +223,15 @@ public class SessionDiagramEditorScreen implements KieEditorWrapperView.KieEdito
     }
 
     private void disableSaveMenuItem() {
-        getSaveMenuItem().setEnabled(false);
+        getSaveMenuItem(saveMenuItem -> saveMenuItem.setEnabled(false));
     }
 
     private void enableSaveMenuItem() {
-        getSaveMenuItem().setEnabled(true);
+        getSaveMenuItem(saveMenuItem -> saveMenuItem.setEnabled(true));
     }
 
-    private MenuItem getSaveMenuItem() {
-        return getMenu().getItems().get(0);
+    private void getSaveMenuItem(final Consumer<MenuItem> saveMenuItemConsumer) {
+        getMenu(menus -> saveMenuItemConsumer.accept(menus.getItems().get(0)));
     }
 
     private Menus makeMenuBar() {
@@ -408,8 +409,8 @@ public class SessionDiagramEditorScreen implements KieEditorWrapperView.KieEdito
     }
 
     @WorkbenchMenu
-    public Menus getMenu() {
-        return menu;
+    public void getMenu(final Consumer<Menus> menusConsumer) {
+        menusConsumer.accept(menu);
     }
 
     @WorkbenchPartTitle

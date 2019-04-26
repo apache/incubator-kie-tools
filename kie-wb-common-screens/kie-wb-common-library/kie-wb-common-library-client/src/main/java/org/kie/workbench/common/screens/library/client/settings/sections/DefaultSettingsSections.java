@@ -22,6 +22,7 @@ import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.kie.workbench.common.screens.library.client.settings.sections.branchmanagement.BranchManagementPresenter;
 import org.kie.workbench.common.screens.library.client.settings.sections.dependencies.DependenciesPresenter;
 import org.kie.workbench.common.screens.library.client.settings.sections.externaldataobjects.ExternalDataObjectsPresenter;
 import org.kie.workbench.common.screens.library.client.settings.sections.generalsettings.GeneralSettingsPresenter;
@@ -42,6 +43,7 @@ public class DefaultSettingsSections implements SettingsSections {
     private final KnowledgeBasesPresenter knowledgeBasesSettingsSection;
     private final PersistencePresenter persistenceSettingsSection;
     private final ValidationPresenter validationSettingsSection;
+    private final BranchManagementPresenter branchManagementPresenter;
 
     @Inject
     public DefaultSettingsSections(final DependenciesPresenter dependenciesSettingsSection,
@@ -49,7 +51,8 @@ public class DefaultSettingsSections implements SettingsSections {
                                    final GeneralSettingsPresenter generalSettingsSection,
                                    final KnowledgeBasesPresenter knowledgeBasesSettingsSection,
                                    final PersistencePresenter persistenceSettingsSection,
-                                   final ValidationPresenter validationSettingsSection) {
+                                   final ValidationPresenter validationSettingsSection,
+                                   final BranchManagementPresenter branchManagementPresenter) {
 
         this.dependenciesSettingsSection = dependenciesSettingsSection;
         this.externalDataObjectsSettingsSection = externalDataObjectsSettingsSection;
@@ -57,6 +60,7 @@ public class DefaultSettingsSections implements SettingsSections {
         this.knowledgeBasesSettingsSection = knowledgeBasesSettingsSection;
         this.persistenceSettingsSection = persistenceSettingsSection;
         this.validationSettingsSection = validationSettingsSection;
+        this.branchManagementPresenter = branchManagementPresenter;
     }
 
     @Override
@@ -67,7 +71,8 @@ public class DefaultSettingsSections implements SettingsSections {
                 knowledgeBasesSettingsSection,
                 externalDataObjectsSettingsSection,
                 validationSettingsSection,
-                persistenceSettingsSection
+                persistenceSettingsSection,
+                branchManagementPresenter
         );
     }
 }

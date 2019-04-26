@@ -15,6 +15,7 @@
  */
 package org.kie.workbench.common.screens.defaulteditor.client.editor;
 
+import java.util.function.Consumer;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -84,8 +85,8 @@ public class KieMetaDataEditorPresenter
     }
 
     @WorkbenchMenu
-    public Menus getMenus() {
-        return menus;
+    public void getMenus(final Consumer<Menus> menusConsumer) {
+        super.getMenus(menusConsumer);
     }
 
     @Override

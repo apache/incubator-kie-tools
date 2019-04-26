@@ -18,6 +18,7 @@ package org.kie.workbench.common.screens.library.client.util;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -86,8 +87,8 @@ public class PomEditor extends KieTextEditorPresenter {
     }
 
     @WorkbenchMenu
-    public Menus getMenus() {
-        return super.getMenus();
+    public void getMenus(final Consumer<Menus> menusConsumer) {
+        super.getMenus(menusConsumer);
     }
 
     @WorkbenchPartTitleDecoration

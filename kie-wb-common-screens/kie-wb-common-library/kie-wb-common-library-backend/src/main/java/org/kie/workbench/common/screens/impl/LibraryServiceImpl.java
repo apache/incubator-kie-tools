@@ -45,6 +45,8 @@ import org.guvnor.structure.contributors.Contributor;
 import org.guvnor.structure.contributors.ContributorType;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
+import org.guvnor.structure.organizationalunit.config.BranchPermissions;
+import org.guvnor.structure.organizationalunit.config.SpaceConfigStorageRegistry;
 import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.NewBranchEvent;
 import org.guvnor.structure.repositories.Repository;
@@ -121,6 +123,7 @@ public class LibraryServiceImpl implements LibraryService {
     private Event<NewBranchEvent> newBranchEvent;
     private ConfiguredRepositories configuredRepositories;
     private Event<RepositoryExternalUpdateEvent> repositoryExternalUpdate;
+    private SpaceConfigStorageRegistry spaceConfigStorageRegistry;
 
     public LibraryServiceImpl() {
     }
@@ -143,7 +146,8 @@ public class LibraryServiceImpl implements LibraryService {
                               final PathUtil pathUtil,
                               final Event<NewBranchEvent> newBranchEvent,
                               final ConfiguredRepositories configuredRepositories,
-                              final Event<RepositoryExternalUpdateEvent> repositoryExternalUpdate) {
+                              final Event<RepositoryExternalUpdateEvent> repositoryExternalUpdate,
+                              final SpaceConfigStorageRegistry spaceConfigStorageRegistry) {
         this.ouService = ouService;
         this.refactoringQueryService = refactoringQueryService;
         this.preferences = preferences;
@@ -162,6 +166,7 @@ public class LibraryServiceImpl implements LibraryService {
         this.newBranchEvent = newBranchEvent;
         this.configuredRepositories = configuredRepositories;
         this.repositoryExternalUpdate = repositoryExternalUpdate;
+        this.spaceConfigStorageRegistry = spaceConfigStorageRegistry;
     }
 
     @Override
@@ -233,12 +238,19 @@ public class LibraryServiceImpl implements LibraryService {
     }
 
     private List<Contributor> getRepositoryContributors(final OrganizationalUnit organizationalUnit) {
-        final Collection<Contributor> spaceContributors = ouService.getOrganizationalUnit(organizationalUnit.getName()).getContributors();
+        final OrganizationalUnit ou = ouService.getOrganizationalUnit(organizationalUnit.getName());
+        final Collection<Contributor> spaceContributors = ou.getContributors();
 
         final List<Contributor> contributors = spaceContributors.stream()
                 .filter(c -> !sessionInfo.getIdentity().getIdentifier().equals(c.getUsername()))
                 .collect(Collectors.toList());
 
+        if (spaceContributors.size() == contributors.size()) {
+            spaceContributors.add(new Contributor(sessionInfo.getIdentity().getIdentifier(), ContributorType.CONTRIBUTOR));
+            ouService.updateOrganizationalUnit(ou.getName(),
+                                               ou.getDefaultGroupId(),
+                                               spaceContributors);
+        }
         contributors.add(new Contributor(sessionInfo.getIdentity().getIdentifier(), ContributorType.OWNER));
 
         return contributors;
@@ -408,6 +420,10 @@ public class LibraryServiceImpl implements LibraryService {
         try {
             final org.uberfire.java.nio.file.Path newBranchPath = ioService.get(new URI(newBranchPathURI));
             baseBranchPath.getFileSystem().provider().copy(baseBranchPath, newBranchPath);
+            copyBranchPermissions(newBranchName,
+                                  baseBranchName,
+                                  project);
+
             repositoryExternalUpdate.fire(new RepositoryExternalUpdateEvent(project.getRepository()));
             fireNewBranchEvent(pathUtil.convert(newBranchPath),
                                newBranchPath);
@@ -416,12 +432,48 @@ public class LibraryServiceImpl implements LibraryService {
         }
     }
 
+    private void copyBranchPermissions(final String targetBranchName,
+                                       final String sourceBranchName,
+                                       final WorkspaceProject project) {
+        final BranchPermissions branchPermissions = loadBranchPermissions(project.getSpace().getName(),
+                                                                          project.getRepository().getIdentifier(),
+                                                                          sourceBranchName);
+        saveBranchPermissions(project.getSpace().getName(),
+                              project.getRepository().getIdentifier(),
+                              targetBranchName,
+                              branchPermissions);
+    }
+
     @Override
     public void removeBranch(final WorkspaceProject project,
                              final Branch branch) {
         final org.uberfire.java.nio.file.Path branchPath = pathUtil.convert(branch.getPath());
         ioService.delete(branchPath);
+        deleteBranchPermissions(project.getSpace().getName(),
+                                project.getRepository().getIdentifier(),
+                                branch.getName());
         configuredRepositories.refreshRepository(project.getRepository());
+    }
+
+    @Override
+    public BranchPermissions loadBranchPermissions(final String spaceName,
+                                                   final String projectIdentifier,
+                                                   final String branchName) {
+        return spaceConfigStorageRegistry.get(spaceName).loadBranchPermissions(branchName, projectIdentifier);
+    }
+
+    @Override
+    public void saveBranchPermissions(final String spaceName,
+                                      final String projectIdentifier,
+                                      final String branchName,
+                                      final BranchPermissions branchPermissions) {
+        spaceConfigStorageRegistry.get(spaceName).saveBranchPermissions(branchName, projectIdentifier, branchPermissions);
+    }
+
+    private void deleteBranchPermissions(final String spaceName,
+                                         final String projectIdentifier,
+                                         final String branchName) {
+        spaceConfigStorageRegistry.get(spaceName).deleteBranchPermissions(branchName, projectIdentifier);
     }
 
     private void fireNewBranchEvent(final Path targetRoot,

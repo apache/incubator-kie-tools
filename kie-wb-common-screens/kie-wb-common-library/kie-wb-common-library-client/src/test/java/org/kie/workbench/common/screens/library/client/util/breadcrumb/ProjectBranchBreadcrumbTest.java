@@ -23,6 +23,7 @@ import java.util.Optional;
 
 import javax.enterprise.event.Event;
 
+import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Branch;
@@ -37,7 +38,9 @@ import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.promise.Promises;
 import org.uberfire.mocks.EventSourceMock;
+import org.uberfire.promise.SyncPromises;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.spaces.Space;
 import org.uberfire.workbench.events.NotificationEvent;
@@ -78,6 +81,11 @@ public class ProjectBranchBreadcrumbTest {
     @Mock
     private User user;
 
+    @Mock
+    private ProjectController projectController;
+
+    private Promises promises;
+
     private Branch newBranch;
 
     private Branch branch1;
@@ -86,9 +94,12 @@ public class ProjectBranchBreadcrumbTest {
 
     @Before
     public void setup() {
+        promises = new SyncPromises();
         presenter = spy(new ProjectBranchBreadcrumb(view,
                                                     libraryPlaces,
-                                                    notificationEvent));
+                                                    notificationEvent,
+                                                    projectController,
+                                                    promises));
 
         newBranch = makeBranch("new-branch", "repository");
         branch1 = makeBranch("branch1", "repo");
@@ -112,6 +123,8 @@ public class ProjectBranchBreadcrumbTest {
 
     @Test
     public void setupTest() {
+        doReturn(promises.resolve(true)).when(projectController).canReadBranch(any(), any());
+
         presenter.setup(repository.getBranches());
 
         verify(view).init(presenter);
@@ -156,6 +169,7 @@ public class ProjectBranchBreadcrumbTest {
     @Test
     public void repositoryUpdatedEventUpdatesBranchListTest() {
         doReturn(true).when(libraryPlaces).isThisRepositoryBeingAccessed(repository);
+        doReturn(promises.resolve(true)).when(projectController).canReadBranch(any(), any());
 
         presenter.repositoryUpdatedEvent(new RepositoryUpdatedEvent(repository));
 

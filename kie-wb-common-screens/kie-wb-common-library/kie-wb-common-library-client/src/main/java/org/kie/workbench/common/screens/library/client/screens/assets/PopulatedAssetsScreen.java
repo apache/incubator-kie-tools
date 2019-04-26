@@ -24,7 +24,9 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import com.google.gwt.core.client.Callback;
 import org.ext.uberfire.social.activities.client.widgets.utils.SocialDateFormatter;
+import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -43,7 +45,6 @@ import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryCon
 import org.kie.workbench.common.screens.library.client.screens.EmptyState;
 import org.kie.workbench.common.screens.library.client.screens.assets.events.UpdatedAssetsEvent;
 import org.kie.workbench.common.screens.library.client.util.CategoryUtils;
-import org.kie.workbench.common.screens.library.client.util.LibraryPermissions;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.screens.library.client.widgets.project.AssetItemWidget;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
@@ -51,6 +52,7 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.CategoriesManagerCache;
 import org.uberfire.client.mvp.ResourceTypeManagerCache;
 import org.uberfire.client.mvp.UberElemental;
+import org.uberfire.client.promise.Promises;
 import org.uberfire.client.workbench.events.SelectPlaceEvent;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
@@ -74,7 +76,7 @@ public class PopulatedAssetsScreen {
     private ManagedInstance<AssetItemWidget> assetItemWidget;
     private NewFileUploader newFileUploader;
     private NewResourcePresenter newResourcePresenter;
-    private LibraryPermissions libraryPermissions;
+    private ProjectController projectController;
     private Event<UpdatedAssetsEvent> updatedAssetsEventEvent;
     private EmptyState emptyState;
     private CategoryUtils categoryUtils;
@@ -86,6 +88,7 @@ public class PopulatedAssetsScreen {
     private String filterType;
     private final Event<WorkspaceProjectContextChangeEvent> contextChangeEvent;
     private AssetQueryService assetQueryService;
+    private Promises promises;
 
     public interface View extends UberElemental<PopulatedAssetsScreen> {
 
@@ -114,6 +117,10 @@ public class PopulatedAssetsScreen {
         void showEmptyState(EmptyState emptyState);
 
         void hideEmptyState(EmptyState emptyState);
+
+        void enableImportButton(boolean enable);
+
+        void enableAddAssetButton(boolean enable);
     }
 
     @Inject
@@ -127,12 +134,13 @@ public class PopulatedAssetsScreen {
                                  final ManagedInstance<AssetItemWidget> assetItemWidget,
                                  final NewFileUploader newFileUploader,
                                  final NewResourcePresenter newResourcePresenter,
-                                 final LibraryPermissions libraryPermissions,
+                                 final ProjectController projectController,
                                  final Event<UpdatedAssetsEvent> updatedAssetsEventEvent,
                                  final EmptyState emptyState,
                                  final CategoryUtils categoryUtils,
                                  final AssetQueryService assetQueryService,
-                                 final Event<WorkspaceProjectContextChangeEvent> contextChangeEvent) {
+                                 final Event<WorkspaceProjectContextChangeEvent> contextChangeEvent,
+                                 final Promises promises) {
         this.view = view;
         this.categoriesManagerCache = categoriesManagerCache;
         this.resourceTypeManagerCache = resourceTypeManagerCache;
@@ -143,12 +151,13 @@ public class PopulatedAssetsScreen {
         this.assetItemWidget = assetItemWidget;
         this.newFileUploader = newFileUploader;
         this.newResourcePresenter = newResourcePresenter;
-        this.libraryPermissions = libraryPermissions;
+        this.projectController = projectController;
         this.updatedAssetsEventEvent = updatedAssetsEventEvent;
         this.emptyState = emptyState;
         this.categoryUtils = categoryUtils;
         this.assetQueryService = assetQueryService;
         this.contextChangeEvent = contextChangeEvent;
+        this.promises = promises;
     }
 
     @PostConstruct
@@ -160,6 +169,29 @@ public class PopulatedAssetsScreen {
         this.filter = "";
         this.currentPage = 1;
         this.pageSize = 15;
+
+        projectController.canUpdateProject(this.libraryPlaces.getActiveWorkspace()).then(userCanUpdateProject -> {
+            this.enableButtons(userCanUpdateProject);
+
+            newFileUploader.acceptContext(new Callback<Boolean, Void>() {
+                @Override
+                public void onFailure(Void reason) {
+                    view.enableImportButton(false);
+                }
+
+                @Override
+                public void onSuccess(Boolean result) {
+                    view.enableImportButton(result && userCanUpdateProject);
+                }
+            });
+
+            return promises.resolve();
+        });
+    }
+
+    private void enableButtons(boolean enable) {
+        this.view.enableImportButton(enable);
+        this.view.enableAddAssetButton(enable);
     }
 
     public void onAssetListUpdated(@Observes @Routed ProjectAssetListUpdated event) {
@@ -227,18 +259,18 @@ public class PopulatedAssetsScreen {
     }
 
     public void importAsset() {
-        if (canUpdateProject()) {
-            this.newFileUploader.getCommand(this.newResourcePresenter).execute();
-        }
+        projectController.canUpdateProject(this.workspaceProject).then(userCanUpdateProject -> {
+            if (userCanUpdateProject) {
+                this.newFileUploader.getCommand(this.newResourcePresenter).execute();
+            }
+
+            return promises.resolve();
+        });
     }
 
     public void setFilterType(String filterType) {
         this.filterType = filterType;
         this.update();
-    }
-
-    protected boolean canUpdateProject() {
-        return this.libraryPermissions.userCanUpdateProject(this.workspaceProject);
     }
 
     protected void showIndexingNotFinished() {
@@ -265,9 +297,13 @@ public class PopulatedAssetsScreen {
     }
 
     public void addAsset() {
-        if (canUpdateProject()) {
-            this.libraryPlaces.goToAddAsset();
-        }
+        projectController.canUpdateProject(this.workspaceProject).then(userCanUpdateProject -> {
+            if (userCanUpdateProject) {
+                this.libraryPlaces.goToAddAsset();
+            }
+
+            return promises.resolve();
+        });
     }
 
     public void nextPage() {

@@ -16,6 +16,7 @@
 package org.kie.workbench.common.dmn.project.client.editor;
 
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -261,8 +262,8 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
 
     @Override
     @WorkbenchMenu
-    public Menus getMenus() {
-        return super.getMenus();
+    public void getMenus(final Consumer<Menus> menusConsumer) {
+        super.getMenus(menusConsumer);
     }
 
     @Override

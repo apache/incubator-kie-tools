@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import elemental2.promise.Promise;
 import org.guvnor.structure.contributors.Contributor;
 import org.guvnor.structure.contributors.ContributorType;
 import org.guvnor.structure.events.AfterEditOrganizationalUnitEvent;
@@ -32,6 +33,7 @@ import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.jboss.errai.common.client.api.Caller;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.uberfire.client.mvp.UberElemental;
+import org.uberfire.client.promise.Promises;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
 import org.uberfire.workbench.events.NotificationEvent;
@@ -84,6 +86,8 @@ public class ContributorsListItemPresenter {
 
     private Event<NotificationEvent> notificationEvent;
 
+    Promises promises;
+
     private Contributor persistedContributor;
 
     private ContributorsListPresenter parentPresenter;
@@ -93,10 +97,12 @@ public class ContributorsListItemPresenter {
     @Inject
     public ContributorsListItemPresenter(final View view,
                                          final LibraryPlaces libraryPlaces,
-                                         final Event<NotificationEvent> notificationEvent) {
+                                         final Event<NotificationEvent> notificationEvent,
+                                         final Promises promises) {
         this.view = view;
         this.libraryPlaces = libraryPlaces;
         this.notificationEvent = notificationEvent;
+        this.promises = promises;
     }
 
     public void setupNew(final ContributorsListPresenter parentPresenter,
@@ -128,94 +134,102 @@ public class ContributorsListItemPresenter {
         final Contributor contributor = new Contributor(view.getName(), view.getRole());
 
         contributorsListService.getContributors(currentContributors -> {
-            final boolean isValid = isValid(contributor, currentContributors);
+            isValid(contributor, currentContributors).then(isValid -> {
+                if (isValid) {
+                    final List<Contributor> updatedContributors = new ArrayList<>();
 
-            if (isValid) {
-                final List<Contributor> updatedContributors = new ArrayList<>();
+                    if (persistedContributor == null) {
+                        updatedContributors.addAll(currentContributors);
+                    } else {
+                        updatedContributors.addAll(currentContributors.stream().filter(c -> !c.equals(persistedContributor)).collect(Collectors.toList()));
+                    }
+                    updatedContributors.add(contributor);
 
-                if (persistedContributor == null) {
-                    updatedContributors.addAll(currentContributors);
-                } else {
-                    updatedContributors.addAll(currentContributors.stream().filter(c -> !c.equals(persistedContributor)).collect(Collectors.toList()));
+                    view.showBusyIndicator(view.getSavingMessage());
+                    contributorsListService.saveContributors(updatedContributors,
+                                                             () -> {
+                                                                 persistedContributor = contributor;
+                                                                 view.setupViewMode(contributor);
+                                                                 parentPresenter.itemIsNotBeingEdited();
+                                                                 view.hideBusyIndicator();
+
+                                                                 notificationEvent.fire(new NotificationEvent(view.getSaveSuccessMessage(),
+                                                                                                              NotificationEvent.NotificationType.SUCCESS));
+                                                                 parentPresenter.refresh();
+                                                             },
+                                                             new HasBusyIndicatorDefaultErrorCallback(view));
                 }
-                updatedContributors.add(contributor);
 
-                view.showBusyIndicator(view.getSavingMessage());
-                contributorsListService.saveContributors(updatedContributors,
-                                                         () -> {
-                                                             persistedContributor = contributor;
-                                                             view.setupViewMode(contributor);
-                                                             parentPresenter.itemIsNotBeingEdited();
-                                                             view.hideBusyIndicator();
-
-                                                             notificationEvent.fire(new NotificationEvent(view.getSaveSuccessMessage(),
-                                                                                                          NotificationEvent.NotificationType.SUCCESS));
-                                                             parentPresenter.refresh();
-                                                         },
-                                                         new HasBusyIndicatorDefaultErrorCallback(view));
-            }
+                return promises.resolve();
+            });
         });
     }
 
-    private boolean isValid(final Contributor contributor,
-                            final List<Contributor> currentContributors) {
-        final boolean emptyName = contributor.getUsername() == null;
-        final boolean validUsername = !emptyName && parentPresenter.getValidUsernames().contains(contributor.getUsername());
-        if (emptyName || !validUsername) {
-            notificationEvent.fire(new NotificationEvent(view.getInvalidNameMessage(),
-                                                         NotificationEvent.NotificationType.ERROR));
-            return false;
-        }
+    private Promise<Boolean> isValid(final Contributor contributor,
+                                     final List<Contributor> currentContributors) {
+        return contributorsListService.canEditContributors(currentContributors, contributor.getType()).then(canEditContributors -> {
+            final boolean emptyName = contributor.getUsername() == null;
+            final boolean validUsername = !emptyName && parentPresenter.getValidUsernames().contains(contributor.getUsername());
+            if (emptyName || !validUsername) {
+                notificationEvent.fire(new NotificationEvent(view.getInvalidNameMessage(),
+                                                             NotificationEvent.NotificationType.ERROR));
+                return promises.resolve(false);
+            }
 
-        final boolean newContributor = persistedContributor == null;
-        final boolean wasOwner = !newContributor && ContributorType.OWNER.equals(persistedContributor.getType());
-        final boolean isOwner = ContributorType.OWNER.equals(contributor.getType());
-        if (!newContributor && wasOwner && !isOwner && isLastOwner(persistedContributor, currentContributors)) {
-            notificationEvent.fire(new NotificationEvent(view.getSingleOwnerIsMandatoryMessage(),
-                                                         NotificationEvent.NotificationType.ERROR));
-            return false;
-        }
+            final boolean newContributor = persistedContributor == null;
+            final boolean wasOwner = !newContributor && ContributorType.OWNER.equals(persistedContributor.getType());
+            final boolean isOwner = ContributorType.OWNER.equals(contributor.getType());
+            if (!newContributor && wasOwner && !isOwner && isLastOwner(persistedContributor,
+                                                                       currentContributors)) {
+                notificationEvent.fire(new NotificationEvent(view.getSingleOwnerIsMandatoryMessage(),
+                                                             NotificationEvent.NotificationType.ERROR));
+                return promises.resolve(false);
+            }
 
-        final boolean userIsAlreadyAContributor = currentContributors.stream().anyMatch(c -> c.getUsername().equals(contributor.getUsername()));
-        final boolean userChanged = !newContributor && !persistedContributor.getUsername().equals(contributor.getUsername());
-        if ((newContributor && userIsAlreadyAContributor) || (!newContributor && userChanged && userIsAlreadyAContributor)) {
-            notificationEvent.fire(new NotificationEvent(view.getDuplicatedContributorMessage(),
-                                                         NotificationEvent.NotificationType.ERROR));
-            return false;
-        }
+            final boolean userIsAlreadyAContributor = currentContributors.stream().anyMatch(c -> c.getUsername().equals(contributor.getUsername()));
+            final boolean userChanged = !newContributor && !persistedContributor.getUsername().equals(contributor.getUsername());
+            if ((newContributor && userIsAlreadyAContributor) || (!newContributor && userChanged && userIsAlreadyAContributor)) {
+                notificationEvent.fire(new NotificationEvent(view.getDuplicatedContributorMessage(),
+                                                             NotificationEvent.NotificationType.ERROR));
+                return promises.resolve(false);
+            }
 
-        if (!contributorsListService.canEditContributors(currentContributors, contributor.getType())) {
-            notificationEvent.fire(new NotificationEvent(view.getContributorTypeNotAllowedMessage(),
-                                                         NotificationEvent.NotificationType.ERROR));
-            return false;
-        }
+            if (!canEditContributors) {
+                notificationEvent.fire(new NotificationEvent(view.getContributorTypeNotAllowedMessage(),
+                                                             NotificationEvent.NotificationType.ERROR));
+                return promises.resolve(false);
+            }
 
-        return true;
+            return promises.resolve(true);
+        });
     }
 
     public void remove() {
-        if (!canRemoveContributor()) {
-            return;
-        }
+        canRemoveContributor().then(canRemoveContributor -> {
+            if (canRemoveContributor) {
+                contributorsListService.getContributors(contributors -> {
+                    if (isLastOwner(persistedContributor,
+                                    contributors)) {
+                        notificationEvent.fire(new NotificationEvent(view.getSingleOwnerIsMandatoryMessage(),
+                                                                     NotificationEvent.NotificationType.ERROR));
+                    } else {
+                        contributors.remove(persistedContributor);
 
-        contributorsListService.getContributors(contributors -> {
-            if (isLastOwner(persistedContributor, contributors)) {
-                notificationEvent.fire(new NotificationEvent(view.getSingleOwnerIsMandatoryMessage(),
-                                                             NotificationEvent.NotificationType.ERROR));
-            } else {
-                contributors.remove(persistedContributor);
-
-                view.showBusyIndicator(view.getSavingMessage());
-                contributorsListService.saveContributors(contributors,
-                                                         () -> {
-                                                             view.hideBusyIndicator();
-                                                             notificationEvent.fire(new NotificationEvent(view.getRemoveSuccessMessage(),
-                                                                                                          NotificationEvent.NotificationType.SUCCESS));
-                                                             view.removeContributor();
-                                                             parentPresenter.refresh();
-                                                         },
-                                                         new HasBusyIndicatorDefaultErrorCallback(view));
+                        view.showBusyIndicator(view.getSavingMessage());
+                        contributorsListService.saveContributors(contributors,
+                                                                 () -> {
+                                                                     view.hideBusyIndicator();
+                                                                     notificationEvent.fire(new NotificationEvent(view.getRemoveSuccessMessage(),
+                                                                                                                  NotificationEvent.NotificationType.SUCCESS));
+                                                                     view.removeContributor();
+                                                                     parentPresenter.refresh();
+                                                                 },
+                                                                 new HasBusyIndicatorDefaultErrorCallback(view));
+                    }
+                });
             }
+
+            return promises.resolve();
         });
     }
 
@@ -250,12 +264,16 @@ public class ContributorsListItemPresenter {
         return parentPresenter.getValidUsernames();
     }
 
-    public boolean canRemoveContributor() {
+    public Promise<Boolean> canRemoveContributor() {
         return canEditContributors();
     }
 
-    public boolean canEditContributors() {
-        return persistedContributor != null && parentPresenter.canEditContributors(persistedContributor.getType());
+    public Promise<Boolean> canEditContributors() {
+        if (persistedContributor == null) {
+            return promises.resolve(false);
+        }
+
+        return parentPresenter.canEditContributors(persistedContributor.getType());
     }
 
     public View getView() {

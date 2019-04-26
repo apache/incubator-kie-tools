@@ -46,6 +46,7 @@ import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.PlaceStatus;
+import org.uberfire.client.promise.Promises;
 import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
 import org.uberfire.client.workbench.events.PlaceHiddenEvent;
 import org.uberfire.client.workbench.type.ClientResourceType;
@@ -58,6 +59,7 @@ import org.uberfire.ext.editor.commons.service.support.SupportsSaveAndRename;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.promise.SyncPromises;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuItem;
 
@@ -103,6 +105,9 @@ public class KieEditorTest {
     @Spy
     @InjectMocks
     protected AssetUpdateValidator assetUpdateValidator;
+
+    protected Promises promises;
+
     protected KieEditorFake presenter;
     @Captor
     ArgumentCaptor<PlaceRequest> placeRequestArgumentCaptor;
@@ -115,15 +120,17 @@ public class KieEditorTest {
 
     @Before
     public void setup() {
+        promises = new SyncPromises();
         when(alertsButtonMenuItemBuilder.build()).thenReturn(alertsButtonMenuItem);
         presenter = spy(new KieEditorFake());
+        doReturn(promises.resolve(true)).when(projectController).canUpdateProject(any());
     }
 
     @Test
     public void testMakeMenuBar() {
 
         doReturn(Optional.of(mock(WorkspaceProject.class))).when(workbenchContext).getActiveWorkspaceProject();
-        doReturn(true).when(projectController).canUpdateProject(any());
+        doReturn(promises.resolve(true)).when(projectController).canUpdateProject(any());
 
         presenter.makeMenuBar();
 
@@ -139,7 +146,7 @@ public class KieEditorTest {
     public void testMakeMenuBarWithoutUpdateProjectPermission() {
 
         doReturn(Optional.of(mock(WorkspaceProject.class))).when(workbenchContext).getActiveWorkspaceProject();
-        doReturn(false).when(projectController).canUpdateProject(any());
+        doReturn(promises.resolve(false)).when(projectController).canUpdateProject(any());
 
         presenter.makeMenuBar();
 
@@ -248,7 +255,7 @@ public class KieEditorTest {
     @Test
     public void testValidSaveAction() {
         doReturn(Optional.of(mock(WorkspaceProject.class))).when(workbenchContext).getActiveWorkspaceProject();
-        doReturn(true).when(projectController).canUpdateProject(any());
+        doReturn(promises.resolve(true)).when(projectController).canUpdateProject(any());
 
         presenter.saveAction();
 
@@ -258,7 +265,7 @@ public class KieEditorTest {
     @Test
     public void testNotAllowedSaveAction() {
         doReturn(Optional.of(mock(WorkspaceProject.class))).when(workbenchContext).getActiveWorkspaceProject();
-        doReturn(false).when(projectController).canUpdateProject(any());
+        doReturn(promises.resolve(false)).when(projectController).canUpdateProject(any());
         doReturn("not-allowed").when(kieView).getNotAllowedSavingMessage();
 
         presenter.saveAction();
@@ -454,6 +461,7 @@ public class KieEditorTest {
             alertsButtonMenuItemBuilder = KieEditorTest.this.alertsButtonMenuItemBuilder;
             perspectiveManager = KieEditorTest.this.perspectiveManager;
             placeManager = KieEditorTest.this.placeManager;
+            promises = KieEditorTest.this.promises;
         }
 
         @Override

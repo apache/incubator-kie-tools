@@ -34,7 +34,9 @@ import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
+import org.uberfire.client.promise.Promises;
 import org.uberfire.mocks.EventSourceMock;
+import org.uberfire.promise.SyncPromises;
 import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.junit.Assert.assertEquals;
@@ -55,13 +57,17 @@ public class ContributorsListItemPresenterTest {
     @Captor
     private ArgumentCaptor<List<Contributor>> contributorsArgumentCaptor;
 
+    private Promises promises;
+
     private ContributorsListItemPresenter presenter;
 
     @Before
     public void setup() {
+        promises = new SyncPromises();
         presenter = new ContributorsListItemPresenter(view,
                                                       libraryPlaces,
-                                                      notificationEvent);
+                                                      notificationEvent,
+                                                      promises);
     }
 
     @Test
@@ -105,7 +111,7 @@ public class ContributorsListItemPresenterTest {
         doReturn(Arrays.asList("admin", "newContributor")).when(parentPresenter).getValidUsernames();
 
         final ContributorsListService contributorsListService = mock(ContributorsListService.class);
-        doReturn(true).when(contributorsListService).canEditContributors(any(), any());
+        doReturn(promises.resolve(true)).when(contributorsListService).canEditContributors(any(), any());
         final Contributor contributor1 = new Contributor("admin", ContributorType.OWNER);
         doAnswer(invocationOnMock -> {
             final List<Contributor> contributors = new ArrayList<>();
@@ -138,7 +144,7 @@ public class ContributorsListItemPresenterTest {
         doReturn(Arrays.asList("admin", "newName")).when(parentPresenter).getValidUsernames();
 
         final ContributorsListService contributorsListService = mock(ContributorsListService.class);
-        doReturn(true).when(contributorsListService).canEditContributors(any(), any());
+        doReturn(promises.resolve(true)).when(contributorsListService).canEditContributors(any(), any());
         final Contributor persistedContributor = new Contributor("admin", ContributorType.OWNER);
         doAnswer(invocationOnMock -> {
             final List<Contributor> contributors = new ArrayList<>();
@@ -177,6 +183,7 @@ public class ContributorsListItemPresenterTest {
             invocationOnMock.getArgumentAt(0, Consumer.class).accept(contributors);
             return null;
         }).when(contributorsListService).getContributors(any());
+        doReturn(promises.resolve(true)).when(contributorsListService).canEditContributors(any(), any());
 
         presenter.setup(persistedContributor,
                         parentPresenter,
@@ -201,7 +208,7 @@ public class ContributorsListItemPresenterTest {
         }).when(contributorsListService).getContributors(any());
 
         final ContributorsListPresenter parentPresenter = mock(ContributorsListPresenter.class);
-        doReturn(true).when(parentPresenter).canEditContributors(any());
+        doReturn(promises.resolve(true)).when(parentPresenter).canEditContributors(any());
 
         presenter.setup(contributor2,
                         parentPresenter,
@@ -223,7 +230,7 @@ public class ContributorsListItemPresenterTest {
         }).when(contributorsListService).getContributors(any());
 
         final ContributorsListPresenter parentPresenter = mock(ContributorsListPresenter.class);
-        doReturn(true).when(parentPresenter).canEditContributors(any());
+        doReturn(promises.resolve(true)).when(parentPresenter).canEditContributors(any());
 
         presenter.setup(contributor,
                         parentPresenter,

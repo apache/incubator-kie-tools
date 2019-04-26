@@ -23,7 +23,6 @@ import org.kie.workbench.common.screens.library.client.settings.sections.Setting
 import org.kie.workbench.common.screens.library.client.settings.util.sections.MenuItem;
 import org.kie.workbench.common.screens.library.client.settings.util.sections.Section;
 import org.kie.workbench.common.screens.library.client.settings.util.sections.SectionManager;
-import org.kie.workbench.common.screens.library.client.util.LibraryPermissions;
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
 import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenService;
 import org.mockito.Mock;
@@ -82,7 +81,7 @@ public class SettingsPresenterTest {
     private SectionManager<ProjectScreenModel> sectionManager;
 
     @Mock
-    private LibraryPermissions libraryPermissions;
+    private ProjectController projectController;
 
     private static final SyncPromises promises = new SyncPromises();
 
@@ -115,7 +114,7 @@ public class SettingsPresenterTest {
                 observablePaths,
                 conflictingRepositoriesPopup,
                 sectionManager,
-                libraryPermissions));
+                projectController));
     }
 
     @Test
@@ -129,7 +128,6 @@ public class SettingsPresenterTest {
 
         presenter.setup();
 
-        verify(presenter, times(1)).setupUsingCurrentSection();
         verify(sectionManager).init(eq(sections), any(), any());
     }
 
@@ -151,7 +149,7 @@ public class SettingsPresenterTest {
         doReturn(true).when(sectionManager).manages(any());
         doReturn(promises.resolve()).when(sectionManager).goToCurrentSection();
         doReturn(promises.resolve()).when(presenter).setupSections(any());
-        doReturn(true).when(libraryPermissions).userCanUpdateProject(any());
+        doReturn(promises.resolve(true)).when(projectController).canUpdateProject(any());
 
         presenter.setupUsingCurrentSection();
 
@@ -176,7 +174,7 @@ public class SettingsPresenterTest {
         doReturn(true).when(sectionManager).manages(any());
         doReturn(promises.resolve()).when(sectionManager).goToCurrentSection();
         doReturn(promises.resolve()).when(presenter).setupSections(any());
-        doReturn(false).when(libraryPermissions).userCanUpdateProject(any());
+        doReturn(promises.resolve(false)).when(projectController).canUpdateProject(any());
 
         presenter.setupUsingCurrentSection();
 
@@ -201,6 +199,7 @@ public class SettingsPresenterTest {
         doReturn(false).when(sectionManager).manages(eq(section));
         doReturn(promises.resolve()).when(sectionManager).goToFirstAvailable();
         doReturn(promises.resolve()).when(presenter).setupSections(any());
+        doReturn(promises.resolve(false)).when(projectController).canUpdateProject(any());
 
         presenter.setupUsingCurrentSection();
 
@@ -223,6 +222,7 @@ public class SettingsPresenterTest {
 
         doReturn(new ArrayList<>(Arrays.asList(section1, section2))).when(sectionManager).getSections();
         doReturn(promises.reject("Test")).when(presenter).setupSections(any());
+        doReturn(promises.resolve(false)).when(projectController).canUpdateProject(any());
 
         presenter.setupUsingCurrentSection();
 
@@ -301,7 +301,7 @@ public class SettingsPresenterTest {
 
     @Test
     public void testShowSaveModal() {
-        doReturn(true).when(libraryPermissions).userCanUpdateProject(any());
+        doReturn(promises.resolve(true)).when(projectController).canUpdateProject(any());
         doReturn(promises.resolve()).when(sectionManager).validateAll();
 
         presenter.showSaveModal();
@@ -312,7 +312,7 @@ public class SettingsPresenterTest {
 
     @Test
     public void testShowSaveModalWithoutPermission() {
-        doReturn(false).when(libraryPermissions).userCanUpdateProject(any());
+        doReturn(promises.resolve(false)).when(projectController).canUpdateProject(any());
         doReturn(promises.resolve()).when(sectionManager).validateAll();
 
         presenter.showSaveModal();
@@ -323,7 +323,7 @@ public class SettingsPresenterTest {
 
     @Test
     public void testShowSaveModalWithValidationError() {
-        doReturn(true).when(libraryPermissions).userCanUpdateProject(any());
+        doReturn(promises.resolve(true)).when(projectController).canUpdateProject(any());
         Section<ProjectScreenModel> section = newMockedSection();
         doReturn(promises.reject(section)).when(sectionManager).validateAll();
 
@@ -529,7 +529,7 @@ public class SettingsPresenterTest {
 
     @Test
     public void testResetWithPermission() {
-        doReturn(true).when(libraryPermissions).userCanUpdateProject(any());
+        doReturn(promises.resolve(true)).when(projectController).canUpdateProject(any());
         doReturn(promises.resolve()).when(presenter).setupUsingCurrentSection();
 
         presenter.reset();
@@ -539,7 +539,7 @@ public class SettingsPresenterTest {
 
     @Test
     public void testResetWithoutPermission() {
-        doReturn(false).when(libraryPermissions).userCanUpdateProject(any());
+        doReturn(promises.resolve(false)).when(projectController).canUpdateProject(any());
         doReturn(promises.resolve()).when(presenter).setupUsingCurrentSection();
 
         presenter.reset();

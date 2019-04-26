@@ -18,6 +18,7 @@ package org.kie.workbench.common.screens.datamodeller.client;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -25,6 +26,7 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import elemental2.promise.Promise;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.guvnor.messageconsole.events.PublishBaseEvent;
@@ -175,8 +177,8 @@ public class DataModelerScreenPresenter
     }
 
     @WorkbenchMenu
-    public Menus getMenus() {
-        return menus;
+    public void getMenus(final Consumer<Menus> menusConsumer) {
+        super.getMenus(menusConsumer);
     }
 
     @OnStartup
@@ -717,42 +719,46 @@ public class DataModelerScreenPresenter
 
             @Override
             public void callback(EditorModelContent content) {
+                isReadOnly().then(isReadOnly -> {
+                    //Path is set to null when the Editor is closed (which can happen before async calls complete).
+                    if (versionRecordManager.getCurrentPath() == null) {
+                        return promises.resolve();
+                    }
 
-                //Path is set to null when the Editor is closed (which can happen before async calls complete).
-                if (versionRecordManager.getCurrentPath() == null) {
-                    return;
-                }
+                    uiStarted = false;
+                    resetEditorPages(content.getOverview());
+                    addSourceEditorPage();
+                    uiStarted = true;
 
-                uiStarted = false;
-                resetEditorPages(content.getOverview());
-                addSourceEditorPage();
-                uiStarted = true;
+                    initContext(content,
+                                isReadOnly);
+                    javaSourceEditor.setReadonly(isReadOnly || !sourceEditionEnabled);
+                    javaSourceEditor.setContent(content.getSource());
 
-                initContext(content);
-                javaSourceEditor.setReadonly(isReadOnly() || !sourceEditionEnabled);
-                javaSourceEditor.setContent(content.getSource());
+                    view.hideBusyIndicator();
 
-                view.hideBusyIndicator();
+                    if (content.hasErrors()) {
+                        publishSystemMessages(getCurrentMessageType(),
+                                              true,
+                                              content.getErrors());
+                    }
 
-                if (content.hasErrors()) {
-                    publishSystemMessages(getCurrentMessageType(),
-                                          true,
-                                          content.getErrors());
-                }
+                    if (content.getDataObject() != null) {
+                        selectEditorTab();
+                    } else {
+                        showParseErrorsDialog(Constants.INSTANCE.modelEditor_message_file_parsing_errors(),
+                                              false,
+                                              context.getEditorModelContent().getErrors(),
+                                              getOnLoadParseErrorCommand());
+                    }
 
-                if (content.getDataObject() != null) {
-                    selectEditorTab();
-                } else {
-                    showParseErrorsDialog(Constants.INSTANCE.modelEditor_message_file_parsing_errors(),
-                                          false,
-                                          context.getEditorModelContent().getErrors(),
-                                          getOnLoadParseErrorCommand());
-                }
+                    showDataModellerDocks();
+                    setOriginalHash(context.getDataObject() != null ? context.getDataObject().hashCode() : null);
+                    originalSourceHash = getSource().hashCode();
+                    loading = false;
 
-                showDataModellerDocks();
-                setOriginalHash(context.getDataObject() != null ? context.getDataObject().hashCode() : null);
-                originalSourceHash = getSource().hashCode();
-                loading = false;
+                    return promises.resolve();
+                });
             }
         };
     }
@@ -898,14 +904,14 @@ public class DataModelerScreenPresenter
                                                               sessionInfo.getIdentity());
     }
 
-    private void initContext(EditorModelContent content) {
-
+    private void initContext(final EditorModelContent content,
+                             final boolean isReadOnly) {
         if (loadTypesInfo) {
             dataModelerWBContext.setAnnotationDefinitions(content.getAnnotationDefinitions());
             dataModelerWBContext.setPropertyTypes(content.getPropertyTypes());
         }
 
-        context.setReadonly(isReadOnly());
+        context.setReadonly(isReadOnly);
         context.setEditorModelContent(content);
         context.setAnnotationDefinitions(dataModelerWBContext.getAnnotationDefinitions());
         context.init(dataModelerWBContext.getPropertyTypes());
@@ -918,7 +924,7 @@ public class DataModelerScreenPresenter
             context.setParseStatus(DataModelerContext.ParseStatus.PARSE_ERRORS);
             context.setEditionMode(DataModelerContext.EditionMode.SOURCE_MODE);
         }
-    }
+   }
 
     @Override
     public void onSourceTabSelected() {
@@ -1173,43 +1179,52 @@ public class DataModelerScreenPresenter
     }
 
     @Override
-    protected void makeMenuBar() {
-        if (canUpdateProject()) {
-            fileMenuBuilder
-                    .addSave(versionRecordManager.newSaveMenuItem(new Command() {
-                        @Override
-                        public void execute() {
-                            saveAction();
-                        }
-                    }))
-                    .addCopy(new Command() {
-                        @Override
-                        public void execute() {
-                            onCopy();
-                        }
-                    })
-                    .addRename(new Command() {
-                        @Override
-                        public void execute() {
-                            onSafeRename();
-                        }
-                    })
-                    .addDelete(new Command() {
-                        @Override
-                        public void execute() {
-                            onSafeDelete();
-                        }
-                    });
+    protected Promise<Void> makeMenuBar() {
+        if (workbenchContext.getActiveWorkspaceProject().isPresent()) {
+            final WorkspaceProject activeProject = workbenchContext.getActiveWorkspaceProject().get();
+            return projectController.canUpdateProject(activeProject).then(canUpdateProject -> {
+                if (canUpdateProject) {
+                    fileMenuBuilder
+                            .addSave(versionRecordManager.newSaveMenuItem(new Command() {
+                                @Override
+                                public void execute() {
+                                    saveAction();
+                                }
+                            }))
+                            .addCopy(new Command() {
+                                @Override
+                                public void execute() {
+                                    onCopy();
+                                }
+                            })
+                            .addRename(new Command() {
+                                @Override
+                                public void execute() {
+                                    onSafeRename();
+                                }
+                            })
+                            .addDelete(new Command() {
+                                @Override
+                                public void execute() {
+                                    onSafeDelete();
+                                }
+                            });
+                }
+
+                addDownloadMenuItem(fileMenuBuilder);
+
+                fileMenuBuilder
+                        .addValidate(
+                                getValidateCommand()
+                        )
+                        .addNewTopLevelMenu(versionRecordManager.buildMenu())
+                        .addNewTopLevelMenu(alertsButtonMenuItemBuilder.build());
+
+                return promises.resolve();
+            });
         }
 
-        addDownloadMenuItem(fileMenuBuilder);
-
-        fileMenuBuilder
-                .addValidate(
-                        getValidateCommand()
-                )
-                .addNewTopLevelMenu(versionRecordManager.buildMenu())
-                .addNewTopLevelMenu(alertsButtonMenuItemBuilder.build());
+        return promises.resolve();
     }
 
     private void clearContext() {
@@ -1255,13 +1270,17 @@ public class DataModelerScreenPresenter
         }
     }
 
-    private boolean isReadOnly() {
-        boolean result = super.isReadOnly;
-        Optional<WorkspaceProject> workspaceProject = workbenchContext.getActiveWorkspaceProject();
-        if (workspaceProject.isPresent()) {
-            result = result || !projectController.canUpdateProject(workspaceProject.get());
+    private Promise<Boolean> isReadOnly() {
+        if (super.isReadOnly) {
+            return promises.resolve(true);
         }
-        return result;
+
+        if (workbenchContext.getActiveWorkspaceProject().isPresent()) {
+            final WorkspaceProject activeProject = workbenchContext.getActiveWorkspaceProject().get();
+            return projectController.canUpdateProject(activeProject).then(canUpdateProject -> promises.resolve(!canUpdateProject));
+        }
+
+        return promises.resolve(false);
     }
 
     public interface DataModelerScreenView

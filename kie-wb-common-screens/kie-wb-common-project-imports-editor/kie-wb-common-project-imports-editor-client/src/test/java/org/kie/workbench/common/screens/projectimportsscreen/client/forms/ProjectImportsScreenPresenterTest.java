@@ -46,6 +46,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.promise.Promises;
 import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
 import org.uberfire.ext.editor.commons.client.menu.common.SaveAndRenameCommandBuilder;
 import org.uberfire.ext.editor.commons.client.validation.Validator;
@@ -53,6 +54,7 @@ import org.uberfire.ext.editor.commons.service.support.SupportsSaveAndRename;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.promise.SyncPromises;
 import org.uberfire.workbench.category.Others;
 import org.uberfire.workbench.model.menu.MenuItem;
 
@@ -125,6 +127,8 @@ public class ProjectImportsScreenPresenterTest {
     @Mock
     protected MenuItem alertsButtonMenuItem;
 
+    protected Promises promises;
+
     @InjectMocks
     protected ProjectImportsScreenPresenter presenter = makeProjectImportsScreen();
 
@@ -181,7 +185,7 @@ public class ProjectImportsScreenPresenterTest {
     @Test
     public void testMakeMenuBar() {
         doReturn(Optional.of(mock(WorkspaceProject.class))).when(workbenchContext).getActiveWorkspaceProject();
-        doReturn(true).when(projectController).canUpdateProject(any());
+        doReturn(promises.resolve(true)).when(projectController).canUpdateProject(any());
 
         presenter.makeMenuBar();
 
@@ -196,7 +200,7 @@ public class ProjectImportsScreenPresenterTest {
     @Test
     public void testMakeMenuBarWithoutUpdateProjectPermission() {
         doReturn(Optional.of(mock(WorkspaceProject.class))).when(workbenchContext).getActiveWorkspaceProject();
-        doReturn(false).when(projectController).canUpdateProject(any());
+        doReturn(promises.resolve(false)).when(projectController).canUpdateProject(any());
 
         presenter.makeMenuBar();
 
@@ -228,8 +232,13 @@ public class ProjectImportsScreenPresenterTest {
     }
 
     private ProjectImportsScreenPresenter makeProjectImportsScreen() {
+        promises = new SyncPromises();
 
         return spy(new ProjectImportsScreenPresenter(view, serviceCaller, new Others()) {
+
+            {
+                promises = ProjectImportsScreenPresenterTest.this.promises;
+            }
 
             @Override
             public void addDownloadMenuItem(final FileMenuBuilder fileMenuBuilder) {

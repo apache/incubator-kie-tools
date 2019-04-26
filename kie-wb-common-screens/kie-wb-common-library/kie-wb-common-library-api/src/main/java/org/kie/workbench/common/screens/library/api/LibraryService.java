@@ -25,6 +25,7 @@ import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.structure.contributors.Contributor;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
+import org.guvnor.structure.organizationalunit.config.BranchPermissions;
 import org.guvnor.structure.repositories.Branch;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.workbench.common.screens.examples.model.ImportProject;
@@ -79,4 +80,13 @@ public interface LibraryService {
 
     void removeBranch(final WorkspaceProject project,
                       final Branch branch);
+
+    BranchPermissions loadBranchPermissions(final String spaceName,
+                                            final String projectIdentifier,
+                                            final String branchName);
+
+    void saveBranchPermissions(final String spaceName,
+                               final String projectIdentifier,
+                               final String branchName,
+                               final BranchPermissions branchPermissions);
 }

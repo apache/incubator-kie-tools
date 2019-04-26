@@ -15,6 +15,7 @@
  */
 package org.kie.workbench.common.screens.explorer.client;
 
+import java.util.function.Consumer;
 import javax.inject.Inject;
 
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
@@ -131,8 +132,8 @@ public class ExplorerPresenter {
     }
 
     @WorkbenchMenu
-    public Menus buildMenu() {
-        return menu.asMenu();
+    public void getMenus(final Consumer<Menus> menusConsumer) {
+        menusConsumer.accept(menu.asMenu());
     }
 
     private void refresh() {

@@ -25,10 +25,10 @@ import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
-import org.kie.workbench.common.screens.library.client.util.LibraryPermissions;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.UberElemental;
+import org.uberfire.client.promise.Promises;
 import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
 import org.uberfire.workbench.events.NotificationEvent;
 
@@ -36,10 +36,11 @@ public class RenameProjectPopUpScreen {
 
     private final Caller<KieModuleService> projectService;
     private View view;
-    private LibraryPermissions libraryPermissions;
+    private ProjectController projectController;
     private TranslationService ts;
     private Event<NotificationEvent> notificationEvent;
     private WorkspaceProject workspaceProject;
+    private Promises promises;
 
     public interface View extends UberElemental<RenameProjectPopUpScreen>,
                                   HasBusyIndicator {
@@ -52,12 +53,13 @@ public class RenameProjectPopUpScreen {
     @Inject
     public RenameProjectPopUpScreen(final RenameProjectPopUpScreen.View view,
                                     final Caller<KieModuleService> projectService,
-                                    final LibraryPermissions libraryPermissions,
+                                    final ProjectController projectController,
                                     final TranslationService ts,
-                                    final Event<NotificationEvent> notificationEvent) {
+                                    final Event<NotificationEvent> notificationEvent,
+                                    final Promises promises) {
         this.view = view;
         this.projectService = projectService;
-        this.libraryPermissions = libraryPermissions;
+        this.projectController = projectController;
         this.ts = ts;
         this.notificationEvent = notificationEvent;
     }
@@ -68,10 +70,14 @@ public class RenameProjectPopUpScreen {
     }
 
     public void show(final WorkspaceProject projectInfo) {
-        if (libraryPermissions.userCanUpdateProject(projectInfo)) {
-            this.workspaceProject = projectInfo;
-            view.show();
-        }
+        projectController.canUpdateProject(workspaceProject).then(userCanUpdateProject -> {
+            if (userCanUpdateProject) {
+                this.workspaceProject = projectInfo;
+                view.show();
+            }
+
+            return promises.resolve();
+        });
     }
 
     public void cancel() {
@@ -79,18 +85,23 @@ public class RenameProjectPopUpScreen {
     }
 
     public void rename(String newName) {
-        if (libraryPermissions.userCanUpdateProject(workspaceProject)) {
-            this.view.showBusyIndicator(ts.getTranslation(LibraryConstants.Renaming));
-            this.projectService.call((Path path) -> {
-                this.view.hideBusyIndicator();
-                notificationEvent.fire(new NotificationEvent(ts.format(LibraryConstants.RenameSuccess,
-                                                                       newName),
-                                                             NotificationEvent.NotificationType.SUCCESS));
-                this.view.hide();
-            }).rename(this.workspaceProject.getMainModule().getPomXMLPath(),
-                      newName,
-                      "Project renamed to: " + newName);
-        }
+
+        projectController.canUpdateProject(workspaceProject).then(userCanUpdateProject -> {
+            if (userCanUpdateProject) {
+                this.view.showBusyIndicator(ts.getTranslation(LibraryConstants.Renaming));
+                this.projectService.call((Path path) -> {
+                    this.view.hideBusyIndicator();
+                    notificationEvent.fire(new NotificationEvent(ts.format(LibraryConstants.RenameSuccess,
+                                                                           newName),
+                                                                 NotificationEvent.NotificationType.SUCCESS));
+                    this.view.hide();
+                }).rename(this.workspaceProject.getMainModule().getPomXMLPath(),
+                          newName,
+                          "Project renamed to: " + newName);
+            }
+
+            return promises.resolve();
+        });
     }
 
     public View getView() {

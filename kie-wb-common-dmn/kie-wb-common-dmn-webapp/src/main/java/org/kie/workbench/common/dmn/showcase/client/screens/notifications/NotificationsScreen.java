@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.dmn.showcase.client.screens.notifications;
 
+import java.util.function.Consumer;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -63,8 +65,8 @@ public class NotificationsScreen {
     }
 
     @WorkbenchMenu
-    public Menus getMenu() {
-        return menu;
+    public void getMenus(final Consumer<Menus> menusConsumer) {
+        menusConsumer.accept(menu);
     }
 
     @WorkbenchPartTitle

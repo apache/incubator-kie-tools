@@ -34,6 +34,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.uberfire.backend.vfs.ObservablePath;
+import org.uberfire.client.promise.Promises;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.ext.editor.commons.client.file.popups.CopyPopUpPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.DeletePopUpPresenter;
@@ -51,6 +52,7 @@ import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.promise.SyncPromises;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuItem;
 
@@ -141,6 +143,8 @@ abstract class KieMultipleDocumentEditorTestBase {
     @Mock
     protected MenuItem downloadMenuItemButton;
 
+    protected Promises promises;
+
     protected Command concurrentRenameCommand;
     protected Command concurrentDeleteCommand;
 
@@ -150,6 +154,7 @@ abstract class KieMultipleDocumentEditorTestBase {
         concurrentDeleteCommand = null;
 
         versionServiceCaller = new CallerMock<>(versionService);
+        promises = new SyncPromises();
 
         final TestMultipleDocumentEditor wrapped = new TestMultipleDocumentEditor(editorView) {
             @Override
@@ -186,6 +191,7 @@ abstract class KieMultipleDocumentEditorTestBase {
         wrapped.setFileNameValidator(fileNameValidator);
         wrapped.setAssetUpdateValidator(assetUpdateValidator);
         wrapped.setDownloadMenuItem(downloadMenuItem);
+        wrapped.setPromises(promises);
 
         this.editor = spy(wrapped);
 

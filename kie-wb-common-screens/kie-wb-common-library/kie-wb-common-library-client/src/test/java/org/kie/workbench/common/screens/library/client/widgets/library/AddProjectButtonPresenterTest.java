@@ -25,7 +25,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.library.client.screens.project.AddProjectPopUpPresenter;
-import org.kie.workbench.common.screens.library.client.util.LibraryPermissions;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.screens.library.client.widgets.common.MenuResourceHandlerWidget;
 import org.kie.workbench.common.widgets.client.handlers.NewResourceHandler;
@@ -57,7 +56,7 @@ public class AddProjectButtonPresenterTest {
     private NewResourcePresenter newResourcePresenter;
 
     @Mock
-    private LibraryPermissions libraryPermissions;
+    private ProjectController projectController;
 
     @Mock
     private LibraryPlaces libraryPlaces;
@@ -72,7 +71,7 @@ public class AddProjectButtonPresenterTest {
 
     @Before
     public void setup() {
-        doReturn(true).when(libraryPermissions).userCanCreateProject(any());
+        doReturn(true).when(projectController).canCreateProjects(any());
         doReturn(addProjectPopUpPresenter).when(addProjectPopUpPresenters).get();
         doReturn(menuResourceHandlerWidget).when(menuResourceHandlerWidgets).get();
 
@@ -86,7 +85,7 @@ public class AddProjectButtonPresenterTest {
                                                       menuResourceHandlerWidgets,
                                                       newProjectHandlers,
                                                       newResourcePresenter,
-                                                      libraryPermissions,
+                                                      projectController,
                                                       libraryPlaces));
     }
 
@@ -133,7 +132,7 @@ public class AddProjectButtonPresenterTest {
 
     @Test
     public void addProjectWithoutPermissionTest() {
-        doReturn(false).when(libraryPermissions).userCanCreateProject(any());
+        doReturn(false).when(projectController).canCreateProjects(any());
 
         presenter.addProject();
 

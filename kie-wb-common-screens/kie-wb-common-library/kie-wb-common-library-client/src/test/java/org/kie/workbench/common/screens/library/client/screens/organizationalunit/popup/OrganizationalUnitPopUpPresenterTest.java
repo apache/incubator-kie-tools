@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.screens.library.client.screens.organizationalunit.popup;
 
+import org.guvnor.structure.client.security.OrganizationalUnitController;
 import org.guvnor.structure.events.AfterCreateOrganizationalUnitEvent;
 import org.guvnor.structure.events.AfterEditOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
@@ -25,7 +26,6 @@ import org.jboss.errai.common.client.api.Caller;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.screens.library.client.util.LibraryPermissions;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.mocks.CallerMock;
@@ -45,7 +45,7 @@ public class OrganizationalUnitPopUpPresenterTest {
     private OrganizationalUnitPopUpPresenter.View view;
 
     @Mock
-    private LibraryPermissions libraryPermissions;
+    private OrganizationalUnitController organizationalUnitController;
 
     @Mock
     private OrganizationalUnitService organizationalUnitService;
@@ -66,11 +66,11 @@ public class OrganizationalUnitPopUpPresenterTest {
 
     @Before
     public void setup() {
-        doReturn(true).when(libraryPermissions).userCanReadOrganizationalUnits();
-        doReturn(true).when(libraryPermissions).userCanReadOrganizationalUnit(any());
-        doReturn(true).when(libraryPermissions).userCanUpdateOrganizationalUnit(any());
-        doReturn(true).when(libraryPermissions).userCanCreateOrganizationalUnit();
-        doReturn(true).when(libraryPermissions).userCanDeleteOrganizationalUnit(any());
+        doReturn(true).when(organizationalUnitController).canReadOrgUnits();
+        doReturn(true).when(organizationalUnitController).canReadOrgUnit(any());
+        doReturn(true).when(organizationalUnitController).canUpdateOrgUnit(any());
+        doReturn(true).when(organizationalUnitController).canCreateOrgUnits();
+        doReturn(true).when(organizationalUnitController).canDeleteOrgUnit(any());
 
         organizationalUnitServiceCaller = new CallerMock<>(organizationalUnitService);
         doReturn(true).when(organizationalUnitService).isValidGroupId(anyString());
@@ -88,7 +88,7 @@ public class OrganizationalUnitPopUpPresenterTest {
                                                              afterCreateOrganizationalUnitEvent,
                                                              afterEditOrganizationalUnitEvent,
                                                              notificationEvent,
-                                                             libraryPermissions,
+                                                             organizationalUnitController,
                                                              sessionInfo));
     }
 
@@ -102,7 +102,7 @@ public class OrganizationalUnitPopUpPresenterTest {
 
     @Test
     public void showWithoutPermissionTest() {
-        doReturn(false).when(libraryPermissions).userCanCreateOrganizationalUnit();
+        doReturn(false).when(organizationalUnitController).canCreateOrgUnits();
 
         presenter.show();
 

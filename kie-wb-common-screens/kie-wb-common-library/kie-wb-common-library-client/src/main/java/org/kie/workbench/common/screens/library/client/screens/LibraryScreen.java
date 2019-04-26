@@ -17,14 +17,15 @@
 package org.kie.workbench.common.screens.library.client.screens;
 
 import java.util.List;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
+import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.model.WorkspaceProject;
+import org.guvnor.structure.client.security.OrganizationalUnitController;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.RepositoryRemovedEvent;
 import org.jboss.errai.common.client.api.Caller;
@@ -35,7 +36,6 @@ import org.kie.workbench.common.screens.library.client.perspective.LibraryPerspe
 import org.kie.workbench.common.screens.library.client.screens.organizationalunit.contributors.tab.ContributorsListPresenter;
 import org.kie.workbench.common.screens.library.client.screens.organizationalunit.contributors.tab.SpaceContributorsListServiceImpl;
 import org.kie.workbench.common.screens.library.client.screens.organizationalunit.delete.DeleteOrganizationalUnitPopUpPresenter;
-import org.kie.workbench.common.screens.library.client.util.LibraryPermissions;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
@@ -51,7 +51,9 @@ public class LibraryScreen {
     protected List<WorkspaceProject> projects;
     private View view;
     private ManagedInstance<DeleteOrganizationalUnitPopUpPresenter> deleteOrganizationalUnitPopUpPresenters;
-    private LibraryPermissions libraryPermissions;
+    private ProjectController projectController;
+    private OrganizationalUnitController organizationalUnitController;
+
     private WorkspaceProjectContext projectContext;
     private EmptyLibraryScreen emptyLibraryScreen;
     private PopulatedLibraryScreen populatedLibraryScreen;
@@ -65,7 +67,8 @@ public class LibraryScreen {
     public LibraryScreen(final View view,
                          final ManagedInstance<DeleteOrganizationalUnitPopUpPresenter> deleteOrganizationalUnitPopUpPresenters,
                          final WorkspaceProjectContext projectContext,
-                         final LibraryPermissions libraryPermissions,
+                         final ProjectController projectController,
+                         final OrganizationalUnitController organizationalUnitController,
                          final EmptyLibraryScreen emptyLibraryScreen,
                          final PopulatedLibraryScreen populatedLibraryScreen,
                          final OrgUnitsMetricsScreen orgUnitsMetricsScreen,
@@ -76,7 +79,8 @@ public class LibraryScreen {
         this.view = view;
         this.deleteOrganizationalUnitPopUpPresenters = deleteOrganizationalUnitPopUpPresenters;
         this.projectContext = projectContext;
-        this.libraryPermissions = libraryPermissions;
+        this.projectController = projectController;
+        this.organizationalUnitController = organizationalUnitController;
         this.emptyLibraryScreen = emptyLibraryScreen;
         this.populatedLibraryScreen = populatedLibraryScreen;
         this.orgUnitsMetricsScreen = orgUnitsMetricsScreen;
@@ -163,15 +167,15 @@ public class LibraryScreen {
     }
 
     public boolean userCanCreateProjects() {
-        return libraryPermissions.userCanCreateProject(libraryPlaces.getActiveSpace());
+        return projectController.canCreateProjects(libraryPlaces.getActiveSpace());
     }
 
     public boolean userCanUpdateOrganizationalUnit() {
-        return libraryPermissions.userCanUpdateOrganizationalUnit(projectContext.getActiveOrganizationalUnit().orElseThrow(() -> new IllegalStateException("Cannot try to update an organizational unit when none is active.")));
+        return organizationalUnitController.canUpdateOrgUnit(projectContext.getActiveOrganizationalUnit().orElseThrow(() -> new IllegalStateException("Cannot try to update an organizational unit when none is active.")));
     }
 
     public boolean userCanDeleteOrganizationalUnit() {
-        return libraryPermissions.userCanDeleteOrganizationalUnit(projectContext.getActiveOrganizationalUnit().orElseThrow(() -> new IllegalStateException("Cannot try to delete an organizational unit when none is active.")));
+        return organizationalUnitController.canDeleteOrgUnit(projectContext.getActiveOrganizationalUnit().orElseThrow(() -> new IllegalStateException("Cannot try to delete an organizational unit when none is active.")));
     }
 
     public void onNewProject(@Observes NewProjectEvent e) {

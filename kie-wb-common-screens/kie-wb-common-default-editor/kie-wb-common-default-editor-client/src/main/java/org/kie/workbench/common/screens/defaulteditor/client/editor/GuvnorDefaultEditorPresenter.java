@@ -15,11 +15,14 @@
  */
 package org.kie.workbench.common.screens.defaulteditor.client.editor;
 
+import java.util.function.Consumer;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import elemental2.promise.Promise;
+import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.defaulteditor.service.DefaultEditorContent;
@@ -84,27 +87,36 @@ public class GuvnorDefaultEditorPresenter
     }
 
     @Override
-    protected void makeMenuBar() {
-        if (canUpdateProject()) {
-            fileMenuBuilder
-                    .addCopy(versionRecordManager.getCurrentPath(),
-                             assetUpdateValidator)
-                    .addRename(versionRecordManager.getCurrentPath(),
-                               assetUpdateValidator)
-                    .addDelete(versionRecordManager.getCurrentPath(),
-                               assetUpdateValidator);
+    protected Promise<Void> makeMenuBar() {
+        if (workbenchContext.getActiveWorkspaceProject().isPresent()) {
+            final WorkspaceProject activeProject = workbenchContext.getActiveWorkspaceProject().get();
+            return projectController.canUpdateProject(activeProject).then(canUpdateProject -> {
+                if (canUpdateProject) {
+                    fileMenuBuilder
+                            .addCopy(versionRecordManager.getCurrentPath(),
+                                     assetUpdateValidator)
+                            .addRename(versionRecordManager.getCurrentPath(),
+                                       assetUpdateValidator)
+                            .addDelete(versionRecordManager.getCurrentPath(),
+                                       assetUpdateValidator);
+                }
+
+                addDownloadMenuItem(fileMenuBuilder);
+
+                fileMenuBuilder
+                        .addNewTopLevelMenu(versionRecordManager.buildMenu())
+                        .addNewTopLevelMenu(alertsButtonMenuItemBuilder.build());
+
+                return promises.resolve();
+            });
         }
 
-        addDownloadMenuItem(fileMenuBuilder);
-
-        fileMenuBuilder
-                .addNewTopLevelMenu(versionRecordManager.buildMenu())
-                .addNewTopLevelMenu(alertsButtonMenuItemBuilder.build());
+        return promises.resolve();
     }
 
     @WorkbenchMenu
-    public Menus getMenus() {
-        return menus;
+    public void getMenus(final Consumer<Menus> menusConsumer) {
+        super.getMenus(menusConsumer);
     }
 
     @Override

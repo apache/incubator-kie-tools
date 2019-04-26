@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.standalone.client.screens;
 
+import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -146,8 +147,8 @@ public class DiagramPresenterScreen {
     }
 
     @WorkbenchMenu
-    public Menus getMenu() {
-        return menu;
+    public void getMenus(final Consumer<Menus> menusConsumer) {
+        menusConsumer.accept(menu);
     }
 
     @WorkbenchPartTitle

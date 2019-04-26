@@ -258,7 +258,10 @@ public class SessionDiagramEditorScreenTest {
 
         when(menus.getItems()).thenReturn(items);
         when(event.isEditModeEnabled()).thenReturn(true);
-        doReturn(menus).when(editor).getMenu();
+        doAnswer(invocationOnMock -> {
+            invocationOnMock.getArgumentAt(0, Consumer.class).accept(menus);
+            return null;
+        }).when(editor).getMenu(any());
 
         editor.onDataTypeEditModeToggle(event);
 
@@ -275,7 +278,10 @@ public class SessionDiagramEditorScreenTest {
 
         when(menus.getItems()).thenReturn(items);
         when(event.isEditModeEnabled()).thenReturn(false);
-        doReturn(menus).when(editor).getMenu();
+        doAnswer(invocationOnMock -> {
+            invocationOnMock.getArgumentAt(0, Consumer.class).accept(menus);
+            return null;
+        }).when(editor).getMenu(any());
 
         editor.onDataTypeEditModeToggle(event);
 

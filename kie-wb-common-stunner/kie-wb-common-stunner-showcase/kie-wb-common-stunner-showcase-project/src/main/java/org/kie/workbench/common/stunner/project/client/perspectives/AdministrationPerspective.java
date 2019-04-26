@@ -17,6 +17,7 @@ package org.kie.workbench.common.stunner.project.client.perspectives;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -82,21 +83,21 @@ public class AdministrationPerspective {
     }
 
     @WorkbenchMenu
-    public Menus buildMenuBar() {
-        return MenuFactory
-                .newTopLevelMenu(AppConstants.INSTANCE.MenuExplore())
-                .withItems(getExploreMenuItems())
-                .endMenu()
-                .newTopLevelMenu(AppConstants.INSTANCE.MenuOrganizationalUnits())
-                .withItems(getOrganizationalUnitsMenuItem())
-                .endMenu()
-                .newTopLevelMenu(AppConstants.INSTANCE.MenuRepositories())
-                .withItems(getRepositoriesMenuItems())
-                .endMenu()
-                .newTopLevelMenu("Editor Properties")
-                .withItems(getEditorsMenuItem())
-                .endMenu()
-                .build();
+    public void getMenus(final Consumer<Menus> menusConsumer) {
+        menusConsumer.accept(MenuFactory
+                                     .newTopLevelMenu(AppConstants.INSTANCE.MenuExplore())
+                                     .withItems(getExploreMenuItems())
+                                     .endMenu()
+                                     .newTopLevelMenu(AppConstants.INSTANCE.MenuOrganizationalUnits())
+                                     .withItems(getOrganizationalUnitsMenuItem())
+                                     .endMenu()
+                                     .newTopLevelMenu(AppConstants.INSTANCE.MenuRepositories())
+                                     .withItems(getRepositoriesMenuItems())
+                                     .endMenu()
+                                     .newTopLevelMenu("Editor Properties")
+                                     .withItems(getEditorsMenuItem())
+                                     .endMenu()
+                                     .build());
     }
 
     private List<? extends MenuItem> getRepositoriesMenuItems() {

@@ -39,7 +39,9 @@ import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.client.promise.Promises;
 import org.uberfire.mocks.CallerMock;
+import org.uberfire.promise.SyncPromises;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
@@ -58,10 +60,6 @@ public class ContributorsListPresenterTest {
     private Elemental2DomUtil elemental2DomUtil;
 
     @Mock
-    private LibraryService libraryService;
-    private Caller<LibraryService> libraryServiceCaller;
-
-    @Mock
     private ContributorsListItemPresenter contributorsListItemPresenter;
 
     @Mock
@@ -70,13 +68,15 @@ public class ContributorsListPresenterTest {
     @Mock
     private Consumer<Integer> contributorsCountChangedCallback;
 
+    private Promises promises;
+
     private ContributorsListPresenter presenter;
 
     private List<Contributor> contributors;
 
     @Before
     public void setup() {
-        libraryServiceCaller = new CallerMock<>(libraryService);
+        promises = new SyncPromises();
 
         doReturn(contributorsListItemPresenter).when(contributorsListItemPresenters).get();
         doReturn(mock(ContributorsListItemPresenter.View.class)).when(contributorsListItemPresenter).getView();
@@ -84,7 +84,7 @@ public class ContributorsListPresenterTest {
         presenter = spy(new ContributorsListPresenter(view,
                                                       contributorsListItemPresenters,
                                                       elemental2DomUtil,
-                                                      libraryServiceCaller));
+                                                      promises));
 
         contributors = new ArrayList<>();
         contributors.add(new Contributor("admin", ContributorType.OWNER));

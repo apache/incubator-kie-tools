@@ -54,6 +54,7 @@ import org.kie.workbench.common.workbench.client.events.LayoutEditorFocusEvent;
 import org.mockito.Mock;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.promise.Promises;
 import org.uberfire.ext.editor.commons.client.file.popups.CopyPopUpPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.DeletePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.DeletePopUpView;
@@ -69,6 +70,7 @@ import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.promise.SyncPromises;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
@@ -184,6 +186,8 @@ public class FormEditorPresenterAbstractTest {
 
     protected CallerMock<FormEditorService> editorServiceCallerMock;
 
+    protected Promises promises;
+
     protected FormEditorPresenter presenter;
     protected FormModelerContent content;
 
@@ -195,6 +199,7 @@ public class FormEditorPresenterAbstractTest {
 
     @Before
     public void setUp() throws Exception {
+        promises = new SyncPromises();
         fieldManager = new TestFieldManager();
 
         model = new PortableJavaModel("com.test.Employee");
@@ -294,6 +299,7 @@ public class FormEditorPresenterAbstractTest {
                 alertsButtonMenuItemBuilder = FormEditorPresenterAbstractTest.this.alertsButtonMenuItemBuilder;
                 formEditorContext = mock(FormEditorContext.class);
                 copyPopUpPresenter = FormEditorPresenterAbstractTest.this.copyPopUpPresenter;
+                promises = FormEditorPresenterAbstractTest.this.promises;
             }
 
             @Override

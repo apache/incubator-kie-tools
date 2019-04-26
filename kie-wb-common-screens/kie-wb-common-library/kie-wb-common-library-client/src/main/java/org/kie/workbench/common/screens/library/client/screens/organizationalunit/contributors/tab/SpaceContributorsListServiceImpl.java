@@ -23,6 +23,7 @@ import java.util.function.Consumer;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import elemental2.promise.Promise;
 import org.guvnor.structure.client.security.OrganizationalUnitController;
 import org.guvnor.structure.contributors.Contributor;
 import org.guvnor.structure.contributors.ContributorType;
@@ -35,6 +36,7 @@ import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
+import org.uberfire.client.promise.Promises;
 import org.uberfire.rpc.SessionInfo;
 
 public class SpaceContributorsListServiceImpl implements ContributorsListService {
@@ -53,6 +55,8 @@ public class SpaceContributorsListServiceImpl implements ContributorsListService
 
     private ContributorsSecurityUtils contributorsSecurityUtils;
 
+    private Promises promises;
+
     @Inject
     public SpaceContributorsListServiceImpl(final LibraryPlaces libraryPlaces,
                                             final Caller<OrganizationalUnitService> organizationalUnitService,
@@ -60,7 +64,8 @@ public class SpaceContributorsListServiceImpl implements ContributorsListService
                                             final Caller<LibraryService> libraryService,
                                             final SessionInfo sessionInfo,
                                             final OrganizationalUnitController organizationalUnitController,
-                                            final ContributorsSecurityUtils contributorsSecurityUtils) {
+                                            final ContributorsSecurityUtils contributorsSecurityUtils,
+                                            final Promises promises) {
         this.libraryPlaces = libraryPlaces;
         this.organizationalUnitService = organizationalUnitService;
         this.afterEditOrganizationalUnitEvent = afterEditOrganizationalUnitEvent;
@@ -68,6 +73,7 @@ public class SpaceContributorsListServiceImpl implements ContributorsListService
         this.sessionInfo = sessionInfo;
         this.organizationalUnitController = organizationalUnitController;
         this.contributorsSecurityUtils = contributorsSecurityUtils;
+        this.promises = promises;
     }
 
     @Override
@@ -93,19 +99,19 @@ public class SpaceContributorsListServiceImpl implements ContributorsListService
     }
 
     @Override
-    public boolean canEditContributors(final List<Contributor> contributors,
-                                       final ContributorType type) {
-        boolean canEdit = false;
+    public Promise<Boolean> canEditContributors(final List<Contributor> contributors,
+                                                final ContributorType type) {
+        if (organizationalUnitController.canUpdateOrgUnit(libraryPlaces.getActiveSpace())) {
+            return promises.resolve(true);
+        }
 
         final Optional<Contributor> contributor = contributors.stream().filter(c -> c.getUsername().equals(sessionInfo.getIdentity().getIdentifier())).findFirst();
         if (contributor.isPresent()) {
             final ContributorType userContributorType = contributor.get().getType();
-            canEdit = contributorsSecurityUtils.canUserEditContributorOfType(userContributorType, type);
+            return promises.resolve(contributorsSecurityUtils.canUserEditContributorOfType(userContributorType, type));
         }
 
-        canEdit = canEdit || organizationalUnitController.canUpdateOrgUnit(libraryPlaces.getActiveSpace());
-
-        return canEdit;
+        return promises.resolve(false);
     }
 
     @Override

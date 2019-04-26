@@ -19,6 +19,7 @@ package org.kie.workbench.common.screens.javaeditor.client.editor;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import elemental2.promise.Promise;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.javaeditor.client.type.JavaResourceType;
@@ -89,9 +90,11 @@ public class JavaEditorPresenter
     }
 
     @Override
-    protected void makeMenuBar() {
+    protected Promise<Void> makeMenuBar() {
         fileMenuBuilder.addNewTopLevelMenu(versionRecordManager.buildMenu())
                 .addNewTopLevelMenu(alertsButtonMenuItemBuilder.build());
+
+        return promises.resolve();
     }
 
     @WorkbenchPartView

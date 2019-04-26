@@ -58,7 +58,10 @@ public class ContributorsListView implements ContributorsListPresenter.View,
         this.presenter = presenter;
         filterText.setAttribute("placeholder",
                                 ts.getTranslation(LibraryConstants.Search));
-        addContributor.setHidden(!presenter.canEditContributors(ContributorType.CONTRIBUTOR));
+        presenter.canEditContributors(ContributorType.CONTRIBUTOR).then(canEditContributors -> {
+            addContributor.setHidden(!canEditContributors);
+            return presenter.promises.resolve();
+        });
     }
 
     @Override
@@ -83,7 +86,10 @@ public class ContributorsListView implements ContributorsListPresenter.View,
 
     @Override
     public void showAddContributor() {
-        addContributor.setHidden(!presenter.canEditContributors(ContributorType.CONTRIBUTOR));
+        presenter.canEditContributors(ContributorType.CONTRIBUTOR).then(canEditContributors -> {
+            addContributor.setHidden(!canEditContributors);
+            return presenter.promises.resolve();
+        });
     }
 
     @Override

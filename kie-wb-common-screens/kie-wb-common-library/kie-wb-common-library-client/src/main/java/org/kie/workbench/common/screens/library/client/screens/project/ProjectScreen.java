@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.screens.library.client.screens.project;
 
+import java.util.Arrays;
+import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -24,6 +26,7 @@ import javax.inject.Inject;
 import com.google.gwt.core.client.Callback;
 import elemental2.dom.HTMLElement;
 import elemental2.promise.Promise;
+import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.jboss.errai.common.client.api.Caller;
@@ -41,7 +44,6 @@ import org.kie.workbench.common.screens.library.client.screens.project.branch.de
 import org.kie.workbench.common.screens.library.client.screens.project.delete.DeleteProjectPopUpScreen;
 import org.kie.workbench.common.screens.library.client.screens.project.rename.RenameProjectPopUpScreen;
 import org.kie.workbench.common.screens.library.client.settings.SettingsPresenter;
-import org.kie.workbench.common.screens.library.client.util.LibraryPermissions;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.screens.projecteditor.client.validation.ProjectNameValidator;
 import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenService;
@@ -107,7 +109,7 @@ public class ProjectScreen {
     private AssetsScreen assetsScreen;
     private ContributorsListPresenter contributorsListScreen;
     private ProjectMetricsScreen projectMetricsScreen;
-    private LibraryPermissions libraryPermissions;
+    private ProjectController projectController;
     private SettingsPresenter settingsPresenter;
     private final NewFileUploader newFileUploader;
     private final NewResourcePresenter newResourcePresenter;
@@ -130,7 +132,7 @@ public class ProjectScreen {
                          final AssetsScreen assetsScreen,
                          final ContributorsListPresenter contributorsListScreen,
                          final ProjectMetricsScreen projectMetricsScreen,
-                         final LibraryPermissions libraryPermissions,
+                         final ProjectController projectController,
                          final SettingsPresenter settingsPresenter,
                          final NewFileUploader newFileUploader,
                          final NewResourcePresenter newResourcePresenter,
@@ -150,7 +152,7 @@ public class ProjectScreen {
         this.assetsScreen = assetsScreen;
         this.contributorsListScreen = contributorsListScreen;
         this.projectMetricsScreen = projectMetricsScreen;
-        this.libraryPermissions = libraryPermissions;
+        this.projectController = projectController;
         this.settingsPresenter = settingsPresenter;
         this.newFileUploader = newFileUploader;
         this.newResourcePresenter = newResourcePresenter;
@@ -177,34 +179,46 @@ public class ProjectScreen {
         this.resolveAssetsCount();
         this.showAssets();
 
-        final boolean userCanUpdateProject = this.userCanUpdateProject();
-        final boolean userCanDeleteProject = this.userCanDeleteProject();
-        final boolean userCanDeleteBranch = this.userCanDeleteBranch();
-        final boolean userCanBuildProject = this.userCanBuildProject();
-        final boolean userCanDeployProject = this.userCanDeployProject();
-        final boolean userCanCreateProjects = this.userCanCreateProjects();
+        projectController.canUpdateProject(workspaceProject).then(userCanUpdateProject -> {
+            this.view.setAddAssetVisible(userCanUpdateProject);
+            this.view.setImportAssetVisible(userCanUpdateProject);
+            this.view.setReimportVisible(userCanUpdateProject);
 
-        this.view.setAddAssetVisible(userCanUpdateProject);
-        this.view.setImportAssetVisible(userCanUpdateProject);
+            newFileUploader.acceptContext(new Callback<Boolean, Void>() {
+                @Override
+                public void onFailure(Void reason) {
+                    view.setImportAssetVisible(false);
+                }
+
+                @Override
+                public void onSuccess(Boolean result) {
+                    view.setImportAssetVisible(result && userCanUpdateProject);
+                }
+            });
+
+            return promises.resolve();
+        });
+
+        final boolean userCanCreateProjects = this.userCanCreateProjects();
         this.view.setDuplicateVisible(userCanCreateProjects);
-        this.view.setReimportVisible(userCanUpdateProject);
+
+        final boolean userCanDeleteProject = this.userCanDeleteProject();
         this.view.setDeleteProjectVisible(userCanDeleteProject);
-        this.view.setDeleteBranchVisible(userCanDeleteBranch);
+
+        projectController.canDeleteBranch(workspaceProject).then(userCanDeleteBranch -> {
+            this.view.setDeleteBranchVisible(userCanDeleteBranch);
+            return promises.resolve();
+        });
 
         setupMainActions();
 
-        this.view.setActionsVisible(userCanUpdateProject || userCanDeleteProject || userCanBuildProject || userCanDeployProject || userCanCreateProjects);
-
-        newFileUploader.acceptContext(new Callback<Boolean, Void>() {
-            @Override
-            public void onFailure(Void reason) {
-                view.setImportAssetVisible(false);
-            }
-
-            @Override
-            public void onSuccess(Boolean result) {
-                view.setImportAssetVisible(result && userCanUpdateProject);
-            }
+        final List<Promise<Boolean>> permissionPromises = Arrays.asList(projectController.canUpdateProject(workspaceProject),
+                                                                        projectController.canDeleteBranch(workspaceProject),
+                                                                        promises.resolve(userCanDeleteProject()),
+                                                                        promises.resolve(userCanCreateProjects()));
+        promises.reduce(promises.resolve(false), permissionPromises, (p1, p2) -> p1.then(resultP1 -> p2.then(resultP2 -> this.promises.resolve(resultP1 || resultP2)))).then(thereAreActionsToDisplay -> {
+            this.view.setActionsVisible(thereAreActionsToDisplay);
+            return promises.resolve();
         });
 
         contributorsListScreen.setup(projectContributorsListService,
@@ -212,8 +226,16 @@ public class ProjectScreen {
     }
 
     private void setupMainActions() {
-        projectMainActions.setBuildEnabled(userCanBuildProject());
-        projectMainActions.setDeployEnabled(userCanDeployProject());
+        projectController.canBuildProject(workspaceProject).then(userCanBuildProject -> {
+            projectMainActions.setBuildEnabled(userCanBuildProject);
+            return promises.resolve();
+        });
+
+        projectController.canDeployProject(workspaceProject).then(userCanDeployProject -> {
+            projectMainActions.setDeployEnabled(userCanDeployProject);
+            return promises.resolve();
+        });
+
         projectMainActions.setRedeployEnabled(workspaceProject.getMainModule().getPom().getGav().isSnapshot());
     }
 
@@ -273,22 +295,34 @@ public class ProjectScreen {
     }
 
     public void deleteBranch() {
-        if (userCanDeleteBranch()) {
-            final DeleteBranchPopUpScreen popUp = deleteBranchPopUpScreen.get();
-            popUp.show(this.libraryPlaces.getActiveWorkspace().getBranch());
-        }
+        projectController.canDeleteBranch(workspaceProject).then(userCanDeleteBranch -> {
+            if (userCanDeleteBranch) {
+                final DeleteBranchPopUpScreen popUp = deleteBranchPopUpScreen.get();
+                popUp.show(this.libraryPlaces.getActiveWorkspace().getBranch());
+            }
+
+            return promises.resolve();
+        });
     }
 
     public void addAsset() {
-        if (userCanUpdateProject()) {
-            this.libraryPlaces.goToAddAsset();
-        }
+        projectController.canUpdateProject(workspaceProject).then(userCanUpdateProject -> {
+            if (userCanUpdateProject) {
+                this.libraryPlaces.goToAddAsset();
+            }
+
+            return promises.resolve();
+        });
     }
 
     public void importAsset() {
-        if (userCanUpdateProject()) {
-            newFileUploader.getCommand(newResourcePresenter).execute();
-        }
+        projectController.canUpdateProject(workspaceProject).then(userCanUpdateProject -> {
+            if (userCanUpdateProject) {
+                newFileUploader.getCommand(newResourcePresenter).execute();
+            }
+
+            return promises.resolve();
+        });
     }
 
     public void showSettings() {
@@ -300,10 +334,14 @@ public class ProjectScreen {
     }
 
     public void rename() {
-        if (userCanUpdateProject()) {
-            final RenameProjectPopUpScreen popUp = renameProjectPopUpScreen.get();
-            popUp.show(this.workspaceProject);
-        }
+        projectController.canUpdateProject(workspaceProject).then(userCanUpdateProject -> {
+            if (userCanUpdateProject) {
+                final RenameProjectPopUpScreen popUp = renameProjectPopUpScreen.get();
+                popUp.show(this.workspaceProject);
+            }
+
+            return promises.resolve();
+        });
     }
 
     public void duplicate() {
@@ -333,19 +371,23 @@ public class ProjectScreen {
     }
 
     public void reimport() {
-        if (this.userCanUpdateProject()) {
-            final Path pomXMLPath = workspaceProject.getMainModule().getPomXMLPath();
-            view.showBusyIndicator(view.getLoadingMessage());
+        projectController.canUpdateProject(workspaceProject).then(userCanUpdateProject -> {
+            if (userCanUpdateProject) {
+                final Path pomXMLPath = workspaceProject.getMainModule().getPomXMLPath();
+                view.showBusyIndicator(view.getLoadingMessage());
 
-            promises.promisify(projectScreenService, s -> {
-                s.reImport(pomXMLPath);
-            }).then(i -> {
-                view.hideBusyIndicator();
-                notificationEvent.fire(new NotificationEvent(view.getReimportSuccessfulMessage(),
-                                                             NotificationEvent.NotificationType.SUCCESS));
-                return promises.resolve();
-            }).catch_(this::onError);
-        }
+                promises.promisify(projectScreenService, s -> {
+                    s.reImport(pomXMLPath);
+                }).then(i -> {
+                    view.hideBusyIndicator();
+                    notificationEvent.fire(new NotificationEvent(view.getReimportSuccessfulMessage(),
+                                                                 NotificationEvent.NotificationType.SUCCESS));
+                    return promises.resolve();
+                }).catch_(this::onError);
+            }
+
+            return promises.resolve();
+        });
     }
 
     private Promise<Object> onError(final Object o) {
@@ -359,27 +401,11 @@ public class ProjectScreen {
     }
 
     public boolean userCanDeleteProject() {
-        return libraryPermissions.userCanDeleteProject(this.workspaceProject);
-    }
-
-    public boolean userCanDeleteBranch() {
-        return userCanDeleteProject() && !workspaceProject.getBranch().getName().equals("master");
-    }
-
-    public boolean userCanBuildProject() {
-        return libraryPermissions.userCanBuildProject(this.workspaceProject);
-    }
-
-    public boolean userCanDeployProject() {
-        return libraryPermissions.userCanDeployProject(this.workspaceProject);
-    }
-
-    public boolean userCanUpdateProject() {
-        return libraryPermissions.userCanUpdateProject(this.workspaceProject);
+        return projectController.canDeleteProject(this.workspaceProject);
     }
 
     public boolean userCanCreateProjects() {
-        return libraryPermissions.userCanCreateProject(libraryPlaces.getActiveSpace());
+        return projectController.canCreateProjects(libraryPlaces.getActiveSpace());
     }
 
     @WorkbenchPartView

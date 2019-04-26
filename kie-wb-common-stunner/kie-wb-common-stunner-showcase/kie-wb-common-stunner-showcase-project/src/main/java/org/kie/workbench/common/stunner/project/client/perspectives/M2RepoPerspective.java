@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.stunner.project.client.perspectives;
 
+import java.util.function.Consumer;
+
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -54,16 +56,16 @@ public class M2RepoPerspective implements IsElement {
     Div m2RepoEditor;
 
     @WorkbenchMenu
-    public Menus getMenus() {
-        return MenuFactory.newTopLevelMenu(AppConstants.INSTANCE.Upload())
-                .respondsWith(() -> {
-                    UploadFormPresenter uploadFormPresenter = iocManager.lookupBean(UploadFormPresenter.class).getInstance();
-                    uploadFormPresenter.showView();
-                })
-                .endMenu()
-                .newTopLevelMenu(AppConstants.INSTANCE.Refresh())
-                .respondsWith(() -> refreshEvents.fire(new M2RepoRefreshEvent()))
-                .endMenu()
-                .build();
+    public void getMenus(final Consumer<Menus> menusConsumer) {
+        menusConsumer.accept(MenuFactory.newTopLevelMenu(AppConstants.INSTANCE.Upload())
+                                     .respondsWith(() -> {
+                                         UploadFormPresenter uploadFormPresenter = iocManager.lookupBean(UploadFormPresenter.class).getInstance();
+                                         uploadFormPresenter.showView();
+                                     })
+                                     .endMenu()
+                                     .newTopLevelMenu(AppConstants.INSTANCE.Refresh())
+                                     .respondsWith(() -> refreshEvents.fire(new M2RepoRefreshEvent()))
+                                     .endMenu()
+                                     .build());
     }
 }

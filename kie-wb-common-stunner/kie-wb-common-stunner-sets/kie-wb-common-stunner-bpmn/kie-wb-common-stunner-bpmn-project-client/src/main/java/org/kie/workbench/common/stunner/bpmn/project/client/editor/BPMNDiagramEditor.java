@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.bpmn.project.client.editor;
 
+import java.util.function.Consumer;
+
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -170,8 +172,8 @@ public class BPMNDiagramEditor extends AbstractProjectDiagramEditor<BPMNDiagramR
     }
 
     @WorkbenchMenu
-    public Menus getMenus() {
-        return super.getMenus();
+    public void getMenus(final Consumer<Menus> menusConsumer) {
+        super.getMenus(menusConsumer);
     }
 
     @WorkbenchPartView

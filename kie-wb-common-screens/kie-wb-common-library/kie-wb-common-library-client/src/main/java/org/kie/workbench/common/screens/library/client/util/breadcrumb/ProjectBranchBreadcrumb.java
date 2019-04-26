@@ -16,16 +16,21 @@
 
 package org.kie.workbench.common.screens.library.client.util.breadcrumb;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import elemental2.promise.Promise;
+import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.NewBranchEvent;
 import org.guvnor.structure.repositories.Repository;
@@ -34,6 +39,7 @@ import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.services.datamodel.util.SortHelper;
 import org.uberfire.client.mvp.UberElemental;
+import org.uberfire.client.promise.Promises;
 import org.uberfire.ext.widgets.common.client.breadcrumbs.widget.BreadcrumbPresenter;
 import org.uberfire.workbench.events.NotificationEvent;
 
@@ -53,18 +59,38 @@ public class ProjectBranchBreadcrumb implements BreadcrumbPresenter {
 
     private Event<NotificationEvent> notificationEvent;
 
+    private ProjectController projectController;
+
+    private Promises promises;
+
     @Inject
     public ProjectBranchBreadcrumb(final View view,
                                    final LibraryPlaces libraryPlaces,
-                                   final Event<NotificationEvent> notificationEvent) {
+                                   final Event<NotificationEvent> notificationEvent,
+                                   final ProjectController projectController,
+                                   final Promises promises) {
         this.view = view;
         this.libraryPlaces = libraryPlaces;
         this.notificationEvent = notificationEvent;
+        this.projectController = projectController;
+        this.promises = promises;
     }
 
     public ProjectBranchBreadcrumb setup(final Collection<Branch> branches) {
-        this.branches = branches.stream().sorted(BRANCH_ALPHABETICAL_ORDER_COMPARATOR).collect(Collectors.toList());
-        view.init(this);
+        final Set<Branch> branchesSet = new HashSet<>();
+        final List<Promise<Boolean>> canReadBranchPromises = branches.stream().map(b -> projectController.canReadBranch(libraryPlaces.getActiveWorkspace(),
+                                                                                                                        b.getName()).then(canReadBranch -> {
+            if (canReadBranch) {
+                branchesSet.add(b);
+            }
+            return promises.resolve(true);
+        })).collect(Collectors.toList());
+
+        promises.all(canReadBranchPromises.toArray(new Promise[canReadBranchPromises.size()])).then(ignored -> {
+            this.branches = branchesSet.stream().sorted(BRANCH_ALPHABETICAL_ORDER_COMPARATOR).collect(Collectors.toList());
+            view.init(this);
+            return promises.resolve();
+        });
 
         return this;
     }

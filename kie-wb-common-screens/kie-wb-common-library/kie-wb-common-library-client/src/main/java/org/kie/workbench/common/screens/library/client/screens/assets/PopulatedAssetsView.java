@@ -222,4 +222,14 @@ public class PopulatedAssetsView implements PopulatedAssetsScreen.View,
                                    selectOption -> presenter.setFilterType(selectOption.getSelector()));
         this.filterType.appendChild(this.selectComponent.getView().getElement());
     }
+
+    @Override
+    public void enableImportButton(boolean enable) {
+        this.importAsset.disabled = !enable;
+    }
+
+    @Override
+    public void enableAddAssetButton(boolean enable) {
+        this.addAsset.disabled = !enable;
+    }
 }

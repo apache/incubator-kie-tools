@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.screens.datasource.management.client.explorer;
 
+import java.util.function.Consumer;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -84,8 +85,8 @@ public class DataSourceDefExplorerScreen
     }
 
     @WorkbenchMenu
-    public Menus getMenu() {
-        return menu;
+    public void getMenus(final Consumer<Menus> menusConsumer) {
+        menusConsumer.accept(menu);
     }
 
     private Menus makeMenuBar() {

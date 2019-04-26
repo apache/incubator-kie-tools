@@ -529,4 +529,16 @@ public class LibraryConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String Test = "Test";
+
+    @TranslationKey(defaultValue = "")
+    public static final String BranchManagementReadPermissionTooltip = "BranchManagementReadPermissionTooltip";
+
+    @TranslationKey(defaultValue = "")
+    public static final String BranchManagementWritePermissionTooltip = "BranchManagementWritePermissionTooltip";
+
+    @TranslationKey(defaultValue = "")
+    public static final String BranchManagementDeletePermissionTooltip = "BranchManagementDeletePermissionTooltip";
+
+    @TranslationKey(defaultValue = "")
+    public static final String BranchManagementDeployPermissionTooltip = "BranchManagementDeployPermissionTooltip";
 }

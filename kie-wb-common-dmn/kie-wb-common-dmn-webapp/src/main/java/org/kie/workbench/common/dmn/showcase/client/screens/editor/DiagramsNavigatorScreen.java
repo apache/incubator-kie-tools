@@ -17,6 +17,7 @@ package org.kie.workbench.common.dmn.showcase.client.screens.editor;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -115,8 +116,8 @@ public class DiagramsNavigatorScreen {
     }
 
     @WorkbenchMenu
-    public Menus getMenu() {
-        return menu;
+    public void getMenus(final Consumer<Menus> menusConsumer) {
+        menusConsumer.accept(menu);
     }
 
     @WorkbenchPartTitle

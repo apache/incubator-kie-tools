@@ -77,7 +77,7 @@ public class KieMultipleDocumentEditorTest
     @Test
     public void testSetupMenuBar() {
         doReturn(Optional.of(mock(WorkspaceProject.class))).when(workbenchContext).getActiveWorkspaceProject();
-        doReturn(true).when(projectController).canUpdateProject(any());
+        doReturn(promises.resolve(true)).when(projectController).canUpdateProject(any());
 
         editor.setupMenuBar();
 
@@ -93,7 +93,7 @@ public class KieMultipleDocumentEditorTest
     @Test
     public void testSetupMenuBarWithoutUpdateProjectPermission() {
         doReturn(Optional.of(mock(WorkspaceProject.class))).when(workbenchContext).getActiveWorkspaceProject();
-        doReturn(false).when(projectController).canUpdateProject(any());
+        doReturn(promises.resolve(false)).when(projectController).canUpdateProject(any());
 
         editor.setupMenuBar();
 
@@ -652,7 +652,7 @@ public class KieMultipleDocumentEditorTest
     @Test
     public void testSave() {
         doReturn(Optional.of(mock(WorkspaceProject.class))).when(workbenchContext).getActiveWorkspaceProject();
-        doReturn(true).when(projectController).canUpdateProject(any());
+        doReturn(promises.resolve(true)).when(projectController).canUpdateProject(any());
 
         final TestDocument document = createTestDocument();
         registerDocument(document);
@@ -734,6 +734,7 @@ public class KieMultipleDocumentEditorTest
 
     @Test
     public void testOnRepositoryRemoved() {
+        doReturn(promises.resolve(true)).when(projectController).canUpdateProject(any());
         final Repository repository = mock(Repository.class);
         when(workbenchContext.getActiveWorkspaceProject()).thenReturn(Optional.of(new WorkspaceProject(mock(OrganizationalUnit.class),
                                                                                                        repository,

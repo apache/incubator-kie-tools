@@ -20,6 +20,7 @@ import javax.inject.Inject;
 
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.project.client.security.ProjectController;
+import org.uberfire.client.promise.Promises;
 import org.uberfire.ext.editor.commons.client.validation.ValidationErrorReason;
 import org.uberfire.ext.editor.commons.client.validation.Validator;
 import org.uberfire.ext.editor.commons.client.validation.ValidatorCallback;
@@ -33,29 +34,31 @@ public abstract class BaseAssetUpdateValidator implements Validator {
     @Inject
     protected ProjectController projectController;
 
+    @Inject
+    protected Promises promises;
+
     @Override
     public void validate(final String value,
                          final ValidatorCallback callback) {
-        if (canUpdateProject()) {
-            if (value != null) {
-                getFileNameValidator().validate(value,
-                                                callback);
-            } else {
-                callback.onSuccess();
-            }
-        } else if (callback instanceof ValidatorWithReasonCallback) {
-            ((ValidatorWithReasonCallback) callback).onFailure(ValidationErrorReason.NOT_ALLOWED.name());
-        } else {
-            callback.onFailure();
-        }
+        workbenchContext.getActiveWorkspaceProject().ifPresent(activeProject -> {
+            projectController.canUpdateProject(activeProject).then(canUpdateProject -> {
+                if (canUpdateProject) {
+                    if (value != null) {
+                        getFileNameValidator().validate(value,
+                                                        callback);
+                    } else {
+                        callback.onSuccess();
+                    }
+                } else if (callback instanceof ValidatorWithReasonCallback) {
+                    ((ValidatorWithReasonCallback) callback).onFailure(ValidationErrorReason.NOT_ALLOWED.name());
+                } else {
+                    callback.onFailure();
+                }
+
+                return promises.resolve();
+            });
+        });
     }
 
     protected abstract Validator getFileNameValidator();
-
-    private boolean canUpdateProject() {
-        return workbenchContext
-                               .getActiveWorkspaceProject()
-                               .map(activeProject -> projectController.canUpdateProject(activeProject))
-                               .orElse(true);
-    }
 }

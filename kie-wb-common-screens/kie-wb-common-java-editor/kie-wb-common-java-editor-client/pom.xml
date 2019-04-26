@@ -88,6 +88,10 @@
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-message-console-client</artifactId>
     </dependency>
+    <dependency>
+      <groupId>com.google.elemental2</groupId>
+      <artifactId>elemental2-promise</artifactId>
+    </dependency>
 
     <!-- GWT and GWT Extensions -->
     <dependency>

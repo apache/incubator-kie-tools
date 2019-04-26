@@ -35,8 +35,12 @@ import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.guvnor.structure.backend.repositories.ConfiguredRepositories;
+import org.guvnor.structure.contributors.Contributor;
+import org.guvnor.structure.contributors.ContributorType;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
+import org.guvnor.structure.organizationalunit.config.SpaceConfigStorage;
+import org.guvnor.structure.organizationalunit.config.SpaceConfigStorageRegistry;
 import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.NewBranchEvent;
 import org.guvnor.structure.repositories.Repository;
@@ -78,9 +82,11 @@ import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.NoSuchFileException;
 import org.uberfire.java.nio.file.spi.FileSystemProvider;
 import org.uberfire.mocks.EventSourceMock;
+import org.uberfire.mocks.SessionInfoMock;
 import org.uberfire.paging.PageResponse;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.authz.AuthorizationManager;
+import org.uberfire.spaces.Space;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
@@ -146,6 +152,9 @@ public class LibraryServiceImplTest {
     private EventSourceMock<RepositoryExternalUpdateEvent> repositoryExternalUpdateEvent;
 
     @Mock
+    private SpaceConfigStorageRegistry spaceConfigStorageRegistry;
+
+    @Mock
     private Event<NewBranchEvent> newBranchEvent;
 
     @Mock
@@ -201,7 +210,7 @@ public class LibraryServiceImplTest {
         when(preferences.getOrganizationalUnitPreferences()).thenReturn(spy(new LibraryOrganizationalUnitPreferences()));
         when(preferences.getProjectPreferences()).thenReturn(spy(new LibraryProjectPreferences()));
 
-        when(sessionInfo.getIdentity()).thenReturn(mock(User.class));
+        sessionInfo = new SessionInfoMock();
 
         libraryService = spy(new LibraryServiceImpl(ouService,
                                                     refactoringQueryService,
@@ -220,7 +229,8 @@ public class LibraryServiceImplTest {
                                                     pathUtil,
                                                     newBranchEvent,
                                                     configuredRepositories,
-                                                    repositoryExternalUpdateEvent
+                                                    repositoryExternalUpdateEvent,
+                                                    spaceConfigStorageRegistry
         ));
     }
 
@@ -322,6 +332,75 @@ public class LibraryServiceImplTest {
                      pom.getGav().getArtifactId());
         assertEquals("description",
                      pom.getDescription());
+    }
+
+    @Test
+    public void createProjectTest() {
+        final List<Contributor> spaceContributors = new ArrayList<>();
+        spaceContributors.add(new Contributor("user1", ContributorType.OWNER));
+        spaceContributors.add(new Contributor("user2", ContributorType.ADMIN));
+        spaceContributors.add(new Contributor("admin", ContributorType.CONTRIBUTOR));
+
+        final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
+        doReturn("ou").when(organizationalUnit).getName();
+        doReturn("org.ou").when(organizationalUnit).getDefaultGroupId();
+        doReturn(spaceContributors).when(organizationalUnit).getContributors();
+        doReturn(organizationalUnit).when(ouService).getOrganizationalUnit("ou");
+
+        final POM pom = mock(POM.class);
+
+        libraryService.createProject(organizationalUnit,
+                                     pom,
+                                     DeploymentMode.VALIDATED);
+
+        verify(ouService, never()).updateOrganizationalUnit(anyString(), anyString(), anyList());
+
+        final List<Contributor> projectContributors = new ArrayList<>();
+        projectContributors.add(new Contributor("user1", ContributorType.OWNER));
+        projectContributors.add(new Contributor("user2", ContributorType.ADMIN));
+        projectContributors.add(new Contributor("admin", ContributorType.OWNER));
+        verify(projectService).newProject(organizationalUnit,
+                                          pom,
+                                          DeploymentMode.VALIDATED,
+                                          projectContributors);
+    }
+
+    @Test
+    public void createProjectWithUserThatIsNotASpaceContributorTest() {
+        final List<Contributor> spaceContributors = new ArrayList<>();
+        spaceContributors.add(new Contributor("user1", ContributorType.OWNER));
+        spaceContributors.add(new Contributor("user2", ContributorType.ADMIN));
+        spaceContributors.add(new Contributor("user3", ContributorType.CONTRIBUTOR));
+
+        final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
+        doReturn("ou").when(organizationalUnit).getName();
+        doReturn("org.ou").when(organizationalUnit).getDefaultGroupId();
+        doReturn(spaceContributors).when(organizationalUnit).getContributors();
+        doReturn(organizationalUnit).when(ouService).getOrganizationalUnit("ou");
+
+        final POM pom = mock(POM.class);
+
+        libraryService.createProject(organizationalUnit,
+                                     pom,
+                                     DeploymentMode.VALIDATED);
+
+
+        final List<Contributor> updatedSpaceContributors = new ArrayList<>();
+        updatedSpaceContributors.add(new Contributor("user1", ContributorType.OWNER));
+        updatedSpaceContributors.add(new Contributor("user2", ContributorType.ADMIN));
+        updatedSpaceContributors.add(new Contributor("user3", ContributorType.CONTRIBUTOR));
+        updatedSpaceContributors.add(new Contributor("admin", ContributorType.CONTRIBUTOR));
+        verify(ouService).updateOrganizationalUnit(anyString(), anyString(), eq(updatedSpaceContributors));
+
+        final List<Contributor> projectContributors = new ArrayList<>();
+        projectContributors.add(new Contributor("user1", ContributorType.OWNER));
+        projectContributors.add(new Contributor("user2", ContributorType.ADMIN));
+        projectContributors.add(new Contributor("user3", ContributorType.CONTRIBUTOR));
+        projectContributors.add(new Contributor("admin", ContributorType.OWNER));
+        verify(projectService).newProject(organizationalUnit,
+                                          pom,
+                                          DeploymentMode.VALIDATED,
+                                          projectContributors);
     }
 
     @Test
@@ -656,6 +735,9 @@ public class LibraryServiceImplTest {
     public void addBranchTest() throws URISyntaxException {
         final WorkspaceProject project = mock(WorkspaceProject.class);
         doReturn(repo1).when(project).getRepository();
+        doReturn(new Space("my-space")).when(project).getSpace();
+
+        doReturn(mock(SpaceConfigStorage.class)).when(spaceConfigStorageRegistry).get("my-space");
 
         final org.uberfire.java.nio.file.Path baseBranchPath = mock(org.uberfire.java.nio.file.Path.class);
         final Path path = repo1.getBranches().stream().filter(b -> b.getName().equals("repo1-branch1")).findFirst().get().getPath();
@@ -699,6 +781,9 @@ public class LibraryServiceImplTest {
 
         final WorkspaceProject project = mock(WorkspaceProject.class);
         doReturn(repo1).when(project).getRepository();
+        doReturn(new Space("my-space")).when(project).getSpace();
+
+        doReturn(mock(SpaceConfigStorage.class)).when(spaceConfigStorageRegistry).get("my-space");
 
         libraryService.removeBranch(project, masterBranch);
 

@@ -42,6 +42,7 @@ import org.kie.workbench.common.screens.datasource.management.service.DataSource
 import org.mockito.Mock;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.promise.Promises;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.editor.commons.client.file.popups.DeletePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
@@ -49,6 +50,7 @@ import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
 import org.uberfire.ext.editor.commons.client.menu.BasicFileMenuBuilder;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.promise.SyncPromises;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -105,6 +107,8 @@ public class DataSourceDefEditorTest
     @GwtMock
     private VersionRecordManager versionRecordManager;
 
+    private Promises promises;
+
     @Mock
     private PlaceRequest placeRequest;
 
@@ -151,12 +155,15 @@ public class DataSourceDefEditorTest
         editorHelper = new DataSourceDefEditorHelper(translationService,
                                                      editorServiceCaller, queryServiceCaller, clientValidationService, popupsUtil);
 
+        promises = new SyncPromises();
+
         editor = new DataSourceDefEditor(view,
                                          mainPanel, editorHelper, dbStructureExplorer, popupsUtil, placeManager, type, savePopupPresenter, deletePopUpPresenter,
                                          editorServiceCaller, dataSourceManagerClientCaller) {
             {
                 this.versionRecordManager = DataSourceDefEditorTest.this.versionRecordManager;
                 this.menuBuilder = mock(BasicFileMenuBuilder.class);
+                this.promises = DataSourceDefEditorTest.this.promises;
             }
         };
         editor.init();

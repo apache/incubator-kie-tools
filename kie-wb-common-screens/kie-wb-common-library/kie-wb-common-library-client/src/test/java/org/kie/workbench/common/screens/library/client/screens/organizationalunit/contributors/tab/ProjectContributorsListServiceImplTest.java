@@ -35,8 +35,10 @@ import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.client.promise.Promises;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.SessionInfoMock;
+import org.uberfire.promise.SyncPromises;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.spaces.Space;
 
@@ -66,10 +68,13 @@ public class ProjectContributorsListServiceImplTest {
     @Spy
     private ContributorsSecurityUtils contributorsSecurityUtils;
 
+    private Promises promises;
+
     private ProjectContributorsListServiceImpl service;
 
     @Before
     public void setup() {
+        promises = new SyncPromises();
         sessionInfo = new SessionInfoMock("owner");
         repositoryServiceCaller = new CallerMock<>(repositoryService);
 
@@ -88,7 +93,8 @@ public class ProjectContributorsListServiceImplTest {
                                                          spaceContributorsListService,
                                                          sessionInfo,
                                                          projectController,
-                                                         contributorsSecurityUtils);
+                                                         contributorsSecurityUtils,
+                                                         promises);
     }
 
     @Test
@@ -125,43 +131,82 @@ public class ProjectContributorsListServiceImplTest {
 
     @Test
     public void userCanEditContributors() {
-        doReturn(true).when(projectController).canUpdateProject(any());
-        assertTrue(service.canEditContributors(Collections.emptyList(), ContributorType.CONTRIBUTOR));
+        doReturn(promises.resolve(true)).when(projectController).canUpdateProject(any());
+        service.canEditContributors(Collections.emptyList(), ContributorType.CONTRIBUTOR).then(canEditContributors -> {
+            assertTrue(canEditContributors);
+            return promises.resolve();
+        });
     }
 
     @Test
     public void userCanNotEditContributors() {
-        doReturn(false).when(projectController).canUpdateProject(any());
-        assertFalse(service.canEditContributors(Collections.emptyList(), ContributorType.CONTRIBUTOR));
+        doReturn(promises.resolve(false)).when(projectController).canUpdateProject(any());
+        service.canEditContributors(Collections.emptyList(), ContributorType.CONTRIBUTOR).then(canEditContributors -> {
+            assertFalse(canEditContributors);
+            return promises.resolve();
+        });
     }
 
     @Test
     public void ownerCanEditContributors() {
+        doReturn(promises.resolve(false)).when(projectController).canUpdateProject(any());
+
         final List<Contributor> contributors = new ArrayList<>();
         contributors.add(new Contributor("owner", ContributorType.OWNER));
 
-        assertTrue(service.canEditContributors(contributors, ContributorType.OWNER));
-        assertTrue(service.canEditContributors(contributors, ContributorType.ADMIN));
-        assertTrue(service.canEditContributors(contributors, ContributorType.CONTRIBUTOR));
+        service.canEditContributors(contributors, ContributorType.OWNER).then(canEditContributors -> {
+            assertTrue(canEditContributors);
+            return promises.resolve();
+        });
+        service.canEditContributors(contributors, ContributorType.ADMIN).then(canEditContributors -> {
+            assertTrue(canEditContributors);
+            return promises.resolve();
+        });
+        service.canEditContributors(contributors, ContributorType.CONTRIBUTOR).then(canEditContributors -> {
+            assertTrue(canEditContributors);
+            return promises.resolve();
+        });
     }
 
     @Test
     public void adminCanEditSomeContributors() {
+        doReturn(promises.resolve(false)).when(projectController).canUpdateProject(any());
+
         final List<Contributor> contributors = new ArrayList<>();
         contributors.add(new Contributor("owner", ContributorType.ADMIN));
 
-        assertFalse(service.canEditContributors(contributors, ContributorType.OWNER));
-        assertTrue(service.canEditContributors(contributors, ContributorType.ADMIN));
-        assertTrue(service.canEditContributors(contributors, ContributorType.CONTRIBUTOR));
+        service.canEditContributors(contributors, ContributorType.OWNER).then(canEditContributors -> {
+            assertFalse(canEditContributors);
+            return promises.resolve();
+        });
+        service.canEditContributors(contributors, ContributorType.ADMIN).then(canEditContributors -> {
+            assertTrue(canEditContributors);
+            return promises.resolve();
+        });
+        service.canEditContributors(contributors, ContributorType.CONTRIBUTOR).then(canEditContributors -> {
+            assertTrue(canEditContributors);
+            return promises.resolve();
+        });
     }
 
     @Test
     public void contributorCanNotEditContributors() {
+        doReturn(promises.resolve(false)).when(projectController).canUpdateProject(any());
+
         final List<Contributor> contributors = new ArrayList<>();
         contributors.add(new Contributor("owner", ContributorType.CONTRIBUTOR));
 
-        assertFalse(service.canEditContributors(contributors, ContributorType.OWNER));
-        assertFalse(service.canEditContributors(contributors, ContributorType.ADMIN));
-        assertFalse(service.canEditContributors(contributors, ContributorType.CONTRIBUTOR));
+        service.canEditContributors(contributors, ContributorType.OWNER).then(canEditContributors -> {
+            assertFalse(canEditContributors);
+            return promises.resolve();
+        });
+        service.canEditContributors(contributors, ContributorType.ADMIN).then(canEditContributors -> {
+            assertFalse(canEditContributors);
+            return promises.resolve();
+        });
+        service.canEditContributors(contributors, ContributorType.CONTRIBUTOR).then(canEditContributors -> {
+            assertFalse(canEditContributors);
+            return promises.resolve();
+        });
     }
 }

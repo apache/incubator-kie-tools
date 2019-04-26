@@ -68,6 +68,7 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.mvp.LockRequiredEvent;
+import org.uberfire.client.promise.Promises;
 import org.uberfire.ext.editor.commons.client.file.popups.CopyPopUpPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.DeletePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.RenamePopUpPresenter;
@@ -77,6 +78,7 @@ import org.uberfire.ext.editor.commons.client.menu.BasicFileMenuBuilder;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.promise.SyncPromises;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.workbench.events.NotificationEvent;
@@ -148,6 +150,9 @@ public abstract class DataModelerScreenPresenterTestBase {
     protected ShowAssetUsagesDisplayer showAssetUsages;
     @Mock
     protected AlertsButtonMenuItemBuilder alertsButtonMenuItemBuilder;
+
+    protected Promises promises;
+
     @Mock
     protected MenuItem alertsButtonMenuItem;
     protected DataModelerScreenPresenter presenter;
@@ -194,6 +199,7 @@ public abstract class DataModelerScreenPresenterTestBase {
 
     @Before
     public void setUp() throws Exception {
+        promises = new SyncPromises();
         when(alertsButtonMenuItemBuilder.build()).thenReturn(alertsButtonMenuItem);
 
         testObject1 = DataModelerEditorsTestHelper.createTestObject1();
@@ -236,6 +242,7 @@ public abstract class DataModelerScreenPresenterTestBase {
                 deletePopUpPresenter = DataModelerScreenPresenterTestBase.this.deletePopUpPresenter;
                 showAssetUsagesDisplayer = DataModelerScreenPresenterTestBase.this.showAssetUsages;
                 alertsButtonMenuItemBuilder = DataModelerScreenPresenterTestBase.this.alertsButtonMenuItemBuilder;
+                promises = DataModelerScreenPresenterTestBase.this.promises;
                 uiStarted = true;
 
                 when(workbenchContext.getActiveOrganizationalUnit()).thenReturn(Optional.empty());

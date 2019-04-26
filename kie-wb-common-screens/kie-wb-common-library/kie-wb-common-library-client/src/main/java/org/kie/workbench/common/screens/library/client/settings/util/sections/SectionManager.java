@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.screens.library.client.settings.util.sections;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,7 +59,7 @@ public class SectionManager<T> {
                      final HTMLElement menuItemsContainer,
                      final HTMLElement contentContainer) {
 
-        this.sections = sections;
+        this.sections = new ArrayList<>(sections);
         this.currentSection = sections.get(0);
         this.menuItemsContainer = menuItemsContainer;
         this.contentContainer = contentContainer;

@@ -15,6 +15,7 @@
  */
 package org.kie.workbench.common.dmn.showcase.client.screens.preview;
 
+import java.util.function.Consumer;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
@@ -100,8 +101,8 @@ public class SessionDiagramPreviewScreen extends BaseSessionScreen {
     }
 
     @WorkbenchMenu
-    public Menus getMenu() {
-        return menu;
+    public void getMenus(final Consumer<Menus> menusConsumer) {
+        menusConsumer.accept(menu);
     }
 
     @WorkbenchPartTitle

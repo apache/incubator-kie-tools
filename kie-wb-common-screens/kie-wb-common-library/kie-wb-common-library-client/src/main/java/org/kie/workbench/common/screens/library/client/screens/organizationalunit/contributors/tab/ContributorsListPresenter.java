@@ -22,6 +22,7 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
 
+import elemental2.promise.Promise;
 import org.guvnor.structure.contributors.Contributor;
 import org.guvnor.structure.contributors.ContributorType;
 import org.jboss.errai.common.client.api.Caller;
@@ -30,6 +31,7 @@ import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.uberfire.client.mvp.UberElement;
+import org.uberfire.client.promise.Promises;
 
 public class ContributorsListPresenter {
 
@@ -54,7 +56,7 @@ public class ContributorsListPresenter {
 
     private Elemental2DomUtil elemental2DomUtil;
 
-    private Caller<LibraryService> libraryService;
+    Promises promises;
 
     ContributorsListService contributorsListService;
 
@@ -70,11 +72,11 @@ public class ContributorsListPresenter {
     public ContributorsListPresenter(final View view,
                                      final ManagedInstance<ContributorsListItemPresenter> contributorsListItemPresenters,
                                      final Elemental2DomUtil elemental2DomUtil,
-                                     final Caller<LibraryService> libraryService) {
+                                     final Promises promises) {
         this.view = view;
         this.contributorsListItemPresenters = contributorsListItemPresenters;
         this.elemental2DomUtil = elemental2DomUtil;
-        this.libraryService = libraryService;
+        this.promises = promises;
     }
 
     public void setup(final ContributorsListService contributorsListService,
@@ -125,13 +127,17 @@ public class ContributorsListPresenter {
     }
 
     public void addContributor() {
-        if (contributorsListService.canEditContributors(contributors, ContributorType.CONTRIBUTOR)) {
-            itemIsBeingEdited();
-            final ContributorsListItemPresenter newContributorItem = contributorsListItemPresenters.get();
-            newContributorItem.setupNew(this, contributorsListService);
-            view.addNewContributor(elemental2DomUtil.asHTMLElement(newContributorItem.getView().getElement()));
-            items.add(newContributorItem);
-        }
+        canEditContributors(ContributorType.CONTRIBUTOR).then(canEditContributors -> {
+            if (canEditContributors) {
+                itemIsBeingEdited();
+                final ContributorsListItemPresenter newContributorItem = contributorsListItemPresenters.get();
+                newContributorItem.setupNew(this, contributorsListService);
+                view.addNewContributor(elemental2DomUtil.asHTMLElement(newContributorItem.getView().getElement()));
+                items.add(newContributorItem);
+            }
+
+            return promises.resolve();
+        });
     }
 
     public void itemIsBeingEdited() {
@@ -144,12 +150,12 @@ public class ContributorsListPresenter {
         view.showAddContributor();
     }
 
-    public List<String> getValidUsernames() {
-        return validUsernames;
+    public Promise<Boolean> canEditContributors(final ContributorType type) {
+        return contributorsListService.canEditContributors(contributors, type);
     }
 
-    public boolean canEditContributors(final ContributorType type) {
-        return contributorsListService.canEditContributors(contributors, type);
+    public List<String> getValidUsernames() {
+        return validUsernames;
     }
 
     public View getView() {

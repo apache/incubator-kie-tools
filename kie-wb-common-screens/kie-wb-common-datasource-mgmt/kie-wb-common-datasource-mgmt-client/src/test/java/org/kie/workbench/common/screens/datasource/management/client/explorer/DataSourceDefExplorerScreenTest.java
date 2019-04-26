@@ -17,6 +17,7 @@
 package org.kie.workbench.common.screens.datasource.management.client.explorer;
 
 import org.jboss.errai.ui.client.local.spi.TranslationService;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -72,7 +73,7 @@ public class DataSourceDefExplorerScreenTest {
         screen.onStartup();
         verify(explorer,
                times(1)).refresh();
-        assertNotNull(screen.getMenu());
+        screen.getMenus(Assert::assertNotNull);
     }
 
     @Test

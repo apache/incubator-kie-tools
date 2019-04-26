@@ -17,6 +17,7 @@ package org.kie.workbench.common.stunner.project.client.perspectives;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -77,11 +78,11 @@ public class AuthoringPerspective {
     }
 
     @WorkbenchMenu
-    public Menus buildMenuBar() {
+    public void buildMenuBar(final Consumer<Menus> menusConsumer) {
         if (ApplicationPreferences.getBooleanPref(ExamplesService.EXAMPLES_SYSTEM_PROPERTY)) {
-            return buildMenuBarWithExamples();
+            menusConsumer.accept(buildMenuBarWithExamples());
         } else {
-            return buildMenuBarWithoutExamples();
+            menusConsumer.accept(buildMenuBarWithoutExamples());
         }
     }
 

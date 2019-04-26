@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
@@ -33,8 +34,10 @@ import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.IsWidget;
+import elemental2.promise.Promise;
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.project.client.security.ProjectController;
+import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.structure.repositories.RepositoryRemovedEvent;
 import org.jboss.errai.bus.client.api.messaging.Message;
@@ -52,6 +55,7 @@ import org.kie.workbench.common.widgets.metadata.client.validation.AssetUpdateVa
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.promise.Promises;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.ext.editor.commons.client.BaseEditorView;
 import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
@@ -98,6 +102,7 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
     protected AssetUpdateValidator assetUpdateValidator;
     protected ProjectController projectController;
     protected Event<NotificationEvent> notification;
+    protected Promises promises;
 
     //Constructed
     protected BaseEditorView editorView;
@@ -219,6 +224,11 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
     @Inject
     protected void setNotification(final Event<NotificationEvent> notification) {
         this.notification = notification;
+    }
+
+    @Inject
+    protected void setPromises(final Promises promises) {
+        this.promises = promises;
     }
 
     @Override
@@ -407,8 +417,11 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
     }
 
     @Override
-    public Menus getMenus() {
-        return this.menus;
+    public void getMenus(final Consumer<Menus> menusConsumer) {
+        makeMenuBar().then(v -> {
+            menusConsumer.accept(menus);
+            return promises.resolve();
+        });
     }
 
     @Override
@@ -476,27 +489,37 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
      * to customize their Menus.
      */
     @Override
-    public void makeMenuBar() {
-        this.fileMenuBuilder.setLockSyncMenuStateHelper(new KieMultipleDocumentEditorLockSyncHelper(this));
+    public Promise<Void> makeMenuBar() {
+        if (menus == null) {
+            this.fileMenuBuilder.setLockSyncMenuStateHelper(new KieMultipleDocumentEditorLockSyncHelper(this));
+            if (workbenchContext.getActiveWorkspaceProject().isPresent()) {
+                final WorkspaceProject activeProject = workbenchContext.getActiveWorkspaceProject().get();
+                return projectController.canUpdateProject(activeProject).then(canUpdateProject -> {
+                    if (canUpdateProject) {
+                        fileMenuBuilder
+                                .addSave(getSaveMenuItem())
+                                .addCopy(() -> getActiveDocument().getCurrentPath(),
+                                         assetUpdateValidator)
+                                .addRename(() -> getActiveDocument().getLatestPath(),
+                                           assetUpdateValidator)
+                                .addDelete(() -> getActiveDocument().getLatestPath(),
+                                           assetUpdateValidator);
+                    }
 
-        if (canUpdateProject()) {
-            fileMenuBuilder
-                    .addSave(getSaveMenuItem())
-                    .addCopy(() -> getActiveDocument().getCurrentPath(),
-                             assetUpdateValidator)
-                    .addRename(() -> getActiveDocument().getLatestPath(),
-                               assetUpdateValidator)
-                    .addDelete(() -> getActiveDocument().getLatestPath(),
-                               assetUpdateValidator);
+                    addDownloadMenuItem(fileMenuBuilder);
+
+                    this.menus = fileMenuBuilder
+                            .addValidate(() -> onValidate(getActiveDocument()))
+                            .addNewTopLevelMenu(getRegisteredDocumentsMenuItem())
+                            .addNewTopLevelMenu(getVersionManagerMenuItem())
+                            .build();
+
+                    return promises.resolve();
+                });
+            }
         }
 
-        addDownloadMenuItem(fileMenuBuilder);
-
-        this.menus = fileMenuBuilder
-                .addValidate(() -> onValidate(getActiveDocument()))
-                .addNewTopLevelMenu(getRegisteredDocumentsMenuItem())
-                .addNewTopLevelMenu(getVersionManagerMenuItem())
-                .build();
+        return promises.resolve();
     }
 
     protected void addDownloadMenuItem(final FileMenuBuilder menuBuilder) {
@@ -505,13 +528,6 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
 
     private MenuItem downloadMenuItem() {
         return downloadMenuItem.build(() -> getActiveDocument().getLatestPath());
-    }
-
-    protected boolean canUpdateProject() {
-        return workbenchContext
-                               .getActiveWorkspaceProject()
-                               .map(activeProject -> projectController.canUpdateProject(activeProject))
-                               .orElse(true);
     }
 
     /**
@@ -697,9 +713,11 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
      */
     protected void enableMenuItem(final boolean enabled,
                                   final MenuItems menuItem) {
-        if (menus.getItemsMap().containsKey(menuItem)) {
-            menus.getItemsMap().get(menuItem).setEnabled(enabled);
-        }
+        getMenus(menus -> {
+            if (menus.getItemsMap().containsKey(menuItem)) {
+                menus.getItemsMap().get(menuItem).setEnabled(enabled);
+            }
+        });
     }
 
     protected void openDocumentInEditor() {

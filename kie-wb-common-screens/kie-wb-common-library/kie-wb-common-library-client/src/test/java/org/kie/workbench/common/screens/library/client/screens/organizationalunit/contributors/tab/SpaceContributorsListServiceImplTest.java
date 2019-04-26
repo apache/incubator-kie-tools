@@ -35,9 +35,11 @@ import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.client.promise.Promises;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mocks.SessionInfoMock;
+import org.uberfire.promise.SyncPromises;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.spaces.Space;
 
@@ -70,10 +72,13 @@ public class SpaceContributorsListServiceImplTest {
     @Spy
     private ContributorsSecurityUtils contributorsSecurityUtils;
 
+    private Promises promises;
+
     private SpaceContributorsListServiceImpl service;
 
     @Before
     public void setup() {
+        promises = new SyncPromises();
         sessionInfo = new SessionInfoMock("owner");
         organizationalUnitServiceCaller = new CallerMock<>(organizationalUnitService);
         libraryServiceCaller = new CallerMock<>(libraryService);
@@ -88,7 +93,8 @@ public class SpaceContributorsListServiceImplTest {
                                                        libraryServiceCaller,
                                                        sessionInfo,
                                                        organizationalUnitController,
-                                                       contributorsSecurityUtils);
+                                                       contributorsSecurityUtils,
+                                                       promises);
     }
 
     @Test
@@ -129,42 +135,81 @@ public class SpaceContributorsListServiceImplTest {
     @Test
     public void userCanEditContributors() {
         doReturn(true).when(organizationalUnitController).canUpdateOrgUnit(any());
-        assertTrue(service.canEditContributors(Collections.emptyList(), ContributorType.CONTRIBUTOR));
+        service.canEditContributors(Collections.emptyList(), ContributorType.CONTRIBUTOR).then(canEditContributors -> {
+            assertTrue(canEditContributors);
+            return promises.resolve();
+        });
     }
 
     @Test
     public void userCanNotEditContributors() {
         doReturn(false).when(organizationalUnitController).canUpdateOrgUnit(any());
-        assertFalse(service.canEditContributors(Collections.emptyList(), ContributorType.CONTRIBUTOR));
+        service.canEditContributors(Collections.emptyList(), ContributorType.CONTRIBUTOR).then(canEditContributors -> {
+            assertFalse(canEditContributors);
+            return promises.resolve();
+        });
     }
 
     @Test
     public void ownerCanEditContributors() {
+        doReturn(false).when(organizationalUnitController).canUpdateOrgUnit(any());
+
         final List<Contributor> contributors = new ArrayList<>();
         contributors.add(new Contributor("owner", ContributorType.OWNER));
 
-        assertTrue(service.canEditContributors(contributors, ContributorType.OWNER));
-        assertTrue(service.canEditContributors(contributors, ContributorType.ADMIN));
-        assertTrue(service.canEditContributors(contributors, ContributorType.CONTRIBUTOR));
+        service.canEditContributors(contributors, ContributorType.OWNER).then(canEditContributors -> {
+            assertTrue(canEditContributors);
+            return promises.resolve();
+        });
+        service.canEditContributors(contributors, ContributorType.ADMIN).then(canEditContributors -> {
+            assertTrue(canEditContributors);
+            return promises.resolve();
+        });
+        service.canEditContributors(contributors, ContributorType.CONTRIBUTOR).then(canEditContributors -> {
+            assertTrue(canEditContributors);
+            return promises.resolve();
+        });
     }
 
     @Test
     public void adminCanEditSomeContributors() {
+        doReturn(false).when(organizationalUnitController).canUpdateOrgUnit(any());
+
         final List<Contributor> contributors = new ArrayList<>();
         contributors.add(new Contributor("owner", ContributorType.ADMIN));
 
-        assertFalse(service.canEditContributors(contributors, ContributorType.OWNER));
-        assertTrue(service.canEditContributors(contributors, ContributorType.ADMIN));
-        assertTrue(service.canEditContributors(contributors, ContributorType.CONTRIBUTOR));
+        service.canEditContributors(contributors, ContributorType.OWNER).then(canEditContributors -> {
+            assertFalse(canEditContributors);
+            return promises.resolve();
+        });
+        service.canEditContributors(contributors, ContributorType.ADMIN).then(canEditContributors -> {
+            assertTrue(canEditContributors);
+            return promises.resolve();
+        });
+        service.canEditContributors(contributors, ContributorType.CONTRIBUTOR).then(canEditContributors -> {
+            assertTrue(canEditContributors);
+            return promises.resolve();
+        });
     }
 
     @Test
     public void contributorCanNotEditContributors() {
+        doReturn(false).when(organizationalUnitController).canUpdateOrgUnit(any());
+
         final List<Contributor> contributors = new ArrayList<>();
         contributors.add(new Contributor("owner", ContributorType.CONTRIBUTOR));
 
-        assertFalse(service.canEditContributors(contributors, ContributorType.OWNER));
-        assertFalse(service.canEditContributors(contributors, ContributorType.ADMIN));
-        assertFalse(service.canEditContributors(contributors, ContributorType.CONTRIBUTOR));
+        service.canEditContributors(contributors, ContributorType.OWNER).then(canEditContributors -> {
+            assertFalse(canEditContributors);
+            return promises.resolve();
+        });
+        service.canEditContributors(contributors, ContributorType.ADMIN).then(canEditContributors -> {
+            assertFalse(canEditContributors);
+            return promises.resolve();
+        });
+        service.canEditContributors(contributors, ContributorType.CONTRIBUTOR).then(canEditContributors -> {
+            assertFalse(canEditContributors);
+            return promises.resolve();
+        });
     }
 }

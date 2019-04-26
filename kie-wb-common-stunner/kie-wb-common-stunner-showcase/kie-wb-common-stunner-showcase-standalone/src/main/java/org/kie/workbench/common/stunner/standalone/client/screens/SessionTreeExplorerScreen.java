@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.stunner.standalone.client.screens;
 
+import java.util.function.Consumer;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -81,8 +83,7 @@ public class SessionTreeExplorerScreen extends AbstractSessionScreen {
     }
 
     @WorkbenchMenu
-    public Menus getMenu() {
-        return null;
+    public void getMenus(final Consumer<Menus> menusConsumer) {
     }
 
     @WorkbenchPartTitle

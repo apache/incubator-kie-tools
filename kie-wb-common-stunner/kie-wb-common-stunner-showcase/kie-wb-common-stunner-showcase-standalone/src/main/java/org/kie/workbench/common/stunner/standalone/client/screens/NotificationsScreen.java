@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.stunner.standalone.client.screens;
 
+import java.util.function.Consumer;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -88,8 +90,8 @@ public class NotificationsScreen {
     }
 
     @WorkbenchMenu
-    public Menus getMenu() {
-        return menu;
+    public void getMenus(final Consumer<Menus> menusConsumer) {
+        menusConsumer.accept(menu);
     }
 
     private void showError(final String message) {

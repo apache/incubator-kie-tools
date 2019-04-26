@@ -33,22 +33,17 @@ import org.kie.workbench.common.screens.explorer.client.utils.Classifier;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderItemType;
 import org.kie.workbench.common.screens.library.api.AssetInfo;
-import org.kie.workbench.common.screens.library.api.AssetQueryResult;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.api.ProjectAssetsQuery;
 import org.kie.workbench.common.screens.library.client.events.AssetDetailEvent;
-import org.kie.workbench.common.screens.library.client.screens.project.ProjectScreen;
-import org.kie.workbench.common.screens.library.client.util.LibraryPermissions;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.mocks.EventSourceMock;
 
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 public class ProjectScreenTestBase {
@@ -76,7 +71,7 @@ public class ProjectScreenTestBase {
     protected BusyIndicatorView busyIndicatorView;
 
     @Mock
-    protected LibraryPermissions libraryPermissions;
+    protected ProjectController projectController;
 
     @Captor
     protected ArgumentCaptor<ProjectAssetsQuery> queryArgumentCaptor;

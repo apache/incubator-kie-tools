@@ -15,11 +15,14 @@
  */
 package org.kie.workbench.common.screens.defaulteditor.client.editor;
 
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import elemental2.promise.Promise;
+import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -87,22 +90,31 @@ public abstract class KieTextEditorPresenter
     }
 
     @Override
-    protected void makeMenuBar() {
-        if (canUpdateProject()) {
-            fileMenuBuilder
-                    .addSave(versionRecordManager.newSaveMenuItem(this::saveAction))
-                    .addCopy(versionRecordManager.getCurrentPath(),
-                             getRenameValidator())
-                    .addRename(getSaveAndRename())
-                    .addDelete(versionRecordManager.getPathToLatest(),
-                               assetUpdateValidator);
+    protected Promise<Void> makeMenuBar() {
+        if (workbenchContext.getActiveWorkspaceProject().isPresent()) {
+            final WorkspaceProject activeProject = workbenchContext.getActiveWorkspaceProject().get();
+            return projectController.canUpdateProject(activeProject).then(canUpdateProject -> {
+                if (canUpdateProject) {
+                    fileMenuBuilder
+                            .addSave(versionRecordManager.newSaveMenuItem(this::saveAction))
+                            .addCopy(versionRecordManager.getCurrentPath(),
+                                     getRenameValidator())
+                            .addRename(getSaveAndRename())
+                            .addDelete(versionRecordManager.getPathToLatest(),
+                                       assetUpdateValidator);
+                }
+
+                addDownloadMenuItem(fileMenuBuilder);
+
+                fileMenuBuilder
+                        .addNewTopLevelMenu(versionRecordManager.buildMenu())
+                        .addNewTopLevelMenu(alertsButtonMenuItemBuilder.build());
+
+                return promises.resolve();
+            });
         }
 
-        addDownloadMenuItem(fileMenuBuilder);
-
-        fileMenuBuilder
-                .addNewTopLevelMenu(versionRecordManager.buildMenu())
-                .addNewTopLevelMenu(alertsButtonMenuItemBuilder.build());
+        return promises.resolve();
     }
 
     @Override
@@ -150,8 +162,8 @@ public abstract class KieTextEditorPresenter
     }
 
     @WorkbenchMenu
-    public Menus getMenus() {
-        return menus;
+    public void getMenus(final Consumer<Menus> menusConsumer) {
+        super.getMenus(menusConsumer);
     }
 
     @WorkbenchPartTitle

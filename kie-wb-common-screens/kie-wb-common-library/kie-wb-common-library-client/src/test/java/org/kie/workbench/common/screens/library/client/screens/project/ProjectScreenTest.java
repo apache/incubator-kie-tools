@@ -21,6 +21,7 @@ import javax.enterprise.event.Event;
 
 import elemental2.dom.HTMLElement;
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
+import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.Module;
@@ -43,7 +44,6 @@ import org.kie.workbench.common.screens.library.client.screens.project.branch.de
 import org.kie.workbench.common.screens.library.client.screens.project.delete.DeleteProjectPopUpScreen;
 import org.kie.workbench.common.screens.library.client.screens.project.rename.RenameProjectPopUpScreen;
 import org.kie.workbench.common.screens.library.client.settings.SettingsPresenter;
-import org.kie.workbench.common.screens.library.client.util.LibraryPermissions;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.screens.projecteditor.client.validation.ProjectNameValidator;
 import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenService;
@@ -60,8 +60,6 @@ import org.uberfire.mocks.CallerMock;
 import org.uberfire.promise.SyncPromises;
 import org.uberfire.workbench.events.NotificationEvent;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -98,7 +96,7 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
     private ProjectMetricsScreen projectMetrictsScreen;
 
     @Mock
-    private LibraryPermissions libraryPermissions;
+    private ProjectController projectController;
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private NewFileUploader newFileUploader;
@@ -170,7 +168,7 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
                                                               this.assetsScreen,
                                                               this.contributorsListScreen,
                                                               this.projectMetrictsScreen,
-                                                              this.libraryPermissions,
+                                                              this.projectController,
                                                               this.settingsPresenter,
                                                               this.newFileUploader,
                                                               this.newResourcePresenter,
@@ -189,6 +187,11 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
 
         this.presenter.workspaceProject = spy(createProject());
         when(libraryPlaces.getActiveWorkspace()).thenReturn(this.presenter.workspaceProject);
+
+        doReturn(promises.resolve(false)).when(this.projectController).canDeleteBranch(any());
+        doReturn(promises.resolve(false)).when(this.projectController).canBuildProject(any());
+        doReturn(promises.resolve(false)).when(this.projectController).canDeployProject(any());
+        doReturn(promises.resolve(false)).when(this.projectController).canUpdateProject(any());
     }
 
     @Test
@@ -204,7 +207,7 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
 
     @Test
     public void testActionsVisibilityWithPermissionToUpdateProjectOnly() {
-        doReturn(true).when(this.presenter).userCanUpdateProject();
+        doReturn(promises.resolve(true)).when(this.projectController).canUpdateProject(any());
 
         presenter.initialize();
 
@@ -240,7 +243,7 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
 
     @Test
     public void testActionsVisibilityWithPermissionToBuildProjectOnly() {
-        doReturn(true).when(this.presenter).userCanBuildProject();
+        doReturn(promises.resolve(true)).when(this.projectController).canBuildProject(any());
 
         presenter.initialize();
 
@@ -250,7 +253,7 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
         verify(view).setReimportVisible(false);
         verify(view).setDeleteProjectVisible(false);
         verify(view).setDeleteBranchVisible(false);
-        verify(view).setActionsVisible(true);
+        verify(view).setActionsVisible(false);
         verify(projectMainActions).setBuildEnabled(eq(true));
         verify(projectMainActions).setDeployEnabled(eq(false));
         verify(projectMainActions).setRedeployEnabled(eq(false));
@@ -258,7 +261,7 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
 
     @Test
     public void testActionsVisibilityWithPermissionToDeployProjectOnly() {
-        doReturn(true).when(this.presenter).userCanDeployProject();
+        doReturn(promises.resolve(true)).when(this.projectController).canDeployProject(any());
 
         presenter.initialize();
 
@@ -268,7 +271,7 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
         verify(view).setReimportVisible(false);
         verify(view).setDeleteProjectVisible(false);
         verify(view).setDeleteBranchVisible(false);
-        verify(view).setActionsVisible(true);
+        verify(view).setActionsVisible(false);
         verify(projectMainActions).setBuildEnabled(eq(false));
         verify(projectMainActions).setDeployEnabled(eq(true));
         verify(projectMainActions).setRedeployEnabled(eq(false));
@@ -320,7 +323,7 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
         verify(view).setDuplicateVisible(false);
         verify(view).setReimportVisible(false);
         verify(view).setDeleteProjectVisible(true);
-        verify(view).setDeleteBranchVisible(true);
+        verify(view).setDeleteBranchVisible(false);
         verify(view).setActionsVisible(true);
         verify(projectMainActions).setBuildEnabled(eq(false));
         verify(projectMainActions).setDeployEnabled(eq(false));
@@ -330,13 +333,13 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
     @Test
     public void testAddAsset() {
         {
-            doReturn(false).when(this.presenter).userCanUpdateProject();
+            doReturn(promises.resolve(false)).when(this.projectController).canUpdateProject(any());
             this.presenter.addAsset();
             verify(this.libraryPlaces,
                    never()).goToAddAsset();
         }
         {
-            doReturn(true).when(this.presenter).userCanUpdateProject();
+            doReturn(promises.resolve(true)).when(this.projectController).canUpdateProject(any());
             this.presenter.addAsset();
             verify(this.libraryPlaces,
                    times(1)).goToAddAsset();
@@ -346,13 +349,13 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
     @Test
     public void testImportAsset() {
         {
-            doReturn(false).when(this.presenter).userCanUpdateProject();
+            doReturn(promises.resolve(false)).when(this.projectController).canUpdateProject(any());
             this.presenter.importAsset();
             verify(this.newFileUploader,
                    never()).getCommand(any());
         }
         {
-            doReturn(true).when(this.presenter).userCanUpdateProject();
+            doReturn(promises.resolve(true)).when(this.projectController).canUpdateProject(any());
             this.presenter.importAsset();
             verify(this.newFileUploader,
                    times(1)).getCommand(any());
@@ -374,13 +377,13 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
     @Test
     public void testRename() {
         {
-            doReturn(false).when(this.presenter).userCanUpdateProject();
+            doReturn(promises.resolve(false)).when(this.projectController).canUpdateProject(any());
             this.presenter.rename();
             verify(this.renameProjectPopUpScreen,
                    never()).show(any());
         }
         {
-            doReturn(true).when(this.presenter).userCanUpdateProject();
+            doReturn(promises.resolve(true)).when(this.projectController).canUpdateProject(any());
             this.presenter.rename();
             verify(this.renameProjectPopUpScreen,
                    times(1)).show(any());
@@ -430,7 +433,7 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
     @Test
     public void testReimport() {
         {
-            doReturn(false).when(this.presenter).userCanUpdateProject();
+            doReturn(promises.resolve(false)).when(this.projectController).canUpdateProject(any());
             this.presenter.reimport();
             verify(this.copyPopUpPresenter,
                    never()).show(any(),
@@ -439,7 +442,7 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
         }
         {
             doNothing().when(projectScreenService).reImport(any());
-            doReturn(true).when(this.presenter).userCanUpdateProject();
+            doReturn(promises.resolve(true)).when(this.projectController).canUpdateProject(any());
             CommandWithFileNameAndCommitMessage duplicateCommand = mock(CommandWithFileNameAndCommitMessage.class);
             doReturn(duplicateCommand).when(presenter).getDuplicateCommand();
             this.presenter.reimport();
@@ -447,20 +450,8 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
             verify(projectScreenService).reImport(presenter.workspaceProject.getMainModule().getPomXMLPath());
             verify(view).hideBusyIndicator();
             verify(notificationEvent).fire(any());
-            verify(promises).resolve();
+            verify(promises, times(3)).resolve();
         }
-    }
-
-    @Test
-    public void canBuild() {
-        doReturn(true).when(libraryPermissions).userCanBuildProject(any(WorkspaceProject.class));
-        assertTrue(presenter.userCanBuildProject());
-    }
-
-    @Test
-    public void notAllowedToBuild() {
-        doReturn(false).when(libraryPermissions).userCanBuildProject(any(WorkspaceProject.class));
-        assertFalse(presenter.userCanBuildProject());
     }
 
     @Test

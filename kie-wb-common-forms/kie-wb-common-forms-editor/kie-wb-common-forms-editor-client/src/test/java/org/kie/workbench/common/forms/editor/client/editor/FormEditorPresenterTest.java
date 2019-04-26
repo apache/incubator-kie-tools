@@ -22,6 +22,7 @@ import java.util.Optional;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.guvnor.common.services.project.model.WorkspaceProject;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldLayoutComponent;
@@ -457,7 +458,7 @@ public class FormEditorPresenterTest extends FormEditorPresenterAbstractTest {
     @Test
     public void testMakeMenuBar() {
         doReturn(Optional.of(mock(WorkspaceProject.class))).when(workbenchContext).getActiveWorkspaceProject();
-        doReturn(true).when(projectController).canUpdateProject(any());
+        doReturn(promises.resolve(true)).when(projectController).canUpdateProject(any());
 
         loadContent();
 
@@ -468,7 +469,7 @@ public class FormEditorPresenterTest extends FormEditorPresenterAbstractTest {
         verify(menuBuilderMock).addNewTopLevelMenu(alertsButtonMenuItem);
         verify(menuBuilderMock).addNewTopLevelMenu(downloadMenuItem);
 
-        assertNotNull(presenter.getMenus());
+        presenter.getMenus(Assert::assertNotNull);
         verify(menuBuilderMock,
                atLeastOnce()).build();
     }
@@ -476,7 +477,7 @@ public class FormEditorPresenterTest extends FormEditorPresenterAbstractTest {
     @Test
     public void testMakeMenuBarWithoutUpdateProjectPermission() {
         doReturn(Optional.of(mock(WorkspaceProject.class))).when(workbenchContext).getActiveWorkspaceProject();
-        doReturn(false).when(projectController).canUpdateProject(any());
+        doReturn(promises.resolve(false)).when(projectController).canUpdateProject(any());
 
         loadContent();
 
@@ -493,7 +494,7 @@ public class FormEditorPresenterTest extends FormEditorPresenterAbstractTest {
                                   any(AssetUpdateValidator.class));
         verify(menuBuilderMock).addNewTopLevelMenu(alertsButtonMenuItem);
 
-        assertNotNull(presenter.getMenus());
+        presenter.getMenus(Assert::assertNotNull);
         verify(menuBuilderMock,
                atLeastOnce()).build();
     }

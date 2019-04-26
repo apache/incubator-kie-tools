@@ -32,8 +32,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.promise.Promises;
 import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
 import org.uberfire.ext.editor.commons.client.menu.BasicFileMenuBuilder;
+import org.uberfire.promise.SyncPromises;
 import org.uberfire.workbench.model.menu.MenuItem;
 
 import static org.mockito.Matchers.any;
@@ -64,10 +66,13 @@ public class GuvnorDefaultEditorPresenterTest {
     @Mock
     protected MenuItem alertsButtonMenuItem;
 
+    protected Promises promises;
+
     protected GuvnorDefaultEditorPresenter presenter;
 
     @Before
     public void setup() {
+        promises = new SyncPromises();
         doReturn(alertsButtonMenuItem).when(alertsButtonMenuItemBuilder).build();
         presenter = spy(new GuvnorDefaultEditorPresenter(mock(GuvnorDefaultEditorView.class)) {
             {
@@ -76,6 +81,7 @@ public class GuvnorDefaultEditorPresenterTest {
                 workbenchContext = GuvnorDefaultEditorPresenterTest.this.workbenchContext;
                 versionRecordManager = GuvnorDefaultEditorPresenterTest.this.versionRecordManager;
                 alertsButtonMenuItemBuilder = GuvnorDefaultEditorPresenterTest.this.alertsButtonMenuItemBuilder;
+                promises = GuvnorDefaultEditorPresenterTest.this.promises;
             }
         });
 
@@ -85,7 +91,7 @@ public class GuvnorDefaultEditorPresenterTest {
     @Test
     public void testMakeMenuBar() {
         doReturn(Optional.of(mock(WorkspaceProject.class))).when(workbenchContext).getActiveWorkspaceProject();
-        doReturn(true).when(projectController).canUpdateProject(any());
+        doReturn(promises.resolve(true)).when(projectController).canUpdateProject(any());
 
         presenter.makeMenuBar();
 
@@ -102,7 +108,7 @@ public class GuvnorDefaultEditorPresenterTest {
     @Test
     public void testMakeMenuBarWithoutUpdateProjectPermission() {
         doReturn(Optional.of(mock(WorkspaceProject.class))).when(workbenchContext).getActiveWorkspaceProject();
-        doReturn(false).when(projectController).canUpdateProject(any());
+        doReturn(promises.resolve(false)).when(projectController).canUpdateProject(any());
 
         presenter.makeMenuBar();
 

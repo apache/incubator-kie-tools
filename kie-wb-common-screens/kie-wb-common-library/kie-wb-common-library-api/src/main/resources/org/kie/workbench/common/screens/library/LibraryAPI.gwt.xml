@@ -6,6 +6,7 @@
   <inherits name="org.jboss.errai.bus.ErraiBus"/>
 
   <inherits name="org.kie.workbench.common.screens.examples.KieWorkbenchCommonExamplesAPI"/>
+  <inherits name="org.guvnor.common.services.project.GuvnorProjectAPI"/>
 
   <source path='api'/>
 </module>

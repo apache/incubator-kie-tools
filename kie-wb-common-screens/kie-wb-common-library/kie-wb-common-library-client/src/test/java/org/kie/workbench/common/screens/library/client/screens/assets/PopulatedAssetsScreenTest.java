@@ -22,6 +22,8 @@ import java.util.Collections;
 import java.util.List;
 import javax.enterprise.event.Event;
 
+import com.google.gwt.core.client.Callback;
+import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
@@ -38,7 +40,6 @@ import org.kie.workbench.common.screens.library.client.screens.EmptyState;
 import org.kie.workbench.common.screens.library.client.screens.ProjectScreenTestBase;
 import org.kie.workbench.common.screens.library.client.screens.assets.events.UpdatedAssetsEvent;
 import org.kie.workbench.common.screens.library.client.util.CategoryUtils;
-import org.kie.workbench.common.screens.library.client.util.LibraryPermissions;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.screens.library.client.widgets.project.AssetItemWidget;
 import org.kie.workbench.common.services.shared.project.KieModule;
@@ -53,6 +54,7 @@ import org.uberfire.client.workbench.events.SelectPlaceEvent;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.promise.SyncPromises;
 import org.uberfire.workbench.category.Others;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -94,7 +96,7 @@ public class PopulatedAssetsScreenTest extends ProjectScreenTestBase {
     private LibraryService libraryService;
 
     @Mock
-    private LibraryPermissions libraryPermissions;
+    private ProjectController projectController;
 
     @Mock
     private CategoriesManagerCache categoriesManagerCache;
@@ -113,6 +115,8 @@ public class PopulatedAssetsScreenTest extends ProjectScreenTestBase {
 
     private AssetQueryService assetQueryService;
 
+    private static final SyncPromises promises = new SyncPromises();
+
     @Before
     public void setUp() {
         assetQueryService = spy(new AssetQueryService(new CallerMock<>(libraryService)));
@@ -127,12 +131,15 @@ public class PopulatedAssetsScreenTest extends ProjectScreenTestBase {
                                                               assetItemWidget,
                                                               newFileUploader,
                                                               newResourcePresenter,
-                                                              libraryPermissions,
+                                                              projectController,
                                                               mock(Event.class),
                                                               emptyState,
                                                               categoryUtils,
                                                               assetQueryService,
-                                                              contextChangeEvent));
+                                                              contextChangeEvent,
+                                                              promises));
+
+        doReturn(promises.resolve(true)).when(this.projectController).canUpdateProject(any());
     }
 
     @Test
@@ -450,5 +457,79 @@ public class PopulatedAssetsScreenTest extends ProjectScreenTestBase {
         this.populatedAssetsScreen.detailsCommand(assetPath).execute();
 
         verify(libraryPlaces).goToAsset(assetPath);
+    }
+
+    @Test
+    public void testInitializeCheckButtonsCanUpdateProject() {
+        doReturn(promises.resolve(false)).when(this.projectController).canUpdateProject(any());
+        this.populatedAssetsScreen.init();
+        verify(this.view,
+               times(1)).enableAddAssetButton(eq(false));
+        verify(this.view,
+               times(1)).enableImportButton(eq(false));
+    }
+
+    @Test
+    public void testInitializeCheckButtonsCanNotUpdateProject() {
+        doReturn(promises.resolve(true)).when(this.projectController).canUpdateProject(any());
+        this.populatedAssetsScreen.init();
+        verify(this.view,
+               times(1)).enableAddAssetButton(eq(true));
+        verify(this.view,
+               times(1)).enableImportButton(eq(true));
+    }
+
+    @Test
+    public void testInitializeAcceptContentSuccess() {
+        doReturn(promises.resolve(true)).when(this.projectController).canUpdateProject(any());
+        doAnswer(invocation -> {
+            Callback<Boolean, Void> callback = invocation.getArgumentAt(0,
+                                                                        Callback.class);
+            callback.onSuccess(false);
+            return null;
+        }).when(this.newFileUploader).acceptContext(any());
+        this.populatedAssetsScreen.init();
+        verify(this.view).enableImportButton(eq(true));
+        verify(this.view).enableImportButton(eq(false));
+    }
+
+    @Test
+    public void testInitializeAcceptContentSuccessWithPermission() {
+        doReturn(promises.resolve(true)).when(this.projectController).canUpdateProject(any());
+        doAnswer(invocation -> {
+            Callback<Boolean, Void> callback = invocation.getArgumentAt(0,
+                                                                        Callback.class);
+            callback.onSuccess(true);
+            return null;
+        }).when(this.newFileUploader).acceptContext(any());
+        this.populatedAssetsScreen.init();
+        verify(this.view, times(2)).enableImportButton(eq(true));
+    }
+
+    @Test
+    public void testInitializeAcceptContentSuccessWithoutPermission() {
+        doReturn(promises.resolve(false)).when(this.projectController).canUpdateProject(any());
+        doAnswer(invocation -> {
+            Callback<Boolean, Void> callback = invocation.getArgumentAt(0,
+                                                                        Callback.class);
+            callback.onSuccess(true);
+            return null;
+        }).when(this.newFileUploader).acceptContext(any());
+        this.populatedAssetsScreen.init();
+        verify(this.view, times(2)).enableImportButton(eq(false));
+    }
+
+    @Test
+    public void testInitializeAcceptContentFailure() {
+        doReturn(promises.resolve(true)).when(this.projectController).canUpdateProject(any());
+        doAnswer(invocation -> {
+            Callback<Boolean, Void> callback = invocation.getArgumentAt(0,
+                                                                        Callback.class);
+            callback.onFailure(null);
+            return null;
+        }).when(this.newFileUploader).acceptContext(any());
+        this.populatedAssetsScreen.init();
+        verify(this.view).enableImportButton(eq(true));
+        verify(this.view).enableImportButton(eq(false));
     }
 }

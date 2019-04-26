@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import javax.annotation.PreDestroy;
@@ -30,6 +31,8 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import elemental2.promise.Promise;
+import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
@@ -282,11 +285,8 @@ public class FormEditorPresenter extends KieEditor<FormModelerContent> {
     }
 
     @WorkbenchMenu
-    public Menus getMenus() {
-        if (menus == null) {
-            makeMenuBar();
-        }
-        return menus;
+    public void getMenus(final Consumer<Menus> menusConsumer) {
+        super.getMenus(menusConsumer);
     }
 
     @Override
@@ -296,24 +296,33 @@ public class FormEditorPresenter extends KieEditor<FormModelerContent> {
     }
 
     @Override
-    protected void makeMenuBar() {
-        if (canUpdateProject()) {
-            fileMenuBuilder
-                    .addSave(versionRecordManager.newSaveMenuItem(() -> saveAction()))
-                    .addCopy(this::safeCopy)
-                    .addRename(this::safeRename)
-                    .addDelete(this::safeDelete);
-        }
-        addDownloadMenuItem(fileMenuBuilder);
+    protected Promise<Void> makeMenuBar() {
+        if (workbenchContext.getActiveWorkspaceProject().isPresent()) {
+            final WorkspaceProject activeProject = workbenchContext.getActiveWorkspaceProject().get();
+            return projectController.canUpdateProject(activeProject).then(canUpdateProject -> {
+                if (canUpdateProject) {
+                    fileMenuBuilder
+                            .addSave(versionRecordManager.newSaveMenuItem(() -> saveAction()))
+                            .addCopy(this::safeCopy)
+                            .addRename(this::safeRename)
+                            .addDelete(this::safeDelete);
+                }
+                addDownloadMenuItem(fileMenuBuilder);
 
-        fileMenuBuilder
-                .addNewTopLevelMenu(versionRecordManager.buildMenu())
-                .addNewTopLevelMenu(alertsButtonMenuItemBuilder.build());
-                /*.addCommand( "PREVIEW",
-                             () -> {
-                                 synchronizeFormLayout();
-                                 IOC.getBeanManager().lookupBean( PreviewFormPresenter.class ).newInstance().preview( getRenderingContext() );
-                             } )*/
+                fileMenuBuilder
+                        .addNewTopLevelMenu(versionRecordManager.buildMenu())
+                        .addNewTopLevelMenu(alertsButtonMenuItemBuilder.build());
+                        /*.addCommand( "PREVIEW",
+                                     () -> {
+                                         synchronizeFormLayout();
+                                         IOC.getBeanManager().lookupBean( PreviewFormPresenter.class ).newInstance().preview( getRenderingContext() );
+                                     } )*/
+
+                return promises.resolve();
+            });
+        }
+
+        return promises.resolve();
     }
 
     protected void safeCopy() {

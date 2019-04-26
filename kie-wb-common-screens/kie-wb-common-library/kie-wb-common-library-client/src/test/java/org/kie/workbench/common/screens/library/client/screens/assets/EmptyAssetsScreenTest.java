@@ -23,13 +23,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.defaulteditor.client.editor.NewFileUploader;
-import org.kie.workbench.common.screens.library.client.util.LibraryPermissions;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
-import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.mvp.Command;
+import org.uberfire.promise.SyncPromises;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
@@ -49,10 +48,12 @@ public class EmptyAssetsScreenTest {
     private NewResourcePresenter newResourcePresenter;
 
     @Mock
-    private LibraryPermissions libraryPermissions;
+    private ProjectController projectController;
 
     @Mock
     private LibraryPlaces libraryPlaces;
+
+    private static final SyncPromises promises = new SyncPromises();
 
     @Before
     public void setUp() {
@@ -60,8 +61,9 @@ public class EmptyAssetsScreenTest {
         this.emptyAssetsScreen = spy(new EmptyAssetsScreen(this.view,
                                                            this.newFileUploader,
                                                            this.newResourcePresenter,
-                                                           this.libraryPermissions,
-                                                           this.libraryPlaces));
+                                                           this.projectController,
+                                                           this.libraryPlaces,
+                                                           promises));
 
         Command command = mock(Command.class);
         doNothing().when(command).execute();
@@ -70,7 +72,7 @@ public class EmptyAssetsScreenTest {
 
     @Test
     public void testInitializeCheckButtonsCanUpdateProject() {
-        doReturn(false).when(this.emptyAssetsScreen).canUpdateProject();
+        doReturn(promises.resolve(false)).when(this.projectController).canUpdateProject(any());
         this.emptyAssetsScreen.initialize();
         verify(this.view,
                times(1)).enableAddAssetButton(eq(false));
@@ -80,7 +82,7 @@ public class EmptyAssetsScreenTest {
 
     @Test
     public void testInitializeCheckButtonsCanNotUpdateProject() {
-        doReturn(true).when(this.emptyAssetsScreen).canUpdateProject();
+        doReturn(promises.resolve(true)).when(this.projectController).canUpdateProject(any());
         this.emptyAssetsScreen.initialize();
         verify(this.view,
                times(1)).enableAddAssetButton(eq(true));
@@ -90,7 +92,7 @@ public class EmptyAssetsScreenTest {
 
     @Test
     public void testInitializeAcceptContentSuccess() {
-        doReturn(true).when(this.emptyAssetsScreen).canUpdateProject();
+        doReturn(promises.resolve(true)).when(this.projectController).canUpdateProject(any());
         doAnswer(invocation -> {
             Callback<Boolean, Void> callback = invocation.getArgumentAt(0,
                                                                         Callback.class);
@@ -104,7 +106,7 @@ public class EmptyAssetsScreenTest {
 
     @Test
     public void testInitializeAcceptContentSuccessWithPermission() {
-        doReturn(true).when(this.emptyAssetsScreen).canUpdateProject();
+        doReturn(promises.resolve(true)).when(this.projectController).canUpdateProject(any());
         doAnswer(invocation -> {
             Callback<Boolean, Void> callback = invocation.getArgumentAt(0,
                                                                         Callback.class);
@@ -117,7 +119,7 @@ public class EmptyAssetsScreenTest {
 
     @Test
     public void testInitializeAcceptContentSuccessWithoutPermission() {
-        doReturn(false).when(this.emptyAssetsScreen).canUpdateProject();
+        doReturn(promises.resolve(false)).when(this.projectController).canUpdateProject(any());
         doAnswer(invocation -> {
             Callback<Boolean, Void> callback = invocation.getArgumentAt(0,
                                                                         Callback.class);
@@ -130,7 +132,7 @@ public class EmptyAssetsScreenTest {
 
     @Test
     public void testInitializeAcceptContentFailure() {
-        doReturn(true).when(this.emptyAssetsScreen).canUpdateProject();
+        doReturn(promises.resolve(true)).when(this.projectController).canUpdateProject(any());
         doAnswer(invocation -> {
             Callback<Boolean, Void> callback = invocation.getArgumentAt(0,
                                                                         Callback.class);
@@ -145,14 +147,14 @@ public class EmptyAssetsScreenTest {
     @Test
     public void testImportAsset() {
         {
-            doReturn(false).when(this.emptyAssetsScreen).canUpdateProject();
+            doReturn(promises.resolve(false)).when(this.projectController).canUpdateProject(any());
             this.emptyAssetsScreen.importAsset();
             verify(this.newFileUploader,
                    never()).getCommand(any());
         }
 
         {
-            doReturn(true).when(this.emptyAssetsScreen).canUpdateProject();
+            doReturn(promises.resolve(true)).when(this.projectController).canUpdateProject(any());
             this.emptyAssetsScreen.importAsset();
             verify(this.newFileUploader,
                    times(1)).getCommand(any());
@@ -162,14 +164,14 @@ public class EmptyAssetsScreenTest {
     @Test
     public void testAddAsset() {
         {
-            doReturn(false).when(this.emptyAssetsScreen).canUpdateProject();
+            doReturn(promises.resolve(false)).when(this.projectController).canUpdateProject(any());
             this.emptyAssetsScreen.addAsset();
             verify(this.libraryPlaces,
                    never()).goToAddAsset();
         }
 
         {
-            doReturn(true).when(this.emptyAssetsScreen).canUpdateProject();
+            doReturn(promises.resolve(true)).when(this.projectController).canUpdateProject(any());
             this.emptyAssetsScreen.addAsset();
             verify(this.libraryPlaces,
                    times(1)).goToAddAsset();

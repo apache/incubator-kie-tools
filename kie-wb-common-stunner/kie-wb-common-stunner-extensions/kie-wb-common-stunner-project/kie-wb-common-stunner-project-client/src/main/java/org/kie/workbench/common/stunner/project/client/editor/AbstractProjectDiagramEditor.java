@@ -34,6 +34,8 @@ import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.ProvidesResize;
 import com.google.gwt.user.client.ui.RequiresResize;
+import elemental2.promise.Promise;
+import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
@@ -91,7 +93,6 @@ import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
-import org.uberfire.workbench.model.menu.Menus;
 
 import static org.kie.workbench.common.stunner.project.client.resources.i18n.StunnerProjectClientConstants.DIAGRAM_PARSING_ERROR;
 
@@ -481,27 +482,36 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     }
 
     @Override
-    protected void makeMenuBar() {
+    protected Promise<Void> makeMenuBar() {
         if (!menuBarInitialzed) {
             menuSessionItems.populateMenu(fileMenuBuilder);
             makeAdditionalStunnerMenus(fileMenuBuilder);
-            if (canUpdateProject()) {
-                fileMenuBuilder
-                        .addSave(versionRecordManager.newSaveMenuItem(this::saveAction))
-                        .addCopy(versionRecordManager.getCurrentPath(),
-                                 assetUpdateValidator)
-                        .addRename(getSaveAndRename())
-                        .addDelete(versionRecordManager.getPathToLatest(),
-                                   assetUpdateValidator);
+            if (workbenchContext.getActiveWorkspaceProject().isPresent()) {
+                final WorkspaceProject activeProject = workbenchContext.getActiveWorkspaceProject().get();
+                return projectController.canUpdateProject(activeProject).then(canUpdateProject -> {
+                    if (canUpdateProject) {
+                        fileMenuBuilder
+                                .addSave(versionRecordManager.newSaveMenuItem(this::saveAction))
+                                .addCopy(versionRecordManager.getCurrentPath(),
+                                         assetUpdateValidator)
+                                .addRename(getSaveAndRename())
+                                .addDelete(versionRecordManager.getPathToLatest(),
+                                           assetUpdateValidator);
+                    }
+
+                    addDownloadMenuItem(fileMenuBuilder);
+
+                    fileMenuBuilder
+                            .addNewTopLevelMenu(versionRecordManager.buildMenu())
+                            .addNewTopLevelMenu(alertsButtonMenuItemBuilder.build());
+                    menuBarInitialzed = true;
+
+                    return promises.resolve();
+                });
             }
-
-            addDownloadMenuItem(fileMenuBuilder);
-
-            fileMenuBuilder
-                    .addNewTopLevelMenu(versionRecordManager.buildMenu())
-                    .addNewTopLevelMenu(alertsButtonMenuItemBuilder.build());
-            menuBarInitialzed = true;
         }
+
+        return promises.resolve();
     }
 
     @Override
@@ -575,13 +585,6 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
 
     public String getTitleText() {
         return title;
-    }
-
-    protected Menus getMenus() {
-        if (menus == null) {
-            makeMenuBar();
-        }
-        return menus;
     }
 
     @Override

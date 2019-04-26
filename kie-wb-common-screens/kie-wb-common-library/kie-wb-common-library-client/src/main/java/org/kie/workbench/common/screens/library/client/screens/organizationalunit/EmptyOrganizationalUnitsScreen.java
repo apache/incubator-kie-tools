@@ -19,9 +19,9 @@ package org.kie.workbench.common.screens.library.client.screens.organizationalun
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
+import org.guvnor.structure.client.security.OrganizationalUnitController;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.screens.library.client.screens.organizationalunit.popup.OrganizationalUnitPopUpPresenter;
-import org.kie.workbench.common.screens.library.client.util.LibraryPermissions;
 import org.uberfire.client.mvp.UberElement;
 
 public class EmptyOrganizationalUnitsScreen {
@@ -34,15 +34,15 @@ public class EmptyOrganizationalUnitsScreen {
 
     private ManagedInstance<OrganizationalUnitPopUpPresenter> organizationalUnitPopUpPresenters;
 
-    private LibraryPermissions libraryPermissions;
+    private OrganizationalUnitController organizationalUnitController;
 
     @Inject
     public EmptyOrganizationalUnitsScreen(final View view,
                                           final ManagedInstance<OrganizationalUnitPopUpPresenter> organizationalUnitPopUpPresenters,
-                                          final LibraryPermissions libraryPermissions) {
+                                          final OrganizationalUnitController organizationalUnitController) {
         this.view = view;
         this.organizationalUnitPopUpPresenters = organizationalUnitPopUpPresenters;
-        this.libraryPermissions = libraryPermissions;
+        this.organizationalUnitController = organizationalUnitController;
     }
 
     @PostConstruct
@@ -58,7 +58,7 @@ public class EmptyOrganizationalUnitsScreen {
     }
 
     boolean userCanCreateOrganizationalUnits() {
-        return libraryPermissions.userCanCreateOrganizationalUnit();
+        return organizationalUnitController.canCreateOrgUnits();
     }
 
     public View getView() {

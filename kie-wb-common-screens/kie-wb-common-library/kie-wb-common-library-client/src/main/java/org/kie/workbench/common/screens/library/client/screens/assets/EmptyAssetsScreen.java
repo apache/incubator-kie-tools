@@ -22,10 +22,10 @@ import javax.inject.Inject;
 import com.google.gwt.core.client.Callback;
 import org.guvnor.common.services.project.client.security.ProjectController;
 import org.kie.workbench.common.screens.defaulteditor.client.editor.NewFileUploader;
-import org.kie.workbench.common.screens.library.client.util.LibraryPermissions;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.uberfire.client.mvp.UberElemental;
+import org.uberfire.client.promise.Promises;
 
 public class EmptyAssetsScreen {
 
@@ -39,40 +39,45 @@ public class EmptyAssetsScreen {
     private final EmptyAssetsScreen.View view;
     private final NewFileUploader newFileUploader;
     private final NewResourcePresenter newResourcePresenter;
-    private final LibraryPermissions libraryPermissions;
+    private final ProjectController projectController;
     private final LibraryPlaces libraryPlaces;
+    private final Promises promises;
 
     @Inject
     public EmptyAssetsScreen(final EmptyAssetsScreen.View view,
                              final NewFileUploader newFileUploader,
                              final NewResourcePresenter newResourcePresenter,
-                             final LibraryPermissions libraryPermissions,
-                             final LibraryPlaces libraryPlaces) {
+                             final ProjectController projectController,
+                             final LibraryPlaces libraryPlaces,
+                             final Promises promises) {
         this.view = view;
         this.newFileUploader = newFileUploader;
         this.newResourcePresenter = newResourcePresenter;
-        this.libraryPermissions = libraryPermissions;
+        this.projectController = projectController;
         this.libraryPlaces = libraryPlaces;
+        this.promises = promises;
     }
 
     @PostConstruct
     public void initialize() {
         this.view.init(this);
 
-        final boolean userCanUpdateProject = canUpdateProject();
+        projectController.canUpdateProject(this.libraryPlaces.getActiveWorkspace()).then(userCanUpdateProject -> {
+            this.enableButtons(userCanUpdateProject);
 
-        this.enableButtons(userCanUpdateProject);
+            newFileUploader.acceptContext(new Callback<Boolean, Void>() {
+                @Override
+                public void onFailure(Void reason) {
+                    view.enableImportButton(false);
+                }
 
-        newFileUploader.acceptContext(new Callback<Boolean, Void>() {
-            @Override
-            public void onFailure(Void reason) {
-                view.enableImportButton(false);
-            }
+                @Override
+                public void onSuccess(Boolean result) {
+                    view.enableImportButton(result && userCanUpdateProject);
+                }
+            });
 
-            @Override
-            public void onSuccess(Boolean result) {
-                view.enableImportButton(result && userCanUpdateProject);
-            }
+            return promises.resolve();
         });
     }
 
@@ -82,19 +87,23 @@ public class EmptyAssetsScreen {
     }
 
     public void importAsset() {
-        if (this.canUpdateProject()) {
-            newFileUploader.getCommand(newResourcePresenter).execute();
-        }
-    }
+        projectController.canUpdateProject(this.libraryPlaces.getActiveWorkspace()).then(userCanUpdateProject -> {
+            if (userCanUpdateProject) {
+                newFileUploader.getCommand(newResourcePresenter).execute();
+            }
 
-    protected boolean canUpdateProject() {
-        return this.libraryPermissions.userCanUpdateProject(this.libraryPlaces.getActiveWorkspace());
+            return promises.resolve();
+        });
     }
 
     public void addAsset() {
-        if (this.canUpdateProject()) {
-            this.libraryPlaces.goToAddAsset();
-        }
+        projectController.canUpdateProject(this.libraryPlaces.getActiveWorkspace()).then(userCanUpdateProject -> {
+            if (userCanUpdateProject) {
+                this.libraryPlaces.goToAddAsset();
+            }
+
+            return promises.resolve();
+        });
     }
 
     public EmptyAssetsScreen.View getView() {

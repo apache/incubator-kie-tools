@@ -17,8 +17,10 @@
 package org.kie.workbench.common.widgets.metadata.client;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import elemental2.promise.Promise;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.kie.soup.project.datamodel.imports.Imports;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
@@ -48,17 +50,15 @@ public interface KieMultipleDocumentEditorPresenter<D extends KieDocument> exten
 
     /**
      * The Menus for this Editor. To be returned by subclasses @WorkbenchMenu method.
-     *
-     * @return
      */
-    Menus getMenus();
+    void getMenus(Consumer<Menus> menusConsumer);
 
     /**
      * Construct the default Menus, consisting of "Save", "Copy", "Rename", "Delete",
      * "Validate" and "VersionRecordManager" drop-down. Subclasses can override this
      * to customize their Menus.
      */
-    void makeMenuBar();
+    Promise<Void> makeMenuBar();
 
     /**
      * Ensure resources are released correctly. To be used by subclasses @OnClose method.

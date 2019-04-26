@@ -1,0 +1,67 @@
+<!--
+  ~ Copyright 2019 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<div class="tab-pane kie-tab-pane active">
+    <h3 data-i18n-key="BranchManagement" data-field="title"></h3>
+
+    <p></p>
+    <hr>
+
+    <form role="form">
+        <div data-field="error" class="alert alert-danger">
+            <span class="pficon pficon-error-circle-o"></span>
+            <span data-field="error-message"></span>
+        </div>
+        <div class="form-group">
+            <div data-field="branches-select-container"></div>
+        </div>
+    </form>
+
+    <h3 data-i18n-key="RoleAccess"></h3>
+    <table class="table table-hover kie-tablelist">
+        <thead>
+        <tr class="kie-tablelist__row kie-tablelist__row--header">
+            <th class="kie-tablelist__cell kie-tablelist__cell--header" data-i18n-key="Role"></th>
+            <th class="kie-tablelist__cell kie-tablelist__cell--header">
+                <span data-i18n-key="Read"></span>
+                <a href="#" data-toggle="tooltip" data-delay="0">
+                    <span data-field="read-tooltip" class="fa fa-info-circle"></span>
+                </a>
+            </th>
+            <th class="kie-tablelist__cell kie-tablelist__cell--header">
+                <span data-i18n-key="Write"></span>
+                <a href="#" data-toggle="tooltip" data-delay="0">
+                    <span data-field="write-tooltip" class="fa fa-info-circle"></span>
+                </a>
+            </th>
+            <th class="kie-tablelist__cell kie-tablelist__cell--header">
+                <span data-i18n-key="Delete"></span>
+                <a href="#" data-toggle="tooltip" data-delay="0">
+                    <span data-field="delete-tooltip" class="fa fa-info-circle"></span>
+                </a>
+            </th>
+            <th class="kie-tablelist__cell kie-tablelist__cell--header">
+                <span data-i18n-key="Deploy"></span>
+                <a href="#" data-toggle="tooltip" data-delay="0">
+                    <span data-field="deploy-tooltip" class="fa fa-info-circle"></span>
+                </a>
+            </th>
+        </tr>
+        </thead>
+        <tbody data-field="role-access-table">
+        </tbody>
+    </table>
+</div>
