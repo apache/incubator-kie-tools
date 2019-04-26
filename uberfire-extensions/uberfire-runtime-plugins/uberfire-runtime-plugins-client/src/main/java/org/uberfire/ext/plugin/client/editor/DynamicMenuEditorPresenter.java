@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import javax.enterprise.context.Dependent;
@@ -139,8 +140,8 @@ public class DynamicMenuEditorPresenter
     }
 
     @WorkbenchMenu
-    public Menus getMenus() {
-        return menus;
+    public void getMenus(final Consumer<Menus> menusConsumer) {
+        super.getMenus(menusConsumer);
     }
 
     protected void onPlugInRenamed(@Observes final PluginRenamed pluginRenamed) {

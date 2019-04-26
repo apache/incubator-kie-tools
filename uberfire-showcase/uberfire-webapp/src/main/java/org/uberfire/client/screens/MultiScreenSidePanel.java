@@ -16,6 +16,7 @@
 
 package org.uberfire.client.screens;
 
+import java.util.function.Consumer;
 import javax.enterprise.context.Dependent;
 
 import com.google.gwt.user.client.Window;
@@ -44,25 +45,25 @@ public class MultiScreenSidePanel extends AbstractMarkdownScreen {
     }
 
     @WorkbenchMenu
-    public Menus getMenu() {
-        return MenuFactory
-                .newTopLevelMenu("Save")
-                    .respondsWith(() -> Window.alert("Saved!"))
-                .endMenu()
-                .newTopLevelMenu("Delete")
-                    .respondsWith(() -> Window.alert("Deleted!"))
-                .endMenu()
-                .newTopLevelMenu("Edit")
-                    .menus()
-                        .menu("Cut")
-                            .respondsWith(() -> Window.alert("Cut!"))
-                        .endMenu()
-                        .menu("Paste")
-                            .respondsWith(() -> Window.alert("Paste!"))
-                        .endMenu()
-                    .endMenus()
-                .endMenu()
-                .build();
+    public void getMenus(final Consumer<Menus> menusConsumer) {
+        menusConsumer.accept(MenuFactory
+                                     .newTopLevelMenu("Save")
+                                     .respondsWith(() -> Window.alert("Saved!"))
+                                     .endMenu()
+                                     .newTopLevelMenu("Delete")
+                                     .respondsWith(() -> Window.alert("Deleted!"))
+                                     .endMenu()
+                                     .newTopLevelMenu("Edit")
+                                     .menus()
+                                     .menu("Cut")
+                                     .respondsWith(() -> Window.alert("Cut!"))
+                                     .endMenu()
+                                     .menu("Paste")
+                                     .respondsWith(() -> Window.alert("Paste!"))
+                                     .endMenu()
+                                     .endMenus()
+                                     .endMenu()
+                                     .build());
     }
 
     @DefaultPosition

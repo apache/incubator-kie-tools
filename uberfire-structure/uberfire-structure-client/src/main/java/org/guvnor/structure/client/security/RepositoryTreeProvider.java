@@ -103,8 +103,7 @@ public class RepositoryTreeProvider implements PermissionTreeProvider {
         rootNode.addDependencies(readPermission,
                                  updatePermission,
                                  deletePermission,
-                                 buildPermission,
-                                 createPermission);
+                                 buildPermission);
         return rootNode;
     }
 

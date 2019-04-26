@@ -35,7 +35,6 @@
 }
 
 li[data-field="breadcrumb"] {
-    display: inline-block;
     vertical-align: top;
     text-overflow: ellipsis;
     overflow: hidden;

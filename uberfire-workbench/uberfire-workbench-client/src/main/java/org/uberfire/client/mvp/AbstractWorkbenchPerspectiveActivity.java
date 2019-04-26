@@ -15,6 +15,8 @@
  */
 package org.uberfire.client.mvp;
 
+import java.util.function.Consumer;
+
 import org.uberfire.client.annotations.WorkbenchPerspective;
 import org.uberfire.security.ResourceType;
 import org.uberfire.workbench.model.ActivityResourceType;
@@ -51,8 +53,8 @@ public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActiv
     }
 
     @Override
-    public Menus getMenus() {
-        return null;
+    public void getMenus(final Consumer<Menus> menusConsumer) {
+        menusConsumer.accept(null);
     }
 
     @Override

@@ -16,6 +16,7 @@
 
 package org.guvnor.m2repo.client;
 
+import java.util.function.Consumer;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -73,18 +74,13 @@ public class M2RepoEditorPresenter implements RefreshMenuBuilder.SupportsRefresh
     }
 
     @WorkbenchMenu
-    public Menus getMenus() {
-        return MenuFactory.newTopLevelMenu(constants.Upload())
-                .respondsWith(new Command() {
-                    @Override
-                    public void execute() {
-                        uploadFormPresenter.showView();
-                    }
-                })
+    public void getMenus(final Consumer<Menus> menusConsumer) {
+        menusConsumer.accept(MenuFactory.newTopLevelMenu(constants.Upload())
+                .respondsWith(() -> uploadFormPresenter.showView())
                 .endMenu()
                 .newTopLevelCustomMenu(new RefreshMenuBuilder(this))
                 .endMenu()
-                .build();
+                .build());
     }
 
     @Override

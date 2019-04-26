@@ -63,10 +63,12 @@ public class M2RepoEditorPresenterTest {
 
     @Test
     public void testUpload() {
-        final MenuItemCommand upload = (MenuItemCommand) presenter.getMenus().getItems().get(0);
-        upload.getCommand().execute();
+        presenter.getMenus(menus -> {
+            final MenuItemCommand upload = (MenuItemCommand) menus.getItems().get(0);
+            upload.getCommand().execute();
 
-        verify(uploadFormPresenter).showView();
+            verify(uploadFormPresenter).showView();
+        });
     }
 
     @Test
@@ -78,12 +80,14 @@ public class M2RepoEditorPresenterTest {
             }
         });
 
-        final MenuCustom refresh = (MenuCustom) presenter.getMenus().getItems().get(1);
-        refresh.build();
+        presenter.getMenus(menus -> {
+            final MenuCustom refresh = (MenuCustom) menus.getItems().get(1);
+            refresh.build();
 
-        clickHandler.onClick(new ClickEvent() {
+            clickHandler.onClick(new ClickEvent() {
+            });
+
+            verify(refreshEvents).fire(any(M2RepoRefreshEvent.class));
         });
-
-        verify(refreshEvents).fire(any(M2RepoRefreshEvent.class));
     }
 }

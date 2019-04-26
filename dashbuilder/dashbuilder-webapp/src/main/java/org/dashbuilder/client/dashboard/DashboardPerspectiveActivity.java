@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import org.dashbuilder.client.resources.i18n.AppConstants;
 import org.dashbuilder.displayer.DisplayerSettings;
@@ -136,14 +137,14 @@ public class DashboardPerspectiveActivity implements PerspectiveActivity {
     }
 
     @Override
-    public Menus getMenus() {
-        return MenuFactory
-                .newTopLevelMenu(AppConstants.INSTANCE.dashboard_new_displayer())
-                .respondsWith(getNewDisplayerCommand())
-                .endMenu()
-                .newTopLevelMenu(AppConstants.INSTANCE.dashboard_delete_dashboard())
-                .respondsWith(getShowDeletePopupCommand())
-                .endMenu().build();
+    public void getMenus(final Consumer<Menus> menusConsumer) {
+        menusConsumer.accept(MenuFactory
+                                     .newTopLevelMenu(AppConstants.INSTANCE.dashboard_new_displayer())
+                                     .respondsWith(getNewDisplayerCommand())
+                                     .endMenu()
+                                     .newTopLevelMenu(AppConstants.INSTANCE.dashboard_delete_dashboard())
+                                     .respondsWith(getShowDeletePopupCommand())
+                                     .endMenu().build());
     }
 
     @Override

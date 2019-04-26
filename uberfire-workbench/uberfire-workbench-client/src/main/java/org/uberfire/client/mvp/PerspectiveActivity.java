@@ -15,6 +15,8 @@
  */
 package org.uberfire.client.mvp;
 
+import java.util.function.Consumer;
+
 import jsinterop.annotations.JsType;
 import org.uberfire.client.workbench.WorkbenchServicesProxy;
 import org.uberfire.workbench.model.PerspectiveDefinition;
@@ -51,7 +53,7 @@ public interface PerspectiveActivity extends ContextSensitiveActivity {
      * must produce a new set of menus.
      * @return the menus to use while this perspective is active.
      */
-    Menus getMenus();
+    void getMenus(final Consumer<Menus> menusConsumer);
 
     ToolBar getToolBar();
 

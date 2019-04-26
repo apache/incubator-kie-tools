@@ -16,6 +16,7 @@
 
 package org.uberfire.ext.editor.commons.client.htmleditor;
 
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import javax.annotation.PostConstruct;
@@ -134,8 +135,8 @@ public class HtmlEditor extends BaseEditor<String, DefaultMetadata> {
     }
 
     @WorkbenchMenu
-    public Menus getMenus() {
-        return menus;
+    public void getMenus(final Consumer<Menus> menusConsumer) {
+        super.getMenus(menusConsumer);
     }
 
     @WorkbenchPartView

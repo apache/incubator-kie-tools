@@ -16,6 +16,7 @@
 
 package org.uberfire.client.experimental.editor;
 
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import javax.enterprise.context.Dependent;
@@ -24,6 +25,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
+import elemental2.promise.Promise;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.backend.vfs.ObservablePath;
@@ -103,23 +105,25 @@ public class ExperimentalAssetEditor extends BaseEditor<String, DefaultMetadata>
     }
 
     @Override
-    protected void makeMenuBar() {
-        super.makeMenuBar();
+    protected Promise<Void> makeMenuBar() {
+        return super.makeMenuBar().then(v -> {
+            // Checking manually the experimental actions from the experimental features framework
+            if (registryService.isFeatureEnabled(ExperimentalAssetAction.class.getName())) {
+                menuBuilder.addNewTopLevelMenu(MenuFactory.newTopLevelMenu(Constants.INSTANCE.experimental_asset_editor_actionsExperimental())
+                                                       .respondsWith(() -> Window.alert(Constants.INSTANCE.experimental_asset_editor_actionsExperimentalText()))
+                                                       .endMenu()
+                                                       .build().getItems().get(0));
+            }
 
-        // Checking manually the experimental actions from the experimental features framework
-        if (registryService.isFeatureEnabled(ExperimentalAssetAction.class.getName())) {
-            menuBuilder.addNewTopLevelMenu(MenuFactory.newTopLevelMenu(Constants.INSTANCE.experimental_asset_editor_actionsExperimental())
-                                                   .respondsWith(() -> Window.alert(Constants.INSTANCE.experimental_asset_editor_actionsExperimentalText()))
-                                                   .endMenu()
-                                                   .build().getItems().get(0));
-        }
+            if (registryService.isFeatureEnabled(ExperimentalAssetAction2.class.getName())) {
+                menuBuilder.addNewTopLevelMenu(MenuFactory.newTopLevelMenu(Constants.INSTANCE.experimental_asset_editor_actionsExperimental2())
+                                                       .respondsWith(() -> Window.alert(Constants.INSTANCE.experimental_asset_editor_actionsExperimental2Text()))
+                                                       .endMenu()
+                                                       .build().getItems().get(0));
+            }
 
-        if (registryService.isFeatureEnabled(ExperimentalAssetAction2.class.getName())) {
-            menuBuilder.addNewTopLevelMenu(MenuFactory.newTopLevelMenu(Constants.INSTANCE.experimental_asset_editor_actionsExperimental2())
-                                                   .respondsWith(() -> Window.alert(Constants.INSTANCE.experimental_asset_editor_actionsExperimental2Text()))
-                                                   .endMenu()
-                                                   .build().getItems().get(0));
-        }
+            return promises.resolve();
+        });
     }
 
     @Override
@@ -135,8 +139,8 @@ public class ExperimentalAssetEditor extends BaseEditor<String, DefaultMetadata>
     }
 
     @WorkbenchMenu
-    public Menus getMenus() {
-        return menus;
+    public void getMenus(final Consumer<Menus> menusConsumer) {
+        super.getMenus(menusConsumer);
     }
 
     @WorkbenchPartView

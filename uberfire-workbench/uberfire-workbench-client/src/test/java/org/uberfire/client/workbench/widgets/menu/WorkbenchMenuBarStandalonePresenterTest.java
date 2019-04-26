@@ -16,6 +16,8 @@
 
 package org.uberfire.client.workbench.widgets.menu;
 
+import java.util.function.Consumer;
+
 import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -89,7 +91,10 @@ public class WorkbenchMenuBarStandalonePresenterTest {
         final PlaceRequest placeRequest = mock(PlaceRequest.class);
 
         when(activity.getIdentifier()).thenReturn(perspectiveId);
-        when(activity.getMenus()).thenReturn(contextMenus);
+        doAnswer(invocationOnMock -> {
+            invocationOnMock.getArgumentAt(0, Consumer.class).accept(contextMenus);
+            return null;
+        }).when(activity).getMenus(any());
         when(activity.isType(ActivityResourceType.PERSPECTIVE.name())).thenReturn(true);
         when(authzManager.authorize(contextMenus.getItems().get(0),
                                     identity)).thenReturn(true);

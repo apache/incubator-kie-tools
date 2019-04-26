@@ -15,6 +15,7 @@
  */
 package org.dashbuilder.client.cms.screen.explorer;
 
+import java.util.function.Consumer;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
@@ -73,12 +74,12 @@ public class PerspectivesExplorerScreen {
     }
 
     @WorkbenchMenu
-    public Menus getMenus() {
-        return MenuFactory.newTopLevelMenu(i18n.getContentExplorerNew())
-                .withPermission(ActivityResourceType.PERSPECTIVE, PerspectiveAction.CREATE)
-                .respondsWith(this::createNewPerspective)
-                .endMenu()
-                .build();
+    public void getMenus(final Consumer<Menus> menusConsumer) {
+        menusConsumer.accept(MenuFactory.newTopLevelMenu(i18n.getContentExplorerNew())
+                                     .withPermission(ActivityResourceType.PERSPECTIVE, PerspectiveAction.CREATE)
+                                     .respondsWith(this::createNewPerspective)
+                                     .endMenu()
+                                     .build());
     }
 
     public void createNewPerspective() {

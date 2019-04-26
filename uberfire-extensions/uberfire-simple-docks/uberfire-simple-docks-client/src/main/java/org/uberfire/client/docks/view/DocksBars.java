@@ -262,29 +262,30 @@ public class DocksBars {
         Activity activity = placeManager.getActivity(placeRequest);
         if (activity instanceof AbstractWorkbenchScreenActivity) {
             AbstractWorkbenchScreenActivity screen = (AbstractWorkbenchScreenActivity) activity;
-            if (screen.getMenus() != null) {
+            screen.getMenus(menus -> {
+                if (menus != null) {
+                    menus.accept(new AuthFilterMenuVisitor(authorizationManager,
+                            identity, new BaseMenuVisitor() {
 
-                screen.getMenus().accept(new AuthFilterMenuVisitor(authorizationManager,
-                        identity, new BaseMenuVisitor() {
-
-                            @Override
-                            public void visit(MenuItemPlain menuItemPlain) {
-                                expandedBar.addContextMenuItem(menuBuilder.makeItem(menuItemPlain, true));
-                            }
-                            @Override
-                            public void visit(MenuItemCommand menuItemCommand) {
-                                expandedBar.addContextMenuItem(menuBuilder.makeItem(menuItemCommand, true));
-                            }
-                            @Override
-                            public void visit(MenuItemPerspective menuItemPerspective) {
-                                expandedBar.addContextMenuItem(menuBuilder.makeItem(menuItemPerspective, true));
-                            }
-                            @Override
-                            public void visit(MenuCustom<?> menuCustom) {
-                                expandedBar.addContextMenuItem(menuBuilder.makeItem(menuCustom, true));
-                            }
-                        }));
-            }
+                                @Override
+                                public void visit(MenuItemPlain menuItemPlain) {
+                                    expandedBar.addContextMenuItem(menuBuilder.makeItem(menuItemPlain, true));
+                                }
+                                @Override
+                                public void visit(MenuItemCommand menuItemCommand) {
+                                    expandedBar.addContextMenuItem(menuBuilder.makeItem(menuItemCommand, true));
+                                }
+                                @Override
+                                public void visit(MenuItemPerspective menuItemPerspective) {
+                                    expandedBar.addContextMenuItem(menuBuilder.makeItem(menuItemPerspective, true));
+                                }
+                                @Override
+                                public void visit(MenuCustom<?> menuCustom) {
+                                    expandedBar.addContextMenuItem(menuBuilder.makeItem(menuCustom, true));
+                                }
+                            }));
+                }
+            });
         }
     }
 

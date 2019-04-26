@@ -14,8 +14,28 @@
  */
 package org.guvnor.structure.backend.repositories.git;
 
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import javax.enterprise.event.Event;
+
+import org.eclipse.jgit.lib.Ref;
+import org.eclipse.jgit.transport.ReceiveCommand;
+import org.eclipse.jgit.transport.RefFilter;
+import org.eclipse.jgit.transport.UploadPack;
+import org.guvnor.structure.backend.repositories.BranchAccessAuthorizer;
 import org.guvnor.structure.backend.repositories.git.hooks.PostCommitNotificationService;
-import org.guvnor.structure.repositories.*;
+import org.guvnor.structure.backend.repositories.git.hooks.exception.BranchOperationNotAllowedException;
+import org.guvnor.structure.repositories.Branch;
+import org.guvnor.structure.repositories.EnvironmentParameters;
+import org.guvnor.structure.repositories.PublicURI;
+import org.guvnor.structure.repositories.Repository;
+import org.guvnor.structure.repositories.RepositoryExternalUpdateEvent;
 import org.guvnor.structure.repositories.impl.DefaultPublicURI;
 import org.guvnor.structure.repositories.impl.git.GitRepository;
 import org.guvnor.structure.server.config.ConfigGroup;
@@ -27,11 +47,9 @@ import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
 import org.uberfire.java.nio.file.extensions.FileSystemHooks;
 import org.uberfire.java.nio.file.extensions.FileSystemHooksConstants;
+import org.uberfire.java.nio.fs.jgit.daemon.filters.HiddenBranchRefFilter;
+import org.uberfire.java.nio.security.FileSystemUser;
 import org.uberfire.spaces.SpacesAPI;
-
-import javax.enterprise.event.Event;
-import java.net.URI;
-import java.util.*;
 
 import static org.uberfire.backend.server.util.Paths.convert;
 
@@ -43,17 +61,20 @@ public class GitRepositoryBuilder {
     private Event<RepositoryExternalUpdateEvent> repositoryExternalUpdate;
     private PostCommitNotificationService postCommitNotificationService;
     private GitRepository repo;
+    private BranchAccessAuthorizer branchAccessAuthorizer;
 
     public GitRepositoryBuilder(final IOService ioService,
                                 final PasswordService secureService,
                                 final SpacesAPI spacesAPI,
                                 final Event<RepositoryExternalUpdateEvent> repositoryExternalUpdate,
-                                final PostCommitNotificationService postCommitNotificationService) {
+                                final PostCommitNotificationService postCommitNotificationService,
+                                final BranchAccessAuthorizer branchAccessAuthorizer) {
         this.ioService = ioService;
         this.secureService = secureService;
         this.spacesAPI = spacesAPI;
         this.repositoryExternalUpdate = repositoryExternalUpdate;
         this.postCommitNotificationService = postCommitNotificationService;
+        this.branchAccessAuthorizer = branchAccessAuthorizer;
     }
 
     public Repository build(final ConfigGroup repoConfig) {
@@ -146,6 +167,8 @@ public class GitRepositoryBuilder {
                     }
                     put(FileSystemHooks.ExternalUpdate.name(), externalUpdatedCallBack());
                     put(FileSystemHooks.PostCommit.name(), postCommitCallback());
+                    put(FileSystemHooks.BranchAccessCheck.name(), checkBranchAccessCallback());
+                    put(FileSystemHooks.BranchAccessFilter.name(), filterBranchAccessCallback());
                 }});
     }
 
@@ -155,6 +178,50 @@ public class GitRepositoryBuilder {
 
     private FileSystemHooks.FileSystemHook postCommitCallback() {
         return ctx -> postCommitNotificationService.notifyUser(repo, (Integer) ctx.getParamValue(FileSystemHooksConstants.POST_COMMIT_EXIT_CODE));
+    }
+
+    private FileSystemHooks.FileSystemHook checkBranchAccessCallback() {
+        return ctx -> {
+            final ReceiveCommand command = (ReceiveCommand) ctx.getParamValue(FileSystemHooksConstants.RECEIVE_COMMAND);
+            final FileSystemUser user = (FileSystemUser) ctx.getParamValue(FileSystemHooksConstants.USER);
+            final Optional<String> branchName = GitPathUtil.extractBranchFromRef(command.getRefName());
+
+            branchName.ifPresent(branch -> {
+                if (!branchAccessAuthorizer.authorize(user.getName(),
+                                                      repo.getSpace().getName(),
+                                                      repo.getIdentifier(),
+                                                      repo.getAlias(),
+                                                      branch,
+                                                      BranchAccessAuthorizer.AccessType.valueOf(command.getType()))) {
+                    throw new BranchOperationNotAllowedException();
+                }
+            });
+        };
+    }
+
+    private FileSystemHooks.FileSystemHook filterBranchAccessCallback() {
+        return ctx -> {
+            final UploadPack uploadPack = (UploadPack) ctx.getParamValue(FileSystemHooksConstants.UPLOAD_PACK);
+            final FileSystemUser user = (FileSystemUser) ctx.getParamValue(FileSystemHooksConstants.USER);
+            uploadPack.setRefFilter(refs -> refs.entrySet()
+                    .stream()
+                    .filter(ref -> !HiddenBranchRefFilter.isHidden(ref.getKey()))
+                    .filter(ref -> {
+                        final Optional<String> branchName = GitPathUtil.extractBranchFromRef(ref.getValue().getName());
+                        if (branchName.isPresent()) {
+                            return branchAccessAuthorizer.authorize(user.getName(),
+                                                                    repo.getSpace().getName(),
+                                                                    repo.getIdentifier(),
+                                                                    repo.getAlias(),
+                                                                    branchName.get(),
+                                                                    BranchAccessAuthorizer.AccessType.READ);
+                        }
+
+                        return true;
+                    })
+                    .collect(Collectors.toMap(Map.Entry::getKey,
+                                              Map.Entry::getValue)));
+        };
     }
 
     /**

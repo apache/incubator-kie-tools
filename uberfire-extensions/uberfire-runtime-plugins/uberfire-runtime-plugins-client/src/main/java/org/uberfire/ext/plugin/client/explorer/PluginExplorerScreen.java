@@ -17,6 +17,7 @@
 package org.uberfire.ext.plugin.client.explorer;
 
 import java.util.Collection;
+import java.util.function.Consumer;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -88,28 +89,28 @@ public class PluginExplorerScreen
     }
 
     @WorkbenchMenu
-    public Menus buildMenu() {
-        return MenuFactory
-                .newTopLevelCustomMenu(new MenuFactory.CustomMenuBuilder() {
-                    @Override
-                    public void push(MenuFactory.CustomMenuBuilder element) {
-                    }
+    public void buildMenu(final Consumer<Menus> menusConsumer) {
+        menusConsumer.accept(MenuFactory
+                                     .newTopLevelCustomMenu(new MenuFactory.CustomMenuBuilder() {
+                                         @Override
+                                         public void push(MenuFactory.CustomMenuBuilder element) {
+                                         }
 
-                    @Override
-                    public MenuItem build() {
-                        return new BaseMenuCustom<IsWidget>() {
-                            @Override
-                            public void accept(MenuVisitor visitor) {
-                                visitor.visit(this);
-                            }
+                                         @Override
+                                         public MenuItem build() {
+                                             return new BaseMenuCustom<IsWidget>() {
+                                                 @Override
+                                                 public void accept(MenuVisitor visitor) {
+                                                     visitor.visit(this);
+                                                 }
 
-                            @Override
-                            public IsWidget build() {
-                                return getNewButton();
-                            }
-                        };
-                    }
-                }).endMenu().build();
+                                                 @Override
+                                                 public IsWidget build() {
+                                                     return getNewButton();
+                                                 }
+                                             };
+                                         }
+                                     }).endMenu().build());
     }
 
     public IsWidget getNewButton() {

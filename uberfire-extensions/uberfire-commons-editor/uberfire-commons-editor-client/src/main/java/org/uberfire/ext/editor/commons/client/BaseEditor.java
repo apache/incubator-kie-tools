@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import javax.enterprise.event.Event;
@@ -29,6 +30,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.ui.IsWidget;
+import elemental2.promise.Promise;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
@@ -36,6 +38,7 @@ import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.promise.Promises;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.ext.editor.commons.client.event.ConcurrentDeleteAcceptedEvent;
@@ -84,6 +87,8 @@ public abstract class BaseEditor<T, M> {
 
     protected Menus menus;
 
+    protected Promise<Void> makeMenuBarPromise;
+
     @Inject
     protected PlaceManager placeManager;
 
@@ -122,6 +127,9 @@ public abstract class BaseEditor<T, M> {
 
     @Inject
     private DownloadMenuItem downloadMenuItem;
+
+    @Inject
+    protected Promises promises;
 
     protected Set<MenuItems> menuItems = new HashSet<>();
 
@@ -215,11 +223,7 @@ public abstract class BaseEditor<T, M> {
             addFileChangeListeners(path);
         }
 
-        makeMenuBar();
-
-        buildMenuBar();
-
-        loadContent();
+        getMenus(menus -> loadContent());
 
         concurrentUpdateSessionInfo = null;
     }
@@ -231,7 +235,7 @@ public abstract class BaseEditor<T, M> {
     /**
      * If you want to customize the menu content override this method.
      */
-    protected void makeMenuBar() {
+    protected Promise<Void> makeMenuBar() {
         if (menuItems.contains(SAVE)) {
             menuBuilder.addSave(getOnSave());
         }
@@ -257,6 +261,8 @@ public abstract class BaseEditor<T, M> {
         if (menuItems.contains(DOWNLOAD)) {
             addDownloadMenuItem(menuBuilder);
         }
+
+        return promises.resolve();
     }
 
     protected void addDownloadMenuItem(final BasicFileMenuBuilder menuBuilder) {
@@ -337,7 +343,7 @@ public abstract class BaseEditor<T, M> {
      * {@link BasicFileMenuBuilder#build()} to create the {@link Menus}
      */
     protected void buildMenuBar() {
-        if (menuBuilder != null) {
+        if (menuBuilder != null && menus == null) {
             menus = menuBuilder.build();
         }
     }
@@ -603,13 +609,31 @@ public abstract class BaseEditor<T, M> {
 
     private void setEnableMenuItem(final MenuItems menuItem,
                                    final boolean isEnabled) {
-        if (menus().getItemsMap().containsKey(menuItem)) {
-            menus().getItemsMap().get(menuItem).setEnabled(isEnabled);
-        }
+        getMenus(menus -> {
+            if (menus.getItemsMap().containsKey(menuItem)) {
+                menus.getItemsMap().get(menuItem).setEnabled(isEnabled);
+            }
+        });
     }
 
-    Menus menus() {
-        return menus;
+    public void getMenus(final Consumer<Menus> menusConsumer) {
+        if (menus != null) {
+            menusConsumer.accept(menus);
+            return;
+        }
+
+        if (makeMenuBarPromise == null) {
+            makeMenuBarPromise = makeMenuBar().then(v -> {
+                buildMenuBar();
+                menusConsumer.accept(menus);
+                return promises.resolve();
+            });
+        } else {
+            makeMenuBarPromise.then(v -> {
+                menusConsumer.accept(menus);
+                return promises.resolve();
+            });
+        }
     }
 
     public Command getValidateCommand() {

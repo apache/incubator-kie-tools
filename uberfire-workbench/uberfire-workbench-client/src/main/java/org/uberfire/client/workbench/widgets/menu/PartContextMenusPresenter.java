@@ -53,7 +53,7 @@ public class PartContextMenusPresenter {
             //Add items for current WorkbenchPart
             activePlace = event.getPlace();
 
-            buildMenu(wbActivity.getMenus());
+            wbActivity.getMenus(this::buildMenu);
         }
     }
 

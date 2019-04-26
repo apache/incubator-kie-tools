@@ -35,6 +35,7 @@ import org.apache.sshd.server.keyprovider.AbstractGeneratorHostKeyProvider;
 import org.apache.sshd.server.keyprovider.SimpleGeneratorHostKeyProvider;
 import org.apache.sshd.server.scp.UnknownCommand;
 import org.eclipse.jgit.transport.resolver.ReceivePackFactory;
+import org.eclipse.jgit.transport.resolver.UploadPackFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
@@ -95,9 +96,10 @@ public class GitSSHService {
                       final String sshIdleTimeout,
                       final String algorithm,
                       final ReceivePackFactory receivePackFactory,
+                      final UploadPackFactory uploadPackFactory,
                       final JGitFileSystemProvider.RepositoryResolverImpl<BaseGitCommand> repositoryResolver,
                       final ExecutorService executorService) {
-        setup(certDir, inetSocketAddress, sshIdleTimeout, algorithm, receivePackFactory, repositoryResolver, executorService, null, null);
+        setup(certDir, inetSocketAddress, sshIdleTimeout, algorithm, receivePackFactory, uploadPackFactory, repositoryResolver, executorService, null, null);
     }
 
     public void setup(final File certDir,
@@ -105,6 +107,7 @@ public class GitSSHService {
                       final String sshIdleTimeout,
                       final String algorithm,
                       final ReceivePackFactory receivePackFactory,
+                      final UploadPackFactory uploadPackFactory,
                       final JGitFileSystemProvider.RepositoryResolverImpl<BaseGitCommand> repositoryResolver,
                       final ExecutorService executorService,
                       final String gitSshCiphers,
@@ -117,6 +120,8 @@ public class GitSSHService {
                       algorithm);
         checkNotNull("receivePackFactory",
                      receivePackFactory);
+        checkNotNull("uploadPackFactory",
+                     uploadPackFactory);
         checkNotNull("repositoryResolver",
                      repositoryResolver);
 
@@ -156,6 +161,7 @@ public class GitSSHService {
                 return new GitUploadCommand(command,
                                             repositoryResolver,
                                             getAuthorizationManager(),
+                                            uploadPackFactory,
                                             executorService);
             } else if (command.startsWith("git-receive-pack")) {
                 return new GitReceiveCommand(command,

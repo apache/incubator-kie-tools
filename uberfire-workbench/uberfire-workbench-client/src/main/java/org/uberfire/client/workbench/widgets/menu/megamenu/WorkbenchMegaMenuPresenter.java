@@ -330,18 +330,19 @@ public class WorkbenchMegaMenuPresenter extends WorkbenchBaseMenuPresenter {
     }
 
     protected void addPerspectiveMenus(final PerspectiveActivity perspective) {
-        final String perspectiveId = perspective.getIdentifier();
-        final Menus menus = perspective.getMenus();
-        view.clearContextMenu();
-        if (menus != null) {
-            menus.accept(new AuthFilterMenuVisitor(authzManager,
-                                                   identity,
-                                                   new WorkbenchMegaMenuContextMenuVisitor(this,
-                                                                                           placeManager,
-                                                                                           perspectiveId)));
+        perspective.getMenus(menus -> {
+            final String perspectiveId = perspective.getIdentifier();
+            view.clearContextMenu();
+            if (menus != null) {
+                menus.accept(new AuthFilterMenuVisitor(authzManager,
+                                                       identity,
+                                                       new WorkbenchMegaMenuContextMenuVisitor(this,
+                                                                                               placeManager,
+                                                                                               perspectiveId)));
 
-            synchronizeUIWithMenus(menus.getItems());
-        }
+                synchronizeUIWithMenus(menus.getItems());
+            }
+        });
     }
 
     public void onPerspectiveChange(final PerspectiveChange perspectiveChange) {

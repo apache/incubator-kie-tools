@@ -36,5 +36,6 @@
   <source path='social' />
   <source path='categories' />
   <source path='preferences' />
+  <source path='roles' />
 
 </module>

@@ -15,6 +15,7 @@
  */
 package org.uberfire.ext.wires.bpmn.client.editor;
 
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import javax.enterprise.context.Dependent;
@@ -93,8 +94,8 @@ public class BpmnEditorPresenter extends BaseEditor<ProcessNode, Metadata> {
     }
 
     @WorkbenchMenu
-    public Menus getMenus() {
-        return menus;
+    public void getMenus(final Consumer<Menus> menusConsumer) {
+        super.getMenus(menusConsumer);
     }
 
     @WorkbenchPartView

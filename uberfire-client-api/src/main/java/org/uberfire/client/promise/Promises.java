@@ -26,8 +26,10 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.BiFunction;
+import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -58,6 +60,15 @@ public class Promises {
      */
     public <T, O> Promise<O> all(final List<T> objects, final Function<T, Promise<O>> f) {
         return objects.stream().map(f).reduce(resolve(), (p1, p2) -> p1.then(ignore -> p2));
+    }
+
+    /**
+     * Reduces a list of promises using the accumulator passed.
+     */
+    public final <O> Promise<O> reduce(final Promise<O> identity,
+                                       final Collection<Promise<O>> promises,
+                                       final BinaryOperator<Promise<O>> accumulator) {
+        return promises.stream().reduce(identity, accumulator);
     }
 
     /**

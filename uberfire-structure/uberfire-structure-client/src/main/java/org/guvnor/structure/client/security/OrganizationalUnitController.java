@@ -16,9 +16,13 @@
 
 package org.guvnor.structure.client.security;
 
+import java.util.Collection;
+import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.guvnor.structure.contributors.Contributor;
+import org.guvnor.structure.contributors.ContributorType;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.security.OrganizationalUnitAction;
@@ -57,27 +61,38 @@ public class OrganizationalUnitController {
                                               user);
     }
 
-    public boolean canReadOrgUnit(OrganizationalUnit organizationalUnit) {
-        return authorizationManager.authorize(organizationalUnit,
+    public boolean canReadOrgUnit(final OrganizationalUnit organizationalUnit) {
+        final boolean securityPermission = authorizationManager.authorize(organizationalUnit,
                                               OrganizationalUnitAction.READ,
                                               user);
+        return securityPermission
+                || userIsAtLeast(ContributorType.CONTRIBUTOR, organizationalUnit.getContributors());
     }
 
     public boolean canUpdateOrgUnit(OrganizationalUnit organizationalUnit) {
-        return authorizationManager.authorize(organizationalUnit,
+        final boolean securityPermission = authorizationManager.authorize(organizationalUnit,
                                               OrganizationalUnitAction.UPDATE,
                                               user);
+        return securityPermission
+                || userIsAtLeast(ContributorType.ADMIN, organizationalUnit.getContributors());
     }
 
     public boolean canDeleteOrgUnit(OrganizationalUnit organizationalUnit) {
-        return authorizationManager.authorize(organizationalUnit,
+        final boolean securityPermission = authorizationManager.authorize(organizationalUnit,
                                               OrganizationalUnitAction.DELETE,
                                               user);
+
+        return securityPermission
+                || userIsAtLeast(ContributorType.OWNER, organizationalUnit.getContributors());
     }
 
-    public boolean canReadRepository(Repository repository) {
-        return authorizationManager.authorize(repository,
-                                              RepositoryAction.READ,
-                                              user);
+    boolean userIsAtLeast(final ContributorType type,
+                          final Collection<Contributor> contributors) {
+        return contributors.stream().anyMatch(c -> c.getUsername().equals(user.getIdentifier())
+                && ContributorType.PRIORITY_ORDER.indexOf(c.getType()) <= ContributorType.PRIORITY_ORDER.indexOf(type));
+    }
+
+    Optional<Contributor> getUserContributor(final Collection<Contributor> contributors) {
+        return contributors.stream().filter(c -> c.getUsername().equals(user.getIdentifier())).findFirst();
     }
 }

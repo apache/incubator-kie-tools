@@ -41,6 +41,7 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.promise.Promises;
 import org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants;
 import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.lifecycle.OnStartup;
@@ -64,6 +65,7 @@ public class RepositoryEditorPresenter {
     private Path root = null;
     private PlaceRequest place;
     private WorkspaceProjectContext context;
+    private Promises promises;
 
     public interface View
             extends UberView<RepositoryEditorPresenter> {
@@ -91,7 +93,8 @@ public class RepositoryEditorPresenter {
                                      final Event<NotificationEvent> notification,
                                      final PlaceManager placeManager,
                                      final ProjectController projectController,
-                                     final WorkspaceProjectContext context) {
+                                     final WorkspaceProjectContext context,
+                                     final Promises promises) {
         this.view = view;
         this.repositoryService = repositoryService;
         this.projectService = projectService;
@@ -100,6 +103,7 @@ public class RepositoryEditorPresenter {
         this.placeManager = placeManager;
         this.projectController = projectController;
         this.context = context;
+        this.promises = promises;
     }
 
     @OnStartup
@@ -110,27 +114,22 @@ public class RepositoryEditorPresenter {
                                .map(ou -> ou.getName())
                                .orElseThrow(() -> new IllegalStateException("Cannot lookup repository [" + alias + "] without active organizational unit."));
 
-        repositoryService.call(new RemoteCallback<RepositoryInfo>() {
-            @Override
-            public void callback(final RepositoryInfo repo) {
+        repositoryService.call((RemoteCallback<RepositoryInfo>) repo -> projectService.call(
+                (RemoteCallback<WorkspaceProject>) workspaceProject -> {
+                    root = repo.getRoot();
+                    projectController.canUpdateProject(workspaceProject).then(canUpdateProject -> {
+                        view.setRepositoryInfo(repo.getAlias(),
+                                               repo.getOwner(),
+                                               !canUpdateProject,
+                                               repo.getPublicURIs(),
+                                               CoreConstants.INSTANCE.Empty(),
+                                               repo.getInitialVersionList());
 
-                projectService.call(
-                        new RemoteCallback<WorkspaceProject>() {
-                            @Override
-                            public void callback(final WorkspaceProject workspaceProject) {
-                                root = repo.getRoot();
-                                view.setRepositoryInfo(repo.getAlias(),
-                                                       repo.getOwner(),
-                                                       !projectController.canUpdateProject(workspaceProject),
-                                                       repo.getPublicURIs(),
-                                                       CoreConstants.INSTANCE.Empty(),
-                                                       repo.getInitialVersionList());
-                            }
-                        }
+                        return promises.resolve();
+                    });
+                }
 
-                ).resolveProjectByRepositoryAlias(new Space(repo.getOwner()), repo.getAlias());
-            }
-        }).getRepositoryInfo(new Space(ouName), alias);
+        ).resolveProjectByRepositoryAlias(new Space(repo.getOwner()), repo.getAlias())).getRepositoryInfo(new Space(ouName), alias);
     }
 
     @WorkbenchPartTitle

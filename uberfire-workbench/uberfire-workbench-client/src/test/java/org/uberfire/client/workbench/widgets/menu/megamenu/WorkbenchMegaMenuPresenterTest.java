@@ -19,6 +19,7 @@ package org.uberfire.client.workbench.widgets.menu.megamenu;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.Consumer;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
@@ -29,6 +30,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 import org.uberfire.client.mvp.ActivityManager;
@@ -64,6 +66,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isNull;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -254,7 +257,10 @@ public class WorkbenchMegaMenuPresenterTest {
         final PlaceRequest placeRequest = mock(PlaceRequest.class);
 
         when(activity.getIdentifier()).thenReturn(PERSPECTIVE_ID);
-        when(activity.getMenus()).thenReturn(contextMenus);
+        doAnswer(invocationOnMock -> {
+            invocationOnMock.getArgumentAt(0, Consumer.class).accept(contextMenus);
+            return null;
+        }).when(activity).getMenus(any());
         when(activity.isType(ActivityResourceType.PERSPECTIVE.name())).thenReturn(true);
         when(authzManager.authorize(contextMenus.getItems().get(0),
                                     identity)).thenReturn(true);
@@ -283,7 +289,10 @@ public class WorkbenchMegaMenuPresenterTest {
         final PlaceRequest placeRequest = mock(PlaceRequest.class);
 
         when(activity.getIdentifier()).thenReturn(PERSPECTIVE_ID);
-        when(activity.getMenus()).thenReturn(contextMenus);
+        doAnswer(invocationOnMock -> {
+            invocationOnMock.getArgumentAt(0, Consumer.class).accept(contextMenus);
+            return null;
+        }).when(activity).getMenus(any());
         when(activity.isType(ActivityResourceType.PERSPECTIVE.name())).thenReturn(true);
         when(authzManager.authorize(contextMenus.getItems().get(0),
                                     identity)).thenReturn(false);
@@ -373,7 +382,10 @@ public class WorkbenchMegaMenuPresenterTest {
         final PlaceRequest placeRequest = mock(PlaceRequest.class);
 
         when(activity.getIdentifier()).thenReturn(perspectiveId);
-        when(activity.getMenus()).thenReturn(contextMenus);
+        doAnswer(invocationOnMock -> {
+            invocationOnMock.getArgumentAt(0, Consumer.class).accept(contextMenus);
+            return null;
+        }).when(activity).getMenus(any());
         when(activity.isType(ActivityResourceType.PERSPECTIVE.name())).thenReturn(true);
         when(authzManager.authorize(contextMenus.getItems().get(0),
                                     identity)).thenReturn(true);

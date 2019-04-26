@@ -66,26 +66,28 @@ public class WorkbenchPickupDragController extends PickupDragController {
         final Integer width = toInteger(sourcePanel.getWidthAsInt());
         final Integer minHeight = toInteger(sourcePanel.getMinHeightAsInt());
         final Integer minWidth = toInteger(sourcePanel.getMinWidthAsInt());
-        final WorkbenchDragContext context = new WorkbenchDragContext(place,
-                                                                      sourcePart,
-                                                                      sourcePanel,
-                                                                      sourceView.getPresenter().getMenus(),
-                                                                      title,
-                                                                      titleDecoration,
-                                                                      widget,
-                                                                      contextId,
-                                                                      height,
-                                                                      width,
-                                                                      minHeight,
-                                                                      minWidth);
-        dndManager.setWorkbenchContext(context);
-        super.dragStart();
-        final Widget movablePanel = getMoveablePanel();
-        if (movablePanel != null) {
-            DOMUtil.fastSetElementPosition(movablePanel.getElement(),
-                                           super.context.mouseX,
-                                           super.context.mouseY);
-        }
+        sourceView.getPresenter().getMenus(menus -> {
+            final WorkbenchDragContext context = new WorkbenchDragContext(place,
+                                                                          sourcePart,
+                                                                          sourcePanel,
+                                                                          menus,
+                                                                          title,
+                                                                          titleDecoration,
+                                                                          widget,
+                                                                          contextId,
+                                                                          height,
+                                                                          width,
+                                                                          minHeight,
+                                                                          minWidth);
+            dndManager.setWorkbenchContext(context);
+            super.dragStart();
+            final Widget movablePanel = getMoveablePanel();
+            if (movablePanel != null) {
+                DOMUtil.fastSetElementPosition(movablePanel.getElement(),
+                                               super.context.mouseX,
+                                               super.context.mouseY);
+            }
+        });
     }
 
     @Override

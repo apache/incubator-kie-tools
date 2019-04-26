@@ -16,6 +16,7 @@
 
 package org.uberfire.client.workbench.part;
 
+import java.util.function.Consumer;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
@@ -81,8 +82,8 @@ public abstract class AbstractWorkbenchPartPresenter implements WorkbenchPartPre
     }
 
     @Override
-    public Menus getMenus() {
-        return menus;
+    public void getMenus(final Consumer<Menus> menusConsumer) {
+        menusConsumer.accept(menus);
     }
 
     @Override

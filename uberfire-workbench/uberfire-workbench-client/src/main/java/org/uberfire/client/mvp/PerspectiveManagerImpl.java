@@ -288,11 +288,13 @@ public class PerspectiveManagerImpl implements PerspectiveManager {
 
         @Override
         public void execute(PerspectiveDefinition perspectiveDef) {
-            perspectiveChangeEvent.fire(new PerspectiveChange(placeRequest,
-                                                              perspectiveDef,
-                                                              currentPerspective.getMenus(),
-                                                              currentPerspective.getIdentifier()));
-            doWhenFinished.execute(perspectiveDef);
+            currentPerspective.getMenus(menus -> {
+                perspectiveChangeEvent.fire(new PerspectiveChange(placeRequest,
+                                                                  perspectiveDef,
+                                                                  menus,
+                                                                  currentPerspective.getIdentifier()));
+                doWhenFinished.execute(perspectiveDef);
+            });
         }
     }
 }

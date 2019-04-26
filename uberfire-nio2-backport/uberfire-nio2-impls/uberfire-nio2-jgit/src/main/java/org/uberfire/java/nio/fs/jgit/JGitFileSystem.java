@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.jgit.transport.CredentialsProvider;
+import org.eclipse.jgit.transport.ReceiveCommand;
+import org.eclipse.jgit.transport.UploadPack;
 import org.uberfire.java.nio.base.FileSystemId;
 import org.uberfire.java.nio.base.FileSystemStateAware;
 import org.uberfire.java.nio.base.options.CommentedOption;
@@ -29,7 +31,7 @@ import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.WatchEvent;
 import org.uberfire.java.nio.fs.jgit.util.Git;
 import org.uberfire.java.nio.fs.jgit.util.model.CommitInfo;
-
+import org.uberfire.java.nio.security.FileSystemUser;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableSet;
@@ -91,4 +93,10 @@ public interface JGitFileSystem extends FileSystem,
     void notifyExternalUpdate();
 
     void notifyPostCommit(int exitCode);
+
+    void checkBranchAccess(ReceiveCommand command,
+                           FileSystemUser user);
+
+    void filterBranchAccess(UploadPack uploadPack,
+                            FileSystemUser user);
 }

@@ -18,6 +18,7 @@
 package org.uberfire.promise;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
@@ -25,6 +26,7 @@ import elemental2.promise.Promise;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -259,6 +261,46 @@ public class SyncPromisesTest {
             return promises.resolve();
         }).catch_(e -> {
             fail("Promise should've been resolved!");
+            return promises.resolve();
+        });
+    }
+
+    @Test
+    public void reduceWithOrIsTrueOperatorTest() {
+        final List<Promise<Boolean>> promisesToReduce = Arrays.asList(promises.resolve(true),
+                                                                      promises.resolve(false));
+        promises.reduce(promises.resolve(false), promisesToReduce, (p1, p2) -> p1.then(resultP1 -> p2.then(resultP2 -> this.promises.resolve(resultP1 || resultP2)))).then(resultIsTrue -> {
+            assertTrue(resultIsTrue);
+            return promises.resolve();
+        });
+    }
+
+    @Test
+    public void reduceWithOrIsFalseOperatorTest() {
+        final List<Promise<Boolean>> promisesToReduce = Arrays.asList(promises.resolve(false),
+                                                                      promises.resolve(false));
+        promises.reduce(promises.resolve(false), promisesToReduce, (p1, p2) -> p1.then(resultP1 -> p2.then(resultP2 -> this.promises.resolve(resultP1 || resultP2)))).then(resultIsTrue -> {
+            assertFalse(resultIsTrue);
+            return promises.resolve();
+        });
+    }
+
+    @Test
+    public void reduceWithAndIsTrueOperatorTest() {
+        final List<Promise<Boolean>> promisesToReduce = Arrays.asList(promises.resolve(true),
+                                                                      promises.resolve(true));
+        promises.reduce(promises.resolve(true), promisesToReduce, (p1, p2) -> p1.then(resultP1 -> p2.then(resultP2 -> this.promises.resolve(resultP1 && resultP2)))).then(resultIsTrue -> {
+            assertTrue(resultIsTrue);
+            return promises.resolve();
+        });
+    }
+
+    @Test
+    public void reduceWithAndIsFalseOperatorTest() {
+        final List<Promise<Boolean>> promisesToReduce = Arrays.asList(promises.resolve(false),
+                                                                      promises.resolve(true));
+        promises.reduce(promises.resolve(true), promisesToReduce, (p1, p2) -> p1.then(resultP1 -> p2.then(resultP2 -> this.promises.resolve(resultP1 && resultP2)))).then(resultIsTrue -> {
+            assertFalse(resultIsTrue);
             return promises.resolve();
         });
     }

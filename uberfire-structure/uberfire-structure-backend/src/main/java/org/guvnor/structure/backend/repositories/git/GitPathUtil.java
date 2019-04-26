@@ -22,10 +22,20 @@ import java.util.regex.Pattern;
 
 public class GitPathUtil {
 
-    private static final Pattern branchNameExtractor = Pattern.compile("^[A-Za-z]+://([^@]+)@.*");
+    private static final Pattern branchNameExtractorFromPath = Pattern.compile("^[A-Za-z]+://([^@]+)@.*");
+    private static final Pattern branchNameExtractorFromRef = Pattern.compile("^refs/(?:heads|remotes/[^/]+)/(.*)");
 
     public static Optional<String> extractBranch(final String uri) {
-        final Matcher matcher = branchNameExtractor.matcher(uri);
+        final Matcher matcher = branchNameExtractorFromPath.matcher(uri);
+        if (matcher.matches()) {
+            return Optional.of(matcher.group(1));
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    public static Optional<String> extractBranchFromRef(final String refName) {
+        final Matcher matcher = branchNameExtractorFromRef.matcher(refName);
         if (matcher.matches()) {
             return Optional.of(matcher.group(1));
         } else {

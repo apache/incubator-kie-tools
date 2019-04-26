@@ -109,6 +109,10 @@
       <artifactId>uberfire-workbench-processors</artifactId>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>com.google.elemental2</groupId>
+      <artifactId>elemental2-promise</artifactId>
+    </dependency>
 
     <!-- GWT and GWT Extensions -->
     <dependency>

@@ -17,6 +17,7 @@ package org.dashbuilder.displayer.client;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -165,8 +166,8 @@ public class DisplayerScreenPresenter {
     }
 
     @WorkbenchMenu
-    public Menus getMenu() {
-        return menu;
+    public void getMenus(final Consumer<Menus> menusConsumer) {
+        menusConsumer.accept(menu);
     }
 
     private Menus makeMenuBar() {

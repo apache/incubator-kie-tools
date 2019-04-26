@@ -16,7 +16,7 @@ package org.uberfire.java.nio.file.extensions;
 
 public enum FileSystemHooks {
 
-    ExternalUpdate, PostCommit;
+    ExternalUpdate, PostCommit, BranchAccessCheck, BranchAccessFilter;
 
     @FunctionalInterface
     public interface FileSystemHook {

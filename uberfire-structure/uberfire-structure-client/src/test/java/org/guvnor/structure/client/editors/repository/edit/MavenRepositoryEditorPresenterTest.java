@@ -43,6 +43,7 @@ import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.promise.SyncPromises;
 import org.uberfire.spaces.Space;
 import org.uberfire.workbench.events.NotificationEvent;
 
@@ -77,12 +78,15 @@ public class MavenRepositoryEditorPresenterTest {
     @Mock
     private WorkspaceProjectContext context;
 
+    private SyncPromises promises;
+
     private RepositoryInfo repositoryInfo;
     private List<VersionRecord> repositoryHistory;
     private PlaceRequest place = new DefaultPlaceRequest();
 
     @Before
     public void before() {
+        promises = new SyncPromises();
         presenter = new RepositoryEditorPresenter(view,
                                                   new CallerMock<>(repositoryService),
                                                   new CallerMock<>(mock(WorkspaceProjectService.class)),
@@ -90,7 +94,8 @@ public class MavenRepositoryEditorPresenterTest {
                                                   notification,
                                                   placeManager,
                                                   projectController,
-                                                  context);
+                                                  context,
+                                                  promises);
 
         repositoryInfo = new RepositoryInfo("repository",
                                             "repository",
@@ -111,6 +116,7 @@ public class MavenRepositoryEditorPresenterTest {
         OrganizationalUnit ou = mock(OrganizationalUnit.class);
         when(ou.getName()).thenReturn("owner");
         when(context.getActiveOrganizationalUnit()).thenReturn(Optional.of(ou));
+        doReturn(promises.resolve(true)).when(projectController).canUpdateProject(any());
 
         //Each test needs the Presenter to be initialised
         place.addParameter("alias",
@@ -126,7 +132,7 @@ public class MavenRepositoryEditorPresenterTest {
         verify(view,
                times(1)).setRepositoryInfo(eq(repositoryInfo.getAlias()),
                                            eq(repositoryInfo.getOwner()),
-                                           eq(true),
+                                           eq(false),
                                            eq(repositoryInfo.getPublicURIs()),
                                            eq(CoreConstants.INSTANCE.Empty()),
                                            eq(repositoryInfo.getInitialVersionList()));

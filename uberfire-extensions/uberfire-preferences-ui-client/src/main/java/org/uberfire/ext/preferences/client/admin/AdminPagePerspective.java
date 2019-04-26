@@ -18,6 +18,7 @@ package org.uberfire.ext.preferences.client.admin;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.function.Consumer;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -86,20 +87,16 @@ public class AdminPagePerspective {
     }
 
     @WorkbenchMenu
-    public Menus getMenus() {
+    public void getMenus(final Consumer<Menus> menusConsumer) {
         if (perspectiveIdentifierToGoBackTo != null) {
-            return MenuFactory
+            menusConsumer.accept(MenuFactory
                     .newTopLevelMenu(translationService.format(Constants.AdminPagePerspective_GoBackToThePreviousPage))
-                    .respondsWith(new Command() {
-                        @Override
-                        public void execute() {
-                            placeManager.goTo(perspectiveIdentifierToGoBackTo);
-                        }
-                    })
+                    .respondsWith(() -> placeManager.goTo(perspectiveIdentifierToGoBackTo))
                     .endMenu()
-                    .build();
+                    .build()
+            );
         }
 
-        return null;
+        menusConsumer.accept(null);
     }
 }

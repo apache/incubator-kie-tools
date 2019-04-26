@@ -16,6 +16,7 @@
 
 package org.uberfire.client.screen;
 
+import java.util.function.Consumer;
 import javax.enterprise.inject.Alternative;
 
 import com.google.gwt.core.client.Scheduler;
@@ -123,8 +124,8 @@ public class JSWorkbenchScreenActivity implements WorkbenchScreenActivity {
     }
 
     @Override
-    public Menus getMenus() {
-        return null;
+    public void getMenus(final Consumer<Menus> menusConsumer) {
+        menusConsumer.accept(null);
     }
 
     @Override

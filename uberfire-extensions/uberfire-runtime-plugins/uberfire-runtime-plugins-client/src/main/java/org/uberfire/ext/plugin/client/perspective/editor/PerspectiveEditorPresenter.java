@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -29,6 +30,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+import elemental2.promise.Promise;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
@@ -202,18 +204,20 @@ public class PerspectiveEditorPresenter extends BaseEditor<LayoutTemplate, Defau
     }
 
     @Override
-    protected void makeMenuBar() {
-        super.makeMenuBar();
+    protected Promise<Void> makeMenuBar() {
+        return super.makeMenuBar().then(v -> {
+            if (perspectiveEditorSettings.isTagsEnabled()) {
+                menuBuilder.addNewTopLevelMenu(MenuFactory.newTopLevelMenu(CommonConstants.INSTANCE.Tags())
+                                                       .respondsWith(() -> {
+                                                           AddTag addTag = new AddTag(PerspectiveEditorPresenter.this);
+                                                           addTag.show();
+                                                       })
+                                                       .endMenu()
+                                                       .build().getItems().get(0));
+            }
 
-        if (perspectiveEditorSettings.isTagsEnabled()) {
-            menuBuilder.addNewTopLevelMenu(MenuFactory.newTopLevelMenu(CommonConstants.INSTANCE.Tags())
-                                                   .respondsWith(() -> {
-                                                       AddTag addTag = new AddTag(PerspectiveEditorPresenter.this);
-                                                       addTag.show();
-                                                   })
-                                                   .endMenu()
-                                                   .build().getItems().get(0));
-        }
+            return promises.resolve();
+        });
     }
 
     @OnMayClose
@@ -234,8 +238,8 @@ public class PerspectiveEditorPresenter extends BaseEditor<LayoutTemplate, Defau
     }
 
     @WorkbenchMenu
-    public Menus getMenus() {
-        return menus;
+    public void getMenus(final Consumer<Menus> menusConsumer) {
+        super.getMenus(menusConsumer);
     }
 
     @WorkbenchPartView

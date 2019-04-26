@@ -17,6 +17,7 @@
 package org.guvnor.messageconsole.client.console;
 
 import java.util.ArrayList;
+import java.util.function.Consumer;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -132,7 +133,7 @@ public class MessageConsoleScreen implements RefreshMenuBuilder.SupportsRefresh 
     }
 
     @WorkbenchMenu
-    public Menus getMenus() {
-        return menus;
+    public void getMenus(final Consumer<Menus> menusConsumer) {
+        menusConsumer.accept(menus);
     }
 }

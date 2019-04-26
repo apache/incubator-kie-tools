@@ -19,6 +19,7 @@ package org.uberfire.client.mvp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 import javax.enterprise.event.Event;
 
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
@@ -103,6 +104,10 @@ public class PerspectiveManagerTest {
         when(oz.getDefaultPerspectiveLayout()).thenReturn(ozDefinition);
         when(oz.getIdentifier()).thenReturn("oz_perspective");
         when(oz.isTransient()).thenReturn(true);
+        doAnswer((Answer<Void>) invocationOnMock -> {
+            invocationOnMock.getArgumentAt(0, Consumer.class).accept(null);
+            return null;
+        }).when(oz).getMenus(any());
 
         doWhenFinished = mock(ParameterizedCommand.class);
         doAfterFetch = spy(new ParameterizedCommand<PerspectiveDefinition>() {

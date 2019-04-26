@@ -852,26 +852,28 @@ public class PlaceManagerImpl
                                          titleDecoration,
                                          widget);
 
-        panelManager.addWorkbenchPart(place,
-                                      part,
-                                      panel,
-                                      activity.getMenus(),
-                                      uiPart,
-                                      activity.contextId(),
-                                      toInteger(panel.getWidthAsInt()),
-                                      toInteger(panel.getHeightAsInt()));
-        addSplashScreenFor(place);
+        activity.getMenus(menus -> {
+            panelManager.addWorkbenchPart(place,
+                                          part,
+                                          panel,
+                                          menus,
+                                          uiPart,
+                                          activity.contextId(),
+                                          toInteger(panel.getWidthAsInt()),
+                                          toInteger(panel.getHeightAsInt()));
+            addSplashScreenFor(place);
 
-        try {
-            activity.onOpen();
-            getPlaceHistoryHandler().registerOpen(activity,
-                                                  place);
-        } catch (Exception ex) {
-            lifecycleErrorHandler.handle(activity,
-                                         LifecyclePhase.OPEN,
-                                         ex);
-            closePlace(place);
-        }
+            try {
+                activity.onOpen();
+                getPlaceHistoryHandler().registerOpen(activity,
+                                                      place);
+            } catch (Exception ex) {
+                lifecycleErrorHandler.handle(activity,
+                                             LifecyclePhase.OPEN,
+                                             ex);
+                closePlace(place);
+            }
+        });
     }
 
     private IsWidget maybeWrapExternalWidget(WorkbenchActivity activity,

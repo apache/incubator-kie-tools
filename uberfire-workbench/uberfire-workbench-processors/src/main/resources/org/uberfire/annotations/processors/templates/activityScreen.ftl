@@ -19,6 +19,7 @@ package ${packageName};
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.function.Consumer;
 import javax.annotation.Generated;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -228,8 +229,8 @@ public class ${className} extends AbstractWorkbenchScreenActivity {
     </#if>
     <#if getMenuBarMethodName??>
     @Override
-    public Menus getMenus() {
-        return realPresenter.${getMenuBarMethodName}();
+    public void getMenus(final Consumer<Menus> menusConsumer) {
+        realPresenter.${getMenuBarMethodName}(menusConsumer);
     }
 
     </#if>

@@ -16,6 +16,8 @@
 
 package org.uberfire.client.views.pfly.multiscreen;
 
+import java.util.function.Consumer;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import elemental2.dom.HTMLDivElement;
@@ -25,6 +27,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
@@ -57,6 +61,10 @@ public class MultiScreenPartWidgetTest {
     public void setup() {
         when(multiScreenViews.get()).thenReturn(multiScreenView);
         final WorkbenchPartPresenter presenter = mock(WorkbenchPartPresenter.class);
+        doAnswer(invocationOnMock -> {
+            invocationOnMock.getArgumentAt(0, Consumer.class).accept(null);
+            return null;
+        }).when(presenter).getMenus(any());
         when(view.getPresenter()).thenReturn(presenter);
         when(partDefinition.getParentPanel()).thenReturn(mock(PanelDefinition.class));
         when(presenter.getDefinition()).thenReturn(partDefinition);

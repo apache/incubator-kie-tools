@@ -16,6 +16,7 @@
 
 package org.uberfire.client.screens;
 
+import java.util.function.Consumer;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
@@ -103,27 +104,27 @@ public class MultiScreen extends Composite {
     }
 
     @WorkbenchMenu
-    public Menus getMenu() {
-        return MenuFactory
-                .newTopLevelCustomMenu(new MenuFactory.CustomMenuBuilder() {
-                    @Override
-                    public void push(MenuFactory.CustomMenuBuilder element) {
-                    }
+    public void getMenus(final Consumer<Menus> menusConsumer) {
+        menusConsumer.accept(MenuFactory
+                                     .newTopLevelCustomMenu(new MenuFactory.CustomMenuBuilder() {
+                                         @Override
+                                         public void push(MenuFactory.CustomMenuBuilder element) {
+                                         }
 
-                    @Override
-                    public MenuItem build() {
-                        return new BaseMenuCustom<HTMLElement>() {
-                            @Override
-                            public void accept(MenuVisitor visitor) {
-                                visitor.visit(this);
-                            }
+                                         @Override
+                                         public MenuItem build() {
+                                             return new BaseMenuCustom<HTMLElement>() {
+                                                 @Override
+                                                 public void accept(MenuVisitor visitor) {
+                                                     visitor.visit(this);
+                                                 }
 
-                            @Override
-                            public HTMLElement build() {
-                                return buttonMenu.getElement();
-                            }
-                        };
-                    }
-                }).endMenu().build();
+                                                 @Override
+                                                 public HTMLElement build() {
+                                                     return buttonMenu.getElement();
+                                                 }
+                                             };
+                                         }
+                                     }).endMenu().build());
     }
 }

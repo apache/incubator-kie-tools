@@ -84,30 +84,32 @@ public class MultiScreenPartWidget extends Composite implements MultiPartWidget 
 
     @Override
     public void addPart(final WorkbenchPartPresenter.View view) {
-        final PartDefinition partDefinition = view.getPresenter().getDefinition();
-        if (parts.containsKey(partDefinition) == false) {
-            final MultiScreenView screen = multiScreenViews.get();
-            screen.setContent(view);
-            screen.setTitle(view.getPresenter().getTitle());
-            if (view.getPresenter().getTitleDecoration() != null) {
-                screen.setTitleWidget(view.getPresenter().getTitleDecoration());
+        view.getPresenter().getMenus(menus -> {
+            final PartDefinition partDefinition = view.getPresenter().getDefinition();
+            if (parts.containsKey(partDefinition) == false) {
+                final MultiScreenView screen = multiScreenViews.get();
+                screen.setContent(view);
+                screen.setTitle(view.getPresenter().getTitle());
+                if (view.getPresenter().getTitleDecoration() != null) {
+                    screen.setTitleWidget(view.getPresenter().getTitleDecoration());
+                }
+                if (parts.isEmpty() && partDefinition.getParentPanel().getPosition() == null) {
+                    screen.disableClose();
+                }
+                screen.setCloseHandler(() -> panelManager.closePart(partDefinition));
+
+                Optional.ofNullable(menus)
+                        .ifPresent(m -> m.getItems().stream().map(menuBuilder)
+                                .forEachOrdered(e -> e.ifPresent(element -> screen.addMenus(element)))
+                        );
+
+                content.appendChild(screen.getElement());
+                parts.put(partDefinition,
+                          screen);
             }
-            if (parts.isEmpty() && partDefinition.getParentPanel().getPosition() == null) {
-                screen.disableClose();
-            }
-            screen.setCloseHandler(() -> panelManager.closePart(partDefinition));
 
-            Optional.ofNullable(view.getPresenter().getMenus())
-                    .ifPresent(menus -> menus.getItems().stream().map(menuBuilder)
-                            .forEachOrdered(e -> e.ifPresent(element -> screen.addMenus(element)))
-            );
-
-            content.appendChild(screen.getElement());
-            parts.put(partDefinition,
-                      screen);
-        }
-
-        selectPart(partDefinition);
+            selectPart(partDefinition);
+        });
     }
 
     @Override

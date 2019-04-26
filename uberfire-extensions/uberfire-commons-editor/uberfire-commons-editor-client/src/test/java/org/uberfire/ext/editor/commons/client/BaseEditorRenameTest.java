@@ -24,6 +24,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.uberfire.backend.vfs.ObservablePath;
+import org.uberfire.client.promise.Promises;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.ext.editor.commons.client.file.RestoreUtil;
@@ -38,6 +39,7 @@ import org.uberfire.ext.editor.commons.version.VersionService;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.promise.SyncPromises;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
@@ -69,9 +71,11 @@ public class BaseEditorRenameTest {
     private EventSourceMock<ChangeTitleWidgetEvent> changeTitleNotification = new EventSourceMock<>();
     @Mock
     private ObservablePath observablePath;
+    private Promises promises;
 
     @Before
     public void setup() {
+        promises = new SyncPromises();
         versionMenuDropDownButton = new VersionMenuDropDownButton();
 
         versionServiceCaller = new CallerMock<>(versionService);
@@ -80,6 +84,10 @@ public class BaseEditorRenameTest {
                                     baseView,
                                     menuBuilder,
                                     changeTitleNotification) {
+            {
+                promises = BaseEditorRenameTest.this.promises;
+            }
+
             @Override
             protected void loadContent() {
             }

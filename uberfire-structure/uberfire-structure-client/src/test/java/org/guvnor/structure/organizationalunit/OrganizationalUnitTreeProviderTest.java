@@ -87,7 +87,7 @@ public class OrganizationalUnitTreeProviderTest {
     public void testRootNode() {
         assertEquals(rootNode.getPermissionList().size(),
                      4);
-        checkDependencies(rootNode, 3);
+        checkDependencies(rootNode, 2);
     }
 
     @Test

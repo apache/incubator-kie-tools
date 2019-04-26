@@ -16,6 +16,7 @@
 
 package org.uberfire.ext.plugin.client.editor;
 
+import java.util.function.Consumer;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -69,8 +70,8 @@ public class ScreenEditorPresenter
     }
 
     @WorkbenchMenu
-    public Menus getMenus() {
-        return menus;
+    public void getMenus(final Consumer<Menus> menusConsumer) {
+        super.getMenus(menusConsumer);
     }
 
     @WorkbenchPartView

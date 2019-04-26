@@ -15,6 +15,7 @@
  */
 package org.uberfire.ext.wires.core.scratchpad.client.canvas;
 
+import java.util.function.Consumer;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -115,8 +116,8 @@ public class WiresScratchPadScreen extends WiresCanvas implements ContainerManag
     }
 
     @WorkbenchMenu
-    public Menus getMenus() {
-        return menus;
+    public void getMenus(final Consumer<Menus> menusConsumer) {
+        menusConsumer.accept(menus);
     }
 
     @Override

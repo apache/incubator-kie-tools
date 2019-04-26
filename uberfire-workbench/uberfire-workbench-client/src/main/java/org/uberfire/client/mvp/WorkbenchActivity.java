@@ -15,6 +15,8 @@
  */
 package org.uberfire.client.mvp;
 
+import java.util.function.Consumer;
+
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.IsWidget;
 import jsinterop.annotations.JsIgnore;
@@ -122,7 +124,7 @@ public interface WorkbenchActivity extends ContextSensitiveActivity {
         return (widget == null) ? null : widget.asWidget().getElement();
     }
 
-    Menus getMenus();
+    void getMenus(Consumer<Menus> menusConsumer);
 
     ToolBar getToolBar();
 

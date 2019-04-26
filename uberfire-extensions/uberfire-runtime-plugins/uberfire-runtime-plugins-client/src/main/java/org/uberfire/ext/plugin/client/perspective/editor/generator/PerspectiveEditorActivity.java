@@ -16,6 +16,8 @@
 
 package org.uberfire.ext.plugin.client.perspective.editor.generator;
 
+import java.util.function.Consumer;
+
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.workbench.panels.impl.SimpleWorkbenchPanelPresenter;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
@@ -113,8 +115,8 @@ public class PerspectiveEditorActivity implements PerspectiveActivity {
     }
 
     @Override
-    public Menus getMenus() {
-        return null;
+    public void getMenus(final Consumer<Menus> menusConsumer) {
+        menusConsumer.accept(null);
     }
 
     @Override

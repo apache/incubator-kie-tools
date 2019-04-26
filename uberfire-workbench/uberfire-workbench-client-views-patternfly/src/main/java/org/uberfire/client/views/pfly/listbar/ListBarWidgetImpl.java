@@ -304,16 +304,18 @@ public class ListBarWidgetImpl
     void setupContextMenu() {
         contextMenu.clear();
         final WorkbenchPartPresenter.View part = (WorkbenchPartPresenter.View) currentPart.getK2().getWidget(0);
-        if (part.getPresenter().getMenus() != null && part.getPresenter().getMenus().getItems().size() > 0) {
-            for (final MenuItem menuItem : part.getPresenter().getMenus().getItems()) {
-                final Widget result = makeItem(menuItem,
-                                               true);
-                if (result != null) {
-                    contextMenu.add(result);
+        part.getPresenter().getMenus(menus -> {
+            if (menus != null && menus.getItems().size() > 0) {
+                for (final MenuItem menuItem : menus.getItems()) {
+                    final Widget result = makeItem(menuItem,
+                                                   true);
+                    if (result != null) {
+                        contextMenu.add(result);
+                    }
                 }
             }
-        }
-        contextMenu.setVisible(contextMenu.getWidgetCount() > 0);
+            contextMenu.setVisible(contextMenu.getWidgetCount() > 0);
+        });
     }
 
     @Override

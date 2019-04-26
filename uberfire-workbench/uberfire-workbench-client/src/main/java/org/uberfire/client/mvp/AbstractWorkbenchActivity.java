@@ -15,6 +15,8 @@
  */
 package org.uberfire.client.mvp;
 
+import java.util.function.Consumer;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.CompassPosition;
@@ -73,8 +75,8 @@ public abstract class AbstractWorkbenchActivity extends AbstractActivity impleme
     }
 
     @Override
-    public Menus getMenus() {
-        return null;
+    public void getMenus(final Consumer<Menus> menusConsumer) {
+        menusConsumer.accept(null);
     }
 
     @Override

@@ -41,4 +41,28 @@ public class GitPathUtilTest {
         final Optional<String> result = GitPathUtil.extractBranch("git://space/repo/some/path");
         assertEquals(Optional.empty(), result);
     }
+
+    @Test
+    public void extractLocalBranchNameFromRef() throws Exception {
+        final Optional<String> result = GitPathUtil.extractBranchFromRef("refs/heads/master");
+        assertEquals("master", result.get());
+    }
+
+    @Test
+    public void extractLocalBranchNameWithSlashFromRef() throws Exception {
+        final Optional<String> result = GitPathUtil.extractBranchFromRef("refs/heads/my/branch");
+        assertEquals("my/branch", result.get());
+    }
+
+    @Test
+    public void extractRemoteBranchNameFromRef() throws Exception {
+        final Optional<String> result = GitPathUtil.extractBranchFromRef("refs/remotes/upstream/master");
+        assertEquals("master", result.get());
+    }
+
+    @Test
+    public void extractRemoteBranchNameWithSlashFromRef() throws Exception {
+        final Optional<String> result = GitPathUtil.extractBranchFromRef("refs/remotes/upstream/my/branch");
+        assertEquals("my/branch", result.get());
+    }
 }

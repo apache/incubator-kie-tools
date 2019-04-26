@@ -138,7 +138,11 @@ public abstract class BaseGitCommand implements Command,
             } else {
                 err.write("Can't resolve repository name.".getBytes());
             }
-        } catch (final Throwable ignored) {
+        } catch (final Throwable e) {
+            try {
+                err.write(e.getMessage().getBytes());
+            } catch (IOException ignored) {
+            }
         }
         if (callback != null) {
             callback.onExit(0);

@@ -87,7 +87,7 @@ public class RepositoryTreeProviderTest {
     public void testRootNode() {
         assertEquals(rootNode.getPermissionList().size(),
                      5);
-        checkDependencies(rootNode, 4);
+        checkDependencies(rootNode, 3);
     }
 
     @Test

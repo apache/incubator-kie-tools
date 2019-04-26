@@ -17,6 +17,7 @@ package org.uberfire.ext.wires.core.trees.client.canvas;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -155,8 +156,8 @@ public class WiresTreesScreen extends WiresCanvas {
     }
 
     @WorkbenchMenu
-    public Menus getMenus() {
-        return menus;
+    public void getMenus(final Consumer<Menus> menusConsumer) {
+        menusConsumer.accept(menus);
     }
 
     @Override

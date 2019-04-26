@@ -97,8 +97,7 @@ public class OrganizationalUnitTreeProvider implements PermissionTreeProvider {
 
         rootNode.addDependencies(readPermission,
                                  updatePermission,
-                                 deletePermission,
-                                 createPermission);
+                                 deletePermission);
         return rootNode;
     }
 

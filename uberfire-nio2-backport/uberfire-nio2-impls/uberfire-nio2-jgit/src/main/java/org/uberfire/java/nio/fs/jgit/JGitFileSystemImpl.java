@@ -18,6 +18,8 @@ package org.uberfire.java.nio.fs.jgit;
 
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.transport.CredentialsProvider;
+import org.eclipse.jgit.transport.ReceiveCommand;
+import org.eclipse.jgit.transport.UploadPack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.java.nio.IOException;
@@ -33,6 +35,7 @@ import org.uberfire.java.nio.fs.jgit.util.Git;
 import org.uberfire.java.nio.fs.jgit.util.extensions.JGitFSHooks;
 import org.uberfire.java.nio.fs.jgit.util.model.CommitInfo;
 import org.uberfire.java.nio.fs.jgit.ws.JGitFileSystemsEventsManager;
+import org.uberfire.java.nio.security.FileSystemUser;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -500,7 +503,7 @@ public class JGitFileSystemImpl implements JGitFileSystem {
     @Override
     public void notifyExternalUpdate() {
         Object hook = fsHooks.get(FileSystemHooks.ExternalUpdate);
-        if(hook != null){
+        if (hook != null) {
             JGitFSHooks.executeFSHooks(hook, FileSystemHooks.ExternalUpdate, new FileSystemHookExecutionContext(name));
         }
     }
@@ -508,12 +511,37 @@ public class JGitFileSystemImpl implements JGitFileSystem {
     @Override
     public void notifyPostCommit(int exitCode) {
         Object hook = fsHooks.get(FileSystemHooks.PostCommit);
-        if(hook != null){
-
+        if (hook != null) {
             FileSystemHookExecutionContext ctx = new FileSystemHookExecutionContext(name);
             ctx.addParam(FileSystemHooksConstants.POST_COMMIT_EXIT_CODE, exitCode);
 
             JGitFSHooks.executeFSHooks(hook, FileSystemHooks.ExternalUpdate, ctx);
+        }
+    }
+
+    @Override
+    public void checkBranchAccess(final ReceiveCommand command,
+                                  final FileSystemUser user) {
+        Object hook = fsHooks.get(FileSystemHooks.BranchAccessCheck);
+        if (hook != null) {
+            FileSystemHookExecutionContext ctx = new FileSystemHookExecutionContext(name);
+            ctx.addParam(FileSystemHooksConstants.RECEIVE_COMMAND, command);
+            ctx.addParam(FileSystemHooksConstants.USER, user);
+
+            JGitFSHooks.executeFSHooks(hook, FileSystemHooks.BranchAccessCheck, ctx);
+        }
+    }
+
+    @Override
+    public void filterBranchAccess(final UploadPack uploadPack,
+                                   final FileSystemUser user) {
+        Object hook = fsHooks.get(FileSystemHooks.BranchAccessFilter);
+        if (hook != null) {
+            FileSystemHookExecutionContext ctx = new FileSystemHookExecutionContext(name);
+            ctx.addParam(FileSystemHooksConstants.UPLOAD_PACK, uploadPack);
+            ctx.addParam(FileSystemHooksConstants.USER, user);
+
+            JGitFSHooks.executeFSHooks(hook, FileSystemHooks.BranchAccessFilter, ctx);
         }
     }
 }

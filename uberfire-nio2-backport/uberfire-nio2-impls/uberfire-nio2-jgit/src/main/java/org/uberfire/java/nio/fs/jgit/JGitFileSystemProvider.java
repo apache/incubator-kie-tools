@@ -32,6 +32,7 @@ import org.eclipse.jgit.transport.resolver.ReceivePackFactory;
 import org.eclipse.jgit.transport.resolver.RepositoryResolver;
 import org.eclipse.jgit.transport.resolver.ServiceNotAuthorizedException;
 import org.eclipse.jgit.transport.resolver.ServiceNotEnabledException;
+import org.eclipse.jgit.transport.resolver.UploadPackFactory;
 import org.eclipse.jgit.util.FS;
 import org.eclipse.jgit.util.FileUtils;
 import org.eclipse.jgit.util.ProcessResult;
@@ -330,6 +331,8 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider, Dispos
             setPreReceiveHook((rp, commands2) -> {
                 fs.lock();
                 for (final ReceiveCommand command : commands2) {
+                    fs.checkBranchAccess(command,
+                                         req.getUser());
                     final RevCommit lastCommit = fs.getGit().getLastCommit(command.getRefName());
                     oldTreeRefs.put(command.getRefName(),
                                     lastCommit);
@@ -359,6 +362,12 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider, Dispos
             });
         }};
 
+        final UploadPackFactory uploadPackFactory = (UploadPackFactory<BaseGitCommand>) (req, db) -> new UploadPack(db) {{
+            final JGitFileSystem fs = fsManager.get(db);
+            fs.filterBranchAccess(this,
+                                  req.getUser());
+        }};
+
         gitSSHService = new GitSSHService();
 
         gitSSHService.setup(config.getSshFileCertDir(),
@@ -367,6 +376,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider, Dispos
                             config.getSshIdleTimeout(),
                             config.getSshAlgorithm(),
                             receivePackFactory,
+                            uploadPackFactory,
                             new RepositoryResolverImpl<>(),
                             executorService,
                             config.getGitSshCiphers(),

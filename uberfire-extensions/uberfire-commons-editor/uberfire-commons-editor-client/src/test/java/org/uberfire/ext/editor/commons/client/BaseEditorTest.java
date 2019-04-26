@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -29,9 +30,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.callbacks.Callback;
+import org.uberfire.client.promise.Promises;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
@@ -45,6 +49,7 @@ import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.promise.SyncPromises;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
 
@@ -54,6 +59,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -91,12 +97,13 @@ public class BaseEditorTest {
 
     private SaveAndRenameCommandBuilder<String, DefaultMetadata> builder = spy(makeBuilder());
 
+    private Promises promises;
+
     @InjectMocks
     private BaseEditor<String, DefaultMetadata> editor = spy(makeBaseEditor());
 
     @Test
     public void testSaveAndRename() {
-
         final Supplier pathSupplier = mock(Supplier.class);
         final Validator renameValidator = mock(Validator.class);
         final Supplier saveValidator = mock(Supplier.class);
@@ -552,7 +559,10 @@ public class BaseEditorTest {
 
         itemMap.put(SAVE, menuItem);
         when(menus.getItemsMap()).thenReturn(itemMap);
-        doReturn(menus).when(editor).menus();
+        doAnswer(invocationOnMock -> {
+            invocationOnMock.getArgumentAt(0, Consumer.class).accept(menus);
+            return null;
+        }).when(editor).getMenus(any());
 
         editor.disableMenuItem(SAVE);
 
@@ -568,7 +578,10 @@ public class BaseEditorTest {
 
         itemMap.put(SAVE, menuItem);
         when(menus.getItemsMap()).thenReturn(itemMap);
-        doReturn(menus).when(editor).menus();
+        doAnswer(invocationOnMock -> {
+            invocationOnMock.getArgumentAt(0, Consumer.class).accept(menus);
+            return null;
+        }).when(editor).getMenus(any());
 
         editor.enableMenuItem(SAVE);
 
@@ -589,7 +602,11 @@ public class BaseEditorTest {
     }
 
     private BaseEditor<String, DefaultMetadata> makeBaseEditor() {
+        promises = new SyncPromises();
         return new BaseEditor<String, DefaultMetadata>() {
+            {
+                promises = BaseEditorTest.this.promises;
+            }
 
             @Override
             protected SaveAndRenameCommandBuilder<String, DefaultMetadata> getSaveAndRenameCommandBuilder() {

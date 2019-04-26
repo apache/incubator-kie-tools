@@ -15,6 +15,8 @@
  */
 package org.dashbuilder.client.cms.screen.explorer;
 
+import java.util.function.Consumer;
+
 import org.dashbuilder.client.cms.resources.i18n.ContentManagerI18n;
 import org.dashbuilder.client.navigation.NavigationManager;
 import org.dashbuilder.client.navigation.event.NavTreeLoadedEvent;
@@ -84,11 +86,11 @@ public class NavigationExplorerScreen {
     }
 
     @WorkbenchMenu
-    public Menus getMenus() {
-        return MenuFactory.newTopLevelMenu(i18n.getContentExplorerNew())
-                .respondsWith(this::createNewNavigationTree)
-                .endMenu()
-                .build();
+    public void getMenus(final Consumer<Menus> menusConsumer) {
+        menusConsumer.accept(MenuFactory.newTopLevelMenu(i18n.getContentExplorerNew())
+                                     .respondsWith(this::createNewNavigationTree)
+                                     .endMenu()
+                                     .build());
     }
 
     public NavTreeEditor getNavTreeEditor() {

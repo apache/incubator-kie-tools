@@ -31,6 +31,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
@@ -52,6 +53,7 @@ import org.uberfire.ext.plugin.client.security.PluginController;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.promise.SyncPromises;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.any;
@@ -113,6 +115,9 @@ public class PerspectiveEditorPresenterTest {
 
     @Mock
     SaveAndRenameCommandBuilder<LayoutTemplate, DefaultMetadata> saveAndRenameCommandBuilder;
+
+    @Spy
+    SyncPromises promises;
 
     @InjectMocks
     PerspectiveEditorPresenter presenter;

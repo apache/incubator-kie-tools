@@ -16,6 +16,8 @@
 
 package org.uberfire.client.workbench.part;
 
+import java.util.function.Consumer;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RequiresResize;
 import org.uberfire.client.mvp.UberView;
@@ -51,7 +53,7 @@ public interface WorkbenchPartPresenter {
      * Returns the menus associated with this part.
      * @return the menus associated with this part. Null if this part does not have menus.
      */
-    Menus getMenus();
+    void getMenus(final Consumer<Menus> menusConsumer);
 
     /**
      * Sets the menus associated with this part.

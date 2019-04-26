@@ -16,6 +16,8 @@
 
 package org.uberfire.ext.plugin.client.perspective.editor.generator;
 
+import java.util.function.Consumer;
+
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Panel;
@@ -123,8 +125,8 @@ public class PerspectiveEditorScreenActivity implements WorkbenchScreenActivity 
     }
 
     @Override
-    public Menus getMenus() {
-        return null;
+    public void getMenus(final Consumer<Menus> menusConsumer) {
+        menusConsumer.accept(null);
     }
 
     @Override

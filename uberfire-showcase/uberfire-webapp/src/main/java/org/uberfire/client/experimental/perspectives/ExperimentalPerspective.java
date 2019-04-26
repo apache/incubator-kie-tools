@@ -15,6 +15,7 @@
  */
 package org.uberfire.client.experimental.perspectives;
 
+import java.util.function.Consumer;
 import javax.enterprise.context.ApplicationScoped;
 
 import com.google.gwt.user.client.Window;
@@ -66,12 +67,12 @@ public class ExperimentalPerspective {
     }
 
     @WorkbenchMenu
-    public Menus getMenus() {
-        return MenuFactory
-                .newTopLevelMenu("Do nothing")
-                .respondsWith(() -> Window.alert("Hello World!"))
-                .position(MenuPosition.RIGHT)
-                .endMenu()
-                .build();
+    public void getMenus(final Consumer<Menus> menusConsumer) {
+        menusConsumer.accept(MenuFactory
+                                     .newTopLevelMenu("Do nothing")
+                                     .respondsWith(() -> Window.alert("Hello World!"))
+                                     .position(MenuPosition.RIGHT)
+                                     .endMenu()
+                                     .build());
     }
 }

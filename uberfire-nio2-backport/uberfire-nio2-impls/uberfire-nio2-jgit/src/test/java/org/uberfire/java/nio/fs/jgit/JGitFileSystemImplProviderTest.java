@@ -2141,6 +2141,22 @@ public class JGitFileSystemImplProviderTest extends AbstractTestInfra {
     }
 
     @Test
+    public void extractCheckBranchAccessHookTest() {
+        Map<String, Object> env = new HashMap<>();
+
+        Object hook = (FileSystemHooks.FileSystemHook) context -> { };
+
+        env.put("dora", "bento");
+        env.put(FileSystemHooks.BranchAccessCheck.name(), hook);
+
+        Map<FileSystemHooks, ?> fileSystemHooksMap = JGitFileSystemProvider.extractFSHooks(env);
+
+        assertEquals(1, fileSystemHooksMap.size());
+        assertTrue(fileSystemHooksMap.keySet().contains(FileSystemHooks.BranchAccessCheck));
+        assertEquals(hook, fileSystemHooksMap.get(FileSystemHooks.BranchAccessCheck));
+    }
+
+    @Test
     public void testCloseFileSystem() {
 
         JGitFileSystemProvider fsProvider = spy(new JGitFileSystemProvider(getGitPreferences()) {

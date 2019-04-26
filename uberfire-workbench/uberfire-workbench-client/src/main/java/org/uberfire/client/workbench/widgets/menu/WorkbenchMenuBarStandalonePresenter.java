@@ -49,7 +49,6 @@ public class WorkbenchMenuBarStandalonePresenter extends WorkbenchMenuBarPresent
 
     @Override
     protected void addPerspectiveMenus(final PerspectiveActivity perspective) {
-        final Menus menus = perspective.getMenus();
-        super.addMenus(menus);
+        perspective.getMenus(super::addMenus);
     }
 }

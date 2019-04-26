@@ -16,6 +16,7 @@
 
 package org.uberfire.annotations.processors;
 
+import java.util.function.Consumer;
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPerspective;
@@ -31,8 +32,7 @@ public class PerspectiveTest8 {
     }
 
     @WorkbenchMenu
-    public Menus getMenus() {
-        return null;
+    public void getMenus(final Consumer<Menus> menusConsumer) {
     }
 
 }

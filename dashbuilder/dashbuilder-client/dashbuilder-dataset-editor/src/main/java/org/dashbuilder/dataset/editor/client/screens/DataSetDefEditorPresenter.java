@@ -17,6 +17,7 @@ package org.dashbuilder.dataset.editor.client.screens;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
@@ -137,8 +138,8 @@ public class DataSetDefEditorPresenter extends BaseEditor<DataSetDef, DefaultMet
     }
 
     @WorkbenchMenu
-    public Menus getMenus() {
-        return menus;
+    public void getMenus(final Consumer<Menus> menusConsumer) {
+        super.getMenus(menusConsumer);
     }
 
     @WorkbenchPartView

@@ -16,6 +16,7 @@
 
 package org.uberfire.client.screens.todo;
 
+import java.util.function.Consumer;
 import javax.enterprise.context.Dependent;
 
 import com.google.gwt.user.client.Window;
@@ -40,18 +41,18 @@ public class ReadmeScreen extends AbstractMarkdownScreen {
     }
 
     @WorkbenchMenu
-    public Menus getMenu() {
-        return MenuFactory
-                .newTopLevelMenu("Validate")
-                .respondsWith(() -> Window.alert("valid!"))
-                .endMenu()
-                .newTopLevelMenu("Build")
-                .menus()
-                .menu("Build & Deploy")
-                .respondsWith(() -> Window.alert("Build!"))
-                .endMenu()
-                .endMenus()
-                .endMenu()
-                .build();
+    public void getMenus(final Consumer<Menus> menusConsumer) {
+        menusConsumer.accept(MenuFactory
+                                     .newTopLevelMenu("Validate")
+                                     .respondsWith(() -> Window.alert("valid!"))
+                                     .endMenu()
+                                     .newTopLevelMenu("Build")
+                                     .menus()
+                                     .menu("Build & Deploy")
+                                     .respondsWith(() -> Window.alert("Build!"))
+                                     .endMenu()
+                                     .endMenus()
+                                     .endMenu()
+                                     .build());
     }
 }

@@ -2,6 +2,7 @@ package org.uberfire.annotations.processors;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.SimplePanel;
+import java.util.function.Consumer;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
@@ -23,8 +24,7 @@ public class WorkbenchEditorTest9 {
     }
 
     @WorkbenchMenu
-    public Menus getMenus() {
-        return null;
+    public void getMenus(final Consumer<Menus> menusConsumer) {
     }
 
 }

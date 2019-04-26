@@ -17,6 +17,7 @@
 package org.guvnor.structure.backend.repositories.git;
 
 import org.assertj.core.api.Assertions;
+import org.guvnor.structure.backend.repositories.BranchAccessAuthorizer;
 import org.guvnor.structure.backend.repositories.git.hooks.PostCommitNotificationService;
 import org.guvnor.structure.repositories.EnvironmentParameters;
 import org.guvnor.structure.repositories.Repository;
@@ -70,6 +71,9 @@ public abstract class GitRepositoryFactoryHelperBaseTest {
     @Mock
     protected PostCommitNotificationService postCommitNotificationService;
 
+    @Mock
+    protected BranchAccessAuthorizer branchAccessAuthorizer;
+
     protected GitRepositoryFactoryHelper helper;
 
     protected ArrayList<Path> rootDirectories;
@@ -84,7 +88,8 @@ public abstract class GitRepositoryFactoryHelperBaseTest {
                 notIndexed,
                 spacesAPI,
                 repositoryExternalUpdate,
-                postCommitNotificationService);
+                postCommitNotificationService,
+                branchAccessAuthorizer);
 
 
 

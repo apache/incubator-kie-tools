@@ -18,6 +18,7 @@ package org.uberfire.ext.wires.client.demo.grids;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
@@ -119,8 +120,8 @@ public class WiresGridsDemoPresenter implements WiresGridsDemoView.Presenter {
     }
 
     @WorkbenchMenu
-    public Menus getMenus() {
-        return menus;
+    public void getMenus(final Consumer<Menus> menusConsumer) {
+        menusConsumer.accept(menus);
     }
 
     @PostConstruct

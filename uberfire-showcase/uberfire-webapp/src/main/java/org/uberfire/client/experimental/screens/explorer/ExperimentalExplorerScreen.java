@@ -16,6 +16,7 @@
 
 package org.uberfire.client.experimental.screens.explorer;
 
+import java.util.function.Consumer;
 import javax.inject.Inject;
 
 import elemental2.dom.HTMLElement;
@@ -56,11 +57,11 @@ public class ExperimentalExplorerScreen implements IsElement {
     }
 
     @WorkbenchMenu
-    public Menus getMenu() {
-        return MenuFactory.newTopLevelMenu(Constants.INSTANCE.experimental_asset_explorer_actionsAdd())
-                .respondsWith(() -> explorer.createNew())
-                .endMenu()
-                .build();
+    public void getMenus(final Consumer<Menus> menusConsumer) {
+        menusConsumer.accept(MenuFactory.newTopLevelMenu(Constants.INSTANCE.experimental_asset_explorer_actionsAdd())
+                                     .respondsWith(() -> explorer.createNew())
+                                     .endMenu()
+                                     .build());
     }
 
     @Override

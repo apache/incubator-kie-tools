@@ -15,6 +15,8 @@
  */
 package org.dashbuilder.dataset.editor.client.screens;
 
+import java.util.function.Consumer;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import org.dashbuilder.client.widgets.dataset.event.EditDataSetEvent;
 import org.dashbuilder.client.widgets.dataset.event.ErrorEvent;
@@ -93,8 +95,8 @@ public class DataSetDefExplorerScreen {
     }
 
     @WorkbenchMenu
-    public Menus getMenu() {
-        return menu;
+    public void getMenus(final Consumer<Menus> menusConsumer) {
+        menusConsumer.accept(menu);
     }
 
     private Menus makeMenuBar() {

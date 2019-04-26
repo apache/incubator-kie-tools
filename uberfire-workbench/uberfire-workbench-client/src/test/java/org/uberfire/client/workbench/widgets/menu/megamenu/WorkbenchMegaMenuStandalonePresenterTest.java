@@ -16,6 +16,8 @@
 
 package org.uberfire.client.workbench.widgets.menu.megamenu;
 
+import java.util.function.Consumer;
+
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
@@ -49,6 +51,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isNull;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -157,7 +160,10 @@ public class WorkbenchMegaMenuStandalonePresenterTest {
         final PlaceRequest placeRequest = mock(PlaceRequest.class);
 
         when(activity.getIdentifier()).thenReturn(perspectiveId);
-        when(activity.getMenus()).thenReturn(contextMenus);
+        doAnswer(invocationOnMock -> {
+            invocationOnMock.getArgumentAt(0, Consumer.class).accept(contextMenus);
+            return null;
+        }).when(activity).getMenus(any());
         when(activity.isType(ActivityResourceType.PERSPECTIVE.name())).thenReturn(true);
         when(authzManager.authorize(contextMenus.getItems().get(0),
                                     identity)).thenReturn(true);

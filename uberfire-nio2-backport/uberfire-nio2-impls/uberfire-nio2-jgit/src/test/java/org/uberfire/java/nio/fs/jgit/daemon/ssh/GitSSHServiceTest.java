@@ -30,6 +30,7 @@ import org.apache.sshd.common.mac.BuiltinMacs;
 import org.apache.sshd.common.mac.Mac;
 import org.apache.sshd.server.SshServer;
 import org.eclipse.jgit.transport.resolver.ReceivePackFactory;
+import org.eclipse.jgit.transport.resolver.UploadPackFactory;
 import org.eclipse.jgit.util.FileUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -87,6 +88,7 @@ public class GitSSHServiceTest {
                          "10000",
                          "RSA",
                          mock(ReceivePackFactory.class),
+                         mock(UploadPackFactory.class),
                          mock(JGitFileSystemProvider.RepositoryResolverImpl.class),
                          executorService);
 
@@ -108,6 +110,7 @@ public class GitSSHServiceTest {
                          "10000",
                          "DSA",
                          mock(ReceivePackFactory.class),
+                         mock(UploadPackFactory.class),
                          mock(JGitFileSystemProvider.RepositoryResolverImpl.class),
                          executorService);
 
@@ -130,6 +133,7 @@ public class GitSSHServiceTest {
                          idleTimeout,
                          "RSA",
                          mock(ReceivePackFactory.class),
+                         mock(UploadPackFactory.class),
                          mock(JGitFileSystemProvider.RepositoryResolverImpl.class),
                          executorService);
 
@@ -154,6 +158,7 @@ public class GitSSHServiceTest {
                              "10000",
                              "xxxx",
                              mock(ReceivePackFactory.class),
+                             mock(UploadPackFactory.class),
                              mock(JGitFileSystemProvider.RepositoryResolverImpl.class),
                              executorService);
             fail("has to fail");
@@ -173,6 +178,7 @@ public class GitSSHServiceTest {
                              "10000",
                              "RSA",
                              mock(ReceivePackFactory.class),
+                             mock(UploadPackFactory.class),
                              mock(JGitFileSystemProvider.RepositoryResolverImpl.class),
                              executorService);
             fail("has to fail");
@@ -186,6 +192,7 @@ public class GitSSHServiceTest {
                              null,
                              "RSA",
                              mock(ReceivePackFactory.class),
+                             mock(UploadPackFactory.class),
                              mock(JGitFileSystemProvider.RepositoryResolverImpl.class),
                              executorService);
             fail("has to fail");
@@ -199,6 +206,7 @@ public class GitSSHServiceTest {
                              "",
                              "RSA",
                              mock(ReceivePackFactory.class),
+                             mock(UploadPackFactory.class),
                              mock(JGitFileSystemProvider.RepositoryResolverImpl.class),
                              executorService);
             fail("has to fail");
@@ -212,6 +220,7 @@ public class GitSSHServiceTest {
                              "1000",
                              null,
                              mock(ReceivePackFactory.class),
+                             mock(UploadPackFactory.class),
                              mock(JGitFileSystemProvider.RepositoryResolverImpl.class),
                              executorService);
             fail("has to fail");
@@ -225,6 +234,7 @@ public class GitSSHServiceTest {
                              "1000",
                              "",
                              mock(ReceivePackFactory.class),
+                             mock(UploadPackFactory.class),
                              mock(JGitFileSystemProvider.RepositoryResolverImpl.class),
                              executorService);
             fail("has to fail");
@@ -237,6 +247,7 @@ public class GitSSHServiceTest {
                              null,
                              "100",
                              "RSA",
+                             null,
                              null,
                              mock(JGitFileSystemProvider.RepositoryResolverImpl.class),
                              executorService);
@@ -251,6 +262,7 @@ public class GitSSHServiceTest {
                              "100",
                              "RSA",
                              mock(ReceivePackFactory.class),
+                             mock(UploadPackFactory.class),
                              null,
                              executorService);
             fail("has to fail");
@@ -264,6 +276,7 @@ public class GitSSHServiceTest {
                              "10000",
                              "RSA",
                              mock(ReceivePackFactory.class),
+                             mock(UploadPackFactory.class),
                              mock(JGitFileSystemProvider.RepositoryResolverImpl.class),
                              executorService);
         } catch (IllegalArgumentException ex) {
@@ -284,6 +297,7 @@ public class GitSSHServiceTest {
                          idleTimeout,
                          "RSA",
                          mock(ReceivePackFactory.class),
+                         mock(UploadPackFactory.class),
                          mock(JGitFileSystemProvider.RepositoryResolverImpl.class),
                          executorService,
                          ciphers,
@@ -321,6 +335,7 @@ public class GitSSHServiceTest {
                          idleTimeout,
                          "RSA",
                          mock(ReceivePackFactory.class),
+                         mock(UploadPackFactory.class),
                          mock(JGitFileSystemProvider.RepositoryResolverImpl.class),
                          executorService,
                          "",
@@ -358,6 +373,7 @@ public class GitSSHServiceTest {
                          idleTimeout,
                          "RSA",
                          mock(ReceivePackFactory.class),
+                         mock(UploadPackFactory.class),
                          mock(JGitFileSystemProvider.RepositoryResolverImpl.class),
                          executorService,
                          ciphers,
@@ -393,6 +409,7 @@ public class GitSSHServiceTest {
                          idleTimeout,
                          "RSA",
                          mock(ReceivePackFactory.class),
+                         mock(UploadPackFactory.class),
                          mock(JGitFileSystemProvider.RepositoryResolverImpl.class),
                          executorService,
                          "",
@@ -428,6 +445,7 @@ public class GitSSHServiceTest {
                          idleTimeout,
                          "RSA",
                          mock(ReceivePackFactory.class),
+                         mock(UploadPackFactory.class),
                          mock(JGitFileSystemProvider.RepositoryResolverImpl.class),
                          executorService,
                          null,
@@ -464,6 +482,7 @@ public class GitSSHServiceTest {
                          idleTimeout,
                          "RSA",
                          mock(ReceivePackFactory.class),
+                         mock(UploadPackFactory.class),
                          mock(JGitFileSystemProvider.RepositoryResolverImpl.class),
                          executorService,
                          ciphers,

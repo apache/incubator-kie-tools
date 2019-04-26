@@ -19,6 +19,7 @@ package org.uberfire.ext.editor.commons.client;
 import java.util.Set;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import elemental2.promise.Promise;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,6 +28,7 @@ import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.impl.ObservablePathImpl;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.promise.Promises;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.ext.editor.commons.client.event.ConcurrentDeleteAcceptedEvent;
 import org.uberfire.ext.editor.commons.client.event.ConcurrentDeleteIgnoredEvent;
@@ -39,6 +41,7 @@ import org.uberfire.ext.editor.commons.version.events.RestoreEvent;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.promise.SyncPromises;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -55,11 +58,13 @@ public class KieEditorTest {
     private BaseEditorView view;
     private RestoreEvent restoreEvent;
     private ObservablePath observablePath;
+    private Promises promises;
 
     @Before
     public void setUp() throws Exception {
         view = mock(BaseEditorView.class);
         restoreEvent = mock(RestoreEvent.class);
+        promises = new SyncPromises();
         kieEditor = spy(new BaseEditor<String, DefaultMetadata>(view) {
 
             @Override
@@ -72,8 +77,8 @@ public class KieEditorTest {
             }
 
             @Override
-            protected void makeMenuBar() {
-
+            protected Promise<Void> makeMenuBar() {
+                return promises.resolve();
             }
 
             @Override
@@ -99,6 +104,7 @@ public class KieEditorTest {
         kieEditor.concurrentDeleteAcceptedEvent = spy(new EventMock<>());
         kieEditor.versionRecordManager = mock(VersionRecordManager.class);
         kieEditor.notification = new EventMock<>();
+        kieEditor.promises = promises;
         observablePath = mock(ObservablePath.class);
         PlaceRequest placeRequest = mock(PlaceRequest.class);
         ClientResourceType resourceType = mock(ClientResourceType.class);

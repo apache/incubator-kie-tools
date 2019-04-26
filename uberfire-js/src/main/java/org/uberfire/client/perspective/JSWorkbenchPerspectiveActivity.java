@@ -16,6 +16,7 @@
 
 package org.uberfire.client.perspective;
 
+import java.util.function.Consumer;
 import javax.enterprise.inject.Alternative;
 
 import org.uberfire.client.mvp.PerspectiveActivity;
@@ -88,8 +89,8 @@ public class JSWorkbenchPerspectiveActivity implements PerspectiveActivity {
     }
 
     @Override
-    public Menus getMenus() {
-        return null;
+    public void getMenus(final Consumer<Menus> menusConsumer) {
+        menusConsumer.accept(null);
     }
 
     @Override
