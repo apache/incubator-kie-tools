@@ -35,6 +35,7 @@ import org.uberfire.client.mvp.ActivityBeansCache;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.widgets.menu.megamenu.WorkbenchMegaMenuPresenter;
 import org.uberfire.ext.preferences.client.admin.page.AdminPage;
+import org.uberfire.jsbridge.client.AppFormerJsBridge;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.ConstantsAnswerMock;
 import org.uberfire.preferences.shared.PreferenceScopeFactory;
@@ -100,7 +101,8 @@ public class DroolsWorkbenchEntryPointTest {
                                                                       scopeFactory,
                                                                       workbenchConfigurationPresenter,
                                                                       languageConfigurationHandler,
-                                                                      defaultWorkbenchErrorCallback));
+                                                                      defaultWorkbenchErrorCallback,
+                                                                      mock(AppFormerJsBridge.class)));
         mockMenuHelper();
         mockConstants();
     }
@@ -114,13 +116,11 @@ public class DroolsWorkbenchEntryPointTest {
 
         Menus menus = menusCaptor.getValue();
 
-        assertEquals(2,
+        assertEquals(1,
                      menus.getItems().size());
 
-        assertEquals(droolsWorkbenchEntryPoint.constants.Home(),
-                     menus.getItems().get(0).getCaption());
         assertEquals(droolsWorkbenchEntryPoint.constants.Perspectives(),
-                     menus.getItems().get(1).getCaption());
+                     menus.getItems().get(0).getCaption());
 
         verify(menusHelper).addUtilitiesMenuItems();
     }

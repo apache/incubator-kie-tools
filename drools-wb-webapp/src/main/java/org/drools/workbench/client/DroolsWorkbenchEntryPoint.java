@@ -15,6 +15,7 @@
  */
 package org.drools.workbench.client;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import org.drools.workbench.client.resources.i18n.AppConstants;
@@ -33,6 +34,7 @@ import org.uberfire.client.mvp.ActivityBeansCache;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.widgets.menu.megamenu.WorkbenchMegaMenuPresenter;
 import org.uberfire.ext.preferences.client.admin.page.AdminPage;
+import org.uberfire.jsbridge.client.AppFormerJsBridge;
 import org.uberfire.preferences.shared.PreferenceScopeFactory;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.Menus;
@@ -57,8 +59,7 @@ public class DroolsWorkbenchEntryPoint extends DefaultWorkbenchEntryPoint {
     protected WorkbenchConfigurationPresenter workbenchConfigurationPresenter;
 
     protected LanguageConfigurationHandler languageConfigurationHandler;
-
-
+    private final AppFormerJsBridge appFormerJsBridge;
 
     @Inject
     public DroolsWorkbenchEntryPoint(final Caller<AppConfigService> appConfigService,
@@ -71,7 +72,8 @@ public class DroolsWorkbenchEntryPoint extends DefaultWorkbenchEntryPoint {
                                      final PreferenceScopeFactory scopeFactory,
                                      final WorkbenchConfigurationPresenter workbenchConfigurationPresenter,
                                      final LanguageConfigurationHandler languageConfigurationHandler,
-                                     final DefaultWorkbenchErrorCallback defaultWorkbenchErrorCallback) {
+                                     final DefaultWorkbenchErrorCallback defaultWorkbenchErrorCallback,
+                                     final AppFormerJsBridge appFormerJsBridge) {
         super(appConfigService,
               activityBeansCache,
               defaultWorkbenchErrorCallback);
@@ -83,6 +85,12 @@ public class DroolsWorkbenchEntryPoint extends DefaultWorkbenchEntryPoint {
         this.scopeFactory = scopeFactory;
         this.workbenchConfigurationPresenter = workbenchConfigurationPresenter;
         this.languageConfigurationHandler = languageConfigurationHandler;
+        this.appFormerJsBridge = appFormerJsBridge;
+    }
+
+    @PostConstruct
+    public void preStartSetup() {
+        appFormerJsBridge.init("org.drools.workbench.DroolsWorkbench");
     }
 
     @Override
