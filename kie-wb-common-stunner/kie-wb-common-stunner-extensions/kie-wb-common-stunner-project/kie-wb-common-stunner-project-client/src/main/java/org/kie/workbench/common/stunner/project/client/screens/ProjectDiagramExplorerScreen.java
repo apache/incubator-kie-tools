@@ -15,7 +15,6 @@
  */
 package org.kie.workbench.common.stunner.project.client.screens;
 
-import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -41,7 +40,6 @@ import org.kie.workbench.common.stunner.core.client.session.event.SessionOpenedE
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.uberfire.client.annotations.WorkbenchContextId;
-import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
@@ -51,7 +49,6 @@ import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.workbench.model.menu.Menus;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
@@ -123,10 +120,6 @@ public class ProjectDiagramExplorerScreen {
     @OnClose
     public void onClose() {
         close();
-    }
-
-    @WorkbenchMenu
-    public void getMenus(final Consumer<Menus> menusConsumer) {
     }
 
     @WorkbenchPartTitle
