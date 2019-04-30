@@ -15,6 +15,7 @@
  */
 package org.kie.workbench.common.stunner.project.client;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import org.guvnor.common.services.shared.config.AppConfigService;
@@ -33,6 +34,7 @@ import org.uberfire.client.mvp.ActivityBeansCache;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.widgets.menu.megamenu.WorkbenchMegaMenuPresenter;
 import org.uberfire.ext.preferences.client.admin.page.AdminPage;
+import org.uberfire.jsbridge.client.AppFormerJsBridge;
 import org.uberfire.preferences.shared.PreferenceScopeFactory;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.Menus;
@@ -58,6 +60,8 @@ public class StunnerProjectShowcaseEntryPoint extends DefaultWorkbenchEntryPoint
 
     protected LanguageConfigurationHandler languageConfigurationHandler;
 
+    private final AppFormerJsBridge appFormerJsBridge;
+
     @Inject
     public StunnerProjectShowcaseEntryPoint(final Caller<AppConfigService> appConfigService,
                                             final ActivityBeansCache activityBeansCache,
@@ -69,7 +73,8 @@ public class StunnerProjectShowcaseEntryPoint extends DefaultWorkbenchEntryPoint
                                             final PreferenceScopeFactory scopeFactory,
                                             final WorkbenchConfigurationPresenter workbenchConfigurationPresenter,
                                             final LanguageConfigurationHandler languageConfigurationHandler,
-                                            final DefaultWorkbenchErrorCallback defaultWorkbenchErrorCallback) {
+                                            final DefaultWorkbenchErrorCallback defaultWorkbenchErrorCallback,
+                                            final AppFormerJsBridge appFormerJsBridge) {
         super(appConfigService,
               activityBeansCache,
               defaultWorkbenchErrorCallback);
@@ -81,6 +86,12 @@ public class StunnerProjectShowcaseEntryPoint extends DefaultWorkbenchEntryPoint
         this.scopeFactory = scopeFactory;
         this.workbenchConfigurationPresenter = workbenchConfigurationPresenter;
         this.languageConfigurationHandler = languageConfigurationHandler;
+        this.appFormerJsBridge = appFormerJsBridge;
+    }
+
+    @PostConstruct
+    public void setup() {
+        this.appFormerJsBridge.init("org.kie.workbench.common.stunner.project.StunnerProjectShowcase");
     }
 
     @Override

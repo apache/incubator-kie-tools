@@ -1,0 +1,187 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`snapshot of spaces screen with no space 1`] = `
+<Fragment>
+  <EmptySpacesScreen
+    onAddSpace={[Function]}
+  />
+</Fragment>
+`;
+
+exports[`snapshot of spaces screen with no space and popup open 1`] = `
+<Fragment>
+  <NewSpacePopup
+    onClose={[Function]}
+  />
+  <div
+    className="library container-fluid"
+  >
+    <div
+      className="row page-content-kie"
+    >
+      <div
+        className="toolbar-pf"
+      >
+        <div
+          className="toolbar-pf-actions"
+        >
+          <div
+            className="toolbar-data-title-kie"
+          >
+            Spaces
+          </div>
+          <div
+            className="btn-group toolbar-btn-group-kie"
+          >
+            <button
+              className="btn btn-primary"
+              onClick={[Function]}
+            />
+          </div>
+        </div>
+      </div>
+      <div
+        className="container-fluid container-cards-pf"
+      >
+        <div
+          className="row row-cards-pf"
+        >
+          <Tile
+            key="Foo"
+            onSelect={[Function]}
+            space={
+              Object {
+                "contributors": Array [],
+                "name": "Foo",
+                "repositories": Array [],
+              }
+            }
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</Fragment>
+`;
+
+exports[`snapshot of spaces screen with no space but loading 1`] = `
+<Fragment>
+  <LoadingPopup />
+  <EmptySpacesScreen
+    onAddSpace={[Function]}
+  />
+</Fragment>
+`;
+
+exports[`snapshot of spaces screen with no space but loading and popup open 1`] = `
+<Fragment>
+  <LoadingPopup />
+  <NewSpacePopup
+    onClose={[Function]}
+  />
+  <EmptySpacesScreen
+    onAddSpace={[Function]}
+  />
+</Fragment>
+`;
+
+exports[`snapshot of spaces screen with some spaces 1`] = `
+<Fragment>
+  <div
+    className="library container-fluid"
+  >
+    <div
+      className="row page-content-kie"
+    >
+      <div
+        className="toolbar-pf"
+      >
+        <div
+          className="toolbar-pf-actions"
+        >
+          <div
+            className="toolbar-data-title-kie"
+          >
+            Spaces
+          </div>
+          <div
+            className="btn-group toolbar-btn-group-kie"
+          >
+            <button
+              className="btn btn-primary"
+              onClick={[Function]}
+            />
+          </div>
+        </div>
+      </div>
+      <div
+        className="container-fluid container-cards-pf"
+      >
+        <div
+          className="row row-cards-pf"
+        >
+          <Tile
+            key="Foo"
+            onSelect={[Function]}
+            space={
+              Object {
+                "contributors": Array [],
+                "name": "Foo",
+                "repositories": Array [],
+              }
+            }
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</Fragment>
+`;
+
+exports[`snapshot of spaces screen with some spaces but no permission to create spaces 1`] = `
+<Fragment>
+  <div
+    className="library container-fluid"
+  >
+    <div
+      className="row page-content-kie"
+    >
+      <div
+        className="toolbar-pf"
+      >
+        <div
+          className="toolbar-pf-actions"
+        >
+          <div
+            className="toolbar-data-title-kie"
+          >
+            Spaces
+          </div>
+          <div
+            className="btn-group toolbar-btn-group-kie"
+          />
+        </div>
+      </div>
+      <div
+        className="container-fluid container-cards-pf"
+      >
+        <div
+          className="row row-cards-pf"
+        >
+          <Tile
+            key="Foo"
+            onSelect={[Function]}
+            space={
+              Object {
+                "contributors": Array [],
+                "name": "Foo",
+                "repositories": Array [],
+              }
+            }
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</Fragment>
+`;

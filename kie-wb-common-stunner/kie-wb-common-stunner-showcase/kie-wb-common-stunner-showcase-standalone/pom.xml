@@ -1007,6 +1007,8 @@
             <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-forms-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-forms-client</compileSourcesArtifact>
 
+            <compileSourcesArtifact>org.uberfire:appformer-js-bridge</compileSourcesArtifact>
+
           </compileSourcesArtifacts>
         </configuration>
         <executions>

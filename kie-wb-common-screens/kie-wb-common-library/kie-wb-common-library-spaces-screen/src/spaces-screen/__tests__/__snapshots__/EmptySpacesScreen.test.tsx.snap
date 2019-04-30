@@ -1,0 +1,35 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`snapshot of empty spaces screen should match snapshot 1`] = `
+<div
+  className="library"
+>
+  <div
+    className="col-sm-12 blank-slate-pf"
+  >
+    <div
+      className="blank-slate-pf-icon"
+    >
+      <span
+        className="pficon pficon pficon-add-circle-o"
+      />
+    </div>
+    <h1>
+      NothingHere
+    </h1>
+    <p>
+      NoOrganizationalUnits
+    </p>
+    <div
+      className="blank-slate-pf-main-action"
+    >
+      <button
+        className="btn btn-primary btn-lg"
+        onClick={[Function]}
+      >
+        CreateOrganizationalUnit
+      </button>
+    </div>
+  </div>
+</div>
+`;

@@ -980,6 +980,8 @@
             <!-- Wires -->
             <compileSourcesArtifact>org.uberfire:uberfire-wires-core-grids</compileSourcesArtifact>
 
+            <compileSourcesArtifact>org.uberfire:appformer-js-bridge</compileSourcesArtifact>
+
           </compileSourcesArtifacts>
         </configuration>
         <executions>

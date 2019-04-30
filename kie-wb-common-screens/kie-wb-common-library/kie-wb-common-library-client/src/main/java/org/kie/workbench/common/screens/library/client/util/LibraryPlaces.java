@@ -30,6 +30,8 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.Window;
+import elemental2.promise.IThenable;
+import elemental2.promise.Promise;
 import org.ext.uberfire.social.activities.model.ExtendedTypes;
 import org.ext.uberfire.social.activities.model.SocialFileSelectedEvent;
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
@@ -40,8 +42,10 @@ import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.guvnor.common.services.project.social.ModuleEventType;
 import org.guvnor.messageconsole.client.console.MessageConsoleScreen;
+import org.guvnor.structure.client.security.OrganizationalUnitController;
 import org.guvnor.structure.events.AfterDeleteOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
+import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryRemovedEvent;
@@ -75,6 +79,7 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.PlaceStatus;
+import org.uberfire.client.promise.Promises;
 import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
 import org.uberfire.ext.editor.commons.client.event.ConcurrentDeleteAcceptedEvent;
 import org.uberfire.ext.editor.commons.client.event.ConcurrentRenameAcceptedEvent;
@@ -168,6 +173,13 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
 
     private Caller<RepositoryService> repositoryService;
 
+    private OrganizationalUnitController organizationalUnitController;
+
+    @Inject
+    private Caller<OrganizationalUnitService> organizationalUnitService;
+
+    private Promises promises;
+
     private boolean closingLibraryPlaces = false;
 
     public LibraryPlaces() {
@@ -193,7 +205,10 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
                          final LibraryBreadcrumbs libraryBreadcrumbs,
                          final SessionInfo sessionInfo,
                          final LibraryInternalPreferences libraryInternalPreferences,
-                         final Caller<RepositoryService> repositoryService) {
+                         final Caller<RepositoryService> repositoryService,
+                         final Promises promises,
+                         final OrganizationalUnitController organizationalUnitController) {
+
         this.breadcrumbs = breadcrumbs;
         this.ts = ts;
         this.assetDetailEvent = assetDetailEvent;
@@ -214,11 +229,16 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
         this.sessionInfo = sessionInfo;
         this.libraryInternalPreferences = libraryInternalPreferences;
         this.repositoryService = repositoryService;
+        this.promises = promises;
+        this.organizationalUnitController = organizationalUnitController;
     }
 
     @PostConstruct
     public void setup() {
         libraryBreadcrumbs.init(this);
+
+        self = this;
+        expose();
 
         projectContext.addChangeHandler(this);
 
@@ -231,6 +251,33 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
                                                                       place);
                                                        }
                                                    });
+    }
+
+    private static LibraryPlaces self;
+
+    public static Object nativeGoToSpace(final String spaceName) {
+        return self.promises.promisify(self.organizationalUnitService, s -> {
+            return s.getOrganizationalUnit(spaceName);
+        }).then(space -> {
+            self.projectContextChangeEvent.fire(new WorkspaceProjectContextChangeEvent());
+            return self.goToLibrary();
+        });
+    }
+
+    public native void expose() /*-{
+        $wnd.AppFormer.LibraryPlaces = {
+            goToSpace: @org.kie.workbench.common.screens.library.client.util.LibraryPlaces::nativeGoToSpace(Ljava/lang/String;),
+            canCreateSpace: @org.kie.workbench.common.screens.library.client.util.LibraryPlaces::nativeUserCanCreateOrganizationalUnit()
+        }
+    }-*/;
+
+
+    public static boolean nativeUserCanCreateOrganizationalUnit() {
+        return self.userCanCreateOrganizationalUnit();
+    }
+
+    public boolean userCanCreateOrganizationalUnit() {
+        return this.organizationalUnitController.canCreateOrgUnits();
     }
 
     public void onSelectPlaceEvent(@Observes final PlaceGainFocusEvent placeGainFocusEvent) {
@@ -432,25 +479,31 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
         libraryBreadcrumbs.setupForSpacesScreen();
     }
 
-    public void goToLibrary() {
+    public Promise<Void> goToLibrary() {
         if (!projectContext.getActiveOrganizationalUnit().isPresent()) {
-            libraryService.call(
-                    (RemoteCallback<OrganizationalUnit>) organizationalUnit -> {
-                        projectContextChangeEvent.fire(new WorkspaceProjectContextChangeEvent(organizationalUnit));
-                        setupLibraryPerspective();
-                    },
-                    (message, throwable) -> {
-                        try {
-                            throw throwable;
-                        } catch (UnauthorizedException ue) {
-                            this.goToOrganizationalUnits();
-                            return false;
-                        } catch (Throwable t) {
-                            return true; // Let default error handling happen.
-                        }
-                    }).getDefaultOrganizationalUnit();
+            return promises.create((res, rej) -> {
+                libraryService.call(
+                        (RemoteCallback<OrganizationalUnit>) organizationalUnit -> {
+                            projectContextChangeEvent.fire(new WorkspaceProjectContextChangeEvent(organizationalUnit));
+                            setupLibraryPerspective();
+                            res.onInvoke((IThenable<Void>) null);
+                        },
+                        (message, throwable) -> {
+                            try {
+                                throw throwable;
+                            } catch (UnauthorizedException ue) {
+                                this.goToOrganizationalUnits();
+                                res.onInvoke((IThenable<Void>) null);
+                                return false;
+                            } catch (Throwable t) {
+                                rej.onInvoke(null);
+                                return true; // Let default error handling happen.
+                            }
+                        }).getDefaultOrganizationalUnit();
+            });
         } else {
             setupLibraryPerspective();
+            return promises.resolve();
         }
     }
 

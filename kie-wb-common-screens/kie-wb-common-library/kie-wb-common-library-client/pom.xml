@@ -307,6 +307,11 @@
       <artifactId>elemental2-promise</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.kie.workbench.screens</groupId>
+      <artifactId>kie-wb-common-library-spaces-screen</artifactId>
+    </dependency>
+
     <!-- test -->
     <dependency>
       <groupId>org.assertj</groupId>

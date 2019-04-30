@@ -16,5 +16,6 @@
     <module>kie-wb-common-library-api</module>
     <module>kie-wb-common-library-backend</module>
     <module>kie-wb-common-library-client</module>
+    <module>kie-wb-common-library-spaces-screen</module>
   </modules>
 </project>
