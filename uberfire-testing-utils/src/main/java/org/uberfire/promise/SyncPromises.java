@@ -78,8 +78,16 @@ public class SyncPromises extends Promises {
             }
 
             @Override
-            public void onInvoke(final IThenable<T> value) {
-                throw new RuntimeException("Not supported");
+            public void onInvoke(final IThenable<T> thenable) {
+                if (thenable == null) {
+                    value = null;
+                } else {
+                    thenable.then(v -> {
+                        value = v;
+                        return SyncPromise.resolve(v);
+                    });
+                }
+                status = RESOLVED;
             }
 
             @Override

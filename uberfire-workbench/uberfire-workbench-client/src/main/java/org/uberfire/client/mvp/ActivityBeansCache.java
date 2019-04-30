@@ -43,8 +43,6 @@ import org.uberfire.client.workbench.events.NewWorkbenchScreenEvent;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.experimental.service.auth.ExperimentalActivitiesAuthorizationManager;
 
-import static java.util.Collections.sort;
-
 /**
  *
  */
@@ -112,6 +110,13 @@ public class ActivityBeansCache {
         }
 
         this.resourceTypeManagerCache.sortResourceActivitiesByPriority();
+    }
+
+    private void put(final SyncBeanDef<Activity> activityBean,
+                     final String id) {
+
+        activitiesById.put(id,
+                           activityBean);
     }
 
     private void addResourceActivity(SyncBeanDef<Activity> activityBean,
@@ -195,6 +200,18 @@ public class ActivityBeansCache {
                                                                                   activityBean,
                                                                                   Integer.valueOf(priority),
                                                                                   Arrays.asList(resourceTypeName)));
+        this.resourceTypeManagerCache.sortResourceActivitiesByPriority();
+    }
+
+    public void addNewEditorActivity(final SyncBeanDef<Activity> syncBeanDef,
+                                     final int priority,
+                                     final List<String> resourceTypes) {
+
+        validateUniqueness(syncBeanDef.getName());
+        put(syncBeanDef, syncBeanDef.getName());
+
+        ActivityAndMetaInfo metaInfo = new ActivityAndMetaInfo(iocManager, syncBeanDef, priority, resourceTypes);
+        this.resourceTypeManagerCache.addResourceActivity(metaInfo);
         this.resourceTypeManagerCache.sortResourceActivitiesByPriority();
     }
 

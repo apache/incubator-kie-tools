@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -134,6 +135,12 @@ public class PlaceManagerImpl
     private LayoutSelection layoutSelection;
     @Inject
     private ExperimentalActivitiesAuthorizationManager activitiesAuthorizationManager;
+    @Inject
+    private AppFormerActivityLoader appFormerActivityLoader;
+
+    public interface AppFormerActivityLoader {
+        boolean triggerLoadOfMatchingEditors(final Path path, final Runnable callback);
+    }
 
     @PostConstruct
     public void initPlaceHistoryHandler() {
@@ -264,6 +271,7 @@ public class PlaceManagerImpl
         if (place == null || place.equals(DefaultPlaceRequest.NOWHERE)) {
             return;
         }
+
         final ResolvedRequest resolved = resolveActivity(place);
 
         if (resolved.getActivity() != null) {
@@ -369,6 +377,7 @@ public class PlaceManagerImpl
      * {@code org.uberfire.client.mvp.PlaceManagerImpl.ignoreUnkownPlaces} property in {@link UberfirePreferences}.
      * @param place A non-null place request that could have originated from within application code, from within the
      * framework, or by parsing a hash fragment from a browser history event.
+     * @param lazyLoadingSuccessCallback
      * @return a non-null ResolvedRequest, where:
      * <ul>
      * <li>the Activity value is either the unambiguous resolved Activity instance, or null if the activity was
@@ -388,6 +397,10 @@ public class PlaceManagerImpl
 
         if (existingDestination != null) {
             return existingDestination;
+        }
+
+        if (appFormerActivityLoader.triggerLoadOfMatchingEditors(place.getPath(), () -> closeLazyLoadingScreenAndGoToPlace(place))) {
+            return new ResolvedRequest(null, new DefaultPlaceRequest("LazyLoadingScreen"));
         }
 
         final Set<Activity> activities = activityManager.getActivities(resolvedPlaceRequest);
@@ -420,6 +433,10 @@ public class PlaceManagerImpl
                                         unambigousActivity);
         return new ResolvedRequest(unambigousActivity,
                                    resolvedPlaceRequest);
+    }
+
+    private void closeLazyLoadingScreenAndGoToPlace(final PlaceRequest place) {
+        this.closePlace(new DefaultPlaceRequest("LazyLoadingScreen"), () -> this.goTo(place));
     }
 
     private PlaceRequest resolvePlaceRequest(PlaceRequest place) {
@@ -471,6 +488,7 @@ public class PlaceManagerImpl
         if (place == null) {
             return;
         }
+
         final ResolvedRequest resolved = resolveActivity(place);
 
         if (resolved.getActivity() != null) {

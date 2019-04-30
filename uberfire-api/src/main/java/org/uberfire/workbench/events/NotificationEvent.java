@@ -15,18 +15,24 @@
  */
 package org.uberfire.workbench.events;
 
+import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.mvp.PlaceRequest;
 
 /**
  * An event to show a notification pop-up in the Workbench
  */
+@Portable
 public class NotificationEvent implements UberFireEvent {
 
-    private final String notification;
-    private final NotificationType type;
-    private final boolean isSingleton;
-    private final PlaceRequest placeRequest;
-    private final Integer initialTopOffset;
+    private String notification;
+    private NotificationType type;
+    private boolean isSingleton;
+    private PlaceRequest placeRequest;
+    private Integer initialTopOffset;
+
+    public NotificationEvent() {
+    }
+
     public NotificationEvent(final String notification) {
         this(notification,
              NotificationType.DEFAULT,

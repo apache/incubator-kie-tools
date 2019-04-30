@@ -25,5 +25,6 @@
   <inherits name="org.uberfire.UberfireClientAPI"/>
   <inherits name="org.uberfire.UberfireWorkbench"/>
   <inherits name="org.uberfire.UberfireBackend"/>
+  <inherits name="org.uberfire.jsbridge.AppFormerJsBridge"/>
 
 </module>

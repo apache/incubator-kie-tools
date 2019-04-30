@@ -1,11 +1,11 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *        http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.uberfire.client.jsapi;
+package org.uberfire.jsbridge.client;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,13 +25,13 @@ import com.google.gwt.json.client.JSONString;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
-public class JSPlaceRequest extends JavaScriptObject {
+public class JsPlaceRequest extends JavaScriptObject {
 
-    protected JSPlaceRequest() {
+    protected JsPlaceRequest() {
     }
 
-    public static JSPlaceRequest fromPlaceRequest(PlaceRequest pr) {
-        JSPlaceRequest jspr = newInstance();
+    public static JsPlaceRequest fromPlaceRequest(PlaceRequest pr) {
+        JsPlaceRequest jspr = newInstance();
         jspr.setIdentifier(pr.getIdentifier());
         JSONObject rawParams = new JSONObject();
         for (String name : pr.getParameterNames()) {
@@ -42,7 +42,7 @@ public class JSPlaceRequest extends JavaScriptObject {
         return jspr;
     }
 
-    public static native JSPlaceRequest newInstance() /*-{
+    public static native JsPlaceRequest newInstance() /*-{
         return {identifier: '', params: {}};
     }-*/;
 
@@ -50,7 +50,7 @@ public class JSPlaceRequest extends JavaScriptObject {
         return this.identifier;
     }-*/;
 
-    public final native void setIdentifier(String newIdentifier) /*-{
+    public final native void setIdentifier(final String newIdentifier) /*-{
         this.identifier = newIdentifier;
     }-*/;
 
@@ -58,18 +58,7 @@ public class JSPlaceRequest extends JavaScriptObject {
         return this.params;
     }-*/;
 
-    public final native void setParams(JavaScriptObject newParams) /*-{
+    public final native void setParams(final JavaScriptObject newParams) /*-{
         this.params = newParams;
     }-*/;
-
-    public final PlaceRequest toPlaceRequest() {
-        JSONObject rawParams = new JSONObject(getParams());
-        Map<String, String> params = new HashMap<String, String>();
-        for (String key : rawParams.keySet()) {
-            params.put(key,
-                       rawParams.get(key).isString().stringValue());
-        }
-        return new DefaultPlaceRequest(getIdentifier(),
-                                       params);
-    }
 }

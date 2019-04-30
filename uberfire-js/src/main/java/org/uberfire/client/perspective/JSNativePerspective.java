@@ -22,13 +22,13 @@ import javax.inject.Inject;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.json.client.JSONObject;
-import org.uberfire.client.jsapi.JSPlaceRequest;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.plugin.JSNativePlugin;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.WorkbenchServicesProxy;
 import org.uberfire.client.workbench.panels.impl.MultiTabWorkbenchPanelPresenter;
+import org.uberfire.jsbridge.client.JsPlaceRequest;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.CompassPosition;
@@ -63,7 +63,7 @@ public class JSNativePerspective {
     }-*/;
 
     private static native void executeOnStartup(final JavaScriptObject o,
-                                                JSPlaceRequest place) /*-{
+                                                JsPlaceRequest place) /*-{
         o.on_open(place);
     }-*/;
 
@@ -120,8 +120,9 @@ public class JSNativePerspective {
     public void onStartup(final PlaceRequest place) {
         if (JSNativePlugin.hasMethod(obj,
                                      "on_startup")) {
+
             executeOnStartup(obj,
-                             JSPlaceRequest.fromPlaceRequest(place));
+                             JsPlaceRequest.fromPlaceRequest(place));
         }
     }
 

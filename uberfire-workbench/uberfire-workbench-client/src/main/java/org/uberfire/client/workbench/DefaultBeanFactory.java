@@ -16,6 +16,7 @@
 package org.uberfire.client.workbench;
 
 import java.util.Collection;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -24,6 +25,7 @@ import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.TemplatedActivity;
+import org.uberfire.client.mvp.jsbridge.JsWorkbenchLazyPerspective;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.client.workbench.panels.impl.TemplatedWorkbenchPanelPresenter;
@@ -64,7 +66,15 @@ public class DefaultBeanFactory
                                                 PanelDefinition root) {
         WorkbenchPanelPresenter panel = newWorkbenchPanel(root);
         if (panel instanceof TemplatedWorkbenchPanelPresenter) {
-            ((TemplatedWorkbenchPanelPresenter) panel).setActivity((TemplatedActivity) activity);
+
+            final TemplatedActivity templatedActivity;
+            if (activity instanceof JsWorkbenchLazyPerspective) {
+                templatedActivity = (TemplatedActivity) ((JsWorkbenchLazyPerspective) activity).get();
+            } else {
+                templatedActivity = (TemplatedActivity) activity;
+            }
+
+            ((TemplatedWorkbenchPanelPresenter) panel).setActivity(templatedActivity);
         }
         return panel;
     }

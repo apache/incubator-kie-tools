@@ -20,3 +20,7 @@ target/
 # Live editing asciidoc leaves .html files behind in the source dir
 uberfire-docs/src/main/asciidoc/*.html
 **/dependency-reduced-pom.xml
+
+**/node_modules
+**/package-lock.json
+**/dist

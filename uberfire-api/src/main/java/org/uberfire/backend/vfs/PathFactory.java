@@ -132,7 +132,7 @@ public final class PathFactory {
         public PathImpl() {
         }
 
-        private PathImpl(final String fileName,
+        public PathImpl(final String fileName,
                          final String uri) {
             this(fileName,
                  uri,

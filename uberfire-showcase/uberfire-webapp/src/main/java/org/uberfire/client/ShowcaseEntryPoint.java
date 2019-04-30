@@ -16,6 +16,7 @@
 package org.uberfire.client;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -78,10 +79,15 @@ import org.uberfire.ext.plugin.client.perspective.editor.generator.PerspectiveEd
 import org.uberfire.ext.plugin.client.perspective.editor.layout.editor.PerspectiveEditorSettings;
 import org.uberfire.ext.preferences.client.admin.AdminPagePerspective;
 import org.uberfire.ext.preferences.client.central.PreferencesCentralPerspective;
+import org.uberfire.jsbridge.client.AppFormerJsBridge;
+import org.uberfire.jsbridge.client.loading.ActivityLazyLoaded;
+import org.uberfire.jsbridge.client.loading.JsWorkbenchLazyPerspectiveActivity;
+import org.uberfire.jsbridge.client.screen.JsWorkbenchScreenActivity;
 import org.uberfire.mvp.Commands;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.events.PluginAddedEvent;
 import org.uberfire.workbench.events.PluginUpdatedEvent;
+import org.uberfire.workbench.model.ActivityResourceType;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
@@ -131,6 +137,8 @@ public class ShowcaseEntryPoint {
     private PatternFlyEntryPoint pflyEntryPoint;
     @Inject
     private PerspectiveEditorSettings perspectiveEditorSettings;
+    @Inject
+    private AppFormerJsBridge appFormerJsBridge;
 
     public static List<MenuItem> getScreens() {
         final List<MenuItem> screens = new ArrayList<>();
@@ -139,7 +147,7 @@ public class ShowcaseEntryPoint {
         for (final IOCBeanDef<WorkbenchScreenActivity> _menuItem : IOC.getBeanManager().lookupBeans(WorkbenchScreenActivity.class)) {
             final String name;
             if (!_menuItem.getBeanClass().equals(PerspectiveEditorScreenActivity.class)) {
-                if (_menuItem.getBeanClass().equals(JSWorkbenchScreenActivity.class)) {
+                if (Arrays.asList(JSWorkbenchScreenActivity.class, JsWorkbenchScreenActivity.class).contains(_menuItem.getBeanClass())) {
                     name = _menuItem.getName();
                 } else {
                     name = IOC.getBeanManager().lookupBean(_menuItem.getBeanClass()).getName();
@@ -174,9 +182,16 @@ public class ShowcaseEntryPoint {
         hideLoadingPopup();
         GWT.log("PatternFly version: " + pflyEntryPoint.getPatternFlyVersion());
         GWT.log("Loaded MomentJS using locale: " + pflyEntryPoint.getMomentLocale());
+
+        GWT.log("Exposing JS bridge");
+        appFormerJsBridge.init("org.uberfire.UberfireShowcase");
     }
 
-    private void setupMenu(@Observes final ApplicationReadyEvent event) {
+    private void onApplicationReady(@Observes final ApplicationReadyEvent event) {
+        setupMenu();
+    }
+
+    private void setupMenu() {
         final PerspectiveActivity defaultPerspective = getDefaultPerspectiveActivity();
 
         final Menus menus =
@@ -237,17 +252,23 @@ public class ShowcaseEntryPoint {
     private List<MenuItem> getPerspectives() {
         final List<MenuItem> perspectives = new ArrayList<>();
 
-        perspectives.add(MenuFactory.newSimpleItem(Constants.INSTANCE.admin_perspective()).perspective(AdminPagePerspective.IDENTIFIER).endMenu().build().getItems().get(0));
-        perspectives.add(MenuFactory.newSimpleItem(Constants.INSTANCE.apps_perspective()).perspective(AppsPerspective.IDENTIFIER).endMenu().build().getItems().get(0));
-        perspectives.add(MenuFactory.newSimpleItem(Constants.INSTANCE.experimental_features_editor()).perspective(ExperimentalFeaturesPerspective.IDENTIFIER).endMenu().build().getItems().get(0));
-        perspectives.add(MenuFactory.newSimpleItem(Constants.INSTANCE.experimental_perspective()).perspective(ExperimentalPerspective.IDENTIFIER).endMenu().build().getItems().get(0));
-        perspectives.add(MenuFactory.newSimpleItem(Constants.INSTANCE.admin_perspective()).perspective(MultiScreenPerspective.IDENTIFIER).endMenu().build().getItems().get(0));
-        perspectives.add(MenuFactory.newSimpleItem(Constants.INSTANCE.plugin_authoring()).perspective(PlugInAuthoringPerspective.IDENTIFIER).endMenu().build().getItems().get(0));
-        perspectives.add(MenuFactory.newSimpleItem(Constants.INSTANCE.preferences_perspective()).perspective(PreferencesCentralPerspective.IDENTIFIER).endMenu().build().getItems().get(0));
-        perspectives.add(MenuFactory.newSimpleItem(Constants.INSTANCE.simple_perspective()).perspective(SimplePerspective.IDENTIFIER).endMenu().build().getItems().get(0));
-        perspectives.add(MenuFactory.newSimpleItem(Constants.INSTANCE.standalone_editor_perspective()).perspective(StandaloneEditorPerspective.IDENTIFIER).endMenu().build().getItems().get(0));
+        perspectives.add(buildPerspectiveMenuItem(Constants.INSTANCE.admin_perspective(), AdminPagePerspective.IDENTIFIER));
+        perspectives.add(buildPerspectiveMenuItem(Constants.INSTANCE.apps_perspective(), AppsPerspective.IDENTIFIER));
+        perspectives.add(buildPerspectiveMenuItem(Constants.INSTANCE.experimental_features_editor(), ExperimentalFeaturesPerspective.IDENTIFIER));
+        perspectives.add(buildPerspectiveMenuItem(Constants.INSTANCE.experimental_perspective(), ExperimentalPerspective.IDENTIFIER));
+        perspectives.add(buildPerspectiveMenuItem(Constants.INSTANCE.multi_screem_perspective(), MultiScreenPerspective.IDENTIFIER));
+        perspectives.add(buildPerspectiveMenuItem(Constants.INSTANCE.plugin_authoring(), PlugInAuthoringPerspective.IDENTIFIER));
+        perspectives.add(buildPerspectiveMenuItem(Constants.INSTANCE.preferences_perspective(), PreferencesCentralPerspective.IDENTIFIER));
+        perspectives.add(buildPerspectiveMenuItem(Constants.INSTANCE.simple_perspective(), SimplePerspective.IDENTIFIER));
+        perspectives.add(buildPerspectiveMenuItem(Constants.INSTANCE.standalone_editor_perspective(), StandaloneEditorPerspective.IDENTIFIER));
+
+        getJsPerspectiveActivities().forEach(activity -> perspectives.add(buildPerspectiveMenuItem(activity.getName(), activity.getIdentifier())));
 
         return perspectives;
+    }
+
+    private MenuItem buildPerspectiveMenuItem(final String perspectiveName, final String perspectiveIdentifier) {
+        return MenuFactory.newSimpleItem(perspectiveName).perspective(perspectiveIdentifier).endMenu().build().getItems().get(0);
     }
 
     private PerspectiveActivity getDefaultPerspectiveActivity() {
@@ -268,13 +289,13 @@ public class ShowcaseEntryPoint {
         return defaultPerspective;
     }
 
-    private List<PerspectiveActivity> getPerspectiveActivities() {
+    private List<PerspectiveActivity> getJsPerspectiveActivities() {
 
         //Get Perspective Providers
-        final Set<PerspectiveActivity> activities = activityManager.getActivities(PerspectiveActivity.class);
+        final Set<JsWorkbenchLazyPerspectiveActivity> activities = activityManager.getActivities(JsWorkbenchLazyPerspectiveActivity.class);
 
         //Remove default perspective to avoid duplicate menu
-        final Iterator<PerspectiveActivity> iterator = activities.iterator();
+        final Iterator<JsWorkbenchLazyPerspectiveActivity> iterator = activities.iterator();
         while (iterator.hasNext()) {
             final PerspectiveActivity activity = iterator.next();
             if (activity.isDefault()) {
@@ -348,5 +369,14 @@ public class ShowcaseEntryPoint {
         modal.setTitle(title);
         modal.addHiddenHandler(evt -> Window.Location.reload());
         modal.show();
+    }
+
+    public void onActivityLazyLoaded(@Observes ActivityLazyLoaded event) {
+
+        if (event.getActivity().getResourceType() != ActivityResourceType.PERSPECTIVE) {
+            return;
+        }
+
+        setupMenu();
     }
 }
