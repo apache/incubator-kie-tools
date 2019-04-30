@@ -15,8 +15,6 @@
  */
 package org.kie.workbench.common.stunner.standalone.client.screens;
 
-import java.util.function.Consumer;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -27,7 +25,6 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.client.widgets.explorer.tree.TreeExplorer;
 import org.uberfire.client.annotations.WorkbenchContextId;
-import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
@@ -36,7 +33,6 @@ import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.workbench.model.menu.Menus;
 
 // TODO: I18n.
 @Dependent
@@ -80,10 +76,6 @@ public class SessionTreeExplorerScreen extends AbstractSessionScreen {
     @OnClose
     public void onClose() {
         close();
-    }
-
-    @WorkbenchMenu
-    public void getMenus(final Consumer<Menus> menusConsumer) {
     }
 
     @WorkbenchPartTitle
