@@ -57,7 +57,9 @@ public abstract class AbstractDataManagementStrategy implements DataManagementSt
         String fullName = clazz.getCanonicalName();
         simpleProperties.put("value", fullName);
         String packageName = fullName.substring(0, fullName.lastIndexOf("."));
-        return new FactModelTree(key, packageName, simpleProperties, new HashMap<>());
+        FactModelTree toReturn = new FactModelTree(key, packageName, simpleProperties, new HashMap<>());
+        toReturn.setSimple(true);
+        return toReturn;
     }
 
     /**
@@ -130,11 +132,14 @@ public abstract class AbstractDataManagementStrategy implements DataManagementSt
                 .collect(Collectors.partitioningBy(stringFactModelTreeEntry -> stringFactModelTreeEntry.getValue().isSimple()));
         final SortedMap<String, FactModelTree> complexDataObjects = new TreeMap<>(partitionBy.get(false).stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
         final SortedMap<String, FactModelTree> simpleDataObjects = new TreeMap<>(partitionBy.get(true).stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
-        final SortedMap<String, FactModelTree> instanceFieldsMap = getInstanceMap(visibleFacts);
+        final SortedMap<String, FactModelTree> instanceFieldsMap = getInstanceMap(complexDataObjects);
+        final SortedMap<String, FactModelTree> simpleJavaTypeInstanceFieldsMap = getInstanceMap(simpleDataObjects);
         // Update right panel
-        testToolsPresenter.setInstanceFieldsMap(instanceFieldsMap);
         testToolsPresenter.setDataObjectFieldsMap(complexDataObjects);
         testToolsPresenter.setSimpleJavaTypeFieldsMap(simpleDataObjects);
+        testToolsPresenter.setInstanceFieldsMap(instanceFieldsMap);
+        testToolsPresenter.setSimpleJavaInstanceFieldsMap(simpleJavaTypeInstanceFieldsMap);
+
         testToolsPresenter.setHiddenFieldsMap(factModelTuple.getHiddenFacts());
         testToolsPresenter.hideProperties(propertiesToHide);
         // Update context
@@ -146,7 +151,6 @@ public abstract class AbstractDataManagementStrategy implements DataManagementSt
         Set<String> dataObjectsInstancesName = new HashSet<>(visibleFacts.keySet());
         dataObjectsInstancesName.addAll(instanceFieldsMap.keySet());
         scenarioGridModel.setDataObjectsInstancesName(dataObjectsInstancesName);
-        SortedMap<String, FactModelTree> simpleJavaTypeInstanceFieldsMap = getInstanceMap(simpleDataObjects);
         Set<String> simpleJavaTypeInstancesName = new HashSet<>(simpleDataObjects.keySet());
         simpleJavaTypeInstancesName.addAll(simpleJavaTypeInstanceFieldsMap.keySet());
         scenarioGridModel.setSimpleJavaTypeInstancesName(simpleJavaTypeInstancesName);

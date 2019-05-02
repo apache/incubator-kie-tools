@@ -64,6 +64,7 @@ abstract class AbstractTestToolsTest {
         instanceFactTreeMap = new TreeMap<>();
         dataObjectFactTreeMap.keySet().forEach(key -> instanceFactTreeMap.put(getRandomString(), dataObjectFactTreeMap.get(key)));
         simpleJavaInstanceFactTreeMap = new TreeMap<>();
+        simpleJavaTypeTreeMap.keySet().forEach(key -> simpleJavaInstanceFactTreeMap.put(getRandomString(), simpleJavaTypeTreeMap.get(key)));
         FACT_NAME = new ArrayList<>(dataObjectFactTreeMap.keySet()).get(0);
         FACT_MODEL_TREE = dataObjectFactTreeMap.get(FACT_NAME);
     }

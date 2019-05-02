@@ -24,13 +24,14 @@ import javax.enterprise.context.ApplicationScoped;
 import com.google.gwt.dom.client.ButtonElement;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.HRElement;
 import com.google.gwt.dom.client.InputElement;
+import com.google.gwt.dom.client.LabelElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.user.client.ui.Composite;
+import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
@@ -55,23 +56,26 @@ public class TestToolsViewImpl
     @DataField("nameField")
     protected InputElement nameField = Document.get().createTextInputElement();
 
+    @DataField("dataObjectListContainer-separator")
+    protected LabelElement dataObjectListContainerSeparator = Document.get().createLabelElement();
+
     @DataField("dataObjectListContainer")
     protected DivElement dataObjectListContainer = Document.get().createDivElement();
 
     @DataField("simpleJavaTypeListContainer-separator")
-    protected HRElement simpleJavaTypeListContainerSeparator = Document.get().createHRElement();
+    protected LabelElement simpleJavaTypeListContainerSeparator = Document.get().createLabelElement();
 
     @DataField("simpleJavaTypeListContainer")
     protected DivElement simpleJavaTypeListContainer = Document.get().createDivElement();
 
     @DataField("instanceListContainer-separator")
-    protected HRElement instanceListContainerSeparator = Document.get().createHRElement();
+    protected LabelElement instanceListContainerSeparator = Document.get().createLabelElement();
 
     @DataField("instanceListContainer")
     protected DivElement instanceListContainer = Document.get().createDivElement();
 
     @DataField("simpleJavaInstanceListContainer-separator")
-    protected HRElement simpleJavaInstanceListContainerSeparator = Document.get().createHRElement();
+    protected LabelElement simpleJavaInstanceListContainerSeparator = Document.get().createLabelElement();
 
     @DataField("simpleJavaInstanceListContainer")
     protected DivElement simpleJavaInstanceListContainer = Document.get().createDivElement();
@@ -96,6 +100,10 @@ public class TestToolsViewImpl
         this.presenter = presenter;
         disableEditorTab();
         addButton.setDisabled(true);
+        dataObjectListContainerSeparator.setInnerText(ScenarioSimulationEditorConstants.INSTANCE.complexTypes());
+        simpleJavaTypeListContainerSeparator.setInnerText(ScenarioSimulationEditorConstants.INSTANCE.simpleTypes());
+        instanceListContainerSeparator.setInnerText(ScenarioSimulationEditorConstants.INSTANCE.complexCustomInstances());
+        simpleJavaInstanceListContainerSeparator.setInnerText(ScenarioSimulationEditorConstants.INSTANCE.simpleCustomInstances());
     }
 
     @Override
@@ -155,12 +163,17 @@ public class TestToolsViewImpl
     }
 
     @Override
+    public LabelElement getDataObjectListContainerSeparator() {
+        return dataObjectListContainerSeparator;
+    }
+
+    @Override
     public DivElement getDataObjectListContainer() {
         return dataObjectListContainer;
     }
 
     @Override
-    public HRElement getSimpleJavaTypeListContainerSeparator() {
+    public LabelElement getSimpleJavaTypeListContainerSeparator() {
         return simpleJavaTypeListContainerSeparator;
     }
 
@@ -170,7 +183,7 @@ public class TestToolsViewImpl
     }
 
     @Override
-    public HRElement getInstanceListContainerSeparator() {
+    public LabelElement getInstanceListContainerSeparator() {
         return instanceListContainerSeparator;
     }
 
@@ -180,7 +193,7 @@ public class TestToolsViewImpl
     }
 
     @Override
-    public HRElement getSimpleJavaInstanceListContainerSeparator() {
+    public LabelElement getSimpleJavaInstanceListContainerSeparator() {
         return simpleJavaInstanceListContainerSeparator;
     }
 

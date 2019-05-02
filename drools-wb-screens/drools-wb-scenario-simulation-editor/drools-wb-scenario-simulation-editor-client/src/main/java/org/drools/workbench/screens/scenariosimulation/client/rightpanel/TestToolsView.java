@@ -22,7 +22,7 @@ import java.util.Optional;
 import java.util.SortedMap;
 
 import com.google.gwt.dom.client.DivElement;
-import com.google.gwt.dom.client.HRElement;
+import com.google.gwt.dom.client.LabelElement;
 import com.google.gwt.event.shared.EventBus;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree;
 
@@ -36,17 +36,19 @@ public interface TestToolsView extends SubDockView<TestToolsView.Presenter> {
 
     void showClearButton();
 
+    LabelElement getDataObjectListContainerSeparator();
+
     DivElement getDataObjectListContainer();
 
-    HRElement getSimpleJavaTypeListContainerSeparator();
+    LabelElement getSimpleJavaTypeListContainerSeparator();
 
     DivElement getSimpleJavaTypeListContainer();
 
-    HRElement getInstanceListContainerSeparator();
+    LabelElement getInstanceListContainerSeparator();
 
     DivElement getInstanceListContainer();
 
-    HRElement getSimpleJavaInstanceListContainerSeparator();
+    LabelElement getSimpleJavaInstanceListContainerSeparator();
 
     DivElement getSimpleJavaInstanceListContainer();
 
@@ -100,6 +102,14 @@ public interface TestToolsView extends SubDockView<TestToolsView.Presenter> {
         void clearInstanceList();
 
         void clearSimpleJavaInstanceFieldList();
+
+        void updateDataObjectListSeparator();
+
+        void updateSimpleJavaTypeListSeparator();
+
+        void updateInstanceListSeparator();
+
+        void updateSimpleJavaInstanceFieldListSeparator();
 
         void addDataObjectListGroupItemView(String factName, FactModelTree factModelTree);
 

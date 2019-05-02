@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import junit.framework.TestCase;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree;
+import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTuple;
 import org.jgroups.util.Util;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,6 +44,7 @@ import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.soup.project.datamodel.oracle.ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS;
 import static org.mockito.Matchers.any;
@@ -50,6 +52,7 @@ import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -84,7 +87,17 @@ public class DMODataManagementStrategyTest extends AbstractDataManagementStrateg
     }
 
     @Test
-    public void populateTestTools() {
+    public void populateTestToolsWithFactTuple() {
+        final FactModelTuple factModelTupleMock = mock(FactModelTuple.class);
+        dmoDataManagementStrategy.factModelTreeHolder.factModelTuple = factModelTupleMock;
+        doNothing().when(dmoDataManagementStrategy).storeData(eq(factModelTupleMock), eq(testToolsPresenterMock), eq(scenarioGridModelMock));
+        dmoDataManagementStrategy.populateTestTools(testToolsPresenterMock, scenarioGridModelMock);
+        verify(dmoDataManagementStrategy, times(1)).storeData(eq(factModelTupleMock), eq(testToolsPresenterMock), eq(scenarioGridModelMock));
+    }
+
+    @Test
+    public void populateTestToolsWithoutFactTupleEmptyOracle() {
+        dmoDataManagementStrategy.factModelTreeHolder.factModelTuple = null;
         Map<String, List<String>> alreadyAssignedProperties = new HashMap<>();
         doReturn(alreadyAssignedProperties).when(dmoDataManagementStrategy).getPropertiesToHide(scenarioGridModelMock);
         String[] emptyFactTypes = {};
@@ -92,7 +105,13 @@ public class DMODataManagementStrategyTest extends AbstractDataManagementStrateg
         dmoDataManagementStrategy.populateTestTools(testToolsPresenterMock, scenarioGridModelMock);
         verify(dmoDataManagementStrategy, never()).aggregatorCallback(eq(testToolsPresenterMock), anyInt(), any(SortedMap.class), eq(scenarioGridModelMock), isA(List.class));
         verify(oracleMock, never()).getFieldCompletions(anyString(), any(Callback.class));
-        //
+    }
+
+    @Test
+    public void populateTestToolsWithoutFactTupleWithOnlyDataObjects() {
+        dmoDataManagementStrategy.factModelTreeHolder.factModelTuple = null;
+        Map<String, List<String>> alreadyAssignedProperties = new HashMap<>();
+        doReturn(alreadyAssignedProperties).when(dmoDataManagementStrategy).getPropertiesToHide(scenarioGridModelMock);
         String[] notEmptyFactTypes = getRandomStringArray();
         when(oracleMock.getFactTypes()).thenReturn(notEmptyFactTypes);
         dmoDataManagementStrategy.populateTestTools(testToolsPresenterMock, scenarioGridModelMock);
@@ -100,6 +119,35 @@ public class DMODataManagementStrategyTest extends AbstractDataManagementStrateg
         for (String factType : notEmptyFactTypes) {
             verify(oracleMock, times(1)).getFieldCompletions(eq(factType), any(Callback.class));
         }
+    }
+
+    @Test
+    public void populateTestToolsWithoutFactTupleWithDataObjectsAndSimpleJavaTypes() {
+        dmoDataManagementStrategy.factModelTreeHolder.factModelTuple = null;
+        Map<String, List<String>> alreadyAssignedProperties = new HashMap<>();
+        doReturn(alreadyAssignedProperties).when(dmoDataManagementStrategy).getPropertiesToHide(scenarioGridModelMock);
+        String[] dataObjectTypes = getRandomStringArray();
+        String[] simpleJavaTypes = getSimpleTypeArray();
+        String[] notEmptyFactTypes = mergeArrays(dataObjectTypes, simpleJavaTypes);
+        when(oracleMock.getFactTypes()).thenReturn(notEmptyFactTypes);
+        dmoDataManagementStrategy.populateTestTools(testToolsPresenterMock, scenarioGridModelMock);
+        verify(dmoDataManagementStrategy, times(1)).aggregatorCallback(eq(testToolsPresenterMock), anyInt(), any(SortedMap.class), eq(scenarioGridModelMock), isA(List.class));
+        for (String factType : dataObjectTypes) {
+            verify(oracleMock, times(1)).getFieldCompletions(eq(factType), any(Callback.class));
+        }
+    }
+
+    @Test
+    public void populateTestToolsWithoutFactTupleWithoutDataObjectsWithSimpleJavaTypes() {
+        dmoDataManagementStrategy.factModelTreeHolder.factModelTuple = null;
+        Map<String, List<String>> alreadyAssignedProperties = new HashMap<>();
+        doReturn(alreadyAssignedProperties).when(dmoDataManagementStrategy).getPropertiesToHide(scenarioGridModelMock);
+        String[] notEmptyFactTypes = getSimpleTypeArray();
+        List<String> simpleJavaTypes = Arrays.asList(notEmptyFactTypes);
+        when(oracleMock.getFactTypes()).thenReturn(notEmptyFactTypes);
+        dmoDataManagementStrategy.populateTestTools(testToolsPresenterMock, scenarioGridModelMock);
+        verify(dmoDataManagementStrategy, never()).aggregatorCallback(eq(testToolsPresenterMock), anyInt(), any(SortedMap.class), eq(scenarioGridModelMock), isA(List.class));
+        verify(dmoDataManagementStrategy, times(1)).aggregatorCallbackMethod(eq(testToolsPresenterMock), eq(0), any(SortedMap.class), eq(scenarioGridModelMock), eq(null), eq(simpleJavaTypes));
     }
 
     @Test
@@ -173,6 +221,66 @@ public class DMODataManagementStrategyTest extends AbstractDataManagementStrateg
         commonPopulateGenericTypeMap(false);
     }
 
+    @Test
+    public void aggregatorCallbackMethodWithResultAllElements() {
+        SortedMap<String, FactModelTree> factTypeFieldsMap = getRandomMap();
+        String resultName = "RESULT_NAME";
+        FactModelTree resultMock = mock(FactModelTree.class);
+        when(resultMock.getFactName()).thenReturn(resultName);
+        List<String> simpleJavaTypes = Arrays.asList(getSimpleTypeArray());
+        dmoDataManagementStrategy.factModelTreeHolder.factModelTuple = null;
+        dmoDataManagementStrategy.aggregatorCallbackMethod(testToolsPresenterMock, factTypeFieldsMap.size() + 1, factTypeFieldsMap, scenarioGridModelMock, resultMock, simpleJavaTypes);
+        verify(resultMock, times(1)).getFactName();
+        assertTrue(factTypeFieldsMap.containsKey(resultName));
+        assertEquals(resultMock, factTypeFieldsMap.get(resultName));
+        factTypeFieldsMap.values().forEach(factModelTree -> verify(dmoDataManagementStrategy, times(1)).populateFactModelTree(eq(factModelTree), eq(factTypeFieldsMap)));
+        assertNotNull(dmoDataManagementStrategy.factModelTreeHolder.factModelTuple);
+        verify(dmoDataManagementStrategy, times(1)).storeData(eq(dmoDataManagementStrategy.factModelTreeHolder.factModelTuple), eq(testToolsPresenterMock), eq(scenarioGridModelMock));
+    }
+
+    @Test
+    public void aggregatorCallbackMethodWithResultNotAllElements() {
+        SortedMap<String, FactModelTree> factTypeFieldsMap = getRandomMap();
+        String resultName = "RESULT_NAME";
+        FactModelTree resultMock = mock(FactModelTree.class);
+        when(resultMock.getFactName()).thenReturn(resultName);
+        List<String> simpleJavaTypes = Arrays.asList(getSimpleTypeArray());
+        dmoDataManagementStrategy.factModelTreeHolder.factModelTuple = null;
+        dmoDataManagementStrategy.aggregatorCallbackMethod(testToolsPresenterMock, factTypeFieldsMap.size() + 10, factTypeFieldsMap, scenarioGridModelMock, resultMock, simpleJavaTypes);
+        verify(resultMock, times(1)).getFactName();
+        assertTrue(factTypeFieldsMap.containsKey(resultName));
+        assertEquals(resultMock, factTypeFieldsMap.get(resultName));
+        verify(dmoDataManagementStrategy, never()).populateFactModelTree(isA(FactModelTree.class), isA(SortedMap.class));
+        assertNull(dmoDataManagementStrategy.factModelTreeHolder.factModelTuple);
+        verify(dmoDataManagementStrategy, never()).storeData(isA(FactModelTuple.class), eq(testToolsPresenterMock), eq(scenarioGridModelMock));
+    }
+
+    @Test
+    public void aggregatorCallbackMethodWithoutResultAllElements() {
+        SortedMap<String, FactModelTree> factTypeFieldsMap = getRandomMap();
+        List<String> simpleJavaTypes = Arrays.asList(getSimpleTypeArray());
+        dmoDataManagementStrategy.factModelTreeHolder.factModelTuple = null;
+        int previousSizeMap = factTypeFieldsMap.size();
+        dmoDataManagementStrategy.aggregatorCallbackMethod(testToolsPresenterMock, factTypeFieldsMap.size(), factTypeFieldsMap, scenarioGridModelMock, null, simpleJavaTypes);
+        assertEquals(previousSizeMap, factTypeFieldsMap.size());
+        factTypeFieldsMap.values().forEach(factModelTree -> verify(dmoDataManagementStrategy, times(1)).populateFactModelTree(eq(factModelTree), eq(factTypeFieldsMap)));
+        assertNotNull(dmoDataManagementStrategy.factModelTreeHolder.factModelTuple);
+        verify(dmoDataManagementStrategy, times(1)).storeData(eq(dmoDataManagementStrategy.factModelTreeHolder.factModelTuple), eq(testToolsPresenterMock), eq(scenarioGridModelMock));
+    }
+
+    @Test
+    public void aggregatorCallbackMethodWithOutResultNotAllElements() {
+        SortedMap<String, FactModelTree> factTypeFieldsMap = getRandomMap();
+        List<String> simpleJavaTypes = Arrays.asList(getSimpleTypeArray());
+        int previousSizeMap = factTypeFieldsMap.size();
+        dmoDataManagementStrategy.factModelTreeHolder.factModelTuple = null;
+        dmoDataManagementStrategy.aggregatorCallbackMethod(testToolsPresenterMock, factTypeFieldsMap.size() + 10, factTypeFieldsMap, scenarioGridModelMock, null, simpleJavaTypes);
+        assertEquals(previousSizeMap, factTypeFieldsMap.size());
+        verify(dmoDataManagementStrategy, never()).populateFactModelTree(isA(FactModelTree.class), isA(SortedMap.class));
+        assertNull(dmoDataManagementStrategy.factModelTreeHolder.factModelTuple);
+        verify(dmoDataManagementStrategy, never()).storeData(isA(FactModelTuple.class), eq(testToolsPresenterMock), eq(scenarioGridModelMock));
+    }
+
     private void commonIsADataType(String value, boolean expected) {
         boolean retrieved = dmoDataManagementStrategy.isADataType(value);
         if (expected) {
@@ -235,4 +343,29 @@ public class DMODataManagementStrategyTest extends AbstractDataManagementStrateg
     private String[] getRandomStringArray() {
         return new String[]{randomAlphabetic(3), randomAlphabetic(4), randomAlphabetic(5)};
     }
+
+    private String[] getSimpleTypeArray() {
+        return new String[]{"Integer", "String"};
+    }
+
+    private String[] mergeArrays(String[] first, String[] second) {
+        String[] toReturn = new String[first.length + second.length];
+        for (int i = 0; i < first.length; i++) {
+            toReturn[i] = first[i];
+        }
+        for (int i = 0; i < second.length; i++) {
+            toReturn[i + first.length] = second[i];
+        }
+        return toReturn;
+    }
+
+    private SortedMap<String, FactModelTree> getRandomMap() {
+        SortedMap<String, FactModelTree> toReturn = new TreeMap<>();
+        String[] dataObjects = getRandomStringArray();
+        for (String factName : dataObjects) {
+            toReturn.put(factName, getFactModelTreeInner(factName));
+        }
+        return toReturn;
+    }
 }
+

@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import com.google.gwt.dom.client.DivElement;
-import com.google.gwt.dom.client.HRElement;
+import com.google.gwt.dom.client.LabelElement;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -57,10 +57,16 @@ public class TestToolsPresenterTest extends AbstractTestToolsTest {
     private TestToolsView testToolsViewMock;
 
     @Mock
+    private LabelElement dataObjectListContainerSeparatorMock;
+
+    @Mock
+    private Style dataObjectListContainerSeparatorStyleMock;
+
+    @Mock
     private DivElement dataObjectListContainerMock;
 
     @Mock
-    private HRElement simpleJavaTypeListContainerSeparatorMock;
+    private LabelElement simpleJavaTypeListContainerSeparatorMock;
 
     @Mock
     private Style simpleJavaTypeListContainerSeparatorStyleMock;
@@ -69,7 +75,7 @@ public class TestToolsPresenterTest extends AbstractTestToolsTest {
     private DivElement simpleJavaTypeListContainerMock;
 
     @Mock
-    private HRElement instanceListContainerSeparatorMock;
+    private LabelElement instanceListContainerSeparatorMock;
 
     @Mock
     private Style instanceListContainerSeparatorStyleMock;
@@ -78,7 +84,7 @@ public class TestToolsPresenterTest extends AbstractTestToolsTest {
     private DivElement instanceListContainerMock;
 
     @Mock
-    private HRElement simpleJavaInstanceListContainerSeparatorMock;
+    private LabelElement simpleJavaInstanceListContainerSeparatorMock;
 
     @Mock
     private Style simpleJavaInstanceListContainerSeparatorStyleMock;
@@ -113,10 +119,12 @@ public class TestToolsPresenterTest extends AbstractTestToolsTest {
         when(selectedFieldItemViewMock.getFieldName()).thenReturn(firstPropertyKey);
         when(selectedFieldItemViewMock.getClassName()).thenReturn(firstPropertyClass);
 
+        when(dataObjectListContainerSeparatorMock.getStyle()).thenReturn(dataObjectListContainerSeparatorStyleMock);
         when(simpleJavaTypeListContainerSeparatorMock.getStyle()).thenReturn(simpleJavaTypeListContainerSeparatorStyleMock);
         when(instanceListContainerSeparatorMock.getStyle()).thenReturn(instanceListContainerSeparatorStyleMock);
         when(simpleJavaInstanceListContainerSeparatorMock.getStyle()).thenReturn(simpleJavaInstanceListContainerSeparatorStyleMock);
 
+        when(testToolsViewMock.getDataObjectListContainerSeparator()).thenReturn(dataObjectListContainerSeparatorMock);
         when(testToolsViewMock.getDataObjectListContainer()).thenReturn(dataObjectListContainerMock);
         when(testToolsViewMock.getSimpleJavaTypeListContainerSeparator()).thenReturn(simpleJavaTypeListContainerSeparatorMock);
         when(testToolsViewMock.getSimpleJavaTypeListContainer()).thenReturn(simpleJavaTypeListContainerMock);
@@ -178,8 +186,6 @@ public class TestToolsPresenterTest extends AbstractTestToolsTest {
     @Test
     public void clearSimpleJavaTypeList() {
         testToolsPresenter.clearSimpleJavaTypeList();
-        verify(testToolsViewMock, times(1)).getSimpleJavaTypeListContainerSeparator();
-        verify(simpleJavaTypeListContainerSeparatorStyleMock, times(1)).setDisplay(eq(Style.Display.NONE));
         verify(testToolsViewMock, times(1)).getSimpleJavaTypeListContainer();
         verify(simpleJavaTypeListContainerMock, times(1)).removeAllChildren();
     }
@@ -187,8 +193,6 @@ public class TestToolsPresenterTest extends AbstractTestToolsTest {
     @Test
     public void clearInstanceList() {
         testToolsPresenter.clearInstanceList();
-        verify(testToolsViewMock, times(1)).getInstanceListContainerSeparator();
-        verify(instanceListContainerSeparatorStyleMock, times(1)).setDisplay(eq(Style.Display.NONE));
         verify(testToolsViewMock, times(1)).getInstanceListContainer();
         verify(instanceListContainerMock, times(1)).removeAllChildren();
     }
@@ -196,10 +200,80 @@ public class TestToolsPresenterTest extends AbstractTestToolsTest {
     @Test
     public void clearSimpleJavaInstanceFieldList() {
         testToolsPresenter.clearSimpleJavaInstanceFieldList();
-        verify(testToolsViewMock, times(1)).getSimpleJavaInstanceListContainerSeparator();
-        verify(simpleJavaInstanceListContainerSeparatorStyleMock, times(1)).setDisplay(eq(Style.Display.NONE));
         verify(testToolsViewMock, times(1)).getSimpleJavaInstanceListContainer();
         verify(simpleJavaInstanceListContainerMock, times(1)).removeAllChildren();
+    }
+
+    @Test
+    public void updateDataObjectListSeparatorNotEmpty() {
+        when(dataObjectListContainerMock.getChildCount()).thenReturn(2);
+        testToolsPresenter.updateDataObjectListSeparator();
+        verify(dataObjectListContainerMock, times(1)).getChildCount();
+        verify(testToolsViewMock, times(1)).getDataObjectListContainerSeparator();
+        verify(dataObjectListContainerSeparatorStyleMock, times(1)).setDisplay(eq(Style.Display.BLOCK));
+    }
+
+    @Test
+    public void updateDataObjectListSeparatorEmpty() {
+        when(dataObjectListContainerMock.getChildCount()).thenReturn(0);
+        testToolsPresenter.updateDataObjectListSeparator();
+        verify(dataObjectListContainerMock, times(1)).getChildCount();
+        verify(testToolsViewMock, times(1)).getDataObjectListContainerSeparator();
+        verify(dataObjectListContainerSeparatorStyleMock, times(1)).setDisplay(eq(Style.Display.NONE));
+    }
+
+    @Test
+    public void updateSimpleJavaTypeListSeparatorNotEmpty() {
+        when(simpleJavaTypeListContainerMock.getChildCount()).thenReturn(2);
+        testToolsPresenter.updateSimpleJavaTypeListSeparator();
+        verify(simpleJavaTypeListContainerMock, times(1)).getChildCount();
+        verify(testToolsViewMock, times(1)).getSimpleJavaTypeListContainerSeparator();
+        verify(simpleJavaTypeListContainerSeparatorStyleMock, times(1)).setDisplay(eq(Style.Display.BLOCK));
+    }
+
+    @Test
+    public void updateSimpleJavaTypeListSeparatorEmpty() {
+        when(simpleJavaTypeListContainerMock.getChildCount()).thenReturn(0);
+        testToolsPresenter.updateSimpleJavaTypeListSeparator();
+        verify(simpleJavaTypeListContainerMock, times(1)).getChildCount();
+        verify(testToolsViewMock, times(1)).getSimpleJavaTypeListContainerSeparator();
+        verify(simpleJavaTypeListContainerSeparatorStyleMock, times(1)).setDisplay(eq(Style.Display.NONE));
+    }
+
+
+    @Test
+    public void updateInstanceListSeparatorNotEmpty() {
+        when(instanceListContainerMock.getChildCount()).thenReturn(2);
+        testToolsPresenter.updateInstanceListSeparator();
+        verify(instanceListContainerMock, times(1)).getChildCount();
+        verify(testToolsViewMock, times(1)).getInstanceListContainerSeparator();
+        verify(instanceListContainerSeparatorStyleMock, times(1)).setDisplay(eq(Style.Display.BLOCK));
+    }
+
+    @Test
+    public void updateInstanceListSeparatorEmpty() {
+        when(instanceListContainerMock.getChildCount()).thenReturn(0);
+        testToolsPresenter.updateInstanceListSeparator();
+        verify(instanceListContainerMock, times(1)).getChildCount();
+        verify(testToolsViewMock, times(1)).getInstanceListContainerSeparator();
+        verify(instanceListContainerSeparatorStyleMock, times(1)).setDisplay(eq(Style.Display.NONE));
+    }
+
+    @Test
+    public void updateSimpleJavaInstanceFieldListSeparatorNotEmpty() {
+        when(simpleJavaInstanceListContainerMock.getChildCount()).thenReturn(2);
+        testToolsPresenter.updateSimpleJavaInstanceFieldListSeparator();
+        verify(testToolsViewMock, times(1)).getSimpleJavaInstanceListContainerSeparator();
+        verify(simpleJavaInstanceListContainerSeparatorStyleMock, times(1)).setDisplay(eq(Style.Display.BLOCK));
+    }
+
+    @Test
+    public void updateSimpleJavaInstanceFieldListSeparatorEmpty() {
+        when(simpleJavaInstanceListContainerMock.getChildCount()).thenReturn(0);
+        testToolsPresenter.updateSimpleJavaInstanceFieldListSeparator();
+        verify(simpleJavaInstanceListContainerMock, times(1)).getChildCount();
+        verify(testToolsViewMock, times(1)).getSimpleJavaInstanceListContainerSeparator();
+        verify(simpleJavaInstanceListContainerSeparatorStyleMock, times(1)).setDisplay(eq(Style.Display.NONE));
     }
 
     @Test
@@ -232,9 +306,86 @@ public class TestToolsPresenterTest extends AbstractTestToolsTest {
 
     @Test
     public void onSearchedEvent() {
-        testToolsPresenter.onSearchedEvent("");
-        verify(testToolsPresenter, times(1)).clearDataObjectList();
-        verify(testToolsPresenter, times(1)).clearInstanceList();
+        String searched = "";
+        testToolsPresenter.onSearchedEvent(searched);
+        verify(testToolsPresenter, times(1)).clearLists();
+        testToolsPresenter.dataObjectFieldsMap
+                .entrySet()
+                .stream()
+                .filter(entry -> entry.getKey().toLowerCase().contains(searched))
+                .forEach(filteredEntry -> verify(testToolsPresenter, times(1)).addDataObjectListGroupItemView(eq(filteredEntry.getKey()), eq(filteredEntry.getValue())));
+        testToolsPresenter.simpleJavaTypeFieldsMap
+                .entrySet()
+                .stream()
+                .filter(entry -> entry.getKey().toLowerCase().contains(searched))
+                .forEach(filteredEntry -> verify(testToolsPresenter, times(1)).addSimpleJavaTypeListGroupItemView(eq(filteredEntry.getKey()), eq(filteredEntry.getValue())));
+        testToolsPresenter.instanceFieldsMap
+                .entrySet()
+                .stream()
+                .filter(entry -> entry.getKey().toLowerCase().contains(searched))
+                .forEach(filteredEntry -> verify(testToolsPresenter, times(1)).addInstanceListGroupItemView(eq(filteredEntry.getKey()), eq(filteredEntry.getValue())));
+        testToolsPresenter.simpleJavaInstanceFieldsMap
+                .entrySet()
+                .stream()
+                .filter(entry -> entry.getKey().toLowerCase().contains(searched))
+                .forEach(filteredEntry -> verify(testToolsPresenter, times(1)).addSimpleJavaInstanceListGroupItemView(eq(filteredEntry.getKey()), eq(filteredEntry.getValue())));
+        verify(testToolsPresenter, times(1)).updateSeparators();
+    }
+
+    @Test
+    public void onPerfectMatchSearchedEventNotEquals() {
+        String search = "";
+        testToolsPresenter.onPerfectMatchSearchedEvent(search, true);
+        verify(testToolsPresenter, times(1)).clearLists();
+        testToolsPresenter.dataObjectFieldsMap
+                .entrySet()
+                .stream()
+                .filter(entry -> testToolsPresenter.filterTerm(entry.getKey(), search, true))
+                .forEach(filteredEntry -> verify(testToolsPresenter, times(1)).addDataObjectListGroupItemView(eq(filteredEntry.getKey()), eq(filteredEntry.getValue())));
+        testToolsPresenter.simpleJavaTypeFieldsMap
+                .entrySet()
+                .stream()
+                .filter(entry -> testToolsPresenter.filterTerm(entry.getKey(), search, true))
+                .forEach(filteredEntry -> verify(testToolsPresenter, times(1)).addSimpleJavaTypeListGroupItemView(eq(filteredEntry.getKey()), eq(filteredEntry.getValue())));
+        testToolsPresenter.instanceFieldsMap
+                .entrySet()
+                .stream()
+                .filter(entry -> testToolsPresenter.filterTerm(entry.getKey(), search, true))
+                .forEach(filteredEntry -> verify(testToolsPresenter, times(1)).addInstanceListGroupItemView(eq(filteredEntry.getKey()), eq(filteredEntry.getValue())));
+        testToolsPresenter.simpleJavaInstanceFieldsMap
+                .entrySet()
+                .stream()
+                .filter(entry -> testToolsPresenter.filterTerm(entry.getKey(), search, true))
+                .forEach(filteredEntry -> verify(testToolsPresenter, times(1)).addSimpleJavaInstanceListGroupItemView(eq(filteredEntry.getKey()), eq(filteredEntry.getValue())));
+        verify(testToolsPresenter, times(1)).updateSeparators();
+    }
+
+    @Test
+    public void onPerfectMatchSearchedEventEquals() {
+        String search = "";
+        testToolsPresenter.onPerfectMatchSearchedEvent(search, false);
+        verify(testToolsPresenter, times(1)).clearLists();
+        testToolsPresenter.dataObjectFieldsMap
+                .entrySet()
+                .stream()
+                .filter(entry -> testToolsPresenter.filterTerm(entry.getKey(), search, false))
+                .forEach(filteredEntry -> verify(testToolsPresenter, times(1)).addDataObjectListGroupItemView(eq(filteredEntry.getKey()), eq(filteredEntry.getValue())));
+        testToolsPresenter.simpleJavaTypeFieldsMap
+                .entrySet()
+                .stream()
+                .filter(entry -> testToolsPresenter.filterTerm(entry.getKey(), search, false))
+                .forEach(filteredEntry -> verify(testToolsPresenter, times(1)).addSimpleJavaTypeListGroupItemView(eq(filteredEntry.getKey()), eq(filteredEntry.getValue())));
+        testToolsPresenter.instanceFieldsMap
+                .entrySet()
+                .stream()
+                .filter(entry -> testToolsPresenter.filterTerm(entry.getKey(), search, false))
+                .forEach(filteredEntry -> verify(testToolsPresenter, times(1)).addInstanceListGroupItemView(eq(filteredEntry.getKey()), eq(filteredEntry.getValue())));
+        testToolsPresenter.simpleJavaInstanceFieldsMap
+                .entrySet()
+                .stream()
+                .filter(entry -> testToolsPresenter.filterTerm(entry.getKey(), search, false))
+                .forEach(filteredEntry -> verify(testToolsPresenter, times(1)).addSimpleJavaInstanceListGroupItemView(eq(filteredEntry.getKey()), eq(filteredEntry.getValue())));
+        verify(testToolsPresenter, times(1)).updateSeparators();
     }
 
     @Test
@@ -294,6 +445,26 @@ public class TestToolsPresenterTest extends AbstractTestToolsTest {
         verify(eventBusMock, never()).fireEvent(isA(SetPropertyHeaderEvent.class));
         verify(eventBusMock, times(1)).fireEvent(isA(SetInstanceHeaderEvent.class));
     }
+
+    @Test
+    public void clearLists() {
+        testToolsPresenter.clearLists();
+        verify(testToolsPresenter, times(1)).clearDataObjectList();
+        verify(testToolsPresenter, times(1)).clearSimpleJavaTypeList();
+        verify(testToolsPresenter, times(1)).clearInstanceList();
+        verify(testToolsPresenter, times(1)).clearSimpleJavaInstanceFieldList();
+    }
+
+
+    @Test
+    public void updateSeparators() {
+        testToolsPresenter.updateSeparators();
+        verify(testToolsPresenter, times(1)).updateDataObjectListSeparator();
+        verify(testToolsPresenter, times(1)).updateSimpleJavaTypeListSeparator();
+        verify(testToolsPresenter, times(1)).updateInstanceListSeparator();
+        verify(testToolsPresenter, times(1)).updateSimpleJavaInstanceFieldListSeparator();
+    }
+
 
     @Test
     public void filterTerm() {
