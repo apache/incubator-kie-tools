@@ -298,6 +298,7 @@ public class ScenarioSimulationEditorPresenter
                         simulation::getScenarioByIndex
                 )
         );
+        view.showBusyIndicator(ScenarioSimulationEditorConstants.INSTANCE.running());
         service.call(getRefreshModelCallback(), new HasBusyIndicatorDefaultErrorCallback(view))
                 .runScenario(versionRecordManager.getCurrentPath(),
                              simulation.getSimulationDescriptor(),
@@ -351,6 +352,7 @@ public class ScenarioSimulationEditorPresenter
     }
 
     protected void refreshModelContent(TestRunResult testRunResult) {
+        view.hideBusyIndicator();
         if (this.model == null) {
             return;
         }

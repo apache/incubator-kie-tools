@@ -92,6 +92,7 @@ import static org.drools.workbench.screens.scenariosimulation.client.TestPropert
 import static org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioSimulationDocksHandler.SCESIMEDITOR_ID;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.anyInt;
@@ -512,22 +513,23 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
                                                                                                           new TestResultMessage()));
         when(statusMock.getSimulation()).thenReturn(simulationMock);
         when(contextMock.getStatus()).thenReturn(statusMock);
-        assertFalse(modelLocal.getSimulation().equals(simulationMock));
+        assertNotEquals(simulationMock, modelLocal.getSimulation());
         presenter.onStartup(observablePathMock, placeRequestMock);
         presenter.onRunScenario();
         verify(scenarioSimulationServiceMock, times(1)).runScenario(any(), any(), any());
         verify(scenarioGridModelMock, times(1)).resetErrors();
         verify(scenarioSimulationViewMock, times(1)).refreshContent(any());
         verify(scenarioSimulationDocksHandlerMock).expandTestResultsDock();
-        assertTrue(modelLocal.getSimulation().equals(simulationMock));
+        assertEquals(simulationMock, modelLocal.getSimulation());
     }
 
     @Test
     public void onRunTestById() throws Exception {
-        when(scenarioSimulationServiceMock.runScenario(any(), any(), any())).thenReturn(new TestRunResult(Collections.EMPTY_MAP,
+        when(scenarioSimulationServiceMock.runScenario(any(), any(), any())).thenReturn(new TestRunResult(Collections.emptyMap(),
                                                                                                           new TestResultMessage()));
         when(simulationMock.getScenarioByIndex(anyInt())).thenReturn(mock(Scenario.class));
         presenter.onRunScenario(Collections.singletonList(0));
+        verify(scenarioSimulationViewMock, times(1)).showBusyIndicator(anyString());
         verify(scenarioSimulationServiceMock, times(1)).runScenario(any(), any(), any());
         verify(scenarioGridModelMock, times(1)).resetErrors();
         verify(scenarioSimulationViewMock, times(1)).refreshContent(any());
@@ -544,6 +546,7 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
         when(scenarioMapMock.entrySet()).thenReturn(entries);
         presenter.refreshModelContent(new TestRunResult(scenarioMapMock,
                                                         new TestResultMessage()));
+        verify(scenarioSimulationViewMock, times(1)).hideBusyIndicator();
         verify(simulationMock, times(1)).replaceScenario(eq(scenarioIndex), any());
         assertEquals(scenarioSimulationModelMock, presenter.getModel());
         verify(scenarioSimulationViewMock, times(1)).refreshContent(eq(simulationMock));
