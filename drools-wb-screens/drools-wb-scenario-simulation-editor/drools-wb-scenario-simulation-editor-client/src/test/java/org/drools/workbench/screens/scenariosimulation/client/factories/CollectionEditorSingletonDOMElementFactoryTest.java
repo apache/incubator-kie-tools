@@ -30,6 +30,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.EXPECTED_MAP_FOR_NOT_SIMPLE_TYPE;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.EXPECTED_MAP_FOR_NOT_SIMPLE_TYPE_1;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.EXPECTED_MAP_FOR_NOT_SIMPLE_TYPE_2;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.FULL_CLASS_NAME;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.LIST_CLASS_NAME;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.LOWER_CASE_VALUE;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.MAP_CLASS_NAME;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.NUMBER_CLASS_NAME;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.STRING_CLASS_NAME;
 import static org.drools.workbench.screens.scenariosimulation.client.utils.ScenarioSimulationUtils.isSimpleJavaType;
 import static org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel.Type.DMN;
 import static org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel.Type.RULE;
@@ -45,11 +54,6 @@ import static org.mockito.Mockito.when;
 @RunWith(LienzoMockitoTestRunner.class)
 public class CollectionEditorSingletonDOMElementFactoryTest extends AbstractFactoriesTest {
 
-    protected final String STRING_CLASS_NAME = String.class.getCanonicalName();
-    protected final String NUMBER_CLASS_NAME = Number.class.getCanonicalName();
-    protected final Map<String, String> expectedMapForNotSimpleType = new HashMap<>();
-    protected final Map<String, String> expectedMapForNotSimpleType1 = new HashMap<>();
-    protected final Map<String, String> expectedMapForNotSimpleType2 = new HashMap<>();
 
     protected CollectionEditorSingletonDOMElementFactory collectionEditorSingletonDOMElementFactoryMock;
     protected CollectionViewImpl collectionEditorViewImpl;
@@ -92,15 +96,15 @@ public class CollectionEditorSingletonDOMElementFactoryTest extends AbstractFact
         when(factModelTreeMock.getSimpleProperties()).thenReturn(new HashMap<>());
         when(factModelTreeMock.getExpandableProperties()).thenReturn(new HashMap<>());
         /* This FactModelTree is used to test manageList and manageMap methods*/
-        when(factModelTreeMock1.getSimpleProperties()).thenReturn(expectedMapForNotSimpleType);
-        when(factModelTreeMock1.getExpandableProperties()).thenReturn(expectedMapForNotSimpleType1);
+        when(factModelTreeMock1.getSimpleProperties()).thenReturn(EXPECTED_MAP_FOR_NOT_SIMPLE_TYPE);
+        when(factModelTreeMock1.getExpandableProperties()).thenReturn(EXPECTED_MAP_FOR_NOT_SIMPLE_TYPE_1);
         when(scenarioSimulationContextLocal.getDataObjectFieldsMap().get(FULL_CLASS_NAME)).thenReturn(factModelTreeMock1);
-        expectedMapForNotSimpleType.put("x", "y");
-        expectedMapForNotSimpleType1.put("a", "b");
+        EXPECTED_MAP_FOR_NOT_SIMPLE_TYPE.put("x", "y");
+        EXPECTED_MAP_FOR_NOT_SIMPLE_TYPE_1.put("a", "b");
         when(scenarioSimulationContextLocal.getDataObjectFieldsMap().get("testclass")).thenReturn(factModelTreeMock2);
-        when(factModelTreeMock2.getSimpleProperties()).thenReturn(expectedMapForNotSimpleType2);
-        when(factModelTreeMock2.getExpandableProperties()).thenReturn(expectedMapForNotSimpleType1);
-        expectedMapForNotSimpleType2.put("z", "w");
+        when(factModelTreeMock2.getSimpleProperties()).thenReturn(EXPECTED_MAP_FOR_NOT_SIMPLE_TYPE_2);
+        when(factModelTreeMock2.getExpandableProperties()).thenReturn(EXPECTED_MAP_FOR_NOT_SIMPLE_TYPE_1);
+        EXPECTED_MAP_FOR_NOT_SIMPLE_TYPE_2.put("z", "w");
     }
 
     @Test
@@ -109,7 +113,7 @@ public class CollectionEditorSingletonDOMElementFactoryTest extends AbstractFact
         collectionEditorSingletonDOMElementFactoryMock.manageList(collectionEditorViewImpl, key, STRING_CLASS_NAME);
         verify(collectionEditorViewImpl, times(1)).setListWidget(true);
         Map<String, String> expectedMap1 = new HashMap<>();
-        expectedMap1.put("value", STRING_CLASS_NAME);
+        expectedMap1.put(LOWER_CASE_VALUE, STRING_CLASS_NAME);
         verify(collectionEditorViewImpl, times(1)).initListStructure(eq(key), eq(expectedMap1), isA(Map.class));
         verify(collectionEditorSingletonDOMElementFactoryMock, times(1)).getExpandablePropertiesMap(eq(STRING_CLASS_NAME));
     }
@@ -117,20 +121,20 @@ public class CollectionEditorSingletonDOMElementFactoryTest extends AbstractFact
     @Test
     public void manageMap_RuleSimpleType() {
         Map<String, String> expectedMap1 = new HashMap<>();
-        expectedMap1.put("value", NUMBER_CLASS_NAME);
+        expectedMap1.put(LOWER_CASE_VALUE, NUMBER_CLASS_NAME);
         manageMap(NUMBER_CLASS_NAME, true, expectedMap1);
     }
 
     @Test
     public void manageMap_NotRuleSimpleType() {
         Map<String, String> expectedMap1 = new HashMap<>();
-        expectedMap1.put("value", NUMBER_CLASS_NAME);
+        expectedMap1.put(LOWER_CASE_VALUE, NUMBER_CLASS_NAME);
         manageMap(NUMBER_CLASS_NAME, false, expectedMap1);
     }
 
     @Test
     public void manageMap_NotRuleNotSimpleType() {
-        manageMap(FULL_CLASS_NAME, false, expectedMapForNotSimpleType);
+        manageMap(FULL_CLASS_NAME, false, EXPECTED_MAP_FOR_NOT_SIMPLE_TYPE);
     }
 
     private void manageMap(String genericType1, boolean isRule, Map<String, String> expectedMap1) {

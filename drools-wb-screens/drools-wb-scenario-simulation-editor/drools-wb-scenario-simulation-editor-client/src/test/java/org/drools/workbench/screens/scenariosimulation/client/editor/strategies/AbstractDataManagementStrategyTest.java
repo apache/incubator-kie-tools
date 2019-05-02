@@ -80,7 +80,7 @@ public abstract class AbstractDataManagementStrategyTest extends AbstractScenari
                 doReturn(new ArrayList<>()).when(abstractDataManagementStrategySpy).getPropertiesToHide(eq(gridColumnMock), eq(scenarioGridModelMock));
             }
         }
-        final Map<String, List<String>> retrieved = abstractDataManagementStrategySpy.getPropertiesToHide(scenarioGridModelMock);
+        final Map<String, List<List<String>>> retrieved = abstractDataManagementStrategySpy.getPropertiesToHide(scenarioGridModelMock);
         if (selectedColumnNull) {
             assertTrue(retrieved.isEmpty());
             verify(abstractDataManagementStrategySpy, never()).getPropertiesToHide(isA(ScenarioGridColumn.class), eq(scenarioGridModelMock));
@@ -96,7 +96,7 @@ public abstract class AbstractDataManagementStrategyTest extends AbstractScenari
 
     private void commonGetPropertiesToHideList(boolean isPropertyAssigned) {
         doReturn(isPropertyAssigned).when(gridColumnMock).isPropertyAssigned();
-        List<String> retrieved = abstractDataManagementStrategySpy.getPropertiesToHide(gridColumnMock, scenarioGridModelMock);
+        List<List<String>> retrieved = abstractDataManagementStrategySpy.getPropertiesToHide(gridColumnMock, scenarioGridModelMock);
         if (isPropertyAssigned) {
             assertTrue(retrieved.isEmpty());
             verify(scenarioGridModelMock, never()).getSimulation();

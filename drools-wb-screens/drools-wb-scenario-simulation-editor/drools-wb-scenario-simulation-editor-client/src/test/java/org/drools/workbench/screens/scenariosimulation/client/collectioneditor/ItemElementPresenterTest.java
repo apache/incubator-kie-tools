@@ -15,9 +15,6 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.collectioneditor;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.dom.client.LIElement;
@@ -28,6 +25,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.ELEMENT1_ID;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.EXPANDABLE_PROPERTIES;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.EXPANDABLE_PROPERTIES_VALUES;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.ITEM_ID_EXPANDABLE_PROPERTIES_MAP_LOCAL;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.TEST_ITEM_ID;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.TEST_PROPERTIES_MAP;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -45,19 +48,6 @@ import static org.mockito.Mockito.when;
 @RunWith(GwtMockitoTestRunner.class)
 public class ItemElementPresenterTest extends ElementPresenterTest<ItemElementView, ItemElementView.Presenter> {
 
-    private static final String TEST_ITEM_ID = "TEST-ITEM-ID";
-
-    private static final String EXPANDABLE_PROPERTY = "EXPANDABLE_PROPERTY";
-
-    private Map<String, String> testPropertiesMap = Collections.singletonMap("TEST-KEY", "TEST-VALUE");
-
-    private Map<String, String> expandablePropertiesMap = Collections.singletonMap("EXPANDABLE-KEY", "EXPANDABLE-VALUE");
-
-    private Map<String, Map<String, String>> expandablePropertiesValues = Collections.singletonMap(EXPANDABLE_PROPERTY, expandablePropertiesMap);
-
-    private Map<String, List<String>> itemIdExpandablePropertiesMapLocal = new HashMap<>();
-
-    private List<String> expandableProperties = Collections.singletonList(EXPANDABLE_PROPERTY);
 
     @Mock
     private LIElement propertyFieldsMock;
@@ -75,31 +65,31 @@ public class ItemElementPresenterTest extends ElementPresenterTest<ItemElementVi
                 this.propertyPresenter = propertyPresenterMock;
                 this.elementViewList = elementViewListLocal;
                 this.collectionEditorPresenter = collectionPresenterMock;
-                this.itemIdExpandablePropertiesMap = itemIdExpandablePropertiesMapLocal;
+                this.itemIdExpandablePropertiesMap = ITEM_ID_EXPANDABLE_PROPERTIES_MAP_LOCAL;
             }
         });
-        itemIdExpandablePropertiesMapLocal.put(elementView1Mock.getItemId(), expandableProperties);
-        itemIdExpandablePropertiesMapLocal.put(elementView2Mock.getItemId(), expandableProperties);
+        ITEM_ID_EXPANDABLE_PROPERTIES_MAP_LOCAL.put(elementView1Mock.getItemId(), EXPANDABLE_PROPERTIES);
+        ITEM_ID_EXPANDABLE_PROPERTIES_MAP_LOCAL.put(elementView2Mock.getItemId(), EXPANDABLE_PROPERTIES);
     }
 
     @Test
     public void getItemContainer() {
         elementViewListLocal.clear();
-        itemIdExpandablePropertiesMapLocal.clear();
-        LIElement itemContainer = elementPresenter.getItemContainer(TEST_ITEM_ID, testPropertiesMap, expandablePropertiesValues);
-        verify(elementView1Mock, times(1 + expandablePropertiesValues.size())).init(elementPresenter); // Add invocation inside expandablePropertiesValues loop
+        ITEM_ID_EXPANDABLE_PROPERTIES_MAP_LOCAL.clear();
+        LIElement itemContainer = elementPresenter.getItemContainer(TEST_ITEM_ID, TEST_PROPERTIES_MAP, EXPANDABLE_PROPERTIES_VALUES);
+        verify(elementView1Mock, times(1 + EXPANDABLE_PROPERTIES_VALUES.size())).init(elementPresenter); // Add invocation inside EXPANDABLE_PROPERTIES_VALUES loop
         verify(elementView1Mock, times(1)).setItemId(TEST_ITEM_ID);
-        verify(elementView1Mock, times(1 + expandablePropertiesValues.size())).getItemContainer(); // Add invocation inside expandablePropertiesValues loop
-        verify(elementView1Mock, times(3)).getSaveChange(); // Three times because invoked also inside expandablePropertiesValues loop
-        testPropertiesMap.forEach((propertyName, propertyValue) -> {
+        verify(elementView1Mock, times(1 + EXPANDABLE_PROPERTIES_VALUES.size())).getItemContainer(); // Add invocation inside EXPANDABLE_PROPERTIES_VALUES loop
+        verify(elementView1Mock, times(3)).getSaveChange(); // Three times because invoked also inside EXPANDABLE_PROPERTIES_VALUES loop
+        TEST_PROPERTIES_MAP.forEach((propertyName, propertyValue) -> {
             verify(propertyPresenterMock, times(1))
                     .getPropertyFields(eq(TEST_ITEM_ID), eq(propertyName), eq(propertyValue));
             verify(innerItemContainerMock, times(1)).insertBefore(propertyFieldsMock, saveChangeMock);
             reset(innerItemContainerMock);
         });
-        assertTrue(itemIdExpandablePropertiesMapLocal.containsKey(TEST_ITEM_ID));
-        expandablePropertiesValues.forEach((nestedPropertyName, nestedPropertiesValues) -> {
-            assertTrue(itemIdExpandablePropertiesMapLocal.get(TEST_ITEM_ID).contains(nestedPropertyName));
+        assertTrue(ITEM_ID_EXPANDABLE_PROPERTIES_MAP_LOCAL.containsKey(TEST_ITEM_ID));
+        EXPANDABLE_PROPERTIES_VALUES.forEach((nestedPropertyName, nestedPropertiesValues) -> {
+            assertTrue(ITEM_ID_EXPANDABLE_PROPERTIES_MAP_LOCAL.get(TEST_ITEM_ID).contains(nestedPropertyName));
             verify((ItemElementPresenter) elementPresenter, times(1)).addExpandableItemElementView(eq(elementView1Mock), eq(nestedPropertiesValues), eq(nestedPropertyName));
         });
         assertNotNull(itemContainer);
@@ -112,7 +102,7 @@ public class ItemElementPresenterTest extends ElementPresenterTest<ItemElementVi
         elementPresenter.onEditItem(elementView1Mock);
         verify(elementPresenter, never()).onToggleRowExpansion(eq(elementView1Mock), eq((false)));
         verify(propertyPresenterMock, times(1)).editProperties(eq(elementView1Mock.getItemId()));
-        for (String expandableProperty : expandableProperties) {
+        for (String expandableProperty : EXPANDABLE_PROPERTIES) {
             verify(propertyPresenterMock, times(1)).editProperties(eq(expandableProperty));
         }
         verify(styleMock, times(1)).setDisplay(Style.Display.INLINE);
@@ -125,7 +115,7 @@ public class ItemElementPresenterTest extends ElementPresenterTest<ItemElementVi
         elementPresenter.onEditItem(elementView1Mock);
         verify(elementPresenter, times(1)).onToggleRowExpansion(eq(elementView1Mock), eq((false)));
         verify(propertyPresenterMock, times(1)).editProperties(eq(elementView1Mock.getItemId()));
-        for (String expandableProperty : expandableProperties) {
+        for (String expandableProperty : EXPANDABLE_PROPERTIES) {
             verify(propertyPresenterMock, times(1)).editProperties(eq(expandableProperty));
         }
         verify(styleMock, times(1)).setDisplay(Style.Display.INLINE);
@@ -154,7 +144,7 @@ public class ItemElementPresenterTest extends ElementPresenterTest<ItemElementVi
     public void updateItem() {
         elementPresenter.updateItem(elementView1Mock);
         verify(propertyPresenterMock, times(1)).updateProperties(eq(elementView1Mock.getItemId()));
-        for (String expandableProperty : expandableProperties) {
+        for (String expandableProperty : EXPANDABLE_PROPERTIES) {
             verify(propertyPresenterMock, times(1)).updateProperties(eq(expandableProperty));
         }
         verify(styleMock, times(1)).setDisplay(Style.Display.NONE);

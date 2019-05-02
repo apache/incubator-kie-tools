@@ -41,6 +41,9 @@ import org.mockito.Mock;
 import org.uberfire.client.callbacks.Callback;
 
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.FACT_NAME;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.FULL_FACT_CLASSNAME;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.LOWER_CASE_VALUE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -69,9 +72,7 @@ public class DMODataManagementStrategyTest extends AbstractDataManagementStrateg
     @Mock
     private AsyncPackageDataModelOracle oracleMock;
 
-    private final String FACT_NAME = "FACT_NAME";
 
-    private final String FULL_FACT_CLASSNAME = "FULL_FACT_CLASSNAME";
 
     @Before
     public void setup() {
@@ -198,8 +199,8 @@ public class DMODataManagementStrategyTest extends AbstractDataManagementStrateg
             Map<String, String> simpleProperties = retrieved.getSimpleProperties();
             assertNotNull(simpleProperties);
             assertEquals(1, simpleProperties.size());
-            Util.assertTrue(simpleProperties.containsKey("value"));
-            String simplePropertyValue = simpleProperties.get("value");
+            Util.assertTrue(simpleProperties.containsKey(LOWER_CASE_VALUE));
+            String simplePropertyValue = simpleProperties.get(LOWER_CASE_VALUE);
             assertNotNull(simplePropertyValue);
             assertEquals(fullName, simplePropertyValue);
         }

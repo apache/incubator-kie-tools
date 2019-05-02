@@ -88,6 +88,7 @@ import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuItem;
 
 import static junit.framework.TestCase.assertTrue;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.LOWER_CASE_VALUE;
 import static org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioSimulationDocksHandler.SCESIMEDITOR_ID;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -660,8 +661,8 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
 
         test1.addExpressionElement("test", String.class.getCanonicalName());
         Scenario scenario = simulation.addScenario();
-        scenario.addMappingValue(test1.getFactIdentifier(), test1.getExpressionIdentifier(), "value");
-        scenario.addMappingValue(test2.getFactIdentifier(), test2.getExpressionIdentifier(), "value");
+        scenario.addMappingValue(test1.getFactIdentifier(), test1.getExpressionIdentifier(), LOWER_CASE_VALUE);
+        scenario.addMappingValue(test2.getFactIdentifier(), test2.getExpressionIdentifier(), LOWER_CASE_VALUE);
 
         presenter.cleanReadOnlyColumn(simulation);
 

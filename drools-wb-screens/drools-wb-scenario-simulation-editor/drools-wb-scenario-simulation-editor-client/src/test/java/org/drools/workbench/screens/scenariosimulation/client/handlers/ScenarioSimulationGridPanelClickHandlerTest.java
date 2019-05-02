@@ -26,6 +26,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.CLICK_POINT_X;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.CLICK_POINT_Y;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.GRID_WIDTH;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.HEADER_HEIGHT;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.UI_COLUMN_INDEX;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.UI_ROW_INDEX;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;

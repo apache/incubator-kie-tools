@@ -33,6 +33,10 @@ import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
 
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.GRID_COMPUTED_LOCATION_X;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.GRID_COMPUTED_LOCATION_Y;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.MOUSE_EVENT_X;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.MOUSE_EVENT_Y;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
@@ -49,13 +53,7 @@ import static org.mockito.Mockito.when;
 @RunWith(LienzoMockitoTestRunner.class)
 public class ScenarioSimulationGridWidgetMouseEventHandlerTest extends AbstractScenarioSimulationGridHandlerTest {
 
-    private static final int MOUSE_EVENT_X = 32;
 
-    private static final int MOUSE_EVENT_Y = 64;
-
-    private static final double GRID_COMPUTED_LOCATION_X = 100.0;
-
-    private static final double GRID_COMPUTED_LOCATION_Y = 200.0;
 
     @Mock
     private MouseEvent nativeClickEvent;

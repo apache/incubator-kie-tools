@@ -22,6 +22,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.MAIN_QUESTION_TEXT;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.MAIN_TITLE_TEXT;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.OKDELETE_BUTTON_TEXT;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.TEXT1_TEXT;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.TEXT_DANGER_TEXT;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.TEXT_QUESTION_TEXT;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -35,7 +41,7 @@ public class DeletePopupPresenterTest extends AbstractDeletePopupViewTest {
 
     private DeletePopupPresenter deletePopupPresenter;
 
-    private final String TEXT_DANGER_TEXT = "TEXT_DANGER_TEXT";
+
 
     @Before
     public void setup() {

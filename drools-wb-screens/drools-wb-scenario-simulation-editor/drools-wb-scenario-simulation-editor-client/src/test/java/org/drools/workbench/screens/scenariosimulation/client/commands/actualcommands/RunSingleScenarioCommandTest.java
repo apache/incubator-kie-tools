@@ -23,6 +23,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.ROW_INDEX;
 import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;

@@ -36,6 +36,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
 import static junit.framework.TestCase.assertTrue;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.FACT_NAME;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;

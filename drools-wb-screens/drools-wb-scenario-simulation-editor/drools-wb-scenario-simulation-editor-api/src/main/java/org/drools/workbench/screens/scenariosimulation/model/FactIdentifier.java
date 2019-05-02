@@ -48,6 +48,14 @@ public class FactIdentifier {
         return className;
     }
 
+    public String getClassNameWithoutPackage() {
+        if (className.contains(".")) {
+            return className.substring(className.lastIndexOf(".")+1);
+        } else {
+            return className;
+        }
+    }
+
     public static FactIdentifier create(String name, String className) {
         return new FactIdentifier(name, className);
     }

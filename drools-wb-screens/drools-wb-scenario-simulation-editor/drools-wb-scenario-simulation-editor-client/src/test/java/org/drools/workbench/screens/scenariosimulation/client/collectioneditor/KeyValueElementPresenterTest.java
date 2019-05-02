@@ -15,9 +15,6 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.collectioneditor;
 
-import java.util.Collections;
-import java.util.Map;
-
 import com.google.gwt.dom.client.LIElement;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.UListElement;
@@ -27,6 +24,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.ELEMENT1_ID;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.ELEMENT2_ID;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.TEST_ITEM_ID;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.TEST_KEY_PROPERTY_MAP;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.TEST_VALUE_PROPERTYY_MAP;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -43,10 +45,6 @@ import static org.mockito.Mockito.when;
 @RunWith(GwtMockitoTestRunner.class)
 public class KeyValueElementPresenterTest extends ElementPresenterTest<KeyValueElementView, KeyValueElementView.Presenter> {
 
-    private static final String TEST_ITEM_ID = "TEST-ITEM-ID";
-
-    private Map<String, String> testKeyPropertyMap = Collections.singletonMap("TEST-KEY1", "TEST-KEY2");
-    private Map<String, String> testValuePropertyyMap = Collections.singletonMap("TEST-VALUE1", "TEST-VALUE2");
 
     @Mock
     private LIElement propertyFieldsMock;
@@ -95,7 +93,7 @@ public class KeyValueElementPresenterTest extends ElementPresenterTest<KeyValueE
     @Test
     public void getKeyValueContainer() {
         elementViewListLocal.clear();
-        LIElement keyValueContainer = elementPresenter.getKeyValueContainer(TEST_ITEM_ID, testKeyPropertyMap, testValuePropertyyMap);
+        LIElement keyValueContainer = elementPresenter.getKeyValueContainer(TEST_ITEM_ID, TEST_KEY_PROPERTY_MAP, TEST_VALUE_PROPERTYY_MAP);
         verify(elementView1Mock, times(1)).init(elementPresenter);
         verify(elementView1Mock, times(1)).setItemId(TEST_ITEM_ID);
         verify(elementView1Mock, times(1)).getKeyContainer();

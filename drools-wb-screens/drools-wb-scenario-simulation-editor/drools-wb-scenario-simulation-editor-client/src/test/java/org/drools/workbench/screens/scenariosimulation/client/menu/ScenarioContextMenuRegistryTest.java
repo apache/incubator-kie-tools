@@ -37,6 +37,8 @@ import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.COLUMN_GROUP;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.HEADER_HEIGHT;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;

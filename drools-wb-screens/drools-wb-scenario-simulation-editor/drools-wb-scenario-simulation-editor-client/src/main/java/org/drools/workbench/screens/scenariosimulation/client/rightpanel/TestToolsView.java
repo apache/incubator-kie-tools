@@ -127,7 +127,7 @@ public interface TestToolsView extends SubDockView<TestToolsView.Presenter> {
 
         void setInstanceFieldsMap(SortedMap<String, FactModelTree> factTypeFieldsMap);
 
-        void hideProperties(Map<String, List<String>> propertiesToHide);
+        void hideProperties(Map<String, List<List<String>>> propertiesToHide);
 
         void setSimpleJavaInstanceFieldsMap(SortedMap<String, FactModelTree> factTypeFieldsMap);
 
@@ -157,10 +157,10 @@ public interface TestToolsView extends SubDockView<TestToolsView.Presenter> {
          * Call this method to show only the data model with the given name, <b>disabled</b> (i.e. <b>not double-clickable</b>)
          * and their properties <b>enabled</b> (i.e. <b>double-clickable</b> to map to a <i>property</i> header/column below the belonging data model instance one)
          * @param factName
-         * @param propertyName the string to <b>eventually</b> use to select the property in the right panel
+         * @param propertyNameElements The <code>List</code> to <b>eventually</b> use to select the property in the test tools  panel
          * @param notEqualsSearch set to <code>true</code> to perform a <b>not</b> filter, i.e. to show only results <b>different</b> than filterTerm
          */
-        void onEnableEditorTab(String factName, String propertyName, boolean notEqualsSearch);
+        void onEnableEditorTab(String factName, List<String> propertyNameElements, boolean notEqualsSearch);
 
         /**
          * By default the <b>Editor Tab</b> must be disabled (no user interaction allowed).

@@ -15,6 +15,10 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import javax.enterprise.context.Dependent;
 
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
@@ -43,45 +47,39 @@ public class SetHeaderCellValueCommand extends AbstractScenarioSimulationCommand
     @Override
     protected void internalExecute(ScenarioSimulationContext context) throws Exception {
         final ScenarioSimulationContext.Status status = context.getStatus();
-        final String headerValue = status.getCellValue();
-        boolean valid = false;
+        String headerCellValue = status.getHeaderCellValue();
         if (isInstanceHeader) {
-            valid = validateInstanceHeader(context, headerValue, status.getColumnIndex());
-        }  else if (isPropertyHeader) {
-            valid = validatePropertyHeader(context, headerValue, status.getColumnIndex());
+            validateInstanceHeader(context, headerCellValue, status.getColumnIndex());
+        } else if (isPropertyHeader) {
+            validatePropertyHeader(context, headerCellValue, status.getColumnIndex());
         }
-        if (valid) {
-            context.getModel().updateHeader(status.getColumnIndex(), status.getRowIndex(), headerValue);
-        } else {
-            throw new Exception("Name \"" + headerValue + "\" cannot be used");
-        }
+        context.getModel().updateHeader(status.getColumnIndex(), status.getRowIndex(), headerCellValue);
     }
 
-    protected boolean validateInstanceHeader(ScenarioSimulationContext context, String headerValue, int columnIndex) {
-        boolean isADataType = context.getDataObjectFieldsMap().containsKey(headerValue);
-        return context.getModel().validateInstanceHeaderUpdate(headerValue, columnIndex, isADataType);
+    protected void validateInstanceHeader(ScenarioSimulationContext context, String headerCellValue, int columnIndex) throws Exception {
+        List<String> instanceNameElements = Collections.unmodifiableList(Arrays.asList(headerCellValue.split("\\.")));
+        boolean isADataType = !headerCellValue.endsWith(".") && instanceNameElements.size() == 1 && context.getDataObjectFieldsMap().containsKey(instanceNameElements.get(0));
+        context.getModel().validateInstanceHeaderUpdate(headerCellValue, columnIndex, isADataType);
     }
 
-    protected boolean validatePropertyHeader(ScenarioSimulationContext context, String headerValue, int columnIndex) {
+    protected void validatePropertyHeader(ScenarioSimulationContext context, String headerCellValue, int columnIndex) throws Exception {
+        List<String> propertyNameElements = Collections.unmodifiableList(Arrays.asList(headerCellValue.split("\\.")));
         final FactMapping factMappingByIndex = context.getStatus().getSimulation().getSimulationDescriptor().getFactMappingByIndex(columnIndex);
-        String className = factMappingByIndex.getFactIdentifier().getClassName();
-        if (className.contains(".")) {
-            className = className.substring(className.lastIndexOf(".")+1);
-        }
+        String className = factMappingByIndex.getFactIdentifier().getClassNameWithoutPackage();
         final FactModelTree factModelTree = context.getDataObjectFieldsMap().get(className);
-        boolean isPropertyType = factModelTree != null && recursivelyFindIsPropertyType(context, factModelTree, headerValue);
-        return context.getModel().validatePropertyHeaderUpdate(headerValue, columnIndex, isPropertyType);
+        boolean isPropertyType = !headerCellValue.endsWith(".") && factModelTree != null && recursivelyFindIsPropertyType(context, factModelTree, propertyNameElements);
+        context.getModel().validatePropertyHeaderUpdate(headerCellValue, columnIndex, isPropertyType);
     }
 
-    protected boolean recursivelyFindIsPropertyType(ScenarioSimulationContext context, FactModelTree factModelTree, String propertyName) {
-        boolean toReturn = factModelTree.getSimpleProperties().containsKey(propertyName) || factModelTree.getExpandableProperties().containsKey(propertyName);
-        if (!toReturn && propertyName.contains(".")) {
-            String propertyParent = propertyName.substring(0, propertyName.indexOf("."));
+    protected boolean recursivelyFindIsPropertyType(ScenarioSimulationContext context, FactModelTree factModelTree, List<String> propertyNameElements) {
+        boolean toReturn = propertyNameElements.size() == 1 && (factModelTree.getSimpleProperties().containsKey(propertyNameElements.get(0)) || factModelTree.getExpandableProperties().containsKey(propertyNameElements.get(0)));
+        if (!toReturn && propertyNameElements.size() > 1) {
+            String propertyParent = propertyNameElements.get(0);
             if (factModelTree.getExpandableProperties().containsKey(propertyParent)) {
-                String nestedHeaderValue = propertyName.substring(propertyName.lastIndexOf(".") + 1);
+                List<String> nestedPropertyNameElements = propertyNameElements.subList(1, propertyNameElements.size());
                 String className = factModelTree.getExpandableProperties().get(propertyParent);
                 final FactModelTree nestedFactModelTree = context.getDataObjectFieldsMap().get(className);
-                toReturn =  recursivelyFindIsPropertyType(context, nestedFactModelTree, nestedHeaderValue);
+                toReturn = recursivelyFindIsPropertyType(context, nestedFactModelTree, nestedPropertyNameElements);
             }
         }
         return toReturn;

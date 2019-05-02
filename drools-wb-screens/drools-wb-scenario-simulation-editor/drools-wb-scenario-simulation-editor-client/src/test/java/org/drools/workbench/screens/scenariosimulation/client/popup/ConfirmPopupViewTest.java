@@ -21,13 +21,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.MAIN_TEXT;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.MAIN_TITLE_TEXT;
 import static org.mockito.Mockito.spy;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class ConfirmPopupViewTest extends AbstractScenarioConfirmationPopupViewTest {
-
-
-    private final String MAIN_TEXT = "MAIN_TEXT";
 
     @Before
     public void setup() {

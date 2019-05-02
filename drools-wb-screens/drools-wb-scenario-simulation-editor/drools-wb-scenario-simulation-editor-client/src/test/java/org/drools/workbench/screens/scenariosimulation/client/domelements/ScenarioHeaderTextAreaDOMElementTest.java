@@ -26,6 +26,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.COLUMN_INDEX;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.MULTIPART_VALUE;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.ROW_INDEX;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.never;
@@ -42,8 +45,6 @@ public class ScenarioHeaderTextAreaDOMElementTest extends AbstractFactoriesTest 
     @Mock
     private ScenarioHeaderMetaData scenarioHeaderMetaDataMock;
 
-    private final String VALUE = "VALUE";
-
     @Before
     public void setup() {
         super.setup();
@@ -57,36 +58,36 @@ public class ScenarioHeaderTextAreaDOMElementTest extends AbstractFactoriesTest 
 
     @Test
     public void flushMetadataEqualsValue() {
-        when(scenarioHeaderMetaDataMock.getTitle()).thenReturn(VALUE);
+        when(scenarioHeaderMetaDataMock.getTitle()).thenReturn(MULTIPART_VALUE);
         scenarioHeaderTextAreaDOMElement.setScenarioHeaderMetaData(scenarioHeaderMetaDataMock);
-        scenarioHeaderTextAreaDOMElement.flush(VALUE);
-        verify(scenarioHeaderTextAreaDOMElement, never()).internalFlush(eq(VALUE));
+        scenarioHeaderTextAreaDOMElement.flush(MULTIPART_VALUE);
+        verify(scenarioHeaderTextAreaDOMElement, never()).internalFlush(eq(MULTIPART_VALUE));
     }
 
     @Test
     public void flushMetadataNotEqualsValue() {
         when(scenarioHeaderMetaDataMock.getTitle()).thenReturn("NOT_VALUE");
         scenarioHeaderTextAreaDOMElement.setScenarioHeaderMetaData(scenarioHeaderMetaDataMock);
-        scenarioHeaderTextAreaDOMElement.flush(VALUE);
-        verify(scenarioHeaderTextAreaDOMElement, times(1)).internalFlush(eq(VALUE));
+        scenarioHeaderTextAreaDOMElement.flush(MULTIPART_VALUE);
+        verify(scenarioHeaderTextAreaDOMElement, times(1)).internalFlush(eq(MULTIPART_VALUE));
     }
 
     @Test
     public void flushNullMetadata() {
         scenarioHeaderTextAreaDOMElement.setScenarioHeaderMetaData(null);
-        scenarioHeaderTextAreaDOMElement.flush(VALUE);
-        verify(scenarioHeaderTextAreaDOMElement, times(1)).internalFlush(eq(VALUE));
+        scenarioHeaderTextAreaDOMElement.flush(MULTIPART_VALUE);
+        verify(scenarioHeaderTextAreaDOMElement, times(1)).internalFlush(eq(MULTIPART_VALUE));
     }
 
     @Test
     public void internalFlushInvalidHeader() {
-        scenarioHeaderTextAreaDOMElement.internalFlush(VALUE);
-        verify(scenarioGridModelMock, never()).updateHeader(eq(COLUMN_INDEX), eq(ROW_INDEX), eq(VALUE));
+        scenarioHeaderTextAreaDOMElement.internalFlush(MULTIPART_VALUE);
+        verify(scenarioGridModelMock, never()).updateHeader(eq(COLUMN_INDEX), eq(ROW_INDEX), eq(MULTIPART_VALUE));
     }
 
     @Test
     public void internalFlushValidHeader() {
-        scenarioHeaderTextAreaDOMElement.internalFlush(VALUE);
+        scenarioHeaderTextAreaDOMElement.internalFlush(MULTIPART_VALUE);
         verify(eventBusMock, times(1)).fireEvent(isA(SetHeaderCellValueEvent.class));
     }
 

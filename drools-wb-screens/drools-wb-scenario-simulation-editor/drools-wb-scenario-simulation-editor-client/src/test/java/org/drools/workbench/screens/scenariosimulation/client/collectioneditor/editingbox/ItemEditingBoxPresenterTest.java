@@ -16,10 +16,8 @@
 package org.drools.workbench.screens.scenariosimulation.client.collectioneditor.editingbox;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.google.gwt.dom.client.UListElement;
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -28,6 +26,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.LOWER_CASE_VALUE;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.MAP_TEST_KEY;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.TEST_INSTANCE_PROPERTY_MAP;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.TEST_KEY;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.TEST_PROPERTYNAME;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
@@ -43,12 +46,6 @@ import static org.mockito.Mockito.when;
 @RunWith(GwtMockitoTestRunner.class)
 public class ItemEditingBoxPresenterTest extends AbstractEditingBoxPresenterTest {
 
-    private static final String TEST_KEY = "TEST-CLASSNAME#TEST-PROPERTYNAME";
-    private static final String TEST_PROPERTYNAME = "TEST-PROPERTYNAME";
-
-    private static final String MAP_TEST_KEY = "TEST-KEY";
-    private static final String MAP_TEST_VALUE = "TEST-VALUE";
-    private Map<String, String> testInstancePropertyMap = Collections.singletonMap(MAP_TEST_KEY, MAP_TEST_VALUE);
 
     @Mock
     private ItemEditingBox listEditingBoxMock;
@@ -75,7 +72,7 @@ public class ItemEditingBoxPresenterTest extends AbstractEditingBoxPresenterTest
 
     @Test
     public void getEditingBox() {
-        ((ItemEditingBoxPresenter)editingBoxPresenter).getEditingBox(TEST_KEY, testInstancePropertyMap, new HashMap<>());
+        ((ItemEditingBoxPresenter)editingBoxPresenter).getEditingBox(TEST_KEY, TEST_INSTANCE_PROPERTY_MAP, new HashMap<>());
         verify(viewsProviderMock, times(1)).getItemEditingBox();
         verify(listEditingBoxMock, times(1)).init(((ItemEditingBoxPresenter)editingBoxPresenter));
         verify(listEditingBoxMock, times(1)).setKey(TEST_KEY);
@@ -86,7 +83,7 @@ public class ItemEditingBoxPresenterTest extends AbstractEditingBoxPresenterTest
     @Test
     public void save() {
         editingBoxPresenter.save();
-        verify(propertyPresenterMock, times(1)).updateProperties("value");
+        verify(propertyPresenterMock, times(1)).updateProperties(LOWER_CASE_VALUE);
         verify(collectionPresenterMock, times(1)).addListItem(anyMap(), anyMap());
     }
 
@@ -98,7 +95,7 @@ public class ItemEditingBoxPresenterTest extends AbstractEditingBoxPresenterTest
         ItemEditingBox containerItemEditingBoxMock = mock(ItemEditingBox.class);
         UListElement containerPropertiesContainerMock = mock(UListElement.class);
         when(containerItemEditingBoxMock.getPropertiesContainer()).thenReturn(containerPropertiesContainerMock);
-        ((ItemEditingBoxPresenter)editingBoxPresenter).addExpandableItemEditingBox(containerItemEditingBoxMock, testInstancePropertyMap, TEST_KEY, TEST_PROPERTYNAME);
+        ((ItemEditingBoxPresenter)editingBoxPresenter).addExpandableItemEditingBox(containerItemEditingBoxMock, TEST_INSTANCE_PROPERTY_MAP, TEST_KEY, TEST_PROPERTYNAME);
         verify(viewsProviderMock, times(1)).getItemEditingBox();
         verify(listEditingBoxMock, times(1)).init(((ItemEditingBoxPresenter)editingBoxPresenter));
         verify(listEditingBoxMock, times(1)).setKey(TEST_KEY);

@@ -214,11 +214,10 @@ public class TestToolsPresenter extends AbstractSubDockPresenter<TestToolsView> 
     }
 
     @Override
-    public void hideProperties(Map<String, List<String>> propertiesToHide) {
+    public void hideProperties(Map<String, List<List<String>>> propertiesToHide) {
         listGroupItemPresenter.showAll();
         propertiesToHide.entrySet().stream().forEach(
-                stringListEntry -> stringListEntry.getValue().forEach(s -> {
-                    List<String> propertyParts = s.contains(".") ? Arrays.asList(s.split("\\.")) : Collections.singletonList(s);
+                stringListEntry -> stringListEntry.getValue().forEach(propertyParts -> {
                     listGroupItemPresenter.hideProperty(stringListEntry.getKey(), propertyParts);
                 })
         );
@@ -319,15 +318,14 @@ public class TestToolsPresenter extends AbstractSubDockPresenter<TestToolsView> 
     }
 
     @Override
-    public void onEnableEditorTab(String factName, String propertyName, boolean notEqualsSearch) {
+    public void onEnableEditorTab(String factName, List<String> propertyNameElements, boolean notEqualsSearch) {
         onDisableEditorTab();
         onPerfectMatchSearchedEvent(factName, notEqualsSearch);
         listGroupItemPresenter.enable(factName);
         editingColumnEnabled = true;
         view.enableEditorTab();
-        if (propertyName != null && !notEqualsSearch) {
-            List<String> propertyParts = propertyName.contains(".") ? Arrays.asList(propertyName.split("\\.")) : Collections.singletonList(propertyName);
-            listGroupItemPresenter.selectProperty(factName, propertyParts);
+        if (propertyNameElements != null && !notEqualsSearch) {
+            listGroupItemPresenter.selectProperty(factName, propertyNameElements);
         }
     }
 
@@ -366,7 +364,8 @@ public class TestToolsPresenter extends AbstractSubDockPresenter<TestToolsView> 
                 String value = isSimple(baseClass) ?
                         selectedFieldItemView.getFullPath() :
                         selectedFieldItemView.getFullPath() + "." + selectedFieldItemView.getFieldName();
-                getFullPackage(baseClass).ifPresent(fullPackage -> eventBus.fireEvent(new SetPropertyHeaderEvent(fullPackage, value, selectedFieldItemView.getClassName())));
+                List<String> propertyNameElements = Collections.unmodifiableList(Arrays.asList(value.split("\\.")));
+                getFullPackage(baseClass).ifPresent(fullPackage -> eventBus.fireEvent(new SetPropertyHeaderEvent(fullPackage, propertyNameElements, selectedFieldItemView.getClassName())));
             }
         }
     }

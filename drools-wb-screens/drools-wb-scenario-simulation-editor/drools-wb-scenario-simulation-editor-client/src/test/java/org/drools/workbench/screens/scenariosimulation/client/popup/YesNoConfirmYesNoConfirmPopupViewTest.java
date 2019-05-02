@@ -30,6 +30,12 @@ import org.uberfire.client.views.pfly.widgets.InlineNotification;
 import org.uberfire.client.views.pfly.widgets.Modal;
 import org.uberfire.mvp.Command;
 
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.CONFIRM_MESSAGE;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.INLINE_NOTIFICATION_MESSAGE;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.NO_BUTTON_TEXT;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.OK_BUTTON_TEXT;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.TITLE;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.YES_BUTTON_TEXT;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;

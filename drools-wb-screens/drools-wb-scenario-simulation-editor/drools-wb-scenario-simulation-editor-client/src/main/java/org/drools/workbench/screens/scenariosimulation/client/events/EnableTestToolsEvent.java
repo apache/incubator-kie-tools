@@ -15,6 +15,8 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.events;
 
+import java.util.List;
+
 import com.google.gwt.event.shared.GwtEvent;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.EnableTestToolsEventHandler;
 
@@ -37,9 +39,9 @@ public class EnableTestToolsEvent extends GwtEvent<EnableTestToolsEventHandler> 
     private final boolean notEqualsSearch;
 
     /**
-     * The string to <b>eventually</b> use to select the property in the test tools  panel
+     * The <code>List</code> to <b>eventually</b> use to select the property in the test tools  panel
      */
-    private final String propertyName;
+    private final List<String> propertyNameElements;
 
     /**
      * Fire this event to show all the first-level data models <b>enabled</b> (i.e. <b>double-clickable</b> to map to an <i>instance</i> header/column)
@@ -48,7 +50,7 @@ public class EnableTestToolsEvent extends GwtEvent<EnableTestToolsEventHandler> 
     public EnableTestToolsEvent() {
         filterTerm = null;
         notEqualsSearch = false;
-        propertyName = null;
+        propertyNameElements = null;
     }
 
     /**
@@ -60,7 +62,7 @@ public class EnableTestToolsEvent extends GwtEvent<EnableTestToolsEventHandler> 
     public EnableTestToolsEvent(String filterTerm) {
         this.filterTerm = filterTerm;
         notEqualsSearch = false;
-        propertyName = null;
+        propertyNameElements = null;
     }
 
     /**
@@ -68,12 +70,12 @@ public class EnableTestToolsEvent extends GwtEvent<EnableTestToolsEventHandler> 
      * and their properties <b>enabled</b> (i.e. <b>double-clickable</b> to map to a <i>property</i> header/column below the belonging data model instance one).
      * It show only results <b>equals</b> to filterTerm
      * @param filterTerm
-     * @param propertyName
+     * @param propertyNameElements The <code>List</code> to <b>eventually</b> use to select the property in the test tools  panel
      */
-    public EnableTestToolsEvent(String filterTerm, String propertyName) {
+    public EnableTestToolsEvent(String filterTerm, List<String> propertyNameElements) {
         this.filterTerm = filterTerm;
         notEqualsSearch = false;
-        this.propertyName = propertyName;
+        this.propertyNameElements = propertyNameElements;
     }
 
     /**
@@ -85,7 +87,7 @@ public class EnableTestToolsEvent extends GwtEvent<EnableTestToolsEventHandler> 
     public EnableTestToolsEvent(String filterTerm, boolean notEqualsSearch) {
         this.filterTerm = filterTerm;
         this.notEqualsSearch = notEqualsSearch;
-        propertyName = null;
+        propertyNameElements = null;
     }
 
     @Override
@@ -101,8 +103,8 @@ public class EnableTestToolsEvent extends GwtEvent<EnableTestToolsEventHandler> 
         return notEqualsSearch;
     }
 
-    public String getPropertyName() {
-        return propertyName;
+    public List<String> getPropertyNameElements() {
+        return propertyNameElements;
     }
 
     @Override

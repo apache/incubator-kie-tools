@@ -40,7 +40,7 @@ public class EnableTestToolsCommand extends AbstractScenarioSimulationCommand {
             if (status.getFilterTerm() == null) {
                 context.getTestToolsPresenter().onEnableEditorTab();
             } else {
-                context.getTestToolsPresenter().onEnableEditorTab(status.getFilterTerm(), status.getPropertyName(), status.isNotEqualsSearch());
+                context.getTestToolsPresenter().onEnableEditorTab(status.getFilterTerm(), status.getPropertyNameElements(), status.isNotEqualsSearch());
             }
         }
     }

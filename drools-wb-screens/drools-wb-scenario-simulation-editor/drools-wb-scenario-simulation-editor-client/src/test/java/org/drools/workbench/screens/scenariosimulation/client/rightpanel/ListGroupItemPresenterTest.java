@@ -27,6 +27,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.FACT_NAME;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.FULL_PACKAGE;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.MULTIPART_VALUE;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.VALUE_CLASS_NAME;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.anyObject;
@@ -90,11 +94,11 @@ public class ListGroupItemPresenterTest extends AbstractTestToolsTest {
 
     @Test
     public void getDivElementByStrings() {
-        DivElement retrieved = listGroupItemPresenter.getDivElement(FULL_PACKAGE, VALUE, VALUE_CLASS_NAME);
+        DivElement retrieved = listGroupItemPresenter.getDivElement(FULL_PACKAGE, MULTIPART_VALUE, VALUE_CLASS_NAME);
         assertNotNull(retrieved);
         assertEquals(divElementMock, retrieved);
-        verify(listGroupItemPresenter, times(1)).commonGetListGroupItemView(eq(FULL_PACKAGE), eq(VALUE), eq(true));
-        verify(listGroupItemPresenter, times(1)).populateListGroupItemView(eq(listGroupItemViewMock), eq(VALUE), eq(VALUE_CLASS_NAME));
+        verify(listGroupItemPresenter, times(1)).commonGetListGroupItemView(eq(FULL_PACKAGE), eq(MULTIPART_VALUE), eq(true));
+        verify(listGroupItemPresenter, times(1)).populateListGroupItemView(eq(listGroupItemViewMock), eq(MULTIPART_VALUE), eq(VALUE_CLASS_NAME));
     }
 
     @Test
@@ -154,12 +158,12 @@ public class ListGroupItemPresenterTest extends AbstractTestToolsTest {
 
     @Test
     public void populateListGroupItemView() {
-        listGroupItemPresenter.populateListGroupItemView(listGroupItemViewMock, "", FACT_NAME, FACT_MODEL_TREE);
-        verify(listGroupItemViewMock, times(1)).setFactName(eq(FACT_NAME));
+        listGroupItemPresenter.populateListGroupItemView(listGroupItemViewMock, "", FACT_MODEL_TREE.getFactName(), FACT_MODEL_TREE);
+        verify(listGroupItemViewMock, times(1)).setFactName(eq(FACT_MODEL_TREE.getFactName()));
         Map<String, String> simpleProperties = FACT_MODEL_TREE.getSimpleProperties();
         for (String key : simpleProperties.keySet()) {
             String value = simpleProperties.get(key);
-            verify(fieldItemPresenterMock, times(1)).getLIElement(eq(FACT_NAME), eq(FACT_NAME), eq(key), eq(value));
+            verify(fieldItemPresenterMock, times(1)).getLIElement(eq(FACT_MODEL_TREE.getFactName()), eq(FACT_MODEL_TREE.getFactName()), eq(key), eq(value));
         }
         verify(listGroupItemViewMock, times(simpleProperties.size())).addFactField(anyObject());
         reset(listGroupItemViewMock);

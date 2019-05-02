@@ -31,6 +31,9 @@ import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.Fact
 import org.junit.Before;
 import org.mockito.Mock;
 
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.FACT_PACKAGE;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.LOWER_CASE_VALUE;
+
 abstract class AbstractTestToolsTest {
 
     @Mock
@@ -43,19 +46,10 @@ abstract class AbstractTestToolsTest {
     protected SortedMap<String, FactModelTree> simpleJavaTypeTreeMap;
     protected SortedMap<String, FactModelTree> instanceFactTreeMap;
     protected SortedMap<String, FactModelTree> simpleJavaInstanceFactTreeMap;
-    protected String FACT_NAME;
-    protected String FACT_PACKAGE = "test.scesim.package";
-    protected final String GRID_COLUMN_TITLE = "GRID_COLUMN_TITLE";
-    protected final String GRID_COLUMN_GROUP = "GIVEN";
-    protected final String GRID_COLUMN_ID = "GRID_COLUMN_ID";
-    protected final String GRID_CELL_TEXT = "GRID_CELL_TEXT";
-    protected final String FULL_PACKAGE = "test.scesim";
-    protected final String VALUE = "VALUE";
-    protected final String VALUE_CLASS_NAME = String.class.getName();
-    protected final int ROW_COUNT = 4;
-    protected final int ROW_INDEX = 3;
-    protected final int COLUMN_INDEX = 5;
+
     protected FactModelTree FACT_MODEL_TREE;
+
+    protected String localFactName;
 
     @Before
     public void setup() {
@@ -64,9 +58,8 @@ abstract class AbstractTestToolsTest {
         instanceFactTreeMap = new TreeMap<>();
         dataObjectFactTreeMap.keySet().forEach(key -> instanceFactTreeMap.put(getRandomString(), dataObjectFactTreeMap.get(key)));
         simpleJavaInstanceFactTreeMap = new TreeMap<>();
-        simpleJavaTypeTreeMap.keySet().forEach(key -> simpleJavaInstanceFactTreeMap.put(getRandomString(), simpleJavaTypeTreeMap.get(key)));
-        FACT_NAME = new ArrayList<>(dataObjectFactTreeMap.keySet()).get(0);
-        FACT_MODEL_TREE = dataObjectFactTreeMap.get(FACT_NAME);
+        localFactName = new ArrayList<>(dataObjectFactTreeMap.keySet()).get(0);
+        FACT_MODEL_TREE = dataObjectFactTreeMap.get(localFactName);
     }
 
     protected String getRandomFactModelTree(Map<String, FactModelTree> source, int position) {
@@ -98,7 +91,7 @@ abstract class AbstractTestToolsTest {
         for (String key : DataManagementStrategy.SIMPLE_CLASSES_MAP.keySet()) {
             Map<String, String> simpleProperties = new HashMap<>();
             String fullName = DataManagementStrategy.SIMPLE_CLASSES_MAP.get(key).getCanonicalName();
-            simpleProperties.put("value", fullName);
+            simpleProperties.put(LOWER_CASE_VALUE, fullName);
             String packageName = fullName.substring(0, fullName.lastIndexOf("."));
             FactModelTree value = new FactModelTree(key, packageName, simpleProperties, new HashMap<>());
             toReturn.put(key, value);

@@ -22,6 +22,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.MAIN_TEXT;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.MAIN_TITLE_TEXT;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -35,7 +37,7 @@ public class ConfirmPopupPresenterTest extends AbstractDeletePopupViewTest {
 
     private ConfirmPopupPresenter confirmPopupPresenter;
 
-    private final String MAIN_TEXT = "MAIN_TEXT";
+
 
     @Before
     public void setup() {

@@ -53,15 +53,7 @@ public abstract class AbstractDeletePopupViewTest {
     @Mock
     protected HeadingElement mainQuestionMock;
 
-    protected final String MAIN_TITLE_TEXT = "MAIN_TITLE_TEXT";
-    protected final String MAIN_QUESTION_TEXT = "MAIN_QUESTION_TEXT";
-    protected final String TEXT1_TEXT = "TEXT1_TEXT";
-    protected final String TEXT_QUESTION_TEXT = "TEXT_QUESTION_TEXT";
-    protected final String TEXT_WARNING_TEXT = "TEXT_WARNING_TEXT";
-    protected final String OKDELETE_BUTTON_TEXT = "OKDELETE_BUTTON_TEXT";
-    protected final String OPTION1_TEXT = "OPTION1_TEXT";
-    protected final String OPTION2_TEXT = "OPTION2_TEXT";
-    protected final String OKPRESERVE_BUTTON_TEXT = "OKPRESERVE_BUTTON_TEXT";
+
 
     protected void commonSetup() {
         when(translationServiceMock.getTranslation(Constants.ConfirmPopup_Cancel)).thenReturn(Constants.ConfirmPopup_Cancel);

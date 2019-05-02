@@ -251,7 +251,7 @@ public class ScenarioSimulationEventHandler implements AppendColumnEventHandler,
     @Override
     public void onEvent(EnableTestToolsEvent event) {
         context.getStatus().setFilterTerm(event.getFilterTerm());
-        context.getStatus().setPropertyName(event.getPropertyName());
+        context.getStatus().setPropertyNameElements(event.getPropertyNameElements());
         context.getStatus().setNotEqualsSearch(event.isNotEqualsSearch());
         commonExecution(context, new EnableTestToolsCommand());
     }
@@ -331,7 +331,7 @@ public class ScenarioSimulationEventHandler implements AppendColumnEventHandler,
     public void onEvent(SetGridCellValueEvent event) {
         context.getStatus().setRowIndex(event.getRowIndex());
         context.getStatus().setColumnIndex(event.getColumnIndex());
-        context.getStatus().setCellValue(event.getCellValue());
+        context.getStatus().setGridCellValue(event.getCellValue());
         commonExecution(context, new SetGridCellValueCommand());
     }
 
@@ -339,7 +339,7 @@ public class ScenarioSimulationEventHandler implements AppendColumnEventHandler,
     public void onEvent(SetHeaderCellValueEvent event) {
         context.getStatus().setRowIndex(event.getRowIndex());
         context.getStatus().setColumnIndex(event.getColumnIndex());
-        context.getStatus().setCellValue(event.getCellValue());
+        context.getStatus().setHeaderCellValue(event.getHeaderCellValue());
         commonExecution(context, new SetHeaderCellValueCommand(event.isInstanceHeader(), event.isPropertyHeader()));
     }
 
@@ -373,16 +373,17 @@ public class ScenarioSimulationEventHandler implements AppendColumnEventHandler,
         if (context.getModel().getSelectedColumn() == null) {
             return;
         }
-        if (context.getModel().isAlreadyAssignedProperty(event.getValue())) {
-            onEvent(new ScenarioNotificationEvent("Property \"" + event.getValue() + "\" already assigned", NotificationEvent.NotificationType.ERROR));
+        if (context.getModel().isAlreadyAssignedProperty(event.getPropertyNameElements())) {
+            String value = String.join(".", event.getPropertyNameElements());
+            onEvent(new ScenarioNotificationEvent("Property \"" + value + "\" already assigned", NotificationEvent.NotificationType.ERROR));
             return;
         }
         context.getStatus().setFullPackage(event.getFullPackage());
-        context.getStatus().setValue(event.getValue());
+        context.getStatus().setPropertyNameElements(event.getPropertyNameElements());
         context.getStatus().setValueClassName(event.getValueClassName());
         if (context.getModel().isSelectedColumnEmpty()) {
             commonExecution(context, new SetPropertyHeaderCommand());
-        } else if (context.getModel().isSameSelectedColumnProperty(event.getValue())) {
+        } else if (context.getModel().isSameSelectedColumnProperty(event.getPropertyNameElements())) {
             return;
         } else if (context.getModel().isSameSelectedColumnType(event.getValueClassName())) {
             org.uberfire.mvp.Command okDeleteCommand = () -> {

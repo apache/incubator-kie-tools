@@ -25,6 +25,8 @@ import com.google.gwt.dom.client.ButtonElement;
 import org.junit.Test;
 import org.mockito.Mock;
 
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.ELEMENT1_ID;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.ELEMENT2_ID;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.never;
@@ -35,8 +37,7 @@ import static org.mockito.Mockito.when;
 
 public abstract class ElementPresenterTest<E extends ElementView, T extends ElementView.Presenter<E>> extends AbstractCollectionEditorTest {
 
-    protected final static String ELEMENT1_ID = "ELEMENT1_ID";
-    protected final static String ELEMENT2_ID = "ELEMENT2_ID";
+
 
     protected T elementPresenter;
 
@@ -75,7 +76,7 @@ public abstract class ElementPresenterTest<E extends ElementView, T extends Elem
         elementViewListLocal.add(elementView2Mock);
         for (String el : Arrays.asList(ELEMENT1_ID, ELEMENT2_ID)) {
             when(propertyPresenterMock.getSimpleProperties(eq(el + "#KEY"))).thenReturn(new HashMap<>());
-            when(propertyPresenterMock.getSimpleProperties(eq(el + "#VALUE"))).thenReturn(new HashMap<>());
+            when(propertyPresenterMock.getSimpleProperties(eq(el + "#MULTIPART_VALUE"))).thenReturn(new HashMap<>());
         }
     }
 

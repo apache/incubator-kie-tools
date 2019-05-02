@@ -16,6 +16,8 @@
 
 package org.drools.workbench.screens.scenariosimulation.client.utils;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -125,13 +127,13 @@ public class ScenarioSimulationGridHeaderUtilities {
             String complexSearch = getExistingInstances(columnGroup, scenarioGrid.getModel());
             return new EnableTestToolsEvent(complexSearch, true);
         } else if (Objects.equals(clickedScenarioHeaderMetadata.getMetadataType(), ScenarioHeaderMetaData.MetadataType.PROPERTY)) {
-            String propertyName = null;
+            List<String> propertyNameElements = null;
             if (scenarioGridColumn.isPropertyAssigned()) {
                 final Optional<Simulation> optionalSimulation = scenarioGrid.getModel().getSimulation();
-                propertyName = optionalSimulation.map(simulation -> getPropertyName(simulation, uiColumnIndex)).orElse(null);
+                propertyNameElements = optionalSimulation.map(simulation -> getPropertyNameElements(simulation, uiColumnIndex)).orElse(null);
             }
-            return propertyName != null ? new EnableTestToolsEvent(scenarioGridColumn.getInformationHeaderMetaData()
-                                                                            .getTitle(), propertyName) : new EnableTestToolsEvent(scenarioGridColumn.getInformationHeaderMetaData().getTitle());
+            return propertyNameElements != null ? new EnableTestToolsEvent(scenarioGridColumn.getInformationHeaderMetaData()
+                                                                            .getTitle(), propertyNameElements) : new EnableTestToolsEvent(scenarioGridColumn.getInformationHeaderMetaData().getTitle());
         } else {
             String complexSearch = getExistingInstances(columnGroup, scenarioGrid.getModel());
             return new EnableTestToolsEvent(complexSearch, true);
@@ -150,8 +152,8 @@ public class ScenarioSimulationGridHeaderUtilities {
                 .collect(Collectors.toSet()));
     }
 
-    public static String getPropertyName(final Simulation simulation, final int columnIndex) {
-        return String.join(".", simulation.getSimulationDescriptor().getFactMappingByIndex(columnIndex).getExpressionElementsWithoutClass()
+    public static List<String> getPropertyNameElements(final Simulation simulation, final int columnIndex) {
+        return Collections.unmodifiableList(simulation.getSimulationDescriptor().getFactMappingByIndex(columnIndex).getExpressionElementsWithoutClass()
                 .stream()
                 .map(ExpressionElement::getStep)
                 .collect(Collectors.toList()));

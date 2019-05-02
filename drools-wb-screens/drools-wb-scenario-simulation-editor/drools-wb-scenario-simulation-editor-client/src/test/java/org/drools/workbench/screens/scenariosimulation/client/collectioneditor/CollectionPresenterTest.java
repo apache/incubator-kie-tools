@@ -15,11 +15,8 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.collectioneditor;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import com.google.gwt.dom.client.ButtonElement;
 import com.google.gwt.dom.client.HeadingElement;
@@ -43,6 +40,14 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.uberfire.mvp.Command;
 
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.CHILD_COUNT;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.ITEM_ID;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.JSON_ARRAY_SIZE;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.KEY_SET;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.TEST_JSON;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.TEST_KEY;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.TEST_PROPERTYNAME;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.UPDATED_VALUE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
@@ -61,15 +66,7 @@ import static org.mockito.Mockito.when;
 @RunWith(GwtMockitoTestRunner.class)
 public class CollectionPresenterTest extends AbstractCollectionEditorTest {
 
-    private static final String TEST_JSON = "TEST-JSON";
-    private final static String TEST_CLASSNAME = "TEST-CLASSNAME";
-    private final static String TEST_PROPERTYNAME = "TEST-PROPERTYNAME";
-    private final static String TEST_KEY = TEST_CLASSNAME + "#" + TEST_PROPERTYNAME;
-    private final static int CHILD_COUNT = 3;
-    private final static String ITEM_ID = String.valueOf(CHILD_COUNT - 1);
-    private final static String UPDATED_VALUE = "UPDATED_VALUE";
-    private final static int JSON_ARRAY_SIZE = 2;
-    private final static Set<String> KEY_SET = new HashSet<>(Arrays.asList("prop1", "prop2"));
+
 
     @Mock
     private ItemElementPresenter listElementPresenterMock;

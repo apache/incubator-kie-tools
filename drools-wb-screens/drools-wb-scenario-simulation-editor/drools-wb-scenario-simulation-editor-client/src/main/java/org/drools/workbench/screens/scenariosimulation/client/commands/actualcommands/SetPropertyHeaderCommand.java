@@ -32,7 +32,7 @@ public class SetPropertyHeaderCommand extends AbstractSelectedColumnCommand {
     protected void executeIfSelectedColumn(ScenarioSimulationContext context, ScenarioGridColumn selectedColumn) {
         setPropertyHeader(context,
                           selectedColumn,
-                          context.getStatus().getValue(),
+                          context.getStatus().getPropertyNameElements(),
                           context.getStatus().getValueClassName(),
                           Optional.empty());
     }

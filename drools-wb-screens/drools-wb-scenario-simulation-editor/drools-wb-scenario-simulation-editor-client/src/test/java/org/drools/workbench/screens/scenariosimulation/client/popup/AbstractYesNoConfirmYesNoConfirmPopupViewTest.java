@@ -25,7 +25,6 @@ import org.uberfire.mvp.Command;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public abstract class AbstractYesNoConfirmYesNoConfirmPopupViewTest {
-    
 
     @Mock
     protected Command okCommandMock;
@@ -36,14 +35,6 @@ public abstract class AbstractYesNoConfirmYesNoConfirmPopupViewTest {
     @Mock
     protected Command noCommandMock;
 
-    protected final String TITLE = "TITLE";
-    protected final String OK_BUTTON_TEXT = "OK_BUTTON_TEXT";
-    protected final String YES_BUTTON_TEXT = "YES_BUTTON_TEXT";
-    protected final String NO_BUTTON_TEXT = "NO_BUTTON_TEXT";
-    protected final String CONFIRM_MESSAGE = "CONFIRM_MESSAGE";
-    protected final String INLINE_NOTIFICATION_MESSAGE = "INLINE_NOTIFICATION_MESSAGE";
     protected final Button.ButtonStyleType BUTTON_STYLE_TYPE = Button.ButtonStyleType.SUCCESS;
     protected final InlineNotification.InlineNotificationType INLINE_NOTIFICATION_TYPE = InlineNotification.InlineNotificationType.SUCCESS;
-
-
 }

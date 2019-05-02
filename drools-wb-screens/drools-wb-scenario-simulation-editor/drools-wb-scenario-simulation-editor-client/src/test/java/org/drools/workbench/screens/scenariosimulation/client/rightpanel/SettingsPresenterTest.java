@@ -27,6 +27,14 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.uberfire.mvp.Command;
 
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.DMN_FILE_PATH;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.DMN_NAME;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.DMN_NAMESPACE;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.DMO_SESSION;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.FILE_NAME;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.KIE_BASE;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.KIE_SESSION;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.RULE_FLOW_GROUP;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.reset;

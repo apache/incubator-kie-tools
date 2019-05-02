@@ -31,20 +31,18 @@ import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
 
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.CLICK_POINT_X;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.GRID_WIDTH;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.HEADER_HEIGHT;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.HEADER_ROW_HEIGHT;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.OFFSET_X;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.UI_COLUMN_INDEX;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.UI_ROW_INDEX;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
 public abstract class AbstractScenarioSimulationGridHandlerTest extends AbstractScenarioSimulationTest {
-
-    protected final Double GRID_WIDTH = 100.0;
-    protected final Double HEADER_HEIGHT = 10.0;
-    protected final Double HEADER_ROW_HEIGHT = 10.0;
-    protected final int UI_COLUMN_INDEX = 0;
-    protected final int UI_ROW_INDEX = 1;
-    protected final double CLICK_POINT_X = 5;
-    protected final double CLICK_POINT_Y = 5;
-    protected final int OFFSET_X = 0;
 
     @Mock
     protected Point2D point2DMock;

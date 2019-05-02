@@ -30,6 +30,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.INNER_TEXT;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.ITEM_ID;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.TEST_NEWVALUE;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.TEST_PROPERTYNAME;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.TEST_PROPERTYVALUE;
 import static org.drools.workbench.screens.scenariosimulation.client.utils.ConstantHolder.NODE_HIDDEN;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -45,11 +50,6 @@ import static org.mockito.Mockito.when;
 @RunWith(GwtMockitoTestRunner.class)
 public class PropertyPresenterTest extends AbstractCollectionEditorTest {
 
-    private static final String INNER_TEXT = "INNER_TEXT";
-    private static final String ITEM_ID = "ITEM_ID";
-    private static final String TEST_PROPERTYNAME = "TEST-PROPERTYNAME";
-    private static final String TEST_PROPERTYVALUE = "TEST-PROPERTYVALUE";
-    private static final String TEST_NEWVALUE = "TEST_NEWVALUE";
 
     @Mock
     private PropertyView propertyViewMock;

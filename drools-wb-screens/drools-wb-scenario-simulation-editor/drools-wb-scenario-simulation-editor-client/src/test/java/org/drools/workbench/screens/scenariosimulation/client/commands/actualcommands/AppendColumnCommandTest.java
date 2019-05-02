@@ -26,6 +26,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.COLUMN_GROUP;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.COLUMN_ID;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.FIRST_INDEX_RIGHT;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;

@@ -25,6 +25,11 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.uberfire.client.views.pfly.widgets.Button;
 
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.MAIN_QUESTION_TEXT;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.MAIN_TITLE_TEXT;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.OKDELETE_BUTTON_TEXT;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.TEXT1_TEXT;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.TEXT_QUESTION_TEXT;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;

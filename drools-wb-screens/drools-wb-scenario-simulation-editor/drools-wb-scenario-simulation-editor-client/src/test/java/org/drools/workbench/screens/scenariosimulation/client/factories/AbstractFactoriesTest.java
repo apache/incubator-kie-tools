@@ -28,6 +28,8 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.COLUMN_INDEX;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.ROW_INDEX;
 import static org.mockito.Mockito.when;
 
 public abstract class AbstractFactoriesTest extends AbstractScenarioSimulationTest {
@@ -43,8 +45,7 @@ public abstract class AbstractFactoriesTest extends AbstractScenarioSimulationTe
     @Captor
     protected ArgumentCaptor<KeyDownHandler> keyDownHandlerArgumentCaptor;
 
-    protected final static int ROW_INDEX = 1;
-    protected final static int COLUMN_INDEX = 2;
+
 
     @Before
     public void setup() {

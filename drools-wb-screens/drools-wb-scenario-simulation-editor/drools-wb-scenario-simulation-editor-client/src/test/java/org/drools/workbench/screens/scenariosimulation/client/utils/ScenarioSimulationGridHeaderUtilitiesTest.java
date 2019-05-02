@@ -39,6 +39,13 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.COLUMN_GROUP;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.COLUMN_ONE_TITLE;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.COLUMN_TWO_TITLE;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.HEADER_HEIGHT;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.HEADER_ROW_HEIGHT;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.MULTIPART_VALUE;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.UI_COLUMN_INDEX;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.doReturn;
@@ -48,13 +55,6 @@ import static org.mockito.Mockito.when;
 @RunWith(LienzoMockitoTestRunner.class)
 public class ScenarioSimulationGridHeaderUtilitiesTest extends AbstractScenarioSimulationTest {
 
-    private static final int HEADER_ROWS = 2;
-    private static final double HEADER_HEIGHT = 50.0;
-    private static final double HEADER_ROW_HEIGHT = HEADER_HEIGHT / HEADER_ROWS;
-    private static final Integer uiColumnIndex = 0;
-    private static final String columnGroup = "col-group";
-    private static final String columnOneTitle = "column one";
-    private static final String columnTwoTitle = "column two";
     private ScenarioGridColumn scenarioGridColumnOne;
     private ScenarioGridColumn scenarioGridColumnTwo;
 
@@ -98,13 +98,13 @@ public class ScenarioSimulationGridHeaderUtilitiesTest extends AbstractScenarioS
         scenarioGridColumnOne =
                 mockGridColumn(100.0,
                                Collections.singletonList(clickedScenarioHeaderMetadataMock),
-                               columnOneTitle,
-                               columnGroup);
+                               COLUMN_ONE_TITLE,
+                               COLUMN_GROUP);
         scenarioGridColumnTwo =
                 mockGridColumn(100.0,
                                Collections.singletonList(clickedScenarioHeaderMetadataMock),
-                               columnTwoTitle,
-                               columnGroup);
+                               COLUMN_TWO_TITLE,
+                               COLUMN_GROUP);
         gridColumns.add(scenarioGridColumnOne);
         gridColumns.add(scenarioGridColumnTwo);
     }
@@ -140,10 +140,10 @@ public class ScenarioSimulationGridHeaderUtilitiesTest extends AbstractScenarioS
         final EnableTestToolsEvent event = ScenarioSimulationGridHeaderUtilities.getEnableTestToolsEvent(scenarioGridMock,
                                                                                                          scenarioGridColumnOne,
                                                                                                          clickedScenarioHeaderMetadataMock,
-                                                                                                         uiColumnIndex,
-                                                                                                         columnGroup);
+                                                                                                         UI_COLUMN_INDEX,
+                                                                                                         COLUMN_GROUP);
 
-        assertThat(event.getFilterTerm()).isEqualTo(columnOneTitle + ";" + columnTwoTitle);
+        assertThat(event.getFilterTerm()).isEqualTo(COLUMN_ONE_TITLE + ";" + COLUMN_TWO_TITLE + ";" + MULTIPART_VALUE);
         assertThat(event.isNotEqualsSearch()).isTrue();
     }
 
@@ -154,10 +154,10 @@ public class ScenarioSimulationGridHeaderUtilitiesTest extends AbstractScenarioS
         final EnableTestToolsEvent event = ScenarioSimulationGridHeaderUtilities.getEnableTestToolsEvent(scenarioGridMock,
                                                                                                          scenarioGridColumnOne,
                                                                                                          clickedScenarioHeaderMetadataMock,
-                                                                                                         uiColumnIndex,
-                                                                                                         columnGroup);
+                                                                                                         UI_COLUMN_INDEX,
+                                                                                                         COLUMN_GROUP);
 
-        assertThat(event.getFilterTerm()).isEqualTo(columnOneTitle + ";" + columnTwoTitle);
+        assertThat(event.getFilterTerm()).isEqualTo(COLUMN_ONE_TITLE + ";" + COLUMN_TWO_TITLE + ";" + MULTIPART_VALUE);
         assertThat(event.isNotEqualsSearch()).isTrue();
     }
 
@@ -169,11 +169,11 @@ public class ScenarioSimulationGridHeaderUtilitiesTest extends AbstractScenarioS
         final EnableTestToolsEvent event = ScenarioSimulationGridHeaderUtilities.getEnableTestToolsEvent(scenarioGridMock,
                                                                                                          scenarioGridColumnOne,
                                                                                                          clickedScenarioHeaderMetadataMock,
-                                                                                                         uiColumnIndex,
-                                                                                                         columnGroup);
+                                                                                                         UI_COLUMN_INDEX,
+                                                                                                         COLUMN_GROUP);
 
-        assertThat(event.getFilterTerm()).isEqualTo(columnOneTitle);
-        assertThat(event.getPropertyName()).isNull();
+        assertThat(event.getFilterTerm()).isEqualTo(COLUMN_ONE_TITLE);
+        assertThat(event.getPropertyNameElements()).isNull();
         assertThat(event.isNotEqualsSearch()).isFalse();
     }
 
@@ -263,14 +263,14 @@ public class ScenarioSimulationGridHeaderUtilitiesTest extends AbstractScenarioS
     private ScenarioGridColumn mockGridColumn(final double width,
                                               final List<GridColumn.HeaderMetaData> headerMetaData,
                                               final String columnTitle,
-                                              final String columnGroup) {
+                                              final String COLUMN_GROUP) {
         final ScenarioGridColumn uiColumn = mock(ScenarioGridColumn.class);
 
         doReturn(headerMetaData).when(uiColumn).getHeaderMetaData();
         doReturn(width).when(uiColumn).getWidth();
 
         final ScenarioHeaderMetaData informationHeader = mock(ScenarioHeaderMetaData.class);
-        when(informationHeader.getColumnGroup()).thenReturn(columnGroup);
+        when(informationHeader.getColumnGroup()).thenReturn(COLUMN_GROUP);
         when(informationHeader.getTitle()).thenReturn(columnTitle);
 
         when(uiColumn.getInformationHeaderMetaData()).thenReturn(informationHeader);

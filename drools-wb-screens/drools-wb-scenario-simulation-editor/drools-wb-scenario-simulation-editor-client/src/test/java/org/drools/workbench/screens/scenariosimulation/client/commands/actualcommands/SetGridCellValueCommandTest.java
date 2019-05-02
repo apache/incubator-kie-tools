@@ -22,6 +22,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.COLUMN_INDEX;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.MULTIPART_VALUE;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.ROW_INDEX;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
@@ -43,7 +46,7 @@ public class SetGridCellValueCommandTest extends AbstractScenarioSimulationComma
     public void execute() {
         scenarioSimulationContextLocal.getStatus().setRowIndex(ROW_INDEX);
         scenarioSimulationContextLocal.getStatus().setColumnIndex(COLUMN_INDEX);
-        scenarioSimulationContextLocal.getStatus().setCellValue(VALUE);
+        scenarioSimulationContextLocal.getStatus().setGridCellValue(MULTIPART_VALUE);
         command.execute(scenarioSimulationContextLocal);
         verify(scenarioGridModelMock, times(1)).setCellValue(eq(ROW_INDEX), eq(COLUMN_INDEX), isA(ScenarioGridCellValue.class));
         verify(scenarioGridModelMock, times(1)).resetErrors(eq(ROW_INDEX));

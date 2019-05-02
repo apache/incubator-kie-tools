@@ -24,20 +24,20 @@ import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.dom.client.Style;
 import org.mockito.Mock;
 
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.DMN_FILE_PATH;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.DMN_NAME;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.DMN_NAMESPACE;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.DMO_SESSION;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.FILE_NAME;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.KIE_BASE;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.KIE_SESSION;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.RULE_FLOW_GROUP;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.SCENARIO_TYPE;
 import static org.mockito.Mockito.when;
 
 abstract class AbstractSettingsTest {
 
-    protected final String SCENARIO_TYPE = "SCENARIO_TYPE";
 
-    protected static final String FILE_NAME = "FILE_NAME";
-    protected static final String KIE_SESSION = "KIE_SESSION";
-    protected static final String KIE_BASE = "KIE_BASE";
-    protected static final String RULE_FLOW_GROUP = "RULE_FLOW_GROUP";
-    protected static final String DMO_SESSION = "DMO_SESSION";
-    protected static final String DMN_FILE_PATH = "DMN_FILE_PATH";
-    protected static final String DMN_NAMESPACE = "DMN_NAMESPACE";
-    protected static final String DMN_NAME = "DMN_NAME";
 
     @Mock
     protected LabelElement nameLabelMock;

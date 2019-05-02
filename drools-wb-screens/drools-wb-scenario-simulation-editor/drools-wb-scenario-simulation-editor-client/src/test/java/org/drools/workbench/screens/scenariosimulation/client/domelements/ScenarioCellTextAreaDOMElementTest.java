@@ -27,6 +27,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.MULTIPART_VALUE;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.TEST;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
@@ -62,18 +64,18 @@ public class ScenarioCellTextAreaDOMElementTest extends AbstractFactoriesTest {
 
     @Test
     public void flushSameValue() {
-        when(gridCellValueMock.getValue()).thenReturn(VALUE);
-        scenarioCellTextAreaDOMElement.flush(VALUE);
+        when(gridCellValueMock.getValue()).thenReturn(MULTIPART_VALUE);
+        scenarioCellTextAreaDOMElement.flush(MULTIPART_VALUE);
         verify(scenarioGridCellMock, times(1)).setEditingMode(eq(false));
         verify(scenarioCellTextAreaDOMElement, never()).internalFlush(anyString());
     }
 
     @Test
     public void flushDifferentValue() {
-        when(gridCellValueMock.getValue()).thenReturn("TEST");
-        scenarioCellTextAreaDOMElement.flush(VALUE);
+        when(gridCellValueMock.getValue()).thenReturn(TEST);
+        scenarioCellTextAreaDOMElement.flush(MULTIPART_VALUE);
         verify(scenarioGridCellMock, times(1)).setEditingMode(eq(false));
-        verify(scenarioCellTextAreaDOMElement, times(1)).internalFlush(eq(VALUE));
+        verify(scenarioCellTextAreaDOMElement, times(1)).internalFlush(eq(MULTIPART_VALUE));
     }
 
     @Test
@@ -95,7 +97,7 @@ public class ScenarioCellTextAreaDOMElementTest extends AbstractFactoriesTest {
 
     @Test
     public void internalFlush() {
-        scenarioCellTextAreaDOMElement.internalFlush(VALUE);
+        scenarioCellTextAreaDOMElement.internalFlush(MULTIPART_VALUE);
         verify(eventBusMock, times(1)).fireEvent(isA(SetGridCellValueEvent.class));
     }
 

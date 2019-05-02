@@ -25,6 +25,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.COLUMN_GROUP_FIRST;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.COLUMN_INSTANCE_TITLE_FIRST;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.PLACEHOLDER;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;

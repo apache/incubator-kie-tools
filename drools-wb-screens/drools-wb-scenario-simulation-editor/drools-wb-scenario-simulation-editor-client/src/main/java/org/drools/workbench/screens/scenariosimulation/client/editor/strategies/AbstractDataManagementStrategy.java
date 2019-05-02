@@ -16,6 +16,7 @@
 package org.drools.workbench.screens.scenariosimulation.client.editor.strategies;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -74,8 +75,8 @@ public abstract class AbstractDataManagementStrategy implements DataManagementSt
      * @param scenarioGridModel
      * @return
      */
-    protected Map<String, List<String>> getPropertiesToHide(ScenarioGridModel scenarioGridModel) {
-        final Map<String, List<String>> toReturn = new HashMap<>();
+    protected Map<String, List<List<String>>> getPropertiesToHide(ScenarioGridModel scenarioGridModel) {
+        final Map<String, List<List<String>>> toReturn = new HashMap<>();
         final ScenarioGridColumn selectedColumn = (ScenarioGridColumn) scenarioGridModel.getSelectedColumn();
         if (selectedColumn != null) {
             if (selectedColumn.isInstanceAssigned()) {
@@ -98,8 +99,8 @@ public abstract class AbstractDataManagementStrategy implements DataManagementSt
      * @param scenarioGridModel
      * @return
      */
-    protected List<String> getPropertiesToHide(ScenarioGridColumn selectedColumn, ScenarioGridModel scenarioGridModel) {
-        List<String> toReturn = new ArrayList<>();
+    protected List<List<String>> getPropertiesToHide(ScenarioGridColumn selectedColumn, ScenarioGridModel scenarioGridModel) {
+        List<List<String>> toReturn = new ArrayList<>();
         if (!selectedColumn.isPropertyAssigned()) {
             scenarioGridModel.getSimulation().ifPresent(simulation -> {
                 final SimulationDescriptor simulationDescriptor = simulation.getSimulationDescriptor();
@@ -108,12 +109,14 @@ public abstract class AbstractDataManagementStrategy implements DataManagementSt
                                         .filter(ScenarioGridColumn::isPropertyAssigned)
                                         .map(instanceColumn -> scenarioGridModel.getColumns().indexOf(instanceColumn))
                                         .map(columnIndex -> {
-                                            String propertyString = String.join(".", simulationDescriptor.getFactMappingByIndex(columnIndex).getExpressionElementsWithoutClass()
+                                            List<String> propertyNameElements =  simulationDescriptor.getFactMappingByIndex(columnIndex).getExpressionElementsWithoutClass()
                                                     .stream()
                                                     .map(ExpressionElement::getStep)
-                                                    .collect(Collectors.toList()));
-                                            propertyString = propertyString.isEmpty() ? "value" : propertyString;
-                                            return propertyString;
+                                                    .collect(Collectors.toList());
+                                            if  (propertyNameElements.isEmpty()) {
+                                                propertyNameElements.add("value");
+                                            }
+                                            return Collections.unmodifiableList(propertyNameElements);
                                         })
                                         .collect(Collectors.toList()));
             });
@@ -126,7 +129,7 @@ public abstract class AbstractDataManagementStrategy implements DataManagementSt
      */
     protected void storeData(final FactModelTuple factModelTuple, final TestToolsView.Presenter testToolsPresenter, final ScenarioGridModel scenarioGridModel) {
         // Instantiate a map of already assigned properties
-        final Map<String, List<String>> propertiesToHide = getPropertiesToHide(scenarioGridModel);
+        final Map<String, List<List<String>>> propertiesToHide = getPropertiesToHide(scenarioGridModel);
         final SortedMap<String, FactModelTree> visibleFacts = factModelTuple.getVisibleFacts();
         final Map<Boolean, List<Map.Entry<String, FactModelTree>>> partitionBy = visibleFacts.entrySet().stream()
                 .collect(Collectors.partitioningBy(stringFactModelTreeEntry -> stringFactModelTreeEntry.getValue().isSimple()));
@@ -170,10 +173,7 @@ public abstract class AbstractDataManagementStrategy implements DataManagementSt
                     .stream()
                     .filter(factMapping -> !Objects.equals(FactMappingType.OTHER, factMapping.getExpressionIdentifier().getType()))
                     .forEach(factMapping -> {
-                        String dataObjectName = factMapping.getFactIdentifier().getClassName();
-                        if (dataObjectName.contains(".")) {
-                            dataObjectName = dataObjectName.substring(dataObjectName.lastIndexOf(".") + 1);
-                        }
+                        String dataObjectName = factMapping.getFactIdentifier().getClassNameWithoutPackage();
                         final String instanceName = factMapping.getFactAlias();
                         if (!instanceName.equals(dataObjectName)) {
                             final FactModelTree factModelTree = sourceMap.get(dataObjectName);

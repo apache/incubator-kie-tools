@@ -21,6 +21,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.FACT_NAME;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.FIELD_NAME;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.FULL_PROPERTY_PATH;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -37,8 +40,8 @@ public class FieldItemViewTest extends AbstractTestToolsTest {
     @Before
     public void setup() {
         super.setup();
-        INNER_HTML = "<a>" + FACT_NAME + "</a> [" + FACT_MODEL_TREE.getFactName() + "]";
-        ID_ATTRIBUTE = "fieldElement-" + FACT_NAME + "-" + FACT_MODEL_TREE.getFactName();
+        INNER_HTML = "<a>" + FIELD_NAME + "</a> [" + FACT_MODEL_TREE.getFactName() + "]";
+        ID_ATTRIBUTE = "fieldElement-" + FACT_NAME + "-" + FIELD_NAME;
         this.fieldItemView = spy(new FieldItemViewImpl() {
             {
                 this.fieldElement = lIElementMock;
@@ -48,8 +51,11 @@ public class FieldItemViewTest extends AbstractTestToolsTest {
 
     @Test
     public void setFieldData() {
-        fieldItemView.setFieldData("", FACT_NAME, FACT_NAME, FACT_MODEL_TREE.getFactName());
+        fieldItemView.setFieldData(FULL_PROPERTY_PATH, FACT_NAME, FIELD_NAME, FACT_MODEL_TREE.getFactName());
         verify(lIElementMock, times(1)).setInnerHTML(eq(INNER_HTML));
         verify(lIElementMock, times(1)).setAttribute(eq("id"), eq(ID_ATTRIBUTE));
+        verify(lIElementMock, times(1)).setAttribute(eq("fieldName"), eq(FIELD_NAME));
+        verify(lIElementMock, times(1)).setAttribute(eq("className"), eq(FACT_MODEL_TREE.getFactName()));
+        verify(lIElementMock, times(1)).setAttribute(eq("fullPath"), eq(FULL_PROPERTY_PATH));
     }
 }

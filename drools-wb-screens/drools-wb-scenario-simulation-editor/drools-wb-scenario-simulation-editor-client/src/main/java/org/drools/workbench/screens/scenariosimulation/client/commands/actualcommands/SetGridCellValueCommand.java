@@ -36,7 +36,7 @@ public class SetGridCellValueCommand extends AbstractScenarioSimulationCommand {
         final ScenarioSimulationContext.Status status = context.getStatus();
         context.getModel().setCellValue(status.getRowIndex(),
                                         status.getColumnIndex(),
-                                        new ScenarioGridCellValue(status.getCellValue(), ScenarioSimulationEditorConstants.INSTANCE.insertValue()));
+                                        new ScenarioGridCellValue(status.getGridCellValue(), ScenarioSimulationEditorConstants.INSTANCE.insertValue()));
         context.getModel().resetErrors(status.getRowIndex());
     }
 }

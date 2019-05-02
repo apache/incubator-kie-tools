@@ -53,6 +53,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.DefaultGridWidg
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.SelectionExtension;
 
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.TEST;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -70,6 +71,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class ScenarioGridTest {
+
 
     @Mock
     private ScenarioGridModel scenarioGridModelMock;
@@ -264,7 +266,7 @@ public class ScenarioGridTest {
         factMappingDescription.getExpressionElements().clear();
         assertTrue(scenarioGrid.isPropertyAssigned(false, factMappingDescription));
         assertTrue(scenarioGrid.isPropertyAssigned(true, factMappingDescription));
-        factMappingDescription.getExpressionElements().add(new ExpressionElement("test"));
+        factMappingDescription.getExpressionElements().add(new ExpressionElement(TEST));
         assertTrue(scenarioGrid.isPropertyAssigned(false, factMappingDescription));
         assertTrue(scenarioGrid.isPropertyAssigned(true, factMappingDescription));
         factMappingGiven.getExpressionElements().clear();

@@ -28,6 +28,8 @@ import org.uberfire.client.views.pfly.widgets.Button;
 import org.uberfire.client.views.pfly.widgets.Modal;
 import org.uberfire.mvp.Command;
 
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.MAIN_TITLE_TEXT;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.OK_BUTTON_TEXT;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.anyString;
@@ -70,8 +72,7 @@ public abstract class AbstractScenarioPopupViewTest {
     @Mock
     protected HeadingElement mainTitleMock;
 
-    protected final String MAIN_TITLE_TEXT = "MAIN_TITLE_TEXT";
-    protected final String OK_BUTTON_TEXT = "OK_BUTTON_TEXT";
+
 
     @Test
     public void init() {

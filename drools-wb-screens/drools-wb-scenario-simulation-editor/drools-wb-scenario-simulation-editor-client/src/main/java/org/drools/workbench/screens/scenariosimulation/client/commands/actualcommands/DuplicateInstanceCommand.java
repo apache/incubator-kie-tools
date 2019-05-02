@@ -15,6 +15,8 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -54,11 +56,13 @@ public class DuplicateInstanceCommand extends AbstractSelectedColumnCommand {
                             int originalColumnIndex = context.getModel().getColumns().indexOf(originalColumn);
                             int createdColumnIndex = context.getModel().getColumns().indexOf(createdColumn);
                             final FactMapping originalFactMapping = context.getModel().getSimulation().get().getSimulationDescriptor().getFactMappingByIndex(originalColumnIndex);
-                            /*  Rebuilt the value, which is composed by: factName.property . The property MUST be the original property name */
-                            String value = alias + "." + originalFactMapping.getExpressionElements().stream().skip(1).map(ExpressionElement::getStep).collect(Collectors.joining("."));
+                            /*  Rebuilt propertyNameElements, which is composed by: factName.property . The property MUST be the original property name */
+                            List<String> propertyNameElements = new ArrayList();
+                            propertyNameElements.add(alias);
+                            propertyNameElements.addAll(originalFactMapping.getExpressionElementsWithoutClass().stream().map(ExpressionElement::getStep).collect(Collectors.toList()));
                             setPropertyHeader(context,
                                               createdColumn,
-                                              value,
+                                              propertyNameElements,
                                               originalFactMapping.getClassName(),
                                               Optional.of(originalColumn.getPropertyHeaderMetaData().getTitle()));
 

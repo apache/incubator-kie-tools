@@ -15,6 +15,8 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.events;
 
+import java.util.List;
+
 import com.google.gwt.event.shared.GwtEvent;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.SetPropertyHeaderEventHandler;
 
@@ -26,19 +28,19 @@ public class SetPropertyHeaderEvent extends GwtEvent<SetPropertyHeaderEventHandl
     public static Type<SetPropertyHeaderEventHandler> TYPE = new Type<>();
 
     private String fullPackage;
-    private String value;
+    private List<String> propertyNameElements;
     private String valueClassName;
 
     /**
      * Use this constructor to modify the <i>property</i> level header
      *
      * @param fullPackage
-     * @param value
+     * @param propertyNameElements
      * @param valueClassName
      */
-    public SetPropertyHeaderEvent(String fullPackage, String value, String valueClassName) {
+    public SetPropertyHeaderEvent(String fullPackage, List<String> propertyNameElements, String valueClassName) {
         this.fullPackage = fullPackage;
-        this.value = value;
+        this.propertyNameElements = propertyNameElements;
         this.valueClassName = valueClassName;
     }
 
@@ -51,8 +53,8 @@ public class SetPropertyHeaderEvent extends GwtEvent<SetPropertyHeaderEventHandl
         return fullPackage;
     }
 
-    public String getValue() {
-        return value;
+    public List<String> getPropertyNameElements() {
+        return propertyNameElements;
     }
 
     public String getValueClassName() {

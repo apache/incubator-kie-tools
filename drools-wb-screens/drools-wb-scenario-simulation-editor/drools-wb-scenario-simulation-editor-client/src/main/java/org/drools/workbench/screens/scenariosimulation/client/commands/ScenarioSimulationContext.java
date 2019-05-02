@@ -15,6 +15,7 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.commands;
 
+import java.util.List;
 import java.util.SortedMap;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -187,7 +188,7 @@ public class ScenarioSimulationContext {
         protected String valueClassName;
         protected boolean keepData;
 
-        protected String cellValue;
+        protected String gridCellValue;
 
         protected int rowIndex;
 
@@ -205,9 +206,14 @@ public class ScenarioSimulationContext {
         protected boolean notEqualsSearch = false;
 
         /**
-         * The string to <b>eventually</b> use to select the property in the right panel
+         * The <code>List</code> to <b>eventually</b> use to select the property in the test tools  panel
          */
-        protected String propertyName;
+        protected List<String> propertyNameElements;
+
+        /**
+         * The <b>content</b> of a header cell
+         */
+        protected String headerCellValue;
 
         /**
          * Disable the <b>TestTools</b>
@@ -331,12 +337,12 @@ public class ScenarioSimulationContext {
             this.notEqualsSearch = notEqualsSearch;
         }
 
-        public String getPropertyName() {
-            return propertyName;
+        public List<String> getPropertyNameElements() {
+            return propertyNameElements;
         }
 
-        public void setPropertyName(String propertyName) {
-            this.propertyName = propertyName;
+        public void setPropertyNameElements(List<String> propertyNameElements) {
+            this.propertyNameElements = propertyNameElements;
         }
 
         public boolean isDisable() {
@@ -355,12 +361,20 @@ public class ScenarioSimulationContext {
             this.openDock = openDock;
         }
 
-        public String getCellValue() {
-            return cellValue;
+        public String getGridCellValue() {
+            return gridCellValue;
         }
 
-        public void setCellValue(String cellValue) {
-            this.cellValue = cellValue;
+        public void setGridCellValue(String gridCellValue) {
+            this.gridCellValue = gridCellValue;
+        }
+
+        public String getHeaderCellValue() {
+            return headerCellValue;
+        }
+
+        public void setHeaderCellValue(String headerCellValue) {
+            this.headerCellValue = headerCellValue;
         }
 
         public Simulation getSimulation() {
@@ -383,7 +397,7 @@ public class ScenarioSimulationContext {
             toReturn.value = this.value;
             toReturn.valueClassName = this.valueClassName;
             toReturn.keepData = this.keepData;
-            toReturn.cellValue = this.cellValue;
+            toReturn.gridCellValue = this.gridCellValue;
             toReturn.rowIndex = this.rowIndex;
             toReturn.simulation = this.simulation.cloneSimulation();
             return toReturn;
