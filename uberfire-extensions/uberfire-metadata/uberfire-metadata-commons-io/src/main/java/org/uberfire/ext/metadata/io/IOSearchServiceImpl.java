@@ -32,6 +32,7 @@ import org.uberfire.java.nio.base.SegmentedPath;
 import org.uberfire.java.nio.file.Path;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
+import static org.uberfire.ext.metadata.backend.lucene.index.directory.DirectoryFactory.*;
 
 /**
  *
@@ -108,7 +109,7 @@ public class IOSearchServiceImpl implements IOSearchService {
             clusterSegments[i] = new ClusterSegment() {
                 @Override
                 public String getClusterId() {
-                    return fsId.id()+"/"+segmentedPath.getSegmentId();
+                    return fsId.id() + CLUSTER_ID_SEGMENT_SEPARATOR + segmentedPath.getSegmentId();
                 }
 
                 @Override

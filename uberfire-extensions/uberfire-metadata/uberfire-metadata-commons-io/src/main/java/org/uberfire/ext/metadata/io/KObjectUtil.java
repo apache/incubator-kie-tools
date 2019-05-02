@@ -16,9 +16,6 @@
 
 package org.uberfire.ext.metadata.io;
 
-import java.io.File;
-import java.util.ArrayList;
-
 import org.apache.commons.codec.digest.DigestUtils;
 import org.uberfire.ext.metadata.backend.lucene.fields.FieldFactory;
 import org.uberfire.ext.metadata.backend.lucene.model.KClusterImpl;
@@ -29,25 +26,22 @@ import org.uberfire.ext.metadata.model.KProperty;
 import org.uberfire.ext.metadata.model.schema.MetaType;
 import org.uberfire.java.nio.base.FileSystemId;
 import org.uberfire.java.nio.base.SegmentedPath;
-import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.attribute.FileAttribute;
+
+import java.util.ArrayList;
 
 import static org.apache.commons.codec.binary.Base64.encodeBase64String;
 import static org.apache.commons.io.FilenameUtils.getBaseName;
 import static org.apache.commons.io.FilenameUtils.getExtension;
+import static org.uberfire.ext.metadata.backend.lucene.index.directory.DirectoryFactory.CLUSTER_ID_SEGMENT_SEPARATOR;
 
 /**
  *
  */
 public final class KObjectUtil {
 
-    private static final MetaType META_TYPE = new MetaType() {
-        @Override
-        public String getName() {
-            return Path.class.getName();
-        }
-    };
+    private static final MetaType META_TYPE = () -> Path.class.getName();
 
     private KObjectUtil() {
 
@@ -69,7 +63,7 @@ public final class KObjectUtil {
             public String getClusterId() {
                 final String fsId = ((FileSystemId) path.getFileSystem()).id();
                 final String segmentId = ((SegmentedPath) path).getSegmentId();
-                return fsId + File.separator + segmentId;
+                return fsId + CLUSTER_ID_SEGMENT_SEPARATOR + segmentId;
             }
 
             @Override
@@ -102,7 +96,7 @@ public final class KObjectUtil {
             public String getClusterId() {
                 final String fsId = ((FileSystemId) path.getFileSystem()).id();
                 final String segmentId = ((SegmentedPath) path).getSegmentId();
-                return fsId + File.separator + segmentId;
+                return fsId + CLUSTER_ID_SEGMENT_SEPARATOR + segmentId;
             }
 
             @Override
@@ -248,7 +242,7 @@ public final class KObjectUtil {
     public static KCluster toKCluster(final Path fsPath) {
         final String fsId = ((FileSystemId) fsPath.getFileSystem()).id();
         final String segmentId = ((SegmentedPath) fsPath).getSegmentId();
-        return new KClusterImpl(fsId + File.separator + segmentId);
+        return new KClusterImpl(fsId + CLUSTER_ID_SEGMENT_SEPARATOR + segmentId);
     }
 
     private static String sha1(final String input) {

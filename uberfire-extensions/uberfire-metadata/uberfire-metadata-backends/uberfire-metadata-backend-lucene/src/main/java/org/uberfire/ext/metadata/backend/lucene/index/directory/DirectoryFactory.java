@@ -39,6 +39,7 @@ import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull
 public class DirectoryFactory implements LuceneIndexFactory {
 
     private static final String REPOSITORIES_ROOT_DIR = ".index";
+    public static final String CLUSTER_ID_SEGMENT_SEPARATOR = "/";
 
     private final Map<KCluster, LuceneIndex> clusters = new ConcurrentHashMap<>();
     private final DirectoryType type;
@@ -76,8 +77,8 @@ public class DirectoryFactory implements LuceneIndexFactory {
     }
 
     protected static String clusterIdOf(File file) {
-        return file.getParentFile().getParentFile().getName() + "/" +
-                file.getParentFile().getName() + "/" +
+        return file.getParentFile().getParentFile().getName() + CLUSTER_ID_SEGMENT_SEPARATOR +
+                file.getParentFile().getName() + CLUSTER_ID_SEGMENT_SEPARATOR +
                 file.getName();
     }
 
