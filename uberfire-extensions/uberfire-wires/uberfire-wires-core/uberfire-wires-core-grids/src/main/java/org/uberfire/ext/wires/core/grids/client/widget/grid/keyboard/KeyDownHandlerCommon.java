@@ -34,18 +34,15 @@ public class KeyDownHandlerCommon implements KeyDownHandler {
     protected final GridLayer gridLayer;
     protected final GridWidget gridWidget;
     protected final HasSingletonDOMElementResource gridCell;
-    protected final GridBodyCellRenderContext context;
 
     public KeyDownHandlerCommon(final GridLienzoPanel gridPanel,
                                 final GridLayer gridLayer,
                                 final GridWidget gridWidget,
-                                final HasSingletonDOMElementResource gridCell,
-                                final GridBodyCellRenderContext context) {
+                                final HasSingletonDOMElementResource gridCell) {
         this.gridPanel = gridPanel;
         this.gridLayer = gridLayer;
         this.gridWidget = gridWidget;
         this.gridCell = gridCell;
-        this.context = context;
     }
 
     @Override

@@ -18,7 +18,6 @@ package org.uberfire.ext.wires.core.grids.client.widget.dom.multiple.impl;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import org.gwtbootstrap3.client.ui.CheckBox;
-import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.impl.CheckBoxDOMElement;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
@@ -41,19 +40,23 @@ public class CheckBoxDOMElementFactory extends BaseDOMElementFactory<Boolean, Ch
 
     @Override
     public CheckBoxDOMElement createDomElement(final GridLayer gridLayer,
-                                               final GridWidget gridWidget,
-                                               final GridBodyCellRenderContext context) {
+                                               final GridWidget gridWidget) {
         final CheckBox widget = createWidget();
         final CheckBoxDOMElement e = new CheckBoxDOMElement(widget,
                                                             gridLayer,
                                                             gridWidget);
+        registerHandlers(widget, e);
+        return e;
+    }
+
+    @Override
+    public void registerHandlers(final CheckBox widget, final CheckBoxDOMElement widgetDomElement) {
         widget.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(final ClickEvent event) {
-                e.flush(widget.getValue());
+                widgetDomElement.flush(widget.getValue());
                 gridLayer.batch();
             }
         });
-        return e;
     }
 }

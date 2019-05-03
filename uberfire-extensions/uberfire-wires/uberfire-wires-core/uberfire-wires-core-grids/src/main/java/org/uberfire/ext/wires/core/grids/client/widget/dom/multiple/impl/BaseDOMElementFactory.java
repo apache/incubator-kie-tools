@@ -57,8 +57,7 @@ public abstract class BaseDOMElementFactory<T, W extends Widget, E extends BaseD
         E domElement;
         if (consumed + 1 > domElements.size()) {
             domElement = createDomElement(gridLayer,
-                                          gridWidget,
-                                          context);
+                                          gridWidget);
             domElements.add(domElement);
         } else {
             domElement = domElements.get(consumed);

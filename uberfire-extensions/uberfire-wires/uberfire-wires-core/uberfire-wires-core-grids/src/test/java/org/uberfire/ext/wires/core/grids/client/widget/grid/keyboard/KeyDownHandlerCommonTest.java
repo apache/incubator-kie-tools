@@ -30,7 +30,6 @@ import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
-import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.single.HasSingletonDOMElementResource;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.GridColumnRenderer;
@@ -59,9 +58,6 @@ public class KeyDownHandlerCommonTest {
     private HasSingletonDOMElementResource gridCell;
 
     @Mock
-    private GridBodyCellRenderContext context;
-
-    @Mock
     private GridColumn.HeaderMetaData headerMetaData;
 
     @Mock
@@ -77,8 +73,7 @@ public class KeyDownHandlerCommonTest {
         handler = new KeyDownHandlerCommon(gridPanel,
                                            gridLayer,
                                            gridWidget,
-                                           gridCell,
-                                           context);
+                                           gridCell);
 
         for (int size = 0; size < 3; size++) {
             uiModel.appendRow(new BaseGridRow());

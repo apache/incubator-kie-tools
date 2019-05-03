@@ -15,10 +15,7 @@
  */
 package org.uberfire.ext.wires.core.grids.client.widget.dom.single.impl;
 
-import com.google.gwt.event.dom.client.BlurEvent;
-import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.user.client.ui.ListBox;
-import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.impl.ListBoxDOMElement;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
@@ -39,29 +36,7 @@ public class ListBoxSingletonDOMElementFactory extends BaseSingletonDOMElementFa
 
     @Override
     public ListBox createWidget() {
-        return new ListBox() {{
-            addKeyDownHandler((e) -> e.stopPropagation());
-            addMouseDownHandler((e) -> e.stopPropagation());
-        }};
-    }
-
-    @Override
-    public ListBoxDOMElement createDomElement(final GridLayer gridLayer,
-                                              final GridWidget gridWidget,
-                                              final GridBodyCellRenderContext context) {
-        this.widget = createWidget();
-        this.e = new ListBoxDOMElement(widget,
-                                       gridLayer,
-                                       gridWidget);
-        widget.addBlurHandler(new BlurHandler() {
-            @Override
-            public void onBlur(final BlurEvent event) {
-                destroyResources();
-                gridLayer.batch();
-                gridPanel.setFocus(true);
-            }
-        });
-        return e;
+        return new ListBox();
     }
 
     @Override
@@ -70,5 +45,14 @@ public class ListBoxSingletonDOMElementFactory extends BaseSingletonDOMElementFa
             return widget.getValue(widget.getSelectedIndex());
         }
         return null;
+    }
+
+    @Override
+    protected ListBoxDOMElement createDomElementInternal(final ListBox widget,
+                                                         final GridLayer gridLayer,
+                                                         final GridWidget gridWidget) {
+        return new ListBoxDOMElement(widget,
+                                     gridLayer,
+                                     gridWidget);
     }
 }
