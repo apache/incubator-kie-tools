@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.services.refactoring.backend.server.util;
 
-import java.io.File;
 import java.util.Set;
 
 import org.apache.commons.codec.digest.DigestUtils;
@@ -29,6 +28,7 @@ import org.uberfire.java.nio.base.SegmentedPath;
 import org.uberfire.java.nio.file.Path;
 
 import static org.apache.commons.codec.binary.Base64.encodeBase64String;
+import static org.uberfire.ext.metadata.backend.lucene.index.directory.DirectoryFactory.CLUSTER_ID_SEGMENT_SEPARATOR;
 
 public class KObjectUtil {
 
@@ -61,7 +61,7 @@ public class KObjectUtil {
             public String getClusterId() {
                 final String fsId = ((FileSystemId) path.getFileSystem()).id();
                 final String segmentId = ((SegmentedPath) path).getSegmentId();
-                return fsId + File.separator + segmentId;
+                return fsId + CLUSTER_ID_SEGMENT_SEPARATOR + segmentId;
             }
 
             @Override
@@ -108,7 +108,7 @@ public class KObjectUtil {
             public String getClusterId() {
                 final String fsId = ((FileSystemId) path.getFileSystem()).id();
                 final String segmentId = ((SegmentedPath) path).getSegmentId();
-                return fsId + File.separator + segmentId;
+                return fsId + CLUSTER_ID_SEGMENT_SEPARATOR + segmentId;
             }
 
             @Override
