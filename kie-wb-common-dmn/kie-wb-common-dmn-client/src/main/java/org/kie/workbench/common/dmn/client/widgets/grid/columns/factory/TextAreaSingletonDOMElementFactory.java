@@ -18,8 +18,6 @@ package org.kie.workbench.common.dmn.client.widgets.grid.columns.factory;
 
 import java.util.function.Function;
 
-import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.MouseDownEvent;
 import org.gwtbootstrap3.client.ui.TextArea;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.dom.TextAreaDOMElement;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
@@ -29,7 +27,6 @@ import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.command.Command;
-import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.single.impl.BaseSingletonDOMElementFactory;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
@@ -67,31 +64,7 @@ public class TextAreaSingletonDOMElementFactory extends BaseSingletonDOMElementF
 
     @Override
     public TextArea createWidget() {
-        final TextArea textArea = new TextArea();
-
-        textArea.addKeyDownHandler(KeyDownEvent::stopPropagation);
-        textArea.addMouseDownHandler(MouseDownEvent::stopPropagation);
-
-        return textArea;
-    }
-
-    @Override
-    public TextAreaDOMElement createDomElement(final GridLayer gridLayer,
-                                               final GridWidget gridWidget,
-                                               final GridBodyCellRenderContext context) {
-        this.widget = createWidget();
-        this.e = new TextAreaDOMElement(widget,
-                                        gridLayer,
-                                        gridWidget,
-                                        sessionManager,
-                                        sessionCommandManager,
-                                        hasNoValueCommand,
-                                        hasValueCommand);
-        widget.addBlurHandler((event) -> {
-            destroyResources();
-            gridPanel.setFocus(true);
-        });
-        return e;
+        return new TextArea();
     }
 
     @Override
@@ -100,5 +73,18 @@ public class TextAreaSingletonDOMElementFactory extends BaseSingletonDOMElementF
             return widget.getValue();
         }
         return null;
+    }
+
+    @Override
+    protected TextAreaDOMElement createDomElementInternal(final TextArea widget,
+                                                          final GridLayer gridLayer,
+                                                          final GridWidget gridWidget) {
+        return new TextAreaDOMElement(widget,
+                                      gridLayer,
+                                      gridWidget,
+                                      sessionManager,
+                                      sessionCommandManager,
+                                      hasNoValueCommand,
+                                      hasValueCommand);
     }
 }

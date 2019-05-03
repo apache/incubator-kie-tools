@@ -21,7 +21,6 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.commands.general.DeleteCellValueCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetCellValueCommand;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.dom.TextAreaDOMElement;
-import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 
@@ -45,11 +44,9 @@ public class TextAreaSingletonDOMElementFactoryTest extends BaseSingletonDOMElem
                                                                                        gridLayer::batch)) {
             @Override
             public TextAreaDOMElement createDomElement(final GridLayer gridLayer,
-                                                       final GridWidget gridWidget,
-                                                       final GridBodyCellRenderContext context) {
+                                                       final GridWidget gridWidget) {
                 return spy(super.createDomElement(gridLayer,
-                                                  gridWidget,
-                                                  context));
+                                                  gridWidget));
             }
         };
     }
