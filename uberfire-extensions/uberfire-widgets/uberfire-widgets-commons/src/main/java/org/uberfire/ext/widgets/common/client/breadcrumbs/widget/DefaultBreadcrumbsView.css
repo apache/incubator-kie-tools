@@ -34,7 +34,12 @@
     font-weight: bold;
 }
 
-li[data-field="breadcrumb"] {
+li[data-field="breadcrumb"] a {
+    text-decoration: none;
+}
+
+li[data-field="breadcrumb"] a span:first-child {
+    display: inline-block;
     vertical-align: top;
     text-overflow: ellipsis;
     overflow: hidden;
