@@ -17,9 +17,7 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table.columns.d
 
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.gwtbootstrap3.client.ui.TextBox;
-import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.keyboard.KeyDownHandlerCommon;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPanel;
 
@@ -37,35 +35,19 @@ public abstract class TextBoxSingletonDOMElementFactory<T, W extends TextBox> ex
     }
 
     @Override
-    public TextBoxDOMElement<T, W> createDomElement(final GridLayer gridLayer,
-                                                    final GridWidget gridWidget,
-                                                    final GridBodyCellRenderContext context) {
-        this.widget = createWidget();
-        this.widget.addMouseDownHandler((e) -> e.stopPropagation());
-        this.widget.addKeyDownHandler(new KeyDownHandlerCommon(gridPanel,
-                                                               gridLayer,
-                                                               gridWidget,
-                                                               this,
-                                                               context));
-        this.widget.addBlurHandler((e) -> {
-            flush();
-            destroyResources();
-            gridLayer.batch();
-            gridPanel.setFocus(true);
-        });
-
-        this.e = new TextBoxDOMElement<>(widget,
-                                         gridLayer,
-                                         gridWidget);
-
-        return e;
-    }
-
-    @Override
     protected T getValue() {
         if (widget != null) {
             return convert(widget.getValue());
         }
         return null;
+    }
+
+    @Override
+    protected TextBoxDOMElement<T, W> createDomElementInternal(final W widget,
+                                                               final GridLayer gridLayer,
+                                                               final GridWidget gridWidget) {
+        return new TextBoxDOMElement<>(widget,
+                                       gridLayer,
+                                       gridWidget);
     }
 }

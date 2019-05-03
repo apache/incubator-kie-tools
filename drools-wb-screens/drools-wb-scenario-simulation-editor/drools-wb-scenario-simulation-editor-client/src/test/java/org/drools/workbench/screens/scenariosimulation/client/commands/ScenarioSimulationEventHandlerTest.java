@@ -94,6 +94,7 @@ import static org.drools.workbench.screens.scenariosimulation.client.TestPropert
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.ROW_INDEX;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.VALUE_CLASS_NAME;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
@@ -166,7 +167,7 @@ public class ScenarioSimulationEventHandlerTest extends AbstractScenarioSimulati
     @Mock
     private ConfirmPopupPresenter confirmPopupPresenterMock;
     @Mock
-    private  FileUploadPopupPresenter fileUploadPopupPresenterMock;
+    private FileUploadPopupPresenter fileUploadPopupPresenterMock;
 
     private ScenarioSimulationEventHandler scenarioSimulationEventHandler;
 
@@ -231,14 +232,18 @@ public class ScenarioSimulationEventHandlerTest extends AbstractScenarioSimulati
     public void onAppendColumnEvent() {
         AppendColumnEvent event = new AppendColumnEvent(COLUMN_GROUP);
         scenarioSimulationEventHandler.onEvent(event);
-        verify(scenarioSimulationEventHandler, times(1)).commonExecution(eq(scenarioSimulationContextLocal), isA(AppendColumnCommand.class));
+        verify(scenarioSimulationEventHandler).commonExecution(eq(scenarioSimulationContextLocal),
+                                                               isA(AppendColumnCommand.class),
+                                                               eq(true));
     }
 
     @Test
     public void onAppendRowEvent() {
         AppendRowEvent event = new AppendRowEvent();
         scenarioSimulationEventHandler.onEvent(event);
-        verify(scenarioSimulationEventHandler, times(1)).commonExecution(eq(scenarioSimulationContextLocal), isA(AppendRowCommand.class));
+        verify(scenarioSimulationEventHandler).commonExecution(eq(scenarioSimulationContextLocal),
+                                                               isA(AppendRowCommand.class),
+                                                               eq(true));
     }
 
     @Test
@@ -246,42 +251,54 @@ public class ScenarioSimulationEventHandlerTest extends AbstractScenarioSimulati
         DeleteColumnEvent event = new DeleteColumnEvent(COLUMN_INDEX, COLUMN_GROUP);
         when(scenarioGridModelMock.getSelectedColumn()).thenReturn(null);
         scenarioSimulationEventHandler.onEvent(event);
-        verify(scenarioSimulationEventHandler, times(1)).commonExecution(eq(scenarioSimulationContextLocal), isA(DeleteColumnCommand.class));
+        verify(scenarioSimulationEventHandler).commonExecution(eq(scenarioSimulationContextLocal),
+                                                               isA(DeleteColumnCommand.class),
+                                                               eq(true));
     }
 
     @Test
     public void onDeleteRowEvent() {
         DeleteRowEvent event = new DeleteRowEvent(ROW_INDEX);
         scenarioSimulationEventHandler.onEvent(event);
-        verify(scenarioSimulationEventHandler, times(1)).commonExecution(eq(scenarioSimulationContextLocal), isA(DeleteRowCommand.class));
+        verify(scenarioSimulationEventHandler).commonExecution(eq(scenarioSimulationContextLocal),
+                                                               isA(DeleteRowCommand.class),
+                                                               eq(true));
     }
 
     @Test
     public void onDisableTestToolsEvent() {
         DisableTestToolsEvent event = new DisableTestToolsEvent();
         scenarioSimulationEventHandler.onEvent(event);
-        verify(scenarioSimulationEventHandler, times(1)).commonExecution(eq(scenarioSimulationContextLocal), isA(DisableTestToolsCommand.class));
+        verify(scenarioSimulationEventHandler).commonExecution(eq(scenarioSimulationContextLocal),
+                                                               isA(DisableTestToolsCommand.class),
+                                                               eq(false));
     }
 
     @Test
     public void onDuplicateColumnEvent() {
         DuplicateInstanceEvent event = new DuplicateInstanceEvent(COLUMN_INDEX);
         scenarioSimulationEventHandler.onEvent(event);
-        verify(scenarioSimulationEventHandler, times(1)).commonExecution(eq(scenarioSimulationContextLocal), isA(DuplicateInstanceCommand.class));
+        verify(scenarioSimulationEventHandler).commonExecution(eq(scenarioSimulationContextLocal),
+                                                               isA(DuplicateInstanceCommand.class),
+                                                               eq(true));
     }
 
     @Test
     public void onDuplicateRowEvent() {
         DuplicateRowEvent event = new DuplicateRowEvent(ROW_INDEX);
         scenarioSimulationEventHandler.onEvent(event);
-        verify(scenarioSimulationEventHandler, times(1)).commonExecution(eq(scenarioSimulationContextLocal), isA(DuplicateRowCommand.class));
+        verify(scenarioSimulationEventHandler).commonExecution(eq(scenarioSimulationContextLocal),
+                                                               isA(DuplicateRowCommand.class),
+                                                               eq(true));
     }
 
     @Test
     public void onEnableTestToolsEvent() {
         EnableTestToolsEvent event = new EnableTestToolsEvent();
         scenarioSimulationEventHandler.onEvent(event);
-        verify(scenarioSimulationEventHandler, times(1)).commonExecution(eq(scenarioSimulationContextLocal), isA(EnableTestToolsCommand.class));
+        verify(scenarioSimulationEventHandler).commonExecution(eq(scenarioSimulationContextLocal),
+                                                               isA(EnableTestToolsCommand.class),
+                                                               eq(false));
     }
 
     @Test
@@ -299,28 +316,36 @@ public class ScenarioSimulationEventHandlerTest extends AbstractScenarioSimulati
     public void onInsertColumnEvent() {
         InsertColumnEvent event = new InsertColumnEvent(COLUMN_INDEX, true, false);
         scenarioSimulationEventHandler.onEvent(event);
-        verify(scenarioSimulationEventHandler, times(1)).commonExecution(eq(scenarioSimulationContextLocal), isA(InsertColumnCommand.class));
+        verify(scenarioSimulationEventHandler).commonExecution(eq(scenarioSimulationContextLocal),
+                                                               isA(InsertColumnCommand.class),
+                                                               eq(true));
     }
 
     @Test
     public void onInsertRowEvent() {
         InsertRowEvent event = new InsertRowEvent(ROW_INDEX);
         scenarioSimulationEventHandler.onEvent(event);
-        verify(scenarioSimulationEventHandler, times(1)).commonExecution(eq(scenarioSimulationContextLocal), isA(InsertRowCommand.class));
+        verify(scenarioSimulationEventHandler).commonExecution(eq(scenarioSimulationContextLocal),
+                                                               isA(InsertRowCommand.class),
+                                                               eq(true));
     }
 
     @Test
     public void onPrependColumnEvent() {
         PrependColumnEvent event = new PrependColumnEvent(COLUMN_GROUP);
         scenarioSimulationEventHandler.onEvent(event);
-        verify(scenarioSimulationEventHandler, times(1)).commonExecution(eq(scenarioSimulationContextLocal), isA(PrependColumnCommand.class));
+        verify(scenarioSimulationEventHandler).commonExecution(eq(scenarioSimulationContextLocal),
+                                                               isA(PrependColumnCommand.class),
+                                                               eq(true));
     }
 
     @Test
     public void onPrependRowEvent() {
         PrependRowEvent event = new PrependRowEvent();
         scenarioSimulationEventHandler.onEvent(event);
-        verify(scenarioSimulationEventHandler, times(1)).commonExecution(eq(scenarioSimulationContextLocal), isA(PrependRowCommand.class));
+        verify(scenarioSimulationEventHandler).commonExecution(eq(scenarioSimulationContextLocal),
+                                                               isA(PrependRowCommand.class),
+                                                               eq(true));
     }
 
     @Test
@@ -334,14 +359,18 @@ public class ScenarioSimulationEventHandlerTest extends AbstractScenarioSimulati
     public void onReloadTestToolsEvent() {
         ReloadTestToolsEvent event = new ReloadTestToolsEvent(true);
         scenarioSimulationEventHandler.onEvent(event);
-        verify(scenarioSimulationEventHandler, times(1)).commonExecution(eq(scenarioSimulationContextLocal), isA(ReloadTestToolsCommand.class));
+        verify(scenarioSimulationEventHandler).commonExecution(eq(scenarioSimulationContextLocal),
+                                                               isA(ReloadTestToolsCommand.class),
+                                                               eq(false));
     }
 
     @Test
     public void onRunSingleScenarioPanelEvent() {
         RunSingleScenarioEvent event = new RunSingleScenarioEvent(ROW_INDEX);
         scenarioSimulationEventHandler.onEvent(event);
-        verify(scenarioSimulationEventHandler, times(1)).commonExecution(eq(scenarioSimulationContextLocal), isA(RunSingleScenarioCommand.class));
+        verify(scenarioSimulationEventHandler).commonExecution(eq(scenarioSimulationContextLocal),
+                                                               isA(RunSingleScenarioCommand.class),
+                                                               eq(false));
     }
 
     @Test
@@ -355,21 +384,27 @@ public class ScenarioSimulationEventHandlerTest extends AbstractScenarioSimulati
     public void onSetGridCellValueEvent() {
         SetGridCellValueEvent event = new SetGridCellValueEvent(ROW_INDEX, COLUMN_INDEX, MULTIPART_VALUE);
         scenarioSimulationEventHandler.onEvent(event);
-        verify(scenarioSimulationEventHandler, times(1)).commonExecution(eq(scenarioSimulationContextLocal), isA(SetGridCellValueCommand.class));
+        verify(scenarioSimulationEventHandler).commonExecution(eq(scenarioSimulationContextLocal),
+                                                               isA(SetGridCellValueCommand.class),
+                                                               eq(false));
     }
 
     @Test
     public void onSetHeaderCellValueEventInstanceHeader() {
         SetHeaderCellValueEvent event = new SetHeaderCellValueEvent(ROW_INDEX, COLUMN_INDEX, MULTIPART_VALUE, true, false);
         scenarioSimulationEventHandler.onEvent(event);
-        verify(scenarioSimulationEventHandler, times(1)).commonExecution(eq(scenarioSimulationContextLocal), isA(SetHeaderCellValueCommand.class));
+        verify(scenarioSimulationEventHandler).commonExecution(eq(scenarioSimulationContextLocal),
+                                                               isA(SetHeaderCellValueCommand.class),
+                                                               eq(false));
     }
 
     @Test
     public void onSetHeaderCellValueEventPropertyHeader() {
         SetHeaderCellValueEvent event = new SetHeaderCellValueEvent(ROW_INDEX, COLUMN_INDEX, MULTIPART_VALUE, false, true);
         scenarioSimulationEventHandler.onEvent(event);
-        verify(scenarioSimulationEventHandler, times(1)).commonExecution(eq(scenarioSimulationContextLocal), isA(SetHeaderCellValueCommand.class));
+        verify(scenarioSimulationEventHandler).commonExecution(eq(scenarioSimulationContextLocal),
+                                                               isA(SetHeaderCellValueCommand.class),
+                                                               eq(false));
     }
 
     @Test
@@ -377,12 +412,16 @@ public class ScenarioSimulationEventHandlerTest extends AbstractScenarioSimulati
         SetInstanceHeaderEvent event = new SetInstanceHeaderEvent(FULL_PACKAGE, FULL_CLASS_NAME);
         when(scenarioGridModelMock.getSelectedColumn()).thenReturn(null);
         scenarioSimulationEventHandler.onEvent(event);
-        verify(scenarioSimulationEventHandler, never()).commonExecution(eq(scenarioSimulationContextLocal), isA(SetInstanceHeaderCommand.class));
+        verify(scenarioSimulationEventHandler, never()).commonExecution(eq(scenarioSimulationContextLocal),
+                                                                        isA(SetInstanceHeaderCommand.class),
+                                                                        anyBoolean());
         //
         doReturn(gridColumnMock).when(scenarioGridModelMock).getSelectedColumn();
         when(scenarioGridModelMock.isSameSelectedColumnType(anyString())).thenReturn(true);
         scenarioSimulationEventHandler.onEvent(event);
-        verify(scenarioSimulationEventHandler, never()).commonExecution(eq(scenarioSimulationContextLocal), isA(SetInstanceHeaderCommand.class));
+        verify(scenarioSimulationEventHandler, never()).commonExecution(eq(scenarioSimulationContextLocal),
+                                                                        isA(SetInstanceHeaderCommand.class),
+                                                                        anyBoolean());
         //
         when(scenarioGridModelMock.isSameSelectedColumnType(anyString())).thenReturn(false);
         when(gridColumnMock.isInstanceAssigned()).thenReturn(true);
@@ -395,12 +434,16 @@ public class ScenarioSimulationEventHandlerTest extends AbstractScenarioSimulati
                       eq(ScenarioSimulationEditorConstants.INSTANCE.changeTypeTextDanger()),
                       eq(ScenarioSimulationEditorConstants.INSTANCE.changeType()),
                       isA(org.uberfire.mvp.Command.class));
-        verify(scenarioSimulationEventHandler, never()).commonExecution(eq(scenarioSimulationContextLocal), isA(SetInstanceHeaderCommand.class));
+        verify(scenarioSimulationEventHandler, never()).commonExecution(eq(scenarioSimulationContextLocal),
+                                                                        isA(SetInstanceHeaderCommand.class),
+                                                                        anyBoolean());
         //
         when(scenarioGridModelMock.isSameSelectedColumnType(anyString())).thenReturn(false);
         when(gridColumnMock.isInstanceAssigned()).thenReturn(false);
         scenarioSimulationEventHandler.onEvent(event);
-        verify(scenarioSimulationEventHandler, times(1)).commonExecution(eq(scenarioSimulationContextLocal), isA(SetInstanceHeaderCommand.class));
+        verify(scenarioSimulationEventHandler).commonExecution(eq(scenarioSimulationContextLocal),
+                                                               isA(SetInstanceHeaderCommand.class),
+                                                               eq(true));
     }
 
     @Test
@@ -408,26 +451,34 @@ public class ScenarioSimulationEventHandlerTest extends AbstractScenarioSimulati
         SetPropertyHeaderEvent event = new SetPropertyHeaderEvent(FULL_PACKAGE, MULTIPART_VALUE_ELEMENTS, VALUE_CLASS_NAME);
         when(scenarioGridModelMock.getSelectedColumn()).thenReturn(null);
         scenarioSimulationEventHandler.onEvent(event);
-        verify(scenarioSimulationEventHandler, never()).commonExecution(eq(scenarioSimulationContextLocal), isA(SetPropertyHeaderCommand.class));
+        verify(scenarioSimulationEventHandler, never()).commonExecution(eq(scenarioSimulationContextLocal),
+                                                                        isA(SetPropertyHeaderCommand.class),
+                                                                        anyBoolean());
         //
         doReturn(gridColumnMock).when(scenarioGridModelMock).getSelectedColumn();
         when(scenarioGridModelMock.isAlreadyAssignedProperty(MULTIPART_VALUE_ELEMENTS)).thenReturn(true);
         scenarioSimulationEventHandler.onEvent(event);
         verify(scenarioSimulationEventHandler, times(1)).onEvent(isA(ScenarioNotificationEvent.class));
-        verify(scenarioSimulationEventHandler, never()).commonExecution(eq(scenarioSimulationContextLocal), isA(SetPropertyHeaderCommand.class));
+        verify(scenarioSimulationEventHandler, never()).commonExecution(eq(scenarioSimulationContextLocal),
+                                                                        isA(SetPropertyHeaderCommand.class),
+                                                                        anyBoolean());
         //
         reset(scenarioSimulationEventHandler);
         when(scenarioGridModelMock.isAlreadyAssignedProperty(MULTIPART_VALUE_ELEMENTS)).thenReturn(false);
         when(scenarioGridModelMock.isSelectedColumnEmpty()).thenReturn(true);
         scenarioSimulationEventHandler.onEvent(event);
         verify(scenarioSimulationEventHandler, never()).onEvent(isA(ScenarioNotificationEvent.class));
-        verify(scenarioSimulationEventHandler, times(1)).commonExecution(eq(scenarioSimulationContextLocal), isA(SetPropertyHeaderCommand.class));
+        verify(scenarioSimulationEventHandler).commonExecution(eq(scenarioSimulationContextLocal),
+                                                               isA(SetPropertyHeaderCommand.class),
+                                                               eq(true));
         //
         reset(scenarioSimulationEventHandler);
         when(scenarioGridModelMock.isSelectedColumnEmpty()).thenReturn(false);
         when(scenarioGridModelMock.isSameSelectedColumnProperty(anyListOf(String.class))).thenReturn(true);
         scenarioSimulationEventHandler.onEvent(event);
-        verify(scenarioSimulationEventHandler, never()).commonExecution(eq(scenarioSimulationContextLocal), isA(SetPropertyHeaderCommand.class));
+        verify(scenarioSimulationEventHandler, never()).commonExecution(eq(scenarioSimulationContextLocal),
+                                                                        isA(SetPropertyHeaderCommand.class),
+                                                                        anyBoolean());
         //
         when(scenarioGridModelMock.isSameSelectedColumnProperty(anyListOf(String.class))).thenReturn(false);
         when(scenarioGridModelMock.isSameSelectedColumnType(anyString())).thenReturn(true);
@@ -443,7 +494,9 @@ public class ScenarioSimulationEventHandlerTest extends AbstractScenarioSimulati
                       eq(ScenarioSimulationEditorConstants.INSTANCE.deleteValues()),
                       isA(org.uberfire.mvp.Command.class),
                       isA(org.uberfire.mvp.Command.class));
-        verify(scenarioSimulationEventHandler, never()).commonExecution(eq(scenarioSimulationContextLocal), isA(SetPropertyHeaderCommand.class));
+        verify(scenarioSimulationEventHandler, never()).commonExecution(eq(scenarioSimulationContextLocal),
+                                                                        isA(SetPropertyHeaderCommand.class),
+                                                                        anyBoolean());
         //
         when(scenarioGridModelMock.isSameSelectedColumnType(anyString())).thenReturn(false);
         scenarioSimulationEventHandler.onEvent(event);
@@ -455,7 +508,9 @@ public class ScenarioSimulationEventHandlerTest extends AbstractScenarioSimulati
                       eq(ScenarioSimulationEditorConstants.INSTANCE.deleteScenarioTextDanger()),
                       eq(ScenarioSimulationEditorConstants.INSTANCE.deleteValues()),
                       isA(org.uberfire.mvp.Command.class));
-        verify(scenarioSimulationEventHandler, never()).commonExecution(eq(scenarioSimulationContextLocal), isA(SetPropertyHeaderCommand.class));
+        verify(scenarioSimulationEventHandler, never()).commonExecution(eq(scenarioSimulationContextLocal),
+                                                                        isA(SetPropertyHeaderCommand.class),
+                                                                        anyBoolean());
     }
 
     @Test
@@ -476,14 +531,14 @@ public class ScenarioSimulationEventHandlerTest extends AbstractScenarioSimulati
     @Test
     public void commonExecution() {
         when(scenarioCommandManagerMock.execute(eq(scenarioSimulationContextLocal), eq(appendRowCommandMock))).thenReturn(CommandResultBuilder.SUCCESS);
-        scenarioSimulationEventHandler.commonExecution(scenarioSimulationContextLocal, appendRowCommandMock);
+        scenarioSimulationEventHandler.commonExecution(scenarioSimulationContextLocal, appendRowCommandMock, true);
         assertEquals(simulationMock, scenarioSimulationContextLocal.getStatus().getSimulation());
         verify(scenarioCommandRegistryMock, times(1)).register(eq(scenarioSimulationContextLocal), eq(appendRowCommandMock));
         //
         reset(scenarioCommandRegistryMock);
         CommandResult<ScenarioSimulationViolation> status = new CommandResultImpl<>(CommandResult.Type.ERROR, Collections.singletonList(new ScenarioSimulationViolation("FAKE ERROR")));
         when(scenarioCommandManagerMock.execute(eq(scenarioSimulationContextLocal), eq(appendRowCommandMock))).thenReturn(status);
-        scenarioSimulationEventHandler.commonExecution(scenarioSimulationContextLocal, appendRowCommandMock);
+        scenarioSimulationEventHandler.commonExecution(scenarioSimulationContextLocal, appendRowCommandMock, true);
         assertEquals(simulationMock, scenarioSimulationContextLocal.getStatus().getSimulation());
         verify(scenarioCommandRegistryMock, never()).register(eq(appendRowCommandMock));
     }

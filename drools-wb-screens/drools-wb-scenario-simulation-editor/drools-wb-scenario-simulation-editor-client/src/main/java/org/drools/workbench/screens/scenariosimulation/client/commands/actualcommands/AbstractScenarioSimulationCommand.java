@@ -64,7 +64,7 @@ public abstract class AbstractScenarioSimulationCommand extends AbstractCommand<
      * Calling this constructor will set the command as <b>undoable</b>
      * @param undoable
      */
-    protected AbstractScenarioSimulationCommand(boolean undoable) {
+    protected AbstractScenarioSimulationCommand(final boolean undoable) {
         this.id = COUNTER_ID.getAndIncrement();
         this.undoable = undoable;
     }
@@ -179,12 +179,9 @@ public abstract class AbstractScenarioSimulationCommand extends AbstractCommand<
                 .map(column -> ((ScenarioGridColumn) column).getFactIdentifier());
     }
 
-    protected CommandResult<ScenarioSimulationViolation> commonExecution(ScenarioSimulationContext context) {
+    protected CommandResult<ScenarioSimulationViolation> commonExecution(final ScenarioSimulationContext context) {
         context.getScenarioGridPanel().onResize();
         context.getScenarioGridPanel().select();
-        if (undoable) {
-            context.getScenarioGridPanel().setFocus(true);
-        }
         return CommandResultBuilder.SUCCESS;
     }
 }

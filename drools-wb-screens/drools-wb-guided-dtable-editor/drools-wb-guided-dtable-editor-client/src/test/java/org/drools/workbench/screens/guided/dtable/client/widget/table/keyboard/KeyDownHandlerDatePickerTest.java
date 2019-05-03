@@ -33,8 +33,7 @@ public class KeyDownHandlerDatePickerTest extends BaseKeyDownHandlerTest {
         return new KeyDownHandlerDatePicker(gridPanel,
                                             gridLayer,
                                             gridWidget,
-                                            gridCell,
-                                            context);
+                                            gridCell);
     }
 
     @Test

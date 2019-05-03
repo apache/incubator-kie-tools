@@ -15,12 +15,9 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.listbox;
 
-import com.google.gwt.event.dom.client.MouseDownEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.gwtbootstrap3.client.ui.ListBox;
-import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.keyboard.KeyDownHandlerCommon;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPanel;
 
@@ -38,36 +35,20 @@ public abstract class ListBoxSingletonDOMElementFactory<T, W extends ListBox> ex
     }
 
     @Override
-    public ListBoxDOMElement<T, W> createDomElement(final GridLayer gridLayer,
-                                                    final GridWidget gridWidget,
-                                                    final GridBodyCellRenderContext context) {
-        this.widget = createWidget();
-        this.widget.addMouseDownHandler(MouseDownEvent::stopPropagation);
-        this.widget.addKeyDownHandler(new KeyDownHandlerCommon(gridPanel,
-                                                               gridLayer,
-                                                               gridWidget,
-                                                               this,
-                                                               context));
-        this.widget.addBlurHandler((e) -> {
-            flush();
-            destroyResources();
-            gridLayer.batch();
-            gridPanel.setFocus(true);
-        });
-
-        this.e = new ListBoxDOMElement<>(widget,
-                                         gridLayer,
-                                         gridWidget,
-                                         widget.isMultipleSelect());
-
-        return e;
-    }
-
-    @Override
     protected T getValue() {
         if (widget != null) {
             return fromWidget(widget);
         }
         return null;
+    }
+
+    @Override
+    protected ListBoxDOMElement<T, W> createDomElementInternal(final W widget,
+                                                               final GridLayer gridLayer,
+                                                               final GridWidget gridWidget) {
+        return new ListBoxDOMElement<>(widget,
+                                       gridLayer,
+                                       gridWidget,
+                                       widget.isMultipleSelect());
     }
 }

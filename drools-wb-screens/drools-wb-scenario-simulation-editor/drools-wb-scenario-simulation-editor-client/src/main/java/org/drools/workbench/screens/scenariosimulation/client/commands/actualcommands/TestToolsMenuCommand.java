@@ -35,5 +35,4 @@ public class TestToolsMenuCommand extends AbstractScenarioSimulationCommand {
             context.getPlaceManager().goTo(context.getTestToolsRequest());
         }
     }
-
 }

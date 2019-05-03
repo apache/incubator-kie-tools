@@ -25,7 +25,6 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.do
 import org.drools.workbench.screens.guided.dtable.client.widget.table.keyboard.KeyDownHandlerDatePicker;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.uberfire.ext.widgets.common.client.common.DatePicker;
-import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPanel;
@@ -61,26 +60,6 @@ public class DatePickerSingletonDOMElementFactory extends SingleValueSingletonDO
         };
     }
 
-    @Override
-    public DatePickerDOMElement createDomElement(final GridLayer gridLayer,
-                                                 final GridWidget gridWidget,
-                                                 final GridBodyCellRenderContext context) {
-        this.widget = createWidget();
-        this.e = new DatePickerDOMElement(widget,
-                                          gridLayer,
-                                          gridWidget);
-
-        widget.addChangeDateHandler((e) -> doValueUpdate());
-        widget.addDomHandler(new KeyDownHandlerDatePicker(gridPanel,
-                                                          gridLayer,
-                                                          gridWidget,
-                                                          this,
-                                                          context),
-                             KeyDownEvent.getType());
-
-        return e;
-    }
-
     private void doValueUpdate() {
         flush();
         destroyResources();
@@ -112,5 +91,24 @@ public class DatePickerSingletonDOMElementFactory extends SingleValueSingletonDO
 
     DatePicker getWidget() {
         return widget;
+    }
+
+    @Override
+    protected DatePickerDOMElement createDomElementInternal(final DatePicker widget,
+                                                            final GridLayer gridLayer,
+                                                            final GridWidget gridWidget) {
+        return new DatePickerDOMElement(widget,
+                                        gridLayer,
+                                        gridWidget);
+    }
+
+    @Override
+    public void registerHandlers(final DatePicker widget, final DatePickerDOMElement widgetDomElement) {
+        widget.addChangeDateHandler((e) -> doValueUpdate());
+        widget.addDomHandler(new KeyDownHandlerDatePicker(gridPanel,
+                                                          gridLayer,
+                                                          gridWidget,
+                                                          this),
+                             KeyDownEvent.getType());
     }
 }

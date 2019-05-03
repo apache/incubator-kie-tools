@@ -17,7 +17,6 @@ package org.drools.workbench.screens.guided.dtable.client.widget.table.keyboard;
 
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
-import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.single.HasSingletonDOMElementResource;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.keyboard.KeyDownHandlerCommon;
@@ -29,13 +28,11 @@ public class KeyDownHandlerDatePicker extends KeyDownHandlerCommon {
     public KeyDownHandlerDatePicker(final GridLienzoPanel gridPanel,
                                     final GridLayer gridLayer,
                                     final GridWidget gridWidget,
-                                    final HasSingletonDOMElementResource gridCell,
-                                    final GridBodyCellRenderContext context) {
+                                    final HasSingletonDOMElementResource gridCell) {
         super(gridPanel,
               gridLayer,
               gridWidget,
-              gridCell,
-              context);
+              gridCell);
     }
 
     @Override

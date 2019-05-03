@@ -22,33 +22,36 @@ import com.ait.lienzo.client.core.types.Transform;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
+import com.google.gwt.event.dom.client.DomEvent;
+import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
+import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.assertj.core.api.Assertions;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.gwtbootstrap3.client.ui.ListBox;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.keyboard.KeyDownHandlerCommon;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLayerRedrawManager.PrioritizedCommand;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPanel;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -73,9 +76,6 @@ public class ListBoxSingletonDOMElementFactoryTest {
     @Mock
     private GuidedDecisionTableView gridWidget;
 
-    @Mock
-    private GridBodyCellRenderContext cellRenderContext;
-
     private ListBoxSingletonDOMElementFactory<String, ListBox> factory;
 
     @Before
@@ -98,39 +98,25 @@ public class ListBoxSingletonDOMElementFactoryTest {
     }
 
     @Test
-    public void checkDOMElementCreationChecksListBoxIsMultipleSelect() {
+    public void checkDOMElementCreation() {
         factory.createDomElement(gridLayer,
-                                 gridWidget,
-                                 cellRenderContext);
+                                 gridWidget);
 
-        verify(listBox).addMouseDownHandler(any(MouseDownHandler.class));
-        verify(listBox).addKeyDownHandler(any(KeyDownHandler.class));
-        verify(listBox).addBlurHandler(any(BlurHandler.class));
-        verify(listBox).isMultipleSelect();
+        verify(factory).createDomElementInternal(listBox, gridLayer, gridWidget);
     }
 
     @Test
-    public void checkDOMElementCreationMouseDownHandler() {
-        factory.createDomElement(gridLayer,
-                                 gridWidget,
-                                 cellRenderContext);
+    public void checkDOMElementInternalCreation() {
+        factory.createDomElementInternal(listBox,
+                                         gridLayer,
+                                         gridWidget);
 
-        final ArgumentCaptor<MouseDownHandler> mouseDownHandlerCaptor = ArgumentCaptor.forClass(MouseDownHandler.class);
-
-        verify(listBox).addMouseDownHandler(mouseDownHandlerCaptor.capture());
-
-        final MouseDownEvent e = mock(MouseDownEvent.class);
-        final MouseDownHandler mouseDownHandler = mouseDownHandlerCaptor.getValue();
-        mouseDownHandler.onMouseDown(e);
-
-        verify(e).stopPropagation();
+        verify(listBox).isMultipleSelect();
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void checkDOMElementCreationBlurHandler() {
-        final InOrder order = inOrder(factory);
-
         final GridBodyCellRenderContext context = mock(GridBodyCellRenderContext.class);
         final Consumer<ListBoxDOMElement<String, ListBox>> onCreation = mock(Consumer.class);
         final Consumer<ListBoxDOMElement<String, ListBox>> onDisplay = mock(Consumer.class);
@@ -140,18 +126,32 @@ public class ListBoxSingletonDOMElementFactoryTest {
                                  onCreation,
                                  onDisplay);
 
-        final ArgumentCaptor<BlurHandler> blurHandlerCaptor = ArgumentCaptor.forClass(BlurHandler.class);
+        final ArgumentCaptor<EventHandler> handlerCaptor = ArgumentCaptor.forClass(EventHandler.class);
 
-        verify(listBox).addBlurHandler(blurHandlerCaptor.capture());
+        verify(listBox, times(4)).addDomHandler(handlerCaptor.capture(), any(DomEvent.Type.class));
 
-        final BlurEvent e = mock(BlurEvent.class);
-        final BlurHandler blurHandler = blurHandlerCaptor.getValue();
-        blurHandler.onBlur(e);
+        // KeyDownHandlerCommon
+        Assertions.assertThat(handlerCaptor.getAllValues().get(0)).isInstanceOf(KeyDownHandlerCommon.class);
 
-        order.verify(factory).flush();
-        order.verify(factory).destroyResources();
+        // KeyDownHandler - stopPropagation
+        final KeyDownEvent keyDownEventMock = mock(KeyDownEvent.class);
+        Assertions.assertThat(handlerCaptor.getAllValues().get(1)).isInstanceOf(KeyDownHandler.class);
+        ((KeyDownHandler) handlerCaptor.getAllValues().get(1)).onKeyDown(keyDownEventMock);
+        verify(keyDownEventMock).stopPropagation();
+
+        // MouseDownHandler - stopPropagation
+        final MouseDownEvent mouseDownEventMock = mock(MouseDownEvent.class);
+        Assertions.assertThat(handlerCaptor.getAllValues().get(2)).isInstanceOf(MouseDownHandler.class);
+        ((MouseDownHandler) handlerCaptor.getAllValues().get(2)).onMouseDown(mouseDownEventMock);
+        verify(mouseDownEventMock).stopPropagation();
+
+        // BlurHandler
+        final BlurEvent blurEventMock = mock(BlurEvent.class);
+        Assertions.assertThat(handlerCaptor.getAllValues().get(3)).isInstanceOf(BlurHandler.class);
+        ((BlurHandler) handlerCaptor.getAllValues().get(3)).onBlur(blurEventMock);
+        verify(factory).flush();
         verify(gridLayer).batch();
-        verify(gridLienzoPanel).setFocus(eq(true));
+        verify(gridLienzoPanel).setFocus(true);
     }
 
     private class ListBoxSingletonDOMElementFactoryMock extends ListBoxSingletonDOMElementFactory<String, ListBox> {

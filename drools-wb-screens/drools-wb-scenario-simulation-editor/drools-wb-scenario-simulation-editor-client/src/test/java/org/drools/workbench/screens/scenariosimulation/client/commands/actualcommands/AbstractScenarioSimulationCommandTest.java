@@ -26,9 +26,7 @@ import org.mockito.Mock;
 
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -115,17 +113,6 @@ public abstract class AbstractScenarioSimulationCommandTest extends AbstractScen
             command.commonExecution(scenarioSimulationContextLocal);
             verify(scenarioGridPanelMock, times(1)).onResize();
             verify(scenarioGridPanelMock, times(1)).select();
-            verify(scenarioGridPanelMock, times(1)).setFocus(eq(true));
-        }
-    }
-
-    @Test
-    public void commonExecutionNotUndoable() {
-        if (!command.isUndoable()) {
-            command.commonExecution(scenarioSimulationContextLocal);
-            verify(scenarioGridPanelMock, times(1)).onResize();
-            verify(scenarioGridPanelMock, times(1)).select();
-            verify(scenarioGridPanelMock, never()).setFocus(anyBoolean());
         }
     }
 }

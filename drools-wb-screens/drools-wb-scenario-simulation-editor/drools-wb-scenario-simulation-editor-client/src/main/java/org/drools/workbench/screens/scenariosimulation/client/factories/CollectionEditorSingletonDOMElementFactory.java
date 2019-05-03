@@ -33,7 +33,6 @@ import org.drools.workbench.screens.scenariosimulation.model.Simulation;
 import org.drools.workbench.screens.scenariosimulation.utils.ScenarioSimulationSharedUtils;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
-import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.single.impl.BaseSingletonDOMElementFactory;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
@@ -51,7 +50,8 @@ public class CollectionEditorSingletonDOMElementFactory extends BaseSingletonDOM
     public CollectionEditorSingletonDOMElementFactory(final GridLienzoPanel gridPanel,
                                                       final GridLayer gridLayer,
                                                       final GridWidget gridWidget,
-                                                      ScenarioSimulationContext scenarioSimulationContext, ViewsProvider viewsProvider) {
+                                                      final ScenarioSimulationContext scenarioSimulationContext,
+                                                      final ViewsProvider viewsProvider) {
         super(gridPanel,
               gridLayer,
               gridWidget);
@@ -66,8 +66,7 @@ public class CollectionEditorSingletonDOMElementFactory extends BaseSingletonDOM
 
     @Override
     public CollectionEditorDOMElement createDomElement(final GridLayer gridLayer,
-                                                       final GridWidget gridWidget,
-                                                       final GridBodyCellRenderContext context) {
+                                                       final GridWidget gridWidget) {
         if (this.widget != null) {
             this.widget.close();
         }
@@ -81,12 +80,7 @@ public class CollectionEditorSingletonDOMElementFactory extends BaseSingletonDOM
             final int actualIndex = model.getColumns().indexOf(col);
             final FactMapping factMapping = model.getSimulation().get().getSimulationDescriptor().getFactMappingByIndex(actualIndex);
             setCollectionEditorStructureData(this.widget, factMapping);
-            this.e = internalCreateDomElement(widget, gridLayer, gridWidget);
-            final CollectionEditorDOMElement collectionEditorDOMElement = this.e;
-            widget.addCloseCompositeEventHandler(event -> {
-                commonCloseHandling(collectionEditorDOMElement);
-            });
-            widget.addSaveEditorEventHandler(event -> flush());
+            this.e = createDomElementInternal(widget, gridLayer, gridWidget);
         });
         return e;
     }
@@ -135,7 +129,10 @@ public class CollectionEditorSingletonDOMElementFactory extends BaseSingletonDOM
         collectionEditorView.initMapStructure(key, getSimplePropertiesMap(genericTypeName0), getSimplePropertiesMap(genericTypeName1));
     }
 
-    protected CollectionEditorDOMElement internalCreateDomElement(CollectionViewImpl collectionEditorView, GridLayer gridLayer, GridWidget gridWidget) {
+    @Override
+    public CollectionEditorDOMElement createDomElementInternal(final CollectionViewImpl collectionEditorView,
+                                                               final GridLayer gridLayer,
+                                                               final GridWidget gridWidget) {
         return new CollectionEditorDOMElement(collectionEditorView, gridLayer, gridWidget);
     }
 
@@ -176,6 +173,15 @@ public class CollectionEditorSingletonDOMElementFactory extends BaseSingletonDOM
         gridLayer.batch();
         gridPanel.setFocus(true);
         collectionEditorDOMElement.stopEditingMode();
+    }
+
+    @Override
+    public void registerHandlers(final CollectionViewImpl widget, final CollectionEditorDOMElement widgetDomElement) {
+
+        widget.addCloseCompositeEventHandler(event -> {
+            commonCloseHandling(widgetDomElement);
+        });
+        widget.addSaveEditorEventHandler(event -> flush());
     }
 }
 

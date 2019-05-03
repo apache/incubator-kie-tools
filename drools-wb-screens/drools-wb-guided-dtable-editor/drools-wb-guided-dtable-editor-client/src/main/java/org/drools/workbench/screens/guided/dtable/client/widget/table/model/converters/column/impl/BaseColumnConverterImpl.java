@@ -83,7 +83,6 @@ import org.kie.soup.project.datamodel.oracle.OperatorsOracle;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
-import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.impl.CheckBoxDOMElement;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.multiple.impl.CheckBoxDOMElementFactory;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
@@ -716,8 +715,7 @@ public abstract class BaseColumnConverterImpl implements BaseColumnConverter {
 
                                        @Override
                                        public CheckBoxDOMElement createDomElement(final GridLayer gridLayer,
-                                                                                  final GridWidget gridWidget,
-                                                                                  final GridBodyCellRenderContext context) {
+                                                                                  final GridWidget gridWidget) {
                                            final CheckBox widget = createWidget();
                                            widget.addMouseDownHandler((e) -> e.stopPropagation());
                                            widget.addKeyDownHandler((e) -> e.stopPropagation());
