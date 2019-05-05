@@ -30,7 +30,9 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionService;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InputData;
 import org.kie.workbench.common.dmn.api.definition.v1_1.KnowledgeSource;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
+import org.kie.workbench.common.dmn.api.definition.v1_1.NamedElement;
 import org.kie.workbench.common.dmn.api.definition.v1_1.TextAnnotation;
+import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -43,6 +45,9 @@ import org.kie.workbench.common.stunner.core.graph.store.GraphNodeStoreImpl;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
+import static org.powermock.api.mockito.PowerMockito.mock;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DefaultValueUtilitiesTest {
@@ -268,5 +273,18 @@ public class DefaultValueUtilitiesTest {
         final Node<View, Edge> node = new NodeImpl<>(UUID.randomUUID().toString());
         node.setContent(view);
         return node;
+    }
+
+    @Test
+    public void testUpdateNewNodeNameWhenNomeIsAlreadySet() {
+        final String existingName = "existingName";
+        final NamedElement dec = mock(NamedElement.class);
+        final Name name = new Name();
+        name.setValue(existingName);
+        when(dec.getName()).thenReturn(name);
+
+        DefaultValueUtilities.updateNewNodeName(graph, dec);
+
+        assertEquals(existingName, dec.getName().getValue());
     }
 }

@@ -27,6 +27,7 @@ import com.google.gwt.dom.client.Document;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.kie.workbench.common.forms.adf.definitions.DynamicReadOnly;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.FormGroup;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.configError.ConfigErrorDisplayer;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
@@ -73,6 +74,13 @@ public abstract class FieldRenderer<F extends FieldDefinition, FORM_GROUP extend
                 protected void doSetReadOnly(boolean readOnly) {
                     if (renderingContext.getRenderMode().equals(RenderMode.PRETTY_MODE)) {
                         return;
+                    }
+                    final Object model = renderingContext.getModel();
+                    if (model instanceof DynamicReadOnly){
+                        final DynamicReadOnly.ReadOnly readonlyMode = ((DynamicReadOnly) model).getReadOnly(field.getName());
+                        if (readonlyMode == DynamicReadOnly.ReadOnly.TRUE) {
+                            readOnly = true;
+                        }
                     }
                     FieldRenderer.this.setReadOnly(readOnly);
                 }

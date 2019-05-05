@@ -29,6 +29,7 @@ import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.BusinessKnowledgeModel;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
+import org.kie.workbench.common.dmn.api.definition.v1_1.DRGElement;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
@@ -134,9 +135,16 @@ public class DecisionNavigatorNestedItemFactory {
         final Object definition = getDefinition(node);
         final Optional<HasName> hasName = Optional.of((HasName) definition);
         final HasExpression hasExpression = getHasExpression(node);
-        final boolean isOnlyVisualChangeAllowed = false; //TODO {manstis} Read from the definition
+        final boolean isOnlyVisualChangeAllowed = isOnlyVisualChangeAllowed(definition);
 
         return new EditExpressionEvent(currentSession, node.getUUID(), hasExpression, hasName, isOnlyVisualChangeAllowed);
+    }
+
+    private boolean isOnlyVisualChangeAllowed(final Object definition) {
+        if (definition instanceof DRGElement) {
+            return ((DRGElement) definition).isAllowOnlyVisualChange();
+        }
+        return false;
     }
 
     String getUUID(final Node<View, Edge> node) {

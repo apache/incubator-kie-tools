@@ -54,6 +54,8 @@ public class DecisionComponentsItem {
         view.setIcon(getDecisionComponent().getIcon().getUri().asString());
         view.setName(getDecisionComponent().getName());
         view.setFile(getDecisionComponent().getFile());
+        view.setClass(getDecisionComponent().getClassName());
+        view.setObjectId(getDecisionComponent().getDrgElementId());
     }
 
     DecisionComponent getDecisionComponent() {
@@ -76,5 +78,9 @@ public class DecisionComponentsItem {
         void setName(final String name);
 
         void setFile(final String includedModelName);
+
+        void setClass(final String className);
+
+        void setObjectId(final String id);
     }
 }

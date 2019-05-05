@@ -26,6 +26,8 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
+import static org.kie.workbench.common.dmn.backend.definition.v1_1.HrefBuilder.getHref;
+
 public class AssociationConverter {
 
     public static List<org.kie.dmn.model.api.Association> dmnFromWB(final Node<View<TextAnnotation>, ?> node) {
@@ -43,7 +45,7 @@ public class AssociationConverter {
                 if (view.getDefinition() instanceof DRGElement) {
                     final DRGElement drgElement = (DRGElement) view.getDefinition();
                     final org.kie.dmn.model.api.DMNElementReference sourceRef = new org.kie.dmn.model.v1_2.TDMNElementReference();
-                    sourceRef.setHref(new StringBuilder("#").append(drgElement.getId().getValue()).toString());
+                    sourceRef.setHref(getHref(drgElement));
 
                     final org.kie.dmn.model.api.Association adding = new org.kie.dmn.model.v1_2.TAssociation();
                     adding.setId(((View<Association>) e.getContent()).getDefinition().getId().getValue());
@@ -62,7 +64,7 @@ public class AssociationConverter {
                 if (view.getDefinition() instanceof DRGElement) {
                     final DRGElement drgElement = (DRGElement) view.getDefinition();
                     final org.kie.dmn.model.api.DMNElementReference targetRef = new org.kie.dmn.model.v1_2.TDMNElementReference();
-                    targetRef.setHref(new StringBuilder("#").append(drgElement.getId().getValue()).toString());
+                    targetRef.setHref(getHref(drgElement));
 
                     final org.kie.dmn.model.api.Association adding = new org.kie.dmn.model.v1_2.TAssociation();
                     adding.setId(((View<Association>) e.getContent()).getDefinition().getId().getValue());

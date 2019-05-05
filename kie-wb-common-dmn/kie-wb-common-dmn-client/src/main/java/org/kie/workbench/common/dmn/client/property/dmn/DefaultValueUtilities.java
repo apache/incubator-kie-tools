@@ -29,15 +29,23 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionService;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InputData;
 import org.kie.workbench.common.dmn.api.definition.v1_1.KnowledgeSource;
+import org.kie.workbench.common.dmn.api.definition.v1_1.NamedElement;
 import org.kie.workbench.common.dmn.api.definition.v1_1.TextAnnotation;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.util.StringUtils;
 
 public class DefaultValueUtilities {
 
     public static void updateNewNodeName(final Graph<?, Node> graph,
                                          final DMNModelInstrumentedBase dmnModel) {
+        if (dmnModel instanceof NamedElement) {
+            if (isNameAlreadySet((NamedElement) dmnModel)) {
+                return;
+            }
+        }
+
         if (dmnModel instanceof BusinessKnowledgeModel) {
             updateBusinessKnowledgeModelDefaultName(graph, (BusinessKnowledgeModel) dmnModel);
         } else if (dmnModel instanceof Decision) {
@@ -144,13 +152,18 @@ public class DefaultValueUtilities {
                                                                                           final T dmnModel,
                                                                                           final Function<T, String> nameExtractor) {
         return StreamSupport
-                .stream(graph.nodes().spliterator(), false)
-                .filter(node -> node.getContent() instanceof View)
-                .map(node -> (View) node.getContent())
-                .filter(view -> view.getDefinition() instanceof DMNModelInstrumentedBase)
-                .map(view -> (T) view.getDefinition())
-                .filter(dmn -> dmn.getClass().equals(dmnModel.getClass()))
-                .map(nameExtractor::apply)
-                .collect(Collectors.toList());
+                   .stream(graph.nodes().spliterator(), false)
+                   .filter(node -> node.getContent() instanceof View)
+                   .map(node -> (View) node.getContent())
+                   .filter(view -> view.getDefinition() instanceof DMNModelInstrumentedBase)
+                   .map(view -> (T) view.getDefinition())
+                   .filter(dmn -> dmn.getClass().equals(dmnModel.getClass()))
+                   .map(nameExtractor::apply)
+                   .collect(Collectors.toList());
+    }
+
+    private static boolean isNameAlreadySet(final NamedElement element) {
+        return element.getName() != null
+                   && !StringUtils.isEmpty(element.getName().getValue());
     }
 }

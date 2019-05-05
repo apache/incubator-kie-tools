@@ -15,11 +15,25 @@
  */
 package org.kie.workbench.common.dmn.api.definition.v1_1;
 
+import java.util.Arrays;
+
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
+import org.kie.workbench.common.forms.adf.definitions.DynamicReadOnly;
 
-public abstract class DRGElement extends NamedElement {
+public abstract class DRGElement extends NamedElement implements DynamicReadOnly {
+
+    private static final String[] READONLY_FIELDS = {
+        "Name",
+        "AllowedAnswers",
+        "Description",
+        "Question",
+        "DataType",
+        "SourceType",
+        "LocationURI"};
+
+    protected boolean allowOnlyVisualChange;
 
     public DRGElement() {
     }
@@ -30,5 +44,32 @@ public abstract class DRGElement extends NamedElement {
         super(id,
               description,
               name);
+    }
+
+    @Override
+    public void setAllowOnlyVisualChange(final boolean allowOnlyVisualChange) {
+        this.allowOnlyVisualChange = allowOnlyVisualChange;
+    }
+
+    @Override
+    public boolean isAllowOnlyVisualChange() {
+        return allowOnlyVisualChange;
+    }
+
+    @Override
+    public ReadOnly getReadOnly(final String fieldName) {
+        if (!isAllowOnlyVisualChange()) {
+            return ReadOnly.NOT_SET;
+        }
+
+        if (isReadonlyField(fieldName)) {
+            return ReadOnly.TRUE;
+        }
+
+        return ReadOnly.FALSE;
+    }
+
+    protected boolean isReadonlyField(final String fieldName) {
+        return Arrays.stream(READONLY_FIELDS).anyMatch(f -> f.equalsIgnoreCase(fieldName));
     }
 }

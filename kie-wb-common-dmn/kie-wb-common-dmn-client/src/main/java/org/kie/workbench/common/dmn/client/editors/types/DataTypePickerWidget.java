@@ -53,6 +53,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.kie.workbench.common.dmn.client.editors.types.common.ItemDefinitionUtils;
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
+import org.kie.workbench.common.forms.adf.definitions.DynamicReadOnly;
 
 @Dependent
 @Templated
@@ -98,6 +99,8 @@ public class DataTypePickerWidget extends Composite implements HasValue<QName>,
 
     private boolean enabled;
 
+    private boolean modelAllowsOnlyVisualChange;
+
     public DataTypePickerWidget() {
         //CDI proxy
     }
@@ -133,6 +136,13 @@ public class DataTypePickerWidget extends Composite implements HasValue<QName>,
     }
 
     public void setDMNModel(final DMNModelInstrumentedBase dmnModel) {
+        if (dmnModel instanceof DynamicReadOnly) {
+            modelAllowsOnlyVisualChange = ((DynamicReadOnly) dmnModel).isAllowOnlyVisualChange();
+            if (modelAllowsOnlyVisualChange) {
+                this.enabled = false;
+                this.typeSelector.setEnabled(false);
+            }
+        }
         this.qNameConverter.setDMNModel(dmnModel);
         typeSelector.clear();
 
@@ -252,6 +262,9 @@ public class DataTypePickerWidget extends Composite implements HasValue<QName>,
 
     @Override
     public void setEnabled(final boolean enabled) {
+        if (modelAllowsOnlyVisualChange) {
+            return;
+        }
         this.enabled = enabled;
         this.typeSelector.setEnabled(enabled);
     }

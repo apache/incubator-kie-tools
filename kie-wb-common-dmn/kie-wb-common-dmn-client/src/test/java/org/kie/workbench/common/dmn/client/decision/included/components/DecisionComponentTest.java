@@ -73,4 +73,9 @@ public class DecisionComponentTest {
 
         assertEquals(expectedIcon, actualIcon);
     }
+
+    @Test
+    public void testGetClassName() {
+        assertEquals(drgElementClass.getName(), component.getClassName());
+    }
 }

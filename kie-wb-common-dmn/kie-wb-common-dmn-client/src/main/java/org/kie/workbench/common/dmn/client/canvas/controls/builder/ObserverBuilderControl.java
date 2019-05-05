@@ -20,15 +20,21 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import org.kie.workbench.common.dmn.api.definition.HasName;
+import org.kie.workbench.common.dmn.api.definition.v1_1.DMNElement;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
+import org.kie.workbench.common.forms.adf.definitions.DynamicReadOnly;
 import org.kie.workbench.common.stunner.core.client.api.ClientDefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.impl.Observer;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationMessages;
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
+import org.kie.workbench.common.stunner.core.graph.Element;
+import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.index.bounds.GraphBoundsIndexer;
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
+import org.kie.workbench.common.stunner.core.util.StringUtils;
 
 @DMNEditor
 @Dependent
@@ -50,5 +56,30 @@ public class ObserverBuilderControl extends org.kie.workbench.common.stunner.cor
               translationMessages,
               graphBoundsIndexer,
               canvasSelectionEvent);
+    }
+
+    @Override
+    protected void updateElementFromDefinition(final Element element, final Object definition) {
+
+        final Object content = element.getContent();
+        if (!(content instanceof View)) {
+            return;
+        }
+
+        final Object newDefinition = ((View) content).getDefinition();
+        if (newDefinition instanceof HasName && definition instanceof HasName) {
+            ((HasName) newDefinition).getName().setValue(((HasName) definition).getName().getValue());
+        }
+
+        if (newDefinition instanceof DynamicReadOnly && definition instanceof DynamicReadOnly) {
+            ((DynamicReadOnly) newDefinition).setAllowOnlyVisualChange(((DynamicReadOnly) definition).isAllowOnlyVisualChange());
+        }
+
+        if (newDefinition instanceof DMNElement && definition instanceof DMNElement) {
+            final DMNElement dmnElement = (DMNElement) definition;
+            if (!StringUtils.isEmpty(dmnElement.getId().getValue())) {
+                ((DMNElement) newDefinition).getId().setValue(dmnElement.getId().getValue());
+            }
+        }
     }
 }

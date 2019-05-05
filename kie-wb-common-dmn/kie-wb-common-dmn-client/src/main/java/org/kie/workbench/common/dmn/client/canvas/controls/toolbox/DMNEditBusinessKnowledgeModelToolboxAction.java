@@ -81,7 +81,7 @@ public class DMNEditBusinessKnowledgeModelToolboxAction implements ToolboxAction
                                                                                                     uuid)
                 .asNode();
         final BusinessKnowledgeModel bkm = bkmNode.getContent().getDefinition();
-        final boolean isOnlyVisualChangeAllowed = false; //TODO {manstis} Read from BKM
+        final boolean isOnlyVisualChangeAllowed = bkm.isAllowOnlyVisualChange();
         editExpressionEvent.fire(new EditExpressionEvent(sessionManager.getCurrentSession(),
                                                          uuid,
                                                          bkm.asHasExpression(),

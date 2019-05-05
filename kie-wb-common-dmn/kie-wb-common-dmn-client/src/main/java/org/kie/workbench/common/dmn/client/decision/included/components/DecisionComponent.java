@@ -62,6 +62,10 @@ public class DecisionComponent {
         return drgElementClass;
     }
 
+    public String getClassName() {
+        return drgElementClass.getName();
+    }
+
     public ImageDataUriGlyph getIcon() {
         return PALETTE_MAP.get(drgElementClass);
     }

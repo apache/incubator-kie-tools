@@ -142,7 +142,7 @@ public class DecisionComponents {
     }
 
     private DecisionComponent makeDecisionComponent(final DMNIncludedNode node) {
-        return new DecisionComponent(node.getFileName(), node.getDrgElementId(), node.getDrgElementName(), node.getDrgElementClass());
+        return new DecisionComponent(node.getFileName(), node.getImportedElementId(), node.getDrgElementName(), node.getDrgElementClass());
     }
 
     List<DMNIncludedModel> getDMNIncludedModels(final Diagram diagram) {

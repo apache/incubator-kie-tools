@@ -15,6 +15,7 @@
  */
 package org.kie.workbench.common.dmn.api.definition.v1_1;
 
+import java.util.Arrays;
 import java.util.Set;
 
 import javax.validation.Valid;
@@ -29,6 +30,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Text;
 import org.kie.workbench.common.dmn.api.property.dmn.TextFormat;
 import org.kie.workbench.common.dmn.api.property.font.FontSet;
+import org.kie.workbench.common.forms.adf.definitions.DynamicReadOnly;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
@@ -49,18 +51,23 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 @Bindable
 @Definition(graphFactory = NodeFactory.class, nameField = "text")
 @FormDefinition(policy = FieldPolicy.ONLY_MARKED,
-        defaultFieldSettings = {@FieldParam(name = FIELD_CONTAINER_PARAM, value = COLLAPSIBLE_CONTAINER)},
-        i18n = @I18nSettings(keyPreffix = "org.kie.workbench.common.dmn.api.definition.v1_1.TextAnnotation"),
-        startElement = "id")
-public class TextAnnotation extends Artifact implements DMNViewDefinition<GeneralRectangleDimensionsSet> {
+    defaultFieldSettings = {@FieldParam(name = FIELD_CONTAINER_PARAM, value = COLLAPSIBLE_CONTAINER)},
+    i18n = @I18nSettings(keyPreffix = "org.kie.workbench.common.dmn.api.definition.v1_1.TextAnnotation"),
+    startElement = "id")
+public class TextAnnotation extends Artifact implements DMNViewDefinition<GeneralRectangleDimensionsSet>,
+                                                        DynamicReadOnly {
+
+    private static final String[] READONLY_FIELDS = {"Description", "Text", "TextFormat"};
+
+    protected boolean allowOnlyVisualChange;
 
     @Category
     private static final String stunnerCategory = Categories.NODES;
 
     @Labels
     private static final Set<String> stunnerLabels = new Sets.Builder<String>()
-            .add("text-annotation")
-            .build();
+                                                         .add("text-annotation")
+                                                         .build();
 
     @Property
     @FormField(afterElement = "description")
@@ -209,5 +216,33 @@ public class TextAnnotation extends Artifact implements DMNViewDefinition<Genera
                                          backgroundSet != null ? backgroundSet.hashCode() : 0,
                                          fontSet != null ? fontSet.hashCode() : 0,
                                          dimensionsSet != null ? dimensionsSet.hashCode() : 0);
+    }
+
+
+    @Override
+    public void setAllowOnlyVisualChange(final boolean allowOnlyVisualChange) {
+        this.allowOnlyVisualChange = allowOnlyVisualChange;
+    }
+
+    @Override
+    public boolean isAllowOnlyVisualChange() {
+        return allowOnlyVisualChange;
+    }
+
+    @Override
+    public ReadOnly getReadOnly(final String fieldName) {
+        if (!isAllowOnlyVisualChange()) {
+            return ReadOnly.NOT_SET;
+        }
+
+        if (isReadonlyField(fieldName)) {
+            return ReadOnly.TRUE;
+        }
+
+        return ReadOnly.FALSE;
+    }
+
+    protected boolean isReadonlyField(final String fieldName) {
+        return Arrays.stream(READONLY_FIELDS).anyMatch(f -> f.equalsIgnoreCase(fieldName));
     }
 }

@@ -40,6 +40,8 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
+import static org.kie.workbench.common.dmn.backend.definition.v1_1.HrefBuilder.getHref;
+
 public class BusinessKnowledgeModelConverter implements NodeConverter<org.kie.dmn.model.api.BusinessKnowledgeModel, org.kie.workbench.common.dmn.api.definition.v1_1.BusinessKnowledgeModel> {
 
     private FactoryManager factoryManager;
@@ -112,14 +114,14 @@ public class BusinessKnowledgeModelConverter implements NodeConverter<org.kie.dm
                         final org.kie.dmn.model.api.KnowledgeRequirement iReq = new org.kie.dmn.model.v1_2.TKnowledgeRequirement();
                         iReq.setId(e.getUUID());
                         final org.kie.dmn.model.api.DMNElementReference ri = new org.kie.dmn.model.v1_2.TDMNElementReference();
-                        ri.setHref(new StringBuilder("#").append(drgElement.getId().getValue()).toString());
+                        ri.setHref(getHref(drgElement));
                         iReq.setRequiredKnowledge(ri);
                         result.getKnowledgeRequirement().add(iReq);
                     } else if (drgElement instanceof KnowledgeSource) {
                         final org.kie.dmn.model.api.AuthorityRequirement iReq = new org.kie.dmn.model.v1_2.TAuthorityRequirement();
                         iReq.setId(e.getUUID());
                         final org.kie.dmn.model.api.DMNElementReference ri = new org.kie.dmn.model.v1_2.TDMNElementReference();
-                        ri.setHref(new StringBuilder("#").append(drgElement.getId().getValue()).toString());
+                        ri.setHref(getHref(drgElement));
                         iReq.setRequiredAuthority(ri);
                         result.getAuthorityRequirement().add(iReq);
                     } else if (drgElement instanceof DecisionService) {
@@ -127,7 +129,7 @@ public class BusinessKnowledgeModelConverter implements NodeConverter<org.kie.dm
                             final org.kie.dmn.model.api.KnowledgeRequirement iReq = new org.kie.dmn.model.v1_2.TKnowledgeRequirement();
                             iReq.setId(e.getUUID());
                             final org.kie.dmn.model.api.DMNElementReference ri = new org.kie.dmn.model.v1_2.TDMNElementReference();
-                            ri.setHref(new StringBuilder("#").append(drgElement.getId().getValue()).toString());
+                            ri.setHref(getHref(drgElement));
                             iReq.setRequiredKnowledge(ri);
                             result.getKnowledgeRequirement().add(iReq);
                         } else {

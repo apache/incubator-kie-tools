@@ -233,6 +233,7 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
                                          new ServiceCallback<Element>() {
                                              @Override
                                              public void onSuccess(final Element element) {
+                                                 updateElementFromDefinition(element, definition);
                                                  getElementCommands(element,
                                                                     parent,
                                                                     getParentAssignment(parent, definition),
@@ -258,6 +259,10 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
                                                  commandsCallback.onError(error);
                                              }
                                          });
+    }
+
+    protected void updateElementFromDefinition(final Element element, final Object definition) {
+        // Nothing for now
     }
 
     @SuppressWarnings("unchecked")

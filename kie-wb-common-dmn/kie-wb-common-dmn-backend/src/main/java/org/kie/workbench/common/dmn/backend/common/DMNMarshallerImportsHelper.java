@@ -53,4 +53,10 @@ public interface DMNMarshallerImportsHelper {
      * @return a list of imported {@link ItemDefinition}s.
      */
     List<ItemDefinition> getImportedItemDefinitions(final Map<Import, Definitions> importDefinitions);
+
+    /**
+     * This method initialises the helper.
+     * @param marshaller is instance used to unmarshal the imports.
+     */
+    void init(final org.kie.dmn.api.marshalling.DMNMarshaller marshaller);
 }

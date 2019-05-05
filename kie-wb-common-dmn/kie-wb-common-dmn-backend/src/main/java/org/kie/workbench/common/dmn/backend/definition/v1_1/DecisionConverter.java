@@ -45,6 +45,8 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
+import static org.kie.workbench.common.dmn.backend.definition.v1_1.HrefBuilder.getHref;
+
 public class DecisionConverter implements NodeConverter<org.kie.dmn.model.api.Decision, org.kie.workbench.common.dmn.api.definition.v1_1.Decision> {
 
     private FactoryManager factoryManager;
@@ -123,28 +125,28 @@ public class DecisionConverter implements NodeConverter<org.kie.dmn.model.api.De
                         final org.kie.dmn.model.api.InformationRequirement iReq = new org.kie.dmn.model.v1_2.TInformationRequirement();
                         iReq.setId(e.getUUID());
                         final org.kie.dmn.model.api.DMNElementReference ri = new org.kie.dmn.model.v1_2.TDMNElementReference();
-                        ri.setHref(new StringBuilder("#").append(drgElement.getId().getValue()).toString());
+                        ri.setHref(getHref(drgElement));
                         iReq.setRequiredDecision(ri);
                         d.getInformationRequirement().add(iReq);
                     } else if (drgElement instanceof BusinessKnowledgeModel) {
                         final org.kie.dmn.model.api.KnowledgeRequirement iReq = new org.kie.dmn.model.v1_2.TKnowledgeRequirement();
                         iReq.setId(e.getUUID());
                         final org.kie.dmn.model.api.DMNElementReference ri = new org.kie.dmn.model.v1_2.TDMNElementReference();
-                        ri.setHref(new StringBuilder("#").append(drgElement.getId().getValue()).toString());
+                        ri.setHref(getHref(drgElement));
                         iReq.setRequiredKnowledge(ri);
                         d.getKnowledgeRequirement().add(iReq);
                     } else if (drgElement instanceof KnowledgeSource) {
                         final org.kie.dmn.model.api.AuthorityRequirement iReq = new org.kie.dmn.model.v1_2.TAuthorityRequirement();
                         iReq.setId(e.getUUID());
                         final org.kie.dmn.model.api.DMNElementReference ri = new org.kie.dmn.model.v1_2.TDMNElementReference();
-                        ri.setHref(new StringBuilder("#").append(drgElement.getId().getValue()).toString());
+                        ri.setHref(getHref(drgElement));
                         iReq.setRequiredAuthority(ri);
                         d.getAuthorityRequirement().add(iReq);
                     } else if (drgElement instanceof InputData) {
                         final org.kie.dmn.model.api.InformationRequirement iReq = new org.kie.dmn.model.v1_2.TInformationRequirement();
                         iReq.setId(e.getUUID());
                         final org.kie.dmn.model.api.DMNElementReference ri = new org.kie.dmn.model.v1_2.TDMNElementReference();
-                        ri.setHref(new StringBuilder("#").append(drgElement.getId().getValue()).toString());
+                        ri.setHref(getHref(drgElement));
                         iReq.setRequiredInput(ri);
                         d.getInformationRequirement().add(iReq);
                     } else if (drgElement instanceof DecisionService) {
@@ -154,7 +156,7 @@ public class DecisionConverter implements NodeConverter<org.kie.dmn.model.api.De
                             final org.kie.dmn.model.api.KnowledgeRequirement iReq = new org.kie.dmn.model.v1_2.TKnowledgeRequirement();
                             iReq.setId(e.getUUID());
                             final org.kie.dmn.model.api.DMNElementReference ri = new org.kie.dmn.model.v1_2.TDMNElementReference();
-                            ri.setHref(new StringBuilder("#").append(drgElement.getId().getValue()).toString());
+                            ri.setHref(getHref(drgElement));
                             iReq.setRequiredKnowledge(ri);
                             d.getKnowledgeRequirement().add(iReq);
                         } else {

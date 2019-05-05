@@ -46,7 +46,7 @@ public class DecisionComponentsItemViewTest {
 
     @Before
     public void setup() {
-        view = new DecisionComponentsItemView(icon, name, file);
+        view = new DecisionComponentsItemView(icon, name, file, null, null, null, null, null, null, null, null);
         view.init(presenter);
     }
 
