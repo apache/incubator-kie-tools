@@ -22,14 +22,14 @@ import org.gwtbootstrap3.client.ui.constants.ValidationState;
 import org.jboss.errai.common.client.dom.HTMLElement;
 
 import static org.jboss.errai.common.client.dom.DOMUtil.addEnumStyleName;
-import static org.jboss.errai.common.client.dom.DOMUtil.removeCSSClass;
+import static org.jboss.errai.common.client.dom.DOMUtil.removeEnumStyleName;
 
 public interface ValidableFormGroupView extends FormGroupView {
 
     HTMLElement getHelpBlock();
 
     default void clearErrors() {
-        Arrays.stream(ValidationState.values()).forEach(v -> removeCSSClass(getElement(), v.getCssName()));
+        Arrays.stream(ValidationState.values()).forEach(state -> removeEnumStyleName(getElement(), state));
         getHelpBlock().setTextContent("");
     }
 

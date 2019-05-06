@@ -20,19 +20,19 @@ import javax.enterprise.context.Dependent;
 
 import org.jboss.errai.databinding.client.PropertyType;
 import org.kie.workbench.common.forms.dynamic.client.helper.PropertyGenerator;
-import org.kie.workbench.common.forms.jbpm.model.authoring.documents.definition.DocumentListFieldDefinition;
+import org.kie.workbench.common.forms.jbpm.model.authoring.documents.definition.DocumentCollectionFieldDefinition;
 import org.kie.workbench.common.forms.jbpm.model.document.DocumentData;
 
 @Dependent
-public class DocumentListPropertyGenerator implements PropertyGenerator<DocumentListFieldDefinition> {
+public class DocumentCollectionPropertyGenerator implements PropertyGenerator<DocumentCollectionFieldDefinition> {
 
     @Override
-    public Class<DocumentListFieldDefinition> getType() {
-        return DocumentListFieldDefinition.class;
+    public Class<DocumentCollectionFieldDefinition> getType() {
+        return DocumentCollectionFieldDefinition.class;
     }
 
     @Override
-    public PropertyType generatePropertyType(DocumentListFieldDefinition field) {
+    public PropertyType generatePropertyType(DocumentCollectionFieldDefinition field) {
         return new PropertyType(DocumentData.class, false, true);
     }
 }

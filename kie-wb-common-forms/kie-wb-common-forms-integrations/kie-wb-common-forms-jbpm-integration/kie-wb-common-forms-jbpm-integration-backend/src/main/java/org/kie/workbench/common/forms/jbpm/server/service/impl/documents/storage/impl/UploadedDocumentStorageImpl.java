@@ -54,8 +54,13 @@ public class UploadedDocumentStorageImpl implements UploadedDocumentStorage,
     private Map<String, File> uploadedFiles = new HashMap<>();
 
     @PostConstruct
-    public void init() throws IOException {
-        rootFolder = Files.createTempDirectory(UPLOADS_FOLDER);
+    public void init() {
+        try {
+            rootFolder = Files.createTempDirectory(UPLOADS_FOLDER);
+        } catch (IOException e) {
+            logger.warn("Cannot create tmp folder for document uploading due to: ", e);
+            throw new IllegalStateException(e);
+        }
     }
 
     @Override

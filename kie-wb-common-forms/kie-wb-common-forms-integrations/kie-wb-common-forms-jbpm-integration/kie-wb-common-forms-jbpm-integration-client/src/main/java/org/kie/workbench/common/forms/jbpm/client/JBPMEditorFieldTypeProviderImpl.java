@@ -25,7 +25,7 @@ import javax.enterprise.context.ApplicationScoped;
 
 import org.kie.workbench.common.forms.editor.client.editor.EditorFieldTypesProvider;
 import org.kie.workbench.common.forms.jbpm.model.authoring.document.definition.DocumentFieldDefinition;
-import org.kie.workbench.common.forms.jbpm.model.authoring.documents.definition.DocumentListFieldDefinition;
+import org.kie.workbench.common.forms.jbpm.model.authoring.documents.definition.DocumentCollectionFieldDefinition;
 import org.kie.workbench.common.forms.model.FieldType;
 
 @ApplicationScoped
@@ -36,7 +36,7 @@ public class JBPMEditorFieldTypeProviderImpl implements EditorFieldTypesProvider
     @PostConstruct
     public void init() {
         supportedFieldTypes.add(DocumentFieldDefinition.FIELD_TYPE);
-        supportedFieldTypes.add(DocumentListFieldDefinition.FIELD_TYPE);
+        supportedFieldTypes.add(DocumentCollectionFieldDefinition.FIELD_TYPE);
     }
 
     @Override

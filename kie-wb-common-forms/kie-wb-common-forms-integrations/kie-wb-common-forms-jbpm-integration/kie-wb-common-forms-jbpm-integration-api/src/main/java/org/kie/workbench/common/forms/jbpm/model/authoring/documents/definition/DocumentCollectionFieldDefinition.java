@@ -24,7 +24,7 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSettings;
 import org.kie.workbench.common.forms.fields.shared.AbstractFieldDefinition;
-import org.kie.workbench.common.forms.jbpm.model.authoring.documents.type.DocumentListFieldType;
+import org.kie.workbench.common.forms.jbpm.model.authoring.documents.type.DocumentCollectionFieldType;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 
 @Portable
@@ -33,9 +33,9 @@ import org.kie.workbench.common.forms.model.FieldDefinition;
         i18n = @I18nSettings(keyPreffix = "FieldProperties"),
         startElement = "label"
 )
-public class DocumentListFieldDefinition extends AbstractFieldDefinition {
+public class DocumentCollectionFieldDefinition extends AbstractFieldDefinition {
 
-    public static final DocumentListFieldType FIELD_TYPE = new DocumentListFieldType();
+    public static final DocumentCollectionFieldType FIELD_TYPE = new DocumentCollectionFieldType();
 
     @FormField(
             labelKey = "maxDocuments",
@@ -44,8 +44,8 @@ public class DocumentListFieldDefinition extends AbstractFieldDefinition {
     )
     private Integer maxDocuments = 0;
 
-    public DocumentListFieldDefinition() {
-        super(DocumentListFieldType.DOCUMENTS_TYPE);
+    public DocumentCollectionFieldDefinition() {
+        super(DocumentCollectionFieldType.DOCUMENT_COLLECTION_TYPE);
     }
 
     public Integer getMaxDocuments() {
@@ -57,14 +57,14 @@ public class DocumentListFieldDefinition extends AbstractFieldDefinition {
     }
 
     @Override
-    public DocumentListFieldType getFieldType() {
+    public DocumentCollectionFieldType getFieldType() {
         return FIELD_TYPE;
     }
 
     @Override
     protected void doCopyFrom(FieldDefinition other) {
-        if(other instanceof DocumentListFieldDefinition) {
-            this.maxDocuments = ((DocumentListFieldDefinition)other).maxDocuments;
+        if(other instanceof DocumentCollectionFieldDefinition) {
+            this.maxDocuments = ((DocumentCollectionFieldDefinition)other).maxDocuments;
         }
     }
 
@@ -79,7 +79,7 @@ public class DocumentListFieldDefinition extends AbstractFieldDefinition {
         if (!super.equals(o)) {
             return false;
         }
-        DocumentListFieldDefinition that = (DocumentListFieldDefinition) o;
+        DocumentCollectionFieldDefinition that = (DocumentCollectionFieldDefinition) o;
         return Objects.equals(maxDocuments, that.maxDocuments);
     }
 

@@ -18,11 +18,14 @@ package org.kie.workbench.common.forms.jbpm.model.authoring.documents.type;
 
 import org.kie.workbench.common.forms.model.FieldType;
 
-public class DocumentListFieldType implements FieldType {
+public class DocumentCollectionFieldType implements FieldType {
 
+
+    public static final String DOCUMENT_COLLECTION_TYPE = "org.jbpm.document.DocumentCollection";
+    public static final String DOCUMENT_COLLECTION_IMPL_TYPE = "org.jbpm.document.service.impl.DocumentCollectionImpl";
     public static final String DOCUMENTS_TYPE = "org.jbpm.document.Documents";
 
-    public static final String NAME = "DocumentList";
+    public static final String NAME = "DocumentCollection";
 
     @Override
     public String getTypeName() {

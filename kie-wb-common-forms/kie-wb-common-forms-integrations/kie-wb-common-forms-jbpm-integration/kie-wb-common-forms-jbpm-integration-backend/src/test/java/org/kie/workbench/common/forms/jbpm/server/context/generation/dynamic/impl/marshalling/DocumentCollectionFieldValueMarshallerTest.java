@@ -22,33 +22,37 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import org.assertj.core.api.Assertions;
 import org.jbpm.document.Document;
+import org.jbpm.document.DocumentCollection;
 import org.jbpm.document.Documents;
+import org.jbpm.document.service.impl.DocumentCollectionImpl;
 import org.jbpm.document.service.impl.DocumentImpl;
 import org.jbpm.document.service.impl.util.DocumentDownloadLinkGenerator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.workbench.common.forms.dynamic.service.context.generation.dynamic.BackendFormRenderingContext;
-import org.kie.workbench.common.forms.jbpm.model.authoring.documents.definition.DocumentListFieldDefinition;
+import org.kie.workbench.common.forms.jbpm.model.authoring.documents.definition.DocumentCollectionFieldDefinition;
 import org.kie.workbench.common.forms.jbpm.model.document.DocumentData;
 import org.kie.workbench.common.forms.jbpm.model.document.DocumentStatus;
 import org.kie.workbench.common.forms.jbpm.server.service.impl.documents.storage.UploadedDocumentStorage;
 import org.kie.workbench.common.forms.model.FormDefinition;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class DocumentListFieldValueMarshallerTest {
+@RunWith(Parameterized.class)
+@SuppressWarnings("unchecked")
+public class DocumentCollectionFieldValueMarshallerTest {
 
     private static final String SERVER_TEMPLATE_ID = "templateId";
     private static final String DOCUMENT_ID = "docId";
@@ -57,29 +61,50 @@ public class DocumentListFieldValueMarshallerTest {
 
     private static final String EXPECTED_DOWNLOAD_LINK = DocumentDownloadLinkGenerator.generateDownloadLink(SERVER_TEMPLATE_ID, DOCUMENT_ID);
 
-    @Mock
-    protected UploadedDocumentStorage documentStorage;
+    private UploadedDocumentStorage documentStorage;
 
-    @Mock
     private FormDefinition form;
 
-    @Mock
-    protected BackendFormRenderingContext context;
+    private BackendFormRenderingContext context;
 
-    protected DocumentListFieldValueMarshaller marshaller;
+    @Parameterized.Parameters(name = "{index}: {0} {1}")
+    public static Collection<Object[]> data() {
+        return Arrays.asList(new Object[][]{
+                                     {(Supplier<DocumentCollection>) DocumentCollectionImpl::new, DocumentCollectionImpl.class},
+                                     {(Supplier<DocumentCollection>) Documents::new, Documents.class}
+                             }
+        );
+    }
 
-    protected DocumentListFieldDefinition field;
+    @Parameterized.Parameter
+    public Supplier<DocumentCollection> documentCollectionSupplier;
+
+    @Parameterized.Parameter(1)
+    public Class<? extends DocumentCollection> expectedType;
+
+    private DocumentCollection<Document> documentCollection;
+
+    private DocumentCollectionFieldValueMarshaller marshaller;
+
+    private DocumentCollectionFieldDefinition field;
 
     @Before
     public void initTest() {
+        documentStorage = mock(UploadedDocumentStorage.class);
+        form = mock(FormDefinition.class);
+        context = mock(BackendFormRenderingContext.class);
+
         when(documentStorage.getContent(anyString())).thenReturn(new byte[]{});
 
-        field = new DocumentListFieldDefinition();
+        field = new DocumentCollectionFieldDefinition();
         field.setBinding("documents");
         field.setName("documents");
         field.setLabel("documents");
+        field.setStandaloneClassName(expectedType.getName());
 
-        marshaller = new DocumentListFieldValueMarshaller(documentStorage);
+        marshaller = new DocumentCollectionFieldValueMarshaller(documentStorage);
+
+        documentCollection = documentCollectionSupplier.get();
     }
 
     @Test
@@ -98,7 +123,9 @@ public class DocumentListFieldValueMarshallerTest {
     public void testDocuments2FlatValueEmptyLinkPattern() {
         Document doc = new DocumentImpl(DOCUMENT_ID, "docName", 1024, new Date());
 
-        marshaller.init(new Documents(Collections.singletonList(doc)), field, form, context);
+        documentCollection.addDocument(doc);
+
+        marshaller.init(documentCollection, field, form, context);
 
         Collection<DocumentData> documents = marshaller.toFlatValue();
 
@@ -126,7 +153,9 @@ public class DocumentListFieldValueMarshallerTest {
 
         when(context.getAttributes()).thenReturn(result);
 
-        marshaller.init(new Documents(Collections.singletonList(doc)), field, form, context);
+        documentCollection.addDocument(doc);
+
+        marshaller.init(documentCollection, field, form, context);
 
         Collection<DocumentData> documents = marshaller.toFlatValue();
 
@@ -148,10 +177,11 @@ public class DocumentListFieldValueMarshallerTest {
 
         marshaller.init(null, field, form, context);
 
-        Documents documents = marshaller.toRawValue(null);
+        DocumentCollection documents = marshaller.toRawValue(null);
 
         Assertions.assertThat(documents)
-                .isNotNull();
+                .isNotNull()
+                .isInstanceOf(expectedType);
 
         Assertions.assertThat(documents.getDocuments())
                 .isNotNull()
@@ -166,14 +196,15 @@ public class DocumentListFieldValueMarshallerTest {
 
         data.setContentId("content");
 
-        Documents documents = marshaller.toRawValue(Collections.singletonList(data));
+        DocumentCollection<Document> documents = marshaller.toRawValue(Collections.singletonList(data));
 
         verify(documentStorage).getContent(anyString());
 
         verify(documentStorage).removeContent(anyString());
 
         Assertions.assertThat(documents)
-                .isNotNull();
+                .isNotNull()
+                .isInstanceOf(expectedType);
 
         Assertions.assertThat(documents.getDocuments())
                 .isNotNull()
@@ -184,18 +215,19 @@ public class DocumentListFieldValueMarshallerTest {
     public void testExistingFlatValue2Documents() {
         Document doc = new DocumentImpl(DOCUMENT_ID, "docName", 1024, new Date(), "aLink");
 
-        Documents documents = new Documents(Collections.singletonList(doc));
+        documentCollection.addDocument(doc);
 
-        marshaller.init(documents, field, form, context);
+        marshaller.init(documentCollection, field, form, context);
 
         DocumentData data = new DocumentData(doc.getName(), doc.getSize(), doc.getLink());
 
         data.setStatus(DocumentStatus.STORED);
 
-        Documents rawDocuments = marshaller.toRawValue(Collections.singletonList(data));
+        DocumentCollection<Document> rawDocuments = marshaller.toRawValue(Collections.singletonList(data));
 
         Assertions.assertThat(rawDocuments)
-                .isSameAs(documents);
+                .isSameAs(documentCollection)
+                .isInstanceOf(expectedType);
 
         verify(documentStorage, never()).getContent(anyString());
 
@@ -206,9 +238,9 @@ public class DocumentListFieldValueMarshallerTest {
     public void testAddingNewDocuments() {
         Document doc = new DocumentImpl(DOCUMENT_ID, "docName", 1024, new Date(), "aLink");
 
-        Documents documents = new Documents(Collections.singletonList(doc));
+        documentCollection.addDocument(doc);
 
-        marshaller.init(documents, field, form, context);
+        marshaller.init(documentCollection, field, form, context);
 
         DocumentData data1 = new DocumentData(DOCUMENT_ID, doc.getName(), doc.getSize(), doc.getLink(), System.currentTimeMillis());
         data1.setStatus(DocumentStatus.STORED);
@@ -216,14 +248,15 @@ public class DocumentListFieldValueMarshallerTest {
         DocumentData data2 = new DocumentData(DOCUMENT_ID2, DOCUMENT_ID2, 1024, "", System.currentTimeMillis());
         DocumentData data3 = new DocumentData(DOCUMENT_ID3, DOCUMENT_ID3, 1024, "", System.currentTimeMillis());
 
-        Documents rawDocuments = marshaller.toRawValue(Arrays.asList(data1, data2, data3));
+        DocumentCollection<Document> rawDocuments = marshaller.toRawValue(Arrays.asList(data1, data2, data3));
 
         verify(documentStorage, times(2)).getContent(anyString());
 
         verify(documentStorage, times(2)).removeContent(anyString());
 
         Assertions.assertThat(rawDocuments)
-                .isNotSameAs(documents);
+                .isNotSameAs(documentCollection)
+                .isInstanceOf(expectedType);
 
         Assertions.assertThat(rawDocuments.getDocuments())
                 .isNotNull()
@@ -238,21 +271,22 @@ public class DocumentListFieldValueMarshallerTest {
     public void testAddingAndRemovingDocuments() {
         Document doc = new DocumentImpl(DOCUMENT_ID, "docName", 1024, new Date(), "aLink");
 
-        Documents documents = new Documents(Collections.singletonList(doc));
+        documentCollection.addDocument(doc);
 
-        marshaller.init(documents, field, form, context);
+        marshaller.init(documentCollection, field, form, context);
 
         DocumentData data1 = new DocumentData(DOCUMENT_ID2, DOCUMENT_ID2, 1024, "", System.currentTimeMillis());
         DocumentData data2 = new DocumentData(DOCUMENT_ID3, DOCUMENT_ID3, 1024, "", System.currentTimeMillis());
 
-        Documents rawDocuments = marshaller.toRawValue(Arrays.asList(data1, data2));
+        DocumentCollection<Document> rawDocuments = marshaller.toRawValue(Arrays.asList(data1, data2));
 
         verify(documentStorage, times(2)).getContent(anyString());
 
         verify(documentStorage, times(2)).removeContent(anyString());
 
         Assertions.assertThat(rawDocuments)
-                .isNotSameAs(documents);
+                .isNotSameAs(documentCollection)
+                .isInstanceOf(expectedType);
 
         Assertions.assertThat(rawDocuments.getDocuments())
                 .isNotNull()

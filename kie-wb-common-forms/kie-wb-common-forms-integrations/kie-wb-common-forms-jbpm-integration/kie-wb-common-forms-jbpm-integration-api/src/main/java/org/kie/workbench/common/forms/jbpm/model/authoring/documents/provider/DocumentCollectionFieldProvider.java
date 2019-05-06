@@ -19,26 +19,26 @@ package org.kie.workbench.common.forms.jbpm.model.authoring.documents.provider;
 import javax.enterprise.context.Dependent;
 
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.BasicTypeFieldProvider;
-import org.kie.workbench.common.forms.jbpm.model.authoring.documents.definition.DocumentListFieldDefinition;
-import org.kie.workbench.common.forms.jbpm.model.authoring.documents.type.DocumentListFieldType;
+import org.kie.workbench.common.forms.jbpm.model.authoring.documents.definition.DocumentCollectionFieldDefinition;
+import org.kie.workbench.common.forms.jbpm.model.authoring.documents.type.DocumentCollectionFieldType;
 import org.kie.workbench.common.forms.model.TypeInfo;
 
 @Dependent
-public class DocumentsListFieldProvider extends BasicTypeFieldProvider<DocumentListFieldDefinition> {
+public class DocumentCollectionFieldProvider extends BasicTypeFieldProvider<DocumentCollectionFieldDefinition> {
 
     @Override
-    public Class<DocumentListFieldType> getFieldType() {
-        return DocumentListFieldType.class;
+    public Class<DocumentCollectionFieldType> getFieldType() {
+        return DocumentCollectionFieldType.class;
     }
 
     @Override
     public String getFieldTypeName() {
-        return DocumentListFieldDefinition.FIELD_TYPE.getTypeName();
+        return DocumentCollectionFieldDefinition.FIELD_TYPE.getTypeName();
     }
 
     @Override
-    public DocumentListFieldDefinition getDefaultField() {
-        return new DocumentListFieldDefinition();
+    public DocumentCollectionFieldDefinition getDefaultField() {
+        return new DocumentCollectionFieldDefinition();
     }
 
     @Override
@@ -48,11 +48,13 @@ public class DocumentsListFieldProvider extends BasicTypeFieldProvider<DocumentL
 
     @Override
     protected void doRegisterFields() {
-        registerPropertyType(DocumentListFieldType.DOCUMENTS_TYPE);
+        registerPropertyType(DocumentCollectionFieldType.DOCUMENT_COLLECTION_TYPE);
+        registerPropertyType(DocumentCollectionFieldType.DOCUMENT_COLLECTION_IMPL_TYPE);
+        registerPropertyType(DocumentCollectionFieldType.DOCUMENTS_TYPE);
     }
 
     @Override
-    public DocumentListFieldDefinition createFieldByType(TypeInfo typeInfo) {
-        return new DocumentListFieldDefinition();
+    public DocumentCollectionFieldDefinition createFieldByType(TypeInfo typeInfo) {
+        return new DocumentCollectionFieldDefinition();
     }
 }

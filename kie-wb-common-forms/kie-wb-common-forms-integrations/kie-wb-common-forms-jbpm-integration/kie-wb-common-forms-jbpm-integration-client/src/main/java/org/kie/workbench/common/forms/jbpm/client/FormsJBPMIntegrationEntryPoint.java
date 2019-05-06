@@ -23,7 +23,7 @@ import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ui.shared.api.annotations.Bundle;
 import org.kie.workbench.common.forms.jbpm.client.resources.DocumentUploadScript;
 import org.kie.workbench.common.forms.jbpm.model.authoring.document.type.DocumentFieldType;
-import org.kie.workbench.common.forms.jbpm.model.authoring.documents.type.DocumentListFieldType;
+import org.kie.workbench.common.forms.jbpm.model.authoring.documents.type.DocumentCollectionFieldType;
 import org.kie.workbench.common.forms.model.util.formModel.FormModelPropertiesUtil;
 
 @EntryPoint
@@ -35,7 +35,10 @@ public class FormsJBPMIntegrationEntryPoint {
         // registering Document Types to ModelPropertiesUtil
         FormModelPropertiesUtil.registerBaseType(DocumentFieldType.DOCUMENT_TYPE);
         FormModelPropertiesUtil.registerBaseType(DocumentFieldType.DOCUMENT_IMPL_TYPE);
-        FormModelPropertiesUtil.registerBaseType(DocumentListFieldType.DOCUMENTS_TYPE);
+
+        FormModelPropertiesUtil.registerBaseType(DocumentCollectionFieldType.DOCUMENTS_TYPE);
+        FormModelPropertiesUtil.registerBaseType(DocumentCollectionFieldType.DOCUMENT_COLLECTION_TYPE);
+        FormModelPropertiesUtil.registerBaseType(DocumentCollectionFieldType.DOCUMENT_COLLECTION_IMPL_TYPE);
 
         ScriptInjector.fromString(DocumentUploadScript.INSTANCE.upload().getText())
                 .setWindow(ScriptInjector.TOP_WINDOW)

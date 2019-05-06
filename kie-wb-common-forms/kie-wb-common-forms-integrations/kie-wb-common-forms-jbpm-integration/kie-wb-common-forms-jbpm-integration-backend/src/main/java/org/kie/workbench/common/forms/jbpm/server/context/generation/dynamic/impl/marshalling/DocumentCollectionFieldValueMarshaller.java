@@ -27,11 +27,14 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.jbpm.document.Document;
+import org.jbpm.document.DocumentCollection;
 import org.jbpm.document.Documents;
+import org.jbpm.document.service.impl.DocumentCollectionImpl;
 import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.dynamic.impl.marshalling.AbstractFieldValueMarshaller;
 import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.dynamic.impl.marshalling.FieldValueMarshaller;
 import org.kie.workbench.common.forms.dynamic.service.context.generation.dynamic.BackendFormRenderingContext;
-import org.kie.workbench.common.forms.jbpm.model.authoring.documents.definition.DocumentListFieldDefinition;
+import org.kie.workbench.common.forms.jbpm.model.authoring.documents.definition.DocumentCollectionFieldDefinition;
+import org.kie.workbench.common.forms.jbpm.model.authoring.documents.type.DocumentCollectionFieldType;
 import org.kie.workbench.common.forms.jbpm.model.document.DocumentData;
 import org.kie.workbench.common.forms.jbpm.model.document.DocumentStatus;
 import org.kie.workbench.common.forms.jbpm.server.service.impl.documents.storage.UploadedDocumentStorage;
@@ -39,52 +42,56 @@ import org.kie.workbench.common.forms.model.FormDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.kie.workbench.common.forms.jbpm.server.context.generation.dynamic.impl.marshalling.DocumentFieldValueMarshaller.fromDocument;
 import static org.kie.workbench.common.forms.jbpm.server.context.generation.dynamic.impl.marshalling.DocumentFieldValueMarshaller.toDocument;
 
 @Dependent
-public class DocumentListFieldValueMarshaller extends AbstractFieldValueMarshaller<Documents, Collection<DocumentData>, DocumentListFieldDefinition> {
+public class DocumentCollectionFieldValueMarshaller extends AbstractFieldValueMarshaller<DocumentCollection, Collection<DocumentData>, DocumentCollectionFieldDefinition> {
 
     public static final String SERVER_TEMPLATE_ID = "serverTemplateId";
 
-    private static final Logger logger = LoggerFactory.getLogger(DocumentListFieldValueMarshaller.class);
+    private static final Logger logger = LoggerFactory.getLogger(DocumentCollectionFieldValueMarshaller.class);
 
     private UploadedDocumentStorage documentStorage;
 
     @Inject
-    public DocumentListFieldValueMarshaller(UploadedDocumentStorage documentStorage) {
+    public DocumentCollectionFieldValueMarshaller(UploadedDocumentStorage documentStorage) {
         this.documentStorage = documentStorage;
     }
 
     @Override
-    public void init(Documents originalValue, DocumentListFieldDefinition fieldDefinition, FormDefinition currentForm, BackendFormRenderingContext currentContext) {
+    public void init(DocumentCollection originalValue, DocumentCollectionFieldDefinition fieldDefinition, FormDefinition currentForm, BackendFormRenderingContext currentContext) {
         super.init(originalValue, fieldDefinition, currentForm, currentContext);
-        this.originalValue = Optional.ofNullable(originalValue).orElseGet(Documents::new);
+        this.originalValue = Optional.ofNullable(originalValue).orElseGet(this::getInstance);
     }
 
     @Override
-    public Class<DocumentListFieldDefinition> getSupportedField() {
-        return DocumentListFieldDefinition.class;
+    public Class<DocumentCollectionFieldDefinition> getSupportedField() {
+        return DocumentCollectionFieldDefinition.class;
     }
 
     @Override
-    public Supplier<FieldValueMarshaller<Documents, Collection<DocumentData>, DocumentListFieldDefinition>> newInstanceSupplier() {
-        return () -> new DocumentListFieldValueMarshaller(documentStorage);
+    public Supplier<FieldValueMarshaller<DocumentCollection, Collection<DocumentData>, DocumentCollectionFieldDefinition>> newInstanceSupplier() {
+        return () -> new DocumentCollectionFieldValueMarshaller(documentStorage);
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Collection<DocumentData> toFlatValue() {
 
         String templateId = (String) context.getAttributes().get(SERVER_TEMPLATE_ID);
 
-        return originalValue.getDocuments().stream()
-                .map(document -> DocumentFieldValueMarshaller.fromDocument(document, templateId)).collect(Collectors.toList());
+        return (List<DocumentData>) originalValue.getDocuments().stream()
+                .map(document -> fromDocument((Document) document, templateId))
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Documents toRawValue(Collection<DocumentData> flatValue) {
+    @SuppressWarnings("unchecked")
+    public DocumentCollection toRawValue(Collection<DocumentData> flatValue) {
 
         if (flatValue == null) {
-            return new Documents();
+            return getInstance();
         }
 
         boolean newValues = flatValue.stream().anyMatch(documentData -> documentData.getStatus().equals(DocumentStatus.NEW));
@@ -93,13 +100,22 @@ public class DocumentListFieldValueMarshaller extends AbstractFieldValueMarshall
             return originalValue;
         }
 
-        List<Document> documents = flatValue.stream()
+        originalValue = getInstance();
+
+        flatValue.stream()
                 .map(documentData -> toDocument(documentData, documentStorage))
                 .filter(Objects::nonNull)
-                .collect(Collectors.toList());
-
-        originalValue = new Documents(documents);
+                .forEach(document -> originalValue.addDocument(document));
 
         return originalValue;
+    }
+
+    private DocumentCollection getInstance() {
+        if (DocumentCollectionFieldType.DOCUMENTS_TYPE.equals(fieldDefinition.getStandaloneClassName())) {
+            // Handling Documents just in case it is still being used
+            return new Documents();
+        }
+
+        return new DocumentCollectionImpl();
     }
 }

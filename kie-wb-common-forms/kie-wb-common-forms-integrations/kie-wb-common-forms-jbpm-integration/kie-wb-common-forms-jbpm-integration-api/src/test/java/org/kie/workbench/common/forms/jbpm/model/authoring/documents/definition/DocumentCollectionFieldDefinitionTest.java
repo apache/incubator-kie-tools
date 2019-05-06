@@ -18,17 +18,17 @@ package org.kie.workbench.common.forms.jbpm.model.authoring.documents.definition
 
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.AbstractFieldDefinitionTest;
 
-public class DocumentsListFieldDefinitionTest extends AbstractFieldDefinitionTest<DocumentListFieldDefinition> {
+public class DocumentCollectionFieldDefinitionTest extends AbstractFieldDefinitionTest<DocumentCollectionFieldDefinition> {
 
     @Override
-    protected DocumentListFieldDefinition getEmptyFieldDefinition() {
-        return new DocumentListFieldDefinition();
+    protected DocumentCollectionFieldDefinition getEmptyFieldDefinition() {
+        return new DocumentCollectionFieldDefinition();
     }
 
     @Override
-    protected DocumentListFieldDefinition getFullFieldDefinition() {
+    protected DocumentCollectionFieldDefinition getFullFieldDefinition() {
 
-        DocumentListFieldDefinition fieldDefinition = new DocumentListFieldDefinition();
+        DocumentCollectionFieldDefinition fieldDefinition = new DocumentCollectionFieldDefinition();
         fieldDefinition.setMaxDocuments(5);
 
         return fieldDefinition;

@@ -33,14 +33,14 @@ import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.forms.jbpm.client.rendering.documents.control.DocumentUpload;
 import org.kie.workbench.common.forms.jbpm.client.rendering.util.DocumentSizeHelper;
 import org.kie.workbench.common.forms.jbpm.client.resources.i18n.Constants;
-import org.kie.workbench.common.forms.jbpm.model.authoring.documents.definition.DocumentListFieldDefinition;
+import org.kie.workbench.common.forms.jbpm.model.authoring.documents.definition.DocumentCollectionFieldDefinition;
 import org.kie.workbench.common.forms.jbpm.model.document.DocumentData;
 import org.kie.workbench.common.forms.jbpm.model.document.DocumentStatus;
 import org.kie.workbench.common.forms.processing.engine.handling.CustomFieldValidator;
 import org.kie.workbench.common.forms.processing.engine.handling.ValidationResult;
 
 @Dependent
-public class DocumentListFieldRenderer extends FieldRenderer<DocumentListFieldDefinition, DefaultFormGroup> implements RequiresValueConverter {
+public class DocumentCollectionFieldRenderer extends FieldRenderer<DocumentCollectionFieldDefinition, DefaultFormGroup> implements RequiresValueConverter {
 
     private static final Integer MAX_CONTENT_SIZE = 20 * 1024 * 1024;
 
@@ -48,7 +48,7 @@ public class DocumentListFieldRenderer extends FieldRenderer<DocumentListFieldDe
     private final DocumentUpload upload;
 
     @Inject
-    public DocumentListFieldRenderer(final TranslationService translationService, final DocumentUpload upload) {
+    public DocumentCollectionFieldRenderer(final TranslationService translationService, final DocumentUpload upload) {
         this.translationService = translationService;
         this.upload = upload;
     }
@@ -65,12 +65,12 @@ public class DocumentListFieldRenderer extends FieldRenderer<DocumentListFieldDe
 
     @Override
     public String getName() {
-        return DocumentListFieldDefinition.FIELD_TYPE.getTypeName();
+        return DocumentCollectionFieldDefinition.FIELD_TYPE.getTypeName();
     }
 
     @Override
     public String getSupportedCode() {
-        return DocumentListFieldDefinition.FIELD_TYPE.getTypeName();
+        return DocumentCollectionFieldDefinition.FIELD_TYPE.getTypeName();
     }
 
     @Override
