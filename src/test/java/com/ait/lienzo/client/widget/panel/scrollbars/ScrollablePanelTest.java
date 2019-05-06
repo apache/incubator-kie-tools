@@ -30,6 +30,7 @@ import com.ait.lienzo.client.widget.panel.event.LienzoPanelScrollEvent;
 import com.ait.lienzo.client.widget.panel.event.LienzoPanelScrollEventHandler;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.event.dom.client.MouseOutHandler;
@@ -37,6 +38,7 @@ import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.dom.client.ScrollEvent;
 import com.google.gwt.event.dom.client.ScrollHandler;
 import com.google.gwt.event.logical.shared.AttachEvent;
+import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.AbsolutePanel;
@@ -48,8 +50,10 @@ import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -164,6 +168,48 @@ public class ScrollablePanelTest {
                                                     eq(handler));
         tested.fireLienzoPanelBoundsChangedEvent();
         verify(handlerManager, times(1)).fireEvent(any(LienzoPanelBoundsChangedEvent.class));
+    }
+
+    @Test
+    public void testResize() {
+        when(tested.getElement()).thenReturn(mock(com.google.gwt.user.client.Element.class));
+        when(tested.getElement().getParentElement()).thenReturn(mock(Element.class));
+        when(tested.getElement().getParentElement().getOffsetWidth()).thenReturn(300);
+        when(tested.getElement().getParentElement().getOffsetHeight()).thenReturn(500);
+
+        AbsolutePanel scrollPanel = mock(AbsolutePanel.class);
+        AbsolutePanel domContainerPanel = mock(AbsolutePanel.class);
+        when(tested.getScrollPanel()).thenReturn(scrollPanel);
+        when(tested.getDomElementContainer()).thenReturn(domContainerPanel);
+        when(scrollHandler.scrollbarWidth()).thenReturn(32);
+        when(scrollHandler.scrollbarHeight()).thenReturn(41);
+
+        tested.resize();
+
+        verify(scrollPanel, times(1)).setPixelSize(300, 500);
+        verify(domContainerPanel, times(1)).setPixelSize(268, 459);
+        verify(lienzoPanel, times(1)).setPixelSize(268, 459);
+        ArgumentCaptor<LienzoPanelResizeEvent> eventCaptor = ArgumentCaptor.forClass(LienzoPanelResizeEvent.class);
+        verify(handlerManager, times(1)).fireEvent(eventCaptor.capture());
+        LienzoPanelResizeEvent event = eventCaptor.getValue();
+        assertEquals(300d, event.getWidth(), 0);
+        assertEquals(500d, event.getHeight(), 0);
+    }
+
+    @Test
+    public void testResizeWithClosedParentContainer() {
+        when(tested.getElement()).thenReturn(mock(com.google.gwt.user.client.Element.class));
+        when(tested.getElement().getParentElement()).thenReturn(null);
+
+        AbsolutePanel scrollPanel = mock(AbsolutePanel.class);
+        AbsolutePanel domContainerPanel = mock(AbsolutePanel.class);
+
+        tested.resize();
+
+        verify(scrollPanel, never()).setPixelSize(anyInt(), anyInt());
+        verify(domContainerPanel, never()).setPixelSize(anyInt(), anyInt());
+        verify(lienzoPanel, never()).setPixelSize(anyInt(), anyInt());
+        verify(handlerManager, never()).fireEvent(any(GwtEvent.class));
     }
 
     @Test
