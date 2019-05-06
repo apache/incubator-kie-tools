@@ -217,6 +217,7 @@ public class ScrollablePanel extends LienzoBoundsPanel
     public void updateSize()
     {
         final Element parentElement = getElement().getParentElement();
+
         final int width         = parentElement.getOffsetWidth();
         final int height        = parentElement.getOffsetHeight();
 
@@ -275,11 +276,26 @@ public class ScrollablePanel extends LienzoBoundsPanel
             @Override
             public void execute()
             {
-                onSroll();
-                ScrollablePanel.this.updateSize();
-                ScrollablePanel.this.refresh();
+                resize();
             }
         });
+    }
+
+    void resize()
+    {
+        final Element parentElement = getElement().getParentElement();
+
+        if (isContainerStillOpened(parentElement))
+        {
+            onScroll();
+            ScrollablePanel.this.updateSize();
+            ScrollablePanel.this.refresh();
+        }
+    }
+
+    private boolean isContainerStillOpened(Element parentElement)
+    {
+        return parentElement != null;
     }
 
     @Override
@@ -354,7 +370,7 @@ public class ScrollablePanel extends LienzoBoundsPanel
                     @Override
                     public void onScroll(final ScrollEvent scrollEvent)
                     {
-                        ScrollablePanel.this.onSroll();
+                        ScrollablePanel.this.onScroll();
                     }
                 })
                 );
@@ -388,7 +404,7 @@ public class ScrollablePanel extends LienzoBoundsPanel
         }
     }
 
-    private void onSroll()
+    private void onScroll()
     {
         // Prevent DOMElements scrolling into view when they receive the focus
         domElementContainer.getElement().setScrollTop(0);
