@@ -482,6 +482,8 @@ public class BPMNDirectDiagramMarshallerTest {
                              "Instance\n" +
                              "Description",
                      diagramProperties.getProcessInstanceDescription().getValue());
+        assertEquals("12/25/1983",
+                     diagramProperties.getSlaDueDate().getValue());
     }
 
     @Test
@@ -2197,6 +2199,9 @@ public class BPMNDirectDiagramMarshallerTest {
         assertEquals("<![CDATA[This is the\nProcess\nInstance\nDescription]]>",
                      getProcessExtensionValue(process,
                                               "customDescription"));
+        assertEquals("<![CDATA[12/25/1983]]>",
+                     getProcessExtensionValue(process,
+                                              "customSLADueDate"));
     }
 
     @Test

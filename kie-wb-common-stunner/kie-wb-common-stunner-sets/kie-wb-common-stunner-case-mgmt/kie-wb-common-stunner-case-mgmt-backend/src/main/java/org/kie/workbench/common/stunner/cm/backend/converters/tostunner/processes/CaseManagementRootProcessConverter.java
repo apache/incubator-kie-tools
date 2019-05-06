@@ -28,6 +28,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.GlobalV
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Id;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Documentation;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
 import org.kie.workbench.common.stunner.cm.definition.property.diagram.DiagramSet;
 import org.kie.workbench.common.stunner.cm.definition.property.diagram.Package;
@@ -67,7 +68,8 @@ public class CaseManagementRootProcessConverter extends BaseRootProcessConverter
                               new AdHoc(e.isAdHoc()),
                               new ProcessInstanceDescription(e.getDescription()),
                               new GlobalVariables(e.getGlobalVariables()),
-                              new Executable(process.isIsExecutable()));
+                              new Executable(process.isIsExecutable()),
+                              new SLADueDate(e.getSlaDueDate()));
     }
 
     @Override

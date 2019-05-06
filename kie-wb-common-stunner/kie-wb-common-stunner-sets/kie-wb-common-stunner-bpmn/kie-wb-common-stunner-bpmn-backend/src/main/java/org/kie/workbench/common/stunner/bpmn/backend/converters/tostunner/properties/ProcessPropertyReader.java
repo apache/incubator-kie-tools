@@ -81,4 +81,8 @@ public class ProcessPropertyReader extends BasePropertyReader {
     public String getGlobalVariables() {
         return CustomElement.globalVariables.of(process).get();
     }
+
+    public String getSlaDueDate() {
+        return CustomElement.slaDueDate.of(process).get();
+    }
 }

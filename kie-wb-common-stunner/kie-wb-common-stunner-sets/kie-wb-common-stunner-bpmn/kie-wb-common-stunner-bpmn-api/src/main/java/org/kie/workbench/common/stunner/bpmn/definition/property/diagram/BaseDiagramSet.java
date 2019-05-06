@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.bpmn.definition.property.diagram;
 
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNBaseInfo;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 
 public interface BaseDiagramSet extends BPMNPropertySet,
                                         BPMNBaseInfo {
@@ -35,4 +36,6 @@ public interface BaseDiagramSet extends BPMNPropertySet,
     GlobalVariables getGlobalVariables();
 
     Executable getExecutable();
+
+    SLADueDate getSlaDueDate();
 }

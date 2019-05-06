@@ -35,6 +35,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.GlobalV
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Id;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Documentation;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 import org.kie.workbench.common.stunner.bpmn.forms.model.VariablesEditorFieldType;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
@@ -108,6 +109,11 @@ public class DiagramSet implements BaseDiagramSet {
     )
     private Executable executable;
 
+    @Property
+    @FormField(afterElement = "executable")
+    @Valid
+    private SLADueDate slaDueDate;
+
     public DiagramSet() {
         this(new Name(),
              new Documentation(),
@@ -117,7 +123,8 @@ public class DiagramSet implements BaseDiagramSet {
              new AdHoc(true),
              new ProcessInstanceDescription(),
              new GlobalVariables(),
-             new Executable());
+             new Executable(),
+             new SLADueDate());
     }
 
     public DiagramSet(final @MapsTo("name") Name name,
@@ -128,7 +135,8 @@ public class DiagramSet implements BaseDiagramSet {
                       final @MapsTo("adHoc") AdHoc adHoc,
                       final @MapsTo("processInstanceDescription") ProcessInstanceDescription processInstanceDescription,
                       final @MapsTo("globalVariables") GlobalVariables globalVariables,
-                      final @MapsTo("executable") Executable executable) {
+                      final @MapsTo("executable") Executable executable,
+                      final @MapsTo("slaDueDate") SLADueDate slaDueDate) {
         this.name = name;
         this.documentation = documentation;
         this.id = id;
@@ -138,6 +146,7 @@ public class DiagramSet implements BaseDiagramSet {
         this.processInstanceDescription = processInstanceDescription;
         this.globalVariables = globalVariables;
         this.executable = executable;
+        this.slaDueDate = slaDueDate;
     }
 
     public DiagramSet(final String name) {
@@ -149,7 +158,8 @@ public class DiagramSet implements BaseDiagramSet {
              new AdHoc(true),
              new ProcessInstanceDescription(),
              new GlobalVariables(),
-             new Executable());
+             new Executable(),
+             new SLADueDate());
     }
 
     @Override
@@ -234,16 +244,24 @@ public class DiagramSet implements BaseDiagramSet {
     }
 
     @Override
+    public SLADueDate getSlaDueDate() {
+        return slaDueDate;
+    }
+
+    public void setSlaDueDate(final SLADueDate slaDueDate) { this.slaDueDate = slaDueDate; }
+
+    @Override
     public int hashCode() {
-        return HashUtil.combineHashCodes(name.hashCode(),
-                                         documentation.hashCode(),
-                                         id.hashCode(),
-                                         packageProperty.hashCode(),
-                                         version.hashCode(),
-                                         adHoc.hashCode(),
-                                         processInstanceDescription.hashCode(),
-                                         globalVariables.hashCode(),
-                                         executable.hashCode());
+        return HashUtil.combineHashCodes(Objects.hashCode(name),
+                                         Objects.hashCode(documentation),
+                                         Objects.hashCode(id),
+                                         Objects.hashCode(packageProperty),
+                                         Objects.hashCode(version),
+                                         Objects.hashCode(adHoc),
+                                         Objects.hashCode(processInstanceDescription),
+                                         Objects.hashCode(globalVariables),
+                                         Objects.hashCode(executable),
+                                         Objects.hashCode(slaDueDate));
     }
 
     @Override
@@ -258,7 +276,8 @@ public class DiagramSet implements BaseDiagramSet {
                     Objects.equals(adHoc, other.adHoc) &&
                     Objects.equals(processInstanceDescription, other.processInstanceDescription) &&
                     Objects.equals(globalVariables, other.globalVariables) &&
-                    Objects.equals(executable, other.executable);
+                    Objects.equals(executable, other.executable) &&
+                    Objects.equals(slaDueDate, other.slaDueDate);
         }
         return false;
     }

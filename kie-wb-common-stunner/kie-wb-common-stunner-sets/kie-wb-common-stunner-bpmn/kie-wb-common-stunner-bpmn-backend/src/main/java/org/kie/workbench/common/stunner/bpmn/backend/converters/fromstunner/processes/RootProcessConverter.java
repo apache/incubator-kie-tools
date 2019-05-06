@@ -73,6 +73,7 @@ public class RootProcessConverter {
         p.setDescription(diagramSet.getProcessInstanceDescription().getValue());
         p.setGlobalVariables(diagramSet.getGlobalVariables());
         p.setExecutable(diagramSet.getExecutable().getValue());
+        p.setSlaDueDate(diagramSet.getSlaDueDate());
 
         BaseProcessData processData = definition.getProcessData();
         p.setProcessVariables(processData.getProcessVariables());

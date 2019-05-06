@@ -38,6 +38,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseManageme
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseRoles;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.DiagramSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.GlobalVariables;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.mockito.Mock;
@@ -129,5 +130,11 @@ public class RootProcessConverterTest {
     public void convertProcessWithGlobalVariables() {
         final ProcessPropertyWriter propertyWriter = converter.convertProcess();
         verify(propertyWriter).setGlobalVariables(any(GlobalVariables.class));
+    }
+
+    @Test
+    public void convertProcessWithSlaDueDate() {
+        final ProcessPropertyWriter propertyWriter = converter.convertProcess();
+        verify(propertyWriter).setSlaDueDate(any(SLADueDate.class));
     }
 }

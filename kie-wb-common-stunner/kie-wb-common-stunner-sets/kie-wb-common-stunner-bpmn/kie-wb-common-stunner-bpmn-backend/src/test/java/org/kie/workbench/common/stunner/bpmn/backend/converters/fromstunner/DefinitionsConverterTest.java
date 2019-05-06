@@ -30,6 +30,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Process
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Version;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Documentation;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewImpl;
 import org.kie.workbench.common.stunner.core.graph.impl.GraphImpl;
@@ -54,7 +55,8 @@ public class DefinitionsConverterTest {
                 new AdHoc(false),
                 new ProcessInstanceDescription("descr"),
                 new GlobalVariables(""),
-                new Executable(true)
+                new Executable(true),
+                new SLADueDate("")
         ));
         x.setContent(new ViewImpl<>(diag, Bounds.create()));
         nodeStore.add(x);

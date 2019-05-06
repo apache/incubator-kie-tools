@@ -32,6 +32,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Process
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Version;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Documentation;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessData;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessVariables;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -62,7 +63,8 @@ public class RootProcessConverter extends BaseRootProcessConverter<BPMNDiagramIm
                               new AdHoc(e.isAdHoc()),
                               new ProcessInstanceDescription(e.getDescription()),
                               new GlobalVariables(e.getGlobalVariables()),
-                              new Executable(process.isIsExecutable()));
+                              new Executable(process.isIsExecutable()),
+                              new SLADueDate(e.getSlaDueDate()));
     }
 
     @Override

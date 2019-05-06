@@ -56,6 +56,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Documentation;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.TaskGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.subProcess.execution.EmbeddedSubprocessExecutionSet;
@@ -72,7 +73,6 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleIn
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceDataOutput;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnEntryAction;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnExitAction;
-import org.kie.workbench.common.stunner.bpmn.definition.property.task.SLADueDate;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeListValue;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeValue;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.Skippable;
@@ -167,6 +167,7 @@ public class ClientBPMNDocumentationServiceTest {
     private static final String ICON_HTML = "icon image";
     public static final String ASSIGNEMNTS = "assignemnts";
     private static final String ASSIGNEMNTS_CAPTION = "ASSIGNEMNTS_CAPTION";
+    private static final String SLA_DUE_DATE = "";
 
     private ClientBPMNDocumentationService tested;
 
@@ -276,6 +277,9 @@ public class ClientBPMNDocumentationServiceTest {
     @Mock
     private DefinitionId subprocessId;
 
+    @Mock
+    private SLADueDate slaDueDate;
+
     @Before
     public void setUp() throws Exception {
 
@@ -289,9 +293,18 @@ public class ClientBPMNDocumentationServiceTest {
         executable = new Executable(PROCESS_IS_EXECUTABLE);
         processId = new Id(PROCESS_UUID);
         globalVariables = new GlobalVariables(GLOBAL_VARIABLES);
-        diagramSet = new DiagramSet(processName, processDocumentation, processId,
-                                    packageProperty, version, adHoc,
-                                    processInstanceDescription, globalVariables, executable);
+        slaDueDate = new SLADueDate(SLA_DUE_DATE);
+
+        diagramSet = new DiagramSet(processName,
+                                    processDocumentation,
+                                    processId,
+                                    packageProperty,
+                                    version,
+                                    adHoc,
+                                    processInstanceDescription,
+                                    globalVariables,
+                                    executable,
+                                    slaDueDate);
         //ProcessData
         processVariables = new ProcessVariables(VARIABLES);
         processData = new ProcessData(processVariables);

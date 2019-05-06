@@ -27,6 +27,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseFileVari
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseIdPrefix;
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseRoles;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.GlobalVariables;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -133,6 +134,14 @@ public class ProcessPropertyWriterTest {
         p.setGlobalVariables(globalVariables);
         String globalVariablesString = CustomElement.globalVariables.of(p.getProcess()).get();
         assertThat(globalVariablesString).isEqualTo("GV1:Boolean,GV2:Boolean,GV3:Integer");
+    }
+
+    @Test
+    public void slaDueDate() {
+        SLADueDate slaDueDate = new SLADueDate("12/25/1983");
+        p.setSlaDueDate(slaDueDate);
+        String slaDueDateString = CustomElement.slaDueDate.of(p.getProcess()).get();
+        assertThat(slaDueDateString).isEqualTo("<![CDATA[12/25/1983]]>");
     }
 
     @Test
