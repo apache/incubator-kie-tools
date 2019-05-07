@@ -13,18 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.workbench.screens.scenariosimulation.backend.server.runner;
 
-import java.util.List;
+package org.drools.workbench.screens.scenariosimulation.client.rightpanel;
 
-import org.drools.workbench.screens.scenariosimulation.model.ScenarioWithIndex;
-import org.drools.workbench.screens.scenariosimulation.model.SimulationDescriptor;
-import org.kie.api.runtime.KieContainer;
+import elemental2.dom.HTMLElement;
 
-@FunctionalInterface
-public interface ScenarioRunnerProvider {
+public interface CoverageDecisionElementView {
 
-    AbstractScenarioRunner create(KieContainer kieContainer,
-                                  SimulationDescriptor simulationDescriptor,
-                                  List<ScenarioWithIndex> scenarios);
+    HTMLElement getDecisionDescription();
+
+    HTMLElement getDecisionNumberOfTime();
+
+    interface Presenter {
+
+        void initDecisionList(HTMLElement decisionList);
+
+        void addDecisionElementView(String decisionDescription, String decisionValue);
+    }
+
+    void setDescriptionValue(String decisionDescription);
+
+    void setDecisionValue(String decisionValue);
 }

@@ -30,6 +30,7 @@ import org.drools.workbench.screens.scenariosimulation.backend.server.runner.mod
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.ScenarioExpect;
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.ScenarioGiven;
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.ScenarioResult;
+import org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.ScenarioResultMetadata;
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.ScenarioRunnerData;
 import org.drools.workbench.screens.scenariosimulation.model.ExpressionElement;
 import org.drools.workbench.screens.scenariosimulation.model.ExpressionIdentifier;
@@ -38,6 +39,7 @@ import org.drools.workbench.screens.scenariosimulation.model.FactMapping;
 import org.drools.workbench.screens.scenariosimulation.model.FactMappingType;
 import org.drools.workbench.screens.scenariosimulation.model.FactMappingValue;
 import org.drools.workbench.screens.scenariosimulation.model.Scenario;
+import org.drools.workbench.screens.scenariosimulation.model.ScenarioWithIndex;
 import org.drools.workbench.screens.scenariosimulation.model.SimulationDescriptor;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.RequestContext;
@@ -46,7 +48,9 @@ import static java.util.stream.Collectors.toList;
 
 public abstract class AbstractRunnerHelper {
 
-    public void run(KieContainer kieContainer, SimulationDescriptor simulationDescriptor, Scenario scenario, ExpressionEvaluator expressionEvaluator, ClassLoader classLoader, ScenarioRunnerData scenarioRunnerData) {
+    public void run(KieContainer kieContainer, SimulationDescriptor simulationDescriptor, ScenarioWithIndex scenarioWithIndex, ExpressionEvaluator expressionEvaluator, ClassLoader classLoader, ScenarioRunnerData scenarioRunnerData) {
+
+        Scenario scenario = scenarioWithIndex.getScenario();
 
         extractGivenValues(simulationDescriptor, scenario.getUnmodifiableFactMappingValues(), classLoader, expressionEvaluator)
                 .forEach(scenarioRunnerData::addGiven);
@@ -57,6 +61,8 @@ public abstract class AbstractRunnerHelper {
                                                         scenarioRunnerData,
                                                         expressionEvaluator,
                                                         simulationDescriptor);
+
+        scenarioRunnerData.setMetadata(extractResultMetadata(requestContext, scenarioWithIndex));
 
         verifyConditions(simulationDescriptor,
                          scenarioRunnerData,
@@ -202,6 +208,11 @@ public abstract class AbstractRunnerHelper {
         return new ScenarioResult(factIdentifier, expectedResult, resultValue.getResult()).setResult(resultValue.isSatisfied());
     }
 
+    protected ScenarioResultMetadata extractResultMetadata(RequestContext requestContext,
+                                                           ScenarioWithIndex scenarioWithIndex) {
+        return null;
+    }
+
     public abstract RequestContext executeScenario(KieContainer kieContainer,
                                                    ScenarioRunnerData scenarioRunnerData,
                                                    ExpressionEvaluator expressionEvaluator,
@@ -212,5 +223,7 @@ public abstract class AbstractRunnerHelper {
                                           ExpressionEvaluator expressionEvaluator,
                                           RequestContext requestContext);
 
-    public abstract Object createObject(String className, Map<List<String>, Object> params, ClassLoader classLoader);
+    public abstract Object createObject(String className,
+                                        Map<List<String>, Object> params,
+                                        ClassLoader classLoader);
 }

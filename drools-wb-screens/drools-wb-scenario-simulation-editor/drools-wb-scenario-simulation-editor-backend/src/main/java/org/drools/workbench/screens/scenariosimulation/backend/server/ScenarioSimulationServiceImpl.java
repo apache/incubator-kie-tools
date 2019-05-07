@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
@@ -33,11 +32,11 @@ import javax.inject.Named;
 
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.ScenarioJunitActivator;
 import org.drools.workbench.screens.scenariosimulation.backend.server.util.ScenarioSimulationBuilder;
-import org.drools.workbench.screens.scenariosimulation.model.Scenario;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModelContent;
+import org.drools.workbench.screens.scenariosimulation.model.ScenarioWithIndex;
 import org.drools.workbench.screens.scenariosimulation.model.SimulationDescriptor;
-import org.drools.workbench.screens.scenariosimulation.model.TestRunResult;
+import org.drools.workbench.screens.scenariosimulation.model.SimulationRunResult;
 import org.drools.workbench.screens.scenariosimulation.service.ScenarioRunnerService;
 import org.drools.workbench.screens.scenariosimulation.service.ScenarioSimulationService;
 import org.drools.workbench.screens.scenariosimulation.type.ScenarioSimulationResourceTypeDefinition;
@@ -151,13 +150,13 @@ public class ScenarioSimulationServiceImpl
     }
 
     @Override
-    public TestRunResult runScenario(final Path path,
-                                     final SimulationDescriptor simulationDescriptor,
-                                     final Map<Integer, Scenario> scenarioMap) {
+    public SimulationRunResult runScenario(final Path path,
+                                           final SimulationDescriptor simulationDescriptor,
+                                           final List<ScenarioWithIndex> scenarios) {
         return scenarioRunnerService.runTest(user.getIdentifier(),
                                              path,
                                              simulationDescriptor,
-                                             scenarioMap);
+                                             scenarios);
     }
 
     @Override

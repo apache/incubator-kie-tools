@@ -26,6 +26,7 @@ import org.drools.workbench.screens.scenariosimulation.backend.server.runner.mod
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.ScenarioExpect;
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.ScenarioGiven;
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.ScenarioResult;
+import org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.ScenarioResultMetadata;
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.ScenarioRunnerData;
 import org.drools.workbench.screens.scenariosimulation.model.ExpressionElement;
 import org.drools.workbench.screens.scenariosimulation.model.ExpressionIdentifier;
@@ -33,11 +34,14 @@ import org.drools.workbench.screens.scenariosimulation.model.FactIdentifier;
 import org.drools.workbench.screens.scenariosimulation.model.FactMapping;
 import org.drools.workbench.screens.scenariosimulation.model.FactMappingValue;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
+import org.drools.workbench.screens.scenariosimulation.model.ScenarioWithIndex;
 import org.drools.workbench.screens.scenariosimulation.model.SimulationDescriptor;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.RequestContext;
 import org.kie.dmn.api.core.DMNDecisionResult;
+import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
+import org.kie.dmn.api.core.ast.DecisionNode;
 
 import static org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.ResultWrapper.createErrorResult;
 import static org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.ResultWrapper.createResult;
@@ -60,6 +64,26 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
         }
 
         return executableBuilder.run();
+    }
+
+    @Override
+    protected ScenarioResultMetadata extractResultMetadata(RequestContext requestContext, ScenarioWithIndex scenarioWithIndex) {
+        DMNModel dmnModel = requestContext.getOutput(DMNScenarioExecutableBuilder.DMN_MODEL);
+        DMNResult dmnResult = requestContext.getOutput(DMNScenarioExecutableBuilder.DMN_RESULT);
+
+        ScenarioResultMetadata scenarioResultMetadata = new ScenarioResultMetadata(scenarioWithIndex);
+
+        for (DecisionNode decision : dmnModel.getDecisions()) {
+            scenarioResultMetadata.addAvailable(decision.getName());
+        }
+
+        for (DMNDecisionResult decisionResult : dmnResult.getDecisionResults()) {
+            if (SUCCEEDED.equals(decisionResult.getEvaluationStatus())) {
+                scenarioResultMetadata.addExecuted(decisionResult.getDecisionName());
+            }
+        }
+
+        return scenarioResultMetadata;
     }
 
     @Override

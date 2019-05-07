@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.stream.IntStream;
@@ -54,8 +53,10 @@ import org.drools.workbench.screens.scenariosimulation.model.FactMappingType;
 import org.drools.workbench.screens.scenariosimulation.model.FactMappingValue;
 import org.drools.workbench.screens.scenariosimulation.model.Scenario;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
+import org.drools.workbench.screens.scenariosimulation.model.ScenarioWithIndex;
 import org.drools.workbench.screens.scenariosimulation.model.Simulation;
 import org.drools.workbench.screens.scenariosimulation.model.SimulationDescriptor;
+import org.drools.workbench.screens.scenariosimulation.model.SimulationRunResult;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree;
 import org.junit.Before;
 import org.kie.workbench.common.command.client.CommandResult;
@@ -137,7 +138,7 @@ public abstract class AbstractScenarioSimulationTest {
     @Mock
     protected ScenarioSimulationModel scenarioSimulationModelMock;
     @Mock
-    protected Map<Integer, Scenario> scenarioMapMock;
+    protected SimulationRunResult simulationRunResultMock;
     @Mock
     protected DataManagementStrategy dataManagementStrategyMock;
     @Mock
@@ -157,6 +158,8 @@ public abstract class AbstractScenarioSimulationTest {
 
     protected List<FactMappingValue> factMappingValuesLocal = new ArrayList<>();
 
+    protected List<ScenarioWithIndex> scenarioWithIndexLocal;
+
     protected ScenarioSimulationContext scenarioSimulationContextLocal;
     protected AppendRowCommand appendRowCommandMock;
     protected CollectionEditorSingletonDOMElementFactory collectionEditorSingletonDOMElementFactoryTest;
@@ -170,8 +173,10 @@ public abstract class AbstractScenarioSimulationTest {
 
     @Before
     public void setup() {
+        scenarioWithIndexLocal = new ArrayList<>();
         when(simulationMock.getSimulationDescriptor()).thenReturn(simulationDescriptorMock);
-        when(simulationMock.getScenarioMap()).thenReturn(scenarioMapMock);
+        when(simulationMock.getScenarioWithIndex()).thenReturn(scenarioWithIndexLocal);
+        when(simulationRunResultMock.getScenarioWithIndex()).thenReturn(scenarioWithIndexLocal);
         GridData.Range range = new GridData.Range(FIRST_INDEX_LEFT, FIRST_INDEX_RIGHT - 1);
         collectionEditorSingletonDOMElementFactoryTest = new CollectionEditorSingletonDOMElementFactory(scenarioGridPanelMock,
                                                                                                         scenarioGridLayerMock,

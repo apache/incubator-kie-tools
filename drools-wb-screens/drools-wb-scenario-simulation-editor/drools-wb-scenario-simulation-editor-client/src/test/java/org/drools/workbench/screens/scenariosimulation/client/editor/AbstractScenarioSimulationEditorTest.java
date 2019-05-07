@@ -23,6 +23,7 @@ import org.drools.workbench.screens.scenariosimulation.client.editor.menu.BaseMe
 import org.drools.workbench.screens.scenariosimulation.client.editor.menu.GridContextMenu;
 import org.drools.workbench.screens.scenariosimulation.client.editor.menu.HeaderGivenContextMenu;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.CheatSheetPresenter;
+import org.drools.workbench.screens.scenariosimulation.client.rightpanel.CoverageReportPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.SettingsPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsPresenter;
 import org.drools.workbench.screens.scenariosimulation.model.ExpressionIdentifier;
@@ -87,6 +88,8 @@ public abstract class AbstractScenarioSimulationEditorTest extends AbstractScena
     protected CheatSheetPresenter cheatSheetPresenterMock;
     @Mock
     protected SettingsPresenter settingsPresenterMock;
+    @Mock
+    protected CoverageReportPresenter coverageReportPresenterMock;
     @Mock
     protected AsyncPackageDataModelOracleFactory oracleFactoryMock;
 

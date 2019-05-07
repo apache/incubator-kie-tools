@@ -16,11 +16,43 @@
 
 package org.drools.workbench.screens.scenariosimulation.backend.server.runner;
 
+import org.drools.workbench.screens.scenariosimulation.backend.server.expression.BaseExpressionEvaluator;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
+import org.drools.workbench.screens.scenariosimulation.model.Simulation;
 import org.drools.workbench.screens.scenariosimulation.model.SimulationDescriptor;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runner.notification.RunNotifier;
+import org.kie.api.runtime.KieContainer;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.spy;
+
+@RunWith(MockitoJUnitRunner.class)
 public class AbstractScenarioRunnerTest {
+
+    @Mock
+    protected KieContainer kieContainerMock;
+
+    protected AbstractScenarioRunner abstractScenarioRunnerLocal;
+
+    @Before
+    public void setup() {
+        abstractScenarioRunnerLocal = spy(
+                new AbstractScenarioRunner(kieContainerMock,
+                                           new Simulation(),
+                                           "",
+                                           BaseExpressionEvaluator::new) {
+                    @Override
+                    protected AbstractRunnerHelper newRunnerHelper(SimulationDescriptor simulationDescriptor) {
+                        return null;
+                    }
+                });
+    }
 
     @Test
     public void getSpecificRunnerProvider() {
@@ -30,5 +62,12 @@ public class AbstractScenarioRunnerTest {
             simulationDescriptor.setType(value);
             AbstractScenarioRunner.getSpecificRunnerProvider(simulationDescriptor);
         }
+    }
+
+    @Test
+    public void testRun() {
+        assertNull(abstractScenarioRunnerLocal.simulationRunMetadataBuilder);
+        abstractScenarioRunnerLocal.run(new RunNotifier());
+        assertNotNull(abstractScenarioRunnerLocal.simulationRunMetadataBuilder);
     }
 }

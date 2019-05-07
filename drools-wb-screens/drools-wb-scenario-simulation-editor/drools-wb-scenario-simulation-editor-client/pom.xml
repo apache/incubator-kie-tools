@@ -167,6 +167,19 @@
       <!--<scope>provided</scope>-->
     </dependency>
 
+    <dependency>
+      <groupId>org.kie.soup</groupId>
+      <artifactId>kie-soup-dataset-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.dashbuilder</groupId>
+      <artifactId>dashbuilder-displayer-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.dashbuilder</groupId>
+      <artifactId>dashbuilder-displayer-client</artifactId>
+    </dependency>
+
     <!--Wires Grids dependencies-->
     <dependency>
       <groupId>org.uberfire</groupId>

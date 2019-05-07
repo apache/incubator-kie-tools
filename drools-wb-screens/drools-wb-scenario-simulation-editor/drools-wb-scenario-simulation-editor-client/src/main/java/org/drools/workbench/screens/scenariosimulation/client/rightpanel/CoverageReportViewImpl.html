@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<!--
+  ~ Copyright 2019 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!-- COVERAGE REPORT -->
+<div id="kieDockPanelCoverageReport" class="uf-scroll-panel">
+    <div class="tab-pane kie-tab-pane--scesim-panel">
+
+        <div class="row" data-field="emptyStatus">
+            <div class="col-xs-12 col-md-12" data-field="emptyStatusText"></div>
+        </div>
+
+        <div class="row" data-field="summarySection">
+            <div class="col-xs-12 col-md-8">
+                <dl class="dl-horizontal kie-coverage__dl-horizontal clearfix">
+                    <dt data-field="reportAvailableLabel" style="overflow:visible; text-overflow:clip; white-space:normal"></dt>
+                    <dd data-field="reportAvailable"></dd>
+                    <dt data-field="reportExecutedLabel" style="overflow:visible; text-overflow:clip; white-space:normal"></dt>
+                    <dd data-field="reportExecuted"></dd>
+                    <dt data-field="reportCoverageLabel" style="overflow:visible; text-overflow:clip; white-space:normal"></dt>
+                    <dd data-field="reportCoverage"></dd>
+                </dl>
+            </div>
+
+            <div class="col-xs-12 col-md-4">
+                <!------- DONUT CHART -->
+                <div id="kieCoverageChart1" data-field="donutChart" class="example-donut-chart-utilization"></div>
+                <!------- END OF DONUT CHART -->
+
+            </div>
+        </div>
+
+        <div class="row" data-field="decisionListSection">
+            <div class="col-xs-12 col-md-12">
+                <hr class="kie-dock__divider"/>
+                <span data-field="numberOfTimesDecisionEvaluated"></span>
+                <br/>
+                <div style="margin-top: 20px; height: 100px">
+                    <div style="height: 100%; overflow: auto">
+                        <dl data-field="decisionList" class="dl-horizontal kie-coverage__dl-horizontal"></dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" data-field="scenarioListSection">
+            <div class="col-xs-12 col-md-12">
+                <hr class="kie-dock__divider"/>
+                <br/>
+
+                <ul class="list-group" data-field="scenarioList">
+                </ul>
+            </div>
+        </div>
+    </div>
+
+</div>
+<!-- END OF COVERAGE REPORT TAB -->

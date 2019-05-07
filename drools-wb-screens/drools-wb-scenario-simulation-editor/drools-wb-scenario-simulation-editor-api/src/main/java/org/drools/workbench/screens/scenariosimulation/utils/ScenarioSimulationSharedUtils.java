@@ -15,11 +15,12 @@
  */
 package org.drools.workbench.screens.scenariosimulation.utils;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.drools.workbench.screens.scenariosimulation.model.Scenario;
+import org.drools.workbench.screens.scenariosimulation.model.ScenarioWithIndex;
 import org.drools.workbench.screens.scenariosimulation.model.Simulation;
 
 public class ScenarioSimulationSharedUtils {
@@ -42,7 +43,6 @@ public class ScenarioSimulationSharedUtils {
         return List.class.getName().equals(className);
     }
 
-
     /**
      * Returns true if given string equals <code>List.class.getName()</code>
      * @param className
@@ -52,12 +52,12 @@ public class ScenarioSimulationSharedUtils {
         return Map.class.getName().equals(className);
     }
 
-    public static Map<Integer, Scenario> toScenarioMap(Simulation simulation) {
+    public static List<ScenarioWithIndex> toScenarioWithIndex(Simulation simulation) {
+        List<ScenarioWithIndex> toReturn = new ArrayList<>();
         List<Scenario> scenarios = simulation.getUnmodifiableScenarios();
-        Map<Integer, Scenario> indexToScenario = new HashMap<>();
         for (int index = 0; index < scenarios.size(); index += 1) {
-            indexToScenario.put(index + 1, scenarios.get(index));
+            toReturn.add(new ScenarioWithIndex(index + 1, scenarios.get(index)));
         }
-        return indexToScenario;
+        return toReturn;
     }
 }

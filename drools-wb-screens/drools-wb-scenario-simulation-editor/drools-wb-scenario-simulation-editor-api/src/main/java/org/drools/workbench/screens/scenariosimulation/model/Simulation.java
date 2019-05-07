@@ -18,11 +18,10 @@ package org.drools.workbench.screens.scenariosimulation.model;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 
-import static org.drools.workbench.screens.scenariosimulation.utils.ScenarioSimulationSharedUtils.toScenarioMap;
+import static org.drools.workbench.screens.scenariosimulation.utils.ScenarioSimulationSharedUtils.toScenarioWithIndex;
 
 /**
  * Envelop class that wrap the definition of the simulation and the values of the scenarios
@@ -47,8 +46,8 @@ public class Simulation {
         return Collections.unmodifiableList(scenarios);
     }
 
-    public Map<Integer, Scenario> getScenarioMap() {
-        return toScenarioMap(this);
+    public List<ScenarioWithIndex> getScenarioWithIndex() {
+        return toScenarioWithIndex(this);
     }
 
     public void removeScenarioByIndex(int index) {

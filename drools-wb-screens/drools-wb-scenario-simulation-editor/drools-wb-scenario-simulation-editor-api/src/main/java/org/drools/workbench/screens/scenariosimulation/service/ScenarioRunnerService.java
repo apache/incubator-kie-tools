@@ -15,19 +15,19 @@
  */
 package org.drools.workbench.screens.scenariosimulation.service;
 
-import java.util.Map;
+import java.util.List;
 
-import org.drools.workbench.screens.scenariosimulation.model.Scenario;
+import org.drools.workbench.screens.scenariosimulation.model.ScenarioWithIndex;
 import org.drools.workbench.screens.scenariosimulation.model.SimulationDescriptor;
-import org.drools.workbench.screens.scenariosimulation.model.TestRunResult;
+import org.drools.workbench.screens.scenariosimulation.model.SimulationRunResult;
 import org.guvnor.common.services.shared.test.TestService;
 import org.uberfire.backend.vfs.Path;
 
 public interface ScenarioRunnerService
         extends TestService {
 
-    TestRunResult runTest(final String identifier,
-                          final Path path,
-                          final SimulationDescriptor simulationDescriptor,
-                          final Map<Integer, Scenario> scenarioMap);
+    SimulationRunResult runTest(final String identifier,
+                                final Path path,
+                                final SimulationDescriptor simulationDescriptor,
+                                final List<ScenarioWithIndex> scenarios);
 }

@@ -26,6 +26,7 @@ import javax.inject.Inject;
 
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.CheatSheetPresenter;
+import org.drools.workbench.screens.scenariosimulation.client.rightpanel.CoverageReportPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.SettingsPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsPresenter;
 import org.kie.workbench.common.widgets.client.docks.AbstractWorkbenchDocksHandler;
@@ -52,6 +53,7 @@ public class ScenarioSimulationDocksHandler
     private UberfireDock toolsDock;
     private UberfireDock cheatSheetDock;
     private UberfireDock reportDock;
+    private UberfireDock coverageDock;
 
     @Override
     public Collection<UberfireDock> provideDocks(final String perspectiveIdentifier) {
@@ -78,6 +80,12 @@ public class ScenarioSimulationDocksHandler
                                       perspectiveIdentifier);
         result.add(reportDock.withSize(450).withLabel(DefaultWorkbenchConstants.INSTANCE.TestReport()));
 
+        coverageDock = new UberfireDock(UberfireDockPosition.EAST,
+                                      "BAR_CHART",
+                                      new DefaultPlaceRequest(CoverageReportPresenter.IDENTIFIER),
+                                      perspectiveIdentifier);
+        result.add(coverageDock.withSize(450).withLabel(ScenarioSimulationEditorConstants.INSTANCE.coverageReport()));
+
         return result;
     }
 
@@ -103,6 +111,7 @@ public class ScenarioSimulationDocksHandler
         settingsDock.getPlaceRequest().addParameter(SCESIMEDITOR_ID, scesimEditorId);
         toolsDock.getPlaceRequest().addParameter(SCESIMEDITOR_ID, scesimEditorId);
         cheatSheetDock.getPlaceRequest().addParameter(SCESIMEDITOR_ID, scesimEditorId);
+        coverageDock.getPlaceRequest().addParameter(SCESIMEDITOR_ID, scesimEditorId);
     }
 
     public Optional<UberfireDock> getSettingsDock(PlaceRequest placeRequest) {
@@ -115,5 +124,9 @@ public class ScenarioSimulationDocksHandler
 
     public Optional<UberfireDock> getCheatSheetDock(PlaceRequest placeRequest) {
         return Objects.equals(cheatSheetDock.getPlaceRequest(), placeRequest) ? Optional.of(cheatSheetDock) : Optional.empty();
+    }
+
+    public Optional<UberfireDock> getCoverageReportDock(PlaceRequest placeRequest) {
+        return Objects.equals(coverageDock.getPlaceRequest(), placeRequest) ? Optional.of(coverageDock) : Optional.empty();
     }
 }

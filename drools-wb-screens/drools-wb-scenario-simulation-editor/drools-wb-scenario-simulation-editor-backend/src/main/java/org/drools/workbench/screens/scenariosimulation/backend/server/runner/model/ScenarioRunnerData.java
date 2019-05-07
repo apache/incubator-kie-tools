@@ -19,6 +19,7 @@ package org.drools.workbench.screens.scenariosimulation.backend.server.runner.mo
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Class to group all runner data: given data, expected data and results
@@ -28,6 +29,7 @@ public class ScenarioRunnerData {
     private final List<ScenarioGiven> givens = new ArrayList<>();
     private final List<ScenarioExpect> expects = new ArrayList<>();
     private final List<ScenarioResult> results = new ArrayList<>();
+    private ScenarioResultMetadata metadata;
 
     public void addGiven(ScenarioGiven input) {
         givens.add(input);
@@ -41,6 +43,10 @@ public class ScenarioRunnerData {
         results.add(result);
     }
 
+    public void setMetadata(ScenarioResultMetadata metadata) {
+        this.metadata = metadata;
+    }
+
     public List<ScenarioGiven> getGivens() {
         return Collections.unmodifiableList(givens);
     }
@@ -51,5 +57,9 @@ public class ScenarioRunnerData {
 
     public List<ScenarioResult> getResults() {
         return Collections.unmodifiableList(results);
+    }
+
+    public Optional<ScenarioResultMetadata> getMetadata() {
+        return Optional.ofNullable(metadata);
     }
 }

@@ -16,10 +16,10 @@
 
 package org.drools.workbench.screens.scenariosimulation.backend.server.runner;
 
-import java.util.Map;
+import java.util.List;
 
 import org.drools.workbench.screens.scenariosimulation.backend.server.expression.DMNFeelExpressionEvaluator;
-import org.drools.workbench.screens.scenariosimulation.model.Scenario;
+import org.drools.workbench.screens.scenariosimulation.model.ScenarioWithIndex;
 import org.drools.workbench.screens.scenariosimulation.model.Simulation;
 import org.drools.workbench.screens.scenariosimulation.model.SimulationDescriptor;
 import org.kie.api.runtime.KieContainer;
@@ -31,14 +31,14 @@ public class DMNScenarioRunner extends AbstractScenarioRunner {
     }
 
     public DMNScenarioRunner(KieContainer kieContainer, Simulation simulation, String fileName) {
-        this(kieContainer, simulation.getSimulationDescriptor(), simulation.getScenarioMap(), fileName);
+        this(kieContainer, simulation.getSimulationDescriptor(), simulation.getScenarioWithIndex(), fileName);
     }
 
-    public DMNScenarioRunner(KieContainer kieContainer, SimulationDescriptor simulationDescriptor, Map<Integer, Scenario> scenarios) {
+    public DMNScenarioRunner(KieContainer kieContainer, SimulationDescriptor simulationDescriptor, List<ScenarioWithIndex> scenarios) {
         this(kieContainer, simulationDescriptor, scenarios, null);
     }
 
-    public DMNScenarioRunner(KieContainer kieContainer, SimulationDescriptor simulationDescriptor, Map<Integer, Scenario> scenarios, String fileName) {
+    public DMNScenarioRunner(KieContainer kieContainer, SimulationDescriptor simulationDescriptor, List<ScenarioWithIndex> scenarios, String fileName) {
         super(kieContainer, simulationDescriptor, scenarios, fileName, DMNFeelExpressionEvaluator::new);
     }
 

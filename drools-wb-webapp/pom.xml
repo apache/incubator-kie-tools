@@ -1253,6 +1253,11 @@
 
     <dependency>
       <groupId>org.dashbuilder</groupId>
+      <artifactId>dashbuilder-displayer-client</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dashbuilder</groupId>
       <artifactId>dashbuilder-client-all</artifactId>
     </dependency>
 

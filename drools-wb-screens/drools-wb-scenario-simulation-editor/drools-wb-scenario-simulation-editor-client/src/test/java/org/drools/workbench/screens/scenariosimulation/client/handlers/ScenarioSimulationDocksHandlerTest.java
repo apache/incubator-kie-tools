@@ -40,16 +40,11 @@ public class ScenarioSimulationDocksHandlerTest {
 
 
     private enum MANAGED_DOCKS {
-        SETTINGS(0),
-        TOOLS(1),
-        CHEATSHEET(2),
-        REPORT(3);
-
-        private int index;
-
-        MANAGED_DOCKS(int index) {
-            this.index = index;
-        }
+        SETTINGS,
+        TOOLS,
+        CHEATSHEET,
+        REPORT,
+        COVERAGE;
     }
 
     @Test
@@ -60,7 +55,7 @@ public class ScenarioSimulationDocksHandlerTest {
     @Test
     public void expandToolsDock() {
         final Collection<UberfireDock> docks = scenarioSimulationDocksHandler.provideDocks("id");
-        final UberfireDock toolsDock = (UberfireDock) docks.toArray()[MANAGED_DOCKS.TOOLS.index];
+        final UberfireDock toolsDock = (UberfireDock) docks.toArray()[MANAGED_DOCKS.TOOLS.ordinal()];
 
         scenarioSimulationDocksHandler.expandToolsDock();
 
@@ -70,7 +65,7 @@ public class ScenarioSimulationDocksHandlerTest {
     @Test
     public void expandTestResultsDock() {
         final Collection<UberfireDock> docks = scenarioSimulationDocksHandler.provideDocks("id");
-        final UberfireDock reportDock = (UberfireDock) docks.toArray()[MANAGED_DOCKS.REPORT.index];
+        final UberfireDock reportDock = (UberfireDock) docks.toArray()[MANAGED_DOCKS.REPORT.ordinal()];
 
         scenarioSimulationDocksHandler.expandTestResultsDock();
 
@@ -80,9 +75,9 @@ public class ScenarioSimulationDocksHandlerTest {
     @Test
     public void setScesimPath() {
         final Collection<UberfireDock> docks = scenarioSimulationDocksHandler.provideDocks("id");
-        final UberfireDock settingsDock = (UberfireDock) docks.toArray()[MANAGED_DOCKS.SETTINGS.index];
-        final UberfireDock toolsDock = (UberfireDock) docks.toArray()[MANAGED_DOCKS.TOOLS.index];
-        final UberfireDock cheatSheetDock = (UberfireDock) docks.toArray()[MANAGED_DOCKS.CHEATSHEET.index];
+        final UberfireDock settingsDock = (UberfireDock) docks.toArray()[MANAGED_DOCKS.SETTINGS.ordinal()];
+        final UberfireDock toolsDock = (UberfireDock) docks.toArray()[MANAGED_DOCKS.TOOLS.ordinal()];
+        final UberfireDock cheatSheetDock = (UberfireDock) docks.toArray()[MANAGED_DOCKS.CHEATSHEET.ordinal()];
         String TEST_PATH = "TEST_PATH";
         scenarioSimulationDocksHandler.setScesimEditorId(TEST_PATH);
         assertTrue(settingsDock.getPlaceRequest().getParameters().containsKey(SCESIMEDITOR_ID));

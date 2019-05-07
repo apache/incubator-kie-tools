@@ -243,11 +243,23 @@ public interface ScenarioSimulationEditorConstants
 
     String settings();
 
+    String coverageReport();
+
     String uploadWarning();
 
     String importFailedMessage();
 
     String importErrorTitle();
+
+    String executed();
+
+    String notCovered();
+
+    String decisionsEvaluated();
+
+    String coverageNotSupportedForRule();
+
+    String runATestToSeeCoverageReport();
 
     String running();
 
@@ -258,4 +270,12 @@ public interface ScenarioSimulationEditorConstants
     String complexCustomInstances();
 
     String simpleCustomInstances();
+
+    String reportAvailableLabel();
+
+    String reportExecutedLabel();
+
+    String reportCoverageLabel();
+
+    String numberOfTimesDecisionEvaluated();
 }

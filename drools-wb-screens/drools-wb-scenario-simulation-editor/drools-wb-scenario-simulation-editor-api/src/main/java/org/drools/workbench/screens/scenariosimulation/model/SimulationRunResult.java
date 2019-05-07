@@ -13,30 +13,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.drools.workbench.screens.scenariosimulation.model;
 
-import java.util.Map;
+import java.util.List;
 
 import org.guvnor.common.services.shared.test.TestResultMessage;
-import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
+/**
+ * Transport object that contains run result data and report
+ */
 @Portable
-public class TestRunResult {
+public class SimulationRunResult {
 
-    private final Map<Integer, Scenario> map;
+    protected List<ScenarioWithIndex> scenarioWithIndex;
 
-    private final TestResultMessage testResultMessage;
+    protected SimulationRunMetadata simulationRunMetadata;
 
-    public TestRunResult(@MapsTo("map") Map<Integer, Scenario> map,
-                         @MapsTo("testResultMessage") TestResultMessage testResultMessage) {
-        this.map = map;
+    private TestResultMessage testResultMessage;
+
+    public SimulationRunResult() {
+        // CDI
+    }
+
+    public SimulationRunResult(List<ScenarioWithIndex> scenarioWithIndex,
+                               SimulationRunMetadata simulationRunMetadata,
+                               TestResultMessage testResultMessage) {
+        this.scenarioWithIndex = scenarioWithIndex;
+        this.simulationRunMetadata = simulationRunMetadata;
         this.testResultMessage = testResultMessage;
     }
 
-    public Map<Integer, Scenario> getMap() {
-        return map;
+    public List<ScenarioWithIndex> getScenarioWithIndex() {
+        return scenarioWithIndex;
+    }
+
+    public SimulationRunMetadata getSimulationRunMetadata() {
+        return simulationRunMetadata;
     }
 
     public TestResultMessage getTestResultMessage() {

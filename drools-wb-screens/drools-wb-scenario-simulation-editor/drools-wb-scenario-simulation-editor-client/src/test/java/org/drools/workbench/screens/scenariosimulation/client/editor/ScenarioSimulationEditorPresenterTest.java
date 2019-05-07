@@ -16,12 +16,10 @@
 
 package org.drools.workbench.screens.scenariosimulation.client.editor;
 
-import java.util.AbstractMap;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Supplier;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -35,6 +33,7 @@ import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGri
 import org.drools.workbench.screens.scenariosimulation.client.popup.ConfirmPopupPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.producers.ScenarioSimulationProducer;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.CheatSheetPresenter;
+import org.drools.workbench.screens.scenariosimulation.client.rightpanel.CoverageReportPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.SettingsPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsView;
@@ -48,9 +47,11 @@ import org.drools.workbench.screens.scenariosimulation.model.FactMappingType;
 import org.drools.workbench.screens.scenariosimulation.model.Scenario;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModelContent;
+import org.drools.workbench.screens.scenariosimulation.model.ScenarioWithIndex;
 import org.drools.workbench.screens.scenariosimulation.model.Simulation;
 import org.drools.workbench.screens.scenariosimulation.model.SimulationDescriptor;
-import org.drools.workbench.screens.scenariosimulation.model.TestRunResult;
+import org.drools.workbench.screens.scenariosimulation.model.SimulationRunMetadata;
+import org.drools.workbench.screens.scenariosimulation.model.SimulationRunResult;
 import org.drools.workbench.screens.scenariosimulation.service.ImportExportType;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.common.services.shared.test.TestResultMessage;
@@ -65,6 +66,8 @@ import org.kie.workbench.common.widgets.configresource.client.widget.bound.Impor
 import org.kie.workbench.common.widgets.metadata.client.KieEditorWrapperView;
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
 import org.kie.workbench.common.workbench.client.test.TestRunnerReportingPanel;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
@@ -175,12 +178,15 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
     private Command saveCommandMock;
     @Mock
     private TextFileExport textFileExportMock;
+    @Captor
+    private ArgumentCaptor<List<ScenarioWithIndex>> scenarioWithIndexCaptor;
 
     @Before
     public void setup() {
         promises = new SyncPromises();
         super.setup();
         when(scenarioGridLayerMock.getScenarioGrid()).thenReturn(scenarioGridMock);
+        when(scenarioSimulationServiceMock.runScenario(any(), any(), any())).thenReturn(simulationRunResultMock);
         when(scenarioSimulationViewMock.getScenarioGridPanel()).thenReturn(scenarioGridPanelMock);
         when(scenarioSimulationViewMock.getScenarioGridLayer()).thenReturn(scenarioGridLayerMock);
         when(scenarioSimulationViewMock.getRunScenarioMenuItem()).thenReturn(runScenarioMenuItemMock);
@@ -488,6 +494,22 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
         verify(presenterSpy, times(1)).getSettingsPresenter(eq(settingsPlaceRequestMock));
         verify(presenterSpy, times(1)).getSaveCommand();
         verify(presenterSpy, times(1)).setSettings(eq(settingsPresenterMock));
+        //
+        PlaceRequest coverageReportPlaceRequestMock = mock(PlaceRequest.class);
+        reset(presenterSpy);
+        reset(uberfireDocksInteractionEventMock);
+        presenterSpy.dataManagementStrategy = dataManagementStrategyMock;
+        when(presenterSpy.getCurrentRightDockPlaceRequest(anyString())).thenReturn(coverageReportPlaceRequestMock);
+        when(uberfireDocksInteractionEventMock.getTargetDock()).thenReturn(targetDockMock);
+        doReturn(true).when(presenterSpy).isUberfireDocksInteractionEventToManage(uberfireDocksInteractionEventMock);
+        doReturn(Optional.of(coverageReportPresenterMock)).when(presenterSpy).getCoverageReportPresenter(eq(coverageReportPlaceRequestMock));
+        when(targetDockMock.getIdentifier()).thenReturn(CoverageReportPresenter.IDENTIFIER);
+        when(targetDockMock.getPlaceRequest()).thenReturn(placeRequestMock);
+        presenterSpy.onUberfireDocksInteractionEvent(uberfireDocksInteractionEventMock);
+        verify(presenterSpy, times(1)).isUberfireDocksInteractionEventToManage(eq(uberfireDocksInteractionEventMock));
+        verify(uberfireDocksInteractionEventMock, times(2)).getTargetDock(); // It's invoked twice
+        verify(presenterSpy, times(1)).getCoverageReportPresenter(eq(coverageReportPlaceRequestMock));
+        verify(presenterSpy, times(1)).setCoverageReport(eq(coverageReportPresenterMock));
     }
 
     @Test
@@ -509,9 +531,12 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
         doReturn(new ScenarioSimulationModelContent(modelLocal,
                                                     new Overview(),
                                                     new PackageDataModelOracleBaselinePayload())).when(scenarioSimulationServiceMock).loadContent(any());
-        when(scenarioSimulationServiceMock.runScenario(any(), any(), any())).thenReturn(new TestRunResult(scenarioMapMock,
-                                                                                                          new TestResultMessage()));
+        when(scenarioSimulationServiceMock.runScenario(any(), any(), any()))
+                .thenReturn(new SimulationRunResult(scenarioWithIndexLocal,
+                                                    mock(SimulationRunMetadata.class),
+                                                    new TestResultMessage()));
         when(statusMock.getSimulation()).thenReturn(simulationMock);
+        when(simulationMock.getScenarioWithIndex()).thenReturn(scenarioWithIndexLocal);
         when(contextMock.getStatus()).thenReturn(statusMock);
         assertNotEquals(simulationMock, modelLocal.getSimulation());
         presenter.onStartup(observablePathMock, placeRequestMock);
@@ -525,33 +550,49 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
 
     @Test
     public void onRunTestById() throws Exception {
-        when(scenarioSimulationServiceMock.runScenario(any(), any(), any())).thenReturn(new TestRunResult(Collections.emptyMap(),
-                                                                                                          new TestResultMessage()));
+
+        scenarioWithIndexLocal.add(new ScenarioWithIndex(1, new Scenario()));
+        scenarioWithIndexLocal.add(new ScenarioWithIndex(2, new Scenario()));
+        scenarioWithIndexLocal.add(new ScenarioWithIndex(3, new Scenario()));
+        when(scenarioSimulationServiceMock.runScenario(any(), any(), any()))
+                .thenReturn(new SimulationRunResult(scenarioWithIndexLocal,
+                                                    mock(SimulationRunMetadata.class),
+                                                    new TestResultMessage()));
         when(simulationMock.getScenarioByIndex(anyInt())).thenReturn(mock(Scenario.class));
-        presenter.onRunScenario(Collections.singletonList(0));
+        List<Integer> indexList = Arrays.asList(0, 2);
+
+        presenter.onRunScenario(indexList);
         verify(scenarioSimulationViewMock, times(1)).showBusyIndicator(anyString());
-        verify(scenarioSimulationServiceMock, times(1)).runScenario(any(), any(), any());
+        verify(scenarioSimulationServiceMock, times(1)).runScenario(any(), any(), scenarioWithIndexCaptor.capture());
         verify(scenarioGridModelMock, times(1)).resetErrors();
         verify(scenarioSimulationViewMock, times(1)).refreshContent(any());
         verify(scenarioSimulationDocksHandlerMock).expandTestResultsDock();
+
+        List<ScenarioWithIndex> capturedValue = scenarioWithIndexCaptor.getValue();
+        assertEquals(2, capturedValue.size());
+
+        for (Integer requestedIndex : indexList) {
+            assertEquals(1, capturedValue.stream().filter(elem -> elem.getIndex() == (requestedIndex + 1)).count());
+        }
     }
 
     @Test
     public void refreshModelContent() {
         when(scenarioSimulationModelMock.getSimulation()).thenReturn(simulationMock);
-        Set<Map.Entry<Integer, Scenario>> entries = new HashSet<>();
+        List<ScenarioWithIndex> entries = new ArrayList<>();
         int scenarioNumber = 1;
         int scenarioIndex = scenarioNumber - 1;
-        entries.add(new AbstractMap.SimpleEntry<>(scenarioNumber, new Scenario()));
-        when(scenarioMapMock.entrySet()).thenReturn(entries);
-        presenter.refreshModelContent(new TestRunResult(scenarioMapMock,
-                                                        new TestResultMessage()));
+        entries.add(new ScenarioWithIndex(scenarioNumber, new Scenario()));
+
+        assertNull(presenter.lastRunResult);
+        presenter.refreshModelContent(new SimulationRunResult(entries, new SimulationRunMetadata(), new TestResultMessage()));
         verify(scenarioSimulationViewMock, times(1)).hideBusyIndicator();
         verify(simulationMock, times(1)).replaceScenario(eq(scenarioIndex), any());
         assertEquals(scenarioSimulationModelMock, presenter.getModel());
         verify(scenarioSimulationViewMock, times(1)).refreshContent(eq(simulationMock));
         verify(statusMock, times(1)).setSimulation(eq(simulationMock));
         verify(dataManagementStrategyMock, times(1)).setModel(eq(scenarioSimulationModelMock));
+        assertNotNull(presenter.lastRunResult);
     }
 
     @Test
@@ -619,6 +660,7 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
         presenterSpy.getModelSuccessCallbackMethod(content);
         verify(presenterSpy, times(1)).populateRightDocks(TestToolsPresenter.IDENTIFIER);
         verify(presenterSpy, times(1)).populateRightDocks(SettingsPresenter.IDENTIFIER);
+        verify(presenterSpy, times(1)).populateRightDocks(CoverageReportPresenter.IDENTIFIER);
         verify(scenarioSimulationViewMock, times(1)).hideBusyIndicator();
         verify(scenarioSimulationViewMock, times(1)).setContent(eq(content.getModel().getSimulation()));
         verify(statusMock, times(1)).setSimulation(eq(content.getModel().getSimulation()));
@@ -674,11 +716,26 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
     }
 
     @Test
+    public void setCoverageReport() {
+        presenter.setCoverageReport(coverageReportPresenterMock);
+        verify(coverageReportPresenterMock, never()).setSimulationRunMetadata(any(), any());
+        verify(coverageReportPresenterMock, times(1)).showEmptyStateMessage(any());
+
+        reset(coverageReportPresenterMock);
+        presenter.lastRunResult = mock(SimulationRunResult.class);
+
+        presenter.setCoverageReport(coverageReportPresenterMock);
+        verify(coverageReportPresenterMock, times(1)).setSimulationRunMetadata(any(), any());
+        verify(coverageReportPresenterMock, never()).showEmptyStateMessage(any());
+    }
+
+    @Test
     public void resetDocks() {
         PlaceRequest placeRequestMock = mock(PlaceRequest.class);
         doReturn(Optional.of(cheatSheetPresenterMock)).when(presenterSpy).getCheatSheetPresenter(eq(placeRequestMock));
         doReturn(Optional.of(testToolsPresenterMock)).when(presenterSpy).getTestToolsPresenter(eq(placeRequestMock));
         doReturn(Optional.of(settingsPresenterMock)).when(presenterSpy).getSettingsPresenter(eq(placeRequestMock));
+        doReturn(Optional.of(coverageReportPresenterMock)).when(presenterSpy).getCoverageReportPresenter(eq(placeRequestMock));
         when(presenterSpy.getCurrentRightDockPlaceRequest(anyString())).thenReturn(placeRequestMock);
         presenterSpy.resetDocks();
         verify(presenterSpy, times(1)).getCheatSheetPresenter(eq(placeRequestMock));
@@ -687,5 +744,7 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
         verify(testToolsPresenterMock, times(1)).reset();
         verify(presenterSpy, times(1)).getSettingsPresenter(eq(placeRequestMock));
         verify(settingsPresenterMock, times(1)).reset();
+        verify(presenterSpy, times(1)).getCoverageReportPresenter(eq(placeRequestMock));
+        verify(coverageReportPresenterMock, times(1)).reset();
     }
 }

@@ -25,16 +25,15 @@ import javax.inject.Inject;
 
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.AbstractScenarioRunner;
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.ScenarioRunnerProvider;
-import org.drools.workbench.screens.scenariosimulation.model.Scenario;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
+import org.drools.workbench.screens.scenariosimulation.model.ScenarioWithIndex;
 import org.drools.workbench.screens.scenariosimulation.model.SimulationDescriptor;
-import org.drools.workbench.screens.scenariosimulation.model.TestRunResult;
+import org.drools.workbench.screens.scenariosimulation.model.SimulationRunResult;
 import org.drools.workbench.screens.scenariosimulation.service.ScenarioRunnerService;
 import org.guvnor.common.services.shared.test.Failure;
 import org.guvnor.common.services.shared.test.TestResultMessage;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.junit.runner.Result;
-import org.junit.runner.Runner;
 import org.kie.api.runtime.KieContainer;
 import org.uberfire.backend.vfs.Path;
 
@@ -62,20 +61,20 @@ public class ScenarioRunnerServiceImpl extends AbstractKieContainerService
             testResultMessages.add(runTest(identifier,
                                            entry.getKey(),
                                            scenarioSimulationModel.getSimulation().getSimulationDescriptor(),
-                                           scenarioSimulationModel.getSimulation().getScenarioMap()).getTestResultMessage());
+                                           scenarioSimulationModel.getSimulation().getScenarioWithIndex()).getTestResultMessage());
         }
 
         return testResultMessages;
     }
 
     @Override
-    public TestRunResult runTest(final String identifier,
-                                 final Path path,
-                                 final SimulationDescriptor simulationDescriptor,
-                                 final Map<Integer, Scenario> scenarioMap) {
+    public SimulationRunResult runTest(final String identifier,
+                                       final Path path,
+                                       final SimulationDescriptor simulationDescriptor,
+                                       final List<ScenarioWithIndex> scenarios) {
         final KieContainer kieContainer = getKieContainer(path);
-        final Runner scenarioRunner = getOrCreateRunnerSupplier(simulationDescriptor)
-                .create(kieContainer, simulationDescriptor, scenarioMap);
+        final AbstractScenarioRunner scenarioRunner = getOrCreateRunnerSupplier(simulationDescriptor)
+                .create(kieContainer, simulationDescriptor, scenarios);
 
         final List<Failure> failures = new ArrayList<>();
 
@@ -83,12 +82,14 @@ public class ScenarioRunnerServiceImpl extends AbstractKieContainerService
 
         final Result result = runWithJunit(scenarioRunner, failures, failureDetails);
 
-        return new TestRunResult(scenarioMap,
-                                 new TestResultMessage(
-                                         identifier,
-                                         result.getRunCount(),
-                                         result.getRunTime(),
-                                         failures));
+        return new SimulationRunResult(scenarios,
+                                       scenarioRunner.getLastRunResultMetadata()
+                                               .orElseThrow(() -> new IllegalStateException("SimulationRunMetadata should be available after a run")),
+                                       new TestResultMessage(
+                                               identifier,
+                                               result.getRunCount(),
+                                               result.getRunTime(),
+                                               failures));
     }
 
     public ScenarioRunnerProvider getOrCreateRunnerSupplier(SimulationDescriptor simulationDescriptor) {

@@ -15,20 +15,20 @@
  */
 package org.drools.workbench.screens.scenariosimulation.backend.server;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
-import org.assertj.core.api.Assertions;
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.AbstractScenarioRunner;
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.RuleScenarioRunner;
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.ScenarioException;
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.ScenarioRunnerData;
 import org.drools.workbench.screens.scenariosimulation.model.Scenario;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
+import org.drools.workbench.screens.scenariosimulation.model.ScenarioWithIndex;
 import org.drools.workbench.screens.scenariosimulation.model.Simulation;
 import org.drools.workbench.screens.scenariosimulation.model.SimulationDescriptor;
-import org.drools.workbench.screens.scenariosimulation.model.TestRunResult;
+import org.drools.workbench.screens.scenariosimulation.model.SimulationRunResult;
 import org.guvnor.common.services.shared.test.TestResultMessage;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,6 +43,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -90,27 +91,42 @@ public class ScenarioRunnerServiceImplTest {
         Simulation simulation = new Simulation();
         simulation.getSimulationDescriptor().setType(ScenarioSimulationModel.Type.RULE);
 
-        TestRunResult test = scenarioRunnerService.runTest("test",
-                                                           mock(Path.class),
-                                                           simulation.getSimulationDescriptor(),
-                                                           simulation.getScenarioMap());
+        SimulationRunResult test = scenarioRunnerService.runTest("test",
+                                                                 mock(Path.class),
+                                                                 simulation.getSimulationDescriptor(),
+                                                                 simulation.getScenarioWithIndex());
 
         assertNotNull(test.getTestResultMessage());
-        assertNotNull(test.getMap());
+        assertNotNull(test.getScenarioWithIndex());
+        assertNotNull(test.getSimulationRunMetadata());
+
+        when(runnerMock.getLastRunResultMetadata()).thenReturn(Optional.empty());
+        scenarioRunnerService.setRunnerSupplier((kieContainer, simulationDescriptor, scenarios) -> runnerMock);
+
+        assertThatThrownBy(() -> scenarioRunnerService.runTest("test",
+                                                               mock(Path.class),
+                                                               simulation.getSimulationDescriptor(),
+                                                               simulation.getScenarioWithIndex()))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("SimulationRunMetadata should be available after a run");
     }
 
     @Test
-    public void runTestWithScenarioMap() throws Exception {
+    public void runTestWithScenarios() throws Exception {
         when(buildInfoServiceMock.getBuildInfo(any())).thenReturn(buildInfoMock);
         when(buildInfoMock.getKieContainer()).thenReturn(kieContainerMock);
         SimulationDescriptor simulationDescriptor = new SimulationDescriptor();
         simulationDescriptor.setType(ScenarioSimulationModel.Type.RULE);
-        Map<Integer, Scenario> scenarioMap = new HashMap<>();
+        List<ScenarioWithIndex> scenarios = new ArrayList<>();
 
-        TestRunResult test = scenarioRunnerService.runTest("test", mock(Path.class), simulationDescriptor, scenarioMap);
+        SimulationRunResult test = scenarioRunnerService.runTest("test",
+                                                                 mock(Path.class),
+                                                                 simulationDescriptor,
+                                                                 scenarios);
 
         assertNotNull(test.getTestResultMessage());
-        assertNotNull(test.getMap());
+        assertNotNull(test.getScenarioWithIndex());
+        assertNotNull(test.getSimulationRunMetadata());
     }
 
     @Test
@@ -124,16 +140,19 @@ public class ScenarioRunnerServiceImplTest {
         String errorMessage = "Test Error";
 
         scenarioRunnerService.setRunnerSupplier(
-                (kieContainer, simulationDescriptor, scenarioMap) ->
-                        new RuleScenarioRunner(kieContainer, simulationDescriptor, scenarioMap, "") {
+                (kieContainer, simulationDescriptor, scenarios) ->
+                        new RuleScenarioRunner(kieContainer, simulationDescriptor, scenarios, "") {
 
                             @Override
-                            protected void internalRunScenario(Scenario scenario, ScenarioRunnerData scenarioRunnerData) {
+                            protected void internalRunScenario(ScenarioWithIndex scenarioWithIndex, ScenarioRunnerData scenarioRunnerData) {
                                 throw new ScenarioException(errorMessage);
                             }
                         });
-        TestRunResult testRunResult = scenarioRunnerService.runTest("test", mock(Path.class), simulation.getSimulationDescriptor(), simulation.getScenarioMap());
-        TestResultMessage value = testRunResult.getTestResultMessage();
+        SimulationRunResult test = scenarioRunnerService.runTest("test",
+                                                                 mock(Path.class),
+                                                                 simulation.getSimulationDescriptor(),
+                                                                 simulation.getScenarioWithIndex());
+        TestResultMessage value = test.getTestResultMessage();
         List<org.guvnor.common.services.shared.test.Failure> failures = value.getFailures();
         assertEquals(1, failures.size());
 
@@ -149,7 +168,7 @@ public class ScenarioRunnerServiceImplTest {
     public void kieContainerTest() {
         when(buildInfoServiceMock.getBuildInfo(any())).thenReturn(buildInfoMock);
         when(buildInfoMock.getKieContainer()).thenReturn(null);
-        Assertions.assertThatThrownBy(() -> scenarioRunnerService.getKieContainer(mock(Path.class)))
+        assertThatThrownBy(() -> scenarioRunnerService.getKieContainer(mock(Path.class)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Retrieving KieContainer has failed. Fix all compilation errors within the " +
                                     "project and build the project again.");
