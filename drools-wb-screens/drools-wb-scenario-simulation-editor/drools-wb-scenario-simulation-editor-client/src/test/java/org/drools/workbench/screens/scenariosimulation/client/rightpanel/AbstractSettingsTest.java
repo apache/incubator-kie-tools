@@ -54,7 +54,6 @@ abstract class AbstractSettingsTest {
     @Mock
     protected DivElement ruleSettingsMock;
 
-
     @Mock
     protected Style ruleSettingsStyleMock;
 

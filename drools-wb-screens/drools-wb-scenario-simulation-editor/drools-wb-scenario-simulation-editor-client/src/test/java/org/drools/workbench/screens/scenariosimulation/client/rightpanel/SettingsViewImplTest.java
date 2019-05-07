@@ -16,6 +16,7 @@
 
 package org.drools.workbench.screens.scenariosimulation.client.rightpanel;
 
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
@@ -24,6 +25,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.SCENARIO_TYPE;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -69,5 +71,15 @@ public class SettingsViewImplTest extends AbstractSettingsTest {
     public void onSaveButtonClickEvent() {
         settingsView.onSaveButtonClickEvent(mock(ClickEvent.class));
         verify(settingsPresenterMock, times(1)).onSaveButton(SCENARIO_TYPE);
+    }
+
+    @Test
+    public void resetTest() {
+        settingsView.reset();
+        verify(scenarioTypeMock, times(1)).setInnerText(eq(""));
+        verify(fileNameMock, times(1)).setInnerText(eq(""));
+        verify(skipFromBuildMock, times(1)).setChecked(eq(false));
+        verify(ruleSettingsStyleMock, times(1)).setDisplay(eq(Style.Display.NONE));
+        verify(dmnSettingsStyleMock, times(1)).setDisplay(eq(Style.Display.NONE));
     }
 }

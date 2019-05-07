@@ -32,8 +32,6 @@ public class CheatSheetPresenter extends AbstractSubDockPresenter<CheatSheetView
 
     public static final String IDENTIFIER = "org.drools.scenariosimulation.CheatSheet";
 
-
-
     public CheatSheetPresenter() {
         //Zero argument constructor for CDI
         title = ScenarioSimulationEditorConstants.INSTANCE.scenarioCheatSheet();
@@ -43,6 +41,11 @@ public class CheatSheetPresenter extends AbstractSubDockPresenter<CheatSheetView
     public CheatSheetPresenter(CheatSheetView view) {
         super(view);
         title = ScenarioSimulationEditorConstants.INSTANCE.scenarioCheatSheet();
+    }
+
+    @Override
+    public void reset() {
+        view.reset();
     }
 
     public void initCheatSheet(ScenarioSimulationModel.Type type) {

@@ -243,4 +243,10 @@ public class SettingsPresenterTest extends AbstractSettingsTest {
         verify(settingsViewMock, times(1)).getDmnNamespace();
         verify(simulationDescriptorMock, times(1)).setDmnNamespace(eq(DMN_NAMESPACE));
     }
+
+    @Test
+    public void resetTest() {
+        settingsPresenter.reset();
+        verify(settingsViewMock, times(1)).reset();
+    }
 }

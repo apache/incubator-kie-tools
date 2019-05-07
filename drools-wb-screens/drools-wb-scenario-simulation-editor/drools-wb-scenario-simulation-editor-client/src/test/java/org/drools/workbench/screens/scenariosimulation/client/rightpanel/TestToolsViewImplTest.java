@@ -17,7 +17,10 @@
 package org.drools.workbench.screens.scenariosimulation.client.rightpanel;
 
 import com.google.gwt.dom.client.ButtonElement;
+import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.InputElement;
+import com.google.gwt.dom.client.LabelElement;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -32,6 +35,7 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class TestToolsViewImplTest {
@@ -50,6 +54,42 @@ public class TestToolsViewImplTest {
     @Mock
     private ButtonElement clearSearchButtonMock;
 
+    @Mock
+    private LabelElement dataObjectListContainerSeparatorMock;
+
+    @Mock
+    private Style dataObjectListStyleMock;
+
+    @Mock
+    private DivElement dataObjectListContainerMock;
+
+    @Mock
+    private LabelElement simpleJavaTypeListContainerSeparatorMock;
+
+    @Mock
+    private Style simpleJavaTypeListStyleMock;
+
+    @Mock
+    private DivElement simpleJavaTypeListContainerMock;
+
+    @Mock
+    private LabelElement instanceListContainerSeparatorMock;
+
+    @Mock
+    private Style instanceListStyleMock;
+
+    @Mock
+    private DivElement instanceListContainerMock;
+
+    @Mock
+    private LabelElement simpleJavaInstanceListContainerSeparatorMock;
+
+    @Mock
+    private DivElement simpleJavaInstanceListContainerMock;
+
+    @Mock
+    private Style simpleJavaInstanceListStyleMock;
+
     @Before
     public void setup() {
         this.testToolsView = spy(new TestToolsViewImpl() {
@@ -57,8 +97,20 @@ public class TestToolsViewImplTest {
                 this.inputSearch = inputSearchMock;
                 this.clearSearchButton = clearSearchButtonMock;
                 this.nameField = nameFieldMock;
+                this.dataObjectListContainer = dataObjectListContainerMock;
+                this.dataObjectListContainerSeparator = dataObjectListContainerSeparatorMock;
+                this.simpleJavaTypeListContainer = simpleJavaTypeListContainerMock;
+                this.simpleJavaTypeListContainerSeparator = simpleJavaTypeListContainerSeparatorMock;
+                this.instanceListContainer = instanceListContainerMock;
+                this.instanceListContainerSeparator = instanceListContainerSeparatorMock;
+                this.simpleJavaInstanceListContainer = simpleJavaInstanceListContainerMock;
+                this.simpleJavaInstanceListContainerSeparator = simpleJavaInstanceListContainerSeparatorMock;
             }
         });
+        when(dataObjectListContainerSeparatorMock.getStyle()).thenReturn(dataObjectListStyleMock);
+        when(simpleJavaTypeListContainerSeparatorMock.getStyle()).thenReturn(simpleJavaTypeListStyleMock);
+        when(instanceListContainerSeparatorMock.getStyle()).thenReturn(instanceListStyleMock);
+        when(simpleJavaInstanceListContainerSeparatorMock.getStyle()).thenReturn(simpleJavaInstanceListStyleMock);
         testToolsView.init(testToolsPresenterMock);
     }
 
@@ -101,5 +153,18 @@ public class TestToolsViewImplTest {
         testToolsView.showClearButton();
         verify(clearSearchButtonMock, times(1)).setDisabled(eq(false));
         verify(clearSearchButtonMock, times(1)).removeAttribute(eq("style"));
+    }
+
+    @Test
+    public void testReset() {
+        testToolsView.reset();
+        verify(dataObjectListContainerSeparatorMock.getStyle(), times(1)).setDisplay(eq(Style.Display.NONE));
+        verify(dataObjectListContainerMock, times(1)).removeAllChildren();
+        verify(simpleJavaTypeListContainerSeparatorMock.getStyle(), times(1)).setDisplay(eq(Style.Display.NONE));
+        verify(simpleJavaTypeListContainerMock, times(1)).removeAllChildren();
+        verify(instanceListContainerSeparatorMock.getStyle(), times(1)).setDisplay(eq(Style.Display.NONE));
+        verify(instanceListContainerMock, times(1)).removeAllChildren();
+        verify(simpleJavaInstanceListContainerSeparatorMock.getStyle(), times(1)).setDisplay(eq(Style.Display.NONE));
+        verify(simpleJavaInstanceListContainerMock, times(1)).removeAllChildren();
     }
 }

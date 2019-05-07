@@ -26,6 +26,7 @@ import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.dom.client.LabelElement;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
@@ -109,6 +110,18 @@ public class TestToolsViewImpl
     @Override
     public Presenter getPresenter() {
         return presenter;
+    }
+
+    @Override
+    public void reset() {
+        dataObjectListContainerSeparator.getStyle().setDisplay(Style.Display.NONE);
+        dataObjectListContainer.removeAllChildren();
+        simpleJavaTypeListContainerSeparator.getStyle().setDisplay(Style.Display.NONE);
+        simpleJavaTypeListContainer.removeAllChildren();
+        instanceListContainerSeparator.getStyle().setDisplay(Style.Display.NONE);
+        instanceListContainer.removeAllChildren();
+        simpleJavaInstanceListContainerSeparator.getStyle().setDisplay(Style.Display.NONE);
+        simpleJavaInstanceListContainer.removeAllChildren();
     }
 
     @EventHandler("clearSearchButton")

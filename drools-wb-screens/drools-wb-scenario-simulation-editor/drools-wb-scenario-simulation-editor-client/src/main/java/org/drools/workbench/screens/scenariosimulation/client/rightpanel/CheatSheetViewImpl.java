@@ -128,7 +128,6 @@ public class CheatSheetViewImpl
         return presenter;
     }
 
-
     @Override
     public void setRuleCheatSheetContent() {
         ruleCheatSheet.getStyle().setDisplay(Style.Display.BLOCK);
@@ -183,5 +182,11 @@ public class CheatSheetViewImpl
                                                 + " " + ScenarioSimulationEditorConstants.INSTANCE.and() + " " + "<i>" + ScenarioSimulationEditorConstants.INSTANCE.dmnCheatSheet16() + "</i>"
                                                 + ScenarioSimulationEditorConstants.INSTANCE.forExample() + " " + "<tt>[1 .. 10]</tt> or <tt>[2, 3, 4, 5]</tt>");
         dmnCheatSheetParagraph6.setInnerHTML(ScenarioSimulationEditorConstants.INSTANCE.dmnCheatSheet17());
+    }
+
+    @Override
+    public void reset() {
+        dmnCheatSheet.getStyle().setDisplay(Style.Display.NONE);
+        ruleCheatSheet.getStyle().setDisplay(Style.Display.NONE);
     }
 }

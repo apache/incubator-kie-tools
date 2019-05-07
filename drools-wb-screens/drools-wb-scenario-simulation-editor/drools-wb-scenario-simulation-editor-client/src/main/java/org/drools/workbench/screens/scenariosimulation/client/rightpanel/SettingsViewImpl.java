@@ -24,6 +24,7 @@ import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.dom.client.LabelElement;
 import com.google.gwt.dom.client.SpanElement;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.ui.Composite;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
@@ -103,6 +104,15 @@ public class SettingsViewImpl
     @Override
     public Presenter getPresenter() {
         return presenter;
+    }
+
+    @Override
+    public void reset() {
+        scenarioType.setInnerText("");
+        fileName.setInnerText("");
+        skipFromBuild.setChecked(false);
+        dmnSettings.getStyle().setDisplay(Style.Display.NONE);
+        ruleSettings.getStyle().setDisplay(Style.Display.NONE);
     }
 
     @Override

@@ -68,4 +68,10 @@ public class CheatSheetPresenterTest extends AbstractTestToolsTest {
         cheatSheetPresenter.initCheatSheet(ScenarioSimulationModel.Type.DMN);
         verify(cheatSheetViewMock, times(1)).setDMNCheatSheetContent();
     }
+
+    @Test
+    public void reset() {
+        cheatSheetPresenter.reset();
+        verify(cheatSheetViewMock, times(1)).reset();
+    }
 }

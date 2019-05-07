@@ -76,4 +76,12 @@ public class CheatSheetViewImplTest {
         verify(ruleCheatSheetStyleMock, times(1)).setDisplay(Style.Display.NONE);
         verify(dmnCheatSheetStyleMock, times(1)).setDisplay(Style.Display.BLOCK);
     }
+
+
+    @Test
+    public void reset() {
+        cheatSheetView.reset();
+        verify(ruleCheatSheetStyleMock, times(1)).setDisplay(Style.Display.NONE);
+        verify(dmnCheatSheetStyleMock, times(1)).setDisplay(Style.Display.NONE);
+    }
 }

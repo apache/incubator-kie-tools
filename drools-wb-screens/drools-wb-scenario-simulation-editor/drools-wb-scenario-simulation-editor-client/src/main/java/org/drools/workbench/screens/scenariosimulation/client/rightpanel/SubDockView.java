@@ -27,6 +27,7 @@ public interface SubDockView<T extends SubDockView.Presenter>
 
     T getPresenter();
 
+    void reset();
 
     interface Presenter {
 
@@ -44,5 +45,9 @@ public interface SubDockView<T extends SubDockView.Presenter>
          */
         boolean isCurrentlyShow(ObservablePath path);
 
+        /**
+         * It resets the current status of the <code>SubDock</code> component
+         */
+        void reset();
     }
 }
