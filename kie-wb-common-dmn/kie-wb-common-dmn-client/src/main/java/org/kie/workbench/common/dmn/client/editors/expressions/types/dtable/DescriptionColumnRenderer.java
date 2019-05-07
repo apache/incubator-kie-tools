@@ -38,6 +38,6 @@ public class DescriptionColumnRenderer extends BaseGridColumnSingletonDOMElement
             return null;
         }
 
-        return RendererUtils.getCenteredCellText(context, cell);
+        return RendererUtils.getExpressionCellText(context, cell);
     }
 }

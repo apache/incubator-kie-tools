@@ -29,6 +29,7 @@ import org.kie.workbench.common.stunner.core.client.command.SessionCommandManage
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.single.impl.BaseSingletonDOMElementFactory;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.keyboard.KeyDownHandlerCommon;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 
 public class TextAreaSingletonDOMElementFactory extends BaseSingletonDOMElementFactory<String, TextArea, TextAreaDOMElement> {
@@ -73,6 +74,11 @@ public class TextAreaSingletonDOMElementFactory extends BaseSingletonDOMElementF
             return widget.getValue();
         }
         return null;
+    }
+
+    @Override
+    protected KeyDownHandlerCommon destroyOrFlushKeyDownHandler() {
+        return new KeyDownHandlerCommon(gridPanel, gridLayer, gridWidget, this, true, false, true);
     }
 
     @Override

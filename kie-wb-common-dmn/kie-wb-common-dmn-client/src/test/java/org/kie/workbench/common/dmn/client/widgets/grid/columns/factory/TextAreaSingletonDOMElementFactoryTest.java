@@ -17,17 +17,28 @@
 package org.kie.workbench.common.dmn.client.widgets.grid.columns.factory;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.commands.general.DeleteCellValueCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetCellValueCommand;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.dom.TextAreaDOMElement;
+import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.keyboard.KeyDownHandlerCommon;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class TextAreaSingletonDOMElementFactoryTest extends BaseSingletonDOMElementFactoryTest<TextAreaSingletonDOMElementFactory, TextAreaDOMElement> {
+
+    @Mock
+    private KeyDownEvent event;
 
     @Override
     protected TextAreaSingletonDOMElementFactory getFactoryForAttachDomElementTest() {
@@ -64,5 +75,41 @@ public class TextAreaSingletonDOMElementFactoryTest extends BaseSingletonDOMElem
                                                       (gcv) -> new SetCellValueCommand(gcv,
                                                                                        () -> uiModelMapper,
                                                                                        gridLayer::batch));
+    }
+
+    @Test
+    public void testKeyDownHandlerCommon_KEY_TAB() {
+        final TextAreaSingletonDOMElementFactory factory = spy(getFactoryForAttachDomElementTest());
+        final KeyDownHandlerCommon keyDownHandlerCommon = factory.destroyOrFlushKeyDownHandler();
+
+        when(event.getNativeKeyCode()).thenReturn(KeyCodes.KEY_TAB);
+
+        keyDownHandlerCommon.onKeyDown(event);
+
+        verify(factory).flush();
+    }
+
+    @Test
+    public void testKeyDownHandlerCommon_KEY_ENTER() {
+        final TextAreaSingletonDOMElementFactory factory = spy(getFactoryForAttachDomElementTest());
+        final KeyDownHandlerCommon keyDownHandlerCommon = factory.destroyOrFlushKeyDownHandler();
+
+        when(event.getNativeKeyCode()).thenReturn(KeyCodes.KEY_ENTER);
+
+        keyDownHandlerCommon.onKeyDown(event);
+
+        verify(factory, never()).flush();
+    }
+
+    @Test
+    public void testKeyDownHandlerCommon_KEY_ESCAPE() {
+        final TextAreaSingletonDOMElementFactory factory = spy(getFactoryForAttachDomElementTest());
+        final KeyDownHandlerCommon keyDownHandlerCommon = factory.destroyOrFlushKeyDownHandler();
+
+        when(event.getNativeKeyCode()).thenReturn(KeyCodes.KEY_ESCAPE);
+
+        keyDownHandlerCommon.onKeyDown(event);
+
+        verify(factory, never()).flush();
     }
 }
