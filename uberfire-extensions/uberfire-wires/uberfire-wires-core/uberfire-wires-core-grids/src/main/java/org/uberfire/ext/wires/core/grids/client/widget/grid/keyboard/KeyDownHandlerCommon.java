@@ -21,7 +21,6 @@ import java.util.Optional;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
-import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.single.HasSingletonDOMElementResource;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.SelectionExtension;
@@ -35,35 +34,81 @@ public class KeyDownHandlerCommon implements KeyDownHandler {
     protected final GridWidget gridWidget;
     protected final HasSingletonDOMElementResource gridCell;
 
+    private final boolean isTabKeyHandled;
+    private final boolean isEnterKeyHandled;
+    private final boolean isEscapeKeyHandled;
+
     public KeyDownHandlerCommon(final GridLienzoPanel gridPanel,
                                 final GridLayer gridLayer,
                                 final GridWidget gridWidget,
                                 final HasSingletonDOMElementResource gridCell) {
+        this(gridPanel,
+             gridLayer,
+             gridWidget,
+             gridCell,
+             true,
+             true,
+             true);
+    }
+
+    public KeyDownHandlerCommon(final GridLienzoPanel gridPanel,
+                                final GridLayer gridLayer,
+                                final GridWidget gridWidget,
+                                final HasSingletonDOMElementResource gridCell,
+                                final boolean isTabKeyHandled,
+                                final boolean isEnterKeyHandled,
+                                final boolean isEscapeKeyHandled) {
         this.gridPanel = gridPanel;
         this.gridLayer = gridLayer;
         this.gridWidget = gridWidget;
         this.gridCell = gridCell;
+
+        this.isTabKeyHandled = isTabKeyHandled;
+        this.isEnterKeyHandled = isEnterKeyHandled;
+        this.isEscapeKeyHandled = isEscapeKeyHandled;
     }
 
     @Override
     public void onKeyDown(final KeyDownEvent e) {
         final int keyCode = e.getNativeKeyCode();
-        final boolean isShiftKeyDown = e.isShiftKeyDown();
+
         switch (keyCode) {
             case KeyCodes.KEY_TAB:
+                if (isTabKeyHandled) {
+                    flush(e);
+                }
+                break;
+
             case KeyCodes.KEY_ENTER:
-                gridCell.flush();
-                moveSelection(keyCode,
-                              isShiftKeyDown);
-                e.preventDefault();
+                if (isEnterKeyHandled) {
+                    flush(e);
+                }
+                break;
 
             case KeyCodes.KEY_ESCAPE:
-                gridCell.destroyResources();
-                gridPanel.setFocus(true);
-                gridLayer.batch();
+                if (isEscapeKeyHandled) {
+                    reset();
+                }
         }
 
         e.stopPropagation();
+    }
+
+    private void flush(final KeyDownEvent e) {
+        final int keyCode = e.getNativeKeyCode();
+        final boolean isShiftKeyDown = e.isShiftKeyDown();
+
+        gridCell.flush();
+        moveSelection(keyCode, isShiftKeyDown);
+        e.preventDefault();
+
+        reset();
+    }
+
+    private void reset() {
+        gridCell.destroyResources();
+        gridPanel.setFocus(true);
+        gridLayer.batch();
     }
 
     protected void moveSelection(final int keyCode,

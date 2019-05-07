@@ -20,16 +20,16 @@ import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.runner.RunWith;
 
 @RunWith(LienzoMockitoTestRunner.class)
-public class KeyDownHandlerCommonTest extends BaseKeyDownHandlerCommonTest {
+public class KeyDownHandlerCommonEscapeKeyTest extends BaseKeyDownHandlerCommonTest {
 
     @Override
     protected boolean isTabKeyHandled() {
-        return true;
+        return false;
     }
 
     @Override
     protected boolean isEnterKeyHandled() {
-        return true;
+        return false;
     }
 
     @Override
