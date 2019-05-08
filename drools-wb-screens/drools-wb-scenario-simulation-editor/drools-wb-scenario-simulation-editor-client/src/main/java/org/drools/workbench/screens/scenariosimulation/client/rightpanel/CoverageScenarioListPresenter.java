@@ -25,9 +25,9 @@ import javax.inject.Inject;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLLIElement;
 import elemental2.dom.HTMLUListElement;
+import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.drools.workbench.screens.scenariosimulation.client.utils.ViewsProvider;
-import org.drools.workbench.screens.scenariosimulation.model.ScenarioWithIndex;
 
 @Dependent
 public class CoverageScenarioListPresenter implements CoverageScenarioListView.Presenter {

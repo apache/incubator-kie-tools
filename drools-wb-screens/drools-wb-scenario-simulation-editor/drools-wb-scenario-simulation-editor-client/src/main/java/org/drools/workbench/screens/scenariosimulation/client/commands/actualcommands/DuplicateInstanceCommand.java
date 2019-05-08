@@ -23,10 +23,10 @@ import java.util.stream.Collectors;
 
 import javax.enterprise.context.Dependent;
 
+import org.drools.scenariosimulation.api.model.ExpressionElement;
+import org.drools.scenariosimulation.api.model.FactMapping;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
-import org.drools.workbench.screens.scenariosimulation.model.ExpressionElement;
-import org.drools.workbench.screens.scenariosimulation.model.FactMapping;
 
 /**
  * <code>Command</code> to <b>duplicate</b> an instance
@@ -57,7 +57,7 @@ public class DuplicateInstanceCommand extends AbstractSelectedColumnCommand {
                             int createdColumnIndex = context.getModel().getColumns().indexOf(createdColumn);
                             final FactMapping originalFactMapping = context.getModel().getSimulation().get().getSimulationDescriptor().getFactMappingByIndex(originalColumnIndex);
                             /*  Rebuilt propertyNameElements, which is composed by: factName.property . The property MUST be the original property name */
-                            List<String> propertyNameElements = new ArrayList();
+                            List<String> propertyNameElements = new ArrayList<>();
                             propertyNameElements.add(alias);
                             propertyNameElements.addAll(originalFactMapping.getExpressionElementsWithoutClass().stream().map(ExpressionElement::getStep).collect(Collectors.toList()));
                             setPropertyHeader(context,

@@ -18,10 +18,10 @@ package org.drools.workbench.screens.scenariosimulation.service;
 
 import java.util.List;
 
-import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
+import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
+import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
+import org.drools.scenariosimulation.api.model.SimulationDescriptor;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModelContent;
-import org.drools.workbench.screens.scenariosimulation.model.ScenarioWithIndex;
-import org.drools.workbench.screens.scenariosimulation.model.SimulationDescriptor;
 import org.drools.workbench.screens.scenariosimulation.model.SimulationRunResult;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.bus.server.annotations.Remote;

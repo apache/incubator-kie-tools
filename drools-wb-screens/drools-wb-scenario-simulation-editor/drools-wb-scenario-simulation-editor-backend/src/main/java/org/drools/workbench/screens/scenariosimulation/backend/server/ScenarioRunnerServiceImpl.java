@@ -23,11 +23,11 @@ import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.drools.workbench.screens.scenariosimulation.backend.server.runner.AbstractScenarioRunner;
-import org.drools.workbench.screens.scenariosimulation.backend.server.runner.ScenarioRunnerProvider;
-import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
-import org.drools.workbench.screens.scenariosimulation.model.ScenarioWithIndex;
-import org.drools.workbench.screens.scenariosimulation.model.SimulationDescriptor;
+import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
+import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
+import org.drools.scenariosimulation.api.model.SimulationDescriptor;
+import org.drools.scenariosimulation.backend.runner.AbstractScenarioRunner;
+import org.drools.scenariosimulation.backend.runner.ScenarioRunnerProvider;
 import org.drools.workbench.screens.scenariosimulation.model.SimulationRunResult;
 import org.drools.workbench.screens.scenariosimulation.service.ScenarioRunnerService;
 import org.guvnor.common.services.shared.test.Failure;

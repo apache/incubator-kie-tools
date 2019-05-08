@@ -17,8 +17,8 @@
 package org.drools.workbench.screens.scenariosimulation.client.rightpanel;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
-import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

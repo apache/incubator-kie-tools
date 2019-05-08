@@ -21,8 +21,8 @@ import java.util.List;
 
 import javax.enterprise.context.Dependent;
 
+import org.drools.scenariosimulation.api.model.FactMapping;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
-import org.drools.workbench.screens.scenariosimulation.model.FactMapping;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree;
 
 /**

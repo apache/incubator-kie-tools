@@ -24,21 +24,22 @@ import java.util.SortedMap;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import org.drools.scenariosimulation.api.model.ExpressionElement;
+import org.drools.scenariosimulation.api.model.FactIdentifier;
+import org.drools.scenariosimulation.api.model.FactMapping;
+import org.drools.scenariosimulation.api.model.FactMappingType;
+import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
+import org.drools.scenariosimulation.api.utils.ScenarioSimulationSharedUtils;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
 import org.drools.workbench.screens.scenariosimulation.client.metadata.ScenarioHeaderMetaData;
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
-import org.drools.workbench.screens.scenariosimulation.model.FactIdentifier;
-import org.drools.workbench.screens.scenariosimulation.model.FactMapping;
-import org.drools.workbench.screens.scenariosimulation.model.FactMappingType;
-import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree;
-import org.drools.workbench.screens.scenariosimulation.utils.ScenarioSimulationSharedUtils;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 
+import static org.drools.scenariosimulation.api.model.FactMapping.getPropertyPlaceHolder;
 import static org.drools.workbench.screens.scenariosimulation.client.utils.ScenarioSimulationUtils.getPropertyMetaDataGroup;
 import static org.drools.workbench.screens.scenariosimulation.client.utils.ScenarioSimulationUtils.getPropertyNameElementsWithoutAlias;
-import static org.drools.workbench.screens.scenariosimulation.model.FactMapping.getPropertyPlaceHolder;
 
 /**
  * <b>Abstract</b> <code>Command</code> class which assures that a <code>ScenarioColumn</code> is selected.
@@ -261,7 +262,7 @@ public abstract class AbstractSelectedColumnCommand extends AbstractScenarioSimu
         final List<FactMapping> factMappingsByFactName = context.getStatus().getSimulation().getSimulationDescriptor().getFactMappingsByFactName(factIdentifier.getName());
         return factMappingsByFactName.stream()
                 .filter(factMapping -> {
-                    List<String> expressionElements = factMapping.getExpressionElements().stream().map(expressionElement -> expressionElement.getStep()).collect(Collectors.toList());
+                    List<String> expressionElements = factMapping.getExpressionElements().stream().map(ExpressionElement::getStep).collect(Collectors.toList());
                     return Objects.equals(expressionElements, propertyNameElements);
                 })
                 .findFirst()

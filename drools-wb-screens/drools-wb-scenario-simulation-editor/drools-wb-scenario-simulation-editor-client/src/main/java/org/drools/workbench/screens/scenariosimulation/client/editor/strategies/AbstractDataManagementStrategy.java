@@ -27,14 +27,14 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import org.drools.scenariosimulation.api.model.ExpressionElement;
+import org.drools.scenariosimulation.api.model.FactMappingType;
+import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
+import org.drools.scenariosimulation.api.model.SimulationDescriptor;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
 import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsView;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
-import org.drools.workbench.screens.scenariosimulation.model.ExpressionElement;
-import org.drools.workbench.screens.scenariosimulation.model.FactMappingType;
-import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
-import org.drools.workbench.screens.scenariosimulation.model.SimulationDescriptor;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTuple;
 
@@ -109,11 +109,11 @@ public abstract class AbstractDataManagementStrategy implements DataManagementSt
                                         .filter(ScenarioGridColumn::isPropertyAssigned)
                                         .map(instanceColumn -> scenarioGridModel.getColumns().indexOf(instanceColumn))
                                         .map(columnIndex -> {
-                                            List<String> propertyNameElements =  simulationDescriptor.getFactMappingByIndex(columnIndex).getExpressionElementsWithoutClass()
+                                            List<String> propertyNameElements = simulationDescriptor.getFactMappingByIndex(columnIndex).getExpressionElementsWithoutClass()
                                                     .stream()
                                                     .map(ExpressionElement::getStep)
                                                     .collect(Collectors.toList());
-                                            if  (propertyNameElements.isEmpty()) {
+                                            if (propertyNameElements.isEmpty()) {
                                                 propertyNameElements.add("value");
                                             }
                                             return Collections.unmodifiableList(propertyNameElements);

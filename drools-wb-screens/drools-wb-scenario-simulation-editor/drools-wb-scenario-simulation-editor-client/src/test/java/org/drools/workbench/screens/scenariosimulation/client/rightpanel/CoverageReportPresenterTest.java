@@ -20,9 +20,9 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.drools.workbench.screens.scenariosimulation.model.Scenario;
-import org.drools.workbench.screens.scenariosimulation.model.ScenarioWithIndex;
-import org.drools.workbench.screens.scenariosimulation.model.SimulationRunMetadata;
+import org.drools.scenariosimulation.api.model.Scenario;
+import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
+import org.drools.scenariosimulation.api.model.SimulationRunMetadata;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,7 +31,7 @@ import org.mockito.Mock;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
-import static org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel.Type;
+import static org.drools.scenariosimulation.api.model.ScenarioSimulationModel.Type;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;

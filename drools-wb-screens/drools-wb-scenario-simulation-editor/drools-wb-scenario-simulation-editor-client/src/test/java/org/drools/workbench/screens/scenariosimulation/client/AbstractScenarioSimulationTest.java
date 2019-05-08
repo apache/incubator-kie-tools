@@ -27,6 +27,17 @@ import javax.enterprise.event.Event;
 
 import com.ait.lienzo.client.core.types.Point2D;
 import com.google.gwt.event.shared.EventBus;
+import org.drools.scenariosimulation.api.model.ExpressionElement;
+import org.drools.scenariosimulation.api.model.ExpressionIdentifier;
+import org.drools.scenariosimulation.api.model.FactIdentifier;
+import org.drools.scenariosimulation.api.model.FactMapping;
+import org.drools.scenariosimulation.api.model.FactMappingType;
+import org.drools.scenariosimulation.api.model.FactMappingValue;
+import org.drools.scenariosimulation.api.model.Scenario;
+import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
+import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
+import org.drools.scenariosimulation.api.model.Simulation;
+import org.drools.scenariosimulation.api.model.SimulationDescriptor;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioCommandManager;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioCommandRegistry;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
@@ -45,17 +56,6 @@ import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGr
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridLayer;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridPanel;
-import org.drools.workbench.screens.scenariosimulation.model.ExpressionElement;
-import org.drools.workbench.screens.scenariosimulation.model.ExpressionIdentifier;
-import org.drools.workbench.screens.scenariosimulation.model.FactIdentifier;
-import org.drools.workbench.screens.scenariosimulation.model.FactMapping;
-import org.drools.workbench.screens.scenariosimulation.model.FactMappingType;
-import org.drools.workbench.screens.scenariosimulation.model.FactMappingValue;
-import org.drools.workbench.screens.scenariosimulation.model.Scenario;
-import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
-import org.drools.workbench.screens.scenariosimulation.model.ScenarioWithIndex;
-import org.drools.workbench.screens.scenariosimulation.model.Simulation;
-import org.drools.workbench.screens.scenariosimulation.model.SimulationDescriptor;
 import org.drools.workbench.screens.scenariosimulation.model.SimulationRunResult;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree;
 import org.junit.Before;
@@ -252,7 +252,8 @@ public abstract class AbstractScenarioSimulationTest {
 
             @Override
             public void insertRowGridOnly(final int rowIndex,
-                                          final GridRow row, final Scenario scenario) {
+                                          final GridRow row,
+                                          final Scenario scenario) {
                 //
             }
 

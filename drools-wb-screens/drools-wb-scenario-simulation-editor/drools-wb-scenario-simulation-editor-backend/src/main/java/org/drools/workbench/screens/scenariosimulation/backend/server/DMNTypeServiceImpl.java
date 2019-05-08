@@ -26,8 +26,8 @@ import java.util.TreeMap;
 
 import javax.enterprise.context.ApplicationScoped;
 
+import org.drools.scenariosimulation.backend.util.DMNSimulationUtils;
 import org.drools.workbench.screens.scenariosimulation.backend.server.exceptions.WrongDMNTypeException;
-import org.drools.workbench.screens.scenariosimulation.backend.server.util.DMNSimulationUtils;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTuple;
 import org.drools.workbench.screens.scenariosimulation.service.DMNTypeService;

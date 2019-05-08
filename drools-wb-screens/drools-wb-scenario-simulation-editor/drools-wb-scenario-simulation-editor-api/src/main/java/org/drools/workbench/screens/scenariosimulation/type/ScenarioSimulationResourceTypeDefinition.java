@@ -26,6 +26,8 @@ import org.uberfire.workbench.annotations.VisibleAsset;
 import org.uberfire.workbench.category.Category;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
+import static org.drools.scenariosimulation.api.utils.ScenarioSimulationSharedUtils.FILE_EXTENSION;
+
 @Default
 @VisibleAsset
 @ApplicationScoped
@@ -48,12 +50,12 @@ public class ScenarioSimulationResourceTypeDefinition implements ResourceTypeDef
 
     @Override
     public String getShortName() {
-        return "scesim";
+        return FILE_EXTENSION;
     }
 
     @Override
     public String getDescription() {
-        return "Test Scenarios (Preview)";
+        return "Test Scenarios";
     }
 
     @Override
@@ -63,7 +65,7 @@ public class ScenarioSimulationResourceTypeDefinition implements ResourceTypeDef
 
     @Override
     public String getSuffix() {
-        return "scesim";
+        return FILE_EXTENSION;
     }
 
     @Override

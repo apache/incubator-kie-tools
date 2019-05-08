@@ -20,14 +20,15 @@ import java.util.Set;
 
 import javax.inject.Named;
 
-import org.drools.workbench.screens.scenariosimulation.backend.server.runner.ScenarioJunitActivator;
+import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
+import org.drools.scenariosimulation.api.model.Simulation;
+import org.drools.scenariosimulation.backend.runner.ScenarioJunitActivator;
 import org.drools.workbench.screens.scenariosimulation.backend.server.util.ScenarioSimulationBuilder;
-import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
-import org.drools.workbench.screens.scenariosimulation.model.Simulation;
 import org.guvnor.common.services.backend.config.SafeSessionInfo;
 import org.guvnor.common.services.backend.metadata.MetadataServerSideService;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.project.model.Dependencies;
+import org.guvnor.common.services.project.model.Dependency;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Package;
@@ -155,6 +156,7 @@ public class ScenarioSimulationServiceImplTest {
         when(projectPomMock.getGav()).thenReturn(gavMock);
         when(gavMock.getGroupId()).thenReturn("Test");
         when(projectPomMock.getDependencies()).thenReturn(dependenciesMock);
+        when(dependenciesMock.iterator()).thenReturn(new Dependencies().iterator());
         when(ioServiceMock.exists(any(org.uberfire.java.nio.file.Path.class))).thenReturn(false);
         when(packageMock.getPackageTestSrcPath()).thenReturn(path);
         when(scenarioSimulationBuilderMock.createSimulation(any(), any(), any())).thenReturn(new Simulation());
@@ -363,6 +365,26 @@ public class ScenarioSimulationServiceImplTest {
                                              any(POM.class),
                                              any(Metadata.class),
                                              anyString());
+    }
+
+    @Test
+    public void removeFromPomIfNecessaryTest() {
+        String groupId = "groupId";
+        String artifactId = "artifactId";
+        String version = "version";
+        GAV toRemove = new GAV(groupId, artifactId, version);
+        Dependencies dependencies = new Dependencies();
+        dependencies.add(new Dependency(toRemove));
+
+        assertTrue(service.removeFromPomIfNecessary(dependencies, toRemove));
+
+        assertFalse(service.removeFromPomIfNecessary(dependencies, toRemove));
+
+        dependencies.add(new Dependency(new GAV(groupId, artifactId, null)));
+
+        assertTrue(service.removeFromPomIfNecessary(dependencies, toRemove));
+
+        assertFalse(service.removeFromPomIfNecessary(dependencies, toRemove));
     }
 
     @Test

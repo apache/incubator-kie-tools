@@ -887,9 +887,15 @@
       <artifactId>drools-wb-scenario-simulation-editor-client</artifactId>
       <scope>provided</scope>
     </dependency>
+
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-wb-scenario-simulation-editor-backend</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-scenario-simulation-api</artifactId>
     </dependency>
 
     <!-- Stunner -->
@@ -1581,6 +1587,7 @@
             <compileSourcesArtifact>org.drools:drools-wb-scorecard-xls-editor-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.drools:drools-wb-workitems-editor-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.drools:drools-wb-scenario-simulation-editor-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.drools:drools-scenario-simulation-api</compileSourcesArtifact>
 
             <!-- Stunner -->
             <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-core-api</compileSourcesArtifact>

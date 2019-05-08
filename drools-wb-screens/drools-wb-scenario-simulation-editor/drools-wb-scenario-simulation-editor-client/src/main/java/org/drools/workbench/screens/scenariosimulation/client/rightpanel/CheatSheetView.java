@@ -16,7 +16,7 @@
 
 package org.drools.workbench.screens.scenariosimulation.client.rightpanel;
 
-import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
+import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 
 public interface CheatSheetView extends SubDockView<CheatSheetView.Presenter> {
 

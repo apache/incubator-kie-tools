@@ -21,9 +21,9 @@ import java.util.Collections;
 import java.util.List;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.drools.scenariosimulation.api.model.ExpressionIdentifier;
+import org.drools.scenariosimulation.api.model.FactIdentifier;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
-import org.drools.workbench.screens.scenariosimulation.model.ExpressionIdentifier;
-import org.drools.workbench.screens.scenariosimulation.model.FactIdentifier;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 

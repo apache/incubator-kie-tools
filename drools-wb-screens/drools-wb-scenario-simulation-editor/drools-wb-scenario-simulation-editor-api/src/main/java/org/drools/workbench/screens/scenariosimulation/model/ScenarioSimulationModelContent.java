@@ -16,6 +16,7 @@
 
 package org.drools.workbench.screens.scenariosimulation.model;
 
+import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.soup.commons.validation.PortablePreconditions;

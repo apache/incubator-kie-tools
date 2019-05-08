@@ -17,10 +17,10 @@ package org.drools.workbench.screens.scenariosimulation.client.commands.actualco
 
 import java.util.Map;
 
+import org.drools.scenariosimulation.api.model.FactMappingType;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
-import org.drools.workbench.screens.scenariosimulation.model.FactMappingType;
 
 public abstract class AbstractInsertColumnCommand extends AbstractScenarioSimulationCommand {
 

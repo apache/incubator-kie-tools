@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.workbench.screens.scenariosimulation.model.FactMappingType;
+import org.drools.scenariosimulation.api.model.FactMappingType;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 

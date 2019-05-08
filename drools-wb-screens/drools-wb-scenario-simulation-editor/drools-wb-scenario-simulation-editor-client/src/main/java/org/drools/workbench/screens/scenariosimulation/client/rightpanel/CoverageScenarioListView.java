@@ -21,7 +21,7 @@ import java.util.List;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLLIElement;
 import elemental2.dom.HTMLUListElement;
-import org.drools.workbench.screens.scenariosimulation.model.ScenarioWithIndex;
+import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
 
 public interface CoverageScenarioListView {
 

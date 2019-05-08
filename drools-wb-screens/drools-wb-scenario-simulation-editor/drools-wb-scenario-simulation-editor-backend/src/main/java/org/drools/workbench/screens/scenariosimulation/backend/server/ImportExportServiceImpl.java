@@ -18,8 +18,8 @@ package org.drools.workbench.screens.scenariosimulation.backend.server;
 
 import javax.enterprise.context.ApplicationScoped;
 
+import org.drools.scenariosimulation.api.model.Simulation;
 import org.drools.workbench.screens.scenariosimulation.backend.server.importexport.ScenarioCsvImportExport;
-import org.drools.workbench.screens.scenariosimulation.model.Simulation;
 import org.drools.workbench.screens.scenariosimulation.service.ImportExportService;
 import org.drools.workbench.screens.scenariosimulation.service.ImportExportType;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;

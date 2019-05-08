@@ -26,11 +26,11 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.CSVRecord;
-import org.drools.workbench.screens.scenariosimulation.model.FactMapping;
-import org.drools.workbench.screens.scenariosimulation.model.FactMappingType;
-import org.drools.workbench.screens.scenariosimulation.model.FactMappingValue;
-import org.drools.workbench.screens.scenariosimulation.model.Scenario;
-import org.drools.workbench.screens.scenariosimulation.model.Simulation;
+import org.drools.scenariosimulation.api.model.FactMapping;
+import org.drools.scenariosimulation.api.model.FactMappingType;
+import org.drools.scenariosimulation.api.model.FactMappingValue;
+import org.drools.scenariosimulation.api.model.Scenario;
+import org.drools.scenariosimulation.api.model.Simulation;
 
 public class ScenarioCsvImportExport {
 
@@ -69,7 +69,7 @@ public class ScenarioCsvImportExport {
         List<FactMapping> factMappings = toReturn.getSimulationDescriptor().getUnmodifiableFactMappings();
 
         List<CSVRecord> csvRecords = csvParser.getRecords();
-        if(csvRecords.size() < HEADER_SIZE) {
+        if (csvRecords.size() < HEADER_SIZE) {
             throw new IllegalArgumentException("Malformed file, missing header");
         }
         csvRecords = csvRecords.subList(HEADER_SIZE, csvRecords.size());
@@ -101,8 +101,7 @@ public class ScenarioCsvImportExport {
                 firstLineHeader.add(factAlias);
                 secondLineHeader.add(factAlias);
                 thirdLineHeader.add(factAlias);
-            }
-            else {
+            } else {
                 // GIVEN/EXPECT
                 firstLineHeader.add(factMapping.getExpressionIdentifier().getType().name());
                 // Instance

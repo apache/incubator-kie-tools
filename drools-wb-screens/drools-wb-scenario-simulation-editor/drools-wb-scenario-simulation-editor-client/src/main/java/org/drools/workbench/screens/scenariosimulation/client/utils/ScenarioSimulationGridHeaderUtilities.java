@@ -23,14 +23,14 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.ait.lienzo.client.core.types.Point2D;
+import org.drools.scenariosimulation.api.model.ExpressionElement;
+import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
+import org.drools.scenariosimulation.api.model.Simulation;
 import org.drools.workbench.screens.scenariosimulation.client.events.EnableTestToolsEvent;
 import org.drools.workbench.screens.scenariosimulation.client.metadata.ScenarioHeaderMetaData;
 import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGrid;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
-import org.drools.workbench.screens.scenariosimulation.model.ExpressionElement;
-import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
-import org.drools.workbench.screens.scenariosimulation.model.Simulation;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.util.CoordinateUtilities;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
@@ -133,7 +133,7 @@ public class ScenarioSimulationGridHeaderUtilities {
                 propertyNameElements = optionalSimulation.map(simulation -> getPropertyNameElements(simulation, uiColumnIndex)).orElse(null);
             }
             return propertyNameElements != null ? new EnableTestToolsEvent(scenarioGridColumn.getInformationHeaderMetaData()
-                                                                            .getTitle(), propertyNameElements) : new EnableTestToolsEvent(scenarioGridColumn.getInformationHeaderMetaData().getTitle());
+                                                                                   .getTitle(), propertyNameElements) : new EnableTestToolsEvent(scenarioGridColumn.getInformationHeaderMetaData().getTitle());
         } else {
             String complexSearch = getExistingInstances(columnGroup, scenarioGrid.getModel());
             return new EnableTestToolsEvent(complexSearch, true);
@@ -154,8 +154,8 @@ public class ScenarioSimulationGridHeaderUtilities {
 
     public static List<String> getPropertyNameElements(final Simulation simulation, final int columnIndex) {
         return Collections.unmodifiableList(simulation.getSimulationDescriptor().getFactMappingByIndex(columnIndex).getExpressionElementsWithoutClass()
-                .stream()
-                .map(ExpressionElement::getStep)
-                .collect(Collectors.toList()));
+                                                    .stream()
+                                                    .map(ExpressionElement::getStep)
+                                                    .collect(Collectors.toList()));
     }
 }

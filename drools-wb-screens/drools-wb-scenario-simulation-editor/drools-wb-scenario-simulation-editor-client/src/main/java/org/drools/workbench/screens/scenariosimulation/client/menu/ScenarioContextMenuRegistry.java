@@ -24,6 +24,7 @@ import javax.inject.Inject;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.google.gwt.event.dom.client.ContextMenuEvent;
 import com.google.gwt.event.shared.EventBus;
+import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.workbench.screens.scenariosimulation.client.editor.menu.ExpectedContextMenu;
 import org.drools.workbench.screens.scenariosimulation.client.editor.menu.GivenContextMenu;
 import org.drools.workbench.screens.scenariosimulation.client.editor.menu.GridContextMenu;
@@ -35,7 +36,6 @@ import org.drools.workbench.screens.scenariosimulation.client.metadata.ScenarioH
 import org.drools.workbench.screens.scenariosimulation.client.utils.ScenarioSimulationGridHeaderUtilities;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGrid;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
-import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
 import org.uberfire.ext.wires.core.grids.client.util.CoordinateUtilities;
 
 @Dependent

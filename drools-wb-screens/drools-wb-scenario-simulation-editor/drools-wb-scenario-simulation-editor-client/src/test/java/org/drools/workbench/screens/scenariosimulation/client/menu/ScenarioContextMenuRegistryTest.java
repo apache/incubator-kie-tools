@@ -21,6 +21,7 @@ import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.ContextMenuEvent;
+import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.workbench.screens.scenariosimulation.client.editor.menu.ExpectedContextMenu;
 import org.drools.workbench.screens.scenariosimulation.client.editor.menu.GivenContextMenu;
 import org.drools.workbench.screens.scenariosimulation.client.editor.menu.GridContextMenu;
@@ -29,7 +30,6 @@ import org.drools.workbench.screens.scenariosimulation.client.editor.menu.Header
 import org.drools.workbench.screens.scenariosimulation.client.editor.menu.OtherContextMenu;
 import org.drools.workbench.screens.scenariosimulation.client.editor.menu.UnmodifiableColumnGridContextMenu;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.AbstractScenarioSimulationGridHandlerTest;
-import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

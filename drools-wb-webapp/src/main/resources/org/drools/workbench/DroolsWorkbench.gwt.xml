@@ -74,6 +74,7 @@
   <!-- ScenarioSimulation -->
   <inherits name="org.drools.workbench.screens.scenariosimulation.DroolsWorkbenchScenarioSimulationEditorAPI" />
   <inherits name='org.drools.workbench.screens.scenariosimulation.DroolsWorkbenchScenarioSimulationEditorClient'/>
+  <inherits name="org.drools.scenariosimulation.ScenarioSimulationAPI" />
 
 
 

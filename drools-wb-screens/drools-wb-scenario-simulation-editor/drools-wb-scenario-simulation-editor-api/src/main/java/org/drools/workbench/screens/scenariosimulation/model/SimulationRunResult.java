@@ -17,6 +17,8 @@ package org.drools.workbench.screens.scenariosimulation.model;
 
 import java.util.List;
 
+import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
+import org.drools.scenariosimulation.api.model.SimulationRunMetadata;
 import org.guvnor.common.services.shared.test.TestResultMessage;
 import org.jboss.errai.common.client.api.annotations.Portable;
 

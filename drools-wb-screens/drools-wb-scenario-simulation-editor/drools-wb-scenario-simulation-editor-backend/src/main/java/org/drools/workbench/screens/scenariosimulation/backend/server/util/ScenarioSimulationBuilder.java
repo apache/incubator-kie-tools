@@ -18,8 +18,8 @@ package org.drools.workbench.screens.scenariosimulation.backend.server.util;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
-import org.drools.workbench.screens.scenariosimulation.model.Simulation;
+import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
+import org.drools.scenariosimulation.api.model.Simulation;
 import org.uberfire.backend.vfs.Path;
 
 @ApplicationScoped

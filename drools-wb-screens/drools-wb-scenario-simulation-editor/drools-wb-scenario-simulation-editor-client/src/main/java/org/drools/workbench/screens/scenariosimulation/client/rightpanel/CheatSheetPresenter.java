@@ -19,8 +19,8 @@ package org.drools.workbench.screens.scenariosimulation.client.rightpanel;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
-import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
 import org.uberfire.client.annotations.WorkbenchScreen;
 
 import static org.drools.workbench.screens.scenariosimulation.client.rightpanel.CheatSheetPresenter.DEFAULT_PREFERRED_WIDHT;

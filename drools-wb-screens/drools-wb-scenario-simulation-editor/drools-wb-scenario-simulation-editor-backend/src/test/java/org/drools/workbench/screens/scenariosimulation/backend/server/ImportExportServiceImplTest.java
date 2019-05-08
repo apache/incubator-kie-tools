@@ -17,8 +17,8 @@ package org.drools.workbench.screens.scenariosimulation.backend.server;
 
 import java.io.IOException;
 
+import org.drools.scenariosimulation.api.model.Simulation;
 import org.drools.workbench.screens.scenariosimulation.backend.server.importexport.ScenarioCsvImportExport;
-import org.drools.workbench.screens.scenariosimulation.model.Simulation;
 import org.drools.workbench.screens.scenariosimulation.service.ImportExportType;
 import org.guvnor.common.services.shared.exceptions.GenericPortableException;
 import org.junit.Before;

@@ -19,8 +19,8 @@ package org.drools.workbench.screens.scenariosimulation.client.rightpanel;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLUListElement;
-import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
-import org.drools.workbench.screens.scenariosimulation.model.SimulationRunMetadata;
+import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
+import org.drools.scenariosimulation.api.model.SimulationRunMetadata;
 
 public interface CoverageReportView
         extends SubDockView<CoverageReportView.Presenter> {

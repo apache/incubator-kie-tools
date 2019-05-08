@@ -27,6 +27,8 @@
 
   <inherits name="org.kie.workbench.common.services.datamodel.KieWorkbenchCommonDataModelAPI" />
 
+  <inherits name="org.drools.scenariosimulation.ScenarioSimulationAPI" />
+
   <source path="model"/>
   <source path="type"/>
   <source path="service"/>
