@@ -246,14 +246,12 @@ public class WorkItemsEditorServiceImpl
                      final Metadata metadata,
                      final String comment) {
         try {
-            Metadata currentMetadata = metadataService.getMetadata(resource);
             ioService.write(Paths.convert(resource),
                             content,
                             metadataService.setUpAttributes(resource,
                                                             metadata),
                             commentedOptionFactory.makeCommentedOption(comment));
 
-            fireMetadataSocialEvents(resource, currentMetadata, metadata);
             return resource;
         } catch (Exception e) {
             throw ExceptionUtilities.handleException(e);

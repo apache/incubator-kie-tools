@@ -92,10 +92,6 @@
   <!-- DMN Editor -->
   <inherits name="org.kie.workbench.common.dmn.project.DMNProjectClient"/>
 
-  <!-- Social Home page -->
-  <inherits name="org.ext.uberfire.social.activities.SocialActivitiesAPI"/>
-  <inherits name="org.ext.uberfire.social.activities.SocialActivitiesClient"/>
-
   <!-- Uberfire Apps-->
   <inherits name="org.uberfire.ext.apps.UberfireAppsClient"/>
 

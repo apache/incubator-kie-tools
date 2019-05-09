@@ -173,8 +173,6 @@ public class GuidedDecisionTableGraphEditorServiceImpl
                      final Metadata metadata,
                      final String comment) {
         try {
-            final Metadata currentMetadata = metadataService.getMetadata(path);
-
             versionEntriesPaths(model);
 
             ioService.write(Paths.convert(path),
@@ -182,10 +180,6 @@ public class GuidedDecisionTableGraphEditorServiceImpl
                             metadataService.setUpAttributes(path,
                                                             metadata),
                             commentedOptionFactory.makeCommentedOption(comment));
-
-            fireMetadataSocialEvents(path,
-                                     currentMetadata,
-                                     metadata);
 
             return path;
         } catch (Exception e) {

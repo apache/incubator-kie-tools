@@ -159,7 +159,6 @@ public class DSLTextEditorServiceImpl
                       final Metadata metadata,
                       final String comment ) {
         try {
-            Metadata currentMetadata = metadataService.getMetadata( resource );
             ioService.write( Paths.convert( resource ),
                              content,
                              metadataService.setUpAttributes( resource,
@@ -169,7 +168,6 @@ public class DSLTextEditorServiceImpl
             //Invalidate Package-level DMO cache as a DSL has been altered
             invalidateDMOPackageCache.fire( new InvalidateDMOPackageCacheEvent( resource ) );
 
-            fireMetadataSocialEvents( resource, currentMetadata, metadata );
             return resource;
 
         } catch ( Exception e ) {

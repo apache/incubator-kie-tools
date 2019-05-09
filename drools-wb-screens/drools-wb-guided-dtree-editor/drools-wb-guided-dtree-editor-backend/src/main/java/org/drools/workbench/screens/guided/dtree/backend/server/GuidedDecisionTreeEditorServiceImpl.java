@@ -212,14 +212,12 @@ public class GuidedDecisionTreeEditorServiceImpl
             final String packageName = (pkg == null ? null : pkg.getPackageName());
             model.setPackageName(packageName);
 
-            Metadata currentMetadata = metadataService.getMetadata(resource);
             ioService.write(Paths.convert(resource),
                             GuidedDecisionTreeDRLPersistence.getInstance().marshal(model),
                             metadataService.setUpAttributes(resource,
                                                             metadata),
                             commentedOptionFactory.makeCommentedOption(comment));
 
-            fireMetadataSocialEvents(resource, currentMetadata, metadata);
             return resource;
         } catch (Exception e) {
             throw ExceptionUtilities.handleException(e);

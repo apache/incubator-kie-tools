@@ -170,7 +170,6 @@ public class EnumServiceImpl
                      final Metadata metadata,
                      final String comment) {
         try {
-            Metadata currentMetadata = metadataService.getMetadata(resource);
             ioService.write(Paths.convert(resource),
                             content,
                             metadataService.setUpAttributes(resource,
@@ -180,9 +179,6 @@ public class EnumServiceImpl
             //Invalidate Package-level DMO cache as Enums have changed.
             invalidateDMOPackageCache.fire(new InvalidateDMOPackageCacheEvent(resource));
 
-            fireMetadataSocialEvents(resource,
-                                     currentMetadata,
-                                     metadata);
             return resource;
         } catch (Exception e) {
             throw ExceptionUtilities.handleException(e);

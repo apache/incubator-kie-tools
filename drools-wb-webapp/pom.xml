@@ -574,16 +574,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-social-activities-api</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-social-activities-client</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>org.kie.workbench.screens</groupId>
       <artifactId>kie-wb-common-examples-screen-api</artifactId>
     </dependency>
@@ -1641,10 +1631,6 @@
             <compileSourcesArtifact>org.kie.workbench:kie-wb-common-dmn-project-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench:kie-wb-common-dmn-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench:kie-wb-common-dmn-project-client</compileSourcesArtifact>
-
-            <!-- UberFire extensions -->
-            <compileSourcesArtifact>org.uberfire:uberfire-social-activities-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.uberfire:uberfire-social-activities-client</compileSourcesArtifact>
 
             <!-- UberFire Extensions -->
             <compileSourcesArtifact>org.uberfire:uberfire-commons-editor-api</compileSourcesArtifact>

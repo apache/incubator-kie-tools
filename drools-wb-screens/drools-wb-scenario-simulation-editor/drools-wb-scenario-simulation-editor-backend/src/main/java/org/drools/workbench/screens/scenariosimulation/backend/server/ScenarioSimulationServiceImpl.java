@@ -262,18 +262,14 @@ public class ScenarioSimulationServiceImpl
                      final Metadata metadata,
                      final String comment) {
         try {
-            final Metadata currentMetadata = metadataService.getMetadata(resource);
             ioService.write(Paths.convert(resource),
                             ScenarioSimulationXMLPersistence.getInstance().marshal(content),
                             metadataService.setUpAttributes(resource,
                                                             metadata),
                             commentedOptionFactory.makeCommentedOption(comment));
 
-            fireMetadataSocialEvents(resource,
-                                     currentMetadata,
-                                     metadata);
-
             createActivatorIfNotExist(resource);
+
             return resource;
         } catch (Exception e) {
             throw ExceptionUtilities.handleException(e);
