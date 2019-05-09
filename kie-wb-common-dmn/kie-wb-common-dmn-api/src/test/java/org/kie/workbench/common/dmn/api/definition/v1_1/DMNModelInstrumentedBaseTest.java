@@ -16,11 +16,13 @@
 
 package org.kie.workbench.common.dmn.api.definition.v1_1;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.Test;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase.Namespace;
 
+import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -166,6 +168,28 @@ public class DMNModelInstrumentedBaseTest {
         assertTrue(modelDummyPrefix.isPresent());
         assertEquals(DUMMY_PREFIX,
                      modelDummyPrefix.get());
+    }
+
+    @Test
+    public void testNamespaces() {
+
+        final List<Namespace> namespaces = asList(Namespace.values());
+
+        assertEquals(7, namespaces.size());
+        assertEquals("http://www.omg.org/spec/DMN/20180521/FEEL/", namespaces.get(0).getUri());
+        assertEquals("http://www.omg.org/spec/DMN/20180521/MODEL/", namespaces.get(1).getUri());
+        assertEquals("http://www.drools.org/kie/dmn/1.2", namespaces.get(2).getUri());
+        assertEquals("https://kiegroup.org/dmn/", namespaces.get(3).getUri());
+        assertEquals("http://www.omg.org/spec/DMN/20180521/DMNDI/", namespaces.get(4).getUri());
+        assertEquals("http://www.omg.org/spec/DMN/20180521/DI/", namespaces.get(5).getUri());
+        assertEquals("http://www.omg.org/spec/DMN/20180521/DC/", namespaces.get(6).getUri());
+        assertEquals("feel", namespaces.get(0).getPrefix());
+        assertEquals("dmn", namespaces.get(1).getPrefix());
+        assertEquals("kie", namespaces.get(2).getPrefix());
+        assertEquals("", namespaces.get(3).getPrefix());
+        assertEquals("dmndi", namespaces.get(4).getPrefix());
+        assertEquals("di", namespaces.get(5).getPrefix());
+        assertEquals("dc", namespaces.get(6).getPrefix());
     }
 
     public class MockDMNModelClass extends DMNModelInstrumentedBase {
