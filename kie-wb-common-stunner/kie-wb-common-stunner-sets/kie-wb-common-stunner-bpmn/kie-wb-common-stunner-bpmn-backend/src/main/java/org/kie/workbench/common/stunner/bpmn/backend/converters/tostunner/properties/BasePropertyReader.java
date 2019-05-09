@@ -142,4 +142,16 @@ public class BasePropertyReader {
         return new RectangleDimensionsSet(bounds.getWidth() * resolutionFactor,
                                           bounds.getHeight() * resolutionFactor);
     }
+
+    public boolean isExpanded() {
+        return shape.isIsExpanded();
+    }
+
+    public BaseElement getElement() {
+        return element;
+    }
+
+    public BPMNShape getShape() {
+        return shape;
+    }
 }

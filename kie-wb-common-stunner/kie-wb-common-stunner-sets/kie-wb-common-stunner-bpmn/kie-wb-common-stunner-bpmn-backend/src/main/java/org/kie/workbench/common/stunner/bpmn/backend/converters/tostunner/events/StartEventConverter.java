@@ -124,7 +124,7 @@ public class StartEventConverter {
         definition.setFontSet(p.getFontSet());
         definition.setBackgroundSet(p.getBackgroundSet());
 
-        return BpmnNode.of(node);
+        return BpmnNode.of(node, p);
     }
 
     private BpmnNode timerEvent(
@@ -154,7 +154,7 @@ public class StartEventConverter {
         definition.setFontSet(p.getFontSet());
         definition.setBackgroundSet(p.getBackgroundSet());
 
-        return BpmnNode.of(node);
+        return BpmnNode.of(node, p);
     }
 
     private BpmnNode messageEvent(
@@ -188,7 +188,7 @@ public class StartEventConverter {
         definition.setBackgroundSet(p.getBackgroundSet());
         definition.setDimensionsSet(p.getCircleDimensionSet());
 
-        return BpmnNode.of(node);
+        return BpmnNode.of(node, p);
     }
 
     private BpmnNode signalEvent(
@@ -222,7 +222,7 @@ public class StartEventConverter {
         definition.setFontSet(p.getFontSet());
         definition.setBackgroundSet(p.getBackgroundSet());
 
-        return BpmnNode.of(node);
+        return BpmnNode.of(node, p);
     }
 
     private BpmnNode noneEvent(StartEvent event) {
@@ -245,7 +245,7 @@ public class StartEventConverter {
         definition.setFontSet(p.getFontSet());
         definition.setBackgroundSet(p.getBackgroundSet());
 
-        return BpmnNode.of(node);
+        return BpmnNode.of(node, p);
     }
 
     private BpmnNode conditionalEvent(
@@ -275,7 +275,7 @@ public class StartEventConverter {
         definition.setFontSet(p.getFontSet());
         definition.setBackgroundSet(p.getBackgroundSet());
 
-        return BpmnNode.of(node);
+        return BpmnNode.of(node, p);
     }
 
     private BpmnNode escalationEvent(
@@ -309,7 +309,7 @@ public class StartEventConverter {
         definition.setFontSet(p.getFontSet());
         definition.setBackgroundSet(p.getBackgroundSet());
 
-        return BpmnNode.of(node);
+        return BpmnNode.of(node, p);
     }
 
     private BpmnNode compensationEvent(
@@ -335,6 +335,6 @@ public class StartEventConverter {
         definition.setFontSet(p.getFontSet());
         definition.setBackgroundSet(p.getBackgroundSet());
 
-        return BpmnNode.of(node);
+        return BpmnNode.of(node, p);
     }
 }

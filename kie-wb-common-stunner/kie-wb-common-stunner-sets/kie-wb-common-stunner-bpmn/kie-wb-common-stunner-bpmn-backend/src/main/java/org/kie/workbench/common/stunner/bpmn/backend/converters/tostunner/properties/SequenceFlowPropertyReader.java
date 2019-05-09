@@ -31,7 +31,6 @@ import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 
 public class SequenceFlowPropertyReader extends FlowElementPropertyReader {
 
-    final FormalExpression conditionExpression;
     private final DefinitionResolver definitionResolver;
     private final SequenceFlow seq;
 
@@ -43,7 +42,6 @@ public class SequenceFlowPropertyReader extends FlowElementPropertyReader {
               definitionResolver.getShape(seq.getId()),
               definitionResolver.getResolutionFactor());
         this.seq = seq;
-        conditionExpression = (FormalExpression) seq.getConditionExpression();
         this.definitionResolver = definitionResolver;
     }
 
@@ -52,13 +50,13 @@ public class SequenceFlowPropertyReader extends FlowElementPropertyReader {
     }
 
     public ScriptTypeValue getConditionExpression() {
-        if (conditionExpression == null) {
-            return new ScriptTypeValue("java",
-                                       "");
-        } else {
+        if (seq.getConditionExpression() instanceof FormalExpression) {
+            FormalExpression conditionExpression = (FormalExpression) seq.getConditionExpression();
             return new ScriptTypeValue(
                     Scripts.scriptLanguageFromUri(conditionExpression.getLanguage()),
                     conditionExpression.getBody());
+        } else {
+            return new ScriptTypeValue("java", "");
         }
     }
 
@@ -93,5 +91,9 @@ public class SequenceFlowPropertyReader extends FlowElementPropertyReader {
     public List<Point2D> getControlPoints() {
         return PropertyReaderUtils.getControlPoints(definitionResolver,
                                                     element.getId());
+    }
+
+    public DefinitionResolver getDefinitionResolver() {
+        return definitionResolver;
     }
 }

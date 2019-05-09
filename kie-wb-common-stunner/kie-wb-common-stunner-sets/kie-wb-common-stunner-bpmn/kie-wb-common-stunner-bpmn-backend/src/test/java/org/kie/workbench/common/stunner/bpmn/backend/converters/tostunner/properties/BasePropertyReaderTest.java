@@ -30,6 +30,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -86,5 +87,27 @@ public class BasePropertyReaderTest {
         RectangleDimensionsSet rectangleDimensionsSet = tested.getRectangleDimensionsSet();
         assertEquals(65.0d, rectangleDimensionsSet.getWidth().getValue(), 0d);
         assertEquals(354.4710174560547d, rectangleDimensionsSet.getHeight().getValue(), 0d);
+    }
+
+    @Test
+    public void testIsExpandedTrue() {
+        when(shape.isIsExpanded()).thenReturn(true);
+        assertTrue(tested.isExpanded());
+    }
+
+    @Test
+    public void testIsExpandedFalse() {
+        when(shape.isIsExpanded()).thenReturn(false);
+        assertFalse(shape.isIsExpanded());
+    }
+
+    @Test
+    public void testGetElement() {
+        assertEquals(element, tested.getElement());
+    }
+
+    @Test
+    public void testGetShape() {
+        assertEquals(shape, tested.getShape());
     }
 }

@@ -119,7 +119,7 @@ public abstract class BaseTaskConverter<U extends BaseUserTask<S>, S extends Bas
         definition.setBackgroundSet(p.getBackgroundSet());
         definition.setFontSet(p.getFontSet());
 
-        return BpmnNode.of(node);
+        return BpmnNode.of(node, p);
     }
 
     private BpmnNode businessRuleTask(org.eclipse.bpmn2.BusinessRuleTask task) {
@@ -175,7 +175,7 @@ public abstract class BaseTaskConverter<U extends BaseUserTask<S>, S extends Bas
         definition.setBackgroundSet(p.getBackgroundSet());
         definition.setFontSet(p.getFontSet());
 
-        return BpmnNode.of(node);
+        return BpmnNode.of(node, p);
     }
 
     private BpmnNode scriptTask(org.eclipse.bpmn2.ScriptTask task) {
@@ -203,7 +203,7 @@ public abstract class BaseTaskConverter<U extends BaseUserTask<S>, S extends Bas
 
         definition.setSimulationSet(p.getSimulationSet());
 
-        return BpmnNode.of(node);
+        return BpmnNode.of(node, p);
     }
 
     private BpmnNode userTask(org.eclipse.bpmn2.UserTask task) {
@@ -229,7 +229,7 @@ public abstract class BaseTaskConverter<U extends BaseUserTask<S>, S extends Bas
         definition.setBackgroundSet(p.getBackgroundSet());
         definition.setFontSet(p.getFontSet());
 
-        return BpmnNode.of(node);
+        return BpmnNode.of(node, p);
     }
 
     private BpmnNode fallback(Task task) {
@@ -263,7 +263,7 @@ public abstract class BaseTaskConverter<U extends BaseUserTask<S>, S extends Bas
         definition.setBackgroundSet(p.getBackgroundSet());
         definition.setFontSet(p.getFontSet());
 
-        return BpmnNode.of(node);
+        return BpmnNode.of(node, p);
     }
 
     protected abstract Node<View<U>, Edge> createNode(String id);

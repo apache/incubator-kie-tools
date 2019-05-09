@@ -45,7 +45,7 @@ public abstract class EventPropertyReader extends FlowElementPropertyReader {
     static final double WIDTH = 56d;
     static final double HEIGHT = 56d;
 
-    private final DefinitionResolver definitionResolver;
+    protected final DefinitionResolver definitionResolver;
 
     EventPropertyReader(Event element, BPMNDiagram diagram, DefinitionResolver definitionResolver) {
         super(element, diagram, definitionResolver.getShape(element.getId()), definitionResolver.getResolutionFactor());

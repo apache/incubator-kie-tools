@@ -16,14 +16,19 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties;
 
+import java.util.Optional;
+
 import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.EventDefinition;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomAttribute;
+import org.kie.workbench.common.stunner.core.graph.Edge;
+import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.Bound;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
+import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
-import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.dc;
+import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.util.PropertyWriterUtils.getDockSourceNode;
 
 public class BoundaryEventPropertyWriter extends CatchEventPropertyWriter {
 
@@ -41,9 +46,6 @@ public class BoundaryEventPropertyWriter extends CatchEventPropertyWriter {
     }
 
     public void setParentActivity(ActivityPropertyWriter parent) {
-        org.eclipse.dd.dc.Bounds parentBounds =
-                getParentActivityBounds(parent.getShape().getBounds());
-        getShape().setBounds(parentBounds);
         event.setAttachedToRef(parent.getFlowElement());
     }
 
@@ -52,64 +54,28 @@ public class BoundaryEventPropertyWriter extends CatchEventPropertyWriter {
         this.event.getEventDefinitions().add(eventDefinition);
     }
 
-    /*
-     *  absolute coordinates (absoluteX, absoluteY) of the boundary
-     *  event are computed with the following formulae:
-     *
-     *    absoluteX := parentX + x - width/2
-     *    absoluteY := parentY + x - height/2
-     *
-     *  where (x,y) is relative to (parentX,parentY)
-     *
-     *
-     *   (parentX, parentY)
-     *         +----------------------+
-     *         |                      |
-     *         |                      |
-     *         |        parent        |
-     *         |                      |
-     *         |                      |
-     *         |                      |
-     *         |      (x,y)           |
-     *         |       +-------+      |
-     *         |       |       |      |
-     *         +-------- event -------+
-     *                 |       |
-     *                 +-------+
-     *
-     *
-     *
-     */
-    protected org.eclipse.dd.dc.Bounds getParentActivityBounds(org.eclipse.dd.dc.Bounds parentRect) {
-        if (getShape().getBounds() == null) {
-            throw new IllegalArgumentException(
-                    "Cannot set parent bounds if the child " +
-                            "has undefined bounds. Use setBounds() first.");
+    @Override
+    public void setAbsoluteBounds(Node<? extends View, ?> node) {
+        Bound ul = node.getContent().getBounds().getUpperLeft();
+        //docker information is relative
+        setDockerInfo(Point2D.create(ul.getX(), ul.getY()));
+
+        Optional<Node<View, Edge>> dockSourceNode = getDockSourceNode(node);
+        if (dockSourceNode.isPresent()) {
+            //docked node bounds are relative to the dockSourceNode in Stunner, but not in bpmn2 standard so the node
+            //absolute bounds must be calculated by using hte dockSourceNode absolute coordinates.
+            Bounds dockSourceNodeBounds = absoluteBounds(dockSourceNode.get());
+            Bounds nodeBounds = node.getContent().getBounds();
+            double x = dockSourceNodeBounds.getX() + nodeBounds.getUpperLeft().getX();
+            double y = dockSourceNodeBounds.getY() + nodeBounds.getUpperLeft().getY();
+            super.setBounds(Bounds.create(x, y, x + nodeBounds.getWidth(), y + nodeBounds.getHeight()));
+        } else {
+            //uncommon case
+            super.setAbsoluteBounds(node);
         }
-
-        org.eclipse.dd.dc.Bounds relativeBounds = getShape().getBounds();
-        float x = relativeBounds.getX();
-        float y = relativeBounds.getY();
-        float width = relativeBounds.getWidth();
-        float height = relativeBounds.getHeight();
-
-        float parentX = parentRect.getX();
-        float parentY = parentRect.getY();
-
-        org.eclipse.dd.dc.Bounds bounds = dc.createBounds();
-        bounds.setX(parentX + x - width / 2);
-        bounds.setY(parentY + y - height / 2);
-        bounds.setWidth(width);
-        bounds.setHeight(height);
-
-        return bounds;
     }
 
-    @Override
-    public void setBounds(Bounds rect) {
-        Bound bound = rect.getUpperLeft();
-        CustomAttribute.dockerInfo.of(flowElement).set(
-                Point2D.create(bound.getX(), bound.getY()));
-        super.setBounds(rect);
+    private void setDockerInfo(Point2D docker) {
+        CustomAttribute.dockerInfo.of(event).set(docker);
     }
 }

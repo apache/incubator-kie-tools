@@ -73,7 +73,7 @@ public class GatewayConverter {
         definition.setFontSet(p.getFontSet());
         definition.setBackgroundSet(p.getBackgroundSet());
 
-        return BpmnNode.of(node);
+        return BpmnNode.of(node, p);
     }
 
     private BpmnNode exclusiveGateway(Gateway gateway) {
@@ -97,7 +97,7 @@ public class GatewayConverter {
         definition.setFontSet(p.getFontSet());
         definition.setBackgroundSet(p.getBackgroundSet());
 
-        return BpmnNode.of(node);
+        return BpmnNode.of(node, p);
     }
 
     private BpmnNode parallelGateway(Gateway gateway) {
@@ -116,6 +116,6 @@ public class GatewayConverter {
         definition.setFontSet(p.getFontSet());
         definition.setBackgroundSet(p.getBackgroundSet());
 
-        return BpmnNode.of(node);
+        return BpmnNode.of(node, p);
     }
 }

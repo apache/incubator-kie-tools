@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner;
 
 import java.util.List;
 
+import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.BasePropertyReader;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
@@ -30,8 +31,9 @@ public interface BpmnEdge {
             Edge<? extends View<?>, Node> edge,
             BpmnNode source, Connection sourceConnection,
             List<Point2D> controlPoints,
-            BpmnNode target, Connection targetConnection) {
-        return new BpmnEdge.Simple(edge, source, sourceConnection, controlPoints, target, targetConnection);
+            BpmnNode target, Connection targetConnection,
+            BasePropertyReader propertyReader) {
+        return new BpmnEdge.Simple(edge, source, sourceConnection, controlPoints, target, targetConnection, propertyReader);
     }
 
     static BpmnEdge.Docked docked(BpmnNode source, BpmnNode target) {
@@ -42,6 +44,8 @@ public interface BpmnEdge {
 
     BpmnNode getTarget();
 
+    boolean isDocked();
+
     class Simple implements BpmnEdge {
 
         private final Edge<? extends View<?>, Node> edge;
@@ -50,14 +54,16 @@ public interface BpmnEdge {
         private final List<Point2D> controlPoints;
         private final BpmnNode target;
         private final Connection targetConnection;
+        private final BasePropertyReader propertyReader;
 
-        private Simple(Edge<? extends View<?>, Node> edge, BpmnNode source, Connection sourceConnection, List<Point2D> controlPoints, BpmnNode target, Connection targetConnection) {
+        private Simple(Edge<? extends View<?>, Node> edge, BpmnNode source, Connection sourceConnection, List<Point2D> controlPoints, BpmnNode target, Connection targetConnection, BasePropertyReader propertyReader) {
             this.edge = edge;
             this.source = source;
             this.sourceConnection = sourceConnection;
             this.controlPoints = controlPoints;
             this.target = target;
             this.targetConnection = targetConnection;
+            this.propertyReader = propertyReader;
         }
 
         public Edge<? extends View<?>, Node> getEdge() {
@@ -83,6 +89,15 @@ public interface BpmnEdge {
         public Connection getTargetConnection() {
             return targetConnection;
         }
+
+        @Override
+        public boolean isDocked() {
+            return false;
+        }
+
+        public BasePropertyReader getPropertyReader() {
+            return propertyReader;
+        }
     }
 
     class Docked implements BpmnEdge {
@@ -104,5 +119,11 @@ public interface BpmnEdge {
         public BpmnNode getTarget() {
             return target;
         }
+
+        @Override
+        public boolean isDocked() {
+            return true;
+        }
+
     }
 }

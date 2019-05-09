@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.BasePropertyReader;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNViewDefinition;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
@@ -43,16 +44,18 @@ public abstract class BpmnNode {
     private final List<BpmnNode> children = new ArrayList<>();
     private List<BpmnEdge> edges = new ArrayList<>();
     private BpmnNode parent;
+    private BasePropertyReader propertyReader;
 
-    protected BpmnNode(Node<? extends View<? extends BPMNViewDefinition>, ?> value) {
+    protected BpmnNode(Node<? extends View<? extends BPMNViewDefinition>, ?> value, BasePropertyReader propertyReader) {
         this.value = value;
+        this.propertyReader = propertyReader;
     }
 
     public abstract boolean isDocked();
 
     public static class Simple extends BpmnNode {
-        public Simple(Node<? extends View<? extends BPMNViewDefinition>, ?> value) {
-            super(value);
+        public Simple(Node<? extends View<? extends BPMNViewDefinition>, ?> value, BasePropertyReader propertyReader) {
+            super(value, propertyReader);
         }
 
         @Override
@@ -62,8 +65,8 @@ public abstract class BpmnNode {
     }
 
     public static class Docked extends BpmnNode {
-        public Docked(Node<? extends View<? extends BPMNViewDefinition>, ?> value) {
-            super(value);
+        public Docked(Node<? extends View<? extends BPMNViewDefinition>, ?> value, BasePropertyReader propertyReader) {
+            super(value, propertyReader);
         }
 
         @Override
@@ -72,12 +75,12 @@ public abstract class BpmnNode {
         }
     }
 
-    public static BpmnNode of(Node<? extends View<? extends BPMNViewDefinition>, ?> value) {
-        return new BpmnNode.Simple(value);
+    public static BpmnNode of(Node<? extends View<? extends BPMNViewDefinition>, ?> value, BasePropertyReader propertyReader) {
+        return new BpmnNode.Simple(value, propertyReader);
     }
 
     public BpmnNode docked() {
-        return new BpmnNode.Docked(this.value);
+        return new BpmnNode.Docked(this.value, this.propertyReader);
     }
 
     public BpmnNode getParent() {
@@ -105,8 +108,16 @@ public abstract class BpmnNode {
         return children;
     }
 
+    public boolean hasChildren() {
+        return !children.isEmpty();
+    }
+
     public Node<? extends View<? extends BPMNViewDefinition>, ?> value() {
         return value;
+    }
+
+    public BasePropertyReader getPropertyReader() {
+        return propertyReader;
     }
 
     public void addAllEdges(Collection<BpmnEdge> bpmnEdges) {

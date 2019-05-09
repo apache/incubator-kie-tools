@@ -101,4 +101,8 @@ public abstract class BaseConverterFactory {
     }
 
     public abstract BaseTaskConverter taskConverter();
+
+    public ProcessPostConverter newProcessPostConverter() {
+        return new ProcessPostConverter();
+    }
 }

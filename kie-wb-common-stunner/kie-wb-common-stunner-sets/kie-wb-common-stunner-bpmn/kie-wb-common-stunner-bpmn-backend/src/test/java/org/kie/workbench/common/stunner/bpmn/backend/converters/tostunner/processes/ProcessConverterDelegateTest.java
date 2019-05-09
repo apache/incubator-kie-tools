@@ -43,6 +43,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.BaseCo
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.BpmnNode;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.ConverterFactory;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.BasePropertyReader;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.PropertyReaderFactory;
 import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.MockApplicationFactoryManager;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
@@ -89,6 +90,9 @@ public class ProcessConverterDelegateTest {
     private BaseConverterFactory factory;
 
     @Mock
+    private BasePropertyReader basePropertyReader;
+
+    @Mock
     private org.eclipse.bpmn2.Process process;
 
     @Mock
@@ -109,7 +113,7 @@ public class ProcessConverterDelegateTest {
 
     @Before
     public void setUp() {
-        parentNode = new BpmnNode.Simple(new NodeImpl<>("ParentNode"));
+        parentNode = new BpmnNode.Simple(new NodeImpl<>("ParentNode"), basePropertyReader);
         when(diagram.getPlane()).thenReturn(plane);
         List<RootElement> rootElements = Collections.singletonList(process);
         List<BPMNDiagram> diagrams = Collections.singletonList(diagram);

@@ -126,7 +126,7 @@ public abstract class BaseDirectDiagramMarshaller implements DiagramMarshaller<G
     public Definitions marshallToBpmn2Definitions(final Diagram<Graph, Metadata> diagram) throws IOException {
         String marshalled = marshall(diagram);
         try (InputStream inputStream = new BufferedInputStream(new ByteArrayInputStream(marshalled.getBytes(StandardCharsets.UTF_8)))) {
-            return parseDefinitions(inputStream);
+            return parseDefinitions(inputStream).getDefinitions();
         }
     }
 
@@ -148,8 +148,10 @@ public abstract class BaseDirectDiagramMarshaller implements DiagramMarshaller<G
         DefinitionResolver definitionResolver;
         try {
             // definition resolver provides utlities to access elements of the BPMN datamodel
-            definitionResolver = new DefinitionResolver(parseDefinitions(inputStream),
-                                                        workItemDefinitionService.execute(metadata));
+            final DefinitionsHandler definitionsHandler = parseDefinitions(inputStream);
+            definitionResolver = new DefinitionResolver(definitionsHandler.getDefinitions(),
+                                                        workItemDefinitionService.execute(metadata),
+                                                        definitionsHandler.isJbpm());
         } finally {
             inputStream.close();
         }
@@ -206,7 +208,7 @@ public abstract class BaseDirectDiagramMarshaller implements DiagramMarshaller<G
         return diagramMetadataMarshaller;
     }
 
-    private static Definitions parseDefinitions(final InputStream inputStream) throws IOException {
+    private static DefinitionsHandler parseDefinitions(final InputStream inputStream) throws IOException {
         DroolsPackageImpl.init();
         BpsimPackageImpl.init();
 
@@ -240,7 +242,7 @@ public abstract class BaseDirectDiagramMarshaller implements DiagramMarshaller<G
 
         final DocumentRoot root = (DocumentRoot) resource.getContents().get(0);
 
-        return root.getDefinitions();
+        return new DefinitionsHandler(root);
     }
 
     protected abstract org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.BaseConverterFactory createFromStunnerConverterFactory(
@@ -254,4 +256,36 @@ public abstract class BaseDirectDiagramMarshaller implements DiagramMarshaller<G
     protected abstract PropertyWriterFactory createPropertyWriterFactory();
 
     protected abstract Class<?> getDefinitionSetClass();
+
+    static class DefinitionsHandler {
+
+        private static final String JBPM_PREFIX = "jBPM";
+        private static final String DROOLS_NAMESPACE = "http://www.jboss.org/drools";
+
+        private final Definitions definitions;
+        private final boolean jbpm;
+
+        DefinitionsHandler(DocumentRoot root) {
+            this.definitions = root.getDefinitions();
+            this.jbpm = isJbpmnDocument(root, definitions);
+        }
+
+        public Definitions getDefinitions() {
+            return definitions;
+        }
+
+        public boolean isJbpm() {
+            return jbpm;
+        }
+
+        private static boolean isJbpmnDocument(DocumentRoot root, Definitions definitions) {
+            String exporter = definitions.getExporter();
+            if (exporter != null) {
+                //99% of cases
+                return exporter.toLowerCase().startsWith(JBPM_PREFIX.toLowerCase());
+            }
+            //1% of cases, legacy jBPM processes might not have exporter value properly set.
+            return root.getXMLNSPrefixMap().values().contains(DROOLS_NAMESPACE) || root.getXSISchemaLocation().keySet().contains(DROOLS_NAMESPACE);
+        }
+    }
 }

@@ -35,12 +35,11 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.event.message.C
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.signal.CancellingSignalEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.timer.CancellingTimerEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
-import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.content.relationship.Dock;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpmn2;
+import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.util.PropertyWriterUtils.getDockSourceNode;
 
 public class IntermediateCatchEventConverter {
 
@@ -80,7 +79,7 @@ public class IntermediateCatchEventConverter {
         p.setCancelActivity(executionSet.getCancelActivity().getValue());
         p.addError(executionSet.getErrorRef());
 
-        p.setBounds(n.getContent().getBounds());
+        p.setAbsoluteBounds(n);
         return p;
     }
 
@@ -101,7 +100,7 @@ public class IntermediateCatchEventConverter {
         p.setCancelActivity(executionSet.getCancelActivity().getValue());
         p.addSignal(definition.getExecutionSet().getSignalRef());
 
-        p.setBounds(n.getContent().getBounds());
+        p.setAbsoluteBounds(n);
         return p;
     }
 
@@ -119,7 +118,7 @@ public class IntermediateCatchEventConverter {
         p.setCancelActivity(executionSet.getCancelActivity().getValue());
         p.addTimer(executionSet.getTimerSettings());
 
-        p.setBounds(n.getContent().getBounds());
+        p.setAbsoluteBounds(n);
         return p;
     }
 
@@ -140,7 +139,7 @@ public class IntermediateCatchEventConverter {
         p.setCancelActivity(executionSet.getCancelActivity().getValue());
         p.addMessage(executionSet.getMessageRef());
 
-        p.setBounds(n.getContent().getBounds());
+        p.setAbsoluteBounds(n);
         return p;
     }
 
@@ -158,7 +157,7 @@ public class IntermediateCatchEventConverter {
         p.setCancelActivity(executionSet.getCancelActivity().getValue());
         p.addCondition(executionSet.getConditionExpression());
 
-        p.setBounds(n.getContent().getBounds());
+        p.setAbsoluteBounds(n);
         return p;
     }
 
@@ -179,7 +178,7 @@ public class IntermediateCatchEventConverter {
         p.setCancelActivity(executionSet.getCancelActivity().getValue());
         p.addEscalation(executionSet.getEscalationRef());
 
-        p.setBounds(n.getContent().getBounds());
+        p.setAbsoluteBounds(n);
         return p;
     }
 
@@ -195,32 +194,13 @@ public class IntermediateCatchEventConverter {
 
         p.addCompensation();
 
-        p.setBounds(n.getContent().getBounds());
+        p.setAbsoluteBounds(n);
         return p;
     }
 
-    private CatchEventPropertyWriter createCatchEventPropertyWriter(Node n) {
-        return isDocked(n) ?
+    private CatchEventPropertyWriter createCatchEventPropertyWriter(Node<? extends View, ?> n) {
+        return getDockSourceNode(n).isPresent() ?
                 propertyWriterFactory.of(bpmn2.createBoundaryEvent()) :
                 propertyWriterFactory.of(bpmn2.createIntermediateCatchEvent());
-    }
-
-    private boolean isDocked(Node node) {
-        return null != getDockSourceNode(node);
-    }
-
-    @SuppressWarnings("unchecked")
-    private Node<View, Edge> getDockSourceNode(final Node<View, Edge> node) {
-        return (Node<View, Edge>) node
-                .getInEdges()
-                .stream()
-                .filter(this::isDockEdge)
-                .map(Edge::getSourceNode)
-                .findFirst()
-                .orElse(null);
-    }
-
-    private boolean isDockEdge(final Edge edge) {
-        return edge.getContent() instanceof Dock;
     }
 }

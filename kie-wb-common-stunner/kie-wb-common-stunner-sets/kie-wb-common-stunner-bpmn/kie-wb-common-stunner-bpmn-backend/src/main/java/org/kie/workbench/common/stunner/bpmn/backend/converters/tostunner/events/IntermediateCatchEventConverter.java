@@ -142,7 +142,7 @@ public class IntermediateCatchEventConverter {
         definition.setFontSet(p.getFontSet());
         definition.setBackgroundSet(p.getBackgroundSet());
 
-        return BpmnNode.of(node);
+        return BpmnNode.of(node, p);
     }
 
     private BpmnNode signalEvent(CatchEvent event, SignalEventDefinition e) {
@@ -172,7 +172,7 @@ public class IntermediateCatchEventConverter {
         definition.setFontSet(p.getFontSet());
         definition.setBackgroundSet(p.getBackgroundSet());
 
-        return BpmnNode.of(node);
+        return BpmnNode.of(node, p);
     }
 
     private BpmnNode timerEvent(CatchEvent event, TimerEventDefinition e) {
@@ -198,7 +198,7 @@ public class IntermediateCatchEventConverter {
         definition.setFontSet(p.getFontSet());
         definition.setBackgroundSet(p.getBackgroundSet());
 
-        return BpmnNode.of(node);
+        return BpmnNode.of(node, p);
     }
 
     private BpmnNode messageEvent(CatchEvent event, MessageEventDefinition e) {
@@ -228,7 +228,7 @@ public class IntermediateCatchEventConverter {
         definition.setFontSet(p.getFontSet());
         definition.setBackgroundSet(p.getBackgroundSet());
 
-        return BpmnNode.of(node);
+        return BpmnNode.of(node, p);
     }
 
     private BpmnNode conditionalEvent(CatchEvent event, ConditionalEventDefinition e) {
@@ -254,7 +254,7 @@ public class IntermediateCatchEventConverter {
         definition.setFontSet(p.getFontSet());
         definition.setBackgroundSet(p.getBackgroundSet());
 
-        return BpmnNode.of(node);
+        return BpmnNode.of(node, p);
     }
 
     private BpmnNode escalationEvent(CatchEvent event,
@@ -285,7 +285,7 @@ public class IntermediateCatchEventConverter {
         definition.setFontSet(p.getFontSet());
         definition.setBackgroundSet(p.getBackgroundSet());
 
-        return BpmnNode.of(node);
+        return BpmnNode.of(node, p);
     }
 
     private BpmnNode compensationEvent(CatchEvent event,
@@ -308,7 +308,7 @@ public class IntermediateCatchEventConverter {
         definition.setFontSet(p.getFontSet());
         definition.setBackgroundSet(p.getBackgroundSet());
 
-        return BpmnNode.of(node);
+        return BpmnNode.of(node, p);
     }
 
 }

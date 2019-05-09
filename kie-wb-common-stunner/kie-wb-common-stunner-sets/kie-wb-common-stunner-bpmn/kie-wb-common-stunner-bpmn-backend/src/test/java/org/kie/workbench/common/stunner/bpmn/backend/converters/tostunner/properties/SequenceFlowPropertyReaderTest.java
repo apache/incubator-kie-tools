@@ -20,20 +20,25 @@ import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.bpmn2.FlowNode;
+import org.eclipse.bpmn2.FormalExpression;
 import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.dd.dc.Bounds;
 import org.eclipse.dd.dc.Point;
 import org.junit.Test;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.TestDefinitionsWriter;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeValue;
 import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 
 import static java.util.Arrays.asList;
-import static junit.framework.TestCase.assertEquals;
+import static org.junit.Assert.assertEquals;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.dc;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class SequenceFlowPropertyReaderTest {
 
+    private static final String SCRIPT = "SCRIPT";
     private final String SEQ_ID = "SEQ_ID", SOURCE_ID = "SOURCE_ID", TARGET_ID = "TARGET_ID";
 
     @Test
@@ -53,12 +58,12 @@ public class SequenceFlowPropertyReaderTest {
 
         // this is inferred from behavior of the old marshallers
         Connection sourceConnection = p.getSourceConnection();
-        assertEquals(sourceBounds.getWidth(), (float) sourceConnection.getLocation().getX());
-        assertEquals(sourceBounds.getHeight() / 2f, (float) sourceConnection.getLocation().getY());
+        assertEquals(sourceBounds.getWidth(), (float) sourceConnection.getLocation().getX(), 0);
+        assertEquals(sourceBounds.getHeight() / 2f, (float) sourceConnection.getLocation().getY(), 0);
 
         Connection targetConnection = p.getTargetConnection();
-        assertEquals(0.0f, (float) targetConnection.getLocation().getX());
-        assertEquals(targetBounds.getHeight() / 2.0f, (float) targetConnection.getLocation().getY());
+        assertEquals(0.0f, (float) targetConnection.getLocation().getX(), 0);
+        assertEquals(targetBounds.getHeight() / 2.0f, (float) targetConnection.getLocation().getY(), 0);
     }
 
     @Test
@@ -79,12 +84,12 @@ public class SequenceFlowPropertyReaderTest {
         SequenceFlowPropertyReader p = factory.of(el);
 
         Connection sourceConnection = p.getSourceConnection();
-        assertEquals(sourcePoint.getX() - sourceBounds.getX(), (float) sourceConnection.getLocation().getX());
-        assertEquals(sourcePoint.getY() - sourceBounds.getY(), (float) sourceConnection.getLocation().getY());
+        assertEquals(sourcePoint.getX() - sourceBounds.getX(), (float) sourceConnection.getLocation().getX(), 0);
+        assertEquals(sourcePoint.getY() - sourceBounds.getY(), (float) sourceConnection.getLocation().getY(), 0);
 
         Connection targetConnection = p.getTargetConnection();
-        assertEquals(targetPoint.getX() - targetBounds.getX(), (float) targetConnection.getLocation().getX());
-        assertEquals(targetPoint.getY() - targetBounds.getY(), (float) targetConnection.getLocation().getY());
+        assertEquals(targetPoint.getX() - targetBounds.getX(), (float) targetConnection.getLocation().getX(), 0);
+        assertEquals(targetPoint.getY() - targetBounds.getY(), (float) targetConnection.getLocation().getY(), 0);
     }
 
     @Test
@@ -157,5 +162,29 @@ public class SequenceFlowPropertyReaderTest {
         bounds.setWidth(width);
         bounds.setHeight(height);
         return bounds;
+    }
+
+    @Test
+    public void testGetConditionExpressionWithFormalExpression() {
+        for (Scripts.LANGUAGE language : Scripts.LANGUAGE.values()) {
+            FormalExpression formalExpression = mock(FormalExpression.class);
+            when(formalExpression.getLanguage()).thenReturn(language.format());
+            when(formalExpression.getBody()).thenReturn(SCRIPT);
+            testGetConditionExpression(new ScriptTypeValue(language.language(), SCRIPT), formalExpression);
+        }
+    }
+
+    @Test
+    public void testGetConditionExpressionWithoutFormalExpression() {
+        testGetConditionExpression(new ScriptTypeValue(Scripts.LANGUAGE.JAVA.language(), ""), null);
+    }
+
+    private void testGetConditionExpression(ScriptTypeValue expectedValue, FormalExpression formalExpression) {
+        TestDefinitionsWriter d = new TestDefinitionsWriter();
+        PropertyReaderFactory factory = new PropertyReaderFactory(d.getDefinitionResolver());
+        SequenceFlow sequenceFlow = mock(SequenceFlow.class);
+        SequenceFlowPropertyReader propertyReader = factory.of(sequenceFlow);
+        when(sequenceFlow.getConditionExpression()).thenReturn(formalExpression);
+        assertEquals(expectedValue, propertyReader.getConditionExpression());
     }
 }

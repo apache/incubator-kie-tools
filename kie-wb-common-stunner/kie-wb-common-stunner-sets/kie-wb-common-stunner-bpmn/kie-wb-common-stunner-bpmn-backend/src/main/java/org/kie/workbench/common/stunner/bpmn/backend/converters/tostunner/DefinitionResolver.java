@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 import bpsim.BPSimDataType;
@@ -69,10 +70,12 @@ public class DefinitionResolver {
     private final Process process;
     private final BPMNDiagram diagram;
     private final double resolutionFactor;
+    private final boolean jbpm;
 
     public DefinitionResolver(
             Definitions definitions,
-            Collection<WorkItemDefinition> workItemDefinitions) {
+            Collection<WorkItemDefinition> workItemDefinitions,
+            boolean jbpm) {
         this.definitions = definitions;
         this.signals = initSignals(definitions);
         this.simulationParameters = initSimulationParameters(definitions);
@@ -80,6 +83,12 @@ public class DefinitionResolver {
         this.process = findProcess();
         this.diagram = findDiagram();
         this.resolutionFactor = calculateResolutionFactor(diagram);
+        this.jbpm = jbpm;
+    }
+
+    public DefinitionResolver(Definitions definitions,
+                              Collection<WorkItemDefinition> workItemDefinitions) {
+        this(definitions, workItemDefinitions, true);
     }
 
     public BPMNDiagram getDiagram() {
@@ -90,8 +99,8 @@ public class DefinitionResolver {
         return resolutionFactor;
     }
 
-    public BPMNPlane getPlane() {
-        return diagram.getPlane();
+    public boolean isJbpm() {
+        return jbpm;
     }
 
     public Definitions getDefinitions() {
@@ -189,7 +198,15 @@ public class DefinitionResolver {
     }
 
     public BPMNShape getShape(String elementId) {
-        return getPlane().getPlaneElement().stream()
+        return definitions.getDiagrams().stream()
+                .map(BPMNDiagram::getPlane)
+                .map(plane -> getShape(plane, elementId))
+                .filter(Objects::nonNull)
+                .findFirst().orElse(null);
+    }
+
+    private static BPMNShape getShape(BPMNPlane plane, String elementId) {
+        return plane.getPlaneElement().stream()
                 .filter(dia -> dia instanceof BPMNShape)
                 .map(shape -> (BPMNShape) shape)
                 .filter(shape -> shape.getBpmnElement().getId().equals(elementId))
@@ -197,11 +214,19 @@ public class DefinitionResolver {
     }
 
     public BPMNEdge getEdge(String elementId) {
-        return getPlane().getPlaneElement().stream()
+        return definitions.getDiagrams().stream()
+                .map(BPMNDiagram::getPlane)
+                .map(plane -> getEdge(plane, elementId))
+                .filter(Objects::nonNull)
+                .findFirst().orElse(null);
+    }
+
+    private static BPMNEdge getEdge(BPMNPlane plane, String elementId) {
+        return plane.getPlaneElement().stream()
                 .filter(dia -> dia instanceof BPMNEdge)
                 .map(edge -> (BPMNEdge) edge)
                 .filter(edge -> edge.getBpmnElement().getId().equals(elementId))
-                .findFirst().get();
+                .findFirst().orElse(null);
     }
 
     static double calculateResolutionFactor(final BPMNDiagram diagram) {

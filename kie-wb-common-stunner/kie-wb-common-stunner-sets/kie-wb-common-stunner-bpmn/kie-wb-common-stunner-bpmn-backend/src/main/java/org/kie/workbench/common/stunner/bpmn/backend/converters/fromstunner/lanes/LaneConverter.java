@@ -49,7 +49,7 @@ public class LaneConverter {
                     p.setName(general.getName().getValue());
                     p.setDocumentation(general.getDocumentation().getValue());
 
-                    p.setBounds(n.getContent().getBounds());
+                    p.setAbsoluteBounds(n);
 
                     return p;
                 })

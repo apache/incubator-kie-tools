@@ -117,7 +117,7 @@ public class EndEventConverter {
         definition.setFontSet(p.getFontSet());
         definition.setBackgroundSet(p.getBackgroundSet());
 
-        return BpmnNode.of(node);
+        return BpmnNode.of(node, p);
     }
 
     private BpmnNode signalEventDefinition(EndEvent event, SignalEventDefinition nodeId) {
@@ -147,7 +147,7 @@ public class EndEventConverter {
         definition.setFontSet(p.getFontSet());
         definition.setBackgroundSet(p.getBackgroundSet());
 
-        return BpmnNode.of(node);
+        return BpmnNode.of(node, p);
     }
 
     private BpmnNode terminateEndEvent(EndEvent event, TerminateEventDefinition e) {
@@ -168,7 +168,7 @@ public class EndEventConverter {
         definition.setFontSet(p.getFontSet());
         definition.setBackgroundSet(p.getBackgroundSet());
 
-        return BpmnNode.of(node);
+        return BpmnNode.of(node, p);
     }
 
     private BpmnNode endNoneEvent(EndEvent event) {
@@ -188,7 +188,7 @@ public class EndEventConverter {
         definition.setFontSet(p.getFontSet());
         definition.setBackgroundSet(p.getBackgroundSet());
 
-        return BpmnNode.of(node);
+        return BpmnNode.of(node, p);
     }
 
     private BpmnNode errorEventDefinition(EndEvent event, ErrorEventDefinition e) {
@@ -217,7 +217,7 @@ public class EndEventConverter {
         definition.setFontSet(p.getFontSet());
         definition.setBackgroundSet(p.getBackgroundSet());
 
-        return BpmnNode.of(node);
+        return BpmnNode.of(node, p);
     }
 
     private BpmnNode escalationEventDefinition(EndEvent event,
@@ -248,7 +248,7 @@ public class EndEventConverter {
         definition.setFontSet(p.getFontSet());
         definition.setBackgroundSet(p.getBackgroundSet());
 
-        return BpmnNode.of(node);
+        return BpmnNode.of(node, p);
     }
 
     private BpmnNode compensationEventDefinition(EndEvent event,
@@ -275,6 +275,6 @@ public class EndEventConverter {
         definition.setFontSet(p.getFontSet());
         definition.setBackgroundSet(p.getBackgroundSet());
 
-        return BpmnNode.of(node);
+        return BpmnNode.of(node, p);
     }
 }

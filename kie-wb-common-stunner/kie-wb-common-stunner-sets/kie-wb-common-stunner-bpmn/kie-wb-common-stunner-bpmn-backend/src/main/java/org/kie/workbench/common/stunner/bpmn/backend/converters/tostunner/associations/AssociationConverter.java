@@ -61,6 +61,7 @@ public class AssociationConverter {
                 p.getSourceConnection(),
                 p.getControlPoints(),
                 nodes.get(p.getTargetId()),
-                p.getTargetConnection());
+                p.getTargetConnection(),
+                p);
     }
 }

@@ -67,7 +67,7 @@ public class IntermediateThrowEventConverter {
         p.addSignal(definition.getExecutionSet().getSignalRef());
         p.addSignalScope(definition.getExecutionSet().getSignalScope());
 
-        p.setBounds(n.getContent().getBounds());
+        p.setAbsoluteBounds(n);
         return p;
     }
 
@@ -89,7 +89,7 @@ public class IntermediateThrowEventConverter {
 
         p.addMessage(executionSet.getMessageRef());
 
-        p.setBounds(n.getContent().getBounds());
+        p.setAbsoluteBounds(n);
         return p;
     }
 
@@ -109,7 +109,7 @@ public class IntermediateThrowEventConverter {
 
         p.addEscalation(definition.getExecutionSet().getEscalationRef());
 
-        p.setBounds(n.getContent().getBounds());
+        p.setAbsoluteBounds(n);
         return p;
     }
 
@@ -126,7 +126,7 @@ public class IntermediateThrowEventConverter {
 
         p.addCompensation();
 
-        p.setBounds(n.getContent().getBounds());
+        p.setAbsoluteBounds(n);
         return p;
     }
 }

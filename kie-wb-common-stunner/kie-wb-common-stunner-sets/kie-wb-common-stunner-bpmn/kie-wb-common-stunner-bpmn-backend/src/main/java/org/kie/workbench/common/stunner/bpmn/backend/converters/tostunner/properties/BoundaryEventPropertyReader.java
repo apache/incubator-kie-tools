@@ -40,8 +40,30 @@ public class BoundaryEventPropertyReader extends CatchEventPropertyReader {
     @Override
     protected Bounds computeBounds(final org.eclipse.dd.dc.Bounds bounds) {
         final Point2D docker = getDockerInfo();
-        final double x = docker.getX() * resolutionFactor;
-        final double y = docker.getY() * resolutionFactor;
+        double x = 0;
+        double y = 0;
+        if (docker.getX() != 0 && docker.getY() != 0) {
+            x = docker.getX() * resolutionFactor;
+            y = docker.getY() * resolutionFactor;
+        } else if (event.getAttachedToRef() != null) {
+            //when the node was generated in other tool than Stunner/jBPM designer the dockerInfo attribute don't exists
+            //and we need to use attachedToRef activity position to calculate the bounded event relative coordinates.
+            String activityId = event.getAttachedToRef().getId();
+            org.eclipse.dd.dc.Bounds activityBounds = definitionResolver.getShape(activityId).getBounds();
+            x = bounds.getX() * resolutionFactor - activityBounds.getX() * resolutionFactor;
+            y = bounds.getY() * resolutionFactor - activityBounds.getY() * resolutionFactor;
+            //if required adjust the event relative position according with the positioning supported by Stunner.
+            if (x < -WIDTH / 2) {
+                x = -WIDTH / 2;
+            } else if (x > (activityBounds.getWidth() * resolutionFactor) - WIDTH / 2) {
+                x = activityBounds.getWidth() * resolutionFactor - WIDTH / 2;
+            }
+            if (y < -HEIGHT / 2) {
+                y = -HEIGHT / 2;
+            } else if (y > (activityBounds.getHeight() * resolutionFactor) - HEIGHT / 2) {
+                y = activityBounds.getHeight() * resolutionFactor - HEIGHT / 2;
+            }
+        }
         return Bounds.create(x, y, x + WIDTH, y + HEIGHT);
     }
 

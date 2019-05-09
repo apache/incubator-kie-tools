@@ -26,8 +26,12 @@ import org.eclipse.bpmn2.RootElement;
 import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Ids;
+import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.Bound;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
+import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
+import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpmn2;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.dc;
@@ -52,7 +56,7 @@ public abstract class BasePropertyWriter {
         return this.baseElement.getId();
     }
 
-    public void setBounds(Bounds rect) {
+    protected void setBounds(Bounds rect) {
         this.shape = di.createBPMNShape();
         shape.setId(Ids.bpmnShape(getId()));
         shape.setBpmnElement(baseElement);
@@ -68,6 +72,10 @@ public abstract class BasePropertyWriter {
         bounds.setHeight(lowerRight.getY().floatValue() - upperLeft.getY().floatValue());
 
         shape.setBounds(bounds);
+    }
+
+    public void setAbsoluteBounds(Node<? extends View, ?> node) {
+        setBounds(absoluteBounds(node));
     }
 
     public BaseElement getElement() {
@@ -110,46 +118,6 @@ public abstract class BasePropertyWriter {
 
     public void setParent(BasePropertyWriter parent) {
         parent.addChild(this);
-        if (this.getShape() == null) {
-            return;
-        }
-        if (parent.getShape() == null) {
-            throw new IllegalArgumentException(
-                    "Cannot set parent with undefined shape: " +
-                            parent.getElement().getId());
-        }
-        org.eclipse.dd.dc.Bounds parentBounds =
-                getParentBounds(parent.getShape().getBounds());
-        getShape().setBounds(parentBounds);
-    }
-
-    protected org.eclipse.dd.dc.Bounds getParentBounds(org.eclipse.dd.dc.Bounds parentRect) {
-        if (getShape() == null) {
-            throw new NullPointerException(
-                    "Shape is null:" + getElement().getId());
-        }
-        if (getShape().getBounds() == null) {
-            throw new IllegalArgumentException(
-                    "Cannot set parent bounds if the child " +
-                            "has undefined bounds. Use setBounds() first." + getElement().getId());
-        }
-
-        org.eclipse.dd.dc.Bounds relativeBounds = getShape().getBounds();
-        float x = relativeBounds.getX();
-        float y = relativeBounds.getY();
-        float width = relativeBounds.getWidth();
-        float height = relativeBounds.getHeight();
-
-        float parentX = parentRect.getX();
-        float parentY = parentRect.getY();
-
-        org.eclipse.dd.dc.Bounds bounds = dc.createBounds();
-        bounds.setX(parentX + x);
-        bounds.setY(parentY + y);
-        bounds.setWidth(width);
-        bounds.setHeight(height);
-
-        return bounds;
     }
 
     protected void addItemDefinition(ItemDefinition itemDefinition) {
@@ -166,5 +134,14 @@ public abstract class BasePropertyWriter {
 
     public List<RootElement> getRootElements() {
         return rootElements;
+    }
+
+    public static org.kie.workbench.common.stunner.core.graph.content.Bounds absoluteBounds(final Node<? extends View, ?> node) {
+        final Point2D point2D = GraphUtils.getComputedPosition(node);
+        final org.kie.workbench.common.stunner.core.graph.content.Bounds bounds = node.getContent().getBounds();
+        return org.kie.workbench.common.stunner.core.graph.content.Bounds.create(point2D.getX(),
+                                                                                 point2D.getY(),
+                                                                                 point2D.getX() + bounds.getWidth(),
+                                                                                 point2D.getY() + bounds.getHeight());
     }
 }

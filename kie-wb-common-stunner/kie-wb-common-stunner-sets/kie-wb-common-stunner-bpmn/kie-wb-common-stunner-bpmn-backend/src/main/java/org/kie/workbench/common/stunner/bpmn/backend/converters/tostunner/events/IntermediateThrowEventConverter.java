@@ -111,7 +111,7 @@ public class IntermediateThrowEventConverter {
         definition.setFontSet(p.getFontSet());
         definition.setBackgroundSet(p.getBackgroundSet());
 
-        return BpmnNode.of(node);
+        return BpmnNode.of(node, p);
     }
 
     private BpmnNode signalEvent(
@@ -144,7 +144,7 @@ public class IntermediateThrowEventConverter {
         definition.setFontSet(p.getFontSet());
         definition.setBackgroundSet(p.getBackgroundSet());
 
-        return BpmnNode.of(node);
+        return BpmnNode.of(node, p);
     }
 
     private BpmnNode escalationEvent(
@@ -177,7 +177,7 @@ public class IntermediateThrowEventConverter {
         definition.setFontSet(p.getFontSet());
         definition.setBackgroundSet(p.getBackgroundSet());
 
-        return BpmnNode.of(node);
+        return BpmnNode.of(node, p);
     }
 
     private BpmnNode compensationEvent(IntermediateThrowEvent event,
@@ -205,6 +205,6 @@ public class IntermediateThrowEventConverter {
         definition.setFontSet(p.getFontSet());
         definition.setBackgroundSet(p.getBackgroundSet());
 
-        return BpmnNode.of(node);
+        return BpmnNode.of(node, p);
     }
 }

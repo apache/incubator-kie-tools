@@ -66,6 +66,7 @@ public class SequenceFlowConverter {
                 p.getSourceConnection(),
                 p.getControlPoints(),
                 nodes.get(p.getTargetId()),
-                p.getTargetConnection());
+                p.getTargetConnection(),
+                p);
     }
 }

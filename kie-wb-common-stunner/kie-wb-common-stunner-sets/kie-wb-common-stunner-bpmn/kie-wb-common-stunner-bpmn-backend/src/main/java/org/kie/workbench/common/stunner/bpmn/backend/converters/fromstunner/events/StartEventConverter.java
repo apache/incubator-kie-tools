@@ -83,7 +83,7 @@ public class StartEventConverter {
         p.addMessage(executionSet.getMessageRef());
         event.setIsInterrupting(executionSet.getIsInterrupting().getValue());
 
-        p.setBounds(n.getContent().getBounds());
+        p.setAbsoluteBounds(n);
         return p;
     }
 
@@ -107,7 +107,7 @@ public class StartEventConverter {
         p.addError(executionSet.getErrorRef());
         event.setIsInterrupting(executionSet.getIsInterrupting().getValue());
 
-        p.setBounds(n.getContent().getBounds());
+        p.setAbsoluteBounds(n);
         return p;
     }
 
@@ -128,7 +128,7 @@ public class StartEventConverter {
 
         p.setSimulationSet(definition.getSimulationSet());
 
-        p.setBounds(n.getContent().getBounds());
+        p.setAbsoluteBounds(n);
         return p;
     }
 
@@ -152,7 +152,7 @@ public class StartEventConverter {
         p.addSignal(executionSet.getSignalRef());
         event.setIsInterrupting(executionSet.getIsInterrupting().getValue());
 
-        p.setBounds(n.getContent().getBounds());
+        p.setAbsoluteBounds(n);
         return p;
     }
 
@@ -171,7 +171,7 @@ public class StartEventConverter {
 
         p.setSimulationSet(definition.getSimulationSet());
 
-        p.setBounds(n.getContent().getBounds());
+        p.setAbsoluteBounds(n);
         return p;
     }
 
@@ -186,7 +186,7 @@ public class StartEventConverter {
         p.setName(general.getName().getValue());
         p.setDocumentation(general.getDocumentation().getValue());
         p.setSimulationSet(definition.getSimulationSet());
-        p.setBounds(n.getContent().getBounds());
+        p.setAbsoluteBounds(n);
 
         InterruptingConditionalEventExecutionSet executionSet = definition.getExecutionSet();
         event.setIsInterrupting(executionSet.getIsInterrupting().getValue());
@@ -206,7 +206,7 @@ public class StartEventConverter {
         p.setName(general.getName().getValue());
         p.setDocumentation(general.getDocumentation().getValue());
         p.setSimulationSet(definition.getSimulationSet());
-        p.setBounds(n.getContent().getBounds());
+        p.setAbsoluteBounds(n);
 
         InterruptingEscalationEventExecutionSet executionSet = definition.getExecutionSet();
         event.setIsInterrupting(executionSet.getIsInterrupting().getValue());
@@ -231,7 +231,7 @@ public class StartEventConverter {
         p.setName(general.getName().getValue());
         p.setDocumentation(general.getDocumentation().getValue());
         p.setSimulationSet(definition.getSimulationSet());
-        p.setBounds(n.getContent().getBounds());
+        p.setAbsoluteBounds(n);
         return p;
     }
 

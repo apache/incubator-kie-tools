@@ -105,7 +105,7 @@ public class SubProcessConverter extends ProcessConverterDelegate {
 
         p.setSimulationSet(definition.getSimulationSet());
 
-        p.setBounds(n.getContent().getBounds());
+        p.setAbsoluteBounds(n);
 
         return p;
     }
@@ -133,7 +133,7 @@ public class SubProcessConverter extends ProcessConverterDelegate {
 
         p.setSimulationSet(definition.getSimulationSet());
 
-        p.setBounds(n.getContent().getBounds());
+        p.setAbsoluteBounds(n);
 
         return p;
     }
@@ -159,7 +159,7 @@ public class SubProcessConverter extends ProcessConverterDelegate {
 
         p.setSimulationSet(definition.getSimulationSet());
 
-        p.setBounds(n.getContent().getBounds());
+        p.setAbsoluteBounds(n);
 
         return p;
     }
@@ -186,7 +186,7 @@ public class SubProcessConverter extends ProcessConverterDelegate {
         p.setProcessVariables(processData.getProcessVariables());
 
         p.setSimulationSet(definition.getSimulationSet());
-        p.setBounds(n.getContent().getBounds());
+        p.setAbsoluteBounds(n);
         return p;
     }
 }

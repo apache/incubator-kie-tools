@@ -72,7 +72,7 @@ public class ReusableSubprocessConverter {
 
         p.setSimulationSet(definition.getSimulationSet());
 
-        p.setBounds(n.getContent().getBounds());
+        p.setAbsoluteBounds(n);
 
         return p;
     }

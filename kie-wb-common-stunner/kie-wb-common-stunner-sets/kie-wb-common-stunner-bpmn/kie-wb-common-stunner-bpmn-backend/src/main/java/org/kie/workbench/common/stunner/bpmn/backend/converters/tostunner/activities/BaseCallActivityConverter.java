@@ -67,7 +67,7 @@ public abstract class BaseCallActivityConverter<R extends BaseReusableSubprocess
         definition.setFontSet(p.getFontSet());
         definition.setBackgroundSet(p.getBackgroundSet());
 
-        return BpmnNode.of(node);
+        return BpmnNode.of(node, p);
     }
 
     protected abstract Node<View<R>, Edge> createNode(CallActivity activity, CallActivityPropertyReader p);

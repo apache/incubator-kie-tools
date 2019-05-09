@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.eclipse.bpmn2.Activity;
@@ -50,6 +51,7 @@ import org.kie.workbench.common.stunner.backend.definition.factory.TestScopeMode
 import org.kie.workbench.common.stunner.bpmn.BPMNDefinitionSet;
 import org.kie.workbench.common.stunner.bpmn.backend.BPMNDirectDiagramMarshaller;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.DefinitionsConverter;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.BasePropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.backend.workitem.service.WorkItemDefinitionBackendService;
 import org.kie.workbench.common.stunner.bpmn.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.Association;
@@ -140,6 +142,7 @@ import org.kie.workbench.common.stunner.core.graph.content.definition.Definition
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Dock;
 import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
 import org.kie.workbench.common.stunner.core.graph.content.view.DiscreteConnection;
+import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnectorImpl;
@@ -228,10 +231,14 @@ public class BPMNDirectDiagramMarshallerTest {
     private static final String BPMN_ENDERROR_EVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/endErrorEvent.bpmn";
     private static final String BPMN_EVENT_DEFINITION_REF = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/eventDefinitionRef.bpmn";
     private static final String BPMN_SERVICE_TASKS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/serviceTasks.bpmn";
+    private static final String BPMN_NESTED_SUBPROCESSES = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/nestedSubprocesses.bpmn";
 
     private static final String BPMN_ARIS_LANES_1 = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/aris/ARIS_LANES_1.bpmn";
     private static final String BPMN_ARIS_LANES_2 = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/aris/ARIS_LANES_2.bpmn";
     private static final String BPMN_ARIS_LANES_3 = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/aris/ARIS_LANES_3.bpmn";
+    private static final String ARIS_MULTIPLE_COLLAPSED_SUBPROCESSES = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/aris/ARIS_MULTIPLE_COLLAPSED_SUBPROCESSES.bpmn";
+    private static final String ARIS_NESTED_COLLAPSED_SUBPROCESSES = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/aris/ARIS_NESTED_COLLAPSED_SUBPROCESES.bpmn";
+    private static final String ARIS_COLLAPSED_SUBPROCESS_IN_LANE = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/aris/ARIS_COLLAPSED_SUBPROCESS_IN_LANE.bpmn";
 
     private static final String NEW_LINE = System.lineSeparator();
 
@@ -2117,7 +2124,7 @@ public class BPMNDirectDiagramMarshallerTest {
                       5,
                       3);
         // Assert that the boundary event location and size are the expected ones.
-        assertTrue(result.contains("Bounds height=\"56.0\" width=\"56.0\" x=\"299.0\" y=\"182.0\""));
+        assertTrue(result.contains("Bounds height=\"56.0\" width=\"56.0\" x=\"327.0\" y=\"210.0\""));
     }
 
     @Test
@@ -3407,6 +3414,93 @@ public class BPMNDirectDiagramMarshallerTest {
 
     @Test
     @SuppressWarnings("unchecked")
+    public void testUnmarshallNestedSubprocesses() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_NESTED_SUBPROCESSES);
+        assertDiagram(diagram, 8);
+
+        Bounds event1ExpectedBounds = Bounds.create(84.0, 275.0, 140.0, 331.0);
+        Node<View<? extends Definition>, ?> event1 = diagram.getGraph().getNode("_46579C86-4ED2-4DDC-BBD0-51AC99034F0A");
+        assertEquals(event1ExpectedBounds, event1.getContent().getBounds());
+
+        Bounds subProcess1ExpectedBounds = Bounds.create(278.0, 68.0, 1443.0, 537.0);
+        Bounds subProcess2ExpectedBounds = Bounds.create(196.0, 63.0, 1095.0, 428.0);
+        Bounds task1ExpectedBounds = Bounds.create(25.0, 143.0, 179.0, 245.0);
+        Node<View<? extends Definition>, ?> subProcess1 = diagram.getGraph().getNode("_3EF003AC-1AB2-416A-83EA-926A3978D6C0");
+        Node<View<? extends Definition>, ?> task1 = diagram.getGraph().getNode("_529CFC51-DEAE-4E40-8404-BEAABC043171");
+        Node<View<? extends Definition>, ?> subProcess2 = diagram.getGraph().getNode("_793D68BA-AC40-4B16-A036-36353F686977");
+        List subProcess1Children = GraphUtils.getChildNodes(subProcess1);
+        assertEquals(2, subProcess1Children.size());
+        assertTrue(subProcess1Children.contains(task1));
+        assertTrue(subProcess1Children.contains(subProcess2));
+        assertEquals(subProcess1ExpectedBounds, subProcess1.getContent().getBounds());
+        assertEquals(subProcess2ExpectedBounds, subProcess2.getContent().getBounds());
+        assertEquals(task1ExpectedBounds, task1.getContent().getBounds());
+
+        Bounds subProcess3ExpectedBounds = Bounds.create(193.0, 46.0, 846.0, 299.0);
+        Bounds task2ExpectedBounds = Bounds.create(20.0, 80.0, 174.0, 182.0);
+        Node<View<? extends Definition>, ?> subProcess3 = diagram.getGraph().getNode("_AE368C8F-8BE4-40A5-BC48-5CE5ACF05605");
+        Node<View<? extends Definition>, ?> task2 = diagram.getGraph().getNode("_2265BA12-91FA-4064-8A7E-C963E15517EB");
+        List subProcess2Children = GraphUtils.getChildNodes(subProcess2);
+        assertEquals(2, subProcess2Children.size());
+        assertTrue(subProcess2Children.contains(task2));
+        assertTrue(subProcess2Children.contains(subProcess3));
+        assertEquals(subProcess3ExpectedBounds, subProcess3.getContent().getBounds());
+        assertEquals(task2ExpectedBounds, task2.getContent().getBounds());
+
+        Bounds task3ExpectedBounds = Bounds.create(24.0, 34.0, 178.0, 136.0);
+        Node<View<? extends Definition>, ?> task3 = diagram.getGraph().getNode("_B7873741-0FFA-4E46-B2E7-3B81D25842B3");
+        List subProcess3Children = GraphUtils.getChildNodes(subProcess3);
+        assertEquals(1, subProcess3Children.size());
+        assertTrue(subProcess3Children.contains(task3));
+        assertEquals(task3ExpectedBounds, task3.getContent().getBounds());
+    }
+
+    @Test
+    public void testMarshallNestedSubprocesses() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_NESTED_SUBPROCESSES);
+        String result = tested.marshall(diagram);
+        assertDiagram(result,
+                      1,
+                      7,
+                      1);
+        //event1
+        assertCoordinatesProperlyCalculatedAndMarshalled(diagram, result, "_46579C86-4ED2-4DDC-BBD0-51AC99034F0A", null);
+        //subProcess1
+        assertCoordinatesProperlyCalculatedAndMarshalled(diagram, result, "_3EF003AC-1AB2-416A-83EA-926A3978D6C0", true);
+        //task1
+        assertCoordinatesProperlyCalculatedAndMarshalled(diagram, result, "_529CFC51-DEAE-4E40-8404-BEAABC043171", null);
+        //subProcess2
+        assertCoordinatesProperlyCalculatedAndMarshalled(diagram, result, "_793D68BA-AC40-4B16-A036-36353F686977", true);
+        //subProcess3
+        assertCoordinatesProperlyCalculatedAndMarshalled(diagram, result, "_AE368C8F-8BE4-40A5-BC48-5CE5ACF05605", true);
+        //task2
+        assertCoordinatesProperlyCalculatedAndMarshalled(diagram, result, "_2265BA12-91FA-4064-8A7E-C963E15517EB", null);
+        //task3
+        assertCoordinatesProperlyCalculatedAndMarshalled(diagram, result, "_B7873741-0FFA-4E46-B2E7-3B81D25842B3", null);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static void assertCoordinatesProperlyCalculatedAndMarshalled(Diagram<Graph, Metadata> diagram, String marshalledDiagram, String elementId, Boolean isExpandedAttribute) {
+        Node<View<? extends Definition>, ?> node = diagram.getGraph().getNode(elementId);
+        Bounds nodeAbsoluteBounds = BasePropertyWriter.absoluteBounds(node);
+        float expectedX = Double.valueOf(nodeAbsoluteBounds.getX()).floatValue();
+        float expectedY = Double.valueOf(nodeAbsoluteBounds.getY()).floatValue();
+        float expectedWidth = nodeAbsoluteBounds.getLowerRight().getX().floatValue() - nodeAbsoluteBounds.getUpperLeft().getX().floatValue();
+        float expectedHeight = nodeAbsoluteBounds.getLowerRight().getY().floatValue() - nodeAbsoluteBounds.getUpperLeft().getY().floatValue();
+        assertContainsShape(marshalledDiagram, elementId, expectedX, expectedY, expectedWidth, expectedHeight, isExpandedAttribute);
+    }
+
+    private static void assertContainsShape(String bpmnContent, String elementId, float expectedX, float expectedY, float expectedWidth, float expectedHeight, Boolean isExpandedAttribute) {
+        if (isExpandedAttribute != null) {
+            assertTrue(bpmnContent.contains(String.format("<bpmndi:BPMNShape id=\"shape_%s\" bpmnElement=\"%s\" isExpanded=\"%s\">", elementId, elementId, isExpandedAttribute.toString())));
+        } else {
+            assertTrue(bpmnContent.contains(String.format("<bpmndi:BPMNShape id=\"shape_%s\" bpmnElement=\"%s\">", elementId, elementId)));
+        }
+        assertTrue(bpmnContent.contains(String.format("<dc:Bounds height=\"%s\" width=\"%s\" x=\"%s\" y=\"%s\"/>", expectedHeight, expectedWidth, expectedX, expectedY)));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
     public void testUnmarshall_ARIS_LANES_1() throws Exception {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_ARIS_LANES_1);
         Node<? extends Definition, ?> bpmnDiagramNode = diagram.getGraph().getNode("Definitions_ID-ef3bd1b1-35d2-11e9-21c1-02b28450efee");
@@ -3462,6 +3556,167 @@ public class BPMNDirectDiagramMarshallerTest {
         assertExpectedLane(diagram, "ID-4345241e-35dd-11e9-21c1-02b28450efee", "LaneA3.1", bpmnDiagramNode, "ID-69882527-35df-11e9-21c1-02b28450efee");
         //LaneA3.2 contains Task6
         assertExpectedLane(diagram, "ID-4345241b-35dd-11e9-21c1-02b28450efee", "LaneA3.2", bpmnDiagramNode, "ID-69882524-35df-11e9-21c1-02b28450efee");
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testUnmarshall_ARIS_MULTIPLE_COLLAPSED_SUBPROCESSES() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(ARIS_MULTIPLE_COLLAPSED_SUBPROCESSES);
+        assertDiagram(diagram, 11);
+        String subProcess1_ID = "ID-4dee0202-4681-11e9-21c1-02b28450efee";
+        Node<View<? extends Definition>, ?> subProcess1 = diagram.getGraph().getNode(subProcess1_ID);
+        //subProcess1 must contain task1.1 and task1.2 both from the logical model and the UI perspective.
+        String task1_1 = "ID-4dee0204-4681-11e9-21c1-02b28450efee";
+        String task1_2 = "ID-4dee0207-4681-11e9-21c1-02b28450efee";
+        assertContains(subProcess1, Arrays.asList(task1_1, task1_2));
+        //subProcess2 must contain task2.1 and task2.2 both from the logical model and the UI perspective.
+        String subProcess2_ID = "ID-4dee020a-4681-11e9-21c1-02b28450efee";
+        Node<View<? extends Definition>, ?> subProcess2 = diagram.getGraph().getNode(subProcess2_ID);
+        String task2_1 = "ID-4dee020c-4681-11e9-21c1-02b28450efee";
+        String task2_2 = "ID-4dee020f-4681-11e9-21c1-02b28450efee";
+        assertContains(subProcess2, Arrays.asList(task2_1, task2_2));
+    }
+
+    @Test
+    public void testMarshall_ARIS_MULTIPLE_COLLAPSED_SUBPROCESSES() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(ARIS_MULTIPLE_COLLAPSED_SUBPROCESSES);
+        String result = tested.marshall(diagram);
+        assertDiagram(result,
+                      1,
+                      10,
+                      7);
+        //subProcess1
+        assertCoordinatesProperlyCalculatedAndMarshalled(diagram, result, "ID-4dee0202-4681-11e9-21c1-02b28450efee", true);
+        //task1.1
+        assertCoordinatesProperlyCalculatedAndMarshalled(diagram, result, "ID-4dee0204-4681-11e9-21c1-02b28450efee", null);
+        //task1.2
+        assertCoordinatesProperlyCalculatedAndMarshalled(diagram, result, "ID-4dee0207-4681-11e9-21c1-02b28450efee", null);
+        //subProcess2
+        assertCoordinatesProperlyCalculatedAndMarshalled(diagram, result, "ID-4dee020a-4681-11e9-21c1-02b28450efee", true);
+        //task2.1
+        assertCoordinatesProperlyCalculatedAndMarshalled(diagram, result, "ID-4dee020c-4681-11e9-21c1-02b28450efee", null);
+        //task2.2
+        assertCoordinatesProperlyCalculatedAndMarshalled(diagram, result, "ID-4dee020f-4681-11e9-21c1-02b28450efee", null);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testUnmarshall_ARIS_NESTED_COLLAPSED_SUBPROCESSES() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(ARIS_NESTED_COLLAPSED_SUBPROCESSES);
+        assertDiagram(diagram, 9);
+        String subProcessA1_ID = "ID-401c4a50-4673-11e9-21c1-02b28450efee";
+        Node<View<? extends Definition>, ?> subProcessA1 = diagram.getGraph().getNode(subProcessA1_ID);
+        //subProcessA1 must contain subProcessA2, taskA1.1, taskA1.2 and taskA1.3 both from the logical model and the UI perspective.
+        String subProcessA2_ID = "ID-401c4a58-4673-11e9-21c1-02b28450efee";
+        String taskA1_1 = "ID-401c4a55-4673-11e9-21c1-02b28450efee";
+        String taskA1_2 = "ID-401c4a5b-4673-11e9-21c1-02b28450efee";
+        String taskA1_3 = "ID-401c4a6b-4673-11e9-21c1-02b28450efee";
+
+        assertContains(subProcessA1, Arrays.asList(subProcessA2_ID, taskA1_1, taskA1_2, taskA1_3));
+        //subProcessA2 must contain taskA2.1 and taskA2.2 both from the logical model and the UI perspective.
+        String taskA2_1 = "ID-401c4a64-4673-11e9-21c1-02b28450efee";
+        String taskA2_2 = "ID-401c4a67-4673-11e9-21c1-02b28450efee";
+        Node<View<? extends Definition>, ?> subProcessA2 = diagram.getGraph().getNode(subProcessA2_ID);
+        assertContains(subProcessA2, Arrays.asList(taskA2_1, taskA2_2));
+    }
+
+    @Test
+    public void testMarshall_ARIS_NESTED_COLLAPSED_SUBPROCESSES() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(ARIS_NESTED_COLLAPSED_SUBPROCESSES);
+        String result = tested.marshall(diagram);
+        assertDiagram(result,
+                      1,
+                      8,
+                      6);
+        //task1
+        assertCoordinatesProperlyCalculatedAndMarshalled(diagram, result, "ID-401c4a52-4673-11e9-21c1-02b28450efee", null);
+        //subProcessA1
+        assertCoordinatesProperlyCalculatedAndMarshalled(diagram, result, "ID-401c4a50-4673-11e9-21c1-02b28450efee", true);
+        //works taskA1.1
+        assertCoordinatesProperlyCalculatedAndMarshalled(diagram, result, "ID-401c4a55-4673-11e9-21c1-02b28450efee", null);
+        //taskA1.2
+        assertCoordinatesProperlyCalculatedAndMarshalled(diagram, result, "ID-401c4a5b-4673-11e9-21c1-02b28450efee", null);
+        //taskA1.3
+        assertCoordinatesProperlyCalculatedAndMarshalled(diagram, result, "ID-401c4a6b-4673-11e9-21c1-02b28450efee", null);
+        //SubprocessA2
+        assertCoordinatesProperlyCalculatedAndMarshalled(diagram, result, "ID-401c4a58-4673-11e9-21c1-02b28450efee", true);
+        //TaskA2.1
+        assertCoordinatesProperlyCalculatedAndMarshalled(diagram, result, "ID-401c4a64-4673-11e9-21c1-02b28450efee", null);
+        //TaskA2.2
+        assertCoordinatesProperlyCalculatedAndMarshalled(diagram, result, "ID-401c4a67-4673-11e9-21c1-02b28450efee", null);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testUnmarshall_ARIS_COLLAPSED_SUBPROCESS_IN_LANE() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(ARIS_COLLAPSED_SUBPROCESS_IN_LANE);
+        assertDiagram(diagram, 7);
+        String lane_ID = "ID-feebbb40-5aab-11e9-21c1-02b28450efee";
+        Node<View<? extends Definition>, ?> lane = diagram.getGraph().getNode(lane_ID);
+        //the lane must contain task1, task2 and subprocess1 from the logical model and the UI perspective.
+        String task1 = "ID-feebbb42-5aab-11e9-21c1-02b28450efee";
+        String task2 = "ID-feebbb49-5aab-11e9-21c1-02b28450efee";
+        String subProcess1_ID = "ID-feebbb45-5aab-11e9-21c1-02b28450efee";
+        assertContains(lane, Arrays.asList(task1, task2, subProcess1_ID));
+
+        //subProcess1 must contain task1.1 and task1.2 both from the logical model and the UI perspective.
+        Node<View<? extends Definition>, ?> subProcess1 = diagram.getGraph().getNode(subProcess1_ID);
+        String task1_1 = "ID-feebbb50-5aab-11e9-21c1-02b28450efee";
+        String task1_2 = "ID-feebbb53-5aab-11e9-21c1-02b28450efee";
+        assertContains(subProcess1, Arrays.asList(task1_1, task1_2));
+    }
+
+    @Test
+    public void testMarshall_ARIS_COLLAPSED_SUBPROCESS_IN_LANE() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(ARIS_COLLAPSED_SUBPROCESS_IN_LANE);
+        String result = tested.marshall(diagram);
+        assertDiagram(result,
+                      1,
+                      6,
+                      3);
+        //lane
+        assertCoordinatesProperlyCalculatedAndMarshalled(diagram, result, "ID-feebbb40-5aab-11e9-21c1-02b28450efee", null);
+        //task1
+        assertCoordinatesProperlyCalculatedAndMarshalled(diagram, result, "ID-feebbb42-5aab-11e9-21c1-02b28450efee", null);
+        //task2
+        assertCoordinatesProperlyCalculatedAndMarshalled(diagram, result, "ID-feebbb49-5aab-11e9-21c1-02b28450efee", null);
+        //subprocess1
+        assertCoordinatesProperlyCalculatedAndMarshalled(diagram, result, "ID-feebbb45-5aab-11e9-21c1-02b28450efee", true);
+        //task1.1
+        assertCoordinatesProperlyCalculatedAndMarshalled(diagram, result, "ID-feebbb50-5aab-11e9-21c1-02b28450efee", null);
+        //task1.2
+        assertCoordinatesProperlyCalculatedAndMarshalled(diagram, result, "ID-feebbb53-5aab-11e9-21c1-02b28450efee", null);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static void assertContains(Node<View<? extends Definition>, ?> container, List<String> containedNodes) {
+        List<Node> children = GraphUtils.getChildNodes(container).stream()
+                .filter(child -> containedNodes.contains(child.getUUID()))
+                .collect(Collectors.toList());
+
+        Bounds containerBounds = container.getContent().getBounds();
+        Point2D containerAbsolutePosition = GraphUtils.getComputedPosition(container);
+        Bounds containerAbsoluteBounds = Bounds.create(containerAbsolutePosition.getX(),
+                                                       containerAbsolutePosition.getY(),
+                                                       containerAbsolutePosition.getX() + containerBounds.getWidth(),
+                                                       containerAbsolutePosition.getY() + containerBounds.getHeight());
+        assertEquals(containedNodes.size(), children.size());
+        children.forEach(child -> {
+            Bounds relativeBounds = ((View) child.getContent()).getBounds();
+            Point2D absolutePosition = GraphUtils.getComputedPosition(child);
+            Bounds absoluteBounds = Bounds.create(absolutePosition.getX(),
+                                                  absolutePosition.getY(),
+                                                  absolutePosition.getX() + relativeBounds.getWidth(),
+                                                  absolutePosition.getY() + relativeBounds.getHeight());
+            assertContains(containerAbsoluteBounds, absoluteBounds);
+        });
+    }
+
+    private static void assertContains(Bounds container, Bounds contained) {
+        assertTrue(container.getUpperLeft().getX() < contained.getUpperLeft().getX());
+        assertTrue(container.getUpperLeft().getY() < contained.getUpperLeft().getY());
+        assertTrue(container.getLowerRight().getX() > contained.getLowerRight().getX());
+        assertTrue(container.getLowerRight().getY() > contained.getLowerRight().getY());
     }
 
     @SuppressWarnings("unchecked")

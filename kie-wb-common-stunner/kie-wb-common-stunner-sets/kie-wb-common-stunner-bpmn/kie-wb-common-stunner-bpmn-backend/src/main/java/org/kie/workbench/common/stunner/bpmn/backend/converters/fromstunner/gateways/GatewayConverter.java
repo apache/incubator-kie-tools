@@ -63,7 +63,7 @@ public class GatewayConverter {
         GatewayExecutionSet executionSet = definition.getExecutionSet();
         p.setDefaultRoute(executionSet.getDefaultRoute().getValue());
 
-        p.setBounds(n.getContent().getBounds());
+        p.setAbsoluteBounds(n);
 
         return p;
     }
@@ -84,7 +84,7 @@ public class GatewayConverter {
         GatewayExecutionSet executionSet = definition.getExecutionSet();
         p.setDefaultRoute(executionSet.getDefaultRoute().getValue());
 
-        p.setBounds(n.getContent().getBounds());
+        p.setAbsoluteBounds(n);
 
         return p;
     }
@@ -102,7 +102,7 @@ public class GatewayConverter {
         p.setName(general.getName().getValue());
         p.setDocumentation(general.getDocumentation().getValue());
 
-        p.setBounds(n.getContent().getBounds());
+        p.setAbsoluteBounds(n);
 
         return p;
     }

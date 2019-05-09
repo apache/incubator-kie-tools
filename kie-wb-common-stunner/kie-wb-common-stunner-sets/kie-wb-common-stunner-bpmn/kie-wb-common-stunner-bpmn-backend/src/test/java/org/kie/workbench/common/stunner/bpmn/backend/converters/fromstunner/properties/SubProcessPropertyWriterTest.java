@@ -16,28 +16,48 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.bpmn2.FlowElement;
 import org.eclipse.bpmn2.SubProcess;
-import org.junit.Before;
 import org.junit.Test;
+import org.kie.workbench.common.stunner.bpmn.definition.BaseAdHocSubprocess;
+import org.kie.workbench.common.stunner.bpmn.definition.EmbeddedSubprocess;
+import org.kie.workbench.common.stunner.bpmn.definition.EventSubprocess;
+import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.RectangleDimensionsSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.BaseAdHocSubprocessTaskExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.BaseProcessData;
+import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpmn2;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-public class SubProcessPropertyWriterTest {
+public class SubProcessPropertyWriterTest extends AbstractBasePropertyWriterTest<SubProcessPropertyWriter, SubProcess> {
 
-    SubProcessPropertyWriter p ;
-    FlatVariableScope variableScope;
+    @Override
+    protected SubProcessPropertyWriter newPropertyWriter(SubProcess baseElement, VariableScope variableScope) {
+        return new SubProcessPropertyWriter(baseElement, variableScope);
+    }
 
-    @Before
-    public void before() {
-        this.variableScope = new FlatVariableScope();
-        this.p = new SubProcessPropertyWriter(
-                bpmn2.createSubProcess(), variableScope);
+    @Override
+    protected SubProcess mockElement() {
+        return mock(SubProcess.class);
     }
 
     @Test
     public void addChildElement() {
-        SubProcess process = (SubProcess) p.getElement();
+        SubProcess process = (SubProcess) propertyWriter.getElement();
+        List<FlowElement> flowElements = new ArrayList<>();
+        when(process.getFlowElements()).thenReturn(flowElements);
 
         BoundaryEventPropertyWriter boundaryEventPropertyWriter =
                 new BoundaryEventPropertyWriter(bpmn2.createBoundaryEvent(), variableScope);
@@ -45,12 +65,62 @@ public class SubProcessPropertyWriterTest {
         UserTaskPropertyWriter userTaskPropertyWriter =
                 new UserTaskPropertyWriter(bpmn2.createUserTask(), variableScope);
 
-        p.addChildElement(boundaryEventPropertyWriter);
-        p.addChildElement(userTaskPropertyWriter);
+        propertyWriter.addChildElement(boundaryEventPropertyWriter);
+        propertyWriter.addChildElement(userTaskPropertyWriter);
 
         // boundary event should always occur after other nodes (compat with old marshallers)
         assertThat(process.getFlowElements().get(0)).isEqualTo(userTaskPropertyWriter.getFlowElement());
         assertThat(process.getFlowElements().get(1)).isEqualTo(boundaryEventPropertyWriter.getFlowElement());
     }
 
+    @Test
+    public void testSetAbsoluteBoundsForAdHocSubprocess() {
+        testSetAbsoluteBoundsForExpandedNode(createNode(new BaseAdHocSubprocessMock()));
+    }
+
+    @Test
+    public void testSetAbsoluteBoundsForEmbeddedSubprocess() {
+        testSetAbsoluteBoundsForExpandedNode(createNode(mock(EmbeddedSubprocess.class)));
+    }
+
+    @Test
+    public void testSetAbsoluteBoundsForEventSubprocess() {
+        testSetAbsoluteBoundsForExpandedNode(createNode(mock(EventSubprocess.class)));
+    }
+
+    private void testSetAbsoluteBoundsForExpandedNode(Node<View, ?> node) {
+        testSetAbsoluteBounds(node);
+        assertTrue(propertyWriter.getShape().isIsExpanded());
+    }
+
+    private class BaseAdHocSubprocessMock extends BaseAdHocSubprocess {
+
+        BaseAdHocSubprocessMock() {
+            this(null, null, null, null, null);
+        }
+
+        private BaseAdHocSubprocessMock(BPMNGeneralSet general, BackgroundSet backgroundSet, FontSet fontSet, RectangleDimensionsSet dimensionsSet, SimulationSet simulationSet) {
+            super(general, backgroundSet, fontSet, dimensionsSet, simulationSet);
+        }
+
+        @Override
+        public BaseAdHocSubprocessTaskExecutionSet getExecutionSet() {
+            return null;
+        }
+
+        @Override
+        public void setExecutionSet(BaseAdHocSubprocessTaskExecutionSet executionSet) {
+
+        }
+
+        @Override
+        public BaseProcessData getProcessData() {
+            return null;
+        }
+
+        @Override
+        public void setProcessData(BaseProcessData processData) {
+
+        }
+    }
 }

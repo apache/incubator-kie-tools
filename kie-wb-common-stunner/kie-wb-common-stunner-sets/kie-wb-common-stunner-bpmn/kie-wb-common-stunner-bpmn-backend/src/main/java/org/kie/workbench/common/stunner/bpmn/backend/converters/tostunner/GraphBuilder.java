@@ -40,7 +40,6 @@ import org.kie.workbench.common.stunner.core.graph.command.impl.AddDockedNodeCom
 import org.kie.workbench.common.stunner.core.graph.command.impl.AddNodeCommand;
 import org.kie.workbench.common.stunner.core.graph.command.impl.GraphCommandFactory;
 import org.kie.workbench.common.stunner.core.graph.command.impl.UpdateElementPositionCommand;
-import org.kie.workbench.common.stunner.core.graph.content.Bound;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
@@ -163,10 +162,25 @@ public class GraphBuilder {
     private void addChildNode(BpmnNode current) {
         addChildNode(current.getParent().value(), current.value());
         if (!current.isDocked()) {
+            Point2D translationFactors = calculateTranslationFactors(current);
             translate(
                     current.value(),
-                    current.getParent().value().getContent().getBounds().getUpperLeft());
+                    translationFactors.getX(), translationFactors.getY());
         }
+    }
+
+    private Point2D calculateTranslationFactors(BpmnNode current) {
+        double xFactor = 0;
+        double yFactor = 0;
+        Bounds bounds;
+        BpmnNode parent = current.getParent();
+        while (parent != null) {
+            bounds = parent.value().getContent().getBounds();
+            xFactor += bounds.getX();
+            yFactor += bounds.getY();
+            parent = parent.getParent();
+        }
+        return Point2D.create(xFactor, yFactor);
     }
 
     private void addChildNode(Node<? extends View, ?> parent, Node<? extends View, ?> child) {
@@ -181,14 +195,14 @@ public class GraphBuilder {
      * If we move node into a new coordinate system where the origin is in (3, 4)
      * then the new coordinates for node are: (10-3, 11-4) = (7,7)
      */
-    private void translate(Node<? extends View, ?> node, Bound newOrigin) {
+    private void translate(Node<? extends View, ?> node, double deltaX, double deltaY) {
 
-        logger.debug("Translating {} from {} into constraints {}",
-                     node.getUUID(), node.getContent().getBounds(), newOrigin);
+        logger.debug("Translating {} from {} with (deltaX,deltaY) ({},{})",
+                     node.getUUID(), node.getContent().getBounds(), deltaX, deltaX);
 
         Bounds childBounds = node.getContent().getBounds();
-        double constrainedX = childBounds.getUpperLeft().getX() - newOrigin.getX();
-        double constrainedY = childBounds.getUpperLeft().getY() - newOrigin.getY();
+        double constrainedX = childBounds.getUpperLeft().getX() - deltaX;
+        double constrainedY = childBounds.getUpperLeft().getY() - deltaY;
 
         Point2D coords = Point2D.create(constrainedX, constrainedY);
         updatePosition(node, coords);

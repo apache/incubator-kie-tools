@@ -88,7 +88,7 @@ public class TaskConverter {
 
         p.setSimulationSet(definition.getSimulationSet());
 
-        p.setBounds(n.getContent().getBounds());
+        p.setAbsoluteBounds(n);
         return p;
     }
 
@@ -132,7 +132,7 @@ public class TaskConverter {
         p.setContent(executionSet.getContent().getValue());
         p.setSLADueDate(executionSet.getSlaDueDate().getValue());
 
-        p.setBounds(n.getContent().getBounds());
+        p.setAbsoluteBounds(n);
 
         return p;
     }
@@ -170,7 +170,7 @@ public class TaskConverter {
 
         p.setSimulationSet(definition.getSimulationSet());
 
-        p.setBounds(n.getContent().getBounds());
+        p.setAbsoluteBounds(n);
         return p;
     }
 
@@ -192,7 +192,7 @@ public class TaskConverter {
 
         p.setSimulationSet(definition.getSimulationSet());
 
-        p.setBounds(n.getContent().getBounds());
+        p.setAbsoluteBounds(n);
         return p;
     }
 
@@ -206,7 +206,7 @@ public class TaskConverter {
         p.setName(general.getName().getValue());
         p.setDocumentation(general.getDocumentation().getValue());
 
-        p.setBounds(n.getContent().getBounds());
+        p.setAbsoluteBounds(n);
 
         p.setSimulationSet(definition.getSimulationSet());
         return p;

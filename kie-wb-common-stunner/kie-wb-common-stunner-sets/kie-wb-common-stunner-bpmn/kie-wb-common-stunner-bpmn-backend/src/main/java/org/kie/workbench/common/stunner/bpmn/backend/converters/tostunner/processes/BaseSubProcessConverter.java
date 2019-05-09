@@ -127,7 +127,7 @@ public abstract class BaseSubProcessConverter<A extends BaseAdHocSubprocess<P, S
 
         node.getContent().setBounds(p.getBounds());
 
-        return BpmnNode.of(node);
+        return BpmnNode.of(node, p);
     }
 
     private BpmnNode convertAdHocSubProcess(org.eclipse.bpmn2.AdHocSubProcess subProcess) {
@@ -151,7 +151,7 @@ public abstract class BaseSubProcessConverter<A extends BaseAdHocSubprocess<P, S
         definition.setFontSet(p.getFontSet());
         definition.setBackgroundSet(p.getBackgroundSet());
 
-        return BpmnNode.of(node);
+        return BpmnNode.of(node, p);
     }
 
     private BpmnNode convertEmbeddedSubprocessNode(SubProcess subProcess) {
@@ -180,7 +180,7 @@ public abstract class BaseSubProcessConverter<A extends BaseAdHocSubprocess<P, S
         definition.setFontSet(p.getFontSet());
         definition.setBackgroundSet(p.getBackgroundSet());
 
-        return BpmnNode.of(node);
+        return BpmnNode.of(node, p);
     }
 
     private BpmnNode convertEventSubprocessNode(SubProcess subProcess) {
@@ -206,7 +206,7 @@ public abstract class BaseSubProcessConverter<A extends BaseAdHocSubprocess<P, S
 
         node.getContent().setBounds(p.getBounds());
 
-        return BpmnNode.of(node);
+        return BpmnNode.of(node, p);
     }
 
     protected abstract Node<View<A>, Edge> createNode(String id);

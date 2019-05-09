@@ -25,6 +25,7 @@ import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.Task;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.di.BPMNEdge;
+import org.eclipse.bpmn2.di.BPMNPlane;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.dd.dc.Bounds;
 import org.eclipse.dd.dc.Point;
@@ -36,12 +37,14 @@ import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunn
 public class TestDefinitionsWriter {
 
     private final DefinitionResolver definitionResolver;
+    private BPMNPlane bpmnPlane;
 
     public TestDefinitionsWriter() {
         Definitions definitions = bpmn2.createDefinitions();
         definitions.getRootElements().add(bpmn2.createProcess());
         BPMNDiagram bpmnDiagram = di.createBPMNDiagram();
-        bpmnDiagram.setPlane(di.createBPMNPlane());
+        bpmnPlane = di.createBPMNPlane();
+        bpmnDiagram.setPlane(bpmnPlane);
         definitions.getDiagrams().add(bpmnDiagram);
 
         this.definitionResolver = new DefinitionResolver(definitions, Collections.emptyList());
@@ -58,7 +61,7 @@ public class TestDefinitionsWriter {
         BPMNShape shape = di.createBPMNShape();
         shape.setBounds(bounds);
         shape.setBpmnElement(node);
-        definitionResolver.getPlane().getPlaneElement().add(shape);
+        bpmnPlane.getPlaneElement().add(shape);
 
         return node;
     }
@@ -71,7 +74,7 @@ public class TestDefinitionsWriter {
 
         BPMNEdge edge = di.createBPMNEdge();
         edge.setBpmnElement(sequenceFlow);
-        definitionResolver.getPlane().getPlaneElement().add(edge);
+        bpmnPlane.getPlaneElement().add(edge);
         edge.getWaypoint().addAll(waypoints);
 
         return sequenceFlow;

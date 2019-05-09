@@ -32,10 +32,15 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.ElementContainer;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.Scripts;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.SimulationSets;
+import org.kie.workbench.common.stunner.bpmn.definition.BaseAdHocSubprocess;
+import org.kie.workbench.common.stunner.bpmn.definition.EmbeddedSubprocess;
+import org.kie.workbench.common.stunner.bpmn.definition.EventSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnEntryAction;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnExitAction;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.BaseProcessVariables;
+import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpmn2;
 
@@ -121,5 +126,16 @@ public class SubProcessPropertyWriter extends MultipleInstanceActivityPropertyWr
 
     public void setAsync(Boolean isAsync) {
         CustomElement.async.of(flowElement).set(isAsync);
+    }
+
+    @Override
+    public void setAbsoluteBounds(Node<? extends View, ?> node) {
+        super.setAbsoluteBounds(node);
+        Object definition = node.getContent().getDefinition();
+        if (definition instanceof BaseAdHocSubprocess ||
+                definition instanceof EventSubprocess ||
+                definition instanceof EmbeddedSubprocess) {
+            shape.setIsExpanded(true);
+        }
     }
 }

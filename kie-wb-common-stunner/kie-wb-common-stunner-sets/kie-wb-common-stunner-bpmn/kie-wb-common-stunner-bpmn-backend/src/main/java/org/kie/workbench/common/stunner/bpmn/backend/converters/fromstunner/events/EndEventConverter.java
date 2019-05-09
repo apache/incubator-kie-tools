@@ -75,7 +75,7 @@ public class EndEventConverter {
         ErrorEventExecutionSet executionSet = definition.getExecutionSet();
         p.addError(executionSet.getErrorRef());
 
-        p.setBounds(n.getContent().getBounds());
+        p.setAbsoluteBounds(n);
         return p;
     }
 
@@ -92,7 +92,7 @@ public class EndEventConverter {
 
         p.addTerminate();
 
-        p.setBounds(n.getContent().getBounds());
+        p.setAbsoluteBounds(n);
         return p;
     }
 
@@ -113,7 +113,7 @@ public class EndEventConverter {
         p.addSignal(definition.getExecutionSet().getSignalRef());
         p.addSignalScope(definition.getExecutionSet().getSignalScope());
 
-        p.setBounds(n.getContent().getBounds());
+        p.setAbsoluteBounds(n);
         return p;
     }
 
@@ -136,7 +136,7 @@ public class EndEventConverter {
 
         p.addMessage(executionSet.getMessageRef());
 
-        p.setBounds(n.getContent().getBounds());
+        p.setAbsoluteBounds(n);
         return p;
     }
 
@@ -151,7 +151,7 @@ public class EndEventConverter {
         p.setName(general.getName().getValue());
         p.setDocumentation(general.getDocumentation().getValue());
 
-        p.setBounds(n.getContent().getBounds());
+        p.setAbsoluteBounds(n);
         return p;
     }
 
@@ -172,7 +172,7 @@ public class EndEventConverter {
         EscalationEventExecutionSet executionSet = definition.getExecutionSet();
         p.addEscalation(executionSet.getEscalationRef());
 
-        p.setBounds(n.getContent().getBounds());
+        p.setAbsoluteBounds(n);
         return p;
     }
 
@@ -189,7 +189,7 @@ public class EndEventConverter {
 
         p.addCompensation();
 
-        p.setBounds(n.getContent().getBounds());
+        p.setAbsoluteBounds(n);
         return p;
     }
 }
