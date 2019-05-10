@@ -20,21 +20,26 @@ import java.util.Collections;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.assertj.core.api.SoftAssertions;
+import org.guvnor.common.services.shared.message.Level;
 import org.guvnor.common.services.shared.test.Failure;
 import org.guvnor.common.services.shared.test.TestResultMessage;
 import org.guvnor.messageconsole.events.PublishBatchMessagesEvent;
+import org.guvnor.messageconsole.events.SystemMessage;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.mocks.EventSourceMock;
 
+import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -59,7 +64,32 @@ public class TestRunnerReportingPanelTest {
     }
 
     @Test
+    public void testEventGoesThroughCorrectly() {
+
+        when(failure.getDisplayName()).thenReturn("Display name.");
+        when(failure.getMessage()).thenReturn("Message");
+        final Path path = mock(Path.class);
+        when(failure.getPath()).thenReturn(path);
+
+        screen.onTestRun(createTRMWithFailures());
+
+        screen.onViewAlerts();
+
+        verify(event).fire(publishEventCaptor.capture());
+
+        final PublishBatchMessagesEvent value = publishEventCaptor.getValue();
+        assertTrue(value.isCleanExisting());
+        assertEquals(1, value.getMessagesToPublish().size());
+        final SystemMessage systemMessage = value.getMessagesToPublish().get(0);
+        assertEquals("TestResults", systemMessage.getMessageType());
+        assertEquals(Level.ERROR, systemMessage.getLevel());
+        assertEquals(path, systemMessage.getPath());
+        assertEquals("Display name. : Message", systemMessage.getText());
+    }
+
+    @Test
     public void onViewAlerts() {
+
         screen.onViewAlerts();
 
         verify(event).fire(publishEventCaptor.capture());

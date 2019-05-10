@@ -116,6 +116,7 @@ public class TestRunnerReportingPanel
         systemMessage.setMessageType("TestResults");
         systemMessage.setLevel(Level.ERROR);
         systemMessage.setText(makeMessage(failure));
+        systemMessage.setPath(failure.getPath());
         return systemMessage;
     }
 
