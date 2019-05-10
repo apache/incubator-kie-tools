@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.widgets.grid.controls.list;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.uberfire.mvp.Command;
@@ -56,12 +57,30 @@ public interface HasListSelectorControl {
         }
     }
 
+    interface ListSelectorHeaderItem extends ListSelectorItem {
+
+        String getText();
+
+        static ListSelectorHeaderItem build(final String text) {
+            return new ListSelectorHeaderItem() {
+                @Override
+                public String getText() {
+                    return text;
+                }
+            };
+        }
+    }
+
     class ListSelectorDividerItem implements ListSelectorItem {
 
     }
 
-    List<ListSelectorItem> getItems(final int uiRowIndex,
-                                    final int uiColumnIndex);
+    default List<ListSelectorItem> getItems(final int uiRowIndex,
+                                            final int uiColumnIndex) {
+        return Collections.emptyList();
+    }
 
-    void onItemSelected(final ListSelectorItem item);
+    default void onItemSelected(final ListSelectorItem item) {
+        //NOP by default
+    }
 }

@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
 import com.ait.lienzo.client.core.shape.Viewport;
@@ -62,7 +61,6 @@ import org.kie.workbench.common.dmn.client.commands.general.DeleteHasNameCommand
 import org.kie.workbench.common.dmn.client.commands.general.SetCellValueCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetHasNameCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetTypeRefCommand;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.GridFactoryCommandUtils;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.hitpolicy.HitPolicyPopoverView;
 import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
@@ -129,27 +127,32 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class DecisionTableGridTest {
 
-    private static final int DEFAULT_INSERT_RULE_ABOVE = 0;
+    private static final int RULE_HEADER = 0;
 
-    private static final int DEFAULT_INSERT_RULE_BELOW = 1;
+    private static final int DEFAULT_INSERT_RULE_ABOVE = 1;
 
-    private static final int DEFAULT_DELETE_RULE = 2;
+    private static final int DEFAULT_INSERT_RULE_BELOW = 2;
 
-    private static final int DEFAULT_DUPLICATE_RULE = 3;
+    private static final int DEFAULT_DELETE_RULE = 3;
 
-    private static final int INSERT_COLUMN_BEFORE = 0;
+    private static final int DEFAULT_DUPLICATE_RULE = 4;
 
-    private static final int INSERT_COLUMN_AFTER = 1;
+    private static final int COLUMN_HEADER = 0;
 
-    private static final int DELETE_COLUMN = 2;
+    private static final int INSERT_COLUMN_BEFORE = 1;
 
-    private static final int DIVIDER = 3;
+    private static final int INSERT_COLUMN_AFTER = 2;
+
+    private static final int DELETE_COLUMN = 3;
+
+    private static final int DIVIDER = 4;
 
     private static final String INPUT_CLAUSE_NAME = "input-1";
 
@@ -230,12 +233,6 @@ public class DecisionTableGridTest {
 
     @Mock
     private GraphCommandExecutionContext graphCommandContext;
-
-    @Mock
-    private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
-
-    @Mock
-    private Supplier<ExpressionEditorDefinitions> supplementaryEditorDefinitionsSupplier;
 
     @Mock
     private CellEditorControlsView.Presenter cellEditorControls;
@@ -548,63 +545,23 @@ public class DecisionTableGridTest {
     @Test
     public void testGetItemsInputClauseColumn() {
         setupGrid(makeHasNameForDecision(), 0);
-        mockInsertColumnCommandExecution();
 
         final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 1);
 
-        assertThat(items.size()).isEqualTo(8);
-        assertDefaultListItems(items.subList(4, 8), true);
-
-        assertListSelectorItem(items.get(INSERT_COLUMN_BEFORE),
-                               DMNEditorConstants.DecisionTableEditor_InsertInputClauseLeft,
-                               true);
-        assertListSelectorItem(items.get(INSERT_COLUMN_AFTER),
-                               DMNEditorConstants.DecisionTableEditor_InsertInputClauseRight,
-                               true);
-        assertListSelectorItem(items.get(DELETE_COLUMN),
-                               DMNEditorConstants.DecisionTableEditor_DeleteInputClause,
-                               false);
-        assertThat(items.get(DIVIDER)).isInstanceOf(HasListSelectorControl.ListSelectorDividerItem.class);
-
-        grid.onItemSelected(items.get(INSERT_COLUMN_BEFORE));
-        verify(grid).addInputClause(eq(1));
-
-        grid.onItemSelected(items.get(INSERT_COLUMN_AFTER));
-        verify(grid).addInputClause(eq(2));
-
-        grid.onItemSelected(items.get(DELETE_COLUMN));
-        verify(grid).deleteInputClause(eq(1));
+        assertThat(items.size()).isEqualTo(10);
+        assertInputClauseItems(items.subList(0, 4));
+        assertDefaultListItems(items.subList(5, 10), true);
     }
 
     @Test
     public void testGetItemsOutputClauseColumn() {
         setupGrid(makeHasNameForDecision(), 0);
-        mockInsertColumnCommandExecution();
 
         final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 2);
 
-        assertThat(items.size()).isEqualTo(8);
-        assertDefaultListItems(items.subList(4, 8), true);
-
-        assertListSelectorItem(items.get(INSERT_COLUMN_BEFORE),
-                               DMNEditorConstants.DecisionTableEditor_InsertOutputClauseLeft,
-                               true);
-        assertListSelectorItem(items.get(INSERT_COLUMN_AFTER),
-                               DMNEditorConstants.DecisionTableEditor_InsertOutputClauseRight,
-                               true);
-        assertListSelectorItem(items.get(DELETE_COLUMN),
-                               DMNEditorConstants.DecisionTableEditor_DeleteOutputClause,
-                               false);
-        assertThat(items.get(DIVIDER)).isInstanceOf(HasListSelectorControl.ListSelectorDividerItem.class);
-
-        grid.onItemSelected(items.get(INSERT_COLUMN_BEFORE));
-        verify(grid).addOutputClause(eq(2));
-
-        grid.onItemSelected(items.get(INSERT_COLUMN_AFTER));
-        verify(grid).addOutputClause(eq(3));
-
-        grid.onItemSelected(items.get(DELETE_COLUMN));
-        verify(grid).deleteOutputClause(eq(2));
+        assertThat(items.size()).isEqualTo(10);
+        assertOutputClauseItems(items.subList(0, 4));
+        assertDefaultListItems(items.subList(5, 10), true);
     }
 
     @Test
@@ -612,6 +569,112 @@ public class DecisionTableGridTest {
         setupGrid(makeHasNameForDecision(), 0);
 
         assertDefaultListItems(grid.getItems(0, 3), true);
+    }
+
+    @Test
+    public void testGetHeaderItemsInputClauseColumn() {
+        setupGrid(makeHasNameForDecision(), 0);
+
+        assertInputClauseItems(grid.getHeaderItems(0, 1));
+    }
+
+    @Test
+    public void testGetHeaderItemsOutputClauseColumn() {
+        setupGrid(makeHasNameForDecision(), 0);
+
+        assertOutputClauseItems(grid.getHeaderItems(0, 2));
+    }
+
+    @Test
+    public void testGetHeaderItemsOutputClauseColumnWithMultipleOutputClausesHeaderRow0() {
+        setupGrid(makeHasNameForDecision(), 0);
+
+        //We need (at least) 2 OutputClause columns to have a split header
+        addOutputClause(2);
+
+        // 0 |   1 |   2 |   3
+        // --+-----+-----+-----
+        // # | IC1 | OC1 | OC2
+        // --+-----+-----+-----
+
+        final List<HasListSelectorControl.ListSelectorItem> items = grid.getHeaderItems(0, 2);
+
+        assertThat(items.size()).isEqualTo(3);
+        assertListSelectorHeaderItem(items.get(COLUMN_HEADER),
+                                     DMNEditorConstants.DecisionTableEditor_OutputClauseHeader);
+        assertListSelectorTextItem(items.get(INSERT_COLUMN_BEFORE),
+                                   DMNEditorConstants.DecisionTableEditor_InsertOutputClauseLeft,
+                                   true);
+        assertListSelectorTextItem(items.get(INSERT_COLUMN_AFTER),
+                                   DMNEditorConstants.DecisionTableEditor_InsertOutputClauseRight,
+                                   true);
+
+        //Adds an OutputClause column at the "block start", index 2
+        grid.onItemSelected(items.get(INSERT_COLUMN_BEFORE));
+        verify(grid, times(2)).addOutputClause(eq(2));
+
+        // 0 |   1 |   2 |   3 |   4
+        // --+-----+-----+-----+-----
+        // # | IC1 | OC3 | OC1 | OC2
+        // --+-----+-----+-----+-----
+
+        //Adds an OutputClause column at the "block end", index 5
+        grid.onItemSelected(items.get(INSERT_COLUMN_AFTER));
+        verify(grid).addOutputClause(eq(5));
+
+        // 0 |   1 |   2 |   3 |   4 |   5
+        // --+-----+-----+-----+-----+-----
+        // # | IC1 | OC3 | OC1 | OC2 | OC4
+        // --+-----+-----+-----+-----+-----
+    }
+
+    @Test
+    public void testGetHeaderItemsOutputClauseColumnWithMultipleOutputClausesHeaderRow1() {
+        setupGrid(makeHasNameForDecision(), 0);
+
+        //We need (at least) 2 OutputClause columns to have a split header
+        addOutputClause(2);
+
+        // 0 |   1 |   2 |   3
+        // --+-----+-----+-----
+        // # | IC1 | OC1 | OC2
+        // --+-----+-----+-----
+
+        final List<HasListSelectorControl.ListSelectorItem> items = grid.getHeaderItems(1, 2);
+
+        assertThat(items.size()).isEqualTo(4);
+        assertListSelectorHeaderItem(items.get(COLUMN_HEADER),
+                                     DMNEditorConstants.DecisionTableEditor_OutputClauseHeader);
+        assertListSelectorTextItem(items.get(INSERT_COLUMN_BEFORE),
+                                   DMNEditorConstants.DecisionTableEditor_InsertOutputClauseLeft,
+                                   true);
+        assertListSelectorTextItem(items.get(INSERT_COLUMN_AFTER),
+                                   DMNEditorConstants.DecisionTableEditor_InsertOutputClauseRight,
+                                   true);
+        assertListSelectorTextItem(items.get(DELETE_COLUMN),
+                                   DMNEditorConstants.DecisionTableEditor_DeleteOutputClause,
+                                   true);
+
+        //Adds an OutputClause column at index 2
+        grid.onItemSelected(items.get(INSERT_COLUMN_BEFORE));
+        verify(grid, times(2)).addOutputClause(eq(2));
+
+        // 0 |   1 |   2 |   3 |   4
+        // --+-----+-----+-----+-----
+        // # | IC1 | OC2 | OC1 | OC2
+        // --+-----+-----+-----+-----
+
+        //Adds an OutputClause column at index 3
+        grid.onItemSelected(items.get(INSERT_COLUMN_AFTER));
+        verify(grid).addOutputClause(eq(3));
+
+        // 0 |   1 |   2 |   3 |   4 |   5
+        // --+-----+-----+-----+-----+-----
+        // # | IC1 | OC2 | OC4 | OC1 | OC2
+        // --+-----+-----+-----+-----+-----
+
+        grid.onItemSelected(items.get(DELETE_COLUMN));
+        verify(grid).deleteOutputClause(eq(2));
     }
 
     @Test
@@ -635,18 +698,20 @@ public class DecisionTableGridTest {
 
         final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 1);
 
-        assertThat(items.size()).isEqualTo(8);
-        assertDefaultListItems(items.subList(4, 8), true);
+        assertThat(items.size()).isEqualTo(10);
+        assertDefaultListItems(items.subList(5, 10), true);
 
-        assertListSelectorItem(items.get(INSERT_COLUMN_BEFORE),
-                               DMNEditorConstants.DecisionTableEditor_InsertInputClauseLeft,
-                               false);
-        assertListSelectorItem(items.get(INSERT_COLUMN_AFTER),
-                               DMNEditorConstants.DecisionTableEditor_InsertInputClauseRight,
-                               false);
-        assertListSelectorItem(items.get(DELETE_COLUMN),
-                               DMNEditorConstants.DecisionTableEditor_DeleteInputClause,
-                               false);
+        assertListSelectorHeaderItem(items.get(COLUMN_HEADER),
+                                     DMNEditorConstants.DecisionTableEditor_InputClauseHeader);
+        assertListSelectorTextItem(items.get(INSERT_COLUMN_BEFORE),
+                                   DMNEditorConstants.DecisionTableEditor_InsertInputClauseLeft,
+                                   false);
+        assertListSelectorTextItem(items.get(INSERT_COLUMN_AFTER),
+                                   DMNEditorConstants.DecisionTableEditor_InsertInputClauseRight,
+                                   false);
+        assertListSelectorTextItem(items.get(DELETE_COLUMN),
+                                   DMNEditorConstants.DecisionTableEditor_DeleteInputClause,
+                                   false);
         assertThat(items.get(DIVIDER)).isInstanceOf(HasListSelectorControl.ListSelectorDividerItem.class);
     }
 
@@ -660,41 +725,100 @@ public class DecisionTableGridTest {
 
         final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 2);
 
-        assertThat(items.size()).isEqualTo(8);
-        assertDefaultListItems(items.subList(4, 8), true);
+        assertThat(items.size()).isEqualTo(10);
+        assertDefaultListItems(items.subList(5, 10), true);
 
-        assertListSelectorItem(items.get(INSERT_COLUMN_BEFORE),
-                               DMNEditorConstants.DecisionTableEditor_InsertOutputClauseLeft,
-                               false);
-        assertListSelectorItem(items.get(INSERT_COLUMN_AFTER),
-                               DMNEditorConstants.DecisionTableEditor_InsertOutputClauseRight,
-                               false);
-        assertListSelectorItem(items.get(DELETE_COLUMN),
-                               DMNEditorConstants.DecisionTableEditor_DeleteOutputClause,
-                               false);
+        assertListSelectorHeaderItem(items.get(COLUMN_HEADER),
+                                     DMNEditorConstants.DecisionTableEditor_OutputClauseHeader);
+        assertListSelectorTextItem(items.get(INSERT_COLUMN_BEFORE),
+                                   DMNEditorConstants.DecisionTableEditor_InsertOutputClauseLeft,
+                                   false);
+        assertListSelectorTextItem(items.get(INSERT_COLUMN_AFTER),
+                                   DMNEditorConstants.DecisionTableEditor_InsertOutputClauseRight,
+                                   false);
+        assertListSelectorTextItem(items.get(DELETE_COLUMN),
+                                   DMNEditorConstants.DecisionTableEditor_DeleteOutputClause,
+                                   false);
         assertThat(items.get(DIVIDER)).isInstanceOf(HasListSelectorControl.ListSelectorDividerItem.class);
+    }
+
+    private void assertInputClauseItems(final List<HasListSelectorControl.ListSelectorItem> items) {
+        assertThat(items.size()).isEqualTo(4);
+        assertListSelectorHeaderItem(items.get(COLUMN_HEADER),
+                                     DMNEditorConstants.DecisionTableEditor_InputClauseHeader);
+        assertListSelectorTextItem(items.get(INSERT_COLUMN_BEFORE),
+                                   DMNEditorConstants.DecisionTableEditor_InsertInputClauseLeft,
+                                   true);
+        assertListSelectorTextItem(items.get(INSERT_COLUMN_AFTER),
+                                   DMNEditorConstants.DecisionTableEditor_InsertInputClauseRight,
+                                   true);
+        assertListSelectorTextItem(items.get(DELETE_COLUMN),
+                                   DMNEditorConstants.DecisionTableEditor_DeleteInputClause,
+                                   false);
+
+        grid.onItemSelected(items.get(INSERT_COLUMN_BEFORE));
+        verify(grid).addInputClause(eq(1));
+
+        grid.onItemSelected(items.get(INSERT_COLUMN_AFTER));
+        verify(grid).addInputClause(eq(2));
+
+        grid.onItemSelected(items.get(DELETE_COLUMN));
+        verify(grid).deleteInputClause(eq(1));
+    }
+
+    private void assertOutputClauseItems(final List<HasListSelectorControl.ListSelectorItem> items) {
+        assertThat(items.size()).isEqualTo(4);
+        assertListSelectorHeaderItem(items.get(COLUMN_HEADER),
+                                     DMNEditorConstants.DecisionTableEditor_OutputClauseHeader);
+        assertListSelectorTextItem(items.get(INSERT_COLUMN_BEFORE),
+                                   DMNEditorConstants.DecisionTableEditor_InsertOutputClauseLeft,
+                                   true);
+        assertListSelectorTextItem(items.get(INSERT_COLUMN_AFTER),
+                                   DMNEditorConstants.DecisionTableEditor_InsertOutputClauseRight,
+                                   true);
+        assertListSelectorTextItem(items.get(DELETE_COLUMN),
+                                   DMNEditorConstants.DecisionTableEditor_DeleteOutputClause,
+                                   false);
+
+        grid.onItemSelected(items.get(INSERT_COLUMN_BEFORE));
+        verify(grid).addOutputClause(eq(2));
+
+        grid.onItemSelected(items.get(INSERT_COLUMN_AFTER));
+        verify(grid).addOutputClause(eq(3));
+
+        grid.onItemSelected(items.get(DELETE_COLUMN));
+        verify(grid).deleteOutputClause(eq(2));
     }
 
     private void assertDefaultListItems(final List<HasListSelectorControl.ListSelectorItem> items,
                                         final boolean enabled) {
-        assertThat(items.size()).isEqualTo(4);
-        assertListSelectorItem(items.get(DEFAULT_INSERT_RULE_ABOVE),
-                               DMNEditorConstants.DecisionTableEditor_InsertDecisionRuleAbove,
-                               enabled);
-        assertListSelectorItem(items.get(DEFAULT_INSERT_RULE_BELOW),
-                               DMNEditorConstants.DecisionTableEditor_InsertDecisionRuleBelow,
-                               enabled);
-        assertListSelectorItem(items.get(DEFAULT_DELETE_RULE),
-                               DMNEditorConstants.DecisionTableEditor_DeleteDecisionRule,
-                               enabled && grid.getModel().getRowCount() > 1);
-        assertListSelectorItem(items.get(DEFAULT_DUPLICATE_RULE),
-                               DMNEditorConstants.DecisionTableEditor_DuplicateDecisionRule,
-                               enabled);
+        assertThat(items.size()).isEqualTo(5);
+        assertListSelectorHeaderItem(items.get(RULE_HEADER),
+                                     DMNEditorConstants.DecisionTableEditor_DecisionRuleHeader);
+        assertListSelectorTextItem(items.get(DEFAULT_INSERT_RULE_ABOVE),
+                                   DMNEditorConstants.DecisionTableEditor_InsertDecisionRuleAbove,
+                                   enabled);
+        assertListSelectorTextItem(items.get(DEFAULT_INSERT_RULE_BELOW),
+                                   DMNEditorConstants.DecisionTableEditor_InsertDecisionRuleBelow,
+                                   enabled);
+        assertListSelectorTextItem(items.get(DEFAULT_DELETE_RULE),
+                                   DMNEditorConstants.DecisionTableEditor_DeleteDecisionRule,
+                                   enabled && grid.getModel().getRowCount() > 1);
+        assertListSelectorTextItem(items.get(DEFAULT_DUPLICATE_RULE),
+                                   DMNEditorConstants.DecisionTableEditor_DuplicateDecisionRule,
+                                   enabled);
     }
 
-    private void assertListSelectorItem(final HasListSelectorControl.ListSelectorItem item,
-                                        final String text,
-                                        final boolean enabled) {
+    private void assertListSelectorHeaderItem(final HasListSelectorControl.ListSelectorItem item,
+                                              final String text) {
+        assertThat(item).isInstanceOf(HasListSelectorControl.ListSelectorHeaderItem.class);
+        final HasListSelectorControl.ListSelectorHeaderItem hi = (HasListSelectorControl.ListSelectorHeaderItem) item;
+        assertThat(hi.getText()).isEqualTo(text);
+    }
+
+    private void assertListSelectorTextItem(final HasListSelectorControl.ListSelectorItem item,
+                                            final String text,
+                                            final boolean enabled) {
         assertThat(item).isInstanceOf(HasListSelectorControl.ListSelectorTextItem.class);
         final HasListSelectorControl.ListSelectorTextItem ti = (HasListSelectorControl.ListSelectorTextItem) item;
         assertThat(ti.getText()).isEqualTo(text);

@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.dmn.client.widgets.panel;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.IntStream;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
@@ -53,14 +55,13 @@ public class DMNGridPanelCellSelectionHandlerTest {
     private DMNGridPanelCellSelectionHandler cellSelectionHandler;
 
     @Before
-    @SuppressWarnings("unchecked")
     public void setup() {
         this.cellSelectionHandler = new DMNGridPanelCellSelectionHandlerImpl(gridLayer);
     }
 
     @Test
     public void testSelectCellIfRequired() {
-        final GridWidget gridWidget = mockGridWidget(BaseExpressionGrid.class);
+        final GridWidget gridWidget = mockGridWidget();
         final GridData gridData = gridWidget.getModel();
         gridData.setCell(0, 1, () -> gridCell);
 
@@ -81,7 +82,7 @@ public class DMNGridPanelCellSelectionHandlerTest {
 
     @Test
     public void testSelectCellIfRequiredButSelectionDidNotChanged() {
-        final GridWidget gridWidget = mockGridWidget(BaseExpressionGrid.class);
+        final GridWidget gridWidget = mockGridWidget();
         final GridData gridData = gridWidget.getModel();
         gridData.setCell(0, 1, () -> gridCell);
 
@@ -102,7 +103,7 @@ public class DMNGridPanelCellSelectionHandlerTest {
 
     @Test
     public void testSelectCellIfRequiredWhenAlreadySelected() {
-        final GridWidget gridWidget = mockGridWidget(BaseExpressionGrid.class);
+        final GridWidget gridWidget = mockGridWidget();
         final GridData gridData = gridWidget.getModel();
         gridData.setCell(0, 1, () -> gridCell);
         gridData.selectCell(0, 1);
@@ -117,15 +118,76 @@ public class DMNGridPanelCellSelectionHandlerTest {
         verify(gridLayer, never()).batch();
     }
 
-    private <G extends BaseExpressionGrid> G mockGridWidget(final Class<G> gridClass) {
-        final G gridWidget = mock(gridClass);
+    @Test
+    public void testSelectHeaderCellIfRequired() {
+        final GridWidget gridWidget = mockGridWidget();
+        final GridData gridData = gridWidget.getModel();
+        gridData.setCell(0, 1, () -> gridCell);
+
+        when(gridWidget.selectHeaderCell(anyInt(),
+                                         anyInt(),
+                                         anyBoolean(),
+                                         anyBoolean())).thenReturn(true);
+
+        cellSelectionHandler.selectHeaderCellIfRequired(0, 1, gridWidget, true, false);
+
+        verify(gridLayer).select(eq(gridWidget));
+        verify(gridWidget).selectHeaderCell(eq(0),
+                                            eq(1),
+                                            eq(true),
+                                            eq(false));
+        verify(gridLayer).batch();
+    }
+
+    @Test
+    public void testSelectHeaderCellIfRequiredButSelectionDidNotChanged() {
+        final GridWidget gridWidget = mockGridWidget();
+        final GridData gridData = gridWidget.getModel();
+        gridData.setCell(0, 1, () -> gridCell);
+
+        when(gridWidget.selectHeaderCell(anyInt(),
+                                         anyInt(),
+                                         anyBoolean(),
+                                         anyBoolean())).thenReturn(false);
+
+        cellSelectionHandler.selectHeaderCellIfRequired(0, 1, gridWidget, true, false);
+
+        verify(gridLayer).select(eq(gridWidget));
+        verify(gridWidget).selectHeaderCell(eq(0),
+                                            eq(1),
+                                            eq(true),
+                                            eq(false));
+        verify(gridLayer, never()).batch();
+    }
+
+    @Test
+    public void testSelectHeaderCellIfRequiredWhenAlreadySelected() {
+        final GridWidget gridWidget = mockGridWidget();
+        final GridData gridData = gridWidget.getModel();
+        gridData.setCell(0, 1, () -> gridCell);
+        gridData.selectHeaderCell(0, 1);
+
+        cellSelectionHandler.selectHeaderCellIfRequired(0, 1, gridWidget, true, false);
+
+        verify(gridLayer, never()).select(eq(gridWidget));
+        verify(gridWidget, never()).selectHeaderCell(anyInt(),
+                                                     anyInt(),
+                                                     anyBoolean(),
+                                                     anyBoolean());
+        verify(gridLayer, never()).batch();
+    }
+
+    private BaseExpressionGrid mockGridWidget() {
+        final BaseExpressionGrid gridWidget = mock(BaseExpressionGrid.class);
         final GridData gridData = new DMNGridData();
         when(gridWidget.getModel()).thenReturn(gridData);
 
         gridData.appendColumn(new RowNumberColumn());
         IntStream.range(0, 3).forEach(i -> {
             final GridColumn gridColumn = mock(GridColumn.class);
+            final List<GridColumn.HeaderMetaData> headerMetaData = Collections.singletonList(mock(GridColumn.HeaderMetaData.class));
             when(gridColumn.getIndex()).thenReturn(i);
+            when(gridColumn.getHeaderMetaData()).thenReturn(headerMetaData);
             gridData.appendColumn(gridColumn);
         });
 

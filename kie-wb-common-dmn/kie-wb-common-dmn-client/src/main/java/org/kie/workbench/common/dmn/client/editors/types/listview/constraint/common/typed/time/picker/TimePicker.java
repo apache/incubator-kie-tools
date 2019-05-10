@@ -95,8 +95,8 @@ public class TimePicker {
 
     boolean isDateSetInInput() {
         return !StringUtils.isEmpty(getInputBind().value)
-                   && !StringUtils.isEmpty(getInputBind().value.trim())
-                   && getInputBind().value.contains(":");
+                && !StringUtils.isEmpty(getInputBind().value.trim())
+                && getInputBind().value.contains(":");
     }
 
     void setDefaultData() {

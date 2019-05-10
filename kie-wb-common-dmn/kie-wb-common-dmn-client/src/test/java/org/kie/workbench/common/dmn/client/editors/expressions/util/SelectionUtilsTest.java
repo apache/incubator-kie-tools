@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.dmn.client.editors.expressions.util;
 
+import java.util.Collections;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,6 +39,9 @@ public class SelectionUtilsTest {
     @Mock
     private GridColumn uiColumn1;
 
+    @Mock
+    private GridColumn.HeaderMetaData headerMetaData;
+
     private GridData uiModel;
 
     @Before
@@ -49,6 +54,8 @@ public class SelectionUtilsTest {
 
         when(uiColumn0.getIndex()).thenReturn(0);
         when(uiColumn1.getIndex()).thenReturn(1);
+        when(uiColumn0.getHeaderMetaData()).thenReturn(Collections.singletonList(headerMetaData));
+        when(uiColumn1.getHeaderMetaData()).thenReturn(Collections.singletonList(headerMetaData));
     }
 
     @Test
@@ -109,5 +116,25 @@ public class SelectionUtilsTest {
         uiModel.selectCell(0, 1);
 
         assertThat(SelectionUtils.isMultiColumn(uiModel)).isTrue();
+    }
+
+    @Test
+    public void testIsMultiHeaderColumnZeroSelections() {
+        assertThat(SelectionUtils.isMultiHeaderColumn(uiModel)).isFalse();
+    }
+
+    @Test
+    public void testIsMultiHeaderColumnSingleSelection() {
+        uiModel.selectHeaderCell(0, 0);
+
+        assertThat(SelectionUtils.isMultiHeaderColumn(uiModel)).isFalse();
+    }
+
+    @Test
+    public void testIsMultiHeaderColumnMultipleSelections() {
+        uiModel.selectHeaderCell(0, 0);
+        uiModel.selectHeaderCell(0, 1);
+
+        assertThat(SelectionUtils.isMultiHeaderColumn(uiModel)).isTrue();
     }
 }

@@ -87,6 +87,8 @@ import org.uberfire.ext.wires.core.grids.client.util.CellContextUtilities;
 import org.uberfire.mvp.Command;
 
 import static org.kie.workbench.common.dmn.client.editors.expressions.util.RendererUtils.getExpressionTextLineHeight;
+import static org.uberfire.ext.wires.core.grids.client.util.ColumnIndexUtilities.getHeaderBlockEndColumnIndex;
+import static org.uberfire.ext.wires.core.grids.client.util.ColumnIndexUtilities.getHeaderBlockStartColumnIndex;
 
 public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, DecisionTableGridData, DecisionTableUIModelMapper> implements HasListSelectorControl,
                                                                                                                                        HasHitPolicyControl {
@@ -212,7 +214,10 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
                                                                                                    setTypeRefConsumer(),
                                                                                                    cellEditorControls,
                                                                                                    headerEditor,
-                                                                                                   Optional.of(translationService.getTranslation(DMNEditorConstants.DecisionTableEditor_EditInputClause))),
+                                                                                                   Optional.of(translationService.getTranslation(DMNEditorConstants.DecisionTableEditor_EditInputClause)),
+                                                                                                   listSelector,
+                                                                                                   this::getHeaderItems,
+                                                                                                   this::onItemSelected),
                                                                textAreaFactory,
                                                                getAndSetInitialWidth(index, DMNGridColumn.DEFAULT_WIDTH),
                                                                this);
@@ -259,7 +264,10 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
                                                                                     setTypeRefConsumer(oc, dtable),
                                                                                     cellEditorControls,
                                                                                     headerEditor,
-                                                                                    Optional.of(translationService.getTranslation(DMNEditorConstants.DecisionTableEditor_EditOutputClause))));
+                                                                                    Optional.of(translationService.getTranslation(DMNEditorConstants.DecisionTableEditor_EditOutputClause)),
+                                                                                    listSelector,
+                                                                                    this::getHeaderItems,
+                                                                                    this::onItemSelected));
                 } else {
                     metaData.add(new OutputClauseColumnHeaderMetaData(wrapOutputClauseIntoHasName(oc),
                                                                       oc,
@@ -268,7 +276,10 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
                                                                       setTypeRefConsumer(),
                                                                       cellEditorControls,
                                                                       headerEditor,
-                                                                      Optional.of(translationService.getTranslation(DMNEditorConstants.DecisionTableEditor_EditOutputClause))));
+                                                                      Optional.of(translationService.getTranslation(DMNEditorConstants.DecisionTableEditor_EditOutputClause)),
+                                                                      listSelector,
+                                                                      this::getHeaderItems,
+                                                                      this::onItemSelected));
                 }
                 if (dtable.getOutput().size() > 1) {
                     metaData.add(new OutputClauseColumnHeaderMetaData(wrapOutputClauseIntoHasName(oc),
@@ -278,7 +289,10 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
                                                                       setTypeRefConsumer(),
                                                                       cellEditorControls,
                                                                       headerEditor,
-                                                                      Optional.of(translationService.getTranslation(DMNEditorConstants.DecisionTableEditor_EditOutputClause))));
+                                                                      Optional.of(translationService.getTranslation(DMNEditorConstants.DecisionTableEditor_EditOutputClause)),
+                                                                      listSelector,
+                                                                      this::getHeaderItems,
+                                                                      this::onItemSelected));
                 }
             });
             return metaData;
@@ -397,61 +411,121 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
         });
     }
 
-    @Override
     @SuppressWarnings("unused")
-    public java.util.List<ListSelectorItem> getItems(final int uiRowIndex,
-                                                     final int uiColumnIndex) {
-        final java.util.List<ListSelectorItem> items = new ArrayList<>();
-        final boolean isMultiColumn = SelectionUtils.isMultiColumn(model);
+    List<ListSelectorItem> getHeaderItems(final int uiHeaderRowIndex,
+                                          final int uiHeaderColumnIndex) {
+        final List<ListSelectorItem> items = new ArrayList<>();
 
         getExpression().get().ifPresent(dtable -> {
-            final DecisionTableUIModelMapperHelper.DecisionTableSection section = DecisionTableUIModelMapperHelper.getSection(dtable, uiColumnIndex);
+            final boolean isMultiHeaderColumn = SelectionUtils.isMultiHeaderColumn(model);
+            final DecisionTableUIModelMapperHelper.DecisionTableSection section = DecisionTableUIModelMapperHelper.getSection(dtable, uiHeaderColumnIndex);
             switch (section) {
                 case INPUT_CLAUSES:
-                    addItems(items,
-                             new ListSelectorItemDefinition(translationService.format(DMNEditorConstants.DecisionTableEditor_InsertInputClauseLeft),
-                                                            !isMultiColumn,
-                                                            () -> addInputClause(uiColumnIndex)),
-                             new ListSelectorItemDefinition(translationService.format(DMNEditorConstants.DecisionTableEditor_InsertInputClauseRight),
-                                                            !isMultiColumn,
-                                                            () -> addInputClause(uiColumnIndex + 1)),
-                             new ListSelectorItemDefinition(translationService.format(DMNEditorConstants.DecisionTableEditor_DeleteInputClause),
-                                                            !isMultiColumn && dtable.getInput().size() > 1,
-                                                            () -> deleteInputClause(uiColumnIndex)));
-                    items.add(new ListSelectorDividerItem());
-                    addDecisionRuleItems(dtable,
-                                         items,
-                                         uiRowIndex);
+                    addInputClauseItems(items,
+                                        dtable,
+                                        uiHeaderColumnIndex,
+                                        isMultiHeaderColumn);
                     break;
 
                 case OUTPUT_CLAUSES:
-                    addItems(items,
-                             new ListSelectorItemDefinition(translationService.format(DMNEditorConstants.DecisionTableEditor_InsertOutputClauseLeft),
-                                                            !isMultiColumn,
-                                                            () -> addOutputClause(uiColumnIndex)),
-                             new ListSelectorItemDefinition(translationService.format(DMNEditorConstants.DecisionTableEditor_InsertOutputClauseRight),
-                                                            !isMultiColumn,
-                                                            () -> addOutputClause(uiColumnIndex + 1)),
-                             new ListSelectorItemDefinition(translationService.format(DMNEditorConstants.DecisionTableEditor_DeleteOutputClause),
-                                                            !isMultiColumn && dtable.getOutput().size() > 1,
-                                                            () -> deleteOutputClause(uiColumnIndex)));
-                    items.add(new ListSelectorDividerItem());
-                    addDecisionRuleItems(dtable,
-                                         items,
-                                         uiRowIndex);
-                    break;
-
-                default:
-                    addDecisionRuleItems(dtable,
-                                         items,
-                                         uiRowIndex);
+                    final List<GridColumn<?>> allColumns = model.getColumns();
+                    final List<GridColumn.HeaderMetaData> headerMetaData = allColumns.get(uiHeaderColumnIndex).getHeaderMetaData();
+                    final GridColumn.HeaderMetaData cellHeaderMetaData = headerMetaData.get(uiHeaderRowIndex);
+                    if (headerMetaData.size() - 1 == uiHeaderRowIndex) {
+                        addOutputClauseItems(items,
+                                             dtable,
+                                             uiHeaderColumnIndex,
+                                             isMultiHeaderColumn);
+                    } else {
+                        items.add(ListSelectorHeaderItem.build(translationService.format(DMNEditorConstants.DecisionTableEditor_OutputClauseHeader)));
+                        items.add(ListSelectorTextItem.build(translationService.format(DMNEditorConstants.DecisionTableEditor_InsertOutputClauseLeft),
+                                                             true,
+                                                             () -> addOutputClause(getHeaderBlockStartColumnIndex(allColumns,
+                                                                                                                  cellHeaderMetaData,
+                                                                                                                  uiHeaderRowIndex,
+                                                                                                                  uiHeaderColumnIndex))));
+                        items.add(ListSelectorTextItem.build(translationService.format(DMNEditorConstants.DecisionTableEditor_InsertOutputClauseRight),
+                                                             true,
+                                                             () -> addOutputClause(getHeaderBlockEndColumnIndex(allColumns,
+                                                                                                                cellHeaderMetaData,
+                                                                                                                uiHeaderRowIndex,
+                                                                                                                uiHeaderColumnIndex) + 1)));
+                    }
             }
         });
 
         return items;
     }
 
-    void addItems(final java.util.List<ListSelectorItem> items,
+    @Override
+    @SuppressWarnings("unused")
+    public List<ListSelectorItem> getItems(final int uiRowIndex,
+                                           final int uiColumnIndex) {
+        final List<ListSelectorItem> items = new ArrayList<>();
+
+        getExpression().get().ifPresent(dtable -> {
+            final boolean isMultiColumn = SelectionUtils.isMultiColumn(model);
+            final DecisionTableUIModelMapperHelper.DecisionTableSection section = DecisionTableUIModelMapperHelper.getSection(dtable, uiColumnIndex);
+            switch (section) {
+                case INPUT_CLAUSES:
+                    addInputClauseItems(items,
+                                        dtable,
+                                        uiColumnIndex,
+                                        isMultiColumn);
+                    items.add(new ListSelectorDividerItem());
+                    break;
+
+                case OUTPUT_CLAUSES:
+                    addOutputClauseItems(items,
+                                         dtable,
+                                         uiColumnIndex,
+                                         isMultiColumn);
+                    items.add(new ListSelectorDividerItem());
+            }
+
+            addDecisionRuleItems(dtable,
+                                 items,
+                                 uiRowIndex);
+        });
+
+        return items;
+    }
+
+    private void addInputClauseItems(final List<ListSelectorItem> items,
+                                     final DecisionTable dtable,
+                                     final int uiColumnIndex,
+                                     final boolean isMultiColumn) {
+        items.add(ListSelectorHeaderItem.build(translationService.format(DMNEditorConstants.DecisionTableEditor_InputClauseHeader)));
+        addItems(items,
+                 new ListSelectorItemDefinition(translationService.format(DMNEditorConstants.DecisionTableEditor_InsertInputClauseLeft),
+                                                !isMultiColumn,
+                                                () -> addInputClause(uiColumnIndex)),
+                 new ListSelectorItemDefinition(translationService.format(DMNEditorConstants.DecisionTableEditor_InsertInputClauseRight),
+                                                !isMultiColumn,
+                                                () -> addInputClause(uiColumnIndex + 1)),
+                 new ListSelectorItemDefinition(translationService.format(DMNEditorConstants.DecisionTableEditor_DeleteInputClause),
+                                                !isMultiColumn && dtable.getInput().size() > 1,
+                                                () -> deleteInputClause(uiColumnIndex)));
+    }
+
+    private void addOutputClauseItems(final List<ListSelectorItem> items,
+                                      final DecisionTable dtable,
+                                      final int uiColumnIndex,
+                                      final boolean isMultiColumn) {
+        items.add(ListSelectorHeaderItem.build(translationService.format(DMNEditorConstants.DecisionTableEditor_OutputClauseHeader)));
+        addItems(items,
+                 new ListSelectorItemDefinition(translationService.format(DMNEditorConstants.DecisionTableEditor_InsertOutputClauseLeft),
+                                                !isMultiColumn,
+                                                () -> addOutputClause(uiColumnIndex)),
+                 new ListSelectorItemDefinition(translationService.format(DMNEditorConstants.DecisionTableEditor_InsertOutputClauseRight),
+                                                !isMultiColumn,
+                                                () -> addOutputClause(uiColumnIndex + 1)),
+                 new ListSelectorItemDefinition(translationService.format(DMNEditorConstants.DecisionTableEditor_DeleteOutputClause),
+                                                !isMultiColumn && dtable.getOutput().size() > 1,
+                                                () -> deleteOutputClause(uiColumnIndex)));
+    }
+
+    void addItems(final List<ListSelectorItem> items,
                   final ListSelectorItemDefinition onBefore,
                   final ListSelectorItemDefinition onAfter,
                   final ListSelectorItemDefinition onDelete) {
@@ -476,10 +550,11 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
     }
 
     void addDecisionRuleItems(final DecisionTable dtable,
-                              final java.util.List<ListSelectorItem> items,
+                              final List<ListSelectorItem> items,
                               final int uiRowIndex) {
         final boolean isMultiRow = SelectionUtils.isMultiRow(model);
 
+        items.add(ListSelectorHeaderItem.build(translationService.format(DMNEditorConstants.DecisionTableEditor_DecisionRuleHeader)));
         addItems(items,
                  new ListSelectorItemDefinition(translationService.format(DMNEditorConstants.DecisionTableEditor_InsertDecisionRuleAbove),
                                                 !isMultiRow,

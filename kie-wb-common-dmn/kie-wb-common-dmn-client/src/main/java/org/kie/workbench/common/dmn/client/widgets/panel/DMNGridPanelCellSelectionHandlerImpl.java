@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.dmn.client.widgets.panel;
 
+import java.util.List;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
@@ -33,23 +35,52 @@ public class DMNGridPanelCellSelectionHandlerImpl implements DMNGridPanelCellSel
     }
 
     @Override
+    public void selectHeaderCellIfRequired(final int uiHeaderRowIndex,
+                                           final int uiHeaderColumnIndex,
+                                           final GridWidget gridWidget,
+                                           final boolean isShiftKeyDown,
+                                           final boolean isControlKeyDown) {
+        final GridData gridData = gridWidget.getModel();
+        final GridColumn<?> column = gridData.getColumns().get(uiHeaderColumnIndex);
+        doSelectCellIfRequired(uiHeaderRowIndex,
+                               column.getIndex(),
+                               gridWidget,
+                               gridData.getSelectedHeaderCells(),
+                               () -> gridWidget.selectHeaderCell(uiHeaderRowIndex,
+                                                                 uiHeaderColumnIndex,
+                                                                 isShiftKeyDown,
+                                                                 isControlKeyDown));
+    }
+
+    @Override
     public void selectCellIfRequired(final int uiRowIndex,
                                      final int uiColumnIndex,
                                      final GridWidget gridWidget,
                                      final boolean isShiftKeyDown,
                                      final boolean isControlKeyDown) {
-        // If the right-click did not occur in an already selected cell, ensure the cell is selected
         final GridData gridData = gridWidget.getModel();
         final GridColumn<?> column = gridData.getColumns().get(uiColumnIndex);
-        final Stream<SelectedCell> modelColumnSelectedCells = gridData.getSelectedCells().stream().filter(sc -> sc.getColumnIndex() == column.getIndex());
+        doSelectCellIfRequired(uiRowIndex,
+                               column.getIndex(),
+                               gridWidget,
+                               gridData.getSelectedCells(),
+                               () -> gridWidget.selectCell(uiRowIndex,
+                                                           uiColumnIndex,
+                                                           isShiftKeyDown,
+                                                           isControlKeyDown));
+    }
+
+    private void doSelectCellIfRequired(final int uiRowIndex,
+                                        final int uiColumnIndex,
+                                        final GridWidget gridWidget,
+                                        final List<SelectedCell> selectedCells,
+                                        final Supplier<Boolean> isSelectionChanged) {
+        // If the right-click did not occur in an already selected cell, ensure the cell is selected
+        final Stream<SelectedCell> modelColumnSelectedCells = selectedCells.stream().filter(sc -> sc.getColumnIndex() == uiColumnIndex);
         final boolean isContextMenuCellSelectedCell = modelColumnSelectedCells.map(SelectedCell::getRowIndex).anyMatch(ri -> ri == uiRowIndex);
         if (!isContextMenuCellSelectedCell) {
             gridLayer.select(gridWidget);
-            final boolean selectionChanged = gridWidget.selectCell(uiRowIndex,
-                                                                   uiColumnIndex,
-                                                                   isShiftKeyDown,
-                                                                   isControlKeyDown);
-            if (selectionChanged) {
+            if (isSelectionChanged.get()) {
                 gridLayer.batch();
             }
         }

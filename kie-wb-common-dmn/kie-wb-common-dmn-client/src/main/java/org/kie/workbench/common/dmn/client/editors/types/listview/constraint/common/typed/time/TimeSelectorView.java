@@ -323,7 +323,7 @@ public class TimeSelectorView implements TimeSelector.View {
         onBlur(blurEvent);
     }
 
-    private void onBlur(final BlurEvent blurEvent){
+    private void onBlur(final BlurEvent blurEvent) {
         final Object target = getEventTarget(blurEvent);
         if (!Objects.isNull(getOnValueInputBlur())
                 && !Objects.isNull(target)
@@ -331,7 +331,6 @@ public class TimeSelectorView implements TimeSelector.View {
             getOnValueInputBlur().accept(blurEvent);
         }
     }
-
 
     @EventHandler("toggle-timezone-button")
     public void onToggleTimeZoneButtonClick(final ClickEvent clickEvent) {

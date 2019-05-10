@@ -17,6 +17,7 @@ package org.kie.workbench.common.dmn.client.widgets.panel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import com.ait.lienzo.client.core.types.Point2D;
@@ -27,13 +28,16 @@ import org.kie.workbench.common.dmn.client.widgets.grid.controls.HasCellEditorCo
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
+import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
+import org.uberfire.mvp.Command;
 
 import static org.uberfire.ext.wires.core.grids.client.util.CoordinateUtilities.convertDOMToGridCoordinate;
 import static org.uberfire.ext.wires.core.grids.client.util.CoordinateUtilities.getRelativeXOfEvent;
 import static org.uberfire.ext.wires.core.grids.client.util.CoordinateUtilities.getRelativeYOfEvent;
 import static org.uberfire.ext.wires.core.grids.client.util.CoordinateUtilities.getUiColumnIndex;
+import static org.uberfire.ext.wires.core.grids.client.util.CoordinateUtilities.getUiHeaderRowIndex;
 import static org.uberfire.ext.wires.core.grids.client.util.CoordinateUtilities.getUiRowIndex;
 
 public class DMNGridPanelContextMenuHandler implements ContextMenuHandler {
@@ -49,25 +53,28 @@ public class DMNGridPanelContextMenuHandler implements ContextMenuHandler {
         final Point2D ap;
         final int uiRowIndex;
         final int uiColumnIndex;
-        final GridWidget gridWidget;
+        final Object binding;
         final HasCellEditorControls hasCellEditorControls;
+        final Command ensureCellSelectedCommand;
 
-        public CandidateGridWidget(final Point2D ap,
-                                   final int uiRowIndex,
-                                   final int uiColumnIndex,
-                                   final GridWidget gridWidget,
-                                   final HasCellEditorControls hasCellEditorControls) {
+        CandidateGridWidget(final Point2D ap,
+                            final int uiRowIndex,
+                            final int uiColumnIndex,
+                            final Object binding,
+                            final HasCellEditorControls hasCellEditorControls,
+                            final Command ensureCellSelectedCommand) {
             this.ap = ap;
             this.uiRowIndex = uiRowIndex;
             this.uiColumnIndex = uiColumnIndex;
-            this.gridWidget = gridWidget;
+            this.binding = binding;
             this.hasCellEditorControls = hasCellEditorControls;
+            this.ensureCellSelectedCommand = ensureCellSelectedCommand;
         }
     }
 
-    public DMNGridPanelContextMenuHandler(final DMNGridLayer gridLayer,
-                                          final CellEditorControlsView.Presenter cellEditorControls,
-                                          final DMNGridPanelCellSelectionHandler cellSelectionHandler) {
+    DMNGridPanelContextMenuHandler(final DMNGridLayer gridLayer,
+                                   final CellEditorControlsView.Presenter cellEditorControls,
+                                   final DMNGridPanelCellSelectionHandler cellSelectionHandler) {
         this.gridLayer = gridLayer;
         this.cellEditorControls = cellEditorControls;
         this.cellSelectionHandler = cellSelectionHandler;
@@ -85,7 +92,7 @@ public class DMNGridPanelContextMenuHandler implements ContextMenuHandler {
 
         final List<CandidateGridWidget> candidateGridWidgets = new ArrayList<>();
         for (GridWidget gridWidget : gridLayer.getGridWidgets()) {
-            
+
             if (DynamicReadOnlyUtils.isOnlyVisualChangeAllowed(gridWidget)) {
                 continue;
             }
@@ -94,26 +101,39 @@ public class DMNGridPanelContextMenuHandler implements ContextMenuHandler {
             final Point2D ap = convertDOMToGridCoordinate(gridWidget,
                                                           new Point2D(canvasX,
                                                                       canvasY));
-            final Integer uiRowIndex = getUiRowIndex(gridWidget,
-                                                     ap.getY());
-            final Integer uiColumnIndex = getUiColumnIndex(gridWidget,
-                                                           ap.getX());
 
-            if (uiRowIndex == null || uiColumnIndex == null) {
-                continue;
-            }
-            final GridCell<?> cell = gridModel.getCell(uiRowIndex, uiColumnIndex);
-            if (cell == null) {
-                continue;
+            //Ascertain whether the right-click occurred in the Header or Body
+            final Integer uiHeaderRowIndex = getUiHeaderRowIndex(gridWidget, ap);
+            final Integer uiColumnIndex = getUiColumnIndex(gridWidget, ap.getX());
+            if (Objects.nonNull(uiHeaderRowIndex) && Objects.nonNull(uiColumnIndex)) {
+                final GridColumn.HeaderMetaData hasCellEditorControls = gridModel.getColumns().get(uiColumnIndex).getHeaderMetaData().get(uiHeaderRowIndex);
+                registerCandidateGridWidget(hasCellEditorControls,
+                                            gridWidget.getComputedLocation().add(ap),
+                                            uiHeaderRowIndex,
+                                            uiColumnIndex,
+                                            hasCellEditorControls,
+                                            candidateGridWidgets,
+                                            () -> cellSelectionHandler.selectHeaderCellIfRequired(uiHeaderRowIndex,
+                                                                                                  uiColumnIndex,
+                                                                                                  gridWidget,
+                                                                                                  isShiftKeyDown,
+                                                                                                  isControlKeyDown));
             }
 
-            if (cell instanceof HasCellEditorControls) {
-                final HasCellEditorControls hasControls = (HasCellEditorControls) cell;
-                candidateGridWidgets.add(new CandidateGridWidget(ap,
-                                                                 uiRowIndex,
-                                                                 uiColumnIndex,
-                                                                 gridWidget,
-                                                                 hasControls));
+            final Integer uiRowIndex = getUiRowIndex(gridWidget, ap.getY());
+            if (Objects.nonNull(uiRowIndex) && Objects.nonNull(uiColumnIndex)) {
+                final GridCell<?> hasCellEditorControls = gridModel.getCell(uiRowIndex, uiColumnIndex);
+                registerCandidateGridWidget(hasCellEditorControls,
+                                            gridWidget.getComputedLocation().add(ap),
+                                            uiRowIndex,
+                                            uiColumnIndex,
+                                            gridWidget,
+                                            candidateGridWidgets,
+                                            () -> cellSelectionHandler.selectCellIfRequired(uiRowIndex,
+                                                                                            uiColumnIndex,
+                                                                                            gridWidget,
+                                                                                            isShiftKeyDown,
+                                                                                            isControlKeyDown));
             }
         }
 
@@ -126,25 +146,42 @@ public class DMNGridPanelContextMenuHandler implements ContextMenuHandler {
         final Point2D ap = candidateGridWidget.ap;
         final int uiRowIndex = candidateGridWidget.uiRowIndex;
         final int uiColumnIndex = candidateGridWidget.uiColumnIndex;
-        final GridWidget gridWidget = candidateGridWidget.gridWidget;
+        final Object binding = candidateGridWidget.binding;
         final HasCellEditorControls hasCellEditorControls = candidateGridWidget.hasCellEditorControls;
         final Optional<HasCellEditorControls.Editor> editor = hasCellEditorControls.getEditor();
 
-        //First select cell, if required, as selections are examined by HasCellEditorControls.Editor#bind
-        cellSelectionHandler.selectCellIfRequired(uiRowIndex,
-                                                  uiColumnIndex,
-                                                  gridWidget,
-                                                  isShiftKeyDown,
-                                                  isControlKeyDown);
-
         editor.ifPresent(e -> {
-            e.bind(gridWidget,
+            //First select cell, if required, as selections are examined by HasCellEditorControls.Editor#bind
+            candidateGridWidget.ensureCellSelectedCommand.execute();
+
+            e.bind(binding,
                    uiRowIndex,
                    uiColumnIndex);
             cellEditorControls.show(e,
                                     EDITOR_TITLE,
-                                    (int) (ap.getX() + gridWidget.getComputedLocation().getX()),
-                                    (int) (ap.getY() + gridWidget.getComputedLocation().getY()));
+                                    (int) (ap.getX()),
+                                    (int) (ap.getY()));
         });
+    }
+
+    private void registerCandidateGridWidget(final Object hasCellEditorControls,
+                                             final Point2D ap,
+                                             final int uiRowIndex,
+                                             final int uiColumnIndex,
+                                             final Object binding,
+                                             final List<CandidateGridWidget> candidateGridWidgets,
+                                             final Command ensureCellSelectedCommand) {
+        if (hasCellEditorControls == null) {
+            return;
+        }
+
+        if (hasCellEditorControls instanceof HasCellEditorControls) {
+            candidateGridWidgets.add(new CandidateGridWidget(ap,
+                                                             uiRowIndex,
+                                                             uiColumnIndex,
+                                                             binding,
+                                                             (HasCellEditorControls) hasCellEditorControls,
+                                                             ensureCellSelectedCommand));
+        }
     }
 }

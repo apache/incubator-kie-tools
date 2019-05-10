@@ -159,7 +159,10 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
                                                                                                   setTypeRefConsumer(),
                                                                                                   cellEditorControls,
                                                                                                   headerEditor,
-                                                                                                  Optional.of(translationService.getTranslation(DMNEditorConstants.RelationEditor_EditRelation))),
+                                                                                                  Optional.of(translationService.getTranslation(DMNEditorConstants.RelationEditor_EditRelation)),
+                                                                                                  listSelector,
+                                                                                                  this::getHeaderItems,
+                                                                                                  this::onItemSelected),
                                                                  factory,
                                                                  getAndSetInitialWidth(index, DMNGridColumn.DEFAULT_WIDTH),
                                                                  this);
@@ -186,33 +189,26 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
         });
     }
 
+    @SuppressWarnings("unused")
+    java.util.List<ListSelectorItem> getHeaderItems(final int uiHeaderRowIndex,
+                                                    final int uiHeaderColumnIndex) {
+        final java.util.List<ListSelectorItem> items = new ArrayList<>();
+
+        addColumnItems(items, uiHeaderColumnIndex);
+
+        return items;
+    }
+
     @Override
     @SuppressWarnings("unused")
     public java.util.List<ListSelectorItem> getItems(final int uiRowIndex,
                                                      final int uiColumnIndex) {
         final java.util.List<ListSelectorItem> items = new ArrayList<>();
-        final boolean isMultiRow = SelectionUtils.isMultiRow(model);
-        final boolean isMultiColumn = SelectionUtils.isMultiColumn(model);
 
-        items.add(ListSelectorTextItem.build(translationService.format(DMNEditorConstants.RelationEditor_InsertColumnLeft),
-                                             !isMultiColumn && uiColumnIndex > 0,
-                                             () -> {
-                                                 cellEditorControls.hide();
-                                                 getExpression().get().ifPresent(e -> addColumn(uiColumnIndex));
-                                             }));
-        items.add(ListSelectorTextItem.build(translationService.format(DMNEditorConstants.RelationEditor_InsertColumnRight),
-                                             !isMultiColumn && uiColumnIndex > 0,
-                                             () -> {
-                                                 cellEditorControls.hide();
-                                                 getExpression().get().ifPresent(e -> addColumn(uiColumnIndex + 1));
-                                             }));
-        items.add(ListSelectorTextItem.build(translationService.format(DMNEditorConstants.RelationEditor_DeleteColumn),
-                                             !isMultiColumn && model.getColumnCount() - RelationUIModelMapperHelper.ROW_INDEX_COLUMN_COUNT > 1 && uiColumnIndex > 0,
-                                             () -> {
-                                                 cellEditorControls.hide();
-                                                 getExpression().get().ifPresent(e -> deleteColumn(uiColumnIndex));
-                                             }));
-        items.add(new ListSelectorDividerItem());
+        addColumnItems(items, uiColumnIndex);
+
+        final boolean isMultiRow = SelectionUtils.isMultiRow(model);
+        items.add(ListSelectorHeaderItem.build(translationService.format(DMNEditorConstants.RelationEditor_HeaderRows)));
         items.add(ListSelectorTextItem.build(translationService.format(DMNEditorConstants.RelationEditor_InsertRowAbove),
                                              !isMultiRow,
                                              () -> {
@@ -232,6 +228,31 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
                                                  getExpression().get().ifPresent(e -> deleteRow(uiRowIndex));
                                              }));
         return items;
+    }
+
+    private void addColumnItems(final java.util.List<ListSelectorItem> items,
+                                final int uiColumnIndex) {
+        final boolean isMultiColumn = SelectionUtils.isMultiColumn(model);
+
+        items.add(ListSelectorHeaderItem.build(translationService.format(DMNEditorConstants.RelationEditor_HeaderColumns)));
+        items.add(ListSelectorTextItem.build(translationService.format(DMNEditorConstants.RelationEditor_InsertColumnLeft),
+                                             !isMultiColumn && uiColumnIndex > 0,
+                                             () -> {
+                                                 cellEditorControls.hide();
+                                                 getExpression().get().ifPresent(e -> addColumn(uiColumnIndex));
+                                             }));
+        items.add(ListSelectorTextItem.build(translationService.format(DMNEditorConstants.RelationEditor_InsertColumnRight),
+                                             !isMultiColumn && uiColumnIndex > 0,
+                                             () -> {
+                                                 cellEditorControls.hide();
+                                                 getExpression().get().ifPresent(e -> addColumn(uiColumnIndex + 1));
+                                             }));
+        items.add(ListSelectorTextItem.build(translationService.format(DMNEditorConstants.RelationEditor_DeleteColumn),
+                                             !isMultiColumn && model.getColumnCount() - RelationUIModelMapperHelper.ROW_INDEX_COLUMN_COUNT > 1 && uiColumnIndex > 0,
+                                             () -> {
+                                                 cellEditorControls.hide();
+                                                 getExpression().get().ifPresent(e -> deleteColumn(uiColumnIndex));
+                                             }));
     }
 
     @Override

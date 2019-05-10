@@ -111,7 +111,7 @@ public class CommandUtilsTest {
     private BaseGrid<Expression> gridWidget;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         decisionRuleOne = new DecisionRule();
         decisionRuleTwo = new DecisionRule();
         decisionRuleThree = new DecisionRule();
@@ -138,56 +138,47 @@ public class CommandUtilsTest {
                                               domainObjectSelectionEvent,
                                               cellEditorControls,
                                               translationService) {
-            @Override
-            public List<ListSelectorItem> getItems(final int uiRowIndex,
-                                                   final int uiColumnIndex) {
-                return Collections.emptyList();
-            }
 
-            @Override
-            public void onItemSelected(final ListSelectorItem item) {
-                //NOP for tests
-            }
         };
     }
 
     @Test
-    public void testMoveOneRowUp() throws Exception {
+    public void testMoveOneRowUp() {
         CommandUtils.moveRows(allRows, Collections.singletonList(decisionRuleThree), 0);
 
         Assertions.assertThat(allRows).containsSequence(decisionRuleThree, decisionRuleOne, decisionRuleTwo);
     }
 
     @Test
-    public void testMoveOneRowUpMiddle() throws Exception {
+    public void testMoveOneRowUpMiddle() {
         CommandUtils.moveRows(allRows, Collections.singletonList(decisionRuleThree), 1);
 
         Assertions.assertThat(allRows).containsSequence(decisionRuleOne, decisionRuleThree, decisionRuleTwo);
     }
 
     @Test
-    public void testMoveOneRowDown() throws Exception {
+    public void testMoveOneRowDown() {
         CommandUtils.moveRows(allRows, Collections.singletonList(decisionRuleOne), 2);
 
         Assertions.assertThat(allRows).containsSequence(decisionRuleTwo, decisionRuleThree, decisionRuleOne);
     }
 
     @Test
-    public void testMoveOneRowDownMiddle() throws Exception {
+    public void testMoveOneRowDownMiddle() {
         CommandUtils.moveRows(allRows, Collections.singletonList(decisionRuleOne), 1);
 
         Assertions.assertThat(allRows).containsSequence(decisionRuleTwo, decisionRuleOne, decisionRuleThree);
     }
 
     @Test
-    public void testMoveTwoRowsUp() throws Exception {
+    public void testMoveTwoRowsUp() {
         CommandUtils.moveRows(allRows, Arrays.asList(decisionRuleTwo, decisionRuleThree), 0);
 
         Assertions.assertThat(allRows).containsSequence(decisionRuleTwo, decisionRuleThree, decisionRuleOne);
     }
 
     @Test
-    public void testMoveTwoRowsDown() throws Exception {
+    public void testMoveTwoRowsDown() {
         CommandUtils.moveRows(allRows, Arrays.asList(decisionRuleOne, decisionRuleTwo), 2);
 
         Assertions.assertThat(allRows).containsSequence(decisionRuleThree, decisionRuleOne, decisionRuleTwo);
@@ -276,7 +267,7 @@ public class CommandUtilsTest {
     }
 
     @Test
-    public void testExtractCellValueNoValue() throws Exception {
+    public void testExtractCellValueNoValue() {
         final int rowIndex = 123;
         final int columnIndex = 456;
         final GridData gridData = mock(GridData.class);
@@ -290,7 +281,7 @@ public class CommandUtilsTest {
     }
 
     @Test
-    public void testExtractCellValue() throws Exception {
+    public void testExtractCellValue() {
         final int rowIndex = 123;
         final int columnIndex = 456;
         final GridCellValue gridCellValue = mock(GridCellValue.class);

@@ -17,7 +17,6 @@
 package org.kie.workbench.common.dmn.client.editors.expressions.types.function.supplementary;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -151,16 +150,5 @@ public class FunctionSupplementaryGrid extends BaseExpressionGrid<Context, Funct
                                            2);
             });
         });
-    }
-
-    @Override
-    public List<ListSelectorItem> getItems(final int uiRowIndex,
-                                           final int uiColumnIndex) {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public void onItemSelected(final ListSelectorItem item) {
-        //Do nothing for now until https://issues.jboss.org/browse/DROOLS-2298
     }
 }

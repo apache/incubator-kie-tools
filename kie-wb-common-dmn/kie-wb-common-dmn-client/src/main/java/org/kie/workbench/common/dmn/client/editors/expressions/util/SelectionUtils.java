@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.util;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
@@ -36,7 +37,15 @@ public class SelectionUtils {
     }
 
     public static boolean isMultiColumn(final GridData uiModel) {
-        return uiModel.getSelectedCells()
+        return isMultiColumn(uiModel.getSelectedCells());
+    }
+
+    public static boolean isMultiHeaderColumn(final GridData uiModel) {
+        return isMultiColumn(uiModel.getSelectedHeaderCells());
+    }
+
+    private static boolean isMultiColumn(final List<GridData.SelectedCell> selectedCells) {
+        return selectedCells
                 .stream()
                 .map(GridData.SelectedCell::getColumnIndex)
                 .distinct()

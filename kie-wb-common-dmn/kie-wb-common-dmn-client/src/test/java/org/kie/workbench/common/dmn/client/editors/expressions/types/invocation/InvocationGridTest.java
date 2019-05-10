@@ -128,15 +128,19 @@ import static org.mockito.Mockito.when;
 @RunWith(LienzoMockitoTestRunner.class)
 public class InvocationGridTest {
 
-    private final static int INSERT_PARAMETER_ABOVE = 0;
+    private final static int HEADER = 0;
 
-    private final static int INSERT_PARAMETER_BELOW = 1;
+    private final static int INSERT_PARAMETER = 1;
 
-    private final static int DELETE_PARAMETER = 2;
+    private final static int INSERT_PARAMETER_ABOVE = 1;
 
-    private final static int DIVIDER = 3;
+    private final static int INSERT_PARAMETER_BELOW = 2;
 
-    private final static int CLEAR_EXPRESSION_TYPE = 4;
+    private final static int DELETE_PARAMETER = 3;
+
+    private final static int DIVIDER = 4;
+
+    private final static int CLEAR_EXPRESSION_TYPE = 5;
 
     private static final String NODE_UUID = "uuid";
 
@@ -566,13 +570,13 @@ public class InvocationGridTest {
 
         final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 2);
 
-        assertThat(items.size()).isEqualTo(5);
-        assertDefaultListItems(items.subList(0, 3), true);
+        assertThat(items.size()).isEqualTo(6);
+        assertDefaultListItems(items.subList(0, 4), true);
 
         assertThat(items.get(DIVIDER)).isInstanceOf(HasListSelectorControl.ListSelectorDividerItem.class);
-        assertListSelectorItem(items.get(CLEAR_EXPRESSION_TYPE),
-                               DMNEditorConstants.ExpressionEditor_Clear,
-                               true);
+        assertListSelectorTextItem(items.get(CLEAR_EXPRESSION_TYPE),
+                                   DMNEditorConstants.ExpressionEditor_Clear,
+                                   true);
 
         ((HasListSelectorControl.ListSelectorTextItem) items.get(CLEAR_EXPRESSION_TYPE)).getCommand().execute();
         verify(cellEditorControls).hide();
@@ -605,36 +609,75 @@ public class InvocationGridTest {
 
         final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 2);
 
-        assertThat(items.size()).isEqualTo(5);
-        assertDefaultListItems(items.subList(0, 3), false);
+        assertThat(items.size()).isEqualTo(6);
+        assertDefaultListItems(items.subList(0, 4), false);
 
         assertThat(items.get(DIVIDER)).isInstanceOf(HasListSelectorControl.ListSelectorDividerItem.class);
-        assertListSelectorItem(items.get(CLEAR_EXPRESSION_TYPE),
-                               DMNEditorConstants.ExpressionEditor_Clear,
-                               false);
+        assertListSelectorTextItem(items.get(CLEAR_EXPRESSION_TYPE),
+                                   DMNEditorConstants.ExpressionEditor_Clear,
+                                   false);
+    }
+
+    @Test
+    public void testGetHeaderItemsRowNumberColumn() {
+        setupGrid(0);
+
+        assertDefaultHeaderListItems(grid.getHeaderItems(0, 0));
+    }
+
+    @Test
+    public void testGetHeaderItemsNameColumn() {
+        setupGrid(0);
+
+        assertDefaultHeaderListItems(grid.getHeaderItems(0, 1));
+    }
+
+    @Test
+    public void testGetHeaderItemsExpressionColumn() {
+        setupGrid(0);
+
+        assertDefaultHeaderListItems(grid.getHeaderItems(0, 2));
     }
 
     private void assertDefaultListItems(final List<HasListSelectorControl.ListSelectorItem> items,
                                         final boolean enabled) {
-        assertThat(items.size()).isEqualTo(3);
-        assertListSelectorItem(items.get(INSERT_PARAMETER_ABOVE),
-                               DMNEditorConstants.InvocationEditor_InsertParameterAbove,
-                               enabled);
-        assertListSelectorItem(items.get(INSERT_PARAMETER_BELOW),
-                               DMNEditorConstants.InvocationEditor_InsertParameterBelow,
-                               enabled);
-        assertListSelectorItem(items.get(DELETE_PARAMETER),
-                               DMNEditorConstants.InvocationEditor_DeleteParameter,
-                               enabled && grid.getModel().getRowCount() > 1);
+        assertThat(items.size()).isEqualTo(4);
+        assertListSelectorHeaderItem(items.get(HEADER),
+                                     DMNEditorConstants.InvocationEditor_Header);
+        assertListSelectorTextItem(items.get(INSERT_PARAMETER_ABOVE),
+                                   DMNEditorConstants.InvocationEditor_InsertParameterAbove,
+                                   enabled);
+        assertListSelectorTextItem(items.get(INSERT_PARAMETER_BELOW),
+                                   DMNEditorConstants.InvocationEditor_InsertParameterBelow,
+                                   enabled);
+        assertListSelectorTextItem(items.get(DELETE_PARAMETER),
+                                   DMNEditorConstants.InvocationEditor_DeleteParameter,
+                                   enabled && grid.getModel().getRowCount() > 1);
     }
 
-    private void assertListSelectorItem(final HasListSelectorControl.ListSelectorItem item,
-                                        final String text,
-                                        final boolean enabled) {
+    private void assertListSelectorHeaderItem(final HasListSelectorControl.ListSelectorItem item,
+                                              final String text) {
+        assertThat(item).isInstanceOf(HasListSelectorControl.ListSelectorHeaderItem.class);
+        final HasListSelectorControl.ListSelectorHeaderItem hi = (HasListSelectorControl.ListSelectorHeaderItem) item;
+        assertThat(hi.getText()).isEqualTo(text);
+    }
+
+    private void assertListSelectorTextItem(final HasListSelectorControl.ListSelectorItem item,
+                                            final String text,
+                                            final boolean enabled) {
         assertThat(item).isInstanceOf(HasListSelectorControl.ListSelectorTextItem.class);
         final HasListSelectorControl.ListSelectorTextItem ti = (HasListSelectorControl.ListSelectorTextItem) item;
         assertThat(ti.getText()).isEqualTo(text);
         assertThat(ti.isEnabled()).isEqualTo(enabled);
+    }
+
+    private void assertDefaultHeaderListItems(final List<HasListSelectorControl.ListSelectorItem> items) {
+        assertThat(items.size()).isEqualTo(2);
+        assertListSelectorHeaderItem(items.get(HEADER),
+                                     DMNEditorConstants.InvocationEditor_Header);
+        assertListSelectorTextItem(items.get(INSERT_PARAMETER),
+                                   DMNEditorConstants.InvocationEditor_InsertParameter,
+                                   true);
     }
 
     @Test
@@ -700,6 +743,19 @@ public class InvocationGridTest {
         grid.getModel().appendRow(new BaseGridRow());
         assertDeleteParameterEnabled(0, true);
         assertDeleteParameterEnabled(1, true);
+    }
+
+    @Test
+    public void testOnHeaderItemSelectedInsertParameter() {
+        setupGrid(0);
+
+        final List<HasListSelectorControl.ListSelectorItem> items = grid.getHeaderItems(0, 1);
+        final HasListSelectorControl.ListSelectorTextItem ti = (HasListSelectorControl.ListSelectorTextItem) items.get(INSERT_PARAMETER);
+
+        grid.onItemSelected(ti);
+
+        verify(cellEditorControls).hide();
+        verify(grid).addParameterBinding(eq(1));
     }
 
     private void assertDeleteParameterEnabled(final int uiRowIndex, final boolean enabled) {

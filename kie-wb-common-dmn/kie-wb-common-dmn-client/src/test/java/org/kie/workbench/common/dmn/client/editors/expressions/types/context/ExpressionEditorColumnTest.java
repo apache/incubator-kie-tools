@@ -16,8 +16,6 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.context;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
@@ -118,7 +116,7 @@ public class ExpressionEditorColumnTest {
     private ExpressionEditorColumn column;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         gridData = new BaseGridData();
         widget = new BaseGrid<Expression>(gridLayer,
                                           gridData,
@@ -130,16 +128,7 @@ public class ExpressionEditorColumnTest {
                                           domainObjectSelectionEvent,
                                           cellEditorControls,
                                           translationService) {
-            @Override
-            public List<ListSelectorItem> getItems(final int uiRowIndex,
-                                                   final int uiColumnIndex) {
-                return Collections.emptyList();
-            }
 
-            @Override
-            public void onItemSelected(final ListSelectorItem item) {
-                //NOP for tests
-            }
         };
         column = new ExpressionEditorColumn(gridLayer,
                                             new BaseHeaderMetaData("column header"),
@@ -148,7 +137,7 @@ public class ExpressionEditorColumnTest {
     }
 
     @Test
-    public void testMinimalWidthNoContent() throws Exception {
+    public void testMinimalWidthNoContent() {
         gridData.appendColumn(column);
         assertThat(column.getMinimumWidth()).isEqualTo(DEFAULT_WIDTH);
     }
@@ -159,7 +148,7 @@ public class ExpressionEditorColumnTest {
      * [125]
      */
     @Test
-    public void testMinimalWidthOneCellInEachRow() throws Exception {
+    public void testMinimalWidthOneCellInEachRow() {
         gridData.appendColumn(column);
         gridData.appendRow(new BaseGridRow());
         gridData.appendRow(new BaseGridRow());
@@ -176,7 +165,7 @@ public class ExpressionEditorColumnTest {
      * [105]
      */
     @Test
-    public void testMinimalWidthTwoCellsSum() throws Exception {
+    public void testMinimalWidthTwoCellsSum() {
         gridData.appendColumn(column);
         gridData.appendRow(new BaseGridRow());
         gridData.appendRow(new BaseGridRow());
@@ -193,7 +182,7 @@ public class ExpressionEditorColumnTest {
      * [50][60][10]
      */
     @Test
-    public void testMinimalWidthThreeCellsSum() throws Exception {
+    public void testMinimalWidthThreeCellsSum() {
         gridData.appendColumn(column);
         gridData.appendRow(new BaseGridRow());
         gridData.appendRow(new BaseGridRow());
@@ -210,7 +199,7 @@ public class ExpressionEditorColumnTest {
      * [49][50]
      */
     @Test
-    public void testMinimalWidthDefaultWidth() throws Exception {
+    public void testMinimalWidthDefaultWidth() {
         gridData.appendColumn(column);
         gridData.appendRow(new BaseGridRow());
         gridData.appendRow(new BaseGridRow());
@@ -227,7 +216,7 @@ public class ExpressionEditorColumnTest {
      * [50][60]
      */
     @Test
-    public void testMinimalWidthNoCellsInMiddle() throws Exception {
+    public void testMinimalWidthNoCellsInMiddle() {
         gridData.appendColumn(column);
         gridData.appendRow(new BaseGridRow());
         gridData.appendRow(new BaseGridRow());
@@ -244,7 +233,7 @@ public class ExpressionEditorColumnTest {
      * (10)[125](10)
      */
     @Test
-    public void testMinimalWidthOneCellInEachRowWithPadding() throws Exception {
+    public void testMinimalWidthOneCellInEachRowWithPadding() {
         gridData.appendColumn(column);
         gridData.appendRow(new BaseGridRow());
         gridData.appendRow(new BaseGridRow());
@@ -261,7 +250,7 @@ public class ExpressionEditorColumnTest {
      * (10)[105](10)
      */
     @Test
-    public void testMinimalWidthTwoCellsSumWithPadding() throws Exception {
+    public void testMinimalWidthTwoCellsSumWithPadding() {
         gridData.appendColumn(column);
         gridData.appendRow(new BaseGridRow());
         gridData.appendRow(new BaseGridRow());
@@ -278,7 +267,7 @@ public class ExpressionEditorColumnTest {
      * (10)[50][60][10](10)
      */
     @Test
-    public void testMinimalWidthThreeCellsSumWithPadding() throws Exception {
+    public void testMinimalWidthThreeCellsSumWithPadding() {
         gridData.appendColumn(column);
         gridData.appendRow(new BaseGridRow());
         gridData.appendRow(new BaseGridRow());
@@ -295,7 +284,7 @@ public class ExpressionEditorColumnTest {
      * (10)[49][50](10)
      */
     @Test
-    public void testMinimalWidthDefaultWidthWithPadding() throws Exception {
+    public void testMinimalWidthDefaultWidthWithPadding() {
         gridData.appendColumn(column);
         gridData.appendRow(new BaseGridRow());
         gridData.appendRow(new BaseGridRow());
@@ -312,7 +301,7 @@ public class ExpressionEditorColumnTest {
      * (10)[50][60](10)
      */
     @Test
-    public void testMinimalWidthNoCellsInMiddleWithPadding() throws Exception {
+    public void testMinimalWidthNoCellsInMiddleWithPadding() {
         gridData.appendColumn(column);
         gridData.appendRow(new BaseGridRow());
         gridData.appendRow(new BaseGridRow());
@@ -324,7 +313,7 @@ public class ExpressionEditorColumnTest {
     }
 
     @Test
-    public void testUpdateInternalWidth() throws Exception {
+    public void testUpdateInternalWidth() {
         gridData.appendColumn(column);
         gridData.appendRow(new BaseGridRow());
         gridData.appendRow(new BaseGridRow());
@@ -340,7 +329,7 @@ public class ExpressionEditorColumnTest {
     }
 
     @Test
-    public void testUpdateInternalWidthNoCellsInMiddle() throws Exception {
+    public void testUpdateInternalWidthNoCellsInMiddle() {
         gridData.appendColumn(column);
         gridData.appendRow(new BaseGridRow());
         gridData.appendRow(new BaseGridRow());
@@ -355,7 +344,7 @@ public class ExpressionEditorColumnTest {
     }
 
     @Test
-    public void testUpdateInternalWidthResizedToSmaller() throws Exception {
+    public void testUpdateInternalWidthResizedToSmaller() {
         gridData.appendColumn(column);
         gridData.appendRow(new BaseGridRow());
         gridData.appendRow(new BaseGridRow());
@@ -478,17 +467,6 @@ public class ExpressionEditorColumnTest {
 
             @Override
             protected void initialiseUiModel() {
-                //Nothing for this test
-            }
-
-            @Override
-            public List<ListSelectorItem> getItems(final int uiRowIndex,
-                                                   final int uiColumnIndex) {
-                return Collections.emptyList();
-            }
-
-            @Override
-            public void onItemSelected(final ListSelectorItem item) {
                 //Nothing for this test
             }
 

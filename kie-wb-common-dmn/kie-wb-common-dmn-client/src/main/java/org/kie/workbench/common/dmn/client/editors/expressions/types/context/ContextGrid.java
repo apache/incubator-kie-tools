@@ -158,7 +158,10 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextGridData, Co
                                                             setTypeRefConsumer(),
                                                             cellEditorControls,
                                                             headerEditor,
-                                                            Optional.of(translationService.getTranslation(DMNEditorConstants.ContextEditor_EditExpression))));
+                                                            Optional.of(translationService.getTranslation(DMNEditorConstants.ContextEditor_EditExpression)),
+                                                            listSelector,
+                                                            this::getHeaderItems,
+                                                            this::onItemSelected));
         }
 
         final NameColumn nameColumn = new NameColumn(headerMetaData,
@@ -209,6 +212,22 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextGridData, Co
         return true;
     }
 
+    @SuppressWarnings("unused")
+    List<ListSelectorItem> getHeaderItems(final int uiHeaderRowIndex,
+                                          final int uiHeaderColumnIndex) {
+        final List<ListSelectorItem> items = new ArrayList<>();
+
+        items.add(ListSelectorHeaderItem.build(translationService.format(DMNEditorConstants.ContextEditor_Header)));
+        items.add(ListSelectorTextItem.build(translationService.format(DMNEditorConstants.ContextEditor_InsertContextEntry),
+                                             true,
+                                             () -> {
+                                                 cellEditorControls.hide();
+                                                 getExpression().get().ifPresent(e -> addContextEntry(model.getRowCount() - 1));
+                                             }));
+
+        return items;
+    }
+
     @Override
     @SuppressWarnings("unused")
     public List<ListSelectorItem> getItems(final int uiRowIndex,
@@ -218,6 +237,7 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextGridData, Co
         final boolean isMultiSelect = SelectionUtils.isMultiSelect(model);
 
         if (uiRowIndex < model.getRowCount() - 1) {
+            items.add(ListSelectorHeaderItem.build(translationService.format(DMNEditorConstants.ContextEditor_Header)));
             items.add(ListSelectorTextItem.build(translationService.format(DMNEditorConstants.ContextEditor_InsertContextEntryAbove),
                                                  !isMultiRow,
                                                  () -> {

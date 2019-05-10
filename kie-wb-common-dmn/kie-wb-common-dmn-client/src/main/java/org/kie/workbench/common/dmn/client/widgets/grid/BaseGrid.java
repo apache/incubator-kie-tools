@@ -19,6 +19,7 @@ package org.kie.workbench.common.dmn.client.widgets.grid;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.BiFunction;
 import java.util.function.Supplier;
 import java.util.stream.StreamSupport;
 
@@ -54,11 +55,14 @@ import org.kie.workbench.common.stunner.forms.client.event.RefreshFormProperties
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
-import org.uberfire.ext.wires.core.grids.client.util.CellContextUtilities;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellEditContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.BaseGridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper.ColumnInformation;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper.RenderingInformation;
+
+import static org.uberfire.ext.wires.core.grids.client.util.CellContextUtilities.makeCellRenderContext;
+import static org.uberfire.ext.wires.core.grids.client.util.CellContextUtilities.makeHeaderCellRenderContext;
 
 public abstract class BaseGrid<E extends Expression> extends BaseGridWidget implements HasListSelectorControl {
 
@@ -245,6 +249,26 @@ public abstract class BaseGrid<E extends Expression> extends BaseGridWidget impl
     }
 
     @Override
+    public boolean showContextMenuForHeader(final int uiHeaderRowIndex,
+                                            final int uiHeaderColumnIndex) {
+        final GridColumn.HeaderMetaData hasCellEditorControls = model.getColumns().get(uiHeaderColumnIndex).getHeaderMetaData().get(uiHeaderRowIndex);
+        if (hasCellEditorControls instanceof HasCellEditorControls) {
+            if (((HasCellEditorControls) hasCellEditorControls).getEditor().isPresent()) {
+                final HasCellEditorControls.Editor editor = ((HasCellEditorControls) hasCellEditorControls).getEditor().get();
+                return doShowContextMenu(editor,
+                                         (ri, ci) -> makeHeaderCellRenderContext(this,
+                                                                                 ri,
+                                                                                 ci,
+                                                                                 uiHeaderRowIndex),
+                                         uiHeaderRowIndex,
+                                         uiHeaderColumnIndex,
+                                         hasCellEditorControls);
+            }
+        }
+        return super.showContextMenuForHeader(uiHeaderRowIndex, uiHeaderColumnIndex);
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
     public boolean showContextMenuForCell(final int uiRowIndex,
                                           final int uiColumnIndex) {
@@ -252,31 +276,43 @@ public abstract class BaseGrid<E extends Expression> extends BaseGridWidget impl
         if (cell instanceof DMNGridCell<?>) {
             if (((DMNGridCell<?>) cell).getEditor().isPresent()) {
                 final HasCellEditorControls.Editor editor = ((DMNGridCell<?>) cell).getEditor().get();
-                final GridColumn<?> column = model.getColumns().get(uiColumnIndex);
-                final BaseGridRendererHelper.RenderingInformation ri = rendererHelper.getRenderingInformation();
-                final double columnXCoordinate = rendererHelper.getColumnOffset(column) + column.getWidth() / 2;
-                final BaseGridRendererHelper.ColumnInformation ci = rendererHelper.getColumnInformation(columnXCoordinate);
-
-                final GridBodyCellEditContext context = CellContextUtilities.makeCellRenderContext(this,
-                                                                                                   ri,
-                                                                                                   ci,
-                                                                                                   uiRowIndex);
-
-                final double cellWidth = context.getCellWidth();
-                final double cellHeight = context.getCellHeight();
-
-                editor.bind(this,
-                            uiRowIndex,
-                            uiColumnIndex);
-                cellEditorControls.show(editor,
-                                        Optional.empty(),
-                                        (int) (context.getAbsoluteCellX() + cellWidth / 2),
-                                        (int) (context.getAbsoluteCellY() + cellHeight / 2));
-
-                return true;
+                return doShowContextMenu(editor,
+                                         (ri, ci) -> makeCellRenderContext(this,
+                                                                           ri,
+                                                                           ci,
+                                                                           uiRowIndex),
+                                         uiRowIndex,
+                                         uiColumnIndex,
+                                         this);
             }
         }
         return super.showContextMenuForCell(uiRowIndex, uiColumnIndex);
+    }
+
+    @SuppressWarnings("unchecked")
+    private boolean doShowContextMenu(final HasCellEditorControls.Editor editor,
+                                      final BiFunction<RenderingInformation, ColumnInformation, GridBodyCellEditContext> contextSupplier,
+                                      final int uiRowIndex,
+                                      final int uiColumnIndex,
+                                      final Object binding) {
+        final GridColumn<?> column = model.getColumns().get(uiColumnIndex);
+        final RenderingInformation ri = rendererHelper.getRenderingInformation();
+        final double columnXCoordinate = rendererHelper.getColumnOffset(column) + column.getWidth() / 2;
+        final ColumnInformation ci = rendererHelper.getColumnInformation(columnXCoordinate);
+        final GridBodyCellEditContext context = contextSupplier.apply(ri, ci);
+
+        final double cellWidth = context.getCellWidth();
+        final double cellHeight = context.getCellHeight();
+
+        editor.bind(binding,
+                    uiRowIndex,
+                    uiColumnIndex);
+        cellEditorControls.show(editor,
+                                Optional.empty(),
+                                (int) (context.getAbsoluteCellX() + cellWidth / 2),
+                                (int) (context.getAbsoluteCellY() + cellHeight / 2));
+
+        return true;
     }
 
     public boolean isOnlyVisualChangeAllowed() {

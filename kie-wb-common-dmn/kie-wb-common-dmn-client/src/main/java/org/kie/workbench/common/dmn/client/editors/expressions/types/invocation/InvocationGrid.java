@@ -155,12 +155,18 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGri
                                                                   setTypeRefConsumer(),
                                                                   cellEditorControls,
                                                                   headerEditor,
-                                                                  Optional.of(translationService.getTranslation(DMNEditorConstants.InvocationEditor_EditExpression))));
+                                                                  Optional.of(translationService.getTranslation(DMNEditorConstants.InvocationEditor_EditExpression)),
+                                                                  listSelector,
+                                                                  this::getHeaderItems,
+                                                                  this::onItemSelected));
         }
         headerMetaData.add(new InvocationColumnExpressionHeaderMetaData(this::getExpressionText,
                                                                         this::setExpressionText,
                                                                         getHeaderTextBoxFactory(),
-                                                                        Optional.of(translationService.getTranslation(DMNEditorConstants.InvocationEditor_EnterFunction))));
+                                                                        Optional.of(translationService.getTranslation(DMNEditorConstants.InvocationEditor_EnterFunction)),
+                                                                        listSelector,
+                                                                        this::getHeaderItems,
+                                                                        this::onItemSelected));
 
         final InvocationParameterColumn nameColumn = new InvocationParameterColumn(headerMetaData,
                                                                                    getAndSetInitialWidth(1, DMNGridColumn.DEFAULT_WIDTH),
@@ -210,6 +216,22 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGri
         });
     }
 
+    @SuppressWarnings("unused")
+    List<ListSelectorItem> getHeaderItems(final int uiHeaderRowIndex,
+                                          final int uiHeaderColumnIndex) {
+        final List<ListSelectorItem> items = new ArrayList<>();
+
+        items.add(ListSelectorHeaderItem.build(translationService.format(DMNEditorConstants.InvocationEditor_Header)));
+        items.add(ListSelectorTextItem.build(translationService.format(DMNEditorConstants.InvocationEditor_InsertParameter),
+                                             true,
+                                             () -> {
+                                                 cellEditorControls.hide();
+                                                 getExpression().get().ifPresent(e -> addParameterBinding(model.getRowCount()));
+                                             }));
+
+        return items;
+    }
+
     @Override
     @SuppressWarnings("unused")
     public List<ListSelectorItem> getItems(final int uiRowIndex,
@@ -218,6 +240,7 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGri
         final boolean isMultiRow = SelectionUtils.isMultiRow(model);
         final boolean isMultiSelect = SelectionUtils.isMultiSelect(model);
 
+        items.add(ListSelectorHeaderItem.build(translationService.format(DMNEditorConstants.InvocationEditor_Header)));
         items.add(ListSelectorTextItem.build(translationService.format(DMNEditorConstants.InvocationEditor_InsertParameterAbove),
                                              !isMultiRow,
                                              () -> {

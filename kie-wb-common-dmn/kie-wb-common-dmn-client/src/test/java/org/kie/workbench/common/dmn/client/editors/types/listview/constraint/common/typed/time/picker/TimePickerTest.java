@@ -126,7 +126,7 @@ public class TimePickerTest {
         picker.onDateChanged(moment);
 
         assertEquals(expected, input.value);
-            verify(consumer).accept(argThat(new ArgumentMatcher<Moment>() {
+        verify(consumer).accept(argThat(new ArgumentMatcher<Moment>() {
             @Override
             public boolean matches(Object argument) {
                 return Objects.equals(argument, moment);

@@ -50,6 +50,9 @@ public class ListSelectorViewImplTest {
     private ManagedInstance<ListSelectorDividerItemView> listSelectorDividerItemViews;
 
     @Mock
+    private ManagedInstance<ListSelectorHeaderItemView> listSelectorHeaderItemViews;
+
+    @Mock
     private ListSelectorView.Presenter presenter;
 
     @Mock
@@ -70,32 +73,52 @@ public class ListSelectorViewImplTest {
     @Mock
     private HasListSelectorControl.ListSelectorDividerItem dividerItem;
 
+    @Mock
+    private ListSelectorHeaderItemView headerItemView;
+
+    @Mock
+    private HTMLElement headerElement;
+
+    @Mock
+    private HasListSelectorControl.ListSelectorHeaderItem headerItem;
+
     private ListSelectorViewImpl view;
 
     @Before
-    public void setUp() throws Exception {
-        view = new ListSelectorViewImpl(itemsContainer, listSelectorTextItemViews, listSelectorDividerItemViews);
+    public void setUp() {
+        view = new ListSelectorViewImpl(itemsContainer,
+                                        listSelectorTextItemViews,
+                                        listSelectorDividerItemViews,
+                                        listSelectorHeaderItemViews);
         view.init(presenter);
         doReturn(textItemView).when(listSelectorTextItemViews).get();
         doReturn(textElement).when(textItemView).getElement();
         doReturn(dividerItemView).when(listSelectorDividerItemViews).get();
         doReturn(dividerElement).when(dividerItemView).getElement();
+        doReturn(headerItemView).when(listSelectorHeaderItemViews).get();
+        doReturn(headerElement).when(headerItemView).getElement();
     }
 
     @Test
     public void testSetItems() {
         final boolean textItemEnabled = true;
-        final String textItemText = "Inert rule above";
+        final String textItemText = "Insert rule above";
         doReturn(textItemEnabled).when(textItem).isEnabled();
         doReturn(textItemText).when(textItem).getText();
 
-        view.setItems(Arrays.asList(textItem, dividerItem));
+        final String headerItemText = "Header";
+        doReturn(headerItemText).when(headerItem).getText();
+
+        view.setItems(Arrays.asList(textItem, dividerItem, headerItem));
 
         verify(itemsContainer).appendChild(textElement);
         verify(itemsContainer).appendChild(dividerElement);
+        verify(itemsContainer).appendChild(headerElement);
 
         verify(textItemView).setEnabled(eq(textItemEnabled));
         verify(textItemView).setText(eq(textItemText));
+
+        verify(headerItemView).setText(eq(headerItemText));
 
         final ArgumentCaptor<Command> commandCaptor = ArgumentCaptor.forClass(Command.class);
         verify(textItemView).addClickHandler(commandCaptor.capture());

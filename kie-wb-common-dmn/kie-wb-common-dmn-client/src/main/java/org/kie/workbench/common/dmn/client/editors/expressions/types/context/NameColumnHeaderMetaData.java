@@ -16,23 +16,32 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.context;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.NameAndDataTypeHeaderMetaData;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.HasCellEditorControls;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 
-public class NameColumnHeaderMetaData extends NameAndDataTypeHeaderMetaData<Context> {
+public class NameColumnHeaderMetaData extends NameAndDataTypeHeaderMetaData implements HasCellEditorControls,
+                                                                                       HasListSelectorControl {
 
     private static final String NAME_DATA_TYPE_COLUMN_GROUP = "NameColumnHeaderMetaData$NameAndDataTypeColumn";
+
+    private final ListSelectorView.Presenter listSelector;
+    private final BiFunction<Integer, Integer, List<ListSelectorItem>> listSelectorItemsSupplier;
+    private final Consumer<ListSelectorItem> listSelectorItemConsumer;
 
     public NameColumnHeaderMetaData(final HasExpression hasExpression,
                                     final Optional<HasName> hasName,
@@ -41,7 +50,10 @@ public class NameColumnHeaderMetaData extends NameAndDataTypeHeaderMetaData<Cont
                                     final BiConsumer<HasTypeRef, QName> setTypeRefConsumer,
                                     final CellEditorControlsView.Presenter cellEditorControls,
                                     final NameAndDataTypePopoverView.Presenter editor,
-                                    final Optional<String> editorTitle) {
+                                    final Optional<String> editorTitle,
+                                    final ListSelectorView.Presenter listSelector,
+                                    final BiFunction<Integer, Integer, List<ListSelectorItem>> listSelectorItemsSupplier,
+                                    final Consumer<ListSelectorItem> listSelectorItemConsumer) {
         super(hasExpression,
               hasName,
               clearDisplayNameConsumer,
@@ -50,10 +62,29 @@ public class NameColumnHeaderMetaData extends NameAndDataTypeHeaderMetaData<Cont
               cellEditorControls,
               editor,
               editorTitle);
+        this.listSelector = listSelector;
+        this.listSelectorItemsSupplier = listSelectorItemsSupplier;
+        this.listSelectorItemConsumer = listSelectorItemConsumer;
     }
 
     @Override
     public String getColumnGroup() {
         return NAME_DATA_TYPE_COLUMN_GROUP;
+    }
+
+    @Override
+    public Optional<Editor> getEditor() {
+        return Optional.of(listSelector);
+    }
+
+    @Override
+    public List<ListSelectorItem> getItems(final int uiRowIndex,
+                                           final int uiColumnIndex) {
+        return listSelectorItemsSupplier.apply(uiRowIndex, uiColumnIndex);
+    }
+
+    @Override
+    public void onItemSelected(final ListSelectorItem item) {
+        listSelectorItemConsumer.accept(item);
     }
 }

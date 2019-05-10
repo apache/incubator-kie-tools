@@ -21,7 +21,6 @@ import java.util.Optional;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
-import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.client.editors.expressions.util.RendererUtils;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -36,14 +35,14 @@ public class NameAndDataTypeHeaderMetaDataHasExpressionTest extends BaseNameAndD
     private Decision hasExpression = new Decision();
 
     public void setup(final Optional<HasName> hasName) {
-        this.metaData = new NameAndDataTypeHeaderMetaData<LiteralExpression>(hasExpression,
-                                                                             hasName,
-                                                                             clearDisplayNameConsumer,
-                                                                             setDisplayNameConsumer,
-                                                                             setTypeRefConsumer,
-                                                                             cellEditorControls,
-                                                                             headerEditor,
-                                                                             EDITOR_TITLE) {
+        this.metaData = new NameAndDataTypeHeaderMetaData(hasExpression,
+                                                          hasName,
+                                                          clearDisplayNameConsumer,
+                                                          setDisplayNameConsumer,
+                                                          setTypeRefConsumer,
+                                                          cellEditorControls,
+                                                          headerEditor,
+                                                          EDITOR_TITLE) {
             @Override
             public String getColumnGroup() {
                 return NAME_DATA_TYPE_COLUMN_GROUP;

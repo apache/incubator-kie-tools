@@ -59,6 +59,12 @@ public class DMNEditorConstants {
     public static final String LiteralExpression_EditExpression = "LiteralExpression.EditExpression";
 
     @TranslationKey(defaultValue = "")
+    public static final String ContextEditor_Header = "ContextEditor.Header";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ContextEditor_InsertContextEntry = "ContextEditor.InsertContextEntry";
+
+    @TranslationKey(defaultValue = "")
     public static final String ContextEditor_InsertContextEntryAbove = "ContextEditor.InsertContextEntryAbove";
 
     @TranslationKey(defaultValue = "")
@@ -74,6 +80,9 @@ public class DMNEditorConstants {
     public static final String ContextEditor_EditContextEntry = "ContextEditor.EditContextEntry";
 
     @TranslationKey(defaultValue = "")
+    public static final String RelationEditor_HeaderRows = "RelationEditor.HeaderRows";
+
+    @TranslationKey(defaultValue = "")
     public static final String RelationEditor_InsertRowAbove = "RelationEditor.InsertRowAbove";
 
     @TranslationKey(defaultValue = "")
@@ -81,6 +90,9 @@ public class DMNEditorConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String RelationEditor_DeleteRow = "RelationEditor.DeleteRow";
+
+    @TranslationKey(defaultValue = "")
+    public static final String RelationEditor_HeaderColumns = "RelationEditor.HeaderColumns";
 
     @TranslationKey(defaultValue = "")
     public static final String RelationEditor_InsertColumnLeft = "RelationEditor.InsertColumnLeft";
@@ -93,6 +105,12 @@ public class DMNEditorConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String RelationEditor_EditRelation = "RelationEditor.EditRelation";
+
+    @TranslationKey(defaultValue = "")
+    public static final String InvocationEditor_Header = "InvocationEditor.Header";
+
+    @TranslationKey(defaultValue = "")
+    public static final String InvocationEditor_InsertParameter = "InvocationEditor.InsertParameter";
 
     @TranslationKey(defaultValue = "")
     public static final String InvocationEditor_InsertParameterAbove = "InvocationEditor.InsertParameterAbove";
@@ -140,7 +158,7 @@ public class DMNEditorConstants {
     public static final String DecisionTableEditor_DescriptionColumnHeader = "DecisionTableEditor.DescriptionColumnHeader";
 
     @TranslationKey(defaultValue = "")
-    public static final String DecisionTableEditor_OutputClauseHeader = "DecisionTableEditor.OutputClauseHeader";
+    public static final String DecisionTableEditor_DecisionRuleHeader = "DecisionTableEditor.DecisionRuleHeader";
 
     @TranslationKey(defaultValue = "")
     public static final String DecisionTableEditor_InsertDecisionRuleAbove = "DecisionTableEditor.InsertDecisionRuleAbove";
@@ -155,6 +173,9 @@ public class DMNEditorConstants {
     public static final String DecisionTableEditor_DuplicateDecisionRule = "DecisionTableEditor.DuplicateDecisionRule";
 
     @TranslationKey(defaultValue = "")
+    public static final String DecisionTableEditor_InputClauseHeader = "DecisionTableEditor.InputClauseHeader";
+
+    @TranslationKey(defaultValue = "")
     public static final String DecisionTableEditor_InsertInputClauseLeft = "DecisionTableEditor.InsertInputClauseLeft";
 
     @TranslationKey(defaultValue = "")
@@ -162,6 +183,9 @@ public class DMNEditorConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String DecisionTableEditor_DeleteInputClause = "DecisionTableEditor.DeleteInputClause";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DecisionTableEditor_OutputClauseHeader = "DecisionTableEditor.OutputClauseHeader";
 
     @TranslationKey(defaultValue = "")
     public static final String DecisionTableEditor_InsertOutputClauseLeft = "DecisionTableEditor.InsertOutputClauseLeft";

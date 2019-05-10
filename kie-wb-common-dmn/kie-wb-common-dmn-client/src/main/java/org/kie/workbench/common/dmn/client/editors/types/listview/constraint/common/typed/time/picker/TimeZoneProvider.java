@@ -37,7 +37,6 @@ public class TimeZoneProvider {
 
     private final List<String> timeZonesOffsets;
 
-
     @Inject
     public TimeZoneProvider(final Caller<TimeZoneService> service) {
         this.service = service;
@@ -51,8 +50,8 @@ public class TimeZoneProvider {
                 getLoadedTimeZones().clear();
                 getLoadedTimeZones().addAll(timeZones);
                 final DMNSimpleTimeZone[] offSets = timeZones.stream()
-                                                        .sorted(Comparator.comparingDouble(DMNSimpleTimeZone::getOffset))
-                                                        .toArray(DMNSimpleTimeZone[]::new);
+                        .sorted(Comparator.comparingDouble(DMNSimpleTimeZone::getOffset))
+                        .toArray(DMNSimpleTimeZone[]::new);
 
                 getTimeZonesOffsets().clear();
                 for (final DMNSimpleTimeZone offSet : offSets) {

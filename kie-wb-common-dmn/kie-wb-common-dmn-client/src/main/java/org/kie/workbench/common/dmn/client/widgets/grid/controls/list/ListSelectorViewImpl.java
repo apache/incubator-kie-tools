@@ -29,6 +29,7 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl.ListSelectorDividerItem;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl.ListSelectorHeaderItem;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl.ListSelectorItem;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl.ListSelectorTextItem;
 
@@ -43,6 +44,7 @@ public class ListSelectorViewImpl implements ListSelectorView {
 
     private ManagedInstance<ListSelectorTextItemView> listSelectorTextItemViews;
     private ManagedInstance<ListSelectorDividerItemView> listSelectorDividerItemViews;
+    private ManagedInstance<ListSelectorHeaderItemView> listSelectorHeaderItemViews;
     private Presenter presenter;
 
     public ListSelectorViewImpl() {
@@ -52,10 +54,12 @@ public class ListSelectorViewImpl implements ListSelectorView {
     @Inject
     public ListSelectorViewImpl(final UnorderedList itemsContainer,
                                 final ManagedInstance<ListSelectorTextItemView> listSelectorTextItemViews,
-                                final ManagedInstance<ListSelectorDividerItemView> listSelectorDividerItemViews) {
+                                final ManagedInstance<ListSelectorDividerItemView> listSelectorDividerItemViews,
+                                final ManagedInstance<ListSelectorHeaderItemView> listSelectorHeaderItemViews) {
         this.itemsContainer = itemsContainer;
         this.listSelectorTextItemViews = listSelectorTextItemViews;
         this.listSelectorDividerItemViews = listSelectorDividerItemViews;
+        this.listSelectorHeaderItemViews = listSelectorHeaderItemViews;
     }
 
     @Override
@@ -85,6 +89,11 @@ public class ListSelectorViewImpl implements ListSelectorView {
             listSelectorItemView = Optional.of(selector);
         } else if (item instanceof ListSelectorDividerItem) {
             listSelectorItemView = Optional.of(listSelectorDividerItemViews.get());
+        } else if (item instanceof ListSelectorHeaderItem) {
+            final ListSelectorHeaderItem ti = (ListSelectorHeaderItem) item;
+            final ListSelectorHeaderItemView selector = listSelectorHeaderItemViews.get();
+            selector.setText(ti.getText());
+            listSelectorItemView = Optional.of(selector);
         }
 
         return listSelectorItemView;

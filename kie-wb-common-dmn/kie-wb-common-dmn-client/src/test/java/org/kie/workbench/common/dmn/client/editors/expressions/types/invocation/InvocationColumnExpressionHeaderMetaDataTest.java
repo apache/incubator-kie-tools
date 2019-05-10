@@ -21,9 +21,9 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import org.gwtbootstrap3.client.ui.TextBox;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.BaseColumnHeaderMetaDataContextMenuTest;
 import org.kie.workbench.common.dmn.client.editors.expressions.util.RendererUtils;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.dom.TextBoxDOMElement;
 import org.mockito.Mock;
@@ -39,7 +39,7 @@ import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(RendererUtils.class)
-public class InvocationColumnExpressionHeaderMetaDataTest {
+public class InvocationColumnExpressionHeaderMetaDataTest extends BaseColumnHeaderMetaDataContextMenuTest<InvocationColumnExpressionHeaderMetaData> {
 
     private static final double BLOCK_WIDTH = 10.0;
 
@@ -59,14 +59,15 @@ public class InvocationColumnExpressionHeaderMetaDataTest {
 
     private Optional<String> placeHolder = Optional.empty();
 
-    private InvocationColumnExpressionHeaderMetaData headerMetaData;
-
-    @Before
-    public void setup() {
-        this.headerMetaData = new InvocationColumnExpressionHeaderMetaData(titleGetter,
-                                                                           titleSetter,
-                                                                           factory,
-                                                                           placeHolder);
+    @Override
+    protected InvocationColumnExpressionHeaderMetaData getHeaderMetaData() {
+        return new InvocationColumnExpressionHeaderMetaData(titleGetter,
+                                                            titleSetter,
+                                                            factory,
+                                                            placeHolder,
+                                                            listSelector,
+                                                            listSelectorItemsSupplier,
+                                                            listSelectorItemConsumer);
     }
 
     @Test

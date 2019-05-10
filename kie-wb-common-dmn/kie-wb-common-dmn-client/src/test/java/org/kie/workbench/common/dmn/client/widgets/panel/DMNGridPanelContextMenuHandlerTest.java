@@ -18,7 +18,6 @@ package org.kie.workbench.common.dmn.client.widgets.panel;
 
 import java.util.Collections;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -37,6 +36,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.context.Exp
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.HasCellEditorControls;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -73,6 +73,8 @@ public class DMNGridPanelContextMenuHandlerTest {
     private static final double COLUMN0_WIDTH = 50.0;
 
     private static final double COLUMN1_WIDTH = 100.0;
+
+    private static final double HEADER_HEIGHT = 20.0;
 
     private static final double ROW_HEIGHT = 20.0;
 
@@ -121,10 +123,19 @@ public class DMNGridPanelContextMenuHandlerTest {
     @Mock
     private TranslationService translationService;
 
+    @Mock
+    private GridColumn gridColumn;
+
     private DMNGridPanelContextMenuHandler handler;
 
     private interface MockCell extends GridCell,
                                        HasCellEditorControls {
+
+    }
+
+    private interface MockContextMenuHeaderMetaData extends GridColumn.HeaderMetaData,
+                                                            HasCellEditorControls,
+                                                            HasListSelectorControl {
 
     }
 
@@ -147,6 +158,12 @@ public class DMNGridPanelContextMenuHandlerTest {
 
         when(nativeEvent.getShiftKey()).thenReturn(false);
         when(nativeEvent.getCtrlKey()).thenReturn(false);
+
+        when(gridColumn.getWidth()).thenReturn(100.0);
+        when(gridColumn.isVisible()).thenReturn(true);
+
+        when(renderer.getHeaderHeight()).thenReturn(HEADER_HEIGHT);
+        when(renderer.getHeaderRowHeight()).thenReturn(HEADER_HEIGHT);
 
         when(gridLayer.getVisibleBounds()).thenReturn(new BaseBounds(0, 0, 1000, 1000));
     }
@@ -219,7 +236,7 @@ public class DMNGridPanelContextMenuHandlerTest {
     @SuppressWarnings("unchecked")
     public void onContextMenu_WithGridWidget_WithCellValue() {
         final int EVENT_X = (int) (COLUMN0_WIDTH / 2);
-        final int EVENT_Y = (int) (ROW_HEIGHT + ROW_HEIGHT / 2);
+        final int EVENT_Y = (int) (HEADER_HEIGHT + ROW_HEIGHT + ROW_HEIGHT / 2);
         when(nativeEvent.getClientX()).thenReturn(EVENT_X);
         when(nativeEvent.getClientY()).thenReturn(EVENT_Y);
 
@@ -235,6 +252,33 @@ public class DMNGridPanelContextMenuHandlerTest {
         verify(editor).bind(eq(gridWidget),
                             eq(1),
                             eq(0));
+
+        verify(cellEditorControls).show(eq(editor),
+                                        eq(DMNGridPanelContextMenuHandler.EDITOR_TITLE),
+                                        eq(EVENT_X),
+                                        eq(EVENT_Y));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void onContextMenu_WithGridWidget_WithHeader() {
+        final int EVENT_X = (int) (COLUMN0_WIDTH + COLUMN1_WIDTH / 2);
+        final int EVENT_Y = (int) (HEADER_HEIGHT / 2);
+        when(nativeEvent.getClientX()).thenReturn(EVENT_X);
+        when(nativeEvent.getClientY()).thenReturn(EVENT_Y);
+
+        final BaseGrid gridWidget = mockGridWidget();
+        when(gridLayer.getGridWidgets()).thenReturn(Collections.singleton(gridWidget));
+
+        final MockContextMenuHeaderMetaData headerMetaData = mock(MockContextMenuHeaderMetaData.class);
+        when(gridColumn.getHeaderMetaData()).thenReturn(Collections.singletonList(headerMetaData));
+        when(headerMetaData.getEditor()).thenReturn(Optional.of(editor));
+
+        handler.onContextMenu(event);
+
+        verify(editor).bind(eq(headerMetaData),
+                            eq(0),
+                            eq(1));
 
         verify(cellEditorControls).show(eq(editor),
                                         eq(DMNGridPanelContextMenuHandler.EDITOR_TITLE),
@@ -265,7 +309,7 @@ public class DMNGridPanelContextMenuHandlerTest {
     @Test
     public void onContextMenu_WithGridWidget_WithCellSelectionStrategy_CellNotSelected() {
         when(nativeEvent.getClientX()).thenReturn((int) (COLUMN0_WIDTH / 2));
-        when(nativeEvent.getClientY()).thenReturn((int) (ROW_HEIGHT + ROW_HEIGHT / 2));
+        when(nativeEvent.getClientY()).thenReturn((int) (HEADER_HEIGHT + ROW_HEIGHT + ROW_HEIGHT / 2));
 
         final BaseGrid gridWidget = mockGridWidget();
         when(gridLayer.getGridWidgets()).thenReturn(Collections.singleton(gridWidget));
@@ -313,7 +357,7 @@ public class DMNGridPanelContextMenuHandlerTest {
     @SuppressWarnings("unchecked")
     public void onContextMenu_WithMultipleOverlappingGridWidgets() {
         final int EVENT_X = (int) (COLUMN0_WIDTH / 2);
-        final int EVENT_Y = (int) (ROW_HEIGHT + ROW_HEIGHT / 2);
+        final int EVENT_Y = (int) (HEADER_HEIGHT + ROW_HEIGHT + ROW_HEIGHT / 2);
         when(nativeEvent.getClientX()).thenReturn(EVENT_X);
         when(nativeEvent.getClientY()).thenReturn(EVENT_Y);
 
@@ -363,21 +407,7 @@ public class DMNGridPanelContextMenuHandlerTest {
             public Layer getLayer() {
                 return gridLayer;
             }
-
-            @Override
-            public List<ListSelectorItem> getItems(final int uiRowIndex,
-                                                   final int uiColumnIndex) {
-                return Collections.emptyList();
-            }
-
-            @Override
-            public void onItemSelected(final ListSelectorItem item) {
-
-            }
         });
-        final GridColumn gridColumn = mock(GridColumn.class);
-        when(gridColumn.getWidth()).thenReturn(100.0);
-        when(gridColumn.isVisible()).thenReturn(true);
         gridWidget.getModel().appendColumn(new RowNumberColumn());
         gridWidget.getModel().appendColumn(gridColumn);
         gridWidget.getModel().appendRow(new BaseGridRow());

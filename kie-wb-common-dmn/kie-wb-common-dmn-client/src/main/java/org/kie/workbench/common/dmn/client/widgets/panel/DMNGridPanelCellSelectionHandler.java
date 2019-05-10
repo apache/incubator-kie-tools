@@ -19,6 +19,12 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 
 public interface DMNGridPanelCellSelectionHandler {
 
+    void selectHeaderCellIfRequired(final int uiHeaderRowIndex,
+                                    final int uiHeaderColumnIndex,
+                                    final GridWidget gridWidget,
+                                    final boolean isShiftKeyDown,
+                                    final boolean isControlKeyDown);
+
     void selectCellIfRequired(final int uiRowIndex,
                               final int uiColumnIndex,
                               final GridWidget gridWidget,

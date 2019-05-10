@@ -130,15 +130,19 @@ import static org.mockito.Mockito.when;
 @RunWith(LienzoMockitoTestRunner.class)
 public class ContextGridTest {
 
-    private final static int INSERT_ROW_ABOVE = 0;
+    private final static int HEADER = 0;
 
-    private final static int INSERT_ROW_BELOW = 1;
+    private final static int INSERT_ROW = 1;
 
-    private final static int DELETE_ROW = 2;
+    private final static int INSERT_ROW_ABOVE = 1;
 
-    private final static int DIVIDER = 3;
+    private final static int INSERT_ROW_BELOW = 2;
 
-    private final static int CLEAR_EXPRESSION_TYPE = 4;
+    private final static int DELETE_ROW = 3;
+
+    private final static int DIVIDER = 4;
+
+    private final static int CLEAR_EXPRESSION_TYPE = 5;
 
     private static final String NODE_UUID = "uuid";
 
@@ -517,13 +521,13 @@ public class ContextGridTest {
 
         final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 2);
 
-        assertThat(items.size()).isEqualTo(5);
-        assertDefaultListItems(items.subList(0, 3), true);
+        assertThat(items.size()).isEqualTo(6);
+        assertDefaultListItems(items.subList(0, 4), true);
 
         assertThat(items.get(DIVIDER)).isInstanceOf(HasListSelectorControl.ListSelectorDividerItem.class);
-        assertListSelectorItem(items.get(CLEAR_EXPRESSION_TYPE),
-                               DMNEditorConstants.ExpressionEditor_Clear,
-                               true);
+        assertListSelectorTextItem(items.get(CLEAR_EXPRESSION_TYPE),
+                                   DMNEditorConstants.ExpressionEditor_Clear,
+                                   true);
 
         ((HasListSelectorControl.ListSelectorTextItem) items.get(CLEAR_EXPRESSION_TYPE)).getCommand().execute();
         verify(cellEditorControls).hide();
@@ -564,9 +568,9 @@ public class ContextGridTest {
 
         assertThat(items.size()).isEqualTo(1);
 
-        assertListSelectorItem(items.get(0),
-                               DMNEditorConstants.ExpressionEditor_Clear,
-                               true);
+        assertListSelectorTextItem(items.get(0),
+                                   DMNEditorConstants.ExpressionEditor_Clear,
+                                   true);
 
         ((HasListSelectorControl.ListSelectorTextItem) items.get(0)).getCommand().execute();
         verify(cellEditorControls).hide();
@@ -609,36 +613,75 @@ public class ContextGridTest {
 
         final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 2);
 
-        assertThat(items.size()).isEqualTo(5);
-        assertDefaultListItems(items.subList(0, 3), false);
+        assertThat(items.size()).isEqualTo(6);
+        assertDefaultListItems(items.subList(0, 4), false);
 
         assertThat(items.get(DIVIDER)).isInstanceOf(HasListSelectorControl.ListSelectorDividerItem.class);
-        assertListSelectorItem(items.get(CLEAR_EXPRESSION_TYPE),
-                               DMNEditorConstants.ExpressionEditor_Clear,
-                               false);
+        assertListSelectorTextItem(items.get(CLEAR_EXPRESSION_TYPE),
+                                   DMNEditorConstants.ExpressionEditor_Clear,
+                                   false);
+    }
+
+    @Test
+    public void testGetHeaderItemsRowNumberColumn() {
+        setupGrid(0);
+
+        assertDefaultHeaderListItems(grid.getHeaderItems(0, 0));
+    }
+
+    @Test
+    public void testGetHeaderItemsNameColumn() {
+        setupGrid(0);
+
+        assertDefaultHeaderListItems(grid.getHeaderItems(0, 1));
+    }
+
+    @Test
+    public void testGetHeaderItemsExpressionColumn() {
+        setupGrid(0);
+
+        assertDefaultHeaderListItems(grid.getHeaderItems(0, 2));
     }
 
     private void assertDefaultListItems(final List<HasListSelectorControl.ListSelectorItem> items,
                                         final boolean enabled) {
-        assertThat(items.size()).isEqualTo(3);
-        assertListSelectorItem(items.get(INSERT_ROW_ABOVE),
-                               DMNEditorConstants.ContextEditor_InsertContextEntryAbove,
-                               enabled);
-        assertListSelectorItem(items.get(INSERT_ROW_BELOW),
-                               DMNEditorConstants.ContextEditor_InsertContextEntryBelow,
-                               enabled);
-        assertListSelectorItem(items.get(DELETE_ROW),
-                               DMNEditorConstants.ContextEditor_DeleteContextEntry,
-                               enabled && grid.getModel().getRowCount() > 2);
+        assertThat(items.size()).isEqualTo(4);
+        assertListSelectorHeaderItem(items.get(HEADER),
+                                     DMNEditorConstants.ContextEditor_Header);
+        assertListSelectorTextItem(items.get(INSERT_ROW_ABOVE),
+                                   DMNEditorConstants.ContextEditor_InsertContextEntryAbove,
+                                   enabled);
+        assertListSelectorTextItem(items.get(INSERT_ROW_BELOW),
+                                   DMNEditorConstants.ContextEditor_InsertContextEntryBelow,
+                                   enabled);
+        assertListSelectorTextItem(items.get(DELETE_ROW),
+                                   DMNEditorConstants.ContextEditor_DeleteContextEntry,
+                                   enabled && grid.getModel().getRowCount() > 2);
     }
 
-    private void assertListSelectorItem(final HasListSelectorControl.ListSelectorItem item,
-                                        final String text,
-                                        final boolean enabled) {
+    private void assertListSelectorHeaderItem(final HasListSelectorControl.ListSelectorItem item,
+                                              final String text) {
+        assertThat(item).isInstanceOf(HasListSelectorControl.ListSelectorHeaderItem.class);
+        final HasListSelectorControl.ListSelectorHeaderItem hi = (HasListSelectorControl.ListSelectorHeaderItem) item;
+        assertThat(hi.getText()).isEqualTo(text);
+    }
+
+    private void assertListSelectorTextItem(final HasListSelectorControl.ListSelectorItem item,
+                                            final String text,
+                                            final boolean enabled) {
         assertThat(item).isInstanceOf(HasListSelectorControl.ListSelectorTextItem.class);
         final HasListSelectorControl.ListSelectorTextItem ti = (HasListSelectorControl.ListSelectorTextItem) item;
         assertThat(ti.getText()).isEqualTo(text);
         assertThat(ti.isEnabled()).isEqualTo(enabled);
+    }
+
+    private void assertDefaultHeaderListItems(final List<HasListSelectorControl.ListSelectorItem> items) {
+        assertThat(items.size()).isEqualTo(2);
+        assertListSelectorHeaderItem(items.get(HEADER),
+                                     DMNEditorConstants.ContextEditor_Header);
+        assertListSelectorTextItem(items.get(INSERT_ROW),
+                                   DMNEditorConstants.ContextEditor_InsertContextEntry,
+                                   true);
     }
 
     @Test
@@ -706,6 +749,19 @@ public class ContextGridTest {
         assertDeleteRowEnabled(0, true);
         assertDeleteRowEnabled(1, true);
         assertLastRowHasNoListItems();
+    }
+
+    @Test
+    public void testOnHeaderItemSelectedInsertRow() {
+        setupGrid(0);
+
+        final List<HasListSelectorControl.ListSelectorItem> items = grid.getHeaderItems(0, 1);
+        final HasListSelectorControl.ListSelectorTextItem ti = (HasListSelectorControl.ListSelectorTextItem) items.get(INSERT_ROW);
+
+        grid.onItemSelected(ti);
+
+        verify(cellEditorControls).hide();
+        verify(grid).addContextEntry(eq(1));
     }
 
     private void assertDeleteRowEnabled(final int uiRowIndex, final boolean enabled) {

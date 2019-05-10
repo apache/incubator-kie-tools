@@ -18,6 +18,7 @@ package org.kie.workbench.common.dmn.client.widgets.grid.controls.list;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl.ListSelectorHeaderItem;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl.ListSelectorTextItem;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -36,10 +37,16 @@ public class HasListSelectorControlTest {
     private Command command;
 
     @Test
-    public void testBuild() {
+    public void testSelectorTextItemBuild() {
         final ListSelectorTextItem item = ListSelectorTextItem.build(TEXT, ENABLED, command);
         assertThat(item.getText()).isEqualTo(TEXT);
         assertThat(item.isEnabled()).isEqualTo(ENABLED);
         assertThat(item.getCommand()).isEqualTo(command);
+    }
+
+    @Test
+    public void testSelectorHeaderItemBuild() {
+        final ListSelectorHeaderItem item = ListSelectorHeaderItem.build(TEXT);
+        assertThat(item.getText()).isEqualTo(TEXT);
     }
 }
