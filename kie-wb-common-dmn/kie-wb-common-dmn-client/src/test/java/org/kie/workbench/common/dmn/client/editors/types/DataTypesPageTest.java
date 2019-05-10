@@ -37,6 +37,7 @@ import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManager;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManagerStackStore;
 import org.kie.workbench.common.dmn.client.editors.types.common.ItemDefinitionUtils;
+import org.kie.workbench.common.dmn.client.editors.types.common.events.RefreshDataTypesListEvent;
 import org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeList;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.DataTypeStore;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.ItemDefinitionStore;
@@ -48,10 +49,12 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static junit.framework.TestCase.assertTrue;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -325,6 +328,35 @@ public class DataTypesPageTest {
         page.enableShortcuts();
 
         verify(dataTypeShortcuts).setup();
+    }
+
+    @Test
+    public void testOnRefreshDataTypesListWithNewItemDefinitionWhenPageIsNotLoaded() {
+
+        final RefreshDataTypesListEvent event = new RefreshDataTypesListEvent(emptyList());
+
+        doReturn(false).when(page).isLoaded();
+
+        page.onRefreshDataTypesListWithNewItemDefinitions(event);
+
+        verify(page, never()).refreshItemDefinitions(any());
+        verify(page, never()).reload();
+    }
+
+    @Test
+    public void testOnRefreshDataTypesListWithNewItemDefinitionWhenPageIsLoaded() {
+
+        final ItemDefinition itemDefinition1 = mock(ItemDefinition.class);
+        final ItemDefinition itemDefinition2 = mock(ItemDefinition.class);
+        final List<ItemDefinition> newItemDefinitions = asList(itemDefinition1, itemDefinition2);
+        final RefreshDataTypesListEvent event = new RefreshDataTypesListEvent(newItemDefinitions);
+
+        doReturn(true).when(page).isLoaded();
+
+        page.onRefreshDataTypesListWithNewItemDefinitions(event);
+
+        verify(page).refreshItemDefinitions(newItemDefinitions);
+        verify(page).reload();
     }
 
     @Test

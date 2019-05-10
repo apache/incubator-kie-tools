@@ -175,7 +175,7 @@ public class SessionDiagramEditorScreenTest {
         verify(kieView).clear();
         verify(kieView).addMainEditorPage(screenPanelWidget);
         verify(multiPageEditor).addPage(dataTypesPage);
-        // TODO: {karreiro} Enable Included Models feature. # verify(multiPageEditor).addPage(includedModelsPage);
+        verify(multiPageEditor).addPage(includedModelsPage);
     }
 
     @Test

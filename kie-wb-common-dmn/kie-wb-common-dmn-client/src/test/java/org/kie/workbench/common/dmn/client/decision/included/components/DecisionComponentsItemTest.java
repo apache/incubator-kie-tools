@@ -22,12 +22,15 @@ import elemental2.dom.HTMLElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.api.definition.v1_1.DRGElement;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
 import static org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper.HIDDEN_CSS_CLASS;
 import static org.kie.workbench.common.dmn.client.resources.DMNSVGGlyphFactory.DECISION_PALETTE;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -41,7 +44,7 @@ public class DecisionComponentsItemTest {
 
     @Before
     public void setup() {
-        item = new DecisionComponentsItem(view);
+        item = spy(new DecisionComponentsItem(view));
     }
 
     @Test
@@ -62,13 +65,13 @@ public class DecisionComponentsItemTest {
 
         when(decisionComponent.getIcon()).thenReturn(DECISION_PALETTE);
         when(decisionComponent.getName()).thenReturn("name");
-        when(decisionComponent.getFile()).thenReturn("file");
+        when(decisionComponent.getFileName()).thenReturn("file");
 
         item.setDecisionComponent(decisionComponent);
 
         verify(view).setIcon(DECISION_PALETTE.getUri().asString());
         verify(view).setName(decisionComponent.getName());
-        verify(view).setFile(decisionComponent.getFile());
+        verify(view).setFile(decisionComponent.getFileName());
     }
 
     @Test
@@ -93,5 +96,19 @@ public class DecisionComponentsItemTest {
         item.hide();
 
         verify(viewElement.classList).add(HIDDEN_CSS_CLASS);
+    }
+
+    @Test
+    public void testGetDrgElement() {
+
+        final DecisionComponent decisionComponent = mock(DecisionComponent.class);
+        final DRGElement expectedDrgElement = null;
+
+        when(decisionComponent.getDrgElement()).thenReturn(expectedDrgElement);
+        doReturn(decisionComponent).when(item).getDecisionComponent();
+
+        final DRGElement actualDrgElement = item.getDrgElement();
+
+        assertEquals(expectedDrgElement, actualDrgElement);
     }
 }

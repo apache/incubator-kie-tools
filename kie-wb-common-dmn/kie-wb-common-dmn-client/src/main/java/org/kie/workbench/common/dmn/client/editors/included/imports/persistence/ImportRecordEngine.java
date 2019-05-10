@@ -49,19 +49,27 @@ public class ImportRecordEngine implements RecordEngine<IncludedModel> {
 
     private final DefinitionsHandler definitionsHandler;
 
+    private final ItemDefinitionHandler itemDefinitionHandler;
+
+    private final DRGElementHandler drgElementHandler;
+
     @Inject
     public ImportRecordEngine(final IncludedModelsPageStateProviderImpl stateProvider,
                               final IncludedModelsIndex includedModelsIndex,
                               final IncludedModelErrorMessageFactory messageFactory,
                               final ImportFactory importFactory,
                               final Event<FlashMessage> flashMessageEvent,
-                              final DefinitionsHandler definitionsHandler) {
+                              final DefinitionsHandler definitionsHandler,
+                              final ItemDefinitionHandler itemDefinitionHandler,
+                              final DRGElementHandler drgElementHandler) {
         this.stateProvider = stateProvider;
         this.includedModelsIndex = includedModelsIndex;
         this.messageFactory = messageFactory;
         this.importFactory = importFactory;
         this.flashMessageEvent = flashMessageEvent;
         this.definitionsHandler = definitionsHandler;
+        this.itemDefinitionHandler = itemDefinitionHandler;
+        this.drgElementHandler = drgElementHandler;
     }
 
     @Override
@@ -74,6 +82,8 @@ public class ImportRecordEngine implements RecordEngine<IncludedModel> {
         final String oldModelName = anImport.getName().getValue();
 
         definitionsHandler.update(oldModelName, record);
+        itemDefinitionHandler.update(oldModelName, record.getName());
+        drgElementHandler.update(oldModelName, record.getName());
         anImport.setName(new Name(record.getName()));
 
         return singletonList(record);
@@ -82,6 +92,8 @@ public class ImportRecordEngine implements RecordEngine<IncludedModel> {
     @Override
     public List<IncludedModel> destroy(final IncludedModel record) {
         definitionsHandler.destroy(record);
+        itemDefinitionHandler.destroy(record.getName());
+        drgElementHandler.destroy(record.getName());
         stateProvider.getImports().remove(getImport(record));
         return singletonList(record);
     }

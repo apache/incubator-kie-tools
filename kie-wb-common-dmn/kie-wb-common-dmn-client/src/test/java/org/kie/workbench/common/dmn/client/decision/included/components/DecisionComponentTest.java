@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DRGElement;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
+import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.resources.DMNSVGGlyphFactory;
 import org.kie.workbench.common.stunner.core.client.shape.ImageDataUriGlyph;
 
@@ -30,39 +31,30 @@ import static org.junit.Assert.assertEquals;
 @RunWith(GwtMockitoTestRunner.class)
 public class DecisionComponentTest {
 
-    private String modelName = "file1.dmn";
-
-    private String drgElementId = "0000-1111-2222-3333";
+    private String fileName = "file1.dmn";
 
     private String drgElementName = "Is Allowed?";
 
-    private Class<? extends DRGElement> drgElementClass = Decision.class;
+    private DRGElement drgElement = new Decision();
 
     private DecisionComponent component;
 
     @Before
     public void setup() {
-        component = new DecisionComponent(modelName, drgElementId, drgElementName, drgElementClass);
+        drgElement = new Decision();
+        component = new DecisionComponent(fileName, drgElement);
+
+        drgElement.setName(new Name(drgElementName));
     }
 
     @Test
     public void testGetFile() {
-        assertEquals(modelName, component.getFile());
-    }
-
-    @Test
-    public void testGetDrgElementId() {
-        assertEquals(drgElementId, component.getDrgElementId());
+        assertEquals(fileName, component.getFileName());
     }
 
     @Test
     public void testGetName() {
         assertEquals(drgElementName, component.getName());
-    }
-
-    @Test
-    public void testGetDrgElementClass() {
-        assertEquals(drgElementClass, component.getDrgElementClass());
     }
 
     @Test
@@ -72,10 +64,5 @@ public class DecisionComponentTest {
         final ImageDataUriGlyph actualIcon = component.getIcon();
 
         assertEquals(expectedIcon, actualIcon);
-    }
-
-    @Test
-    public void testGetClassName() {
-        assertEquals(drgElementClass.getName(), component.getClassName());
     }
 }

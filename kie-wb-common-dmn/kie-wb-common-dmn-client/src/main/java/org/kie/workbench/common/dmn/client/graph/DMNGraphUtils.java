@@ -16,11 +16,14 @@
 
 package org.kie.workbench.common.dmn.client.graph;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.kie.workbench.common.dmn.api.definition.v1_1.DRGElement;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Definitions;
 import org.kie.workbench.common.dmn.api.graph.DMNDiagramUtils;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
@@ -31,7 +34,11 @@ import org.kie.workbench.common.stunner.core.diagram.Diagram;
 @Dependent
 public class DMNGraphUtils {
 
-    private static Definitions NONE = null;
+    private static Definitions NO_DEFINITIONS = null;
+
+    private static Diagram NO_DIAGRAM = null;
+
+    private static CanvasHandler NO_CANVAS_HANDLER = null;
 
     private SessionManager sessionManager;
 
@@ -53,13 +60,33 @@ public class DMNGraphUtils {
                 .map(clientSession -> {
                     return getCanvasHandler(clientSession)
                             .map(canvasHandler -> dmnDiagramUtils.getDefinitions(canvasHandler.getDiagram()))
-                            .orElse(NONE);
+                            .orElse(NO_DEFINITIONS);
                 })
-                .orElse(NONE);
+                .orElse(NO_DEFINITIONS);
+    }
+
+    public Diagram getDiagram() {
+        return getCurrentSession()
+                .map(clientSession -> {
+                    return getCanvasHandler(clientSession)
+                            .map((Function<CanvasHandler, Diagram>) CanvasHandler::getDiagram)
+                            .orElse(NO_DIAGRAM);
+                })
+                .orElse(NO_DIAGRAM);
+    }
+
+    public CanvasHandler getCanvasHandler() {
+        return getCurrentSession()
+                .map(clientSession -> getCanvasHandler(clientSession).orElse(NO_CANVAS_HANDLER))
+                .orElse(NO_CANVAS_HANDLER);
     }
 
     public Definitions getDefinitions(final Diagram diagram) {
         return dmnDiagramUtils.getDefinitions(diagram);
+    }
+
+    public List<DRGElement> getDRGElements() {
+        return dmnDiagramUtils.getNodes(getDiagram());
     }
 
     private Optional<ClientSession> getCurrentSession() {

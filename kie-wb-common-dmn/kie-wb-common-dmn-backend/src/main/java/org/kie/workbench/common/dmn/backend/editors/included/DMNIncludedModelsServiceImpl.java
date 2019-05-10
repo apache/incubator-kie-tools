@@ -27,10 +27,13 @@ import javax.inject.Inject;
 
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
 import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedModel;
 import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedModelsService;
 import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedNode;
+import org.kie.workbench.common.dmn.backend.common.DMNMarshallerImportsHelper;
 import org.kie.workbench.common.dmn.backend.common.DMNPathsHelperImpl;
+import org.kie.workbench.common.dmn.backend.definition.v1_1.ImportedItemDefinitionConverter;
 import org.kie.workbench.common.dmn.backend.editors.common.DMNIncludeModelFactory;
 import org.kie.workbench.common.dmn.backend.editors.common.DMNIncludedNodesFilter;
 import org.kie.workbench.common.dmn.backend.editors.types.exceptions.DMNIncludeModelCouldNotBeCreatedException;
@@ -47,13 +50,17 @@ public class DMNIncludedModelsServiceImpl implements DMNIncludedModelsService {
 
     private final DMNIncludedNodesFilter includedNodesFilter;
 
+    private final DMNMarshallerImportsHelper importsHelper;
+
     @Inject
     public DMNIncludedModelsServiceImpl(final DMNPathsHelperImpl pathsHelper,
                                         final DMNIncludeModelFactory includeModelFactory,
-                                        final DMNIncludedNodesFilter includedNodesFilter) {
+                                        final DMNIncludedNodesFilter includedNodesFilter,
+                                        final DMNMarshallerImportsHelper importsHelper) {
         this.pathsHelper = pathsHelper;
         this.includeModelFactory = includeModelFactory;
         this.includedNodesFilter = includedNodesFilter;
+        this.importsHelper = importsHelper;
     }
 
     @Override
@@ -75,6 +82,17 @@ public class DMNIncludedModelsServiceImpl implements DMNIncludedModelsService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<ItemDefinition> loadItemDefinitionsByNamespace(final WorkspaceProject workspaceProject,
+                                                               final String modelName,
+                                                               final String namespace) {
+        return importsHelper
+                .getImportedItemDefinitionsByNamespace(workspaceProject, modelName, namespace)
+                .stream()
+                .map(itemDefinition -> wbFromDMN(itemDefinition, modelName))
+                .collect(Collectors.toList());
+    }
+
     private Function<Path, DMNIncludedModel> getPathDMNIncludeModelFunction() {
         return path -> {
             try {
@@ -88,5 +106,10 @@ public class DMNIncludedModelsServiceImpl implements DMNIncludedModelsService {
 
     private List<Path> getPaths(final WorkspaceProject workspaceProject) {
         return pathsHelper.getDiagramsPaths(workspaceProject);
+    }
+
+    ItemDefinition wbFromDMN(final org.kie.dmn.model.api.ItemDefinition itemDefinition,
+                             final String modelName) {
+        return ImportedItemDefinitionConverter.wbFromDMN(itemDefinition, modelName);
     }
 }

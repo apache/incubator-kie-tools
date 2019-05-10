@@ -336,4 +336,7 @@ public class DMNEditorConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String DecisionComponentsView_EnterText = "DecisionComponentsView.EnterText";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DecisionComponentsItemView_DuplicatedNode = "DecisionComponentsItemView.DuplicatedNode";
 }

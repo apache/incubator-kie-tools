@@ -73,7 +73,7 @@ public class DecisionComponentFilter {
     }
 
     private String getDrgElementClass(final DecisionComponentsItem item) {
-        return item.getDecisionComponent().getDrgElementClass().getSimpleName();
+        return item.getDecisionComponent().getDrgElement().getClass().getSimpleName();
     }
 
     private boolean containsIgnoringCase(final String container,

@@ -27,6 +27,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DRGElement;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InputData;
+import org.kie.workbench.common.dmn.api.property.dmn.Name;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
@@ -80,10 +81,10 @@ public class DecisionComponentFilterTest {
     @Test
     public void testQueryWithoutFilters() {
 
-        final DecisionComponentsItem item1 = item("Can Drive?", Decision.class);
-        final DecisionComponentsItem item2 = item("Is Allowed?", Decision.class);
-        final DecisionComponentsItem item3 = item("Age", InputData.class);
-        final DecisionComponentsItem item4 = item("Name", InputData.class);
+        final DecisionComponentsItem item1 = item("Can Drive?", new Decision());
+        final DecisionComponentsItem item2 = item("Is Allowed?", new Decision());
+        final DecisionComponentsItem item3 = item("Age", new InputData());
+        final DecisionComponentsItem item4 = item("Name", new InputData());
         final Stream<DecisionComponentsItem> stream = Stream.of(item1, item2, item3, item4);
 
         final Stream<DecisionComponentsItem> query = filter.query(stream);
@@ -96,10 +97,10 @@ public class DecisionComponentFilterTest {
     @Test
     public void testQueryFilteredByTerm() {
 
-        final DecisionComponentsItem item1 = item("Can Drive?", Decision.class);
-        final DecisionComponentsItem item2 = item("Is Allowed?", Decision.class);
-        final DecisionComponentsItem item3 = item("Age", InputData.class);
-        final DecisionComponentsItem item4 = item("Name", InputData.class);
+        final DecisionComponentsItem item1 = item("Can Drive?", new Decision());
+        final DecisionComponentsItem item2 = item("Is Allowed?", new Decision());
+        final DecisionComponentsItem item3 = item("Age", new InputData());
+        final DecisionComponentsItem item4 = item("Name", new InputData());
         final Stream<DecisionComponentsItem> stream = Stream.of(item1, item2, item3, item4);
 
         filter.setTerm("name");
@@ -114,10 +115,10 @@ public class DecisionComponentFilterTest {
     @Test
     public void testQueryFilteredByTermMultipleResults() {
 
-        final DecisionComponentsItem item1 = item("Can Drive?", Decision.class);
-        final DecisionComponentsItem item2 = item("Is Allowed?", Decision.class);
-        final DecisionComponentsItem item3 = item("Age", InputData.class);
-        final DecisionComponentsItem item4 = item("Name", InputData.class);
+        final DecisionComponentsItem item1 = item("Can Drive?", new Decision());
+        final DecisionComponentsItem item2 = item("Is Allowed?", new Decision());
+        final DecisionComponentsItem item3 = item("Age", new InputData());
+        final DecisionComponentsItem item4 = item("Name", new InputData());
         final Stream<DecisionComponentsItem> stream = Stream.of(item1, item2, item3, item4);
 
         filter.setTerm("?");
@@ -132,10 +133,10 @@ public class DecisionComponentFilterTest {
     @Test
     public void testQueryFilteredByDrgElement() {
 
-        final DecisionComponentsItem item1 = item("Can Drive?", Decision.class);
-        final DecisionComponentsItem item2 = item("Is Allowed?", Decision.class);
-        final DecisionComponentsItem item3 = item("Age", InputData.class);
-        final DecisionComponentsItem item4 = item("Name", InputData.class);
+        final DecisionComponentsItem item1 = item("Can Drive?", new Decision());
+        final DecisionComponentsItem item2 = item("Is Allowed?", new Decision());
+        final DecisionComponentsItem item3 = item("Age", new InputData());
+        final DecisionComponentsItem item4 = item("Name", new InputData());
         final Stream<DecisionComponentsItem> stream = Stream.of(item1, item2, item3, item4);
 
         filter.setDrgElement("Decision");
@@ -150,10 +151,10 @@ public class DecisionComponentFilterTest {
     @Test
     public void testQueryFilteredByDrgElementNoResult() {
 
-        final DecisionComponentsItem item1 = item("Can Drive?", Decision.class);
-        final DecisionComponentsItem item2 = item("Is Allowed?", Decision.class);
-        final DecisionComponentsItem item3 = item("Age", InputData.class);
-        final DecisionComponentsItem item4 = item("Name", InputData.class);
+        final DecisionComponentsItem item1 = item("Can Drive?", new Decision());
+        final DecisionComponentsItem item2 = item("Is Allowed?", new Decision());
+        final DecisionComponentsItem item3 = item("Age", new InputData());
+        final DecisionComponentsItem item4 = item("Name", new InputData());
         final Stream<DecisionComponentsItem> stream = Stream.of(item1, item2, item3, item4);
 
         filter.setDrgElement("KnowledgeRequirement");
@@ -168,10 +169,10 @@ public class DecisionComponentFilterTest {
     @Test
     public void testQueryFilteredByDrgElementAndTerm() {
 
-        final DecisionComponentsItem item1 = item("Can Drive?", Decision.class);
-        final DecisionComponentsItem item2 = item("Is Allowed?", Decision.class);
-        final DecisionComponentsItem item3 = item("Age", InputData.class);
-        final DecisionComponentsItem item4 = item("Name", InputData.class);
+        final DecisionComponentsItem item1 = item("Can Drive?", new Decision());
+        final DecisionComponentsItem item2 = item("Is Allowed?", new Decision());
+        final DecisionComponentsItem item3 = item("Age", new InputData());
+        final DecisionComponentsItem item4 = item("Name", new InputData());
         final Stream<DecisionComponentsItem> stream = Stream.of(item1, item2, item3, item4);
 
         filter.setTerm("is");
@@ -187,10 +188,10 @@ public class DecisionComponentFilterTest {
     @Test
     public void testQueryFilteredByDrgElementAndTermMultipleResults() {
 
-        final DecisionComponentsItem item1 = item("Can Drive?", Decision.class);
-        final DecisionComponentsItem item2 = item("Is Allowed?", Decision.class);
-        final DecisionComponentsItem item3 = item("Age", InputData.class);
-        final DecisionComponentsItem item4 = item("Name", InputData.class);
+        final DecisionComponentsItem item1 = item("Can Drive?", new Decision());
+        final DecisionComponentsItem item2 = item("Is Allowed?", new Decision());
+        final DecisionComponentsItem item3 = item("Age", new InputData());
+        final DecisionComponentsItem item4 = item("Name", new InputData());
         final Stream<DecisionComponentsItem> stream = Stream.of(item1, item2, item3, item4);
 
         filter.setTerm("e");
@@ -206,10 +207,10 @@ public class DecisionComponentFilterTest {
     @Test
     public void testQueryFilteredByDrgElementAndTermNoResult() {
 
-        final DecisionComponentsItem item1 = item("Can Drive?", Decision.class);
-        final DecisionComponentsItem item2 = item("Is Allowed?", Decision.class);
-        final DecisionComponentsItem item3 = item("Age", InputData.class);
-        final DecisionComponentsItem item4 = item("Name", InputData.class);
+        final DecisionComponentsItem item1 = item("Can Drive?", new Decision());
+        final DecisionComponentsItem item2 = item("Is Allowed?", new Decision());
+        final DecisionComponentsItem item3 = item("Age", new InputData());
+        final DecisionComponentsItem item4 = item("Name", new InputData());
         final Stream<DecisionComponentsItem> stream = Stream.of(item1, item2, item3, item4);
 
         filter.setTerm("?");
@@ -223,12 +224,15 @@ public class DecisionComponentFilterTest {
     }
 
     private DecisionComponentsItem item(final String drgElementName,
-                                        final Class<? extends DRGElement> drgElementClass) {
+                                        final DRGElement drgElement) {
 
         final DecisionComponentsItem item = mock(DecisionComponentsItem.class);
-        final DecisionComponent decisionComponent = new DecisionComponent(null, null, drgElementName, drgElementClass);
+        final Name name = mock(Name.class);
+        final DecisionComponent decisionComponent = new DecisionComponent("file.dmn", drgElement);
 
+        when(name.getValue()).thenReturn(drgElementName);
         when(item.getDecisionComponent()).thenReturn(decisionComponent);
+        drgElement.setName(name);
 
         return item;
     }

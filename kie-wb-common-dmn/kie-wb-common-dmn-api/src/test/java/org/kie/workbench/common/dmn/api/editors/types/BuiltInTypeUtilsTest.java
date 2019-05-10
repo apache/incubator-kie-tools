@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.editors.types.common;
+package org.kie.workbench.common.dmn.api.editors.types;
 
 import org.junit.Test;
 
@@ -27,27 +27,27 @@ public class BuiltInTypeUtilsTest {
 
     @Test
     public void testIsDefaultWhenTypeIsDefault() {
-        assertTrue(BuiltInTypeUtils.isDefault("string"));
+        assertTrue(BuiltInTypeUtils.isBuiltInType("string"));
     }
 
     @Test
     public void testIsDefaultWhenTypeIsDefaultWithAlternativeAlias() {
-        assertTrue(BuiltInTypeUtils.isDefault("dayTimeDuration"));
+        assertTrue(BuiltInTypeUtils.isBuiltInType("dayTimeDuration"));
     }
 
     @Test
     public void testIsNotDefaultWhenTypeIsDefaultWithAnUpperCaseCharacter() {
-        assertFalse(BuiltInTypeUtils.isDefault("String"));
+        assertFalse(BuiltInTypeUtils.isBuiltInType("String"));
     }
 
     @Test
     public void testIsDefaultWhenTypeIsNull() {
-        assertFalse(BuiltInTypeUtils.isDefault(null));
+        assertFalse(BuiltInTypeUtils.isBuiltInType(null));
     }
 
     @Test
     public void testIsDefaultWhenTypeIsNotDefault() {
-        assertFalse(BuiltInTypeUtils.isDefault("tAddress"));
+        assertFalse(BuiltInTypeUtils.isBuiltInType("tAddress"));
     }
 
     @Test

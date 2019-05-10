@@ -40,7 +40,7 @@ import org.uberfire.commons.uuid.UUID;
 
 import static java.util.stream.Collectors.toList;
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
-import static org.kie.workbench.common.dmn.client.editors.types.common.BuiltInTypeUtils.isDefault;
+import static org.kie.workbench.common.dmn.api.editors.types.BuiltInTypeUtils.isBuiltInType;
 import static org.kie.workbench.common.dmn.client.editors.types.common.DataType.TOP_LEVEL_PARENT_UUID;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeManager_None;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeManager_Structure;
@@ -105,8 +105,9 @@ public class DataTypeManager {
     }
 
     public DataTypeManager from(final ItemDefinition itemDefinition) {
+        final boolean isReadOnly = isImportedItemDefinition(itemDefinition);
         return this
-                .newDataType()
+                .newDataType(isReadOnly)
                 .withUUID()
                 .withParentUUID(TOP_LEVEL_PARENT_UUID)
                 .withItemDefinition(itemDefinition)
@@ -116,6 +117,10 @@ public class DataTypeManager {
                 .withItemDefinitionCollection()
                 .withItemDefinitionSubDataTypes()
                 .withIndexedItemDefinition();
+    }
+
+    private boolean isImportedItemDefinition(final ItemDefinition itemDefinition) {
+        return itemDefinition.isAllowOnlyVisualChange();
     }
 
     public DataTypeManager from(final BuiltInType builtInType) {
@@ -176,7 +181,15 @@ public class DataTypeManager {
     }
 
     DataTypeManager newDataType() {
-        return withDataType(makeDataType());
+        return withDataType(new DataType(recordEngine));
+    }
+
+    DataTypeManager newReadOnlyDataType() {
+        return withDataType(new DataType(null));
+    }
+
+    DataTypeManager newDataType(final boolean isReadOnly) {
+        return isReadOnly ? newReadOnlyDataType() : newDataType();
     }
 
     public DataTypeManager withItemDefinition(final ItemDefinition itemDefinition) {
@@ -333,7 +346,7 @@ public class DataTypeManager {
 
     DataType createSubDataType(final ItemDefinition itemDefinition) {
         return anotherManager()
-                .newDataType()
+                .newDataType(getDataType().isReadOnly())
                 .withUUID()
                 .withParentUUID(getDataTypeUUID().orElseThrow(() -> new UnsupportedOperationException("A parent data type must have an UUID.")))
                 .withItemDefinition(itemDefinition)
@@ -391,7 +404,7 @@ public class DataTypeManager {
         if (getDataType().isTopLevel()) {
             return Optional.ofNullable(name);
         } else {
-            if (!Objects.equals(type, structure()) && !isDefault(type)) {
+            if (!Objects.equals(type, structure()) && !isBuiltInType(type)) {
                 return Optional.ofNullable(type);
             }
         }
@@ -405,10 +418,6 @@ public class DataTypeManager {
 
     DataType getDataType() {
         return dataType;
-    }
-
-    private DataType makeDataType() {
-        return new DataType(recordEngine);
     }
 
     private Optional<ItemDefinition> findByName(final String typeName) {

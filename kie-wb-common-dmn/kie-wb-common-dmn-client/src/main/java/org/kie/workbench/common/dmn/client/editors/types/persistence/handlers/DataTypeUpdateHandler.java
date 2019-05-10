@@ -28,7 +28,7 @@ import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManager;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.DataTypeStore;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.ItemDefinitionStore;
 
-import static org.kie.workbench.common.dmn.client.editors.types.common.BuiltInTypeUtils.isDefault;
+import static org.kie.workbench.common.dmn.api.editors.types.BuiltInTypeUtils.isBuiltInType;
 
 @Dependent
 public class DataTypeUpdateHandler extends DataTypeHandler {
@@ -48,7 +48,7 @@ public class DataTypeUpdateHandler extends DataTypeHandler {
 
         final String type = dataType.getType();
 
-        if (!isDefault(type)) {
+        if (!isBuiltInType(type)) {
             dataTypeManager
                     .from(dataType)
                     .withRefreshedSubDataTypes(type);

@@ -24,7 +24,7 @@ import javax.inject.Inject;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 
-import static org.kie.workbench.common.dmn.client.editors.types.common.BuiltInTypeUtils.findBuiltInTypeByName;
+import static org.kie.workbench.common.dmn.api.editors.types.BuiltInTypeUtils.findBuiltInTypeByName;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.ConstraintPlaceholderHelper_SampleDefault;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.ConstraintPlaceholderHelper_SentenceDefault;
 import static org.kie.workbench.common.stunner.core.util.StringUtils.isEmpty;

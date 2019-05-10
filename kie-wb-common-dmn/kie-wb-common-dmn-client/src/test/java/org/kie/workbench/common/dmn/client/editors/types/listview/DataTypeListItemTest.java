@@ -877,6 +877,24 @@ public class DataTypeListItemTest {
         verify(dataTypeList).fireOnDataTypeListItemUpdateCallback(dataTypeHash);
     }
 
+    @Test
+    public void testIsReadOnlyWhenItReturnsTrue() {
+
+        doReturn(dataType).when(listItem).getDataType();
+        when(dataType.isReadOnly()).thenReturn(true);
+
+        assertTrue(listItem.isReadOnly());
+    }
+
+    @Test
+    public void testIsReadOnlyWhenItReturnsFalse() {
+
+        doReturn(dataType).when(listItem).getDataType();
+        when(dataType.isReadOnly()).thenReturn(false);
+
+        assertFalse(listItem.isReadOnly());
+    }
+
     private DataType makeDataType() {
         return new DataType(null);
     }

@@ -16,8 +16,10 @@
 
 package org.kie.workbench.common.dmn.client.editors.included.modal;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import elemental2.dom.HTMLElement;
@@ -25,16 +27,22 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.soup.commons.util.Maps;
+import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
+import org.kie.workbench.common.dmn.client.api.included.legacy.DMNIncludeModelsClient;
 import org.kie.workbench.common.dmn.client.decision.events.RefreshDecisionComponents;
 import org.kie.workbench.common.dmn.client.editors.included.IncludedModel;
 import org.kie.workbench.common.dmn.client.editors.included.IncludedModelsPagePresenter;
 import org.kie.workbench.common.dmn.client.editors.included.imports.persistence.ImportRecordEngine;
 import org.kie.workbench.common.dmn.client.editors.included.modal.dropdown.DMNAssetsDropdown;
+import org.kie.workbench.common.dmn.client.editors.types.common.events.RefreshDataTypesListEvent;
 import org.kie.workbench.common.widgets.client.assets.dropdown.KieAssetsDropdownItem;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
 
+import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -63,7 +71,16 @@ public class IncludedModelModalTest {
     private IncludedModelsPagePresenter grid;
 
     @Mock
+    private DMNIncludeModelsClient client;
+
+    @Mock
     private EventSourceMock<RefreshDecisionComponents> refreshDecisionComponentsEvent;
+
+    @Mock
+    private EventSourceMock<RefreshDataTypesListEvent> refreshDataTypesListEvent;
+
+    @Captor
+    private ArgumentCaptor<RefreshDataTypesListEvent> refreshDataTypesListArgumentCaptor;
 
     private IncludedModelModalFake modal;
 
@@ -121,9 +138,10 @@ public class IncludedModelModalTest {
     public void testInclude() {
 
         final KieAssetsDropdownItem dropdownItem = mock(KieAssetsDropdownItem.class);
+        final IncludedModel includedModel = mock(IncludedModel.class);
 
         when(dropdown.getValue()).thenReturn(Optional.of(dropdownItem));
-        doNothing().when(modal).createIncludedModel(any());
+        doReturn(includedModel).when(modal).createIncludedModel(any());
         doNothing().when(modal).hide();
 
         modal.include();
@@ -132,6 +150,40 @@ public class IncludedModelModalTest {
         verify(grid).refresh();
         verify(modal).hide();
         verify(refreshDecisionComponentsEvent).fire(any(RefreshDecisionComponents.class));
+        verify(modal).refreshDataTypesList(includedModel);
+    }
+
+    @Test
+    public void testRefreshDataTypesList() {
+
+        final IncludedModel includedModel = mock(IncludedModel.class);
+        final Consumer<List<ItemDefinition>> listConsumer = list -> {/* Nothing. */};
+        final String modelName = "model1";
+        final String namespace = "://namespace1";
+
+        when(includedModel.getName()).thenReturn(modelName);
+        when(includedModel.getNamespace()).thenReturn(namespace);
+        doReturn(listConsumer).when(modal).getItemDefinitionConsumer();
+
+        modal.refreshDataTypesList(includedModel);
+
+        verify(client).loadItemDefinitionsByNamespace(modelName, namespace, listConsumer);
+    }
+
+    @Test
+    public void testGetItemDefinitionConsumer() {
+
+        final ItemDefinition itemDefinition1 = mock(ItemDefinition.class);
+        final ItemDefinition itemDefinition2 = mock(ItemDefinition.class);
+        final List<ItemDefinition> expectedNewItemDefinitions = asList(itemDefinition1, itemDefinition2);
+
+        modal.getItemDefinitionConsumer().accept(expectedNewItemDefinitions);
+
+        verify(refreshDataTypesListEvent).fire(refreshDataTypesListArgumentCaptor.capture());
+
+        final List<ItemDefinition> actualNewItemDefinitions = refreshDataTypesListArgumentCaptor.getValue().getNewItemDefinitions();
+
+        assertEquals(expectedNewItemDefinitions, actualNewItemDefinitions);
     }
 
     @Test
@@ -208,7 +260,7 @@ public class IncludedModelModalTest {
         IncludedModelModalFake(final View view,
                                final DMNAssetsDropdown dropdown,
                                final ImportRecordEngine recordEngine) {
-            super(view, dropdown, recordEngine, refreshDecisionComponentsEvent);
+            super(view, dropdown, recordEngine, client, refreshDataTypesListEvent, refreshDecisionComponentsEvent);
         }
 
         @Override

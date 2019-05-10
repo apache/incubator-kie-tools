@@ -68,11 +68,17 @@ public class ImportRecordEngineTest {
     @Mock
     private DefinitionsHandler definitionsHandler;
 
+    @Mock
+    private ItemDefinitionHandler itemDefinitionHandler;
+
+    @Mock
+    private DRGElementHandler drgElementHandler;
+
     private ImportRecordEngine recordEngine;
 
     @Before
     public void setup() {
-        recordEngine = spy(new ImportRecordEngine(stateProvider, includedModelsIndex, messageFactory, importFactory, flashMessageEvent, definitionsHandler));
+        recordEngine = spy(new ImportRecordEngine(stateProvider, includedModelsIndex, messageFactory, importFactory, flashMessageEvent, definitionsHandler, itemDefinitionHandler, drgElementHandler));
     }
 
     @Test
@@ -94,6 +100,8 @@ public class ImportRecordEngineTest {
 
         verify(anImport).setName(nameCaptor.capture());
         verify(definitionsHandler).update(oldName, record);
+        verify(itemDefinitionHandler).update(oldName, name);
+        verify(drgElementHandler).update(oldName, name);
 
         final Name actualName = nameCaptor.getValue();
         final Name expectedName = new Name(name);
@@ -124,7 +132,9 @@ public class ImportRecordEngineTest {
         final Import import2 = mock(Import.class);
         final List<Import> expectedImports = singletonList(import1);
         final List<Import> actualImports = new ArrayList<>(asList(import1, import2));
+        final String name = "name";
 
+        when(record.getName()).thenReturn(name);
         when(includedModelsIndex.getImport(record)).thenReturn(import2);
         when(stateProvider.getImports()).thenReturn(actualImports);
 
@@ -132,6 +142,8 @@ public class ImportRecordEngineTest {
         final List<IncludedModel> expectedResult = singletonList(record);
 
         verify(definitionsHandler).destroy(record);
+        verify(itemDefinitionHandler).destroy(name);
+        verify(drgElementHandler).destroy(name);
         assertEquals(expectedImports, actualImports);
         assertEquals(expectedResult, actualResult);
     }

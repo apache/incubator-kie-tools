@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.editors.types;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -37,6 +38,7 @@ import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManager;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManagerStackStore;
 import org.kie.workbench.common.dmn.client.editors.types.common.ItemDefinitionUtils;
+import org.kie.workbench.common.dmn.client.editors.types.common.events.RefreshDataTypesListEvent;
 import org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeList;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.DataTypeStore;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.ItemDefinitionStore;
@@ -116,6 +118,17 @@ public class DataTypesPage extends DMNPage {
     @Override
     public void onLostFocus() {
         flashMessages.hideMessages();
+    }
+
+    public void onRefreshDataTypesListWithNewItemDefinitions(final @Observes RefreshDataTypesListEvent refresh) {
+        if (isLoaded()) {
+            refreshItemDefinitions(refresh.getNewItemDefinitions());
+            reload();
+        }
+    }
+
+    void refreshItemDefinitions(final List<ItemDefinition> newItemDefinitions) {
+        itemDefinitionUtils.addItemDefinitions(newItemDefinitions);
     }
 
     public void reload() {

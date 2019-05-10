@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.editors.types.common;
+package org.kie.workbench.common.dmn.api.editors.types;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -25,7 +25,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 
 public class BuiltInTypeUtils {
 
-    public static boolean isDefault(final String type) {
+    public static boolean isBuiltInType(final String type) {
         return builtInTypeNames()
                 .anyMatch(builtInTypeName -> Objects.equals(builtInTypeName, type));
     }

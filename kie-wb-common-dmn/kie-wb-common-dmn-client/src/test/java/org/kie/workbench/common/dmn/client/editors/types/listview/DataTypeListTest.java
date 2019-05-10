@@ -233,17 +233,37 @@ public class DataTypeListTest {
     }
 
     @Test
-    public void testSetViewItems() {
+    public void testSetViewItemsWhenSomeDataTypeListItemIsReadOnly() {
 
         final DataTypeListItem listItem1 = mock(DataTypeListItem.class);
         final DataTypeListItem listItem2 = mock(DataTypeListItem.class);
         final List<DataTypeListItem> listItems = asList(listItem1, listItem2);
 
         doReturn(listItems).when(dataTypeList).getItems();
+        when(listItem1.isReadOnly()).thenReturn(false);
+        when(listItem2.isReadOnly()).thenReturn(true);
 
         dataTypeList.setupViewItems();
 
         verify(view).setupListItems(listItems);
+        verify(view).showReadOnlyMessage(true);
+    }
+
+    @Test
+    public void testSetViewItemsWhenNoDataTypeListItemIsReadOnly() {
+
+        final DataTypeListItem listItem1 = mock(DataTypeListItem.class);
+        final DataTypeListItem listItem2 = mock(DataTypeListItem.class);
+        final List<DataTypeListItem> listItems = asList(listItem1, listItem2);
+
+        doReturn(listItems).when(dataTypeList).getItems();
+        when(listItem1.isReadOnly()).thenReturn(false);
+        when(listItem2.isReadOnly()).thenReturn(false);
+
+        dataTypeList.setupViewItems();
+
+        verify(view).setupListItems(listItems);
+        verify(view).showReadOnlyMessage(false);
     }
 
     @Test

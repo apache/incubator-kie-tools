@@ -157,6 +157,10 @@ public class DataTypeListItem {
         return dataType;
     }
 
+    public boolean isReadOnly() {
+        return getDataType().isReadOnly();
+    }
+
     public int getLevel() {
         return level;
     }

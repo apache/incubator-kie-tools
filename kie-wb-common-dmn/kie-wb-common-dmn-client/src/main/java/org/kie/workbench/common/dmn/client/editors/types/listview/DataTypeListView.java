@@ -85,6 +85,12 @@ public class DataTypeListView implements DataTypeList.View {
     @DataField("no-data-types-found")
     private final HTMLDivElement noDataTypesFound;
 
+    @DataField("read-only-message")
+    private final HTMLDivElement readOnlyMessage;
+
+    @DataField("read-only-message-close-button")
+    private final HTMLButtonElement readOnlyMessageCloseButton;
+
     private final ScrollHelper scrollHelper;
 
     private DataTypeList presenter;
@@ -101,6 +107,8 @@ public class DataTypeListView implements DataTypeList.View {
                             final HTMLAnchorElement expandAll,
                             final HTMLAnchorElement collapseAll,
                             final HTMLDivElement noDataTypesFound,
+                            final HTMLDivElement readOnlyMessage,
+                            final HTMLButtonElement readOnlyMessageCloseButton,
                             final ScrollHelper scrollHelper) {
         this.listItems = listItems;
         this.collapsedDescription = collapsedDescription;
@@ -113,6 +121,8 @@ public class DataTypeListView implements DataTypeList.View {
         this.expandAll = expandAll;
         this.collapseAll = collapseAll;
         this.noDataTypesFound = noDataTypesFound;
+        this.readOnlyMessage = readOnlyMessage;
+        this.readOnlyMessageCloseButton = readOnlyMessageCloseButton;
         this.scrollHelper = scrollHelper;
     }
 
@@ -192,6 +202,11 @@ public class DataTypeListView implements DataTypeList.View {
     public void onAddClick(final ClickEvent e) {
         scrollHelper.animatedScrollToBottom(listItems);
         presenter.addDataType();
+    }
+
+    @EventHandler("read-only-message-close-button")
+    public void onReadOnlyMessageCloseButtonClick(final ClickEvent e) {
+        hide(readOnlyMessage);
     }
 
     void hideItemElementIfParentIsCollapsed(final HTMLElement itemElement,
@@ -346,5 +361,14 @@ public class DataTypeListView implements DataTypeList.View {
     @Override
     public HTMLDivElement getListItems() {
         return listItems;
+    }
+
+    @Override
+    public void showReadOnlyMessage(final boolean show) {
+        if (show) {
+            show(readOnlyMessage);
+        } else {
+            hide(readOnlyMessage);
+        }
     }
 }

@@ -224,7 +224,7 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
         diagramEditor.initialiseKieEditorForSession(diagram);
 
         verify(multiPage).addPage(dataTypesPage);
-        // TODO: {karreiro} Enable Included Models feature. # verify(multiPage).addPage(includedModelsPage);
+        verify(multiPage).addPage(includedModelsPage);
     }
 
     @Test

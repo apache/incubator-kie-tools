@@ -152,29 +152,55 @@ public class DataTypeListItemViewTest {
     }
 
     @Test
-    public void testSetupRowCSSClassWhenDataTypeHasSubDataTypes() {
+    public void testSetupSubDataTypesCSSClassWhenDataTypeHasSubDataTypes() {
 
         final DataType dataType = mock(DataType.class);
 
         row.classList = mock(DOMTokenList.class);
         when(dataType.hasSubDataTypes()).thenReturn(true);
 
-        view.setupRowCSSClass(dataType);
+        view.setupSubDataTypesCSSClass(dataType);
 
         verify(row.classList).add("has-sub-data-types");
     }
 
     @Test
-    public void testSetupRowCSSClassWhenDataTypeDoesNotHaveSubDataTypes() {
+    public void testSetupSubDataTypesCSSClassWhenDataTypeDoesNotHaveSubDataTypes() {
 
         final DataType dataType = mock(DataType.class);
 
         row.classList = mock(DOMTokenList.class);
         when(dataType.hasSubDataTypes()).thenReturn(false);
 
-        view.setupRowCSSClass(dataType);
+        view.setupSubDataTypesCSSClass(dataType);
 
         verify(row.classList).remove("has-sub-data-types");
+    }
+
+    @Test
+    public void testSetupReadOnlyCSSClassWhenDataTypeHasSubDataTypes() {
+
+        final DataType dataType = mock(DataType.class);
+
+        row.classList = mock(DOMTokenList.class);
+        when(dataType.isReadOnly()).thenReturn(true);
+
+        view.setupReadOnlyCSSClass(dataType);
+
+        verify(row.classList).add("read-only");
+    }
+
+    @Test
+    public void testSetupReadOnlyCSSClassWhenDataTypeDoesNotHaveSubDataTypes() {
+
+        final DataType dataType = mock(DataType.class);
+
+        row.classList = mock(DOMTokenList.class);
+        when(dataType.isReadOnly()).thenReturn(false);
+
+        view.setupReadOnlyCSSClass(dataType);
+
+        verify(row.classList).remove("read-only");
     }
 
     @Test

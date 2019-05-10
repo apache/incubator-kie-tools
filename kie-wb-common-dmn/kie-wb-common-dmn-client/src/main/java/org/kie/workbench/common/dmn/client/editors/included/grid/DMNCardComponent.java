@@ -99,6 +99,7 @@ public class DMNCardComponent implements CardComponent {
             if (getIncludedModel().isValid()) {
                 getIncludedModel().update();
                 getGrid().refresh();
+                refreshDecisionComponents();
                 return true;
             } else {
                 getIncludedModel().setName(oldName);
@@ -143,7 +144,7 @@ public class DMNCardComponent implements CardComponent {
         refreshDecisionComponents();
     }
 
-    private void refreshDecisionComponents() {
+    void refreshDecisionComponents() {
         refreshDecisionComponentsEvent.fire(new RefreshDecisionComponents());
     }
 

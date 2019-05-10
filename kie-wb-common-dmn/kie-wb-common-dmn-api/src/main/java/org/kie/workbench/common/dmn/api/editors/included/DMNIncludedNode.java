@@ -25,47 +25,19 @@ public class DMNIncludedNode {
 
     private String fileName;
 
-    private String modelName;
-
-    private String drgElementId;
-
-    private String drgElementName;
-
-    private Class<? extends DRGElement> drgElementClass;
+    private DRGElement drgElement;
 
     public DMNIncludedNode(final @MapsTo("fileName") String fileName,
-                           final @MapsTo("modelName") String modelName,
-                           final @MapsTo("drgElementId") String drgElementId,
-                           final @MapsTo("drgElementName") String drgElementName,
-                           final @MapsTo("drgElementClass") Class<? extends DRGElement> drgElementClass) {
+                           final @MapsTo("drgElement") DRGElement drgElement) {
         this.fileName = fileName;
-        this.modelName = modelName;
-        this.drgElementId = drgElementId;
-        this.drgElementName = drgElementName;
-        this.drgElementClass = drgElementClass;
+        this.drgElement = drgElement;
     }
 
     public String getFileName() {
         return fileName;
     }
 
-    public String getModelName() {
-        return modelName;
-    }
-
-    public String getDrgElementId() {
-        return drgElementId;
-    }
-
-    public String getImportedElementId() {
-        return modelName + ":" + drgElementId;
-    }
-
-    public String getDrgElementName() {
-        return drgElementName;
-    }
-
-    public Class<? extends DRGElement> getDrgElementClass() {
-        return drgElementClass;
+    public DRGElement getDrgElement() {
+        return drgElement;
     }
 }

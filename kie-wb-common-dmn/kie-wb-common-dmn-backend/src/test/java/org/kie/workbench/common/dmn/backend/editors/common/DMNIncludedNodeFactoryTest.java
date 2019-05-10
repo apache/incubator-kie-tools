@@ -20,13 +20,16 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DRGElement;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
+import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItemPrimary;
 import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedModel;
 import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedNode;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
+import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.uberfire.backend.vfs.Path;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -44,31 +47,41 @@ public class DMNIncludedNodeFactoryTest {
 
         final Path path = mock(Path.class);
         final DMNIncludedModel includedModel = mock(DMNIncludedModel.class);
-        final String expectedId = "0000-1111-3333-4444";
-        final String expectedDrgElementName = "Can Drive?";
+        final String drgElementId = "0000-1111-3333-4444";
+        final String drgElementName = "Can Drive?";
         final String expectedFileName = "file.dmn";
         final String expectedModelName = "model";
         final String expectedImportedElementId = "model:0000-1111-3333-4444";
-        final DRGElement importedElementId = makeDecision(expectedId, expectedDrgElementName);
+        final String expectedImportedElementName = "model.Can Drive?";
+        final String expectedImportedItemDefinitionName = "model.tCustomBoolean";
+        final DRGElement importedElementId = makeDecision(drgElementId, drgElementName, "tCustomBoolean");
 
         when(path.getFileName()).thenReturn(expectedFileName);
         when(includedModel.getModelName()).thenReturn(expectedModelName);
 
         final DMNIncludedNode node = factory.makeDMNIncludeModel(path, includedModel, importedElementId);
+        final Decision drgElement = (Decision) node.getDrgElement();
 
-        assertEquals(expectedId, node.getDrgElementId());
-        assertEquals(expectedDrgElementName, node.getDrgElementName());
-        assertEquals(expectedImportedElementId, node.getImportedElementId());
+        assertEquals(expectedImportedElementId, drgElement.getId().getValue());
+        assertEquals(expectedImportedElementName, drgElement.getName().getValue());
+        assertEquals(expectedImportedItemDefinitionName, drgElement.getVariable().getTypeRef().getLocalPart());
         assertEquals(expectedFileName, node.getFileName());
-        assertEquals(expectedModelName, node.getModelName());
-        assertEquals(Decision.class, node.getDrgElementClass());
+        assertTrue(drgElement.isAllowOnlyVisualChange());
     }
 
     private Decision makeDecision(final String id,
-                                  final String name) {
+                                  final String name,
+                                  final String type) {
         final Decision decision = new Decision();
         decision.setId(new Id(id));
         decision.setName(new Name(name));
+        decision.setVariable(makeInformationItemPrimary(type));
         return decision;
+    }
+
+    private InformationItemPrimary makeInformationItemPrimary(final String localPart) {
+        final InformationItemPrimary informationItemPrimary = new InformationItemPrimary();
+        informationItemPrimary.setTypeRef(new QName(QName.NULL_NS_URI, localPart, QName.DEFAULT_NS_PREFIX));
+        return informationItemPrimary;
     }
 }

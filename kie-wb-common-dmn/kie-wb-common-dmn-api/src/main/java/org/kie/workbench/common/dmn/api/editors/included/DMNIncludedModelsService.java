@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.jboss.errai.bus.server.annotations.Remote;
+import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
 
 /**
  * This service handles calls related to included DMN models.
@@ -30,7 +31,7 @@ public interface DMNIncludedModelsService {
     /**
      * This method loads all DMN models from a given project.
      * @param workspaceProject represents the project that will be scanned.
-     * @return returns all 'DMNIncludedModel's from a given project.
+     * @return all {@link DMNIncludedModel}s from a given project.
      */
     List<DMNIncludedModel> loadModels(final WorkspaceProject workspaceProject);
 
@@ -38,13 +39,19 @@ public interface DMNIncludedModelsService {
      * This method loads all nodes from an included model.
      * @param workspaceProject represents the project that will be scanned.
      * @param includedModels represents all imports that provide the list of nodes.
-     * @return returns the list of 'DMNIncludedNode's.
-     * ---
-     * @deprecated Imported nodes are being loaded by the marshaller by using the 'DMNMarshallerImportsHelper'.
-     * Thus, client side components can consume nodes directly from the 'Diagram',
-     * and this method will be removed by https://issues.jboss.org/browse/DROOLS-3934 with the end of this refactoring.
+     * @return a list of {@link DMNIncludedNode}s.
      */
-    @Deprecated
     List<DMNIncludedNode> loadNodesFromImports(final WorkspaceProject workspaceProject,
                                                final List<DMNIncludedModel> includedModels);
+
+    /**
+     * This method finds the list of {@link ItemDefinition}s for a given <code>namespace</code>.
+     * @param workspaceProject represents the project that will be scanned.
+     * @param modelName is the value used as the prefix for imported {@link ItemDefinition}s.
+     * @param namespace is the namespace of the model that provides the list of {@link ItemDefinition}s.
+     * @return a list of {@link ItemDefinition}s.
+     */
+    List<ItemDefinition> loadItemDefinitionsByNamespace(final WorkspaceProject workspaceProject,
+                                                        final String modelName,
+                                                        final String namespace);
 }

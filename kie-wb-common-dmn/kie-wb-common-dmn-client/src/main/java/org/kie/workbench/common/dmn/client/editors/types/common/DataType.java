@@ -127,4 +127,8 @@ public class DataType extends DataTypeActiveRecord {
     public boolean isTopLevel() {
         return Objects.equals(getParentUUID(), TOP_LEVEL_PARENT_UUID);
     }
+
+    public boolean isReadOnly() {
+        return !isRecordEnginePresent();
+    }
 }

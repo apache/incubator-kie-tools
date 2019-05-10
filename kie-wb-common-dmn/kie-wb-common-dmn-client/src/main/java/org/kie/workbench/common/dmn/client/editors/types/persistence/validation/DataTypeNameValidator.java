@@ -23,8 +23,8 @@ import java.util.Optional;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import org.kie.workbench.common.dmn.api.editors.types.BuiltInTypeUtils;
 import org.kie.workbench.common.dmn.client.editors.common.messages.FlashMessage;
-import org.kie.workbench.common.dmn.client.editors.types.common.BuiltInTypeUtils;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.errors.DataTypeNameIsBlankErrorMessage;
 import org.kie.workbench.common.dmn.client.editors.types.common.errors.DataTypeNameIsDefaultTypeMessage;
@@ -79,7 +79,7 @@ public class DataTypeNameValidator {
     }
 
     boolean isDefault(final DataType dataType) {
-        return BuiltInTypeUtils.isDefault(dataType.getName());
+        return BuiltInTypeUtils.isBuiltInType(dataType.getName());
     }
 
     public boolean isNotUnique(final DataType dataType) {

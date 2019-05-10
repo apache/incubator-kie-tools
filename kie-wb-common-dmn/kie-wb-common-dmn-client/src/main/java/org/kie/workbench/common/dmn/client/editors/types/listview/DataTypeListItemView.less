@@ -35,6 +35,14 @@
     height: 72px;
   }
 
+  &.read-only {
+    cursor: not-allowed;
+
+    .list-view-pf-actions {
+      pointer-events: none;
+    }
+  }
+
   [data-type-field="arrow-button"] {
     cursor: pointer;
   }

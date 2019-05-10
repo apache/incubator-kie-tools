@@ -106,13 +106,28 @@ public class DataTypeListItemView implements DataTypeListItem.View {
     }
 
     void setupRowCSSClass(final DataType dataType) {
+        setupSubDataTypesCSSClass(dataType);
+        setupReadOnlyCSSClass(dataType);
+    }
 
+    void setupSubDataTypesCSSClass(final DataType dataType) {
         final String hasSubDataTypesCSSClass = "has-sub-data-types";
 
         if (dataType.hasSubDataTypes()) {
             getElement().classList.add(hasSubDataTypesCSSClass);
         } else {
             getElement().classList.remove(hasSubDataTypesCSSClass);
+        }
+    }
+
+    void setupReadOnlyCSSClass(final DataType dataType) {
+
+        final String readOnlyCSSClass = "read-only";
+
+        if (dataType.isReadOnly()) {
+            getElement().classList.add(readOnlyCSSClass);
+        } else {
+            getElement().classList.remove(readOnlyCSSClass);
         }
     }
 

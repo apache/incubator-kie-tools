@@ -26,48 +26,32 @@ import static org.kie.workbench.common.dmn.client.shape.def.DMNSVGShapeDefImpl.G
 
 public class DecisionComponent {
 
-    private final String modelName;
+    private final String fileName;
 
-    private final String drgElementId;
-
-    private final String drgElementName;
-
-    private final Class<? extends DRGElement> drgElementClass;
+    private DRGElement drgElement;
 
     private final static Map<Class<?>, ImageDataUriGlyph> PALETTE_MAP = buildPaletteMap();
 
-    public DecisionComponent(final String modelName,
-                             final String drgElementId,
-                             final String drgElementName,
-                             final Class<? extends DRGElement> drgElementClass) {
-        this.modelName = modelName;
-        this.drgElementId = drgElementId;
-        this.drgElementName = drgElementName;
-        this.drgElementClass = drgElementClass;
+    public DecisionComponent(final String fileName,
+                             final DRGElement drgElement) {
+        this.fileName = fileName;
+        this.drgElement = drgElement;
     }
 
-    public String getFile() {
-        return modelName;
+    public String getFileName() {
+        return fileName;
     }
 
-    public String getDrgElementId() {
-        return drgElementId;
+    public DRGElement getDrgElement() {
+        return drgElement;
     }
 
     public String getName() {
-        return drgElementName;
-    }
-
-    public Class<? extends DRGElement> getDrgElementClass() {
-        return drgElementClass;
-    }
-
-    public String getClassName() {
-        return drgElementClass.getName();
+        return drgElement.getName().getValue();
     }
 
     public ImageDataUriGlyph getIcon() {
-        return PALETTE_MAP.get(drgElementClass);
+        return PALETTE_MAP.get(drgElement.getClass());
     }
 
     private static Map<Class<?>, ImageDataUriGlyph> buildPaletteMap() {

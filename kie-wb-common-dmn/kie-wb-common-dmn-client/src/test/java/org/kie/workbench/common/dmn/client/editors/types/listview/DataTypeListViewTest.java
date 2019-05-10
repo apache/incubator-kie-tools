@@ -108,6 +108,12 @@ public class DataTypeListViewTest {
     private HTMLElement searchBarElement;
 
     @Mock
+    private HTMLDivElement readOnlyMessage;
+
+    @Mock
+    private HTMLButtonElement readOnlyMessageCloseButton;
+
+    @Mock
     private ScrollHelper scrollHelper;
 
     @Mock
@@ -126,7 +132,7 @@ public class DataTypeListViewTest {
         listItems.classList = mock(DOMTokenList.class);
         listItems.childNodes = new NodeList<>();
 
-        view = spy(new DataTypeListView(listItems, collapsedDescription, expandedDescription, viewMore, viewLess, addButton, placeholder, searchBarContainer, expandAll, collapseAll, noDataTypesFound, scrollHelper));
+        view = spy(new DataTypeListView(listItems, collapsedDescription, expandedDescription, viewMore, viewLess, addButton, placeholder, searchBarContainer, expandAll, collapseAll, noDataTypesFound, readOnlyMessage, readOnlyMessageCloseButton, scrollHelper));
         view.init(presenter);
 
         doReturn(element).when(view).getElement();
@@ -339,6 +345,17 @@ public class DataTypeListViewTest {
 
         verify(scrollHelper).animatedScrollToBottom(listItems);
         verify(presenter).addDataType();
+    }
+
+    @Test
+    public void testOnReadOnlyMessageCloseButtonClick() {
+
+        final ClickEvent event = mock(ClickEvent.class);
+        readOnlyMessage.classList = mock(DOMTokenList.class);
+
+        view.onReadOnlyMessageCloseButtonClick(event);
+
+        verify(readOnlyMessage.classList).add(HIDDEN_CSS_CLASS);
     }
 
     @Test
@@ -619,6 +636,26 @@ public class DataTypeListViewTest {
         final Element actualElement = view.getLastSubDataTypeElement(dataType);
 
         assertEquals(expectedElement, actualElement);
+    }
+
+    @Test
+    public void testShowReadOnlyMessageWhenShowIsTrue() {
+
+        readOnlyMessage.classList = mock(DOMTokenList.class);
+
+        view.showReadOnlyMessage(true);
+
+        verify(readOnlyMessage.classList).remove(HIDDEN_CSS_CLASS);
+    }
+
+    @Test
+    public void testShowReadOnlyMessageWhenShowIsFalse() {
+
+        readOnlyMessage.classList = mock(DOMTokenList.class);
+
+        view.showReadOnlyMessage(false);
+
+        verify(readOnlyMessage.classList).add(HIDDEN_CSS_CLASS);
     }
 
     private HTMLElement makeHTMLElement() {

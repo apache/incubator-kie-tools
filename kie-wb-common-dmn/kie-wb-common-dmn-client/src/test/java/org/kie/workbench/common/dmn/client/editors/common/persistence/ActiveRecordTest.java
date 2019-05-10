@@ -119,6 +119,18 @@ public class ActiveRecordTest {
         assertFalse(activeRecord.isValid());
     }
 
+    @Test
+    public void testIsRecordEnginePresentWhenRecordEngineIsPresent() {
+        final ActiveRecord<Data> record = activeRecord(null);
+        assertFalse(record.isRecordEnginePresent());
+    }
+
+    @Test
+    public void testIsRecordEnginePresentWhenRecordEngineIsNotPresent() {
+        final ActiveRecord<Data> record = activeRecord(makeRecordEngine());
+        assertTrue(record.isRecordEnginePresent());
+    }
+
     private ActiveRecord<Data> activeRecord(final RecordEngine<Data> engine) {
 
         final Data record = new Data();

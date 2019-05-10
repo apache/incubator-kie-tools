@@ -29,6 +29,7 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
 import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedModel;
 import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedModelsService;
 import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedNode;
@@ -47,7 +48,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class DMNIncludedModelsClientTest {
+public class DMNIncludeModelsClientTest {
 
     @Mock
     private CallerMock<DMNIncludedModelsService> service;
@@ -60,6 +61,9 @@ public class DMNIncludedModelsClientTest {
 
     @Mock
     private Consumer<List<DMNIncludedNode>> listConsumerDMNNodes;
+
+    @Mock
+    private Consumer<List<ItemDefinition>> listConsumerDMNItemDefinitions;
 
     @Mock
     private ErrorCallback<Object> onError;
@@ -111,6 +115,23 @@ public class DMNIncludedModelsClientTest {
         client.loadNodesFromImports(imports, listConsumerDMNNodes);
 
         verify(dmnService).loadNodesFromImports(workspaceProject, imports);
+    }
+
+    @Test
+    public void testLoadItemDefinitionsByNamespace() {
+
+        final Optional<WorkspaceProject> optionalWorkspaceProject = Optional.of(workspaceProject);
+        final String modelName = "model1";
+        final String namespace = "://namespace1";
+
+        doReturn(onSuccess).when(client).onSuccess(any());
+        doReturn(onError).when(client).onError(any());
+        when(service.call(onSuccess, onError)).thenReturn(dmnService);
+        when(projectContext.getActiveWorkspaceProject()).thenReturn(optionalWorkspaceProject);
+
+        client.loadItemDefinitionsByNamespace(modelName, namespace, listConsumerDMNItemDefinitions);
+
+        verify(dmnService).loadItemDefinitionsByNamespace(workspaceProject, modelName, namespace);
     }
 
     @Test

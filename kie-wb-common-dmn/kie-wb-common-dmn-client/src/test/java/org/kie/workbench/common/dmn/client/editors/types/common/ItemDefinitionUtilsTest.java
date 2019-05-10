@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.editors.types.common;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -70,6 +71,26 @@ public class ItemDefinitionUtilsTest {
         final Optional<ItemDefinition> expected = Optional.of(item1);
 
         assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testAddItemDefinitions() {
+
+        final Definitions definitions = mock(Definitions.class);
+        final ItemDefinition itemDefinition1 = mock(ItemDefinition.class);
+        final ItemDefinition itemDefinition2 = mock(ItemDefinition.class);
+        final ItemDefinition itemDefinition3 = mock(ItemDefinition.class);
+        final ItemDefinition itemDefinition4 = mock(ItemDefinition.class);
+        final List<ItemDefinition> newItemDefinitions = asList(itemDefinition1, itemDefinition3);
+        final List<ItemDefinition> expectedItemDefinitions = asList(itemDefinition2, itemDefinition4, itemDefinition1, itemDefinition3);
+        final List<ItemDefinition> actualItemDefinitions = new ArrayList<>(asList(itemDefinition2, itemDefinition4));
+
+        when(dmnGraphUtils.getDefinitions()).thenReturn(definitions);
+        when(definitions.getItemDefinition()).thenReturn(actualItemDefinitions);
+
+        utils.addItemDefinitions(newItemDefinitions);
+
+        assertEquals(expectedItemDefinitions, actualItemDefinitions);
     }
 
     @Test

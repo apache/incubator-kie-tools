@@ -168,6 +168,13 @@ public class DataTypeList {
 
     void setupViewItems() {
         view.setupListItems(getItems());
+        view.showReadOnlyMessage(hasReadOnlyDataTypes());
+    }
+
+    private boolean hasReadOnlyDataTypes() {
+        return getItems()
+                .stream()
+                .anyMatch(DataTypeListItem::isReadOnly);
     }
 
     public List<DataTypeListItem> getItems() {
@@ -303,5 +310,7 @@ public class DataTypeList {
         void showNoDataTypesFound();
 
         HTMLDivElement getListItems();
+
+        void showReadOnlyMessage(boolean show);
     }
 }

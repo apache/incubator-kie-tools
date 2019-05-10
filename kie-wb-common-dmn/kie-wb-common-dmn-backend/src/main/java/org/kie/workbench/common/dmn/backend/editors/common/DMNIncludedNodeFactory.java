@@ -18,10 +18,18 @@ package org.kie.workbench.common.dmn.backend.editors.common;
 
 import javax.enterprise.context.Dependent;
 
+import org.kie.workbench.common.dmn.api.definition.HasVariable;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DRGElement;
+import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItemPrimary;
+import org.kie.workbench.common.dmn.api.definition.v1_1.IsInformationItem;
 import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedModel;
 import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedNode;
+import org.kie.workbench.common.dmn.api.property.dmn.Id;
+import org.kie.workbench.common.dmn.api.property.dmn.Name;
+import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.uberfire.backend.vfs.Path;
+
+import static org.kie.workbench.common.dmn.api.editors.types.BuiltInTypeUtils.isBuiltInType;
 
 @Dependent
 public class DMNIncludedNodeFactory {
@@ -29,13 +37,41 @@ public class DMNIncludedNodeFactory {
     DMNIncludedNode makeDMNIncludeModel(final Path path,
                                         final DMNIncludedModel includeModel,
                                         final DRGElement drgElement) {
-
         final String fileName = path.getFileName();
-        final String modelName = includeModel.getModelName();
-        final String drgElementId = drgElement.getId().getValue();
-        final String drgElementName = drgElement.getName().getValue();
-        final Class<? extends DRGElement> drgElementClass = drgElement.getClass();
+        return new DMNIncludedNode(fileName, withNamespace(drgElement, includeModel));
+    }
 
-        return new DMNIncludedNode(fileName, modelName, drgElementId, drgElementName, drgElementClass);
+    private DRGElement withNamespace(final DRGElement drgElement,
+                                     final DMNIncludedModel includeModel) {
+
+        final String namespace = includeModel.getModelName();
+
+        drgElement.setId(new Id(namespace + ":" + drgElement.getId().getValue()));
+        drgElement.setName(new Name(namespace + "." + drgElement.getName().getValue()));
+        drgElement.setAllowOnlyVisualChange(true);
+
+        if (drgElement instanceof HasVariable) {
+
+            final HasVariable hasVariable = (HasVariable) drgElement;
+            final IsInformationItem variable = hasVariable.getVariable();
+            final QName qName = variable.getTypeRef();
+
+            if (qName != null && !isBuiltInType(qName.getLocalPart())) {
+
+                final QName typeRef = new QName(qName.getNamespaceURI(), namespace + "." + qName.getLocalPart(), qName.getPrefix());
+                setVariable(hasVariable, variable, typeRef);
+            }
+        }
+
+        return drgElement;
+    }
+
+    @SuppressWarnings("unchecked")
+    private void setVariable(final HasVariable hasVariable,
+                             final IsInformationItem variable,
+                             final QName typeRef) {
+        if (variable instanceof InformationItemPrimary) {
+            hasVariable.setVariable(new InformationItemPrimary(variable.getId(), typeRef));
+        }
     }
 }

@@ -24,18 +24,21 @@ import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.kie.workbench.common.forms.adf.definitions.DynamicReadOnly;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 import static java.util.Collections.singletonList;
 
 @Portable
-public class ItemDefinition extends NamedElement implements HasTypeRef {
+public class ItemDefinition extends NamedElement implements HasTypeRef,
+                                                            DynamicReadOnly {
 
     private QName typeRef;
     private UnaryTests allowedValues;
     private List<ItemDefinition> itemComponent;
     private String typeLanguage;
     private Boolean isCollection;
+    private Boolean allowOnlyVisualChange;
 
     public ItemDefinition() {
         this(new Id(),
@@ -45,6 +48,7 @@ public class ItemDefinition extends NamedElement implements HasTypeRef {
              null,
              null,
              null,
+             false,
              false);
     }
 
@@ -55,7 +59,8 @@ public class ItemDefinition extends NamedElement implements HasTypeRef {
                           final UnaryTests allowedValues,
                           final List<ItemDefinition> itemComponent,
                           final String typeLanguage,
-                          final Boolean isCollection) {
+                          final Boolean isCollection,
+                          final Boolean allowOnlyVisualChange) {
         super(id,
               description,
               name);
@@ -64,6 +69,7 @@ public class ItemDefinition extends NamedElement implements HasTypeRef {
         this.itemComponent = itemComponent;
         this.typeLanguage = typeLanguage;
         this.isCollection = isCollection;
+        this.allowOnlyVisualChange = allowOnlyVisualChange;
     }
 
     @Override
@@ -153,6 +159,9 @@ public class ItemDefinition extends NamedElement implements HasTypeRef {
         if (typeLanguage != null ? !typeLanguage.equals(that.typeLanguage) : that.typeLanguage != null) {
             return false;
         }
+        if (allowOnlyVisualChange != null ? !allowOnlyVisualChange.equals(that.allowOnlyVisualChange) : that.allowOnlyVisualChange != null) {
+            return false;
+        }
         return isCollection != null ? isCollection.equals(that.isCollection) : that.isCollection == null;
     }
 
@@ -165,6 +174,17 @@ public class ItemDefinition extends NamedElement implements HasTypeRef {
                                          allowedValues != null ? allowedValues.hashCode() : 0,
                                          itemComponent != null ? itemComponent.hashCode() : 0,
                                          typeLanguage != null ? typeLanguage.hashCode() : 0,
+                                         allowOnlyVisualChange != null ? allowOnlyVisualChange.hashCode() : 0,
                                          isCollection != null ? isCollection.hashCode() : 0);
+    }
+
+    @Override
+    public void setAllowOnlyVisualChange(final boolean allowOnlyVisualChange) {
+        this.allowOnlyVisualChange = allowOnlyVisualChange;
+    }
+
+    @Override
+    public boolean isAllowOnlyVisualChange() {
+        return allowOnlyVisualChange;
     }
 }

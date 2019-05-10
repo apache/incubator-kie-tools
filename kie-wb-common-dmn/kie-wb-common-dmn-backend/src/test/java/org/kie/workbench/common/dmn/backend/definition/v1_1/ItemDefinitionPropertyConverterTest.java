@@ -66,6 +66,7 @@ public class ItemDefinitionPropertyConverterTest {
         final Name expectedName = new Name(name);
         final String expectedTypeLanguage = "typeLanguage";
         final boolean expectedIsCollection = true;
+        final boolean expectedAllowOnlyVisualChange = false;
         final Description expectedDescription = mock(Description.class);
         final QName expectedTypeRef = mock(QName.class);
 
@@ -85,6 +86,7 @@ public class ItemDefinitionPropertyConverterTest {
         final boolean actualIsCollection = actualItemDefinition.isIsCollection();
         final Description actualDescription = actualItemDefinition.getDescription();
         final QName actualTypeRef = actualItemDefinition.getTypeRef();
+        final boolean actualAllowOnlyVisualChange = actualItemDefinition.isAllowOnlyVisualChange();
 
         assertEquals(expectedId, actualId);
         assertEquals(expectedName, actualName);
@@ -92,6 +94,7 @@ public class ItemDefinitionPropertyConverterTest {
         assertEquals(expectedIsCollection, actualIsCollection);
         assertEquals(expectedDescription, actualDescription);
         assertEquals(expectedTypeRef, actualTypeRef);
+        assertEquals(expectedAllowOnlyVisualChange, actualAllowOnlyVisualChange);
     }
 
     @Test

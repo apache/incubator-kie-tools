@@ -53,7 +53,8 @@ public class ItemDefinitionPropertyConverter {
                                                      null,
                                                      null,
                                                      typeLanguage,
-                                                     isCollection);
+                                                     isCollection,
+                                                     false);
 
         setUnaryTests(wb, dmn);
         setItemComponent(wb, dmn);

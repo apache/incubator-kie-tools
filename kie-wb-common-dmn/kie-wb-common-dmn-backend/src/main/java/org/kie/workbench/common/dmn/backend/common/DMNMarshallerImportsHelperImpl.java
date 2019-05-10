@@ -20,7 +20,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,14 +36,22 @@ import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.kie.dmn.api.marshalling.DMNMarshaller;
 import org.kie.dmn.model.api.DRGElement;
+import org.kie.dmn.model.api.Decision;
 import org.kie.dmn.model.api.Definitions;
 import org.kie.dmn.model.api.Import;
+import org.kie.dmn.model.api.InformationItem;
+import org.kie.dmn.model.api.InputData;
+import org.kie.dmn.model.api.Invocable;
 import org.kie.dmn.model.api.ItemDefinition;
-import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
+import org.kie.dmn.model.v1_2.TInformationItem;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
+
+import static java.util.Collections.emptyList;
+import static org.kie.workbench.common.dmn.api.editors.types.BuiltInTypeUtils.isBuiltInType;
+import static org.kie.workbench.common.dmn.backend.definition.v1_1.ImportedItemDefinitionConverter.withNamespace;
 
 @ApplicationScoped
 public class DMNMarshallerImportsHelperImpl implements DMNMarshallerImportsHelper {
@@ -55,23 +62,21 @@ public class DMNMarshallerImportsHelperImpl implements DMNMarshallerImportsHelpe
 
     private final IOService ioService;
 
-    private DMNMarshaller marshaller;
+    private final DMNMarshaller marshaller;
 
     public DMNMarshallerImportsHelperImpl() {
-        this(null, null, null);
+        this(null, null, null, null);
     }
 
     @Inject
     public DMNMarshallerImportsHelperImpl(final DMNPathsHelperImpl pathsHelper,
                                           final WorkspaceProjectService projectService,
+                                          final DMNMarshaller marshaller,
                                           final @Named("ioStrategy") IOService ioService) {
         this.pathsHelper = pathsHelper;
         this.projectService = projectService;
-        this.ioService = ioService;
-    }
-
-    public void init(final DMNMarshaller marshaller) {
         this.marshaller = marshaller;
+        this.ioService = ioService;
     }
 
     @Override
@@ -115,59 +120,37 @@ public class DMNMarshallerImportsHelperImpl implements DMNMarshallerImportsHelpe
         return itemDefinitions;
     }
 
+    @Override
+    public List<ItemDefinition> getImportedItemDefinitionsByNamespace(final WorkspaceProject workspaceProject,
+                                                                      final String modelName,
+                                                                      final String namespace) {
+
+        return findDefinitionsByNamespace(workspaceProject, namespace)
+                .map(Definitions::getItemDefinition)
+                .orElse(emptyList());
+    }
+
+    private Optional<Definitions> findDefinitionsByNamespace(final WorkspaceProject workspaceProject,
+                                                             final String namespace) {
+        return pathsHelper
+                .getDiagramsPaths(workspaceProject)
+                .stream()
+                .map(path -> loadPath(path).map(marshaller::unmarshal).orElse(null))
+                .filter(Objects::nonNull)
+                .filter(definitions -> Objects.equals(definitions.getNamespace(), namespace))
+                .findAny();
+    }
+
     List<ItemDefinition> getItemDefinitionsWithNamespace(final Definitions definitions,
                                                          final Import anImport) {
 
         final List<ItemDefinition> itemDefinitions = definitions.getItemDefinition();
-        final String namespace = anImport.getName();
+        final String prefix = anImport.getName();
 
-        return setItemDefinitionsNamespace(itemDefinitions, namespace);
-    }
-
-    private List<ItemDefinition> setItemDefinitionsNamespace(final List<ItemDefinition> itemDefinitions,
-                                                             final String namespace) {
         return itemDefinitions
                 .stream()
-                .map(itemDefinition -> setItemDefinitionNamespace(itemDefinition, namespace))
+                .map(itemDefinition -> withNamespace(itemDefinition, prefix))
                 .collect(Collectors.toList());
-    }
-
-    private ItemDefinition setItemDefinitionNamespace(final ItemDefinition itemDefinition,
-                                                      final String namespace) {
-
-        final String nameWithNamespace = namespace + "." + itemDefinition.getName();
-        final List<ItemDefinition> itemComponents = itemDefinition.getItemComponent();
-
-        if (itemDefinition.getTypeRef() != null && !isBuiltInType(itemDefinition.getTypeRef())) {
-            itemDefinition.setTypeRef(makeQNameWithNamespace(itemDefinition.getTypeRef(), namespace));
-        }
-
-        itemDefinition.setName(nameWithNamespace);
-        setItemDefinitionsNamespace(itemComponents, namespace);
-
-        return itemDefinition;
-    }
-
-    private boolean isBuiltInType(final QName typeRef) {
-        return Arrays
-                .stream(BuiltInType.values())
-                .anyMatch(builtInType -> {
-
-                    final String builtInTypeName = builtInType.getName();
-                    final String typeRefName = typeRef.getLocalPart();
-
-                    return Objects.equals(builtInTypeName, typeRefName);
-                });
-    }
-
-    private QName makeQNameWithNamespace(final QName qName,
-                                         final String namespace) {
-
-        final String namespaceURI = qName.getNamespaceURI();
-        final String localPart = namespace + "." + qName.getLocalPart();
-        final String prefix = qName.getPrefix();
-
-        return new QName(namespaceURI, localPart, prefix);
     }
 
     List<DRGElement> getDrgElementsWithNamespace(final Definitions definitions,
@@ -186,8 +169,58 @@ public class DMNMarshallerImportsHelperImpl implements DMNMarshallerImportsHelpe
 
         drgElement.setId(namespace + ":" + drgElement.getId());
         drgElement.setName(namespace + "." + drgElement.getName());
+        updateInformationItem(namespace, drgElement);
 
         return drgElement;
+    }
+
+    private void updateInformationItem(final String namespace,
+                                       final DRGElement drgElement) {
+
+        getInformationItem(drgElement).ifPresent(informationItem -> {
+
+            final InformationItem tInformationItem = new TInformationItem();
+            final QName qName = informationItem.getTypeRef();
+
+            if (qName != null && !isBuiltInType(qName.getLocalPart())) {
+                tInformationItem.setTypeRef(new QName(qName.getNamespaceURI(), namespace + "." + qName.getLocalPart(), qName.getPrefix()));
+            }
+
+            setInformationItem(drgElement, tInformationItem);
+        });
+    }
+
+    private Optional<InformationItem> getInformationItem(final DRGElement drgElement) {
+
+        if (drgElement instanceof Decision) {
+            return Optional.of(((Decision) drgElement).getVariable());
+        }
+
+        if (drgElement instanceof InputData) {
+            return Optional.of(((InputData) drgElement).getVariable());
+        }
+
+        if (drgElement instanceof Invocable) {
+            return Optional.of(((Invocable) drgElement).getVariable());
+        }
+
+        return Optional.empty();
+    }
+
+    private void setInformationItem(final DRGElement drgElement,
+                                    final InformationItem informationItem) {
+
+        if (drgElement instanceof Decision) {
+            ((Decision) drgElement).setVariable(informationItem);
+        }
+
+        if (drgElement instanceof InputData) {
+            ((InputData) drgElement).setVariable(informationItem);
+        }
+
+        if (drgElement instanceof Invocable) {
+            ((Invocable) drgElement).setVariable(informationItem);
+        }
     }
 
     private Optional<Import> findImportByDefinitions(final Definitions definitions,

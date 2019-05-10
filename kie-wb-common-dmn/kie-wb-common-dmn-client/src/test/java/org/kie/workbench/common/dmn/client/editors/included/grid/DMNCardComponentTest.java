@@ -168,6 +168,7 @@ public class DMNCardComponentTest {
         assertTrue(titleChanged);
         verify(includedModel).update();
         verify(grid).refresh();
+        verify(dmnCard).refreshDecisionComponents();
     }
 
     @Test
@@ -189,6 +190,7 @@ public class DMNCardComponentTest {
         assertFalse(titleChanged);
         verify(includedModel, never()).update();
         verify(grid, never()).refresh();
+        verify(dmnCard, never()).refreshDecisionComponents();
     }
 
     @Test

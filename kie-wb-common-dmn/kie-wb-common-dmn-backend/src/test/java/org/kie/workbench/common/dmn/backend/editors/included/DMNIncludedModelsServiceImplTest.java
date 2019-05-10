@@ -22,8 +22,10 @@ import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
 import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedModel;
 import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedNode;
+import org.kie.workbench.common.dmn.backend.common.DMNMarshallerImportsHelper;
 import org.kie.workbench.common.dmn.backend.common.DMNPathsHelperImpl;
 import org.kie.workbench.common.dmn.backend.editors.common.DMNIncludeModelFactory;
 import org.kie.workbench.common.dmn.backend.editors.common.DMNIncludedNodesFilter;
@@ -35,6 +37,7 @@ import org.uberfire.backend.vfs.Path;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
@@ -51,11 +54,14 @@ public class DMNIncludedModelsServiceImplTest {
     @Mock
     private DMNIncludedNodesFilter includedNodesFilter;
 
+    @Mock
+    private DMNMarshallerImportsHelper importsHelper;
+
     private DMNIncludedModelsServiceImpl service;
 
     @Before
     public void setup() {
-        service = spy(new DMNIncludedModelsServiceImpl(pathsHelper, includeModelFactory, includedNodesFilter));
+        service = spy(new DMNIncludedModelsServiceImpl(pathsHelper, includeModelFactory, includedNodesFilter, importsHelper));
     }
 
     @Test
@@ -138,5 +144,30 @@ public class DMNIncludedModelsServiceImplTest {
         final List<DMNIncludedNode> expectedNodes = asList(node1, node2, node3, node4, node5, node6, node7);
 
         assertEquals(expectedNodes, actualNodes);
+    }
+
+    @Test
+    public void testLoadItemDefinitionsByNamespace() {
+
+        final WorkspaceProject workspaceProject = mock(WorkspaceProject.class);
+        final String modelName = "model1";
+        final String namespace = "://namespace";
+        final org.kie.dmn.model.api.ItemDefinition itemDefinition1 = mock(org.kie.dmn.model.api.ItemDefinition.class);
+        final org.kie.dmn.model.api.ItemDefinition itemDefinition2 = mock(org.kie.dmn.model.api.ItemDefinition.class);
+        final org.kie.dmn.model.api.ItemDefinition itemDefinition3 = mock(org.kie.dmn.model.api.ItemDefinition.class);
+        final ItemDefinition wbItemDefinition1 = mock(ItemDefinition.class);
+        final ItemDefinition wbItemDefinition2 = mock(ItemDefinition.class);
+        final ItemDefinition wbItemDefinition3 = mock(ItemDefinition.class);
+        final List<org.kie.dmn.model.api.ItemDefinition> itemDefinitions = asList(itemDefinition1, itemDefinition2, itemDefinition3);
+
+        doReturn(wbItemDefinition1).when(service).wbFromDMN(itemDefinition1, modelName);
+        doReturn(wbItemDefinition2).when(service).wbFromDMN(itemDefinition2, modelName);
+        doReturn(wbItemDefinition3).when(service).wbFromDMN(itemDefinition3, modelName);
+        when(importsHelper.getImportedItemDefinitionsByNamespace(workspaceProject, modelName, namespace)).thenReturn(itemDefinitions);
+
+        final List<ItemDefinition> actualItemDefinitions = service.loadItemDefinitionsByNamespace(workspaceProject, modelName, namespace);
+        final List<ItemDefinition> expectedItemDefinitions = asList(wbItemDefinition1, wbItemDefinition2, wbItemDefinition3);
+
+        assertEquals(expectedItemDefinitions, actualItemDefinitions);
     }
 }

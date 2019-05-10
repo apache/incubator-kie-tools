@@ -85,6 +85,7 @@ import org.kie.dmn.model.api.dmndi.DiagramElement;
 import org.kie.dmn.model.api.dmndi.Point;
 import org.kie.dmn.model.v1_2.TDecision;
 import org.kie.dmn.model.v1_2.TInputData;
+import org.kie.dmn.model.v1_2.TItemDefinition;
 import org.kie.dmn.model.v1_2.TTextAnnotation;
 import org.kie.workbench.common.dmn.api.DMNDefinitionSet;
 import org.kie.workbench.common.dmn.api.definition.HasComponentWidths;
@@ -104,6 +105,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.FunctionDefinition;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationRequirement;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InputData;
+import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
 import org.kie.workbench.common.dmn.api.definition.v1_1.KnowledgeRequirement;
 import org.kie.workbench.common.dmn.api.definition.v1_1.KnowledgeSource;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
@@ -114,6 +116,7 @@ import org.kie.workbench.common.dmn.backend.common.DMNMarshallerImportsHelper;
 import org.kie.workbench.common.dmn.backend.definition.v1_1.DecisionConverter;
 import org.kie.workbench.common.dmn.backend.definition.v1_1.InputDataConverter;
 import org.kie.workbench.common.dmn.backend.definition.v1_1.TextAnnotationConverter;
+import org.kie.workbench.common.dmn.backend.producers.DMNMarshallerProducer;
 import org.kie.workbench.common.stunner.backend.definition.factory.TestScopeModelFactory;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.backend.BackendFactoryManager;
@@ -476,20 +479,20 @@ public class DMNMarshallerTest {
 
     private static DMNShape findShapeByDMNI(org.kie.dmn.model.api.dmndi.DMNDiagram root, String id) {
         return root.getDMNDiagramElement().stream()
-                   .filter(DMNShape.class::isInstance)
-                   .map(DMNShape.class::cast)
-                   .filter(shape -> shape.getDmnElementRef().getLocalPart().equals(id))
-                   .findFirst()
-                   .orElseThrow(() -> new UnsupportedOperationException("There is no DMNShape with id '" + id + "' in DMNDiagram " + root));
+                .filter(DMNShape.class::isInstance)
+                .map(DMNShape.class::cast)
+                .filter(shape -> shape.getDmnElementRef().getLocalPart().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new UnsupportedOperationException("There is no DMNShape with id '" + id + "' in DMNDiagram " + root));
     }
 
     private static DMNEdge findEdgeByDMNI(org.kie.dmn.model.api.dmndi.DMNDiagram root, String id) {
         return root.getDMNDiagramElement().stream()
-                   .filter(DMNEdge.class::isInstance)
-                   .map(DMNEdge.class::cast)
-                   .filter(shape -> shape.getDmnElementRef().getLocalPart().equals(id))
-                   .findFirst()
-                   .orElseThrow(() -> new UnsupportedOperationException("There is no DMNEdge with id '" + id + "' in DMNDiagram " + root));
+                .filter(DMNEdge.class::isInstance)
+                .map(DMNEdge.class::cast)
+                .filter(shape -> shape.getDmnElementRef().getLocalPart().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new UnsupportedOperationException("There is no DMNEdge with id '" + id + "' in DMNDiagram " + root));
     }
 
     @Test
@@ -935,13 +938,13 @@ public class DMNMarshallerTest {
         assertEquals("literalExpression1's parent-parent is contextNode",
                      "_0f38d114-5d6e-40dd-aa9c-9f031f9b0571",
                      ((DMNElement) (literalExpression1).getParent()
-                                       .getParent()).getId().getValue());
+                             .getParent()).getId().getValue());
 
         Expression literalExpression2 = context.getContextEntry().get(1).getExpression();
         assertEquals("literalExpression2's parent-parent is contextNode",
                      "_0f38d114-5d6e-40dd-aa9c-9f031f9b0571",
                      ((DMNElement) (literalExpression2).getParent()
-                                       .getParent()).getId().getValue());
+                             .getParent()).getId().getValue());
     }
 
     private void checkDecisionWithContextWithDefaultResult(Graph<?, Node<?, ?>> g) {
@@ -960,7 +963,7 @@ public class DMNMarshallerTest {
         assertEquals("defaultResultExpression's parent-parent is contextNode",
                      "_0f38d114-5d6e-40dd-aa9c-9f031f9b0571",
                      ((DMNElement) (defaultResultExpression).getParent()
-                                       .getParent()).getId().getValue());
+                             .getParent()).getId().getValue());
     }
 
     private void checkDecisionWithContextWithoutDefaultResult(Graph<?, Node<?, ?>> g) {
@@ -1450,11 +1453,11 @@ public class DMNMarshallerTest {
         final Stream<Node<?, ?>> stream = StreamSupport.stream(Spliterators.spliteratorUnknownSize(g.nodes().iterator(), Spliterator.ORDERED),
                                                                false);
         final Optional<Decision> wbDecision = stream
-                                                  .filter(n -> n.getContent() instanceof ViewImpl)
-                                                  .map(n -> (ViewImpl) n.getContent())
-                                                  .filter(n -> n.getDefinition() instanceof Decision)
-                                                  .map(n -> (Decision) n.getDefinition())
-                                                  .findFirst();
+                .filter(n -> n.getContent() instanceof ViewImpl)
+                .map(n -> (ViewImpl) n.getContent())
+                .filter(n -> n.getDefinition() instanceof Decision)
+                .map(n -> (Decision) n.getDefinition())
+                .findFirst();
 
         wbDecision.ifPresent(d -> {
             assertTrue(d.getExpression() instanceof FunctionDefinition);
@@ -1606,11 +1609,11 @@ public class DMNMarshallerTest {
         String roundtripped = marshaller.marshall(diagram);
         LOG.debug(roundtripped);
         XPath xpathOriginal = namespaceAwareXPath(
-            new AbstractMap.SimpleEntry<>("semantic", "http://www.omg.org/spec/DMN/20151101/dmn.xsd"),
-            new AbstractMap.SimpleEntry<>("drools", "http://www.drools.org/kie/dmn/1.1"));
+                new AbstractMap.SimpleEntry<>("semantic", "http://www.omg.org/spec/DMN/20151101/dmn.xsd"),
+                new AbstractMap.SimpleEntry<>("drools", "http://www.drools.org/kie/dmn/1.1"));
         XPath xpathRountripped = namespaceAwareXPath(
-            new AbstractMap.SimpleEntry<>("semantic", "http://www.omg.org/spec/DMN/20180521/MODEL/"),
-            new AbstractMap.SimpleEntry<>("drools", "http://www.drools.org/kie/dmn/1.2")
+                new AbstractMap.SimpleEntry<>("semantic", "http://www.omg.org/spec/DMN/20180521/MODEL/"),
+                new AbstractMap.SimpleEntry<>("drools", "http://www.drools.org/kie/dmn/1.2")
         );
         assertXPathEquals(xpathOriginal, xpathRountripped, "boolean(/semantic:definitions/semantic:extensionElements)", original, roundtripped);
 
@@ -1861,7 +1864,6 @@ public class DMNMarshallerTest {
         assertEquals(ref1, actual.get(0));
         assertEquals(ref2, actual.get(1));
         assertEquals(ref3, actual.get(2));
-
     }
 
     @Test
@@ -1975,6 +1977,70 @@ public class DMNMarshallerTest {
         assertTrue(actual);
     }
 
+    @Test
+    public void testLoadImportedItemDefinitions() {
+
+        final org.kie.workbench.common.dmn.api.definition.v1_1.Definitions definitions = mock(org.kie.workbench.common.dmn.api.definition.v1_1.Definitions.class);
+        final org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition itemDefinition1 = mock(org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition.class);
+        final org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition itemDefinition2 = mock(org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition.class);
+        final List<org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition> expectedItemDefinitions = asList(itemDefinition1, itemDefinition2);
+        final List<org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition> actualItemDefinitions = new ArrayList<>();
+        final Map<Import, org.kie.dmn.model.api.Definitions> importDefinitions = new HashMap<>();
+        final DMNMarshaller dmnMarshaller = spy(getDMNMarshaller());
+
+        doReturn(expectedItemDefinitions).when(dmnMarshaller).getWbImportedItemDefinitions(importDefinitions);
+        when(definitions.getItemDefinition()).thenReturn(actualItemDefinitions);
+
+        dmnMarshaller.loadImportedItemDefinitions(definitions, importDefinitions);
+
+        assertEquals(expectedItemDefinitions, actualItemDefinitions);
+    }
+
+    @Test
+    public void testCleanImportedItemDefinitions() {
+
+        final org.kie.workbench.common.dmn.api.definition.v1_1.Definitions definitions = mock(org.kie.workbench.common.dmn.api.definition.v1_1.Definitions.class);
+        final org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition itemDefinition1 = mock(org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition.class);
+        final org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition itemDefinition2 = mock(org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition.class);
+        final org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition itemDefinition3 = mock(org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition.class);
+        final List<org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition> actualItemDefinitions = new ArrayList<>(asList(itemDefinition1, itemDefinition2, itemDefinition3));
+        final List<org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition> expectedItemDefinitions = asList(itemDefinition1, itemDefinition3);
+        final DMNMarshaller dmnMarshaller = getDMNMarshaller();
+
+        when(itemDefinition1.isAllowOnlyVisualChange()).thenReturn(false);
+        when(itemDefinition2.isAllowOnlyVisualChange()).thenReturn(true);
+        when(itemDefinition3.isAllowOnlyVisualChange()).thenReturn(false);
+        when(definitions.getItemDefinition()).thenReturn(actualItemDefinitions);
+
+        dmnMarshaller.cleanImportedItemDefinitions(definitions);
+
+        assertEquals(expectedItemDefinitions, actualItemDefinitions);
+    }
+
+    @Test
+    public void testGetWbImportedItemDefinitions() {
+
+        final org.kie.dmn.model.api.ItemDefinition itemDefinition1 = makeItemDefinition("model1.tUUID");
+        final org.kie.dmn.model.api.ItemDefinition itemDefinition2 = makeItemDefinition("model1.tPerson");
+        final org.kie.dmn.model.api.ItemDefinition itemDefinition3 = makeItemDefinition("model2.tNum");
+        final Map<Import, org.kie.dmn.model.api.Definitions> importDefinitions = new HashMap<>();
+
+        when(dmnMarshallerImportsHelper.getImportedItemDefinitions(importDefinitions)).thenReturn(asList(itemDefinition1, itemDefinition2, itemDefinition3));
+
+        final List<ItemDefinition> actualItemDefinitions = getDMNMarshaller().getWbImportedItemDefinitions(importDefinitions);
+
+        assertEquals(3, actualItemDefinitions.size());
+        assertEquals("model1.tUUID", actualItemDefinitions.get(0).getName().getValue());
+        assertEquals("model1.tPerson", actualItemDefinitions.get(1).getName().getValue());
+        assertEquals("model2.tNum", actualItemDefinitions.get(2).getName().getValue());
+    }
+
+    private org.kie.dmn.model.api.ItemDefinition makeItemDefinition(final String name) {
+        final org.kie.dmn.model.api.ItemDefinition itemDefinition = new TItemDefinition();
+        itemDefinition.setName(name);
+        return itemDefinition;
+    }
+
     @SuppressWarnings("unchecked")
     private void checkComponentWidths(Graph<?, Node<?, ?>> graph) {
         final Node<?, ?> node = graph.getNode("_37883BDC-DB54-4925-B539-A0F19B1DDE41");
@@ -2038,8 +2104,8 @@ public class DMNMarshallerTest {
 
     private static Node<View, ?> nodeOfDefinition(final Iterator<Node<View, ?>> nodesIterator, final Class aClass) {
         return StreamSupport.stream(Spliterators.spliteratorUnknownSize(nodesIterator, Spliterator.NONNULL), false)
-                   .filter(node -> aClass.isInstance(node.getContent().getDefinition()))
-                   .findFirst().get();
+                .filter(node -> aClass.isInstance(node.getContent().getDefinition()))
+                .findFirst().get();
     }
 
     @SafeVarargs
@@ -2078,7 +2144,12 @@ public class DMNMarshallerTest {
     private DMNMarshaller getDMNMarshaller() {
         return new DMNMarshaller(new XMLEncoderDiagramMetadataMarshaller(),
                                  applicationFactoryManager,
-                                 dmnMarshallerImportsHelper);
+                                 dmnMarshallerImportsHelper,
+                                 getMarshaller());
+    }
+
+    private org.kie.dmn.api.marshalling.DMNMarshaller getMarshaller() {
+        return new DMNMarshallerProducer().get();
     }
 
     private void assertXPathEquals(XPath xpathOriginal, XPath xpathRoundtrip, String xpathExpression, String expectedXml, String actualXml) throws XPathExpressionException {

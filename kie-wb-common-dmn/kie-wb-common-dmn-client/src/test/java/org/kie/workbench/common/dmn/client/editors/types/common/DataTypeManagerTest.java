@@ -61,6 +61,7 @@ import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeManager_None;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeManager_Structure;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
@@ -258,6 +259,7 @@ public class DataTypeManagerTest {
         assertEquals(0, name.getSubDataTypes().size());
         assertFalse(name.hasSubDataTypes());
         assertTrue(name.isList());
+        assertFalse(name.isReadOnly());
 
         assertEquals("uuid", address.getUUID());
         assertEquals("address", address.getName());
@@ -267,6 +269,7 @@ public class DataTypeManagerTest {
         assertEquals(1, address.getSubDataTypes().size());
         assertTrue(address.hasSubDataTypes());
         assertFalse(address.isList());
+        assertFalse(address.isReadOnly());
 
         assertEquals("uuid", street.getUUID());
         assertEquals("street", street.getName());
@@ -276,6 +279,7 @@ public class DataTypeManagerTest {
         assertEquals(0, street.getSubDataTypes().size());
         assertFalse(street.hasSubDataTypes());
         assertFalse(street.isList());
+        assertFalse(street.isReadOnly());
 
         assertEquals("uuid", employee.getUUID());
         assertEquals("employee", employee.getName());
@@ -285,6 +289,7 @@ public class DataTypeManagerTest {
         assertEquals(1, employee.getSubDataTypes().size());
         assertTrue(employee.hasSubDataTypes());
         assertFalse(employee.isList());
+        assertFalse(employee.isReadOnly());
 
         assertEquals("uuid", company.getUUID());
         assertEquals("company", company.getName());
@@ -294,6 +299,28 @@ public class DataTypeManagerTest {
         assertEquals(0, company.getSubDataTypes().size());
         assertFalse(company.hasSubDataTypes());
         assertFalse(company.isList());
+        assertFalse(company.isReadOnly());
+    }
+
+    @Test
+    public void testMakeDataTypeFromItemDefinitionWithAnImportedItemDefinition() {
+
+        final ItemDefinition itemDefinition = mock(ItemDefinition.class);
+        final Name name = mock(Name.class);
+        final QName typeRefMock = mock(QName.class);
+
+        when(name.getValue()).thenReturn("id");
+        when(typeRefMock.getLocalPart()).thenReturn("string");
+        when(itemDefinition.getName()).thenReturn(name);
+        when(itemDefinition.getItemComponent()).thenReturn(new ArrayList<>());
+        when(itemDefinition.getTypeRef()).thenReturn(typeRefMock);
+        when(itemDefinition.isAllowOnlyVisualChange()).thenReturn(true);
+        when(itemDefinitionUtils.getConstraintText(any())).thenCallRealMethod();
+        when(itemDefinitionUtils.findByName(any())).thenReturn(Optional.empty());
+
+        final DataType dataType = manager.from(itemDefinition).get();
+
+        assertTrue(dataType.isReadOnly());
     }
 
     @Test
@@ -399,9 +426,9 @@ public class DataTypeManagerTest {
         final List<String> subDataTypeStack = singletonList("type");
         final String expectedParentUUID = "expectedParentUUID";
 
-        doReturn(Optional.of(expectedParentUUID)).when(manager).getDataTypeUUID();
+        doReturn(expectedDataType).when(manager).getDataType();
         doReturn(manager).when(manager).anotherManager();
-        doReturn(manager).when(manager).newDataType();
+        doReturn(manager).when(manager).newDataType(anyBoolean());
         doReturn(manager).when(manager).withUUID();
         doReturn(manager).when(manager).withParentUUID(anyString());
         doReturn(manager).when(manager).withItemDefinition(any());
@@ -415,12 +442,13 @@ public class DataTypeManagerTest {
         doReturn(manager).when(manager).withIndexedItemDefinition();
         doReturn(subDataTypeStack).when(manager).getSubDataTypeStack();
         doReturn(expectedDataType).when(manager).get();
-        doReturn(expectedDataType).when(manager).get();
+        when(expectedDataType.isReadOnly()).thenReturn(false);
+        when(expectedDataType.getUUID()).thenReturn(expectedParentUUID);
 
         final DataType actualDataType = manager.createSubDataType(itemDefinition);
         final InOrder inOrder = Mockito.inOrder(manager);
 
-        inOrder.verify(manager).newDataType();
+        inOrder.verify(manager).newDataType(false);
         inOrder.verify(manager).withUUID();
         inOrder.verify(manager).withParentUUID(expectedParentUUID);
         inOrder.verify(manager).withItemDefinition(itemDefinition);

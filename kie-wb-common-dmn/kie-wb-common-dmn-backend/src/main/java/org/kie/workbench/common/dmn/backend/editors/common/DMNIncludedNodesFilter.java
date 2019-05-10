@@ -47,16 +47,21 @@ public class DMNIncludedNodesFilter {
     public List<DMNIncludedNode> getNodesFromImports(final Path path,
                                                      final List<DMNIncludedModel> includedModels) {
 
-        final Diagram<Graph, Metadata> diagram = diagramHelper.getDiagramByPath(path);
-        final Optional<DMNIncludedModel> diagramImport = getDiagramImport(diagram, includedModels);
-        final boolean isDiagramImported = diagramImport.isPresent();
+        try {
 
-        if (isDiagramImported) {
-            return diagramHelper
-                    .getNodes(diagram)
-                    .stream()
-                    .map(node -> factory.makeDMNIncludeModel(path, diagramImport.get(), node))
-                    .collect(Collectors.toList());
+            final Diagram<Graph, Metadata> diagram = diagramHelper.getDiagramByPath(path);
+            final Optional<DMNIncludedModel> diagramImport = getDiagramImport(diagram, includedModels);
+            final boolean isDiagramImported = diagramImport.isPresent();
+
+            if (isDiagramImported) {
+                return diagramHelper
+                        .getNodes(diagram)
+                        .stream()
+                        .map(node -> factory.makeDMNIncludeModel(path, diagramImport.get(), node))
+                        .collect(Collectors.toList());
+            }
+        } catch (final Exception e) {
+            // Ignore when 'path' cannot be reached.
         }
 
         return new ArrayList<>();

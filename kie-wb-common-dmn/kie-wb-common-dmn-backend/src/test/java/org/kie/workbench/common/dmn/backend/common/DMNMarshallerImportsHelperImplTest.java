@@ -23,8 +23,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
 
+import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
+import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,9 +35,11 @@ import org.kie.dmn.api.marshalling.DMNMarshaller;
 import org.kie.dmn.model.api.DRGElement;
 import org.kie.dmn.model.api.Definitions;
 import org.kie.dmn.model.api.Import;
+import org.kie.dmn.model.api.InformationItem;
 import org.kie.dmn.model.api.ItemDefinition;
 import org.kie.dmn.model.v1_2.TDecision;
 import org.kie.dmn.model.v1_2.TDecisionService;
+import org.kie.dmn.model.v1_2.TInformationItem;
 import org.kie.dmn.model.v1_2.TInputData;
 import org.kie.dmn.model.v1_2.TItemDefinition;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
@@ -77,8 +81,7 @@ public class DMNMarshallerImportsHelperImplTest {
 
     @Before
     public void setup() {
-        helper = spy(new DMNMarshallerImportsHelperImpl(pathsHelper, projectService, ioService));
-        helper.init(marshaller);
+        helper = spy(new DMNMarshallerImportsHelperImpl(pathsHelper, projectService, marshaller, ioService));
     }
 
     @Test
@@ -154,29 +157,47 @@ public class DMNMarshallerImportsHelperImplTest {
 
         final Definitions definitions = mock(Definitions.class);
         final Import anImport = mock(Import.class);
-        final DRGElement drgElement1 = new TDecision();
-        final DRGElement drgElement2 = new TInputData();
-        final DRGElement drgElement3 = new TDecisionService();
+        final TDecision drgElement1 = new TDecision();
+        final TInputData drgElement2 = new TInputData();
+        final TDecisionService drgElement3 = new TDecisionService();
+        final InformationItem informationItem1 = new TInformationItem();
+        final InformationItem informationItem2 = new TInformationItem();
+        final InformationItem informationItem3 = new TInformationItem();
         final List<DRGElement> drgElements = asList(drgElement1, drgElement2, drgElement3);
 
         when(anImport.getName()).thenReturn("model");
+        informationItem1.setTypeRef(new QName(XMLConstants.NULL_NS_URI, "tUUID", XMLConstants.DEFAULT_NS_PREFIX));
+        informationItem2.setTypeRef(new QName(XMLConstants.NULL_NS_URI, "tAge", XMLConstants.DEFAULT_NS_PREFIX));
+        informationItem3.setTypeRef(new QName(XMLConstants.NULL_NS_URI, "tNum", XMLConstants.DEFAULT_NS_PREFIX));
         drgElement1.setId("0000-1111");
         drgElement2.setId("2222-3333");
         drgElement3.setId("4444-5555");
         drgElement1.setName("Decision");
         drgElement2.setName("Input Data");
         drgElement3.setName("Decision Service");
+        drgElement1.setVariable(informationItem1);
+        drgElement2.setVariable(informationItem2);
+        drgElement3.setVariable(informationItem3);
         when(definitions.getDrgElement()).thenReturn(drgElements);
 
         final List<DRGElement> elements = helper.getDrgElementsWithNamespace(definitions, anImport);
 
         assertEquals(3, elements.size());
-        assertEquals("model:0000-1111", elements.get(0).getId());
-        assertEquals("model.Decision", elements.get(0).getName());
-        assertEquals("model:2222-3333", elements.get(1).getId());
-        assertEquals("model.Input Data", elements.get(1).getName());
-        assertEquals("model:4444-5555", elements.get(2).getId());
-        assertEquals("model.Decision Service", elements.get(2).getName());
+
+        final TDecision element1 = (TDecision) elements.get(0);
+        assertEquals("model:0000-1111", element1.getId());
+        assertEquals("model.Decision", element1.getName());
+        assertEquals("model.tUUID", element1.getVariable().getTypeRef().getLocalPart());
+
+        final TInputData element2 = (TInputData) elements.get(1);
+        assertEquals("model:2222-3333", element2.getId());
+        assertEquals("model.Input Data", element2.getName());
+        assertEquals("model.tAge", element2.getVariable().getTypeRef().getLocalPart());
+
+        final TDecisionService element3 = (TDecisionService) elements.get(2);
+        assertEquals("model:4444-5555", element3.getId());
+        assertEquals("model.Decision Service", element3.getName());
+        assertEquals("model.tNum", element3.getVariable().getTypeRef().getLocalPart());
     }
 
     @Test
@@ -333,6 +354,45 @@ public class DMNMarshallerImportsHelperImplTest {
         helper.closeInputStreamReader(mutableInputStream);
 
         verify(mutableInputStream).close();
+    }
+
+    @Test
+    public void testGetImportedItemDefinitionsByNamespace() {
+
+        final WorkspaceProject workspaceProject = mock(WorkspaceProject.class);
+        final String modelName = "model1";
+        final String namespace = "://namespace1";
+        final Path path1 = makePath("../file1.dmn");
+        final Path path2 = makePath("../file2.dmn");
+        final Path path3 = makePath("../file3.dmn");
+        final Path path4 = makePath("../file4.dmn");
+        final InputStreamReader inputStreamReader1 = mock(InputStreamReader.class);
+        final InputStreamReader inputStreamReader2 = mock(InputStreamReader.class);
+        final InputStreamReader inputStreamReader3 = mock(InputStreamReader.class);
+        final Definitions definitions1 = mock(Definitions.class);
+        final Definitions definitions2 = mock(Definitions.class);
+        final Definitions definitions3 = mock(Definitions.class);
+        final ItemDefinition itemDefinition1 = mock(ItemDefinition.class);
+        final ItemDefinition itemDefinition2 = mock(ItemDefinition.class);
+        final List<Path> paths = asList(path1, path2, path3, path4);
+
+        when(pathsHelper.getDiagramsPaths(any())).thenReturn(paths);
+        doReturn(Optional.of(inputStreamReader1)).when(helper).loadPath(path1);
+        doReturn(Optional.of(inputStreamReader2)).when(helper).loadPath(path2);
+        doReturn(Optional.of(inputStreamReader3)).when(helper).loadPath(path3);
+        doReturn(Optional.empty()).when(helper).loadPath(path4);
+        when(marshaller.unmarshal(inputStreamReader1)).thenReturn(definitions1);
+        when(marshaller.unmarshal(inputStreamReader2)).thenReturn(definitions2);
+        when(marshaller.unmarshal(inputStreamReader3)).thenReturn(definitions3);
+        when(definitions1.getNamespace()).thenReturn("://namespace1");
+        when(definitions2.getNamespace()).thenReturn("://namespace2");
+        when(definitions3.getNamespace()).thenReturn("://namespace3");
+        when(definitions1.getItemDefinition()).thenReturn(asList(itemDefinition1, itemDefinition2));
+
+        final List<ItemDefinition> actualItemDefinitions = helper.getImportedItemDefinitionsByNamespace(workspaceProject, modelName, namespace);
+        final List<ItemDefinition> expectedItemDefinitions = asList(itemDefinition1, itemDefinition2);
+
+        assertEquals(expectedItemDefinitions, actualItemDefinitions);
     }
 
     private Path makePath(final String uri) {

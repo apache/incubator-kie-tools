@@ -18,6 +18,7 @@ package org.kie.workbench.common.dmn.client.editors.types.shortcuts;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -69,7 +70,7 @@ public class DataTypeListShortcuts {
     }
 
     void onCtrlE() {
-        getCurrentDataTypeListItem().ifPresent(DataTypeListItem::enableEditMode);
+        consumeIfDataTypeIsNotReadOnly(DataTypeListItem::enableEditMode);
     }
 
     void onEscape() {
@@ -86,23 +87,23 @@ public class DataTypeListShortcuts {
     }
 
     void onCtrlBackspace() {
-        getCurrentDataTypeListItem().ifPresent(DataTypeListItem::remove);
+        consumeIfDataTypeIsNotReadOnly(DataTypeListItem::remove);
     }
 
     void onCtrlS() {
-        getCurrentDataTypeListItem().ifPresent(DataTypeListItem::saveAndCloseEditMode);
+        consumeIfDataTypeIsNotReadOnly(DataTypeListItem::saveAndCloseEditMode);
     }
 
     void onCtrlB() {
-        getCurrentDataTypeListItem().ifPresent(DataTypeListItem::insertNestedField);
+        consumeIfDataTypeIsNotReadOnly(DataTypeListItem::insertNestedField);
     }
 
     void onCtrlU() {
-        getCurrentDataTypeListItem().ifPresent(DataTypeListItem::insertFieldAbove);
+        consumeIfDataTypeIsNotReadOnly(DataTypeListItem::insertFieldAbove);
     }
 
     void onCtrlD() {
-        getCurrentDataTypeListItem().ifPresent(DataTypeListItem::insertFieldBelow);
+        consumeIfDataTypeIsNotReadOnly(DataTypeListItem::insertFieldBelow);
     }
 
     DataTypeList getDataTypeList() {
@@ -127,6 +128,14 @@ public class DataTypeListShortcuts {
 
     private void onDataTypeListItemUpdate(final DataTypeListItem dataTypeListItem) {
         view.highlight(dataTypeListItem.getElement());
+    }
+
+    private void consumeIfDataTypeIsNotReadOnly(final Consumer<DataTypeListItem> dataTypeListItemConsumer) {
+        getCurrentDataTypeListItem().ifPresent(dataTypeListItem -> {
+            if (!dataTypeListItem.isReadOnly()) {
+                dataTypeListItemConsumer.accept(dataTypeListItem);
+            }
+        });
     }
 
     public interface View extends HasPresenter<DataTypeListShortcuts> {

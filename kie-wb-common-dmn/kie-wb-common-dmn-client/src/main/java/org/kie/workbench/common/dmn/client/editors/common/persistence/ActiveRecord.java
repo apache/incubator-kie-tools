@@ -47,7 +47,15 @@ public abstract class ActiveRecord<T> {
     }
 
     public RecordEngine<T> getRecordEngine() {
-        return Optional.ofNullable(recordEngine).orElseThrow(this::error);
+        return getOptionalRecordEngine().orElseThrow(this::error);
+    }
+
+    public boolean isRecordEnginePresent() {
+        return getOptionalRecordEngine().isPresent();
+    }
+
+    private Optional<RecordEngine<T>> getOptionalRecordEngine() {
+        return Optional.ofNullable(recordEngine);
     }
 
     protected abstract T getRecord();

@@ -16,7 +16,9 @@
 
 package org.kie.workbench.common.dmn.client.editors.included.modal;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
@@ -24,11 +26,14 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import elemental2.dom.HTMLElement;
+import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
+import org.kie.workbench.common.dmn.client.api.included.legacy.DMNIncludeModelsClient;
 import org.kie.workbench.common.dmn.client.decision.events.RefreshDecisionComponents;
 import org.kie.workbench.common.dmn.client.editors.included.IncludedModel;
 import org.kie.workbench.common.dmn.client.editors.included.IncludedModelsPagePresenter;
 import org.kie.workbench.common.dmn.client.editors.included.imports.persistence.ImportRecordEngine;
 import org.kie.workbench.common.dmn.client.editors.included.modal.dropdown.DMNAssetsDropdown;
+import org.kie.workbench.common.dmn.client.editors.types.common.events.RefreshDataTypesListEvent;
 import org.kie.workbench.common.widgets.client.assets.dropdown.KieAssetsDropdownItem;
 import org.uberfire.ext.editor.commons.client.file.popups.elemental2.Elemental2Modal;
 import org.uberfire.mvp.Command;
@@ -45,6 +50,10 @@ public class IncludedModelModal extends Elemental2Modal<IncludedModelModal.View>
 
     private final ImportRecordEngine recordEngine;
 
+    private final DMNIncludeModelsClient client;
+
+    private final Event<RefreshDataTypesListEvent> refreshDataTypesListEvent;
+
     private final Event<RefreshDecisionComponents> refreshDecisionComponentsEvent;
 
     private IncludedModelsPagePresenter grid;
@@ -53,10 +62,14 @@ public class IncludedModelModal extends Elemental2Modal<IncludedModelModal.View>
     public IncludedModelModal(final View view,
                               final DMNAssetsDropdown dropdown,
                               final ImportRecordEngine recordEngine,
+                              final DMNIncludeModelsClient client,
+                              final Event<RefreshDataTypesListEvent> refreshDataTypesListEvent,
                               final Event<RefreshDecisionComponents> refreshDecisionComponentsEvent) {
         super(view);
         this.dropdown = dropdown;
         this.recordEngine = recordEngine;
+        this.client = client;
+        this.refreshDataTypesListEvent = refreshDataTypesListEvent;
         this.refreshDecisionComponentsEvent = refreshDecisionComponentsEvent;
     }
 
@@ -94,11 +107,22 @@ public class IncludedModelModal extends Elemental2Modal<IncludedModelModal.View>
         getDropdown()
                 .getValue()
                 .ifPresent(value -> {
-                    createIncludedModel(value);
+                    final IncludedModel includedModel = createIncludedModel(value);
                     refreshGrid();
                     refreshDecisionComponents();
+                    refreshDataTypesList(includedModel);
                     hide();
                 });
+    }
+
+    void refreshDataTypesList(final IncludedModel includedModel) {
+        client.loadItemDefinitionsByNamespace(includedModel.getName(),
+                                              includedModel.getNamespace(),
+                                              getItemDefinitionConsumer());
+    }
+
+    Consumer<List<ItemDefinition>> getItemDefinitionConsumer() {
+        return itemDefinitions -> refreshDataTypesListEvent.fire(new RefreshDataTypesListEvent(itemDefinitions));
     }
 
     private void refreshDecisionComponents() {
@@ -111,12 +135,13 @@ public class IncludedModelModal extends Elemental2Modal<IncludedModelModal.View>
         getDropdown().clear();
     }
 
-    void createIncludedModel(final KieAssetsDropdownItem value) {
+    IncludedModel createIncludedModel(final KieAssetsDropdownItem value) {
         final IncludedModel includedModel = createIncludedModel();
         includedModel.setName(getView().getModelNameInput());
         includedModel.setNamespace(value.getValue());
         includedModel.setPath(value.getMetaData().get(PATH_METADATA));
         includedModel.create();
+        return includedModel;
     }
 
     IncludedModel createIncludedModel() {

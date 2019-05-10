@@ -35,6 +35,7 @@ import org.mockito.Mock;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -48,6 +49,9 @@ public class DataTypeListShortcutsTest {
     @Mock
     private DataTypeListShortcutsView view;
 
+    @Mock
+    private DataTypeListItem listItem;
+
     @Captor
     private ArgumentCaptor<Consumer<DataTypeListItem>> onDataTypeListItemUpdateArgumentCaptor;
 
@@ -55,6 +59,7 @@ public class DataTypeListShortcutsTest {
 
     @Before
     public void setup() {
+        when(view.getCurrentDataTypeListItem()).thenReturn(Optional.of(listItem));
         shortcuts = spy(new DataTypeListShortcuts(view));
         shortcuts.init(dataTypeList);
     }
@@ -114,9 +119,6 @@ public class DataTypeListShortcutsTest {
     @Test
     public void testOnArrowLeft() {
 
-        final DataTypeListItem listItem = mock(DataTypeListItem.class);
-        when(view.getCurrentDataTypeListItem()).thenReturn(Optional.of(listItem));
-
         shortcuts.onArrowLeft();
 
         verify(listItem).collapse();
@@ -124,9 +126,6 @@ public class DataTypeListShortcutsTest {
 
     @Test
     public void testOnArrowRight() {
-
-        final DataTypeListItem listItem = mock(DataTypeListItem.class);
-        when(view.getCurrentDataTypeListItem()).thenReturn(Optional.of(listItem));
 
         shortcuts.onArrowRight();
 
@@ -136,9 +135,6 @@ public class DataTypeListShortcutsTest {
     @Test
     public void testOnCtrlE() {
 
-        final DataTypeListItem listItem = mock(DataTypeListItem.class);
-        when(view.getCurrentDataTypeListItem()).thenReturn(Optional.of(listItem));
-
         shortcuts.onCtrlE();
 
         verify(listItem).enableEditMode();
@@ -146,9 +142,6 @@ public class DataTypeListShortcutsTest {
 
     @Test
     public void testOnEscapeWhenCurrentDataTypeListItemIsPresent() {
-
-        final DataTypeListItem listItem = mock(DataTypeListItem.class);
-        when(view.getCurrentDataTypeListItem()).thenReturn(Optional.of(listItem));
 
         shortcuts.onEscape();
 
@@ -175,9 +168,6 @@ public class DataTypeListShortcutsTest {
     @Test
     public void testOnBackspace() {
 
-        final DataTypeListItem listItem = mock(DataTypeListItem.class);
-        when(view.getCurrentDataTypeListItem()).thenReturn(Optional.of(listItem));
-
         shortcuts.onCtrlBackspace();
 
         verify(listItem).remove();
@@ -185,9 +175,6 @@ public class DataTypeListShortcutsTest {
 
     @Test
     public void testOnCtrlS() {
-
-        final DataTypeListItem listItem = mock(DataTypeListItem.class);
-        when(view.getCurrentDataTypeListItem()).thenReturn(Optional.of(listItem));
 
         shortcuts.onCtrlS();
 
@@ -197,9 +184,6 @@ public class DataTypeListShortcutsTest {
     @Test
     public void testOnCtrlB() {
 
-        final DataTypeListItem listItem = mock(DataTypeListItem.class);
-        when(view.getCurrentDataTypeListItem()).thenReturn(Optional.of(listItem));
-
         shortcuts.onCtrlB();
 
         verify(listItem).insertNestedField();
@@ -208,9 +192,6 @@ public class DataTypeListShortcutsTest {
     @Test
     public void testOnCtrlU() {
 
-        final DataTypeListItem listItem = mock(DataTypeListItem.class);
-        when(view.getCurrentDataTypeListItem()).thenReturn(Optional.of(listItem));
-
         shortcuts.onCtrlU();
 
         verify(listItem).insertFieldAbove();
@@ -218,9 +199,6 @@ public class DataTypeListShortcutsTest {
 
     @Test
     public void testOnCtrlD() {
-
-        final DataTypeListItem listItem = mock(DataTypeListItem.class);
-        when(view.getCurrentDataTypeListItem()).thenReturn(Optional.of(listItem));
 
         shortcuts.onCtrlD();
 
@@ -239,5 +217,59 @@ public class DataTypeListShortcutsTest {
         shortcuts.focusIn();
 
         verify(view).focusIn();
+    }
+
+    @Test
+    public void testOnCtrlEWhenDataTypeIsReadOnly() {
+        when(listItem.isReadOnly()).thenReturn(true);
+
+        shortcuts.onCtrlE();
+
+        verify(listItem, never()).enableEditMode();
+    }
+
+    @Test
+    public void testOnCtrlBackspaceWhenDataTypeIsReadOnly() {
+        when(listItem.isReadOnly()).thenReturn(true);
+
+        shortcuts.onCtrlBackspace();
+
+        verify(listItem, never()).remove();
+    }
+
+    @Test
+    public void testOnCtrlSWhenDataTypeIsReadOnly() {
+        when(listItem.isReadOnly()).thenReturn(true);
+
+        shortcuts.onCtrlS();
+
+        verify(listItem, never()).saveAndCloseEditMode();
+    }
+
+    @Test
+    public void testOnCtrlBWhenDataTypeIsReadOnly() {
+        when(listItem.isReadOnly()).thenReturn(true);
+
+        shortcuts.onCtrlB();
+
+        verify(listItem, never()).insertNestedField();
+    }
+
+    @Test
+    public void testOnCtrlUWhenDataTypeIsReadOnly() {
+        when(listItem.isReadOnly()).thenReturn(true);
+
+        shortcuts.onCtrlU();
+
+        verify(listItem, never()).insertFieldAbove();
+    }
+
+    @Test
+    public void testOnCtrlDWhenDataTypeIsReadOnly() {
+        when(listItem.isReadOnly()).thenReturn(true);
+
+        shortcuts.onCtrlD();
+
+        verify(listItem, never()).insertFieldBelow();
     }
 }

@@ -55,6 +55,11 @@ public class ItemDefinitionUtils {
         }
     }
 
+    public void addItemDefinitions(final List<ItemDefinition> newItemDefinitions) {
+        final List<ItemDefinition> itemDefinitions = dmnGraphUtils.getDefinitions().getItemDefinition();
+        itemDefinitions.addAll(newItemDefinitions);
+    }
+
     public String getConstraintText(final ItemDefinition itemDefinition) {
         return Optional
                 .ofNullable(itemDefinition.getAllowedValues())

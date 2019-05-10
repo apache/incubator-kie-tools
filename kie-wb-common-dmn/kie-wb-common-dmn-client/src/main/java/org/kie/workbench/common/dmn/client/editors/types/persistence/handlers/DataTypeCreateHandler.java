@@ -30,7 +30,7 @@ import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManager;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.CreationType;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.DataTypeStore;
 
-import static org.kie.workbench.common.dmn.client.editors.types.common.BuiltInTypeUtils.isDefault;
+import static org.kie.workbench.common.dmn.api.editors.types.BuiltInTypeUtils.isBuiltInType;
 import static org.kie.workbench.common.dmn.client.editors.types.common.DataType.TOP_LEVEL_PARENT_UUID;
 
 @Dependent
@@ -57,7 +57,7 @@ public class DataTypeCreateHandler extends DataTypeHandler {
         final Optional<DataType> topLevelReference = fetchTopLevelDataType(reference);
         final DataType parent = topLevelReference.orElse(reference);
 
-        if (isDefault(reference.getType()) || topLevelReference.isPresent()) {
+        if (isBuiltInType(reference.getType()) || topLevelReference.isPresent()) {
             dataTypeManager.withDataType(parent).asStructure();
         }
 
