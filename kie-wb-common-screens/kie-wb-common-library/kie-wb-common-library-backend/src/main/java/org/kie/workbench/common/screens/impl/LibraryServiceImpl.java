@@ -40,6 +40,7 @@ import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
+import org.guvnor.common.services.project.utils.NewWorkspaceProjectUtils;
 import org.guvnor.structure.backend.repositories.ConfiguredRepositories;
 import org.guvnor.structure.contributors.Contributor;
 import org.guvnor.structure.contributors.ContributorType;
@@ -74,7 +75,6 @@ import org.kie.workbench.common.services.refactoring.backend.server.query.standa
 import org.kie.workbench.common.services.refactoring.backend.server.query.standard.LibraryValueRepositoryRootIndexTerm;
 import org.kie.workbench.common.screens.library.api.preferences.LibraryInternalPreferences;
 import org.kie.workbench.common.screens.library.api.preferences.LibraryPreferences;
-import org.kie.workbench.common.screens.projecteditor.util.NewWorkspaceProjectUtils;
 import org.kie.workbench.common.services.refactoring.backend.server.query.standard.FindAllLibraryAssetsQuery;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRequest;

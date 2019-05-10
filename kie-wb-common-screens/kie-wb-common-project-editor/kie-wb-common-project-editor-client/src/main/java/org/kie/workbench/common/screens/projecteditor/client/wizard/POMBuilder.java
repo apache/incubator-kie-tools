@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import org.guvnor.common.services.project.model.Build;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Plugin;
-import org.kie.workbench.common.screens.projecteditor.util.NewWorkspaceProjectUtils;
+import org.guvnor.common.services.project.utils.NewWorkspaceProjectUtils;
 
 /**
  * The Module Name is used to generate the folder name and hence is only checked to be a valid file name.

@@ -306,7 +306,7 @@ public class AddProjectPopUpView implements AddProjectPopUpPresenter.View,
     
     @EventHandler("name")
     public void setProjectNameAndArtifactId(final KeyUpEvent keyUpEvent) {
-        artifactId.setValue(name.getValue());
+        artifactId.setValue(name.getValue().replaceAll(" ", ""));
     }
 
 }

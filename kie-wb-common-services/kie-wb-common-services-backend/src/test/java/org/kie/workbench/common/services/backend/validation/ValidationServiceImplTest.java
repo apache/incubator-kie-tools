@@ -122,12 +122,12 @@ public class ValidationServiceImplTest {
         assertTrue(validationService.isProjectNameValid("Test-0"));
         assertTrue(validationService.isProjectNameValid("Test-._"));
         assertTrue(validationService.isProjectNameValid("Test.test"));
+        assertTrue(validationService.isProjectNameValid("test "));
+        assertTrue(validationService.isProjectNameValid(" test "));
 
         assertFalse(validationService.isProjectNameValid("test@"));
         assertFalse(validationService.isProjectNameValid("test\\u1234"));
         assertFalse(validationService.isProjectNameValid("\\u1234\\u1111"));
-        assertFalse(validationService.isProjectNameValid("test "));
-        assertFalse(validationService.isProjectNameValid(" test "));
         assertFalse(validationService.isProjectNameValid("test!"));
     }
 
