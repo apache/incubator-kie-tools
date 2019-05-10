@@ -28,6 +28,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.jboss.arquillian.container.test.api.ContainerController;
+import org.jboss.arquillian.container.test.api.Deployer;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.OperateOnDeployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
@@ -67,21 +68,23 @@ public class StandaloneControllerMultinodeIT extends AbstractControllerIT {
     public static final String SECONDARY_NODE = "wildfly-node2";
     public static final String KIE_SERVER_ID = "wildfly-multinode-kie-server";
 
-
-    @Deployment(name = "workbench", order = 2)
-    @TargetsContainer(PRIMARY_NODE)
-    public static WebArchive createWorkbenchWarDeployment() {
-        return createWorkbenchWar();
-    }
-
-    @Deployment(name = "kie-server", order = 3, testable = false)
+    @Deployment(name = "kie-server", order = 1, testable = false, managed = false)
     @TargetsContainer(SECONDARY_NODE)
     public static WebArchive createKieServerWarDeployment() {
         return createKieServerWar();
     }
 
+    @Deployment(name = "workbench", order = 2, managed = false)
+    @TargetsContainer(PRIMARY_NODE)
+    public static WebArchive createWorkbenchWarDeployment() {
+        return createWorkbenchWar();
+    }
+
     @ArquillianResource
     private ContainerController controller;
+
+    @ArquillianResource
+    private Deployer deployer;
 
     @Before
     public void before() {
@@ -111,13 +114,15 @@ public class StandaloneControllerMultinodeIT extends AbstractControllerIT {
     @Test
     @RunAsClient
     @OperateOnDeployment("workbench")
-    public void testAvailableRestEndpoint(final @ArquillianResource URL baseURL,
-                                          final @ArquillianResource @OperateOnDeployment("kie-server") URL baseServerURL) throws Exception {
-        String url = new URL(baseURL, "websocket/controller").toExternalForm();
-        
-        URL serverUrl = new URL(baseServerURL, "services/rest/server");
+    public void testAvailableRestEndpoint() throws Exception {
+        String url = new URL("http://localhost:8080/workbench/websocket/controller").toExternalForm();
+
+        URL serverUrl = new URL("http://localhost:8230/kie-server/services/rest/server");
+
         CountDownLatch serverDown = new CountDownLatch(1);
-        EventHandler customWSEventHandler = new EventHandler () {
+        CountDownLatch kieServerTemplateUp = new CountDownLatch(1);
+        CountDownLatch kieServerInstanceUp = new CountDownLatch(1);
+        EventHandler customWSEventHandler = new EventHandler() {
 
             @Override
             public void onServerInstanceConnected(ServerInstanceConnected serverInstanceConnected) {
@@ -125,7 +130,7 @@ public class StandaloneControllerMultinodeIT extends AbstractControllerIT {
             }
 
             @Override
-            public void onServerInstanceDeleted(ServerInstanceDeleted serverInstanceDeleted) {       
+            public void onServerInstanceDeleted(ServerInstanceDeleted serverInstanceDeleted) {
                 LOGGER.info("onServerInstanceDeleted :" + serverInstanceDeleted);
             }
 
@@ -143,27 +148,35 @@ public class StandaloneControllerMultinodeIT extends AbstractControllerIT {
             @Override
             public void onServerTemplateUpdated(ServerTemplateUpdated serverTemplateUpdated) {
                 LOGGER.info("onServerTemplateUpdated :" + serverTemplateUpdated);
+                kieServerTemplateUp.countDown();
             }
 
             @Override
             public void onServerInstanceUpdated(ServerInstanceUpdated serverInstanceUpdated) {
                 LOGGER.info("onServerInstanceUpdated :" + serverInstanceUpdated);
+                kieServerInstanceUp.countDown();
             }
 
             @Override
-            public void onContainerSpecUpdated(ContainerSpecUpdated containerSpecUpdated) {   
+            public void onContainerSpecUpdated(ContainerSpecUpdated containerSpecUpdated) {
                 LOGGER.info("onContainerSpecUpdated :" + containerSpecUpdated);
             }
-            
         };
+
+        deployer.deploy("kie-server");
+        assertTrue(ping(serverUrl));
+
+        // the use of manually deployment is the only way to guarantee that the web context is completely deployed
+        // and not causing a race condition when the controller ping the server and severing the connection
+        deployer.deploy("workbench");
 
         try (WebSocketKieServerControllerClient client = (WebSocketKieServerControllerClient) KieServerControllerClientFactory.newWebSocketClient(url,
                                                                                                                                                   USER,
                                                                                                                                                   PASSWORD,
                                                                                                                                                   customWSEventHandler)) {
+            kieServerTemplateUp.await(100, TimeUnit.SECONDS);
+            kieServerInstanceUp.await(100, TimeUnit.SECONDS);
 
-            assertTrue(ping(serverUrl));
-            // get all the instances connected to the controller
             ServerInstanceKeyList list = client.getServerInstances(KIE_SERVER_ID);
 
             assertEquals(1, list.getServerInstanceKeys().length);
@@ -178,7 +191,6 @@ public class StandaloneControllerMultinodeIT extends AbstractControllerIT {
             list = client.getServerInstances(KIE_SERVER_ID);
 
             assertEquals(0, list.getServerInstanceKeys().length);
-
         }
     }
 
