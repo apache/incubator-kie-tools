@@ -16,8 +16,8 @@
 
 package org.drools.workbench.screens.testscenario.backend.server;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -41,11 +41,11 @@ public class ScenarioLoader {
     @Inject
     private FileLoader fileLoader;
 
-    public List<Scenario> loadScenarios(final Path testResourcePath) {
-        final List<Scenario> scenarios = new ArrayList<>();
+    public Map<Path, Scenario> loadScenarios(final Path testResourcePath) {
+        final Map<Path, Scenario> scenarios = new HashMap<>();
 
         for (Path path : fileLoader.loadPaths(testResourcePath, testScenarioResourceTypeDefinition.getSuffix())) {
-            scenarios.add(scenarioTestEditorService.load(path));
+            scenarios.put(path, scenarioTestEditorService.load(path));
         }
         return scenarios;
     }

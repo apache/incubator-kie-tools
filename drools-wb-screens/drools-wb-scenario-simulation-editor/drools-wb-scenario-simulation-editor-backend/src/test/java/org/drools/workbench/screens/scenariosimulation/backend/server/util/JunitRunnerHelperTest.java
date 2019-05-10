@@ -27,10 +27,12 @@ import org.junit.runner.Description;
 import org.junit.runner.Result;
 import org.junit.runner.Runner;
 import org.junit.runner.notification.RunNotifier;
+import org.uberfire.backend.vfs.Path;
 
 import static org.drools.workbench.screens.scenariosimulation.backend.server.util.JunitRunnerHelper.runWithJunit;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.mockito.Mockito.mock;
 
 public class JunitRunnerHelperTest {
 
@@ -58,9 +60,12 @@ public class JunitRunnerHelperTest {
     public void runWithJunitTest() {
         List<Failure> failures = new ArrayList<>();
         List<Failure> failureDetails = new ArrayList<>();
-        Result result = runWithJunit(fakeRunner, failures, failureDetails);
+        Path path = mock(Path.class);
+        Result result = runWithJunit(path, fakeRunner, failures, failureDetails);
         assertFalse(result.wasSuccessful());
         assertEquals(1, failures.size());
         assertEquals(2, failureDetails.size());
+        assertEquals("Test", failures.get(0).getMessage());
+        assertEquals(path, failures.get(0).getPath());
     }
 }

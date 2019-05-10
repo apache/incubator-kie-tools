@@ -17,8 +17,9 @@
 package org.drools.workbench.screens.testscenario.backend.server;
 
 import java.net.URL;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import org.drools.workbench.models.testscenarios.shared.Scenario;
@@ -200,10 +201,11 @@ public class ScenarioRunnerServiceTest {
         initKieSession();
         Path path = mock(Path.class);
 
-        ArrayList<Scenario> scenarios = new ArrayList<Scenario>();
-        scenarios.add(makeScenario("test1.scenario"));
-        scenarios.add(makeScenario("test2.scenario"));
-        scenarios.add(makeScenario("test3.scenario"));
+        Map<Path, Scenario> scenarios = new HashMap<>();
+        scenarios.put(mock(Path.class), makeScenario("test1.scenario"));
+        scenarios.put(mock(Path.class), makeScenario("test2.scenario"));
+        scenarios.put(mock(Path.class), makeScenario("test3.scenario"));
+
         when(scenarioLoader.loadScenarios(path)).thenReturn(scenarios);
 
         List<TestResultMessage> testResultMessages = service.runAllTests("userName",

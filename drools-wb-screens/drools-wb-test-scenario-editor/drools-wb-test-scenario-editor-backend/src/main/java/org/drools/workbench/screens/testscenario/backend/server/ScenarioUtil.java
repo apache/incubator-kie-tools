@@ -20,23 +20,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.runner.notification.Failure;
+import org.uberfire.backend.vfs.Path;
 
 public class ScenarioUtil {
 
-    static List<org.guvnor.common.services.shared.test.Failure> failuresToFailures(List<Failure> failures) {
+    static List<org.guvnor.common.services.shared.test.Failure> failuresToFailures(final Path path,
+                                                                                   final List<Failure> failures) {
         ArrayList<org.guvnor.common.services.shared.test.Failure> result = new ArrayList<org.guvnor.common.services.shared.test.Failure>();
 
         for (Failure failure : failures) {
-            result.add(failureToFailure(failure));
+            result.add(failureToFailure(path, failure));
         }
 
         return result;
     }
 
-    static org.guvnor.common.services.shared.test.Failure failureToFailure(final Failure failure) {
+    static org.guvnor.common.services.shared.test.Failure failureToFailure(final Path path,
+                                                                           final Failure failure) {
         return new org.guvnor.common.services.shared.test.Failure(
                 getScenarioName(failure),
-                failure.getMessage());
+                failure.getMessage(),
+                path);
     }
 
     static String getScenarioName(final Failure failure) {

@@ -24,39 +24,48 @@ import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.Runner;
 import org.junit.runner.notification.RunListener;
+import org.uberfire.backend.vfs.Path;
 
 public class JunitRunnerHelper {
 
-    public static Result runWithJunit(Runner runner, List<Failure> failures, List<Failure> failureDetails) {
+    public static Result runWithJunit(Path path,
+                                      Runner runner,
+                                      List<Failure> failures,
+                                      List<Failure> failureDetails) {
         JUnitCore jUnitCore = new JUnitCore();
 
         jUnitCore.addListener(new RunListener() {
             @Override
             public void testAssumptionFailure(org.junit.runner.notification.Failure failure) {
-                failureDetails.add(failureToFailure(failure));
+                failureDetails.add(failureToFailure(path,failure));
             }
         });
 
         Result result = jUnitCore.run(runner);
-        failures.addAll(failuresToFailures(result.getFailures()));
+        failures.addAll(failuresToFailures(path, result.getFailures()));
 
         return result;
     }
 
-    static List<org.guvnor.common.services.shared.test.Failure> failuresToFailures(List<org.junit.runner.notification.Failure> failures) {
+    static List<org.guvnor.common.services.shared.test.Failure> failuresToFailures(final Path path,
+                                                                                   final List<org.junit.runner.notification.Failure> failures) {
         List<org.guvnor.common.services.shared.test.Failure> result = new ArrayList<>();
 
         for (org.junit.runner.notification.Failure failure : failures) {
-            result.add(failureToFailure(failure));
+
+
+            result.add(failureToFailure(path, failure));
         }
 
         return result;
     }
 
-    static org.guvnor.common.services.shared.test.Failure failureToFailure(final org.junit.runner.notification.Failure failure) {
+    static org.guvnor.common.services.shared.test.Failure failureToFailure(final Path path,
+                                                                           final org.junit.runner.notification.Failure failure) {
         return new org.guvnor.common.services.shared.test.Failure(
                 getScenarioName(failure),
-                failure.getMessage());
+                failure.getMessage(),
+                path);
     }
 
     static String getScenarioName(final org.junit.runner.notification.Failure failure) {

@@ -80,7 +80,7 @@ public class ScenarioRunnerServiceImpl extends AbstractKieContainerService
 
         final List<Failure> failureDetails = new ArrayList<>();
 
-        final Result result = runWithJunit(scenarioRunner, failures, failureDetails);
+        final Result result = runWithJunit(path, scenarioRunner, failures, failureDetails);
 
         return new SimulationRunResult(scenarios,
                                        scenarioRunner.getLastRunResultMetadata()

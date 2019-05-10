@@ -17,7 +17,7 @@
 package org.drools.workbench.screens.testscenario.backend.server;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -96,6 +96,7 @@ public class ScenarioRunnerService
                     getMaxRuleFirings());
 
             final TestResultMessage testResultMessage = run(identifier,
+                                                            null,
                                                             scenarioRunner);
 
             return new TestScenarioResult(scenario,
@@ -110,22 +111,30 @@ public class ScenarioRunnerService
     public List<TestResultMessage> runAllTests(final String identifier,
                                                final Path path) {
         try {
-            final List<Scenario> scenarios = scenarioLoader.loadScenarios(path);
+            final ArrayList<TestResultMessage> result = new ArrayList<>();
+            final Map<Path, Scenario> scenarios = scenarioLoader.loadScenarios(path);
 
-            ScenarioRunner4JUnit scenarioRunner = new ScenarioRunner4JUnit(
-                    scenarios,
-                    getKSessions(path,
-                                 scenarios),
-                    getMaxRuleFirings());
+            final Map<String, KieSession> kSessions = getKSessions(path,
+                                                                   scenarios.values());
 
-            return Collections.singletonList(run(identifier,
-                                                 scenarioRunner));
+            for (Map.Entry<Path, Scenario> entry : scenarios.entrySet()) {
+                ScenarioRunner4JUnit scenarioRunner = new ScenarioRunner4JUnit(
+                        entry.getValue(),
+                        kSessions,
+                        getMaxRuleFirings());
+                result.add(run(identifier,
+                               entry.getKey(),
+                               scenarioRunner));
+            }
+
+            return result;
         } catch (Exception e) {
             throw ExceptionUtilities.handleException(e);
         }
     }
 
     private TestResultMessage run(final String identifier,
+                                  final Path path,
                                   final ScenarioRunner4JUnit scenarioRunner) {
 
         final List<org.guvnor.common.services.shared.test.Failure> failures = new ArrayList<org.guvnor.common.services.shared.test.Failure>();
@@ -135,13 +144,13 @@ public class ScenarioRunnerService
         jUnitCore.addListener(new RunListener() {
             @Override
             public void testAssumptionFailure(Failure failure) {
-                failures.add(failureToFailure(failure));
+                failures.add(failureToFailure(path, failure));
             }
         });
 
         final Result result = jUnitCore.run(scenarioRunner);
 
-        failures.addAll(failuresToFailures(result.getFailures()));
+        failures.addAll(failuresToFailures(path, result.getFailures()));
 
         return new TestResultMessage(identifier,
                                      result.getRunCount(),
@@ -164,7 +173,7 @@ public class ScenarioRunnerService
     }
 
     private Map<String, KieSession> getKSessions(Path path,
-                                                 List<Scenario> scenarios) {
+                                                 Collection<Scenario> scenarios) {
         Map<String, KieSession> ksessions = new HashMap<String, KieSession>();
         for (Scenario scenario : scenarios) {
             String ksessionName = getKSessionName(scenario.getKSessions());
