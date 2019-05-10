@@ -28,7 +28,6 @@ import org.drools.workbench.models.guided.dtable.backend.GuidedDTXMLPersistence;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.services.verifier.plugin.client.AnalyzerUpdateTestBase;
 import org.drools.workbench.services.verifier.plugin.client.Coordinate;
-import org.drools.workbench.services.verifier.plugin.client.UpdateException;
 import org.drools.workbench.services.verifier.plugin.client.api.FactTypes;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -47,8 +46,7 @@ public class DecisionTableAnalyzerFromFileTest extends AnalyzerUpdateTestBase {
 
     @Test
     public void testUpdateNotNullColumn() throws
-            Exception,
-            UpdateException {
+            Exception {
 
         final String xml = loadResource("Is Null Table.gdst");
 
@@ -221,8 +219,7 @@ public class DecisionTableAnalyzerFromFileTest extends AnalyzerUpdateTestBase {
 
     @Test
     public void testFileLargeFileGDSTWithUpdate() throws
-            Exception,
-            UpdateException {
+            Exception {
         long baseline = System.currentTimeMillis();
         final String xml = loadResource("Large file.gdst");
         final GuidedDecisionTable52 table52 = GuidedDTXMLPersistence.getInstance()
@@ -265,8 +262,7 @@ public class DecisionTableAnalyzerFromFileTest extends AnalyzerUpdateTestBase {
 
     @Test
     public void testFileLargeFileGDSTWithDeletes() throws
-            Exception,
-            UpdateException {
+            Exception {
         final String xml = loadResource("Large file.gdst");
         final GuidedDecisionTable52 table52 = GuidedDTXMLPersistence.getInstance()
                 .unmarshal(xml);

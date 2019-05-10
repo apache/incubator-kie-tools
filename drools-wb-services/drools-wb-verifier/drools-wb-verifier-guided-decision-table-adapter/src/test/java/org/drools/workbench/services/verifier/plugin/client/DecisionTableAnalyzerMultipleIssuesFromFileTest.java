@@ -55,7 +55,7 @@ public class DecisionTableAnalyzerMultipleIssuesFromFileTest extends AnalyzerUpd
     }
 
     @Test
-    public void testMissingRangeAndRedundantRows() throws Exception, UpdateException {
+    public void testMissingRangeAndRedundantRows() throws Exception {
 
         analyze("missingRangeAndRedundantRows.gdst");
 

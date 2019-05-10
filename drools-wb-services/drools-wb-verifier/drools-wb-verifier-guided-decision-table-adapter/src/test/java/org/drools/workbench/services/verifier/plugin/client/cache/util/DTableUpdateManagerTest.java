@@ -25,7 +25,6 @@ import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTabl
 import org.drools.workbench.services.verifier.plugin.client.Coordinate;
 import org.drools.workbench.services.verifier.plugin.client.DTableUpdateManager;
 import org.drools.workbench.services.verifier.plugin.client.DataBuilderProvider;
-import org.drools.workbench.services.verifier.plugin.client.UpdateException;
 import org.drools.workbench.services.verifier.plugin.client.testutil.AnalyzerProvider;
 import org.junit.Before;
 import org.junit.Test;
@@ -69,8 +68,7 @@ public class DTableUpdateManagerTest {
 
     @Test
     public void testDoNotUpdateWhenDescriptionChanges() throws
-            Exception,
-            UpdateException {
+            Exception {
         ArrayList<Coordinate> coordinates = new ArrayList<Coordinate>();
         coordinates.add(new Coordinate(1,
                                        1));
@@ -84,8 +82,7 @@ public class DTableUpdateManagerTest {
 
     @Test
     public void testDoNotUpdateConditionWhenValueDidNotChange() throws
-            Exception,
-            UpdateException {
+            Exception {
         ArrayList<Coordinate> coordinates = new ArrayList<Coordinate>();
         coordinates.add(new Coordinate(1,
                                        2));
@@ -99,8 +96,7 @@ public class DTableUpdateManagerTest {
 
     @Test
     public void testDoNotUpdateActionWhenValueDidNotChange() throws
-            Exception,
-            UpdateException {
+            Exception {
         ArrayList<Coordinate> coordinates = new ArrayList<Coordinate>();
         coordinates.add(new Coordinate(0,
                                        3));
@@ -114,8 +110,7 @@ public class DTableUpdateManagerTest {
 
     @Test
     public void testSetIntegerConditionToNewInteger() throws
-            Exception,
-            UpdateException {
+            Exception {
         ArrayList<Coordinate> coordinates = new ArrayList<Coordinate>();
         Coordinate coordinate = new Coordinate(0,
                                                2);
@@ -133,8 +128,7 @@ public class DTableUpdateManagerTest {
 
     @Test
     public void testSetBooleanActionToNewBoolean() throws
-            Exception,
-            UpdateException {
+            Exception {
         final ArrayList<Coordinate> coordinates = new ArrayList<Coordinate>();
         final Coordinate coordinate = new Coordinate(0,
                                                      3);
@@ -152,8 +146,7 @@ public class DTableUpdateManagerTest {
 
     @Test
     public void testSetActionToNull() throws
-            Exception,
-            UpdateException {
+            Exception {
         ArrayList<Coordinate> coordinates = new ArrayList<Coordinate>();
         Coordinate coordinate = new Coordinate(0,
                                                3);
@@ -171,8 +164,7 @@ public class DTableUpdateManagerTest {
 
     @Test
     public void testSetConditionToNull() throws
-            Exception,
-            UpdateException {
+            Exception {
         ArrayList<Coordinate> coordinates = new ArrayList<Coordinate>();
         Coordinate coordinate = new Coordinate(0,
                                                2);
@@ -190,8 +182,7 @@ public class DTableUpdateManagerTest {
 
     @Test
     public void testFillNullCondition() throws
-            Exception,
-            UpdateException {
+            Exception {
         ArrayList<Coordinate> coordinates = new ArrayList<Coordinate>();
         Coordinate coordinate = new Coordinate(1,
                                                2);
@@ -209,8 +200,7 @@ public class DTableUpdateManagerTest {
 
     @Test
     public void testFillNullAction() throws
-            Exception,
-            UpdateException {
+            Exception {
         ArrayList<Coordinate> coordinates = new ArrayList<Coordinate>();
         Coordinate coordinate = new Coordinate(1,
                                                3);
@@ -228,8 +218,7 @@ public class DTableUpdateManagerTest {
 
     @Test
     public void testFillNullActionWithNull() throws
-            Exception,
-            UpdateException {
+            Exception {
         ArrayList<Coordinate> coordinates = new ArrayList<Coordinate>();
         Coordinate coordinate = new Coordinate(1,
                                                3);
@@ -248,8 +237,7 @@ public class DTableUpdateManagerTest {
 
     @Test
     public void testFillNullConditionWithNull() throws
-            Exception,
-            UpdateException {
+            Exception {
         ArrayList<Coordinate> coordinates = new ArrayList<Coordinate>();
         Coordinate coordinate = new Coordinate(1,
                                                2);

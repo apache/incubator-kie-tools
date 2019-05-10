@@ -150,6 +150,10 @@ public class AnalyzerBuilder
         return (AnalyzerBuilder) super.withData(data);
     }
 
+    public AnalyzerBuilder withAttributeColumn(final String attribute) {
+        return (AnalyzerBuilder)super.withAttributeColumn(attribute);
+    }
+
     public AnalyzerBuilder withApplicationApprovedColumn(final String operator) {
         return withConditionBooleanColumn("a",
                                           "Application",

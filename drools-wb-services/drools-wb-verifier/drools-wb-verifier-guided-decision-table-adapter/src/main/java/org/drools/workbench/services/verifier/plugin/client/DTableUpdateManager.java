@@ -40,10 +40,9 @@ public class DTableUpdateManager {
 
     private static final int ROW_NUMBER_COLUMN = 0;
     private static final int DESCRIPTION_COLUMN = 1;
-
-    private Index index;
     private final Analyzer analyzer;
     private final AnalyzerConfiguration configuration;
+    private Index index;
 
     public DTableUpdateManager(final Index index,
                                final Analyzer analyzer,
@@ -62,8 +61,7 @@ public class DTableUpdateManager {
     }
 
     public void update(final GuidedDecisionTable52 model,
-                       final List<Coordinate> coordinates) throws
-            UpdateException {
+                       final List<Coordinate> coordinates) {
         PortablePreconditions.checkNotNull("model",
                                            model);
         PortablePreconditions.checkNotNull("coordinates",
@@ -91,8 +89,7 @@ public class DTableUpdateManager {
     }
 
     private CellUpdateManagerBase getCellUpdateManager(final Coordinate coordinate,
-                                                       final GuidedDecisionTable52 model) throws
-            UpdateException {
+                                                       final GuidedDecisionTable52 model) {
         final BaseColumn baseColumn = model.getExpandedColumns()
                 .get(coordinate.getCol());
 

@@ -41,8 +41,7 @@ public class SpeedTest extends AnalyzerUpdateTestBase {
 
     @Test
     public void subsumptionTable() throws
-            Exception,
-            UpdateException {
+            Exception {
         long baseline = System.currentTimeMillis();
 
         final DataBuilderProvider.DataBuilder builder = DataBuilderProvider.row(true,
@@ -98,8 +97,7 @@ public class SpeedTest extends AnalyzerUpdateTestBase {
 
     @Test
     public void noConflictTable() throws
-            Exception,
-            UpdateException {
+            Exception {
         long baseline = System.currentTimeMillis();
 
         final DataBuilderProvider.DataBuilder builder = DataBuilderProvider

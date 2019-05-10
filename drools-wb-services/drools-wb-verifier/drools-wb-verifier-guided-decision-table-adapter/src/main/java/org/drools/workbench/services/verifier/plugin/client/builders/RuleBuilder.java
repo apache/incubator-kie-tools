@@ -16,17 +16,22 @@
 package org.drools.workbench.services.verifier.plugin.client.builders;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.drools.verifier.core.configuration.AnalyzerConfiguration;
 import org.drools.verifier.core.index.model.Action;
 import org.drools.verifier.core.index.model.Condition;
 import org.drools.verifier.core.index.model.Rule;
+import org.drools.verifier.core.index.model.RuleAttribute;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.kie.soup.commons.validation.PortablePreconditions;
+
+import static org.drools.workbench.services.verifier.plugin.client.builders.Utils.getRealCellValue;
 
 public class RuleBuilder {
 
@@ -62,7 +67,19 @@ public class RuleBuilder {
 
         for (final BaseColumn baseColumn : model.getExpandedColumns()) {
 
-            if (baseColumn instanceof ConditionCol52) {
+            if (baseColumn instanceof AttributeCol52) {
+                final String attribute = ((AttributeCol52) baseColumn).getAttribute();
+                final DTCellValue52 realCellValue = getRealCellValue((AttributeCol52) baseColumn,
+                                                                     row.get(columnIndex));
+
+                final Optional<RuleAttribute> ruleAttribute = AttributeBuilder.build(columnIndex,
+                                                                                     configuration,
+                                                                                     attribute,
+                                                                                     realCellValue);
+                if (ruleAttribute.isPresent()) {
+                    rule.addRuleAttribute(ruleAttribute.get());
+                }
+            } else if (baseColumn instanceof ConditionCol52) {
                 final Condition condition = builderFactory.getConditionBuilder()
                         .with((ConditionCol52) baseColumn)
                         .with(rule)

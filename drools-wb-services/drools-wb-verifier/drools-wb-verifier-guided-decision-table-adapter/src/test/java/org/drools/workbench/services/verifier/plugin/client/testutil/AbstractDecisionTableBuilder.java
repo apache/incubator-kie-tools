@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.drools.workbench.models.guided.dtable.backend.util.DataUtilities;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionRetractFactCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 
@@ -61,6 +62,13 @@ public class AbstractDecisionTableBuilder {
 
     public GuidedDecisionTable52 buildTable() {
         return table;
+    }
+
+    protected Object withAttributeColumn(final String attribute) {
+        final AttributeCol52 attributeCol52 = new AttributeCol52();
+        attributeCol52.setAttribute(attribute);
+        table.getAttributeCols().add(attributeCol52);
+        return this;
     }
 
     public AbstractDecisionTableBuilder withRetract() {

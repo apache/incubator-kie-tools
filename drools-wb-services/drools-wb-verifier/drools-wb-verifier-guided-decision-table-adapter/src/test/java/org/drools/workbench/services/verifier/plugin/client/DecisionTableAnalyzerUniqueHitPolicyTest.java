@@ -38,7 +38,7 @@ public class DecisionTableAnalyzerUniqueHitPolicyTest extends AnalyzerUpdateTest
     }
 
     @Test
-    public void testUniqueHitPolicyRedundantRows() throws Exception, UpdateException {
+    public void testUniqueHitPolicyRedundantRows() throws Exception {
         analyze("uniqueHitPolicyRedundantRows.gdst");
 
         assertContains(analyzerProvider.getAnalysisReport(),
@@ -49,7 +49,7 @@ public class DecisionTableAnalyzerUniqueHitPolicyTest extends AnalyzerUpdateTest
     }
 
     @Test
-    public void testUniqueHitPolicySubsumptantRows() throws Exception, UpdateException {
+    public void testUniqueHitPolicySubsumptantRows() throws Exception {
         analyze("uniqueHitPolicySubsumptantRows.gdst");
 
         assertContains(analyzerProvider.getAnalysisReport(),
@@ -60,7 +60,7 @@ public class DecisionTableAnalyzerUniqueHitPolicyTest extends AnalyzerUpdateTest
     }
 
     @Test
-    public void testUniqueHitPolicyRedundantAndSubsumptantRows() throws Exception, UpdateException {
+    public void testUniqueHitPolicyRedundantAndSubsumptantRows() throws Exception {
         analyze("uniqueHitPolicyRedundantAndSubsumptantRows.gdst");
 
         assertContains(analyzerProvider.getAnalysisReport(),

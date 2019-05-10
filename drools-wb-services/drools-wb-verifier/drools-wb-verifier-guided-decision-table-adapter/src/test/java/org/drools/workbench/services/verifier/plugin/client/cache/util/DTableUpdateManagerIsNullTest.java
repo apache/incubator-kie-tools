@@ -24,7 +24,6 @@ import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTabl
 import org.drools.workbench.services.verifier.plugin.client.Coordinate;
 import org.drools.workbench.services.verifier.plugin.client.DTableUpdateManager;
 import org.drools.workbench.services.verifier.plugin.client.DataBuilderProvider;
-import org.drools.workbench.services.verifier.plugin.client.UpdateException;
 import org.drools.workbench.services.verifier.plugin.client.testutil.AnalyzerProvider;
 import org.junit.Before;
 import org.junit.Test;
@@ -74,8 +73,7 @@ public class DTableUpdateManagerIsNullTest {
 
     @Test
     public void testTrueDidNotChange() throws
-            Exception,
-            UpdateException {
+            Exception {
         ArrayList<Coordinate> coordinates = new ArrayList<>();
         coordinates.add(new Coordinate(0,
                                        2));
@@ -89,8 +87,7 @@ public class DTableUpdateManagerIsNullTest {
 
     @Test
     public void testFalseDidNotChange() throws
-            Exception,
-            UpdateException {
+            Exception {
         ArrayList<Coordinate> coordinates = new ArrayList<>();
         coordinates.add(new Coordinate(1,
                                        2));
@@ -104,8 +101,7 @@ public class DTableUpdateManagerIsNullTest {
 
     @Test
     public void testNullDidNotChange() throws
-            Exception,
-            UpdateException {
+            Exception {
         ArrayList<Coordinate> coordinates = new ArrayList<>();
         coordinates.add(new Coordinate(2,
                                        2));
@@ -119,8 +115,7 @@ public class DTableUpdateManagerIsNullTest {
 
     @Test
     public void testSetTrueToFalse() throws
-            Exception,
-            UpdateException {
+            Exception {
         set(0,
             2,
             false);
@@ -130,8 +125,7 @@ public class DTableUpdateManagerIsNullTest {
 
     @Test
     public void testSetTrueToNull() throws
-            Exception,
-            UpdateException {
+            Exception {
         set(0,
             2,
             (Boolean) null);
@@ -141,8 +135,7 @@ public class DTableUpdateManagerIsNullTest {
 
     @Test
     public void testSetFalseToTrue() throws
-            Exception,
-            UpdateException {
+            Exception {
         set(1,
             2,
             true);
@@ -152,8 +145,7 @@ public class DTableUpdateManagerIsNullTest {
 
     @Test
     public void testSetFalseToNull() throws
-            Exception,
-            UpdateException {
+            Exception {
         set(1,
             2,
             (Boolean) null);
@@ -164,8 +156,7 @@ public class DTableUpdateManagerIsNullTest {
 
     @Test
     public void testSetNullToTrue() throws
-            Exception,
-            UpdateException {
+            Exception {
         set(2,
             2,
             true);
@@ -175,8 +166,7 @@ public class DTableUpdateManagerIsNullTest {
 
     @Test
     public void testSetNullToFalse() throws
-            Exception,
-            UpdateException {
+            Exception {
         set(2,
             2,
             false);
@@ -187,8 +177,7 @@ public class DTableUpdateManagerIsNullTest {
 
     private void set(final int row,
                      final int col,
-                     final Boolean value) throws
-            UpdateException {
+                     final Boolean value) {
         final ArrayList<Coordinate> coordinates = new ArrayList<>();
         final Coordinate coordinate = new Coordinate(row,
                                                      col);

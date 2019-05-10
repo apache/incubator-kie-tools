@@ -26,8 +26,7 @@ public class NullEqualityOperatorCellUpdateManager
 
     public NullEqualityOperatorCellUpdateManager(final Index index,
                                                  final GuidedDecisionTable52 model,
-                                                 final Coordinate coordinate) throws
-            UpdateException {
+                                                 final Coordinate coordinate) {
         super(index,
               model,
               coordinate);

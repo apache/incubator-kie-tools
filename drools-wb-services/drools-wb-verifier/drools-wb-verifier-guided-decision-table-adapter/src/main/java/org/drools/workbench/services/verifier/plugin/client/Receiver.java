@@ -95,7 +95,7 @@ public class Receiver {
         try {
             getUpdateManager().update(update.getModel(),
                                       update.getCoordinates());
-        } catch (final UpdateException e) {
+        } catch (final Exception e) {
             poster.post(new WebWorkerException("Dtable update failed: " +
                                                        e.getMessage()));
         }

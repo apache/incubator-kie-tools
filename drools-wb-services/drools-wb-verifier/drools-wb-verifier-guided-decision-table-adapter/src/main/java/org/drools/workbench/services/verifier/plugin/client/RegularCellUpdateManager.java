@@ -43,7 +43,7 @@ public class RegularCellUpdateManager
     public RegularCellUpdateManager(final Index index,
                                     final AnalyzerConfiguration configuration,
                                     final GuidedDecisionTable52 model,
-                                    final Coordinate coordinate) throws UpdateException {
+                                    final Coordinate coordinate) {
         super(index,
               model,
               coordinate);

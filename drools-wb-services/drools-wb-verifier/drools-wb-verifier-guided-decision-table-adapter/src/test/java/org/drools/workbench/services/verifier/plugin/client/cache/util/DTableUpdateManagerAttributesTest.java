@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,8 @@
 package org.drools.workbench.services.verifier.plugin.client.cache.util;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Set;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.verifier.core.main.Analyzer;
@@ -28,36 +30,37 @@ import org.drools.workbench.services.verifier.plugin.client.testutil.AnalyzerPro
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 
-import static org.mockito.Mockito.anySet;
-import static org.mockito.Mockito.never;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class DTableUpdateManagerRetractTest {
+public class DTableUpdateManagerAttributesTest {
 
+    @Captor
+    private ArgumentCaptor<Set> setArgumentCaptor;
     private DTableUpdateManager updateManager;
     private GuidedDecisionTable52 table52;
-
     private AnalyzerProvider analyzerProvider;
-
     @Mock
     private Analyzer analyzer;
 
     @Before
-    public void setUp() throws
-            Exception {
+    public void setUp()
+            throws Exception {
         analyzerProvider = new AnalyzerProvider();
 
         table52 = analyzerProvider.makeAnalyser()
+                .withAttributeColumn("date-effective")
+                .withAttributeColumn("date-expires")
                 .withPersonAgeColumn("==")
-                .withRetract()
+                .withPersonApprovedActionSetField()
                 .withData(DataBuilderProvider
-                                  .row(1,
-                                       "a")
-                                  .row(1,
-                                       null)
+                                  .row(new Date(10), new Date(100), 1, true)
+                                  .row(new Date(10), new Date(100), 1, true)
                                   .end())
                 .buildTable();
 
@@ -66,34 +69,44 @@ public class DTableUpdateManagerRetractTest {
     }
 
     @Test
-    public void testDoNotUpdateActionWhenValueDidNotChange() throws
+    public void testSetDateEffectiveToNull() throws
             Exception {
-        ArrayList<Coordinate> coordinates = new ArrayList<Coordinate>();
-        coordinates.add(new Coordinate(0,
-                                       3));
+        ArrayList<Coordinate> coordinates = new ArrayList<>();
+        Coordinate coordinate = new Coordinate(0,
+                                               2);
+        coordinates.add(coordinate);
+        table52.getData()
+                .get(0)
+                .get(2)
+                .setDateValue(null);
 
         updateManager.update(table52,
                              coordinates);
 
-        verify(analyzer,
-               never()).update(anySet());
+        verify(analyzer).update(setArgumentCaptor.capture());
+        Set value = setArgumentCaptor.getValue();
+        assertEquals(1, value.size());
+        assertEquals(0, value.iterator().next());
     }
 
     @Test
-    public void testFillNullAction() throws
+    public void testSetDateExpiresToNull() throws
             Exception {
-        ArrayList<Coordinate> coordinates = new ArrayList<Coordinate>();
-        Coordinate coordinate = new Coordinate(1,
+        ArrayList<Coordinate> coordinates = new ArrayList<>();
+        Coordinate coordinate = new Coordinate(0,
                                                3);
         coordinates.add(coordinate);
         table52.getData()
-                .get(1)
+                .get(0)
                 .get(3)
-                .setStringValue("a");
+                .setDateValue(null);
 
         updateManager.update(table52,
                              coordinates);
 
-        verify(analyzer).update(anySet());
+        verify(analyzer).update(setArgumentCaptor.capture());
+        Set value = setArgumentCaptor.getValue();
+        assertEquals(1, value.size());
+        assertEquals(0, value.iterator().next());
     }
 }

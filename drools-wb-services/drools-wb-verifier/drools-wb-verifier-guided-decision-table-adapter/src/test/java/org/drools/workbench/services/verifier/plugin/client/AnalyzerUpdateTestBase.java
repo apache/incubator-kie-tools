@@ -17,6 +17,7 @@
 package org.drools.workbench.services.verifier.plugin.client;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.drools.verifier.core.main.Analyzer;
@@ -81,19 +82,28 @@ public abstract class AnalyzerUpdateTestBase {
 
     protected void setValue(final int rowIndex,
                             final int columnIndex,
+                            final Date value) {
+        DTCellValue52 dtCellValue52 = table52.getData()
+                .get(rowIndex)
+                .get(columnIndex);
+        dtCellValue52
+                .setDateValue(value);
+        updateManager.update(table52,
+                             getUpdates(rowIndex,
+                                        columnIndex));
+    }
+
+    protected void setValue(final int rowIndex,
+                            final int columnIndex,
                             final Number value) {
         DTCellValue52 dtCellValue52 = table52.getData()
                 .get(rowIndex)
                 .get(columnIndex);
         dtCellValue52
                 .setNumericValue(value);
-        try {
-            updateManager.update(table52,
-                                 getUpdates(rowIndex,
-                                            columnIndex));
-        } catch (UpdateException e) {
-            e.printStackTrace();
-        }
+        updateManager.update(table52,
+                             getUpdates(rowIndex,
+                                        columnIndex));
     }
 
     protected void setValue(final int rowIndex,
@@ -103,13 +113,9 @@ public abstract class AnalyzerUpdateTestBase {
                 .get(rowIndex)
                 .get(columnIndex)
                 .setStringValue(value);
-        try {
-            updateManager.update(table52,
-                                 getUpdates(rowIndex,
-                                            columnIndex));
-        } catch (UpdateException e) {
-            e.printStackTrace();
-        }
+        updateManager.update(table52,
+                             getUpdates(rowIndex,
+                                        columnIndex));
     }
 
     protected void setValue(final int rowIndex,
@@ -119,13 +125,9 @@ public abstract class AnalyzerUpdateTestBase {
                 .get(rowIndex)
                 .get(columnIndex)
                 .setBooleanValue(value);
-        try {
-            updateManager.update(table52,
-                                 getUpdates(rowIndex,
-                                            columnIndex));
-        } catch (UpdateException e) {
-            e.printStackTrace();
-        }
+        updateManager.update(table52,
+                             getUpdates(rowIndex,
+                                        columnIndex));
     }
 
     protected void appendActionColumn(final int columnNumber,

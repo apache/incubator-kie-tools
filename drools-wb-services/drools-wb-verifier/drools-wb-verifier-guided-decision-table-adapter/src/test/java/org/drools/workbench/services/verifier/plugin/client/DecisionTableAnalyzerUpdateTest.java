@@ -16,6 +16,8 @@
 
 package org.drools.workbench.services.verifier.plugin.client;
 
+import java.util.Date;
+
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.verifier.api.reporting.CheckType;
 import org.drools.verifier.api.reporting.Severity;
@@ -82,6 +84,62 @@ public class DecisionTableAnalyzerUpdateTest
         setValue(1,
                  2,
                  0);
+
+        assertTrue(analyzerProvider.getAnalysisReport().isEmpty());
+    }
+
+    @Test
+    public void testUpdateDateEffective() throws Exception {
+
+        table52 = analyzerProvider.makeAnalyser()
+                .withAttributeColumn("date-effective")
+                .withAttributeColumn("date-expires")
+                .withPersonAgeColumn("==")
+                .withPersonApprovedActionSetField()
+                .withData(DataBuilderProvider
+                                  .row(new Date(2000, 11, 01), new Date(3000, 11, 02), 1, true)
+                                  .row(new Date(2000, 11, 03), new Date(5000, 11, 04), 1, true)
+                                  .end())
+                .buildTable();
+
+        fireUpAnalyzer();
+
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       CheckType.REDUNDANT_ROWS,
+                       Severity.WARNING,
+                       1, 2);
+
+        setValue(1,
+                 2,
+                 new Date(4000, 11, 05));
+
+        assertTrue(analyzerProvider.getAnalysisReport().isEmpty());
+    }
+
+    @Test
+    public void testUpdateDateExpires() throws Exception {
+
+        table52 = analyzerProvider.makeAnalyser()
+                .withAttributeColumn("date-effective")
+                .withAttributeColumn("date-expires")
+                .withPersonAgeColumn("==")
+                .withPersonApprovedActionSetField()
+                .withData(DataBuilderProvider
+                                  .row(new Date(2000, 11, 01), new Date(3000, 11, 02), 1, true)
+                                  .row(new Date(1000, 11, 03), new Date(5000, 11, 04), 1, true)
+                                  .end())
+                .buildTable();
+
+        fireUpAnalyzer();
+
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       CheckType.REDUNDANT_ROWS,
+                       Severity.WARNING,
+                       1, 2);
+
+        setValue(1,
+                 3,
+                 new Date(1500, 11, 05));
 
         assertTrue(analyzerProvider.getAnalysisReport().isEmpty());
     }
