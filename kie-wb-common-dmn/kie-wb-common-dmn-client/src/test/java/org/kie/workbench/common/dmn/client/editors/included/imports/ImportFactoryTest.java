@@ -56,10 +56,14 @@ public class ImportFactoryTest {
         final Name expectedName = new Name(nameValue);
         final LocationURI expectedLocationURI = new LocationURI(path);
         final String expectedNamespace = "://namespace";
+        final int expectedDrgElementsCount = 2;
+        final int expectedItemDefinitionsCount = 3;
 
         record.setName(nameValue);
         record.setPath(path);
         record.setNamespace(expectedNamespace);
+        record.setDrgElementsCount(expectedDrgElementsCount);
+        record.setDataTypesCount(expectedItemDefinitionsCount);
 
         final Import actualImport = factory.makeImport(record);
 
@@ -67,6 +71,8 @@ public class ImportFactoryTest {
         assertEquals(expectedName, actualImport.getName());
         assertEquals(expectedLocationURI, actualImport.getLocationURI());
         assertEquals(expectedNamespace, actualImport.getNamespace());
+        assertEquals(expectedDrgElementsCount, actualImport.getDrgElementsCount());
+        assertEquals(expectedItemDefinitionsCount, actualImport.getItemDefinitionsCount());
     }
 
     @Test

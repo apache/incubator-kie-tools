@@ -22,13 +22,19 @@ import org.guvnor.common.services.project.model.Package;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.api.definition.v1_1.DRGElement;
+import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
 import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedModel;
 import org.kie.workbench.common.dmn.backend.editors.types.exceptions.DMNIncludeModelCouldNotBeCreatedException;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
+import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
+import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 
+import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
@@ -47,11 +53,14 @@ public class DMNIncludedModelFactoryTest {
     @Mock
     private Path path;
 
-    private DMNIncludeModelFactory factory;
+    @Mock
+    private Diagram<Graph, Metadata> diagram;
+
+    private DMNIncludedModelFactory factory;
 
     @Before
     public void setup() {
-        factory = spy(new DMNIncludeModelFactory(dmnDiagramHelper, moduleService));
+        factory = spy(new DMNIncludedModelFactory(dmnDiagramHelper, moduleService));
     }
 
     @Test
@@ -62,12 +71,18 @@ public class DMNIncludedModelFactoryTest {
         final String fileName = "file.dmn";
         final String uri = "/src/main/java/com/kie/dmn/file.dmn";
         final String namespace = "://namespace";
+        final Integer expectedDrgElementsCount = 2;
+        final Integer expectedItemDefinitionsCount = 3;
 
         when(aPackage.getPackageName()).thenReturn(packageName);
         when(path.getFileName()).thenReturn(fileName);
         when(path.toURI()).thenReturn(uri);
         when(moduleService.resolvePackage(path)).thenReturn(aPackage);
-        when(dmnDiagramHelper.getNamespace(path)).thenReturn(namespace);
+
+        when(dmnDiagramHelper.getDiagramByPath(path)).thenReturn(diagram);
+        when(dmnDiagramHelper.getNamespace(diagram)).thenReturn(namespace);
+        when(dmnDiagramHelper.getNodes(diagram)).thenReturn(asList(mock(DRGElement.class), mock(DRGElement.class)));
+        when(dmnDiagramHelper.getItemDefinitions(diagram)).thenReturn(asList(mock(ItemDefinition.class), mock(ItemDefinition.class), mock(ItemDefinition.class)));
 
         final DMNIncludedModel dmnIncludedModel = factory.create(path);
 
@@ -75,11 +90,13 @@ public class DMNIncludedModelFactoryTest {
         assertEquals(fileName, dmnIncludedModel.getModelName());
         assertEquals(uri, dmnIncludedModel.getPath());
         assertEquals(namespace, dmnIncludedModel.getNamespace());
+        assertEquals(expectedDrgElementsCount, dmnIncludedModel.getDrgElementsCount());
+        assertEquals(expectedItemDefinitionsCount, dmnIncludedModel.getItemDefinitionsCount());
     }
 
     @Test(expected = DMNIncludeModelCouldNotBeCreatedException.class)
     public void testCreateWhenGetNamespaceRaisesAnError() throws Exception {
-        doThrow(NoSuchFileException.class).when(dmnDiagramHelper).getNamespace(path);
+        doThrow(NoSuchFileException.class).when(dmnDiagramHelper).getDiagramByPath(path);
         factory.create(path);
     }
 }

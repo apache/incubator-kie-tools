@@ -27,7 +27,7 @@ import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedModel;
 import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedNode;
 import org.kie.workbench.common.dmn.backend.common.DMNMarshallerImportsHelper;
 import org.kie.workbench.common.dmn.backend.common.DMNPathsHelperImpl;
-import org.kie.workbench.common.dmn.backend.editors.common.DMNIncludeModelFactory;
+import org.kie.workbench.common.dmn.backend.editors.common.DMNIncludedModelFactory;
 import org.kie.workbench.common.dmn.backend.editors.common.DMNIncludedNodesFilter;
 import org.kie.workbench.common.dmn.backend.editors.types.exceptions.DMNIncludeModelCouldNotBeCreatedException;
 import org.mockito.Mock;
@@ -49,7 +49,7 @@ public class DMNIncludedModelsServiceImplTest {
     private DMNPathsHelperImpl pathsHelper;
 
     @Mock
-    private DMNIncludeModelFactory includeModelFactory;
+    private DMNIncludedModelFactory includedModelFactory;
 
     @Mock
     private DMNIncludedNodesFilter includedNodesFilter;
@@ -61,7 +61,7 @@ public class DMNIncludedModelsServiceImplTest {
 
     @Before
     public void setup() {
-        service = spy(new DMNIncludedModelsServiceImpl(pathsHelper, includeModelFactory, includedNodesFilter, importsHelper));
+        service = spy(new DMNIncludedModelsServiceImpl(pathsHelper, includedNodesFilter, includedModelFactory, importsHelper));
     }
 
     @Test
@@ -75,9 +75,9 @@ public class DMNIncludedModelsServiceImplTest {
         final DMNIncludedModel dmnIncludedModel2 = mock(DMNIncludedModel.class);
 
         when(pathsHelper.getDiagramsPaths(workspaceProject)).thenReturn(asList(path1, path2, path3));
-        when(includeModelFactory.create(path1)).thenReturn(dmnIncludedModel1);
-        when(includeModelFactory.create(path2)).thenReturn(dmnIncludedModel2);
-        when(includeModelFactory.create(path3)).thenThrow(new DMNIncludeModelCouldNotBeCreatedException());
+        when(includedModelFactory.create(path1)).thenReturn(dmnIncludedModel1);
+        when(includedModelFactory.create(path2)).thenReturn(dmnIncludedModel2);
+        when(includedModelFactory.create(path3)).thenThrow(new DMNIncludeModelCouldNotBeCreatedException());
 
         final List<DMNIncludedModel> dmnIncludedModels = service.loadModels(workspaceProject);
 
@@ -101,9 +101,9 @@ public class DMNIncludedModelsServiceImplTest {
         when(workspaceProject.getRootPath()).thenReturn(rootPath);
         when(rootPath.toURI()).thenReturn(uri);
         when(pathsHelper.getDiagramsPaths(workspaceProject)).thenReturn(asList(path1, path2, path3));
-        when(includeModelFactory.create(path1)).thenReturn(dmnIncludedModel1);
-        when(includeModelFactory.create(path2)).thenReturn(dmnIncludedModel2);
-        when(includeModelFactory.create(path3)).thenThrow(new DMNIncludeModelCouldNotBeCreatedException());
+        when(includedModelFactory.create(path1)).thenReturn(dmnIncludedModel1);
+        when(includedModelFactory.create(path2)).thenReturn(dmnIncludedModel2);
+        when(includedModelFactory.create(path3)).thenThrow(new DMNIncludeModelCouldNotBeCreatedException());
 
         final List<DMNIncludedModel> dmnIncludedModels = service.loadModels(workspaceProject);
 

@@ -44,6 +44,8 @@ public class ImportFactory {
         anImport.setName(name(record));
         anImport.setLocationURI(location(record));
         anImport.setNamespace(record.getNamespace());
+        anImport.setDrgElementsCount(record.getDrgElementsCount());
+        anImport.setItemDefinitionsCount(record.getDataTypesCount());
 
         return anImport;
     }

@@ -157,8 +157,7 @@ public class DecisionComponents {
     private DMNIncludedModel asDMNIncludedModel(final Import anImport) {
         final String modelName = anImport.getName().getValue();
         final String namespace = anImport.getNamespace();
-        final String none = "";
-        return new DMNIncludedModel(modelName, none, none, namespace);
+        return new DMNIncludedModel(modelName, "", "", namespace, 0, 0);
     }
 
     List<DecisionComponentsItem> getDecisionComponentsItems() {

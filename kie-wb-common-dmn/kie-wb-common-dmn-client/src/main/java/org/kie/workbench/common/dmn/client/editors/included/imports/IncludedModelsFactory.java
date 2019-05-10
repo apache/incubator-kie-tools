@@ -58,8 +58,8 @@ public class IncludedModelsFactory {
         includedModel.setName(getName(anImport));
         includedModel.setNamespace(getNamespace(anImport));
         includedModel.setPath(getPath(anImport));
-        includedModel.setDataTypesCount(getDataTypesCount());
-        includedModel.setDrgElementsCount(getDrgElementsCount());
+        includedModel.setDataTypesCount(getDataTypesCount(anImport));
+        includedModel.setDrgElementsCount(getDrgElementsCount(anImport));
 
         getIncludedModelsIndex().index(includedModel, anImport);
 
@@ -86,13 +86,11 @@ public class IncludedModelsFactory {
         return anImport.getNamespace();
     }
 
-    private int getDataTypesCount() {
-        // TODO: The '99' value is temporary - https://issues.jboss.org/browse/DROOLS-3720
-        return 99;
+    private int getDataTypesCount(final Import anImport) {
+        return anImport.getItemDefinitionsCount();
     }
 
-    private int getDrgElementsCount() {
-        // TODO: The '99' value is temporary - https://issues.jboss.org/browse/DROOLS-3721
-        return 99;
+    private int getDrgElementsCount(final Import anImport) {
+        return anImport.getDrgElementsCount();
     }
 }

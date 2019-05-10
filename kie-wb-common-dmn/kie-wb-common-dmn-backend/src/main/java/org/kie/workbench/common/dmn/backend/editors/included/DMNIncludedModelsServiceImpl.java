@@ -34,7 +34,7 @@ import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedNode;
 import org.kie.workbench.common.dmn.backend.common.DMNMarshallerImportsHelper;
 import org.kie.workbench.common.dmn.backend.common.DMNPathsHelperImpl;
 import org.kie.workbench.common.dmn.backend.definition.v1_1.ImportedItemDefinitionConverter;
-import org.kie.workbench.common.dmn.backend.editors.common.DMNIncludeModelFactory;
+import org.kie.workbench.common.dmn.backend.editors.common.DMNIncludedModelFactory;
 import org.kie.workbench.common.dmn.backend.editors.common.DMNIncludedNodesFilter;
 import org.kie.workbench.common.dmn.backend.editors.types.exceptions.DMNIncludeModelCouldNotBeCreatedException;
 import org.uberfire.backend.vfs.Path;
@@ -46,20 +46,20 @@ public class DMNIncludedModelsServiceImpl implements DMNIncludedModelsService {
 
     private final DMNPathsHelperImpl pathsHelper;
 
-    private final DMNIncludeModelFactory includeModelFactory;
-
     private final DMNIncludedNodesFilter includedNodesFilter;
+
+    private final DMNIncludedModelFactory includedModelFactory;
 
     private final DMNMarshallerImportsHelper importsHelper;
 
     @Inject
     public DMNIncludedModelsServiceImpl(final DMNPathsHelperImpl pathsHelper,
-                                        final DMNIncludeModelFactory includeModelFactory,
                                         final DMNIncludedNodesFilter includedNodesFilter,
+                                        final DMNIncludedModelFactory includedModelFactory,
                                         final DMNMarshallerImportsHelper importsHelper) {
         this.pathsHelper = pathsHelper;
-        this.includeModelFactory = includeModelFactory;
         this.includedNodesFilter = includedNodesFilter;
+        this.includedModelFactory = includedModelFactory;
         this.importsHelper = importsHelper;
     }
 
@@ -96,7 +96,7 @@ public class DMNIncludedModelsServiceImpl implements DMNIncludedModelsService {
     private Function<Path, DMNIncludedModel> getPathDMNIncludeModelFunction() {
         return path -> {
             try {
-                return includeModelFactory.create(path);
+                return includedModelFactory.create(path);
             } catch (final DMNIncludeModelCouldNotBeCreatedException e) {
                 LOGGER.warning("The 'DMNIncludedModel' could not be created for " + path.toURI());
                 return null;

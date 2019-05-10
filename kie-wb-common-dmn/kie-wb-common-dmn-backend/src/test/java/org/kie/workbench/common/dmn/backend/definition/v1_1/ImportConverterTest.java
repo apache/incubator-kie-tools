@@ -19,9 +19,15 @@ package org.kie.workbench.common.dmn.backend.definition.v1_1;
 import java.util.Map;
 
 import org.junit.Test;
+import org.kie.dmn.model.api.DRGElement;
+import org.kie.dmn.model.api.Definitions;
+import org.kie.dmn.model.api.ItemDefinition;
 import org.kie.dmn.model.v1_2.TImport;
 
+import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class ImportConverterTest {
 
@@ -29,15 +35,21 @@ public class ImportConverterTest {
     public void testWbFromDMN() {
 
         final org.kie.dmn.model.api.Import dmn = new TImport();
+        final Definitions definitions = mock(Definitions.class);
         final String key = "drools";
         final String value = "http://www.drools.org/kie/dmn/1.1";
         dmn.getNsContext().put(key, value);
 
-        final org.kie.workbench.common.dmn.api.definition.v1_1.Import anImport = ImportConverter.wbFromDMN(dmn);
+        when(definitions.getDrgElement()).thenReturn(asList(mock(DRGElement.class), mock(DRGElement.class)));
+        when(definitions.getItemDefinition()).thenReturn(asList(mock(ItemDefinition.class), mock(ItemDefinition.class), mock(ItemDefinition.class)));
+
+        final org.kie.workbench.common.dmn.api.definition.v1_1.Import anImport = ImportConverter.wbFromDMN(dmn, definitions);
         final Map<String, String> nsContext = anImport.getNsContext();
 
         assertEquals(1, nsContext.size());
         assertEquals(value, nsContext.get(key));
+        assertEquals(2, anImport.getDrgElementsCount());
+        assertEquals(3, anImport.getItemDefinitionsCount());
     }
 
     @Test

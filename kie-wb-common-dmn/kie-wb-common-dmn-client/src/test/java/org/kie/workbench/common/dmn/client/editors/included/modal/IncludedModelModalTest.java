@@ -47,6 +47,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.dmn.client.editors.included.modal.IncludedModelModal.WIDTH;
+import static org.kie.workbench.common.dmn.client.editors.included.modal.dropdown.DMNAssetsDropdownItemsProvider.DRG_ELEMENT_COUNT_METADATA;
+import static org.kie.workbench.common.dmn.client.editors.included.modal.dropdown.DMNAssetsDropdownItemsProvider.ITEM_DEFINITION_COUNT_METADATA;
+import static org.kie.workbench.common.dmn.client.editors.included.modal.dropdown.DMNAssetsDropdownItemsProvider.PATH_METADATA;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
@@ -241,8 +244,14 @@ public class IncludedModelModalTest {
         final String value = "://namespace";
         final String path = "/src/path/file";
         final String anPackage = "path.file.com";
+        final Integer expectedDrgElementsCount = 2;
+        final Integer expectedDataTypesCount = 3;
         final IncludedModel includedModel = spy(new IncludedModel(recordEngine));
-        final Map<String, String> metaData = new Maps.Builder<String, String>().put("path", path).build();
+        final Map<String, String> metaData = new Maps.Builder<String, String>()
+                .put(PATH_METADATA, path)
+                .put(DRG_ELEMENT_COUNT_METADATA, expectedDrgElementsCount.toString())
+                .put(ITEM_DEFINITION_COUNT_METADATA, expectedDataTypesCount.toString())
+                .build();
 
         when(view.getModelNameInput()).thenReturn(name);
         doReturn(includedModel).when(modal).createIncludedModel();
@@ -252,6 +261,8 @@ public class IncludedModelModalTest {
         assertEquals(name, includedModel.getName());
         assertEquals(value, includedModel.getNamespace());
         assertEquals(path, includedModel.getPath());
+        assertEquals(expectedDrgElementsCount, includedModel.getDrgElementsCount());
+        assertEquals(expectedDataTypesCount, includedModel.getDataTypesCount());
         verify(includedModel).create();
     }
 

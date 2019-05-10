@@ -33,6 +33,9 @@ import org.mockito.Mock;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
+import static org.kie.workbench.common.dmn.client.editors.included.modal.dropdown.DMNAssetsDropdownItemsProvider.DRG_ELEMENT_COUNT_METADATA;
+import static org.kie.workbench.common.dmn.client.editors.included.modal.dropdown.DMNAssetsDropdownItemsProvider.ITEM_DEFINITION_COUNT_METADATA;
+import static org.kie.workbench.common.dmn.client.editors.included.modal.dropdown.DMNAssetsDropdownItemsProvider.PATH_METADATA;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -75,11 +78,13 @@ public class DMNAssetsDropdownItemsProviderTest {
     @Test
     public void testWrap() {
 
-        final DMNIncludedModel dmnIncludedModel1 = new DMNIncludedModel("name1", "com.kie.dmn", "/src/main/kie1", "://namespace1");
-        final DMNIncludedModel dmnIncludedModel2 = new DMNIncludedModel("name2", "com.kie.dmn", "/src/main/kie2", "://namespace2");
-        final DMNIncludedModel dmnIncludedModel3 = new DMNIncludedModel("name3", "com.kie.dmn", "/src/main/kie3", "://namespace3");
-        final DMNIncludedModel dmnIncludedModel4 = new DMNIncludedModel("name4", "com.kie.dmn", "/src/main/kie4", "://namespace4");
-        final DMNIncludedModel dmnIncludedModel5 = new DMNIncludedModel("name5", "com.kie.dmn", "/src/main/kie5", "://namespace5");
+        final Integer drgElementCount = 0;
+        final Integer itemDefinitionCount = 0;
+        final DMNIncludedModel dmnIncludedModel1 = new DMNIncludedModel("name1", "com.kie.dmn", "/src/main/kie1", "://namespace1", drgElementCount, itemDefinitionCount);
+        final DMNIncludedModel dmnIncludedModel2 = new DMNIncludedModel("name2", "com.kie.dmn", "/src/main/kie2", "://namespace2", drgElementCount, itemDefinitionCount);
+        final DMNIncludedModel dmnIncludedModel3 = new DMNIncludedModel("name3", "com.kie.dmn", "/src/main/kie3", "://namespace3", drgElementCount, itemDefinitionCount);
+        final DMNIncludedModel dmnIncludedModel4 = new DMNIncludedModel("name4", "com.kie.dmn", "/src/main/kie4", "://namespace4", drgElementCount, itemDefinitionCount);
+        final DMNIncludedModel dmnIncludedModel5 = new DMNIncludedModel("name5", "com.kie.dmn", "/src/main/kie5", "://namespace5", drgElementCount, itemDefinitionCount);
         final Import import1 = mock(Import.class);
         final Import import2 = mock(Import.class);
         final KieAssetsDropdownItem dropdownItem1 = mock(KieAssetsDropdownItem.class);
@@ -102,13 +107,17 @@ public class DMNAssetsDropdownItemsProviderTest {
     @Test
     public void testAsKieAsset() {
 
-        final DMNIncludedModel model = new DMNIncludedModel("name1", "com.kie.dmn", "/src/main/kie1", "://namespace1");
+        final Integer drgElementCount = 2;
+        final Integer itemDefinitionCount = 3;
+        final DMNIncludedModel model = new DMNIncludedModel("name1", "com.kie.dmn", "/src/main/kie1", "://namespace1", drgElementCount, itemDefinitionCount);
 
         final KieAssetsDropdownItem dropdownItem = itemsProvider.asKieAsset(model);
 
         assertEquals(model.getModelName(), dropdownItem.getText());
         assertEquals(model.getModelPackage(), dropdownItem.getSubText());
         assertEquals(model.getNamespace(), dropdownItem.getValue());
-        assertEquals(model.getPath(), dropdownItem.getMetaData().get("path"));
+        assertEquals(model.getPath(), dropdownItem.getMetaData().get(PATH_METADATA));
+        assertEquals(model.getDrgElementsCount().toString(), dropdownItem.getMetaData().get(DRG_ELEMENT_COUNT_METADATA));
+        assertEquals(model.getItemDefinitionsCount().toString(), dropdownItem.getMetaData().get(ITEM_DEFINITION_COUNT_METADATA));
     }
 }

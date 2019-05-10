@@ -21,6 +21,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.DRGElement;
+import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
 import org.kie.workbench.common.dmn.api.graph.DMNDiagramUtils;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
@@ -43,6 +44,10 @@ public class DMNDiagramHelper {
 
     public List<DRGElement> getNodes(final Diagram diagram) {
         return dmnDiagramUtils.getNodes(diagram);
+    }
+
+    public List<ItemDefinition> getItemDefinitions(final Diagram diagram) {
+        return dmnDiagramUtils.getDefinitions(diagram).getItemDefinition();
     }
 
     public String getNamespace(final Path path) {

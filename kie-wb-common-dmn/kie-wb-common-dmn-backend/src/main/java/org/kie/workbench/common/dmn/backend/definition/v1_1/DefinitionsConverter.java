@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.backend.definition.v1_1;
 
+import java.util.Map;
 import java.util.Map.Entry;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
@@ -31,7 +32,8 @@ import org.kie.workbench.common.stunner.core.util.UUID;
 
 public class DefinitionsConverter {
 
-    public static Definitions wbFromDMN(final org.kie.dmn.model.api.Definitions dmn) {
+    public static Definitions wbFromDMN(final org.kie.dmn.model.api.Definitions dmn,
+                                        final Map<org.kie.dmn.model.api.Import, org.kie.dmn.model.api.Definitions> importDefinitions) {
         if (dmn == null) {
             return null;
         }
@@ -71,7 +73,8 @@ public class DefinitionsConverter {
         }
 
         for (org.kie.dmn.model.api.Import i : dmn.getImport()) {
-            final Import importConverted = ImportConverter.wbFromDMN(i);
+            final org.kie.dmn.model.api.Definitions definitions = importDefinitions.get(i);
+            final Import importConverted = ImportConverter.wbFromDMN(i, definitions);
             if (importConverted != null) {
                 importConverted.setParent(result);
             }

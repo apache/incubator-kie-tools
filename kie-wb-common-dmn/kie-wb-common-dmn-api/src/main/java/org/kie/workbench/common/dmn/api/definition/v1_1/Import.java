@@ -28,6 +28,10 @@ public class Import extends NamedElement {
 
     protected String importType;
 
+    private int itemDefinitionsCount;
+
+    private int drgElementsCount;
+
     public Import() {
         this(null,
              new LocationURI(),
@@ -68,6 +72,22 @@ public class Import extends NamedElement {
 
     public void setImportType(final String importType) {
         this.importType = importType;
+    }
+
+    public int getItemDefinitionsCount() {
+        return itemDefinitionsCount;
+    }
+
+    public void setItemDefinitionsCount(final int itemDefinitionsCount) {
+        this.itemDefinitionsCount = itemDefinitionsCount;
+    }
+
+    public int getDrgElementsCount() {
+        return drgElementsCount;
+    }
+
+    public void setDrgElementsCount(final int drgElementsCount) {
+        this.drgElementsCount = drgElementsCount;
     }
 
     @Override

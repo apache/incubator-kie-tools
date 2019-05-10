@@ -22,6 +22,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DRGElement;
+import org.kie.workbench.common.dmn.api.definition.v1_1.Definitions;
+import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
 import org.kie.workbench.common.dmn.api.graph.DMNDiagramUtils;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
@@ -31,6 +33,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -69,6 +72,20 @@ public class DMNDiagramHelperTest {
         final List<DRGElement> actualNodes = helper.getNodes(diagram);
 
         assertEquals(expectedNodes, actualNodes);
+    }
+
+    @Test
+    public void testGetItemDefinitionsByDiagram() {
+
+        final Definitions definitions = mock(Definitions.class);
+        final List<ItemDefinition> expectedItemDefinitions = asList(mock(ItemDefinition.class), mock(ItemDefinition.class));
+
+        when(definitions.getItemDefinition()).thenReturn(expectedItemDefinitions);
+        when(dmnDiagramUtils.getDefinitions(diagram)).thenReturn(definitions);
+
+        final List<ItemDefinition> actualItemDefinitions = helper.getItemDefinitions(diagram);
+
+        assertEquals(expectedItemDefinitions, actualItemDefinitions);
     }
 
     @Test

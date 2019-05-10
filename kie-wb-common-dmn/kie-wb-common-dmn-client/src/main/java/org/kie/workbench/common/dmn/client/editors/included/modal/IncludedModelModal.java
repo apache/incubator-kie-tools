@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.client.editors.included.modal;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -38,6 +39,8 @@ import org.kie.workbench.common.widgets.client.assets.dropdown.KieAssetsDropdown
 import org.uberfire.ext.editor.commons.client.file.popups.elemental2.Elemental2Modal;
 import org.uberfire.mvp.Command;
 
+import static org.kie.workbench.common.dmn.client.editors.included.modal.dropdown.DMNAssetsDropdownItemsProvider.DRG_ELEMENT_COUNT_METADATA;
+import static org.kie.workbench.common.dmn.client.editors.included.modal.dropdown.DMNAssetsDropdownItemsProvider.ITEM_DEFINITION_COUNT_METADATA;
 import static org.kie.workbench.common.dmn.client.editors.included.modal.dropdown.DMNAssetsDropdownItemsProvider.PATH_METADATA;
 import static org.kie.workbench.common.stunner.core.util.StringUtils.isEmpty;
 
@@ -137,9 +140,12 @@ public class IncludedModelModal extends Elemental2Modal<IncludedModelModal.View>
 
     IncludedModel createIncludedModel(final KieAssetsDropdownItem value) {
         final IncludedModel includedModel = createIncludedModel();
+        final Map<String, String> metaData = value.getMetaData();
         includedModel.setName(getView().getModelNameInput());
         includedModel.setNamespace(value.getValue());
-        includedModel.setPath(value.getMetaData().get(PATH_METADATA));
+        includedModel.setPath(metaData.get(PATH_METADATA));
+        includedModel.setDrgElementsCount(Integer.valueOf(metaData.get(DRG_ELEMENT_COUNT_METADATA)));
+        includedModel.setDataTypesCount(Integer.valueOf(metaData.get(ITEM_DEFINITION_COUNT_METADATA)));
         includedModel.create();
         return includedModel;
     }

@@ -17,8 +17,12 @@ package org.kie.workbench.common.dmn.backend.definition.v1_1;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
+import org.kie.dmn.model.api.Definitions;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Import;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.LocationURI;
@@ -27,7 +31,9 @@ import org.kie.workbench.common.dmn.api.property.dmn.QName;
 
 public final class ImportConverter {
 
-    public static Import wbFromDMN(org.kie.dmn.model.api.Import dmn) {
+    public static Import wbFromDMN(final org.kie.dmn.model.api.Import dmn,
+                                   final Definitions definitions) {
+
         final LocationURI locationURI = new LocationURI(dmn.getLocationURI());
         final Import result = new Import(dmn.getNamespace(), locationURI, dmn.getImportType());
         final Map<QName, String> additionalAttributes = new HashMap<>();
@@ -41,6 +47,8 @@ public final class ImportConverter {
         result.setId(new Id(id != null ? id : UUID.randomUUID().toString()));
         result.setName(new Name(name));
         result.setDescription(DescriptionPropertyConverter.wbFromDMN(description));
+        result.setDrgElementsCount(countDefinitionElement(definitions, () -> d -> d.getDrgElement().size()));
+        result.setItemDefinitionsCount(countDefinitionElement(definitions, () -> d -> d.getItemDefinition().size()));
 
         dmn.getNsContext().forEach((key, value) -> result.getNsContext().put(key, value));
 
@@ -65,5 +73,14 @@ public final class ImportConverter {
         wb.getNsContext().forEach((key, value) -> result.getNsContext().put(key, value));
 
         return result;
+    }
+
+    private static Integer countDefinitionElement(final Definitions definitions,
+                                                  final Supplier<Function<Definitions, Integer>> supplier) {
+        final Integer none = 0;
+        return Optional
+                .ofNullable(definitions)
+                .map(supplier.get())
+                .orElse(none);
     }
 }

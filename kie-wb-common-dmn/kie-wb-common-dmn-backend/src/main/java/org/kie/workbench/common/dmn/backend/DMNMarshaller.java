@@ -399,7 +399,7 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
         textAnnotations.values().forEach(graph::addNode);
 
         Node<?, ?> dmnDiagramRoot = findDMNDiagramRoot(graph);
-        Definitions definitionsStunnerPojo = DefinitionsConverter.wbFromDMN(dmnXml);
+        Definitions definitionsStunnerPojo = DefinitionsConverter.wbFromDMN(dmnXml, importDefinitions);
         loadImportedItemDefinitions(definitionsStunnerPojo, importDefinitions);
         ((View<DMNDiagram>) dmnDiagramRoot.getContent()).getDefinition().setDefinitions(definitionsStunnerPojo);
 

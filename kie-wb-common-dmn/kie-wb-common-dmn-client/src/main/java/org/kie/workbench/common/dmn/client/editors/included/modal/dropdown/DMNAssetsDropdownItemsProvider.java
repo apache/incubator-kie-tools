@@ -38,6 +38,10 @@ public class DMNAssetsDropdownItemsProvider implements KieAssetsDropdownItemsPro
 
     public static final String PATH_METADATA = "path";
 
+    public static final String DRG_ELEMENT_COUNT_METADATA = "drg_element_count";
+
+    public static final String ITEM_DEFINITION_COUNT_METADATA = "item_definition_count";
+
     private final DMNIncludeModelsClient client;
 
     private final IncludedModelsPageState pageState;
@@ -92,6 +96,8 @@ public class DMNAssetsDropdownItemsProvider implements KieAssetsDropdownItemsPro
         return new Maps
                 .Builder<String, String>()
                 .put(PATH_METADATA, dmnIncludedModel.getPath())
+                .put(DRG_ELEMENT_COUNT_METADATA, dmnIncludedModel.getDrgElementsCount().toString())
+                .put(ITEM_DEFINITION_COUNT_METADATA, dmnIncludedModel.getItemDefinitionsCount().toString())
                 .build();
     }
 }

@@ -16,16 +16,27 @@
 
 package org.kie.workbench.common.dmn.backend.definition.v1_1;
 
+import java.util.List;
+import java.util.Map;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.dmn.model.api.DRGElement;
+import org.kie.dmn.model.api.Import;
+import org.kie.dmn.model.api.ItemDefinition;
+import org.kie.dmn.model.v1_2.TImport;
+import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Definitions;
 import org.kie.workbench.common.dmn.api.property.dmn.Text;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -41,11 +52,24 @@ public class DefinitionsConverterTest {
 
     @Test
     public void wbFromDMN() {
-        Definitions wb = DefinitionsConverter.wbFromDMN(apiDefinitions);
-        String defaultNs = wb.getNsContext().get(DMNModelInstrumentedBase.Namespace.DEFAULT.getPrefix());
-        String namespace = wb.getNamespace().getValue();
+
+        final Import anImport = new TImport();
+
+        final org.kie.dmn.model.api.Definitions definitions = mock(org.kie.dmn.model.api.Definitions.class);
+        final Map<Import, org.kie.dmn.model.api.Definitions> importDefinitions = new Maps.Builder<Import, org.kie.dmn.model.api.Definitions>().put(anImport, definitions).build();
+        when(definitions.getDrgElement()).thenReturn(asList(mock(DRGElement.class), mock(DRGElement.class)));
+        when(definitions.getItemDefinition()).thenReturn(asList(mock(ItemDefinition.class), mock(ItemDefinition.class), mock(ItemDefinition.class)));
+        when(apiDefinitions.getImport()).thenReturn(singletonList(anImport));
+
+        final Definitions wb = DefinitionsConverter.wbFromDMN(apiDefinitions, importDefinitions);
+        final String defaultNs = wb.getNsContext().get(DMNModelInstrumentedBase.Namespace.DEFAULT.getPrefix());
+        final String namespace = wb.getNamespace().getValue();
+        final List<org.kie.workbench.common.dmn.api.definition.v1_1.Import> imports = wb.getImport();
 
         assertEquals(defaultNs, namespace);
+        assertEquals(1, imports.size());
+        assertEquals(2, imports.get(0).getDrgElementsCount());
+        assertEquals(3, imports.get(0).getItemDefinitionsCount());
     }
 
     @Test

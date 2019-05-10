@@ -71,6 +71,10 @@ public class IncludedModelsFactoryTest {
         final String uuid2 = "456";
         final String uri1 = "/src/main/kie/dmn/1";
         final String uri2 = "/src/main/kie/dmn/2";
+        final Integer drgElementsCount1 = 2;
+        final Integer drgElementsCount2 = 8;
+        final Integer itemDefinitionsCount1 = 4;
+        final Integer itemDefinitionsCount2 = 16;
 
         when(nameMock1.getValue()).thenReturn(name1);
         when(nameMock2.getValue()).thenReturn(name2);
@@ -80,6 +84,10 @@ public class IncludedModelsFactoryTest {
         when(import2.getNamespace()).thenReturn(path2);
         when(import1.getLocationURI()).thenReturn(new LocationURI(uri1));
         when(import2.getLocationURI()).thenReturn(new LocationURI(uri2));
+        when(import1.getDrgElementsCount()).thenReturn(drgElementsCount1);
+        when(import2.getDrgElementsCount()).thenReturn(drgElementsCount2);
+        when(import1.getItemDefinitionsCount()).thenReturn(itemDefinitionsCount1);
+        when(import2.getItemDefinitionsCount()).thenReturn(itemDefinitionsCount2);
         mockStatic(UUID.class);
         when(UUID.uuid()).thenReturn(uuid1, uuid2);
 
@@ -99,6 +107,10 @@ public class IncludedModelsFactoryTest {
         assertEquals(path2, includedModel2.getNamespace());
         assertEquals(uri1, includedModel1.getPath());
         assertEquals(uri2, includedModel2.getPath());
+        assertEquals(itemDefinitionsCount1, includedModel1.getDataTypesCount());
+        assertEquals(itemDefinitionsCount2, includedModel2.getDataTypesCount());
+        assertEquals(drgElementsCount1, includedModel1.getDrgElementsCount());
+        assertEquals(drgElementsCount2, includedModel2.getDrgElementsCount());
         assertEquals(recordEngine, includedModel1.getRecordEngine());
         assertEquals(recordEngine, includedModel2.getRecordEngine());
     }

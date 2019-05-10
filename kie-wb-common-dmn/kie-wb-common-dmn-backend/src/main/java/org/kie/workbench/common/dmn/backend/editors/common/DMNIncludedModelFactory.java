@@ -24,9 +24,12 @@ import org.guvnor.common.services.project.model.Package;
 import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedModel;
 import org.kie.workbench.common.dmn.backend.editors.types.exceptions.DMNIncludeModelCouldNotBeCreatedException;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
+import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
+import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.uberfire.backend.vfs.Path;
 
-public class DMNIncludeModelFactory {
+public class DMNIncludedModelFactory {
 
     private static final String DEFAULT_PACKAGE_NAME = "";
 
@@ -35,8 +38,8 @@ public class DMNIncludeModelFactory {
     private final KieModuleService moduleService;
 
     @Inject
-    public DMNIncludeModelFactory(final DMNDiagramHelper diagramHelper,
-                                  final KieModuleService moduleService) {
+    public DMNIncludedModelFactory(final DMNDiagramHelper diagramHelper,
+                                   final KieModuleService moduleService) {
         this.diagramHelper = diagramHelper;
         this.moduleService = moduleService;
     }
@@ -47,9 +50,12 @@ public class DMNIncludeModelFactory {
             final String fileName = path.getFileName();
             final String modelPackage = getPackage(path);
             final String pathURI = path.toURI();
-            final String namespace = diagramHelper.getNamespace(path);
+            final Diagram<Graph, Metadata> diagram = diagramHelper.getDiagramByPath(path);
+            final String namespace = diagramHelper.getNamespace(diagram);
+            final int drgElementCount = diagramHelper.getNodes(diagram).size();
+            final int itemDefinitionCount = diagramHelper.getItemDefinitions(diagram).size();
 
-            return new DMNIncludedModel(fileName, modelPackage, pathURI, namespace);
+            return new DMNIncludedModel(fileName, modelPackage, pathURI, namespace, drgElementCount, itemDefinitionCount);
         } catch (final Exception e) {
             throw new DMNIncludeModelCouldNotBeCreatedException();
         }

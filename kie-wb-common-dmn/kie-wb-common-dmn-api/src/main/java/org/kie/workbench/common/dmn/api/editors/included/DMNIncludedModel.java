@@ -30,14 +30,22 @@ public class DMNIncludedModel {
 
     private String namespace;
 
+    private final Integer drgElementsCount;
+
+    private final Integer itemDefinitionsCount;
+
     public DMNIncludedModel(final @MapsTo("modelName") String modelName,
                             final @MapsTo("modelPackage") String modelPackage,
                             final @MapsTo("path") String path,
-                            final @MapsTo("namespace") String namespace) {
+                            final @MapsTo("namespace") String namespace,
+                            final @MapsTo("drgElementsCount") Integer drgElementsCount,
+                            final @MapsTo("itemDefinitionsCount") Integer itemDefinitionsCount) {
         this.modelName = modelName;
         this.modelPackage = modelPackage;
         this.path = path;
         this.namespace = namespace;
+        this.drgElementsCount = drgElementsCount;
+        this.itemDefinitionsCount = itemDefinitionsCount;
     }
 
     public String getModelName() {
@@ -54,5 +62,13 @@ public class DMNIncludedModel {
 
     public String getNamespace() {
         return namespace;
+    }
+
+    public Integer getDrgElementsCount() {
+        return drgElementsCount;
+    }
+
+    public Integer getItemDefinitionsCount() {
+        return itemDefinitionsCount;
     }
 }
