@@ -34,6 +34,7 @@ import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
 import org.guvnor.common.services.project.service.ModuleRepositoryResolver;
 import org.guvnor.common.services.project.service.ModuleService;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
+import org.guvnor.common.services.project.utils.NewWorkspaceProjectUtils;
 import org.guvnor.structure.contributors.Contributor;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
@@ -187,20 +188,34 @@ public class WorkspaceProjectServiceImpl
     private Repository createRepository(final OrganizationalUnit organizationalUnit,
                                         final POM pom,
                                         final List<Contributor> contributors) {
+        final String repositoryAlias = this.createFreshRepositoryAlias(organizationalUnit,
+                                                                       pom.getName());
+
         if (contributors == null) {
             return repositoryService.createRepository(organizationalUnit,
                                                       "git",
-                                                      checkNotNull("project name in pom model",
-                                                                   pom.getName()),
+                                                      repositoryAlias,
                                                       new RepositoryEnvironmentConfigurations());
         } else {
             return repositoryService.createRepository(organizationalUnit,
                                                       "git",
-                                                      checkNotNull("project name in pom model",
-                                                                   pom.getName()),
+                                                      repositoryAlias,
                                                       new RepositoryEnvironmentConfigurations(),
                                                       contributors);
         }
+    }
+
+    String createFreshRepositoryAlias(final OrganizationalUnit organizationalUnit,
+                                              final String projectName) {
+        int index = 0;
+        String suffix = "";
+        String repositoryAlias = checkNotNull("project name in pom model", NewWorkspaceProjectUtils.sanitizeProjectName(projectName));
+
+        while (repositoryService.getRepositoryFromSpace(organizationalUnit.getSpace(), repositoryAlias + suffix) != null) {
+            suffix = "-" + ++index;
+        }
+
+        return repositoryAlias + suffix;
     }
 
     @Override

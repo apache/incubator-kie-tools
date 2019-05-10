@@ -247,7 +247,7 @@ public class WorkspaceProjectServiceImplTest {
     }
 
     @Test
-    public void testReturnSameNameIfRepositoryDoesNotExist() {
+    public void testReturnSameNameIfProjectDoesNotExist() {
         String projectName = "projectA";
         POM pom = new POM(projectName,
                           "description",
@@ -263,7 +263,7 @@ public class WorkspaceProjectServiceImplTest {
     }
 
     @Test
-    public void testCreateNewNameIfRepositoryExists() {
+    public void testCreateNewNameIfProjectExists() {
         {
             POM pom = new POM("repository1",
                               "description",
@@ -291,6 +291,42 @@ public class WorkspaceProjectServiceImplTest {
             WorkspaceProjectServiceImpl impl = (WorkspaceProjectServiceImpl) this.workspaceProjectService;
             String newName = impl.createFreshProjectName(this.ou1,
                                                          pom.getName());
+
+            assertEquals("repository1-2",
+                         newName);
+        }
+    }
+
+    @Test
+    public void testReturnSameNameIfRepositoryDoesNotExist() {
+        String repositoryName = "repositoryA";
+        WorkspaceProjectServiceImpl impl = (WorkspaceProjectServiceImpl) this.workspaceProjectService;
+        String newName = impl.createFreshRepositoryAlias(this.ou1,
+                                                         repositoryName);
+
+        assertEquals(repositoryName,
+                     newName);
+    }
+
+    @Test
+    public void testCreateNewNameIfRepositoryExists() {
+        {
+            String repositoryName = "repository1";
+            WorkspaceProjectServiceImpl impl = (WorkspaceProjectServiceImpl) this.workspaceProjectService;
+            String newName = impl.createFreshProjectName(this.ou1,
+                                                         repositoryName);
+
+            assertEquals("repository1-1",
+                         newName);
+        }
+
+        {
+            doReturn(Optional.of(mock(Branch.class))).when(repository2).getDefaultBranch();
+            doReturn("repository1-1").when(repository2).getAlias();
+
+            WorkspaceProjectServiceImpl impl = (WorkspaceProjectServiceImpl) this.workspaceProjectService;
+            String newName = impl.createFreshProjectName(this.ou1,
+                                                         "repository1");
 
             assertEquals("repository1-2",
                          newName);

@@ -97,7 +97,7 @@ public class WorkspaceProjectServiceImplNewWorkspaceWorkspaceProjectTest {
 
         doReturn(repository).when(repositoryService).createRepository(eq(ou),
                                                                       eq("git"),
-                                                                      eq("my project"),
+                                                                      eq("myproject"),
                                                                       any(RepositoryEnvironmentConfigurations.class));
 
         pom = new POM("my project",

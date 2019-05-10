@@ -37,5 +37,6 @@
   <source path='categories' />
   <source path='preferences' />
   <source path='roles' />
+  <source path='utils' />
 
 </module>
