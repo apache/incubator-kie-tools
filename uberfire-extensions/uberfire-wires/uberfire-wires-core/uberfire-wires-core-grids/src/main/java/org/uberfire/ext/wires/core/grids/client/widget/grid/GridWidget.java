@@ -18,7 +18,6 @@ package org.uberfire.ext.wires.core.grids.client.widget.grid;
 import com.ait.lienzo.client.core.event.INodeXYEvent;
 import com.ait.lienzo.client.core.event.NodeMouseClickHandler;
 import com.ait.lienzo.client.core.shape.Group;
-import com.ait.lienzo.client.core.shape.GroupOf;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.types.Point2D;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
@@ -100,8 +99,18 @@ public interface GridWidget extends IPrimitive<Group>,
     boolean isSelected();
 
     /**
+     * Show context menu of a header cell at coordinates 'uiHeaderRowIndex' and 'uiHeaderColumnIndex'.
+     * If the provided coordinate does not resolve to a header cell in the Grid no operation is performed.
+     * @param uiHeaderRowIndex Header row index of cell to invoke context menu
+     * @param uiHeaderColumnIndex Header column index of cell to invoke context menu
+     * @return true if menu was shown.
+     */
+    boolean showContextMenuForHeader(final int uiHeaderRowIndex,
+                                     final int uiHeaderColumnIndex);
+
+    /**
      * Show context menu of a cell at coordinates 'uiRowIndex' and 'uiColumnIndex'.
-     * If the provided Canvas coordinate does not resolve to a cell in the Grid no operation is performed.
+     * If the provided coordinate does not resolve to a cell in the Grid no operation is performed.
      * @param uiRowIndex Row index of cell to invoke context menu
      * @param uiColumnIndex Column index of cell to invoke context menu
      * @return true if menu was shown.

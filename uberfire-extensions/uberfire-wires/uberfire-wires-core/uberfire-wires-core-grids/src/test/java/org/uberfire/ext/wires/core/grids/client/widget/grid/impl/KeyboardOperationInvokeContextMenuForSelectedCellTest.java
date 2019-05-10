@@ -51,7 +51,7 @@ public class KeyboardOperationInvokeContextMenuForSelectedCellTest {
     private KeyboardOperationInvokeContextMenuForSelectedCell testedOperation;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         testedOperation = new KeyboardOperationInvokeContextMenuForSelectedCell(gridLayerMock);
 
         doReturn(gridDataMock).when(gridWidgetMock).getModel();
@@ -72,6 +72,13 @@ public class KeyboardOperationInvokeContextMenuForSelectedCellTest {
     }
 
     @Test
+    public void testIsExecutableSelectedHeader() {
+        doReturn(Collections.singletonList(mock(GridData.SelectedCell.class))).when(gridDataMock).getSelectedHeaderCells();
+
+        assertThat(testedOperation.isExecutable(gridWidgetMock)).isTrue();
+    }
+
+    @Test
     public void testIsExecutableSelectedCells() {
         doReturn(Collections.singletonList(mock(GridData.SelectedCell.class))).when(gridDataMock).getSelectedCells();
 
@@ -79,7 +86,33 @@ public class KeyboardOperationInvokeContextMenuForSelectedCellTest {
     }
 
     @Test
-    public void testPerform() {
+    public void testPerformWithSelectedHeader() {
+        // non null indexes to verify the coordinates translation
+        final int headerRowIndex = 1;
+        final int headerColumnIndex = 2;
+        // translated column index as just one column used in test
+        final int uiColumnIndex = 0;
+
+        final GridData.SelectedCell selectedCellMock = mock(GridData.SelectedCell.class);
+        doReturn(Collections.singletonList(selectedCellMock)).when(gridDataMock).getSelectedHeaderCells();
+        doReturn(headerRowIndex).when(selectedCellMock).getRowIndex();
+        doReturn(headerColumnIndex).when(selectedCellMock).getColumnIndex();
+
+        final GridColumn columnMock = mock(GridColumn.class);
+        doReturn(headerColumnIndex).when(columnMock).getIndex();
+
+        doReturn(Collections.singletonList(columnMock)).when(gridDataMock).getColumns();
+
+        doReturn(true).when(gridWidgetMock).showContextMenuForHeader(headerRowIndex, uiColumnIndex);
+
+        assertThat(testedOperation.perform(gridWidgetMock, false, true))
+                .as("Menu should be shown successfully")
+                .isTrue();
+        verify(gridWidgetMock).showContextMenuForHeader(headerRowIndex, uiColumnIndex);
+    }
+
+    @Test
+    public void testPerformWithSelectedCell() {
         // non null indexes to verify the coordinates translation
         final int rowIndex = 1;
         final int columnIndex = 2;
@@ -87,6 +120,7 @@ public class KeyboardOperationInvokeContextMenuForSelectedCellTest {
         final int uiColumnIndex = 0;
 
         final GridData.SelectedCell selectedCellMock = mock(GridData.SelectedCell.class);
+        doReturn(Collections.singletonList(selectedCellMock)).when(gridDataMock).getSelectedCells();
         doReturn(rowIndex).when(selectedCellMock).getRowIndex();
         doReturn(columnIndex).when(selectedCellMock).getColumnIndex();
 
@@ -99,7 +133,7 @@ public class KeyboardOperationInvokeContextMenuForSelectedCellTest {
         doReturn(true).when(gridWidgetMock).showContextMenuForCell(rowIndex, uiColumnIndex);
 
         assertThat(testedOperation.perform(gridWidgetMock, false, true))
-                .as("Menu should be shown succesfully")
+                .as("Menu should be shown successfully")
                 .isTrue();
         verify(gridWidgetMock).showContextMenuForCell(rowIndex, uiColumnIndex);
     }
@@ -125,7 +159,7 @@ public class KeyboardOperationInvokeContextMenuForSelectedCellTest {
         doReturn(true).when(gridWidgetMock).showContextMenuForCell(rowIndex, uiColumnIndex);
 
         assertThat(testedOperation.perform(gridWidgetMock, false, true))
-                .as("Menu should not be shown succesfully")
+                .as("Menu should not be shown successfully")
                 .isFalse();
         verify(gridWidgetMock, never()).showContextMenuForCell(anyInt(), anyInt());
     }

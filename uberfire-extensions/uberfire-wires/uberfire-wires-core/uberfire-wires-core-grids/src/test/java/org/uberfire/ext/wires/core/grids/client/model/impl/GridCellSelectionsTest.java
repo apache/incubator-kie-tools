@@ -1253,6 +1253,30 @@ public class GridCellSelectionsTest extends BaseGridTest {
     }
 
     @Test
+    public void testSelectHeaderCellDeleteColumn() {
+        constructGridData(2, 0);
+        final GridColumn<String> gc0 = gridColumns[0];
+        final GridColumn<String> gc1 = gridColumns[1];
+
+        gc0.getHeaderMetaData().add(new BaseHeaderMetaData("col0"));
+        gc1.getHeaderMetaData().add(new BaseHeaderMetaData("col1"));
+
+        gridData.selectHeaderCell(0, 0);
+        gridData.selectHeaderCell(0, 1);
+        assertEquals(2,
+                     gridData.getSelectedHeaderCells().size());
+
+        gridData.deleteColumn(gc0);
+
+        assertTrue(gridData.getSelectedHeaderCells().contains(new GridData.SelectedCell(0,
+                                                                                        0)));
+        assertFalse(gridData.getSelectedHeaderCells().contains(new GridData.SelectedCell(0,
+                                                                                         1)));
+        assertEquals(1,
+                     gridData.getSelectedHeaderCells().size());
+    }
+
+    @Test
     public void testSelectCellDeleteColumnWithAdditionalSelections() {
         constructGridData(2, 1);
         final GridColumn<String> gc1 = gridColumns[0];

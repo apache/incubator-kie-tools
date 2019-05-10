@@ -70,7 +70,12 @@ public class BaseGridDataSelectionsManager {
     }
 
     public void onDeleteColumn(final int index) {
-        final List<GridData.SelectedCell> selectedCells = gridData.getSelectedCells();
+        onDeleteColumn(index, gridData.getSelectedCells());
+        onDeleteColumn(index, gridData.getSelectedHeaderCells());
+    }
+
+    private void onDeleteColumn(final int index,
+                                final List<GridData.SelectedCell> selectedCells) {
         final List<GridData.SelectedCell> selectedCellsToRemove = new ArrayList<GridData.SelectedCell>();
         final List<GridData.SelectedCell> selectedCellsToUpdate = new ArrayList<GridData.SelectedCell>();
         for (GridData.SelectedCell sc : selectedCells) {
