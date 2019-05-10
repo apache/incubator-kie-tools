@@ -25,6 +25,7 @@ import elemental2.dom.HTMLDivElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.widgets.client.widget.KieSelectElement;
+import org.kie.workbench.common.widgets.client.widget.KieSelectOption;
 
 @Templated
 public class PackageListBoxViewImpl
@@ -58,9 +59,9 @@ public class PackageListBoxViewImpl
                                s -> onSelectionChange());
     }
 
-    private List<KieSelectElement.Option> buildOptions(Map<String, String> packageNames) {
+    private List<KieSelectOption> buildOptions(Map<String, String> packageNames) {
 
-        final ArrayList<KieSelectElement.Option> options = new ArrayList<>();
+        final ArrayList<KieSelectOption> options = new ArrayList<>();
 
         for (Map.Entry<String, String> entry : packageNames.entrySet()) {
             options.add(newOption(entry.getKey(), entry.getValue()));
@@ -68,11 +69,11 @@ public class PackageListBoxViewImpl
         return options;
     }
 
-    KieSelectElement.Option newOption(final String name, String value) {
+    KieSelectOption newOption(final String name, String value) {
         if (value.isEmpty()) {
             value = name;
         }
-        return new KieSelectElement.Option(name, value);
+        return new KieSelectOption(name, value);
     }
 
     private void onSelectionChange() {

@@ -18,6 +18,7 @@ package org.kie.workbench.common.widgets.client.handlers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.widgets.client.widget.KieSelectElement;
+import org.kie.workbench.common.widgets.client.widget.KieSelectOption;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -34,11 +35,11 @@ public class PackageListBoxViewImplTest {
     @Test
     public void whenEmptyValueShouldBeEqualsTheLabel() {
 
-        KieSelectElement.Option option = packageListBoxView.newOption("key", "value");
+        KieSelectOption option = packageListBoxView.newOption("key", "value");
         assertEquals(option.label, "key");
         assertEquals(option.value, "value");
 
-        KieSelectElement.Option anotherOption = packageListBoxView.newOption("<default>", "");
+        KieSelectOption anotherOption = packageListBoxView.newOption("<default>", "");
         assertEquals(anotherOption.label, "<default>");
         assertEquals(anotherOption.value, "<default>");
 

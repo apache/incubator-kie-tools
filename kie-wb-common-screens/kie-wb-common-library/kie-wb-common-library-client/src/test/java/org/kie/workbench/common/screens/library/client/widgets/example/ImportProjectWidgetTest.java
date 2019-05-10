@@ -26,6 +26,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.examples.model.ImportProject;
 import org.kie.workbench.common.screens.examples.model.ExampleProjectError;
+import org.kie.workbench.common.screens.library.client.widgets.example.branchselector.BranchSelectorPopUpPresenter;
 import org.kie.workbench.common.screens.library.client.widgets.example.errors.ExampleProjectErrorPresenter;
 import org.kie.workbench.common.screens.library.client.widgets.example.errors.ExampleProjectOkPresenter;
 import org.mockito.Answers;
@@ -51,6 +52,9 @@ public class ImportProjectWidgetTest {
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private ExampleProjectErrorPresenter exampleProjectErrorPresenter;
 
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+    private BranchSelectorPopUpPresenter branchSelectorPopUpPresenter;
+
     @Mock
     private ImportProject importProject;
 
@@ -61,7 +65,8 @@ public class ImportProjectWidgetTest {
     public void setUp() {
         this.widget = new ExampleProjectWidget(this.view,
                                                this.exampleProjectOkPresenter,
-                                               this.exampleProjectErrorPresenter);
+                                               this.exampleProjectErrorPresenter,
+                                               this.branchSelectorPopUpPresenter);
         when(importProject.getName()).thenReturn(EXAMPLE_PROJECT_NAME);
         when(importProject.getDescription()).thenReturn(EXAMPLE_PROJECT_DESCRIPTION);
 
@@ -86,7 +91,8 @@ public class ImportProjectWidgetTest {
         verify(this.view)
                 .setup(eq(EXAMPLE_PROJECT_NAME),
                        eq(EXAMPLE_PROJECT_DESCRIPTION),
-                       any());
+                       any(),
+                       eq(false));
     }
 
     @Test
@@ -104,7 +110,8 @@ public class ImportProjectWidgetTest {
         verify(this.view)
                 .setup(eq(EXAMPLE_PROJECT_NAME),
                        eq(EXAMPLE_PROJECT_DESCRIPTION),
-                       any());
+                       any(),
+                       eq(false));
     }
 
     @Test

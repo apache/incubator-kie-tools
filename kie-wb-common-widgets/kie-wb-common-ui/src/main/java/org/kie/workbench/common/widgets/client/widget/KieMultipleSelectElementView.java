@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,13 @@
 
 package org.kie.workbench.common.widgets.client.widget;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.inject.Inject;
 
+import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import elemental2.dom.HTMLDivElement;
-import elemental2.dom.HTMLOptionElement;
 import elemental2.dom.HTMLSelectElement;
 import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
@@ -28,8 +30,8 @@ import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 @Templated
-public class KieSelectElementView implements KieSelectElement.View,
-                                             IsElement {
+public class KieMultipleSelectElementView implements KieMultipleSelectElement.View,
+                                                     IsElement {
 
     @Inject
     @DataField("root")
@@ -39,10 +41,10 @@ public class KieSelectElementView implements KieSelectElement.View,
     @DataField("select")
     private HTMLSelectElement select;
 
-    private KieSelectElement presenter;
+    private KieMultipleSelectElement presenter;
 
     @Override
-    public void init(final KieSelectElement presenter) {
+    public void init(final KieMultipleSelectElement presenter) {
         this.presenter = presenter;
     }
 
@@ -61,19 +63,38 @@ public class KieSelectElementView implements KieSelectElement.View,
     }
 
     @Override
-    public void setValue(final String value) {
-        setValue(select, value);
+    public void setValue(final List<String> value) {
+        setValue(select, toJsArray(value));
     }
 
-    public native void setValue(final HTMLSelectElement select, final String value) /*-{
+    public native void setValue(final HTMLSelectElement select, final JsArrayString value) /*-{
         $wnd.jQuery(select).val(value);
         $wnd.jQuery(select).selectpicker('refresh');
     }-*/;
 
-    @Override
-    public String getValue() {
-        return select.value;
+    private JsArrayString toJsArray(final List<String> list) {
+        JsArrayString jsArrayString = JsArrayString.createArray().cast();
+        list.forEach(jsArrayString::push);
+        return jsArrayString;
     }
+
+    @Override
+    public List<String> getValue() {
+        final List<String> value = new ArrayList<>();
+        final JsArrayString jsValue = getValue(select);
+
+        if (jsValue != null) {
+            for (int i = 0; i < jsValue.length(); i++) {
+                value.add(jsValue.get(i));
+            }
+        }
+
+        return value;
+    }
+
+    public native JsArrayString getValue(final HTMLSelectElement select) /*-{
+        return $wnd.jQuery(select).val();
+    }-*/;
 
     private native void selectpicker(final HTMLSelectElement select)/*-{
         $wnd.jQuery(select).selectpicker();

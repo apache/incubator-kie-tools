@@ -98,12 +98,12 @@ public class KSessionSelectorViewImpl implements KSessionSelectorView {
                           });
     }
 
-    List<KieSelectElement.Option> buildOptions(final String[] values) {
+    List<KieSelectOption> buildOptions(final String[] values) {
         return Arrays.stream(values).map(this::newOption).collect(toList());
     }
 
-    KieSelectElement.Option newOption(final String e) {
-        return new KieSelectElement.Option(e, e);
+    KieSelectOption newOption(final String e) {
+        return new KieSelectOption(e, e);
     }
 
     @Override

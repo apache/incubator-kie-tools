@@ -25,7 +25,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.widgets.client.widget.KieSelectElement;
-import org.kie.workbench.common.widgets.client.widget.KieSelectElement.Option;
+import org.kie.workbench.common.widgets.client.widget.KieSelectOption;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -61,7 +61,7 @@ public class KieEnumSelectElementTest {
     public void testSetup() {
 
         final Element container = spy(new Element());
-        final List<Option> options = Arrays.asList(new Option("FOO", "foo"), new Option("Bar", "bar"));
+        final List<KieSelectOption> options = Arrays.asList(new KieSelectOption("FOO", "foo"), new KieSelectOption("Bar", "bar"));
 
         doReturn(options).when(kieEnumSelectElement).buildOptions(any());
 
@@ -78,9 +78,9 @@ public class KieEnumSelectElementTest {
 
     @Test
     public void testBuildOptions() {
-        doReturn(new Option("A", "a")).when(kieEnumSelectElement).newOption(any());
+        doReturn(new KieSelectOption("A", "a")).when(kieEnumSelectElement).newOption(any());
 
-        final List<Option> options = kieEnumSelectElement.buildOptions(TestEnum.values());
+        final List<KieSelectOption> options = kieEnumSelectElement.buildOptions(TestEnum.values());
 
         assertEquals(2, options.size());
         assertEquals("A", options.get(0).label);
@@ -93,7 +93,7 @@ public class KieEnumSelectElementTest {
     public void testNewOption() {
         doReturn("A").when(kieEnumSelectElement).getLabel(eq(TestEnum.FOO));
 
-        final Option option = kieEnumSelectElement.newOption(TestEnum.FOO);
+        final KieSelectOption option = kieEnumSelectElement.newOption(TestEnum.FOO);
 
         assertEquals("A", option.label);
         assertEquals("FOO", option.value);

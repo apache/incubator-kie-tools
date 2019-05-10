@@ -177,12 +177,14 @@ public class ProjectImportServiceImplTest {
         when(moduleRoot.toURI()).thenReturn("default:///module1");
         when(metadataService.getTags(any(Path.class))).thenReturn(Arrays.asList("tag1",
                                                                                 "tag2"));
+        when(pathUtil.convert(any(Path.class))).thenCallRealMethod();
 
         final GitRepository repository = makeGitRepository();
         when(repositoryFactory.newRepository(any(ConfigGroup.class))).thenReturn(repository);
         when(moduleService.getAllModules(any(Branch.class))).thenReturn(new HashSet<Module>() {{
             add(module);
         }});
+        doReturn(Collections.singletonList("master")).when(service).getBranches(any(org.uberfire.java.nio.file.Path.class), any(Path.class));
 
         String origin = "https://github.com/guvnorngtestuser1/guvnorng-playground.git";
         final Set<ImportProject> modules = service.getProjects(new ExampleRepository(origin));
@@ -194,7 +196,10 @@ public class ProjectImportServiceImplTest {
                                                       "Example 'module1' module",
                                                       origin,
                                                       Arrays.asList("tag1",
-                                                                    "tag2"))));
+                                                                    "tag2"),
+                                                      null,
+                                                      Collections.singletonList("master"),
+                                                      true)));
     }
 
     @Test
@@ -208,12 +213,14 @@ public class ProjectImportServiceImplTest {
         when(ioService.readAllString(any(org.uberfire.java.nio.file.Path.class))).thenReturn("This is custom description.\n\n This is a new line.");
         when(metadataService.getTags(any(Path.class))).thenReturn(Arrays.asList("tag1",
                                                                                 "tag2"));
+        when(pathUtil.convert(any(Path.class))).thenCallRealMethod();
 
         final GitRepository repository = makeGitRepository();
         when(repositoryFactory.newRepository(any(ConfigGroup.class))).thenReturn(repository);
         when(moduleService.getAllModules(any(Branch.class))).thenReturn(new HashSet<Module>() {{
             add(module);
         }});
+        doReturn(Collections.singletonList("master")).when(service).getBranches(any(org.uberfire.java.nio.file.Path.class), any(Path.class));
 
         String origin = "https://github.com/guvnorngtestuser1/guvnorng-playground.git";
         final Set<ImportProject> modules = service.getProjects(new ExampleRepository(origin));
@@ -225,7 +232,10 @@ public class ProjectImportServiceImplTest {
                                                       "This is custom description. This is a new line.",
                                                       origin,
                                                       Arrays.asList("tag1",
-                                                                    "tag2"))));
+                                                                    "tag2"),
+                                                      null,
+                                                      Collections.singletonList("master"),
+                                                      true)));
     }
 
     @Test
@@ -240,12 +250,14 @@ public class ProjectImportServiceImplTest {
         when(moduleRoot.toURI()).thenReturn("default:///module1");
         when(metadataService.getTags(any(Path.class))).thenReturn(Arrays.asList("tag1",
                                                                                 "tag2"));
+        when(pathUtil.convert(any(Path.class))).thenCallRealMethod();
 
         final GitRepository repository = makeGitRepository();
         when(repositoryFactory.newRepository(any(ConfigGroup.class))).thenReturn(repository);
         when(moduleService.getAllModules(any(Branch.class))).thenReturn(new HashSet<Module>() {{
             add(module);
         }});
+        doReturn(Collections.singletonList("master")).when(service).getBranches(any(org.uberfire.java.nio.file.Path.class), any(Path.class));
 
         String origin = "https://github.com/guvnorngtestuser1/guvnorng-playground.git";
         final Set<ImportProject> modules = service.getProjects(new ExampleRepository(origin));
@@ -257,7 +269,10 @@ public class ProjectImportServiceImplTest {
                                                       "pom description",
                                                       origin,
                                                       Arrays.asList("tag1",
-                                                                    "tag2"))));
+                                                                    "tag2"),
+                                                      null,
+                                                      Collections.singletonList("master"),
+                                                      true)));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -351,6 +366,7 @@ public class ProjectImportServiceImplTest {
         final String repositoryURL = "file:///some/path/to/fake-repo.git";
         final String username = "fakeUser";
         final String password = "fakePassword";
+        final List<String> branches = Arrays.asList("master");
 
         final ArgumentCaptor<RepositoryEnvironmentConfigurations> configCaptor = ArgumentCaptor.forClass(RepositoryEnvironmentConfigurations.class);
 
@@ -363,7 +379,8 @@ public class ProjectImportServiceImplTest {
         final WorkspaceProject observedProject = service.importProject(organizationalUnit,
                                                                        repositoryURL,
                                                                        username,
-                                                                       password);
+                                                                       password,
+                                                                       branches);
 
         verify(repoService).createRepository(same(organizationalUnit),
                                              eq(GitRepository.SCHEME.toString()),
@@ -376,6 +393,8 @@ public class ProjectImportServiceImplTest {
                      observedConfig.getPassword());
         assertEquals(repositoryURL,
                      observedConfig.getOrigin());
+        assertEquals(branches,
+                     observedConfig.getBranches());
 
         verify(projectService).resolveProject(same(repo));
 
@@ -386,14 +405,15 @@ public class ProjectImportServiceImplTest {
     @Test
     public void testProjectImportWithCredentialsTest() {
 
-        String origin = "file:///some/path/to/fake-repo.git";
-        String username = "fakeUser";
-        String password = "fakePassword";
+        final String origin = "file:///some/path/to/fake-repo.git";
+        final String username = "fakeUser";
+        final String password = "fakePassword";
+        final List<String> branches = Arrays.asList("master");
 
         final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
-        ImportProject importProject = mock(ImportProject.class);
-        Path rootPath = mock(Path.class);
-        org.uberfire.java.nio.file.Path convertedRootPath = mock(org.uberfire.java.nio.file.Path.class);
+        final ImportProject importProject = mock(ImportProject.class);
+        final Path rootPath = mock(Path.class);
+        final org.uberfire.java.nio.file.Path convertedRootPath = mock(org.uberfire.java.nio.file.Path.class);
         when(pathUtil.convert(any(Path.class))).thenReturn(convertedRootPath);
         when(importProject.getCredentials()).thenReturn(new Credentials(username,
                                                                         password));
@@ -401,28 +421,32 @@ public class ProjectImportServiceImplTest {
 
         when(importProject.getOrigin()).thenReturn(origin);
 
+        when(importProject.getSelectedBranches()).thenReturn(branches);
+
         service.importProject(organizationalUnit,
                               importProject);
 
         verify(service).importProject(organizationalUnit,
                                       origin,
                                       username,
-                                      password);
+                                      password,
+                                      branches);
     }
 
     @Test
     public void testProjectImportWithNullCredentialsTest() {
 
-        ArgumentCaptor<RepositoryEnvironmentConfigurations> captor = ArgumentCaptor.forClass(RepositoryEnvironmentConfigurations.class);
+        final ArgumentCaptor<RepositoryEnvironmentConfigurations> captor = ArgumentCaptor.forClass(RepositoryEnvironmentConfigurations.class);
 
-        String origin = "file:///some/path/to/fake-repo.git";
-        String username = "fakeUser";
-        String password = null;
+        final String origin = "file:///some/path/to/fake-repo.git";
+        final String username = "fakeUser";
+        final String password = null;
+        final List<String> branches = Arrays.asList("master");
 
         final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
-        ImportProject importProject = mock(ImportProject.class);
-        Path rootPath = mock(Path.class);
-        org.uberfire.java.nio.file.Path convertedRootPath = mock(org.uberfire.java.nio.file.Path.class);
+        final ImportProject importProject = mock(ImportProject.class);
+        final Path rootPath = mock(Path.class);
+        final org.uberfire.java.nio.file.Path convertedRootPath = mock(org.uberfire.java.nio.file.Path.class);
         when(pathUtil.convert(any(Path.class))).thenReturn(convertedRootPath);
         when(importProject.getCredentials()).thenReturn(new Credentials(username,
                                                                         password));
@@ -430,13 +454,16 @@ public class ProjectImportServiceImplTest {
 
         when(importProject.getOrigin()).thenReturn(origin);
 
+        when(importProject.getSelectedBranches()).thenReturn(branches);
+
         service.importProject(organizationalUnit,
                               importProject);
 
         verify(service).importProject(organizationalUnit,
                                       origin,
                                       username,
-                                      password);
+                                      password,
+                                      branches);
         verify(repoService).createRepository(any(),any(),any(),captor.capture());
 
         assertFalse(captor.getValue().containsConfiguration(EnvironmentParameters.USER_NAME));
@@ -452,6 +479,7 @@ public class ProjectImportServiceImplTest {
         final String repositoryURL = "file:///some/path/to/fake-repo.git";
         final String username = null;
         final String password = null;
+        final List<String> branches = Arrays.asList("master");
 
         final ArgumentCaptor<RepositoryEnvironmentConfigurations> configCaptor = ArgumentCaptor.forClass(RepositoryEnvironmentConfigurations.class);
 
@@ -464,7 +492,8 @@ public class ProjectImportServiceImplTest {
         final WorkspaceProject observedProject = service.importProject(organizationalUnit,
                                                                        repositoryURL,
                                                                        username,
-                                                                       password);
+                                                                       password,
+                                                                       branches);
 
 
 
@@ -479,6 +508,8 @@ public class ProjectImportServiceImplTest {
                      observedConfig.getPassword());
         assertEquals(repositoryURL,
                      observedConfig.getOrigin());
+        assertEquals(branches,
+                     observedConfig.getBranches());
 
         verify(projectService).resolveProject(same(repo));
 

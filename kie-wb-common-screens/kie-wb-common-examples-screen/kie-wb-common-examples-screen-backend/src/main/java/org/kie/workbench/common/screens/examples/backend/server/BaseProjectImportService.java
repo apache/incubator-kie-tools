@@ -120,7 +120,9 @@ public abstract class BaseProjectImportService implements ImportService {
                                  description,
                                  repository.getUrl(),
                                  tags,
-                                 repository.getCredentials());
+                                 repository.getCredentials(),
+                                 Collections.emptyList(),
+                                 false);
     }
 
     protected String readDescription(final Module module) {
@@ -161,7 +163,10 @@ public abstract class BaseProjectImportService implements ImportService {
                                              project.getOrigin(),
                                              project.getTags(),
                                              errors,
-                                             project.getCredentials());
+                                             project.getCredentials(),
+                                             project.getAllBranches(),
+                                             project.getSelectedBranches(),
+                                             project.canSelectBranches());
                 })
                 .collect(Collectors.toSet());
     }

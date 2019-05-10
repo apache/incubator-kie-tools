@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package org.kie.workbench.common.widgets.client.widget;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -30,27 +31,27 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static java.util.Collections.singletonList;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class KieSelectElementTest {
+public class KieMultipleSelectElementTest {
 
     @Mock
-    private KieSelectElement.View view;
+    private KieMultipleSelectElement.View view;
 
     @Mock
     private KieSelectOptionsListPresenter optionsListPresenter;
 
-    private KieSelectElement kieSelectElement;
+    private KieMultipleSelectElement kieSelectElement;
 
     @Before
     public void before() {
-        kieSelectElement = spy(new KieSelectElement(view, optionsListPresenter, new Elemental2DomUtil()));
+        kieSelectElement = spy(new KieMultipleSelectElement(view,
+                                                            optionsListPresenter,
+                                                            new Elemental2DomUtil()));
     }
 
     @Test
@@ -80,11 +81,11 @@ public class KieSelectElementTest {
         kieSelectElement.setup(
                 container,
                 options,
-                "Value",
+                Arrays.asList("value1", "value2"),
                 value -> {
                 });
 
-        verify(view).setValue(eq("Value"));
+        verify(view).setValue(eq(Arrays.asList("value1", "value2")));
         verify(view).initSelect();
         verify(optionsListPresenter).setup(eq(selectElement), eq(options), any());
         assertEquals("bar", container.innerHTML);
@@ -93,10 +94,10 @@ public class KieSelectElementTest {
     @Test
     public void testOnChange() {
         final AtomicInteger i = new AtomicInteger(0);
-        doReturn("Test").when(kieSelectElement).getValue();
+        doReturn(Arrays.asList("value1", "value2")).when(kieSelectElement).getValue();
 
         kieSelectElement.onChange = value -> {
-            assertEquals("Test", value);
+            assertEquals(Arrays.asList("value1", "value2"), value);
             i.incrementAndGet();
         };
 

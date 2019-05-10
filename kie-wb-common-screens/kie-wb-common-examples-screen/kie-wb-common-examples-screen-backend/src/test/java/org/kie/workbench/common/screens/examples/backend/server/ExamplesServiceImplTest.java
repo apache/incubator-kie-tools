@@ -255,7 +255,10 @@ public class ExamplesServiceImplTest {
                                                       "Example 'module1' module",
                                                       origin,
                                                       Arrays.asList("tag1",
-                                                                    "tag2"))));
+                                                                    "tag2"),
+                                                      null,
+                                                      Collections.emptyList(),
+                                                      false)));
     }
 
     @Test
@@ -286,7 +289,10 @@ public class ExamplesServiceImplTest {
                                                       "This is custom description. This is a new line.",
                                                       origin,
                                                       Arrays.asList("tag1",
-                                                                    "tag2"))));
+                                                                    "tag2"),
+                                                      null,
+                                                      Collections.emptyList(),
+                                                      false)));
     }
 
     @Test
@@ -318,7 +324,10 @@ public class ExamplesServiceImplTest {
                                                       "pom description",
                                                       origin,
                                                       Arrays.asList("tag1",
-                                                                    "tag2"))));
+                                                                    "tag2"),
+                                                      null,
+                                                      Collections.emptyList(),
+                                                      false)));
     }
 
     @Test(expected = IllegalArgumentException.class)

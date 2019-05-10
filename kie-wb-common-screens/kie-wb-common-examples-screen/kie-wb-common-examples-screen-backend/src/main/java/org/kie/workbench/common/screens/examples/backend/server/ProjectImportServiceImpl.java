@@ -17,6 +17,7 @@
 
 package org.kie.workbench.common.screens.examples.backend.server;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +34,7 @@ import javax.inject.Named;
 import org.guvnor.common.services.project.backend.server.utils.PathUtil;
 import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
 import org.guvnor.common.services.project.events.NewProjectEvent;
+import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
@@ -193,6 +195,7 @@ public class ProjectImportServiceImpl extends BaseProjectImportService implement
             String username = null;
             String password = null;
             Credentials credentials = importProject.getCredentials();
+            final List<String> branches = importProject.getSelectedBranches();
             if (credentials != null) {
                 username = credentials.getUsername();
                 password = credentials.getPassword();
@@ -200,13 +203,14 @@ public class ProjectImportServiceImpl extends BaseProjectImportService implement
             return importProject(organizationalUnit,
                                  origin,
                                  username,
-                                 password);
+                                 password,
+                                 branches);
         } else {
             final RepositoryEnvironmentConfigurations configurations = new RepositoryEnvironmentConfigurations();
             configurations.setInit(false);
             configurations.setOrigin(origin);
-            configurations.setBranches(getBranches(rootPath,
-                                                   importProject.getRoot()));
+            configurations.setBranches(getBranches(importProject,
+                                                   rootPath));
             Credentials credentials = importProject.getCredentials();
             if (credentials != null && credentials.getUsername() != null && credentials.getPassword() != null) {
                 configurations.setUserName(credentials.getUsername());
@@ -234,13 +238,15 @@ public class ProjectImportServiceImpl extends BaseProjectImportService implement
     public WorkspaceProject importProject(final OrganizationalUnit targetOU,
                                           final String repositoryURL,
                                           final String username,
-                                          final String password) {
+                                          final String password,
+                                          final List<String> branches) {
         final RepositoryEnvironmentConfigurations config = new RepositoryEnvironmentConfigurations();
         config.setOrigin(repositoryURL);
         if (username != null && password != null) {
             config.setUserName(username);
             config.setPassword(password);
         }
+        config.setBranches(branches);
 
         final String targetProjectName = inferProjectName(repositoryURL);
 
@@ -251,8 +257,35 @@ public class ProjectImportServiceImpl extends BaseProjectImportService implement
         return projectService.resolveProject(repo);
     }
 
-    private List<String> getBranches(final org.uberfire.java.nio.file.Path rootPath,
-                                     final Path projectPath) {
+    @Override
+    protected ImportProject makeExampleProject(final Module module,
+                                               ExampleRepository repository) {
+        final String description = readDescription(module);
+        final List<String> tags = getTags(module);
+
+        return new ImportProject(module.getRootPath(),
+                                 module.getModuleName(),
+                                 description,
+                                 repository.getUrl(),
+                                 tags,
+                                 repository.getCredentials(),
+                                 getBranches(getProjectRoot(module.getRootPath()),
+                                             module.getRootPath()),
+                                 true);
+    }
+
+    private List<String> getBranches(final ImportProject importProject,
+                                     final org.uberfire.java.nio.file.Path rootPath) {
+        if (importProject.getSelectedBranches() == null || importProject.getSelectedBranches().isEmpty()) {
+            return getBranches(rootPath,
+                               importProject.getRoot());
+        }
+
+        return importProject.getSelectedBranches();
+    }
+
+    List<String> getBranches(final org.uberfire.java.nio.file.Path rootPath,
+                             final Path projectPath) {
         final FileSystem fs = rootPath.getFileSystem();
         final String exampleRootPath = pathUtil.stripRepoNameAndSpace(pathUtil.stripProtocolAndBranch(projectPath.toURI()));
         return StreamSupport.stream(fs.getRootDirectories().spliterator(),
@@ -294,7 +327,11 @@ public class ProjectImportServiceImpl extends BaseProjectImportService implement
     }
 
     private org.uberfire.java.nio.file.Path getProjectRoot(final ImportProject importProject) {
-        return Stream.iterate(pathUtil.convert(importProject.getRoot()),
+        return getProjectRoot(importProject.getRoot());
+    }
+
+    private org.uberfire.java.nio.file.Path getProjectRoot(final Path rootPath) {
+        return Stream.iterate(pathUtil.convert(rootPath),
                               p -> p.getParent())
                 .filter(p -> p != null && p.getParent() == null)
                 .findFirst()

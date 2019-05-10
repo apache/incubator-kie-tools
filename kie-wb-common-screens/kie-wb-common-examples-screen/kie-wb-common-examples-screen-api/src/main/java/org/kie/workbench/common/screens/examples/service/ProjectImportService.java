@@ -39,5 +39,6 @@ public interface ProjectImportService extends ImportService,
     WorkspaceProject importProject(final OrganizationalUnit targetOU,
                                    final String repositoryURL,
                                    final String username,
-                                   final String password);
+                                   final String password,
+                                   final List<String> branches);
 }

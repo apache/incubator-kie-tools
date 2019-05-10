@@ -29,6 +29,7 @@ import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.screens.projecteditor.model.GitUrl;
 import org.kie.workbench.common.widgets.client.widget.KieSelectElement;
+import org.kie.workbench.common.widgets.client.widget.KieSelectOption;
 import org.uberfire.client.mvp.UberElemental;
 import org.uberfire.client.util.Clipboard;
 import org.uberfire.workbench.events.NotificationEvent;
@@ -83,7 +84,7 @@ public class GitUrlsPresenter {
                 : gitUrls.get(0).getProtocol();
 
         protocolSelect.setup(view.getProtocolSelectContainer(),
-                             gitUrls.stream().map(GitUrl::getProtocol).map(p -> new KieSelectElement.Option(p, p)).collect(toList()),
+                             gitUrls.stream().map(GitUrl::getProtocol).map(p -> new KieSelectOption(p, p)).collect(toList()),
                              selectedProtocol,
                              this::setSelectedProtocol);
 

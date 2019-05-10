@@ -21,9 +21,11 @@ import java.util.List;
 import javax.inject.Inject;
 
 import elemental2.dom.HTMLElement;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
 import org.kie.workbench.common.screens.examples.model.ImportProject;
 import org.kie.workbench.common.screens.examples.model.ExampleProjectError;
+import org.kie.workbench.common.screens.library.client.widgets.example.branchselector.BranchSelectorPopUpPresenter;
 import org.kie.workbench.common.screens.library.client.widgets.example.errors.ExampleProjectErrorPresenter;
 import org.kie.workbench.common.screens.library.client.widgets.example.errors.ExampleProjectOkPresenter;
 import org.uberfire.client.mvp.UberElemental;
@@ -33,15 +35,22 @@ public class ExampleProjectWidget {
     public interface View extends UberElemental<ExampleProjectWidget>,
                                   IsElement {
 
-        void setup(String name,
-                   String description,
-                   HTMLElement errors);
+        void setup(final String name,
+                   final String description,
+                   final HTMLElement errors);
+
+        void setup(final String name,
+                   final String description,
+                   final HTMLElement errors,
+                   final boolean showBranchSelector);
 
         void setActive();
 
         void unsetActive();
 
         void setDisabled();
+
+        void changeBranchSelectorTitle(final List<String> branches);
     }
 
     private ImportProject model;
@@ -50,14 +59,17 @@ public class ExampleProjectWidget {
     private final ExampleProjectWidget.View view;
     private final ExampleProjectOkPresenter exampleProjectOkPresenter;
     private final ExampleProjectErrorPresenter exampleProjectErrorPresenter;
+    private final BranchSelectorPopUpPresenter branchSelectorPopUpPresenter;
 
     @Inject
     public ExampleProjectWidget(final ExampleProjectWidget.View view,
                                 final ExampleProjectOkPresenter exampleProjectOkPresenter,
-                                final ExampleProjectErrorPresenter exampleProjectErrorPresenter) {
+                                final ExampleProjectErrorPresenter exampleProjectErrorPresenter,
+                                final BranchSelectorPopUpPresenter branchSelectorPopUpPresenter) {
         this.view = view;
         this.exampleProjectOkPresenter = exampleProjectOkPresenter;
         this.exampleProjectErrorPresenter = exampleProjectErrorPresenter;
+        this.branchSelectorPopUpPresenter = branchSelectorPopUpPresenter;
     }
 
     public void init(final ImportProject importProject) {
@@ -65,7 +77,8 @@ public class ExampleProjectWidget {
         this.model = importProject;
         view.setup(importProject.getName(),
                    importProject.getDescription(),
-                   this.buildErrors(importProject));
+                   this.buildErrors(importProject),
+                   importProject.canSelectBranches());
         this.disableViewIfHasErrors();
     }
 
@@ -97,6 +110,11 @@ public class ExampleProjectWidget {
                 this.getView().unsetActive();
             }
         }
+    }
+
+    public void selectBranches() {
+        branchSelectorPopUpPresenter.setup(model,
+                                           view::changeBranchSelectorTitle);
     }
 
     private HTMLElement buildErrors(ImportProject importProject) {

@@ -29,6 +29,7 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.server.controller.api.model.spec.ServerTemplate;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.widgets.client.widget.KieSelectElement;
+import org.kie.workbench.common.widgets.client.widget.KieSelectOption;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
 
@@ -182,7 +183,7 @@ public class DeploymentPopupViewImpl implements DeploymentPopupView, IsElement {
     public void initServerTemplates(final Collection<ServerTemplate> allServerTemplates, final ServerTemplate serverTemplate) {
         serverTemplateGroup.hidden = false;
         serverTemplateDropdown.setup(serverTemplateDropdownContainer,
-                allServerTemplates.stream().map(template -> new KieSelectElement.Option(template.getId(), template.getId())).collect(Collectors.toList()),
+                allServerTemplates.stream().map(template -> new KieSelectOption(template.getId(), template.getId())).collect(Collectors.toList()),
                 serverTemplate.getId(),
                 s -> {
                 });

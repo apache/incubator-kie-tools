@@ -38,6 +38,7 @@ import org.kie.workbench.common.screens.library.client.screens.importrepository.
 import org.kie.workbench.common.screens.library.client.screens.importrepository.ImportPresenter;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.screens.library.client.widgets.example.ExampleProjectWidget;
+import org.kie.workbench.common.screens.library.client.widgets.example.branchselector.BranchSelectorPopUpPresenter;
 import org.kie.workbench.common.screens.library.client.widgets.example.errors.ExampleProjectErrorPresenter;
 import org.kie.workbench.common.screens.library.client.widgets.example.errors.ExampleProjectOkPresenter;
 import org.mockito.Answers;
@@ -85,6 +86,9 @@ public class ExampleImportPresenterTest {
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private ExampleProjectErrorPresenter exampleProjectErrorPresenter;
 
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+    private BranchSelectorPopUpPresenter branchSelectorPopUpPresenter;
+
     private ExampleProjectWidget tileWidget;
 
     private ImportPresenter importPresenter;
@@ -95,7 +99,8 @@ public class ExampleImportPresenterTest {
         examplesServiceCaller = new CallerMock<>(examplesService);
         tileWidget = spy(new ExampleProjectWidget(mock(ExampleProjectWidget.View.class),
                                                   exampleProjectOkPresenter,
-                                                  exampleProjectErrorPresenter));
+                                                  exampleProjectErrorPresenter,
+                                                  branchSelectorPopUpPresenter));
 
         doReturn(tileWidget).when(tileWidgets).get();
 

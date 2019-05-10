@@ -40,6 +40,7 @@ import org.kie.workbench.common.screens.library.client.settings.util.sections.Se
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
 import org.kie.workbench.common.widgets.client.widget.KieSelectElement;
+import org.kie.workbench.common.widgets.client.widget.KieSelectOption;
 import org.kie.workbench.common.widgets.client.widget.ListPresenter;
 import org.uberfire.client.promise.Promises;
 
@@ -89,7 +90,7 @@ public class BranchManagementPresenter extends Section<ProjectScreenModel> {
         view.init(this);
         final Collection<Branch> branches = libraryPlaces.getActiveWorkspace().getRepository().getBranches();
         branchesSelect.setup(view.getBranchesSelectContainer(),
-                             branches.stream().map(Branch::getName).sorted(String::compareToIgnoreCase).map(p -> new KieSelectElement.Option(p, p)).collect(toList()),
+                             branches.stream().map(Branch::getName).sorted(String::compareToIgnoreCase).map(p -> new KieSelectOption(p, p)).collect(toList()),
                              selectedBranch,
                              this::setBranch);
 

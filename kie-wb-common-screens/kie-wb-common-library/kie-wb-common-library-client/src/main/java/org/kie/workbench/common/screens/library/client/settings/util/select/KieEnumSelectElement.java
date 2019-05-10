@@ -26,6 +26,7 @@ import javax.inject.Inject;
 import elemental2.dom.Element;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.widgets.client.widget.KieSelectElement;
+import org.kie.workbench.common.widgets.client.widget.KieSelectOption;
 
 import static java.util.stream.Collectors.toList;
 
@@ -60,12 +61,12 @@ public class KieEnumSelectElement<T extends Enum<T>> {
                 name -> onChange.accept(toEnum(name)));
     }
 
-    List<KieSelectElement.Option> buildOptions(final T[] values) {
+    List<KieSelectOption> buildOptions(final T[] values) {
         return Arrays.stream(values).map(this::newOption).collect(toList());
     }
 
-    KieSelectElement.Option newOption(final T e) {
-        return new KieSelectElement.Option(getLabel(e), e.name());
+    KieSelectOption newOption(final T e) {
+        return new KieSelectOption(getLabel(e), e.name());
     }
 
     String getLabel(final T e) {

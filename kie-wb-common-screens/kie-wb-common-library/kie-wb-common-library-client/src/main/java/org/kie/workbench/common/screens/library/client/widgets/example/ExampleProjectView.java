@@ -17,6 +17,7 @@
 
 package org.kie.workbench.common.screens.library.client.widgets.example;
 
+import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -27,6 +28,7 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
 
 @Templated
 public class ExampleProjectView implements ExampleProjectWidget.View {
@@ -55,19 +57,37 @@ public class ExampleProjectView implements ExampleProjectWidget.View {
     @DataField("errors")
     private HTMLDivElement errors;
 
+    @Inject
+    @Named("span")
+    @DataField("branch-selector")
+    private HTMLElement branchSelector;
+
     @Override
     public void init(ExampleProjectWidget presenter) {
         this.presenter = presenter;
+        branchSelector.title = ts.format(LibraryConstants.BranchSelectorClickToSelectBranches);
     }
 
     @Override
     public void setup(final String name,
                       final String description,
                       final HTMLElement errors) {
+        setup(name,
+              description,
+              errors,
+              false);
+    }
+
+    @Override
+    public void setup(final String name,
+                      final String description,
+                      final HTMLElement errors,
+                      final boolean showBranchSelector) {
         this.name.textContent = name;
         this.description.textContent = description;
         this.description.title = description;
         this.errors.appendChild(errors);
+        this.branchSelector.hidden = !showBranchSelector;
     }
 
     @Override
@@ -85,8 +105,19 @@ public class ExampleProjectView implements ExampleProjectWidget.View {
         this.card.classList.add("disabled");
     }
 
+    @Override
+    public void changeBranchSelectorTitle(final List<String> branches) {
+        branchSelector.title = ts.format(LibraryConstants.BranchSelectorSelectedBranches, String.join(", ", branches));
+    }
+
     @EventHandler("card")
     public void onCardClick(ClickEvent event) {
         this.presenter.select();
+    }
+
+    @EventHandler("branch-selector")
+    public void onBranchSelectorClick(ClickEvent event) {
+        event.stopPropagation();
+        this.presenter.selectBranches();
     }
 }
