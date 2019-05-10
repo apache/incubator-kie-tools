@@ -576,6 +576,19 @@ public class DataTypeListTest {
     }
 
     @Test
+    public void testInsertNestedField() {
+
+        final String dataTypeHash = "tCity.name";
+        final DataTypeListItem listItem = mock(DataTypeListItem.class);
+
+        doReturn(Optional.of(listItem)).when(dataTypeList).findItemByDataTypeHash(dataTypeHash);
+
+        dataTypeList.insertNestedField(dataTypeHash);
+
+        verify(listItem).insertNestedField();
+    }
+
+    @Test
     public void testFireListItemUpdateCallbacks() {
 
         final String dataTypeHash = "tCity.name";

@@ -245,8 +245,17 @@ public class DataTypeListItem {
             final String referenceDataTypeHash = dataTypeList.calculateParentHash(dataType);
             dataTypeList.refreshItemsByUpdatedDataTypes(persist(dataType));
             closeEditMode();
-            dataTypeList.fireOnDataTypeListItemUpdateCallback(getNewDataTypeHash(dataType, referenceDataTypeHash));
+
+            final String newDataTypeHash = getNewDataTypeHash(dataType, referenceDataTypeHash);
+            dataTypeList.fireOnDataTypeListItemUpdateCallback(newDataTypeHash);
+            insertNewFieldIfDataTypeIsStructure(newDataTypeHash);
         };
+    }
+
+    void insertNewFieldIfDataTypeIsStructure(final String hash) {
+        if (isStructureType() && getDataType().getSubDataTypes().isEmpty()) {
+            dataTypeList.insertNestedField(hash);
+        }
     }
 
     List<DataType> persist(final DataType dataType) {

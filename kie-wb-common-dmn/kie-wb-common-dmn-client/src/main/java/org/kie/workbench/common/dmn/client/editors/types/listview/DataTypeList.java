@@ -262,6 +262,10 @@ public class DataTypeList {
         this.onDataTypeListItemUpdate = onDataTypeListItemUpdate;
     }
 
+    void insertNestedField(final String dataTypeHash) {
+        findItemByDataTypeHash(dataTypeHash).ifPresent(DataTypeListItem::insertNestedField);
+    }
+
     void fireOnDataTypeListItemUpdateCallback(final String dataTypeHash) {
         findItemByDataTypeHash(dataTypeHash).ifPresent(this::fireOnDataTypeListItemUpdateCallback);
     }

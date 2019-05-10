@@ -54,6 +54,7 @@ import static org.kie.workbench.common.dmn.client.editors.types.persistence.Crea
 import static org.kie.workbench.common.dmn.client.editors.types.persistence.CreationType.NESTED;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.inOrder;
@@ -423,6 +424,53 @@ public class DataTypeListItemTest {
         verify(dataTypeList).refreshItemsByUpdatedDataTypes(updatedDataTypes);
         verify(listItem).closeEditMode();
         verify(dataTypeList).fireOnDataTypeListItemUpdateCallback(newDataTypeHash);
+        verify(listItem).insertNewFieldIfDataTypeIsStructure(newDataTypeHash);
+    }
+
+    @Test
+    public void testInsertNewFieldIfDataTypeIsStructureWhenDataTypeIsStructure() {
+
+        final DataType dataType = mock(DataType.class);
+        final String hash = "hash";
+
+        when(dataTypeSelectComponent.getValue()).thenReturn(structure);
+        when(dataType.getSubDataTypes()).thenReturn(emptyList());
+        doReturn(dataType).when(listItem).getDataType();
+        doNothing().when(listItem).insertNestedField();
+
+        listItem.insertNewFieldIfDataTypeIsStructure(hash);
+
+        verify(dataTypeList).insertNestedField(hash);
+    }
+
+    @Test
+    public void testInsertNewFieldIfDataTypeIsStructureWhenDataTypeIsStructureButHasFields() {
+
+        final DataType dataType = mock(DataType.class);
+        final String hash = "hash";
+
+        when(dataTypeSelectComponent.getValue()).thenReturn(structure);
+        when(dataType.getSubDataTypes()).thenReturn(asList(mock(DataType.class), mock(DataType.class)));
+        doReturn(dataType).when(listItem).getDataType();
+
+        listItem.insertNewFieldIfDataTypeIsStructure(hash);
+
+        verify(dataTypeList, never()).insertNestedField(anyString());
+    }
+
+    @Test
+    public void testInsertNewFieldIfDataTypeIsStructureWhenDataTypeIsNotStructure() {
+
+        final DataType dataType = mock(DataType.class);
+        final String hash = "hash";
+
+        when(dataTypeSelectComponent.getValue()).thenReturn("String");
+        when(dataType.getSubDataTypes()).thenReturn(emptyList());
+        doReturn(dataType).when(listItem).getDataType();
+
+        listItem.insertNewFieldIfDataTypeIsStructure(hash);
+
+        verify(dataTypeList, never()).insertNestedField(anyString());
     }
 
     @Test
