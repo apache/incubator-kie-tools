@@ -52,6 +52,7 @@ public class JGitMirrorTest extends AbstractTestInfra {
         new Clone(directory,
                   ORIGIN,
                   true,
+                  null,
                   CredentialsProvider.getDefault(),
                   null,
                   null).execute();
@@ -86,6 +87,7 @@ public class JGitMirrorTest extends AbstractTestInfra {
         new Clone(directory,
                   ORIGIN,
                   false,
+                  null,
                   CredentialsProvider.getDefault(),
                   null,
                   null).execute();
@@ -129,6 +131,7 @@ public class JGitMirrorTest extends AbstractTestInfra {
                   false,
                   null,
                   null,
+                  null,
                   null).execute();
 
         final Git cloned = Git.open(directory);
@@ -158,6 +161,7 @@ public class JGitMirrorTest extends AbstractTestInfra {
             new Clone(directory,
                       ORIGIN + "sssss",
                       false,
+                      null,
                       CredentialsProvider.getDefault(),
                       null,
                       null).execute();

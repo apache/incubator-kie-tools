@@ -16,19 +16,34 @@
 
 package org.uberfire.java.nio.fs.jgit;
 
+import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toSet;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.hooks.PostCommitHook;
 import org.eclipse.jgit.hooks.PreCommitHook;
+import org.eclipse.jgit.lib.ObjectId;
+import org.eclipse.jgit.lib.PersonIdent;
+import org.eclipse.jgit.lib.Ref;
+import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.revwalk.RevSort;
+import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.transport.CredentialsProvider;
+import org.eclipse.jgit.treewalk.CanonicalTreeParser;
+import org.eclipse.jgit.treewalk.TreeWalk;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -97,6 +112,7 @@ public class JGitForkTest extends AbstractTestInfra {
         new Fork(parentFolder,
                  SOURCE_GIT,
                  TARGET_GIT,
+                 null,
                  CredentialsProvider.getDefault(),
                  null,
                  null).execute();
@@ -157,6 +173,7 @@ public class JGitForkTest extends AbstractTestInfra {
         new Fork(parentFolder,
                  SOURCE_GIT,
                  TARGET_GIT,
+                 null,
                  CredentialsProvider.getDefault(),
                  null,
                  null).execute();
@@ -170,6 +187,7 @@ public class JGitForkTest extends AbstractTestInfra {
             new Fork(parentFolder,
                      SOURCE_GIT,
                      TARGET_GIT,
+                     null,
                      CredentialsProvider.getDefault(),
                      null,
                      null).execute();
@@ -290,6 +308,7 @@ public class JGitForkTest extends AbstractTestInfra {
         final Git cloned  = new Fork(parentFolder,
                  SOURCE_GIT,
                  TARGET_GIT,
+                 null,
                  CredentialsProvider.getDefault(),
                  null,
                  hooksDir).execute();
@@ -317,5 +336,51 @@ public class JGitForkTest extends AbstractTestInfra {
         }
         assertThat(foundPreCommitHook).isTrue();
         assertThat(foundPostCommitHook).isTrue();
+    }
+
+    @Test
+    public void testForkMultipleBranches() throws Exception {
+        final File parentFolder = createTempDirectory();
+
+        final File gitSource = new File(parentFolder,
+                                        SOURCE_GIT + ".git");
+
+        final Git origin = new CreateRepository(gitSource, null).execute().get();
+
+        commit(origin,
+               "master",
+               "first",
+               content("dir1/file.txt", "foo"),
+               content("dir2/file2.txt", "bar"),
+               content("file3.txt", "moogah"));
+
+        branch(origin, "master", "dev");
+        commit(origin,
+               "dev",
+               "second",
+               content("dir1/file.txt", "foo1"),
+               content("file3.txt", "bar1"));
+
+        branch(origin, "master", "ignored");
+        commit(origin,
+               "ignored",
+               "third",
+               content("dir1/file.txt", "foo2"));
+
+
+        final Git cloned  = new Fork(parentFolder,
+                                     SOURCE_GIT,
+                                     TARGET_GIT,
+                                     asList("master", "dev"),
+                                     CredentialsProvider.getDefault(),
+                                     null,
+                                     null).execute();
+
+        assertThat(cloned).isNotNull();
+        final Set<String> clonedRefs = listRefs(cloned).stream()
+                .map(ref -> ref.getName())
+                .collect(toSet());
+        assertThat(clonedRefs).hasSize(2);
+        assertThat(clonedRefs).containsExactly("refs/heads/master", "refs/heads/dev");
     }
 }

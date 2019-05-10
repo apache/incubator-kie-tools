@@ -129,6 +129,7 @@ public class JGitUtilTest extends AbstractTestInfra {
         final Git git = new Clone(gitClonedFolder,
                                   origin.getRepository().getDirectory().toString(),
                                   false,
+                                  null,
                                   CredentialsProvider.getDefault(),
                                   null,
                                   null).execute().get();
@@ -180,6 +181,7 @@ public class JGitUtilTest extends AbstractTestInfra {
         final Git git = new Clone(gitClonedFolder,
                                   origin.getRepository().getDirectory().toString(),
                                   false,
+                                  null,
                                   CredentialsProvider.getDefault(),
                                   null,
                                   null).execute().get();
@@ -232,6 +234,7 @@ public class JGitUtilTest extends AbstractTestInfra {
         final Git git = new Clone(gitClonedFolder,
                                   origin.getRepository().getDirectory().toString(),
                                   false,
+                                  null,
                                   CredentialsProvider.getDefault(),
                                   null,
                                   null).execute().get();

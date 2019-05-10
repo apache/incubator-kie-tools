@@ -40,6 +40,7 @@ import org.apache.commons.io.IOUtils;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.JGitInternalException;
 import org.eclipse.jgit.lib.PersonIdent;
+import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.util.FS_POSIX;
 import org.eclipse.jgit.util.FileUtils;
@@ -57,6 +58,7 @@ import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.fs.jgit.util.Git;
 import org.uberfire.java.nio.fs.jgit.util.commands.Commit;
+import org.uberfire.java.nio.fs.jgit.util.commands.ListRefs;
 import org.uberfire.java.nio.fs.jgit.util.model.CommitInfo;
 import org.uberfire.java.nio.fs.jgit.util.model.DefaultCommitContent;
 
@@ -332,5 +334,18 @@ public abstract class AbstractTestInfra {
         } else {
             assertThat(hookExecuted.get()).isFalse();
         }
+    }
+
+    protected Ref branch(Git origin, String source, String target) throws Exception {
+        final Repository repo = origin.getRepository();
+        return org.eclipse.jgit.api.Git.wrap(repo)
+                .branchCreate()
+                .setName(target)
+                .setStartPoint(source)
+                .call();
+    }
+
+    protected List<Ref> listRefs(final Git cloned) {
+        return new ListRefs(cloned.getRepository()).execute();
     }
 }

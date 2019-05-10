@@ -20,6 +20,7 @@ import static org.kie.soup.commons.validation.PortablePreconditions.checkNotEmpt
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 import java.io.File;
+import java.util.List;
 
 import org.eclipse.jgit.internal.ketch.KetchLeaderCache;
 import org.eclipse.jgit.transport.CredentialsProvider;
@@ -38,6 +39,7 @@ public class Fork {
     private File parentFolder;
     private final String source;
     private final String target;
+    private final List<String> branches;
     private CredentialsProvider credentialsProvider;
     private final File hookDir;
     private final boolean sslVerify;
@@ -45,6 +47,7 @@ public class Fork {
     public Fork(final File parentFolder,
                 final String source,
                 final String target,
+                final List<String> branches,
                 final CredentialsProvider credentialsProvider,
                 final KetchLeaderCache leaders,
                 final File hookDir) {
@@ -52,6 +55,7 @@ public class Fork {
         this(parentFolder,
              source,
              target,
+             branches,
              credentialsProvider,
              leaders,
              hookDir,
@@ -61,6 +65,7 @@ public class Fork {
     public Fork(final File parentFolder,
                 final String source,
                 final String target,
+                final List<String> branches,
                 final CredentialsProvider credentialsProvider,
                 final KetchLeaderCache leaders,
                 final File hookDir,
@@ -71,6 +76,7 @@ public class Fork {
                                     source);
         this.target = checkNotEmpty("target",
                                     target);
+        this.branches = branches;
         this.credentialsProvider = checkNotNull("credentialsProvider",
                                                 credentialsProvider);
         this.leaders = leaders;
@@ -103,6 +109,7 @@ public class Fork {
         return Git.clone(destination,
                          origin.toPath().toUri().toString(),
                          false,
+                         branches,
                          credentialsProvider,
                          leaders,
                          hookDir,

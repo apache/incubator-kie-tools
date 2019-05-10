@@ -18,6 +18,7 @@ package org.uberfire.java.nio.fs.jgit.util.commands;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import org.eclipse.jgit.internal.ketch.KetchLeaderCache;
@@ -42,6 +43,7 @@ public class Clone {
     public static final String REFS_MIRRORED = "+refs/heads/*:refs/remotes/origin/*";
     private final File repoDir;
     private final String origin;
+    private final List<String> branches;
     private final CredentialsProvider credentialsProvider;
     private final boolean isMirror;
     private final KetchLeaderCache leaders;
@@ -52,12 +54,14 @@ public class Clone {
     public Clone(final File directory,
                  final String origin,
                  final boolean isMirror,
+                 final List<String> branches,
                  final CredentialsProvider credentialsProvider,
                  final KetchLeaderCache leaders,
                  final File hookDir) {
         this(directory,
              origin,
              isMirror,
+             branches,
              credentialsProvider,
              leaders,
              hookDir,
@@ -67,6 +71,7 @@ public class Clone {
     public Clone(final File directory,
                  final String origin,
                  final boolean isMirror,
+                 final List<String> branches,
                  final CredentialsProvider credentialsProvider,
                  final KetchLeaderCache leaders,
                  final File hookDir,
@@ -76,6 +81,7 @@ public class Clone {
         this.origin = checkNotEmpty("origin",
                                     origin);
         this.isMirror = isMirror;
+        this.branches = branches;
         this.credentialsProvider = credentialsProvider;
         this.leaders = leaders;
         this.hookDir = hookDir;
@@ -118,6 +124,8 @@ public class Clone {
                 }
 
                 git.setHeadAsInitialized();
+
+                BranchUtil.deleteUnfilteredBranches(git.getRepository(), branches);
 
                 return Optional.of(git);
             } catch (Exception e) {

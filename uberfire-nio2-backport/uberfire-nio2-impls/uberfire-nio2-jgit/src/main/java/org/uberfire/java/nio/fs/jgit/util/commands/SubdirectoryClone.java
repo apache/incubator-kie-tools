@@ -151,7 +151,7 @@ public class SubdirectoryClone {
     }
 
     public Git execute() {
-        final Git git = new Clone(repoDir, origin, false, credentialsProvider, leaders, hookDir, sslVerify).execute().get();
+        final Git git = new Clone(repoDir, origin, false, branches, credentialsProvider, leaders, hookDir, sslVerify).execute().get();
         final Repository repository = git.getRepository();
 
         try (final ObjectReader reader = repository.newObjectReader();
@@ -162,7 +162,6 @@ public class SubdirectoryClone {
             transformBranches(repository, reader, inserter, revWalk, commitMap);
             overrideBranchNames(repository, revWalk, commitMap);
 
-            deleteUnfilteredBranches(repository);
             removeOriginRemote(repository);
 
             return git;
@@ -174,21 +173,6 @@ public class SubdirectoryClone {
             cleanupDir(git.getRepository().getDirectory());
             throw new Clone.CloneException(message, e);
         }
-    }
-
-    private void deleteUnfilteredBranches(Repository repository) throws GitAPIException {
-        final org.eclipse.jgit.api.Git git = org.eclipse.jgit.api.Git.wrap(repository);
-        final String[] toDelete = git.branchList()
-                                     .call()
-                                     .stream()
-                                     .map(ref -> ref.getName())
-                                     .map(fullname -> fullname.substring(fullname.lastIndexOf('/') + 1))
-                                     .filter(name -> !branches.contains(name))
-                                     .toArray(String[]::new);
-        git.branchDelete()
-           .setBranchNames(toDelete)
-           .setForce(true)
-           .call();
     }
 
     private void removeOriginRemote(Repository repository) throws GitAPIException {

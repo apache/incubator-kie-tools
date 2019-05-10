@@ -318,15 +318,6 @@ public class JGitSubdirectoryCloneTest extends AbstractTestInfra {
         assertThat(clonedTreeId).isEqualTo(originDirId);
     }
 
-    private Ref branch(Git origin, String source, String target) throws Exception {
-        final Repository repo = origin.getRepository();
-        return org.eclipse.jgit.api.Git.wrap(repo)
-                                       .branchCreate()
-                                       .setName(target)
-                                       .setStartPoint(source)
-                                       .call();
-    }
-
     private ObjectId findIdForPath(final Git origin, final RevCommit originMasterTip, final String searchPath) throws Exception {
         try (TreeWalk treeWalk = new TreeWalk(origin.getRepository())) {
             final int treeId = treeWalk.addTree(originMasterTip.getTree());
@@ -355,10 +346,6 @@ public class JGitSubdirectoryCloneTest extends AbstractTestInfra {
             }
         }
         return commits;
-    }
-
-    private List<Ref> listRefs(final Git cloned) {
-        return new ListRefs(cloned.getRepository()).execute();
     }
 
     private Git gitRepo(File gitSource) {

@@ -16,6 +16,7 @@
 
 package org.uberfire.java.nio.fs.jgit;
 
+import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.errors.RepositoryNotFoundException;
 import org.eclipse.jgit.internal.ketch.KetchLeaderCache;
@@ -69,6 +70,7 @@ import org.uberfire.java.nio.fs.jgit.daemon.ssh.GitSSHService;
 import org.uberfire.java.nio.fs.jgit.manager.JGitFileSystemsManager;
 import org.uberfire.java.nio.fs.jgit.util.Git;
 import org.uberfire.java.nio.fs.jgit.util.ProxyAuthenticator;
+import org.uberfire.java.nio.fs.jgit.util.commands.BranchUtil;
 import org.uberfire.java.nio.fs.jgit.util.commands.Clone;
 import org.uberfire.java.nio.fs.jgit.util.commands.PathUtil;
 import org.uberfire.java.nio.fs.jgit.util.model.*;
@@ -596,6 +598,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider, Dispos
                     git = Git.fork(this.getGitRepoContainerDir(),
                                    origin,
                                    fsName,
+                                   branches,
                                    credential,
                                    config.isEnableKetch() ? leaders : null,
                                    config.getHookDir(),
@@ -616,6 +619,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider, Dispos
                     git = Git.clone(repoDest,
                                     origin,
                                     isMirror,
+                                    branches,
                                     credential,
                                     config.isEnableKetch() ? leaders : null,
                                     config.getHookDir(),
