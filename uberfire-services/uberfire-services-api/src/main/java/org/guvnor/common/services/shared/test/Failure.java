@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -11,16 +11,18 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 package org.guvnor.common.services.shared.test;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.uberfire.backend.vfs.Path;
 
 @Portable
 public class Failure {
 
     private String message;
+    private Path path;
     private String displayName;
 
     public Failure() {
@@ -29,8 +31,17 @@ public class Failure {
 
     public Failure(String displayName,
                    String message) {
+        this(displayName,
+             message,
+             null);
+    }
+
+    public Failure(String displayName,
+                   String message,
+                   Path path) {
         this.displayName = displayName;
         this.message = message;
+        this.path = path;
     }
 
     public String getMessage() {
@@ -41,11 +52,16 @@ public class Failure {
         return displayName;
     }
 
+    public Path getPath() {
+        return path;
+    }
+
     @Override
     public String toString() {
         return "Failure{" +
                 "message='" + message + '\'' +
                 ", displayName='" + displayName + '\'' +
+                ", path='" + path + '\'' +
                 '}';
     }
 }
