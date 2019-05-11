@@ -89,7 +89,7 @@
 
     <dependency>
       <groupId>org.dashbuilder</groupId>
-      <artifactId>dashbuilder-renderer-google</artifactId>
+      <artifactId>dashbuilder-renderer-c3</artifactId>
     </dependency>
 
     <dependency>

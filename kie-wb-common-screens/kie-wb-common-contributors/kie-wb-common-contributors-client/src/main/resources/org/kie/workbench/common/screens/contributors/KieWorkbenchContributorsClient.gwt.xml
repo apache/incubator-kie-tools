@@ -27,7 +27,7 @@
   <inherits name="org.uberfire.UberfireClientAll"/>
   <inherits name="org.dashbuilder.DashbuilderClientAll"/>
   <inherits name="org.dashbuilder.DisplayerEditor"/>
-  <inherits name="org.dashbuilder.renderer.GChartsRenderer"/>
+  <inherits name="org.dashbuilder.renderer.C3Renderer"/>
 
   <inherits name="org.kie.workbench.common.screens.contributors.KieWorkbenchContributorsAPI"/>
 
