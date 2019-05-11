@@ -1642,19 +1642,6 @@
 
       <dependency>
         <groupId>org.dashbuilder</groupId>
-        <artifactId>dashbuilder-renderer-google</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.dashbuilder</groupId>
-        <artifactId>dashbuilder-renderer-google</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-
-      <dependency>
-        <groupId>org.dashbuilder</groupId>
         <artifactId>dashbuilder-renderer-lienzo</artifactId>
         <version>${project.version}</version>
       </dependency>

@@ -19,10 +19,12 @@ import org.dashbuilder.common.client.widgets.FilterLabelSet;
 import org.dashbuilder.displayer.client.AbstractGwtDisplayerView;
 import org.dashbuilder.renderer.c3.client.resources.i18n.C3DisplayerConstants;
 import org.gwtbootstrap3.client.ui.Label;
+import org.gwtbootstrap3.client.ui.html.Text;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Panel;
@@ -35,7 +37,10 @@ public abstract class C3AbstractDisplayerView<P extends C3AbstractDisplayer>
     protected Panel container = GWT.create(FlowPanel.class);
     protected Panel displayerPanel = GWT.create(FlowPanel.class);
     private Panel filterPanel = GWT.create(FlowPanel.class);
+    private Panel dataPanel = GWT.create(FlowPanel.class);
     private HTML titleHtml = GWT.create(HTML.class);
+    
+    FlexTable dataTable = GWT.create(FlexTable.class);
     
     protected int width;
     protected int height;
@@ -44,9 +49,12 @@ public abstract class C3AbstractDisplayerView<P extends C3AbstractDisplayer>
     public void init(P presenter) {
         super.setPresenter(presenter);
         super.setVisualization(container);
+        dataPanel.setVisible(false);
+        dataPanel.add(dataTable);
         container.add(titleHtml);
         container.add(filterPanel);
         container.add(displayerPanel);
+        container.add(dataPanel);
         filterPanel.getElement().setAttribute("cellpadding", "2");
     }
     
@@ -75,12 +83,22 @@ public abstract class C3AbstractDisplayerView<P extends C3AbstractDisplayer>
         noDataPanel.add(lblNoData);
         displayerPanel.clear();
         displayerPanel.add(noDataPanel);
+        dataTable.clear();
     }
     
     @Override
     public void setSize(int width, int height) {
         this.width = width;
         this.height = height;
+    }
+    
+    public void setTableData(String[][] data) {
+        dataTable.clear();
+        for (int i = 0; i < data.length; i++) {
+            for (int j = 0; j < data[i].length; j++) {
+                dataTable.setWidget(j, i, new Text(data[i][j]));
+            }
+        }
     }
 
 }

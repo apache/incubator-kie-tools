@@ -15,6 +15,7 @@
  */
 package org.dashbuilder.renderer.c3.client;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.dashbuilder.common.client.widgets.FilterLabelSet;
@@ -71,6 +72,8 @@ public abstract class C3Displayer<V extends C3Displayer.View> extends C3Abstract
         void setBackgroundColor(String color);
         
         void setResizable(int maxWidth, int maxHeight);
+        
+        void setTableData(String[][] data);
 
     }
     
@@ -117,6 +120,8 @@ public abstract class C3Displayer<V extends C3Displayer.View> extends C3Abstract
         C3ChartConf conf = buildConfiguration();
         getView().updateChart(conf);
         applyPropertiesToView();
+        String[][] tableData = getDataTable();
+        getView().setTableData(tableData);
     }
 
     protected C3ChartConf buildConfiguration() {
@@ -281,6 +286,19 @@ public abstract class C3Displayer<V extends C3Displayer.View> extends C3Abstract
         List<?> values = dataSet.getColumns().get(0).getValues();
         return values.get(info.getIndex()).toString();
     }
+    
+    protected String[][] getDataTable() {
+        List<DataColumn> columns = dataSet.getColumns();
+        String data[][] = new String[columns.size()][];
+        for (int i = 0; i < columns.size(); i++) {
+            List<?> values = columns.get(i).getValues();
+            data[i] = new String[values.size()];
+            for (int j = 0; j < values.size(); j++) {
+                data[i][j] = columnValueToString(values.get(j));
+            }
+        }
+        return data;
+    }    
     
     private void addToSelection(C3DataInfo data) {
         int row = getSelectedRowIndex(data);

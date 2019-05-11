@@ -122,5 +122,17 @@ public class C3DisplayerTest extends C3BaseTest {
         C3LineChartDisplayer.View view = displayer.getView();
         verify(view).noData();
     }
+    
+    @Test
+    public void tableDataTest() {
+        String[][] expectedDataTable = {
+                { "2012",    "2013",    "2014", "2015" },
+                { "6126.13", "5252.96", "4015.48", "7336.69"}
+        }; 
+        displayer.draw();
+        C3LineChartDisplayer.View view = displayer.getView();
+        String[][] dataTable = displayer.getDataTable();
+        assertArrayEquals(expectedDataTable, dataTable);
+    }
 
 }
