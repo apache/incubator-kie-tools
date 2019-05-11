@@ -55,6 +55,9 @@ public class DatePickerFieldRenderer extends FieldRenderer<DatePickerFieldDefini
             formGroup.render(inputId,
                              input,
                              field);
+            
+            registerFieldRendererPart(input);
+            
         }
 
         return formGroup;

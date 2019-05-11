@@ -16,8 +16,12 @@
 
 package org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl;
 
+import java.util.Collections;
+import java.util.Map;
+
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.Widget;
+
 import org.jboss.errai.common.client.dom.DOMUtil;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.kie.workbench.common.forms.model.FieldDefinition;
@@ -28,5 +32,9 @@ public interface FormGroupView extends IsElement {
 
     default void setVisible(boolean visible) {
         DOMUtil.addEnumStyleName(getElement(), visible ? Style.Visibility.VISIBLE : Style.Visibility.HIDDEN);
+    }
+    
+    default Map<String, Widget> getViewPartsWidgets() {
+        return Collections.emptyMap();
     }
 }

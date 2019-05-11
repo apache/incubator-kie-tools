@@ -16,12 +16,16 @@
 
 package org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.slider;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.common.client.dom.DOMUtil;
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.HTMLElement;
+import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.labels.label.FieldLabel;
@@ -29,6 +33,8 @@ import org.kie.workbench.common.forms.model.FieldDefinition;
 
 @Templated
 public class SliderFormGroupViewImpl implements SliderFormGroupView {
+
+    private static final String PART_SLIDER_LABEL = "Slider Label";
 
     @Inject
     @DataField
@@ -42,11 +48,16 @@ public class SliderFormGroupViewImpl implements SliderFormGroupView {
     @DataField
     protected Div helpBlock;
 
+    private Map<String, Widget> viewPartsWidgets = new HashMap<>();
+
     @Override
     public void render(Widget widget,
                        FieldDefinition fieldDefinition) {
 
         render("", widget, fieldDefinition);
+        
+        viewPartsWidgets.put(PART_SLIDER_LABEL, 
+                             ElementWrapperWidget.getWidget(fieldLabel.getElement()));
     }
 
     public void render(String inputId, Widget widget, FieldDefinition fieldDefinition) {
@@ -54,10 +65,16 @@ public class SliderFormGroupViewImpl implements SliderFormGroupView {
         fieldLabel.renderForInputId(inputId, fieldDefinition);
 
         DOMUtil.appendWidgetToElement(fieldContainer, widget);
+        
     }
 
     @Override
     public HTMLElement getHelpBlock() {
         return helpBlock;
+    }
+    
+    @Override
+    public Map<String, Widget> getViewPartsWidgets() {
+        return viewPartsWidgets;
     }
 }

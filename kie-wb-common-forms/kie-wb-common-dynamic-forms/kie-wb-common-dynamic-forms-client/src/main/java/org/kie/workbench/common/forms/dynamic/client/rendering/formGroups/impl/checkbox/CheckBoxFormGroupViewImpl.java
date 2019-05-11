@@ -16,11 +16,15 @@
 
 package org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.checkbox;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.HTMLElement;
+import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
@@ -39,15 +43,23 @@ public class CheckBoxFormGroupViewImpl implements IsElement,
     @DataField
     protected Div helpBlock;
 
+    private Map<String, Widget> viewPartsWidget = new HashMap<>();
+
     public void render(Widget widget,
                        FieldDefinition field) {
 
         fieldLabel.renderForInput(widget,
                                   field);
+        viewPartsWidget.put("Check Box Label", ElementWrapperWidget.getWidget(fieldLabel.getElement()));
     }
 
     @Override
     public HTMLElement getHelpBlock() {
         return helpBlock;
+    }
+    
+    @Override
+    public Map<String, Widget> getViewPartsWidgets() {
+        return viewPartsWidget;
     }
 }

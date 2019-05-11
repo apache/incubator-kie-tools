@@ -17,6 +17,9 @@
 package org.kie.workbench.common.forms.editor.client.editor.rendering;
 
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwtmockito.GwtMock;
@@ -373,12 +376,15 @@ public class EditorFieldLayoutComponentTest {
                                  boolean withConfigContext) {
         FieldDefinition fieldCopy = setupFormEditorHelper();
         ModalConfigurationContext ctx = mock(ModalConfigurationContext.class);
+        
+       
 
         if (bound) {
             when(fieldCopy.getBinding()).thenReturn(BINDING_FIRSTNAME);
         }
         if (withConfigContext) {
             when(ctx.getComponentProperties()).thenReturn(mock(Map.class));
+            when(ctx.getLayoutComponent()).thenReturn(new LayoutComponent());
             editorFieldLayoutComponent.getConfigurationModal(ctx);
         }
 
@@ -443,4 +449,18 @@ public class EditorFieldLayoutComponentTest {
         assertFalse(editorFieldLayoutComponent.showProperties);
         verify(ctx).configurationCancelled();
     }
+    
+    @Test
+    public void testFieldPartsAdded() {
+        Set<String> parts = Stream.of("p1","p2").collect(Collectors.toSet());
+        when(fieldRenderer.getFieldParts()).thenReturn(parts);
+        editorFieldLayoutComponent.generateContent(ctx);
+        Set<String> expectedParts = layoutComponent.getParts().stream().map(p -> p.getPartId()).collect(Collectors.toSet());
+        parts = Stream.of("p1","p3").collect(Collectors.toSet());
+        when(fieldRenderer.getFieldParts()).thenReturn(parts);
+        editorFieldLayoutComponent.generateContent(ctx);
+        expectedParts = layoutComponent.getParts().stream().map(p -> p.getPartId()).collect(Collectors.toSet());
+        assertEquals(parts, expectedParts);
+    }
+    
 }

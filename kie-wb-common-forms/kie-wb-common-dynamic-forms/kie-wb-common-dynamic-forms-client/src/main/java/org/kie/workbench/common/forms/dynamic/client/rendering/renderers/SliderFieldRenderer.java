@@ -57,6 +57,8 @@ public class SliderFieldRenderer extends FieldRenderer<SliderBaseDefinition, Sli
 
         formGroup.render(slider,
                          field);
+        
+        registerFieldRendererPart(slider);
 
         return formGroup;
     }

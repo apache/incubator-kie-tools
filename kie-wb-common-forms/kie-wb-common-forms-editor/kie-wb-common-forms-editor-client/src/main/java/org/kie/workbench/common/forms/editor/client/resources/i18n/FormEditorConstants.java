@@ -37,6 +37,9 @@ public interface FormEditorConstants {
 
     @TranslationKey(defaultValue = "")
     String FormEditorPresenterTitle = "FormEditorPresenter.title";
+    
+    @TranslationKey(defaultValue = "")
+    String FielPropertiesEditor = "FormEditorPresenter.propertiesEditor";
 
     @TranslationKey(defaultValue = "")
     String FormEditorPresenterFormUsages = "FormEditorPresenter.formUsages";
@@ -145,4 +148,5 @@ public interface FormEditorConstants {
 
     @TranslationKey(defaultValue = "")
     String ErrorMessageDisplayerViewImplCloseAndReview = "ErrorMessageDisplayerViewImpl.closeAndReview";
+
 }

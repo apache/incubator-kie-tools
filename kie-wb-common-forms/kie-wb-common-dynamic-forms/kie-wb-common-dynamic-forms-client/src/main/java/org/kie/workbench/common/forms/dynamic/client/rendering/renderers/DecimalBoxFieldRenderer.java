@@ -61,6 +61,7 @@ public class DecimalBoxFieldRenderer extends FieldRenderer<DecimalBoxFieldDefini
             formGroup.render(inputId,
                              decimalBox.asWidget(),
                              field);
+            registerFieldRendererPart(decimalBox);
         }
 
         return formGroup;

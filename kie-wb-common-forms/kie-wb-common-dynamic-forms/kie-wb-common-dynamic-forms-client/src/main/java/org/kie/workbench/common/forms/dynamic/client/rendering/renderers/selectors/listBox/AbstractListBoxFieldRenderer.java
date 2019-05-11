@@ -75,10 +75,12 @@ public abstract class AbstractListBoxFieldRenderer<FIELD extends ListBoxBaseDefi
             widgetList.setName(fieldNS);
             widgetList.setEnabled(!field.getReadOnly());
             refreshSelectorOptions();
-
+            
             formGroup.render(inputId,
                              widgetList,
                              field);
+
+            registerFieldRendererPart(widgetList);
         }
 
         return formGroup;

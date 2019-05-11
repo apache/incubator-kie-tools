@@ -69,6 +69,7 @@ public class IntegerBoxFieldRenderer extends FieldRenderer<IntegerBoxFieldDefini
         formGroup.render(inputId,
                          widget,
                          field);
+        registerFieldRendererPart(widget);
 
         return formGroup;
     }

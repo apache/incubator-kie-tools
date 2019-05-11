@@ -55,6 +55,8 @@ public class TextBoxFieldRenderer extends FieldRenderer<TextBoxBaseDefinition, D
             textBox.setPlaceholder(field.getPlaceHolder());
             textBox.setMaxLength(field.getMaxLength());
             textBox.setEnabled(!field.getReadOnly());
+            
+            registerFieldRendererPart(textBox);
 
             formGroup.render(inputId, textBox, field);
         }
@@ -76,4 +78,5 @@ public class TextBoxFieldRenderer extends FieldRenderer<TextBoxBaseDefinition, D
     public Converter getConverter() {
         return ValueConvertersFactory.getConverterForType(field.getStandaloneClassName());
     }
+    
 }

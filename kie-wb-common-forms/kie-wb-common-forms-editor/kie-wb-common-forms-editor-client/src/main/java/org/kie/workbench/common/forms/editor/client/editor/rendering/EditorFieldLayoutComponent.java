@@ -40,6 +40,7 @@ import org.kie.workbench.common.forms.editor.service.shared.FormEditorRenderingC
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.service.shared.FieldManager;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.client.api.HasDragAndDropSettings;
 import org.uberfire.ext.layout.editor.client.api.HasModalConfiguration;
 import org.uberfire.ext.layout.editor.client.api.ModalConfigurationContext;
@@ -167,6 +168,8 @@ public class EditorFieldLayoutComponent extends FieldLayoutComponent implements 
         renderContent();
         showProperties = false;
         if (configContext != null) {
+            LayoutComponent layoutComponent = configContext.getLayoutComponent();
+            addComponentParts(layoutComponent);
             configContext.getComponentProperties().put(FORM_ID,
                                                        getFormId());
             configContext.getComponentProperties().put(FIELD_ID,
@@ -174,7 +177,6 @@ public class EditorFieldLayoutComponent extends FieldLayoutComponent implements 
             configContext.configurationFinished();
             configContext = null;
         }
-
         syncPaletteEvent.fire(new FormEditorSyncPaletteEvent(getFormId()));
     }
 
@@ -242,11 +244,13 @@ public class EditorFieldLayoutComponent extends FieldLayoutComponent implements 
 
     @Override
     protected IsWidget generateContent(RenderingContext ctx) {
+        LayoutComponent component = ctx.getComponent();
         if (fieldRenderer == null) {
-            initContent(ctx.getComponent().getProperties());
+            initContent(component.getProperties());
         } else {
             renderContent();
         }
+        addComponentParts(component);
         return content;
     }
 

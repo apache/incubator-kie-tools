@@ -59,6 +59,8 @@ public class TextAreaFieldRenderer extends FieldRenderer<TextAreaFieldDefinition
             textArea.setVisibleLines(field.getRows());
 
             formGroup.render(inputId, textArea, field);
+            
+            registerFieldRendererPart(textArea);
         }
 
         return formGroup;

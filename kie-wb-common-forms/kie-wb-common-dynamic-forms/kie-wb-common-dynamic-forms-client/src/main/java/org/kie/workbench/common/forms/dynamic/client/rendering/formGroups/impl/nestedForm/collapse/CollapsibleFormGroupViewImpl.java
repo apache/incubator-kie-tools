@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.nestedForm.collapse;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.inject.Inject;
 
 import com.google.gwt.dom.client.Document;
@@ -26,6 +29,7 @@ import org.jboss.errai.common.client.dom.Anchor;
 import org.jboss.errai.common.client.dom.DOMUtil;
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.Span;
+import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
@@ -37,6 +41,8 @@ import org.kie.workbench.common.forms.model.FieldDefinition;
 @Templated
 public class CollapsibleFormGroupViewImpl implements IsElement,
                                                      CollapsibleFormGroupView {
+
+    private static final String PART_ANCHOR_TEXT = "Anchor Text";
 
     @Inject
     private FieldRequired fieldRequired;
@@ -69,6 +75,8 @@ public class CollapsibleFormGroupViewImpl implements IsElement,
 
     private Presenter presenter;
 
+    private Map<String, Widget> partsWidget = new HashMap<>();
+
     @Override
     public void init(Presenter presenter) {
         this.presenter = presenter;
@@ -97,6 +105,8 @@ public class CollapsibleFormGroupViewImpl implements IsElement,
         container.clear();
 
         container.add(widget);
+        
+        partsWidget.put(PART_ANCHOR_TEXT, ElementWrapperWidget.getWidget(anchorText));
     }
 
     @Override
@@ -123,5 +133,10 @@ public class CollapsibleFormGroupViewImpl implements IsElement,
     @EventHandler("anchor")
     public void onClick(ClickEvent clickEvent) {
         presenter.notifyClick();
+    }
+    
+    @Override
+    public Map<String, Widget> getViewPartsWidgets() {
+        return partsWidget;
     }
 }

@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -99,6 +100,18 @@ public class FormGeneratorDriver implements LayoutGeneratorDriver {
         }
         return null;
     }
+    
+    @Override
+    public Optional<IsWidget> getComponentPart(HTMLElement column, LayoutComponent layoutComponent, String partId) {
+        FieldDefinition field = getFieldForLayoutComponent(layoutComponent);
+        FieldLayoutComponent dragComponent = getFieldLayoutComponentForField(field);
+        if (dragComponent != null) {
+            Widget columnWidget = ElementWrapperWidget.getWidget(column);
+            RenderingContext componentContext = new RenderingContext(layoutComponent, columnWidget);
+            return dragComponent.getContentPart(partId, componentContext);
+        }
+        return Optional.empty();
+    }
 
     protected LayoutDragComponent lookupComponent(LayoutComponent layoutComponent) {
         Class<? extends LayoutDragComponent> clazz = componentsCache.get(layoutComponent.getDragTypeName());
@@ -116,8 +129,7 @@ public class FormGeneratorDriver implements LayoutGeneratorDriver {
         if (dragComponent instanceof FieldLayoutComponent) {
             FieldLayoutComponent fieldComponent = (FieldLayoutComponent) dragComponent;
 
-            FieldDefinition field = renderingContext.getRootForm().getFieldById(layoutComponent.getProperties().get(
-                    FieldLayoutComponent.FIELD_ID));
+            FieldDefinition field = getFieldForLayoutComponent(layoutComponent);
             fieldComponent.init(renderingContext,
                                 field);
 
@@ -143,5 +155,11 @@ public class FormGeneratorDriver implements LayoutGeneratorDriver {
     public void clear() {
         layoutComponents.clear();
         instance.destroyAll();
+    }
+    
+    private FieldDefinition getFieldForLayoutComponent(LayoutComponent layoutComponent) {
+        FieldDefinition field = renderingContext.getRootForm().getFieldById(layoutComponent.getProperties().get(
+                FieldLayoutComponent.FIELD_ID));
+        return field;
     }
 }

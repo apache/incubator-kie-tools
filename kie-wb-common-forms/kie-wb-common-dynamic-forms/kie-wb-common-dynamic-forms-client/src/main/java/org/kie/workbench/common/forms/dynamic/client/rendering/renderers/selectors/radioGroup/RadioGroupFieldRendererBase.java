@@ -65,6 +65,7 @@ public abstract class RadioGroupFieldRendererBase<FIELD extends RadioGroupBaseDe
             input.setValue(selectedValue,
                            true);
         }
+        registerFieldRendererPart(input);
     }
 
     protected SafeHtml getOptionLabel(String text) {

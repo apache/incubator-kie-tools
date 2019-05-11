@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.forms.dynamic.client.rendering;
 
+import java.util.Optional;
+import java.util.Set;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -25,6 +28,7 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormLayoutComponent;
+import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
 import org.uberfire.ext.layout.editor.client.api.RenderingContext;
 
@@ -89,18 +93,30 @@ public class FieldLayoutComponent implements FormLayoutComponent,
     public IsWidget getShowWidget(RenderingContext ctx) {
         return generateContent(ctx);
     }
+    
+    public Optional<IsWidget> getContentPart(String partId, RenderingContext componentContext) {
+        return Optional.ofNullable(fieldRenderer.getFieldPartWidget(partId));
+    }
 
     protected IsWidget generateContent(RenderingContext ctx) {
         if (fieldRenderer != null) {
             renderContent();
+            addComponentParts(ctx.getComponent());
         }
 
         return content;
     }
 
+
     protected void renderContent() {
         content.clear();
         content.add(fieldRenderer.renderWidget());
+    }
+    
+    protected void addComponentParts(LayoutComponent component) {
+        Set<String> parts = fieldRenderer.getFieldParts();
+        component.removePartIf(partId ->  !parts.contains(partId));
+        parts.forEach(component::addPartIfAbsent);
     }
 
     public String getFieldId() {

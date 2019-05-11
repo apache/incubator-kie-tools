@@ -45,6 +45,8 @@ public class CheckBoxFieldRenderer extends FieldRenderer<CheckBoxFieldDefinition
 
         formGroup.render(checkbox,
                          field);
+        
+        registerFieldRendererPart(checkbox);
 
         return formGroup;
     }

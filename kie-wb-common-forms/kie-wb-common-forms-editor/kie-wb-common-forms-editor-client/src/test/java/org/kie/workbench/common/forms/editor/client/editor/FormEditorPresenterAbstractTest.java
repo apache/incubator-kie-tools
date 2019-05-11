@@ -64,6 +64,7 @@ import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponentPalette;
 import org.uberfire.ext.layout.editor.client.api.LayoutEditor;
+import org.uberfire.ext.layout.editor.client.widgets.LayoutEditorPropertiesPresenter;
 import org.uberfire.ext.plugin.client.perspective.editor.layout.editor.HTMLLayoutDragComponent;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.mocks.CallerMock;
@@ -174,6 +175,10 @@ public class FormEditorPresenterAbstractTest {
 
     @Mock
     protected ErrorMessageDisplayer errorMessageDisplayer;
+    @Mock
+    private FormFieldPropertiesEditorDock formFieldPropertiesEditorDock;
+    @Mock
+    LayoutEditorPropertiesPresenter layoutEditorPropertiesPresenter;
 
     @Mock
     protected MenuItem downloadMenuItem;
@@ -279,7 +284,9 @@ public class FormEditorPresenterAbstractTest {
                                             translationService,
                                             editorFieldLayoutComponents,
                                             showAssetUsagesDisplayer,
-                                            errorMessageDisplayer) {
+                                            errorMessageDisplayer,
+                                            formFieldPropertiesEditorDock,
+                                            layoutEditorPropertiesPresenter) {
             {
                 kieView = mock(KieEditorWrapperView.class);
                 versionRecordManager = FormEditorPresenterAbstractTest.this.versionRecordManager;

@@ -16,12 +16,16 @@
 
 package org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.def;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.HTMLElement;
+import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
@@ -31,6 +35,11 @@ import org.kie.workbench.common.forms.model.FieldDefinition;
 @Templated
 public class DefaultFormGroupViewImpl implements IsElement,
                                                  DefaultFormGroupView {
+    
+    
+    private final static String PART_LABEL = "Field Label";
+    
+    private Map<String, Widget> partsWidgets = new HashMap<>();
 
     @Inject
     @DataField
@@ -62,10 +71,18 @@ public class DefaultFormGroupViewImpl implements IsElement,
 
         fieldContainer.clear();
         fieldContainer.add(widget);
+        
+        Widget labelWidget = ElementWrapperWidget.getWidget(fieldLabel.getElement());
+        partsWidgets.put(PART_LABEL, labelWidget);
     }
 
     @Override
     public HTMLElement getHelpBlock() {
         return helpBlock;
+    }
+    
+    @Override
+    public Map<String, Widget> getViewPartsWidgets() {
+        return partsWidgets;
     }
 }
