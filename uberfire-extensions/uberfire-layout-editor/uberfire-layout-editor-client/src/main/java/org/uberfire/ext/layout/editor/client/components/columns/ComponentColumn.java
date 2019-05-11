@@ -16,6 +16,7 @@
 
 package org.uberfire.ext.layout.editor.client.components.columns;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,10 +26,12 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.api.LayoutEditorElement;
+import org.uberfire.ext.layout.editor.client.api.LayoutEditorElementPart;
 import org.uberfire.ext.layout.editor.client.api.LayoutEditorElementType;
 import org.uberfire.ext.layout.editor.client.event.LayoutEditorElementSelectEvent;
 import org.uberfire.ext.layout.editor.client.event.LayoutEditorElementUnselectEvent;
@@ -63,6 +66,8 @@ public class ComponentColumn implements Column {
     private boolean selectable = true;
     private Event<LayoutEditorElementSelectEvent> columnSelectEvent;
     private Event<LayoutEditorElementUnselectEvent> columnUnselectEvent;
+    private ManagedInstance<ComponentColumnPart> componentColumnManagedInstance;
+    private List<LayoutEditorElementPart> parts = new ArrayList<>();
 
     @Inject
     public ComponentColumn(final View view,
@@ -70,14 +75,15 @@ public class ComponentColumn implements Column {
                            LayoutDragComponentHelper layoutDragComponentHelper,
                            Event<ColumnResizeEvent> columnResizeEvent,
                            Event<LayoutEditorElementSelectEvent> columnSelectEvent,
-                           Event<LayoutEditorElementUnselectEvent> columnUnselectEvent
-    ) {
+                           Event<LayoutEditorElementUnselectEvent> columnUnselectEvent,
+                           ManagedInstance<ComponentColumnPart> componentColumnManagedInstance) {
         this.view = view;
         this.dndManager = dndManager;
         this.layoutDragComponentHelper = layoutDragComponentHelper;
         this.columnResizeEvent = columnResizeEvent;
         this.columnSelectEvent = columnSelectEvent;
         this.columnUnselectEvent = columnUnselectEvent;
+        this.componentColumnManagedInstance = componentColumnManagedInstance;
     }
 
     @PostConstruct
@@ -107,6 +113,7 @@ public class ComponentColumn implements Column {
             componentReady = true;
         }
         view.setupWidget();
+        setupParts();
     }
 
     @Override
@@ -151,6 +158,15 @@ public class ComponentColumn implements Column {
 
     private void setupPageLayout() {
         view.setupPageLayout();
+    }
+    
+    public void setupParts() {
+        parts.clear();
+        layoutComponent.getParts().forEach(part -> {
+            ComponentColumnPart componentColumnPart = componentColumnManagedInstance.get();
+            componentColumnPart.init(this, part);
+            parts.add(componentColumnPart);
+        });
     }
 
     @Override
@@ -210,6 +226,7 @@ public class ComponentColumn implements Column {
 
     private void configurationFinish() {
         this.componentReady = true;
+        setupParts();
         updateView();
     }
 
@@ -413,6 +430,11 @@ public class ComponentColumn implements Column {
                 columnSelectEvent.fire(new LayoutEditorElementSelectEvent(this));
             }
         }
+    }
+    
+    @Override
+    public List<LayoutEditorElementPart> getLayoutEditorElementParts() {
+        return parts;
     }
 
     public interface View extends UberElement<ComponentColumn> {

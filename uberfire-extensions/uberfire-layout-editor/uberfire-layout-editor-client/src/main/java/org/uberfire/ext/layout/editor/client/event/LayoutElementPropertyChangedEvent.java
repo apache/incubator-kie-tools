@@ -16,23 +16,23 @@
 
 package org.uberfire.ext.layout.editor.client.event;
 
-import org.uberfire.ext.layout.editor.client.api.LayoutEditorElement;
+import org.uberfire.ext.layout.editor.client.api.LayoutElementWithProperties;
 
 public class LayoutElementPropertyChangedEvent {
 
-    private LayoutEditorElement layoutEditorElement;
+    private LayoutElementWithProperties layoutEditorElement;
     private String property;
     private String oldValue;
     private String newValue;
 
-    public LayoutElementPropertyChangedEvent(LayoutEditorElement layoutEditorElement, String property, String oldValue, String newValue) {
+    public LayoutElementPropertyChangedEvent(LayoutElementWithProperties layoutEditorElement, String property, String oldValue, String newValue) {
         this.layoutEditorElement = layoutEditorElement;
         this.property = property;
         this.oldValue = oldValue;
         this.newValue = newValue;
     }
 
-    public LayoutEditorElement getElement() {
+    public LayoutElementWithProperties getElement() {
         return layoutEditorElement;
     }
 

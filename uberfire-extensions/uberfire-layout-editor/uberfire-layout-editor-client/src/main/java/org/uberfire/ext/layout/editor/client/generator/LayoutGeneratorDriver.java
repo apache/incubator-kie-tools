@@ -17,6 +17,9 @@
 package org.uberfire.ext.layout.editor.client.generator;
 
 import com.google.gwt.user.client.ui.IsWidget;
+
+import java.util.Optional;
+
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.uberfire.ext.layout.editor.api.editor.LayoutColumn;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
@@ -31,4 +34,8 @@ public interface LayoutGeneratorDriver {
     HTMLElement createColumn(LayoutColumn layoutColumn);
 
     IsWidget createComponent(HTMLElement column, LayoutComponent layoutComponent);
+
+    default Optional<IsWidget> getComponentPart(HTMLElement column, LayoutComponent layoutComponent, String partId) {
+        return Optional.empty();
+    }
 }

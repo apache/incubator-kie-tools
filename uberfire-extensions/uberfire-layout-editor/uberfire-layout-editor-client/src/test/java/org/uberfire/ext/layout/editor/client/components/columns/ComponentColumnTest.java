@@ -16,7 +16,16 @@
 
 package org.uberfire.ext.layout.editor.client.components.columns;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
 import org.junit.Test;
+import org.uberfire.ext.layout.editor.api.editor.LayoutComponentPart;
+import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.AbstractLayoutEditorTest;
 
 public class ComponentColumnTest extends AbstractLayoutEditorTest {
@@ -25,4 +34,36 @@ public class ComponentColumnTest extends AbstractLayoutEditorTest {
     public void assertThereIsNoGWTDepInComponentColumn() throws Exception {
         loadLayout(SINGLE_ROW_TWO_COMPONENTS_LAYOUT);
     }
+    
+    @Test
+    public void emptyPartsWontBreakTest() throws Exception {
+        LayoutTemplate layout = loadLayout(SINGLE_ROW_COMPONENT_LAYOUT);
+        List<LayoutComponentPart> parts = layout.getRows().get(0)
+                                               .getLayoutColumns().get(0)
+                                               .getLayoutComponents().get(0)
+                                               .getParts();
+        assertTrue(parts.isEmpty());
+    }
+    
+    @Test
+    public void partsLoadingTest() throws Exception {
+        LayoutTemplate layout = loadLayout(SINGLE_ROW_COMPONENT_LAYOUT_WITH_PARTS);
+        List<LayoutComponentPart> parts = layout.getRows().get(0)
+                                               .getLayoutColumns().get(0)
+                                               .getLayoutComponents().get(0)
+                                               .getParts();
+        assertEquals(2, parts.size());
+        Optional<LayoutComponentPart> part1Op = parts.stream()
+                                                     .filter(p -> p.getPartId().equals("PART1"))
+                                                     .findFirst();
+        assertTrue(part1Op.isPresent());
+        LayoutComponentPart part1 = part1Op.get();
+        assertTrue(part1.getCssProperties().containsKey("PROP1"));
+        assertEquals("PROP1_VAL", part1.getCssProperties().get("PROP1"));
+        part1.clearCssProperties();
+        assertTrue(part1.getCssProperties().isEmpty());
+        part1.addCssProperty("NEW_PROP", "NEW_VALUE");
+        assertEquals("NEW_VALUE", part1.getCssProperties().get("NEW_PROP"));
+    }
+    
 }

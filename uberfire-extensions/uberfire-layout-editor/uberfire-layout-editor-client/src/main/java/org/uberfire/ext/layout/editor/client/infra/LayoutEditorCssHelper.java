@@ -17,7 +17,7 @@ package org.uberfire.ext.layout.editor.client.infra;
 
 import org.uberfire.ext.layout.editor.api.css.*;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
-import org.uberfire.ext.layout.editor.client.api.LayoutEditorElement;
+import org.uberfire.ext.layout.editor.client.api.LayoutElementWithProperties;
 import org.uberfire.ext.layout.editor.client.components.container.Container;
 import org.uberfire.ext.layout.editor.client.components.rows.Row;
 import org.uberfire.ext.layout.editor.client.resources.i18n.CssAllowedValueConstants;
@@ -118,7 +118,7 @@ public class LayoutEditorCssHelper {
         return new PropertyEditorCategory(name);
     }
 
-    public PropertyEditorFieldInfo createField(LayoutEditorElement element, CssProperty property) {
+    public PropertyEditorFieldInfo createField(LayoutElementWithProperties element, CssProperty property) {
         return createField(element.getProperties(), property);
     }
 
@@ -268,4 +268,38 @@ public class LayoutEditorCssHelper {
 
         return result;
     }
+    
+    public List<PropertyEditorCategory> allCategories(Map<String,String> propertyMap) {
+        List<PropertyEditorCategory> result = new ArrayList<>();
+
+        PropertyEditorCategory category = createCategory(LayoutEditorCssHelper.CSS_CATEGORY_PANEL);
+        category.withField(createField(propertyMap, CssProperty.WIDTH));
+        category.withField(createField(propertyMap, CssProperty.HEIGHT));
+        category.withField(createField(propertyMap, CssProperty.BACKGROUND_COLOR));
+        result.add(category);
+
+        category = createCategory(LayoutEditorCssHelper.CSS_CATEGORY_MARGIN);
+        category.withField(createField(propertyMap, CssProperty.MARGIN_TOP));
+        category.withField(createField(propertyMap, CssProperty.MARGIN_BOTTOM));
+        category.withField(createField(propertyMap, CssProperty.MARGIN_LEFT));
+        category.withField(createField(propertyMap, CssProperty.MARGIN_RIGHT));
+        result.add(category);
+
+        category = createCategory(LayoutEditorCssHelper.CSS_CATEGORY_PADDING);
+        category.withField(createField(propertyMap, CssProperty.PADDING_TOP));
+        category.withField(createField(propertyMap, CssProperty.PADDING_BOTTOM));
+        category.withField(createField(propertyMap, CssProperty.PADDING_LEFT));
+        category.withField(createField(propertyMap, CssProperty.PADDING_RIGHT));
+        result.add(category);
+        
+        category = createCategory(LayoutEditorCssHelper.CSS_CATEGORY_TEXT);
+        category.withField(createField(propertyMap, CssProperty.FONT_SIZE));
+        category.withField(createField(propertyMap, CssProperty.FONT_WEIGHT));
+        category.withField(createField(propertyMap, CssProperty.TEXT_ALIGN));
+        category.withField(createField(propertyMap, CssProperty.TEXT_DECORATION));
+        category.withField(createField(propertyMap, CssProperty.COLOR));
+        result.add(category);
+
+        return result;
+    }    
 }

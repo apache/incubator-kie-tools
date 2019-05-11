@@ -1,6 +1,6 @@
 {
-  "version": 2,
-  "name": "12withHTMLComponent",
+  "version": 3,
+  "name": "LayoutWithComponentWithParts",
   "style": "PAGE",
   "layoutProperties": {
     "LAYOUT_TAGS": "teste|"
@@ -19,7 +19,14 @@
               "properties": {
                 "HTML_CODE": "\u003ch1\u003eyo\u003c/h1\u003e"
               },
-              "parts": []
+              "parts": [
+                {
+                  "partId": "TEST",
+                  "cssProperties": {
+                    "prop1": "val1"
+                  }
+                }
+              ]
             }
           ]
         }

@@ -22,6 +22,7 @@ import org.uberfire.ext.properties.editor.model.PropertyEditorCategory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * This interface defines the main contract between the Layout Editor's module and components implementations.
@@ -81,6 +82,17 @@ public interface LayoutDragComponent {
      * @param ctx The context for the component being rendered
      */
     default void removeCurrentWidget(RenderingContext ctx){
+    }
+
+    /**
+     * Get a specific part of this widget.
+     * 
+     * @param partId
+     * @param componentContext
+     * @return
+     */
+    default Optional<IsWidget> getContentPart(String partId, RenderingContext componentContext) {
+        return Optional.empty();
     }
 
 }

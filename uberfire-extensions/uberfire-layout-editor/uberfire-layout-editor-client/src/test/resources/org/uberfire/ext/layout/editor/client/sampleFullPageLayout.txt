@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "name": "CV",
   "style": "PAGE",
   "layoutProperties": {
@@ -20,7 +20,8 @@
               "dragTypeName": "org.uberfire.ext.plugin.client.perspective.editor.layout.editor.HTMLLayoutDragComponent",
               "properties": {
                 "HTML_CODE": "Add your HTML here..."
-              }
+              },
+              "parts": []
             }
           ]
         }
@@ -40,7 +41,8 @@
               "dragTypeName": "org.uberfire.ext.plugin.client.perspective.editor.layout.editor.HTMLLayoutDragComponent",
               "properties": {
                 "HTML_CODE": "Add your HTML here..."
-              }
+              },
+              "parts": []
             }
           ]
         },
@@ -63,7 +65,8 @@
                       "dragTypeName": "org.uberfire.ext.plugin.client.perspective.editor.layout.editor.TargetDivDragComponent",
                       "properties": {
                         "ID_PARAMETER": "-110184430"
-                      }
+                      },
+                      "parts": []
                     }
                   ]
                 },
@@ -77,7 +80,8 @@
                       "dragTypeName": "org.uberfire.ext.plugin.client.perspective.editor.layout.editor.HTMLLayoutDragComponent",
                       "properties": {
                         "HTML_CODE": "Add your HTML here..."
-                      }
+                      },
+                      "parts": []
                     }
                   ]
                 },
@@ -91,7 +95,8 @@
                       "dragTypeName": "org.uberfire.ext.plugin.client.perspective.editor.layout.editor.ScreenLayoutDragComponent",
                       "properties": {
                         "Place Name": "AppsHomePresenter"
-                      }
+                      },
+                      "parts": []
                     }
                   ]
                 }

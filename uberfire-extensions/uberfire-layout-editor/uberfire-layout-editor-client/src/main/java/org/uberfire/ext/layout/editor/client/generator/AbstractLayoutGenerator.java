@@ -17,6 +17,7 @@ package org.uberfire.ext.layout.editor.client.generator;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -116,6 +117,10 @@ public abstract class AbstractLayoutGenerator implements LayoutGenerator {
                 }
                 DOMUtil.appendWidgetToElement(column, componentWidget);
                 applyCssToElement(layoutComponent.getProperties(), componentWidget);
+                layoutComponent.getParts().forEach(p -> {
+                    final Optional<IsWidget> partWidget = driver.getComponentPart(column, layoutComponent, p.getPartId());
+                    partWidget.ifPresent(widget -> applyCssToElement(p.getCssProperties(), widget));
+                });
             }
         }
     }

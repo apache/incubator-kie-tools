@@ -16,36 +16,20 @@
 
 package org.uberfire.ext.layout.editor.client.api;
 
-import org.uberfire.ext.properties.editor.model.PropertyEditorCategory;
-
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Layout editor's element interface
  */
-public interface LayoutEditorElement {
+public interface LayoutEditorElement extends LayoutElementWithProperties {
 
     LayoutEditorElementType geElementType();
-
-    String getId();
 
     void setSelectable(boolean selectable);
 
     boolean isSelected();
-
-    void setSelected(boolean status);
-
-    Map<String,String> getProperties();
-
-    void clearProperties();
-
-    void setProperty(String property, String value);
-
-    void removeProperty(String property);
-
-    List<PropertyEditorCategory> getPropertyCategories();
 
     LayoutEditorElement getParentElement();
 
@@ -56,5 +40,9 @@ public interface LayoutEditorElement {
     default void visit(LayoutElementVisitor visitor) {
         visitor.accept(this);
         getChildElements().stream().forEach(child -> child.visit(visitor));
+    }
+    
+    default List<LayoutEditorElementPart> getLayoutEditorElementParts() {
+        return Collections.emptyList();
     }
 }

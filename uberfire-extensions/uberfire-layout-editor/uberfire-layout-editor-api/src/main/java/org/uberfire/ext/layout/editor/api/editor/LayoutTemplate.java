@@ -26,7 +26,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 public final class LayoutTemplate {
 
-    private int version = 2;
+    private int version = 3;
 
     private String name;
 

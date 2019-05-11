@@ -91,4 +91,8 @@ public class ConfigurationContext {
     public void setConfigurationFinish(final Command configurationFinish) {
         this.configurationFinish = configurationFinish;
     }
+    
+    public LayoutComponent getLayoutComponent() {
+        return this.component;
+    }
 }

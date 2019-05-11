@@ -70,4 +70,13 @@ public class LayoutServicesImplTest {
         assertEquals(expected,
                      actual);
     }
+    
+    @Test
+    public void layoutMarshallerComponentWithParts() {
+        String expected = loadSample("LayoutWithComponentWithParts.txt");
+        LayoutTemplate template = layoutServices.convertLayoutFromString(expected);
+        String actual = layoutServices.convertLayoutToString(template);
+        assertEquals(expected,
+                     actual);
+    }
 }

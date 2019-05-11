@@ -16,10 +16,11 @@
 package org.uberfire.ext.layout.editor.client.widgets;
 
 import com.google.gwt.user.client.ui.IsWidget;
+
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.ext.layout.editor.client.api.*;
-import org.uberfire.ext.layout.editor.client.components.columns.ComponentColumn;
 import org.uberfire.ext.layout.editor.client.components.rows.RowDnDEvent;
 import org.uberfire.ext.layout.editor.client.event.LayoutEditorElementSelectEvent;
 import org.uberfire.ext.layout.editor.client.event.LayoutElementClearAllPropertiesEvent;
@@ -34,13 +35,18 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.uberfire.ext.layout.editor.client.api.LayoutEditorElementType.*;
 
 @ApplicationScoped
 public class LayoutEditorPropertiesPresenter {
+
+    public static final String PART_ROOT = "Root";
 
     public interface View extends UberElement<LayoutEditorPropertiesPresenter> {
 
@@ -63,10 +69,14 @@ public class LayoutEditorPropertiesPresenter {
         String getLayoutElementTypeComponent();
 
         void setClearPropertiesEnabled(boolean enabled);
+
+        void noParts();
+
+        void showParts(List<String> parts);
     }
 
     private View view;
-    private SyncBeanManager beanManager;
+    private ManagedInstance<LayoutElementPropertiesPresenter> layoutElementPropertiesPresenterInstance;
     private LiveSearchDropDown<String> elementSelector;
     private LayoutEditor layoutEditor;
     private LayoutElementPropertiesPresenter propertiesPresenter;
@@ -125,10 +135,10 @@ public class LayoutEditorPropertiesPresenter {
 
     @Inject
     public LayoutEditorPropertiesPresenter(final View view,
-            SyncBeanManager beanManager,
+            ManagedInstance<LayoutElementPropertiesPresenter> layoutElementPropertiesPresenterInstance,
             LiveSearchDropDown elementSelector) {
         this.view = view;
-        this.beanManager = beanManager;
+        this.layoutElementPropertiesPresenterInstance = layoutElementPropertiesPresenterInstance;
         this.elementSelector = elementSelector;
         view.init(this);
     }
@@ -153,6 +163,10 @@ public class LayoutEditorPropertiesPresenter {
     public LiveSearchService<String> getSearchService() {
         return searchService;
     }
+    
+    public void setSelectionHandler(SingleLiveSearchSelectionHandler<String> selectionHandler) {
+        this.selectionHandler = selectionHandler;
+    }
 
     public void edit(LayoutEditor layoutEditor) {
         if (layoutEditor != null) {
@@ -170,18 +184,18 @@ public class LayoutEditorPropertiesPresenter {
         if (layoutEditor != null) {
             String elementId = layoutElement.getId();
             elementSelector.setSelectedItem(elementId);
-
-            LayoutElementPropertiesPresenter presenter = presenterMap.get(elementId);
-            if (presenter == null) {
-                propertiesPresenter = beanManager.lookupBean(LayoutElementPropertiesPresenter.class).newInstance();
-                propertiesPresenter.edit(layoutElement);
-                presenterMap.put(layoutElement.getId(), propertiesPresenter);
-                view.showElement(propertiesPresenter.getView());
-            } else if (presenter != propertiesPresenter) {
-                propertiesPresenter.getLayoutElement().setSelected(false);
-                propertiesPresenter = presenter;
-                view.showElement(propertiesPresenter.getView());
-            }
+            fillElementParts(layoutElement);
+            updateCurrentPropertiesPresenter(elementId, layoutElement);
+            view.showElement(propertiesPresenter.getView());
+            updateClearElementStatus();
+        }
+    }
+    
+    public void edit(LayoutEditorElementPart layoutElementPart) {
+        if (layoutEditor != null) {
+            String elementPartId = layoutElementPart.getParent().getId() + "." + layoutElementPart.getId();
+            updateCurrentPropertiesPresenter(elementPartId, layoutElementPart);
+            view.showElement(propertiesPresenter.getView());
             updateClearElementStatus();
         }
     }
@@ -189,7 +203,6 @@ public class LayoutEditorPropertiesPresenter {
     public void dispose() {
         this.propertiesPresenter = null;
         elementSelector.clear();
-        presenterMap.values().stream().forEach(beanManager::destroyBean);
         presenterMap.clear();
         view.dispose();
     }
@@ -259,15 +272,10 @@ public class LayoutEditorPropertiesPresenter {
     // View actions
 
     void onElementSelected() {
-        String elementId = selectionHandler.getSelectedKey();
-        for (LayoutEditorElement element : layoutEditor.getLayoutElements()) {
-            if (element.getId().equals(elementId)) {
-                this.edit(element);
-                return;
-            }
-        }
+        LayoutEditorElement selectedElement = getSelectedElement();
+        this.edit(selectedElement);
     }
-
+    
     // LayoutElementPropertiesPresenter events
 
     void onLayoutPropertyChangedEvent(@Observes LayoutElementPropertyChangedEvent event) {
@@ -285,6 +293,17 @@ public class LayoutEditorPropertiesPresenter {
         this.edit(element);
     }
 
+    public void onPartSelected(String partId) {
+        LayoutEditorElement selectedElement = getSelectedElement();
+        if (PART_ROOT.equals(partId)) {
+            this.edit(selectedElement);
+        } else {
+            selectedElement.getLayoutEditorElementParts().stream()
+                                                         .filter(p -> p.getId().equals(partId))
+                                                         .findFirst().ifPresent(this::edit);
+        }
+    }
+
     void onComponentDropped(@Observes ComponentDropEvent event) {
         this.reset();
     }
@@ -295,5 +314,40 @@ public class LayoutEditorPropertiesPresenter {
 
     void onRowsSwap(@Observes RowDnDEvent rowDndEvent) {
         this.reset();
+    }
+    
+    protected void fillElementParts(LayoutEditorElement element) {
+        List<LayoutEditorElementPart> currentLayoutElementParts = element.getLayoutEditorElementParts();
+        if (currentLayoutElementParts.isEmpty()) {
+            view.noParts();
+        } else {
+            List<String> parts = new ArrayList<>();
+            parts.add(PART_ROOT);
+            currentLayoutElementParts.stream().map(LayoutEditorElementPart::getId)
+                                             .forEach(parts::add);
+            view.showParts(parts);
+        }
+    }
+    
+    private void updateCurrentPropertiesPresenter(String elementId, LayoutElementWithProperties layoutElement) {
+        LayoutElementPropertiesPresenter presenter = presenterMap.get(elementId);
+        if (presenter == null) {
+            propertiesPresenter = layoutElementPropertiesPresenterInstance.get();
+            propertiesPresenter.edit(layoutElement);
+            presenterMap.put(elementId, propertiesPresenter);
+        } else if (presenter != propertiesPresenter) {
+            propertiesPresenter.getLayoutElement().setSelected(false);
+            propertiesPresenter = presenter;
+        }
+    }
+    
+    private LayoutEditorElement getSelectedElement() {
+        String elementId = selectionHandler.getSelectedKey();
+        for (LayoutEditorElement element : layoutEditor.getLayoutElements()) {
+            if (element.getId().equals(elementId)) {
+                return element;
+            }
+        }
+        return null;
     }
 }

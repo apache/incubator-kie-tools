@@ -16,17 +16,17 @@
 
 package org.uberfire.ext.layout.editor.client.event;
 
-import org.uberfire.ext.layout.editor.client.api.LayoutEditorElement;
+import org.uberfire.ext.layout.editor.client.api.LayoutElementWithProperties;
 
 public class LayoutEditorElementUnselectEvent {
 
-    private LayoutEditorElement element;
+    private LayoutElementWithProperties element;
 
-    public LayoutEditorElementUnselectEvent(LayoutEditorElement element) {
+    public LayoutEditorElementUnselectEvent(LayoutElementWithProperties element) {
         this.element = element;
     }
 
-    public LayoutEditorElement getElement() {
+    public LayoutElementWithProperties getElement() {
         return element;
     }
 }

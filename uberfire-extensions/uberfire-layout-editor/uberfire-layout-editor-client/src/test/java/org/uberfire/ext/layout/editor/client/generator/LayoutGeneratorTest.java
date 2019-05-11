@@ -99,6 +99,8 @@ public class LayoutGeneratorTest {
 
     @Before
     public void initialize() {
+        component1.addPartIfAbsent("PART");
+        component1.addPartProperty("PART", "PROP", "PROP_VALUE");
         column1.add(component1);
         row1.add(column1);
         template.addRow(row1);
@@ -113,5 +115,6 @@ public class LayoutGeneratorTest {
         generator.build(template);
 
         verify(containerElement).setId(AbstractLayoutGenerator.CONTAINER_ID);
+        
     }
 }

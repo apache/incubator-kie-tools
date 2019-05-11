@@ -17,7 +17,7 @@ package org.uberfire.ext.layout.editor.client.widgets;
 
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.ext.layout.editor.api.css.CssAllowedValue;
-import org.uberfire.ext.layout.editor.client.api.LayoutEditorElement;
+import org.uberfire.ext.layout.editor.client.api.LayoutElementWithProperties;
 import org.uberfire.ext.layout.editor.client.event.LayoutElementClearAllPropertiesEvent;
 import org.uberfire.ext.layout.editor.client.event.LayoutElementPropertyChangedEvent;
 import org.uberfire.ext.layout.editor.client.infra.LayoutEditorCssHelper;
@@ -42,7 +42,7 @@ public class LayoutElementPropertiesPresenter {
     }
 
     private View view;
-    private LayoutEditorElement layoutElement;
+    private LayoutElementWithProperties layoutElement;
     private LayoutEditorCssHelper cssHelper;
     Event<LayoutElementPropertyChangedEvent> propertyChangedEvent;
     Event<LayoutElementClearAllPropertiesEvent> propertyClearAllEvent;
@@ -67,7 +67,7 @@ public class LayoutElementPropertiesPresenter {
         return view;
     }
 
-    public LayoutEditorElement getLayoutElement() {
+    public LayoutElementWithProperties getLayoutElement() {
         return layoutElement;
     }
 
@@ -79,7 +79,7 @@ public class LayoutElementPropertiesPresenter {
         return currentValues;
     }
 
-    public void edit(LayoutEditorElement element) {
+    public void edit(LayoutElementWithProperties element) {
         this.layoutElement = element;
 
         view.clear();

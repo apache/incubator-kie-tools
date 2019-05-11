@@ -17,15 +17,22 @@ package org.uberfire.ext.layout.editor.client.widgets;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.ui.IsWidget;
+
+import elemental2.dom.HTMLOptionElement;
+import elemental2.dom.HTMLSelectElement;
+
 import org.jboss.errai.common.client.dom.Anchor;
 import org.jboss.errai.common.client.dom.DOMUtil;
 import org.jboss.errai.common.client.dom.Div;
+import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.common.client.dom.Span;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.ext.layout.editor.client.resources.i18n.PropertiesConstants;
+
+import java.util.List;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -55,6 +62,18 @@ public class LayoutEditorPropertiesView implements LayoutEditorPropertiesPresent
     @Inject
     @DataField
     Anchor clearAllAnchor;
+    
+    @Inject
+    @DataField
+    HTMLOptionElement partOption;
+    
+    @Inject
+    @DataField
+    HTMLSelectElement partsSelect;
+    
+    @Inject
+    @DataField
+    Div partsFieldContainer;
 
     private IsWidget selectorView;
     private IsWidget elementView;
@@ -65,6 +84,7 @@ public class LayoutEditorPropertiesView implements LayoutEditorPropertiesPresent
         selectorLabel.setTextContent(PropertiesConstants.INSTANCE.elementLabel());
         propertiesLabel.setTextContent(PropertiesConstants.INSTANCE.propertiesLabel());
         clearAllAnchor.setTextContent(PropertiesConstants.INSTANCE.clearAll());
+        partsSelect.onchange = this::onPartsSelectChange;
     }
 
     @Override
@@ -88,7 +108,7 @@ public class LayoutEditorPropertiesView implements LayoutEditorPropertiesPresent
             elementView = null;
         }
     }
-
+    
     @Override
     public void showSelector(IsWidget selector) {
         disposeSelectorWidget();
@@ -146,5 +166,32 @@ public class LayoutEditorPropertiesView implements LayoutEditorPropertiesPresent
     @EventHandler("clearAllAnchor")
     private void onClearAll(ClickEvent event) {
         presenter.clearElementProperties();
+    }
+
+    @Override
+    public void noParts() {
+        partsFieldContainer.setHidden(true);
+        partsSelect.innerHTML = "";
+        
+    }
+
+    @Override
+    public void showParts(List<String> parts) {
+        partsFieldContainer.setHidden(false);
+        partsSelect.innerHTML = "";
+        parts.stream().map(this::itemToOption).forEach(partsSelect::appendChild);
+        
+    }
+    
+    private Object onPartsSelectChange(Object event) {
+        presenter.onPartSelected(partsSelect.value); 
+        return null; 
+    }
+    
+    private HTMLOptionElement itemToOption(String item) {
+        HTMLOptionElement option = (HTMLOptionElement) partOption.cloneNode(false);
+        option.text = item;
+        option.value = item;
+        return option;
     }
 }

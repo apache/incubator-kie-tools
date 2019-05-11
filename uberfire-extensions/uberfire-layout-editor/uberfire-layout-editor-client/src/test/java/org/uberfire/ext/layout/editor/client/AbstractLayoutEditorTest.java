@@ -25,17 +25,22 @@ import javax.enterprise.inject.Instance;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.api.ComponentDropEvent;
 import org.uberfire.ext.layout.editor.client.api.ComponentRemovedEvent;
 import org.uberfire.ext.layout.editor.client.components.columns.Column;
 import org.uberfire.ext.layout.editor.client.components.columns.ColumnWithComponents;
 import org.uberfire.ext.layout.editor.client.components.columns.ComponentColumn;
+import org.uberfire.ext.layout.editor.client.components.columns.ComponentColumnPart;
 import org.uberfire.ext.layout.editor.client.components.container.Container;
 import org.uberfire.ext.layout.editor.client.components.rows.EmptyDropRow;
 import org.uberfire.ext.layout.editor.client.components.rows.Row;
@@ -52,6 +57,7 @@ public abstract class AbstractLayoutEditorTest {
     public static final String SAMPLE_FULL_FLUID_LAYOUT = "org/uberfire/ext/layout/editor/client/sampleFullFluidLayout.txt";
     public static final String SAMPLE_FULL_PAGE_LAYOUT = "org/uberfire/ext/layout/editor/client/sampleFullPageLayout.txt";
     public static final String SINGLE_ROW_COMPONENT_LAYOUT = "org/uberfire/ext/layout/editor/client/singleRowComponentLayout.txt";
+    public static final String SINGLE_ROW_COMPONENT_LAYOUT_WITH_PARTS = "org/uberfire/ext/layout/editor/client/singleRowComponentLayoutWithParts.txt";
     public static final String SINGLE_ROW_TWO_COMPONENTS_LAYOUT = "org/uberfire/ext/layout/editor/client/singleRowTwoComponentsLayout.txt";
     public static final String FULL_LAYOUT_FLUID = "org/uberfire/ext/layout/editor/client/fullLayoutFluid.txt";
     public static final String FULL_LAYOUT_PAGE = "org/uberfire/ext/layout/editor/client/fullLayoutPage.txt";
@@ -150,12 +156,15 @@ public abstract class AbstractLayoutEditorTest {
             @Override
             protected ComponentColumn createComponentColumnInstance() {
 
+                ManagedInstance managedInstanceMock = mock(ManagedInstance.class);
+                when(managedInstanceMock.get()).thenReturn(new ComponentColumnPart());
                 ComponentColumn componentColumn = new ComponentColumn(mock(ComponentColumn.View.class),
                                                                       dnDManager,
                                                                       dragHelper,
                                                                       mock(Event.class),
                                                                       columnSelectedEvent,
-                                                                      columnUnselectedEvent) {
+                                                                      columnUnselectedEvent,
+                                                                      managedInstanceMock) {
                     @Override
                     protected boolean hasConfiguration() {
                         return false;
@@ -229,6 +238,7 @@ public abstract class AbstractLayoutEditorTest {
     public void setup() {
         container = createContainer();
         container.setup();
+        when(dragHelper.getLayoutComponentFromDrop(any())).thenReturn(new LayoutComponent());
     }
 
     protected LayoutTemplate loadLayout(String singleRowComponentLayout) throws Exception {

@@ -18,6 +18,7 @@ package org.uberfire.ext.layout.editor.client.infra;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Supplier;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -29,7 +30,7 @@ import org.gwtbootstrap3.client.ui.Modal;
 import org.jboss.errai.common.client.dom.DOMUtil;
 import org.jboss.errai.common.client.dom.Document;
 import org.jboss.errai.common.client.dom.HTMLElement;
-import org.uberfire.ext.layout.editor.api.css.CssProperty;
+import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.uberfire.ext.layout.editor.api.css.CssValue;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
@@ -86,7 +87,7 @@ public class DragHelperComponentColumn {
 
     public HTMLElement getPreviewElement(Widget context) {
         HTMLElement div = document.createElement("div");
-        applyCssProperties(div);
+        applyCssPropertiesToLayoutComponent(div);
         addCSSClass(div,
                     "uf-perspective-col");
 
@@ -95,9 +96,16 @@ public class DragHelperComponentColumn {
                     "uf-le-overflow");
         }
         FlowPanel gwtDivWrapper = GWT.create(FlowPanel.class);
-        gwtDivWrapper.add(getLayoutDragComponent()
-                                  .getPreviewWidget(new RenderingContext(layoutComponent,
-                                                                         context)).asWidget());
+        LayoutDragComponent layoutDragComponent = getLayoutDragComponent();
+        RenderingContext ctx = new RenderingContext(layoutComponent,context);
+        gwtDivWrapper.add(getLayoutDragComponent().getPreviewWidget(ctx).asWidget());
+        
+        layoutComponent.getParts().forEach(part -> {
+            layoutDragComponent.getContentPart(part.getPartId(), ctx).ifPresent(contentPart -> {
+                applyCssProperties(contentPart.asWidget(), part.getCssProperties());
+            });
+        });
+        
         DOMUtil.appendWidgetToElement(div,
                                       gwtDivWrapper);
         return div;
@@ -114,14 +122,18 @@ public class DragHelperComponentColumn {
                 getLayoutDragComponent()).getConfigurationModal(ctx);
         configModal.show();
     }
-
-
-    protected void applyCssProperties(HTMLElement widget) {
-        List<CssValue> cssValues = layoutCssHelper.readCssValues(layoutComponent.getProperties());
+    
+    protected void applyCssPropertiesToLayoutComponent(HTMLElement widget) {
+        applyCssProperties(ElementWrapperWidget.getWidget(widget), layoutComponent.getProperties());
+    }
+    
+    protected void applyCssProperties(Widget widget, Map<String, String> properties) {
+        List<CssValue> cssValues = layoutCssHelper.readCssValues(properties);
         cssValues.forEach(cssValue -> {
-            String prop = cssValue.getProperty();
+            String prop = cssValue.getPropertyInCamelCase();
             String val = cssValue.getValue();
-            widget.getStyle().setProperty(prop, val);
+            widget.getElement().getStyle().setProperty(prop, val);
         });
     }
+
 }
