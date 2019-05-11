@@ -101,7 +101,7 @@
 
   <!-- Dashbuilder -->
   <inherits name="org.dashbuilder.DashbuilderClientAll"/>
-  <inherits name="org.dashbuilder.renderer.GChartsRenderer"/>
+  <inherits name="org.dashbuilder.renderer.C3Renderer"/>
 
   <!-- Experimental -->
   <inherits name="org.uberfire.experimental.UberfireExperimentalClient"/>
