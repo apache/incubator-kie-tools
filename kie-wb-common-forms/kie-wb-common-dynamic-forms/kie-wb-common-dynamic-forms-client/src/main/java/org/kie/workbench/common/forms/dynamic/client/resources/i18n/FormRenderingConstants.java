@@ -85,4 +85,10 @@ public interface FormRenderingConstants {
 
     @TranslationKey(defaultValue = "")
     String BooleanEditableColumnGeneratorNo= "BooleanEditableColumnGenerator.no";
+
+    @TranslationKey(defaultValue = "")
+    String DatePickerWrapperViewImplShowDateTooltip= "DatePickerWrapperViewImpl.showDateTooltip";
+
+    @TranslationKey(defaultValue = "")
+    String DatePickerWrapperViewImplClearDateTooltip= "DatePickerWrapperViewImpl.clearDateTooltip";
 }
