@@ -240,7 +240,6 @@ public interface ScenarioSimulationEditorConstants
 
     String importLabel();
 
-
     String settings();
 
     String coverageReport();
@@ -278,4 +277,16 @@ public interface ScenarioSimulationEditorConstants
     String reportCoverageLabel();
 
     String numberOfTimesDecisionEvaluated();
+
+    String errorReason();
+
+    String keep();
+
+    String close();
+
+    String apply();
+
+    String errorPopoverMessageFailedWithError(String expectedValue, String errorValue);
+
+    String errorPopoverMessageFailedWithException(String errorMsg);
 }

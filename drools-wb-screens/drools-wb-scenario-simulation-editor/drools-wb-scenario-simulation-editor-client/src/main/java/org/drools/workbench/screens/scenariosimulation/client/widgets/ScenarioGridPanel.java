@@ -20,12 +20,17 @@ import java.util.Set;
 
 import javax.enterprise.context.Dependent;
 
+import com.ait.lienzo.client.core.event.NodeMouseMoveEvent;
+import com.ait.lienzo.client.core.event.NodeMouseMoveHandler;
 import com.ait.lienzo.client.core.event.NodeMouseOutEvent;
 import com.ait.lienzo.client.core.event.NodeMouseOutHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ContextMenuEvent;
+import com.google.gwt.event.dom.client.ScrollEvent;
+import com.google.gwt.event.dom.client.ScrollHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
+import org.drools.workbench.screens.scenariosimulation.client.handlers.CommonOnMoveHandler;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioSimulationGridPanelClickHandler;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPanel;
 
@@ -36,24 +41,30 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPane
  * The Clicks are managed by the injected <code>ScenarioSimulationGridPanelClickHandler</code>
  */
 @Dependent
-public class ScenarioGridPanel extends GridLienzoPanel implements NodeMouseOutHandler {
+public class ScenarioGridPanel extends GridLienzoPanel implements NodeMouseOutHandler,
+                                                                  NodeMouseMoveHandler,
+                                                                  ScrollHandler {
 
     private EventBus eventBus;
     private ScenarioSimulationGridPanelClickHandler clickHandler;
+    private CommonOnMoveHandler commonOnMoveHandler;
 
     Set<HandlerRegistration> handlerRegistrations = new HashSet<>();
 
     public ScenarioGridPanel() {
     }
 
-    public void addClickHandler(final ScenarioSimulationGridPanelClickHandler clickHandler) {
+    public void addHandlers(final ScenarioSimulationGridPanelClickHandler clickHandler, final CommonOnMoveHandler commonOnHoverHandler) {
         this.clickHandler = clickHandler;
+        this.commonOnMoveHandler = commonOnHoverHandler;
         unregister();
         handlerRegistrations.add(getDomElementContainer().addDomHandler(clickHandler,
                                                                         ContextMenuEvent.getType()));
         handlerRegistrations.add(getDomElementContainer().addDomHandler(clickHandler,
                                                                         ClickEvent.getType()));
         handlerRegistrations.add(getScenarioGridLayer().addNodeMouseOutHandler(this));
+        handlerRegistrations.add(getScenarioGridLayer().addNodeMouseMoveHandler(this));
+        handlerRegistrations.add(getScrollPanel().addDomHandler(this, ScrollEvent.getType()));
     }
 
     public ScenarioGridLayer getScenarioGridLayer() {
@@ -81,7 +92,26 @@ public class ScenarioGridPanel extends GridLienzoPanel implements NodeMouseOutHa
         final int y = event.getY();
         if (x < 0 || x > width || y < 0 || y > height) {
             clickHandler.hideMenus();
+            commonOnMoveHandler.hidePopover();
         }
+    }
+
+    @Override
+    public void onNodeMouseMove(NodeMouseMoveEvent event) {
+        commonOnMoveHandler.handleOnMove(event.getX(), event.getY());
+    }
+
+    @Override
+    public void onScroll(ScrollEvent scrollEvent) {
+        clickHandler.hideMenus();
+        commonOnMoveHandler.hidePopover();
+    }
+
+    @Override
+    public void onResize() {
+        super.onResize();
+        clickHandler.hideMenus();
+        commonOnMoveHandler.hidePopover();
     }
 
     public void unregister() {

@@ -16,18 +16,18 @@
 
 package org.drools.workbench.screens.scenariosimulation.client.handlers;
 
+import com.ait.lienzo.client.core.types.Point2D;
 import org.drools.workbench.screens.scenariosimulation.client.menu.ScenarioContextMenuRegistry;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGrid;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
-import org.uberfire.ext.wires.core.grids.client.util.CellContextUtilities;
 import org.uberfire.ext.wires.core.grids.client.util.ColumnIndexUtilities;
-import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellEditContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationInvokeContextMenuForSelectedCell;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
+
+import static org.drools.workbench.screens.scenariosimulation.client.utils.ScenarioSimulationUtils.getMiddleXYCell;
 
 public class ScenarioInvokeContextMenuForSelectedCell extends KeyboardOperationInvokeContextMenuForSelectedCell {
 
@@ -68,30 +68,10 @@ public class ScenarioInvokeContextMenuForSelectedCell extends KeyboardOperationI
                                                                          origin.getColumnIndex());
         final GridColumn<?> column = model.getColumns().get(uiColumnIndex);
         if (column instanceof ScenarioGridColumn) {
-            final BaseGridRendererHelper rendererHelper = gridWidget.getRendererHelper();
-            final BaseGridRendererHelper.RenderingInformation ri = rendererHelper.getRenderingInformation();
-            final double columnXCoordinate = rendererHelper.getColumnOffset(column) + column.getWidth() / 2;
-            final BaseGridRendererHelper.ColumnInformation ci = rendererHelper.getColumnInformation(columnXCoordinate);
-
-            final GridBodyCellEditContext context = isHeader ?
-                    CellContextUtilities.makeHeaderCellRenderContext(gridWidget,
-                                                                     ri,
-                                                                     ci,
-                                                                     uiRowIndex)
-                    : CellContextUtilities.makeCellRenderContext(gridWidget,
-                                                                 ri,
-                                                                 ci,
-                                                                 uiRowIndex);
-            final int cellXMiddle = (int) (context.getAbsoluteCellX() +
-                    context.getCellWidth() / 2 +
-                    gridLayer.getDomElementContainer().getAbsoluteLeft());
-            final int cellYMiddle = (int) (context.getAbsoluteCellY() +
-                    context.getCellHeight() / 2 +
-                    gridLayer.getDomElementContainer().getAbsoluteTop());
-
+            final Point2D middleXYCell = getMiddleXYCell(gridWidget, column, isHeader, uiRowIndex, gridLayer);
             return scenarioContextMenuRegistry.manageRightClick((ScenarioGrid) gridWidget,
-                                                                cellXMiddle,
-                                                                cellYMiddle,
+                                                                (int) middleXYCell.getX(),
+                                                                (int) middleXYCell.getY(),
                                                                 uiRowIndex,
                                                                 uiColumnIndex,
                                                                 isHeader);

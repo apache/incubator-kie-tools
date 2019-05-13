@@ -284,6 +284,7 @@ public abstract class AbstractScenarioSimulationTest {
         });
         when(scenarioGridMock.getEventBus()).thenReturn(eventBusMock);
         when(scenarioGridMock.getModel()).thenReturn(scenarioGridModelMock);
+        when(scenarioGridMock.getLayer()).thenReturn(scenarioGridLayerMock);
         final Point2D computedLocation = mock(Point2D.class);
         when(computedLocation.getX()).thenReturn(0.0);
         when(computedLocation.getY()).thenReturn(0.0);

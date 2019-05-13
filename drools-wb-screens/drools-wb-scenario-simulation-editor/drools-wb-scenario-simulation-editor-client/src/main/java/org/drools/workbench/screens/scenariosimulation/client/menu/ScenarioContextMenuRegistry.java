@@ -33,6 +33,7 @@ import org.drools.workbench.screens.scenariosimulation.client.editor.menu.Header
 import org.drools.workbench.screens.scenariosimulation.client.editor.menu.OtherContextMenu;
 import org.drools.workbench.screens.scenariosimulation.client.editor.menu.UnmodifiableColumnGridContextMenu;
 import org.drools.workbench.screens.scenariosimulation.client.metadata.ScenarioHeaderMetaData;
+import org.drools.workbench.screens.scenariosimulation.client.popover.ErrorReportPopoverPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.utils.ScenarioSimulationGridHeaderUtilities;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGrid;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
@@ -48,6 +49,7 @@ public class ScenarioContextMenuRegistry {
     protected ExpectedContextMenu expectedContextMenu;
     protected GridContextMenu gridContextMenu;
     protected UnmodifiableColumnGridContextMenu unmodifiableColumnGridContextMenu;
+    protected ErrorReportPopoverPresenter errorReportPopoverPresenter;
 
     @Inject
     public ScenarioContextMenuRegistry(final OtherContextMenu otherContextMenu,
@@ -255,4 +257,14 @@ public class ScenarioContextMenuRegistry {
         scenarioGrid.setSelectedColumnAndHeader(uiHeaderRowIndex, uiColumnIndex);
         return true;
     }
+
+
+    public void setErrorReportPopoverPresenter(ErrorReportPopoverPresenter errorReportPopoverPresenter) {
+        this.errorReportPopoverPresenter = errorReportPopoverPresenter;
+    }
+
+    public void hideErrorReportPopover() {
+        errorReportPopoverPresenter.hide();
+    }
+
 }

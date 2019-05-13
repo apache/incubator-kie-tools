@@ -71,15 +71,14 @@ public class ScenarioSimulationGridPanelClickHandlerTest extends AbstractScenari
     }
 
     @Test
-    public void setScenarioGrid() {
-        scenarioSimulationGridPanelClickHandler.setScenarioGrid(scenarioGridMock);
+    public void setScenarioGridPanel() {
+        scenarioSimulationGridPanelClickHandler.setScenarioGridPanel(scenarioGridPanelMock);
         assertEquals(scenarioGridMock, scenarioSimulationGridPanelClickHandler.scenarioGrid);
     }
 
     @Test
     public void setEventBus() {
         scenarioSimulationGridPanelClickHandler.setEventBus(eventBusMock);
-        verify(scenarioContextMenuRegistryMock, times(1)).setEventBus(eq(eventBusMock));
     }
 
     @Test
@@ -101,7 +100,7 @@ public class ScenarioSimulationGridPanelClickHandlerTest extends AbstractScenari
     public void testManageLeftClick() {
         when(point2DMock.getX()).thenReturn(Double.valueOf(CLICK_POINT_X));
         when(point2DMock.getY()).thenReturn(Double.valueOf(CLICK_POINT_Y));
-        assertTrue("testManageLeftClick fail", scenarioSimulationGridPanelClickHandler.manageLeftClick((int) CLICK_POINT_X,
+        assertTrue("testManageLeftClick fail", scenarioSimulationGridPanelClickHandler.manageCoordinates((int) CLICK_POINT_X,
                                                                                                        (int) CLICK_POINT_Y));
     }
 
@@ -110,7 +109,7 @@ public class ScenarioSimulationGridPanelClickHandlerTest extends AbstractScenari
         when(informationHeaderMetaDataMock.isReadOnly()).thenReturn(true);
         scenarioSimulationGridPanelClickHandler.setEventBus(eventBusMock);
         assertTrue("Click to readonly header cell.",
-                   scenarioSimulationGridPanelClickHandler.manageLeftClick((int) CLICK_POINT_X,
+                   scenarioSimulationGridPanelClickHandler.manageCoordinates((int) CLICK_POINT_X,
                                                                            (int) CLICK_POINT_Y));
         verify(scenarioGridMock, times(1)).setSelectedColumnAndHeader(anyInt(), anyInt());
         verify(eventBusMock, times(1)).fireEvent(any(EnableTestToolsEvent.class));
@@ -119,7 +118,7 @@ public class ScenarioSimulationGridPanelClickHandlerTest extends AbstractScenari
     @Test
     public void testManageLeftClick_NextToGrid() {
         assertFalse("Click to point next to table.",
-                    scenarioSimulationGridPanelClickHandler.manageLeftClick(GRID_WIDTH.intValue() + (int) CLICK_POINT_X,
+                    scenarioSimulationGridPanelClickHandler.manageCoordinates(GRID_WIDTH.intValue() + (int) CLICK_POINT_X,
                                                                             (int) CLICK_POINT_Y));
         verify(scenarioGridMock, never()).setSelectedColumnAndHeader(anyInt(), anyInt());
         verify(eventBusMock, never()).fireEvent(any(EnableTestToolsEvent.class));
@@ -128,7 +127,7 @@ public class ScenarioSimulationGridPanelClickHandlerTest extends AbstractScenari
     @Test
     public void testManageLeftClick_BelowHeader() {
         assertFalse("Click to point below header.",
-                    scenarioSimulationGridPanelClickHandler.manageLeftClick((int) CLICK_POINT_X,
+                    scenarioSimulationGridPanelClickHandler.manageCoordinates((int) CLICK_POINT_X,
                                                                             HEADER_HEIGHT.intValue() + (int) CLICK_POINT_Y));
         verify(scenarioGridMock, never()).setSelectedColumnAndHeader(anyInt(), anyInt());
         verify(eventBusMock, never()).fireEvent(any(EnableTestToolsEvent.class));
@@ -137,20 +136,20 @@ public class ScenarioSimulationGridPanelClickHandlerTest extends AbstractScenari
     @Test
     public void testManageHeaderLeftClick_NoEditableHeader() {
         when(informationHeaderMetaDataMock.isReadOnly()).thenReturn(true);
-        assertTrue("NoEditableHeader fail", scenarioSimulationGridPanelClickHandler.manageLeftClick((int) CLICK_POINT_X,
+        assertTrue("NoEditableHeader fail", scenarioSimulationGridPanelClickHandler.manageCoordinates((int) CLICK_POINT_X,
                                                                                                     (int) CLICK_POINT_Y));
     }
 
     @Test
     public void testManageHeaderLeftClick_NullUIHeaderRowIndex() {
-        assertFalse("NullUIHeaderRowIndex fail", scenarioSimulationGridPanelClickHandler.manageLeftClick((int) CLICK_POINT_X,
+        assertFalse("NullUIHeaderRowIndex fail", scenarioSimulationGridPanelClickHandler.manageCoordinates((int) CLICK_POINT_X,
                                                                                                          (int) CLICK_POINT_Y + 10));
     }
 
     @Test
     public void testManageHeaderLeftClick_NullMetadata() {
         when(headerMetaDatasMock.get(anyInt())).thenReturn(null);
-        assertFalse("NullMetadata fail", scenarioSimulationGridPanelClickHandler.manageLeftClick((int) CLICK_POINT_X,
+        assertFalse("NullMetadata fail", scenarioSimulationGridPanelClickHandler.manageCoordinates((int) CLICK_POINT_X,
                                                                                                  (int) CLICK_POINT_Y));
     }
 
@@ -177,7 +176,7 @@ public class ScenarioSimulationGridPanelClickHandlerTest extends AbstractScenari
         doReturn(null).when(scenarioSimulationGridPanelClickHandler).getUiHeaderRowIndexLocal(isA(Point2D.class));
         doReturn(UI_ROW_INDEX).when(scenarioSimulationGridPanelClickHandler).getUiRowIndexLocal(anyDouble());
         doReturn(UI_COLUMN_INDEX).when(scenarioSimulationGridPanelClickHandler).getUiColumnIndexLocal(anyDouble());
-        assertTrue(scenarioSimulationGridPanelClickHandler.manageLeftClick((int) CLICK_POINT_X, (int) CLICK_POINT_Y));
+        assertTrue(scenarioSimulationGridPanelClickHandler.manageCoordinates((int) CLICK_POINT_X, (int) CLICK_POINT_Y));
         verify(scenarioGridModelMock, times(1)).selectCell(eq(1), eq(0));
     }
 
@@ -191,7 +190,7 @@ public class ScenarioSimulationGridPanelClickHandlerTest extends AbstractScenari
         doReturn(UI_ROW_INDEX).when(scenarioSimulationGridPanelClickHandler).getUiRowIndexLocal(anyDouble());
         doReturn(UI_COLUMN_INDEX).when(scenarioSimulationGridPanelClickHandler).getUiColumnIndexLocal(anyDouble());
         doReturn(scenarioGridCellMock).when(scenarioGridModelMock).getCell(UI_ROW_INDEX, UI_COLUMN_INDEX);
-        assertTrue(scenarioSimulationGridPanelClickHandler.manageLeftClick((int) CLICK_POINT_X, (int) CLICK_POINT_Y));
+        assertTrue(scenarioSimulationGridPanelClickHandler.manageCoordinates((int) CLICK_POINT_X, (int) CLICK_POINT_Y));
         verify(scenarioGridModelMock, times(1)).selectCell(eq(1), eq(0));
     }
 
@@ -201,11 +200,11 @@ public class ScenarioSimulationGridPanelClickHandlerTest extends AbstractScenari
         when(informationHeaderMetaDataMock.getColumnGroup()).thenReturn(group);
         String message = group + "Group fail";
         if (assertExpected) {
-            assertTrue(message, scenarioSimulationGridPanelClickHandler.manageLeftClick((int) CLICK_POINT_X, (int) CLICK_POINT_Y));
+            assertTrue(message, scenarioSimulationGridPanelClickHandler.manageCoordinates((int) CLICK_POINT_X, (int) CLICK_POINT_Y));
             verify(scenarioGridMock, times(1)).setSelectedColumnAndHeader(eq(0), eq(0));
             verify(eventBusMock, times(1)).fireEvent(isA(EnableTestToolsEvent.class));
         } else {
-            assertFalse(message, scenarioSimulationGridPanelClickHandler.manageLeftClick((int) CLICK_POINT_X, (int) CLICK_POINT_Y));
+            assertFalse(message, scenarioSimulationGridPanelClickHandler.manageCoordinates((int) CLICK_POINT_X, (int) CLICK_POINT_Y));
             verify(scenarioGridMock, never()).setSelectedColumnAndHeader(eq(0), eq(0));
             verify(eventBusMock, never()).fireEvent(any());
             return;

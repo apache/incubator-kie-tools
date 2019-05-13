@@ -26,6 +26,7 @@ import org.drools.scenariosimulation.api.model.ExpressionIdentifier;
 import org.drools.scenariosimulation.api.model.FactIdentifier;
 import org.drools.scenariosimulation.api.model.FactMapping;
 import org.drools.scenariosimulation.api.model.FactMappingValue;
+import org.drools.scenariosimulation.api.model.FactMappingValueStatus;
 import org.drools.scenariosimulation.api.model.Scenario;
 import org.drools.workbench.screens.scenariosimulation.client.AbstractScenarioSimulationTest;
 import org.drools.workbench.screens.scenariosimulation.client.events.ReloadTestToolsEvent;
@@ -140,7 +141,7 @@ public class ScenarioGridModelTest extends AbstractScenarioSimulationTest {
         when(simulationMock.cloneScenario(ROW_COUNT, ROW_COUNT + 1)).thenReturn(scenarioMock);
 
         when(scenarioMock.getFactMappingValue(any(), any())).thenReturn(Optional.of(factMappingValueMock));
-        when(factMappingValueMock.isError()).thenReturn(true);
+        when(factMappingValueMock.getStatus()).thenReturn(FactMappingValueStatus.FAILED_WITH_ERROR);
 
         gridCellSupplier = () -> gridCellMock;
         scenarioGridModel = spy(new ScenarioGridModel(false) {
@@ -465,7 +466,7 @@ public class ScenarioGridModelTest extends AbstractScenarioSimulationTest {
         scenarioGridModel.refreshErrors();
         verify(gridCellMock, times(expectedCalls)).setErrorMode(eq(true));
 
-        when(factMappingValueMock.isError()).thenReturn(false);
+        when(factMappingValueMock.getStatus()).thenReturn(FactMappingValueStatus.SUCCESS);
         scenarioGridModel.refreshErrors();
         verify(gridCellMock, times(expectedCalls)).setErrorMode(eq(false));
     }
@@ -474,7 +475,7 @@ public class ScenarioGridModelTest extends AbstractScenarioSimulationTest {
     public void refreshErrorsRow() {
         int expectedCalls = scenarioGridModel.getColumnCount();
         FactMappingValue factMappingValue = mock(FactMappingValue.class);
-        when(factMappingValue.isError()).thenReturn(true);
+        when(factMappingValue.getStatus()).thenReturn(FactMappingValueStatus.FAILED_WITH_ERROR);
 
         when(scenarioMock.getFactMappingValue(any(), any())).thenReturn(Optional.empty());
         scenarioGridModel.refreshErrorsRow(0);

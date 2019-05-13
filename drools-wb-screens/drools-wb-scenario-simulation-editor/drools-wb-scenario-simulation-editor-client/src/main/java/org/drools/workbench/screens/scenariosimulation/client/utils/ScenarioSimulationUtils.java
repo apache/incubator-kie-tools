@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.ait.lienzo.client.core.types.Point2D;
 import org.drools.scenariosimulation.api.model.ExpressionIdentifier;
 import org.drools.scenariosimulation.api.model.FactIdentifier;
 import org.drools.scenariosimulation.api.model.FactMappingType;
@@ -26,6 +27,12 @@ import org.drools.workbench.screens.scenariosimulation.client.factories.Scenario
 import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioHeaderTextBoxSingletonDOMElementFactory;
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
+import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
+import org.uberfire.ext.wires.core.grids.client.util.CellContextUtilities;
+import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellEditContext;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
+import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 
 import static org.drools.workbench.screens.scenariosimulation.client.editor.strategies.DataManagementStrategy.SIMPLE_CLASSES_MAP;
 
@@ -275,6 +282,39 @@ public class ScenarioSimulationUtils {
                 .setPropertyHeader(true);
 
         return headerBuilder;
+    }
+
+    /**
+     * Returns an array where the 0-element is middle x of given cell and 1-element is middle y
+     * @param gridWidget
+     * @param column
+     * @param isHeader
+     * @param uiRowIndex
+     * @param gridLayer
+     * @return
+     */
+    public static Point2D getMiddleXYCell(final GridWidget gridWidget, final GridColumn<?> column, boolean isHeader, final int uiRowIndex, final GridLayer gridLayer) {
+        final BaseGridRendererHelper rendererHelper = gridWidget.getRendererHelper();
+        final BaseGridRendererHelper.RenderingInformation ri = rendererHelper.getRenderingInformation();
+        final double columnXCoordinate = rendererHelper.getColumnOffset(column) + column.getWidth() / 2;
+        final BaseGridRendererHelper.ColumnInformation ci = rendererHelper.getColumnInformation(columnXCoordinate);
+
+        final GridBodyCellEditContext context = isHeader ?
+                CellContextUtilities.makeHeaderCellRenderContext(gridWidget,
+                                                                 ri,
+                                                                 ci,
+                                                                 uiRowIndex)
+                : CellContextUtilities.makeCellRenderContext(gridWidget,
+                                                             ri,
+                                                             ci,
+                                                             uiRowIndex);
+        final int cellXMiddle = (int) (context.getAbsoluteCellX() +
+                context.getCellWidth() / 2 +
+                gridLayer.getDomElementContainer().getAbsoluteLeft());
+        final int cellYMiddle = (int) (context.getAbsoluteCellY() +
+                context.getCellHeight() / 2 +
+                gridLayer.getDomElementContainer().getAbsoluteTop());
+        return new Point2D(cellXMiddle, cellYMiddle);
     }
 
     protected static double getColumnWidth(String columnId) {

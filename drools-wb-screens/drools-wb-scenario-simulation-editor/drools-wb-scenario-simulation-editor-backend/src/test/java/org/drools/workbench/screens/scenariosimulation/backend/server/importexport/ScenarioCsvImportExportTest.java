@@ -78,9 +78,10 @@ public class ScenarioCsvImportExportTest {
         Simulation simulation = scenarioCsvImportExport.importData(rawCSV, originalSimulation);
 
         assertEquals(1, simulation.getUnmodifiableScenarios().size());
-        assertEquals("value1", simulation.getScenarioByIndex(0).getFactMappingValueByIndex(2).get().getRawValue());
-        assertEquals("value2", simulation.getScenarioByIndex(0).getFactMappingValueByIndex(3).get().getRawValue());
-        assertEquals("value3", simulation.getScenarioByIndex(0).getFactMappingValueByIndex(4).get().getRawValue());
+
+        assertEquals("value1", simulation.getScenarioByIndex(0).getFactMappingValue(simulation.getSimulationDescriptor().getFactMappingByIndex(2)).get().getRawValue());
+        assertEquals("value2", simulation.getScenarioByIndex(0).getFactMappingValue(simulation.getSimulationDescriptor().getFactMappingByIndex(3)).get().getRawValue());
+        assertEquals("value3", simulation.getScenarioByIndex(0).getFactMappingValue(simulation.getSimulationDescriptor().getFactMappingByIndex(4)).get().getRawValue());
 
         assertThatThrownBy(() -> scenarioCsvImportExport.importData("", originalSimulation))
                 .isInstanceOf(IllegalArgumentException.class)
