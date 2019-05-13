@@ -19,11 +19,11 @@ package org.kie.workbench.common.dmn.client.editors.included.modal.dropdown;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.widgets.client.assets.dropdown.KieAssetsDropdown;
+import org.kie.workbench.common.widgets.client.assets.dropdown.SubmarineKieAssetsDropdown;
 import org.kie.workbench.common.widgets.client.submarine.IsSubmarine;
 
 @Dependent
-public class DMNAssetsDropdown extends KieAssetsDropdown {
+public class DMNAssetsDropdown extends SubmarineKieAssetsDropdown {
 
     @Inject
     public DMNAssetsDropdown(final View view,

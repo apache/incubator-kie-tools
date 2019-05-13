@@ -16,119 +16,37 @@
 
 package org.kie.workbench.common.widgets.client.assets.dropdown;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Consumer;
-
-import javax.annotation.PostConstruct;
 
 import elemental2.dom.HTMLElement;
 import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
-import org.kie.workbench.common.widgets.client.submarine.IsSubmarine;
 import org.uberfire.client.mvp.UberElemental;
 import org.uberfire.mvp.Command;
 
-public abstract class KieAssetsDropdown {
+public interface KieAssetsDropdown {
 
-    private final View view;
+    void init();
 
-    private final KieAssetsDropdownItemsProvider dataProvider;
+    void registerOnChangeHandler(final Command onChangeHandler);
 
-    private final IsSubmarine isSubmarine;
+    void loadAssets();
 
-    private final List<KieAssetsDropdownItem> kieAssets = new ArrayList<>();
+    void initialize();
 
-    private Command onValueChangeHandler = () -> {/* Nothing. */};
+    void clear();
 
-    public KieAssetsDropdown(final View view,
-                             final IsSubmarine isSubmarine,
-                             final KieAssetsDropdownItemsProvider dataProvider) {
-        this.view = view;
-        this.isSubmarine = isSubmarine;
-        this.dataProvider = dataProvider;
-    }
+    HTMLElement getElement();
 
-    @PostConstruct
-    public void setup() {
-        view.init(this);
-    }
+    Optional<KieAssetsDropdownItem> getValue();
 
-    public void registerOnChangeHandler(final Command onChangeHandler) {
-        this.onValueChangeHandler = onChangeHandler;
-    }
+    void onValueChanged();
 
-    public void loadAssets() {
-        clear();
+    void initializeDropdown();
 
-        if (isSubmarine.get()) {
-            initializeInput();
-        } else {
-            initializeDropdown();
-        }
-    }
+    void addValue(final KieAssetsDropdownItem kieAsset);
 
-    public void initialize() {
-        if (!isSubmarine.get()) {
-            view.refreshSelectPicker();
-        }
-    }
-
-    public void clear() {
-        getKieAssets().clear();
-        view.clear();
-    }
-
-    private void initializeInput() {
-        view.enableInputMode();
-        view.initialize();
-    }
-
-    private void initializeDropdown() {
-        view.enableDropdownMode();
-        dataProvider.getItems(getAssetListConsumer());
-    }
-
-    Consumer<List<KieAssetsDropdownItem>> getAssetListConsumer() {
-        return assetList -> {
-            assetList.forEach(this::addValue);
-            view.refreshSelectPicker();
-            view.initialize();
-        };
-    }
-
-    private void addValue(final KieAssetsDropdownItem kieAsset) {
-        getKieAssets().add(kieAsset);
-        view.addValue(kieAsset);
-    }
-
-    public HTMLElement getElement() {
-        return view.getElement();
-    }
-
-    public Optional<KieAssetsDropdownItem> getValue() {
-        if (isSubmarine.get()) {
-            return Optional.of(new KieAssetsDropdownItem("", "", view.getValue(), new HashMap<>()));
-        } else {
-            return getKieAssets()
-                    .stream()
-                    .filter(kieAsset -> Objects.equals(view.getValue(), kieAsset.getValue()))
-                    .findAny();
-        }
-    }
-
-    List<KieAssetsDropdownItem> getKieAssets() {
-        return kieAssets;
-    }
-
-    void onValueChanged() {
-        onValueChangeHandler.execute();
-    }
-
-    public interface View extends UberElemental<KieAssetsDropdown>,
-                                  IsElement {
+    interface View extends UberElemental<KieAssetsDropdown>,
+                           IsElement {
 
         void clear();
 
@@ -139,9 +57,5 @@ public abstract class KieAssetsDropdown {
         void initialize();
 
         String getValue();
-
-        void enableInputMode();
-
-        void enableDropdownMode();
     }
 }

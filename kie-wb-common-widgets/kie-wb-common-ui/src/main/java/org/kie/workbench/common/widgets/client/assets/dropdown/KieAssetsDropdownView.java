@@ -20,17 +20,14 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.event.dom.client.KeyUpEvent;
 import elemental2.dom.Element;
-import elemental2.dom.HTMLInputElement;
 import elemental2.dom.HTMLOptionElement;
 import elemental2.dom.HTMLSelectElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.client.views.pfly.selectpicker.JQuerySelectPicker;
-import org.uberfire.client.views.pfly.selectpicker.JQuerySelectPicker.CallbackFunction;
+import org.uberfire.client.views.pfly.selectpicker.JQuerySelectPickerEvent;
 
 import static org.kie.workbench.common.widgets.client.resources.i18n.KieWorkbenchWidgetsConstants.KieAssetsDropdownView_Select;
 
@@ -38,29 +35,20 @@ import static org.kie.workbench.common.widgets.client.resources.i18n.KieWorkbenc
 @Templated
 public class KieAssetsDropdownView implements KieAssetsDropdown.View {
 
-    static final String HIDDEN_CSS_CLASS = "hidden";
+    public static final String HIDDEN_CSS_CLASS = "hidden";
 
-    static final String SELECT_PICKER_SUBTEXT_ATTRIBUTE = "data-subtext";
-
+    public static final String SELECT_PICKER_SUBTEXT_ATTRIBUTE = "data-subtext";
     @DataField("native-select")
-    private final HTMLSelectElement nativeSelect;
-
-    @DataField("fallback-input")
-    private final HTMLInputElement fallbackInput;
-
-    private final HTMLOptionElement htmlOptionElement;
-
-    private final TranslationService translationService;
-
-    private KieAssetsDropdown presenter;
+    protected final HTMLSelectElement nativeSelect;
+    protected final HTMLOptionElement htmlOptionElement;
+    protected final TranslationService translationService;
+    protected KieAssetsDropdown presenter;
 
     @Inject
     public KieAssetsDropdownView(final HTMLSelectElement nativeSelect,
-                                 final HTMLInputElement fallbackInput,
                                  final HTMLOptionElement htmlOptionElement,
                                  final TranslationService translationService) {
         this.nativeSelect = nativeSelect;
-        this.fallbackInput = fallbackInput;
         this.htmlOptionElement = htmlOptionElement;
         this.translationService = translationService;
     }
@@ -73,15 +61,7 @@ public class KieAssetsDropdownView implements KieAssetsDropdown.View {
     @PostConstruct
     public void init() {
         nativeSelect.hidden = false;
-        fallbackInput.hidden = true;
         dropdown().on("hidden.bs.select", getOnDropdownChangeHandler());
-    }
-
-    CallbackFunction getOnDropdownChangeHandler() {
-        return event -> {
-            fallbackInput.value = event.target.value;
-            presenter.onValueChanged();
-        };
     }
 
     @Override
@@ -98,8 +78,8 @@ public class KieAssetsDropdownView implements KieAssetsDropdown.View {
 
     @Override
     public void initialize() {
-        fallbackInput.value = "";
         dropdown().selectpicker("val", "");
+        dropdown().selectpicker("show");
     }
 
     @Override
@@ -109,56 +89,42 @@ public class KieAssetsDropdownView implements KieAssetsDropdown.View {
 
     @Override
     public String getValue() {
-        return fallbackInput.value;
+        return dropdown().val();
     }
 
-    @Override
-    public void enableInputMode() {
-        nativeSelect.classList.add(HIDDEN_CSS_CLASS);
-        fallbackInput.classList.remove(HIDDEN_CSS_CLASS);
-        dropdown().selectpicker("hide");
+    protected JQuerySelectPicker.CallbackFunction getOnDropdownChangeHandler() {
+        return this::onDropdownChangeHandlerMethod;
     }
 
-    @Override
-    public void enableDropdownMode() {
-        fallbackInput.classList.add(HIDDEN_CSS_CLASS);
-        nativeSelect.classList.remove(HIDDEN_CSS_CLASS);
-        dropdown().selectpicker("show");
-    }
-
-    @EventHandler("fallback-input")
-    public void onFallbackInputChange(final KeyUpEvent e) {
+    protected void onDropdownChangeHandlerMethod(JQuerySelectPickerEvent event) {
         presenter.onValueChanged();
     }
 
-    HTMLOptionElement selectOption() {
+    protected HTMLOptionElement selectOption() {
         final HTMLOptionElement option = makeHTMLOptionElement();
         option.text = translationService.format(KieAssetsDropdownView_Select);
         option.value = "";
         return option;
     }
 
-    private HTMLOptionElement entryOption(final KieAssetsDropdownItem entry) {
-
-        final HTMLOptionElement option = makeHTMLOptionElement();
-
-        option.text = entry.getText();
-        option.value = entry.getValue();
-        option.setAttribute(SELECT_PICKER_SUBTEXT_ATTRIBUTE, entry.getSubText());
-
-        return option;
-    }
-
-    HTMLOptionElement makeHTMLOptionElement() {
+    protected HTMLOptionElement makeHTMLOptionElement() {
         // This is a workaround for an issue on Errai (ERRAI-1114) related to 'ManagedInstance' + 'HTMLOptionElement'.
         return (HTMLOptionElement) htmlOptionElement.cloneNode(false);
     }
 
-    JQuerySelectPicker dropdown() {
+    protected JQuerySelectPicker dropdown() {
         return JQuerySelectPicker.$(nativeSelect);
     }
 
-    private void removeChildren(final Element element) {
+    protected HTMLOptionElement entryOption(final KieAssetsDropdownItem entry) {
+        final HTMLOptionElement option = makeHTMLOptionElement();
+        option.text = entry.getText();
+        option.value = entry.getValue();
+        option.setAttribute(SELECT_PICKER_SUBTEXT_ATTRIBUTE, entry.getSubText());
+        return option;
+    }
+
+    protected void removeChildren(final Element element) {
         while (element.firstChild != null) {
             element.removeChild(element.firstChild);
         }
