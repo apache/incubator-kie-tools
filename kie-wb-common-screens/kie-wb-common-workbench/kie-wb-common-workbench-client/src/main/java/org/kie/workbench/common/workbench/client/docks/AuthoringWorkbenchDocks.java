@@ -27,6 +27,7 @@ import javax.inject.Inject;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.screens.library.api.preferences.LibraryInternalPreferences;
+import org.kie.workbench.common.widgets.client.docks.AuthoringEditorDock;
 import org.kie.workbench.common.widgets.client.docks.EditorDock;
 import org.kie.workbench.common.widgets.client.docks.WorkbenchDocksHandler;
 import org.kie.workbench.common.workbench.client.events.LayoutEditorFocusEvent;
@@ -43,7 +44,7 @@ import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
 @ApplicationScoped
 public class AuthoringWorkbenchDocks
-        implements EditorDock {
+        implements AuthoringEditorDock {
 
     protected DefaultWorkbenchConstants constants = DefaultWorkbenchConstants.INSTANCE;
 
@@ -100,6 +101,7 @@ public class AuthoringWorkbenchDocks
         }
     }
 
+    @Override
     public void setup(String authoringPerspectiveIdentifier,
                       PlaceRequest projectExplorerPlaceRequest) {
         this.authoringPerspectiveIdentifier = authoringPerspectiveIdentifier;
@@ -155,6 +157,7 @@ public class AuthoringWorkbenchDocks
                 authoringPerspectiveIdentifier.equals(currentPerspectiveIdentifier);
     }
 
+    @Override
     public void hide() {
 
         if (componentPaletteEnabled) {
@@ -166,6 +169,7 @@ public class AuthoringWorkbenchDocks
         projectExplorerEnabled = false;
     }
 
+    @Override
     public void show() {
 
         uberfireDocks.show(UberfireDockPosition.WEST,
@@ -187,6 +191,7 @@ public class AuthoringWorkbenchDocks
         }
     }
 
+    @Override
     public void expandAuthoringDock(final UberfireDock dockToOpen) {
         uberfireDocks.show(UberfireDockPosition.EAST, authoringPerspectiveIdentifier);
 
