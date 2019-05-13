@@ -42,6 +42,8 @@ public abstract class JQuerySelectPicker {
 
     public native JQuerySelectPicker off(final String event);
 
+    public native String val();
+
     @JsFunction
     public interface CallbackFunction {
 
