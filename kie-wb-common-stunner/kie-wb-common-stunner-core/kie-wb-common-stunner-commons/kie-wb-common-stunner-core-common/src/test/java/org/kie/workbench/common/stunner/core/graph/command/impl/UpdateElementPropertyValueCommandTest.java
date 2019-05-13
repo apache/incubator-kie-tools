@@ -93,8 +93,8 @@ public class UpdateElementPropertyValueCommandTest extends AbstractGraphCommandT
     }
 
     @Test(expected = BadCommandArgumentsException.class)
-    public void testAllowNodeNotFound() {
-        when(graphIndex.getNode(eq(UUID))).thenReturn(null);
+    public void testAllowElementNotFound() {
+        when(graphIndex.get(eq(UUID))).thenReturn(null);
         tested.allow(graphCommandExecutionContext);
     }
 

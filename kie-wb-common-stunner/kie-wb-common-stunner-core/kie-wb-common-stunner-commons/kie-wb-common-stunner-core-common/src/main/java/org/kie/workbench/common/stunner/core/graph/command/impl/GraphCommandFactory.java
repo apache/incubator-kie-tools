@@ -122,7 +122,7 @@ public class GraphCommandFactory {
     }
 
     @SuppressWarnings("unchecked")
-    public UpdateElementPropertyValueCommand updatePropertyValue(final Node element,
+    public UpdateElementPropertyValueCommand updatePropertyValue(final Element element,
                                                                  final String propertyId,
                                                                  final Object value) {
         return new UpdateElementPropertyValueCommand(element,

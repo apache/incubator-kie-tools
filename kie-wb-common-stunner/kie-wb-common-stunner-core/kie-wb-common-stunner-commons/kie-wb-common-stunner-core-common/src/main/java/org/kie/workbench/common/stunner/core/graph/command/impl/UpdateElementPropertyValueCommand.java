@@ -20,9 +20,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.definition.adapter.PropertyAdapter;
-import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
-import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
@@ -39,7 +37,7 @@ public final class UpdateElementPropertyValueCommand extends AbstractGraphComman
     private final String propertyId;
     private final Object value;
     private Object oldValue;
-    private transient Node<?, Edge> node;
+    private transient Element<?> element;
 
     public UpdateElementPropertyValueCommand(final @MapsTo("elementUUID") String elementUUID,
                                              final @MapsTo("propertyId") String propertyId,
@@ -50,28 +48,28 @@ public final class UpdateElementPropertyValueCommand extends AbstractGraphComman
                                                              propertyId);
         this.value = value;
 
-        this.node = null;
+        this.element = null;
     }
 
-    public UpdateElementPropertyValueCommand(final Node<?, Edge> node,
+    public UpdateElementPropertyValueCommand(final Element<?> element,
                                              final String propertyId,
                                              final Object value) {
-        this(node.getUUID(),
+        this(element.getUUID(),
              propertyId,
              value);
-        this.node = node;
+        this.element = element;
     }
 
     @Override
     protected CommandResult<RuleViolation> check(final GraphCommandExecutionContext context) {
-        checkNodeNotNull(context);
+        getNullSafeElement(context);
         return GraphCommandResultBuilder.SUCCESS;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext context) {
-        final Element<Definition<?>> element = (Element<Definition<?>>) checkElementNotNull(context);
+        final Element<Definition<?>> element = (Element<Definition<?>>) getNullSafeElement(context);
         final Object p = GraphUtils.getProperty(context.getDefinitionManager(),
                                                 element,
                                                 propertyId);
@@ -84,7 +82,7 @@ public final class UpdateElementPropertyValueCommand extends AbstractGraphComman
 
     @Override
     public CommandResult<RuleViolation> undo(final GraphCommandExecutionContext context) {
-        final UpdateElementPropertyValueCommand undoCommand = new UpdateElementPropertyValueCommand(checkNodeNotNull(context),
+        final UpdateElementPropertyValueCommand undoCommand = new UpdateElementPropertyValueCommand(getNullSafeElement(context),
                                                                                                     propertyId,
                                                                                                     oldValue);
         return undoCommand.execute(context);
@@ -102,24 +100,16 @@ public final class UpdateElementPropertyValueCommand extends AbstractGraphComman
         return value;
     }
 
-    public Node<?, Edge> getNode() {
-        return node;
+    public Element<?> getElement() {
+        return element;
     }
 
-    private Node<?, Edge> checkNodeNotNull(final GraphCommandExecutionContext context) {
-        if (null == node) {
-            node = super.getNodeNotNull(context,
-                                        elementUUID);
-        }
-        return node;
-    }
-
-    private Element checkElementNotNull(final GraphCommandExecutionContext context) {
-        if (null == node) {
+    private Element getNullSafeElement(final GraphCommandExecutionContext context) {
+        if (null == element) {
             return super.getElementNotNull(context,
                                            elementUUID);
         }
-        return node;
+        return element;
     }
 
     @Override

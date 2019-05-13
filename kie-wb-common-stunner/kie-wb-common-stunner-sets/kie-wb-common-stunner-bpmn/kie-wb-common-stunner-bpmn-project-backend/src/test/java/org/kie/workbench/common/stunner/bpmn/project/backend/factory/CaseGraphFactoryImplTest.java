@@ -177,7 +177,7 @@ public class CaseGraphFactoryImplTest {
         assertEquals(addNodeCommand.getCandidate(), diagramNode);
         assertEquals(addChildNodeCommand.getCandidate(), milestoneNode);
         assertEquals(addChildNodeCommand.getParent(), diagramNode);
-        assertEquals(updatePropertyCommand.getNode(), diagramNode);
+        assertEquals(updatePropertyCommand.getElement(), diagramNode);
         assertEquals(updatePropertyCommand.getPropertyId(), ADHOC_ID);
         assertEquals(updatePropertyCommand.getValue(), true);
     }
