@@ -211,7 +211,7 @@ public class DataTypeListItem {
         dataTypeSelectComponent.enableEditMode();
         dataTypeConstraintComponent.enableEditMode();
 
-        editModeToggleEvent.fire(new DataTypeEditModeToggleEvent(true));
+        editModeToggleEvent.fire(new DataTypeEditModeToggleEvent(true, this));
     }
 
     public void disableEditMode() {
@@ -302,7 +302,7 @@ public class DataTypeListItem {
         dataTypeSelectComponent.disableEditMode();
         dataTypeConstraintComponent.disableEditMode();
 
-        editModeToggleEvent.fire(new DataTypeEditModeToggleEvent(false));
+        editModeToggleEvent.fire(new DataTypeEditModeToggleEvent(false, this));
     }
 
     void refreshListYesLabel() {

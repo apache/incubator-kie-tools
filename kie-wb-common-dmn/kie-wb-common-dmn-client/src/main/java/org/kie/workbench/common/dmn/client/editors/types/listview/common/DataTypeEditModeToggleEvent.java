@@ -16,17 +16,24 @@
 
 package org.kie.workbench.common.dmn.client.editors.types.listview.common;
 
+import org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItem;
 import org.uberfire.workbench.events.UberFireEvent;
 
 public class DataTypeEditModeToggleEvent implements UberFireEvent {
 
     private final boolean isEditModeEnabled;
+    private final DataTypeListItem item;
 
-    public DataTypeEditModeToggleEvent(final boolean isEditModeEnabled) {
+    public DataTypeEditModeToggleEvent(final boolean isEditModeEnabled, final DataTypeListItem item) {
         this.isEditModeEnabled = isEditModeEnabled;
+        this.item = item;
     }
 
     public boolean isEditModeEnabled() {
         return isEditModeEnabled;
+    }
+
+    public DataTypeListItem getItem() {
+        return item;
     }
 }

@@ -24,6 +24,7 @@ import java.util.function.Consumer;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import elemental2.dom.HTMLDivElement;
@@ -32,6 +33,7 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManager;
+import org.kie.workbench.common.dmn.client.editors.types.listview.common.DataTypeEditModeToggleEvent;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.DataTypeStackHash;
 import org.kie.workbench.common.dmn.client.editors.types.search.DataTypeSearchBar;
 import org.uberfire.client.mvp.UberElemental;
@@ -52,6 +54,8 @@ public class DataTypeList {
     private Consumer<DataTypeListItem> onDataTypeListItemUpdate = (e) -> { /* Nothing. */ };
 
     private List<DataTypeListItem> items;
+
+    private DataTypeListItem currentEditingItem;
 
     @Inject
     public DataTypeList(final DataTypeList.View view,
@@ -287,6 +291,25 @@ public class DataTypeList {
 
     String calculateHash(final DataType dataType) {
         return dataTypeStackHash.calculateHash(dataType);
+    }
+
+    public void onDataTypeEditModeToggle(final @Observes DataTypeEditModeToggleEvent event) {
+        if (event.isEditModeEnabled()) {
+            if (getCurrentEditingItem() != null && getItems().contains(getCurrentEditingItem())) {
+                getCurrentEditingItem().disableEditMode();
+            }
+            setCurrentEditingItem(event.getItem());
+        } else if (Objects.equals(event.getItem(), getCurrentEditingItem())) {
+            setCurrentEditingItem(null);
+        }
+    }
+
+    DataTypeListItem getCurrentEditingItem() {
+        return currentEditingItem;
+    }
+
+    void setCurrentEditingItem(final DataTypeListItem currentEditingItem) {
+        this.currentEditingItem = currentEditingItem;
     }
 
     public interface View extends UberElemental<DataTypeList>,
