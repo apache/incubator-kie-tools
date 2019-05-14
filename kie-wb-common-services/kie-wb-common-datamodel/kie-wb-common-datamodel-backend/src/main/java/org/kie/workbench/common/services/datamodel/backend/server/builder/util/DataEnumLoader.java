@@ -112,6 +112,12 @@ public class DataEnumLoader {
                 }
                 return Collections.emptyMap();
             } else if (list instanceof String) {
+
+                if (mvelSource.contains("'" + entry.getValue() + "'") && !key.contains("[")) {
+                    final String field = key.substring(key.indexOf("#") + 1);
+                    key = key + "[" + field + "]";
+                }
+
                 newMap.put(key, new String[]{(String) list});
             } else {
                 List<?> items = (List<?>) list;

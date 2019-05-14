@@ -15,12 +15,15 @@
  */
 package org.kie.workbench.common.services.datamodel.backend.server.builder.util;
 
+import java.util.Map;
+
 import org.junit.Test;
 import org.kie.soup.project.datamodel.commons.util.RawMVELEvaluator;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.jgroups.util.Util.assertEquals;
 import static org.jgroups.util.Util.assertFalse;
 import static org.jgroups.util.Util.assertTrue;
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * DataEnumLoader tests
@@ -146,6 +149,16 @@ public class DataEnumLoaderTest {
     public void testInvalidDependentEnum_AdvancedEnum2() {
         final String e = "'Fact.field[dependentField1]' : '(new org.company.DataHelper()).getList(\"@{dependentField1}\")'";
         final DataEnumLoader loader = new DataEnumLoader(e, new RawMVELEvaluator());
+        assertFalse(loader.hasErrors());
+    }
+
+    @Test
+    public void testValidDependentEnum_AdvancedEnumForDynamic() {
+        final String e = "'Fact.field' : '(new org.company.DataHelper()).getList()'";
+        final DataEnumLoader loader = new DataEnumLoader(e, new RawMVELEvaluator());
+        Map<String, String[]> data = loader.getData();
+
+        assertTrue(data.containsKey("Fact#field[field]"));
         assertFalse(loader.hasErrors());
     }
 
