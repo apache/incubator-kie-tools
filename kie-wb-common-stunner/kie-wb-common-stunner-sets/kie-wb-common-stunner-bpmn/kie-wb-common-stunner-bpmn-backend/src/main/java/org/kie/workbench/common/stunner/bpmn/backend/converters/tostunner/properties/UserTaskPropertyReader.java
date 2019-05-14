@@ -30,6 +30,8 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomInput;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
 import org.kie.workbench.common.stunner.bpmn.definition.property.assignee.Actors;
+import org.kie.workbench.common.stunner.bpmn.definition.property.notification.NotificationsInfo;
+import org.kie.workbench.common.stunner.bpmn.definition.property.reassignment.ReassignmentsInfo;
 
 public class UserTaskPropertyReader extends MultipleInstanceActivityPropertyReader {
 
@@ -57,6 +59,14 @@ public class UserTaskPropertyReader extends MultipleInstanceActivityPropertyRead
 
     private String renderActors(final Collection<String> actors) {
         return actors.stream().collect(Collectors.joining(","));
+    }
+
+    public ReassignmentsInfo getReassignments() {
+        return ReassignmentsInfos.of(task.getDataInputAssociations());
+    }
+
+    public NotificationsInfo getNotifications() {
+        return NotificationsInfos.of(task.getDataInputAssociations());
     }
 
     public String getTaskName() {

@@ -106,6 +106,10 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.event.signal.Si
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.timer.CancellingTimerEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.timer.TimerSettings;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.notification.NotificationValue;
+import org.kie.workbench.common.stunner.bpmn.definition.property.notification.NotificationsInfo;
+import org.kie.workbench.common.stunner.bpmn.definition.property.reassignment.ReassignmentValue;
+import org.kie.workbench.common.stunner.bpmn.definition.property.reassignment.ReassignmentsInfo;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocSubprocessTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.BaseReusableSubprocessTaskExecutionSet;
@@ -232,7 +236,7 @@ public class BPMNDirectDiagramMarshallerTest {
     private static final String BPMN_EVENT_DEFINITION_REF = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/eventDefinitionRef.bpmn";
     private static final String BPMN_SERVICE_TASKS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/serviceTasks.bpmn";
     private static final String BPMN_NESTED_SUBPROCESSES = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/nestedSubprocesses.bpmn";
-
+    private static final String BPMN_REASSIGNMENT_NOTIFICATION = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/reassignmentAndNotification.bpmn";
     private static final String BPMN_ARIS_LANES_1 = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/aris/ARIS_LANES_1.bpmn";
     private static final String BPMN_ARIS_LANES_2 = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/aris/ARIS_LANES_2.bpmn";
     private static final String BPMN_ARIS_LANES_3 = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/aris/ARIS_LANES_3.bpmn";
@@ -3747,6 +3751,35 @@ public class BPMNDirectDiagramMarshallerTest {
                       3);
         assertTrue(result.contains("drools:taskName=\"Email\""));
         assertTrue(result.contains("drools:taskName=\"Log\""));
+    }
+
+    @Test
+    public void testNotifications() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_REASSIGNMENT_NOTIFICATION);
+        Node<? extends Definition, ?> multipleInstanceSubprocessNode = diagram.getGraph().getNode("_F402A212-CBB8-4F1B-A7FC-EE185C41BBF7");
+        UserTask userTask = (UserTask) multipleInstanceSubprocessNode.getContent().getDefinition();
+        NotificationsInfo notificationsInfo = userTask.getExecutionSet().getNotificationsInfo();
+        assertEquals(1, notificationsInfo.getValue().getValues().size());
+        NotificationValue notification = notificationsInfo.getValue().getValues().get(0);
+        assertEquals("[from:director|tousers:alessio,guest,john|togroups:Developer,IT|replyTo:guest|subject:test|body:test body]@[11h]", notification.toCDATAFormat());
+        assertEquals("NotStartedNotify", notification.getType());
+    }
+
+    @Test
+    public void testReassignments() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_REASSIGNMENT_NOTIFICATION);
+        Node<? extends Definition, ?> multipleInstanceSubprocessNode = diagram.getGraph().getNode("_F402A212-CBB8-4F1B-A7FC-EE185C41BBF7");
+        UserTask userTask = (UserTask) multipleInstanceSubprocessNode.getContent().getDefinition();
+        ReassignmentsInfo reassignmentsInfo = userTask.getExecutionSet().getReassignmentsInfo();
+        assertEquals(2, reassignmentsInfo.getValue().getValues().size());
+
+        ReassignmentValue reassignment = reassignmentsInfo.getValue().getValues().get(0);
+        assertEquals("[users:Reviewer|groups:kirill]@[1111w]", reassignment.toCDATAFormat());
+        assertEquals("NotStartedReassign", reassignment.getType());
+
+        reassignment = reassignmentsInfo.getValue().getValues().get(1);
+        assertEquals("[users:Forms,HR|groups:director,guest]@[22h]", reassignment.toCDATAFormat());
+        assertEquals("NotCompletedReassign", reassignment.getType());
     }
 
     private List<Node> getNodes(Diagram<Graph, Metadata> diagram) {

@@ -74,6 +74,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.event.signal.Si
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.timer.TimerSettings;
 import org.kie.workbench.common.stunner.bpmn.definition.property.gateway.DefaultRoute;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
+import org.kie.workbench.common.stunner.bpmn.definition.property.notification.NotificationsInfo;
+import org.kie.workbench.common.stunner.bpmn.definition.property.reassignment.ReassignmentsInfo;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.DistributionType;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.StandardDeviation;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.TimeUnit;
@@ -175,6 +177,8 @@ public abstract class BaseOryxIdMappings implements OryxIdMappings {
                 .put(ProcessInstanceDescription.class, "customdescription")
                 .put(WaitForCompletion.class, "waitforcompletion")
                 .put(IsAsync.class, "isasync")
+                .put(NotificationsInfo.class, "notificationsinfo")
+                .put(ReassignmentsInfo.class, "reassignmentsinfo")
                 .put(Skippable.class, "skippable")
                 .put(Subject.class, "subject")
                 .put(Description.class, "description")

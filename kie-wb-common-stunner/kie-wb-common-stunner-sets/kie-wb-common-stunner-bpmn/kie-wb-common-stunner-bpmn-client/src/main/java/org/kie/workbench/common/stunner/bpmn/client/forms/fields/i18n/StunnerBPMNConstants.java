@@ -34,4 +34,59 @@ public interface StunnerBPMNConstants {
 
     @TranslationKey(defaultValue = "")
     String ASSIGNEE_SEARCH_ERROR = "assignee.searchError";
+
+    @TranslationKey(defaultValue = "Reassignment")
+    String REASSIGNMENT_LABEL = "reassignment.label";
+
+    @TranslationKey(defaultValue = "Reassignments")
+    String REASSIGNMENTS_LABEL = "reassignments.label";
+
+    @TranslationKey(defaultValue = "To users")
+    String REASSIGNMENT_TO_USERS = "reassignment.toUsers";
+
+    @TranslationKey(defaultValue = "To groups")
+    String REASSIGNMENT_TO_GROUPS = "reassignment.toGroups";
+
+    @TranslationKey(defaultValue = "Type")
+    String REASSIGNMENT_TYPE = "reassignment.type";
+
+    @TranslationKey(defaultValue = "Expires at")
+    String REASSIGNMENT_EXPIRESAT = "reassignment.expiresAt";
+
+    @TranslationKey(defaultValue = "Delete")
+    String REASSIGNMENT_DELETE = "reassignment.delete";
+
+    @TranslationKey(defaultValue = "Notification")
+    String NOTIFICATION_LABEL = "notification.label";
+
+    @TranslationKey(defaultValue = "Notifications")
+    String NOTIFICATIONS_LABEL = "notifications.label";
+
+    @TranslationKey(defaultValue = "To users")
+    String NOTIFICATION_TO_USERS = "notification.toUsers";
+
+    @TranslationKey(defaultValue = "To groups")
+    String NOTIFICATION_TO_GROUPS = "notification.toGroups";
+
+    @TranslationKey(defaultValue = "From")
+    String NOTIFICATION_FROM = "notification.from";
+
+    @TranslationKey(defaultValue = "Body")
+    String NOTIFICATION_BODY = "notification.body";
+
+    @TranslationKey(defaultValue = "Subject")
+    String NOTIFICATION_SUBJECT = "notification.subject";
+
+    @TranslationKey(defaultValue = "Reply to")
+    String NOTIFICATION_REPLYTO = "notification.replyTo";
+
+    @TranslationKey(defaultValue = "Type")
+    String NOTIFICATION_TYPE = "notification.type";
+
+    @TranslationKey(defaultValue = "Expires at")
+    String NOTIFICATION_EXPIRESAT = "notification.expiresAt";
+
+    @TranslationKey(defaultValue = "Delete")
+    String NOTIFICATION_DELETE = "notification.delete";
+
 }

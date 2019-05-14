@@ -44,6 +44,10 @@ public class CustomInput<T> {
     public static final CustomInputDefinition<String> namespace = new StringInput("namespace", "java.lang.String", "");
     public static final CustomInputDefinition<String> dmnModelName = new StringInput("model", "java.lang.String", "");
     public static final CustomInputDefinition<String> decisionName = new StringInput("decision", "java.lang.String", "");
+    public static final CustomInputDefinition<String> notStartedReassign = new StringInput("NotStartedReassign", "");
+    public static final CustomInputDefinition<String> notCompletedReassign = new StringInput("NotCompletedReassign", "");
+    public static final CustomInputDefinition<String> notStartedNotify = new StringInput("NotStartedNotify", "");
+    public static final CustomInputDefinition<String> notCompletedNotify = new StringInput("NotCompletedNotify", "");
 
     private final CustomInputDefinition<T> inputDefinition;
     private final Task element;

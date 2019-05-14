@@ -109,6 +109,8 @@ public class TaskConverter {
         p.setTaskName(executionSet.getTaskName().getValue());
         p.setActors(executionSet.getActors());
         p.setAssignmentsInfo(executionSet.getAssignmentsinfo());
+        p.setReassignments(executionSet.getReassignmentsInfo());
+        p.setNotifications(executionSet.getNotificationsInfo());
         p.setSkippable(executionSet.getSkippable().getValue());
         p.setGroupId(executionSet.getGroupid().getValue());
         p.setSubject(executionSet.getSubject().getValue());

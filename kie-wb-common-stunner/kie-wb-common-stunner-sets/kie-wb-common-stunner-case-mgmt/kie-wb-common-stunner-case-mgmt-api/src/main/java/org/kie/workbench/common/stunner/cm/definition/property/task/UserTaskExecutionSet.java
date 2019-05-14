@@ -33,6 +33,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.assignee.Groupi
 import org.kie.workbench.common.stunner.bpmn.definition.property.connectors.Priority;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.AssignmentsInfo;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
+import org.kie.workbench.common.stunner.bpmn.definition.property.notification.NotificationsInfo;
+import org.kie.workbench.common.stunner.bpmn.definition.property.reassignment.ReassignmentsInfo;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocAutostart;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.BaseUserTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.Content;
@@ -48,6 +50,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.Subject;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskName;
 import org.kie.workbench.common.stunner.bpmn.forms.model.AssigneeEditorFieldType;
 import org.kie.workbench.common.stunner.bpmn.forms.model.AssignmentsEditorFieldType;
+import org.kie.workbench.common.stunner.bpmn.forms.model.NotificationsEditorFieldType;
+import org.kie.workbench.common.stunner.bpmn.forms.model.ReassignmentsEditorFieldType;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
@@ -95,6 +99,23 @@ public class UserTaskExecutionSet implements BaseUserTaskExecutionSet {
     private AssignmentsInfo assignmentsinfo;
 
     @Property
+    @FormField(
+            type = ReassignmentsEditorFieldType.class,
+            afterElement = "assignmentsinfo"
+    )
+    @Valid
+    private ReassignmentsInfo reassignmentsInfo;
+
+
+    @Property
+    @FormField(
+            type = NotificationsEditorFieldType.class,
+            afterElement = "reassignmentsInfo"
+    )
+    @Valid
+    private NotificationsInfo notificationsInfo;
+
+    @Property
     @SkipFormField
     @Valid
     private IsAsync isAsync;
@@ -105,7 +126,7 @@ public class UserTaskExecutionSet implements BaseUserTaskExecutionSet {
     private Skippable skippable;
 
     @Property
-    @FormField(afterElement = "assignmentsinfo")
+    @FormField(afterElement = "notificationsInfo")
     @Valid
     private Priority priority;
 
@@ -164,6 +185,8 @@ public class UserTaskExecutionSet implements BaseUserTaskExecutionSet {
              new Actors(),
              new Groupid(),
              new AssignmentsInfo(),
+             new NotificationsInfo(),
+             new ReassignmentsInfo(),
              new IsAsync(),
              new Skippable(),
              new Priority(""),
@@ -183,6 +206,8 @@ public class UserTaskExecutionSet implements BaseUserTaskExecutionSet {
                                 final @MapsTo("actors") Actors actors,
                                 final @MapsTo("groupid") Groupid groupid,
                                 final @MapsTo("assignmentsinfo") AssignmentsInfo assignmentsinfo,
+                                final @MapsTo("notificationsInfo") NotificationsInfo notificationsInfo,
+                                final @MapsTo("reassignmentsInfo") ReassignmentsInfo reassignmentsInfo,
                                 final @MapsTo("isAsync") IsAsync isAsync,
                                 final @MapsTo("skippable") Skippable skippable,
                                 final @MapsTo("priority") Priority priority,
@@ -198,6 +223,8 @@ public class UserTaskExecutionSet implements BaseUserTaskExecutionSet {
         this.actors = actors;
         this.groupid = groupid;
         this.assignmentsinfo = assignmentsinfo;
+        this.notificationsInfo = notificationsInfo;
+        this.reassignmentsInfo = reassignmentsInfo;
         this.isAsync = isAsync;
         this.skippable = skippable;
         this.priority = priority;
@@ -245,6 +272,24 @@ public class UserTaskExecutionSet implements BaseUserTaskExecutionSet {
 
     public void setAssignmentsinfo(final AssignmentsInfo assignmentsinfo) {
         this.assignmentsinfo = assignmentsinfo;
+    }
+
+    @Override
+    public NotificationsInfo getNotificationsInfo() {
+        return notificationsInfo;
+    }
+
+    public void setNotificationsInfo(final NotificationsInfo notificationsInfo) {
+        this.notificationsInfo = notificationsInfo;
+    }
+
+    @Override
+    public ReassignmentsInfo getReassignmentsInfo() {
+        return reassignmentsInfo;
+    }
+
+    public void setReassignmentsInfo(final ReassignmentsInfo reassignmentsInfo) {
+        this.reassignmentsInfo = reassignmentsInfo;
     }
 
     @Override
@@ -353,6 +398,8 @@ public class UserTaskExecutionSet implements BaseUserTaskExecutionSet {
                                          Objects.hashCode(actors),
                                          Objects.hashCode(groupid),
                                          Objects.hashCode(assignmentsinfo),
+                                         Objects.hashCode(notificationsInfo),
+                                         Objects.hashCode(reassignmentsInfo),
                                          Objects.hashCode(isAsync),
                                          Objects.hashCode(skippable),
                                          Objects.hashCode(priority),
@@ -379,6 +426,10 @@ public class UserTaskExecutionSet implements BaseUserTaskExecutionSet {
                                    other.groupid) &&
                     Objects.equals(assignmentsinfo,
                                    other.assignmentsinfo) &&
+                    Objects.equals(notificationsInfo,
+                                   other.notificationsInfo) &&
+                    Objects.equals(reassignmentsInfo,
+                                   other.reassignmentsInfo) &&
                     Objects.equals(isAsync,
                                    other.isAsync) &&
                     Objects.equals(skippable,

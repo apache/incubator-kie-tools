@@ -22,6 +22,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.assignee.Groupi
 import org.kie.workbench.common.stunner.bpmn.definition.property.connectors.Priority;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.AssignmentsInfo;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
+import org.kie.workbench.common.stunner.bpmn.definition.property.notification.NotificationsInfo;
+import org.kie.workbench.common.stunner.bpmn.definition.property.reassignment.ReassignmentsInfo;
 
 public interface BaseUserTaskExecutionSet extends BPMNPropertySet {
 
@@ -54,4 +56,8 @@ public interface BaseUserTaskExecutionSet extends BPMNPropertySet {
     Content getContent();
 
     SLADueDate getSlaDueDate();
+
+    ReassignmentsInfo getReassignmentsInfo();
+
+    NotificationsInfo getNotificationsInfo();
 }

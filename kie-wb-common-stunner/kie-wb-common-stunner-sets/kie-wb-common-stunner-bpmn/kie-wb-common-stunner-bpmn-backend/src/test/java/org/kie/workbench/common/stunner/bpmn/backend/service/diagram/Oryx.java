@@ -30,6 +30,8 @@ import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.DoubleTypeSerializer;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.EnumTypeSerializer;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.IntegerTypeSerializer;
+import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.NotificationsTypeSerializer;
+import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.ReassignmentsTypeSerializer;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.StringTypeSerializer;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.TimerSettingsTypeSerializer;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.VariablesTypeSerializer;
@@ -52,6 +54,8 @@ public class Oryx {
         IntegerTypeSerializer integerTypeSerializer = new IntegerTypeSerializer();
         EnumTypeSerializer enumTypeSerializer = new EnumTypeSerializer(definitionUtils);
         AssignmentsTypeSerializer assignmentsTypeSerializer = new AssignmentsTypeSerializer();
+        NotificationsTypeSerializer notificationsTypeSerializer = new NotificationsTypeSerializer();
+        ReassignmentsTypeSerializer reassignmentsTypeSerializer = new ReassignmentsTypeSerializer();
         VariablesTypeSerializer variablesTypeSerializer = new VariablesTypeSerializer();
         TimerSettingsTypeSerializer timerSettingsTypeSerializer = new TimerSettingsTypeSerializer();
         List<Bpmn2OryxPropertySerializer<?>> propertySerializers = new LinkedList<>();
@@ -62,6 +66,8 @@ public class Oryx {
         propertySerializers.add(integerTypeSerializer);
         propertySerializers.add(enumTypeSerializer);
         propertySerializers.add(assignmentsTypeSerializer);
+        propertySerializers.add(notificationsTypeSerializer);
+        propertySerializers.add(reassignmentsTypeSerializer);
         propertySerializers.add(variablesTypeSerializer);
         propertySerializers.add(timerSettingsTypeSerializer);
 

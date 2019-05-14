@@ -56,6 +56,8 @@ public class CaseManagementTaskConverter extends BaseTaskConverter<UserTask, Use
                                         p.getActors(),
                                         new Groupid(p.getGroupid()),
                                         p.getAssignmentsInfo(),
+                                        p.getNotifications(),
+                                        p.getReassignments(),
                                         new IsAsync(p.isAsync()),
                                         new Skippable(p.isSkippable()),
                                         new Priority(p.getPriority()),
