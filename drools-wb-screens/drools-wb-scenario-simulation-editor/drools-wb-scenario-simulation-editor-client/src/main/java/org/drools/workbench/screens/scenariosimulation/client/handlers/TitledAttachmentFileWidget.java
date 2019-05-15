@@ -111,6 +111,7 @@ public class TitledAttachmentFileWidget extends Composite implements ValueChange
 
 
     protected void updateAssets(RemoteCallback<AssetQueryResult> callback) {
+        workspaceProject = libraryPlaces.getActiveWorkspace();
         ProjectAssetsQuery query = createProjectQuery();
         assetQueryService.getAssets(query)
                 .call(callback, new DefaultErrorCallback());
