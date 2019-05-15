@@ -91,6 +91,7 @@ public class TitledAttachmentFileWidgetTest extends AbstractNewScenarioTest {
         verify(comboBoxMock, times(1)).setText(eq(null));
         verify(titledAttachmentFileWidget, times(1)).updateAssetList();
         verify(errorLabelMock, times(1)).setText(eq(null));
+        verify(libraryPlacesMock, times(2)).getActiveWorkspace();
         assertNull(titledAttachmentFileWidget.selectedPath);
     }
 
