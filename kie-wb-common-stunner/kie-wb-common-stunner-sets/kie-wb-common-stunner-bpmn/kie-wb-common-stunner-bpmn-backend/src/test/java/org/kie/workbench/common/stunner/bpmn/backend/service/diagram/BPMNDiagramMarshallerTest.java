@@ -319,7 +319,6 @@ public class BPMNDiagramMarshallerTest {
         when(definitionManager.adapters()).thenReturn(adapterManager);
         when(adapterManager.registry()).thenReturn(adapterRegistry);
         definitionUtils = new DefinitionUtils(definitionManager,
-                                              applicationFactoryManager,
                                               null); // TODO!!!
         testScopeModelFactory = new BPMNTestScopeModelFactory(new BPMNDefinitionSet.BPMNDefinitionSetBuilder().build(),
                                                               workItemDefinitionMockRegistry);

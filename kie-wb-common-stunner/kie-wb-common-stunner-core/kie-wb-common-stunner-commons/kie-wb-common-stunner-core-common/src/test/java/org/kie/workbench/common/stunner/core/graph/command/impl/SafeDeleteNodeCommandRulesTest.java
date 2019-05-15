@@ -72,8 +72,8 @@ public class SafeDeleteNodeCommandRulesTest extends AbstractGraphCommandTest {
         node = mockNode(UUID);
         node1 = mockNode(UUID1);
         edge = mockEdge(EDGE_UUID);
-        graphNodes.add(node);
-        graphNodes.add(node1);
+        graph.addNode(node);
+        graph.addNode(node1);
         when(graphIndex.getNode(eq(UUID))).thenReturn(node);
         when(graphIndex.getNode(eq(UUID))).thenReturn(node);
         when(graphIndex.getEdge(eq(EDGE_UUID))).thenReturn(edge);

@@ -28,7 +28,6 @@ import javax.inject.Inject;
 
 import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
-import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.MorphAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.HasInheritance;
@@ -56,22 +55,18 @@ import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull
 public class DefinitionUtils {
 
     private final DefinitionManager definitionManager;
-    private final FactoryManager factoryManager;
     private final DefinitionsCacheRegistry definitionsRegistry;
 
     protected DefinitionUtils() {
         this(null,
-             null,
              null);
     }
 
     @Inject
     @SuppressWarnings("all")
     public DefinitionUtils(final DefinitionManager definitionManager,
-                           final FactoryManager factoryManager,
                            final DefinitionsCacheRegistry definitionsRegistry) {
         this.definitionManager = definitionManager;
-        this.factoryManager = factoryManager;
         this.definitionsRegistry = definitionsRegistry;
     }
 

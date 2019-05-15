@@ -79,7 +79,7 @@ public class SetConnectionSourceNodeCommandTest extends AbstractGraphCommandTest
         edgeContent = mock(ViewConnector.class);
         sourceMagnet = Optional.of(MagnetConnection.Builder.at(0d,
                                                                0d));
-        graphNodes.add(node);
+        graph.addNode(node);
         when(graphIndex.getNode(eq(NODE_UUID))).thenReturn(node);
         when(graphIndex.getNode(eq(LAST_SOURCE_NODE_UUID))).thenReturn(lastSourceNode);
         when(graphIndex.getNode(eq(TARGET_UUID))).thenReturn(target);

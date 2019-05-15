@@ -15,14 +15,11 @@
  */
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
-import java.util.Optional;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.core.TestingSimpleDomainObject;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
-import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
-import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
@@ -34,37 +31,21 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class UpdateDomainObjectPropertyValueCommandTest extends AbstractGraphCommandTest {
 
-    private static final String PROPERTY = "property";
-
-    private static final String PROPERTY_FIELD = "property.name";
-
-    private static final String NAME_FIELD = "name";
-
     private static final String PROPERTY_VALUE = "value";
-
     private static final String PROPERTY_OLD_VALUE = "oldValue";
 
-    @Mock
-    private DomainObject domainObject;
-
     private UpdateDomainObjectPropertyValueCommand command;
-
-    @Mock
-    private Object property;
-
-    @Mock
-    private Object nameProperty;
+    private TestingSimpleDomainObject domainObject;
 
     @Before
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
         super.init();
-        when(definitionAdapter.getProperty(domainObject, PROPERTY)).thenReturn(Optional.of(property));
-        when(definitionAdapter.getProperty(property, NAME_FIELD)).thenReturn(Optional.of(nameProperty));
-        when(propertyAdapter.getValue(nameProperty)).thenReturn(PROPERTY_OLD_VALUE);
+        domainObject = new TestingSimpleDomainObject(testingGraphMockHandler);
+        when(propertyAdapter.getValue(domainObject.getNameProperty())).thenReturn(PROPERTY_OLD_VALUE);
 
         this.command = new UpdateDomainObjectPropertyValueCommand(domainObject,
-                                                                  PROPERTY_FIELD,
+                                                                  TestingSimpleDomainObject.NAME_FIELD,
                                                                   PROPERTY_VALUE);
     }
 
@@ -80,8 +61,8 @@ public class UpdateDomainObjectPropertyValueCommandTest extends AbstractGraphCom
         assertEquals(CommandResult.Type.INFO,
                      command.execute(graphCommandExecutionContext).getType());
 
-        verify(propertyAdapter).getValue(eq(nameProperty));
-        verify(propertyAdapter).setValue(eq(nameProperty), eq(PROPERTY_VALUE));
+        verify(propertyAdapter).getValue(eq(domainObject.getNameProperty()));
+        verify(propertyAdapter).setValue(eq(domainObject.getNameProperty()), eq(PROPERTY_VALUE));
     }
 
     @Test
@@ -89,16 +70,16 @@ public class UpdateDomainObjectPropertyValueCommandTest extends AbstractGraphCom
     public void testUndo() {
         command.execute(graphCommandExecutionContext);
 
-        verify(propertyAdapter).getValue(eq(nameProperty));
-        verify(propertyAdapter).setValue(eq(nameProperty),
+        verify(propertyAdapter).getValue(eq(domainObject.getNameProperty()));
+        verify(propertyAdapter).setValue(eq(domainObject.getNameProperty()),
                                          eq(PROPERTY_VALUE));
 
         assertEquals(CommandResult.Type.INFO,
                      command.undo(graphCommandExecutionContext).getType());
 
         //One read for the execute, one read for the undo. Resetting the mock would require it to be setup again.
-        verify(propertyAdapter, times(2)).getValue(eq(nameProperty));
-        verify(propertyAdapter).setValue(eq(nameProperty),
+        verify(propertyAdapter, times(2)).getValue(eq(domainObject.getNameProperty()));
+        verify(propertyAdapter).setValue(eq(domainObject.getNameProperty()),
                                          eq(PROPERTY_OLD_VALUE));
     }
 }

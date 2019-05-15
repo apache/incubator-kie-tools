@@ -57,7 +57,7 @@ public class DeleteNodeCommandTest extends AbstractGraphCommandTest {
     public void setup() throws Exception {
         super.init();
         node = mockNode(UUID);
-        graphNodes.add(node);
+        graph.addNode(node);
         when(graph.getNode(eq(UUID))).thenReturn(node);
         when(graphIndex.getNode(eq(UUID))).thenReturn(node);
         this.tested = new DeleteNodeCommand(UUID);
@@ -112,7 +112,7 @@ public class DeleteNodeCommandTest extends AbstractGraphCommandTest {
     @Test(expected = BadCommandArgumentsException.class)
     @SuppressWarnings("unchecked")
     public void testNodeNotPresentOnStorage() {
-        graphNodes.clear();
+        graph.clear();
         when(graphIndex.getNode(eq(UUID))).thenReturn(null);
         CommandResult<RuleViolation> result = tested.allow(graphCommandExecutionContext);
         assertEquals(CommandResult.Type.ERROR,
@@ -178,7 +178,7 @@ public class DeleteNodeCommandTest extends AbstractGraphCommandTest {
         assertEquals(CommandResult.Type.INFO,
                      result.getType());
         verify(graph,
-               times(1)).addNode(any(Node.class));
+               times(2)).addNode(any(Node.class));
         verify(graphIndex,
                times(1)).addNode(any(Node.class));
         verify(graph,

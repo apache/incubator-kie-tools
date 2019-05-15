@@ -168,7 +168,7 @@ public class CaseManagementDirectDiagramMarshallerTest {
         when(rulesManager.evaluate(any(RuleSet.class), any(RuleEvaluationContext.class)))
                 .thenReturn(new DefaultRuleViolations());
 
-        DefinitionUtils definitionUtils = new DefinitionUtils(definitionManager, applicationFactoryManager, null);
+        DefinitionUtils definitionUtils = new DefinitionUtils(definitionManager, null);
         TestScopeModelFactory testScopeModelFactory =
                 new TestScopeModelFactory(new CaseManagementDefinitionSet.CaseManagementDefinitionSetBuilder().build());
         // Definition manager.

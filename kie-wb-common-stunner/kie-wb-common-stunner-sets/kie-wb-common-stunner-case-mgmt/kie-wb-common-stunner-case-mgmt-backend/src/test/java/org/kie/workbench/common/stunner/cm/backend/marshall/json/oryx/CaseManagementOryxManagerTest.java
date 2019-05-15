@@ -77,7 +77,6 @@ public class CaseManagementOryxManagerTest {
     public void setup() {
         OryxIdMappings oryxIdMappings = new Bpmn2OryxIdMappings(definitionManager, WorkItemDefinitionEmptyRegistry::new);
         DefinitionUtils definitionUtils = new DefinitionUtils(definitionManager,
-                                                              factoryManager,
                                                               null);// TODO!
         List<Bpmn2OryxPropertySerializer<?>> oryxPropertySerializers = new ArrayList<>();
         oryxPropertySerializers.add(new AssigneeTypeSerializer());

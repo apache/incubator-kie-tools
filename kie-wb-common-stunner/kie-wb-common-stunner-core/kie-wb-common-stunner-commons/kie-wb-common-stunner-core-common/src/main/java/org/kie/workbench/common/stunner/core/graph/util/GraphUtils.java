@@ -25,6 +25,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.Set;
+import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -73,26 +74,25 @@ public class GraphUtils {
     }
 
     public static Object getPropertyByField(final DefinitionManager definitionManager,
-                                            final Object definition,
+                                            final Object bean,
                                             final String field) {
+        return getPropertyByField(currentField -> definitionManager.adapters().forDefinition().getProperty(bean, currentField),
+                                  (ps, currentField) -> definitionManager.adapters().forPropertySet().getProperty(ps, currentField),
+                                  field);
+    }
 
+    private static Object getPropertyByField(final Function<String, Optional<?>> propertyProvider,
+                                             final BiFunction<Object, String, Optional<?>> childPropertiesProvider,
+                                             final String field) {
         final int index = field.indexOf('.');
         final String firstField = index > -1 ? field.substring(0, index) : field;
-        final Object property =
-                Exceptions.<Optional>swallow(() -> definitionManager
-                        .adapters()
-                        .forDefinition()
-                        .getProperty(definition, firstField), Optional.empty())
-                        .orElseGet(() -> Exceptions.<Optional>swallow(() -> definitionManager
-                                .adapters()
-                                .forPropertySet()
-                                .getProperty(definition, firstField), Optional.empty())
-                                .orElse(null)
-                        );
-
-        return (index > 0 && Objects.nonNull(property))
-                ? getPropertyByField(definitionManager, property, field.substring(index + 1))
-                : property;
+        final Optional<?> optionalBean = propertyProvider.apply(firstField);
+        final Object bean = optionalBean.orElse(null);
+        return (index > 0 && null != bean)
+                ? getPropertyByField(currentField -> childPropertiesProvider.apply(bean, currentField),
+                                     childPropertiesProvider,
+                                     field.substring(index + 1))
+                : bean;
     }
 
     public static Object getProperty(final DefinitionManager definitionManager,
@@ -107,19 +107,6 @@ public class GraphUtils {
             }
         }
         return null;
-    }
-
-    public static int countDefinitionsById(final DefinitionManager definitionManager,
-                                           final Graph<?, ? extends Node> target,
-                                           final String id) {
-        final int[] count = {0};
-        target.nodes().forEach(node -> {
-            if (getElementDefinitionId(definitionManager,
-                                       node).equals(id)) {
-                count[0]++;
-            }
-        });
-        return count[0];
     }
 
     public static int countEdges(final DefinitionManager definitionManager,

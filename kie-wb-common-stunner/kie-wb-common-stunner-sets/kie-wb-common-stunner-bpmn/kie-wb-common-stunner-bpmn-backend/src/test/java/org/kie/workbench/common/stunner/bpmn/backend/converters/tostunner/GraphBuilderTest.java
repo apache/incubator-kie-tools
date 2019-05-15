@@ -144,9 +144,7 @@ public class GraphBuilderTest {
         commandFactory = new GraphCommandFactory();
 
         TestScopeModelFactory testScopeModelFactory = new TestScopeModelFactory(new BPMNDefinitionSet.BPMNDefinitionSetBuilder().build());
-        DefinitionUtils definitionUtils = new DefinitionUtils(definitionManager,
-                                                              applicationFactoryManager,
-                                                              null);
+        DefinitionUtils definitionUtils = new DefinitionUtils(definitionManager, null);
         // Definition manager.
         final BackendDefinitionAdapter definitionAdapter = new BackendDefinitionAdapter(definitionUtils);
         final BackendDefinitionSetAdapter definitionSetAdapter = new BackendDefinitionSetAdapter(definitionAdapter);

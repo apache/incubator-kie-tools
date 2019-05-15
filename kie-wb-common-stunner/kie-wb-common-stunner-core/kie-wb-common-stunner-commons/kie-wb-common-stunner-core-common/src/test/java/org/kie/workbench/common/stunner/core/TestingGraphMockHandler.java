@@ -29,6 +29,7 @@ import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapte
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionId;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionSetRuleAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.PropertyAdapter;
+import org.kie.workbench.common.stunner.core.definition.adapter.PropertySetAdapter;
 import org.kie.workbench.common.stunner.core.factory.impl.EdgeFactoryImpl;
 import org.kie.workbench.common.stunner.core.factory.impl.GraphFactoryImpl;
 import org.kie.workbench.common.stunner.core.factory.impl.NodeFactoryImpl;
@@ -71,6 +72,8 @@ import org.mockito.MockitoAnnotations;
 
 import static org.junit.Assert.assertNotEquals;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.anyDouble;
 import static org.mockito.Mockito.mock;
@@ -99,9 +102,11 @@ public class TestingGraphMockHandler {
     @Mock
     public AdapterRegistry adapterRegistry;
     @Mock
-    public DefinitionAdapter<Object> definitionAdapter;
+    public DefinitionAdapter definitionAdapter;
     @Mock
     public PropertyAdapter propertyAdapter;
+    @Mock
+    public PropertySetAdapter propertySetAdapter;
     @Mock
     public DefinitionSetRuleAdapter ruleAdapter;
     @Mock
@@ -131,17 +136,20 @@ public class TestingGraphMockHandler {
         this.nodeFactory = new NodeFactoryImpl(definitionUtils);
         this.edgeFactory = new EdgeFactoryImpl(definitionManager);
         this.commandFactory = new GraphCommandFactory();
-        this.graph = graphFactory.build(GRAPH_UUID,
-                                        DEF_SET_ID);
+        this.graph = spy(graphFactory.build(GRAPH_UUID, DEF_SET_ID));
         when(definitionUtils.getDefinitionManager()).thenReturn(definitionManager);
         when(definitionManager.definitionSets()).thenReturn(definitionSetRegistry);
         when(definitionManager.adapters()).thenReturn(adapterManager);
         when(adapterManager.registry()).thenReturn(adapterRegistry);
         when(adapterManager.forDefinition()).thenReturn(definitionAdapter);
         when(adapterManager.forProperty()).thenReturn(propertyAdapter);
+        when(adapterManager.forPropertySet()).thenReturn(propertySetAdapter);
         when(adapterManager.forRules()).thenReturn(ruleAdapter);
         when(adapterRegistry.getDefinitionAdapter(any(Class.class))).thenReturn(definitionAdapter);
         when(adapterRegistry.getPropertyAdapter(any(Class.class))).thenReturn(propertyAdapter);
+        when(adapterRegistry.getPropertySetAdapter(any(Class.class))).thenReturn(propertySetAdapter);
+        when(definitionAdapter.getProperty(anyObject(), anyString())).thenReturn(Optional.empty());
+        when(propertySetAdapter.getProperty(anyObject(), anyString())).thenReturn(Optional.empty());
         graphCommandExecutionContext = spy(new ContextualGraphCommandExecutionContext(definitionManager, factoryManager, ruleManager, graphIndex, ruleSet));
         when(graphCommandExecutionContext.getRuleSet()).thenReturn(ruleSet);
         when(graphIndex.getGraph()).thenReturn(graph);
@@ -150,6 +158,7 @@ public class TestingGraphMockHandler {
         return this;
     }
 
+    @SuppressWarnings("unchecked")
     public Object getDefIfPresent(final String id,
                                   final Optional<Object> actual) {
         Object definition = null;
@@ -174,6 +183,7 @@ public class TestingGraphMockHandler {
         return def;
     }
 
+    @SuppressWarnings("unchecked")
     public void mockDefAttributes(final Object def,
                                   final String id,
                                   final Optional<Set<String>> labels) {

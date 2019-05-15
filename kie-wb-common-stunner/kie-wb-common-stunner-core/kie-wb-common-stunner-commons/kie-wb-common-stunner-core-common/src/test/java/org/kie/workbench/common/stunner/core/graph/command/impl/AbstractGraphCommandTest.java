@@ -15,18 +15,18 @@
  */
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
-import java.util.Collection;
 import java.util.LinkedList;
 
+import org.kie.workbench.common.stunner.core.TestingGraphMockHandler;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.PropertyAdapter;
+import org.kie.workbench.common.stunner.core.definition.adapter.PropertySetAdapter;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.command.ContextualGraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.DirectGraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.content.Bound;
@@ -35,66 +35,45 @@ import org.kie.workbench.common.stunner.core.graph.content.definition.Definition
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.index.MutableIndex;
 import org.kie.workbench.common.stunner.core.registry.definition.AdapterRegistry;
-import org.kie.workbench.common.stunner.core.rule.RuleEvaluationContext;
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.kie.workbench.common.stunner.core.rule.RuleSet;
-import org.kie.workbench.common.stunner.core.rule.RuleViolations;
-import org.kie.workbench.common.stunner.core.rule.violations.DefaultRuleViolations;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 public abstract class AbstractGraphCommandTest {
 
-    private static final String GRAPH_UUID = "graphUUID";
-    protected final RuleViolations EMPTY_VIOLATIONS = new DefaultRuleViolations();
-
-    @Mock
+    protected TestingGraphMockHandler testingGraphMockHandler;
     protected DefinitionManager definitionManager;
-    @Mock
     protected AdapterManager adapterManager;
-    @Mock
     protected AdapterRegistry adapterRegistry;
-    @Mock
     protected DefinitionAdapter definitionAdapter;
-    @Mock
     protected PropertyAdapter propertyAdapter;
-    @Mock
+    protected PropertySetAdapter propertySetAdapter;
     protected FactoryManager factoryManager;
-    @Mock
     protected RuleManager ruleManager;
-    @Mock
     protected MutableIndex graphIndex;
-    @Mock
     protected Graph<DefinitionSet, Node> graph;
-    @Mock
     protected RuleSet ruleSet;
-    @Mock
     protected DefinitionSet graphContent;
-
     protected GraphCommandExecutionContext graphCommandExecutionContext;
-    protected Collection<Node> graphNodes = new LinkedList<>();
 
     @SuppressWarnings("unchecked")
     public void init() {
-        MockitoAnnotations.initMocks(this);
-        when(graph.getUUID()).thenReturn(GRAPH_UUID);
-        when(graph.getContent()).thenReturn(graphContent);
-        when(graph.nodes()).thenReturn(graphNodes);
-        when(definitionManager.adapters()).thenReturn(adapterManager);
-        when(adapterManager.registry()).thenReturn(adapterRegistry);
-        when(adapterManager.forDefinition()).thenReturn(definitionAdapter);
-        when(adapterManager.forProperty()).thenReturn(propertyAdapter);
-        when(adapterRegistry.getDefinitionAdapter(any(Class.class))).thenReturn(definitionAdapter);
-        when(adapterRegistry.getPropertyAdapter(any(Class.class))).thenReturn(propertyAdapter);
-        graphCommandExecutionContext = spy(new ContextualGraphCommandExecutionContext(definitionManager, factoryManager, ruleManager, graphIndex, ruleSet));
-        when(graphIndex.getGraph()).thenReturn(graph);
-        when(ruleManager.evaluate(any(RuleSet.class),
-                                  any(RuleEvaluationContext.class))).thenReturn(EMPTY_VIOLATIONS);
+        testingGraphMockHandler = new TestingGraphMockHandler();
+        definitionManager = testingGraphMockHandler.definitionManager;
+        adapterManager = testingGraphMockHandler.adapterManager;
+        adapterRegistry = testingGraphMockHandler.adapterRegistry;
+        definitionAdapter = testingGraphMockHandler.definitionAdapter;
+        propertyAdapter = testingGraphMockHandler.propertyAdapter;
+        propertySetAdapter = testingGraphMockHandler.propertySetAdapter;
+        factoryManager = testingGraphMockHandler.factoryManager;
+        ruleManager = testingGraphMockHandler.ruleManager;
+        graphIndex = testingGraphMockHandler.graphIndex;
+        graph = testingGraphMockHandler.graph;
+        ruleSet = testingGraphMockHandler.ruleSet;
+        graphContent = testingGraphMockHandler.graph.getContent();
+        graphCommandExecutionContext = testingGraphMockHandler.graphCommandExecutionContext;
     }
 
     protected DirectGraphCommandExecutionContext createAllowedExecutionContext() {

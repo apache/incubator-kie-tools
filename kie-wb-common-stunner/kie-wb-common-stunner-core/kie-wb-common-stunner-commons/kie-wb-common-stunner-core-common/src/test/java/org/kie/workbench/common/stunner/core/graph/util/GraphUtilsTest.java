@@ -17,21 +17,15 @@
 package org.kie.workbench.common.stunner.core.graph.util;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.OptionalInt;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.soup.commons.util.Sets;
 import org.kie.workbench.common.stunner.core.TestingGraphInstanceBuilder;
 import org.kie.workbench.common.stunner.core.TestingGraphMockHandler;
+import org.kie.workbench.common.stunner.core.TestingSimpleDomainObject;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
-import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
-import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
-import org.kie.workbench.common.stunner.core.definition.adapter.PropertyAdapter;
-import org.kie.workbench.common.stunner.core.definition.adapter.PropertySetAdapter;
-import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
@@ -43,79 +37,47 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class GraphUtilsTest {
 
-    private static final String PROPERTY = "property";
-
-    private static final String PROPERTY_ID = "property.id";
-    private static final String FIELD_NAME = "name";
-    private static final String FIELD_ATTRIBUTE1 = "attribute1";
-    private static final String FIELD_ATTRIBUTE2 = "attribute2";
-    private static final String FIELD_WITH_NAMESPACE = "attribute1.attribute2.name";
-
-    @Mock
-    private DefinitionManager definitionManager;
-
-    @Mock
-    private AdapterManager adapterManager;
-
-    @Mock
-    private DefinitionAdapter definitionAdapter;
-
-    @Mock
-    private PropertyAdapter propertyAdapter;
-
     @Mock
     private Element<? extends Definition> element;
 
     @Mock
-    private Object definition;
-
-    @Mock
-    private Object property;
-
-    @Mock
-    private PropertySetAdapter<Object> propertySetAdapter;
+    private Definition content;
 
     private TestingGraphMockHandler graphTestHandler;
     private TestingGraphInstanceBuilder.TestGraph4 graphInstance;
-
-    @Mock
-    private Object property1;
-
-    @Mock
-    private Object property2;
-
-    @Mock
-    private Definition content;
+    private TestingSimpleDomainObject domainObject;
 
     @Before
+    @SuppressWarnings("unchecked")
     public void setup() {
-        this.graphTestHandler = new TestingGraphMockHandler();
+        graphTestHandler = new TestingGraphMockHandler();
         graphInstance = TestingGraphInstanceBuilder.newGraph4(graphTestHandler);
+        domainObject = new TestingSimpleDomainObject(graphTestHandler);
+        when(element.getContent()).thenReturn(content);
+        when(content.getDefinition()).thenReturn(domainObject);
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void hasChildrenTest() {
         boolean hasChildren = GraphUtils.hasChildren(graphInstance.parentNode);
         assertTrue(hasChildren);
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void notHasChildrenTest() {
         boolean hasChildren = GraphUtils.hasChildren(graphInstance.startNode);
         assertFalse(hasChildren);
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void countChildrenTest() {
         Long countChildren = GraphUtils.countChildren(graphInstance.parentNode);
         assertEquals(Long.valueOf(4),
@@ -158,6 +120,7 @@ public class GraphUtilsTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void isDockedNodeTest() {
         assertTrue(GraphUtils.isDockedNode(graphInstance.dockedNode));
         assertFalse(GraphUtils.isDockedNode(graphInstance.startNode));
@@ -166,6 +129,7 @@ public class GraphUtilsTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void getDockedNodesTest() {
         List<Node> dockedNodes = GraphUtils.getDockedNodes(graphInstance.intermNode);
         assertEquals(dockedNodes.size(), 1);
@@ -173,6 +137,7 @@ public class GraphUtilsTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void getChildNodesTest() {
         List<Node> dockedNodes = GraphUtils.getChildNodes(graphInstance.parentNode);
         assertEquals(dockedNodes.size(), 4);
@@ -185,92 +150,36 @@ public class GraphUtilsTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testGetPropertyForNullElement() {
-        assertNull(GraphUtils.getProperty(definitionManager, (Element) null, PROPERTY_ID));
+        assertNull(GraphUtils.getProperty(getDefinitionManager(),
+                                          (Element) null,
+                                          TestingSimpleDomainObject.NAME));
     }
 
     @Test
     public void testGetPropertyForNonNullElement() {
-        setupDefinitionManager();
-
-        assertEquals(PROPERTY, GraphUtils.getProperty(definitionManager, element, PROPERTY_ID));
+        assertEquals(domainObject.getPropertySet(), GraphUtils.getProperty(getDefinitionManager(),
+                                                                           element,
+                                                                           TestingSimpleDomainObject.PROPERTY_SET));
     }
 
     @Test
-    public void testGetPropertyForElementUsingField() {
-        setupDefinitionManager();
-        when(definitionAdapter.getProperty(definition, FIELD_NAME)).thenReturn(Optional.of(property));
-
-        assertEquals(property, GraphUtils.getProperty(definitionManager, element, FIELD_NAME));
-    }
-
-    @Test
-    public void testGetPropertyByFieldHasProperty() {
-        setupDefinitionManager();
-        when(definitionAdapter.getProperty(definition, FIELD_NAME)).thenReturn(Optional.of(property));
-
-        final Object field = GraphUtils.getPropertyByField(definitionManager, definition, FIELD_NAME);
-        assertEquals(field, property);
-
-        verify(propertySetAdapter, never()).getProperty(any(), anyString());
-    }
-
-    @Test
-    public void testGetPropertyByFieldHasPropertySet() {
-        setupDefinitionManager();
-        when(definitionAdapter.getProperty(definition, FIELD_NAME)).thenReturn(Optional.empty());
-        when(adapterManager.forPropertySet()).thenReturn(propertySetAdapter);
-        when(propertySetAdapter.getProperty(definition, FIELD_NAME)).thenAnswer((i) -> Optional.of(property));
-
-        final Object field = GraphUtils.getPropertyByField(definitionManager, definition, FIELD_NAME);
-        assertEquals(field, property);
-
-        verify(definitionAdapter).getProperty(definition, FIELD_NAME);
-        verify(propertySetAdapter).getProperty(definition, FIELD_NAME);
-    }
-
-    @Test
-    public void testGetPropertyByFieldHasNoProperty() {
-        setupDefinitionManager();
-        when(definitionAdapter.getProperty(definition, FIELD_NAME)).thenReturn(Optional.empty());
-        when(adapterManager.forPropertySet()).thenReturn(propertySetAdapter);
-        when(propertySetAdapter.getProperty(definition, FIELD_NAME)).thenAnswer((i) -> Optional.empty());
-
-        final Object field = GraphUtils.getPropertyByField(definitionManager, definition, FIELD_NAME);
-        assertNull(field);
-
-        verify(definitionAdapter).getProperty(definition, FIELD_NAME);
-        verify(propertySetAdapter).getProperty(definition, FIELD_NAME);
-    }
-
-    @Test
-    public void testGetPropertyByFieldWithNameSpace() {
-        setupDefinitionManager();
-        when(definitionAdapter.getProperty(definition, FIELD_ATTRIBUTE1)).thenReturn(Optional.of(property1));
-        when(definitionAdapter.getProperty(property1, FIELD_ATTRIBUTE2)).thenReturn(Optional.of(property2));
-        when(definitionAdapter.getProperty(property2, FIELD_NAME)).thenReturn(Optional.of(property));
-
-        final Object field = GraphUtils.getPropertyByField(definitionManager, definition, FIELD_WITH_NAMESPACE);
-        assertEquals(field, property);
-
-        verify(definitionAdapter).getProperty(definition, FIELD_ATTRIBUTE1);
-        verify(definitionAdapter).getProperty(property1, FIELD_ATTRIBUTE2);
-        verify(definitionAdapter).getProperty(property2, FIELD_NAME);
-        verify(propertySetAdapter, never()).getProperty(any(), anyString());
-    }
-
     @SuppressWarnings("unchecked")
-    private void setupDefinitionManager() {
-        when(element.getContent()).thenReturn(content);
-        when(content.getDefinition()).thenReturn(definition);
-        when(definitionManager.adapters()).thenReturn(adapterManager);
-        when(adapterManager.forDefinition()).thenReturn(definitionAdapter);
-        when(definitionAdapter.getProperties(eq(content))).thenReturn(new Sets.Builder<String>().add(PROPERTY).build());
-        when(definitionAdapter.getProperties(any(DomainObject.class))).thenReturn(new Sets.Builder<String>().add(PROPERTY).build());
-        when(adapterManager.forProperty()).thenReturn(propertyAdapter);
-        when(propertyAdapter.getId(PROPERTY)).thenReturn(PROPERTY_ID);
+    public void testGetPropertyForElementUsingField() {
+        assertEquals(domainObject.getNameProperty(), GraphUtils.getProperty(getDefinitionManager(),
+                                                                            element,
+                                                                            TestingSimpleDomainObject.NAME_FIELD));
     }
 
     @Test
+    @SuppressWarnings("unchecked")
+    public void testEmptyGetPropertyForElementUsingField() {
+        assertNull(GraphUtils.getProperty(getDefinitionManager(),
+                                          element,
+                                          TestingSimpleDomainObject.PROPERTY_SET + "." + "someField"));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
     public void testGetChildIndex() {
         final OptionalInt index1 = GraphUtils.getChildIndex(graphInstance.parentNode, TestingGraphInstanceBuilder.START_NODE_UUID);
         assertTrue(index1.isPresent());
@@ -290,5 +199,9 @@ public class GraphUtilsTest {
 
         final OptionalInt index5 = GraphUtils.getChildIndex(graphInstance.parentNode, "node_not_exist");
         assertFalse(index5.isPresent());
+    }
+
+    private DefinitionManager getDefinitionManager() {
+        return graphTestHandler.definitionManager;
     }
 }
