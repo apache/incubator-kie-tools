@@ -1,0 +1,20 @@
+schema_version: 1
+name: graalvm
+version: "1.0.0-rc16"
+
+envs:
+  - name: "JAVA_HOME"
+    value: "/usr/share/graalvm"
+  - name: "GRAALVM_HOME"
+    value: "/usr/share/graalvm"
+  #version without prefix ce
+  - name: "GRAALVM_VERSION"
+    value: "1.0.0-rc16"
+
+artifacts:
+- name: graalvm-ce-1.0.0-rc16-linux-amd64.tar.gz
+  url: https://github.com/oracle/graal/releases/download/vm-1.0.0-rc16/graalvm-ce-1.0.0-rc16-linux-amd64.tar.gz
+  md5: 42376d71746ef62525d51eeca84f508c
+
+execute:
+- script: configure
