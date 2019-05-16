@@ -176,8 +176,6 @@ public class FormEditorPresenterAbstractTest {
     @Mock
     protected ErrorMessageDisplayer errorMessageDisplayer;
     @Mock
-    private FormFieldPropertiesEditorDock formFieldPropertiesEditorDock;
-    @Mock
     LayoutEditorPropertiesPresenter layoutEditorPropertiesPresenter;
 
     @Mock
@@ -285,7 +283,6 @@ public class FormEditorPresenterAbstractTest {
                                             editorFieldLayoutComponents,
                                             showAssetUsagesDisplayer,
                                             errorMessageDisplayer,
-                                            formFieldPropertiesEditorDock,
                                             layoutEditorPropertiesPresenter) {
             {
                 kieView = mock(KieEditorWrapperView.class);

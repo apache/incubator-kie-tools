@@ -56,8 +56,8 @@ import org.kie.workbench.common.services.refactoring.client.usages.ShowAssetUsag
 import org.kie.workbench.common.services.refactoring.service.ResourceType;
 import org.kie.workbench.common.widgets.metadata.client.KieEditor;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorView;
-import org.kie.workbench.common.workbench.client.PerspectiveIds;
 import org.kie.workbench.common.workbench.client.events.LayoutEditorFocusEvent;
+import org.kie.workbench.common.workbench.client.events.LayoutEditorLostFocusEvent;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.WorkbenchEditor;
@@ -113,7 +113,9 @@ public class FormEditorPresenter extends KieEditor<FormModelerContent> {
     protected LayoutDragComponentPalette layoutDragComponentPalette;
     @Inject
     protected Event<LayoutEditorFocusEvent> layoutFocusEvent;
-
+    @Inject
+    protected Event<LayoutEditorLostFocusEvent> layoutLostFocusEvent;
+    
     private ShowAssetUsagesDisplayer showAssetUsagesDisplayer;
     private FormEditorView view;
     private ChangesNotificationDisplayer changesNotificationDisplayer;
@@ -121,7 +123,6 @@ public class FormEditorPresenter extends KieEditor<FormModelerContent> {
     private Caller<FormEditorService> editorService;
     private TranslationService translationService;
     private ErrorMessageDisplayer errorMessageDisplayer;
-    private FormFieldPropertiesEditorDock formFieldPropertiesEditorDock;
     private LayoutEditorPropertiesPresenter layoutEditorPropertiesPresenter;
 
     protected boolean setActiveOnLoad = false;
@@ -135,7 +136,6 @@ public class FormEditorPresenter extends KieEditor<FormModelerContent> {
                                ManagedInstance<EditorFieldLayoutComponent> editorFieldLayoutComponents,
                                ShowAssetUsagesDisplayer showAssetUsagesDisplayer,
                                ErrorMessageDisplayer errorMessageDisplayer,
-                               FormFieldPropertiesEditorDock formFieldPropertiesEditorDock,
                                LayoutEditorPropertiesPresenter layoutEditorPropertiesPresenter) {
         super(view);
         this.view = view;
@@ -146,7 +146,6 @@ public class FormEditorPresenter extends KieEditor<FormModelerContent> {
         this.editorFieldLayoutComponents = editorFieldLayoutComponents;
         this.showAssetUsagesDisplayer = showAssetUsagesDisplayer;
         this.errorMessageDisplayer = errorMessageDisplayer;
-        this.formFieldPropertiesEditorDock = formFieldPropertiesEditorDock;
         this.layoutEditorPropertiesPresenter = layoutEditorPropertiesPresenter;
     }
 
@@ -157,7 +156,6 @@ public class FormEditorPresenter extends KieEditor<FormModelerContent> {
         init(path,
              place,
              resourceType);
-        formFieldPropertiesEditorDock.init(PerspectiveIds.LIBRARY);
         layoutEditorPropertiesPresenter.edit(layoutEditor);
     }
 
@@ -169,13 +167,13 @@ public class FormEditorPresenter extends KieEditor<FormModelerContent> {
             setActiveInstance();
         }
     }
-        
+    
     @Override
     public void hideDocks() {
         super.hideDocks();
-        formFieldPropertiesEditorDock.close();
+        layoutLostFocusEvent.fire(new LayoutEditorLostFocusEvent(ID));
     }
-
+    
     @Override
     protected String getEditorIdentifier() {
         return ID;
@@ -186,7 +184,7 @@ public class FormEditorPresenter extends KieEditor<FormModelerContent> {
 
         initLayoutDragComponentPalette();
 
-        layoutFocusEvent.fire(new LayoutEditorFocusEvent());
+        layoutFocusEvent.fire(new LayoutEditorFocusEvent(ID));
     }
 
     @Override
@@ -268,7 +266,6 @@ public class FormEditorPresenter extends KieEditor<FormModelerContent> {
 
         layoutEditor.loadLayout(editorHelper.getContent().getDefinition().getLayoutTemplate());
         layoutEditor.setElementSelectionEnabled(true);
-        formFieldPropertiesEditorDock.open();
     }
 
     protected void synchronizeLayoutEditor() {
