@@ -237,10 +237,10 @@ public class LibraryConstants {
     public static final String AddProjectSuccess = "AddProjectSuccess";
 
     @TranslationKey(defaultValue = "")
-    public static final String ShowAdvancedOptions = "ShowAdvancedOptions";
+    public static final String ConfigureAdvancedOptions = "ConfigureAdvancedOptions";
 
     @TranslationKey(defaultValue = "")
-    public static final String HideAdvancedOptions = "HideAdvancedOptions";
+    public static final String RestoreAdvancedOptions = "RestoreAdvancedOptions";
 
     @TranslationKey(defaultValue = "")
     public static final String GroupId = "GroupId";

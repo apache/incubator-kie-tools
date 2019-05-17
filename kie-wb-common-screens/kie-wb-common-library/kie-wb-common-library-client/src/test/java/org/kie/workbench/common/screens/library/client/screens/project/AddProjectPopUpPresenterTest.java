@@ -32,7 +32,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.library.api.LibraryInfo;
 import org.kie.workbench.common.screens.library.api.LibraryService;
+import org.kie.workbench.common.screens.library.api.preferences.LibraryOrganizationalUnitPreferences;
 import org.kie.workbench.common.screens.library.api.preferences.LibraryPreferences;
+import org.kie.workbench.common.screens.library.api.preferences.LibraryProjectPreferences;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.mockito.ArgumentCaptor;
@@ -48,6 +50,7 @@ import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.jgroups.util.Util.assertEquals;
 import static org.mockito.Mockito.*;
+import static org.uberfire.mocks.ParametrizedCommandMock.executeParametrizedCommandWith;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AddProjectPopUpPresenterTest {
@@ -495,5 +498,51 @@ public class AddProjectPopUpPresenterTest {
         verify(view).showBusyIndicator(anyString());
         verify(view).setAddButtonEnabled(true);
         verify(command).execute(any());
+    }
+
+    @Test
+    public void testRestoreAdvancedOptionsWithActiveOrganizationalUnit() {
+        LibraryPreferences loadedLibraryPreferences = mock(LibraryPreferences.class);
+        LibraryProjectPreferences libraryProjectPreferences = mock(LibraryProjectPreferences.class);
+
+        doReturn(libraryProjectPreferences).when(loadedLibraryPreferences).getProjectPreferences();
+        doReturn("version").when(libraryProjectPreferences).getVersion();
+        when(projectContext.getActiveOrganizationalUnit().get().getDefaultGroupId()).thenReturn("group");
+        when(view.getName()).thenReturn("Project Test");
+
+        executeParametrizedCommandWith(0, loadedLibraryPreferences).when(libraryPreferences).load(any(ParameterizedCommand.class),
+                                                                                                  any(ParameterizedCommand.class));
+
+        presenter.restoreAdvancedOptions();
+
+        verify(libraryPreferences).load(any(ParameterizedCommand.class), any(ParameterizedCommand.class));
+        verify(view).setVersion("version");
+        verify(view).setGroupId("group");
+        verify(view, never()).setDescription(any());
+        verify(view).setArtifactId("ProjectTest");
+    }
+
+    @Test
+    public void testRestoreAdvancedOptionsWithoutActiveOrganizationalUnit() {
+        LibraryPreferences loadedLibraryPreferences = mock(LibraryPreferences.class);
+        LibraryProjectPreferences libraryProjectPreferences = mock(LibraryProjectPreferences.class);
+        LibraryOrganizationalUnitPreferences libraryOrganizationalUnitPreferences = mock(LibraryOrganizationalUnitPreferences.class);
+
+        doReturn(libraryProjectPreferences).when(loadedLibraryPreferences).getProjectPreferences();
+        doReturn("version").when(libraryProjectPreferences).getVersion();
+        doReturn(libraryOrganizationalUnitPreferences).when(loadedLibraryPreferences).getOrganizationalUnitPreferences();
+        when(libraryOrganizationalUnitPreferences.getGroupId()).thenReturn("group");
+        when(projectContext.getActiveOrganizationalUnit()).thenReturn(Optional.empty());
+        when(view.getName()).thenReturn("Project Test");
+
+        executeParametrizedCommandWith(0, loadedLibraryPreferences).when(libraryPreferences).load(any(ParameterizedCommand.class),
+                                                                                                  any(ParameterizedCommand.class));
+
+        presenter.restoreAdvancedOptions();
+
+        verify(view).setVersion("version");
+        verify(view).setGroupId("group");
+        verify(view, never()).setDescription(any());
+        verify(view).setArtifactId("ProjectTest");
     }
 }

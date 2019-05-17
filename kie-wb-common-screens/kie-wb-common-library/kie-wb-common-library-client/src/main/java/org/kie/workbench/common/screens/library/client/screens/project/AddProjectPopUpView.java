@@ -66,8 +66,8 @@ public class AddProjectPopUpView implements AddProjectPopUpPresenter.View,
     Span errorMessage;
 
     @Inject
-    @DataField("show-hide-advanced-options")
-    Anchor showHideAdvancedOptions;
+    @DataField("advanced-options-anchor")
+    Anchor advancedOptionsAnchor;
 
     @Inject
     @DataField("advanced-options")
@@ -94,6 +94,20 @@ public class AddProjectPopUpView implements AddProjectPopUpPresenter.View,
     Input version;
 
     private Button addButton;
+
+    public AddProjectPopUpView() {
+
+    }
+
+    public AddProjectPopUpView(final AddProjectPopUpPresenter presenter,
+                               final TranslationService ts,
+                               final Div advancedOptions,
+                               final Anchor advancedOptionsAnchor) {
+        this.presenter = presenter;
+        this.ts = ts;
+        this.advancedOptions = advancedOptions;
+        this.advancedOptionsAnchor = advancedOptionsAnchor;
+    }
 
     @Override
     public void init(final AddProjectPopUpPresenter presenter) {
@@ -292,21 +306,22 @@ public class AddProjectPopUpView implements AddProjectPopUpPresenter.View,
         BusyPopup.close();
     }
 
-    @EventHandler("show-hide-advanced-options")
-    public void showAdvancedOptions(final ClickEvent clickEvent) {
+    @EventHandler("advanced-options-anchor")
+    public void advancedOptionsAnchorOnClick(final ClickEvent clickEvent) {
         if (advancedOptions.getHidden()) {
             advancedOptions.setHidden(false);
-            showHideAdvancedOptions.setTextContent(ts.format(LibraryConstants.HideAdvancedOptions));
+            advancedOptionsAnchor.setTextContent(ts.format(LibraryConstants.RestoreAdvancedOptions));
         } else {
             advancedOptions.setHidden(true);
-            showHideAdvancedOptions.setTextContent(ts.format(LibraryConstants.ShowAdvancedOptions));
-            presenter.restoreDefaultAdvancedOptions();
+            advancedOptionsAnchor.setTextContent(ts.format(LibraryConstants.ConfigureAdvancedOptions));
+            presenter.restoreAdvancedOptions();
         }
     }
     
     @EventHandler("name")
     public void setProjectNameAndArtifactId(final KeyUpEvent keyUpEvent) {
-        artifactId.setValue(name.getValue().replaceAll(" ", ""));
+        presenter.setDefaultArtifactId();
     }
+
 
 }
