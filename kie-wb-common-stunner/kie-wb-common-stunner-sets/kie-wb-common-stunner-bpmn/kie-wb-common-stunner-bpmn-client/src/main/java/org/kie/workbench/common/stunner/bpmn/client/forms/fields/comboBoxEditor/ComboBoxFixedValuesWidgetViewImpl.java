@@ -29,15 +29,15 @@ import org.kie.workbench.common.stunner.bpmn.client.forms.util.ListBoxValues;
 @Templated("ComboBoxWidget.html")
 public class ComboBoxFixedValuesWidgetViewImpl extends ComboBoxWidgetViewImpl implements ComboBoxFixedValuesWidgetView {
 
-  @PostConstruct
-  public void init() {
-    super.init();
-    //Do not allow custom values to be inserted on the combobox
-    valueComboBox.setShowCustomValues(false);
-  }
+    @PostConstruct
+    public void init() {
+        super.init();
+        //Do not allow custom values to be inserted on the combobox
+        valueComboBox.setShowCustomValues(false);
+    }
 
-  @Override
-  public void setComboBoxValues(final ListBoxValues valueListBoxValues) {
-    valueComboBox.setListBoxValues(valueListBoxValues);
-  }
+    @Override
+    public void setComboBoxValues(final ListBoxValues valueListBoxValues) {
+        valueComboBox.setListBoxValues(valueListBoxValues);
+    }
 }

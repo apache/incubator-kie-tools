@@ -59,9 +59,9 @@ public class CatchingIntermediateEscalationEventTest extends CatchingIntermediat
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
 
         IntermediateEscalationEvent filledTopEvent = getCatchingIntermediateNodeById(diagram,
-                                                                                         FILLED_TOP_LEVEL_EVENT_ID,
-                                                                                         HAS_NO_INCOME_EDGE,
-                                                                                         HAS_OUTGOING_EDGE);
+                                                                                     FILLED_TOP_LEVEL_EVENT_ID,
+                                                                                     HAS_NO_INCOME_EDGE,
+                                                                                     HAS_OUTGOING_EDGE);
         assertGeneralSet(filledTopEvent.getGeneral(), EVENT_NAME, EVENT_DOCUMENTATION);
         assertEscalationEventExecutionSet(filledTopEvent.getExecutionSet(), EVENT_REF, CANCELLING);
         assertDataIOSet(filledTopEvent.getDataIOSet(), EVENT_DATA_OUTPUT);
@@ -74,9 +74,9 @@ public class CatchingIntermediateEscalationEventTest extends CatchingIntermediat
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
 
         IntermediateEscalationEvent emptyTopEvent = getCatchingIntermediateNodeById(diagram,
-                                                                                        EMPTY_TOP_LEVEL_EVENT_ID,
-                                                                                        HAS_NO_INCOME_EDGE,
-                                                                                        HAS_OUTGOING_EDGE);
+                                                                                    EMPTY_TOP_LEVEL_EVENT_ID,
+                                                                                    HAS_NO_INCOME_EDGE,
+                                                                                    HAS_OUTGOING_EDGE);
         assertGeneralSet(emptyTopEvent.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
         assertEscalationEventExecutionSet(emptyTopEvent.getExecutionSet(), EMPTY_VALUE, CANCELLING);
         assertDataIOSet(emptyTopEvent.getDataIOSet(), EMPTY_VALUE);
@@ -94,9 +94,9 @@ public class CatchingIntermediateEscalationEventTest extends CatchingIntermediat
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
 
         IntermediateEscalationEvent filledSubprocessEvent = getCatchingIntermediateNodeById(diagram,
-                                                                                                FILLED_SUBPROCESS_LEVEL_EVENT_ID,
-                                                                                                HAS_NO_INCOME_EDGE,
-                                                                                                HAS_OUTGOING_EDGE);
+                                                                                            FILLED_SUBPROCESS_LEVEL_EVENT_ID,
+                                                                                            HAS_NO_INCOME_EDGE,
+                                                                                            HAS_OUTGOING_EDGE);
         assertGeneralSet(filledSubprocessEvent.getGeneral(), EVENT_NAME, EVENT_DOCUMENTATION);
         assertEscalationEventExecutionSet(filledSubprocessEvent.getExecutionSet(), EVENT_REF, CANCELLING);
         assertDataIOSet(filledSubprocessEvent.getDataIOSet(), EVENT_DATA_OUTPUT);
@@ -109,9 +109,9 @@ public class CatchingIntermediateEscalationEventTest extends CatchingIntermediat
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
 
         IntermediateEscalationEvent emptySubprocessEvent = getCatchingIntermediateNodeById(diagram,
-                                                                                               EMPTY_SUBPROCESS_LEVEL_EVENT_ID,
-                                                                                               HAS_NO_INCOME_EDGE,
-                                                                                               HAS_OUTGOING_EDGE);
+                                                                                           EMPTY_SUBPROCESS_LEVEL_EVENT_ID,
+                                                                                           HAS_NO_INCOME_EDGE,
+                                                                                           HAS_OUTGOING_EDGE);
         assertGeneralSet(emptySubprocessEvent.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
         assertEscalationEventExecutionSet(emptySubprocessEvent.getExecutionSet(), EMPTY_VALUE, CANCELLING);
         assertDataIOSet(emptySubprocessEvent.getDataIOSet(), EMPTY_VALUE);
@@ -129,9 +129,9 @@ public class CatchingIntermediateEscalationEventTest extends CatchingIntermediat
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
 
         IntermediateEscalationEvent filledSubprocessEvent = getCatchingIntermediateNodeById(diagram,
-                                                                                                FILLED_WITH_INCOME_TOP_LEVEL_EVENT_ID,
-                                                                                                HAS_INCOME_EDGE,
-                                                                                                HAS_OUTGOING_EDGE);
+                                                                                            FILLED_WITH_INCOME_TOP_LEVEL_EVENT_ID,
+                                                                                            HAS_INCOME_EDGE,
+                                                                                            HAS_OUTGOING_EDGE);
         assertGeneralSet(filledSubprocessEvent.getGeneral(), EVENT_NAME, EVENT_DOCUMENTATION);
         assertEscalationEventExecutionSet(filledSubprocessEvent.getExecutionSet(), EVENT_REF, CANCELLING);
         assertDataIOSet(filledSubprocessEvent.getDataIOSet(), EVENT_DATA_OUTPUT);
@@ -144,9 +144,9 @@ public class CatchingIntermediateEscalationEventTest extends CatchingIntermediat
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
 
         IntermediateEscalationEvent emptyEvent = getCatchingIntermediateNodeById(diagram,
-                                                                                     EMPTY_WITH_INCOME_TOP_LEVEL_EVENT_ID,
-                                                                                     HAS_INCOME_EDGE,
-                                                                                     HAS_OUTGOING_EDGE);
+                                                                                 EMPTY_WITH_INCOME_TOP_LEVEL_EVENT_ID,
+                                                                                 HAS_INCOME_EDGE,
+                                                                                 HAS_OUTGOING_EDGE);
         assertGeneralSet(emptyEvent.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
         assertEscalationEventExecutionSet(emptyEvent.getExecutionSet(), EMPTY_VALUE, CANCELLING);
         assertDataIOSet(emptyEvent.getDataIOSet(), EMPTY_VALUE);
@@ -159,9 +159,9 @@ public class CatchingIntermediateEscalationEventTest extends CatchingIntermediat
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
 
         IntermediateEscalationEvent emptySubprocessEvent = getCatchingIntermediateNodeById(diagram,
-                                                                                               EMPTY_WITH_INCOME_SUBPROCESS_LEVEL_EVENT_ID,
-                                                                                               HAS_INCOME_EDGE,
-                                                                                               HAS_OUTGOING_EDGE);
+                                                                                           EMPTY_WITH_INCOME_SUBPROCESS_LEVEL_EVENT_ID,
+                                                                                           HAS_INCOME_EDGE,
+                                                                                           HAS_OUTGOING_EDGE);
         assertGeneralSet(emptySubprocessEvent.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
         assertEscalationEventExecutionSet(emptySubprocessEvent.getExecutionSet(), EMPTY_VALUE, CANCELLING);
         assertDataIOSet(emptySubprocessEvent.getDataIOSet(), EMPTY_VALUE);
@@ -179,9 +179,9 @@ public class CatchingIntermediateEscalationEventTest extends CatchingIntermediat
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
 
         IntermediateEscalationEvent filledSubprocessEvent = getCatchingIntermediateNodeById(diagram,
-                                                                                                FILLED_WITH_INCOME_SUBPROCESS_LEVEL_EVENT_ID,
-                                                                                                HAS_INCOME_EDGE,
-                                                                                                HAS_OUTGOING_EDGE);
+                                                                                            FILLED_WITH_INCOME_SUBPROCESS_LEVEL_EVENT_ID,
+                                                                                            HAS_INCOME_EDGE,
+                                                                                            HAS_OUTGOING_EDGE);
         assertGeneralSet(filledSubprocessEvent.getGeneral(), EVENT_NAME, EVENT_DOCUMENTATION);
         assertEscalationEventExecutionSet(filledSubprocessEvent.getExecutionSet(), EVENT_REF, CANCELLING);
         assertDataIOSet(filledSubprocessEvent.getDataIOSet(), EVENT_DATA_OUTPUT);

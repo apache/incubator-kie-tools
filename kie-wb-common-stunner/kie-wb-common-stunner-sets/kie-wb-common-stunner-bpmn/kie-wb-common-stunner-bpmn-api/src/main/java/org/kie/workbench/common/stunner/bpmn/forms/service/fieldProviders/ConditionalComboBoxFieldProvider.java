@@ -26,33 +26,33 @@ import org.kie.workbench.common.stunner.bpmn.forms.model.ConditionalComboBoxFiel
 @Model
 public class ConditionalComboBoxFieldProvider extends BasicTypeFieldProvider<ConditionalComboBoxFieldDefinition> {
 
-  @Override
-  public int getPriority() {
-    return 40000;
-  }
+    @Override
+    public int getPriority() {
+        return 40000;
+    }
 
-  @Override
-  protected void doRegisterFields() {
-    registerPropertyType(String.class);
-  }
+    @Override
+    protected void doRegisterFields() {
+        registerPropertyType(String.class);
+    }
 
-  @Override
-  public ConditionalComboBoxFieldDefinition createFieldByType(TypeInfo typeInfo) {
-    return getDefaultField();
-  }
+    @Override
+    public ConditionalComboBoxFieldDefinition createFieldByType(TypeInfo typeInfo) {
+        return getDefaultField();
+    }
 
-  @Override
-  public Class<ConditionalComboBoxFieldType> getFieldType() {
-    return ConditionalComboBoxFieldType.class;
-  }
+    @Override
+    public Class<ConditionalComboBoxFieldType> getFieldType() {
+        return ConditionalComboBoxFieldType.class;
+    }
 
-  @Override
-  public String getFieldTypeName() {
-    return ConditionalComboBoxFieldDefinition.FIELD_TYPE.getTypeName();
-  }
+    @Override
+    public String getFieldTypeName() {
+        return ConditionalComboBoxFieldDefinition.FIELD_TYPE.getTypeName();
+    }
 
-  @Override
-  public ConditionalComboBoxFieldDefinition getDefaultField() {
-    return new ConditionalComboBoxFieldDefinition();
-  }
+    @Override
+    public ConditionalComboBoxFieldDefinition getDefaultField() {
+        return new ConditionalComboBoxFieldDefinition();
+    }
 }

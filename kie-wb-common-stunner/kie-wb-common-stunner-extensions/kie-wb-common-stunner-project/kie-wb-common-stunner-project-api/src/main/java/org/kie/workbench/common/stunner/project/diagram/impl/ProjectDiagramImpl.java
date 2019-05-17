@@ -58,5 +58,4 @@ public class ProjectDiagramImpl extends AbstractDiagram<Graph, ProjectMetadata> 
             return false;
         }
     }
-
 }

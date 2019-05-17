@@ -33,8 +33,8 @@ public class ShapeStateAttributesFactory {
         }
 
         return buildAttributes()
-                        .set(ShapeStateAttribute.STROKE_ALPHA, 1d)
-                        .set(ShapeStateAttribute.STROKE_COLOR, COLOR);
+                .set(ShapeStateAttribute.STROKE_ALPHA, 1d)
+                .set(ShapeStateAttribute.STROKE_COLOR, COLOR);
     }
 
     public static ShapeStateAttributes buildFillAttributes(final ShapeState state) {
@@ -44,8 +44,8 @@ public class ShapeStateAttributesFactory {
         }
 
         return buildAttributes()
-                        .set(ShapeStateAttribute.FILL_COLOR, COLOR)
-                        .set(ShapeStateAttribute.FILL_ALPHA, 1d);
+                .set(ShapeStateAttribute.FILL_COLOR, COLOR)
+                .set(ShapeStateAttribute.FILL_ALPHA, 1d);
     }
 
     private static String getAttributeColorByState(final ShapeState state) {

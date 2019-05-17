@@ -28,7 +28,6 @@ import org.kie.workbench.common.stunner.bpmn.forms.model.NotificationsEditorFiel
 @Dependent
 public class NotificationsEditorFieldRenderer extends FieldRenderer<NotificationsEditorFieldDefinition, DefaultFormGroup> {
 
-
     private NotificationsEditorWidget notificationsEditorWidget;
 
     @Inject

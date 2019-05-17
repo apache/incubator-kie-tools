@@ -28,7 +28,6 @@ import static org.junit.Assert.assertEquals;
 
 public class ParsedNotificationsInfosTest {
 
-
     @Test
     public void testNotification() {
         String body = "[from:director|tousers:director,jack,katy|togroups:Forms,IT|replyTo:guest|subject:asd|body:asd]@[11h]";
@@ -41,8 +40,7 @@ public class ParsedNotificationsInfosTest {
         expected.setBody("asd");
         expected.setExpiresAt("11h");
         expected.setGroups(new ArrayList<>(Arrays.asList("Forms", "IT")));
-        expected.setUsers(new ArrayList<>(Arrays.asList("director", "jack","katy")));
-
+        expected.setUsers(new ArrayList<>(Arrays.asList("director", "jack", "katy")));
 
         assertEquals(expected, actual);
     }
@@ -67,5 +65,4 @@ public class ParsedNotificationsInfosTest {
         valid.setType(AssociationType.NOT_COMPLETED_NOTIFY.getName());
         assertEquals(valid, value);
     }
-
 }

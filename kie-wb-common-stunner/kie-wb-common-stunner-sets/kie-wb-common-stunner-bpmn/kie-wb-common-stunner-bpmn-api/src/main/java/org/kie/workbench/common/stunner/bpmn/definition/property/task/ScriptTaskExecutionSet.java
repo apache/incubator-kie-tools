@@ -106,8 +106,8 @@ public class ScriptTaskExecutionSet implements BPMNPropertySet {
         if (o instanceof ScriptTaskExecutionSet) {
             ScriptTaskExecutionSet other = (ScriptTaskExecutionSet) o;
             return Objects.equals(script, other.script) &&
-                   Objects.equals(isAsync, other.isAsync) &&
-                   Objects.equals(adHocAutostart, other.adHocAutostart);
+                    Objects.equals(isAsync, other.isAsync) &&
+                    Objects.equals(adHocAutostart, other.adHocAutostart);
         }
         return false;
     }

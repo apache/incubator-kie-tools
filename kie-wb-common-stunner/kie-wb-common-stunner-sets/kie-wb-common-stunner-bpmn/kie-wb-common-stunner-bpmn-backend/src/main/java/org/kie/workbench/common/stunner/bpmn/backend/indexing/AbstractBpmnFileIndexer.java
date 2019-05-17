@@ -219,5 +219,4 @@ public abstract class AbstractBpmnFileIndexer extends AbstractFileIndexer {
     }
 
     protected abstract String getProcessDescriptorName();
-
 }

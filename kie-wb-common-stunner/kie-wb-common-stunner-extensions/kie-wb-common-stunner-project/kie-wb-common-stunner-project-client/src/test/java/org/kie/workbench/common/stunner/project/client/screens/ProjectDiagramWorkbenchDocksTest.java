@@ -60,7 +60,7 @@ public class ProjectDiagramWorkbenchDocksTest {
         tested.enableDocks();
         verify(uberfireDocks,
                times(1)).show(any(UberfireDockPosition.class),
-                                eq(pId));
+                              eq(pId));
         assertTrue(tested.isEnabled());
     }
 
@@ -72,7 +72,7 @@ public class ProjectDiagramWorkbenchDocksTest {
         tested.disableDocks();
         verify(uberfireDocks,
                times(1)).hide(any(UberfireDockPosition.class),
-                                 eq(pId));
+                              eq(pId));
         assertFalse(tested.isEnabled());
     }
 }

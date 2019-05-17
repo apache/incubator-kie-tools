@@ -39,7 +39,7 @@ public class NoneCloneProcessTest extends AbstractCloneProcessTest {
 
     @Test
     public void testCloneParam() throws Exception {
-        Object clone = noneCloneProcess.clone(def1 ,def2);
+        Object clone = noneCloneProcess.clone(def1, def2);
         assertEquals(clone, def2);
         assertNotEquals(clone, def1);
     }

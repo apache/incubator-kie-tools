@@ -61,7 +61,6 @@ public class NotificationsInfo implements BPMNProperty {
         return value;
     }
 
-
     public void setValue(final NotificationTypeListValue value) {
         this.value = value;
     }
@@ -79,5 +78,4 @@ public class NotificationsInfo implements BPMNProperty {
         }
         return false;
     }
-
 }

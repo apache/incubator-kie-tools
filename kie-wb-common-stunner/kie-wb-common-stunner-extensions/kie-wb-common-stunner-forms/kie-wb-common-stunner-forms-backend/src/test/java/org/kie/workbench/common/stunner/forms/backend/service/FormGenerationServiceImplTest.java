@@ -123,7 +123,7 @@ public class FormGenerationServiceImplTest {
                     .when(formDefinitionGenerator).generateSelectedForms(any(), any());
         }
 
-        generationService.generateSelectedForms(diagram, new String[] {""});
+        generationService.generateSelectedForms(diagram, new String[]{""});
 
         verify(formDefinitionGenerator).generateSelectedForms(any(), any());
 

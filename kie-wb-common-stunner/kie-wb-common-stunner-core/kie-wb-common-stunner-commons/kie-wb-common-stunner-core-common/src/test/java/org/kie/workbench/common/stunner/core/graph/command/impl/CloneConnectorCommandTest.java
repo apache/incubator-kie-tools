@@ -30,7 +30,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
-public class CloneConnectorCommandTest extends AbstractCloneCommandTest{
+public class CloneConnectorCommandTest extends AbstractCloneCommandTest {
 
     private CloneConnectorCommand cloneConnectorCommand;
 
@@ -39,7 +39,7 @@ public class CloneConnectorCommandTest extends AbstractCloneCommandTest{
     String targetNodeUUID;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         super.setUp();
 
         candidate = graphInstance.edge1;

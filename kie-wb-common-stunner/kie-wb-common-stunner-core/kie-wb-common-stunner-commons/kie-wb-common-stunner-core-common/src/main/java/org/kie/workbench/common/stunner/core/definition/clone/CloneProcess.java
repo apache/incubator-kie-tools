@@ -18,8 +18,7 @@ package org.kie.workbench.common.stunner.core.definition.clone;
 
 public interface CloneProcess {
 
-    <T> T clone (T source);
+    <T> T clone(T source);
 
     <S, T> T clone(S source, T target);
-
 }

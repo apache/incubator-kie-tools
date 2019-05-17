@@ -76,7 +76,7 @@ public class CanvasDiagramValidator<H extends AbstractCanvasHandler> {
         elementViolations
                 .forEach(v -> {
                     if (checkViolation(canvasHandler,
-                                        v)) {
+                                       v)) {
                         valid[0] = false;
                     }
                 });

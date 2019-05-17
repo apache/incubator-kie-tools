@@ -29,15 +29,15 @@ public class ParsedReassignmentsInfos {
 
     ReassignmentValue reassignment = new ReassignmentValue();
 
-    public static ReassignmentValue of(String type, String body){
+    public static ReassignmentValue of(String type, String body) {
         return new ParsedReassignmentsInfos(type, body).reassignment;
     }
 
-    public static String ofCDATA(ReassignmentTypeListValue value, AssociationType type){
+    public static String ofCDATA(ReassignmentTypeListValue value, AssociationType type) {
         return new CDATA(value, type).get();
     }
 
-    private ParsedReassignmentsInfos(String type, String body){
+    private ParsedReassignmentsInfos(String type, String body) {
         reassignment.setType(type);
 
         if (body != null && !body.isEmpty()) {
@@ -46,7 +46,7 @@ public class ParsedReassignmentsInfos {
                 String[] parts = body.split("@");
                 parsePeriod(reassignment, parts[1]);
                 usersAndGroups = parts[0];
-            }else {
+            } else {
                 usersAndGroups = body;
             }
             usersAndGroups = replaceBracket(usersAndGroups);
@@ -54,7 +54,6 @@ public class ParsedReassignmentsInfos {
             getUsers(reassignment, usersAndGroups);
             getGroups(reassignment, usersAndGroups);
         }
-
     }
 
     private static void getUsers(ReassignmentValue reassignment, String usersAndGroups) {
@@ -79,28 +78,27 @@ public class ParsedReassignmentsInfos {
 
     private static void parsePeriod(ReassignmentValue reassignment, String part) {
         reassignment.setDuration(replaceBracket(part));
-
     }
 
-    private static String replaceBracket(String original){
+    private static String replaceBracket(String original) {
         return original.replaceFirst("\\[", "").replace("]", "");
     }
 
     private static class CDATA {
-        private List<ReassignmentValue>  reassignments;
+
+        private List<ReassignmentValue> reassignments;
 
         private AssociationType type;
 
-        CDATA(ReassignmentTypeListValue value, AssociationType type){
+        CDATA(ReassignmentTypeListValue value, AssociationType type) {
             this.type = type;
             reassignments = value.getValues();
         }
 
-        String get(){
+        String get() {
             return reassignments.stream().filter(m -> m.getType().equals(type.getName()))
                     .map(m -> m.toCDATAFormat())
                     .collect(Collectors.joining("^"));
         }
     }
-
 }

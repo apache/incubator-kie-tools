@@ -46,7 +46,7 @@ public abstract class FieldEditorEditorWidget<T, E extends FieldEditorPresenter<
     public void setReadOnly(final boolean readOnly) {
         editor.setReadOnly(readOnly);
     }
-    
+
     @Override
     public T getValue() {
         return editor.getValue();

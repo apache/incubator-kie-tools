@@ -117,7 +117,6 @@ public class StartEscalationEvent extends BaseStartEvent {
         this.dataIOSet = dataIOSet;
     }
 
-
     @Override
     public int hashCode() {
         return HashUtil.combineHashCodes(super.hashCode(),
@@ -138,5 +137,4 @@ public class StartEscalationEvent extends BaseStartEvent {
         }
         return false;
     }
-
 }

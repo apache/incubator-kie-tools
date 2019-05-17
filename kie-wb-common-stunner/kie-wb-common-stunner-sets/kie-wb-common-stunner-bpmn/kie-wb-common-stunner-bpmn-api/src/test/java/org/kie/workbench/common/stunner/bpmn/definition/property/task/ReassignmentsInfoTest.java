@@ -32,20 +32,20 @@ public class ReassignmentsInfoTest {
     public void testEqualsAndHashCode() {
         EqualsAndHashCodeTestUtils.TestCaseBuilder.newTestCase()
                 .addTrueCase(new ReassignmentsInfo(),
-                        new ReassignmentsInfo())
+                             new ReassignmentsInfo())
                 .addTrueCase(new ReassignmentsInfo(new ReassignmentTypeListValue()),
-                        new ReassignmentsInfo(new ReassignmentTypeListValue()))
+                             new ReassignmentsInfo(new ReassignmentTypeListValue()))
                 .addTrueCase(new ReassignmentsInfo(),
-                        new ReassignmentsInfo(new ReassignmentTypeListValue()))
+                             new ReassignmentsInfo(new ReassignmentTypeListValue()))
                 .test();
     }
 
-    private List<ReassignmentValue> getReassignmentValues(){
+    private List<ReassignmentValue> getReassignmentValues() {
         List<ReassignmentValue> result = new ArrayList<>();
         result.add(new ReassignmentValue("AAA",
-                "1h",
-                Arrays.asList(new String[]{"foo", "bar", "baz"}),
-                Arrays.asList(new String[]{"foo", "bar", "baz"})));
+                                         "1h",
+                                         Arrays.asList(new String[]{"foo", "bar", "baz"}),
+                                         Arrays.asList(new String[]{"foo", "bar", "baz"})));
         return result;
     }
 }

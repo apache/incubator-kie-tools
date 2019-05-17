@@ -61,7 +61,6 @@ public class AssignmentListItemWidgetViewImpl extends Composite implements Assig
 
     private static final String EMPTY_VALUE = "";
 
-
     private final static String ALLOWED_CHARS = "^[a-zA-Z0-9\\-\\_\\ \\+\\/\\*\\?\\'\\.]*$";
 
     /**

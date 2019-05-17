@@ -64,7 +64,7 @@ public class NotificationPropertyWriterTest {
         String cdata = getNotificationValue(AssociationType.NOT_STARTED_NOTIFY.getName()).toCDATAFormat();
 
         CustomInput<String> notStartedNotify = getFieldValue(UserTaskPropertyWriter.class, userTaskPropertyWriter, "notStartedNotify");
-        Assert.assertEquals(asCDATA(cdata+"^"+cdata), notStartedNotify.get());
+        Assert.assertEquals(asCDATA(cdata + "^" + cdata), notStartedNotify.get());
     }
 
     @Test
@@ -91,9 +91,8 @@ public class NotificationPropertyWriterTest {
         String cdata = getNotificationValue(AssociationType.NOT_COMPLETED_NOTIFY.getName()).toCDATAFormat();
 
         CustomInput<String> notStartedNotify = getFieldValue(UserTaskPropertyWriter.class, userTaskPropertyWriter, "notCompletedNotify");
-        Assert.assertEquals(asCDATA(cdata+"^"+cdata), notStartedNotify.get());
+        Assert.assertEquals(asCDATA(cdata + "^" + cdata), notStartedNotify.get());
     }
-
 
     protected <T> T getFieldValue(Class parent, Object instance, String fieldName) {
         Field inputField = FieldUtils.getField(parent, fieldName, true);

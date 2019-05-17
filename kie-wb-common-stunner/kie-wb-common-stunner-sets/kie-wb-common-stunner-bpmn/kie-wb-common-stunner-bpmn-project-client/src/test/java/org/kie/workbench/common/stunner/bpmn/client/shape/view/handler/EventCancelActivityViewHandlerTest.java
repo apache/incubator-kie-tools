@@ -170,5 +170,4 @@ public class EventCancelActivityViewHandlerTest extends EventViewHandlerTestBase
         verify(prim1).setFillAlpha(eq(1d));
         verify(prim1).setStrokeAlpha(eq(0d));
     }
-
 }

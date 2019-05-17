@@ -42,6 +42,5 @@ public class LanePropertyWriterTest {
         assertThat(lane.getName()).isEqualTo(StringEscapeUtils.escapeXml10(aWeirdName.trim()));
         assertThat(CustomElement.name.of(lane).get()).isEqualTo(asCData(aWeirdName));
         assertThat(lane.getDocumentation().get(0).getText()).isEqualTo(asCData(aWeirdDoc));
-
     }
 }

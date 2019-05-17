@@ -102,7 +102,6 @@ public class ParsedNotificationsInfos {
 
     private static void parsePeriod(NotificationValue notification, String part) {
         notification.setExpiresAt(replaceBracket(part));
-
     }
 
     private static String replaceBracket(String original) {
@@ -118,6 +117,7 @@ public class ParsedNotificationsInfos {
     }
 
     private static class CDATA {
+
         private List<NotificationValue> notifications;
 
         private AssociationType type;
@@ -133,5 +133,4 @@ public class ParsedNotificationsInfos {
                     .collect(Collectors.joining("^"));
         }
     }
-
 }

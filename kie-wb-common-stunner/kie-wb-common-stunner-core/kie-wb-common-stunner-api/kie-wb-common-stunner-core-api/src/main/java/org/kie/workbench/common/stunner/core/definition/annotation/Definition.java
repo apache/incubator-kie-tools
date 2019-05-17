@@ -40,12 +40,12 @@ public @interface Definition {
      * Corresponds to the field that represents the <b>Name</b> of the annotated class.
      * The name field should be expressed with the namespace if applied.
      * </br>
-     *
+     * <p>
      * Example: nameField = "general.text"
      * "general" is the attribute name on the current Definition(annotated class) and "text" is the attribute name
      * contained in "general".     *
      * </br>
-     *
+     * <p>
      * Note: If nameField is not set, than the first attribute annotated with {@link PropertyMetaTypes#NAME}
      * will be used to return the name as a default behavior.
      */

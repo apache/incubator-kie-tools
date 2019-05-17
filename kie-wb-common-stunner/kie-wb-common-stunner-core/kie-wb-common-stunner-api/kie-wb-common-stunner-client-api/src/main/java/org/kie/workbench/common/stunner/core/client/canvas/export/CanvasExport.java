@@ -46,7 +46,6 @@ public interface CanvasExport<H extends CanvasHandler> {
         public String getMimeType() {
             return mimeType;
         }
-
     }
 
     String toImageData(H canvasHandler,

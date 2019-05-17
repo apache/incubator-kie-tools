@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.controls.exceptions;
 
-public class ElementOutOfBoundsException extends RuntimeException{
+public class ElementOutOfBoundsException extends RuntimeException {
 
     public ElementOutOfBoundsException(String message) {
         super(message);

@@ -42,7 +42,7 @@ public class ItemNameReaderTest {
 
     @Mock
     private DataOutput dataOutput;
-    
+
     @Test
     public void testGetPropertyName() {
         when(property.getName()).thenReturn(NAME);

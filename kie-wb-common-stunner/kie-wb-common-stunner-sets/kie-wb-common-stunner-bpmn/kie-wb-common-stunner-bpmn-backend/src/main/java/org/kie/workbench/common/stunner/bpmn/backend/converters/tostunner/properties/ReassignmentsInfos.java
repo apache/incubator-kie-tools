@@ -67,5 +67,4 @@ public class ReassignmentsInfos {
     private static String replaceBracket(String original) {
         return original.replaceFirst("\\[", "").replace("]", "");
     }
-
 }

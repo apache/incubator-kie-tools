@@ -19,7 +19,6 @@ package org.kie.workbench.common.stunner.bpmn.backend.forms.conditions;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.jboss.errai.bus.server.annotations.Service;
-
 import org.kie.workbench.common.stunner.bpmn.forms.conditions.ConditionEditorService;
 import org.uberfire.backend.vfs.Path;
 

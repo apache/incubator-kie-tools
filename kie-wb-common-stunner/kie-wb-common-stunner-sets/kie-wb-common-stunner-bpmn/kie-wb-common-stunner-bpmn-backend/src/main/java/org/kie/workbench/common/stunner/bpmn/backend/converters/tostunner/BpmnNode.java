@@ -54,6 +54,7 @@ public abstract class BpmnNode {
     public abstract boolean isDocked();
 
     public static class Simple extends BpmnNode {
+
         public Simple(Node<? extends View<? extends BPMNViewDefinition>, ?> value, BasePropertyReader propertyReader) {
             super(value, propertyReader);
         }
@@ -65,6 +66,7 @@ public abstract class BpmnNode {
     }
 
     public static class Docked extends BpmnNode {
+
         public Docked(Node<? extends View<? extends BPMNViewDefinition>, ?> value, BasePropertyReader propertyReader) {
             super(value, propertyReader);
         }

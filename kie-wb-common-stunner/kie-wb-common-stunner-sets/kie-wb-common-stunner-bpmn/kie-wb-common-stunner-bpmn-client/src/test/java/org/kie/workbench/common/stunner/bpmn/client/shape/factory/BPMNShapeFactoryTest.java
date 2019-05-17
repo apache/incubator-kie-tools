@@ -327,7 +327,7 @@ public class BPMNShapeFactoryTest {
 
         verify(delegateShapeFactory,
                times(1)).delegate(eq(SequenceFlow.class),
-                                 sequenceFlowConnectorDefArgumentCaptor.capture(),
+                                  sequenceFlowConnectorDefArgumentCaptor.capture(),
                                   factoryArgumentCaptor.capture());
         final SequenceFlowConnectorDef sequenceFlowConnectorDef = sequenceFlowConnectorDefArgumentCaptor.getValue();
         sequenceFlowConnectorDef.newFontHandler().handle(sequenceFlow, sequenceFlowView);

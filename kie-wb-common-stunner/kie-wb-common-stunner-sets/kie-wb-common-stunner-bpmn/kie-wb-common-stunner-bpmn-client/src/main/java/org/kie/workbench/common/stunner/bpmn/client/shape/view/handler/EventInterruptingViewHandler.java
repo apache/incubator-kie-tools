@@ -44,7 +44,7 @@ public class EventInterruptingViewHandler
             isInterrupting = ((StartSignalEvent) bean).getExecutionSet().getIsInterrupting().getValue();
         } else if (bean instanceof StartConditionalEvent) {
             isInterrupting = ((StartConditionalEvent) bean).getExecutionSet().getIsInterrupting().getValue();
-        }  else if (bean instanceof StartEscalationEvent) {
+        } else if (bean instanceof StartEscalationEvent) {
             isInterrupting = ((StartEscalationEvent) bean).getExecutionSet().getIsInterrupting().getValue();
         }
         if (null != isInterrupting) {

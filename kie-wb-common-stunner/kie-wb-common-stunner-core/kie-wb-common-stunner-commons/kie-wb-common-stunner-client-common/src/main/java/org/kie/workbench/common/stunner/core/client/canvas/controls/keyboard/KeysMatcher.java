@@ -42,7 +42,7 @@ public class KeysMatcher {
     }
 
     public static boolean isKeyMatch(final KeyboardEvent.Key[] actualKeys,
-                                      final KeyboardEvent.Key... expectedKey) {
+                                     final KeyboardEvent.Key... expectedKey) {
         if (actualKeys == null) {
             return expectedKey == null;
         } else if (expectedKey == null) {

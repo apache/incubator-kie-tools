@@ -199,7 +199,7 @@ public class StartEventFilterProviderFactoryTest {
         assertEquals(filterClass,
                      startEventFilterProvider.getDefinitionType());
 
-        Collection<FormElementFilter> formElementFilters = startEventFilterProvider.provideFilters(ELEMENT_UUID,  definition);
+        Collection<FormElementFilter> formElementFilters = startEventFilterProvider.provideFilters(ELEMENT_UUID, definition);
 
         FormElementFilter formElementFilter = formElementFilters.iterator().next();
 

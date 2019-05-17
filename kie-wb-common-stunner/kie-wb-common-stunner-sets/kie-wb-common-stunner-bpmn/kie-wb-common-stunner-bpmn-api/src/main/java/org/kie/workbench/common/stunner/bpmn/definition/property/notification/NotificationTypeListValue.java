@@ -68,7 +68,7 @@ public class NotificationTypeListValue {
         if (o instanceof NotificationTypeListValue) {
             NotificationTypeListValue other = (NotificationTypeListValue) o;
             return Objects.equals(values,
-                    other.values);
+                                  other.values);
         }
         return false;
     }

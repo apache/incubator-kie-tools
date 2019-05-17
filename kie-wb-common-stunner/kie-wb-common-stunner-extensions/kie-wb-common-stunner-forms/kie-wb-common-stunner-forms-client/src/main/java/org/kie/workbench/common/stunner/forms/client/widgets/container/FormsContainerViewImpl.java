@@ -28,6 +28,7 @@ import org.kie.workbench.common.stunner.forms.client.widgets.container.displayer
 @Templated
 public class FormsContainerViewImpl implements FormsContainerView,
                                                IsElement {
+
     @Inject
     @DataField
     private Div content;

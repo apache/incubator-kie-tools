@@ -66,8 +66,8 @@ public class MorphCanvasNodeCommandTest extends AbstractCanvasCommandTest {
 
         //mocking shapes
         StreamSupport.<Node>stream(graphInstance.graph.nodes().spliterator(), true)
-                .map(node -> ((Node)node).getUUID())
-                .forEach(uuid-> when(canvas.getShape((String) uuid)).thenReturn(mock(Shape.class)));
+                .map(node -> ((Node) node).getUUID())
+                .forEach(uuid -> when(canvas.getShape((String) uuid)).thenReturn(mock(Shape.class)));
         when(canvas.getShape(graphInstance.edge1.getUUID())).thenReturn(mock(EdgeShape.class));
         when(canvas.getShape(graphInstance.edge2.getUUID())).thenReturn(mock(EdgeShape.class));
     }

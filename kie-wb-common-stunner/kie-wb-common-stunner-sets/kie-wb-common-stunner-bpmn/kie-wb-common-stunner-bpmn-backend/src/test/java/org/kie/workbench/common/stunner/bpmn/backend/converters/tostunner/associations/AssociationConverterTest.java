@@ -104,7 +104,7 @@ public class AssociationConverterTest {
         when(association.getId()).thenReturn(ASSOCIATION_ID);
         when(edge.getContent()).thenReturn(content);
         when(content.getDefinition()).thenReturn(definition);
-        when(factoryManager.newEdge(ASSOCIATION_ID, org.kie.workbench.common.stunner.bpmn.definition.Association.class)).thenReturn((Edge)edge);
+        when(factoryManager.newEdge(ASSOCIATION_ID, org.kie.workbench.common.stunner.bpmn.definition.Association.class)).thenReturn((Edge) edge);
         when(propertyReaderFactory.of(association)).thenReturn(associationReader);
         when(associationReader.getDocumentation()).thenReturn(ASSOCIATION_DOCUMENTATION);
         when(associationReader.getSourceId()).thenReturn(SOURCE_ID);

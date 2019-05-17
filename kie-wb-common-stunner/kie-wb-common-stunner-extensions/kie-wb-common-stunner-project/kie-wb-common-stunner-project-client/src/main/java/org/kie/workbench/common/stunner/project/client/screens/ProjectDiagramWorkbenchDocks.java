@@ -64,7 +64,7 @@ public class ProjectDiagramWorkbenchDocks {
             log(Level.INFO,
                 "Show docks");
             uberfireDocks.show(POSITION,
-                                 perspectiveId);
+                               perspectiveId);
             this.enabled = true;
         }
     }
@@ -75,7 +75,7 @@ public class ProjectDiagramWorkbenchDocks {
                 "Hide docks");
             // TODO: Ask to walter - uberfireDocks.disable( POSITION, perspectiveId );
             uberfireDocks.hide(POSITION,
-                                  perspectiveId);
+                               perspectiveId);
             this.enabled = false;
         }
     }

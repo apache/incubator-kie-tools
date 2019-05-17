@@ -23,5 +23,4 @@ public interface BPMNDocumentationTemplateSource extends ClientBundle {
 
     @Source("process-documentation-template.html")
     TextResource documentationTemplate();
-
 }

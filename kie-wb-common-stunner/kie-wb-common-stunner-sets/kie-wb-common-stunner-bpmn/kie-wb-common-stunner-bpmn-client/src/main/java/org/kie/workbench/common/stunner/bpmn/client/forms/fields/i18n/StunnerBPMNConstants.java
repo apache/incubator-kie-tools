@@ -88,5 +88,4 @@ public interface StunnerBPMNConstants {
 
     @TranslationKey(defaultValue = "Delete")
     String NOTIFICATION_DELETE = "notification.delete";
-
 }

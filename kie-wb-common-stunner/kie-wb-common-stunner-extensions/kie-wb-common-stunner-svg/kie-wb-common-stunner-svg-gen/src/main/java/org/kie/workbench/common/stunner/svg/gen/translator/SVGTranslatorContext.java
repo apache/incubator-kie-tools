@@ -96,7 +96,7 @@ public class SVGTranslatorContext {
     }
 
     public void addStaticStringMember(final String name,
-                                        final String value) {
+                                      final String value) {
         staticStringMembers.put(name, value);
     }
 

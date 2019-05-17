@@ -61,9 +61,9 @@ public class WorkItemDefinitionMockRegistry implements WorkItemDefinitionRegistr
                     .setParameters("|Message:String|||");
     public static final WorkItemDefinition REST =
             new WorkItemDefinition()
-                .setName(WID_REST)
-                .setDescription("Rest task")
-                .setDisplayName("Rest");
+                    .setName(WID_REST)
+                    .setDescription("Rest task")
+                    .setDisplayName("Rest");
     public static final WorkItemDefinition WEB =
             new WorkItemDefinition()
                     .setName(WID_WEB)

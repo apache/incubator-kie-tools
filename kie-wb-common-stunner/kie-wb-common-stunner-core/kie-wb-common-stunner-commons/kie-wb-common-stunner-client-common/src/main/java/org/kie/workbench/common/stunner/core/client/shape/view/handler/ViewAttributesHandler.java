@@ -24,18 +24,17 @@ import org.kie.workbench.common.stunner.core.client.shape.view.ShapeViewHandler;
 
 /**
  * The default view attributes handler to generic shape views.
- *
+ * <p>
  * It allows specifying functions which provide the different view attributes
  * managed by this handler, like colors or borders, by having as an input the domain
  * object's instance.
- *
+ * <p>
  * This way view attribute values can be the ones present in some
  * instance's property value, or just some hardcoded ones.
- *
+ * <p>
  * If domain object's instance property values are not present (can be <code>null</code>),
  * this handler does not apply updates to the view, so the default attributes from the view
  * will be the ones used to render it.
- *
  * @param <W> The domain's object type.
  * @param <V> The shape view type.
  */

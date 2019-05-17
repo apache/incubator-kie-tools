@@ -36,7 +36,7 @@ public class TimerSettingsFieldRenderer
 
     @Override
     protected FormGroup getFormGroup(RenderMode renderMode) {
-        DefaultFormGroup formGroup  = formGroupsInstance.get();
+        DefaultFormGroup formGroup = formGroupsInstance.get();
 
         formGroup.render(widget, field);
 

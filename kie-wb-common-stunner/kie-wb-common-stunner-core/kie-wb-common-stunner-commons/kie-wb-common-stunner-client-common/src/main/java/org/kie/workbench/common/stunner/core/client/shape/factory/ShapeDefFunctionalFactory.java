@@ -62,8 +62,8 @@ public class ShapeDefFunctionalFactory<W, D extends ShapeDef, S extends Shape> i
     }
 
     protected S newShape(final W instance,
-                       final D shapeDef,
-                       final Class<? extends D> shapeDefType) {
+                         final D shapeDef,
+                         final Class<? extends D> shapeDefType) {
         return getShapeBuilder(shapeDefType)
                 .apply(instance,
                        shapeDef);

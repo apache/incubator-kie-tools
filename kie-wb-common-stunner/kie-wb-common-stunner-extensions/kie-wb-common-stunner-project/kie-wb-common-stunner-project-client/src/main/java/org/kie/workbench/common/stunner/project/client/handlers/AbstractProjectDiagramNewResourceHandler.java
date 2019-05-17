@@ -74,7 +74,7 @@ public abstract class AbstractProjectDiagramNewResourceHandler<R extends ClientR
     }
 
     public void createDiagram(Package pkg, String name, NewResourcePresenter presenter, Path path, String setId,
-                         String moduleName, Optional<String> projectType) {
+                              String moduleName, Optional<String> projectType) {
         projectDiagramServices.create(path,
                                       name,
                                       setId,

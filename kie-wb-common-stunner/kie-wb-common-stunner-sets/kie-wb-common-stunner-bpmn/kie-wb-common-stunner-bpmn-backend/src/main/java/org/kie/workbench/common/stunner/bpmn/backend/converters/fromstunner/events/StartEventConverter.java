@@ -234,5 +234,4 @@ public class StartEventConverter {
         p.setAbsoluteBounds(n);
         return p;
     }
-
 }

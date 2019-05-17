@@ -31,5 +31,4 @@ public interface ConditionEditorService {
     GenerateConditionResult generateCondition(Condition condition);
 
     TypeMetadataQueryResult findMetadata(TypeMetadataQuery query);
-
 }

@@ -37,7 +37,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.reassignment.Re
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 
 @Dependent
-public class ReassignmentWidget implements IsWidget, ReassignmentWidgetView.Presenter {
+public class ReassignmentWidget implements IsWidget,
+                                           ReassignmentWidgetView.Presenter {
 
     private ReassignmentWidgetView view;
 
@@ -108,9 +109,9 @@ public class ReassignmentWidget implements IsWidget, ReassignmentWidgetView.Pres
     @Override
     public void save() {
         if (callback != null) {
-           List<ReassignmentValue> reassignments =  getValue()
+            List<ReassignmentValue> reassignments = getValue()
                     .stream()
-                    .map( row -> row.toReassignmentValue())
+                    .map(row -> row.toReassignmentValue())
                     .collect(Collectors.toList());
             callback.getData(new ReassignmentTypeListValue(reassignments));
         }

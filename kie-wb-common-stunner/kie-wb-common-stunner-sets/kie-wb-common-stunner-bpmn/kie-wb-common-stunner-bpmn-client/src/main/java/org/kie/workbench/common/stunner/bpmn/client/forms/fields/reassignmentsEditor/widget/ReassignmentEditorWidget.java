@@ -26,7 +26,8 @@ import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Reassignm
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 
 @Dependent
-public class ReassignmentEditorWidget implements IsWidget, ReassignmentEditorWidgetView.Presenter {
+public class ReassignmentEditorWidget implements IsWidget,
+                                                 ReassignmentEditorWidgetView.Presenter {
 
     private ReassignmentEditorWidgetView view;
 

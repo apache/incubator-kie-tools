@@ -164,5 +164,7 @@ public abstract class AbstractCloneProcessTest {
                      nameArgumentCaptor.getValue());
     }
 
-    interface BindableTypeMock extends BindableProxy {}
+    interface BindableTypeMock extends BindableProxy {
+
+    }
 }

@@ -106,7 +106,6 @@ public class UserTaskExecutionSet implements BaseUserTaskExecutionSet {
     @Valid
     private ReassignmentsInfo reassignmentsInfo;
 
-
     @Property
     @FormField(
             type = NotificationsEditorFieldType.class,

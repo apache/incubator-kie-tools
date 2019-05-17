@@ -66,5 +66,4 @@ public class ReassignmentRowTest {
         // Verify the results
         assertFalse(reassignmentRowUnderTest.equals(obj));
     }
-
 }

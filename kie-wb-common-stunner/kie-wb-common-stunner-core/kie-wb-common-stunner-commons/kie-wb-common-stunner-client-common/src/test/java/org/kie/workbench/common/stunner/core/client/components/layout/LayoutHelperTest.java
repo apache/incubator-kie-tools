@@ -129,7 +129,7 @@ public class LayoutHelperTest {
     public void applyLayoutDoNotOverrideExistingLayout() {
         when(layoutService.hasLayoutInformation(graph)).thenReturn(true);
         final LayoutHelper helper = new LayoutHelper(layoutService);
-        helper.applyLayout(diagram, layoutExecutor,false);
+        helper.applyLayout(diagram, layoutExecutor, false);
 
         verify(layoutExecutor, never()).applyLayout(any(), any());
     }
@@ -138,7 +138,7 @@ public class LayoutHelperTest {
     public void applyLayoutOverrideExistingLayout() {
         when(layoutService.hasLayoutInformation(graph)).thenReturn(true);
         final LayoutHelper helper = new LayoutHelper(layoutService);
-        helper.applyLayout(diagram, layoutExecutor,true);
+        helper.applyLayout(diagram, layoutExecutor, true);
 
         verify(layoutExecutor).applyLayout(any(), any());
     }

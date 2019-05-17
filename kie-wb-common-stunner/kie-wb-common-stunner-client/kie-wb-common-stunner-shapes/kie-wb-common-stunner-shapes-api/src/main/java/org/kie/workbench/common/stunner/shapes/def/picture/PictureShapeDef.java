@@ -30,5 +30,4 @@ public interface PictureShapeDef<W, S> extends BasicShapeDef<W> {
     default Class<? extends ShapeDef> getType() {
         return PictureShapeDef.class;
     }
-
 }

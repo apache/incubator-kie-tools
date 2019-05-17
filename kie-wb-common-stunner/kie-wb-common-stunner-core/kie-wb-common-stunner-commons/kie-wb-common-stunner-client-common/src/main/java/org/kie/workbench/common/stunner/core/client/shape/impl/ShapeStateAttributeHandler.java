@@ -170,10 +170,10 @@ public class ShapeStateAttributeHandler<V extends ShapeView>
 
         public ShapeStateAttributes consume(final BiConsumer<ShapeStateAttribute, Object> attribute) {
             values.forEach((key, value) -> {
-                        if (null != value) {
-                            attribute.accept(key, value);
-                        }
-                    });
+                if (null != value) {
+                    attribute.accept(key, value);
+                }
+            });
             return this;
         }
 

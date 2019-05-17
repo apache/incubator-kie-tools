@@ -44,7 +44,7 @@ class ProcessVariableReader {
     public static String getProcessVariableName(Property p) {
         String name = p.getName();
         // legacy uses ID instead of name
-        return name == null? p.getId() : name;
+        return name == null ? p.getId() : name;
     }
 
     public static boolean isProcessVariable(Property p) {

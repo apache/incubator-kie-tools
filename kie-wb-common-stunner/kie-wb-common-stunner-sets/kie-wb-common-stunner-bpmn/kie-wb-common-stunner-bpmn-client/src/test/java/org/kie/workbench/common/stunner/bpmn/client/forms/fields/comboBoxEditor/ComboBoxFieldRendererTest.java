@@ -29,31 +29,31 @@ import org.mockito.runners.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class ComboBoxFieldRendererTest {
 
-  @Mock
-  private ComboBoxWidgetView comboBoxWidgetView;
+    @Mock
+    private ComboBoxWidgetView comboBoxWidgetView;
 
-  @Mock
-  private ComboBoxFieldDefinition comboBoxFieldDefinition;
+    @Mock
+    private ComboBoxFieldDefinition comboBoxFieldDefinition;
 
-  @Spy
-  @InjectMocks
-  private ComboBoxFieldRenderer comboBoxFieldRenderer = new ComboBoxFieldRenderer(comboBoxWidgetView);
+    @Spy
+    @InjectMocks
+    private ComboBoxFieldRenderer comboBoxFieldRenderer = new ComboBoxFieldRenderer(comboBoxWidgetView);
 
-  @Test
-  public void getName() throws Exception {
-    Assert.assertEquals(comboBoxFieldRenderer.getName(),
-                        ComboBoxFieldType.NAME);
-  }
+    @Test
+    public void getName() throws Exception {
+        Assert.assertEquals(comboBoxFieldRenderer.getName(),
+                            ComboBoxFieldType.NAME);
+    }
 
-  @Test
-  public void getSupportedCode() throws Exception {
-    Assert.assertEquals(comboBoxFieldRenderer.getSupportedCode(),
-                        ComboBoxFieldType.NAME);
-  }
+    @Test
+    public void getSupportedCode() throws Exception {
+        Assert.assertEquals(comboBoxFieldRenderer.getSupportedCode(),
+                            ComboBoxFieldType.NAME);
+    }
 
-  @Test
-  public void getSupportedFieldDefinition() throws Exception {
-    Assert.assertEquals(comboBoxFieldRenderer.getSupportedFieldDefinition(),
-                        ComboBoxFieldDefinition.class);
-  }
+    @Test
+    public void getSupportedFieldDefinition() throws Exception {
+        Assert.assertEquals(comboBoxFieldRenderer.getSupportedFieldDefinition(),
+                            ComboBoxFieldDefinition.class);
+    }
 }

@@ -42,5 +42,4 @@ public class BpmnProcessDataEventListener extends AbstractBpmnProcessDataEventLi
     protected ResourceType getProcessNameResourceType() {
         return ResourceType.BPMN2_NAME;
     }
-
 }

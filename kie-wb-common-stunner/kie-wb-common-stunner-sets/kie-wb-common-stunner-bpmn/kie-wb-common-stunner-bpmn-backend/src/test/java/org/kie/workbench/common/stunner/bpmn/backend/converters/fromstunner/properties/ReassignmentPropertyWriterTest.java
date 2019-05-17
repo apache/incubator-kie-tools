@@ -32,6 +32,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.reassignment.Re
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpmn2;
 
 public class ReassignmentPropertyWriterTest {
+
     private FlatVariableScope variableScope;
 
     @Before
@@ -63,7 +64,7 @@ public class ReassignmentPropertyWriterTest {
         String cdata = getReassignmentValue(AssociationType.NOT_COMPLETED_REASSIGN.getName()).toCDATAFormat();
 
         CustomInput<String> notStartedNotify = getFieldValue(UserTaskPropertyWriter.class, userTaskPropertyWriter, "notCompletedReassign");
-        Assert.assertEquals(asCDATA(cdata+"^"+cdata), notStartedNotify.get());
+        Assert.assertEquals(asCDATA(cdata + "^" + cdata), notStartedNotify.get());
     }
 
     @Test
@@ -90,9 +91,8 @@ public class ReassignmentPropertyWriterTest {
         String cdata = getReassignmentValue(AssociationType.NOT_COMPLETED_REASSIGN.getName()).toCDATAFormat();
 
         CustomInput<String> notStartedNotify = getFieldValue(UserTaskPropertyWriter.class, userTaskPropertyWriter, "notCompletedReassign");
-        Assert.assertEquals(asCDATA(cdata+"^"+cdata), notStartedNotify.get());
+        Assert.assertEquals(asCDATA(cdata + "^" + cdata), notStartedNotify.get());
     }
-
 
     protected <T> T getFieldValue(Class parent, Object instance, String fieldName) {
         Field inputField = FieldUtils.getField(parent, fieldName, true);
@@ -121,7 +121,6 @@ public class ReassignmentPropertyWriterTest {
         value.setUsers(users);
         value.setGroups(groups);
         value.setDuration("1d");
-
 
         return value;
     }

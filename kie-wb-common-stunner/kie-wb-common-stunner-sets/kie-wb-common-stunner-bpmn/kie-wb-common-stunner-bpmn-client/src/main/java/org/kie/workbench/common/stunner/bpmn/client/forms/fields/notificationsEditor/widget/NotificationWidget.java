@@ -37,7 +37,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.notification.No
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 
 @Dependent
-public class NotificationWidget implements IsWidget, NotificationWidgetView.Presenter {
+public class NotificationWidget implements IsWidget,
+                                           NotificationWidgetView.Presenter {
 
     private NotificationWidgetView view;
 
@@ -128,9 +129,9 @@ public class NotificationWidget implements IsWidget, NotificationWidgetView.Pres
     @Override
     public void save() {
         if (callback != null) {
-           List<NotificationValue> notifications =  getValue()
+            List<NotificationValue> notifications = getValue()
                     .stream()
-                    .map( row -> row.toNotificationValue())
+                    .map(row -> row.toNotificationValue())
                     .collect(Collectors.toList());
             callback.getData(new NotificationTypeListValue(notifications));
         }

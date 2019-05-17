@@ -130,8 +130,8 @@ public class DeleteElementsCommand extends AbstractGraphCompositeCommand {
                                                                 final SafeDeleteNodeCommand.Options options,
                                                                 final DeleteCallback callback) {
         return new SafeDeleteNodeCommand(node,
-                                        callback.onDeleteNode(node, options),
-                                        options);
+                                         callback.onDeleteNode(node, options),
+                                         options);
     }
 
     public Collection<String> getUUIDs() {

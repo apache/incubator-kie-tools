@@ -48,7 +48,7 @@ public class ReassignmentsType implements PropertyType {
     @Override
     public int hashCode() {
         return HashUtil.combineHashCodes(super.hashCode(),
-                name.hashCode());
+                                         name.hashCode());
     }
 
     @Override

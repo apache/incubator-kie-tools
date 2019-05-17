@@ -148,7 +148,7 @@ public class UserTaskPropertyWriter extends MultipleInstanceActivityPropertyWrit
         }
     }
 
-    public void setReassignments(ReassignmentsInfo reassignments){
+    public void setReassignments(ReassignmentsInfo reassignments) {
         fromReassignment(reassignments.getValue());
     }
 
@@ -162,7 +162,7 @@ public class UserTaskPropertyWriter extends MultipleInstanceActivityPropertyWrit
     }
 
     private void fromReassignment(ReassignmentTypeListValue value) {
-        if(value != null && !value.getValues().isEmpty()){
+        if (value != null && !value.getValues().isEmpty()) {
             notStartedReassign.set(ParsedReassignmentsInfos.ofCDATA(value, AssociationType.NOT_STARTED_REASSIGN));
             notCompletedReassign.set(ParsedReassignmentsInfos.ofCDATA(value, AssociationType.NOT_COMPLETED_REASSIGN));
         }
@@ -193,7 +193,7 @@ public class UserTaskPropertyWriter extends MultipleInstanceActivityPropertyWrit
     }
 
     private void fromNotification(NotificationTypeListValue value) {
-        if(value != null && !value.getValues().isEmpty()){
+        if (value != null && !value.getValues().isEmpty()) {
             notStartedNotify.set(ParsedNotificationsInfos.ofCDATA(value, AssociationType.NOT_STARTED_NOTIFY));
             notCompletedNotify.set(ParsedNotificationsInfos.ofCDATA(value, AssociationType.NOT_COMPLETED_NOTIFY));
         }

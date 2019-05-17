@@ -51,7 +51,7 @@ public class ClientDefinitionManager extends AbstractDefinitionManager {
                                    final RegistryFactory registryFactory,
                                    final AdapterManager adapterManager,
                                    final CloneManager cloneManager
-                                  ) {
+    ) {
         super(registryFactory,
               adapterManager,
               cloneManager);

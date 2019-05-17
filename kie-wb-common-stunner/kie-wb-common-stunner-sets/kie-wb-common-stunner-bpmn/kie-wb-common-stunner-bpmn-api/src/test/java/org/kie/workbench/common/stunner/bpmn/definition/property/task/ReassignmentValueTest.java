@@ -24,62 +24,63 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.reassignment.Re
 import org.kie.workbench.common.stunner.core.util.EqualsAndHashCodeTestUtils;
 
 public class ReassignmentValueTest {
+
     @Test
     public void testEqualsAndHashCode() {
         EqualsAndHashCodeTestUtils.TestCaseBuilder.newTestCase()
                 .addTrueCase(new ReassignmentValue(),
-                        new ReassignmentValue())
+                             new ReassignmentValue())
                 .addTrueCase(new ReassignmentValue("AAA",
-                                "1h",
-                                Collections.EMPTY_LIST,
-                                Collections.EMPTY_LIST),
-                        new ReassignmentValue("AAA",
-                                "1h",
-                                Collections.EMPTY_LIST,
-                                Collections.EMPTY_LIST))
+                                                   "1h",
+                                                   Collections.EMPTY_LIST,
+                                                   Collections.EMPTY_LIST),
+                             new ReassignmentValue("AAA",
+                                                   "1h",
+                                                   Collections.EMPTY_LIST,
+                                                   Collections.EMPTY_LIST))
 
                 .addTrueCase(new ReassignmentValue("AAA",
-                                "1h",
-                                Arrays.asList(new String[]{"foo", "bar", "baz"}),
-                                Collections.EMPTY_LIST),
-                        new ReassignmentValue("AAA",
-                                "1h",
-                                Arrays.asList(new String[]{"foo", "bar", "baz"}),
-                                Collections.EMPTY_LIST))
+                                                   "1h",
+                                                   Arrays.asList(new String[]{"foo", "bar", "baz"}),
+                                                   Collections.EMPTY_LIST),
+                             new ReassignmentValue("AAA",
+                                                   "1h",
+                                                   Arrays.asList(new String[]{"foo", "bar", "baz"}),
+                                                   Collections.EMPTY_LIST))
                 .addTrueCase(new ReassignmentValue("AAA",
-                                "1h",
-                                Arrays.asList(new String[]{"foo", "bar", "baz"}),
-                                Arrays.asList(new String[]{"foo", "bar", "baz"})),
-                        new ReassignmentValue("AAA",
-                                "1h",
-                                Arrays.asList(new String[]{"foo", "bar", "baz"}),
-                                Arrays.asList(new String[]{"foo", "bar", "baz"})))
+                                                   "1h",
+                                                   Arrays.asList(new String[]{"foo", "bar", "baz"}),
+                                                   Arrays.asList(new String[]{"foo", "bar", "baz"})),
+                             new ReassignmentValue("AAA",
+                                                   "1h",
+                                                   Arrays.asList(new String[]{"foo", "bar", "baz"}),
+                                                   Arrays.asList(new String[]{"foo", "bar", "baz"})))
 
                 .addFalseCase(new ReassignmentValue("AAA1",
-                                "1h1",
-                                Collections.EMPTY_LIST,
-                                Collections.EMPTY_LIST),
-                        new ReassignmentValue("AAA",
-                                "1h",
-                                Collections.EMPTY_LIST,
-                                Collections.EMPTY_LIST))
+                                                    "1h1",
+                                                    Collections.EMPTY_LIST,
+                                                    Collections.EMPTY_LIST),
+                              new ReassignmentValue("AAA",
+                                                    "1h",
+                                                    Collections.EMPTY_LIST,
+                                                    Collections.EMPTY_LIST))
 
                 .addFalseCase(new ReassignmentValue("AAA",
-                                "1h",
-                                Arrays.asList(new String[]{"foo1", "bar", "baz"}),
-                                Collections.EMPTY_LIST),
-                        new ReassignmentValue("AAA",
-                                "1h",
-                                Arrays.asList(new String[]{"foo", "bar", "baz"}),
-                                Collections.EMPTY_LIST))
+                                                    "1h",
+                                                    Arrays.asList(new String[]{"foo1", "bar", "baz"}),
+                                                    Collections.EMPTY_LIST),
+                              new ReassignmentValue("AAA",
+                                                    "1h",
+                                                    Arrays.asList(new String[]{"foo", "bar", "baz"}),
+                                                    Collections.EMPTY_LIST))
                 .addFalseCase(new ReassignmentValue("AAA",
-                                "1h",
-                                Arrays.asList(new String[]{"foo", "bar", "baz"}),
-                                Arrays.asList(new String[]{"foo1", "bar", "baz"})),
-                        new ReassignmentValue("AAA",
-                                "1h",
-                                Arrays.asList(new String[]{"foo", "bar", "baz"}),
-                                Arrays.asList(new String[]{"foo", "bar", "baz"})))
+                                                    "1h",
+                                                    Arrays.asList(new String[]{"foo", "bar", "baz"}),
+                                                    Arrays.asList(new String[]{"foo1", "bar", "baz"})),
+                              new ReassignmentValue("AAA",
+                                                    "1h",
+                                                    Arrays.asList(new String[]{"foo", "bar", "baz"}),
+                                                    Arrays.asList(new String[]{"foo", "bar", "baz"})))
                 .test();
     }
 }

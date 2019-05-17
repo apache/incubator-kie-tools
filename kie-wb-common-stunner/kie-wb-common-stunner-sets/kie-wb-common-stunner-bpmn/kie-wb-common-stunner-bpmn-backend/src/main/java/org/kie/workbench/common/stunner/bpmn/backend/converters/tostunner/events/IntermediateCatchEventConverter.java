@@ -310,5 +310,4 @@ public class IntermediateCatchEventConverter {
 
         return BpmnNode.of(node, p);
     }
-
 }

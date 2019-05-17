@@ -30,7 +30,7 @@ public class ExceptionsTest {
         final String result = Exceptions.swallow(() -> methodThatThrowsRuntimeException(), DEFAULT_RESULT);
         assertEquals(result, DEFAULT_RESULT);
     }
-    
+
     @Test
     public void swallowException() {
         final String result = Exceptions.swallow(() -> methodThatThrowsException(), DEFAULT_RESULT);
@@ -48,7 +48,7 @@ public class ExceptionsTest {
     }
 
     private String methodThatThrowsRuntimeException() {
-        throw new RuntimeException(); 
+        throw new RuntimeException();
     }
 
     private String methodThatThrowsException() throws Exception {

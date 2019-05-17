@@ -42,7 +42,7 @@ import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunn
 @RunWith(MockitoJUnitRunner.class)
 public class ProcessPropertyWriterTest {
 
-    ProcessPropertyWriter p ;
+    ProcessPropertyWriter p;
     FlatVariableScope variableScope;
 
     @Before

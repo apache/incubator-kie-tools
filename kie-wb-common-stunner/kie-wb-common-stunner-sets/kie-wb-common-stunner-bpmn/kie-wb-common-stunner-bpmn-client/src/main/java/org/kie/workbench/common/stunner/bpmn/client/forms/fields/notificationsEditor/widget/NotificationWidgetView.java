@@ -57,7 +57,6 @@ public interface NotificationWidgetView extends IsWidget {
         List<NotificationRow> getValue();
 
         void setValue(List<NotificationRow> values);
-
     }
 
     void init(final NotificationWidgetView.Presenter presenter, List<NotificationRow> rows);
@@ -73,5 +72,4 @@ public interface NotificationWidgetView extends IsWidget {
     void show();
 
     void hide();
-
 }

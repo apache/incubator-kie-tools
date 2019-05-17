@@ -188,8 +188,8 @@ import static org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonProp
 /**
  * @author Antoine Toulme
  * @author Tihomir Surdilovic
- *         <p>
- *         an unmarshaller to transform JSON into BPMN 2.0 elements.
+ * <p>
+ * an unmarshaller to transform JSON into BPMN 2.0 elements.
  */
 public class Bpmn2JsonUnmarshaller {
 

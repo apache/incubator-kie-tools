@@ -28,7 +28,6 @@ import static org.junit.Assert.assertEquals;
 
 public class ParsedReassignmentsInfosTest {
 
-
     @Test
     public void testReassignment() {
         String body = "[users:Forms,Reviewer,manager|groups:director,john]@[33y]";
@@ -37,8 +36,7 @@ public class ParsedReassignmentsInfosTest {
         expected.setType(AssociationType.NOT_COMPLETED_REASSIGN.getName());
         expected.setDuration("33y");
         expected.setGroups(new ArrayList<>(Arrays.asList("director", "john")));
-        expected.setUsers(new ArrayList<>(Arrays.asList("Forms", "Reviewer","manager")));
-
+        expected.setUsers(new ArrayList<>(Arrays.asList("Forms", "Reviewer", "manager")));
 
         assertEquals(expected, actual);
     }

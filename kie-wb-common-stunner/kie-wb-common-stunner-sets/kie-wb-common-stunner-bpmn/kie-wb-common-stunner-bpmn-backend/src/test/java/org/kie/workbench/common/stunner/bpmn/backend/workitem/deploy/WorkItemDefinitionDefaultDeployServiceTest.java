@@ -81,7 +81,6 @@ public class WorkItemDefinitionDefaultDeployServiceTest {
 
     private WorkItemDefinitionDefaultDeployService tested;
 
-
     @Before
     public void init() {
         when(assetBuilder.apply(eq(WorkItemDefinitionDefaultDeployService.WID_FILE),

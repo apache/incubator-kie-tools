@@ -49,7 +49,6 @@ public interface ReassignmentWidgetView extends IsWidget {
         List<ReassignmentRow> getValue();
 
         void setValue(List<ReassignmentRow> values);
-
     }
 
     void init(final ReassignmentWidgetView.Presenter presenter, List<ReassignmentRow> rows);
@@ -65,5 +64,4 @@ public interface ReassignmentWidgetView extends IsWidget {
     void show();
 
     void hide();
-
 }

@@ -45,7 +45,7 @@ public final class ReverseEdgesCycleBreaker implements CycleBreaker {
      */
     @Override
     public void breakCycle(final ReorderedGraph graph) {
-        this.graph = (LayeredGraph)graph;
+        this.graph = (LayeredGraph) graph;
 
         for (final String vertex : this.graph.getVertices()) {
             visit(vertex);

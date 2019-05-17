@@ -69,7 +69,7 @@ public class ConditionParamView
     private ConditionParamPresenter presenter;
 
     @PostConstruct
-    public void  init() {
+    public void init() {
         paramInputHelpPopover.wrap(paramInputHelp).popover();
     }
 

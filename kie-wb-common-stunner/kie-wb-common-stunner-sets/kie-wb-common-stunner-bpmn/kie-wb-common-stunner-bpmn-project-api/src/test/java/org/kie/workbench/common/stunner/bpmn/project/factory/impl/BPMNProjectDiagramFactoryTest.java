@@ -142,7 +142,7 @@ public class BPMNProjectDiagramFactoryTest {
     public void testBuildWithAttributesSet() {
         final String id2 = "id";
         final String name2 = "name2";
-        
+
         this.id.setValue(id2);
         name.setValue(name2);
 

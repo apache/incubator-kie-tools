@@ -43,7 +43,7 @@ public class ReassignmentRow {
 
     private List<String> users = new ArrayList<>();
 
-    private List<String> groups= new ArrayList<>();
+    private List<String> groups = new ArrayList<>();
 
     public ReassignmentRow() {
         this.id = lastId++;
@@ -97,7 +97,7 @@ public class ReassignmentRow {
         this.id = id;
     }
 
-    public ReassignmentRow clone(){
+    public ReassignmentRow clone() {
         ReassignmentRow clone = new ReassignmentRow();
         clone.setId(getId());
         clone.setDuration(getDuration());
@@ -107,7 +107,7 @@ public class ReassignmentRow {
         return clone;
     }
 
-    public ReassignmentValue toReassignmentValue(){
+    public ReassignmentValue toReassignmentValue() {
         ReassignmentValue value = new ReassignmentValue();
         value.setType(getType().getAlias());
         value.setDuration(getDuration());
@@ -134,6 +134,6 @@ public class ReassignmentRow {
     @Override
     public int hashCode() {
         return HashUtil.combineHashCodes(super.hashCode(),
-                Objects.hashCode(id));
+                                         Objects.hashCode(id));
     }
 }

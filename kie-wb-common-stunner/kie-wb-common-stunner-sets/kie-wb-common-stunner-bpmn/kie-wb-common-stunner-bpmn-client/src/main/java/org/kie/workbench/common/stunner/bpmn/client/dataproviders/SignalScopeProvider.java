@@ -59,7 +59,6 @@ public class SignalScopeProvider
         public String i18nKey() {
             return i18nKey;
         }
-
     }
 
     private static Map<Object, Integer> valuePosition;

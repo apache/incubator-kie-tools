@@ -38,49 +38,49 @@ import static org.mockito.Mockito.verify;
 @RunWith(MockitoJUnitRunner.class)
 public class AbstractComboBoxFieldRendererTest {
 
-  @Mock
-  private ComboBoxWidgetView comboBoxWidgetView;
+    @Mock
+    private ComboBoxWidgetView comboBoxWidgetView;
 
-  @Mock
-  private ComboBoxFieldDefinition comboBoxFieldDefinition;
+    @Mock
+    private ComboBoxFieldDefinition comboBoxFieldDefinition;
 
-  @Spy
-  @InjectMocks
-  private AbstractComboBoxFieldRenderer comboBoxFieldRenderer = new ComboBoxFieldRenderer(comboBoxWidgetView);
+    @Spy
+    @InjectMocks
+    private AbstractComboBoxFieldRenderer comboBoxFieldRenderer = new ComboBoxFieldRenderer(comboBoxWidgetView);
 
-  private Map<String, String> options;
+    private Map<String, String> options;
 
-  @Before
-  public void setUp() {
-    options = new HashMap<String, String>();
-    options.put("age",
-                "33");
-    options.put("height",
-                "1.77");
-    options.put("gender",
-                "male");
-  }
+    @Before
+    public void setUp() {
+        options = new HashMap<String, String>();
+        options.put("age",
+                    "33");
+        options.put("height",
+                    "1.77");
+        options.put("gender",
+                    "male");
+    }
 
-  @Test
-  public void testRefreshInput() {
-    comboBoxFieldRenderer.refreshInput(options,
-                                       null);
-    verify(comboBoxWidgetView,
-           times(1)).setComboBoxValues(any(ListBoxValues.class));
-  }
+    @Test
+    public void testRefreshInput() {
+        comboBoxFieldRenderer.refreshInput(options,
+                                           null);
+        verify(comboBoxWidgetView,
+               times(1)).setComboBoxValues(any(ListBoxValues.class));
+    }
 
-  @Test
-  public void testSetComboBoxValues() {
-    List<String> values = Arrays.asList(new String[]{"age", "height", "sex"});
-    comboBoxFieldRenderer.setComboBoxValues(values);
-    verify(comboBoxWidgetView,
-           times(1)).setComboBoxValues(any(ListBoxValues.class));
-  }
+    @Test
+    public void testSetComboBoxValues() {
+        List<String> values = Arrays.asList(new String[]{"age", "height", "sex"});
+        comboBoxFieldRenderer.setComboBoxValues(values);
+        verify(comboBoxWidgetView,
+               times(1)).setComboBoxValues(any(ListBoxValues.class));
+    }
 
-  @Test
-  public void setReadOnly() throws Exception {
-    comboBoxFieldRenderer.setReadOnly(true);
-    verify(comboBoxWidgetView,
-           times(1)).setReadOnly(true);
-  }
+    @Test
+    public void setReadOnly() throws Exception {
+        comboBoxFieldRenderer.setReadOnly(true);
+        verify(comboBoxWidgetView,
+               times(1)).setReadOnly(true);
+    }
 }

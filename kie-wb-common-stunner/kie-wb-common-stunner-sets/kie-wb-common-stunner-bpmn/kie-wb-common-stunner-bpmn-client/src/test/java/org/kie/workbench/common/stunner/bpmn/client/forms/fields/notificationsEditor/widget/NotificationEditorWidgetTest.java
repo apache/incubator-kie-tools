@@ -201,7 +201,7 @@ public class NotificationEditorWidgetTest extends ReflectionUtilsTest {
 
     @Test
     public void testGetNameHeader() {
-        Assert.assertEquals(notificationEditorWidget.getNameHeader(),"Notification");
+        Assert.assertEquals(notificationEditorWidget.getNameHeader(), "Notification");
     }
 
     @Test

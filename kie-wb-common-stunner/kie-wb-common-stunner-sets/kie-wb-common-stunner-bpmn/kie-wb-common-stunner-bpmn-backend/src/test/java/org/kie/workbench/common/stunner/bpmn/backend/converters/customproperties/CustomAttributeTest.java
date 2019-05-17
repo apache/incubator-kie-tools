@@ -43,7 +43,6 @@ public class CustomAttributeTest {
         assertEquals(null, packageName.get());
     }
 
-
     public BaseElement createBaseElement() {
         return bpmn2.createTask();
     }

@@ -100,7 +100,7 @@ public class RolesListItemWidgetViewImplTest {
         verify(role).addChangeHandler(valueChangeHandler.capture());
         verify(cardinality).addChangeHandler(valueChangeHandler.capture());
         verify(deleteButton).setIcon(IconType.TRASH);
-        
+
         //test handler
         ChangeHandler handler = valueChangeHandler.getValue();
         handler.onChange(null);

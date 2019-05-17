@@ -34,29 +34,29 @@ import org.uberfire.client.workbench.events.PlaceMinimizedEvent;
 @ApplicationScoped
 public class ScreenEventPublisher {
 
-  private Event<ScreenMaximizedEvent> diagramEditorMaximizedEventEvent;
-  private Event<ScreenMinimizedEvent> diagramEditorMinimizedEventEvent;
-  private ActivityBeansCache activityBeansCache;
+    private Event<ScreenMaximizedEvent> diagramEditorMaximizedEventEvent;
+    private Event<ScreenMinimizedEvent> diagramEditorMinimizedEventEvent;
+    private ActivityBeansCache activityBeansCache;
 
-  @Inject
-  public ScreenEventPublisher(Event<ScreenMaximizedEvent> diagramEditorMaximizedEventEvent,
-                              Event<ScreenMinimizedEvent> diagramEditorMinimizedEventEvent,
-                              ActivityBeansCache activityBeansCache) {
-    this.diagramEditorMaximizedEventEvent = diagramEditorMaximizedEventEvent;
-    this.diagramEditorMinimizedEventEvent = diagramEditorMinimizedEventEvent;
-    this.activityBeansCache = activityBeansCache;
-  }
+    @Inject
+    public ScreenEventPublisher(Event<ScreenMaximizedEvent> diagramEditorMaximizedEventEvent,
+                                Event<ScreenMinimizedEvent> diagramEditorMinimizedEventEvent,
+                                ActivityBeansCache activityBeansCache) {
+        this.diagramEditorMaximizedEventEvent = diagramEditorMaximizedEventEvent;
+        this.diagramEditorMinimizedEventEvent = diagramEditorMinimizedEventEvent;
+        this.activityBeansCache = activityBeansCache;
+    }
 
-  protected void onPlaceMaximizedEvent(@Observes PlaceMaximizedEvent event) {
-    diagramEditorMaximizedEventEvent.fire(new ScreenMaximizedEvent(verifyEventIdentifier(event)));
-  }
+    protected void onPlaceMaximizedEvent(@Observes PlaceMaximizedEvent event) {
+        diagramEditorMaximizedEventEvent.fire(new ScreenMaximizedEvent(verifyEventIdentifier(event)));
+    }
 
-  protected void onPlaceMinimizedEvent(@Observes PlaceMinimizedEvent event) {
-    diagramEditorMinimizedEventEvent.fire(new ScreenMinimizedEvent(verifyEventIdentifier(event)));
-  }
+    protected void onPlaceMinimizedEvent(@Observes PlaceMinimizedEvent event) {
+        diagramEditorMinimizedEventEvent.fire(new ScreenMinimizedEvent(verifyEventIdentifier(event)));
+    }
 
-  private boolean verifyEventIdentifier(AbstractPlaceEvent event) {
-    return activityBeansCache.getActivity(event.getPlace().getIdentifier()).getQualifiers().stream()
-        .anyMatch(a -> a instanceof DiagramEditor);
-  }
+    private boolean verifyEventIdentifier(AbstractPlaceEvent event) {
+        return activityBeansCache.getActivity(event.getPlace().getIdentifier()).getQualifiers().stream()
+                .anyMatch(a -> a instanceof DiagramEditor);
+    }
 }

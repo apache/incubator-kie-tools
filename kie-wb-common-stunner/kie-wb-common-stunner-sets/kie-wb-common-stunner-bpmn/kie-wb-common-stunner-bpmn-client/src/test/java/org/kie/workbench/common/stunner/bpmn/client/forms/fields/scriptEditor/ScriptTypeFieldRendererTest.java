@@ -48,6 +48,4 @@ public class ScriptTypeFieldRendererTest {
         assertEquals("ScriptTypeFieldType",
                      renderer.getSupportedCode());
     }
-
-
 }

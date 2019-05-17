@@ -31,26 +31,26 @@ public class NotificationTypeListValueTest {
     public void testEqualsAndHashCode() {
         EqualsAndHashCodeTestUtils.TestCaseBuilder.newTestCase()
                 .addTrueCase(new NotificationTypeListValue(),
-                        new NotificationTypeListValue())
+                             new NotificationTypeListValue())
                 .addTrueCase(new NotificationTypeListValue(new ArrayList<>()),
-                        new NotificationTypeListValue(new ArrayList<>()))
+                             new NotificationTypeListValue(new ArrayList<>()))
                 .addTrueCase(new NotificationTypeListValue(),
-                        new NotificationTypeListValue(new ArrayList<>()))
+                             new NotificationTypeListValue(new ArrayList<>()))
                 .addFalseCase(new NotificationTypeListValue(getNotificationValues()),
-                        new NotificationTypeListValue(new ArrayList<>()))
+                              new NotificationTypeListValue(new ArrayList<>()))
                 .test();
     }
 
-    private List<NotificationValue> getNotificationValues(){
+    private List<NotificationValue> getNotificationValues() {
         List<NotificationValue> result = new ArrayList<>();
         result.add(new NotificationValue("AAA",
-                "1h",
-                "Subj",
-                "me",
-                "NotStartedNotify",
-                "me",
-                Arrays.asList(new String[]{"foo", "bar", "baz"}),
-                Arrays.asList(new String[]{"foo", "bar", "baz"})));
+                                         "1h",
+                                         "Subj",
+                                         "me",
+                                         "NotStartedNotify",
+                                         "me",
+                                         Arrays.asList(new String[]{"foo", "bar", "baz"}),
+                                         Arrays.asList(new String[]{"foo", "bar", "baz"})));
         return result;
     }
 }

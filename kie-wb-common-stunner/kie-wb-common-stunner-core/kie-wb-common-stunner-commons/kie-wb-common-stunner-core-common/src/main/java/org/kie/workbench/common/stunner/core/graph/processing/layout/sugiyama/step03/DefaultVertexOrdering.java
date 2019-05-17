@@ -70,7 +70,7 @@ public final class DefaultVertexOrdering implements VertexOrdering {
      */
     @Override
     public void orderVertices(final ReorderedGraph graph) {
-        final LayeredGraph layered = (LayeredGraph)graph;
+        final LayeredGraph layered = (LayeredGraph) graph;
         final List<OrientedEdge> edges = graph.getEdges();
         final List<GraphLayer> virtualized = createVirtual(edges, layered);
         List<GraphLayer> best = clone(virtualized);

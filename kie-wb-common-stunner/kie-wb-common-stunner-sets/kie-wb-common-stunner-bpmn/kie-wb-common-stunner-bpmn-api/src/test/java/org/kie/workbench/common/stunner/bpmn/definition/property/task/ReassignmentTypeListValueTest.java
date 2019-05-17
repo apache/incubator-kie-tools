@@ -26,26 +26,27 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.reassignment.Re
 import org.kie.workbench.common.stunner.core.util.EqualsAndHashCodeTestUtils;
 
 public class ReassignmentTypeListValueTest {
+
     @Test
     public void testEqualsAndHashCode() {
         EqualsAndHashCodeTestUtils.TestCaseBuilder.newTestCase()
                 .addTrueCase(new ReassignmentTypeListValue(),
-                        new ReassignmentTypeListValue())
+                             new ReassignmentTypeListValue())
                 .addTrueCase(new ReassignmentTypeListValue(new ArrayList<>()),
-                        new ReassignmentTypeListValue(new ArrayList<>()))
+                             new ReassignmentTypeListValue(new ArrayList<>()))
                 .addTrueCase(new ReassignmentTypeListValue(),
-                        new ReassignmentTypeListValue(new ArrayList<>()))
+                             new ReassignmentTypeListValue(new ArrayList<>()))
                 .addFalseCase(new ReassignmentTypeListValue(getReassignmentValues()),
-                        new ReassignmentTypeListValue(new ArrayList<>()))
+                              new ReassignmentTypeListValue(new ArrayList<>()))
                 .test();
     }
 
-    private List<ReassignmentValue> getReassignmentValues(){
+    private List<ReassignmentValue> getReassignmentValues() {
         List<ReassignmentValue> result = new ArrayList<>();
         result.add(new ReassignmentValue("AAA",
-                "1h",
-                Arrays.asList(new String[]{"foo", "bar", "baz"}),
-                Arrays.asList(new String[]{"foo", "bar", "baz"})));
+                                         "1h",
+                                         Arrays.asList(new String[]{"foo", "bar", "baz"}),
+                                         Arrays.asList(new String[]{"foo", "bar", "baz"})));
         return result;
     }
 }

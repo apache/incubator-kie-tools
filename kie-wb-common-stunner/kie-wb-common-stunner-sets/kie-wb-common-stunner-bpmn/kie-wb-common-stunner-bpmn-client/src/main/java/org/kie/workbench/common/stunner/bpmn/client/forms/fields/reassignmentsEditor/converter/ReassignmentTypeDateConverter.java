@@ -42,5 +42,4 @@ public class ReassignmentTypeDateConverter implements Converter<ReassignmentType
     public String toWidgetValue(ReassignmentType modelValue) {
         return modelValue.getType();
     }
-
 }

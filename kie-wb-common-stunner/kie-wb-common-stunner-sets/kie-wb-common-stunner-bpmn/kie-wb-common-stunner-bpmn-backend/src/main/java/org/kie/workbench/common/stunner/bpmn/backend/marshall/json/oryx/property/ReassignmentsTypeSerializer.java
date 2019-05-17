@@ -50,7 +50,7 @@ public class ReassignmentsTypeSerializer implements Bpmn2OryxPropertySerializer<
     public ReassignmentTypeListValue parse(String value) {
         ReassignmentTypeListValue reassignmentTypeListValue = new ReassignmentTypeListValue();
         Arrays.stream(value.split(LIST_DELIMITER)).forEach(elm
-                -> reassignmentTypeListValue.addValue(parseReassignmentValue(elm)));
+                                                                   -> reassignmentTypeListValue.addValue(parseReassignmentValue(elm)));
         return reassignmentTypeListValue;
     }
 
@@ -62,9 +62,9 @@ public class ReassignmentsTypeSerializer implements Bpmn2OryxPropertySerializer<
         final String users = tokens.get(3);
 
         return new ReassignmentValue(type,
-                duration,
-                Arrays.stream(groups.split(ARRAY_DELIMITER)).collect(Collectors.toList()),
-                Arrays.stream(users.split(ARRAY_DELIMITER)).collect(Collectors.toList()));
+                                     duration,
+                                     Arrays.stream(groups.split(ARRAY_DELIMITER)).collect(Collectors.toList()),
+                                     Arrays.stream(users.split(ARRAY_DELIMITER)).collect(Collectors.toList()));
     }
 
     @Override
@@ -79,22 +79,21 @@ public class ReassignmentsTypeSerializer implements Bpmn2OryxPropertySerializer<
                 .stream()
                 .map(this::serializeReassignmentValue)
                 .collect(Collectors.joining("^"));
-
     }
 
     private String serializeReassignmentValue(ReassignmentValue value) {
         final StringBuffer serializedValue = new StringBuffer();
         appendValue(serializedValue,
-                value.getType());
+                    value.getType());
         serializedValue.append(ELM_DELIMITER);
         appendValue(serializedValue,
-                value.getDuration());
+                    value.getDuration());
         serializedValue.append(ELM_DELIMITER);
         appendValue(serializedValue,
-                value.getGroups().stream().collect(Collectors.joining(ARRAY_DELIMITER)));
+                    value.getGroups().stream().collect(Collectors.joining(ARRAY_DELIMITER)));
         serializedValue.append(ELM_DELIMITER);
         appendValue(serializedValue,
-                value.getUsers().stream().collect(Collectors.joining(ARRAY_DELIMITER)));
+                    value.getUsers().stream().collect(Collectors.joining(ARRAY_DELIMITER)));
         return serializedValue.toString();
     }
 
@@ -106,10 +105,10 @@ public class ReassignmentsTypeSerializer implements Bpmn2OryxPropertySerializer<
             int index;
             while ((index = remainder.indexOf('|')) >= 0) {
                 token = remainder.substring(0,
-                        index);
+                                            index);
                 tokens.add(token);
                 remainder = remainder.substring(index + 1,
-                        remainder.length());
+                                                remainder.length());
             }
             tokens.add(remainder);
         }

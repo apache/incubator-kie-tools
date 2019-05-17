@@ -30,6 +30,7 @@ import org.eclipse.bpmn2.RootElement;
 import org.eclipse.bpmn2.SubProcess;
 
 class Processes {
+
     static void addChildElement(
             BasePropertyWriter p,
             Map<String, BasePropertyWriter> childElements,
@@ -46,18 +47,18 @@ class Processes {
                 process.getFlowElements().add((FlowElement) p.getElement());
             } else {
                 process.getFlowElements().add(0, (FlowElement) p.getElement());
-                                              p.getElement();
+                p.getElement();
             }
-        } else if (p.getElement() instanceof Artifact)  {
+        } else if (p.getElement() instanceof Artifact) {
             if (process instanceof Process) {
-                ((Process)process).getArtifacts().add((Artifact)p.getElement());
+                ((Process) process).getArtifacts().add((Artifact) p.getElement());
             } else if (process instanceof SubProcess) {
-                ((SubProcess)process).getArtifacts().add((Artifact)p.getElement());
+                ((SubProcess) process).getArtifacts().add((Artifact) p.getElement());
             }
         }
 
         if (p instanceof PropertyWriter) {
-            ElementParameters sp = ((PropertyWriter)p).getSimulationParameters();
+            ElementParameters sp = ((PropertyWriter) p).getSimulationParameters();
             if (sp != null) {
                 simulationParameters.add(sp);
             }

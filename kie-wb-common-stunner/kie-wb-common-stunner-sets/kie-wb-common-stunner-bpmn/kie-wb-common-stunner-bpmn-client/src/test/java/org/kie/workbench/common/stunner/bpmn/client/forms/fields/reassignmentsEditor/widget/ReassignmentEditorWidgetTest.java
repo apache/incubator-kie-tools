@@ -146,7 +146,6 @@ public class ReassignmentEditorWidgetTest extends ReflectionUtilsTest {
 
         when(translationService.getValue(any(String.class))).thenReturn("Reassignment");
 
-
         view.initTypeSelector();
     }
 
@@ -167,7 +166,7 @@ public class ReassignmentEditorWidgetTest extends ReflectionUtilsTest {
 
     @Test
     public void testGetNameHeader() {
-        Assert.assertEquals(reassignmentEditorWidget.getNameHeader(),"Reassignment");
+        Assert.assertEquals(reassignmentEditorWidget.getNameHeader(), "Reassignment");
     }
 
     @Test

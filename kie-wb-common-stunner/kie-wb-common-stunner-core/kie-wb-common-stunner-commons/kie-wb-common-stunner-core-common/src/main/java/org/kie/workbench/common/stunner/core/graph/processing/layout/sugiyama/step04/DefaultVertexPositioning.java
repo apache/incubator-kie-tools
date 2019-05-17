@@ -54,7 +54,7 @@ public final class DefaultVertexPositioning implements VertexPositioning {
     @Override
     public void calculateVerticesPositions(final ReorderedGraph graph,
                                            final LayerArrangement arrangement) {
-        final LayeredGraph layered = (LayeredGraph)graph;
+        final LayeredGraph layered = (LayeredGraph) graph;
         for (final OrientedEdge edge : graph.getEdges()) {
             if (edge.isReversed()) {
                 edge.reverse();

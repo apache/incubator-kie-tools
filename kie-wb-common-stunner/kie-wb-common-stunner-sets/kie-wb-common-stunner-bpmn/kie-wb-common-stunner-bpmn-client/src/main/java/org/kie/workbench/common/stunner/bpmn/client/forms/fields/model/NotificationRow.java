@@ -155,7 +155,7 @@ public class NotificationRow {
     @Override
     public int hashCode() {
         return HashUtil.combineHashCodes(super.hashCode(),
-                Objects.hashCode(id));
+                                         Objects.hashCode(id));
     }
 
     @Override

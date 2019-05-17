@@ -60,10 +60,10 @@ public class ActivityPropertyReader extends FlowElementPropertyReader {
 
     public AssignmentsInfo getAssignmentsInfo() {
         AssignmentsInfo info = AssignmentsInfos.of(getDataInputs(),
-                                   getDataInputAssociations(),
-                                   getDataOutputs(),
-                                   getDataOutputAssociations(),
-                                   getIOSpecification().isPresent());
+                                                   getDataInputAssociations(),
+                                                   getDataOutputs(),
+                                                   getDataOutputAssociations(),
+                                                   getIOSpecification().isPresent());
         // do not break compatibility with old marshallers: return
         // empty delimited fields instead of empty string
         if (info.getValue().isEmpty()) {

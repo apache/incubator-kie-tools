@@ -112,7 +112,7 @@ public class ShapeViewExtStub
     }
 
     @Override
-    public Object setTitleStrokeAlpha(final double alpha){
+    public Object setTitleStrokeAlpha(final double alpha) {
         return this;
     }
 

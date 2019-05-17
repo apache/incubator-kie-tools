@@ -96,5 +96,4 @@ public class ClientFormGenerationManager {
             return false;
         };
     }
-
 }

@@ -24,7 +24,6 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
 /**
  * This type provides the way view is being updated from a given domain object instance.
- *
  * @param <W> The domain object's type.
  * @param <V> The shape view type.
  */

@@ -32,26 +32,26 @@ public class NotificationsInfoTest {
     public void testEqualsAndHashCode() {
         EqualsAndHashCodeTestUtils.TestCaseBuilder.newTestCase()
                 .addTrueCase(new NotificationsInfo(),
-                        new NotificationsInfo())
+                             new NotificationsInfo())
                 .addTrueCase(new NotificationsInfo(new NotificationTypeListValue()),
-                        new NotificationsInfo(new NotificationTypeListValue()))
+                             new NotificationsInfo(new NotificationTypeListValue()))
                 .addTrueCase(new NotificationsInfo(),
-                        new NotificationsInfo(new NotificationTypeListValue()))
+                             new NotificationsInfo(new NotificationTypeListValue()))
                 .addFalseCase(new NotificationsInfo(),
-                        new NotificationsInfo(new NotificationTypeListValue(getNotificationValues())))
+                              new NotificationsInfo(new NotificationTypeListValue(getNotificationValues())))
                 .test();
     }
 
-     private List<NotificationValue> getNotificationValues(){
+    private List<NotificationValue> getNotificationValues() {
         List<NotificationValue> result = new ArrayList<>();
         result.add(new NotificationValue("AAA",
-                "1h",
-                "Subj",
-                "me",
-                "NotStartedNotify",
-                "me",
-                Arrays.asList(new String[]{"foo", "bar", "baz"}),
-                Arrays.asList(new String[]{"foo", "bar", "baz"})));
+                                         "1h",
+                                         "Subj",
+                                         "me",
+                                         "NotStartedNotify",
+                                         "me",
+                                         Arrays.asList(new String[]{"foo", "bar", "baz"}),
+                                         Arrays.asList(new String[]{"foo", "bar", "baz"})));
         return result;
     }
 }

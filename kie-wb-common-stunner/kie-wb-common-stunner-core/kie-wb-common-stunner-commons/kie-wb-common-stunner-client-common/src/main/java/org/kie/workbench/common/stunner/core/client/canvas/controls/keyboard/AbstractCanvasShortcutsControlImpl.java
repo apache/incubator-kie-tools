@@ -81,5 +81,4 @@ public abstract class AbstractCanvasShortcutsControlImpl extends AbstractCanvasH
             return null;
         }
     }
-
 }

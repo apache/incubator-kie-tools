@@ -24,7 +24,7 @@ public interface FormsClientConstants {
     String FormsNotificationTitle = "forms.notificationTitle";
 
     @TranslationKey(defaultValue = "Cannot generate forms, there are no User Tasks selected")
-    String FormsNoItemsSelectedForGeneration= "forms.noItemsSelectedForGeneration";
+    String FormsNoItemsSelectedForGeneration = "forms.noItemsSelectedForGeneration";
 
     @TranslationKey(defaultValue = "Forms generation completed successfully for [{0}]")
     String FormsGenerationSuccess = "forms.generationSuccess";

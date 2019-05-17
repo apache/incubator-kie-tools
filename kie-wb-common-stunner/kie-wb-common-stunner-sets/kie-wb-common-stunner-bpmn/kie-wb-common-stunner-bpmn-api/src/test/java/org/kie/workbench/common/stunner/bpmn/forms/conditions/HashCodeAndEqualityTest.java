@@ -24,7 +24,6 @@ import org.junit.Test;
 import org.uberfire.backend.vfs.Path;
 
 import static org.kie.workbench.common.stunner.core.util.EqualsAndHashCodeTestUtils.TestCaseBuilder;
-
 import static org.mockito.Mockito.mock;
 
 public class HashCodeAndEqualityTest {

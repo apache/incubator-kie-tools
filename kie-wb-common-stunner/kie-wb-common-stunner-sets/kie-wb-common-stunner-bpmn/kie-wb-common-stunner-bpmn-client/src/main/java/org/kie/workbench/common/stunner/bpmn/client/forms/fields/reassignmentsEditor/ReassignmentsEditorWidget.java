@@ -64,11 +64,11 @@ public class ReassignmentsEditorWidget extends Composite implements HasValue<Rea
 
     void showReassignmentsDialog() {
         reassignmentWidget.setValue(reassignmentTypeListValue.getValues()
-                .stream(
-                ).map(r -> new ReassignmentRow(r))
-                .collect(Collectors.toList()), true);
+                                            .stream(
+                                            ).map(r -> new ReassignmentRow(r))
+                                            .collect(Collectors.toList()), true);
         reassignmentWidget.setCallback(data -> setValue(data,
-                true));
+                                                        true));
         reassignmentWidget.show();
     }
 
@@ -80,8 +80,8 @@ public class ReassignmentsEditorWidget extends Composite implements HasValue<Rea
             initTextBox();
             if (fireEvents) {
                 ValueChangeEvent.fireIfNotEqual(this,
-                        oldValue,
-                        reassignmentTypeListValue);
+                                                oldValue,
+                                                reassignmentTypeListValue);
             }
         }
     }
@@ -102,13 +102,13 @@ public class ReassignmentsEditorWidget extends Composite implements HasValue<Rea
     @Override
     public void setValue(ReassignmentTypeListValue value) {
         setValue(value,
-                false);
+                 false);
     }
 
     @Override
     public HandlerRegistration addValueChangeHandler(ValueChangeHandler<ReassignmentTypeListValue> handler) {
         return addHandler(handler,
-                ValueChangeEvent.getType());
+                          ValueChangeEvent.getType());
     }
 
     public void setReadOnly(final boolean readOnly) {

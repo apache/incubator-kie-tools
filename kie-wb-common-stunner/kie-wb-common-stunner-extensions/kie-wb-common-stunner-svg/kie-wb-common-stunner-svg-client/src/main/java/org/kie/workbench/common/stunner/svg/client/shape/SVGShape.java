@@ -15,7 +15,6 @@
  */
 
 
-
 package org.kie.workbench.common.stunner.svg.client.shape;
 
 import org.kie.workbench.common.stunner.core.client.shape.Lifecycle;

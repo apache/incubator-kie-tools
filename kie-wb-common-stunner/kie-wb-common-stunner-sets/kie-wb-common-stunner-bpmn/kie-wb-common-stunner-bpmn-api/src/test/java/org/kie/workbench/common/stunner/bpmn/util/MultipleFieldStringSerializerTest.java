@@ -23,33 +23,32 @@ import org.junit.Test;
 
 public class MultipleFieldStringSerializerTest {
 
-  private static final String SERIALIZED_FIELDS = "tiago;dolphine";
-  private static final String[] DESERIALIZED_FIELDS = {"tiago", "dolphine"};
-  private static final String SERIALIZED_SUBFIELDS = "tiago.dolphine";
-  private static final String[] DESERIALIZED_SUBFIELDS = {"tiago", "dolphine"};
+    private static final String SERIALIZED_FIELDS = "tiago;dolphine";
+    private static final String[] DESERIALIZED_FIELDS = {"tiago", "dolphine"};
+    private static final String SERIALIZED_SUBFIELDS = "tiago.dolphine";
+    private static final String[] DESERIALIZED_SUBFIELDS = {"tiago", "dolphine"};
 
-  @Test
-  public void testSerialize() throws Exception {
-    Assert.assertEquals(SERIALIZED_FIELDS,
-                        MultipleFieldStringSerializer.serialize(DESERIALIZED_FIELDS));
-  }
+    @Test
+    public void testSerialize() throws Exception {
+        Assert.assertEquals(SERIALIZED_FIELDS,
+                            MultipleFieldStringSerializer.serialize(DESERIALIZED_FIELDS));
+    }
 
-  @Test
-  public void testDeserialize() throws Exception {
-    Assert.assertEquals(Arrays.asList(DESERIALIZED_FIELDS),
-                        MultipleFieldStringSerializer.deserialize(SERIALIZED_FIELDS));
-  }
+    @Test
+    public void testDeserialize() throws Exception {
+        Assert.assertEquals(Arrays.asList(DESERIALIZED_FIELDS),
+                            MultipleFieldStringSerializer.deserialize(SERIALIZED_FIELDS));
+    }
 
-  @Test
-  public void testSerializeSubfields() throws Exception {
-    Assert.assertEquals(SERIALIZED_SUBFIELDS,
-                        MultipleFieldStringSerializer.serializeSubfields(DESERIALIZED_SUBFIELDS));
-  }
+    @Test
+    public void testSerializeSubfields() throws Exception {
+        Assert.assertEquals(SERIALIZED_SUBFIELDS,
+                            MultipleFieldStringSerializer.serializeSubfields(DESERIALIZED_SUBFIELDS));
+    }
 
-  @Test
-  public void testDeserializeSubfields() throws Exception {
-    Assert.assertEquals(Arrays.asList(DESERIALIZED_SUBFIELDS),
-                        MultipleFieldStringSerializer.deserializeSubfields(SERIALIZED_SUBFIELDS));
-
-  }
+    @Test
+    public void testDeserializeSubfields() throws Exception {
+        Assert.assertEquals(Arrays.asList(DESERIALIZED_SUBFIELDS),
+                            MultipleFieldStringSerializer.deserializeSubfields(SERIALIZED_SUBFIELDS));
+    }
 }

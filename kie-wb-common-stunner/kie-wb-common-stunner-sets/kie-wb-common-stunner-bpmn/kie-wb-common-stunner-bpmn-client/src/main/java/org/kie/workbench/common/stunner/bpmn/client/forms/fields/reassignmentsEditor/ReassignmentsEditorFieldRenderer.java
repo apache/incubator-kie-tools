@@ -28,7 +28,6 @@ import org.kie.workbench.common.stunner.bpmn.forms.model.ReassignmentsEditorFiel
 @Dependent
 public class ReassignmentsEditorFieldRenderer extends FieldRenderer<ReassignmentsEditorFieldDefinition, DefaultFormGroup> {
 
-
     private ReassignmentsEditorWidget reassignmentsEditorWidget;
 
     @Inject

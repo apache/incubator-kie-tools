@@ -26,7 +26,8 @@ import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Notificat
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 
 @Dependent
-public class NotificationEditorWidget implements IsWidget, NotificationEditorWidgetView.Presenter {
+public class NotificationEditorWidget implements IsWidget,
+                                                 NotificationEditorWidgetView.Presenter {
 
     private NotificationEditorWidgetView view;
 

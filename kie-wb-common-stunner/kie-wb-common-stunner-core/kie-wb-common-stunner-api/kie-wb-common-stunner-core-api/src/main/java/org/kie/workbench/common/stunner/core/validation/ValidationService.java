@@ -26,5 +26,4 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 public interface ValidationService {
 
     Collection<DiagramElementViolation<RuleViolation>> validate(Diagram diagram);
-
 }

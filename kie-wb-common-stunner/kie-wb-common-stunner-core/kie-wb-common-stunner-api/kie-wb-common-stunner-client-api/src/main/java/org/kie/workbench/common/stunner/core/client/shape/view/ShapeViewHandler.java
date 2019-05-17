@@ -18,7 +18,6 @@ package org.kie.workbench.common.stunner.core.client.shape.view;
 
 /**
  * A type for handling shape views by given a domain model object.
- *
  * @param <W> The domain object's type.
  * @param <V> The shape view type.
  */
@@ -26,7 +25,6 @@ public interface ShapeViewHandler<W, V extends ShapeView> {
 
     /**
      * Apply the updates to the view, if any.
-     *
      * @param object The domain object's instance.
      * @param view The shape view instance.
      */

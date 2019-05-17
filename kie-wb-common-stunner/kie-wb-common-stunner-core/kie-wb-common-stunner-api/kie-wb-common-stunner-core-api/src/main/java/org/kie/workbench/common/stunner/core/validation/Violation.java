@@ -38,7 +38,6 @@ public interface Violation {
         public int getSeverity() {
             return severity;
         }
-
     }
 
     /**

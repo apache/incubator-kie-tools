@@ -59,7 +59,7 @@ public abstract class AbstractProfileManager implements ProfileManager {
 
     @Override
     public Profile getProfile(final String definitionSetId,
-                                    final String id) {
+                              final String id) {
         final Annotation qualifier = getQualifier().apply(definitionSetId);
         Profile profile = getProfile(id);
         if (null == profile) {

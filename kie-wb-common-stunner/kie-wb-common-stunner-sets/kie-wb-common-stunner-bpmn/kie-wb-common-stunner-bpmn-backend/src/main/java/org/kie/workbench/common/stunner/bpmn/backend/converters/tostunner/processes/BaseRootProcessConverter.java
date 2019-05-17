@@ -70,7 +70,6 @@ public abstract class BaseRootProcessConverter<D extends BPMNDiagram<S, P>,
                                             process.getArtifacts().stream()).collect(Collectors.toList()),
                               nodes);
 
-
         delegate.postConvert(processRoot);
 
         return processRoot;

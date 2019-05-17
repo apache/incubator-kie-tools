@@ -24,7 +24,7 @@ public class ReassignmentEvent {
 
     private ReassignmentRow row;
 
-    public ReassignmentEvent(){
+    public ReassignmentEvent() {
 
     }
 

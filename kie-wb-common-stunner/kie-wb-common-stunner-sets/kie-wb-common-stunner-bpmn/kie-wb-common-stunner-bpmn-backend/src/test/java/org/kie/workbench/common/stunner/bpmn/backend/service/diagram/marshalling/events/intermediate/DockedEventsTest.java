@@ -60,5 +60,4 @@ public class DockedEventsTest extends BPMNDiagramMarshallerBase {
         assertThat(posCmds.get(0).getNode().getUUID()).isEqualTo(TASK_ID);
         assertThat(posCmds.get(1).getNode().getUUID()).isEqualTo(DOCKED_NODE_ID);
     }
-
 }

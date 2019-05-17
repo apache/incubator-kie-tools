@@ -22,5 +22,4 @@ public class BaseFooTestBean2 {
 
     @Category
     public static final transient String category = "FooTest";
-
 }

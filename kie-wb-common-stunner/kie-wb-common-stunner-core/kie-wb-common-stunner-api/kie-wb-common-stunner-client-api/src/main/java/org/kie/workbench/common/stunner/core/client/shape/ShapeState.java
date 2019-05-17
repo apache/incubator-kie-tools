@@ -28,5 +28,4 @@ public enum ShapeState {
     HIGHLIGHT,
 
     INVALID;
-
 }

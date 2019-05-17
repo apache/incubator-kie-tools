@@ -99,9 +99,11 @@ public class ProcessesTest {
         when(boundaryEventPropertyWriter.getSimulationParameters()).thenReturn(propertyWriterElementParameters);
         when(boundaryEventPropertyWriter.getItemDefinitions()).thenReturn(propertyWriterItemDefinitions);
 
-        flowElement = new FlowElementImpl() {};
+        flowElement = new FlowElementImpl() {
+        };
         flowElement.setId(ELEMENT_ID);
-        artifact = new ArtifactImpl() {};
+        artifact = new ArtifactImpl() {
+        };
         artifact.setId(ELEMENT_ID);
 
         when(process.getFlowElements()).thenReturn(flowElements);
@@ -164,5 +166,4 @@ public class ProcessesTest {
         verify(rootElements).addAll(propertyWriterRootElements);
         verify(itemDefinitions).addAll(propertyWriterItemDefinitions);
     }
-
 }

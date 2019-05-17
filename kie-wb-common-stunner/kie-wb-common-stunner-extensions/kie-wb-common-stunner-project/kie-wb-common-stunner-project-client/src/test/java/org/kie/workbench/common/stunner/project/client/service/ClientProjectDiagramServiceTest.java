@@ -133,7 +133,7 @@ public class ClientProjectDiagramServiceTest extends AbstractClientDiagramServic
     public final ExpectedException exception = ExpectedException.none();
 
     @Test
-    public void testDuplicatedBusinessProcess(){
+    public void testDuplicatedBusinessProcess() {
         final String name = "d1";
         final String defSetId = "id1";
         final String projName = "project-name";

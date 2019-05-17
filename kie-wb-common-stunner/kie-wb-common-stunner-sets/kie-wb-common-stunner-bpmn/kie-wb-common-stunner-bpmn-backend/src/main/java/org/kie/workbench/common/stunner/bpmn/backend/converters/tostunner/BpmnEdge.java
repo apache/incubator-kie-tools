@@ -124,6 +124,5 @@ public interface BpmnEdge {
         public boolean isDocked() {
             return true;
         }
-
     }
 }

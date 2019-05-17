@@ -35,5 +35,4 @@ public class StunnerLienzoCoreTest {
         assertEquals(ImageSelectionMode.SELECT_NON_TRANSPARENT, before);
         assertEquals(ImageSelectionMode.SELECT_BOUNDS, after);
     }
-
 }

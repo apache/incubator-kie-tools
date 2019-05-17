@@ -58,5 +58,4 @@ public class GraphNodeStoreImpl implements GraphNodeStore<Node> {
     public Iterator<Node> iterator() {
         return nodes.values().iterator();
     }
-
 }

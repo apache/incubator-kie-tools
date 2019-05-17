@@ -24,5 +24,4 @@ import org.kie.workbench.common.stunner.core.diagram.Diagram;
 public interface DomainValidator extends Validator<Diagram, DomainViolation> {
 
     String getDefinitionSetId();
-
 }

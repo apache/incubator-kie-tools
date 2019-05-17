@@ -35,8 +35,8 @@ public class KeyValueRow {
     }
 
     public KeyValueRow(String key, String value) {
-        this.key = Objects.isNull(key) ?"": key;
-        this.value = Objects.isNull(value) ?"": value;
+        this.key = Objects.isNull(key) ? "" : key;
+        this.value = Objects.isNull(value) ? "" : value;
         this.uuid = UUID.uuid();
     }
 

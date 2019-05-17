@@ -24,7 +24,7 @@ public class NotificationEvent {
 
     private NotificationRow row;
 
-    public NotificationEvent(){
+    public NotificationEvent() {
 
     }
 

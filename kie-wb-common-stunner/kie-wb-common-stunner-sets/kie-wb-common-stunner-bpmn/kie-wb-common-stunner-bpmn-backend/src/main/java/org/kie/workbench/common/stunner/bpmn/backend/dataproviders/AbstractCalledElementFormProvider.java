@@ -80,5 +80,4 @@ public abstract class AbstractCalledElementFormProvider implements SelectorDataP
     protected abstract ResourceType getProcessIdResourceType();
 
     protected abstract String getQueryName();
-
 }

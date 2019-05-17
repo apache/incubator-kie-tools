@@ -77,7 +77,7 @@ public class FormsContainer implements IsElement {
         displayer.show();
         currentDisplayer = displayer;
 
-        currentDisplayer.getRenderer().addFieldChangeHandler((name, value)-> {
+        currentDisplayer.getRenderer().addFieldChangeHandler((name, value) -> {
             formFieldChangedEvent.fire(new FormFieldChanged(name, value, domainObjectUUID));
         });
     }

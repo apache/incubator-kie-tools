@@ -27,5 +27,5 @@ public interface FormGenerationService {
     void generateAllForms(Diagram diagram);
 
     void generateSelectedForms(Diagram diagram,
-                                      String[] ids);
+                               String[] ids);
 }

@@ -24,7 +24,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.legacy.plugin.IDiagramPlugi
 
 /**
  * @author Antoine Toulme
- *         A default implementation of a plugin for plugins defined inside the Process Designer web application
+ * A default implementation of a plugin for plugins defined inside the Process Designer web application
  */
 public class LocalPluginImpl extends LocalResource implements IDiagramPlugin {
 

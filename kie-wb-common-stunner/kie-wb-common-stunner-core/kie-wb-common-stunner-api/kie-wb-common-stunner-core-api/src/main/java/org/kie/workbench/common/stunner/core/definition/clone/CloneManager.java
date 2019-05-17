@@ -20,5 +20,5 @@ public interface CloneManager {
 
     <T> T clone(T source, ClonePolicy policy);
 
-    <S,T> T clone(S source, T target, ClonePolicy policy);
+    <S, T> T clone(S source, T target, ClonePolicy policy);
 }

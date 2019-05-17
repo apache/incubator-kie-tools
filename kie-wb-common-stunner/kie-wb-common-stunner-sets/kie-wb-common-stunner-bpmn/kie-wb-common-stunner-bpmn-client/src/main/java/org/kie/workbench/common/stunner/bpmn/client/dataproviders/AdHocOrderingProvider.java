@@ -56,7 +56,6 @@ public class AdHocOrderingProvider
         public String i18nKey() {
             return i18nKey;
         }
-
     }
 
     private static Map<Object, Integer> valuePosition;

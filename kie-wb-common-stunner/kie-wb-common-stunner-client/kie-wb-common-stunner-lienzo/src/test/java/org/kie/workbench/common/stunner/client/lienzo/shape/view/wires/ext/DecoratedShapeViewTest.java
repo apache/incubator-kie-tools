@@ -37,7 +37,6 @@ public class DecoratedShapeViewTest extends AbstractWiresShapeViewText {
 
     private WiresScalableContainer container;
 
-
     @Before
     public void setup() throws Exception {
         container = new WiresScalableContainer();
@@ -46,11 +45,11 @@ public class DecoratedShapeViewTest extends AbstractWiresShapeViewText {
 
     @Override
     public WiresShapeViewExt createInstance() {
-        return  new DecoratedShapeView<>(viewEventTypes,
-                                         container,
-                                         PATH,
-                                         width,
-                                         height);
+        return new DecoratedShapeView<>(viewEventTypes,
+                                        container,
+                                        PATH,
+                                        width,
+                                        height);
     }
 
     @Test

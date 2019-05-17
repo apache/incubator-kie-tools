@@ -30,5 +30,4 @@ public abstract class ClientErrorHandler {
     }
 
     public abstract void handleError(ClientRuntimeError error, Consumer<String> showError);
-
 }

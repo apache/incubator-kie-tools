@@ -40,7 +40,6 @@ public class ClientDiagramServiceImpl<M extends Metadata, D extends Diagram<Grap
         super(null, null, null, null);
     }
 
-
     public ClientDiagramServiceImpl(final ShapeManager shapeManager,
                                     final Caller<S> diagramServiceCaller,
                                     final Caller<DiagramLookupService> diagramLookupServiceCaller,

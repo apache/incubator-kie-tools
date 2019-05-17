@@ -40,115 +40,115 @@ import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 @Dependent
 public class ConditionalComboBoxFieldRenderer extends AbstractComboBoxFieldRenderer<ConditionalComboBoxFieldDefinition> {
 
-  public static final String TYPE_NAME = ConditionalComboBoxFieldDefinition.FIELD_TYPE.getTypeName();
+    public static final String TYPE_NAME = ConditionalComboBoxFieldDefinition.FIELD_TYPE.getTypeName();
 
-  private AdapterManager adapterManager;
+    private AdapterManager adapterManager;
 
-  @Inject
-  public ConditionalComboBoxFieldRenderer(@FixedValues final ComboBoxFixedValuesWidgetView comboBoxEditor,
-                                          AdapterManager adapterManager) {
-    super(comboBoxEditor);
-    this.adapterManager = adapterManager;
-  }
-
-  @Override
-  public void init(final FormRenderingContext renderingContext,
-                   ConditionalComboBoxFieldDefinition field) {
-    super.init(renderingContext,
-               field);
-    initializeRelatedFieldCondition(renderingContext,
-                                    field);
-  }
-
-  private void initializeRelatedFieldCondition(FormRenderingContext renderingContext,
-                                               ConditionalComboBoxFieldDefinition field) {
-    if (Objects.nonNull(field.getRelatedField())) {
-      List<String> fields = extractFields(field);
-      if (Objects.isNull(field) || fields.isEmpty()) {
-        return;
-      }
-      initializeListeners(fields);
-      checkCurrentRelatedFieldValues(renderingContext,
-                                     fields);
+    @Inject
+    public ConditionalComboBoxFieldRenderer(@FixedValues final ComboBoxFixedValuesWidgetView comboBoxEditor,
+                                            AdapterManager adapterManager) {
+        super(comboBoxEditor);
+        this.adapterManager = adapterManager;
     }
-  }
 
-  private Object getModelFromFormContext(FormRenderingContext renderingContext) {
-    if (Objects.isNull(renderingContext.getModel()) && Objects.nonNull(renderingContext.getParentContext())) {
-      return getModelFromFormContext(renderingContext.getParentContext());
+    @Override
+    public void init(final FormRenderingContext renderingContext,
+                     ConditionalComboBoxFieldDefinition field) {
+        super.init(renderingContext,
+                   field);
+        initializeRelatedFieldCondition(renderingContext,
+                                        field);
     }
-    return renderingContext.getModel();
-  }
 
-  private void checkCurrentRelatedFieldValues(FormRenderingContext renderingContext,
-                                              List<String> fields) {
-    final Object formModel = getModelFromFormContext(renderingContext);
-
-    setReadOnly(fields.stream().allMatch(f -> {
-      Object relatedFieldDefinition = getFormFieldProxiedDefinition(formModel,
-                                                                    extractSubFields(f));
-      return verifyReadOnlyCondition(adapterManager.forProperty().getValue(relatedFieldDefinition));
-    }));
-  }
-
-  private Object getFormFieldProxiedDefinition(Object formModel,
-                                               String... fieldSequence) {
-    if (fieldSequence == null || fieldSequence.length == 0) {
-      throw new IllegalArgumentException("Empty fields to get from model");
+    private void initializeRelatedFieldCondition(FormRenderingContext renderingContext,
+                                                 ConditionalComboBoxFieldDefinition field) {
+        if (Objects.nonNull(field.getRelatedField())) {
+            List<String> fields = extractFields(field);
+            if (Objects.isNull(field) || fields.isEmpty()) {
+                return;
+            }
+            initializeListeners(fields);
+            checkCurrentRelatedFieldValues(renderingContext,
+                                           fields);
+        }
     }
-    String firstField = Stream.of(fieldSequence).findFirst().get();
-    Object proxiedDefinition = ClientBindingUtils.getProxiedValue(formModel,
-                                                                  firstField);
-    if (proxiedDefinition instanceof BPMNPropertySet) {
-      return getFormFieldProxiedDefinition(proxiedDefinition,
-                                           Stream.of(fieldSequence).filter(f -> !Objects.equals(f,
-                                                                                                firstField)).toArray(String[]::new));
+
+    private Object getModelFromFormContext(FormRenderingContext renderingContext) {
+        if (Objects.isNull(renderingContext.getModel()) && Objects.nonNull(renderingContext.getParentContext())) {
+            return getModelFromFormContext(renderingContext.getParentContext());
+        }
+        return renderingContext.getModel();
     }
-    return proxiedDefinition;
-  }
 
-  private void initializeListeners(List<String> fields) {
-    fields.forEach(field -> fieldChangeListeners.add(
-        new FieldChangeListener(extractLastSubField(field),
-                                (name, value) -> refreshFieldCondition(value)))
+    private void checkCurrentRelatedFieldValues(FormRenderingContext renderingContext,
+                                                List<String> fields) {
+        final Object formModel = getModelFromFormContext(renderingContext);
 
-    );
-  }
+        setReadOnly(fields.stream().allMatch(f -> {
+            Object relatedFieldDefinition = getFormFieldProxiedDefinition(formModel,
+                                                                          extractSubFields(f));
+            return verifyReadOnlyCondition(adapterManager.forProperty().getValue(relatedFieldDefinition));
+        }));
+    }
 
-  private String extractLastSubField(String field) {
-    String[] extractedSubFields = extractSubFields(field);
-    return extractedSubFields[extractedSubFields.length -1];
-  }
+    private Object getFormFieldProxiedDefinition(Object formModel,
+                                                 String... fieldSequence) {
+        if (fieldSequence == null || fieldSequence.length == 0) {
+            throw new IllegalArgumentException("Empty fields to get from model");
+        }
+        String firstField = Stream.of(fieldSequence).findFirst().get();
+        Object proxiedDefinition = ClientBindingUtils.getProxiedValue(formModel,
+                                                                      firstField);
+        if (proxiedDefinition instanceof BPMNPropertySet) {
+            return getFormFieldProxiedDefinition(proxiedDefinition,
+                                                 Stream.of(fieldSequence).filter(f -> !Objects.equals(f,
+                                                                                                      firstField)).toArray(String[]::new));
+        }
+        return proxiedDefinition;
+    }
 
-  private String[] extractSubFields(String field) {
-    return MultipleFieldStringSerializer.deserializeSubfields(field).stream().toArray(String[]::new);
-  }
+    private void initializeListeners(List<String> fields) {
+        fields.forEach(field -> fieldChangeListeners.add(
+                new FieldChangeListener(extractLastSubField(field),
+                                        (name, value) -> refreshFieldCondition(value)))
 
-  private List<String> extractFields(ConditionalComboBoxFieldDefinition field) {
-    return MultipleFieldStringSerializer.deserialize(field.getRelatedField());
-  }
+        );
+    }
 
-  public void refreshFieldCondition(Object conditionValue) {
-    boolean readOnly = verifyReadOnlyCondition(conditionValue);
-    setReadOnly(readOnly);
-  }
+    private String extractLastSubField(String field) {
+        String[] extractedSubFields = extractSubFields(field);
+        return extractedSubFields[extractedSubFields.length - 1];
+    }
 
-  private boolean verifyReadOnlyCondition(Object conditionValue) {
-    return Objects.isNull(conditionValue) || String.valueOf(conditionValue).trim().isEmpty();
-  }
+    private String[] extractSubFields(String field) {
+        return MultipleFieldStringSerializer.deserializeSubfields(field).stream().toArray(String[]::new);
+    }
 
-  @Override
-  public String getName() {
-    return TYPE_NAME;
-  }
+    private List<String> extractFields(ConditionalComboBoxFieldDefinition field) {
+        return MultipleFieldStringSerializer.deserialize(field.getRelatedField());
+    }
 
-  @Override
-  public String getSupportedCode() {
-    return TYPE_NAME;
-  }
+    public void refreshFieldCondition(Object conditionValue) {
+        boolean readOnly = verifyReadOnlyCondition(conditionValue);
+        setReadOnly(readOnly);
+    }
 
-  @Override
-  public Class<ConditionalComboBoxFieldDefinition> getSupportedFieldDefinition() {
-    return ConditionalComboBoxFieldDefinition.class;
-  }
+    private boolean verifyReadOnlyCondition(Object conditionValue) {
+        return Objects.isNull(conditionValue) || String.valueOf(conditionValue).trim().isEmpty();
+    }
+
+    @Override
+    public String getName() {
+        return TYPE_NAME;
+    }
+
+    @Override
+    public String getSupportedCode() {
+        return TYPE_NAME;
+    }
+
+    @Override
+    public Class<ConditionalComboBoxFieldDefinition> getSupportedFieldDefinition() {
+        return ConditionalComboBoxFieldDefinition.class;
+    }
 }

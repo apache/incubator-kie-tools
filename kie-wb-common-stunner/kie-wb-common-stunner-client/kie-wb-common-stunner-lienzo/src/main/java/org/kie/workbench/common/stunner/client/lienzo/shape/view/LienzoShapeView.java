@@ -26,6 +26,4 @@ public interface LienzoShapeView<V>
                 HasDecorators<Shape<?>>,
                 HasShadow<V> {
 
-
-
 }

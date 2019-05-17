@@ -38,7 +38,7 @@ public class VisitGraphSessionCommand extends AbstractClientSessionCommand<Clien
                      callback);
 
         createCanvasHighlightVisitor().run(getSession().getCanvasHandler(),
-                                         callback::onSuccess);
+                                           callback::onSuccess);
     }
 
     @Override

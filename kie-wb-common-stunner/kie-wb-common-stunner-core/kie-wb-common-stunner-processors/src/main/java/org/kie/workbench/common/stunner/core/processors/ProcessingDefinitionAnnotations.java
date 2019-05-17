@@ -37,7 +37,6 @@ public class ProcessingDefinitionAnnotations {
     private final Map<String, String[]> shapeDefs = new HashMap<>();
     private final Map<String, String> nameFields = new HashMap<>();
 
-
     public Map<String, String> getBaseTypes() {
         return baseTypes;
     }

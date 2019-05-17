@@ -68,7 +68,7 @@ public class ReassignmentTypeListValue {
         if (o instanceof ReassignmentTypeListValue) {
             ReassignmentTypeListValue other = (ReassignmentTypeListValue) o;
             return Objects.equals(values,
-                    other.values);
+                                  other.values);
         }
         return false;
     }
@@ -80,5 +80,4 @@ public class ReassignmentTypeListValue {
                 .filter(StringUtils::nonEmpty)
                 .collect(Collectors.joining(", "));
     }
-
 }

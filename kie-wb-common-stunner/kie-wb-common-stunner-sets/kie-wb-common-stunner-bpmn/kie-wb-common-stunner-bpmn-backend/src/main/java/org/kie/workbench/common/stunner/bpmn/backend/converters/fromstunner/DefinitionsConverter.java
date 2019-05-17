@@ -47,7 +47,6 @@ public class DefinitionsConverter {
         Definitions definitions = bpmn2.createDefinitions();
         DefinitionsPropertyWriter p = propertyWriterFactory.of(definitions);
 
-
         ProcessPropertyWriter pp =
                 processConverter.convertProcess();
 

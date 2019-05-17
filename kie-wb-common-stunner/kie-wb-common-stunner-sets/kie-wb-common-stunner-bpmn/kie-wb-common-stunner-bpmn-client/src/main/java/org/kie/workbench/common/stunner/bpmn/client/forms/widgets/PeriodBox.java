@@ -77,14 +77,13 @@ public class PeriodBox extends Composite implements IsWidget,
     private void initChangeHandlers() {
         numberPeriod.addEventListener("change", event -> {
             String value = numberPeriod.value;
-            if(value.startsWith("-")){
+            if (value.startsWith("-")) {
                 addStyleName(ValidationState.ERROR.getCssName());
-            } else if(value.matches("[0-9]*")){
+            } else if (value.matches("[0-9]*")) {
                 if (getStyleName().contains(ValidationState.ERROR.getCssName())) {
                     removeStyleName(ValidationState.ERROR.getCssName());
                     error.setText("");
                 }
-
             } else {
                 value = "0";
             }
@@ -145,7 +144,6 @@ public class PeriodBox extends Composite implements IsWidget,
             } catch (NumberFormatException e) {
                 // nothing to do here, here 0 as value
             }
-
 
             numberPeriod.value = (intValue < 0 ? 0 : intValue) + "";
         } else {

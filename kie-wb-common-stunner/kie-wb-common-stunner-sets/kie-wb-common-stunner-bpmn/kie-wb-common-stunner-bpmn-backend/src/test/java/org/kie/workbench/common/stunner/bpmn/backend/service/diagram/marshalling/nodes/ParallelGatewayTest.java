@@ -27,7 +27,6 @@ public class ParallelGatewayTest extends GatewayNode<ParallelGateway> {
 
     private static final String BPMN_PARALLEL_GATEWAY_FILE_PATH = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/parallelGateways.bpmn";
 
-
     private static final String FILLED_TOP_LEVEL_GATEWAY_ID = "5C6F1A12-3B5D-4558-8F24-3DDE41F24A0A";
     private static final String EMPTY_TOP_LEVEL_GATEWAY_ID = "162CA3E2-47D1-40D9-B4AF-D6FB26F02A38";
     private static final String FILLED_SUBPROCESS_LEVEL_GATEWAY_ID = "66BF84BC-D7DB-485B-8AF7-4B6B3D219531";

@@ -29,6 +29,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.reassignment.Re
 import static org.junit.Assert.assertEquals;
 
 public class ReassignmentsTypeSerializerTest {
+
     private static final String SERIALIZED = "AAA|1h|foo,bar,baz|foo,bar,baz";
     private static final String DELIMITER = "^";
     private ReassignmentsTypeSerializer serializer;
@@ -45,7 +46,7 @@ public class ReassignmentsTypeSerializerTest {
         String result = serializer.serialize(new Object(), reassignmentTypeListValue);
 
         assertEquals(result,
-                "");
+                     "");
     }
 
     @Test
@@ -66,9 +67,9 @@ public class ReassignmentsTypeSerializerTest {
 
     private ReassignmentValue getReassignmentValue() {
         return new ReassignmentValue("AAA",
-                "1h",
-                Arrays.asList(new String[]{"foo", "bar", "baz"}),
-                Arrays.asList(new String[]{"foo", "bar", "baz"}));
+                                     "1h",
+                                     Arrays.asList(new String[]{"foo", "bar", "baz"}),
+                                     Arrays.asList(new String[]{"foo", "bar", "baz"}));
     }
 
     @Test

@@ -60,7 +60,7 @@ public class BPMNDirectDiagramMarshaller extends BaseDirectDiagramMarshaller {
             final Graph graph,
             final PropertyWriterFactory propertyWriterFactory) {
         return new org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.ConverterFactory(new DefinitionsBuildingContext(graph),
-                                    propertyWriterFactory);
+                                                                                                         propertyWriterFactory);
     }
 
     @Override

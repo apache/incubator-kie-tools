@@ -82,8 +82,8 @@ public class FormGenerationNotifier {
     }
 
     private void showNotification(final String title,
-                                         final String message,
-                                         final IconType icon) {
+                                  final String message,
+                                  final IconType icon) {
         Notify.notify(title,
                       buildHtmlEscapedText(message),
                       icon);

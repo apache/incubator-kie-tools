@@ -48,7 +48,8 @@ public class NotificationsType implements PropertyType {
     @Override
     public int hashCode() {
         return HashUtil.combineHashCodes(super.hashCode(),
-                name.hashCode());    }
+                                         name.hashCode());
+    }
 
     @Override
     public String toString() {

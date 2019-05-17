@@ -33,47 +33,47 @@ import org.kie.workbench.common.stunner.bpmn.forms.model.ComboBoxFieldDefinition
 
 @Dependent
 public abstract class AbstractComboBoxFieldRenderer<T extends ComboBoxFieldDefinition>
-    extends SelectorFieldRenderer<T, StringSelectorOption, String> {
+        extends SelectorFieldRenderer<T, StringSelectorOption, String> {
 
-  private ComboBoxWidgetView view;
+    private ComboBoxWidgetView view;
 
-  private ListBoxValues valueListBoxValues;
+    private ListBoxValues valueListBoxValues;
 
-  @Inject
-  public AbstractComboBoxFieldRenderer(final ComboBoxWidgetView comboBoxEditor) {
-    this.view = comboBoxEditor;
-  }
+    @Inject
+    public AbstractComboBoxFieldRenderer(final ComboBoxWidgetView comboBoxEditor) {
+        this.view = comboBoxEditor;
+    }
 
-  @Override
-  protected void refreshInput(Map<String, String> optionsValues,
-                              String defaultValue) {
-    List<String> values = new ArrayList<String>(optionsValues.keySet());
-    java.util.Collections.sort(values);
-    setComboBoxValues(values);
-  }
+    @Override
+    protected void refreshInput(Map<String, String> optionsValues,
+                                String defaultValue) {
+        List<String> values = new ArrayList<String>(optionsValues.keySet());
+        java.util.Collections.sort(values);
+        setComboBoxValues(values);
+    }
 
-  protected void setComboBoxValues(final List<String> values) {
-    valueListBoxValues = new ListBoxValues(ComboBoxWidgetView.CUSTOM_PROMPT,
-                                           "Edit" + " ",
-                                           null);
-    valueListBoxValues.addValues(values);
-    view.setComboBoxValues(valueListBoxValues);
-  }
+    protected void setComboBoxValues(final List<String> values) {
+        valueListBoxValues = new ListBoxValues(ComboBoxWidgetView.CUSTOM_PROMPT,
+                                               "Edit" + " ",
+                                               null);
+        valueListBoxValues.addValues(values);
+        view.setComboBoxValues(valueListBoxValues);
+    }
 
-  @Override
-  protected FormGroup getFormGroup(RenderMode renderMode) {
-    DefaultFormGroup formGroup = formGroupsInstance.get();
+    @Override
+    protected FormGroup getFormGroup(RenderMode renderMode) {
+        DefaultFormGroup formGroup = formGroupsInstance.get();
 
-    view.setReadOnly(field.getReadOnly());
-    refreshSelectorOptions();
+        view.setReadOnly(field.getReadOnly());
+        refreshSelectorOptions();
 
-    formGroup.render(view.asWidget(), field);
-    return formGroup;
-  }
+        formGroup.render(view.asWidget(), field);
+        return formGroup;
+    }
 
-  @Override
-  protected void setReadOnly(boolean readOnly) {
-    view.setReadOnly(readOnly);
-    field.setReadOnly(readOnly);
-  }
+    @Override
+    protected void setReadOnly(boolean readOnly) {
+        view.setReadOnly(readOnly);
+        field.setReadOnly(readOnly);
+    }
 }

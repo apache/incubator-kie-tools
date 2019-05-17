@@ -23,10 +23,10 @@ import org.jboss.errai.databinding.client.api.Bindable;
 @Bindable
 public class ConditionalComboBoxFieldDefinition extends ComboBoxFieldDefinition {
 
-  public static final ConditionalComboBoxFieldType FIELD_TYPE = new ConditionalComboBoxFieldType();
+    public static final ConditionalComboBoxFieldType FIELD_TYPE = new ConditionalComboBoxFieldType();
 
-  @Override
-  public ConditionalComboBoxFieldType getFieldType() {
-    return FIELD_TYPE;
-  }
+    @Override
+    public ConditionalComboBoxFieldType getFieldType() {
+        return FIELD_TYPE;
+    }
 }

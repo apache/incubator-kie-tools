@@ -25,8 +25,6 @@ import org.kie.workbench.common.stunner.bpmn.forms.serializer.KeyValueSerializer
 /**
  * This class is responsible to serialize a given Key-Value pair, indicating the Role and Cardinality, to be used on
  * {@link CaseRoles} definition.
- *
- *
  */
 @Dependent
 public class CaseRoleSerializer extends KeyValueSerializer {

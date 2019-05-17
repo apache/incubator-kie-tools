@@ -43,14 +43,14 @@ public class NotificationsTypeSerializer implements Bpmn2OryxPropertySerializer<
 
     @Override
     public NotificationTypeListValue parse(Object property,
-                                    String value) {
+                                           String value) {
         return parse(value);
     }
 
     public NotificationTypeListValue parse(String value) {
         NotificationTypeListValue notificationTypeListValue = new NotificationTypeListValue();
-        Arrays.stream(value.split(LIST_DELIMITER)).forEach( elm
-                -> notificationTypeListValue.addValue(parseNotificationValue(elm)));
+        Arrays.stream(value.split(LIST_DELIMITER)).forEach(elm
+                                                                   -> notificationTypeListValue.addValue(parseNotificationValue(elm)));
         return notificationTypeListValue;
     }
 
@@ -66,13 +66,13 @@ public class NotificationsTypeSerializer implements Bpmn2OryxPropertySerializer<
         final String groups = tokens.get(7);
 
         return new NotificationValue(body,
-                expiresAt,
-                subject,
-                replyTo,
-                type,
-                from,
-                Arrays.stream(users.split(ARRAY_DELIMITER)).collect(Collectors.toList()),
-                Arrays.stream(groups.split(ARRAY_DELIMITER)).collect(Collectors.toList()));
+                                     expiresAt,
+                                     subject,
+                                     replyTo,
+                                     type,
+                                     from,
+                                     Arrays.stream(users.split(ARRAY_DELIMITER)).collect(Collectors.toList()),
+                                     Arrays.stream(groups.split(ARRAY_DELIMITER)).collect(Collectors.toList()));
     }
 
     @Override
@@ -87,35 +87,34 @@ public class NotificationsTypeSerializer implements Bpmn2OryxPropertySerializer<
                 .stream()
                 .map(this::serializeNotificationValue)
                 .collect(Collectors.joining("^"));
-
     }
 
     private String serializeNotificationValue(NotificationValue value) {
 
         final StringBuffer serializedValue = new StringBuffer();
         appendValue(serializedValue,
-                value.getBody());
+                    value.getBody());
         serializedValue.append(ELM_DELIMITER);
         appendValue(serializedValue,
-                value.getExpiresAt());
+                    value.getExpiresAt());
         serializedValue.append(ELM_DELIMITER);
         appendValue(serializedValue,
-                value.getFrom());
+                    value.getFrom());
         serializedValue.append(ELM_DELIMITER);
         appendValue(serializedValue,
-                value.getReplyTo());
+                    value.getReplyTo());
         serializedValue.append(ELM_DELIMITER);
         appendValue(serializedValue,
-                value.getSubject());
+                    value.getSubject());
         serializedValue.append(ELM_DELIMITER);
         appendValue(serializedValue,
-                value.getType());
+                    value.getType());
         serializedValue.append(ELM_DELIMITER);
         appendValue(serializedValue,
-                value.getUsers().stream().collect(Collectors.joining(ARRAY_DELIMITER)));
+                    value.getUsers().stream().collect(Collectors.joining(ARRAY_DELIMITER)));
         serializedValue.append(ELM_DELIMITER);
         appendValue(serializedValue,
-                value.getGroups().stream().collect(Collectors.joining(ARRAY_DELIMITER)));
+                    value.getGroups().stream().collect(Collectors.joining(ARRAY_DELIMITER)));
         return serializedValue.toString();
     }
 
@@ -127,10 +126,10 @@ public class NotificationsTypeSerializer implements Bpmn2OryxPropertySerializer<
             int index;
             while ((index = remainder.indexOf('|')) >= 0) {
                 token = remainder.substring(0,
-                        index);
+                                            index);
                 tokens.add(token);
                 remainder = remainder.substring(index + 1,
-                        remainder.length());
+                                                remainder.length());
             }
             tokens.add(remainder);
         }

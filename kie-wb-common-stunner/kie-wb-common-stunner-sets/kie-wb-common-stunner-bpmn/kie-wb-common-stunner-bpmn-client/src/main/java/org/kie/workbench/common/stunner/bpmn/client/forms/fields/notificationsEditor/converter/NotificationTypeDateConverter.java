@@ -42,6 +42,5 @@ public class NotificationTypeDateConverter implements Converter<NotificationType
     public String toWidgetValue(NotificationType modelValue) {
         return modelValue.getType();
     }
-
 }
 

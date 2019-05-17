@@ -27,7 +27,7 @@ import org.eclipse.emf.ecore.EClass;
 
 /**
  * @author Antoine Toulme
- *         the mapping to stencil ids to BPMN 2.0 metamodel classes
+ * the mapping to stencil ids to BPMN 2.0 metamodel classes
  */
 public enum Bpmn20Stencil {
     Task(Bpmn2Package.eINSTANCE.getTask()),

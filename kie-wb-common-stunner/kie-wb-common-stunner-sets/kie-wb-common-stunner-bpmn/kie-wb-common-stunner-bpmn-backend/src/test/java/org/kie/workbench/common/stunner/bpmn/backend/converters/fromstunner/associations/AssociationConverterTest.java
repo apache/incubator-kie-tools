@@ -58,7 +58,7 @@ public class AssociationConverterTest {
     private AssociationPropertyWriter associationPropertyWriter;
 
     @Mock
-    private Edge<ViewConnector<org.kie.workbench.common.stunner.bpmn.definition.Association> , Node> edge;
+    private Edge<ViewConnector<org.kie.workbench.common.stunner.bpmn.definition.Association>, Node> edge;
 
     @Mock
     private ViewConnector<org.kie.workbench.common.stunner.bpmn.definition.Association> connector;

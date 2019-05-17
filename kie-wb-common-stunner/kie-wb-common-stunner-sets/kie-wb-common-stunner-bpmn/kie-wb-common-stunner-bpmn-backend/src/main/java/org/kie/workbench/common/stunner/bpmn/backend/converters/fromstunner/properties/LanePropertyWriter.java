@@ -35,7 +35,6 @@ public class LanePropertyWriter extends BasePropertyWriter {
         CustomElement.name.of(lane).set(value);
     }
 
-
     @Override
     public Lane getElement() {
         return (Lane) super.getElement();

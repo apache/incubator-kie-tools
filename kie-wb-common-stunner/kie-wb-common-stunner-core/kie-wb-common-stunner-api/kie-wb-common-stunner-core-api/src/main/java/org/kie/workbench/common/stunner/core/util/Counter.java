@@ -46,7 +46,7 @@ public class Counter {
         return counter == value;
     }
 
-    public String toString(){
+    public String toString() {
         return String.valueOf(counter);
     }
 

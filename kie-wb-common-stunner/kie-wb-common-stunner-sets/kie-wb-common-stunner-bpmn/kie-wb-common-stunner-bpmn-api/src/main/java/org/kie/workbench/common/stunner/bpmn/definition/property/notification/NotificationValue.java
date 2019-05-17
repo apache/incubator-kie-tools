@@ -32,7 +32,6 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 @ValidNotificationValue
 public class NotificationValue {
 
-
     private String body;
 
     private String expiresAt;
@@ -149,13 +148,13 @@ public class NotificationValue {
     @Override
     public int hashCode() {
         return HashUtil.combineHashCodes(Objects.hashCode(body),
-                Objects.hashCode(expiresAt),
-                Objects.hashCode(from),
-                Objects.hashCode(type),
-                Objects.hashCode(users),
-                Objects.hashCode(groups),
-                Objects.hashCode(replyTo),
-                Objects.hashCode(subject));
+                                         Objects.hashCode(expiresAt),
+                                         Objects.hashCode(from),
+                                         Objects.hashCode(type),
+                                         Objects.hashCode(users),
+                                         Objects.hashCode(groups),
+                                         Objects.hashCode(replyTo),
+                                         Objects.hashCode(subject));
     }
 
     @Override

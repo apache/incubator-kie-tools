@@ -103,7 +103,6 @@ public class ReassignmentWidgetViewImpl extends Composite implements Reassignmen
 
         table.setToolBarVisible(false);
 
-
         setWidth("870px");
 
         initTable();

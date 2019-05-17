@@ -932,7 +932,7 @@ public class Bpmn2JsonMarshaller {
     }
 
     protected void setAdHocSubProcessProperties(final AdHocSubProcess subProcess,
-                                              final Map<String, Object> properties) {
+                                                final Map<String, Object> properties) {
         if (subProcess.getOrdering().equals(AdHocOrdering.PARALLEL)) {
             properties.put(ADHOCORDERING,
                            "Parallel");
@@ -2301,7 +2301,7 @@ public class Bpmn2JsonMarshaller {
                         if (task instanceof UserTask && datain.getAssignment().get(0).getTo() != null &&
                                 ((FormalExpression) datain.getAssignment().get(0).getTo()).getBody() != null &&
                                 datain.getAssignment().get(0).getFrom() != null
-                                ) {
+                        ) {
                             String toBody = ((FormalExpression) datain.getAssignment().get(0).getTo()).getBody();
                             String fromBody = ((FormalExpression) datain.getAssignment().get(0).getFrom()).getBody();
                             if (toBody != null) {

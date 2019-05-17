@@ -140,6 +140,4 @@ public class MockApplicationFactoryManager extends BackendFactoryManager {
             throw new IllegalArgumentException("No constructor for type " + id, e);
         }
     }
-
-
 }

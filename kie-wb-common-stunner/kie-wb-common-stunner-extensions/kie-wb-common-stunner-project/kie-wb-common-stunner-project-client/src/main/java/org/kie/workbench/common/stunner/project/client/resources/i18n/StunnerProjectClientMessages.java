@@ -22,5 +22,4 @@ public class StunnerProjectClientMessages {
 
     @TranslationKey(defaultValue = "File '{0}' already exists.")
     public static final String BUSINESS_PROCESS_ALREADY_EXISTS = "ClientProjectDiagramService.fileAlreadyExists";
-
 }

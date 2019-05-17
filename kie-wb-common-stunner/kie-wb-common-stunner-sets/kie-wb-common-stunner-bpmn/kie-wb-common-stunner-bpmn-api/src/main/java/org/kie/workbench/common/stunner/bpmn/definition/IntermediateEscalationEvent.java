@@ -133,5 +133,4 @@ public class IntermediateEscalationEvent extends BaseCatchingIntermediateEvent {
         }
         return false;
     }
-
 }

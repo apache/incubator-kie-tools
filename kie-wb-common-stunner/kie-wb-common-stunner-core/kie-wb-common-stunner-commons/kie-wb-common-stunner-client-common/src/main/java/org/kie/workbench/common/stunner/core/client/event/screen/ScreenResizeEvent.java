@@ -35,7 +35,7 @@ public abstract class ScreenResizeEvent {
         if (this == obj) {
             return true;
         }
-        if (Objects.isNull(obj) || getClass() != obj.getClass()){
+        if (Objects.isNull(obj) || getClass() != obj.getClass()) {
             return false;
         }
         return ((ScreenResizeEvent) obj).isDiagramScreen() == this.isDiagramScreen();

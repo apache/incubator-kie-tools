@@ -46,7 +46,7 @@ public class NotificationsTypeSerializerTest {
         String result = serializer.serialize(new Object(), notificationTypeListValue);
 
         assertEquals(result,
-                "");
+                     "");
     }
 
     @Test
@@ -67,13 +67,13 @@ public class NotificationsTypeSerializerTest {
 
     private NotificationValue getNotificationValue() {
         return new NotificationValue("AAA",
-                "1h",
-                "Subj",
-                "me",
-                "NotStartedNotify",
-                "me",
-                Arrays.asList(new String[]{"foo", "bar", "baz"}),
-                Arrays.asList(new String[]{"foo", "bar", "baz"}));
+                                     "1h",
+                                     "Subj",
+                                     "me",
+                                     "NotStartedNotify",
+                                     "me",
+                                     Arrays.asList(new String[]{"foo", "bar", "baz"}),
+                                     Arrays.asList(new String[]{"foo", "bar", "baz"}));
     }
 
     @Test

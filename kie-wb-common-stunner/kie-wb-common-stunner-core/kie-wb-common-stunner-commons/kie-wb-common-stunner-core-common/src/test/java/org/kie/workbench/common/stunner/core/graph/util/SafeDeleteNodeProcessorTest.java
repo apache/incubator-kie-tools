@@ -46,7 +46,6 @@ public class SafeDeleteNodeProcessorTest {
     private TestingGraphInstanceBuilder.TestGraph3 graphHolderContainer;
     private TestingGraphInstanceBuilder.TestGraph4 graphHolderDocked;
 
-
     private SafeDeleteNodeProcessor tested;
 
     @Before

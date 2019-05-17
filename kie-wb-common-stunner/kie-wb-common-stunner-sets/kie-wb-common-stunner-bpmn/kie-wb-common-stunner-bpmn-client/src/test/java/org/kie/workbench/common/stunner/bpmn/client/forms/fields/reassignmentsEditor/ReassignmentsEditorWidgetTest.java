@@ -43,6 +43,7 @@ import static org.mockito.Mockito.verify;
 
 @RunWith(PowerMockRunner.class)
 public class ReassignmentsEditorWidgetTest extends ReflectionUtilsTest {
+
     @GwtMock
     private ReassignmentsEditorWidget reassignmentsEditorWidget;
 

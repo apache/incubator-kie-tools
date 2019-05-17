@@ -245,7 +245,9 @@ public class DiagramSet implements BaseDiagramSet {
         this.executable = executable;
     }
 
-    public void setSlaDueDate(final SLADueDate slaDueDate) { this.slaDueDate = slaDueDate; }
+    public void setSlaDueDate(final SLADueDate slaDueDate) {
+        this.slaDueDate = slaDueDate;
+    }
 
     @Override
     public int hashCode() {

@@ -27,41 +27,41 @@ import java.util.stream.Stream;
  */
 public class MultipleFieldStringSerializer {
 
-  public static final String FIELD_SEPARATOR = ";";
+    public static final String FIELD_SEPARATOR = ";";
 
-  public static final String SUBFIELD_SEPARATOR = ".";
+    public static final String SUBFIELD_SEPARATOR = ".";
 
-  public static final String serialize(String... fields) {
-    return Stream.of(fields).collect(Collectors.joining(FIELD_SEPARATOR));
-  }
-
-  public static List<String> deserialize(String value) {
-    return MultipleFieldStringSerializer.split(value,
-                                               FIELD_SEPARATOR);
-  }
-
-  public static final String serializeSubfields(String... fields) {
-    return Stream.of(fields).collect(Collectors.joining(SUBFIELD_SEPARATOR));
-  }
-
-  public static List<String> deserializeSubfields(String value) {
-    return MultipleFieldStringSerializer.split(value,
-                                               SUBFIELD_SEPARATOR);
-  }
-
-  private static List<String> split(String input,
-                                    String delim) {
-    if (Objects.isNull(input)) {
-      throw new IllegalArgumentException("Null input");
+    public static final String serialize(String... fields) {
+        return Stream.of(fields).collect(Collectors.joining(FIELD_SEPARATOR));
     }
 
-    if (Objects.isNull(delim)) {
-      throw new IllegalArgumentException("Null delimiter");
+    public static List<String> deserialize(String value) {
+        return MultipleFieldStringSerializer.split(value,
+                                                   FIELD_SEPARATOR);
     }
-    return Stream.of(input.split(escape(delim))).collect(Collectors.toList());
-  }
 
-  private static String escape(String delim) {
-    return "\\" + delim;
-  }
+    public static final String serializeSubfields(String... fields) {
+        return Stream.of(fields).collect(Collectors.joining(SUBFIELD_SEPARATOR));
+    }
+
+    public static List<String> deserializeSubfields(String value) {
+        return MultipleFieldStringSerializer.split(value,
+                                                   SUBFIELD_SEPARATOR);
+    }
+
+    private static List<String> split(String input,
+                                      String delim) {
+        if (Objects.isNull(input)) {
+            throw new IllegalArgumentException("Null input");
+        }
+
+        if (Objects.isNull(delim)) {
+            throw new IllegalArgumentException("Null delimiter");
+        }
+        return Stream.of(input.split(escape(delim))).collect(Collectors.toList());
+    }
+
+    private static String escape(String delim) {
+        return "\\" + delim;
+    }
 }

@@ -56,6 +56,5 @@ public class CounterTest {
     public void equalsToValue() {
         assertTrue(counter.equalsToValue(INIT_VALUE));
         assertFalse(counter.equalsToValue(INIT_VALUE + 1));
-
     }
 }

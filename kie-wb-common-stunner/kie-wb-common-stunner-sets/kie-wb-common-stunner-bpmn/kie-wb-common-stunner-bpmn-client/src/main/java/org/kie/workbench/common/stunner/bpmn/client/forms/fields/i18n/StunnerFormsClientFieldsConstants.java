@@ -96,5 +96,4 @@ public interface StunnerFormsClientFieldsConstants extends Messages {
     String DuplicatedVariableNameError(String variableName);
 
     String AssignmentNameAlreadyInUseAsMultipleInstanceInputOutputVariable(String assignmentName);
-
 }

@@ -188,7 +188,7 @@ public abstract class AbstractProjectEditorMenuSessionItems<BUILDER extends Abst
         errorConsumer = null;
     }
 
-    protected void addMenuItem(final Class clazz, final MenuItem menuItem){
+    protected void addMenuItem(final Class clazz, final MenuItem menuItem) {
         this.menuItems.put(clazz, menuItem);
     }
 
