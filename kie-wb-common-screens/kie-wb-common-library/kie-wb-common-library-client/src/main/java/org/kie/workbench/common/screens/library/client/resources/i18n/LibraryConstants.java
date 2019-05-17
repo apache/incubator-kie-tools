@@ -531,6 +531,9 @@ public class LibraryConstants {
     public static final String Test = "Test";
 
     @TranslationKey(defaultValue = "")
+    public static final String NoBranchesWithWriteAccess = "NoBranchesWithWriteAccess";
+
+    @TranslationKey(defaultValue = "")
     public static final String BranchManagementReadPermissionTooltip = "BranchManagementReadPermissionTooltip";
 
     @TranslationKey(defaultValue = "")

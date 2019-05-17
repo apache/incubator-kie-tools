@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.screens.library.client.settings.sections.branchmanagement;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -27,6 +26,7 @@ import javax.inject.Inject;
 import elemental2.dom.Element;
 import elemental2.dom.HTMLElement;
 import elemental2.promise.Promise;
+import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.structure.organizationalunit.config.BranchPermissions;
 import org.guvnor.structure.organizationalunit.config.RolePermissions;
 import org.guvnor.structure.repositories.Branch;
@@ -57,6 +57,8 @@ public class BranchManagementPresenter extends Section<ProjectScreenModel> {
         HTMLElement getBranchesSelectContainer();
 
         Element getRoleAccessTable();
+
+        void showEmptyState();
     }
 
     private final View view;
@@ -64,6 +66,7 @@ public class BranchManagementPresenter extends Section<ProjectScreenModel> {
     private final LibraryPlaces libraryPlaces;
     private final KieSelectElement branchesSelect;
     private final RoleAccessListPresenter roleAccessListPresenter;
+    private final ProjectController projectController;
 
     String selectedBranch;
     Map<String, BranchPermissions> branchPermissionsByBranch = new HashMap<>();
@@ -76,25 +79,36 @@ public class BranchManagementPresenter extends Section<ProjectScreenModel> {
                                      final Caller<LibraryService> libraryService,
                                      final LibraryPlaces libraryPlaces,
                                      final KieSelectElement branchesSelect,
-                                     final RoleAccessListPresenter roleAccessListPresenter) {
+                                     final RoleAccessListPresenter roleAccessListPresenter,
+                                     final ProjectController projectController) {
         super(settingsSectionChangeEvent, menuItem, promises);
         this.view = view;
         this.libraryService = libraryService;
         this.libraryPlaces = libraryPlaces;
         this.branchesSelect = branchesSelect;
         this.roleAccessListPresenter = roleAccessListPresenter;
+        this.projectController = projectController;
     }
 
     @Override
     public Promise<Void> setup(final ProjectScreenModel model) {
-        view.init(this);
-        final Collection<Branch> branches = libraryPlaces.getActiveWorkspace().getRepository().getBranches();
-        branchesSelect.setup(view.getBranchesSelectContainer(),
-                             branches.stream().map(Branch::getName).sorted(String::compareToIgnoreCase).map(p -> new KieSelectOption(p, p)).collect(toList()),
-                             selectedBranch,
-                             this::setBranch);
+        return projectController.getUpdatableBranches(libraryPlaces.getActiveWorkspace()).then(branches -> {
+            view.init(this);
 
-        return setup(libraryPlaces.getActiveWorkspace().getBranch().getName());
+            if (branches.isEmpty()) {
+                view.showEmptyState();
+                return promises.resolve();
+            }
+
+            selectedBranch = libraryPlaces.getActiveWorkspace().getBranch().getName();
+
+            branchesSelect.setup(view.getBranchesSelectContainer(),
+                                 branches.stream().map(Branch::getName).sorted(String::compareToIgnoreCase).map(p -> new KieSelectOption(p, p)).collect(toList()),
+                                 selectedBranch,
+                                 this::setBranch);
+
+            return setup(libraryPlaces.getActiveWorkspace().getBranch().getName());
+        });
     }
 
     Promise<Void> setup(final String branch) {

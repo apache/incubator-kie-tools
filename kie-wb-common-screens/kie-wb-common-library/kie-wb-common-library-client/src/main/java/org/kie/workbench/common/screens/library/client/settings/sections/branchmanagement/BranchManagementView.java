@@ -51,6 +51,14 @@ public class BranchManagementView implements BranchManagementPresenter.View {
     private HTMLElement errorMessage;
 
     @Inject
+    @DataField("empty-state-container")
+    private HTMLDivElement emptyStateContainer;
+
+    @Inject
+    @DataField("role-access-container")
+    private HTMLDivElement roleAccessContainer;
+
+    @Inject
     @Named("h3")
     @DataField("title")
     private HTMLHeadingElement title;
@@ -89,6 +97,8 @@ public class BranchManagementView implements BranchManagementPresenter.View {
         this.presenter = presenter;
         hideError();
 
+        this.emptyStateContainer.hidden = true;
+
         this.readTooltip.title = translationService.getTranslation(LibraryConstants.BranchManagementReadPermissionTooltip);
         this.writeTooltip.title = translationService.getTranslation(LibraryConstants.BranchManagementWritePermissionTooltip);
         this.deleteTooltip.title = translationService.getTranslation(LibraryConstants.BranchManagementDeletePermissionTooltip);
@@ -121,5 +131,11 @@ public class BranchManagementView implements BranchManagementPresenter.View {
     @Override
     public Element getRoleAccessTable() {
         return roleAccessTable;
+    }
+
+    @Override
+    public void showEmptyState() {
+        this.emptyStateContainer.hidden = false;
+        this.roleAccessContainer.hidden = true;
     }
 }

@@ -18,13 +18,18 @@ package org.kie.workbench.common.screens.library.client.settings.sections.branch
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
-import javax.enterprise.event.Event;
+import java.util.Map;
 
+import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.structure.contributors.Contributor;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
+import org.guvnor.structure.organizationalunit.config.BranchPermissions;
+import org.guvnor.structure.organizationalunit.config.RolePermissions;
 import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.common.client.api.Caller;
@@ -39,19 +44,17 @@ import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
 import org.kie.workbench.common.widgets.client.widget.KieSelectElement;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.promise.Promises;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.promise.SyncPromises;
 import org.uberfire.spaces.Space;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BranchManagementPresenterTest {
@@ -80,6 +83,9 @@ public class BranchManagementPresenterTest {
     @Mock
     private BranchManagementPresenter.RoleAccessListPresenter roleAccessListPresenter;
 
+    @Mock
+    private ProjectController projectController;
+
     private BranchManagementPresenter presenter;
 
     @Before
@@ -93,18 +99,49 @@ public class BranchManagementPresenterTest {
                                                       libraryServiceCaller,
                                                       libraryPlaces,
                                                       branchesSelect,
-                                                      roleAccessListPresenter));
+                                                      roleAccessListPresenter,
+                                                      projectController));
         mockLibraryPlaces();
     }
 
     @Test
-    public void setupTest() {
-        presenter.setup(mock(ProjectScreenModel.class));
+    public void setupWithNoUpdatableBranchesTest() {
+        doReturn(promises.resolve(Collections.emptyList())).when(projectController).getUpdatableBranches(any());
 
-        assertEquals("myBranch", presenter.selectedBranch);
-        verify(view).init(presenter);
-        verify(branchesSelect).setup(any(), any(), any(), any());
-        verify(libraryService).loadBranchPermissions("mySpace", "myProject", "myBranch");
+        presenter.setup(mock(ProjectScreenModel.class)).then(v -> {
+            verify(view).init(presenter);
+            verify(view).showEmptyState();
+            verify(branchesSelect, never()).setup(any(), any(), any(), any());
+            verify(libraryService, never()).loadBranchPermissions(anyString(), anyString(), anyString());
+
+            return promises.resolve();
+        }).catch_(error -> {
+            fail();
+            return promises.resolve();
+        });
+    }
+
+    @Test
+    public void setupWithUpdatableBranchesTest() {
+        final Map<String, RolePermissions> permissionsByRole = new HashMap<>();
+        permissionsByRole.put("CONTRIBUTOR", new RolePermissions("CONTRIBUTOR", true, false, true, true));
+        doReturn(new BranchPermissions("myBranch", permissionsByRole)).when(libraryService).loadBranchPermissions("mySpace", "myProject", "myBranch");
+
+        doReturn(promises.resolve(Arrays.asList(new Branch("master", mock(Path.class)),
+                                                new Branch("myBranch", mock(Path.class))))).when(projectController).getUpdatableBranches(any());
+
+        presenter.setup(mock(ProjectScreenModel.class)).then(v -> {
+            assertEquals("myBranch", presenter.selectedBranch);
+            verify(view).init(presenter);
+            verify(view, never()).showEmptyState();
+            verify(branchesSelect).setup(any(), any(), any(), any());
+            verify(libraryService).loadBranchPermissions("mySpace", "myProject", "myBranch");
+
+            return promises.resolve();
+        }).catch_(error -> {
+            fail();
+            return promises.resolve();
+        });
     }
 
     @Test

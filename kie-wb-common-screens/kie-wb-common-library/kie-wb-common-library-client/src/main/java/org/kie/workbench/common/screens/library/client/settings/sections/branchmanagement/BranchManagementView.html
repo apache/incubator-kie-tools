@@ -20,48 +20,54 @@
     <p></p>
     <hr>
 
-    <form role="form">
-        <div data-field="error" class="alert alert-danger">
-            <span class="pficon pficon-error-circle-o"></span>
-            <span data-field="error-message"></span>
-        </div>
-        <div class="form-group">
-            <div data-field="branches-select-container"></div>
-        </div>
-    </form>
+    <div data-field="empty-state-container">
+        <span data-i18n-key="NoBranchesWithWriteAccess"></span>
+    </div>
 
-    <h3 data-i18n-key="RoleAccess"></h3>
-    <table class="table table-hover kie-tablelist">
-        <thead>
-        <tr class="kie-tablelist__row kie-tablelist__row--header">
-            <th class="kie-tablelist__cell kie-tablelist__cell--header" data-i18n-key="Role"></th>
-            <th class="kie-tablelist__cell kie-tablelist__cell--header">
-                <span data-i18n-key="Read"></span>
-                <a href="#" data-toggle="tooltip" data-delay="0">
-                    <span data-field="read-tooltip" class="fa fa-info-circle"></span>
-                </a>
-            </th>
-            <th class="kie-tablelist__cell kie-tablelist__cell--header">
-                <span data-i18n-key="Write"></span>
-                <a href="#" data-toggle="tooltip" data-delay="0">
-                    <span data-field="write-tooltip" class="fa fa-info-circle"></span>
-                </a>
-            </th>
-            <th class="kie-tablelist__cell kie-tablelist__cell--header">
-                <span data-i18n-key="Delete"></span>
-                <a href="#" data-toggle="tooltip" data-delay="0">
-                    <span data-field="delete-tooltip" class="fa fa-info-circle"></span>
-                </a>
-            </th>
-            <th class="kie-tablelist__cell kie-tablelist__cell--header">
-                <span data-i18n-key="Deploy"></span>
-                <a href="#" data-toggle="tooltip" data-delay="0">
-                    <span data-field="deploy-tooltip" class="fa fa-info-circle"></span>
-                </a>
-            </th>
-        </tr>
-        </thead>
-        <tbody data-field="role-access-table">
-        </tbody>
-    </table>
+    <div data-field="role-access-container">
+        <form role="form">
+            <div data-field="error" class="alert alert-danger">
+                <span class="pficon pficon-error-circle-o"></span>
+                <span data-field="error-message"></span>
+            </div>
+            <div class="form-group">
+                <div data-field="branches-select-container"></div>
+            </div>
+        </form>
+
+        <h3 data-i18n-key="RoleAccess"></h3>
+        <table class="table table-hover kie-tablelist">
+            <thead>
+            <tr class="kie-tablelist__row kie-tablelist__row--header">
+                <th class="kie-tablelist__cell kie-tablelist__cell--header" data-i18n-key="Role"></th>
+                <th class="kie-tablelist__cell kie-tablelist__cell--header">
+                    <span data-i18n-key="Read"></span>
+                    <a href="#" data-toggle="tooltip" data-delay="0">
+                        <span data-field="read-tooltip" class="fa fa-info-circle"></span>
+                    </a>
+                </th>
+                <th class="kie-tablelist__cell kie-tablelist__cell--header">
+                    <span data-i18n-key="Write"></span>
+                    <a href="#" data-toggle="tooltip" data-delay="0">
+                        <span data-field="write-tooltip" class="fa fa-info-circle"></span>
+                    </a>
+                </th>
+                <th class="kie-tablelist__cell kie-tablelist__cell--header">
+                    <span data-i18n-key="Delete"></span>
+                    <a href="#" data-toggle="tooltip" data-delay="0">
+                        <span data-field="delete-tooltip" class="fa fa-info-circle"></span>
+                    </a>
+                </th>
+                <th class="kie-tablelist__cell kie-tablelist__cell--header">
+                    <span data-i18n-key="Deploy"></span>
+                    <a href="#" data-toggle="tooltip" data-delay="0">
+                        <span data-field="deploy-tooltip" class="fa fa-info-circle"></span>
+                    </a>
+                </th>
+            </tr>
+            </thead>
+            <tbody data-field="role-access-table">
+            </tbody>
+        </table>
+    </div>
 </div>
