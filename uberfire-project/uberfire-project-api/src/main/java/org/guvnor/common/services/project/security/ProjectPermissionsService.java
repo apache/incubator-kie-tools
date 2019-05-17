@@ -16,6 +16,9 @@
 
 package org.guvnor.common.services.project.security;
 
+import java.util.List;
+import java.util.Map;
+
 import org.guvnor.structure.organizationalunit.config.BranchPermissions;
 import org.jboss.errai.bus.server.annotations.Remote;
 
@@ -25,4 +28,8 @@ public interface ProjectPermissionsService {
     BranchPermissions loadBranchPermissions(final String spaceName,
                                             final String projectIdentifier,
                                             final String branchName);
+
+    Map<String, BranchPermissions> loadBranchPermissions(final String spaceName,
+                                                         final String projectIdentifier,
+                                                         final List<String> branches);
 }

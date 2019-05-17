@@ -17,8 +17,11 @@
 package org.guvnor.common.services.project.client.security;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.guvnor.common.services.project.model.Module;
@@ -27,6 +30,8 @@ import org.guvnor.common.services.project.security.ProjectPermissionsService;
 import org.guvnor.structure.contributors.Contributor;
 import org.guvnor.structure.contributors.ContributorType;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
+import org.guvnor.structure.organizationalunit.config.BranchPermissions;
+import org.guvnor.structure.organizationalunit.config.RolePermissions;
 import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.security.RepositoryAction;
@@ -38,6 +43,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.client.promise.Promises;
+import org.uberfire.mocks.CallerMock;
 import org.uberfire.promise.SyncPromises;
 import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.spaces.Space;
@@ -58,7 +64,8 @@ public class ProjectControllerTest {
     private User user;
 
     @Mock
-    private Caller<ProjectPermissionsService> projectPermissionsService;
+    private ProjectPermissionsService projectPermissionsService;
+    private Caller<ProjectPermissionsService> projectPermissionsServiceCaller;
 
     private Promises promises;
 
@@ -67,9 +74,10 @@ public class ProjectControllerTest {
     @Before
     public void setup() {
         promises = new SyncPromises();
+        projectPermissionsServiceCaller = new CallerMock<>(projectPermissionsService);
         projectController = spy(new ProjectController(authorizationManager,
                                                       user,
-                                                      projectPermissionsService,
+                                                      projectPermissionsServiceCaller,
                                                       promises));
     }
 
@@ -175,6 +183,9 @@ public class ProjectControllerTest {
         projectController.canUpdateProject(project).then(userCanUpdateProject -> {
             assertTrue(userCanUpdateProject);
             return promises.resolve();
+        }).catch_(error -> {
+            fail();
+            return promises.resolve();
         });
     }
 
@@ -184,10 +195,13 @@ public class ProjectControllerTest {
         when(authorizationManager.authorize(project.getRepository(),
                                             RepositoryAction.UPDATE,
                                             user)).thenReturn(false);
-        doReturn(promises.resolve(Optional.of(false))).when(projectController).getBranchPermissionsForUser(project,
-                                                                                                           "branch");
+        doReturn(promises.resolve(Optional.of(new RolePermissions("CONTRIBUTOR", true, false, true, true))))
+                .when(projectController).getBranchPermissionsForUser(project, "branch");
         projectController.canUpdateProject(project).then(userCanUpdateProject -> {
             assertFalse(userCanUpdateProject);
+            return promises.resolve();
+        }).catch_(error -> {
+            fail();
             return promises.resolve();
         });
     }
@@ -195,10 +209,13 @@ public class ProjectControllerTest {
     @Test
     public void projectContributorCanUpdateProjectTest() {
         final WorkspaceProject project = getProject();
-        doReturn(promises.resolve(Optional.of(true))).when(projectController).getBranchPermissionsForUser(project,
-                                                                                                          "branch");
+        doReturn(promises.resolve(Optional.of(new RolePermissions("CONTRIBUTOR", true, true, true, true))))
+                .when(projectController).getBranchPermissionsForUser(project, "branch");
         projectController.canUpdateProject(project).then(userCanUpdateProject -> {
             assertTrue(userCanUpdateProject);
+            return promises.resolve();
+        }).catch_(error -> {
+            fail();
             return promises.resolve();
         });
     }
@@ -206,10 +223,73 @@ public class ProjectControllerTest {
     @Test
     public void projectContributorCanNotUpdateProjectTest() {
         final WorkspaceProject project = getProject();
-        doReturn(promises.resolve(Optional.of(false))).when(projectController).getBranchPermissionsForUser(project,
-                                                                                                           "branch");
+        doReturn(promises.resolve(Optional.of(new RolePermissions("CONTRIBUTOR", true, false, true, true))))
+                .when(projectController).getBranchPermissionsForUser(project, "branch");
         projectController.canUpdateProject(project).then(userCanUpdateProject -> {
             assertFalse(userCanUpdateProject);
+            return promises.resolve();
+        }).catch_(error -> {
+            fail();
+            return promises.resolve();
+        });
+    }
+
+    @Test
+    public void userCanUpdateBranchTest() {
+        final WorkspaceProject project = getProject();
+        when(authorizationManager.authorize(project.getRepository(),
+                                            RepositoryAction.UPDATE,
+                                            user)).thenReturn(true);
+        projectController.canUpdateBranch(project, project.getRepository().getBranch("branch2").get()).then(userCanUpdateBranch -> {
+            assertTrue(userCanUpdateBranch);
+            return promises.resolve();
+        }).catch_(error -> {
+            fail();
+            return promises.resolve();
+        });
+    }
+
+    @Test
+    public void userCanNotUpdateBranchTest() {
+        final WorkspaceProject project = getProject();
+        when(authorizationManager.authorize(project.getRepository(),
+                                            RepositoryAction.UPDATE,
+                                            user)).thenReturn(false);
+        doReturn(promises.resolve(Optional.of(new RolePermissions("CONTRIBUTOR", true, false, true, true))))
+                .when(projectController).getBranchPermissionsForUser(project, "branch2");
+        projectController.canUpdateBranch(project, project.getRepository().getBranch("branch2").get()).then(userCanUpdateBranch -> {
+            assertFalse(userCanUpdateBranch);
+            return promises.resolve();
+        }).catch_(error -> {
+            fail();
+            return promises.resolve();
+        });
+    }
+
+    @Test
+    public void projectContributorCanUpdateBranchTest() {
+        final WorkspaceProject project = getProject();
+        doReturn(promises.resolve(Optional.of(new RolePermissions("CONTRIBUTOR", true, true, true, true))))
+                .when(projectController).getBranchPermissionsForUser(project, "branch2");
+        projectController.canUpdateBranch(project, project.getRepository().getBranch("branch2").get()).then(userCanUpdateBranch -> {
+            assertTrue(userCanUpdateBranch);
+            return promises.resolve();
+        }).catch_(error -> {
+            fail();
+            return promises.resolve();
+        });
+    }
+
+    @Test
+    public void projectContributorCanNotUpdateBranchTest() {
+        final WorkspaceProject project = getProject();
+        doReturn(promises.resolve(Optional.of(new RolePermissions("CONTRIBUTOR", true, false, true, true))))
+                .when(projectController).getBranchPermissionsForUser(project, "branch2");
+        projectController.canUpdateBranch(project, project.getRepository().getBranch("branch2").get()).then(userCanUpdateBranch -> {
+            assertFalse(userCanUpdateBranch);
+            return promises.resolve();
+        }).catch_(error -> {
+            fail();
             return promises.resolve();
         });
     }
@@ -275,6 +355,9 @@ public class ProjectControllerTest {
         projectController.canBuildProject(project).then(userCanBuildProject -> {
             assertTrue(userCanBuildProject);
             return promises.resolve();
+        }).catch_(error -> {
+            fail();
+            return promises.resolve();
         });
     }
 
@@ -284,10 +367,13 @@ public class ProjectControllerTest {
         when(authorizationManager.authorize(project.getRepository(),
                                             RepositoryAction.BUILD,
                                             user)).thenReturn(false);
-        doReturn(promises.resolve(Optional.of(false))).when(projectController).getBranchPermissionsForUser(project,
-                                                                                                           "branch");
+        doReturn(promises.resolve(Optional.of(new RolePermissions("CONTRIBUTOR", true, false, true, true))))
+                .when(projectController).getBranchPermissionsForUser(project, "branch");
         projectController.canBuildProject(project).then(userCanBuildProject -> {
             assertFalse(userCanBuildProject);
+            return promises.resolve();
+        }).catch_(error -> {
+            fail();
             return promises.resolve();
         });
     }
@@ -295,10 +381,13 @@ public class ProjectControllerTest {
     @Test
     public void projectContributorCanBuildProjectTest() {
         final WorkspaceProject project = getProject();
-        doReturn(promises.resolve(Optional.of(true))).when(projectController).getBranchPermissionsForUser(project,
-                                                                                                          "branch");
+        doReturn(promises.resolve(Optional.of(new RolePermissions("CONTRIBUTOR", true, true, true, true))))
+                .when(projectController).getBranchPermissionsForUser(project, "branch");
         projectController.canBuildProject(project).then(userCanBuildProject -> {
             assertTrue(userCanBuildProject);
+            return promises.resolve();
+        }).catch_(error -> {
+            fail();
             return promises.resolve();
         });
     }
@@ -306,10 +395,13 @@ public class ProjectControllerTest {
     @Test
     public void projectContributorCanNotBuildProjectTest() {
         final WorkspaceProject project = getProject();
-        doReturn(promises.resolve(Optional.of(false))).when(projectController).getBranchPermissionsForUser(project,
-                                                                                                           "branch");
+        doReturn(promises.resolve(Optional.of(new RolePermissions("CONTRIBUTOR", true, false, true, true))))
+                .when(projectController).getBranchPermissionsForUser(project, "branch");
         projectController.canBuildProject(project).then(userCanBuildProject -> {
             assertFalse(userCanBuildProject);
+            return promises.resolve();
+        }).catch_(error -> {
+            fail();
             return promises.resolve();
         });
     }
@@ -323,6 +415,9 @@ public class ProjectControllerTest {
         projectController.canDeployProject(project).then(userCanDeployProject -> {
             assertTrue(userCanDeployProject);
             return promises.resolve();
+        }).catch_(error -> {
+            fail();
+            return promises.resolve();
         });
     }
 
@@ -332,10 +427,13 @@ public class ProjectControllerTest {
         when(authorizationManager.authorize(project.getRepository(),
                                             RepositoryAction.BUILD,
                                             user)).thenReturn(false);
-        doReturn(promises.resolve(Optional.of(false))).when(projectController).getBranchPermissionsForUser(project,
-                                                                                                           "branch");
+        doReturn(promises.resolve(Optional.of(new RolePermissions("CONTRIBUTOR", true, true, true, false))))
+                .when(projectController).getBranchPermissionsForUser(project, "branch");
         projectController.canDeployProject(project).then(userCanDeployProject -> {
             assertFalse(userCanDeployProject);
+            return promises.resolve();
+        }).catch_(error -> {
+            fail();
             return promises.resolve();
         });
     }
@@ -343,10 +441,13 @@ public class ProjectControllerTest {
     @Test
     public void projectContributorCanDeployProjectTest() {
         final WorkspaceProject project = getProject();
-        doReturn(promises.resolve(Optional.of(true))).when(projectController).getBranchPermissionsForUser(project,
-                                                                                                          "branch");
+        doReturn(promises.resolve(Optional.of(new RolePermissions("CONTRIBUTOR", true, true, true, true))))
+                .when(projectController).getBranchPermissionsForUser(project, "branch");
         projectController.canDeployProject(project).then(userCanDeployProject -> {
             assertTrue(userCanDeployProject);
+            return promises.resolve();
+        }).catch_(error -> {
+            fail();
             return promises.resolve();
         });
     }
@@ -354,10 +455,13 @@ public class ProjectControllerTest {
     @Test
     public void projectContributorCanNotDeployProjectTest() {
         final WorkspaceProject project = getProject();
-        doReturn(promises.resolve(Optional.of(false))).when(projectController).getBranchPermissionsForUser(project,
-                                                                                                           "branch");
+        doReturn(promises.resolve(Optional.of(new RolePermissions("CONTRIBUTOR", true, true, true, false))))
+                .when(projectController).getBranchPermissionsForUser(project, "branch");
         projectController.canDeployProject(project).then(userCanDeployProject -> {
             assertFalse(userCanDeployProject);
+            return promises.resolve();
+        }).catch_(error -> {
+            fail();
             return promises.resolve();
         });
     }
@@ -370,6 +474,9 @@ public class ProjectControllerTest {
                                             user)).thenReturn(true);
         projectController.canReadBranch(project).then(userCanReadBranch -> {
             assertTrue(userCanReadBranch);
+            return promises.resolve();
+        }).catch_(error -> {
+            fail();
             return promises.resolve();
         });
     }
@@ -386,16 +493,22 @@ public class ProjectControllerTest {
         projectController.canReadBranch(project).then(userCanReadBranch -> {
             assertFalse(userCanReadBranch);
             return promises.resolve();
+        }).catch_(error -> {
+            fail();
+            return promises.resolve();
         });
     }
 
     @Test
     public void projectContributorCanReadBranchTest() {
         final WorkspaceProject project = getProject();
-        doReturn(promises.resolve(Optional.of(true))).when(projectController).getBranchPermissionsForUser(project,
-                                                                                                          "branch");
+        doReturn(promises.resolve(Optional.of(new RolePermissions("CONTRIBUTOR", true, true, true, true))))
+                .when(projectController).getBranchPermissionsForUser(project, "branch");
         projectController.canDeleteBranch(project).then(userCanDeleteBranch -> {
             assertTrue(userCanDeleteBranch);
+            return promises.resolve();
+        }).catch_(error -> {
+            fail();
             return promises.resolve();
         });
     }
@@ -403,10 +516,13 @@ public class ProjectControllerTest {
     @Test
     public void projectContributorCanNotReadBranchTest() {
         final WorkspaceProject project = getProject();
-        doReturn(promises.resolve(Optional.of(false))).when(projectController).getBranchPermissionsForUser(project,
-                                                                                                           "branch");
+        doReturn(promises.resolve(Optional.of(new RolePermissions("CONTRIBUTOR", false, true, true, true))))
+                .when(projectController).getBranchPermissionsForUser(project, "branch");
         projectController.canReadBranch(project).then(userCanReadBranch -> {
             assertFalse(userCanReadBranch);
+            return promises.resolve();
+        }).catch_(error -> {
+            fail();
             return promises.resolve();
         });
     }
@@ -419,6 +535,9 @@ public class ProjectControllerTest {
                                             user)).thenReturn(true);
         projectController.canDeleteBranch(project).then(userCanDeleteBranch -> {
             assertTrue(userCanDeleteBranch);
+            return promises.resolve();
+        }).catch_(error -> {
+            fail();
             return promises.resolve();
         });
     }
@@ -435,16 +554,22 @@ public class ProjectControllerTest {
         projectController.canDeleteBranch(project).then(userCanDeleteBranch -> {
             assertFalse(userCanDeleteBranch);
             return promises.resolve();
+        }).catch_(error -> {
+            fail();
+            return promises.resolve();
         });
     }
 
     @Test
     public void projectContributorCanDeleteBranchTest() {
         final WorkspaceProject project = getProject();
-        doReturn(promises.resolve(Optional.of(true))).when(projectController).getBranchPermissionsForUser(project,
-                                                                                                          "branch");
+        doReturn(promises.resolve(Optional.of(new RolePermissions("CONTRIBUTOR", true, true, true, true))))
+                .when(projectController).getBranchPermissionsForUser(project, "branch");
         projectController.canDeleteBranch(project).then(userCanDeleteBranch -> {
             assertTrue(userCanDeleteBranch);
+            return promises.resolve();
+        }).catch_(error -> {
+            fail();
             return promises.resolve();
         });
     }
@@ -452,10 +577,84 @@ public class ProjectControllerTest {
     @Test
     public void projectContributorCanNotDeleteBranchTest() {
         final WorkspaceProject project = getProject();
-        doReturn(promises.resolve(Optional.of(false))).when(projectController).getBranchPermissionsForUser(project,
-                                                                                                           "branch");
+        doReturn(promises.resolve(Optional.of(new RolePermissions("CONTRIBUTOR", true, true, false, true))))
+                .when(projectController).getBranchPermissionsForUser(project, "branch");
         projectController.canDeleteBranch(project).then(userCanDeleteBranch -> {
             assertFalse(userCanDeleteBranch);
+            return promises.resolve();
+        }).catch_(error -> {
+            fail();
+            return promises.resolve();
+        });
+    }
+
+    @Test
+    public void userCanUpdateAllBranchesTest() {
+        final WorkspaceProject project = getProject();
+        when(authorizationManager.authorize(project.getRepository(),
+                                            RepositoryAction.UPDATE,
+                                            user)).thenReturn(true);
+        projectController.getUpdatableBranches(project).then(branches -> {
+            assertEquals(2, branches.size());
+            return promises.resolve();
+        }).catch_(error -> {
+            fail();
+            return promises.resolve();
+        });
+    }
+
+    @Test
+    public void userCanNotUpdateAllBranchesTest() {
+        final WorkspaceProject project = getProject();
+        when(authorizationManager.authorize(project.getRepository(),
+                                            RepositoryAction.UPDATE,
+                                            user)).thenReturn(false);
+
+        final Map<String, RolePermissions> branch1PermissionsByRole = new HashMap<>();
+        branch1PermissionsByRole.put("CONTRIBUTOR", new RolePermissions("CONTRIBUTOR", true, false, true, true));
+
+        final Map<String, RolePermissions> branch2PermissionsByRole = new HashMap<>();
+        branch2PermissionsByRole.put("CONTRIBUTOR", new RolePermissions("CONTRIBUTOR", true, false, true, true));
+
+        final Map<String, BranchPermissions> branchPermissions = new HashMap<>();
+        branchPermissions.put("branch", new BranchPermissions("branch", branch1PermissionsByRole));
+        branchPermissions.put("branch2", new BranchPermissions("branch2", branch2PermissionsByRole));
+
+        doReturn(Optional.of(new Contributor("contributor", ContributorType.CONTRIBUTOR))).when(projectController).getUserContributor(any());
+        doReturn(branchPermissions).when(projectPermissionsService).loadBranchPermissions(anyString(), anyString(), anyList());
+
+        projectController.getUpdatableBranches(project).then(branches -> {
+            assertEquals(0, branches.size());
+            return promises.resolve();
+        }).catch_(error -> {
+            fail();
+            return promises.resolve();
+        });
+    }
+
+    @Test
+    public void projectContributorCanUpdateSomeBranchesTest() {
+        final WorkspaceProject project = getProject();
+
+        final Map<String, RolePermissions> branch1PermissionsByRole = new HashMap<>();
+        branch1PermissionsByRole.put("CONTRIBUTOR", new RolePermissions("CONTRIBUTOR", true, false, true, true));
+
+        final Map<String, RolePermissions> branch2PermissionsByRole = new HashMap<>();
+        branch2PermissionsByRole.put("CONTRIBUTOR", new RolePermissions("CONTRIBUTOR", true, true, true, true));
+
+        final Map<String, BranchPermissions> branchPermissions = new HashMap<>();
+        branchPermissions.put("branch", new BranchPermissions("branch", branch1PermissionsByRole));
+        branchPermissions.put("branch2", new BranchPermissions("branch2", branch2PermissionsByRole));
+
+        doReturn(Optional.of(new Contributor("contributor", ContributorType.CONTRIBUTOR))).when(projectController).getUserContributor(any());
+        doReturn(branchPermissions).when(projectPermissionsService).loadBranchPermissions(anyString(), anyString(), anyList());
+
+        projectController.getUpdatableBranches(project).then(branches -> {
+            assertEquals(1, branches.size());
+            assertEquals("branch2", branches.get(0).getName());
+            return promises.resolve();
+        }).catch_(error -> {
+            fail();
             return promises.resolve();
         });
     }
@@ -473,12 +672,17 @@ public class ProjectControllerTest {
 
         final Branch branch = mock(Branch.class);
         doReturn("branch").when(branch).getName();
+        final Branch branch2 = mock(Branch.class);
+        doReturn("branch2").when(branch2).getName();
 
         final WorkspaceProject project = mock(WorkspaceProject.class);
         doReturn(repository).when(project).getRepository();
         doReturn(organizationalUnit).when(project).getOrganizationalUnit();
         doReturn(space).when(project).getSpace();
         doReturn(branch).when(project).getBranch();
+        doReturn(Optional.of(branch)).when(repository).getBranch("branch");
+        doReturn(Optional.of(branch2)).when(repository).getBranch("branch2");
+        doReturn(Arrays.asList(branch, branch2)).when(repository).getBranches();
         doReturn(mock(Module.class)).when(project).getMainModule();
 
         return project;

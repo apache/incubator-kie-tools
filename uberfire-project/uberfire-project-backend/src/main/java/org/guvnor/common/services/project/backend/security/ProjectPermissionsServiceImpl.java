@@ -16,6 +16,10 @@
 
 package org.guvnor.common.services.project.backend.security;
 
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import javax.inject.Inject;
 
 import org.guvnor.common.services.project.security.ProjectPermissionsService;
@@ -35,9 +39,16 @@ public class ProjectPermissionsServiceImpl implements ProjectPermissionsService 
     }
 
     @Override
-    public BranchPermissions loadBranchPermissions(String spaceName,
-                                                   String projectIdentifier,
-                                                   String branchName) {
+    public BranchPermissions loadBranchPermissions(final String spaceName,
+                                                   final String projectIdentifier,
+                                                   final String branchName) {
         return spaceConfigStorageRegistry.get(spaceName).loadBranchPermissions(branchName, projectIdentifier);
+    }
+
+    @Override
+    public Map<String, BranchPermissions> loadBranchPermissions(final String spaceName,
+                                                                final String projectIdentifier,
+                                                                final List<String> branches) {
+        return branches.stream().collect(Collectors.toMap(Function.identity(), branch -> loadBranchPermissions(spaceName, projectIdentifier, branch)));
     }
 }

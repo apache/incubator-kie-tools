@@ -16,9 +16,14 @@
 
 package org.guvnor.common.services.project.client.security;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -29,12 +34,15 @@ import org.guvnor.structure.contributors.Contributor;
 import org.guvnor.structure.contributors.ContributorType;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.config.RolePermissions;
+import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.security.RepositoryAction;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.client.promise.Promises;
 import org.uberfire.security.authz.AuthorizationManager;
+
+import static java.util.stream.Collectors.toList;
 
 @ApplicationScoped
 public class ProjectController {
@@ -78,6 +86,12 @@ public class ProjectController {
     }
 
     public Promise<Boolean> canUpdateProject(final WorkspaceProject workspaceProject) {
+        return canUpdateBranch(workspaceProject,
+                               workspaceProject.getBranch());
+    }
+
+    public Promise<Boolean> canUpdateBranch(final WorkspaceProject workspaceProject,
+                                            final Branch branch) {
         if (workspaceProject.getMainModule() == null) {
             return promises.resolve(false);
         }
@@ -89,7 +103,7 @@ public class ProjectController {
         }
 
         return checkBranchPermission(workspaceProject,
-                                     workspaceProject.getBranch().getName(),
+                                     branch.getName(),
                                      RolePermissions::canWrite);
     }
 
@@ -206,16 +220,47 @@ public class ProjectController {
                                       return s.loadBranchPermissions(project.getSpace().getName(),
                                                                      project.getRepository().getIdentifier(),
                                                                      branch);
-                                  }).then(branchPermissions -> {
-            final Optional<Contributor> userContributor = getUserContributor(project.getRepository().getContributors());
-            if (userContributor.isPresent()) {
-                final RolePermissions rolePermissions = branchPermissions.getPermissionsByRole().get(userContributor.get().getType().name());
-                if (rolePermissions != null) {
-                    return promises.resolve(Optional.of(rolePermissions));
-                }
-            }
+                                  }).then(branchPermissions -> promises.resolve(getBranchPermissionsForUser(project, branchPermissions.getPermissionsByRole())));
+    }
 
-            return promises.resolve(Optional.empty());
-        });
+    public Optional<RolePermissions> getBranchPermissionsForUser(final WorkspaceProject project,
+                                                                 final Map<String, RolePermissions> permissionsByRole) {
+        final Optional<Contributor> userContributor = getUserContributor(project.getRepository().getContributors());
+        if (userContributor.isPresent()) {
+            final RolePermissions rolePermissions = permissionsByRole.get(userContributor.get().getType().name());
+            if (rolePermissions != null) {
+                return Optional.of(rolePermissions);
+            }
+        }
+
+        return Optional.empty();
+    }
+
+    public Promise<List<Branch>> getUpdatableBranches(final WorkspaceProject project) {
+        if (project.getMainModule() == null) {
+            return promises.resolve(Collections.emptyList());
+        }
+
+        if (authorizationManager.authorize(project.getRepository(),
+                                           RepositoryAction.UPDATE,
+                                           user)) {
+            return promises.resolve(new ArrayList<>(project.getRepository().getBranches()));
+        }
+
+        return getBranchesWithPermission(project, RolePermissions::canWrite);
+    }
+
+    private Promise<List<Branch>> getBranchesWithPermission(final WorkspaceProject project,
+                                                            final Function<RolePermissions, Boolean> rolePermissionsCheck) {
+
+        return promises.promisify(projectPermissionsService, service -> {
+            return service.loadBranchPermissions(project.getSpace().getName(),
+                                                 project.getRepository().getIdentifier(),
+                                                 project.getRepository().getBranches().stream().map(Branch::getName).collect(Collectors.toList()));
+        }).then(branchPermissions -> promises.resolve(project.getRepository().getBranches().stream().filter(branch -> {
+            final Optional<RolePermissions> branchPermissionsForUser = getBranchPermissionsForUser(project,
+                                                                                                   branchPermissions.get(branch.getName()).getPermissionsByRole());
+            return branchPermissionsForUser.map(rolePermissionsCheck).orElse(false);
+        }).collect(Collectors.toList())));
     }
 }
