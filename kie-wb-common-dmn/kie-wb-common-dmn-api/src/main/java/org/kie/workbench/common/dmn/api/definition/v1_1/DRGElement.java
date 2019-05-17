@@ -20,8 +20,11 @@ import java.util.Arrays;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
+import org.kie.workbench.common.dmn.api.rules.NoInputNodesInImportedDecisionRule;
 import org.kie.workbench.common.forms.adf.definitions.DynamicReadOnly;
+import org.kie.workbench.common.stunner.core.rule.annotation.RuleExtension;
 
+@RuleExtension(handler = NoInputNodesInImportedDecisionRule.class)
 public abstract class DRGElement extends NamedElement implements DynamicReadOnly {
 
     private static final String[] READONLY_FIELDS = {
