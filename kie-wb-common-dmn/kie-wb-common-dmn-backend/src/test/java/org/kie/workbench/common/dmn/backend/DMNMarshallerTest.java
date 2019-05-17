@@ -31,6 +31,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.Scanner;
 import java.util.Spliterator;
 import java.util.Spliterators;
@@ -40,7 +41,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import javax.enterprise.inject.spi.BeanManager;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpressionException;
@@ -148,6 +148,7 @@ import org.kie.workbench.common.stunner.core.graph.content.Bound;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
 import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
+import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
 import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
@@ -156,7 +157,6 @@ import org.kie.workbench.common.stunner.core.graph.content.view.ViewImpl;
 import org.kie.workbench.common.stunner.core.graph.impl.EdgeImpl;
 import org.kie.workbench.common.stunner.core.registry.definition.AdapterRegistry;
 import org.kie.workbench.common.stunner.core.registry.impl.DefinitionsCacheRegistry;
-import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -201,12 +201,6 @@ public class DMNMarshallerTest {
     AdapterRegistry adapterRegistry;
 
     @Mock
-    BeanManager beanManager;
-
-    @Mock
-    RuleManager rulesManager;
-
-    @Mock
     BackendFactoryManager applicationFactoryManager;
 
     @Mock
@@ -228,7 +222,7 @@ public class DMNMarshallerTest {
 
     @Before
     @SuppressWarnings("unchecked")
-    public void setup() throws Exception {
+    public void setup() {
         // Graph utils.
         when(definitionManager.adapters()).thenReturn(adapterManager);
         when(adapterManager.registry()).thenReturn(adapterRegistry);
@@ -294,8 +288,8 @@ public class DMNMarshallerTest {
             Class type = (Class) invocationOnMock.getArguments()[1];
             String id = BindableAdapterUtils.getGenericClassName(type);
             if (DMNDefinitionSet.class.equals(type)) {
-                Graph graph = (Graph) dmnGraphFactory.build(uuid,
-                                                            DMN_DEF_SET_ID);
+                Graph graph = dmnGraphFactory.build(uuid,
+                                                    DMN_DEF_SET_ID);
                 return graph;
             }
             Object model = testScopeModelFactory.accepts(id) ? testScopeModelFactory.build(id) : null;
@@ -2038,6 +2032,163 @@ public class DMNMarshallerTest {
         final org.kie.dmn.model.api.ItemDefinition itemDefinition = new TItemDefinition();
         itemDefinition.setName(name);
         return itemDefinition;
+    }
+
+    @Test
+    public void testConnectorRightToLeft() throws Exception {
+        final org.kie.workbench.common.stunner.core.graph.content.Bounds bounds = org.kie.workbench.common.stunner.core.graph.content.Bounds.create(0, 0, 100, 50);
+        final String decisionNode1UUID = org.kie.workbench.common.stunner.core.util.UUID.uuid();
+        final String decisionNode2UUID = org.kie.workbench.common.stunner.core.util.UUID.uuid();
+        final String edgeUUID = org.kie.workbench.common.stunner.core.util.UUID.uuid();
+
+        final ViewConnector edgeView = marshallAndUnMarshallConnectors(bounds,
+                                                                       decisionNode1UUID,
+                                                                       decisionNode2UUID,
+                                                                       edgeUUID,
+                                                                       (sc) -> {
+                                                                           when(sc.getMagnetIndex()).thenReturn(OptionalInt.of(MagnetConnection.MAGNET_RIGHT));
+                                                                           when(sc.getLocation()).thenReturn(new Point2D(bounds.getWidth(), bounds.getHeight() / 2));
+                                                                       },
+                                                                       (tc) -> {
+                                                                           when(tc.getMagnetIndex()).thenReturn(OptionalInt.of(MagnetConnection.MAGNET_LEFT));
+                                                                           when(tc.getLocation()).thenReturn(new Point2D(0, bounds.getHeight() / 2));
+                                                                       });
+
+        final MagnetConnection sourceConnection = (MagnetConnection) edgeView.getSourceConnection().get();
+        assertEquals(bounds.getWidth(), sourceConnection.getLocation().getX(), 0.0);
+        assertEquals(bounds.getHeight() / 2, sourceConnection.getLocation().getY(), 0.0);
+        assertFalse(sourceConnection.getMagnetIndex().isPresent());
+        assertTrue(sourceConnection.isAuto());
+
+        final MagnetConnection targetConnection = (MagnetConnection) edgeView.getTargetConnection().get();
+        assertEquals(0, targetConnection.getLocation().getX(), 0.0);
+        assertEquals(bounds.getHeight() / 2, targetConnection.getLocation().getY(), 0.0);
+        assertFalse(targetConnection.getMagnetIndex().isPresent());
+        assertTrue(targetConnection.isAuto());
+    }
+
+    @Test
+    public void testConnectorCentreToCentre() throws Exception {
+        final org.kie.workbench.common.stunner.core.graph.content.Bounds bounds = org.kie.workbench.common.stunner.core.graph.content.Bounds.create(0, 0, 100, 50);
+        final String decisionNode1UUID = org.kie.workbench.common.stunner.core.util.UUID.uuid();
+        final String decisionNode2UUID = org.kie.workbench.common.stunner.core.util.UUID.uuid();
+        final String edgeUUID = org.kie.workbench.common.stunner.core.util.UUID.uuid();
+
+        final ViewConnector edgeView = marshallAndUnMarshallConnectors(bounds,
+                                                                       decisionNode1UUID,
+                                                                       decisionNode2UUID,
+                                                                       edgeUUID,
+                                                                       (sc) -> {/*NOP*/},
+                                                                       (tc) -> {/*NOP*/});
+
+        final MagnetConnection sourceConnection = (MagnetConnection) edgeView.getSourceConnection().get();
+        assertEquals(bounds.getWidth() / 2, sourceConnection.getLocation().getX(), 0.0);
+        assertEquals(bounds.getHeight() / 2, sourceConnection.getLocation().getY(), 0.0);
+        assertTrue(sourceConnection.getMagnetIndex().isPresent());
+        assertEquals(MagnetConnection.MAGNET_CENTER, sourceConnection.getMagnetIndex().getAsInt());
+        assertFalse(sourceConnection.isAuto());
+
+        final MagnetConnection targetConnection = (MagnetConnection) edgeView.getTargetConnection().get();
+        assertEquals(bounds.getWidth() / 2, targetConnection.getLocation().getX(), 0.0);
+        assertEquals(bounds.getHeight() / 2, targetConnection.getLocation().getY(), 0.0);
+        assertTrue(targetConnection.getMagnetIndex().isPresent());
+        assertEquals(MagnetConnection.MAGNET_CENTER, targetConnection.getMagnetIndex().getAsInt());
+        assertFalse(targetConnection.isAuto());
+    }
+
+    @SuppressWarnings("unchecked")
+    private ViewConnector marshallAndUnMarshallConnectors(final org.kie.workbench.common.stunner.core.graph.content.Bounds bounds,
+                                                          final String decisionNode1UUID,
+                                                          final String decisionNode2UUID,
+                                                          final String edgeUUID,
+                                                          final Consumer<MagnetConnection> sourceMagnetConsumer,
+                                                          final Consumer<MagnetConnection> targetMagnetConsumer) throws Exception {
+        final DMNMarshaller marshaller = getDMNMarshaller();
+
+        final Diagram<Graph, Metadata> mockedDiagram = connectTwoNodes(bounds,
+                                                                       decisionNode1UUID,
+                                                                       decisionNode2UUID,
+                                                                       edgeUUID,
+                                                                       sourceMagnetConsumer,
+                                                                       targetMagnetConsumer);
+
+        final String marshalledSource = marshaller.marshall(mockedDiagram);
+
+        final Graph<?, Node<View, ?>> unmarshalledGraph = marshaller.unmarshall(null, new StringInputStream(marshalledSource));
+
+        assertNotNull(unmarshalledGraph);
+
+        final Node<?, ?> decision1Node = unmarshalledGraph.getNode(decisionNode1UUID);
+        final Node<?, ?> decision2Node = unmarshalledGraph.getNode(decisionNode2UUID);
+        assertNotNull(decision1Node);
+        assertNotNull(decision2Node);
+        assertEquals(1, decision1Node.getOutEdges().size());
+        assertEquals(2, decision2Node.getInEdges().size());
+
+        final Edge decision1NodeOutEdge = decision1Node.getOutEdges().get(0);
+        final Edge decision2NodeInEdge = decision2Node.getInEdges().get(0);
+        assertEquals(decision1NodeOutEdge, decision2NodeInEdge);
+
+        final ViewConnector edgeView = (ViewConnector) decision1NodeOutEdge.getContent();
+        assertTrue(edgeView.getSourceConnection().isPresent());
+        assertTrue(edgeView.getTargetConnection().isPresent());
+
+        return edgeView;
+    }
+
+    @SuppressWarnings("unchecked")
+    private Diagram<Graph, Metadata> connectTwoNodes(final org.kie.workbench.common.stunner.core.graph.content.Bounds bounds,
+                                                     final String decisionNode1UUID,
+                                                     final String decisionNode2UUID,
+                                                     final String edgeUUID,
+                                                     final Consumer<MagnetConnection> sourceMagnetConsumer,
+                                                     final Consumer<MagnetConnection> targetMagnetConsumer) {
+        final DiagramImpl diagram = new DiagramImpl("dmn graph", null);
+        final Graph<DefinitionSet, Node> graph = mock(Graph.class);
+
+        final Node<View, Edge> diagramNode = mock(Node.class);
+        final View diagramView = mock(View.class);
+        final DMNDiagram dmnDiagram = new DMNDiagram();
+        when(diagramNode.getContent()).thenReturn(diagramView);
+        when(diagramView.getDefinition()).thenReturn(dmnDiagram);
+
+        final Node<View, Edge> decisionNode1 = mock(Node.class);
+        final View decisionView1 = mock(View.class);
+        final Decision decision1 = new Decision();
+        decision1.getId().setValue(decisionNode1UUID);
+        when(decisionNode1.getContent()).thenReturn(decisionView1);
+        when(decisionView1.getDefinition()).thenReturn(decision1);
+        when(decisionView1.getBounds()).thenReturn(bounds);
+
+        final Node<View, Edge> decisionNode2 = mock(Node.class);
+        final View decisionView2 = mock(View.class);
+        final Decision decision2 = new Decision();
+        decision2.getId().setValue(decisionNode2UUID);
+        when(decisionNode2.getContent()).thenReturn(decisionView2);
+        when(decisionView2.getDefinition()).thenReturn(decision2);
+        when(decisionView2.getBounds()).thenReturn(bounds);
+
+        final Edge edge = mock(Edge.class);
+        final ViewConnector edgeView = mock(ViewConnector.class);
+        when(edge.getUUID()).thenReturn(edgeUUID);
+        when(edge.getContent()).thenReturn(edgeView);
+        final MagnetConnection edgeSourceConnection = mock(MagnetConnection.class);
+        final MagnetConnection edgeTargetConnection = mock(MagnetConnection.class);
+        when(edgeView.getSourceConnection()).thenReturn(Optional.of(edgeSourceConnection));
+        when(edgeView.getTargetConnection()).thenReturn(Optional.of(edgeTargetConnection));
+        when(edgeView.getControlPoints()).thenReturn(new ControlPoint[]{});
+        when(decisionNode1.getOutEdges()).thenReturn(Collections.singletonList(edge));
+        when(decisionNode2.getInEdges()).thenReturn(Collections.singletonList(edge));
+        when(edge.getSourceNode()).thenReturn(decisionNode1);
+        when(edge.getTargetNode()).thenReturn(decisionNode2);
+
+        sourceMagnetConsumer.accept(edgeSourceConnection);
+        targetMagnetConsumer.accept(edgeTargetConnection);
+
+        doReturn(asList(diagramNode, decisionNode1, decisionNode2)).when(graph).nodes();
+        diagram.setGraph(graph);
+
+        return diagram;
     }
 
     @SuppressWarnings("unchecked")

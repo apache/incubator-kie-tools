@@ -127,6 +127,8 @@ import static org.kie.workbench.common.dmn.backend.definition.v1_1.dd.PointUtils
 @ApplicationScoped
 public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram<Graph, Metadata>> {
 
+    private static final double CENTRE_TOLERANCE = 1.0;
+
     private XMLEncoderDiagramMetadataMarshaller diagramMetadataMarshaller;
     private FactoryManager factoryManager;
     private InputDataConverter inputDataConverter;
@@ -353,17 +355,17 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
         }
 
         Map<String, Node<View<TextAnnotation>, ?>> textAnnotations = dmnXml.getArtifact().stream()
-                                                                         .filter(org.kie.dmn.model.api.TextAnnotation.class::isInstance)
-                                                                         .map(org.kie.dmn.model.api.TextAnnotation.class::cast)
-                                                                         .collect(Collectors.toMap(org.kie.dmn.model.api.TextAnnotation::getId,
-                                                                                                   dmn -> textAnnotationConverter.nodeFromDMN(dmn,
-                                                                                                                                              hasComponentWidthsConsumer)));
+                .filter(org.kie.dmn.model.api.TextAnnotation.class::isInstance)
+                .map(org.kie.dmn.model.api.TextAnnotation.class::cast)
+                .collect(Collectors.toMap(org.kie.dmn.model.api.TextAnnotation::getId,
+                                          dmn -> textAnnotationConverter.nodeFromDMN(dmn,
+                                                                                     hasComponentWidthsConsumer)));
         textAnnotations.values().forEach(n -> ddExtAugmentStunner(dmnDDDiagram, n));
 
         List<org.kie.dmn.model.api.Association> associations = dmnXml.getArtifact().stream()
-                                                                   .filter(org.kie.dmn.model.api.Association.class::isInstance)
-                                                                   .map(org.kie.dmn.model.api.Association.class::cast)
-                                                                   .collect(Collectors.toList());
+                .filter(org.kie.dmn.model.api.Association.class::isInstance)
+                .map(org.kie.dmn.model.api.Association.class::cast)
+                .collect(Collectors.toList());
         for (org.kie.dmn.model.api.Association a : associations) {
             String sourceId = getId(a.getSourceRef());
             Node sourceNode = Optional.ofNullable(elems.get(sourceId)).map(Entry::getValue).orElse(textAnnotations.get(sourceId));
@@ -409,11 +411,11 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
         dmnDecisionServices.forEach(ds -> references.addAll(ds.getOutputDecision().stream().map(org.kie.dmn.model.api.DMNElementReference::getHref).collect(Collectors.toList())));
 
         final Map<org.kie.dmn.model.api.DRGElement, Node> elemsToConnectToRoot = elems.values().stream()
-                                                                                     .filter(elem -> !references.contains("#" + elem.getKey().getId()))
-                                                                                     .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+                .filter(elem -> !references.contains("#" + elem.getKey().getId()))
+                .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
         elemsToConnectToRoot.values().stream()
-            .forEach(node -> connectRootWithChild(dmnDiagramRoot,
-                                                  node));
+                .forEach(node -> connectRootWithChild(dmnDiagramRoot,
+                                                      node));
 
         textAnnotations.values().stream().forEach(node -> connectRootWithChild(dmnDiagramRoot,
                                                                                node));
@@ -427,15 +429,15 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
             if (componentsWidthsExtension.getComponentsWidths() != null) {
                 hasComponentWidthsMap.entrySet().forEach(es -> {
                     componentsWidthsExtension
-                        .getComponentsWidths()
-                        .stream()
-                        .filter(componentWidths -> componentWidths.getDmnElementRef().getLocalPart().equals(es.getKey()))
-                        .findFirst()
-                        .ifPresent(componentWidths -> {
-                            final List<Double> widths = es.getValue().getComponentWidths();
-                            widths.clear();
-                            widths.addAll(componentWidths.getWidths());
-                        });
+                            .getComponentsWidths()
+                            .stream()
+                            .filter(componentWidths -> componentWidths.getDmnElementRef().getLocalPart().equals(es.getKey()))
+                            .findFirst()
+                            .ifPresent(componentWidths -> {
+                                final List<Double> widths = es.getValue().getComponentWidths();
+                                widths.clear();
+                                widths.addAll(componentWidths.getWidths());
+                            });
                 });
             }
         });
@@ -450,8 +452,8 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
         } else {
 
             final Optional<String> match = elems.keySet().stream()
-                                               .filter(k -> k.contains(reqInputID))
-                                               .findFirst();
+                    .filter(k -> k.contains(reqInputID))
+                    .findFirst();
             if (match.isPresent()) {
                 return elems.get(match.get()).getValue();
             }
@@ -479,7 +481,7 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
     }
 
     Optional<org.kie.dmn.model.api.DRGElement> getReference(final List<org.kie.dmn.model.api.DRGElement> importedDRGElements,
-                                                            final String dmnElementRef){
+                                                            final String dmnElementRef) {
         return importedDRGElements.stream().filter(drgElement -> Objects.equals(dmnElementRef, drgElement.getId())).findFirst();
     }
 
@@ -634,35 +636,33 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
         Optional<DMNEdge> dmnEdge = Optional.empty();
         if (dmnDiagram.isPresent()) {
             dmnEdge = dmnDiagram.get().getDMNDiagramElement().stream()
-                          .filter(DMNEdge.class::isInstance)
-                          .map(DMNEdge.class::cast)
-                          .filter(e -> e.getDmnElementRef().getLocalPart().equals(dmnEdgeElementRef))
-                          .findFirst();
+                    .filter(DMNEdge.class::isInstance)
+                    .map(DMNEdge.class::cast)
+                    .filter(e -> e.getDmnElementRef().getLocalPart().equals(dmnEdgeElementRef))
+                    .findFirst();
         }
         if (dmnEdge.isPresent()) {
             DMNEdge e = dmnEdge.get();
             Point source = e.getWaypoint().get(0);
-            final Node<?, ?> sourceNode = edge.getSourceNode();
+            final Node<View<?>, Edge> sourceNode = edge.getSourceNode();
             if (null != sourceNode) {
-                final View<?> sourceView = (View<?>) sourceNode.getContent();
-                final double xSource = xOfBound(upperLeftBound(sourceView));
-                final double ySource = yOfBound(upperLeftBound(sourceView));
-                connectionContent.setSourceConnection(MagnetConnection.Builder.at(source.getX() - xSource, source.getY() - ySource).setAuto(true)); // Stunner connection x,y is relative to shape
+                setConnectionMagnet(sourceNode,
+                                    source,
+                                    connectionContent::setSourceConnection);
             }
             Point target = e.getWaypoint().get(e.getWaypoint().size() - 1);
-            final Node targetNode = edge.getTargetNode();
+            final Node<View<?>, Edge> targetNode = edge.getTargetNode();
             if (null != targetNode) {
-                final View<?> targetView = (View<?>) targetNode.getContent();
-                final double xTarget = xOfBound(upperLeftBound(targetView));
-                final double yTarget = yOfBound(upperLeftBound(targetView));
-                connectionContent.setTargetConnection(MagnetConnection.Builder.at(target.getX() - xTarget, target.getY() - yTarget).setAuto(true)); // Stunner connection x,y is relative to shape
+                setConnectionMagnet(targetNode,
+                                    target,
+                                    connectionContent::setTargetConnection);
             }
             if (e.getWaypoint().size() > 2) {
                 connectionContent.setControlPoints(e.getWaypoint()
-                                                       .subList(1, e.getWaypoint().size() - 1)
-                                                       .stream()
-                                                       .map(p -> ControlPoint.build(PointUtils.dmndiPointToPoint2D(p)))
-                                                       .toArray(ControlPoint[]::new));
+                                                           .subList(1, e.getWaypoint().size() - 1)
+                                                           .stream()
+                                                           .map(p -> ControlPoint.build(PointUtils.dmndiPointToPoint2D(p)))
+                                                           .toArray(ControlPoint[]::new));
             }
         } else {
             // Set the source connection, if any.
@@ -676,6 +676,34 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
                 connectionContent.setTargetConnection(MagnetConnection.Builder.atCenter(targetNode));
             }
         }
+    }
+
+    private void setConnectionMagnet(final Node<View<?>, Edge> node,
+                                     final Point magnetPoint,
+                                     final Consumer<Connection> connectionConsumer) {
+        final View<?> view = node.getContent();
+        final double viewX = xOfBound(upperLeftBound(view));
+        final double viewY = yOfBound(upperLeftBound(view));
+        final double magnetRelativeX = magnetPoint.getX() - viewX;
+        final double magnetRelativeY = magnetPoint.getY() - viewY;
+        final double viewWidth = view.getBounds().getWidth();
+        final double viewHeight = view.getBounds().getHeight();
+        if (isCentre(magnetRelativeX,
+                     magnetRelativeY,
+                     viewWidth,
+                     viewHeight)) {
+            connectionConsumer.accept(MagnetConnection.Builder.atCenter(node));
+        } else {
+            connectionConsumer.accept(MagnetConnection.Builder.at(magnetRelativeX, magnetRelativeY).setAuto(true));
+        }
+    }
+
+    private boolean isCentre(final double magnetRelativeX,
+                             final double magnetRelativeY,
+                             final double viewWidth,
+                             final double viewHeight) {
+        return Math.abs((viewWidth / 2) - magnetRelativeX) < CENTRE_TOLERANCE &&
+                Math.abs((viewHeight / 2) - magnetRelativeY) < CENTRE_TOLERANCE;
     }
 
     private Optional<ComponentsWidthsExtension> findComponentsWidthsExtension(final Optional<org.kie.dmn.model.api.dmndi.DMNDiagram> dmnDDDiagram) {
@@ -692,10 +720,10 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
             return Optional.empty();
         }
         return extensions
-                   .stream()
-                   .filter(extension -> extension instanceof ComponentsWidthsExtension)
-                   .map(extension -> (ComponentsWidthsExtension) extension)
-                   .findFirst();
+                .stream()
+                .filter(extension -> extension instanceof ComponentsWidthsExtension)
+                .map(extension -> (ComponentsWidthsExtension) extension)
+                .findFirst();
     }
 
     @Override
