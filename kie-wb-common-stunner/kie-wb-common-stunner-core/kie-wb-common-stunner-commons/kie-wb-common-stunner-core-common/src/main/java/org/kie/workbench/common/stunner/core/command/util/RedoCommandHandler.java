@@ -18,11 +18,11 @@ package org.kie.workbench.common.stunner.core.command.util;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandManager;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
-import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
 import org.kie.workbench.common.stunner.core.registry.impl.ClientCommandRegistry;
 
 /**
@@ -44,7 +44,7 @@ import org.kie.workbench.common.stunner.core.registry.impl.ClientCommandRegistry
 @Dependent
 public class RedoCommandHandler<C extends Command> {
 
-    private final CommandRegistry<C> registry;
+    private final ClientCommandRegistry<C> registry;
 
     protected RedoCommandHandler() {
         this(null);
@@ -86,6 +86,10 @@ public class RedoCommandHandler<C extends Command> {
         final C last = registry.peek();
         return commandManager.execute(context,
                                       last);
+    }
+
+    public void setSession(ClientSession clientSession) {
+        registry.setSession(clientSession);
     }
 
     public boolean isEnabled() {

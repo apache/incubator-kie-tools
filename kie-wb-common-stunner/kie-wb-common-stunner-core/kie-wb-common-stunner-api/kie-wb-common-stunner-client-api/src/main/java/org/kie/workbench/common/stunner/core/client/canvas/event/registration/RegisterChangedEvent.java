@@ -16,8 +16,12 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.event.registration;
 
-import org.uberfire.workbench.events.UberFireEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.event.AbstractCanvasHandlerEvent;
 
-public class RegisterChangedEvent implements UberFireEvent {
+public class RegisterChangedEvent extends AbstractCanvasHandlerEvent<CanvasHandler> {
 
+    public RegisterChangedEvent(CanvasHandler canvasHandler) {
+        super(canvasHandler);
+    }
 }

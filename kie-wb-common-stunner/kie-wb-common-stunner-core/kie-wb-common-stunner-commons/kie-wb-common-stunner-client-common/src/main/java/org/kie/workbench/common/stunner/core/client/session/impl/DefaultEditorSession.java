@@ -65,7 +65,7 @@ public class DefaultEditorSession
     private final CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager;
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
     private final SessionCommandManager<AbstractCanvasHandler> requestCommandManager;
-    private final CommandRegistry<org.kie.workbench.common.stunner.core.command.Command<AbstractCanvasHandler, CanvasViolation>> commandRegistry;
+    private final ClientCommandRegistry<org.kie.workbench.common.stunner.core.command.Command<AbstractCanvasHandler, CanvasViolation>> commandRegistry;
 
     @Inject
     public DefaultEditorSession(final ManagedSession session,
@@ -86,6 +86,7 @@ public class DefaultEditorSession
                 .onCanvasHandlerControlRegistered(this::onCanvasHandlerControlRegistered)
                 .onCanvasControlDestroyed(AbstractSession::onControlDestroyed)
                 .onCanvasHandlerControlDestroyed(AbstractSession::onControlDestroyed);
+        commandRegistry.setSession(getSession());
     }
 
     @Override

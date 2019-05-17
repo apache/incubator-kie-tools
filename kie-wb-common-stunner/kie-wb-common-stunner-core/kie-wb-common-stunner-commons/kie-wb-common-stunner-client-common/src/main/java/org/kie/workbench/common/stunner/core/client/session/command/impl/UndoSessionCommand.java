@@ -42,10 +42,6 @@ public class UndoSessionCommand extends AbstractClientSessionCommand<EditorSessi
 
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
 
-    protected UndoSessionCommand() {
-        this(null);
-    }
-
     @Inject
     public UndoSessionCommand(final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager) {
         super(false);
@@ -100,18 +96,16 @@ public class UndoSessionCommand extends AbstractClientSessionCommand<EditorSessi
     void onCommandAdded(final @Observes RegisterChangedEvent registerChangedEvent) {
         checkNotNull("registerChangedEvent",
                      registerChangedEvent);
-        checkState();
+        if (registerChangedEvent.getCanvasHandler().equals(getCanvasHandler())) {
+            checkState();
+        }
     }
 
     private void checkState() {
-        if (null != getSession()) {
-            final SessionCommandManager<AbstractCanvasHandler> cm = getSessionCommandManager();
-            final boolean isHistoryEmpty = cm == null || cm.getRegistry().getCommandHistory().isEmpty();
-            setEnabled(!isHistoryEmpty);
-        } else {
-            setEnabled(false);
+        if (getSession() != null) {
+            setEnabled(!getSession().getCommandRegistry().getCommandHistory().isEmpty());
+            fire();
         }
-        fire();
     }
 
     private SessionCommandManager<AbstractCanvasHandler> getSessionCommandManager() {

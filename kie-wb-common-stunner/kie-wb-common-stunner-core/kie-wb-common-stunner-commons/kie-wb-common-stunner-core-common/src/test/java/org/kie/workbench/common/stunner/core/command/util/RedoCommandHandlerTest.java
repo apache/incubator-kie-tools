@@ -20,7 +20,9 @@ import javax.enterprise.event.Event;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.RegisterChangedEvent;
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandManager;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
@@ -54,6 +56,12 @@ public class RedoCommandHandlerTest {
     private ClientCommandRegistry clientCommandRegistry;
 
     @Mock
+    private ClientSession session;
+
+    @Mock
+    private CanvasHandler canvasHandler;
+
+    @Mock
     private Event<RegisterChangedEvent> registerChangedEvent;
 
     private RedoCommandHandler tested;
@@ -62,12 +70,16 @@ public class RedoCommandHandlerTest {
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
         this.tested = new RedoCommandHandler(clientCommandRegistry);
+        when(session.getCanvasHandler()).thenReturn(canvasHandler);
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testUndoCommandExecuted() {
-        ClientCommandRegistry realRegistry = spy(new ClientCommandRegistry(registerChangedEvent));
+        ClientCommandRegistry clientCommandRegistry = new ClientCommandRegistry(registerChangedEvent);
+        clientCommandRegistry.setSession(session);
+
+        ClientCommandRegistry realRegistry = spy(clientCommandRegistry);
         RedoCommandHandler tested = new RedoCommandHandler(realRegistry);
         assertTrue(tested.onUndoCommandExecuted(command1));
         verify(realRegistry).register(eq(command1));
@@ -109,7 +121,10 @@ public class RedoCommandHandlerTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testExecuteJustRecentRedoCommand() {
-        RedoCommandHandler tested = new RedoCommandHandler(spy(new ClientCommandRegistry(registerChangedEvent)));
+        ClientCommandRegistry clientCommandRegistry = new ClientCommandRegistry(registerChangedEvent);
+        clientCommandRegistry.setSession(session);
+
+        RedoCommandHandler tested = new RedoCommandHandler(spy(clientCommandRegistry));
         assertTrue(tested.onUndoCommandExecuted(command1));
         assertFalse(tested.onCommandExecuted(command1));
         assertFalse(tested.isEnabled());
@@ -118,7 +133,10 @@ public class RedoCommandHandlerTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testExecuteRemoveRedoCommands() {
-        RedoCommandHandler tested = new RedoCommandHandler(spy(new ClientCommandRegistry(registerChangedEvent)));
+        ClientCommandRegistry clientCommandRegistry = new ClientCommandRegistry(registerChangedEvent);
+        clientCommandRegistry.setSession(session);
+
+        RedoCommandHandler tested = new RedoCommandHandler(spy(clientCommandRegistry));
         Command command3 = mock(Command.class);
         assertTrue(tested.onUndoCommandExecuted(command1));
         assertTrue(tested.onUndoCommandExecuted(command2));
