@@ -258,7 +258,6 @@ public class ScenarioGridModelTest extends AbstractScenarioSimulationTest {
         verify(scenarioGridModel, times(1)).checkSimulation();
         verify(scenarioGridModel, times(1)).deleteColumn(eq(gridColumnMock));
         verify(simulationMock, times(1)).removeFactMappingByIndex(eq(COLUMN_INDEX));
-        verify(eventBusMock, times(1)).fireEvent(isA(ReloadTestToolsEvent.class));
     }
 
     @Test
