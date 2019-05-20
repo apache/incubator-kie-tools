@@ -65,7 +65,7 @@ public class DecisionConverter implements NodeConverter<org.kie.dmn.model.api.De
         final Id id = new Id(dmn.getId());
         final Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
         final Name name = new Name(dmn.getName());
-        final InformationItemPrimary informationItem = InformationItemPrimaryPropertyConverter.wbFromDMN(dmn.getVariable());
+        final InformationItemPrimary informationItem = InformationItemPrimaryPropertyConverter.wbFromDMN(dmn.getVariable(), dmn);
         final Expression expression = ExpressionPropertyConverter.wbFromDMN(dmn.getExpression(),
                                                                             hasComponentWidthsConsumer);
         final Decision decision = new Decision(id,
@@ -100,7 +100,7 @@ public class DecisionConverter implements NodeConverter<org.kie.dmn.model.api.De
         d.setId(source.getId().getValue());
         d.setDescription(DescriptionPropertyConverter.dmnFromWB(source.getDescription()));
         d.setName(source.getName().getValue());
-        final org.kie.dmn.model.api.InformationItem variable = InformationItemPrimaryPropertyConverter.dmnFromWB(source.getVariable());
+        final org.kie.dmn.model.api.InformationItem variable = InformationItemPrimaryPropertyConverter.dmnFromWB(source.getVariable(), source);
         if (variable != null) {
             variable.setParent(d);
         }

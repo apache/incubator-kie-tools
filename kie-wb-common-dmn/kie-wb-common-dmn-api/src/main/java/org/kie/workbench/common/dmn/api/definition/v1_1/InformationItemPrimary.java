@@ -28,6 +28,7 @@ import org.kie.soup.commons.util.Sets;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.kie.workbench.common.dmn.api.property.DMNPropertySet;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
+import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.property.dmn.QNameFieldType;
 import org.kie.workbench.common.dmn.api.property.dmn.QNameHolder;
@@ -65,6 +66,8 @@ public class InformationItemPrimary extends DMNModelInstrumentedBase implements 
 
     protected Id id;
 
+    protected Name name;
+
     protected QName typeRef;
 
     @Property
@@ -74,12 +77,15 @@ public class InformationItemPrimary extends DMNModelInstrumentedBase implements 
 
     public InformationItemPrimary() {
         this(new Id(),
+             new Name(),
              new QName());
     }
 
     public InformationItemPrimary(final Id id,
+                                  final Name name,
                                   final QName typeRef) {
         this.id = id;
+        this.name = name;
         this.typeRef = typeRef;
         this.typeRefHolder = new QNameHolder(typeRef);
     }
@@ -99,6 +105,16 @@ public class InformationItemPrimary extends DMNModelInstrumentedBase implements 
     // -----------------------
     // DMN properties
     // -----------------------
+
+    @Override
+    public Name getName() {
+        return name;
+    }
+
+    @Override
+    public void setName(final Name name) {
+        this.name = name;
+    }
 
     @Override
     public QName getTypeRef() {
@@ -163,6 +179,9 @@ public class InformationItemPrimary extends DMNModelInstrumentedBase implements 
         if (id != null ? !id.equals(that.id) : that.id != null) {
             return false;
         }
+        if (name != null ? !name.equals(that.name) : that.name != null) {
+            return false;
+        }
         if (typeRef != null ? !typeRef.equals(that.typeRef) : that.typeRef != null) {
             return false;
         }
@@ -172,6 +191,7 @@ public class InformationItemPrimary extends DMNModelInstrumentedBase implements 
     @Override
     public int hashCode() {
         return HashUtil.combineHashCodes(id != null ? id.hashCode() : 0,
+                                         name != null ? name.hashCode() : 0,
                                          typeRef != null ? typeRef.hashCode() : 0,
                                          typeRefHolder != null ? typeRefHolder.hashCode() : 0);
     }

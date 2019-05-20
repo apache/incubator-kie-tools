@@ -471,7 +471,7 @@ public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTable
 
     @Test
     public void testModelEnrichmentWhenHasExpressionIsHasVariable() {
-        decision.setVariable(new InformationItemPrimary(new Id(), OUTPUT_DATA_QNAME));
+        decision.setVariable(new InformationItemPrimary(new Id(), new Name(), OUTPUT_DATA_QNAME));
 
         final Optional<DecisionTable> oModel = definition.getModelClass();
 

@@ -30,9 +30,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
+import org.kie.workbench.common.dmn.api.definition.HasVariable;
 import org.kie.workbench.common.dmn.api.definition.NOPDomainObject;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
+import org.kie.workbench.common.dmn.api.definition.v1_1.IsInformationItem;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
@@ -168,6 +170,9 @@ public class ExpressionContainerGridTest {
     private HasExpression hasExpression;
 
     @Mock
+    private IsInformationItem isInformationItem;
+
+    @Mock
     private ParameterizedCommand<Optional<Expression>> onHasExpressionChanged;
 
     @Mock
@@ -197,7 +202,12 @@ public class ExpressionContainerGridTest {
     @Captor
     private ArgumentCaptor<RefreshFormPropertiesEvent> refreshFormPropertiesEventCaptor;
 
-    private HasName hasName = new HasName() {
+    private interface MockHasNameHasVariable extends HasName,
+                                                     HasVariable {
+
+    }
+
+    private MockHasNameHasVariable hasName = new MockHasNameHasVariable() {
 
         private Name name = new Name(NAME);
 
@@ -209,6 +219,21 @@ public class ExpressionContainerGridTest {
         @Override
         public void setName(final Name name) {
             this.name = name;
+        }
+
+        @Override
+        public IsInformationItem getVariable() {
+            return isInformationItem;
+        }
+
+        @Override
+        public void setVariable(final IsInformationItem informationItem) {
+            throw new UnsupportedOperationException("Not supported in this Unit Test");
+        }
+
+        @Override
+        public DMNModelInstrumentedBase asDMNModelInstrumentedBase() {
+            throw new UnsupportedOperationException("Not supported in this Unit Test");
         }
     };
 
@@ -554,6 +579,7 @@ public class ExpressionContainerGridTest {
         spy.get().setName(newName);
 
         assertThat(hasName.getName().getValue()).isEqualTo(NEW_NAME);
+        verify(isInformationItem).setName(eq(newName));
         verify(onHasNameChanged).execute(hasNameCaptor.capture());
         assertThat(hasNameCaptor.getValue().get().getName().getValue()).isEqualTo(NEW_NAME);
     }

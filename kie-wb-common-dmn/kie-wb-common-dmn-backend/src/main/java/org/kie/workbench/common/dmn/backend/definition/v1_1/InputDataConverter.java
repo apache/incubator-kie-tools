@@ -51,7 +51,7 @@ public class InputDataConverter implements NodeConverter<org.kie.dmn.model.api.I
         final Id id = new Id(dmn.getId());
         final Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
         final Name name = new Name(dmn.getName());
-        final InformationItemPrimary informationItem = InformationItemPrimaryPropertyConverter.wbFromDMN(dmn.getVariable());
+        final InformationItemPrimary informationItem = InformationItemPrimaryPropertyConverter.wbFromDMN(dmn.getVariable(), dmn);
         final InputData inputData = new InputData(id,
                                                   description,
                                                   name,
@@ -76,7 +76,7 @@ public class InputDataConverter implements NodeConverter<org.kie.dmn.model.api.I
         result.setId(source.getId().getValue());
         result.setDescription(DescriptionPropertyConverter.dmnFromWB(source.getDescription()));
         result.setName(source.getName().getValue());
-        final org.kie.dmn.model.api.InformationItem variable = InformationItemPrimaryPropertyConverter.dmnFromWB(source.getVariable());
+        final org.kie.dmn.model.api.InformationItem variable = InformationItemPrimaryPropertyConverter.dmnFromWB(source.getVariable(), source);
         if (variable != null) {
             variable.setParent(result);
         }

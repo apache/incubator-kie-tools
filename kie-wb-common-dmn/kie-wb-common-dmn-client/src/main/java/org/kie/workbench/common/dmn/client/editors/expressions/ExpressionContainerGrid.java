@@ -30,6 +30,7 @@ import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
+import org.kie.workbench.common.dmn.api.definition.HasVariable;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
@@ -246,6 +247,10 @@ public class ExpressionContainerGrid extends BaseGrid<Expression> {
             public void setName(final Name name) {
                 hasName.ifPresent(hn -> {
                     hn.setName(name);
+                    if (hn instanceof HasVariable) {
+                        final HasVariable hv = (HasVariable) hn;
+                        hv.getVariable().setName(name);
+                    }
                     onHasNameChanged.execute(hasName);
                 });
             }

@@ -120,6 +120,7 @@ public class BusinessKnowledgeModelConverterTest {
         assertThat(wb.getDescription()).isNotNull();
         assertThat(wb.getDescription().getValue()).isEqualTo(DECISION_DESCRIPTION);
         assertThat(wb.getVariable()).isNotNull();
+        assertThat(wb.getVariable().getName().getValue()).isEqualTo(DECISION_NAME);
         assertThat(wb.getEncapsulatedLogic()).isNotNull();
         assertThat(wb.getEncapsulatedLogic().getExpression()).isNotNull();
         assertThat(wb.getEncapsulatedLogic().getExpression().getId().getValue()).isEqualTo(EXPRESSION_UUID);
@@ -162,6 +163,7 @@ public class BusinessKnowledgeModelConverterTest {
         assertThat(dmn.getDescription()).isNotNull();
         assertThat(dmn.getDescription()).isEqualTo(DECISION_DESCRIPTION);
         assertThat(dmn.getVariable()).isNotNull();
+        assertThat(dmn.getVariable().getName()).isEqualTo(DECISION_NAME);
         assertThat(dmn.getEncapsulatedLogic()).isNotNull();
         assertThat(dmn.getEncapsulatedLogic().getExpression()).isNotNull();
         assertThat(dmn.getEncapsulatedLogic().getExpression().getId()).isEqualTo(EXPRESSION_UUID);

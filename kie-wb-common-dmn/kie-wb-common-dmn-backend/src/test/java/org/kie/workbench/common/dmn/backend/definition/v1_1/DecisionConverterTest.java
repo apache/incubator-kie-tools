@@ -116,6 +116,7 @@ public class DecisionConverterTest {
         assertThat(wb.getDescription()).isNotNull();
         assertThat(wb.getDescription().getValue()).isEqualTo(DECISION_DESCRIPTION);
         assertThat(wb.getVariable()).isNotNull();
+        assertThat(wb.getVariable().getName().getValue()).isEqualTo(DECISION_NAME);
         assertThat(wb.getExpression()).isNotNull();
         assertThat(wb.getExpression().getId().getValue()).isEqualTo(EXPRESSION_UUID);
 
@@ -155,6 +156,7 @@ public class DecisionConverterTest {
         assertThat(dmn.getDescription()).isNotNull();
         assertThat(dmn.getDescription()).isEqualTo(DECISION_DESCRIPTION);
         assertThat(dmn.getVariable()).isNotNull();
+        assertThat(dmn.getVariable().getName()).isEqualTo(DECISION_NAME);
         assertThat(dmn.getExpression()).isNotNull();
         assertThat(dmn.getExpression().getId()).isEqualTo(EXPRESSION_UUID);
 

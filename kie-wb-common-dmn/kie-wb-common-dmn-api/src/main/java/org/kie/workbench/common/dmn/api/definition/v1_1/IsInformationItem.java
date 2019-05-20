@@ -16,11 +16,13 @@
 
 package org.kie.workbench.common.dmn.api.definition.v1_1;
 
+import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 
 public interface IsInformationItem extends DomainObject,
+                                           HasName,
                                            HasTypeRef {
 
     Id getId();

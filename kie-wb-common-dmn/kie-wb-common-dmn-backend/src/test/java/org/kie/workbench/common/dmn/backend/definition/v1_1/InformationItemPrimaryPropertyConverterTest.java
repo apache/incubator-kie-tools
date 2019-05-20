@@ -45,7 +45,7 @@ public class InformationItemPrimaryPropertyConverterTest {
     public void testWbFromDMNWhenDMNIsNull() {
 
         final InformationItem dmn = null;
-        final InformationItemPrimary informationItemPrimary = InformationItemPrimaryPropertyConverter.wbFromDMN(dmn);
+        final InformationItemPrimary informationItemPrimary = InformationItemPrimaryPropertyConverter.wbFromDMN(dmn, dmn);
 
         assertNull(informationItemPrimary);
     }
@@ -65,7 +65,7 @@ public class InformationItemPrimaryPropertyConverterTest {
         PowerMockito.mockStatic(QNamePropertyConverter.class);
         PowerMockito.when(QNamePropertyConverter.wbFromDMN(qName, dmn)).thenReturn(expectedTypeRef);
 
-        final InformationItemPrimary informationItemPrimary = InformationItemPrimaryPropertyConverter.wbFromDMN(dmn);
+        final InformationItemPrimary informationItemPrimary = InformationItemPrimaryPropertyConverter.wbFromDMN(dmn, dmn);
         final Id actualId = informationItemPrimary.getId();
         final QName actualTypeRef = informationItemPrimary.getTypeRef();
 
@@ -77,7 +77,7 @@ public class InformationItemPrimaryPropertyConverterTest {
     public void testDmnFromWBWhenWBIsNull() {
 
         final InformationItemPrimary wb = null;
-        final InformationItem informationItem = InformationItemPrimaryPropertyConverter.dmnFromWB(wb);
+        final InformationItem informationItem = InformationItemPrimaryPropertyConverter.dmnFromWB(wb, wb);
 
         assertNull(informationItem);
     }
@@ -89,17 +89,18 @@ public class InformationItemPrimaryPropertyConverterTest {
         final String expectedName = "name";
         final Id id = new Id(expectedId);
         final InformationItemPrimary wb = mock(InformationItemPrimary.class);
+        final Name name = new Name(expectedName);
         final QName qName = PowerMockito.mock(QName.class);
         final javax.xml.namespace.QName expectedQName = mock(javax.xml.namespace.QName.class);
         final Optional<javax.xml.namespace.QName> optionalExpectedQName = Optional.of(expectedQName);
 
         when(wb.getId()).thenReturn(id);
+        when(wb.getName()).thenReturn(name);
         when(wb.getTypeRef()).thenReturn(qName);
 
-        PowerMockito.stub(PowerMockito.method(InformationItemPrimaryPropertyConverter.class, "getName", InformationItemPrimary.class)).toReturn(expectedName);
         PowerMockito.stub(PowerMockito.method(QNamePropertyConverter.class, "dmnFromWB", QName.class)).toReturn(optionalExpectedQName);
 
-        final TInformationItem informationItem = InformationItemPrimaryPropertyConverter.dmnFromWB(wb);
+        final TInformationItem informationItem = InformationItemPrimaryPropertyConverter.dmnFromWB(wb, wb);
         final String actualId = informationItem.getId();
         final String actualName = informationItem.getName();
         final javax.xml.namespace.QName actualQName = informationItem.getTypeRef();
@@ -110,45 +111,67 @@ public class InformationItemPrimaryPropertyConverterTest {
     }
 
     @Test
-    public void testGetNameWhenParentDoesNotHaveName() {
+    public void testDMNGetNameWhenParentDoesNotHaveName() {
+        final org.kie.dmn.model.api.InformationItem parent = mock(org.kie.dmn.model.api.InformationItem.class);
 
-        final InformationItemPrimary informationItem = mock(InformationItemPrimary.class);
-        final InformationItemPrimary parent = mock(InformationItemPrimary.class);
-
-        when(informationItem.getParent()).thenReturn(parent);
-
-        final String name = InformationItemPrimaryPropertyConverter.getName(informationItem);
+        final String name = InformationItemPrimaryPropertyConverter.getParentName(parent);
 
         assertTrue(name.isEmpty());
     }
 
     @Test
-    public void testGetNameWhenParentHasNullName() {
+    public void testDMNGetNameWhenParentHasNullName() {
+        final org.kie.dmn.model.api.InputData parent = mock(org.kie.dmn.model.api.InputData.class);
 
-        final InformationItemPrimary informationItem = mock(InformationItemPrimary.class);
-        final InputData parent = mock(InputData.class);
-
-        when(informationItem.getParent()).thenReturn(parent);
         when(parent.getName()).thenReturn(null);
 
-        final String name = InformationItemPrimaryPropertyConverter.getName(informationItem);
+        final String name = InformationItemPrimaryPropertyConverter.getParentName(parent);
 
         assertTrue(name.isEmpty());
     }
 
     @Test
-    public void testGetNameWhenParentHasName() {
+    public void testDMNGetNameWhenParentHasName() {
+        final org.kie.dmn.model.api.InputData parent = mock(org.kie.dmn.model.api.InputData.class);
+        final String expectedName = "name";
 
-        final InformationItemPrimary informationItem = mock(InformationItemPrimary.class);
+        when(parent.getName()).thenReturn(expectedName);
+
+        final String actualName = InformationItemPrimaryPropertyConverter.getParentName(parent);
+
+        assertEquals(expectedName, actualName);
+    }
+
+    @Test
+    public void testWBGetNameWhenParentDoesNotHaveName() {
+        final InformationItemPrimary parent = mock(InformationItemPrimary.class);
+
+        final String name = InformationItemPrimaryPropertyConverter.getParentName(parent);
+
+        assertTrue(name.isEmpty());
+    }
+
+    @Test
+    public void testWBGetNameWhenParentHasNullName() {
+        final InputData parent = mock(InputData.class);
+
+        when(parent.getName()).thenReturn(null);
+
+        final String name = InformationItemPrimaryPropertyConverter.getParentName(parent);
+
+        assertTrue(name.isEmpty());
+    }
+
+    @Test
+    public void testWBGetNameWhenParentHasName() {
         final InputData parent = mock(InputData.class);
         final Name parentName = mock(Name.class);
         final String expectedName = "name";
 
-        when(informationItem.getParent()).thenReturn(parent);
         when(parent.getName()).thenReturn(parentName);
         when(parentName.getValue()).thenReturn(expectedName);
 
-        final String actualName = InformationItemPrimaryPropertyConverter.getName(informationItem);
+        final String actualName = InformationItemPrimaryPropertyConverter.getParentName(parent);
 
         assertEquals(expectedName, actualName);
     }

@@ -71,7 +71,7 @@ public class DMNIncludedNodeFactory {
                              final IsInformationItem variable,
                              final QName typeRef) {
         if (variable instanceof InformationItemPrimary) {
-            hasVariable.setVariable(new InformationItemPrimary(variable.getId(), typeRef));
+            hasVariable.setVariable(new InformationItemPrimary(variable.getId(), variable.getName(), typeRef));
         }
     }
 }

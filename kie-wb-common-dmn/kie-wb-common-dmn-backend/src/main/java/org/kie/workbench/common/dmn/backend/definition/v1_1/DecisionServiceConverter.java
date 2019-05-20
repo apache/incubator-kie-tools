@@ -63,7 +63,7 @@ public class DecisionServiceConverter implements NodeConverter<org.kie.dmn.model
         final Id id = new Id(dmn.getId());
         final Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
         final Name name = new Name(dmn.getName());
-        final InformationItemPrimary informationItem = InformationItemPrimaryPropertyConverter.wbFromDMN(dmn.getVariable());
+        final InformationItemPrimary informationItem = InformationItemPrimaryPropertyConverter.wbFromDMN(dmn.getVariable(), dmn);
         final List<DMNElementReference> outputDecision = dmn.getOutputDecision().stream().map(DMNElementReferenceConverter::wbFromDMN).collect(Collectors.toList());
         final List<DMNElementReference> encapsulatedDecision = dmn.getEncapsulatedDecision().stream().map(DMNElementReferenceConverter::wbFromDMN).collect(Collectors.toList());
         final List<DMNElementReference> inputDecision = dmn.getInputDecision().stream().map(DMNElementReferenceConverter::wbFromDMN).collect(Collectors.toList());
@@ -98,7 +98,7 @@ public class DecisionServiceConverter implements NodeConverter<org.kie.dmn.model
         ds.setId(source.getId().getValue());
         ds.setDescription(DescriptionPropertyConverter.dmnFromWB(source.getDescription()));
         ds.setName(source.getName().getValue());
-        final org.kie.dmn.model.api.InformationItem variable = InformationItemPrimaryPropertyConverter.dmnFromWB(source.getVariable());
+        final org.kie.dmn.model.api.InformationItem variable = InformationItemPrimaryPropertyConverter.dmnFromWB(source.getVariable(), source);
         if (variable != null) {
             variable.setParent(ds);
         }

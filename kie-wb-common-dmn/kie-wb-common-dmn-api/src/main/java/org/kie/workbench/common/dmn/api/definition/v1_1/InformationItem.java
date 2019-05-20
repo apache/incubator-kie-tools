@@ -24,7 +24,6 @@ import javax.validation.Valid;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.soup.commons.util.Sets;
-import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.kie.workbench.common.dmn.api.property.DMNPropertySet;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
@@ -52,8 +51,7 @@ import static java.util.Collections.singletonList;
 @PropertySet
 @Definition(graphFactory = NodeFactory.class)
 @FormDefinition(policy = FieldPolicy.ONLY_MARKED, startElement = "id")
-public class InformationItem extends NamedElement implements HasName,
-                                                             DMNPropertySet,
+public class InformationItem extends NamedElement implements DMNPropertySet,
                                                              IsInformationItem {
 
     @Category
