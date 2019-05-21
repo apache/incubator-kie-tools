@@ -28,16 +28,15 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import elemental2.dom.Element;
-import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.common.client.api.ErrorCallback;
-import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
-import org.kie.workbench.common.dmn.api.editors.types.DMNParseService;
 import org.kie.workbench.common.dmn.client.editors.types.common.ScrollHelper;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.DataTypeConstraintComponent;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.DataTypeConstraintParserWarningEvent;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.enumeration.item.DataTypeConstraintEnumerationItem;
+import org.kie.workbench.common.dmn.client.service.DMNClientServicesProxy;
+import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
+import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.uberfire.client.mvp.UberElemental;
 import org.uberfire.mvp.Command;
 
@@ -54,7 +53,7 @@ public class DataTypeConstraintEnumeration implements DataTypeConstraintComponen
 
     private final View view;
 
-    private final Caller<DMNParseService> service;
+    private final DMNClientServicesProxy clientServicesProxy;
 
     private final ScrollHelper scrollHelper;
 
@@ -70,12 +69,12 @@ public class DataTypeConstraintEnumeration implements DataTypeConstraintComponen
 
     @Inject
     public DataTypeConstraintEnumeration(final View view,
-                                         final Caller<DMNParseService> service,
+                                         final DMNClientServicesProxy clientServicesProxy,
                                          final ScrollHelper scrollHelper,
                                          final Event<DataTypeConstraintParserWarningEvent> parserWarningEvent,
                                          final ManagedInstance<DataTypeConstraintEnumerationItem> enumerationItemInstances) {
         this.view = view;
-        this.service = service;
+        this.clientServicesProxy = clientServicesProxy;
         this.scrollHelper = scrollHelper;
         this.parserWarningEvent = parserWarningEvent;
         this.enumerationItemInstances = enumerationItemInstances;
@@ -98,7 +97,21 @@ public class DataTypeConstraintEnumeration implements DataTypeConstraintComponen
 
     @Override
     public void setValue(final String value) {
-        service.call(getSuccessCallback(), getErrorCallback()).parseFEELList(value);
+        clientServicesProxy.parseFEELList(value,
+                                          new ServiceCallback<List<String>>() {
+                                              @Override
+                                              public void onSuccess(final List<String> item) {
+                                                  loadConstraintValues(item);
+                                                  executeOnCompleteCallback();
+                                              }
+
+                                              @Override
+                                              public void onError(final ClientRuntimeError error) {
+                                                  showWarningMessage();
+                                                  loadConstraintValues(emptyList());
+                                                  executeOnCompleteCallback();
+                                              }
+                                          });
     }
 
     @Override
@@ -122,22 +135,6 @@ public class DataTypeConstraintEnumeration implements DataTypeConstraintComponen
 
     void registerOnCompleteCallback(final Command onCompleteCallback) {
         this.onCompleteCallback = onCompleteCallback;
-    }
-
-    RemoteCallback<List<String>> getSuccessCallback() {
-        return constraintValues -> {
-            loadConstraintValues(constraintValues);
-            executeOnCompleteCallback();
-        };
-    }
-
-    ErrorCallback<Object> getErrorCallback() {
-        return (message, throwable) -> {
-            showWarningMessage();
-            loadConstraintValues(emptyList());
-            executeOnCompleteCallback();
-            return false;
-        };
     }
 
     private void showWarningMessage() {

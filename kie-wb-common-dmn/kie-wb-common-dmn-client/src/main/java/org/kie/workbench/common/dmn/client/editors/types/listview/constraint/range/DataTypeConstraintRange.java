@@ -22,16 +22,15 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import elemental2.dom.Element;
-import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.common.client.api.ErrorCallback;
-import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
-import org.kie.workbench.common.dmn.api.editors.types.DMNParseService;
 import org.kie.workbench.common.dmn.api.editors.types.RangeValue;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.DataTypeConstraintModal;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.ConstraintPlaceholderHelper;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.DataTypeConstraintComponent;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.DataTypeConstraintParserWarningEvent;
+import org.kie.workbench.common.dmn.client.service.DMNClientServicesProxy;
+import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
+import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.util.StringUtils;
 import org.uberfire.client.mvp.UberElemental;
 
@@ -42,7 +41,7 @@ public class DataTypeConstraintRange implements DataTypeConstraintComponent {
 
     private final ConstraintPlaceholderHelper placeholderHelper;
 
-    private final Caller<DMNParseService> service;
+    private final DMNClientServicesProxy clientServicesProxy;
 
     private final Event<DataTypeConstraintParserWarningEvent> parserWarningEvent;
 
@@ -51,11 +50,11 @@ public class DataTypeConstraintRange implements DataTypeConstraintComponent {
     @Inject
     public DataTypeConstraintRange(final View view,
                                    final ConstraintPlaceholderHelper placeholderHelper,
-                                   final Caller<DMNParseService> service,
+                                   final DMNClientServicesProxy clientServicesProxy,
                                    final Event<DataTypeConstraintParserWarningEvent> parserWarningEvent) {
         this.view = view;
         this.placeholderHelper = placeholderHelper;
-        this.service = service;
+        this.clientServicesProxy = clientServicesProxy;
         this.parserWarningEvent = parserWarningEvent;
     }
 
@@ -71,7 +70,19 @@ public class DataTypeConstraintRange implements DataTypeConstraintComponent {
 
     @Override
     public void setValue(final String value) {
-        service.call(getSuccessCallback(), getErrorCallback()).parseRangeValue(value);
+        clientServicesProxy.parseRangeValue(value,
+                                            new ServiceCallback<RangeValue>() {
+                                                @Override
+                                                public void onSuccess(final RangeValue item) {
+                                                    loadConstraintValue(item);
+                                                }
+
+                                                @Override
+                                                public void onError(final ClientRuntimeError error) {
+                                                    showWarningMessage();
+                                                    loadConstraintValue(new RangeValue());
+                                                }
+                                            });
     }
 
     @Override
@@ -80,20 +91,8 @@ public class DataTypeConstraintRange implements DataTypeConstraintComponent {
         view.setPlaceholders(placeholderHelper.getPlaceholderSample(type));
     }
 
-    ErrorCallback<Object> getErrorCallback() {
-        return (message, throwable) -> {
-            showWarningMessage();
-            loadConstraintValue(new RangeValue());
-            return false;
-        };
-    }
-
     private void showWarningMessage() {
         parserWarningEvent.fire(new DataTypeConstraintParserWarningEvent());
-    }
-
-    RemoteCallback<RangeValue> getSuccessCallback() {
-        return this::loadConstraintValue;
     }
 
     void loadConstraintValue(final RangeValue rangeValue) {

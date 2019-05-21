@@ -16,9 +16,11 @@
 
 package org.kie.workbench.common.dmn.backend.editors.types;
 
+import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.dmn.feel.parser.feel11.FEELParser;
 import org.kie.workbench.common.dmn.api.editors.types.DMNValidationService;
 
+@Service
 public class DMNValidationServiceImpl implements DMNValidationService {
 
     @Override

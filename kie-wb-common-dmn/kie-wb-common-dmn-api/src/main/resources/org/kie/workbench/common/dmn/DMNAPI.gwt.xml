@@ -25,6 +25,7 @@
   <inherits name="org.kie.workbench.common.stunner.shapes.StunnerShapesApi"/>
   <inherits name="org.kie.workbench.common.forms.adf.AnnotationDrivenFormsBase"/>
   <inherits name="org.kie.workbench.common.forms.adf.engine.AnnotationDrivenFormsEngineAPI"/>
+  <inherits name="org.guvnor.common.services.project.GuvnorProjectAPI"/>
 
   <source path="api"/>
 

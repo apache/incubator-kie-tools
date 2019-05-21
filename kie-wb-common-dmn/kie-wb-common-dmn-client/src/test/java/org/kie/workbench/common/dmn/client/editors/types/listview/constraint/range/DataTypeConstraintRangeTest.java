@@ -16,25 +16,22 @@
 
 package org.kie.workbench.common.dmn.client.editors.types.listview.constraint.range;
 
-import java.util.List;
-
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.common.client.api.ErrorCallback;
-import org.jboss.errai.common.client.api.RemoteCallback;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.dmn.api.editors.types.DMNParseService;
 import org.kie.workbench.common.dmn.api.editors.types.RangeValue;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.DataTypeConstraintModal;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.ConstraintPlaceholderHelper;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.DataTypeConstraintParserWarningEvent;
+import org.kie.workbench.common.dmn.client.service.DMNClientServicesProxy;
+import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.mockito.Mock;
 import org.uberfire.mocks.EventSourceMock;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.doReturn;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -50,10 +47,7 @@ public class DataTypeConstraintRangeTest {
     private ConstraintPlaceholderHelper placeholderHelper;
 
     @Mock
-    private Caller<DMNParseService> serviceCaller;
-
-    @Mock
-    private DMNParseService service;
+    private DMNClientServicesProxy clientServicesProxy;
 
     @Mock
     private EventSourceMock<DataTypeConstraintParserWarningEvent> parserWarningEvent;
@@ -65,7 +59,10 @@ public class DataTypeConstraintRangeTest {
 
     @Before
     public void setup() {
-        constraintRange = spy(new DataTypeConstraintRange(view, placeholderHelper, serviceCaller, parserWarningEvent));
+        constraintRange = spy(new DataTypeConstraintRange(view,
+                                                          placeholderHelper,
+                                                          clientServicesProxy,
+                                                          parserWarningEvent));
     }
 
     @Test
@@ -90,18 +87,14 @@ public class DataTypeConstraintRangeTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testSetValue() {
-        final RemoteCallback<List<String>> successCallback = (c) -> { /* Nothing. */ };
-        final ErrorCallback<Object> errorCallback = (m, t) -> true;
         final String value = "value";
-
-        doReturn(successCallback).when(constraintRange).getSuccessCallback();
-        doReturn(errorCallback).when(constraintRange).getErrorCallback();
-        when(serviceCaller.call(successCallback, errorCallback)).thenReturn(service);
 
         constraintRange.setValue(value);
 
-        verify(service).parseRangeValue(value);
+        verify(clientServicesProxy).parseRangeValue(eq(value),
+                                                    any(ServiceCallback.class));
     }
 
     @Test

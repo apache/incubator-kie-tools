@@ -19,52 +19,61 @@ package org.kie.workbench.common.dmn.client.editors.types.listview.constraint.co
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Consumer;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.dmn.api.editors.types.DMNSimpleTimeZone;
-import org.kie.workbench.common.dmn.api.editors.types.TimeZoneService;
+import org.kie.workbench.common.dmn.client.service.DMNClientServicesProxy;
+import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
+import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 
 @ApplicationScoped
 public class TimeZoneProvider {
 
-    private final Caller<TimeZoneService> service;
+    private final DMNClientServicesProxy clientServicesProxy;
 
     private final List<DMNSimpleTimeZone> timeZones;
 
     private final List<String> timeZonesOffsets;
 
     @Inject
-    public TimeZoneProvider(final Caller<TimeZoneService> service) {
-        this.service = service;
+    public TimeZoneProvider(final DMNClientServicesProxy clientServicesProxy) {
+        this.clientServicesProxy = clientServicesProxy;
         this.timeZones = new ArrayList<>();
         this.timeZonesOffsets = new ArrayList<>();
     }
 
-    public void getTimeZones(final RemoteCallback<List<DMNSimpleTimeZone>> successCallback) {
+    public void getTimeZones(final Consumer<List<DMNSimpleTimeZone>> consumer) {
         if (getLoadedTimeZones().isEmpty()) {
-            service.call((List<DMNSimpleTimeZone> timeZones) -> {
-                getLoadedTimeZones().clear();
-                getLoadedTimeZones().addAll(timeZones);
-                final DMNSimpleTimeZone[] offSets = timeZones.stream()
-                        .sorted(Comparator.comparingDouble(DMNSimpleTimeZone::getOffset))
-                        .toArray(DMNSimpleTimeZone[]::new);
+            clientServicesProxy.getTimeZones(new ServiceCallback<List<DMNSimpleTimeZone>>() {
+                @Override
+                public void onSuccess(final List<DMNSimpleTimeZone> timeZones) {
+                    getLoadedTimeZones().clear();
+                    getLoadedTimeZones().addAll(timeZones);
+                    final DMNSimpleTimeZone[] offSets = timeZones.stream()
+                            .sorted(Comparator.comparingDouble(DMNSimpleTimeZone::getOffset))
+                            .toArray(DMNSimpleTimeZone[]::new);
 
-                getTimeZonesOffsets().clear();
-                for (final DMNSimpleTimeZone offSet : offSets) {
-                    final String offsetString = offSet.getOffsetString();
-                    if (!getTimeZonesOffsets().contains(offsetString)) {
-                        getTimeZonesOffsets().add(offsetString);
+                    getTimeZonesOffsets().clear();
+                    for (final DMNSimpleTimeZone offSet : offSets) {
+                        final String offsetString = offSet.getOffsetString();
+                        if (!getTimeZonesOffsets().contains(offsetString)) {
+                            getTimeZonesOffsets().add(offsetString);
+                        }
                     }
+
+                    consumer.accept(timeZones);
                 }
 
-                successCallback.callback(timeZones);
-            }).getTimeZones();
+                @Override
+                public void onError(final ClientRuntimeError error) {
+                    clientServicesProxy.logWarning(error);
+                }
+            });
         } else {
-            successCallback.callback(getLoadedTimeZones());
+            consumer.accept(getLoadedTimeZones());
         }
     }
 

@@ -20,9 +20,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TimeZone;
 
+import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.dmn.api.editors.types.DMNSimpleTimeZone;
 import org.kie.workbench.common.dmn.api.editors.types.TimeZoneService;
 
+@Service
 public class TimeZoneServiceImpl implements TimeZoneService {
 
     @Override
@@ -63,11 +65,11 @@ public class TimeZoneServiceImpl implements TimeZoneService {
         return milliseconds / 1000.0d / 60.0d / 60.0d;
     }
 
-    TimeZone getTimeZone(final String id){
+    TimeZone getTimeZone(final String id) {
         return TimeZone.getTimeZone(id);
     }
 
-    String[] getAvailableIds(){
+    String[] getAvailableIds() {
         return TimeZone.getAvailableIDs();
     }
 }

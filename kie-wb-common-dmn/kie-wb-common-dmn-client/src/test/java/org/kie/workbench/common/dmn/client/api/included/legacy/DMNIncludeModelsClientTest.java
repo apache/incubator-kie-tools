@@ -16,45 +16,31 @@
 
 package org.kie.workbench.common.dmn.client.api.included.legacy;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Consumer;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
-import org.guvnor.common.services.project.model.WorkspaceProject;
-import org.jboss.errai.common.client.api.ErrorCallback;
-import org.jboss.errai.common.client.api.RemoteCallback;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
 import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedModel;
-import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedModelsService;
 import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedNode;
+import org.kie.workbench.common.dmn.client.service.DMNClientServicesProxy;
+import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.mockito.Mock;
-import org.uberfire.mocks.CallerMock;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.assertFalse;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class DMNIncludeModelsClientTest {
 
     @Mock
-    private CallerMock<DMNIncludedModelsService> service;
-
-    @Mock
-    private WorkspaceProjectContext projectContext;
+    private DMNClientServicesProxy service;
 
     @Mock
     private Consumer<List<DMNIncludedModel>> listConsumerDMNModels;
@@ -65,95 +51,48 @@ public class DMNIncludeModelsClientTest {
     @Mock
     private Consumer<List<ItemDefinition>> listConsumerDMNItemDefinitions;
 
-    @Mock
-    private ErrorCallback<Object> onError;
-
-    @Mock
-    private RemoteCallback<List<DMNIncludedModel>> onSuccess;
-
-    @Mock
-    private DMNIncludedModelsService dmnService;
-
-    @Mock
-    private WorkspaceProject workspaceProject;
-
     private DMNIncludeModelsClient client;
 
     @Before
+    @SuppressWarnings("unchecked")
     public void setup() {
-        client = spy(new DMNIncludeModelsClient(service, projectContext));
+        client = new DMNIncludeModelsClient(service);
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testLoadModels() {
-
-        final Optional<WorkspaceProject> optionalWorkspaceProject = Optional.of(workspaceProject);
-
-        doReturn(onSuccess).when(client).onSuccess(any());
-        doReturn(onError).when(client).onError(any());
-        when(service.call(onSuccess, onError)).thenReturn(dmnService);
-        when(projectContext.getActiveWorkspaceProject()).thenReturn(optionalWorkspaceProject);
-
         client.loadModels(listConsumerDMNModels);
 
-        verify(dmnService).loadModels(workspaceProject);
+        verify(service).loadModels(any(ServiceCallback.class));
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testLoadNodesFromImports() {
-
-        final Optional<WorkspaceProject> optionalWorkspaceProject = Optional.of(workspaceProject);
         final DMNIncludedModel includedModel1 = mock(DMNIncludedModel.class);
         final DMNIncludedModel includedModel2 = mock(DMNIncludedModel.class);
         final List<DMNIncludedModel> imports = asList(includedModel1, includedModel2);
 
-        doReturn(onSuccess).when(client).onSuccess(any());
-        doReturn(onError).when(client).onError(any());
-        when(service.call(onSuccess, onError)).thenReturn(dmnService);
-        when(projectContext.getActiveWorkspaceProject()).thenReturn(optionalWorkspaceProject);
+        client.loadNodesFromImports(imports,
+                                    listConsumerDMNNodes);
 
-        client.loadNodesFromImports(imports, listConsumerDMNNodes);
-
-        verify(dmnService).loadNodesFromImports(workspaceProject, imports);
+        verify(service).loadNodesFromImports(eq(imports),
+                                             any(ServiceCallback.class));
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testLoadItemDefinitionsByNamespace() {
-
-        final Optional<WorkspaceProject> optionalWorkspaceProject = Optional.of(workspaceProject);
         final String modelName = "model1";
         final String namespace = "://namespace1";
 
-        doReturn(onSuccess).when(client).onSuccess(any());
-        doReturn(onError).when(client).onError(any());
-        when(service.call(onSuccess, onError)).thenReturn(dmnService);
-        when(projectContext.getActiveWorkspaceProject()).thenReturn(optionalWorkspaceProject);
+        client.loadItemDefinitionsByNamespace(modelName,
+                                              namespace,
+                                              listConsumerDMNItemDefinitions);
 
-        client.loadItemDefinitionsByNamespace(modelName, namespace, listConsumerDMNItemDefinitions);
-
-        verify(dmnService).loadItemDefinitionsByNamespace(workspaceProject, modelName, namespace);
-    }
-
-    @Test
-    public void testOnError() {
-
-        final boolean error = true;
-        final Throwable throwable = mock(Throwable.class);
-        doNothing().when(client).warn(any());
-
-        final boolean result = client.onError(listConsumerDMNModels).error(error, throwable);
-
-        assertFalse(result);
-        verify(client).warn(eq("[WARNING] DMNIncludeModelsClient could not get the asset list."));
-        verify(listConsumerDMNModels).accept(eq(new ArrayList<>()));
-    }
-
-    @Test
-    public void testOnSuccess() {
-        final List<DMNIncludedModel> dmnIncludedModels = new ArrayList<>();
-
-        client.onSuccess(listConsumerDMNModels).callback(dmnIncludedModels);
-
-        verify(listConsumerDMNModels).accept(dmnIncludedModels);
+        verify(service).loadItemDefinitionsByNamespace(eq(modelName),
+                                                       eq(namespace),
+                                                       any(ServiceCallback.class));
     }
 }

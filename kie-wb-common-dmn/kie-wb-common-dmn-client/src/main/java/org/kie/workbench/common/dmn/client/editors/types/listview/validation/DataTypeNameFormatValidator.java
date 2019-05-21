@@ -20,49 +20,55 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.common.client.api.RemoteCallback;
-import org.kie.workbench.common.dmn.api.editors.types.DMNValidationService;
 import org.kie.workbench.common.dmn.client.editors.common.messages.FlashMessage;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.errors.DataTypeNameIsInvalidErrorMessage;
+import org.kie.workbench.common.dmn.client.service.DMNClientServicesProxy;
+import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
+import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.uberfire.mvp.Command;
 
 @Dependent
 public class DataTypeNameFormatValidator {
 
-    private final Caller<DMNValidationService> service;
+    private final DMNClientServicesProxy clientServicesProxy;
 
     private final Event<FlashMessage> flashMessageEvent;
 
     private final DataTypeNameIsInvalidErrorMessage nameIsInvalidErrorMessage;
 
     @Inject
-    public DataTypeNameFormatValidator(final Caller<DMNValidationService> service,
+    public DataTypeNameFormatValidator(final DMNClientServicesProxy clientServicesProxy,
                                        final Event<FlashMessage> flashMessageEvent,
                                        final DataTypeNameIsInvalidErrorMessage nameIsInvalidErrorMessage) {
-        this.service = service;
+        this.clientServicesProxy = clientServicesProxy;
         this.flashMessageEvent = flashMessageEvent;
         this.nameIsInvalidErrorMessage = nameIsInvalidErrorMessage;
     }
 
     public void ifIsValid(final DataType dataType,
                           final Command onSuccess) {
-
-        final RemoteCallback<Boolean> callback = getCallback(dataType, onSuccess);
         final String dataTypeName = dataType.getName();
 
-        service.call(callback).isValidVariableName(dataTypeName);
+        clientServicesProxy.isValidVariableName(dataTypeName,
+                                                getCallback(dataType, onSuccess));
     }
 
-    RemoteCallback<Boolean> getCallback(final DataType dataType,
-                                        final Command onSuccess) {
-        return isValid -> {
+    ServiceCallback<Boolean> getCallback(final DataType dataType,
+                                         final Command onSuccess) {
+        return new ServiceCallback<Boolean>() {
+            @Override
+            public void onSuccess(final Boolean isValid) {
+                if (isValid) {
+                    onSuccess.execute();
+                } else {
+                    flashMessageEvent.fire(nameIsInvalidErrorMessage.getFlashMessage(dataType));
+                }
+            }
 
-            if (isValid) {
-                onSuccess.execute();
-            } else {
-                flashMessageEvent.fire(nameIsInvalidErrorMessage.getFlashMessage(dataType));
+            @Override
+            public void onError(final ClientRuntimeError error) {
+                clientServicesProxy.logWarning(error);
             }
         };
     }

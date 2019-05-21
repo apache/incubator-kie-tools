@@ -17,20 +17,20 @@
 package org.kie.workbench.common.dmn.client.editors.types.listview.validation;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.common.client.api.RemoteCallback;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.dmn.api.editors.types.DMNValidationService;
 import org.kie.workbench.common.dmn.client.editors.common.messages.FlashMessage;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.errors.DataTypeNameIsInvalidErrorMessage;
+import org.kie.workbench.common.dmn.client.service.DMNClientServicesProxy;
+import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.mockito.Mock;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
 
-import static org.mockito.Mockito.doReturn;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -41,10 +41,7 @@ import static org.mockito.Mockito.when;
 public class DataTypeNameFormatValidatorTest {
 
     @Mock
-    private Caller<DMNValidationService> serviceCaller;
-
-    @Mock
-    private DMNValidationService service;
+    private DMNClientServicesProxy clientServicesProxy;
 
     @Mock
     private EventSourceMock<FlashMessage> flashMessageEvent;
@@ -56,36 +53,35 @@ public class DataTypeNameFormatValidatorTest {
 
     @Before
     public void setup() {
-        validator = spy(new DataTypeNameFormatValidator(serviceCaller, flashMessageEvent, nameIsInvalidErrorMessage));
+        validator = spy(new DataTypeNameFormatValidator(clientServicesProxy,
+                                                        flashMessageEvent,
+                                                        nameIsInvalidErrorMessage));
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testIfIsValid() {
-
         final DataType dataType = mock(DataType.class);
         final Command onSuccess = mock(Command.class);
-        final RemoteCallback<Boolean> callback = (b) -> { /* Nothing. */ };
         final String dataTypeName = "name";
 
-        doReturn(callback).when(validator).getCallback(dataType, onSuccess);
         when(dataType.getName()).thenReturn(dataTypeName);
-        when(serviceCaller.call(callback)).thenReturn(service);
 
         validator.ifIsValid(dataType, onSuccess);
 
-        verify(service).isValidVariableName(dataTypeName);
+        verify(clientServicesProxy).isValidVariableName(eq(dataTypeName),
+                                                        any(ServiceCallback.class));
     }
 
     @Test
     public void testGetCallbackWhenIsValid() {
-
         final DataType dataType = mock(DataType.class);
         final Command onSuccess = mock(Command.class);
         final FlashMessage flashMessage = mock(FlashMessage.class);
 
         when(nameIsInvalidErrorMessage.getFlashMessage(dataType)).thenReturn(flashMessage);
 
-        validator.getCallback(dataType, onSuccess).callback(true);
+        validator.getCallback(dataType, onSuccess).onSuccess(true);
 
         verify(onSuccess).execute();
         verify(flashMessageEvent, never()).fire(flashMessage);
@@ -93,14 +89,13 @@ public class DataTypeNameFormatValidatorTest {
 
     @Test
     public void testGetCallbackWhenIsNotValid() {
-
         final DataType dataType = mock(DataType.class);
         final Command onSuccess = mock(Command.class);
         final FlashMessage flashMessage = mock(FlashMessage.class);
 
         when(nameIsInvalidErrorMessage.getFlashMessage(dataType)).thenReturn(flashMessage);
 
-        validator.getCallback(dataType, onSuccess).callback(false);
+        validator.getCallback(dataType, onSuccess).onSuccess(false);
 
         verify(flashMessageEvent).fire(flashMessage);
         verify(onSuccess, never()).execute();
