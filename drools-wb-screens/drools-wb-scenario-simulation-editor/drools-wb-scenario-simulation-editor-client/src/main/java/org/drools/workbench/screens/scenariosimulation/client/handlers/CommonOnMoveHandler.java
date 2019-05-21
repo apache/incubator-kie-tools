@@ -95,7 +95,7 @@ public class CommonOnMoveHandler extends AbstractScenarioSimulationGridPanelHand
                 int xMiddleWidth = (int) column.getWidth() / 2;
                 int xPosition = (int) xYCell.getX() + xMiddleWidth;
                 /* It determines if the popover should be draw on the RIGHT or in the LEFT of the cell */
-                if (xPosition  + POPOVER_WIDTH > scenarioGrid.getLayer().getWidth()) {
+                if (xPosition + POPOVER_WIDTH > scenarioGrid.getLayer().getWidth()) {
                     xPosition = (int) xYCell.getX() - xMiddleWidth;
                     position = PopoverView.Position.LEFT;
                 }
@@ -117,12 +117,10 @@ public class CommonOnMoveHandler extends AbstractScenarioSimulationGridPanelHand
                                                            errorValue  != null ? errorValue.toString() : NULL),
                                                    ScenarioSimulationEditorConstants.INSTANCE.keep(),
                                                    ScenarioSimulationEditorConstants.INSTANCE.apply(),
-                                                   () -> {
-                                                       scenarioGrid.getEventBus().fireEvent(
-                                                               new SetGridCellValueEvent(uiRowIndex,
-                                                                                         uiColumnIndex,
-                                                                                         errorValue != null ? errorValue.toString() : NULL));
-                                                   },
+                                                   () -> scenarioGrid.getEventBus().fireEvent(
+                                                           new SetGridCellValueEvent(uiRowIndex,
+                                                                                     uiColumnIndex,
+                                                                                     errorValue != null ? errorValue.toString() : NULL)),
                                                    xPosition,
                                                    yPosition,
                                                    position);

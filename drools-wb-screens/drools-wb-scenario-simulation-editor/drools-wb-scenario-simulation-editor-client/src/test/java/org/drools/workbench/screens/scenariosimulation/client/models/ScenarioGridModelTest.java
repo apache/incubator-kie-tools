@@ -141,6 +141,7 @@ public class ScenarioGridModelTest extends AbstractScenarioSimulationTest {
         when(simulationMock.cloneScenario(ROW_COUNT, ROW_COUNT + 1)).thenReturn(scenarioMock);
 
         when(scenarioMock.getFactMappingValue(any(), any())).thenReturn(Optional.of(factMappingValueMock));
+        when(scenarioMock.getFactMappingValue(isA(FactMapping.class))).thenReturn(Optional.of(factMappingValueMock));
         when(factMappingValueMock.getStatus()).thenReturn(FactMappingValueStatus.FAILED_WITH_ERROR);
 
         gridCellSupplier = () -> gridCellMock;
@@ -567,4 +568,37 @@ public class ScenarioGridModelTest extends AbstractScenarioSimulationTest {
         }
         reset(eventBusMock);
     }
+
+    @Test
+    public void resetError() {
+        scenarioGridModel = spy(new ScenarioGridModel(false) {
+            {
+                this.simulation = simulationMock;
+                this.eventBus = eventBusMock;
+                this.rows = GRID_ROWS;
+                this.columns = gridColumns;
+            }
+
+            @Override
+            public void refreshErrors() {
+                //Do nothing
+            }
+
+            @Override
+            public GridCell<?> getCell(final int rowIndex,
+                                       final int columnIndex) {
+                if (rowIndex < 0 || rowIndex > rows.size() - 1) {
+                    return null;
+                }
+                return gridCellMock;
+            }
+        });
+        scenarioGridModel.resetError(ROW_INDEX, COLUMN_INDEX);
+        verify(simulationMock, times(1)).getScenarioByIndex(eq(ROW_INDEX));
+        verify(simulationDescriptorMock, times(1)).getFactMappingByIndex(eq(COLUMN_INDEX));
+        verify(scenarioMock, times(1)).getFactMappingValue(eq(factMappingMock));
+        verify(factMappingValueMock, times(1)).resetStatus();
+        verify(scenarioGridModel, times(1)).refreshErrors();
+    }
+
 }
