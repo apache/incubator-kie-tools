@@ -43,8 +43,8 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.select.Multi
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.kie.workbench.common.stunner.core.client.registry.impl.ClientCommandRegistry;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
-import org.kie.workbench.common.stunner.core.registry.impl.ClientCommandRegistry;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.mvp.Command;

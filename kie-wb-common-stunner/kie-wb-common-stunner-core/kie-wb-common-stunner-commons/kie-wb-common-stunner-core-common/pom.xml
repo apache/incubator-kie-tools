@@ -41,15 +41,7 @@
       <artifactId>kie-wb-common-stunner-core-api</artifactId>
     </dependency>
 
-    <!-- TODO: Should not be present here. -->
-    <dependency>
-      <groupId>org.kie.workbench.stunner</groupId>
-      <artifactId>kie-wb-common-stunner-client-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
     <!-- GWT. -->
-
     <dependency>
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-user</artifactId>

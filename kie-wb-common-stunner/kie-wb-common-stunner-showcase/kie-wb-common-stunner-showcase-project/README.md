@@ -40,15 +40,12 @@ To compile showcase project with source map execute following commands:
   - *GWT Modules to load*: org.kie.workbench.common.stunner.project.FastCompiledStunnerProjectShowcase             
   - *VM options*: 
         
-        -Xmx4g
+        -Xmx8g
         -Xms1g
         -Xss1M
         -XX:CompileThreshold=7000
         -Derrai.jboss.home=$PATH_OF_YOUR_CLONED_KIE_WB_COMMON_REPO/kie-wb-common-stunner/kie-wb-common-stunner-showcase/kie-wb-common-stunner-showcase-project/target/wildfly-14.0.1.Final
-        -Derrai.server.classOutput=$PATH_OF_YOUR_CLONED_KIE_WB_COMMON_REPO/kie-wb-common-stunner/kie-wb-common-stunner-showcase/kie-wb-common-stunner-showcase-project/target
-        -Djava.util.prefs.syncInterval=2000000
-        -Dorg.uberfire.async.executor.safemode=true
-        -Dorg.uberfire.nio.git.dir=/tmp/dir
+        -Derrai.marshalling.server.classOutput=$PATH_OF_YOUR_CLONED_KIE_WB_COMMON_REPO/kie-wb-common-stunner/kie-wb-common-stunner-showcase/kie-wb-common-stunner-showcase-project/target
         -Derrai.dynamic_validation.enabled=true
                       
   - *Dev mode parameters*: 

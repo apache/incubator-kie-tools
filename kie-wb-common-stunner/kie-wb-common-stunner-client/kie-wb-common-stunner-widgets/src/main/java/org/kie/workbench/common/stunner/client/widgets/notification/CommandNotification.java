@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.client.widgets.notification;
 import java.util.Optional;
 
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
+import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationMessages;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
@@ -79,8 +80,8 @@ public final class CommandNotification
 
         private static String getErrorMessage(final ClientTranslationService translationService,
                                               final CommandResult<CanvasViolation> result) {
-            return CoreTranslationMessages.getCanvasCommandValidationsErrorMessage(translationService,
-                                                                                   result.getViolations());
+            return ClientTranslationMessages.getCanvasCommandValidationsErrorMessage(translationService,
+                                                                                     result.getViolations());
         }
 
         private static Notification.Type getNotificationType(final CommandResult<CanvasViolation> result) {

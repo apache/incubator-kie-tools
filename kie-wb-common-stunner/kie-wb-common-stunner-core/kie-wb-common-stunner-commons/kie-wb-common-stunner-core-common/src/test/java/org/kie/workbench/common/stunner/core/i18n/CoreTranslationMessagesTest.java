@@ -25,7 +25,6 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.validation.DiagramElementViolation;
 import org.kie.workbench.common.stunner.core.validation.ModelBeanViolation;
@@ -84,28 +83,6 @@ public class CoreTranslationMessagesTest {
         final String message = CoreTranslationMessages.getRuleValidationMessage(translationService,
                                                                                 ruleViolation);
         assertEquals("(WARNING) " + "rv1",
-                     message);
-    }
-
-    @Test
-    public void testCanvasValidationMessage() {
-
-        final RuleViolation ruleViolation = mock(RuleViolation.class);
-        final CanvasViolation canvasViolation = mock(CanvasViolation.class);
-        when(canvasViolation.getViolationType()).thenReturn(Violation.Type.ERROR);
-        when(canvasViolation.getRuleViolation()).thenReturn(ruleViolation);
-        when(ruleViolation.getViolationType()).thenReturn(Violation.Type.ERROR);
-        when(ruleViolation.getViolationType()).thenReturn(Violation.Type.ERROR);
-        final Iterable<CanvasViolation> violations = Collections.singletonList(canvasViolation);
-        when(translationService.getValue(eq("aKey"))).thenReturn("aValue");
-        when(translationService.getViolationMessage(eq(canvasViolation))).thenReturn("cv1");
-        String message = CoreTranslationMessages.getCanvasValidationsErrorMessage(translationService,
-                                                                                  "aKey",
-                                                                                  violations);
-        message = new SafeHtmlBuilder().appendEscapedLines(message).toSafeHtml().asString();
-        assertEquals("aValue." + HTML_NEW_LINE + "R" + COLON + HTML_NEW_LINE +
-                             OPEN_BRA + "1" + CLOSE_BRA + "(ERROR) "
-                             + "cv1" + HTML_NEW_LINE,
                      message);
     }
 

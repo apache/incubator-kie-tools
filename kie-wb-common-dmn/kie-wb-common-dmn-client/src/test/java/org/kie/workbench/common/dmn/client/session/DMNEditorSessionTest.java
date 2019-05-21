@@ -43,10 +43,10 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.Abs
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyboardControl;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.kie.workbench.common.stunner.core.client.registry.impl.ClientCommandRegistry;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.registry.RegistryFactory;
 import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
-import org.kie.workbench.common.stunner.core.registry.impl.ClientCommandRegistry;
 import org.mockito.Mock;
 
 import static org.mockito.Matchers.eq;

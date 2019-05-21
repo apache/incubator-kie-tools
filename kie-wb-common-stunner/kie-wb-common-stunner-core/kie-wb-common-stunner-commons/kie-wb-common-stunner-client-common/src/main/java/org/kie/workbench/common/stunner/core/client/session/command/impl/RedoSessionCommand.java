@@ -26,6 +26,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandExecutedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandUndoneEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
+import org.kie.workbench.common.stunner.core.client.command.ClientRedoCommandHandler;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
@@ -35,7 +36,6 @@ import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
-import org.kie.workbench.common.stunner.core.command.util.RedoCommandHandler;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 import static org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeysMatcher.doKeysMatch;
@@ -45,7 +45,7 @@ import static org.kie.workbench.common.stunner.core.client.canvas.controls.keybo
 public class RedoSessionCommand extends AbstractClientSessionCommand<EditorSession> {
 
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
-    private final RedoCommandHandler<Command<AbstractCanvasHandler, CanvasViolation>> redoCommandHandler;
+    private final ClientRedoCommandHandler<Command<AbstractCanvasHandler, CanvasViolation>> redoCommandHandler;
 
     protected RedoSessionCommand() {
         this(null,
@@ -54,7 +54,7 @@ public class RedoSessionCommand extends AbstractClientSessionCommand<EditorSessi
 
     @Inject
     public RedoSessionCommand(final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                              final RedoCommandHandler<Command<AbstractCanvasHandler, CanvasViolation>> redoCommandHandler) {
+                              final ClientRedoCommandHandler<Command<AbstractCanvasHandler, CanvasViolation>> redoCommandHandler) {
         super(false);
         this.redoCommandHandler = redoCommandHandler;
         this.sessionCommandManager = sessionCommandManager;

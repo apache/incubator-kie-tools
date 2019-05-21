@@ -16,14 +16,10 @@
 
 package org.kie.workbench.common.stunner.core.diagram;
 
-import java.util.Collection;
-
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
-import org.kie.workbench.common.stunner.core.client.ShapeSet;
-import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.uberfire.backend.vfs.Path;
 
 @Portable
@@ -46,7 +42,6 @@ public final class MetadataImpl extends AbstractMetadata {
 
         private final String defSetId;
         private final DefinitionManager definitionManager;
-        private final ShapeManager shapeManager;
         private String title;
         private String ssid;
         private Path root;
@@ -59,17 +54,8 @@ public final class MetadataImpl extends AbstractMetadata {
 
         public MetadataImplBuilder(final String defSetId,
                                    final DefinitionManager definitionManager) {
-            this(defSetId,
-                 definitionManager,
-                 null);
-        }
-
-        public MetadataImplBuilder(final String defSetId,
-                                   final DefinitionManager definitionManager,
-                                   final ShapeManager shapeManager) {
             this.defSetId = defSetId;
             this.definitionManager = definitionManager;
-            this.shapeManager = shapeManager;
         }
 
         public MetadataImplBuilder setPath(final Path path) {
@@ -101,30 +87,12 @@ public final class MetadataImpl extends AbstractMetadata {
                 if (null != defSet) {
                     result.setTitle(null != title ? title :
                                             definitionManager.adapters().forDefinitionSet().getDescription(defSet));
-                    final String s = null != ssid ? ssid : (null != getShapeSet() ? getShapeSet().getId() : null);
-                    if (null != s) {
-                        result.setShapeSetId(s);
-                    }
                 }
             } else {
                 result.setTitle(title);
                 result.setShapeSetId(ssid);
             }
             return result;
-        }
-
-        private ShapeSet<?> getShapeSet() {
-            if (null != shapeManager) {
-                final Collection<ShapeSet<?>> sets = shapeManager.getShapeSets();
-                if (null != sets && !sets.isEmpty()) {
-                    for (final ShapeSet<?> set : sets) {
-                        if (set.getDefinitionSetId().equals(defSetId)) {
-                            return set;
-                        }
-                    }
-                }
-            }
-            return null;
         }
     }
 }

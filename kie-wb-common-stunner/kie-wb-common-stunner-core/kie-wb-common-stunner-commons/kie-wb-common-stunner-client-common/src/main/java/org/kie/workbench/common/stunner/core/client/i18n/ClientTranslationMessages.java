@@ -58,6 +58,23 @@ public class ClientTranslationMessages extends CoreTranslationMessages {
                                                        result);
     }
 
+    public static String getCanvasValidationsErrorMessage(final StunnerTranslationService translationService,
+                                                          final String key,
+                                                          final Iterable<CanvasViolation> result) {
+        final String message = translationService.getValue(key) + DOT + NEW_LINE
+                + translationService.getValue(CoreTranslationMessages.REASON) + COLON + NEW_LINE
+                + getValidationMessages(translationService,
+                                        result);
+        return message;
+    }
+
+    public static String getCanvasCommandValidationsErrorMessage(final StunnerTranslationService translationService,
+                                                                 final Iterable<CanvasViolation> result) {
+        return getCanvasValidationsErrorMessage(translationService,
+                                                CoreTranslationMessages.COMMAND_FAILED,
+                                                result);
+    }
+
     public String getRuleValidationMessage(final RuleViolation violation) {
         return getRuleValidationMessage(translationService,
                                         violation);
@@ -71,5 +88,18 @@ public class ClientTranslationMessages extends CoreTranslationMessages {
     public String getDomainValidationMessage(final DomainViolation violation) {
         return getDomainValidationMessage(translationService,
                                           violation);
+    }
+
+    private static String getValidationMessages(final StunnerTranslationService translationService,
+                                                final Iterable<CanvasViolation> violations) {
+        final StringBuilder message = new StringBuilder();
+        final int[] i = {1};
+        violations
+                .forEach(v -> message
+                        .append(OPEN_BRA).append(i[0]++).append(CLOSE_BRA)
+                        .append(getRuleValidationMessage(translationService,
+                                                         v))
+                        .append(NEW_LINE));
+        return message.toString();
     }
 }

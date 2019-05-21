@@ -49,12 +49,12 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.Request;
 import org.kie.workbench.common.stunner.core.client.command.RequiresCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.kie.workbench.common.stunner.core.client.registry.impl.ClientCommandRegistry;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.Session;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
-import org.kie.workbench.common.stunner.core.registry.impl.ClientCommandRegistry;
 import org.uberfire.mvp.Command;
 
 @Dependent

@@ -25,6 +25,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.Key
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandExecutedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandUndoneEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
+import org.kie.workbench.common.stunner.core.client.command.ClientRedoCommandHandler;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
@@ -32,7 +33,6 @@ import org.kie.workbench.common.stunner.core.client.session.command.AbstractClie
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
-import org.kie.workbench.common.stunner.core.command.util.RedoCommandHandler;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -47,7 +47,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
 public class RedoSessionCommandTest extends BaseSessionCommandKeyboardTest {
 
     @Mock
-    private RedoCommandHandler<Command<AbstractCanvasHandler, CanvasViolation>> redoCommandHandler;
+    private ClientRedoCommandHandler<Command<AbstractCanvasHandler, CanvasViolation>> redoCommandHandler;
 
     @Mock
     private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
@@ -132,8 +132,6 @@ public class RedoSessionCommandTest extends BaseSessionCommandKeyboardTest {
         doCallRealMethod().when(command).onCommandExecuted(any(CanvasCommandExecutedEvent.class));
         doCallRealMethod().when(command).bind(any(EditorSession.class));
 
-
-
         when(session.getCanvasHandler()).thenReturn(canvasHandler);
         when(session.getKeyboardControl()).thenReturn(keyboardControl);
         when(keyboardControl.addKeyShortcutCallback(any(KeyboardControl.KeyShortcutCallback.class))).thenReturn(keyboardControl);
@@ -151,8 +149,6 @@ public class RedoSessionCommandTest extends BaseSessionCommandKeyboardTest {
 
         doCallRealMethod().when(command).onCommandExecuted(any(CanvasCommandExecutedEvent.class));
         doCallRealMethod().when(command).bind(any(EditorSession.class));
-
-
 
         when(session.getCanvasHandler()).thenReturn(canvasHandler);
         when(session.getKeyboardControl()).thenReturn(keyboardControl);

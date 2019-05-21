@@ -18,12 +18,11 @@ package org.kie.workbench.common.stunner.core.command.util;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandManager;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
-import org.kie.workbench.common.stunner.core.registry.impl.ClientCommandRegistry;
+import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
 
 /**
  * This handler is an util class that achieves command "re-do" features.
@@ -44,15 +43,15 @@ import org.kie.workbench.common.stunner.core.registry.impl.ClientCommandRegistry
 @Dependent
 public class RedoCommandHandler<C extends Command> {
 
-    private final ClientCommandRegistry<C> registry;
+    private final CommandRegistry<C> registry;
 
     protected RedoCommandHandler() {
         this(null);
     }
 
     @Inject
-    public RedoCommandHandler(final ClientCommandRegistry<C> clientCommandRegistry) {
-        this.registry = clientCommandRegistry;
+    public RedoCommandHandler(final CommandRegistry<C> commandRegistry) {
+        this.registry = commandRegistry;
     }
 
     public boolean onUndoCommandExecuted(final C command) {
@@ -88,15 +87,15 @@ public class RedoCommandHandler<C extends Command> {
                                       last);
     }
 
-    public void setSession(ClientSession clientSession) {
-        registry.setSession(clientSession);
-    }
-
     public boolean isEnabled() {
         return !registry.isEmpty();
     }
 
     public void clear() {
         registry.clear();
+    }
+
+    protected CommandRegistry<C> getRegistry() {
+        return registry;
     }
 }

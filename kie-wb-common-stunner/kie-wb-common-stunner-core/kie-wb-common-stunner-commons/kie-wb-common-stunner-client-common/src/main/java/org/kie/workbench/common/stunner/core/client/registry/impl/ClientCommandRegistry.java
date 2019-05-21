@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.core.registry.impl;
+package org.kie.workbench.common.stunner.core.client.registry.impl;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -23,6 +23,7 @@ import javax.inject.Inject;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.RegisterChangedEvent;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.command.Command;
+import org.kie.workbench.common.stunner.core.registry.impl.CommandRegistryImpl;
 
 /**
  * The client implementation for the CommandRegistry type.
