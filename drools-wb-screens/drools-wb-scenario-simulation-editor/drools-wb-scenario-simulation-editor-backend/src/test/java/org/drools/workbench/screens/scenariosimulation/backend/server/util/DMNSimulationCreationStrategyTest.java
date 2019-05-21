@@ -26,31 +26,41 @@ import org.drools.scenariosimulation.api.model.Simulation;
 import org.drools.workbench.screens.scenariosimulation.backend.server.AbstractDMNTest;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTuple;
+import org.drools.workbench.screens.scenariosimulation.service.DMNTypeService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.api.core.ast.InputDataNode;
+import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DMNSimulationCreationStrategyTest extends AbstractDMNTest {
 
     private DMNSimulationCreationStrategy dmnSimulationCreationStrategy;
 
+    @Mock
+    protected DMNTypeService dmnTypeServiceMock;
+
     @Before
     public void init() {
         super.init();
         dmnSimulationCreationStrategy = spy(new DMNSimulationCreationStrategy() {
-
+            {
+                this.dmnTypeService = dmnTypeServiceMock;
+            }
         });
     }
 
@@ -61,7 +71,9 @@ public class DMNSimulationCreationStrategyTest extends AbstractDMNTest {
         final String dmnFilePath = "test";
         doReturn(factModelTuple).when(dmnSimulationCreationStrategy).getFactModelTuple(any(), any());
         final Simulation retrieved = dmnSimulationCreationStrategy.createSimulation(pathMock, dmnFilePath);
+
         assertNotNull(retrieved);
+        verify(dmnTypeServiceMock, times(1)).initializeNameAndNamespace(any(), any(), anyString());
     }
 
     private FactModelTuple getFactModelTuple() throws IOException {

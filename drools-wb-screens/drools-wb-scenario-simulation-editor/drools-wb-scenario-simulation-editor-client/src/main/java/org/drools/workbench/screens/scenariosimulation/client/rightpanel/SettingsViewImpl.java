@@ -54,17 +54,11 @@ public class SettingsViewImpl
     @DataField("ruleSettings")
     protected DivElement ruleSettings = Document.get().createDivElement();
 
-    @DataField("kieSession")
-    protected InputElement kieSession = Document.get().createTextInputElement();
-
-    @DataField("kieBase")
-    protected InputElement kieBase = Document.get().createTextInputElement();
+    @DataField("dmoSession")
+    protected InputElement dmoSession = Document.get().createTextInputElement();
 
     @DataField("ruleFlowGroup")
     protected InputElement ruleFlowGroup = Document.get().createTextInputElement();
-
-    @DataField("dmoSession")
-    protected InputElement dmoSession = Document.get().createTextInputElement();
 
     @DataField("dmnSettings")
     protected DivElement dmnSettings = Document.get().createDivElement();
@@ -73,7 +67,7 @@ public class SettingsViewImpl
     protected LabelElement dmnFileLabel = Document.get().createLabelElement();
 
     @DataField("dmnFilePath")
-    protected SpanElement dmnFilePath = Document.get().createSpanElement();
+    protected InputElement dmnFilePath = Document.get().createTextInputElement();
 
     @DataField("dmnNamespaceLabel")
     protected LabelElement dmnNamespaceLabel = Document.get().createLabelElement();
@@ -92,6 +86,9 @@ public class SettingsViewImpl
 
     @DataField("saveButton")
     protected ButtonElement saveButton = Document.get().createButtonElement();
+
+    @DataField("skipFromBuildLabel")
+    protected SpanElement skipFromBuildLabel = Document.get().createSpanElement();
 
     public SettingsViewImpl() {
     }
@@ -141,23 +138,13 @@ public class SettingsViewImpl
     }
 
     @Override
-    public InputElement getKieSession() {
-        return kieSession;
-    }
-
-    @Override
-    public InputElement getKieBase() {
-        return kieBase;
+    public InputElement getDmoSession() {
+        return dmoSession;
     }
 
     @Override
     public InputElement getRuleFlowGroup() {
         return ruleFlowGroup;
-    }
-
-    @Override
-    public InputElement getDmoSession() {
-        return dmoSession;
     }
 
     @Override
@@ -171,7 +158,7 @@ public class SettingsViewImpl
     }
 
     @Override
-    public SpanElement getDmnFilePath() {
+    public InputElement getDmnFilePath() {
         return dmnFilePath;
     }
 
@@ -198,6 +185,11 @@ public class SettingsViewImpl
     @Override
     public InputElement getSkipFromBuild() {
         return skipFromBuild;
+    }
+
+    @Override
+    public SpanElement getSkipFromBuildLabel() {
+        return skipFromBuildLabel;
     }
 
     @Override

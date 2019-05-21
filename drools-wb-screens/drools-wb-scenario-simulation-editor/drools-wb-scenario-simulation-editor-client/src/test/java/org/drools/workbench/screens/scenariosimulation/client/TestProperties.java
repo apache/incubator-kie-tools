@@ -178,7 +178,6 @@ public class TestProperties {
     public static final String SCENARIO_TYPE = "SCENARIO_TYPE";
     public static final String FILE_NAME = "FILE_NAME";
     public static final String KIE_SESSION = "KIE_SESSION";
-    public static final String KIE_BASE = "KIE_BASE";
     public static final String RULE_FLOW_GROUP = "RULE_FLOW_GROUP";
     public static final String DMO_SESSION = "DMO_SESSION";
     public static final String DMN_FILE_PATH = "DMN_FILE_PATH";

@@ -25,11 +25,13 @@ import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToo
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModelContent;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTuple;
 import org.drools.workbench.screens.scenariosimulation.service.DMNTypeService;
+import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
 
 public class DMNDataManagementStrategy extends AbstractDataManagementStrategy {
 
@@ -100,9 +102,10 @@ public class DMNDataManagementStrategy extends AbstractDataManagementStrategy {
         }
     }
 
-    private ErrorCallback<Object> getErrorCallback(TestToolsView.Presenter testToolsPresenter) {
+    private ErrorCallback<Message> getErrorCallback(TestToolsView.Presenter testToolsPresenter) {
         return (error, exception) -> {
             testToolsPresenter.setDataObjectFieldsMap(new TreeMap<>());
+            ErrorPopup.showMessage(exception.getMessage());
             return false;
         };
     }

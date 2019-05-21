@@ -40,6 +40,7 @@ import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
 import org.drools.scenariosimulation.api.model.Simulation;
 import org.drools.scenariosimulation.api.model.SimulationDescriptor;
+import org.drools.scenariosimulation.api.model.SimulationRunMetadata;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
 import org.drools.workbench.screens.scenariosimulation.client.editor.strategies.DMNDataManagementStrategy;
 import org.drools.workbench.screens.scenariosimulation.client.editor.strategies.DMODataManagementStrategy;
@@ -48,6 +49,7 @@ import org.drools.workbench.screens.scenariosimulation.client.events.ImportEvent
 import org.drools.workbench.screens.scenariosimulation.client.events.RedoEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.UndoEvent;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioSimulationDocksHandler;
+import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioSimulationHasBusyIndicatorDefaultErrorCallback;
 import org.drools.workbench.screens.scenariosimulation.client.popup.ConfirmPopupPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.popup.CustomBusyPopup;
 import org.drools.workbench.screens.scenariosimulation.client.producers.ScenarioSimulationProducer;
@@ -69,7 +71,6 @@ import org.drools.workbench.screens.scenariosimulation.service.DMNTypeService;
 import org.drools.workbench.screens.scenariosimulation.service.ImportExportService;
 import org.drools.workbench.screens.scenariosimulation.service.ScenarioSimulationService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
-import org.jboss.errai.bus.client.api.base.DefaultErrorCallback;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -98,7 +99,6 @@ import org.uberfire.ext.editor.commons.service.support.SupportsCopy;
 import org.uberfire.ext.editor.commons.service.support.SupportsDelete;
 import org.uberfire.ext.editor.commons.service.support.SupportsRename;
 import org.uberfire.ext.editor.commons.service.support.SupportsSaveAndRename;
-import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.lifecycle.OnStartup;
@@ -301,7 +301,7 @@ public class ScenarioSimulationEditorPresenter
                 .filter(elem -> indexOfScenarioToRun.contains(elem.getIndex() - 1))
                 .collect(Collectors.toList());
         view.showBusyIndicator(ScenarioSimulationEditorConstants.INSTANCE.running());
-        service.call(getRefreshModelCallback(), new HasBusyIndicatorDefaultErrorCallback(view))
+        service.call(getRefreshModelCallback(), new ScenarioSimulationHasBusyIndicatorDefaultErrorCallback(view))
                 .runScenario(versionRecordManager.getCurrentPath(),
                              simulation.getSimulationDescriptor(),
                              toRun);
@@ -427,10 +427,10 @@ public class ScenarioSimulationEditorPresenter
     @Override
     protected void save(final String commitMessage) {
         service.call(getSaveSuccessCallback(getJsonModel(model).hashCode()),
-                     new HasBusyIndicatorDefaultErrorCallback(baseView)).save(versionRecordManager.getCurrentPath(),
-                                                                              model,
-                                                                              metadata,
-                                                                              commitMessage);
+                     new ScenarioSimulationHasBusyIndicatorDefaultErrorCallback(baseView)).save(versionRecordManager.getCurrentPath(),
+                                                                                                model,
+                                                                                                metadata,
+                                                                                                commitMessage);
     }
 
     @Override
@@ -462,7 +462,7 @@ public class ScenarioSimulationEditorPresenter
 
     protected void onExportToCsv() {
         importExportService.call(getExportCallBack(),
-                                 new DefaultErrorCallback())
+                                 new ScenarioSimulationHasBusyIndicatorDefaultErrorCallback(view))
                 .exportSimulation(CSV, context.getStatus().getSimulation());
     }
 
@@ -561,11 +561,8 @@ public class ScenarioSimulationEditorPresenter
 
     protected void setCoverageReport(CoverageReportView.Presenter presenter) {
         Type type = dataManagementStrategy instanceof DMODataManagementStrategy ? Type.RULE : Type.DMN;
-        if (lastRunResult != null) {
-            presenter.setSimulationRunMetadata(this.lastRunResult.getSimulationRunMetadata(), type);
-        } else {
-            presenter.showEmptyStateMessage(type);
-        }
+        SimulationRunMetadata simulationRunMetadata = lastRunResult != null ? lastRunResult.getSimulationRunMetadata() : null;
+        presenter.populateCoverageReport(type, simulationRunMetadata);
     }
 
     protected String getJsonModel(ScenarioSimulationModel model) {
@@ -620,9 +617,9 @@ public class ScenarioSimulationEditorPresenter
             dataManagementStrategy = new DMNDataManagementStrategy(dmnTypeService, context, eventBus);
         }
         dataManagementStrategy.manageScenarioSimulationModelContent(versionRecordManager.getCurrentPath(), content);
+        // NOTE: keep here initialization of docks related with model
         populateRightDocks(TestToolsPresenter.IDENTIFIER);
         populateRightDocks(SettingsPresenter.IDENTIFIER);
-        populateRightDocks(CoverageReportPresenter.IDENTIFIER);
         model = content.getModel();
         if (dataManagementStrategy instanceof DMODataManagementStrategy) {
             importsWidget.setContent(((DMODataManagementStrategy) dataManagementStrategy).getOracle(),
@@ -723,5 +720,4 @@ public class ScenarioSimulationEditorPresenter
     private Command getPopulateTestToolsCommand() {
         return () -> populateRightDocks(TestToolsPresenter.IDENTIFIER);
     }
-
 }

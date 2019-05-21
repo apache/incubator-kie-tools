@@ -45,8 +45,6 @@ public interface CoverageReportView
 
     interface Presenter extends SubDockView.Presenter {
 
-        void setSimulationRunMetadata(SimulationRunMetadata simulationRunMetadata, ScenarioSimulationModel.Type type);
-
-        void showEmptyStateMessage(ScenarioSimulationModel.Type type);
+        void populateCoverageReport(ScenarioSimulationModel.Type type, SimulationRunMetadata simulationRunMetadata);
     }
 }

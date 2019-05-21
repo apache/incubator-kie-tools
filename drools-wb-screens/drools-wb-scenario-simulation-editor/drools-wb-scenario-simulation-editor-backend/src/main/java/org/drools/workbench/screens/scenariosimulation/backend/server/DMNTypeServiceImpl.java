@@ -26,6 +26,7 @@ import java.util.TreeMap;
 
 import javax.enterprise.context.ApplicationScoped;
 
+import org.drools.scenariosimulation.api.model.Simulation;
 import org.drools.scenariosimulation.backend.util.DMNSimulationUtils;
 import org.drools.workbench.screens.scenariosimulation.backend.server.exceptions.WrongDMNTypeException;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree;
@@ -80,6 +81,13 @@ public class DMNTypeServiceImpl
         errorHolder.getMultipleNestedCollection().forEach(factModelTuple::addMultipleNestedCollectionError);
         errorHolder.getMultipleNestedObject().forEach(factModelTuple::addMultipleNestedObjectError);
         return factModelTuple;
+    }
+
+    @Override
+    public void initializeNameAndNamespace(Simulation simulation, Path path, String dmnPath) {
+        DMNModel dmnModel = getDMNModel(path, dmnPath);
+        simulation.getSimulationDescriptor().setDmnName(dmnModel.getName());
+        simulation.getSimulationDescriptor().setDmnNamespace(dmnModel.getNamespace());
     }
 
     public DMNModel getDMNModel(Path path, String dmnPath) {

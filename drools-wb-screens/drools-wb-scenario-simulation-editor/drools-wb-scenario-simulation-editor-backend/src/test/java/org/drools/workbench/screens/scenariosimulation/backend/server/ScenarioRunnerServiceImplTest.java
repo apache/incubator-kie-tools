@@ -16,7 +16,9 @@
 package org.drools.workbench.screens.scenariosimulation.backend.server;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.drools.scenariosimulation.api.model.Scenario;
@@ -44,6 +46,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.drools.scenariosimulation.api.model.ScenarioSimulationModel.Type;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -55,7 +58,7 @@ import static org.mockito.Mockito.when;
 public class ScenarioRunnerServiceImplTest {
 
     @Mock
-    ScenarioLoader scenarioLoader;
+    private ScenarioLoader scenarioLoaderMock;
     @Mock
     private AbstractScenarioRunner runnerMock;
     @Mock
@@ -75,21 +78,28 @@ public class ScenarioRunnerServiceImplTest {
     @Before
     public void setup() {
         when(classLoaderHelperMock.getModuleClassLoader(any())).thenReturn(ClassLoader.getSystemClassLoader());
+        when(buildInfoServiceMock.getBuildInfo(any())).thenReturn(buildInfoMock);
+        when(buildInfoMock.getKieContainer()).thenReturn(kieContainerMock);
     }
 
     @Test
     public void runAllTests() throws Exception {
+        Map<Path, ScenarioSimulationModel> scenarioSimulationMap = new HashMap<>();
+
+        scenarioSimulationMap.put(mock(Path.class), makeScenarioSimulationModel(true));
+        scenarioSimulationMap.put(mock(Path.class), makeScenarioSimulationModel(false));
+
+        when(scenarioLoaderMock.loadScenarios(any())).thenReturn(scenarioSimulationMap);
         List<TestResultMessage> testResultMessages = scenarioRunnerService.runAllTests("test", mock(Path.class));
 
         assertNotNull(testResultMessages);
+        assertEquals(1, testResultMessages.size());
     }
 
     @Test
     public void runTest() throws Exception {
-        when(buildInfoServiceMock.getBuildInfo(any())).thenReturn(buildInfoMock);
-        when(buildInfoMock.getKieContainer()).thenReturn(kieContainerMock);
         Simulation simulation = new Simulation();
-        simulation.getSimulationDescriptor().setType(ScenarioSimulationModel.Type.RULE);
+        simulation.getSimulationDescriptor().setType(Type.RULE);
 
         SimulationRunResult test = scenarioRunnerService.runTest("test",
                                                                  mock(Path.class),
@@ -116,7 +126,7 @@ public class ScenarioRunnerServiceImplTest {
         when(buildInfoServiceMock.getBuildInfo(any())).thenReturn(buildInfoMock);
         when(buildInfoMock.getKieContainer()).thenReturn(kieContainerMock);
         SimulationDescriptor simulationDescriptor = new SimulationDescriptor();
-        simulationDescriptor.setType(ScenarioSimulationModel.Type.RULE);
+        simulationDescriptor.setType(Type.RULE);
         List<ScenarioWithIndex> scenarios = new ArrayList<>();
 
         SimulationRunResult test = scenarioRunnerService.runTest("test",
@@ -172,5 +182,14 @@ public class ScenarioRunnerServiceImplTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Retrieving KieContainer has failed. Fix all compilation errors within the " +
                                     "project and build the project again.");
+    }
+
+    private ScenarioSimulationModel makeScenarioSimulationModel(boolean toSkip) {
+        Simulation simulation = new Simulation();
+        simulation.getSimulationDescriptor().setType(Type.RULE);
+        simulation.getSimulationDescriptor().setSkipFromBuild(toSkip);
+        ScenarioSimulationModel scenarioSimulationModel = new ScenarioSimulationModel();
+        scenarioSimulationModel.setSimulation(simulation);
+        return scenarioSimulationModel;
     }
 }

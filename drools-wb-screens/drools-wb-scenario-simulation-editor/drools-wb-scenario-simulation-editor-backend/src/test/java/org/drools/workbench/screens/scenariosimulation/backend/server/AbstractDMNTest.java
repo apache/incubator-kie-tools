@@ -52,6 +52,8 @@ public class AbstractDMNTest {
     protected static final String EXPANDABLE_PROPERTY_DETAILS = "details";
     protected static final String PHONENUMBER_NUMBER = "number";
     protected static final String PHONENUMBER_PREFIX = "prefix";
+    protected static final String NAMESPACE = "https://github.com/kiegroup/drools/kie-dmn/_CC8924B0-D729-4D70-9588-039B5824FFE9";
+    protected static final String MODEL_NAME = "dmn-list";
 
     protected DMNType simpleTypeNoCollection;
     protected DMNType simpleTypeSimpleCollectionOfSimple;
@@ -82,7 +84,7 @@ public class AbstractDMNTest {
         decisionNodes.add(decisionNodeSimpleNoCollection);
         DecisionNode decisionNodeCompositeNoCollection = getDecisionNode(compositeTypeNoCollection, COMPOSITE_DECISION_DATA_NAME);
         decisionNodes.add(decisionNodeCompositeNoCollection);
-        setDmnModelLocal("dmn-list.dmn", "https://github.com/kiegroup/drools/kie-dmn/_CC8924B0-D729-4D70-9588-039B5824FFE9", "dmn-list");
+        setDmnModelLocal("dmn-list.dmn", NAMESPACE, MODEL_NAME);
     }
 
     protected void setDmnModelLocal(String resourceName, String namespace, String modelName) {

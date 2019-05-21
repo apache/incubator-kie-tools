@@ -50,6 +50,7 @@ public class DMNSimulationCreationStrategy implements SimulationCreationStrategy
     public Simulation createSimulation(Path context, String dmnFilePath) throws Exception {
         final FactModelTuple factModelTuple = getFactModelTuple(context, dmnFilePath);
         Simulation toReturn = new Simulation();
+        dmnTypeService.initializeNameAndNamespace(toReturn, context, dmnFilePath);
         SimulationDescriptor simulationDescriptor = toReturn.getSimulationDescriptor();
         simulationDescriptor.setType(ScenarioSimulationModel.Type.DMN);
         simulationDescriptor.setDmnFilePath(dmnFilePath);

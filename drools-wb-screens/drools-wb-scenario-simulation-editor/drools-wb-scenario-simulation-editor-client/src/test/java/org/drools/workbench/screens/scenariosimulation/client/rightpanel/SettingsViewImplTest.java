@@ -49,10 +49,8 @@ public class SettingsViewImplTest extends AbstractSettingsTest {
                 this.typeLabel = typeLabelMock;
                 this.scenarioType = scenarioTypeMock;
                 this.ruleSettings = ruleSettingsMock;
-                this.kieSession = kieSessionMock;
-                this.kieBase = kieBaseMock;
-                this.ruleFlowGroup = ruleFlowGroupMock;
                 this.dmoSession = dmoSessionMock;
+                this.ruleFlowGroup = ruleFlowGroupMock;
                 this.dmnSettings = dmnSettingsMock;
                 this.dmnFileLabel = dmnModelLabelMock;
                 this.dmnFilePath = dmnFilePathMock;

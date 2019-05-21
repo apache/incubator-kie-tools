@@ -25,6 +25,7 @@ import javax.inject.Inject;
 
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
+import org.drools.scenariosimulation.api.model.Simulation;
 import org.drools.scenariosimulation.api.model.SimulationDescriptor;
 import org.drools.scenariosimulation.backend.runner.AbstractScenarioRunner;
 import org.drools.scenariosimulation.backend.runner.ScenarioRunnerProvider;
@@ -56,12 +57,15 @@ public class ScenarioRunnerServiceImpl extends AbstractKieContainerService
 
         for (Map.Entry<Path, ScenarioSimulationModel> entry : scenarioLoader.loadScenarios(path).entrySet()) {
 
-            final ScenarioSimulationModel scenarioSimulationModel = entry.getValue();
+            final Simulation simulation = entry.getValue().getSimulation();
 
-            testResultMessages.add(runTest(identifier,
-                                           entry.getKey(),
-                                           scenarioSimulationModel.getSimulation().getSimulationDescriptor(),
-                                           scenarioSimulationModel.getSimulation().getScenarioWithIndex()).getTestResultMessage());
+            if (!simulation.getSimulationDescriptor().isSkipFromBuild()) {
+
+                testResultMessages.add(runTest(identifier,
+                                               entry.getKey(),
+                                               simulation.getSimulationDescriptor(),
+                                               simulation.getScenarioWithIndex()).getTestResultMessage());
+            }
         }
 
         return testResultMessages;

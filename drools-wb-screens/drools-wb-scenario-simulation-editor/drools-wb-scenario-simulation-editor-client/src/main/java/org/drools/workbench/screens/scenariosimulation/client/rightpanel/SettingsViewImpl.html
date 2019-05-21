@@ -37,28 +37,14 @@
                 <label for="kieScenarioSettingsKieSession">
                     KieSession
                 </label>
-                <input class="form-control" data-field="kieSession" id="kieScenarioSettingsKieSession">
-            </div>
-            <br/>
-            <div class="pf-c-form__group">
-                <label for="kieScenarioSettingsKieBase">
-                    KieBase
-                </label>
-                <input class="form-control" data-field="kieBase" id="kieScenarioSettingsKieBase">
+                <input class="form-control" data-field="dmoSession" id="kieScenarioSettingsKieSession">
             </div>
             <br/>
             <div class="pf-c-form__group">
                 <label for="kieScenarioSettingsRuleFlowGroup">
-                    RuleFlowGroup
+                    RuleFlowGroup/AgendaGroup
                 </label>
                 <input class="form-control" data-field="ruleFlowGroup" id="kieScenarioSettingsRuleFlowGroup">
-            </div>
-            <br/>
-            <div class="pf-c-form__group">
-                <label for="kieScenarioSettingsDMOSession">
-                    DMOSession
-                </label>
-                <input class="form-control" data-field="dmoSession" id="kieScenarioSettingsDMOSession">
             </div>
         </div>
         <div data-field="dmnSettings">
@@ -86,11 +72,11 @@
         <br/>
         <div class="checkbox">
             <label for="kieScenarioSettingsSkipFromBuild">
-                <input type="checkbox" data-field="skipFromBuild" id="kieScenarioSettingsSkipFromBuild">Skip this simulation during the build
+                <input type="checkbox" data-field="skipFromBuild" id="kieScenarioSettingsSkipFromBuild">
+                <span data-field="skipFromBuildLabel"></span>
             </label>
         </div>
         <br/>
-        <p data-field="toBeRemoved" style="font-style: italic">Only the default values are currently supported. Changing them will not have any impact on test execution.</p>
         <button class="btn btn-default" type="button" data-field="saveButton">Save</button>
     </div>
 </div>

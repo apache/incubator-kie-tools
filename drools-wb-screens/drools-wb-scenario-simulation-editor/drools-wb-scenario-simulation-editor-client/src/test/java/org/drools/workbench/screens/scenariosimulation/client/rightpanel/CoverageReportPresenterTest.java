@@ -35,7 +35,8 @@ import static org.drools.scenariosimulation.api.model.ScenarioSimulationModel.Ty
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -85,14 +86,24 @@ public class CoverageReportPresenterTest {
     }
 
     @Test
-    public void setSimulationRunMetadata() {
-        presenterSpy.setSimulationRunMetadata(simulationRunMetadataLocal, Type.RULE);
-        verify(presenterSpy, never()).populateSummary(eq(availableLocal), eq(executedLocal), eq(coverageLocal));
-        verify(presenterSpy, never()).populateDecisionList(eq(outputCounterLocal));
-        verify(presenterSpy, never()).populateScenarioList(eq(scenarioCounterLocal));
-        verify(coverageReportViewMock, never()).show();
+    public void populateCoverageReport() {
+        presenterSpy.populateCoverageReport(Type.DMN, simulationRunMetadataLocal);
+        verify(presenterSpy, times(1)).setSimulationRunMetadata(eq(simulationRunMetadataLocal));
 
-        presenterSpy.setSimulationRunMetadata(simulationRunMetadataLocal, Type.DMN);
+        reset(presenterSpy);
+
+        presenterSpy.populateCoverageReport(Type.DMN, null);
+        verify(presenterSpy, times(1)).showEmptyStateMessage(eq(Type.DMN));
+
+        reset(presenterSpy);
+
+        presenterSpy.populateCoverageReport(Type.RULE, mock(SimulationRunMetadata.class));
+        verify(presenterSpy, times(1)).showEmptyStateMessage(eq(Type.RULE));
+    }
+
+    @Test
+    public void setSimulationRunMetadata() {
+        presenterSpy.setSimulationRunMetadata(simulationRunMetadataLocal);
         verify(presenterSpy, times(1)).populateSummary(eq(availableLocal), eq(executedLocal), eq(coverageLocal));
         verify(presenterSpy, times(1)).populateDecisionList(eq(outputCounterLocal));
         verify(presenterSpy, times(1)).populateScenarioList(eq(scenarioCounterLocal));

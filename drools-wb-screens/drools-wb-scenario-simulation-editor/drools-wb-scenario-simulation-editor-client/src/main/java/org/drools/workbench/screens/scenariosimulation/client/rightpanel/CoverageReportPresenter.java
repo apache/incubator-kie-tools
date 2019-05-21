@@ -73,30 +73,35 @@ public class CoverageReportPresenter extends AbstractSubDockPresenter<CoverageRe
     }
 
     @Override
-    public void setSimulationRunMetadata(SimulationRunMetadata simulationRunMetadata, ScenarioSimulationModel.Type type) {
-        if(ScenarioSimulationModel.Type.DMN.equals(type)) {
-            populateSummary(simulationRunMetadata.getAvailable(),
-                            simulationRunMetadata.getExecuted(),
-                            simulationRunMetadata.getCoveragePercentage());
-
-            populateDecisionList(simulationRunMetadata.getOutputCounter());
-
-            populateScenarioList(simulationRunMetadata.getScenarioCounter());
-            view.show();
-        }
-    }
-
-    @Override
     public void reset() {
         view.reset();
     }
 
     @Override
-    public void showEmptyStateMessage(ScenarioSimulationModel.Type type) {
-        if(ScenarioSimulationModel.Type.RULE.equals(type)) {
-            view.setEmptyStatusText(ScenarioSimulationEditorConstants.INSTANCE.coverageNotSupportedForRule());
+    public void populateCoverageReport(ScenarioSimulationModel.Type type, SimulationRunMetadata simulationRunMetadata) {
+        if (simulationRunMetadata != null && ScenarioSimulationModel.Type.DMN.equals(type)) {
+            setSimulationRunMetadata(simulationRunMetadata);
         }
         else {
+            showEmptyStateMessage(type);
+        }
+    }
+
+    protected void setSimulationRunMetadata(SimulationRunMetadata simulationRunMetadata) {
+        populateSummary(simulationRunMetadata.getAvailable(),
+                        simulationRunMetadata.getExecuted(),
+                        simulationRunMetadata.getCoveragePercentage());
+
+        populateDecisionList(simulationRunMetadata.getOutputCounter());
+
+        populateScenarioList(simulationRunMetadata.getScenarioCounter());
+        view.show();
+    }
+
+    protected void showEmptyStateMessage(ScenarioSimulationModel.Type type) {
+        if (ScenarioSimulationModel.Type.RULE.equals(type)) {
+            view.setEmptyStatusText(ScenarioSimulationEditorConstants.INSTANCE.coverageNotSupportedForRule());
+        } else {
             view.setEmptyStatusText(ScenarioSimulationEditorConstants.INSTANCE.runATestToSeeCoverageReport());
         }
         view.hide();

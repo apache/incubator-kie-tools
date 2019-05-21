@@ -47,19 +47,15 @@ public interface SettingsView
 
     DivElement getRuleSettings();
 
-    InputElement getKieSession();
-
-    InputElement getKieBase();
+    InputElement getDmoSession();
 
     InputElement getRuleFlowGroup();
-
-    InputElement getDmoSession();
 
     DivElement getDmnSettings();
 
     LabelElement getDmnFileLabel();
 
-    SpanElement getDmnFilePath();
+    InputElement getDmnFilePath();
 
     LabelElement getDmnNamespaceLabel();
 
@@ -70,6 +66,8 @@ public interface SettingsView
     SpanElement getDmnName();
 
     InputElement getSkipFromBuild();
+
+    SpanElement getSkipFromBuildLabel();
 
     ButtonElement getSaveButton();
 }

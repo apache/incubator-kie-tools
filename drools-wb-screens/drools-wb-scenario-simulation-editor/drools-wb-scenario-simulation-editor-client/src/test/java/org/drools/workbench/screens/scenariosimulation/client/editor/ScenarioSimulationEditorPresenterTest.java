@@ -660,7 +660,6 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
         presenterSpy.getModelSuccessCallbackMethod(content);
         verify(presenterSpy, times(1)).populateRightDocks(TestToolsPresenter.IDENTIFIER);
         verify(presenterSpy, times(1)).populateRightDocks(SettingsPresenter.IDENTIFIER);
-        verify(presenterSpy, times(1)).populateRightDocks(CoverageReportPresenter.IDENTIFIER);
         verify(scenarioSimulationViewMock, times(1)).hideBusyIndicator();
         verify(scenarioSimulationViewMock, times(1)).setContent(eq(content.getModel().getSimulation()));
         verify(statusMock, times(1)).setSimulation(eq(content.getModel().getSimulation()));
@@ -718,15 +717,7 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
     @Test
     public void setCoverageReport() {
         presenter.setCoverageReport(coverageReportPresenterMock);
-        verify(coverageReportPresenterMock, never()).setSimulationRunMetadata(any(), any());
-        verify(coverageReportPresenterMock, times(1)).showEmptyStateMessage(any());
-
-        reset(coverageReportPresenterMock);
-        presenter.lastRunResult = mock(SimulationRunResult.class);
-
-        presenter.setCoverageReport(coverageReportPresenterMock);
-        verify(coverageReportPresenterMock, times(1)).setSimulationRunMetadata(any(), any());
-        verify(coverageReportPresenterMock, never()).showEmptyStateMessage(any());
+        verify(coverageReportPresenterMock, times(1)).populateCoverageReport(any(), any());
     }
 
     @Test
