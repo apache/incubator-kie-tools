@@ -44,6 +44,7 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.mvp.ParameterizedCommand;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -100,10 +101,13 @@ public class ProjectMessagesListenerTest {
 
         projectMessagesListener.fireNotification(commandNotification);
         ArgumentCaptor<PublishMessagesEvent> eventCaptor = ArgumentCaptor.forClass(PublishMessagesEvent.class);
-        verify(publishMessagesEvent,
-               times(1)).fire(eventCaptor.capture());
+        verify(publishMessagesEvent, times(1)).fire(eventCaptor.capture());
+        testMessageToPublish(eventCaptor.getValue(), Level.ERROR);
+    }
 
-        final List<SystemMessage> messagesToPublish = eventCaptor.getValue().getMessagesToPublish();
+    private void testMessageToPublish(PublishMessagesEvent messageToPublish, Level level) {
+        assertFalse(messageToPublish.isShowSystemConsole());
+        final List<SystemMessage> messagesToPublish = messageToPublish.getMessagesToPublish();
 
         assertEquals(messagesToPublish.size(),
                      1);
@@ -111,7 +115,7 @@ public class ProjectMessagesListenerTest {
         assertEquals(message.getText(),
                      "message");
         assertEquals(message.getLevel(),
-                     Level.ERROR);
+                     level);
     }
 
     @Test
@@ -127,18 +131,8 @@ public class ProjectMessagesListenerTest {
                 "message");
         projectMessagesListener.fireNotification(commandNotification);
         ArgumentCaptor<PublishMessagesEvent> eventCaptor = ArgumentCaptor.forClass(PublishMessagesEvent.class);
-        verify(publishMessagesEvent,
-               times(1)).fire(eventCaptor.capture());
-
-        final List<SystemMessage> messagesToPublish = eventCaptor.getValue().getMessagesToPublish();
-
-        assertEquals(messagesToPublish.size(),
-                     1);
-        SystemMessage message = messagesToPublish.get(0);
-        assertEquals(message.getText(),
-                     "message");
-        assertEquals(message.getLevel(),
-                     Level.INFO);
+        verify(publishMessagesEvent, times(1)).fire(eventCaptor.capture());
+        testMessageToPublish(eventCaptor.getValue(), Level.INFO);
     }
 
     @Test
@@ -154,17 +148,7 @@ public class ProjectMessagesListenerTest {
                 "message");
         projectMessagesListener.fireNotification(commandNotification);
         ArgumentCaptor<PublishMessagesEvent> eventCaptor = ArgumentCaptor.forClass(PublishMessagesEvent.class);
-        verify(publishMessagesEvent,
-               times(1)).fire(eventCaptor.capture());
-
-        final List<SystemMessage> messagesToPublish = eventCaptor.getValue().getMessagesToPublish();
-
-        assertEquals(messagesToPublish.size(),
-                     1);
-        SystemMessage message = messagesToPublish.get(0);
-        assertEquals(message.getText(),
-                     "message");
-        assertEquals(message.getLevel(),
-                     Level.WARNING);
+        verify(publishMessagesEvent, times(1)).fire(eventCaptor.capture());
+        testMessageToPublish(eventCaptor.getValue(), Level.WARNING);
     }
 }

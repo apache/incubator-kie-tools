@@ -79,6 +79,7 @@ public class ProjectMessagesListener {
         systemMessage.setPath(path);
         messagesList.add(systemMessage);
         PublishMessagesEvent messages = new PublishMessagesEvent();
+        messages.setShowSystemConsole(false);
         messages.setMessagesToPublish(messagesList);
         publishMessagesEvent.fire(messages);
     }
