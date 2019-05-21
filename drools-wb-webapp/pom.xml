@@ -1079,6 +1079,18 @@
       <artifactId>kie-wb-common-dmn-backend</artifactId>
     </dependency>
 
+    <!-- PMML Text Editor -->
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-wb-pmml-text-editor-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-wb-pmml-text-editor-client</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
     <!-- UberFire PlugIn Extension -->
     <dependency>
       <groupId>org.uberfire</groupId>
@@ -1588,6 +1600,8 @@
             <compileSourcesArtifact>org.drools:drools-wb-workitems-editor-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.drools:drools-wb-scenario-simulation-editor-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.drools:drools-scenario-simulation-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.drools:drools-wb-pmml-text-editor-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.drools:drools-wb-pmml-text-editor-client</compileSourcesArtifact>
 
             <!-- Stunner -->
             <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-core-api</compileSourcesArtifact>
