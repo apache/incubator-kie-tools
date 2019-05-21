@@ -28,8 +28,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import javax.enterprise.inject.spi.BeanManager;
-
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.DataInput;
 import org.eclipse.bpmn2.DataInputAssociation;
@@ -264,9 +262,6 @@ public class BPMNDiagramMarshallerTest {
 
     @Mock
     AdapterRegistry adapterRegistry;
-
-    @Mock
-    BeanManager beanManager;
 
     @Mock
     RuleManager rulesManager;

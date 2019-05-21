@@ -43,6 +43,8 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
+import org.kie.workbench.common.stunner.core.marshaller.MarshallingMessage;
+import org.kie.workbench.common.stunner.core.marshaller.MarshallingResponse;
 import org.kie.workbench.common.stunner.core.registry.BackendRegistryFactory;
 import org.kie.workbench.common.stunner.core.registry.factory.FactoryRegistry;
 import org.kie.workbench.common.stunner.core.util.UUID;
@@ -186,7 +188,9 @@ public abstract class AbstractVFSDiagramServiceTest<M extends Metadata, D extend
         when(metadata.getDefinitionSetId()).thenReturn(DEFINITION_SET_ID);
         when(diagramMarshaller.marshall(diagram)).thenReturn(DIAGRAM_MARSHALLED);
         when(metadataMarshaller.marshall(metadata)).thenReturn(METADATA_MARSHALLED);
-
+        when(diagramMarshaller.unmarshallWithValidation(anyObject())).thenReturn(MarshallingResponse.builder()
+                                                                                         .result(graph)
+                                                                                         .build());
         when(diagramMarshaller.unmarshall(anyObject(),
                                           anyObject())).thenReturn(graph);
         when(graph.getContent()).thenReturn(graphContent);
@@ -264,8 +268,11 @@ public abstract class AbstractVFSDiagramServiceTest<M extends Metadata, D extend
 
         //Mock failure to unmarshall XML to Graph
         try {
-            Mockito.when(diagramMarshaller.unmarshall(anyObject(),
-                                                      anyObject())).thenThrow(IOException.class);
+            Mockito.when(diagramMarshaller.unmarshallWithValidation(anyObject()))
+                    .thenReturn(MarshallingResponse.builder()
+                                        .state(MarshallingResponse.State.ERROR)
+                                        .addMessage(MarshallingMessage.builder().message("error").build())
+                                        .build());
 
             diagramService.getDiagramByPath(path);
         } catch (DiagramParsingException dpe) {

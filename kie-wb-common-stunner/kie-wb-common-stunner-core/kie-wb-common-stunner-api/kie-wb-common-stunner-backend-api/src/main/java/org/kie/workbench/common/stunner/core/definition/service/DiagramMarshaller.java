@@ -21,6 +21,10 @@ import java.io.InputStream;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Graph;
+import org.kie.workbench.common.stunner.core.marshaller.MarshallingMessage;
+import org.kie.workbench.common.stunner.core.marshaller.MarshallingRequest;
+import org.kie.workbench.common.stunner.core.marshaller.MarshallingResponse;
+import org.kie.workbench.common.stunner.core.validation.Violation;
 
 /**
  * Provides marshalling and unmarshalling services for a Diagram.
@@ -39,6 +43,32 @@ public interface DiagramMarshaller<G extends Graph, M extends Metadata, D extend
      */
     G unmarshall(final M metadata,
                  final InputStream input) throws IOException;
+
+    /**
+     * Default implementation that returns a {@link MarshallingResponse} with the result based on
+     * {@link DiagramMarshaller#unmarshall(Metadata, InputStream)} with an error in case of any exception.
+     * @param request
+     * @return
+     */
+    default MarshallingResponse<G> unmarshallWithValidation(final MarshallingRequest<InputStream, M> request) {
+
+        try {
+            final G result = unmarshall(request.getMetadata(), request.getInput());
+            return MarshallingResponse.builder()
+                    .result(result)
+                    .state(MarshallingResponse.State.SUCCESS)
+                    .build();
+        } catch (Exception e) {
+            final String message = e.getMessage();
+            return MarshallingResponse.builder()
+                    .state(MarshallingResponse.State.ERROR)
+                    .addMessage(MarshallingMessage.builder()
+                                        .type(Violation.Type.ERROR)
+                                        .message(message)
+                                        .build())
+                    .build();
+        }
+    }
 
     /**
      * Serializes a diagram instance of type <code>D</code> as string.

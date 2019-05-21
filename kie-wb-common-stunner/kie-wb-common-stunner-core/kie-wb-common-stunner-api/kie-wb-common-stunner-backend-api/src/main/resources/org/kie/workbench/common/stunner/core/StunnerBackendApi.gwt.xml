@@ -23,5 +23,6 @@
   <source path="api"/>
   <source path="definition"/>
   <source path="service"/>
+  <source path="marshaller"/>
 
 </module>
