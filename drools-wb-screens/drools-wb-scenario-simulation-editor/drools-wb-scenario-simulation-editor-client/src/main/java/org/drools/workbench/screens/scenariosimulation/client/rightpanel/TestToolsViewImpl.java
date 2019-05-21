@@ -230,6 +230,11 @@ public class TestToolsViewImpl
         addButton.setDisabled(false);
     }
 
+    @Override
+    public void disableAddButton() {
+        addButton.setDisabled(true);
+    }
+
     protected void setDisabledStatus(boolean disabled) {
         clearSearchButton.setDisabled(disabled);
         searchButton.setDisabled(disabled);

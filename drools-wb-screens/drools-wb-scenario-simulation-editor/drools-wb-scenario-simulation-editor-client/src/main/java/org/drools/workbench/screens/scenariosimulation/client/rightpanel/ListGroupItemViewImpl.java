@@ -73,6 +73,8 @@ public class ListGroupItemViewImpl implements ListGroupItemView {
 
     protected boolean toExpand = false;
 
+    protected boolean instanceAssigned = false;
+
     @Override
     public Widget asWidget() {
         return null;
@@ -202,6 +204,16 @@ public class ListGroupItemViewImpl implements ListGroupItemView {
     @Override
     public boolean isShown() {
         return listGroupItemHeader.getClassName().contains(LIST_VIEW_PF_EXPAND_ACTIVE);
+    }
+
+    @Override
+    public void setInstanceAssigned(boolean instanceAssigned) {
+        this.instanceAssigned = instanceAssigned;
+    }
+
+    @Override
+    public boolean isInstanceAssigned() {
+        return instanceAssigned;
     }
 
     @Override

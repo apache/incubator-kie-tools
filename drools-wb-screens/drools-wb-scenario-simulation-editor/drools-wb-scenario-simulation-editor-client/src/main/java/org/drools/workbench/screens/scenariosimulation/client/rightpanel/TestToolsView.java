@@ -72,6 +72,8 @@ public interface TestToolsView extends SubDockView<TestToolsView.Presenter> {
      */
     void enableAddButton();
 
+    void disableAddButton();
+
     interface Presenter extends SubDockView.Presenter {
 
         void onClearSearch();

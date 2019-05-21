@@ -17,6 +17,7 @@
 package org.drools.workbench.screens.scenariosimulation.client.rightpanel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -35,11 +36,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
+import static junit.framework.TestCase.assertNull;
 import static junit.framework.TestCase.assertTrue;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.FACT_NAME;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.FACT_PACKAGE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -407,9 +411,20 @@ public class TestToolsPresenterTest extends AbstractTestToolsTest {
     }
 
     @Test
-    public void onEnableEditorTabWithFactName() {
+    public void onEnableEditorTabWithFactName_NotEqualsSearch() {
         testToolsPresenter.onEnableEditorTab(FACT_NAME, null, false);
         verify(testToolsPresenter, times(1)).onPerfectMatchSearchedEvent(eq(FACT_NAME), eq(false));
+        verify(testToolsPresenter, times(1)).updateInstanceIsAssignedStatus(eq(FACT_NAME));
+        verify(listGroupItemPresenterMock, times(1)).enable(eq(FACT_NAME));
+        verify(listGroupItemPresenterMock, never()).enable();
+        verify(testToolsViewMock, times(1)).enableEditorTab();
+    }
+
+    @Test
+    public void onEnableEditorTabWithFactName_EqualSearch() {
+        testToolsPresenter.onEnableEditorTab(FACT_NAME, null, true);
+        verify(testToolsPresenter, times(1)).onPerfectMatchSearchedEvent(eq(FACT_NAME), eq(true));
+        verify(testToolsPresenter, never()).updateInstanceIsAssignedStatus(anyString());
         verify(listGroupItemPresenterMock, times(1)).enable(eq(FACT_NAME));
         verify(listGroupItemPresenterMock, never()).enable();
         verify(testToolsViewMock, times(1)).enableEditorTab();
@@ -421,6 +436,26 @@ public class TestToolsPresenterTest extends AbstractTestToolsTest {
         verify(listGroupItemPresenterMock, times(1)).disable();
         verify(listGroupItemPresenterMock, never()).enable();
         verify(testToolsViewMock, times(1)).disableEditorTab();
+    }
+
+    @Test
+    public void setSelectedElement_WithInstanceAssigned() {
+        when(selectedListGroupItemViewMock.isInstanceAssigned()).thenReturn(true);
+        testToolsPresenter.setSelectedElement(selectedListGroupItemViewMock);
+        verify(selectedListGroupItemViewMock, times(1)).isInstanceAssigned();
+        verify(testToolsViewMock, times(1)).disableAddButton();
+        assertNull(testToolsPresenter.selectedFieldItemView);
+        assertEquals(selectedListGroupItemViewMock, testToolsPresenter.selectedListGroupItemView);
+    }
+
+    @Test
+    public void setSelectedElement_WithoutInstanceAssigned() {
+        when(selectedListGroupItemViewMock.isInstanceAssigned()).thenReturn(false);
+        testToolsPresenter.setSelectedElement(selectedListGroupItemViewMock);
+        verify(selectedListGroupItemViewMock, times(1)).isInstanceAssigned();
+        verify(testToolsViewMock, times(1)).enableAddButton();
+        assertNull(testToolsPresenter.selectedFieldItemView);
+        assertEquals(selectedListGroupItemViewMock, testToolsPresenter.selectedListGroupItemView);
     }
 
     @Test
@@ -456,7 +491,6 @@ public class TestToolsPresenterTest extends AbstractTestToolsTest {
         verify(testToolsPresenter, times(1)).clearSimpleJavaInstanceFieldList();
     }
 
-
     @Test
     public void updateSeparators() {
         testToolsPresenter.updateSeparators();
@@ -465,7 +499,6 @@ public class TestToolsPresenterTest extends AbstractTestToolsTest {
         verify(testToolsPresenter, times(1)).updateInstanceListSeparator();
         verify(testToolsPresenter, times(1)).updateSimpleJavaInstanceFieldListSeparator();
     }
-
 
     @Test
     public void filterTerm() {
@@ -488,5 +521,28 @@ public class TestToolsPresenterTest extends AbstractTestToolsTest {
     public void resetTest() {
         testToolsPresenter.reset();
         verify(testToolsViewMock, times(1)).reset();
+    }
+
+    @Test
+    public void checkInstanceIsAssigned_NotPresent() {
+        String instance = "CHECK_INSTANCE";
+        testToolsPresenter.updateInstanceIsAssignedStatus(instance);
+        verify(listGroupItemPresenterMock, times(1)).setInstanceAssigned(eq(instance), eq(false));
+    }
+
+    @Test
+    public void checkInstanceIsAssigned_Present() {
+        String instance = "CHECK_INSTANCE";
+        FactModelTree factModel = new FactModelTree(instance, FACT_PACKAGE, getMockSimpleProperties(), new HashMap<>());
+        dataObjectFactTreeMap.put(instance, factModel);
+        testToolsPresenter.updateInstanceIsAssignedStatus(instance);
+        verify(listGroupItemPresenterMock, times(1)).setInstanceAssigned(eq(instance), eq(true));
+    }
+
+    @Test
+    public void checkInstanceIsAssigned_EmptyString() {
+        String instance = "";
+        testToolsPresenter.updateInstanceIsAssignedStatus(instance);
+        verify(listGroupItemPresenterMock, never()).setInstanceAssigned(anyString(), anyBoolean());
     }
 }

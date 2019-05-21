@@ -423,7 +423,7 @@ public class ScenarioSimulationEventHandlerTest extends AbstractScenarioSimulati
                                                                         isA(SetInstanceHeaderCommand.class),
                                                                         anyBoolean());
         //
-        when(scenarioGridModelMock.isSameSelectedColumnType(anyString())).thenReturn(false);
+        when(scenarioGridModelMock.isSameInstanceType(anyString())).thenReturn(false);
         when(gridColumnMock.isInstanceAssigned()).thenReturn(true);
         scenarioSimulationEventHandler.onEvent(event);
         verify(deletePopupPresenterMock, times(1))
@@ -437,7 +437,7 @@ public class ScenarioSimulationEventHandlerTest extends AbstractScenarioSimulati
         verify(scenarioSimulationEventHandler, never()).commonExecution(eq(scenarioSimulationContextLocal),
                                                                         isA(SetInstanceHeaderCommand.class),
                                                                         anyBoolean());
-        //
+
         when(scenarioGridModelMock.isSameSelectedColumnType(anyString())).thenReturn(false);
         when(gridColumnMock.isInstanceAssigned()).thenReturn(false);
         scenarioSimulationEventHandler.onEvent(event);
