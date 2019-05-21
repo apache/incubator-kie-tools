@@ -21,6 +21,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.dynamic.model.config.SelectorData;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.ExecutionOrder;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -30,7 +31,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class AdHocOrderingProviderTest {
+public class ExecutionOrderProviderTest {
 
     private static final String PARALLEL_LABEL = "PARALLEL";
 
@@ -42,16 +43,16 @@ public class AdHocOrderingProviderTest {
     @Mock
     private FormRenderingContext context;
 
-    private AdHocOrderingProvider provider;
+    private ExecutionOrderProvider provider;
 
     @Before
     public void setUp() {
-        final String PARALLEL_KEY = "org.kie.workbench.common.stunner.bpmn.client.dataproviders.AdHocOrderingProvider.parallel";
-        final String SEQUENTIAL_KEY = "org.kie.workbench.common.stunner.bpmn.client.dataproviders.AdHocOrderingProvider.sequential";
+        final String PARALLEL_KEY = "org.kie.workbench.common.stunner.bpmn.client.dataproviders.ExecutionOrderProvider.parallel";
+        final String SEQUENTIAL_KEY = "org.kie.workbench.common.stunner.bpmn.client.dataproviders.ExecutionOrderProvider.sequential";
 
         when(translationService.getValue(PARALLEL_KEY)).thenReturn(PARALLEL_LABEL);
         when(translationService.getValue(SEQUENTIAL_KEY)).thenReturn(SEQUENTIAL_LABEL);
-        provider = new AdHocOrderingProvider(translationService);
+        provider = new ExecutionOrderProvider(translationService);
         provider.init();
     }
 
@@ -61,11 +62,11 @@ public class AdHocOrderingProviderTest {
         assertNotNull(selectorData.getValues());
         assertEquals(2,
                      selectorData.getValues().size());
-        assertEquals("Sequential",
+        assertEquals(ExecutionOrder.SEQUENTIAL.value(),
                      selectorData.getSelectedValue());
         assertEquals(SEQUENTIAL_LABEL,
-                     selectorData.getValues().get("Sequential"));
+                     selectorData.getValues().get(ExecutionOrder.SEQUENTIAL.value()));
         assertEquals(PARALLEL_LABEL,
-                     selectorData.getValues().get("Parallel"));
+                     selectorData.getValues().get(ExecutionOrder.PARALLEL.value()));
     }
 }

@@ -39,6 +39,7 @@ import static org.kie.workbench.common.stunner.bpmn.client.forms.filters.Multipl
 import static org.kie.workbench.common.stunner.bpmn.client.forms.filters.MultipleInstanceNodeFilterProvider.MULTIPLE_INSTANCE_COMPLETION_CONDITION;
 import static org.kie.workbench.common.stunner.bpmn.client.forms.filters.MultipleInstanceNodeFilterProvider.MULTIPLE_INSTANCE_DATA_INPUT;
 import static org.kie.workbench.common.stunner.bpmn.client.forms.filters.MultipleInstanceNodeFilterProvider.MULTIPLE_INSTANCE_DATA_OUTPUT;
+import static org.kie.workbench.common.stunner.bpmn.client.forms.filters.MultipleInstanceNodeFilterProvider.MULTIPLE_INSTANCE_EXECUTION_MODE;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -95,12 +96,13 @@ public abstract class MultipleInstanceNodeFilterProviderTest {
 
     protected void testProvideFilters(String elementUUID, Object definition, boolean expectedValue) {
         ArrayList<FormElementFilter> filters = new ArrayList<>(filterProvider.provideFilters(elementUUID, definition));
-        assertEquals(5, filters.size());
+        assertEquals(6, filters.size());
         assertExpectedFilter(MULTIPLE_INSTANCE_COLLECTION_INPUT, expectedValue, definition, filters.get(0));
         assertExpectedFilter(MULTIPLE_INSTANCE_DATA_INPUT, expectedValue, definition, filters.get(1));
         assertExpectedFilter(MULTIPLE_INSTANCE_COLLECTION_OUTPUT, expectedValue, definition, filters.get(2));
         assertExpectedFilter(MULTIPLE_INSTANCE_DATA_OUTPUT, expectedValue, definition, filters.get(3));
         assertExpectedFilter(MULTIPLE_INSTANCE_COMPLETION_CONDITION, expectedValue, definition, filters.get(4));
+        assertExpectedFilter(MULTIPLE_INSTANCE_EXECUTION_MODE, expectedValue, definition, filters.get(5));
     }
 
     @SuppressWarnings("unchecked")

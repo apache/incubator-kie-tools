@@ -27,24 +27,25 @@ import javax.inject.Inject;
 import org.kie.workbench.common.forms.dynamic.model.config.SelectorData;
 import org.kie.workbench.common.forms.dynamic.model.config.SelectorDataProvider;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.ExecutionOrder;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 
-public class AdHocOrderingProvider
+public class ExecutionOrderProvider
         implements SelectorDataProvider {
 
-    private enum ORDERING {
+    private enum DataProviderOption {
 
-        SEQUENTIAL("Sequential",
-                   "org.kie.workbench.common.stunner.bpmn.client.dataproviders.AdHocOrderingProvider.sequential"),
-        PARALLEL("Parallel",
-                 "org.kie.workbench.common.stunner.bpmn.client.dataproviders.AdHocOrderingProvider.parallel");
+        SEQUENTIAL(ExecutionOrder.SEQUENTIAL.value(),
+                   "org.kie.workbench.common.stunner.bpmn.client.dataproviders.ExecutionOrderProvider.sequential"),
+        PARALLEL(ExecutionOrder.PARALLEL.value(),
+                 "org.kie.workbench.common.stunner.bpmn.client.dataproviders.ExecutionOrderProvider.parallel");
 
         private final String value;
 
         private final String i18nKey;
 
-        ORDERING(String value,
-                 String i18nKey) {
+        DataProviderOption(String value,
+                           String i18nKey) {
             this.value = value;
             this.i18nKey = i18nKey;
         }
@@ -63,7 +64,7 @@ public class AdHocOrderingProvider
     private final ClientTranslationService translationService;
 
     @Inject
-    public AdHocOrderingProvider(final ClientTranslationService translationService) {
+    public ExecutionOrderProvider(final ClientTranslationService translationService) {
         this.translationService = translationService;
     }
 
@@ -72,9 +73,9 @@ public class AdHocOrderingProvider
         valuePosition = new HashMap<>();
         valuePosition.put(null,
                           -1);
-        valuePosition.put(ORDERING.SEQUENTIAL.value(),
+        valuePosition.put(DataProviderOption.SEQUENTIAL.value(),
                           0);
-        valuePosition.put(ORDERING.PARALLEL.value(),
+        valuePosition.put(DataProviderOption.PARALLEL.value(),
                           1);
     }
 
@@ -87,11 +88,9 @@ public class AdHocOrderingProvider
     @SuppressWarnings("unchecked")
     public SelectorData getSelectorData(final FormRenderingContext context) {
         Map<Object, String> values = new TreeMap<>(Comparator.comparing(o -> valuePosition.get(o)));
-        Arrays.stream(ORDERING.values())
-                .forEach(scope -> values.put(scope.value(),
-                                             translationService.getValue(scope.i18nKey())));
+        Arrays.stream(DataProviderOption.values())
+                .forEach(scope -> values.put(scope.value(), translationService.getValue(scope.i18nKey())));
 
-        return new SelectorData(values,
-                                ORDERING.SEQUENTIAL.value());
+        return new SelectorData(values, DataProviderOption.SEQUENTIAL.value());
     }
 }

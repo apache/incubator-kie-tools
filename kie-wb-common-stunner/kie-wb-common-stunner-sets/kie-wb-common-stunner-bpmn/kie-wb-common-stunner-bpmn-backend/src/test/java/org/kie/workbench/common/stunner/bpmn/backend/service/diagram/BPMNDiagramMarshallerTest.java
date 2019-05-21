@@ -2136,6 +2136,7 @@ public class BPMNDiagramMarshallerTest {
         Node<? extends Definition, ?> multipleInstanceSubprocessNode = diagram.getGraph().getNode("_2316CEC1-C1F7-41B1-8C91-3CE73ADE5571");
         MultipleInstanceSubprocess multipleInstanceSubprocess = (MultipleInstanceSubprocess) multipleInstanceSubprocessNode.getContent().getDefinition();
 
+        assertFalse(multipleInstanceSubprocess.getExecutionSet().getMultipleInstanceExecutionMode().isSequential());
         assertEquals("var1", multipleInstanceSubprocess.getExecutionSet().getMultipleInstanceCollectionInput().getValue());
         assertEquals("var2", multipleInstanceSubprocess.getExecutionSet().getMultipleInstanceCollectionOutput().getValue());
         assertEquals("dataInput", multipleInstanceSubprocess.getExecutionSet().getMultipleInstanceDataInput().getValue());

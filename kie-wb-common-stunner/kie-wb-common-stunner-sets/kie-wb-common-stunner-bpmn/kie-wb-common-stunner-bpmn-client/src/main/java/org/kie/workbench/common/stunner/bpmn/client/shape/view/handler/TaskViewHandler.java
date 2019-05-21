@@ -24,16 +24,26 @@ import org.kie.workbench.common.stunner.svg.client.shape.view.SVGViewUtils;
 
 public class TaskViewHandler implements ShapeViewHandler<BaseTask, SVGShapeView<?>> {
 
-    private static final String MULTIPLE_INSTANCE_ICON = "taskMultipleInstanceIcon";
+    static final String MULTIPLE_INSTANCE_ICON_PARALLEL = "taskMultipleInstanceIconParallel";
+    static final String MULTIPLE_INSTANCE_ICON_SEQUENTIAL = "taskMultipleInstanceIconSequential";
 
     @Override
     public void handle(BaseTask task, SVGShapeView<?> view) {
         if (task instanceof UserTask) {
-            final boolean multipleInstance = ((UserTask) task).getExecutionSet().getIsMultipleInstance().getValue();
-            final double fillApha = multipleInstance ? 1 : 0;
-            final double fillStroke = multipleInstance ? 1 : 0;
-            SVGViewUtils.getPrimitive(view, MULTIPLE_INSTANCE_ICON)
-                    .ifPresent(p -> p.get().setFillAlpha(fillApha).setStrokeAlpha(fillStroke));
+            final UserTask userTask = (UserTask) task;
+            final boolean multipleInstance = userTask.getExecutionSet().getIsMultipleInstance().getValue();
+            final boolean sequential = userTask.getExecutionSet().getMultipleInstanceExecutionMode().isSequential();
+
+            SVGViewUtils.setFillAndStroke(view, MULTIPLE_INSTANCE_ICON_PARALLEL, 0, 0);
+            SVGViewUtils.setFillAndStroke(view, MULTIPLE_INSTANCE_ICON_SEQUENTIAL, 0, 0);
+
+            if (multipleInstance) {
+                if (sequential) {
+                    SVGViewUtils.setFillAndStroke(view, MULTIPLE_INSTANCE_ICON_SEQUENTIAL, 1, 1);
+                } else {
+                    SVGViewUtils.setFillAndStroke(view, MULTIPLE_INSTANCE_ICON_PARALLEL, 1, 1);
+                }
+            }
         }
     }
 }

@@ -110,4 +110,19 @@ public class MultipleInstanceActivityPropertyReaderTest {
         when(miloop.getCompletionCondition()).thenReturn(expression);
         assertEquals(EXPRESSION, reader.getCompletionCondition());
     }
+
+    @Test
+    public void testGetIsSequentialTrue() {
+        testIsSequential(true);
+    }
+
+    @Test
+    public void testGetIsSequentialFalse() {
+        testIsSequential(false);
+    }
+
+    private void testIsSequential(boolean sequential) {
+        when(miloop.isIsSequential()).thenReturn(sequential);
+        assertEquals(sequential, reader.isSequential());
+    }
 }

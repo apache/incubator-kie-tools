@@ -77,7 +77,18 @@ public class ReusableSubprocessTaskExecutionSet implements BaseReusableSubproces
     private IsMultipleInstance isMultipleInstance;
 
     @Property
-    @FormField(type = ListBoxFieldType.class, afterElement = "isMultipleInstance")
+    @Valid
+    @FormField(afterElement = "isMultipleInstance",
+            type = ListBoxFieldType.class,
+            settings = {@FieldParam(name = "addEmptyOption", value = "false")}
+    )
+    @SelectorDataProvider(
+            type = SelectorDataProvider.ProviderType.CLIENT,
+            className = "org.kie.workbench.common.stunner.bpmn.client.dataproviders.ExecutionOrderProvider")
+    private MultipleInstanceExecutionMode multipleInstanceExecutionMode;
+
+    @Property
+    @FormField(type = ListBoxFieldType.class, afterElement = "multipleInstanceExecutionMode")
     @SelectorDataProvider(
             type = SelectorDataProvider.ProviderType.CLIENT,
             className = "org.kie.workbench.common.stunner.bpmn.client.dataproviders.VariablesProvider"
@@ -142,6 +153,7 @@ public class ReusableSubprocessTaskExecutionSet implements BaseReusableSubproces
              new WaitForCompletion(),
              new IsAsync(),
              new IsMultipleInstance(false),
+             new MultipleInstanceExecutionMode(false),
              new MultipleInstanceCollectionInput(),
              new MultipleInstanceDataInput(),
              new MultipleInstanceCollectionOutput(),
@@ -158,6 +170,7 @@ public class ReusableSubprocessTaskExecutionSet implements BaseReusableSubproces
                                               final @MapsTo("waitForCompletion") WaitForCompletion waitForCompletion,
                                               final @MapsTo("isAsync") IsAsync isAsync,
                                               final @MapsTo("isMultipleInstance") IsMultipleInstance isMultipleInstance,
+                                              final @MapsTo("multipleInstanceExecutionMode") MultipleInstanceExecutionMode multipleInstanceExecutionMode,
                                               final @MapsTo("multipleInstanceCollectionInput") MultipleInstanceCollectionInput multipleInstanceCollectionInput,
                                               final @MapsTo("multipleInstanceDataInput") MultipleInstanceDataInput multipleInstanceDataInput,
                                               final @MapsTo("multipleInstanceCollectionOutput") MultipleInstanceCollectionOutput multipleInstanceCollectionOutput,
@@ -170,6 +183,7 @@ public class ReusableSubprocessTaskExecutionSet implements BaseReusableSubproces
         this.waitForCompletion = waitForCompletion;
         this.isAsync = isAsync;
         this.isMultipleInstance = isMultipleInstance;
+        this.multipleInstanceExecutionMode = multipleInstanceExecutionMode;
         this.multipleInstanceCollectionInput = multipleInstanceCollectionInput;
         this.multipleInstanceDataInput = multipleInstanceDataInput;
         this.multipleInstanceCollectionOutput = multipleInstanceCollectionOutput;
@@ -225,6 +239,14 @@ public class ReusableSubprocessTaskExecutionSet implements BaseReusableSubproces
 
     public void setIsMultipleInstance(IsMultipleInstance isMultipleInstance) {
         this.isMultipleInstance = isMultipleInstance;
+    }
+
+    public MultipleInstanceExecutionMode getMultipleInstanceExecutionMode() {
+        return multipleInstanceExecutionMode;
+    }
+
+    public void setMultipleInstanceExecutionMode(MultipleInstanceExecutionMode multipleInstanceExecutionMode) {
+        this.multipleInstanceExecutionMode = multipleInstanceExecutionMode;
     }
 
     public MultipleInstanceCollectionInput getMultipleInstanceCollectionInput() {
@@ -293,6 +315,7 @@ public class ReusableSubprocessTaskExecutionSet implements BaseReusableSubproces
                                          Objects.hashCode(waitForCompletion),
                                          Objects.hashCode(isAsync),
                                          Objects.hashCode(isMultipleInstance),
+                                         Objects.hashCode(multipleInstanceExecutionMode),
                                          Objects.hashCode(multipleInstanceCollectionInput),
                                          Objects.hashCode(multipleInstanceDataInput),
                                          Objects.hashCode(multipleInstanceCollectionOutput),
@@ -314,6 +337,7 @@ public class ReusableSubprocessTaskExecutionSet implements BaseReusableSubproces
                     Objects.equals(waitForCompletion, other.waitForCompletion) &&
                     Objects.equals(isAsync, other.isAsync) &&
                     Objects.equals(isMultipleInstance, other.isMultipleInstance) &&
+                    Objects.equals(multipleInstanceExecutionMode, other.multipleInstanceExecutionMode) &&
                     Objects.equals(multipleInstanceCollectionInput, other.multipleInstanceCollectionInput) &&
                     Objects.equals(multipleInstanceDataInput, other.multipleInstanceDataInput) &&
                     Objects.equals(multipleInstanceCollectionOutput, other.multipleInstanceCollectionOutput) &&

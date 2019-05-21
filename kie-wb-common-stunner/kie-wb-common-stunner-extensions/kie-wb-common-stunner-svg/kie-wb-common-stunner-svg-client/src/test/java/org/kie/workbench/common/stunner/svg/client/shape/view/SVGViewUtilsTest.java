@@ -29,6 +29,7 @@ import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyDouble;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -49,13 +50,13 @@ public class SVGViewUtilsTest {
     private SVGPrimitive primitive1;
 
     @Mock
-    private IPrimitive<?> p1;
+    private IPrimitive p1;
 
     @Mock
     private SVGPrimitive primitive2;
 
     @Mock
-    private IPrimitive<?> p2;
+    private IPrimitive p2;
 
     @Before
     public void setup() throws Exception {
@@ -109,5 +110,16 @@ public class SVGViewUtilsTest {
         when(shape2.getAlpha()).thenReturn(0d);
         visibleShape = SVGViewUtils.getVisibleShape(shape1, shape2);
         assertEquals(shape1, visibleShape);
+    }
+
+    @Test
+    public void testSetFillAndStroke() {
+        double fillAlpha = 123;
+        double strokeAlpha = 456;
+        when(p1.setFillAlpha(anyDouble())).thenReturn(p1);
+        when(p1.setStrokeAlpha(anyDouble())).thenReturn(p1);
+        SVGViewUtils.setFillAndStroke(svgShape, "p1", fillAlpha, strokeAlpha);
+        verify(p1).setFillAlpha(fillAlpha);
+        verify(p1).setStrokeAlpha(strokeAlpha);
     }
 }

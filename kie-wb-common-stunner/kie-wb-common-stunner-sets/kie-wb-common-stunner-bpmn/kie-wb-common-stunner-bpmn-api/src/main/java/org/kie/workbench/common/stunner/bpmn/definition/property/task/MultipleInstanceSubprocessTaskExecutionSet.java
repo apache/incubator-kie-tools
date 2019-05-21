@@ -40,12 +40,25 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 @Bindable
 @PropertySet
 @FormDefinition(
-        startElement = "multipleInstanceCollectionInput"
+        startElement = "multipleInstanceExecutionMode"
 )
 public class MultipleInstanceSubprocessTaskExecutionSet implements BPMNPropertySet {
 
     @Property
-    @FormField(type = ListBoxFieldType.class)
+    @Valid
+    @FormField(
+            type = ListBoxFieldType.class,
+            settings = {@FieldParam(name = "addEmptyOption", value = "false")}
+    )
+    @SelectorDataProvider(
+            type = SelectorDataProvider.ProviderType.CLIENT,
+            className = "org.kie.workbench.common.stunner.bpmn.client.dataproviders.ExecutionOrderProvider")
+    private MultipleInstanceExecutionMode multipleInstanceExecutionMode;
+
+    @Property
+    @FormField(
+            afterElement = "multipleInstanceExecutionMode",
+            type = ListBoxFieldType.class)
     @SelectorDataProvider(
             type = SelectorDataProvider.ProviderType.CLIENT,
             className = "org.kie.workbench.common.stunner.bpmn.client.dataproviders.VariablesProvider"
@@ -116,7 +129,8 @@ public class MultipleInstanceSubprocessTaskExecutionSet implements BPMNPropertyS
     private IsMultipleInstance isMultipleInstance;
 
     public MultipleInstanceSubprocessTaskExecutionSet() {
-        this(new MultipleInstanceCollectionInput(),
+        this(new MultipleInstanceExecutionMode(false),
+             new MultipleInstanceCollectionInput(),
              new MultipleInstanceCollectionOutput(),
              new MultipleInstanceDataInput(),
              new MultipleInstanceDataOutput(),
@@ -129,7 +143,8 @@ public class MultipleInstanceSubprocessTaskExecutionSet implements BPMNPropertyS
              new IsAsync());
     }
 
-    public MultipleInstanceSubprocessTaskExecutionSet(final @MapsTo("multipleInstanceCollectionInput") MultipleInstanceCollectionInput multipleInstanceCollectionInput,
+    public MultipleInstanceSubprocessTaskExecutionSet(final @MapsTo("multipleInstanceExecutionMode") MultipleInstanceExecutionMode multipleInstanceExecutionMode,
+                                                      final @MapsTo("multipleInstanceCollectionInput") MultipleInstanceCollectionInput multipleInstanceCollectionInput,
                                                       final @MapsTo("multipleInstanceCollectionOutput") MultipleInstanceCollectionOutput multipleInstanceCollectionOutput,
                                                       final @MapsTo("multipleInstanceDataInput") MultipleInstanceDataInput multipleInstanceDataInput,
                                                       final @MapsTo("multipleInstanceDataOutput") MultipleInstanceDataOutput multipleInstanceDataOutput,
@@ -140,6 +155,7 @@ public class MultipleInstanceSubprocessTaskExecutionSet implements BPMNPropertyS
                                                       final @MapsTo("isAsync") IsAsync isAsync
 
     ) {
+        this.multipleInstanceExecutionMode = multipleInstanceExecutionMode;
         this.multipleInstanceCollectionInput = multipleInstanceCollectionInput;
         this.multipleInstanceCollectionOutput = multipleInstanceCollectionOutput;
         this.multipleInstanceDataInput = multipleInstanceDataInput;
@@ -149,6 +165,14 @@ public class MultipleInstanceSubprocessTaskExecutionSet implements BPMNPropertyS
         this.onExitAction = onExitAction;
         this.isMultipleInstance = isMultipleInstance;
         this.isAsync = isAsync;
+    }
+
+    public MultipleInstanceExecutionMode getMultipleInstanceExecutionMode() {
+        return multipleInstanceExecutionMode;
+    }
+
+    public void setMultipleInstanceExecutionMode(MultipleInstanceExecutionMode multipleInstanceExecutionMode) {
+        this.multipleInstanceExecutionMode = multipleInstanceExecutionMode;
     }
 
     public MultipleInstanceCollectionInput getMultipleInstanceCollectionInput() {
@@ -225,7 +249,8 @@ public class MultipleInstanceSubprocessTaskExecutionSet implements BPMNPropertyS
 
     @Override
     public int hashCode() {
-        return HashUtil.combineHashCodes(Objects.hashCode(multipleInstanceCollectionInput),
+        return HashUtil.combineHashCodes(Objects.hashCode(multipleInstanceExecutionMode),
+                                         Objects.hashCode(multipleInstanceCollectionInput),
                                          Objects.hashCode(multipleInstanceCollectionOutput),
                                          Objects.hashCode(multipleInstanceDataInput),
                                          Objects.hashCode(multipleInstanceDataOutput),
@@ -240,7 +265,8 @@ public class MultipleInstanceSubprocessTaskExecutionSet implements BPMNPropertyS
     public boolean equals(Object o) {
         if (o instanceof MultipleInstanceSubprocessTaskExecutionSet) {
             MultipleInstanceSubprocessTaskExecutionSet other = (MultipleInstanceSubprocessTaskExecutionSet) o;
-            return Objects.equals(multipleInstanceCollectionInput, other.multipleInstanceCollectionInput) &&
+            return Objects.equals(multipleInstanceExecutionMode, other.multipleInstanceExecutionMode) &&
+                    Objects.equals(multipleInstanceCollectionInput, other.multipleInstanceCollectionInput) &&
                     Objects.equals(multipleInstanceCollectionOutput, other.multipleInstanceCollectionOutput) &&
                     Objects.equals(multipleInstanceDataInput, other.multipleInstanceDataInput) &&
                     Objects.equals(multipleInstanceDataOutput, other.multipleInstanceDataOutput) &&

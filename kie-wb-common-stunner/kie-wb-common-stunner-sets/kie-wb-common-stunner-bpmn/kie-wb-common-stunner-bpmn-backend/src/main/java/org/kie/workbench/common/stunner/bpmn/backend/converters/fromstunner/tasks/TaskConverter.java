@@ -122,6 +122,7 @@ public class TaskConverter {
         if (executionSet instanceof UserTaskExecutionSet) {
             UserTaskExecutionSet taskExecutionSet = (UserTaskExecutionSet) executionSet;
             if (Boolean.TRUE.equals(taskExecutionSet.getIsMultipleInstance().getValue())) {
+                p.setIsSequential(taskExecutionSet.getMultipleInstanceExecutionMode().isSequential());
                 p.setCollectionInput(taskExecutionSet.getMultipleInstanceCollectionInput().getValue());
                 p.setInput(taskExecutionSet.getMultipleInstanceDataInput().getValue());
                 p.setCollectionOutput(taskExecutionSet.getMultipleInstanceCollectionOutput().getValue());

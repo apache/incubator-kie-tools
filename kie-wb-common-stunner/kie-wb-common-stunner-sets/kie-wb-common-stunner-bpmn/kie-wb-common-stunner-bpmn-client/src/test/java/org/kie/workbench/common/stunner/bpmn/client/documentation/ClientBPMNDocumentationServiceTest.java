@@ -73,6 +73,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleIn
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceCompletionCondition;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceDataInput;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceDataOutput;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceExecutionMode;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnEntryAction;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnExitAction;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeListValue;
@@ -336,6 +337,7 @@ public class ClientBPMNDocumentationServiceTest {
                                                          new CreatedBy(),
                                                          new AdHocAutostart(true),
                                                          new IsMultipleInstance(false),
+                                                         new MultipleInstanceExecutionMode(),
                                                          new MultipleInstanceCollectionInput(),
                                                          new MultipleInstanceDataInput(),
                                                          new MultipleInstanceCollectionOutput(),

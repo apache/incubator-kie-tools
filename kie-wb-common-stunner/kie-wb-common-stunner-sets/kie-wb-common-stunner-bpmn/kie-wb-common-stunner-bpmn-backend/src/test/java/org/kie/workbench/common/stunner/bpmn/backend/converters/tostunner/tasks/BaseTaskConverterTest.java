@@ -52,36 +52,36 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class BaseTaskConverterTest {
 
-    private BaseTaskConverter tested;
+    protected BaseTaskConverter tested;
 
     @Mock
-    private TypedFactoryManager factoryManager;
+    protected TypedFactoryManager factoryManager;
 
     @Mock
-    private PropertyReaderFactory propertyReaderFactory;
+    protected PropertyReaderFactory propertyReaderFactory;
 
     @Mock
-    private ServiceTask serviceTask;
+    protected ServiceTask serviceTask;
 
     @Mock
-    private ExtensionDefinition serviceTaskDef;
+    protected ExtensionDefinition serviceTaskDef;
 
     @Mock
-    private FeatureMap attributes;
+    protected FeatureMap attributes;
 
     @Mock
-    private FeatureMap.Entry businessRuleAttr;
+    protected FeatureMap.Entry businessRuleAttr;
 
     @Mock
-    private EStructuralFeature businessRuleFeature;
+    protected EStructuralFeature businessRuleFeature;
 
     @Mock
-    private View<NoneTask> noneTaskContent;
+    protected View<NoneTask> noneTaskContent;
 
-    private NoneTask noneTaskDefinition;
+    protected NoneTask noneTaskDefinition;
 
     @Mock
-    private TaskPropertyReader taskPropertyReader;
+    protected TaskPropertyReader taskPropertyReader;
 
     @Mock
     private Node<View<NoneTask>, Edge> noneTaskNode;
@@ -113,7 +113,11 @@ public class BaseTaskConverterTest {
         when(propertyReaderFactory.of(serviceTask)).thenReturn(taskPropertyReader);
         when(propertyReaderFactory.ofCustom(serviceTask)).thenReturn(Optional.of(serviceTaskPropertyReader));
 
-        tested = spy(new BaseTaskConverter(factoryManager, propertyReaderFactory) {
+        tested = createTaskConverter();
+    }
+
+    protected BaseTaskConverter createTaskConverter() {
+        return spy(new BaseTaskConverter(factoryManager, propertyReaderFactory) {
             @Override
             protected Node<View, Edge> createNode(String id) {
                 return null;

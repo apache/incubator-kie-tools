@@ -164,6 +164,11 @@ public class MultipleInstanceActivityPropertyWriter extends ActivityPropertyWrit
         }
     }
 
+    public void setIsSequential(boolean sequential) {
+        setUpLoopCharacteristics();
+        miloop.setIsSequential(sequential);
+    }
+
     protected void setUpLoopCharacteristics() {
         if (miloop == null) {
             miloop = bpmn2.createMultiInstanceLoopCharacteristics();

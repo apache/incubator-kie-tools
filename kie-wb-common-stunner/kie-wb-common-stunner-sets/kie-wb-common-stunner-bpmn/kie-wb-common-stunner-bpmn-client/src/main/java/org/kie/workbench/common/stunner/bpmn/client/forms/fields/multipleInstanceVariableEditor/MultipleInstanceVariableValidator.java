@@ -34,6 +34,7 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
 import static org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils.ALPHA_NUM_REGEXP;
+import static org.kie.workbench.common.stunner.core.util.StringUtils.isEmpty;
 
 public class MultipleInstanceVariableValidator implements CustomFieldValidator<String> {
 
@@ -114,12 +115,14 @@ public class MultipleInstanceVariableValidator implements CustomFieldValidator<S
 
     private static Set<String> extractNames(String encodedNames) {
         Set<String> result = new HashSet<>();
-        SplitResult encodedNamesSplit = ENCODED_NAMES_DELIMITER.split(encodedNames);
-        SplitResult nameSplit;
-        for (int i = 0; i < encodedNamesSplit.length(); i++) {
-            nameSplit = ENCODED_NAME_DELIMITER.split(encodedNamesSplit.get(i));
-            if (nameSplit.length() > 0) {
-                result.add(nameSplit.get(0));
+        if (!isEmpty(encodedNames)) {
+            SplitResult encodedNamesSplit = ENCODED_NAMES_DELIMITER.split(encodedNames);
+            SplitResult nameSplit;
+            for (int i = 0; i < encodedNamesSplit.length(); i++) {
+                nameSplit = ENCODED_NAME_DELIMITER.split(encodedNamesSplit.get(i));
+                if (nameSplit.length() > 0) {
+                    result.add(nameSplit.get(0));
+                }
             }
         }
         return result;

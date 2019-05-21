@@ -45,6 +45,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleIn
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceCompletionCondition;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceDataInput;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceDataOutput;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceExecutionMode;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceSubprocessTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnEntryAction;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnExitAction;
@@ -106,7 +107,8 @@ public abstract class BaseSubProcessConverter<A extends BaseAdHocSubprocess<P, S
         ));
 
         definition.setExecutionSet(
-                new MultipleInstanceSubprocessTaskExecutionSet(new MultipleInstanceCollectionInput(p.getCollectionInput()),
+                new MultipleInstanceSubprocessTaskExecutionSet(new MultipleInstanceExecutionMode(p.isSequential()),
+                                                               new MultipleInstanceCollectionInput(p.getCollectionInput()),
                                                                new MultipleInstanceCollectionOutput(p.getCollectionOutput()),
                                                                new MultipleInstanceDataInput(p.getDataInput()),
                                                                new MultipleInstanceDataOutput(p.getDataOutput()),

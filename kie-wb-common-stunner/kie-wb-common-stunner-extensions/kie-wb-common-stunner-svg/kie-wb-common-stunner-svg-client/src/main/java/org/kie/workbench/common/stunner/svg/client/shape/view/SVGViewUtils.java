@@ -77,4 +77,8 @@ public class SVGViewUtils {
                 primitive :
                 null;
     }
+
+    public static void setFillAndStroke(final SVGShapeView<?> view, final String id, final double fill, final double stroke) {
+        SVGViewUtils.getPrimitive(view, id).ifPresent(p -> p.get().setFillAlpha(fill).setStrokeAlpha(stroke));
+    }
 }

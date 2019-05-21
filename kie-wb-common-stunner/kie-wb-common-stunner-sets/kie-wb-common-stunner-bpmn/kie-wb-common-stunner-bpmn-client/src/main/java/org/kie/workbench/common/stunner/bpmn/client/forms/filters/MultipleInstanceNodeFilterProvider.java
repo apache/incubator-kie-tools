@@ -38,6 +38,7 @@ public abstract class MultipleInstanceNodeFilterProvider implements StunnerFormE
     static final String MULTIPLE_INSTANCE_COLLECTION_OUTPUT = "executionSet.multipleInstanceCollectionOutput";
     static final String MULTIPLE_INSTANCE_DATA_OUTPUT = "executionSet.multipleInstanceDataOutput";
     static final String MULTIPLE_INSTANCE_COMPLETION_CONDITION = "executionSet.multipleInstanceCompletionCondition";
+    static final String MULTIPLE_INSTANCE_EXECUTION_MODE = "executionSet.multipleInstanceExecutionMode";
 
     private final SessionManager sessionManager;
 
@@ -65,6 +66,7 @@ public abstract class MultipleInstanceNodeFilterProvider implements StunnerFormE
         filters.add(new FormElementFilter(MULTIPLE_INSTANCE_COLLECTION_OUTPUT, predicate));
         filters.add(new FormElementFilter(MULTIPLE_INSTANCE_DATA_OUTPUT, predicate));
         filters.add(new FormElementFilter(MULTIPLE_INSTANCE_COMPLETION_CONDITION, predicate));
+        filters.add(new FormElementFilter(MULTIPLE_INSTANCE_EXECUTION_MODE, predicate));
         return filters;
     }
 

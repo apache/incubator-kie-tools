@@ -41,6 +41,10 @@ public class MultipleInstanceActivityPropertyReader extends ActivityPropertyRead
         super(activity, diagram, definitionResolver);
     }
 
+    public boolean isMultipleInstance() {
+        return getMultiInstanceLoopCharacteristics().isPresent();
+    }
+
     public String getCollectionInput() {
         String ieDataInputId = getLoopDataInputRefId();
         return super.getDataInputAssociations().stream()
@@ -79,6 +83,12 @@ public class MultipleInstanceActivityPropertyReader extends ActivityPropertyRead
                 .map(miloop -> (FormalExpression) miloop.getCompletionCondition())
                 .map(FormalExpression::getBody)
                 .orElse("");
+    }
+
+    public boolean isSequential() {
+        return getMultiInstanceLoopCharacteristics()
+                .map(MultiInstanceLoopCharacteristics::isIsSequential)
+                .orElse(false);
     }
 
     private Optional<MultiInstanceLoopCharacteristics> getMultiInstanceLoopCharacteristics() {

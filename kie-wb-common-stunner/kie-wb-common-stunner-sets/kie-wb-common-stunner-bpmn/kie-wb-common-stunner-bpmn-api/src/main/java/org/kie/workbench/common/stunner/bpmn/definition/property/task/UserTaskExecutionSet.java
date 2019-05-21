@@ -148,7 +148,18 @@ public class UserTaskExecutionSet implements BaseUserTaskExecutionSet {
     private IsMultipleInstance isMultipleInstance;
 
     @Property
-    @FormField(type = ListBoxFieldType.class, afterElement = "isMultipleInstance")
+    @Valid
+    @FormField(afterElement = "isMultipleInstance",
+            type = ListBoxFieldType.class,
+            settings = {@FieldParam(name = "addEmptyOption", value = "false")}
+    )
+    @SelectorDataProvider(
+            type = SelectorDataProvider.ProviderType.CLIENT,
+            className = "org.kie.workbench.common.stunner.bpmn.client.dataproviders.ExecutionOrderProvider")
+    private MultipleInstanceExecutionMode multipleInstanceExecutionMode;
+
+    @Property
+    @FormField(type = ListBoxFieldType.class, afterElement = "multipleInstanceExecutionMode")
     @SelectorDataProvider(
             type = SelectorDataProvider.ProviderType.CLIENT,
             className = "org.kie.workbench.common.stunner.bpmn.client.dataproviders.VariablesProvider"
@@ -233,6 +244,7 @@ public class UserTaskExecutionSet implements BaseUserTaskExecutionSet {
              new CreatedBy(),
              new AdHocAutostart(),
              new IsMultipleInstance(false),
+             new MultipleInstanceExecutionMode(false),
              new MultipleInstanceCollectionInput(),
              new MultipleInstanceDataInput(),
              new MultipleInstanceCollectionOutput(),
@@ -260,6 +272,7 @@ public class UserTaskExecutionSet implements BaseUserTaskExecutionSet {
                                 final @MapsTo("createdBy") CreatedBy createdBy,
                                 final @MapsTo("adHocAutostart") AdHocAutostart adHocAutostart,
                                 final @MapsTo("isMultipleInstance") IsMultipleInstance isMultipleInstance,
+                                final @MapsTo("multipleInstanceExecutionMode") MultipleInstanceExecutionMode multipleInstanceExecutionMode,
                                 final @MapsTo("multipleInstanceCollectionInput") MultipleInstanceCollectionInput multipleInstanceCollectionInput,
                                 final @MapsTo("multipleInstanceDataInput") MultipleInstanceDataInput multipleInstanceDataInput,
                                 final @MapsTo("multipleInstanceCollectionOutput") MultipleInstanceCollectionOutput multipleInstanceCollectionOutput,
@@ -283,6 +296,7 @@ public class UserTaskExecutionSet implements BaseUserTaskExecutionSet {
         this.createdBy = createdBy;
         this.adHocAutostart = adHocAutostart;
         this.isMultipleInstance = isMultipleInstance;
+        this.multipleInstanceExecutionMode = multipleInstanceExecutionMode;
         this.multipleInstanceCollectionInput = multipleInstanceCollectionInput;
         this.multipleInstanceDataInput = multipleInstanceDataInput;
         this.multipleInstanceCollectionOutput = multipleInstanceCollectionOutput;
@@ -415,6 +429,14 @@ public class UserTaskExecutionSet implements BaseUserTaskExecutionSet {
         return isMultipleInstance;
     }
 
+    public MultipleInstanceExecutionMode getMultipleInstanceExecutionMode() {
+        return multipleInstanceExecutionMode;
+    }
+
+    public void setMultipleInstanceExecutionMode(MultipleInstanceExecutionMode multipleInstanceExecutionMode) {
+        this.multipleInstanceExecutionMode = multipleInstanceExecutionMode;
+    }
+
     public void setIsMultipleInstance(IsMultipleInstance isMultipleInstance) {
         this.isMultipleInstance = isMultipleInstance;
     }
@@ -511,6 +533,7 @@ public class UserTaskExecutionSet implements BaseUserTaskExecutionSet {
                                          Objects.hashCode(createdBy),
                                          Objects.hashCode(adHocAutostart),
                                          Objects.hashCode(isMultipleInstance),
+                                         Objects.hashCode(multipleInstanceExecutionMode),
                                          Objects.hashCode(multipleInstanceCollectionInput),
                                          Objects.hashCode(multipleInstanceDataInput),
                                          Objects.hashCode(multipleInstanceCollectionOutput),
@@ -543,6 +566,7 @@ public class UserTaskExecutionSet implements BaseUserTaskExecutionSet {
                     Objects.equals(createdBy, other.createdBy) &&
                     Objects.equals(adHocAutostart, other.adHocAutostart) &&
                     Objects.equals(isMultipleInstance, other.isMultipleInstance) &&
+                    Objects.equals(multipleInstanceExecutionMode, other.multipleInstanceExecutionMode) &&
                     Objects.equals(multipleInstanceCollectionInput, other.multipleInstanceCollectionInput) &&
                     Objects.equals(multipleInstanceDataInput, other.multipleInstanceDataInput) &&
                     Objects.equals(multipleInstanceCollectionOutput, other.multipleInstanceCollectionOutput) &&

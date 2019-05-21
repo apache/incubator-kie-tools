@@ -36,7 +36,9 @@ import org.junit.Test;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -140,6 +142,18 @@ public class MultipleInstanceActivityPropertyWriterTest {
     public void testSetCompletionCondition() {
         writer.setCompletionCondition(COMPLETION_CONDITION);
         assertEquals("<![CDATA[COMPLETION_CONDITION]]>", ((FormalExpression) ((MultiInstanceLoopCharacteristics) activity.getLoopCharacteristics()).getCompletionCondition()).getBody());
+    }
+
+    @Test
+    public void testSetIsSequentialTrue() {
+        writer.setIsSequential(true);
+        assertTrue(((MultiInstanceLoopCharacteristics) activity.getLoopCharacteristics()).isIsSequential());
+    }
+
+    @Test
+    public void testSetIsSequentialFalse() {
+        writer.setIsSequential(false);
+        assertFalse(((MultiInstanceLoopCharacteristics) activity.getLoopCharacteristics()).isIsSequential());
     }
 
     private void assertInputsInitialized() {

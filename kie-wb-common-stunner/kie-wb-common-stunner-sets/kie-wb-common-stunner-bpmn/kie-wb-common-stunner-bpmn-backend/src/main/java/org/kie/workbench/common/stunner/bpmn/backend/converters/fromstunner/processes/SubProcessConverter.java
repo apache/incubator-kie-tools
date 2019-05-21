@@ -94,6 +94,7 @@ public class SubProcessConverter extends ProcessConverterDelegate {
         p.setProcessVariables(processData.getProcessVariables());
 
         MultipleInstanceSubprocessTaskExecutionSet executionSet = definition.getExecutionSet();
+        p.setIsSequential(executionSet.getMultipleInstanceExecutionMode().isSequential());
         p.setCollectionInput(executionSet.getMultipleInstanceCollectionInput().getValue());
         p.setInput(executionSet.getMultipleInstanceDataInput().getValue());
         p.setCollectionOutput(executionSet.getMultipleInstanceCollectionOutput().getValue());
