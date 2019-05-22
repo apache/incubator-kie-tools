@@ -19,6 +19,9 @@ package org.uberfire.ext.widgets.common.client.dropdown.items;
 import javax.inject.Inject;
 
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.DomEvent;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyDownEvent;
 import org.jboss.errai.common.client.dom.Anchor;
 import org.jboss.errai.common.client.dom.DOMUtil;
 import org.jboss.errai.common.client.dom.ListItem;
@@ -30,7 +33,7 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 @Templated
 public class LiveSearchSelectorDropDownItemViewImpl<TYPE> implements LiveSearchSelectorDropDownItemView<TYPE>,
-                                                               IsElement {
+                                                                     IsElement {
 
     private final static String ICON_VISIBLE_CLASSNAME = "appformer-live-search-selector-dditem-icon-visible";
     private final static String ICON_HIDDEN_CLASSNAME = "appformer-live-search-selector-dditem-icon-hidden";
@@ -65,6 +68,7 @@ public class LiveSearchSelectorDropDownItemViewImpl<TYPE> implements LiveSearchS
     @Override
     public void init(LiveSearchSelectorDropDownItem presenter) {
         this.presenter = presenter;
+        this.reset();
     }
 
     @Override
@@ -97,12 +101,23 @@ public class LiveSearchSelectorDropDownItemViewImpl<TYPE> implements LiveSearchS
         this.multiSelect = multiSelect;
     }
 
-    @EventHandler("itemAnchor")
-    public void onItemClick(ClickEvent event) {
+    private void onItemSelected(DomEvent event) {
         presenter.onItemClick();
 
-        if(multiSelect) {
+        if (multiSelect) {
             event.stopPropagation();
+        }
+    }
+
+    @EventHandler("itemAnchor")
+    public void onItemClick(ClickEvent event) {
+        onItemSelected(event);
+    }
+
+    @EventHandler("itemAnchor")
+    void onEnterKeyDown(KeyDownEvent event) {
+        if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+            onItemSelected(event);
         }
     }
 }
