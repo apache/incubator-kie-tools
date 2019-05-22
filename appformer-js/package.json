@@ -32,7 +32,7 @@
     "outputDirectory": "./target",
     "suiteName": "org.appformer.js.tests",
     "suiteNameTemplate": "{filename}",
-    "classNameTemplate": "org.appformer.js.tests.{classname}"
+    "classNameTemplate": "org.appformer.js.tests.{filename}.{classname}"
   },
   "devDependencies": {
     "@types/jest": "23.3.1",
