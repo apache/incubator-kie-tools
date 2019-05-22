@@ -19,6 +19,8 @@ package org.kie.workbench.common.stunner.bpmn.backend.dataproviders;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -35,8 +37,25 @@ import org.kie.workbench.common.services.refactoring.service.RefactoringQuerySer
 
 public class RuleFlowGroupFormProvider implements SelectorDataProvider {
 
+    private final RefactoringQueryService queryService;
+    private final Function<List<RefactoringPageRow>, TreeMap> resultToSelectorData;
+
+    // CDI Proxy.
+    protected RuleFlowGroupFormProvider() {
+        this(null, null);
+    }
+
     @Inject
-    protected RefactoringQueryService queryService;
+    public RuleFlowGroupFormProvider(final RefactoringQueryService queryService) {
+        this(queryService,
+             DEFAULT_RESULT_CONVERTER);
+    }
+
+    RuleFlowGroupFormProvider(final RefactoringQueryService queryService,
+                              final Function<List<RefactoringPageRow>, TreeMap> resultToSelectorData) {
+        this.queryService = queryService;
+        this.resultToSelectorData = resultToSelectorData;
+    }
 
     @Override
     public String getProviderName() {
@@ -52,22 +71,28 @@ public class RuleFlowGroupFormProvider implements SelectorDataProvider {
 
     @SuppressWarnings("unchecked")
     private Map<Object, String> getRuleFlowGroupNames() {
-
-        List<RefactoringPageRow> results = queryService.query(
+        List<RefactoringPageRow> queryResult = queryService.query(
                 FindRuleFlowNamesQuery.NAME,
                 new Sets.Builder<ValueIndexTerm>()
                         .add(new ValueSharedPartIndexTerm("*",
                                                           PartType.RULEFLOW_GROUP,
                                                           ValueIndexTerm.TermSearchType.WILDCARD)).build()
         );
+        return resultToSelectorData.apply(queryResult);
+    }
 
-        Map<Object, String> ruleFlowGroupNames = new TreeMap<>();
+    public static Function<List<RefactoringPageRow>, TreeMap> DEFAULT_RESULT_CONVERTER =
+            rows -> rows.stream()
+                    .map(RuleFlowGroupFormProvider::getValue)
+                    .filter(RuleFlowGroupFormProvider::isNotEmpty)
+                    .collect(Collectors.toMap(name -> name, name -> name, (oldValue, newValue) -> oldValue, TreeMap::new));
 
-        for (RefactoringPageRow row : results) {
-            ruleFlowGroupNames.put(((Map<String, String>) row.getValue()).get("name"),
-                                   ((Map<String, String>) row.getValue()).get("name"));
-        }
+    @SuppressWarnings("unchecked")
+    private static String getValue(final RefactoringPageRow row) {
+        return ((Map<String, String>) row.getValue()).get("name");
+    }
 
-        return ruleFlowGroupNames;
+    private static boolean isNotEmpty(final String s) {
+        return null != s && s.trim().length() > 0;
     }
 }
