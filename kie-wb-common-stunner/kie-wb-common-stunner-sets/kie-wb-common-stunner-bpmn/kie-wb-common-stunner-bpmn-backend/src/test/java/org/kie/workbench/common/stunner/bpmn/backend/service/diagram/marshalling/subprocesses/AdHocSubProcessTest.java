@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,175 +16,458 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.subprocesses;
 
-import org.junit.Before;
+import java.util.List;
+
 import org.junit.Test;
-import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.Unmarshalling;
-import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.BPMNDiagramMarshallerBase;
+import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.Marshaller;
 import org.kie.workbench.common.stunner.bpmn.definition.AdHocSubprocess;
-import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
-import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
-import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocSubprocessTaskExecutionSet;
-import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessData;
-import org.kie.workbench.common.stunner.core.definition.service.DiagramMarshaller;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeValue;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Graph;
-import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assume.assumeFalse;
 
-public class AdHocSubProcessTest extends BPMNDiagramMarshallerBase {
+public class AdHocSubProcessTest extends SubProcess<AdHocSubprocess> {
 
-    private static final String BPMN_ADHOC_SUBPROCESS_AUTOSTART =
-            "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/adHocSubProcessAutostart.bpmn";
-    private static final String BPMN_ADHOC_SUBPROCESS_SPECIAL_CHARACTERS =
-            "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/adHocSubProcessSpecialCharacters.bpmn";
+    private static final String BPMN_SUB_PROCESS_FILE_PATH = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/adHocSubProcesses.bpmn";
 
-    @Before
-    public void setUp() {
-        super.init();
+    private static final String TOP_LEVEL_EMPTY_SUBPROCESS_ID = "_C13AA1A1-8AA5-4F37-821D-616953802599";
+    private static final String TOP_LEVEL_FILLED_SUBPROCESS_JAVA_ID = "_7FBF0C49-8268-495A-98D9-44CA6D34BE96";
+    private static final String TOP_LEVEL_FILLED_SUBPROCESS_JAVASCRIPT_ID = "_6F38D400-A187-4845-BA2D-CACEFA63013A";
+    private static final String TOP_LEVEL_FILLED_SUBPROCESS_MVEL_ID = "_752AED87-C2E8-4E62-8DA1-2FC831F4EA7E";
+
+    private static final String SUBPROCESS_LEVEL_EMPTY_SUBPROCESS_ID = "_41EBC350-8CF6-4781-84BE-A54A647C779A";
+    private static final String SUBPROCESS_LEVEL_FILLED_SUBPROCESS_JAVA_ID = "_F9AD8287-3BD1-4D8E-9888-6524F1E8079C";
+    private static final String SUBPROCESS_LEVEL_FILLED_SUBPROCESS_JAVASCRIPT_ID = "_06F7FACD-7F14-4B88-9DF0-30C3D4F859B0";
+    private static final String SUBPROCESS_LEVEL_FILLED_SUBPROCESS_MVEL_ID = "_336E3C64-942E-47F9-894F-E15BAF72D514";
+
+    private static final String TOP_LEVEL_SUBPROCESS_WITH_EDGES = "_22F2BA2D-7AA3-4924-973A-452C379E563A";
+    private static final String SUBPROCESS_LEVEL_SUBPROCESS_WITH_EDGES = "_D14DA50A-FA9F-4EE3-A06B-F7F35A923CEE";
+
+    private static final int AMOUNT_OF_NODES_IN_DIAGRAM = 23;
+
+    private static final String ADHOC_COMPLETION_CONDITION_SCRIPT_DEFAULT = "autocomplete";
+    private static final String ADHOC_COMPLETION_CONDITION_SCRIPT = "org.kie.api.runtime.process.CaseData(data.get(\"someData\") == true)";
+    private static final String ADHOC_COMPLETION_CONDITION_LANGUAGE_MVEL = "mvel";
+    private static final String ADHOC_COMPLETION_CONDITION_LANGUAGE_DROOLS = "drools";
+    private static final String ADHOC_ORDERING_SEQUENTIAL = "Sequential";
+    private static final String ADHOC_ORDERING_PARALLEL = "Parallel";
+
+    private static final String SUBPROCESS_SCRIPT_JAVA_LANGUAGE = "java";
+    private static final String SUBPROCESS_ON_ENTRY_ACTION_JAVA = "System.out.println(\"On Entry Action\");\n" +
+            "System.out.println(\"`&(^*&^(\\n\\r\");\n" +
+            "Object o = kcontext.getVariable(\"hello_world\");";
+    private static final String SUBPROCESS_ON_EXIT_ACTION_JAVA = "System.out.println(\"On Exit Action\");\n" +
+            "System.out.println(\"`&(^*&^(\\n\\r\");\n" +
+            "Object o = kcontext.getVariable(\"hello_world\");";
+
+    private static final String SUBPROCESS_SCRIPT_JAVASCRIPT_LANGUAGE = "javascript";
+    private static final String SUBPROCESS_ON_ENTRY_ACTION_JAVASCRIPT = "console.log(\"On Entry Action\");\n" +
+            "print(\"~``!@#$%^&*()_+=-{}|\\n\\r][:\\\",.?\");\n" +
+            "print(\"somevalue\" + \"~``!@#$%^&*()_+=-{}|\\n\\r][:\\\",.?\");";
+    private static final String SUBPROCESS_ON_EXIT_ACTION_JAVASCRIPT = "console.log(\"On Exit Action\");\n" +
+            "print(\"~``!@#$%^&*()_+=-{}|\\n\\r][:\\\",.?\");\n" +
+            "print(\"somevalue\" + \"~``!@#$%^&*()_+=-{}|\\n\\r][:\\\",.?\");";
+
+    private static final String SUBPROCESS_SCRIPT_MVEL_LANGUAGE = "mvel";
+    private static final String SUBPROCESS_ON_ENTRY_ACTION_MVEL = "System.out.println(\"On Entry Action\");\n" +
+            "System.out.println(\"`&(^*&^(\\n\\r\");\n" +
+            "Object o = kcontext.getVariable(\"hello_world\");";
+    private static final String SUBPROCESS_ON_EXIT_ACTION_MVEL = "System.out.println(\"On Exit Action\");\n" +
+            "System.out.println(\"`&(^*&^(\\n\\r\");\n" +
+            "Object o = kcontext.getVariable(\"hello_world\");";
+
+    private static final String IGNORE_MESSAGE_FOR_INHERETED_TEST = "There is a bug in old marshaller. Once, the bug is fixed, the " +
+            "method should be removed only from this class, not from its superclass.\n" +
+            "For more information see https://issues.jboss.org/browse/JBPM-8462";
+
+    private static final String IGNORE_MESSAGE_FOR_TEST = "There is a bug in old marshaller. Once, the bug is fixed, the test should not be ignored any more.\n" +
+            "For more information see https://issues.jboss.org/browse/JBPM-8462";
+
+    private static Diagram<Graph, Metadata> oldDiagram;
+    private static Diagram<Graph, Metadata> oldRoundTripDiagram;
+
+    private static Diagram<Graph, Metadata> newDiagram;
+    private static Diagram<Graph, Metadata> newRoundTripDiagram;
+
+    public AdHocSubProcessTest(Marshaller marshallerType) throws Exception {
+        super(marshallerType, marshallers());
+    }
+
+    @Override
+    Diagram<Graph, Metadata> getNewDiagram() {
+        return newDiagram;
+    }
+
+    @Override
+    void setNewDiagram(Diagram<Graph, Metadata> diagram) {
+        newDiagram = diagram;
+    }
+
+    @Override
+    Diagram<Graph, Metadata> getNewRoundTripDiagram() {
+        return newRoundTripDiagram;
+    }
+
+    @Override
+    void setNewRoundTripDiagram(Diagram<Graph, Metadata> diagram) {
+        newRoundTripDiagram = diagram;
+    }
+
+    @Override
+    Diagram<Graph, Metadata> getOldDiagram() {
+        return oldDiagram;
+    }
+
+    @Override
+    void setOldDiagram(Diagram<Graph, Metadata> diagram) {
+        oldDiagram = diagram;
+    }
+
+    @Override
+    Diagram<Graph, Metadata> getOldRoundTripDiagram() {
+        return oldRoundTripDiagram;
+    }
+
+    @Override
+    void setOldRoundTripDiagram(Diagram<Graph, Metadata> diagram) {
+        oldRoundTripDiagram = diagram;
     }
 
     @Test
-    public void testOldMarshallerAdHocSpecificProperties() throws Exception {
-        unmarshallAddHocSubprocess(oldMarshaller);
+    @Override
+    public void testMarshallSubProcessLevelEmptyPropertiesSubProcess() {
+        assumeFalse(IGNORE_MESSAGE_FOR_INHERETED_TEST, isCurrentMarshallerOld());
+        super.testMarshallSubProcessLevelEmptyPropertiesSubProcess();
     }
 
     @Test
-    public void testNewMarshallerAdHocSpecificProperties() throws Exception {
-        unmarshallAddHocSubprocess(newMarshaller);
+    @Override
+    public void testMarshallTopLevelEmptyPropertiesSubProcess() {
+        assumeFalse(IGNORE_MESSAGE_FOR_INHERETED_TEST, isCurrentMarshallerOld());
+        super.testMarshallTopLevelEmptyPropertiesSubProcess();
     }
 
     @Test
-    public void testOldMarshallerSpecialCharacters() throws Exception {
-        unmarshallAddHocSubprocessSpecialCharacters(oldMarshaller);
+    @Override
+    public void testMarshallTopLevelFilledPropertiesSubProcess() {
+        assumeFalse(IGNORE_MESSAGE_FOR_INHERETED_TEST, isCurrentMarshallerOld());
+        super.testMarshallTopLevelFilledPropertiesSubProcess();
     }
 
     @Test
-    public void testNewMarshallerSpecialCharacters() throws Exception {
-        unmarshallAddHocSubprocessSpecialCharacters(newMarshaller);
+    @Override
+    public void testUnmarshallTopLevelEmptyPropertiesSubProcess() {
+        assumeFalse(IGNORE_MESSAGE_FOR_TEST, isCurrentMarshallerOld());
+
+        Diagram<Graph, Metadata> diagram = getDiagram();
+        assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
+
+        AdHocSubprocess topLevelSubProcess = getSubProcessNodeById(diagram,
+                                                                   TOP_LEVEL_EMPTY_SUBPROCESS_ID,
+                                                                   EMPTY_INCOME_EDGES,
+                                                                   EMPTY_OUTCOME_EDGES);
+
+        assertGeneralSet(topLevelSubProcess.getGeneral(), DEFAULT_NAME, DEFAULT_DOCUMENTATION);
+        assertAdHocSubProcessExecutionSet(topLevelSubProcess.getExecutionSet(),
+                                          EMPTY_VALUE,
+                                          ADHOC_COMPLETION_CONDITION_LANGUAGE_MVEL,
+                                          ADHOC_ORDERING_SEQUENTIAL,
+                                          EMPTY_VALUE,
+                                          SUBPROCESS_SCRIPT_JAVA_LANGUAGE,
+                                          EMPTY_VALUE,
+                                          SUBPROCESS_SCRIPT_JAVA_LANGUAGE);
+        assertSubProcessProcessData(topLevelSubProcess.getProcessData(), EMPTY_VALUE);
     }
 
     @Test
-    public void testMigration() throws Exception {
-        Diagram<Graph, Metadata> oldDiagram = Unmarshalling.unmarshall(oldMarshaller, BPMN_ADHOC_SUBPROCESS_AUTOSTART);
-        Diagram<Graph, Metadata> newDiagram = Unmarshalling.unmarshall(newMarshaller, BPMN_ADHOC_SUBPROCESS_AUTOSTART);
+    @Override
+    public void testUnmarshallTopLevelFilledPropertiesSubProcess() {
+        final String SUB_PROCESS_NAME_JAVA = "Ad-hoc sub-process01 name ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
+        final String SUB_PROCESS_DOCUMENTATION_JAVA = "Ad-hoc sub-process01 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
+        final String SUB_PROCESS_NAME_JAVASCRIPT = "Ad-hoc sub-process02 name ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
+        final String SUB_PROCESS_DOCUMENTATION_JAVASCRIPT = "Ad-hoc sub-process02 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
+        final String SUB_PROCESS_NAME_MVEL = "Ad-hoc sub-process03 name ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
+        final String SUB_PROCESS_DOCUMENTATION_MVEL = "Ad-hoc sub-process03 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
 
-        assertDiagramEquals(oldDiagram, newDiagram, BPMN_ADHOC_SUBPROCESS_AUTOSTART);
+        final String SUB_PROCESS_VARIABLES_JAVA = "subVar01:String";
+        final String SUB_PROCESS_VARIABLES_JAVASCRIPT = "subVar02:String";
+        final String SUB_PROCESS_VARIABLES_MVEL = "subVarString:String,subVarCustom:CustomType,subVarBoolean:Boolean,subVarFloat:Float,subVarInteger:Integer,subVarObject:Object";
+
+        Diagram<Graph, Metadata> diagram = getDiagram();
+        assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
+
+        AdHocSubprocess topLevelSubProcessJava = getSubProcessNodeById(diagram,
+                                                                       TOP_LEVEL_FILLED_SUBPROCESS_JAVA_ID,
+                                                                       EMPTY_INCOME_EDGES,
+                                                                       EMPTY_OUTCOME_EDGES);
+
+        assertGeneralSet(topLevelSubProcessJava.getGeneral(), SUB_PROCESS_NAME_JAVA, SUB_PROCESS_DOCUMENTATION_JAVA);
+        assertAdHocSubProcessExecutionSet(topLevelSubProcessJava.getExecutionSet(),
+                                          ADHOC_COMPLETION_CONDITION_SCRIPT_DEFAULT,
+                                          ADHOC_COMPLETION_CONDITION_LANGUAGE_MVEL,
+                                          ADHOC_ORDERING_SEQUENTIAL,
+                                          SUBPROCESS_ON_ENTRY_ACTION_JAVA,
+                                          SUBPROCESS_SCRIPT_JAVA_LANGUAGE,
+                                          SUBPROCESS_ON_EXIT_ACTION_JAVA,
+                                          SUBPROCESS_SCRIPT_JAVA_LANGUAGE);
+        assertSubProcessProcessData(topLevelSubProcessJava.getProcessData(), SUB_PROCESS_VARIABLES_JAVA);
+
+        AdHocSubprocess topLevelSubProcessJavascript = getSubProcessNodeById(diagram,
+                                                                             TOP_LEVEL_FILLED_SUBPROCESS_JAVASCRIPT_ID,
+                                                                             EMPTY_INCOME_EDGES,
+                                                                             EMPTY_OUTCOME_EDGES);
+
+        assertGeneralSet(topLevelSubProcessJavascript.getGeneral(), SUB_PROCESS_NAME_JAVASCRIPT, SUB_PROCESS_DOCUMENTATION_JAVASCRIPT);
+        assertAdHocSubProcessExecutionSet(topLevelSubProcessJavascript.getExecutionSet(),
+                                          ADHOC_COMPLETION_CONDITION_SCRIPT,
+                                          ADHOC_COMPLETION_CONDITION_LANGUAGE_DROOLS,
+                                          ADHOC_ORDERING_PARALLEL,
+                                          SUBPROCESS_ON_ENTRY_ACTION_JAVASCRIPT,
+                                          SUBPROCESS_SCRIPT_JAVASCRIPT_LANGUAGE,
+                                          SUBPROCESS_ON_EXIT_ACTION_JAVASCRIPT,
+                                          SUBPROCESS_SCRIPT_JAVASCRIPT_LANGUAGE);
+        assertSubProcessProcessData(topLevelSubProcessJavascript.getProcessData(), SUB_PROCESS_VARIABLES_JAVASCRIPT);
+
+        AdHocSubprocess topLevelSubProcessMVEL = getSubProcessNodeById(diagram,
+                                                                       TOP_LEVEL_FILLED_SUBPROCESS_MVEL_ID,
+                                                                       EMPTY_INCOME_EDGES,
+                                                                       EMPTY_OUTCOME_EDGES);
+
+        assertGeneralSet(topLevelSubProcessMVEL.getGeneral(), SUB_PROCESS_NAME_MVEL, SUB_PROCESS_DOCUMENTATION_MVEL);
+        assertAdHocSubProcessExecutionSet(topLevelSubProcessMVEL.getExecutionSet(),
+                                          ADHOC_COMPLETION_CONDITION_SCRIPT_DEFAULT,
+                                          ADHOC_COMPLETION_CONDITION_LANGUAGE_MVEL,
+                                          ADHOC_ORDERING_SEQUENTIAL,
+                                          SUBPROCESS_ON_ENTRY_ACTION_MVEL,
+                                          SUBPROCESS_SCRIPT_MVEL_LANGUAGE,
+                                          SUBPROCESS_ON_EXIT_ACTION_MVEL,
+                                          SUBPROCESS_SCRIPT_MVEL_LANGUAGE);
+        assertSubProcessProcessData(topLevelSubProcessMVEL.getProcessData(), SUB_PROCESS_VARIABLES_MVEL);
     }
 
     @Test
-    public void testMigrationSpecialCharacters() throws Exception {
-        Diagram<Graph, Metadata> oldDiagram = Unmarshalling.unmarshall(oldMarshaller, BPMN_ADHOC_SUBPROCESS_SPECIAL_CHARACTERS);
-        Diagram<Graph, Metadata> newDiagram = Unmarshalling.unmarshall(newMarshaller, BPMN_ADHOC_SUBPROCESS_SPECIAL_CHARACTERS);
+    @Override
+    public void testUnmarshallTopLevelSubProcessWithEdges() {
+        final String SUB_PROCESS_NAME = "Sub-process07";
 
-        assertDiagramEquals(oldDiagram, newDiagram, BPMN_ADHOC_SUBPROCESS_SPECIAL_CHARACTERS);
+        Diagram<Graph, Metadata> diagram = getDiagram();
+        assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
+
+        AdHocSubprocess topLevelSubProcess = getSubProcessNodeById(diagram,
+                                                                   TOP_LEVEL_SUBPROCESS_WITH_EDGES,
+                                                                   ONE_INCOME_EDGE,
+                                                                   FOUR_OUTCOME_EDGES);
+
+        assertGeneralSet(topLevelSubProcess.getGeneral(), SUB_PROCESS_NAME, DEFAULT_DOCUMENTATION);
+        assertAdHocSubProcessExecutionSet(topLevelSubProcess.getExecutionSet(),
+                                          ADHOC_COMPLETION_CONDITION_SCRIPT_DEFAULT,
+                                          ADHOC_COMPLETION_CONDITION_LANGUAGE_MVEL,
+                                          ADHOC_ORDERING_SEQUENTIAL,
+                                          EMPTY_VALUE,
+                                          SUBPROCESS_SCRIPT_JAVA_LANGUAGE,
+                                          EMPTY_VALUE,
+                                          SUBPROCESS_SCRIPT_JAVA_LANGUAGE);
+        assertSubProcessProcessData(topLevelSubProcess.getProcessData(), EMPTY_VALUE);
     }
 
-    @SuppressWarnings("unchecked")
-    private void unmarshallAddHocSubprocess(final DiagramMarshaller marshaller) throws Exception {
+    @Test
+    @Override
+    public void testUnmarshallSubProcessLevelEmptyPropertiesSubProcess() {
+        assumeFalse(IGNORE_MESSAGE_FOR_TEST, isCurrentMarshallerOld());
 
-        final String ADHOC_SUBPROCESS_ID = "_8D223345-9B6F-4AD3-997B-582C9222CC35";
-        final String USER_TASK_ID = "_E386D64B-70FE-45E5-A190-C65EB8695480";
-        final String BUSINESS_RULE_TASK_ID = "_5AF47879-8D23-4893-8668-ADF88C3EAD1B";
+        Diagram<Graph, Metadata> diagram = getDiagram();
+        assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_ADHOC_SUBPROCESS_AUTOSTART);
+        AdHocSubprocess subProcessLevelSubProcess = getSubProcessNodeById(diagram,
+                                                                          SUBPROCESS_LEVEL_EMPTY_SUBPROCESS_ID,
+                                                                          EMPTY_INCOME_EDGES,
+                                                                          EMPTY_OUTCOME_EDGES);
 
-        Node<? extends Definition, ?> adHocSubProcessNode = diagram.getGraph().getNode(ADHOC_SUBPROCESS_ID);
-        AdHocSubprocess adHocSubprocess = (AdHocSubprocess) adHocSubProcessNode.getContent().getDefinition();
-
-        assertNotNull(adHocSubprocess);
-
-        BPMNGeneralSet generalSet = adHocSubprocess.getGeneral();
-        AdHocSubprocessTaskExecutionSet executionSet = adHocSubprocess.getExecutionSet();
-        ProcessData processData = adHocSubprocess.getProcessData();
-
-        assertEquals("AdHoc Sub-process",
-                     generalSet.getName().getValue());
-        assertEquals("for marshalling test",
-                     generalSet.getDocumentation().getValue());
-
-        assertEquals("",
-                     executionSet.getOnEntryAction().getValue().getValues().get(0).getScript());
-        assertEquals("java",
-                     executionSet.getOnEntryAction().getValue().getValues().get(0).getLanguage());
-
-        assertEquals("",
-                     executionSet.getOnExitAction().getValue().getValues().get(0).getScript());
-        assertEquals("java",
-                     executionSet.getOnExitAction().getValue().getValues().get(0).getLanguage());
-
-        assertEquals("varA == null",
-                     executionSet.getAdHocCompletionCondition().getValue().getScript());
-        assertEquals("mvel",
-                     executionSet.getAdHocCompletionCondition().getValue().getLanguage());
-
-        assertEquals("Parallel",
-                     executionSet.getAdHocOrdering().getValue());
-
-        assertEquals("adHocVariable:Object",
-                     processData.getProcessVariables().getValue());
-
-        Node<? extends Definition, ?> userTaskNode = diagram.getGraph().getNode(USER_TASK_ID);
-        UserTask userTask = (UserTask) userTaskNode.getContent().getDefinition();
-        assertTrue(userTask.getExecutionSet().getAdHocAutostart().getValue());
-
-        Node<? extends Definition, ?> businessRuleTaskNode = diagram.getGraph().getNode(BUSINESS_RULE_TASK_ID);
-        BusinessRuleTask businessRuleTask = (BusinessRuleTask) businessRuleTaskNode.getContent().getDefinition();
-        assertTrue(businessRuleTask.getExecutionSet().getAdHocAutostart().getValue());
+        assertGeneralSet(subProcessLevelSubProcess.getGeneral(), DEFAULT_NAME, DEFAULT_DOCUMENTATION);
+        assertAdHocSubProcessExecutionSet(subProcessLevelSubProcess.getExecutionSet(),
+                                          EMPTY_VALUE,
+                                          ADHOC_COMPLETION_CONDITION_LANGUAGE_MVEL,
+                                          ADHOC_ORDERING_SEQUENTIAL,
+                                          EMPTY_VALUE,
+                                          SUBPROCESS_SCRIPT_JAVA_LANGUAGE,
+                                          EMPTY_VALUE,
+                                          SUBPROCESS_SCRIPT_JAVA_LANGUAGE);
+        assertSubProcessProcessData(subProcessLevelSubProcess.getProcessData(), EMPTY_VALUE);
     }
 
-    @SuppressWarnings("unchecked")
-    private void unmarshallAddHocSubprocessSpecialCharacters(final DiagramMarshaller marshaller) throws Exception {
-        final String ADHOC_SUBPROCESS_ID = "_56770326-5337-4F88-A502-1269AB8E4786";
-        final String USER_TASK_ID = "_1AEB4B8A-4515-404D-A1F3-2FFCA864C4CF";
+    @Test
+    @Override
+    public void testUnmarshallSubProcessLevelFilledPropertiesSubProcess() {
+        final String SUB_PROCESS_NAME_JAVA = "Ad-hoc sub-process04 name ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
+        final String SUB_PROCESS_DOCUMENTATION_JAVA = "Ad-hoc sub-process04 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
+        final String SUB_PROCESS_NAME_JAVASCRIPT = "Ad-hoc sub-process05 name ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
+        final String SUB_PROCESS_DOCUMENTATION_JAVASCRIPT = "Ad-hoc sub-process05 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
+        final String SUB_PROCESS_NAME_MVEL = "Ad-hoc sub-process06 name ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
+        final String SUB_PROCESS_DOCUMENTATION_MVEL = "Ad-hoc sub-process06 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
 
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_ADHOC_SUBPROCESS_SPECIAL_CHARACTERS);
+        final String SUB_PROCESS_VARIABLES_JAVA = "subVar04:String";
+        final String SUB_PROCESS_VARIABLES_JAVASCRIPT = "subVar05:String";
+        final String SUB_PROCESS_VARIABLES_MVEL = "subVarString:String,subVarCustom:CustomType,subVarBoolean:Boolean,subVarFloat:Float,subVarInteger:Integer,subVarObject:Object";
 
-        Node<? extends Definition, ?> adHocSubProcessNode = diagram.getGraph().getNode(ADHOC_SUBPROCESS_ID);
-        AdHocSubprocess adHocSubprocess = (AdHocSubprocess) adHocSubProcessNode.getContent().getDefinition();
+        Diagram<Graph, Metadata> diagram = getDiagram();
+        assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        assertNotNull(adHocSubprocess);
+        AdHocSubprocess subProcessLevelSubProcessJava = getSubProcessNodeById(diagram,
+                                                                              SUBPROCESS_LEVEL_FILLED_SUBPROCESS_JAVA_ID,
+                                                                              EMPTY_INCOME_EDGES,
+                                                                              EMPTY_OUTCOME_EDGES);
 
-        BPMNGeneralSet generalSet = adHocSubprocess.getGeneral();
-        AdHocSubprocessTaskExecutionSet executionSet = adHocSubprocess.getExecutionSet();
-        ProcessData processData = adHocSubprocess.getProcessData();
+        assertGeneralSet(subProcessLevelSubProcessJava.getGeneral(), SUB_PROCESS_NAME_JAVA, SUB_PROCESS_DOCUMENTATION_JAVA);
+        assertAdHocSubProcessExecutionSet(subProcessLevelSubProcessJava.getExecutionSet(),
+                                          ADHOC_COMPLETION_CONDITION_SCRIPT_DEFAULT,
+                                          ADHOC_COMPLETION_CONDITION_LANGUAGE_MVEL,
+                                          ADHOC_ORDERING_SEQUENTIAL,
+                                          SUBPROCESS_ON_ENTRY_ACTION_JAVA,
+                                          SUBPROCESS_SCRIPT_JAVA_LANGUAGE,
+                                          SUBPROCESS_ON_EXIT_ACTION_JAVA,
+                                          SUBPROCESS_SCRIPT_JAVA_LANGUAGE);
+        assertSubProcessProcessData(subProcessLevelSubProcessJava.getProcessData(), SUB_PROCESS_VARIABLES_JAVA);
 
-        assertEquals("~`!@#$%^&*()_+|}{[]\":;'<>?/.,",
-                     generalSet.getName().getValue());
-        assertEquals("式",
-                     generalSet.getDocumentation().getValue());
+        AdHocSubprocess subProcessLevelSubProcessJavascript = getSubProcessNodeById(diagram,
+                                                                                    SUBPROCESS_LEVEL_FILLED_SUBPROCESS_JAVASCRIPT_ID,
+                                                                                    EMPTY_INCOME_EDGES,
+                                                                                    EMPTY_OUTCOME_EDGES);
 
-        assertEquals("String message = \"entering!\";\n" +
-                             "System.out.println(message);",
-                     executionSet.getOnEntryAction().getValue().getValues().get(0).getScript());
-        assertEquals("java",
-                     executionSet.getOnEntryAction().getValue().getValues().get(0).getLanguage());
+        assertGeneralSet(subProcessLevelSubProcessJavascript.getGeneral(), SUB_PROCESS_NAME_JAVASCRIPT, SUB_PROCESS_DOCUMENTATION_JAVASCRIPT);
+        assertAdHocSubProcessExecutionSet(subProcessLevelSubProcessJavascript.getExecutionSet(),
+                                          ADHOC_COMPLETION_CONDITION_SCRIPT,
+                                          ADHOC_COMPLETION_CONDITION_LANGUAGE_DROOLS,
+                                          ADHOC_ORDERING_PARALLEL,
+                                          SUBPROCESS_ON_ENTRY_ACTION_JAVASCRIPT,
+                                          SUBPROCESS_SCRIPT_JAVASCRIPT_LANGUAGE,
+                                          SUBPROCESS_ON_EXIT_ACTION_JAVASCRIPT,
+                                          SUBPROCESS_SCRIPT_JAVASCRIPT_LANGUAGE);
+        assertSubProcessProcessData(subProcessLevelSubProcessJavascript.getProcessData(), SUB_PROCESS_VARIABLES_JAVASCRIPT);
 
-        assertEquals("String message = \"leaving!\";\n" +
-                             "System.out.println(message);",
-                     executionSet.getOnExitAction().getValue().getValues().get(0).getScript());
-        assertEquals("java",
-                     executionSet.getOnExitAction().getValue().getValues().get(0).getLanguage());
+        AdHocSubprocess subProcessLevelSubProcessMVEL = getSubProcessNodeById(diagram,
+                                                                              SUBPROCESS_LEVEL_FILLED_SUBPROCESS_MVEL_ID,
+                                                                              EMPTY_INCOME_EDGES,
+                                                                              EMPTY_OUTCOME_EDGES);
 
-        assertEquals("Person(name == \"式\" && age > 18)",
-                     executionSet.getAdHocCompletionCondition().getValue().getScript());
-        assertEquals("drools",
-                     executionSet.getAdHocCompletionCondition().getValue().getLanguage());
+        assertGeneralSet(subProcessLevelSubProcessMVEL.getGeneral(), SUB_PROCESS_NAME_MVEL, SUB_PROCESS_DOCUMENTATION_MVEL);
+        assertAdHocSubProcessExecutionSet(subProcessLevelSubProcessMVEL.getExecutionSet(),
+                                          ADHOC_COMPLETION_CONDITION_SCRIPT_DEFAULT,
+                                          ADHOC_COMPLETION_CONDITION_LANGUAGE_MVEL,
+                                          ADHOC_ORDERING_SEQUENTIAL,
+                                          SUBPROCESS_ON_ENTRY_ACTION_MVEL,
+                                          SUBPROCESS_SCRIPT_MVEL_LANGUAGE,
+                                          SUBPROCESS_ON_EXIT_ACTION_MVEL,
+                                          SUBPROCESS_SCRIPT_MVEL_LANGUAGE);
+        assertSubProcessProcessData(subProcessLevelSubProcessMVEL.getProcessData(), SUB_PROCESS_VARIABLES_MVEL);
+    }
 
-        assertEquals("Sequential",
-                     executionSet.getAdHocOrdering().getValue());
+    @Test
+    @Override
+    public void testUnmarshallSubProcessLevelSubProcessWithEdges() {
+        final String SUB_PROCESS_NAME = "Sub-process08";
 
-        assertEquals("",
-                     processData.getProcessVariables().getValue());
+        Diagram<Graph, Metadata> diagram = getDiagram();
+        assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        Node<? extends Definition, ?> userTaskNode = diagram.getGraph().getNode(USER_TASK_ID);
-        UserTask userTask = (UserTask) userTaskNode.getContent().getDefinition();
-        assertFalse(userTask.getExecutionSet().getAdHocAutostart().getValue());
+        AdHocSubprocess subProcessLevelSubProcess = getSubProcessNodeById(diagram,
+                                                                          SUBPROCESS_LEVEL_SUBPROCESS_WITH_EDGES,
+                                                                          ONE_INCOME_EDGE,
+                                                                          FOUR_OUTCOME_EDGES);
+
+        assertGeneralSet(subProcessLevelSubProcess.getGeneral(), SUB_PROCESS_NAME, DEFAULT_DOCUMENTATION);
+        assertAdHocSubProcessExecutionSet(subProcessLevelSubProcess.getExecutionSet(),
+                                          ADHOC_COMPLETION_CONDITION_SCRIPT_DEFAULT,
+                                          ADHOC_COMPLETION_CONDITION_LANGUAGE_MVEL,
+                                          ADHOC_ORDERING_SEQUENTIAL,
+                                          EMPTY_VALUE,
+                                          SUBPROCESS_SCRIPT_JAVA_LANGUAGE,
+                                          EMPTY_VALUE,
+                                          SUBPROCESS_SCRIPT_JAVA_LANGUAGE);
+        assertSubProcessProcessData(subProcessLevelSubProcess.getProcessData(), EMPTY_VALUE);
+    }
+
+    @Override
+    Class<AdHocSubprocess> getSubProcessType() {
+        return AdHocSubprocess.class;
+    }
+
+    @Override
+    String getBpmnSubProcessFilePath() {
+        return BPMN_SUB_PROCESS_FILE_PATH;
+    }
+
+    @Override
+    String getTopLevelEmptyPropertiesSubProcessId() {
+        return TOP_LEVEL_EMPTY_SUBPROCESS_ID;
+    }
+
+    @Override
+    String[] getTopLevelFilledPropertiesSubProcessesIds() {
+        return new String[]{TOP_LEVEL_FILLED_SUBPROCESS_JAVA_ID,
+                TOP_LEVEL_FILLED_SUBPROCESS_JAVASCRIPT_ID,
+                TOP_LEVEL_FILLED_SUBPROCESS_MVEL_ID};
+    }
+
+    @Override
+    String getTopLevelSubProcessWithEdgesId() {
+        return TOP_LEVEL_SUBPROCESS_WITH_EDGES;
+    }
+
+    @Override
+    String getSubProcessLevelEmptyPropertiesSubProcessId() {
+        return SUBPROCESS_LEVEL_EMPTY_SUBPROCESS_ID;
+    }
+
+    @Override
+    String[] getSubProcessLevelFilledPropertiesSubProcessesIds() {
+        return new String[]{SUBPROCESS_LEVEL_FILLED_SUBPROCESS_JAVA_ID,
+                SUBPROCESS_LEVEL_FILLED_SUBPROCESS_JAVASCRIPT_ID,
+                SUBPROCESS_LEVEL_FILLED_SUBPROCESS_MVEL_ID};
+    }
+
+    @Override
+    String getSubProcessLevelSubProcessWithEdgesId() {
+        return SUBPROCESS_LEVEL_SUBPROCESS_WITH_EDGES;
+    }
+
+    private void assertAdHocSubProcessExecutionSet(AdHocSubprocessTaskExecutionSet executionSet,
+                                                   String adHocCompletionConditionScript,
+                                                   String adHocCompletionConditionLanguage,
+                                                   String adHocOrdering,
+                                                   String onEntryActionScriptValue,
+                                                   String onEntryActionScriptLanguage,
+                                                   String onExitActionScriptValue,
+                                                   String onExitActionScriptLanguage) {
+        assertThat(executionSet).isNotNull();
+
+        assertThat(executionSet.getAdHocCompletionCondition()).isNotNull();
+        assertThat(executionSet.getAdHocCompletionCondition().getValue()).isNotNull();
+        assertThat(executionSet.getAdHocOrdering()).isNotNull();
+
+        assertThat(executionSet.getOnEntryAction()).isNotNull();
+        assertThat(executionSet.getOnExitAction()).isNotNull();
+        assertThat(executionSet.getOnEntryAction().getValue()).isNotNull();
+        assertThat(executionSet.getOnExitAction().getValue()).isNotNull();
+
+        List<ScriptTypeValue> onEntryScriptTypeValues = executionSet.getOnEntryAction().getValue().getValues();
+        List<ScriptTypeValue> onExitScriptTypeValues = executionSet.getOnExitAction().getValue().getValues();
+
+        assertThat(onEntryScriptTypeValues).isNotNull();
+        assertThat(onExitScriptTypeValues).isNotNull();
+        assertThat(onEntryScriptTypeValues.get(0)).isNotNull();
+        assertThat(onExitScriptTypeValues.get(0)).isNotNull();
+
+        assertThat(executionSet.getAdHocCompletionCondition().getValue().getScript()).isEqualTo(adHocCompletionConditionScript);
+        assertThat(executionSet.getAdHocCompletionCondition().getValue().getLanguage()).isEqualTo(adHocCompletionConditionLanguage);
+        assertThat(executionSet.getAdHocOrdering().getValue()).isEqualTo(adHocOrdering);
+
+        assertThat(onEntryScriptTypeValues.get(0).getScript()).isEqualTo(onEntryActionScriptValue);
+        assertThat(onEntryScriptTypeValues.get(0).getLanguage()).isEqualTo(onEntryActionScriptLanguage);
+        assertThat(onExitScriptTypeValues.get(0).getScript()).isEqualTo(onExitActionScriptValue);
+        assertThat(onExitScriptTypeValues.get(0).getLanguage()).isEqualTo(onExitActionScriptLanguage);
     }
 }

@@ -90,6 +90,10 @@ public abstract class SubProcess<T extends BaseSubprocess> extends BPMNDiagramMa
         }
     }
 
+    protected boolean isCurrentMarshallerOld() {
+        return currentMarshaller == OLD;
+    }
+
     private void marshallDiagramWithNewMarshaller() throws Exception {
         setNewDiagram(unmarshall(newMarshaller, getBpmnSubProcessFilePath()));
         setNewRoundTripDiagram(unmarshall(newMarshaller, getStream(newMarshaller.marshall(getNewDiagram()))));
@@ -129,7 +133,7 @@ public abstract class SubProcess<T extends BaseSubprocess> extends BPMNDiagramMa
     }
 
     @Test
-    public void testMarshallTopLevelSubProcessWithEdges() throws Exception {
+    public void testMarshallTopLevelSubProcessWithEdges() {
         checkSubProcessMarshalling(getTopLevelSubProcessWithEdgesId(), ONE_INCOME_EDGE, FOUR_OUTCOME_EDGES);
     }
 
@@ -146,7 +150,7 @@ public abstract class SubProcess<T extends BaseSubprocess> extends BPMNDiagramMa
     }
 
     @Test
-    public void testMarshallSubProcessLevelSubProcessWithEdges() throws Exception {
+    public void testMarshallSubProcessLevelSubProcessWithEdges() {
         checkSubProcessMarshalling(getSubProcessLevelSubProcessWithEdgesId(), ONE_INCOME_EDGE, FOUR_OUTCOME_EDGES);
     }
 
@@ -199,7 +203,7 @@ public abstract class SubProcess<T extends BaseSubprocess> extends BPMNDiagramMa
         }
     }
 
-    public Diagram<Graph, Metadata> getRoundTripDiagram() {
+    private Diagram<Graph, Metadata> getRoundTripDiagram() {
         switch (currentMarshaller) {
             case OLD:
                 return getOldRoundTripDiagram();
