@@ -436,6 +436,7 @@ public class TestToolsPresenterTest extends AbstractTestToolsTest {
         verify(listGroupItemPresenterMock, times(1)).disable();
         verify(listGroupItemPresenterMock, never()).enable();
         verify(testToolsViewMock, times(1)).disableEditorTab();
+        verify(testToolsViewMock, times(1)).disableAddButton();
     }
 
     @Test

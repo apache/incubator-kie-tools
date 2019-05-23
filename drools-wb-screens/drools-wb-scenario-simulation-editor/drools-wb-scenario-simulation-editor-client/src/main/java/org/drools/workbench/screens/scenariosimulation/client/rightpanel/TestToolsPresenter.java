@@ -341,6 +341,7 @@ public class TestToolsPresenter extends AbstractSubDockPresenter<TestToolsView> 
         listGroupItemPresenter.disable();
         editingColumnEnabled = false;
         view.disableEditorTab();
+        view.disableAddButton();
         selectedFieldItemView = null;
         selectedListGroupItemView = null;
     }

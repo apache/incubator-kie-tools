@@ -19,6 +19,8 @@ package org.drools.workbench.screens.scenariosimulation.client.handlers;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.event.shared.GwtEvent;
+import org.drools.workbench.screens.scenariosimulation.client.events.DisableTestToolsEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.EnableTestToolsEvent;
 import org.drools.workbench.screens.scenariosimulation.client.menu.ScenarioContextMenuRegistry;
 import org.junit.Before;
@@ -28,8 +30,10 @@ import org.mockito.Mock;
 
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.CLICK_POINT_X;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.CLICK_POINT_Y;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.COLUMN_INDEX;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.GRID_WIDTH;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.HEADER_HEIGHT;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.ROW_INDEX;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.UI_COLUMN_INDEX;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.UI_ROW_INDEX;
 import static org.junit.Assert.assertEquals;
@@ -155,17 +159,17 @@ public class ScenarioSimulationGridPanelClickHandlerTest extends AbstractScenari
 
     @Test
     public void testManageHeaderLeftClick_GIVENGroup() {
-        commontTestManageHeaderLeftClick_Group("GIVEN", true);
+        commonTestManageHeaderLeftClick_Group("GIVEN", true);
     }
 
     @Test
     public void testManageHeaderLeftClick_EXPECTGroup() {
-        commontTestManageHeaderLeftClick_Group("EXPECT", true);
+        commonTestManageHeaderLeftClick_Group("EXPECT", true);
     }
 
     @Test
     public void testManageHeaderLeftClick_OTHERGroup() {
-        commontTestManageHeaderLeftClick_Group("OTHER", false);
+        commonTestManageHeaderLeftClick_Group("OTHER", false);
     }
 
     @Test
@@ -194,7 +198,7 @@ public class ScenarioSimulationGridPanelClickHandlerTest extends AbstractScenari
         verify(scenarioGridModelMock, times(1)).selectCell(eq(1), eq(0));
     }
 
-    private void commontTestManageHeaderLeftClick_Group(String group, boolean assertExpected) {
+    private void commonTestManageHeaderLeftClick_Group(String group, boolean assertExpected) {
         doReturn(1).when(scenarioSimulationGridPanelClickHandler).getUiHeaderRowIndexLocal(point2DMock);
         when(informationHeaderMetaDataMock.isReadOnly()).thenReturn(false);
         when(informationHeaderMetaDataMock.getColumnGroup()).thenReturn(group);
@@ -209,5 +213,22 @@ public class ScenarioSimulationGridPanelClickHandlerTest extends AbstractScenari
             verify(eventBusMock, never()).fireEvent(any());
             return;
         }
+    }
+
+    @Test
+    public void manageBodyCoordinates_NullCell() {
+        scenarioSimulationGridPanelClickHandler.manageBodyCoordinates(ROW_INDEX, COLUMN_INDEX);
+        verify(scenarioGridMock.getModel(), times(1)).getCell(eq(ROW_INDEX), eq(COLUMN_INDEX));
+        verify(scenarioGridMock.getModel(), never()).selectCell(anyInt(), anyInt());
+        verify(eventBusMock, times(0)).fireEvent(isA(GwtEvent.class));
+    }
+
+    @Test
+    public void manageBodyCoordinates_WithCell() {
+        doReturn(scenarioGridCellMock).when(scenarioGridModelMock).getCell(ROW_INDEX, COLUMN_INDEX);
+        scenarioSimulationGridPanelClickHandler.manageBodyCoordinates(ROW_INDEX, COLUMN_INDEX);
+        verify(scenarioGridMock.getModel(), times(1)).getCell(eq(ROW_INDEX), eq(COLUMN_INDEX));
+        verify(scenarioGridMock.getModel(), times(1)).selectCell(ROW_INDEX, COLUMN_INDEX);
+        verify(eventBusMock, times(1)).fireEvent(isA(DisableTestToolsEvent.class));
     }
 }

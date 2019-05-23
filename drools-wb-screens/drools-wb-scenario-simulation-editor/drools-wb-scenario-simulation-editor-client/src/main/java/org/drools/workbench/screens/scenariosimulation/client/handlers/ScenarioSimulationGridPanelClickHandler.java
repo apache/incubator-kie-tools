@@ -129,6 +129,7 @@ public class ScenarioSimulationGridPanelClickHandler extends AbstractScenarioSim
             return false;
         } else {
             scenarioGrid.getModel().selectCell(uiRowIndex, uiColumnIndex);
+            eventBus.fireEvent(new DisableTestToolsEvent());
             return true;
         }
     }
