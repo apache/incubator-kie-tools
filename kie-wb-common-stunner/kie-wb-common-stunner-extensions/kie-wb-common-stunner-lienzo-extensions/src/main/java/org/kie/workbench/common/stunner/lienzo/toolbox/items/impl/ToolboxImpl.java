@@ -189,9 +189,11 @@ public class ToolboxImpl
         // Obtain the toolbox's location relative to the cardinal direction.
         final Point2D location = Positions.anchorFor(shapeBoundingBoxSupplier.get(),
                                                      this.at);
-        // Set the toolbox primitive's location.
-        asPrimitive().setLocation(location
-                                          .offset(this.offset));
+        // Set the toolbox primitive's location
+        // and ensure it's on top of any node or connector present in the layer below.
+        asPrimitive()
+                .setLocation(location.offset(this.offset))
+                .moveToTop();
         fireRefresh();
     }
 

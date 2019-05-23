@@ -40,6 +40,7 @@ import static org.junit.Assert.assertFalse;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -69,27 +70,26 @@ public class ToolboxImplTest {
     private ItemGridImpl wrapped;
 
     @Mock
-    private Group group;
-
-    @Mock
     private IPrimitive primitive;
 
     @Mock
     private BoundingPoints boundingPoints;
 
     private ToolboxImpl tested;
+    private Group group;
 
     @Before
     @SuppressWarnings("unchecked")
     public void setUp() {
+        group = spy(new Group());
         when(wrapped.getBoundingBox()).thenReturn(() -> boundingBox);
         when(wrapped.onRefresh(any(Runnable.class))).thenReturn(wrapped);
         when(wrapped.asPrimitive()).thenReturn(group);
         when(wrapped.getPrimitive()).thenReturn(primitive);
-        when(group.getAlpha()).thenReturn(0d);
-        when(group.getComputedBoundingPoints()).thenReturn(boundingPoints);
-        when(group.getBoundingBox()).thenReturn(boundingBox);
         when(boundingPoints.getBoundingBox()).thenReturn(boundingBox);
+        doReturn(0d).when(group).getAlpha();
+        doReturn(boundingPoints).when(group).getComputedBoundingPoints();
+        doReturn(boundingBox).when(group).getBoundingBox();
         doAnswer(invocationOnMock -> {
             ((Runnable) invocationOnMock.getArguments()[0]).run();
             ((Runnable) invocationOnMock.getArguments()[1]).run();
@@ -133,6 +133,13 @@ public class ToolboxImplTest {
     }
 
     @Test
+    public void testAtButVisible() {
+        makeItVisible();
+        tested.at(Direction.EAST);
+        verifyGroupIsOnTop();
+    }
+
+    @Test
     public void testOffset() {
         Point2D o = new Point2D(50,
                                 25);
@@ -144,6 +151,13 @@ public class ToolboxImplTest {
     }
 
     @Test
+    public void testOffsetButVisible() {
+        makeItVisible();
+        tested.offset(new Point2D(50d, 25d));
+        verifyGroupIsOnTop();
+    }
+
+    @Test
     public void testGrid() {
         Point2DGrid grid = mock(Point2DGrid.class);
         when(wrapped.getGrid()).thenReturn(grid);
@@ -152,6 +166,15 @@ public class ToolboxImplTest {
                      cascade);
         verify(wrapped,
                times(1)).grid(eq(grid));
+    }
+
+    @Test
+    public void testGridButVisible() {
+        makeItVisible();
+        Point2DGrid grid = mock(Point2DGrid.class);
+        when(wrapped.getGrid()).thenReturn(grid);
+        tested.grid(grid);
+        verifyGroupIsOnTop();
     }
 
     @Test
@@ -207,6 +230,7 @@ public class ToolboxImplTest {
         ArgumentCaptor<Point2D> pc = ArgumentCaptor.forClass(Point2D.class);
         verify(group,
                times(1)).setLocation(pc.capture());
+        verifyGroupIsOnTop();
         Point2D point = pc.getValue();
         assertEquals(33d,
                      point.getX(),
@@ -228,6 +252,10 @@ public class ToolboxImplTest {
         verify(wrapped,
                never()).show(any(Runnable.class),
                              any(Runnable.class));
+        verify(group, never()).moveToTop();
+        verify(group, never()).moveToBottom();
+        verify(group, never()).moveDown();
+        verify(group, never()).moveUp();
         verify(before,
                times(1)).run();
         verify(after,
@@ -239,5 +267,16 @@ public class ToolboxImplTest {
         tested.destroy();
         verify(wrapped,
                times(1)).destroy();
+    }
+
+    private void makeItVisible() {
+        doReturn(true).when(wrapped).isVisible();
+    }
+
+    private void verifyGroupIsOnTop() {
+        verify(group, times(1)).moveToTop();
+        verify(group, never()).moveToBottom();
+        verify(group, never()).moveDown();
+        verify(group, never()).moveUp();
     }
 }
