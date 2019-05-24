@@ -16,17 +16,22 @@
 
 package org.kie.workbench.common.screens.impl;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 
+import org.guvnor.structure.contributors.Contributor;
+import org.guvnor.structure.contributors.ContributorType;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.kie.workbench.common.screens.library.api.SpacesScreenService;
 import org.kie.workbench.common.screens.library.api.preferences.LibraryInternalPreferencesPortableGeneratedImpl;
 import org.uberfire.preferences.shared.bean.PreferenceBeanServerStore;
+import org.uberfire.rpc.SessionInfo;
 
 @ApplicationScoped
 public class SpacesScreenServiceImpl implements SpacesScreenService {
@@ -35,14 +40,18 @@ public class SpacesScreenServiceImpl implements SpacesScreenService {
 
     private PreferenceBeanServerStore preferenceBeanServerStore;
 
+    private SessionInfo sessionInfo;
+
     public SpacesScreenServiceImpl() {
     }
 
     @Inject
     public SpacesScreenServiceImpl(final OrganizationalUnitService organizationalUnitService,
-                                   final PreferenceBeanServerStore preferenceBeanServerStore) {
+                                   final PreferenceBeanServerStore preferenceBeanServerStore,
+                                   final SessionInfo sessionInfo) {
         this.organizationalUnitService = organizationalUnitService;
         this.preferenceBeanServerStore = preferenceBeanServerStore;
+        this.sessionInfo = sessionInfo;
     }
 
     @Override
@@ -68,7 +77,14 @@ public class SpacesScreenServiceImpl implements SpacesScreenService {
 
     @Override
     public Response postSpace(final NewSpace newSpace) {
-        organizationalUnitService.createOrganizationalUnit(newSpace.name, newSpace.groupId);
+        organizationalUnitService.createOrganizationalUnit(newSpace.name, newSpace.groupId, new ArrayList<>(), getContributors());
         return Response.status(201).build();
+    }
+
+    private List<Contributor> getContributors() {
+        final List<Contributor> contributors = new ArrayList<>();
+        contributors.add(new Contributor(sessionInfo.getIdentity().getIdentifier(), ContributorType.OWNER));
+
+        return contributors;
     }
 }

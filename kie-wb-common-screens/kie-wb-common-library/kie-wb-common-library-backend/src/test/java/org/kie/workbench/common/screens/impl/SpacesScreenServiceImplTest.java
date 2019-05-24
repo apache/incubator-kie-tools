@@ -16,9 +16,13 @@
 
 package org.kie.workbench.common.screens.impl;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
+import org.guvnor.structure.contributors.Contributor;
+import org.guvnor.structure.contributors.ContributorType;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.organizationalunit.impl.OrganizationalUnitImpl;
@@ -29,7 +33,9 @@ import org.kie.workbench.common.screens.library.api.SpacesScreenService;
 import org.kie.workbench.common.screens.library.api.preferences.LibraryInternalPreferencesPortableGeneratedImpl;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.mocks.SessionInfoMock;
 import org.uberfire.preferences.shared.bean.PreferenceBeanServerStore;
+import org.uberfire.rpc.SessionInfo;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -38,6 +44,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SpacesScreenServiceImplTest {
@@ -48,14 +55,16 @@ public class SpacesScreenServiceImplTest {
     @Mock
     private PreferenceBeanServerStore preferenceBeanServerStore;
 
+    private SessionInfo sessionInfo;
+
     private SpacesScreenServiceImpl spacesScreenService;
 
     @Before
     public void before() {
-        organizationalUnitService = mock(OrganizationalUnitService.class);
-        preferenceBeanServerStore = mock(PreferenceBeanServerStore.class);
+        sessionInfo = new SessionInfoMock();
         spacesScreenService = spy(new SpacesScreenServiceImpl(organizationalUnitService,
-                                                              preferenceBeanServerStore));
+                                                              preferenceBeanServerStore,
+                                                              sessionInfo));
     }
 
     @Test
@@ -87,8 +96,11 @@ public class SpacesScreenServiceImplTest {
             groupId = "com.test";
         }};
 
-        doReturn(new OrganizationalUnitImpl("test", "com.test")).when(organizationalUnitService).createOrganizationalUnit("test", "com.test");
+        final List<Contributor> contributors = new ArrayList<>();
+        contributors.add(new Contributor(sessionInfo.getIdentity().getIdentifier(), ContributorType.OWNER));
+
         assertEquals(201, spacesScreenService.postSpace(space).getStatus());
+        verify(organizationalUnitService).createOrganizationalUnit("test", "com.test", new ArrayList<>(), contributors);
     }
 
     @Test
