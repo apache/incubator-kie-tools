@@ -16,13 +16,14 @@
 
 package org.drools.workbench.screens.scenariosimulation.backend.server;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import javax.enterprise.context.ApplicationScoped;
 
@@ -59,8 +60,7 @@ public class DMNTypeServiceImpl
         ErrorHolder errorHolder = new ErrorHolder();
         for (InputDataNode input : dmnModel.getInputs()) {
             DMNType type = input.getType();
-            checkTypeSupport(type, errorHolder, input.getName());
-            visitCompositeType(type, false, errorHolder, input.getName());
+            checkTypeSupport(type, false, errorHolder, input.getName());
             try {
                 visibleFacts.put(input.getName(), createTopLevelFactModelTree(input.getName(), type, hiddenFacts, FactModelTree.Type.INPUT));
             } catch (WrongDMNTypeException e) {
@@ -69,8 +69,7 @@ public class DMNTypeServiceImpl
         }
         for (DecisionNode decision : dmnModel.getDecisions()) {
             DMNType type = decision.getResultType();
-            checkTypeSupport(type, errorHolder, decision.getName());
-            visitCompositeType(type, false, errorHolder, decision.getName());
+            checkTypeSupport(type, false, errorHolder, decision.getName());
             try {
                 visibleFacts.put(decision.getName(), createTopLevelFactModelTree(decision.getName(), type, hiddenFacts, FactModelTree.Type.DECISION));
             } catch (WrongDMNTypeException e) {
@@ -214,16 +213,6 @@ public class DMNTypeServiceImpl
     }
 
     /**
-     * Check the given <code>DMNType</code> to eventually detect if it is currently supported and add errors to given <code>ErrorHolder</code>
-     * @param type
-     * @param errorHolder
-     * @param fullPropertyPath
-     */
-    protected void checkTypeSupport(DMNType type, ErrorHolder errorHolder, String fullPropertyPath) {
-        visitCompositeType(type, false, errorHolder, fullPropertyPath);
-    }
-
-    /**
      * Return <code>true</code> if the given <code>BaseDMNTypeImpl</code> has to be managed as <b>collection</b>
      * @param type
      * @return <code>true</code> if <code>BaseDMNTypeImpl.isCollection() == true</code> <b>and</b> <code>BaseDMNTypeImpl.getFeelType() != BuiltInType.UNKNOWN</code>
@@ -280,10 +269,10 @@ public class DMNTypeServiceImpl
      * @param errorHolder
      * @param fullPropertyPath
      */
-    private void visitCompositeType(DMNType type,
-                                    boolean alreadyInCollection,
-                                    ErrorHolder errorHolder,
-                                    String fullPropertyPath) {
+    protected void checkTypeSupport(DMNType type,
+                                  boolean alreadyInCollection,
+                                  ErrorHolder errorHolder,
+                                  String fullPropertyPath) {
         if (type.isComposite()) {
             for (Map.Entry<String, DMNType> entry : type.getFields().entrySet()) {
                 String name = entry.getKey();
@@ -295,24 +284,24 @@ public class DMNTypeServiceImpl
                 if (alreadyInCollection && nestedType.isComposite()) {
                     errorHolder.getMultipleNestedObject().add(nestedPath);
                 }
-                visitCompositeType(nestedType,
-                                   alreadyInCollection || nestedType.isCollection(),
-                                   errorHolder,
-                                   nestedPath);
+                checkTypeSupport(nestedType,
+                                 alreadyInCollection || nestedType.isCollection(),
+                                 errorHolder,
+                                 nestedPath);
             }
         }
     }
 
     static class ErrorHolder {
 
-        List<String> multipleNestedObject = new ArrayList<>();
-        List<String> multipleNestedCollection = new ArrayList<>();
+        Set<String> multipleNestedObject = new TreeSet<>();
+        Set<String> multipleNestedCollection = new TreeSet<>();
 
-        public List<String> getMultipleNestedObject() {
+        public Set<String> getMultipleNestedObject() {
             return multipleNestedObject;
         }
 
-        public List<String> getMultipleNestedCollection() {
+        public Set<String> getMultipleNestedCollection() {
             return multipleNestedCollection;
         }
     }
