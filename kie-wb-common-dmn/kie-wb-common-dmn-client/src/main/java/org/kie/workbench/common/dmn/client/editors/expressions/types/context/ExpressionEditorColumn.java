@@ -22,6 +22,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.literal.LiteralExpressionGrid;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseGrid;
@@ -119,6 +120,9 @@ public class ExpressionEditorColumn extends DMNGridColumn<BaseGrid<? extends Exp
         cell.getValue().getValue()
                 .filter(nestedGrid -> !(nestedGrid instanceof UndefinedExpressionGrid))
                 .ifPresent(nestedGrid -> nestedGrid.selectFirstCell());
+        cell.getValue().getValue()
+                .filter(nestedGrid -> nestedGrid instanceof LiteralExpressionGrid)
+                .ifPresent(nestedGrid -> nestedGrid.startEditingCell(0, 0));
     }
 
     protected void updateWidthOfChildren() {
