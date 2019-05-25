@@ -1,0 +1,3 @@
+#!/bin/sh
+
+groupadd -r kogito -g 1001 && useradd -u 1001 -r -g 1001 -m -d ${KOGITO_HOME} -s /sbin/nologin -c "Kogito user" kogito

@@ -1,6 +1,6 @@
 #!/bin/bash -e
 cat <<EOF
-This is the kaas-springboot-centos S2I image:
+This is the kogito-springboot-centos S2I image:
 
 Build executable jar based on project source either complete maven project or just set of business assets 
 such as processes, rules, decisions.
@@ -9,11 +9,11 @@ To use it, install S2I: https://github.com/openshift/source-to-image
 
 This image is intended to build application binaries only that are later on transfered to runtime image.
 
-s2i build -c <source code path/URL> kaas-quarkus-centos-s2i <application image name> --runtime-image <image name> --runtime-artifact /home/submarine/bin
+s2i build -c <source code path/URL> kogito-springboot-centos-s2i <application image name> --runtime-image <image name> --runtime-artifact /home/kogito/bin
 
 Sample invocation:
 
-s2i build -c /Development/project/ kaas-springboot-centos-s2i application --runtime-image kaas-springboot-centos --runtime-artifact /home/submarine/bin
+s2i build -c /Development/project/ kogito-springboot-centos-s2i application --runtime-image kogito-springboot-centos --runtime-artifact /home/kogito/bin
 
 You can then run the resulting image via:
 docker run <application image>

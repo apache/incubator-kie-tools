@@ -1,12 +1,12 @@
 schema_version: 1
 
-name: "submarine-image-real-name-on-overrides-file"
+name: "kogito-image-real-name-on-overrides-file"
 version: "1.0"
 from: "centos:latest"
 
 labels:
 - name: "maintainer"
-  value: "Submarine <submarine@kiegroup.com>"
+  value: "kogito <kogito@kiegroup.com>"
 - name: "io.openshift.s2i.scripts-url"
   value: "image:///usr/local/s2i"
 - name: "io.openshift.s2i.destination"

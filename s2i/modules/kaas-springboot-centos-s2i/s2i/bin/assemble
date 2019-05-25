@@ -11,9 +11,9 @@
 # supported values, please refer the module.yaml
 # file.
 CONFIGURE_SCRIPTS=(
-  ${SUBMARINE_HOME}/.m2/configure-maven.sh
+  ${KOGITO_HOME}/.m2/configure-maven.sh
 )
-source ${SUBMARINE_HOME}/.m2/configure.sh
+source ${KOGITO_HOME}/.m2/configure.sh
 #############################################
 
 # If the 'kaas-springboot-centos-s2i' assemble script is executed with the '-h' flag, print the usage.
@@ -31,13 +31,13 @@ cd /tmp/src/
 
 if [ -f "pom.xml" ]; then
 	echo "---> Building application from source..."
-	$MAVEN_HOME/bin/mvn clean package -s $SUBMARINE_HOME/.m2/settings.xml \
+	$MAVEN_HOME/bin/mvn clean package -s $KOGITO_HOME/.m2/settings.xml \
     -DskipTests -Dmaven.javadoc.skip=true -Dmaven.site.skip=true -Dmaven.source.skip=true \
     -Djacoco.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Dpmd.skip=true -Dfabric8.skip=true
 else
 	echo "---> Generating project structure..."
 
-	$MAVEN_HOME/bin/mvn archetype:generate -B -DarchetypeGroupId=org.kie -DarchetypeArtifactId=kaas-springboot-archetype -DarchetypeVersion=8.0.0-SNAPSHOT -DgroupId=com.company -DartifactId=project -s $SUBMARINE_HOME/.m2/settings.xml
+	$MAVEN_HOME/bin/mvn archetype:generate -B -DarchetypeGroupId=org.kie.kogito -DarchetypeArtifactId=kogito-springboot-archetype -DarchetypeVersion=8.0.0-SNAPSHOT -DgroupId=com.company -DartifactId=project -s $KOGITO_HOME/.m2/settings.xml
 
 	# copy resources into the generated project
 	for item in *
@@ -54,20 +54,20 @@ else
 	mv project/* .
 
 	echo "---> Building application from source..."
-	$MAVEN_HOME/bin/mvn clean package -s $SUBMARINE_HOME/.m2/settings.xml \
+	$MAVEN_HOME/bin/mvn clean package -s $KOGITO_HOME/.m2/settings.xml \
     -DskipTests -Dmaven.javadoc.skip=true -Dmaven.site.skip=true -Dmaven.source.skip=true \
     -Djacoco.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Dpmd.skip=true -Dfabric8.skip=true
 fi
 
 echo "---> Installing application binaries"
-mkdir $SUBMARINE_HOME/bin
-cp -v target/*.jar $SUBMARINE_HOME/bin
+mkdir $KOGITO_HOME/bin
+cp -v target/*.jar $KOGITO_HOME/bin
 
 echo "---> Copy image metadata file..."
 if [ -e /tmp/src/target/image_metadata.json ]; then
     mkdir /tmp/.s2i
     cp -v /tmp/src/target/image_metadata.json /tmp/.s2i
-    cp -v /tmp/src/target/image_metadata.json $SUBMARINE_HOME/bin
+    cp -v /tmp/src/target/image_metadata.json $KOGITO_HOME/bin
 else
     echo "-----> Failed to copy metadata file, /tmp/src/target/image_metadata.json not found."
 fi

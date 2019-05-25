@@ -1,6 +1,6 @@
-# Submarine S2I images
+# Kogito S2I images
 
-To be able to produce efficient container images for Submarine there are following sets
+To be able to produce efficient container images for Kogito there are following sets
 of builder images to perform the build and to run the result binaries.
 
 Images are grouped by the runtime that will run the binaries and the OS level
@@ -9,46 +9,46 @@ Images are grouped by the runtime that will run the binaries and the OS level
 
 ## Quarkus
 
-### kaas-quarkus-centos-s2i
+### kogito-quarkus-centos-s2i
 
 Builder image that is responsible for building the project
 with Apache Maven and generate native image using GraalVM/SubstrateVM
 
-Image location: quay.io/kiegroup/kaas-quarkus-centos-s2i:latest
+Image location: quay.io/kiegroup/kogito-quarkus-centos-s2i:latest
 
-For more details have a look at [README.md](modules/kaas-quarkus-centos-s2i/README.md)
+For more details have a look at [README.md](modules/kogito-quarkus-centos-s2i/README.md)
 
-### kaas-quarkus-centos
+### kogito-quarkus-centos
 
 Runtime image that is responsible for just running the binaries taken from the
 builder image. That approach is giving small and compact image that does not
 not carry on any of the build tools or artefacts (like local maven repository).
 
-Image location: quay.io/kiegroup/kaas-quarkus-centos:latest
+Image location: quay.io/kiegroup/kogito-quarkus-centos:latest
 
-For more details have a look at [README.md](kaas-quarkus-centos/README.md)
+For more details have a look at [README.md](kogito-quarkus-centos/README.md)
 
 ## SpringBoot
 
-### kaas-springboot-centos-s2i
+### kogito-springboot-centos-s2i
 
 Builder image that is responsible for building the project
 with Apache Maven and generate fat jar.
 
-Image location: quay.io/kiegroup/kaas-springboot-centos-s2i:latest
+Image location: quay.io/kiegroup/kogito-springboot-centos-s2i:latest
 
-For more details have a look at [README.md](kaas-springboot-centos-s2i/README.md)
+For more details have a look at [README.md](kogito-springboot-centos-s2i/README.md)
 
-### kaas-springboot-centos
+### kogito-springboot-centos
 
 Runtime image that is responsible for just running the fat jar taken from the
 builder image. It has JRE installed on the container to allow java executable.
 That approach is giving small and compact image that does not
 not carry on any of the build tools or artefacts (like local maven repository).
 
-Image location: quay.io/kiegroup/kaas-springboot-centos:latest
+Image location: quay.io/kiegroup/kogito-springboot-centos:latest
 
-For more details have a look at [README.md](kaas-springboot-centos/README.md)
+For more details have a look at [README.md](kogito-springboot-centos/README.md)
 
 # Supported source structure
 
@@ -77,9 +77,9 @@ This source structure is expected to be valid kjar project equipped with runtime
 
 Best way is to use maven archetypes to generate project structure (same archetypes are used in cases assets only are used as source).
 
-[KaaS Quarkus archetype](https://github.com/kiegroup/submarine-runtimes/tree/master/archetypes/kaas-quarkus-archetype)
+[Kogito Quarkus archetype](https://github.com/kiegroup/kogito-runtimes/tree/master/archetypes/kogito-quarkus-archetype)
 
-[KaaS SpringBoot archetype](https://github.com/kiegroup/submarine-runtimes/tree/master/archetypes/kaas-springboot-archetype)
+[Kogito SpringBoot archetype](https://github.com/kiegroup/kogito-runtimes/tree/master/archetypes/kogito-springboot-archetype)
 
 # Example usage
 
@@ -88,7 +88,7 @@ Best way is to use maven archetypes to generate project structure (same archetyp
 Once the images are built and imported into registry (docker hub or internal OpenShift registry)
 new applications can be build and deployed with this few steps
 
-`oc new-build quay.io/kiegroup/kaas-quarkus-centos-s2i~https://github.com/user/project --name=builder-app-name`
+`oc new-build quay.io/kiegroup/kogito-quarkus-centos-s2i~https://github.com/user/project --name=builder-app-name`
 
 Modify accordingly following
 - repository is the docker repository the images are available in (could be OpenShift project or docker hub user)
@@ -100,7 +100,7 @@ Modify accordingly following
 
 Once the build is finished, create another build config to produce runtime image
 
-`oc new-build --name app-name --source-image=builder-app-name --source-image-path=/home/submarine/bin:. --image-stream=kaas-quarkus-centos`
+`oc new-build --name app-name --source-image=builder-app-name --source-image-path=/home/kogito/bin:. --image-stream=kogito-quarkus-centos`
 
 Modify accordingly following
 - app-name is the final name of the image that will be deployed
@@ -155,7 +155,7 @@ Modify accordingly following
 what this does ... essentially reuses previously build image and takes advantage of
 already downloaded artifacts. By that improving overall build time significantly.
 
-You can also use a maven mirror, if available on your internal network, just set the 
+You can also use a maven mirror, if available on your internal network, just set the
 MAVEN_MIRROR_URL environment variable when starting a new build.
 
 
@@ -164,8 +164,8 @@ MAVEN_MIRROR_URL environment variable when starting a new build.
 
 CeKit2 or 3 (Not fully tested) and docker-squash are required to build the images, how to install: https://docs.cekit.io/en/latest/handbook/installation/instructions.html
 
-To build all images: 
-```bash 
+To build all images:
+```bash
 $ make
 ```
 
@@ -184,7 +184,7 @@ Testing the images (WIP):
 $ make test
 ```
 
-And finally, to push the images for the quay.io/kiegroup registry, this step requires permission under the kiegroup 
+And finally, to push the images for the quay.io/kiegroup registry, this step requires permission under the kiegroup
 organization on quay.io.:
 ```bash
  make push
@@ -192,24 +192,24 @@ organization on quay.io.:
 
 ##### Pushing the built images to a local OCP registry:
 To be able to build the image a docker should be installed.
- 
+
 Setup environment
- 
+
 ```bash
 $ eval $(minishift docker-env)
  ```
- 
+
 Login to docker registry
 
 ```bash
 $ docker login -u developer -p $(oc whoami -t) $(minishift openshift registry)
 ```
- 
+
 (this will run a docker build and produce a image builder)
- 
+
 Tag the built image, example
 ```bash
-$ docker tag {IMAGE_ID} $(minishift openshift registry)/{PROJECT}/kaas-quarkus-centos
+$ docker tag {IMAGE_ID} $(minishift openshift registry)/{PROJECT}/kogito-quarkus-centos
 ```
 
 Modify accordingly
