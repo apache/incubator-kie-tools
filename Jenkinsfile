@@ -18,27 +18,27 @@ pipeline {
                 sh 'printenv'
             }
         }
-        stage('Build submarine-bom') {
+        stage('Build kogito-bom') {
             steps {
-                dir("submarine-bom") {
+                dir("kogito-bom") {
                     script {
-                        githubscm.checkoutIfExists('submarine-bom', "$CHANGE_AUTHOR", "$CHANGE_BRANCH", 'kiegroup', "$CHANGE_TARGET")
+                        githubscm.checkoutIfExists('kogito-bom', "$CHANGE_AUTHOR", "$CHANGE_BRANCH", 'kiegroup', "$CHANGE_TARGET")
                         maven.runMavenWithSubmarineSettings('clean install', true)
                     }
                 }
             }
         }
-        stage('Build submarine-runtimes') {
+        stage('Build kogito-runtimes') {
             steps {
-                dir("submarine-runtimes") {
+                dir("kogito-runtimes") {
                     script {
-                        githubscm.checkoutIfExists('submarine-runtimes', "$CHANGE_AUTHOR", "$CHANGE_BRANCH", 'kiegroup', "$CHANGE_TARGET")
+                        githubscm.checkoutIfExists('kogito-runtimes', "$CHANGE_AUTHOR", "$CHANGE_BRANCH", 'kiegroup', "$CHANGE_TARGET")
                         maven.runMavenWithSubmarineSettings('clean install', true)
                     }
                 }
             }
         }
-        stage('Build submarine-cloud') {
+        stage('Build kogito-cloud') {
             steps {
                 script {
                     maven.runMavenWithSubmarineSettings('clean install', false)
