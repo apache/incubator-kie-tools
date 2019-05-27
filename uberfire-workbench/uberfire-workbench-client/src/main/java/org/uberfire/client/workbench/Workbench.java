@@ -21,7 +21,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -42,6 +41,7 @@ import org.jboss.errai.bus.client.framework.ClientMessageBusImpl;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EnabledByProperty;
 import org.jboss.errai.ioc.client.api.EntryPoint;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.jboss.errai.security.shared.api.identity.User;
@@ -51,7 +51,6 @@ import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.resources.WorkbenchResources;
 import org.uberfire.client.workbench.events.ApplicationReadyEvent;
-import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.rpc.SessionInfo;
@@ -148,6 +147,8 @@ public class Workbench {
     @Inject
     private Logger logger;
     private SessionInfo sessionInfo = null;
+    @Inject
+    private ManagedInstance<WorkbenchCustomStandalonePerspectiveDefinition> workbenchCustomStandalonePerspectiveDefinition;
 
     /**
      * Requests that the workbench does not attempt to create any UI parts until the given responsible party has
@@ -257,24 +258,44 @@ public class Workbench {
     }
 
     // TODO add tests for standalone startup vs. full startup
-    private void handleStandaloneMode(final Map<String, List<String>> parameters) {
+    void handleStandaloneMode(final Map<String, List<String>> parameters) {
         if (parameters.containsKey("perspective") && !parameters.get("perspective").isEmpty()) {
             placeManager.goTo(new DefaultPlaceRequest(parameters.get("perspective").get(0)));
         } else if (parameters.containsKey("path") && !parameters.get("path").isEmpty()) {
-            placeManager.goTo(new DefaultPlaceRequest("StandaloneEditorPerspective"));
+            openStandaloneEditor(parameters);
+        }
+    }
+
+    private void openStandaloneEditor(final Map<String, List<String>> parameters) {
+        String standalonePerspective = "StandaloneEditorPerspective";
+        boolean openEditor = true;
+
+        if (!workbenchCustomStandalonePerspectiveDefinition.isUnsatisfied()) {
+            final WorkbenchCustomStandalonePerspectiveDefinition workbenchCustomStandalonePerspectiveDefinition = this.workbenchCustomStandalonePerspectiveDefinition.get();
+            standalonePerspective = workbenchCustomStandalonePerspectiveDefinition.getStandalonePerspectiveIdentifier();
+            openEditor = workbenchCustomStandalonePerspectiveDefinition.openPathAutomatically();
+        }
+
+        placeManager.goTo(new DefaultPlaceRequest(standalonePerspective));
+        if (openEditor) {
             vfsService.get(parameters.get("path").get(0),
-                           new ParameterizedCommand<Path>() {
-                               @Override
-                               public void execute(final Path response) {
-                                   if (parameters.containsKey("editor") && !parameters.get("editor").isEmpty()) {
-                                       placeManager.goTo(new PathPlaceRequest(response,
-                                                                              parameters.get("editor").get(0)));
-                                   } else {
-                                       placeManager.goTo(new PathPlaceRequest(response));
-                                   }
+                           path -> {
+                               if (parameters.containsKey("editor") && !parameters.get("editor").isEmpty()) {
+                                   openEditor(path, parameters.get("editor").get(0));
+                               } else {
+                                   openEditor(path);
                                }
                            });
         }
+    }
+
+    void openEditor(final Path path) {
+        placeManager.goTo(new PathPlaceRequest(path));
+    }
+
+    void openEditor(final Path path,
+                    final String editor) {
+        placeManager.goTo(new PathPlaceRequest(path, editor));
     }
 
     /**
