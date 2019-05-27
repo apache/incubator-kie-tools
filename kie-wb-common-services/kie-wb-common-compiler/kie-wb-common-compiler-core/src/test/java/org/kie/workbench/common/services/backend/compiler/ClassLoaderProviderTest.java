@@ -192,9 +192,6 @@ public class ClassLoaderProviderTest {
         KieModuleMetaInfo kieModuleMetaInfo = metaDataOptional.get();
         assertThat(kieModuleMetaInfo).isNotNull();
 
-        Map<String, Set<String>> rulesBP = kieModuleMetaInfo.getRulesByPackage();
-        assertThat(rulesBP).hasSize(1);
-
         Optional<KieModule> kieModuleOptional = res.getKieModule();
         assertThat(kieModuleOptional).isPresent();
         KieModule kModule = kieModuleOptional.get();
@@ -240,9 +237,6 @@ public class ClassLoaderProviderTest {
         KieModuleMetaInfo kieModuleMetaInfo = metaDataOptional.get();
         assertThat(kieModuleMetaInfo).isNotNull();
 
-        Map<String, Set<String>> rulesBP = kieModuleMetaInfo.getRulesByPackage();
-        assertThat(rulesBP).hasSize(1);
-
         Optional<KieModule> kieModuleOptional = res.getKieModule();
         assertThat(kieModuleOptional).isPresent();
         List<String> classloaderOptional = CompilerClassloaderUtils.getStringFromTargets(tmpRoot);
@@ -279,9 +273,6 @@ public class ClassLoaderProviderTest {
         assertThat(metaDataOptional).isPresent();
         KieModuleMetaInfo kieModuleMetaInfo = metaDataOptional.get();
         assertThat(kieModuleMetaInfo).isNotNull();
-
-        Map<String, Set<String>> rulesBP = kieModuleMetaInfo.getRulesByPackage();
-        assertThat(rulesBP).hasSize(1);
 
         Optional<KieModule> kieModuleOptional = res.getKieModule();
         assertThat(kieModuleOptional).isPresent();

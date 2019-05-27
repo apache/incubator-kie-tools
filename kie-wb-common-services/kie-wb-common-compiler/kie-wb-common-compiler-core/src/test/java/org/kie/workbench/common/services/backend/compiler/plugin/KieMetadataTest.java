@@ -106,15 +106,13 @@ public class KieMetadataTest {
         assertThat(kieModuleMetaInfo).isNotNull();
 
         Map<String, Set<String>> rulesBP = kieModuleMetaInfo.getRulesByPackage();
-        assertThat(rulesBP).hasSize(8);
+        assertThat(rulesBP).hasSize(6);
         Map<String, TypeMetaInfo> typesMI = kieModuleMetaInfo.getTypeMetaInfos();
         // This is a "magic number" test and may or may not be valid since changes
         // to the mechanism for generating classes, especially in PMML processing,
         // may cause this value to change.
         assertThat(typesMI).hasSize(22);
 
-
-        Map<String, byte[]> projectClasloaderStore = res.getProjectClassLoaderStore();
         Optional<KieModule> kieModuleOptional = res.getKieModule();
         assertThat(kieModuleOptional).isPresent();
 
@@ -157,9 +155,6 @@ public class KieMetadataTest {
             KieModuleMetaInfo kieModuleMetaInfo = metaDataOptional.get();
             assertThat(kieModuleMetaInfo).isNotNull();
 
-            Map<String, Set<String>> rulesBP = kieModuleMetaInfo.getRulesByPackage();
-            assertThat(rulesBP).hasSize(1);
-
             Optional<KieModule> kieModuleOptional = res.getKieModule();
             assertThat(kieModuleOptional).isPresent();
 
@@ -200,9 +195,6 @@ public class KieMetadataTest {
         assertThat(metaDataOptional).isPresent();
         KieModuleMetaInfo kieModuleMetaInfo = metaDataOptional.get();
         assertThat(kieModuleMetaInfo).isNotNull();
-
-        Map<String, Set<String>> rulesBP = kieModuleMetaInfo.getRulesByPackage();
-        assertThat(rulesBP).hasSize(1);
 
         Optional<KieModule> kieModuleOptional = res.getKieModule();
         assertThat(kieModuleOptional).isPresent();
