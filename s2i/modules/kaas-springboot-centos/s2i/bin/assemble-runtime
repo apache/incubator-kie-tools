@@ -6,15 +6,15 @@
 # For more information see the documentation:
 #	https://github.com/openshift/source-to-image/blob/master/docs/builder_image.md
 #
-if [ -d "$SUBMARINE_HOME/bin" ]; then
+if [ -d "$KOGITO_HOME/bin" ]; then
   echo "---> Application binaries found and ready to use"
   
   echo "---> Adding custom labels..."
-  if [ -e "${SUBMARINE_HOME}/bin/image_metadata.json" ]; then
+  if [ -e "${KOGITO_HOME}/bin/image_metadata.json" ]; then
     mkdir /tmp/.s2i
-    mv -v $SUBMARINE_HOME/bin/image_metadata.json /tmp/.s2i/image_metadata.json
+    mv -v $KOGITO_HOME/bin/image_metadata.json /tmp/.s2i/image_metadata.json
   else
-    echo "-----> Failed to copy metada file, $SUBMARINE_HOME/bin/image_metadata.json does not exist"
+    echo "-----> Failed to copy metada file, $KOGITO_HOME/bin/image_metadata.json does not exist"
   fi
 else
   echo "---> Application binaries NOT found, failing build..."

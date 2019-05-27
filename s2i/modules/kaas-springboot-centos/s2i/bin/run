@@ -6,4 +6,4 @@
 # For more information see the documentation:
 #	https://github.com/openshift/source-to-image/blob/master/docs/builder_image.md
 #
-exec java -jar $SUBMARINE_HOME/bin/*.jar
+exec java -jar $KOGITO_HOME/bin/*.jar
