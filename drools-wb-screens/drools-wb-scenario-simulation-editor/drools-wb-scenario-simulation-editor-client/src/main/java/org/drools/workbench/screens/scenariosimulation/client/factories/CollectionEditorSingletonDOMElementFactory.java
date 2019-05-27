@@ -155,8 +155,11 @@ public class CollectionEditorSingletonDOMElementFactory extends BaseSingletonDOM
     }
 
     protected Map<String, Map<String, String>> getExpandablePropertiesMap(String typeName) {
-        Map<String, Map<String, String>> toReturn = new HashMap<>();
+        final Map<String, Map<String, String>> toReturn = new HashMap<>();
         Optional<Simulation> simulation = scenarioSimulationContext.getModel().getSimulation();
+        if (isSimpleJavaType(typeName)) {
+            return toReturn;
+        }
         boolean isRule = RULE.equals(simulation.get().getSimulationDescriptor().getType());
         final Map<String, String> expandableProperties = scenarioSimulationContext.getDataObjectFieldsMap().get(typeName).getExpandableProperties();
         expandableProperties.forEach((key, nestedTypeName) -> {

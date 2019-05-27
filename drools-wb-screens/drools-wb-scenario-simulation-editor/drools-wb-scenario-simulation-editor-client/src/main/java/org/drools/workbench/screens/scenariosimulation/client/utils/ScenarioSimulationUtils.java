@@ -46,6 +46,11 @@ public class ScenarioSimulationUtils {
         return columnGroup + "-" + subGroupCounter.getAndIncrement();
     }
 
+    /**
+     * This method can be used <b>ONLY</b> when managing a <b>RULE</b> type Test Scenario.
+     * @param className
+     * @return
+     */
     public static boolean isSimpleJavaType(String className) {
         return SIMPLE_CLASSES_MAP.values()
                 .stream()

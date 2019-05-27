@@ -131,6 +131,7 @@ public class TestProperties {
     public static final Map<String, String> EXPECTED_MAP_FOR_NOT_SIMPLE_TYPE = new HashMap<>();
     public static final Map<String, String> EXPECTED_MAP_FOR_NOT_SIMPLE_TYPE_1 = new HashMap<>();
     public static final Map<String, String> EXPECTED_MAP_FOR_NOT_SIMPLE_TYPE_2 = new HashMap<>();
+    public static final Map<String, String> EXPECTED_MAP_FOR_NOT_SIMPLE_TYPE_3 = new HashMap<>();
 
     public static final Double GRID_WIDTH = 100.0;
     public static final Double HEADER_HEIGHT = 10.0;

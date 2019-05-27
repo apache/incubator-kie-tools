@@ -32,16 +32,21 @@ import org.mockito.Mock;
 
 import static org.drools.scenariosimulation.api.model.ScenarioSimulationModel.Type.DMN;
 import static org.drools.scenariosimulation.api.model.ScenarioSimulationModel.Type.RULE;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.CLASS_NAME;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.EXPECTED_MAP_FOR_NOT_SIMPLE_TYPE;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.EXPECTED_MAP_FOR_NOT_SIMPLE_TYPE_1;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.EXPECTED_MAP_FOR_NOT_SIMPLE_TYPE_2;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.EXPECTED_MAP_FOR_NOT_SIMPLE_TYPE_3;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.FULL_CLASS_NAME;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.FULL_FACT_CLASSNAME;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.LIST_CLASS_NAME;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.LOWER_CASE_VALUE;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.MAP_CLASS_NAME;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.NUMBER_CLASS_NAME;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.STRING_CLASS_NAME;
 import static org.drools.workbench.screens.scenariosimulation.client.utils.ScenarioSimulationUtils.isSimpleJavaType;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
@@ -72,6 +77,9 @@ public class CollectionEditorSingletonDOMElementFactoryTest extends AbstractFact
 
     @Mock
     protected FactModelTree factModelTreeMock2;
+
+    @Mock
+    protected FactModelTree factModelTreeMock3;
 
     @Before
     public void setup() {
@@ -105,6 +113,11 @@ public class CollectionEditorSingletonDOMElementFactoryTest extends AbstractFact
         when(factModelTreeMock2.getSimpleProperties()).thenReturn(EXPECTED_MAP_FOR_NOT_SIMPLE_TYPE_2);
         when(factModelTreeMock2.getExpandableProperties()).thenReturn(EXPECTED_MAP_FOR_NOT_SIMPLE_TYPE_1);
         EXPECTED_MAP_FOR_NOT_SIMPLE_TYPE_2.put("z", "w");
+        when(scenarioSimulationContextLocal.getDataObjectFieldsMap().get(FULL_FACT_CLASSNAME)).thenReturn(factModelTreeMock3);
+        when(scenarioSimulationContextLocal.getDataObjectFieldsMap().get(CLASS_NAME)).thenReturn(factModelTreeMock3);
+        when(factModelTreeMock3.getSimpleProperties()).thenReturn(EXPECTED_MAP_FOR_NOT_SIMPLE_TYPE_2);
+        when(factModelTreeMock3.getExpandableProperties()).thenReturn(EXPECTED_MAP_FOR_NOT_SIMPLE_TYPE_3);
+        EXPECTED_MAP_FOR_NOT_SIMPLE_TYPE_3.put("a", FULL_CLASS_NAME);
     }
 
     @Test
@@ -116,6 +129,20 @@ public class CollectionEditorSingletonDOMElementFactoryTest extends AbstractFact
         expectedMap1.put(LOWER_CASE_VALUE, STRING_CLASS_NAME);
         verify(collectionEditorViewImpl, times(1)).initListStructure(eq(key), eq(expectedMap1), isA(Map.class));
         verify(collectionEditorSingletonDOMElementFactoryMock, times(1)).getExpandablePropertiesMap(eq(STRING_CLASS_NAME));
+    }
+
+    @Test
+    public void getExpandableProperties_SimpleType() {
+        Map<String, Map<String, String>> resultMap = collectionEditorSingletonDOMElementFactoryMock.getExpandablePropertiesMap(STRING_CLASS_NAME);
+        assertTrue(resultMap.isEmpty());
+    }
+
+    @Test
+    public void getExpandableProperties_NotSimpleType() {
+        Map<String, Map<String, String>> expectedResult = new HashMap<>();
+        expectedResult.put("a", EXPECTED_MAP_FOR_NOT_SIMPLE_TYPE_2);
+        Map<String, Map<String, String>> resultMap = collectionEditorSingletonDOMElementFactoryMock.getExpandablePropertiesMap(FULL_FACT_CLASSNAME);
+        assertEquals(resultMap, expectedResult);
     }
 
     @Test
