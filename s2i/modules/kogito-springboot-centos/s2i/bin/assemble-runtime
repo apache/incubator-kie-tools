@@ -1,6 +1,6 @@
 #!/bin/bash -e
 #
-# S2I assemble-runtime script for the 'kaas-springboot-centos' image.
+# S2I assemble-runtime script for the 'kogito-springboot-centos' image.
 # The assemble-runtime script executes preparation for running the container on runtime image.
 #
 # For more information see the documentation:

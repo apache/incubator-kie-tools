@@ -63,7 +63,7 @@ test-cekit3:
 .PHONY: push
 push: build _push
 
-cekit3: build-cekit3 _push
+push-cekit3: build-cekit3 _push
 
 _push:
 	docker push quay.io/kiegroup/kogito-quarkus-centos:${IMAGE_VERSION}

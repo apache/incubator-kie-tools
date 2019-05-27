@@ -1,11 +1,11 @@
 #!/bin/bash -e
 cat <<EOF
-This is the kaas-quarkus-centos S2I image:
+This is the kogito-quarkus-centos S2I image:
 To use it, install S2I: https://github.com/openshift/source-to-image
 
 Sample invocation:
 
-s2i build <source code path/URL> kaas-quarkus-centos <application image>
+s2i build <source code path/URL> kogito-quarkus-centos <application image>
 
 You can then run the resulting image via:
 docker run <application image>

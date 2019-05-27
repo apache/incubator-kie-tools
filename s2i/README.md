@@ -171,7 +171,7 @@ $ make
 
 To build a single image, use `make build image-name`, example:
 ```bash
-$ make kaas-quarkus-centos
+$ make kogito-quarkus-centos
 ```
 
 To build all images using cekit3:

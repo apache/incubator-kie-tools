@@ -1,0 +1,9 @@
+#!/bin/bash
+
+pushd ${HOME} > /dev/null
+if [ -d .m2 ]; then
+    tar cf - .m2
+    echo "--> Maven artifacts saved"
+    ls -l
+fi
+popd > /dev/null
