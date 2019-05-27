@@ -33,6 +33,7 @@ import org.drools.scenariosimulation.api.utils.ScenarioSimulationSharedUtils;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
 import org.drools.workbench.screens.scenariosimulation.client.metadata.ScenarioHeaderMetaData;
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
+import org.drools.workbench.screens.scenariosimulation.client.utils.ScenarioSimulationUtils;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
@@ -162,7 +163,7 @@ public abstract class AbstractSelectedColumnCommand extends AbstractScenarioSimu
      * @param context It contains the <b>Context</b> inside which the commands will be executed
      * @param selectedColumn The selected <code>ScenarioGridColumn</code> where the command was launched
      * @param propertyNameElements The <code>List</code> with the path instance_name.property.name (eg. Author.isAlive)
-     * @param propertyClass it contains the full classname of the instance (eg. com.Author)
+     * @param propertyClass it contains the full classname of the property (eg. com.Author)
      * @param propertyHeaderTitle The title to assign to this property. Can be null, in this case it will be retrieved used <code>getPropertyHeaderTitle()</code> method
      */
     protected void setPropertyHeader(ScenarioSimulationContext context, ScenarioGridColumn selectedColumn, List<String> propertyNameElements, String propertyClass, Optional<String> propertyHeaderTitle) {
@@ -181,7 +182,8 @@ public abstract class AbstractSelectedColumnCommand extends AbstractScenarioSimu
                     }
                 });
         selectedColumn.getPropertyHeaderMetaData().setColumnGroup(getPropertyMetaDataGroup(selectedColumn.getInformationHeaderMetaData().getColumnGroup()));
-        setPropertyMetaData(selectedColumn.getPropertyHeaderMetaData(), propertyTitle, false, selectedColumn, ScenarioSimulationEditorConstants.INSTANCE.insertValue());
+        String editableCellPlaceholder = ScenarioSimulationUtils.getPlaceholder(propertyClass);
+        setPropertyMetaData(selectedColumn.getPropertyHeaderMetaData(), propertyTitle, false, selectedColumn, editableCellPlaceholder);
         selectedColumn.setPropertyAssigned(true);
         context.getModel().updateColumnProperty(columnIndex,
                                                 selectedColumn,

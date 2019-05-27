@@ -72,8 +72,6 @@ public class DMODataManagementStrategyTest extends AbstractDataManagementStrateg
     @Mock
     private AsyncPackageDataModelOracle oracleMock;
 
-
-
     @Before
     public void setup() {
         super.setup();
@@ -189,7 +187,9 @@ public class DMODataManagementStrategyTest extends AbstractDataManagementStrateg
     public void getSimpleClassFactModelTree() {
         Class[] expectedClazzes = {String.class, Boolean.class, Integer.class, Double.class, Number.class};
         for (Class expectedClazz : expectedClazzes) {
-            final FactModelTree retrieved = dmoDataManagementStrategy.getSimpleClassFactModelTree(expectedClazz);
+            final FactModelTree retrieved = dmoDataManagementStrategy.getSimpleClassFactModelTree(
+                    expectedClazz.getSimpleName(),
+                    expectedClazz.getCanonicalName());
             assertNotNull(retrieved);
             String key = expectedClazz.getSimpleName();
             assertEquals(key, retrieved.getFactName());

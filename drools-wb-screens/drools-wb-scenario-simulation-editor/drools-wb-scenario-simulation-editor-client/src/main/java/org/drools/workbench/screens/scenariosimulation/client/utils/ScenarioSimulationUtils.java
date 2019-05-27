@@ -23,6 +23,7 @@ import com.ait.lienzo.client.core.types.Point2D;
 import org.drools.scenariosimulation.api.model.ExpressionIdentifier;
 import org.drools.scenariosimulation.api.model.FactIdentifier;
 import org.drools.scenariosimulation.api.model.FactMappingType;
+import org.drools.workbench.screens.scenariosimulation.client.editor.strategies.SimpleClassEntry;
 import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioCellTextAreaSingletonDOMElementFactory;
 import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioHeaderTextBoxSingletonDOMElementFactory;
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
@@ -35,6 +36,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 
 import static org.drools.workbench.screens.scenariosimulation.client.editor.strategies.DataManagementStrategy.SIMPLE_CLASSES_MAP;
+import static org.drools.workbench.screens.scenariosimulation.client.utils.ConstantHolder.LOCALDATE_CANONICAL_NAME;
 
 public class ScenarioSimulationUtils {
 
@@ -47,7 +49,7 @@ public class ScenarioSimulationUtils {
     public static boolean isSimpleJavaType(String className) {
         return SIMPLE_CLASSES_MAP.values()
                 .stream()
-                .map(Class::getCanonicalName)
+                .map(SimpleClassEntry::getCanonicalName)
                 .anyMatch(className::equals);
     }
 
@@ -69,44 +71,6 @@ public class ScenarioSimulationUtils {
             toReturn.set(0, actualClassName);
         }
         return toReturn;
-    }
-
-    /**
-     * Returns a <code>ScenarioGridColumn</code> with the following default values:
-     * <p>
-     * width: 150
-     * </p>
-     * <p>
-     * isMovable: <code>false</code>;
-     * </p>
-     * <p>
-     * isPropertyAssigned: <code>false</code>;
-     * </p>
-     * <p>
-     * placeHolder: <code>ScenarioSimulationEditorConstants.INSTANCE.insertValue()</code>;
-     * </p>
-     * <p>
-     * columnRenderer: new ScenarioGridColumnRenderer()
-     * </p>
-     * @param instanceTitle
-     * @param propertyTitle
-     * @param columnId
-     * @param columnGroup
-     * @param factMappingType
-     * @param factoryHeader
-     * @param factoryCell
-     * @return
-     */
-    public static ScenarioGridColumn getScenarioGridColumn(String instanceTitle,
-                                                           String propertyTitle,
-                                                           String columnId,
-                                                           String columnGroup,
-                                                           FactMappingType factMappingType,
-                                                           ScenarioHeaderTextBoxSingletonDOMElementFactory factoryHeader,
-                                                           ScenarioCellTextAreaSingletonDOMElementFactory factoryCell
-    ) {
-        ScenarioSimulationBuilders.HeaderBuilder headerBuilder = getHeaderBuilder(instanceTitle, propertyTitle, columnId, columnGroup, factMappingType, factoryHeader);
-        return getScenarioGridColumn(headerBuilder, factoryCell);
     }
 
     /**
@@ -143,35 +107,6 @@ public class ScenarioSimulationUtils {
                                                            String placeHolder) {
         ScenarioSimulationBuilders.HeaderBuilder headerBuilder = getHeaderBuilder(instanceTitle, propertyTitle, columnId, columnGroup, factMappingType, factoryHeader);
         return getScenarioGridColumn(headerBuilder, factoryCell, placeHolder);
-    }
-
-    /**
-     * Returns a <code>ScenarioGridColumn</code> with the following default values:
-     * <p>
-     * width: 150
-     * </p>
-     * <p>
-     * isMovable: <code>false</code>;
-     * </p>
-     * <p>
-     * isPropertyAssigned: <code>true</code>;
-     * </p>
-     * <p>
-     * placeHolder: <code>ScenarioSimulationEditorConstants.INSTANCE.insertValue()</code>;
-     * </p>
-     * <p>
-     * columnRenderer: new ScenarioGridColumnRenderer()
-     * </p>
-     * @param headerBuilder
-     * @param factoryCell
-     * @return
-     */
-    public static ScenarioGridColumn getScenarioGridColumn(ScenarioSimulationBuilders.HeaderBuilder headerBuilder,
-                                                           ScenarioCellTextAreaSingletonDOMElementFactory factoryCell) {
-        ScenarioSimulationBuilders.ScenarioGridColumnBuilder scenarioGridColumnBuilder = getScenarioGridColumnBuilder(factoryCell,
-                                                                                                                      headerBuilder,
-                                                                                                                      ScenarioSimulationEditorConstants.INSTANCE.insertValue());
-        return scenarioGridColumnBuilder.build();
     }
 
     /**
@@ -315,6 +250,16 @@ public class ScenarioSimulationUtils {
                 context.getCellHeight() / 2 +
                 gridLayer.getDomElementContainer().getAbsoluteTop());
         return new Point2D(cellXMiddle, cellYMiddle);
+    }
+
+    public static String getPlaceholder(String canonicalClassName) {
+        return isLocalDate(canonicalClassName) ?
+                ScenarioSimulationEditorConstants.INSTANCE.dateFormatPlaceholder() :
+                ScenarioSimulationEditorConstants.INSTANCE.insertValue();
+    }
+
+    public static boolean isLocalDate(String canonicalClassName) {
+        return LOCALDATE_CANONICAL_NAME.equals(canonicalClassName);
     }
 
     protected static double getColumnWidth(String columnId) {

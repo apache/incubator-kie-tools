@@ -13,19 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.workbench.screens.scenariosimulation.client.utils;
+package org.drools.workbench.screens.scenariosimulation.client.editor.strategies;
 
-/**
- * Class used to store constants used throughout the code
- */
-public class ConstantHolder {
+public class SimpleClassEntry {
 
-    public static final String FA_ANGLE_DOWN = "fa-angle-down";
-    public static final String FA_ANGLE_RIGHT = "fa-angle-right";
-    public static final String HIDDEN = "hidden";
-    public static final String NODE_HIDDEN = "node-hidden";
+    private final String simpleName;
+    private final String canonicalName;
 
-    // GWT doesn't support Java 8 LocalDate
-    public static final String LOCALDATE_SIMPLE_NAME = "LocalDate";
-    public static final String LOCALDATE_CANONICAL_NAME = "java.time.LocalDate";
+    public SimpleClassEntry(Class<?> clazz) {
+        this(clazz.getSimpleName(), clazz.getCanonicalName());
+    }
+
+    public SimpleClassEntry(String simpleName, String canonicalName) {
+        this.simpleName = simpleName;
+        this.canonicalName = canonicalName;
+    }
+
+    public String getSimpleName() {
+        return simpleName;
+    }
+
+    public String getCanonicalName() {
+        return canonicalName;
+    }
 }

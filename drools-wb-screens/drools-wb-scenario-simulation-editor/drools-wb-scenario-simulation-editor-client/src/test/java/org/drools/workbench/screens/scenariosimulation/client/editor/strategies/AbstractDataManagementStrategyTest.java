@@ -46,9 +46,12 @@ public abstract class AbstractDataManagementStrategyTest extends AbstractScenari
 
     @Test
     public void getSimpleClassFactModelTree() {
-        final FactModelTree retrieved = AbstractDataManagementStrategy.getSimpleClassFactModelTree(String.class);
+        Class<String> clazz = String.class;
+        final FactModelTree retrieved = AbstractDataManagementStrategy.getSimpleClassFactModelTree(
+                clazz.getSimpleName(),
+                clazz.getCanonicalName());
         assertNotNull(retrieved);
-        assertEquals(String.class.getSimpleName(), retrieved.getFactName());
+        assertEquals(clazz.getSimpleName(), retrieved.getFactName());
         assertEquals("java.lang", retrieved.getFullPackage());
         assertNotNull(retrieved.getSimpleProperties());
     }

@@ -16,6 +16,7 @@
 
 package org.drools.workbench.screens.scenariosimulation.client.utils;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -23,6 +24,7 @@ import java.util.List;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.scenariosimulation.api.model.ExpressionIdentifier;
 import org.drools.scenariosimulation.api.model.FactIdentifier;
+import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,20 +46,8 @@ import static org.mockito.Mockito.when;
 public class ScenarioSimulationUtilsTest extends AbstractUtilsTest {
 
     @Test
-    public void getScenarioGridColumn1() {
-        final ScenarioGridColumn retrieved = ScenarioSimulationUtils.getScenarioGridColumn(COLUMN_INSTANCE_TITLE_FIRST, COLUMN_PROPERTY_TITLE_FIRST, COLUMN_ID, COLUMN_GROUP_FIRST, factMappingType, scenarioHeaderTextBoxSingletonDOMElementFactoryMock, scenarioCellTextAreaSingletonDOMElementFactoryMock);
-        assertNotNull(retrieved);
-    }
-
-    @Test
     public void getScenarioGridColumn2() {
         final ScenarioGridColumn retrieved = ScenarioSimulationUtils.getScenarioGridColumn(COLUMN_INSTANCE_TITLE_FIRST, COLUMN_PROPERTY_TITLE_FIRST, COLUMN_ID, COLUMN_GROUP_FIRST, factMappingType, scenarioHeaderTextBoxSingletonDOMElementFactoryMock, scenarioCellTextAreaSingletonDOMElementFactoryMock, PLACEHOLDER);
-        assertNotNull(retrieved);
-    }
-
-    @Test
-    public void getScenarioGridColumn3() {
-        final ScenarioGridColumn retrieved = ScenarioSimulationUtils.getScenarioGridColumn(headerBuilderMock, scenarioCellTextAreaSingletonDOMElementFactoryMock);
         assertNotNull(retrieved);
     }
 
@@ -90,7 +80,7 @@ public class ScenarioSimulationUtilsTest extends AbstractUtilsTest {
 
     @Test
     public void isSimpleJavaType() {
-        SIMPLE_CLASSES_MAP.values().forEach(clazz -> assertTrue(ScenarioSimulationUtils.isSimpleJavaType(clazz.getName())));
+        SIMPLE_CLASSES_MAP.values().forEach(clazz -> assertTrue(ScenarioSimulationUtils.isSimpleJavaType(clazz.getCanonicalName())));
         assertFalse(ScenarioSimulationUtils.isSimpleJavaType("com.TestBean"));
     }
 
@@ -113,5 +103,14 @@ public class ScenarioSimulationUtilsTest extends AbstractUtilsTest {
         when(factIdentifierMock.getClassName()).thenReturn(packageName + "." + className);
         retrieved = ScenarioSimulationUtils.getPropertyNameElementsWithoutAlias(Arrays.asList(aliasName, propertyName), factIdentifierMock);
         assertEquals(Arrays.asList(className, propertyName), retrieved);
+    }
+
+    @Test
+    public void getPlaceholder() {
+        assertEquals(ScenarioSimulationEditorConstants.INSTANCE.insertValue(),
+                     ScenarioSimulationUtils.getPlaceholder(String.class.getCanonicalName()));
+
+        assertEquals(ScenarioSimulationEditorConstants.INSTANCE.dateFormatPlaceholder(),
+                     ScenarioSimulationUtils.getPlaceholder(LocalDate.class.getCanonicalName()));
     }
 }

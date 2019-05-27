@@ -200,12 +200,16 @@ public class DMODataManagementStrategy extends AbstractDataManagementStrategy {
         if (result != null) {
             factTypeFieldsMap.put(result.getFactName(), result);
         }
-        if (factTypeFieldsMap.size() == expectedElements) { // This is used to invoke this callback only once, when all the expected "compolex" objects has been managed
+        if (factTypeFieldsMap.size() == expectedElements) { // This is used to invoke this callback only once, when all the expected "complex" objects has been managed
             factTypeFieldsMap.values().forEach(factModelTree -> populateFactModelTree(factModelTree, factTypeFieldsMap));
-            SortedMap<String, FactModelTree> simpleJavaTypeFieldsMap = new TreeMap<>(simpleJavaTypes.stream()
-                                                                                             .collect(Collectors.toMap(
-                                                                                                     factType -> factType,
-                                                                                                     factType -> getSimpleClassFactModelTree(SIMPLE_CLASSES_MAP.get(factType)))));
+            SortedMap<String, FactModelTree> simpleJavaTypeFieldsMap =
+                    new TreeMap<>(simpleJavaTypes.stream()
+                                          .collect(Collectors.toMap(
+                                                  factType -> factType,
+                                                  factType -> {
+                                                      SimpleClassEntry classEntry = SIMPLE_CLASSES_MAP.get(factType);
+                                                      return getSimpleClassFactModelTree(classEntry.getSimpleName(), classEntry.getCanonicalName());
+                                                  })));
 
             SortedMap<String, FactModelTree> visibleFacts = new TreeMap<>(factTypeFieldsMap);
             visibleFacts.putAll(simpleJavaTypeFieldsMap);

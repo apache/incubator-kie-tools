@@ -137,7 +137,7 @@ public class ScenarioGrid extends BaseGridWidget {
         String columnGroup = factMapping.getExpressionIdentifier().getType().name();
         boolean isInstanceAssigned = isInstanceAssigned(factIdentifier);
         boolean isPropertyAssigned = isPropertyAssigned(isInstanceAssigned, factMapping);
-        String placeHolder = getPlaceholder(isPropertyAssigned);
+        String placeHolder = getPlaceholder(isPropertyAssigned, factMapping);
         ScenarioGridColumn scenarioGridColumn = getScenarioGridColumnLocal(instanceTitle, propertyTitle, columnId, columnGroup, factMapping.getExpressionIdentifier().getType(), placeHolder);
         scenarioGridColumn.setInstanceAssigned(isInstanceAssigned);
         scenarioGridColumn.setPropertyAssigned(isPropertyAssigned);
@@ -214,8 +214,9 @@ public class ScenarioGrid extends BaseGridWidget {
      * @param isPropertyAssigned
      * @return
      */
-    protected String getPlaceholder(boolean isPropertyAssigned) {
-        return isPropertyAssigned ? ScenarioSimulationEditorConstants.INSTANCE.insertValue() : ScenarioSimulationEditorConstants.INSTANCE.defineValidType();
+    protected String getPlaceholder(boolean isPropertyAssigned, FactMapping factMapping) {
+        String editableCellPlaceholder = ScenarioSimulationUtils.getPlaceholder(factMapping.getClassName());
+        return isPropertyAssigned ? editableCellPlaceholder : ScenarioSimulationEditorConstants.INSTANCE.defineValidType();
     }
 
     protected ScenarioGridColumn getScenarioGridColumnLocal(String instanceTitle, String propertyTitle, String
