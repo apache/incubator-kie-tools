@@ -25,6 +25,7 @@ import javax.inject.Inject;
 import org.guvnor.common.services.shared.message.Level;
 import org.guvnor.messageconsole.events.PublishMessagesEvent;
 import org.guvnor.messageconsole.events.SystemMessage;
+import org.guvnor.messageconsole.events.UnpublishMessagesEvent;
 import org.kie.workbench.common.stunner.client.widgets.notification.AbstractNotification;
 import org.kie.workbench.common.stunner.client.widgets.notification.NotificationsObserver;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
@@ -34,12 +35,15 @@ import org.uberfire.backend.vfs.Path;
 @Dependent
 public class ProjectMessagesListener {
 
+    public static final String MESSAGE_TYPE = "Stunner.";
     private final Event<PublishMessagesEvent> publishMessagesEvent;
+    private final Event<UnpublishMessagesEvent> unpublishMessagesEvent;
     private final NotificationsObserver notificationsObserver;
     private final SessionManager clientSessionManager;
 
     protected ProjectMessagesListener() {
         this(null,
+             null,
              null,
              null);
     }
@@ -47,20 +51,27 @@ public class ProjectMessagesListener {
     @Inject
     public ProjectMessagesListener(final NotificationsObserver notificationsObserver,
                                    final Event<PublishMessagesEvent> publishMessagesEvent,
+                                   final Event<UnpublishMessagesEvent> unpublishMessagesEvent,
                                    final SessionManager clientSessionManager) {
-        this.publishMessagesEvent = publishMessagesEvent;
         this.notificationsObserver = notificationsObserver;
+        this.publishMessagesEvent = publishMessagesEvent;
+        this.unpublishMessagesEvent = unpublishMessagesEvent;
         this.clientSessionManager = clientSessionManager;
     }
 
     public void enable() {
         notificationsObserver.onCommandExecutionFailed(parameter -> fireNotification(parameter));
         notificationsObserver.onValidationFailed(parameter -> fireNotification(parameter));
+        notificationsObserver.onValidationExecuted(parameter -> clearMessages(parameter));
+    }
+
+    private Path getDiagramPath() {
+        final ClientSession session = clientSessionManager.getCurrentSession();
+        return session.getCanvasHandler().getDiagram().getMetadata().getPath();
     }
 
     void fireNotification(final AbstractNotification notification) {
-        final ClientSession session = clientSessionManager.getCurrentSession();
-        final Path path = session.getCanvasHandler().getDiagram().getMetadata().getPath();
+
         final SystemMessage systemMessage = new SystemMessage();
         final ArrayList<SystemMessage> messagesList = new ArrayList<>();
 
@@ -75,12 +86,26 @@ public class ProjectMessagesListener {
                 systemMessage.setLevel(Level.INFO);
                 break;
         }
+
+        final Path path = getDiagramPath();
         systemMessage.setText(notification.getMessage());
         systemMessage.setPath(path);
+        systemMessage.setMessageType(getMessageType(path));
+
         messagesList.add(systemMessage);
         PublishMessagesEvent messages = new PublishMessagesEvent();
         messages.setShowSystemConsole(false);
         messages.setMessagesToPublish(messagesList);
         publishMessagesEvent.fire(messages);
+    }
+
+    private String getMessageType(Path path) {
+        return MESSAGE_TYPE + path.toURI();
+    }
+
+    protected void clearMessages(AbstractNotification notification) {
+        final UnpublishMessagesEvent unpublishMessagesEvent = new UnpublishMessagesEvent();
+        unpublishMessagesEvent.setMessageType(getMessageType(getDiagramPath()));
+        this.unpublishMessagesEvent.fire(unpublishMessagesEvent);
     }
 }
