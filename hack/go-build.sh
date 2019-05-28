@@ -1,8 +1,8 @@
 #!/bin/sh
-REPO=https://github.com/kiegroup/submarine-cloud-operator
+REPO=https://github.com/kiegroup/kogito-cloud-operator
 BRANCH=master
 REGISTRY=quay.io/kiegroup
-IMAGE=submarine-cloud-operator
+IMAGE=kogito-cloud-operator
 TAG=0.1
 TAR=${BRANCH}.tar.gz
 URL=${REPO}/archive/${TAR}
@@ -25,8 +25,8 @@ if [[ -z ${CI} ]]; then
 
         echo ${CFLAGS}
         cekit build ${CFLAGS} \
-            --overrides "{'artifacts': [{'name': 'submarine-cloud-operator.tar.gz', 'md5': '${MD5}', 'url': '${URL}'}]}"
+            --overrides "{'artifacts': [{'name': 'kogito-cloud-operator.tar.gz', 'md5': '${MD5}', 'url': '${URL}'}]}"
     fi
 else
-    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -v -a -o build/_output/bin/submarine-cloud-operator github.com/kiegroup/submarine-cloud-operator/cmd/manager
+    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -v -a -o build/_output/bin/kogito-cloud-operator github.com/kiegroup/kogito-cloud-operator/cmd/manager
 fi
