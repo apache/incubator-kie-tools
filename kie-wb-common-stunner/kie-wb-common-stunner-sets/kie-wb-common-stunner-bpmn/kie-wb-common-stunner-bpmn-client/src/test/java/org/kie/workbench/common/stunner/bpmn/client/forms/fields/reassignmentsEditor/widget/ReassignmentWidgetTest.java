@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.reassignmentsEditor.widget;
 
+import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockito;
 import elemental2.dom.HTMLButtonElement;
@@ -25,14 +26,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.ReflectionUtilsTest;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
-import static org.powermock.api.mockito.PowerMockito.doCallRealMethod;
-import static org.powermock.api.mockito.PowerMockito.spy;
 
-@RunWith(PowerMockRunner.class)
+@RunWith(LienzoMockitoTestRunner.class)
 public class ReassignmentWidgetTest extends ReflectionUtilsTest {
 
     @GwtMock

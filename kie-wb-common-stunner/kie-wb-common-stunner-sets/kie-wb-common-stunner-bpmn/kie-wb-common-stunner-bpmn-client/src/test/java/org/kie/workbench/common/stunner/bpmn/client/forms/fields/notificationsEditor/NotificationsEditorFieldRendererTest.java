@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.notificationsEditor;
 
+import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockito;
 import org.junit.Assert;
@@ -23,12 +24,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.ReflectionUtilsTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
-import static org.powermock.api.mockito.PowerMockito.doCallRealMethod;
-import static org.powermock.api.mockito.PowerMockito.spy;
+import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.spy;
 
-@RunWith(PowerMockRunner.class)
+@RunWith(LienzoMockitoTestRunner.class)
 public class NotificationsEditorFieldRendererTest extends ReflectionUtilsTest {
 
     @GwtMock

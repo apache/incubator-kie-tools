@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.bpmn.client.forms.fields.reassignmentsE
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockito;
@@ -34,14 +35,13 @@ import org.kie.workbench.common.stunner.bpmn.client.forms.util.ReflectionUtilsTe
 import org.kie.workbench.common.stunner.bpmn.definition.property.reassignment.ReassignmentTypeListValue;
 import org.kie.workbench.common.stunner.bpmn.definition.property.reassignment.ReassignmentValue;
 import org.mockito.Mock;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-@RunWith(PowerMockRunner.class)
+@RunWith(LienzoMockitoTestRunner.class)
 public class ReassignmentsEditorWidgetTest extends ReflectionUtilsTest {
 
     @GwtMock
