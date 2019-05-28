@@ -164,8 +164,10 @@ public class DMNMarshallerImportsHelperImplTest {
         final InformationItem informationItem2 = new TInformationItem();
         final InformationItem informationItem3 = new TInformationItem();
         final List<DRGElement> drgElements = asList(drgElement1, drgElement2, drgElement3);
+        final String namespace = "http://github.com/kiegroup/_something";
 
         when(anImport.getName()).thenReturn("model");
+        when(anImport.getNamespace()).thenReturn(namespace);
         informationItem1.setTypeRef(new QName(XMLConstants.NULL_NS_URI, "tUUID", XMLConstants.DEFAULT_NS_PREFIX));
         informationItem2.setTypeRef(new QName(XMLConstants.NULL_NS_URI, "tAge", XMLConstants.DEFAULT_NS_PREFIX));
         informationItem3.setTypeRef(new QName(XMLConstants.NULL_NS_URI, "tNum", XMLConstants.DEFAULT_NS_PREFIX));
@@ -188,16 +190,23 @@ public class DMNMarshallerImportsHelperImplTest {
         assertEquals("model:0000-1111", element1.getId());
         assertEquals("model.Decision", element1.getName());
         assertEquals("model.tUUID", element1.getVariable().getTypeRef().getLocalPart());
+        assertEquals(namespace, getNamespace(element1));
 
         final TInputData element2 = (TInputData) elements.get(1);
         assertEquals("model:2222-3333", element2.getId());
         assertEquals("model.Input Data", element2.getName());
         assertEquals("model.tAge", element2.getVariable().getTypeRef().getLocalPart());
+        assertEquals(namespace, getNamespace(element2));
 
         final TDecisionService element3 = (TDecisionService) elements.get(2);
         assertEquals("model:4444-5555", element3.getId());
         assertEquals("model.Decision Service", element3.getName());
         assertEquals("model.tNum", element3.getVariable().getTypeRef().getLocalPart());
+        assertEquals(namespace, getNamespace(element3));
+    }
+
+    private String getNamespace(final DRGElement element) {
+        return element.getAdditionalAttributes().get(DMNMarshallerImportsHelperImpl.NAMESPACE);
     }
 
     @Test

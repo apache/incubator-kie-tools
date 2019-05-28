@@ -64,6 +64,8 @@ public class DMNMarshallerImportsHelperImpl implements DMNMarshallerImportsHelpe
 
     private final DMNMarshaller marshaller;
 
+    public static final QName NAMESPACE = new QName("Namespace");
+
     public DMNMarshallerImportsHelperImpl() {
         this(null, null, null, null);
     }
@@ -167,6 +169,7 @@ public class DMNMarshallerImportsHelperImpl implements DMNMarshallerImportsHelpe
 
         final String namespace = anImport.getName();
 
+        drgElement.getAdditionalAttributes().put(NAMESPACE, anImport.getNamespace());
         drgElement.setId(namespace + ":" + drgElement.getId());
         drgElement.setName(namespace + "." + drgElement.getName());
         updateInformationItem(namespace, drgElement);

@@ -16,13 +16,12 @@
 
 package org.kie.workbench.common.dmn.backend.definition.v1_1;
 
-import java.util.List;
+import java.util.Map;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNDiagram;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DRGElement;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Definitions;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Import;
 
 public class HrefBuilder {
 
@@ -42,11 +41,11 @@ public class HrefBuilder {
         }
 
         final String[] split = drgElement.getId().getValue().split(":");
-        final String namespace = getNamespaceForImport(split[0], definitions.getImport());
+        final String namespace = getNamespaceForImport(split[0], definitions.getNsContext());
         return namespace + "#" + split[1];
     }
 
-    static String getNamespaceForImport(final String importName, final List<Import> imports) {
-        return imports.stream().filter(imp -> imp.getName().getValue().equalsIgnoreCase(importName)).findFirst().get().getNamespace();
+    static String getNamespaceForImport(final String importName, final Map<String, String> nsContext) {
+        return nsContext.get(importName);
     }
 }

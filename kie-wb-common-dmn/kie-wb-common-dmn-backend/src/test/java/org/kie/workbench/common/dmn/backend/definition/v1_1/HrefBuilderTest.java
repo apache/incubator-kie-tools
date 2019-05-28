@@ -16,13 +16,12 @@
 
 package org.kie.workbench.common.dmn.backend.definition.v1_1;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.Test;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DRGElement;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Definitions;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Import;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 
@@ -57,16 +56,15 @@ public class HrefBuilderTest {
         final String uri = "https://github.com/kiegroup/dmn/something";
         final String stringId = importName + ":" + uuid;
         final Definitions definitions = mock(Definitions.class);
-        final List<Import> imports = new ArrayList<>();
-        final Import importModel = mock(Import.class);
+
         final Name importModelName = mock(Name.class);
 
-        imports.add(importModel);
+        final Map<String, String> nsContext = new HashMap<>();
+        nsContext.put(importName, uri);
+
         when(drgElement.getParent()).thenReturn(definitions);
         when(importModelName.getValue()).thenReturn(importName);
-        when(importModel.getNamespace()).thenReturn(uri);
-        when(definitions.getImport()).thenReturn(imports);
-        when(importModel.getName()).thenReturn(importModelName);
+        when(definitions.getNsContext()).thenReturn(nsContext);
         when(id.getValue()).thenReturn(stringId);
         when(drgElement.getId()).thenReturn(id);
 

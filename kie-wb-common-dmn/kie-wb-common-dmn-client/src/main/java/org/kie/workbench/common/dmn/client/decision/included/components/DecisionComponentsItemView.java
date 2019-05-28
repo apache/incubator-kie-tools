@@ -16,7 +16,9 @@
 
 package org.kie.workbench.common.dmn.client.decision.included.components;
 
-import java.util.Objects;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.StreamSupport;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -31,8 +33,11 @@ import elemental2.dom.HTMLParagraphElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.kie.workbench.common.dmn.api.definition.v1_1.DMNElement;
+import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DRGElement;
 import org.kie.workbench.common.dmn.client.DMNShapeSet;
+import org.kie.workbench.common.dmn.client.editors.included.imports.persistence.NamespaceHandler;
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -42,6 +47,11 @@ import org.kie.workbench.common.stunner.core.client.components.glyph.ShapeGlyphD
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
+import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.graph.Graph;
+import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
+import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DecisionComponentsItemView_DuplicatedNode;
@@ -138,7 +148,29 @@ public class DecisionComponentsItemView implements DecisionComponentsItem.View {
 
     DragProxyCallback makeDragProxyCallbackImpl(final DRGElement drgElement,
                                                 final ShapeFactory factory) {
-        return new DragProxyCallbackImpl(drgElement, factory, sessionManager, notificationEvent, clientTranslationService, dmnGraphUtils);
+
+        final Map<String, String> nsContext = getNsContext();
+
+        final String alias = NamespaceHandler.addIncludedNamespace(nsContext, drgElement.getDefaultNamespace());
+
+        final String currentId = drgElement.getId().getValue();
+        final String id = currentId.split(":")[1];
+        drgElement.getId().setValue(alias + ":" + id);
+
+        return new DragProxyCallbackImpl(drgElement, factory, sessionManager, notificationEvent, clientTranslationService);
+    }
+
+    Map<String, String> getNsContext() {
+
+        final Optional<Diagram> diagram = Optional.of(dmnGraphUtils.getDiagram());
+        return diagram.map(dmnGraphUtils::getDefinitions)
+                      .map(DMNModelInstrumentedBase::getNsContext)
+                      .orElseThrow(UnsupportedOperationException::new);
+    }
+
+    Graph<?, Node> getGraph(){
+        final Diagram diagram = sessionManager.getCurrentSession().getCanvasHandler().getDiagram();
+        return diagram.getGraph();
     }
 
     ShapeGlyphDragHandler.Item makeDragHandler(final Glyph glyph) {
@@ -157,20 +189,16 @@ public class DecisionComponentsItemView implements DecisionComponentsItem.View {
 
         private final ClientTranslationService clientTranslationService;
 
-        private final DMNGraphUtils dmnGraphUtils;
-
         DragProxyCallbackImpl(final DRGElement drgElement,
                               final ShapeFactory factory,
                               final SessionManager sessionManager,
                               final Event<NotificationEvent> notificationEvent,
-                              final ClientTranslationService clientTranslationService,
-                              final DMNGraphUtils dmnGraphUtils) {
+                              final ClientTranslationService clientTranslationService) {
             this.drgElement = drgElement;
             this.factory = factory;
             this.sessionManager = sessionManager;
             this.notificationEvent = notificationEvent;
             this.clientTranslationService = clientTranslationService;
-            this.dmnGraphUtils = dmnGraphUtils;
         }
 
         @Override
@@ -197,12 +225,25 @@ public class DecisionComponentsItemView implements DecisionComponentsItem.View {
         }
 
         private boolean isDuplicatedNode(final DRGElement drgElement) {
-            return dmnGraphUtils
-                    .getDefinitions()
-                    .getDrgElement()
-                    .stream()
-                    .map(element -> element.getId().getValue())
-                    .anyMatch(drgElementId -> Objects.equals(drgElementId, drgElement.getId().getValue()));
+
+            final Optional<Map.Entry<String, String>> existingAlias = NamespaceHandler.getAlias(getNsContext(), drgElement.getDefaultNamespace());
+
+            if (existingAlias.isPresent()) {
+
+                final String alias = existingAlias.get().getKey();
+                final String id = alias + ":" + drgElement.getId().getValue().split(":")[1];
+                final Graph<?, Node> graph = getGraph();
+
+                return StreamSupport
+                           .stream(graph.nodes().spliterator(), false)
+                           .filter(node -> node.getContent() instanceof View)
+                           .map(node -> (View) node.getContent())
+                           .filter(view -> view.getDefinition() instanceof DMNElement)
+                           .map(Definition::getDefinition)
+                           .anyMatch(d -> ((DMNElement) d).getId().getValue().equals(id));
+            }
+
+            return false;
         }
 
         private void fireDuplicatedNodeWarningMessage() {

@@ -76,6 +76,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.font.FontSet;
 import org.kie.workbench.common.dmn.backend.common.DMNMarshallerImportsHelper;
+import org.kie.workbench.common.dmn.backend.common.DMNMarshallerImportsHelperImpl;
 import org.kie.workbench.common.dmn.backend.definition.v1_1.AssociationConverter;
 import org.kie.workbench.common.dmn.backend.definition.v1_1.BusinessKnowledgeModelConverter;
 import org.kie.workbench.common.dmn.backend.definition.v1_1.DecisionConverter;
@@ -111,6 +112,7 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.graph.impl.EdgeImpl;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
+import org.kie.workbench.common.stunner.core.util.StringUtils;
 import org.kie.workbench.common.stunner.core.util.UUID;
 
 import static java.util.Collections.emptyList;
@@ -209,7 +211,7 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
 
         // Map external DRGElements
         final List<DMNShape> dmnShapes = dmnDDDiagram.map(this::getUniqueDMNShapes).orElse(emptyList());
-        final List<org.kie.dmn.model.api.DRGElement> importedDrgElements = getImportedDrgElementsByShape(dmnShapes, importDefinitions);
+        final List<org.kie.dmn.model.api.DRGElement> importedDrgElements = getImportedDrgElementsByShape(dmnShapes, importDefinitions, dmnXml);
 
         // Group DRGElements
         final List<org.kie.dmn.model.api.DRGElement> drgElements = new ArrayList<>();
@@ -445,6 +447,40 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
         return graph;
     }
 
+    void updateIDsWithAlias(final HashMap<String, String> indexByUri,
+                            final List<org.kie.dmn.model.api.DRGElement> importedDrgElements) {
+
+        if (importedDrgElements.isEmpty()) {
+            return;
+        }
+
+        final QName namespace = DMNMarshallerImportsHelperImpl.NAMESPACE;
+
+        for (org.kie.dmn.model.api.DRGElement element : importedDrgElements) {
+            final String namespaceAttribute = element.getAdditionalAttributes().getOrDefault(namespace, "");
+            if (!StringUtils.isEmpty(namespaceAttribute)) {
+                if (indexByUri.containsKey(namespaceAttribute)) {
+                    final String alias = indexByUri.get(namespaceAttribute);
+                    changeAlias(alias, element);
+                }
+            }
+        }
+    }
+
+    HashMap<String, String> getIndexByUri(final org.kie.dmn.model.api.Definitions dmnXml) {
+
+        final HashMap<String, String> indexByUri = new HashMap<>();
+        dmnXml.getNsContext().entrySet().forEach(e -> indexByUri.put(e.getValue(), e.getKey()));
+        return indexByUri;
+    }
+
+    void changeAlias(final String alias, final org.kie.dmn.model.api.DRGElement drgElement) {
+        if (drgElement.getId().contains(":")) {
+            final String id = drgElement.getId().split(":")[1];
+            drgElement.setId(alias + ":" + id);
+        }
+    }
+
     private Node getRequiredNode(final Map<String, Entry<org.kie.dmn.model.api.DRGElement, Node>> elems,
                                  final String reqInputID) {
         if (elems.containsKey(reqInputID)) {
@@ -463,9 +499,14 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
     }
 
     List<org.kie.dmn.model.api.DRGElement> getImportedDrgElementsByShape(final List<DMNShape> dmnShapes,
-                                                                         final Map<Import, org.kie.dmn.model.api.Definitions> importDefinitions) {
+                                                                         final Map<Import, org.kie.dmn.model.api.Definitions> importDefinitions,
+                                                                         final org.kie.dmn.model.api.Definitions dmnXml) {
 
         final List<org.kie.dmn.model.api.DRGElement> importedDRGElements = dmnMarshallerImportsHelper.getImportedDRGElements(importDefinitions);
+
+        // Update IDs with the alias used in this file for the respective imports
+        final HashMap<String, String> indexByUri = getIndexByUri(dmnXml);
+        updateIDsWithAlias(indexByUri, importedDRGElements);
 
         return dmnShapes
                 .stream()
@@ -481,8 +522,9 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
     }
 
     Optional<org.kie.dmn.model.api.DRGElement> getReference(final List<org.kie.dmn.model.api.DRGElement> importedDRGElements,
-                                                            final String dmnElementRef) {
-        return importedDRGElements.stream().filter(drgElement -> Objects.equals(dmnElementRef, drgElement.getId())).findFirst();
+                                                            final String dmnElementRef){
+        final Optional<org.kie.dmn.model.api.DRGElement> element = importedDRGElements.stream().filter(drgElement -> dmnElementRef.equals(drgElement.getId())).findFirst();
+        return element;
     }
 
     String getDmnElementRef(final DMNShape dmnShape) {

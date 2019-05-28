@@ -81,7 +81,6 @@ public class ImportRecordEngine implements RecordEngine<IncludedModel> {
         final Import anImport = getImport(record);
         final String oldModelName = anImport.getName().getValue();
 
-        definitionsHandler.update(oldModelName, record);
         itemDefinitionHandler.update(oldModelName, record.getName());
         drgElementHandler.update(oldModelName, record.getName());
         anImport.setName(new Name(record.getName()));

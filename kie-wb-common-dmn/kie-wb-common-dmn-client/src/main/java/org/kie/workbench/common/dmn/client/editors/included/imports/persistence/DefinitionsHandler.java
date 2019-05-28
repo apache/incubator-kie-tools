@@ -38,18 +38,12 @@ public class DefinitionsHandler {
         this.dmnGraphUtils = dmnGraphUtils;
     }
 
-    public void update(final String oldModelName,
-                       final IncludedModel includedModel) {
-        getNsContext().remove(oldModelName);
-        getNsContext().put(includedModel.getName(), includedModel.getNamespace());
-    }
-
     public void destroy(final IncludedModel includedModel) {
-        getNsContext().remove(includedModel.getName());
+        NamespaceHandler.removeIncludedNamespace(getNsContext(), includedModel.getNamespace());
     }
 
     public void create(final IncludedModel includedModel) {
-        getNsContext().put(includedModel.getName(), includedModel.getNamespace());
+        NamespaceHandler.addIncludedNamespace(getNsContext(), includedModel.getNamespace());
     }
 
     private Map<String, String> getNsContext() {

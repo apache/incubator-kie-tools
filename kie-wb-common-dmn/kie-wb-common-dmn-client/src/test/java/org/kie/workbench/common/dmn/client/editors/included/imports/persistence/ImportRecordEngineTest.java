@@ -99,7 +99,6 @@ public class ImportRecordEngineTest {
         final List<IncludedModel> expectedResult = singletonList(record);
 
         verify(anImport).setName(nameCaptor.capture());
-        verify(definitionsHandler).update(oldName, record);
         verify(itemDefinitionHandler).update(oldName, name);
         verify(drgElementHandler).update(oldName, name);
 

@@ -105,4 +105,18 @@ public abstract class DMNModelInstrumentedBase implements DMNDefinition {
         }
         return Optional.empty();
     }
+
+    public String getDefaultNamespace() {
+        if (nsContext != null && nsContext.containsKey("")) {
+            return nsContext.entrySet().stream()
+                       .filter(kv -> Objects.equals(kv.getKey(), ""))
+                       .findFirst()
+                       .map(Map.Entry::getValue)
+                       .get();
+        }
+        if (this.parent != null) {
+            return parent.getDefaultNamespace();
+        }
+        return "";
+    }
 }
