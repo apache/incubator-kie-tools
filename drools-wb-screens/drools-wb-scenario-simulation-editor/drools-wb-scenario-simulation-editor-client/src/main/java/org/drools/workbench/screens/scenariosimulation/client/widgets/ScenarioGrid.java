@@ -30,6 +30,7 @@ import org.drools.scenariosimulation.api.model.Simulation;
 import org.drools.scenariosimulation.api.utils.ScenarioSimulationSharedUtils;
 import org.drools.workbench.screens.scenariosimulation.client.events.DisableTestToolsEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.EnableTestToolsEvent;
+import org.drools.workbench.screens.scenariosimulation.client.events.ReloadTestToolsEvent;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioSimulationGridWidgetMouseEventHandler;
 import org.drools.workbench.screens.scenariosimulation.client.menu.ScenarioContextMenuRegistry;
 import org.drools.workbench.screens.scenariosimulation.client.metadata.ScenarioHeaderMetaData;
@@ -247,14 +248,14 @@ public class ScenarioGrid extends BaseGridWidget {
     public boolean adjustSelection(final SelectionExtension direction, final boolean isShiftKeyDown) {
         final boolean selectionChanged = super.adjustSelection(direction, isShiftKeyDown);
 
-        signalTestToolsAboutSelectedHeaderCells();
+        signalTestTools();
         scenarioContextMenuRegistry.hideMenus();
         scenarioContextMenuRegistry.hideErrorReportPopover();
 
         return selectionChanged;
     }
 
-    public void signalTestToolsAboutSelectedHeaderCells() {
+    protected void signalTestTools() {
         eventBus.fireEvent(new DisableTestToolsEvent());
 
         if (model.getSelectedHeaderCells().size() > 0) {
@@ -275,26 +276,43 @@ public class ScenarioGrid extends BaseGridWidget {
         }
     }
 
-    private void signalTestToolsHeaderCellSelected(final ScenarioGridColumn scenarioGridColumn,
-                                                   final GridData.SelectedCell selectedHeaderCell,
-                                                   final int uiColumnIndex) {
-        final EnableTestToolsEvent enableTestToolsEvent = getEnableTestToolsEvent(scenarioGridColumn,
-                                                                                  selectedHeaderCell,
-                                                                                  uiColumnIndex);
-        eventBus.fireEvent(enableTestToolsEvent);
+    protected void signalTestToolsHeaderCellSelected(final ScenarioGridColumn scenarioGridColumn,
+                                                     final GridData.SelectedCell selectedHeaderCell,
+                                                     final int uiColumnIndex) {
+        final ScenarioHeaderMetaData scenarioHeaderMetaData = getColumnScenarioHeaderMetaData(scenarioGridColumn,
+                                                                                              selectedHeaderCell.getRowIndex());
+        if (scenarioGridColumn.isInstanceAssigned() && scenarioHeaderMetaData.getMetadataType().equals(ScenarioHeaderMetaData.MetadataType.INSTANCE)) {
+            eventBus.fireEvent(new ReloadTestToolsEvent(true, true));
+        } else {
+            String group = scenarioHeaderMetaData.getColumnGroup();
+            if (group.contains("-")) {
+                group = group.substring(0, group.indexOf("-"));
+            }
+            final EnableTestToolsEvent enableTestToolsEvent = getEnableTestToolsEvent(this,
+                                                                                      scenarioGridColumn,
+                                                                                      scenarioHeaderMetaData,
+                                                                                      uiColumnIndex,
+                                                                                      group);
+            eventBus.fireEvent(enableTestToolsEvent);
+        }
     }
 
-    private EnableTestToolsEvent getEnableTestToolsEvent(final ScenarioGridColumn scenarioGridColumn,
-                                                         final GridData.SelectedCell selectedHeaderCell,
-                                                         final int uiColumnIndex) {
-        final ScenarioHeaderMetaData scenarioHeaderMetaData =
-                ScenarioSimulationGridHeaderUtilities.getColumnScenarioHeaderMetaData(scenarioGridColumn,
-                                                                                      selectedHeaderCell.getRowIndex());
+    //Indirection for tests
+    protected ScenarioHeaderMetaData getColumnScenarioHeaderMetaData(final ScenarioGridColumn scenarioGridColumn,
+                                                                     final int rowIndex) {
+        return ScenarioSimulationGridHeaderUtilities.getColumnScenarioHeaderMetaData(scenarioGridColumn, rowIndex);
+    }
 
-        return ScenarioSimulationGridHeaderUtilities.getEnableTestToolsEvent(this,
-                                                                             scenarioGridColumn,
-                                                                             scenarioHeaderMetaData,
-                                                                             uiColumnIndex,
-                                                                             scenarioHeaderMetaData.getColumnGroup());
+    //Indirection for tests
+    protected EnableTestToolsEvent getEnableTestToolsEvent(final ScenarioGrid scenarioGrid,
+                                                           final ScenarioGridColumn scenarioGridColumn,
+                                                           final ScenarioHeaderMetaData scenarioHeaderMetaData,
+                                                           int uiColumnIndex,
+                                                           String group) {
+        return ScenarioSimulationGridHeaderUtilities.getEnableTestToolsEvent(scenarioGrid,
+                                                                      scenarioGridColumn,
+                                                                      scenarioHeaderMetaData,
+                                                                      uiColumnIndex,
+                                                                      group);
     }
 }

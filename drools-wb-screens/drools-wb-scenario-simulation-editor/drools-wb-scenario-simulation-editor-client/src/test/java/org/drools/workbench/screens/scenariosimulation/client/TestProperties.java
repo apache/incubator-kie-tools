@@ -214,4 +214,10 @@ public class TestProperties {
     public static final String ERROR_VALUE = "error";
     public static final String NULL = "null";
     public static final String EXCEPTION = "GenericException";
+
+    public static final String EXPRESSION_ALIAS_DESCRIPTION = "EXPRESSION_ALIAS_DESCRIPTION";
+    public static final String EXPRESSION_ALIAS_GIVEN = "EXPRESSION_ALIAS_GIVEN";
+    public static final String EXPRESSION_ALIAS_INTEGER = "EXPRESSION_ALIAS_INTEGER";
+    public static final int COLUMNS = 6;
+    public static final double HEADER_ROWS_HEIGHT = 100.0;
 }
