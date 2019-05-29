@@ -18,15 +18,23 @@ package org.kie.workbench.common.dmn.client.editors.types.listview.constraint.co
 
 public class DurationHelper {
 
-    private static final String PREFIX = "duration(\"";
+    private static final String PREFIX = "duration";
 
-    private static final String SUFFIX = "\")";
+    private static final String OPEN_BRACKET = "(";
 
-    public static String addPrefixAndSuffix(final String value) {
-        return PREFIX + value + SUFFIX;
+    private static final String CLOSE_BRACKET = ")";
+
+    private static final String QUOTE = "\"";
+
+    public static String addFunctionCall(final String value) {
+        return PREFIX + OPEN_BRACKET + QUOTE + value + QUOTE + CLOSE_BRACKET;
     }
 
-    public static String removePrefixAndSuffix(final String rawValue) {
-        return rawValue.replace(PREFIX, "").replace(SUFFIX, "");
+    public static String getFunctionParameter(final String rawValue) {
+        return rawValue.replace(PREFIX, "")
+                   .replace(CLOSE_BRACKET, "")
+                   .replace(OPEN_BRACKET, "")
+                   .replace(" ", "")
+                   .replace(QUOTE, "");
     }
 }

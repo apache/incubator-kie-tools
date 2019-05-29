@@ -19,24 +19,42 @@ package org.kie.workbench.common.dmn.client.editors.types.listview.constraint.co
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
-import static org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.common.DurationHelper.addPrefixAndSuffix;
-import static org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.common.DurationHelper.removePrefixAndSuffix;
+import static org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.common.DurationHelper.addFunctionCall;
+import static org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.common.DurationHelper.getFunctionParameter;
 
 public class DurationHelperTest {
 
     @Test
-    public void testAddPrefixAndSuffix() {
+    public void testAddFunctionCall() {
 
-        final String actual = addPrefixAndSuffix("<VALUE>");
+        final String actual = addFunctionCall("<VALUE>");
         final String expected = "duration(\"<VALUE>\")";
 
         assertEquals(expected, actual);
     }
 
     @Test
-    public void testRemovePrefixAndSuffix() {
+    public void testGetFunctionParameter() {
 
-        final String actual = removePrefixAndSuffix("duration(\"<VALUE>\")");
+        final String actual = getFunctionParameter("duration(\"<VALUE>\")");
+        final String expected = "<VALUE>";
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testGetFunctionParameterWithSpacesBeforeOpenBracket() {
+
+        final String actual = getFunctionParameter("duration        (\"<VALUE>\")");
+        final String expected = "<VALUE>";
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testGetFunctionParameterWithSpacesInsideBrackets() {
+
+        final String actual = getFunctionParameter("duration(     \"<VALUE>\"     )");
         final String expected = "<VALUE>";
 
         assertEquals(expected, actual);

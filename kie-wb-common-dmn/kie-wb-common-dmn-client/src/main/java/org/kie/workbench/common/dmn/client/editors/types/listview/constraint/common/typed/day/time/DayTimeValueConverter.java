@@ -30,8 +30,8 @@ import com.google.gwt.json.client.JSONValue;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.uberfire.client.views.pfly.widgets.MomentDurationObject;
 
-import static org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.common.DurationHelper.addPrefixAndSuffix;
-import static org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.common.DurationHelper.removePrefixAndSuffix;
+import static org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.common.DurationHelper.addFunctionCall;
+import static org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.common.DurationHelper.getFunctionParameter;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DayTimeValueConverter_Day;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DayTimeValueConverter_Days;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DayTimeValueConverter_Hour;
@@ -58,11 +58,11 @@ public class DayTimeValueConverter {
                                                            value.getMinutes(),
                                                            value.getSeconds());
 
-        return addPrefixAndSuffix(moment.duration(properties).toISOString());
+        return addFunctionCall(moment.duration(properties).toISOString());
     }
 
     DayTimeValue fromDMNString(final String dmnString) {
-        final MomentDurationObject duration = moment.duration(removePrefixAndSuffix(dmnString));
+        final MomentDurationObject duration = moment.duration(getFunctionParameter(dmnString));
         return new DayTimeValue(duration.days(),
                                 duration.hours(),
                                 duration.minutes(),
@@ -78,9 +78,9 @@ public class DayTimeValueConverter {
         final String secondsLabel = pluralize(value.getSeconds(), DayTimeValueConverter_Second, DayTimeValueConverter_Seconds);
 
         return Stream
-                .of(daysLabel, hoursLabel, minutesLabel, secondsLabel)
-                .filter(e -> !isEmpty(e))
-                .collect(Collectors.joining(", "));
+                   .of(daysLabel, hoursLabel, minutesLabel, secondsLabel)
+                   .filter(e -> !isEmpty(e))
+                   .collect(Collectors.joining(", "));
     }
 
     private JavaScriptObject makeProperties(final Integer days,

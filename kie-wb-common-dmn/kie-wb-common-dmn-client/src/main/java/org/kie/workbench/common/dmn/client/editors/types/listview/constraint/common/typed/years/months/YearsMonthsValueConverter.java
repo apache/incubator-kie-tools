@@ -151,10 +151,10 @@ public class YearsMonthsValueConverter {
     }
 
     static String addPrefixAndSuffix(final String value) {
-        return DurationHelper.addPrefixAndSuffix("P" + value);
+        return DurationHelper.addFunctionCall("P" + value);
     }
 
     String removePrefixAndSuffix(final String dmnString) {
-        return DurationHelper.removePrefixAndSuffix(dmnString).substring(1);
+        return DurationHelper.getFunctionParameter(dmnString).substring(1);
     }
 }
