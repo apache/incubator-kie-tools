@@ -16,6 +16,9 @@
 
 package org.drools.workbench.screens.scenariosimulation.client.rightpanel;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,14 +40,18 @@ public class FieldItemPresenterTest extends AbstractTestToolsTest {
 
     private FieldItemPresenter fieldItemPresenter;
 
+    private Map<String, FieldItemView> fieldItemViewMapSpy;
+
     @Before
     public void setup() {
         super.setup();
         when(viewsProviderMock.getFieldItemView()).thenReturn(mockFieldItemView);
         when(mockFieldItemView.getLIElement()).thenReturn(lIElementMock);
+        fieldItemViewMapSpy = spy(new HashMap<>());
         this.fieldItemPresenter = spy(new FieldItemPresenter() {
             {
                 viewsProvider = viewsProviderMock;
+                fieldItemMap = fieldItemViewMapSpy;
             }
         });
     }
@@ -55,5 +62,11 @@ public class FieldItemPresenterTest extends AbstractTestToolsTest {
         verify(viewsProviderMock, times(1)).getFieldItemView();
         verify(mockFieldItemView, times(1)).setFieldData(eq(""), eq(FACT_NAME), eq(FACT_NAME), eq(FACT_MODEL_TREE.getFactName()));
         verify(mockFieldItemView, times(1)).setPresenter(eq(fieldItemPresenter));
+    }
+
+    @Test
+    public void reset() {
+        fieldItemPresenter.reset();
+        verify(fieldItemViewMapSpy, times(1)).clear();
     }
 }

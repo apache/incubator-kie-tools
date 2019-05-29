@@ -146,5 +146,7 @@ public interface ListGroupItemView extends IsWidget,
         boolean isInstanceAssigned(String factName);
 
         void setInstanceAssigned(String factName, boolean assigned);
+
+        void reset();
     }
 }

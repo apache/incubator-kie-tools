@@ -174,4 +174,11 @@ public class ListGroupItemPresenterTest extends AbstractTestToolsTest {
         }
         verify(listGroupItemViewMock, times(expandableProperties.size())).addExpandableFactField(anyObject());
     }
+
+    @Test
+    public void resetTest() {
+        listGroupItemPresenter.reset();
+        verify(listGroupItemViewMapMock, times(1)).clear();
+        verify(fieldItemPresenterMock, times(1)).reset();
+    }
 }

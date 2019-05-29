@@ -168,6 +168,12 @@ public class ListGroupItemPresenter implements ListGroupItemView.Presenter {
         listGroupItemViewMap.values().forEach(ListGroupItemView::unselect);
     }
 
+    @Override
+    public void reset() {
+        fieldItemPresenter.reset();
+        listGroupItemViewMap.clear();
+    }
+
     /**
      * Populate the "Assets" list. When
      * @param toPopulate

@@ -245,7 +245,6 @@ public class TestToolsPresenterTest extends AbstractTestToolsTest {
         verify(simpleJavaTypeListContainerSeparatorStyleMock, times(1)).setDisplay(eq(Style.Display.NONE));
     }
 
-
     @Test
     public void updateInstanceListSeparatorNotEmpty() {
         when(instanceListContainerMock.getChildCount()).thenReturn(2);
@@ -522,6 +521,7 @@ public class TestToolsPresenterTest extends AbstractTestToolsTest {
     public void resetTest() {
         testToolsPresenter.reset();
         verify(testToolsViewMock, times(1)).reset();
+        verify(listGroupItemPresenterMock, times(1)).reset();
     }
 
     @Test

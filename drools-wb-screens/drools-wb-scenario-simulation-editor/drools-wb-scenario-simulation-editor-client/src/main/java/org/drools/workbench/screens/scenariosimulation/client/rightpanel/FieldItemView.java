@@ -38,6 +38,8 @@ public interface FieldItemView {
         void unselectAll();
 
         void showAll();
+
+        void reset();
     }
 
     String getFullPath();

@@ -67,4 +67,9 @@ public class FieldItemPresenter implements FieldItemView.Presenter {
     public void showAll() {
         fieldItemMap.values().forEach(FieldItemView::show);
     }
+
+    @Override
+    public void reset() {
+        fieldItemMap.clear();
+    }
 }
