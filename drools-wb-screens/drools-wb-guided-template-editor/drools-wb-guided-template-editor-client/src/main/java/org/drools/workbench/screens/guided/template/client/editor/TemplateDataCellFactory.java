@@ -20,6 +20,7 @@ import java.math.BigInteger;
 import java.util.Date;
 
 import com.google.gwt.event.shared.EventBus;
+import org.drools.workbench.models.guided.template.shared.TemplateModel;
 import org.kie.soup.project.datamodel.oracle.DataType;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.AbstractCellFactory;
@@ -62,6 +63,10 @@ public class TemplateDataCellFactory
      * @return A Cell
      */
     public DecoratedGridCellValueAdaptor<? extends Comparable<?>> getCell(TemplateDataColumn column) {
+
+        if(column.getDataType().equals(TemplateModel.DEFAULT_TYPE)){
+            return makeTextCell();
+        }
 
         //Check if the column has an enumeration
         final String dataType = column.getDataType();

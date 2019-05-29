@@ -36,6 +36,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import org.drools.workbench.models.datamodel.rule.IPattern;
 import org.drools.workbench.models.datamodel.rule.InterpolationVariable;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
+import org.drools.workbench.models.datamodel.rule.util.InterpolationVariableCollector;
 import org.drools.workbench.models.datamodel.rule.visitors.RuleModelVisitor;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionVariableColumn;
@@ -159,12 +160,15 @@ public class BRLConditionColumnPlugin extends BaseDecisionTableColumnPlugin impl
     }
 
     boolean getDefinedVariables(RuleModel ruleModel) {
-        Map<InterpolationVariable, Integer> ivs = new HashMap<InterpolationVariable, Integer>();
+        Map<InterpolationVariable, Integer> ivs = new HashMap<>();
         RuleModelVisitor rmv = new RuleModelVisitor(ivs);
         rmv.visit(ruleModel);
 
+        Map<InterpolationVariable, Integer> result = new InterpolationVariableCollector(ivs,
+                                                                                        DataType.TYPE_STRING).getMap();
+
         //Update column and UI
-        editingCol.setChildColumns(convertInterpolationVariables(ivs));
+        editingCol.setChildColumns(convertInterpolationVariables(result));
 
         return ivs.size() > 0;
     }
