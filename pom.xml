@@ -51,7 +51,6 @@
 \*\/$
 ]]>
     </checkstyle.header.template>
-    <needs-errai-1101-workaround>true</needs-errai-1101-workaround>
   </properties>
 
   <dependencyManagement>
@@ -204,6 +203,30 @@
             </fileset>
           </filesets>
         </configuration>
+      </plugin>
+
+      <!-- Temporary workaround for https://issues.jboss.org/browse/ERRAI-1101. Needs to stay here until
+              we find a general solution (e.g. moving all localized code to Errai TranslationService. -->
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>create-default-i18n-resource</id>
+            <phase>process-resources</phase>
+            <configuration>
+              <target>
+                <copy todir="${project.build.directory}/classes"
+                      includeemptydirs="false" failonerror="false" quiet="true">
+                  <fileset dir="${project.build.directory}/classes"/>
+                  <globmapper from="*Constants.properties" to="*Constants_default.properties"/>
+                </copy>
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
 
