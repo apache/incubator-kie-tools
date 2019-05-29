@@ -108,6 +108,10 @@
       <scope>test</scope>
       <exclusions>
         <exclusion>
+          <groupId>javax.ws.rs</groupId>
+          <artifactId>javax.ws.rs-api</artifactId>
+        </exclusion>
+        <exclusion>
           <groupId>org.glassfish.hk2.external</groupId>
           <artifactId>aopalliance-repackaged</artifactId>
         </exclusion>
