@@ -34,6 +34,7 @@ import org.junit.Test;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.drools.workbench.screens.scenariosimulation.backend.server.importexport.ScenarioCsvImportExport.HEADER_SIZE;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class ScenarioCsvImportExportTest {
 
@@ -73,7 +74,7 @@ public class ScenarioCsvImportExportTest {
         String rawCSV = "OTHER,OTHER,GIVEN,GIVEN,GIVEN\r\n" +
                 "#,Scenario description,instance1,instance2,instance3\r\n" +
                 "Index,Description,property1,property2,property3\r\n" +
-                "1,My Scenario,value1,value2,value3";
+                "1,My Scenario,value1,value2,";
 
         Simulation simulation = scenarioCsvImportExport.importData(rawCSV, originalSimulation);
 
@@ -81,7 +82,7 @@ public class ScenarioCsvImportExportTest {
 
         assertEquals("value1", simulation.getScenarioByIndex(0).getFactMappingValue(simulation.getSimulationDescriptor().getFactMappingByIndex(2)).get().getRawValue());
         assertEquals("value2", simulation.getScenarioByIndex(0).getFactMappingValue(simulation.getSimulationDescriptor().getFactMappingByIndex(3)).get().getRawValue());
-        assertEquals("value3", simulation.getScenarioByIndex(0).getFactMappingValue(simulation.getSimulationDescriptor().getFactMappingByIndex(4)).get().getRawValue());
+        assertNull(simulation.getScenarioByIndex(0).getFactMappingValue(simulation.getSimulationDescriptor().getFactMappingByIndex(4)).get().getRawValue());
 
         assertThatThrownBy(() -> scenarioCsvImportExport.importData("", originalSimulation))
                 .isInstanceOf(IllegalArgumentException.class)

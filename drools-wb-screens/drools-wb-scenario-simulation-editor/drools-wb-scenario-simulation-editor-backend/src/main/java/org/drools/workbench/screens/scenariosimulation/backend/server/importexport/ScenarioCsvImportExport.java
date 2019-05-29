@@ -81,9 +81,10 @@ public class ScenarioCsvImportExport {
             }
             for (int i = 0; i < factMappings.size(); i += 1) {
                 FactMapping factMapping = factMappings.get(i);
+                String valueToImport = "".equals(csvRecord.get(i)) ? null : csvRecord.get(i);
                 scenarioToFill.addMappingValue(factMapping.getFactIdentifier(),
                                                factMapping.getExpressionIdentifier(),
-                                               csvRecord.get(i));
+                                               valueToImport);
             }
         }
         return toReturn;
