@@ -24,6 +24,7 @@ import java.util.stream.Stream;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
@@ -144,6 +145,10 @@ public class DataTypePickerWidget extends Composite implements HasValue<QName>,
             }
         }
         this.qNameConverter.setDMNModel(dmnModel);
+        populateTypeSelector();
+    }
+
+    void populateTypeSelector(){
         typeSelector.clear();
 
         addBuiltInTypes();
@@ -204,6 +209,11 @@ public class DataTypePickerWidget extends Composite implements HasValue<QName>,
                                                               QName.DEFAULT_NS_PREFIX)));
         }
         return Optional.ofNullable(o);
+    }
+
+    @SuppressWarnings("unused")
+    public void onDataTypePageNavTabActiveEvent(final @Observes DataTypeChangedEvent event) {
+        populateTypeSelector();
     }
 
     @EventHandler("typeButton")

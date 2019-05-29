@@ -28,6 +28,7 @@ import javax.inject.Inject;
 
 import elemental2.dom.HTMLElement;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType;
+import org.kie.workbench.common.dmn.client.editors.types.DataTypeChangedEvent;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManager;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.DataTypeEditModeToggleEvent;
@@ -63,6 +64,8 @@ public class DataTypeListItem {
 
     private final DataTypeNameFormatValidator nameFormatValidator;
 
+    private final Event<DataTypeChangedEvent> dataTypeChangedEvent;
+
     private DataType dataType;
 
     private int level;
@@ -87,7 +90,8 @@ public class DataTypeListItem {
                             final DataTypeManager dataTypeManager,
                             final DataTypeConfirmation confirmation,
                             final DataTypeNameFormatValidator nameFormatValidator,
-                            final Event<DataTypeEditModeToggleEvent> editModeToggleEvent) {
+                            final Event<DataTypeEditModeToggleEvent> editModeToggleEvent,
+                            final Event<DataTypeChangedEvent> dataTypeChangedEvent) {
         this.view = view;
         this.dataTypeSelectComponent = dataTypeSelectComponent;
         this.dataTypeConstraintComponent = dataTypeConstraintComponent;
@@ -96,6 +100,7 @@ public class DataTypeListItem {
         this.confirmation = confirmation;
         this.nameFormatValidator = nameFormatValidator;
         this.editModeToggleEvent = editModeToggleEvent;
+        this.dataTypeChangedEvent = dataTypeChangedEvent;
     }
 
     @PostConstruct
@@ -249,7 +254,12 @@ public class DataTypeListItem {
             final String newDataTypeHash = getNewDataTypeHash(dataType, referenceDataTypeHash);
             dataTypeList.fireOnDataTypeListItemUpdateCallback(newDataTypeHash);
             insertNewFieldIfDataTypeIsStructure(newDataTypeHash);
+            fireDataChangedEvent();
         };
+    }
+
+    void fireDataChangedEvent() {
+        dataTypeChangedEvent.fire(new DataTypeChangedEvent());
     }
 
     void insertNewFieldIfDataTypeIsStructure(final String hash) {
@@ -326,6 +336,8 @@ public class DataTypeListItem {
             destroyedDataTypes.removeAll(removedDataTypes);
 
             dataTypeList.refreshItemsByUpdatedDataTypes(destroyedDataTypes);
+
+            fireDataChangedEvent();
         };
     }
 

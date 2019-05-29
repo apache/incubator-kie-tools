@@ -47,6 +47,7 @@ import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.uberfire.mocks.EventSourceMock;
 
@@ -58,6 +59,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
@@ -377,5 +379,18 @@ public class DataTypePickerWidgetTest {
         final QName actualTypeRef = picker.normaliseBuiltInTypeTypeRef(typeRef);
 
         assertEquals(expectedTypeRef, actualTypeRef);
+    }
+
+    @Test
+    public void testPopulateTypeSelector(){
+
+        picker.populateTypeSelector();
+
+        final InOrder inOrder = inOrder(typeSelector);
+        inOrder.verify(typeSelector).clear();
+        verify(picker).addBuiltInTypes();
+        verify(picker).addItemDefinitions();
+
+        inOrder.verify(typeSelector).refresh();
     }
 }
