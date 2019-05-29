@@ -23,6 +23,7 @@ import java.util.function.Supplier;
 import org.eclipse.jgit.transport.CredentialsProvider;
 import org.eclipse.jgit.transport.ReceiveCommand;
 import org.eclipse.jgit.transport.UploadPack;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.base.FileSystemState;
 import org.uberfire.java.nio.base.options.CommentedOption;
@@ -37,7 +38,6 @@ import org.uberfire.java.nio.file.attribute.UserPrincipalLookupService;
 import org.uberfire.java.nio.file.spi.FileSystemProvider;
 import org.uberfire.java.nio.fs.jgit.util.Git;
 import org.uberfire.java.nio.fs.jgit.util.model.CommitInfo;
-import org.uberfire.java.nio.security.FileSystemUser;
 
 public class JGitFileSystemProxy implements JGitFileSystem {
 
@@ -191,14 +191,14 @@ public class JGitFileSystemProxy implements JGitFileSystem {
 
     @Override
     public void checkBranchAccess(final ReceiveCommand command,
-                                  final FileSystemUser user) {
+                                  final User user) {
         cachedSupplier.get().checkBranchAccess(command,
                                                user);
     }
 
     @Override
     public void filterBranchAccess(final UploadPack uploadPack,
-                                   final FileSystemUser user) {
+                                   final User user) {
         cachedSupplier.get().filterBranchAccess(uploadPack,
                                                 user);
     }

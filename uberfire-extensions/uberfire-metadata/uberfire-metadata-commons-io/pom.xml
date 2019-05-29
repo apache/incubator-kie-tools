@@ -157,8 +157,20 @@
       <scope>test</scope>
       <exclusions>
         <exclusion>
+          <groupId>javax.annotation</groupId>
+          <artifactId>javax.annotation-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.glassfish.hk2.external</groupId>
+          <artifactId>aopalliance-repackaged</artifactId>
+        </exclusion>
+        <exclusion>
           <groupId>org.glassfish.hk2.external</groupId>
           <artifactId>javax.inject</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>javax.ws.rs</groupId>
+          <artifactId>javax.ws.rs-api</artifactId>
         </exclusion>
       </exclusions>
     </dependency>

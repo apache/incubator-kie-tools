@@ -30,38 +30,34 @@ import org.apache.sshd.server.session.ServerSession;
 import org.eclipse.jgit.errors.RepositoryNotFoundException;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.transport.ServiceMayNotContinueException;
+import org.eclipse.jgit.transport.resolver.RepositoryResolver;
 import org.eclipse.jgit.transport.resolver.ServiceNotAuthorizedException;
 import org.eclipse.jgit.transport.resolver.ServiceNotEnabledException;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.commons.async.DescriptiveRunnable;
-import org.uberfire.java.nio.fs.jgit.JGitFileSystem;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
-import org.uberfire.java.nio.security.FileSystemAuthorizer;
-import org.uberfire.java.nio.security.FileSystemUser;
 
 public abstract class BaseGitCommand implements Command,
                                                 SessionAware,
                                                 Runnable {
 
-    public final static Session.AttributeKey<FileSystemUser> SUBJECT_KEY = new Session.AttributeKey<FileSystemUser>();
+    public final static Session.AttributeKey<User> SUBJECT_KEY = new Session.AttributeKey<User>();
 
     protected final String command;
     protected final String repositoryName;
-    protected final FileSystemAuthorizer fileSystemAuthorizer;
-    protected final JGitFileSystemProvider.RepositoryResolverImpl<BaseGitCommand> repositoryResolver;
+    protected final RepositoryResolver repositoryResolver;
     private final ExecutorService executorService;
 
     private InputStream in;
     private OutputStream out;
     private OutputStream err;
     private ExitCallback callback;
-    private FileSystemUser user;
+    private User user;
 
     public BaseGitCommand(final String command,
-                          final FileSystemAuthorizer fileSystemAuthorizer,
-                          final JGitFileSystemProvider.RepositoryResolverImpl<BaseGitCommand> repositoryResolver,
+                          final JGitFileSystemProvider.RepositoryResolverImpl repositoryResolver,
                           final ExecutorService executorService) {
         this.command = command;
-        this.fileSystemAuthorizer = fileSystemAuthorizer;
         this.repositoryName = buildRepositoryName(command);
         this.repositoryResolver = repositoryResolver;
         this.executorService = executorService;
@@ -121,23 +117,7 @@ public abstract class BaseGitCommand implements Command,
     public void run() {
         try {
             final Repository repository = openRepository(repositoryName);
-            if (repository != null) {
-                final JGitFileSystem fileSystem = repositoryResolver.resolveFileSystem(repository);
-
-                if (fileSystemAuthorizer.authorize(fileSystem,
-                                                   user)) {
-                    execute(user,
-                            repository,
-                            in,
-                            out,
-                            err,
-                            fileSystem);
-                } else {
-                    err.write("Invalid credentials.".getBytes());
-                }
-            } else {
-                err.write("Can't resolve repository name.".getBytes());
-            }
+            execute(repository, in, out, err);
         } catch (final Throwable e) {
             try {
                 err.write(e.getMessage().getBytes());
@@ -149,8 +129,7 @@ public abstract class BaseGitCommand implements Command,
         }
     }
 
-    private Repository openRepository(String name)
-            throws ServiceMayNotContinueException {
+    private Repository openRepository(String name) throws ServiceMayNotContinueException {
         // Assume any attempt to use \ was by a Windows client
         // and correct to the more typical / used in Git URIs.
         //
@@ -181,18 +160,16 @@ public abstract class BaseGitCommand implements Command,
         }
     }
 
-    protected abstract void execute(final FileSystemUser user,
-                                    final Repository repository,
+    protected abstract void execute(final Repository repository,
                                     final InputStream in,
                                     final OutputStream out,
-                                    final OutputStream err,
-                                    final JGitFileSystem fileSystem);
+                                    final OutputStream err);
 
     @Override
     public void destroy() {
     }
 
-    public FileSystemUser getUser() {
+    public User getUser() {
         return user;
     }
 

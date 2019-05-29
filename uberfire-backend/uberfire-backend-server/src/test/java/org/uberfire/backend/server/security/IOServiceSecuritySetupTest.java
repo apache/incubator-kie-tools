@@ -18,6 +18,7 @@ package org.uberfire.backend.server.security;
 
 import java.net.URI;
 import java.util.Arrays;
+
 import javax.enterprise.inject.Instance;
 
 import org.jboss.errai.security.shared.api.identity.User;
@@ -31,9 +32,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.java.nio.base.FileSystemId;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Path;
-import org.uberfire.java.nio.security.FileSystemAuthenticator;
 import org.uberfire.java.nio.security.FileSystemAuthorizer;
-import org.uberfire.java.nio.security.FileSystemUser;
 import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.security.authz.PermissionManager;
 import org.uberfire.security.impl.authz.DefaultAuthorizationManager;
@@ -83,10 +82,9 @@ public class IOServiceSecuritySetupTest {
         assertNotNull(mockFsp.authorizer);
 
         // and they should work :)
-        FileSystemUser user = mockFsp.authenticator.authenticate("fake",
-                                                                 "fake");
+        User user = mockFsp.authenticator.login("fake", "fake");
         assertEquals(MockAuthenticationService.FAKE_USER.getIdentifier(),
-                     user.getName());
+                     user.getIdentifier());
 
         final FileSystem mockfs = mock(FileSystem.class);
         final FileSystem mockedFSId = mock(FileSystem.class,
@@ -113,9 +111,8 @@ public class IOServiceSecuritySetupTest {
 
         setupBean.setup();
 
-        FileSystemAuthenticator authenticator = MockSecuredFilesystemProvider.LATEST_INSTANCE.authenticator;
-        authenticator.authenticate("fake",
-                                   "fake");
+        AuthenticationService authenticator = MockSecuredFilesystemProvider.LATEST_INSTANCE.authenticator;
+        authenticator.login("fake", "fake");
 
         // make sure the call went to the one we provided
         verify(mockAuthenticationService).login("fake",
@@ -129,7 +126,7 @@ public class IOServiceSecuritySetupTest {
         setupBean.setup();
 
         FileSystemAuthorizer installedAuthorizer = MockSecuredFilesystemProvider.LATEST_INSTANCE.authorizer;
-        FileSystemAuthenticator installedAuthenticator = MockSecuredFilesystemProvider.LATEST_INSTANCE.authenticator;
+        AuthenticationService installedAuthenticator = MockSecuredFilesystemProvider.LATEST_INSTANCE.authenticator;
         FileSystem mockfs = mock(FileSystem.class);
 
         final FileSystem mockedFSId = mock(FileSystem.class,
@@ -140,8 +137,7 @@ public class IOServiceSecuritySetupTest {
         when(mockedFSId.getRootDirectories()).thenReturn(Arrays.asList(rootPath));
         when(rootPath.getFileSystem()).thenReturn(mockedFSId);
 
-        FileSystemUser fileSystemUser = installedAuthenticator.authenticate("fake",
-                                                                            "fake");
+        User fileSystemUser = installedAuthenticator.login("fake", "fake");
 
         installedAuthorizer.authorize(mockfs,
                                       fileSystemUser);

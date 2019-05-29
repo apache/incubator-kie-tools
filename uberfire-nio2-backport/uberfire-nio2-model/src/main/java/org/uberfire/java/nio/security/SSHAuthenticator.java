@@ -18,7 +18,9 @@ package org.uberfire.java.nio.security;
 
 import java.security.PublicKey;
 
+import org.jboss.errai.security.shared.api.identity.User;
+
 public interface SSHAuthenticator {
 
-    FileSystemUser authenticate(String userName, PublicKey key);
+    User authenticate(String userName, PublicKey key);
 }

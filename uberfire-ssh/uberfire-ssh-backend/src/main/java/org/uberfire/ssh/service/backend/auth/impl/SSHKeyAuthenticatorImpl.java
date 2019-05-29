@@ -17,6 +17,7 @@
 package org.uberfire.ssh.service.backend.auth.impl;
 
 import java.security.PublicKey;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -56,14 +57,12 @@ public class SSHKeyAuthenticatorImpl implements SSHKeyAuthenticator {
     }
 
     @Override
-    public User authenticate(String userName, PublicKey key) {
+    public User authenticate(final String userName, final PublicKey key) {
 
-        Optional<User> userOptional = Optional.ofNullable(userManager.getUser(userName));
+        final Optional<User> userOptional = Optional.ofNullable(userManager.getUser(userName));
 
         if (userOptional.isPresent()) {
-            List<SSHPublicKey> keys = keyStoreService.keyStore().getUserKeys(userName)
-                    .stream()
-                    .collect(Collectors.toList());
+            List<SSHPublicKey> keys = new ArrayList<>(keyStoreService.keyStore().getUserKeys(userName));
 
             PublicKey resultKey = KeyUtils.findMatchingKey(key, keys.stream().map(SSHPublicKey::getKey).collect(Collectors.toList()));
 

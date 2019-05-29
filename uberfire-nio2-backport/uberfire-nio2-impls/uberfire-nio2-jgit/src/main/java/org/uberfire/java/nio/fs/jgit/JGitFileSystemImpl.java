@@ -16,16 +16,36 @@
 
 package org.uberfire.java.nio.fs.jgit;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Set;
+import java.util.TimeZone;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.transport.CredentialsProvider;
 import org.eclipse.jgit.transport.ReceiveCommand;
 import org.eclipse.jgit.transport.UploadPack;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.base.FileSystemState;
 import org.uberfire.java.nio.base.options.CommentedOption;
-import org.uberfire.java.nio.file.*;
+import org.uberfire.java.nio.file.FileStore;
+import org.uberfire.java.nio.file.InvalidPathException;
+import org.uberfire.java.nio.file.Path;
+import org.uberfire.java.nio.file.PathMatcher;
+import org.uberfire.java.nio.file.PatternSyntaxException;
+import org.uberfire.java.nio.file.WatchEvent;
+import org.uberfire.java.nio.file.WatchService;
 import org.uberfire.java.nio.file.attribute.UserPrincipalLookupService;
 import org.uberfire.java.nio.file.extensions.FileSystemHookExecutionContext;
 import org.uberfire.java.nio.file.extensions.FileSystemHooks;
@@ -35,11 +55,6 @@ import org.uberfire.java.nio.fs.jgit.util.Git;
 import org.uberfire.java.nio.fs.jgit.util.extensions.JGitFSHooks;
 import org.uberfire.java.nio.fs.jgit.util.model.CommitInfo;
 import org.uberfire.java.nio.fs.jgit.ws.JGitFileSystemsEventsManager;
-import org.uberfire.java.nio.security.FileSystemUser;
-
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableSet;
@@ -521,7 +536,7 @@ public class JGitFileSystemImpl implements JGitFileSystem {
 
     @Override
     public void checkBranchAccess(final ReceiveCommand command,
-                                  final FileSystemUser user) {
+                                  final User user) {
         Object hook = fsHooks.get(FileSystemHooks.BranchAccessCheck);
         if (hook != null) {
             FileSystemHookExecutionContext ctx = new FileSystemHookExecutionContext(name);
@@ -534,7 +549,7 @@ public class JGitFileSystemImpl implements JGitFileSystem {
 
     @Override
     public void filterBranchAccess(final UploadPack uploadPack,
-                                   final FileSystemUser user) {
+                                   final User user) {
         Object hook = fsHooks.get(FileSystemHooks.BranchAccessFilter);
         if (hook != null) {
             FileSystemHookExecutionContext ctx = new FileSystemHookExecutionContext(name);

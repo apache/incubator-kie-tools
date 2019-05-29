@@ -36,10 +36,21 @@ public class JGitFileSystemProviderConfiguration {
 
     public static final String GIT_DAEMON_ENABLED = "org.uberfire.nio.git.daemon.enabled";
     public static final String GIT_SSH_ENABLED = "org.uberfire.nio.git.ssh.enabled";
+    public static final String GIT_HTTP_ENABLED = "org.uberfire.nio.git.http.enabled";
+    public static final String GIT_HTTPS_ENABLED = "org.uberfire.nio.git.https.enabled";
+
     public static final String GIT_NIO_DIR = "org.uberfire.nio.git.dir";
     public static final String GIT_NIO_DIR_NAME = "org.uberfire.nio.git.dirname";
     public static final String ENABLE_GIT_KETCH = "org.uberfire.nio.git.ketch";
     public static final String HOOK_DIR = "org.uberfire.nio.git.hooks";
+
+    public static final String GIT_HTTP_HOST = "org.uberfire.nio.git.http.host";
+    public static final String GIT_HTTP_HOSTNAME = "org.uberfire.nio.git.http.hostname";
+    public static final String GIT_HTTP_PORT = "org.uberfire.nio.git.http.port";
+    public static final String GIT_HTTPS_HOST = "org.uberfire.nio.git.https.host";
+    public static final String GIT_HTTPS_HOSTNAME = "org.uberfire.nio.git.https.hostname";
+    public static final String GIT_HTTPS_PORT = "org.uberfire.nio.git.https.port";
+
     public static final String GIT_DAEMON_HOST = "org.uberfire.nio.git.daemon.host";
     public static final String GIT_DAEMON_HOSTNAME = "org.uberfire.nio.git.daemon.hostname";
     public static final String GIT_DAEMON_PORT = "org.uberfire.nio.git.daemon.port";
@@ -51,7 +62,7 @@ public class JGitFileSystemProviderConfiguration {
     public static final String GIT_SSH_ALGORITHM = "org.uberfire.nio.git.ssh.algorithm";
     public static final String GIT_SSH_PASSPHRASE = "org.uberfire.nio.git.ssh.passphrase";
     public static final String GIT_GC_LIMIT = "org.uberfire.nio.git.gc.limit";
-    public static final String GIT_HTTP_SSL_VERIFY ="org.uberfire.nio.git.http.sslVerify";
+    public static final String GIT_HTTP_SSL_VERIFY = "org.uberfire.nio.git.http.sslVerify";
     public static final String SSH_OVER_HTTP = "org.uberfire.nio.git.proxy.ssh.over.http";
     public static final String HTTP_PROXY_HOST = "http.proxyHost";
     public static final String HTTP_PROXY_PORT = "http.proxyPort";
@@ -88,13 +99,16 @@ public class JGitFileSystemProviderConfiguration {
     public static final String DEFAULT_DAEMON_DEFAULT_ENABLED = "true";
     public static final String DEFAULT_DAEMON_DEFAULT_PORT = "9418";
     public static final String DEFAULT_SSH_ENABLED = "true";
+    public static final String DEFAULT_HTTP_ENABLED = "true";
+    public static final String DEFAULT_HTTPS_ENABLED = "false";
+    public static final String DEFAULT_HTTP_PORT = "8080";
+    public static final String DEFAULT_HTTPS_PORT = "8443";
     public static final String DEFAULT_SSH_PORT = "8001";
     public static final String DEFAULT_SSH_IDLE_TIMEOUT = "10000";
     public static final String DEFAULT_SSH_ALGORITHM = "RSA";
     public static final String DEFAULT_SSH_CERT_PASSPHRASE = "";
     public static final String DEFAULT_COMMIT_LIMIT_TO_GC = "20";
     public static final Boolean DEFAULT_GIT_HTTP_SSL_VERIFY = Boolean.TRUE;
-    public static final String DEFAULT_GIT_ENV_KEY_MIGRATE_FROM = "migrate-from";
     public static final String DEFAULT_ENABLE_GIT_KETCH = "false";
     public static final String DEFAULT_JGIT_FILE_SYSTEM_INSTANCES_CACHE = "10000";
     public static final String DEFAULT_JGIT_REMOVE_ELDEST_ENTRY_ITERATIONS = "10";
@@ -119,6 +133,15 @@ public class JGitFileSystemProviderConfiguration {
     private String sshIdleTimeout;
     private String gitSshCiphers;
     private String gitSshMACs;
+
+    private boolean httpEnabled;
+    private int httpPort;
+    private String httpHostAddr;
+    private String httpHostName;
+    private boolean httpsEnabled;
+    private int httpsPort;
+    private String httpsHostAddr;
+    private String httpsHostName;
 
     private File gitReposParentDir;
 
@@ -167,6 +190,24 @@ public class JGitFileSystemProviderConfiguration {
                                                                               hostProp.isDefault() ? DEFAULT_HOST_NAME : hostProp.getValue());
         final ConfigProperties.ConfigProperty portProp = systemConfig.get(GIT_DAEMON_PORT,
                                                                           DEFAULT_DAEMON_DEFAULT_PORT);
+
+        final ConfigProperties.ConfigProperty httpEnabledProp = systemConfig.get(GIT_HTTP_ENABLED,
+                                                                                 DEFAULT_HTTP_ENABLED);
+        final ConfigProperties.ConfigProperty httpHostProp = systemConfig.get(GIT_HTTP_HOST,
+                                                                              DEFAULT_HOST_ADDR);
+        final ConfigProperties.ConfigProperty httpHostNameProp = systemConfig.get(GIT_HTTP_HOSTNAME,
+                                                                                  httpHostProp.isDefault() ? DEFAULT_HOST_NAME : httpHostProp.getValue());
+        final ConfigProperties.ConfigProperty httpPortProp = systemConfig.get(GIT_HTTP_PORT,
+                                                                              DEFAULT_HTTP_PORT);
+        final ConfigProperties.ConfigProperty httpsEnabledProp = systemConfig.get(GIT_HTTPS_ENABLED,
+                                                                                  DEFAULT_HTTPS_ENABLED);
+        final ConfigProperties.ConfigProperty httpsHostProp = systemConfig.get(GIT_HTTPS_HOST,
+                                                                               DEFAULT_HOST_ADDR);
+        final ConfigProperties.ConfigProperty httpsHostNameProp = systemConfig.get(GIT_HTTPS_HOSTNAME,
+                                                                                   httpHostProp.isDefault() ? DEFAULT_HOST_NAME : httpHostProp.getValue());
+        final ConfigProperties.ConfigProperty httpsPortProp = systemConfig.get(GIT_HTTPS_PORT,
+                                                                               DEFAULT_HTTPS_PORT);
+
         final ConfigProperties.ConfigProperty sshEnabledProp = systemConfig.get(GIT_SSH_ENABLED,
                                                                                 DEFAULT_SSH_ENABLED);
         final ConfigProperties.ConfigProperty sshHostProp = systemConfig.get(GIT_SSH_HOST,
@@ -322,6 +363,20 @@ public class JGitFileSystemProviderConfiguration {
             }
         }
         sshPassphrase = sshPassphraseProp.getValue();
+
+        httpEnabled = httpEnabledProp.getBooleanValue();
+        if (httpEnabled) {
+            httpPort = httpPortProp.getIntValue();
+            httpHostAddr = httpHostProp.getValue();
+            httpHostName = httpHostNameProp.getValue();
+        }
+
+        httpsEnabled = httpsEnabledProp.getBooleanValue();
+        if (httpsEnabled) {
+            httpsPort = httpsPortProp.getIntValue();
+            httpsHostAddr = httpsHostProp.getValue();
+            httpsHostName = httpsHostNameProp.getValue();
+        }
     }
 
     public boolean httpProxyIsDefined() {
@@ -439,6 +494,38 @@ public class JGitFileSystemProviderConfiguration {
         return httpsProxyPassword;
     }
 
+    public boolean isHttpEnabled() {
+        return httpEnabled;
+    }
+
+    public int getHttpPort() {
+        return httpPort;
+    }
+
+    public String getHttpHostAddr() {
+        return httpHostAddr;
+    }
+
+    public String getHttpHostName() {
+        return httpHostName;
+    }
+
+    public boolean isHttpsEnabled() {
+        return httpsEnabled;
+    }
+
+    public int getHttpsPort() {
+        return httpsPort;
+    }
+
+    public String getHttpsHostAddr() {
+        return httpsHostAddr;
+    }
+
+    public String getHttpsHostName() {
+        return httpsHostName;
+    }
+
     public int getJgitFileSystemsInstancesCache() {
         return jgitFileSystemsInstancesCache;
     }
@@ -459,8 +546,11 @@ public class JGitFileSystemProviderConfiguration {
         return jgitCacheEvictThresholdDuration;
     }
 
-    public String getGitSshCiphers() { return gitSshCiphers; }
+    public String getGitSshCiphers() {
+        return gitSshCiphers;
+    }
 
-    public String getGitSshMACs() { return gitSshMACs; }
-
+    public String getGitSshMACs() {
+        return gitSshMACs;
+    }
 }

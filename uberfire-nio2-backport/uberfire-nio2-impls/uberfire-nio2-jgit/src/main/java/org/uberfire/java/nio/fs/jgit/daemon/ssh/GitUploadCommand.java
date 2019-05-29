@@ -26,11 +26,8 @@ import org.eclipse.jgit.storage.pack.PackConfig;
 import org.eclipse.jgit.transport.RefFilter;
 import org.eclipse.jgit.transport.UploadPack;
 import org.eclipse.jgit.transport.resolver.UploadPackFactory;
-import org.uberfire.java.nio.fs.jgit.JGitFileSystem;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
 import org.uberfire.java.nio.fs.jgit.daemon.filters.HiddenBranchRefFilter;
-import org.uberfire.java.nio.security.FileSystemAuthorizer;
-import org.uberfire.java.nio.security.FileSystemUser;
 
 public class GitUploadCommand extends BaseGitCommand {
 
@@ -38,11 +35,9 @@ public class GitUploadCommand extends BaseGitCommand {
 
     public GitUploadCommand(final String command,
                             final JGitFileSystemProvider.RepositoryResolverImpl<BaseGitCommand> repositoryResolver,
-                            final FileSystemAuthorizer fileSystemAuthorizer,
                             final UploadPackFactory uploadPackFactory,
                             final ExecutorService executorService) {
         super(command,
-              fileSystemAuthorizer,
               repositoryResolver,
               executorService);
         this.uploadPackFactory = uploadPackFactory;
@@ -54,12 +49,10 @@ public class GitUploadCommand extends BaseGitCommand {
     }
 
     @Override
-    protected void execute(final FileSystemUser user,
-                           final Repository repository,
+    protected void execute(final Repository repository,
                            final InputStream in,
                            final OutputStream out,
-                           final OutputStream err,
-                           final JGitFileSystem fileSystem) {
+                           final OutputStream err) {
         try {
             final UploadPack up = uploadPackFactory.create(this,
                                                            repository);

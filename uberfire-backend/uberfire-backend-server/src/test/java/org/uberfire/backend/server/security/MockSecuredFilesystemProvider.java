@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 
+import org.jboss.errai.security.shared.service.AuthenticationService;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.base.AbstractPath;
 import org.uberfire.java.nio.channels.AsynchronousFileChannel;
@@ -61,7 +62,6 @@ import org.uberfire.java.nio.file.attribute.FileAttribute;
 import org.uberfire.java.nio.file.attribute.FileAttributeView;
 import org.uberfire.java.nio.file.attribute.UserPrincipalLookupService;
 import org.uberfire.java.nio.file.spi.FileSystemProvider;
-import org.uberfire.java.nio.security.FileSystemAuthenticator;
 import org.uberfire.java.nio.security.FileSystemAuthorizer;
 import org.uberfire.java.nio.security.SSHAuthenticator;
 import org.uberfire.java.nio.security.SecuredFileSystemProvider;
@@ -76,7 +76,7 @@ public class MockSecuredFilesystemProvider implements SecuredFileSystemProvider 
 
     public boolean isForcedDefault;
 
-    public FileSystemAuthenticator authenticator;
+    public AuthenticationService authenticator;
 
     public FileSystemAuthorizer authorizer;
 
@@ -266,8 +266,13 @@ public class MockSecuredFilesystemProvider implements SecuredFileSystemProvider 
     }
 
     @Override
-    public void setAuthenticator(FileSystemAuthenticator authenticator) {
+    public void setJAASAuthenticator(AuthenticationService authenticator) {
         this.authenticator = authenticator;
+    }
+
+    @Override
+    public void setHTTPAuthenticator(AuthenticationService authenticator) {
+
     }
 
     @Override

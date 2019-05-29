@@ -19,26 +19,24 @@ package org.uberfire.java.nio.fs.jgit;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.sshd.server.SshServer;
 import org.assertj.core.api.Assertions;
 import org.eclipse.jgit.transport.CredentialsProvider;
+import org.jboss.errai.security.shared.api.identity.User;
+import org.jboss.errai.security.shared.api.identity.UserImpl;
+import org.jboss.errai.security.shared.service.AuthenticationService;
 import org.junit.Assume;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
-import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.extensions.FileSystemHookExecutionContext;
 import org.uberfire.java.nio.file.extensions.FileSystemHooks;
 import org.uberfire.java.nio.fs.jgit.util.commands.Commit;
-import org.uberfire.java.nio.security.FileSystemAuthenticator;
-import org.uberfire.java.nio.security.FileSystemAuthorizer;
-import org.uberfire.java.nio.security.FileSystemUser;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
@@ -73,10 +71,28 @@ public class JGitFileSystemImplProviderSSHTest extends AbstractTestInfra {
         Assume.assumeFalse("UF-511",
                            System.getProperty("java.vendor").equals("IBM Corporation"));
         //Setup Authorization/Authentication
-        provider.setAuthenticator((username, password) -> new FileSystemUser() {
+        provider.setJAASAuthenticator(new AuthenticationService() {
+            private User user;
+
             @Override
-            public String getName() {
-                return "admin";
+            public User login(String s, String s1) {
+                user = new UserImpl(s);
+                return user;
+            }
+
+            @Override
+            public boolean isLoggedIn() {
+                return user != null;
+            }
+
+            @Override
+            public void logout() {
+                user = null;
+            }
+
+            @Override
+            public User getUser() {
+                return user;
             }
         });
         provider.setAuthorizer((fs, fileSystemUser) -> true);
@@ -129,6 +145,5 @@ public class JGitFileSystemImplProviderSSHTest extends AbstractTestInfra {
         Assertions.assertThat(captor.getValue())
                 .isNotNull()
                 .hasFieldOrPropertyWithValue("fsName", "repo");
-
     }
 }

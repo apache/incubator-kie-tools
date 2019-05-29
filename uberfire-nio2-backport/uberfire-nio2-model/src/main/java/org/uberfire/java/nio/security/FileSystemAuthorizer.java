@@ -16,6 +16,7 @@
 
 package org.uberfire.java.nio.security;
 
+import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.java.nio.file.FileSystem;
 
 /**
@@ -26,9 +27,9 @@ public interface FileSystemAuthorizer {
     /**
      * Returns true if the given user is permitted to perform actions within the given file system.
      * @param fs
-     * @param fileSystemUser
+     * @param user
      * @return
      */
     boolean authorize(final FileSystem fs,
-                      final FileSystemUser fileSystemUser);
+                      final User user);
 }

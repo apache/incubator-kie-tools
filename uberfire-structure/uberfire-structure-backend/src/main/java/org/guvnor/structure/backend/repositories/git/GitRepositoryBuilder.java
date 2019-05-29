@@ -22,11 +22,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 import javax.enterprise.event.Event;
 
-import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.transport.ReceiveCommand;
-import org.eclipse.jgit.transport.RefFilter;
 import org.eclipse.jgit.transport.UploadPack;
 import org.guvnor.structure.backend.repositories.BranchAccessAuthorizer;
 import org.guvnor.structure.backend.repositories.git.hooks.PostCommitNotificationService;
@@ -42,13 +41,13 @@ import org.guvnor.structure.server.config.ConfigGroup;
 import org.guvnor.structure.server.config.ConfigItem;
 import org.guvnor.structure.server.config.PasswordService;
 import org.guvnor.structure.server.config.SecureConfigItem;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
 import org.uberfire.java.nio.file.extensions.FileSystemHooks;
 import org.uberfire.java.nio.file.extensions.FileSystemHooksConstants;
 import org.uberfire.java.nio.fs.jgit.daemon.filters.HiddenBranchRefFilter;
-import org.uberfire.java.nio.security.FileSystemUser;
 import org.uberfire.spaces.SpacesAPI;
 
 import static org.uberfire.backend.server.util.Paths.convert;
@@ -131,10 +130,10 @@ public class GitRepositoryBuilder {
         for (final ConfigItem item : items) {
             if (item instanceof SecureConfigItem) {
                 repo.addEnvironmentParameter(item.getName(),
-                        secureService.decrypt(item.getValue().toString()));
+                                             secureService.decrypt(item.getValue().toString()));
             } else {
                 repo.addEnvironmentParameter(item.getName(),
-                        item.getValue());
+                                             item.getValue());
             }
         }
     }
@@ -161,15 +160,15 @@ public class GitRepositoryBuilder {
 
     private FileSystem newFileSystem(URI uri) {
         return ioService.newFileSystem(uri,
-                new HashMap<String, Object>(repo.getEnvironment()) {{
-                    if (!repo.getEnvironment().containsKey("origin")) {
-                        put("init", true);
-                    }
-                    put(FileSystemHooks.ExternalUpdate.name(), externalUpdatedCallBack());
-                    put(FileSystemHooks.PostCommit.name(), postCommitCallback());
-                    put(FileSystemHooks.BranchAccessCheck.name(), checkBranchAccessCallback());
-                    put(FileSystemHooks.BranchAccessFilter.name(), filterBranchAccessCallback());
-                }});
+                                       new HashMap<String, Object>(repo.getEnvironment()) {{
+                                           if (!repo.getEnvironment().containsKey("origin")) {
+                                               put("init", true);
+                                           }
+                                           put(FileSystemHooks.ExternalUpdate.name(), externalUpdatedCallBack());
+                                           put(FileSystemHooks.PostCommit.name(), postCommitCallback());
+                                           put(FileSystemHooks.BranchAccessCheck.name(), checkBranchAccessCallback());
+                                           put(FileSystemHooks.BranchAccessFilter.name(), filterBranchAccessCallback());
+                                       }});
     }
 
     private FileSystemHooks.FileSystemHook externalUpdatedCallBack() {
@@ -183,11 +182,11 @@ public class GitRepositoryBuilder {
     private FileSystemHooks.FileSystemHook checkBranchAccessCallback() {
         return ctx -> {
             final ReceiveCommand command = (ReceiveCommand) ctx.getParamValue(FileSystemHooksConstants.RECEIVE_COMMAND);
-            final FileSystemUser user = (FileSystemUser) ctx.getParamValue(FileSystemHooksConstants.USER);
+            final User user = (User) ctx.getParamValue(FileSystemHooksConstants.USER);
             final Optional<String> branchName = GitPathUtil.extractBranchFromRef(command.getRefName());
 
             branchName.ifPresent(branch -> {
-                if (!branchAccessAuthorizer.authorize(user.getName(),
+                if (!branchAccessAuthorizer.authorize(user.getIdentifier(),
                                                       repo.getSpace().getName(),
                                                       repo.getIdentifier(),
                                                       repo.getAlias(),
@@ -202,14 +201,14 @@ public class GitRepositoryBuilder {
     private FileSystemHooks.FileSystemHook filterBranchAccessCallback() {
         return ctx -> {
             final UploadPack uploadPack = (UploadPack) ctx.getParamValue(FileSystemHooksConstants.UPLOAD_PACK);
-            final FileSystemUser user = (FileSystemUser) ctx.getParamValue(FileSystemHooksConstants.USER);
+            final User user = (User) ctx.getParamValue(FileSystemHooksConstants.USER);
             uploadPack.setRefFilter(refs -> refs.entrySet()
                     .stream()
                     .filter(ref -> !HiddenBranchRefFilter.isHidden(ref.getKey()))
                     .filter(ref -> {
                         final Optional<String> branchName = GitPathUtil.extractBranchFromRef(ref.getValue().getName());
                         if (branchName.isPresent()) {
-                            return branchAccessAuthorizer.authorize(user.getName(),
+                            return branchAccessAuthorizer.authorize(user.getIdentifier(),
                                                                     repo.getSpace().getName(),
                                                                     repo.getIdentifier(),
                                                                     repo.getAlias(),

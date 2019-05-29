@@ -17,11 +17,11 @@
 package org.uberfire.java.nio.fs.jgit;
 
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.jgit.transport.CredentialsProvider;
 import org.eclipse.jgit.transport.ReceiveCommand;
 import org.eclipse.jgit.transport.UploadPack;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.java.nio.base.FileSystemId;
 import org.uberfire.java.nio.base.FileSystemStateAware;
 import org.uberfire.java.nio.base.options.CommentedOption;
@@ -31,18 +31,11 @@ import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.WatchEvent;
 import org.uberfire.java.nio.fs.jgit.util.Git;
 import org.uberfire.java.nio.fs.jgit.util.model.CommitInfo;
-import org.uberfire.java.nio.security.FileSystemUser;
-
-import static java.util.Arrays.asList;
-import static java.util.Collections.unmodifiableSet;
-import static org.eclipse.jgit.lib.Repository.shortenRefName;
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotEmpty;
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 public interface JGitFileSystem extends FileSystem,
                                         FileSystemId,
                                         FileSystemStateAware,
-                                        LockableFileSystem { 
+                                        LockableFileSystem {
 
     Git getGit();
 
@@ -95,8 +88,8 @@ public interface JGitFileSystem extends FileSystem,
     void notifyPostCommit(int exitCode);
 
     void checkBranchAccess(ReceiveCommand command,
-                           FileSystemUser user);
+                           User user);
 
     void filterBranchAccess(UploadPack uploadPack,
-                            FileSystemUser user);
+                            User user);
 }

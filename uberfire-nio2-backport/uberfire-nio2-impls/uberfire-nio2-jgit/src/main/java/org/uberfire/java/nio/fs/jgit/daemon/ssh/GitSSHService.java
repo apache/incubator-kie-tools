@@ -36,12 +36,11 @@ import org.apache.sshd.server.keyprovider.SimpleGeneratorHostKeyProvider;
 import org.apache.sshd.server.scp.UnknownCommand;
 import org.eclipse.jgit.transport.resolver.ReceivePackFactory;
 import org.eclipse.jgit.transport.resolver.UploadPackFactory;
+import org.jboss.errai.security.shared.api.identity.User;
+import org.jboss.errai.security.shared.service.AuthenticationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
-import org.uberfire.java.nio.security.FileSystemAuthenticator;
-import org.uberfire.java.nio.security.FileSystemAuthorizer;
-import org.uberfire.java.nio.security.FileSystemUser;
 import org.uberfire.java.nio.security.SSHAuthenticator;
 
 import static org.apache.sshd.common.NamedFactory.setUpBuiltinFactories;
@@ -76,8 +75,7 @@ public class GitSSHService {
             ));
 
     private SshServer sshd;
-    private FileSystemAuthenticator fileSystemAuthenticator;
-    private FileSystemAuthorizer fileSystemAuthorizer;
+    private AuthenticationService authenticationService;
     private SSHAuthenticator sshAuthenticator;
 
     private SshServer buildSshServer(String ciphersConfigured,
@@ -160,13 +158,11 @@ public class GitSSHService {
             if (command.startsWith("git-upload-pack")) {
                 return new GitUploadCommand(command,
                                             repositoryResolver,
-                                            getAuthorizationManager(),
                                             uploadPackFactory,
                                             executorService);
             } else if (command.startsWith("git-receive-pack")) {
                 return new GitReceiveCommand(command,
                                              repositoryResolver,
-                                             getAuthorizationManager(),
                                              receivePackFactory,
                                              executorService);
             } else {
@@ -175,7 +171,7 @@ public class GitSSHService {
         });
         sshd.setPublickeyAuthenticator(new CachingPublicKeyAuthenticator((username, key, session) -> {
 
-            final FileSystemUser user = getSshAuthenticator().authenticate(username, key);
+            final User user = getSshAuthenticator().authenticate(username, key);
 
             if (user == null) {
                 return false;
@@ -187,7 +183,7 @@ public class GitSSHService {
         }));
         sshd.setPasswordAuthenticator((username, password, session) -> {
 
-            final FileSystemUser user = getUserPassAuthenticator().authenticate(username, password);
+            final User user = getUserPassAuthenticator().login(username, password);
 
             if (user == null) {
                 return false;
@@ -273,20 +269,12 @@ public class GitSSHService {
         return Collections.unmodifiableMap(sshd.getProperties());
     }
 
-    public FileSystemAuthenticator getUserPassAuthenticator() {
-        return fileSystemAuthenticator;
+    public AuthenticationService getUserPassAuthenticator() {
+        return authenticationService;
     }
 
-    public void setUserPassAuthenticator(FileSystemAuthenticator fileSystemAuthenticator) {
-        this.fileSystemAuthenticator = fileSystemAuthenticator;
-    }
-
-    public FileSystemAuthorizer getAuthorizationManager() {
-        return fileSystemAuthorizer;
-    }
-
-    public void setAuthorizationManager(FileSystemAuthorizer fileSystemAuthorizer) {
-        this.fileSystemAuthorizer = fileSystemAuthorizer;
+    public void setUserPassAuthenticator(AuthenticationService authenticationService) {
+        this.authenticationService = authenticationService;
     }
 
     public SSHAuthenticator getSshAuthenticator() {

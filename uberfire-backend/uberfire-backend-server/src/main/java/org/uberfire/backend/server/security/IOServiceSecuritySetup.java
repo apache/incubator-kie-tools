@@ -21,8 +21,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import org.jboss.errai.security.shared.api.identity.User;
-import org.jboss.errai.security.shared.exception.AuthenticationException;
 import org.jboss.errai.security.shared.service.AuthenticationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +28,6 @@ import org.uberfire.commons.services.cdi.Startup;
 import org.uberfire.java.nio.file.FileSystemMetadata;
 import org.uberfire.java.nio.file.api.FileSystemProviders;
 import org.uberfire.java.nio.file.spi.FileSystemProvider;
-import org.uberfire.java.nio.security.FileSystemUser;
 import org.uberfire.java.nio.security.SecuredFileSystemProvider;
 import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.ssh.service.backend.auth.SSHKeyAuthenticator;
@@ -50,6 +47,9 @@ public class IOServiceSecuritySetup {
     Instance<AuthenticationService> authenticationManagers;
 
     @Inject
+    AuthenticationService httpAuthManager;
+
+    @Inject
     AuthorizationManager authorizationManager;
 
     @Inject
@@ -57,7 +57,7 @@ public class IOServiceSecuritySetup {
 
     @PostConstruct
     public void setup() {
-        final AuthenticationService authenticationManager;
+        final AuthenticationService nonHTTPAuthenticationManager;
 
         if (authenticationManagers.isUnsatisfied()) {
             final String authType = System.getProperty("org.uberfire.io.auth",
@@ -66,48 +66,27 @@ public class IOServiceSecuritySetup {
                                                      JAASAuthenticationService.DEFAULT_DOMAIN);
 
             if (authType == null || authType.toLowerCase().equals("jaas") || authType.toLowerCase().equals("container")) {
-                authenticationManager = new JAASAuthenticationService(domain);
+                nonHTTPAuthenticationManager = new JAASAuthenticationService(domain);
             } else {
-                authenticationManager = loadClazz(authType,
-                                                  AuthenticationService.class);
+                nonHTTPAuthenticationManager = loadClazz(authType,
+                                                         AuthenticationService.class);
             }
         } else {
-            authenticationManager = authenticationManagers.get();
+            nonHTTPAuthenticationManager = authenticationManagers.get();
         }
 
         for (final FileSystemProvider fp : FileSystemProviders.installedProviders()) {
             if (fp instanceof SecuredFileSystemProvider) {
                 SecuredFileSystemProvider sfp = (SecuredFileSystemProvider) fp;
-                sfp.setAuthenticator((username, password) -> {
-                                         try {
-                                             final User result = authenticationManager.login(username,
-                                                                                             password);
-                                             if (result != null) {
-                                                 return new UserAdapter(result);
-                                             }
-                                             return null;
-                                         } catch (final AuthenticationException loginFailed) {
-                                             LOG.warn("Login failed",
-                                                      loginFailed);
-                                             return null;
-                                         }
-                                     }
-                );
+                sfp.setJAASAuthenticator(nonHTTPAuthenticationManager);
+                sfp.setHTTPAuthenticator(httpAuthManager);
                 sfp.setAuthorizer((fs, fileSystemUser) ->
                                           authorizationManager.authorize(
                                                   new FileSystemResourceAdaptor(new FileSystemMetadata(fs)),
-                                                  ((UserAdapter) fileSystemUser).getWrappedUser())
+                                                  fileSystemUser)
 
                 );
-                sfp.setSSHAuthenticator((userName, key) -> {
-                    User user = sshKeyAuthenticator.authenticate(userName, key);
-
-                    if (user != null) {
-                        return new UserAdapter(user);
-                    }
-
-                    return null;
-                });
+                sfp.setSSHAuthenticator((userName, key) -> sshKeyAuthenticator.authenticate(userName, key));
             }
         }
     }
@@ -136,23 +115,5 @@ public class IOServiceSecuritySetup {
         }
 
         return null;
-    }
-
-    static class UserAdapter implements FileSystemUser {
-
-        private final User user;
-
-        UserAdapter(User user) {
-            this.user = user;
-        }
-
-        @Override
-        public String getName() {
-            return user.getIdentifier();
-        }
-
-        public User getWrappedUser() {
-            return user;
-        }
     }
 }

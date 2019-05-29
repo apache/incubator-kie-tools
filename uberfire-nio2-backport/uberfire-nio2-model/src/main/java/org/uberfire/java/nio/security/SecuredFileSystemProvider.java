@@ -16,6 +16,7 @@
 
 package org.uberfire.java.nio.security;
 
+import org.jboss.errai.security.shared.service.AuthenticationService;
 import org.uberfire.java.nio.file.spi.FileSystemProvider;
 
 /**
@@ -29,9 +30,12 @@ public interface SecuredFileSystemProvider extends FileSystemProvider {
      * provider.
      * @param authenticator The authenticator to use. Must not be null.
      */
-    void setAuthenticator(final FileSystemAuthenticator authenticator);
+    void setJAASAuthenticator(final AuthenticationService authenticator);
+
+    void setHTTPAuthenticator(final AuthenticationService authenticator);
+
+    void setSSHAuthenticator(final SSHAuthenticator authenticator);
 
     void setAuthorizer(final FileSystemAuthorizer authorizer);
 
-    void setSSHAuthenticator(final SSHAuthenticator authenticator);
 }
