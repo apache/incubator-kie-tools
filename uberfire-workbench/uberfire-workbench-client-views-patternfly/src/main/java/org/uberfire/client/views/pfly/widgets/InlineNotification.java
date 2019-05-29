@@ -17,6 +17,8 @@
 package org.uberfire.client.views.pfly.widgets;
 
 import java.util.List;
+import java.util.stream.Stream;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -84,6 +86,10 @@ public class InlineNotification implements IsElement {
     }
 
     public void setType(final InlineNotificationType type) {
+        Stream.of(InlineNotificationType.values()).forEach(availableType -> {
+            removeCSSClass(alert, availableType.getCssClass());
+            removeCSSClass(icon, availableType.getIcon());
+        });
         addCSSClass(alert,
                     type.getCssClass());
         addCSSClass(icon,

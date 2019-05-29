@@ -17,8 +17,15 @@
 package org.uberfire.client.views.pfly.widgets;
 
 import java.util.Arrays;
+import java.util.stream.Stream;
 
-import org.jboss.errai.common.client.dom.*;
+import org.jboss.errai.common.client.dom.DOMTokenList;
+import org.jboss.errai.common.client.dom.Div;
+import org.jboss.errai.common.client.dom.Document;
+import org.jboss.errai.common.client.dom.HTMLElement;
+import org.jboss.errai.common.client.dom.Node;
+import org.jboss.errai.common.client.dom.NodeList;
+import org.jboss.errai.common.client.dom.Span;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -27,7 +34,9 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class InlineNotificationTest {
@@ -58,6 +67,23 @@ public class InlineNotificationTest {
 
         verify(alertDomTokenList).add(InlineNotification.InlineNotificationType.SUCCESS.getCssClass());
         verify(iconDomTokenList).add(InlineNotification.InlineNotificationType.SUCCESS.getIcon());
+    }
+
+    @Test
+    public void testPreviousTypeIsCleared() {
+        final DOMTokenList alertDomTokenList = mock(DOMTokenList.class);
+        when(alert.getClassList()).thenReturn(alertDomTokenList);
+        final DOMTokenList iconDomTokenList = mock(DOMTokenList.class);
+        when(icon.getClassList()).thenReturn(iconDomTokenList);
+        when(alertDomTokenList.contains(anyString())).thenReturn(true);
+        when(iconDomTokenList.contains(anyString())).thenReturn(true);
+
+        notification.setType(InlineNotification.InlineNotificationType.SUCCESS);
+
+        Stream.of(InlineNotification.InlineNotificationType.values()).forEach(availableType -> {
+            verify(alertDomTokenList).remove(availableType.getCssClass());
+            verify(iconDomTokenList).remove(availableType.getIcon());
+        });
     }
 
     @Test

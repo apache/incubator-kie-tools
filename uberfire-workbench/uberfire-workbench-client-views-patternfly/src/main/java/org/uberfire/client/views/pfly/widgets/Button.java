@@ -65,6 +65,7 @@ public class Button implements IsElement {
     }
 
     public void setEnabled(final boolean enabled) {
+        button.disabled = !enabled;
         if (enabled) {
             button.classList.remove("disabled");
         } else {
