@@ -59,10 +59,24 @@ public class YearsMonthsValueConverterTest {
     }
 
     @Test
+    public void testFromDMNStringYearsMonthsSingleDigitNegative() {
+
+        final String input = "duration(\"P-1Y-2M\")";
+        testFromDMNString(input, "-1", "-2");
+    }
+
+    @Test
     public void testFromDMNStringYearsMonthsMultipleDigits() {
 
         final String input = "duration(\"P12Y11M\")";
         testFromDMNString(input, "12", "11");
+    }
+
+    @Test
+    public void testFromDMNStringYearsMonthsMultipleDigitsNegative() {
+
+        final String input = "duration(\"P-12Y-11M\")";
+        testFromDMNString(input, "-12", "-11");
     }
 
     @Test
@@ -73,10 +87,24 @@ public class YearsMonthsValueConverterTest {
     }
 
     @Test
+    public void testFromDMNStringYearsMonthsOnlyYearSingleDigitNegative() {
+
+        final String input = "duration(\"P-1Y\")";
+        testFromDMNString(input, "-1", "");
+    }
+
+    @Test
     public void testFromDMNStringYearsMonthsOnlyYear() {
 
         final String input = "duration(\"P12Y\")";
         testFromDMNString(input, "12", "");
+    }
+
+    @Test
+    public void testFromDMNStringYearsMonthsOnlyYearNegative() {
+
+        final String input = "duration(\"P-12Y\")";
+        testFromDMNString(input, "-12", "");
     }
 
     @Test
@@ -87,10 +115,45 @@ public class YearsMonthsValueConverterTest {
     }
 
     @Test
+    public void testFromDMNStringYearsMonthsOnlyMonthSingleDigitNegative() {
+
+        final String input = "duration(\"P-1M\")";
+        testFromDMNString(input, "", "-1");
+    }
+
+    @Test
     public void testFromDMNStringYearsMonthsOnlyMonth() {
 
         final String input = "duration(\"P12M\")";
         testFromDMNString(input, "", "12");
+    }
+
+    @Test
+    public void testFromDMNStringYearsMonthsOnlyMonthNegative() {
+
+        final String input = "duration(\"P-12M\")";
+        testFromDMNString(input, "", "-12");
+    }
+
+    @Test
+    public void testFromDMNStringWhiteSpacesStartAndEnd() {
+
+        final String input = "duration( \"P1Y\" )";
+        testFromDMNString(input, "1", "");
+    }
+
+    @Test
+    public void testFromDMNStringWhiteSpacesStart() {
+
+        final String input = "duration( \"P1Y\")";
+        testFromDMNString(input, "1", "");
+    }
+
+    @Test
+    public void testFromDMNStringWhiteSpacesEnd() {
+
+        final String input = "duration(\"P1Y\" )";
+        testFromDMNString(input, "1", "");
     }
 
     @Test
