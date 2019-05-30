@@ -90,17 +90,13 @@ public class NotificationsObserverTest {
         when(diagram.getName()).thenReturn(NAME);
         when(diagram.getMetadata()).thenReturn(metadata);
         when(metadata.getTitle()).thenReturn(TITLE);
+
         this.notificationContext = new NotificationContext(UUID,
                                                            NAME,
                                                            TITLE);
-        this.tested = new NotificationsObserver(translationService);
-        this.tested.onNotification(onNotification);
-        this.tested.onCommandExecutionSuccess(commandSuccess);
-        this.tested.onCommandExecutionFailed(commandFailed);
-        this.tested.onValidationSuccess(validationSuccess);
-        this.tested.onValidationFailed(validationFailed);
-        this.tested.onValidationExecuted(validationExecuted);
-        this.tested.notificationBuilder = new NotificationsObserver.NotificationBuilder() {
+
+        final NotificationsObserver.NotificationBuilder notificationBuilder =
+                new NotificationsObserver.NotificationBuilder() {
             @Override
             public Notification createCommandNotification(NotificationContext context,
                                                           Command<?, CanvasViolation> command,
@@ -115,10 +111,18 @@ public class NotificationsObserverTest {
 
             @Override
             public Notification createValidationFailedNotification(NotificationContext context,
-                                                                   Collection<DiagramElementViolation<RuleViolation>> errors) {
+                                                                   DiagramElementViolation<RuleViolation> error) {
                 return validationFailedNotification;
             }
         };
+
+        this.tested = new NotificationsObserver(translationService, notificationBuilder);
+        this.tested.onNotification(onNotification);
+        this.tested.onCommandExecutionSuccess(commandSuccess);
+        this.tested.onCommandExecutionFailed(commandFailed);
+        this.tested.onValidationSuccess(validationSuccess);
+        this.tested.onValidationFailed(validationFailed);
+        this.tested.onValidationExecuted(validationExecuted);
     }
 
     @Test

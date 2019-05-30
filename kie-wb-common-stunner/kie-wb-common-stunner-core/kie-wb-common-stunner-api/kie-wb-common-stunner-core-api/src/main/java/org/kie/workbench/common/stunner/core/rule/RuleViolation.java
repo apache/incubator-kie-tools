@@ -18,13 +18,13 @@ package org.kie.workbench.common.stunner.core.rule;
 
 import java.util.Optional;
 
-import org.kie.workbench.common.stunner.core.validation.GraphElementViolation;
+import org.kie.workbench.common.stunner.core.validation.ElementViolation;
 
 /**
  * A rule violation defines some
  * information about a concrete operation.
  */
-public interface RuleViolation extends GraphElementViolation {
+public interface RuleViolation extends ElementViolation {
 
     Optional<Object[]> getArguments();
 }

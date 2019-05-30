@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.core.validation.impl;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.function.Consumer;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Path;
@@ -26,6 +27,8 @@ import javax.validation.Validator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.core.graph.Element;
+import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSetImpl;
 import org.kie.workbench.common.stunner.core.validation.ModelBeanViolation;
 import org.kie.workbench.common.stunner.core.validation.Violation;
 import org.mockito.Mock;
@@ -35,8 +38,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyCollection;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -46,7 +52,10 @@ public class ModelBeanValidatorTest {
     Validator beanValidator;
 
     @Mock
-    Object bean1;
+    Element element;
+
+    @Mock
+    Object bean;
 
     @Mock
     ConstraintViolation violation1;
@@ -67,22 +76,31 @@ public class ModelBeanValidatorTest {
         when(violation1.getMessage()).thenReturn("message1");
         when(violation1.getPropertyPath()).thenReturn(propertyPath);
         when(propertyPath.toString()).thenReturn("path1");
+        when(element.getContent()).thenReturn(bean);
         this.tested = new TestModelValidator();
     }
 
     @Test
     public void testValidateBean1Success() {
-        when(beanValidator.validate(eq(bean1))).thenReturn(Collections.emptySet());
-        tested.validate(bean1,
+        when(beanValidator.validate(eq(element))).thenReturn(Collections.emptySet());
+        tested.validate(element,
                         this::assertNoViolations);
     }
 
     @Test
     public void testValidateBean1Failed() {
-        when(beanValidator.validate(eq(bean1))).thenReturn(Collections.singleton(violation1));
-        tested.validate(bean1,
+        when(beanValidator.validate(eq(element))).thenReturn(Collections.singleton(violation1));
+        tested.validate(element,
                         v -> assertViolation(v,
                                              violation1));
+    }
+
+    @Test
+    public void testValidateBeanDefinitionSet() {
+        when(element.getContent()).thenReturn(new DefinitionSetImpl("id"));
+        Consumer<Collection<ModelBeanViolation>> consumer = mock(Consumer.class);
+        tested.validate(element, consumer);
+        verify(consumer, never()).accept(anyCollection());
     }
 
     private void assertViolation(final Collection<ModelBeanViolation> violations,

@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -37,7 +38,9 @@ import org.drools.core.xml.SemanticModules;
 import org.jbpm.bpmn2.xml.BPMNDISemanticModule;
 import org.jbpm.bpmn2.xml.BPMNSemanticModule;
 import org.jbpm.compiler.xml.XmlProcessReader;
+import org.jbpm.process.core.validation.impl.ProcessNodeValidationErrorImpl;
 import org.jbpm.ruleflow.core.validation.RuleFlowProcessValidator;
+import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.Process;
 import org.kie.workbench.common.stunner.bpmn.BPMNDefinitionSet;
 import org.kie.workbench.common.stunner.bpmn.validation.BPMNValidator;
@@ -45,6 +48,7 @@ import org.kie.workbench.common.stunner.bpmn.validation.BPMNViolation;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.service.DiagramService;
+import org.kie.workbench.common.stunner.core.util.StringUtils;
 import org.kie.workbench.common.stunner.core.validation.DomainViolation;
 import org.kie.workbench.common.stunner.core.validation.Violation;
 import org.slf4j.Logger;
@@ -78,38 +82,48 @@ public class BPMNValidatorImpl implements BPMNValidator {
     public void validate(Diagram diagram, Consumer<Collection<DomainViolation>> resultConsumer) {
         String rawContent = diagramService.getRawContent(diagram);
         if (Objects.nonNull(rawContent)) {
-            resultConsumer.accept(validate(rawContent).stream().collect(Collectors.toSet()));
+            resultConsumer.accept(validate(rawContent, diagram.getMetadata().getTitle()).stream().collect(Collectors.toSet()));
             return;
         }
 
         resultConsumer.accept(Collections.emptyList());
     }
 
-    protected Collection<BPMNViolation> validate(String serializedProcess) {
+    protected Collection<BPMNViolation> validate(String serializedProcess, String processUUID) {
         try {
-            List<Process> processes = parseProcess(serializedProcess);
+                List<Process> processes = parseProcess(serializedProcess);
             if (Objects.isNull(processes) || processes.size() == 0) {
                 return Collections.emptyList();
             }
 
             return processes.stream()
-                    .distinct()
                     .map(process -> RuleFlowProcessValidator.getInstance().validateProcess(process))
                     .flatMap(processValidationErrors -> Stream.of(processValidationErrors))
                     .filter(Objects::nonNull)
-                    .map(error -> new BPMNViolation(error.getMessage(), Violation.Type.WARNING))
+                    .map(error -> Optional.of(error)
+                            .filter(ProcessNodeValidationErrorImpl.class::isInstance)
+                            .map(ProcessNodeValidationErrorImpl.class::cast)
+                            .map(ProcessNodeValidationErrorImpl::getNode)
+                            .map(Node::getMetaData)
+                            .map(m -> m.get("UniqueId"))
+                            .map(String::valueOf)
+                            .filter(StringUtils::nonEmpty)
+                            .map(uuid -> new BPMNViolation(((ProcessNodeValidationErrorImpl) error).getRawMessage(),
+                                                           Violation.Type.WARNING, uuid))
+                            .orElseGet(() -> new BPMNViolation(error.getMessage(), Violation.Type.WARNING,
+                                                               error.getProcess().getId())))
                     .collect(Collectors.toSet());
         } catch (SAXException | IOException e) {
             LOG.error("Error parsing process", e);
-            return getBpmnViolationsFromException(() -> e.getMessage());
+            return getBpmnViolationsFromException(() -> e.getMessage(), processUUID);
         } catch (Exception e) {
             LOG.error("Error validating process", e);
-            return getBpmnViolationsFromException(() -> e.getMessage());
+            return getBpmnViolationsFromException(() -> e.getMessage(), processUUID);
         }
     }
 
-    private List<BPMNViolation> getBpmnViolationsFromException(Supplier<String> message) {
-        return Arrays.asList(new BPMNViolation(message.get(), Violation.Type.WARNING));
+    private List<BPMNViolation> getBpmnViolationsFromException(Supplier<String> message, String uuid) {
+        return Arrays.asList(new BPMNViolation(message.get(), Violation.Type.WARNING, uuid));
     }
 
     private List<Process> parseProcess(String serializedProcess) throws SAXException, IOException {

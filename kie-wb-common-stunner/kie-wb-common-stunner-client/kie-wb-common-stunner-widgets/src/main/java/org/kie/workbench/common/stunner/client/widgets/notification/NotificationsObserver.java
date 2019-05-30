@@ -16,7 +16,8 @@
 
 package org.kie.workbench.common.stunner.client.widgets.notification;
 
-import java.util.Collection;
+import java.util.Arrays;
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.PreDestroy;
@@ -50,7 +51,7 @@ public class NotificationsObserver {
     private Optional<ParameterizedCommand<ValidationSuccessNotification>> validationSuccess;
     private Optional<ParameterizedCommand<ValidationFailedNotification>> validationFailed;
     private Optional<ParameterizedCommand<ValidationExecutedNotification>> validationExecuted;
-    NotificationBuilder notificationBuilder;
+    private final NotificationBuilder notificationBuilder;
 
     @Inject
     public NotificationsObserver(final ClientTranslationService translationService) {
@@ -62,6 +63,11 @@ public class NotificationsObserver {
         this.validationSuccess = Optional.empty();
         this.validationFailed = Optional.empty();
         this.validationExecuted = Optional.empty();
+    }
+
+    protected NotificationsObserver(ClientTranslationService translationService, NotificationBuilder notificationBuilder) {
+        this.translationService = translationService;
+        this.notificationBuilder = notificationBuilder;
     }
 
     public NotificationsObserver onNotification(final ParameterizedCommand<Notification> callback) {
@@ -101,7 +107,6 @@ public class NotificationsObserver {
         commandSuccess = null;
         validationSuccess = null;
         validationFailed = null;
-        notificationBuilder = null;
         validationExecuted = null;
     }
 
@@ -164,15 +169,23 @@ public class NotificationsObserver {
     }
 
     private void handleValidationFailed(CanvasValidationFailEvent validationFailEvent, NotificationContext context) {
-        final Notification notification =
-                notificationBuilder.createValidationFailedNotification(context,
-                                                                       validationFailEvent.getViolations());
-        fireNotification(notification);
-        validationFailed.ifPresent(n -> n.execute((ValidationFailedNotification) notification));
+        //here send the notifications that will be show by message on the panel and popup
+        //so to split one notification per violation
+        validationFailEvent.getViolations().stream()
+                .map(v -> notificationBuilder.createValidationFailedNotification(context, v))
+                .filter(Objects::nonNull)
+                .map(this::fireNotification)
+                .map(n -> (ValidationFailedNotification) n)
+                .forEach(this::fireValidationFailed);
     }
 
-    private void fireNotification(final Notification notification) {
+    private void fireValidationFailed(ValidationFailedNotification notification) {
+        validationFailed.ifPresent(cmd -> cmd.execute(notification));
+    }
+
+    private Notification fireNotification(final Notification notification) {
         onNotification.ifPresent(n -> n.execute(notification));
+        return notification;
     }
 
     @SuppressWarnings("unchecked")
@@ -198,7 +211,7 @@ public class NotificationsObserver {
         Notification createValidationSuccessNotification(final NotificationContext context);
 
         Notification createValidationFailedNotification(final NotificationContext context,
-                                                        final Collection<DiagramElementViolation<RuleViolation>> errors);
+                                                        final DiagramElementViolation<RuleViolation> error);
     }
 
     private final class NotificationBuilderImpl implements NotificationBuilder {
@@ -221,10 +234,10 @@ public class NotificationsObserver {
 
         @Override
         public Notification createValidationFailedNotification(final NotificationContext context,
-                                                               final Collection<DiagramElementViolation<RuleViolation>> errors) {
+                                                               final DiagramElementViolation<RuleViolation> error) {
             return ValidationFailedNotification.Builder.build(translationService,
                                                               context,
-                                                              errors);
+                                                              Arrays.asList(error)).orElse(null);
         }
     }
 }

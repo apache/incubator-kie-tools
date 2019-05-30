@@ -26,7 +26,7 @@ import org.kie.workbench.common.stunner.core.diagram.Diagram;
  * @param <D> The diagram type.
  * @param <V> The graph element violation type.
  */
-public interface DiagramValidator<D extends Diagram, V extends GraphElementViolation>
+public interface DiagramValidator<D extends Diagram, V extends ElementViolation>
         extends Validator<D, DiagramElementViolation<V>> {
 
 }

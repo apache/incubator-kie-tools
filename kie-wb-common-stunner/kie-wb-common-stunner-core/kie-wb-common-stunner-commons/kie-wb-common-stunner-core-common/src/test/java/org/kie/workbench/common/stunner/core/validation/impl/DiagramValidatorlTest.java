@@ -43,7 +43,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -89,23 +88,23 @@ public class DiagramValidatorlTest {
         tested.validate(diagram,
                         this::assertNoErrors);
         verify(modelValidator,
-               times(1)).validate(eq(graph1.startNodeBean),
+               times(1)).validate(eq(graph1.startNode),
                                   any(Consumer.class));
         verify(modelValidator,
-               times(1)).validate(eq(graph1.intermNodeBean),
+               times(1)).validate(eq(graph1.intermNode),
                                   any(Consumer.class));
         verify(modelValidator,
-               times(1)).validate(eq(graph1.endNodeBean),
+               times(1)).validate(eq(graph1.endNode),
                                   any(Consumer.class));
         verify(modelValidator,
-               times(1)).validate(eq(graph1.edge1Bean),
+               times(1)).validate(eq(graph1.edge1),
                                   any(Consumer.class));
         verify(modelValidator,
-               times(1)).validate(eq(graph1.edge2Bean),
+               times(1)).validate(eq(graph1.edge2),
                                   any(Consumer.class));
         verify(modelValidator,
-               never()).validate(eq(graphTestHandler.graph),
-                                 any(Consumer.class));
+               times(1)).validate(eq(graphTestHandler.graph),
+                                  any(Consumer.class));
     }
 
     @Test
@@ -120,29 +119,29 @@ public class DiagramValidatorlTest {
                     (Consumer<Collection<ModelBeanViolation>>) invocationOnMock.getArguments()[1];
             validationsConsumer.accept(Collections.singleton(beanViolation));
             return null;
-        }).when(modelValidator).validate(eq(graph1.intermNodeBean),
+        }).when(modelValidator).validate(eq(graph1.intermNode),
                                          any(Consumer.class));
         tested.validate(diagram,
                         violations -> assertElementError(violations,
                                                          TestingGraphInstanceBuilder.INTERM_NODE_UUID));
         verify(modelValidator,
-               times(1)).validate(eq(graph1.startNodeBean),
+               times(1)).validate(eq(graph1.startNode),
                                   any(Consumer.class));
         verify(modelValidator,
-               times(1)).validate(eq(graph1.intermNodeBean),
+               times(1)).validate(eq(graph1.intermNode),
                                   any(Consumer.class));
         verify(modelValidator,
-               times(1)).validate(eq(graph1.endNodeBean),
+               times(1)).validate(eq(graph1.endNode),
                                   any(Consumer.class));
         verify(modelValidator,
-               times(1)).validate(eq(graph1.edge1Bean),
+               times(1)).validate(eq(graph1.edge1),
                                   any(Consumer.class));
         verify(modelValidator,
-               times(1)).validate(eq(graph1.edge2Bean),
+               times(1)).validate(eq(graph1.edge2),
                                   any(Consumer.class));
         verify(modelValidator,
-               never()).validate(eq(graphTestHandler.graph),
-                                 any(Consumer.class));
+               times(1)).validate(eq(graphTestHandler.graph),
+                                  any(Consumer.class));
     }
 
     private void assertNoErrors(final

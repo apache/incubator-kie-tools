@@ -37,7 +37,7 @@ public final class ContextOperationNotAllowedViolation extends AbstractRuleViola
 
     @Override
     public Optional<Object[]> getArguments() {
-        return Optional.of(new Object[]{context});
+        return of(context);
     }
 
     @Override

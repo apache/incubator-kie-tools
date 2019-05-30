@@ -33,9 +33,7 @@ public class BoundsExceededViolation extends AbstractRuleViolation {
 
     @Override
     public Optional<Object[]> getArguments() {
-        return Optional.of(new Object[]{getUUID(),
-                bounds.getLowerRight().getX(),
-                bounds.getLowerRight().getY()});
+        return of(getUUID(), bounds.getLowerRight().getX(), bounds.getLowerRight().getY());
     }
 
     @Override

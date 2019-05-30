@@ -47,7 +47,7 @@ public class EdgeCardinalityMinRuleViolation extends AbstractRuleViolation {
 
     @Override
     public Optional<Object[]> getArguments() {
-        return Optional.of(new Object[]{node, edge, direction, restrictedOccurrences, currentOccurrences});
+        return of(node, edge, direction, restrictedOccurrences, currentOccurrences);
     }
 
     @Override

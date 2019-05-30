@@ -35,7 +35,7 @@ public class DockingRuleViolation extends AbstractRuleViolation {
 
     @Override
     public Optional<Object[]> getArguments() {
-        return Optional.of(new Object[]{parent, candidate});
+        return of(parent, candidate);
     }
 
     @Override

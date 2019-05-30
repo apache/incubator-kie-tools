@@ -33,12 +33,14 @@ import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvasView;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoPanel;
 import org.kie.workbench.common.stunner.client.lienzo.components.views.LienzoCanvasNotification;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyEventHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyboardControl;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 
@@ -99,7 +101,9 @@ public class LienzoCanvasMediatorsTest {
         when(mediators.getPanMediator()).thenReturn(panMediator);
         when(mediators.getPreviewMediator()).thenReturn(previewMediator);
         tested = new LienzoCanvasMediators(keyEventHandler,
-                                           new ClientTranslationService(mock(TranslationService.class)),
+                                           new ClientTranslationService(mock(TranslationService.class),
+                                                                        mock(SessionManager.class),
+                                                                        mock(DefinitionUtils.class)),
                                            notification,
                                            p -> mediators);
         tested.init(() -> canvas);

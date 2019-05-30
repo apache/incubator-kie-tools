@@ -16,10 +16,12 @@
 
 package org.kie.workbench.common.stunner.core.backend.service;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
-import java.util.function.Consumer;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -31,6 +33,7 @@ import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.validation.DiagramElementViolation;
 import org.kie.workbench.common.stunner.core.validation.DomainValidator;
+import org.kie.workbench.common.stunner.core.validation.DomainViolation;
 import org.kie.workbench.common.stunner.core.validation.ValidationService;
 import org.kie.workbench.common.stunner.core.validation.impl.ElementViolationImpl;
 import org.slf4j.Logger;
@@ -55,20 +58,24 @@ public class ValidationServiceImpl implements ValidationService {
 
     @Override
     public Collection<DiagramElementViolation<RuleViolation>> validate(Diagram diagram) {
-        final Collection<DiagramElementViolation<RuleViolation>> violations = new HashSet<>();
         //handle domain violations (BPMN, DMN, CM...)
-        domainValidation(diagram, v -> violations.add(v));
-        return violations;
+        return domainViolations(diagram).stream()
+                .filter(v -> !"null".equals(v.getUUID()))
+                .collect(Collectors.groupingBy(DomainViolation::getUUID))
+                .entrySet()
+                .stream()
+                .map(e -> new ElementViolationImpl.Builder().setUuid(e.getKey()).setDomainViolations(e.getValue()).build())
+                .collect(Collectors.toList());
     }
 
-    private void domainValidation(Diagram diagram, Consumer<DiagramElementViolation<RuleViolation>> callback) {
-        StreamSupport.stream(validators.spliterator(), false)
+    private Collection<DomainViolation> domainViolations(Diagram diagram) {
+        return StreamSupport.stream(validators.spliterator(), false)
                 .filter(validator -> Objects.equals(validator.getDefinitionSetId(), diagram.getMetadata().getDefinitionSetId()))
                 .findFirst()
-                .ifPresent(validator -> validator.validate(diagram, domainViolations ->
-                        callback.accept(new ElementViolationImpl.Builder()
-                                                .setUuid(diagram.getGraph().getUUID())
-                                                .setDomainViolations(domainViolations)
-                                                .build())));
+                .map(validator -> {
+                    final List<DomainViolation> domainViolations = new ArrayList<>();
+                    validator.validate(diagram, violations -> domainViolations.addAll(violations));
+                    return domainViolations;
+                }).orElseGet(Collections::emptyList);
     }
 }

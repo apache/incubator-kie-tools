@@ -284,7 +284,7 @@ public class LienzoMultipleSelectionControlTest {
         when(shapeLocationsChangedEvent.getCanvasHandler()).thenReturn(canvasHandler);
 
         List<String> selectedUUIds = new ArrayList<>();
-        selectedUUIds.add("ELEMENT_UUID");
+        selectedUUIds.add("ELEMENT");
 
         when(shapeLocationsChangedEvent.getUuids()).thenReturn(selectedUUIds);
         when(tested.getSelectedItems()).thenReturn(selectedUUIds);

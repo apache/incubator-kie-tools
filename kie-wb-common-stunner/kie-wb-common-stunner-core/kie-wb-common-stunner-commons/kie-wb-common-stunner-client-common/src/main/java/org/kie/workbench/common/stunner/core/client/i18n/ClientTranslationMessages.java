@@ -16,8 +16,6 @@
 
 package org.kie.workbench.common.stunner.core.client.i18n;
 
-import java.util.Collection;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -25,8 +23,6 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
 import org.kie.workbench.common.stunner.core.i18n.StunnerTranslationService;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
-import org.kie.workbench.common.stunner.core.validation.DiagramElementViolation;
-import org.kie.workbench.common.stunner.core.validation.DomainViolation;
 import org.kie.workbench.common.stunner.core.validation.ModelBeanViolation;
 
 @ApplicationScoped
@@ -37,13 +33,6 @@ public class ClientTranslationMessages extends CoreTranslationMessages {
     @Inject
     public ClientTranslationMessages(final StunnerTranslationService translationService) {
         this.translationService = translationService;
-    }
-
-    public String getDiagramValidationsErrorMessage(final String key,
-                                                    final Collection<DiagramElementViolation<RuleViolation>> result) {
-        return getDiagramValidationsErrorMessage(translationService,
-                                                 key,
-                                                 result);
     }
 
     public String getCanvasValidationsErrorMessage(final String key,
@@ -83,11 +72,6 @@ public class ClientTranslationMessages extends CoreTranslationMessages {
     public String getBeanValidationMessage(final ModelBeanViolation violation) {
         return getBeanValidationMessage(translationService,
                                         violation);
-    }
-
-    public String getDomainValidationMessage(final DomainViolation violation) {
-        return getDomainValidationMessage(translationService,
-                                          violation);
     }
 
     private static String getValidationMessages(final StunnerTranslationService translationService,

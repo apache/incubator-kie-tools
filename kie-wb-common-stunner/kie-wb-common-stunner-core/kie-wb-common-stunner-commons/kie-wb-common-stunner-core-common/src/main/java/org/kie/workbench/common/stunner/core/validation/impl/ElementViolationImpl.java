@@ -74,6 +74,11 @@ public final class ElementViolationImpl
     }
 
     @Override
+    public String getMessage() {
+        throw new IllegalStateException("The message should be handled by the caller");
+    }
+
+    @Override
     public Type getViolationType() {
         return type;
     }
@@ -120,7 +125,8 @@ public final class ElementViolationImpl
                     Optional.ofNullable(domainViolations).ifPresent(v -> addAll(v));
                 }}));
             }
-            return new ElementViolationImpl(uuid, graphViolations, modelViolations, domainViolations, type);
+            ElementViolationImpl violation = new ElementViolationImpl(uuid, graphViolations, modelViolations, domainViolations, type);
+            return violation;
         }
     }
 }

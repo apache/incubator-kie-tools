@@ -31,6 +31,7 @@ import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.validation.DiagramElementViolation;
 import org.kie.workbench.common.stunner.core.validation.DiagramValidator;
+import org.kie.workbench.common.stunner.core.validation.ElementViolation;
 
 @Dependent
 public class CanvasDiagramValidator<H extends AbstractCanvasHandler> {
@@ -72,36 +73,24 @@ public class CanvasDiagramValidator<H extends AbstractCanvasHandler> {
         final Diagram diagram = canvasHandler.getDiagram();
         final String name = diagram.getName();
         final String title = diagram.getMetadata().getTitle();
-        final boolean[] valid = {true};
-        elementViolations
-                .forEach(v -> {
-                    if (checkViolation(canvasHandler,
-                                       v)) {
-                        valid[0] = false;
-                    }
-                });
-        if (valid[0]) {
-            validationSuccessEvent.fire(new CanvasValidationSuccessEvent(uuid,
-                                                                         name,
-                                                                         title));
+        final boolean valid = elementViolations
+                .stream()
+                .flatMap(v -> Stream.of(v.getDomainViolations(), v.getGraphViolations(), v.getModelViolations()))
+                .flatMap(Collection::stream)
+                .filter(v -> v instanceof ElementViolation)
+                .map(v -> (ElementViolation) v)
+                .map(v -> applyViolation(canvasHandler, v))
+                .anyMatch(Boolean.FALSE::equals);
+
+        if (valid) {
+            validationSuccessEvent.fire(new CanvasValidationSuccessEvent(uuid, name, title));
         } else {
-            validationFailEvent.fire(new CanvasValidationFailEvent(uuid,
-                                                                   name,
-                                                                   title,
-                                                                   elementViolations));
+            validationFailEvent.fire(new CanvasValidationFailEvent(uuid, name, title, elementViolations));
         }
     }
 
-    private boolean checkViolation(final H canvasHandler,
-                                   final DiagramElementViolation<RuleViolation> elementViolation) {
-        return Stream.concat(elementViolation.getGraphViolations().stream(),
-                             elementViolation.getDomainViolations().stream())
-                .filter(v -> v instanceof RuleViolation)
-                .anyMatch(v -> applyViolation(canvasHandler, (RuleViolation) v));
-    }
-
     private boolean applyViolation(final H canvasHandler,
-                                   final RuleViolation violation) {
+                                   final ElementViolation violation) {
         if (hasViolations(violation)) {
             final Shape shape = getShape(canvasHandler,
                                          violation.getUUID());
@@ -118,7 +107,7 @@ public class CanvasDiagramValidator<H extends AbstractCanvasHandler> {
         return canvasHandler.getCanvas().getShape(uuid);
     }
 
-    private boolean hasViolations(final RuleViolation violation) {
+    private boolean hasViolations(final ElementViolation violation) {
         return RuleViolation.Type.ERROR.equals(violation.getViolationType()) ||
                 RuleViolation.Type.WARNING.equals(violation.getViolationType());
     }

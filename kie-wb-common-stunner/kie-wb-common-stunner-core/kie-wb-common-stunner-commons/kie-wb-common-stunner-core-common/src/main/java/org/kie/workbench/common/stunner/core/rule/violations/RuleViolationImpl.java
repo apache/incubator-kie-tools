@@ -32,7 +32,7 @@ public final class RuleViolationImpl extends AbstractRuleViolation {
 
     @Override
     public Optional<Object[]> getArguments() {
-        return Optional.of(new Object[]{message});
+        return of(message);
     }
 
     @Override

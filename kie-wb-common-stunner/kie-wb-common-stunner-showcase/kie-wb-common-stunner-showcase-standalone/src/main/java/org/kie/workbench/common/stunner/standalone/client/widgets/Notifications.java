@@ -57,7 +57,7 @@ public class Notifications implements IsWidget {
     private final View view;
     private final NotificationsObserver notificationsObserver;
 
-    final ListDataProvider<Notification> logsProvider = new ListDataProvider<Notification>();
+    final ListDataProvider<Notification> logsProvider = new ListDataProvider<>();
 
     @Inject
     public Notifications(final View view,
@@ -184,9 +184,9 @@ public class Notifications implements IsWidget {
 
     @SuppressWarnings("unchecked")
     private String getNotificationSourceMessage(final Notification notification) {
-        return notification.getSource().isPresent() ?
-                notification.getSource().get().toString() :
-                "-- No source --";
+        return (String) notification.getSource()
+                .map(s -> notification.getMessage())
+                .orElse("-- No source --");
     }
 
     @SuppressWarnings("unchecked")

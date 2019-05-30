@@ -26,23 +26,13 @@ import org.kie.workbench.common.stunner.core.validation.DomainViolation;
 @Portable
 public class BPMNViolation extends AbstractRuleViolation implements DomainViolation {
 
-    private String message;
-
-    BPMNViolation() {
-    }
-
-    public BPMNViolation(@MapsTo("message") String message, @MapsTo("type") Type type) {
-        super(type);
-        this.message = message;
-    }
-
-    @Override
-    public String getMessage() {
-        return message;
+    public BPMNViolation(@MapsTo("message") String message, @MapsTo("type") Type type, @MapsTo("uuid") String uuid) {
+        super(type, message);
+        setUUID(uuid);
     }
 
     @Override
     public Optional<Object[]> getArguments() {
-        return Optional.of(new Object[]{message});
+        return of(getMessage());
     }
 }

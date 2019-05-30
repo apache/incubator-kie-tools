@@ -21,7 +21,7 @@ import java.util.Collection;
 /**
  * A violation type that related to an element in a diagram.
  */
-public interface DiagramElementViolation<V extends GraphElementViolation> extends Violation {
+public interface DiagramElementViolation<V extends ElementViolation> extends Violation {
 
     /**
      * The violation's root element UUID.

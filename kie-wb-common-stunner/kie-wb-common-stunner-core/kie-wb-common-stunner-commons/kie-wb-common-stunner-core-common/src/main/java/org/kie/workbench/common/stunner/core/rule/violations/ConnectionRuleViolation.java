@@ -36,7 +36,7 @@ public class ConnectionRuleViolation extends AbstractRuleViolation {
 
     @Override
     public Optional<Object[]> getArguments() {
-        return Optional.of(new Object[]{role, allowedConnections});
+        return of(role, allowedConnections);
     }
 
     @Override

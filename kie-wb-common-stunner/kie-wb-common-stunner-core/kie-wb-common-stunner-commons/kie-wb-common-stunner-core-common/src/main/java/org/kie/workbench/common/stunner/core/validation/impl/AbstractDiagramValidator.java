@@ -28,8 +28,6 @@ import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Graph;
-import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
-import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.TreeWalkTraverseProcessor;
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
@@ -65,12 +63,9 @@ public abstract class AbstractDiagramValidator
         final List<DiagramElementViolation<RuleViolation>> violations = new LinkedList<>();
         graphValidator.validate(graph,
                                 Optional.empty(),
-                                Optional.of((g, v) -> consumeBeanAndViolations(() -> violations).accept(g,
-                                                                                                        v)),
-                                Optional.of((n, v) -> consumeBeanAndViolations(() -> violations).accept(n,
-                                                                                                        v)),
-                                Optional.of((e, v) -> consumeBeanAndViolations(() -> violations).accept(e,
-                                                                                                        v)),
+                                Optional.of((g, v) -> consumeBeanAndViolations(() -> violations).accept(g, v)),
+                                Optional.of((n, v) -> consumeBeanAndViolations(() -> violations).accept(n, v)),
+                                Optional.of((e, v) -> consumeBeanAndViolations(() -> violations).accept(e, v)),
                                 // At this point all violations have been already consumed, so no need
                                 // to use the resulting ones here.
                                 vs -> resultConsumer.accept(violations)
@@ -79,16 +74,16 @@ public abstract class AbstractDiagramValidator
 
     private BiConsumer<Element, Collection<RuleViolation>> consumeBeanAndViolations(final Supplier<List<DiagramElementViolation<RuleViolation>>> violations) {
         return (element, ruleViolations) -> {
-            final Optional<Object> bean = getBean(element);
-            if (bean.isPresent()) {
+            if (Optional.ofNullable(element.getContent()).isPresent()) {
                 // If the underlying bean is a Definition, it accomplishes JSR303 validations.
-                modelValidator.validate(bean.get(),
-                                        modelViolations ->
-                                                violations.get().add(new ElementViolationImpl.Builder()
-                                                                             .setUuid(element.getUUID())
-                                                                             .setGraphViolations(ruleViolations)
-                                                                             .setModelViolations(modelViolations)
-                                                                             .build()));
+                modelValidator.validate(element,
+                                        modelViolations -> {
+                                            violations.get().add(new ElementViolationImpl.Builder()
+                                                                         .setUuid(element.getUUID())
+                                                                         .setGraphViolations(ruleViolations)
+                                                                         .setModelViolations(modelViolations)
+                                                                         .build());
+                                        });
             } else {
                 // Otherwise, no need not perform bean validation.
                 violations.get().add(new ElementViolationImpl.Builder()
@@ -97,13 +92,5 @@ public abstract class AbstractDiagramValidator
                                              .build());
             }
         };
-    }
-
-    private Optional<Object> getBean(final Element element) {
-        if (!(element.getContent() instanceof DefinitionSet) &&
-                element.getContent() instanceof Definition) {
-            return Optional.ofNullable(((Definition) element.getContent()).getDefinition());
-        }
-        return Optional.empty();
     }
 }

@@ -17,12 +17,16 @@
 package org.kie.workbench.common.stunner.core.i18n;
 
 import java.util.Collection;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
+import org.kie.workbench.common.stunner.core.util.StringUtils;
 import org.kie.workbench.common.stunner.core.validation.DiagramElementViolation;
 import org.kie.workbench.common.stunner.core.validation.DomainViolation;
 import org.kie.workbench.common.stunner.core.validation.ModelBeanViolation;
-import org.kie.workbench.common.stunner.core.validation.Violation;
 
 public class CoreTranslationMessages {
 
@@ -44,10 +48,11 @@ public class CoreTranslationMessages {
     public static final String DECREASE = CORE_PREF + "decrease";
     public static final String FIT = CORE_PREF + "fit";
     public static final String ARE_YOU_SURE = CORE_PREF + "areYouSure";
-    public static final String ELEMENT_UUID = CORE_PREF + "element_uuid";
     public static final String COMMAND_SUCCESS = COMMAND_PREF + "success";
     public static final String COMMAND_FAILED = COMMAND_PREF + "fail";
     public static final String VALIDATION_SUCCESS = RULE_PREF + "success";
+    public static final String VALIDATION_PROPERTY = RULE_PREF + "property";
+    public static final String ELEMENT = RULE_PREF + "element";
     public static final String VALIDATION_FAILED = RULE_PREF + "fail";
     public static final String MEDIATOR_PREVIEW = CLIENT_PREF + "mediator.zoomArea";
     public static final String DIAGRAM_LOAD_FAIL_UNSUPPORTED_ELEMENTS = "org.kie.workbench.common.stunner.core.client.diagram.load.fail.unsupported";
@@ -78,73 +83,63 @@ public class CoreTranslationMessages {
     public static final String CLOSE_BRA = "] ";
     public static final String OPEN_COMMENT = "'";
     public static final String CLOSE_COMMENT = "' ";
+    private Function<String, String> nameByIdResolver;
 
-    public static String getDiagramValidationsErrorMessage(final StunnerTranslationService translationService,
-                                                           final String key,
-                                                           final Collection<DiagramElementViolation<RuleViolation>> result) {
-        final String message = translationService.getValue(key) + DOT + NEW_LINE
-                + translationService.getValue(CoreTranslationMessages.REASON) + COLON + NEW_LINE
-                + getValidationMessages(translationService,
-                                        result);
-        return message;
+    public static Optional<String> getDiagramValidationsErrorMessage(final StunnerTranslationService translationService,
+                                                                     final Collection<DiagramElementViolation<RuleViolation>> result) {
+        return getValidationMessages(translationService, result)
+                .filter(StringUtils::nonEmpty);
     }
 
     public static String getRuleValidationMessage(final StunnerTranslationService translationService,
                                                   final RuleViolation violation) {
-        return getViolationTypeMessage(violation) + translationService.getViolationMessage(violation);
+        return translationService.getViolationMessage(violation);
     }
 
     public static String getBeanValidationMessage(final StunnerTranslationService translationService,
                                                   final ModelBeanViolation violation) {
-        return getViolationTypeMessage(violation) +
-                OPEN_COMMENT + violation.getPropertyPath() + CLOSE_COMMENT
-                + violation.getMessage();
+        return translationService.getValue(VALIDATION_PROPERTY, violation.getPropertyPath(), violation.getMessage());
     }
 
-    public static String getDomainValidationMessage(final StunnerTranslationService translationService,
-                                                    final DomainViolation violation) {
-        return getViolationTypeMessage(violation) +
-                violation.getMessage();
+    public static String getDomainValidationMessage(final DomainViolation violation) {
+        return violation.getMessage();
     }
 
-    private static String getViolationTypeMessage(final Violation violation) {
-        return "(" + violation.getViolationType() + ") ";
+    private static Optional<String> getValidationMessages(final StunnerTranslationService translationService,
+                                                          final Collection<DiagramElementViolation<RuleViolation>> violations) {
+        return Optional.of(violations
+                                   .stream()
+                                   .map(v -> getElementValidationMessage(translationService, v).orElse(""))
+                                   .filter(StringUtils::nonEmpty)
+                                   .collect(Collectors.joining()));
     }
 
-    private static String getValidationMessages(final StunnerTranslationService translationService,
-                                                final Collection<DiagramElementViolation<RuleViolation>> violations) {
-        final StringBuilder message = new StringBuilder();
-        violations.forEach(v -> message.append(getElementValidationMessage(translationService,
-                                                                           v)));
-        return message.toString();
-    }
-
-    private static String getElementValidationMessage(final StunnerTranslationService translationService,
-                                                      final DiagramElementViolation<RuleViolation> elementViolation) {
+    public static Optional<String> getElementValidationMessage(final StunnerTranslationService translationService,
+                                                               final DiagramElementViolation<RuleViolation> elementViolation) {
         final String uuid = elementViolation.getUUID();
         // Bean & graph structure resulting messages.
         final Collection<ModelBeanViolation> modelViolations = elementViolation.getModelViolations();
         final Collection<RuleViolation> graphViolations = elementViolation.getGraphViolations();
         final Collection<DomainViolation> domainViolations = elementViolation.getDomainViolations();
-        final boolean skip = modelViolations.isEmpty() && graphViolations.isEmpty() && domainViolations.isEmpty();
-        if (!skip) {
-            final StringBuilder message = new StringBuilder()
-                    .append(OPEN_BRA)
-                    .append(translationService.getValue(CoreTranslationMessages.ELEMENT_UUID))
-                    .append(COLON)
-                    .append(uuid)
-                    .append(CLOSE_BRA).append(NEW_LINE);
-            modelViolations
-                    .forEach(v -> message.append(getBeanValidationMessage(translationService,
-                                                                          v)).append(NEW_LINE));
-            graphViolations
-                    .forEach(v -> message.append(getRuleValidationMessage(translationService,
-                                                                          v)).append(NEW_LINE));
-            domainViolations
-                    .forEach(v -> message.append("BPMN ").append(getDomainValidationMessage(translationService,
-                                                                                            v)).append(NEW_LINE));
-            return message.toString();
+
+        if (modelViolations.isEmpty() && graphViolations.isEmpty() && domainViolations.isEmpty()) {
+            return Optional.empty();
         }
-        return "";
+
+        final String message =
+                Stream.of(modelViolations.stream().map(v -> getBeanValidationMessage(translationService, v)),
+                          graphViolations.stream().map(v -> getRuleValidationMessage(translationService, v)),
+                          domainViolations.stream().map(CoreTranslationMessages::getDomainValidationMessage))
+                        .flatMap(s -> s)
+                        .collect(Collectors.joining(NEW_LINE));
+
+        return Optional.of(message)
+                .filter(StringUtils::nonEmpty)
+                .map(msg -> {
+                    final String name = translationService.getElementName(uuid)
+                            .filter(StringUtils::nonEmpty)
+                            .orElse(uuid);
+                    return translationService.getValue(ELEMENT, name, msg);
+                });
     }
 }

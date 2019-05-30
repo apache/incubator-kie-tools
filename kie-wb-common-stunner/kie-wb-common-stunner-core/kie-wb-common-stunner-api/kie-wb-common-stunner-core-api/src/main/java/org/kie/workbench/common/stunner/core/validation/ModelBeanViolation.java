@@ -20,16 +20,11 @@ package org.kie.workbench.common.stunner.core.validation;
  * A violation type for domain objects.
  * At least, some JSR303 violations can be present.
  */
-public interface ModelBeanViolation extends Violation {
+public interface ModelBeanViolation extends ElementViolation {
 
     /**
      * The path for the bean's property that
      * produced this violation.
      */
-    public String getPropertyPath();
-
-    /**
-     * The violation's message.
-     */
-    public String getMessage();
+    String getPropertyPath();
 }

@@ -71,4 +71,9 @@ public interface StunnerTranslationService {
     String getViolationMessage(RuleViolation ruleViolation);
 
     Optional<String> getDefinitionSetSvgNodeId(String defId);
+
+    /**
+     * Retrieves the name for the given element by ID
+     */
+    Optional<String> getElementName(String uuid);
 }

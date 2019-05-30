@@ -16,48 +16,47 @@
 
 package org.kie.workbench.common.stunner.core.validation.impl;
 
+import java.util.Optional;
+
 import javax.validation.ConstraintViolation;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.workbench.common.stunner.core.rule.violations.AbstractRuleViolation;
 import org.kie.workbench.common.stunner.core.validation.ModelBeanViolation;
 
 @Portable
-public final class ModelBeanViolationImpl implements ModelBeanViolation {
+public final class ModelBeanViolationImpl extends AbstractRuleViolation implements ModelBeanViolation {
 
     private final String path;
-    private final String message;
-    private final Type type;
 
     private ModelBeanViolationImpl(final @MapsTo("path") String path,
                                    final @MapsTo("message") String message,
-                                   final @MapsTo("type") Type type) {
+                                   final @MapsTo("type") Type type,
+                                   final @MapsTo("uuid") String uuid) {
+        super(type, message);
+        setUUID(uuid);
         this.path = path;
-        this.message = message;
-        this.type = type;
     }
 
     public String getPropertyPath() {
         return path;
     }
 
-    public String getMessage() {
-        return message;
-    }
-
     @Override
-    public Type getViolationType() {
-        return type;
+    public Optional<Object[]> getArguments() {
+        return of(getUUID());
     }
 
     @NonPortable
     public static class Builder {
 
-        public static ModelBeanViolationImpl build(final ConstraintViolation<?> root) {
+        public static ModelBeanViolationImpl build(final ConstraintViolation<?> root, String uuid) {
             return new ModelBeanViolationImpl(root.getPropertyPath().toString(),
                                               root.getMessage(),
-                                              Type.WARNING);
+                                              Type.WARNING,
+                                              uuid);
         }
     }
 }

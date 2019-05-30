@@ -23,5 +23,5 @@ public interface CanvasViolation extends RuleViolation {
     /**
      * The root violation produced in the canvas.
      */
-    public RuleViolation getRuleViolation();
+    RuleViolation getRuleViolation();
 }

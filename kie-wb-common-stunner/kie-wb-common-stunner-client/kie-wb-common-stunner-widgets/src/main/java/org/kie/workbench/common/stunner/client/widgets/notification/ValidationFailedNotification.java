@@ -49,18 +49,19 @@ public final class ValidationFailedNotification extends AbstractNotification<Col
 
     public static class Builder {
 
-        public static ValidationFailedNotification build(final ClientTranslationService translationService,
+        public static Optional<ValidationFailedNotification> build(final ClientTranslationService translationService,
                                                          final NotificationContext context,
                                                          final Collection<DiagramElementViolation<RuleViolation>> errors) {
             final Violation.Type type = ValidationUtils.getMaxSeverity(errors);
-            return new ValidationFailedNotification(errors,
+            final Optional<String> message = CoreTranslationMessages.getDiagramValidationsErrorMessage(
+                    translationService,
+                    errors
+            );
+
+            return message.map(m-> new ValidationFailedNotification(errors,
                                                     context,
-                                                    CoreTranslationMessages.getDiagramValidationsErrorMessage(
-                                                            translationService,
-                                                            CoreTranslationMessages.VALIDATION_FAILED,
-                                                            errors
-                                                    ),
-                                                    getNotificationType(type));
+                                                    m,
+                                                    getNotificationType(type)));
         }
 
         public static Notification.Type getNotificationType(final CanvasViolation.Type type) {

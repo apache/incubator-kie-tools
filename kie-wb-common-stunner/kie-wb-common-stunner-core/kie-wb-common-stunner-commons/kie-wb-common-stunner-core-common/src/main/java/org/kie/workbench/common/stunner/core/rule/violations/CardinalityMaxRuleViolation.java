@@ -40,7 +40,7 @@ public class CardinalityMaxRuleViolation extends AbstractRuleViolation {
 
     @Override
     public Optional<Object[]> getArguments() {
-        return Optional.of(new Object[]{candidate, restrictedOccurrences, currentOccurrences});
+        return of(candidate, restrictedOccurrences, currentOccurrences);
     }
 
     @Override

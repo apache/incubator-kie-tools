@@ -35,7 +35,7 @@ public class MarshallingMessage implements DomainViolation {
     private final String messageKey;
     private final List<?> messageArguments;
 
-    public String getElementUUID() {
+    public String getUUID() {
         return elementUUID;
     }
 
@@ -140,7 +140,7 @@ public class MarshallingMessage implements DomainViolation {
 
     @Override
     public int hashCode() {
-        return HashUtil.combineHashCodes(Objects.hashCode(getElementUUID()), Objects.hashCode(getCode()),
+        return HashUtil.combineHashCodes(Objects.hashCode(getUUID()), Objects.hashCode(getCode()),
                                          Objects.hashCode(type), Objects.hashCode(getMessage()),
                                          Objects.hashCode(getMessageKey()), Objects.hashCode(getMessageArguments()));
     }

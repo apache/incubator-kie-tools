@@ -16,9 +16,11 @@
 
 package org.kie.workbench.common.stunner.core.validation;
 
+import org.kie.workbench.common.stunner.core.graph.Element;
+
 /**
  * Base validator type for the different domain model beans.
  */
-public interface ModelValidator extends Validator<Object, ModelBeanViolation> {
+public interface ModelValidator extends Validator<Element, ModelBeanViolation> {
 
 }

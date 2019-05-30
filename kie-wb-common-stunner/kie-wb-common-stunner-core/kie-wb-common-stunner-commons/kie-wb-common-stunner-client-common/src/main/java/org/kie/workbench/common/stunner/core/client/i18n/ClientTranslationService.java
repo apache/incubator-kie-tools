@@ -16,22 +16,36 @@
 
 package org.kie.workbench.common.stunner.core.client.i18n;
 
+import java.util.Objects;
+import java.util.Optional;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import org.jboss.errai.ui.client.local.spi.TranslationService;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
+import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.i18n.AbstractTranslationService;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
+import org.kie.workbench.common.stunner.core.util.StringUtils;
 
 @Singleton
 public class ClientTranslationService extends AbstractTranslationService {
 
     private final TranslationService erraiTranslationService;
+    private SessionManager sessionManager;
+    private DefinitionUtils definitionUtils;
 
     @Inject
-    public ClientTranslationService(final TranslationService erraiTranslationService) {
+    public ClientTranslationService(final TranslationService erraiTranslationService,
+                                    final SessionManager sessionManager,
+                                    final DefinitionUtils definitionUtils) {
         this.erraiTranslationService = erraiTranslationService;
+        this.sessionManager = sessionManager;
+        this.definitionUtils = definitionUtils;
     }
 
     @Override
@@ -68,5 +82,22 @@ public class ClientTranslationService extends AbstractTranslationService {
 
     private String getCanvasViolationMessage(final CanvasViolation canvasViolation) {
         return getRuleViolationMessage(canvasViolation.getRuleViolation());
+    }
+
+    @Override
+    public Optional<String> getElementName(String uuid) {
+        final Node<? extends Definition, ?> node = sessionManager.getCurrentSession()
+                .getCanvasHandler()
+                .getDiagram()
+                .getGraph()
+                .getNode(uuid);
+        Optional<Object> definition = Optional.ofNullable(node)
+                .map(Node::getContent)
+                .map(Definition::getDefinition)
+                .filter(Objects::nonNull);
+
+        return definition
+                .map(definitionUtils::getName)
+                .filter(StringUtils::nonEmpty);
     }
 }

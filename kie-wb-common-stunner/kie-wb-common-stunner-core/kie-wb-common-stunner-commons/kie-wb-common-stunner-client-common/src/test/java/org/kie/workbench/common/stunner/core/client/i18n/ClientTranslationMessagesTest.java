@@ -48,7 +48,7 @@ public class ClientTranslationMessagesTest {
     @Before
     public void setup() {
         when(translationService.getValue(eq(CoreTranslationMessages.REASON))).thenReturn("R");
-        when(translationService.getValue(eq(CoreTranslationMessages.ELEMENT_UUID))).thenReturn("E");
+        when(translationService.getValue(eq(CoreTranslationMessages.ELEMENT))).thenReturn("E");
         when(translationService.getValue(eq(CoreTranslationMessages.REASON))).thenReturn("R");
         when(translationService.getValue(eq(CoreTranslationMessages.REASON))).thenReturn("R");
     }
@@ -70,8 +70,8 @@ public class ClientTranslationMessagesTest {
                                                                                     violations);
         message = new SafeHtmlBuilder().appendEscapedLines(message).toSafeHtml().asString();
         assertEquals("aValue." + CoreTranslationMessagesTest.HTML_NEW_LINE + "R" + COLON +
-                             CoreTranslationMessagesTest.HTML_NEW_LINE + OPEN_BRA + "1" + CLOSE_BRA + "(ERROR) "
-                             + "cv1" + CoreTranslationMessagesTest.HTML_NEW_LINE,
+                             CoreTranslationMessagesTest.HTML_NEW_LINE + OPEN_BRA + "1" + CLOSE_BRA +
+                             "cv1" + CoreTranslationMessagesTest.HTML_NEW_LINE,
                      message);
     }
 }

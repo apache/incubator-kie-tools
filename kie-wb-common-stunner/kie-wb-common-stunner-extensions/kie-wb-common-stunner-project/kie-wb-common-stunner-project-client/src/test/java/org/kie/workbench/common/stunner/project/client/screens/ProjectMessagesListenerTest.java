@@ -16,8 +16,9 @@
 
 package org.kie.workbench.common.stunner.project.client.screens;
 
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import javax.enterprise.event.Event;
 
@@ -42,6 +43,9 @@ import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
+import org.kie.workbench.common.stunner.core.validation.DiagramElementViolation;
+import org.kie.workbench.common.stunner.core.validation.DomainViolation;
+import org.kie.workbench.common.stunner.core.validation.Violation;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -51,6 +55,7 @@ import org.uberfire.mvp.ParameterizedCommand;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -190,7 +195,18 @@ public class ProjectMessagesListenerTest {
 
         //onValidationFailed
         verify(notificationsObserver).onValidationFailed(callbackCaptor.capture());
-        callbackCaptor.getAllValues().get(1).execute(ValidationFailedNotification.Builder.build(mock(ClientTranslationService.class), buildNotificationContext(), Collections.emptyList()));
+        final DiagramElementViolation diagramElementViolation = mock(DiagramElementViolation.class);
+        final DomainViolation domainViolation = mock(DomainViolation.class);
+        final ClientTranslationService translationService = mock(ClientTranslationService.class);
+
+        when(diagramElementViolation.getViolationType()).thenReturn(Violation.Type.ERROR);
+        when(diagramElementViolation.getDomainViolations()).thenReturn(Arrays.asList(domainViolation));
+        when(domainViolation.getViolationType()).thenReturn(Violation.Type.ERROR);
+        when(translationService.getElementName(anyString())).thenReturn(Optional.of("name"));
+        when(translationService.getValue(anyString(), anyString(), anyString())).thenReturn("message");
+        when(domainViolation.getMessage()).thenReturn("message");
+
+        callbackCaptor.getAllValues().get(1).execute(ValidationFailedNotification.Builder.build(translationService, buildNotificationContext(), Arrays.asList(diagramElementViolation)).get());
         verify(projectMessagesListener, times(2)).fireNotification(any());
 
         //onValidationExecuted

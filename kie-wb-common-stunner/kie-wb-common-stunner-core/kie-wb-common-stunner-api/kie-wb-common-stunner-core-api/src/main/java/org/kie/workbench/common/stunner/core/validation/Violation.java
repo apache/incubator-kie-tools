@@ -44,4 +44,9 @@ public interface Violation {
      * The type of violation.
      */
     Type getViolationType();
+
+    /**
+     * The violation's message.
+     */
+    String getMessage();
 }

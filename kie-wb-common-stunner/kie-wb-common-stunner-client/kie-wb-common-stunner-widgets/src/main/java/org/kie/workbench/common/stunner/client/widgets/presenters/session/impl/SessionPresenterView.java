@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.client.widgets.presenters.session.impl;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
@@ -26,12 +28,14 @@ import com.google.gwt.event.dom.client.ContextMenuEvent;
 import com.google.gwt.event.dom.client.ScrollEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
+import org.gwtbootstrap3.extras.animate.client.ui.constants.Animation;
 import org.gwtbootstrap3.extras.notify.client.constants.NotifyType;
 import org.gwtbootstrap3.extras.notify.client.ui.Notify;
 import org.gwtbootstrap3.extras.notify.client.ui.NotifySettings;
@@ -49,6 +53,7 @@ import org.uberfire.client.workbench.widgets.listbar.ResizeFlowPanel;
 
 import static org.kie.workbench.common.stunner.client.widgets.resources.i18n.StunnerWidgetsConstants.SessionPresenterView_Error;
 import static org.kie.workbench.common.stunner.client.widgets.resources.i18n.StunnerWidgetsConstants.SessionPresenterView_Info;
+import static org.kie.workbench.common.stunner.client.widgets.resources.i18n.StunnerWidgetsConstants.SessionPresenterView_Notifications;
 import static org.kie.workbench.common.stunner.client.widgets.resources.i18n.StunnerWidgetsConstants.SessionPresenterView_Warning;
 
 // TODO: i18n.
@@ -57,8 +62,8 @@ import static org.kie.workbench.common.stunner.client.widgets.resources.i18n.Stu
 public class SessionPresenterView extends Composite
         implements SessionPresenter.View {
 
-    private static final int DELAY = 10000;
-    private static final int TIMER = 100;
+    protected static final int DELAY = 1000;
+    protected static final int NOTIFICATION_LOCK_TIMEOUT = DELAY + 1000;
 
     @Inject
     @DataField
@@ -89,14 +94,16 @@ public class SessionPresenterView extends Composite
     private double paletteInitialTop;
     private double paletteInitialLeft;
     private HandlerRegistration handlerRegistration;
+    private final AtomicBoolean notifying = new AtomicBoolean(false);
 
     @PostConstruct
     public void init() {
         settings.setShowProgressbar(false);
         settings.setPauseOnMouseOver(true);
+        settings.setNewestOnTop(true);
         settings.setAllowDismiss(true);
         settings.setDelay(DELAY);
-        settings.setTimer(TIMER);
+        settings.setAnimation(Animation.NO_ANIMATION, Animation.FADE_OUT);
         handlerRegistration = addDomHandler((e) -> {
                                                 e.preventDefault();
                                                 e.stopPropagation();
@@ -200,27 +207,43 @@ public class SessionPresenterView extends Composite
     }
 
     @Override
-    public SessionPresenter.View showWarning(final String message) {
-
-        getSettings().setType(kieNotificationCssClass(NotifyType.WARNING));
-        showNotification(translate(SessionPresenterView_Warning), message, IconType.EXCLAMATION_TRIANGLE);
-
+    public SessionPresenter.View showWarning() {
+        singleNotify(() -> {
+            getSettings().setType(kieNotificationCssClass(NotifyType.WARNING));
+            showNotification(translate(SessionPresenterView_Warning),
+                             translate(SessionPresenterView_Notifications),
+                             IconType.EXCLAMATION_TRIANGLE);
+        });
         return this;
+    }
+
+    //show only one notification at a time
+    private void singleNotify(final Runnable notification) {
+        //check if any other notification is ongoing and set a lock
+        if (notifying.compareAndSet(false, true)) {
+            //timer to remove the lock on notification
+            new Timer() {
+                @Override
+                public void run() {
+                    notifying.set(false);
+                }
+            }.schedule(NOTIFICATION_LOCK_TIMEOUT);
+
+            Notify.hideAll();
+            notification.run();
+        }
     }
 
     @Override
     public SessionPresenterView showMessage(final String message) {
-
         getSettings().setType(kieNotificationCssClass(NotifyType.SUCCESS));
         showNotification(translate(SessionPresenterView_Info), message, IconType.INFO_CIRCLE);
-
         return this;
     }
 
     void showNotification(final String title,
                           final String message,
                           final IconType icon) {
-
         Notify.notify(title,
                       buildHtmlEscapedText(message),
                       icon,

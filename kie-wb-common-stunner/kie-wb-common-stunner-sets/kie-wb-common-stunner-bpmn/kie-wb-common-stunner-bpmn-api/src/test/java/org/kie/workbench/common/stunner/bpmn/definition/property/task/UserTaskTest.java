@@ -122,6 +122,8 @@ public class UserTaskTest {
         UserTask userTask = new UserTask();
         userTask.getGeneral().setName(new Name(""));
         Set<ConstraintViolation<UserTask>> violations = this.validator.validate(userTask);
-        assertTrue(violations.isEmpty());
+        ConstraintViolation<UserTask> violation = violations.iterator().next();
+        assertEquals(violation.getPropertyPath().toString(), "general.name.value");
+        assertEquals(violation.getMessage(), "may not be empty");
     }
 }

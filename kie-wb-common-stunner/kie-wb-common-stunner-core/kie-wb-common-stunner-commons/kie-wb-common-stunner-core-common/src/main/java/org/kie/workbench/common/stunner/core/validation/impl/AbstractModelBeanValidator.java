@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.core.validation.impl;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -25,6 +26,9 @@ import java.util.stream.Collectors;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
+import org.kie.workbench.common.stunner.core.graph.Element;
+import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
+import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.validation.ModelBeanViolation;
 import org.kie.workbench.common.stunner.core.validation.ModelValidator;
 
@@ -39,22 +43,29 @@ public abstract class AbstractModelBeanValidator implements ModelValidator {
     protected abstract Validator getBeanValidator();
 
     @Override
-    public void validate(final Object entity,
+    public void validate(final Element element,
                          final Consumer<Collection<ModelBeanViolation>> callback) {
         LOGGER.log(Level.INFO,
                    "Performing model bean validation.");
-        callback.accept(getBeanValidator()
-                                .validate(entity)
-                                .stream()
-                                .map(this::buildViolation)
-                                .collect(Collectors.toSet()));
+        getBean(element).ifPresent(bean -> callback.accept(getBeanValidator()
+                                                                   .validate(bean)
+                                                                   .stream()
+                                                                   .map(violation -> buildViolation(violation, element))
+                                                                   .collect(Collectors.toSet())));
         LOGGER.log(Level.INFO,
                    "Model bean validation completed.");
     }
 
-    private ModelBeanViolation buildViolation(final ConstraintViolation<?> rootViolation) {
+    private ModelBeanViolation buildViolation(final ConstraintViolation<?> rootViolation, Element element) {
         LOGGER.log(Level.INFO,
                    "Bean constraint violation found with message [" + rootViolation.getMessage() + "]");
-        return ModelBeanViolationImpl.Builder.build(rootViolation);
+        return ModelBeanViolationImpl.Builder.build(rootViolation, element.getUUID());
+    }
+
+    private Optional<Object> getBean(final Element element) {
+        return Optional.ofNullable(element.getContent())
+                .filter(content -> !(content instanceof DefinitionSet) && content instanceof Definition)
+                .map(content -> (Definition) content)
+                .map(Definition::getDefinition);
     }
 }

@@ -57,6 +57,11 @@ public final class CanvasViolationImpl
     }
 
     @Override
+    public String getMessage() {
+        return ruleViolation.getMessage();
+    }
+
+    @Override
     public String toString() {
         return "CanvasViolationImpl{" +
                 "ruleViolation=" + ruleViolation +

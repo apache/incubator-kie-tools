@@ -40,9 +40,7 @@ public class EmptyConnectionViolation extends AbstractRuleViolation {
 
     @Override
     public Optional<Object[]> getArguments() {
-        return Optional.of(new Object[]{getUUID(),
-                sourceUUID,
-                targetUUID});
+        return of(getUUID(), sourceUUID, targetUUID);
     }
 
     @Override

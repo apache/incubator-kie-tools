@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.stunner.bpmn.definition.property.general;
 
+import javax.validation.Valid;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
@@ -36,6 +38,7 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 public class TaskGeneralSet implements BPMNPropertySet,
                                        BPMNBaseInfo {
 
+    @Valid
     @Property
     @FormField(type = TextAreaFieldType.class)
     private Name name;

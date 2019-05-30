@@ -44,6 +44,9 @@ public interface StunnerWidgetsConstants {
     @TranslationKey(defaultValue = "")
     String SessionPresenterView_Info = "SessionPresenterView.Info";
 
+    @TranslationKey(defaultValue = "")
+    String SessionPresenterView_Notifications = "SessionPresenterView.Notifications";
+
     @TranslationKey(defaultValue = "Are you sure?")
     String AbstractToolbarCommand_ConfirmMessage = "AbstractToolbarCommand.ConfirmMessage";
 

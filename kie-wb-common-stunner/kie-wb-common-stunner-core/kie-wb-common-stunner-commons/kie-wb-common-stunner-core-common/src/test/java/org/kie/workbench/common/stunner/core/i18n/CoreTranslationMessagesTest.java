@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.core.i18n;
 
 import java.util.Collections;
+import java.util.Optional;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Path;
@@ -27,6 +28,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.validation.DiagramElementViolation;
+import org.kie.workbench.common.stunner.core.validation.DomainViolation;
 import org.kie.workbench.common.stunner.core.validation.ModelBeanViolation;
 import org.kie.workbench.common.stunner.core.validation.Violation;
 import org.kie.workbench.common.stunner.core.validation.impl.ModelBeanViolationImpl;
@@ -34,11 +36,10 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
-import static org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages.CLOSE_BRA;
-import static org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages.CLOSE_COMMENT;
-import static org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages.COLON;
-import static org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages.OPEN_BRA;
-import static org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages.OPEN_COMMENT;
+import static org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages.ELEMENT;
+import static org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages.REASON;
+import static org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages.VALIDATION_PROPERTY;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -49,16 +50,20 @@ public class CoreTranslationMessagesTest {
     public static final String HTML_NEW_LINE = "<br>";
     public static final String HTML_OPEN_COMMENT = "&#39;";
     public static final String HTML_CLOSE_COMMENT = "&#39; ";
+    public static final String VALIDATION_BEAN_MESSAGE = "P";
+    public static final String VALIDATION_ELEMENT_MESSAGE = "E";
 
     @Mock
     StunnerTranslationService translationService;
 
     @Before
     public void setup() {
-        when(translationService.getValue(eq(CoreTranslationMessages.REASON))).thenReturn("R");
-        when(translationService.getValue(eq(CoreTranslationMessages.ELEMENT_UUID))).thenReturn("E");
-        when(translationService.getValue(eq(CoreTranslationMessages.REASON))).thenReturn("R");
-        when(translationService.getValue(eq(CoreTranslationMessages.REASON))).thenReturn("R");
+        when(translationService.getValue(eq(REASON))).thenReturn("R");
+        when(translationService.getValue(eq(ELEMENT))).thenReturn("E");
+        when(translationService.getValue(eq(ELEMENT), anyString(), anyString())).thenReturn(VALIDATION_ELEMENT_MESSAGE);
+        when(translationService.getValue(eq(REASON))).thenReturn("R");
+        when(translationService.getValue(eq(REASON))).thenReturn("R");
+        when(translationService.getValue(eq(VALIDATION_PROPERTY), anyString(), anyString())).thenReturn(VALIDATION_BEAN_MESSAGE);
     }
 
     @Test
@@ -68,11 +73,9 @@ public class CoreTranslationMessagesTest {
         when(propertyPath.toString()).thenReturn("path1");
         when(rootViolation.getPropertyPath()).thenReturn(propertyPath);
         when(rootViolation.getMessage()).thenReturn("message1");
-        final ModelBeanViolation violation = ModelBeanViolationImpl.Builder.build(rootViolation);
-        final String message = CoreTranslationMessages.getBeanValidationMessage(translationService,
-                                                                                violation);
-        assertEquals("(WARNING) " + OPEN_COMMENT + "path1" + CLOSE_COMMENT + "message1",
-                     message);
+        final ModelBeanViolation violation = ModelBeanViolationImpl.Builder.build(rootViolation, "uuid");
+        final String message = CoreTranslationMessages.getBeanValidationMessage(translationService, violation);
+        assertEquals(VALIDATION_BEAN_MESSAGE, message);
     }
 
     @Test
@@ -82,8 +85,7 @@ public class CoreTranslationMessagesTest {
         when(translationService.getViolationMessage(eq(ruleViolation))).thenReturn("rv1");
         final String message = CoreTranslationMessages.getRuleValidationMessage(translationService,
                                                                                 ruleViolation);
-        assertEquals("(WARNING) " + "rv1",
-                     message);
+        assertEquals("rv1", message);
     }
 
     @Test
@@ -94,24 +96,22 @@ public class CoreTranslationMessagesTest {
         when(propertyPath.toString()).thenReturn("path1");
         when(rootViolation.getPropertyPath()).thenReturn(propertyPath);
         when(rootViolation.getMessage()).thenReturn("message1");
-        final ModelBeanViolation beanViolation = ModelBeanViolationImpl.Builder.build(rootViolation);
+        final ModelBeanViolation beanViolation = ModelBeanViolationImpl.Builder.build(rootViolation, "uuid");
         final RuleViolation ruleViolation = mock(RuleViolation.class);
         final DiagramElementViolation<RuleViolation> diagramViolation = mock(DiagramElementViolation.class);
+        final DomainViolation domainViolation = mock(DomainViolation.class);
         when(diagramViolation.getUUID()).thenReturn("uuid1");
         when(diagramViolation.getModelViolations()).thenReturn(Collections.singletonList(beanViolation));
         when(diagramViolation.getGraphViolations()).thenReturn(Collections.singletonList(ruleViolation));
+        when(diagramViolation.getDomainViolations()).thenReturn(Collections.singletonList(domainViolation));
         when(ruleViolation.getViolationType()).thenReturn(Violation.Type.WARNING);
         when(translationService.getViolationMessage(eq(ruleViolation))).thenReturn("rv1");
         when(translationService.getValue(eq("aKey"))).thenReturn("aValue");
+        when(translationService.getElementName("uuid1")).thenReturn(Optional.of("name"));
+
         String message = CoreTranslationMessages.getDiagramValidationsErrorMessage(translationService,
-                                                                                   "aKey",
-                                                                                   Collections.singleton(diagramViolation));
+                                                                                   Collections.singleton(diagramViolation)).get();
         message = new SafeHtmlBuilder().appendEscapedLines(message).toSafeHtml().asString();
-        assertEquals("aValue." + HTML_NEW_LINE + "R" + COLON + HTML_NEW_LINE +
-                             OPEN_BRA + "E" + COLON + "uuid1" + CLOSE_BRA + HTML_NEW_LINE +
-                             "(WARNING) " + HTML_OPEN_COMMENT + "path1" + HTML_CLOSE_COMMENT +
-                             "message1" + HTML_NEW_LINE +
-                             "(WARNING) rv1" + HTML_NEW_LINE,
-                     message);
+        assertEquals(VALIDATION_ELEMENT_MESSAGE, message);
     }
 }

@@ -32,6 +32,9 @@ import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.uberfire.backend.vfs.Path;
 
+/**
+ * Class responsible to show Notifications on the Alerts Panel on the Workbench
+ */
 @Dependent
 public class ProjectMessagesListener {
 

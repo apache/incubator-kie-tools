@@ -16,10 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.validation;
 
-public interface DomainViolation extends Violation {
+public interface DomainViolation extends ElementViolation {
 
-    /**
-     * The violation's message.
-     */
-    String getMessage();
+
 }

@@ -28,6 +28,7 @@ import org.kie.workbench.common.stunner.bpmn.BPMNDefinitionSet;
 import org.kie.workbench.common.stunner.bpmn.validation.BPMNViolation;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.service.DiagramService;
 import org.kie.workbench.common.stunner.core.validation.Violation;
 import org.mockito.Mock;
@@ -52,8 +53,12 @@ public class BPMNValidatorImplTest {
     @Mock
     private Diagram diagram;
 
+    @Mock
+    private Metadata metadata;
+
     @Before
     public void setUp() {
+        when(diagram.getMetadata()).thenReturn(metadata);
         bpmnValidador = new BPMNValidatorImpl(diagramService);
         bpmnValidador.init();
     }
@@ -64,7 +69,7 @@ public class BPMNValidatorImplTest {
 
     @Test
     public void validateSerialized() {
-        Collection<BPMNViolation> violations = bpmnValidador.validate(getSerializedProcess(BPMN_VALID));
+        Collection<BPMNViolation> violations = bpmnValidador.validate(getSerializedProcess(BPMN_VALID), "id");
         assertTrue(violations.isEmpty());
     }
 

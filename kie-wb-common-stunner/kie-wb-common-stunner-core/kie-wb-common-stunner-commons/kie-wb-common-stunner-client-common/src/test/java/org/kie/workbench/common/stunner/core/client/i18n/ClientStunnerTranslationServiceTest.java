@@ -20,6 +20,8 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -45,9 +47,15 @@ public class ClientStunnerTranslationServiceTest {
 
     private ClientTranslationService stunnerTranslationService;
 
+    @Mock
+    private DefinitionUtils definitionUtils;
+
+    @Mock
+    private SessionManager sessionManager;
+
     @Before
     public void init() {
-        stunnerTranslationService = new ClientTranslationService(translationService);
+        stunnerTranslationService = new ClientTranslationService(translationService, sessionManager, definitionUtils);
     }
 
     @Test

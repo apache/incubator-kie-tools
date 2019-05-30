@@ -319,9 +319,9 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
         }
     }
 
-    private void showWarning(final String error) {
+    private void showWarning() {
         if (isDisplayErrors()) {
-            getView().showWarning(error);
+            getView().showWarning();
         }
     }
 
@@ -378,7 +378,7 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
             if (Notification.Type.ERROR.equals(notification.getType())) {
                 showError(notification.getMessage());
             } else {
-                showWarning(notification.getMessage());
+                showWarning();
             }
         }
     }

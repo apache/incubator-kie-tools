@@ -110,7 +110,7 @@ public class DefinitionUtils {
                 .orElse("");
     }
 
-    public <T> String getTitle(final String definitionId) {
+    public String getTitle(final String definitionId) {
         return definitionManager
                 .adapters()
                 .forDefinition()

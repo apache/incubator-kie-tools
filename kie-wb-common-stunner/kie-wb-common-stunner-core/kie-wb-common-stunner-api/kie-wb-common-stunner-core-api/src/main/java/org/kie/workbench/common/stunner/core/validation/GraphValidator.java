@@ -27,7 +27,7 @@ import org.kie.workbench.common.stunner.core.rule.RuleSet;
  * @param <G> The graph type.
  * @param <V> The graph element violation type.
  */
-public interface GraphValidator<G extends Graph, V extends GraphElementViolation>
+public interface GraphValidator<G extends Graph, V extends ElementViolation>
         extends Validator<G, V> {
 
     /**

@@ -510,7 +510,6 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
                 });
             }
         }
-
         return promises.resolve();
     }
 

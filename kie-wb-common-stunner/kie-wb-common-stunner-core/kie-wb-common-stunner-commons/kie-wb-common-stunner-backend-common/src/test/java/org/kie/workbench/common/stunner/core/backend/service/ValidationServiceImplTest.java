@@ -38,8 +38,6 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import javax.enterprise.inject.Instance;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -52,12 +50,11 @@ import org.kie.workbench.common.stunner.core.validation.DiagramElementViolation;
 import org.kie.workbench.common.stunner.core.validation.DomainValidator;
 import org.kie.workbench.common.stunner.core.validation.DomainViolation;
 import org.kie.workbench.common.stunner.core.validation.Violation;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.mocks.MockInstanceImpl;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -67,9 +64,6 @@ public class ValidationServiceImplTest {
     public static final String DEF_SET_ID = "defSetId";
 
     private ValidationServiceImpl validationService;
-
-    @Mock
-    private Instance<DomainValidator> validators;
 
     @Mock
     private DomainValidator domainValidator;
@@ -88,27 +82,37 @@ public class ValidationServiceImplTest {
 
     private static final String GRAPH_UUID = UUID.uuid();
 
+    private List<DomainViolation> domainViolationList;
+
     @Before
     public void setUp() {
-        when(validators.spliterator()).thenReturn(Arrays.asList(domainValidator).spliterator());
-        when(domainValidator.getDefinitionSetId()).thenReturn(DEF_SET_ID);
+        domainViolationList = Arrays.asList(domainViolation);
+        domainValidator = new DomainValidator() {
+            @Override
+            public String getDefinitionSetId() {
+                return DEF_SET_ID;
+            }
+
+            @Override
+            public void validate(Diagram entity, Consumer<Collection<DomainViolation>> resultConsumer) {
+                resultConsumer.accept(domainViolationList);
+            }
+        };
+
         when(diagram.getMetadata()).thenReturn(metadata);
         when(metadata.getDefinitionSetId()).thenReturn(DEF_SET_ID);
         when(diagram.getGraph()).thenReturn(graph);
         when(graph.getUUID()).thenReturn(GRAPH_UUID);
         when(domainViolation.getViolationType()).thenReturn(Violation.Type.ERROR);
-        validationService = new ValidationServiceImpl(validators);
+        when(domainViolation.getUUID()).thenReturn("uuid");
+        validationService = new ValidationServiceImpl(new MockInstanceImpl(domainValidator));
     }
 
     @Test
     public void validate() {
-        final List<DomainViolation> domainViolationList = Arrays.asList(domainViolation);
         final Collection<DiagramElementViolation<RuleViolation>> violations = validationService.validate(diagram);
-        final ArgumentCaptor<Consumer> argumentCaptor = ArgumentCaptor.forClass(Consumer.class);
-        verify(domainValidator).validate(eq(diagram), argumentCaptor.capture());
         verify(diagram).getMetadata();
         verify(metadata).getDefinitionSetId();
-        argumentCaptor.getValue().accept(domainViolationList);
         assertEquals(violations.stream()
                              .map(DiagramElementViolation::getDomainViolations)
                              .flatMap(v -> v.stream())

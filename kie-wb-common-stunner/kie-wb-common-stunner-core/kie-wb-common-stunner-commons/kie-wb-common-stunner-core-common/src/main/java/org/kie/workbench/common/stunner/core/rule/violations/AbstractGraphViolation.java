@@ -22,8 +22,6 @@ public abstract class AbstractGraphViolation implements RuleViolation {
 
     private String uuid;
 
-    protected abstract String getMessage();
-
     @Override
     public String getUUID() {
         return uuid;

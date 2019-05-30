@@ -19,7 +19,7 @@ package org.kie.workbench.common.stunner.core.validation;
 /**
  * A violation type that related to an element in a graph structure.
  */
-public interface GraphElementViolation extends Violation {
+public interface ElementViolation extends Violation {
 
     /**
      * The violation's root element UUID.
