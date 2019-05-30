@@ -25,10 +25,10 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.kie.workbench.common.stunner.bpmn.project.client.resources.BPMNClientConstants;
+import org.kie.workbench.common.stunner.bpmn.integration.client.IntegrationHandler;
+import org.kie.workbench.common.stunner.bpmn.integration.client.IntegrationHandlerProvider;
 import org.kie.workbench.common.stunner.bpmn.project.client.type.BPMNDiagramResourceType;
 import org.kie.workbench.common.stunner.bpmn.qualifiers.BPMN;
-import org.kie.workbench.common.stunner.client.widgets.popups.PopupUtil;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionViewerPresenter;
 import org.kie.workbench.common.stunner.core.client.annotation.DiagramEditor;
@@ -51,7 +51,6 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.views.pfly.widgets.InlineNotification;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
@@ -62,7 +61,7 @@ import org.uberfire.lifecycle.OnLostFocus;
 import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnStartup;
-import org.uberfire.mvp.Command;
+import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.menu.Menus;
 
@@ -73,10 +72,9 @@ public class BPMNDiagramEditor extends AbstractProjectDiagramEditor<BPMNDiagramR
 
     public static final String EDITOR_ID = "BPMNDiagramEditor";
 
-    private final Event<BPMNMigrateDiagramEvent> migrateDiagramEvent;
-    private final PopupUtil popupUtil;
-
+    private final IntegrationHandlerProvider integrationHandlerProvider;
     private boolean isMigrating = false;
+    private Consumer<Boolean> saveCallback;
 
     @Inject
     public BPMNDiagramEditor(final View view,
@@ -96,8 +94,7 @@ public class BPMNDiagramEditor extends AbstractProjectDiagramEditor<BPMNDiagramR
                              final DiagramClientErrorHandler diagramClientErrorHandler,
                              final ClientTranslationService translationService,
                              final Caller<ProjectDiagramResourceService> projectDiagramResourceServiceCaller,
-                             final Event<BPMNMigrateDiagramEvent> migrateDiagramEvent,
-                             final PopupUtil popupUtil,
+                             final IntegrationHandlerProvider integrationHandlerProvider,
                              final TextEditorView xmlEditorView) {
         super(view,
               documentationView,
@@ -117,14 +114,13 @@ public class BPMNDiagramEditor extends AbstractProjectDiagramEditor<BPMNDiagramR
               translationService,
               xmlEditorView,
               projectDiagramResourceServiceCaller);
-        this.migrateDiagramEvent = migrateDiagramEvent;
-        this.popupUtil = popupUtil;
+        this.integrationHandlerProvider = integrationHandlerProvider;
     }
 
     @Override
     public void init() {
         super.init();
-        getBPMNSessionItems().setOnMigrate(this::onMigrate);
+        integrationHandlerProvider.getIntegrationHandler().ifPresent(integrationHandler -> getBPMNSessionItems().setOnMigrate(() -> onMigrate(integrationHandler)));
     }
 
     @OnStartup
@@ -186,31 +182,13 @@ public class BPMNDiagramEditor extends AbstractProjectDiagramEditor<BPMNDiagramR
         return super.mayClose(getCurrentDiagramHash());
     }
 
-    protected void onMigrate() {
-        final Command onMigrateCommand = () -> {
-            if (isDirty(getCurrentDiagramHash())) {
-                saveAndMigrate();
-            } else {
-                migrate();
-            }
+    protected void onMigrate(IntegrationHandler integrationHandler) {
+        final ParameterizedCommand<Consumer<Boolean>> saveCommand = saveCallback -> {
+            isMigrating = true;
+            this.saveCallback = saveCallback;
+            BPMNDiagramEditor.super.save();
         };
-        popupUtil.showConfirmPopup(getTranslationService().getValue(BPMNClientConstants.EditorMigrateActionTitle),
-                                   getTranslationService().getValue(BPMNClientConstants.EditorMigrateActionWarning),
-                                   InlineNotification.InlineNotificationType.WARNING,
-                                   getTranslationService().getValue(BPMNClientConstants.EditorMigrateAction),
-                                   org.uberfire.client.views.pfly.widgets.Button.ButtonStyleType.PRIMARY,
-                                   getTranslationService().getValue(BPMNClientConstants.EditorMigrateConfirmAction),
-                                   onMigrateCommand);
-    }
-
-    void saveAndMigrate() {
-        isMigrating = true;
-        super.save();
-    }
-
-    private void migrate() {
-        migrateDiagramEvent.fire(new BPMNMigrateDiagramEvent(versionRecordManager.getCurrentPath(),
-                                                             place));
+        integrationHandler.migrateFromStunnerToJBPMDesigner(versionRecordManager.getCurrentPath(), place, isDirty(getCurrentContentHash()), saveCommand);
     }
 
     @Override
@@ -218,14 +196,17 @@ public class BPMNDiagramEditor extends AbstractProjectDiagramEditor<BPMNDiagramR
         super.onSaveSuccess();
         if (isMigrating) {
             isMigrating = false;
-            migrate();
+            saveCallback.accept(true);
         }
     }
 
     @Override
     protected void onSaveError(ClientRuntimeError error) {
-        isMigrating = false;
         super.onSaveError(error);
+        if (isMigrating) {
+            isMigrating = false;
+            saveCallback.accept(false);
+        }
     }
 
     private BPMNProjectEditorMenuSessionItems getBPMNSessionItems() {

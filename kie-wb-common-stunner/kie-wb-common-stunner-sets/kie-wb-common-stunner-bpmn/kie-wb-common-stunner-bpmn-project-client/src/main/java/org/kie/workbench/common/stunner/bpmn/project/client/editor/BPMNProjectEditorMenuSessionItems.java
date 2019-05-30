@@ -38,10 +38,7 @@ public class BPMNProjectEditorMenuSessionItems extends AbstractProcessProjectEdi
     @Inject
     public BPMNProjectEditorMenuSessionItems(final BPMNProjectDiagramEditorMenuItemsBuilder itemsBuilder,
                                              final BPMNEditorSessionCommands sessionCommands) {
-        super(itemsBuilder,
-              sessionCommands);
-        this.onMigrate = () -> {
-        };
+        super(itemsBuilder, sessionCommands);
     }
 
     public BPMNProjectEditorMenuSessionItems setOnMigrate(final Command onMigrate) {
@@ -52,14 +49,18 @@ public class BPMNProjectEditorMenuSessionItems extends AbstractProcessProjectEdi
     @Override
     public void populateMenu(final FileMenuBuilder menu) {
         super.populateMenu(menu);
-        migrateMenuItem = newMigrateMenuItem();
-        menu.addNewTopLevelMenu(migrateMenuItem);
+        if (onMigrate != null) {
+            migrateMenuItem = newMigrateMenuItem();
+            menu.addNewTopLevelMenu(migrateMenuItem);
+        }
     }
 
     @Override
     public void setEnabled(final boolean enabled) {
         super.setEnabled(enabled);
-        migrateMenuItem.setEnabled(enabled);
+        if (migrateMenuItem != null) {
+            migrateMenuItem.setEnabled(enabled);
+        }
     }
 
     @Override

@@ -22,6 +22,7 @@ import javax.inject.Inject;
 import org.uberfire.client.views.pfly.widgets.Button;
 import org.uberfire.client.views.pfly.widgets.ConfirmPopup;
 import org.uberfire.client.views.pfly.widgets.InlineNotification;
+import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
 import org.uberfire.mvp.Command;
 
 @ApplicationScoped
@@ -62,5 +63,38 @@ public class PopupUtil {
                           okButtonType,
                           confirmMessage,
                           okCommand);
+    }
+
+    public void showYesNoCancelPopup(final String title,
+                                     final String message,
+                                     final Command yesCommand,
+                                     final Command noCommand) {
+
+        final Command cancelCommand = () -> {
+            // Do nothing, but let the cancel button be shown.
+        };
+        final YesNoCancelPopup yesNoCancelPopup = buildYesNoCancelPopup(title,
+                                                                        message,
+                                                                        yesCommand,
+                                                                        noCommand,
+                                                                        cancelCommand);
+        yesNoCancelPopup.clearScrollHeight();
+        yesNoCancelPopup.setClosable(false);
+        yesNoCancelPopup.show();
+    }
+
+    /**
+     * intended for testing purposes
+     */
+    YesNoCancelPopup buildYesNoCancelPopup(final String title,
+                                           final String message,
+                                           final Command yesCommand,
+                                           final Command noCommand,
+                                           final Command cancelCommand) {
+        return YesNoCancelPopup.newYesNoCancelPopup(title,
+                                                    message,
+                                                    yesCommand,
+                                                    noCommand,
+                                                    cancelCommand);
     }
 }

@@ -26,6 +26,5 @@
 
   <source path="project/factory"/>
   <source path="project/profile"/>
-  <source path="project/service"/>
 
 </module>

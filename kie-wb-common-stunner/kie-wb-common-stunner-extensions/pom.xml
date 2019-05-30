@@ -35,6 +35,7 @@
     <module>kie-wb-common-stunner-forms</module>
     <module>kie-wb-common-stunner-project</module>
     <module>kie-wb-common-stunner-svg</module>
+    <module>kie-wb-common-stunner-jbpm-designer-integration</module>
   </modules>
 
 </project>

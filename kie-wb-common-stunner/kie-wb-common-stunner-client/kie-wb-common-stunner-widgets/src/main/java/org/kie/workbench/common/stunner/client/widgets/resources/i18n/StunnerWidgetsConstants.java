@@ -46,4 +46,31 @@ public interface StunnerWidgetsConstants {
 
     @TranslationKey(defaultValue = "Are you sure?")
     String AbstractToolbarCommand_ConfirmMessage = "AbstractToolbarCommand.ConfirmMessage";
+
+    @TranslationKey(defaultValue = "OK")
+    String MarshallingResponsePopup_OkAction = "MarshallingResponsePopup.OkAction";
+
+    @TranslationKey(defaultValue = "Cancel")
+    String MarshallingResponsePopup_CancelAction = "MarshallingResponsePopup.CancelAction";
+
+    @TranslationKey(defaultValue = "Copy to clipboard")
+    String MarshallingResponsePopup_CopyToClipboardActionTitle = "MarshallingResponsePopup.CopyToClipboardActionTitle";
+
+    @TranslationKey(defaultValue = "")
+    String MarshallingResponsePopup_LevelTableColumnName = "MarshallingResponsePopup.LevelTableColumnName";
+
+    @TranslationKey(defaultValue = "")
+    String MarshallingResponsePopup_MessageTableColumnName = "MarshallingResponsePopup.MessageTableColumnName";
+
+    @TranslationKey(defaultValue = "Error")
+    String MarshallingResponsePopup_ErrorMessageLabel = "MarshallingResponsePopup.ErrorMessageLabel";
+
+    @TranslationKey(defaultValue = "Warning")
+    String MarshallingResponsePopup_WarningMessageLabel = "MarshallingResponsePopup.WarningMessageLabel";
+
+    @TranslationKey(defaultValue = "Info")
+    String MarshallingResponsePopup_InfoMessageLabel = "MarshallingResponsePopup.InfoMessageLabel";
+
+    @TranslationKey(defaultValue = "Info")
+    String MarshallingResponsePopup_UnknownMessageLabel = "MarshallingResponsePopup.UnknownMessageLabel";
 }

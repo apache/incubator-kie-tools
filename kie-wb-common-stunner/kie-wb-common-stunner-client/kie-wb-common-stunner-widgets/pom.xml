@@ -74,6 +74,11 @@
       <artifactId>kie-wb-common-stunner-svg-client</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.kie.workbench.stunner</groupId>
+      <artifactId>kie-wb-common-stunner-backend-api</artifactId>
+    </dependency>
+
     <!-- GWT and GWT Extensions -->
 
     <dependency>
@@ -92,6 +97,11 @@
       <groupId>org.gwtbootstrap3</groupId>
       <artifactId>gwtbootstrap3-extras</artifactId>
       <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.elemental2</groupId>
+      <artifactId>elemental2-dom</artifactId>
     </dependency>
 
     <!-- Uberfire & Errai. -->
@@ -139,6 +149,11 @@
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-widgets-commons</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-widgets-table</artifactId>
     </dependency>
 
     <dependency>

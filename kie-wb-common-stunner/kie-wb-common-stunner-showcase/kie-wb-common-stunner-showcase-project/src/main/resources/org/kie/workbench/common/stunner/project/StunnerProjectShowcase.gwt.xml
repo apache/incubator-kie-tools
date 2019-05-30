@@ -56,6 +56,11 @@
   <inherits name="org.kie.workbench.common.stunner.bpmn.StunnerBpmnProjectClient"/>
   <inherits name="org.kie.workbench.common.stunner.cm.StunnerCaseManagementProjectClient"/>
 
+  <!-- Stunner - jBPM Designer integration -->
+  <inherits name="org.kie.workbench.common.stunner.bpmn.integration.StunnerJBPMDesignerIntegrationShared"/>
+  <inherits name="org.kie.workbench.common.stunner.bpmn.integration.StunnerJBPMDesignerIntegrationAPI"/>
+  <inherits name="org.kie.workbench.common.stunner.bpmn.integration.StunnerJBPMDesignerIntegrationClient"/>
+
   <!-- Form modeler.-->
   <inherits name="org.kie.workbench.common.stunner.forms.StunnerFormsClient"/>
   <inherits name="org.kie.workbench.common.forms.dynamic.DynamicFormsClient"/>

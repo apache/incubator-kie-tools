@@ -94,28 +94,36 @@ public class MarshallingResponse<T> {
                                          Objects.hashCode(getResult()));
     }
 
+    public boolean isSuccess() {
+        return State.SUCCESS.equals(state);
+    }
+
+    public boolean isError() {
+        return State.ERROR.equals(state);
+    }
+
     public static class MarshallingResponseBuilder<T> {
 
         private final List<MarshallingMessage> messages = new ArrayList<>();
         private State state;
         private Optional<T> result = Optional.empty();
 
-        public MarshallingResponseBuilder messages(List<MarshallingMessage> messages) {
-            messages.addAll(messages);
+        public MarshallingResponseBuilder<T> messages(List<MarshallingMessage> messages) {
+            this.messages.addAll(messages);
             return this;
         }
 
-        public MarshallingResponseBuilder addMessage(MarshallingMessage message) {
+        public MarshallingResponseBuilder<T> addMessage(MarshallingMessage message) {
             messages.add(message);
             return this;
         }
 
-        public MarshallingResponseBuilder state(State state) {
+        public MarshallingResponseBuilder<T> state(State state) {
             this.state = state;
             return this;
         }
 
-        public MarshallingResponseBuilder result(T result) {
+        public MarshallingResponseBuilder<T> result(T result) {
             this.result = Optional.ofNullable(result);
             return this;
         }

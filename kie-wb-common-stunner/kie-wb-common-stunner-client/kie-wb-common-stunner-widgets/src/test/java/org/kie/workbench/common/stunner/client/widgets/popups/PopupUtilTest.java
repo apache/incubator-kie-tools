@@ -16,20 +16,25 @@
 
 package org.kie.workbench.common.stunner.client.widgets.popups;
 
+import com.google.gwtmockito.GwtMock;
+import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.client.views.pfly.widgets.Button;
 import org.uberfire.client.views.pfly.widgets.ConfirmPopup;
 import org.uberfire.client.views.pfly.widgets.InlineNotification;
+import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
 import org.uberfire.mvp.Command;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(GwtMockitoTestRunner.class)
 public class PopupUtilTest {
 
     private static final String TITLE = "TITLE";
@@ -45,12 +50,23 @@ public class PopupUtilTest {
     @Mock
     private ConfirmPopup confirmPopup;
 
+    @GwtMock
+    private YesNoCancelPopup yesNoCancelPopup;
+
     @Mock
     private Command command;
 
+    @Mock
+    private Command noCommand;
+
     @Before
     public void setUp() {
-        popupUtil = new PopupUtil(confirmPopup);
+        popupUtil = spy(new PopupUtil(confirmPopup) {
+            @Override
+            YesNoCancelPopup buildYesNoCancelPopup(String title, String message, Command yesCommand, Command noCommand, Command cancelCommand) {
+                return yesNoCancelPopup;
+            }
+        });
     }
 
     @Test
@@ -87,5 +103,17 @@ public class PopupUtilTest {
                               someBtnType,
                               CONFIRM_MESSAGE,
                               command);
+    }
+
+    @Test
+    public void testShowYesNoCancelPopup() {
+        popupUtil.showYesNoCancelPopup(TITLE,
+                                       CONFIRM_MESSAGE,
+                                       command,
+                                       noCommand);
+        verify(popupUtil).buildYesNoCancelPopup(eq(TITLE), eq(CONFIRM_MESSAGE), eq(command), eq(noCommand), any(Command.class));
+        verify(yesNoCancelPopup).clearScrollHeight();
+        verify(yesNoCancelPopup).setClosable(false);
+        verify(yesNoCancelPopup).show();
     }
 }

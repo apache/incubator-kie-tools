@@ -120,6 +120,11 @@
       <artifactId>kie-wb-common-stunner-forms-client</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.kie.workbench.stunner</groupId>
+      <artifactId>kie-wb-common-stunner-jbpm-designer-integration-shared</artifactId>
+    </dependency>
+
     <!-- KIE Commons -->
 
     <dependency>

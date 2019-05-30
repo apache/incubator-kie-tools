@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2019 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~  http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <groupId>org.kie.workbench.stunner</groupId>
+    <artifactId>kie-wb-common-stunner-extensions</artifactId>
+    <version>7.23.0-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>kie-wb-common-stunner-jbpm-designer-integration</artifactId>
+  <name>Kie Workbench - Common - Stunner - Extensions</name>
+  <description>Kie Workbench - Common - Stunner - jBPM Designer Integration</description>
+  <packaging>pom</packaging>
+
+  <modules>
+    <module>kie-wb-common-stunner-jbpm-designer-integration-shared</module>
+    <module>kie-wb-common-stunner-jbpm-designer-integration-api</module>
+    <module>kie-wb-common-stunner-jbpm-designer-integration-backend</module>
+    <module>kie-wb-common-stunner-jbpm-designer-integration-client</module>
+  </modules>
+
+</project>

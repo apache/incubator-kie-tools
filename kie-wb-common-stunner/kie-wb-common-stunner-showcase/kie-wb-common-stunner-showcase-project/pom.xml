@@ -738,6 +738,28 @@
       <scope>provided</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.kie.workbench.stunner</groupId>
+      <artifactId>kie-wb-common-stunner-jbpm-designer-integration-shared</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.workbench.stunner</groupId>
+      <artifactId>kie-wb-common-stunner-jbpm-designer-integration-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.workbench.stunner</groupId>
+      <artifactId>kie-wb-common-stunner-jbpm-designer-integration-backend</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.workbench.stunner</groupId>
+      <artifactId>kie-wb-common-stunner-jbpm-designer-integration-client</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
     <!-- Case Management -->
     <dependency>
       <groupId>org.kie.workbench.stunner</groupId>
@@ -1393,6 +1415,10 @@
             <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-case-mgmt-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-case-mgmt-project-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-case-mgmt-project-client</compileSourcesArtifact>
+
+            <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-jbpm-designer-integration-shared</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-jbpm-designer-integration-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-jbpm-designer-integration-client</compileSourcesArtifact>
 
             <!-- Experimental Deps -->
             <compileSourcesArtifact>org.uberfire:uberfire-experimental-api</compileSourcesArtifact>

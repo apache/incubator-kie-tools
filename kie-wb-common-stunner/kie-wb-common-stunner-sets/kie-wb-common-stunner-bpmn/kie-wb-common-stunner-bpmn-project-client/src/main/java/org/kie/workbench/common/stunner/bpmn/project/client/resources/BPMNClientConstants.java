@@ -38,25 +38,4 @@ public interface BPMNClientConstants {
 
     @TranslationKey(defaultValue = "Migrate")
     String EditorMigrateActionMenu = "editor.actions.migrateMenu";
-
-    @TranslationKey(defaultValue = "Migrate Diagram")
-    String EditorMigrateAction = "editor.actions.migrate";
-
-    @TranslationKey(defaultValue = "Migrate Diagram")
-    String EditorMigrateActionTitle = "editor.actions.migrateTitle";
-
-    @TranslationKey(defaultValue = "Warning this action cannot be undone")
-    String EditorMigrateActionWarning = "editor.actions.migrateWarning";
-
-    @TranslationKey(defaultValue = "Confirm Migrate")
-    String EditorMigrateConfirmAction = "editor.actions.migrateConfirmAction";
-
-    @TranslationKey(defaultValue = "File {0} was migrated from Stunner to jBPM designer")
-    String EditorMigrateCommitMessage = "editor.actions.migrateCommitMessage";
-
-    @TranslationKey(defaultValue = "A jBPM designer process already exists for target file {0}")
-    String EditorMigrateErrorProcessAlreadyExists = "editor.actions.migrateErrorProcessAlreadyExists";
-
-    @TranslationKey(defaultValue = "An error was produced during migration")
-    String EditorMigrateErrorGeneric = "editor.actions.migrateErrorGeneric";
 }
