@@ -461,6 +461,8 @@ public class ScenarioSimulationServiceImpl
         return Arrays.asList(new GAV("org.drools", "drools-scenario-simulation-api", kieVersion),
                              new GAV("org.drools", "drools-scenario-simulation-backend", kieVersion),
                              new GAV("org.drools", "drools-compiler", kieVersion),
+                             // needed to compile guided decision table
+                             new GAV("org.drools", "drools-workbench-models-guided-dtable", kieVersion),
                              new GAV("org.kie", "kie-dmn-feel", kieVersion),
                              new GAV("org.kie", "kie-dmn-api", kieVersion),
                              new GAV("org.kie", "kie-dmn-core", kieVersion));

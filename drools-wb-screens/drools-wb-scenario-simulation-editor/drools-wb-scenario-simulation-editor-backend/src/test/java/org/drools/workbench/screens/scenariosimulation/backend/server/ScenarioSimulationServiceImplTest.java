@@ -440,4 +440,11 @@ public class ScenarioSimulationServiceImplTest {
             fail();
         }
     }
+
+    // RHPAM-2089
+    @Test
+    public void checkDependencyForGTable() {
+        GAV gtableDependency = new GAV("org.drools", "drools-workbench-models-guided-dtable", null);
+        assertTrue(service.getDependencies(null).contains(gtableDependency));
+    }
 }
