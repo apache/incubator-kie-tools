@@ -102,8 +102,7 @@ public class NewScenarioSimulationHandlerTest extends AbstractNewScenarioTest {
                                                        scenarioSimulationServiceCallerMock,
                                                        authorizationManagerMock,
                                                        sessionInfoMock,
-                                                       libraryPlacesMock,
-                                                       assetQueryServiceMock) {
+                                                       scenarioSimulationDropdownMock) {
             {
                 this.uploadWidget = uploadWidgetMock;
                 this.sourceTypeSelector = sourceTypeSelectorMock;

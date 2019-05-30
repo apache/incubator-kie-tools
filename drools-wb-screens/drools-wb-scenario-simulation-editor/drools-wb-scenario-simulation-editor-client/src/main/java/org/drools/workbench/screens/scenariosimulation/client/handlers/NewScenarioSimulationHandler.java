@@ -24,6 +24,7 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
+import org.drools.workbench.screens.scenariosimulation.client.dropdown.ScenarioSimulationDropdown;
 import org.drools.workbench.screens.scenariosimulation.client.editor.ScenarioSimulationEditorPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.popup.CustomBusyPopup;
 import org.drools.workbench.screens.scenariosimulation.client.resources.ScenarioSimulationEditorResources;
@@ -32,8 +33,6 @@ import org.drools.workbench.screens.scenariosimulation.client.type.ScenarioSimul
 import org.drools.workbench.screens.scenariosimulation.service.ScenarioSimulationService;
 import org.guvnor.common.services.project.model.Package;
 import org.jboss.errai.common.client.api.Caller;
-import org.kie.workbench.common.screens.library.client.screens.assets.AssetQueryService;
-import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.widgets.client.handlers.DefaultNewResourceHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.kie.workbench.common.widgets.client.handlers.NewResourceSuccessEvent;
@@ -67,9 +66,7 @@ public class NewScenarioSimulationHandler
 
     private final AuthorizationManager authorizationManager;
     private final SessionInfo sessionInfo;
-    private final LibraryPlaces libraryPlaces;
-    private final AssetQueryService assetQueryService;
-
+    private final ScenarioSimulationDropdown scenarioSimulationDropdown;
 
     @Inject
     public NewScenarioSimulationHandler(final ScenarioSimulationResourceType resourceType,
@@ -80,8 +77,7 @@ public class NewScenarioSimulationHandler
                                         final Caller<ScenarioSimulationService> scenarioSimulationService,
                                         final AuthorizationManager authorizationManager,
                                         final SessionInfo sessionInfo,
-                                        final LibraryPlaces libraryPlaces,
-                                        final AssetQueryService assetQueryService) {
+                                        final ScenarioSimulationDropdown scenarioSimulationDropdown) {
         this.resourceType = resourceType;
         this.authorizationManager = authorizationManager;
         this.sessionInfo = sessionInfo;
@@ -90,8 +86,7 @@ public class NewScenarioSimulationHandler
         this.scenarioSimulationService = scenarioSimulationService;
         this.placeManager = placeManager;
         this.notificationEvent = notificationEvent;
-        this.libraryPlaces = libraryPlaces;
-        this.assetQueryService = assetQueryService;
+        this.scenarioSimulationDropdown = scenarioSimulationDropdown;
     }
 
     @Override
@@ -112,9 +107,9 @@ public class NewScenarioSimulationHandler
     @Override
     public boolean canCreate() {
         return authorizationManager.authorize(new ResourceRef(ScenarioSimulationEditorPresenter.IDENTIFIER,
-                                                                           ActivityResourceType.EDITOR),
-                                                           ResourceAction.READ,
-                                                           sessionInfo.getIdentity());
+                                                              ActivityResourceType.EDITOR),
+                                              ResourceAction.READ,
+                                              sessionInfo.getIdentity());
     }
 
     @Override
@@ -137,23 +132,25 @@ public class NewScenarioSimulationHandler
                 break;
             case RULE:
             default:
-                value = null;
+                value = "default";
         }
         busyIndicatorView.showBusyIndicator(CommonConstants.INSTANCE.Saving());
         CustomBusyPopup.showMessage(CommonConstants.INSTANCE.Saving());
         scenarioSimulationService.call(getSuccessCallback(presenter),
                                        new ScenarioSimulationHasBusyIndicatorDefaultErrorCallback(busyIndicatorView)).create(pkg.getPackageTestResourcesPath(),
-                                                                                                                         buildFileName(baseFileName,
-                                                                                                                         resourceType),
-                                                                                                                         new ScenarioSimulationModel(),
-                                                                                                                         "",
-                                                                                                                         selectedType,
-                                                                                                                         value);
+                                                                                                                             buildFileName(baseFileName,
+                                                                                                                                           resourceType),
+                                                                                                                             new ScenarioSimulationModel(),
+                                                                                                                             "",
+                                                                                                                             selectedType,
+                                                                                                                             value);
     }
 
     @PostConstruct
     public void setupExtensions() {
-        uploadWidget = new TitledAttachmentFileWidget(ScenarioSimulationEditorConstants.INSTANCE.chooseDMN(), libraryPlaces, assetQueryService);
+        uploadWidget = new TitledAttachmentFileWidget(ScenarioSimulationEditorConstants.INSTANCE.chooseDMN(),
+                                                      scenarioSimulationService,
+                                                      scenarioSimulationDropdown);
         sourceTypeSelector = new SourceTypeSelector(uploadWidget);
         extensions.add(Pair.newPair(ScenarioSimulationEditorConstants.INSTANCE.sourceType(), sourceTypeSelector));
         extensions.add(Pair.newPair("", uploadWidget));
@@ -163,6 +160,4 @@ public class NewScenarioSimulationHandler
         uploadWidget.clearStatus();
         newResourcePresenter.show(NewScenarioSimulationHandler.this);
     }
-
-
 }

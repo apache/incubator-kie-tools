@@ -16,31 +16,21 @@
 
 package org.drools.workbench.screens.scenariosimulation.client.handlers;
 
-import org.guvnor.common.services.project.model.WorkspaceProject;
+import org.drools.workbench.screens.scenariosimulation.client.dropdown.ScenarioSimulationDropdown;
+import org.drools.workbench.screens.scenariosimulation.service.ScenarioSimulationService;
+import org.jboss.errai.common.client.api.Caller;
 import org.junit.Before;
-import org.kie.workbench.common.screens.library.api.AssetQueryResult;
-import org.kie.workbench.common.screens.library.api.ProjectAssetsQuery;
-import org.kie.workbench.common.screens.library.client.screens.assets.AssetQueryService;
-import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.mockito.Mock;
-
-import static org.mockito.Matchers.isA;
-import static org.mockito.Mockito.when;
 
 public abstract class AbstractNewScenarioTest {
 
     @Mock
-    protected LibraryPlaces libraryPlacesMock;
+    protected Caller<ScenarioSimulationService> scenarioSimulationServiceMock;
+
     @Mock
-    protected WorkspaceProject workspaceProjectMock;
-    @Mock
-    protected AssetQueryService assetQueryServiceMock;
-    @Mock
-    protected AssetQueryService.Invoker<AssetQueryResult> invokerMock;
+    protected ScenarioSimulationDropdown scenarioSimulationDropdownMock;
 
     @Before
     public void setup() throws Exception {
-        when(assetQueryServiceMock.getAssets(isA(ProjectAssetsQuery.class))).thenReturn(invokerMock);
-        when(libraryPlacesMock.getActiveWorkspace()).thenReturn(workspaceProjectMock);
     }
 }

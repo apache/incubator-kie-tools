@@ -15,51 +15,41 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.handlers;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.Optional;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.FlowPanel;
+import org.drools.workbench.screens.scenariosimulation.client.dropdown.ScenarioSimulationDropdown;
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
-import org.guvnor.common.services.project.model.WorkspaceProject;
+import org.drools.workbench.screens.scenariosimulation.service.ScenarioSimulationService;
 import org.gwtbootstrap3.client.ui.FormLabel;
 import org.gwtbootstrap3.client.ui.constants.ElementTags;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.Styles;
 import org.gwtbootstrap3.client.ui.html.Div;
 import org.gwtbootstrap3.client.ui.html.Span;
-import org.jboss.errai.common.client.api.RemoteCallback;
-import org.kie.workbench.common.screens.examples.client.wizard.widgets.ComboBox;
-import org.kie.workbench.common.screens.explorer.model.FolderItemType;
-import org.kie.workbench.common.screens.library.api.AssetInfo;
-import org.kie.workbench.common.screens.library.api.AssetQueryResult;
-import org.kie.workbench.common.screens.library.api.ProjectAssetsQuery;
-import org.kie.workbench.common.screens.library.client.screens.assets.AssetQueryService;
-import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
-import org.uberfire.util.URIUtil;
+import org.jboss.errai.common.client.api.Caller;
+import org.kie.workbench.common.widgets.client.assets.dropdown.KieAssetsDropdownItem;
 
-public class TitledAttachmentFileWidget extends Composite implements ValueChangeHandler<String> {
+public class TitledAttachmentFileWidget extends Composite {
 
-    protected VerticalPanel fields = GWT.create(VerticalPanel.class);
+    protected FlowPanel fields = GWT.create(FlowPanel.class);
     protected Div divElement = GWT.create(Div.class);
     protected FormLabel titleLabel = GWT.create(FormLabel.class);
     protected Span errorLabel = GWT.create(Span.class);
-    protected ComboBox comboBox = GWT.create(ComboBox.class);
-    protected LibraryPlaces libraryPlaces;
-    protected AssetQueryService assetQueryService;
-    protected WorkspaceProject workspaceProject;
+    protected ScenarioSimulationDropdown scenarioSimulationDropdown;
+    protected Caller<ScenarioSimulationService> scenarioSimulationService;
     protected String selectedPath;
 
-    public TitledAttachmentFileWidget(String title, LibraryPlaces libraryPlaces, AssetQueryService assetQueryService) {
+    public TitledAttachmentFileWidget(String title,
+                                      Caller<ScenarioSimulationService> scenarioSimulationService,
+                                      ScenarioSimulationDropdown scenarioSimulationDropdown) {
+        this.scenarioSimulationService = scenarioSimulationService;
+        this.scenarioSimulationDropdown = scenarioSimulationDropdown;
         titleLabel.setStyleName("control-label");
         titleLabel.setText(title);
         divElement.add(titleLabel);
@@ -68,25 +58,26 @@ public class TitledAttachmentFileWidget extends Composite implements ValueChange
         errorLabel.setColor("#c00");
         errorLabel.setText(ScenarioSimulationEditorConstants.INSTANCE.chooseValidDMNAsset());
         fields.add(divElement);
-        fields.add(this.comboBox);
+        fields.add(this.scenarioSimulationDropdown.asWidget());
         fields.add(this.errorLabel);
-        this.libraryPlaces = libraryPlaces;
-        this.assetQueryService = assetQueryService;
-        this.workspaceProject = libraryPlaces.getActiveWorkspace();
         initWidget(fields);
-        comboBox.addValueChangeHandler(this);
+        scenarioSimulationDropdown.init();
+        scenarioSimulationDropdown.registerOnChangeHandler(() -> {
+            final Optional<KieAssetsDropdownItem> value = scenarioSimulationDropdown.getValue();
+            selectedPath = value.map(KieAssetsDropdownItem::getValue).orElse(null);
+            validate();
+        });
     }
 
     public void clearStatus() {
         updateAssetList();
-        comboBox.setText(null);
         errorLabel.setText(null);
         selectedPath = null;
     }
 
     public void updateAssetList() {
-        comboBox.clear();
-        updateAssets(this::addAssets);
+        scenarioSimulationDropdown.clear();
+        scenarioSimulationDropdown.loadAssets();
     }
 
     public String getSelectedPath() {
@@ -101,48 +92,6 @@ public class TitledAttachmentFileWidget extends Composite implements ValueChange
             errorLabel.setText(null);
         }
         return toReturn;
-    }
-
-    @Override
-    public void onValueChange(ValueChangeEvent<String> event) {
-        selectedPath = event.getValue();
-        validate();
-    }
-
-
-    protected void updateAssets(RemoteCallback<AssetQueryResult> callback) {
-        workspaceProject = libraryPlaces.getActiveWorkspace();
-        ProjectAssetsQuery query = createProjectQuery();
-        assetQueryService.getAssets(query)
-                .call(callback, new DefaultErrorCallback());
-    }
-
-    protected ProjectAssetsQuery createProjectQuery() {
-        List<String> suffixes = Collections.singletonList("dmn");
-        return new ProjectAssetsQuery(workspaceProject,
-                                      "",
-                                      0,
-                                      1000,
-                                      suffixes);
-    }
-
-    protected void addAssets(AssetQueryResult result) {
-        if (Objects.equals(AssetQueryResult.ResultType.Normal, result.getResultType())) {
-            List<AssetInfo> assetInfos = result.getAssetInfos().get();
-            assetInfos.forEach(asset -> {
-                if (asset.getFolderItem().getType().equals(FolderItemType.FILE)) {
-                    comboBox.addItem(getAssetPath(asset));
-                }
-            });
-        }
-    }
-
-    protected String getAssetPath(final AssetInfo asset) {
-        final String fullPath = ((Path) asset.getFolderItem().getItem()).toURI();
-        final String projectRootPath = workspaceProject.getRootPath().toURI();
-        final String relativeAssetPath = fullPath.substring(projectRootPath.length());
-        final String decodedRelativeAssetPath = URIUtil.decode(relativeAssetPath);
-        return decodedRelativeAssetPath;
     }
 
     /**
