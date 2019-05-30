@@ -40,6 +40,7 @@ import org.uberfire.client.mvp.UberElemental;
 import org.uberfire.mvp.Command;
 
 import static org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType.BOOLEAN;
+import static org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType.CONTEXT;
 import static org.kie.workbench.common.dmn.client.editors.types.persistence.CreationType.ABOVE;
 import static org.kie.workbench.common.dmn.client.editors.types.persistence.CreationType.BELOW;
 import static org.kie.workbench.common.dmn.client.editors.types.persistence.CreationType.NESTED;
@@ -101,6 +102,7 @@ public class DataTypeListItem {
         this.nameFormatValidator = nameFormatValidator;
         this.editModeToggleEvent = editModeToggleEvent;
         this.dataTypeChangedEvent = dataTypeChangedEvent;
+        this.dataTypeListComponent.setOnValueChanged(value -> refreshConstraintComponent());
     }
 
     @PostConstruct
@@ -123,8 +125,8 @@ public class DataTypeListItem {
         this.level = level;
 
         setupSelectComponent();
-        setupConstraintComponent();
         setupListComponent();
+        setupConstraintComponent();
         setupView();
     }
 
@@ -483,7 +485,7 @@ public class DataTypeListItem {
     }
 
     void refreshConstraintComponent() {
-        if (isBooleanType() || isStructureType()) {
+        if (isBooleanType() || isStructureType() || isContextType() || isList()) {
             dataTypeConstraintComponent.disable();
         } else {
             dataTypeConstraintComponent.enable();
@@ -496,6 +498,10 @@ public class DataTypeListItem {
 
     private boolean isStructureType() {
         return Objects.equals(dataTypeManager.structure(), getType());
+    }
+
+    private boolean isContextType() {
+        return Objects.equals(CONTEXT.getName(), getType());
     }
 
     public interface View extends UberElemental<DataTypeListItem> {

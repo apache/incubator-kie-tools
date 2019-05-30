@@ -91,6 +91,7 @@ public class SmallSwitchComponentViewTest {
         view.onInputCheckBoxChange(event);
 
         verify(view).refreshCheckBoxText();
+        verify(view).callOnValueChanged();
     }
 
     @Test

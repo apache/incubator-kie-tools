@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.dmn.client.editors.types.listview.common;
 
+import java.util.function.Consumer;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -45,11 +47,17 @@ public class SmallSwitchComponent {
         view.setValue(value);
     }
 
+    public void setOnValueChanged(final Consumer<Boolean> onValueChanged) {
+        view.setOnValueChanged(onValueChanged);
+    }
+
     public interface View extends UberElemental<SmallSwitchComponent>,
                                   IsElement {
 
         boolean getValue();
 
         void setValue(final boolean value);
+
+        void setOnValueChanged(final Consumer<Boolean> onValueChanged);
     }
 }

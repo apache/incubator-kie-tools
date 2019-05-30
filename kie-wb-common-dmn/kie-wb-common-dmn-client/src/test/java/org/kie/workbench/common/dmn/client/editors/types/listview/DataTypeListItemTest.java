@@ -49,6 +49,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType.BOOLEAN;
+import static org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType.CONTEXT;
 import static org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType.STRING;
 import static org.kie.workbench.common.dmn.client.editors.types.persistence.CreationType.ABOVE;
 import static org.kie.workbench.common.dmn.client.editors.types.persistence.CreationType.BELOW;
@@ -149,8 +150,8 @@ public class DataTypeListItemTest {
 
         final InOrder inOrder = inOrder(listItem);
         inOrder.verify(listItem).setupSelectComponent();
-        inOrder.verify(listItem).setupConstraintComponent();
         inOrder.verify(listItem).setupListComponent();
+        inOrder.verify(listItem).setupConstraintComponent();
         inOrder.verify(listItem).setupView();
 
         assertEquals(expectedDataType, listItem.getDataType());
@@ -904,6 +905,26 @@ public class DataTypeListItemTest {
     public void testRefreshConstraintComponentWhenSelectedTypeIsBoolean() {
 
         when(dataTypeSelectComponent.getValue()).thenReturn(BOOLEAN.getName());
+
+        listItem.refreshConstraintComponent();
+
+        verify(dataTypeConstraintComponent).disable();
+    }
+
+    @Test
+    public void testRefreshConstraintComponentWhenSelectedTypeIsContext() {
+
+        when(dataTypeSelectComponent.getValue()).thenReturn(CONTEXT.getName());
+
+        listItem.refreshConstraintComponent();
+
+        verify(dataTypeConstraintComponent).disable();
+    }
+
+    @Test
+    public void testRefreshConstraintComponentWhenSelectedTypeIsALIst() {
+
+        when(dataTypeListComponent.getValue()).thenReturn(true);
 
         listItem.refreshConstraintComponent();
 

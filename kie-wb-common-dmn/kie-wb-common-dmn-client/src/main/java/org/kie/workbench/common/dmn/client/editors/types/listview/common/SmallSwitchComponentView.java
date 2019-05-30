@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.dmn.client.editors.types.listview.common;
 
+import java.util.Objects;
+import java.util.function.Consumer;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -46,6 +49,8 @@ public class SmallSwitchComponentView implements SmallSwitchComponent.View {
 
     private SmallSwitchComponent presenter;
 
+    private Consumer<Boolean> onValueChanged;
+
     @Inject
     public SmallSwitchComponentView(final HTMLInputElement inputCheckbox,
                                     final @Named("span") HTMLElement checkboxText,
@@ -68,6 +73,13 @@ public class SmallSwitchComponentView implements SmallSwitchComponent.View {
     @EventHandler("input-checkbox")
     public void onInputCheckBoxChange(final ChangeEvent e) {
         refreshCheckBoxText();
+        callOnValueChanged();
+    }
+
+    void callOnValueChanged() {
+        if (!Objects.isNull(onValueChanged)) {
+            onValueChanged.accept(isChecked());
+        }
     }
 
     @Override
@@ -80,6 +92,11 @@ public class SmallSwitchComponentView implements SmallSwitchComponent.View {
         inputCheckbox.checked = value;
 
         refreshCheckBoxText();
+    }
+
+    @Override
+    public void setOnValueChanged(final Consumer<Boolean> onValueChanged) {
+        this.onValueChanged = onValueChanged;
     }
 
     void refreshCheckBoxText() {
