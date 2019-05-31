@@ -206,7 +206,7 @@ public class ScenarioSimulationGridPanelClickHandlerTest extends AbstractScenari
         if (assertExpected) {
             assertTrue(message, scenarioSimulationGridPanelClickHandler.manageCoordinates((int) CLICK_POINT_X, (int) CLICK_POINT_Y));
             verify(scenarioGridMock, times(1)).setSelectedColumnAndHeader(eq(0), eq(0));
-            verify(eventBusMock, times(1)).fireEvent(isA(EnableTestToolsEvent.class));
+            verify(eventBusMock, times(1)).fireEvent(isA(GwtEvent.class));
         } else {
             assertFalse(message, scenarioSimulationGridPanelClickHandler.manageCoordinates((int) CLICK_POINT_X, (int) CLICK_POINT_Y));
             verify(scenarioGridMock, never()).setSelectedColumnAndHeader(eq(0), eq(0));

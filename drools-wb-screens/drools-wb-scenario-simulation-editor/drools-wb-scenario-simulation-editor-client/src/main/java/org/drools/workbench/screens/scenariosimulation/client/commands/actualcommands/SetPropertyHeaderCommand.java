@@ -15,8 +15,6 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands;
 
-import java.util.Optional;
-
 import javax.enterprise.context.Dependent;
 
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
@@ -33,8 +31,7 @@ public class SetPropertyHeaderCommand extends AbstractSelectedColumnCommand {
         setPropertyHeader(context,
                           selectedColumn,
                           context.getStatus().getPropertyNameElements(),
-                          context.getStatus().getValueClassName(),
-                          Optional.empty());
+                          context.getStatus().getValueClassName());
     }
 
 }

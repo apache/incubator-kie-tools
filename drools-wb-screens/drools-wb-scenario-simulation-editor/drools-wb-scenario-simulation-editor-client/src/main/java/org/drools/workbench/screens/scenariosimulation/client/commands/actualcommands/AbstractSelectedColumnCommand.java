@@ -164,21 +164,55 @@ public abstract class AbstractSelectedColumnCommand extends AbstractScenarioSimu
      * @param selectedColumn The selected <code>ScenarioGridColumn</code> where the command was launched
      * @param propertyNameElements The <code>List</code> with the path instance_name.property.name (eg. Author.isAlive)
      * @param propertyClass it contains the full classname of the property (eg. com.Author)
-     * @param propertyHeaderTitle The title to assign to this property. Can be null, in this case it will be retrieved used <code>getPropertyHeaderTitle()</code> method
      */
-    protected void setPropertyHeader(ScenarioSimulationContext context, ScenarioGridColumn selectedColumn, List<String> propertyNameElements, String propertyClass, Optional<String> propertyHeaderTitle) {
+    protected void setPropertyHeader(ScenarioSimulationContext context, ScenarioGridColumn selectedColumn, List<String> propertyNameElements, String propertyClass) {
+        String instanceAliasName = propertyNameElements.get(0);
+        String canonicalClassName = getFullPackage(context) + instanceAliasName;
+        final FactIdentifier factIdentifier = setEditableHeadersAndGetFactIdentifier(context, selectedColumn, instanceAliasName, canonicalClassName);
+        String propertyTitle = getPropertyHeaderTitle(context, propertyNameElements, factIdentifier);
+        this.setPropertyHeader(context, selectedColumn, factIdentifier, propertyNameElements, propertyClass, propertyTitle);
+    }
+
+    /**
+     * It assigns a property to the selected <code>ScenarioGridColumn</code>
+     * @param context It contains the <b>Context</b> inside which the commands will be executed
+     * @param selectedColumn The selected <code>ScenarioGridColumn</code> where the command was launched
+     * @param propertyNameElements The <code>List</code> with the path instance_name.property.name (eg. Author.isAlive)
+     * @param propertyClass it contains the full classname of the property (eg. com.Author)
+     * @param propertyTitle The title to assign to this property.
+     */
+    protected void setPropertyHeader(ScenarioSimulationContext context, ScenarioGridColumn selectedColumn, List<String> propertyNameElements, String propertyClass, String propertyTitle) {
+        String instanceAliasName = propertyNameElements.get(0);
+        String canonicalClassName = getFullPackage(context) + instanceAliasName;
+        final FactIdentifier factIdentifier = setEditableHeadersAndGetFactIdentifier(context, selectedColumn, instanceAliasName, canonicalClassName);
+        this.setPropertyHeader(context, selectedColumn, factIdentifier, propertyNameElements, propertyClass, propertyTitle);
+    }
+
+    /**
+     * It assigns a property to the selected <code>ScenarioGridColumn</code>
+     * @param context It contains the <b>Context</b> inside which the commands will be executed
+     * @param selectedColumn The selected <code>ScenarioGridColumn</code> where the command was launched
+     * @param factIdentifier The <code>FactIdentifier</code> associated to the selected column
+     * @param propertyNameElements The <code>List</code> with the path instance_name.property.name (eg. Author.isAlive)
+     * @param propertyClass it contains the full classname of the property (eg. com.Author)
+     * @param propertyTitle The title to assign to this property.
+     */
+    protected void setPropertyHeader(ScenarioSimulationContext context, ScenarioGridColumn selectedColumn, FactIdentifier factIdentifier, List<String> propertyNameElements, String propertyClass, String propertyTitle) {
+        if (propertyTitle == null) {
+            throw new IllegalArgumentException("Property title can not be null");
+        }
         int columnIndex = context.getModel().getColumns().indexOf(selectedColumn);
-        String aliasName = propertyNameElements.get(0);
-        String canonicalClassName = getFullPackage(context) + aliasName;
-        final FactIdentifier factIdentifier = setEditableHeadersAndGetFactIdentifier(context, selectedColumn, aliasName, canonicalClassName);
+        String instanceAliasName = propertyNameElements.get(0);
+        if (selectedColumn.isInstanceAssigned() && !instanceAliasName.equals(selectedColumn.getInformationHeaderMetaData().getTitle())) {
+            throw new IllegalArgumentException("It's not possible to assign this property");
+        }
         String className = factIdentifier.getClassName();
-        String propertyTitle = propertyHeaderTitle.orElseGet(() -> getPropertyHeaderTitle(context, propertyNameElements, factIdentifier));
         final GridData.Range instanceLimits = context.getModel().getInstanceLimits(columnIndex);
         IntStream.range(instanceLimits.getMinRowIndex(), instanceLimits.getMaxRowIndex() + 1)
                 .forEach(index -> {
                     final ScenarioGridColumn scenarioGridColumn = (ScenarioGridColumn) context.getModel().getColumns().get(index);
                     if (!scenarioGridColumn.isInstanceAssigned()) { // We have not defined the instance, yet
-                        setInstanceHeaderMetaData(scenarioGridColumn, aliasName, factIdentifier);
+                        setInstanceHeaderMetaData(scenarioGridColumn, instanceAliasName, factIdentifier);
                     }
                 });
         selectedColumn.getPropertyHeaderMetaData().setColumnGroup(getPropertyMetaDataGroup(selectedColumn.getInformationHeaderMetaData().getColumnGroup()));

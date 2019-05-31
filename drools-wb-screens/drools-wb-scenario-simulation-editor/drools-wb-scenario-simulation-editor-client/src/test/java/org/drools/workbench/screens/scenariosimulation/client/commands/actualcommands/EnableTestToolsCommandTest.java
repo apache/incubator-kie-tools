@@ -32,15 +32,12 @@ import static org.mockito.Mockito.verify;
 @RunWith(GwtMockitoTestRunner.class)
 public class EnableTestToolsCommandTest extends AbstractScenarioSimulationCommandTest {
 
-
-
     @Before
     public void setup() {
         super.setup();
         command = spy(new EnableTestToolsCommand());
         assertFalse(command.isUndoable());
     }
-
 
     @Test
     public void executeWithFactName() {

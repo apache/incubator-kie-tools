@@ -135,8 +135,7 @@ public class ScenarioSimulationGridHeaderUtilities {
             return propertyNameElements != null ? new EnableTestToolsEvent(scenarioGridColumn.getInformationHeaderMetaData()
                                                                                    .getTitle(), propertyNameElements) : new EnableTestToolsEvent(scenarioGridColumn.getInformationHeaderMetaData().getTitle());
         } else {
-            String complexSearch = getExistingInstances(columnGroup, scenarioGrid.getModel());
-            return new EnableTestToolsEvent(complexSearch, false);
+            return new EnableTestToolsEvent(scenarioGridColumn.getInformationHeaderMetaData().getTitle(), false);
         }
     }
 

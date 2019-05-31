@@ -16,8 +16,6 @@
 
 package org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands;
 
-import java.util.Optional;
-
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.scenariosimulation.api.model.FactMappingType;
 import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioCellTextAreaSingletonDOMElementFactory;
@@ -57,7 +55,10 @@ public class SetPropertyHeaderCommandTest extends AbstractSelectedColumnCommandT
     @Test
     public void executeIfSelected() {
         ((SetPropertyHeaderCommand) command).executeIfSelectedColumn(scenarioSimulationContextLocal, gridColumnMock);
-        verify((SetPropertyHeaderCommand) command, times(1)).setPropertyHeader(eq(scenarioSimulationContextLocal), eq(gridColumnMock), eq(MULTIPART_VALUE_ELEMENTS), eq(VALUE_CLASS_NAME), eq(Optional.empty()));
+        verify((SetPropertyHeaderCommand) command, times(1)).setPropertyHeader(eq(scenarioSimulationContextLocal),
+                                                                                                      eq(gridColumnMock),
+                                                                                                      eq(MULTIPART_VALUE_ELEMENTS),
+                                                                                                      eq(VALUE_CLASS_NAME));
     }
 
     @Test

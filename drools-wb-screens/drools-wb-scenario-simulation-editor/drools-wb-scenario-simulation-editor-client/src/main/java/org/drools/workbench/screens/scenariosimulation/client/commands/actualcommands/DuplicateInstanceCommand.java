@@ -17,7 +17,6 @@ package org.drools.workbench.screens.scenariosimulation.client.commands.actualco
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -64,7 +63,7 @@ public class DuplicateInstanceCommand extends AbstractSelectedColumnCommand {
                                               createdColumn,
                                               propertyNameElements,
                                               originalFactMapping.getClassName(),
-                                              Optional.of(originalColumn.getPropertyHeaderMetaData().getTitle()));
+                                              originalColumn.getPropertyHeaderMetaData().getTitle());
 
                             /* It copies the properties values */
                             context.getModel().duplicateColumnValues(originalColumnIndex, createdColumnIndex);

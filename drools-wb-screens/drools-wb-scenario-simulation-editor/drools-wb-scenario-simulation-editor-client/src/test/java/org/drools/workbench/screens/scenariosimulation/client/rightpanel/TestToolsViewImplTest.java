@@ -29,8 +29,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -53,6 +55,9 @@ public class TestToolsViewImplTest {
 
     @Mock
     private ButtonElement clearSearchButtonMock;
+
+    @Mock
+    private ButtonElement searchButtonMock;
 
     @Mock
     private LabelElement dataObjectListContainerSeparatorMock;
@@ -90,13 +95,22 @@ public class TestToolsViewImplTest {
     @Mock
     private Style simpleJavaInstanceListStyleMock;
 
+    @Mock
+    private DivElement kieTestToolsContentMock;
+
+    @Mock
+    private ButtonElement conditionsButtonMock;
+
     @Before
     public void setup() {
         this.testToolsView = spy(new TestToolsViewImpl() {
             {
                 this.inputSearch = inputSearchMock;
                 this.clearSearchButton = clearSearchButtonMock;
+                this.searchButton = searchButtonMock;
+                this.conditionsButton = conditionsButtonMock;
                 this.nameField = nameFieldMock;
+                this.kieTestToolsContent = kieTestToolsContentMock;
                 this.dataObjectListContainer = dataObjectListContainerMock;
                 this.dataObjectListContainerSeparator = dataObjectListContainerSeparatorMock;
                 this.simpleJavaTypeListContainer = simpleJavaTypeListContainerMock;
@@ -111,18 +125,18 @@ public class TestToolsViewImplTest {
         when(simpleJavaTypeListContainerSeparatorMock.getStyle()).thenReturn(simpleJavaTypeListStyleMock);
         when(instanceListContainerSeparatorMock.getStyle()).thenReturn(instanceListStyleMock);
         when(simpleJavaInstanceListContainerSeparatorMock.getStyle()).thenReturn(simpleJavaInstanceListStyleMock);
-        testToolsView.init(testToolsPresenterMock);
     }
 
     @Test
     public void onClearSearchButtonClick() {
-        reset(testToolsPresenterMock);
+        testToolsView.init(testToolsPresenterMock);
         testToolsView.onClearSearchButtonClick(mock(ClickEvent.class));
         verify(testToolsPresenterMock, times(1)).onClearSearch();
     }
 
     @Test
     public void onInputSearchKeyUp() {
+        testToolsView.init(testToolsPresenterMock);
         testToolsView.onInputSearchKeyUp(mock(KeyUpEvent.class));
         verify(testToolsPresenterMock, times(1)).onShowClearButton();
     }
@@ -166,5 +180,46 @@ public class TestToolsViewImplTest {
         verify(instanceListContainerMock, times(1)).removeAllChildren();
         verify(simpleJavaInstanceListContainerSeparatorMock.getStyle(), times(1)).setDisplay(eq(Style.Display.NONE));
         verify(simpleJavaInstanceListContainerMock, times(1)).removeAllChildren();
+    }
+
+    @Test
+    public void setDisabledStatusTrue() {
+        testToolsView.setDisabledStatus(true);
+        verify(nameFieldMock, times(1)).setDisabled(eq(true));
+        verify(conditionsButtonMock, times(1)).setDisabled(true);
+        verify(testToolsView, times(1)).setContainersDisabledStatus(true);
+        verify(kieTestToolsContentMock, times(1)).addClassName("disabled");
+        verify(testToolsView, times(1)).disableSearch();
+        verify(testToolsView, times(1)).disableAddButton();
+        verify(kieTestToolsContentMock, never()).removeClassName(anyString());
+    }
+
+    @Test
+    public void setDisabledStatusFalse() {
+        testToolsView.setDisabledStatus(false);
+        verify(nameFieldMock, times(1)).setDisabled(eq(false));
+        verify(conditionsButtonMock, times(1)).setDisabled(false);
+        verify(testToolsView, times(1)).setContainersDisabledStatus(false);
+        verify(kieTestToolsContentMock, never()).addClassName(anyString());
+        verify(testToolsView, never()).disableSearch();
+        verify(testToolsView, never()).disableAddButton();
+        verify(kieTestToolsContentMock, times(1)).removeClassName("disabled");
+    }
+
+
+    @Test
+    public void enableSearch() {
+        testToolsView.enableSearch();
+        verify(clearSearchButtonMock, times(1)).setDisabled(eq(false));
+        verify(searchButtonMock, times(1)).setDisabled(eq(false));
+        verify(inputSearchMock, times(1)).setDisabled(eq(false));
+    }
+
+    @Test
+    public void disableSearch() {
+        testToolsView.disableSearch();
+        verify(clearSearchButtonMock, times(1)).setDisabled(eq(true));
+        verify(searchButtonMock, times(1)).setDisabled(eq(true));
+        verify(inputSearchMock, times(1)).setDisabled(eq(true));
     }
 }

@@ -315,21 +315,24 @@ public class TestToolsPresenter extends AbstractSubDockPresenter<TestToolsView> 
         listGroupItemPresenter.enable();
         editingColumnEnabled = true;
         view.enableEditorTab();
+        view.enableSearch();
     }
 
     @Override
     public void onEnableEditorTab(String factName, List<String> propertyNameElements, boolean notEqualsSearch) {
         onDisableEditorTab();
         onPerfectMatchSearchedEvent(factName, notEqualsSearch);
-        /* If notEqualsSearch is TRUE, then the instance is not assigned for the selected column.
-         * Therefore, it isn't necessary to search through the maps to check it.
-         */
-        if (!notEqualsSearch) {
-            updateInstanceIsAssignedStatus(factName);
-        }
         listGroupItemPresenter.enable(factName);
         editingColumnEnabled = true;
         view.enableEditorTab();
+        /* If notEqualsSearch is TRUE, then the instance is not assigned for the selected column.
+         * Therefore, it isn't necessary to search through the maps to check it. In that case, the search is activated.
+         */
+        if (!notEqualsSearch) {
+            updateInstanceIsAssignedStatus(factName);
+        } else {
+            view.enableSearch();
+        }
         if (propertyNameElements != null && !notEqualsSearch) {
             listGroupItemPresenter.selectProperty(factName, propertyNameElements);
         }
@@ -341,7 +344,6 @@ public class TestToolsPresenter extends AbstractSubDockPresenter<TestToolsView> 
         listGroupItemPresenter.disable();
         editingColumnEnabled = false;
         view.disableEditorTab();
-        view.disableAddButton();
         selectedFieldItemView = null;
         selectedListGroupItemView = null;
     }

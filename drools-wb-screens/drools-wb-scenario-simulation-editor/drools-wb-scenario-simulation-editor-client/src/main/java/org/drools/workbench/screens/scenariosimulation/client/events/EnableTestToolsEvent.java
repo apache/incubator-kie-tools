@@ -34,6 +34,7 @@ public class EnableTestToolsEvent extends GwtEvent<EnableTestToolsEventHandler> 
 
     /**
      * flag to decide which kind of filter (<b>equals</b> or <b>not equals</b>) is to be applied.
+     * In addition, this boolean is set to TRUE when the referring column doesn't have an <b>Instance</b> assigned.
      * Default to false (= <b>equals</b> filter)
      */
     private final boolean notEqualsSearch;
