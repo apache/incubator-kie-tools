@@ -57,6 +57,7 @@ public class DefinitionsConverter {
         p.setRelationship(pp.getRelationship());
         p.addAllRootElements(pp.getItemDefinitions());
         p.addAllRootElements(pp.getRootElements());
+        p.addAllRootElements(pp.getInterfaces());
 
         return definitions;
     }

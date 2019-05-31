@@ -97,6 +97,8 @@ public abstract class BaseTask implements BPMNViewDefinition {
                              ScriptTask.class)
                         .put(TaskTypes.BUSINESS_RULE,
                              BusinessRuleTask.class)
+                        .put(TaskTypes.SERVICE_TASK,
+                             GenericServiceTask.class)
                         .build();
 
         @Override

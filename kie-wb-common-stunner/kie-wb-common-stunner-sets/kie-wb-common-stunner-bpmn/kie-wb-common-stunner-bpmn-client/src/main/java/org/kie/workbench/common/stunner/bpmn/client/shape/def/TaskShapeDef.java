@@ -26,6 +26,7 @@ import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory
 import org.kie.workbench.common.stunner.bpmn.client.shape.view.handler.TaskViewHandler;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseTask;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
+import org.kie.workbench.common.stunner.bpmn.definition.GenericServiceTask;
 import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
 import org.kie.workbench.common.stunner.bpmn.definition.ScriptTask;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
@@ -46,6 +47,7 @@ public class TaskShapeDef extends BaseDimensionedShapeDef
     public static final SVGShapeViewResources<BaseTask, BPMNSVGViewFactory> VIEW_RESOURCES =
             new SVGShapeViewResources<BaseTask, BPMNSVGViewFactory>()
                     .put(NoneTask.class, BPMNSVGViewFactory::noneTask)
+                    .put(GenericServiceTask.class, BPMNSVGViewFactory::genericServiceTask)
                     .put(UserTask.class, BPMNSVGViewFactory::userTask)
                     .put(ScriptTask.class, BPMNSVGViewFactory::scriptTask)
                     .put(BusinessRuleTask.class, BPMNSVGViewFactory::businessRuleTask);
@@ -53,6 +55,7 @@ public class TaskShapeDef extends BaseDimensionedShapeDef
     public static final Map<Class<? extends BaseTask>, Glyph> GLYPHS =
             new Maps.Builder<Class<? extends BaseTask>, Glyph>()
                     .put(NoneTask.class, BPMNGlyphFactory.TASK)
+                    .put(GenericServiceTask.class, BPMNGlyphFactory.TASK_GENERIC_SERVICE)
                     .put(UserTask.class, BPMNGlyphFactory.TASK_USER)
                     .put(ScriptTask.class, BPMNGlyphFactory.TASK_SCRIPT)
                     .put(BusinessRuleTask.class, BPMNGlyphFactory.TASK_BUSINESS_RULE)
@@ -70,6 +73,7 @@ public class TaskShapeDef extends BaseDimensionedShapeDef
                     .put(ScriptTask.class, DEFAULT_TASK_MARGINS_WITH_ICON)
                     .put(BusinessRuleTask.class, DEFAULT_TASK_MARGINS_WITH_ICON)
                     .put(ServiceTask.class, DEFAULT_TASK_MARGINS_WITH_ICON)
+                    .put(GenericServiceTask.class, DEFAULT_TASK_MARGINS_WITH_ICON)
                     .build();
 
     @Override

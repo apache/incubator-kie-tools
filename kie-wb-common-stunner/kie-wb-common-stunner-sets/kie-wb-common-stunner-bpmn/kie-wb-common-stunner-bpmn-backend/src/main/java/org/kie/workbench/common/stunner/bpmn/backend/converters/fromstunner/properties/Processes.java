@@ -65,5 +65,6 @@ class Processes {
         }
         itemDefinitions.addAll(p.getItemDefinitions());
         rootElements.addAll(p.getRootElements());
+        rootElements.addAll(p.getInterfaces());
     }
 }

@@ -116,6 +116,14 @@
     opacity: 0;
 }
 
+.task_group_generic_service {
+    opacity: 0;
+}
+
+.task_generic_service_icon {
+    fill: #393f44;
+}
+
 .task_business_rule_icon {
     fill: #393f44;
 }
@@ -138,6 +146,10 @@
 }
 
 #serviceTask .task_group_service {
+    opacity: 1;
+}
+
+#genericServiceTask .task_group_generic_service {
     opacity: 1;
 }
 

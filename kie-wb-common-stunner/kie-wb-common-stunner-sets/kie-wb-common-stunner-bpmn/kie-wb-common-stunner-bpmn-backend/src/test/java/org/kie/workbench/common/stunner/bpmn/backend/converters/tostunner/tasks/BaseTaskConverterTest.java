@@ -21,7 +21,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.eclipse.bpmn2.ExtensionDefinition;
-import org.eclipse.bpmn2.ServiceTask;
+import org.eclipse.bpmn2.Task;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.util.FeatureMap;
 import org.junit.Before;
@@ -61,7 +61,7 @@ public class BaseTaskConverterTest {
     protected PropertyReaderFactory propertyReaderFactory;
 
     @Mock
-    protected ServiceTask serviceTask;
+    protected Task serviceTask;
 
     @Mock
     protected ExtensionDefinition serviceTaskDef;

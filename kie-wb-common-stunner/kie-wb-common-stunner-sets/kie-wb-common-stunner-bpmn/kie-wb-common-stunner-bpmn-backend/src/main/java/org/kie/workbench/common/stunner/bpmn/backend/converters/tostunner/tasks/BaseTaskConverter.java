@@ -25,6 +25,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.TypedFactoryMana
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomAttribute;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.BpmnNode;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.BusinessRuleTaskPropertyReader;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.GenericServiceTaskPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.PropertyReaderFactory;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.ScriptTaskPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.ServiceTaskPropertyReader;
@@ -32,12 +33,15 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.proper
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.UserTaskPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseUserTask;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
+import org.kie.workbench.common.stunner.bpmn.definition.GenericServiceTask;
 import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
 import org.kie.workbench.common.stunner.bpmn.definition.ScriptTask;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Documentation;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.TaskGeneralSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.service.GenericServiceTaskExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.service.GenericServiceTaskInfo;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocAutostart;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.BaseUserTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.BusinessRuleTaskExecutionSet;
@@ -75,13 +79,13 @@ public abstract class BaseTaskConverter<U extends BaseUserTask<S>, S extends Bas
                 .when(org.eclipse.bpmn2.BusinessRuleTask.class, this::businessRuleTask)
                 .when(org.eclipse.bpmn2.ScriptTask.class, this::scriptTask)
                 .when(org.eclipse.bpmn2.UserTask.class, this::userTask)
-                .when(org.eclipse.bpmn2.ServiceTask.class, this::serviceTask)
+                .when(org.eclipse.bpmn2.ServiceTask.class, this::serviceTaskResolver)
                 .missing(org.eclipse.bpmn2.ManualTask.class)
                 .orElse(this::fallback)
                 .apply(task).value();
     }
 
-    private BpmnNode serviceTask(org.eclipse.bpmn2.Task task) {
+    private BpmnNode jbpmServiceTask(org.eclipse.bpmn2.Task task) {
         Node<View<ServiceTask>, Edge> node = factoryManager.newNode(task.getId(), ServiceTask.class);
 
         ServiceTask definition = node.getContent().getDefinition();
@@ -118,6 +122,36 @@ public abstract class BaseTaskConverter<U extends BaseUserTask<S>, S extends Bas
         definition.setDimensionsSet(p.getRectangleDimensionsSet());
         definition.setBackgroundSet(p.getBackgroundSet());
         definition.setFontSet(p.getFontSet());
+
+        return BpmnNode.of(node, p);
+    }
+
+    BpmnNode bpmnServiceTask(org.eclipse.bpmn2.ServiceTask task) {
+        Node<View<GenericServiceTask>, Edge> node = factoryManager.newNode(task.getId(), GenericServiceTask.class);
+
+        GenericServiceTask definition = node.getContent().getDefinition();
+        GenericServiceTaskPropertyReader p = propertyReaderFactory.of(task);
+
+        if(p == null) {
+            throw new NullPointerException(task.getClass().getCanonicalName());
+        }
+
+        definition.setGeneral(new TaskGeneralSet(
+                new Name(p.getName()),
+                new Documentation(p.getDocumentation())
+        ));
+
+        definition.setExecutionSet(new GenericServiceTaskExecutionSet(
+                new GenericServiceTaskInfo(p.getGenericServiceTask())
+        ));
+
+        node.getContent().setBounds(p.getBounds());
+
+        definition.setDimensionsSet(p.getRectangleDimensionsSet());
+        definition.setBackgroundSet(p.getBackgroundSet());
+        definition.setFontSet(p.getFontSet());
+
+        definition.setSimulationSet(p.getSimulationSet());
 
         return BpmnNode.of(node, p);
     }
@@ -236,8 +270,16 @@ public abstract class BaseTaskConverter<U extends BaseUserTask<S>, S extends Bas
         return Optional.ofNullable(CustomAttribute.serviceTaskName.of(task).get())
                 .filter(StringUtils::nonEmpty)
                 .filter(name -> propertyReaderFactory.ofCustom(task).isPresent())
-                .map(name -> serviceTask(task))
+                .map(name -> jbpmServiceTask(task))
                 .orElseGet(() -> noneTask(task));
+    }
+
+    BpmnNode serviceTaskResolver(org.eclipse.bpmn2.Task task) {
+        if (StringUtils.nonEmpty(CustomAttribute.serviceImplementation.of(task).get())) {
+            return bpmnServiceTask((org.eclipse.bpmn2.ServiceTask) task);
+        } else {
+            return jbpmServiceTask(task);
+        }
     }
 
     private BpmnNode noneTask(Task task) {

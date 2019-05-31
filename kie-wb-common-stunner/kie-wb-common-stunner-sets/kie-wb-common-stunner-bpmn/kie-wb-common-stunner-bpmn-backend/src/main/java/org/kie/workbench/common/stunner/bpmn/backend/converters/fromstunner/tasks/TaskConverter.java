@@ -20,6 +20,7 @@ import org.eclipse.bpmn2.Task;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.NodeMatch;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.ActivityPropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.BusinessRuleTaskPropertyWriter;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.GenericServiceTaskPropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.PropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.PropertyWriterFactory;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.ScriptTaskPropertyWriter;
@@ -28,9 +29,11 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.prop
 import org.kie.workbench.common.stunner.bpmn.definition.BaseTask;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseUserTask;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
+import org.kie.workbench.common.stunner.bpmn.definition.GenericServiceTask;
 import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
 import org.kie.workbench.common.stunner.bpmn.definition.ScriptTask;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.TaskGeneralSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.service.GenericServiceTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.BaseUserTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.BusinessRuleTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.RuleLanguage;
@@ -58,7 +61,36 @@ public class TaskConverter {
                 .when(BusinessRuleTask.class, this::businessRuleTask)
                 .when(BaseUserTask.class, this::userTask)
                 .when(ServiceTask.class, this::serviceTask)
+                .when(GenericServiceTask.class, this::genericServiceTask)
                 .apply(node).value();
+    }
+
+    private PropertyWriter genericServiceTask(Node<View<GenericServiceTask>, ?> n) {
+        org.eclipse.bpmn2.ServiceTask task = bpmn2.createServiceTask();
+        task.setId(n.getUUID());
+
+        GenericServiceTask definition = n.getContent().getDefinition();
+        GenericServiceTaskPropertyWriter p = propertyWriterFactory.of(task);
+
+        TaskGeneralSet general = definition.getGeneral();
+        GenericServiceTaskExecutionSet executionSet =
+                definition.getExecutionSet();
+
+        p.setName(general.getName().getValue());
+        p.setDocumentation(general.getDocumentation().getValue());
+        p.setAbsoluteBounds(n);
+        p.setSimulationSet(definition.getSimulationSet());
+
+        p.setServiceInterface(executionSet.getGenericServiceTaskInfo()
+                                      .getValue()
+                                      .getServiceInterface());
+        p.setServiceImplementation(executionSet.getGenericServiceTaskInfo()
+                                           .getValue()
+                                           .getServiceImplementation());
+        p.setServiceOperation(executionSet.getGenericServiceTaskInfo()
+                                      .getValue()
+                                      .getServiceOperation());
+        return p;
     }
 
     private PropertyWriter serviceTask(Node<View<ServiceTask>, ?> n) {

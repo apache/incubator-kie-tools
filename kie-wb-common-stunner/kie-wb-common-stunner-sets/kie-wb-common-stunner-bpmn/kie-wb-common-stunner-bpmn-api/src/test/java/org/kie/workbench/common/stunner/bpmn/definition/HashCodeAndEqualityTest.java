@@ -675,6 +675,25 @@ public class HashCodeAndEqualityTest {
     }
 
     @Test
+    public void testGenericServiceTaskEquals() {
+        GenericServiceTask a = new GenericServiceTask();
+        GenericServiceTask b = new GenericServiceTask();
+        assertEquals(a,
+                     b);
+        assertFalse(a.equals(19));
+        assertFalse(a.equals(null));
+    }
+
+    @Test
+    public void testGenericServiceTaskHashCode() {
+        GenericServiceTask a = new GenericServiceTask();
+        GenericServiceTask b = new GenericServiceTask();
+        assertEquals(a.hashCode(),
+                     b.hashCode());
+    }
+
+
+    @Test
     public void testSequenceFlowEquals() {
         SequenceFlow a = new SequenceFlow();
         SequenceFlow b = new SequenceFlow();

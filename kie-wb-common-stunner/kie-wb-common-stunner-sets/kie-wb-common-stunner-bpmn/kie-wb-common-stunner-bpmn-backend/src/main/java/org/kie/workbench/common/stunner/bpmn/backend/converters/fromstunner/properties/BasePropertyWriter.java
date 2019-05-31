@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Documentation;
+import org.eclipse.bpmn2.Interface;
 import org.eclipse.bpmn2.ItemDefinition;
 import org.eclipse.bpmn2.RootElement;
 import org.eclipse.bpmn2.di.BPMNEdge;
@@ -45,6 +46,7 @@ public abstract class BasePropertyWriter {
     protected final VariableScope variableScope;
     protected final List<ItemDefinition> itemDefinitions = new ArrayList<>();
     protected final List<RootElement> rootElements = new ArrayList<>();
+    protected final List<Interface> interfaces = new ArrayList<>();
     protected BPMNShape shape;
 
     public BasePropertyWriter(BaseElement baseElement, VariableScope variableScope) {
@@ -124,6 +126,10 @@ public abstract class BasePropertyWriter {
         this.itemDefinitions.add(itemDefinition);
     }
 
+    protected void addInterfaceDefinition(Interface iface) {
+        this.interfaces.add(iface);
+    }
+
     protected void addRootElement(RootElement rootElement) {
         this.rootElements.add(rootElement);
     }
@@ -134,6 +140,10 @@ public abstract class BasePropertyWriter {
 
     public List<RootElement> getRootElements() {
         return rootElements;
+    }
+
+    public List<Interface> getInterfaces() {
+        return interfaces;
     }
 
     public static org.kie.workbench.common.stunner.core.graph.content.Bounds absoluteBounds(final Node<? extends View, ?> node) {

@@ -31,6 +31,7 @@ import org.eclipse.bpmn2.Lane;
 import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.ScriptTask;
 import org.eclipse.bpmn2.SequenceFlow;
+import org.eclipse.bpmn2.ServiceTask;
 import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.Task;
 import org.eclipse.bpmn2.ThrowEvent;
@@ -83,6 +84,10 @@ public class PropertyReaderFactory {
 
     public ScriptTaskPropertyReader of(ScriptTask el) {
         return new ScriptTaskPropertyReader(el, diagram, definitionResolver);
+    }
+
+    public GenericServiceTaskPropertyReader of(ServiceTask el) {
+        return new GenericServiceTaskPropertyReader(el, diagram, definitionResolver);
     }
 
     public BusinessRuleTaskPropertyReader of(BusinessRuleTask el) {

@@ -66,4 +66,5 @@ public interface BPMNGlyphFactory {
     ImageStripGlyph EVENT_INTERMEDIATE_THROWING_COMPENSATION = ImageStripGlyph.create(BPMNIconsStrip.class, 45);
     ImageStripGlyph EVENT_END_COMPENSATION = ImageStripGlyph.create(BPMNIconsStrip.class, 46);
     ImageStripGlyph ASSOCIATION = ImageStripGlyph.create(BPMNIconsStrip.class, 63);
+    ImageStripGlyph TASK_GENERIC_SERVICE = ImageStripGlyph.create(BPMNIconsStrip.class, 64);
 }

@@ -26,7 +26,6 @@ import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 public class CustomAttribute<T> {
 
     private static final String droolsns = DroolsPackage.eNS_URI;
-
     public static final AttributeDefinition<Boolean> independent = new BooleanAttribute(droolsns, "independent", false);
     public static final AttributeDefinition<Boolean> adHoc = new BooleanAttribute(droolsns, "adHoc", false);
     public static final AttributeDefinition<Boolean> waitForCompletion = new BooleanAttribute(droolsns, "waitForCompletion", false);
@@ -67,7 +66,6 @@ public class CustomAttribute<T> {
     };
     public static final AttributeDefinition<String> priority = new StringAttribute(droolsns, "priority", null);
     public static final AttributeDefinition<String> dtype = new StringAttribute(droolsns, "dtype", "");
-
     public static final AttributeDefinition<String> dg = new StringAttribute(droolsns, "dg", "") {
         @Override
         public String getValue(BaseElement element) {
@@ -78,7 +76,6 @@ public class CustomAttribute<T> {
             return value.isEmpty() ? null : value;
         }
     };
-
     public static final AttributeDefinition<Point2D> dockerInfo = new AttributeDefinition<Point2D>(droolsns, "dockerinfo", Point2D.create(0, 0)) {
         @Override
         public Point2D getValue(BaseElement element) {
@@ -105,6 +102,10 @@ public class CustomAttribute<T> {
             setStringValue(element, String.format("%.1f^%.1f|", value.getX(), value.getY()));
         }
     };
+
+    public static final AttributeDefinition<String> serviceOperation = new StringAttribute(droolsns, "serviceoperation", "");
+    public static final AttributeDefinition<String> serviceImplementation = new StringAttribute(droolsns, "serviceimplementation", "");
+    public static final AttributeDefinition<String> serviceInterface = new StringAttribute(droolsns, "serviceinterface", "");
 
     private final AttributeDefinition<T> attributeDefinition;
     private final BaseElement element;
