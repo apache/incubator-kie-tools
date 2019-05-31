@@ -15,16 +15,15 @@
  */
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
+import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.MorphAdapter;
 import org.kie.workbench.common.stunner.core.definition.morph.MorphDefinition;
+import org.kie.workbench.common.stunner.core.factory.impl.AbstractElementFactory;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
@@ -33,80 +32,97 @@ import org.kie.workbench.common.stunner.core.graph.content.definition.Definition
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
 /**
- * A Command to morph a node in a graph.
+ * A Command to morph a node.
  */
 @Portable
 public final class MorphNodeCommand extends AbstractGraphCommand {
 
-    private Node<Definition, Edge> candidate;
-    private MorphDefinition morphDefinition;
-    private String morphTarget;
-    private String oldMorphTarget;
+    private final String uuid;
+    private final MorphDefinition morphDefinition;
+    private final String morphTarget;
+    private transient String oldMorphTarget;
+    private transient Node<Definition, Edge> candidate;
 
-    public MorphNodeCommand(final @MapsTo("candidate") Node<Definition, Edge> candidate,
+    public MorphNodeCommand(final @MapsTo("uuid") String uuid,
                             final @MapsTo("morphDefinition") MorphDefinition morphDefinition,
                             final @MapsTo("morphTarget") String morphTarget) {
-        this.candidate = PortablePreconditions.checkNotNull("candidate",
-                                                            candidate);
-        this.morphDefinition = PortablePreconditions.checkNotNull("morphDefinition",
-                                                                  morphDefinition);
-        this.morphTarget = PortablePreconditions.checkNotNull("morphTarget",
-                                                              morphTarget);
+        this.uuid = PortablePreconditions.checkNotNull("uuid", uuid);
+        this.morphDefinition = PortablePreconditions.checkNotNull("morphDefinition", morphDefinition);
+        this.morphTarget = PortablePreconditions.checkNotNull("morphTarget", morphTarget);
         this.oldMorphTarget = null;
+        this.candidate = null;
+    }
+
+    public MorphNodeCommand(final Node<Definition, Edge> candidate,
+                            final MorphDefinition morphDefinition,
+                            final String morphTarget) {
+        this(candidate.getUUID(),
+             morphDefinition,
+             morphTarget);
+        this.candidate = PortablePreconditions.checkNotNull("candidate", candidate);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext context) {
-        final CommandResult<RuleViolation> results = allow(context);
-        if (!results.getType().equals(CommandResult.Type.ERROR)) {
-            final DefinitionManager definitionManager = context.getDefinitionManager();
-            final Object currentDef = candidate.getContent().getDefinition();
-            final String currentDefId = definitionManager.adapters().forDefinition().getId(currentDef).value();
-            this.oldMorphTarget = currentDefId;
-            final MorphAdapter<Object> morphAdapter = context.getDefinitionManager().adapters().registry().getMorphAdapter(currentDef.getClass());
-            if (null == morphAdapter) {
-                throw new RuntimeException("No morph adapter found for definition [" + currentDef.toString() + "] " +
-                                                   "and target morph [" + morphTarget + "]");
-            }
-            final Object newDef = morphAdapter.morph(currentDef,
-                                                     morphDefinition,
-                                                     morphTarget);
-            if (null == newDef) {
-                throw new RuntimeException("No morph resulting Definition. [ morphSource=" + currentDefId + ", " +
-                                                   "morphTarget=" + morphTarget + "]");
-            }
+        checkSafeCandidate(context);
 
-            // Morph the node definition to the new one.
-            candidate.getContent().setDefinition(newDef);
-            // Update candidate roles.
-            final Set<String> newLabels = new HashSet<>();
-            newLabels.add(definitionManager.adapters().forDefinition().getId(newDef).value());
-            newLabels.addAll(definitionManager.adapters().forDefinition().getLabels(newDef));
-
-            candidate.getLabels().clear();
-            candidate.getLabels().addAll(newLabels);
+        final CommandResult<RuleViolation> results = check(context);
+        final DefinitionManager definitionManager = context.getDefinitionManager();
+        final Object currentDef = candidate.getContent().getDefinition();
+        final String currentDefId = definitionManager.adapters().forDefinition().getId(currentDef).value();
+        this.oldMorphTarget = currentDefId;
+        final MorphAdapter<Object> morphAdapter = context.getDefinitionManager().adapters().registry().getMorphAdapter(currentDef.getClass());
+        if (null == morphAdapter) {
+            throw new RuntimeException("No morph adapter found for definition [" + currentDef.toString() + "] " +
+                                               "and target morph [" + morphTarget + "]");
         }
+        // Morph the bean instance.
+        final Object targetDef = morphAdapter.morph(currentDef,
+                                                    morphDefinition,
+                                                    morphTarget);
+        if (null == targetDef) {
+            throw new RuntimeException("No morph resulting Definition. [ morphSource=" + currentDefId + ", " +
+                                               "morphTarget=" + morphTarget + "]");
+        }
+
+        // Assign the resulting instance to the node,
+        candidate.getContent().setDefinition(targetDef);
+
+        // Update the node's labels.
+        final DefinitionAdapter<Object> adapter =
+                definitionManager
+                        .adapters()
+                        .registry()
+                        .getDefinitionAdapter(targetDef.getClass());
+        candidate.getLabels().clear();
+        candidate.getLabels().addAll(AbstractElementFactory.computeLabels(adapter, targetDef));
+
         return results;
     }
 
     @SuppressWarnings("unchecked")
     protected CommandResult<RuleViolation> check(final GraphCommandExecutionContext context) {
-        // TODO: check rules before morphing?
+        // TODO: check rules before morphing - see https://issues.jboss.org/browse/JBPM-8524
         return GraphCommandResultBuilder.SUCCESS;
     }
 
     @Override
     public CommandResult<RuleViolation> undo(final GraphCommandExecutionContext context) {
-        final MorphNodeCommand undoCommand = new MorphNodeCommand(candidate,
+        final MorphNodeCommand undoCommand = new MorphNodeCommand(uuid,
                                                                   morphDefinition,
                                                                   oldMorphTarget);
         return undoCommand.execute(context);
     }
 
+    private void checkSafeCandidate(final GraphCommandExecutionContext context) {
+        if (null == candidate) {
+            candidate = super.getNodeNotNull(context, uuid);
+        }
+    }
+
     @Override
     public String toString() {
-        return "MorphNodeCommand [candidate=" + candidate.getUUID() + ", morphTarget=" + morphTarget + "]";
+        return "MorphNodeCommand [candidate=" + uuid + ", morphTarget=" + morphTarget + "]";
     }
 }
-

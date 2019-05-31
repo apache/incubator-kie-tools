@@ -61,6 +61,9 @@ import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.mvp.Command;
 
+import static org.kie.workbench.common.stunner.core.graph.util.GraphUtils.getChildIndex;
+import static org.kie.workbench.common.stunner.core.graph.util.GraphUtils.getParent;
+
 @Dependent
 public class TreeExplorer implements IsWidget {
 
@@ -171,7 +174,7 @@ public class TreeExplorer implements IsWidget {
 
     private void onElementAdded(Element element) {
         if (isValidTreeItem().test(element)) {
-            final Element parent = GraphUtils.getParent((Node<?, ? extends Edge>) element);
+            final Element parent = getParent((Node<?, ? extends Edge>) element);
             addItem(parent,
                     (Node) element,
                     true,
@@ -183,19 +186,19 @@ public class TreeExplorer implements IsWidget {
     private void onElementUpdated(Element element,
                                   CanvasHandler canvasHandler) {
         if (isValidTreeItem().test(element)) {
-            final Element parent = GraphUtils.getParent((Node<?, ? extends Edge>) element);
-
+            final Element parent = getParent((Node<?, ? extends Edge>) element);
+            final int childCount = null != element.asNode() ? GraphUtils.countChildren(element.asNode()).intValue() : 0;
+            final OptionalInt childIndex = getChildIndex(parent, element.getUUID());
             if (view.isItemChanged(element.getUUID(),
                                    null != parent ? parent.getUUID() : null,
                                    getItemName(element),
-                                   GraphUtils.getChildIndex(parent, element.getUUID()))) {
-
+                                   childCount,
+                                   childIndex)) {
                 view.removeItem(element.getUUID());
                 addItem(parent,
                         (Node) element,
                         true,
                         true);
-
                 final boolean hasChildren = GraphUtils.hasChildren((Node<?, ? extends Edge>) element);
                 if (hasChildren) {
                     childrenTraverseProcessor
@@ -258,7 +261,7 @@ public class TreeExplorer implements IsWidget {
             final boolean wasParentContainer = view.isContainer(parent.getUUID());
             if (isParentContainer != wasParentContainer) {
                 view.removeItem(parent.getUUID());
-                addItem(GraphUtils.getParent((Node<?, ? extends Edge>) parent),
+                addItem(getParent((Node<?, ? extends Edge>) parent),
                         (Node) parent,
                         expand,
                         false);
@@ -275,7 +278,7 @@ public class TreeExplorer implements IsWidget {
                          widget,
                          isContainer,
                          expand,
-                         GraphUtils.getChildIndex(parent, element.getUUID()));
+                         getChildIndex(parent, element.getUUID()));
         } else {
             view.addItem(element.getUUID(),
                          name,
@@ -444,21 +447,21 @@ public class TreeExplorer implements IsWidget {
 
     public interface View extends UberView<TreeExplorer> {
 
-        View addItem(final String uuid,
-                     final String name,
-                     final IsWidget icon,
-                     final boolean isContainer,
-                     final boolean state);
+        View addItem(String uuid,
+                     String name,
+                     IsWidget icon,
+                     boolean isContainer,
+                     boolean state);
 
-        View addItem(final String uuid,
-                     final String parentUuid,
-                     final String name,
-                     final IsWidget icon,
-                     final boolean isContainer,
-                     final boolean state,
-                     final OptionalInt index);
+        View addItem(String uuid,
+                     String parentUuid,
+                     String name,
+                     IsWidget icon,
+                     boolean isContainer,
+                     boolean state,
+                     OptionalInt index);
 
-        View setSelectedItem(final String uuid);
+        View setSelectedItem(String uuid);
 
         View removeItem(String uuid);
 
@@ -466,11 +469,12 @@ public class TreeExplorer implements IsWidget {
 
         View destroy();
 
-        boolean isItemChanged(final String uuid,
-                              final String parentUuid,
-                              final String name,
-                              final OptionalInt index);
+        boolean isItemChanged(String uuid,
+                              String parentUuid,
+                              String name,
+                              int childCount,
+                              OptionalInt indexIntoParent);
 
-        boolean isContainer(final String uuid);
+        boolean isContainer(String uuid);
     }
 }

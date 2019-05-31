@@ -46,6 +46,8 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class MorphNodeCommandTest extends AbstractGraphCommandTest {
 
+    private static final String UUID = "uuid";
+
     private static final String CURRENT_DEFINITION = "current-definition";
 
     private static final String CURRENT_DEFINITION_ID = "current-definition-id";
@@ -68,34 +70,32 @@ public class MorphNodeCommandTest extends AbstractGraphCommandTest {
     @Mock
     private MorphAdapter morphAdaptor;
 
-    private Set<String> labels = new HashSet<>();
-
     private MorphNodeCommand tested;
+    private Set<String> labels = new HashSet<>();
 
     @Before
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
         super.init();
-
-        this.tested = new MorphNodeCommand(candidate, morphDefinition, CURRENT_DEFINITION_ID);
-
+        when(candidate.getUUID()).thenReturn(UUID);
         when(candidate.getLabels()).thenReturn(labels);
         when(candidate.getContent()).thenReturn(content);
         when(content.getDefinition()).thenReturn(CURRENT_DEFINITION);
         when(adapterRegistry.getMorphAdapter(any(Class.class))).thenReturn(morphAdaptor);
-
+        when(graphIndex.get(eq(UUID))).thenReturn(candidate);
+        when(graphIndex.getNode(eq(UUID))).thenReturn(candidate);
         when(definitionAdapter.getId(CURRENT_DEFINITION)).thenReturn(DefinitionId.build(CURRENT_DEFINITION_ID));
         when(definitionAdapter.getLabels(CURRENT_DEFINITION)).thenReturn(Collections.emptySet());
         when(morphAdaptor.morph(CURRENT_DEFINITION, morphDefinition, CURRENT_DEFINITION_ID)).thenReturn(NEW_DEFINITION);
-
         when(definitionAdapter.getId(NEW_DEFINITION)).thenReturn(DefinitionId.build(NEW_DEFINITION_ID));
         when(definitionAdapter.getLabels(NEW_DEFINITION)).thenReturn(Collections.singleton(NEW_DEFINITION_LABEL));
         when(morphAdaptor.morph(NEW_DEFINITION, morphDefinition, CURRENT_DEFINITION_ID)).thenReturn(CURRENT_DEFINITION);
+        tested = new MorphNodeCommand(candidate, morphDefinition, CURRENT_DEFINITION_ID);
     }
 
     @Test
     public void testAllow() {
-        final CommandResult<RuleViolation> result = tested.allow(graphCommandExecutionContext);
+        CommandResult<RuleViolation> result = tested.allow(graphCommandExecutionContext);
         assertEquals(CommandResult.Type.INFO,
                      result.getType());
         verify(ruleManager,
@@ -106,7 +106,7 @@ public class MorphNodeCommandTest extends AbstractGraphCommandTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testExecute() {
-        final CommandResult<RuleViolation> result = tested.execute(graphCommandExecutionContext);
+        CommandResult<RuleViolation> result = tested.execute(graphCommandExecutionContext);
         assertEquals(CommandResult.Type.INFO,
                      result.getType());
 
@@ -123,8 +123,7 @@ public class MorphNodeCommandTest extends AbstractGraphCommandTest {
         tested.execute(graphCommandExecutionContext);
         reset(content);
         when(content.getDefinition()).thenReturn(NEW_DEFINITION);
-
-        final CommandResult<RuleViolation> result = tested.undo(graphCommandExecutionContext);
+        CommandResult<RuleViolation> result = tested.undo(graphCommandExecutionContext);
         assertEquals(CommandResult.Type.INFO,
                      result.getType());
 

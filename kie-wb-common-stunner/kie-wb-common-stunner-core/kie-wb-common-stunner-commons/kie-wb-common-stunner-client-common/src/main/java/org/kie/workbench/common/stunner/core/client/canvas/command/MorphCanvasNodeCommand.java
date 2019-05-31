@@ -23,35 +23,37 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.shape.EdgeShape;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
+import org.kie.workbench.common.stunner.core.client.util.ShapeUtils;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
-import org.kie.workbench.common.stunner.core.definition.morph.MorphDefinition;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Dock;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
-import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
+
+import static org.kie.workbench.common.stunner.core.graph.util.GraphUtils.getChildNodes;
+import static org.kie.workbench.common.stunner.core.graph.util.GraphUtils.getDockParent;
+import static org.kie.workbench.common.stunner.core.graph.util.GraphUtils.getDockedNodes;
 
 public class MorphCanvasNodeCommand extends AbstractCanvasCommand {
 
     private Node<? extends Definition<?>, Edge> candidate;
-    private MorphDefinition morphDefinition;
     private String shapeSetId;
 
     public MorphCanvasNodeCommand(final Node<? extends Definition<?>, Edge> candidate,
-                                  final MorphDefinition morphDefinition,
                                   final String shapeSetId) {
         this.candidate = candidate;
-        this.morphDefinition = morphDefinition;
         this.shapeSetId = shapeSetId;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
-        final Optional<Node> dockParentOptional = GraphUtils.getDockParent(candidate);
         final Optional<Node> parentOptional = getParent();
+        final Optional<Node> dockParentOptional = getDockParent(candidate);
+        final List<Node> dockedNodes = getDockedNodes(candidate);
+        final List<Node> childNodes = getChildNodes(candidate);
 
         // Removing parent from morphed node
         if (dockParentOptional.isPresent()) {
@@ -61,10 +63,10 @@ public class MorphCanvasNodeCommand extends AbstractCanvasCommand {
         }
 
         //Remove docked nodes
-        GraphUtils.getDockedNodes(candidate).stream().forEach(node -> context.undock(candidate, node));
+        dockedNodes.stream().forEach(node -> context.undock(candidate, node));
 
         //Remove child
-        GraphUtils.getChildNodes(candidate).stream().forEach(node -> context.removeChild(candidate, node));
+        childNodes.stream().forEach(node -> context.removeChild(candidate, node));
 
         // Deregister the existing shape.
         context.deregister(candidate);
@@ -72,16 +74,11 @@ public class MorphCanvasNodeCommand extends AbstractCanvasCommand {
         // Register the shape for the new morphed element.
         context.register(shapeSetId, candidate);
 
-        context.applyElementMutation(candidate, MutationContext.STATIC);
-
-        //Update connections
-        updateConnectionEdges(context, candidate);
-
         //Adding the Docked nodes
-        GraphUtils.getDockedNodes(candidate).stream().forEach(node -> context.dock(candidate, node));
+        dockedNodes.stream().forEach(node -> context.dock(candidate, node));
 
         //Adding the child
-        GraphUtils.getChildNodes(candidate).stream().forEach(node -> context.removeChild(candidate, node));
+        childNodes.stream().forEach(node -> context.addChild(candidate, node));
 
         // Adding parent to the new morphed node
         if (dockParentOptional.isPresent()) {
@@ -89,6 +86,12 @@ public class MorphCanvasNodeCommand extends AbstractCanvasCommand {
         } else {
             parentOptional.ifPresent(parent -> context.addChild(parent, candidate));
         }
+
+        //Update connections.
+        updateConnectionEdges(context, candidate);
+
+        // Update the new shape.
+        context.applyElementMutation(candidate, MutationContext.STATIC);
 
         return buildResult();
     }
@@ -105,6 +108,7 @@ public class MorphCanvasNodeCommand extends AbstractCanvasCommand {
                 .ifPresent(edges -> edges.stream()
                         .filter(this::isViewEdge)
                         .forEach(edge -> updateConnections(context, edge, candidate, edge.getTargetNode())));
+        ShapeUtils.moveViewConnectorsToTop(context, candidate);
     }
 
     @Override

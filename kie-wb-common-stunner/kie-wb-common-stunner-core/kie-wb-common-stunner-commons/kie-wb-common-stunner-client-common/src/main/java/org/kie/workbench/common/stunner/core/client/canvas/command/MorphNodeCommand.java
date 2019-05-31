@@ -53,7 +53,6 @@ public class MorphNodeCommand extends AbstractCanvasGraphCommand {
     @Override
     protected AbstractCanvasCommand newCanvasCommand(final AbstractCanvasHandler context) {
         return new MorphCanvasNodeCommand(candidate,
-                                          morphDefinition,
                                           shapeSetId);
     }
 

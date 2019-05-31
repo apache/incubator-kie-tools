@@ -48,6 +48,7 @@ import static org.mockito.Mockito.when;
 public class TreeExplorerViewTest {
 
     static final String ITEM_UUID = "item";
+    static final int ITEM_CHILDREN_COUNT = 0;
     static final String PARENT_UUID = "parent";
     static final String NAME = "name";
 
@@ -209,6 +210,7 @@ public class TreeExplorerViewTest {
     private TreeItem mockOldItem() {
         TreeItem oldItem = mock(TreeItem.class);
         when(tree.getItemByUuid(ITEM_UUID)).thenReturn(oldItem);
+        when(oldItem.getChildCount()).thenReturn(ITEM_CHILDREN_COUNT);
         when(oldItem.getLabel()).thenReturn(NAME);
         when(oldItem.getParentItem()).thenReturn(parentItem);
         when(oldItem.getUuid()).thenReturn(ITEM_UUID);
@@ -223,6 +225,20 @@ public class TreeExplorerViewTest {
         boolean isItemChanged = testedTreeExplorerView.isItemChanged(ITEM_UUID,
                                                                      PARENT_UUID,
                                                                      NAME,
+                                                                     ITEM_CHILDREN_COUNT,
+                                                                     OptionalInt.empty());
+        assertTrue(isItemChanged);
+    }
+
+    @Test
+    public void isChildrenCountChanged() {
+        TreeItem oldItem = mockOldItem();
+        when(oldItem.getChildCount()).thenReturn(1);
+
+        boolean isItemChanged = testedTreeExplorerView.isItemChanged(ITEM_UUID,
+                                                                     PARENT_UUID,
+                                                                     NAME,
+                                                                     ITEM_CHILDREN_COUNT,
                                                                      OptionalInt.empty());
         assertTrue(isItemChanged);
     }
@@ -235,6 +251,7 @@ public class TreeExplorerViewTest {
         assertTrue(testedTreeExplorerView.isItemChanged(ITEM_UUID,
                                                         PARENT_UUID,
                                                         NAME,
+                                                        ITEM_CHILDREN_COUNT,
                                                         OptionalInt.empty()));
     }
 
@@ -249,14 +266,17 @@ public class TreeExplorerViewTest {
         assertTrue(testedTreeExplorerView.isItemChanged(ITEM_UUID,
                                                         PARENT_UUID,
                                                         NAME,
+                                                        ITEM_CHILDREN_COUNT,
                                                         OptionalInt.of(0)));
         assertFalse(testedTreeExplorerView.isItemChanged(ITEM_UUID,
                                                          PARENT_UUID,
                                                          NAME,
+                                                         ITEM_CHILDREN_COUNT,
                                                          OptionalInt.of(1)));
         assertTrue(testedTreeExplorerView.isItemChanged(ITEM_UUID,
                                                         PARENT_UUID,
                                                         NAME,
+                                                        ITEM_CHILDREN_COUNT,
                                                         OptionalInt.of(2)));
     }
 
@@ -270,6 +290,7 @@ public class TreeExplorerViewTest {
         assertFalse(testedTreeExplorerView.isItemChanged(ITEM_UUID,
                                                          PARENT_UUID,
                                                          NAME,
+                                                         ITEM_CHILDREN_COUNT,
                                                          OptionalInt.of(0)));
     }
 

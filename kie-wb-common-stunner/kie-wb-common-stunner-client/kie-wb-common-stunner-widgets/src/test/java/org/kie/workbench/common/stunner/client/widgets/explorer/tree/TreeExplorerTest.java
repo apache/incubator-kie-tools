@@ -67,6 +67,7 @@ import org.uberfire.mvp.Command;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.any;
@@ -298,7 +299,7 @@ public class TreeExplorerTest {
         when(parent.getOutEdges()).thenReturn(edges);
         when(child.getInEdges()).thenReturn(edges);
 
-        when(view.isItemChanged(anyString(), anyString(), anyString(), any(OptionalInt.class))).thenReturn(true);
+        when(view.isItemChanged(anyString(), anyString(), anyString(), anyInt(), any(OptionalInt.class))).thenReturn(true);
 
         testedTree.show(canvasHandler);
         final CanvasElementUpdatedEvent event = new CanvasElementUpdatedEvent(canvasHandler, child);

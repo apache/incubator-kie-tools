@@ -16,9 +16,11 @@
 
 package org.kie.workbench.common.stunner.core.factory.impl;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
+import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionId;
 import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
 import org.kie.workbench.common.stunner.core.graph.Element;
@@ -34,11 +36,22 @@ public abstract class AbstractElementFactory<C, D extends Definition<C>, T exten
 
     protected void appendLabels(final Set<String> target,
                                 final Object definition) {
-        final DefinitionId id = getDefinitionManager().adapters().forDefinition().getId(definition);
+        target.addAll(computeLabels(getDefinitionManager()
+                                            .adapters()
+                                            .registry()
+                                            .getDefinitionAdapter(definition.getClass()),
+                                    definition));
+    }
+
+    public static <T> Set<String> computeLabels(final DefinitionAdapter<T> adapter,
+                                                final T definition) {
+        final Set<String> target = new HashSet<>();
+        final DefinitionId id = adapter.getId(definition);
         target.add(id.value());
         if (id.isDynamic()) {
             target.add(id.type());
         }
-        target.addAll(getDefinitionManager().adapters().forDefinition().getLabels(definition));
+        target.addAll(adapter.getLabels(definition));
+        return target;
     }
 }

@@ -64,6 +64,11 @@ public class TestingGraphInstanceBuilder {
     public static final String EDGE3_UUID = "edge3";
     public static final String CONTAINER_NODE_UUID = "container1";
 
+    public static class TestGraph {
+
+        public Graph graph;
+    }
+
     /**
      * **********
      * * Graph1 *
@@ -72,9 +77,8 @@ public class TestingGraphInstanceBuilder {
      * Structure:
      * startNode --(edge1)--> intermNode --(edge2)--> endNode
      */
-    public static class TestGraph1 {
+    public static class TestGraph1 extends TestGraph {
 
-        public Graph graph;
         public Object startNodeBean;
         public Node startNode;
         public Object intermNodeBean;
@@ -103,9 +107,8 @@ public class TestingGraphInstanceBuilder {
      * |                     |                     |
      * startNode --(edge1)--> intermNode --(edge2)--> endNode
      */
-    public static class TestGraph2 {
+    public static class TestGraph2 extends TestGraph {
 
-        public Graph graph;
         public Node parentNode;
         public Node startNode;
         public Node intermNode;
@@ -135,9 +138,8 @@ public class TestingGraphInstanceBuilder {
      * ----------------------------------------------------------------------
      */
 
-    public static class TestGraph3 {
+    public static class TestGraph3 extends TestGraph {
 
-        public Graph graph;
         public Node parentNode;
         public Node containerNode;
         public Node startNode;
@@ -200,9 +202,8 @@ public class TestingGraphInstanceBuilder {
      * |                     |                                        |
      * startNode --(edge1)--> intermNode --(edge2)--> intermNode   endNode
      */
-    public static class TestGraph5 {
+    public static class TestGraph5 extends TestGraph {
 
-        public Graph graph;
         public Node parentNode;
         public Node startNode;
         public Node intermNode;

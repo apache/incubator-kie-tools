@@ -127,7 +127,8 @@ public class TreeExplorerView extends Composite implements TreeExplorer.View {
     public boolean isItemChanged(final String uuid,
                                  final String parentUuid,
                                  final String name,
-                                 final OptionalInt index) {
+                                 final int childCount,
+                                 final OptionalInt indexIntoParent) {
 
         final TreeItem oldItem = tree.getItemByUuid(uuid);
         if (oldItem != null) {
@@ -137,9 +138,13 @@ public class TreeExplorerView extends Composite implements TreeExplorer.View {
             }
             final TreeItem oldItemParent = oldItem.getParentItem();
             final String oldParentUuid = null != oldItemParent ? oldItemParent.getUuid() : null;
+            final boolean isChildrenCountChanged = oldItem.getChildCount() != childCount;
+            if (isChildrenCountChanged) {
+                return true;
+            }
             return (((oldParentUuid == null && parentUuid == null) ||
                     (null != parentUuid && !parentUuid.equals(oldParentUuid)))) ||
-                    isIndexChanged().test(oldItem, index);
+                    isIndexChanged().test(oldItem, indexIntoParent);
         }
         return false;
     }
