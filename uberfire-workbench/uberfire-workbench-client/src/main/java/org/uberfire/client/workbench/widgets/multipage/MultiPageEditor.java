@@ -38,4 +38,6 @@ public interface MultiPageEditor extends IsWidget {
                    final String label);
 
     void clear();
+
+    void addTabBarWidget(final IsWidget customWidget);
 }

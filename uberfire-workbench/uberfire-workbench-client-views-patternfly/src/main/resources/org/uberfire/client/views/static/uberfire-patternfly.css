@@ -130,11 +130,15 @@
     padding-top: 1px;
 }
 
+.uf-tabbar-panel-widgets {
+    padding-top: 1px;
+}
+
 .uf-tabbar-panel-nav-tabs .uf-activeNavTabs {
 
 }
 
-.uf-multitab-panel .uf-tabbar-panel-nav-tabs .active:hover a {
+.uf-multitab-panel .uf-tabbar-panel-nav-tabs .uf-tabbar-panel-widgets .active:hover a {
     cursor: move;
 }
 
@@ -207,7 +211,7 @@
     left: 15px !important;
 }
 
-.uf-multi-page-editor .uf-tabbar-panel-nav-tabs {
+.uf-multi-page-editor .uf-tabbar-panel-nav-tabs .uf-tabbar-panel-widgets {
     padding-top: 0px;
 }
 

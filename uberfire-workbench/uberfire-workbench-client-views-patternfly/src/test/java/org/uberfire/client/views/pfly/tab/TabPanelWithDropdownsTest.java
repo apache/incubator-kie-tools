@@ -21,6 +21,8 @@ import java.util.Set;
 
 import com.google.common.collect.Multimap;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.gwtbootstrap3.client.shared.event.TabShowHandler;
@@ -33,9 +35,16 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
+import static com.google.gwt.i18n.client.HasDirection.Direction.LTR;
+import static com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant.endOf;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class TabPanelWithDropdownsTest {
@@ -63,6 +72,9 @@ public class TabPanelWithDropdownsTest {
 
     @Mock
     private TabPanelEntry tabPanelEntry;
+
+    @Mock
+    private HorizontalPanel tabBarWidgetsPanel;
 
     private Set<TabPanelEntry> tabPanelEntries;
 
@@ -145,5 +157,17 @@ public class TabPanelWithDropdownsTest {
 
         verify(registrations).put(tab, shownHandlerRegistration);
         verify(registrations).put(tab, showHandlerRegistration);
+    }
+
+    @Test
+    public void testAddTabBarWidget() throws Exception {
+        doReturn(tabBarWidgetsPanel).when(tabPanel).getWidgetsPanel();
+
+        final IsWidget widget = mock(IsWidget.class);
+
+        tabPanel.addTabBarWidget(widget);
+
+        verify(tabBarWidgetsPanel).add(eq(widget));
+        verify(tabBarWidgetsPanel).setCellHorizontalAlignment(eq(widget), eq(endOf(LTR)));
     }
 }
