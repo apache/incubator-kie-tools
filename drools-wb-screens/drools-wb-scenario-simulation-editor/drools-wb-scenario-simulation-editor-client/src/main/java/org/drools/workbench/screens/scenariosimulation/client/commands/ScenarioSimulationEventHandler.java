@@ -251,6 +251,8 @@ public class ScenarioSimulationEventHandler implements AppendColumnEventHandler,
         context.getStatus().setColumnIndex(event.getColumnIndex());
         context.getStatus().setRight(true);
         context.getStatus().setAsProperty(false);
+        context.getStatus().setFullPackage(
+                ((ScenarioGridColumn) context.getModel().getSelectedColumn()).getFactIdentifier().getPackageWithoutClassName());
         commonExecution(context,
                         new DuplicateInstanceCommand(),
                         true);

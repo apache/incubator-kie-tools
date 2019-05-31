@@ -77,6 +77,7 @@ import static org.drools.workbench.screens.scenariosimulation.client.TestPropert
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.FIRST_INDEX_LEFT;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.FIRST_INDEX_RIGHT;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.FULL_CLASS_NAME;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.FULL_PACKAGE;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.GRID_COLUMN_GROUP;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.GRID_COLUMN_ID;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.GRID_PROPERTY_TITLE;
@@ -349,6 +350,7 @@ public abstract class AbstractScenarioSimulationTest {
             when(simulationDescriptorMock.getFactMappingByIndex(columnIndex)).thenReturn(factMappingMock);
         });
         when(factIdentifierMock.getClassNameWithoutPackage()).thenReturn(CLASS_NAME);
+        when(factIdentifierMock.getPackageWithoutClassName()).thenReturn(FULL_PACKAGE);
         when(factIdentifierMock.getClassName()).thenReturn(FULL_CLASS_NAME);
         when(factIdentifierMock.getName()).thenReturn(FACT_IDENTIFIER_NAME);
         when(simulationDescriptorMock.getFactIdentifiers()).thenReturn(factIdentifierSet);
@@ -399,6 +401,8 @@ public abstract class AbstractScenarioSimulationTest {
         when(factMapping.getExpressionElementsWithoutClass()).thenReturn(Collections.singletonList(propertyAliasExpressionElement));
 
         when(factIdentifier.getClassName()).thenReturn(fullClassName);
+        when(factIdentifier.getClassNameWithoutPackage()).thenReturn(fullClassName.substring(fullClassName.lastIndexOf(".") + 1));
+        when(factIdentifier.getPackageWithoutClassName()).thenReturn(fullClassName.substring(0, fullClassName.lastIndexOf(".")));
         when(factIdentifier.getName()).thenReturn(factIdentfierName);
 
         gridColumns.add(gridColumn);
