@@ -43,7 +43,7 @@ public class SettingsViewImpl
     protected LabelElement nameLabel = Document.get().createLabelElement();
 
     @DataField("fileName")
-    protected SpanElement fileName = Document.get().createSpanElement();
+    protected InputElement fileName = Document.get().createTextInputElement();
 
     @DataField("typeLabel")
     protected LabelElement typeLabel = Document.get().createLabelElement();
@@ -73,13 +73,13 @@ public class SettingsViewImpl
     protected LabelElement dmnNamespaceLabel = Document.get().createLabelElement();
 
     @DataField("dmnNamespace")
-    protected SpanElement dmnNamespace = Document.get().createSpanElement();
+    protected InputElement dmnNamespace = Document.get().createTextInputElement();
 
     @DataField("dmnNameLabel")
     protected LabelElement dmnNameLabel = Document.get().createLabelElement();
 
     @DataField("dmnName")
-    protected SpanElement dmnName = Document.get().createSpanElement();
+    protected InputElement dmnName = Document.get().createTextInputElement();
 
     @DataField("skipFromBuild")
     protected InputElement skipFromBuild = Document.get().createCheckInputElement();
@@ -106,7 +106,10 @@ public class SettingsViewImpl
     @Override
     public void reset() {
         scenarioType.setInnerText("");
-        fileName.setInnerText("");
+        fileName.setValue("");
+        dmnName.setValue("");
+        dmnNamespace.setValue("");
+        dmnFilePath.setValue("");
         skipFromBuild.setChecked(false);
         dmnSettings.getStyle().setDisplay(Style.Display.NONE);
         ruleSettings.getStyle().setDisplay(Style.Display.NONE);
@@ -118,7 +121,7 @@ public class SettingsViewImpl
     }
 
     @Override
-    public SpanElement getFileName() {
+    public InputElement getFileName() {
         return fileName;
     }
 
@@ -168,7 +171,7 @@ public class SettingsViewImpl
     }
 
     @Override
-    public SpanElement getDmnNamespace() {
+    public InputElement getDmnNamespace() {
         return dmnNamespace;
     }
 
@@ -178,7 +181,7 @@ public class SettingsViewImpl
     }
 
     @Override
-    public SpanElement getDmnName() {
+    public InputElement getDmnName() {
         return dmnName;
     }
 

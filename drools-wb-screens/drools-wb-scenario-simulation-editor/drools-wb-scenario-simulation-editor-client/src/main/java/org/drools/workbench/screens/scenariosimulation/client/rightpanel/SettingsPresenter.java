@@ -65,7 +65,7 @@ public class SettingsPresenter extends AbstractSubDockPresenter<SettingsView> im
     public void setScenarioType(ScenarioSimulationModel.Type scenarioType, SimulationDescriptor simulationDescriptor, String fileName) {
         this.simulationDescriptor = simulationDescriptor;
         view.getScenarioType().setInnerText(scenarioType.name());
-        view.getFileName().setInnerText(fileName);
+        view.getFileName().setValue(fileName);
         view.getSkipFromBuild().setChecked(simulationDescriptor.isSkipFromBuild());
         switch (scenarioType) {
             case RULE:
@@ -112,8 +112,8 @@ public class SettingsPresenter extends AbstractSubDockPresenter<SettingsView> im
         view.getRuleSettings().getStyle().setDisplay(Style.Display.NONE);
         view.getDmnSettings().getStyle().setDisplay(Style.Display.INLINE);
         view.getDmnFilePath().setValue(Optional.ofNullable(simulationDescriptor.getDmnFilePath()).orElse(""));
-        view.getDmnName().setInnerText(Optional.ofNullable(simulationDescriptor.getDmnName()).orElse(""));
-        view.getDmnNamespace().setInnerText(Optional.ofNullable(simulationDescriptor.getDmnNamespace()).orElse(""));
+        view.getDmnName().setValue(Optional.ofNullable(simulationDescriptor.getDmnName()).orElse(""));
+        view.getDmnNamespace().setValue(Optional.ofNullable(simulationDescriptor.getDmnNamespace()).orElse(""));
     }
 
     protected void saveRuleSettings() {

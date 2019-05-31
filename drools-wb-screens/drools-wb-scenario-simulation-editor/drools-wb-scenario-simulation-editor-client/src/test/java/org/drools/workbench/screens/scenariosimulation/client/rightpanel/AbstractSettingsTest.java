@@ -39,7 +39,7 @@ abstract class AbstractSettingsTest {
     protected LabelElement nameLabelMock;
 
     @Mock
-    protected SpanElement fileNameMock;
+    protected InputElement fileNameMock;
 
     @Mock
     protected LabelElement typeLabelMock;
@@ -75,13 +75,13 @@ abstract class AbstractSettingsTest {
     protected LabelElement dmnNamespaceLabelMock;
 
     @Mock
-    protected SpanElement dmnNamespaceMock;
+    protected InputElement dmnNamespaceMock;
 
     @Mock
     protected LabelElement dmnNameLabelMock;
 
     @Mock
-    protected SpanElement dmnNameMock;
+    protected InputElement dmnNameMock;
 
     @Mock
     protected InputElement skipFromBuildMock;
@@ -90,14 +90,13 @@ abstract class AbstractSettingsTest {
     protected ButtonElement saveButtonMock;
 
     protected void setup() {
-        when(scenarioTypeMock.getInnerText()).thenReturn(SCENARIO_TYPE);
-        when(fileNameMock.getInnerText()).thenReturn(FILE_NAME);
+        when(fileNameMock.getValue()).thenReturn(FILE_NAME);
         when(scenarioTypeMock.getInnerText()).thenReturn(SCENARIO_TYPE);
         when(dmoSessionMock.getValue()).thenReturn(DMO_SESSION);
         when(ruleFlowGroupMock.getValue()).thenReturn(RULE_FLOW_GROUP);
         when(dmnFilePathMock.getValue()).thenReturn(DMN_FILE_PATH);
-        when(dmnNamespaceMock.getInnerText()).thenReturn(DMN_NAMESPACE);
-        when(dmnNameMock.getInnerText()).thenReturn(DMN_NAME);
+        when(dmnNamespaceMock.getValue()).thenReturn(DMN_NAMESPACE);
+        when(dmnNameMock.getValue()).thenReturn(DMN_NAME);
         when(ruleSettingsMock.getStyle()).thenReturn(ruleSettingsStyleMock);
         when(dmnSettingsMock.getStyle()).thenReturn(dmnSettingsStyleMock);
     }
