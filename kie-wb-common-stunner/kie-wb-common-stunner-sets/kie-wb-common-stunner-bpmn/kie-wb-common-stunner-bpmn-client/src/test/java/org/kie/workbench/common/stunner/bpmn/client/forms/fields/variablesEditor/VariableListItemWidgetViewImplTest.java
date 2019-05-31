@@ -37,6 +37,7 @@ import org.kie.workbench.common.stunner.bpmn.client.forms.fields.i18n.StunnerFor
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Variable;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.VariableRow;
 import org.kie.workbench.common.stunner.bpmn.client.forms.widgets.ComboBox;
+import org.kie.workbench.common.stunner.bpmn.client.forms.widgets.CustomDataTypeTextBox;
 import org.kie.workbench.common.stunner.bpmn.client.forms.widgets.VariableNameTextBox;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -78,7 +79,7 @@ public class VariableListItemWidgetViewImplTest {
     @GwtMock
     private Button deleteButton;
 
-    private TextBox customDataType;
+    private CustomDataTypeTextBox customDataType;
 
     private ValueListBox<String> dataType;
 
@@ -108,7 +109,7 @@ public class VariableListItemWidgetViewImplTest {
     @Before
     public void setUp() throws Exception {
         GwtMockito.initMocks(this);
-        customDataType = mock(TextBox.class);
+        customDataType = mock(CustomDataTypeTextBox.class);
         dataType = mock(ValueListBox.class);
         dataTypeComboBox = mock(ComboBox.class);
         processVarComboBox = mock(ComboBox.class);

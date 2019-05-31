@@ -137,25 +137,10 @@ public class VariableNameTextBox extends AbstractValidatingTextBox {
     }
 
     protected String getInvalidCharsInName(final String value) {
-        if (value == null || value.isEmpty()) {
-            return "";
-        } else {
-            StringBuilder invalidChars = new StringBuilder(value.length());
-            for (int i = 0; i < value.length(); i++) {
-                char c = value.charAt(i);
-                if (!isValidChar(c)) {
-                    invalidChars.append(c);
-                }
-            }
-            return invalidChars.toString();
-        }
+        return getInvalidCharsInName(regExp, value);
     }
 
     protected boolean isValidChar(final char c) {
-        if (regExp != null) {
-            return regExp.test("" + c);
-        } else {
-            return true;
-        }
+        return isValidChar(regExp, c);
     }
 }

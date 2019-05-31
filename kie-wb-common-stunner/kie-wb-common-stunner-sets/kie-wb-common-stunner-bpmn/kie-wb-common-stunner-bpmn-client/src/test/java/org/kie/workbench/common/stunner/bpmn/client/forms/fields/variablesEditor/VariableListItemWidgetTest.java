@@ -34,9 +34,9 @@ import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Variable;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.VariableRow;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.ListBoxValues;
 import org.kie.workbench.common.stunner.bpmn.client.forms.widgets.ComboBox;
+import org.kie.workbench.common.stunner.bpmn.client.forms.widgets.CustomDataTypeTextBox;
 import org.kie.workbench.common.stunner.bpmn.client.forms.widgets.VariableNameTextBox;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -56,7 +56,7 @@ public class VariableListItemWidgetTest {
 
     ValueListBox<String> dataType;
 
-    TextBox customDataType;
+    CustomDataTypeTextBox customDataType;
 
     ComboBox dataTypeComboBox;
 
@@ -69,9 +69,6 @@ public class VariableListItemWidgetTest {
     @GwtMock
     DataBinder<VariableRow> variable;
 
-    @Captor
-    ArgumentCaptor<String> regExpCaptor;
-
     //@Spy  // - cannot make Spy because of GWT error
     //@InjectMocks // - cannot InjectMocks because of GWT error
     private VariableListItemWidgetViewImpl widget;
@@ -80,7 +77,7 @@ public class VariableListItemWidgetTest {
     public void initTestCase() {
         GwtMockito.initMocks(this);
         dataType = mock(ValueListBox.class);
-        customDataType = mock(TextBox.class);
+        customDataType = mock(CustomDataTypeTextBox.class);
         dataTypeComboBox = mock(ComboBox.class);
         widget = GWT.create(VariableListItemWidgetViewImpl.class);
         VariableRow variableRow = new VariableRow();
@@ -119,21 +116,32 @@ public class VariableListItemWidgetTest {
                               true,
                               VariableListItemWidgetView.CUSTOM_PROMPT,
                               VariableListItemWidgetView.ENTER_TYPE_PROMPT);
+        ArgumentCaptor<String> nameRegExpCaptor = ArgumentCaptor.forClass(String.class);
         verify(name,
-               times(1)).setRegExp(regExpCaptor.capture(),
+               times(1)).setRegExp(nameRegExpCaptor.capture(),
                                    anyString(),
                                    anyString());
-        RegExp regExp = RegExp.compile(regExpCaptor.getValue());
-        assertEquals(false,
-                     regExp.test("a 1"));
-        assertEquals(false,
-                     regExp.test("a@1"));
-        assertEquals(true,
-                     regExp.test("a1"));
+        RegExp nameRegExp = RegExp.compile(nameRegExpCaptor.getValue());
+        assertEquals(false, nameRegExp.test("a 1"));
+        assertEquals(false, nameRegExp.test("a@1"));
+        assertEquals(true, nameRegExp.test("a1"));
+        verify(name, times(1)).addChangeHandler(any(ChangeHandler.class));
+        ArgumentCaptor<String> customValueRegExpCaptor = ArgumentCaptor.forClass(String.class);
         verify(customDataType,
-               times(1)).addKeyDownHandler(any(KeyDownHandler.class));
-        verify(name,
-               times(1)).addChangeHandler(any(ChangeHandler.class));
+               times(1)).setRegExp(customValueRegExpCaptor.capture(),
+                                   anyString(),
+                                   anyString());
+        RegExp customValueRegExp = RegExp.compile(customValueRegExpCaptor.getValue());
+        assertEquals(false, customValueRegExp.test("a 1"));
+        assertEquals(false, customValueRegExp.test("<a1"));
+        assertEquals(false, customValueRegExp.test("a1>"));
+        assertEquals(false, customValueRegExp.test("<a1>"));
+        assertEquals(false, customValueRegExp.test("<a1/>"));
+        assertEquals(false, customValueRegExp.test("<a1\\>"));
+        assertEquals(false, customValueRegExp.test("a@1"));
+        assertEquals(true, customValueRegExp.test("a1"));
+        assertEquals(true, customValueRegExp.test("org.kie.Object"));
+        verify(customDataType, times(1)).addKeyDownHandler(any(KeyDownHandler.class));
     }
 
     @Test

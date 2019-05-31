@@ -43,6 +43,7 @@ import org.kie.workbench.common.stunner.bpmn.client.forms.util.ListBoxValues;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils;
 import org.kie.workbench.common.stunner.bpmn.client.forms.widgets.ComboBox;
 import org.kie.workbench.common.stunner.bpmn.client.forms.widgets.ComboBoxView;
+import org.kie.workbench.common.stunner.bpmn.client.forms.widgets.CustomDataTypeTextBox;
 import org.kie.workbench.common.stunner.bpmn.client.forms.widgets.VariableNameTextBox;
 import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.workbench.events.NotificationEvent;
@@ -50,7 +51,7 @@ import org.uberfire.workbench.events.NotificationEvent;
 /**
  * A templated widget that will be used to display a row in a table of
  * {@link VariableRow}s.
- * <p/>
+ * <p>
  * The Name field of VariableRow is Bound, but other fields are not bound because
  * they use a combination of ListBox and TextBox to implement a drop-down combo
  * to hold the values.
@@ -101,7 +102,7 @@ public class VariableListItemWidgetViewImpl implements VariableListItemWidgetVie
 
     @Inject
     @DataField
-    protected TextBox customDataType;
+    protected CustomDataTypeTextBox customDataType;
 
     @Inject
     protected ComboBox dataTypeComboBox;
@@ -145,24 +146,10 @@ public class VariableListItemWidgetViewImpl implements VariableListItemWidgetVie
 
     @PostConstruct
     public void init() {
-        // Configure dataType and customDataType controls
-        dataTypeComboBox.init(this,
-                              true,
-                              dataType,
-                              customDataType,
-                              false,
-                              true,
-                              CUSTOM_PROMPT,
-                              ENTER_TYPE_PROMPT);
         name.setRegExp(StringUtils.ALPHA_NUM_REGEXP,
                        StunnerFormsClientFieldsConstants.INSTANCE.Removed_invalid_characters_from_name(),
                        StunnerFormsClientFieldsConstants.INSTANCE.Invalid_character_in_name());
-        customDataType.addKeyDownHandler(event -> {
-            int iChar = event.getNativeKeyCode();
-            if (iChar == ' ') {
-                event.preventDefault();
-            }
-        });
+
         name.addChangeHandler(event -> {
             String value = name.getText();
             if (isDuplicateName(value)) {
@@ -176,6 +163,23 @@ public class VariableListItemWidgetViewImpl implements VariableListItemWidgetVie
                 ValueChangeEvent.fire(name, currentName);
             }
             notifyModelChanged();
+        });
+        dataTypeComboBox.init(this,
+                              true,
+                              dataType,
+                              customDataType,
+                              false,
+                              true,
+                              CUSTOM_PROMPT,
+                              ENTER_TYPE_PROMPT);
+        customDataType.setRegExp(StringUtils.ALPHA_NUM_DOT_REGEXP,
+                                 StunnerFormsClientFieldsConstants.INSTANCE.Removed_invalid_characters_from_name(),
+                                 StunnerFormsClientFieldsConstants.INSTANCE.Invalid_character_in_name());
+        customDataType.addKeyDownHandler(event -> {
+            int iChar = event.getNativeKeyCode();
+            if (iChar == ' ') {
+                event.preventDefault();
+            }
         });
     }
 

@@ -24,6 +24,7 @@ import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.regexp.shared.RegExp;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.uberfire.workbench.events.NotificationEvent;
 
@@ -118,5 +119,30 @@ public abstract class AbstractValidatingTextBox extends TextBox {
 
     protected int getKeyCodeFromKeyPressEvent(final KeyPressEvent event) {
         return event.getNativeEvent().getKeyCode();
+    }
+
+    public static String getInvalidCharsInName(final RegExp regExp,
+                                               final String value) {
+        if (value == null || value.isEmpty()) {
+            return "";
+        } else {
+            StringBuilder invalidChars = new StringBuilder(value.length());
+            for (int i = 0; i < value.length(); i++) {
+                char c = value.charAt(i);
+                if (!isValidChar(regExp, c)) {
+                    invalidChars.append(c);
+                }
+            }
+            return invalidChars.toString();
+        }
+    }
+
+    public static boolean isValidChar(final RegExp regExp,
+                                      final char c) {
+        if (regExp != null) {
+            return regExp.test("" + c);
+        } else {
+            return true;
+        }
     }
 }
