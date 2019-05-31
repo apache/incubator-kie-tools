@@ -103,7 +103,8 @@ public abstract class AbstractVFSDiagramServiceTest<M extends Metadata, D extend
 
     protected static final String DIAGRAM_UUID = UUID.uuid();
 
-    protected static final String DIAGRAM_SVG = "DIAGRAM_SVG";
+    public static final String DIAGRAM_SVG = "DIAGRAM_SVG";
+
     public static final String DIAGRAM_FILE_ID = "diagram-id";
 
     @Mock
@@ -347,8 +348,7 @@ public abstract class AbstractVFSDiagramServiceTest<M extends Metadata, D extend
         });
     }
 
-    @Test
-    public void testSaveOrUpdateSvg() {
+    protected void testBaseSaveOrUpdateSvg() {
         final Path path = mockGetDiagramByPathObjects();
 
         final Path svgPath = diagramService.saveOrUpdateSvg(path, DIAGRAM_SVG);

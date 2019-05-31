@@ -50,11 +50,11 @@ public class ClientDiagramServiceTest extends AbstractClientDiagramServiceTest<M
     @Override
     @SuppressWarnings("unchecked")
     protected ClientDiagramServiceImpl makeTestClientDiagramService() {
-        final Caller<DiagramService> diagramServiceCaller = new CallerMock<>(diagramService);
         final Caller<DiagramLookupService> diagramLookupServiceCaller = new CallerMock<>(diagramLookupService);
         return new ClientDiagramServiceImpl(shapeManager,
+                                            sessionManager,
                                             diagramServiceCaller,
                                             diagramLookupServiceCaller,
-                                            saveDiagramSessionCommandExecutedEventEvent);
+                                            sessionDiagramSavedEvent);
     }
 }

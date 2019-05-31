@@ -22,10 +22,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.SelectionControl;
-import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasFileExport;
-import org.kie.workbench.common.stunner.core.client.service.ClientDiagramService;
-import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
-import org.kie.workbench.common.stunner.core.client.session.command.event.SaveDiagramSessionCommandExecutedEvent;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -36,33 +32,21 @@ import org.uberfire.backend.vfs.Path;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class SaveDiagramSessionCommandTest {
 
     private static final String DIAGRAM_UUID = UUID.uuid();
-    private static final String RAW_DIAGRAM = "";
 
     private SaveDiagramSessionCommand command;
-
-    @Mock
-    private ClientDiagramService clientDiagramService;
-
-    @Mock
-    protected CanvasFileExport canvasFileExport;
 
     @Mock
     protected EditorSession session;
 
     @Mock
     protected AbstractCanvasHandler canvasHandler;
-
-    private SaveDiagramSessionCommandExecutedEvent saveDiagramSessionCommandExecutedEvent;
 
     @Mock
     private Diagram diagram;
@@ -84,17 +68,9 @@ public class SaveDiagramSessionCommandTest {
         when(metadata.getPath()).thenReturn(path);
         when(metadata.getCanvasRootUUID()).thenReturn(DIAGRAM_UUID);
         when(session.getSelectionControl()).thenReturn(selectionControl);
-        when(canvasFileExport.exportToSvg(canvasHandler)).thenReturn(RAW_DIAGRAM);
 
-        saveDiagramSessionCommandExecutedEvent = new SaveDiagramSessionCommandExecutedEvent(DIAGRAM_UUID);
-        command = new SaveDiagramSessionCommand(clientDiagramService, canvasFileExport);
+        command = new SaveDiagramSessionCommand();
         command.bind(session);
-    }
-
-    @Test
-    public void onSaveDiagram() {
-        command.onSaveDiagram(saveDiagramSessionCommandExecutedEvent);
-        verify(clientDiagramService).saveOrUpdateSvg(eq(path), eq(RAW_DIAGRAM), any(ServiceCallback.class));
     }
 
     @Test

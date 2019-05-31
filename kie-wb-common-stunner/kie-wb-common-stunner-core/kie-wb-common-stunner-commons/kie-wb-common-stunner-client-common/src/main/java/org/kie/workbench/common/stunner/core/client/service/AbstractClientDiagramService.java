@@ -19,8 +19,10 @@ package org.kie.workbench.common.stunner.core.client.service;
 import javax.enterprise.event.Event;
 
 import org.jboss.errai.common.client.api.Caller;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
-import org.kie.workbench.common.stunner.core.client.session.command.event.SaveDiagramSessionCommandExecutedEvent;
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
+import org.kie.workbench.common.stunner.core.client.session.event.SessionDiagramSavedEvent;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Graph;
@@ -34,15 +36,18 @@ import org.uberfire.backend.vfs.Path;
 public abstract class AbstractClientDiagramService<M extends Metadata, D extends Diagram<Graph, M>, S extends BaseDiagramService<M, D>> implements ClientDiagramService<M, D, S> {
 
     private final ShapeManager shapeManager;
+    protected final SessionManager sessionManager;
     protected final Caller<S> diagramServiceCaller;
     protected final Caller<DiagramLookupService> diagramLookupServiceCaller;
-    private final Event<SaveDiagramSessionCommandExecutedEvent> saveEvent;
+    private final Event<SessionDiagramSavedEvent> saveEvent;
 
     public AbstractClientDiagramService(final ShapeManager shapeManager,
+                                        final SessionManager sessionManager,
                                         final Caller<S> diagramServiceCaller,
                                         final Caller<DiagramLookupService> diagramLookupServiceCaller,
-                                        final Event<SaveDiagramSessionCommandExecutedEvent> saveEvent) {
+                                        final Event<SessionDiagramSavedEvent> saveEvent) {
         this.shapeManager = shapeManager;
+        this.sessionManager = sessionManager;
         this.diagramServiceCaller = diagramServiceCaller;
         this.diagramLookupServiceCaller = diagramLookupServiceCaller;
         this.saveEvent = saveEvent;
@@ -70,7 +75,7 @@ public abstract class AbstractClientDiagramService<M extends Metadata, D extends
                                       updateClientMetadata(diagram);
                                       diagram.getMetadata().setPath(((M) serverMetadata).getPath());
                                       callback.onSuccess(diagram);
-                                      fireSavedEvent(diagram);
+                                      fireSavedEvent(sessionManager.getCurrentSession());
                                   },
                                   (message, throwable) -> {
                                       callback.onError(new ClientRuntimeError(throwable));
@@ -83,8 +88,8 @@ public abstract class AbstractClientDiagramService<M extends Metadata, D extends
         diagramServiceCaller.call(res -> callback.onSuccess((Path) res)).saveOrUpdateSvg(diagramPath, rawSvg);
     }
 
-    protected void fireSavedEvent(D diagram) {
-        saveEvent.fire(new SaveDiagramSessionCommandExecutedEvent(diagram.getMetadata().getCanvasRootUUID()));
+    protected void fireSavedEvent(final ClientSession session) {
+        saveEvent.fire(new SessionDiagramSavedEvent(session));
     }
 
     @Override

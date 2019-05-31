@@ -27,12 +27,13 @@ import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.service.ClientDiagramServiceImpl;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
-import org.kie.workbench.common.stunner.core.client.session.command.event.SaveDiagramSessionCommandExecutedEvent;
+import org.kie.workbench.common.stunner.core.client.session.event.SessionDiagramSavedEvent;
 import org.kie.workbench.common.stunner.core.service.DiagramLookupService;
 import org.kie.workbench.common.stunner.project.client.resources.i18n.StunnerProjectClientMessages;
 import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
@@ -54,15 +55,18 @@ public class ClientProjectDiagramService extends ClientDiagramServiceImpl<Projec
         this(null,
              null,
              null,
+             null,
              null);
     }
 
     @Inject
     public ClientProjectDiagramService(final ShapeManager shapeManager,
+                                       final SessionManager sessionManager,
                                        final Caller<ProjectDiagramService> diagramServiceCaller,
                                        final Caller<DiagramLookupService> diagramLookupServiceCaller,
-                                       final Event<SaveDiagramSessionCommandExecutedEvent> saveEvent) {
+                                       final Event<SessionDiagramSavedEvent> saveEvent) {
         super(shapeManager,
+              sessionManager,
               diagramServiceCaller,
               diagramLookupServiceCaller,
               saveEvent);
@@ -96,7 +100,7 @@ public class ClientProjectDiagramService extends ClientDiagramServiceImpl<Projec
         diagramServiceCaller.call(v -> {
                                       updateClientMetadata(diagram);
                                       callback.onSuccess(diagram);
-                                      fireSavedEvent(diagram);
+                                      fireSavedEvent(sessionManager.getCurrentSession());
                                   },
                                   (message, throwable) -> {
                                       callback.onError(new ClientRuntimeError(throwable));

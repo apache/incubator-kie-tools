@@ -218,12 +218,16 @@ public abstract class AbstractVFSDiagramService<M extends Metadata, D extends Di
 
     @Override
     public Path saveOrUpdateSvg(Path diagramPath, String rawDiagramSvg) {
-        final org.uberfire.java.nio.file.Path diagramFilePath = Paths.convert(diagramPath);
-        final String fileName = getDiagramSvgFileName(getDiagramByPath(diagramPath));
-        final org.uberfire.java.nio.file.Path svgPath = diagramFilePath.getParent().resolve(fileName);
+        final org.uberfire.java.nio.file.Path svgPath = getDiagramSvgFilePath(getDiagramByPath(diagramPath));
         LOG.info("Saving diagram SVG " + svgPath);
         getIoService().write(svgPath, rawDiagramSvg);
         return Paths.convert(svgPath);
+    }
+
+    protected org.uberfire.java.nio.file.Path getDiagramSvgFilePath(Diagram diagram) {
+        final org.uberfire.java.nio.file.Path diagramFilePath = Paths.convert(diagram.getMetadata().getPath());
+        final String fileName = getDiagramSvgFileName(diagram);
+        return diagramFilePath.getParent().resolve(fileName);
     }
 
     private String getDiagramSvgFileName(Diagram diagram) {

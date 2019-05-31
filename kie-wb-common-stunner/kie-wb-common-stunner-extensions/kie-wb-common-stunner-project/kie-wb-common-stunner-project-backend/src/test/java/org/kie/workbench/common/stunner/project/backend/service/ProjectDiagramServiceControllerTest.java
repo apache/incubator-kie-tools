@@ -55,6 +55,8 @@ import static org.mockito.Mockito.when;
 public class ProjectDiagramServiceControllerTest
         extends AbstractVFSDiagramServiceTest<ProjectMetadata, ProjectDiagram> {
 
+    private static final String JBPM_DIAGRAM_SVG = "arbitrary content " + "xmlns:oryx=\"http://oryx-editor.org\"" + "etc...";
+
     private final static String PROJECT_NAME = "project";
 
     @Mock
@@ -116,38 +118,54 @@ public class ProjectDiagramServiceControllerTest
 
     @Test
     @Override
-    @SuppressWarnings("unchecked")
     public void testGetDiagramByPath() throws IOException {
         final Path path = mockGetDiagramByPathObjects();
+        prepareLoadDiagramByPath(path);
 
-        when(diagramMarshaller.unmarshall(anyObject(),
-                                          anyObject())).thenReturn(graph);
+        final Diagram result = diagramService.getDiagramByPath(path);
+        assertEquals(diagram, result);
+        verifyExpectedResult(path, result, null, null);
+    }
 
-        when(diagramFactory.build(eq(FILE_NAME),
-                                  any(Metadata.class),
-                                  eq(graph)))
-                .thenAnswer(i -> {
-                    final ProjectMetadata metadata = (ProjectMetadata) i.getArguments()[1];
-                    when(diagram.getMetadata()).thenReturn(metadata);
-                    return diagram;
-                });
+    @Test
+    public void testGetDiagramByPathWhenStunnerSVGFileExists() throws IOException {
+        final Path path = mockGetDiagramByPathObjects();
+        final Path expectedSVGPath = prepareSVGFile(path, DIAGRAM_SVG);
+        prepareLoadDiagramByPath(path);
 
-        WorkspaceProject project = mock(WorkspaceProject.class);
-        when(projectService.resolveProject(any(Path.class))).thenReturn(project);
-        when(project.getName()).thenReturn(PROJECT_NAME);
+        final Diagram result = diagramService.getDiagramByPath(path);
+        assertEquals(diagram, result);
+        verifyExpectedResult(path, result, expectedSVGPath, ProjectMetadata.SVGGenerator.STUNNER);
+    }
 
-        Diagram result = diagramService.getDiagramByPath(path);
-        assertEquals(diagram,
-                     result);
+    @Test
+    public void testGetDiagramByPathWhenStunnerJBPMFileExists() throws IOException {
+        final Path path = mockGetDiagramByPathObjects();
+        final Path expectedSVGPath = prepareSVGFile(path, JBPM_DIAGRAM_SVG);
+        prepareLoadDiagramByPath(path);
 
+        final Diagram result = diagramService.getDiagramByPath(path);
+        assertEquals(diagram, result);
+        verifyExpectedResult(path, result, expectedSVGPath, ProjectMetadata.SVGGenerator.JBPM_DESIGNER);
+    }
+
+    private Path prepareSVGFile(Path diagramPath, String content) {
+        final org.uberfire.java.nio.file.Path expectedSVGPath = Paths.convert(diagramPath).getParent().resolve(DIAGRAM_FILE_ID + AbstractVFSDiagramService.SVG_SUFFIX);
+        when(ioService.exists(expectedSVGPath)).thenReturn(true);
+        when(ioService.readAllString(expectedSVGPath)).thenReturn(content);
+        return Paths.convert(expectedSVGPath);
+    }
+
+    private void verifyExpectedResult(Path path, Diagram result, Path expectedSVGPath, ProjectMetadata.SVGGenerator generator) {
         verify(metadataService).getMetadata(eq(path));
         verify(projectService).resolveProject(eq(rootModulePath));
 
         assertTrue(result.getMetadata() instanceof ProjectMetadata);
-        ProjectMetadata metadata = (ProjectMetadata) result.getMetadata();
+        final ProjectMetadata metadata = (ProjectMetadata) result.getMetadata();
         assertNotNull(metadata.getOverview());
-        assertEquals(PROJECT_NAME,
-                     metadata.getOverview().getProjectName());
+        assertEquals(PROJECT_NAME, metadata.getOverview().getProjectName());
+        assertEquals(expectedSVGPath, metadata.getDiagramSVGPath());
+        assertEquals(generator, metadata.getDiagramSVGGenerator());
     }
 
     @Test
@@ -197,5 +215,33 @@ public class ProjectDiagramServiceControllerTest
         verify(ioService,
                times(1)).deleteIfExists(eq(expectedNioPath),
                                         any(DeleteOption.class));
+    }
+
+    @Test
+    public void testSaveOrUpdateSvg() throws IOException {
+        final Path path = mockGetDiagramByPathObjects();
+        prepareLoadDiagramByPath(path);
+        super.testBaseSaveOrUpdateSvg();
+    }
+
+    private void prepareLoadDiagramByPath(Path path) throws IOException {
+        when(metadata.getPath()).thenReturn(path);
+
+        when(diagramMarshaller.unmarshall(anyObject(),
+                                          anyObject())).thenReturn(graph);
+
+        when(diagramFactory.build(eq(FILE_NAME),
+                                  any(Metadata.class),
+                                  eq(graph)))
+                .thenAnswer(i -> {
+                    final ProjectMetadata metadata = (ProjectMetadata) i.getArguments()[1];
+                    metadata.setCanvasRootUUID(ProjectDiagramServiceControllerTest.this.metadata.getCanvasRootUUID());
+                    metadata.setPath(ProjectDiagramServiceControllerTest.this.metadata.getPath());
+                    when(diagram.getMetadata()).thenReturn(metadata);
+                    return diagram;
+                });
+        WorkspaceProject project = mock(WorkspaceProject.class);
+        when(projectService.resolveProject(any(Path.class))).thenReturn(project);
+        when(project.getName()).thenReturn(PROJECT_NAME);
     }
 }

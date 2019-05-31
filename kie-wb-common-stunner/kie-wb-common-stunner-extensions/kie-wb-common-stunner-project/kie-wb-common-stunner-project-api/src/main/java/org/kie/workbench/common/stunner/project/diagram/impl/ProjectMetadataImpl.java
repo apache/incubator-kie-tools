@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.project.diagram.impl;
 
+import java.util.Objects;
+
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
@@ -34,6 +36,8 @@ public class ProjectMetadataImpl extends AbstractMetadata implements ProjectMeta
     private Package projectPkg;
     private Overview overview;
     private String projectType;
+    private SVGGenerator diagramSVGGenerator;
+    private Path diagramSVGPath;
 
     public ProjectMetadataImpl() {
     }
@@ -42,12 +46,16 @@ public class ProjectMetadataImpl extends AbstractMetadata implements ProjectMeta
                                 final @MapsTo("projectPkg") Package projectPkg,
                                 final @MapsTo("overview") Overview overview,
                                 final @MapsTo("moduleName") String moduleName,
-                                final @MapsTo("projectType") String projectType) {
+                                final @MapsTo("projectType") String projectType,
+                                final @MapsTo("diagramSVGGenerator") SVGGenerator diagramSVGGenerator,
+                                final @MapsTo("diagramSVGPath") Path diagramSVGPath) {
         super(definitionSetId);
         this.moduleName = moduleName;
         this.projectPkg = projectPkg;
         this.overview = overview;
         this.projectType = projectType;
+        this.diagramSVGGenerator = diagramSVGGenerator;
+        this.diagramSVGPath = diagramSVGPath;
     }
 
     @Override
@@ -71,21 +79,50 @@ public class ProjectMetadataImpl extends AbstractMetadata implements ProjectMeta
     }
 
     @Override
+    public SVGGenerator getDiagramSVGGenerator() {
+        return diagramSVGGenerator;
+    }
+
+    @Override
+    public void setDiagramSVGGenerator(SVGGenerator diagramSVGGenerator) {
+        this.diagramSVGGenerator = diagramSVGGenerator;
+    }
+
+    @Override
+    public Path getDiagramSVGPath() {
+        return diagramSVGPath;
+    }
+
+    @Override
+    public void setDiagramSVGPath(Path diagramSVGPath) {
+        this.diagramSVGPath = diagramSVGPath;
+    }
+
+    @Override
     public int hashCode() {
         return HashUtil.combineHashCodes(super.hashCode(),
-                                         (null != moduleName) ? moduleName.hashCode() : 0,
-                                         (null != projectPkg) ? projectPkg.hashCode() : 0,
-                                         (null != overview) ? overview.hashCode() : 0);
+                                         Objects.hashCode(moduleName),
+                                         Objects.hashCode(projectPkg),
+                                         Objects.hashCode(overview),
+                                         Objects.hashCode(projectType),
+                                         Objects.hashCode(diagramSVGGenerator),
+                                         Objects.hashCode(diagramSVGPath));
     }
 
     @Override
     public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
         if (o instanceof ProjectMetadataImpl) {
             ProjectMetadataImpl other = (ProjectMetadataImpl) o;
             return super.equals(other) &&
-                    (null != moduleName) ? moduleName.equals(other.moduleName) : null == other.moduleName &&
-                    (null != projectPkg) ? projectPkg.equals(other.projectPkg) : null == other.projectPkg &&
-                    (null != overview) ? overview.equals(other.overview) : null == other.overview;
+                    Objects.equals(moduleName, other.moduleName) &&
+                    Objects.equals(projectPkg, other.projectPkg) &&
+                    Objects.equals(overview, other.overview) &&
+                    Objects.equals(projectType, other.projectType) &&
+                    Objects.equals(diagramSVGGenerator, other.diagramSVGGenerator) &&
+                    Objects.equals(diagramSVGPath, other.diagramSVGPath);
         }
         return false;
     }
@@ -105,6 +142,8 @@ public class ProjectMetadataImpl extends AbstractMetadata implements ProjectMeta
         private Overview overview;
         private Path path;
         private String projectType;
+        private SVGGenerator diagramSVGGenerator;
+        private Path diagramSVGPath;
 
         public ProjectMetadataBuilder forDefinitionSetId(final String s) {
             this.defSetId = s;
@@ -141,12 +180,24 @@ public class ProjectMetadataImpl extends AbstractMetadata implements ProjectMeta
             return this;
         }
 
+        public ProjectMetadataBuilder forDiagramSVGGenerator(SVGGenerator diagramSVGGenerator) {
+            this.diagramSVGGenerator = diagramSVGGenerator;
+            return this;
+        }
+
+        public ProjectMetadataBuilder forDiagramSVGPAth(final Path diagramSVGPath) {
+            this.diagramSVGPath = diagramSVGPath;
+            return this;
+        }
+
         public ProjectMetadataImpl build() {
             final ProjectMetadataImpl result = new ProjectMetadataImpl(defSetId,
                                                                        pPkg,
                                                                        overview,
                                                                        pName,
-                                                                       projectType);
+                                                                       projectType,
+                                                                       diagramSVGGenerator,
+                                                                       diagramSVGPath);
             result.setPath(path);
             result.setRoot(pPkg.getModuleRootPath());
             result.setTitle(title);

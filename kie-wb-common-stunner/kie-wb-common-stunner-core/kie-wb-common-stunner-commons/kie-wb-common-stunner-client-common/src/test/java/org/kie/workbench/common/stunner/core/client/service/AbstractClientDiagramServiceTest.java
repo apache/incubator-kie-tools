@@ -16,12 +16,16 @@
 
 package org.kie.workbench.common.stunner.core.client.service;
 
+import org.jboss.errai.common.client.api.Caller;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.ShapeSet;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
-import org.kie.workbench.common.stunner.core.client.session.command.event.SaveDiagramSessionCommandExecutedEvent;
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
+import org.kie.workbench.common.stunner.core.client.session.event.SessionDiagramSavedEvent;
+import org.kie.workbench.common.stunner.core.client.util.TestUtils;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Graph;
@@ -33,12 +37,15 @@ import org.kie.workbench.common.stunner.core.service.DiagramLookupService;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -47,8 +54,12 @@ import static org.mockito.Mockito.when;
 public abstract class AbstractClientDiagramServiceTest<M extends Metadata, D extends Diagram<Graph, M>, S extends BaseDiagramService<M, D>, CS extends AbstractClientDiagramService<M, D, S>> {
 
     private static final String RAW_DIAGRAM = "";
+
     @Mock
     protected ShapeManager shapeManager;
+
+    @Mock
+    protected SessionManager sessionManager;
 
     @Mock
     protected DiagramLookupService diagramLookupService;
@@ -62,10 +73,15 @@ public abstract class AbstractClientDiagramServiceTest<M extends Metadata, D ext
 
     protected S diagramService;
 
+    protected Caller<S> diagramServiceCaller;
+
     protected CS tested;
 
     @Mock
-    protected EventSourceMock<SaveDiagramSessionCommandExecutedEvent> saveDiagramSessionCommandExecutedEventEvent;
+    protected EventSourceMock<SessionDiagramSavedEvent> sessionDiagramSavedEvent;
+
+    @Mock
+    protected ClientSession session;
 
     @Before
     @SuppressWarnings("unchecked")
@@ -73,6 +89,7 @@ public abstract class AbstractClientDiagramServiceTest<M extends Metadata, D ext
         this.metadata = makeTestMetadata();
         this.diagram = makeTestDiagram();
         this.diagramService = makeTestDiagramService();
+        this.diagramServiceCaller = spy(new CallerMock<>(diagramService));
         this.tested = makeTestClientDiagramService();
 
         when(diagram.getMetadata()).thenReturn(metadata);
@@ -221,5 +238,26 @@ public abstract class AbstractClientDiagramServiceTest<M extends Metadata, D ext
                times(1)).onSuccess(any(String.class));
         verify(callback,
                times(0)).onError(any(ClientRuntimeError.class));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testSaveSessionDiagramSavedEventFiredWhenSaveWasSuccessful() {
+        when(sessionManager.getCurrentSession()).thenReturn(session);
+        ServiceCallback serviceCallback = mock(ServiceCallback.class);
+        when(diagramService.saveOrUpdate(any())).thenReturn(metadata);
+        tested.saveOrUpdate(diagram, serviceCallback);
+        verify(sessionDiagramSavedEvent).fire(new SessionDiagramSavedEvent(session));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testSaveSessionDiagramSavedEventNotFiredWhenSaveWasUnSuccessful() {
+        TestUtils.prepareServiceCallerError(diagramService, diagramServiceCaller, new Throwable("some error"));
+        when(sessionManager.getCurrentSession()).thenReturn(session);
+        ServiceCallback serviceCallback = mock(ServiceCallback.class);
+        when(diagramService.saveOrUpdate(any())).thenReturn(metadata);
+        tested.saveOrUpdate(diagram, serviceCallback);
+        verify(sessionDiagramSavedEvent, never()).fire(any(SessionDiagramSavedEvent.class));
     }
 }

@@ -65,12 +65,12 @@ public class ClientProjectDiagramServiceTest extends AbstractClientDiagramServic
 
     @Override
     protected ClientProjectDiagramService makeTestClientDiagramService() {
-        final Caller<ProjectDiagramService> diagramServiceCaller = new CallerMock<>(diagramService);
         final Caller<DiagramLookupService> diagramLookupServiceCaller = new CallerMock<>(diagramLookupService);
         return new ClientProjectDiagramService(shapeManager,
+                                               sessionManager,
                                                diagramServiceCaller,
                                                diagramLookupServiceCaller,
-                                               saveDiagramSessionCommandExecutedEventEvent);
+                                               sessionDiagramSavedEvent);
     }
 
     @Test

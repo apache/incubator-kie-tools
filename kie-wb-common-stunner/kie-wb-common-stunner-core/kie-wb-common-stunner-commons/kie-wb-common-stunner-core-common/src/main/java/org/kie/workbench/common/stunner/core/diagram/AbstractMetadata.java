@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.diagram;
 
+import java.util.Objects;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 import org.uberfire.backend.vfs.Path;
@@ -119,24 +121,28 @@ public abstract class AbstractMetadata implements Metadata {
 
     @Override
     public int hashCode() {
-        return HashUtil.combineHashCodes((null != definitionSetId) ? definitionSetId.hashCode() : 0,
-                                         (null != shapeSetId) ? shapeSetId.hashCode() : 0,
-                                         (null != canvasRootUUID) ? canvasRootUUID.hashCode() : 0,
-                                         (null != thumbData) ? thumbData.hashCode() : 0,
-                                         (null != path) ? path.hashCode() : 0,
-                                         (null != title) ? title.hashCode() : 0);
+        return HashUtil.combineHashCodes(Objects.hashCode(definitionSetId),
+                                         Objects.hashCode(profileId),
+                                         Objects.hashCode(shapeSetId),
+                                         Objects.hashCode(canvasRootUUID),
+                                         Objects.hashCode(thumbData),
+                                         Objects.hashCode(root),
+                                         Objects.hashCode(path),
+                                         Objects.hashCode(title));
     }
 
     @Override
     public boolean equals(Object o) {
         if (o instanceof AbstractMetadata) {
             AbstractMetadata other = (AbstractMetadata) o;
-            return (null != definitionSetId) ? definitionSetId.equals(other.definitionSetId) : null == other.definitionSetId &&
-                    (null != shapeSetId) ? shapeSetId.equals(other.shapeSetId) : null == other.shapeSetId &&
-                    (null != canvasRootUUID) ? canvasRootUUID.equals(other.canvasRootUUID) : null == other.canvasRootUUID &&
-                    (null != thumbData) ? thumbData.equals(other.thumbData) : null == other.thumbData &&
-                    (null != path) ? path.equals(other.path) : null == other.path &&
-                    (null != title) ? title.equals(other.title) : null == other.title;
+            return Objects.equals(definitionSetId, other.definitionSetId) &&
+                    Objects.equals(profileId, other.profileId) &&
+                    Objects.equals(shapeSetId, other.shapeSetId) &&
+                    Objects.equals(canvasRootUUID, other.canvasRootUUID) &&
+                    Objects.equals(thumbData, other.thumbData) &&
+                    Objects.equals(root, other.root) &&
+                    Objects.equals(path, other.path) &&
+                    Objects.equals(title, other.title);
         }
         return false;
     }

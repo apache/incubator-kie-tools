@@ -110,6 +110,23 @@ class ProjectDiagramServiceController extends AbstractVFSDiagramService<ProjectM
     }
 
     @Override
+    public ProjectDiagram getDiagramByPath(Path file) {
+        final ProjectDiagram projectDiagram = super.getDiagramByPath(file);
+        final org.uberfire.java.nio.file.Path svgPath = getDiagramSvgFilePath(projectDiagram);
+        if (getIoService().exists(svgPath)) {
+            projectDiagram.getMetadata().setDiagramSVGPath(Paths.convert(svgPath));
+            final String svgContent = getIoService().readAllString(svgPath);
+            //jBPM svg files generated with oryx has the xmlns:oryx="http://oryx-editor.org\" configured
+            if (svgContent != null && svgContent.contains("xmlns:oryx=\"http://oryx-editor.org\"")) {
+                projectDiagram.getMetadata().setDiagramSVGGenerator(ProjectMetadata.SVGGenerator.JBPM_DESIGNER);
+            } else {
+                projectDiagram.getMetadata().setDiagramSVGGenerator(ProjectMetadata.SVGGenerator.STUNNER);
+            }
+        }
+        return projectDiagram;
+    }
+
+    @Override
     protected Metadata buildMetadataInstance(final Path path,
                                              final String defSetId,
                                              final String title) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,19 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.workbench.common.stunner.client.widgets.event;
+
+package org.kie.workbench.common.stunner.core.client.session.event;
 
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
-import org.kie.workbench.common.stunner.core.client.session.event.BaseSessionEvent;
 
-public final class SessionFocusedEvent extends BaseSessionEvent {
+public final class SessionDiagramSavedEvent extends BaseSessionEvent {
 
-    public SessionFocusedEvent(final ClientSession session) {
+    public SessionDiagramSavedEvent(final ClientSession session) {
         super(session);
-    }
-
-    @Override
-    public String toString() {
-        return "SessionFocusedEvent [session=" + session + "]";
     }
 }

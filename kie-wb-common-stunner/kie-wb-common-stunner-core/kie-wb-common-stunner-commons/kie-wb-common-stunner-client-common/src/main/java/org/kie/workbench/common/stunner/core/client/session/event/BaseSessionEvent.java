@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,19 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.workbench.common.stunner.client.widgets.event;
+
+package org.kie.workbench.common.stunner.core.client.session.event;
+
+import java.util.Objects;
 
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
+import org.kie.workbench.common.stunner.core.util.HashUtil;
 import org.uberfire.workbench.events.UberFireEvent;
 
-/**
- * <p>Event when a diagram has been loaded and drawn into the session's canvas.</p>
- */
-public final class SessionDiagramOpenedEvent implements UberFireEvent {
+public abstract class BaseSessionEvent implements UberFireEvent {
 
-    private final ClientSession session;
+    protected final ClientSession session;
 
-    public SessionDiagramOpenedEvent(final ClientSession session) {
+    protected BaseSessionEvent(final ClientSession session) {
         this.session = session;
     }
 
@@ -34,7 +35,19 @@ public final class SessionDiagramOpenedEvent implements UberFireEvent {
     }
 
     @Override
-    public String toString() {
-        return "SessionDiagramOpenedEvent [session=" + session + "]";
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        BaseSessionEvent that = (BaseSessionEvent) o;
+        return Objects.equals(session, that.session);
+    }
+
+    @Override
+    public int hashCode() {
+        return HashUtil.combineHashCodes(Objects.hashCode(session));
     }
 }
