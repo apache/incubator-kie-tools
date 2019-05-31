@@ -81,9 +81,8 @@ public class DataTypeListShortcuts {
             currentDataTypeListItem.get().disableEditMode();
         } else {
             getVisibleDataTypeListItems().forEach(DataTypeListItem::disableEditMode);
+            reset();
         }
-
-        reset();
     }
 
     void onCtrlBackspace() {
@@ -120,6 +119,10 @@ public class DataTypeListShortcuts {
 
     void focusIn() {
         view.focusIn();
+    }
+
+    public void highlight(final Element dataTypeElement) {
+        view.highlight(dataTypeElement);
     }
 
     public void reset() {

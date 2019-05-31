@@ -36,6 +36,8 @@ import static org.uberfire.client.views.pfly.selectpicker.JQuery.$;
 @ApplicationScoped
 public class DataTypeShortcuts {
 
+    static final String SELECT_DATATYPE_MENU = ".bs-container.btn-group.bootstrap-select.open";
+
     private final DataTypeListShortcuts listShortcuts;
 
     EventListener KEY_DOWN_LISTENER = this::keyDownListener;
@@ -83,7 +85,11 @@ public class DataTypeShortcuts {
             return;
         }
 
-        if (tabContentContainsTarget(event)) {
+        if (tabContentContainsTarget(event) || dropdownMenuContainsTarget(event)) {
+            final Element dataTypeElement = getDataTypeRowElement(event);
+            if (dataTypeElement != null) {
+                listShortcuts.highlight(dataTypeElement);
+            }
             listShortcuts.focusIn();
         } else {
             listShortcuts.reset();
@@ -195,10 +201,20 @@ public class DataTypeShortcuts {
         return element instanceof HTMLInputElement;
     }
 
-    private boolean tabContentContainsTarget(final Event event) {
+    boolean tabContentContainsTarget(final Event event) {
         final Element target = getTarget(event);
         final Element tabContent = getTabContent();
         return $.contains(tabContent, target);
+    }
+
+    private boolean dropdownMenuContainsTarget(final Event event) {
+        final Element target = getTarget(event);
+        return target.closest(SELECT_DATATYPE_MENU) != null;
+    }
+
+    private Element getDataTypeRowElement(final Event event) {
+        final Element target = getTarget(event);
+        return target.closest(".list-group-item");
     }
 
     private Element getTabContent() {
@@ -206,7 +222,7 @@ public class DataTypeShortcuts {
     }
 
     boolean isDropdownOpened() {
-        return querySelector(".bs-container.btn-group.bootstrap-select.open") != null;
+        return querySelector(SELECT_DATATYPE_MENU) != null;
     }
 
     boolean isLoaded() {

@@ -146,7 +146,7 @@ public class DataTypeListShortcutsTest {
         shortcuts.onEscape();
 
         verify(listItem).disableEditMode();
-        verify(shortcuts).reset();
+        verify(shortcuts, never()).reset();
     }
 
     @Test
@@ -217,6 +217,14 @@ public class DataTypeListShortcutsTest {
         shortcuts.focusIn();
 
         verify(view).focusIn();
+    }
+
+    @Test
+    public void testHighlight() {
+        final Element element = mock(Element.class);
+        shortcuts.highlight(element);
+
+        verify(view).highlight(element);
     }
 
     @Test
