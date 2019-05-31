@@ -25,6 +25,7 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.drools.workbench.models.guided.scorecard.backend.GuidedScoreCardModelVisitor;
 import org.drools.workbench.models.guided.scorecard.backend.GuidedScoreCardXMLPersistence;
 import org.drools.workbench.models.guided.scorecard.shared.Attribute;
 import org.drools.workbench.models.guided.scorecard.shared.Characteristic;

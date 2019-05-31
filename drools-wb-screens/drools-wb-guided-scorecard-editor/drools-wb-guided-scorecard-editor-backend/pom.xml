@@ -31,14 +31,6 @@
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-workbench-models-datamodel-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-workbench-models-commons</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
       <artifactId>drools-workbench-models-guided-scorecard</artifactId>
       <exclusions>
         <exclusion>
@@ -81,19 +73,11 @@
     </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-backend-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
       <artifactId>uberfire-backend-server</artifactId>
     </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-commons</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.soup</groupId>
@@ -144,18 +128,6 @@
     </dependency>
 
     <!-- Test dependencies -->
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-nio2-fs</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-nio2-jgit</artifactId>
-      <scope>test</scope>
-    </dependency>
-
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-metadata-commons-io</artifactId>
