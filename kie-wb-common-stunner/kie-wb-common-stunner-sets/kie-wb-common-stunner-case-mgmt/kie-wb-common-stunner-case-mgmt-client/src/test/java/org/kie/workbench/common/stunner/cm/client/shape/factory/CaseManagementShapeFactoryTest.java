@@ -28,16 +28,45 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.SequenceFlowConnectorDef;
+import org.kie.workbench.common.stunner.bpmn.definition.Association;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
+import org.kie.workbench.common.stunner.bpmn.definition.EmbeddedSubprocess;
+import org.kie.workbench.common.stunner.bpmn.definition.EndCompensationEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.EndErrorEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.EndEscalationEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.EndMessageEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.EndSignalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.EventSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveGateway;
+import org.kie.workbench.common.stunner.bpmn.definition.InclusiveGateway;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateCompensationEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateCompensationEventThrowing;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateConditionalEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateErrorEventCatching;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateEscalationEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateEscalationEventThrowing;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEventCatching;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEventThrowing;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventCatching;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventThrowing;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.Lane;
+import org.kie.workbench.common.stunner.bpmn.definition.MultipleInstanceSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
 import org.kie.workbench.common.stunner.bpmn.definition.ParallelGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.SequenceFlow;
+import org.kie.workbench.common.stunner.bpmn.definition.StartCompensationEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.StartConditionalEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.StartErrorEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.StartEscalationEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.StartMessageEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.StartSignalEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.StartTimerEvent;
+import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTask;
 import org.kie.workbench.common.stunner.cm.client.canvas.CaseManagementCanvasHandler;
 import org.kie.workbench.common.stunner.cm.client.resources.CaseManagementSVGViewFactory;
 import org.kie.workbench.common.stunner.cm.client.shape.CaseManagementShape;
@@ -73,6 +102,7 @@ import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
@@ -274,17 +304,17 @@ public class CaseManagementShapeFactoryTest {
         assertShapeGlyph(new CaseManagementDiagram());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void checkLane() {
-        assertShapeConstruction(new Lane(),
-                                null);
+        assertShapeConstructionNotSupported(new Lane(),
+                                            null);
         assertShapeGlyph(new Lane());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void checkNoneTask() {
-        assertShapeConstruction(new NoneTask(),
-                                null);
+        assertShapeConstructionNotSupported(new NoneTask(),
+                                            null);
         assertShapeGlyph(new NoneTask());
     }
 
@@ -295,45 +325,45 @@ public class CaseManagementShapeFactoryTest {
         assertShapeGlyph(new UserTask());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void checkBusinessRuleTask() {
-        assertShapeConstruction(new BusinessRuleTask(),
-                                null);
+        assertShapeConstructionNotSupported(new BusinessRuleTask(),
+                                            null);
         assertShapeGlyph(new BusinessRuleTask());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void checkStartNoneEvent() {
-        assertShapeConstruction(new StartNoneEvent(),
-                                null);
+        assertShapeConstructionNotSupported(new StartNoneEvent(),
+                                            null);
         assertShapeGlyph(new StartNoneEvent());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void checkEndNoneEvent() {
-        assertShapeConstruction(new EndNoneEvent(),
-                                null);
+        assertShapeConstructionNotSupported(new EndNoneEvent(),
+                                            null);
         assertShapeGlyph(new EndNoneEvent());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void checkEndTerminateEvent() {
-        assertShapeConstruction(new EndTerminateEvent(),
-                                null);
+        assertShapeConstructionNotSupported(new EndTerminateEvent(),
+                                            null);
         assertShapeGlyph(new EndTerminateEvent());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void checkParallelGateway() {
-        assertShapeConstruction(new ParallelGateway(),
-                                null);
+        assertShapeConstructionNotSupported(new ParallelGateway(),
+                                            null);
         assertShapeGlyph(new ParallelGateway());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void checkExclusiveDatabasedGateway() {
-        assertShapeConstruction(new ExclusiveGateway(),
-                                null);
+        assertShapeConstructionNotSupported(new ExclusiveGateway(),
+                                            null);
         assertShapeGlyph(new ExclusiveGateway());
     }
 
@@ -365,6 +395,209 @@ public class CaseManagementShapeFactoryTest {
         assertShapeGlyph(new SequenceFlow());
     }
 
+    @Test
+    public void checkServiceTask() {
+        assertShapeConstructionNotSupported(new ServiceTask(),
+                                            connectorAssertions);
+        assertShapeGlyph(new ServiceTask());
+    }
+
+    @Test
+    public void checkStartSignalEvent() {
+        assertShapeConstructionNotSupported(new StartSignalEvent(),
+                                            connectorAssertions);
+        assertShapeGlyph(new StartSignalEvent());
+    }
+
+    @Test
+    public void checkStartTimerEvent() {
+        assertShapeConstructionNotSupported(new StartTimerEvent(),
+                                            connectorAssertions);
+        assertShapeGlyph(new StartTimerEvent());
+    }
+
+    @Test
+    public void checkStartMessageEvent() {
+        assertShapeConstructionNotSupported(new StartMessageEvent(),
+                                            connectorAssertions);
+        assertShapeGlyph(new StartMessageEvent());
+    }
+
+    @Test
+    public void checkStartErrorEvent() {
+        assertShapeConstructionNotSupported(new StartErrorEvent(),
+                                            connectorAssertions);
+        assertShapeGlyph(new StartErrorEvent());
+    }
+
+    @Test
+    public void checkStartConditionalEvent() {
+        assertShapeConstructionNotSupported(new StartConditionalEvent(),
+                                            connectorAssertions);
+        assertShapeGlyph(new StartConditionalEvent());
+    }
+
+    @Test
+    public void checkStartEscalationEvent() {
+        assertShapeConstructionNotSupported(new StartEscalationEvent(),
+                                            connectorAssertions);
+        assertShapeGlyph(new StartEscalationEvent());
+    }
+
+    @Test
+    public void checkStartCompensationEvent() {
+        assertShapeConstructionNotSupported(new StartCompensationEvent(),
+                                            connectorAssertions);
+        assertShapeGlyph(new StartCompensationEvent());
+    }
+
+    @Test
+    public void checkInclusiveGateway() {
+        assertShapeConstructionNotSupported(new InclusiveGateway(),
+                                            connectorAssertions);
+        assertShapeGlyph(new InclusiveGateway());
+    }
+
+    @Test
+    public void checkEmbeddedSubprocess() {
+        assertShapeConstructionNotSupported(new EmbeddedSubprocess(),
+                                            connectorAssertions);
+        assertShapeGlyph(new EmbeddedSubprocess());
+    }
+
+    @Test
+    public void checkEventSubprocess() {
+        assertShapeConstructionNotSupported(new EventSubprocess(),
+                                            connectorAssertions);
+        assertShapeGlyph(new EventSubprocess());
+    }
+
+    @Test
+    public void checkMultipleInstanceSubprocess() {
+        assertShapeConstructionNotSupported(new MultipleInstanceSubprocess(),
+                                            connectorAssertions);
+        assertShapeGlyph(new MultipleInstanceSubprocess());
+    }
+
+    @Test
+    public void checkEndSignalEvent() {
+        assertShapeConstructionNotSupported(new EndSignalEvent(),
+                                            connectorAssertions);
+        assertShapeGlyph(new EndSignalEvent());
+    }
+
+    @Test
+    public void checkEndMessageEvent() {
+        assertShapeConstructionNotSupported(new EndMessageEvent(),
+                                            connectorAssertions);
+        assertShapeGlyph(new EndMessageEvent());
+    }
+
+    @Test
+    public void checkEndErrorEvent() {
+        assertShapeConstructionNotSupported(new EndErrorEvent(),
+                                            connectorAssertions);
+        assertShapeGlyph(new EndErrorEvent());
+    }
+
+    @Test
+    public void checkEndEscalationEvent() {
+        assertShapeConstructionNotSupported(new EndEscalationEvent(),
+                                            connectorAssertions);
+        assertShapeGlyph(new EndEscalationEvent());
+    }
+
+    @Test
+    public void checkEndCompensationEvent() {
+        assertShapeConstructionNotSupported(new EndCompensationEvent(),
+                                            connectorAssertions);
+        assertShapeGlyph(new EndCompensationEvent());
+    }
+
+    @Test
+    public void checkIntermediateTimerEvent() {
+        assertShapeConstructionNotSupported(new IntermediateTimerEvent(),
+                                            connectorAssertions);
+        assertShapeGlyph(new IntermediateTimerEvent());
+    }
+
+    @Test
+    public void checkIntermediateConditionalEvent() {
+        assertShapeConstructionNotSupported(new IntermediateConditionalEvent(),
+                                            connectorAssertions);
+        assertShapeGlyph(new IntermediateConditionalEvent());
+    }
+
+    @Test
+    public void checkIntermediateSignalEventCatching() {
+        assertShapeConstructionNotSupported(new IntermediateSignalEventCatching(),
+                                            connectorAssertions);
+        assertShapeGlyph(new IntermediateSignalEventCatching());
+    }
+
+    @Test
+    public void checkIntermediateErrorEventCatching() {
+        assertShapeConstructionNotSupported(new IntermediateErrorEventCatching(),
+                                            connectorAssertions);
+        assertShapeGlyph(new IntermediateErrorEventCatching());
+    }
+
+    @Test
+    public void checkIntermediateMessageEventCatching() {
+        assertShapeConstructionNotSupported(new IntermediateMessageEventCatching(),
+                                            connectorAssertions);
+        assertShapeGlyph(new IntermediateMessageEventCatching());
+    }
+
+    @Test
+    public void checkIntermediateEscalationEvent() {
+        assertShapeConstructionNotSupported(new IntermediateEscalationEvent(),
+                                            connectorAssertions);
+        assertShapeGlyph(new IntermediateEscalationEvent());
+    }
+
+    @Test
+    public void checkIntermediateCompensationEvent() {
+        assertShapeConstructionNotSupported(new IntermediateCompensationEvent(),
+                                            connectorAssertions);
+        assertShapeGlyph(new IntermediateCompensationEvent());
+    }
+
+    @Test
+    public void checkIntermediateSignalEventThrowing() {
+        assertShapeConstructionNotSupported(new IntermediateSignalEventThrowing(),
+                                            connectorAssertions);
+        assertShapeGlyph(new IntermediateSignalEventThrowing());
+    }
+
+    @Test
+    public void checkIntermediateMessageEventThrowing() {
+        assertShapeConstructionNotSupported(new IntermediateMessageEventThrowing(),
+                                            connectorAssertions);
+        assertShapeGlyph(new IntermediateMessageEventThrowing());
+    }
+
+    @Test
+    public void checkIntermediateEscalationEventThrowing() {
+        assertShapeConstructionNotSupported(new IntermediateEscalationEventThrowing(),
+                                            connectorAssertions);
+        assertShapeGlyph(new IntermediateEscalationEventThrowing());
+    }
+
+    @Test
+    public void checkIntermediateCompensationEventThrowing() {
+        assertShapeConstructionNotSupported(new IntermediateCompensationEventThrowing(),
+                                            connectorAssertions);
+        assertShapeGlyph(new IntermediateCompensationEventThrowing());
+    }
+
+    @Test
+    public void checkAssociation() {
+        assertShapeConstructionNotSupported(new Association(),
+                                            connectorAssertions);
+        assertShapeGlyph(new Association());
+    }
+
     @SuppressWarnings("unchecked")
     private void assertShapeConstruction(final BPMNDefinition definition,
                                          final Consumer<Shape> o) {
@@ -375,6 +608,14 @@ public class CaseManagementShapeFactoryTest {
         assertNotNull(shape.getShapeView());
 
         o.accept(shape);
+    }
+
+    private void assertShapeConstructionNotSupported(final BPMNDefinition definition,
+                                                     final Consumer<Shape> o) {
+        when(definitionAdapter.getId(eq(definition))).thenReturn(DefinitionId.build(definition.getClass().getName()));
+
+        final Shape<? extends ShapeView> shape = factory.newShape(definition);
+        assertNull(shape);
     }
 
     @SuppressWarnings("unchecked")

@@ -75,6 +75,9 @@ public class ReusableSubprocessConverter {
 
         p.setAbsoluteBounds(n);
 
+        p.setCase(executionSet.getIsCase().getValue());
+        p.setAdHocAutostart(executionSet.getAdHocAutostart().getValue());
+
         return p;
     }
 }

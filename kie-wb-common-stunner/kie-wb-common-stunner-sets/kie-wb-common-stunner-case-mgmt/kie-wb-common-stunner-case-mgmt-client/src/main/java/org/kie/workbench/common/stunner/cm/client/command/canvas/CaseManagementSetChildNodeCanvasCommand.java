@@ -25,19 +25,21 @@ import org.kie.workbench.common.stunner.core.client.canvas.command.RemoveCanvasC
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
+import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
 public class CaseManagementSetChildNodeCanvasCommand extends org.kie.workbench.common.stunner.core.client.canvas.command.SetCanvasChildrenCommand {
 
     protected final OptionalInt index;
-    protected final Optional<Node> originalParent;
+    protected final Optional<Node<View<?>, Edge>> originalParent;
     protected final OptionalInt originalIndex;
 
     @SuppressWarnings("unchecked")
-    public CaseManagementSetChildNodeCanvasCommand(final Node parent,
-                                                   final Node child,
+    public CaseManagementSetChildNodeCanvasCommand(final Node<View<?>, Edge> parent,
+                                                   final Node<View<?>, Edge> child,
                                                    final OptionalInt index,
-                                                   final Optional<Node> originalParent,
+                                                   final Optional<Node<View<?>, Edge>> originalParent,
                                                    final OptionalInt originalIndex) {
         super(parent,
               Collections.singleton(child));

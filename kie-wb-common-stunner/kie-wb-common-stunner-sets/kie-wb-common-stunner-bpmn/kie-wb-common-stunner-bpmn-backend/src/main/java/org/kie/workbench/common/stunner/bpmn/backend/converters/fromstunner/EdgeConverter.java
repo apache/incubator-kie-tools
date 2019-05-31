@@ -25,9 +25,9 @@ import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 
 public class EdgeConverter {
 
-    private final BaseConverterFactory converterFactory;
+    private final ConverterFactory converterFactory;
 
-    public EdgeConverter(BaseConverterFactory converterFactory) {
+    public EdgeConverter(ConverterFactory converterFactory) {
         this.converterFactory = converterFactory;
     }
 

@@ -788,6 +788,11 @@
       <scope>provided</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.kie.workbench.stunner</groupId>
+      <artifactId>kie-wb-common-stunner-case-mgmt-project-backend</artifactId>
+    </dependency>
+
     <!-- Lienzo. -->
     <dependency>
       <groupId>org.kie</groupId>

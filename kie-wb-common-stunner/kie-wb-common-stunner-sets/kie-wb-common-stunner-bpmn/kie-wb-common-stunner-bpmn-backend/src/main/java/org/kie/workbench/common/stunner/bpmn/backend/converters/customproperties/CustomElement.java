@@ -47,6 +47,7 @@ public class CustomElement<T> {
     public static final MetadataTypeDefinition<String> caseRole = new StringElement("customCaseRoles", "");
     public static final MetadataTypeDefinition<String> slaDueDate = new StringElement("customSLADueDate", "");
     public static final GlobalVariablesElement globalVariables = new GlobalVariablesElement("customGlobalVariables");
+    public static final MetadataTypeDefinition<Boolean> isCase = new BooleanElement("case", Boolean.FALSE);
 
     private final ElementDefinition<T> elementDefinition;
     private final BaseElement element;

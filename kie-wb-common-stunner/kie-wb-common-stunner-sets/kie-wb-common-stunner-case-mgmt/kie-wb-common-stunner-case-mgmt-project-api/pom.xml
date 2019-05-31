@@ -68,6 +68,13 @@
       <artifactId>kie-wb-common-stunner-case-mgmt-api</artifactId>
     </dependency>
 
+    <!-- Uberfire & Errai. -->
+
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-bus</artifactId>
+    </dependency>
+
     <!-- Test scope. -->
 
     <dependency>

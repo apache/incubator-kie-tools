@@ -24,8 +24,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.TypedFactoryManager;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.PropertyReaderFactory;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.UserTaskPropertyReader;
-import org.kie.workbench.common.stunner.cm.backend.converters.tostunner.properties.CaseManagementPropertyReaderFactory;
 import org.kie.workbench.common.stunner.cm.definition.UserTask;
 import org.kie.workbench.common.stunner.cm.definition.property.task.UserTaskExecutionSet;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
@@ -69,7 +69,7 @@ public class CaseManagementTaskConverterTest {
         TypedFactoryManager typedFactoryManager = new TypedFactoryManager(factoryManager);
 
         tested = new CaseManagementTaskConverter(typedFactoryManager,
-                                                 new CaseManagementPropertyReaderFactory(definitionResolver));
+                                                 new PropertyReaderFactory(definitionResolver));
     }
 
     @Test

@@ -46,4 +46,12 @@ public class CallActivityPropertyReader extends MultipleInstanceActivityProperty
     public boolean isAsync() {
         return CustomElement.async.of(element).get();
     }
+
+    public boolean isCase() {
+        return CustomElement.isCase.of(element).get();
+    }
+
+    public boolean isAdHocAutostart() {
+        return CustomElement.autoStart.of(element).get();
+    }
 }

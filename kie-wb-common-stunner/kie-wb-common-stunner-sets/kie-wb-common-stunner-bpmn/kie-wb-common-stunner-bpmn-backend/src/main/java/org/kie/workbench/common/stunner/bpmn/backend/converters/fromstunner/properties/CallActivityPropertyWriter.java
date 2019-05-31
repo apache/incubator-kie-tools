@@ -55,4 +55,12 @@ public class CallActivityPropertyWriter extends MultipleInstanceActivityProperty
     public void setCalledElement(String value) {
         activity.setCalledElement(value);
     }
+
+    public void setCase(Boolean isCase) {
+        CustomElement.isCase.of(flowElement).set(isCase);
+    }
+
+    public void setAdHocAutostart(boolean autoStart) {
+        CustomElement.autoStart.of(flowElement).set(autoStart);
+    }
 }

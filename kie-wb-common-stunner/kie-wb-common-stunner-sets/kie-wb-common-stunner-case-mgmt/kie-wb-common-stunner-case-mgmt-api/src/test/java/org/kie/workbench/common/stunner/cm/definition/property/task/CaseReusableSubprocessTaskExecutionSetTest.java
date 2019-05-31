@@ -25,7 +25,7 @@ import javax.validation.ValidatorFactory;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.workbench.common.stunner.cm.definition.property.subprocess.IsCase;
+import org.kie.workbench.common.stunner.bpmn.definition.property.subProcess.IsCase;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

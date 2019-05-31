@@ -25,7 +25,6 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocAutos
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocOrdering;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnEntryAction;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnExitAction;
-import org.kie.workbench.common.stunner.cm.backend.converters.tostunner.properties.CaseManagementAdHocSubProcessPropertyReader;
 import org.kie.workbench.common.stunner.cm.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.cm.definition.property.task.AdHocCompletionCondition;
 import org.kie.workbench.common.stunner.cm.definition.property.task.AdHocSubprocessTaskExecutionSet;
@@ -60,11 +59,10 @@ public class CaseManagementSubProcessConverter extends BaseSubProcessConverter<A
 
     @Override
     protected AdHocSubprocessTaskExecutionSet createAdHocSubprocessTaskExecutionSet(AdHocSubProcessPropertyReader p) {
-        CaseManagementAdHocSubProcessPropertyReader reader = (CaseManagementAdHocSubProcessPropertyReader) p;
-        return new AdHocSubprocessTaskExecutionSet(new AdHocCompletionCondition(reader.getAdHocCompletionCondition()),
-                                                   new AdHocOrdering(reader.getAdHocOrdering()),
-                                                   new AdHocAutostart(reader.isAdHocAutostart()),
-                                                   new OnEntryAction(reader.getOnEntryAction()),
-                                                   new OnExitAction(reader.getOnExitAction()));
+        return new AdHocSubprocessTaskExecutionSet(new AdHocCompletionCondition(p.getAdHocCompletionCondition()),
+                                                   new AdHocOrdering(p.getAdHocOrdering()),
+                                                   new AdHocAutostart(p.isAdHocAutostart()),
+                                                   new OnEntryAction(p.getOnEntryAction()),
+                                                   new OnExitAction(p.getOnExitAction()));
     }
 }

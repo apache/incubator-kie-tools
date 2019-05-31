@@ -18,16 +18,16 @@ package org.kie.workbench.common.stunner.cm.backend.converters.tostunner;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.TypedFactoryManager;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.BaseConverterFactory;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.PropertyReaderFactory;
 import org.kie.workbench.common.stunner.cm.backend.converters.tostunner.activities.CaseManagementCallActivityConverter;
 import org.kie.workbench.common.stunner.cm.backend.converters.tostunner.processes.CaseManagementRootProcessConverter;
 import org.kie.workbench.common.stunner.cm.backend.converters.tostunner.processes.CaseManagementSubProcessConverter;
-import org.kie.workbench.common.stunner.cm.backend.converters.tostunner.properties.CaseManagementPropertyReaderFactory;
 import org.kie.workbench.common.stunner.cm.backend.converters.tostunner.tasks.CaseManagementTaskConverter;
 
 public class CaseManagementConverterFactory extends BaseConverterFactory {
 
     public CaseManagementConverterFactory(DefinitionResolver definitionResolver, TypedFactoryManager factoryManager) {
-        super(definitionResolver, factoryManager, new CaseManagementPropertyReaderFactory(definitionResolver));
+        super(definitionResolver, factoryManager, new PropertyReaderFactory(definitionResolver));
     }
 
     @Override

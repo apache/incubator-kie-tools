@@ -62,6 +62,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueD
 import org.kie.workbench.common.stunner.bpmn.definition.property.notification.NotificationsInfo;
 import org.kie.workbench.common.stunner.bpmn.definition.property.reassignment.ReassignmentsInfo;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationAttributeSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.subProcess.IsCase;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocAutostart;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocCompletionCondition;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocOrdering;
@@ -1285,12 +1286,53 @@ public class HashCodeAndEqualityTest {
 
                 .addTrueCase(new AdHocSubprocessTaskExecutionSet(new AdHocCompletionCondition(),
                                                                  new AdHocOrdering(),
+                                                                 new AdHocAutostart(),
                                                                  new OnEntryAction(),
                                                                  new OnExitAction()),
                              new AdHocSubprocessTaskExecutionSet(new AdHocCompletionCondition(),
                                                                  new AdHocOrdering(),
+                                                                 new AdHocAutostart(),
                                                                  new OnEntryAction(),
                                                                  new OnExitAction()))
+                .test();
+    }
+
+    @Test
+    public void testReusableSubprocessTaskExecutionSetEqualsAndHashCode() {
+        TestCaseBuilder.newTestCase()
+                .addTrueCase(new ReusableSubprocessTaskExecutionSet(),
+                             new ReusableSubprocessTaskExecutionSet())
+
+                .addTrueCase(new ReusableSubprocessTaskExecutionSet(new CalledElement(),
+                                                                    new IsCase(),
+                                                                    new Independent(),
+                                                                    new WaitForCompletion(),
+                                                                    new IsAsync(),
+                                                                    new AdHocAutostart(),
+                                                                    new IsMultipleInstance(),
+                                                                    new MultipleInstanceExecutionMode(),
+                                                                    new MultipleInstanceCollectionInput(),
+                                                                    new MultipleInstanceDataInput(),
+                                                                    new MultipleInstanceCollectionOutput(),
+                                                                    new MultipleInstanceDataOutput(),
+                                                                    new MultipleInstanceCompletionCondition(),
+                                                                    new OnEntryAction(),
+                                                                    new OnExitAction()),
+                             new ReusableSubprocessTaskExecutionSet(new CalledElement(),
+                                                                    new IsCase(),
+                                                                    new Independent(),
+                                                                    new WaitForCompletion(),
+                                                                    new IsAsync(),
+                                                                    new AdHocAutostart(),
+                                                                    new IsMultipleInstance(),
+                                                                    new MultipleInstanceExecutionMode(),
+                                                                    new MultipleInstanceCollectionInput(),
+                                                                    new MultipleInstanceDataInput(),
+                                                                    new MultipleInstanceCollectionOutput(),
+                                                                    new MultipleInstanceDataOutput(),
+                                                                    new MultipleInstanceCompletionCondition(),
+                                                                    new OnEntryAction(),
+                                                                    new OnExitAction()))
                 .test();
     }
 
@@ -1473,40 +1515,6 @@ public class HashCodeAndEqualityTest {
                                                                              new OnExitAction(),
                                                                              new IsMultipleInstance(),
                                                                              new IsAsync()))
-                .test();
-    }
-
-    @Test
-    public void testReusableSubprocessTaskExecutionSetEqualsAndHashCode() {
-        TestCaseBuilder.newTestCase()
-                .addTrueCase(new ReusableSubprocessTaskExecutionSet(),
-                             new ReusableSubprocessTaskExecutionSet())
-                .addTrueCase(new ReusableSubprocessTaskExecutionSet(new CalledElement(),
-                                                                    new Independent(),
-                                                                    new WaitForCompletion(),
-                                                                    new IsAsync(),
-                                                                    new IsMultipleInstance(),
-                                                                    new MultipleInstanceExecutionMode(),
-                                                                    new MultipleInstanceCollectionInput(),
-                                                                    new MultipleInstanceDataInput(),
-                                                                    new MultipleInstanceCollectionOutput(),
-                                                                    new MultipleInstanceDataOutput(),
-                                                                    new MultipleInstanceCompletionCondition(),
-                                                                    new OnEntryAction(),
-                                                                    new OnExitAction()),
-                             new ReusableSubprocessTaskExecutionSet(new CalledElement(),
-                                                                    new Independent(),
-                                                                    new WaitForCompletion(),
-                                                                    new IsAsync(),
-                                                                    new IsMultipleInstance(),
-                                                                    new MultipleInstanceExecutionMode(),
-                                                                    new MultipleInstanceCollectionInput(),
-                                                                    new MultipleInstanceDataInput(),
-                                                                    new MultipleInstanceCollectionOutput(),
-                                                                    new MultipleInstanceDataOutput(),
-                                                                    new MultipleInstanceCompletionCondition(),
-                                                                    new OnEntryAction(),
-                                                                    new OnExitAction()))
                 .test();
     }
 

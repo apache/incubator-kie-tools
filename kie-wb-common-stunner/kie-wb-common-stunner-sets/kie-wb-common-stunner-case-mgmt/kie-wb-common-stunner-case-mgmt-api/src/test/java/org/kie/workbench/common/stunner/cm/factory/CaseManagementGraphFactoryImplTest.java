@@ -19,6 +19,9 @@ package org.kie.workbench.common.stunner.cm.factory;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.SequenceFlow;
+import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.factory.BPMNGraphFactoryImpl;
 import org.kie.workbench.common.stunner.cm.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
@@ -26,12 +29,14 @@ import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
+import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandManager;
 import org.kie.workbench.common.stunner.core.graph.command.impl.GraphCommandFactory;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
+import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.index.GraphIndexBuilder;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
@@ -43,6 +48,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -102,6 +108,22 @@ public class CaseManagementGraphFactoryImplTest {
         final Node stageNode = mock(Node.class);
         when(factoryManager.newElement(anyString(),
                                        eq(AdHocSubprocess.class))).thenReturn(stageNode);
+        when(stageNode.getContent()).thenReturn(mock(View.class));
+
+        final Node startEventNode = mock(Node.class);
+        when(factoryManager.newElement(anyString(),
+                                       eq(StartNoneEvent.class))).thenReturn(startEventNode);
+        when(startEventNode.getContent()).thenReturn(mock(View.class));
+
+        final Node endEventNode = mock(Node.class);
+        when(factoryManager.newElement(anyString(),
+                                       eq(EndNoneEvent.class))).thenReturn(endEventNode);
+        when(endEventNode.getContent()).thenReturn(mock(View.class));
+
+        final Edge startEventEdge = mock(Edge.class);
+        final Edge endEventEdge = mock(Edge.class);
+        when(factoryManager.newElement(anyString(),
+                                       eq(SequenceFlow.class))).thenReturn(startEventEdge, endEventEdge);
 
         final Graph<DefinitionSet, Node> graph = factory.build("uuid1", "defSetId");
 
@@ -118,12 +140,30 @@ public class CaseManagementGraphFactoryImplTest {
         verify(graphCommandFactory,
                times(1)).addChildNode(eq(diagramNode), eq(stageNode));
 
+        verify(graphCommandFactory,
+               times(1)).addChildNode(eq(diagramNode), eq(startEventNode));
+
+        verify(graphCommandFactory,
+               times(1)).addChildNode(eq(diagramNode), eq(endEventNode));
+
+        verify(graphCommandFactory,
+               times(1)).setSourceNode(eq(startEventNode), eq(startEventEdge), anyObject());
+
+        verify(graphCommandFactory,
+               times(1)).setTargetNode(eq(stageNode), eq(startEventEdge), anyObject());
+
+        verify(graphCommandFactory,
+               times(1)).setSourceNode(eq(stageNode), eq(endEventEdge), anyObject());
+
+        verify(graphCommandFactory,
+               times(1)).setTargetNode(eq(endEventNode), eq(endEventEdge), anyObject());
+
         verify(graphCommandManager,
                times(1)).execute(any(GraphCommandExecutionContext.class), commandCaptor.capture());
 
         final Command command = commandCaptor.getValue();
         assertTrue(command instanceof CompositeCommand);
         final CompositeCommand compositeCommand = (CompositeCommand) command;
-        assertEquals(2, compositeCommand.size());
+        assertEquals(8, compositeCommand.size());
     }
 }

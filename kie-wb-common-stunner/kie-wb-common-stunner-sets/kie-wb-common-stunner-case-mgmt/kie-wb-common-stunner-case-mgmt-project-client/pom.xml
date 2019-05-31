@@ -117,6 +117,11 @@
 
     <dependency>
       <groupId>org.kie.workbench.stunner</groupId>
+      <artifactId>kie-wb-common-stunner-bpmn-client</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.workbench.stunner</groupId>
       <artifactId>kie-wb-common-stunner-case-mgmt-api</artifactId>
     </dependency>
 
@@ -193,6 +198,11 @@
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-widgets-core-client</artifactId>
       <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-workbench-client-views-patternfly</artifactId>
     </dependency>
 
     <dependency>
@@ -282,6 +292,20 @@
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-testing-utils</artifactId>
       <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.workbench.stunner</groupId>
+      <artifactId>kie-wb-common-stunner-project-client</artifactId>
+      <scope>test</scope>
+      <type>test-jar</type>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.workbench.stunner</groupId>
+      <artifactId>kie-wb-common-stunner-client-common</artifactId>
+      <scope>test</scope>
+      <type>test-jar</type>
     </dependency>
 
   </dependencies>

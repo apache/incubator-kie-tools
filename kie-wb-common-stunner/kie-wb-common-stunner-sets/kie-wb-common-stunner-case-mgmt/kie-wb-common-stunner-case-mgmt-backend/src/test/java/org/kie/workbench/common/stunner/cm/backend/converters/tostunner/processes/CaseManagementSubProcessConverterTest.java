@@ -27,9 +27,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.TypedFactoryManager;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.AdHocSubProcessPropertyReader;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.PropertyReaderFactory;
 import org.kie.workbench.common.stunner.cm.backend.converters.tostunner.CaseManagementConverterFactory;
-import org.kie.workbench.common.stunner.cm.backend.converters.tostunner.properties.CaseManagementAdHocSubProcessPropertyReader;
-import org.kie.workbench.common.stunner.cm.backend.converters.tostunner.properties.CaseManagementPropertyReaderFactory;
 import org.kie.workbench.common.stunner.cm.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.cm.definition.property.task.AdHocSubprocessTaskExecutionSet;
 import org.kie.workbench.common.stunner.cm.definition.property.variables.ProcessData;
@@ -74,7 +74,7 @@ public class CaseManagementSubProcessConverterTest {
         TypedFactoryManager typedFactoryManager = new TypedFactoryManager(factoryManager);
 
         tested = new CaseManagementSubProcessConverter(typedFactoryManager,
-                                                       new CaseManagementPropertyReaderFactory(definitionResolver),
+                                                       new PropertyReaderFactory(definitionResolver),
                                                        definitionResolver,
                                                        new CaseManagementConverterFactory(definitionResolver, typedFactoryManager));
     }
@@ -96,8 +96,8 @@ public class CaseManagementSubProcessConverterTest {
         when(adHocSubProcess.getOrdering()).thenReturn(AdHocOrdering.SEQUENTIAL);
 
         assertTrue(AdHocSubprocessTaskExecutionSet.class.isInstance(tested.createAdHocSubprocessTaskExecutionSet(
-                new CaseManagementAdHocSubProcessPropertyReader(adHocSubProcess,
-                                                                definitionResolver.getDiagram(),
-                                                                definitionResolver))));
+                new AdHocSubProcessPropertyReader(adHocSubProcess,
+                                                  definitionResolver.getDiagram(),
+                                                  definitionResolver))));
     }
 }

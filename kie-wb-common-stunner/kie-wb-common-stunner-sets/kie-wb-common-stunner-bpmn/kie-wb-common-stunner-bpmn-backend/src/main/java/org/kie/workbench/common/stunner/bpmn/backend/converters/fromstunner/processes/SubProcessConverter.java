@@ -18,7 +18,7 @@ package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.pro
 import org.eclipse.bpmn2.SubProcess;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.NodeMatch;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.Result;
-import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.BaseConverterFactory;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.ConverterFactory;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.DefinitionsBuildingContext;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.AdHocSubProcessPropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.MultipleInstanceSubProcessPropertyWriter;
@@ -49,7 +49,7 @@ public class SubProcessConverter extends ProcessConverterDelegate {
 
     public SubProcessConverter(DefinitionsBuildingContext context,
                                PropertyWriterFactory propertyWriterFactory,
-                               BaseConverterFactory converterFactory) {
+                               ConverterFactory converterFactory) {
         super(converterFactory);
         this.context = context;
         this.propertyWriterFactory = propertyWriterFactory;
@@ -135,6 +135,8 @@ public class SubProcessConverter extends ProcessConverterDelegate {
         p.setSimulationSet(definition.getSimulationSet());
 
         p.setAbsoluteBounds(n);
+
+        p.setAdHocAutostart(executionSet.getAdHocAutostart().getValue());
 
         return p;
     }

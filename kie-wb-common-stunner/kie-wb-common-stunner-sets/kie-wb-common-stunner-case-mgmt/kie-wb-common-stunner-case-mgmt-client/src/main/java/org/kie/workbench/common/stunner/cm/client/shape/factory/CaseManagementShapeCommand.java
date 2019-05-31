@@ -79,7 +79,7 @@ public class CaseManagementShapeCommand {
     public static CaseManagementShape create(Object definition, CaseManagementShapeView shapeView, CaseManagementSvgShapeDef shapeDef) {
         Command command = CM_SHAPE_TYPES.get(definition.getClass());
         if (command == null) {
-            throw new IllegalArgumentException("Unsupported shapeView type: " + definition.getClass().getSimpleName());
+            return null;
         }
         applyShapeViewHandlers(definition, shapeView, shapeDef);
         return command.configure(shapeView);

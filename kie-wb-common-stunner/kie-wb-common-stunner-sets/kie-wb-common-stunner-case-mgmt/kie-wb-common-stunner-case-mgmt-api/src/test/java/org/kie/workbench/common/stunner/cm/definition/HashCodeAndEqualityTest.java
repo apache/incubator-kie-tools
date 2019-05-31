@@ -20,7 +20,6 @@ import org.junit.Test;
 import org.kie.workbench.common.stunner.cm.definition.property.diagram.DiagramSet;
 import org.kie.workbench.common.stunner.cm.definition.property.diagram.Package;
 import org.kie.workbench.common.stunner.cm.definition.property.diagram.Version;
-import org.kie.workbench.common.stunner.cm.definition.property.subprocess.IsCase;
 import org.kie.workbench.common.stunner.cm.definition.property.task.CaseReusableSubprocessTaskExecutionSet;
 import org.kie.workbench.common.stunner.cm.definition.property.task.ProcessReusableSubprocessTaskExecutionSet;
 import org.kie.workbench.common.stunner.cm.definition.property.task.UserTaskExecutionSet;
@@ -98,20 +97,6 @@ public class HashCodeAndEqualityTest {
     public void testUserTaskHashCode() {
         UserTask a = new UserTask();
         UserTask b = new UserTask();
-        assertDefObjectHashCode(a, b);
-    }
-
-    @Test
-    public void testIsCaseEquals() {
-        IsCase a = new IsCase();
-        IsCase b = new IsCase();
-        assertDefObjectEquals(a, b);
-    }
-
-    @Test
-    public void testIsCaseHashCode() {
-        IsCase a = new IsCase();
-        IsCase b = new IsCase();
         assertDefObjectHashCode(a, b);
     }
 

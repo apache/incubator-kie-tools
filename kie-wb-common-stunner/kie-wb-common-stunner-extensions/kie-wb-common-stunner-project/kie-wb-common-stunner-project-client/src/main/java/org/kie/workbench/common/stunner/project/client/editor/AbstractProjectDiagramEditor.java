@@ -39,7 +39,10 @@ import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.kie.workbench.common.stunner.client.widgets.presenters.Viewer;
+import org.kie.workbench.common.stunner.client.widgets.presenters.diagram.DiagramViewer;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
+import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.AbstractSessionPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionViewerPresenter;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
@@ -198,14 +201,20 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
 
     @SuppressWarnings("unchecked")
     public void open(final ProjectDiagram diagram) {
+        open(diagram, Optional.empty());
+    }
+
+    @SuppressWarnings("unchecked")
+    public void open(final ProjectDiagram diagram,
+                     final Optional<SessionPresenter.SessionPresenterCallback<Diagram>> callback) {
         editorProxy = makeStunnerEditorProxy();
         showLoadingViews();
 
         //Open applicable SessionPresenter
         if (!isReadOnly()) {
-            openSession(diagram);
+            openSession(diagram, callback);
         } else {
-            openReadOnlySession(diagram);
+            openReadOnlySession(diagram, callback);
         }
     }
 
@@ -317,60 +326,47 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         return isReadOnly;
     }
 
-    protected void openSession(final ProjectDiagram diagram) {
-        editorSessionPresenter = Optional.of(newSessionEditorPresenter());
-        editorSessionPresenter.get()
+    private void openSession(final Optional<? extends AbstractSessionPresenter> presenter,
+                             final ProjectDiagram diagram,
+                             final Optional<SessionPresenter.SessionPresenterCallback<Diagram>> callback) {
+        presenter.get()
                 .open(diagram,
                       new SessionPresenter.SessionPresenterCallback<Diagram>() {
                           @Override
                           public void afterSessionOpened() {
-
+                              callback.ifPresent(SessionPresenter.SessionPresenterCallback::afterSessionOpened);
                           }
 
                           @Override
                           public void afterCanvasInitialized() {
-
+                              callback.ifPresent(DiagramViewer.DiagramViewerCallback::afterCanvasInitialized);
                           }
 
                           @Override
                           public void onSuccess() {
                               initialiseKieEditorForSession(diagram);
                               menuSessionItems.bind(getSession());
+                              callback.ifPresent(Viewer.Callback::onSuccess);
                           }
 
                           @Override
                           public void onError(final ClientRuntimeError error) {
                               onLoadError(error);
+                              callback.ifPresent(c -> c.onError(error));
                           }
                       });
     }
 
-    protected void openReadOnlySession(final ProjectDiagram diagram) {
+    protected void openSession(final ProjectDiagram diagram,
+                               final Optional<SessionPresenter.SessionPresenterCallback<Diagram>> callback) {
+        editorSessionPresenter = Optional.of(newSessionEditorPresenter());
+        openSession(editorSessionPresenter, diagram, callback);
+    }
+
+    protected void openReadOnlySession(final ProjectDiagram diagram,
+                                       final Optional<SessionPresenter.SessionPresenterCallback<Diagram>> callback) {
         viewerSessionPresenter = Optional.of(newSessionViewerPresenter());
-        viewerSessionPresenter.get()
-                .open(diagram,
-                      new SessionPresenter.SessionPresenterCallback<Diagram>() {
-                          @Override
-                          public void afterSessionOpened() {
-
-                          }
-
-                          @Override
-                          public void afterCanvasInitialized() {
-
-                          }
-
-                          @Override
-                          public void onSuccess() {
-                              initialiseKieEditorForSession(diagram);
-                              menuSessionItems.bind(getSession());
-                          }
-
-                          @Override
-                          public void onError(final ClientRuntimeError error) {
-                              onLoadError(error);
-                          }
-                      });
+        openSession(viewerSessionPresenter, diagram, callback);
     }
 
     protected void initialiseKieEditorForSession(final ProjectDiagram diagram) {

@@ -22,7 +22,6 @@ import org.kie.workbench.common.widgets.client.source.ViewDRLSourceWidget;
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
 import org.uberfire.client.workbench.widgets.multipage.MultiPageEditor;
 import org.uberfire.client.workbench.widgets.multipage.Page;
-import org.uberfire.ext.editor.commons.client.BaseEditorView;
 
 public interface KieEditorWrapperView
         extends IsWidget {
@@ -66,6 +65,8 @@ public interface KieEditorWrapperView
                          Command onFocus);
 
     void addSourcePage(ViewDRLSourceWidget sourceWidget);
+
+    void addTabBarWidget(IsWidget customWidget);
 
     String getNotAllowedSavingMessage();
 

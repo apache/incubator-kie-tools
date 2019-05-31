@@ -25,11 +25,11 @@ import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.TypedFactoryManager;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.CallActivityPropertyReader;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.PropertyReaderFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.BaseReusableSubprocessTaskExecutionSet;
-import org.kie.workbench.common.stunner.cm.backend.converters.customproperties.CaseManagementCustomElement;
-import org.kie.workbench.common.stunner.cm.backend.converters.tostunner.properties.CaseManagementActivityPropertyReader;
-import org.kie.workbench.common.stunner.cm.backend.converters.tostunner.properties.CaseManagementPropertyReaderFactory;
 import org.kie.workbench.common.stunner.cm.definition.CaseReusableSubprocess;
 import org.kie.workbench.common.stunner.cm.definition.ProcessReusableSubprocess;
 import org.kie.workbench.common.stunner.cm.definition.property.task.CaseReusableSubprocessTaskExecutionSet;
@@ -65,7 +65,7 @@ public class CaseManagementCallActivityConverterTest {
         factoryManager = mock(FactoryManager.class);
 
         tested = new CaseManagementCallActivityConverter(new TypedFactoryManager(factoryManager),
-                                                         new CaseManagementPropertyReaderFactory(definitionResolver));
+                                                         new PropertyReaderFactory(definitionResolver));
     }
 
     @Test
@@ -74,11 +74,11 @@ public class CaseManagementCallActivityConverterTest {
 
         CallActivity callActivity = bpmn2.createCallActivity();
         callActivity.setId(id);
-        CaseManagementCustomElement.isCase.of(callActivity).set(Boolean.TRUE);
+        CustomElement.isCase.of(callActivity).set(Boolean.TRUE);
 
-        CaseManagementActivityPropertyReader propertyReader = new CaseManagementActivityPropertyReader(callActivity,
-                                                                                                       definitionResolver.getDiagram(),
-                                                                                                       definitionResolver);
+        CallActivityPropertyReader propertyReader = new CallActivityPropertyReader(callActivity,
+                                                                                   definitionResolver.getDiagram(),
+                                                                                   definitionResolver);
 
         tested.createNode(callActivity, propertyReader);
 
@@ -91,11 +91,11 @@ public class CaseManagementCallActivityConverterTest {
 
         CallActivity callActivity = bpmn2.createCallActivity();
         callActivity.setId(id);
-        CaseManagementCustomElement.isCase.of(callActivity).set(Boolean.FALSE);
+        CustomElement.isCase.of(callActivity).set(Boolean.FALSE);
 
-        CaseManagementActivityPropertyReader propertyReader = new CaseManagementActivityPropertyReader(callActivity,
-                                                                                                       definitionResolver.getDiagram(),
-                                                                                                       definitionResolver);
+        CallActivityPropertyReader propertyReader = new CallActivityPropertyReader(callActivity,
+                                                                                   definitionResolver.getDiagram(),
+                                                                                   definitionResolver);
 
         tested.createNode(callActivity, propertyReader);
 
@@ -108,17 +108,17 @@ public class CaseManagementCallActivityConverterTest {
 
         CallActivity callActivity = bpmn2.createCallActivity();
         callActivity.setId(id);
-        CaseManagementCustomElement.isCase.of(callActivity).set(Boolean.TRUE);
+        CustomElement.isCase.of(callActivity).set(Boolean.TRUE);
 
-        CaseManagementActivityPropertyReader propertyReader = new CaseManagementActivityPropertyReader(callActivity,
-                                                                                                       definitionResolver.getDiagram(),
-                                                                                                       definitionResolver);
+        CallActivityPropertyReader propertyReader = new CallActivityPropertyReader(callActivity,
+                                                                                   definitionResolver.getDiagram(),
+                                                                                   definitionResolver);
 
         BaseReusableSubprocessTaskExecutionSet result =
                 tested.createReusableSubprocessTaskExecutionSet(callActivity, propertyReader);
 
         assertTrue(CaseReusableSubprocessTaskExecutionSet.class.isInstance(result));
-        assertTrue(((CaseReusableSubprocessTaskExecutionSet) result).getIsCase().getValue());
+        assertTrue(result.getIsCase().getValue());
     }
 
     @Test
@@ -127,16 +127,16 @@ public class CaseManagementCallActivityConverterTest {
 
         CallActivity callActivity = bpmn2.createCallActivity();
         callActivity.setId(id);
-        CaseManagementCustomElement.isCase.of(callActivity).set(Boolean.FALSE);
+        CustomElement.isCase.of(callActivity).set(Boolean.FALSE);
 
-        CaseManagementActivityPropertyReader propertyReader = new CaseManagementActivityPropertyReader(callActivity,
-                                                                                                       definitionResolver.getDiagram(),
-                                                                                                       definitionResolver);
+        CallActivityPropertyReader propertyReader = new CallActivityPropertyReader(callActivity,
+                                                                                   definitionResolver.getDiagram(),
+                                                                                   definitionResolver);
 
         BaseReusableSubprocessTaskExecutionSet result =
                 tested.createReusableSubprocessTaskExecutionSet(callActivity, propertyReader);
 
         assertTrue(ProcessReusableSubprocessTaskExecutionSet.class.isInstance(result));
-        assertFalse(((ProcessReusableSubprocessTaskExecutionSet) result).getIsCase().getValue());
+        assertFalse(result.getIsCase().getValue());
     }
 }

@@ -21,6 +21,7 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.impl.SafeDeleteNodeCommand;
+import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
 @Portable
 public class CaseManagementSafeDeleteNodeCommand extends SafeDeleteNodeCommand {
@@ -48,7 +49,7 @@ public class CaseManagementSafeDeleteNodeCommand extends SafeDeleteNodeCommand {
     @SuppressWarnings("unchecked")
     protected CaseManagementRemoveChildCommand createRemoveChildCommand(final Element<?> parent,
                                                                         final Node<?, Edge> candidate) {
-        return new CaseManagementRemoveChildCommand((Node<?, Edge>) parent,
-                                                    candidate);
+        return new CaseManagementRemoveChildCommand((Node<View<?>, Edge>) parent,
+                                                    (Node<View<?>, Edge>) candidate);
     }
 }

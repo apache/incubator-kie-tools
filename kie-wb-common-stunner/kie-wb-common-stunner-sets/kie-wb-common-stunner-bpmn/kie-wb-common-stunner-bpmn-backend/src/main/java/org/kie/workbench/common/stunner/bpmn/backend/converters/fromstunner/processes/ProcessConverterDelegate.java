@@ -22,7 +22,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.kie.workbench.common.stunner.bpmn.backend.converters.Result;
-import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.BaseConverterFactory;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.ConverterFactory;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.DefinitionsBuildingContext;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.ElementContainer;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.lanes.LaneConverter;
@@ -38,9 +38,9 @@ import static java.util.stream.Collectors.toSet;
 
 class ProcessConverterDelegate {
 
-    private final BaseConverterFactory converterFactory;
+    private final ConverterFactory converterFactory;
 
-    ProcessConverterDelegate(BaseConverterFactory converterFactory) {
+    ProcessConverterDelegate(ConverterFactory converterFactory) {
         this.converterFactory = converterFactory;
     }
 

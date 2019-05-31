@@ -226,6 +226,11 @@ public abstract class AbstractCanvasHandler<D extends Diagram, C extends Abstrac
                          final boolean fireEvents) {
         assert factory != null && candidate != null;
         final Shape shape = factory.newShape(candidate.getContent().getDefinition());
+
+        if (shape == null) {
+            return;
+        }
+
         // Set the same identifier as the graph element's one.
         if (null == shape.getUUID()) {
             shape.setUUID(candidate.getUUID());

@@ -16,6 +16,7 @@
 package org.kie.workbench.common.stunner.bpmn.definition.property.task;
 
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.subProcess.IsCase;
 
 public interface BaseReusableSubprocessTaskExecutionSet extends BPMNPropertySet {
 
@@ -42,4 +43,12 @@ public interface BaseReusableSubprocessTaskExecutionSet extends BPMNPropertySet 
     OnExitAction getOnExitAction();
 
     void setOnExitAction(final OnExitAction onExitAction);
+
+    IsCase getIsCase();
+
+    void setIsCase(final IsCase isCase);
+
+    AdHocAutostart getAdHocAutostart();
+
+    void setAdHocAutostart(AdHocAutostart adHocAutostart);
 }

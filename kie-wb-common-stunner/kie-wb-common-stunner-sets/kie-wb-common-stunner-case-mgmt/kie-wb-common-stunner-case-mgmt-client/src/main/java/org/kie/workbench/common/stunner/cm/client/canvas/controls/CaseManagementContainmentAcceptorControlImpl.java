@@ -43,6 +43,7 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
+import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
 @Dependent
 @CaseManagementEditor
@@ -133,13 +134,15 @@ public class CaseManagementContainmentAcceptorControlImpl
                                                  child);
     }
 
-    Command<AbstractCanvasHandler, CanvasViolation> getSetEdgeCommand(final Node parent,
-                                                                      final Node child,
+    Command<AbstractCanvasHandler, CanvasViolation> getSetEdgeCommand(final Node<View<?>, Edge> parent,
+                                                                      final Node<View<?>, Edge> child,
+                                                                      final Optional<Node<View<?>, Edge>> last,
                                                                       final OptionalInt index,
-                                                                      final Optional<Node> originalParent,
+                                                                      final Optional<Node<View<?>, Edge>> originalParent,
                                                                       final OptionalInt originalIndex) {
         return canvasCommandFactory.setChildNode(parent,
                                                  child,
+                                                 last,
                                                  index,
                                                  originalParent,
                                                  originalIndex);
@@ -195,21 +198,23 @@ public class CaseManagementContainmentAcceptorControlImpl
             return false;
         }
 
+        @SuppressWarnings("unchecked")
         protected Command<AbstractCanvasHandler, CanvasViolation> makeAddMutationCommand(final WiresShape shape,
                                                                                          final WiresContainer container,
                                                                                          final OptionalInt index,
                                                                                          final Optional<WiresContainer> originalContainer,
                                                                                          final OptionalInt originalIndex) {
-            final Node parent = WiresUtils.getNode(getCanvasHandler(),
-                                                   container);
-            final Node child = WiresUtils.getNode(getCanvasHandler(),
-                                                  shape);
-            final Optional<Node> originalParent = originalContainer.flatMap((c) -> Optional.ofNullable(WiresUtils.getNode(getCanvasHandler(),
-                                                                                                                          c)));
+            final Node parent = WiresUtils.getNode(getCanvasHandler(), container);
+            final Node child = WiresUtils.getNode(getCanvasHandler(), shape);
+            final int i = index.orElse(0);
+            final Optional<Node<View<?>, Edge>> last = i > 0 ? Optional.of(WiresUtils.getNode(getCanvasHandler(), container.getChildShapes().get(i - 1))) : Optional.empty();
+
+            final Optional<Node<View<?>, Edge>> originalParent = originalContainer.flatMap((c) -> Optional.ofNullable(WiresUtils.getNode(getCanvasHandler(), c)));
 
             // Set relationship.
             return getSetEdgeCommand(parent,
                                      child,
+                                     last,
                                      index,
                                      originalParent,
                                      originalIndex);

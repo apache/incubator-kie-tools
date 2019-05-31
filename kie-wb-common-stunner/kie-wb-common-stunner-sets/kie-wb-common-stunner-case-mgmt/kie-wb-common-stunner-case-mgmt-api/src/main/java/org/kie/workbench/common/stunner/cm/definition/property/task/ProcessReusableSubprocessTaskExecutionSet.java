@@ -26,7 +26,9 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.annotations.SkipFormField;
 import org.kie.workbench.common.forms.adf.definitions.annotations.field.selector.SelectorDataProvider;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.type.ListBoxFieldType;
+import org.kie.workbench.common.stunner.bpmn.definition.property.subProcess.IsCase;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocAutostart;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.BaseReusableSubprocessTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.CalledElement;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.Independent;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.IsAsync;
@@ -35,7 +37,6 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnExitActi
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeListValue;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeValue;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.WaitForCompletion;
-import org.kie.workbench.common.stunner.cm.definition.property.subprocess.IsCase;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
@@ -47,7 +48,7 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
         startElement = "calledElement"
 )
 public class ProcessReusableSubprocessTaskExecutionSet
-        implements ReusableSubprocessTaskExecutionSet {
+        implements BaseReusableSubprocessTaskExecutionSet {
 
     @Property
     @SelectorDataProvider(

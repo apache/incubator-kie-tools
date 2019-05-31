@@ -60,10 +60,12 @@ public class ShapeUtils {
         final Shape<?> source = sourceNode != null ? canvas.getShape(sourceNode.getUUID()) : null;
         final Shape<?> target = targetNode != null ? canvas.getShape(targetNode.getUUID()) : null;
         EdgeShape connector = (EdgeShape) canvas.getShape(edge.getUUID());
-        connector.applyConnections(edge,
-                                   source != null ? source.getShapeView() : null,
-                                   target != null ? target.getShapeView() : null,
-                                   mutationContext);
+        if (connector != null) {
+            connector.applyConnections(edge,
+                                       source != null ? source.getShapeView() : null,
+                                       target != null ? target.getShapeView() : null,
+                                       mutationContext);
+        }
         updateEdgeConnections(edge, canvasHandler);
     }
 

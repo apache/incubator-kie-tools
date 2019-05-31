@@ -31,10 +31,13 @@ import org.kie.workbench.common.stunner.bpmn.project.client.handlers.util.CaseHe
 import org.kie.workbench.common.stunner.bpmn.service.BPMNDiagramService;
 import org.kie.workbench.common.stunner.bpmn.service.ProjectType;
 import org.kie.workbench.common.stunner.cm.CaseManagementDefinitionSet;
+import org.kie.workbench.common.stunner.cm.project.client.editor.CaseManagementDiagramEditor;
 import org.kie.workbench.common.stunner.cm.project.client.type.CaseManagementDiagramResourceType;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.project.client.service.ClientProjectDiagramService;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
@@ -43,6 +46,7 @@ import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.ResourceAction;
 import org.uberfire.security.ResourceRef;
 import org.uberfire.security.authz.AuthorizationManager;
+import org.uberfire.workbench.model.ActivityResourceType;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -93,6 +97,9 @@ public class CaseManagementDiagramNewResourceHandlerTest {
 
     @Mock
     private Callback<Boolean, Void> callback;
+
+    @Captor
+    private ArgumentCaptor<ResourceRef> refArgumentCaptor;
 
     private CaseManagementDiagramNewResourceHandler tested;
 
@@ -163,5 +170,35 @@ public class CaseManagementDiagramNewResourceHandlerTest {
         tested.acceptContext(callback);
         verify(bpmnDiagramService).getProjectType(rootPath);
         verify(callback, never()).onSuccess(anyBoolean());
+    }
+
+    @Test
+    public void checkCanCreateWhenFeatureDisabled() {
+        when(authorizationManager.authorize(any(ResourceRef.class),
+                                            eq(ResourceAction.READ),
+                                            eq(user))).thenReturn(false);
+
+        assertFalse(tested.canCreate());
+        assertResourceRef();
+    }
+
+    @Test
+    public void checkCanCreateWhenFeatureEnabled() {
+        when(authorizationManager.authorize(any(ResourceRef.class),
+                                            eq(ResourceAction.READ),
+                                            eq(user))).thenReturn(true);
+
+        assertTrue(tested.canCreate());
+        assertResourceRef();
+    }
+
+    private void assertResourceRef() {
+        verify(authorizationManager).authorize(refArgumentCaptor.capture(),
+                                               eq(ResourceAction.READ),
+                                               eq(user));
+        assertEquals(CaseManagementDiagramEditor.EDITOR_ID,
+                     refArgumentCaptor.getValue().getIdentifier());
+        assertEquals(ActivityResourceType.EDITOR,
+                     refArgumentCaptor.getValue().getResourceType());
     }
 }

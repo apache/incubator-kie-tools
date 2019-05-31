@@ -28,7 +28,6 @@ import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPre
 import org.uberfire.client.views.pfly.multipage.MultiPageEditorImpl;
 import org.uberfire.client.views.pfly.multipage.PageImpl;
 import org.uberfire.client.workbench.widgets.multipage.MultiPageEditor;
-import org.uberfire.ext.editor.commons.client.BaseEditorView;
 
 public class KieEditorWrapperViewImpl
         extends MultiPageEditorImpl

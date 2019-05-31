@@ -22,7 +22,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.command.CloneCanvasNo
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.ChildrenTraverseProcessor;
 
-import static org.kie.workbench.common.stunner.cm.client.command.util.CaseManagementCommandUtil.getChildIndex;
+import static org.kie.workbench.common.stunner.cm.client.command.util.CaseManagementCommandUtil.getChildCanvasIndex;
 
 public class CaseManagementCloneCanvasNodeCommand extends CloneCanvasNodeCommand {
 
@@ -33,7 +33,7 @@ public class CaseManagementCloneCanvasNodeCommand extends CloneCanvasNodeCommand
 
     @Override
     public AbstractCanvasCommand createAddCanvasChildNodeCommand(Node parent, Node candidate, String shapeSetId) {
-        return new CaseManagementAddChildNodeCanvasCommand(parent, candidate, shapeSetId, getChildIndex(parent, candidate));
+        return new CaseManagementAddChildNodeCanvasCommand(parent, candidate, shapeSetId, getChildCanvasIndex(parent, candidate));
     }
 
     @Override

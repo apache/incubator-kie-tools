@@ -26,7 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
-import org.kie.workbench.common.stunner.cm.definition.property.subprocess.IsCase;
+import org.kie.workbench.common.stunner.bpmn.definition.property.subProcess.IsCase;
 import org.kie.workbench.common.stunner.cm.definition.property.task.ProcessReusableSubprocessTaskExecutionSet;
 
 import static org.junit.Assert.assertEquals;

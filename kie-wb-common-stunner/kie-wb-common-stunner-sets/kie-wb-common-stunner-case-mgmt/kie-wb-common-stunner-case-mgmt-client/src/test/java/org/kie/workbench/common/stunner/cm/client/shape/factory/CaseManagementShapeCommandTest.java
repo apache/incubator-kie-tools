@@ -28,6 +28,8 @@ import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
 import org.mockito.Mock;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
@@ -57,5 +59,17 @@ public class CaseManagementShapeCommandTest {
                                            HasTitle.Orientation.HORIZONTAL);
         verify(shapeView).setTextSizeConstraints(new HasTitle.Size(100, 100,
                                                                    HasTitle.Size.SizeType.PERCENTAGE));
+    }
+
+    @Test
+    public void create_noShape() {
+        CaseManagementShapeCommand.create(new Object(), shapeView, shapeDef);
+
+        verify(shapeDef, never()).fontHandler();
+        verify(shapeView, never()).setTitlePosition(any(HasTitle.VerticalAlignment.class),
+                                                    any(HasTitle.HorizontalAlignment.class),
+                                                    any(HasTitle.ReferencePosition.class),
+                                                    any(HasTitle.Orientation.class));
+        verify(shapeView, never()).setTextSizeConstraints(any(HasTitle.Size.class));
     }
 }

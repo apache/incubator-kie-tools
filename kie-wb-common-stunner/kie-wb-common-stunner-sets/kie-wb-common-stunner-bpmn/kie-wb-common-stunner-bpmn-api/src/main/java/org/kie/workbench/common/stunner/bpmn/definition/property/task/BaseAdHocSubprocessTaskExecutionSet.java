@@ -27,4 +27,6 @@ public interface BaseAdHocSubprocessTaskExecutionSet extends BPMNPropertySet {
     OnEntryAction getOnEntryAction();
 
     OnExitAction getOnExitAction();
+
+    AdHocAutostart getAdHocAutostart();
 }

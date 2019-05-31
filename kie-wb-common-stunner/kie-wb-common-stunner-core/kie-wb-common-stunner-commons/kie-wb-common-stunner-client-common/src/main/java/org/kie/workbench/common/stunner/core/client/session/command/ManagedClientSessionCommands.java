@@ -66,6 +66,7 @@ public class ManagedClientSessionCommands {
 
     @SuppressWarnings("unchecked")
     public void bind(final ClientSession session) {
+        clearCommands();
         final String id =
                 session.getCanvasHandler().getDiagram().getMetadata().getDefinitionSetId();
         final Annotation qualifier = definitionUtils.getQualifier(id);
@@ -75,7 +76,6 @@ public class ManagedClientSessionCommands {
                                                           type,
                                                           qualifier))
                         .collect(Collectors.toList());
-        clearCommands();
         commands.addAll(instances);
         commands.forEach(c -> safeBind(c, session));
     }
@@ -101,8 +101,8 @@ public class ManagedClientSessionCommands {
         sessionCommands.destroyAll();
     }
 
-    private void clearCommands() {
-        commands.forEach(ClientSessionCommand::destroy);
+    public void clearCommands() {
+        commands.forEach(command -> InstanceUtils.destroy(sessionCommands, command, ClientSessionCommand::destroy));
         commands.clear();
     }
 

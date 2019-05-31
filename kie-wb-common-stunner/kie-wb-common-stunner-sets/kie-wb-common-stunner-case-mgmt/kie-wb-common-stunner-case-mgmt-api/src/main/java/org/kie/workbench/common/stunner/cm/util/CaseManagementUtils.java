@@ -15,24 +15,19 @@
  */
 package org.kie.workbench.common.stunner.cm.util;
 
-import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
-import org.kie.workbench.common.stunner.core.graph.Graph;
-import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
-import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
-
 /**
- * Shared utils class for BPMN stuff.
+ * Shared utils class for CM stuff.
  */
 public class CaseManagementUtils {
 
-    /**
-     * Finds the first Diagram in the graph structure.
-     * @param graph The graph structure.
-     */
-    @SuppressWarnings("unchecked")
-    public static Node<Definition<CaseManagementDiagram>, ?> getFirstDiagramNode(final Graph<?, Node> graph) {
-        return GraphUtils.getFirstNode(graph,
-                                       CaseManagementDiagram.class);
-    }
+    public static final double GAP = 50.0;
+    public static final double STAGE_GAP = 25.0;
+    public static final double ORIGIN_X = 50.0;
+    public static final double ORIGIN_Y = 50.0;
+    public static final double EVENT_WIDTH = 55.0;
+    public static final double EVENT_HEIGHT = 55.0;
+    public static final double STAGE_WIDTH = 175.0;
+    public static final double STAGE_HEIGHT = 50.0;
+    public static final double CHILD_WIDTH = 153.0;
+    public static final double CHILD_HEIGHT = 103.0;
 }

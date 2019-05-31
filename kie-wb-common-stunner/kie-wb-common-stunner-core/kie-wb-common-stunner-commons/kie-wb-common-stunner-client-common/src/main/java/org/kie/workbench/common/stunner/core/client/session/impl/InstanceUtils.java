@@ -56,4 +56,11 @@ public class InstanceUtils {
         controlInstances.clear();
         controls.clear();
     }
+
+    public static <T> void destroy(final ManagedInstance<T> controlInstance,
+                                   final T control,
+                                   final Consumer<T> destroyer) {
+        destroyer.accept(control);
+        controlInstance.destroy(control);
+    }
 }

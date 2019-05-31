@@ -21,14 +21,12 @@ import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.bpmn.BPMNDefinitionSet;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.TypedFactoryManager;
-import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.DefinitionsBuildingContext;
-import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.PropertyWriterFactory;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
 import org.kie.workbench.common.stunner.bpmn.backend.workitem.service.WorkItemDefinitionBackendService;
+import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.backend.service.XMLEncoderDiagramMetadataMarshaller;
-import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandManager;
 import org.kie.workbench.common.stunner.core.graph.command.impl.GraphCommandFactory;
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
@@ -56,14 +54,6 @@ public class BPMNDirectDiagramMarshaller extends BaseDirectDiagramMarshaller {
     }
 
     @Override
-    protected org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.ConverterFactory createFromStunnerConverterFactory(
-            final Graph graph,
-            final PropertyWriterFactory propertyWriterFactory) {
-        return new org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.ConverterFactory(new DefinitionsBuildingContext(graph),
-                                                                                                         propertyWriterFactory);
-    }
-
-    @Override
     protected org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.ConverterFactory createToStunnerConverterFactory(
             final DefinitionResolver definitionResolver,
             final TypedFactoryManager typedFactoryManager) {
@@ -72,12 +62,12 @@ public class BPMNDirectDiagramMarshaller extends BaseDirectDiagramMarshaller {
     }
 
     @Override
-    protected PropertyWriterFactory createPropertyWriterFactory() {
-        return new PropertyWriterFactory();
+    protected Class<BPMNDefinitionSet> getDefinitionSetClass() {
+        return BPMNDefinitionSet.class;
     }
 
     @Override
-    protected Class<BPMNDefinitionSet> getDefinitionSetClass() {
-        return BPMNDefinitionSet.class;
+    protected Class<?> getDiagramClass() {
+        return BPMNDiagramImpl.class;
     }
 }

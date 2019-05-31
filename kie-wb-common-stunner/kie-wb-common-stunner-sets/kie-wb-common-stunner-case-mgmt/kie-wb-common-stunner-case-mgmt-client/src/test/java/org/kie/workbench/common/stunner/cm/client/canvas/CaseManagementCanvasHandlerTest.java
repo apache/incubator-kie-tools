@@ -41,6 +41,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.registration.Ca
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
+import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.PropertyAdapter;
@@ -180,6 +181,24 @@ public class CaseManagementCanvasHandlerTest {
 
         verify(canvas,
                times(1)).addShape(eq(shape));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void checkRegisterNoneShape() {
+        final ShapeFactory factory = mock(ShapeFactory.class);
+        when(factory.newShape(any(CaseManagementDiagram.class))).thenReturn(null);
+
+        final CaseManagementShape shape = makeShape();
+        final Node<View<BPMNViewDefinition>, Edge> node = makeNode("uuid",
+                                                                   shape);
+
+        handler.register(factory,
+                         node,
+                         true);
+
+        verify(canvas,
+               never()).addShape(eq(shape));
     }
 
     @SuppressWarnings("unchecked")

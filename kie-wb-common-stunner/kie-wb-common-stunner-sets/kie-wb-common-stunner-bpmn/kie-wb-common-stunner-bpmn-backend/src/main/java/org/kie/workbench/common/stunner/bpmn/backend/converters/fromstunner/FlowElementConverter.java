@@ -33,9 +33,9 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
 public class FlowElementConverter {
 
-    private final BaseConverterFactory converterFactory;
+    private final ConverterFactory converterFactory;
 
-    public FlowElementConverter(BaseConverterFactory converterFactory) {
+    public FlowElementConverter(ConverterFactory converterFactory) {
         this.converterFactory = converterFactory;
     }
 

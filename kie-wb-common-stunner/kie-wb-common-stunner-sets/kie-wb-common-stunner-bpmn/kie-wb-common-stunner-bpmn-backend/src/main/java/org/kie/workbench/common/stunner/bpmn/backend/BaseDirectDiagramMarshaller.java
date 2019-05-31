@@ -40,6 +40,8 @@ import org.jboss.drools.DroolsPackage;
 import org.jboss.drools.impl.DroolsFactoryImpl;
 import org.jboss.drools.impl.DroolsPackageImpl;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.TypedFactoryManager;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.ConverterFactory;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.DefinitionsBuildingContext;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.DefinitionsConverter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.PropertyWriterFactory;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.BaseConverterFactory;
@@ -108,9 +110,10 @@ public abstract class BaseDirectDiagramMarshaller implements DiagramMarshaller<G
         Bpmn2Resource resource = createBpmn2Resource();
 
         // we start converting from the root, then pull out the result
-        PropertyWriterFactory propertyWriterFactory = createPropertyWriterFactory();
+        PropertyWriterFactory propertyWriterFactory = new PropertyWriterFactory();
         DefinitionsConverter definitionsConverter =
-                new DefinitionsConverter(createFromStunnerConverterFactory(diagram.getGraph(), propertyWriterFactory),
+                new DefinitionsConverter(new ConverterFactory(new DefinitionsBuildingContext(diagram.getGraph(), getDiagramClass()),
+                                                              propertyWriterFactory),
                                          propertyWriterFactory);
 
         Definitions definitions = definitionsConverter.toDefinitions();
@@ -245,15 +248,9 @@ public abstract class BaseDirectDiagramMarshaller implements DiagramMarshaller<G
         return new DefinitionsHandler(root);
     }
 
-    protected abstract org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.BaseConverterFactory createFromStunnerConverterFactory(
-            final Graph graph,
-            final PropertyWriterFactory propertyWriterFactory);
-
     protected abstract org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.BaseConverterFactory createToStunnerConverterFactory(
             final DefinitionResolver definitionResolver,
             final TypedFactoryManager typedFactoryManager);
-
-    protected abstract PropertyWriterFactory createPropertyWriterFactory();
 
     protected abstract Class<?> getDefinitionSetClass();
 
@@ -288,4 +285,6 @@ public abstract class BaseDirectDiagramMarshaller implements DiagramMarshaller<G
             return root.getXMLNSPrefixMap().values().contains(DROOLS_NAMESPACE) || root.getXSISchemaLocation().keySet().contains(DROOLS_NAMESPACE);
         }
     }
+
+    protected abstract Class<?> getDiagramClass();
 }

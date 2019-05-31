@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.pro
 import org.eclipse.bpmn2.AdHocOrdering;
 import org.eclipse.bpmn2.AdHocSubProcess;
 import org.eclipse.bpmn2.FormalExpression;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.BaseAdHocCompletionCondition;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeValue;
 
@@ -45,5 +46,9 @@ public class AdHocSubProcessPropertyWriter extends SubProcessPropertyWriter {
         e.setLanguage(scriptLanguageToUri(s.getLanguage()));
         e.setBody(asCData(s.getScript()));
         process.setCompletionCondition(e);
+    }
+
+    public void setAdHocAutostart(boolean autoStart) {
+        CustomElement.autoStart.of(flowElement).set(autoStart);
     }
 }

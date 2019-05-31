@@ -25,9 +25,10 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.impl.RemoveChildrenCommand;
+import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
-import static org.kie.workbench.common.stunner.cm.client.command.util.CaseManagementCommandUtil.getChildIndex;
+import static org.kie.workbench.common.stunner.cm.client.command.util.CaseManagementCommandUtil.getChildGraphIndex;
 
 @Portable
 public class CaseManagementRemoveChildCommand extends RemoveChildrenCommand {
@@ -39,10 +40,10 @@ public class CaseManagementRemoveChildCommand extends RemoveChildrenCommand {
         super(parentUUID, new String[]{candidateUUID});
     }
 
-    public CaseManagementRemoveChildCommand(Node<?, Edge> parent,
-                                            Node<?, Edge> candidate) {
+    public CaseManagementRemoveChildCommand(Node<View<?>, Edge> parent,
+                                            Node<View<?>, Edge> candidate) {
         super(parent, candidate);
-        this.index = getChildIndex(parent, candidate);
+        this.index = getChildGraphIndex(parent, candidate);
     }
 
     public Node<?, Edge> getCandidate() {
@@ -50,9 +51,10 @@ public class CaseManagementRemoveChildCommand extends RemoveChildrenCommand {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public CommandResult<RuleViolation> undo(GraphCommandExecutionContext context) {
-        final Node<?, Edge> parent = getParent(context);
-        final Node<?, Edge> candidate = getCandidate(context);
+        final Node<View<?>, Edge> parent = (Node<View<?>, Edge>) getParent(context);
+        final Node<View<?>, Edge> candidate = (Node<View<?>, Edge>) getCandidate(context);
 
         final CaseManagementSetChildNodeGraphCommand undoCommand =
                 new CaseManagementSetChildNodeGraphCommand(parent,

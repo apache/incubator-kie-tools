@@ -40,4 +40,10 @@ public interface CaseManagementProjectClientConstants {
 
     @TranslationKey(defaultValue = "Generate forms for selection")
     String CaseManagementEditorGenerateSelectionForms = "cm.editor.forms.generateSelectionForms";
+
+    @TranslationKey(defaultValue = "Case View")
+    String CaseManagementEditorCaseViewTooltip = "cm.editor.case.view.tooltip";
+
+    @TranslationKey(defaultValue = "Process View")
+    String CaseManagementEditorProcessViewTooltip = "cm.editor.process.view.tooltip";
 }

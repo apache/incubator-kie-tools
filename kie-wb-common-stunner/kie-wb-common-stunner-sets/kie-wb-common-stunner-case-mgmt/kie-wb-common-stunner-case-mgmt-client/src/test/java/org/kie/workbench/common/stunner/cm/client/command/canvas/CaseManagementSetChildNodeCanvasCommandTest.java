@@ -22,7 +22,9 @@ import java.util.OptionalInt;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.mockito.Matchers.eq;
@@ -32,7 +34,7 @@ import static org.mockito.Mockito.verify;
 public class CaseManagementSetChildNodeCanvasCommandTest extends CaseManagementAbstractCanvasCommandTest {
 
     private OptionalInt index;
-    private Optional<Node> originalParent;
+    private Optional<Node<View<?>, Edge>> originalParent;
     private OptionalInt originalIndex;
 
     @Before
@@ -57,10 +59,10 @@ public class CaseManagementSetChildNodeCanvasCommandTest extends CaseManagementA
                                        eq(0));
     }
 
-    private CaseManagementSetChildNodeCanvasCommand setChildNode(final Node parent,
-                                                                 final Node candidate,
+    private CaseManagementSetChildNodeCanvasCommand setChildNode(final Node<View<?>, Edge> parent,
+                                                                 final Node<View<?>, Edge> candidate,
                                                                  final OptionalInt index,
-                                                                 final Optional<Node> originalParent,
+                                                                 final Optional<Node<View<?>, Edge>> originalParent,
                                                                  final OptionalInt originalIndex) {
         final CaseManagementSetChildNodeCanvasCommand command = new CaseManagementSetChildNodeCanvasCommand(parent,
                                                                                                             candidate,

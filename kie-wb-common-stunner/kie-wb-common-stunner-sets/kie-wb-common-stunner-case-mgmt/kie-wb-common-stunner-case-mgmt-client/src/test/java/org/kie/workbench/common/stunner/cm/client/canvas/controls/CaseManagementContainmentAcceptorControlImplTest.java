@@ -182,6 +182,7 @@ public class CaseManagementContainmentAcceptorControlImplTest {
 
         control.getSetEdgeCommand(parent,
                                   child,
+                                  Optional.empty(),
                                   OptionalInt.empty(),
                                   Optional.empty(),
                                   OptionalInt.empty());
@@ -189,6 +190,7 @@ public class CaseManagementContainmentAcceptorControlImplTest {
         verify(canvasCommandFactory,
                times(1)).setChildNode(eq(parent),
                                       eq(child),
+                                      eq(Optional.empty()),
                                       eq(OptionalInt.empty()),
                                       eq(Optional.empty()),
                                       eq(OptionalInt.empty()));
@@ -260,6 +262,7 @@ public class CaseManagementContainmentAcceptorControlImplTest {
         verify(canvasCommandFactory,
                times(1)).setChildNode(any(Node.class),
                                       any(Node.class),
+                                      eq(Optional.empty()),
                                       eq(OptionalInt.of(0)),
                                       eq(Optional.empty()),
                                       eq(OptionalInt.empty()));

@@ -17,7 +17,7 @@
 package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.processes;
 
 import org.eclipse.bpmn2.Process;
-import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.BaseConverterFactory;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.ConverterFactory;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.DefinitionsBuildingContext;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.ProcessPropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.PropertyWriterFactory;
@@ -40,7 +40,7 @@ public class RootProcessConverter {
 
     public RootProcessConverter(DefinitionsBuildingContext context,
                                 PropertyWriterFactory propertyWriterFactory,
-                                BaseConverterFactory converterFactory) {
+                                ConverterFactory converterFactory) {
         this.delegate = new ProcessConverterDelegate(converterFactory);
         this.context = context;
         this.propertyWriterFactory = propertyWriterFactory;

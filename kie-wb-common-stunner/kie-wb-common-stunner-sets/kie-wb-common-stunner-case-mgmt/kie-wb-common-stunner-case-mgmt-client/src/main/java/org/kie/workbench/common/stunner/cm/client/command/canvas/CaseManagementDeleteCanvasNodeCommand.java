@@ -19,7 +19,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanva
 import org.kie.workbench.common.stunner.core.client.canvas.command.DeleteCanvasNodeCommand;
 import org.kie.workbench.common.stunner.core.graph.Node;
 
-import static org.kie.workbench.common.stunner.cm.client.command.util.CaseManagementCommandUtil.getChildIndex;
+import static org.kie.workbench.common.stunner.cm.client.command.util.CaseManagementCommandUtil.getChildCanvasIndex;
 
 public class CaseManagementDeleteCanvasNodeCommand extends DeleteCanvasNodeCommand {
 
@@ -28,7 +28,7 @@ public class CaseManagementDeleteCanvasNodeCommand extends DeleteCanvasNodeComma
     public CaseManagementDeleteCanvasNodeCommand(Node candidate) {
         super(candidate);
 
-        this.index = getChildIndex(getParent(candidate), candidate);
+        this.index = getChildCanvasIndex(getParent(candidate), candidate);
     }
 
     public CaseManagementDeleteCanvasNodeCommand(Node candidate,

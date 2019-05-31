@@ -21,17 +21,46 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.SequenceFlowConnectorDef;
+import org.kie.workbench.common.stunner.bpmn.definition.Association;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
+import org.kie.workbench.common.stunner.bpmn.definition.EmbeddedSubprocess;
+import org.kie.workbench.common.stunner.bpmn.definition.EndCompensationEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.EndErrorEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.EndEscalationEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.EndMessageEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.EndSignalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.EventSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveGateway;
+import org.kie.workbench.common.stunner.bpmn.definition.InclusiveGateway;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateCompensationEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateCompensationEventThrowing;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateConditionalEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateErrorEventCatching;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateEscalationEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateEscalationEventThrowing;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEventCatching;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEventThrowing;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventCatching;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventThrowing;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.Lane;
+import org.kie.workbench.common.stunner.bpmn.definition.MultipleInstanceSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
 import org.kie.workbench.common.stunner.bpmn.definition.ParallelGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.ScriptTask;
 import org.kie.workbench.common.stunner.bpmn.definition.SequenceFlow;
+import org.kie.workbench.common.stunner.bpmn.definition.StartCompensationEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.StartConditionalEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.StartErrorEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.StartEscalationEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.StartMessageEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.StartSignalEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.StartTimerEvent;
+import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTask;
 import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementSvgDiagramShapeDef;
 import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementSvgNullShapeDef;
 import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementSvgStageShapeDef;
@@ -82,6 +111,9 @@ public class CaseManagementShapeFactory implements ShapeFactory<BPMNDefinition, 
                 .delegate(UserTask.class,
                           new CaseManagementSvgUserTaskShapeDef(),
                           () -> shapeDefFactory)
+                .delegate(SequenceFlow.class,
+                          new SequenceFlowConnectorDef(),
+                          () -> basicShapesFactory)
                 .delegate(NoneTask.class,
                           new CaseManagementSvgNullShapeDef(),
                           () -> shapeDefFactory)
@@ -91,7 +123,31 @@ public class CaseManagementShapeFactory implements ShapeFactory<BPMNDefinition, 
                 .delegate(BusinessRuleTask.class,
                           new CaseManagementSvgNullShapeDef(),
                           () -> shapeDefFactory)
+                .delegate(ServiceTask.class,
+                          new CaseManagementSvgNullShapeDef(),
+                          () -> shapeDefFactory)
                 .delegate(StartNoneEvent.class,
+                          new CaseManagementSvgNullShapeDef(),
+                          () -> shapeDefFactory)
+                .delegate(StartSignalEvent.class,
+                          new CaseManagementSvgNullShapeDef(),
+                          () -> shapeDefFactory)
+                .delegate(StartTimerEvent.class,
+                          new CaseManagementSvgNullShapeDef(),
+                          () -> shapeDefFactory)
+                .delegate(StartMessageEvent.class,
+                          new CaseManagementSvgNullShapeDef(),
+                          () -> shapeDefFactory)
+                .delegate(StartErrorEvent.class,
+                          new CaseManagementSvgNullShapeDef(),
+                          () -> shapeDefFactory)
+                .delegate(StartConditionalEvent.class,
+                          new CaseManagementSvgNullShapeDef(),
+                          () -> shapeDefFactory)
+                .delegate(StartEscalationEvent.class,
+                          new CaseManagementSvgNullShapeDef(),
+                          () -> shapeDefFactory)
+                .delegate(StartCompensationEvent.class,
                           new CaseManagementSvgNullShapeDef(),
                           () -> shapeDefFactory)
                 .delegate(ParallelGateway.class,
@@ -100,18 +156,78 @@ public class CaseManagementShapeFactory implements ShapeFactory<BPMNDefinition, 
                 .delegate(ExclusiveGateway.class,
                           new CaseManagementSvgNullShapeDef(),
                           () -> shapeDefFactory)
+                .delegate(InclusiveGateway.class,
+                          new CaseManagementSvgNullShapeDef(),
+                          () -> shapeDefFactory)
                 .delegate(Lane.class,
                           new CaseManagementSvgNullShapeDef(),
                           () -> shapeDefFactory)
-                .delegate(EndTerminateEvent.class,
+                .delegate(EmbeddedSubprocess.class,
+                          new CaseManagementSvgNullShapeDef(),
+                          () -> shapeDefFactory)
+                .delegate(EventSubprocess.class,
+                          new CaseManagementSvgNullShapeDef(),
+                          () -> shapeDefFactory)
+                .delegate(MultipleInstanceSubprocess.class,
                           new CaseManagementSvgNullShapeDef(),
                           () -> shapeDefFactory)
                 .delegate(EndNoneEvent.class,
                           new CaseManagementSvgNullShapeDef(),
                           () -> shapeDefFactory)
-                .delegate(SequenceFlow.class,
-                          new SequenceFlowConnectorDef(),
-                          () -> basicShapesFactory);
+                .delegate(EndSignalEvent.class,
+                          new CaseManagementSvgNullShapeDef(),
+                          () -> shapeDefFactory)
+                .delegate(EndMessageEvent.class,
+                          new CaseManagementSvgNullShapeDef(),
+                          () -> shapeDefFactory)
+                .delegate(EndTerminateEvent.class,
+                          new CaseManagementSvgNullShapeDef(),
+                          () -> shapeDefFactory)
+                .delegate(EndErrorEvent.class,
+                          new CaseManagementSvgNullShapeDef(),
+                          () -> shapeDefFactory)
+                .delegate(EndEscalationEvent.class,
+                          new CaseManagementSvgNullShapeDef(),
+                          () -> shapeDefFactory)
+                .delegate(EndCompensationEvent.class,
+                          new CaseManagementSvgNullShapeDef(),
+                          () -> shapeDefFactory)
+                .delegate(IntermediateTimerEvent.class,
+                          new CaseManagementSvgNullShapeDef(),
+                          () -> shapeDefFactory)
+                .delegate(IntermediateConditionalEvent.class,
+                          new CaseManagementSvgNullShapeDef(),
+                          () -> shapeDefFactory)
+                .delegate(IntermediateSignalEventCatching.class,
+                          new CaseManagementSvgNullShapeDef(),
+                          () -> shapeDefFactory)
+                .delegate(IntermediateErrorEventCatching.class,
+                          new CaseManagementSvgNullShapeDef(),
+                          () -> shapeDefFactory)
+                .delegate(IntermediateMessageEventCatching.class,
+                          new CaseManagementSvgNullShapeDef(),
+                          () -> shapeDefFactory)
+                .delegate(IntermediateEscalationEvent.class,
+                          new CaseManagementSvgNullShapeDef(),
+                          () -> shapeDefFactory)
+                .delegate(IntermediateCompensationEvent.class,
+                          new CaseManagementSvgNullShapeDef(),
+                          () -> shapeDefFactory)
+                .delegate(IntermediateSignalEventThrowing.class,
+                          new CaseManagementSvgNullShapeDef(),
+                          () -> shapeDefFactory)
+                .delegate(IntermediateMessageEventThrowing.class,
+                          new CaseManagementSvgNullShapeDef(),
+                          () -> shapeDefFactory)
+                .delegate(IntermediateEscalationEventThrowing.class,
+                          new CaseManagementSvgNullShapeDef(),
+                          () -> shapeDefFactory)
+                .delegate(IntermediateCompensationEventThrowing.class,
+                          new CaseManagementSvgNullShapeDef(),
+                          () -> shapeDefFactory)
+                .delegate(Association.class,
+                          new CaseManagementSvgNullShapeDef(),
+                          () -> shapeDefFactory);
     }
 
     @Override

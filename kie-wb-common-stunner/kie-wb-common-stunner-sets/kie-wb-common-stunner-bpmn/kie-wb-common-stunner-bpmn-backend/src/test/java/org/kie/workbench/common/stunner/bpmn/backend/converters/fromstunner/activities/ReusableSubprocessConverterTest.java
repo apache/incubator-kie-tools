@@ -20,7 +20,9 @@ import org.eclipse.bpmn2.CallActivity;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.CallActivityPropertyWriter;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.PropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.PropertyWriterFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseReusableSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess;
@@ -31,6 +33,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.Rect
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.subProcess.IsCase;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocAutostart;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.CalledElement;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.Independent;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.IsAsync;
@@ -56,6 +60,8 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyString;
@@ -72,8 +78,10 @@ public class ReusableSubprocessConverterTest {
     private static final String DOCUMENTATION = "DOCUMENTATION";
     private static final String CALLED_ELEMENT = "CALLED_ELEMENT";
     private static final Boolean INDEPENDENT = Boolean.TRUE;
+    private static final Boolean IS_CASE = Boolean.FALSE;
     private static final Boolean WAIT_FOR_COMPLETION = Boolean.TRUE;
     private static final Boolean IS_ASYNC = Boolean.TRUE;
+    private static final Boolean IS_ADHOC_AUTOSTART = Boolean.FALSE;
     private static final Boolean IS_MULTIPLE_INSTANCE = Boolean.TRUE;
     private static final Boolean SEQUENTIAL = Boolean.TRUE;
     private static final String COLLECTION_INPUT = "COLLECTION_INPUT";
@@ -108,9 +116,11 @@ public class ReusableSubprocessConverterTest {
         when(ioSet.getAssignmentsinfo()).thenReturn(ASSIGNMENTS_INFO);
         final ReusableSubprocess definition = new ReusableSubprocess(new BPMNGeneralSet(NAME, DOCUMENTATION),
                                                                      new ReusableSubprocessTaskExecutionSet(new CalledElement(CALLED_ELEMENT),
+                                                                                                            new IsCase(IS_CASE),
                                                                                                             new Independent(INDEPENDENT),
                                                                                                             new WaitForCompletion(WAIT_FOR_COMPLETION),
                                                                                                             new IsAsync(IS_ASYNC),
+                                                                                                            new AdHocAutostart(IS_ADHOC_AUTOSTART),
                                                                                                             new IsMultipleInstance(IS_MULTIPLE_INSTANCE),
                                                                                                             new MultipleInstanceExecutionMode(SEQUENTIAL),
                                                                                                             new MultipleInstanceCollectionInput(COLLECTION_INPUT),
@@ -170,5 +180,59 @@ public class ReusableSubprocessConverterTest {
         verify(propertyWriter).setAssignmentsInfo(ASSIGNMENTS_INFO);
         verify(propertyWriter).setSimulationSet(SIMULATION_SET);
         verify(propertyWriter).setAbsoluteBounds(node);
+    }
+
+    private ReusableSubprocessConverter tested =
+            new ReusableSubprocessConverter(new PropertyWriterFactory());
+
+    @Test
+    public void testToFlowElement_case() {
+        final BaseReusableSubprocess definition = new ReusableSubprocess();
+        definition.getExecutionSet().setIsCase(new IsCase(true));
+        final View<BaseReusableSubprocess> view = new ViewImpl<>(definition, Bounds.create());
+        final Node<View<BaseReusableSubprocess>, ?> node = new NodeImpl<>(java.util.UUID.randomUUID().toString());
+        node.setContent(view);
+
+        final PropertyWriter propertyWriter = tested.toFlowElement(node);
+        assertTrue(CallActivityPropertyWriter.class.isInstance(propertyWriter));
+        assertTrue(CustomElement.isCase.of(propertyWriter.getFlowElement()).get());
+    }
+
+    @Test
+    public void testToFlowElement_process() {
+        final BaseReusableSubprocess definition = new ReusableSubprocess();
+        final View<BaseReusableSubprocess> view = new ViewImpl<>(definition, Bounds.create());
+        final Node<View<BaseReusableSubprocess>, ?> node = new NodeImpl<>(java.util.UUID.randomUUID().toString());
+        node.setContent(view);
+
+        final PropertyWriter propertyWriter = tested.toFlowElement(node);
+        assertTrue(CallActivityPropertyWriter.class.isInstance(propertyWriter));
+        assertFalse(CustomElement.isCase.of(propertyWriter.getFlowElement()).get());
+    }
+
+    @Test
+    public void testToFlowElement_autostart() {
+        final ReusableSubprocess definition = new ReusableSubprocess();
+        definition.getExecutionSet().setAdHocAutostart(new AdHocAutostart(true));
+        final View<BaseReusableSubprocess> view = new ViewImpl<>(definition, Bounds.create());
+        final Node<View<BaseReusableSubprocess>, ?> node = new NodeImpl<>(java.util.UUID.randomUUID().toString());
+        node.setContent(view);
+
+        final PropertyWriter propertyWriter = tested.toFlowElement(node);
+        assertTrue(CallActivityPropertyWriter.class.isInstance(propertyWriter));
+        assertTrue(CustomElement.autoStart.of(propertyWriter.getFlowElement()).get());
+    }
+
+    @Test
+    public void testToFlowElement_notautostart() {
+        final ReusableSubprocess definition = new ReusableSubprocess();
+        definition.getExecutionSet().setAdHocAutostart(new AdHocAutostart(false));
+        final View<BaseReusableSubprocess> view = new ViewImpl<>(definition, Bounds.create());
+        final Node<View<BaseReusableSubprocess>, ?> node = new NodeImpl<>(java.util.UUID.randomUUID().toString());
+        node.setContent(view);
+
+        final PropertyWriter propertyWriter = tested.toFlowElement(node);
+        assertTrue(CallActivityPropertyWriter.class.isInstance(propertyWriter));
+        assertFalse(CustomElement.autoStart.of(propertyWriter.getFlowElement()).get());
     }
 }

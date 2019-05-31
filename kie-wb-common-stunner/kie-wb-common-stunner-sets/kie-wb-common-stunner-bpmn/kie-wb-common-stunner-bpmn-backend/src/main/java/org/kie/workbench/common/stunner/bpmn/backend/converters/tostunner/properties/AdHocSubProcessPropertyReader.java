@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.prope
 import org.eclipse.bpmn2.AdHocSubProcess;
 import org.eclipse.bpmn2.FormalExpression;
 import org.eclipse.bpmn2.di.BPMNDiagram;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeValue;
 
@@ -45,5 +46,9 @@ public class AdHocSubProcessPropertyReader extends SubProcessPropertyReader {
 
     public String getAdHocOrdering() {
         return process.getOrdering().toString();
+    }
+
+    public boolean isAdHocAutostart() {
+        return CustomElement.autoStart.of(element).get();
     }
 }

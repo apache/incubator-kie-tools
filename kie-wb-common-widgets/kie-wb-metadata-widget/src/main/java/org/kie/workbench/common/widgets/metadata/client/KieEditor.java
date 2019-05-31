@@ -523,6 +523,10 @@ public abstract class KieEditor<T>
     public void onEditTabUnselected() {
     }
 
+    public void addTabBarWidget(final IsWidget customWidget) {
+        kieView.addTabBarWidget(customWidget);
+    }
+
     //Handler for MayClose requests
     private interface MayCloseHandler {
 

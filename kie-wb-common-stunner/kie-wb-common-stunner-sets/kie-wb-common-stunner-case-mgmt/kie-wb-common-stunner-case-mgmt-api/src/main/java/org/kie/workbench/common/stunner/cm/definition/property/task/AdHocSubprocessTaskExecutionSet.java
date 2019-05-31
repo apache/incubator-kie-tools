@@ -57,7 +57,7 @@ public class AdHocSubprocessTaskExecutionSet implements BaseAdHocSubprocessTaskE
     )
     @SelectorDataProvider(
             type = SelectorDataProvider.ProviderType.CLIENT,
-            className = "org.kie.workbench.common.stunner.bpmn.client.dataproviders.AdHocOrderingProvider")
+            className = "org.kie.workbench.common.stunner.bpmn.client.dataproviders.ExecutionOrderProvider")
     @Valid
     private AdHocOrdering adHocOrdering;
 
@@ -121,6 +121,7 @@ public class AdHocSubprocessTaskExecutionSet implements BaseAdHocSubprocessTaskE
         this.adHocOrdering = adHocOrdering;
     }
 
+    @Override
     public AdHocAutostart getAdHocAutostart() {
         return adHocAutostart;
     }

@@ -16,17 +16,29 @@
 
 package org.kie.workbench.common.stunner.cm.client.command;
 
+import java.util.LinkedList;
+import java.util.Optional;
+import java.util.OptionalInt;
+
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
+import org.kie.workbench.common.stunner.cm.client.command.graph.CaseManagementSetChildNodeGraphCommand;
+import org.kie.workbench.common.stunner.cm.definition.AdHocSubprocess;
+import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
+import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class CaseManagementSetChildCommandTest extends CaseManagementAbstractCommandTest {
 
@@ -88,5 +100,96 @@ public class CaseManagementSetChildCommandTest extends CaseManagementAbstractCom
         verify(canvasHandler).addChild(eq(parent),
                                        eq(candidate),
                                        eq(index));
+    }
+
+    @Test
+    public void testNewGraphCommand_moveForward() throws Exception {
+        final Node last = mock(Node.class);
+        final Edge lEdge = mock(Edge.class);
+        when(lEdge.getTargetNode()).thenReturn(last);
+        parent.getOutEdges().add(lEdge);
+
+        final Edge cEdge = mock(Edge.class);
+        when(cEdge.getTargetNode()).thenReturn(candidate);
+        parent.getOutEdges().add(cEdge);
+
+        command = new CaseManagementSetChildCommand(parent, candidate, Optional.of(last), null, Optional.of(parent), null);
+
+        final Command graphCommand = command.newGraphCommand(canvasHandler);
+        assertTrue(graphCommand instanceof CaseManagementSetChildNodeGraphCommand);
+
+        final CaseManagementSetChildNodeGraphCommand cmGraphCommand = (CaseManagementSetChildNodeGraphCommand) graphCommand;
+        assertTrue(cmGraphCommand.getIndex().isPresent());
+        assertEquals(1, cmGraphCommand.getIndex().getAsInt());
+        assertTrue(cmGraphCommand.getOriginalIndex().isPresent());
+        assertEquals(1, cmGraphCommand.getOriginalIndex().getAsInt());
+    }
+
+    @Test
+    public void testNewGraphCommand_moveBackward() throws Exception {
+        final Edge cEdge = mock(Edge.class);
+        when(cEdge.getTargetNode()).thenReturn(candidate);
+        parent.getOutEdges().add(cEdge);
+
+        final Node last = mock(Node.class);
+        final Edge lEdge = mock(Edge.class);
+        when(lEdge.getTargetNode()).thenReturn(last);
+        parent.getOutEdges().add(lEdge);
+
+        command = new CaseManagementSetChildCommand(parent, candidate, Optional.of(last), null, Optional.of(parent), null);
+
+        final Command graphCommand = command.newGraphCommand(canvasHandler);
+        assertTrue(graphCommand instanceof CaseManagementSetChildNodeGraphCommand);
+
+        final CaseManagementSetChildNodeGraphCommand cmGraphCommand = (CaseManagementSetChildNodeGraphCommand) graphCommand;
+        assertTrue(cmGraphCommand.getIndex().isPresent());
+        assertEquals(1, cmGraphCommand.getIndex().getAsInt());
+        assertTrue(cmGraphCommand.getOriginalIndex().isPresent());
+        assertEquals(0, cmGraphCommand.getOriginalIndex().getAsInt());
+    }
+
+    @Test
+    public void testNewGraphCommand_addNew() throws Exception {
+        command = new CaseManagementSetChildCommand(parent, candidate, Optional.empty(), OptionalInt.empty(), Optional.empty(), null);
+
+        final Command graphCommand = command.newGraphCommand(canvasHandler);
+        assertTrue(graphCommand instanceof CaseManagementSetChildNodeGraphCommand);
+
+        final CaseManagementSetChildNodeGraphCommand cmGraphCommand = (CaseManagementSetChildNodeGraphCommand) graphCommand;
+        assertFalse(cmGraphCommand.getIndex().isPresent());
+        assertFalse(cmGraphCommand.getOriginalIndex().isPresent());
+    }
+
+    @Test
+    public void testNewGraphCommand_addNewStage() throws Exception {
+        final Node childNode = mock(Node.class);
+        final View cContent = mock(View.class);
+        when(childNode.getContent()).thenReturn(cContent);
+        when(cContent.getDefinition()).thenReturn(mock(AdHocSubprocess.class));
+        when(childNode.getOutEdges()).thenReturn(new LinkedList());
+
+        final Node parentNode = mock(Node.class);
+        final View pContent = mock(View.class);
+        when(parentNode.getContent()).thenReturn(pContent);
+        when(pContent.getDefinition()).thenReturn(mock(CaseManagementDiagram.class));
+        when(parentNode.getOutEdges()).thenReturn(new LinkedList());
+
+        final Node start = mock(Node.class);
+        final View sContent = mock(View.class);
+        when(start.getContent()).thenReturn(sContent);
+        when(sContent.getDefinition()).thenReturn(mock(StartNoneEvent.class));
+        final Edge sEdge = mock(Edge.class);
+        when(sEdge.getTargetNode()).thenReturn(start);
+        parentNode.getOutEdges().add(sEdge);
+
+        command = new CaseManagementSetChildCommand(parentNode, childNode, Optional.empty(), OptionalInt.of(0), Optional.empty(), null);
+
+        final Command graphCommand = command.newGraphCommand(canvasHandler);
+        assertTrue(graphCommand instanceof CaseManagementSetChildNodeGraphCommand);
+
+        final CaseManagementSetChildNodeGraphCommand cmGraphCommand = (CaseManagementSetChildNodeGraphCommand) graphCommand;
+        assertTrue(cmGraphCommand.getIndex().isPresent());
+        assertEquals(1, cmGraphCommand.getIndex().getAsInt());
+        assertFalse(cmGraphCommand.getOriginalIndex().isPresent());
     }
 }
