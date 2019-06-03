@@ -243,6 +243,8 @@ public class BPMNDirectDiagramMarshallerTest {
     private static final String ARIS_MULTIPLE_COLLAPSED_SUBPROCESSES = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/aris/ARIS_MULTIPLE_COLLAPSED_SUBPROCESSES.bpmn";
     private static final String ARIS_NESTED_COLLAPSED_SUBPROCESSES = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/aris/ARIS_NESTED_COLLAPSED_SUBPROCESES.bpmn";
     private static final String ARIS_COLLAPSED_SUBPROCESS_IN_LANE = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/aris/ARIS_COLLAPSED_SUBPROCESS_IN_LANE.bpmn";
+    private static final String BPMN_LOG_TASK_JBPM_DESIGNER = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/logtask.bpmn";
+    private static final String BPMN_SERVICETASKS_JBPM_DESIGNER = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/serviceTasksJBPMDeginer.bpmn";
 
     private static final String NEW_LINE = System.lineSeparator();
 
@@ -356,6 +358,33 @@ public class BPMNDirectDiagramMarshallerTest {
 
         Node<? extends Definition, ?> task1 = diagram.getGraph().getNode("810797AB-7D09-4E1F-8A5B-96C424E4B031");
         assertTrue(task1.getContent().getDefinition() instanceof NoneTask);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testUnmarshallLogTaskJBPMDesigner() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_LOG_TASK_JBPM_DESIGNER);
+        assertDiagram(diagram, 4);
+
+        Node<? extends Definition, ?> log = diagram.getGraph().getNode("_AE76ACC9-CCD0-425D-BD40-5E4F3533A1DF");
+        assertTrue(log.getContent().getDefinition() instanceof ServiceTask);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testUnmarshallServiceTaskJBPMDesigner() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_SERVICETASKS_JBPM_DESIGNER);
+        assertDiagram(diagram, 9);
+
+        Node<? extends Definition, ?> email = diagram.getGraph().getNode("_2255B80D-ADCF-47C8-A16F-82E7BB9AD929");
+        Node<? extends Definition, ?> rest = diagram.getGraph().getNode("_D8B91719-0540-4A98-9734-CAF4C703B051");
+        Node<? extends Definition, ?> ws = diagram.getGraph().getNode("_FD3F17AB-199B-4A59-A8B4-CBDCCDBFF7DA");
+        Node<? extends Definition, ?> log = diagram.getGraph().getNode("_324A9674-039E-4B80-80EF-A9B6A44ACA33");
+
+        assertTrue(email.getContent().getDefinition() instanceof ServiceTask);
+        assertTrue(rest.getContent().getDefinition() instanceof ServiceTask);
+        assertTrue(ws.getContent().getDefinition() instanceof ServiceTask);
+        assertTrue(log.getContent().getDefinition() instanceof ServiceTask);
     }
 
     @Test

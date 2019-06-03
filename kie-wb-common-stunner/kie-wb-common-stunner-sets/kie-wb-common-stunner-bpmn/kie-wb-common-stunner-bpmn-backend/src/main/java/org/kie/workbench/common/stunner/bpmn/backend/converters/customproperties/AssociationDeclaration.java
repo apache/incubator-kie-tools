@@ -16,6 +16,12 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties;
 
+import java.util.Objects;
+import java.util.Optional;
+
+import static org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.AssociationDeclaration.Type.FromTo;
+import static org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.AssociationDeclaration.Type.SourceTarget;
+
 public class AssociationDeclaration {
 
     private Direction direction;
@@ -108,10 +114,12 @@ public class AssociationDeclaration {
 class AssociationParser {
 
     public static AssociationDeclaration parse(String encoded) {
-        for (AssociationDeclaration.Direction direction : AssociationDeclaration.Direction.values()) {
-            if (encoded.startsWith(direction.prefix())) {
-                String rest = encoded.substring(direction.prefix().length());
-                return parseAssociation(direction, rest);
+        if (Objects.nonNull(encoded)) {
+            for (AssociationDeclaration.Direction direction : AssociationDeclaration.Direction.values()) {
+                if (encoded.startsWith(direction.prefix())) {
+                    String rest = encoded.substring(direction.prefix().length());
+                    return parseAssociation(direction, rest);
+                }
             }
         }
 
@@ -119,18 +127,21 @@ class AssociationParser {
     }
 
     private static AssociationDeclaration parseAssociation(AssociationDeclaration.Direction direction, String rest) {
-        AssociationDeclaration.Type type;
-        type = AssociationDeclaration.Type.SourceTarget;
-        if (rest.contains(type.op())) {
-            String[] association = rest.split(type.op());
-            return new AssociationDeclaration(direction, type, association[0], association[1]);
-        }
-        type = AssociationDeclaration.Type.FromTo;
-        if (rest.contains(type.op())) {
-            String[] association = rest.split(type.op());
-            return new AssociationDeclaration(direction, type, association[1], association[0]);
-        }
+        final AssociationDeclaration.Type type =
+                Optional.ofNullable(rest)
+                        .filter(s -> s.contains(SourceTarget.op()))
+                        .map(s -> SourceTarget)
+                        .orElseGet(() -> Optional.ofNullable(rest)
+                                .filter(s -> s.contains(FromTo.op()))
+                                .map(s -> FromTo)
+                                .orElseThrow(() -> new IllegalArgumentException("Cannot parse " + rest)));
 
-        throw new IllegalArgumentException("Cannot parse " + rest);
+        final String[] association = rest.split(type.op());
+        final String param1 = association.length > 0 ? association[0] : "";
+        final String param2 = association.length > 1 ? association[1] : "";
+
+        return SourceTarget.equals(type)
+                ? new AssociationDeclaration(direction, type, param1, param2)
+                : new AssociationDeclaration(direction, type, param2, param1);
     }
 }

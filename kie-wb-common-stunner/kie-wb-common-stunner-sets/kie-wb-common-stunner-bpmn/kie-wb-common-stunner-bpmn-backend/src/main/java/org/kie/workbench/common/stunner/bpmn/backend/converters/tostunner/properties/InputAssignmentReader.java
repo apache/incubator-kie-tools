@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.prope
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.List;
+import java.util.Optional;
 
 import org.eclipse.bpmn2.Assignment;
 import org.eclipse.bpmn2.DataInput;
@@ -70,11 +71,17 @@ public class InputAssignmentReader {
     }
 
     private String encode(String body) {
-        try {
-            return URLEncoder.encode(body, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException(body, e);
-        }
+        return Optional
+                .ofNullable(body)
+                .filter(b -> !"null".equals(b))
+                .map(b -> {
+                    try {
+                        return URLEncoder.encode(b, "UTF-8");
+                    } catch (UnsupportedEncodingException e) {
+                        throw new IllegalArgumentException(body, e);
+                    }
+                })
+                .orElse("");
     }
 
     public AssociationDeclaration getAssociationDeclaration() {

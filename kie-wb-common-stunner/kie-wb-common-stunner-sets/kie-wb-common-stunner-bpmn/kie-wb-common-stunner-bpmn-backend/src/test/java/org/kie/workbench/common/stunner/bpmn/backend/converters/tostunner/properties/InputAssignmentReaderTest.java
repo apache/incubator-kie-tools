@@ -29,26 +29,43 @@ import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunn
 
 public class InputAssignmentReaderTest {
 
+    public static final String ID = "ID";
+
     @Test
     public void urlEncodeConstants() throws UnsupportedEncodingException {
-        String decoded = "<<<#!!!#>>>";
-        String expected = URLEncoder.encode(decoded, "UTF-8");
+        final String decoded = "<<<#!!!#>>>";
+        final String expected = URLEncoder.encode(decoded, "UTF-8");
 
-        Assignment assignment = bpmn2.createAssignment();
-        FormalExpression from = bpmn2.createFormalExpression();
-        from.setBody(decoded);
+        final Assignment assignment = createAssignment(decoded);
 
-        FormalExpression to = bpmn2.createFormalExpression();
-        to.setBody("ID");
+        final InputAssignmentReader iar = new InputAssignmentReader(assignment, ID);
 
-        assignment.setFrom(from);
-        assignment.setTo(to);
-
-        InputAssignmentReader iar = new InputAssignmentReader(assignment, "ID");
-
-        AssociationDeclaration associationDeclaration = iar.getAssociationDeclaration();
+        final AssociationDeclaration associationDeclaration = iar.getAssociationDeclaration();
 
         assertEquals(AssociationDeclaration.Type.FromTo, associationDeclaration.getType());
         assertEquals(expected, associationDeclaration.getSource());
+    }
+
+    private Assignment createAssignment(String decodedBody) {
+        final Assignment assignment = bpmn2.createAssignment();
+        final FormalExpression from = bpmn2.createFormalExpression();
+        from.setBody(decodedBody);
+
+        final FormalExpression to = bpmn2.createFormalExpression();
+        to.setBody(ID);
+
+        assignment.setFrom(from);
+        assignment.setTo(to);
+        return assignment;
+    }
+
+    @Test
+    public void testNullBody() {
+        final Assignment assignment = createAssignment(null);
+        final InputAssignmentReader iar = new InputAssignmentReader(assignment, ID);
+        final AssociationDeclaration associationDeclaration = iar.getAssociationDeclaration();
+
+        assertEquals(AssociationDeclaration.Type.FromTo, associationDeclaration.getType());
+        assertEquals("", associationDeclaration.getSource());
     }
 }
