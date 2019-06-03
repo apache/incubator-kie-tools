@@ -19,6 +19,7 @@ package org.kie.workbench.common.dmn.client.editors.types.listview.constraint.co
 import java.util.Optional;
 import java.util.function.Consumer;
 
+import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.google.gwt.event.dom.client.BlurEvent;
 import elemental2.dom.Element.OnchangeCallbackFn;
 import elemental2.dom.Event;
@@ -28,8 +29,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.common.MinMaxValueHelper;
 import org.mockito.Mock;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -40,12 +39,11 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.verifyStatic;
+import static org.mockito.Mockito.when;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({MinMaxValueHelper.class})
+@RunWith(LienzoMockitoTestRunner.class)
 public class DayTimeSelectorViewTest {
 
     @Mock
@@ -73,15 +71,33 @@ public class DayTimeSelectorViewTest {
 
     @Before
     public void setup() {
+        daysInput = spy(new HTMLInputElement());
+        hoursInput = spy(new HTMLInputElement());
+        minutesInput = spy(new HTMLInputElement());
+        secondsInput = spy(new HTMLInputElement());
+
         view = spy(new DayTimeSelectorView(daysInput, hoursInput, minutesInput, secondsInput));
         view.init(presenter);
     }
 
     @Test
     public void testSetupEventHandlers() {
+        daysInput.value = "2";
+        hoursInput.value = "4";
+        minutesInput.value = "8";
+        secondsInput.value = "16";
+
+        when(daysInput.getAttribute("data-old")).thenReturn("getAttribute was invoked");
+        when(hoursInput.getAttribute("data-old")).thenReturn("getAttribute was invoked");
+        when(minutesInput.getAttribute("data-old")).thenReturn("getAttribute was invoked");
+        when(secondsInput.getAttribute("data-old")).thenReturn("getAttribute was invoked");
+
+        doNothing().when(daysInput).setAttribute("data-old", daysInput.value);
+        doNothing().when(hoursInput).setAttribute("data-old", hoursInput.value);
+        doNothing().when(minutesInput).setAttribute("data-old", minutesInput.value);
+        doNothing().when(secondsInput).setAttribute("data-old", secondsInput.value);
 
         final OnchangeCallbackFn onChangeHandler = mock(OnchangeCallbackFn.class);
-        mockStatic(MinMaxValueHelper.class);
         doReturn(onChangeHandler).when(view).getOnChangeHandler();
         daysInput.onchange = null;
         hoursInput.onchange = null;
@@ -95,17 +111,37 @@ public class DayTimeSelectorViewTest {
         assertEquals(minutesInput.onchange, onChangeHandler);
         assertEquals(secondsInput.onchange, onChangeHandler);
 
-        verifyStatic(MinMaxValueHelper.class);
         MinMaxValueHelper.setupMinMaxHandlers(daysInput);
+        daysInput.onfocusout.onInvoke(null);
+        daysInput.onkeydown.onInvoke(null);
+        daysInput.onkeyup.onInvoke(null);
 
-        verifyStatic(MinMaxValueHelper.class);
+        verify(daysInput).setAttribute("data-old", daysInput.value);
+        verify(daysInput, times(2)).getAttribute("data-old");
+
         MinMaxValueHelper.setupMinMaxHandlers(hoursInput);
+        hoursInput.onfocusout.onInvoke(null);
+        hoursInput.onkeydown.onInvoke(null);
+        hoursInput.onkeyup.onInvoke(null);
 
-        verifyStatic(MinMaxValueHelper.class);
+        verify(hoursInput).setAttribute("data-old", hoursInput.value);
+        verify(hoursInput, times(2)).getAttribute("data-old");
+
         MinMaxValueHelper.setupMinMaxHandlers(minutesInput);
+        minutesInput.onfocusout.onInvoke(null);
+        minutesInput.onkeydown.onInvoke(null);
+        minutesInput.onkeyup.onInvoke(null);
 
-        verifyStatic(MinMaxValueHelper.class);
+        verify(minutesInput).setAttribute("data-old", minutesInput.value);
+        verify(minutesInput, times(2)).getAttribute("data-old");
+
         MinMaxValueHelper.setupMinMaxHandlers(secondsInput);
+        secondsInput.onfocusout.onInvoke(null);
+        secondsInput.onkeydown.onInvoke(null);
+        secondsInput.onkeyup.onInvoke(null);
+
+        verify(secondsInput).setAttribute("data-old", secondsInput.value);
+        verify(secondsInput, times(2)).getAttribute("data-old");
     }
 
     @Test

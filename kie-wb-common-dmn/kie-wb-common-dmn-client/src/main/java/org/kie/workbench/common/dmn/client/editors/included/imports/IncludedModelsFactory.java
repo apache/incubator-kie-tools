@@ -50,11 +50,18 @@ public class IncludedModelsFactory {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Wrapped due to test
+     */
+    protected String uuidWrapper() {
+        return uuid();
+    }
+
     private IncludedModel makeIncludedModel(final Import anImport) {
 
         final IncludedModel includedModel = new IncludedModel(getRecordEngine());
 
-        includedModel.setUuid(uuid());
+        includedModel.setUuid(uuidWrapper());
         includedModel.setName(getName(anImport));
         includedModel.setNamespace(getNamespace(anImport));
         includedModel.setPath(getPath(anImport));

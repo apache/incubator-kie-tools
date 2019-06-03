@@ -18,19 +18,16 @@ package org.kie.workbench.common.dmn.client.widgets.grid.columns;
 
 import java.util.Optional;
 
+import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
-import org.kie.workbench.common.dmn.client.editors.expressions.util.RendererUtils;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(RendererUtils.class)
+@RunWith(LienzoMockitoTestRunner.class)
 public class NameAndDataTypeHeaderMetaDataTest extends BaseNameAndDataTypeHeaderMetaDataTest {
 
     public void setup(final Optional<HasName> hasName) {
@@ -45,6 +42,11 @@ public class NameAndDataTypeHeaderMetaDataTest extends BaseNameAndDataTypeHeader
             @Override
             public String getColumnGroup() {
                 return NAME_DATA_TYPE_COLUMN_GROUP;
+            }
+
+            @Override
+            public Optional<String> getPlaceHolder() {
+                return Optional.of(PLACEHOLDER);
             }
         };
     }

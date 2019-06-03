@@ -28,9 +28,8 @@ import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.ArgumentCaptor;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
@@ -47,8 +46,7 @@ import static org.mockito.Mockito.validateMockitoUsage;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@PrepareForTest({ItemDefinitionPropertyConverter.class, UnaryTestsPropertyConverter.class, DescriptionPropertyConverter.class, QNamePropertyConverter.class})
-@RunWith(PowerMockRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class ItemDefinitionPropertyConverterTest {
 
     @Test
@@ -66,17 +64,20 @@ public class ItemDefinitionPropertyConverterTest {
         final Name expectedName = new Name(name);
         final String expectedTypeLanguage = "typeLanguage";
         final boolean expectedIsCollection = true;
+        final String description = "description";
         final boolean expectedAllowOnlyVisualChange = false;
-        final Description expectedDescription = mock(Description.class);
-        final QName expectedTypeRef = mock(QName.class);
+        final String qNameNamespaceURI = "qName namespaceURI";
+        final String qNameLocalPart = "qName local part";
+        final String qNamePrefix = "qName prefix";
+        final Description expectedDescription = new Description(description);
+        final javax.xml.namespace.QName expectedTypeRef = new javax.xml.namespace.QName(qNameNamespaceURI, qNameLocalPart, qNamePrefix);
 
         when(dmn.getId()).thenReturn(id);
         when(dmn.getName()).thenReturn(name);
         when(dmn.getTypeLanguage()).thenReturn(expectedTypeLanguage);
         when(dmn.isIsCollection()).thenReturn(expectedIsCollection);
-
-        stubWbDescriptionFromDMNToReturn(expectedDescription);
-        stubWbTypeRefFromDMNToReturn(expectedTypeRef);
+        when(dmn.getDescription()).thenReturn(description);
+        when(dmn.getTypeRef()).thenReturn(expectedTypeRef);
 
         final ItemDefinition actualItemDefinition = wbFromDMN(dmn);
 
@@ -93,45 +94,65 @@ public class ItemDefinitionPropertyConverterTest {
         assertEquals(expectedTypeLanguage, actualTypeLanguage);
         assertEquals(expectedIsCollection, actualIsCollection);
         assertEquals(expectedDescription, actualDescription);
-        assertEquals(expectedTypeRef, actualTypeRef);
         assertEquals(expectedAllowOnlyVisualChange, actualAllowOnlyVisualChange);
+        assertEquals(expectedTypeRef.getLocalPart(), actualTypeRef.getLocalPart());
+        assertEquals(expectedTypeRef.getPrefix(), actualTypeRef.getPrefix());
+        assertEquals(expectedTypeRef.getNamespaceURI(), actualTypeRef.getNamespaceURI());
     }
 
     @Test
     public void testSetItemComponent() {
 
+        final String id = "id";
+        final String name = "name";
+        final String typeLanguage = "typeLanguage";
+        final boolean isCollection = true;
+        final boolean isOnlyVisualChanges = false;
+        final String description = "description";
+        final ItemDefinition expectedWbChild = new ItemDefinition(new Id(id),
+                                                                  new Description(description),
+                                                                  new Name(name),
+                                                                  null,
+                                                                  null,
+                                                                  null,
+                                                                  typeLanguage,
+                                                                  isCollection,
+                                                                  isOnlyVisualChanges);
         final ItemDefinition wb = new ItemDefinition();
-        final ItemDefinition wbChild = new ItemDefinition();
         final org.kie.dmn.model.api.ItemDefinition dmn = mock(org.kie.dmn.model.api.ItemDefinition.class);
         final org.kie.dmn.model.api.ItemDefinition dmnChild = mock(org.kie.dmn.model.api.ItemDefinition.class);
 
-        stubWbChildFromDMNToReturn(wbChild);
+        when(dmnChild.getId()).thenReturn(id);
+        when(dmnChild.getName()).thenReturn(name);
+        when(dmnChild.getTypeLanguage()).thenReturn(typeLanguage);
+        when(dmnChild.isIsCollection()).thenReturn(isCollection);
+        when(dmnChild.getDescription()).thenReturn(description);
+        when(dmnChild.getTypeRef()).thenReturn(null);
         when(dmn.getItemComponent()).thenReturn(singletonList(dmnChild));
 
         setItemComponent(wb, dmn);
 
-        final List<ItemDefinition> expectedItemDefinitions = singletonList(wbChild);
+        final List<ItemDefinition> expectedItemDefinitions = singletonList(expectedWbChild);
         final List<ItemDefinition> actualItemDefinitions = wb.getItemComponent();
 
         assertEquals(expectedItemDefinitions, actualItemDefinitions);
+        assertEquals(wb, actualItemDefinitions.get(0).getParent());
     }
 
     @Test
     public void testSetUnaryTestsWhenUnaryTestsIsNotNull() {
 
         final ItemDefinition wb = mock(ItemDefinition.class);
-        final UnaryTests wbAllowedValues = mock(UnaryTests.class);
+        final ArgumentCaptor<UnaryTests> argument = ArgumentCaptor.forClass(UnaryTests.class);
         final org.kie.dmn.model.api.ItemDefinition dmn = mock(org.kie.dmn.model.api.ItemDefinition.class);
         final org.kie.dmn.model.api.UnaryTests dmnAllowedValues = mock(org.kie.dmn.model.api.UnaryTests.class);
 
         when(dmn.getAllowedValues()).thenReturn(dmnAllowedValues);
-        PowerMockito.mockStatic(UnaryTestsPropertyConverter.class);
-        PowerMockito.when(UnaryTestsPropertyConverter.wbFromDMN(dmnAllowedValues)).thenReturn(wbAllowedValues);
 
         setUnaryTests(wb, dmn);
 
-        verify(wb).setAllowedValues(wbAllowedValues);
-        verify(wbAllowedValues).setParent(wb);
+        verify(wb).setAllowedValues(argument.capture());
+        assertEquals(wb, argument.getValue().getParent());
     }
 
     @Test
@@ -140,11 +161,9 @@ public class ItemDefinitionPropertyConverterTest {
         final ItemDefinition wb = mock(ItemDefinition.class);
         final UnaryTests wbAllowedValues = mock(UnaryTests.class);
         final org.kie.dmn.model.api.ItemDefinition dmn = mock(org.kie.dmn.model.api.ItemDefinition.class);
-        final org.kie.dmn.model.api.UnaryTests dmnAllowedValues = mock(org.kie.dmn.model.api.UnaryTests.class);
+        final org.kie.dmn.model.api.UnaryTests dmnAllowedValues = null;
 
         when(dmn.getAllowedValues()).thenReturn(dmnAllowedValues);
-        PowerMockito.mockStatic(UnaryTestsPropertyConverter.class);
-        PowerMockito.when(UnaryTestsPropertyConverter.wbFromDMN(dmnAllowedValues)).thenReturn(null);
 
         setUnaryTests(wb, dmn);
 
@@ -156,12 +175,10 @@ public class ItemDefinitionPropertyConverterTest {
     public void testWbDescriptionFromDMN() {
 
         final String description = "description";
-        final Description expectedDescription = mock(Description.class);
+        final Description expectedDescription = new Description(description);
         final org.kie.dmn.model.api.ItemDefinition dmn = mock(org.kie.dmn.model.api.ItemDefinition.class);
 
         when(dmn.getDescription()).thenReturn(description);
-        PowerMockito.mockStatic(DescriptionPropertyConverter.class);
-        PowerMockito.when(DescriptionPropertyConverter.wbFromDMN(description)).thenReturn(expectedDescription);
 
         final Description actualDescription = wbDescriptionFromDMN(dmn);
 
@@ -172,13 +189,9 @@ public class ItemDefinitionPropertyConverterTest {
     public void testWbTypeRefFromDMNWhenQNameIsUndefined() {
 
         final org.kie.dmn.model.api.ItemDefinition dmn = mock(org.kie.dmn.model.api.ItemDefinition.class);
-        final javax.xml.namespace.QName dmnQName = mock(javax.xml.namespace.QName.class);
-        final QName wbQName = BuiltInType.UNDEFINED.asQName();
+        final javax.xml.namespace.QName dmnQName = null;
 
         when(dmn.getTypeRef()).thenReturn(dmnQName);
-
-        PowerMockito.mockStatic(QNamePropertyConverter.class);
-        PowerMockito.when(QNamePropertyConverter.wbFromDMN(dmnQName, dmn)).thenReturn(wbQName);
 
         final QName actualQName = wbTypeRefFromDMN(dmn);
 
@@ -188,14 +201,16 @@ public class ItemDefinitionPropertyConverterTest {
     @Test
     public void testWbTypeRefFromDMNWhenQNameIsNotUndefined() {
 
+        final String qNameLocalPart = "string";
+        final String qNamePrefix = "qName prefix";
+
         final org.kie.dmn.model.api.ItemDefinition dmn = mock(org.kie.dmn.model.api.ItemDefinition.class);
         final javax.xml.namespace.QName dmnQName = mock(javax.xml.namespace.QName.class);
         final QName expectedQName = BuiltInType.STRING.asQName();
 
         when(dmn.getTypeRef()).thenReturn(dmnQName);
-
-        PowerMockito.mockStatic(QNamePropertyConverter.class);
-        PowerMockito.when(QNamePropertyConverter.wbFromDMN(dmnQName, dmn)).thenReturn(expectedQName);
+        when(dmnQName.getLocalPart()).thenReturn(qNameLocalPart);
+        when(dmnQName.getPrefix()).thenReturn(qNamePrefix);
 
         final QName actualQName = wbTypeRefFromDMN(dmn);
 
@@ -205,11 +220,30 @@ public class ItemDefinitionPropertyConverterTest {
     @Test
     public void testWbChildFromDMNWhenWbChildIsNotNull() {
 
+        final String id = "id";
+        final String name = "name";
+        final String typeLanguage = "typeLanguage";
+        final boolean isCollection = true;
+        final boolean isOnlyVisualChanges = false;
+        final String description = "description";
         final ItemDefinition expectedWbParent = new ItemDefinition();
-        final ItemDefinition expectedWbChild = new ItemDefinition();
+        final ItemDefinition expectedWbChild = new ItemDefinition(new Id(id),
+                                                                  new Description(description),
+                                                                  new Name(name),
+                                                                  null,
+                                                                  null,
+                                                                  null,
+                                                                  typeLanguage,
+                                                                  isCollection,
+                                                                  isOnlyVisualChanges);
         final org.kie.dmn.model.api.ItemDefinition dmnChild = mock(org.kie.dmn.model.api.ItemDefinition.class);
 
-        stubWbFromDMNToReturn(expectedWbChild);
+        when(dmnChild.getId()).thenReturn(id);
+        when(dmnChild.getName()).thenReturn(name);
+        when(dmnChild.getTypeLanguage()).thenReturn(typeLanguage);
+        when(dmnChild.isIsCollection()).thenReturn(isCollection);
+        when(dmnChild.getDescription()).thenReturn(description);
+        when(dmnChild.getTypeRef()).thenReturn(null);
 
         final ItemDefinition actualWbChild = wbChildFromDMN(expectedWbParent, dmnChild);
         final ItemDefinition actualParent = (ItemDefinition) actualWbChild.getParent();
@@ -222,46 +256,10 @@ public class ItemDefinitionPropertyConverterTest {
     public void testWbChildFromDMNWhenWbChildIsNull() {
 
         final ItemDefinition expectedWbParent = new ItemDefinition();
-        final org.kie.dmn.model.api.ItemDefinition dmnChild = mock(org.kie.dmn.model.api.ItemDefinition.class);
-
-        stubWbFromDMNToReturn(null);
-
+        final org.kie.dmn.model.api.ItemDefinition dmnChild = null;
         final ItemDefinition actualWbChild = wbChildFromDMN(expectedWbParent, dmnChild);
 
         assertNull(actualWbChild);
-    }
-
-    private void stubWbDescriptionFromDMNToReturn(final Description returnValue) {
-
-        final Class<ItemDefinitionPropertyConverter> aClass = ItemDefinitionPropertyConverter.class;
-        final Class<org.kie.dmn.model.api.ItemDefinition> parameter = org.kie.dmn.model.api.ItemDefinition.class;
-
-        PowerMockito.stub(PowerMockito.method(aClass, "wbDescriptionFromDMN", parameter)).toReturn(returnValue);
-    }
-
-    private void stubWbTypeRefFromDMNToReturn(final QName returnValue) {
-
-        final Class<ItemDefinitionPropertyConverter> aClass = ItemDefinitionPropertyConverter.class;
-        final Class<org.kie.dmn.model.api.ItemDefinition> parameter = org.kie.dmn.model.api.ItemDefinition.class;
-
-        PowerMockito.stub(PowerMockito.method(aClass, "wbTypeRefFromDMN", parameter)).toReturn(returnValue);
-    }
-
-    private void stubWbFromDMNToReturn(final ItemDefinition returnValue) {
-
-        final Class<ItemDefinitionPropertyConverter> aClass = ItemDefinitionPropertyConverter.class;
-        final Class<org.kie.dmn.model.api.ItemDefinition> parameter = org.kie.dmn.model.api.ItemDefinition.class;
-
-        PowerMockito.stub(PowerMockito.method(aClass, "wbFromDMN", parameter)).toReturn(returnValue);
-    }
-
-    private void stubWbChildFromDMNToReturn(final ItemDefinition returnValue) {
-
-        final Class<ItemDefinitionPropertyConverter> aClass = ItemDefinitionPropertyConverter.class;
-        final Class<ItemDefinition> parameter1 = ItemDefinition.class;
-        final Class<org.kie.dmn.model.api.ItemDefinition> parameter2 = org.kie.dmn.model.api.ItemDefinition.class;
-
-        PowerMockito.stub(PowerMockito.method(aClass, "wbChildFromDMN", parameter1, parameter2)).toReturn(returnValue);
     }
 
     @After

@@ -27,19 +27,19 @@ import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.editors.included.IncludedModel;
 import org.kie.workbench.common.dmn.client.editors.included.imports.persistence.ImportRecordEngine;
 import org.mockito.Mock;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.uberfire.commons.uuid.UUID;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.stubbing.Answer;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({UUID.class})
+@RunWith(MockitoJUnitRunner.class)
 public class IncludedModelsFactoryTest {
 
     @Mock
@@ -52,7 +52,7 @@ public class IncludedModelsFactoryTest {
 
     @Before
     public void setup() {
-        factory = new IncludedModelsFactory(recordEngine, includedModelsIndex);
+        factory = spy(new IncludedModelsFactory(recordEngine, includedModelsIndex));
     }
 
     @Test
@@ -69,6 +69,7 @@ public class IncludedModelsFactoryTest {
         final String path2 = "path2";
         final String uuid1 = "123";
         final String uuid2 = "456";
+        final String[] uuids = {uuid1, uuid2};
         final String uri1 = "/src/main/kie/dmn/1";
         final String uri2 = "/src/main/kie/dmn/2";
         final Integer drgElementsCount1 = 2;
@@ -88,8 +89,13 @@ public class IncludedModelsFactoryTest {
         when(import2.getDrgElementsCount()).thenReturn(drgElementsCount2);
         when(import1.getItemDefinitionsCount()).thenReturn(itemDefinitionsCount1);
         when(import2.getItemDefinitionsCount()).thenReturn(itemDefinitionsCount2);
-        mockStatic(UUID.class);
-        when(UUID.uuid()).thenReturn(uuid1, uuid2);
+        doAnswer(new Answer() {
+            private int count = 0;
+
+            public Object answer(InvocationOnMock invocation) {
+                return uuids[count++];
+            }
+        }).when(factory).uuidWrapper();
 
         final List<IncludedModel> includedModels = factory.makeIncludedModels(imports);
         final IncludedModel includedModel1 = includedModels.get(0);

@@ -20,26 +20,31 @@ import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+import com.ait.lienzo.client.core.shape.Text;
 import org.junit.Test;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
+import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItemPrimary;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
-import org.kie.workbench.common.dmn.client.editors.expressions.util.RendererUtils;
+import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
+import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridTheme;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridHeaderColumnRenderContext;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.themes.GridRendererTheme;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 
 public abstract class BaseNameAndDataTypeHeaderMetaDataTest {
 
@@ -52,6 +57,12 @@ public abstract class BaseNameAndDataTypeHeaderMetaDataTest {
     protected static final double BLOCK_WIDTH = 10.0;
 
     protected static final double BLOCK_HEIGHT = 20.0;
+
+    protected static final double SPACING = 8.0;
+
+    protected static final String FONT_STYLE_TYPE_REF = "italic";
+
+    protected final String PLACEHOLDER = "placeholder";
 
     @Mock
     protected HasTypeRef hasTypeRef;
@@ -72,9 +83,15 @@ public abstract class BaseNameAndDataTypeHeaderMetaDataTest {
     protected NameAndDataTypePopoverView.Presenter headerEditor;
 
     @Mock
+    protected EditableHeaderMetaData headerMetaData;
+
+    @Mock
     protected GridHeaderColumnRenderContext context;
 
+    @Mock
     protected NameAndDataTypeHeaderMetaData metaData;
+
+    protected Decision hasExpression = new Decision();
 
     protected abstract void setup(final Optional<HasName> hasName);
 
@@ -203,31 +220,52 @@ public abstract class BaseNameAndDataTypeHeaderMetaDataTest {
 
     @Test
     public void testRender() {
-        setup(Optional.empty());
 
-        mockStatic(RendererUtils.class);
+        final QName typeRef = BuiltInType.DATE.asQName();
+        final GridRenderer renderer = mock(GridRenderer.class);
+        final GridRendererTheme theme = mock(GridRendererTheme.class);
+        final Text tName = mock(Text.class);
+        final InformationItemPrimary hasExpressionVariable = new InformationItemPrimary();
+        hasExpressionVariable.setTypeRef(typeRef);
+        hasExpression.setVariable(hasExpressionVariable);
+        final Decision decision = new Decision();
+        decision.setName(NAME);
+        setup(Optional.of(decision));
+
+        when(theme.getHeaderText()).thenReturn(tName);
+        when(context.getRenderer()).thenReturn(renderer);
+        when(renderer.getTheme()).thenReturn(theme);
+        when(hasTypeRef.getTypeRef()).thenReturn(typeRef);
 
         metaData.render(context, BLOCK_WIDTH, BLOCK_HEIGHT);
 
-        verifyStatic();
-        RendererUtils.getNameAndDataTypeHeaderText(eq(metaData),
-                                                   eq(context),
-                                                   eq(BLOCK_WIDTH),
-                                                   eq(BLOCK_HEIGHT));
+        verify(tName).setText(NAME.getValue());
+        verify(tName, times(2)).setListening(false);
+        verify(tName, times(2)).setX(BLOCK_WIDTH / 2);
+        verify(tName).setY(BLOCK_HEIGHT / 2 - SPACING);
+        verify(tName).setFontStyle(FONT_STYLE_TYPE_REF);
+        verify(tName).setFontSize(BaseExpressionGridTheme.FONT_SIZE - 2.0);
+        verify(tName).setText("(" + typeRef.toString() + ")");
+        verify(tName).setY(BLOCK_HEIGHT / 2 + SPACING);
     }
 
     @Test
     public void testRenderPlaceHolder() {
+
+        final GridRenderer renderer = mock(GridRenderer.class);
+        final GridRendererTheme theme = mock(GridRendererTheme.class);
+        final Text text = mock(Text.class);
         setup(Optional.empty());
 
-        mockStatic(RendererUtils.class);
+        when(context.getRenderer()).thenReturn(renderer);
+        when(renderer.getTheme()).thenReturn(theme);
+        when(theme.getPlaceholderText()).thenReturn(text);
 
         metaData.renderPlaceHolder(context, BLOCK_WIDTH, BLOCK_HEIGHT);
 
-        verifyStatic();
-        RendererUtils.getEditableHeaderPlaceHolderText(eq(metaData),
-                                                       eq(context),
-                                                       eq(BLOCK_WIDTH),
-                                                       eq(BLOCK_HEIGHT));
+        verify(text).setX(BLOCK_WIDTH / 2);
+        verify(text).setY(BLOCK_HEIGHT / 2);
+        verify(text).setText(PLACEHOLDER);
+        verify(text).setListening(false);
     }
 }
