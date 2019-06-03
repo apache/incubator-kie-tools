@@ -749,7 +749,10 @@ public class LibraryServiceImplTest {
 
         doReturn(repo1).when(repositoryService).getRepository(any());
 
-        doReturn(Optional.of(makeBranch("new-branch", "repo1"))).when(repo1).getBranch(any(Path.class));
+        Branch newBranch = makeBranch("new-branch", "repo1");
+        Branch branch1Branch = makeBranch("repo1-branch1", "repo1");
+
+        when(repo1.getBranch(any(Path.class))).thenReturn(Optional.of(newBranch)).thenReturn(Optional.of(branch1Branch));
 
         final org.uberfire.java.nio.file.Path newBranchPath = mock(org.uberfire.java.nio.file.Path.class);
         doReturn(newBranchPath).when(ioService).get(new URI("default://new-branch@repo1/"));
@@ -766,6 +769,7 @@ public class LibraryServiceImplTest {
 
         final NewBranchEvent newBranchEvent = newBranchEventArgumentCaptor.getValue();
         assertEquals("new-branch", newBranchEvent.getNewBranchName());
+        assertEquals("repo1-branch1", newBranchEvent.getFromBranchName());
         assertEquals(repo1, newBranchEvent.getRepository());
     }
 

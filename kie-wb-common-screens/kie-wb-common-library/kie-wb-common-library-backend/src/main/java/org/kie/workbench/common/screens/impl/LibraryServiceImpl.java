@@ -425,8 +425,10 @@ public class LibraryServiceImpl implements LibraryService {
                                   project);
 
             repositoryExternalUpdate.fire(new RepositoryExternalUpdateEvent(project.getRepository()));
+
             fireNewBranchEvent(pathUtil.convert(newBranchPath),
-                               newBranchPath);
+                               newBranchPath,
+                               baseBranchPath);
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
@@ -477,14 +479,18 @@ public class LibraryServiceImpl implements LibraryService {
     }
 
     private void fireNewBranchEvent(final Path targetRoot,
-                                    final org.uberfire.java.nio.file.Path nioTargetRepositoryRoot) {
+                                    final org.uberfire.java.nio.file.Path nioTargetRepositoryRoot,
+                                    final org.uberfire.java.nio.file.Path nioSourceRepositoryRoot) {
         final Repository repository = repoService.getRepository(targetRoot);
 
-        final Optional<Branch> branch = repository.getBranch(Paths.convert(nioTargetRepositoryRoot.getRoot()));
+        final Optional<Branch> toBranch = repository.getBranch(Paths.convert(nioTargetRepositoryRoot.getRoot()));
 
-        if (branch.isPresent()) {
+        final Optional<Branch> fromBranch = repository.getBranch(Paths.convert(nioSourceRepositoryRoot.getRoot()));
+
+        if (toBranch.isPresent()) {
             newBranchEvent.fire(new NewBranchEvent(repository,
-                                                   branch.get().getName(),
+                                                   toBranch.get().getName(),
+                                                   fromBranch.get().getName(),
                                                    sessionInfo.getIdentity()));
         } else {
             throw new IllegalStateException("Could not find a branch that was just created. The Path used was " + nioTargetRepositoryRoot.getRoot());

@@ -149,7 +149,7 @@ public class ProjectBranchBreadcrumbTest {
     public void newBranchCreatedByUserShouldBeOpened() {
         doReturn(true).when(libraryPlaces).isThisUserAccessingThisRepository(user, repository);
 
-        presenter.newBranchEvent(new NewBranchEvent(repository, newBranch.getName(), user));
+        presenter.newBranchEvent(new NewBranchEvent(repository, newBranch.getName(), "old-branch", user));
 
         verify(libraryPlaces).goToProject(project, newBranch);
     }
@@ -161,7 +161,7 @@ public class ProjectBranchBreadcrumbTest {
 
         doReturn(false).when(libraryPlaces).isThisUserAccessingThisRepository(otherUser, repository);
 
-        presenter.newBranchEvent(new NewBranchEvent(repository, newBranch.getName(), otherUser));
+        presenter.newBranchEvent(new NewBranchEvent(repository, newBranch.getName(), "old-branch", otherUser));
 
         verify(libraryPlaces, never()).goToProject(project, newBranch);
     }
