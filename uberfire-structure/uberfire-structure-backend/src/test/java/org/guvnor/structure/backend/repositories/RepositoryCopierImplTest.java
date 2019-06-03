@@ -16,10 +16,13 @@
 package org.guvnor.structure.backend.repositories;
 
 import java.net.URI;
+import java.util.Optional;
 
+import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.NewBranchEvent;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryService;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -54,6 +57,15 @@ public class RepositoryCopierImplTest {
 
     @Mock
     private SessionInfo sessionInfo;
+
+    @Mock
+    private Repository repository;
+
+    @Mock
+    private Branch branch;
+
+    @Mock
+    private User user;
 
     private RepositoryCopierImpl copier;
 
@@ -98,7 +110,7 @@ public class RepositoryCopierImplTest {
 
         fileSystemTestingUtils.getIoService().createDirectory(nioTo);
 
-        doReturn(mock(Repository.class)).when(repositoryService).getRepository(to);
+        doReturn(repository).when(repositoryService).getRepository(to);
 
         copier.copy(from,
                     to);
@@ -107,5 +119,24 @@ public class RepositoryCopierImplTest {
         verify(ioService).endBatch();
         verify(newBranchEventEvent,
                never()).fire(any(NewBranchEvent.class));
+    }
+
+    @Test
+    public void testFireNewBranchEvent() throws Exception {
+        final org.uberfire.java.nio.file.Path nioFrom = fileSystemTestingUtils.getIoService().get(URI.create(PATH_PREFIX + "from"));
+
+        final org.uberfire.java.nio.file.Path nioTo = fileSystemTestingUtils.getIoService().get(URI.create(PATH_PREFIX + "to"));
+        final Path to = Paths.convert(nioTo);
+
+        doReturn(repository).when(repositoryService).getRepository(any(Path.class));
+        when(repository.getBranch(any(Path.class))).thenReturn(Optional.of(branch));
+        when(branch.getName()).thenReturn("testBranch");
+
+        when(sessionInfo.getIdentity()).thenReturn(user);
+
+        copier.fireNewBranchEvent(to, nioTo, nioFrom);
+
+        verify(newBranchEventEvent,
+               times(1)).fire(any(NewBranchEvent.class));
     }
 }

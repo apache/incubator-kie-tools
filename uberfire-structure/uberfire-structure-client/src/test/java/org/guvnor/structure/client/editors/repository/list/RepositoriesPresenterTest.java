@@ -214,6 +214,7 @@ public class RepositoriesPresenterTest {
         //Emulates the context receiving the new branch event for a branch created in r1.
         guvnorStructureContext.onNewBranch(new NewBranchEvent(r1,
                                                               "theNewBranch",
+                                                              "master",
                                                               mock(User.class)));
 
         verify(handler).onNewBranchAdded("r1",

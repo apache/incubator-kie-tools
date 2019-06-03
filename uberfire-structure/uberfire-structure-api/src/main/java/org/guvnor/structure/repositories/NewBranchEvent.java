@@ -26,14 +26,17 @@ public class NewBranchEvent {
 
     private final Repository repository;
     private final String newBranchName;
+    private final String fromBranchName;
     private final User user;
 
     public NewBranchEvent(@MapsTo("repository") final Repository repository,
                           @MapsTo("newBranchName") final String newBranchName,
+                          @MapsTo("fromBranchName") final String fromBranchName,
                           @MapsTo("user") final User user) {
 
         this.repository = checkNotNull("repository", repository);
         this.newBranchName = checkNotNull("newBranchName", newBranchName);
+        this.fromBranchName = checkNotNull("fromBranchName", fromBranchName);
         this.user = checkNotNull("user", user);
     }
 
@@ -45,7 +48,10 @@ public class NewBranchEvent {
         return newBranchName;
     }
 
+    public String getFromBranchName() { return fromBranchName; }
+
     public User getUser() {
         return user;
     }
+
 }
