@@ -475,20 +475,20 @@ public class DMNMarshallerTest {
 
     private static DMNShape findShapeByDMNI(org.kie.dmn.model.api.dmndi.DMNDiagram root, String id) {
         return root.getDMNDiagramElement().stream()
-                   .filter(DMNShape.class::isInstance)
-                   .map(DMNShape.class::cast)
-                   .filter(shape -> shape.getDmnElementRef().getLocalPart().equals(id))
-                   .findFirst()
-                   .orElseThrow(() -> new UnsupportedOperationException("There is no DMNShape with id '" + id + "' in DMNDiagram " + root));
+                .filter(DMNShape.class::isInstance)
+                .map(DMNShape.class::cast)
+                .filter(shape -> shape.getDmnElementRef().getLocalPart().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new UnsupportedOperationException("There is no DMNShape with id '" + id + "' in DMNDiagram " + root));
     }
 
     private static DMNEdge findEdgeByDMNI(org.kie.dmn.model.api.dmndi.DMNDiagram root, String id) {
         return root.getDMNDiagramElement().stream()
-                   .filter(DMNEdge.class::isInstance)
-                   .map(DMNEdge.class::cast)
-                   .filter(shape -> shape.getDmnElementRef().getLocalPart().equals(id))
-                   .findFirst()
-                   .orElseThrow(() -> new UnsupportedOperationException("There is no DMNEdge with id '" + id + "' in DMNDiagram " + root));
+                .filter(DMNEdge.class::isInstance)
+                .map(DMNEdge.class::cast)
+                .filter(shape -> shape.getDmnElementRef().getLocalPart().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new UnsupportedOperationException("There is no DMNEdge with id '" + id + "' in DMNDiagram " + root));
     }
 
     @Test
@@ -934,13 +934,13 @@ public class DMNMarshallerTest {
         assertEquals("literalExpression1's parent-parent is contextNode",
                      "_0f38d114-5d6e-40dd-aa9c-9f031f9b0571",
                      ((DMNElement) (literalExpression1).getParent()
-                                       .getParent()).getId().getValue());
+                             .getParent()).getId().getValue());
 
         Expression literalExpression2 = context.getContextEntry().get(1).getExpression();
         assertEquals("literalExpression2's parent-parent is contextNode",
                      "_0f38d114-5d6e-40dd-aa9c-9f031f9b0571",
                      ((DMNElement) (literalExpression2).getParent()
-                                       .getParent()).getId().getValue());
+                             .getParent()).getId().getValue());
     }
 
     private void checkDecisionWithContextWithDefaultResult(Graph<?, Node<?, ?>> g) {
@@ -959,7 +959,7 @@ public class DMNMarshallerTest {
         assertEquals("defaultResultExpression's parent-parent is contextNode",
                      "_0f38d114-5d6e-40dd-aa9c-9f031f9b0571",
                      ((DMNElement) (defaultResultExpression).getParent()
-                                       .getParent()).getId().getValue());
+                             .getParent()).getId().getValue());
     }
 
     private void checkDecisionWithContextWithoutDefaultResult(Graph<?, Node<?, ?>> g) {
@@ -1449,11 +1449,11 @@ public class DMNMarshallerTest {
         final Stream<Node<?, ?>> stream = StreamSupport.stream(Spliterators.spliteratorUnknownSize(g.nodes().iterator(), Spliterator.ORDERED),
                                                                false);
         final Optional<Decision> wbDecision = stream
-                                                  .filter(n -> n.getContent() instanceof ViewImpl)
-                                                  .map(n -> (ViewImpl) n.getContent())
-                                                  .filter(n -> n.getDefinition() instanceof Decision)
-                                                  .map(n -> (Decision) n.getDefinition())
-                                                  .findFirst();
+                .filter(n -> n.getContent() instanceof ViewImpl)
+                .map(n -> (ViewImpl) n.getContent())
+                .filter(n -> n.getDefinition() instanceof Decision)
+                .map(n -> (Decision) n.getDefinition())
+                .findFirst();
 
         wbDecision.ifPresent(d -> {
             assertTrue(d.getExpression() instanceof FunctionDefinition);
@@ -1517,6 +1517,33 @@ public class DMNMarshallerTest {
         DMNDecisionResult adultResult = dmnResult.getDecisionResultByName("positive or negative");
         assertEquals(DecisionEvaluationStatus.SUCCEEDED, adultResult.getEvaluationStatus());
         assertEquals(result, adultResult.getResult());
+    }
+
+    @Test
+    //https://issues.jboss.org/browse/DROOLS-4107
+    public void test_decision_table_UnaryTestsParenthood() throws IOException {
+        roundTripUnmarshalThenMarshalUnmarshal(this.getClass().getResourceAsStream("/positive_or_negative.dmn"),
+                                               this::checkDecisionRuleInputUnaryTests);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void checkDecisionRuleInputUnaryTests(final Graph<?, Node<?, ?>> g) {
+        final Node<?, ?> decisionNode = g.getNode("_f9f209df-1d64-4c27-90e9-3ad42cb47c07");
+        assertNodeContentDefinitionIs(decisionNode,
+                                      Decision.class);
+
+        final Node<?, ?> rootNode = DMNMarshaller.findDMNDiagramRoot((Graph) g);
+        assertNotNull(rootNode);
+        assertRootNodeConnectedTo(rootNode,
+                                  decisionNode);
+        assertEquals("decisionNode parent is Definitions DMN root",
+                     "_f330b756-e84e-401d-ac3a-2e72e710d4ed",
+                     ((DMNElement) ((Decision) ((View<?>) decisionNode.getContent()).getDefinition()).getParent()).getId().getValue());
+
+        final org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable dtable = (org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable) ((Decision) ((View<?>) decisionNode.getContent()).getDefinition()).getExpression();
+        dtable.getRule().forEach(rule -> rule.getInputEntry().forEach(ie -> assertEquals(ie.getParent(), rule)));
+        dtable.getRule().forEach(rule -> rule.getOutputEntry().forEach(ie -> assertEquals(ie.getParent(), rule)));
+        dtable.getRule().forEach(rule -> assertEquals(rule.getParent(), dtable));
     }
 
     @Test
@@ -1605,11 +1632,11 @@ public class DMNMarshallerTest {
         String roundtripped = marshaller.marshall(diagram);
         LOG.debug(roundtripped);
         XPath xpathOriginal = namespaceAwareXPath(
-            new AbstractMap.SimpleEntry<>("semantic", "http://www.omg.org/spec/DMN/20151101/dmn.xsd"),
-            new AbstractMap.SimpleEntry<>("drools", "http://www.drools.org/kie/dmn/1.1"));
+                new AbstractMap.SimpleEntry<>("semantic", "http://www.omg.org/spec/DMN/20151101/dmn.xsd"),
+                new AbstractMap.SimpleEntry<>("drools", "http://www.drools.org/kie/dmn/1.1"));
         XPath xpathRountripped = namespaceAwareXPath(
-            new AbstractMap.SimpleEntry<>("semantic", "http://www.omg.org/spec/DMN/20180521/MODEL/"),
-            new AbstractMap.SimpleEntry<>("drools", "http://www.drools.org/kie/dmn/1.2")
+                new AbstractMap.SimpleEntry<>("semantic", "http://www.omg.org/spec/DMN/20180521/MODEL/"),
+                new AbstractMap.SimpleEntry<>("drools", "http://www.drools.org/kie/dmn/1.2")
         );
         assertXPathEquals(xpathOriginal, xpathRountripped, "boolean(/semantic:definitions/semantic:extensionElements)", original, roundtripped);
 
@@ -2350,8 +2377,8 @@ public class DMNMarshallerTest {
 
     private static Node<View, ?> nodeOfDefinition(final Iterator<Node<View, ?>> nodesIterator, final Class aClass) {
         return StreamSupport.stream(Spliterators.spliteratorUnknownSize(nodesIterator, Spliterator.NONNULL), false)
-                   .filter(node -> aClass.isInstance(node.getContent().getDefinition()))
-                   .findFirst().get();
+                .filter(node -> aClass.isInstance(node.getContent().getDefinition()))
+                .findFirst().get();
     }
 
     @SafeVarargs

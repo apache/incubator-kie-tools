@@ -35,7 +35,7 @@ public class DecisionRulePropertyConverter {
         for (org.kie.dmn.model.api.UnaryTests ie : dmn.getInputEntry()) {
             final UnaryTests inputEntryConverted = UnaryTestsPropertyConverter.wbFromDMN(ie);
             if (inputEntryConverted != null) {
-                inputEntryConverted.setParent(inputEntryConverted);
+                inputEntryConverted.setParent(result);
             }
             result.getInputEntry().add(inputEntryConverted);
         }
@@ -58,7 +58,7 @@ public class DecisionRulePropertyConverter {
         for (UnaryTests ie : wb.getInputEntry()) {
             final org.kie.dmn.model.api.UnaryTests inputEntryConverted = UnaryTestsPropertyConverter.dmnFromWB(ie);
             if (inputEntryConverted != null) {
-                inputEntryConverted.setParent(inputEntryConverted);
+                inputEntryConverted.setParent(result);
             }
             result.getInputEntry().add(inputEntryConverted);
         }
