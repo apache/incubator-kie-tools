@@ -271,7 +271,7 @@ public class ScenarioSimulationServiceImplTest {
                                                model,
                                                "Commit comment",
                                                Type.RULE,
-                                               "default");
+                                               null);
 
         assertNotNull(returnPath);
         assertNotNull(model.getSimulation());

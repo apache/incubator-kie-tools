@@ -132,7 +132,7 @@ public class NewScenarioSimulationHandler
                 break;
             case RULE:
             default:
-                value = "default";
+                value = null;
         }
         busyIndicatorView.showBusyIndicator(CommonConstants.INSTANCE.Saving());
         CustomBusyPopup.showMessage(CommonConstants.INSTANCE.Saving());

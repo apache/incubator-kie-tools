@@ -47,6 +47,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -173,7 +174,7 @@ public class NewScenarioSimulationHandlerTest extends AbstractNewScenarioTest {
         handler.create(mock(Package.class), "BASEFILENAME", mock(NewResourcePresenter.class));
         if (called) {
             verify(busyIndicatorViewMock, times(1)).showBusyIndicator(eq(CommonConstants.INSTANCE.Saving()));
-            verify(scenarioSimulationServiceMock, times(1)).create(any(), any(), any(), any(), any(), any());
+            verify(scenarioSimulationServiceMock, times(1)).create(any(), any(), any(), any(), any(), isNull(String.class));
         }
     }
 

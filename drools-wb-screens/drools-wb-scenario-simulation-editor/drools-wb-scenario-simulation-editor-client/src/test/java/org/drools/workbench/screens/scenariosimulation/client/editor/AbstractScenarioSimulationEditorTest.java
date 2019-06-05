@@ -111,7 +111,7 @@ public abstract class AbstractScenarioSimulationEditorTest extends AbstractScena
         when(gridContextMenuMock.getView()).thenReturn(gridContextMenuViewMock);
         when(headerGivenContextMenuMock.getView()).thenReturn(headerContextMenuViewMock);
         this.modelLocal = new ScenarioSimulationModel();
-        modelLocal.setSimulation(getSimulation(ScenarioSimulationModel.Type.RULE, "default"));
+        modelLocal.setSimulation(getSimulation(ScenarioSimulationModel.Type.RULE, null));
         this.content = new ScenarioSimulationModelContent(modelLocal,
                                                           overviewMock,
                                                           mock(PackageDataModelOracleBaselinePayload.class));
