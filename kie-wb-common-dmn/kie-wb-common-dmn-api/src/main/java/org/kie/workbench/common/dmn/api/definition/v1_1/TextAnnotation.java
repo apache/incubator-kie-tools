@@ -51,9 +51,9 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 @Bindable
 @Definition(graphFactory = NodeFactory.class, nameField = "text")
 @FormDefinition(policy = FieldPolicy.ONLY_MARKED,
-    defaultFieldSettings = {@FieldParam(name = FIELD_CONTAINER_PARAM, value = COLLAPSIBLE_CONTAINER)},
-    i18n = @I18nSettings(keyPreffix = "org.kie.workbench.common.dmn.api.definition.v1_1.TextAnnotation"),
-    startElement = "id")
+        defaultFieldSettings = {@FieldParam(name = FIELD_CONTAINER_PARAM, value = COLLAPSIBLE_CONTAINER)},
+        i18n = @I18nSettings(keyPreffix = "org.kie.workbench.common.dmn.api.definition.v1_1.TextAnnotation"),
+        startElement = "id")
 public class TextAnnotation extends Artifact implements DMNViewDefinition<GeneralRectangleDimensionsSet>,
                                                         DynamicReadOnly {
 
@@ -66,8 +66,8 @@ public class TextAnnotation extends Artifact implements DMNViewDefinition<Genera
 
     @Labels
     private static final Set<String> stunnerLabels = new Sets.Builder<String>()
-                                                         .add("text-annotation")
-                                                         .build();
+            .add("text-annotation")
+            .build();
 
     @Property
     @FormField(afterElement = "description")
@@ -87,7 +87,6 @@ public class TextAnnotation extends Artifact implements DMNViewDefinition<Genera
     protected FontSet fontSet;
 
     @PropertySet
-    @FormField(afterElement = "fontSet")
     protected GeneralRectangleDimensionsSet dimensionsSet;
 
     public TextAnnotation() {
@@ -217,7 +216,6 @@ public class TextAnnotation extends Artifact implements DMNViewDefinition<Genera
                                          fontSet != null ? fontSet.hashCode() : 0,
                                          dimensionsSet != null ? dimensionsSet.hashCode() : 0);
     }
-
 
     @Override
     public void setAllowOnlyVisualChange(final boolean allowOnlyVisualChange) {

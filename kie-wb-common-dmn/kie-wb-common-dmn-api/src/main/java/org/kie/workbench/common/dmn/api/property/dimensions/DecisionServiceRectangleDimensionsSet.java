@@ -15,14 +15,8 @@
  */
 package org.kie.workbench.common.dmn.api.property.dimensions;
 
-import javax.validation.Valid;
-
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
-import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
-import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
-import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.slider.type.SliderFieldType;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
@@ -30,50 +24,20 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 @Portable
 @Bindable
 @PropertySet
-@FormDefinition(
-        startElement = "width"
-)
 public class DecisionServiceRectangleDimensionsSet implements RectangleDimensionsSet {
 
     public static final double DEFAULT_WIDTH = 200.0;
 
     public static final double DEFAULT_HEIGHT = 200.0;
 
-    private static final String MIN_WIDTH = "100.0";
+    private static final double MIN_WIDTH = 100.0;
 
-    private static final String MAX_WIDTH = "500.0";
-
-    private static final String MIN_HEIGHT = "100.0";
-
-    private static final String MAX_HEIGHT = "500.0";
-
-    private static final String STEP = "50.0";
+    private static final double MIN_HEIGHT = 100.0;
 
     @Property
-    @FormField(
-            type = SliderFieldType.class,
-            settings = {
-                    @FieldParam(name = "min", value = MIN_WIDTH),
-                    @FieldParam(name = "max", value = MAX_WIDTH),
-                    @FieldParam(name = "step", value = STEP),
-                    @FieldParam(name = "precision", value = "0.0")
-            }
-    )
-    @Valid
     protected Width width;
 
     @Property
-    @FormField(
-            type = SliderFieldType.class,
-            afterElement = "width",
-            settings = {
-                    @FieldParam(name = "min", value = MIN_HEIGHT),
-                    @FieldParam(name = "max", value = MAX_HEIGHT),
-                    @FieldParam(name = "step", value = STEP),
-                    @FieldParam(name = "precision", value = "0.0")
-            }
-    )
-    @Valid
     protected Height height;
 
     public DecisionServiceRectangleDimensionsSet() {
@@ -108,19 +72,19 @@ public class DecisionServiceRectangleDimensionsSet implements RectangleDimension
     }
 
     public double getMinimumWidth() {
-        return Double.valueOf(MIN_WIDTH);
+        return MIN_WIDTH;
     }
 
     public double getMaximumWidth() {
-        return Double.valueOf(MAX_WIDTH);
+        return Double.MAX_VALUE;
     }
 
     public double getMinimumHeight() {
-        return Double.valueOf(MIN_HEIGHT);
+        return MIN_HEIGHT;
     }
 
     public double getMaximumHeight() {
-        return Double.valueOf(MAX_HEIGHT);
+        return Double.MAX_VALUE;
     }
 
     @Override

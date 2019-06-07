@@ -15,14 +15,8 @@
  */
 package org.kie.workbench.common.dmn.api.property.dimensions;
 
-import javax.validation.Valid;
-
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
-import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
-import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
-import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.slider.type.SliderFieldType;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
@@ -30,9 +24,6 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 @Portable
 @Bindable
 @PropertySet
-@FormDefinition(
-        startElement = "width"
-)
 public class GeneralRectangleDimensionsSet implements RectangleDimensionsSet {
 
     public static final double DEFAULT_WIDTH = 100.0;
@@ -47,33 +38,10 @@ public class GeneralRectangleDimensionsSet implements RectangleDimensionsSet {
 
     private static final String MAX_HEIGHT = "200.0";
 
-    private static final String STEP = "25.0";
-
     @Property
-    @FormField(
-            type = SliderFieldType.class,
-            settings = {
-                    @FieldParam(name = "min", value = MIN_WIDTH),
-                    @FieldParam(name = "max", value = MAX_WIDTH),
-                    @FieldParam(name = "step", value = STEP),
-                    @FieldParam(name = "precision", value = "0.0")
-            }
-    )
-    @Valid
     protected Width width;
 
     @Property
-    @FormField(
-            type = SliderFieldType.class,
-            afterElement = "width",
-            settings = {
-                    @FieldParam(name = "min", value = MIN_HEIGHT),
-                    @FieldParam(name = "max", value = MAX_HEIGHT),
-                    @FieldParam(name = "step", value = STEP),
-                    @FieldParam(name = "precision", value = "0.0")
-            }
-    )
-    @Valid
     protected Height height;
 
     public GeneralRectangleDimensionsSet() {

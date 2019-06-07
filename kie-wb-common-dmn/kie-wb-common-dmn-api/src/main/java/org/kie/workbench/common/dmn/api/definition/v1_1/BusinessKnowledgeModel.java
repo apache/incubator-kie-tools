@@ -83,8 +83,6 @@ public class BusinessKnowledgeModel extends DRGElement implements HasVariable<In
     protected FontSet fontSet;
 
     @PropertySet
-    @FormField(afterElement = "fontSet")
-    @Valid
     protected GeneralRectangleDimensionsSet dimensionsSet;
 
     public BusinessKnowledgeModel() {

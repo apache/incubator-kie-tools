@@ -77,8 +77,6 @@ public class InputData extends DRGElement implements DMNViewDefinition<GeneralRe
     protected FontSet fontSet;
 
     @PropertySet
-    @FormField(afterElement = "fontSet")
-    @Valid
     protected GeneralRectangleDimensionsSet dimensionsSet;
 
     public InputData() {

@@ -80,8 +80,6 @@ public class KnowledgeSource extends DRGElement implements DMNViewDefinition<Gen
     protected FontSet fontSet;
 
     @PropertySet
-    @FormField(afterElement = "fontSet")
-    @Valid
     protected GeneralRectangleDimensionsSet dimensionsSet;
 
     public KnowledgeSource() {

@@ -97,8 +97,6 @@ public class Decision extends DRGElement implements DomainObject,
     protected FontSet fontSet;
 
     @PropertySet
-    @FormField
-    @Valid
     protected GeneralRectangleDimensionsSet dimensionsSet;
 
     public Decision() {

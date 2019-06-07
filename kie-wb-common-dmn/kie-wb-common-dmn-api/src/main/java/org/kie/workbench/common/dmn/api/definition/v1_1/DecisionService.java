@@ -89,8 +89,6 @@ public class DecisionService extends DRGElement implements HasVariable<Informati
     protected FontSet fontSet;
 
     @PropertySet
-    @FormField(afterElement = "fontSet")
-    @Valid
     protected DecisionServiceRectangleDimensionsSet dimensionsSet;
 
     @Property
