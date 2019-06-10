@@ -38,6 +38,8 @@ public class DataTypeShortcuts {
 
     static final String SELECT_DATATYPE_MENU = ".bs-container.btn-group.bootstrap-select.open";
 
+    static final String MODAL_FOOTER = ".constraint-modal-footer";
+
     private final DataTypeListShortcuts listShortcuts;
 
     EventListener KEY_DOWN_LISTENER = this::keyDownListener;
@@ -85,7 +87,10 @@ public class DataTypeShortcuts {
             return;
         }
 
-        if (tabContentContainsTarget(event) || dropdownMenuContainsTarget(event)) {
+        if (tabContentContainsTarget(event)
+                || dropdownMenuContainsTarget(event)
+                || constraintModalFooterContainsTarget(event)) {
+
             final Element dataTypeElement = getDataTypeRowElement(event);
             if (dataTypeElement != null) {
                 listShortcuts.highlight(dataTypeElement);
@@ -207,9 +212,14 @@ public class DataTypeShortcuts {
         return $.contains(tabContent, target);
     }
 
-    private boolean dropdownMenuContainsTarget(final Event event) {
+    boolean dropdownMenuContainsTarget(final Event event) {
         final Element target = getTarget(event);
         return target.closest(SELECT_DATATYPE_MENU) != null;
+    }
+
+    private boolean constraintModalFooterContainsTarget(final Event event) {
+        final Element target = getTarget(event);
+        return target.closest(MODAL_FOOTER) != null;
     }
 
     private Element getDataTypeRowElement(final Event event) {

@@ -32,6 +32,7 @@ import static com.google.gwt.dom.client.BrowserEvents.CLICK;
 import static com.google.gwt.dom.client.BrowserEvents.KEYDOWN;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.kie.workbench.common.dmn.client.editors.types.shortcuts.DataTypeShortcuts.MODAL_FOOTER;
 import static org.kie.workbench.common.dmn.client.editors.types.shortcuts.DataTypeShortcuts.SELECT_DATATYPE_MENU;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -139,6 +140,26 @@ public class DataTypeShortcutsTest {
         target.target = targetElement;
         doReturn(targetMenu).when(targetElement).closest(SELECT_DATATYPE_MENU);
         doReturn(false).when(shortcuts).tabContentContainsTarget(target);
+
+        shortcuts.clickListener(target);
+
+        verify(listShortcuts).focusIn();
+        verify(listShortcuts, never()).reset();
+    }
+
+    @Test
+    public void testClickListenerWhenConstraintModalFooterContainsTarget() {
+
+        final Event target = mock(Event.class);
+        final Element targetElement = mock(Element.class);
+        final Element targetMenu = mock(Element.class);
+        final JQuery jQuery = mock(JQuery.class);
+
+        JQuery.$ = jQuery;
+        target.target = targetElement;
+        doReturn(targetMenu).when(targetElement).closest(MODAL_FOOTER);
+        doReturn(false).when(shortcuts).tabContentContainsTarget(target);
+        doReturn(false).when(shortcuts).dropdownMenuContainsTarget(target);
 
         shortcuts.clickListener(target);
 
