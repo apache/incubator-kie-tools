@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,152 +16,270 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.subprocesses;
 
-import org.junit.Before;
 import org.junit.Test;
-import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.Unmarshalling;
-import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.BPMNDiagramMarshallerBase;
+import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.Marshaller;
 import org.kie.workbench.common.stunner.bpmn.definition.EventSubprocess;
-import org.kie.workbench.common.stunner.bpmn.definition.StartErrorEvent;
-import org.kie.workbench.common.stunner.bpmn.definition.StartMessageEvent;
-import org.kie.workbench.common.stunner.bpmn.definition.StartSignalEvent;
-import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.subProcess.execution.EventSubprocessExecutionSet;
-import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessData;
-import org.kie.workbench.common.stunner.core.definition.service.DiagramMarshaller;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Graph;
-import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assume.assumeFalse;
 
-public class EventSubProcessTest extends BPMNDiagramMarshallerBase {
+public class EventSubProcessTest extends SubProcess<EventSubprocess> {
 
-    private static final String BPMN_EVENT_SUBPROCESSES =
-            "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/eventSubProcesses.bpmn";
-    private static final String BPMN_EVENT_SUBPROCESS_SPECIAL_CHARACTERS =
-            "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/eventSubProcessSpecialCharacters.bpmn";
+    private static final String BPMN_SUB_PROCESS_FILE_PATH = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/eventSubProcesses.bpmn";
 
-    @Before
-    public void setUp() {
-        super.init();
+    private static final String TOP_LEVEL_EMPTY_SUBPROCESS_ID = "_BFAB4FD7-E901-466E-A628-D22047469503";
+    private static final String TOP_LEVEL_FILLED_SUBPROCESS_ID = "_C331C78A-65AC-46B4-A423-3CF3574372BA";
+
+    private static final String SUBPROCESS_LEVEL_EMPTY_SUBPROCESS_ID = "_51FEAA5A-43FF-4EC4-8770-33A54BA98A6B";
+    private static final String SUBPROCESS_LEVEL_FILLED_SUBPROCESS_ID = "_6A441CA4-0E47-4C84-8473-33F274DEF547";
+
+    private static final String TOP_LEVEL_SUBPROCESS_WITH_EDGES = "_FCB7D840-3B83-4E34-A9DC-C5C0F6C790CB";
+    private static final String SUBPROCESS_LEVEL_SUBPROCESS_WITH_EDGES = "_CFA473E5-6CEC-4DE8-A387-F76E49A5FF00";
+
+    private static final int AMOUNT_OF_NODES_IN_DIAGRAM = 17;
+
+    private static Diagram<Graph, Metadata> oldDiagram;
+    private static Diagram<Graph, Metadata> oldRoundTripDiagram;
+
+    private static Diagram<Graph, Metadata> newDiagram;
+    private static Diagram<Graph, Metadata> newRoundTripDiagram;
+
+    public EventSubProcessTest(Marshaller marshallerType) throws Exception {
+        super(marshallerType, marshallers());
+    }
+
+    @Override
+    Diagram<Graph, Metadata> getNewDiagram() {
+        return newDiagram;
+    }
+
+    @Override
+    void setNewDiagram(Diagram<Graph, Metadata> diagram) {
+        newDiagram = diagram;
+    }
+
+    @Override
+    Diagram<Graph, Metadata> getNewRoundTripDiagram() {
+        return newRoundTripDiagram;
+    }
+
+    @Override
+    void setNewRoundTripDiagram(Diagram<Graph, Metadata> diagram) {
+        newRoundTripDiagram = diagram;
+    }
+
+    @Override
+    Diagram<Graph, Metadata> getOldDiagram() {
+        return oldDiagram;
+    }
+
+    @Override
+    void setOldDiagram(Diagram<Graph, Metadata> diagram) {
+        oldDiagram = diagram;
+    }
+
+    @Override
+    Diagram<Graph, Metadata> getOldRoundTripDiagram() {
+        return oldRoundTripDiagram;
+    }
+
+    @Override
+    void setOldRoundTripDiagram(Diagram<Graph, Metadata> diagram) {
+        oldRoundTripDiagram = diagram;
     }
 
     @Test
-    public void testOldMarshaller() throws Exception {
-        unmarshallEventSubprocessStartEvents(oldMarshaller);
+    @Override
+    public void testMarshallTopLevelFilledPropertiesSubProcess() {
+        final String ignoreMessage = "There is a bug in old marshaller. Once, the bug is fixed, the " +
+                "method should be removed only from this class, not from its superclass.\n" +
+                "For more information see https://issues.jboss.org/browse/JBPM-8467";
+        assumeFalse(ignoreMessage, isCurrentMarshallerOld());
+        super.testMarshallTopLevelFilledPropertiesSubProcess();
     }
 
     @Test
-    public void testNewMarshaller() throws Exception {
-        unmarshallEventSubprocessStartEvents(newMarshaller);
+    @Override
+    public void testMarshallTopLevelSubProcessWithEdges() {
+        // event sub-process cannot have any incoming edges relating to bpmn specification
+        checkSubProcessMarshalling(getTopLevelSubProcessWithEdgesId(), EMPTY_INCOME_EDGES, FOUR_OUTCOME_EDGES);
     }
 
     @Test
-    public void testOldMarshallerSpecialCharacters() throws Exception {
-        unmarshallEventSubprocessSpecialCharacters(oldMarshaller);
+    @Override
+    public void testMarshallSubProcessLevelSubProcessWithEdges() {
+        // event sub-process cannot have any incoming edges relating to bpmn specification
+        checkSubProcessMarshalling(getSubProcessLevelSubProcessWithEdgesId(), EMPTY_INCOME_EDGES, FOUR_OUTCOME_EDGES);
     }
 
     @Test
-    public void testNewMarshallerSpecialCharacters() throws Exception {
-        unmarshallEventSubprocessSpecialCharacters(newMarshaller);
+    @Override
+    public void testUnmarshallTopLevelEmptyPropertiesSubProcess() {
+        Diagram<Graph, Metadata> diagram = getDiagram();
+        assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
+
+        EventSubprocess topLevelSubProcess = getSubProcessNodeById(diagram,
+                                                                   TOP_LEVEL_EMPTY_SUBPROCESS_ID,
+                                                                   EMPTY_INCOME_EDGES,
+                                                                   EMPTY_OUTCOME_EDGES);
+
+        assertGeneralSet(topLevelSubProcess.getGeneral(), DEFAULT_NAME, DEFAULT_DOCUMENTATION);
+        assertEventSubProcessExecutionSet(topLevelSubProcess.getExecutionSet(),
+                                          IS_NOT_ASYNC
+        );
+        assertSubProcessProcessData(topLevelSubProcess.getProcessData(), EMPTY_VALUE);
     }
 
     @Test
-    public void testMigration() throws Exception {
-        Diagram<Graph, Metadata> oldDiagram = Unmarshalling.unmarshall(oldMarshaller, BPMN_EVENT_SUBPROCESSES);
-        Diagram<Graph, Metadata> newDiagram = Unmarshalling.unmarshall(newMarshaller, BPMN_EVENT_SUBPROCESSES);
+    @Override
+    public void testUnmarshallTopLevelFilledPropertiesSubProcess() {
+        final String SUB_PROCESS_NAME = "Event process01 name ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
+        final String SUB_PROCESS_DOCUMENTATION = "Event process01 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
+        final String SUB_PROCESS_VARIABLES = "subVarString:String,subVarCustom:Custom,subVarBoolean:Boolean,subVarFloat:Float,subVarInteger:Integer,subVarObject:Object";
 
-        assertDiagramEquals(oldDiagram, newDiagram, BPMN_EVENT_SUBPROCESSES);
+        Diagram<Graph, Metadata> diagram = getDiagram();
+        assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
+
+        EventSubprocess topLevelSubProcessJava = getSubProcessNodeById(diagram,
+                                                                       TOP_LEVEL_FILLED_SUBPROCESS_ID,
+                                                                       EMPTY_INCOME_EDGES,
+                                                                       EMPTY_OUTCOME_EDGES);
+
+        assertGeneralSet(topLevelSubProcessJava.getGeneral(), SUB_PROCESS_NAME, SUB_PROCESS_DOCUMENTATION);
+        assertEventSubProcessExecutionSet(topLevelSubProcessJava.getExecutionSet(),
+                                          IS_ASYNC
+        );
+        assertSubProcessProcessData(topLevelSubProcessJava.getProcessData(), SUB_PROCESS_VARIABLES);
     }
 
     @Test
-    public void testMigrationSpecialCharacters() throws Exception {
-        Diagram<Graph, Metadata> oldDiagram = Unmarshalling.unmarshall(oldMarshaller, BPMN_EVENT_SUBPROCESS_SPECIAL_CHARACTERS);
-        Diagram<Graph, Metadata> newDiagram = Unmarshalling.unmarshall(newMarshaller, BPMN_EVENT_SUBPROCESS_SPECIAL_CHARACTERS);
+    @Override
+    public void testUnmarshallTopLevelSubProcessWithEdges() {
+        final String SUB_PROCESS_NAME = "Event Sub-process";
 
-        assertDiagramEquals(oldDiagram, newDiagram, BPMN_EVENT_SUBPROCESS_SPECIAL_CHARACTERS);
+        Diagram<Graph, Metadata> diagram = getDiagram();
+        assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
+
+        EventSubprocess topLevelSubProcess = getSubProcessNodeById(diagram,
+                                                                   TOP_LEVEL_SUBPROCESS_WITH_EDGES,
+                                                                   EMPTY_INCOME_EDGES,
+                                                                   FOUR_OUTCOME_EDGES);
+
+        assertGeneralSet(topLevelSubProcess.getGeneral(), SUB_PROCESS_NAME, DEFAULT_DOCUMENTATION);
+        assertEventSubProcessExecutionSet(topLevelSubProcess.getExecutionSet(),
+                                          IS_NOT_ASYNC
+        );
+        assertSubProcessProcessData(topLevelSubProcess.getProcessData(), EMPTY_VALUE);
     }
 
-    @SuppressWarnings("unchecked")
-    private void unmarshallEventSubprocessStartEvents(final DiagramMarshaller marshaller) throws Exception {
-        final String ERROR_ID = "_CB6A1195-C5CE-4EEB-AAD7-81E5206B5C7E";
-        final String SIGNAL_ID = "_A5A451B8-ADD4-4901-BAC3-047421A467E6";
-        final String SIGNAL_INTERRUPTING_ID = "_F9D7DEF1-5E2E-4097-9743-83F8ABE22F84";
-        final String MESSAGE_ID = "_1C802556-6FF9-4D03-8D4D-BDCF4DD1E264";
-        final String MESSAGE_INTERRUPTING_ID = "_08BAB054-DD82-45F4-BDA0-3809EEF134BD";
+    @Test
+    @Override
+    public void testUnmarshallSubProcessLevelEmptyPropertiesSubProcess() {
+        Diagram<Graph, Metadata> diagram = getDiagram();
+        assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_EVENT_SUBPROCESSES);
+        EventSubprocess subProcessLevelSubProcess = getSubProcessNodeById(diagram,
+                                                                          SUBPROCESS_LEVEL_EMPTY_SUBPROCESS_ID,
+                                                                          EMPTY_INCOME_EDGES,
+                                                                          EMPTY_OUTCOME_EDGES);
 
-        Node<? extends Definition, ?> errorNode = diagram.getGraph().getNode(ERROR_ID);
-        StartErrorEvent startError = (StartErrorEvent) errorNode.getContent().getDefinition();
-        assertTrue(startError.getExecutionSet().getIsInterrupting().getValue());
-        assertEquals("standardError",
-                     startError.getExecutionSet().getErrorRef().getValue());
-        assertEquals("error",
-                     startError.getGeneral().getName().getValue());
-
-        Node<? extends Definition, ?> signalOneNode = diagram.getGraph().getNode(SIGNAL_ID);
-        StartSignalEvent startSignal = (StartSignalEvent) signalOneNode.getContent().getDefinition();
-        assertFalse(startSignal.getExecutionSet().getIsInterrupting().getValue());
-        assertEquals("standardSignal",
-                     startSignal.getExecutionSet().getSignalRef().getValue());
-        assertEquals("signalOne",
-                     startSignal.getGeneral().getName().getValue());
-
-        Node<? extends Definition, ?> signalTwoNode = diagram.getGraph().getNode(SIGNAL_INTERRUPTING_ID);
-        StartSignalEvent startSignalInterrupting = (StartSignalEvent) signalTwoNode.getContent().getDefinition();
-        assertTrue(startSignalInterrupting.getExecutionSet().getIsInterrupting().getValue());
-        assertEquals("standardSignal",
-                     startSignalInterrupting.getExecutionSet().getSignalRef().getValue());
-        assertEquals("signal two",
-                     startSignalInterrupting.getGeneral().getName().getValue());
-
-        Node<? extends Definition, ?> messageOneNode = diagram.getGraph().getNode(MESSAGE_ID);
-        StartMessageEvent startMessage = (StartMessageEvent) messageOneNode.getContent().getDefinition();
-        assertFalse(startMessage.getExecutionSet().getIsInterrupting().getValue());
-        assertEquals("standardMessage",
-                     startMessage.getExecutionSet().getMessageRef().getValue());
-        assertEquals("message one node",
-                     startMessage.getGeneral().getName().getValue());
-
-        Node<? extends Definition, ?> messageTwoNode = diagram.getGraph().getNode(MESSAGE_INTERRUPTING_ID);
-        StartMessageEvent startMessageInterrupting = (StartMessageEvent) messageTwoNode.getContent().getDefinition();
-        assertTrue(startMessageInterrupting.getExecutionSet().getIsInterrupting().getValue());
-        assertEquals("standardMessage",
-                     startMessageInterrupting.getExecutionSet().getMessageRef().getValue());
-        assertEquals("message two node",
-                     startMessageInterrupting.getGeneral().getName().getValue());
+        assertGeneralSet(subProcessLevelSubProcess.getGeneral(), DEFAULT_NAME, DEFAULT_DOCUMENTATION);
+        assertEventSubProcessExecutionSet(subProcessLevelSubProcess.getExecutionSet(),
+                                          IS_NOT_ASYNC
+        );
+        assertSubProcessProcessData(subProcessLevelSubProcess.getProcessData(), EMPTY_VALUE);
     }
 
-    @SuppressWarnings("unchecked")
-    private void unmarshallEventSubprocessSpecialCharacters(final DiagramMarshaller marshaller) throws
-            Exception {
-        final String EVENT_SUBPROCESS_ID = "_FFD7F3F0-4B66-4F11-87A5-0193C2DE9EBE";
+    @Test
+    @Override
+    public void testUnmarshallSubProcessLevelFilledPropertiesSubProcess() {
+        final String SUB_PROCESS_NAME = "Event process02 name ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
+        final String SUB_PROCESS_DOCUMENTATION = "Event process02 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
+        final String SUB_PROCESS_VARIABLES = "subVarString:String,subVarCustom:Custom,subVarBoolean:Boolean,subVarFloat:Float,subVarInteger:Integer,subVarObject:Object";
 
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_EVENT_SUBPROCESS_SPECIAL_CHARACTERS);
+        Diagram<Graph, Metadata> diagram = getDiagram();
+        assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        Node<? extends Definition, ?> eventSubProcessNode = diagram.getGraph().getNode(EVENT_SUBPROCESS_ID);
-        EventSubprocess eventSubprocess = (EventSubprocess) eventSubProcessNode.getContent().getDefinition();
+        EventSubprocess subProcessLevelSubProcessJava = getSubProcessNodeById(diagram,
+                                                                              SUBPROCESS_LEVEL_FILLED_SUBPROCESS_ID,
+                                                                              EMPTY_INCOME_EDGES,
+                                                                              EMPTY_OUTCOME_EDGES);
 
-        assertNotNull(eventSubprocess);
+        assertGeneralSet(subProcessLevelSubProcessJava.getGeneral(), SUB_PROCESS_NAME, SUB_PROCESS_DOCUMENTATION);
+        assertEventSubProcessExecutionSet(subProcessLevelSubProcessJava.getExecutionSet(),
+                                          IS_ASYNC
+        );
+        assertSubProcessProcessData(subProcessLevelSubProcessJava.getProcessData(), SUB_PROCESS_VARIABLES);
+    }
 
-        BPMNGeneralSet generalSet = eventSubprocess.getGeneral();
-        EventSubprocessExecutionSet executionSet = eventSubprocess.getExecutionSet();
-        ProcessData processData = eventSubprocess.getProcessData();
+    @Test
+    @Override
+    public void testUnmarshallSubProcessLevelSubProcessWithEdges() {
+        final String SUB_PROCESS_NAME = "Event Sub-process";
 
-        assertEquals("~`!@#$%^&*()_+|}{[]\":;'<>?/.,",
-                     generalSet.getName().getValue());
-        assertEquals("式\nmultiline\n式",
-                     generalSet.getDocumentation().getValue());
+        Diagram<Graph, Metadata> diagram = getDiagram();
+        assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        assertTrue(executionSet.getIsAsync().getValue());
+        EventSubprocess subProcessLevelSubProcess = getSubProcessNodeById(diagram,
+                                                                          SUBPROCESS_LEVEL_SUBPROCESS_WITH_EDGES,
+                                                                          EMPTY_INCOME_EDGES,
+                                                                          FOUR_OUTCOME_EDGES);
 
-        assertEquals("localVariable:Integer",
-                     processData.getProcessVariables().getValue());
+        assertGeneralSet(subProcessLevelSubProcess.getGeneral(), SUB_PROCESS_NAME, DEFAULT_DOCUMENTATION);
+        assertEventSubProcessExecutionSet(subProcessLevelSubProcess.getExecutionSet(),
+                                          IS_NOT_ASYNC
+        );
+        assertSubProcessProcessData(subProcessLevelSubProcess.getProcessData(), EMPTY_VALUE);
+    }
+
+    @Override
+    Class<EventSubprocess> getSubProcessType() {
+        return EventSubprocess.class;
+    }
+
+    @Override
+    String getBpmnSubProcessFilePath() {
+        return BPMN_SUB_PROCESS_FILE_PATH;
+    }
+
+    @Override
+    String getTopLevelEmptyPropertiesSubProcessId() {
+        return TOP_LEVEL_EMPTY_SUBPROCESS_ID;
+    }
+
+    @Override
+    String[] getTopLevelFilledPropertiesSubProcessesIds() {
+        return new String[]{TOP_LEVEL_FILLED_SUBPROCESS_ID};
+    }
+
+    @Override
+    String getTopLevelSubProcessWithEdgesId() {
+        return TOP_LEVEL_SUBPROCESS_WITH_EDGES;
+    }
+
+    @Override
+    String getSubProcessLevelEmptyPropertiesSubProcessId() {
+        return SUBPROCESS_LEVEL_EMPTY_SUBPROCESS_ID;
+    }
+
+    @Override
+    String[] getSubProcessLevelFilledPropertiesSubProcessesIds() {
+        return new String[]{SUBPROCESS_LEVEL_FILLED_SUBPROCESS_ID};
+    }
+
+    @Override
+    String getSubProcessLevelSubProcessWithEdgesId() {
+        return SUBPROCESS_LEVEL_SUBPROCESS_WITH_EDGES;
+    }
+
+    private void assertEventSubProcessExecutionSet(EventSubprocessExecutionSet executionSet,
+                                                   boolean isAsync) {
+        assertThat(executionSet).isNotNull();
+        assertThat(executionSet.getIsAsync()).isNotNull();
+        assertThat(executionSet.getIsAsync().getValue()).isEqualTo(isAsync);
     }
 }
