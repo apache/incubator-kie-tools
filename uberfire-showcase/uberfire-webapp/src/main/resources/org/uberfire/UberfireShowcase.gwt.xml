@@ -27,10 +27,6 @@
   <inherits name="org.uberfire.ext.widgets.core.UberfireWidgetsCore"/>
   <inherits name="org.uberfire.ssh.UberfireSSHClient"/>
 
-  <!-- Social dependencies -->
-  <inherits name="org.ext.uberfire.social.activities.SocialActivitiesAPI"/>
-  <inherits name="org.ext.uberfire.social.activities.SocialActivitiesClient"/>
-
   <!-- Experimental -->
   <inherits name="org.uberfire.experimental.UberfireExperimentalAPI"/>
   <inherits name="org.uberfire.experimental.UberfireExperimentalClient"/>

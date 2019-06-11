@@ -49,10 +49,6 @@
   <inherits name="org.uberfire.ext.wires.bpmn.WiresBpmnApi"/>
   <inherits name="org.uberfire.ext.wires.bpmn.WiresBpmnClient"/>
 
-  <!-- Social dependencies -->
-  <inherits name="org.ext.uberfire.social.activities.SocialActivitiesAPI"/>
-  <inherits name="org.ext.uberfire.social.activities.SocialActivitiesClient"/>
-
   <!-- Experimental -->
   <inherits name="org.uberfire.experimental.UberfireExperimentalAPI"/>
   <inherits name="org.uberfire.experimental.UberfireExperimentalClient"/>

@@ -81,7 +81,6 @@
    * [RAD Extensions (tech module: Runtime Plugins)](uberfireExtensions/radExtensions.md)
    * [App Directory](uberfireExtensions/appDirectory.md)
    * [Third Party Extensions](uberfireExtensions/thirdPartExtensions.md)
-   * [Social Activities](uberfireExtensions/socialActivities.md)
    * [Guvnor](uberfireExtensions/guvnor.md)
    * [Dashbuilder](uberfireExtensions/dashbuilder.md)
    * [Simple Docks](uberfireExtensions/docks.md)

@@ -43,7 +43,6 @@
     <module>uberfire-apps</module>
     <module>uberfire-layout-editor</module>
     <module>uberfire-simple-docks</module>
-    <module>uberfire-social-activities</module>
   </modules>
 
 </project>
