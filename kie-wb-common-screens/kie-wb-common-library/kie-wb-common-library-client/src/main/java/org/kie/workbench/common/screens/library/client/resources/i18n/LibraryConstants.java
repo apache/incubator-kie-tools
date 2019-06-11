@@ -562,4 +562,19 @@ public class LibraryConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String BranchSelectorSelectedBranches = "BranchSelectorSelectedBranches";
+
+    @TranslationKey(defaultValue = "")
+    public static final String OneWeekAgo = "OneWeekAgo";
+
+    @TranslationKey(defaultValue = "")
+    public static final String WeeksAgo = "WeeksAgo";
+
+    @TranslationKey(defaultValue = "")
+    public static final String Today = "Today";
+
+    @TranslationKey(defaultValue = "")
+    public static final String OneDayAgo = "OneDayAgo";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DaysAgo = "DaysAgo";
 }

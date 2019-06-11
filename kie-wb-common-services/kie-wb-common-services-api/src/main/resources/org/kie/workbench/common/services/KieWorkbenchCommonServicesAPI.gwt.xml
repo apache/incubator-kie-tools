@@ -23,7 +23,6 @@
 
   <inherits name='org.guvnor.common.services.project.GuvnorProjectAPI'/>
   <inherits name='org.guvnor.common.services.GuvnorServicesAPI'/>
-  <inherits name="org.ext.uberfire.social.activities.SocialActivitiesAPI"/>
 
   <source path='shared'/>
 

@@ -944,10 +944,6 @@
             <compileSourcesArtifact>org.uberfire:uberfire-ssh-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-ssh-client</compileSourcesArtifact>
 
-            <!-- UberFire extensions -->
-            <compileSourcesArtifact>org.uberfire:uberfire-social-activities-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.uberfire:uberfire-social-activities-client</compileSourcesArtifact>
-
             <!-- UF-ext -->
             <compileSourcesArtifact>org.uberfire:uberfire-preferences-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-preferences-client</compileSourcesArtifact>

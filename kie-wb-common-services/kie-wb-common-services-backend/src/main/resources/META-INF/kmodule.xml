@@ -2,7 +2,6 @@
 <kmodule xmlns="http://jboss.org/kie/6.0.0/kmodule">
 
   <kbase name="kbase1">
-    <ksession name="social-session"/>
   </kbase>
 
 </kmodule>

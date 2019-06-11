@@ -19,8 +19,6 @@ package org.kie.workbench.common.workbench.client;
 public interface PerspectiveIds {
 
     String HOME = "HomePerspective";
-    String SOCIAL_HOME = "SocialHomePagePerspective";
-    String SOCIAL_USER_HOME = "UserHomePagePerspective";
     String SECURITY_MANAGEMENT = "SecurityManagementPerspective";
     String GUVNOR_M2REPO = "GuvnorM2RepoPerspective";
     String ADMINISTRATION = "AdministrationPerspective";

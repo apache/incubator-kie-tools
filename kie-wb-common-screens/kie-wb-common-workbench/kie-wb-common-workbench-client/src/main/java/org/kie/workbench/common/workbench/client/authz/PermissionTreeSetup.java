@@ -117,8 +117,6 @@ public class PermissionTreeSetup {
         perspectiveTreeProvider.excludePerspectiveId(ADMINISTRATION); /* kie-wb-distributions */
         perspectiveTreeProvider.excludePerspectiveId(PLUGIN_AUTHORING); /* uberfire */
         perspectiveTreeProvider.excludePerspectiveId(APPS); /* uberfire */
-        perspectiveTreeProvider.excludePerspectiveId(SOCIAL_HOME); /* uberfire */
-        perspectiveTreeProvider.excludePerspectiveId(SOCIAL_USER_HOME); /* uberfire */
         perspectiveTreeProvider.excludePerspectiveId(SSH_KEYS_EDITOR);
 
         // Include optional editors

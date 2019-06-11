@@ -286,6 +286,12 @@
     </dependency>
 
     <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-nio2-fs</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
       <groupId>org.drools</groupId>
       <artifactId>jbpm-simulation</artifactId>
       <scope>test</scope>

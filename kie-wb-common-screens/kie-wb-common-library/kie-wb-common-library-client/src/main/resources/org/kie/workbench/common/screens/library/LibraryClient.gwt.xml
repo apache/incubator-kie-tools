@@ -17,8 +17,6 @@
 
   <inherits name="org.dashbuilder.DisplayerAPI"/>
 
-  <inherits name="org.ext.uberfire.social.activities.SocialActivitiesClient"/>
-
   <inherits name="org.dashbuilder.DisplayerClient"/>
 
 </module>

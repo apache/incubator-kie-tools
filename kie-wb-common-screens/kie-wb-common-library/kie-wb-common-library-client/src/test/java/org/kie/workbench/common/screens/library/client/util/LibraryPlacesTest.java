@@ -25,8 +25,6 @@ import java.util.Set;
 
 import javax.enterprise.event.Event;
 
-import org.ext.uberfire.social.activities.model.ExtendedTypes;
-import org.ext.uberfire.social.activities.model.SocialFileSelectedEvent;
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
 import org.guvnor.common.services.project.model.GAV;
@@ -35,7 +33,6 @@ import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
-import org.guvnor.common.services.project.social.ModuleEventType;
 import org.guvnor.structure.client.security.OrganizationalUnitController;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Branch;
@@ -796,55 +793,6 @@ public class LibraryPlacesTest {
                never()).setupForAsset(any(), any());
         verify(libraryBreadcrumbs,
                never()).setupForProject(any());
-    }
-
-    @Test
-    public void testOnSocialFileSelected_Repository() {
-
-        doReturn(mock(WorkspaceProject.class)).when(projectService).resolveProject(any(Path.class));
-
-        doReturn(PlaceStatus.OPEN).when(placeManager).getStatus(LibraryPlaces.LIBRARY_PERSPECTIVE);
-
-        final SocialFileSelectedEvent event = new SocialFileSelectedEvent(ExtendedTypes.NEW_REPOSITORY_EVENT.name(),
-                                                                          null);
-
-        libraryPlaces.onSocialFileSelected(event);
-
-        verify(placeManager).goTo(LibraryPlaces.REPOSITORY_STRUCTURE_SCREEN);
-    }
-
-    @Test
-    public void testOnSocialFileSelected_Module() {
-
-        doReturn(mock(WorkspaceProject.class)).when(projectService).resolveProject(any(Path.class));
-
-        doReturn(PlaceStatus.OPEN).when(placeManager).getStatus(LibraryPlaces.LIBRARY_PERSPECTIVE);
-
-        final PlaceRequest libraryPerspective = libraryPlaces.getLibraryPlaceRequestWithoutRefresh();
-        final SocialFileSelectedEvent event = new SocialFileSelectedEvent(ModuleEventType.NEW_MODULE.name(),
-                                                                          null);
-
-        libraryPlaces.onSocialFileSelected(event);
-
-        verify(placeManager).goTo(libraryPerspective);
-        verify(libraryPlaces).goToProject();
-    }
-
-    @Test
-    public void testOnSocialFileSelected_Asset() {
-
-        doReturn(mock(WorkspaceProject.class)).when(projectService).resolveProject(any(Path.class));
-
-        doReturn(PlaceStatus.OPEN).when(placeManager).getStatus(LibraryPlaces.LIBRARY_PERSPECTIVE);
-
-        final PlaceRequest libraryPerspective = libraryPlaces.getLibraryPlaceRequestWithoutRefresh();
-        final SocialFileSelectedEvent event = new SocialFileSelectedEvent("any",
-                                                                          "uri");
-
-        libraryPlaces.onSocialFileSelected(event);
-
-        verify(placeManager).goTo(libraryPerspective);
-        verify(libraryPlaces).goToAsset(any(Path.class));
     }
 
     @Test

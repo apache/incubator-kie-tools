@@ -26,8 +26,6 @@ import static org.kie.workbench.common.workbench.client.PerspectiveIds.LIBRARY;
 import static org.kie.workbench.common.workbench.client.PerspectiveIds.PLUGIN_AUTHORING;
 import static org.kie.workbench.common.workbench.client.PerspectiveIds.PROCESS_DEFINITIONS;
 import static org.kie.workbench.common.workbench.client.PerspectiveIds.PROCESS_INSTANCES;
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.SOCIAL_HOME;
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.SOCIAL_USER_HOME;
 import static org.uberfire.workbench.model.menu.MenuFactory.newSimpleItem;
 
 import java.util.ArrayList;
@@ -128,7 +126,7 @@ public class DefaultWorkbenchFeaturesMenusHelper {
         this.placeManager = placeManager;
     }
 
-    public List<? extends MenuItem> getHomeViews(final boolean socialEnabled) {
+    public List<? extends MenuItem> getHomeViews() {
         final List<MenuItem> result = new ArrayList<>(1);
 
         result.add(MenuFactory.newSimpleItem(constants.HomePage())
@@ -140,21 +138,6 @@ public class DefaultWorkbenchFeaturesMenusHelper {
                            .perspective(ADMIN)
                            .endMenu()
                            .build().getItems().get(0));
-
-        result.addAll(getSocialViews(socialEnabled));
-
-        return result;
-    }
-
-    protected List<MenuItem> getSocialViews(final boolean socialEnabled) {
-        if (!socialEnabled) {
-            return Collections.emptyList();
-        }
-
-        final List<MenuItem> result = new ArrayList<>(2);
-
-        result.add(MenuFactory.newSimpleItem(constants.Timeline()).perspective(SOCIAL_HOME).endMenu().build().getItems().get(0));
-        result.add(MenuFactory.newSimpleItem(constants.People()).perspective(SOCIAL_USER_HOME).endMenu().build().getItems().get(0));
 
         return result;
     }

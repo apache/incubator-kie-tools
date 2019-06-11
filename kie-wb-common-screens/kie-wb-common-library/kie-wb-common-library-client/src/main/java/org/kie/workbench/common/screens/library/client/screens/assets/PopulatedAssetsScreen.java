@@ -25,7 +25,6 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.Callback;
-import org.ext.uberfire.social.activities.client.widgets.utils.SocialDateFormatter;
 import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
 import org.guvnor.common.services.project.model.WorkspaceProject;
@@ -45,6 +44,7 @@ import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryCon
 import org.kie.workbench.common.screens.library.client.screens.EmptyState;
 import org.kie.workbench.common.screens.library.client.screens.assets.events.UpdatedAssetsEvent;
 import org.kie.workbench.common.screens.library.client.util.CategoryUtils;
+import org.kie.workbench.common.screens.library.client.util.DateUtils;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.screens.library.client.widgets.project.AssetItemWidget;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
@@ -80,6 +80,7 @@ public class PopulatedAssetsScreen {
     private Event<UpdatedAssetsEvent> updatedAssetsEventEvent;
     private EmptyState emptyState;
     private CategoryUtils categoryUtils;
+    private DateUtils dateUtils;
     private WorkspaceProject workspaceProject;
     private int currentPage;
     private int pageSize;
@@ -138,6 +139,7 @@ public class PopulatedAssetsScreen {
                                  final Event<UpdatedAssetsEvent> updatedAssetsEventEvent,
                                  final EmptyState emptyState,
                                  final CategoryUtils categoryUtils,
+                                 final DateUtils dateUtils,
                                  final AssetQueryService assetQueryService,
                                  final Event<WorkspaceProjectContextChangeEvent> contextChangeEvent,
                                  final Promises promises) {
@@ -155,6 +157,7 @@ public class PopulatedAssetsScreen {
         this.updatedAssetsEventEvent = updatedAssetsEventEvent;
         this.emptyState = emptyState;
         this.categoryUtils = categoryUtils;
+        this.dateUtils = dateUtils;
         this.assetQueryService = assetQueryService;
         this.contextChangeEvent = contextChangeEvent;
         this.promises = promises;
@@ -459,7 +462,7 @@ public class PopulatedAssetsScreen {
     }
 
     private String getLastModifiedTime(final AssetInfo asset) {
-        return ts.format(LibraryConstants.LastModified) + " " + SocialDateFormatter.format(asset.getLastModifiedTime());
+        return ts.format(LibraryConstants.LastModified) + " " + dateUtils.format(asset.getLastModifiedTime());
     }
 
     public void search(String filterText) {
@@ -469,7 +472,7 @@ public class PopulatedAssetsScreen {
     }
 
     private String getCreatedTime(final AssetInfo asset) {
-        return ts.format(LibraryConstants.Created) + " " + SocialDateFormatter.format(asset.getCreatedTime());
+        return ts.format(LibraryConstants.Created) + " " + dateUtils.format(asset.getCreatedTime());
     }
 
     protected Command selectCommand(final Path assetPath) {

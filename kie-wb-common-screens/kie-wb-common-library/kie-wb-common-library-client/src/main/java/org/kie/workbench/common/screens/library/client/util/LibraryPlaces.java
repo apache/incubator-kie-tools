@@ -32,15 +32,12 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.Window;
 import elemental2.promise.IThenable;
 import elemental2.promise.Promise;
-import org.ext.uberfire.social.activities.model.ExtendedTypes;
-import org.ext.uberfire.social.activities.model.SocialFileSelectedEvent;
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
 import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeHandler;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
-import org.guvnor.common.services.project.social.ModuleEventType;
 import org.guvnor.messageconsole.client.console.MessageConsoleScreen;
 import org.guvnor.structure.client.security.OrganizationalUnitController;
 import org.guvnor.structure.events.AfterDeleteOrganizationalUnitEvent;
@@ -390,45 +387,6 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
         }
     }
 
-    public void onSocialFileSelected(@Observes final SocialFileSelectedEvent event) {
-        vfsService.call(new RemoteCallback<Path>() {
-            @Override
-            public void callback(Path path) {
-
-                projectService.call(new RemoteCallback<WorkspaceProject>() {
-                    @Override
-                    public void callback(final WorkspaceProject project) {
-                        openBestSuitedScreen(event.getEventType(),
-                                             path,
-                                             project);
-                    }
-                }).resolveProject(path);
-            }
-        }).get(event.getUri());
-    }
-
-    private void openBestSuitedScreen(final String eventType,
-                                      final Path path,
-                                      final WorkspaceProject project) {
-
-        if (!projectContext.getActiveWorkspaceProject().map(active -> active.equals(project)).orElse(false)) {
-            projectContextChangeEvent.fire(new WorkspaceProjectContextChangeEvent(project,
-                                                                                  project.getMainModule()));
-        }
-
-        final PlaceRequest libraryPerspectivePlace = getLibraryPlaceRequestWithoutRefresh();
-
-        if (isRepositoryEvent(eventType)) {
-            placeManager.goTo(REPOSITORY_STRUCTURE_SCREEN);
-        } else if (isModuleEvent(eventType)) {
-            placeManager.goTo(libraryPerspectivePlace);
-            goToProject();
-        } else if (path != null) {
-            placeManager.goTo(libraryPerspectivePlace);
-            goToProject(() -> goToAsset(path));
-        }
-    }
-
     PlaceRequest getLibraryPlaceRequestWithoutRefresh() {
         return getPlaceRequestWithoutRefresh(LIBRARY_PERSPECTIVE);
     }
@@ -439,22 +397,6 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
                    "false");
         return new DefaultPlaceRequest(placeId,
                                        params);
-    }
-
-    private boolean isRepositoryEvent(String eventType) {
-        if (eventType == null || eventType.isEmpty()) {
-            return false;
-        }
-
-        if (ExtendedTypes.NEW_REPOSITORY_EVENT.name().equals(eventType)) {
-            return true;
-        }
-
-        return false;
-    }
-
-    private boolean isModuleEvent(final String eventType) {
-        return ModuleEventType.NEW_MODULE.name().equals(eventType);
     }
 
     public void refresh(final Command callback) {

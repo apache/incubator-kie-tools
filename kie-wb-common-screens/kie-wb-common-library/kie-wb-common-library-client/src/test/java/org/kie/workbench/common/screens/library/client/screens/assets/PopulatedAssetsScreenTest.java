@@ -40,6 +40,7 @@ import org.kie.workbench.common.screens.library.client.screens.EmptyState;
 import org.kie.workbench.common.screens.library.client.screens.ProjectScreenTestBase;
 import org.kie.workbench.common.screens.library.client.screens.assets.events.UpdatedAssetsEvent;
 import org.kie.workbench.common.screens.library.client.util.CategoryUtils;
+import org.kie.workbench.common.screens.library.client.util.DateUtils;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.screens.library.client.widgets.project.AssetItemWidget;
 import org.kie.workbench.common.services.shared.project.KieModule;
@@ -111,6 +112,9 @@ public class PopulatedAssetsScreenTest extends ProjectScreenTestBase {
     private CategoryUtils categoryUtils;
 
     @Mock
+    private DateUtils dateUtils;
+
+    @Mock
     private Event<WorkspaceProjectContextChangeEvent> contextChangeEvent;
 
     private AssetQueryService assetQueryService;
@@ -135,6 +139,7 @@ public class PopulatedAssetsScreenTest extends ProjectScreenTestBase {
                                                               mock(Event.class),
                                                               emptyState,
                                                               categoryUtils,
+                                                              dateUtils,
                                                               assetQueryService,
                                                               contextChangeEvent,
                                                               promises));

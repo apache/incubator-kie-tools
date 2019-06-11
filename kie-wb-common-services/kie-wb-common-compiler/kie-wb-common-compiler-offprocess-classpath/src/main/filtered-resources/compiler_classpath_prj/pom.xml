@@ -138,10 +138,6 @@
           <artifactId>uberfire-api</artifactId>
         </exclusion>
         <exclusion>
-          <groupId>org.uberfire</groupId>
-          <artifactId>uberfire-social-activities-api</artifactId>
-        </exclusion>
-        <exclusion>
           <groupId>org.jboss.errai</groupId>
           <artifactId>errai-bus</artifactId>
         </exclusion>
@@ -382,10 +378,6 @@
         </exclusion>
         <exclusion>
           <groupId>org.uberfire</groupId>
-          <artifactId>uberfire-social-activities-backend</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.uberfire</groupId>
           <artifactId>uberfire-commons</artifactId>
         </exclusion>
         <exclusion>
@@ -407,10 +399,6 @@
         <exclusion>
           <groupId>org.uberfire</groupId>
           <artifactId>uberfire-preferences-processors</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.uberfire</groupId>
-          <artifactId>uberfire-social-activities-api</artifactId>
         </exclusion>
       </exclusions>
     </dependency>

@@ -138,10 +138,8 @@ public class DefaultWorkbenchFeaturesMenusHelperTest {
     }
 
     @Test
-    public void getHomeViewsWithoutSocial() {
-        final boolean socialEnabled = false;
-
-        List<? extends MenuItem> homeMenuItems = menusHelper.getHomeViews(socialEnabled);
+    public void getHomeViews() {
+        List<? extends MenuItem> homeMenuItems = menusHelper.getHomeViews();
 
         assertEquals(2,
                      homeMenuItems.size());
@@ -149,24 +147,6 @@ public class DefaultWorkbenchFeaturesMenusHelperTest {
                      homeMenuItems.get(0).getCaption());
         assertEquals(menusHelper.constants.Admin(),
                      homeMenuItems.get(1).getCaption());
-    }
-
-    @Test
-    public void getHomeViewsWithSocial() {
-        final boolean socialEnabled = true;
-
-        List<? extends MenuItem> homeMenuItems = menusHelper.getHomeViews(socialEnabled);
-
-        assertEquals(4,
-                     homeMenuItems.size());
-        assertEquals(menusHelper.constants.HomePage(),
-                     homeMenuItems.get(0).getCaption());
-        assertEquals(menusHelper.constants.Admin(),
-                     homeMenuItems.get(1).getCaption());
-        assertEquals(menusHelper.constants.Timeline(),
-                     homeMenuItems.get(2).getCaption());
-        assertEquals(menusHelper.constants.People(),
-                     homeMenuItems.get(3).getCaption());
     }
 
     @Test

@@ -570,10 +570,6 @@ public class DataModelerServiceImpl
                 nameChanged = true;
             }
 
-            fireMetadataSocialEvents(path,
-                                     metadataService.getMetadata(path),
-                                     metadata);
-
             ioService.startBatch(targetPath.getFileSystem());
             onBatch = true;
 

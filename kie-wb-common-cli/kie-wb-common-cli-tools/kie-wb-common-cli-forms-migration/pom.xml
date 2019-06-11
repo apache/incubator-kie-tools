@@ -220,5 +220,11 @@
       <scope>test</scope>
       <type>test-jar</type>
     </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-nio2-fs</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 </project>

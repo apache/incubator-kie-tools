@@ -58,7 +58,6 @@
     <exclude name="org.kie.workbench.common.screens.projectimportsscreen.client.**"/>
     <exclude name="org.kie.workbench.common.screens.search.client.**"/>
     <exclude name="org.kie.workbench.common.screens.server.management.**"/>
-    <exclude name="org.kie.workbench.common.screens.social.hp.client.**"/>
 
     <!-- KIE WB Common Widgets. -->
     <exclude name="org.kie.workbench.common.widgets.client.**"/>
