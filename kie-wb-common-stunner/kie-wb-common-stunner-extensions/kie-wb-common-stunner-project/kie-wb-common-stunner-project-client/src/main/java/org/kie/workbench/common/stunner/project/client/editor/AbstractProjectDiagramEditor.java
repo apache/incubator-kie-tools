@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.project.client.editor;
 
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
@@ -45,6 +46,7 @@ import org.kie.workbench.common.stunner.client.widgets.presenters.session.Sessio
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.AbstractSessionPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionViewerPresenter;
+import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.error.DiagramClientErrorHandler;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
@@ -386,7 +388,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
                     addPage(new DocumentationPage(documentationView.initialize(diagram),
                                                   label,
                                                   //firing the OnDiagramFocusEvent will force the docks to be minimized
-                                                  () -> onDiagramFocusEvent.fire(new OnDiagramFocusEvent()),
+                                                  () -> onDiagramFocusEvent.fire(new OnDiagramFocusEvent(getDockQualifiers())),
                                                   //check the DocumentationPage is active, the index is 2
                                                   () -> Objects.equals(2, kieView.getSelectedTabIndex())));
                 });
@@ -473,8 +475,14 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
 
     @Override
     public void showDocks() {
-        onDiagramFocusEvent.fire(new OnDiagramFocusEvent());
+        // Docks are shown by AppFormer before the session/diagram has been opened. It is therefore impossible to use
+        // the ideal getDiagram().getMetadata().getDefinitionSetId() and use that as the qualifier for docks.
+        onDiagramFocusEvent.fire(new OnDiagramFocusEvent(getDockQualifiers()));
         super.showDocks();
+    }
+
+    public Annotation[] getDockQualifiers() {
+        return new Annotation[]{DefinitionManager.DEFAULT_QUALIFIER};
     }
 
     @Override

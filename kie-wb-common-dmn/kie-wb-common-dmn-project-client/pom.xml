@@ -26,6 +26,17 @@
 
   <dependencies>
 
+    <!-- Transitive dependencies -->
+    <dependency>
+      <groupId>org.kie.soup</groupId>
+      <artifactId>kie-soup-commons</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.workbench.screens</groupId>
+      <artifactId>kie-wb-common-workbench-client</artifactId>
+    </dependency>
+
     <!-- Stunner -->
     <dependency>
       <groupId>org.kie.workbench.stunner</groupId>

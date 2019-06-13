@@ -18,7 +18,6 @@ package org.kie.workbench.common.dmn.showcase.client.perspectives;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.kie.workbench.common.dmn.showcase.client.screens.editor.DiagramsNavigatorScreen;
-import org.kie.workbench.common.dmn.showcase.client.screens.explorer.SessionTreeExplorerScreen;
 import org.kie.workbench.common.dmn.showcase.client.screens.notifications.NotificationsScreen;
 import org.kie.workbench.common.dmn.showcase.client.screens.preview.SessionDiagramPreviewScreen;
 import org.kie.workbench.common.dmn.showcase.client.screens.properties.SessionPropertiesScreen;
@@ -57,11 +56,6 @@ public class AuthoringPerspective {
         perspective.setName("Authoring");
         perspective.getRoot().addPart(new PartDefinitionImpl(new DefaultPlaceRequest(DiagramsNavigatorScreen.SCREEN_ID)));
 
-        final PanelDefinition treeExplorerPanel = new PanelDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
-        treeExplorerPanel.setWidth(EAST_PANEL_WIDTH);
-        treeExplorerPanel.setHeight(EAST_PANEL_HEIGHT);
-        treeExplorerPanel.addPart(new PartDefinitionImpl(new DefaultPlaceRequest(SessionTreeExplorerScreen.SCREEN_ID)));
-
         final PanelDefinition previewPanel = new PanelDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
         previewPanel.setWidth(EAST_PANEL_WIDTH);
         previewPanel.setHeight(EAST_PANEL_HEIGHT);
@@ -73,8 +67,6 @@ public class AuthoringPerspective {
         propertiesPanel.addPart(new PartDefinitionImpl(new DefaultPlaceRequest(SessionPropertiesScreen.SCREEN_ID)));
         propertiesPanel.appendChild(CompassPosition.NORTH,
                                     previewPanel);
-        propertiesPanel.appendChild(CompassPosition.SOUTH,
-                                    treeExplorerPanel);
 
         final PanelDefinition notificationsPanel = new PanelDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
         notificationsPanel.setWidth(400);

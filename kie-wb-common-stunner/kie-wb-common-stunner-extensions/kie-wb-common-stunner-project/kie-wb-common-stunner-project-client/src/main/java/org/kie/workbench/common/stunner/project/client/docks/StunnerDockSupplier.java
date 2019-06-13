@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,24 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.kie.workbench.common.stunner.project.client.docks;
 
-package org.kie.workbench.common.stunner.project.client.editor.event;
+import java.util.Collection;
 
-import java.lang.annotation.Annotation;
+import org.uberfire.client.workbench.docks.UberfireDock;
 
-public class OnDiagramFocusEvent {
+public interface StunnerDockSupplier {
 
-    private final Annotation[] qualifiers;
-
-    public OnDiagramFocusEvent(final Annotation qualifier) {
-        this.qualifiers = new Annotation[]{qualifier};
-    }
-
-    public OnDiagramFocusEvent(final Annotation[] qualifiers) {
-        this.qualifiers = qualifiers;
-    }
-
-    public Annotation[] getQualifiers() {
-        return qualifiers;
-    }
+    Collection<UberfireDock> getDocks(final String perspectiveIdentifier);
 }

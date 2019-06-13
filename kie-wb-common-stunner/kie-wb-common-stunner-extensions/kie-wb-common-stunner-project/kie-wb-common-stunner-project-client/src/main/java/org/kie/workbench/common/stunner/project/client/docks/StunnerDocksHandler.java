@@ -16,53 +16,57 @@
 
 package org.kie.workbench.common.stunner.project.client.docks;
 
-import java.util.ArrayList;
+import java.lang.annotation.Annotation;
 import java.util.Collection;
-import java.util.List;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Any;
+import javax.inject.Inject;
 
+import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.event.screen.ScreenMaximizedEvent;
+import org.kie.workbench.common.stunner.core.client.session.impl.InstanceUtils;
 import org.kie.workbench.common.stunner.project.client.editor.event.OnDiagramFocusEvent;
 import org.kie.workbench.common.stunner.project.client.editor.event.OnDiagramLoseFocusEvent;
 import org.kie.workbench.common.widgets.client.docks.AbstractWorkbenchDocksHandler;
-import org.kie.workbench.common.workbench.client.resources.i18n.DefaultWorkbenchConstants;
 import org.uberfire.client.workbench.docks.UberfireDock;
-import org.uberfire.client.workbench.docks.UberfireDockPosition;
-import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
 @Dependent
 public class StunnerDocksHandler extends AbstractWorkbenchDocksHandler {
 
-    protected DefaultWorkbenchConstants constants = DefaultWorkbenchConstants.INSTANCE;
+    private ManagedInstance<StunnerDockSupplier> dockSuppliers;
+    private Annotation[] qualifiers = new Annotation[]{DefinitionManager.DEFAULT_QUALIFIER};
 
-    @Override
-    public Collection<UberfireDock> provideDocks(String perspectiveIdentifier) {
-        List<UberfireDock> result = new ArrayList<>();
-
-        result.add(new UberfireDock(UberfireDockPosition.EAST,
-                                    "PENCIL_SQUARE_O",
-                                    new DefaultPlaceRequest("ProjectDiagramPropertiesScreen"),
-                                    perspectiveIdentifier).withSize(450).withLabel(constants.DocksStunnerPropertiesTitle()));
-        result.add(new UberfireDock(UberfireDockPosition.EAST,
-                                    "EYE",
-                                    new DefaultPlaceRequest("ProjectDiagramExplorerScreen"),
-                                    perspectiveIdentifier).withSize(450).withLabel(constants.DocksStunnerExplorerTitle()));
-        return result;
+    public StunnerDocksHandler() {
+        //CDI proxy
     }
 
-    public void onDiagramFocusEvent(@Observes OnDiagramFocusEvent event) {
+    @Inject
+    public StunnerDocksHandler(final @Any ManagedInstance<StunnerDockSupplier> dockSuppliers) {
+        this.dockSuppliers = dockSuppliers;
+    }
+
+    @Override
+    public Collection<UberfireDock> provideDocks(final String perspectiveIdentifier) {
+        final StunnerDockSupplier dockSupplier = InstanceUtils.lookup(dockSuppliers, StunnerDockSupplier.class, qualifiers);
+        return dockSupplier.getDocks(perspectiveIdentifier);
+    }
+
+    public void onDiagramFocusEvent(final @Observes OnDiagramFocusEvent event) {
+        qualifiers = event.getQualifiers();
         refreshDocks(true,
                      false);
     }
 
-    public void onDiagramLoseFocusEvent(@Observes OnDiagramLoseFocusEvent event) {
+    public void onDiagramLoseFocusEvent(final @Observes OnDiagramLoseFocusEvent event) {
+        qualifiers = new Annotation[]{DefinitionManager.DEFAULT_QUALIFIER};
         refreshDocks(true,
                      true);
     }
 
-    public void onDiagramEditorMaximized(@Observes ScreenMaximizedEvent event) {
+    public void onDiagramEditorMaximized(final @Observes ScreenMaximizedEvent event) {
         if (event.isDiagramScreen()) {
             refreshDocks(true,
                          false);

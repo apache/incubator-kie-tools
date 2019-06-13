@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.project.client.editor;
 
+import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
@@ -39,6 +40,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionViewerPresenter;
+import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.ManagedInstanceStub;
 import org.kie.workbench.common.stunner.core.client.error.DiagramClientErrorHandler;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
@@ -805,6 +807,13 @@ public class AbstractProjectDiagramEditorTest {
 
         verify(onDiagramFocusEvent).fire(any());
         verify(defaultEditorDock).show();
+    }
+
+    @Test
+    public void testDocksQualifiers() {
+        final Annotation[] qualifiers = presenter.getDockQualifiers();
+        assertEquals(1, qualifiers.length);
+        assertEquals(DefinitionManager.DEFAULT_QUALIFIER, qualifiers[0]);
     }
 
     @Test

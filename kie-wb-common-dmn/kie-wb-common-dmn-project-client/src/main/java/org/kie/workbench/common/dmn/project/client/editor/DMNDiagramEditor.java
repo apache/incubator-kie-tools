@@ -15,6 +15,7 @@
  */
 package org.kie.workbench.common.dmn.project.client.editor;
 
+import java.lang.annotation.Annotation;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -27,6 +28,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import elemental2.dom.DomGlobal;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.commands.general.NavigateToExpressionEditorCommand;
 import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorDock;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
@@ -93,6 +95,7 @@ import static elemental2.dom.DomGlobal.setTimeout;
 public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramResourceType> {
 
     public static final String EDITOR_ID = "DMNDiagramEditor";
+
     private static final int DATA_TYPES_PAGE_INDEX = 2;
 
     private final SessionManager sessionManager;
@@ -185,6 +188,17 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
     public void showDocks() {
         super.showDocks();
         decisionNavigatorDock.open();
+    }
+
+    @Override
+    public Annotation[] getDockQualifiers() {
+        //GWT really hates this being a lamda. Keep as an anonymous inner class!
+        return new Annotation[]{new Annotation() {
+            @Override
+            public Class<? extends Annotation> annotationType() {
+                return DMNEditor.class;
+            }
+        }};
     }
 
     @Override
