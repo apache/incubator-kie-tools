@@ -24,6 +24,7 @@ import org.kie.dmn.model.api.DRGElement;
 import org.kie.dmn.model.api.Definitions;
 import org.kie.dmn.model.api.Import;
 import org.kie.dmn.model.api.ItemDefinition;
+import org.kie.workbench.common.dmn.api.editors.included.PMMLDocumentMetadata;
 import org.kie.workbench.common.dmn.backend.DMNMarshaller;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 
@@ -33,13 +34,22 @@ import org.kie.workbench.common.stunner.core.diagram.Metadata;
 public interface DMNMarshallerImportsHelper {
 
     /**
-     * This method loads all imported definitions from a list of imports.
+     * This method loads all imported DMN definitions from a list of imports.
      * @param metadata represents the metadata from the main DMN model.
      * @param imports represent the list of imported files.
      * @return a map {@link Definitions} indexed by {@link Import}s.
      */
     Map<Import, Definitions> getImportDefinitions(final Metadata metadata,
                                                   final List<Import> imports);
+
+    /**
+     * This method loads all imported PMML documents from a list of imports.
+     * @param metadata represents the metadata from the main DMN model.
+     * @param imports represent the list of imported files.
+     * @return a map {@link PMMLDocumentMetadata} indexed by {@link Import}s.
+     */
+    Map<Import, PMMLDocumentMetadata> getPMMLDocuments(final Metadata metadata,
+                                                       final List<Import> imports);
 
     /**
      * This method extract a list of {@link DRGElement}s from the <code>importDefinitions</code> map.

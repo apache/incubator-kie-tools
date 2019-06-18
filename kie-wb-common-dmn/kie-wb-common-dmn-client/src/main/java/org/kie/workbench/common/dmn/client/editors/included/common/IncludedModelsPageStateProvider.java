@@ -18,16 +18,16 @@ package org.kie.workbench.common.dmn.client.editors.included.common;
 
 import java.util.List;
 
-import org.kie.workbench.common.dmn.client.editors.included.IncludedModel;
+import org.kie.workbench.common.dmn.client.editors.included.BaseIncludedModelActiveRecord;
 import org.kie.workbench.common.dmn.client.editors.included.IncludedModelsPage;
 
 /**
- * Provides data for the {@link IncludedModelsPage} class, which must be coupled only with the {@link IncludedModel}
+ * Provides data for the {@link IncludedModelsPage} class, which must be coupled only with the {@link BaseIncludedModelActiveRecord}
  * entity.
  */
 public interface IncludedModelsPageStateProvider {
 
     String getCurrentDiagramNamespace();
 
-    List<IncludedModel> generateIncludedModels();
+    List<BaseIncludedModelActiveRecord> generateIncludedModels();
 }

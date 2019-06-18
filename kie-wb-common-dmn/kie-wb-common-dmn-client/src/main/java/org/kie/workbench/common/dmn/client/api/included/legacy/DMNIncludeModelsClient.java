@@ -26,9 +26,11 @@ import javax.inject.Inject;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
 import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedModel;
 import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedNode;
+import org.kie.workbench.common.dmn.api.editors.included.IncludedModel;
 import org.kie.workbench.common.dmn.client.service.DMNClientServicesProxy;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
+import org.uberfire.backend.vfs.Path;
 
 @Dependent
 public class DMNIncludeModelsClient {
@@ -40,8 +42,10 @@ public class DMNIncludeModelsClient {
         this.clientServicesProxy = clientServicesProxy;
     }
 
-    public void loadModels(final Consumer<List<DMNIncludedModel>> consumer) {
-        clientServicesProxy.loadModels(callback(consumer));
+    public void loadModels(final Path path,
+                           final Consumer<List<IncludedModel>> listConsumer) {
+        clientServicesProxy.loadModels(path,
+                                       callback(listConsumer));
     }
 
     public void loadNodesFromImports(final List<DMNIncludedModel> includeModels,

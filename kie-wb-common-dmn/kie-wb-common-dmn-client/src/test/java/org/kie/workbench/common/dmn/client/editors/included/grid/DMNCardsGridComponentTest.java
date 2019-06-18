@@ -24,8 +24,11 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.dmn.client.editors.included.IncludedModel;
+import org.kie.workbench.common.dmn.client.editors.included.BaseIncludedModelActiveRecord;
+import org.kie.workbench.common.dmn.client.editors.included.DMNIncludedModelActiveRecord;
+import org.kie.workbench.common.dmn.client.editors.included.DefaultIncludedModelActiveRecord;
 import org.kie.workbench.common.dmn.client.editors.included.IncludedModelsPageState;
+import org.kie.workbench.common.dmn.client.editors.included.PMMLIncludedModelActiveRecord;
 import org.kie.workbench.common.dmn.client.editors.included.grid.empty.DMNCardsEmptyStateView;
 import org.kie.workbench.common.widgets.client.cards.CardsGridComponent;
 import org.mockito.Mock;
@@ -43,6 +46,12 @@ public class DMNCardsGridComponentTest {
     private ManagedInstance<DMNCardComponent> dmnCardComponent;
 
     @Mock
+    private ManagedInstance<PMMLCardComponent> pmmlCardComponent;
+
+    @Mock
+    private ManagedInstance<DefaultCardComponent> defaultCardComponent;
+
+    @Mock
     private CardsGridComponent cardsGridComponent;
 
     @Mock
@@ -55,7 +64,12 @@ public class DMNCardsGridComponentTest {
 
     @Before
     public void setup() {
-        grid = new DMNCardsGridComponent(dmnCardComponent, cardsGridComponent, pageState, emptyStateView);
+        grid = new DMNCardsGridComponent(dmnCardComponent,
+                                         pmmlCardComponent,
+                                         defaultCardComponent,
+                                         cardsGridComponent,
+                                         pageState,
+                                         emptyStateView);
     }
 
     @Test
@@ -83,19 +97,24 @@ public class DMNCardsGridComponentTest {
     @Test
     public void testRefresh() {
 
-        final IncludedModel includedModel1 = mock(IncludedModel.class);
-        final IncludedModel includedModel2 = mock(IncludedModel.class);
-        final DMNCardComponent card1 = mock(DMNCardComponent.class);
+        final DefaultIncludedModelActiveRecord includedModel1 = mock(DefaultIncludedModelActiveRecord.class);
+        final DMNIncludedModelActiveRecord includedModel2 = mock(DMNIncludedModelActiveRecord.class);
+        final PMMLIncludedModelActiveRecord includedModel3 = mock(PMMLIncludedModelActiveRecord.class);
+        final DefaultCardComponent card1 = mock(DefaultCardComponent.class);
         final DMNCardComponent card2 = mock(DMNCardComponent.class);
-        final List<IncludedModel> includedModels = asList(includedModel1, includedModel2);
+        final PMMLCardComponent card3 = mock(PMMLCardComponent.class);
+        final List<BaseIncludedModelActiveRecord> includedModels = asList(includedModel1, includedModel2, includedModel3);
 
         when(pageState.generateIncludedModels()).thenReturn(includedModels);
-        when(dmnCardComponent.get()).thenReturn(card1, card2);
+        when(defaultCardComponent.get()).thenReturn(card1);
+        when(dmnCardComponent.get()).thenReturn(card2);
+        when(pmmlCardComponent.get()).thenReturn(card3);
 
         grid.refresh();
 
         verify(card1).setup(grid, includedModel1);
         verify(card2).setup(grid, includedModel2);
-        verify(cardsGridComponent).setupCards(asList(card1, card2));
+        verify(card3).setup(grid, includedModel3);
+        verify(cardsGridComponent).setupCards(asList(card1, card2, card3));
     }
 }

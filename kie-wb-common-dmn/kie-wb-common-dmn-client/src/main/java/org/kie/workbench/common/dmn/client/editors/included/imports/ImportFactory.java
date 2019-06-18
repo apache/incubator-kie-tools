@@ -21,13 +21,15 @@ import java.util.Objects;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.Import;
+import org.kie.workbench.common.dmn.api.definition.v1_1.ImportDMN;
+import org.kie.workbench.common.dmn.api.definition.v1_1.ImportPMML;
 import org.kie.workbench.common.dmn.api.property.dmn.LocationURI;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
-import org.kie.workbench.common.dmn.client.editors.included.IncludedModel;
+import org.kie.workbench.common.dmn.client.editors.included.BaseIncludedModelActiveRecord;
+import org.kie.workbench.common.dmn.client.editors.included.DMNIncludedModelActiveRecord;
+import org.kie.workbench.common.dmn.client.editors.included.PMMLIncludedModelActiveRecord;
 
 public class ImportFactory {
-
-    static String IMPORT_TYPE = "http://www.omg.org/spec/DMN/20180521/MODEL/";
 
     private final IncludedModelsIndex modelsIndex;
 
@@ -36,25 +38,38 @@ public class ImportFactory {
         this.modelsIndex = modelsIndex;
     }
 
-    public Import makeImport(final IncludedModel record) {
+    public Import makeImport(final BaseIncludedModelActiveRecord record) {
+        Import anImport;
 
-        final Import anImport = new Import();
+        if (record instanceof DMNIncludedModelActiveRecord) {
+            final ImportDMN dmn = new ImportDMN();
+            final DMNIncludedModelActiveRecord dmnRecord = (DMNIncludedModelActiveRecord) record;
+            dmn.setNamespace(record.getNamespace());
+            dmn.setDrgElementsCount(dmnRecord.getDrgElementsCount());
+            dmn.setItemDefinitionsCount(dmnRecord.getDataTypesCount());
+            anImport = dmn;
+        } else if (record instanceof PMMLIncludedModelActiveRecord) {
+            final ImportPMML pmml = new ImportPMML();
+            final PMMLIncludedModelActiveRecord pmmlRecord = (PMMLIncludedModelActiveRecord) record;
+            pmml.setNamespace(name(record).getValue());
+            pmml.setModelCount(pmmlRecord.getModelCount());
+            anImport = pmml;
+        } else {
+            anImport = new Import();
+        }
 
-        anImport.setImportType(IMPORT_TYPE);
         anImport.setName(name(record));
         anImport.setLocationURI(location(record));
-        anImport.setNamespace(record.getNamespace());
-        anImport.setDrgElementsCount(record.getDrgElementsCount());
-        anImport.setItemDefinitionsCount(record.getDataTypesCount());
+        anImport.setImportType(record.getImportType());
 
         return anImport;
     }
 
-    private LocationURI location(final IncludedModel record) {
+    private LocationURI location(final BaseIncludedModelActiveRecord record) {
         return new LocationURI(record.getPath());
     }
 
-    Name name(final IncludedModel record) {
+    Name name(final BaseIncludedModelActiveRecord record) {
         return new Name(uniqueName(record.getName()));
     }
 

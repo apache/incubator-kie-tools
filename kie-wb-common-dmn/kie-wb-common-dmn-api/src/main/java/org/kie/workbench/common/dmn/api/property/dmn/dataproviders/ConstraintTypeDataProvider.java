@@ -66,8 +66,8 @@ public class ConstraintTypeDataProvider implements SelectorDataProvider {
     public SelectorData getSelectorData(final FormRenderingContext context) {
         final Map<Object, String> values = new TreeMap<>(Comparator.comparing(o -> valuePosition.get(o)));
         Arrays.stream(ConstraintType.values())
-            .forEach(scope -> values.put(scope.value(),
-                                         translationService.getTranslation(KEY_PREFIX + scope.value())));
+                .forEach(scope -> values.put(scope.value(),
+                                             translationService.getTranslation(KEY_PREFIX + scope.value())));
 
         values.put("", translationService.getTranslation(KEY_PREFIX + "selectType"));
         return new SelectorData(values,

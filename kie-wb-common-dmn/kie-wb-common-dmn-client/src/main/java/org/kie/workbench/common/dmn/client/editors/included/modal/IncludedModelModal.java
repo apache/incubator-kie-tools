@@ -18,6 +18,7 @@ package org.kie.workbench.common.dmn.client.editors.included.modal;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -28,10 +29,14 @@ import javax.inject.Inject;
 
 import elemental2.dom.HTMLElement;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
+import org.kie.workbench.common.dmn.api.editors.included.DMNImportTypes;
 import org.kie.workbench.common.dmn.client.api.included.legacy.DMNIncludeModelsClient;
 import org.kie.workbench.common.dmn.client.decision.events.RefreshDecisionComponents;
-import org.kie.workbench.common.dmn.client.editors.included.IncludedModel;
+import org.kie.workbench.common.dmn.client.editors.included.BaseIncludedModelActiveRecord;
+import org.kie.workbench.common.dmn.client.editors.included.DMNIncludedModelActiveRecord;
+import org.kie.workbench.common.dmn.client.editors.included.DefaultIncludedModelActiveRecord;
 import org.kie.workbench.common.dmn.client.editors.included.IncludedModelsPagePresenter;
+import org.kie.workbench.common.dmn.client.editors.included.PMMLIncludedModelActiveRecord;
 import org.kie.workbench.common.dmn.client.editors.included.imports.persistence.ImportRecordEngine;
 import org.kie.workbench.common.dmn.client.editors.included.modal.dropdown.DMNAssetsDropdown;
 import org.kie.workbench.common.dmn.client.editors.types.common.events.RefreshDataTypesListEvent;
@@ -39,9 +44,12 @@ import org.kie.workbench.common.widgets.client.assets.dropdown.KieAssetsDropdown
 import org.uberfire.ext.editor.commons.client.file.popups.elemental2.Elemental2Modal;
 import org.uberfire.mvp.Command;
 
+import static org.kie.workbench.common.dmn.api.editors.included.DMNImportTypes.determineImportType;
 import static org.kie.workbench.common.dmn.client.editors.included.modal.dropdown.DMNAssetsDropdownItemsProvider.DRG_ELEMENT_COUNT_METADATA;
+import static org.kie.workbench.common.dmn.client.editors.included.modal.dropdown.DMNAssetsDropdownItemsProvider.IMPORT_TYPE_METADATA;
 import static org.kie.workbench.common.dmn.client.editors.included.modal.dropdown.DMNAssetsDropdownItemsProvider.ITEM_DEFINITION_COUNT_METADATA;
 import static org.kie.workbench.common.dmn.client.editors.included.modal.dropdown.DMNAssetsDropdownItemsProvider.PATH_METADATA;
+import static org.kie.workbench.common.dmn.client.editors.included.modal.dropdown.DMNAssetsDropdownItemsProvider.PMML_MODEL_COUNT_METADATA;
 import static org.kie.workbench.common.stunner.core.util.StringUtils.isEmpty;
 
 @Dependent
@@ -110,7 +118,7 @@ public class IncludedModelModal extends Elemental2Modal<IncludedModelModal.View>
         getDropdown()
                 .getValue()
                 .ifPresent(value -> {
-                    final IncludedModel includedModel = createIncludedModel(value);
+                    final BaseIncludedModelActiveRecord includedModel = createIncludedModel(value);
                     refreshGrid();
                     refreshDecisionComponents();
                     refreshDataTypesList(includedModel);
@@ -118,7 +126,7 @@ public class IncludedModelModal extends Elemental2Modal<IncludedModelModal.View>
                 });
     }
 
-    void refreshDataTypesList(final IncludedModel includedModel) {
+    void refreshDataTypesList(final BaseIncludedModelActiveRecord includedModel) {
         client.loadItemDefinitionsByNamespace(includedModel.getName(),
                                               includedModel.getNamespace(),
                                               getItemDefinitionConsumer());
@@ -138,20 +146,30 @@ public class IncludedModelModal extends Elemental2Modal<IncludedModelModal.View>
         getDropdown().clear();
     }
 
-    IncludedModel createIncludedModel(final KieAssetsDropdownItem value) {
-        final IncludedModel includedModel = createIncludedModel();
+    BaseIncludedModelActiveRecord createIncludedModel(final KieAssetsDropdownItem value) {
         final Map<String, String> metaData = value.getMetaData();
+        final BaseIncludedModelActiveRecord includedModel = createIncludedModel(metaData);
         includedModel.setName(getView().getModelNameInput());
         includedModel.setNamespace(value.getValue());
+        includedModel.setImportType(metaData.get(IMPORT_TYPE_METADATA));
         includedModel.setPath(metaData.get(PATH_METADATA));
-        includedModel.setDrgElementsCount(Integer.valueOf(metaData.get(DRG_ELEMENT_COUNT_METADATA)));
-        includedModel.setDataTypesCount(Integer.valueOf(metaData.get(ITEM_DEFINITION_COUNT_METADATA)));
         includedModel.create();
         return includedModel;
     }
 
-    IncludedModel createIncludedModel() {
-        return new IncludedModel(recordEngine);
+    BaseIncludedModelActiveRecord createIncludedModel(final Map<String, String> metaData) {
+        final String importType = metaData.get(IMPORT_TYPE_METADATA);
+        if (Objects.equals(DMNImportTypes.DMN, determineImportType(importType))) {
+            final DMNIncludedModelActiveRecord dmnIncludedModel = new DMNIncludedModelActiveRecord(recordEngine);
+            dmnIncludedModel.setDrgElementsCount(Integer.valueOf(metaData.get(DRG_ELEMENT_COUNT_METADATA)));
+            dmnIncludedModel.setDataTypesCount(Integer.valueOf(metaData.get(ITEM_DEFINITION_COUNT_METADATA)));
+            return dmnIncludedModel;
+        } else if (Objects.equals(DMNImportTypes.PMML, determineImportType(importType))) {
+            final PMMLIncludedModelActiveRecord pmmlIncludedModel = new PMMLIncludedModelActiveRecord(recordEngine);
+            pmmlIncludedModel.setModelCount(Integer.valueOf(metaData.get(PMML_MODEL_COUNT_METADATA)));
+            return pmmlIncludedModel;
+        }
+        return new DefaultIncludedModelActiveRecord(recordEngine);
     }
 
     private DMNAssetsDropdown getDropdown() {

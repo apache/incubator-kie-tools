@@ -16,38 +16,20 @@
 
 package org.kie.workbench.common.dmn.client.editors.included.grid;
 
-import java.util.function.Function;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import com.google.gwt.dom.client.Style.HasCssName;
-import elemental2.dom.HTMLElement;
-import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
 import org.kie.workbench.common.dmn.client.decision.events.RefreshDecisionComponents;
-import org.kie.workbench.common.dmn.client.editors.included.IncludedModel;
-import org.kie.workbench.common.widgets.client.cards.CardComponent;
-import org.uberfire.client.mvp.UberElemental;
+import org.kie.workbench.common.dmn.client.editors.included.DMNIncludedModelActiveRecord;
 
-import static org.gwtbootstrap3.client.ui.constants.IconType.DOWNLOAD;
-import static org.kie.workbench.common.stunner.core.util.StringUtils.isEmpty;
-
-public class DMNCardComponent implements CardComponent {
-
-    private final ContentView contentView;
-
-    private final Event<RefreshDecisionComponents> refreshDecisionComponentsEvent;
-
-    private DMNCardsGridComponent grid;
-
-    private IncludedModel includedModel;
+public class DMNCardComponent extends BaseCardComponent<DMNIncludedModelActiveRecord, DMNCardComponent.ContentView> {
 
     @Inject
-    public DMNCardComponent(final ContentView contentView,
+    public DMNCardComponent(final @DMNCard DMNCardComponent.ContentView contentView,
                             final Event<RefreshDecisionComponents> refreshDecisionComponentsEvent) {
-        this.contentView = contentView;
-        this.refreshDecisionComponentsEvent = refreshDecisionComponentsEvent;
+        super(contentView,
+              refreshDecisionComponentsEvent);
     }
 
     @PostConstruct
@@ -55,79 +37,10 @@ public class DMNCardComponent implements CardComponent {
         contentView.init(this);
     }
 
-    public void setup(final DMNCardsGridComponent grid,
-                      final IncludedModel includedModel) {
-        this.grid = grid;
-        this.includedModel = includedModel;
-        refreshView();
-    }
-
-    void refreshView() {
+    protected void refreshView() {
         contentView.setPath(getTruncatedSubTitle());
         contentView.setDataTypesCount(getDataTypesCount());
         contentView.setDrgElementsCount(getDrgElementsCount());
-    }
-
-    @Override
-    public HasCssName getIcon() {
-        return DOWNLOAD;
-    }
-
-    @Override
-    public String getTitle() {
-        return getIncludedModel().getName();
-    }
-
-    @Override
-    public String getUUID() {
-        return getIncludedModel().getUUID();
-    }
-
-    @Override
-    public HTMLElement getContent() {
-        return contentView.getElement();
-    }
-
-    @Override
-    public Function<String, Boolean> onTitleChanged() {
-        return newName -> {
-
-            final String oldName = getIncludedModel().getName();
-
-            getIncludedModel().setName(newName);
-
-            if (getIncludedModel().isValid()) {
-                getIncludedModel().update();
-                getGrid().refresh();
-                refreshDecisionComponents();
-                return true;
-            } else {
-                getIncludedModel().setName(oldName);
-                return false;
-            }
-        };
-    }
-
-    private String getTruncatedSubTitle() {
-        return truncate(getSubTitle(), 60);
-    }
-
-    String getSubTitle() {
-        if (isEmpty(getIncludedModel().getPath())) {
-            return getIncludedModel().getNamespace();
-        } else {
-            return getIncludedModel().getPath();
-        }
-    }
-
-    String truncate(final String value,
-                    final int limit) {
-
-        if (value.length() > limit) {
-            return "..." + value.substring(value.length() - limit);
-        }
-
-        return value;
     }
 
     private Integer getDataTypesCount() {
@@ -138,28 +51,7 @@ public class DMNCardComponent implements CardComponent {
         return getIncludedModel().getDrgElementsCount();
     }
 
-    public void remove() {
-        getIncludedModel().destroy();
-        getGrid().refresh();
-        refreshDecisionComponents();
-    }
-
-    void refreshDecisionComponents() {
-        refreshDecisionComponentsEvent.fire(new RefreshDecisionComponents());
-    }
-
-    IncludedModel getIncludedModel() {
-        return includedModel;
-    }
-
-    DMNCardsGridComponent getGrid() {
-        return grid;
-    }
-
-    public interface ContentView extends UberElemental<DMNCardComponent>,
-                                         IsElement {
-
-        void setPath(final String path);
+    public interface ContentView extends DefaultCardComponent.ContentView {
 
         void setDataTypesCount(final Integer dataTypesCount);
 

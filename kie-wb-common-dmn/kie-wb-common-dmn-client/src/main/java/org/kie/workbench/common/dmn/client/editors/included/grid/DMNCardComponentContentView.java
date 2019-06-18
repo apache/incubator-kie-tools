@@ -19,20 +19,15 @@ package org.kie.workbench.common.dmn.client.editors.included.grid;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.google.gwt.event.dom.client.ClickEvent;
 import elemental2.dom.HTMLButtonElement;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLParagraphElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.kie.workbench.common.dmn.client.editors.included.grid.DMNCardComponent.ContentView;
 
+@DMNCard
 @Templated
-public class DMNCardComponentContentView implements ContentView {
-
-    @DataField("path")
-    private final HTMLParagraphElement path;
+public class DMNCardComponentContentView extends BaseCardComponentContentView implements DMNCardComponent.ContentView {
 
     @DataField("data-types-count")
     private final HTMLElement dataTypesCount;
@@ -40,35 +35,15 @@ public class DMNCardComponentContentView implements ContentView {
     @DataField("drg-elements-count")
     private final HTMLElement drgElementsCount;
 
-    @DataField("remove-button")
-    private final HTMLButtonElement removeButton;
-
-    private DMNCardComponent presenter;
-
     @Inject
     public DMNCardComponentContentView(final HTMLParagraphElement path,
                                        final @Named("span") HTMLElement dataTypesCount,
                                        final @Named("span") HTMLElement drgElementsCount,
                                        final HTMLButtonElement removeButton) {
-        this.path = path;
+        super(path,
+              removeButton);
         this.dataTypesCount = dataTypesCount;
         this.drgElementsCount = drgElementsCount;
-        this.removeButton = removeButton;
-    }
-
-    @Override
-    public void init(final DMNCardComponent presenter) {
-        this.presenter = presenter;
-    }
-
-    @EventHandler("remove-button")
-    public void onRemoveButtonClick(final ClickEvent e) {
-        presenter.remove();
-    }
-
-    @Override
-    public void setPath(final String path) {
-        this.path.textContent = path;
     }
 
     @Override

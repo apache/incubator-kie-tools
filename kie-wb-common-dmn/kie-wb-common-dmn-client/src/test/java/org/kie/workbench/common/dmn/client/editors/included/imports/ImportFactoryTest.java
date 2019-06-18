@@ -23,13 +23,18 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Import;
+import org.kie.workbench.common.dmn.api.definition.v1_1.ImportDMN;
+import org.kie.workbench.common.dmn.api.definition.v1_1.ImportPMML;
+import org.kie.workbench.common.dmn.api.editors.included.DMNImportTypes;
 import org.kie.workbench.common.dmn.api.property.dmn.LocationURI;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
-import org.kie.workbench.common.dmn.client.editors.included.IncludedModel;
+import org.kie.workbench.common.dmn.client.editors.included.DMNIncludedModelActiveRecord;
+import org.kie.workbench.common.dmn.client.editors.included.PMMLIncludedModelActiveRecord;
 import org.mockito.Mock;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -47,10 +52,10 @@ public class ImportFactoryTest {
     }
 
     @Test
-    public void testMakeImport() {
+    public void testMakeDMNImport() {
 
-        final IncludedModel record = new IncludedModel(null);
-        final String expectedImportType = ImportFactory.IMPORT_TYPE;
+        final DMNIncludedModelActiveRecord record = new DMNIncludedModelActiveRecord(null);
+        final String expectedImportType = DMNImportTypes.DMN.getDefaultNamespace();
         final String nameValue = "name";
         final String path = "/src/main/kie/dmn";
         final Name expectedName = new Name(nameValue);
@@ -62,17 +67,50 @@ public class ImportFactoryTest {
         record.setName(nameValue);
         record.setPath(path);
         record.setNamespace(expectedNamespace);
+        record.setImportType(DMNImportTypes.DMN.getDefaultNamespace());
         record.setDrgElementsCount(expectedDrgElementsCount);
         record.setDataTypesCount(expectedItemDefinitionsCount);
 
         final Import actualImport = factory.makeImport(record);
+        assertTrue(actualImport instanceof ImportDMN);
 
+        final ImportDMN dmnImport = (ImportDMN) actualImport;
         assertEquals(expectedImportType, actualImport.getImportType());
         assertEquals(expectedName, actualImport.getName());
         assertEquals(expectedLocationURI, actualImport.getLocationURI());
         assertEquals(expectedNamespace, actualImport.getNamespace());
-        assertEquals(expectedDrgElementsCount, actualImport.getDrgElementsCount());
-        assertEquals(expectedItemDefinitionsCount, actualImport.getItemDefinitionsCount());
+        assertEquals(expectedImportType, actualImport.getImportType());
+        assertEquals(expectedDrgElementsCount, dmnImport.getDrgElementsCount());
+        assertEquals(expectedItemDefinitionsCount, dmnImport.getItemDefinitionsCount());
+    }
+
+    @Test
+    public void testMakePMMLImport() {
+
+        final PMMLIncludedModelActiveRecord record = new PMMLIncludedModelActiveRecord(null);
+        final String expectedImportType = DMNImportTypes.PMML.getDefaultNamespace();
+        final String expectedNameValue = "name";
+        final String path = "/src/main/kie/pmml";
+        final Name expectedName = new Name(expectedNameValue);
+        final LocationURI expectedLocationURI = new LocationURI(path);
+        final int expectedModelCount = 2;
+
+        record.setPath(path);
+        record.setName(expectedNameValue);
+        record.setNamespace(expectedNameValue);
+        record.setImportType(DMNImportTypes.PMML.getDefaultNamespace());
+        record.setModelCount(expectedModelCount);
+
+        final Import actualImport = factory.makeImport(record);
+        assertTrue(actualImport instanceof ImportPMML);
+
+        final ImportPMML pmmlImport = (ImportPMML) actualImport;
+        assertEquals(expectedImportType, actualImport.getImportType());
+        assertEquals(expectedName, actualImport.getName());
+        assertEquals(expectedLocationURI, actualImport.getLocationURI());
+        assertEquals(expectedNameValue, actualImport.getNamespace());
+        assertEquals(expectedImportType, actualImport.getImportType());
+        assertEquals(expectedModelCount, pmmlImport.getModelCount());
     }
 
     @Test
@@ -82,7 +120,7 @@ public class ImportFactoryTest {
         final Import import2 = mock(Import.class);
         final Import import3 = mock(Import.class);
         final List<Import> imports = asList(import1, import2, import3);
-        final IncludedModel record = new IncludedModel(null);
+        final DMNIncludedModelActiveRecord record = new DMNIncludedModelActiveRecord(null);
 
         when(import1.getName()).thenReturn(new Name("foo"));
         when(import2.getName()).thenReturn(new Name("bar"));
@@ -105,7 +143,7 @@ public class ImportFactoryTest {
         final Import import2 = mock(Import.class);
         final Import import3 = mock(Import.class);
         final List<Import> imports = asList(import1, import2, import3);
-        final IncludedModel record = new IncludedModel(null);
+        final DMNIncludedModelActiveRecord record = new DMNIncludedModelActiveRecord(null);
 
         when(import1.getName()).thenReturn(new Name("foo"));
         when(import2.getName()).thenReturn(new Name("bar"));

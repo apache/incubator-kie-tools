@@ -103,6 +103,8 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionService;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.FunctionDefinition;
+import org.kie.workbench.common.dmn.api.definition.v1_1.ImportDMN;
+import org.kie.workbench.common.dmn.api.definition.v1_1.ImportPMML;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationRequirement;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InputData;
@@ -111,6 +113,9 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.KnowledgeRequirement;
 import org.kie.workbench.common.dmn.api.definition.v1_1.KnowledgeSource;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.TextAnnotation;
+import org.kie.workbench.common.dmn.api.editors.included.DMNImportTypes;
+import org.kie.workbench.common.dmn.api.editors.included.PMMLDocumentMetadata;
+import org.kie.workbench.common.dmn.api.graph.DMNDiagramUtils;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.kie.workbench.common.dmn.backend.common.DMNMarshallerImportsHelper;
@@ -177,6 +182,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
@@ -323,8 +329,6 @@ public class DMNMarshallerTest {
         }).when(applicationFactoryManager).newDiagram(anyString(),
                                                       anyString(),
                                                       any(Metadata.class));
-
-        MappingContextSingleton.loadDynamicMarshallers();
     }
 
     /**
@@ -337,6 +341,14 @@ public class DMNMarshallerTest {
         final String ibmVendorName = "IBM";
         final String javaVendorPropertyKey = "java.vendor";
         Assume.assumeFalse(StringUtils.containsIgnoreCase(System.getProperty(javaVendorPropertyKey), ibmVendorName));
+    }
+
+    @Test
+    public void testDynamicMarshallers() {
+        // This is a fail-fast for Errai's dynamic marshallers. It isn't needed as such for
+        // testing DMNMarshaller however issues with Errai's dynamic marshaller generation will
+        // otherwise be reported when compiling the webapp.
+        MappingContextSingleton.loadDynamicMarshallers();
     }
 
     @Test
@@ -2217,6 +2229,45 @@ public class DMNMarshallerTest {
         assertTrue(targetConnection.getMagnetIndex().isPresent());
         assertEquals(MagnetConnection.MAGNET_CENTER, targetConnection.getMagnetIndex().getAsInt());
         assertFalse(targetConnection.isAuto());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testImportConversion() throws IOException {
+        //Assume every import in the DMN file can be resolved to the actual file.
+        when(dmnMarshallerImportsHelper.getPMMLDocuments(any(Metadata.class), anyList())).thenAnswer(i -> {
+            final Map<Import, PMMLDocumentMetadata> pmmlDocuments = new HashMap<>();
+            final List<Import> imports = (List<Import>) i.getArguments()[1];
+            imports.forEach(imp -> pmmlDocuments.put(imp, mock(PMMLDocumentMetadata.class)));
+            return pmmlDocuments;
+        });
+
+        roundTripUnmarshalThenMarshalUnmarshal(this.getClass().getResourceAsStream("/imports.dmn"),
+                                               this::checkImports);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void checkImports(final Graph<?, Node<?, ?>> graph) {
+        assertNotNull(graph);
+
+        final DMNDiagramUtils utils = new DMNDiagramUtils();
+        final Diagram mockDiagram = mock(Diagram.class);
+        when(mockDiagram.getGraph()).thenReturn(graph);
+
+        final org.kie.workbench.common.dmn.api.definition.v1_1.Definitions definitions = utils.getDefinitions(mockDiagram);
+        final List<org.kie.workbench.common.dmn.api.definition.v1_1.Import> imports = definitions.getImport();
+        assertTrue(imports.get(0) instanceof ImportDMN);
+        assertTrue(imports.get(1) instanceof ImportPMML);
+
+        final ImportDMN dmnImport = (ImportDMN) imports.get(0);
+        assertEquals("dmn-import", dmnImport.getName().getValue());
+        assertEquals("https://kiegroup.org/dmn/_46EB0D0D-7241-4629-A38E-0377AA5B32D1", dmnImport.getNamespace());
+        assertEquals(DMNImportTypes.DMN.getDefaultNamespace(), dmnImport.getImportType());
+
+        final ImportPMML pmmlImport = (ImportPMML) imports.get(1);
+        assertEquals("pmml-import", pmmlImport.getName().getValue());
+        assertEquals("pmml-import", pmmlImport.getNamespace());
+        assertEquals(DMNImportTypes.PMML.getDefaultNamespace(), pmmlImport.getImportType());
     }
 
     @SuppressWarnings("unchecked")

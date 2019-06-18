@@ -17,6 +17,7 @@ package org.kie.workbench.common.dmn.backend.definition.v1_1;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
@@ -24,18 +25,23 @@ import java.util.function.Supplier;
 
 import org.kie.dmn.model.api.Definitions;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Import;
+import org.kie.workbench.common.dmn.api.definition.v1_1.ImportDMN;
+import org.kie.workbench.common.dmn.api.definition.v1_1.ImportPMML;
+import org.kie.workbench.common.dmn.api.editors.included.DMNImportTypes;
+import org.kie.workbench.common.dmn.api.editors.included.PMMLDocumentMetadata;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.LocationURI;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 
+import static org.kie.workbench.common.dmn.api.editors.included.DMNImportTypes.determineImportType;
+
 public final class ImportConverter {
 
     public static Import wbFromDMN(final org.kie.dmn.model.api.Import dmn,
-                                   final Definitions definitions) {
-
-        final LocationURI locationURI = new LocationURI(dmn.getLocationURI());
-        final Import result = new Import(dmn.getNamespace(), locationURI, dmn.getImportType());
+                                   final Definitions definitions,
+                                   final PMMLDocumentMetadata pmmlDocument) {
+        final Import result = createWBImport(dmn, definitions, pmmlDocument);
         final Map<QName, String> additionalAttributes = new HashMap<>();
         for (Map.Entry<javax.xml.namespace.QName, String> entry : dmn.getAdditionalAttributes().entrySet()) {
             additionalAttributes.put(QNamePropertyConverter.wbFromDMN(entry.getKey(), dmn), entry.getValue());
@@ -47,15 +53,31 @@ public final class ImportConverter {
         result.setId(new Id(id != null ? id : UUID.randomUUID().toString()));
         result.setName(new Name(name));
         result.setDescription(DescriptionPropertyConverter.wbFromDMN(description));
-        result.setDrgElementsCount(countDefinitionElement(definitions, () -> d -> d.getDrgElement().size()));
-        result.setItemDefinitionsCount(countDefinitionElement(definitions, () -> d -> d.getItemDefinition().size()));
 
         dmn.getNsContext().forEach((key, value) -> result.getNsContext().put(key, value));
 
         return result;
     }
 
-    public static org.kie.dmn.model.api.Import dmnFromWb(Import wb) {
+    private static Import createWBImport(final org.kie.dmn.model.api.Import dmn,
+                                         final Definitions definitions,
+                                         final PMMLDocumentMetadata pmmlDocument) {
+        final LocationURI locationURI = new LocationURI(dmn.getLocationURI());
+        if (Objects.equals(DMNImportTypes.DMN, determineImportType(dmn.getImportType()))) {
+            final ImportDMN result = new ImportDMN(dmn.getNamespace(), locationURI, dmn.getImportType());
+            result.setDrgElementsCount(countDefinitionElement(definitions, () -> d -> d.getDrgElement().size()));
+            result.setItemDefinitionsCount(countDefinitionElement(definitions, () -> d -> d.getItemDefinition().size()));
+            return result;
+        } else if (Objects.equals(DMNImportTypes.PMML, determineImportType(dmn.getImportType()))) {
+            final ImportPMML result = new ImportPMML(dmn.getNamespace(), locationURI, dmn.getImportType());
+            result.setModelCount(pmmlDocument.getModels().size());
+            return result;
+        } else {
+            return new Import(dmn.getNamespace(), locationURI, dmn.getImportType());
+        }
+    }
+
+    public static org.kie.dmn.model.api.Import dmnFromWb(final Import wb) {
         final org.kie.dmn.model.api.Import result = new org.kie.dmn.model.v1_2.TImport();
         result.setImportType(wb.getImportType());
         result.setLocationURI(wb.getLocationURI().getValue());

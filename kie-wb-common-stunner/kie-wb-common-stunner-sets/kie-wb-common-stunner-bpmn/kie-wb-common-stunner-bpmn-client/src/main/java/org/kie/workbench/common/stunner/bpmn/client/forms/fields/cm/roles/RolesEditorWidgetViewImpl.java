@@ -40,7 +40,7 @@ import org.jboss.errai.ui.shared.api.annotations.Bound;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.KeyValueRow;
-import org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils;
+import org.kie.workbench.common.stunner.core.util.StringUtils;
 import org.uberfire.workbench.events.NotificationEvent;
 
 @Dependent
@@ -111,7 +111,7 @@ public class RolesEditorWidgetViewImpl extends Composite implements RolesEditorW
     }
 
     private List<KeyValueRow> removeEmptyRoles(List<KeyValueRow> roles) {
-        return roles.stream().filter(row -> !StringUtils.isBlank(row.getKey())).collect(Collectors.toList());
+        return roles.stream().filter(row -> !StringUtils.isEmpty(row.getKey())).collect(Collectors.toList());
     }
 
     @Override

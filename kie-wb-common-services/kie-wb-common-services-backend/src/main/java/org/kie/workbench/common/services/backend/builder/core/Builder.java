@@ -530,7 +530,7 @@ public class Builder implements Serializable {
     private void buildIncrementally(final IncrementalBuildResults results,
                                     final String... destinationPath) {
         try {
-            final IncrementalResults incrementalResults = ((InternalKieBuilder) kieBuilder).createFileSet(destinationPath).build();
+            final IncrementalResults incrementalResults = ((InternalKieBuilder) kieBuilder).createFileSet(Message.Level.WARNING, destinationPath).build();
             results.addAllAddedMessages(convertMessages(incrementalResults.getAddedMessages(),
                                                         handles));
             results.addAllRemovedMessages(convertMessages(incrementalResults.getRemovedMessages(),

@@ -25,7 +25,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Definitions;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Import;
 import org.kie.workbench.common.dmn.api.property.dmn.Text;
-import org.kie.workbench.common.dmn.client.editors.included.IncludedModel;
+import org.kie.workbench.common.dmn.client.editors.included.BaseIncludedModelActiveRecord;
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.mockito.Mock;
@@ -58,12 +58,12 @@ public class IncludedModelsPageStateProviderImplTest {
     public void testGenerateIncludedModels() {
 
         final List<Import> imports = asList(mock(Import.class), mock(Import.class));
-        final List<IncludedModel> expectedIncludedModels = asList(mock(IncludedModel.class), mock(IncludedModel.class));
+        final List<BaseIncludedModelActiveRecord> expectedIncludedModels = asList(mock(BaseIncludedModelActiveRecord.class), mock(BaseIncludedModelActiveRecord.class));
 
         when(factory.makeIncludedModels(imports)).thenReturn(expectedIncludedModels);
         doReturn(imports).when(stateProvider).getImports();
 
-        final List<IncludedModel> actualIncludedModels = stateProvider.generateIncludedModels();
+        final List<BaseIncludedModelActiveRecord> actualIncludedModels = stateProvider.generateIncludedModels();
 
         assertEquals(expectedIncludedModels, actualIncludedModels);
     }

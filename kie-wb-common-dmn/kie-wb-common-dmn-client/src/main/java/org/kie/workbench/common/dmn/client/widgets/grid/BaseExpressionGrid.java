@@ -47,6 +47,7 @@ import org.kie.workbench.common.dmn.client.commands.general.SetHeaderValueComman
 import org.kie.workbench.common.dmn.client.commands.general.SetTypeRefCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableHeaderMetaData;
+import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.ListBoxSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextBoxSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
@@ -248,6 +249,16 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
                                                       newCellHasValueCommand());
     }
 
+    public ListBoxSingletonDOMElementFactory getBodyListBoxFactory() {
+        return new ListBoxSingletonDOMElementFactory(gridPanel,
+                                                     gridLayer,
+                                                     this,
+                                                     sessionManager,
+                                                     sessionCommandManager,
+                                                     newCellHasNoValueCommand(),
+                                                     newCellHasValueCommand());
+    }
+
     protected Function<GridCellTuple, Command> newCellHasNoValueCommand() {
         return (gridCellTuple) -> new DeleteCellValueCommand(gridCellTuple,
                                                              () -> uiModelMapper,
@@ -307,7 +318,7 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
     }
 
     @Override
-    protected List<NodeMouseEventHandler> getNodeMouseClickEventHandlers(final GridSelectionManager selectionManager) {
+    public List<NodeMouseEventHandler> getNodeMouseClickEventHandlers(final GridSelectionManager selectionManager) {
         final List<NodeMouseEventHandler> handlers = new ArrayList<>();
         handlers.add(new DefaultGridWidgetCellSelectorMouseEventHandler(selectionManager));
         handlers.add(new EditableHeaderGridWidgetEditCellMouseEventHandler());
@@ -315,8 +326,8 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
     }
 
     @Override
-    protected List<NodeMouseEventHandler> getNodeMouseDoubleClickEventHandlers(final GridSelectionManager selectionManager,
-                                                                               final GridPinnedModeManager pinnedModeManager) {
+    public List<NodeMouseEventHandler> getNodeMouseDoubleClickEventHandlers(final GridSelectionManager selectionManager,
+                                                                            final GridPinnedModeManager pinnedModeManager) {
         final List<NodeMouseEventHandler> handlers = new ArrayList<>();
         handlers.add(new EditableHeaderGridWidgetEditCellMouseEventHandler());
         return handlers;

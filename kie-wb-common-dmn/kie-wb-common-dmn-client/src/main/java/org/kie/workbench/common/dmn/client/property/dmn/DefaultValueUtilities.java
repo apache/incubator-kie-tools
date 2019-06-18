@@ -152,18 +152,18 @@ public class DefaultValueUtilities {
                                                                                           final T dmnModel,
                                                                                           final Function<T, String> nameExtractor) {
         return StreamSupport
-                   .stream(graph.nodes().spliterator(), false)
-                   .filter(node -> node.getContent() instanceof View)
-                   .map(node -> (View) node.getContent())
-                   .filter(view -> view.getDefinition() instanceof DMNModelInstrumentedBase)
-                   .map(view -> (T) view.getDefinition())
-                   .filter(dmn -> dmn.getClass().equals(dmnModel.getClass()))
-                   .map(nameExtractor::apply)
-                   .collect(Collectors.toList());
+                .stream(graph.nodes().spliterator(), false)
+                .filter(node -> node.getContent() instanceof View)
+                .map(node -> (View) node.getContent())
+                .filter(view -> view.getDefinition() instanceof DMNModelInstrumentedBase)
+                .map(view -> (T) view.getDefinition())
+                .filter(dmn -> dmn.getClass().equals(dmnModel.getClass()))
+                .map(nameExtractor::apply)
+                .collect(Collectors.toList());
     }
 
     private static boolean isNameAlreadySet(final NamedElement element) {
         return element.getName() != null
-                   && !StringUtils.isEmpty(element.getName().getValue());
+                && !StringUtils.isEmpty(element.getName().getValue());
     }
 }

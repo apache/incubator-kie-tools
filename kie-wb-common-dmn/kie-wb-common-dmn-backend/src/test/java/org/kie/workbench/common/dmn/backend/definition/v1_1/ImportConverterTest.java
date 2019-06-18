@@ -23,19 +23,39 @@ import org.kie.dmn.model.api.DRGElement;
 import org.kie.dmn.model.api.Definitions;
 import org.kie.dmn.model.api.ItemDefinition;
 import org.kie.dmn.model.v1_2.TImport;
+import org.kie.workbench.common.dmn.api.definition.v1_1.ImportDMN;
+import org.kie.workbench.common.dmn.api.definition.v1_1.ImportPMML;
+import org.kie.workbench.common.dmn.api.editors.included.DMNImportTypes;
+import org.kie.workbench.common.dmn.api.editors.included.PMMLDocumentMetadata;
+import org.kie.workbench.common.dmn.api.editors.included.PMMLModelMetadata;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class ImportConverterTest {
 
     @Test
-    public void testWbFromDMN() {
-
+    public void testWbFromDMNWhenGeneric() {
         final org.kie.dmn.model.api.Import dmn = new TImport();
+        dmn.setImportType("cheese");
         final Definitions definitions = mock(Definitions.class);
+        final PMMLDocumentMetadata pmmlDocument = mock(PMMLDocumentMetadata.class);
+
+        final org.kie.workbench.common.dmn.api.definition.v1_1.Import anImport = ImportConverter.wbFromDMN(dmn, definitions, pmmlDocument);
+
+        assertNotNull(anImport);
+    }
+
+    @Test
+    public void testWbFromDMNWhenDMNImport() {
+        final org.kie.dmn.model.api.Import dmn = new TImport();
+        dmn.setImportType(DMNImportTypes.DMN.getDefaultNamespace());
+        final Definitions definitions = mock(Definitions.class);
+        final PMMLDocumentMetadata pmmlDocument = mock(PMMLDocumentMetadata.class);
         final String key = "drools";
         final String value = "http://www.drools.org/kie/dmn/1.1";
         dmn.getNsContext().put(key, value);
@@ -43,13 +63,34 @@ public class ImportConverterTest {
         when(definitions.getDrgElement()).thenReturn(asList(mock(DRGElement.class), mock(DRGElement.class)));
         when(definitions.getItemDefinition()).thenReturn(asList(mock(ItemDefinition.class), mock(ItemDefinition.class), mock(ItemDefinition.class)));
 
-        final org.kie.workbench.common.dmn.api.definition.v1_1.Import anImport = ImportConverter.wbFromDMN(dmn, definitions);
+        final org.kie.workbench.common.dmn.api.definition.v1_1.Import anImport = ImportConverter.wbFromDMN(dmn, definitions, pmmlDocument);
         final Map<String, String> nsContext = anImport.getNsContext();
 
         assertEquals(1, nsContext.size());
         assertEquals(value, nsContext.get(key));
-        assertEquals(2, anImport.getDrgElementsCount());
-        assertEquals(3, anImport.getItemDefinitionsCount());
+
+        assertTrue(anImport instanceof ImportDMN);
+        final ImportDMN dmnImport = (ImportDMN) anImport;
+
+        assertEquals(2, dmnImport.getDrgElementsCount());
+        assertEquals(3, dmnImport.getItemDefinitionsCount());
+    }
+
+    @Test
+    public void testWbFromDMNWhenPMMLImport() {
+        final org.kie.dmn.model.api.Import dmn = new TImport();
+        dmn.setImportType(DMNImportTypes.PMML.getDefaultNamespace());
+        final Definitions definitions = mock(Definitions.class);
+        final PMMLDocumentMetadata pmmlDocument = mock(PMMLDocumentMetadata.class);
+
+        when(pmmlDocument.getModels()).thenReturn(asList(mock(PMMLModelMetadata.class), mock(PMMLModelMetadata.class)));
+
+        final org.kie.workbench.common.dmn.api.definition.v1_1.Import anImport = ImportConverter.wbFromDMN(dmn, definitions, pmmlDocument);
+
+        assertTrue(anImport instanceof ImportPMML);
+        final ImportPMML pmmlImport = (ImportPMML) anImport;
+
+        assertEquals(2, pmmlImport.getModelCount());
     }
 
     @Test

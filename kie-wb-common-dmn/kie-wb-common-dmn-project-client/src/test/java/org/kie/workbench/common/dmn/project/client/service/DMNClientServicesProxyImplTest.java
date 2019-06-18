@@ -29,6 +29,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedModel;
 import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedModelsService;
+import org.kie.workbench.common.dmn.api.editors.included.PMMLIncludedModel;
 import org.kie.workbench.common.dmn.api.editors.types.DMNParseService;
 import org.kie.workbench.common.dmn.api.editors.types.DMNValidationService;
 import org.kie.workbench.common.dmn.api.editors.types.TimeZoneService;
@@ -37,6 +38,7 @@ import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.mocks.CallerMock;
 
 import static java.util.Arrays.asList;
@@ -87,6 +89,9 @@ public class DMNClientServicesProxyImplTest {
     @Mock
     private WorkspaceProject workspaceProject;
 
+    @Mock
+    private Path dmnModelPath;
+
     @Captor
     private ArgumentCaptor<ClientRuntimeError> clientRuntimeErrorArgumentCaptor;
 
@@ -117,9 +122,11 @@ public class DMNClientServicesProxyImplTest {
 
         when(projectContext.getActiveWorkspaceProject()).thenReturn(optionalWorkspaceProject);
 
-        clientServicesProxy.loadModels(serviceCallback);
+        clientServicesProxy.loadModels(dmnModelPath,
+                                       serviceCallback);
 
-        verify(includedModelsService).loadModels(workspaceProject);
+        verify(includedModelsService).loadModels(eq(dmnModelPath),
+                                                 eq(workspaceProject));
     }
 
     @Test
@@ -135,6 +142,21 @@ public class DMNClientServicesProxyImplTest {
         clientServicesProxy.loadNodesFromImports(imports, serviceCallback);
 
         verify(includedModelsService).loadNodesFromImports(workspaceProject, imports);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testLoadPMMLDocumentsFromImports() {
+        final Optional<WorkspaceProject> optionalWorkspaceProject = Optional.of(workspaceProject);
+        final PMMLIncludedModel includedModel1 = mock(PMMLIncludedModel.class);
+        final PMMLIncludedModel includedModel2 = mock(PMMLIncludedModel.class);
+        final List<PMMLIncludedModel> imports = asList(includedModel1, includedModel2);
+
+        when(projectContext.getActiveWorkspaceProject()).thenReturn(optionalWorkspaceProject);
+
+        clientServicesProxy.loadPMMLDocumentsFromImports(dmnModelPath, imports, serviceCallback);
+
+        verify(includedModelsService).loadPMMLDocumentsFromImports(dmnModelPath, workspaceProject, imports);
     }
 
     @Test

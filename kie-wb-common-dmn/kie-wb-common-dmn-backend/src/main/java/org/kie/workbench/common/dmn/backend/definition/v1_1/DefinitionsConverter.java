@@ -23,6 +23,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase
 import org.kie.workbench.common.dmn.api.definition.v1_1.Definitions;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Import;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
+import org.kie.workbench.common.dmn.api.editors.included.PMMLDocumentMetadata;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
@@ -33,7 +34,8 @@ import org.kie.workbench.common.stunner.core.util.UUID;
 public class DefinitionsConverter {
 
     public static Definitions wbFromDMN(final org.kie.dmn.model.api.Definitions dmn,
-                                        final Map<org.kie.dmn.model.api.Import, org.kie.dmn.model.api.Definitions> importDefinitions) {
+                                        final Map<org.kie.dmn.model.api.Import, org.kie.dmn.model.api.Definitions> importDefinitions,
+                                        final Map<org.kie.dmn.model.api.Import, PMMLDocumentMetadata> pmmlDocuments) {
         if (dmn == null) {
             return null;
         }
@@ -74,7 +76,8 @@ public class DefinitionsConverter {
 
         for (org.kie.dmn.model.api.Import i : dmn.getImport()) {
             final org.kie.dmn.model.api.Definitions definitions = importDefinitions.get(i);
-            final Import importConverted = ImportConverter.wbFromDMN(i, definitions);
+            final PMMLDocumentMetadata pmmlDocument = pmmlDocuments.get(i);
+            final Import importConverted = ImportConverter.wbFromDMN(i, definitions, pmmlDocument);
             if (importConverted != null) {
                 importConverted.setParent(result);
             }

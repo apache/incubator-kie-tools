@@ -113,7 +113,7 @@ public class LiteralExpressionGrid extends BaseDelegatingExpressionGrid<LiteralE
     }
 
     @Override
-    protected List<NodeMouseEventHandler> getNodeMouseClickEventHandlers(final GridSelectionManager selectionManager) {
+    public List<NodeMouseEventHandler> getNodeMouseClickEventHandlers(final GridSelectionManager selectionManager) {
         final List<NodeMouseEventHandler> handlers = new ArrayList<>();
         handlers.add(new DelegatingGridWidgetCellSelectorMouseEventHandler(selectionManager,
                                                                            this::getParentInformation,
@@ -123,8 +123,8 @@ public class LiteralExpressionGrid extends BaseDelegatingExpressionGrid<LiteralE
     }
 
     @Override
-    protected List<NodeMouseEventHandler> getNodeMouseDoubleClickEventHandlers(final GridSelectionManager selectionManager,
-                                                                               final GridPinnedModeManager pinnedModeManager) {
+    public List<NodeMouseEventHandler> getNodeMouseDoubleClickEventHandlers(final GridSelectionManager selectionManager,
+                                                                            final GridPinnedModeManager pinnedModeManager) {
         return Collections.singletonList(new DelegatingGridWidgetEditCellMouseEventHandler(this::getParentInformation,
                                                                                            () -> nesting));
     }

@@ -28,7 +28,8 @@ import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
-import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
+import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpressionPMMLDocument;
+import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpressionPMMLDocumentModel;
 import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
@@ -55,6 +56,7 @@ import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.mocks.EventSourceMock;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
@@ -169,14 +171,14 @@ public class PMMLFunctionEditorDefinitionTest {
         assertEquals(2,
                      model.getContextEntry().size());
 
-        assertEquals(PMMLFunctionEditorDefinition.VARIABLE_DOCUMENT,
+        assertEquals(LiteralExpressionPMMLDocument.VARIABLE_DOCUMENT,
                      model.getContextEntry().get(0).getVariable().getName().getValue());
-        assertTrue(model.getContextEntry().get(0).getExpression() instanceof LiteralExpression);
+        assertTrue(model.getContextEntry().get(0).getExpression() instanceof LiteralExpressionPMMLDocument);
         assertEquals(model, model.getContextEntry().get(0).getParent());
 
-        assertEquals(PMMLFunctionEditorDefinition.VARIABLE_MODEL,
+        assertEquals(LiteralExpressionPMMLDocumentModel.VARIABLE_MODEL,
                      model.getContextEntry().get(1).getVariable().getName().getValue());
-        assertTrue(model.getContextEntry().get(1).getExpression() instanceof LiteralExpression);
+        assertTrue(model.getContextEntry().get(1).getExpression() instanceof LiteralExpressionPMMLDocumentModel);
         assertEquals(model, model.getContextEntry().get(1).getParent());
     }
 
@@ -194,5 +196,10 @@ public class PMMLFunctionEditorDefinitionTest {
 
         final GridWidget editor = oEditor.get();
         assertTrue(editor instanceof FunctionSupplementaryGrid);
+    }
+
+    @Test
+    public void testIsUserSelectable() {
+        assertThat(definition.isUserSelectable()).isTrue();
     }
 }

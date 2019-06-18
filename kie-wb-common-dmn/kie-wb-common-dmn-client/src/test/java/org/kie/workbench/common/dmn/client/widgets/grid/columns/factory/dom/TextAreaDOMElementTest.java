@@ -18,10 +18,13 @@ package org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.dom;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.gwtbootstrap3.client.ui.TextArea;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.commands.general.DeleteCellValueCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetCellValueCommand;
 import org.mockito.Mock;
+
+import static org.mockito.Mockito.verify;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class TextAreaDOMElementTest extends BaseDOMElementTest<TextArea, TextAreaDOMElement> {
@@ -47,5 +50,17 @@ public class TextAreaDOMElementTest extends BaseDOMElementTest<TextArea, TextAre
                                       (gcv) -> new SetCellValueCommand(gcv,
                                                                        () -> uiModelMapper,
                                                                        gridLayer::batch));
+    }
+
+    @Test
+    public void testSetValue() {
+        domElement.setValue(VALUE);
+        verify(widget).setValue(VALUE);
+    }
+
+    @Test
+    public void testGetValue() {
+        domElement.getValue();
+        verify(widget).getValue();
     }
 }

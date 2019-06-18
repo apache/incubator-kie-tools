@@ -16,49 +16,16 @@
 
 package org.kie.workbench.common.dmn.client.editors.included;
 
-import org.kie.workbench.common.dmn.client.editors.common.persistence.ActiveRecord;
 import org.kie.workbench.common.dmn.client.editors.common.persistence.RecordEngine;
 
-public class IncludedModel extends ActiveRecord<IncludedModel> {
-
-    private String uuid;
-
-    private String namespace;
-
-    private String path;
-
-    private String name;
+public class DMNIncludedModelActiveRecord extends BaseIncludedModelActiveRecord {
 
     private Integer dataTypesCount;
 
     private Integer drgElementsCount;
 
-    public IncludedModel(final RecordEngine<IncludedModel> recordEngine) {
+    public DMNIncludedModelActiveRecord(final RecordEngine<BaseIncludedModelActiveRecord> recordEngine) {
         super(recordEngine);
-    }
-
-    public String getNamespace() {
-        return namespace;
-    }
-
-    public void setNamespace(final String namespace) {
-        this.namespace = namespace;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public void setPath(final String path) {
-        this.path = path;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
     }
 
     public Integer getDataTypesCount() {
@@ -75,18 +42,5 @@ public class IncludedModel extends ActiveRecord<IncludedModel> {
 
     public void setDrgElementsCount(final Integer drgElementsCount) {
         this.drgElementsCount = drgElementsCount;
-    }
-
-    public String getUUID() {
-        return uuid;
-    }
-
-    public void setUuid(final String uuid) {
-        this.uuid = uuid;
-    }
-
-    @Override
-    protected IncludedModel getRecord() {
-        return this;
     }
 }

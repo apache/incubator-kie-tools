@@ -27,9 +27,32 @@ import org.uberfire.backend.vfs.Path;
 public interface DMNPathsHelper {
 
     /**
-     * This method loads all DMN paths into a given project.
+     * This method returns all model paths (DMN and PMML) for a given project.
      * @param workspaceProject represents the project that will be scanned.
      * @return all paths from a given project.
      */
-    List<Path> getDiagramsPaths(final WorkspaceProject workspaceProject);
+    List<Path> getModelsPaths(final WorkspaceProject workspaceProject);
+
+    /**
+     * This method returns all DMN paths for a given project.
+     * @param workspaceProject represents the project that will be scanned.
+     * @return all paths from a given project.
+     */
+    List<Path> getDMNModelsPaths(final WorkspaceProject workspaceProject);
+
+    /**
+     * This method returns all PMML paths for a given project.
+     * @param workspaceProject represents the project that will be scanned.
+     * @return all paths from a given project.
+     */
+    List<Path> getPMMLModelsPaths(final WorkspaceProject workspaceProject);
+
+    /**
+     * Returns a {@link String} representation of the relative {@link Path} between two other {@link Path}s.
+     * @param dmnModelPath The {@link Path} of the DMN file being edited.
+     * @param includedModelPath The {@link Path} of an included external model file.
+     * @return
+     */
+    String getRelativeURI(final Path dmnModelPath,
+                          final Path includedModelPath);
 }

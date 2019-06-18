@@ -923,8 +923,12 @@ public class FunctionGridTest {
 
         grid.selectFirstCell();
 
-        verify(gridLayer).select(literalExpressionEditor);
-        verify(literalExpressionEditor).selectFirstCell();
+        verify(grid).selectCell(eq(0),
+                                eq(0),
+                                eq(false),
+                                eq(false));
+
+        assertNOPDomainObjectSelection();
     }
 
     @Test

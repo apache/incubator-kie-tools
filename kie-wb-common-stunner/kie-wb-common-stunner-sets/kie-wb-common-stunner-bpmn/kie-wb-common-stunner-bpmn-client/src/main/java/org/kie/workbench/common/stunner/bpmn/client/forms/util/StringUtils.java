@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.bpmn.client.forms.util;
 
 import java.util.List;
-import java.util.Objects;
 
 import com.google.gwt.http.client.URL;
 
@@ -29,54 +28,6 @@ public class StringUtils {
     public static final String ALPHA_NUM_REGEXP = "^[a-zA-Z0-9\\-\\_]*$";
     public static final String ALPHA_NUM_DOT_REGEXP = "^[a-zA-Z0-9\\-\\_\\.]*$";
     public static final String ALPHA_NUM_SPACE_REGEXP = "^[a-zA-Z0-9\\-\\_\\ ]*$";
-
-    /**
-     * Puts strings inside quotes and numerics are left as they are.
-     * @param str
-     * @return
-     */
-    public static String createQuotedConstant(String str) {
-        if (str == null || str.isEmpty()) {
-            return str;
-        }
-        try {
-            Double.parseDouble(str);
-        } catch (NumberFormatException nfe) {
-            return "\"" + str + "\"";
-        }
-        return str;
-    }
-
-    /**
-     * Removes double-quotes from around a string
-     * @param str
-     * @return
-     */
-    public static String createUnquotedConstant(String str) {
-        if (str == null || str.isEmpty()) {
-            return str;
-        }
-        if (str.startsWith("\"")) {
-            str = str.substring(1);
-        }
-        if (str.endsWith("\"")) {
-            str = str.substring(0,
-                                str.length() - 1);
-        }
-        return str;
-    }
-
-    /**
-     * Returns true if string starts and ends with double-quote
-     * @param str
-     * @return
-     */
-    public static boolean isQuotedConstant(String str) {
-        if (str == null || str.isEmpty()) {
-            return false;
-        }
-        return (str.startsWith("\"") && str.endsWith("\""));
-    }
 
     /**
      * Creates a string for a list by concatenating each object's String separated by commas
@@ -133,9 +84,5 @@ public class StringUtils {
         formattedDataType.append(" [").append(dataType.substring(0,
                                                                  i)).append("]");
         return formattedDataType.toString();
-    }
-
-    public static boolean isBlank(String input) {
-        return Objects.isNull(input) || Objects.equals("", input);
     }
 }

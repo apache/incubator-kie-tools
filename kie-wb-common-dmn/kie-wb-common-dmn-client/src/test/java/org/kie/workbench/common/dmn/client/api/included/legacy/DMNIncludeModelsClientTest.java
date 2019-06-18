@@ -26,9 +26,11 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
 import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedModel;
 import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedNode;
+import org.kie.workbench.common.dmn.api.editors.included.IncludedModel;
 import org.kie.workbench.common.dmn.client.service.DMNClientServicesProxy;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.mockito.Mock;
+import org.uberfire.backend.vfs.Path;
 
 import static java.util.Arrays.asList;
 import static org.mockito.Matchers.any;
@@ -43,13 +45,16 @@ public class DMNIncludeModelsClientTest {
     private DMNClientServicesProxy service;
 
     @Mock
-    private Consumer<List<DMNIncludedModel>> listConsumerDMNModels;
+    private Consumer<List<IncludedModel>> listConsumerDMNModels;
 
     @Mock
     private Consumer<List<DMNIncludedNode>> listConsumerDMNNodes;
 
     @Mock
     private Consumer<List<ItemDefinition>> listConsumerDMNItemDefinitions;
+
+    @Mock
+    private Path path;
 
     private DMNIncludeModelsClient client;
 
@@ -62,9 +67,11 @@ public class DMNIncludeModelsClientTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testLoadModels() {
-        client.loadModels(listConsumerDMNModels);
+        client.loadModels(path,
+                          listConsumerDMNModels);
 
-        verify(service).loadModels(any(ServiceCallback.class));
+        verify(service).loadModels(eq(path),
+                                   any(ServiceCallback.class));
     }
 
     @Test

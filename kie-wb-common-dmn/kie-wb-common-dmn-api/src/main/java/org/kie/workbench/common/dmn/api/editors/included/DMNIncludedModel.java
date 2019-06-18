@@ -20,13 +20,7 @@ import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
-public class DMNIncludedModel {
-
-    private String modelName;
-
-    private String modelPackage;
-
-    private String path;
+public class DMNIncludedModel extends BaseIncludedModel {
 
     private String namespace;
 
@@ -38,26 +32,16 @@ public class DMNIncludedModel {
                             final @MapsTo("modelPackage") String modelPackage,
                             final @MapsTo("path") String path,
                             final @MapsTo("namespace") String namespace,
+                            final @MapsTo("importType") String importType,
                             final @MapsTo("drgElementsCount") Integer drgElementsCount,
                             final @MapsTo("itemDefinitionsCount") Integer itemDefinitionsCount) {
-        this.modelName = modelName;
-        this.modelPackage = modelPackage;
-        this.path = path;
+        super(modelName,
+              modelPackage,
+              path,
+              importType);
         this.namespace = namespace;
         this.drgElementsCount = drgElementsCount;
         this.itemDefinitionsCount = itemDefinitionsCount;
-    }
-
-    public String getModelName() {
-        return modelName;
-    }
-
-    public String getModelPackage() {
-        return modelPackage;
-    }
-
-    public String getPath() {
-        return path;
     }
 
     public String getNamespace() {

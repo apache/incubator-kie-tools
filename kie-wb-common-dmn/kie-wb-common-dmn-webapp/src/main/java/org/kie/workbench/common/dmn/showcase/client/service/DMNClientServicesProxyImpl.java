@@ -30,6 +30,9 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
 import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedModel;
 import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedModelsService;
 import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedNode;
+import org.kie.workbench.common.dmn.api.editors.included.IncludedModel;
+import org.kie.workbench.common.dmn.api.editors.included.PMMLDocumentMetadata;
+import org.kie.workbench.common.dmn.api.editors.included.PMMLIncludedModel;
 import org.kie.workbench.common.dmn.api.editors.types.DMNParseService;
 import org.kie.workbench.common.dmn.api.editors.types.DMNSimpleTimeZone;
 import org.kie.workbench.common.dmn.api.editors.types.DMNValidationService;
@@ -38,6 +41,7 @@ import org.kie.workbench.common.dmn.api.editors.types.TimeZoneService;
 import org.kie.workbench.common.dmn.client.service.DMNClientServicesProxy;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
+import org.uberfire.backend.vfs.Path;
 
 @Dependent
 public class DMNClientServicesProxyImpl implements DMNClientServicesProxy {
@@ -62,20 +66,34 @@ public class DMNClientServicesProxyImpl implements DMNClientServicesProxy {
     }
 
     @Override
-    public void loadModels(final ServiceCallback<List<DMNIncludedModel>> callback) {
-        includedModelsService.call(onSuccess(callback), onError(callback)).loadModels(getWorkspaceProject());
+    public void loadModels(final Path path,
+                           final ServiceCallback<List<IncludedModel>> callback) {
+        includedModelsService.call(onSuccess(callback), onError(callback)).loadModels(path,
+                                                                                      getWorkspaceProject());
     }
 
     @Override
     public void loadNodesFromImports(final List<DMNIncludedModel> includedModels,
                                      final ServiceCallback<List<DMNIncludedNode>> callback) {
-        includedModelsService.call(onSuccess(callback), onError(callback)).loadNodesFromImports(getWorkspaceProject(), includedModels);
+        includedModelsService.call(onSuccess(callback), onError(callback)).loadNodesFromImports(getWorkspaceProject(),
+                                                                                                includedModels);
+    }
+
+    @Override
+    public void loadPMMLDocumentsFromImports(final Path path,
+                                             final List<PMMLIncludedModel> includedModels,
+                                             final ServiceCallback<List<PMMLDocumentMetadata>> callback) {
+        includedModelsService.call(onSuccess(callback), onError(callback)).loadPMMLDocumentsFromImports(path,
+                                                                                                        getWorkspaceProject(),
+                                                                                                        includedModels);
     }
 
     @Override
     public void loadItemDefinitionsByNamespace(final String modelName, String namespace,
                                                final ServiceCallback<List<ItemDefinition>> callback) {
-        includedModelsService.call(onSuccess(callback), onError(callback)).loadItemDefinitionsByNamespace(getWorkspaceProject(), modelName, namespace);
+        includedModelsService.call(onSuccess(callback), onError(callback)).loadItemDefinitionsByNamespace(getWorkspaceProject(),
+                                                                                                          modelName,
+                                                                                                          namespace);
     }
 
     @Override

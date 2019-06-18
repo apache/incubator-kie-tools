@@ -363,4 +363,10 @@ public class DMNEditorConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String DecisionComponentsItemView_DuplicatedNode = "DecisionComponentsItemView.DuplicatedNode";
+
+    @TranslationKey(defaultValue = "")
+    public static final String LiteralExpressionPMMLDocumentEditorDefinition_Placeholder = "LiteralExpressionPMMLDocumentEditorDefinition.Placeholder";
+
+    @TranslationKey(defaultValue = "")
+    public static final String LiteralExpressionPMMLDocumentModelEditorDefinition_Placeholder = "LiteralExpressionPMMLDocumentModelEditorDefinition.Placeholder";
 }

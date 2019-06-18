@@ -20,7 +20,7 @@ import javax.inject.Inject;
 
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.client.editors.common.messages.FlashMessage;
-import org.kie.workbench.common.dmn.client.editors.included.IncludedModel;
+import org.kie.workbench.common.dmn.client.editors.included.BaseIncludedModelActiveRecord;
 
 import static org.kie.workbench.common.dmn.client.editors.common.messages.FlashMessage.Type.ERROR;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.IncludedModelNameIsBlankErrorMessage_RegularMessage;
@@ -38,21 +38,21 @@ public class IncludedModelErrorMessageFactory {
         this.translationService = translationService;
     }
 
-    public FlashMessage getNameIsNotUniqueFlashMessage(final IncludedModel includedModel) {
+    public FlashMessage getNameIsNotUniqueFlashMessage(final BaseIncludedModelActiveRecord includedModel) {
         return new FlashMessage(ERROR,
                                 translate(IncludedModelNameIsNotUniqueErrorMessage_StrongMessage, includedModel.getName()),
                                 translate(IncludedModelNameIsNotUniqueErrorMessage_RegularMessage),
                                 getErrorElementSelector(includedModel));
     }
 
-    public FlashMessage getNameIsBlankFlashMessage(final IncludedModel includedModel) {
+    public FlashMessage getNameIsBlankFlashMessage(final BaseIncludedModelActiveRecord includedModel) {
         return new FlashMessage(ERROR,
                                 translate(IncludedModelNameIsBlankErrorMessage_StrongMessage),
                                 translate(IncludedModelNameIsBlankErrorMessage_RegularMessage),
                                 getErrorElementSelector(includedModel));
     }
 
-    private String getErrorElementSelector(final IncludedModel includedModel) {
+    private String getErrorElementSelector(final BaseIncludedModelActiveRecord includedModel) {
         return "[" + CARD_UUID_ATTR + "=\"" + includedModel.getUUID() + "\"] [data-field=\"title-input\"]";
     }
 

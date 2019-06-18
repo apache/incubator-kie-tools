@@ -18,6 +18,7 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.function.s
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import javax.enterprise.context.Dependent;
@@ -25,6 +26,11 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.jboss.errai.ui.client.local.spi.TranslationService;
+import org.kie.workbench.common.dmn.api.definition.HasExpression;
+import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
+import org.kie.workbench.common.dmn.api.definition.v1_1.ContextEntry;
+import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpressionPMMLDocument;
+import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpressionPMMLDocumentModel;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
@@ -45,10 +51,6 @@ import org.kie.workbench.common.stunner.forms.client.event.RefreshFormProperties
 @Dependent
 @FunctionGridSupplementaryEditor
 public class PMMLFunctionEditorDefinition extends BaseSupplementaryFunctionEditorDefinition {
-
-    public static final String VARIABLE_DOCUMENT = "document";
-
-    public static final String VARIABLE_MODEL = "model";
 
     public PMMLFunctionEditorDefinition() {
         //CDI proxy
@@ -88,7 +90,29 @@ public class PMMLFunctionEditorDefinition extends BaseSupplementaryFunctionEdito
     }
 
     @Override
+    public void enrich(final Optional<String> nodeUUID,
+                       final HasExpression hasExpression,
+                       final Optional<Context> expression) {
+        expression.ifPresent(context -> {
+            final List<String> variableNames = getVariableNames();
+
+            final ContextEntry contextEntryDocument = new ContextEntry();
+            contextEntryDocument.setVariable(createVariable(variableNames.get(0)));
+            contextEntryDocument.setExpression(new LiteralExpressionPMMLDocument());
+            context.getContextEntry().add(contextEntryDocument);
+            contextEntryDocument.setParent(context);
+
+            final ContextEntry contextEntryDocumentModel = new ContextEntry();
+            contextEntryDocumentModel.setVariable(createVariable(variableNames.get(1)));
+            contextEntryDocumentModel.setExpression(new LiteralExpressionPMMLDocumentModel());
+            context.getContextEntry().add(contextEntryDocumentModel);
+            contextEntryDocumentModel.setParent(context);
+        });
+    }
+
+    @Override
     protected List<String> getVariableNames() {
-        return Arrays.asList(VARIABLE_DOCUMENT, VARIABLE_MODEL);
+        return Arrays.asList(LiteralExpressionPMMLDocument.VARIABLE_DOCUMENT,
+                             LiteralExpressionPMMLDocumentModel.VARIABLE_MODEL);
     }
 }

@@ -25,7 +25,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Definitions;
-import org.kie.workbench.common.dmn.client.editors.included.IncludedModel;
+import org.kie.workbench.common.dmn.client.editors.included.BaseIncludedModelActiveRecord;
 import org.kie.workbench.common.dmn.client.editors.included.imports.IncludedModelsPageStateProviderImpl;
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -74,7 +74,7 @@ public class DefinitionsHandlerTest {
     @Test
     public void testDestroy() {
 
-        final IncludedModel includedModel = mock(IncludedModel.class);
+        final BaseIncludedModelActiveRecord includedModel = mock(BaseIncludedModelActiveRecord.class);
 
         when(includedModel.getNamespace()).thenReturn(namespace);
 
@@ -86,7 +86,7 @@ public class DefinitionsHandlerTest {
     @Test
     public void testCreate() {
 
-        final IncludedModel includedModel = mock(IncludedModel.class);
+        final BaseIncludedModelActiveRecord includedModel = mock(BaseIncludedModelActiveRecord.class);
         final String newNamespace = "://namespace2";
 
         when(includedModel.getNamespace()).thenReturn(newNamespace);

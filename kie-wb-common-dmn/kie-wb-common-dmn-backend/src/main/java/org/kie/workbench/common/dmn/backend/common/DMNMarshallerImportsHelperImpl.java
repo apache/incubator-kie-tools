@@ -44,6 +44,8 @@ import org.kie.dmn.model.api.InputData;
 import org.kie.dmn.model.api.Invocable;
 import org.kie.dmn.model.api.ItemDefinition;
 import org.kie.dmn.model.v1_2.TInformationItem;
+import org.kie.workbench.common.dmn.api.editors.included.PMMLDocumentMetadata;
+import org.kie.workbench.common.dmn.backend.editors.common.PMMLIncludedDocumentFactory;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -56,7 +58,7 @@ import static org.kie.workbench.common.dmn.backend.definition.v1_1.ImportedItemD
 @ApplicationScoped
 public class DMNMarshallerImportsHelperImpl implements DMNMarshallerImportsHelper {
 
-    private final DMNPathsHelperImpl pathsHelper;
+    private final DMNPathsHelper pathsHelper;
 
     private final WorkspaceProjectService projectService;
 
@@ -66,18 +68,22 @@ public class DMNMarshallerImportsHelperImpl implements DMNMarshallerImportsHelpe
 
     public static final QName NAMESPACE = new QName("Namespace");
 
+    private final PMMLIncludedDocumentFactory pmmlDocumentFactory;
+
     public DMNMarshallerImportsHelperImpl() {
-        this(null, null, null, null);
+        this(null, null, null, null, null);
     }
 
     @Inject
-    public DMNMarshallerImportsHelperImpl(final DMNPathsHelperImpl pathsHelper,
+    public DMNMarshallerImportsHelperImpl(final DMNPathsHelper pathsHelper,
                                           final WorkspaceProjectService projectService,
                                           final DMNMarshaller marshaller,
+                                          final PMMLIncludedDocumentFactory pmmlDocumentFactory,
                                           final @Named("ioStrategy") IOService ioService) {
         this.pathsHelper = pathsHelper;
         this.projectService = projectService;
         this.marshaller = marshaller;
+        this.pmmlDocumentFactory = pmmlDocumentFactory;
         this.ioService = ioService;
     }
 
@@ -96,6 +102,22 @@ public class DMNMarshallerImportsHelperImpl implements DMNMarshallerImportsHelpe
         }
 
         return importDefinitions;
+    }
+
+    @Override
+    public Map<Import, PMMLDocumentMetadata> getPMMLDocuments(final Metadata metadata,
+                                                              final List<Import> imports) {
+        final Map<Import, PMMLDocumentMetadata> pmmlDocuments = new HashMap<>();
+
+        if (imports.size() > 0) {
+            for (final Path pmmlDocumentPath : getPMMLDocumentPaths(metadata)) {
+                findImportByPMMLDocument(metadata.getPath(), pmmlDocumentPath, imports).ifPresent(anImport -> {
+                    pmmlDocuments.put(anImport, pmmlDocumentFactory.getDocumentByPath(pmmlDocumentPath));
+                });
+            }
+        }
+
+        return pmmlDocuments;
     }
 
     @Override
@@ -135,7 +157,7 @@ public class DMNMarshallerImportsHelperImpl implements DMNMarshallerImportsHelpe
     private Optional<Definitions> findDefinitionsByNamespace(final WorkspaceProject workspaceProject,
                                                              final String namespace) {
         return pathsHelper
-                .getDiagramsPaths(workspaceProject)
+                .getDMNModelsPaths(workspaceProject)
                 .stream()
                 .map(path -> loadPath(path).map(marshaller::unmarshal).orElse(null))
                 .filter(Objects::nonNull)
@@ -234,9 +256,18 @@ public class DMNMarshallerImportsHelperImpl implements DMNMarshallerImportsHelpe
                 .findAny();
     }
 
+    private Optional<Import> findImportByPMMLDocument(final Path dmnModelPath,
+                                                      final Path includedModelPath,
+                                                      final List<Import> imports) {
+        return imports
+                .stream()
+                .filter(anImport -> Objects.equals(anImport.getLocationURI(), pathsHelper.getRelativeURI(dmnModelPath, includedModelPath)))
+                .findAny();
+    }
+
     List<Definitions> getOtherDMNDiagramsDefinitions(final Metadata metadata) {
 
-        final List<Path> diagramPaths = pathsHelper.getDiagramsPaths(getProject(metadata));
+        final List<Path> diagramPaths = pathsHelper.getDMNModelsPaths(getProject(metadata));
 
         return diagramPaths
                 .stream()
@@ -244,6 +275,10 @@ public class DMNMarshallerImportsHelperImpl implements DMNMarshallerImportsHelpe
                 .map(path -> loadPath(path).map(marshaller::unmarshal).orElse(null))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
+    }
+
+    List<Path> getPMMLDocumentPaths(final Metadata metadata) {
+        return pathsHelper.getPMMLModelsPaths(getProject(metadata));
     }
 
     Optional<InputStreamReader> loadPath(final Path path) {

@@ -23,7 +23,7 @@ import javax.inject.Inject;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.ValueListBox;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.ListBoxValues;
-import org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils;
+import org.kie.workbench.common.stunner.core.util.StringUtils;
 
 public class ComboBox implements ComboBoxView.ComboBoxPresenter {
 
@@ -188,8 +188,8 @@ public class ComboBox implements ComboBoxView.ComboBoxPresenter {
     public String addCustomValueToListBoxValues(String newValue,
                                                 String oldValue) {
         if (quoteStringValues) {
-            newValue = StringUtils.createQuotedConstant(newValue);
-            oldValue = StringUtils.createQuotedConstant(oldValue);
+            newValue = StringUtils.createQuotedConstantOptionalNumeric(newValue);
+            oldValue = StringUtils.createQuotedConstantOptionalNumeric(oldValue);
         }
         if (addCustomValues) {
             return listBoxValues.addCustomValue(newValue,

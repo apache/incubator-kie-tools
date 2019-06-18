@@ -56,6 +56,7 @@ import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.mocks.EventSourceMock;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -217,5 +218,10 @@ public class ContextEditorDefinitionTest {
 
         final GridWidget editor = oEditor.get();
         assertTrue(editor instanceof ContextGrid);
+    }
+
+    @Test
+    public void testIsUserSelectable() {
+        assertThat(definition.isUserSelectable()).isTrue();
     }
 }

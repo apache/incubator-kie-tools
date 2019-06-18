@@ -44,7 +44,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public abstract class BaseDOMElementSingletonColumnTest<F extends BaseSingletonDOMElementFactory, D extends BaseDOMElement & TakesValue<String> & Focusable, W extends Widget & TakesValue<String> & Focusable, C extends BaseGridColumn & HasSingletonDOMElementResource, G extends BaseExpressionGrid> {
+public abstract class BaseDOMElementSingletonColumnTest<F extends BaseSingletonDOMElementFactory, D extends BaseDOMElement & TakesValue<String> & Focusable, W extends Widget & Focusable, C extends BaseGridColumn & HasSingletonDOMElementResource, G extends BaseExpressionGrid> {
 
     private static final String DEFAULT_VALUE = "";
 
@@ -142,7 +142,7 @@ public abstract class BaseDOMElementSingletonColumnTest<F extends BaseSingletonD
     }
 
     @SuppressWarnings("unchecked")
-    private void assertCellEdit(final String value) {
+    protected void assertCellEdit(final String value) {
         verify(factory).attachDomElement(eq(context),
                                          domElementOnCreationCallbackCaptor.capture(),
                                          domElementOnDisplayCallbackCaptor.capture());

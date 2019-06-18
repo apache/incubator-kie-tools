@@ -21,8 +21,8 @@ import org.junit.Test;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DRGElement;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItemPrimary;
-import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedModel;
 import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedNode;
+import org.kie.workbench.common.dmn.api.editors.included.IncludedModel;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
@@ -46,7 +46,7 @@ public class DMNIncludedNodeFactoryTest {
     public void testMakeDMNIncludeModel() {
 
         final Path path = mock(Path.class);
-        final DMNIncludedModel includedModel = mock(DMNIncludedModel.class);
+        final IncludedModel includedModel = mock(IncludedModel.class);
         final String drgElementId = "0000-1111-3333-4444";
         final String drgElementName = "Can Drive?";
         final String expectedFileName = "file.dmn";

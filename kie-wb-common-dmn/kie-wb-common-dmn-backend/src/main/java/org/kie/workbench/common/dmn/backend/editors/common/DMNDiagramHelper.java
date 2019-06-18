@@ -18,6 +18,7 @@ package org.kie.workbench.common.dmn.backend.editors.common;
 
 import java.util.List;
 
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.DRGElement;
@@ -29,6 +30,7 @@ import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.service.DiagramService;
 import org.uberfire.backend.vfs.Path;
 
+@Dependent
 public class DMNDiagramHelper {
 
     private final DiagramService diagramService;

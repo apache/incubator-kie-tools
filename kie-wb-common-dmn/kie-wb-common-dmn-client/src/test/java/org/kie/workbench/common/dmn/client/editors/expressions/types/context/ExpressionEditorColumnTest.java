@@ -28,6 +28,7 @@ import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.dmn.client.editors.expressions.mocks.MockHasDOMElementResourcesHeaderMetaData;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.function.supplementary.pmml.LiteralExpressionPMMLGrid;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.literal.LiteralExpressionGrid;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
@@ -393,6 +394,19 @@ public class ExpressionEditorColumnTest {
         final GridCell<Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>>> cell = mock(GridCell.class);
         final GridCellValue<Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>>> cellValue = mock(GridCellValue.class);
         final LiteralExpressionGrid leGrid = mock(LiteralExpressionGrid.class);
+        when(cell.getValue()).thenReturn(cellValue);
+        when(cellValue.getValue()).thenReturn(Optional.of(leGrid));
+
+        column.edit(cell, null, null);
+
+        verify(leGrid).startEditingCell(0, 0);
+    }
+
+    @Test
+    public void testEditNestedLiteralExpressionPMMLGrid() {
+        final GridCell<Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>>> cell = mock(GridCell.class);
+        final GridCellValue<Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>>> cellValue = mock(GridCellValue.class);
+        final LiteralExpressionPMMLGrid leGrid = mock(LiteralExpressionPMMLGrid.class);
         when(cell.getValue()).thenReturn(cellValue);
         when(cellValue.getValue()).thenReturn(Optional.of(leGrid));
 

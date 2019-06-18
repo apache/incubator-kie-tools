@@ -21,6 +21,7 @@ import java.util.List;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
+import org.uberfire.backend.vfs.Path;
 
 /**
  * This service handles calls related to included DMN models.
@@ -29,20 +30,33 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
 public interface DMNIncludedModelsService {
 
     /**
-     * This method loads all DMN models from a given project.
+     * This method loads all models (DMN and PMML) from a given project.
+     * @param path Path of the DMN file being edited.
      * @param workspaceProject represents the project that will be scanned.
-     * @return all {@link DMNIncludedModel}s from a given project.
+     * @return all {@link IncludedModel}s from a given project.
      */
-    List<DMNIncludedModel> loadModels(final WorkspaceProject workspaceProject);
+    List<IncludedModel> loadModels(final Path path,
+                                   final WorkspaceProject workspaceProject);
 
     /**
-     * This method loads all nodes from an included model.
+     * This method loads all DMN nodes for the included DMN models.
      * @param workspaceProject represents the project that will be scanned.
-     * @param includedModels represents all imports that provide the list of nodes.
+     * @param includedModels represents all DMN imports that provide the list of nodes.
      * @return a list of {@link DMNIncludedNode}s.
      */
     List<DMNIncludedNode> loadNodesFromImports(final WorkspaceProject workspaceProject,
                                                final List<DMNIncludedModel> includedModels);
+
+    /**
+     * This method loads all PMML documents for the included PMML models.
+     * @param path Path of the DMN file being edited.
+     * @param workspaceProject represents the project that will be scanned.
+     * @param includedModels represents all PMML imports that provide the list of nodes.
+     * @return a list of {@link PMMLDocumentMetadata}s.
+     */
+    List<PMMLDocumentMetadata> loadPMMLDocumentsFromImports(final Path path,
+                                                            final WorkspaceProject workspaceProject,
+                                                            final List<PMMLIncludedModel> includedModels);
 
     /**
      * This method finds the list of {@link ItemDefinition}s for a given <code>namespace</code>.

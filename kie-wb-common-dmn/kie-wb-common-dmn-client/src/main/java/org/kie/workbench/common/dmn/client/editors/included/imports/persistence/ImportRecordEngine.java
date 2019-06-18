@@ -26,7 +26,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.Import;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.editors.common.messages.FlashMessage;
 import org.kie.workbench.common.dmn.client.editors.common.persistence.RecordEngine;
-import org.kie.workbench.common.dmn.client.editors.included.IncludedModel;
+import org.kie.workbench.common.dmn.client.editors.included.BaseIncludedModelActiveRecord;
 import org.kie.workbench.common.dmn.client.editors.included.imports.ImportFactory;
 import org.kie.workbench.common.dmn.client.editors.included.imports.IncludedModelsIndex;
 import org.kie.workbench.common.dmn.client.editors.included.imports.IncludedModelsPageStateProviderImpl;
@@ -35,7 +35,7 @@ import org.kie.workbench.common.dmn.client.editors.included.imports.messages.Inc
 import static java.util.Collections.singletonList;
 import static org.kie.workbench.common.stunner.core.util.StringUtils.isEmpty;
 
-public class ImportRecordEngine implements RecordEngine<IncludedModel> {
+public class ImportRecordEngine implements RecordEngine<BaseIncludedModelActiveRecord> {
 
     private final IncludedModelsPageStateProviderImpl stateProvider;
 
@@ -73,7 +73,7 @@ public class ImportRecordEngine implements RecordEngine<IncludedModel> {
     }
 
     @Override
-    public List<IncludedModel> update(final IncludedModel record) {
+    public List<BaseIncludedModelActiveRecord> update(final BaseIncludedModelActiveRecord record) {
         if (!record.isValid()) {
             throw new UnsupportedOperationException("An invalid Included Model cannot be updated.");
         }
@@ -89,7 +89,7 @@ public class ImportRecordEngine implements RecordEngine<IncludedModel> {
     }
 
     @Override
-    public List<IncludedModel> destroy(final IncludedModel record) {
+    public List<BaseIncludedModelActiveRecord> destroy(final BaseIncludedModelActiveRecord record) {
         definitionsHandler.destroy(record);
         itemDefinitionHandler.destroy(record.getName());
         drgElementHandler.destroy(record.getName());
@@ -98,14 +98,14 @@ public class ImportRecordEngine implements RecordEngine<IncludedModel> {
     }
 
     @Override
-    public List<IncludedModel> create(final IncludedModel record) {
+    public List<BaseIncludedModelActiveRecord> create(final BaseIncludedModelActiveRecord record) {
         definitionsHandler.create(record);
         stateProvider.getImports().add(importFactory.makeImport(record));
         return singletonList(record);
     }
 
     @Override
-    public boolean isValid(final IncludedModel record) {
+    public boolean isValid(final BaseIncludedModelActiveRecord record) {
 
         if (!isUniqueName(record)) {
             flashMessageEvent.fire(messageFactory.getNameIsNotUniqueFlashMessage(record));
@@ -120,27 +120,27 @@ public class ImportRecordEngine implements RecordEngine<IncludedModel> {
         return true;
     }
 
-    private boolean isUniqueName(final IncludedModel record) {
+    private boolean isUniqueName(final BaseIncludedModelActiveRecord record) {
         return stateProvider
                 .getImports()
                 .stream()
                 .noneMatch(anImport -> !sameImport(record, anImport) && sameName(record, anImport));
     }
 
-    private boolean isBlankName(final IncludedModel record) {
+    private boolean isBlankName(final BaseIncludedModelActiveRecord record) {
         return isEmpty(record.getName());
     }
 
-    private boolean sameName(final IncludedModel record, final Import anImport) {
+    private boolean sameName(final BaseIncludedModelActiveRecord record, final Import anImport) {
         return Objects.equals(record.getName(), anImport.getName().getValue());
     }
 
-    private boolean sameImport(final IncludedModel record, final Import anImport) {
+    private boolean sameImport(final BaseIncludedModelActiveRecord record, final Import anImport) {
         final Import recordImport = getImport(record);
         return Objects.equals(recordImport, anImport);
     }
 
-    private Import getImport(final IncludedModel record) {
+    private Import getImport(final BaseIncludedModelActiveRecord record) {
         return includedModelsIndex.getImport(record);
     }
 }

@@ -23,7 +23,12 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.Import;
-import org.kie.workbench.common.dmn.client.editors.included.IncludedModel;
+import org.kie.workbench.common.dmn.api.definition.v1_1.ImportDMN;
+import org.kie.workbench.common.dmn.api.definition.v1_1.ImportPMML;
+import org.kie.workbench.common.dmn.client.editors.included.BaseIncludedModelActiveRecord;
+import org.kie.workbench.common.dmn.client.editors.included.DMNIncludedModelActiveRecord;
+import org.kie.workbench.common.dmn.client.editors.included.DefaultIncludedModelActiveRecord;
+import org.kie.workbench.common.dmn.client.editors.included.PMMLIncludedModelActiveRecord;
 import org.kie.workbench.common.dmn.client.editors.included.imports.persistence.ImportRecordEngine;
 
 import static org.uberfire.commons.uuid.UUID.uuid;
@@ -42,7 +47,7 @@ public class IncludedModelsFactory {
         this.includedModelsIndex = includedModelsIndex;
     }
 
-    List<IncludedModel> makeIncludedModels(final List<Import> imports) {
+    List<BaseIncludedModelActiveRecord> makeIncludedModels(final List<Import> imports) {
         getIncludedModelsIndex().clear();
         return imports
                 .stream()
@@ -57,16 +62,26 @@ public class IncludedModelsFactory {
         return uuid();
     }
 
-    private IncludedModel makeIncludedModel(final Import anImport) {
-
-        final IncludedModel includedModel = new IncludedModel(getRecordEngine());
+    private BaseIncludedModelActiveRecord makeIncludedModel(final Import anImport) {
+        BaseIncludedModelActiveRecord includedModel;
+        if (anImport instanceof ImportDMN) {
+            final DMNIncludedModelActiveRecord dmnIncludedModel = new DMNIncludedModelActiveRecord(getRecordEngine());
+            dmnIncludedModel.setDataTypesCount(getDataTypesCount((ImportDMN) anImport));
+            dmnIncludedModel.setDrgElementsCount(getDrgElementsCount((ImportDMN) anImport));
+            includedModel = dmnIncludedModel;
+        } else if (anImport instanceof ImportPMML) {
+            final PMMLIncludedModelActiveRecord pmmlIncludedModel = new PMMLIncludedModelActiveRecord(getRecordEngine());
+            pmmlIncludedModel.setModelCount(getPMMLModelCount((ImportPMML) anImport));
+            includedModel = pmmlIncludedModel;
+        } else {
+            includedModel = new DefaultIncludedModelActiveRecord(getRecordEngine());
+        }
 
         includedModel.setUuid(uuidWrapper());
         includedModel.setName(getName(anImport));
         includedModel.setNamespace(getNamespace(anImport));
+        includedModel.setImportType(getImportType(anImport));
         includedModel.setPath(getPath(anImport));
-        includedModel.setDataTypesCount(getDataTypesCount(anImport));
-        includedModel.setDrgElementsCount(getDrgElementsCount(anImport));
 
         getIncludedModelsIndex().index(includedModel, anImport);
 
@@ -93,11 +108,19 @@ public class IncludedModelsFactory {
         return anImport.getNamespace();
     }
 
-    private int getDataTypesCount(final Import anImport) {
+    private String getImportType(final Import anImport) {
+        return anImport.getImportType();
+    }
+
+    private int getDataTypesCount(final ImportDMN anImport) {
         return anImport.getItemDefinitionsCount();
     }
 
-    private int getDrgElementsCount(final Import anImport) {
+    private int getDrgElementsCount(final ImportDMN anImport) {
         return anImport.getDrgElementsCount();
+    }
+
+    private int getPMMLModelCount(final ImportPMML anImport) {
+        return anImport.getModelCount();
     }
 }

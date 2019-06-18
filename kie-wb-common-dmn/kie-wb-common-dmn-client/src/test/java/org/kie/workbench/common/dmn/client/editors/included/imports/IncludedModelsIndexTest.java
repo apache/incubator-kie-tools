@@ -24,7 +24,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Import;
-import org.kie.workbench.common.dmn.client.editors.included.IncludedModel;
+import org.kie.workbench.common.dmn.client.editors.included.BaseIncludedModelActiveRecord;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
@@ -35,7 +35,7 @@ import static org.mockito.Mockito.when;
 public class IncludedModelsIndexTest {
 
     @Mock
-    private IncludedModel includedModel;
+    private BaseIncludedModelActiveRecord includedModel;
 
     @Mock
     private Import anImport;
@@ -56,7 +56,7 @@ public class IncludedModelsIndexTest {
     @Test
     public void testIndex() {
 
-        final IncludedModel includedModel = mock(IncludedModel.class);
+        final BaseIncludedModelActiveRecord includedModel = mock(BaseIncludedModelActiveRecord.class);
         final Import expectedImport = mock(Import.class);
         final String uuid = "456";
 

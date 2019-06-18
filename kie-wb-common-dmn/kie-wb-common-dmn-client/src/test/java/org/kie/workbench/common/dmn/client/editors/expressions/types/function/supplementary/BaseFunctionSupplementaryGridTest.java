@@ -29,19 +29,18 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
-import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
+import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
+import org.kie.workbench.common.dmn.api.definition.v1_1.IsLiteralExpression;
 import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ContextGridRowNumberColumn;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.context.InformationItemCell;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionColumn;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
@@ -59,9 +58,6 @@ import org.uberfire.mocks.EventSourceMock;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
@@ -115,21 +111,13 @@ public abstract class BaseFunctionSupplementaryGridTest<D extends ExpressionEdit
     @Mock
     private HasExpression hasExpression;
 
-    @Mock
-    private ExpressionEditorDefinition literalExpressionEditorDefinition;
-
-    @Mock
-    private BaseExpressionGrid literalExpressionEditor;
-
-    private LiteralExpression literalExpression = new LiteralExpression();
-
     private Optional<Context> expression = Optional.empty();
 
     private Optional<HasName> hasName = Optional.empty();
 
     private D definition;
 
-    private FunctionSupplementaryGrid grid;
+    protected FunctionSupplementaryGrid grid;
 
     @Before
     @SuppressWarnings("unchecked")
@@ -145,19 +133,13 @@ public abstract class BaseFunctionSupplementaryGridTest<D extends ExpressionEdit
         definition.enrich(Optional.empty(), hasExpression, expression);
         final ExpressionEditorDefinitions expressionEditorDefinitions = new ExpressionEditorDefinitions();
         expressionEditorDefinitions.add((ExpressionEditorDefinition) definition);
-        expressionEditorDefinitions.add(literalExpressionEditorDefinition);
 
         when(expressionEditorDefinitionsSupplier.get()).thenReturn(expressionEditorDefinitions);
-        when(literalExpressionEditorDefinition.getModelClass()).thenReturn(Optional.of(literalExpression));
-        when(literalExpressionEditorDefinition.getEditor(any(GridCellTuple.class),
-                                                         any(Optional.class),
-                                                         any(HasExpression.class),
-                                                         any(Optional.class),
-                                                         anyBoolean(),
-                                                         anyInt())).thenReturn(Optional.of(literalExpressionEditor));
+
+        setupEditorDefinitions(expressionEditorDefinitions);
     }
 
-    private void setupGrid(final int nesting) {
+    protected void setupGrid(final int nesting) {
         when(hasExpression.getExpression()).thenReturn(expression.get());
         this.grid = (FunctionSupplementaryGrid) definition.getEditor(parent,
                                                                      Optional.empty(),
@@ -171,34 +153,9 @@ public abstract class BaseFunctionSupplementaryGridTest<D extends ExpressionEdit
 
     protected abstract String[] getExpectedNames();
 
-    @Test
-    public void testInitialSetupFromDefinition() {
-        setupGrid(0);
+    protected abstract void setupEditorDefinitions(final ExpressionEditorDefinitions expressionEditorDefinitions);
 
-        final GridData uiModel = grid.getModel();
-        assertTrue(uiModel instanceof FunctionSupplementaryGridData);
-
-        assertEquals(3,
-                     uiModel.getColumnCount());
-        assertTrue(uiModel.getColumns().get(0) instanceof ContextGridRowNumberColumn);
-        assertTrue(uiModel.getColumns().get(1) instanceof NameColumn);
-        assertTrue(uiModel.getColumns().get(2) instanceof ExpressionEditorColumn);
-
-        assertEquals(2,
-                     uiModel.getRowCount());
-
-        final String[] expectedNames = getExpectedNames();
-        for (int i = 0; i < uiModel.getRowCount(); i++) {
-            assertEquals(i + 1,
-                         uiModel.getCell(i, 0).getValue().getValue());
-            assertEquals(expectedNames[i],
-                         ((InformationItemCell.HasNameAndDataTypeCell) uiModel.getCell(i, 1).getValue().getValue()).getName().getValue());
-            assertTrue(uiModel.getCell(i, 2).getValue() instanceof ExpressionCellValue);
-            final ExpressionCellValue dcv = (ExpressionCellValue) uiModel.getCell(i, 2).getValue();
-            assertEquals(literalExpressionEditor,
-                         dcv.getValue().get());
-        }
-    }
+    protected abstract BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper> getExpectedExpressionValueEditor(final int uiRowIndex);
 
     @Test
     public void testInitialColumnWidthsFromDefinition() {
@@ -233,5 +190,41 @@ public abstract class BaseFunctionSupplementaryGridTest<D extends ExpressionEdit
         setupGrid(0);
 
         assertTrue(grid.isCacheable());
+    }
+
+    @Test
+    public void testGetExpressionValue() {
+        setupGrid(0);
+
+        final String[] expectedNames = getExpectedNames();
+        for (int uiRowIndex = 0; uiRowIndex < expectedNames.length; uiRowIndex++) {
+            final String value = expectedNames[uiRowIndex] + "-value";
+            ((IsLiteralExpression) expression.get().getContextEntry().get(uiRowIndex).getExpression()).getText().setValue(value);
+            assertEquals(value, grid.getExpressionValue(getExpectedNames()[uiRowIndex]));
+        }
+    }
+
+    @Test
+    public void testGetExpressionValueQuoteRemoval() {
+        setupGrid(0);
+
+        final String[] expectedNames = getExpectedNames();
+        for (int uiRowIndex = 0; uiRowIndex < expectedNames.length; uiRowIndex++) {
+            final String value = expectedNames[uiRowIndex] + "-value";
+            ((IsLiteralExpression) expression.get().getContextEntry().get(uiRowIndex).getExpression()).getText().setValue("\"" + value + "\"");
+            assertEquals(value, grid.getExpressionValue(getExpectedNames()[uiRowIndex]));
+        }
+    }
+
+    @Test
+    public void testGetExpressionValueEditor() {
+        setupGrid(0);
+
+        final String[] expectedNames = getExpectedNames();
+        for (int uiRowIndex = 0; uiRowIndex < expectedNames.length; uiRowIndex++) {
+            final Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>> valueEditor = grid.getExpressionValueEditor(getExpectedNames()[uiRowIndex]);
+            assertTrue(valueEditor.isPresent());
+            assertEquals(getExpectedExpressionValueEditor(uiRowIndex), valueEditor.get());
+        }
     }
 }

@@ -165,4 +165,9 @@ public class LiteralExpressionEditorDefinitionTest {
         final GridWidget editor = oEditor.get();
         assertThat(editor).isInstanceOf(LiteralExpressionGrid.class);
     }
+
+    @Test
+    public void testIsUserSelectable() {
+        assertThat(definition.isUserSelectable()).isTrue();
+    }
 }

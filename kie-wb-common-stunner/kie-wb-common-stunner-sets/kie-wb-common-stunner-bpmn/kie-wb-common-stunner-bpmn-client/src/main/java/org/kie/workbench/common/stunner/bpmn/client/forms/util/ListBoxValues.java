@@ -21,6 +21,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.kie.workbench.common.stunner.core.util.StringUtils.isQuotedConstant;
+
 /**
  * Class containing a list of values for a ValueListBox<String>.
  * This is used by the ListBoxes in the DataIOEditor to keep their drop-down lists
@@ -220,7 +222,7 @@ public class ListBoxValues {
         }
         String displayValue = value;
         // Create special displayValue only for quoted constants longer than maxDisplayLength
-        if (maxDisplayLength > 0 && value != null && StringUtils.isQuotedConstant(value) && value.length() > maxDisplayLength + 2) {
+        if (maxDisplayLength > 0 && value != null && isQuotedConstant(value) && value.length() > maxDisplayLength + 2) {
             String displayValueStart = value.substring(0,
                                                        maxDisplayLength + 1);
             int nextIndex = 0;

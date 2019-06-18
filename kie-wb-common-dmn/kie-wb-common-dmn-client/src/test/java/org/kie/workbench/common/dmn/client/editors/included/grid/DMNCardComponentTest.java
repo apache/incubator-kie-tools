@@ -16,75 +16,38 @@
 
 package org.kie.workbench.common.dmn.client.editors.included.grid;
 
-import com.google.gwt.dom.client.Style.HasCssName;
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import elemental2.dom.HTMLElement;
-import org.gwtbootstrap3.client.ui.constants.IconType;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.dmn.client.decision.events.RefreshDecisionComponents;
-import org.kie.workbench.common.dmn.client.editors.included.IncludedModel;
-import org.mockito.Mock;
-import org.uberfire.mocks.EventSourceMock;
+import org.kie.workbench.common.dmn.client.editors.included.DMNIncludedModelActiveRecord;
 
-import static java.util.Collections.emptyList;
-import static org.gwtbootstrap3.client.ui.constants.IconType.DOWNLOAD;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class DMNCardComponentTest {
+public class DMNCardComponentTest extends BaseCardComponentTest<DMNCardComponent, DMNCardComponent.ContentView, DMNIncludedModelActiveRecord> {
 
-    @Mock
-    private DMNCardComponent.ContentView contentView;
-
-    @Mock
-    private EventSourceMock<RefreshDecisionComponents> refreshDecisionComponentsEvent;
-
-    private DMNCardComponent dmnCard;
-
-    @Before
-    public void setup() {
-        dmnCard = spy(new DMNCardComponent(contentView, refreshDecisionComponentsEvent));
+    @Override
+    protected DMNCardComponent.ContentView getCardView() {
+        return mock(DMNCardComponent.ContentView.class);
     }
 
-    @Test
-    public void testInit() {
-        dmnCard.init();
-        verify(contentView).init(dmnCard);
+    @Override
+    protected DMNCardComponent getCard(final DMNCardComponent.ContentView cardView) {
+        return new DMNCardComponent(cardView, refreshDecisionComponentsEvent);
     }
 
-    @Test
-    public void testSetup() {
-
-        final DMNCardsGridComponent expectedGrid = mock(DMNCardsGridComponent.class);
-        final IncludedModel expectedIncludedModel = mock(IncludedModel.class);
-
-        when(expectedIncludedModel.getNamespace()).thenReturn("://namespace");
-
-        dmnCard.setup(expectedGrid, expectedIncludedModel);
-
-        final DMNCardsGridComponent actualGrid = dmnCard.getGrid();
-        final IncludedModel actualIncludedModel = dmnCard.getIncludedModel();
-
-        verify(dmnCard).refreshView();
-        assertEquals(expectedGrid, actualGrid);
-        assertEquals(expectedIncludedModel, actualIncludedModel);
+    @Override
+    protected Class<DMNIncludedModelActiveRecord> getActiveRecordClass() {
+        return DMNIncludedModelActiveRecord.class;
     }
 
     @Test
     public void testRefreshView() {
 
-        final IncludedModel includedModel = mock(IncludedModel.class);
+        final DMNIncludedModelActiveRecord includedModel = mock(DMNIncludedModelActiveRecord.class);
         final String path = "/bla/bla/bla/111111111111111222222222222222333333333333333444444444444444/file.dmn";
         final int dataTypesCount = 12;
         final int drgElementsCount = 34;
@@ -92,167 +55,12 @@ public class DMNCardComponentTest {
         when(includedModel.getNamespace()).thenReturn(path);
         when(includedModel.getDataTypesCount()).thenReturn(dataTypesCount);
         when(includedModel.getDrgElementsCount()).thenReturn(drgElementsCount);
-        doReturn(includedModel).when(dmnCard).getIncludedModel();
+        doReturn(includedModel).when(card).getIncludedModel();
 
-        dmnCard.refreshView();
+        card.refreshView();
 
-        verify(contentView).setPath("...111111222222222222222333333333333333444444444444444/file.dmn");
-        verify(contentView).setDataTypesCount(dataTypesCount);
-        verify(contentView).setDrgElementsCount(drgElementsCount);
-    }
-
-    @Test
-    public void testGetIcon() {
-
-        final IconType expected = DOWNLOAD;
-        final HasCssName actual = dmnCard.getIcon();
-
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    public void testGetTitle() {
-
-        final IncludedModel includedModel = mock(IncludedModel.class);
-        final String expectedTitle = "file";
-
-        when(includedModel.getName()).thenReturn(expectedTitle);
-        doReturn(includedModel).when(dmnCard).getIncludedModel();
-
-        final String actualTitle = dmnCard.getTitle();
-
-        assertEquals(expectedTitle, actualTitle);
-    }
-
-    @Test
-    public void testGetUUID() {
-
-        final IncludedModel includedModel = mock(IncludedModel.class);
-        final String expectedUUID = "123";
-
-        when(includedModel.getUUID()).thenReturn(expectedUUID);
-        doReturn(includedModel).when(dmnCard).getIncludedModel();
-
-        final String actualUUID = dmnCard.getUUID();
-
-        assertEquals(expectedUUID, actualUUID);
-    }
-
-    @Test
-    public void testGetContent() {
-
-        final HTMLElement expectedContent = mock(HTMLElement.class);
-
-        when(contentView.getElement()).thenReturn(expectedContent);
-
-        final HTMLElement actualContent = dmnCard.getContent();
-
-        assertEquals(expectedContent, actualContent);
-    }
-
-    @Test
-    public void testOnTitleChangedWhenIncludedModelIsValid() {
-
-        final DMNCardsGridComponent grid = mock(DMNCardsGridComponent.class);
-        final IncludedModel includedModel = spy(new IncludedModel(null));
-        final String newName = "newName";
-
-        doReturn(true).when(includedModel).isValid();
-        doReturn(emptyList()).when(includedModel).update();
-        doReturn(includedModel).when(dmnCard).getIncludedModel();
-        doReturn(grid).when(dmnCard).getGrid();
-
-        final boolean titleChanged = dmnCard.onTitleChanged().apply(newName);
-
-        assertEquals(newName, includedModel.getName());
-        assertTrue(titleChanged);
-        verify(includedModel).update();
-        verify(grid).refresh();
-        verify(dmnCard).refreshDecisionComponents();
-    }
-
-    @Test
-    public void testOnTitleChangedWhenIncludedModelIsNotValid() {
-
-        final DMNCardsGridComponent grid = mock(DMNCardsGridComponent.class);
-        final IncludedModel includedModel = spy(new IncludedModel(null));
-        final String newName = "newName";
-        final String oldName = "oldName";
-
-        includedModel.setName(oldName);
-        doReturn(false).when(includedModel).isValid();
-        doReturn(includedModel).when(dmnCard).getIncludedModel();
-        doReturn(grid).when(dmnCard).getGrid();
-
-        final boolean titleChanged = dmnCard.onTitleChanged().apply(newName);
-
-        assertEquals(oldName, includedModel.getName());
-        assertFalse(titleChanged);
-        verify(includedModel, never()).update();
-        verify(grid, never()).refresh();
-        verify(dmnCard, never()).refreshDecisionComponents();
-    }
-
-    @Test
-    public void testTruncateWhenItIsTruncated() {
-
-        final String actualTruncate = dmnCard.truncate("123456", 5);
-        final String expectedTruncate = "...23456";
-
-        assertEquals(expectedTruncate, actualTruncate);
-    }
-
-    @Test
-    public void testTruncateWhenItIsNotTruncated() {
-
-        final String actualTruncate = dmnCard.truncate("12345", 5);
-        final String expectedTruncate = "12345";
-
-        assertEquals(expectedTruncate, actualTruncate);
-    }
-
-    @Test
-    public void testRemove() {
-
-        final DMNCardsGridComponent grid = mock(DMNCardsGridComponent.class);
-        final IncludedModel includedModel = mock(IncludedModel.class);
-
-        doReturn(includedModel).when(dmnCard).getIncludedModel();
-        doReturn(grid).when(dmnCard).getGrid();
-
-        dmnCard.remove();
-
-        verify(includedModel).destroy();
-        verify(grid).refresh();
-        verify(refreshDecisionComponentsEvent).fire(any(RefreshDecisionComponents.class));
-    }
-
-    @Test
-    public void testGetSubTitleWhenPathIsNotEmpty() {
-
-        final IncludedModel includedModel = mock(IncludedModel.class);
-        final String expected = "/src/path/kie/dmn";
-
-        doReturn(includedModel).when(dmnCard).getIncludedModel();
-        when(includedModel.getPath()).thenReturn(expected);
-
-        final String actual = dmnCard.getSubTitle();
-
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    public void testGetSubTitleWhenPathIsEmpty() {
-
-        final IncludedModel includedModel = mock(IncludedModel.class);
-        final String expected = "://namespace";
-
-        doReturn(includedModel).when(dmnCard).getIncludedModel();
-        when(includedModel.getPath()).thenReturn("");
-        when(includedModel.getNamespace()).thenReturn(expected);
-
-        final String actual = dmnCard.getSubTitle();
-
-        assertEquals(expected, actual);
+        verify(cardView).setPath("...111111222222222222222333333333333333444444444444444/file.dmn");
+        verify(cardView).setDataTypesCount(dataTypesCount);
+        verify(cardView).setDrgElementsCount(drgElementsCount);
     }
 }

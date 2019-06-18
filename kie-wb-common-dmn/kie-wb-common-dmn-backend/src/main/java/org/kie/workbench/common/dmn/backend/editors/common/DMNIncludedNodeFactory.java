@@ -22,8 +22,8 @@ import org.kie.workbench.common.dmn.api.definition.HasVariable;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DRGElement;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItemPrimary;
 import org.kie.workbench.common.dmn.api.definition.v1_1.IsInformationItem;
-import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedModel;
 import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedNode;
+import org.kie.workbench.common.dmn.api.editors.included.IncludedModel;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
@@ -35,14 +35,14 @@ import static org.kie.workbench.common.dmn.api.editors.types.BuiltInTypeUtils.is
 public class DMNIncludedNodeFactory {
 
     DMNIncludedNode makeDMNIncludeModel(final Path path,
-                                        final DMNIncludedModel includeModel,
+                                        final IncludedModel includeModel,
                                         final DRGElement drgElement) {
         final String fileName = path.getFileName();
         return new DMNIncludedNode(fileName, withNamespace(drgElement, includeModel));
     }
 
     private DRGElement withNamespace(final DRGElement drgElement,
-                                     final DMNIncludedModel includeModel) {
+                                     final IncludedModel includeModel) {
 
         final String modelName = includeModel.getModelName();
 

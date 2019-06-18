@@ -24,8 +24,10 @@ import javax.inject.Inject;
 
 import elemental2.dom.HTMLElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.kie.workbench.common.dmn.client.editors.included.IncludedModel;
+import org.kie.workbench.common.dmn.client.editors.included.BaseIncludedModelActiveRecord;
+import org.kie.workbench.common.dmn.client.editors.included.DMNIncludedModelActiveRecord;
 import org.kie.workbench.common.dmn.client.editors.included.IncludedModelsPageState;
+import org.kie.workbench.common.dmn.client.editors.included.PMMLIncludedModelActiveRecord;
 import org.kie.workbench.common.dmn.client.editors.included.grid.empty.DMNCardsEmptyStateView;
 import org.kie.workbench.common.widgets.client.cards.CardComponent;
 import org.kie.workbench.common.widgets.client.cards.CardsGridComponent;
@@ -33,6 +35,10 @@ import org.kie.workbench.common.widgets.client.cards.CardsGridComponent;
 public class DMNCardsGridComponent {
 
     private final ManagedInstance<DMNCardComponent> dmnCardComponent;
+
+    private final ManagedInstance<PMMLCardComponent> pmmlCardComponent;
+
+    private final ManagedInstance<DefaultCardComponent> defaultCardComponent;
 
     private final CardsGridComponent cardsGridComponent;
 
@@ -42,10 +48,14 @@ public class DMNCardsGridComponent {
 
     @Inject
     public DMNCardsGridComponent(final ManagedInstance<DMNCardComponent> dmnCardComponent,
+                                 final ManagedInstance<PMMLCardComponent> pmmlCardComponent,
+                                 final ManagedInstance<DefaultCardComponent> defaultCardComponent,
                                  final CardsGridComponent cardsGridComponent,
                                  final IncludedModelsPageState pageState,
                                  final DMNCardsEmptyStateView emptyStateView) {
         this.dmnCardComponent = dmnCardComponent;
+        this.pmmlCardComponent = pmmlCardComponent;
+        this.defaultCardComponent = defaultCardComponent;
         this.cardsGridComponent = cardsGridComponent;
         this.pageState = pageState;
         this.emptyStateView = emptyStateView;
@@ -57,24 +67,31 @@ public class DMNCardsGridComponent {
     }
 
     public void refresh() {
-        cardsGridComponent.setupCards(dmnCards(generateIncludedModels()));
+        cardsGridComponent.setupCards(cards(generateIncludedModels()));
     }
 
     public HTMLElement getElement() {
         return cardsGridComponent.getElement();
     }
 
-    private List<CardComponent> dmnCards(final List<IncludedModel> includes) {
-        return includes.stream().map(this::dmnCard).collect(Collectors.toList());
+    private List<CardComponent> cards(final List<BaseIncludedModelActiveRecord> includes) {
+        return includes.stream().map(this::card).collect(Collectors.toList());
     }
 
-    private DMNCardComponent dmnCard(final IncludedModel includedModel) {
-        final DMNCardComponent card = dmnCardComponent.get();
+    private BaseCardComponent card(final BaseIncludedModelActiveRecord includedModel) {
+        BaseCardComponent card;
+        if (includedModel instanceof DMNIncludedModelActiveRecord) {
+            card = dmnCardComponent.get();
+        } else if (includedModel instanceof PMMLIncludedModelActiveRecord) {
+            card = pmmlCardComponent.get();
+        } else {
+            card = defaultCardComponent.get();
+        }
         card.setup(this, includedModel);
         return card;
     }
 
-    private List<IncludedModel> generateIncludedModels() {
+    private List<BaseIncludedModelActiveRecord> generateIncludedModels() {
         return pageState.generateIncludedModels();
     }
 }

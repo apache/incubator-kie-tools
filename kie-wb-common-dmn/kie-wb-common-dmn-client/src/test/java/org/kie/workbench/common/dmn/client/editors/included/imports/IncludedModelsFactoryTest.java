@@ -22,9 +22,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Import;
+import org.kie.workbench.common.dmn.api.definition.v1_1.ImportDMN;
+import org.kie.workbench.common.dmn.api.definition.v1_1.ImportPMML;
+import org.kie.workbench.common.dmn.api.editors.included.DMNImportTypes;
 import org.kie.workbench.common.dmn.api.property.dmn.LocationURI;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
-import org.kie.workbench.common.dmn.client.editors.included.IncludedModel;
+import org.kie.workbench.common.dmn.client.editors.included.BaseIncludedModelActiveRecord;
+import org.kie.workbench.common.dmn.client.editors.included.DMNIncludedModelActiveRecord;
+import org.kie.workbench.common.dmn.client.editors.included.PMMLIncludedModelActiveRecord;
 import org.kie.workbench.common.dmn.client.editors.included.imports.persistence.ImportRecordEngine;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
@@ -33,6 +38,7 @@ import org.mockito.stubbing.Answer;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -56,10 +62,10 @@ public class IncludedModelsFactoryTest {
     }
 
     @Test
-    public void testMakeIncludedModels() {
+    public void testMakeIncludedDMNModels() {
 
-        final Import import1 = mock(Import.class);
-        final Import import2 = mock(Import.class);
+        final ImportDMN import1 = mock(ImportDMN.class);
+        final ImportDMN import2 = mock(ImportDMN.class);
         final Name nameMock1 = mock(Name.class);
         final Name nameMock2 = mock(Name.class);
         final List<Import> imports = asList(import1, import2);
@@ -83,6 +89,8 @@ public class IncludedModelsFactoryTest {
         when(import2.getName()).thenReturn(nameMock2);
         when(import1.getNamespace()).thenReturn(path1);
         when(import2.getNamespace()).thenReturn(path2);
+        when(import1.getImportType()).thenReturn(DMNImportTypes.DMN.getDefaultNamespace());
+        when(import2.getImportType()).thenReturn(DMNImportTypes.DMN.getDefaultNamespace());
         when(import1.getLocationURI()).thenReturn(new LocationURI(uri1));
         when(import2.getLocationURI()).thenReturn(new LocationURI(uri2));
         when(import1.getDrgElementsCount()).thenReturn(drgElementsCount1);
@@ -97,9 +105,9 @@ public class IncludedModelsFactoryTest {
             }
         }).when(factory).uuidWrapper();
 
-        final List<IncludedModel> includedModels = factory.makeIncludedModels(imports);
-        final IncludedModel includedModel1 = includedModels.get(0);
-        final IncludedModel includedModel2 = includedModels.get(1);
+        final List<BaseIncludedModelActiveRecord> includedModels = factory.makeIncludedModels(imports);
+        final BaseIncludedModelActiveRecord includedModel1 = includedModels.get(0);
+        final BaseIncludedModelActiveRecord includedModel2 = includedModels.get(1);
 
         verify(includedModelsIndex).clear();
         verify(includedModelsIndex).index(includedModel1, import1);
@@ -113,10 +121,76 @@ public class IncludedModelsFactoryTest {
         assertEquals(path2, includedModel2.getNamespace());
         assertEquals(uri1, includedModel1.getPath());
         assertEquals(uri2, includedModel2.getPath());
-        assertEquals(itemDefinitionsCount1, includedModel1.getDataTypesCount());
-        assertEquals(itemDefinitionsCount2, includedModel2.getDataTypesCount());
-        assertEquals(drgElementsCount1, includedModel1.getDrgElementsCount());
-        assertEquals(drgElementsCount2, includedModel2.getDrgElementsCount());
+        assertTrue(includedModel1 instanceof DMNIncludedModelActiveRecord);
+        assertTrue(includedModel2 instanceof DMNIncludedModelActiveRecord);
+        assertEquals(itemDefinitionsCount1, ((DMNIncludedModelActiveRecord) includedModel1).getDataTypesCount());
+        assertEquals(itemDefinitionsCount2, ((DMNIncludedModelActiveRecord) includedModel2).getDataTypesCount());
+        assertEquals(drgElementsCount1, ((DMNIncludedModelActiveRecord) includedModel1).getDrgElementsCount());
+        assertEquals(drgElementsCount2, ((DMNIncludedModelActiveRecord) includedModel2).getDrgElementsCount());
+        assertEquals(recordEngine, includedModel1.getRecordEngine());
+        assertEquals(recordEngine, includedModel2.getRecordEngine());
+    }
+
+    @Test
+    public void testMakeIncludedPMMLModels() {
+
+        final ImportPMML import1 = mock(ImportPMML.class);
+        final ImportPMML import2 = mock(ImportPMML.class);
+        final Name nameMock1 = mock(Name.class);
+        final Name nameMock2 = mock(Name.class);
+        final List<Import> imports = asList(import1, import2);
+        final String name1 = "name1";
+        final String name2 = "name2";
+        final String path1 = "path1";
+        final String path2 = "path2";
+        final String uuid1 = "123";
+        final String uuid2 = "456";
+        final String[] uuids = {uuid1, uuid2};
+        final String uri1 = "/src/main/kie/dmn/1";
+        final String uri2 = "/src/main/kie/dmn/2";
+        final Integer modelCount1 = 2;
+        final Integer modelCount2 = 8;
+
+        when(nameMock1.getValue()).thenReturn(name1);
+        when(nameMock2.getValue()).thenReturn(name2);
+        when(import1.getName()).thenReturn(nameMock1);
+        when(import2.getName()).thenReturn(nameMock2);
+        when(import1.getNamespace()).thenReturn(path1);
+        when(import2.getNamespace()).thenReturn(path2);
+        when(import1.getImportType()).thenReturn(DMNImportTypes.PMML.getDefaultNamespace());
+        when(import2.getImportType()).thenReturn(DMNImportTypes.PMML.getDefaultNamespace());
+        when(import1.getLocationURI()).thenReturn(new LocationURI(uri1));
+        when(import2.getLocationURI()).thenReturn(new LocationURI(uri2));
+        when(import1.getModelCount()).thenReturn(modelCount1);
+        when(import2.getModelCount()).thenReturn(modelCount2);
+        doAnswer(new Answer() {
+            private int count = 0;
+
+            public Object answer(InvocationOnMock invocation) {
+                return uuids[count++];
+            }
+        }).when(factory).uuidWrapper();
+
+        final List<BaseIncludedModelActiveRecord> includedModels = factory.makeIncludedModels(imports);
+        final BaseIncludedModelActiveRecord includedModel1 = includedModels.get(0);
+        final BaseIncludedModelActiveRecord includedModel2 = includedModels.get(1);
+
+        verify(includedModelsIndex).clear();
+        verify(includedModelsIndex).index(includedModel1, import1);
+        verify(includedModelsIndex).index(includedModel2, import2);
+        assertEquals(2, includedModels.size());
+        assertEquals(uuid1, includedModel1.getUUID());
+        assertEquals(uuid2, includedModel2.getUUID());
+        assertEquals(name1, includedModel1.getName());
+        assertEquals(name2, includedModel2.getName());
+        assertEquals(path1, includedModel1.getNamespace());
+        assertEquals(path2, includedModel2.getNamespace());
+        assertEquals(uri1, includedModel1.getPath());
+        assertEquals(uri2, includedModel2.getPath());
+        assertTrue(includedModel1 instanceof PMMLIncludedModelActiveRecord);
+        assertTrue(includedModel2 instanceof PMMLIncludedModelActiveRecord);
+        assertEquals(modelCount1, ((PMMLIncludedModelActiveRecord) includedModel1).getModelCount());
+        assertEquals(modelCount2, ((PMMLIncludedModelActiveRecord) includedModel2).getModelCount());
         assertEquals(recordEngine, includedModel1.getRecordEngine());
         assertEquals(recordEngine, includedModel2.getRecordEngine());
     }

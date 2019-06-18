@@ -54,11 +54,11 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public abstract class BaseDOMElementTest<W extends Widget & TakesValue<String> & Focusable, D extends BaseDOMElement & TakesValue<String> & Focusable> {
+public abstract class BaseDOMElementTest<W extends Widget & Focusable, D extends BaseDOMElement & TakesValue<String> & Focusable> {
 
-    private static final String VALUE = "value";
+    protected static final String VALUE = "value";
 
-    private static final char KEY = 'a';
+    protected static final char KEY = 'a';
 
     @Mock
     private Element widgetElement;
@@ -104,7 +104,7 @@ public abstract class BaseDOMElementTest<W extends Widget & TakesValue<String> &
 
     protected W widget;
 
-    private D domElement;
+    protected D domElement;
 
     @Before
     public void setup() {
@@ -120,18 +120,6 @@ public abstract class BaseDOMElementTest<W extends Widget & TakesValue<String> &
 
         domElement = getDomElement();
         domElement.setContext(context);
-    }
-
-    @Test
-    public void testSetValue() {
-        domElement.setValue(VALUE);
-        verify(widget).setValue(VALUE);
-    }
-
-    @Test
-    public void testGetValue() {
-        domElement.getValue();
-        verify(widget).getValue();
     }
 
     @Test

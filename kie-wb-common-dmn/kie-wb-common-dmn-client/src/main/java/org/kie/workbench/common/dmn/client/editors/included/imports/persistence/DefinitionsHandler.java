@@ -21,7 +21,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
-import org.kie.workbench.common.dmn.client.editors.included.IncludedModel;
+import org.kie.workbench.common.dmn.client.editors.included.BaseIncludedModelActiveRecord;
 import org.kie.workbench.common.dmn.client.editors.included.imports.IncludedModelsPageStateProviderImpl;
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 
@@ -38,11 +38,11 @@ public class DefinitionsHandler {
         this.dmnGraphUtils = dmnGraphUtils;
     }
 
-    public void destroy(final IncludedModel includedModel) {
+    public void destroy(final BaseIncludedModelActiveRecord includedModel) {
         NamespaceHandler.removeIncludedNamespace(getNsContext(), includedModel.getNamespace());
     }
 
-    public void create(final IncludedModel includedModel) {
+    public void create(final BaseIncludedModelActiveRecord includedModel) {
         NamespaceHandler.addIncludedNamespace(getNsContext(), includedModel.getNamespace());
     }
 

@@ -126,7 +126,7 @@ public class UndefinedExpressionGrid extends BaseDelegatingExpressionGrid<Expres
     }
 
     @Override
-    protected List<NodeMouseEventHandler> getNodeMouseClickEventHandlers(final GridSelectionManager selectionManager) {
+    public List<NodeMouseEventHandler> getNodeMouseClickEventHandlers(final GridSelectionManager selectionManager) {
         final List<NodeMouseEventHandler> handlers = new ArrayList<>();
         handlers.add(new DelegatingGridWidgetCellSelectorMouseEventHandler(selectionManager,
                                                                            this::getParentInformation,
@@ -137,8 +137,8 @@ public class UndefinedExpressionGrid extends BaseDelegatingExpressionGrid<Expres
     }
 
     @Override
-    protected List<NodeMouseEventHandler> getNodeMouseDoubleClickEventHandlers(final GridSelectionManager selectionManager,
-                                                                               final GridPinnedModeManager pinnedModeManager) {
+    public List<NodeMouseEventHandler> getNodeMouseDoubleClickEventHandlers(final GridSelectionManager selectionManager,
+                                                                            final GridPinnedModeManager pinnedModeManager) {
         return Collections.emptyList();
     }
 

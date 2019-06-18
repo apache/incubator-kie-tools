@@ -25,7 +25,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.ListBoxValues;
-import org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils;
+import org.kie.workbench.common.stunner.core.util.StringUtils;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
@@ -196,7 +196,7 @@ public class ComboBoxTest {
                       processVarConstantPrompt,
                       processVarConstantPlaceholder);
         String constant = "a constant";
-        String quotedConstant = StringUtils.createQuotedConstant(constant);
+        String quotedConstant = StringUtils.createQuotedConstantOptionalNumeric(constant);
         when(listBoxValues.isCustomValue(quotedConstant)).thenReturn(true);
         when(listBoxValues.getValueForDisplayValue(quotedConstant)).thenReturn(quotedConstant);
         comboBox.listBoxValueChanged(quotedConstant);
@@ -217,7 +217,7 @@ public class ComboBoxTest {
                       processVarConstantPrompt,
                       processVarConstantPlaceholder);
         String constant = "\"hello\"";
-        String quotedConstant = StringUtils.createQuotedConstant(constant);
+        String quotedConstant = StringUtils.createQuotedConstantOptionalNumeric(constant);
         when(listBoxValues.isCustomValue(quotedConstant)).thenReturn(true);
         when(listBoxValues.getValueForDisplayValue(quotedConstant)).thenReturn(quotedConstant);
         comboBox.listBoxValueChanged(quotedConstant);
@@ -238,7 +238,7 @@ public class ComboBoxTest {
                       processVarConstantPrompt,
                       processVarConstantPlaceholder);
         String constant = "greeting={\"hello\"}";
-        String quotedConstant = StringUtils.createQuotedConstant(constant);
+        String quotedConstant = StringUtils.createQuotedConstantOptionalNumeric(constant);
         when(listBoxValues.isCustomValue(quotedConstant)).thenReturn(true);
         when(listBoxValues.getValueForDisplayValue(quotedConstant)).thenReturn(quotedConstant);
         comboBox.listBoxValueChanged(quotedConstant);
@@ -357,7 +357,7 @@ public class ComboBoxTest {
                       processVarConstantPrompt,
                       processVarConstantPlaceholder);
         String value = "something new";
-        String quotedValue = StringUtils.createQuotedConstant(value);
+        String quotedValue = StringUtils.createQuotedConstantOptionalNumeric(value);
         when(listBoxValues.getNonCustomValueForUserString(value)).thenReturn(null);
         when(comboBox.addCustomValueToListBoxValues(value,
                                                     "")).thenReturn(quotedValue);

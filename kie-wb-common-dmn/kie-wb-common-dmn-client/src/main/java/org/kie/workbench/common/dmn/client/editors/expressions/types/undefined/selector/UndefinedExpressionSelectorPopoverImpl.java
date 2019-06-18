@@ -49,6 +49,7 @@ public class UndefinedExpressionSelectorPopoverImpl implements UndefinedExpressi
         view.setExpressionEditorDefinitions(expressionEditorDefinitionsSupplier
                                                     .get()
                                                     .stream()
+                                                    .filter(ExpressionEditorDefinition::isUserSelectable)
                                                     .filter(definition -> definition.getModelClass().isPresent())
                                                     .collect(Collectors.toList()));
     }

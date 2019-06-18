@@ -29,6 +29,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.FunctionDefinition;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Invocation;
+import org.kie.workbench.common.dmn.api.definition.v1_1.IsLiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.List;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Relation;
@@ -99,8 +100,8 @@ public class ExpressionPropertyConverter {
             componentWidthsConsumer.accept(componentWidths);
         }
 
-        if (wb instanceof LiteralExpression) {
-            return LiteralExpressionPropertyConverter.dmnFromWB((LiteralExpression) wb);
+        if (wb instanceof IsLiteralExpression) {
+            return LiteralExpressionPropertyConverter.dmnFromWB((IsLiteralExpression) wb);
         } else if (wb instanceof Context) {
             return ContextPropertyConverter.dmnFromWB((Context) wb,
                                                       componentWidthsConsumer);

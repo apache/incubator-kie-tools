@@ -24,6 +24,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
+import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpressionPMMLDocument;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
@@ -56,6 +57,9 @@ public class UndefinedExpressionSelectorPopoverImplTest {
     private ExpressionEditorDefinition literalExpressionEditorDefinition;
 
     @Mock
+    private ExpressionEditorDefinition literalExpressionPMMLEditorDefinition;
+
+    @Mock
     private UndefinedExpressionGrid undefinedExpressionGrid;
 
     @Captor
@@ -65,6 +69,8 @@ public class UndefinedExpressionSelectorPopoverImplTest {
 
     private LiteralExpression literalExpression = new LiteralExpression();
 
+    private LiteralExpressionPMMLDocument literalExpressionPMMLDocument = new LiteralExpressionPMMLDocument();
+
     private UndefinedExpressionSelectorPopoverView.Presenter popover;
 
     @Before
@@ -73,12 +79,20 @@ public class UndefinedExpressionSelectorPopoverImplTest {
         final ExpressionEditorDefinitions expressionEditorDefinitions = new ExpressionEditorDefinitions();
         expressionEditorDefinitions.add(undefinedExpressionEditorDefinition);
         expressionEditorDefinitions.add(literalExpressionEditorDefinition);
+        expressionEditorDefinitions.add(literalExpressionPMMLEditorDefinition);
 
         when(undefinedExpressionEditorDefinition.getModelClass()).thenReturn(Optional.empty());
 
+        when(literalExpressionEditorDefinition.isUserSelectable()).thenReturn(true);
         when(literalExpressionEditorDefinition.getType()).thenReturn(ExpressionType.LITERAL_EXPRESSION);
         when(literalExpressionEditorDefinition.getName()).thenReturn(LiteralExpression.class.getSimpleName());
         when(literalExpressionEditorDefinition.getModelClass()).thenReturn(Optional.of(literalExpression));
+
+        when(literalExpressionPMMLEditorDefinition.isUserSelectable()).thenReturn(false);
+        when(literalExpressionPMMLEditorDefinition.getType()).thenReturn(ExpressionType.LITERAL_EXPRESSION);
+        when(literalExpressionPMMLEditorDefinition.getName()).thenReturn(LiteralExpressionPMMLDocument.class.getSimpleName());
+        when(literalExpressionPMMLEditorDefinition.getModelClass()).thenReturn(Optional.of(literalExpressionPMMLDocument));
+
         when(expressionEditorDefinitionsSupplier.get()).thenReturn(expressionEditorDefinitions);
 
         this.popover = new UndefinedExpressionSelectorPopoverImpl(view, expressionEditorDefinitionsSupplier);

@@ -35,13 +35,13 @@ import static org.mockito.Mockito.doCallRealMethod;
 public class DRGElementTest {
 
     private static final String[] READONLY_FIELDS = {
-        "Name",
-        "AllowedAnswers",
-        "Description",
-        "Question",
-        "DataType",
-        "SourceType",
-        "LocationURI"};
+            "Name",
+            "AllowedAnswers",
+            "Description",
+            "Question",
+            "DataType",
+            "SourceType",
+            "LocationURI"};
 
     @Mock
     private DRGElement drgElement;

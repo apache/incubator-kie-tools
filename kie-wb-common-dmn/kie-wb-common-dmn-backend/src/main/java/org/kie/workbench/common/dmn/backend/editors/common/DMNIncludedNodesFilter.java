@@ -22,6 +22,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedModel;
@@ -31,6 +32,7 @@ import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.uberfire.backend.vfs.Path;
 
+@Dependent
 public class DMNIncludedNodesFilter {
 
     private final DMNDiagramHelper diagramHelper;
@@ -51,15 +53,13 @@ public class DMNIncludedNodesFilter {
 
             final Diagram<Graph, Metadata> diagram = diagramHelper.getDiagramByPath(path);
             final Optional<DMNIncludedModel> diagramImport = getDiagramImport(diagram, includedModels);
-            final boolean isDiagramImported = diagramImport.isPresent();
-
-            if (isDiagramImported) {
-                return diagramHelper
-                        .getNodes(diagram)
-                        .stream()
-                        .map(node -> factory.makeDMNIncludeModel(path, diagramImport.get(), node))
-                        .collect(Collectors.toList());
-            }
+            return diagramImport
+                    .map(dmn -> diagramHelper
+                            .getNodes(diagram)
+                            .stream()
+                            .map(node -> factory.makeDMNIncludeModel(path, dmn, node))
+                            .collect(Collectors.toList()))
+                    .orElse(new ArrayList<>());
         } catch (final Exception e) {
             // Ignore when 'path' cannot be reached.
         }

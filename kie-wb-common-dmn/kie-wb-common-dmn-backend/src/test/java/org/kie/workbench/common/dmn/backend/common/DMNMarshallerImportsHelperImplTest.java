@@ -42,6 +42,8 @@ import org.kie.dmn.model.v1_2.TDecisionService;
 import org.kie.dmn.model.v1_2.TInformationItem;
 import org.kie.dmn.model.v1_2.TInputData;
 import org.kie.dmn.model.v1_2.TItemDefinition;
+import org.kie.workbench.common.dmn.api.editors.included.PMMLDocumentMetadata;
+import org.kie.workbench.common.dmn.backend.editors.common.PMMLIncludedDocumentFactory;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -50,6 +52,7 @@ import org.uberfire.io.IOService;
 import org.uberfire.java.nio.IOException;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -77,11 +80,18 @@ public class DMNMarshallerImportsHelperImplTest {
     @Mock
     private DMNMarshaller marshaller;
 
+    @Mock
+    private PMMLIncludedDocumentFactory pmmlDocumentFactory;
+
     private DMNMarshallerImportsHelperImpl helper;
 
     @Before
     public void setup() {
-        helper = spy(new DMNMarshallerImportsHelperImpl(pathsHelper, projectService, marshaller, ioService));
+        helper = spy(new DMNMarshallerImportsHelperImpl(pathsHelper,
+                                                        projectService,
+                                                        marshaller,
+                                                        pmmlDocumentFactory,
+                                                        ioService));
     }
 
     @Test
@@ -110,6 +120,46 @@ public class DMNMarshallerImportsHelperImplTest {
         assertEquals(2, importDefinitions.size());
         assertEquals(definitions1, importDefinitions.get(import1));
         assertEquals(definitions3, importDefinitions.get(import3));
+    }
+
+    @Test
+    public void testGetPMMLDocuments() {
+        final Path dmnModelPath = mock(Path.class);
+        final Metadata metadata = mock(Metadata.class);
+        final PMMLDocumentMetadata pmmlDocument = mock(PMMLDocumentMetadata.class);
+        final Import import1 = mock(Import.class);
+        final List<Import> imports = singletonList(import1);
+        final Path path1 = mock(Path.class);
+        final Path path2 = mock(Path.class);
+        final List<Path> paths = asList(path1, path2);
+
+        when(metadata.getPath()).thenReturn(dmnModelPath);
+        when(import1.getLocationURI()).thenReturn("document1.pmml");
+        when(pathsHelper.getRelativeURI(dmnModelPath, path1)).thenReturn("document1.pmml");
+        when(pathsHelper.getRelativeURI(dmnModelPath, path2)).thenReturn("document2.pmml");
+        when(pmmlDocumentFactory.getDocumentByPath(path1)).thenReturn(pmmlDocument);
+
+        doReturn(paths).when(helper).getPMMLDocumentPaths(metadata);
+
+        final Map<Import, PMMLDocumentMetadata> importDefinitions = helper.getPMMLDocuments(metadata, imports);
+
+        assertEquals(1, importDefinitions.size());
+
+        assertEquals(pmmlDocument, importDefinitions.get(import1));
+    }
+
+    @Test
+    public void testGetPMMLDocumentPaths() {
+        final Metadata metadata = mock(Metadata.class);
+        final WorkspaceProject project = mock(WorkspaceProject.class);
+        final Path projectPath = mock(Path.class);
+
+        when(metadata.getPath()).thenReturn(projectPath);
+        when(projectService.resolveProject(any(Path.class))).thenReturn(project);
+
+        helper.getPMMLDocumentPaths(metadata);
+
+        verify(projectService).resolveProject(projectPath);
     }
 
     @Test
@@ -276,7 +326,7 @@ public class DMNMarshallerImportsHelperImplTest {
         final Definitions definitions3 = mock(Definitions.class);
         final List<Path> paths = asList(path1, path2, path3, path4);
 
-        when(pathsHelper.getDiagramsPaths(any())).thenReturn(paths);
+        when(pathsHelper.getDMNModelsPaths(any())).thenReturn(paths);
         when(metadata.getPath()).thenReturn(path2);
         doReturn(Optional.of(inputStreamReader1)).when(helper).loadPath(path1);
         doReturn(Optional.of(inputStreamReader2)).when(helper).loadPath(path2);
@@ -308,7 +358,7 @@ public class DMNMarshallerImportsHelperImplTest {
         final List<Path> paths = asList(path1, path2, path3);
 
         when(projectService.resolveProject(any(Path.class))).thenThrow(new NullPointerException());
-        when(pathsHelper.getDiagramsPaths(any())).thenReturn(paths);
+        when(pathsHelper.getDMNModelsPaths(any())).thenReturn(paths);
         when(metadata.getPath()).thenReturn(path2);
         doReturn(Optional.of(inputStreamReader1)).when(helper).loadPath(path1);
         doReturn(Optional.of(inputStreamReader2)).when(helper).loadPath(path2);
@@ -385,7 +435,7 @@ public class DMNMarshallerImportsHelperImplTest {
         final ItemDefinition itemDefinition2 = mock(ItemDefinition.class);
         final List<Path> paths = asList(path1, path2, path3, path4);
 
-        when(pathsHelper.getDiagramsPaths(any())).thenReturn(paths);
+        when(pathsHelper.getDMNModelsPaths(any())).thenReturn(paths);
         doReturn(Optional.of(inputStreamReader1)).when(helper).loadPath(path1);
         doReturn(Optional.of(inputStreamReader2)).when(helper).loadPath(path2);
         doReturn(Optional.of(inputStreamReader3)).when(helper).loadPath(path3);

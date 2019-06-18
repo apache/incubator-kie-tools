@@ -23,19 +23,19 @@ import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.Import;
-import org.kie.workbench.common.dmn.client.editors.included.IncludedModel;
+import org.kie.workbench.common.dmn.client.editors.included.BaseIncludedModelActiveRecord;
 
 @ApplicationScoped
 public class IncludedModelsIndex {
 
     private final Map<String, Import> index = new HashMap<>();
 
-    public void index(final IncludedModel includedModel,
+    public void index(final BaseIncludedModelActiveRecord includedModel,
                       final Import anImport) {
         index.put(key(includedModel), anImport);
     }
 
-    public Import getImport(final IncludedModel includedModel) {
+    public Import getImport(final BaseIncludedModelActiveRecord includedModel) {
         return index.get(key(includedModel));
     }
 
@@ -51,7 +51,7 @@ public class IncludedModelsIndex {
         return index.size();
     }
 
-    private String key(final IncludedModel includedModel) {
+    private String key(final BaseIncludedModelActiveRecord includedModel) {
         return includedModel.getUUID();
     }
 }

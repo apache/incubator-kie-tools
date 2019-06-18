@@ -28,13 +28,13 @@ import org.kie.workbench.common.stunner.core.rule.annotation.RuleExtension;
 public abstract class DRGElement extends NamedElement implements DynamicReadOnly {
 
     private static final String[] READONLY_FIELDS = {
-        "Name",
-        "AllowedAnswers",
-        "Description",
-        "Question",
-        "DataType",
-        "SourceType",
-        "LocationURI"};
+            "Name",
+            "AllowedAnswers",
+            "Description",
+            "Question",
+            "DataType",
+            "SourceType",
+            "LocationURI"};
 
     protected boolean allowOnlyVisualChange;
 

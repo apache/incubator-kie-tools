@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kiegroup.org/dmn/_79DCE56C-2E41-4950-A9D1-7DCBF1A67817" xmlns:included2="test_scorecard.pmml" xmlns:included1="https://kiegroup.org/dmn/_46EB0D0D-7241-4629-A38E-0377AA5B32D1" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_40318C8A-0640-4E2F-994E-D020DD1BD218" name="_5D79D6E6-A019-4144-ABEF-5F2212D07B2A" expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kiegroup.org/dmn/_79DCE56C-2E41-4950-A9D1-7DCBF1A67817">
+  <dmn:extensionElements></dmn:extensionElements>
+  <dmn:import id="_5B465738-F08A-403D-BB84-DC9C06301A92" name="dmn-import" namespace="https://kiegroup.org/dmn/_46EB0D0D-7241-4629-A38E-0377AA5B32D1" locationURI="QJPqZeJH.dmn" importType="http://www.omg.org/spec/DMN/20180521/MODEL/"></dmn:import>
+  <dmn:import id="_8CB81325-E88D-4FB1-8979-14FE12DEA4BD" name="pmml-import" namespace="pmml-import" locationURI="test_scorecard.pmml" importType="http://www.dmg.org/PMML-4_3"></dmn:import>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <di:extension>
+        <kie:ComponentsWidthsExtension></kie:ComponentsWidthsExtension>
+      </di:extension>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

@@ -16,15 +16,21 @@
 
 package org.kie.workbench.common.dmn.backend.definition.v1_1;
 
+import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import org.kie.dmn.model.api.FunctionKind;
 import org.kie.workbench.common.dmn.api.definition.HasComponentWidths;
+import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
+import org.kie.workbench.common.dmn.api.definition.v1_1.ContextEntry;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.FunctionDefinition;
 import org.kie.workbench.common.dmn.api.definition.v1_1.FunctionDefinition.Kind;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
+import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
+import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpressionPMMLDocument;
+import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpressionPMMLDocumentModel;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
@@ -60,6 +66,7 @@ public class FunctionDefinitionPropertyConverter {
                 break;
             case PMML:
                 result.setKind(Kind.PMML);
+                convertPMMLFunctionExpression(result);
                 break;
             default:
                 result.setKind(Kind.FEEL);
@@ -75,6 +82,47 @@ public class FunctionDefinitionPropertyConverter {
         }
 
         return result;
+    }
+
+    private static void convertPMMLFunctionExpression(final FunctionDefinition function) {
+        final Expression expression = function.getExpression();
+        if (expression instanceof Context) {
+            final Context context = (Context) expression;
+            context.getContextEntry().forEach(FunctionDefinitionPropertyConverter::convertContextEntryExpression);
+        }
+    }
+
+    private static void convertContextEntryExpression(final ContextEntry contextEntry) {
+        final Expression expression = contextEntry.getExpression();
+        if (expression instanceof LiteralExpression) {
+            final LiteralExpression le = (LiteralExpression) expression;
+            final String variableName = contextEntry.getVariable().getName().getValue();
+            if (Objects.equals(LiteralExpressionPMMLDocument.VARIABLE_DOCUMENT,
+                               variableName)) {
+                contextEntry.setExpression(convertLiteralExpressionToPMMLDocument(le));
+            } else if (Objects.equals(LiteralExpressionPMMLDocumentModel.VARIABLE_MODEL,
+                                      variableName)) {
+                contextEntry.setExpression(convertLiteralExpressionToPMMLDocumentModel(le));
+            }
+        }
+    }
+
+    private static LiteralExpressionPMMLDocument convertLiteralExpressionToPMMLDocument(final LiteralExpression le) {
+        return new LiteralExpressionPMMLDocument(le.getId(),
+                                                 le.getDescription(),
+                                                 le.getTypeRef(),
+                                                 le.getText(),
+                                                 le.getImportedValues(),
+                                                 le.getExpressionLanguage());
+    }
+
+    private static LiteralExpressionPMMLDocumentModel convertLiteralExpressionToPMMLDocumentModel(final LiteralExpression le) {
+        return new LiteralExpressionPMMLDocumentModel(le.getId(),
+                                                      le.getDescription(),
+                                                      le.getTypeRef(),
+                                                      le.getText(),
+                                                      le.getImportedValues(),
+                                                      le.getExpressionLanguage());
     }
 
     public static org.kie.dmn.model.api.FunctionDefinition dmnFromWB(final FunctionDefinition wb,

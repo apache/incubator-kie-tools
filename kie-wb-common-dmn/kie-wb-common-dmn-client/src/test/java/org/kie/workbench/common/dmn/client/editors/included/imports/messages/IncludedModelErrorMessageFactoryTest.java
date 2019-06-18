@@ -22,7 +22,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.editors.common.messages.FlashMessage;
-import org.kie.workbench.common.dmn.client.editors.included.IncludedModel;
+import org.kie.workbench.common.dmn.client.editors.included.BaseIncludedModelActiveRecord;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
@@ -51,7 +51,7 @@ public class IncludedModelErrorMessageFactoryTest {
     @Test
     public void testGetNameIsNotUniqueFlashMessage() {
 
-        final IncludedModel includedModel = mock(IncludedModel.class);
+        final BaseIncludedModelActiveRecord includedModel = mock(BaseIncludedModelActiveRecord.class);
         final Type expectedType = ERROR;
         final String expectedStrongMessage = "StrongMessage";
         final String expectedRegularMessage = "RegularMessage";
@@ -73,7 +73,7 @@ public class IncludedModelErrorMessageFactoryTest {
     @Test
     public void testGetNameIsBlankFlashMessage() {
 
-        final IncludedModel includedModel = mock(IncludedModel.class);
+        final BaseIncludedModelActiveRecord includedModel = mock(BaseIncludedModelActiveRecord.class);
         final Type expectedType = ERROR;
         final String expectedStrongMessage = "StrongMessage";
         final String expectedRegularMessage = "RegularMessage";

@@ -34,10 +34,12 @@ import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.KeyValueRow;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Variable.VariableType;
-import org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils;
 import org.kie.workbench.common.stunner.bpmn.client.forms.widgets.VariableNameTextBox;
 import org.kie.workbench.common.stunner.client.widgets.canvas.actions.IntegerTextBox;
+import org.kie.workbench.common.stunner.core.util.StringUtils;
 import org.uberfire.workbench.events.NotificationEvent;
+
+import static org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils.ALPHA_NUM_REGEXP;
 
 @Templated("RolesEditorWidget.html#tableRow")
 public class RolesListItemWidgetViewImpl implements RolesListItemWidgetView,
@@ -92,7 +94,7 @@ public class RolesListItemWidgetViewImpl implements RolesListItemWidgetView,
 
     @PostConstruct
     public void init() {
-        role.setRegExp(StringUtils.ALPHA_NUM_REGEXP, INVALID_CHARACTERS_MESSAGE, INVALID_CHARACTERS_MESSAGE);
+        role.setRegExp(ALPHA_NUM_REGEXP, INVALID_CHARACTERS_MESSAGE, INVALID_CHARACTERS_MESSAGE);
         role.addChangeHandler((e) -> handleValueChanged());
         cardinality.addChangeHandler((e) -> handleValueChanged());
         cardinality.addFocusHandler((e) -> handleFocus());
@@ -111,7 +113,7 @@ public class RolesListItemWidgetViewImpl implements RolesListItemWidgetView,
     private void handleValueChanged() {
         final String currentRole = row.getModel().getKey();
         final String currentCardinality = row.getModel().getValue();
-        if (StringUtils.isBlank(currentRole)) {
+        if (StringUtils.isEmpty(currentRole)) {
             notification.fire(new NotificationEvent(EMPTY_ERROR_MESSAGE,
                                                     NotificationEvent.NotificationType.ERROR));
             row.getModel().setKey(previousRole);

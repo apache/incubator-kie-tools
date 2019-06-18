@@ -35,6 +35,8 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.InputData;
 import org.kie.workbench.common.dmn.api.definition.v1_1.KnowledgeRequirement;
 import org.kie.workbench.common.dmn.api.definition.v1_1.KnowledgeSource;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
+import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpressionPMMLDocument;
+import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpressionPMMLDocumentModel;
 import org.kie.workbench.common.dmn.api.definition.v1_1.OutputClause;
 import org.kie.workbench.common.dmn.api.definition.v1_1.TextAnnotation;
 import org.kie.workbench.common.dmn.api.definition.v1_1.UnaryTests;
@@ -63,6 +65,8 @@ import org.kie.workbench.common.stunner.core.rule.annotation.Occurrences;
                 KnowledgeRequirement.class,
                 AuthorityRequirement.class,
                 LiteralExpression.class,
+                LiteralExpressionPMMLDocument.class,
+                LiteralExpressionPMMLDocumentModel.class,
                 ImportedValues.class,
                 UnaryTests.class,
                 InformationItem.class,

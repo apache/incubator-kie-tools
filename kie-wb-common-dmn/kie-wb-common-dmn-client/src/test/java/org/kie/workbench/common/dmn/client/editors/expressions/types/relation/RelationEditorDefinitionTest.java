@@ -192,4 +192,9 @@ public class RelationEditorDefinitionTest {
         final GridWidget editor = oEditor.get();
         assertThat(editor).isInstanceOf(RelationGrid.class);
     }
+
+    @Test
+    public void testIsUserSelectable() {
+        assertThat(definition.isUserSelectable()).isTrue();
+    }
 }

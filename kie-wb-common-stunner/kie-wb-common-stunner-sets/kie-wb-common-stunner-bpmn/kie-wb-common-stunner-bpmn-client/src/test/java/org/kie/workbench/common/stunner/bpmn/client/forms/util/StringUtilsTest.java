@@ -20,59 +20,12 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public class StringUtilsTest {
 
     @Test
-    public void testCreateQuotedConstantNull() throws Exception {
-        assertNull(StringUtils.createQuotedConstant(null));
-    }
-
-    @Test
-    public void testCreateQuotedConstantEmpty() throws Exception {
-        assertEquals("",
-                     StringUtils.createQuotedConstant(""));
-    }
-
-    @Test
-    public void testCreateQuotedConstantNumber() throws Exception {
-        assertEquals("-123",
-                     StringUtils.createQuotedConstant("-123"));
-    }
-
-    @Test
-    public void testCreateQuotedConstant() throws Exception {
-        assertEquals("\" abc \"",
-                     StringUtils.createQuotedConstant(" abc "));
-    }
-
-    @Test
-    public void testCreateUnquotedConstantNull() throws Exception {
-        assertNull(StringUtils.createUnquotedConstant(null));
-    }
-
-    @Test
-    public void testCreateUnquotedConstantEmpty() throws Exception {
-        assertEquals("",
-                     StringUtils.createUnquotedConstant(""));
-    }
-
-    @Test
-    public void testCreateUnquotedConstantNoAction() throws Exception {
-        assertEquals("-123",
-                     StringUtils.createUnquotedConstant("-123"));
-    }
-
-    @Test
-    public void testCreateUnquotedConstant() throws Exception {
-        assertEquals(" abc ",
-                     StringUtils.createUnquotedConstant("\" abc \""));
-    }
-
-    @Test
-    public void testCreateDataTypeDisplayName() throws Exception {
+    public void testCreateDataTypeDisplayName() {
         assertEquals("Chairs [com.test]",
                      StringUtils.createDataTypeDisplayName("com.test.Chairs"));
     }

@@ -26,6 +26,10 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.api.definition.v1_1.Definitions;
+import org.kie.workbench.common.dmn.api.definition.v1_1.ImportDMN;
+import org.kie.workbench.common.dmn.api.definition.v1_1.ImportPMML;
+import org.kie.workbench.common.dmn.api.editors.included.DMNImportTypes;
 import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedModel;
 import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedNode;
 import org.kie.workbench.common.dmn.client.api.included.legacy.DMNIncludeModelsClient;
@@ -35,6 +39,7 @@ import org.mockito.Mock;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doNothing;
@@ -95,6 +100,26 @@ public class DecisionComponentsTest {
         verify(decisionComponents).clearDecisionComponents();
         verify(decisionComponents).startLoading();
         verify(client).loadNodesFromImports(includedModels, listConsumer);
+    }
+
+    @Test
+    public void testGetDMNIncludedModelsOnlyIncludesDMN() {
+        final Diagram diagram = mock(Diagram.class);
+        final Definitions definitions = new Definitions();
+        final ImportDMN dmnImport = new ImportDMN();
+        final ImportPMML pmmlImport = new ImportPMML();
+        dmnImport.getName().setValue("dmn");
+        dmnImport.setImportType(DMNImportTypes.DMN.getDefaultNamespace());
+        pmmlImport.setImportType(DMNImportTypes.PMML.getDefaultNamespace());
+        definitions.getImport().addAll(asList(dmnImport, pmmlImport));
+
+        when(graphUtils.getDefinitions(diagram)).thenReturn(definitions);
+
+        final List<DMNIncludedModel> includedModels = decisionComponents.getDMNIncludedModels(diagram);
+
+        assertThat(includedModels).hasSize(1);
+        assertThat(includedModels.get(0).getModelName()).isEqualTo("dmn");
+        assertThat(includedModels.get(0).getImportType()).isEqualTo(DMNImportTypes.DMN.getDefaultNamespace());
     }
 
     @Test

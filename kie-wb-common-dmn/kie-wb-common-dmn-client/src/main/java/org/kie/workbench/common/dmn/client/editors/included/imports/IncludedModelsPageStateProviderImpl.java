@@ -24,7 +24,7 @@ import javax.inject.Inject;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.Definitions;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Import;
-import org.kie.workbench.common.dmn.client.editors.included.IncludedModel;
+import org.kie.workbench.common.dmn.client.editors.included.BaseIncludedModelActiveRecord;
 import org.kie.workbench.common.dmn.client.editors.included.IncludedModelsPage;
 import org.kie.workbench.common.dmn.client.editors.included.common.IncludedModelsPageStateProvider;
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
@@ -57,7 +57,7 @@ public class IncludedModelsPageStateProviderImpl implements IncludedModelsPageSt
     }
 
     @Override
-    public List<IncludedModel> generateIncludedModels() {
+    public List<BaseIncludedModelActiveRecord> generateIncludedModels() {
         return factory.makeIncludedModels(getImports());
     }
 

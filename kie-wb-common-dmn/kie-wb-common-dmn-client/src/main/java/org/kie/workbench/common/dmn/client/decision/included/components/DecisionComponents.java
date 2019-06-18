@@ -19,6 +19,7 @@ package org.kie.workbench.common.dmn.client.decision.included.components;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -30,12 +31,15 @@ import elemental2.dom.HTMLElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Import;
+import org.kie.workbench.common.dmn.api.editors.included.DMNImportTypes;
 import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedModel;
 import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedNode;
 import org.kie.workbench.common.dmn.client.api.included.legacy.DMNIncludeModelsClient;
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.uberfire.client.mvp.UberElemental;
+
+import static org.kie.workbench.common.dmn.api.editors.included.DMNImportTypes.determineImportType;
 
 @Dependent
 public class DecisionComponents {
@@ -150,6 +154,7 @@ public class DecisionComponents {
                 .getDefinitions(diagram)
                 .getImport()
                 .stream()
+                .filter(anImport -> Objects.equals(DMNImportTypes.DMN, determineImportType(anImport.getImportType())))
                 .map(this::asDMNIncludedModel)
                 .collect(Collectors.toList());
     }
@@ -157,7 +162,8 @@ public class DecisionComponents {
     private DMNIncludedModel asDMNIncludedModel(final Import anImport) {
         final String modelName = anImport.getName().getValue();
         final String namespace = anImport.getNamespace();
-        return new DMNIncludedModel(modelName, "", "", namespace, 0, 0);
+        final String importType = anImport.getImportType();
+        return new DMNIncludedModel(modelName, "", "", namespace, importType, 0, 0);
     }
 
     List<DecisionComponentsItem> getDecisionComponentsItems() {

@@ -25,17 +25,27 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Import;
 import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedModel;
+import org.kie.workbench.common.dmn.api.editors.included.IncludedModel;
+import org.kie.workbench.common.dmn.api.editors.included.PMMLIncludedModel;
+import org.kie.workbench.common.dmn.api.property.dmn.LocationURI;
 import org.kie.workbench.common.dmn.client.api.included.legacy.DMNIncludeModelsClient;
 import org.kie.workbench.common.dmn.client.editors.included.IncludedModelsPageState;
 import org.kie.workbench.common.dmn.client.editors.included.imports.IncludedModelsIndex;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.widgets.client.assets.dropdown.KieAssetsDropdownItem;
 import org.mockito.Mock;
+import org.uberfire.backend.vfs.Path;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
+import static org.kie.workbench.common.dmn.api.editors.included.DMNImportTypes.DMN;
+import static org.kie.workbench.common.dmn.api.editors.included.DMNImportTypes.PMML;
 import static org.kie.workbench.common.dmn.client.editors.included.modal.dropdown.DMNAssetsDropdownItemsProvider.DRG_ELEMENT_COUNT_METADATA;
+import static org.kie.workbench.common.dmn.client.editors.included.modal.dropdown.DMNAssetsDropdownItemsProvider.IMPORT_TYPE_METADATA;
 import static org.kie.workbench.common.dmn.client.editors.included.modal.dropdown.DMNAssetsDropdownItemsProvider.ITEM_DEFINITION_COUNT_METADATA;
 import static org.kie.workbench.common.dmn.client.editors.included.modal.dropdown.DMNAssetsDropdownItemsProvider.PATH_METADATA;
+import static org.kie.workbench.common.dmn.client.editors.included.modal.dropdown.DMNAssetsDropdownItemsProvider.PMML_MODEL_COUNT_METADATA;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -55,13 +65,23 @@ public class DMNAssetsDropdownItemsProviderTest {
     private IncludedModelsIndex modelsIndex;
 
     @Mock
-    private Consumer<List<DMNIncludedModel>> wrappedConsumer;
+    private Consumer<List<IncludedModel>> wrappedConsumer;
+
+    @Mock
+    private SessionManager sessionManager;
+
+    @Mock
+    private Path path;
 
     private DMNAssetsDropdownItemsProvider itemsProvider;
 
     @Before
     public void setup() {
-        itemsProvider = spy(new DMNAssetsDropdownItemsProvider(client, pageState, modelsIndex));
+        itemsProvider = spy(new DMNAssetsDropdownItemsProvider(client,
+                                                               pageState,
+                                                               modelsIndex,
+                                                               sessionManager));
+        doReturn(path).when(itemsProvider).getDMNModelPath();
     }
 
     @Test
@@ -72,44 +92,101 @@ public class DMNAssetsDropdownItemsProviderTest {
 
         itemsProvider.getItems(assetListConsumer);
 
-        verify(client).loadModels(wrappedConsumer);
+        verify(client).loadModels(eq(path),
+                                  eq(wrappedConsumer));
     }
 
     @Test
-    public void testWrap() {
+    public void testWrapDMNItems() {
 
-        final Integer drgElementCount = 0;
-        final Integer itemDefinitionCount = 0;
-        final DMNIncludedModel dmnIncludedModel1 = new DMNIncludedModel("name1", "com.kie.dmn", "/src/main/kie1", "://namespace1", drgElementCount, itemDefinitionCount);
-        final DMNIncludedModel dmnIncludedModel2 = new DMNIncludedModel("name2", "com.kie.dmn", "/src/main/kie2", "://namespace2", drgElementCount, itemDefinitionCount);
-        final DMNIncludedModel dmnIncludedModel3 = new DMNIncludedModel("name3", "com.kie.dmn", "/src/main/kie3", "://namespace3", drgElementCount, itemDefinitionCount);
-        final DMNIncludedModel dmnIncludedModel4 = new DMNIncludedModel("name4", "com.kie.dmn", "/src/main/kie4", "://namespace4", drgElementCount, itemDefinitionCount);
-        final DMNIncludedModel dmnIncludedModel5 = new DMNIncludedModel("name5", "com.kie.dmn", "/src/main/kie5", "://namespace5", drgElementCount, itemDefinitionCount);
+        final IncludedModel includedModel1 = makeDMNIncludedModel(1);
+        final IncludedModel includedModel2 = makeDMNIncludedModel(2);
+        final IncludedModel includedModel3 = makeDMNIncludedModel(3);
+        final IncludedModel includedModel4 = makeDMNIncludedModel(4);
+        final IncludedModel includedModel5 = makeDMNIncludedModel(5);
         final Import import1 = mock(Import.class);
         final Import import2 = mock(Import.class);
         final KieAssetsDropdownItem dropdownItem1 = mock(KieAssetsDropdownItem.class);
         final KieAssetsDropdownItem dropdownItem5 = mock(KieAssetsDropdownItem.class);
-        final List<DMNIncludedModel> t = asList(dmnIncludedModel1, dmnIncludedModel2, dmnIncludedModel3, dmnIncludedModel4, dmnIncludedModel5);
+        final List<IncludedModel> t = asList(includedModel1, includedModel2, includedModel3, includedModel4, includedModel5);
 
         when(import1.getNamespace()).thenReturn("://namespace3");
         when(import2.getNamespace()).thenReturn("://namespace4");
         when(modelsIndex.getIndexedImports()).thenReturn(asList(import1, import2));
         when(pageState.getCurrentDiagramNamespace()).thenReturn("://namespace2");
-        doReturn(dropdownItem1).when(itemsProvider).asKieAsset(dmnIncludedModel1);
-        doReturn(dropdownItem5).when(itemsProvider).asKieAsset(dmnIncludedModel5);
+        doReturn(dropdownItem1).when(itemsProvider).asKieAsset(includedModel1);
+        doReturn(dropdownItem5).when(itemsProvider).asKieAsset(includedModel5);
 
         itemsProvider.wrap(actualList -> {
+            //IncludedModel3 and IncludedModel4 are already imported. IncludedModel2 is the current diagram so only expect 1 and 5.
             final List<KieAssetsDropdownItem> expectedList = asList(dropdownItem1, dropdownItem5);
             assertEquals(expectedList, actualList);
         }).accept(t);
     }
 
-    @Test
-    public void testAsKieAsset() {
+    private DMNIncludedModel makeDMNIncludedModel(final int id) {
+        return makeDMNIncludedModel(id, 0, 0);
+    }
 
-        final Integer drgElementCount = 2;
-        final Integer itemDefinitionCount = 3;
-        final DMNIncludedModel model = new DMNIncludedModel("name1", "com.kie.dmn", "/src/main/kie1", "://namespace1", drgElementCount, itemDefinitionCount);
+    private DMNIncludedModel makeDMNIncludedModel(final int id,
+                                                  final int drgElementsCount,
+                                                  final int itemDefinitionsCount) {
+        return new DMNIncludedModel("name" + id,
+                                    "com.kie.dmn",
+                                    "/src/main/kie" + id,
+                                    "://namespace" + id,
+                                    DMN.getDefaultNamespace(),
+                                    drgElementsCount,
+                                    itemDefinitionsCount);
+    }
+
+    @Test
+    public void testWrapPMMLItems() {
+
+        final IncludedModel includedModel1 = makePMMLIncludedModel(1);
+        final IncludedModel includedModel2 = makePMMLIncludedModel(2);
+        final IncludedModel includedModel3 = makePMMLIncludedModel(3);
+        final IncludedModel includedModel4 = makePMMLIncludedModel(4);
+        final IncludedModel includedModel5 = makePMMLIncludedModel(5);
+        final Import import1 = mock(Import.class);
+        final Import import2 = mock(Import.class);
+        final LocationURI import1URI = new LocationURI("/src/main/kie3");
+        final LocationURI import2URI = new LocationURI("/src/main/kie4");
+        final KieAssetsDropdownItem dropdownItem1 = mock(KieAssetsDropdownItem.class);
+        final KieAssetsDropdownItem dropdownItem2 = mock(KieAssetsDropdownItem.class);
+        final KieAssetsDropdownItem dropdownItem5 = mock(KieAssetsDropdownItem.class);
+        final List<IncludedModel> t = asList(includedModel1, includedModel2, includedModel3, includedModel4, includedModel5);
+
+        when(import1.getLocationURI()).thenReturn(import1URI);
+        when(import2.getLocationURI()).thenReturn(import2URI);
+        when(modelsIndex.getIndexedImports()).thenReturn(asList(import1, import2));
+        doReturn(dropdownItem1).when(itemsProvider).asKieAsset(includedModel1);
+        doReturn(dropdownItem2).when(itemsProvider).asKieAsset(includedModel2);
+        doReturn(dropdownItem5).when(itemsProvider).asKieAsset(includedModel5);
+
+        itemsProvider.wrap(actualList -> {
+            //IncludedModel3 and IncludedModel4 are already imported so only expect 1, 2 and 5.
+            final List<KieAssetsDropdownItem> expectedList = asList(dropdownItem1, dropdownItem2, dropdownItem5);
+            assertEquals(expectedList, actualList);
+        }).accept(t);
+    }
+
+    private PMMLIncludedModel makePMMLIncludedModel(final int id) {
+        return makePMMLIncludedModel(id, 0);
+    }
+
+    private PMMLIncludedModel makePMMLIncludedModel(final int id,
+                                                    final int modelCount) {
+        return new PMMLIncludedModel("name" + id,
+                                     "com.kie.pmml",
+                                     "/src/main/kie" + id,
+                                     PMML.getDefaultNamespace(),
+                                     modelCount);
+    }
+
+    @Test
+    public void testAsKieAssetForDMNIncludedModel() {
+        final DMNIncludedModel model = makeDMNIncludedModel(1, 2, 3);
 
         final KieAssetsDropdownItem dropdownItem = itemsProvider.asKieAsset(model);
 
@@ -117,7 +194,21 @@ public class DMNAssetsDropdownItemsProviderTest {
         assertEquals(model.getModelPackage(), dropdownItem.getSubText());
         assertEquals(model.getNamespace(), dropdownItem.getValue());
         assertEquals(model.getPath(), dropdownItem.getMetaData().get(PATH_METADATA));
+        assertEquals(model.getImportType(), dropdownItem.getMetaData().get(IMPORT_TYPE_METADATA));
         assertEquals(model.getDrgElementsCount().toString(), dropdownItem.getMetaData().get(DRG_ELEMENT_COUNT_METADATA));
         assertEquals(model.getItemDefinitionsCount().toString(), dropdownItem.getMetaData().get(ITEM_DEFINITION_COUNT_METADATA));
+    }
+
+    @Test
+    public void testAsKieAssetForPMMLIncludedModel() {
+        final PMMLIncludedModel model = makePMMLIncludedModel(1, 2);
+
+        final KieAssetsDropdownItem dropdownItem = itemsProvider.asKieAsset(model);
+
+        assertEquals(model.getModelName(), dropdownItem.getText());
+        assertEquals(model.getModelPackage(), dropdownItem.getSubText());
+        assertEquals(model.getPath(), dropdownItem.getMetaData().get(PATH_METADATA));
+        assertEquals(model.getImportType(), dropdownItem.getMetaData().get(IMPORT_TYPE_METADATA));
+        assertEquals(model.getModelCount().toString(), dropdownItem.getMetaData().get(PMML_MODEL_COUNT_METADATA));
     }
 }

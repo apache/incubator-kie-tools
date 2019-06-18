@@ -28,6 +28,9 @@ import org.kie.dmn.model.v1_2.TImport;
 import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Definitions;
+import org.kie.workbench.common.dmn.api.definition.v1_1.ImportDMN;
+import org.kie.workbench.common.dmn.api.editors.included.DMNImportTypes;
+import org.kie.workbench.common.dmn.api.editors.included.PMMLDocumentMetadata;
 import org.kie.workbench.common.dmn.api.property.dmn.Text;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -36,6 +39,7 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -54,22 +58,27 @@ public class DefinitionsConverterTest {
     public void wbFromDMN() {
 
         final Import anImport = new TImport();
+        anImport.setImportType(DMNImportTypes.DMN.getDefaultNamespace());
 
         final org.kie.dmn.model.api.Definitions definitions = mock(org.kie.dmn.model.api.Definitions.class);
         final Map<Import, org.kie.dmn.model.api.Definitions> importDefinitions = new Maps.Builder<Import, org.kie.dmn.model.api.Definitions>().put(anImport, definitions).build();
+        final Map<Import, PMMLDocumentMetadata> pmmlDocuments = new Maps.Builder<Import, PMMLDocumentMetadata>().build();
         when(definitions.getDrgElement()).thenReturn(asList(mock(DRGElement.class), mock(DRGElement.class)));
         when(definitions.getItemDefinition()).thenReturn(asList(mock(ItemDefinition.class), mock(ItemDefinition.class), mock(ItemDefinition.class)));
         when(apiDefinitions.getImport()).thenReturn(singletonList(anImport));
 
-        final Definitions wb = DefinitionsConverter.wbFromDMN(apiDefinitions, importDefinitions);
+        final Definitions wb = DefinitionsConverter.wbFromDMN(apiDefinitions, importDefinitions, pmmlDocuments);
         final String defaultNs = wb.getNsContext().get(DMNModelInstrumentedBase.Namespace.DEFAULT.getPrefix());
         final String namespace = wb.getNamespace().getValue();
         final List<org.kie.workbench.common.dmn.api.definition.v1_1.Import> imports = wb.getImport();
 
         assertEquals(defaultNs, namespace);
         assertEquals(1, imports.size());
-        assertEquals(2, imports.get(0).getDrgElementsCount());
-        assertEquals(3, imports.get(0).getItemDefinitionsCount());
+        assertTrue(imports.get(0) instanceof ImportDMN);
+
+        final ImportDMN importDMN = (ImportDMN) imports.get(0);
+        assertEquals(2, importDMN.getDrgElementsCount());
+        assertEquals(3, importDMN.getItemDefinitionsCount());
     }
 
     @Test

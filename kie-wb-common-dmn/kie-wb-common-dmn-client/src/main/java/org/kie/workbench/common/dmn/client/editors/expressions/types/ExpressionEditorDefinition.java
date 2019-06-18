@@ -28,6 +28,10 @@ import org.uberfire.ext.wires.core.grids.client.model.GridData;
 
 public interface ExpressionEditorDefinition<T extends Expression> extends ExpressionEditorModelEnricher<T> {
 
+    default boolean isUserSelectable() {
+        return true;
+    }
+
     ExpressionType getType();
 
     String getName();

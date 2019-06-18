@@ -43,7 +43,7 @@ public class IncludedModelsPageState {
                 .orElse("");
     }
 
-    public List<IncludedModel> generateIncludedModels() {
+    public List<BaseIncludedModelActiveRecord> generateIncludedModels() {
         return getPageProvider()
                 .map(IncludedModelsPageStateProvider::generateIncludedModels)
                 .orElse(emptyList());

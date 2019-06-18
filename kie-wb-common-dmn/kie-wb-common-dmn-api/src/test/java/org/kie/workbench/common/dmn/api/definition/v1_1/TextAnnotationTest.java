@@ -32,9 +32,9 @@ public class TextAnnotationTest {
 
     private TextAnnotation textAnnotation;
     private static final String[] READONLY_FIELDS = {
-        "Description",
-        "Text",
-        "TextFormat"};
+            "Description",
+            "Text",
+            "TextFormat"};
 
     @Before
     public void setup() {

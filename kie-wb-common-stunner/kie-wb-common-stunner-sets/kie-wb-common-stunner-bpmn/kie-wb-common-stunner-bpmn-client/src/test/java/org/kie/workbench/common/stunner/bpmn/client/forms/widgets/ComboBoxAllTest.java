@@ -25,7 +25,7 @@ import org.gwtbootstrap3.client.ui.ValueListBox;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.ListBoxValues;
-import org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils;
+import org.kie.workbench.common.stunner.core.util.StringUtils;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.invocation.InvocationOnMock;
@@ -245,7 +245,7 @@ public class ComboBoxAllTest {
                           2);
         String customNumericValue1 = "123";
         setCustomValue(customNumericValue1);
-        setNonCustomValue(StringUtils.createQuotedConstant(customStringValue1),
+        setNonCustomValue(StringUtils.createQuotedConstantOptionalNumeric(customStringValue1),
                           2);
         String customNumericValue2 = "123.456";
         setCustomValue(customNumericValue2);
@@ -255,12 +255,12 @@ public class ComboBoxAllTest {
         editCustomValue(customNumericValue3);
         String customStringValue2 = "second constant";
         setCustomValue(customStringValue2);
-        setNonCustomValue(StringUtils.createQuotedConstant(customStringValue1),
+        setNonCustomValue(StringUtils.createQuotedConstantOptionalNumeric(customStringValue1),
                           3);
         setNonCustomValue(processVarListBoxStartValues.get(2),
                           3);
         assertTrue(getListBoxValues().getAcceptableValuesWithCustomValues().
-                contains(StringUtils.createQuotedConstant(customStringValue1)));
+                contains(StringUtils.createQuotedConstantOptionalNumeric(customStringValue1)));
         assertTrue(getListBoxValues().getAcceptableValuesWithCustomValues().
                 contains(customNumericValue1));
         assertTrue(!getListBoxValues().getAcceptableValuesWithCustomValues().
@@ -268,7 +268,7 @@ public class ComboBoxAllTest {
         assertTrue(getListBoxValues().getAcceptableValuesWithCustomValues().
                 contains(customNumericValue3));
         assertTrue(getListBoxValues().getAcceptableValuesWithCustomValues().
-                contains(StringUtils.createQuotedConstant(customStringValue2)));
+                contains(StringUtils.createQuotedConstantOptionalNumeric(customStringValue2)));
 //        System.out.println(comboBox.getListBoxValues().toString());
     }
 
@@ -314,7 +314,7 @@ public class ComboBoxAllTest {
                      true);
         assertEquals(textBox.isVisible(),
                      false);
-        String listBoxValue = this.quoteStringValues ? StringUtils.createQuotedConstant(value) : value;
+        String listBoxValue = this.quoteStringValues ? StringUtils.createQuotedConstantOptionalNumeric(value) : value;
         verify(modelPresenter).setTextBoxModelValue(textBox,
                                                     value);
         assertEquals(comboBox.getValue(),
@@ -360,7 +360,7 @@ public class ComboBoxAllTest {
                      true);
         assertEquals(textBox.isVisible(),
                      false);
-        String listBoxValue = this.quoteStringValues ? StringUtils.createQuotedConstant(value) : value;
+        String listBoxValue = this.quoteStringValues ? StringUtils.createQuotedConstantOptionalNumeric(value) : value;
         verify(modelPresenter).setTextBoxModelValue(textBox,
                                                     listBoxValue);
         assertEquals(comboBox.getValue(),

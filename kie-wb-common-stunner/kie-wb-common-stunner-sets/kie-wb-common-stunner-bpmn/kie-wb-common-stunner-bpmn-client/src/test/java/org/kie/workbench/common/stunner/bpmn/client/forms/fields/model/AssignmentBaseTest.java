@@ -62,8 +62,6 @@ public class AssignmentBaseTest {
                 return urlDecode((String) args[0]);
             }
         });
-        PowerMockito.when(StringUtils.createQuotedConstant(Mockito.anyString())).thenCallRealMethod();
-        PowerMockito.when(StringUtils.createUnquotedConstant(Mockito.anyString())).thenCallRealMethod();
         PowerMockito.when(StringUtils.createDataTypeDisplayName(Mockito.anyString())).thenCallRealMethod();
     }
 

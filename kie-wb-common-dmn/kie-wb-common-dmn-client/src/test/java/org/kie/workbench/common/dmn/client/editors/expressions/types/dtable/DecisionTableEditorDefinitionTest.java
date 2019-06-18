@@ -78,4 +78,9 @@ public class DecisionTableEditorDefinitionTest extends BaseDecisionTableEditorDe
         final GridWidget editor = oEditor.get();
         assertThat(editor).isInstanceOf(DecisionTableGrid.class);
     }
+
+    @Test
+    public void testIsUserSelectable() {
+        assertThat(definition.isUserSelectable()).isTrue();
+    }
 }

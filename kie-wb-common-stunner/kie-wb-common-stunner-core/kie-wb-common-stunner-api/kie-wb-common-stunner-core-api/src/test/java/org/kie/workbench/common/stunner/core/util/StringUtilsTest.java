@@ -17,7 +17,9 @@ package org.kie.workbench.common.stunner.core.util;
 
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public class StringUtilsTest {
@@ -47,5 +49,99 @@ public class StringUtilsTest {
         assertFalse(StringUtils.hasNonEmpty(null, null, null));
         assertFalse(StringUtils.hasNonEmpty(null, "", null));
         assertTrue(StringUtils.hasNonEmpty(null, "", "someValue"));
+    }
+
+    @Test
+    public void testCreateQuotedConstantNull() {
+        assertNull(StringUtils.createQuotedConstant(null));
+    }
+
+    @Test
+    public void testCreateQuotedConstantEmpty() {
+        assertEquals("",
+                     StringUtils.createQuotedConstant(""));
+    }
+
+    @Test
+    public void testCreateQuotedConstantNumber() {
+        assertEquals("\"-123\"",
+                     StringUtils.createQuotedConstant("-123"));
+    }
+
+    @Test
+    public void testCreateQuotedConstant() {
+        assertEquals("\" abc \"",
+                     StringUtils.createQuotedConstant(" abc "));
+    }
+
+    @Test
+    public void testCreateQuotedConstantOptionalNumericNull() {
+        assertNull(StringUtils.createQuotedConstantOptionalNumeric(null));
+    }
+
+    @Test
+    public void testCreateQuotedConstantOptionalNumericEmpty() {
+        assertEquals("",
+                     StringUtils.createQuotedConstantOptionalNumeric(""));
+    }
+
+    @Test
+    public void testCreateQuotedConstantOptionalNumericNumber() {
+        assertEquals("-123",
+                     StringUtils.createQuotedConstantOptionalNumeric("-123"));
+    }
+
+    @Test
+    public void testCreateQuotedConstantOptionalNumeric() {
+        assertEquals("\" abc \"",
+                     StringUtils.createQuotedConstantOptionalNumeric(" abc "));
+    }
+
+    @Test
+    public void testIsQuotedConstantNull() {
+        assertFalse(StringUtils.isQuotedConstant(null));
+    }
+
+    @Test
+    public void testIsQuotedConstantEmpty() {
+        assertFalse(StringUtils.isQuotedConstant(""));
+    }
+
+    @Test
+    public void testIsQuotedConstantOpeningQuote() {
+        assertFalse(StringUtils.isQuotedConstant("\"a"));
+    }
+
+    @Test
+    public void testIsQuotedConstantClosingQuote() {
+        assertFalse(StringUtils.isQuotedConstant("a\""));
+    }
+
+    @Test
+    public void testIsQuotedConstantOpeningAndClosingQuote() {
+        assertTrue(StringUtils.isQuotedConstant("\"a\""));
+    }
+
+    @Test
+    public void testCreateUnquotedConstantNull() {
+        assertNull(StringUtils.createUnquotedConstant(null));
+    }
+
+    @Test
+    public void testCreateUnquotedConstantEmpty() {
+        assertEquals("",
+                     StringUtils.createUnquotedConstant(""));
+    }
+
+    @Test
+    public void testCreateUnquotedConstantNoAction() {
+        assertEquals("-123",
+                     StringUtils.createUnquotedConstant("-123"));
+    }
+
+    @Test
+    public void testCreateUnquotedConstant() {
+        assertEquals(" abc ",
+                     StringUtils.createUnquotedConstant("\" abc \""));
     }
 }

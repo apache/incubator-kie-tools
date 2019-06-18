@@ -65,6 +65,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.InputData;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
 import org.kie.workbench.common.dmn.api.definition.v1_1.KnowledgeSource;
 import org.kie.workbench.common.dmn.api.definition.v1_1.TextAnnotation;
+import org.kie.workbench.common.dmn.api.editors.included.PMMLDocumentMetadata;
 import org.kie.workbench.common.dmn.api.property.background.BackgroundSet;
 import org.kie.workbench.common.dmn.api.property.background.BgColour;
 import org.kie.workbench.common.dmn.api.property.background.BorderColour;
@@ -206,8 +207,11 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
         final List<org.kie.dmn.model.api.DRGElement> diagramDrgElements = dmnXml.getDrgElement();
         final Optional<org.kie.dmn.model.api.dmndi.DMNDiagram> dmnDDDiagram = findDMNDiagram(dmnXml);
 
-        // Get external model information
+        // Get external DMN model information
         final Map<Import, org.kie.dmn.model.api.Definitions> importDefinitions = dmnMarshallerImportsHelper.getImportDefinitions(metadata, dmnXml.getImport());
+
+        // Get external PMML model information
+        final Map<Import, PMMLDocumentMetadata> pmmlDocuments = dmnMarshallerImportsHelper.getPMMLDocuments(metadata, dmnXml.getImport());
 
         // Map external DRGElements
         final List<DMNShape> dmnShapes = dmnDDDiagram.map(this::getUniqueDMNShapes).orElse(emptyList());
@@ -403,7 +407,7 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
         textAnnotations.values().forEach(graph::addNode);
 
         Node<?, ?> dmnDiagramRoot = findDMNDiagramRoot(graph);
-        Definitions definitionsStunnerPojo = DefinitionsConverter.wbFromDMN(dmnXml, importDefinitions);
+        Definitions definitionsStunnerPojo = DefinitionsConverter.wbFromDMN(dmnXml, importDefinitions, pmmlDocuments);
         loadImportedItemDefinitions(definitionsStunnerPojo, importDefinitions);
         ((View<DMNDiagram>) dmnDiagramRoot.getContent()).getDefinition().setDefinitions(definitionsStunnerPojo);
 
@@ -522,7 +526,7 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
     }
 
     Optional<org.kie.dmn.model.api.DRGElement> getReference(final List<org.kie.dmn.model.api.DRGElement> importedDRGElements,
-                                                            final String dmnElementRef){
+                                                            final String dmnElementRef) {
         final Optional<org.kie.dmn.model.api.DRGElement> element = importedDRGElements.stream().filter(drgElement -> dmnElementRef.equals(drgElement.getId())).findFirst();
         return element;
     }

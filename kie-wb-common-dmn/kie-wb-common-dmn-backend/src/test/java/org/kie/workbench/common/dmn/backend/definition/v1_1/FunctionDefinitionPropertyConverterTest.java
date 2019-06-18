@@ -23,11 +23,18 @@ import javax.xml.namespace.QName;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.dmn.model.api.FunctionKind;
+import org.kie.dmn.model.v1_2.TContext;
+import org.kie.dmn.model.v1_2.TContextEntry;
 import org.kie.dmn.model.v1_2.TFunctionDefinition;
+import org.kie.dmn.model.v1_2.TInformationItem;
 import org.kie.dmn.model.v1_2.TLiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.HasComponentWidths;
+import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
 import org.kie.workbench.common.dmn.api.definition.v1_1.FunctionDefinition;
+import org.kie.workbench.common.dmn.api.definition.v1_1.IsLiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
+import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpressionPMMLDocument;
+import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpressionPMMLDocumentModel;
 import org.kie.workbench.common.dmn.backend.definition.v1_1.dd.ComponentWidths;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -93,6 +100,47 @@ public class FunctionDefinitionPropertyConverterTest {
         final HasComponentWidths hasComponentWidths = hasComponentWidthsCaptor.getValue();
         assertThat(hasComponentWidths).isNotNull();
         assertThat(hasComponentWidths).isEqualTo(wb.getExpression());
+    }
+
+    @Test
+    public void testWBFromDMNWithJavaContext() {
+        doTestWBFromDMNWithContextEntry(FunctionKind.JAVA,
+                                        "cheese",
+                                        LiteralExpression.class);
+    }
+
+    @Test
+    public void testWBFromDMNWithPMMLContextDocumentEntry() {
+        doTestWBFromDMNWithContextEntry(FunctionKind.PMML,
+                                        LiteralExpressionPMMLDocument.VARIABLE_DOCUMENT,
+                                        LiteralExpressionPMMLDocument.class);
+    }
+
+    @Test
+    public void testWBFromDMNWithPMMLContextDocumentModelEntry() {
+        doTestWBFromDMNWithContextEntry(FunctionKind.PMML,
+                                        LiteralExpressionPMMLDocumentModel.VARIABLE_MODEL,
+                                        LiteralExpressionPMMLDocumentModel.class);
+    }
+
+    private void doTestWBFromDMNWithContextEntry(final FunctionKind kind,
+                                                 final String variableName,
+                                                 final Class<? extends IsLiteralExpression> literalExpressionClass) {
+        final org.kie.dmn.model.api.FunctionDefinition dmn = new TFunctionDefinition();
+        final org.kie.dmn.model.api.Context contextExpression = new TContext();
+        final org.kie.dmn.model.api.ContextEntry contextEntry = new TContextEntry();
+        final org.kie.dmn.model.api.InformationItem variable = new TInformationItem();
+        variable.setName(variableName);
+        contextEntry.setVariable(variable);
+        contextEntry.setExpression(new TLiteralExpression());
+        contextExpression.getContextEntry().add(contextEntry);
+        dmn.setKind(kind);
+        dmn.setExpression(contextExpression);
+
+        final FunctionDefinition wb = FunctionDefinitionPropertyConverter.wbFromDMN(dmn, hasComponentWidthsConsumer);
+
+        assertThat(wb.getExpression()).isInstanceOf(Context.class);
+        assertThat(((Context) wb.getExpression()).getContextEntry().get(0).getExpression()).isInstanceOf(literalExpressionClass);
     }
 
     @Test

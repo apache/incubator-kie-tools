@@ -100,7 +100,7 @@ public abstract class BaseSupplementaryFunctionEditorDefinition extends BaseEdit
         }));
     }
 
-    InformationItem createVariable(final String name) {
+    protected InformationItem createVariable(final String name) {
         final InformationItem variable = new InformationItem();
         variable.setName(new Name(name));
         variable.setTypeRef(new QName(DEFAULT_VARIABLE_TYPE));

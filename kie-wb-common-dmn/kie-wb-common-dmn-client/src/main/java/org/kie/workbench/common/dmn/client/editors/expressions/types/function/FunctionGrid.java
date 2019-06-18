@@ -377,12 +377,6 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGrid
     }
 
     @Override
-    public void doAfterSelectionChange(final int uiRowIndex,
-                                       final int uiColumnIndex) {
-        selectExpressionEditorFirstCell(0, 1);
-    }
-
-    @Override
     public void doAfterHeaderSelectionChange(final int uiHeaderRowIndex,
                                              final int uiHeaderColumnIndex) {
         if (nesting == 0 && uiHeaderRowIndex == 0) {

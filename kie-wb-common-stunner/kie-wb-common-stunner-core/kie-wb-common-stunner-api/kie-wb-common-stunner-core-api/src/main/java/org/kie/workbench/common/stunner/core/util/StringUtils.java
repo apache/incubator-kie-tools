@@ -33,4 +33,64 @@ public class StringUtils {
     public static boolean hasNonEmpty(final String... values) {
         return values != null && Arrays.stream(values).anyMatch(StringUtils::nonEmpty);
     }
+
+    /**
+     * Returns true if string starts and ends with double-quote
+     * @param str
+     * @return
+     */
+    public static boolean isQuotedConstant(String str) {
+        if (str == null || str.isEmpty()) {
+            return false;
+        }
+        return (str.startsWith("\"") && str.endsWith("\""));
+    }
+
+    /**
+     * Puts strings inside quotes.
+     * @param str
+     * @return
+     */
+    public static String createQuotedConstant(final String str) {
+        if (isEmpty(str)) {
+            return str;
+        }
+        return "\"" + str + "\"";
+    }
+
+    /**
+     * Puts strings inside quotes and numerics are left as they are.
+     * @param str
+     * @return
+     */
+    public static String createQuotedConstantOptionalNumeric(String str) {
+        if (isEmpty(str)) {
+            return str;
+        }
+        try {
+            Double.parseDouble(str);
+        } catch (NumberFormatException nfe) {
+            return "\"" + str + "\"";
+        }
+        return str;
+    }
+
+    /**
+     * Removes double-quotes from around a string
+     * @param str
+     * @return
+     */
+    public static String createUnquotedConstant(String str) {
+        if (isEmpty(str)) {
+            return str;
+        }
+        if (str.startsWith("\"")) {
+            str = str.substring(1);
+        }
+        if (str.endsWith("\"")) {
+            str = str.substring(0,
+                                str.length() - 1);
+        }
+        return str;
+    }
 }

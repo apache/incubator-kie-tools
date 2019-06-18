@@ -74,8 +74,8 @@ public class IncludedModelsPageStateTest {
 
         state.init(null);
 
-        final List<IncludedModel> actualIncludedModels = state.generateIncludedModels();
-        final List<IncludedModel> expectedIncludedModels = emptyList();
+        final List<BaseIncludedModelActiveRecord> actualIncludedModels = state.generateIncludedModels();
+        final List<BaseIncludedModelActiveRecord> expectedIncludedModels = emptyList();
 
         assertEquals(expectedIncludedModels, actualIncludedModels);
     }
@@ -83,12 +83,12 @@ public class IncludedModelsPageStateTest {
     @Test
     public void testGenerateIncludedModelsWhenPageProviderIsPresent() {
 
-        final List<IncludedModel> expectedIncludedModels = asList(mock(IncludedModel.class), mock(IncludedModel.class));
+        final List<BaseIncludedModelActiveRecord> expectedIncludedModels = asList(mock(BaseIncludedModelActiveRecord.class), mock(BaseIncludedModelActiveRecord.class));
 
         when(pageProvider.generateIncludedModels()).thenReturn(expectedIncludedModels);
         state.init(pageProvider);
 
-        final List<IncludedModel> actualIncludedModels = state.generateIncludedModels();
+        final List<BaseIncludedModelActiveRecord> actualIncludedModels = state.generateIncludedModels();
 
         assertEquals(actualIncludedModels, expectedIncludedModels);
     }

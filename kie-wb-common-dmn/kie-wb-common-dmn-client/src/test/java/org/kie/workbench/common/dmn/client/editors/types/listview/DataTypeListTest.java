@@ -661,7 +661,6 @@ public class DataTypeListTest {
         return dataType;
     }
 
-
     @Test
     public void testOnDataTypeEditModeToggleStartEditing() {
 

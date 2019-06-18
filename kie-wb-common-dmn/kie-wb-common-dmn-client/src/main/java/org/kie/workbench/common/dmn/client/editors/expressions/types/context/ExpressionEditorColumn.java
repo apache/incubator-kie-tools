@@ -119,7 +119,7 @@ public class ExpressionEditorColumn extends DMNGridColumn<BaseGrid<? extends Exp
                 .ifPresent(nestedGrid -> nestedGrid.startEditingCell(0, 0));
         cell.getValue().getValue()
                 .filter(nestedGrid -> !(nestedGrid instanceof UndefinedExpressionGrid))
-                .ifPresent(nestedGrid -> nestedGrid.selectFirstCell());
+                .ifPresent(BaseExpressionGrid::selectFirstCell);
         cell.getValue().getValue()
                 .filter(nestedGrid -> nestedGrid instanceof LiteralExpressionGrid)
                 .ifPresent(nestedGrid -> nestedGrid.startEditingCell(0, 0));
