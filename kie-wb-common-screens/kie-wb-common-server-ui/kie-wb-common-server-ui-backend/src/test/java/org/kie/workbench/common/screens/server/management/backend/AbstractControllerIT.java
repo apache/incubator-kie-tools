@@ -35,6 +35,7 @@ import org.kie.workbench.common.screens.server.management.backend.service.SpecMa
 import org.kie.workbench.common.screens.server.management.backend.storage.ServerTemplateOCPStorage;
 import org.kie.workbench.common.screens.server.management.backend.storage.ServerTemplateVFSStorage;
 import org.kie.workbench.common.screens.server.management.backend.storage.migration.ServerTemplateMigration;
+import org.kie.workbench.common.screens.server.management.backend.utils.AppSetup;
 import org.kie.workbench.common.screens.server.management.backend.utils.ControllerExtension;
 import org.kie.workbench.common.screens.server.management.backend.utils.EmbeddedController;
 import org.kie.workbench.common.screens.server.management.backend.utils.MVELEvaluatorProducer;
@@ -69,6 +70,7 @@ public abstract class AbstractControllerIT {
                         "org.kie.server:kie-server-controller-websocket",
                         "org.kie.server:kie-server-controller-client",
                         "org.kie.soup:kie-soup-project-datamodel-commons",
+                        "org.uberfire:uberfire-nio2-fs",
                         "org.uberfire:uberfire-nio2-jgit",
                         "org.uberfire:uberfire-backend-server",
                         "org.uberfire:uberfire-backend-cdi",
@@ -77,7 +79,7 @@ public abstract class AbstractControllerIT {
                         "org.uberfire:uberfire-metadata-backend-lucene",
                         "org.uberfire:uberfire-ssh-api",
                         "org.uberfire:uberfire-ssh-backend",
-                                               "org.uberfire:uberfire-commons",
+                        "org.uberfire:uberfire-commons",
                         "org.jboss.errai:errai-jboss-as-support",
                         "org.jboss.errai:errai-security-server",
                         "org.jboss.errai:errai-cdi-server",
@@ -120,6 +122,8 @@ public abstract class AbstractControllerIT {
                 .addClass(AbstractAutoControllerIT.class)
                 .addClass(KieServerHealthCheckControllerImpl.class)
                 .addClass(HealthCheckControllerBootstrap.class)
+                
+                .addClass(AppSetup.class)
 
                 .addAsLibraries(libraries)
 

@@ -335,6 +335,18 @@
     </dependency>
 
     <dependency>
+      <groupId>commons-jxpath</groupId>
+      <artifactId>commons-jxpath</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.codehaus.groovy</groupId>
+      <artifactId>groovy-all</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
       <groupId>org.kie.server</groupId>
       <artifactId>kie-server-integ-tests-common</artifactId>
       <scope>test</scope>
@@ -361,8 +373,7 @@
             <fileset>
               <directory>${basedir}</directory>
               <includes>
-                <include>.niogit/**</include>
-                <include>.security/**</include>
+                <include>wildfly-multinode-kie-server.xml</include>
               </includes>
             </fileset>
           </filesets>
@@ -479,15 +490,15 @@
         </configuration>
         <executions>
           <execution>
-          	<id>default</id>
-          	<goals>
-          	   <goal>integration-test</goal>
-          	</goals>
-          	<configuration>
-          		<excludes>
-          		   <exclude>**/**</exclude>
-          		</excludes>
-          	</configuration>
+            <id>default</id>
+            <goals>
+              <goal>integration-test</goal>
+            </goals>
+            <configuration>
+              <excludes>
+                <exclude>**/*IT.java</exclude>
+              </excludes>
+            </configuration>
           </execution>
           <execution>
             <id>wildfly-embedded-rest</id>
@@ -541,7 +552,7 @@
             </goals>
             <configuration>
               <includes>
-                <include>**/StandaloneControllerMultinodeIT</include>
+                <include>**/StandaloneControllerMultinodeIT.java</include>
               </includes>
               <systemPropertyVariables>
                 <arquillian.launch>wildfly-multinode</arquillian.launch>
