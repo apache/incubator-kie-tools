@@ -126,7 +126,7 @@ public class FunctionUIModelMapper extends BaseUIModelMapper<FunctionDefinition>
         dmnModel.get().ifPresent(function -> {
             cell.get().ifPresent(v -> {
                 final ExpressionCellValue ecv = (ExpressionCellValue) v;
-                ecv.getValue().ifPresent(beg -> function.setExpression((Expression) beg.getExpression().get().orElse(null)));
+                ecv.getValue().ifPresent(beg -> function.setExpression(beg.getExpression().get().orElse(null)));
             });
         });
     }

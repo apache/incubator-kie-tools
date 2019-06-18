@@ -16,9 +16,13 @@
 
 package org.kie.workbench.common.dmn.backend.definition.v1_1;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+
+import javax.xml.namespace.QName;
 
 import org.kie.workbench.common.dmn.api.definition.HasComponentWidths;
 import org.kie.workbench.common.dmn.api.definition.v1_1.BusinessKnowledgeModel;
@@ -61,7 +65,8 @@ public class BusinessKnowledgeModelConverter implements NodeConverter<org.kie.dm
         final Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
         final Name name = new Name(dmn.getName());
         final InformationItemPrimary informationItem = InformationItemPrimaryPropertyConverter.wbFromDMN(dmn.getVariable(), dmn);
-        final FunctionDefinition functionDefinition = FunctionDefinitionPropertyConverter.wbFromDMN(dmn.getEncapsulatedLogic(),
+        final org.kie.dmn.model.api.FunctionDefinition dmnFunctionDefinition = dmn.getEncapsulatedLogic();
+        final FunctionDefinition functionDefinition = FunctionDefinitionPropertyConverter.wbFromDMN(dmnFunctionDefinition,
                                                                                                     hasComponentWidthsConsumer);
         final BusinessKnowledgeModel bkm = new BusinessKnowledgeModel(id,
                                                                       description,
@@ -78,6 +83,11 @@ public class BusinessKnowledgeModelConverter implements NodeConverter<org.kie.dm
         }
         if (functionDefinition != null) {
             functionDefinition.setParent(bkm);
+        }
+
+        if (Objects.nonNull(dmnFunctionDefinition)) {
+            hasComponentWidthsConsumer.accept(dmnFunctionDefinition.getId(),
+                                              functionDefinition);
         }
 
         return node;
@@ -98,6 +108,18 @@ public class BusinessKnowledgeModelConverter implements NodeConverter<org.kie.dm
         result.setVariable(variable);
         final org.kie.dmn.model.api.FunctionDefinition functionDefinition = FunctionDefinitionPropertyConverter.dmnFromWB(source.getEncapsulatedLogic(),
                                                                                                                           componentWidthsConsumer);
+
+        final FunctionDefinition wbFunctionDefinition = source.getEncapsulatedLogic();
+        if (Objects.nonNull(wbFunctionDefinition)) {
+            final String uuid = wbFunctionDefinition.getId().getValue();
+            if (Objects.nonNull(uuid)) {
+                final ComponentWidths componentWidths = new ComponentWidths();
+                componentWidths.setDmnElementRef(new QName(uuid));
+                componentWidths.setWidths(new ArrayList<>(source.getEncapsulatedLogic().getComponentWidths()));
+                componentWidthsConsumer.accept(componentWidths);
+            }
+        }
+
         if (functionDefinition != null) {
             functionDefinition.setParent(result);
         }

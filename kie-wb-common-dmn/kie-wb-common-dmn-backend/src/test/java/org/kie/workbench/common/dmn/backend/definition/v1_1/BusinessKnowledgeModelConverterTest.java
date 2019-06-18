@@ -15,6 +15,7 @@
  */
 package org.kie.workbench.common.dmn.backend.definition.v1_1;
 
+import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -47,6 +48,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -58,6 +60,8 @@ public class BusinessKnowledgeModelConverterTest {
     private static final String DECISION_NAME = "d-name";
 
     private static final String DECISION_DESCRIPTION = "d-description";
+
+    private static final String FUNCTION_DEFINITION_UUID = "fd-uuid";
 
     private static final String EXPRESSION_UUID = "uuid";
 
@@ -102,6 +106,7 @@ public class BusinessKnowledgeModelConverterTest {
         final org.kie.dmn.model.api.FunctionDefinition functionDefinition = new TFunctionDefinition();
         literalExpression.setId(EXPRESSION_UUID);
         functionDefinition.setExpression(literalExpression);
+        functionDefinition.setId(FUNCTION_DEFINITION_UUID);
 
         dmn.setId(DECISION_UUID);
         dmn.setName(DECISION_NAME);
@@ -128,9 +133,16 @@ public class BusinessKnowledgeModelConverterTest {
         verify(hasComponentWidthsConsumer).accept(eq(EXPRESSION_UUID),
                                                   hasComponentWidthsCaptor.capture());
 
-        final HasComponentWidths hasComponentWidths = hasComponentWidthsCaptor.getValue();
-        assertThat(hasComponentWidths).isNotNull();
-        assertThat(hasComponentWidths).isEqualTo(wb.getEncapsulatedLogic().getExpression());
+        final HasComponentWidths hasComponentWidths0 = hasComponentWidthsCaptor.getValue();
+        assertThat(hasComponentWidths0).isNotNull();
+        assertThat(hasComponentWidths0).isEqualTo(wb.getEncapsulatedLogic().getExpression());
+
+        verify(hasComponentWidthsConsumer).accept(eq(FUNCTION_DEFINITION_UUID),
+                                                  hasComponentWidthsCaptor.capture());
+
+        final HasComponentWidths hasComponentWidths1 = hasComponentWidthsCaptor.getValue();
+        assertThat(hasComponentWidths1).isNotNull();
+        assertThat(hasComponentWidths1).isEqualTo(wb.getEncapsulatedLogic());
     }
 
     @Test
@@ -141,7 +153,9 @@ public class BusinessKnowledgeModelConverterTest {
         final FunctionDefinition functionDefinition = new FunctionDefinition();
         literalExpression.getComponentWidths().set(0, 200.0);
         literalExpression.getId().setValue(EXPRESSION_UUID);
+        functionDefinition.getComponentWidths().set(0, 200.0);
         functionDefinition.setExpression(literalExpression);
+        functionDefinition.getId().setValue(FUNCTION_DEFINITION_UUID);
 
         wb.getId().setValue(DECISION_UUID);
         wb.getName().setValue(DECISION_NAME);
@@ -168,12 +182,20 @@ public class BusinessKnowledgeModelConverterTest {
         assertThat(dmn.getEncapsulatedLogic().getExpression()).isNotNull();
         assertThat(dmn.getEncapsulatedLogic().getExpression().getId()).isEqualTo(EXPRESSION_UUID);
 
-        verify(componentWidthsConsumer).accept(componentWidthsCaptor.capture());
+        verify(componentWidthsConsumer, times(2)).accept(componentWidthsCaptor.capture());
 
-        final ComponentWidths componentWidths = componentWidthsCaptor.getValue();
+        final List<ComponentWidths> componentWidths = componentWidthsCaptor.getAllValues();
         assertThat(componentWidths).isNotNull();
-        assertThat(componentWidths.getDmnElementRef().getLocalPart()).isEqualTo(EXPRESSION_UUID);
-        assertThat(componentWidths.getWidths().size()).isEqualTo(literalExpression.getRequiredComponentWidthCount());
-        assertThat(componentWidths.getWidths().get(0)).isEqualTo(200.0);
+        assertThat(componentWidths).hasSize(2);
+
+        final ComponentWidths componentWidths0 = componentWidths.get(0);
+        assertThat(componentWidths0.getDmnElementRef().getLocalPart()).isEqualTo(EXPRESSION_UUID);
+        assertThat(componentWidths0.getWidths().size()).isEqualTo(literalExpression.getRequiredComponentWidthCount());
+        assertThat(componentWidths0.getWidths().get(0)).isEqualTo(200.0);
+
+        final ComponentWidths componentWidths1 = componentWidths.get(1);
+        assertThat(componentWidths1.getDmnElementRef().getLocalPart()).isEqualTo(FUNCTION_DEFINITION_UUID);
+        assertThat(componentWidths1.getWidths().size()).isEqualTo(functionDefinition.getRequiredComponentWidthCount());
+        assertThat(componentWidths1.getWidths().get(0)).isEqualTo(200.0);
     }
 }
