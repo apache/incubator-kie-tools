@@ -35,7 +35,7 @@ import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommand
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ContextGridRowNumberColumn;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionColumn;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
@@ -163,7 +163,7 @@ public abstract class BaseFunctionSupplementaryGridTest<D extends ExpressionEdit
 
         assertComponentWidths(ContextGridRowNumberColumn.DEFAULT_WIDTH,
                               DMNGridColumn.DEFAULT_WIDTH,
-                              UndefinedExpressionColumn.DEFAULT_WIDTH);
+                              ExpressionEditorColumn.DEFAULT_WIDTH);
     }
 
     @Test

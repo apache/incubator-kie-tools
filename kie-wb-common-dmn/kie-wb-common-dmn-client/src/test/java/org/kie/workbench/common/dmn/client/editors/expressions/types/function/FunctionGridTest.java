@@ -19,6 +19,7 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.function;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
@@ -95,7 +96,7 @@ import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
-import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLayerRedrawManager;
+import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLayerRedrawManager.PrioritizedCommand;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
 
@@ -252,7 +253,7 @@ public class FunctionGridTest {
     private ArgumentCaptor<Optional<ExpressionEditorDefinition<Expression>>> expressionDefinitionCaptor;
 
     @Captor
-    private ArgumentCaptor<GridLayerRedrawManager.PrioritizedCommand> redrawCommandCaptor;
+    private ArgumentCaptor<PrioritizedCommand> redrawCommandCaptor;
 
     @Captor
     private ArgumentCaptor<GridCellTuple> parentCaptor;
@@ -340,9 +341,13 @@ public class FunctionGridTest {
                                                                                                          any(Optional.class),
                                                                                                          anyBoolean(),
                                                                                                          anyInt());
+        when(literalExpressionEditor.getGridPanel()).thenReturn(gridPanel);
         when(literalExpressionEditor.getLayer()).thenReturn(gridLayer);
         when(literalExpressionEditor.getModel()).thenReturn(new BaseGridData(false));
+        doCallRealMethod().when(literalExpressionEditor).resize(any(Function.class));
+        doCallRealMethod().when(literalExpressionEditor).doResize(any(PrioritizedCommand.class), any(Function.class));
         doCallRealMethod().when(literalExpressionEditor).selectFirstCell();
+        when(literalExpressionEditor.getParentInformation()).thenReturn(parent);
 
         //Setup Supplementary expression definition and editor
         when(supplementaryExpressionEditorDefinition.getModelClass()).thenReturn(Optional.of(supplementaryExpression));
@@ -352,9 +357,13 @@ public class FunctionGridTest {
                                                                any(Optional.class),
                                                                anyBoolean(),
                                                                anyInt())).thenReturn(Optional.of(supplementaryExpressionEditor));
+        when(supplementaryExpressionEditor.getGridPanel()).thenReturn(gridPanel);
         when(supplementaryExpressionEditor.getLayer()).thenReturn(gridLayer);
         when(supplementaryExpressionEditor.getModel()).thenReturn(new BaseGridData(false));
+        doCallRealMethod().when(supplementaryExpressionEditor).resize(any(Function.class));
+        doCallRealMethod().when(supplementaryExpressionEditor).doResize(any(PrioritizedCommand.class), any(Function.class));
         doCallRealMethod().when(supplementaryExpressionEditor).selectFirstCell();
+        when(supplementaryExpressionEditor.getParentInformation()).thenReturn(parent);
 
         when(session.getCanvasHandler()).thenReturn(canvasHandler);
         when(gridWidget.getModel()).thenReturn(new BaseGridData(false));
@@ -724,7 +733,7 @@ public class FunctionGridTest {
         final ExpressionCellValue ecv = (ExpressionCellValue) gcv;
         assertThat(expectedEditorType).isAssignableFrom(ecv.getValue().get().getClass());
 
-        verify(grid).resize(eq(BaseExpressionGrid.RESIZE_EXISTING_MINIMUM));
+        verify(editor).resize(eq(BaseExpressionGrid.RESIZE_EXISTING));
         verify(editor).selectFirstCell();
 
         verify(gridLayer).batch(redrawCommandCaptor.capture());
@@ -807,7 +816,7 @@ public class FunctionGridTest {
         verify(gridPanel).updatePanelSize();
         verify(gridLayer).batch(redrawCommandCaptor.capture());
 
-        final GridLayerRedrawManager.PrioritizedCommand command = redrawCommandCaptor.getValue();
+        final PrioritizedCommand command = redrawCommandCaptor.getValue();
         command.execute();
 
         verify(gridLayer).draw();

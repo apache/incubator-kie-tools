@@ -336,8 +336,10 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGrid
                                                              kind,
                                                              expression,
                                                              (editor) -> {
-                                                                 resize(BaseExpressionGrid.RESIZE_EXISTING_MINIMUM);
-                                                                 editor.ifPresent(BaseExpressionGrid::selectFirstCell);
+                                                                 editor.ifPresent(e -> {
+                                                                     e.resize(BaseExpressionGrid.RESIZE_EXISTING);
+                                                                     e.selectFirstCell();
+                                                                 });
                                                              },
                                                              () -> {
                                                                  resize(BaseExpressionGrid.RESIZE_EXISTING_MINIMUM);

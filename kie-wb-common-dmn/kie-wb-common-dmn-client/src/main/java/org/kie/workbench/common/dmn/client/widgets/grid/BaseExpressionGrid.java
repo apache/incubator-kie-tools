@@ -338,6 +338,10 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
         return false;
     }
 
+    public DMNGridPanel getGridPanel() {
+        return gridPanel;
+    }
+
     @Override
     public Viewport getViewport() {
         // A GridWidget's Viewport may not have been set IF the grid has not been attached to a Layer.
@@ -420,23 +424,24 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
         doResize(new GridLayerRedrawManager.PrioritizedCommand(0) {
                      @Override
                      public void execute() {
-                         gridLayer.draw();
+                         getLayer().draw();
                      }
                  },
                  requiredWidthSupplier);
     }
 
-    protected void doResize(final GridLayerRedrawManager.PrioritizedCommand command,
-                            final Function<BaseExpressionGrid, Double> requiredWidthSupplier) {
+    public void doResize(final GridLayerRedrawManager.PrioritizedCommand command,
+                         final Function<BaseExpressionGrid, Double> requiredWidthSupplier) {
         final double proposedWidth = getWidth() + getPadding() * 2;
-        parent.proposeContainingColumnWidth(proposedWidth, requiredWidthSupplier);
+        getParentInformation().proposeContainingColumnWidth(proposedWidth, requiredWidthSupplier);
 
-        gridPanel.refreshScrollPosition();
-        gridPanel.updatePanelSize();
-        gridPanel.setFocus(true);
-        parent.onResize();
+        getGridPanel().refreshScrollPosition();
+        getGridPanel().updatePanelSize();
+        getGridPanel().setFocus(true);
+        getParentInformation().onResize();
 
-        gridLayer.batch(command);
+        //This cast is safe as the constructor expects a DMNGridLayer.
+        ((DMNGridLayer) getLayer()).batch(command);
     }
 
     public void selectFirstCell() {

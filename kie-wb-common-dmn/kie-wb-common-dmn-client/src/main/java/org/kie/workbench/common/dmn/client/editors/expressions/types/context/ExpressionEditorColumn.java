@@ -41,6 +41,8 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.GridWidgetRegistry;
 public class ExpressionEditorColumn extends DMNGridColumn<BaseGrid<? extends Expression>, Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>>>
         implements HasDOMElementResources {
 
+    public static final double DEFAULT_WIDTH = 200.0;
+
     public ExpressionEditorColumn(final GridWidgetRegistry registry,
                                   final HeaderMetaData headerMetaData,
                                   final double width,

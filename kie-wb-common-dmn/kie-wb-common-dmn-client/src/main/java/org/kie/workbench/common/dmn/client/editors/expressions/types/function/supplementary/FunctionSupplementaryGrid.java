@@ -38,7 +38,6 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.context.Con
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ContextUIModelMapperHelper;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridRenderer;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
@@ -137,7 +136,7 @@ public class FunctionSupplementaryGrid extends BaseExpressionGrid<Context, Funct
                                                      this);
         final ExpressionEditorColumn expressionColumn = new ExpressionEditorColumn(gridLayer,
                                                                                    Collections.emptyList(),
-                                                                                   getAndSetInitialWidth(2, UndefinedExpressionColumn.DEFAULT_WIDTH),
+                                                                                   getAndSetInitialWidth(2, ExpressionEditorColumn.DEFAULT_WIDTH),
                                                                                    this);
 
         model.appendColumn(rowNumberColumn);
