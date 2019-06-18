@@ -60,6 +60,7 @@ public class ValidationServiceImpl implements ValidationService {
     public Collection<DiagramElementViolation<RuleViolation>> validate(Diagram diagram) {
         //handle domain violations (BPMN, DMN, CM...)
         return domainViolations(diagram).stream()
+                .filter(v -> Objects.nonNull(v.getUUID()))
                 .filter(v -> !"null".equals(v.getUUID()))
                 .collect(Collectors.groupingBy(DomainViolation::getUUID))
                 .entrySet()

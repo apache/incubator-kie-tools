@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.core.validation.impl;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import org.junit.Before;
@@ -27,8 +28,13 @@ import org.kie.workbench.common.stunner.core.TestingGraphInstanceBuilder;
 import org.kie.workbench.common.stunner.core.TestingGraphMockHandler;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
+import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.TreeWalkTraverseProcessorImpl;
+import org.kie.workbench.common.stunner.core.rule.RuleEvaluationContext;
+import org.kie.workbench.common.stunner.core.rule.RuleSet;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
+import org.kie.workbench.common.stunner.core.rule.violations.DefaultRuleViolations;
+import org.kie.workbench.common.stunner.core.util.UUID;
 import org.kie.workbench.common.stunner.core.validation.DiagramElementViolation;
 import org.kie.workbench.common.stunner.core.validation.ModelBeanViolation;
 import org.kie.workbench.common.stunner.core.validation.ModelValidator;
@@ -50,6 +56,8 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class DiagramValidatorlTest {
 
+    public static final String MODEL_VIOLATION = "model violation";
+    public static final String RULE_VIOLATION = "rule violation";
     @Mock
     ModelValidator modelValidator;
 
@@ -112,8 +120,11 @@ public class DiagramValidatorlTest {
     public void testValidateDiagram1InvalidBean() {
         final TestingGraphInstanceBuilder.TestGraph1 graph1 = TestingGraphInstanceBuilder.newGraph1(graphTestHandler);
         when(diagram.getGraph()).thenReturn(graphTestHandler.graph);
+
+        //model violation
         final ModelBeanViolation beanViolation = mock(ModelBeanViolation.class);
         when(beanViolation.getViolationType()).thenReturn(Violation.Type.ERROR);
+        when(beanViolation.getMessage()).thenReturn(MODEL_VIOLATION);
         doAnswer(invocationOnMock -> {
             final Consumer<Collection<ModelBeanViolation>> validationsConsumer =
                     (Consumer<Collection<ModelBeanViolation>>) invocationOnMock.getArguments()[1];
@@ -121,6 +132,14 @@ public class DiagramValidatorlTest {
             return null;
         }).when(modelValidator).validate(eq(graph1.intermNode),
                                          any(Consumer.class));
+
+        //graph violation
+        RuleViolation ruleViolation = mock(RuleViolation.class);
+        when(ruleViolation.getViolationType()).thenReturn(Violation.Type.ERROR);
+        when(ruleViolation.getMessage()).thenReturn(RULE_VIOLATION);
+        when(graphTestHandler.ruleManager.evaluate(any(RuleSet.class),
+                                                   any(RuleEvaluationContext.class))).thenReturn(new DefaultRuleViolations().addViolation(ruleViolation));
+
         tested.validate(diagram,
                         violations -> assertElementError(violations,
                                                          TestingGraphInstanceBuilder.INTERM_NODE_UUID));
@@ -157,10 +176,30 @@ public class DiagramValidatorlTest {
                                     Collection<DiagramElementViolation<RuleViolation>> violations,
                                     final String uuid) {
         assertNotNull(violations);
+
         assertTrue(violations.stream()
-                           .filter(v -> Violation.Type.ERROR.equals(v.getViolationType()) &&
-                                   v.getUUID().equals(uuid))
-                           .findAny()
-                           .isPresent());
+                           .filter(v -> Violation.Type.ERROR.equals(v.getViolationType()))
+                           .anyMatch(v -> v.getUUID().equals(uuid)));
+
+        //model violations
+        assertTrue(violations.stream()
+                           .map(DiagramElementViolation::getModelViolations)
+                           .flatMap(Collection::stream)
+                           .allMatch(v -> v.getMessage().equals(MODEL_VIOLATION)));
+
+        //graph violations
+        assertTrue(violations.stream()
+                           .map(DiagramElementViolation::getGraphViolations)
+                           .flatMap(Collection::stream)
+                           .allMatch(v -> v.getMessage().equals(RULE_VIOLATION)));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testValidateDiagramWithNullBean() {
+        final Node nullNode = graphTestHandler.newNode(UUID.uuid(), Optional.empty());
+        nullNode.setContent(null);
+        when(diagram.getGraph()).thenReturn(graphTestHandler.graph);
+        tested.validate(diagram, this::assertNoErrors);
     }
 }

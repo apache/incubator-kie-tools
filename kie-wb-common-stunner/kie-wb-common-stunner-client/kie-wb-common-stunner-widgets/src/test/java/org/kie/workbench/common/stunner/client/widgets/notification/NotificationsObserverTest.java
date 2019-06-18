@@ -16,8 +16,9 @@
 
 package org.kie.workbench.common.stunner.client.widgets.notification;
 
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -35,12 +36,14 @@ import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.validation.DiagramElementViolation;
+import org.kie.workbench.common.stunner.core.validation.DomainViolation;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.mvp.ParameterizedCommand;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
@@ -97,24 +100,24 @@ public class NotificationsObserverTest {
 
         final NotificationsObserver.NotificationBuilder notificationBuilder =
                 new NotificationsObserver.NotificationBuilder() {
-            @Override
-            public Notification createCommandNotification(NotificationContext context,
-                                                          Command<?, CanvasViolation> command,
-                                                          CommandResult<CanvasViolation> result) {
-                return commandNotification;
-            }
+                    @Override
+                    public Notification createCommandNotification(NotificationContext context,
+                                                                  Command<?, CanvasViolation> command,
+                                                                  CommandResult<CanvasViolation> result) {
+                        return commandNotification;
+                    }
 
-            @Override
-            public Notification createValidationSuccessNotification(NotificationContext context) {
-                return validationSuccessNotification;
-            }
+                    @Override
+                    public Notification createValidationSuccessNotification(NotificationContext context) {
+                        return validationSuccessNotification;
+                    }
 
-            @Override
-            public Notification createValidationFailedNotification(NotificationContext context,
-                                                                   DiagramElementViolation<RuleViolation> error) {
-                return validationFailedNotification;
-            }
-        };
+                    @Override
+                    public Notification createValidationFailedNotification(NotificationContext context,
+                                                                           DiagramElementViolation<RuleViolation> error) {
+                        return validationFailedNotification;
+                    }
+                };
 
         this.tested = new NotificationsObserver(translationService, notificationBuilder);
         this.tested.onNotification(onNotification);
@@ -244,20 +247,29 @@ public class NotificationsObserverTest {
                                                  TITLE);
         tested.onCanvasValidationSuccessEvent(validationSuccessEvent);
         final InOrder inOrder = inOrder(validationExecuted, onNotification, validationFailed,
-                                  commandFailed, validationSuccess, commandSuccess);
+                                        commandFailed, validationSuccess, commandSuccess);
         inOrder.verify(validationExecuted).execute(any(ValidationExecutedNotification.class));
-        inOrder.verify(onNotification,times(1)).execute(any(Notification.class));
-        inOrder.verify(validationSuccess,times(1)).execute(eq(validationSuccessNotification));
-        inOrder.verify(commandFailed,never()).execute(any(CommandNotification.class));
-        inOrder.verify(commandSuccess,never()).execute(any(CommandNotification.class));
-        inOrder.verify(validationFailed,never()).execute(any(ValidationFailedNotification.class));
+        inOrder.verify(onNotification, times(1)).execute(any(Notification.class));
+        inOrder.verify(validationSuccess, times(1)).execute(eq(validationSuccessNotification));
+        inOrder.verify(commandFailed, never()).execute(any(CommandNotification.class));
+        inOrder.verify(commandSuccess, never()).execute(any(CommandNotification.class));
+        inOrder.verify(validationFailed, never()).execute(any(ValidationFailedNotification.class));
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testNotifyValidationFailed() {
+        final DomainViolation domainV1 = mock(DomainViolation.class);
+        when(domainV1.getMessage()).thenReturn("message");
+        when(translationService.getElementName(anyString())).thenReturn(Optional.of("name"));
+        when(translationService.getValue(anyString(), anyString(), anyString())).thenReturn("message");
+
         final DiagramElementViolation violation = mock(DiagramElementViolation.class);
-        final Collection<DiagramElementViolation<RuleViolation>> violations = Collections.singletonList(violation);
+        final DiagramElementViolation violation2 = mock(DiagramElementViolation.class);
+        when(violation.getDomainViolations()).thenReturn(Arrays.asList(domainV1));
+        when(violation2.getDomainViolations()).thenReturn(Arrays.asList(domainV1));
+
+        final Collection<DiagramElementViolation<RuleViolation>> violations = Arrays.asList(violation, violation2);
         validationFailedNotification = new ValidationFailedNotification(violations,
                                                                         notificationContext,
                                                                         "message1",
@@ -269,12 +281,20 @@ public class NotificationsObserverTest {
                                               violations);
         tested.onCanvasValidationFailEvent(validationFailEvent);
         final InOrder inOrder = inOrder(validationExecuted, onNotification, validationFailed,
-                                  commandFailed, validationSuccess, commandSuccess);
+                                        commandFailed, validationSuccess, commandSuccess);
+
+        //verify in order calls
         inOrder.verify(validationExecuted).execute(any(ValidationExecutedNotification.class));
+        inOrder.verify(onNotification, times(1)).execute(any(Notification.class));
+        inOrder.verify(validationFailed, times(1)).execute(eq(validationFailedNotification));
         inOrder.verify(onNotification, times(1)).execute(any(Notification.class));
         inOrder.verify(validationFailed, times(1)).execute(eq(validationFailedNotification));
         inOrder.verify(commandFailed, never()).execute(any(CommandNotification.class));
         inOrder.verify(validationSuccess, never()).execute(any(ValidationSuccessNotification.class));
         inOrder.verify(commandSuccess, never()).execute(any(CommandNotification.class));
+
+        //verify total calls
+        verify(validationFailed, times(2)).execute(eq(validationFailedNotification));
+        verify(onNotification, times(2)).execute(any(Notification.class));
     }
 }

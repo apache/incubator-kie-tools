@@ -36,7 +36,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -62,6 +61,8 @@ import static org.mockito.Mockito.when;
 public class ValidationServiceImplTest {
 
     public static final String DEF_SET_ID = "defSetId";
+    public static final String UUID_0 = "uuid0";
+    public static final String UUID_1 = "uuid1";
 
     private ValidationServiceImpl validationService;
 
@@ -78,6 +79,21 @@ public class ValidationServiceImplTest {
     private DomainViolation domainViolation;
 
     @Mock
+    private DomainViolation domainViolation2;
+
+    @Mock
+    private DomainViolation domainViolation3;
+
+    @Mock
+    private DomainViolation domainViolation4;
+
+    @Mock
+    private DomainViolation domainViolationNull;
+
+    @Mock
+    private DomainViolation domainViolationNullStr;
+
+    @Mock
     private Graph graph;
 
     private static final String GRAPH_UUID = UUID.uuid();
@@ -86,7 +102,12 @@ public class ValidationServiceImplTest {
 
     @Before
     public void setUp() {
-        domainViolationList = Arrays.asList(domainViolation);
+        domainViolationList = Arrays.asList(domainViolation,
+                                            domainViolation2,
+                                            domainViolation3,
+                                            domainViolation4,
+                                            domainViolationNull,
+                                            domainViolationNullStr);
         domainValidator = new DomainValidator() {
             @Override
             public String getDefinitionSetId() {
@@ -103,9 +124,25 @@ public class ValidationServiceImplTest {
         when(metadata.getDefinitionSetId()).thenReturn(DEF_SET_ID);
         when(diagram.getGraph()).thenReturn(graph);
         when(graph.getUUID()).thenReturn(GRAPH_UUID);
-        when(domainViolation.getViolationType()).thenReturn(Violation.Type.ERROR);
-        when(domainViolation.getUUID()).thenReturn("uuid");
+        mockViolations(domainViolationList);
+
         validationService = new ValidationServiceImpl(new MockInstanceImpl(domainValidator));
+    }
+
+    private void mockViolations(List<DomainViolation> violations) {
+        violations.stream().forEach(v -> {
+            when(v.getViolationType()).thenReturn(Violation.Type.ERROR);
+            when(v.getUUID()).thenReturn(UUID_1);
+        });
+
+        DomainViolation first = violations.get(0);
+        when(first.getUUID()).thenReturn(UUID_0);
+
+        DomainViolation last1 = violations.get(violations.size() - 2);
+        when(last1.getUUID()).thenReturn(null);
+
+        DomainViolation last = violations.get(violations.size() - 1);
+        when(last.getUUID()).thenReturn("null");
     }
 
     @Test
@@ -113,10 +150,22 @@ public class ValidationServiceImplTest {
         final Collection<DiagramElementViolation<RuleViolation>> violations = validationService.validate(diagram);
         verify(diagram).getMetadata();
         verify(metadata).getDefinitionSetId();
+        assertEquals(violations.size(), 2);
+
+        List<DomainViolation> violations0 = Arrays.asList(domainViolation);
+        List<DomainViolation> violations1 =
+                Arrays.asList(domainViolation2, domainViolation3, domainViolation4);
+
         assertEquals(violations.stream()
+                             .filter(v -> UUID_1.equals(v.getUUID()))
+                             .findFirst()
                              .map(DiagramElementViolation::getDomainViolations)
-                             .flatMap(v -> v.stream())
-                             .collect(Collectors.toList()),
-                     domainViolationList);
+                             .get(), violations1);
+
+        assertEquals(violations.stream()
+                             .filter(v -> UUID_0.equals(v.getUUID()))
+                             .findFirst()
+                             .map(DiagramElementViolation::getDomainViolations)
+                             .get(), violations0);
     }
 }

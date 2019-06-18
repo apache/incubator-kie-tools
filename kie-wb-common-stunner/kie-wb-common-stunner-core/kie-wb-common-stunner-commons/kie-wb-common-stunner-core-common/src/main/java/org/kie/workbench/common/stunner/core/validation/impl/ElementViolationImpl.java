@@ -125,8 +125,7 @@ public final class ElementViolationImpl
                     Optional.ofNullable(domainViolations).ifPresent(v -> addAll(v));
                 }}));
             }
-            ElementViolationImpl violation = new ElementViolationImpl(uuid, graphViolations, modelViolations, domainViolations, type);
-            return violation;
+            return new ElementViolationImpl(uuid, graphViolations, modelViolations, domainViolations, type);
         }
     }
 }

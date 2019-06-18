@@ -91,7 +91,7 @@ public class BPMNValidatorImpl implements BPMNValidator {
 
     protected Collection<BPMNViolation> validate(String serializedProcess, String processUUID) {
         try {
-                List<Process> processes = parseProcess(serializedProcess);
+            List<Process> processes = parseProcess(serializedProcess);
             if (Objects.isNull(processes) || processes.size() == 0) {
                 return Collections.emptyList();
             }

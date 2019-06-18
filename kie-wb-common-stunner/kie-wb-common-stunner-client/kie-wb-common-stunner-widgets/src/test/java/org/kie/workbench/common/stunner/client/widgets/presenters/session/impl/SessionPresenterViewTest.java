@@ -244,17 +244,19 @@ public class SessionPresenterViewTest extends AbstractCanvasHandlerViewerTest {
 
     @Test
     public void testShowWarning() {
-
         final SessionPresenterView view = spy(new SessionPresenterView());
-        final String message = "Hello<br />World";
         final String warning = "Warning";
 
         when(translationService.getTranslation(SessionPresenterView_Warning)).thenReturn(warning);
         when(view.getTranslationService()).thenReturn(translationService);
         when(view.getSettings()).thenReturn(settings);
 
+        //call 3 times
+        view.showWarning();
+        view.showWarning();
         view.showWarning();
 
+        //called just once
         verify(settings).setType("warning kie-session-notification");
         verify(view).showNotification(warning, DETAILS_MESSAGE, IconType.EXCLAMATION_TRIANGLE);
     }
