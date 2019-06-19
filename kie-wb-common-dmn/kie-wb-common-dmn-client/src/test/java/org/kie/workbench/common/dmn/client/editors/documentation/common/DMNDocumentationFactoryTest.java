@@ -1,0 +1,267 @@
+/*
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.kie.workbench.common.dmn.client.editors.documentation.common;
+
+import java.util.List;
+import java.util.Optional;
+
+import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.jboss.errai.security.shared.api.identity.User;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.api.definition.v1_1.DRGElement;
+import org.kie.workbench.common.dmn.api.definition.v1_1.Definitions;
+import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
+import org.kie.workbench.common.dmn.api.definition.v1_1.UnaryTests;
+import org.kie.workbench.common.dmn.api.property.dmn.Description;
+import org.kie.workbench.common.dmn.api.property.dmn.Name;
+import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.kie.workbench.common.dmn.api.property.dmn.Text;
+import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasFileExport;
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
+import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
+import org.mockito.Mock;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.views.pfly.widgets.Moment;
+import org.uberfire.rpc.SessionInfo;
+
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.kie.workbench.common.dmn.client.editors.documentation.common.DMNDocumentationFactory.EMPTY;
+import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DMNDocumentationFactory_Constraints;
+import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DMNDocumentationFactory_ListYes;
+import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DMNDocumentationFactory_NoFileName;
+import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DMNDocumentationFactory_Structure;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
+
+@RunWith(GwtMockitoTestRunner.class)
+public class DMNDocumentationFactoryTest {
+
+    @Mock
+    private CanvasFileExport canvasFileExport;
+
+    @Mock
+    private TranslationService translationService;
+
+    @Mock
+    private SessionInfo sessionInfo;
+
+    @Mock
+    private DMNGraphUtils graphUtils;
+
+    @Mock
+    private Diagram diagram;
+
+    @Mock
+    private Metadata metadata;
+
+    @Mock
+    private Definitions definitions;
+
+    @Mock
+    private Path path;
+
+    @Mock
+    private User user;
+
+    @Mock
+    private Moment moment;
+
+    @Mock
+    private DMNDocumentationI18n i18n;
+
+    private DMNDocumentationFactory documentationFactory;
+
+    @Before
+    public void setup() {
+
+        documentationFactory = spy(new DMNDocumentationFactory(canvasFileExport, translationService, sessionInfo, graphUtils));
+
+        when(translationService.format(DMNDocumentationFactory_Constraints)).thenReturn("Constraints:");
+        when(translationService.format(DMNDocumentationFactory_ListYes)).thenReturn("List: Yes");
+        when(translationService.format(DMNDocumentationFactory_Structure)).thenReturn("Structure");
+        when(translationService.format(DMNDocumentationFactory_NoFileName)).thenReturn("No file name");
+    }
+
+    @Test
+    public void testCreate() {
+
+        final String fileName = "filename.dmn";
+        final String diagramName = "Diagram name";
+        final String diagramDescription = "Diagram description";
+        final String image = "<image>";
+        final String admin = "admin";
+        final String currentDate = "2 January 1992";
+        final List<DRGElement> drgElements = singletonList(mock(DRGElement.class));
+        final ItemDefinition uuid = makeItemDefinition("tUUID", "String");
+        final ItemDefinition id = makeItemDefinition("id", "tUUID");
+        final ItemDefinition name = makeItemDefinition("name", "String");
+        final ItemDefinition person = makeItemDefinition("tPerson", null, id, name);
+        final List<ItemDefinition> itemDefinitions = asList(uuid, person);
+        final UnaryTests unaryTests = new UnaryTests();
+
+        unaryTests.setText(new Text("[1, 2, 3]"));
+        id.setAllowedValues(unaryTests);
+        id.setIsCollection(true);
+
+        doReturn(fileName).when(documentationFactory).getFileName(diagram);
+        doReturn(image).when(documentationFactory).getDiagramImage();
+        doReturn(i18n).when(documentationFactory).getDocumentationI18n();
+        doReturn(moment).when(documentationFactory).moment();
+
+        when(graphUtils.getDefinitions(diagram)).thenReturn(definitions);
+        when(definitions.getName()).thenReturn(new Name(diagramName));
+        when(definitions.getDescription()).thenReturn(new Description(diagramDescription));
+        when(graphUtils.getDRGElements(diagram)).thenReturn(drgElements);
+        when(definitions.getItemDefinition()).thenReturn(itemDefinitions);
+        when(sessionInfo.getIdentity()).thenReturn(user);
+        when(user.getIdentifier()).thenReturn(admin);
+        when(moment.format("D MMMM YYYY")).thenReturn(currentDate);
+
+        final DMNDocumentation documentation = documentationFactory.create(diagram);
+
+        assertEquals(fileName, documentation.getFileName());
+        assertEquals(diagramName, documentation.getDiagramName());
+        assertEquals(diagramDescription, documentation.getDiagramDescription());
+        assertEquals(image, documentation.getDiagramImage());
+        assertEquals(admin, documentation.getCurrentUser());
+        assertEquals(currentDate, documentation.getCurrentDate());
+        assertEquals(i18n, documentation.getI18n());
+        assertNotNull(documentation.getModuleName());
+        assertNotNull(documentation.getDataTypes());
+        assertTrue(documentation.hasGraphNodes());
+
+        final List<DMNDocumentationDataType> dataTypes = documentation.getDataTypesList();
+
+        assertEquals(4, dataTypes.size());
+
+        assertEquals("", dataTypes.get(0).getConstraint());
+        assertEquals("tUUID", dataTypes.get(0).getName());
+        assertEquals("String", dataTypes.get(0).getType());
+        assertEquals("", dataTypes.get(0).getListLabel());
+        assertEquals(0, dataTypes.get(0).getLevel());
+        assertTrue(dataTypes.get(0).isTopLevel());
+
+        assertEquals("", dataTypes.get(1).getConstraint());
+        assertEquals("tPerson", dataTypes.get(1).getName());
+        assertEquals("Structure", dataTypes.get(1).getType());
+        assertEquals("", dataTypes.get(1).getListLabel());
+        assertEquals(0, dataTypes.get(1).getLevel());
+        assertTrue(dataTypes.get(1).isTopLevel());
+
+        assertEquals("Constraints: [1, 2, 3]", dataTypes.get(2).getConstraint());
+        assertEquals("id", dataTypes.get(2).getName());
+        assertEquals("tUUID", dataTypes.get(2).getType());
+        assertEquals("List: Yes", dataTypes.get(2).getListLabel());
+        assertEquals(1, dataTypes.get(2).getLevel());
+        assertFalse(dataTypes.get(2).isTopLevel());
+
+        assertEquals("", dataTypes.get(3).getConstraint());
+        assertEquals("name", dataTypes.get(3).getName());
+        assertEquals("String", dataTypes.get(3).getType());
+        assertEquals("", dataTypes.get(3).getListLabel());
+        assertEquals(1, dataTypes.get(3).getLevel());
+        assertFalse(dataTypes.get(3).isTopLevel());
+    }
+
+    @Test
+    public void testGetDiagramImageWhenCanvasHandlerIsPresent() {
+
+        final ClientSession clientSession = mock(ClientSession.class);
+        final AbstractCanvasHandler canvasHandler = mock(AbstractCanvasHandler.class);
+        final String image = "<image>";
+
+        when(graphUtils.getCanvasHandler()).thenReturn(canvasHandler);
+        when(canvasFileExport.exportToPng(canvasHandler)).thenReturn(image);
+
+        assertEquals(image, documentationFactory.getDiagramImage());
+    }
+
+    @Test
+    public void testGetDiagramImageWhenCanvasHandlerIsNotPresent() {
+        when(graphUtils.getCurrentSession()).thenReturn(Optional.empty());
+        assertEquals(EMPTY, documentationFactory.getDiagramImage());
+    }
+
+    @Test
+    public void testGetHasGraphNodesWhenIsReturnsFalse() {
+        when(graphUtils.getDRGElements(diagram)).thenReturn(emptyList());
+        assertFalse(documentationFactory.hasGraphNodes(diagram));
+    }
+
+    @Test
+    public void testGetHasGraphNodesWhenIsReturnsTrue() {
+        when(graphUtils.getDRGElements(diagram)).thenReturn(singletonList(mock(DRGElement.class)));
+        assertTrue(documentationFactory.hasGraphNodes(diagram));
+    }
+
+    @Test
+    public void testGetFileNameWhenPathIsPresent() {
+
+        final String expectedFileName = "filename.dmn";
+
+        when(diagram.getMetadata()).thenReturn(metadata);
+        when(metadata.getPath()).thenReturn(path);
+        when(path.getFileName()).thenReturn(expectedFileName);
+
+        final String actualFileName = documentationFactory.getFileName(diagram);
+
+        assertEquals(expectedFileName, actualFileName);
+    }
+
+    @Test
+    public void testGetFileNameWhenPathIsNotPresent() {
+
+        final String expectedFileName = "No file name";
+
+        when(diagram.getMetadata()).thenReturn(metadata);
+        when(metadata.getPath()).thenReturn(null);
+
+        final String actualFileName = documentationFactory.getFileName(diagram);
+
+        assertEquals(expectedFileName, actualFileName);
+    }
+
+    private ItemDefinition makeItemDefinition(final String name,
+                                              final String type,
+                                              final ItemDefinition... itemDefinitions) {
+
+        final ItemDefinition itemDefinition = spy(new ItemDefinition());
+        itemDefinition.setName(new Name(name));
+
+        if (type != null) {
+            itemDefinition.setTypeRef(new QName("://namespace", type));
+        }
+
+        itemDefinition.getItemComponent().addAll(asList(itemDefinitions));
+
+        return itemDefinition;
+    }
+}

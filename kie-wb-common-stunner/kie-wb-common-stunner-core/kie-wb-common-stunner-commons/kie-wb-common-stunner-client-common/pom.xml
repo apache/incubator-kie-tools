@@ -157,6 +157,11 @@
       <scope>provided</scope>
     </dependency>
 
+    <dependency>
+      <groupId>com.google.elemental2</groupId>
+      <artifactId>elemental2-dom</artifactId>
+    </dependency>
+
     <!-- Test scope. -->
     <dependency>
       <groupId>org.assertj</groupId>

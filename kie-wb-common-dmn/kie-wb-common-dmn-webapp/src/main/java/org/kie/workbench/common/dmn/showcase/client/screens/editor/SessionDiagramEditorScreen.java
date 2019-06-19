@@ -29,6 +29,7 @@ import javax.inject.Inject;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.commands.general.NavigateToExpressionEditorCommand;
 import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorDock;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
@@ -68,6 +69,8 @@ import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.diagram.MetadataImpl;
+import org.kie.workbench.common.stunner.core.documentation.DocumentationPage;
+import org.kie.workbench.common.stunner.core.documentation.DocumentationView;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.util.UUID;
@@ -119,6 +122,7 @@ public class SessionDiagramEditorScreen implements KieEditorWrapperView.KieEdito
     private final DataTypesPage dataTypesPage;
     private final IncludedModelsPage includedModelsPage;
     private final IncludedModelsPageStateProviderImpl importsPageProvider;
+    private final DocumentationView<Diagram> documentationView;
 
     private PlaceRequest placeRequest;
     private String title = "Authoring Screen";
@@ -143,7 +147,8 @@ public class SessionDiagramEditorScreen implements KieEditorWrapperView.KieEdito
                                       final DataTypesPage dataTypesPage,
                                       final OpenDiagramLayoutExecutor layoutExecutor,
                                       final IncludedModelsPage includedModelsPage,
-                                      final IncludedModelsPageStateProviderImpl importsPageProvider) {
+                                      final IncludedModelsPageStateProviderImpl importsPageProvider,
+                                      final @DMNEditor DocumentationView<Diagram> documentationView) {
         this.definitionManager = definitionManager;
         this.clientFactoryServices = clientFactoryServices;
         this.diagramService = diagramService;
@@ -163,6 +168,7 @@ public class SessionDiagramEditorScreen implements KieEditorWrapperView.KieEdito
         this.layoutExecutor = layoutExecutor;
         this.includedModelsPage = includedModelsPage;
         this.importsPageProvider = importsPageProvider;
+        this.documentationView = documentationView;
     }
 
     @PostConstruct
@@ -173,6 +179,11 @@ public class SessionDiagramEditorScreen implements KieEditorWrapperView.KieEdito
         kieView.addMainEditorPage(screenPanelView.asWidget());
         kieView.getMultiPage().addPage(dataTypesPage);
         kieView.getMultiPage().addPage(includedModelsPage);
+        kieView.getMultiPage().addPage(getDocumentationPage());
+    }
+
+    DocumentationPage getDocumentationPage() {
+        return new DocumentationPage(documentationView, "Documentation", () -> { /* Nothing. */ }, () -> true);
     }
 
     public void onDataTypePageNavTabActiveEvent(final @Observes DataTypePageTabActiveEvent event) {
@@ -186,13 +197,7 @@ public class SessionDiagramEditorScreen implements KieEditorWrapperView.KieEdito
         final String name = placeRequest.getParameter("name",
                                                       "");
         final boolean isCreate = name == null || name.trim().length() == 0;
-        final Command callback = () -> {
-            final Diagram diagram = getDiagram();
-            if (null != diagram) {
-                // Update screen title.
-                updateTitle(diagram.getMetadata().getTitle());
-            }
-        };
+        final Command callback = getOnStartupDiagramEditorCallback();
         if (isCreate) {
             final String defSetId = placeRequest.getParameter("defSetId",
                                                               "");
@@ -211,6 +216,18 @@ public class SessionDiagramEditorScreen implements KieEditorWrapperView.KieEdito
             load(name,
                  callback);
         }
+    }
+
+    Command getOnStartupDiagramEditorCallback() {
+        return () -> {
+
+            final Diagram diagram = getDiagram();
+
+            if (null != diagram) {
+                updateTitle(diagram.getMetadata().getTitle());
+                documentationView.initialize(diagram);
+            }
+        };
     }
 
     public void onDataTypeEditModeToggle(final @Observes DataTypeEditModeToggleEvent editModeToggleEvent) {
@@ -448,7 +465,7 @@ public class SessionDiagramEditorScreen implements KieEditorWrapperView.KieEdito
 
     }
 
-    private void updateTitle(final String title) {
+    void updateTitle(final String title) {
         // Change screen title.
         SessionDiagramEditorScreen.this.title = title;
         changeTitleNotificationEvent.fire(new ChangeTitleWidgetEvent(placeRequest,
@@ -463,7 +480,7 @@ public class SessionDiagramEditorScreen implements KieEditorWrapperView.KieEdito
         return null != getSession() ? getSession().getCanvasHandler() : null;
     }
 
-    private Diagram getDiagram() {
+    Diagram getDiagram() {
         return null != getCanvasHandler() ? getCanvasHandler().getDiagram() : null;
     }
 

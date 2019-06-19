@@ -1,0 +1,195 @@
+<!--
+  ~ Copyright 2019 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link type="text/css" rel="stylesheet" href="{{&moduleName}}/css/patternfly.min.css" media="print"/>
+    <style type="text/css">
+
+        .kie-dmn-documentation {
+            padding: 20px 30px;
+        }
+
+        .kie-dmn-documentation .cover {
+            text-align: center;
+            margin: 150px auto;
+        }
+
+        .kie-dmn-documentation h1,
+        .kie-dmn-documentation h2,
+        .kie-dmn-documentation .table-of-contents {
+            font-weight: 600;
+        }
+
+        .kie-dmn-documentation ol,
+        .kie-dmn-documentation ul {
+            padding: 10px 15px;
+        }
+
+        .kie-dmn-documentation ol.table-of-contents li {
+            margin-bottom: 10px;
+        }
+
+        .kie-dmn-documentation .diagram-image {
+            width: 100%;
+        }
+
+        .kie-dmn-documentation ul.data-types {
+            list-style: none;
+        }
+
+        .kie-dmn-documentation ul.data-types li {
+            padding-top: 10px;
+            padding-bottom: 10px;
+            border-top: 1px solid #E5EEF5;
+        }
+
+        .kie-dmn-documentation ul.data-types li span.sub-text {
+            font-style: italic;
+            color: #717171;
+        }
+
+        .kie-dmn-documentation ul.data-types li:last-child {
+            border-bottom: 1px solid #E5EEF5;
+        }
+
+        .kie-dmn-documentation ul.data-types li span {
+            display: inline-block;
+            font-weight: bold;
+            padding-right: 5px;
+        }
+
+        .kie-dmn-documentation ul.data-types li span + span {
+            font-weight: normal;
+        }
+
+        .no-results {
+            font-style: italic;
+            opacity: 0.75;
+            padding: 20px;
+        }
+
+        li.no-results {
+            margin-left: -15px;
+        }
+
+        .kie-dmn-documentation .pagebreak {
+            border-bottom: 1px solid #DDDDDD;
+        }
+
+        @media screen {
+
+            .kie-print-preview-screen {
+                opacity: 0;
+            }
+
+            .kie-dmn-documentation .pagebreak {
+                margin: 75px 0;
+            }
+        }
+
+        @media print {
+            .kie-dmn-documentation .pagebreak {
+                margin: 25px 0;
+                page-break-before: always;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="kie-dmn-documentation">
+
+    <!-- ######################################################### -->
+    <!-- Cover -->
+
+    <div class="cover">
+
+        <h1>{{i18n.dmnModelDocumentation}}</h1>
+
+        <h2>{{diagramName}}</h2>
+
+        <h3>{{i18n.generatedOn}} <b>{{currentDate}}</b></h3>
+        <h3>{{i18n.generatedBy}} <b>{{currentUser}}</b></h3>
+        <h3>{{i18n.generatedFrom}} <b>{{fileName}}</b></h3>
+    </div>
+
+    <div class="pagebreak"></div>
+
+    <!-- ######################################################### -->
+    <!-- Table of Contents -->
+
+    <h2>{{i18n.tableOfContents}}</h2>
+
+    <ol class="table-of-contents">
+        <li>{{diagramName}} - {{i18n.dmnModel}}</li>
+        <li>{{diagramName}} - {{i18n.dataTypes}}</li>
+        <!-- TODO (https://issues.jboss.org/browse/DROOLS-4119): <li>{{diagramName}} - {{i18n.drdComponents}}</li> -->
+    </ol>
+
+    <div class="pagebreak"></div>
+
+    <!-- ######################################################### -->
+    <!-- DMN model -->
+
+    <h2>1. {{diagramName}} - {{i18n.dmnModel}}</h2>
+
+    <p>{{diagramDescription}}</p>
+
+    {{^hasGraphNodes}}
+    <div class="no-results">{{i18n.diagramDoesNotHaveElements}}</div>
+    {{/hasGraphNodes}}
+
+    {{#hasGraphNodes}}
+    <img src="{{diagramImage}}" alt="{{diagramName}}" class="diagram-image" />
+    {{/hasGraphNodes}}
+
+    <div class="pagebreak"></div>
+
+    <!-- ######################################################### -->
+    <!-- Data Types -->
+
+    <h2>2. {{diagramName}} - {{i18n.dataTypes}}</h2>
+
+    <ul class="data-types">
+        {{#dataTypes}}
+        <li style="padding-left: calc(30px * {{level}})">
+            {{#isTopLevel}}
+            &#9656;&nbsp;
+            {{/isTopLevel}}
+            <span>{{name}}</span>
+            <span>({{type}})</span>
+            {{#listLabel}}<span class="sub-text">- {{listLabel}}</span>{{/listLabel}}
+            {{#constraint}}<span class="sub-text">- {{constraint}}</span>{{/constraint}}
+        </li>
+        {{/dataTypes}}
+        {{^dataTypes}}
+        <li class="no-results">{{i18n.noDataTypes}}</li>
+        {{/dataTypes}}
+    </ul>
+
+    <!--<div class="pagebreak"></div>-->
+    <!-- ######################################################### -->
+    <!-- DRD components -->
+
+    <!-- TODO (https://issues.jboss.org/browse/DROOLS-4119): <h2>3. {{diagramName}} - {{i18n.drdComponents}}</h2> -->
+
+</div>
+
+</body>
+</html>

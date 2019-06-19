@@ -235,6 +235,11 @@
     </dependency>
 
     <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-security-server</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>com.google.jsinterop</groupId>
       <artifactId>jsinterop-annotations</artifactId>
     </dependency>
@@ -242,6 +247,11 @@
     <dependency>
       <groupId>com.google.elemental2</groupId>
       <artifactId>elemental2-dom</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.elemental2</groupId>
+      <artifactId>elemental2-core</artifactId>
     </dependency>
 
     <!--Wires Grids dependencies-->

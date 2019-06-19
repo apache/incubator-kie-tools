@@ -88,13 +88,19 @@ public class CanvasFileExport {
         svgFileExport.export(canvasExport.toContext2D(canvasHandler, CanvasExportSettings.build()), fullFileName);
     }
 
-    private void clearSelection(AbstractCanvasHandler canvasHandler) {
+    void clearSelection(AbstractCanvasHandler canvasHandler) {
         clearSelectionEvent.fire(new CanvasClearSelectionEvent(canvasHandler));
     }
 
     public String exportToSvg(final AbstractCanvasHandler canvasHandler) {
         clearSelection(canvasHandler);
         return canvasExport.toContext2D(canvasHandler, CanvasExportSettings.build()).getSerializedSvg();
+    }
+
+    public String exportToPng(final AbstractCanvasHandler canvasHandler) {
+        final CanvasURLExportSettings settings = CanvasURLExportSettings.build(CanvasExport.URLDataType.PNG);
+        clearSelection(canvasHandler);
+        return canvasExport.toImageData(canvasHandler, settings);
     }
 
     public void exportToJpg(final AbstractCanvasHandler canvasHandler,

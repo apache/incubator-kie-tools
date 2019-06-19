@@ -298,7 +298,7 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
 
         diagramEditor.onDataTypePageNavTabActiveEvent(mock(DataTypePageTabActiveEvent.class));
 
-        verify(multiPage).selectPage(2);
+        verify(multiPage).selectPage(3);
     }
 
     @Test

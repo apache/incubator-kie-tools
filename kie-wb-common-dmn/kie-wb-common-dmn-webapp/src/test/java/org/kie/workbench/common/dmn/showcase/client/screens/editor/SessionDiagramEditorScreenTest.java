@@ -43,6 +43,8 @@ import org.kie.workbench.common.stunner.core.client.components.layout.OpenDiagra
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
+import org.kie.workbench.common.stunner.core.documentation.DocumentationPage;
+import org.kie.workbench.common.stunner.core.documentation.DocumentationView;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorWrapperView;
 import org.mockito.ArgumentCaptor;
@@ -58,8 +60,10 @@ import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
 
 import static java.util.Collections.singletonList;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
@@ -114,6 +118,9 @@ public class SessionDiagramEditorScreenTest {
     @Mock
     private IncludedModelsPageStateProviderImpl importsPageProvider;
 
+    @Mock
+    private DocumentationView<Diagram> documentationView;
+
     private SessionDiagramEditorScreen editor;
 
     @Before
@@ -156,7 +163,9 @@ public class SessionDiagramEditorScreenTest {
                                                     kieView,
                                                     dataTypesPage,
                                                     layoutExecutor,
-                                                    includedModelsPage, importsPageProvider));
+                                                    includedModelsPage,
+                                                    importsPageProvider,
+                                                    documentationView));
     }
 
     @Test
@@ -164,7 +173,9 @@ public class SessionDiagramEditorScreenTest {
 
         final Widget screenPanelWidget = mock(Widget.class);
         final MultiPageEditor multiPageEditor = mock(MultiPageEditor.class);
+        final DocumentationPage documentationPage = mock(DocumentationPage.class);
 
+        doReturn(documentationPage).when(editor).getDocumentationPage();
         when(kieView.getMultiPage()).thenReturn(multiPageEditor);
         when(screenPanelView.asWidget()).thenReturn(screenPanelWidget);
 
@@ -176,6 +187,7 @@ public class SessionDiagramEditorScreenTest {
         verify(kieView).addMainEditorPage(screenPanelWidget);
         verify(multiPageEditor).addPage(dataTypesPage);
         verify(multiPageEditor).addPage(includedModelsPage);
+        verify(multiPageEditor).addPage(documentationPage);
     }
 
     @Test
@@ -286,5 +298,32 @@ public class SessionDiagramEditorScreenTest {
         editor.onDataTypeEditModeToggle(event);
 
         verify(menuItem).setEnabled(true);
+    }
+
+    @Test
+    public void testGetOnStartupDiagramEditorCallback() {
+
+        final Diagram diagram = mock(Diagram.class);
+        final Metadata metadata = mock(Metadata.class);
+        final String title = "title";
+
+        doNothing().when(editor).updateTitle(anyString());
+        doReturn(diagram).when(editor).getDiagram();
+        when(diagram.getMetadata()).thenReturn(metadata);
+        when(metadata.getTitle()).thenReturn(title);
+
+        editor.getOnStartupDiagramEditorCallback().execute();
+
+        verify(editor).updateTitle(title);
+        verify(documentationView).initialize(diagram);
+    }
+
+    @Test
+    public void testGetDocumentationPage() {
+
+        final DocumentationPage documentationPage = editor.getDocumentationPage();
+
+        assertEquals("Documentation", documentationPage.getLabel());
+        assertEquals(documentationView, documentationPage.getDocumentationView());
     }
 }

@@ -30,6 +30,7 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.stunner.bpmn.documentation.BPMNDocumentationService;
 import org.kie.workbench.common.stunner.bpmn.qualifiers.BPMN;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
+import org.kie.workbench.common.stunner.core.client.util.PrintHelper;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.documentation.DefaultDiagramDocumentationView;
 import org.kie.workbench.common.stunner.core.documentation.model.DocumentationOutput;
@@ -56,23 +57,29 @@ public class BPMNDocumentationView extends DefaultDiagramDocumentationView {
 
     private final ClientTranslationService clientTranslationService;
 
+    private final PrintHelper printHelper;
+
     private Supplier<Boolean> isSelected;
 
     protected BPMNDocumentationView(final BPMNDocumentationService documentationService,
                                     final ClientTranslationService clientTranslationService,
+                                    final PrintHelper printHelper,
                                     final HTMLElement documentationDiv,
                                     final Button printButton) {
         this.documentationService = documentationService;
         this.clientTranslationService = clientTranslationService;
+        this.printHelper = printHelper;
         this.documentationDiv = documentationDiv;
         this.printButton = printButton;
     }
 
     @Inject
     public BPMNDocumentationView(final BPMNDocumentationService documentationService,
-                                 final ClientTranslationService clientTranslationService) {
+                                 final ClientTranslationService clientTranslationService,
+                                 final PrintHelper printHelper) {
         this.documentationService = documentationService;
         this.clientTranslationService = clientTranslationService;
+        this.printHelper = printHelper;
     }
 
     @Override
@@ -92,61 +99,8 @@ public class BPMNDocumentationView extends DefaultDiagramDocumentationView {
         return refresh();
     }
 
-    /**
-     * Native helper method to print a div content
-     * @param
-     * @return
-     */
-    private native boolean print(HTMLElement element)/*-{
-        var content = element.innerHTML;
-        var printWindow = window.open('', '_blank');
-        var doc = printWindow.document;
-
-        // ready for writing
-        doc.open();
-        doc.write(content);
-        doc.close();
-
-        //trick part, change the media attribute to all, to load it before printing
-        //otherwise it is printing before loading the style
-        var links = doc.getElementsByTagName("link");
-        for (var i = 0, max = links.length; i < max; i++) {
-            var css = links[i];
-            var media = css.attributes["media"];
-            if (media && media.value === "print") {
-                media.value = "all";
-            }
-        }
-
-        //copy the styles from the top window
-        if (window.top && window.top.location.href != document.location.href) {
-            var parentStyles = window.top.document.getElementsByTagName('style');
-            var docHead = doc.getElementsByTagName('head').item(0);
-            for (var i = 0, max = parentStyles.length; i < max; i++) {
-                if (parentStyles[i]) {
-                    var copiedStyle = document.createElement('style');
-                    var attrib = parentStyles[i].innerHTML;
-                    copiedStyle.innerHTML = attrib;
-                    docHead.appendChild(copiedStyle);
-                }
-            }
-        }
-
-        //printing after all resources are loaded on the new window
-        printWindow.onload = function () {
-            printWindow.focus();
-            //trick to avoid printing before loading the styles
-            setTimeout(function () {
-                printWindow.print();
-                printWindow.close();
-            }, 10);
-        };
-
-        return true;
-    }-*/;
-
-    private void print() {
-        print(documentationDiv);
+    void print() {
+        printHelper.print(documentationDiv);
     }
 
     @Override

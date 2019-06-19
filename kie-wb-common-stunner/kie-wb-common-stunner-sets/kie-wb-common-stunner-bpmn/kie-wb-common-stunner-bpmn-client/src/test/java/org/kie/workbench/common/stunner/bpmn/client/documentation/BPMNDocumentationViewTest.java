@@ -23,6 +23,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.documentation.BPMNDocumentationService;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
+import org.kie.workbench.common.stunner.core.client.util.PrintHelper;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.documentation.model.DocumentationOutput;
 import org.kie.workbench.common.stunner.core.graph.Graph;
@@ -62,6 +63,9 @@ public class BPMNDocumentationViewTest {
     @Mock
     private HTMLElement div;
 
+    @Mock
+    private PrintHelper printHelper;
+
     private String value = "doc";
 
     @Mock
@@ -77,7 +81,7 @@ public class BPMNDocumentationViewTest {
         when(diagram.getGraph()).thenReturn(graph);
         when(graph.getNode("uuid")).thenReturn(node);
 
-        tested = spy(new BPMNDocumentationView(documentationService, clientTranslationService, div, printButton));
+        tested = spy(new BPMNDocumentationView(documentationService, clientTranslationService, printHelper, div, printButton));
     }
 
     @Test
@@ -115,5 +119,11 @@ public class BPMNDocumentationViewTest {
     @Test
     public void isEnabled() {
         assertTrue(tested.isEnabled());
+    }
+
+    @Test
+    public void print() {
+        tested.print();
+        verify(printHelper).print(div);
     }
 }

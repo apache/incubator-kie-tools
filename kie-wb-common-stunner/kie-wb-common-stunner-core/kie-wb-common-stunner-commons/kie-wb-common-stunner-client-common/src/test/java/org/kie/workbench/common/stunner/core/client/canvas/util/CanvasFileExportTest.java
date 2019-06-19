@@ -44,7 +44,9 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -108,12 +110,12 @@ public class CanvasFileExportTest {
                 .when(preferences)
                 .load(any(ParameterizedCommand.class),
                       any(ParameterizedCommand.class));
-        this.tested = new CanvasFileExport(canvasExport,
-                                           imageFileExport,
-                                           pdfFileExport,
-                                           preferences,
-                                           svgFileExport,
-                                           clearSelectionEvent);
+        this.tested = spy(new CanvasFileExport(canvasExport,
+                                               imageFileExport,
+                                               pdfFileExport,
+                                               preferences,
+                                               svgFileExport,
+                                               clearSelectionEvent));
     }
 
     @Test
@@ -177,5 +179,19 @@ public class CanvasFileExportTest {
         tested.exportToSvg(canvasHandler, "file1");
         verify(svgFileExport, times(1)).export(context2D, "file1.svg");
         verify(clearSelectionEvent).fire(any(CanvasClearSelectionEvent.class));
+    }
+
+    @Test
+    public void testExportToPNG() {
+
+        final String expectedImage = "image";
+
+        doNothing().when(tested).clearSelection(any());
+        when(canvasExport.toImageData(any(), any())).thenReturn(expectedImage);
+
+        final String actualImage = tested.exportToPng(canvasHandler);
+
+        verify(tested).clearSelection(canvasHandler);
+        assertEquals(expectedImage, actualImage);
     }
 }

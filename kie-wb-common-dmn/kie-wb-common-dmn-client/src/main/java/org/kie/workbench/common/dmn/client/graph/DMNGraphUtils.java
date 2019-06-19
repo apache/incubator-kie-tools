@@ -86,10 +86,14 @@ public class DMNGraphUtils {
     }
 
     public List<DRGElement> getDRGElements() {
-        return dmnDiagramUtils.getNodes(getDiagram());
+        return getDRGElements(getDiagram());
     }
 
-    private Optional<ClientSession> getCurrentSession() {
+    public List<DRGElement> getDRGElements(final Diagram diagram) {
+        return dmnDiagramUtils.getNodes(diagram);
+    }
+
+    public Optional<ClientSession> getCurrentSession() {
         return Optional.ofNullable(sessionManager.getCurrentSession());
     }
 

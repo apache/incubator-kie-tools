@@ -369,4 +369,46 @@ public class DMNEditorConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String LiteralExpressionPMMLDocumentModelEditorDefinition_Placeholder = "LiteralExpressionPMMLDocumentModelEditorDefinition.Placeholder";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DMNDocumentationI18n_DmnModelDocumentation = "DMNDocumentationI18n.DmnModelDocumentation";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DMNDocumentationI18n_GeneratedOn = "DMNDocumentationI18n.GeneratedOn";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DMNDocumentationI18n_GeneratedBy = "DMNDocumentationI18n.GeneratedBy";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DMNDocumentationI18n_GeneratedFrom = "DMNDocumentationI18n.GeneratedFrom";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DMNDocumentationI18n_TableOfContents = "DMNDocumentationI18n.TableOfContents";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DMNDocumentationI18n_DmnModel = "DMNDocumentationI18n.DmnModel";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DMNDocumentationI18n_DataTypes = "DMNDocumentationI18n.DataTypes";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DMNDocumentationI18n_DrdComponents = "DMNDocumentationI18n.DrdComponents";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DMNDocumentationI18n_NoDataTypes = "DMNDocumentationI18n.NoDataTypes";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DMNDocumentationI18n_DiagramDoesNotHaveElements = "DMNDocumentationI18n.DiagramDoesNotHaveElements";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DMNDocumentationFactory_NoFileName = "DMNDocumentationFactory.NoFileName";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DMNDocumentationFactory_Constraints = "DMNDocumentationFactory.Constraints";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DMNDocumentationFactory_ListYes = "DMNDocumentationFactory.ListYes";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DMNDocumentationFactory_Structure = "DMNDocumentationFactory.Structure";
 }

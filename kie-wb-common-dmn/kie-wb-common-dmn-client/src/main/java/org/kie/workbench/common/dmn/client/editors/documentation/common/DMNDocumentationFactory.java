@@ -1,0 +1,186 @@
+/*
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.kie.workbench.common.dmn.client.editors.documentation.common;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import javax.inject.Inject;
+
+import org.jboss.errai.ui.client.local.spi.TranslationService;
+import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
+import org.kie.workbench.common.dmn.api.definition.v1_1.UnaryTests;
+import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasFileExport;
+import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.views.pfly.widgets.Moment;
+import org.uberfire.rpc.SessionInfo;
+
+import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DMNDocumentationFactory_Constraints;
+import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DMNDocumentationFactory_ListYes;
+import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DMNDocumentationFactory_NoFileName;
+import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DMNDocumentationFactory_Structure;
+import static org.kie.workbench.common.stunner.core.util.StringUtils.isEmpty;
+
+public class DMNDocumentationFactory {
+
+    static final String EMPTY = "";
+
+    private final CanvasFileExport canvasFileExport;
+
+    private final TranslationService translationService;
+
+    private final SessionInfo sessionInfo;
+
+    private final DMNGraphUtils graphUtils;
+
+    @Inject
+    public DMNDocumentationFactory(final CanvasFileExport canvasFileExport,
+                                   final TranslationService translationService,
+                                   final SessionInfo sessionInfo,
+                                   final DMNGraphUtils graphUtils) {
+        this.canvasFileExport = canvasFileExport;
+        this.translationService = translationService;
+        this.sessionInfo = sessionInfo;
+        this.graphUtils = graphUtils;
+    }
+
+    public DMNDocumentation create(final Diagram diagram) {
+        return DMNDocumentation.create(getFileName(diagram),
+                                       getDiagramName(diagram),
+                                       getDiagramDescription(diagram),
+                                       hasGraphNodes(diagram),
+                                       getDataTypes(diagram),
+                                       getDiagramImage(),
+                                       getCurrentUserName(),
+                                       getCurrentDate(),
+                                       getDocumentationI18n());
+    }
+
+    String getFileName(final Diagram diagram) {
+        final Metadata metadata = diagram.getMetadata();
+        final Optional<Path> path = Optional.ofNullable(metadata.getPath());
+        return path.map(Path::getFileName).orElse(translationService.format(DMNDocumentationFactory_NoFileName));
+    }
+
+    boolean hasGraphNodes(final Diagram diagram) {
+        return !graphUtils.getDRGElements(diagram).isEmpty();
+    }
+
+    String getDiagramImage() {
+        return getCanvasHandler()
+                .map(canvasFileExport::exportToPng)
+                .orElse(EMPTY);
+    }
+
+    private List<DMNDocumentationDataType> getDataTypes(final Diagram diagram) {
+
+        final List<ItemDefinition> itemDefinitions = graphUtils.getDefinitions(diagram).getItemDefinition();
+        final List<DMNDocumentationDataType> dataTypes = new ArrayList<>();
+
+        makeDMNDocumentationDataTypes(itemDefinitions, dataTypes, 0);
+
+        return dataTypes;
+    }
+
+    private void makeDMNDocumentationDataTypes(final List<ItemDefinition> itemDefinitions,
+                                               final List<DMNDocumentationDataType> dataTypes,
+                                               final int level) {
+        itemDefinitions.forEach(itemDefinition -> {
+            makeDMNDocumentationDataType(dataTypes, itemDefinition, level);
+        });
+    }
+
+    private void makeDMNDocumentationDataType(final List<DMNDocumentationDataType> dataTypes,
+                                              final ItemDefinition itemDefinition,
+                                              final int level) {
+
+        final String name = itemDefinition.getName().getValue();
+        final String type = getType(itemDefinition);
+        final String listLabel = getListLabel(itemDefinition);
+        final String constraint = getConstraint(itemDefinition);
+        final DMNDocumentationDataType dataType = DMNDocumentationDataType.create(name, type, listLabel, constraint, level);
+
+        dataTypes.add(dataType);
+
+        makeDMNDocumentationDataTypes(itemDefinition.getItemComponent(), dataTypes, level + 1);
+    }
+
+    private String getConstraint(final ItemDefinition itemDefinition) {
+        final UnaryTests allowedValues = itemDefinition.getAllowedValues();
+
+        if (allowedValues != null && !isEmpty(allowedValues.getText().getValue())) {
+            return translationService.format(DMNDocumentationFactory_Constraints) + " " + allowedValues.getText().getValue();
+        }
+        return "";
+    }
+
+    private String getListLabel(final ItemDefinition itemDefinition) {
+        if (itemDefinition.isIsCollection()) {
+            return translationService.format(DMNDocumentationFactory_ListYes);
+        }
+        return "";
+    }
+
+    private String getType(final ItemDefinition itemDefinition) {
+        if (itemDefinition.getTypeRef() != null) {
+            return itemDefinition.getTypeRef().getLocalPart();
+        }
+        return translationService.format(DMNDocumentationFactory_Structure);
+    }
+
+    private String getCurrentDate() {
+        return moment().format("D MMMM YYYY");
+    }
+
+    private String getDiagramName(final Diagram diagram) {
+        return graphUtils
+                .getDefinitions(diagram)
+                .getName()
+                .getValue();
+    }
+
+    private String getDiagramDescription(final Diagram diagram) {
+        return graphUtils
+                .getDefinitions(diagram)
+                .getDescription()
+                .getValue();
+    }
+
+    private String getCurrentUserName() {
+        return sessionInfo.getIdentity().getIdentifier();
+    }
+
+    private Optional<AbstractCanvasHandler> getCanvasHandler() {
+        return Optional
+                .ofNullable(graphUtils.getCanvasHandler())
+                .filter(c -> c instanceof AbstractCanvasHandler)
+                .map(c -> (AbstractCanvasHandler) c);
+    }
+
+    DMNDocumentationI18n getDocumentationI18n() {
+        return DMNDocumentationI18n.create(translationService);
+    }
+
+    Moment moment() {
+        return Moment.Builder.moment();
+    }
+}
