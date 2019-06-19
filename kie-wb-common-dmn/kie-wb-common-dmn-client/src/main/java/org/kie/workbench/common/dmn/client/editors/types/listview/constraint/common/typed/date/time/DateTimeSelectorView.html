@@ -14,15 +14,11 @@
   ~ limitations under the License.
   -->
 
-<div>
-    <input id="time-input" type="text" class="time-input-field" data-field="time-input"/>
-    <button data-field="toggle-timezone-button" class="btn-toggle-timezone">
-        <i class="fa fa-globe toggle-icon" data-field="toggle-timezone-icon"></i>
-    </button>
-    <div id="time-selector-container" class="selector-container">
-        <select data-container="body" class="selectpicker" data-show-subtext="true" data-live-search="true" id="timeZoneSelector"
-                data-field="time-zone-selector">
-            <option data-field="time-zone-select-option"></option>
-        </select>
+<div class="container-fluid row">
+    <div class="col-md-4">
+        <div data-field="date-selector-container"></div>
+    </div>
+    <div class="col-md-8">
+        <div data-field="time-selector-container"></div>
     </div>
 </div>

@@ -151,7 +151,11 @@ public class TimeValueFormatter {
         return appendPrefixAndSuffix(time + offSet);
     }
 
-    private String appendPrefixAndSuffix(final String input) {
+    public String getTime(final String raw) {
+        return removePrefixAndSuffix(raw);
+    }
+
+    public String appendPrefixAndSuffix(final String input) {
         return PREFIX + input + SUFFIX;
     }
 }

@@ -138,15 +138,13 @@ public class TimePicker {
 
         onBlur(focusEvent, view.getElement());
 
-        refreshDateInPopup();
-
         return this;
     }
 
     private void onBlur(final FocusEvent focusEvent, final HTMLElement targetElement) {
 
         if (!Objects.equals(focusEvent.relatedTarget, targetElement)
-                && !isChildrenOfView((Element) focusEvent.relatedTarget)) {
+                && !isChildOfView((Element) focusEvent.relatedTarget)) {
 
             HiddenHelper.hide(view.getElement());
             if (!Objects.isNull(previousCallback)) {
@@ -155,7 +153,7 @@ public class TimePicker {
         }
     }
 
-    boolean isChildrenOfView(final Element element) {
+    boolean isChildOfView(final Element element) {
 
         final Element viewElement = view.getElement();
         return viewElement.contains(element);

@@ -28,7 +28,7 @@ public class DateValueFormatter {
     private static final DateTimeFormat RAW_FORMAT = DateTimeFormat.getFormat("yyyy-MM-dd");
     private static final DateTimeFormat DISPLAY_FORMAT = DateTimeFormat.getFormat("dd MMM yyyy");
 
-    String toDisplay(final String rawValue) {
+    public String toDisplay(final String rawValue) {
         if (StringUtils.isEmpty(rawValue)) {
             return "";
         }
@@ -47,7 +47,7 @@ public class DateValueFormatter {
         return rawValue.replace(PREFIX, "").replace(SUFFIX, "").trim();
     }
 
-    String addPrefixAndSuffix(final String value) {
+    public String addPrefixAndSuffix(final String value) {
         return PREFIX + value + SUFFIX;
     }
 
@@ -58,5 +58,9 @@ public class DateValueFormatter {
         } catch (final IllegalArgumentException exception) {
             return "";
         }
+    }
+
+    public String getDate(final String raw) {
+        return removePrefixAndSuffix(raw);
     }
 }

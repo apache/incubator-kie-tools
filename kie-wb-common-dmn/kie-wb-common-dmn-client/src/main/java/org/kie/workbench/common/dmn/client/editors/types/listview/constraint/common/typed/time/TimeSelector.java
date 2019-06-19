@@ -82,6 +82,10 @@ public class TimeSelector implements TypedValueSelector {
         return formatter.toDisplay(rawValue);
     }
 
+    public boolean isChild(final Object element) {
+        return view.isChildOfView(element);
+    }
+
     public interface View extends UberElemental<TimeSelectorView>,
                                   IsElement {
 
@@ -96,5 +100,7 @@ public class TimeSelector implements TypedValueSelector {
         void select();
 
         void setOnInputBlurCallback(final Consumer<BlurEvent> blurEvent);
+
+        boolean isChildOfView(final Object element);
     }
 }

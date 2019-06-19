@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.date;
+package org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.date.time;
 
 import java.util.function.Consumer;
 
@@ -29,33 +29,33 @@ import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.com
 import org.uberfire.client.mvp.UberElemental;
 
 @Dependent
-public class DateSelector implements TypedValueSelector {
+public class DateTimeSelector implements TypedValueSelector {
 
     private final View view;
-
-    private final DateValueFormatter dateValueFormatter;
+    private final DateTimeValueConverter converter;
 
     @Inject
-    public DateSelector(final DateSelector.View view,
-                        final DateValueFormatter dateValueFormatter) {
-
-        this.dateValueFormatter = dateValueFormatter;
+    public DateTimeSelector(final DateTimeSelector.View view,
+                            final DateTimeValueConverter converter) {
         this.view = view;
+        this.converter = converter;
     }
 
     @Override
     public String getValue() {
-        return view.getValue();
+        final DateTimeValue value = view.getValue();
+        return converter.toDMNString(value);
     }
 
     @Override
     public void setValue(final String value) {
-        view.setValue(value);
+        final DateTimeValue dateTimeValue = converter.fromDMNString(value);
+        view.setValue(dateTimeValue);
     }
 
     @Override
     public void setPlaceholder(final String placeholder) {
-        view.setPlaceholder(placeholder);
+        // Empty: This component is composed by TimeSelector and DateSelector which have their own placeholders.
     }
 
     @Override
@@ -65,12 +65,12 @@ public class DateSelector implements TypedValueSelector {
 
     @Override
     public void setOnInputChangeCallback(final Consumer<Event> onValueChanged) {
-        view.onValueChanged(onValueChanged);
+        view.setOnValueChanged(onValueChanged);
     }
 
     @Override
-    public void setOnInputBlurCallback(final Consumer<BlurEvent> blurEvent) {
-        view.onValueInputBlur(blurEvent);
+    public void setOnInputBlurCallback(final Consumer<BlurEvent> onValueInputBlur) {
+        view.setOnValueInputBlur(onValueInputBlur);
     }
 
     @Override
@@ -80,28 +80,20 @@ public class DateSelector implements TypedValueSelector {
 
     @Override
     public String toDisplay(final String rawValue) {
-        return dateValueFormatter.toDisplay(rawValue);
+        return converter.toDisplay(rawValue);
     }
 
-    public boolean isChild(final Object element) {
-        return view.isChildOfView(element);
-    }
-
-    public interface View extends UberElemental<DateSelectorView>,
+    public interface View extends UberElemental<DateTimeSelector>,
                                   IsElement {
 
-        String getValue();
+        DateTimeValue getValue();
 
-        void setValue(final String value);
+        void setValue(final DateTimeValue value);
 
-        void setPlaceholder(final String placeholder);
+        void setOnValueChanged(final Consumer<Event> onValueChanged);
 
-        void onValueChanged(final Consumer<Event> onValueChanged);
+        void setOnValueInputBlur(final Consumer<BlurEvent> blurEvent);
 
         void select();
-
-        void onValueInputBlur(final Consumer<BlurEvent> blurEvent);
-
-        boolean isChildOfView(final Object element);
     }
 }

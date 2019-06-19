@@ -26,6 +26,7 @@ import javax.inject.Inject;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
+import elemental2.dom.Element;
 import elemental2.dom.Event;
 import elemental2.dom.HTMLInputElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
@@ -72,7 +73,7 @@ public class DateSelectorView implements DateSelector.View {
 
     @Override
     public String getValue() {
-        return valueFormatter.toRaw(dateInput.value);
+        return StringUtils.isEmpty(dateInput.value) ? "" :  valueFormatter.toRaw(dateInput.value);
     }
 
     @Override
@@ -118,6 +119,13 @@ public class DateSelectorView implements DateSelector.View {
     @Override
     public void onValueInputBlur(final Consumer<BlurEvent> blurEvent) {
         this.onValueInputBlur = blurEvent;
+    }
+
+    @Override
+    public boolean isChildOfView(final Object element) {
+
+        final Element viewElement = getElement();
+        return viewElement.contains((Element) element);
     }
 
     @Override

@@ -16,6 +16,10 @@
 
 [data-i18n-prefix="DataTypeConstraintRangeView."] {
 
+  .time-picker {
+    z-index: 2;
+  }
+
   .checkbox-container {
     padding-top: 10px;
   }
@@ -93,6 +97,19 @@
       [data-field="end-value-container"],
       [data-field="start-value-container"] {
         display: inline-block;
+      }
+    }
+  }
+
+  &.kie-date-and-time {
+
+    .range-value-box {
+      margin: 10px;
+
+      [data-field="end-value-container"],
+      [data-field="start-value-container"] {
+        display: inline-block;
+        width: 400px;
       }
     }
   }

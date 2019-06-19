@@ -334,7 +334,7 @@ public class TimeSelectorViewTest {
         final BlurEvent event = mock(BlurEvent.class);
         final Element target = mock(Element.class);
         doReturn(target).when(view).getEventTarget(event);
-        doReturn(false).when(view).isChildrenOfView(target);
+        doReturn(false).when(view).isChildOfView(target);
 
         view.onTimeInputBlur(event);
         verify(onValueInputBlur).accept(event);
@@ -346,7 +346,7 @@ public class TimeSelectorViewTest {
         final BlurEvent event = mock(BlurEvent.class);
         final Element target = mock(Element.class);
         doReturn(target).when(view).getEventTarget(event);
-        doReturn(true).when(view).isChildrenOfView(target);
+        doReturn(true).when(view).isChildOfView(target);
 
         view.onTimeInputBlur(event);
         verify(onValueInputBlur, never()).accept(event);
