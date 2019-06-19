@@ -47,8 +47,8 @@ public class DefinitionsConverter {
         result.setId(id);
         result.setName(name);
         result.setNamespace(new Text(namespace));
-        result.getNsContext().put(DMNModelInstrumentedBase.Namespace.DEFAULT.getPrefix(),
-                                  namespace);
+        result.getNsContext().putIfAbsent(DMNModelInstrumentedBase.Namespace.DEFAULT.getPrefix(),
+                                          namespace);
         result.setDescription(description);
         for (Entry<String, String> kv : dmn.getNsContext().entrySet()) {
             String mappedURI = kv.getValue();
@@ -63,7 +63,11 @@ public class DefinitionsConverter {
                     mappedURI = org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase.URI_KIE;
                     break;
             }
-            result.getNsContext().put(kv.getKey(), mappedURI);
+            if (kv.getKey().equalsIgnoreCase(DMNModelInstrumentedBase.Namespace.DEFAULT.getPrefix())) {
+                result.getNsContext().putIfAbsent(kv.getKey(), mappedURI);
+            } else {
+                result.getNsContext().put(kv.getKey(), mappedURI);
+            }
         }
 
         for (org.kie.dmn.model.api.ItemDefinition itemDef : dmn.getItemDefinition()) {

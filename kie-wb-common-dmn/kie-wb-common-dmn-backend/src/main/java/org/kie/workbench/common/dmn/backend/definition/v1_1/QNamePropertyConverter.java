@@ -21,6 +21,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
+import org.kie.dmn.model.v1_1.TDefinitions;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 
@@ -37,6 +38,15 @@ public class QNamePropertyConverter {
         if (parent instanceof org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase && parent.getURIFEEL().equals(parent.getNamespaceURI(qName.getPrefix()))) {
             return new QName(QName.NULL_NS_URI, qName.getLocalPart());
         }
+
+        if (parent instanceof org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase) {
+            final String defaultNs = getDefaultNamespace(parent);
+            final String localNs = parent.getNamespaceURI(qName.getPrefix());
+            if (defaultNs.equalsIgnoreCase(localNs)) {
+                return new QName(QName.NULL_NS_URI, qName.getLocalPart());
+            }
+        }
+
         return new QName(qName.getNamespaceURI(),
                          qName.getLocalPart(),
                          qName.getPrefix());
@@ -63,5 +73,16 @@ public class QNamePropertyConverter {
         } else {
             return Optional.empty();
         }
+    }
+
+    public static String getDefaultNamespace(final DMNModelInstrumentedBase parent) {
+        if (parent instanceof TDefinitions) {
+            final TDefinitions def = (TDefinitions) parent;
+            return def.getNamespace();
+        } else if (!Objects.isNull(parent.getParent())) {
+            return getDefaultNamespace(parent.getParent());
+        }
+
+        return "";
     }
 }

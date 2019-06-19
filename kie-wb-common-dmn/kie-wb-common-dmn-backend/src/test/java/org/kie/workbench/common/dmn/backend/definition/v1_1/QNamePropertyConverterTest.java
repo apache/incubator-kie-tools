@@ -21,12 +21,17 @@ import java.util.Optional;
 import javax.xml.XMLConstants;
 
 import org.junit.Test;
+import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.Decision;
+import org.kie.dmn.model.v1_1.TDefinitions;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase.Namespace;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class QNamePropertyConverterTest {
 
@@ -56,6 +61,52 @@ public class QNamePropertyConverterTest {
                                                                                              BuiltInType.UNDEFINED.getName(),
                                                                                              Namespace.FEEL.getPrefix()));
         assertThat(dmn).isEmpty();
+    }
+
+    @Test
+    public void testGetDefaultNamespace() {
+
+        final String defaultNamespace = "http://www.kiegroup.org/";
+        final TDefinitions definition = mock(TDefinitions.class);
+        when(definition.getNamespace()).thenReturn(defaultNamespace);
+
+        final String actual = QNamePropertyConverter.getDefaultNamespace(definition);
+
+        assertEquals(defaultNamespace, actual);
+    }
+
+    @Test
+    public void testGetDefaultNamespaceFromParent() {
+
+        final String defaultNamespace = "http://www.kiegroup.org/";
+        final TDefinitions definition = mock(TDefinitions.class);
+        final DMNModelInstrumentedBase model = mock(DMNModelInstrumentedBase.class);
+
+        when(model.getParent()).thenReturn(definition);
+        when(definition.getNamespace()).thenReturn(defaultNamespace);
+
+        final String actual = QNamePropertyConverter.getDefaultNamespace(model);
+
+        assertEquals(defaultNamespace, actual);
+    }
+
+    @Test
+    public void testWbFromDMNForBuiltInDataType11WithSameUriAsDefaultNamespace(){
+
+        final String defaultNamespace = "http://www.kiegroup.org/";
+        final TDefinitions definition = mock(TDefinitions.class);
+
+        when(definition.getURIFEEL()).thenReturn("");
+        when(definition.getNamespace()).thenReturn(defaultNamespace);
+        when(definition.getNamespaceURI(Namespace.KIE.getPrefix())).thenReturn(defaultNamespace);
+
+        final javax.xml.namespace.QName dmn = new javax.xml.namespace.QName(defaultNamespace,
+                                                                            BuiltInType.STRING.getName(),
+                                                                            Namespace.KIE.getPrefix());
+        final QName wb = QNamePropertyConverter.wbFromDMN(dmn, definition);
+
+        assertEquals(BuiltInType.STRING.getName(), wb.getLocalPart());
+        assertEquals(XMLConstants.NULL_NS_URI, wb.getPrefix());
     }
 
     @Test

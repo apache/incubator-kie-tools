@@ -76,15 +76,19 @@ public abstract class AbstractDMNDiagramFactory<M extends Metadata, D extends Di
 
         Stream.of(DMNModelInstrumentedBase.Namespace.values())
                 .filter(namespace -> !dmnDefinitions.getNsContext().containsValue(namespace.getUri()))
-                .forEach(namespace -> dmnDefinitions.getNsContext().put(namespace.getPrefix(), namespace.getUri()));
+                .forEach(namespace -> {
+                    if (!namespace.getPrefix().equalsIgnoreCase(DMNModelInstrumentedBase.Namespace.DEFAULT.getPrefix())) {
+                        dmnDefinitions.getNsContext().put(namespace.getPrefix(), namespace.getUri());
+                    }
+                });
 
         String defaultNamespace = !StringUtils.isEmpty(dmnDefinitions.getNamespace().getValue())
                 ? dmnDefinitions.getNamespace().getValue()
                 : DMNModelInstrumentedBase.Namespace.DEFAULT.getUri() + UUID.uuid();
 
         dmnDefinitions.setNamespace(new Text(defaultNamespace));
-        dmnDefinitions.getNsContext().put(DMNModelInstrumentedBase.Namespace.DEFAULT.getPrefix(),
-                                          defaultNamespace);
+        dmnDefinitions.getNsContext().putIfAbsent(DMNModelInstrumentedBase.Namespace.DEFAULT.getPrefix(),
+                                                  defaultNamespace);
     }
 
     private void updateName(final Node<Definition<DMNDiagram>, ?> diagramNode,

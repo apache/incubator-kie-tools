@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.backend.definition.v1_1;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -101,5 +102,31 @@ public class DefinitionsConverterTest {
         assertNotNull(defaultNs);
         assertEquals(defaultNs, namespace);
         assertEquals(NAMESPACE, defaultNs);
+    }
+
+    @Test
+    public void testDmnFromWBWithExistingDefaultNamespace() {
+
+        final Map<String, String> existingNsContext = new HashMap<>();
+        final String existing = "existing";
+        existingNsContext.put(DMNModelInstrumentedBase.Namespace.DEFAULT.getPrefix(),
+                              existing);
+
+        when(wbDefinitions.getNamespace()).thenReturn(new Text());
+        when(wbDefinitions.getNsContext()).thenReturn(existingNsContext);
+
+        org.kie.dmn.model.api.Definitions dmn = DefinitionsConverter.dmnFromWB(wbDefinitions);
+        String defaultNs = dmn.getNsContext().get(DMNModelInstrumentedBase.Namespace.DEFAULT.getPrefix());
+
+        assertNotNull(defaultNs);
+        assertEquals(existing, defaultNs);
+
+        when(wbDefinitions.getNamespace()).thenReturn(new Text(NAMESPACE));
+
+        dmn = DefinitionsConverter.dmnFromWB(wbDefinitions);
+        defaultNs = dmn.getNsContext().get(DMNModelInstrumentedBase.Namespace.DEFAULT.getPrefix());
+
+        assertNotNull(defaultNs);
+        assertEquals(existing, defaultNs);
     }
 }
