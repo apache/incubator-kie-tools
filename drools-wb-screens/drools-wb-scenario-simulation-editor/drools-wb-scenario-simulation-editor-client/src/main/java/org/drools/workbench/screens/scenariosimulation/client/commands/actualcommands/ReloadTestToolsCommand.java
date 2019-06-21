@@ -18,6 +18,7 @@ package org.drools.workbench.screens.scenariosimulation.client.commands.actualco
 import javax.enterprise.context.Dependent;
 
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
+import org.uberfire.client.mvp.PlaceStatus;
 
 /**
  * <code>Command</code> to <b>reload</b> the <code>TestToolsView</code>, <b>eventually</b> showing it (if required by original event)
@@ -34,7 +35,7 @@ public class ReloadTestToolsCommand extends AbstractScenarioSimulationCommand {
         final ScenarioSimulationContext.Status status = context.getStatus();
         if (context.getScenarioSimulationEditorPresenter() != null) {
             if (status.isOpenDock()) {
-                context.getScenarioSimulationEditorPresenter().expandToolsDock();
+                context.getScenarioSimulationEditorPresenter().expandToolsDock(PlaceStatus.OPEN);
             }
             context.getScenarioSimulationEditorPresenter().reloadTestTools(status.isDisable());
         }

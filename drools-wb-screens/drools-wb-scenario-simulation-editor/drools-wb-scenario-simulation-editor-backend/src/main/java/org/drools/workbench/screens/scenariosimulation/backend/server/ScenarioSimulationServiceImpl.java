@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
@@ -239,8 +240,8 @@ public class ScenarioSimulationServiceImpl
         consumedFQCNs.addAll(oracle.getModuleCollectionTypes()
                                      .entrySet()
                                      .stream()
-                                     .filter(entry -> entry.getValue())
-                                     .map(entry -> entry.getKey())
+                                     .filter(Map.Entry::getValue)
+                                     .map(Map.Entry::getKey)
                                      .collect(Collectors.toSet()));
 
         DataModelOracleUtilities.populateDataModel(oracle,

@@ -20,6 +20,7 @@
     <exclude name="org.drools.workbench.screens.globals.client.**"/>
     <exclude name="org.drools.workbench.screens.enums.client.**"/>
     <exclude name="org.drools.workbench.screens.scenariosimulation.client.**"/>
+    <exclude name="org.drools.workbench.screens.scenariosimulation.businesscentral.client.**"/>
 
     <exclude name="org.guvnor.asset.management.client.**"/>
     <exclude name="org.guvnor.client.**"/>

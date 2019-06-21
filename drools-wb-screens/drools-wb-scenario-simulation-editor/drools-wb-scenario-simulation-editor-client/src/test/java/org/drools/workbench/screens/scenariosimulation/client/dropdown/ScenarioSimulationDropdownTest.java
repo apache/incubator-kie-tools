@@ -23,7 +23,7 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import com.google.gwtmockito.GwtMockitoTestRunner;
 import elemental2.dom.HTMLElement;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,8 +45,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(LienzoMockitoTestRunner.class)
-public class ScenarioSimulationDropdownTest extends AbstractScenarioSimulationAssetsDropdownTest {
+@RunWith(GwtMockitoTestRunner.class)
+public class ScenarioSimulationDropdownTest extends AbstractScenarioSimulationDropdownTest {
 
     @Mock
     private ScenarioSimulationDropdownView viewMock;
@@ -59,9 +59,6 @@ public class ScenarioSimulationDropdownTest extends AbstractScenarioSimulationAs
 
     @Mock
     private Command onValueChangeHandlerMock;
-
-    @Mock
-    private KieAssetsDropdownItem kieAssetsDropdownItemMock;
 
     private ScenarioSimulationDropdown scenarioSimulationDropdown;
 

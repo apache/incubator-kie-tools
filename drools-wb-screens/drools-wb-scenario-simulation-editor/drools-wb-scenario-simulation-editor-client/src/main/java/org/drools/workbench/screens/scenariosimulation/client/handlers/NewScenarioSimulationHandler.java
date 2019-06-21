@@ -149,8 +149,7 @@ public class NewScenarioSimulationHandler
     @PostConstruct
     public void setupExtensions() {
         uploadWidget = new TitledAttachmentFileWidget(ScenarioSimulationEditorConstants.INSTANCE.chooseDMN(),
-                                                      scenarioSimulationService,
-                                                      scenarioSimulationDropdown);
+                                                      scenarioSimulationService, scenarioSimulationDropdown);
         sourceTypeSelector = new SourceTypeSelector(uploadWidget);
         extensions.add(Pair.newPair(ScenarioSimulationEditorConstants.INSTANCE.sourceType(), sourceTypeSelector));
         extensions.add(Pair.newPair("", uploadWidget));

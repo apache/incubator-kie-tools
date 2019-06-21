@@ -46,8 +46,7 @@ public class TitledAttachmentFileWidget extends Composite {
     protected String selectedPath;
 
     public TitledAttachmentFileWidget(String title,
-                                      Caller<ScenarioSimulationService> scenarioSimulationService,
-                                      ScenarioSimulationDropdown scenarioSimulationDropdown) {
+                                      Caller<ScenarioSimulationService> scenarioSimulationService, ScenarioSimulationDropdown scenarioSimulationDropdown) {
         this.scenarioSimulationService = scenarioSimulationService;
         this.scenarioSimulationDropdown = scenarioSimulationDropdown;
         titleLabel.setStyleName("control-label");

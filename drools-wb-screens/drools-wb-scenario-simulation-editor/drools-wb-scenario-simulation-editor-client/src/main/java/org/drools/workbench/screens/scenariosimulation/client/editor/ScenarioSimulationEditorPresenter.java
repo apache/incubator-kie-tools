@@ -19,7 +19,6 @@ package org.drools.workbench.screens.scenariosimulation.client.editor;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -30,9 +29,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.user.client.ui.IsWidget;
 import elemental2.dom.DomGlobal;
-import elemental2.promise.Promise;
 import org.drools.scenariosimulation.api.model.FactMapping;
 import org.drools.scenariosimulation.api.model.FactMappingType;
 import org.drools.scenariosimulation.api.model.Scenario;
@@ -42,8 +39,7 @@ import org.drools.scenariosimulation.api.model.Simulation;
 import org.drools.scenariosimulation.api.model.SimulationDescriptor;
 import org.drools.scenariosimulation.api.model.SimulationRunMetadata;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
-import org.drools.workbench.screens.scenariosimulation.client.editor.strategies.DMNDataManagementStrategy;
-import org.drools.workbench.screens.scenariosimulation.client.editor.strategies.DMODataManagementStrategy;
+import org.drools.workbench.screens.scenariosimulation.client.editor.strategies.AbstractDMODataManagementStrategy;
 import org.drools.workbench.screens.scenariosimulation.client.editor.strategies.DataManagementStrategy;
 import org.drools.workbench.screens.scenariosimulation.client.events.ImportEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.RedoEvent;
@@ -61,33 +57,20 @@ import org.drools.workbench.screens.scenariosimulation.client.rightpanel.Coverag
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.SettingsPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.SettingsView;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.SubDockView;
+import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestRunnerReportingPanelWrapper;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsView;
 import org.drools.workbench.screens.scenariosimulation.client.type.ScenarioSimulationResourceType;
+import org.drools.workbench.screens.scenariosimulation.client.utils.ConstantHolder;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridPanel;
-import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModelContent;
 import org.drools.workbench.screens.scenariosimulation.model.SimulationRunResult;
-import org.drools.workbench.screens.scenariosimulation.service.DMNTypeService;
-import org.drools.workbench.screens.scenariosimulation.service.ImportExportService;
-import org.drools.workbench.screens.scenariosimulation.service.ScenarioSimulationService;
-import org.guvnor.common.services.shared.metadata.model.Metadata;
-import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.enterprise.client.jaxrs.MarshallingWrapper;
-import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleFactory;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.kie.workbench.common.widgets.configresource.client.widget.bound.ImportsWidgetPresenter;
-import org.kie.workbench.common.widgets.metadata.client.KieEditor;
-import org.kie.workbench.common.workbench.client.test.TestRunnerReportingPanel;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.annotations.WorkbenchEditor;
-import org.uberfire.client.annotations.WorkbenchMenu;
-import org.uberfire.client.annotations.WorkbenchPartTitle;
-import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
-import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.mvp.AbstractWorkbenchActivity;
 import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.mvp.PlaceManager;
@@ -95,87 +78,57 @@ import org.uberfire.client.mvp.PlaceStatus;
 import org.uberfire.client.workbench.docks.UberfireDocksInteractionEvent;
 import org.uberfire.ext.editor.commons.client.file.exports.TextContent;
 import org.uberfire.ext.editor.commons.client.file.exports.TextFileExport;
-import org.uberfire.ext.editor.commons.service.support.SupportsCopy;
-import org.uberfire.ext.editor.commons.service.support.SupportsDelete;
-import org.uberfire.ext.editor.commons.service.support.SupportsRename;
-import org.uberfire.ext.editor.commons.service.support.SupportsSaveAndRename;
-import org.uberfire.lifecycle.OnClose;
-import org.uberfire.lifecycle.OnMayClose;
-import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
-import org.uberfire.workbench.model.menu.Menus;
+import org.uberfire.workbench.model.menu.MenuItem;
 
 import static org.drools.scenariosimulation.api.model.ScenarioSimulationModel.Type;
-import static org.drools.workbench.screens.scenariosimulation.client.editor.ScenarioSimulationEditorPresenter.IDENTIFIER;
 import static org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioSimulationDocksHandler.SCESIMEDITOR_ID;
 import static org.drools.workbench.screens.scenariosimulation.service.ImportExportType.CSV;
 
 @Dependent
-@WorkbenchEditor(identifier = IDENTIFIER, supportedTypes = {ScenarioSimulationResourceType.class})
-public class ScenarioSimulationEditorPresenter
-        extends KieEditor<ScenarioSimulationModel> {
+public class ScenarioSimulationEditorPresenter {
 
     public static final String IDENTIFIER = "ScenarioSimulationEditor";
-
+    private static final AtomicLong SCENARIO_PRESENTER_COUNTER = new AtomicLong();
     //Package for which this Scenario Simulation relates
     protected String packageName = "";
-
     protected ObservablePath path;
-
     protected EventBus eventBus;
-
     protected ScenarioGridPanel scenarioGridPanel;
-
+    protected PlaceManager placeManager;
     protected DataManagementStrategy dataManagementStrategy;
     protected ScenarioSimulationContext context;
     protected ScenarioSimulationModel model;
-    protected TestRunnerReportingPanel testRunnerReportingPanel;
+    protected TestRunnerReportingPanelWrapper testRunnerReportingPanel;
     protected SimulationRunResult lastRunResult;
-    private ImportsWidgetPresenter importsWidget;
-    private AsyncPackageDataModelOracleFactory oracleFactory;
-    private Caller<ScenarioSimulationService> service;
-    private Caller<DMNTypeService> dmnTypeService;
-    private Caller<ImportExportService> importExportService;
+    protected long scenarioPresenterId;
     private ScenarioSimulationResourceType type;
     private ScenarioSimulationView view;
     private Command populateTestToolsCommand;
     private TextFileExport textFileExport;
     private ConfirmPopupPresenter confirmPopupPresenter;
-
     private ScenarioSimulationDocksHandler scenarioSimulationDocksHandler;
-
-    private static final AtomicLong SCENARIO_PRESENTER_COUNTER = new AtomicLong();
-    protected long scenarioPresenterId;
+    private ScenarioSimulationEditorWrapper scenarioSimulationEditorWrapper;
 
     public ScenarioSimulationEditorPresenter() {
         //Zero-parameter constructor for CDI proxies
     }
 
     @Inject
-    public ScenarioSimulationEditorPresenter(final Caller<ScenarioSimulationService> service,
-                                             final ScenarioSimulationProducer scenarioSimulationProducer,
+    public ScenarioSimulationEditorPresenter(final ScenarioSimulationProducer scenarioSimulationProducer,
                                              final ScenarioSimulationResourceType type,
-                                             final ImportsWidgetPresenter importsWidget,
-                                             final AsyncPackageDataModelOracleFactory oracleFactory,
                                              final PlaceManager placeManager,
-                                             final TestRunnerReportingPanel testRunnerReportingPanel,
+                                             // TO BE WRAPPED
+                                             final TestRunnerReportingPanelWrapper testRunnerReportingPanel,
                                              final ScenarioSimulationDocksHandler scenarioSimulationDocksHandler,
-                                             final Caller<DMNTypeService> dmnTypeService,
-                                             final Caller<ImportExportService> importExportService,
                                              final TextFileExport textFileExport,
                                              final ConfirmPopupPresenter confirmPopupPresenter) {
-        super(scenarioSimulationProducer.getScenarioSimulationView());
+        this.view = scenarioSimulationProducer.getScenarioSimulationView();
         this.testRunnerReportingPanel = testRunnerReportingPanel;
         this.scenarioSimulationDocksHandler = scenarioSimulationDocksHandler;
-        this.dmnTypeService = dmnTypeService;
-        this.importExportService = importExportService;
-        this.view = (ScenarioSimulationView) baseView;
-        this.service = service;
         this.type = type;
-        this.importsWidget = importsWidget;
-        this.oracleFactory = oracleFactory;
         this.placeManager = placeManager;
         this.context = scenarioSimulationProducer.getScenarioSimulationContext();
         this.eventBus = scenarioSimulationProducer.getEventBus();
@@ -184,70 +137,39 @@ public class ScenarioSimulationEditorPresenter
         scenarioGridPanel = view.getScenarioGridPanel();
         context.setScenarioSimulationEditorPresenter(this);
         view.init(this);
-        populateTestToolsCommand = getPopulateTestToolsCommand();
+        populateTestToolsCommand = createPopulateTestToolsCommand();
         scenarioGridPanel.select();
         scenarioPresenterId = SCENARIO_PRESENTER_COUNTER.getAndIncrement();
     }
 
-    @OnStartup
-    public void onStartup(final ObservablePath path,
-                          final PlaceRequest place) {
-        super.init(path,
-                   place,
-                   type);
+    public void init(ScenarioSimulationEditorWrapper scenarioSimulationEditorWrapper, ObservablePath path) {
+        this.scenarioSimulationEditorWrapper = scenarioSimulationEditorWrapper;
         this.path = path;
-
         testRunnerReportingPanel.reset();
     }
 
-    @OnClose
-    @Override
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
+    }
+
     public void onClose() {
-        this.versionRecordManager.clear();
         scenarioGridPanel.unregister();
-        super.onClose();
     }
 
-    @OnMayClose
-    public boolean mayClose() {
-        return !isDirty();
-    }
-
-    @WorkbenchPartTitle
-    public String getTitleText() {
-        return super.getTitleText();
-    }
-
-    @WorkbenchPartTitleDecoration
-    public IsWidget getTitle() {
-        return super.getTitle();
-    }
-
-    @WorkbenchPartView
-    public IsWidget getWidget() {
-        return super.getWidget();
-    }
-
-    @WorkbenchMenu
-    public void getMenus(final Consumer<Menus> menusConsumer) {
-        super.getMenus(menusConsumer);
-    }
-
-    @Override
-    public void showDocks() {
-        super.showDocks();
-        registerDock(ScenarioSimulationDocksHandler.TEST_RUNNER_REPORTING_PANEL, testRunnerReportingPanel.asWidget());
+    /**
+     * @param status <code>PlaceStatus</code> of <b>TestToolsPresenter</b>
+     */
+    public void showDocks(PlaceStatus status) {
+        scenarioSimulationEditorWrapper.wrappedRegisterDock(ScenarioSimulationDocksHandler.TEST_RUNNER_REPORTING_PANEL, testRunnerReportingPanel.asWidget());
         scenarioSimulationDocksHandler.addDocks();
         scenarioSimulationDocksHandler.setScesimEditorId(String.valueOf(scenarioPresenterId));
-        expandToolsDock();
+        expandToolsDock(status);
         registerTestToolsCallback();
         resetDocks();
         populateRightDocks(TestToolsPresenter.IDENTIFIER);
     }
 
-    @Override
     public void hideDocks() {
-        super.hideDocks();
         scenarioSimulationDocksHandler.removeDocks();
         view.getScenarioGridLayer().getScenarioGrid().clearSelections();
         unRegisterTestToolsCallback();
@@ -260,9 +182,8 @@ public class ScenarioSimulationEditorPresenter
         }
     }
 
-    public void expandToolsDock() {
-        final DefaultPlaceRequest placeRequest = new DefaultPlaceRequest(TestToolsPresenter.IDENTIFIER);
-        if (!PlaceStatus.OPEN.equals(placeManager.getStatus(placeRequest))) {
+    public void expandToolsDock(PlaceStatus status) {
+        if (!PlaceStatus.OPEN.equals(status)) {
             scenarioSimulationDocksHandler.expandToolsDock();
         }
     }
@@ -273,6 +194,10 @@ public class ScenarioSimulationEditorPresenter
 
     public ScenarioSimulationModel getModel() {
         return model;
+    }
+
+    public Command getPopulateTestToolsCommand() {
+        return populateTestToolsCommand;
     }
 
     /**
@@ -301,10 +226,9 @@ public class ScenarioSimulationEditorPresenter
                 .filter(elem -> indexOfScenarioToRun.contains(elem.getIndex() - 1))
                 .collect(Collectors.toList());
         view.showBusyIndicator(ScenarioSimulationEditorConstants.INSTANCE.running());
-        service.call(getRefreshModelCallback(), new ScenarioSimulationHasBusyIndicatorDefaultErrorCallback(view))
-                .runScenario(versionRecordManager.getCurrentPath(),
-                             simulation.getSimulationDescriptor(),
-                             toRun);
+        scenarioSimulationEditorWrapper.onRunScenario(getRefreshModelCallback(), new ScenarioSimulationHasBusyIndicatorDefaultErrorCallback(view),
+                                                      simulation.getSimulationDescriptor(),
+                                                      toRun);
     }
 
     public void onUndo() {
@@ -323,9 +247,8 @@ public class ScenarioSimulationEditorPresenter
         view.getRedoMenuItem().setEnabled(enabled);
     }
 
-    @Override
-    public void addDownloadMenuItem(FileMenuBuilder fileMenuBuilder) {
-        fileMenuBuilder.addNewTopLevelMenu(view.getDownloadMenuItem(getPathSupplier()));
+    public void addDownloadMenuItem(FileMenuBuilder fileMenuBuilder, Supplier<Path> pathSupplier) {
+        fileMenuBuilder.addNewTopLevelMenu(view.getDownloadMenuItem(pathSupplier));
     }
 
     public DataManagementStrategy getDataManagementStrategy() {
@@ -333,9 +256,15 @@ public class ScenarioSimulationEditorPresenter
     }
 
     public void onImport(String fileContents) {
-        importExportService.call(getImportCallBack(),
-                                 getImportErrorCallback())
-                .importSimulation(CSV, fileContents, context.getStatus().getSimulation());
+        scenarioSimulationEditorWrapper.onImport(fileContents, getImportCallBack(), getImportErrorCallback(), context.getStatus().getSimulation());
+    }
+
+    public EventBus getEventBus() {
+        return eventBus;
+    }
+
+    public ScenarioSimulationContext getContext() {
+        return context;
     }
 
     /**
@@ -406,9 +335,9 @@ public class ScenarioSimulationEditorPresenter
 
     /**
      * If you want to customize the menu override this method.
+     * @param fileMenuBuilder
      */
-    @Override
-    protected Promise<Void> makeMenuBar() {
+    public void makeMenuBar(FileMenuBuilder fileMenuBuilder) {
         fileMenuBuilder.addNewTopLevelMenu(view.getRunScenarioMenuItem());
         fileMenuBuilder.addNewTopLevelMenu(view.getUndoMenuItem());
         fileMenuBuilder.addNewTopLevelMenu(view.getRedoMenuItem());
@@ -416,35 +345,30 @@ public class ScenarioSimulationEditorPresenter
         fileMenuBuilder.addNewTopLevelMenu(view.getImportMenuItem());
         view.getUndoMenuItem().setEnabled(false);
         view.getRedoMenuItem().setEnabled(false);
-        return super.makeMenuBar();
     }
 
-    @Override
-    protected Supplier<ScenarioSimulationModel> getContentSupplier() {
+    public Supplier<ScenarioSimulationModel> getContentSupplier() {
         return () -> model;
     }
 
-    @Override
-    protected void save(final String commitMessage) {
-        service.call(getSaveSuccessCallback(getJsonModel(model).hashCode()),
-                     new ScenarioSimulationHasBusyIndicatorDefaultErrorCallback(baseView)).save(versionRecordManager.getCurrentPath(),
-                                                                                                model,
-                                                                                                metadata,
-                                                                                                commitMessage);
-    }
-
-    @Override
-    protected void addCommonActions(final FileMenuBuilder fileMenuBuilder) {
+    public void addCommonActions(final FileMenuBuilder fileMenuBuilder, MenuItem versionMenuItem, MenuItem alertsButtonMenuItem) {
         fileMenuBuilder
-                .addNewTopLevelMenu(versionRecordManager.buildMenu())
-                .addNewTopLevelMenu(alertsButtonMenuItemBuilder.build());
+                .addNewTopLevelMenu(versionMenuItem)
+                .addNewTopLevelMenu(alertsButtonMenuItem);
     }
 
-    @Override
-    protected void loadContent() {
+    public void loadContent() {
         CustomBusyPopup.showMessage(CommonConstants.INSTANCE.Loading());
-        service.call(getModelSuccessCallback(),
-                     getNoSuchFileExceptionErrorCallback()).loadContent(versionRecordManager.getCurrentPath());
+    }
+
+    public boolean isDirty() {
+        try {
+            view.getScenarioGridPanel().getScenarioGrid().getModel().resetErrors();
+            int currentHashcode = MarshallingWrapper.toJSON(model).hashCode();
+            return scenarioSimulationEditorWrapper.getOriginalHash() != currentHashcode;
+        } catch (Exception ignored) {
+            return false;
+        }
     }
 
     protected void onDownload(final Supplier<Path> pathSupplier) {
@@ -461,10 +385,9 @@ public class ScenarioSimulationEditorPresenter
     }
 
     protected void onExportToCsv() {
-        importExportService.call(getExportCallBack(),
-                                 new ScenarioSimulationHasBusyIndicatorDefaultErrorCallback(view))
-                .exportSimulation(CSV, context.getStatus().getSimulation());
+        scenarioSimulationEditorWrapper.onExportToCsv(getExportCallBack(), new ScenarioSimulationHasBusyIndicatorDefaultErrorCallback(view), context.getStatus().getSimulation());
     }
+
 
     protected RemoteCallback<Object> getExportCallBack() {
         return rawResult -> {
@@ -507,7 +430,7 @@ public class ScenarioSimulationEditorPresenter
                 factMapping.getExpressionElements().isEmpty();
     }
 
-    protected void populateRightDocks(String identifier) {
+    public void populateRightDocks(String identifier) {
         if (dataManagementStrategy != null) {
             final PlaceRequest currentRightDockPlaceRequest = getCurrentRightDockPlaceRequest(identifier);
             switch (identifier) {
@@ -538,6 +461,21 @@ public class ScenarioSimulationEditorPresenter
         }
     }
 
+    public void getModelSuccessCallbackMethod(DataManagementStrategy dataManagementStrategy, ScenarioSimulationModel model) {
+        this.dataManagementStrategy = dataManagementStrategy;
+        this.model = model;
+        // NOTE: keep here initialization of docks related with model
+        populateRightDocks(TestToolsPresenter.IDENTIFIER);
+        populateRightDocks(SettingsPresenter.IDENTIFIER);
+        view.setContent(model.getSimulation());
+        context.getStatus().setSimulation(model.getSimulation());
+        CustomBusyPopup.close();
+    }
+
+    public ScenarioSimulationResourceType getType() {
+        return type;
+    }
+
     protected void setTestTools(TestToolsView.Presenter presenter) {
         context.setTestToolsPresenter(presenter);
         presenter.setEventBus(eventBus);
@@ -549,89 +487,24 @@ public class ScenarioSimulationEditorPresenter
     }
 
     protected void setCheatSheet(CheatSheetView.Presenter presenter) {
-        Type type = dataManagementStrategy instanceof DMODataManagementStrategy ? Type.RULE : Type.DMN;
+        Type type = dataManagementStrategy instanceof AbstractDMODataManagementStrategy ? Type.RULE : Type.DMN;
         presenter.initCheatSheet(type);
     }
 
     protected void setSettings(SettingsView.Presenter presenter) {
-        Type type = dataManagementStrategy instanceof DMODataManagementStrategy ? Type.RULE : Type.DMN;
+        Type type = dataManagementStrategy instanceof AbstractDMODataManagementStrategy ? Type.RULE : Type.DMN;
         presenter.setScenarioType(type, model.getSimulation().getSimulationDescriptor(), path.getFileName());
         presenter.setSaveCommand(getSaveCommand());
     }
 
     protected void setCoverageReport(CoverageReportView.Presenter presenter) {
-        Type type = dataManagementStrategy instanceof DMODataManagementStrategy ? Type.RULE : Type.DMN;
+        Type type = dataManagementStrategy instanceof AbstractDMODataManagementStrategy ? Type.RULE : Type.DMN;
         SimulationRunMetadata simulationRunMetadata = lastRunResult != null ? lastRunResult.getSimulationRunMetadata() : null;
         presenter.populateCoverageReport(type, simulationRunMetadata);
     }
 
-    protected String getJsonModel(ScenarioSimulationModel model) {
+    public String getJsonModel(ScenarioSimulationModel model) {
         return MarshallingWrapper.toJSON(model);
-    }
-
-    protected boolean isDirty() {
-        try {
-            view.getScenarioGridPanel().getScenarioGrid().getModel().resetErrors();
-            int currentHashcode = MarshallingWrapper.toJSON(model).hashCode();
-            return originalHash != currentHashcode;
-        } catch (Exception ignored) {
-            return false;
-        }
-    }
-
-    @Override
-    protected Caller<? extends SupportsDelete> getDeleteServiceCaller() {
-        return service;
-    }
-
-    @Override
-    protected Caller<? extends SupportsRename> getRenameServiceCaller() {
-        return service;
-    }
-
-    @Override
-    protected Caller<? extends SupportsCopy> getCopyServiceCaller() {
-        return service;
-    }
-
-    @Override
-    protected Caller<? extends SupportsSaveAndRename<ScenarioSimulationModel, Metadata>> getSaveAndRenameServiceCaller() {
-        return service;
-    }
-
-    @Override
-    protected String getEditorIdentifier() {
-        return IDENTIFIER;
-    }
-
-    protected void getModelSuccessCallbackMethod(ScenarioSimulationModelContent content) {
-        //Path is set to null when the Editor is closed (which can happen before async calls complete).
-        if (versionRecordManager.getCurrentPath() == null) {
-            return;
-        }
-        packageName = content.getDataModel().getPackageName();
-        resetEditorPages(content.getOverview());
-        if (Type.RULE.equals(content.getModel().getSimulation().getSimulationDescriptor().getType())) {
-            dataManagementStrategy = new DMODataManagementStrategy(oracleFactory, context);
-        } else {
-            dataManagementStrategy = new DMNDataManagementStrategy(dmnTypeService, context, eventBus);
-        }
-        dataManagementStrategy.manageScenarioSimulationModelContent(versionRecordManager.getCurrentPath(), content);
-        // NOTE: keep here initialization of docks related with model
-        populateRightDocks(TestToolsPresenter.IDENTIFIER);
-        populateRightDocks(SettingsPresenter.IDENTIFIER);
-        model = content.getModel();
-        if (dataManagementStrategy instanceof DMODataManagementStrategy) {
-            importsWidget.setContent(((DMODataManagementStrategy) dataManagementStrategy).getOracle(),
-                                     model.getImports(),
-                                     isReadOnly);
-            addImportsTab(importsWidget);
-        }
-        baseView.hideBusyIndicator();
-        view.setContent(model.getSimulation());
-        context.getStatus().setSimulation(model.getSimulation());
-        setOriginalHash(getJsonModel(model).hashCode());
-        CustomBusyPopup.close();
     }
 
     protected Optional<CheatSheetView.Presenter> getCheatSheetPresenter(PlaceRequest placeRequest) {
@@ -655,7 +528,7 @@ public class ScenarioSimulationEditorPresenter
     }
 
     protected Command getSaveCommand() {
-        return () -> this.save("Save");
+        return () -> scenarioSimulationEditorWrapper.wrappedSave(ConstantHolder.SAVE);
     }
 
     /**
@@ -671,10 +544,6 @@ public class ScenarioSimulationEditorPresenter
 
     protected String getFileDownloadURL(final Supplier<Path> pathSupplier) {
         return GWT.getModuleBaseURL() + "defaulteditor/download?path=" + pathSupplier.get().toURI();
-    }
-
-    private RemoteCallback<ScenarioSimulationModelContent> getModelSuccessCallback() {
-        return this::getModelSuccessCallbackMethod;
     }
 
     private Optional<TestToolsView> getTestToolsView(PlaceRequest placeRequest) {
@@ -717,7 +586,7 @@ public class ScenarioSimulationEditorPresenter
         }
     }
 
-    private Command getPopulateTestToolsCommand() {
+    private Command createPopulateTestToolsCommand() {
         return () -> populateRightDocks(TestToolsPresenter.IDENTIFIER);
     }
 }

@@ -35,7 +35,7 @@
   <properties>
     <!-- Add the absolute path for $JBOSS_HOME below to manage another instance -->
     <errai.jboss.home>${project.build.directory}/wildfly-${version.org.jboss.errai.wildfly}</errai.jboss.home>
-    <gwt.helper.includes>Client</gwt.helper.includes>
+    <gwt.helper.includes>Client,BusinessCentral</gwt.helper.includes>
     <gwt.helper.rootDirectories>${project.parent.basedir}/drools-wb-screens</gwt.helper.rootDirectories>
   </properties>
 
@@ -875,7 +875,11 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-wb-scenario-simulation-editor-client</artifactId>
-      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-wb-scenario-simulation-editor-businesscentral-client</artifactId>
     </dependency>
 
     <dependency>

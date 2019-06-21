@@ -35,6 +35,7 @@
     <module>drools-wb-scenario-simulation-editor-api</module>
     <module>drools-wb-scenario-simulation-editor-client</module>
     <module>drools-wb-scenario-simulation-editor-backend</module>
+    <module>drools-wb-scenario-simulation-editor-businesscentral-client</module>
   </modules>
 
 </project>

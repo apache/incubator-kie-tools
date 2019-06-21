@@ -20,7 +20,7 @@ import java.util.Collection;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.workbench.client.docks.AuthoringWorkbenchDocks;
+import org.kie.workbench.common.widgets.client.docks.AuthoringEditorDock;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.uberfire.client.workbench.docks.UberfireDock;
@@ -28,13 +28,14 @@ import org.uberfire.client.workbench.docks.UberfireDock;
 import static org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioSimulationDocksHandler.SCESIMEDITOR_ID;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class ScenarioSimulationDocksHandlerTest {
 
     @Mock
-    private AuthoringWorkbenchDocks authoringWorkbenchDocks;
+    private AuthoringEditorDock authoringWorkbenchDocks;
     @InjectMocks
     private ScenarioSimulationDocksHandler scenarioSimulationDocksHandler;
 
@@ -59,7 +60,7 @@ public class ScenarioSimulationDocksHandlerTest {
 
         scenarioSimulationDocksHandler.expandToolsDock();
 
-        verify(authoringWorkbenchDocks).expandAuthoringDock(toolsDock);
+        verify(authoringWorkbenchDocks).expandAuthoringDock(eq(toolsDock));
     }
 
     @Test
@@ -69,7 +70,7 @@ public class ScenarioSimulationDocksHandlerTest {
 
         scenarioSimulationDocksHandler.expandTestResultsDock();
 
-        verify(authoringWorkbenchDocks).expandAuthoringDock(reportDock);
+        verify(authoringWorkbenchDocks).expandAuthoringDock(eq(reportDock));
     }
 
     @Test

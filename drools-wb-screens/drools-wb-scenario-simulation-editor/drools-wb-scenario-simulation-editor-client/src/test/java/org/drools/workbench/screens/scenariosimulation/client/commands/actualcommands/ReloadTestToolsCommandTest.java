@@ -20,9 +20,11 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.uberfire.client.mvp.PlaceStatus;
 
 import static org.junit.Assert.assertFalse;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -44,7 +46,7 @@ public class ReloadTestToolsCommandTest extends AbstractScenarioSimulationComman
         scenarioSimulationContextLocal.getStatus().setDisable(true);
         scenarioSimulationContextLocal.getStatus().setOpenDock(true);
         command.execute(scenarioSimulationContextLocal);
-        verify(scenarioSimulationEditorPresenterMock, times(1)).expandToolsDock();
+        verify(scenarioSimulationEditorPresenterMock, times(1)).expandToolsDock(eq(PlaceStatus.OPEN));
         verify(scenarioSimulationEditorPresenterMock, times(1)).reloadTestTools(eq(true));
     }
 
@@ -53,7 +55,7 @@ public class ReloadTestToolsCommandTest extends AbstractScenarioSimulationComman
         scenarioSimulationContextLocal.getStatus().setDisable(false);
         scenarioSimulationContextLocal.getStatus().setOpenDock(true);
         command.execute(scenarioSimulationContextLocal);
-        verify(scenarioSimulationEditorPresenterMock, times(1)).expandToolsDock();
+        verify(scenarioSimulationEditorPresenterMock, times(1)).expandToolsDock(eq(PlaceStatus.OPEN));
         verify(scenarioSimulationEditorPresenterMock, times(1)).reloadTestTools(eq(false));
     }
 
@@ -62,7 +64,7 @@ public class ReloadTestToolsCommandTest extends AbstractScenarioSimulationComman
         scenarioSimulationContextLocal.getStatus().setDisable(true);
         scenarioSimulationContextLocal.getStatus().setOpenDock(false);
         command.execute(scenarioSimulationContextLocal);
-        verify(scenarioSimulationEditorPresenterMock, never()).expandToolsDock();
+        verify(scenarioSimulationEditorPresenterMock, never()).expandToolsDock(isA(PlaceStatus.class));
         verify(scenarioSimulationEditorPresenterMock, times(1)).reloadTestTools(eq(true));
     }
 }

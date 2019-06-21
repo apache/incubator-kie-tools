@@ -52,7 +52,7 @@ public abstract class AbstractDataManagementStrategy implements DataManagementSt
         this.model = model;
     }
 
-    protected static FactModelTree getSimpleClassFactModelTree(String simpleClass, String canonicalName) {
+    public static FactModelTree getSimpleClassFactModelTree(String simpleClass, String canonicalName) {
         String key = simpleClass;
         Map<String, String> simpleProperties = new HashMap<>();
         String fullName = canonicalName;
@@ -75,7 +75,7 @@ public abstract class AbstractDataManagementStrategy implements DataManagementSt
      * @param scenarioGridModel
      * @return
      */
-    protected Map<String, List<List<String>>> getPropertiesToHide(ScenarioGridModel scenarioGridModel) {
+    public Map<String, List<List<String>>> getPropertiesToHide(ScenarioGridModel scenarioGridModel) {
         final Map<String, List<List<String>>> toReturn = new HashMap<>();
         final ScenarioGridColumn selectedColumn = (ScenarioGridColumn) scenarioGridModel.getSelectedColumn();
         if (selectedColumn != null) {
@@ -127,7 +127,7 @@ public abstract class AbstractDataManagementStrategy implements DataManagementSt
     /**
      * Store data in required target objects
      */
-    protected void storeData(final FactModelTuple factModelTuple, final TestToolsView.Presenter testToolsPresenter, final ScenarioGridModel scenarioGridModel) {
+    public void storeData(final FactModelTuple factModelTuple, final TestToolsView.Presenter testToolsPresenter, final ScenarioGridModel scenarioGridModel) {
         // Instantiate a map of already assigned properties
         final Map<String, List<List<String>>> propertiesToHide = getPropertiesToHide(scenarioGridModel);
         final SortedMap<String, FactModelTree> visibleFacts = factModelTuple.getVisibleFacts();
@@ -164,7 +164,7 @@ public abstract class AbstractDataManagementStrategy implements DataManagementSt
      * @param sourceMap
      * @return
      */
-    protected SortedMap<String, FactModelTree> getInstanceMap(SortedMap<String, FactModelTree> sourceMap) {
+    public SortedMap<String, FactModelTree> getInstanceMap(SortedMap<String, FactModelTree> sourceMap) {
         SortedMap<String, FactModelTree> toReturn = new TreeMap<>();
         // map instance name to base class
         if (model != null) {
@@ -186,7 +186,7 @@ public abstract class AbstractDataManagementStrategy implements DataManagementSt
         return toReturn;
     }
 
-    static protected class ResultHolder {
+    static public class ResultHolder {
 
         FactModelTuple factModelTuple;
 

@@ -13,11 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.drools.workbench.screens.scenariosimulation.client.rightpanel;
 
-package org.drools.workbench.screens.scenariosimulation.client.dropdown;
+import com.google.gwt.user.client.ui.IsWidget;
+import org.guvnor.common.services.shared.test.TestResultMessage;
 
-public abstract class AbstractScenarioSimulationAssetsDropdownTest {
+/**
+ * <b>Wrapper</b> to be used to avoid importing <b>workbench</b> package inside the client <b>core</b> method
+ */
+public interface TestRunnerReportingPanelWrapper {
 
-    public void setup() {
-    }
+    void reset();
+
+    void onTestRun(TestResultMessage testResultMessage);
+
+    IsWidget asWidget();
 }

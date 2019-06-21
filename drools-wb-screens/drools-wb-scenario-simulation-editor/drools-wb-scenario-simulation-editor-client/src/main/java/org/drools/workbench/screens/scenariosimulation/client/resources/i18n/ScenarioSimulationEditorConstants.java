@@ -48,6 +48,8 @@ public interface ScenarioSimulationEditorConstants
 
     String testTools();
 
+    String testReport();
+
     String testEditor();
 
     String scenarioCheatSheet();

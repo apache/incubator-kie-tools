@@ -16,7 +16,6 @@
 package org.drools.workbench.screens.scenariosimulation.client.editor.strategies;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,42 +24,42 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import org.drools.scenariosimulation.api.utils.ScenarioSimulationSharedUtils;
-import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
 import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsView;
-import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModelContent;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTuple;
 import org.kie.soup.project.datamodel.oracle.ModelField;
-import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleFactory;
-import org.uberfire.backend.vfs.ObservablePath;
-import org.uberfire.client.callbacks.Callback;
 
-public class DMODataManagementStrategy extends AbstractDataManagementStrategy {
-
-    private AsyncPackageDataModelOracleFactory oracleFactory;
-    protected AsyncPackageDataModelOracle oracle;
+public abstract class AbstractDMODataManagementStrategy extends AbstractDataManagementStrategy {
 
     //Package for which this Scenario Simulation relates
     protected String packageName = "";
 
-    public DMODataManagementStrategy(final AsyncPackageDataModelOracleFactory oracleFactory, final ScenarioSimulationContext scenarioSimulationContext) {
-        this.oracleFactory = oracleFactory;
-        this.scenarioSimulationContext = scenarioSimulationContext;
-    }
+    protected abstract String getFQCNByFactName(String factName);
+
+    protected abstract String getParametricFieldType(String factName, String propertyName);
+
+    protected abstract List<String> getFactTypes();
+
+    protected abstract boolean skipPopulateTestTools();
+
+    protected abstract void manageDataObjects(List<String> dataObjectsTypes,
+                                              final TestToolsView.Presenter testToolsPresenter,
+                                              int expectedElements,
+                                              final SortedMap<String, FactModelTree> dataObjectsFieldsMap,
+                                              final ScenarioGridModel scenarioGridModel,
+                                              final List<String> simpleJavaTypes);
 
     @Override
     public void populateTestTools(final TestToolsView.Presenter testToolsPresenter, final ScenarioGridModel scenarioGridModel) {
         if (factModelTreeHolder.getFactModelTuple() != null) {
             storeData(factModelTreeHolder.getFactModelTuple(), testToolsPresenter, scenarioGridModel);
         } else {
-            // Execute only when oracle has been set
-            if (oracle == null || oracle.getFactTypes().length == 0) {
+            if (skipPopulateTestTools()) {
                 return;
             }
             // Retrieve the relevant facttypes
-            List<String> factTypes = Arrays.asList(oracle.getFactTypes());
+            List<String> factTypes = getFactTypes();
 
             // Split the DMO from the Simple Java types
             final Map<Boolean, List<String>> partitionedFactTypes = factTypes.stream()
@@ -74,53 +73,9 @@ public class DMODataManagementStrategy extends AbstractDataManagementStrategy {
             if (dataObjectsTypes.isEmpty()) { // Add to manage the situation when no complex objects are present
                 aggregatorCallbackMethod(testToolsPresenter, expectedElements, dataObjectsFieldsMap, scenarioGridModel, null, simpleJavaTypes);
             } else {
-                // Instantiate the aggregator callback
-                Callback<FactModelTree> aggregatorCallback = aggregatorCallback(testToolsPresenter, expectedElements, dataObjectsFieldsMap, scenarioGridModel, simpleJavaTypes);
-                // Iterate over all dataObjects to retrieve their modelfields
-                dataObjectsTypes.forEach(factType ->
-                                                 oracle.getFieldCompletions(factType, fieldCompletionsCallback(factType, aggregatorCallback)));
+                manageDataObjects(dataObjectsTypes, testToolsPresenter, expectedElements, dataObjectsFieldsMap, scenarioGridModel, simpleJavaTypes);
             }
         }
-    }
-
-    @Override
-    public void manageScenarioSimulationModelContent(ObservablePath currentPath, ScenarioSimulationModelContent toManage) {
-        model = toManage.getModel();
-        oracle = oracleFactory.makeAsyncPackageDataModelOracle(currentPath,
-                                                               model,
-                                                               toManage.getDataModel());
-    }
-
-    @Override
-    public boolean isADataType(String value) {
-        return oracle != null && Arrays.asList(oracle.getFactTypes()).contains(value);
-    }
-
-    public AsyncPackageDataModelOracle getOracle() {
-        return oracle;
-    }
-
-    /**
-     * This <code>Callback</code> will receive <code>ModelField[]</code> from <code>AsyncPackageDataModelOracleFactory.getFieldCompletions(final String,
-     * final Callback&lt;ModelField[]&gt;)</code>; build a <code>FactModelTree</code> from them, and send it to the
-     * given <code>Callback&lt;FactModelTree&gt;</code> aggregatorCallback
-     * @param factName
-     * @param aggregatorCallback
-     * @return
-     */
-    protected Callback<ModelField[]> fieldCompletionsCallback(String factName, Callback<FactModelTree> aggregatorCallback) {
-        return result -> fieldCompletionsCallbackMethod(factName, result, aggregatorCallback);
-    }
-
-    /**
-     * Actual code of the <b>fieldCompletionsCallback</b>; isolated for testing
-     * @param factName
-     * @param result
-     * @param aggregatorCallback
-     */
-    protected void fieldCompletionsCallbackMethod(String factName, ModelField[] result, Callback<FactModelTree> aggregatorCallback) {
-        FactModelTree toSend = getFactModelTree(factName, result);
-        aggregatorCallback.callback(toSend);
     }
 
     /**
@@ -131,13 +86,13 @@ public class DMODataManagementStrategy extends AbstractDataManagementStrategy {
      * @return
      * @implNote For the moment being, due to current implementation of <b>DMO</b>, it it not possible to retrieve <b>all</b>
      * the generic types of a class with more then one, but only the last one. So, for <code>Map</code>, the <b>key</b>
-     * will allways be a <code>java.lang.String</code>
+     * will always be a <code>java.lang.String</code>
      */
-    protected FactModelTree getFactModelTree(String factName, ModelField[] modelFields) {
+    public FactModelTree getFactModelTree(String factName, ModelField[] modelFields) {
         Map<String, String> simpleProperties = new HashMap<>();
         Map<String, List<String>> genericTypesMap = new HashMap<>();
         String factPackageName = packageName;
-        String fullFactClassName = oracle.getFQCNByFactName(factName);
+        String fullFactClassName = getFQCNByFactName(factName);
         if (fullFactClassName != null && fullFactClassName.contains(".")) {
             factPackageName = fullFactClassName.substring(0, fullFactClassName.lastIndexOf("."));
         }
@@ -160,31 +115,18 @@ public class DMODataManagementStrategy extends AbstractDataManagementStrategy {
      * @param factName
      * @param propertyName
      * @param isList
-     * @implNote due to current DMO implementation, it is not possible to retrive <b>all</b> generic types of a given class, but only the last one; for the moment being, the generic type
+     * @implNote due to current DMO implementation, it is not possible to retrieve <b>all</b> generic types of a given class, but only the last one; for the moment being, the generic type
      * for <code>Map</code> will be <b>java.lang.String</b>
      */
-    protected void populateGenericTypeMap(Map<String, List<String>> toPopulate, String factName, String propertyName, boolean isList) {
+    public void populateGenericTypeMap(Map<String, List<String>> toPopulate, String factName, String propertyName, boolean isList) {
         List<String> genericTypes = new ArrayList<>();
         if (!isList) {
             genericTypes.add(String.class.getName());
         }
-        String genericInfo = oracle.getParametricFieldType(factName, propertyName);
-        String fullGenericInfoClassName = oracle.getFQCNByFactName(genericInfo);
+        String genericInfo = getParametricFieldType(factName, propertyName);
+        String fullGenericInfoClassName = getFQCNByFactName(genericInfo);
         genericTypes.add(fullGenericInfoClassName);
         toPopulate.put(propertyName, genericTypes);
-    }
-
-    /**
-     * This <code>Callback</code> will receive data from other callbacks and when the retrieved results get to the
-     * expected ones it will recursively elaborate the map
-     * @param testToolsPresenter
-     * @param expectedElements
-     * @param factTypeFieldsMap
-     * @param scenarioGridModel
-     * @return
-     */
-    protected Callback<FactModelTree> aggregatorCallback(final TestToolsView.Presenter testToolsPresenter, final int expectedElements, final SortedMap<String, FactModelTree> factTypeFieldsMap, final ScenarioGridModel scenarioGridModel, final List<String> simpleJavaTypes) {
-        return result -> aggregatorCallbackMethod(testToolsPresenter, expectedElements, factTypeFieldsMap, scenarioGridModel, result, simpleJavaTypes);
     }
 
     /**
@@ -196,7 +138,7 @@ public class DMODataManagementStrategy extends AbstractDataManagementStrategy {
      * @param result pass <code>null</code> if there is not any <i>complex</i> data object but only simple ones
      * @param simpleJavaTypes
      */
-    protected void aggregatorCallbackMethod(final TestToolsView.Presenter testToolsPresenter, final int expectedElements, SortedMap<String, FactModelTree> factTypeFieldsMap, final ScenarioGridModel scenarioGridModel, final FactModelTree result, final List<String> simpleJavaTypes) {
+    public void aggregatorCallbackMethod(final TestToolsView.Presenter testToolsPresenter, final int expectedElements, SortedMap<String, FactModelTree> factTypeFieldsMap, final ScenarioGridModel scenarioGridModel, final FactModelTree result, final List<String> simpleJavaTypes) {
         if (result != null) {
             factTypeFieldsMap.put(result.getFactName(), result);
         }
@@ -226,7 +168,7 @@ public class DMODataManagementStrategy extends AbstractDataManagementStrategy {
      * @param toPopulate
      * @param factTypeFieldsMap
      */
-    protected void populateFactModelTree(FactModelTree toPopulate, final SortedMap<String, FactModelTree> factTypeFieldsMap) {
+    public void populateFactModelTree(FactModelTree toPopulate, final SortedMap<String, FactModelTree> factTypeFieldsMap) {
         List<String> toRemove = new ArrayList<>();
         toPopulate.getSimpleProperties().forEach((key, value) -> {
             if (factTypeFieldsMap.containsKey(value)) {

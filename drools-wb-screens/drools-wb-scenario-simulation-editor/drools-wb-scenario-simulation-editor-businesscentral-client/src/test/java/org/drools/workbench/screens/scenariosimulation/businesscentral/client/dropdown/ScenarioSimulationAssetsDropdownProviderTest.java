@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-package org.drools.workbench.screens.scenariosimulation.client.dropdown;
+package org.drools.workbench.screens.scenariosimulation.businesscentral.client.dropdown;
 
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.drools.workbench.screens.scenariosimulation.client.dropdown.AbstractScenarioSimulationDropdownTest;
 import org.drools.workbench.screens.scenariosimulation.service.ScenarioSimulationService;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.jboss.errai.common.client.api.Caller;
@@ -52,8 +53,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(LienzoMockitoTestRunner.class)
-public class ScenarioSimulationAssetsDropdownProviderTest extends AbstractScenarioSimulationAssetsDropdownTest {
+@RunWith(GwtMockitoTestRunner.class)
+public class ScenarioSimulationAssetsDropdownProviderTest extends AbstractScenarioSimulationDropdownTest {
 
     @Mock
     private Caller<ScenarioSimulationService> scenarioSimulationServiceCallerMock;
@@ -79,7 +80,7 @@ public class ScenarioSimulationAssetsDropdownProviderTest extends AbstractScenar
     @Mock
     Consumer<List<KieAssetsDropdownItem>> assetListConsumerMock;
 
-    private ScenarioSimulationAssetsDropdownProviderImpl scenarioSimulationAssetsDropdownProvider;
+    private ScenarioSimulationAssetsDropdownProviderBCImpl scenarioSimulationAssetsDropdownProvider;
     private ProjectAssetsQuery projectAssetsQuery;
 
     @Before
@@ -90,9 +91,9 @@ public class ScenarioSimulationAssetsDropdownProviderTest extends AbstractScenar
         when(workspaceProjectMock.getRootPath()).thenReturn(rootPathMock);
         when(rootPathMock.toURI()).thenReturn("project/");
         when(assetQueryServiceMock.getAssets(eq(projectAssetsQuery))).thenReturn(invokerMock);
-        scenarioSimulationAssetsDropdownProvider = spy(new ScenarioSimulationAssetsDropdownProviderImpl(scenarioSimulationServiceCallerMock,
-                                                                                                        libraryPlacesMock,
-                                                                                                        assetQueryServiceMock) {
+        scenarioSimulationAssetsDropdownProvider = spy(new ScenarioSimulationAssetsDropdownProviderBCImpl(scenarioSimulationServiceCallerMock,
+                                                                                                          libraryPlacesMock,
+                                                                                                          assetQueryServiceMock) {
             @Override
             protected ProjectAssetsQuery createProjectQuery() {
                 return projectAssetsQuery;
@@ -119,9 +120,9 @@ public class ScenarioSimulationAssetsDropdownProviderTest extends AbstractScenar
 
     @Test
     public void createProjectQuery() {
-        scenarioSimulationAssetsDropdownProvider = spy(new ScenarioSimulationAssetsDropdownProviderImpl(scenarioSimulationServiceCallerMock,
-                                                                                                        libraryPlacesMock,
-                                                                                                        assetQueryServiceMock) {
+        scenarioSimulationAssetsDropdownProvider = spy(new ScenarioSimulationAssetsDropdownProviderBCImpl(scenarioSimulationServiceCallerMock,
+                                                                                                          libraryPlacesMock,
+                                                                                                          assetQueryServiceMock) {
 
         });
         final ProjectAssetsQuery retrieved = scenarioSimulationAssetsDropdownProvider.createProjectQuery();

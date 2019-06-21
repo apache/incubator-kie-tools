@@ -682,6 +682,7 @@ public class ScenarioGridModel extends BaseGridData {
         if (!isSameInstanceType(columnIndex, headerName)) {
             throw new Exception(headerName + " is not the class of the current column.");
         }
+
     }
 
     /**

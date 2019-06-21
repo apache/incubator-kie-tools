@@ -13,8 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.workbench.screens.scenariosimulation.client.dropdown;
-
+package org.drools.workbench.screens.scenariosimulation.businesscentral.client.dropdown;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -25,6 +24,7 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.drools.workbench.screens.scenariosimulation.client.dropdown.ScenarioSimulationAssetsDropdownProvider;
 import org.drools.workbench.screens.scenariosimulation.service.ScenarioSimulationService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -40,16 +40,16 @@ import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
 import org.uberfire.util.URIUtil;
 
 @Dependent
-public class ScenarioSimulationAssetsDropdownProviderImpl implements ScenarioSimulationAssetsDropdownProvider {
+public class ScenarioSimulationAssetsDropdownProviderBCImpl implements ScenarioSimulationAssetsDropdownProvider {
 
     protected Caller<ScenarioSimulationService> scenarioSimulationService;
     protected LibraryPlaces libraryPlaces;
     protected AssetQueryService assetQueryService;
 
     @Inject
-    public ScenarioSimulationAssetsDropdownProviderImpl(Caller<ScenarioSimulationService> scenarioSimulationService,
-                                                        final LibraryPlaces libraryPlaces,
-                                                        final AssetQueryService assetQueryService) {
+    public ScenarioSimulationAssetsDropdownProviderBCImpl(Caller<ScenarioSimulationService> scenarioSimulationService,
+                                                          final LibraryPlaces libraryPlaces,
+                                                          final AssetQueryService assetQueryService) {
         super();
         this.scenarioSimulationService = scenarioSimulationService;
         this.libraryPlaces = libraryPlaces;
