@@ -81,4 +81,8 @@ public class SetPropertyHeaderCommandTest extends AbstractSelectedColumnCommandT
         super.manageCollectionProperty();
     }
 
+    @Test
+    public void manageSimpleTypeCollectionProperty() {
+        super.manageSimpleTypeCollectionProperty();
+    }
 }

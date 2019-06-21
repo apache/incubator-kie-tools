@@ -48,6 +48,7 @@ import static org.drools.workbench.screens.scenariosimulation.client.TestPropert
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.FULL_PROPERTY_PATH_ELEMENTS;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.LIST_CLASS_NAME;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.LIST_PROPERTY_NAME;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.LOWER_CASE_VALUE;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.MULTIPART_VALUE;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.MULTIPART_VALUE_ELEMENTS;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.PROPERTY_NAME;
@@ -238,6 +239,18 @@ public abstract class AbstractSelectedColumnCommandTest extends AbstractScenario
         verify((AbstractSelectedColumnCommand)  command, times(1)).navigateComplexObject(eq(factModelTreeMock), eq(fullPropertyPathElements), eq(scenarioSimulationContextLocal.getDataObjectFieldsMap()));
         verify(gridColumnMock, times(1)).setFactory(eq(scenarioSimulationContextLocal.getCollectionEditorSingletonDOMElementFactory()));
         verify(factMappingMock, times(1)).setGenericTypes(eq(factModelTreeMock.getGenericTypeInfo(LIST_PROPERTY_NAME)));
+    }
+
+    /* This test is usable ONLY by <code>SetPropertyCommandTest</code> subclass */
+    public void manageSimpleTypeCollectionProperty() {
+        when(factModelTreeMock.isSimple()).thenReturn(true);
+        scenarioSimulationContextLocal.getStatus().setValueClassName(LIST_CLASS_NAME);
+        scenarioSimulationContextLocal.getStatus().setValue(FULL_PROPERTY_PATH);
+        final List<String> fullPropertyPathElements = Arrays.asList(FULL_PROPERTY_PATH.split("\\."));
+        ((AbstractSelectedColumnCommand)  command).manageCollectionProperty(scenarioSimulationContextLocal, gridColumnMock, FULL_PROPERTY_PATH, 0, fullPropertyPathElements);
+        verify((AbstractSelectedColumnCommand)  command, never()).navigateComplexObject(any(), any(), any());
+        verify(gridColumnMock, times(1)).setFactory(eq(scenarioSimulationContextLocal.getCollectionEditorSingletonDOMElementFactory()));
+        verify(factMappingMock, times(1)).setGenericTypes(eq(factModelTreeMock.getGenericTypeInfo(LOWER_CASE_VALUE)));
     }
 
     protected void commonSetPropertyHeader(ScenarioSimulationModel.Type type, boolean keepData, List<String> propertyNameElements, String propertyClass) {

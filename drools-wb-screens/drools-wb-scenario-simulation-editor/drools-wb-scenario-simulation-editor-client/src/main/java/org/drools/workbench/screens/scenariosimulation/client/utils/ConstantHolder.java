@@ -24,6 +24,7 @@ public class ConstantHolder {
     public static final String FA_ANGLE_RIGHT = "fa-angle-right";
     public static final String HIDDEN = "hidden";
     public static final String NODE_HIDDEN = "node-hidden";
+    public static final String VALUE = "value";
 
     public static final String SAVE = "Save";
 
