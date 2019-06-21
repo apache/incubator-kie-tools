@@ -121,6 +121,7 @@ public class WorkspaceProjectServiceImplTest {
         allOUs.add(ou1);
         allOUs.add(ou2);
         doReturn(allOUs).when(organizationalUnitService).getOrganizationalUnits();
+        doReturn(allOUs).when(organizationalUnitService).getAllOrganizationalUnits();
 
         ou1.getRepositories().add(repository1);
         ou1.getRepositories().add(repository2);
@@ -150,13 +151,15 @@ public class WorkspaceProjectServiceImplTest {
         doReturn(Arrays.asList(repository1,
                                repository2)).when(repositoryService).getRepositories(Mockito.eq(space1));
         doReturn(Arrays.asList(repository1,
-                               repository2)).when(repositoryService).getAllRepositories(Mockito.eq(space1));
-        doReturn(Arrays.asList(repository3)).when(repositoryService).getAllRepositories(Mockito.eq(space2));
+                               repository2)).when(repositoryService).getAllRepositories(Mockito.eq(space1),
+                                                                                        anyBoolean());
+        doReturn(Arrays.asList(repository3)).when(repositoryService).getAllRepositories(Mockito.eq(space2),
+                                                                                        anyBoolean());
         doReturn(Collections.singletonList(repository3)).when(repositoryService).getRepositories(Mockito.eq(space2));
     }
 
     @Test
-    public void getAllProjects() throws Exception {
+    public void getAllProjects() {
 
         final Collection<WorkspaceProject> allWorkspaceProjects = workspaceProjectService.getAllWorkspaceProjects();
 
@@ -165,7 +168,7 @@ public class WorkspaceProjectServiceImplTest {
     }
 
     @Test
-    public void getAllProjectsForOU1() throws Exception {
+    public void getAllProjectsForOU1() {
         final Collection<WorkspaceProject> allWorkspaceProjects = workspaceProjectService.getAllWorkspaceProjects(ou1);
 
         assertContains(repository1,
@@ -178,7 +181,7 @@ public class WorkspaceProjectServiceImplTest {
     }
 
     @Test
-    public void getAllProjectsForOU2() throws Exception {
+    public void getAllProjectsForOU2() {
         final Collection<WorkspaceProject> allWorkspaceProjects = workspaceProjectService.getAllWorkspaceProjects(ou2);
 
         assertContains(repository3,
@@ -189,7 +192,7 @@ public class WorkspaceProjectServiceImplTest {
     }
 
     @Test
-    public void getAllProjectsWithName() throws Exception {
+    public void getAllProjectsWithName() {
         final Collection<WorkspaceProject> allWorkspaceProjects = workspaceProjectService.getAllWorkspaceProjectsByName(ou1,
                                                                                                                         "repository-with-same-alias");
 
@@ -201,7 +204,7 @@ public class WorkspaceProjectServiceImplTest {
     }
 
     @Test
-    public void spaceHasProjectsWithName() throws Exception {
+    public void spaceHasProjectsWithName() {
         final boolean hasNoProjects = workspaceProjectService.spaceHasNoProjectsWithName(ou1,
                                                                                          "repository1",
                                                                                          new WorkspaceProject(ou1,
@@ -237,7 +240,7 @@ public class WorkspaceProjectServiceImplTest {
     }
 
     @Test
-    public void noProjects() throws Exception {
+    public void noProjects() {
         final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
         doReturn("myOU").when(organizationalUnit).getName();
 

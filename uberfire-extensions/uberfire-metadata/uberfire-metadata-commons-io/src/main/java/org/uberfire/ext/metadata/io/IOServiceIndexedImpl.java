@@ -156,7 +156,12 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
         this.executorService = executorService;
         this.indexersFactory = indexersFactory;
         this.dispatcherFactory = dispatcherFactory;
-        this.batchIndex = new BatchIndex(indexEngine, observer, executorService, indexersFactory, dispatcherFactory, views);
+        this.batchIndex = new BatchIndex(indexEngine,
+                                         observer,
+                                         executorService,
+                                         indexersFactory,
+                                         dispatcherFactory,
+                                         views);
         ensureCoreIndexerExists();
     }
 
@@ -175,7 +180,12 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
         this.executorService = executorService;
         this.indexersFactory = indexersFactory;
         this.dispatcherFactory = dispatcherFactory;
-        this.batchIndex = new BatchIndex(indexEngine, observer, executorService, indexersFactory, dispatcherFactory, views);
+        this.batchIndex = new BatchIndex(indexEngine,
+                                         observer,
+                                         executorService,
+                                         indexersFactory,
+                                         dispatcherFactory,
+                                         views);
         ensureCoreIndexerExists();
     }
 
@@ -195,7 +205,12 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
         this.executorService = executorService;
         this.indexersFactory = indexersFactory;
         this.dispatcherFactory = dispatcherFactory;
-        this.batchIndex = new BatchIndex(indexEngine, observer, executorService, indexersFactory, dispatcherFactory, views);
+        this.batchIndex = new BatchIndex(indexEngine,
+                                         observer,
+                                         executorService,
+                                         indexersFactory,
+                                         dispatcherFactory,
+                                         views);
         ensureCoreIndexerExists();
     }
 
@@ -217,17 +232,23 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
         this.executorService = executorService;
         this.indexersFactory = indexersFactory;
         this.dispatcherFactory = dispatcherFactory;
-        this.batchIndex = new BatchIndex(indexEngine, observer, executorService, indexersFactory, dispatcherFactory, views);
+        this.batchIndex = new BatchIndex(indexEngine,
+                                         observer,
+                                         executorService,
+                                         indexersFactory,
+                                         dispatcherFactory,
+                                         views);
         ensureCoreIndexerExists();
     }
 
     private void ensureCoreIndexerExists() {
         boolean containsCoreIndexer = indexersFactory.getIndexers()
-                                                     .stream()
-                                                     .anyMatch(indexer -> indexer.getClass().equals(CoreIndexer.class));
+                .stream()
+                .anyMatch(indexer -> indexer.getClass().equals(CoreIndexer.class));
 
         if (!containsCoreIndexer) {
-            indexersFactory.addIndexer(new CoreIndexer(this, views));
+            indexersFactory.addIndexer(new CoreIndexer(this,
+                                                       views));
         }
     }
 
@@ -254,7 +275,8 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
     }
 
     private Stream<Path> rootDirStream(FileSystem fs) {
-        return StreamSupport.stream(fs.getRootDirectories().spliterator(), false);
+        return StreamSupport.stream(fs.getRootDirectories().spliterator(),
+                                    false);
     }
 
     @Override
@@ -265,7 +287,7 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
     @Override
     public void dispose() {
         watchServicesByFS.values()
-                         .forEach(ws -> ws.close());
+                .forEach(ws -> ws.close());
         activeIndexerDispatchers.forEach(d -> d.dispose());
 
         super.dispose();
@@ -280,7 +302,8 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
             return;
         }
         final WatchService ws = fs.newWatchService();
-        watchServicesByFS.put(fs.getName(), ws);
+        watchServicesByFS.put(fs.getName(),
+                              ws);
 
         final ExecutorService defaultInstance = this.executorService;
 
@@ -311,34 +334,46 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
                         public void run() {
                             fs.getRootDirectories().forEach(rootPath -> {
                                 final KCluster kCluster = KObjectUtil.toKCluster(rootPath);
-                                IndexerDispatcher dispatcher = dispatcherFactory.create(indexersFactory.getIndexers(), kCluster);
+                                IndexerDispatcher dispatcher = dispatcherFactory.create(indexersFactory.getIndexers(),
+                                                                                        kCluster);
                                 final Set<Path> eventRealPaths = getRealCreatedPaths(events);
                                 try {
-                                    queueEvents(events, eventRealPaths, dispatcher);
-                                    scheduleIndexing(dispatcher, events, kCluster);
+                                    queueEvents(events,
+                                                eventRealPaths,
+                                                dispatcher);
+                                    scheduleIndexing(dispatcher,
+                                                     events,
+                                                     kCluster);
                                 } catch (DisposedException e) {
                                     return;
                                 }
                             });
                         }
 
-                        private void scheduleIndexing(IndexerDispatcher dispatcher, List<WatchEvent<?>> events, KCluster kCluster) {
+                        private void scheduleIndexing(IndexerDispatcher dispatcher,
+                                                      List<WatchEvent<?>> events,
+                                                      KCluster kCluster) {
                             activeIndexerDispatchers.add(dispatcher);
                             dispatcher.schedule(executorService)
-                                      .thenRun(() -> LOGGER.info("Completed indexing {} events in cluster [{}].", events.size(), kCluster))
-                                      .whenComplete((result, exception) -> activeIndexerDispatchers.remove(dispatcher));
+                                    .thenRun(() -> LOGGER.info("Completed indexing {} events in cluster [{}].",
+                                                               events.size(),
+                                                               kCluster))
+                                    .whenComplete((result, exception) -> activeIndexerDispatchers.remove(dispatcher));
                         }
 
                         private void queueEvents(final List<WatchEvent<?>> events,
-                                                   final Set<Path> eventRealPaths,
-                                                   final IndexerDispatcher dispatcher) throws DisposedException {
+                                                 final Set<Path> eventRealPaths,
+                                                 final IndexerDispatcher dispatcher) throws DisposedException {
                             for (WatchEvent event : events) {
                                 if (isDisposed()) {
                                     throw new DisposedException();
                                 }
                                 try {
                                     final WatchContext context = ((WatchContext) event.context());
-                                    queueEvent(eventRealPaths, event, context, dispatcher);
+                                    queueEvent(eventRealPaths,
+                                               event,
+                                               context,
+                                               dispatcher);
                                 } catch (final Exception ex) {
                                     LOGGER.error("Error during indexing. { " + event.toString() + " }",
                                                  ex);
@@ -346,39 +381,49 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
                             }
                         }
 
-                        private void queueEvent(final Set<Path> eventRealPaths, WatchEvent event,
-                                                  final WatchContext context,
-                                                  final IndexerDispatcher dispatcher) throws DisposedException {
+                        private void queueEvent(final Set<Path> eventRealPaths,
+                                                WatchEvent event,
+                                                final WatchContext context,
+                                                final IndexerDispatcher dispatcher) throws DisposedException {
                             if (event.kind() == ENTRY_MODIFY || event.kind() == ENTRY_CREATE) {
-                                queueCreationAndModificationEvent(eventRealPaths, context, dispatcher);
+                                queueCreationAndModificationEvent(eventRealPaths,
+                                                                  context,
+                                                                  dispatcher);
                             }
 
                             if (event.kind() == StandardWatchEventKind.ENTRY_RENAME) {
-                                queueRenameEvent(context, dispatcher);
+                                queueRenameEvent(context,
+                                                 dispatcher);
                             }
 
                             if (event.kind() == StandardWatchEventKind.ENTRY_DELETE) {
-                                queueDeleteEvent(event, context, dispatcher);
+                                queueDeleteEvent(event,
+                                                 context,
+                                                 dispatcher);
                             }
                         }
 
-                        private void queueDeleteEvent(WatchEvent object, final WatchContext context, final IndexerDispatcher dispatcher) throws DisposedException {
+                        private void queueDeleteEvent(WatchEvent object,
+                                                      final WatchContext context,
+                                                      final IndexerDispatcher dispatcher) throws DisposedException {
                             final Path oldPath = context.getOldPath();
                             // ignore delete events for dot files, because dot files are not indexed
-                            if(!oldPath.getFileName().toString().startsWith(".")){
+                            if (!oldPath.getFileName().toString().startsWith(".")) {
                                 dispatcher.offer(new DeletedFileEvent(oldPath));
                             }
                         }
 
-                        private void queueRenameEvent(final WatchContext context, final IndexerDispatcher dispatcher) throws DisposedException {
+                        private void queueRenameEvent(final WatchContext context,
+                                                      final IndexerDispatcher dispatcher) throws DisposedException {
                             final Path sourcePath = context.getOldPath();
                             final Path destinationPath = context.getPath();
-                            dispatcher.offer(new RenamedFileEvent(sourcePath, destinationPath));
+                            dispatcher.offer(new RenamedFileEvent(sourcePath,
+                                                                  destinationPath));
                         }
 
                         private void queueCreationAndModificationEvent(final Set<Path> eventRealPaths,
-                                                                         final WatchContext context,
-                                                                         final IndexerDispatcher dispatcher) throws DisposedException {
+                                                                       final WatchContext context,
+                                                                       final IndexerDispatcher dispatcher) throws DisposedException {
                             // If the path to be indexed is a "dot path" but does not have an associated
                             // "real path" index the "real path" instead. This ensures when only a
                             // "dot path" is updated the FileAttributeView(s) are re-indexed.
@@ -429,7 +474,8 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
                        final DeleteOption... options) throws IllegalArgumentException, NoSuchFileException, DirectoryNotEmptyException, IOException, SecurityException {
         cleanupIfDeletedFileSystem(path);
         cleanupIfDeletedBranch(path);
-        deleteRepositoryFiles(path, options);
+        deleteRepositoryFiles(path,
+                              options);
     }
 
     void cleanupIfDeletedFileSystem(Path path) {
@@ -459,14 +505,28 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
         fs.getRootDirectories().forEach(rootPath -> indexEngine.delete(KObjectUtil.toKCluster(rootPath)));
     }
 
+    private void cleanupDeletedFS(String fsName,
+                                  Iterable<Path> rootDirectories) {
+        WatchService ws = watchServicesByFS.remove(fsName);
+        if (ws != null && !ws.isClose()) {
+            ws.close();
+        }
+        rootDirectories.forEach(rootPath -> indexEngine.delete(KObjectUtil.toKCluster(rootPath)));
+    }
+
     @Override
     public boolean deleteIfExists(Path path,
                                   DeleteOption... options) throws IllegalArgumentException, DirectoryNotEmptyException, IOException, SecurityException {
+
+        Iterable<Path> rootDirectories = path.getFileSystem().getRootDirectories();
+        String fsName = path.getFileSystem().getName();
+
         final boolean result = super.deleteIfExists(path,
                                                     options);
         if (result && path instanceof FSPath) {
             FileSystem fileSystem = path.getFileSystem();
-            cleanupDeletedFS(fileSystem);
+            cleanupDeletedFS(fsName,
+                             rootDirectories);
         }
         return result;
     }

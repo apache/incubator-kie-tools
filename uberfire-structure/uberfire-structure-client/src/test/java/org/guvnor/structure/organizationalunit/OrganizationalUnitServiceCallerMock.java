@@ -83,8 +83,30 @@ public class OrganizationalUnitServiceCallerMock
         }
 
         @Override
+        public OrganizationalUnit getOrganizationalUnit(String name,
+                                                        final boolean includeDeleted) {
+            OrganizationalUnit result = organizationalUnitService.getOrganizationalUnit(name, includeDeleted);
+            remoteCallback.callback(result);
+            return result;
+        }
+
+        @Override
         public Collection<OrganizationalUnit> getAllOrganizationalUnits() {
             Collection<OrganizationalUnit> result = organizationalUnitService.getAllOrganizationalUnits();
+            remoteCallback.callback(result);
+            return result;
+        }
+
+        @Override
+        public Collection<OrganizationalUnit> getAllOrganizationalUnits(final boolean includeDeleted) {
+            Collection<OrganizationalUnit> result = organizationalUnitService.getAllOrganizationalUnits(includeDeleted);
+            remoteCallback.callback(result);
+            return result;
+        }
+
+        @Override
+        public Collection<OrganizationalUnit> getAllDeletedOrganizationalUnit() {
+            Collection<OrganizationalUnit> result = organizationalUnitService.getAllDeletedOrganizationalUnit();
             remoteCallback.callback(result);
             return result;
         }
@@ -99,6 +121,13 @@ public class OrganizationalUnitServiceCallerMock
         @Override
         public Collection<OrganizationalUnit> getOrganizationalUnits() {
             Collection<OrganizationalUnit> result = organizationalUnitService.getOrganizationalUnits();
+            remoteCallback.callback(result);
+            return result;
+        }
+
+        @Override
+        public Collection<OrganizationalUnit> getOrganizationalUnits(final boolean includeDeleted) {
+            Collection<OrganizationalUnit> result = organizationalUnitService.getOrganizationalUnits(includeDeleted);
             remoteCallback.callback(result);
             return result;
         }

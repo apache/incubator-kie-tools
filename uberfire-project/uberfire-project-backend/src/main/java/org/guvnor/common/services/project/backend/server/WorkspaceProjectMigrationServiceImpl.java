@@ -14,7 +14,6 @@
  */
 package org.guvnor.common.services.project.backend.server;
 
-import org.eclipse.jgit.lib.RefUpdate;
 import org.guvnor.common.services.project.backend.server.utils.PathUtil;
 import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.model.Module;
@@ -24,6 +23,10 @@ import org.guvnor.common.services.project.service.ModuleService;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
+import org.guvnor.structure.organizationalunit.config.RepositoryConfiguration;
+import org.guvnor.structure.organizationalunit.config.RepositoryInfo;
+import org.guvnor.structure.organizationalunit.config.SpaceConfigStorageRegistry;
+import org.guvnor.structure.organizationalunit.config.SpaceInfo;
 import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryEnvironmentConfigurations;
@@ -56,9 +59,10 @@ public class WorkspaceProjectMigrationServiceImpl implements WorkspaceProjectMig
     private RepositoryService repositoryService;
     private Event<NewProjectEvent> newProjectEvent;
     private ModuleService<? extends Module> moduleService;
+    private SpaceConfigStorageRegistry spaceConfigStorageRegistry;
     private PathUtil pathUtil;
 
-    public WorkspaceProjectMigrationServiceImpl() {
+    WorkspaceProjectMigrationServiceImpl() {
     }
 
     @Inject
@@ -67,18 +71,36 @@ public class WorkspaceProjectMigrationServiceImpl implements WorkspaceProjectMig
                                                 final OrganizationalUnitService organizationalUnitService,
                                                 final PathUtil pathUtil,
                                                 final Event<NewProjectEvent> newProjectEvent,
-                                                final ModuleService<? extends Module> moduleService) {
+                                                final ModuleService<? extends Module> moduleService,
+                                                final SpaceConfigStorageRegistry spaceConfigStorageRegistry) {
         this.workspaceProjectService = workspaceProjectService;
         this.repositoryService = repositoryService;
         this.pathUtil = pathUtil;
         this.newProjectEvent = newProjectEvent;
         this.moduleService = moduleService;
+        this.spaceConfigStorageRegistry = spaceConfigStorageRegistry;
     }
 
     @Override
     public void migrate(final WorkspaceProject legacyWorkspaceProject) {
         Collection<Repository> newRepositories = copyModulesToRepositories(legacyWorkspaceProject);
+
+        updateSpaceInfo(legacyWorkspaceProject, newRepositories);
+
         fireNewProjectEvents(newRepositories);
+    }
+
+    private void updateSpaceInfo(final WorkspaceProject legacyWorkspaceProject, final Collection<Repository> newRepositories) {
+        final SpaceInfo spaceInfo = spaceConfigStorageRegistry.get(legacyWorkspaceProject.getSpace().getName()).loadSpaceInfo();
+
+        newRepositories.stream()
+                .map(repository -> new RepositoryInfo(repository.getAlias(), false, new RepositoryConfiguration(repository.getEnvironment())))
+                .forEach(repositoryInfo -> {
+                    spaceInfo.removeRepository(repositoryInfo.getName());
+                    spaceInfo.getRepositories().add(repositoryInfo);
+                });
+
+        spaceConfigStorageRegistry.get(spaceInfo.getName()).saveSpaceInfo(spaceInfo);
     }
 
     private void fireNewProjectEvents(Collection<Repository> newRepositories) {

@@ -26,19 +26,31 @@ import org.uberfire.spaces.Space;
 @Remote
 public interface OrganizationalUnitService {
 
+    /**
+     * Get the OU with the specified name. Security checks are omitted. Returns null if the OU with that name is deleted.
+     */
     OrganizationalUnit getOrganizationalUnit(final String name);
 
+    OrganizationalUnit getOrganizationalUnit(final String name,
+                                             final boolean includeDeleted);
+
     /**
-     * Get all the OUs. Security checks are omitted.
+     * Get all the OUs. Security checks are omitted. Deleted OUs waiting for removal are NOT included.
      */
     Collection<OrganizationalUnit> getAllOrganizationalUnits();
+
+    Collection<OrganizationalUnit> getAllOrganizationalUnits(final boolean includeDeleted);
+
+    Collection<OrganizationalUnit> getAllDeletedOrganizationalUnit();
 
     Collection<Space> getAllUserSpaces();
 
     /**
-     * Get only those OUs available within the current security context.
+     * Get only those OUs available within the current security context. Deleted OUs waiting for removal are NOT included.
      */
     Collection<OrganizationalUnit> getOrganizationalUnits();
+
+    Collection<OrganizationalUnit> getOrganizationalUnits(final boolean includeDeleted);
 
     OrganizationalUnit createOrganizationalUnit(final String name,
                                                 final String defaultGroupId);

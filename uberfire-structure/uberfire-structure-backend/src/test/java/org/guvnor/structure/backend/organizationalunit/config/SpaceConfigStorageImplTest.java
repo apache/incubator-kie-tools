@@ -23,6 +23,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.server.io.object.ObjectStorage;
+import org.uberfire.io.IOService;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -33,11 +34,15 @@ public class SpaceConfigStorageImplTest {
     @Mock
     private ObjectStorage objectStorage;
 
+    @Mock
+    private IOService ioService;
+
     private SpaceConfigStorageImpl spaceConfigStorage;
 
     @Before
     public void setup() {
-        spaceConfigStorage = spy(new SpaceConfigStorageImpl(objectStorage));
+        spaceConfigStorage = spy(new SpaceConfigStorageImpl(objectStorage,
+                                                            ioService));
     }
 
     @Test
@@ -48,7 +53,8 @@ public class SpaceConfigStorageImplTest {
         final BranchPermissions branchPermissions = spaceConfigStorage.loadBranchPermissions("myBranch",
                                                                                              "myProject");
 
-        assertSame(customBranchPermissions, branchPermissions);
+        assertSame(customBranchPermissions,
+                   branchPermissions);
     }
 
     @Test
@@ -59,14 +65,17 @@ public class SpaceConfigStorageImplTest {
         final BranchPermissions branchPermissions = spaceConfigStorage.loadBranchPermissions("myBranch",
                                                                                              "myProject");
 
-        assertSame(defaultBranchPermissions, branchPermissions);
+        assertSame(defaultBranchPermissions,
+                   branchPermissions);
     }
 
     @Test
     public void saveBranchPermissionsTest() {
         final BranchPermissions customBranchPermissions = mock(BranchPermissions.class);
 
-        spaceConfigStorage.saveBranchPermissions("myBranch", "myProject", customBranchPermissions);
+        spaceConfigStorage.saveBranchPermissions("myBranch",
+                                                 "myProject",
+                                                 customBranchPermissions);
 
         verify(objectStorage).write(eq("/config/myProject/myBranch/BranchPermissions.json"),
                                     same(customBranchPermissions));
@@ -74,7 +83,8 @@ public class SpaceConfigStorageImplTest {
 
     @Test
     public void deleteBranchPermissionsTest() {
-        spaceConfigStorage.deleteBranchPermissions("myBranch", "myProject");
+        spaceConfigStorage.deleteBranchPermissions("myBranch",
+                                                   "myProject");
 
         verify(objectStorage).delete(eq("/config/myProject/myBranch/BranchPermissions.json"));
     }

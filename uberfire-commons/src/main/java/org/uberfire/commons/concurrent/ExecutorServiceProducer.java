@@ -22,6 +22,8 @@ import java.util.concurrent.Executors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.commons.async.DescriptiveThreadFactory;
 
 /**
@@ -30,8 +32,41 @@ import org.uberfire.commons.async.DescriptiveThreadFactory;
  */
 public class ExecutorServiceProducer {
 
-    private final ExecutorService executorService = Executors.newCachedThreadPool(new DescriptiveThreadFactory());
-    private final ExecutorService unmanagedExecutorService = Executors.newCachedThreadPool(new DescriptiveThreadFactory());
+    private Logger logger = LoggerFactory.getLogger(ExecutorServiceProducer.class);
+
+    private final ExecutorService executorService;
+    private final ExecutorService unmanagedExecutorService;
+
+    protected static final String MANAGED_LIMIT_PROPERTY = "org.appformer.concurrent.managed.thread.limit";
+    protected static final String UNMANAGED_LIMIT_PROPERTY = "org.appformer.concurrent.unmanaged.thread.limit";
+
+    public ExecutorServiceProducer() {
+        this.executorService = this.buildFixedThreadPoolExecutorService(MANAGED_LIMIT_PROPERTY);
+        this.unmanagedExecutorService = this.buildFixedThreadPoolExecutorService(UNMANAGED_LIMIT_PROPERTY);
+    }
+
+    protected ExecutorService buildFixedThreadPoolExecutorService(String key) {
+        String stringProperty = System.getProperty(key);
+        int threadLimit = stringProperty == null ? 0 : toInteger(stringProperty);
+        if (threadLimit > 0) {
+            return Executors.newFixedThreadPool(threadLimit,
+                                                new DescriptiveThreadFactory());
+        } else {
+            return Executors.newCachedThreadPool(new DescriptiveThreadFactory());
+        }
+    }
+
+    private Integer toInteger(String stringProperty) {
+        try {
+            return Integer.valueOf(stringProperty);
+        } catch (NumberFormatException e) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("Property {} is invalid, defaulting to 0",
+                             stringProperty);
+            }
+            return 0;
+        }
+    }
 
     @Produces
     @ApplicationScoped

@@ -46,12 +46,23 @@ public interface ObjectStorage {
     <T> T read(String path);
 
     /**
-     * Write an object into the object storage. That object is marshelled into JSON.
+     * Write an object into the object storage. That object is marshalled into JSON. Lock will be enabled before write
+     * and disabled after it.
      * @param path The path where the object is going to be written
      * @param value The object itself
      */
     <T> void write(String path,
                    T value);
+
+    /**
+     * Write an object into the object storage. That object is marshalled into JSON. You can avoid FS lock
+     * @param path The path where the object is going to be written
+     * @param value The object itself
+     * @param lock If the object storage should be locked while writing
+     */
+    <T> void write(String path,
+                   T value,
+                   boolean lock);
 
     /**
      * Delete a path from the object storage if exists. That path contains the object stored.
@@ -67,4 +78,6 @@ public interface ObjectStorage {
      */
     Path getPath(String first,
                  String... path);
+
+    void close();
 }

@@ -42,4 +42,6 @@ public interface OrganizationalUnit extends RuntimeContentResource,
     Collection<String> getGroups();
 
     Collection<Contributor> getContributors();
+
+    boolean isDeleted();
 }

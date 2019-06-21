@@ -22,23 +22,23 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import javax.enterprise.event.Event;
 
-import org.guvnor.structure.backend.backcompat.BackwardCompatibleUtil;
-import org.guvnor.structure.backend.config.ConfigurationFactoryImpl;
-import org.guvnor.structure.backend.repositories.ConfiguredRepositories;
 import org.guvnor.structure.contributors.Contributor;
 import org.guvnor.structure.contributors.ContributorType;
+import org.guvnor.structure.contributors.SpaceContributorsUpdatedEvent;
 import org.guvnor.structure.organizationalunit.NewOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.RemoveOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.RepoAddedToOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.RepoRemovedFromOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.UpdatedOrganizationalUnitEvent;
+import org.guvnor.structure.organizationalunit.config.SpaceConfigStorage;
+import org.guvnor.structure.organizationalunit.config.SpaceConfigStorageRegistry;
+import org.guvnor.structure.organizationalunit.config.SpaceInfo;
+import org.guvnor.structure.organizationalunit.impl.OrganizationalUnitImpl;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.guvnor.structure.security.OrganizationalUnitAction;
@@ -50,12 +50,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Path;
+import org.uberfire.java.nio.file.Paths;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystem;
 import org.uberfire.java.nio.fs.jgit.JGitPathImpl;
 import org.uberfire.java.nio.fs.jgit.util.Git;
@@ -83,13 +83,7 @@ public class OrganizationalUnitServiceTest {
     @Mock
     private ConfigurationService configurationService;
 
-    @Spy
-    @InjectMocks
-    private ConfigurationFactoryImpl configurationFactory;
-
     private OrganizationalUnitFactoryImpl organizationalUnitFactory;
-
-    private BackwardCompatibleUtil backward;
 
     @Mock
     private Event<NewOrganizationalUnitEvent> newOrganizationalUnitEvent;
@@ -121,73 +115,103 @@ public class OrganizationalUnitServiceTest {
     private IOService ioService;
 
     @Mock
-    private ConfiguredRepositories configuredRepositories;
+    private SpaceConfigStorageRegistry spaceConfigStorageRegistry;
+
+    @Mock
+    private FileSystem systemFS;
+
+    @Mock
+    private Event<SpaceContributorsUpdatedEvent> spaceContributorsUpdatedEvent;
 
     private OrganizationalUnitServiceImpl organizationalUnitService;
 
     @Before
     public void setUp() throws Exception {
-        sessionInfo = new SessionInfoMock();
-        backward = new BackwardCompatibleUtil(configurationFactory);
-        organizationalUnitFactory = spy(new OrganizationalUnitFactoryImpl(repositoryService,
-                                                                          backward,
-                                                                          spacesAPI,
-                                                                          configurationService,
-                                                                          configurationFactory));
-        organizationalUnitService = new OrganizationalUnitServiceImpl(configurationService,
-                                                                      configurationFactory,
-                                                                      organizationalUnitFactory,
-                                                                      repoService,
-                                                                      backward,
-                                                                      newOrganizationalUnitEvent,
-                                                                      removeOrganizationalUnitEvent,
-                                                                      repoAddedToOrgUnitEvent,
-                                                                      repoRemovedFromOrgUnitEvent,
-                                                                      updatedOrganizationalUnitEvent,
-                                                                      authorizationManager,
-                                                                      spacesAPI,
-                                                                      sessionInfo,
-                                                                      ioService,
-                                                                      configuredRepositories);
 
-        organizationalUnitService.registeredOrganizationalUnits.put("A",
-                                                                    orgUnit);
+        doAnswer(invocationOnMock -> {
+            final SpaceConfigStorage spaceConfigStorage = mock(SpaceConfigStorage.class);
+            doReturn(new SpaceInfo((String) invocationOnMock.getArguments()[0],
+                                   "defaultGroupId",
+                                   Collections.emptyList(),
+                                   Collections.emptyList(),
+                                   Collections.emptyList())).when(spaceConfigStorage).loadSpaceInfo();
+            doReturn(true)
+                    .when(spaceConfigStorage).isInitialized();
+            return spaceConfigStorage;
+        }).when(spaceConfigStorageRegistry).get(any());
+
+        doAnswer(invocationOnMock -> true).when(spaceConfigStorageRegistry).exist(anyString());
+
+        sessionInfo = new SessionInfoMock();
+        organizationalUnitFactory = spy(new OrganizationalUnitFactoryImpl(repositoryService,
+                                                                          spacesAPI));
+        organizationalUnitService = spy(new OrganizationalUnitServiceImpl(organizationalUnitFactory,
+                                                                          repoService,
+                                                                          newOrganizationalUnitEvent,
+                                                                          removeOrganizationalUnitEvent,
+                                                                          repoAddedToOrgUnitEvent,
+                                                                          repoRemovedFromOrgUnitEvent,
+                                                                          updatedOrganizationalUnitEvent,
+                                                                          authorizationManager,
+                                                                          spacesAPI,
+                                                                          sessionInfo,
+                                                                          ioService,
+                                                                          spaceConfigStorageRegistry,
+                                                                          systemFS,
+                                                                          spaceContributorsUpdatedEvent,
+                                                                          configurationService));
+
         when(authorizationManager.authorize(any(Resource.class),
                                             any(User.class))).thenReturn(false);
+
+        doAnswer(invocation -> false).when(organizationalUnitService).isDeleted(any());
+
+        doReturn(Paths.get("src/test/resources/niogit").toFile().toPath()).when(organizationalUnitService).getNiogitPath();
     }
 
     @Test
-    public void testAllOrgUnits() throws Exception {
+    public void testAllOrgUnits() {
         Collection<OrganizationalUnit> orgUnits = organizationalUnitService.getAllOrganizationalUnits();
-        assertEquals(1, orgUnits.size());
+        assertEquals(2,
+                     orgUnits.size());
     }
 
     @Test
-    public void testSecuredOrgUnits() throws Exception {
+    public void testSecuredOrgUnits() {
         Collection<OrganizationalUnit> orgUnits = organizationalUnitService.getOrganizationalUnits();
-        assertEquals(0, orgUnits.size());
+        assertEquals(0,
+                     orgUnits.size());
     }
 
     @Test
-    public void testSecuredOrgUnitsWithPermission() throws Exception {
+    public void testSecuredOrgUnitsWithPermission() {
         when(authorizationManager.authorize(any(Resource.class),
                                             any(User.class))).thenReturn(true);
         Collection<OrganizationalUnit> orgUnits = organizationalUnitService.getOrganizationalUnits();
-        assertEquals(1, orgUnits.size());
+        assertEquals(2,
+                     orgUnits.size());
     }
 
     @Test
-    public void testSecuredOrgUnitsToCollaborators() throws Exception {
-        when(orgUnit.getContributors()).thenReturn(Collections.singletonList(new Contributor("admin", ContributorType.OWNER)));
+    public void testSecuredOrgUnitsToCollaborators() {
+        when(orgUnit.getContributors()).thenReturn(Collections.singletonList(new Contributor("admin",
+                                                                                             ContributorType.OWNER)));
+        doReturn(Collections.singletonList(orgUnit)).when(organizationalUnitService).getAllOrganizationalUnits(anyBoolean());
+
         Collection<OrganizationalUnit> orgUnits = organizationalUnitService.getOrganizationalUnits();
-        assertEquals(1, orgUnits.size());
+        assertEquals(1,
+                     orgUnits.size());
     }
 
     @Test
     public void createOrganizationalUnitWithDuplicatedNameTest() {
         setOUCreationPermission(true);
 
-        final OrganizationalUnit ou = organizationalUnitService.createOrganizationalUnit("a",
+        doReturn(true)
+                .when(organizationalUnitService)
+                .spaceDirectoryExists(anyString());
+
+        final OrganizationalUnit ou = organizationalUnitService.createOrganizationalUnit("space1",
                                                                                          "default.group.id");
 
         assertNull(ou);
@@ -217,17 +241,6 @@ public class OrganizationalUnitServiceTest {
                      ou.getDefaultGroupId());
         assertEquals(contributors,
                      ou.getContributors());
-
-        final URI configFSUri = URI.create(SpacesAPI.resolveConfigFileSystemPath(SpacesAPI.Scheme.DEFAULT,
-                                                                                 "name"));
-        final Map<String, Object> env = new HashMap<String, Object>() {{
-            put("init",
-                Boolean.TRUE);
-            put("internal",
-                Boolean.TRUE);
-        }};
-        verify(ioService).newFileSystem(configFSUri,
-                                        env);
     }
 
     @Test
@@ -261,6 +274,8 @@ public class OrganizationalUnitServiceTest {
         doReturn(fileSystem).when(configPath).getFileSystem();
         doReturn(configPath).when(ioService).get(any(URI.class));
 
+        doReturn(orgUnit).when(organizationalUnitService).getOrganizationalUnit("A");
+
         organizationalUnitService.removeOrganizationalUnit("A");
 
         verify(repoService).removeRepositories(eq(space),
@@ -271,10 +286,18 @@ public class OrganizationalUnitServiceTest {
         RemoveOrganizationalUnitEvent event = eventCaptor.getValue();
         assertEquals(repos,
                      event.getOrganizationalUnit().getRepositories());
-        verify(ioService).delete(fsPath);
-        verify(directory).delete();
-        assertEquals(repos,
-                     event.getOrganizationalUnit().getRepositories());
+    }
+
+    @Test
+    public void testOnRemoveOrgUnit() {
+
+        String spaceName = "A";
+        OrganizationalUnit organizationalUnit = new OrganizationalUnitImpl(spaceName,
+                                                                           "groupId");
+        RemoveOrganizationalUnitEvent event = new RemoveOrganizationalUnitEvent(organizationalUnit,
+                                                                                "admin");
+        this.organizationalUnitService.onRemoveOrganizationalUnit(event);
+        verify(this.spaceConfigStorageRegistry).remove(spaceName);
     }
 
     private void setOUCreationPermission(final boolean hasPermission) {

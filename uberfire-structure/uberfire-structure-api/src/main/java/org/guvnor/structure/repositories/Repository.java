@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -11,7 +11,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 package org.guvnor.structure.repositories;
 
@@ -22,11 +22,11 @@ import java.util.Optional;
 
 import org.guvnor.structure.contributors.Contributor;
 import org.guvnor.structure.security.RepositoryResourceType;
-import org.uberfire.spaces.Space;
-import org.uberfire.spaces.SpacesAPI;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.commons.data.Cacheable;
 import org.uberfire.security.authz.RuntimeContentResource;
+import org.uberfire.spaces.Space;
+import org.uberfire.spaces.SpacesAPI;
 
 public interface Repository
         extends RuntimeContentResource,
@@ -75,4 +75,5 @@ public interface Repository
      * @return empty if there are no branches.
      */
     Optional<Branch> getDefaultBranch();
+
 }

@@ -17,38 +17,31 @@
 package org.guvnor.structure.backend.repositories;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.enterprise.event.Event;
 
-import org.guvnor.structure.backend.config.ConfigurationFactoryImpl;
 import org.guvnor.structure.contributors.Contributor;
 import org.guvnor.structure.contributors.ContributorType;
+import org.guvnor.structure.organizationalunit.config.RepositoryConfiguration;
+import org.guvnor.structure.organizationalunit.config.RepositoryInfo;
+import org.guvnor.structure.organizationalunit.config.SpaceConfigStorage;
+import org.guvnor.structure.organizationalunit.config.SpaceConfigStorageRegistry;
+import org.guvnor.structure.organizationalunit.config.SpaceInfo;
 import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.Repository;
-import org.guvnor.structure.repositories.RepositoryUpdatedEvent;
 import org.guvnor.structure.repositories.impl.git.GitRepository;
-import org.guvnor.structure.server.config.ConfigGroup;
-import org.guvnor.structure.server.config.ConfigItem;
-import org.guvnor.structure.server.config.ConfigurationService;
 import org.guvnor.structure.server.repositories.RepositoryFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.spaces.Space;
 
-import static org.guvnor.structure.server.config.ConfigType.REPOSITORY;
-import static org.guvnor.structure.server.config.ConfigType.SPACE;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -65,94 +58,99 @@ public class ConfiguredRepositoriesTest {
     public static final String REPO3S2 = "multibranchs3";
 
     @Mock
-    ConfigurationService configurationService;
-
-    @Mock
-    RepositoryFactory repositoryFactory;
-
-    @Mock
-    Event<RepositoryUpdatedEvent> repositoryUpdatedEvent;
-
-    @Spy
-    ConfigurationFactoryImpl configurationFactory;
+    private RepositoryFactory repositoryFactory;
 
     private ConfiguredRepositories configuredRepositories;
 
-    @Captor
-    ArgumentCaptor<ConfigItem<List<Contributor>>> contributorsArgumentCaptor;
+    @Mock
+    private SpaceConfigStorageRegistry spaceConfigStorageRegistry;
 
     @Before
     public void setUp() throws Exception {
-        final Map<String, List<ConfigGroup>> repoConfigsBySpace = new HashMap<>();
 
-        final List<ConfigGroup> space1RepoConfigs = new ArrayList<>();
-        space1RepoConfigs.add(addRepository(SPACE1,
-                                            REPO1S1,
-                                            Collections.singletonList(new Contributor("admin1", ContributorType.OWNER)),
-                                            "master"));
-        space1RepoConfigs.add(addRepository(SPACE1,
-                                            REPO2S1,
-                                            Collections.singletonList(new Contributor("admin1", ContributorType.OWNER)),
-                                            "master",
-                                            "dev",
-                                            "release"));
-        repoConfigsBySpace.put(SPACE1.getName(),
-                               space1RepoConfigs);
+        ArrayList<RepositoryInfo> repositoriesSpace1 = new ArrayList<>();
+        repositoriesSpace1.add(addRepository(SPACE1,
+                                             REPO1S1,
+                                             createAdminContributors("admin1"),
+                                             "master"));
+        repositoriesSpace1.add(addRepository(SPACE1,
+                                             REPO2S1,
+                                             createAdminContributors("admin1"),
+                                             "master",
+                                             "dev",
+                                             "release"));
 
-        final List<ConfigGroup> space2RepoConfigs = new ArrayList<>();
-        space2RepoConfigs.add(addRepository(SPACE2,
-                                            REPO1S2,
-                                            Collections.emptyList(),
-                                            "master"));
-        space2RepoConfigs.add(addRepository(SPACE2,
-                                            REPO2S2,
-                                            Collections.emptyList(),
-                                            "master",
-                                            "dev",
-                                            "release"));
-        space2RepoConfigs.add(addRepository(SPACE2,
-                                            REPO3S2,
-                                            Collections.emptyList(),
-                                            "master",
-                                            "dev",
-                                            "release"));
-        repoConfigsBySpace.put(SPACE2.getName(),
-                               space2RepoConfigs);
+        SpaceInfo space1 = new SpaceInfo(SPACE1.getName(),
+                                         "com.space1",
+                                         createAdminContributors("admin1"),
+                                         repositoriesSpace1,
+                                         Collections.emptyList());
 
-        when(configurationService.getConfigurationByNamespace(REPOSITORY)).thenReturn(repoConfigsBySpace);
-        final List<ConfigGroup> spaces = Arrays.asList(createSpaceConfigGroup(SPACE1, Collections.singletonList(new Contributor("admin1", ContributorType.OWNER))),
-                                                       createSpaceConfigGroup(SPACE2, Collections.singletonList(new Contributor("admin2", ContributorType.OWNER))));
+        ArrayList<RepositoryInfo> repositoriesSpace2 = new ArrayList<>();
+        repositoriesSpace2.add(addRepository(SPACE2,
+                                             REPO1S2,
+                                             Collections.emptyList(),
+                                             "master"));
+        repositoriesSpace2.add(addRepository(SPACE2,
+                                             REPO2S2,
+                                             Collections.emptyList(),
+                                             "master",
+                                             "dev",
+                                             "release"));
+        repositoriesSpace2.add(addRepository(SPACE2,
+                                             REPO3S2,
+                                             Collections.emptyList(),
+                                             "master",
+                                             "dev",
+                                             "release"));
 
-        when(configurationService.getConfiguration(SPACE)).thenReturn(spaces);
+        SpaceInfo space2 = new SpaceInfo(SPACE2.getName(),
+                                         "com.space2",
+                                         createAdminContributors("admin2"),
+                                         repositoriesSpace2,
+                                         Collections.emptyList());
 
-        configuredRepositories = new ConfiguredRepositoriesImpl(configurationService,
-                                                                repositoryFactory,
-                                                                SystemRepository.SYSTEM_REPO,
-                                                                repositoryUpdatedEvent,
-                                                                configurationFactory);
+        Map<String, SpaceInfo> spaces = new HashMap<>();
+        spaces.put(SPACE1.getName(),
+                   space1);
+        spaces.put(SPACE2.getName(),
+                   space2);
 
-        configuredRepositories.reloadRepositories();
+        doAnswer(invocationOnMock -> {
+            final SpaceConfigStorage spaceConfigStorage = mock(SpaceConfigStorage.class);
+            String spaceName = (String) invocationOnMock.getArguments()[0];
+            doReturn(spaces.get(spaceName)).when(spaceConfigStorage).loadSpaceInfo();
+            doReturn(true)
+                    .when(spaceConfigStorage).isInitialized();
+            return spaceConfigStorage;
+        }).when(spaceConfigStorageRegistry).get(any());
+
+        configuredRepositories = new ConfiguredRepositoriesImpl(repositoryFactory,
+                                                                spaceConfigStorageRegistry);
     }
 
-    private ConfigGroup createSpaceConfigGroup(final Space space,
-                                               final List<Contributor> contributors) {
-        final ConfigGroup configGroup = spy(new ConfigGroup());
-        configGroup.setName(space.getName());
-        configGroup.addConfigItem(configurationFactory.newConfigItem("space-contributors", contributors));
-
-        return configGroup;
-    }
-
-    private ConfigGroup addRepository(final Space space,
-                                      final String alias,
-                                      final List<Contributor> contributors,
-                                      final String... branches) {
-        final ConfigGroup configGroup = spy(new ConfigGroup());
-        if (contributors != null && !contributors.isEmpty()) {
-            configGroup.addConfigItem(configurationFactory.newConfigItem("contributors", contributors));
+    private List<Contributor> createAdminContributors(String... username) {
+        List<Contributor> contributors = new ArrayList<>();
+        for (int i = 0; i < username.length; i++) {
+            contributors.add(new Contributor(username[i],
+                                             ContributorType.OWNER));
         }
+        return contributors;
+    }
 
-        final GitRepository repository = new GitRepository(alias, space);
+    private RepositoryInfo addRepository(final Space space,
+                                         final String alias,
+                                         final List<Contributor> contributors,
+                                         final String... branches) {
+
+        RepositoryConfiguration config = new RepositoryConfiguration();
+        RepositoryInfo repositoryInfo = new RepositoryInfo(alias,
+                                                           false,
+                                                           config);
+        config.add("contributors",
+                   contributors);
+        final GitRepository repository = new GitRepository(alias,
+                                                           space);
 
         final HashMap<String, Branch> branchMap = new HashMap<>();
 
@@ -165,14 +163,12 @@ public class ConfiguredRepositoriesTest {
                                      path));
         }
         repository.setBranches(branchMap);
-
-        when(repositoryFactory.newRepository(configGroup)).thenReturn(repository);
-
-        return configGroup;
+        when(repositoryFactory.newRepository(repositoryInfo)).thenReturn(repository);
+        return repositoryInfo;
     }
 
     @Test
-    public void testLoadRepositories() throws Exception {
+    public void testLoadRepositories() {
         assertEquals(2,
                      configuredRepositories.getAllConfiguredRepositories(SPACE1).size());
         assertEquals(3,
@@ -180,7 +176,7 @@ public class ConfiguredRepositoriesTest {
     }
 
     @Test
-    public void testLoadSingle() throws Exception {
+    public void testLoadSingle() {
         final Repository single = configuredRepositories.getRepositoryByRepositoryAlias(SPACE1,
                                                                                         REPO1S1);
         assertEquals(1,
@@ -189,7 +185,7 @@ public class ConfiguredRepositoriesTest {
     }
 
     @Test
-    public void testLoadMultiBranch() throws Exception {
+    public void testLoadMultiBranch() {
         final Repository single = configuredRepositories.getRepositoryByRepositoryAlias(SPACE1,
                                                                                         REPO2S1);
         assertEquals(3,
@@ -197,62 +193,5 @@ public class ConfiguredRepositoriesTest {
         assertNotNull(single.getBranch("master"));
         assertNotNull(single.getBranch("dev"));
         assertNotNull(single.getBranch("release"));
-    }
-
-    @Test
-    public void testRemoveSingle() throws Exception {
-        final Path root = configuredRepositories.getRepositoryByRepositoryAlias(SPACE1,
-                                                                                REPO1S1).getDefaultBranch().get().getPath();
-
-        assertNotNull(configuredRepositories.getRepositoryByRootPath(SPACE1,
-                                                                     root));
-
-        assertNotNull(configuredRepositories.remove(SPACE1,
-                                                    REPO1S1));
-
-        assertFalse(configuredRepositories.containsAlias(SPACE1,
-                                                         REPO1S1));
-
-        assertNull(configuredRepositories.getRepositoryByRootPath(SPACE1,
-                                                                  root));
-    }
-
-    @Test
-    public void testRemoveMultiBranch() throws Exception {
-        final Branch devBranch = configuredRepositories.getRepositoryByRepositoryAlias(SPACE1,
-                                                                                       REPO2S1).getBranch("dev").get();
-
-        assertNotNull(configuredRepositories.getRepositoryByRootPath(SPACE1,
-                                                                     devBranch.getPath()));
-
-        assertNotNull(configuredRepositories.remove(SPACE1,
-                                                    REPO2S1));
-
-        assertFalse(configuredRepositories.containsAlias(SPACE1,
-                                                         REPO2S1));
-
-        assertNull(configuredRepositories.getRepositoryByRootPath(SPACE1,
-                                                                  devBranch.getPath()));
-    }
-
-    @Test
-    public void testContributorsWereSetOnReload() {
-
-        final Map<String, List<ConfigGroup>> repoBySpace = configurationService.getConfigurationByNamespace(REPOSITORY);
-        repoBySpace.keySet().forEach(space -> {
-            repoBySpace.get(space).forEach(repoConfigGroup -> {
-                if (space.equals(SPACE1.getName())) {
-                    verify(configurationService, never()).updateConfiguration(repoConfigGroup);
-                } else {
-                    verify(repoConfigGroup).addConfigItem(contributorsArgumentCaptor.capture());
-                    verify(configurationService).updateConfiguration(repoConfigGroup);
-
-                    final ConfigItem<List<Contributor>> configItem = contributorsArgumentCaptor.getValue();
-                    assertEquals("contributors", configItem.getName());
-
-                    final List<Contributor> contributors = configItem.getValue();
-                }
-            });
-        });
     }
 }

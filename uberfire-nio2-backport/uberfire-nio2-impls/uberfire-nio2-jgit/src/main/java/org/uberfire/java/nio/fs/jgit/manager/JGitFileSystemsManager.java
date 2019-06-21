@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.transport.CredentialsProvider;
+import org.uberfire.java.nio.fs.jgit.FileSystemLockManager;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystem;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemImpl;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemLock;
@@ -140,7 +141,8 @@ public class JGitFileSystemsManager {
     }
 
     JGitFileSystemLock createLock(Git git) {
-        return new JGitFileSystemLock(git, config.getDefaultJgitCacheEvictThresholdTimeUnit(), config.getJgitCacheEvictThresholdDuration());
+        return new JGitFileSystemLock(git, config.getDefaultJgitCacheEvictThresholdTimeUnit(),
+                                      config.getJgitCacheEvictThresholdDuration());
     }
 
     public void remove(String realFSKey) {

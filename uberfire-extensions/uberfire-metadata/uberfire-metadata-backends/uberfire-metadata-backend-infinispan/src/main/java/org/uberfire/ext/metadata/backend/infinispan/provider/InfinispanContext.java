@@ -149,6 +149,10 @@ public class InfinispanContext implements Disposable {
                          addCachePrefix(SCHEMA_PROTO),
                          Schema.class);
 
+        retrieveProbufSchemas();
+    }
+
+    public void retrieveProbufSchemas() {
         this.loadProtobufSchema(getProtobufCache());
     }
 

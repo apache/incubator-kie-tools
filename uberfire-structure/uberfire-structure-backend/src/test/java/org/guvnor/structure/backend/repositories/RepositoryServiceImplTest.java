@@ -1,19 +1,25 @@
 package org.guvnor.structure.backend.repositories;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
+import javax.enterprise.event.Event;
 
-import org.guvnor.structure.backend.config.ConfigurationFactoryImpl;
+import org.guvnor.common.services.project.events.RepositoryContributorsUpdatedEvent;
 import org.guvnor.structure.contributors.Contributor;
 import org.guvnor.structure.contributors.ContributorType;
+import org.guvnor.structure.organizationalunit.config.RepositoryConfiguration;
+import org.guvnor.structure.organizationalunit.config.RepositoryInfo;
+import org.guvnor.structure.organizationalunit.config.SpaceConfigStorage;
+import org.guvnor.structure.organizationalunit.config.SpaceConfigStorageRegistry;
+import org.guvnor.structure.organizationalunit.config.SpaceInfo;
 import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.Repository;
-import org.guvnor.structure.server.config.ConfigGroup;
-import org.guvnor.structure.server.config.ConfigType;
-import org.guvnor.structure.server.config.ConfigurationService;
-import org.guvnor.structure.server.repositories.RepositoryFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
@@ -35,16 +41,20 @@ public class RepositoryServiceImplTest {
     private ConfiguredRepositories configuredRepositories;
 
     @Mock
-    private ConfigurationService configurationService;
+    private SpaceConfigStorageRegistry registry;
 
     @Mock
-    private RepositoryFactory repositoryFactory;
-
-    @Spy
-    ConfigurationFactoryImpl configurationFactory;
+    private Event<RepositoryContributorsUpdatedEvent> updatedEvent;
 
     @InjectMocks
+    @Spy
     private RepositoryServiceImpl repositoryService;
+
+    @Captor
+    private ArgumentCaptor<RepositoryContributorsUpdatedEvent> captor;
+
+    @Captor
+    private ArgumentCaptor<RepositoryInfo> configCaptor;
 
     @Test
     public void testNotCreateNewAliasIfNecessary() {
@@ -62,7 +72,8 @@ public class RepositoryServiceImplTest {
     @Test
     public void testCreateNewAliasIfNecessary() {
         when(configuredRepositories.getRepositoryByRepositoryAlias(any(),
-                                                                   eq("alias"))).thenReturn(repository);
+                                                                   eq("alias"),
+                                                                   eq(true))).thenReturn(repository);
         doReturn(Optional.of(mock(Branch.class))).when(repository).getDefaultBranch();
         doReturn("alias").when(repository).getAlias();
         String newAlias = repositoryService.createFreshRepositoryAlias("alias",
@@ -75,9 +86,11 @@ public class RepositoryServiceImplTest {
     @Test
     public void testCreateSecondNewAliasIfNecessary() {
         when(configuredRepositories.getRepositoryByRepositoryAlias(any(),
-                                                                   eq("alias"))).thenReturn(repository);
+                                                                   eq("alias"),
+                                                                   eq(true))).thenReturn(repository);
         when(configuredRepositories.getRepositoryByRepositoryAlias(any(),
-                                                                   eq("alias-1"))).thenReturn(repository);
+                                                                   eq("alias-1"),
+                                                                   eq(true))).thenReturn(repository);
         doReturn(Optional.of(mock(Branch.class))).when(repository).getDefaultBranch();
         doReturn("alias").when(repository).getAlias();
         String newAlias = repositoryService.createFreshRepositoryAlias("alias",
@@ -89,17 +102,44 @@ public class RepositoryServiceImplTest {
 
     @Test
     public void updateContributorsTest() {
-        final Space space = new Space("alias");
+
+        final Space space = new Space("space");
         doReturn(space).when(repository).getSpace();
         doReturn("alias").when(repository).getAlias();
 
-        final ConfigGroup configGroup = new ConfigGroup();
-        configGroup.setName("alias");
-        configGroup.addConfigItem(configurationFactory.newConfigItem("contributors", Collections.emptyList()));
-        doReturn(Collections.singletonList(configGroup)).when(configurationService).getConfiguration(ConfigType.REPOSITORY, "alias");
+        doReturn(repository).when(configuredRepositories).getRepositoryByRepositoryAlias(any(),
+                                                                                         any());
 
-        repositoryService.updateContributors(repository, Collections.singletonList(new Contributor("admin1", ContributorType.OWNER)));
+        doAnswer(invocationOnMock -> {
+            final SpaceConfigStorage spaceConfigStorage = mock(SpaceConfigStorage.class);
+            doReturn(new SpaceInfo((String) invocationOnMock.getArguments()[0],
+                                   "defaultGroupId",
+                                   Collections.emptyList(),
+                                   new ArrayList<>(Arrays.asList(new RepositoryInfo("alias",
+                                                                                    false,
+                                                                                    new RepositoryConfiguration()))),
+                                   Collections.emptyList())).when(spaceConfigStorage).loadSpaceInfo();
+            doReturn(true)
+                    .when(spaceConfigStorage).isInitialized();
+            return spaceConfigStorage;
+        }).when(registry).get(any());
 
-        verify(configurationService).updateConfiguration(configGroup);
+        String username = "admin1";
+        repositoryService.updateContributors(repository,
+                                             Collections.singletonList(new Contributor(username,
+                                                                                       ContributorType.OWNER)));
+
+        verify(updatedEvent).fire(captor.capture());
+        assertEquals("alias",
+                     captor.getValue().getRepository().getAlias());
+        assertEquals("space",
+                     captor.getValue().getRepository().getSpace().getName());
+        verify(repositoryService).saveRepositoryConfig(eq("space"),
+                                                       configCaptor.capture());
+
+        assertEquals(username,
+                     configCaptor.getValue().getContributors().get(0).getUsername());
+        assertEquals(ContributorType.OWNER,
+                     configCaptor.getValue().getContributors().get(0).getType());
     }
 }

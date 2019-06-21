@@ -16,7 +16,6 @@ package org.guvnor.structure.backend.repositories.git;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,17 +29,14 @@ import org.eclipse.jgit.transport.UploadPack;
 import org.guvnor.structure.backend.repositories.BranchAccessAuthorizer;
 import org.guvnor.structure.backend.repositories.git.hooks.PostCommitNotificationService;
 import org.guvnor.structure.backend.repositories.git.hooks.exception.BranchOperationNotAllowedException;
+import org.guvnor.structure.organizationalunit.config.RepositoryInfo;
 import org.guvnor.structure.repositories.Branch;
-import org.guvnor.structure.repositories.EnvironmentParameters;
 import org.guvnor.structure.repositories.PublicURI;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryExternalUpdateEvent;
 import org.guvnor.structure.repositories.impl.DefaultPublicURI;
 import org.guvnor.structure.repositories.impl.git.GitRepository;
-import org.guvnor.structure.server.config.ConfigGroup;
-import org.guvnor.structure.server.config.ConfigItem;
 import org.guvnor.structure.server.config.PasswordService;
-import org.guvnor.structure.server.config.SecureConfigItem;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileSystem;
@@ -54,6 +50,8 @@ import static org.uberfire.backend.server.util.Paths.convert;
 
 public class GitRepositoryBuilder {
 
+    private static final String SECURE_PREFIX = "secure:";
+    public static final String PROTOCOL_SEPARATOR = "://";
     private final IOService ioService;
     private final PasswordService secureService;
     private SpacesAPI spacesAPI;
@@ -76,19 +74,20 @@ public class GitRepositoryBuilder {
         this.branchAccessAuthorizer = branchAccessAuthorizer;
     }
 
-    public Repository build(final ConfigGroup repoConfig) {
+    public Repository build(final RepositoryInfo repositoryInfo) {
 
-        ConfigItem space = repoConfig.getConfigItem(EnvironmentParameters.SPACE);
-        if (space == null) {
-            throw new IllegalStateException("Repository " + repoConfig.getName() + " space is not valid");
+        String space = repositoryInfo.getSpace();
+        if (space == null || space.isEmpty()) {
+            throw new IllegalStateException("Repository " + repositoryInfo.getName() + " space is not valid");
         }
-        repo = new GitRepository(repoConfig.getName(), spacesAPI.getSpace(space.getValue().toString()));
+        repo = new GitRepository(repositoryInfo.getName(),
+                                 spacesAPI.getSpace(space));
 
         if (!repo.isValid()) {
-            throw new IllegalStateException("Repository " + repoConfig.getName() + " not valid");
+            throw new IllegalStateException("Repository " + repositoryInfo.getName() + " not valid");
         } else {
 
-            addEnvironmentParameters(repoConfig.getItems());
+            addEnvironmentParameters(repositoryInfo.getConfiguration().getEnvironment());
 
             FileSystem fileSystem = createFileSystem(repo);
 
@@ -105,8 +104,9 @@ public class GitRepositoryBuilder {
         final List<PublicURI> publicURIs = new ArrayList<>(uris.length);
 
         for (final String s : uris) {
-            final int protocolStart = s.indexOf("://");
-            publicURIs.add(getPublicURI(s, protocolStart));
+            final int protocolStart = s.indexOf(PROTOCOL_SEPARATOR);
+            publicURIs.add(getPublicURI(s,
+                                        protocolStart));
         }
         repo.setPublicURIs(publicURIs);
     }
@@ -114,7 +114,9 @@ public class GitRepositoryBuilder {
     private PublicURI getPublicURI(final String s,
                                    final int protocolStart) {
         if (protocolStart > 0) {
-            return new DefaultPublicURI(s.substring(0, protocolStart), s);
+            return new DefaultPublicURI(s.substring(0,
+                                                    protocolStart),
+                                        s);
         } else {
             return new DefaultPublicURI(s);
         }
@@ -126,13 +128,14 @@ public class GitRepositoryBuilder {
         repo.setBranches(branches);
     }
 
-    private void addEnvironmentParameters(final Collection<ConfigItem> items) {
-        for (final ConfigItem item : items) {
-            if (item instanceof SecureConfigItem) {
-                repo.addEnvironmentParameter(item.getName(),
+    private void addEnvironmentParameters(final Map<String, Object> items) {
+        for (final Map.Entry<String, Object> item : items.entrySet()) {
+            String key = item.getKey();
+            if (key.startsWith(SECURE_PREFIX)) {
+                repo.addEnvironmentParameter(key.substring(key.indexOf(SECURE_PREFIX)),
                                              secureService.decrypt(item.getValue().toString()));
             } else {
-                repo.addEnvironmentParameter(item.getName(),
+                repo.addEnvironmentParameter(key,
                                              item.getValue());
             }
         }
@@ -162,12 +165,17 @@ public class GitRepositoryBuilder {
         return ioService.newFileSystem(uri,
                                        new HashMap<String, Object>(repo.getEnvironment()) {{
                                            if (!repo.getEnvironment().containsKey("origin")) {
-                                               put("init", true);
+                                               put("init",
+                                                   true);
                                            }
-                                           put(FileSystemHooks.ExternalUpdate.name(), externalUpdatedCallBack());
-                                           put(FileSystemHooks.PostCommit.name(), postCommitCallback());
-                                           put(FileSystemHooks.BranchAccessCheck.name(), checkBranchAccessCallback());
-                                           put(FileSystemHooks.BranchAccessFilter.name(), filterBranchAccessCallback());
+                                           put(FileSystemHooks.ExternalUpdate.name(),
+                                               externalUpdatedCallBack());
+                                           put(FileSystemHooks.PostCommit.name(),
+                                               postCommitCallback());
+                                           put(FileSystemHooks.BranchAccessCheck.name(),
+                                               checkBranchAccessCallback());
+                                           put(FileSystemHooks.BranchAccessFilter.name(),
+                                               filterBranchAccessCallback());
                                        }});
     }
 
@@ -176,7 +184,8 @@ public class GitRepositoryBuilder {
     }
 
     private FileSystemHooks.FileSystemHook postCommitCallback() {
-        return ctx -> postCommitNotificationService.notifyUser(repo, (Integer) ctx.getParamValue(FileSystemHooksConstants.POST_COMMIT_EXIT_CODE));
+        return ctx -> postCommitNotificationService.notifyUser(repo,
+                                                               (Integer) ctx.getParamValue(FileSystemHooksConstants.POST_COMMIT_EXIT_CODE));
     }
 
     private FileSystemHooks.FileSystemHook checkBranchAccessCallback() {

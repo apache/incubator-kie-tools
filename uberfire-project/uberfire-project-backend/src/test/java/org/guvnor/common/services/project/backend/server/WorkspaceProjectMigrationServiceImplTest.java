@@ -11,7 +11,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 package org.guvnor.common.services.project.backend.server;
 
 import java.net.URI;
@@ -30,6 +30,9 @@ import org.guvnor.common.services.project.service.ModuleService;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
+import org.guvnor.structure.organizationalunit.config.SpaceConfigStorage;
+import org.guvnor.structure.organizationalunit.config.SpaceConfigStorageRegistry;
+import org.guvnor.structure.organizationalunit.config.SpaceInfo;
 import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryEnvironmentConfigurations;
@@ -52,20 +55,11 @@ import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.spaces.Space;
 import org.uberfire.spaces.SpacesAPI;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class WorkspaceProjectMigrationServiceImplTest {
@@ -114,8 +108,11 @@ public class WorkspaceProjectMigrationServiceImplTest {
     @Mock
     private Space space;
 
-    @Captor
-    private ArgumentCaptor<Path> pathArgumentCaptor;
+    @Mock
+    private SpaceConfigStorage spaceConfigStorage;
+
+    @Mock
+    private SpaceConfigStorageRegistry spaceConfigStorageRegistry;
 
     @Captor
     private ArgumentCaptor<NewProjectEvent> newProjectEventArgumentCaptor;
@@ -129,19 +126,23 @@ public class WorkspaceProjectMigrationServiceImplTest {
     @Before
     public void setUp() throws Exception {
 
+        SpaceInfo spaceInfo = mock(SpaceInfo.class);
+        doAnswer(invocation -> null).when(spaceInfo).removeRepository(any());
+        doAnswer(invocation -> null).when(spaceInfo).getRepositories(any());
+        doReturn(spaceInfo).when(spaceConfigStorage).loadSpaceInfo();
+        when(spaceConfigStorageRegistry.get(anyString())).thenReturn(spaceConfigStorage);
+
         doReturn(mock(WorkspaceProject.class)).when(workspaceProjectService).resolveProject(any(Repository.class));
 
-        doAnswer(new Answer<org.uberfire.java.nio.file.Path>() {
-            @Override
-            public org.uberfire.java.nio.file.Path answer(InvocationOnMock invocationOnMock) throws Throwable {
-                return Paths.convert(PathFactory.newPath("file",
-                                                         invocationOnMock.getArguments()[0].toString()));
-            }
-        }).when(ioService).get(any(URI.class));
+        doAnswer((Answer<org.uberfire.java.nio.file.Path>) invocationOnMock ->
+                Paths.convert(PathFactory.newPath("file",
+                                                  invocationOnMock.getArguments()[0].toString()))).when(ioService).get(any(URI.class));
 
-        when(pathUtil.normalizePath(any())).then(inv -> inv.getArgumentAt(0, Path.class));
+        when(pathUtil.normalizePath(any())).then(inv -> inv.getArgumentAt(0,
+                                                                          Path.class));
         when(pathUtil.convert(any(Path.class))).then(inv -> {
-            final Path path = inv.getArgumentAt(0, Path.class);
+            final Path path = inv.getArgumentAt(0,
+                                                Path.class);
 
             final org.uberfire.java.nio.file.Path retVal = mock(org.uberfire.java.nio.file.Path.class);
             when(retVal.toUri()).then(inv1 -> URI.create(path.toURI()));
@@ -151,20 +152,24 @@ public class WorkspaceProjectMigrationServiceImplTest {
         when(pathUtil.getNiogitRepoPath(any())).thenReturn(NIOGIT_PATH);
 
         service = spy(new WorkspaceProjectMigrationServiceImpl(workspaceProjectService,
-                                                           repositoryService,
-                                                           organizationalUnitService,
-                                                           pathUtil,
-                                                           newProjectEvent,
-                                                           moduleService));
+                                                               repositoryService,
+                                                               organizationalUnitService,
+                                                               pathUtil,
+                                                               newProjectEvent,
+                                                               moduleService,
+                                                               spaceConfigStorageRegistry));
 
         doAnswer(invocation -> null).when(service).cleanupOrigin(any(Repository.class));
 
         legacyMasterBranch = mockBranch("legacyMasterBranch");
         legacyDevBranch = mockBranch("legacyDevBranch");
 
-        when(legacyDevBranchProject1RootPath.toURI()).thenReturn(uri("legacyDevBranch", "legacyProject1"));
-        when(legacyDevBranchProject2RootPath.toURI()).thenReturn(uri("legacyDevBranch", "legacyProject2"));
-        when(legacyMasterBranchProject1RootPath.toURI()).thenReturn(uri("legacyMasterBranch", "legacyProject1"));
+        when(legacyDevBranchProject1RootPath.toURI()).thenReturn(uri("legacyDevBranch",
+                                                                     "legacyProject1"));
+        when(legacyDevBranchProject2RootPath.toURI()).thenReturn(uri("legacyDevBranch",
+                                                                     "legacyProject2"));
+        when(legacyMasterBranchProject1RootPath.toURI()).thenReturn(uri("legacyMasterBranch",
+                                                                        "legacyProject1"));
 
         final Repository legacyRepository = mockLegacyRepository();
 
@@ -182,7 +187,8 @@ public class WorkspaceProjectMigrationServiceImplTest {
         service.migrate(legacyWorkspaceProject);
     }
 
-    private String uri(final String branch, final String repo) {
+    private String uri(final String branch,
+                       final String repo) {
         return "git://" + branch + "@" + SPACE + "/" + REPO + "/" + repo;
     }
 
@@ -197,31 +203,42 @@ public class WorkspaceProjectMigrationServiceImplTest {
         final List<RepositoryEnvironmentConfigurations> allValues = configsCaptor.getAllValues();
         final Set<String> observedSubdirectories = new HashSet<>();
         allValues.forEach(configs -> {
-            assertEquals(NIOGIT_PATH, assertInstanceOf(configs.getOrigin(), String.class));
-            assertFalse(assertInstanceOf(configs.getInit(), Boolean.class));
-            assertFalse(assertInstanceOf(configs.getMirror(), Boolean.class));
+            assertEquals(NIOGIT_PATH,
+                         assertInstanceOf(configs.getOrigin(),
+                                          String.class));
+            assertFalse(assertInstanceOf(configs.getInit(),
+                                         Boolean.class));
+            assertFalse(assertInstanceOf(configs.getMirror(),
+                                         Boolean.class));
 
-            final String subdirectory = assertInstanceOf(configs.getSubdirectory(), String.class);
+            final String subdirectory = assertInstanceOf(configs.getSubdirectory(),
+                                                         String.class);
             observedSubdirectories.add(subdirectory);
 
             @SuppressWarnings("unchecked")
-            final List<String> branches = assertInstanceOf(configs.getBranches(), List.class);
+            final List<String> branches = assertInstanceOf(configs.getBranches(),
+                                                           List.class);
             final List<String> expectedBranches;
             if (subdirectory.equals("legacyProject1")) {
-                expectedBranches = Arrays.asList("legacyMasterBranch", "legacyDevBranch");
+                expectedBranches = Arrays.asList("legacyMasterBranch",
+                                                 "legacyDevBranch");
             } else if (subdirectory.equals("legacyProject2")) {
                 expectedBranches = Arrays.asList("legacyDevBranch");
             } else {
                 throw new AssertionError("Unrecognized subdirectory: " + subdirectory);
             }
 
-            verify(service,times(2)).cleanupOrigin(any());
+            verify(service,
+                   times(2)).cleanupOrigin(any());
 
-            assertEquals("Unexpected branches for subdirectory " + subdirectory, new HashSet<>(expectedBranches), new HashSet<>(branches));
+            assertEquals("Unexpected branches for subdirectory " + subdirectory,
+                         new HashSet<>(expectedBranches),
+                         new HashSet<>(branches));
         });
 
-        assertEquals(new HashSet<>(Arrays.asList("legacyProject1", "legacyProject2")), observedSubdirectories);
-
+        assertEquals(new HashSet<>(Arrays.asList("legacyProject1",
+                                                 "legacyProject2")),
+                     observedSubdirectories);
     }
 
     @Test
@@ -235,7 +252,8 @@ public class WorkspaceProjectMigrationServiceImplTest {
         assertNotNull(allValues.get(1).getWorkspaceProject());
     }
 
-    private <T> T assertInstanceOf(Object value, Class<T> clazz) {
+    private <T> T assertInstanceOf(Object value,
+                                   Class<T> clazz) {
         assertTrue(clazz.isInstance(value));
 
         return clazz.cast(value);
@@ -284,6 +302,8 @@ public class WorkspaceProjectMigrationServiceImplTest {
         doReturn(ous).when(organizationalUnitService).getOrganizationalUnits(legacyRepository);
 
         when(legacyRepository.getDefaultBranch()).thenReturn(Optional.of(legacyMasterBranch));
+
+        doReturn(space).when(legacyRepository).getSpace();
 
         return legacyRepository;
     }

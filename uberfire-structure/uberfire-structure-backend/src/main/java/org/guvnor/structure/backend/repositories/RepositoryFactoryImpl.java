@@ -11,7 +11,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 package org.guvnor.structure.backend.repositories;
 
@@ -25,10 +25,8 @@ import javax.inject.Named;
 
 import org.guvnor.structure.backend.backcompat.BackwardCompatibleUtil;
 import org.guvnor.structure.contributors.Contributor;
-import org.guvnor.structure.repositories.EnvironmentParameters;
+import org.guvnor.structure.organizationalunit.config.RepositoryInfo;
 import org.guvnor.structure.repositories.Repository;
-import org.guvnor.structure.server.config.ConfigGroup;
-import org.guvnor.structure.server.config.ConfigItem;
 import org.guvnor.structure.server.repositories.RepositoryFactory;
 import org.guvnor.structure.server.repositories.RepositoryFactoryHelper;
 
@@ -46,38 +44,38 @@ public class RepositoryFactoryImpl implements RepositoryFactory {
     private BackwardCompatibleUtil backward;
 
     @Override
-    public Repository newRepository(final ConfigGroup repoConfig) {
-        checkNotNull("repoConfig",
-                     repoConfig);
-        final ConfigItem<String> schemeConfigItem = repoConfig.getConfigItem(EnvironmentParameters.SCHEME);
+    public Repository newRepository(RepositoryInfo repositoryInfo) {
+        checkNotNull("repositoryInfo",
+                     repositoryInfo);
+        final String schemeConfigItem = repositoryInfo.getScheme();
         checkNotNull("schemeConfigItem",
                      schemeConfigItem);
 
         //Find a Helper that can create a repository
         Repository repository = null;
         for (RepositoryFactoryHelper helper : helpers) {
-            if (helper.accept(repoConfig)) {
-                repository = helper.newRepository(repoConfig);
+            if (helper.accept(repositoryInfo)) {
+                repository = helper.newRepository(repositoryInfo);
                 break;
             }
         }
 
         //Check one was created
         if (repository == null) {
-            throw new IllegalArgumentException("Unrecognized scheme '" + schemeConfigItem.getValue() + "'.");
+            throw new IllegalArgumentException("Unrecognized scheme '" + schemeConfigItem + "'.");
         }
 
         //Copy in Security Roles required to access this resource
-        ConfigItem<List<String>> groups = backward.compat(repoConfig).getConfigItem("security:groups");
+        List<String> groups = repositoryInfo.getSecurityGroups();
         if (groups != null) {
-            for (String group : groups.getValue()) {
+            for (String group : groups) {
                 repository.getGroups().add(group);
             }
         }
 
-        ConfigItem<List<Contributor>> contributors = repoConfig.getConfigItem("contributors");
+        List<Contributor> contributors = repositoryInfo.getContributors();
         if (contributors != null) {
-            for (Contributor contributor : contributors.getValue()) {
+            for (Contributor contributor : contributors) {
                 repository.getContributors().add(contributor);
             }
         }

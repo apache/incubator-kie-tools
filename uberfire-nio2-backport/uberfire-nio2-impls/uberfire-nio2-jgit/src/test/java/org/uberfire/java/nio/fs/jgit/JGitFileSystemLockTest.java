@@ -15,17 +15,19 @@
  */
 package org.uberfire.java.nio.fs.jgit;
 
+import java.io.File;
 import java.net.URI;
 import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
 
+import org.eclipse.jgit.lib.Repository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.java.nio.fs.jgit.util.Git;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class JGitFileSystemLockTest {
@@ -51,13 +53,16 @@ public class JGitFileSystemLockTest {
     }
 
     private JGitFileSystemLock createLock(long lastAccessThreshold) {
-        return new JGitFileSystemLock(mock(Git.class),
+        Git gitMock = mock(Git.class);
+        Repository repo = mock(Repository.class);
+        File directory = mock(File.class);
+        when(directory.isDirectory()).thenReturn(true);
+        when(directory.toURI()).thenReturn(URI.create(""));
+        when(repo.getDirectory()).thenReturn(directory);
+        when(gitMock.getRepository()).thenReturn(repo);
+        return new JGitFileSystemLock(gitMock,
                                       TimeUnit.MILLISECONDS,
                                       lastAccessThreshold) {
-            @Override
-            URI getRepoURI(Git git) {
-                return null;
-            }
 
             @Override
             Path createLockInfra(URI uri) {

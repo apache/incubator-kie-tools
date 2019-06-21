@@ -16,14 +16,20 @@
 
 package org.guvnor.structure.backend.repositories.git;
 
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Map;
+import javax.enterprise.event.Event;
+
 import org.assertj.core.api.Assertions;
 import org.guvnor.structure.backend.repositories.BranchAccessAuthorizer;
 import org.guvnor.structure.backend.repositories.git.hooks.PostCommitNotificationService;
+import org.guvnor.structure.organizationalunit.config.RepositoryConfiguration;
+import org.guvnor.structure.organizationalunit.config.RepositoryInfo;
 import org.guvnor.structure.repositories.EnvironmentParameters;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryExternalUpdateEvent;
-import org.guvnor.structure.server.config.ConfigGroup;
-import org.guvnor.structure.server.config.ConfigItem;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
@@ -37,13 +43,7 @@ import org.uberfire.java.nio.file.extensions.FileSystemHooks;
 import org.uberfire.java.nio.file.extensions.FileSystemHooksConstants;
 import org.uberfire.spaces.SpacesAPI;
 
-import javax.enterprise.event.Event;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Map;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyMap;
 import static org.mockito.Mockito.*;
@@ -51,7 +51,8 @@ import static org.mockito.Mockito.*;
 public abstract class GitRepositoryFactoryHelperBaseTest {
 
     enum Mode {
-        INDEXED, NOT_INDEXED;
+        INDEXED,
+        NOT_INDEXED
     }
 
     protected Mode mode;
@@ -79,74 +80,51 @@ public abstract class GitRepositoryFactoryHelperBaseTest {
     protected ArrayList<Path> rootDirectories;
     protected SpacesAPI spacesAPI;
 
-
     public void init() {
 
         spacesAPI = new SpacesAPIImpl();
 
         helper = new GitRepositoryFactoryHelper(indexed,
-                notIndexed,
-                spacesAPI,
-                repositoryExternalUpdate,
-                postCommitNotificationService,
-                branchAccessAuthorizer);
+                                                notIndexed,
+                                                spacesAPI,
+                                                repositoryExternalUpdate,
+                                                postCommitNotificationService,
+                                                branchAccessAuthorizer);
 
-
-
-        if(Mode.INDEXED.equals(mode)) {
-            initServices(indexed, notIndexed);
+        if (Mode.INDEXED.equals(mode)) {
+            initServices(indexed,
+                         notIndexed);
         } else {
-            initServices(notIndexed, indexed);
+            initServices(notIndexed,
+                         indexed);
         }
 
-        rootDirectories = new ArrayList<Path>();
+        rootDirectories = new ArrayList<>();
         when(fileSystem.getRootDirectories()).thenReturn(rootDirectories);
     }
 
-    private void initServices(IOService normal, IOService withException) {
-        when(normal.newFileSystem(any(URI.class), anyMap())
+    private void initServices(IOService normal,
+                              IOService withException) {
+        when(normal.newFileSystem(any(URI.class),
+                                  anyMap())
         ).thenReturn(fileSystem);
 
-        when(withException.newFileSystem(any(URI.class), anyMap())).thenThrow(new RuntimeException());
+        when(withException.newFileSystem(any(URI.class),
+                                         anyMap())).thenThrow(new RuntimeException());
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testNoSchemeConfigItem() throws Exception {
-        helper.newRepository(new ConfigGroup());
+    public void testNoSchemeConfigItem() {
+        helper.newRepository(new RepositoryInfo("test",
+                                                false,
+                                                new RepositoryConfiguration()));
     }
 
     @Test(expected = IllegalStateException.class)
-    public void testNotValid() throws Exception {
-        helper.newRepository(getConfigGroup());
-    }
-
-    @Test
-    public void testNewRepositoryDontReplaceIfExists() {
-
-        rootDirectories.add(createPath("default://master@uf-playground"));
-
-        ConfigGroup configGroup = getConfigGroup();
-        configGroup.setName("test");
-
-        ConfigItem configItem = new ConfigItem();
-        configItem.setName("replaceIfExists");
-        configItem.setValue(false);
-        configGroup.setConfigItem(configItem);
-
-        final IOService service = getServiceToTest();
-
-        when(service.newFileSystem(any(URI.class),
-                anyMap()))
-                .thenThrow(FileSystemAlreadyExistsException.class);
-        when(service.getFileSystem(any(URI.class))).thenReturn(fileSystem);
-
-        helper.newRepository(configGroup);
-
-        verify(service,
-                never()).delete(any(Path.class));
-        verify(service,
-                times(1)).newFileSystem(any(URI.class),
-                anyMap());
+    public void testNotValid() {
+        helper.newRepository(new RepositoryInfo(null,
+                                                false,
+                                                this.getConfig()));
     }
 
     @Test
@@ -154,42 +132,47 @@ public abstract class GitRepositoryFactoryHelperBaseTest {
 
         rootDirectories.add(createPath("default://master@uf-playground"));
 
-        ConfigGroup configGroup = getConfigGroup();
-        configGroup.setName("test");
+        RepositoryConfiguration config = this.getConfig();
+        config.add("replaceIfExists",
+                   true);
 
-        ConfigItem configItem = new ConfigItem();
-        configItem.setName("replaceIfExists");
-        configItem.setValue(true);
-        configGroup.setConfigItem(configItem);
+        RepositoryInfo repositoryInfo = new RepositoryInfo("test",
+                                                           false,
+                                                           config);
 
         final IOService service = getServiceToTest();
 
         when(service.newFileSystem(any(URI.class),
-                anyMap()))
+                                   anyMap()))
                 .thenThrow(FileSystemAlreadyExistsException.class)
                 .thenReturn(fileSystem);
         when(service.getFileSystem(any(URI.class))).thenReturn(fileSystem);
 
-        helper.newRepository(configGroup);
+        helper.newRepository(repositoryInfo);
 
-        verify(service, times(1)).delete(any(Path.class));
-        verify(service, times(2)).newFileSystem(any(URI.class), anyMap());
+        verify(service,
+               times(1)).delete(any(Path.class));
+        verify(service,
+               times(2)).newFileSystem(any(URI.class),
+                                       anyMap());
     }
 
     @Test
     public void testFileSystemHooks() {
         rootDirectories.add(createPath("default://master@uf-playground"));
 
-        ConfigGroup configGroup = getConfigGroup();
-        configGroup.setName("test");
+        RepositoryInfo repositoryInfo = new RepositoryInfo("test",
+                                                           false,
+                                                           this.getConfig());
 
         final IOService service = getServiceToTest();
 
-        helper.newRepository(configGroup);
+        helper.newRepository(repositoryInfo);
 
         ArgumentCaptor<Map> captor = ArgumentCaptor.forClass(Map.class);
 
-        verify(service).newFileSystem(any(URI.class), captor.capture());
+        verify(service).newFileSystem(any(URI.class),
+                                      captor.capture());
 
         Map params = captor.getValue();
 
@@ -210,15 +193,17 @@ public abstract class GitRepositoryFactoryHelperBaseTest {
                 .isNotNull()
                 .isInstanceOf(FileSystemHooks.FileSystemHook.class);
 
-        ctx.addParam(FileSystemHooksConstants.POST_COMMIT_EXIT_CODE, 0);
+        ctx.addParam(FileSystemHooksConstants.POST_COMMIT_EXIT_CODE,
+                     0);
 
         hook = (FileSystemHooks.FileSystemHook) params.get(FileSystemHooks.PostCommit.name());
         hook.execute(ctx);
-        verify(postCommitNotificationService).notifyUser(any(), eq(0));
+        verify(postCommitNotificationService).notifyUser(any(),
+                                                         eq(0));
     }
 
     private IOService getServiceToTest() {
-        if(Mode.INDEXED.equals(mode)) {
+        if (Mode.INDEXED.equals(mode)) {
             return indexed;
         } else {
             return notIndexed;
@@ -226,19 +211,20 @@ public abstract class GitRepositoryFactoryHelperBaseTest {
     }
 
     @Test
-    public void testBranches() throws Exception {
+    public void testBranches() {
 
         rootDirectories.add(createPath("default://origin@uf-playground"));
         rootDirectories.add(createPath("default://master@uf-playground"));
         rootDirectories.add(createPath("default://branch1@uf-playground"));
 
-        ConfigGroup configGroup = getConfigGroup();
-        configGroup.setName("test");
+        RepositoryInfo repositoryInfo = new RepositoryInfo("test",
+                                                           false,
+                                                           this.getConfig());
 
-        Repository repository = helper.newRepository(configGroup);
+        Repository repository = helper.newRepository(repositoryInfo);
 
         assertEquals(3,
-                repository.getBranches().size());
+                     repository.getBranches().size());
         assertTrue(repository.getDefaultBranch().get().getPath().toURI().contains("master"));
     }
 
@@ -249,20 +235,17 @@ public abstract class GitRepositoryFactoryHelperBaseTest {
         return path;
     }
 
-    protected ConfigGroup getConfigGroup() {
-        ConfigGroup repoConfig = new ConfigGroup();
+    protected RepositoryConfiguration getConfig() {
+        RepositoryConfiguration repositoryConfiguration = new RepositoryConfiguration();
         {
-            ConfigItem configItem = new ConfigItem();
-            configItem.setName(EnvironmentParameters.SCHEME);
-            repoConfig.addConfigItem(configItem);
+            repositoryConfiguration.add(EnvironmentParameters.SCHEME,
+                                        "git");
         }
         {
-            ConfigItem configItem = new ConfigItem();
-            configItem.setName(EnvironmentParameters.SPACE);
-            configItem.setValue("space");
-            repoConfig.addConfigItem(configItem);
+            repositoryConfiguration.add(EnvironmentParameters.SPACE,
+                                        "space");
         }
 
-        return repoConfig;
+        return repositoryConfiguration;
     }
 }

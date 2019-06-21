@@ -17,35 +17,20 @@
 package org.guvnor.structure.backend.repositories;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import javax.annotation.PostConstruct;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
-import javax.inject.Named;
 
-import org.guvnor.structure.config.SystemRepositoryChangedEvent;
-import org.guvnor.structure.contributors.Contributor;
+import org.guvnor.structure.organizationalunit.config.RepositoryInfo;
+import org.guvnor.structure.organizationalunit.config.SpaceConfigStorageRegistry;
+import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.Repository;
-import org.guvnor.structure.repositories.RepositoryExternalUpdateEvent;
-import org.guvnor.structure.repositories.RepositoryUpdatedEvent;
-import org.guvnor.structure.server.config.ConfigGroup;
-import org.guvnor.structure.server.config.ConfigItem;
-import org.guvnor.structure.server.config.ConfigurationFactory;
-import org.guvnor.structure.server.config.ConfigurationService;
 import org.guvnor.structure.server.repositories.RepositoryFactory;
+import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.spaces.Space;
-
-import static org.guvnor.structure.server.config.ConfigType.REPOSITORY;
-import static org.guvnor.structure.server.config.ConfigType.SPACE;
-import static org.uberfire.backend.server.util.Paths.convert;
 
 /**
  * Cache for configured repositories.
@@ -59,60 +44,17 @@ import static org.uberfire.backend.server.util.Paths.convert;
 @ApplicationScoped
 public class ConfiguredRepositoriesImpl implements ConfiguredRepositories {
 
-    private ConfigurationService configurationService;
     private RepositoryFactory repositoryFactory;
-    private Repository systemRepository;
-    private Event<RepositoryUpdatedEvent> repositoryUpdatedEvent;
-    private ConfigurationFactory configurationFactory;
-    private Map<Space, ConfiguredRepositoriesBySpace> repositoriesBySpace = Collections.synchronizedMap(new HashMap<>());
+    private SpaceConfigStorageRegistry spaceConfigStorage;
 
     public ConfiguredRepositoriesImpl() {
     }
 
     @Inject
-    public ConfiguredRepositoriesImpl(final ConfigurationService configurationService,
-                                      final RepositoryFactory repositoryFactory,
-                                      final @Named("system") Repository systemRepository,
-                                      final Event<RepositoryUpdatedEvent> repositoryUpdatedEvent,
-                                      final ConfigurationFactory configurationFactory) {
-        this.configurationService = configurationService;
+    public ConfiguredRepositoriesImpl(final RepositoryFactory repositoryFactory,
+                                      final SpaceConfigStorageRegistry spaceConfigStorage) {
         this.repositoryFactory = repositoryFactory;
-        this.systemRepository = systemRepository;
-        this.repositoryUpdatedEvent = repositoryUpdatedEvent;
-        this.configurationFactory = configurationFactory;
-    }
-
-    @SuppressWarnings("unchecked")
-    @PostConstruct
-    public void reloadRepositories() {
-        repositoriesBySpace.values().forEach(r -> r.clear());
-
-        final Map<String, List<ConfigGroup>> repoConfigsBySpace = configurationService.getConfigurationByNamespace(REPOSITORY);
-
-        for (final Map.Entry<String, List<ConfigGroup>> entry : repoConfigsBySpace.entrySet()) {
-            final Space space = new Space(entry.getKey());
-            final ConfiguredRepositoriesBySpace configuredRepositoriesBySpace = getConfiguredRepositoriesBySpace(space);
-
-            for (ConfigGroup repoConfig : entry.getValue()) {
-                final Repository repository = repositoryFactory.newRepository(repoConfig);
-                checkIfRepositoryContributorsIsNotSet(repoConfig, repository, space);
-                configuredRepositoriesBySpace.add(repository);
-            }
-        }
-    }
-
-    private void checkIfRepositoryContributorsIsNotSet(final ConfigGroup repoConfig,
-                                                       final Repository repository,
-                                                       final Space space) {
-        if (repoConfig.getConfigItem("contributors") == null) {
-            final Optional<ConfigGroup> spaceConfig = configurationService.getConfiguration(SPACE).stream().filter(s -> s.getName().equals(space.getName())).findFirst();
-            ConfigItem<List<Contributor>> spaceContributors = spaceConfig.get().getConfigItem("space-contributors");
-            if (spaceContributors != null) {
-                spaceContributors.getValue().forEach(c -> repository.getContributors().add(c));
-                repoConfig.addConfigItem(configurationFactory.newConfigItem("contributors", repository.getContributors()));
-                configurationService.updateConfiguration(repoConfig);
-            }
-        }
+        this.spaceConfigStorage = spaceConfigStorage;
     }
 
     /**
@@ -122,41 +64,44 @@ public class ConfiguredRepositoriesImpl implements ConfiguredRepositories {
      */
     public Repository getRepositoryByRepositoryAlias(final Space space,
                                                      final String alias) {
-        ConfiguredRepositoriesBySpace configuredRepositoriesBySpace = getConfiguredRepositoriesBySpace(space);
 
-        return configuredRepositoriesBySpace.get(alias);
-    }
-
-    private ConfiguredRepositoriesBySpace getConfiguredRepositoriesBySpace(Space space) {
-        repositoriesBySpace.putIfAbsent(space,
-                                        new ConfiguredRepositoriesBySpace());
-        return repositoriesBySpace.get(space);
+        return this.getRepositoryByRepositoryAlias(space,
+                                                   alias,
+                                                   false);
     }
 
     /**
-     * This can also return System Repository.
-     * @param fs
-     * @return
+     * @param alias Name of the repository.
+     * @param space Space of the repository.
+     * @return Repository that has a random branch as a root, usually master if master exists.
      */
-    public Repository getRepositoryByRepositoryFileSystem(final FileSystem fs) {
-        if (fs == null) {
-            return null;
-        }
+    public Repository getRepositoryByRepositoryAlias(final Space space,
+                                                     final String alias,
+                                                     final boolean includeDeleted) {
 
-        if (systemRepository.getDefaultBranch().isPresent()
-                && convert(systemRepository.getDefaultBranch().get().getPath()).getFileSystem().equals(fs)) {
-            return systemRepository;
-        }
+        List<RepositoryInfo> repositories = getAllRepositoryInfo(space);
 
-        for (ConfiguredRepositoriesBySpace configuredRepositoriesBySpace : repositoriesBySpace.values()) {
-            for (final Repository repository : configuredRepositoriesBySpace.getAllConfiguredRepositories()) {
-                if (repository.getDefaultBranch().isPresent()
-                        && convert(repository.getDefaultBranch().get().getPath()).getFileSystem().equals(fs)) {
-                    return repository;
-                }
-            }
+        return repositories.stream()
+                .filter(this.getRepository(alias,
+                                           includeDeleted))
+                .findAny()
+                .map(repo -> repositoryFactory.newRepository(repo))
+                .orElse(null);
+    }
+
+    private List<RepositoryInfo> getAllRepositoryInfo(Space space) {
+        try {
+            return this.spaceConfigStorage.get(space.getName())
+                    .loadSpaceInfo()
+                    .getRepositories();
+        } catch (Exception e) {
+            return new ArrayList<>();
         }
-        return null;
+    }
+
+    private Predicate<RepositoryInfo> getRepository(String alias,
+                                                    boolean includeDeleted) {
+        return (RepositoryInfo repositoryInfo) -> repositoryInfo.getName().equals(alias) && (!repositoryInfo.isDeleted() || includeDeleted);
     }
 
     /**
@@ -166,63 +111,60 @@ public class ConfiguredRepositoriesImpl implements ConfiguredRepositories {
      */
     public Repository getRepositoryByRootPath(final Space space,
                                               final Path root) {
-        ConfiguredRepositoriesBySpace configuredRepositoriesBySpace = getConfiguredRepositoriesBySpace(space);
-        return configuredRepositoriesBySpace.get(root);
+
+        return this.getAllConfiguredRepositories(space).stream().filter(r -> {
+            if (r.getBranches() != null) {
+                for (final Branch branch : r.getBranches()) {
+                    Path rootPath = Paths.normalizePath(branch.getPath());
+                    if (root.equals(rootPath)) {
+                        return true;
+                    }
+                }
+                return false;
+            } else {
+                return false;
+            }
+        }).findFirst()
+                .orElse(null);
     }
 
     /**
      * @return Does not include system repository.
      */
     public List<Repository> getAllConfiguredRepositories(final Space space) {
-        ConfiguredRepositoriesBySpace configuredRepositoriesBySpace = getConfiguredRepositoriesBySpace(space);
-        return new ArrayList<>(configuredRepositoriesBySpace.getAllConfiguredRepositories());
+        return this.getConfiguredRepositories(space,
+                                              repositoryInfo -> !repositoryInfo.isDeleted());
+    }
+
+    @Override
+    public List<Repository> getAllConfiguredRepositories(Space space,
+                                                         boolean includeDeleted) {
+
+        return this.getConfiguredRepositories(space,
+                                              r -> includeDeleted || !r.isDeleted());
+    }
+
+    @Override
+    public List<Repository> getAllDeletedConfiguredRepositories(Space space) {
+        return this.getConfiguredRepositories(space,
+                                              repositoryInfo -> repositoryInfo.isDeleted());
+    }
+
+    private List<Repository> getConfiguredRepositories(Space space,
+                                                       Predicate<RepositoryInfo> predicate) {
+        List<RepositoryInfo> repositories = getAllRepositoryInfo(space);
+
+        return repositories.stream()
+                .filter(predicate)
+                .map(repo -> repositoryFactory.newRepository(repo))
+                .collect(Collectors.toList());
     }
 
     public boolean containsAlias(final Space space,
                                  final String alias) {
-        ConfiguredRepositoriesBySpace configuredRepositoriesBySpace = getConfiguredRepositoriesBySpace(space);
-        return configuredRepositoriesBySpace.containsRepository(alias) || SystemRepository.SYSTEM_REPO.getAlias().equals(alias);
-    }
-
-    public Repository remove(final Space space,
-                             final String alias) {
-        ConfiguredRepositoriesBySpace configuredRepositoriesBySpace = getConfiguredRepositoriesBySpace(space);
-        return configuredRepositoriesBySpace.remove(alias);
-    }
-
-    public void add(final Space space,
-                    final Repository alias) {
-        ConfiguredRepositoriesBySpace configuredRepositoriesBySpace = getConfiguredRepositoriesBySpace(space);
-        configuredRepositoriesBySpace.add(alias);
-    }
-
-    public void update(final Space space,
-                       final Repository updatedRepo) {
-        ConfiguredRepositoriesBySpace configuredRepositoriesBySpace = getConfiguredRepositoriesBySpace(space);
-        configuredRepositoriesBySpace.remove(updatedRepo.getAlias());
-        configuredRepositoriesBySpace.add(updatedRepo);
-        repositoryUpdatedEvent.fire(new RepositoryUpdatedEvent(updatedRepo));
-    }
-
-    public void flush(final @Observes
-                      @org.guvnor.structure.backend.config.Repository
-                              SystemRepositoryChangedEvent changedEvent) {
-        reloadRepositories();
-    }
-
-    public void repositoryExternalUpdateEvent(final @Observes RepositoryExternalUpdateEvent event) {
-        refreshRepository(event.getRepository());
-    }
-
-    public void refreshRepository(final Repository repository) {
-        final Space space = repository.getSpace();
-
-        final Map<String, List<ConfigGroup>> repoConfigsBySpace = configurationService.getConfigurationByNamespace(REPOSITORY);
-        final List<ConfigGroup> repoConfigs = repoConfigsBySpace.get(space.getName());
-
-        repoConfigs.stream().filter(c -> c.getName().equals(repository.getAlias())).findFirst().ifPresent(repoConfig -> {
-            final Repository updatedRepo = repositoryFactory.newRepository(repoConfig);
-            update(space, updatedRepo);
-        });
+        List<RepositoryInfo> repositories = this.getAllRepositoryInfo(space);
+        return repositories.stream()
+                .anyMatch(r -> !r.isDeleted() && r.getName().equals(alias)) &&
+                SystemRepository.SYSTEM_REPO.getAlias().equals(alias);
     }
 }

@@ -895,7 +895,7 @@ public class JGitFileSystemImplProviderTest extends AbstractTestInfra {
 
         provider.delete(doraFS1.getPath(null));
         assertFalse(dora1RepoDir.exists());
-        assertFalse(parentDir1.exists());
+        assertTrue(parentDir1.exists());
         assertTrue(gitProviderDir.exists());
     }
 

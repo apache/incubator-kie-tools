@@ -20,6 +20,10 @@ public interface SpaceConfigStorage {
 
     void setup(final String spaceName);
 
+    SpaceInfo loadSpaceInfo();
+
+    void saveSpaceInfo(final SpaceInfo spaceInfo);
+
     BranchPermissions loadBranchPermissions(final String branchName,
                                             final String projectIdentifier);
 
@@ -29,4 +33,13 @@ public interface SpaceConfigStorage {
 
     void deleteBranchPermissions(final String branchName,
                                  final String projectIdentifier);
+
+    boolean isInitialized();
+
+    void startBatch();
+
+    void endBatch();
+
+    void close();
+
 }

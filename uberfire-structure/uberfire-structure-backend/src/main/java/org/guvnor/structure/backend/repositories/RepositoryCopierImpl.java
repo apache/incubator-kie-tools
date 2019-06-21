@@ -117,9 +117,12 @@ public class RepositoryCopierImpl
     }
 
     @Override
-    public void copy(Space space, Path originRoot, Path targetRoot) {
+    public void copy(Space space,
+                     Path originRoot,
+                     Path targetRoot) {
 
-        final boolean branchExisted = (repositoryService.getRepository(space, targetRoot) != null);
+        final boolean branchExisted = (repositoryService.getRepository(space,
+                                                                       targetRoot) != null);
 
         final org.uberfire.java.nio.file.Path nioTargetRepositoryRoot = Paths.convert(targetRoot);
         final org.uberfire.java.nio.file.Path originRepositoryRoot = Paths.convert(originRoot);
@@ -143,10 +146,8 @@ public class RepositoryCopierImpl
     }
 
     public void fireNewBranchEvent(final Path targetRoot,
-                                    final org.uberfire.java.nio.file.Path nioTargetRepositoryRoot,
-                                    final org.uberfire.java.nio.file.Path originRepositoryRoot) {
-
-        configuredRepositories.reloadRepositories();
+                                   final org.uberfire.java.nio.file.Path nioTargetRepositoryRoot,
+                                   final org.uberfire.java.nio.file.Path originRepositoryRoot) {
 
         final Repository repository = repositoryService.getRepository(targetRoot);
 
@@ -165,13 +166,12 @@ public class RepositoryCopierImpl
     }
 
     public void fireNewBranchEvent(final Space space,
-                                    final Path targetRoot,
-                                    final org.uberfire.java.nio.file.Path nioTargetRepositoryRoot,
-                                    final org.uberfire.java.nio.file.Path originRepositoryRoot) {
+                                   final Path targetRoot,
+                                   final org.uberfire.java.nio.file.Path nioTargetRepositoryRoot,
+                                   final org.uberfire.java.nio.file.Path originRepositoryRoot) {
 
-        configuredRepositories.reloadRepositories();
-
-        final Repository repository = repositoryService.getRepository(space, targetRoot);
+        final Repository repository = repositoryService.getRepository(space,
+                                                                      targetRoot);
 
         final Optional<Branch> branch = repository.getBranch(Paths.convert(nioTargetRepositoryRoot.getRoot()));
 
@@ -206,9 +206,6 @@ public class RepositoryCopierImpl
                     Files.copy(path,
                                resolve,
                                StandardCopyOption.REPLACE_EXISTING);
-
-
-
                 } catch (FileAlreadyExistsException x) {
                     //Swallow
                     x.printStackTrace();
@@ -219,7 +216,8 @@ public class RepositoryCopierImpl
 
     @Override
     public String makeSafeRepositoryName(final String oldName) {
-        return oldName.replace(' ', '-');
+        return oldName.replace(' ',
+                               '-');
     }
 
     static class RecursiveCopier implements FileVisitor<org.uberfire.java.nio.file.Path> {

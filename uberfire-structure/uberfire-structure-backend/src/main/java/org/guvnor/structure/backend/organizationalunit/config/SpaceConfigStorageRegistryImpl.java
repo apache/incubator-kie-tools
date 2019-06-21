@@ -16,8 +16,8 @@
 
 package org.guvnor.structure.backend.organizationalunit.config;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -30,7 +30,7 @@ public class SpaceConfigStorageRegistryImpl implements SpaceConfigStorageRegistr
 
     private Instance<SpaceConfigStorage> spaceConfigStorages;
 
-    private Map<String, SpaceConfigStorage> storageBySpaceName = new HashMap<>();
+    private Map<String, SpaceConfigStorage> storageBySpaceName = new ConcurrentHashMap<>();
 
     public SpaceConfigStorageRegistryImpl() {
     }
@@ -42,10 +42,25 @@ public class SpaceConfigStorageRegistryImpl implements SpaceConfigStorageRegistr
 
     @Override
     public SpaceConfigStorage get(final String spaceName) {
-        return storageBySpaceName.computeIfAbsent(spaceName, name -> {
-            final SpaceConfigStorage spaceConfigStorage = spaceConfigStorages.get();
-            spaceConfigStorage.setup(spaceName);
-            return spaceConfigStorage;
-        });
+
+        return storageBySpaceName.computeIfAbsent(spaceName,
+                                                  name -> {
+                                                      final SpaceConfigStorage spaceConfigStorage = spaceConfigStorages.get();
+                                                      spaceConfigStorage.setup(spaceName);
+                                                      return spaceConfigStorage;
+                                                  });
+    }
+
+    @Override
+    public void remove(String spaceName) {
+        if (this.exist(spaceName)) {
+            this.storageBySpaceName.get(spaceName).close();
+            this.storageBySpaceName.remove(spaceName);
+        }
+    }
+
+    @Override
+    public boolean exist(String spaceName) {
+        return this.storageBySpaceName.containsKey(spaceName);
     }
 }

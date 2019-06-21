@@ -32,6 +32,7 @@ public class OrganizationalUnitImpl implements OrganizationalUnit {
 
     private String name;
     private String defaultGroupId;
+    private boolean deleted;
 
     private Collection<Repository> repositories = new ArrayList<>();
     private Collection<String> groups = new ArrayList<>();
@@ -43,8 +44,15 @@ public class OrganizationalUnitImpl implements OrganizationalUnit {
 
     public OrganizationalUnitImpl(final String name,
                                   final String defaultGroupId) {
+        this(name, defaultGroupId, false);
+    }
+
+    public OrganizationalUnitImpl(final String name,
+                                  final String defaultGroupId,
+                                  final boolean deleted) {
         this.name = name;
         this.defaultGroupId = defaultGroupId;
+        this.deleted = deleted;
     }
 
     @Override
@@ -116,7 +124,8 @@ public class OrganizationalUnitImpl implements OrganizationalUnit {
     @Override
     public String toString() {
         return "OrganizationalUnitImpl [name=" + name + ", repositories=" + repositories
-                + ", groups=" + groups + ", contributors=" + contributors + ", defaultGroupId=" + defaultGroupId + "]";
+                + ", groups=" + groups + ", contributors=" + contributors + ", defaultGroupId=" + defaultGroupId
+                + ", deleted=" + deleted + "]";
     }
 
     @Override
@@ -137,5 +146,10 @@ public class OrganizationalUnitImpl implements OrganizationalUnit {
     @Override
     public Collection<Contributor> getContributors() {
         return contributors;
+    }
+
+    @Override
+    public boolean isDeleted() {
+        return deleted;
     }
 }

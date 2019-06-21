@@ -98,11 +98,20 @@ public class WorkspaceProjectServiceImpl
     @Override
     public Collection<WorkspaceProject> getAllWorkspaceProjectsByName(final OrganizationalUnit organizationalUnit,
                                                                       final String name) {
+        return this.getAllWorkspaceProjectsByName(organizationalUnit,
+                                                  name,
+                                                  false);
+    }
+
+    public Collection<WorkspaceProject> getAllWorkspaceProjectsByName(final OrganizationalUnit organizationalUnit,
+                                                                      final String name,
+                                                                      final boolean includeDeleted) {
         final List<WorkspaceProject> result = new ArrayList<>();
 
         Space space = spaces.getSpace(organizationalUnit.getName());
 
-        for (final Repository repository : repositoryService.getAllRepositories(space)) {
+        for (final Repository repository : repositoryService.getAllRepositories(space,
+                                                                                includeDeleted)) {
 
             if (repository.getDefaultBranch().isPresent()) {
 
@@ -122,7 +131,8 @@ public class WorkspaceProjectServiceImpl
     public boolean spaceHasNoProjectsWithName(final OrganizationalUnit organizationalUnit,
                                               final String name,
                                               final WorkspaceProject projectToIgnore) {
-        return getAllWorkspaceProjectsByName(organizationalUnit, name)
+        return getAllWorkspaceProjectsByName(organizationalUnit,
+                                             name)
                 .stream().noneMatch(p -> !p.getEncodedIdentifier().equals(projectToIgnore.getEncodedIdentifier()));
     }
 
@@ -224,7 +234,8 @@ public class WorkspaceProjectServiceImpl
         int index = 0;
         String suffix = "";
         while (!this.getAllWorkspaceProjectsByName(organizationalUnit,
-                                                   name + suffix).isEmpty()) {
+                                                   name + suffix,
+                                                   true).isEmpty()) {
             suffix = "-" + ++index;
         }
 

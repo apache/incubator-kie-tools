@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -11,14 +11,14 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 package org.guvnor.structure.server.repositories;
 
+import org.guvnor.structure.organizationalunit.config.RepositoryInfo;
 import org.guvnor.structure.repositories.Repository;
-import org.guvnor.structure.server.config.ConfigGroup;
 
 public interface RepositoryFactory {
 
-    Repository newRepository(final ConfigGroup repoConfig);
+    Repository newRepository(final RepositoryInfo repositoryInfo);
 }

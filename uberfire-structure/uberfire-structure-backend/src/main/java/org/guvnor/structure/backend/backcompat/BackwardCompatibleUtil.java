@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -11,7 +11,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 package org.guvnor.structure.backend.backcompat;
 
@@ -24,6 +24,7 @@ import org.guvnor.structure.server.config.ConfigGroup;
 import org.guvnor.structure.server.config.ConfigItem;
 import org.guvnor.structure.server.config.ConfigurationFactory;
 
+@Deprecated
 @ApplicationScoped
 public class BackwardCompatibleUtil {
 
@@ -37,6 +38,7 @@ public class BackwardCompatibleUtil {
         this.configurationFactory = configurationFactory;
     }
 
+    @Deprecated
     public ConfigGroup compat(final ConfigGroup configGroup) {
         if (configGroup != null) {
             final ConfigItem<List<String>> roles = configGroup.getConfigItem("security:roles");

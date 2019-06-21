@@ -50,6 +50,7 @@ public class GitRepository
     private Collection<String> groups = new ArrayList<>();
     private Collection<Contributor> contributors = new ArrayList<>();
     private boolean requiresRefresh = true;
+    private boolean deleted;
 
     public GitRepository() {
     }

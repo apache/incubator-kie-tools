@@ -16,8 +16,10 @@
 package org.guvnor.structure.organizationalunit;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.uberfire.commons.clusterapi.Clustered;
 
 @Portable
+@Clustered
 public class NewOrganizationalUnitEvent extends OrganizationalUnitEventBase {
 
     public NewOrganizationalUnitEvent() {
