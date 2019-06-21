@@ -17,7 +17,6 @@
 package org.kie.workbench.common.project.config;
 
 import javax.enterprise.event.Event;
-import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
@@ -26,9 +25,11 @@ import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.service.ModuleRepositoryResolver;
 import org.guvnor.common.services.project.service.ModuleService;
+import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
+import org.guvnor.structure.repositories.RepositoryService;
 import org.uberfire.spaces.SpacesAPI;
 
-@Alternative
+@Migration
 public class MigrationWorkspaceProjectServiceImpl extends WorkspaceProjectServiceImpl {
 
     public MigrationWorkspaceProjectServiceImpl() {
@@ -36,8 +37,8 @@ public class MigrationWorkspaceProjectServiceImpl extends WorkspaceProjectServic
     }
 
     @Inject
-    public MigrationWorkspaceProjectServiceImpl(final MigrationOrganizationalUnitServiceImpl organizationalUnitService,
-                                                final MigrationRepositoryServiceImpl repositoryService,
+    public MigrationWorkspaceProjectServiceImpl(final @Migration OrganizationalUnitService organizationalUnitService,
+                                                final @Migration RepositoryService repositoryService,
                                                 final SpacesAPI spaces,
                                                 final Event<NewProjectEvent> newProjectEvent,
                                                 final Instance<ModuleService<? extends Module>> moduleServices,

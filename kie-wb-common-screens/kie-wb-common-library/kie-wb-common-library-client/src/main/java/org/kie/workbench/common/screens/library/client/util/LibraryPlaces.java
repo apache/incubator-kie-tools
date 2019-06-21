@@ -426,8 +426,12 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
             return promises.create((res, rej) -> {
                 libraryService.call(
                         (RemoteCallback<OrganizationalUnit>) organizationalUnit -> {
-                            projectContextChangeEvent.fire(new WorkspaceProjectContextChangeEvent(organizationalUnit));
-                            setupLibraryPerspective();
+                            if (organizationalUnit == null) {
+                                this.goToOrganizationalUnits();
+                            } else {
+                                projectContextChangeEvent.fire(new WorkspaceProjectContextChangeEvent(organizationalUnit));
+                                setupLibraryPerspective();
+                            }
                             res.onInvoke((IThenable<Void>) null);
                         },
                         (message, throwable) -> {

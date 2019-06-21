@@ -17,19 +17,15 @@
 package org.kie.workbench.common.screens.examples.backend.server;
 
 import java.util.ArrayList;
+import java.util.Map;
 import javax.enterprise.event.Event;
 
 import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
-import org.guvnor.structure.backend.config.ConfigurationFactoryImpl;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.EnvironmentParameters;
 import org.guvnor.structure.repositories.RepositoryCopier;
-import org.guvnor.structure.server.config.ConfigGroup;
-import org.guvnor.structure.server.config.ConfigItem;
-import org.guvnor.structure.server.config.ConfigType;
-import org.guvnor.structure.server.config.ConfigurationFactory;
 import org.guvnor.structure.server.repositories.RepositoryFactory;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,28 +34,22 @@ import org.kie.workbench.common.screens.examples.model.ExampleRepository;
 import org.kie.workbench.common.screens.examples.validation.ImportProjectValidators;
 import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenService;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.io.IOService;
 import org.uberfire.mocks.EventSourceMock;
-import org.uberfire.rpc.SessionInfo;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ExamplesServiceImplCheckNoIndexConfigTest {
 
     @Mock
     private IOService ioService;
-
-    private ConfigurationFactory configurationFactory = spy(new ConfigurationFactoryImpl());
 
     @Mock
     private RepositoryFactory repositoryFactory;
@@ -91,17 +81,16 @@ public class ExamplesServiceImplCheckNoIndexConfigTest {
     };
 
     @Mock
-    private SessionInfo sessionInfo;
-
-    @Mock
     private ImportProjectValidators validators;
+
+    @Captor
+    private ArgumentCaptor<Map<String, Object>> captor;
 
     private ExamplesServiceImpl service;
 
     @Before
     public void setup() {
         service = spy(new ExamplesServiceImpl(ioService,
-                                              configurationFactory,
                                               repositoryFactory,
                                               moduleService,
                                               repositoryCopier,
@@ -117,18 +106,13 @@ public class ExamplesServiceImplCheckNoIndexConfigTest {
 
     @Test
     public void testCheckRepositoryConfig_NoIndex() {
-        final ConfigGroup configGroup = new ConfigGroup();
-        doReturn(configGroup).when(configurationFactory).newConfigGroup(any(ConfigType.class),
-                                                                        anyString(),
-                                                                        anyString(),
-                                                                        anyString());
 
         service.getProjects(new ExampleRepository("https://github.com/guvnorngtestuser1/guvnorng-playground.git"));
 
-        final ConfigItem item = configGroup.getConfigItem(EnvironmentParameters.AVOID_INDEX);
-        assertNotNull(item);
+        verify(service).createConfigGroup(eq("examples-guvnorng-playground"),
+                                          captor.capture());
 
-        assertEquals("true",
-                     item.getValue());
+        assertEquals(true,
+                     captor.getValue().get(EnvironmentParameters.AVOID_INDEX));
     }
 }

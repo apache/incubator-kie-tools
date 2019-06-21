@@ -56,7 +56,7 @@ public class SpacesScreenServiceImpl implements SpacesScreenService {
 
     @Override
     public Collection<OrganizationalUnit> getSpaces() {
-        return organizationalUnitService.getOrganizationalUnits();
+        return organizationalUnitService.getOrganizationalUnits(true);
     }
 
     @Override
@@ -67,7 +67,7 @@ public class SpacesScreenServiceImpl implements SpacesScreenService {
 
     @Override
     public OrganizationalUnit getSpace(final String name) {
-        return organizationalUnitService.getOrganizationalUnit(name);
+        return organizationalUnitService.getOrganizationalUnit(name, true);
     }
 
     @Override

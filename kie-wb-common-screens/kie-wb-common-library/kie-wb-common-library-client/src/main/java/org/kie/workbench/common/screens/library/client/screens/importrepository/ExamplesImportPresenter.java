@@ -17,6 +17,8 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.screens.examples.model.ExampleOrganizationalUnit;
 import org.kie.workbench.common.screens.examples.model.ImportProject;
 import org.kie.workbench.common.screens.examples.service.ExamplesService;
+import org.kie.workbench.common.screens.library.api.LibraryService;
+import org.kie.workbench.common.screens.library.api.preferences.ImportProjectsPreferences;
 import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.screens.library.client.widgets.example.ExampleProjectWidget;
@@ -39,7 +41,9 @@ public class ExamplesImportPresenter extends ImportPresenter {
                                    final Event<NotificationEvent> notificationEvent,
                                    final Event<WorkspaceProjectContextChangeEvent> projectContextChangeEvent,
                                    final Elemental2DomUtil elemental2DomUtil,
-                                   final TranslationService ts) {
+                                   final TranslationService ts,
+                                   final ImportProjectsPreferences importProjectsPreferences,
+                                   final Caller<LibraryService> libraryService) {
 
         super(view,
               libraryPlaces,
@@ -48,6 +52,8 @@ public class ExamplesImportPresenter extends ImportPresenter {
               notificationEvent,
               projectContextChangeEvent,
               elemental2DomUtil,
+              importProjectsPreferences,
+              libraryService,
               ts.getTranslation(LibraryConstants.TrySamples));
         this.examplesService = examplesService;
     }

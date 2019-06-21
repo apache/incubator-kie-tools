@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.screens.library.client.screens.organizationalunit.contributors.tab;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -37,4 +38,6 @@ public interface ContributorsListService {
                                          ContributorType type);
 
     void getValidUsernames(Consumer<List<String>> validUsernamesConsumer);
+
+    void onExternalChange(final Consumer<Collection<Contributor>> contributorsConsumer);
 }

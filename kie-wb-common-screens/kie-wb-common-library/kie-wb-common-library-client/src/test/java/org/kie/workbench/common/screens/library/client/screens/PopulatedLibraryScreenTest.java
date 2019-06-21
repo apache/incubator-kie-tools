@@ -18,6 +18,7 @@ package org.kie.workbench.common.screens.library.client.screens;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import javax.enterprise.event.Event;
 
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.project.client.security.ProjectController;
@@ -35,6 +36,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.library.api.LibraryInfo;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.api.ProjectAssetListUpdated;
+import org.kie.workbench.common.screens.library.api.ProjectCountUpdate;
 import org.kie.workbench.common.screens.library.client.screens.project.AddProjectPopUpPresenter;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.screens.library.client.widgets.common.TileWidget;
@@ -84,6 +86,9 @@ public class PopulatedLibraryScreenTest {
 
     private PopulatedLibraryScreen libraryScreen;
 
+    @Mock
+    private Event<ProjectCountUpdate> projectCountUpdateEvent;
+
     private WorkspaceProject project1;
     private WorkspaceProject project2;
     private WorkspaceProject project3;
@@ -98,7 +103,8 @@ public class PopulatedLibraryScreenTest {
                                                        projectController,
                                                        projectContext,
                                                        tileWidgets,
-                                                       addProjectButtonPresenter));
+                                                       addProjectButtonPresenter,
+                                                       projectCountUpdateEvent));
 
         doReturn(true).when(projectController).canCreateProjects(any());
 

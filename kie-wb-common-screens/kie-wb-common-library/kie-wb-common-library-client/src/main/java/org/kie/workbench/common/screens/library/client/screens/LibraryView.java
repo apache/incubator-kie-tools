@@ -170,4 +170,19 @@ public class LibraryView implements LibraryScreen.View,
         mainContainer.setTextContent("");
         mainContainer.appendChild(content);
     }
+
+    @Override
+    public boolean isProjectsTabActive() {
+        return projectsTabContainer.getClassList().contains("active");
+    }
+
+    @Override
+    public boolean isContributorsTabActive() {
+        return contributorsTabContainer.getClassList().contains("active");
+    }
+
+    @Override
+    public boolean isMetricsTabActive() {
+        return metricsTabContainer.getClassList().contains("active");
+    }
 }

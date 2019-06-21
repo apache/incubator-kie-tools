@@ -51,8 +51,8 @@ import org.guvnor.structure.organizationalunit.config.SpaceConfigStorageRegistry
 import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.NewBranchEvent;
 import org.guvnor.structure.repositories.Repository;
-import org.guvnor.structure.repositories.RepositoryExternalUpdateEvent;
 import org.guvnor.structure.repositories.RepositoryService;
+import org.guvnor.structure.repositories.RepositoryUpdatedEvent;
 import org.guvnor.structure.security.OrganizationalUnitAction;
 import org.guvnor.structure.security.RepositoryAction;
 import org.jboss.errai.bus.server.annotations.Service;
@@ -70,12 +70,12 @@ import org.kie.workbench.common.screens.library.api.LibraryInfo;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.api.OrganizationalUnitRepositoryInfo;
 import org.kie.workbench.common.screens.library.api.ProjectAssetsQuery;
-import org.kie.workbench.common.services.refactoring.backend.server.query.standard.LibraryValueFileExtensionIndexTerm;
-import org.kie.workbench.common.services.refactoring.backend.server.query.standard.LibraryValueFileNameIndexTerm;
-import org.kie.workbench.common.services.refactoring.backend.server.query.standard.LibraryValueRepositoryRootIndexTerm;
 import org.kie.workbench.common.screens.library.api.preferences.LibraryInternalPreferences;
 import org.kie.workbench.common.screens.library.api.preferences.LibraryPreferences;
 import org.kie.workbench.common.services.refactoring.backend.server.query.standard.FindAllLibraryAssetsQuery;
+import org.kie.workbench.common.services.refactoring.backend.server.query.standard.LibraryValueFileExtensionIndexTerm;
+import org.kie.workbench.common.services.refactoring.backend.server.query.standard.LibraryValueFileNameIndexTerm;
+import org.kie.workbench.common.services.refactoring.backend.server.query.standard.LibraryValueRepositoryRootIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRequest;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRow;
@@ -85,6 +85,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.commons.cluster.ClusterService;
 import org.uberfire.ext.security.management.api.exception.NoImplementationAvailableException;
 import org.uberfire.ext.security.management.api.service.UserManagerService;
 import org.uberfire.ext.security.management.impl.SearchRequestImpl;
@@ -122,8 +123,9 @@ public class LibraryServiceImpl implements LibraryService {
     private PathUtil pathUtil;
     private Event<NewBranchEvent> newBranchEvent;
     private ConfiguredRepositories configuredRepositories;
-    private Event<RepositoryExternalUpdateEvent> repositoryExternalUpdate;
+    private Event<RepositoryUpdatedEvent> repositoryUpdatedEvent;
     private SpaceConfigStorageRegistry spaceConfigStorageRegistry;
+    private ClusterService clusterService;
 
     public LibraryServiceImpl() {
     }
@@ -146,8 +148,9 @@ public class LibraryServiceImpl implements LibraryService {
                               final PathUtil pathUtil,
                               final Event<NewBranchEvent> newBranchEvent,
                               final ConfiguredRepositories configuredRepositories,
-                              final Event<RepositoryExternalUpdateEvent> repositoryExternalUpdate,
-                              final SpaceConfigStorageRegistry spaceConfigStorageRegistry) {
+                              final Event<RepositoryUpdatedEvent> repositoryUpdatedEvent,
+                              final SpaceConfigStorageRegistry spaceConfigStorageRegistry,
+                              final ClusterService clusterService) {
         this.ouService = ouService;
         this.refactoringQueryService = refactoringQueryService;
         this.preferences = preferences;
@@ -165,8 +168,9 @@ public class LibraryServiceImpl implements LibraryService {
         this.pathUtil = pathUtil;
         this.newBranchEvent = newBranchEvent;
         this.configuredRepositories = configuredRepositories;
-        this.repositoryExternalUpdate = repositoryExternalUpdate;
+        this.repositoryUpdatedEvent = repositoryUpdatedEvent;
         this.spaceConfigStorageRegistry = spaceConfigStorageRegistry;
+        this.clusterService = clusterService;
     }
 
     @Override
@@ -206,7 +210,9 @@ public class LibraryServiceImpl implements LibraryService {
     }
 
     private boolean userCanReadProject(final WorkspaceProject project) {
-        return authorizationManager.authorize(project.getRepository(), RepositoryAction.READ, sessionInfo.getIdentity())
+        return authorizationManager.authorize(project.getRepository(),
+                                              RepositoryAction.READ,
+                                              sessionInfo.getIdentity())
                 || project.getRepository().getContributors().stream().anyMatch(c -> c.getUsername().equals(sessionInfo.getIdentity().getIdentifier()));
     }
 
@@ -246,12 +252,14 @@ public class LibraryServiceImpl implements LibraryService {
                 .collect(Collectors.toList());
 
         if (spaceContributors.size() == contributors.size()) {
-            spaceContributors.add(new Contributor(sessionInfo.getIdentity().getIdentifier(), ContributorType.CONTRIBUTOR));
+            spaceContributors.add(new Contributor(sessionInfo.getIdentity().getIdentifier(),
+                                                  ContributorType.CONTRIBUTOR));
             ouService.updateOrganizationalUnit(ou.getName(),
                                                ou.getDefaultGroupId(),
                                                spaceContributors);
         }
-        contributors.add(new Contributor(sessionInfo.getIdentity().getIdentifier(), ContributorType.OWNER));
+        contributors.add(new Contributor(sessionInfo.getIdentity().getIdentifier(),
+                                         ContributorType.OWNER));
 
         return contributors;
     }
@@ -419,12 +427,14 @@ public class LibraryServiceImpl implements LibraryService {
                                                                baseBranch.getPath().toURI());
         try {
             final org.uberfire.java.nio.file.Path newBranchPath = ioService.get(new URI(newBranchPathURI));
-            baseBranchPath.getFileSystem().provider().copy(baseBranchPath, newBranchPath);
+            baseBranchPath.getFileSystem().provider().copy(baseBranchPath,
+                                                           newBranchPath);
             copyBranchPermissions(newBranchName,
                                   baseBranchName,
                                   project);
 
-            repositoryExternalUpdate.fire(new RepositoryExternalUpdateEvent(project.getRepository()));
+            repositoryUpdatedEvent.fire(new RepositoryUpdatedEvent(repoService.getRepositoryFromSpace(project.getSpace(),
+                                                                                                      project.getRepository().getAlias())));
 
             fireNewBranchEvent(pathUtil.convert(newBranchPath),
                                newBranchPath,
@@ -454,14 +464,16 @@ public class LibraryServiceImpl implements LibraryService {
         deleteBranchPermissions(project.getSpace().getName(),
                                 project.getRepository().getIdentifier(),
                                 branch.getName());
-        configuredRepositories.refreshRepository(project.getRepository());
+        this.repositoryUpdatedEvent.fire(new RepositoryUpdatedEvent(repoService.getRepositoryFromSpace(project.getSpace(),
+                                                                                                       project.getRepository().getAlias())));
     }
 
     @Override
     public BranchPermissions loadBranchPermissions(final String spaceName,
                                                    final String projectIdentifier,
                                                    final String branchName) {
-        return spaceConfigStorageRegistry.get(spaceName).loadBranchPermissions(branchName, projectIdentifier);
+        return spaceConfigStorageRegistry.get(spaceName).loadBranchPermissions(branchName,
+                                                                               projectIdentifier);
     }
 
     @Override
@@ -469,13 +481,21 @@ public class LibraryServiceImpl implements LibraryService {
                                       final String projectIdentifier,
                                       final String branchName,
                                       final BranchPermissions branchPermissions) {
-        spaceConfigStorageRegistry.get(spaceName).saveBranchPermissions(branchName, projectIdentifier, branchPermissions);
+        spaceConfigStorageRegistry.get(spaceName).saveBranchPermissions(branchName,
+                                                                        projectIdentifier,
+                                                                        branchPermissions);
+    }
+
+    @Override
+    public Boolean isClustered() {
+        return clusterService.isAppFormerClustered();
     }
 
     private void deleteBranchPermissions(final String spaceName,
                                          final String projectIdentifier,
                                          final String branchName) {
-        spaceConfigStorageRegistry.get(spaceName).deleteBranchPermissions(branchName, projectIdentifier);
+        spaceConfigStorageRegistry.get(spaceName).deleteBranchPermissions(branchName,
+                                                                          projectIdentifier);
     }
 
     private void fireNewBranchEvent(final Path targetRoot,
@@ -585,7 +605,8 @@ public class LibraryServiceImpl implements LibraryService {
         final LibraryPreferences preferences = getPreferences();
 
         final List<Contributor> contributors = new ArrayList<>();
-        contributors.add(new Contributor(preferences.getOrganizationalUnitPreferences().getOwner(), ContributorType.OWNER));
+        contributors.add(new Contributor(preferences.getOrganizationalUnitPreferences().getOwner(),
+                                         ContributorType.OWNER));
 
         return ouService.createOrganizationalUnit(preferences.getOrganizationalUnitPreferences().getName(),
                                                   preferences.getOrganizationalUnitPreferences().getGroupId(),

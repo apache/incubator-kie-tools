@@ -44,10 +44,9 @@ import org.guvnor.structure.organizationalunit.config.SpaceConfigStorageRegistry
 import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.NewBranchEvent;
 import org.guvnor.structure.repositories.Repository;
-import org.guvnor.structure.repositories.RepositoryExternalUpdateEvent;
 import org.guvnor.structure.repositories.RepositoryService;
+import org.guvnor.structure.repositories.RepositoryUpdatedEvent;
 import org.guvnor.structure.security.RepositoryAction;
-import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -76,6 +75,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.commons.cluster.ClusterService;
 import org.uberfire.ext.security.management.api.service.UserManagerService;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileSystem;
@@ -149,10 +149,13 @@ public class LibraryServiceImplTest {
     private ConfiguredRepositories configuredRepositories;
 
     @Mock
-    private EventSourceMock<RepositoryExternalUpdateEvent> repositoryExternalUpdateEvent;
+    private EventSourceMock<RepositoryUpdatedEvent> repositoryUpdatedEvent;
 
     @Mock
     private SpaceConfigStorageRegistry spaceConfigStorageRegistry;
+
+    @Mock
+    private ClusterService clusterService;
 
     @Mock
     private Event<NewBranchEvent> newBranchEvent;
@@ -229,8 +232,9 @@ public class LibraryServiceImplTest {
                                                     pathUtil,
                                                     newBranchEvent,
                                                     configuredRepositories,
-                                                    repositoryExternalUpdateEvent,
-                                                    spaceConfigStorageRegistry
+                                                    repositoryUpdatedEvent,
+                                                    spaceConfigStorageRegistry,
+                                                    clusterService
         ));
     }
 
@@ -764,7 +768,7 @@ public class LibraryServiceImplTest {
         libraryService.addBranch("new-branch", "repo1-branch1", project);
 
         verify(fileSystemProvider).copy(baseBranchPath, newBranchPath);
-        verify(repositoryExternalUpdateEvent).fire(any());
+        verify(repositoryUpdatedEvent).fire(any());
         verify(newBranchEvent).fire(newBranchEventArgumentCaptor.capture());
 
         final NewBranchEvent newBranchEvent = newBranchEventArgumentCaptor.getValue();
@@ -792,7 +796,6 @@ public class LibraryServiceImplTest {
         libraryService.removeBranch(project, masterBranch);
 
         verify(ioService).delete(baseBranchPath);
-        verify(configuredRepositories).refreshRepository(repo1);
     }
 
     private Branch makeBranch(final String branchName,

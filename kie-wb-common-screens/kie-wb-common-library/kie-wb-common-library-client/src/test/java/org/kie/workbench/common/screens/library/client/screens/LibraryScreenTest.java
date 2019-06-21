@@ -23,10 +23,8 @@ import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.structure.client.security.OrganizationalUnitController;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
-import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryRemovedEvent;
-import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
@@ -145,7 +143,8 @@ public class LibraryScreenTest {
 
         verify(view).init(libraryScreen);
         verify(view).setTitle("name");
-        verify(contributorsListPresenter).setup(eq(spaceContributorsListService), any());
+        verify(contributorsListPresenter).setup(eq(spaceContributorsListService),
+                                                any());
     }
 
     @Test
@@ -201,6 +200,7 @@ public class LibraryScreenTest {
 
     @Test
     public void showProjectsTest() {
+        doReturn(true).when(view).isProjectsTabActive();
         doReturn(true).when(libraryService).hasProjects(any());
         final HTMLElement populatedLibraryScreenElement = mock(HTMLElement.class);
         when(populatedLibraryScreen.getView().getElement()).thenReturn(populatedLibraryScreenElement);
@@ -264,6 +264,7 @@ public class LibraryScreenTest {
 
     @Test
     public void showNoProjectsTest() {
+        doReturn(true).when(view).isProjectsTabActive();
         doReturn(false).when(libraryService).hasProjects(any());
         final HTMLElement emptyLibraryScreenElement = mock(HTMLElement.class);
         when(emptyLibraryScreen.getView().getElement()).thenReturn(emptyLibraryScreenElement);
@@ -271,11 +272,13 @@ public class LibraryScreenTest {
         libraryScreen.showProjects();
 
         verify(view).updateContent(emptyLibraryScreenElement);
-        verify(view).setProjectsCount(0);
+        verify(view,
+               times(2)).setProjectsCount(0);
     }
 
     @Test
     public void showMetrics() {
+        doReturn(true).when(view).isMetricsTabActive();
         libraryScreen.showMetrics();
         verify(orgUnitsMetricsScreen).refresh();
         verify(view).updateContent(any());

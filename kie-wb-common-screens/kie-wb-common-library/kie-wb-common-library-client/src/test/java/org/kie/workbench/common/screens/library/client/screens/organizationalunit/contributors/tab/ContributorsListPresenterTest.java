@@ -112,8 +112,8 @@ public class ContributorsListPresenterTest {
         verify(contributorsCountChangedCallback).accept(3);
         verify(view).clearContributors();
         order.verify(contributorsListItemPresenter).setup(contributors.get(0), presenter, contributorsListService);
-        order.verify(contributorsListItemPresenter).setup(contributors.get(1), presenter, contributorsListService);
         order.verify(contributorsListItemPresenter).setup(contributors.get(2), presenter, contributorsListService);
+        order.verify(contributorsListItemPresenter).setup(contributors.get(1), presenter, contributorsListService);
         verify(view, times(3)).addContributor(any());
     }
 

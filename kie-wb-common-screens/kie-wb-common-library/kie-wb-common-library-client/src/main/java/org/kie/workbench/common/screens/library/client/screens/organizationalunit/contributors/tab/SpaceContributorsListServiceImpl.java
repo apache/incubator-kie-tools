@@ -17,16 +17,19 @@
 package org.kie.workbench.common.screens.library.client.screens.organizationalunit.contributors.tab;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import elemental2.promise.Promise;
 import org.guvnor.structure.client.security.OrganizationalUnitController;
 import org.guvnor.structure.contributors.Contributor;
 import org.guvnor.structure.contributors.ContributorType;
+import org.guvnor.structure.contributors.SpaceContributorsUpdatedEvent;
 import org.guvnor.structure.events.AfterEditOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
@@ -57,6 +60,8 @@ public class SpaceContributorsListServiceImpl implements ContributorsListService
 
     private Promises promises;
 
+    private Consumer<Collection<Contributor>> contributorsConsumerForExternalChange;
+
     @Inject
     public SpaceContributorsListServiceImpl(final LibraryPlaces libraryPlaces,
                                             final Caller<OrganizationalUnitService> organizationalUnitService,
@@ -74,6 +79,7 @@ public class SpaceContributorsListServiceImpl implements ContributorsListService
         this.organizationalUnitController = organizationalUnitController;
         this.contributorsSecurityUtils = contributorsSecurityUtils;
         this.promises = promises;
+        this.contributorsConsumerForExternalChange = null;
     }
 
     @Override
@@ -117,5 +123,17 @@ public class SpaceContributorsListServiceImpl implements ContributorsListService
     @Override
     public void getValidUsernames(final Consumer<List<String>> validUsernamesConsumer) {
         libraryService.call((RemoteCallback<List<String>>) validUsernamesConsumer::accept).getAllUsers();
+    }
+
+    @Override
+    public void onExternalChange(final Consumer<Collection<Contributor>> contributorsConsumer) {
+        this.contributorsConsumerForExternalChange = contributorsConsumer;
+    }
+
+    public void onSpaceContributorsUpdatedEvent(@Observes final SpaceContributorsUpdatedEvent spaceContributorsUpdatedEvent) {
+        if (this.contributorsConsumerForExternalChange != null
+                && spaceContributorsUpdatedEvent.getOrganizationalUnit().getName().equals(libraryPlaces.getActiveSpace().getName())) {
+            this.contributorsConsumerForExternalChange.accept(spaceContributorsUpdatedEvent.getOrganizationalUnit().getContributors());
+        }
     }
 }

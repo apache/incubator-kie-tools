@@ -27,7 +27,7 @@ describe("snapshot", () => {
     expect(
       shallow(
         <Tile
-          space={{ name: "Foo", contributors: [], repositories: [] }}
+          space={{ name: "Foo", deleted: false, contributors: [], repositories: [] }}
           onSelect={jest.fn()}
         />
       )

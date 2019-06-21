@@ -70,14 +70,14 @@ public class SpacesScreenServiceImplTest {
     @Test
     public void testGetSpaces() {
         final Collection<OrganizationalUnit> spaces = Arrays.asList(new OrganizationalUnitImpl("foo", "org.foo"), new OrganizationalUnitImpl("bar", "org.bar"));
-        doReturn(spaces).when(organizationalUnitService).getOrganizationalUnits();
+        doReturn(spaces).when(organizationalUnitService).getOrganizationalUnits(true);
         assertEquals(spaces, spacesScreenService.getSpaces());
     }
 
     @Test
     public void testGetSpace() {
         final OrganizationalUnitImpl space = new OrganizationalUnitImpl("test", "org.test");
-        doReturn(space).when(organizationalUnitService).getOrganizationalUnit("test");
+        doReturn(space).when(organizationalUnitService).getOrganizationalUnit("test", true);
         assertEquals(space, spacesScreenService.getSpace("test"));
     }
 

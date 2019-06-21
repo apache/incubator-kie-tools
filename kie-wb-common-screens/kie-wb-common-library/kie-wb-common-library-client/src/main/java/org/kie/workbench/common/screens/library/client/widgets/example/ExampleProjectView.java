@@ -107,12 +107,14 @@ public class ExampleProjectView implements ExampleProjectWidget.View {
 
     @Override
     public void changeBranchSelectorTitle(final List<String> branches) {
-        branchSelector.title = ts.format(LibraryConstants.BranchSelectorSelectedBranches, String.join(", ", branches));
+        branchSelector.title = ts.format(LibraryConstants.BranchSelectorSelectedBranches,
+                                         String.join(", ",
+                                                     branches));
     }
 
     @EventHandler("card")
     public void onCardClick(ClickEvent event) {
-        this.presenter.select();
+        this.presenter.click();
     }
 
     @EventHandler("branch-selector")

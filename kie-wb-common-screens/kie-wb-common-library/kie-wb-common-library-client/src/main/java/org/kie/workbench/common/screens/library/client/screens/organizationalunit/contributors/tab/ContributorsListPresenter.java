@@ -17,6 +17,7 @@
 package org.kie.workbench.common.screens.library.client.screens.organizationalunit.contributors.tab;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -25,11 +26,9 @@ import javax.inject.Inject;
 import elemental2.promise.Promise;
 import org.guvnor.structure.contributors.Contributor;
 import org.guvnor.structure.contributors.ContributorType;
-import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.client.promise.Promises;
 
@@ -85,19 +84,22 @@ public class ContributorsListPresenter {
         this.contributorsCountChangedCallback = contributorsCountChangedCallback;
 
         refresh();
+        this.contributorsListService.onExternalChange(this::refresh);
     }
 
     public void refresh() {
-        contributorsListService.getContributors(contributors -> {
-            this.contributors = contributors;
-            this.contributors.sort(Contributor.COMPARATOR);
-            view.init(this);
+        contributorsListService.getContributors(this::refresh);
+    }
 
-            contributorsListService.getValidUsernames(validUsernames -> {
-                this.validUsernames = validUsernames;
-                updateContributors();
-                contributorsCountChangedCallback.accept(contributors.size());
-            });
+    private void refresh(final Collection<Contributor> contributors) {
+        this.contributors = new ArrayList<>(contributors);
+        this.contributors.sort(Contributor.COMPARATOR);
+        view.init(this);
+
+        contributorsListService.getValidUsernames(validUsernames -> {
+            this.validUsernames = validUsernames;
+            updateContributors();
+            contributorsCountChangedCallback.accept(contributors.size());
         });
     }
 

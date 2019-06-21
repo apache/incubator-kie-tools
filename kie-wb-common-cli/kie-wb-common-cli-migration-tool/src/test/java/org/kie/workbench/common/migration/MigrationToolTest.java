@@ -237,7 +237,7 @@ public class MigrationToolTest {
         assertThat(personFormDef.getFieldByName("person_salary").getHelpMessage()).isEqualTo("Please enter your salary in dollars.");
         assertThat(personFormDef.getFieldByName("person_birthdate").getRequired()).isTrue();
         assertThat(personFormDef.getFieldByName("person_married").getReadOnly()).isTrue();
-        assertThat(((DataObjectFormModel) personFormDef.getModel()).getType()).isEqualTo("bxms.formmodeler_migration.Person");
+        assertThat(((DataObjectFormModel) personFormDef.getModel()).getType()).isEqualTo("bxms.projectWithForms.Person");
     }
 
     @Test

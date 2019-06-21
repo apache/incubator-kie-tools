@@ -16,6 +16,7 @@
 
 export interface Space {
   name: string;
+  deleted: boolean;
   contributors: any[];
   repositories: any[];
 }

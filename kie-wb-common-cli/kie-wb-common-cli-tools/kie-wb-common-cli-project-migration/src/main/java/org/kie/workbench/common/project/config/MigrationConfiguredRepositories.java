@@ -17,18 +17,13 @@
 package org.kie.workbench.common.project.config;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.guvnor.structure.backend.repositories.ConfiguredRepositoriesImpl;
-import org.guvnor.structure.repositories.Repository;
-import org.guvnor.structure.repositories.RepositoryUpdatedEvent;
-import org.guvnor.structure.server.config.ConfigurationFactory;
+import org.guvnor.structure.organizationalunit.config.SpaceConfigStorageRegistry;
 import org.guvnor.structure.server.repositories.RepositoryFactory;
 
-@Alternative
+@Migration
 @ApplicationScoped
 public class MigrationConfiguredRepositories extends ConfiguredRepositoriesImpl {
 
@@ -37,15 +32,9 @@ public class MigrationConfiguredRepositories extends ConfiguredRepositoriesImpl 
     }
 
     @Inject
-    public MigrationConfiguredRepositories(final MigrationConfigurationServiceImpl configurationService,
-                                           final RepositoryFactory repositoryFactory,
-                                           final @Named("system") Repository systemRepository,
-                                           final Event<RepositoryUpdatedEvent> repositoryUpdatedEvent,
-                                           final ConfigurationFactory configurationFactory) {
-        super(configurationService,
-              repositoryFactory,
-              systemRepository,
-              repositoryUpdatedEvent,
-              configurationFactory);
+    public MigrationConfiguredRepositories(final RepositoryFactory repositoryFactory,
+                                           final SpaceConfigStorageRegistry spaceConfigStorage) {
+        super(repositoryFactory,
+              spaceConfigStorage);
     }
 }

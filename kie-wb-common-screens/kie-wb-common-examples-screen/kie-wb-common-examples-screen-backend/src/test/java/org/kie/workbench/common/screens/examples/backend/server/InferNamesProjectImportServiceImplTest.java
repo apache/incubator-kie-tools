@@ -90,7 +90,6 @@ public class InferNamesProjectImportServiceImplTest {
 
     private final ProjectImportServiceImpl service = new ProjectImportServiceImpl(mock(IOService.class),
             mock(MetadataService.class),
-            mock(ConfigurationFactory.class),
             mock(RepositoryFactory.class),
             mock(KieModuleService.class),
             mock(ImportProjectValidators.class),

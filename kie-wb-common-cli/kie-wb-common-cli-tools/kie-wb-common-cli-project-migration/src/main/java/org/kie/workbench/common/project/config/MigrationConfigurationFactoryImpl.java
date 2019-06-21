@@ -16,8 +16,6 @@
 
 package org.kie.workbench.common.project.config;
 
-import javax.enterprise.inject.Alternative;
-import javax.enterprise.inject.Vetoed;
 import javax.inject.Inject;
 
 import org.guvnor.structure.backend.config.ConfigurationFactoryImpl;
@@ -26,7 +24,7 @@ import org.guvnor.structure.server.config.ConfigType;
 import org.guvnor.structure.server.config.ConfigurationFactory;
 import org.guvnor.structure.server.config.PasswordService;
 
-@Alternative
+@Migration
 public class MigrationConfigurationFactoryImpl extends ConfigurationFactoryImpl implements ConfigurationFactory {
 
     public MigrationConfigurationFactoryImpl() {

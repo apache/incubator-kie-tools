@@ -17,14 +17,17 @@
 package org.kie.workbench.common.screens.library.client.screens.organizationalunit.contributors.tab;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import elemental2.promise.Promise;
 import org.guvnor.common.services.project.client.security.ProjectController;
+import org.guvnor.common.services.project.events.RepositoryContributorsUpdatedEvent;
 import org.guvnor.structure.contributors.Contributor;
 import org.guvnor.structure.contributors.ContributorType;
 import org.guvnor.structure.repositories.Repository;
@@ -52,6 +55,8 @@ public class ProjectContributorsListServiceImpl implements ContributorsListServi
 
     private Promises promises;
 
+    private Consumer<Collection<Contributor>> contributorsConsumerForExternalChange;
+
     @Inject
     public ProjectContributorsListServiceImpl(final LibraryPlaces libraryPlaces,
                                               final Caller<RepositoryService> repositoryService,
@@ -67,6 +72,7 @@ public class ProjectContributorsListServiceImpl implements ContributorsListServi
         this.projectController = projectController;
         this.contributorsSecurityUtils = contributorsSecurityUtils;
         this.promises = promises;
+        this.contributorsConsumerForExternalChange = null;
     }
 
     @Override
@@ -104,12 +110,22 @@ public class ProjectContributorsListServiceImpl implements ContributorsListServi
         });
     }
 
-
-
     @Override
     public void getValidUsernames(Consumer<List<String>> validUsernamesConsumer) {
         spaceContributorsListService.getContributors(contributors -> {
             validUsernamesConsumer.accept(contributors.stream().map(c -> c.getUsername()).collect(Collectors.toList()));
         });
+    }
+
+    @Override
+    public void onExternalChange(final Consumer<Collection<Contributor>> contributorsConsumer) {
+        this.contributorsConsumerForExternalChange = contributorsConsumer;
+    }
+
+    public void onRepositoryContributorsUpdatedEvent(@Observes final RepositoryContributorsUpdatedEvent repositoryContributorsUpdatedEvent) {
+        if (this.contributorsConsumerForExternalChange != null
+                && repositoryContributorsUpdatedEvent.getRepository().getIdentifier().equals(libraryPlaces.getActiveWorkspace().getRepository().getIdentifier())) {
+            this.contributorsConsumerForExternalChange.accept(repositoryContributorsUpdatedEvent.getRepository().getContributors());
+        }
     }
 }

@@ -34,17 +34,16 @@ import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
-import org.guvnor.structure.backend.config.ConfigurationFactoryImpl;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
+import org.guvnor.structure.organizationalunit.config.RepositoryConfiguration;
+import org.guvnor.structure.organizationalunit.config.RepositoryInfo;
 import org.guvnor.structure.organizationalunit.impl.OrganizationalUnitImpl;
 import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.EnvironmentParameters;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryCopier;
 import org.guvnor.structure.repositories.impl.git.GitRepository;
-import org.guvnor.structure.server.config.ConfigGroup;
-import org.guvnor.structure.server.config.ConfigType;
 import org.guvnor.structure.server.repositories.RepositoryFactory;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
@@ -58,6 +57,8 @@ import org.kie.workbench.common.screens.examples.validation.ImportProjectValidat
 import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenService;
 import org.kie.workbench.common.services.shared.project.KieModule;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.invocation.InvocationOnMock;
@@ -72,7 +73,6 @@ import org.uberfire.rpc.SessionInfo;
 import static org.junit.Assert.*;
 import static org.kie.workbench.common.screens.examples.backend.server.ImportUtils.makeGitRepository;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
@@ -82,9 +82,6 @@ public class ExamplesServiceImplTest {
 
     @Mock
     private IOService ioService;
-
-    @Mock
-    private ConfigurationFactoryImpl configurationFactory;
 
     @Mock
     private RepositoryFactory repositoryFactory;
@@ -126,11 +123,13 @@ public class ExamplesServiceImplTest {
 
     private ExamplesServiceImpl service;
 
+    @Captor
+    private ArgumentCaptor<RepositoryInfo> captor;
+
     @Before
     public void setup() {
 
         service = spy(new ExamplesServiceImpl(ioService,
-                                              configurationFactory,
                                               repositoryFactory,
                                               moduleService,
                                               repositoryCopier,
@@ -166,10 +165,6 @@ public class ExamplesServiceImplTest {
         when(sessionInfo.getId()).thenReturn("sessionId");
         when(sessionInfo.getIdentity()).thenReturn(user);
         when(user.getIdentifier()).thenReturn("user");
-        when(configurationFactory.newConfigGroup(any(ConfigType.class),
-                                                 anyString(),
-                                                 anyString(),
-                                                 anyString())).thenReturn(mock(ConfigGroup.class));
     }
 
     @Test
@@ -238,7 +233,7 @@ public class ExamplesServiceImplTest {
                                                                                 "tag2"));
 
         final GitRepository repository = makeGitRepository();
-        when(repositoryFactory.newRepository(any(ConfigGroup.class))).thenReturn(repository);
+        when(repositoryFactory.newRepository(any(RepositoryInfo.class))).thenReturn(repository);
         when(moduleService.getAllModules(any(Branch.class))).thenReturn(new HashSet<Module>() {{
             add(module);
         }});
@@ -274,7 +269,7 @@ public class ExamplesServiceImplTest {
                                                                                 "tag2"));
 
         final GitRepository repository = makeGitRepository();
-        when(repositoryFactory.newRepository(any(ConfigGroup.class))).thenReturn(repository);
+        when(repositoryFactory.newRepository(any(RepositoryInfo.class))).thenReturn(repository);
         when(moduleService.getAllModules(any(Branch.class))).thenReturn(new HashSet<Module>() {{
             add(module);
         }});
@@ -309,7 +304,7 @@ public class ExamplesServiceImplTest {
                                                                                 "tag2"));
 
         final GitRepository repository = makeGitRepository();
-        when(repositoryFactory.newRepository(any(ConfigGroup.class))).thenReturn(repository);
+        when(repositoryFactory.newRepository(any(RepositoryInfo.class))).thenReturn(repository);
         when(moduleService.getAllModules(any(Branch.class))).thenReturn(new HashSet<Module>() {{
             add(module);
         }});
@@ -491,30 +486,23 @@ public class ExamplesServiceImplTest {
         ExampleRepository playgroundRepository = new ExampleRepository("file:///home/user/folder/.kie-wb-playground");
         service.setPlaygroundRepository(playgroundRepository);
 
-        ConfigGroup configGroup = new ConfigGroup();
-        when(configurationFactory.newConfigGroup(any(ConfigType.class),
-                                                 anyString(),
-                                                 anyString(),
-                                                 anyString())).thenReturn(configGroup);
-        doCallRealMethod().when(configurationFactory).newConfigItem(anyString(),
-                                                                    anyBoolean());
-        doCallRealMethod().when(configurationFactory).newConfigItem(anyString(),
-                                                                    anyString());
-        doCallRealMethod().when(configurationFactory).newConfigItem(anyString(),
-                                                                    any(Object.class));
+        RepositoryInfo configGroup = new RepositoryInfo("examples-.kie-wb-playground",
+                                                        false,
+                                                        new RepositoryConfiguration());
 
         Repository repository = mock(Repository.class);
-        when(repositoryFactory.newRepository(configGroup)).thenReturn(repository);
+        when(repositoryFactory.newRepository(captor.capture())).thenReturn(repository);
 
         Repository result = service.resolveGitRepository(playgroundRepository);
 
         assertEquals(repository,
                      result);
         assertEquals(false,
-                     configGroup.getConfigItem(EnvironmentParameters.MIRROR).getValue());
+                     captor.getValue().getConfiguration().get(Boolean.class,
+                                                              EnvironmentParameters.MIRROR));
 
         verify(repositoryFactory,
-               times(1)).newRepository(configGroup);
+               times(1)).newRepository(any());
     }
 
     @Test
@@ -536,6 +524,6 @@ public class ExamplesServiceImplTest {
                      result);
 
         verify(repositoryFactory,
-               never()).newRepository(any(ConfigGroup.class));
+               never()).newRepository(any(RepositoryInfo.class));
     }
 }

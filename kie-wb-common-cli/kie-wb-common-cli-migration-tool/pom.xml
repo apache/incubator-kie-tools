@@ -45,6 +45,10 @@
     </dependency>
     <dependency>
       <groupId>org.kie.workbench</groupId>
+      <artifactId>kie-wb-common-cli-system-to-space-configuration-migration</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.workbench</groupId>
       <artifactId>kie-wb-common-cli-pom-migration</artifactId>
     </dependency>
 

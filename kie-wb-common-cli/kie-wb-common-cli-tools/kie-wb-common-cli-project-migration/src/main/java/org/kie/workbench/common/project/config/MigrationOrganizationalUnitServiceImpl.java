@@ -18,25 +18,28 @@ package org.kie.workbench.common.project.config;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
-import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.guvnor.structure.backend.backcompat.BackwardCompatibleUtil;
 import org.guvnor.structure.backend.organizationalunit.OrganizationalUnitServiceImpl;
-import org.guvnor.structure.backend.repositories.ConfiguredRepositories;
+import org.guvnor.structure.contributors.SpaceContributorsUpdatedEvent;
 import org.guvnor.structure.organizationalunit.NewOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.RemoveOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.RepoAddedToOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.RepoRemovedFromOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.UpdatedOrganizationalUnitEvent;
+import org.guvnor.structure.organizationalunit.config.SpaceConfigStorageRegistry;
+import org.guvnor.structure.repositories.RepositoryService;
+import org.guvnor.structure.server.config.ConfigurationService;
+import org.guvnor.structure.server.organizationalunit.OrganizationalUnitFactory;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.spaces.SpacesAPI;
 
-@Alternative
+@Migration
 @Service
 @ApplicationScoped
 public class MigrationOrganizationalUnitServiceImpl extends OrganizationalUnitServiceImpl {
@@ -46,11 +49,8 @@ public class MigrationOrganizationalUnitServiceImpl extends OrganizationalUnitSe
     }
 
     @Inject
-    public MigrationOrganizationalUnitServiceImpl(final MigrationConfigurationServiceImpl configurationService,
-                                                  final MigrationConfigurationFactoryImpl configurationFactory,
-                                                  final MigrationOrganizationalUnitFactoryImpl organizationalUnitFactory,
-                                                  final MigrationRepositoryServiceImpl repositoryService,
-                                                  final BackwardCompatibleUtil backward,
+    public MigrationOrganizationalUnitServiceImpl(final @Migration OrganizationalUnitFactory organizationalUnitFactory,
+                                                  final @Migration RepositoryService repositoryService,
                                                   final Event<NewOrganizationalUnitEvent> newOrganizationalUnitEvent,
                                                   final Event<RemoveOrganizationalUnitEvent> removeOrganizationalUnitEvent,
                                                   final Event<RepoAddedToOrganizationalUnitEvent> repoAddedToOrgUnitEvent,
@@ -60,12 +60,12 @@ public class MigrationOrganizationalUnitServiceImpl extends OrganizationalUnitSe
                                                   final SpacesAPI spaces,
                                                   final SessionInfo sessionInfo,
                                                   @Named("ioStrategy") final IOService ioService,
-                                                  final ConfiguredRepositories configuredRepositories) {
-        super(configurationService,
-              configurationFactory,
-              organizationalUnitFactory,
+                                                  final SpaceConfigStorageRegistry spaceConfigStorageRegistry,
+                                                  @Named("systemFS") final FileSystem systemFS,
+                                                  final Event<SpaceContributorsUpdatedEvent> spaceContributorsUpdatedEvent,
+                                                  final ConfigurationService configurationService) {
+        super(organizationalUnitFactory,
               repositoryService,
-              backward,
               newOrganizationalUnitEvent,
               removeOrganizationalUnitEvent,
               repoAddedToOrgUnitEvent,
@@ -75,6 +75,9 @@ public class MigrationOrganizationalUnitServiceImpl extends OrganizationalUnitSe
               spaces,
               sessionInfo,
               ioService,
-              configuredRepositories);
+              spaceConfigStorageRegistry,
+              systemFS,
+              spaceContributorsUpdatedEvent,
+              configurationService);
     }
 }

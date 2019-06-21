@@ -36,6 +36,7 @@
     <module>kie-wb-common-cli-forms-migration</module>
     <module>kie-wb-common-cli-system-configuration-migration</module>
     <module>kie-wb-common-cli-pom-migration</module>
+    <module>kie-wb-common-cli-system-to-space-configuration-migration</module>
   </modules>
 
 </project>

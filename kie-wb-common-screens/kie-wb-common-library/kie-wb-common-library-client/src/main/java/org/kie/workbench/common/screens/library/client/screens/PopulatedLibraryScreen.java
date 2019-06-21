@@ -22,6 +22,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
+import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
@@ -39,6 +40,7 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.screens.library.api.LibraryInfo;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.api.ProjectAssetListUpdated;
+import org.kie.workbench.common.screens.library.api.ProjectCountUpdate;
 import org.kie.workbench.common.screens.library.api.Routed;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.screens.library.client.widgets.common.TileWidget;
@@ -73,6 +75,7 @@ public class PopulatedLibraryScreen {
     private ProjectController projectController;
 
     private WorkspaceProjectContext projectContext;
+    private Event<ProjectCountUpdate> projectCountUpdateEvent;
 
     private ManagedInstance<TileWidget> tileWidgets;
 
@@ -87,12 +90,14 @@ public class PopulatedLibraryScreen {
                                   final ProjectController projectController,
                                   final WorkspaceProjectContext projectContext,
                                   final ManagedInstance<TileWidget> tileWidgets,
-                                  final AddProjectButtonPresenter addProjectButtonPresenter) {
+                                  final AddProjectButtonPresenter addProjectButtonPresenter,
+                                  final Event<ProjectCountUpdate> projectCountUpdateEvent) {
         this.view = view;
         this.libraryPlaces = libraryPlaces;
         this.libraryService = libraryService;
         this.projectController = projectController;
         this.projectContext = projectContext;
+        this.projectCountUpdateEvent = projectCountUpdateEvent;
         this.projects = Collections.emptyList();
         this.tileWidgets = tileWidgets;
         this.addProjectButtonPresenter = addProjectButtonPresenter;
@@ -141,11 +146,14 @@ public class PopulatedLibraryScreen {
 
     private void updateView(final List<WorkspaceProject> projects) {
         view.clearProjects();
+        this.projectCountUpdateEvent.fire(new ProjectCountUpdate(projects.size(),
+                                                                 this.getOrganizationalUnit().getSpace()));
         projects.stream().forEach(project -> {
 
             final TileWidget tileWidget = createProjectWidget(project);
             view.addProject(tileWidget.getView().getElement());
         });
+
     }
 
     private TileWidget createProjectWidget(final WorkspaceProject project) {

@@ -556,6 +556,8 @@ public class LibraryPlacesTest {
         doReturn(Optional.empty()).when(projectContext).getActiveWorkspaceProject();
         doReturn(Optional.empty()).when(projectContext).getActiveModule();
 
+        doReturn(mock(OrganizationalUnit.class)).when(libraryService).getDefaultOrganizationalUnit();
+
         final PlaceRequest placeRequest = new DefaultPlaceRequest(LibraryPlaces.LIBRARY_SCREEN);
         final PartDefinitionImpl part = new PartDefinitionImpl(placeRequest);
         part.setSelectable(false);

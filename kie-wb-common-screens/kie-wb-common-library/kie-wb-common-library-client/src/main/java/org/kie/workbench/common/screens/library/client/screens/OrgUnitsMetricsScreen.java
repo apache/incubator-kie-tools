@@ -16,6 +16,7 @@
 package org.kie.workbench.common.screens.library.client.screens;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.dashbuilder.displayer.client.Displayer;
@@ -23,6 +24,8 @@ import org.dashbuilder.displayer.client.DisplayerCoordinator;
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
+import org.kie.workbench.common.screens.library.api.ProjectAssetListUpdated;
+import org.kie.workbench.common.screens.library.api.Routed;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.screens.library.client.util.OrgUnitsMetricsFactory;
 import org.uberfire.client.mvp.UberElement;
@@ -139,6 +142,12 @@ public class OrgUnitsMetricsScreen {
     public void onClose() {
         displayerCoordinator.closeAll();
         view.clear();
+    }
+
+    public void onProjectAssetListUpdated(@Observes @Routed final ProjectAssetListUpdated event) {
+        if (this.organizationalUnit != null && event.getProject().getSpace().getName().equals(this.organizationalUnit.getSpace().getName())) {
+            init();
+        }
     }
 
     public Displayer getCommitsOverTimeDisplayer() {

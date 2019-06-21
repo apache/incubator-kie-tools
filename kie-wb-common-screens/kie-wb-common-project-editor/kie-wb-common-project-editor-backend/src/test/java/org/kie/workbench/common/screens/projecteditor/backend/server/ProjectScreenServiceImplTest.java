@@ -36,7 +36,6 @@ import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
 import org.guvnor.common.services.project.service.ModuleRepositoriesService;
 import org.guvnor.common.services.project.service.ModuleRepositoryResolver;
 import org.guvnor.common.services.project.service.POMService;
-import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
@@ -45,7 +44,6 @@ import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryCopier;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.guvnor.structure.repositories.impl.git.GitRepository;
-import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -58,7 +56,6 @@ import org.kie.workbench.common.services.shared.kmodule.KModuleService;
 import org.kie.workbench.common.services.shared.project.KieModule;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.kie.workbench.common.services.shared.project.ProjectImportsService;
-import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.kie.workbench.common.services.shared.whitelist.PackageNameWhiteListService;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
@@ -68,24 +65,11 @@ import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.FileSystem;
-import org.uberfire.rpc.SessionInfo;
 import org.uberfire.spaces.Space;
 
 import static java.util.Collections.emptyList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyBoolean;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.doCallRealMethod;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ProjectScreenServiceImplTest {
@@ -95,9 +79,6 @@ public class ProjectScreenServiceImplTest {
 
     @Mock
     private KieModuleService moduleService;
-
-    @Mock
-    private ValidationService validationService;
 
     @Mock
     private ProjectImportsService importsService;
@@ -110,12 +91,6 @@ public class ProjectScreenServiceImplTest {
 
     @Mock
     private ModuleRepositoryResolver repositoryResolver;
-
-    @Mock
-    private User identity;
-
-    @Mock
-    private SessionInfo sessionInfo;
 
     @Mock
     private IOService ioService;
@@ -249,7 +224,9 @@ public class ProjectScreenServiceImplTest {
 
         when(projectService.resolveProject((Path) any()))
                 .thenReturn(spy(new WorkspaceProject(mock(OrganizationalUnit.class),
-                                                     new GitRepository("alias", mock(Space.class), emptyList()),
+                                                     new GitRepository("alias",
+                                                                       mock(Space.class),
+                                                                       emptyList()),
                                                      mock(Branch.class),
                                                      mock(Module.class))));
     }
@@ -794,10 +771,12 @@ public class ProjectScreenServiceImplTest {
 
     @Test
     public void testCopy() throws Exception {
+
         when(projectService.createFreshProjectName(any(),
                                                    any())).thenCallRealMethod();
         doReturn(Arrays.asList(mock(WorkspaceProject.class))).when(projectService).getAllWorkspaceProjectsByName(any(),
-                                                                                                                 eq("newName"));
+                                                                                                                 eq("newName"),
+                                                                                                                 anyBoolean());
 
         final WorkspaceProject project = mock(WorkspaceProject.class);
         final OrganizationalUnit ou = mock(OrganizationalUnit.class);
@@ -806,7 +785,8 @@ public class ProjectScreenServiceImplTest {
         doReturn(projectRoot).when(project).getRootPath();
 
         final Repository newRepository = mock(Repository.class);
-        final Path newRepositoryRoot = PathFactory.newPath("root", "file:///root");
+        final Path newRepositoryRoot = PathFactory.newPath("root",
+                                                           "file:///root");
         doReturn(Optional.of(new Branch("master",
                                         newRepositoryRoot))).when(newRepository).getDefaultBranch();
 
@@ -832,8 +812,10 @@ public class ProjectScreenServiceImplTest {
                                 eq(true));
 
         final POM updatedPom = pomArgumentCaptor.getValue();
-        assertEquals("newName-1", updatedPom.getName());
-        assertEquals("newName", updatedPom.getGav().getArtifactId());
+        assertEquals("newName-1",
+                     updatedPom.getName());
+        assertEquals("newName",
+                     updatedPom.getGav().getArtifactId());
     }
 
     @Test
@@ -845,9 +827,11 @@ public class ProjectScreenServiceImplTest {
         doReturn(projectRoot).when(project).getRootPath();
 
         final Repository newRepository = mock(Repository.class);
-        final Path newRepositoryRoot = PathFactory.newPath("root", "file:///root");
+        final Path newRepositoryRoot = PathFactory.newPath("root",
+                                                           "file:///root");
 
-        doReturn(Optional.of(new Branch("master", newRepositoryRoot))).when(newRepository).getDefaultBranch();
+        doReturn(Optional.of(new Branch("master",
+                                        newRepositoryRoot))).when(newRepository).getDefaultBranch();
 
         doReturn(newRepository).when(repositoryCopier).copy(ou,
                                                             "newName",
@@ -862,12 +846,14 @@ public class ProjectScreenServiceImplTest {
                                       "newName",
                                       projectRoot);
 
-        verify(metadataService, never()).getMetadata(any(Path.class));
-        verify(pomService, never()).save(any(Path.class),
-                                         any(POM.class),
-                                         any(Metadata.class),
-                                         anyString(),
-                                         anyBoolean());
+        verify(metadataService,
+               never()).getMetadata(any(Path.class));
+        verify(pomService,
+               never()).save(any(Path.class),
+                             any(POM.class),
+                             any(Metadata.class),
+                             anyString(),
+                             anyBoolean());
     }
 
     @Test
@@ -890,6 +876,7 @@ public class ProjectScreenServiceImplTest {
 
         service.delete(project);
 
-        verify(repositoryService).removeRepository(eq(space), eq("myrepo"));
+        verify(repositoryService).removeRepository(eq(space),
+                                                   eq("myrepo"));
     }
 }

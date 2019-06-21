@@ -56,7 +56,7 @@ public class SystemConfigurationMigrationTool implements MigrationTool {
 
     @Override
     public void run(final ToolConfig config,
-                     final SystemAccess system) {
+                    final SystemAccess system) {
         this.config = config;
         this.system = system;
 

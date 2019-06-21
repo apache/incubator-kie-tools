@@ -21,11 +21,11 @@ import java.util.List;
 import javax.inject.Inject;
 
 import elemental2.dom.HTMLElement;
-import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
-import org.kie.workbench.common.screens.examples.model.ImportProject;
 import org.kie.workbench.common.screens.examples.model.ExampleProjectError;
+import org.kie.workbench.common.screens.examples.model.ImportProject;
 import org.kie.workbench.common.screens.library.client.widgets.example.branchselector.BranchSelectorPopUpPresenter;
+import org.kie.workbench.common.screens.examples.model.ImportProject;
 import org.kie.workbench.common.screens.library.client.widgets.example.errors.ExampleProjectErrorPresenter;
 import org.kie.workbench.common.screens.library.client.widgets.example.errors.ExampleProjectOkPresenter;
 import org.uberfire.client.mvp.UberElemental;
@@ -53,6 +53,7 @@ public class ExampleProjectWidget {
         void changeBranchSelectorTitle(final List<String> branches);
     }
 
+    private ExampleProjectWidgetContainer container;
     private ImportProject model;
     private boolean selected;
 
@@ -72,9 +73,13 @@ public class ExampleProjectWidget {
         this.branchSelectorPopUpPresenter = branchSelectorPopUpPresenter;
     }
 
-    public void init(final ImportProject importProject) {
+    public void init(final ImportProject importProject,
+                     final ExampleProjectWidgetContainer container) {
         this.view.init(this);
+
+        this.container = container;
         this.model = importProject;
+
         view.setup(importProject.getName(),
                    importProject.getDescription(),
                    this.buildErrors(importProject),
@@ -100,16 +105,24 @@ public class ExampleProjectWidget {
         return this.model.getName();
     }
 
+    public void click() {
+        if (!isSelected()) {
+            container.selectProject(this);
+        } else {
+            unselect();
+        }
+    }
+
     public void select() {
         if (!this.hasErrors()) {
-            if (!this.isSelected()) {
-                this.setSelected(true);
-                this.getView().setActive();
-            } else {
-                this.setSelected(false);
-                this.getView().unsetActive();
-            }
+            this.setSelected(true);
+            this.getView().setActive();
         }
+    }
+
+    public void unselect() {
+        this.setSelected(false);
+        this.getView().unsetActive();
     }
 
     public void selectBranches() {

@@ -17,7 +17,6 @@
 package org.kie.workbench.common.project.config;
 
 import javax.enterprise.event.Event;
-import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 
 import org.guvnor.common.services.project.backend.server.WorkspaceProjectMigrationServiceImpl;
@@ -25,26 +24,28 @@ import org.guvnor.common.services.project.backend.server.utils.PathUtil;
 import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.service.ModuleService;
+import org.guvnor.common.services.project.service.WorkspaceProjectService;
+import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
+import org.guvnor.structure.organizationalunit.config.SpaceConfigStorageRegistry;
+import org.guvnor.structure.repositories.RepositoryService;
 
-@Alternative
+@Migration
 public class MigrationWorkspaceProjectMigrationServiceImpl extends WorkspaceProjectMigrationServiceImpl {
 
-    public MigrationWorkspaceProjectMigrationServiceImpl() {
-        super();
-    }
-
     @Inject
-    public MigrationWorkspaceProjectMigrationServiceImpl(final MigrationWorkspaceProjectServiceImpl workspaceProjectService,
-                                                         final MigrationRepositoryServiceImpl repositoryService,
-                                                         final MigrationOrganizationalUnitServiceImpl organizationalUnitService,
+    public MigrationWorkspaceProjectMigrationServiceImpl(final @Migration WorkspaceProjectService workspaceProjectService,
+                                                         final @Migration RepositoryService repositoryService,
+                                                         final @Migration OrganizationalUnitService organizationalUnitService,
                                                          final PathUtil pathUtil,
                                                          final Event<NewProjectEvent> newProjectEvent,
-                                                         final ModuleService<? extends Module> moduleService) {
+                                                         final ModuleService<? extends Module> moduleService,
+                                                         final SpaceConfigStorageRegistry spaceConfigStorageRegistry) {
         super(workspaceProjectService,
               repositoryService,
               organizationalUnitService,
               pathUtil,
               newProjectEvent,
-              moduleService);
+              moduleService,
+              spaceConfigStorageRegistry);
     }
 }

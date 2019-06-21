@@ -16,26 +16,18 @@
 
 package org.kie.workbench.common.project.config;
 
-import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 
-import org.guvnor.structure.backend.backcompat.BackwardCompatibleUtil;
 import org.guvnor.structure.backend.organizationalunit.OrganizationalUnitFactoryImpl;
+import org.guvnor.structure.repositories.RepositoryService;
 import org.uberfire.spaces.SpacesAPI;
 
-@Alternative
+@Migration
 public class MigrationOrganizationalUnitFactoryImpl extends OrganizationalUnitFactoryImpl {
 
     @Inject
-    public MigrationOrganizationalUnitFactoryImpl(final MigrationRepositoryServiceImpl repositoryService,
-                                                  final BackwardCompatibleUtil backward,
-                                                  final SpacesAPI spacesAPI,
-                                                  final MigrationConfigurationServiceImpl configurationService,
-                                                  final MigrationConfigurationFactoryImpl configurationFactory) {
-        super(repositoryService,
-              backward,
-              spacesAPI,
-              configurationService,
-              configurationFactory);
+    public MigrationOrganizationalUnitFactoryImpl(final @Migration RepositoryService repositoryService,
+                                                  final SpacesAPI spacesAPI) {
+        super(repositoryService, spacesAPI);
     }
 }

@@ -42,10 +42,9 @@ import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
+import org.guvnor.structure.organizationalunit.config.RepositoryInfo;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryCopier;
-import org.guvnor.structure.server.config.ConfigGroup;
-import org.guvnor.structure.server.config.ConfigurationFactory;
 import org.guvnor.structure.server.repositories.RepositoryFactory;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.soup.commons.validation.PortablePreconditions;
@@ -74,7 +73,6 @@ public class ExamplesServiceImpl extends BaseProjectImportService implements Exa
     private final Set<Repository> clonedRepositories = new HashSet<>();
     private WorkspaceProjectService projectService;
     private IOService ioService;
-    private ConfigurationFactory configurationFactory;
     private RepositoryFactory repositoryFactory;
     private KieModuleService moduleService;
     private RepositoryCopier repositoryCopier;
@@ -87,7 +85,6 @@ public class ExamplesServiceImpl extends BaseProjectImportService implements Exa
 
     @Inject
     public ExamplesServiceImpl(final @Named("ioStrategy") IOService ioService,
-                               final ConfigurationFactory configurationFactory,
                                final RepositoryFactory repositoryFactory,
                                final KieModuleService moduleService,
                                final RepositoryCopier repositoryCopier,
@@ -101,13 +98,11 @@ public class ExamplesServiceImpl extends BaseProjectImportService implements Exa
         super(ioService,
               metadataService,
               validators,
-              configurationFactory,
               moduleService,
               projectService,
               projectScreenService);
 
         this.ioService = ioService;
-        this.configurationFactory = configurationFactory;
         this.repositoryFactory = repositoryFactory;
         this.moduleService = moduleService;
         this.repositoryCopier = repositoryCopier;
@@ -242,8 +237,8 @@ public class ExamplesServiceImpl extends BaseProjectImportService implements Exa
                                                              password,
                                                              false);
 
-            final ConfigGroup repositoryConfig = this.createConfigGroup(alias,
-                                                                        env);
+            final RepositoryInfo repositoryConfig = this.createConfigGroup(alias,
+                                                                           env);
 
             Repository repository = repositoryFactory.newRepository(repositoryConfig);
             clonedRepositories.add(repository);

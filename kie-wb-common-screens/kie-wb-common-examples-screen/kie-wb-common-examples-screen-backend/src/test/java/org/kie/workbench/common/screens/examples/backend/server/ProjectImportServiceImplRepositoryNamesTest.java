@@ -37,9 +37,6 @@ import org.guvnor.structure.organizationalunit.impl.OrganizationalUnitImpl;
 import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.guvnor.structure.repositories.impl.git.GitRepository;
-import org.guvnor.structure.server.config.ConfigGroup;
-import org.guvnor.structure.server.config.ConfigType;
-import org.guvnor.structure.server.config.ConfigurationFactory;
 import org.guvnor.structure.server.repositories.RepositoryFactory;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
@@ -73,9 +70,6 @@ public class ProjectImportServiceImplRepositoryNamesTest {
 
     @Mock
     private IOService ioService;
-
-    @Mock
-    private ConfigurationFactory configurationFactory;
 
     @Mock
     private RepositoryFactory repositoryFactory;
@@ -129,7 +123,6 @@ public class ProjectImportServiceImplRepositoryNamesTest {
     public void setup() {
         service = spy(new ProjectImportServiceImpl(ioService,
                                                    metadataService,
-                                                   configurationFactory,
                                                    repositoryFactory,
                                                    moduleService,
                                                    validators,
@@ -159,9 +152,6 @@ public class ProjectImportServiceImplRepositoryNamesTest {
         when(sessionInfo.getId()).thenReturn("sessionId");
         when(sessionInfo.getIdentity()).thenReturn(user);
         when(user.getIdentifier()).thenReturn("user");
-        when(configurationFactory.newConfigGroup(any(ConfigType.class),
-                                                 anyString(),
-                                                 anyString())).thenReturn(mock(ConfigGroup.class));
 
         exProject1 = mock(ImportProject.class);
         importProjects = Collections.singletonList(exProject1);

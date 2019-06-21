@@ -13,13 +13,22 @@ exports[`snapshot of tile should match snapshot 1`] = `
         className="card-pf-body"
       >
         <div>
-          <h2
+          <div
             className="card-pf-title"
+            style={
+              Object {
+                "display": "flex",
+              }
+            }
           >
-             
-            Foo
-             
-          </h2>
+            <h2
+              className="card-pf-title"
+            >
+               
+              Foo
+               
+            </h2>
+          </div>
           <h5>
             NumberOfContributors
           </h5>

@@ -18,58 +18,35 @@ package org.kie.workbench.common.project.config;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
-import javax.enterprise.inject.Alternative;
-import javax.enterprise.inject.Vetoed;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.naming.InitialContext;
 
 import org.guvnor.structure.backend.config.ConfigGroupMarshaller;
 import org.guvnor.structure.backend.config.ConfigurationServiceImpl;
 import org.guvnor.structure.backend.config.OrgUnit;
 import org.guvnor.structure.backend.config.Repository;
-import org.guvnor.structure.backend.config.watch.AsyncConfigWatchService;
 import org.guvnor.structure.backend.config.watch.AsyncWatchServiceCallback;
-import org.guvnor.structure.backend.config.watch.ConfigServiceWatchServiceExecutor;
-import org.guvnor.structure.backend.config.watch.ConfigServiceWatchServiceExecutorImpl;
 import org.guvnor.structure.config.SystemRepositoryChangedEvent;
 import org.guvnor.structure.server.config.ConfigGroup;
 import org.guvnor.structure.server.config.ConfigType;
 import org.guvnor.structure.server.config.ConfigurationService;
 import org.jboss.errai.security.shared.api.identity.User;
-import org.uberfire.commons.async.DescriptiveRunnable;
 import org.uberfire.io.IOService;
-import org.uberfire.java.nio.IOException;
-import org.uberfire.java.nio.base.WatchContext;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Files;
 import org.uberfire.java.nio.file.Path;
-import org.uberfire.java.nio.file.StandardWatchEventKind;
-import org.uberfire.java.nio.file.WatchEvent;
-import org.uberfire.java.nio.file.WatchKey;
-import org.uberfire.java.nio.file.WatchService;
 
-@Alternative
+@Migration
 @ApplicationScoped
 public class MigrationConfigurationServiceImpl extends ConfigurationServiceImpl
                                                implements ConfigurationService,

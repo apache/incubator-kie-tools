@@ -22,6 +22,8 @@ import org.dashbuilder.displayer.client.Displayer;
 import org.dashbuilder.displayer.client.DisplayerCoordinator;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
+import org.kie.workbench.common.screens.library.api.ProjectAssetListUpdated;
+import org.kie.workbench.common.screens.library.api.Routed;
 import org.kie.workbench.common.screens.library.client.events.WorkbenchProjectMetricsEvent;
 import org.kie.workbench.common.screens.library.client.util.ProjectMetricsFactory;
 import org.uberfire.client.annotations.WorkbenchPartView;
@@ -86,26 +88,16 @@ public class ProjectMetricsScreen {
     }
 
     public void onStartup(@Observes final WorkbenchProjectMetricsEvent event) {
+        onStartup(event.getProject());
+    }
+
+    public void onStartup(final WorkspaceProject workspaceProject) {
         this.view.init(this);
-
-        this.workspaceProject = event.getProject();
-
-        this.commitsOverTimeDisplayer = metricsFactory.lookupCommitsOverTimeDisplayer(workspaceProject);
-        this.commitsPerAuthorDisplayer = metricsFactory.lookupCommitsPerAuthorDisplayer(workspaceProject);
-        this.commitsByYearDisplayer = metricsFactory.lookupCommitsByYearDisplayer(workspaceProject);
-        this.commitsByQuarterDisplayer = metricsFactory.lookupCommitsByQuarterDisplayer(workspaceProject);
-        this.commitsByDayOfWeekDisplayer = metricsFactory.lookupCommitsByDayOfWeekDisplayer(workspaceProject);
-        this.allCommitsDisplayer = metricsFactory.lookupAllCommitsDisplayer(workspaceProject);
-        this.topAuthorSelectorDisplayer = metricsFactory.lookupTopContributorSelectorDisplayer(workspaceProject);
-        this.dateSelectorDisplayer = metricsFactory.lookupDateSelectorDisplayer(workspaceProject);
-        buildMetrics(this.workspaceProject);
+        this.workspaceProject = workspaceProject;
+        this.buildMetrics(workspaceProject);
     }
 
-    public void onStartup(WorkspaceProject projectInfo) {
-        this.buildMetrics(projectInfo);
-    }
-
-    private void buildMetrics(WorkspaceProject projectInfo) {
+    private void buildMetrics(final WorkspaceProject projectInfo) {
         this.commitsOverTimeDisplayer = metricsFactory.lookupCommitsOverTimeDisplayer(projectInfo);
         this.commitsPerAuthorDisplayer = metricsFactory.lookupCommitsPerAuthorDisplayer(projectInfo);
         this.commitsByYearDisplayer = metricsFactory.lookupCommitsByYearDisplayer(projectInfo);
@@ -140,6 +132,12 @@ public class ProjectMetricsScreen {
     public void onClose() {
         displayerCoordinator.closeAll();
         view.clear();
+    }
+
+    public void onProjectAssetListUpdated(@Observes @Routed final ProjectAssetListUpdated event) {
+        if (this.workspaceProject != null && event.getProject().getRepository().getIdentifier().equals(this.workspaceProject.getRepository().getIdentifier())) {
+            onStartup(event.getProject());
+        }
     }
 
     public Displayer getCommitsOverTimeDisplayer() {

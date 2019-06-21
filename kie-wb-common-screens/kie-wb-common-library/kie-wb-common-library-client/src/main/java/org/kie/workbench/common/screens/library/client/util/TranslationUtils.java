@@ -52,12 +52,13 @@ public class TranslationUtils {
                                     if (organizationalUnitAliasInPlural == null || organizationalUnitAliasInPlural.isEmpty()) {
                                         organizationalUnitAliasInPlural = getOrganizationalUnitDefaultAliasInPlural();
                                     }
+                                    callback.execute();
                                 },
                                 error -> {
                                     organizationalUnitAliasInSingular = getOrganizationalUnitDefaultAliasInSingular();
                                     organizationalUnitAliasInPlural = getOrganizationalUnitDefaultAliasInPlural();
+                                    callback.execute();
                                 });
-        callback.execute();
     }
 
     private String getOrganizationalUnitDefaultAliasInPlural() {

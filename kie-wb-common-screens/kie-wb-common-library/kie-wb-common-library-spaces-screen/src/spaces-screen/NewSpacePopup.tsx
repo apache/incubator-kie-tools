@@ -56,7 +56,9 @@ export class NewSpacePopup extends React.Component<Props, State> {
       .then(() => Service.fetchIsDuplicatedSpaceName(newSpace.name))
       .then(spaceAlreadyExists => {
         if (spaceAlreadyExists) {
-          this.addErrorMessage(AppFormer.translate("DuplicatedOrganizationalUnitValidation", ["Space"]));
+          this.addErrorMessage(AppFormer.translate("DuplicatedOrganizationalUnitValidation", [
+              AppFormer.translate("OrganizationalUnitDefaultAliasInSingular", []).toLowerCase()
+          ]));
           return Promise.reject();
         } else {
           return Promise.resolve();
@@ -83,7 +85,7 @@ export class NewSpacePopup extends React.Component<Props, State> {
             new NotificationEvent({
               type: NotificationType.SUCCESS,
               notification: AppFormer.translate("OrganizationalUnitSaveSuccess", [
-                AppFormer.translate("OrganizationalUnitDefaultAliasInSingular", [])
+                  AppFormer.translate("OrganizationalUnitDefaultAliasInSingular", []).toLowerCase()
               ])
             })
           );

@@ -26,12 +26,14 @@ import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.structure.client.security.OrganizationalUnitController;
+import org.guvnor.structure.contributors.SpaceContributorsUpdatedEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.RepositoryRemovedEvent;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.screens.library.api.LibraryService;
+import org.kie.workbench.common.screens.library.api.ProjectCountUpdate;
 import org.kie.workbench.common.screens.library.client.perspective.LibraryPerspective;
 import org.kie.workbench.common.screens.library.client.screens.organizationalunit.contributors.tab.ContributorsListPresenter;
 import org.kie.workbench.common.screens.library.client.screens.organizationalunit.contributors.tab.SpaceContributorsListServiceImpl;
@@ -128,7 +130,7 @@ public class LibraryScreen {
     }
 
     public void showProjects() {
-
+        view.setProjectsCount(0);
         final OrganizationalUnit activeOU = projectContext.getActiveOrganizationalUnit()
                 .orElseThrow(() -> new IllegalStateException("Cannot try to query library projects without an active organizational unit."));
         final boolean cachedHasProjects = !activeOU.getRepositories().isEmpty();
@@ -148,22 +150,30 @@ public class LibraryScreen {
     }
 
     private void showEmptyLibraryScreen() {
-        view.updateContent(emptyLibraryScreen.getView().getElement());
         view.setProjectsCount(0);
+        if (view.isProjectsTabActive()) {
+            view.updateContent(emptyLibraryScreen.getView().getElement());
+        }
     }
 
     private void showPopulatedLibraryScreen() {
-        view.updateContent(populatedLibraryScreen.getView().getElement());
         view.setProjectsCount(populatedLibraryScreen.getProjectsCount());
+        if (view.isProjectsTabActive()) {
+            view.updateContent(populatedLibraryScreen.getView().getElement());
+        }
     }
 
     public void showContributors() {
-        view.updateContent(contributorsListPresenter.getView().getElement());
+        if (view.isContributorsTabActive()) {
+            view.updateContent(contributorsListPresenter.getView().getElement());
+        }
     }
 
     public void showMetrics() {
         orgUnitsMetricsScreen.refresh();
-        view.updateContent(orgUnitsMetricsScreen.getView().getElement());
+        if (view.isMetricsTabActive()) {
+            view.updateContent(orgUnitsMetricsScreen.getView().getElement());
+        }
     }
 
     public boolean userCanCreateProjects() {
@@ -194,9 +204,25 @@ public class LibraryScreen {
         });
     }
 
-    boolean eventOnCurrentSpace(OrganizationalUnit p,
-                                Space space) {
+    boolean eventOnCurrentSpace(final OrganizationalUnit p,
+                                final Space space) {
         return p.getSpace().getName().equalsIgnoreCase(space.getName());
+    }
+
+    public void onProjectCountUpdate(@Observes final ProjectCountUpdate projectCountUpdate) {
+        projectContext.getActiveOrganizationalUnit().ifPresent(p -> {
+            if (eventOnCurrentSpace(p, projectCountUpdate.getSpace())) {
+                view.setProjectsCount(projectCountUpdate.getCount());
+            }
+        });
+    }
+
+    public void onSpaceContributorsUpdated(@Observes final SpaceContributorsUpdatedEvent spaceContributorsUpdatedEvent) {
+        projectContext.getActiveOrganizationalUnit().ifPresent(p -> {
+            if (eventOnCurrentSpace(p, spaceContributorsUpdatedEvent.getOrganizationalUnit().getSpace())) {
+                view.setContributorsCount(spaceContributorsUpdatedEvent.getOrganizationalUnit().getContributors().size());
+            }
+        });
     }
 
     @OnClose
@@ -223,5 +249,11 @@ public class LibraryScreen {
         void setContributorsCount(int count);
 
         void updateContent(HTMLElement content);
+
+        boolean isProjectsTabActive();
+
+        boolean isContributorsTabActive();
+
+        boolean isMetricsTabActive();
     }
 }

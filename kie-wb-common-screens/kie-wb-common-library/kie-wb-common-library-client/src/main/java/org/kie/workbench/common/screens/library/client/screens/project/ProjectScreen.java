@@ -28,6 +28,7 @@ import elemental2.dom.HTMLElement;
 import elemental2.promise.Promise;
 import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
+import org.guvnor.common.services.project.events.RepositoryContributorsUpdatedEvent;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
@@ -254,6 +255,12 @@ public class ProjectScreen {
 
     public void onAssetsUpdated(@Observes UpdatedAssetsEvent event) {
         resolveAssetsCount();
+    }
+
+    public void onRepositoryContributorsUpdated(@Observes final RepositoryContributorsUpdatedEvent repositoryUpdatedEvent) {
+        if (repositoryUpdatedEvent.getRepository().getIdentifier().equals(libraryPlaces.getActiveWorkspace().getRepository().getIdentifier())) {
+            view.setContributorsCount(repositoryUpdatedEvent.getRepository().getContributors().size());
+        }
     }
 
     public void changeProjectAndTitleWhenContextChange(@Observes final WorkspaceProjectContextChangeEvent current) {
