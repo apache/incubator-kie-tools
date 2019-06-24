@@ -131,7 +131,7 @@ public class ContainerPresenter {
     }
 
     public void onInstanceUpdated(@Observes ServerInstanceUpdated instanceUpdated) {
-        if (instanceUpdated != null && containerSpec.getServerTemplateKey().getId().equals(instanceUpdated.getServerInstance().getServerTemplateId())) {
+        if (instanceUpdated != null && containerSpec != null && containerSpec.getServerTemplateKey().getId().equals(instanceUpdated.getServerInstance().getServerTemplateId())) {
             load(containerSpec);
         }
     }

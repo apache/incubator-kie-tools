@@ -29,7 +29,9 @@ import org.junit.runner.RunWith;
 import org.kie.server.api.model.KieContainerStatus;
 import org.kie.server.api.model.Message;
 import org.kie.server.api.model.ReleaseId;
+import org.kie.server.controller.api.model.events.ServerInstanceUpdated;
 import org.kie.server.controller.api.model.runtime.Container;
+import org.kie.server.controller.api.model.runtime.ServerInstance;
 import org.kie.server.controller.api.model.runtime.ServerInstanceKey;
 import org.kie.server.controller.api.model.spec.*;
 import org.kie.workbench.common.screens.server.management.client.container.config.process.ContainerProcessConfigPresenter;
@@ -156,6 +158,27 @@ public class ContainerPresenterTest {
                                                   containers);
 
         presenter.setContainerSpec(containerSpec);
+    }
+
+    @Test
+    public void testOnInstanceUpdatedWhenContainerSpecIsNull() {
+        ServerInstanceUpdated serverInstanceUpdated = mock(ServerInstanceUpdated.class);
+        ContainerSpec containerSpec = null;
+        presenter.setContainerSpec(containerSpec);
+        presenter.onInstanceUpdated(serverInstanceUpdated);
+
+        verify(runtimeManagementService, times(0)).getContainersByContainerSpec(any(), any());
+    }
+
+    @Test
+    public void testOnInstanceUpdatedWhenContainerSpecServerTemplateNotEqualServerInstanceUpdatedServerTemplate() {
+        ServerInstanceUpdated serverInstanceUpdated = mock(ServerInstanceUpdated.class);
+        ServerInstance serverInstance = mock(ServerInstance.class);
+        when(serverInstanceUpdated.getServerInstance()).thenReturn(serverInstance);
+        when(serverInstance.getServerTemplateId()).thenReturn(serverTemplateKey + "1");
+        presenter.onInstanceUpdated(serverInstanceUpdated);
+
+        verify(runtimeManagementService, times(0)).getContainersByContainerSpec(any(), any());
     }
 
     @Test
