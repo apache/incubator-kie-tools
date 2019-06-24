@@ -16,6 +16,7 @@
 
 package org.drools.workbench.screens.scenariosimulation.client.utils;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 
 import com.ait.lienzo.client.core.types.Point2D;
 import org.drools.scenariosimulation.api.model.ExpressionElement;
+import org.drools.scenariosimulation.api.model.FactMapping;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.model.Simulation;
 import org.drools.workbench.screens.scenariosimulation.client.events.EnableTestToolsEvent;
@@ -129,8 +131,7 @@ public class ScenarioSimulationGridHeaderUtilities {
         } else if (Objects.equals(clickedScenarioHeaderMetadata.getMetadataType(), ScenarioHeaderMetaData.MetadataType.PROPERTY)) {
             List<String> propertyNameElements = null;
             if (scenarioGridColumn.isPropertyAssigned()) {
-                final Optional<Simulation> optionalSimulation = scenarioGrid.getModel().getSimulation();
-                propertyNameElements = optionalSimulation.map(simulation -> getPropertyNameElements(simulation, uiColumnIndex)).orElse(null);
+                propertyNameElements = getPropertyNameElements(scenarioGrid.getModel(), uiColumnIndex);
             }
             return propertyNameElements != null ? new EnableTestToolsEvent(scenarioGridColumn.getInformationHeaderMetaData()
                                                                                    .getTitle(), propertyNameElements) : new EnableTestToolsEvent(scenarioGridColumn.getInformationHeaderMetaData().getTitle());
@@ -151,10 +152,18 @@ public class ScenarioSimulationGridHeaderUtilities {
                 .collect(Collectors.toSet()));
     }
 
-    public static List<String> getPropertyNameElements(final Simulation simulation, final int columnIndex) {
-        return Collections.unmodifiableList(simulation.getSimulationDescriptor().getFactMappingByIndex(columnIndex).getExpressionElementsWithoutClass()
-                                                    .stream()
-                                                    .map(ExpressionElement::getStep)
-                                                    .collect(Collectors.toList()));
+    public static List<String> getPropertyNameElements(final ScenarioGridModel scenarioGridModel, final int columnIndex) {
+        final Optional<Simulation> optionalSimulation = scenarioGridModel.getSimulation();
+        return optionalSimulation.map(simulation -> {
+            final FactMapping factMapping = simulation.getSimulationDescriptor().getFactMappingByIndex(columnIndex);
+            if (scenarioGridModel.isSimpleType(factMapping.getFactAlias())) {
+                return Arrays.asList(ConstantHolder.VALUE);
+            } else {
+                return Collections.unmodifiableList(simulation.getSimulationDescriptor().getFactMappingByIndex(columnIndex).getExpressionElementsWithoutClass()
+                                                            .stream()
+                                                            .map(ExpressionElement::getStep)
+                                                            .collect(Collectors.toList()));
+            }
+        }).orElse(null);
     }
 }

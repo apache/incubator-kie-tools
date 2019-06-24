@@ -796,6 +796,10 @@ public class ScenarioGridModel extends BaseGridData {
         }
     }
 
+    public boolean isSimpleType(String factClassName) {
+        return simpleJavaTypeInstancesName.contains(factClassName);
+    }
+
     /**
      * If the <code>FactIdentifier</code> of the given <code>FactMapping</code> equals the one at <b>index</b>, update the <code>FactMapping.FactAlias</code> at <b>index</b>
      * position with the provided <b>value</b>
