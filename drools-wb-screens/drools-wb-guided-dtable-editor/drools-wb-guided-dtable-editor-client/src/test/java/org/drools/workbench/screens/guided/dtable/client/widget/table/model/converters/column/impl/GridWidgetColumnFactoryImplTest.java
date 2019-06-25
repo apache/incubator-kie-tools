@@ -22,6 +22,7 @@ import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionVariableColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.CompositeColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
@@ -34,6 +35,8 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDeci
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTablePresenter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.BaseUiColumn;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.IntegerUiColumn;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.StringUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.GridWidgetColumnFactory;
 import org.drools.workbench.screens.guided.rule.client.widget.attribute.RuleAttributeWidget;
 import org.junit.Before;
@@ -277,5 +280,36 @@ public class GridWidgetColumnFactoryImplTest extends BaseConverterTest {
 
         assertEquals(false,
                      uiColumn.isVisible());
+    }
+
+    @Test
+    public void testNumericColumn_IsContainedInOperator() {
+        final BRLConditionVariableColumn column = new BRLConditionVariableColumn("$a",
+                                                                                 DataType.TYPE_NUMERIC_INTEGER,
+                                                                                 "Applicant",
+                                                                                 "age",
+                                                                                 "in");
+        column.setHeader("age is");
+
+        final GridColumn gridColumn = factory.convertColumn(column, access, gridWidget);
+
+        assertTrue(gridColumn instanceof StringUiColumn);
+    }
+
+    @Test
+    public void testNumericColumn_EqualOperator() {
+        final BRLConditionVariableColumn column = new BRLConditionVariableColumn("$a",
+                                                                                 DataType.TYPE_NUMERIC_INTEGER,
+                                                                                 "Applicant",
+                                                                                 "age",
+                                                                                 "==");
+        column.setHeader("age equal to");
+
+        when(oracle.getFieldType("Applicant",
+                                 "age")).thenReturn(DataType.TYPE_NUMERIC_INTEGER);
+
+        final GridColumn gridColumn = factory.convertColumn(column, access, gridWidget);
+
+        assertTrue(gridColumn instanceof IntegerUiColumn);
     }
 }

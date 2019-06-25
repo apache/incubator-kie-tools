@@ -22,6 +22,7 @@ import java.util.Date;
 import com.google.gwt.event.shared.EventBus;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
 import org.kie.soup.project.datamodel.oracle.DataType;
+import org.kie.soup.project.datamodel.oracle.OperatorsOracle;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.AbstractCellFactory;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.DecoratedGridCellValueAdaptor;
@@ -64,8 +65,13 @@ public class TemplateDataCellFactory
      */
     public DecoratedGridCellValueAdaptor<? extends Comparable<?>> getCell(TemplateDataColumn column) {
 
-        if(column.getDataType().equals(TemplateModel.DEFAULT_TYPE)){
-            return makeTextCell();
+        if (column.getDataType().equals(TemplateModel.DEFAULT_TYPE)) {
+            return makeTextCellWrapper();
+        }
+
+        if (OperatorsOracle.operatorRequiresList(column.getOperator())) {
+            // " " and "," needed to list multiple values
+            return makeTextCellWrapper();
         }
 
         //Check if the column has an enumeration
@@ -101,7 +107,7 @@ public class TemplateDataCellFactory
             } else if (dataType.equals(DataType.TYPE_NUMERIC_SHORT)) {
                 return makeNumericShortCell();
             } else {
-                return makeTextCell();
+                return makeTextCellWrapper();
             }
         }
     }
@@ -218,5 +224,12 @@ public class TemplateDataCellFactory
         }
 
         return cell;
+    }
+
+    /**
+     * Wrapper method due to a test purpose
+     */
+    protected DecoratedGridCellValueAdaptor<String> makeTextCellWrapper() {
+        return makeTextCell();
     }
 }

@@ -25,6 +25,7 @@ import org.drools.workbench.models.datamodel.rule.InterpolationVariable;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
 import org.kie.soup.project.datamodel.oracle.DataType;
 import org.kie.soup.project.datamodel.oracle.DateConverter;
+import org.kie.soup.project.datamodel.oracle.OperatorsOracle;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.AbstractCellValueFactory;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellValue;
@@ -154,6 +155,10 @@ public class TemplateDataCellValueFactory
     @Override
     public CellValue<? extends Comparable<?>> convertModelCellValue(TemplateDataColumn column,
                                                                     String dcv) {
+
+        if (OperatorsOracle.operatorRequiresList(column.getOperator())) {
+            return makeNewStringCellValue(dcv);
+        }
 
         DataType.DataTypes dataType = getDataType(column);
         CellValue<? extends Comparable<?>> cell = null;
@@ -307,6 +312,10 @@ public class TemplateDataCellValueFactory
     public String convertToModelCell(TemplateDataColumn column,
                                      CellValue<?> cv) {
         DataType.DataTypes dataType = getDataType(column);
+
+        if (OperatorsOracle.operatorRequiresList(column.getOperator())) {
+            return cv.getValue().toString();
+        }
 
         switch (dataType) {
             case BOOLEAN:

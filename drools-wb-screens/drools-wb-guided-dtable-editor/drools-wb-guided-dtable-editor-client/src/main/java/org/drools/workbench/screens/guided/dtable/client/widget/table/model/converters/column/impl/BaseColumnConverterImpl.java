@@ -20,6 +20,7 @@ import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 
+import org.drools.workbench.models.datamodel.rule.HasOperator;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
@@ -129,6 +130,17 @@ public abstract class BaseColumnConverterImpl implements BaseColumnConverter {
     protected GridColumn<?> newColumn(final BaseColumn column,
                                       final GuidedDecisionTablePresenter.Access access,
                                       final GuidedDecisionTableView gridWidget) {
+
+        if (column instanceof HasOperator && OperatorsOracle.operatorRequiresList(((HasOperator) column).getOperator())) {
+            return newStringColumn(makeHeaderMetaData(column),
+                                   Math.max(column.getWidth(),
+                                            DEFAULT_COLUMN_WIDTH),
+                                   true,
+                                   !column.isHideColumn(),
+                                   access,
+                                   gridWidget);
+        }
+
         //Get a column based upon the data-type
         final String type = columnUtilities.getType(column);
 
