@@ -234,9 +234,10 @@ public class TestToolsViewImpl
 
     @Override
     public void disableSearch() {
-        clearSearchButton.setDisabled(true);
+        hideClearButton();
         searchButton.setDisabled(true);
         inputSearch.setDisabled(true);
+        inputSearch.setValue("");
     }
 
     @Override

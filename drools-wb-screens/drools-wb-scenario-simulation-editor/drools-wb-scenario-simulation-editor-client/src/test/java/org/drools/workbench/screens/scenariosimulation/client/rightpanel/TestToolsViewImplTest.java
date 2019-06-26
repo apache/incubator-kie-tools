@@ -206,7 +206,6 @@ public class TestToolsViewImplTest {
         verify(kieTestToolsContentMock, times(1)).removeClassName("disabled");
     }
 
-
     @Test
     public void enableSearch() {
         testToolsView.enableSearch();
@@ -218,8 +217,9 @@ public class TestToolsViewImplTest {
     @Test
     public void disableSearch() {
         testToolsView.disableSearch();
-        verify(clearSearchButtonMock, times(1)).setDisabled(eq(true));
+        verify(testToolsView, times(1)).hideClearButton();
         verify(searchButtonMock, times(1)).setDisabled(eq(true));
         verify(inputSearchMock, times(1)).setDisabled(eq(true));
+        verify(inputSearchMock, times(1)).setValue((eq("")));
     }
 }
