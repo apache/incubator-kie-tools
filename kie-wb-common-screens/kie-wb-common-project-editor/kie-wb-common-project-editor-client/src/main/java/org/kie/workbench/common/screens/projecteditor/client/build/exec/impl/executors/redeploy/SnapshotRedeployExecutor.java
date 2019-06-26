@@ -44,6 +44,7 @@ public class SnapshotRedeployExecutor extends SnapshotBuildAndDeployExecutor {
 
     @Override
     protected void updateContainerSpec(final BuildExecutionContext context, final ContainerSpec containerSpec) {
+        containerSpec.setStatus(context.getServerTemplate().getContainerSpec(containerSpec.getId()).getStatus());
         specManagementService.call(ignore -> {
             notifyUpdateSuccess();
         }, (o, throwable) -> {

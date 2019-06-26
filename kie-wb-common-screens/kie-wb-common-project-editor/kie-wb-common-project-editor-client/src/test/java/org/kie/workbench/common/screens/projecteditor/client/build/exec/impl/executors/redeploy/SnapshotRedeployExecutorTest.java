@@ -30,6 +30,8 @@ import org.guvnor.common.services.project.service.DeploymentMode;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.server.api.model.KieContainerStatus;
+import org.kie.server.api.model.KieScannerStatus;
 import org.kie.server.api.model.KieServerMode;
 import org.kie.server.controller.api.model.spec.ContainerSpec;
 import org.kie.server.controller.api.model.spec.ServerTemplate;
@@ -129,6 +131,7 @@ public class SnapshotRedeployExecutorTest extends AbstractBuildAndDeployExecutor
 
         ContainerSpec spec = mock(ContainerSpec.class);
         when(spec.getId()).thenReturn(context.getContainerId());
+        when(spec.getStatus()).thenReturn(KieContainerStatus.STARTED);
 
         serverTemplate.addContainerSpec(spec);
 
@@ -146,6 +149,7 @@ public class SnapshotRedeployExecutorTest extends AbstractBuildAndDeployExecutor
         ContainerSpec containerSpec = containerSpecArgumentCaptor.getValue();
 
         assertEquals(module.getPom().getGav().getArtifactId(), containerSpec.getContainerName());
+        assertEquals(KieContainerStatus.STARTED, containerSpec.getStatus());
 
         verifyNotification(ProjectEditorResources.CONSTANTS.BuildSuccessful(), NotificationEvent.NotificationType.SUCCESS);
         verifyNotification(ProjectEditorResources.CONSTANTS.DeploySuccessfulAndContainerUpdated(), NotificationEvent.NotificationType.SUCCESS);
@@ -169,6 +173,7 @@ public class SnapshotRedeployExecutorTest extends AbstractBuildAndDeployExecutor
 
         ContainerSpec spec = mock(ContainerSpec.class);
         when(spec.getId()).thenReturn(context.getContainerId());
+        when(spec.getStatus()).thenReturn(KieContainerStatus.STARTED);
 
         serverTemplate.addContainerSpec(spec);
 
@@ -186,6 +191,7 @@ public class SnapshotRedeployExecutorTest extends AbstractBuildAndDeployExecutor
         ContainerSpec containerSpec = containerSpecArgumentCaptor.getValue();
 
         assertEquals(module.getPom().getGav().getArtifactId(), containerSpec.getContainerName());
+        assertEquals(KieContainerStatus.STARTED, containerSpec.getStatus());
 
         verifyNotification(CONSTANTS.DeployFailed(), NotificationEvent.NotificationType.ERROR);
 
