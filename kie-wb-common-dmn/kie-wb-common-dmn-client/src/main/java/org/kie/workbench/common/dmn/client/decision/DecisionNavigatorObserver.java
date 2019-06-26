@@ -74,12 +74,15 @@ public class DecisionNavigatorObserver {
 
     private void updateNode(final Graph graph) {
 
-        final String activeParent = getActiveParent().getUUID();
-        final Node node = graph.getNode(activeParent);
+        getActiveParent().ifPresent(activeParent -> {
 
-        presenter.updateElement(node);
+            final String activeParentUUID = activeParent.getUUID();
+            final Node node = graph.getNode(activeParentUUID);
 
-        getActiveParent().getChildren().forEach(e -> getTreePresenter().selectItem(e.getUUID()));
+            presenter.updateElement(node);
+
+            activeParent.getChildren().forEach(e -> getTreePresenter().selectItem(e.getUUID()));
+        });
     }
 
     void onNestedElementLostFocus(final @Observes CanvasFocusedShapeEvent event) {
@@ -97,8 +100,8 @@ public class DecisionNavigatorObserver {
         });
     }
 
-    DecisionNavigatorItem getActiveParent() {
-        return getTreePresenter().getActiveParent();
+    Optional<DecisionNavigatorItem> getActiveParent() {
+        return Optional.ofNullable(getTreePresenter().getActiveParent());
     }
 
     void setActiveParent(final EditExpressionEvent event) {

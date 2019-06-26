@@ -383,6 +383,9 @@ public class DMNEditorConstants {
     public static final String DMNDocumentationI18n_GeneratedFrom = "DMNDocumentationI18n.GeneratedFrom";
 
     @TranslationKey(defaultValue = "")
+    public static final String DMNDocumentationI18n_Namespace = "DMNDocumentationI18n.Namespace";
+
+    @TranslationKey(defaultValue = "")
     public static final String DMNDocumentationI18n_TableOfContents = "DMNDocumentationI18n.TableOfContents";
 
     @TranslationKey(defaultValue = "")
@@ -396,6 +399,9 @@ public class DMNEditorConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String DMNDocumentationI18n_NoDataTypes = "DMNDocumentationI18n.NoDataTypes";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DMNDocumentationI18n_NoDRDs = "DMNDocumentationI18n.NoDRDs";
 
     @TranslationKey(defaultValue = "")
     public static final String DMNDocumentationI18n_DiagramDoesNotHaveElements = "DMNDocumentationI18n.DiagramDoesNotHaveElements";

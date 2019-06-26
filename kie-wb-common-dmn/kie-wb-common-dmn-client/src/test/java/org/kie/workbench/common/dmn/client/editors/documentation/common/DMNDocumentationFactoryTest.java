@@ -71,6 +71,9 @@ public class DMNDocumentationFactoryTest {
     private TranslationService translationService;
 
     @Mock
+    private DMNDocumentationDRDsFactory drdsFactory;
+
+    @Mock
     private SessionInfo sessionInfo;
 
     @Mock
@@ -102,7 +105,7 @@ public class DMNDocumentationFactoryTest {
     @Before
     public void setup() {
 
-        documentationFactory = spy(new DMNDocumentationFactory(canvasFileExport, translationService, sessionInfo, graphUtils));
+        documentationFactory = spy(new DMNDocumentationFactory(canvasFileExport, translationService, drdsFactory, sessionInfo, graphUtils));
 
         when(translationService.format(DMNDocumentationFactory_Constraints)).thenReturn("Constraints:");
         when(translationService.format(DMNDocumentationFactory_ListYes)).thenReturn("List: Yes");
@@ -119,6 +122,7 @@ public class DMNDocumentationFactoryTest {
         final String image = "<image>";
         final String admin = "admin";
         final String currentDate = "2 January 1992";
+        final String namespace = "://namespace";
         final List<DRGElement> drgElements = singletonList(mock(DRGElement.class));
         final ItemDefinition uuid = makeItemDefinition("tUUID", "String");
         final ItemDefinition id = makeItemDefinition("id", "tUUID");
@@ -136,6 +140,7 @@ public class DMNDocumentationFactoryTest {
         doReturn(i18n).when(documentationFactory).getDocumentationI18n();
         doReturn(moment).when(documentationFactory).moment();
 
+        when(definitions.getNamespace()).thenReturn(new Text(namespace));
         when(graphUtils.getDefinitions(diagram)).thenReturn(definitions);
         when(definitions.getName()).thenReturn(new Name(diagramName));
         when(definitions.getDescription()).thenReturn(new Description(diagramDescription));
@@ -147,6 +152,7 @@ public class DMNDocumentationFactoryTest {
 
         final DMNDocumentation documentation = documentationFactory.create(diagram);
 
+        assertEquals(namespace, documentation.getNamespace());
         assertEquals(fileName, documentation.getFileName());
         assertEquals(diagramName, documentation.getDiagramName());
         assertEquals(diagramDescription, documentation.getDiagramDescription());

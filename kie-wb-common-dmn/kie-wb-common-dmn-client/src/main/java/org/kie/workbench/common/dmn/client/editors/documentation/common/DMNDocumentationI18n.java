@@ -29,6 +29,8 @@ import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConsta
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DMNDocumentationI18n_GeneratedBy;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DMNDocumentationI18n_GeneratedFrom;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DMNDocumentationI18n_GeneratedOn;
+import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DMNDocumentationI18n_Namespace;
+import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DMNDocumentationI18n_NoDRDs;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DMNDocumentationI18n_NoDataTypes;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DMNDocumentationI18n_TableOfContents;
 
@@ -40,6 +42,8 @@ public class DMNDocumentationI18n {
     private String generatedBy;
 
     private String generatedFrom;
+
+    private String namespace;
 
     private String dmnModelDocumentation;
 
@@ -53,6 +57,8 @@ public class DMNDocumentationI18n {
 
     private String noDataTypes;
 
+    private String noDRDs;
+
     private String diagramDoesNotHaveElements;
 
     @JsOverlay
@@ -64,11 +70,13 @@ public class DMNDocumentationI18n {
         i18n.generatedOn = translationService.format(DMNDocumentationI18n_GeneratedOn);
         i18n.generatedBy = translationService.format(DMNDocumentationI18n_GeneratedBy);
         i18n.generatedFrom = translationService.format(DMNDocumentationI18n_GeneratedFrom);
+        i18n.namespace = translationService.format(DMNDocumentationI18n_Namespace);
         i18n.tableOfContents = translationService.format(DMNDocumentationI18n_TableOfContents);
         i18n.dmnModel = translationService.format(DMNDocumentationI18n_DmnModel);
         i18n.dataTypes = translationService.format(DMNDocumentationI18n_DataTypes);
         i18n.drdComponents = translationService.format(DMNDocumentationI18n_DrdComponents);
         i18n.noDataTypes = translationService.format(DMNDocumentationI18n_NoDataTypes);
+        i18n.noDRDs = translationService.format(DMNDocumentationI18n_NoDRDs);
         i18n.diagramDoesNotHaveElements = translationService.format(DMNDocumentationI18n_DiagramDoesNotHaveElements);
 
         return i18n;
@@ -87,6 +95,11 @@ public class DMNDocumentationI18n {
     @JsOverlay
     public final String getGeneratedFrom() {
         return generatedFrom;
+    }
+
+    @JsOverlay
+    public final String getNamespace() {
+        return namespace;
     }
 
     @JsOverlay
@@ -117,6 +130,11 @@ public class DMNDocumentationI18n {
     @JsOverlay
     public final String getNoDataTypes() {
         return noDataTypes;
+    }
+
+    @JsOverlay
+    public final String getNoDRDs() {
+        return noDRDs;
     }
 
     @JsOverlay

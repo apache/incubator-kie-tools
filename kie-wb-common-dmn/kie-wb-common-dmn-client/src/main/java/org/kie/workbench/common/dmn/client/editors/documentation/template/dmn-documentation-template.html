@@ -46,7 +46,7 @@
         }
 
         .kie-dmn-documentation .diagram-image {
-            width: 100%;
+            max-width: 100%;
         }
 
         .kie-dmn-documentation ul.data-types {
@@ -78,14 +78,35 @@
             font-weight: normal;
         }
 
-        .no-results {
+        .kie-dmn-documentation .no-results {
             font-style: italic;
             opacity: 0.75;
             padding: 20px;
         }
 
-        li.no-results {
+        .kie-dmn-documentation li.no-results {
             margin-left: -15px;
+        }
+
+        .kie-dmn-documentation .drd-component {
+            padding: 10px 0 20px;
+        }
+
+        .kie-dmn-documentation .drd-component + .drd-component {
+            border-top: 1px solid #E5EEF5;
+            padding: 20px 0;
+        }
+
+        .kie-dmn-documentation .drd-component h4 {
+            font-weight: 600;
+        }
+
+        .kie-dmn-documentation .drd-component h4 span {
+            font-weight: normal;
+        }
+
+        .kie-dmn-documentation .drd-component .diagram-image {
+            padding-top: 5px;
         }
 
         .kie-dmn-documentation .pagebreak {
@@ -124,6 +145,7 @@
 
         <h2>{{diagramName}}</h2>
 
+        <h3>{{i18n.namespace}} <b>{{namespace}}</b></h3>
         <h3>{{i18n.generatedOn}} <b>{{currentDate}}</b></h3>
         <h3>{{i18n.generatedBy}} <b>{{currentUser}}</b></h3>
         <h3>{{i18n.generatedFrom}} <b>{{fileName}}</b></h3>
@@ -139,7 +161,7 @@
     <ol class="table-of-contents">
         <li>{{diagramName}} - {{i18n.dmnModel}}</li>
         <li>{{diagramName}} - {{i18n.dataTypes}}</li>
-        <!-- TODO (https://issues.jboss.org/browse/DROOLS-4119): <li>{{diagramName}} - {{i18n.drdComponents}}</li> -->
+        <li>{{diagramName}} - {{i18n.drdComponents}}</li>
     </ol>
 
     <div class="pagebreak"></div>
@@ -156,7 +178,7 @@
     {{/hasGraphNodes}}
 
     {{#hasGraphNodes}}
-    <img src="{{diagramImage}}" alt="{{diagramName}}" class="diagram-image" />
+    <img src="{{diagramImage}}" alt="{{diagramName}}" class="diagram-image"/>
     {{/hasGraphNodes}}
 
     <div class="pagebreak"></div>
@@ -183,11 +205,33 @@
         {{/dataTypes}}
     </ul>
 
-    <!--<div class="pagebreak"></div>-->
+    <div class="pagebreak"></div>
+
     <!-- ######################################################### -->
     <!-- DRD components -->
 
-    <!-- TODO (https://issues.jboss.org/browse/DROOLS-4119): <h2>3. {{diagramName}} - {{i18n.drdComponents}}</h2> -->
+    <h2>3. {{diagramName}} - {{i18n.drdComponents}}</h2>
+
+    {{#drds}}
+    <div class="drd-component">
+        <h4>
+            &#9656;
+            {{drdName}}
+            {{#drdType}}
+            <span>
+                ({{drdType}})
+            </span>
+            {{/drdType}}
+        </h4>
+        <p>{{drdDescription}}</p>
+        {{#drdBoxedExpressionImage}}
+        <img src="{{drdBoxedExpressionImage}}" alt="{{drdName}}" class="diagram-image"/>
+        {{/drdBoxedExpressionImage}}
+    </div>
+    {{/drds}}
+    {{^drds}}
+    <div class="no-results">{{i18n.noDRDs}}</div>
+    {{/drds}}
 
 </div>
 

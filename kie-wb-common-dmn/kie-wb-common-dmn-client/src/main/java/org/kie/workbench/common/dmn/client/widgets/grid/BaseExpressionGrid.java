@@ -401,11 +401,6 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
         return true;
     }
 
-    //Package protected getter for Unit Tests.
-    Optional<String> getNodeUUID() {
-        return nodeUUID;
-    }
-
     public double getMinimumWidth() {
         double minimumWidth = 0;
         final int columnCount = model.getColumnCount();

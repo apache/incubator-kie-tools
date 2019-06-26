@@ -25,13 +25,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
-import org.kie.workbench.common.dmn.api.definition.v1_1.BusinessKnowledgeModel;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
-import org.kie.workbench.common.dmn.api.definition.v1_1.FunctionDefinition;
-import org.kie.workbench.common.dmn.api.definition.v1_1.InputData;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
+import org.kie.workbench.common.dmn.client.common.BoxedExpressionHelper;
 import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorItem;
 import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorPresenter;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
@@ -84,6 +81,9 @@ public class DecisionNavigatorNestedItemFactoryTest {
     @Mock
     private ExpressionEditorDefinition decisionTableEditorDefinition;
 
+    @Mock
+    private BoxedExpressionHelper boxedExpressionHelper;
+
     private DecisionNavigatorNestedItemFactory factory;
 
     @Before
@@ -93,7 +93,8 @@ public class DecisionNavigatorNestedItemFactoryTest {
                                                              editExpressionEvent,
                                                              decisionNavigatorPresenter,
                                                              expressionEditorDefinitionsSupplier,
-                                                             canvasSelectionEvent));
+                                                             canvasSelectionEvent,
+                                                             boxedExpressionHelper));
 
         final ExpressionEditorDefinitions expressionEditorDefinitions = new ExpressionEditorDefinitions();
         expressionEditorDefinitions.add(decisionTableEditorDefinition);
@@ -167,8 +168,8 @@ public class DecisionNavigatorNestedItemFactoryTest {
 
         when(node.getUUID()).thenReturn(uuid);
         when(sessionManager.getCurrentSession()).thenReturn(currentSession);
-        doReturn(hasName).when(factory).getDefinition(node);
-        doReturn(hasExpression).when(factory).getHasExpression(node);
+        when(boxedExpressionHelper.getDefinition(node)).thenReturn(hasName);
+        when(boxedExpressionHelper.getHasExpression(node)).thenReturn(hasExpression);
 
         final EditExpressionEvent expressionEvent = factory.makeEditExpressionEvent(node);
 
@@ -186,7 +187,7 @@ public class DecisionNavigatorNestedItemFactoryTest {
         final Id id = mock(Id.class);
         final String expectedUUID = "uuid";
 
-        doReturn(expression).when(factory).getExpression(node);
+        when(boxedExpressionHelper.getExpression(node)).thenReturn(expression);
         when(expression.getId()).thenReturn(id);
         when(id.getValue()).thenReturn(expectedUUID);
 
@@ -200,7 +201,7 @@ public class DecisionNavigatorNestedItemFactoryTest {
 
         final DecisionTable expression = new DecisionTable();
 
-        doReturn(expression).when(factory).getExpression(node);
+        when(boxedExpressionHelper.getExpression(node)).thenReturn(expression);
 
         final String actualLabel = factory.getLabel(node);
 
@@ -213,7 +214,7 @@ public class DecisionNavigatorNestedItemFactoryTest {
         final DecisionTable expression = new DecisionTable();
         final DecisionNavigatorItem.Type expectedType = DECISION_TABLE;
 
-        doReturn(expression).when(factory).getExpression(node);
+        when(boxedExpressionHelper.getExpression(node)).thenReturn(expression);
 
         final DecisionNavigatorItem.Type actualType = factory.getType(node);
 
@@ -226,8 +227,8 @@ public class DecisionNavigatorNestedItemFactoryTest {
         final Optional<HasExpression> hasExpression = Optional.empty();
         final Optional<Expression> expression = Optional.empty();
 
-        doReturn(hasExpression).when(factory).getOptionalHasExpression(node);
-        doReturn(expression).when(factory).getOptionalExpression(node);
+        when(boxedExpressionHelper.getOptionalHasExpression(node)).thenReturn(hasExpression);
+        when(boxedExpressionHelper.getOptionalExpression(node)).thenReturn(expression);
 
         assertFalse(factory.hasNestedElement(node));
     }
@@ -238,8 +239,8 @@ public class DecisionNavigatorNestedItemFactoryTest {
         final Optional<HasExpression> hasExpression = Optional.ofNullable(mock(HasExpression.class));
         final Optional<Expression> expression = Optional.empty();
 
-        doReturn(hasExpression).when(factory).getOptionalHasExpression(node);
-        doReturn(expression).when(factory).getOptionalExpression(node);
+        when(boxedExpressionHelper.getOptionalHasExpression(node)).thenReturn(hasExpression);
+        when(boxedExpressionHelper.getOptionalExpression(node)).thenReturn(expression);
 
         assertFalse(factory.hasNestedElement(node));
     }
@@ -250,56 +251,9 @@ public class DecisionNavigatorNestedItemFactoryTest {
         final Optional<HasExpression> hasExpression = Optional.ofNullable(mock(HasExpression.class));
         final Optional<Expression> expression = Optional.ofNullable(mock(Expression.class));
 
-        doReturn(hasExpression).when(factory).getOptionalHasExpression(node);
-        doReturn(expression).when(factory).getOptionalExpression(node);
+        when(boxedExpressionHelper.getOptionalHasExpression(node)).thenReturn(hasExpression);
+        when(boxedExpressionHelper.getOptionalExpression(node)).thenReturn(expression);
 
         assertTrue(factory.hasNestedElement(node));
-    }
-
-    @Test
-    public void testGetOptionalHasExpressionWhenNodeIsBusinessKnowledgeModel() {
-
-        final View content = mock(View.class);
-        final BusinessKnowledgeModel businessKnowledgeModel = new BusinessKnowledgeModel();
-        final FunctionDefinition encapsulatedLogic = mock(FunctionDefinition.class);
-        businessKnowledgeModel.setEncapsulatedLogic(encapsulatedLogic);
-
-        when(node.getContent()).thenReturn(content);
-        when(content.getDefinition()).thenReturn(businessKnowledgeModel);
-
-        final Optional<HasExpression> actualHasExpression = factory.getOptionalHasExpression(node);
-
-        assertTrue(actualHasExpression.isPresent());
-        assertEquals(businessKnowledgeModel, actualHasExpression.get().asDMNModelInstrumentedBase());
-        assertEquals(encapsulatedLogic, actualHasExpression.get().getExpression());
-    }
-
-    @Test
-    public void testGetOptionalHasExpressionWhenNodeIsDecision() {
-
-        final View content = mock(View.class);
-        final Decision expectedHasExpression = mock(Decision.class);
-
-        when(node.getContent()).thenReturn(content);
-        when(content.getDefinition()).thenReturn(expectedHasExpression);
-
-        final Optional<HasExpression> actualHasExpression = factory.getOptionalHasExpression(node);
-
-        assertTrue(actualHasExpression.isPresent());
-        assertEquals(expectedHasExpression, actualHasExpression.get());
-    }
-
-    @Test
-    public void testGetOptionalHasExpressionWhenNodeIsOtherDRGElement() {
-
-        final View content = mock(View.class);
-        final InputData expectedHasExpression = mock(InputData.class);
-
-        when(node.getContent()).thenReturn(content);
-        when(content.getDefinition()).thenReturn(expectedHasExpression);
-
-        final Optional<HasExpression> actualHasExpression = factory.getOptionalHasExpression(node);
-
-        assertFalse(actualHasExpression.isPresent());
     }
 }

@@ -318,4 +318,8 @@ public abstract class BaseGrid<E extends Expression> extends BaseGridWidget impl
     public boolean isOnlyVisualChangeAllowed() {
         return isOnlyVisualChangeAllowed;
     }
+
+    public Optional<String> getNodeUUID() {
+        return nodeUUID;
+    }
 }

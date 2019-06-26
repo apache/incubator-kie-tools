@@ -226,7 +226,7 @@ public class DecisionNavigatorObserverTest {
 
         when(presenter.getGraph()).thenReturn(Optional.of(graph));
         when(graph.getNode(uuid1)).thenReturn(node);
-        doReturn(item).when(observer).getActiveParent();
+        doReturn(Optional.of(item)).when(observer).getActiveParent();
 
         observer.init(presenter);
         observer.onNestedElementAdded(new ExpressionEditorChanged());
@@ -253,7 +253,7 @@ public class DecisionNavigatorObserverTest {
         when(treePresenter.getActiveParent()).thenReturn(expectedItem);
         observer.init(presenter);
 
-        final DecisionNavigatorItem actualItem = observer.getActiveParent();
+        final DecisionNavigatorItem actualItem = observer.getActiveParent().get();
 
         assertEquals(expectedItem, actualItem);
     }

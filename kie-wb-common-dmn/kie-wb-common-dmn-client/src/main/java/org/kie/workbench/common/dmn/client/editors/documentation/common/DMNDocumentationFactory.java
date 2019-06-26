@@ -48,6 +48,8 @@ public class DMNDocumentationFactory {
 
     private final TranslationService translationService;
 
+    private final DMNDocumentationDRDsFactory drdsFactory;
+
     private final SessionInfo sessionInfo;
 
     private final DMNGraphUtils graphUtils;
@@ -55,24 +57,36 @@ public class DMNDocumentationFactory {
     @Inject
     public DMNDocumentationFactory(final CanvasFileExport canvasFileExport,
                                    final TranslationService translationService,
+                                   final DMNDocumentationDRDsFactory drdsFactory,
                                    final SessionInfo sessionInfo,
                                    final DMNGraphUtils graphUtils) {
         this.canvasFileExport = canvasFileExport;
         this.translationService = translationService;
+        this.drdsFactory = drdsFactory;
         this.sessionInfo = sessionInfo;
         this.graphUtils = graphUtils;
     }
 
     public DMNDocumentation create(final Diagram diagram) {
-        return DMNDocumentation.create(getFileName(diagram),
+        return DMNDocumentation.create(getNamespace(diagram),
+                                       getFileName(diagram),
                                        getDiagramName(diagram),
                                        getDiagramDescription(diagram),
                                        hasGraphNodes(diagram),
                                        getDataTypes(diagram),
+                                       getDrds(diagram),
                                        getDiagramImage(),
                                        getCurrentUserName(),
                                        getCurrentDate(),
                                        getDocumentationI18n());
+    }
+
+    private List<DMNDocumentationDRD> getDrds(final Diagram diagram) {
+        return drdsFactory.create(diagram);
+    }
+
+    private String getNamespace(final Diagram diagram) {
+        return graphUtils.getDefinitions(diagram).getNamespace().getValue();
     }
 
     String getFileName(final Diagram diagram) {

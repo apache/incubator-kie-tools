@@ -28,6 +28,8 @@ import org.kie.workbench.common.stunner.core.documentation.model.DiagramDocument
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
 public class DMNDocumentation implements DiagramDocumentation {
 
+    private String namespace;
+
     private String diagramName;
 
     private String diagramDescription;
@@ -44,6 +46,8 @@ public class DMNDocumentation implements DiagramDocumentation {
 
     private Array<DMNDocumentationDataType> dataTypes;
 
+    private Array<DMNDocumentationDRD> drds;
+
     private List<DMNDocumentationDataType> dataTypesList;
 
     private boolean hasGraphNodes;
@@ -55,11 +59,13 @@ public class DMNDocumentation implements DiagramDocumentation {
     }
 
     @JsOverlay
-    public static DMNDocumentation create(final String fileName,
+    public static DMNDocumentation create(final String namespace,
+                                          final String fileName,
                                           final String diagramName,
                                           final String diagramDescription,
                                           final boolean hasGraphNodes,
                                           final List<DMNDocumentationDataType> dataTypes,
+                                          final List<DMNDocumentationDRD> drds,
                                           final String diagramImage,
                                           final String currentUser,
                                           final String currentDate,
@@ -67,6 +73,7 @@ public class DMNDocumentation implements DiagramDocumentation {
 
         final DMNDocumentation dmn = new DMNDocumentation();
 
+        dmn.namespace = namespace;
         dmn.diagramName = diagramName;
         dmn.diagramDescription = diagramDescription;
         dmn.fileName = fileName;
@@ -76,10 +83,16 @@ public class DMNDocumentation implements DiagramDocumentation {
         dmn.hasGraphNodes = hasGraphNodes;
         dmn.moduleName = GWT.getModuleName();
         dmn.dataTypes = asJsArray(dataTypes);
+        dmn.drds = asJsArray(drds);
         dmn.dataTypesList = dataTypes;
         dmn.i18n = i18n;
 
         return dmn;
+    }
+
+    @JsOverlay
+    public final String getNamespace() {
+        return namespace;
     }
 
     @JsOverlay
@@ -123,6 +136,11 @@ public class DMNDocumentation implements DiagramDocumentation {
     }
 
     @JsOverlay
+    public final Array<DMNDocumentationDRD> getDrds() {
+        return drds;
+    }
+
+    @JsOverlay
     public final List<DMNDocumentationDataType> getDataTypesList() {
         return dataTypesList;
     }
@@ -138,8 +156,9 @@ public class DMNDocumentation implements DiagramDocumentation {
     }
 
     @JsOverlay
-    private static Array<DMNDocumentationDataType> asJsArray(final List<DMNDocumentationDataType> javaList) {
-        final Array<DMNDocumentationDataType> jsArray = new Array<>();
+    @SuppressWarnings("unchecked")
+    private static <T> Array<T> asJsArray(final List<T> javaList) {
+        final Array<T> jsArray = new Array<>();
         javaList.forEach(jsArray::push);
         return jsArray;
     }

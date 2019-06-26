@@ -227,6 +227,10 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         setExpressionTypeText(Optional.ofNullable(hasExpression.getExpression()));
     }
 
+    public ExpressionContainerGrid getExpressionContainerGrid() {
+        return expressionContainerGrid;
+    }
+
     @Override
     public void setExpressionNameText(final Optional<HasName> hasName) {
         hasName.ifPresent(name -> expressionName.setTextContent(name.getName().getValue()));

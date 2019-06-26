@@ -27,10 +27,8 @@ import javax.inject.Inject;
 import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
-import org.kie.workbench.common.dmn.api.definition.v1_1.BusinessKnowledgeModel;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DRGElement;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.FunctionDefinition;
@@ -39,6 +37,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.List;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Relation;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
+import org.kie.workbench.common.dmn.client.common.BoxedExpressionHelper;
 import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorItem;
 import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorPresenter;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
@@ -84,17 +83,21 @@ public class DecisionNavigatorNestedItemFactory {
 
     private final Event<CanvasSelectionEvent> canvasSelectionEvent;
 
+    private final BoxedExpressionHelper helper;
+
     @Inject
     public DecisionNavigatorNestedItemFactory(final SessionManager sessionManager,
                                               final Event<EditExpressionEvent> editExpressionEvent,
                                               final DecisionNavigatorPresenter decisionNavigatorPresenter,
                                               final @DMNEditor Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
-                                              final Event<CanvasSelectionEvent> canvasSelectionEvent) {
+                                              final Event<CanvasSelectionEvent> canvasSelectionEvent,
+                                              final BoxedExpressionHelper helper) {
         this.sessionManager = sessionManager;
         this.editExpressionEvent = editExpressionEvent;
         this.decisionNavigatorPresenter = decisionNavigatorPresenter;
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
         this.canvasSelectionEvent = canvasSelectionEvent;
+        this.helper = helper;
     }
 
     public DecisionNavigatorItem makeItem(final Node<View, Edge> node) {
@@ -109,7 +112,7 @@ public class DecisionNavigatorNestedItemFactory {
     }
 
     public boolean hasNestedElement(final Node<View, Edge> node) {
-        return getOptionalHasExpression(node).isPresent() && getOptionalExpression(node).isPresent();
+        return helper.getOptionalHasExpression(node).isPresent() && helper.getOptionalExpression(node).isPresent();
     }
 
     Command makeOnClickCommand(final Node<View, Edge> node,
@@ -132,9 +135,9 @@ public class DecisionNavigatorNestedItemFactory {
     EditExpressionEvent makeEditExpressionEvent(final Node<View, Edge> node) {
 
         final ClientSession currentSession = sessionManager.getCurrentSession();
-        final Object definition = getDefinition(node);
+        final Object definition = helper.getDefinition(node);
+        final HasExpression hasExpression = helper.getHasExpression(node);
         final Optional<HasName> hasName = Optional.of((HasName) definition);
-        final HasExpression hasExpression = getHasExpression(node);
         final boolean isOnlyVisualChangeAllowed = isOnlyVisualChangeAllowed(definition);
 
         return new EditExpressionEvent(currentSession, node.getUUID(), hasExpression, hasName, isOnlyVisualChangeAllowed);
@@ -161,35 +164,7 @@ public class DecisionNavigatorNestedItemFactory {
         return ITEM_TYPE_BY_EXPRESSION.get(getExpression(node).getClass());
     }
 
-    Optional<HasExpression> getOptionalHasExpression(final Node<View, Edge> node) {
-
-        final Object definition = getDefinition(node);
-        final HasExpression expression;
-
-        if (definition instanceof BusinessKnowledgeModel) {
-            expression = ((BusinessKnowledgeModel) definition).asHasExpression();
-        } else if (definition instanceof Decision) {
-            expression = (Decision) definition;
-        } else {
-            expression = null;
-        }
-
-        return Optional.ofNullable(expression);
-    }
-
-    Optional<Expression> getOptionalExpression(final Node<View, Edge> node) {
-        return Optional.ofNullable(getExpression(node));
-    }
-
-    Expression getExpression(final Node<View, Edge> node) {
-        return getHasExpression(node).getExpression();
-    }
-
-    HasExpression getHasExpression(final Node<View, Edge> node) {
-        return getOptionalHasExpression(node).orElseThrow(RuntimeException::new);
-    }
-
-    Object getDefinition(final Node<View, Edge> node) {
-        return node.getContent().getDefinition();
+    private Expression getExpression(final Node<View, Edge> node) {
+        return helper.getExpression(node);
     }
 }
