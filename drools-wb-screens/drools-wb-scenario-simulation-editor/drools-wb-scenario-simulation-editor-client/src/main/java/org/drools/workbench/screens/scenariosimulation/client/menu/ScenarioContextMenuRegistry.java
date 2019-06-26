@@ -188,12 +188,11 @@ public class ScenarioContextMenuRegistry {
         if (scenarioGridColumn == null) {
             return false;
         }
-        boolean showDuplicateInstance = scenarioGrid.getModel().getSimulation().get().getSimulationDescriptor().getType().equals(ScenarioSimulationModel.Type.RULE);
         String group = scenarioGridColumn.getInformationHeaderMetaData().getColumnGroup();
         switch (group) {
             case "GIVEN":
             case "EXPECT":
-                gridContextMenu.show(left, top, uiColumnIndex, uiRowIndex, group, true, showDuplicateInstance);
+                gridContextMenu.show(left, top, uiRowIndex);
                 break;
             default:
                 unmodifiableColumnGridContextMenu.show(left, top, uiRowIndex);

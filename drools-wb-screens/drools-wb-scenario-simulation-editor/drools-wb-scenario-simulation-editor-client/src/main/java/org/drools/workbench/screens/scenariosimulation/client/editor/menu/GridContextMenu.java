@@ -29,13 +29,9 @@ import org.drools.workbench.screens.scenariosimulation.client.events.RunSingleSc
  * The contextual menu of a a <i>ROW</i> cell whose <b>GROUP</b> does <b>allow</b> column modification (insert/delete). It has the same items has {@link AbstractColumnMenuPresenter} and specific ones (?)
  */
 @Dependent
-public class GridContextMenu extends AbstractColumnMenuPresenter {
+public class GridContextMenu extends AbstractHeaderMenuPresenter {
 
     // This strings are used to give unique id in the final dom
-    private final String GRIDCONTEXTMENU_GRID = "gridcontextmenu-grid";
-    private final String GRIDCONTEXTMENU_INSERT_COLUMN_LEFT = "gridcontextmenu-insert-column-left";
-    private final String GRIDCONTEXTMENU_INSERT_COLUMN_RIGHT = "gridcontextmenu-insert-column-right";
-    private final String GRIDCONTEXTMENU_DELETE_COLUMN = "gridcontextmenu-delete-column";
     private final String GRIDCONTEXTMENU_INSERT_ROW_ABOVE = "gridcontextmenu-insert-row-above";
     private final String GRIDCONTEXTMENU_INSERT_ROW_BELOW = "gridcontextmenu-insert-row-below";
     private final String GRIDCONTEXTMENU_DELETE_ROW = "gridcontextmenu-delete-row";
@@ -51,14 +47,6 @@ public class GridContextMenu extends AbstractColumnMenuPresenter {
     @PostConstruct
     @Override
     public void initMenu() {
-        // GRID MENU
-        COLUMNCONTEXTMENU_COLUMN = GRIDCONTEXTMENU_GRID;
-        COLUMNCONTEXTMENU_INSERT_COLUMN_LEFT = GRIDCONTEXTMENU_INSERT_COLUMN_LEFT;
-        COLUMNCONTEXTMENU_INSERT_COLUMN_RIGHT = GRIDCONTEXTMENU_INSERT_COLUMN_RIGHT;
-        COLUMNCONTEXTMENU_DELETE_COLUMN = GRIDCONTEXTMENU_DELETE_COLUMN;
-        COLUMNCONTEXTMENU_LABEL = constants.expect().toUpperCase();
-        COLUMNCONTEXTMENU_I18N = "grid";
-        // SCENARIO MENU
         super.initMenu();
         removeMenuItem(insertRowBelowElement);
         insertRowAboveLIElement = addExecutableMenuItem(GRIDCONTEXTMENU_INSERT_ROW_ABOVE, constants.insertRowAbove(), "insertRowAbove");
@@ -68,14 +56,8 @@ public class GridContextMenu extends AbstractColumnMenuPresenter {
         runSingleScenarioElement = addExecutableMenuItem(GRIDCONTEXTMENU_RUN_SINGLE_SCENARIO, constants.runSingleScenario(), "runSingleScenario");
     }
 
-    public void show(final int mx, final int my, int columnIndex, int rowIndex, String group, boolean asProperty, boolean showDuplicate) {
-        super.show(mx, my, columnIndex, group, asProperty, showDuplicate);
-        columnContextLIElement
-                .getChild(1) //  a  element
-                .getChild(3) // span element
-                .getFirstChild() // b element
-                .getChild(0) // text
-                .setNodeValue(group);
+    public void show(final int mx, final int my, int rowIndex) {
+        super.show(mx, my);
         mapEvent(insertRowAboveLIElement, new InsertRowEvent(rowIndex));
         mapEvent(insertRowBelowLIElement, new InsertRowEvent(rowIndex + 1));
         mapEvent(duplicateRowLIElement, new DuplicateRowEvent(rowIndex));
