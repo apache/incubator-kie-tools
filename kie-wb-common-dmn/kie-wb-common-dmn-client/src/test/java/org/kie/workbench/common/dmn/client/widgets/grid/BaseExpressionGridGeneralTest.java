@@ -236,7 +236,12 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
             }
 
             @Override
-            protected void initialiseUiModel() {
+            public void initialiseUiRows() {
+                //Nothing for this test
+            }
+
+            @Override
+            public void initialiseUiCells() {
                 //Nothing for this test
             }
         };

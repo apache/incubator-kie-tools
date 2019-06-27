@@ -174,18 +174,24 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
     }
 
     @Override
-    public void initialiseUiModel() {
+    public void initialiseUiRows() {
         getExpression().get().ifPresent(e -> {
-            e.getRow().forEach(r -> {
+            e.getRow().forEach(r -> model.appendRow(makeRelationRow()));
+        });
+    }
+
+    @Override
+    public void initialiseUiCells() {
+        getExpression().get().ifPresent(e -> {
+            for (int rowIndex = 0; rowIndex < e.getRow().size(); rowIndex++) {
                 int columnIndex = 0;
-                model.appendRow(makeRelationRow());
-                uiModelMapper.fromDMNModel(model.getRowCount() - 1,
+                uiModelMapper.fromDMNModel(rowIndex,
                                            columnIndex++);
                 for (int ii = 0; ii < e.getColumn().size(); ii++) {
-                    uiModelMapper.fromDMNModel(model.getRowCount() - 1,
+                    uiModelMapper.fromDMNModel(rowIndex,
                                                columnIndex++);
                 }
-            });
+            }
         });
     }
 

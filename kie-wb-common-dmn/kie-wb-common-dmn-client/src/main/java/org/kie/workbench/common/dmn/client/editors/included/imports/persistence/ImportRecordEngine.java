@@ -20,8 +20,10 @@ import java.util.List;
 import java.util.Objects;
 
 import javax.enterprise.event.Event;
+import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Import;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.editors.common.messages.FlashMessage;
@@ -49,9 +51,7 @@ public class ImportRecordEngine implements RecordEngine<BaseIncludedModelActiveR
 
     private final DefinitionsHandler definitionsHandler;
 
-    private final ItemDefinitionHandler itemDefinitionHandler;
-
-    private final DRGElementHandler drgElementHandler;
+    private final ManagedInstance<DRGElementHandler> drgElementHandlers;
 
     @Inject
     public ImportRecordEngine(final IncludedModelsPageStateProviderImpl stateProvider,
@@ -60,16 +60,14 @@ public class ImportRecordEngine implements RecordEngine<BaseIncludedModelActiveR
                               final ImportFactory importFactory,
                               final Event<FlashMessage> flashMessageEvent,
                               final DefinitionsHandler definitionsHandler,
-                              final ItemDefinitionHandler itemDefinitionHandler,
-                              final DRGElementHandler drgElementHandler) {
+                              final @Any ManagedInstance<DRGElementHandler> drgElementHandlers) {
         this.stateProvider = stateProvider;
         this.includedModelsIndex = includedModelsIndex;
         this.messageFactory = messageFactory;
         this.importFactory = importFactory;
         this.flashMessageEvent = flashMessageEvent;
         this.definitionsHandler = definitionsHandler;
-        this.itemDefinitionHandler = itemDefinitionHandler;
-        this.drgElementHandler = drgElementHandler;
+        this.drgElementHandlers = drgElementHandlers;
     }
 
     @Override
@@ -81,8 +79,7 @@ public class ImportRecordEngine implements RecordEngine<BaseIncludedModelActiveR
         final Import anImport = getImport(record);
         final String oldModelName = anImport.getName().getValue();
 
-        itemDefinitionHandler.update(oldModelName, record.getName());
-        drgElementHandler.update(oldModelName, record.getName());
+        drgElementHandlers.forEach(handler -> handler.update(oldModelName, record.getName()));
         anImport.setName(new Name(record.getName()));
 
         return singletonList(record);
@@ -91,8 +88,7 @@ public class ImportRecordEngine implements RecordEngine<BaseIncludedModelActiveR
     @Override
     public List<BaseIncludedModelActiveRecord> destroy(final BaseIncludedModelActiveRecord record) {
         definitionsHandler.destroy(record);
-        itemDefinitionHandler.destroy(record.getName());
-        drgElementHandler.destroy(record.getName());
+        drgElementHandlers.forEach(handler -> handler.destroy(record.getName()));
         stateProvider.getImports().remove(getImport(record));
         return singletonList(record);
     }

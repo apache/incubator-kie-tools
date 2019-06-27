@@ -198,11 +198,13 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGrid
     }
 
     @Override
-    protected void initialiseUiModel() {
-        getExpression().get().ifPresent(e -> {
-            model.appendRow(new ExpressionEditorGridRow());
-            uiModelMapper.fromDMNModel(0, 1);
-        });
+    public void initialiseUiRows() {
+        getExpression().get().ifPresent(e -> model.appendRow(new ExpressionEditorGridRow()));
+    }
+
+    @Override
+    public void initialiseUiCells() {
+        getExpression().get().ifPresent(e -> uiModelMapper.fromDMNModel(0, 1));
     }
 
     @Override

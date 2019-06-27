@@ -44,21 +44,26 @@ public class ImportFactory {
         if (record instanceof DMNIncludedModelActiveRecord) {
             final ImportDMN dmn = new ImportDMN();
             final DMNIncludedModelActiveRecord dmnRecord = (DMNIncludedModelActiveRecord) record;
+            dmn.setName(name(record));
             dmn.setNamespace(record.getNamespace());
+            dmn.setLocationURI(location(record));
+            dmn.setImportType(record.getImportType());
             dmn.setDrgElementsCount(dmnRecord.getDrgElementsCount());
             dmn.setItemDefinitionsCount(dmnRecord.getDataTypesCount());
             anImport = dmn;
         } else if (record instanceof PMMLIncludedModelActiveRecord) {
             final ImportPMML pmml = new ImportPMML();
             final PMMLIncludedModelActiveRecord pmmlRecord = (PMMLIncludedModelActiveRecord) record;
+            pmml.setName(name(record));
             pmml.setNamespace(name(record).getValue());
+            pmml.setLocationURI(location(record));
+            pmml.setImportType(record.getImportType());
             pmml.setModelCount(pmmlRecord.getModelCount());
             anImport = pmml;
         } else {
             anImport = new Import();
         }
 
-        anImport.setName(name(record));
         anImport.setLocationURI(location(record));
         anImport.setImportType(record.getImportType());
 

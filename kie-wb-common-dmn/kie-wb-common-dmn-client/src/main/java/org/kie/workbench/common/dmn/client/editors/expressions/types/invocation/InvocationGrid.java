@@ -202,17 +202,23 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGri
     }
 
     @Override
-    protected void initialiseUiModel() {
+    public void initialiseUiRows() {
         getExpression().get().ifPresent(invocation -> {
-            invocation.getBinding().stream().forEach(binding -> {
-                model.appendRow(new ExpressionEditorGridRow());
-                uiModelMapper.fromDMNModel(model.getRowCount() - 1,
+            invocation.getBinding().forEach(binding -> model.appendRow(new ExpressionEditorGridRow()));
+        });
+    }
+
+    @Override
+    public void initialiseUiCells() {
+        getExpression().get().ifPresent(invocation -> {
+            for (int rowIndex = 0; rowIndex < invocation.getBinding().size(); rowIndex++) {
+                uiModelMapper.fromDMNModel(rowIndex,
                                            InvocationUIModelMapper.ROW_NUMBER_COLUMN_INDEX);
-                uiModelMapper.fromDMNModel(model.getRowCount() - 1,
+                uiModelMapper.fromDMNModel(rowIndex,
                                            InvocationUIModelMapper.BINDING_PARAMETER_COLUMN_INDEX);
-                uiModelMapper.fromDMNModel(model.getRowCount() - 1,
+                uiModelMapper.fromDMNModel(rowIndex,
                                            InvocationUIModelMapper.BINDING_EXPRESSION_COLUMN_INDEX);
-            });
+            }
         });
     }
 

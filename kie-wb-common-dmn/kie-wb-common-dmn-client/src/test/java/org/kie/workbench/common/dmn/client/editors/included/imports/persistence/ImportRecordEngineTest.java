@@ -31,6 +31,7 @@ import org.kie.workbench.common.dmn.client.editors.included.imports.ImportFactor
 import org.kie.workbench.common.dmn.client.editors.included.imports.IncludedModelsIndex;
 import org.kie.workbench.common.dmn.client.editors.included.imports.IncludedModelsPageStateProviderImpl;
 import org.kie.workbench.common.dmn.client.editors.included.imports.messages.IncludedModelErrorMessageFactory;
+import org.kie.workbench.common.stunner.core.client.ManagedInstanceStub;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.uberfire.mocks.EventSourceMock;
@@ -72,13 +73,25 @@ public class ImportRecordEngineTest {
     private ItemDefinitionHandler itemDefinitionHandler;
 
     @Mock
-    private DRGElementHandler drgElementHandler;
+    private DMNIncludedModelHandler dmnIncludedModelHandler;
+
+    @Mock
+    private PMMLIncludedModelHandler pmmlIncludedModelHandler;
+
+    private ManagedInstanceStub<DRGElementHandler> drgElementHandlers;
 
     private ImportRecordEngine recordEngine;
 
     @Before
     public void setup() {
-        recordEngine = spy(new ImportRecordEngine(stateProvider, includedModelsIndex, messageFactory, importFactory, flashMessageEvent, definitionsHandler, itemDefinitionHandler, drgElementHandler));
+        drgElementHandlers = new ManagedInstanceStub<>(itemDefinitionHandler, dmnIncludedModelHandler, pmmlIncludedModelHandler);
+        recordEngine = spy(new ImportRecordEngine(stateProvider,
+                                                  includedModelsIndex,
+                                                  messageFactory,
+                                                  importFactory,
+                                                  flashMessageEvent,
+                                                  definitionsHandler,
+                                                  drgElementHandlers));
     }
 
     @Test
@@ -100,7 +113,8 @@ public class ImportRecordEngineTest {
 
         verify(anImport).setName(nameCaptor.capture());
         verify(itemDefinitionHandler).update(oldName, name);
-        verify(drgElementHandler).update(oldName, name);
+        verify(dmnIncludedModelHandler).update(oldName, name);
+        verify(pmmlIncludedModelHandler).update(oldName, name);
 
         final Name actualName = nameCaptor.getValue();
         final Name expectedName = new Name(name);
@@ -142,7 +156,8 @@ public class ImportRecordEngineTest {
 
         verify(definitionsHandler).destroy(record);
         verify(itemDefinitionHandler).destroy(name);
-        verify(drgElementHandler).destroy(name);
+        verify(dmnIncludedModelHandler).destroy(name);
+        verify(pmmlIncludedModelHandler).destroy(name);
         assertEquals(expectedImports, actualImports);
         assertEquals(expectedResult, actualResult);
     }

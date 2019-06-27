@@ -17,14 +17,23 @@ package org.kie.workbench.common.dmn.api.definition.v1_1;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.dmn.api.property.dmn.LocationURI;
+import org.kie.workbench.common.dmn.api.property.dmn.Name;
 
+/**
+ * Specialisation of {@link Import} that has a model count property.
+ * It also synchronises {@see name} and {@see namespace} values.
+ */
 @Portable
 public class ImportPMML extends Import {
+
+    private Name wrapped;
 
     private int modelCount;
 
     public ImportPMML() {
         super();
+        this.wrapped = name;
+        this.setName(name);
     }
 
     public ImportPMML(final String namespace,
@@ -33,6 +42,9 @@ public class ImportPMML extends Import {
         super(namespace,
               locationURI,
               importType);
+        this.wrapped = name;
+        this.getName().setValue(namespace);
+        this.setName(name);
     }
 
     public int getModelCount() {
@@ -41,5 +53,44 @@ public class ImportPMML extends Import {
 
     public void setModelCount(final int modelCount) {
         this.modelCount = modelCount;
+    }
+
+    @Override
+    public String getNamespace() {
+        return name.getValue();
+    }
+
+    @Override
+    public void setNamespace(final String namespace) {
+        super.setNamespace(namespace);
+        name.setValue(namespace);
+    }
+
+    @Override
+    public Name getName() {
+        return wrapped;
+    }
+
+    @Override
+    public void setName(final Name name) {
+        super.setName(wrap(name));
+        this.namespace = name.getValue();
+    }
+
+    private Name wrap(final Name name) {
+        this.wrapped = name;
+
+        return new Name(name.getValue()) {
+            @Override
+            public String getValue() {
+                return ImportPMML.this.wrapped.getValue();
+            }
+
+            @Override
+            public void setValue(final String value) {
+                ImportPMML.this.wrapped.setValue(value);
+                ImportPMML.this.namespace = value;
+            }
+        };
     }
 }

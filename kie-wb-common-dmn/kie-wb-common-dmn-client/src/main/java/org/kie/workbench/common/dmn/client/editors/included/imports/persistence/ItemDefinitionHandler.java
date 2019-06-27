@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
@@ -31,7 +32,8 @@ import org.kie.workbench.common.dmn.client.editors.types.common.ItemDefinitionUt
 import org.kie.workbench.common.dmn.client.editors.types.common.events.RefreshDataTypesListEvent;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.handlers.common.PropertiesPanelNotifier;
 
-public class ItemDefinitionHandler {
+@Dependent
+public class ItemDefinitionHandler implements DRGElementHandler {
 
     private final ItemDefinitionUtils itemDefinitionUtils;
 
@@ -48,6 +50,7 @@ public class ItemDefinitionHandler {
         this.panelNotifier = panelNotifier;
     }
 
+    @Override
     public void update(final String oldModelName,
                        final String newModelName) {
 
@@ -74,6 +77,7 @@ public class ItemDefinitionHandler {
         refreshDataTypesList();
     }
 
+    @Override
     public void destroy(final String oldModelName) {
 
         final List<ItemDefinition> updatedItemDefinitionsByName = findItemDefinitionsByOldName(oldModelName);

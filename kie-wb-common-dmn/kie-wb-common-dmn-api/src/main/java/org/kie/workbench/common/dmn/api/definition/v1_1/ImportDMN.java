@@ -18,6 +18,9 @@ package org.kie.workbench.common.dmn.api.definition.v1_1;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.dmn.api.property.dmn.LocationURI;
 
+/**
+ * Specialisation of {@link Import} that has definitions and elements counts.
+ */
 @Portable
 public class ImportDMN extends Import {
 

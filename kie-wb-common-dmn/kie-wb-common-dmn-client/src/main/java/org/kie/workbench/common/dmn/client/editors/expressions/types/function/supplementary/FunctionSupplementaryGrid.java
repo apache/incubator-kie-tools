@@ -147,17 +147,23 @@ public class FunctionSupplementaryGrid extends BaseExpressionGrid<Context, Funct
     }
 
     @Override
-    public void initialiseUiModel() {
+    public void initialiseUiRows() {
         getExpression().get().ifPresent(c -> {
-            c.getContextEntry().stream().forEach(ce -> {
-                model.appendRow(new ExpressionEditorGridRow());
-                uiModelMapper.fromDMNModel(model.getRowCount() - 1,
+            c.getContextEntry().forEach(ce -> model.appendRow(new ExpressionEditorGridRow()));
+        });
+    }
+
+    @Override
+    public void initialiseUiCells() {
+        getExpression().get().ifPresent(c -> {
+            for (int rowIndex = 0; rowIndex < c.getContextEntry().size(); rowIndex++) {
+                uiModelMapper.fromDMNModel(rowIndex,
                                            0);
-                uiModelMapper.fromDMNModel(model.getRowCount() - 1,
+                uiModelMapper.fromDMNModel(rowIndex,
                                            1);
-                uiModelMapper.fromDMNModel(model.getRowCount() - 1,
+                uiModelMapper.fromDMNModel(rowIndex,
                                            2);
-            });
+            }
         });
     }
 

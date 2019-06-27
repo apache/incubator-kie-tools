@@ -481,7 +481,7 @@ public class ExpressionEditorColumnTest {
             }
 
             @Override
-            protected void initialiseUiColumns() {
+            public void initialiseUiColumns() {
                 for (double width : widthOfCells) {
                     model.appendColumn(new DMNGridColumn<BaseGrid<Expression>, Object>(headerMetaData,
                                                                                        gridColumnRenderer,
@@ -494,7 +494,12 @@ public class ExpressionEditorColumnTest {
             }
 
             @Override
-            protected void initialiseUiModel() {
+            public void initialiseUiRows() {
+                //Nothing for this test
+            }
+
+            @Override
+            public void initialiseUiCells() {
                 //Nothing for this test
             }
 

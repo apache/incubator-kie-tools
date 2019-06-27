@@ -171,8 +171,12 @@ public class UndefinedExpressionGrid extends BaseDelegatingExpressionGrid<Expres
     }
 
     @Override
-    protected void initialiseUiModel() {
+    public void initialiseUiRows() {
         model.appendRow(new ExpressionEditorGridRow());
+    }
+
+    @Override
+    public void initialiseUiCells() {
         uiModelMapper.fromDMNModel(0,
                                    0);
     }

@@ -390,24 +390,30 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
     }
 
     @Override
-    public void initialiseUiModel() {
+    public void initialiseUiRows() {
         getExpression().get().ifPresent(e -> {
-            e.getRule().forEach(r -> {
+            e.getRule().forEach(r -> model.appendRow(makeDecisionTableRow()));
+        });
+    }
+
+    @Override
+    public void initialiseUiCells() {
+        getExpression().get().ifPresent(e -> {
+            for (int rowIndex = 0; rowIndex < e.getRule().size(); rowIndex++) {
                 int columnIndex = 0;
-                model.appendRow(makeDecisionTableRow());
-                uiModelMapper.fromDMNModel(model.getRowCount() - 1,
+                uiModelMapper.fromDMNModel(rowIndex,
                                            columnIndex++);
                 for (int ici = 0; ici < e.getInput().size(); ici++) {
-                    uiModelMapper.fromDMNModel(model.getRowCount() - 1,
+                    uiModelMapper.fromDMNModel(rowIndex,
                                                columnIndex++);
                 }
                 for (int oci = 0; oci < e.getOutput().size(); oci++) {
-                    uiModelMapper.fromDMNModel(model.getRowCount() - 1,
+                    uiModelMapper.fromDMNModel(rowIndex,
                                                columnIndex++);
                 }
-                uiModelMapper.fromDMNModel(model.getRowCount() - 1,
+                uiModelMapper.fromDMNModel(rowIndex,
                                            columnIndex);
-            });
+            }
         });
     }
 

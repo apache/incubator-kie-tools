@@ -165,12 +165,13 @@ public class LiteralExpressionGrid extends BaseDelegatingExpressionGrid<LiteralE
     }
 
     @Override
-    protected void initialiseUiModel() {
-        getExpression().get().ifPresent(e -> {
-            model.appendRow(new LiteralExpressionGridRow(getExpressionTextLineHeight(getRenderer().getTheme())));
-            uiModelMapper.fromDMNModel(0,
-                                       0);
-        });
+    public void initialiseUiRows() {
+        getExpression().get().ifPresent(e -> model.appendRow(new LiteralExpressionGridRow(getExpressionTextLineHeight(getRenderer().getTheme()))));
+    }
+
+    @Override
+    public void initialiseUiCells() {
+        getExpression().get().ifPresent(e -> uiModelMapper.fromDMNModel(0, 0));
     }
 
     @Override
