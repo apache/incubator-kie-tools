@@ -69,5 +69,7 @@ public interface SettingsView
 
     SpanElement getSkipFromBuildLabel();
 
+    InputElement getStateless();
+
     ButtonElement getSaveButton();
 }
