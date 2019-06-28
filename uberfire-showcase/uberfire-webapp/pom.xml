@@ -429,7 +429,6 @@
       <groupId>com.google.elemental2</groupId>
       <artifactId>elemental2-promise</artifactId>
     </dependency>
-
     <dependency>
       <groupId>com.google.elemental2</groupId>
       <artifactId>elemental2-core</artifactId>
@@ -441,20 +440,44 @@
     </dependency>
 
     <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-cdi-shared</artifactId>
+      <groupId>com.google.inject</groupId>
+      <artifactId>guice</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- missing deps to avoid illegal transitive type dependencies -->
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-widgets-service-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-widgets-properties-editor-api</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-cdi-shared</artifactId>
+      </dependency>
+
+    <dependency>  
+      <groupId>org.jboss.errai</groupId>	      
       <artifactId>errai-marshalling</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-data-binding</artifactId>
+    </dependency>
+    
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>appformer-js-bridge</artifactId>
       <scope>provided</scope>
     </dependency>
+
   </dependencies>
 
   <build>

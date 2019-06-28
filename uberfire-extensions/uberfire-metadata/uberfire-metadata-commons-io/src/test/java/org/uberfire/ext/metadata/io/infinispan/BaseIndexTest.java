@@ -26,8 +26,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Executors;
 import javax.enterprise.event.Event;
+import javax.enterprise.event.NotificationOptions;
 import javax.enterprise.util.TypeLiteral;
 
 import org.apache.commons.io.FileUtils;
@@ -136,6 +138,17 @@ public abstract class BaseIndexTest {
 
             @Override
             public void fire(T event) {
+            }
+
+            @Override
+            public <U extends T> CompletionStage<U> fireAsync(U u) {
+                return null;
+            }
+
+            @Override
+            public <U extends T> CompletionStage<U> fireAsync(U u,
+                                                              NotificationOptions notificationOptions) {
+                return null;
             }
 
             @Override

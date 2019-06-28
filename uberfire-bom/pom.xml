@@ -20,11 +20,10 @@
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.jboss.integration-platform</groupId>
-    <artifactId>jboss-integration-platform-parent</artifactId>
-    <!-- Keep in sync with the parent version of ../pom.xml -->
-    <version>8.6.0.Final</version>
-    <relativePath/>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-parent</artifactId>
+      <version>7.24.0-SNAPSHOT</version>
+    <!-- Keep in sync with the parent version in ../pom.xml (kie-parent)  -->
   </parent>
 
   <groupId>org.uberfire</groupId>

@@ -26,7 +26,7 @@
   </parent>
 
   <artifactId>dashbuilder-all</artifactId>
-  <packaging>jar</packaging>
+  <packaging>pom</packaging>
 
   <name>Dashbuilder All Libraries</name>
 

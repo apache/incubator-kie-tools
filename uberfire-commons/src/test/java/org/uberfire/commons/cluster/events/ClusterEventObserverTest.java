@@ -16,7 +16,9 @@
 package org.uberfire.commons.cluster.events;
 
 import java.lang.annotation.Annotation;
+import java.util.concurrent.CompletionStage;
 import javax.enterprise.event.Event;
+import javax.enterprise.event.NotificationOptions;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.EventMetadata;
 import javax.enterprise.inject.spi.InjectionPoint;
@@ -148,6 +150,17 @@ public class ClusterEventObserverTest {
         @Override
         public void fire(T event) {
             throw new UnsupportedOperationException("mocking testing class");
+        }
+
+        @Override
+        public <U extends T> CompletionStage<U> fireAsync(U u) {
+            return null;
+        }
+
+        @Override
+        public <U extends T> CompletionStage<U> fireAsync(U u,
+                                                          NotificationOptions notificationOptions) {
+            return null;
         }
 
         @Override

@@ -17,7 +17,9 @@
 package org.uberfire.ext.editor.commons.client.history;
 
 import java.lang.annotation.Annotation;
+import java.util.concurrent.CompletionStage;
 import javax.enterprise.event.Event;
+import javax.enterprise.event.NotificationOptions;
 import javax.enterprise.util.TypeLiteral;
 
 import org.uberfire.client.callbacks.Callback;
@@ -35,6 +37,17 @@ public class VersionSelectedEventMock
     @Override
     public void fire(VersionSelectedEvent event) {
         callback.callback(event);
+    }
+
+    @Override
+    public <U extends VersionSelectedEvent> CompletionStage<U> fireAsync(U u) {
+        return null;
+    }
+
+    @Override
+    public <U extends VersionSelectedEvent> CompletionStage<U> fireAsync(U u,
+                                                                         NotificationOptions notificationOptions) {
+        return null;
     }
 
     @Override

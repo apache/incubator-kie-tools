@@ -19,7 +19,9 @@ package org.uberfire.ext.editor.commons.client.history;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletionStage;
 import javax.enterprise.event.Event;
+import javax.enterprise.event.NotificationOptions;
 import javax.enterprise.util.TypeLiteral;
 
 import com.google.gwt.view.client.AsyncDataProvider;
@@ -212,6 +214,17 @@ public class VersionHistoryPresenterTest {
         @Override
         public void fire(VersionSelectedEvent event) {
 
+        }
+
+        @Override
+        public <U extends VersionSelectedEvent> CompletionStage<U> fireAsync(U u) {
+            return null;
+        }
+
+        @Override
+        public <U extends VersionSelectedEvent> CompletionStage<U> fireAsync(U u,
+                                                                             NotificationOptions notificationOptions) {
+            return null;
         }
 
         @Override
