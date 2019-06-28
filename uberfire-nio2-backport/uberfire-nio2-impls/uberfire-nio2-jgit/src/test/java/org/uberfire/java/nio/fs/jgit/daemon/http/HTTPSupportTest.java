@@ -36,7 +36,7 @@ public class HTTPSupportTest extends AbstractTestInfra {
     }
 
     @Test
-    public void testComtext() {
+    public void testContext() {
         base("/app-former");
         assertThat(provider.getFullHostNames().get("http")).isEqualTo("localhost:8080/app-former/git");
     }
