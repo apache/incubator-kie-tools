@@ -57,6 +57,14 @@
     <dependencies>
 
       <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-platform-bom</artifactId>
+        <version>${version.org.kie}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>wildfly-dist</artifactId>
         <version>${version.org.jboss.errai.wildfly}</version>
