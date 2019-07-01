@@ -75,7 +75,7 @@ public class CSVDataSetDefAttributesEditorTest {
         presenter.setValue(dataSetDef);
         FileUploadEditor.FileUploadEditorCallback fileCallback = callbackCaptor.getValue();
         String fileUrl = fileCallback.getUploadFileUrl();
-        assertEquals(fileUrl, "default://master@system/datasets/tmp/test.csv");
+        assertEquals(fileUrl, "default://master@dashbuilder/datasets/tmp/test.csv");
     }
     
     @Test

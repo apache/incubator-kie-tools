@@ -35,6 +35,7 @@ import org.uberfire.commons.lifecycle.PriorityDisposableRegistry;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.spaces.SpacesAPI;
+import org.uberfire.spaces.Space;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
@@ -81,9 +82,9 @@ public class SystemConfigProducerTest {
 
         final Bean fileSystemBean = producer.createFileSystemBean(bm,
                                                                   mock(InjectionTarget.class),
+                                                                  mock(Space.class),
                                                                   "configIO",
                                                                   "systemFS",
-
                                                                   "system");
 
         assertNull(PriorityDisposableRegistry.get("systemFS"));
@@ -110,6 +111,7 @@ public class SystemConfigProducerTest {
 
         verify(producerSpy).createFileSystemBean(eq(bm),
                                                  any(),
+                                                 any(),
                                                  eq("configIO"),
                                                  eq("systemFS"),
                                                  eq("system"));
@@ -126,6 +128,7 @@ public class SystemConfigProducerTest {
                                    bm);
 
         verify(producerSpy).createFileSystemBean(eq(bm),
+                                                 any(),
                                                  any(),
                                                  eq("ioStrategy"),
                                                  eq("pluginsFS"),

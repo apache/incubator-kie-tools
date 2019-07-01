@@ -59,6 +59,7 @@ import org.uberfire.java.nio.file.FileAlreadyExistsException;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.mocks.FileSystemTestingUtils;
 import org.uberfire.rpc.SessionInfo;
+import org.uberfire.spaces.SpacesAPI;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -74,7 +75,8 @@ import static org.mockito.Mockito.verify;
 
 public class PluginServicesImplTest {
 
-    private static FileSystemTestingUtils fileSystemTestingUtils = new FileSystemTestingUtils();
+    private static FileSystemTestingUtils pluginsFSUtils = new FileSystemTestingUtils();
+    private static FileSystemTestingUtils perspectivesFSUtils = new FileSystemTestingUtils();
 
     @Mock(name = "MediaServletURI")
     private Instance<MediaServletURI> mediaServletURI;
@@ -98,7 +100,10 @@ public class PluginServicesImplTest {
     private Event<MediaDeleted> mediaDeletedEvent;
 
     @Mock(name = "pluginsFS")
-    private FileSystem fileSystem;
+    private FileSystem pluginsFS;
+
+    @Mock(name = "perspectivesFS")
+    private FileSystem perspectivesFS;
 
     @Spy
     private DefaultFileNameValidator defaultFileNameValidator;
@@ -109,25 +114,35 @@ public class PluginServicesImplTest {
     @Mock
     private User identity;
 
+    @Mock
+    private SpacesAPI spacesAPI;
+
     private IOServiceDotFileImpl ioService;
 
     private PluginServicesImpl pluginServices;
 
+    private String PLUGINS_PATH = "git://plugins";
+    private String PLUGINS_REPO_PATH = "git://master@plugins";
+    private String PERSPECTIVES_PATH = "git://perspectives";
+    private String PERSPECTIVES_REPO_PATH = "git://master@perspectives";
+
     @After
     public void cleanupFileSystem() {
-        fileSystemTestingUtils.cleanup();
+        pluginsFSUtils.cleanup();
+        perspectivesFSUtils.cleanup();
     }
 
     @Before
     public void setup() throws IOException {
-        fileSystemTestingUtils.setup();
+        pluginsFSUtils.setup(PLUGINS_PATH);
+        perspectivesFSUtils.setup(PERSPECTIVES_PATH);
 
         MockitoAnnotations.initMocks(this);
-        ioService = spy((IOServiceDotFileImpl) fileSystemTestingUtils.getIoService());
-        doReturn(fileSystemTestingUtils.getFileSystem()).when(ioService).getFileSystem(any(URI.class));
-        doReturn(fileSystemTestingUtils.getFileSystem().getRootDirectories()).when(fileSystem).getRootDirectories();
-        doNothing().when(ioService).startBatch(any(FileSystem.class));
-        doNothing().when(ioService).endBatch();
+        ioService = spy((IOServiceDotFileImpl) pluginsFSUtils.getIoService());
+
+        doReturn("plugins").when(pluginsFS).getName();
+        doReturn("perspectives").when(perspectivesFS).getName();
+
         pluginServices = spy(new PluginServicesImpl(ioService,
                                                     mediaServletURI,
                                                     sessionInfo,
@@ -138,8 +153,10 @@ public class PluginServicesImplTest {
                                                     mediaDeletedEvent,
                                                     defaultFileNameValidator,
                                                     identity,
-                                                    fileSystemTestingUtils.getFileSystem(),
-                                                    saveAndRenameService) {
+                                                    pluginsFSUtils.getFileSystem(),
+                                                    perspectivesFSUtils.getFileSystem(),
+                                                    saveAndRenameService,
+                                                    spacesAPI) {
             @Override
             String getFrameworkScript(Framework framework) throws IOException {
                 return "script";
@@ -289,6 +306,7 @@ public class PluginServicesImplTest {
                times(1)).fire(any(PluginRenamed.class));
 
         Collection<RuntimePlugin> runtimePlugins = pluginServices.listRuntimePlugins();
+
         assertEquals(1,
                      runtimePlugins.size());
         assertTrue(contains(runtimePlugins,
@@ -384,6 +402,61 @@ public class PluginServicesImplTest {
         assertEquals(expected, actual);
     }
 
+    @Test
+    public void testGetRootAndGetFileSystem() {
+        assertTrue(pluginServices.getRoot().getFileSystem().getName().equals(pluginsFS.getName()));
+        assertTrue(pluginServices.getFileSystem().getName().equals(pluginsFS.getName()));
+        for (PluginType type : PluginType.values()) {
+            String expected = type == PluginType.PERSPECTIVE_LAYOUT
+                              ? perspectivesFS.getName()
+                              : pluginsFS.getName();
+            assertTrue(pluginServices.getRoot(type).getFileSystem().getName().equals(expected));
+            assertTrue(pluginServices.getFileSystem(type).getName().equals(expected));
+        }
+    }
+
+    @Test
+    public void testCreatePluginsDifferentTypes() {
+        Collection<Plugin> listOfDefaultPlugins = pluginServices.listPlugins();
+        Collection<Plugin> listOfPerspectivesPlugins = pluginServices.listPlugins(PluginType.PERSPECTIVE_LAYOUT);
+        assertEquals(0, listOfDefaultPlugins.size());
+        assertEquals(0, listOfPerspectivesPlugins.size());
+
+        pluginServices.createNewPlugin("test", PluginType.DEFAULT);
+        listOfDefaultPlugins = pluginServices.listPlugins();
+        listOfPerspectivesPlugins = pluginServices.listPlugins(PluginType.PERSPECTIVE_LAYOUT);
+        assertEquals(1, listOfDefaultPlugins.size());
+        assertEquals(0, listOfPerspectivesPlugins.size());
+        assertTrue(listOfDefaultPlugins.iterator().next().getPath().toURI().startsWith(PLUGINS_REPO_PATH));
+
+        pluginServices.createNewPlugin("test", PluginType.PERSPECTIVE_LAYOUT);
+        listOfDefaultPlugins = pluginServices.listPlugins();
+        listOfPerspectivesPlugins = pluginServices.listPlugins(PluginType.PERSPECTIVE_LAYOUT);
+        assertEquals(1, listOfDefaultPlugins.size());
+        assertEquals(1, listOfPerspectivesPlugins.size());
+        assertTrue(listOfDefaultPlugins.iterator().next().getPath().toURI().startsWith(PLUGINS_REPO_PATH));
+        assertTrue(listOfPerspectivesPlugins.iterator().next().getPath().toURI().startsWith(PERSPECTIVES_REPO_PATH));
+    }
+
+    @Test
+    public void testDeletePluginsDifferentTypes() {
+        Plugin defaultPlugin = pluginServices.createNewPlugin("test", PluginType.DEFAULT);
+        assertEquals(1, pluginServices.listPlugins().size());
+        assertEquals(0, pluginServices.listPlugins(PluginType.PERSPECTIVE_LAYOUT).size());
+
+        Plugin perspectivePlugin = pluginServices.createNewPlugin("test", PluginType.PERSPECTIVE_LAYOUT);
+        assertEquals(1, pluginServices.listPlugins().size());
+        assertEquals(1, pluginServices.listPlugins(PluginType.PERSPECTIVE_LAYOUT).size());
+
+        pluginServices.delete(defaultPlugin.getPath(), "delete plugin");
+        assertEquals(0, pluginServices.listPlugins().size());
+        assertEquals(1, pluginServices.listPlugins(PluginType.PERSPECTIVE_LAYOUT).size());
+
+        pluginServices.delete(perspectivePlugin.getPath(), "delete plugin");
+        assertEquals(0, pluginServices.listPlugins().size());
+        assertEquals(0, pluginServices.listPlugins(PluginType.PERSPECTIVE_LAYOUT).size());
+    }
+
     private Path createPlugin(String name,
                               PluginType type,
                               Framework framework) {
@@ -414,10 +487,21 @@ public class PluginServicesImplTest {
             frameworks.add(framework);
         }
 
+        String basePath = type == PluginType.PERSPECTIVE_LAYOUT
+                          ? PERSPECTIVES_PATH
+                          : PLUGINS_PATH;
+
+        String fileName = type.name().toLowerCase() + ".plugin";
+
+        String fullPath = basePath
+                          + "/"
+                          + name
+                          + "/"
+                          + fileName;
+
         return new PluginSimpleContent(name,
                                        type,
-                                       PathFactory.newPath(type.name().toLowerCase() + ".plugin",
-                                                           "git://amend-repo-test/" + name + "/" + type.name().toLowerCase() + ".plugin"),
+                                       PathFactory.newPath(fileName, fullPath),
                                        null,
                                        null,
                                        new HashMap<CodeType, String>(),

@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.net.URI;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Observes;
@@ -57,6 +58,7 @@ import org.uberfire.io.impl.IOServiceNio2WrapperImpl;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.base.FileSystemState;
 import org.uberfire.java.nio.file.FileStore;
+import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
 import org.uberfire.java.nio.file.InvalidPathException;
@@ -68,6 +70,7 @@ import org.uberfire.java.nio.file.WatchService;
 import org.uberfire.java.nio.file.attribute.UserPrincipalLookupService;
 import org.uberfire.java.nio.file.spi.FileSystemProvider;
 import org.uberfire.spaces.SpacesAPI;
+import org.uberfire.spaces.Space;
 
 public class SystemConfigProducer implements Extension {
 
@@ -83,6 +86,9 @@ public class SystemConfigProducer implements Extension {
     private final Comparator<OrderedBean> priorityComparator = (o1, o2) -> o1.priority - o2.priority;
     private boolean systemFSNotExists = true;
     private boolean pluginsFSNotExists = true;
+    private boolean perspectivesFSNotExists = true;
+    private boolean datasetsFSNotExists = true;
+    private boolean navigationFSNotExists = true;
     private boolean ioStrategyBeanNotFound = true;
 
     public void processSystemFSProducer(@Observes ProcessProducer<?, FileSystem> pp) {
@@ -97,6 +103,23 @@ public class SystemConfigProducer implements Extension {
         }
     }
 
+    public void processPerspectivesFSProducer(@Observes ProcessProducer<?, FileSystem> pp) {
+        if (pp.getAnnotatedMember().getJavaMember().getName().equals("perspectivesFS")) {
+            perspectivesFSNotExists = false;
+        }
+    }
+
+    public void processDatasetsFSProducer(@Observes ProcessProducer<?, FileSystem> pp) {
+        if (pp.getAnnotatedMember().getJavaMember().getName().equals("datasetsFS")) {
+            datasetsFSNotExists = false;
+        }
+    }
+
+    public void processNavigationFSProducer(@Observes ProcessProducer<?, FileSystem> pp) {
+        if (pp.getAnnotatedMember().getJavaMember().getName().equals("navigationFS")) {
+            navigationFSNotExists = false;
+        }
+    }
     public void processIOServiceProducer(@Observes ProcessProducer<?, IOService> pp) {
         if (pp.getAnnotatedMember().getJavaMember().getName().equals("ioStrategy")) {
             ioStrategyBeanNotFound = false;
@@ -108,6 +131,12 @@ public class SystemConfigProducer implements Extension {
             systemFSNotExists = false;
         } else if (event.getBean().getName() != null && event.getBean().getName().equals("pluginsFS")) {
             pluginsFSNotExists = false;
+        } else if (event.getBean().getName() != null && event.getBean().getName().equals("perspectivesFS")) {
+            perspectivesFSNotExists = false;
+        } else if (event.getBean().getName() != null && event.getBean().getName().equals("datasetsFS")) {
+            datasetsFSNotExists = false;
+        } else if (event.getBean().getName() != null && event.getBean().getName().equals("navigationFS")) {
+            navigationFSNotExists = false;
         } else if (event.getBean().getName() != null && event.getBean().getName().equals("ioStrategy")) {
             ioStrategyBeanNotFound = false;
         }
@@ -183,6 +212,21 @@ public class SystemConfigProducer implements Extension {
                             bm);
         }
 
+        if (perspectivesFSNotExists) {
+            buildPerspectivesFS(abd,
+                                bm);
+        }
+
+        if (datasetsFSNotExists) {
+            buildDatasetsFS(abd,
+                            bm);
+        }
+
+        if (navigationFSNotExists) {
+            buildNavigationFS(abd,
+                              bm);
+        }
+
         if (pluginsFSNotExists) {
             buildPluginsFS(abd,
                            bm);
@@ -200,17 +244,55 @@ public class SystemConfigProducer implements Extension {
 
         abd.addBean(createFileSystemBean(bm,
                                          it,
+                                         SpacesAPI.DEFAULT_SPACE,
                                          "ioStrategy",
                                          "pluginsFS",
                                          "plugins"));
     }
 
+    void buildPerspectivesFS(final AfterBeanDiscovery abd,
+                             final BeanManager bm) {
+        final InjectionTarget<DummyFileSystem> it = bm.createInjectionTarget(bm.createAnnotatedType(DummyFileSystem.class));
+
+        abd.addBean(createFileSystemBean(bm,
+                                         it,
+                                         SpacesAPI.DASHBUILDER_SPACE,
+                                         "ioStrategy",
+                                         "perspectivesFS",
+                                         "perspectives"));
+    }
+
+
+    void buildDatasetsFS(final AfterBeanDiscovery abd,
+                         final BeanManager bm) {
+        final InjectionTarget<DummyFileSystem> it = bm.createInjectionTarget(bm.createAnnotatedType(DummyFileSystem.class));
+
+        abd.addBean(createFileSystemBean(bm,
+                                         it,
+                                         SpacesAPI.DASHBUILDER_SPACE,
+                                         "ioStrategy",
+                                         "datasetsFS",
+                                         "datasets"));
+    }
+
+    void buildNavigationFS(final AfterBeanDiscovery abd,
+                           final BeanManager bm) {
+        final InjectionTarget<DummyFileSystem> it = bm.createInjectionTarget(bm.createAnnotatedType(DummyFileSystem.class));
+
+        abd.addBean(createFileSystemBean(bm,
+                                         it,
+                                         SpacesAPI.DASHBUILDER_SPACE,
+                                         "ioStrategy",
+                                         "navigationFS",
+                                         "navigation"));
+    }
     void buildSystemFS(final AfterBeanDiscovery abd,
                        final BeanManager bm) {
         final InjectionTarget<DummyFileSystem> it = bm.createInjectionTarget(bm.createAnnotatedType(DummyFileSystem.class));
 
         abd.addBean(createFileSystemBean(bm,
                                          it,
+                                         SpacesAPI.DEFAULT_SPACE,
                                          "configIO",
                                          "systemFS",
                                          "system"));
@@ -218,6 +300,7 @@ public class SystemConfigProducer implements Extension {
 
     Bean<FileSystem> createFileSystemBean(final BeanManager bm,
                                           final InjectionTarget<DummyFileSystem> it,
+                                          final Space space,
                                           String ioService,
                                           String beanName,
                                           String fsName) {
@@ -281,32 +364,30 @@ public class SystemConfigProducer implements Extension {
 
             @Override
             public FileSystem create(CreationalContext<FileSystem> ctx) {
+                final SpacesAPI spaces = getSpaces(bm);
                 final Bean<IOService> bean = (Bean<IOService>) bm.getBeans(ioService).iterator().next();
                 final CreationalContext<IOService> _ctx = bm.createCreationalContext(bean);
                 final IOService ioService = (IOService) bm.getReference(bean,
                                                                         IOService.class,
                                                                         _ctx);
 
-                final SpacesAPI spaces = getSpaces(bm);
+                URI uri = spaces.resolveFileSystemURI(SpacesAPI.Scheme.DEFAULT,
+                                                      space,
+                                                      fsName);
+
+                HashMap<String, Object> env = new HashMap<String, Object>() {{
+                    put("init", Boolean.TRUE);
+                    put("internal", Boolean.TRUE);
+                }};
+
                 FileSystem fs;
                 try {
-                    fs = ioService.newFileSystem(spaces.resolveFileSystemURI(SpacesAPI.Scheme.GIT,
-                                                                             SpacesAPI.DEFAULT_SPACE,
-                                                                             fsName),
-                                                 new HashMap<String, Object>() {{
-                                                     put("init",
-                                                         Boolean.TRUE);
-                                                     put("internal",
-                                                         Boolean.TRUE);
-                                                 }});
+                    fs = ioService.newFileSystem(uri, env);
                 } catch (FileSystemAlreadyExistsException e) {
-                    fs = ioService.getFileSystem(spaces.resolveFileSystemURI(SpacesAPI.Scheme.GIT,
-                                                                             SpacesAPI.DEFAULT_SPACE,
-                                                                             fsName));
+                    fs = ioService.getFileSystem(uri);
                 }
 
-                PriorityDisposableRegistry.register(beanName,
-                                                    fs);
+                PriorityDisposableRegistry.register(beanName, fs);
 
                 return fs;
             }

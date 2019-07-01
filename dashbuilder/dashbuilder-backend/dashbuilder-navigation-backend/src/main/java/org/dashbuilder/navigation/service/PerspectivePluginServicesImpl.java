@@ -50,7 +50,7 @@ public class PerspectivePluginServicesImpl implements PerspectivePluginServices 
 
     @Override
     public Collection<Plugin> listPlugins() {
-        return pluginServices.listPlugins();
+        return pluginServices.listPlugins(PluginType.PERSPECTIVE_LAYOUT);
     }
 
     @Override
