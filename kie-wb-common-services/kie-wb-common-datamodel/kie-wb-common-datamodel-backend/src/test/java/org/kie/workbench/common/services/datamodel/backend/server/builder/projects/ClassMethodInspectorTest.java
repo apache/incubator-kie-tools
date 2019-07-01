@@ -26,7 +26,9 @@ import org.junit.Test;
 import org.kie.soup.project.datamodel.oracle.DataType;
 import org.kie.soup.project.datamodel.oracle.MethodInfo;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 
 public class ClassMethodInspectorTest {
 
@@ -51,6 +53,23 @@ public class ClassMethodInspectorTest {
         assertEquals(DataType.TYPE_NUMERIC_INTEGER,
                      getMethodInfo("addOrSimilar",
                                    ext.getMethodInfos()).getParams().get(0));
+    }
+
+    @Test
+    public void testInheritedPublicMethods() {
+        final ClassMethodInspector ext = new ClassMethodInspector(ChildClass.class,
+                                                                  new JavaTypeSystemTranslator());
+
+        for (String s : ext.getMethodNames()) {
+            assertFalse("Method " + s + " is not allowed.",
+                        checkBlackList(s));
+        }
+        assertEquals(2,
+                     ext.getMethodInfos().size());
+        assertNotNull(getMethodInfo("aParentMethod",
+                                    ext.getMethodInfos()));
+        assertNotNull(getMethodInfo("aChildMethod",
+                                    ext.getMethodInfos()));
     }
 
     private MethodInfo getMethodInfo(final String methodName,
@@ -306,6 +325,19 @@ public class ClassMethodInspectorTest {
 
         public void isSomething(String a) {
 
+        }
+    }
+
+    public static class ParentClass {
+
+        public void aParentMethod() {
+
+        }
+    }
+
+    public static class ChildClass extends ParentClass {
+
+        public void aChildMethod() {
         }
     }
 }

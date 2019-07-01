@@ -16,9 +16,7 @@
 
 package org.kie.workbench.common.services.datamodel.backend.server.builder.projects;
 
-import java.io.IOException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -37,15 +35,17 @@ public class ClassMethodInspector {
     private final Set<MethodInfo> methods = new HashSet<MethodInfo>();
 
     public ClassMethodInspector(final Class<?> clazz,
-                                final ClassToGenericClassConverter converter) throws IOException {
-        final Method[] methods = clazz.getDeclaredMethods();
+                                final ClassToGenericClassConverter converter) {
+        // Get an array containing Method objects reflecting all the public methods of the class or interface
+        // represented by this Class object, including those declared by the class or interface and those
+        // inherited from superclasses and superinterfaces
+        final Method[] methods = clazz.getMethods();
         for (int i = 0; i < methods.length; i++) {
             Method aMethod = methods[i];
-            int modifiers = methods[i].getModifiers();
             String methodName = aMethod.getName();
 
             if (isNotGetterOrSetter(aMethod) && !BlackLists.isClassMethodBlackListed(clazz,
-                                                                                     methodName) && Modifier.isPublic(modifiers)) {
+                                                                                     methodName)) {
 
                 Class<?>[] listParam = aMethod.getParameterTypes();
 
@@ -62,7 +62,6 @@ public class ClassMethodInspector {
 
     /**
      * Translate Method Parameter types to the generic types used by DataModelOracle
-     *
      * @param converter
      * @param listParam
      * @return
@@ -89,7 +88,6 @@ public class ClassMethodInspector {
      * <p/>
      * If method starts with set or get and is longer than 3 characters.
      * For example java.util.List.set(int index, Object element) is considered to be a method, not a setter.
-     *
      * @param m
      */
     private boolean isNotGetterOrSetter(final Method m) {

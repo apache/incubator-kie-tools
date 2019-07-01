@@ -29,32 +29,32 @@ public class BlackLists {
      * @param methodName
      * @return
      */
-    public static boolean isClassMethodBlackListed( final Class<?> clazz,
-                                                    final String methodName ) {
-        if ( "class".equals( methodName ) || "hashCode".equals( methodName ) || "equals".equals( methodName ) || "toString".equals( methodName ) ) {
+    public static boolean isClassMethodBlackListed(final Class<?> clazz,
+                                                   final String methodName) {
+        if (isInObjectMethodsBlackList(methodName)) {
             return true;
         }
 
-        if ( Collection.class.isAssignableFrom( clazz ) ) {
-            if ( isInCollectionMethodsBlackList( methodName ) ) {
+        if (Collection.class.isAssignableFrom(clazz)) {
+            if (isInCollectionMethodsBlackList(methodName)) {
                 return true;
             }
         }
 
-        if ( Set.class.isAssignableFrom( clazz ) ) {
-            if ( isInSetMethodsBlackList( methodName ) ) {
+        if (Set.class.isAssignableFrom(clazz)) {
+            if (isInSetMethodsBlackList(methodName)) {
                 return true;
             }
         }
 
-        if ( List.class.isAssignableFrom( clazz ) ) {
-            if ( isInListMethodsBlackList( methodName ) ) {
+        if (List.class.isAssignableFrom(clazz)) {
+            if (isInListMethodsBlackList(methodName)) {
                 return true;
             }
         }
 
-        if ( Map.class.isAssignableFrom( clazz ) ) {
-            if ( isInMapMethodsBlackList( methodName ) ) {
+        if (Map.class.isAssignableFrom(clazz)) {
+            if (isInMapMethodsBlackList(methodName)) {
                 return true;
             }
         }
@@ -62,40 +62,39 @@ public class BlackLists {
         return false;
     }
 
-    private static boolean isInCollectionMethodsBlackList( final String methodName ) {
-        return ( "addAll".equals( methodName )
-                || "containsAll".equals( methodName )
-                || "iterator".equals( methodName )
-                || "removeAll".equals( methodName )
-                || "retainAll".equals( methodName )
-                || "toArray".equals( methodName ) );
+    private static boolean isInObjectMethodsBlackList(final String methodName) {
+        return "wait".equals(methodName)
+                || "notify".equals(methodName)
+                || "notifyAll".equals(methodName)
+                || "class".equals(methodName)
+                || "hashCode".equals(methodName)
+                || "equals".equals(methodName)
+                || "toString".equals(methodName);
     }
 
-    private static boolean isInSetMethodsBlackList( final String methodName ) {
-        return ( "addAll".equals( methodName )
-                || "containsAll".equals( methodName )
-                || "iterator".equals( methodName )
-                || "removeAll".equals( methodName )
-                || "retainAll".equals( methodName )
-                || "toArray".equals( methodName ) );
+    private static boolean isInCollectionMethodsBlackList(final String methodName) {
+        return "addAll".equals(methodName)
+                || "containsAll".equals(methodName)
+                || "iterator".equals(methodName)
+                || "removeAll".equals(methodName)
+                || "retainAll".equals(methodName)
+                || "toArray".equals(methodName);
     }
 
-    private static boolean isInListMethodsBlackList( final String methodName ) {
-        return ( "addAll".equals( methodName )
-                || "containsAll".equals( methodName )
-                || "iterator".equals( methodName )
-                || "listIterator".equals( methodName )
-                || "removeAll".equals( methodName )
-                || "retainAll".equals( methodName )
-                || "subList".equals( methodName )
-                || "toArray".equals( methodName )
-        );
+    private static boolean isInSetMethodsBlackList(final String methodName) {
+        return isInCollectionMethodsBlackList(methodName);
     }
 
-    private static boolean isInMapMethodsBlackList( final String methodName ) {
-        return ( "entrySet".equals( methodName )
-                || "keySet".equals( methodName )
-                || "putAll".equals( methodName ) );
+    private static boolean isInListMethodsBlackList(final String methodName) {
+        return isInCollectionMethodsBlackList(methodName)
+                || "listIterator".equals(methodName)
+                || "subList".equals(methodName);
+    }
+
+    private static boolean isInMapMethodsBlackList(final String methodName) {
+        return "entrySet".equals(methodName)
+                || "keySet".equals(methodName)
+                || "putAll".equals(methodName);
     }
 
     /**
@@ -103,7 +102,7 @@ public class BlackLists {
      * @param type
      * @return
      */
-    public static boolean isTypeBlackListed( final Class<?> type ) {
+    public static boolean isTypeBlackListed(final Class<?> type) {
         return type.isArray();
     }
 
@@ -112,8 +111,7 @@ public class BlackLists {
      * @param type
      * @return
      */
-    public static boolean isReturnTypeBlackListed( final Class<?> type ) {
+    public static boolean isReturnTypeBlackListed(final Class<?> type) {
         return type.isArray() || type.isPrimitive();
     }
-
 }
