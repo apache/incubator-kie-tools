@@ -90,4 +90,13 @@ public class LayoutRow {
                 "layoutColumns=" + layoutColumns +
                 '}';
     }
+
+    public boolean contains(LayoutComponent component) {
+        for (LayoutColumn column : layoutColumns) {
+            if (column.contains(component)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

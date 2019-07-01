@@ -119,4 +119,8 @@ public class LayoutColumn {
     public boolean hasRows() {
         return !rows.isEmpty();
     }
+
+    public boolean contains(LayoutComponent component) {
+        return layoutComponents.contains(component);
+    }
 }

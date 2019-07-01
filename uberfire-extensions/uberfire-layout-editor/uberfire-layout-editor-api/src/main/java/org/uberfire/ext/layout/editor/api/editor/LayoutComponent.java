@@ -19,11 +19,9 @@ package org.uberfire.ext.layout.editor.api.editor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Predicate;
 
 import org.jboss.errai.common.client.api.annotations.Portable;

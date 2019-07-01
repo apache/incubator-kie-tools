@@ -129,6 +129,15 @@ public final class LayoutTemplate {
     public boolean isEmpty() {
         return rows.isEmpty();
     }
+    
+    public boolean contains(LayoutComponent component) {
+        for (LayoutRow row : rows) {
+            if (row.contains(component)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public Style getStyle() {
         return style;

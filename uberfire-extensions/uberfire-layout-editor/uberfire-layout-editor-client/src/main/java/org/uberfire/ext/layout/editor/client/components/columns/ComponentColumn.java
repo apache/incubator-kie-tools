@@ -30,6 +30,7 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
+import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
 import org.uberfire.ext.layout.editor.client.api.LayoutEditorElement;
 import org.uberfire.ext.layout.editor.client.api.LayoutEditorElementPart;
 import org.uberfire.ext.layout.editor.client.api.LayoutEditorElementType;
@@ -436,10 +437,16 @@ public class ComponentColumn implements Column {
     public List<LayoutEditorElementPart> getLayoutEditorElementParts() {
         return parts;
     }
+    
+    public LayoutDragComponent getLayoutDragComponent() {
+        return view.getLayoutDragComponent();
+    }
 
     public interface View extends UberElement<ComponentColumn> {
 
         void setWidth(String size);
+
+        LayoutDragComponent getLayoutDragComponent();
 
         void calculateWidth();
 
