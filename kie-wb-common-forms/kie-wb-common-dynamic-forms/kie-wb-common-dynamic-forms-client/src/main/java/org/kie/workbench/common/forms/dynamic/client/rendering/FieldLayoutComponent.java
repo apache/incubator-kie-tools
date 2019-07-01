@@ -101,7 +101,6 @@ public class FieldLayoutComponent implements FormLayoutComponent,
     protected IsWidget generateContent(RenderingContext ctx) {
         if (fieldRenderer != null) {
             renderContent();
-            addComponentParts(ctx.getComponent());
         }
 
         return content;
@@ -113,7 +112,7 @@ public class FieldLayoutComponent implements FormLayoutComponent,
         content.add(fieldRenderer.renderWidget());
     }
     
-    protected void addComponentParts(LayoutComponent component) {
+    public void addComponentParts(LayoutComponent component) {
         Set<String> parts = fieldRenderer.getFieldParts();
         component.removePartIf(partId ->  !parts.contains(partId));
         parts.forEach(component::addPartIfAbsent);

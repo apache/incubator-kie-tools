@@ -455,10 +455,12 @@ public class EditorFieldLayoutComponentTest {
         Set<String> parts = Stream.of("p1","p2").collect(Collectors.toSet());
         when(fieldRenderer.getFieldParts()).thenReturn(parts);
         editorFieldLayoutComponent.generateContent(ctx);
+        editorFieldLayoutComponent.addComponentParts(ctx.getComponent());
         Set<String> expectedParts = layoutComponent.getParts().stream().map(p -> p.getPartId()).collect(Collectors.toSet());
         parts = Stream.of("p1","p3").collect(Collectors.toSet());
         when(fieldRenderer.getFieldParts()).thenReturn(parts);
         editorFieldLayoutComponent.generateContent(ctx);
+        editorFieldLayoutComponent.addComponentParts(ctx.getComponent());
         expectedParts = layoutComponent.getParts().stream().map(p -> p.getPartId()).collect(Collectors.toSet());
         assertEquals(parts, expectedParts);
     }

@@ -68,6 +68,7 @@ import org.uberfire.ext.editor.commons.client.file.CommandWithFileNameAndCommitM
 import org.uberfire.ext.editor.commons.client.file.FileNameAndCommitMessage;
 import org.uberfire.ext.editor.commons.client.file.popups.CopyPopUpPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.RenamePopUpPresenter;
+import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.api.ComponentRemovedEvent;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
@@ -509,7 +510,14 @@ public class FormEditorPresenter extends KieEditor<FormModelerContent> {
     public void onLayoutEditorElementSelectEvent(@Observes LayoutEditorElementSelectEvent event) {
         LayoutEditorElement element = event.getElement();
         if (element instanceof ComponentColumn) {
-            ((ComponentColumn) element).setupParts();
+            ComponentColumn componentColumn = (ComponentColumn) element;
+            LayoutComponent layoutComponent = componentColumn.getLayoutComponent();
+            LayoutDragComponent layoutDragComponent = componentColumn.getLayoutDragComponent();
+            boolean containsElement = getFormDefinition().getLayoutTemplate().contains(layoutComponent);
+            if (layoutDragComponent instanceof EditorFieldLayoutComponent && containsElement) {
+                ((EditorFieldLayoutComponent) layoutDragComponent).addComponentParts(layoutComponent);
+            }
+            componentColumn.setupParts();
         }
     }
     

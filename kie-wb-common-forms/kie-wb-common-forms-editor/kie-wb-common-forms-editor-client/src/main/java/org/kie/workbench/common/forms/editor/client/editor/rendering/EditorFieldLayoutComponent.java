@@ -250,7 +250,6 @@ public class EditorFieldLayoutComponent extends FieldLayoutComponent implements 
         } else {
             renderContent();
         }
-        addComponentParts(component);
         return content;
     }
 
