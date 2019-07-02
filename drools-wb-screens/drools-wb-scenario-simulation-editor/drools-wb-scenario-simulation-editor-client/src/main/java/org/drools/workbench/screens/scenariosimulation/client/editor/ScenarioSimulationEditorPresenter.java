@@ -163,7 +163,9 @@ public class ScenarioSimulationEditorPresenter {
         scenarioSimulationEditorWrapper.wrappedRegisterDock(ScenarioSimulationDocksHandler.TEST_RUNNER_REPORTING_PANEL, testRunnerReportingPanel.asWidget());
         scenarioSimulationDocksHandler.addDocks();
         scenarioSimulationDocksHandler.setScesimEditorId(String.valueOf(scenarioPresenterId));
-        expandToolsDock(status);
+        if (!PlaceStatus.OPEN.equals(status)) {
+            expandToolsDock();
+        }
         registerTestToolsCallback();
         resetDocks();
         populateRightDocks(TestToolsPresenter.IDENTIFIER);
@@ -182,10 +184,8 @@ public class ScenarioSimulationEditorPresenter {
         }
     }
 
-    public void expandToolsDock(PlaceStatus status) {
-        if (!PlaceStatus.OPEN.equals(status)) {
-            scenarioSimulationDocksHandler.expandToolsDock();
-        }
+    public void expandToolsDock() {
+        scenarioSimulationDocksHandler.expandToolsDock();
     }
 
     public ScenarioSimulationView getView() {

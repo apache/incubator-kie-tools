@@ -233,7 +233,7 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
         verify(scenarioSimulationEditorWrapper, times(1)).wrappedRegisterDock(eq(ScenarioSimulationDocksHandler.TEST_RUNNER_REPORTING_PANEL), eq(testRunnerReportingPanelWidgetMock));
         verify(scenarioSimulationDocksHandlerMock, times(1)).addDocks();
         verify(scenarioSimulationDocksHandlerMock, times(1)).setScesimEditorId(eq(String.valueOf(presenter.scenarioPresenterId)));
-        verify(presenter).expandToolsDock(eq(PlaceStatus.OPEN));
+        verify(presenter, never()).expandToolsDock();
         verify(presenter, times(1)).registerTestToolsCallback();
         verify(presenter, times(1)).resetDocks();
         verify(presenter, times(1)).populateRightDocks(eq(TestToolsPresenter.IDENTIFIER));
@@ -246,7 +246,7 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
         verify(scenarioSimulationEditorWrapper, times(1)).wrappedRegisterDock(eq(ScenarioSimulationDocksHandler.TEST_RUNNER_REPORTING_PANEL), eq(testRunnerReportingPanelWidgetMock));
         verify(scenarioSimulationDocksHandlerMock, times(1)).addDocks();
         verify(scenarioSimulationDocksHandlerMock, times(1)).setScesimEditorId(eq(String.valueOf(presenter.scenarioPresenterId)));
-        verify(presenter).expandToolsDock(eq(PlaceStatus.CLOSE));
+        verify(presenter, times(1)).expandToolsDock();
         verify(presenter, times(1)).registerTestToolsCallback();
         verify(presenter, times(1)).resetDocks();
         verify(presenter, times(1)).populateRightDocks(eq(TestToolsPresenter.IDENTIFIER));
@@ -262,14 +262,8 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
     }
 
     @Test
-    public void expandToolsDock_PlaceStatusOpen() {
-        presenter.expandToolsDock(PlaceStatus.OPEN);
-        verify(scenarioSimulationDocksHandlerMock, never()).expandToolsDock();
-    }
-
-    @Test
-    public void expandToolsDock_PlaceStatusClose() {
-        presenter.expandToolsDock(PlaceStatus.CLOSE);
+    public void expandToolsDock() {
+        presenter.expandToolsDock();
         verify(scenarioSimulationDocksHandlerMock, times(1)).expandToolsDock();
     }
 
