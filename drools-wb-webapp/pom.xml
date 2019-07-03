@@ -596,6 +596,10 @@
       <groupId>org.kie.workbench.screens</groupId>
       <artifactId>kie-wb-common-workbench-backend</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.kie.workbench.screens</groupId>
+      <artifactId>kie-wb-common-server-ui-api</artifactId>
+    </dependency>
 
     <!-- KIE Workbench Playground Repository -->
     <dependency>
@@ -1182,6 +1186,16 @@
       <artifactId>errai-cdi-server</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-cdi-shared</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-data-binding</artifactId>
+    </dependency>
+
     <!-- GWT and GWT Extensions -->
     <dependency>
       <groupId>com.google.gwt</groupId>
@@ -1238,6 +1252,10 @@
     </dependency>
 
     <!-- Uberfire Security Management -->
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-security-management-api</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-security-management-client</artifactId>
@@ -1380,10 +1398,6 @@
       <scope>compile</scope>
     </dependency>
     <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-security-management-api</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.kie</groupId>
       <artifactId>lienzo-core</artifactId>
       <scope>compile</scope>
@@ -1392,10 +1406,6 @@
       <groupId>org.kie.workbench.widgets</groupId>
       <artifactId>kie-wb-config-resource-widget</artifactId>
       <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.workbench.screens</groupId>
-      <artifactId>kie-wb-common-server-ui-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
@@ -1463,14 +1473,6 @@
       <scope>compile</scope>
     </dependency>
     <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-data-binding</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-cdi-shared</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>appformer-js-bridge</artifactId>
       <scope>provided</scope>
@@ -1491,16 +1493,6 @@
     <outputDirectory>src/main/webapp/WEB-INF/classes</outputDirectory>
 
     <plugins>
-      <!-- temporary skipping of enforcer-plugin because it brings the drools-wb-webapp to fail (after merging "replaceIPBOM")
-      Should be reverted and fixed once the ip-replacement was merged -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-enforcer-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
-      </plugin>
-
       <!-- Include additional sources path for hot reload -->
       <plugin>
         <groupId>org.kie</groupId>
