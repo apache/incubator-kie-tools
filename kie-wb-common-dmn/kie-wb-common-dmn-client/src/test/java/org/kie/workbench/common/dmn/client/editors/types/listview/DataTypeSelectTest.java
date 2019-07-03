@@ -30,6 +30,7 @@ import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManager;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeUtils;
 import org.mockito.Mock;
 
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doReturn;
@@ -111,15 +112,21 @@ public class DataTypeSelectTest {
     @Test
     public void testGetCustomDataTypes() {
 
-        final List<DataType> expectedDataTypes = new ArrayList<DataType>() {{
-            add(mock(DataType.class));
-        }};
+        final DataType dataType1 = mock(DataType.class);
+        final DataType dataType2 = mock(DataType.class);
+        final DataType dataType3 = mock(DataType.class);
+        final List<DataType> customDataTypes = asList(dataType1, dataType2, dataType3);
 
-        when(dataTypeUtils.customDataTypes()).thenReturn(expectedDataTypes);
+        when(dataType1.getName()).thenReturn("tUUID");
+        when(dataType2.getName()).thenReturn("tPerson");
+        when(dataType3.getName()).thenReturn("tCity");
+        when(dataTypeUtils.customDataTypes()).thenReturn(customDataTypes);
+        doReturn(dataType2).when(dataTypeSelect).getDataType();
 
         final List<DataType> actualDataTypes = dataTypeSelect.getCustomDataTypes();
+        final List<DataType> expectedDataTypes = asList(dataType1, dataType3);
 
-        assertThat(actualDataTypes).hasSameElementsAs(expectedDataTypes);
+        assertEquals(expectedDataTypes, actualDataTypes);
     }
 
     @Test

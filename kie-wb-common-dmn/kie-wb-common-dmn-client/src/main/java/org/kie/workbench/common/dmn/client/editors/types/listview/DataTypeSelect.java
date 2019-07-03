@@ -17,6 +17,8 @@
 package org.kie.workbench.common.dmn.client.editors.types.listview;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
@@ -92,7 +94,11 @@ public class DataTypeSelect {
     }
 
     List<DataType> getCustomDataTypes() {
-        return dataTypeUtils.customDataTypes();
+        return dataTypeUtils
+                .customDataTypes()
+                .stream()
+                .filter(dataType -> !Objects.equals(dataType.getName(), getDataType().getName()))
+                .collect(Collectors.toList());
     }
 
     void refreshView(final String typeName) {
