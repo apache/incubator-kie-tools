@@ -20,7 +20,6 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
 public enum PluginType {
-    DEFAULT,
     PERSPECTIVE,
     PERSPECTIVE_LAYOUT,
     SCREEN,

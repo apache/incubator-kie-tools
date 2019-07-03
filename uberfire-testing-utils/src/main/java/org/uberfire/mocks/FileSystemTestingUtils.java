@@ -42,18 +42,12 @@ public class FileSystemTestingUtils {
     }
 
     public void setup(boolean initRepo) throws IOException {
-        setup(initRepo, "git://amend-repo-test");
-    }
-
-    public void setup(String repoPath) throws IOException {
-        setup(true, repoPath);
-    }
-
-    public void setup(boolean initRepo, String repoPath) throws IOException {
         ioService = new IOServiceDotFileImpl();
 
         createTempDirectory();
-        setupJGitRepository(repoPath, initRepo);
+        setupJGitRepository("git://amend-repo-test",
+                            initRepo
+        );
     }
 
     private void createTempDirectory()

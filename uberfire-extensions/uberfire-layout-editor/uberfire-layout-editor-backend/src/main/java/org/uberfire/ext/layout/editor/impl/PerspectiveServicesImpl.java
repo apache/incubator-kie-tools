@@ -33,7 +33,6 @@ import org.uberfire.ext.plugin.backend.PluginServicesImpl;
 import org.uberfire.ext.plugin.model.LayoutEditorModel;
 import org.uberfire.ext.plugin.model.Plugin;
 import org.uberfire.ext.plugin.model.PluginType;
-import org.uberfire.spaces.SpacesAPI;
 
 @Service
 @ApplicationScoped
@@ -67,7 +66,7 @@ public class PerspectiveServicesImpl implements PerspectiveServices {
 
     @Override
     public Collection<LayoutTemplate> listLayoutTemplates() {
-        return pluginServices.listPlugins(PluginType.PERSPECTIVE_LAYOUT).stream()
+        return pluginServices.listPlugins().stream()
                 .map(this::getLayoutTemplate)
                 .collect(Collectors.toList());
     }
@@ -96,7 +95,7 @@ public class PerspectiveServicesImpl implements PerspectiveServices {
         if (perspectiveName == null) {
             return null;
         }
-        for (Plugin plugin : pluginServices.listPlugins(PluginType.PERSPECTIVE_LAYOUT)) {
+        for (Plugin plugin : pluginServices.listPlugins()) {
             if (PluginType.PERSPECTIVE_LAYOUT.equals(plugin.getType()) && plugin.getName().equals(perspectiveName)) {
                 return plugin;
             }

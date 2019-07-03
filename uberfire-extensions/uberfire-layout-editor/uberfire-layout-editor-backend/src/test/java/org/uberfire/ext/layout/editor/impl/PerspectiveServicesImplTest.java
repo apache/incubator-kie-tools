@@ -35,7 +35,6 @@ import org.uberfire.ext.plugin.model.Plugin;
 import org.uberfire.ext.plugin.model.PluginType;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.eq;
@@ -75,7 +74,6 @@ public class PerspectiveServicesImplTest {
 
         when(pluginServices.createNewPlugin(anyString(), any())).thenReturn(plugin);
         when(plugin.getPath()).thenReturn(path);
-        when(plugin.getName()).thenReturn("plugin1");
         when(pluginServices.copy(any(), anyString(), anyString())).thenReturn(path2);
         when(pluginServices.copy(any(), anyString(), any(), anyString())).thenReturn(path2);
         when(pluginServices.rename(any(), anyString(), anyString())).thenReturn(path2);
@@ -97,14 +95,12 @@ public class PerspectiveServicesImplTest {
     @Test
     public void testList() {
         Plugin layoutPlugin = new Plugin("layout", PluginType.PERSPECTIVE_LAYOUT, path2);
-        when(pluginServices.listPlugins(PluginType.PERSPECTIVE_LAYOUT))
-            .thenReturn(Collections.singletonList(layoutPlugin));
+        when(pluginServices.listPlugins()).thenReturn(Collections.singletonList(layoutPlugin));
 
         Collection<LayoutTemplate> layouts = perspectiveServices.listLayoutTemplates();
         assertEquals(layouts.size(), 1);
         LayoutTemplate layoutTemplate = layouts.iterator().next();
         assertEquals(layoutTemplate.getName(), "layout");
-        verify(pluginServices).listPlugins(PluginType.PERSPECTIVE_LAYOUT);
     }
 
     @Test
@@ -189,18 +185,5 @@ public class PerspectiveServicesImplTest {
         perspectiveServices.saveAndRename(path, newFileName, metadata, content, comment);
 
         verify(saveAndRenameService).saveAndRename(path, newFileName, metadata, content, comment);
-    }
-
-    @Test
-    public void testGetLayoutTemplate() {
-        LayoutTemplate layoutTemplate = perspectiveServices.getLayoutTemplate(path2);
-        verify(pluginServices).getLayoutEditor(path2, PluginType.PERSPECTIVE_LAYOUT);
-        assertTrue(layoutTemplate.getName().equals("layout"));
-    }
-
-    @Test
-    public void testGetLayoutTemplatePlugin() {
-        Plugin retPlugin = perspectiveServices.getLayoutTemplatePlugin(plugin.getName());
-        verify(pluginServices).listPlugins(PluginType.PERSPECTIVE_LAYOUT);
     }
 }

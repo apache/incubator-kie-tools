@@ -123,7 +123,7 @@ public class CSVDataSetDefAttributesEditor implements IsWidget, org.dashbuilder.
 
             @Override
             public String getUploadFileUrl() {
-                String csvPath = "default://master@dashbuilder/datasets/tmp/" + value.getUUID() + ".csv";
+                String csvPath = "default://master@system/datasets/tmp/" + value.getUUID() + ".csv";
                 return dataSetClientServices.getUploadFileUrl(csvPath);
             }
         });

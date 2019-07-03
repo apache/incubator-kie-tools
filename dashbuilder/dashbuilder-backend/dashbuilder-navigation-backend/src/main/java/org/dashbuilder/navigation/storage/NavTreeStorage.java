@@ -15,6 +15,8 @@
  */
 package org.dashbuilder.navigation.storage;
 
+import java.net.URI;
+import java.util.HashMap;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -26,6 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileSystem;
+import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
 import org.uberfire.java.nio.file.Path;
 
 @ApplicationScoped
@@ -42,7 +45,7 @@ public class NavTreeStorage {
 
     @Inject
     public NavTreeStorage(@Named("ioStrategy") IOService ioService,
-                          @Named("navigationFS") FileSystem fileSystem) {
+                          @Named("pluginsFS") FileSystem fileSystem) {
         this.ioService = ioService;
         this.fileSystem = fileSystem;
         this.jsonMarshaller = NavTreeJSONMarshaller.get();
@@ -50,7 +53,7 @@ public class NavTreeStorage {
 
     @PostConstruct
     public void init() {
-        root = fileSystem.getRootDirectories().iterator().next();
+        this.root = fileSystem.getRootDirectories().iterator().next();
     }
 
     protected Path getNavRootPath() {
