@@ -39,9 +39,8 @@ import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.scanner.KieModuleMetaData;
 import org.kie.soup.project.datamodel.commons.util.MVELEvaluator;
-import org.kie.workbench.common.services.backend.builder.service.BuildInfoService;
+import org.kie.workbench.common.services.backend.builder.core.LRUModuleDependenciesClassLoaderCache;
 import org.kie.workbench.common.services.backend.service.KieService;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.util.DataEnumLoader;
 import org.kie.workbench.common.services.shared.project.KieModule;
@@ -88,9 +87,6 @@ public class EnumServiceImpl
     private EnumResourceTypeDefinition resourceTypeDefinition;
 
     @Inject
-    private BuildInfoService buildInfoService;
-
-    @Inject
     private CommentedOptionFactory commentedOptionFactory;
 
     @Inject
@@ -98,6 +94,10 @@ public class EnumServiceImpl
 
     @Inject
     private SaveAndRenameServiceImpl<String, Metadata> saveAndRenameService;
+
+    @Inject
+    @Named("LRUModuleDependenciesClassLoaderCache")
+    private LRUModuleDependenciesClassLoaderCache dependenciesClassLoaderCache;
 
     private SafeSessionInfo safeSessionInfo;
 
@@ -264,8 +264,7 @@ public class EnumServiceImpl
                                                  final String content) {
         try {
             final KieModule module = moduleService.resolveModule(path);
-            final org.kie.api.builder.KieModule kieModule = buildInfoService.getBuildInfo(module).getKieModuleIgnoringErrors();
-            final ClassLoader classLoader = KieModuleMetaData.Factory.newKieModuleMetaData(kieModule).getClassLoader();
+            final ClassLoader classLoader = dependenciesClassLoaderCache.assertDependenciesClassLoader(module);
             final DataEnumLoader loader = new DataEnumLoader(content,
                                                              classLoader,
                                                              evaluator);
