@@ -22,7 +22,6 @@ import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.OperateOnDeployment;
 import org.junit.After;
 import org.junit.Test;
-import org.kie.server.controller.api.model.spec.ServerTemplateList;
 import org.kie.server.controller.client.KieServerControllerClient;
 import org.kie.workbench.common.screens.server.management.service.SpecManagementService;
 import org.slf4j.Logger;
@@ -44,17 +43,14 @@ public abstract class AbstractAutoControllerIT extends AbstractControllerIT {
                 LOGGER.info("Closing Kie Server Management Controller client");
                 client.close();
             } catch (IOException e) {
-                LOGGER.warn("Error trying to close Kie Server Management Controller Client: {}",
-                            e.getMessage(),
-                            e);
+                LOGGER.warn("Error trying to close Kie Server Management Controller Client: {}", e.getMessage(), e);
             }
         }
     }
 
     @Test
     @OperateOnDeployment("workbench")
-    public void testSpecManagementService() throws Exception {
-        final ServerTemplateList serverTemplateList = specManagementService.listServerTemplates();
-        assertServerTemplateList(serverTemplateList);
+    public void testSpecManagementService() {
+        assertServerTemplateList(specManagementService.listServerTemplates());
     }
 }

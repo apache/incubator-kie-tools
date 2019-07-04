@@ -23,6 +23,9 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
+import org.jboss.shrinkwrap.resolver.api.maven.strategy.CombinedStrategy;
+import org.jboss.shrinkwrap.resolver.api.maven.strategy.RejectDependenciesStrategy;
+import org.jboss.shrinkwrap.resolver.api.maven.strategy.TransitiveStrategy;
 import org.kie.server.controller.api.model.spec.ServerTemplateList;
 import org.kie.server.controller.impl.KieServerHealthCheckControllerImpl;
 import org.kie.workbench.common.screens.server.management.backend.rest.StandaloneControllerDynamicFeature;
@@ -57,39 +60,39 @@ public abstract class AbstractControllerIT {
     protected static final String USER = "admin";
     protected static final String PASSWORD = "admin";
     protected static final String SERVER_TEMPLATE_ID = "it-test-kie-server";
-
-
-
-    public static WebArchive createWorkbenchWar() {
+    
+    private static File[] getLibraries(){
         final File[] libraries = Maven.configureResolver().workOffline().loadPomFromFile("pom.xml")
+                .importRuntimeDependencies()
                 .resolve(
-                        "org.kie.workbench.screens:kie-wb-common-server-ui-api",
-                        "org.kie.workbench.services:kie-wb-common-services-backend",
                         "org.kie.workbench.screens:kie-wb-common-workbench-backend",
-                        "org.kie.server:kie-server-controller-rest",
-                        "org.kie.server:kie-server-controller-websocket",
-                        "org.kie.server:kie-server-controller-client",
-                        "org.kie.soup:kie-soup-project-datamodel-commons",
+                        "org.kie.workbench.services:kie-wb-common-services-backend",
                         "org.uberfire:uberfire-nio2-fs",
                         "org.uberfire:uberfire-nio2-jgit",
-                        "org.uberfire:uberfire-backend-server",
-                        "org.uberfire:uberfire-backend-cdi",
-                        "org.uberfire:uberfire-servlet-security",
-                        "org.uberfire:uberfire-rest-backend",
-                        "org.uberfire:uberfire-metadata-backend-lucene",
                         "org.uberfire:uberfire-ssh-api",
                         "org.uberfire:uberfire-ssh-backend",
-                        "org.uberfire:uberfire-commons",
+                        "org.uberfire:uberfire-servlet-security",
+                        "org.uberfire:uberfire-rest-backend",
+                        "org.uberfire:uberfire-backend-server",
+                        "org.uberfire:uberfire-backend-cdi",
                         "org.jboss.errai:errai-jboss-as-support",
                         "org.jboss.errai:errai-security-server",
                         "org.jboss.errai:errai-cdi-server",
-                        "org.mockito:mockito-core"
-                ).withTransitivity().asFile();
+                        "org.mockito:mockito-core",
+                        "org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-api"
+                ).using(new CombinedStrategy(TransitiveStrategy.INSTANCE, new RejectDependenciesStrategy(false,
+                                                                                                         "log4j:log4j",
+                                                                                                         "mysql:mysql-connector-java",
+                                                                                                         "javax.mail:mail"))).asFile();
+        return libraries;
+    }
+
+    public static WebArchive createWorkbenchWar() {
+        File[] libraries = getLibraries();
 
         final URL extension = Thread.currentThread().getContextClassLoader().getResource("META-INF/services/javax.enterprise.inject.spi.Extension");
 
-        final WebArchive archive = ShrinkWrap.create(WebArchive.class,
-                                                     "workbench.war")
+        final WebArchive archive = ShrinkWrap.create(WebArchive.class, "workbench.war")
                 .addClass(StandaloneControllerDynamicFeature.class)
                 .addClass(StandaloneControllerFilter.class)
 
@@ -122,7 +125,7 @@ public abstract class AbstractControllerIT {
                 .addClass(AbstractAutoControllerIT.class)
                 .addClass(KieServerHealthCheckControllerImpl.class)
                 .addClass(HealthCheckControllerBootstrap.class)
-                
+
                 .addClass(AppSetup.class)
 
                 .addAsLibraries(libraries)
@@ -139,8 +142,7 @@ public abstract class AbstractControllerIT {
                 .addAsWebInfResource("web.xml")
                 .addAsWebInfResource("jboss-web.xml");
 
-        LOGGER.debug("Workbench archive contents:\n{}",
-                     archive.toString(true));
+        LOGGER.debug("Workbench archive contents:\n{}", archive.toString(true));
         return archive;
     }
 
@@ -149,9 +151,7 @@ public abstract class AbstractControllerIT {
             final File kieServerFile = Maven.configureResolver().workOffline().loadPomFromFile("pom.xml")
                     .resolve("org.kie.server:kie-server:war:ee8:?").withoutTransitivity().asSingleFile();
 
-            return ShrinkWrap.create(ZipImporter.class,
-                                     "kie-server.war").importFrom(kieServerFile)
-                    .as(WebArchive.class);
+            return ShrinkWrap.create(ZipImporter.class, "kie-server.war").importFrom(kieServerFile).as(WebArchive.class);
         } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
@@ -163,9 +163,7 @@ public abstract class AbstractControllerIT {
             final File kieServerControllerFile = Maven.configureResolver().workOffline().loadPomFromFile("pom.xml")
                     .resolve("org.kie.server:kie-server-controller-standalone:war:ee7:?").withoutTransitivity().asSingleFile();
 
-            return ShrinkWrap.create(ZipImporter.class,
-                                     "kie-server-controller.war").importFrom(kieServerControllerFile)
-                    .as(WebArchive.class);
+            return ShrinkWrap.create(ZipImporter.class, "kie-server-controller.war").importFrom(kieServerControllerFile).as(WebArchive.class);
         } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException(ex);
@@ -186,10 +184,8 @@ public abstract class AbstractControllerIT {
     protected static void assertServerTemplateList(final ServerTemplateList serverTemplateList) {
         assertNotNull(serverTemplateList);
         assertNotNull(serverTemplateList.getServerTemplates());
-        assertEquals(1,
-                     serverTemplateList.getServerTemplates().length);
-        assertEquals(SERVER_TEMPLATE_ID,
-                     serverTemplateList.getServerTemplates()[0].getId());
+        assertEquals(1, serverTemplateList.getServerTemplates().length);
+        assertEquals(SERVER_TEMPLATE_ID, serverTemplateList.getServerTemplates()[0].getId());
     }
 
 
