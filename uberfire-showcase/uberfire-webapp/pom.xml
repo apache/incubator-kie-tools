@@ -442,7 +442,6 @@
     <dependency>
       <groupId>com.google.inject</groupId>
       <artifactId>guice</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <!-- missing deps to avoid illegal transitive type dependencies -->

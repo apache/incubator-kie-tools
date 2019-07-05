@@ -674,7 +674,6 @@
     <dependency>
       <groupId>com.google.inject</groupId>
       <artifactId>guice</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <dependency>
