@@ -74,7 +74,7 @@ public class CustomDataTypeTextBoxTest {
         doCallRealMethod().when(textBox).setup();
         doCallRealMethod().when(textBox).addBlurHandler(any(BlurHandler.class));
         doCallRealMethod().when(textBox).addKeyPressHandler(any(KeyPressHandler.class));
-        textBox.setRegExp(StringUtils.ALPHA_NUM_DOT_REGEXP,
+        textBox.setRegExp(StringUtils.ALPHA_NUM_UNDERSCORE_DOT_REGEXP,
                           ERROR_REMOVED,
                           ERROR_TYPED);
     }
@@ -132,7 +132,7 @@ public class CustomDataTypeTextBoxTest {
         assertEquals("ab21",
                      makeValidResult);
         makeValidResult = textBox.makeValidValue("<a#b$2%1.3-4_5>");
-        assertEquals("ab21.3-4_5",
+        assertEquals("ab21.34_5",
                      makeValidResult);
     }
 
@@ -144,14 +144,6 @@ public class CustomDataTypeTextBoxTest {
         assertEquals(null,
                      isValidResult);
         isValidResult = textBox.isValidValue("a",
-                                             false);
-        assertEquals(null,
-                     isValidResult);
-        isValidResult = textBox.isValidValue("-",
-                                             true);
-        assertEquals(null,
-                     isValidResult);
-        isValidResult = textBox.isValidValue("-",
                                              false);
         assertEquals(null,
                      isValidResult);
@@ -170,6 +162,14 @@ public class CustomDataTypeTextBoxTest {
         isValidResult = textBox.isValidValue("CdE",
                                              false);
         assertEquals(null,
+                     isValidResult);
+        isValidResult = textBox.isValidValue("-",
+                                             true);
+        assertEquals(ERROR_REMOVED + ": -",
+                     isValidResult);
+        isValidResult = textBox.isValidValue("a-b",
+                                             true);
+        assertEquals(ERROR_REMOVED + ": -",
                      isValidResult);
         isValidResult = textBox.isValidValue("a#$%1",
                                              false);

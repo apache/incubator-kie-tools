@@ -42,15 +42,17 @@ import org.kie.workbench.common.stunner.bpmn.client.forms.fields.i18n.StunnerFor
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.AssignmentRow;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Variable.VariableType;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.ListBoxValues;
+import org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils;
 import org.kie.workbench.common.stunner.bpmn.client.forms.widgets.ComboBox;
 import org.kie.workbench.common.stunner.bpmn.client.forms.widgets.ComboBoxView;
+import org.kie.workbench.common.stunner.bpmn.client.forms.widgets.CustomDataTypeTextBox;
 import org.kie.workbench.common.stunner.bpmn.client.forms.widgets.VariableNameTextBox;
 import org.uberfire.workbench.events.NotificationEvent;
 
 /**
  * A templated widget that will be used to display a row in a table of
  * {@link AssignmentRow}s.
- * <p/>
+ * <p>
  * The Name field of AssignmentRow is Bound, but other fields are not bound because
  * they use a combination of ListBox and TextBox to implement a drop-down combo
  * to hold the values.
@@ -98,7 +100,7 @@ public class AssignmentListItemWidgetViewImpl extends Composite implements Assig
 
     @Inject
     @DataField
-    protected TextBox customDataType;
+    protected CustomDataTypeTextBox customDataType;
 
     @DataField
     protected ValueListBox<String> processVar = new ValueListBox<>(new Renderer<String>() {
@@ -181,33 +183,9 @@ public class AssignmentListItemWidgetViewImpl extends Composite implements Assig
 
     @PostConstruct
     public void init() {
-        // Configure dataType and customDataType controls
-        dataTypeComboBox.init(this,
-                              false,
-                              dataType,
-                              customDataType,
-                              false,
-                              true,
-                              CUSTOM_PROMPT,
-                              ENTER_TYPE_PROMPT);
-        // Configure processVar and constant controls
-        processVarComboBox.init(this,
-                                false,
-                                processVar,
-                                constant,
-                                true,
-                                true,
-                                CONSTANT_PROMPT,
-                                ENTER_CONSTANT_PROMPT);
         name.setRegExp(ALLOWED_CHARS,
                        StunnerFormsClientFieldsConstants.INSTANCE.Removed_invalid_characters_from_name(),
                        StunnerFormsClientFieldsConstants.INSTANCE.Invalid_character_in_name());
-        customDataType.addKeyDownHandler(event -> {
-            int iChar = event.getNativeKeyCode();
-            if (iChar == ' ') {
-                event.preventDefault();
-            }
-        });
         name.addChangeHandler(event -> {
             String value = name.getText();
             String notifyMessage = null;
@@ -222,6 +200,31 @@ public class AssignmentListItemWidgetViewImpl extends Composite implements Assig
                 ValueChangeEvent.fire(name, EMPTY_VALUE);
             }
         });
+        customDataType.setRegExp(StringUtils.ALPHA_NUM_UNDERSCORE_DOT_REGEXP,
+                                 StunnerFormsClientFieldsConstants.INSTANCE.Removed_invalid_characters_from_name(),
+                                 StunnerFormsClientFieldsConstants.INSTANCE.Invalid_character_in_name());
+        customDataType.addKeyDownHandler(event -> {
+            int iChar = event.getNativeKeyCode();
+            if (iChar == ' ') {
+                event.preventDefault();
+            }
+        });
+        dataTypeComboBox.init(this,
+                              false,
+                              dataType,
+                              customDataType,
+                              false,
+                              true,
+                              CUSTOM_PROMPT,
+                              ENTER_TYPE_PROMPT);
+        processVarComboBox.init(this,
+                                false,
+                                processVar,
+                                constant,
+                                true,
+                                true,
+                                CONSTANT_PROMPT,
+                                ENTER_CONSTANT_PROMPT);
     }
 
     @Override

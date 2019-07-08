@@ -34,7 +34,9 @@ import org.kie.workbench.common.stunner.bpmn.client.forms.fields.i18n.StunnerFor
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.AssignmentRow;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Variable;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.ListBoxValues;
+import org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils;
 import org.kie.workbench.common.stunner.bpmn.client.forms.widgets.ComboBox;
+import org.kie.workbench.common.stunner.bpmn.client.forms.widgets.CustomDataTypeTextBox;
 import org.kie.workbench.common.stunner.bpmn.client.forms.widgets.VariableNameTextBox;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -42,6 +44,7 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyBoolean;
 import static org.mockito.Mockito.anyString;
@@ -61,7 +64,7 @@ public class AssignmentListItemWidgetTest {
 
     ValueListBox<String> processVar;
 
-    TextBox customDataType;
+    CustomDataTypeTextBox customDataType;
 
     TextBox constant;
 
@@ -90,7 +93,7 @@ public class AssignmentListItemWidgetTest {
         GwtMockito.initMocks(this);
         dataType = mock(ValueListBox.class);
         processVar = mock(ValueListBox.class);
-        customDataType = mock(TextBox.class);
+        customDataType = mock(CustomDataTypeTextBox.class);
         constant = mock(TextBox.class);
         dataTypeComboBox = mock(ComboBox.class);
         processVarComboBox = mock(ComboBox.class);
@@ -134,6 +137,7 @@ public class AssignmentListItemWidgetTest {
         widget.init();
         verify(widget,
                times(1)).init();
+        verify(customDataType, times(1)).setRegExp(eq(StringUtils.ALPHA_NUM_UNDERSCORE_DOT_REGEXP), anyString(), anyString());
         verify(dataTypeComboBox,
                times(1)).init(widget,
                               false,

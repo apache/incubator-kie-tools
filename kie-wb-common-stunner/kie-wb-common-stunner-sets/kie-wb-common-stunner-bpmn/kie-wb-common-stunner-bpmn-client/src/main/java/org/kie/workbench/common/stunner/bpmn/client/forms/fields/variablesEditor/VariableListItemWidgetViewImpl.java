@@ -172,7 +172,7 @@ public class VariableListItemWidgetViewImpl implements VariableListItemWidgetVie
                               true,
                               CUSTOM_PROMPT,
                               ENTER_TYPE_PROMPT);
-        customDataType.setRegExp(StringUtils.ALPHA_NUM_DOT_REGEXP,
+        customDataType.setRegExp(StringUtils.ALPHA_NUM_UNDERSCORE_DOT_REGEXP,
                                  StunnerFormsClientFieldsConstants.INSTANCE.Removed_invalid_characters_from_name(),
                                  StunnerFormsClientFieldsConstants.INSTANCE.Invalid_character_in_name());
         customDataType.addKeyDownHandler(event -> {

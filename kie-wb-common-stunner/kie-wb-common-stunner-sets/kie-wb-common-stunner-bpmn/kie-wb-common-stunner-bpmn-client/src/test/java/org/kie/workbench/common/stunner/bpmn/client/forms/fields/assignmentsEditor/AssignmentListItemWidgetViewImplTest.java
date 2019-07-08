@@ -38,7 +38,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.AssignmentRow;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Variable;
+import org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils;
 import org.kie.workbench.common.stunner.bpmn.client.forms.widgets.ComboBox;
+import org.kie.workbench.common.stunner.bpmn.client.forms.widgets.CustomDataTypeTextBox;
 import org.kie.workbench.common.stunner.bpmn.client.forms.widgets.VariableNameTextBox;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -48,6 +50,7 @@ import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyBoolean;
 import static org.mockito.Mockito.anySet;
@@ -77,7 +80,7 @@ public class AssignmentListItemWidgetViewImplTest {
     @GwtMock
     private Button deleteButton;
 
-    private TextBox customDataType;
+    private CustomDataTypeTextBox customDataType;
 
     private TextBox constant;
 
@@ -105,7 +108,7 @@ public class AssignmentListItemWidgetViewImplTest {
     @Before
     public void setUp() throws Exception {
         GwtMockito.initMocks(this);
-        customDataType = mock(TextBox.class);
+        customDataType = mock(CustomDataTypeTextBox.class);
         constant = mock(TextBox.class);
         dataType = mock(ValueListBox.class);
         processVar = mock(ValueListBox.class);
@@ -258,6 +261,7 @@ public class AssignmentListItemWidgetViewImplTest {
     @Test
     public void testDataTypeHandlerSpace() {
         view.init();
+        verify(customDataType, times(1)).setRegExp(eq(StringUtils.ALPHA_NUM_UNDERSCORE_DOT_REGEXP), anyString(), anyString());
         verify(customDataType, times(1)).addKeyDownHandler(keyDownHandlerCaptor.capture());
         KeyDownHandler handler = keyDownHandlerCaptor.getValue();
         doReturn(Integer.valueOf(' ')).when(keyDownEvent).getNativeKeyCode();

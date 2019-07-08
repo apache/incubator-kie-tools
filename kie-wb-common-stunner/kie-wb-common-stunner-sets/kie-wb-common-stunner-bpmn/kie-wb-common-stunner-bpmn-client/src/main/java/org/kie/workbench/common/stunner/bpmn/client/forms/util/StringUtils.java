@@ -26,7 +26,7 @@ import com.google.gwt.http.client.URL;
 public class StringUtils {
 
     public static final String ALPHA_NUM_REGEXP = "^[a-zA-Z0-9\\-\\_]*$";
-    public static final String ALPHA_NUM_DOT_REGEXP = "^[a-zA-Z0-9\\-\\_\\.]*$";
+    public static final String ALPHA_NUM_UNDERSCORE_DOT_REGEXP = "^[a-zA-Z0-9\\_\\.]*$";
     public static final String ALPHA_NUM_SPACE_REGEXP = "^[a-zA-Z0-9\\-\\_\\ ]*$";
 
     /**
