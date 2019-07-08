@@ -18,6 +18,7 @@ package org.kie.workbench.common.dmn.client.editors.types;
 
 import java.util.Optional;
 
+import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,8 +26,6 @@ import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverV
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 import org.uberfire.client.views.pfly.selectpicker.JQuerySelectPicker;
 import org.uberfire.client.views.pfly.selectpicker.JQuerySelectPicker.CallbackFunction;
 import org.uberfire.client.views.pfly.selectpicker.JQuerySelectPickerEvent;
@@ -35,17 +34,15 @@ import org.uberfire.mvp.ParameterizedCommand;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.when;
+import static org.mockito.Mockito.when;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({JQuerySelectPicker.class})
+@RunWith(LienzoMockitoTestRunner.class)
 public class BootstrapSelectDropDownMonitorTest {
 
     private static final Optional<String> TITLE = Optional.of("title");
@@ -72,11 +69,8 @@ public class BootstrapSelectDropDownMonitorTest {
 
     @Before
     public void setup() {
-        mockStatic(JQuerySelectPicker.class);
-        when(JQuerySelectPicker.$(anyString())).thenReturn(jQuerySelectPicker);
-        when(jQuerySelectPicker.on(anyString(), any(CallbackFunction.class))).thenReturn(jQuerySelectPicker);
-
-        this.monitor = new BootstrapSelectDropDownMonitor(showCommand, hideCommand);
+        this.monitor = spy(new BootstrapSelectDropDownMonitor(showCommand, hideCommand));
+        when(monitor.kieDataTypeSelect()).thenReturn(jQuerySelectPicker);
     }
 
     @Test

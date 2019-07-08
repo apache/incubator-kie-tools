@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.google.gwt.event.dom.client.ClickEvent;
 import elemental2.dom.DOMTokenList;
 import elemental2.dom.Element;
@@ -36,9 +37,6 @@ import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.ScrollHelper;
 import org.kie.workbench.common.dmn.client.editors.types.search.DataTypeSearchBar;
 import org.mockito.Mock;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.uberfire.client.views.pfly.selectpicker.ElementHelper;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -58,11 +56,8 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 
-@PrepareForTest(ElementHelper.class)
-@RunWith(PowerMockRunner.class)
+@RunWith(LienzoMockitoTestRunner.class)
 public class DataTypeListViewTest {
 
     @Mock
@@ -308,17 +303,14 @@ public class DataTypeListViewTest {
         doNothing().when(view).hideItemElementIfParentIsCollapsed(any(), any());
         doNothing().when(view).showArrowIconIfDataTypeHasChildren(any());
 
-        mockStatic(ElementHelper.class);
-
         view.addSubItems(dataType, listItems);
 
         verify(view).hideItemElementIfParentIsCollapsed(listItemElement1, dataTypeRow);
         verify(view).hideItemElementIfParentIsCollapsed(listItemElement2, listItemElement1);
         verify(view).showArrowIconIfDataTypeHasChildren(dataType);
 
-        verifyStatic();
-        ElementHelper.insertAfter(listItemElement1, dataTypeRow);
-        ElementHelper.insertAfter(listItemElement2, listItemElement1);
+        verify(dataTypeRow.parentNode).insertBefore(listItemElement1, dataTypeRow.nextSibling);
+        verify(listItemElement1.parentNode).insertBefore(listItemElement2, listItemElement1.nextSibling);
         verify(view).showOrHideNoCustomItemsMessage();
     }
 
@@ -568,17 +560,18 @@ public class DataTypeListViewTest {
         final DataTypeListItem listItem = mock(DataTypeListItem.class);
         final DataType reference = mock(DataType.class);
         final HTMLElement listItemElement = mock(HTMLElement.class);
-        final Element lastElement = mock(Element.class);
+        final Element lastElement = spy(new Element());
+        final Element parentElement = mock(Element.class);
+        final Element siblingElement = mock(Element.class);
+        lastElement.parentNode = parentElement;
+        lastElement.nextSibling = siblingElement;
 
         when(listItem.getElement()).thenReturn(listItemElement);
         doReturn(lastElement).when(view).getLastSubDataTypeElement(reference);
 
-        mockStatic(ElementHelper.class);
-
         view.insertBelow(listItem, reference);
 
-        verifyStatic();
-        ElementHelper.insertAfter(listItemElement, lastElement);
+        verify(parentElement).insertBefore(listItemElement, siblingElement);
     }
 
     @Test
@@ -586,18 +579,18 @@ public class DataTypeListViewTest {
 
         final DataTypeListItem listItem = mock(DataTypeListItem.class);
         final DataType reference = mock(DataType.class);
+
         final HTMLElement listItemElement = mock(HTMLElement.class);
-        final Element element = mock(Element.class);
+        final Element element = spy(new Element());
+        final Element parentElement = mock(Element.class);
+        element.parentNode = parentElement;
 
         when(listItem.getElement()).thenReturn(listItemElement);
         doReturn(element).when(view).getDataTypeRow(reference);
 
-        mockStatic(ElementHelper.class);
-
         view.insertAbove(listItem, reference);
 
-        verifyStatic();
-        ElementHelper.insertBefore(listItemElement, element);
+        verify(parentElement).insertBefore(listItemElement, element);
     }
 
     @Test
@@ -661,6 +654,7 @@ public class DataTypeListViewTest {
     private HTMLElement makeHTMLElement() {
         final HTMLElement element = mock(HTMLElement.class);
         element.parentNode = mock(Node.class);
+        element.nextSibling = mock(Node.class);
         return element;
     }
 

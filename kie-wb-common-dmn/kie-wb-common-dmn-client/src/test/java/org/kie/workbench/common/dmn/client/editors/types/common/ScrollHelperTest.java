@@ -16,14 +16,13 @@
 
 package org.kie.workbench.common.dmn.client.editors.types.common;
 
+import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.google.gwt.core.client.JavaScriptObject;
 import elemental2.dom.Element;
 import elemental2.dom.HTMLElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 import org.uberfire.client.views.pfly.selectpicker.JQuery;
 
 import static org.junit.Assert.assertEquals;
@@ -35,11 +34,9 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({JQuery.class})
+@RunWith(LienzoMockitoTestRunner.class)
 public class ScrollHelperTest {
 
     private ScrollHelper scrollHelper;
@@ -112,8 +109,7 @@ public class ScrollHelperTest {
         final JavaScriptObject javaScriptObject = mock(JavaScriptObject.class);
         final double scrollHeight = 123;
 
-        mockStatic(JQuery.class);
-        when(JQuery.$(element)).thenReturn(jQuery);
+        when(scrollHelper.elementJQuery(element)).thenReturn(jQuery);
         doReturn(javaScriptObject).when(scrollHelper).property("scrollTop", scrollHeight);
 
         scrollHelper.animatedScrollToBottom(element, scrollHeight);

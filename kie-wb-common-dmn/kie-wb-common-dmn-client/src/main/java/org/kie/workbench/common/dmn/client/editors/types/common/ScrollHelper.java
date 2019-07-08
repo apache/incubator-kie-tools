@@ -23,6 +23,7 @@ import com.google.gwt.json.client.JSONNumber;
 import com.google.gwt.json.client.JSONObject;
 import elemental2.dom.Element;
 import elemental2.dom.HTMLElement;
+import org.uberfire.client.views.pfly.selectpicker.JQuery;
 
 import static org.uberfire.client.views.pfly.selectpicker.JQuery.$;
 
@@ -58,7 +59,7 @@ public class ScrollHelper {
         final JavaScriptObject scrollTopProperty = property("scrollTop", scrollTop);
         final int duration = 800;
 
-        $(element).animate(scrollTopProperty, duration);
+        elementJQuery(element).animate(scrollTopProperty, duration);
     }
 
     JavaScriptObject property(final String key,
@@ -66,5 +67,12 @@ public class ScrollHelper {
         final JSONObject jsonObject = new JSONObject();
         jsonObject.put(key, new JSONNumber(value));
         return jsonObject.getJavaScriptObject();
+    }
+
+    /**
+     * Wrapper due to a testing purpose
+     */
+    JQuery elementJQuery(final Element element) {
+        return $(element);
     }
 }

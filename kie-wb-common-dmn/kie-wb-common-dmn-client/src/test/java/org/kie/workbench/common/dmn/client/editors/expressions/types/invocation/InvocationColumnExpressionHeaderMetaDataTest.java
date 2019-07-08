@@ -20,6 +20,9 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import com.ait.lienzo.client.core.shape.Text;
+import com.ait.lienzo.shared.core.types.TextAlign;
+import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,18 +30,16 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.BaseColumnH
 import org.kie.workbench.common.dmn.client.editors.expressions.util.RendererUtils;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.dom.TextBoxDOMElement;
 import org.mockito.Mock;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridHeaderColumnRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.single.SingletonDOMElementFactory;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.themes.GridRendererTheme;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.eq;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.verifyStatic;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(RendererUtils.class)
+@RunWith(LienzoMockitoTestRunner.class)
 public class InvocationColumnExpressionHeaderMetaDataTest extends BaseColumnHeaderMetaDataContextMenuTest<InvocationColumnExpressionHeaderMetaData> {
 
     private static final double BLOCK_WIDTH = 10.0;
@@ -57,10 +58,25 @@ public class InvocationColumnExpressionHeaderMetaDataTest extends BaseColumnHead
     @Mock
     private GridHeaderColumnRenderContext context;
 
+    @Mock
+    private GridRenderer gridRendererMock;
+
+    @Mock
+    private GridRendererTheme gridRendererThemeMock;
+    @Mock
+    private Text textMock;
+
     private Optional<String> placeHolder = Optional.empty();
+
+    private String title = "column title";
 
     @Override
     protected InvocationColumnExpressionHeaderMetaData getHeaderMetaData() {
+        when(context.getRenderer()).thenReturn(gridRendererMock);
+        when(gridRendererMock.getTheme()).thenReturn(gridRendererThemeMock);
+        when(gridRendererThemeMock.getBodyText()).thenReturn(textMock);
+        when(titleGetter.get()).thenReturn(title);
+
         return new InvocationColumnExpressionHeaderMetaData(titleGetter,
                                                             titleSetter,
                                                             factory,
@@ -72,26 +88,18 @@ public class InvocationColumnExpressionHeaderMetaDataTest extends BaseColumnHead
 
     @Test
     public void testRender() {
-        mockStatic(RendererUtils.class);
 
         headerMetaData.render(context, BLOCK_WIDTH, BLOCK_HEIGHT);
 
-        verifyStatic();
-        RendererUtils.getExpressionHeaderText(eq(headerMetaData),
-                                              eq(context));
+        verify(textMock).setText(title);
+        verify(textMock).setX(RendererUtils.EXPRESSION_TEXT_PADDING);
+        verify(textMock).setY(RendererUtils.EXPRESSION_TEXT_PADDING);
+        verify(textMock).setTextAlign(TextAlign.LEFT);
     }
 
     @Test
     public void testRenderPlaceHolder() {
-        mockStatic(RendererUtils.class);
-
         headerMetaData.renderPlaceHolder(context, BLOCK_WIDTH, BLOCK_HEIGHT);
-
-        verifyStatic();
-        RendererUtils.getEditableHeaderPlaceHolderText(eq(headerMetaData),
-                                                       eq(context),
-                                                       eq(BLOCK_WIDTH),
-                                                       eq(BLOCK_HEIGHT));
     }
 
     @Test

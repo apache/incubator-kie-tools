@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.editors.types.listview.constraint;
 
+import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.google.gwt.event.dom.client.ClickEvent;
 import elemental2.dom.DOMTokenList;
 import elemental2.dom.Element;
@@ -31,9 +32,6 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.DataTypeConstraintComponent;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 import org.uberfire.client.views.pfly.selectpicker.JQuery;
 import org.uberfire.client.views.pfly.selectpicker.JQuery.CallbackFunction;
 import org.uberfire.client.views.pfly.selectpicker.JQueryEvent;
@@ -54,10 +52,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({JQuery.class})
+@RunWith(LienzoMockitoTestRunner.class)
 public class DataTypeConstraintModalViewTest {
 
     @Mock
@@ -335,8 +331,8 @@ public class DataTypeConstraintModalViewTest {
         modalContent.parentNode = modalDialog;
         modalDialog.parentNode = modalComponent;
         doReturn(body).when(view).getBody();
-        mockStatic(JQuery.class);
-        PowerMockito.when(JQuery.$(modalComponent)).thenReturn(jQuery);
+
+        when(view.constraintModalJQuery()).thenReturn(jQuery);
 
         view.setupOnHideHandler(command);
 

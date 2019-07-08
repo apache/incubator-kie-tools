@@ -48,15 +48,15 @@ public class MenuInitializer {
     public void init() {
         final Element dropdown = dropdown();
 
-        $(dropdown).on("show.bs.dropdown", moveDropDownToBody());
-        $(dropdown).on("hidden.bs.dropdown", moveDropDownToKebabContainer());
+        jQuery(dropdown).on("show.bs.dropdown", moveDropDownToBody());
+        jQuery(dropdown).on("hidden.bs.dropdown", moveDropDownToKebabContainer());
     }
 
     JQuery.CallbackFunction moveDropDownToBody() {
         return (event) -> {
             final JavaScriptObject properties = bodyDropdownProperties(event).getJavaScriptObject();
-            JQuery $ = $(body());
-            JQuery css = $(event.target).css(properties);
+            JQuery $ = jQuery(body());
+            JQuery css = jQuery(event.target).css(properties);
             JQuery detach = css.detach();
             $.append(detach);
         };
@@ -65,7 +65,7 @@ public class MenuInitializer {
     JQuery.CallbackFunction moveDropDownToKebabContainer() {
         return (event) -> {
             final JavaScriptObject properties = emptyProperties().getJavaScriptObject();
-            $(menu).append($(event.target).css(properties).detach());
+            jQuery(menu).append(jQuery(event.target).css(properties).detach());
         };
     }
 
@@ -105,5 +105,12 @@ public class MenuInitializer {
 
     double offsetTop(final Element target) {
         return target.getBoundingClientRect().top + body().scrollTop;
+    }
+
+    /**
+     * Wrapper due to a testing purpose
+     */
+    JQuery jQuery(final Element element) {
+        return $(element);
     }
 }

@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
@@ -44,10 +45,6 @@ import org.kie.workbench.common.dmn.client.editors.types.persistence.validation.
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.uberfire.commons.uuid.UUID;
 import org.uberfire.mocks.EventSourceMock;
 
 import static java.util.Arrays.asList;
@@ -69,10 +66,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
-@PrepareForTest({UUID.class})
-@RunWith(PowerMockRunner.class)
+@RunWith(LienzoMockitoTestRunner.class)
 public class DataTypeManagerTest {
 
     @Mock
@@ -114,8 +109,6 @@ public class DataTypeManagerTest {
 
     @Before
     public void setup() {
-        mockStatic(UUID.class);
-        PowerMockito.when(UUID.uuid()).thenReturn("uuid");
 
         when(translationService.format(DataTypeManager_None)).thenReturn("--");
         when(translationService.format(DataTypeManager_Structure)).thenReturn("Structure");
@@ -227,7 +220,7 @@ public class DataTypeManagerTest {
 
         final DataType tPerson = manager.from(mainItemDefinition).get();
 
-        assertEquals("uuid", tPerson.getUUID());
+        assertFalse(tPerson.getUUID().isEmpty());
         assertEquals("tPerson", tPerson.getName());
         assertEquals("Structure", tPerson.getType());
         assertEquals(3, tPerson.getSubDataTypes().size());
@@ -251,7 +244,7 @@ public class DataTypeManagerTest {
         verify(dataTypeStore).index(employee.getUUID(), employee);
         verify(dataTypeStore).index(company.getUUID(), company);
 
-        assertEquals("uuid", name.getUUID());
+        assertFalse(name.getUUID().isEmpty());
         assertEquals("name", name.getName());
         assertEquals("Text", name.getType());
         assertEquals("", name.getConstraint());
@@ -261,7 +254,7 @@ public class DataTypeManagerTest {
         assertTrue(name.isList());
         assertFalse(name.isReadOnly());
 
-        assertEquals("uuid", address.getUUID());
+        assertFalse(address.getUUID().isEmpty());
         assertEquals("address", address.getName());
         assertEquals("tAddress", address.getType());
         assertEquals("", address.getConstraint());
@@ -271,7 +264,7 @@ public class DataTypeManagerTest {
         assertFalse(address.isList());
         assertFalse(address.isReadOnly());
 
-        assertEquals("uuid", street.getUUID());
+        assertFalse(street.getUUID().isEmpty());
         assertEquals("street", street.getName());
         assertEquals("Text", street.getType());
         assertEquals("", street.getConstraint());
@@ -281,7 +274,7 @@ public class DataTypeManagerTest {
         assertFalse(street.isList());
         assertFalse(street.isReadOnly());
 
-        assertEquals("uuid", employee.getUUID());
+        assertFalse(employee.getUUID().isEmpty());
         assertEquals("employee", employee.getName());
         assertEquals("Structure", employee.getType());
         assertEquals("", employee.getConstraint());
@@ -291,7 +284,7 @@ public class DataTypeManagerTest {
         assertFalse(employee.isList());
         assertFalse(employee.isReadOnly());
 
-        assertEquals("uuid", company.getUUID());
+        assertFalse(company.getUUID().isEmpty());
         assertEquals("company", company.getName());
         assertEquals("Text", company.getType());
         assertEquals("\"Red\", \"Hat\"", company.getConstraint());
@@ -329,7 +322,7 @@ public class DataTypeManagerTest {
         final BuiltInType builtInType = BuiltInType.values()[0];
         final DataType dataType = manager.from(builtInType).get();
 
-        assertEquals("uuid", dataType.getUUID());
+        assertFalse(dataType.getUUID().isEmpty());
         assertEquals("--", dataType.getName());
         assertEquals("number", dataType.getType());
         assertEquals(emptyList(), dataType.getSubDataTypes());
@@ -341,7 +334,7 @@ public class DataTypeManagerTest {
 
         final DataType dataType = manager.fromNew().get();
 
-        assertEquals("uuid", dataType.getUUID());
+        assertFalse(dataType.getUUID().isEmpty());
         assertEquals("--", dataType.getName());
         assertEquals("Any", dataType.getType());
         assertEquals("", dataType.getConstraint());

@@ -36,6 +36,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.popover.AbstractPopoverViewImpl;
+import org.uberfire.client.views.pfly.selectpicker.JQuerySelectPicker;
 import org.uberfire.client.views.pfly.widgets.JQueryProducer;
 import org.uberfire.client.views.pfly.widgets.Popover;
 import org.uberfire.mvp.Command;
@@ -98,26 +99,33 @@ public class NameAndDataTypePopoverViewImpl extends AbstractPopoverViewImpl impl
             commandShow.execute(editorTitle);
 
             //Track state of drop-down element
-            $(SELECT_ID).on(BOOTSTRAP_SELECT_SHOWN_EVENT, (event) -> isSelectDropDownShown = true);
-            $(SELECT_ID).on(BOOTSTRAP_SELECT_HIDDEN_EVENT, (event) -> isSelectDropDownShown = false);
+            kieDataTypeSelect().on(BOOTSTRAP_SELECT_SHOWN_EVENT, (event) -> isSelectDropDownShown = true);
+            kieDataTypeSelect().on(BOOTSTRAP_SELECT_HIDDEN_EVENT, (event) -> isSelectDropDownShown = false);
 
             isSelectDropDownShown = false;
         }
 
         void hide() {
-            $(SELECT_ID).off(BOOTSTRAP_SELECT_SHOWN_EVENT);
+            kieDataTypeSelect().off(BOOTSTRAP_SELECT_SHOWN_EVENT);
 
             //If drop-down is visible defer closure of popover until drop-down has closed.
             if (isSelectDropDownShown) {
-                $(SELECT_ID).on(BOOTSTRAP_SELECT_HIDDEN_EVENT, (event) -> onHide());
+                kieDataTypeSelect().on(BOOTSTRAP_SELECT_HIDDEN_EVENT, (event) -> onHide());
             } else {
                 onHide();
             }
         }
 
         void onHide() {
-            $(SELECT_ID).off(BOOTSTRAP_SELECT_HIDDEN_EVENT);
+            kieDataTypeSelect().off(BOOTSTRAP_SELECT_HIDDEN_EVENT);
             commandHide.execute();
+        }
+
+        /**
+         * Wrapper due to a testing purpose
+         */
+        JQuerySelectPicker kieDataTypeSelect() {
+            return $(SELECT_ID);
         }
     }
 

@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.editors.types.listview.common;
 
+import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.json.client.JSONNumber;
 import com.google.gwt.json.client.JSONObject;
@@ -27,9 +28,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 import org.uberfire.client.views.pfly.selectpicker.JQuery;
 import org.uberfire.client.views.pfly.selectpicker.JQueryEvent;
 
@@ -38,11 +36,9 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mock;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
 
-@PrepareForTest({JQuery.class})
-@RunWith(PowerMockRunner.class)
+@RunWith(LienzoMockitoTestRunner.class)
 public class MenuInitializerTest {
 
     @Mock
@@ -66,9 +62,7 @@ public class MenuInitializerTest {
         doReturn(dropdown).when(initializer).dropdown();
         doReturn(moveDropDownToBody).when(initializer).moveDropDownToBody();
         doReturn(moveDropDownToKebabContainer).when(initializer).moveDropDownToKebabContainer();
-
-        mockStatic(JQuery.class);
-        PowerMockito.when(JQuery.$(dropdown)).thenReturn(jQuery);
+        doReturn(jQuery).when(initializer).jQuery(dropdown);
 
         initializer.init();
 
@@ -96,9 +90,8 @@ public class MenuInitializerTest {
         when(jQueryTarget.css(javaScriptObjectProperties)).thenReturn(jQueryCSS);
         when(jQueryCSS.detach()).thenReturn(jQueryDetach);
 
-        mockStatic(JQuery.class);
-        PowerMockito.when(JQuery.$(modalInElement)).thenReturn(jQueryModalIn);
-        PowerMockito.when(JQuery.$(target)).thenReturn(jQueryTarget);
+        when(initializer.jQuery(modalInElement)).thenReturn(jQueryModalIn);
+        when(initializer.jQuery(target)).thenReturn(jQueryTarget);
 
         initializer.moveDropDownToBody().call(event);
 
@@ -125,9 +118,8 @@ public class MenuInitializerTest {
         when(jQueryTarget.css(javaScriptObjectProperties)).thenReturn(jQueryCSS);
         when(jQueryCSS.detach()).thenReturn(jQueryDetach);
 
-        mockStatic(JQuery.class);
-        PowerMockito.when(JQuery.$(kebabMenu)).thenReturn(jQueryModalIn);
-        PowerMockito.when(JQuery.$(target)).thenReturn(jQueryTarget);
+        when(initializer.jQuery(kebabMenu)).thenReturn(jQueryModalIn);
+        when(initializer.jQuery(target)).thenReturn(jQueryTarget);
 
         initializer.moveDropDownToKebabContainer().call(event);
 

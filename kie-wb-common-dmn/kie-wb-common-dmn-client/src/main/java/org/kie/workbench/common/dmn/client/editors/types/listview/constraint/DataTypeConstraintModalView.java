@@ -196,7 +196,7 @@ public class DataTypeConstraintModalView implements DataTypeConstraintModal.View
 
     @Override
     public void setupOnHideHandler(final Command handler) {
-        JQuery.$(getModalElement()).on("hidden.bs.modal", (e) -> handler.execute());
+        constraintModalJQuery().on("hidden.bs.modal", (e) -> handler.execute());
     }
 
     private Node getModalElement() {
@@ -251,5 +251,12 @@ public class DataTypeConstraintModalView implements DataTypeConstraintModal.View
     void triggerPickerAction(final Element element,
                              final String method) {
         JQuerySelectPicker.$(element).selectpicker(method);
+    }
+
+    /**
+     * Wrapper due to a testing purpose
+     */
+    JQuery constraintModalJQuery() {
+        return JQuery.$(getModalElement());
     }
 }
