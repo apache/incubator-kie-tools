@@ -62,12 +62,12 @@ export class LocalRouter {
     ]);
   }
 
-  public getRelativePathTo(uri: string): string {
-    return (
-      vscode.Uri.file(__path.join(this.context.extensionPath, ...uri.split("/"))).with({
+  public getRelativePathTo(uri: string) {
+    return vscode.Uri.file(__path.join(this.context.extensionPath, ...uri.split("/")))
+      .with({
         scheme: "vscode-resource"
-      }) + ""
-    );
+      })
+      .toString();
   }
 
   public getLanguageData(fileExtension: string) {

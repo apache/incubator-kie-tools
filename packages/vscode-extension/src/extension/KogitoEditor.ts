@@ -108,7 +108,7 @@ export class KogitoEditor {
   }
 
   private getWebviewIndexJsPath() {
-    return this.router.getRelativePathTo("dist/webview/index.js").toString();
+    return this.router.getRelativePathTo("dist/webview/index.js");
   }
 
   public setupWebviewContent() {
