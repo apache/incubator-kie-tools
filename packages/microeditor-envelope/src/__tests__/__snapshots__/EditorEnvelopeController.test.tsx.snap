@@ -1,0 +1,289 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`EditorEnvelopeController after received content and set empty first 1`] = `
+<EditorEnvelopeView
+  exposing={[Function]}
+  loadingScreenContainer={
+    <div
+      id="loading-screen"
+    >
+      <div
+        style="width: 100vw; height: 100vh; text-align: center; background-color: rgb(30, 30, 30); padding: 40px 0px 0px 0px; opacity: 0; transition: opacity 400ms;"
+      >
+        <span
+          style="font-family: Helvetica; color: white; font-size: 12pt;"
+        >
+          Loading...
+        </span>
+      </div>
+    </div>
+  }
+>
+  <Portal
+    containerInfo={
+      <div
+        id="loading-screen"
+      >
+        <div
+          style="width: 100vw; height: 100vh; text-align: center; background-color: rgb(30, 30, 30); padding: 40px 0px 0px 0px; opacity: 0; transition: opacity 400ms;"
+        >
+          <span
+            style="font-family: Helvetica; color: white; font-size: 12pt;"
+          >
+            Loading...
+          </span>
+        </div>
+      </div>
+    }
+  >
+    <LoadingScreen
+      visible={false}
+    >
+      <div
+        style={
+          Object {
+            "backgroundColor": "#1e1e1e",
+            "height": "100vh",
+            "opacity": 0,
+            "padding": "40px 0 0 0",
+            "textAlign": "center",
+            "transition": "opacity 400ms",
+            "width": "100vw",
+          }
+        }
+      >
+        <span
+          style={
+            Object {
+              "color": "white",
+              "fontFamily": "Helvetica",
+              "fontSize": "12pt",
+            }
+          }
+        >
+          Loading...
+        </span>
+      </div>
+    </LoadingScreen>
+  </Portal>
+  <DummyEditorComponent
+    exposing={[Function]}
+  >
+    <div>
+      Here's the dummy content: 
+      test content
+    </div>
+  </DummyEditorComponent>
+</EditorEnvelopeView>
+`;
+
+exports[`EditorEnvelopeController opens 1`] = `
+<EditorEnvelopeView
+  exposing={[Function]}
+  loadingScreenContainer={
+    <div
+      id="loading-screen"
+    >
+      <div
+        style="width: 100vw; height: 100vh; text-align: center; background-color: rgb(30, 30, 30); padding: 40px 0px 0px 0px; opacity: 1;"
+      >
+        <span
+          style="font-family: Helvetica; color: white; font-size: 12pt;"
+        >
+          Loading...
+        </span>
+      </div>
+    </div>
+  }
+>
+  <Portal
+    containerInfo={
+      <div
+        id="loading-screen"
+      >
+        <div
+          style="width: 100vw; height: 100vh; text-align: center; background-color: rgb(30, 30, 30); padding: 40px 0px 0px 0px; opacity: 1;"
+        >
+          <span
+            style="font-family: Helvetica; color: white; font-size: 12pt;"
+          >
+            Loading...
+          </span>
+        </div>
+      </div>
+    }
+  >
+    <LoadingScreen
+      visible={true}
+    >
+      <div
+        style={
+          Object {
+            "backgroundColor": "#1e1e1e",
+            "height": "100vh",
+            "opacity": 1,
+            "padding": "40px 0 0 0",
+            "textAlign": "center",
+            "width": "100vw",
+          }
+        }
+      >
+        <span
+          style={
+            Object {
+              "color": "white",
+              "fontFamily": "Helvetica",
+              "fontSize": "12pt",
+            }
+          }
+        >
+          Loading...
+        </span>
+      </div>
+    </LoadingScreen>
+  </Portal>
+</EditorEnvelopeView>
+`;
+
+exports[`EditorEnvelopeController receives init request 1`] = `
+<EditorEnvelopeView
+  exposing={[Function]}
+  loadingScreenContainer={
+    <div
+      id="loading-screen"
+    >
+      <div
+        style="width: 100vw; height: 100vh; text-align: center; background-color: rgb(30, 30, 30); padding: 40px 0px 0px 0px; opacity: 1;"
+      >
+        <span
+          style="font-family: Helvetica; color: white; font-size: 12pt;"
+        >
+          Loading...
+        </span>
+      </div>
+    </div>
+  }
+>
+  <Portal
+    containerInfo={
+      <div
+        id="loading-screen"
+      >
+        <div
+          style="width: 100vw; height: 100vh; text-align: center; background-color: rgb(30, 30, 30); padding: 40px 0px 0px 0px; opacity: 1;"
+        >
+          <span
+            style="font-family: Helvetica; color: white; font-size: 12pt;"
+          >
+            Loading...
+          </span>
+        </div>
+      </div>
+    }
+  >
+    <LoadingScreen
+      visible={true}
+    >
+      <div
+        style={
+          Object {
+            "backgroundColor": "#1e1e1e",
+            "height": "100vh",
+            "opacity": 1,
+            "padding": "40px 0 0 0",
+            "textAlign": "center",
+            "width": "100vw",
+          }
+        }
+      >
+        <span
+          style={
+            Object {
+              "color": "white",
+              "fontFamily": "Helvetica",
+              "fontSize": "12pt",
+            }
+          }
+        >
+          Loading...
+        </span>
+      </div>
+    </LoadingScreen>
+  </Portal>
+</EditorEnvelopeView>
+`;
+
+exports[`EditorEnvelopeController right after received content 1`] = `
+<EditorEnvelopeView
+  exposing={[Function]}
+  loadingScreenContainer={
+    <div
+      id="loading-screen"
+    >
+      <div
+        style="width: 100vw; height: 100vh; text-align: center; background-color: rgb(30, 30, 30); padding: 40px 0px 0px 0px; opacity: 1;"
+      >
+        <span
+          style="font-family: Helvetica; color: white; font-size: 12pt;"
+        >
+          Loading...
+        </span>
+      </div>
+    </div>
+  }
+>
+  <Portal
+    containerInfo={
+      <div
+        id="loading-screen"
+      >
+        <div
+          style="width: 100vw; height: 100vh; text-align: center; background-color: rgb(30, 30, 30); padding: 40px 0px 0px 0px; opacity: 1;"
+        >
+          <span
+            style="font-family: Helvetica; color: white; font-size: 12pt;"
+          >
+            Loading...
+          </span>
+        </div>
+      </div>
+    }
+  >
+    <LoadingScreen
+      visible={true}
+    >
+      <div
+        style={
+          Object {
+            "backgroundColor": "#1e1e1e",
+            "height": "100vh",
+            "opacity": 1,
+            "padding": "40px 0 0 0",
+            "textAlign": "center",
+            "width": "100vw",
+          }
+        }
+      >
+        <span
+          style={
+            Object {
+              "color": "white",
+              "fontFamily": "Helvetica",
+              "fontSize": "12pt",
+            }
+          }
+        >
+          Loading...
+        </span>
+      </div>
+    </LoadingScreen>
+  </Portal>
+  <DummyEditorComponent
+    exposing={[Function]}
+  >
+    <div>
+      Here's the dummy content: 
+    </div>
+  </DummyEditorComponent>
+</EditorEnvelopeView>
+`;

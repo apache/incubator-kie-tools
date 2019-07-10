@@ -1,0 +1,10 @@
+export enum EnvelopeBusMessageType {
+  REQUEST_LANGUAGE,
+  RETURN_LANGUAGE,
+
+  REQUEST_INIT,
+  RETURN_INIT,
+
+  REQUEST_CONTENT,
+  RETURN_CONTENT
+}
