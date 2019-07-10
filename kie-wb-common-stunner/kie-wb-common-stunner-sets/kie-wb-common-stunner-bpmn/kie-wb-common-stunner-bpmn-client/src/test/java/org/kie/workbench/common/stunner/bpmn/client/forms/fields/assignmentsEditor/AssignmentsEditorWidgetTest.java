@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.bpmn.client.forms.fields.assignmentsEdi
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -27,10 +28,14 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Assignment;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.AssignmentBaseTest;
+import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.AssignmentData;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.AssignmentParser;
+import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Variable;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
+import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
 import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
@@ -40,17 +45,35 @@ import org.kie.workbench.common.stunner.bpmn.definition.StartSignalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.TaskGeneralSet;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.SelectionControl;
+import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
+import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.graph.Edge;
+import org.kie.workbench.common.stunner.core.graph.Element;
+import org.kie.workbench.common.stunner.core.graph.Graph;
+import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
+import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
+import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.graph.content.view.ViewImpl;
+import org.kie.workbench.common.stunner.core.graph.impl.EdgeImpl;
+import org.kie.workbench.common.stunner.core.graph.impl.NodeImpl;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.uberfire.commons.data.Pair;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyBoolean;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -75,6 +98,13 @@ public class AssignmentsEditorWidgetTest extends AssignmentBaseTest {
                                                                                      "org.documents.Articles"));
     public static final String FORMATTED_DATATYPES = "Articles [org.documents]:org.documents.Articles,Cardboard [myorg.myproject1]:myorg.myproject1.Cardboard,Paper [yourorg.materials]:yourorg.materials.Paper";
 
+    public static final String SIMPLE_DATA_TYPES = "Boolean:Boolean,Float:Float,Integer:Integer,Object:Object,String:String";
+    public static final String NORMAL_TASK_WITH_INPUTS_OUTPUTS_CASE = "|input1:Boolean,input2:Object||output1:Object,output2:Integer|[din]processVar1->input1,[din]processVar2->input2,[dout]output1->processVar3,[dout]output2->processVar4";
+    public static final String NORMAL_TASK_WITH_ONLY_INPUTS_CASE = "|input1:Boolean,input2:Object|||[din]processVar1->input1,[din]processVar2->input2";
+    public static final String NORMAL_TASK_WITH_ONLY_OUTPUTS_CASE = "|||output1:Object,output2:Integer|[dout]output1->processVar1,[dout]output2->processVar2";
+    public static final String EVENT_WITH_INPUT_CASE = "||eventOutput:Object||[dout]eventOutput->processVar1";
+    public static final String EVENT_WITH_OUTPUT_CASE = "eventInput:Object||||[din]processVar1->eventInput";
+
     @GwtMock
     private AssignmentsEditorWidget widget;
 
@@ -85,31 +115,49 @@ public class AssignmentsEditorWidgetTest extends AssignmentBaseTest {
     private ActivityDataIOEditorView activityDataIOEditorView;
 
     @Mock
-    UserTask userTask;
+    private UserTask userTask;
 
     @Mock
-    BusinessRuleTask businessRuleTask;
+    private BusinessRuleTask businessRuleTask;
 
     @Mock
-    StartNoneEvent startNoneEvent;
+    private StartNoneEvent startNoneEvent;
 
     @Mock
-    StartSignalEvent startSignalEvent;
+    private StartSignalEvent startSignalEvent;
 
     @Mock
-    EndTerminateEvent endTerminateEvent;
+    private EndTerminateEvent endTerminateEvent;
 
     @Mock
-    EndNoneEvent endNoneEvent;
+    private EndNoneEvent endNoneEvent;
 
     @Mock
-    SequenceFlow sequenceFlow;
+    private SequenceFlow sequenceFlow;
 
     @Mock
-    TaskGeneralSet taskGeneralSet;
+    private TaskGeneralSet taskGeneralSet;
 
     @Mock
-    Name taskName;
+    private Name taskName;
+
+    @Mock
+    private SessionManager canvasSessionManager;
+
+    @Mock
+    private EditorSession session;
+
+    @Mock
+    private AbstractCanvasHandler canvasHandler;
+
+    @Mock
+    private SelectionControl selectionControl;
+
+    @Mock
+    private Diagram diagram;
+
+    @Mock
+    private Graph graph;
 
     @Captor
     private ArgumentCaptor<String> taskNameCaptor;
@@ -126,11 +174,17 @@ public class AssignmentsEditorWidgetTest extends AssignmentBaseTest {
     @Captor
     private ArgumentCaptor<Boolean> isSingleOutputVarCaptor;
 
+    @Captor
+    private ArgumentCaptor<AssignmentData> assignmentDataCaptor;
+
+    private List<Variable> processVariables;
+
     @Before
     public void setUp() throws Exception {
         super.setUp();
         GwtMockito.initMocks(this);
         widget.activityDataIOEditor = activityDataIOEditor;
+        widget.canvasSessionManager = canvasSessionManager;
         activityDataIOEditor.view = activityDataIOEditorView;
         doCallRealMethod().when(widget).getVariableCountsString(anyString(),
                                                                 anyString(),
@@ -420,6 +474,143 @@ public class AssignmentsEditorWidgetTest extends AssignmentBaseTest {
         widget.setReadOnly(false);
         verify(activityDataIOEditor,
                times(1)).setReadOnly(false);
+    }
+
+    @Test
+    public void testAssignmentsForNormalTaskWithInputOutput() {
+        setUpProcessVariables();
+        Variable inputVariable1 = new Variable("input1", Variable.VariableType.INPUT, "Boolean", null);
+        Variable inputVariable2 = new Variable("input2", Variable.VariableType.INPUT, "Object", null);
+        Variable outputVariable1 = new Variable("output1", Variable.VariableType.OUTPUT, "Object", null);
+        Variable outputVariable2 = new Variable("output2", Variable.VariableType.OUTPUT, "Integer", null);
+
+        List<Variable> expectedInputVariables = Arrays.asList(inputVariable1, inputVariable2);
+        List<Variable> expectedOutputVariables = Arrays.asList(outputVariable1, outputVariable2);
+        List<Pair<Variable, Variable>> expectedAssignments = Arrays.asList(Pair.newPair(inputVariable1, processVariables.get(0)),
+                                                                           Pair.newPair(inputVariable2, processVariables.get(1)),
+                                                                           Pair.newPair(outputVariable1, processVariables.get(2)),
+                                                                           Pair.newPair(outputVariable2, processVariables.get(3)));
+        testAssignments(NORMAL_TASK_WITH_INPUTS_OUTPUTS_CASE, expectedInputVariables, expectedOutputVariables, expectedAssignments);
+    }
+
+    @Test
+    public void testAssignmentsForNormalTaskWithOnlyInput() {
+        setUpProcessVariables();
+        Variable inputVariable1 = new Variable("input1", Variable.VariableType.INPUT, "Boolean", null);
+        Variable inputVariable2 = new Variable("input2", Variable.VariableType.INPUT, "Object", null);
+        List<Variable> expectedInputVariables = Arrays.asList(inputVariable1, inputVariable2);
+        List<Pair<Variable, Variable>> expectedAssignments = Arrays.asList(Pair.newPair(inputVariable1, processVariables.get(0)),
+                                                                           Pair.newPair(inputVariable2, processVariables.get(1)));
+        testAssignments(NORMAL_TASK_WITH_ONLY_INPUTS_CASE, expectedInputVariables, Collections.emptyList(), expectedAssignments);
+    }
+
+    @Test
+    public void testAssignmentsForNormalTaskWithOnlyOutput() {
+        setUpProcessVariables();
+        Variable outputVariable1 = new Variable("output1", Variable.VariableType.OUTPUT, "Object", null);
+        Variable outputVariable2 = new Variable("output2", Variable.VariableType.OUTPUT, "Integer", null);
+        List<Variable> expectedOutputVariables = Arrays.asList(outputVariable1, outputVariable2);
+        List<Pair<Variable, Variable>> expectedAssignments = Arrays.asList(Pair.newPair(outputVariable1, processVariables.get(0)),
+                                                                           Pair.newPair(outputVariable2, processVariables.get(1)));
+        testAssignments(NORMAL_TASK_WITH_ONLY_OUTPUTS_CASE, Collections.emptyList(), expectedOutputVariables, expectedAssignments);
+    }
+
+    @Test
+    public void testAssignmentsForEventWithOutput() {
+        setUpProcessVariables();
+        Variable outputVariable1 = new Variable("eventOutput", Variable.VariableType.OUTPUT, "Object", null);
+        List<Variable> expectedOutputVariables = Collections.singletonList(outputVariable1);
+        List<Pair<Variable, Variable>> expectedAssignments = Collections.singletonList(Pair.newPair(outputVariable1, processVariables.get(0)));
+        testAssignments(EVENT_WITH_INPUT_CASE, Collections.emptyList(), expectedOutputVariables, expectedAssignments);
+    }
+
+    @Test
+    public void testAssignmentsForEventWithInput() {
+        setUpProcessVariables();
+        Variable inputVariable1 = new Variable("eventInput", Variable.VariableType.INPUT, "Object", null);
+        List<Variable> expectedInputVariables = Collections.singletonList(inputVariable1);
+        List<Pair<Variable, Variable>> expectedAssignments = Collections.singletonList(Pair.newPair(inputVariable1, processVariables.get(0)));
+        testAssignments(EVENT_WITH_OUTPUT_CASE, expectedInputVariables, Collections.emptyList(), expectedAssignments);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void testAssignments(String encodedAssignments,
+                                 List<Variable> expectedInputVariables,
+                                 List<Variable> expectedOutputVariables,
+                                 List<Pair<Variable, Variable>> expectedAssignments) {
+        doCallRealMethod().when(widget).setValue(anyString());
+        doCallRealMethod().when(widget).setValue(anyString(), anyBoolean());
+        doCallRealMethod().when(widget).getProcessVariables();
+        doCallRealMethod().when(widget).getSelectedElement();
+        doCallRealMethod().when(widget).getSelectedElementUUID(anyObject());
+
+        when(canvasSessionManager.getCurrentSession()).thenReturn(session);
+        when(session.getCanvasHandler()).thenReturn(canvasHandler);
+        when(canvasHandler.getDiagram()).thenReturn(diagram);
+        when(diagram.getGraph()).thenReturn(graph);
+        when(session.getSelectionControl()).thenReturn(selectionControl);
+        List<String> selectedItems = Collections.singletonList("UUID");
+        when(selectionControl.getSelectedItems()).thenReturn(selectedItems);
+
+        BPMNDiagramImpl bpmnDiagram = new BPMNDiagramImpl();
+        Node parentNode = new NodeImpl("PARENT_UUID");
+        View parentNodeView = new ViewImpl(bpmnDiagram, Bounds.create());
+        parentNode.setContent(parentNodeView);
+
+        bpmnDiagram.getProcessData().getProcessVariables().setValue("processVar1:Object,processVar2:Object,processVar3:Object,processVar4:Object");
+        Node node = new NodeImpl("UUID");
+        Edge edge = new EdgeImpl("edge");
+        Child child = mock(Child.class);
+        edge.setContent(child);
+        edge.setSourceNode(parentNode);
+        node.getInEdges().add(edge);
+
+        when(graph.getNode("UUID")).thenReturn(node);
+
+        List<Element> nodes = Arrays.asList(node, parentNode);
+        when(graph.nodes()).thenReturn(nodes);
+
+        widget.setValue(encodedAssignments);
+        widget.showDataIOEditor(SIMPLE_DATA_TYPES);
+        verify(activityDataIOEditor).setAssignmentData(assignmentDataCaptor.capture());
+
+        AssignmentData assignmentData = assignmentDataCaptor.getValue();
+        verifyProcessVariables(assignmentData);
+
+        assertVariables(expectedInputVariables, assignmentData.getInputVariables());
+        assertVariables(expectedOutputVariables, assignmentData.getOutputVariables());
+        assertAssignments(expectedAssignments, assignmentData.getAssignments());
+    }
+
+    private void setUpProcessVariables() {
+
+        processVariables = Arrays.asList(new Variable("processVar1", Variable.VariableType.PROCESS, "Object", null),
+                                         new Variable("processVar2", Variable.VariableType.PROCESS, "Object", null),
+                                         new Variable("processVar3", Variable.VariableType.PROCESS, "Object", null),
+                                         new Variable("processVar4", Variable.VariableType.PROCESS, "Object", null));
+    }
+
+    private void verifyProcessVariables(AssignmentData assignmentData) {
+        assertEquals(processVariables.get(0), assignmentData.getProcessVariables().get(0));
+        assertEquals(processVariables.get(1), assignmentData.getProcessVariables().get(1));
+        assertEquals(processVariables.get(2), assignmentData.getProcessVariables().get(2));
+        assertEquals(processVariables.get(3), assignmentData.getProcessVariables().get(3));
+    }
+
+    private void assertAssignments(List<Pair<Variable, Variable>> expectedAssignments, List<Assignment> assignments) {
+        assertEquals(expectedAssignments.size(), assignments.size());
+        Pair<Variable, Variable> expectedAssignment;
+        Assignment assignment;
+        for (int i = 0; i < expectedAssignments.size(); i++) {
+            expectedAssignment = expectedAssignments.get(i);
+            assignment = assignments.get(i);
+            assertEquals(expectedAssignment.getK1(), assignment.getVariable());
+            assertEquals(expectedAssignment.getK2().getName(), assignment.getProcessVarName());
+        }
+    }
+
+    private void assertVariables(List<Variable> expectedVariables, List<Variable> variables) {
+        assertEquals(expectedVariables, variables);
     }
 }
 

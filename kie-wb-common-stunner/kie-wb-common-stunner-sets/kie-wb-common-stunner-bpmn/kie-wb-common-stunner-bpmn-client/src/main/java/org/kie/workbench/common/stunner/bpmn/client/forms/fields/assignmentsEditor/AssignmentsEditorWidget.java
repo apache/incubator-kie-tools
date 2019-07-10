@@ -219,7 +219,7 @@ public class AssignmentsEditorWidget extends Composite implements HasValue<Strin
         Map<String, String> assignmentsProperties = AssignmentParser.parseAssignmentsInfo(assignmentsInfo);
         String datainput = assignmentsProperties.get(AssignmentParser.DATAINPUT);
         String datainputset = assignmentsProperties.get(AssignmentParser.DATAINPUTSET);
-        String dataoutput = assignmentsProperties.get(AssignmentParser.DATAINPUT);
+        String dataoutput = assignmentsProperties.get(AssignmentParser.DATAOUTPUT);
         String dataoutputset = assignmentsProperties.get(AssignmentParser.DATAOUTPUTSET);
         String assignments = assignmentsProperties.get(AssignmentParser.ASSIGNMENTS);
 
