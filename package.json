@@ -11,7 +11,7 @@
     "build": "npx lerna run build --stream",
     "build:fast": "npx lerna run build:fast --stream",
     "build:prod": "npx lerna exec -- yarn run build --mode production",
-    "build:colorful": "npx lerna exec -- yarn run build",
+    "build:colorful": "npx lerna exec -- yarn run build"
   },
   "devDependencies": {
     "lerna": "3.4.0"
