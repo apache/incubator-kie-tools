@@ -41,15 +41,7 @@
     <!-- dependencies added because of new illegal transitive dependency check -->
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-compiler</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
       <artifactId>drools-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-workbench-models-datamodel-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.soup</groupId>
@@ -129,11 +121,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-workbench-models-commons</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-project-backend</artifactId>
     </dependency>
@@ -163,10 +150,6 @@
       <groupId>org.kie</groupId>
       <artifactId>kie-ci</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.kie.soup</groupId>
-      <artifactId>kie-soup-maven-support</artifactId>
-    </dependency>
 
     <dependency>
       <groupId>org.mvel</groupId>
@@ -195,12 +178,6 @@
     <dependency>
       <groupId>org.jboss.spec.javax.servlet</groupId>
       <artifactId>jboss-servlet-api_3.1_spec</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-structure-backend</artifactId>
       <scope>test</scope>
     </dependency>
 
