@@ -18,9 +18,9 @@
   "scripts": {
     "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}'",
     "test": "jest",
-    "init": "yarn -f",
     "build": "yarn run lint && yarn test && yarn run build:fast",
-    "build:fast": "rm -rf dist && webpack"
+    "build:fast": "rm -rf dist && webpack",
+    "build:prod": "yarn run build --mode production"
   },
   "babel": {
     "presets": [

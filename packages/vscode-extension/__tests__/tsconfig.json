@@ -6,7 +6,7 @@
     "lib": ["es6"],
     "sourceMap": true,
     "declaration": false,
-    "types": ["mocha"]
+    "types": []
   },
   "include": ["."]
 }

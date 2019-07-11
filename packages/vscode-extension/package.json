@@ -66,9 +66,7 @@
     "@types/vscode": "^1.33.0",
     "vscode-test": "1.0.0",
     "copy-webpack-plugin": "5.0.3",
-    "jest": "23.5.0",
     "mocha": "6.1.4",
-    "jest-junit": "6.3.0",
     "glob": "7.1.4",
     "@types/glob": "7.1.1"
   },
