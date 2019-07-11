@@ -46,6 +46,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils.getDefinitionId;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
@@ -97,7 +98,7 @@ public class BusinessKnowledgeModelConverterTest {
         final View<BusinessKnowledgeModel> view = new ViewImpl<>(new BusinessKnowledgeModel(), Bounds.create());
         factoryNode.setContent(view);
 
-        when(factoryManager.newElement(anyString(), eq(BusinessKnowledgeModel.class))).thenReturn(element);
+        when(factoryManager.newElement(anyString(), eq(getDefinitionId(BusinessKnowledgeModel.class)))).thenReturn(element);
         when(element.asNode()).thenReturn(factoryNode);
 
         final org.kie.dmn.model.api.BusinessKnowledgeModel dmn = new TBusinessKnowledgeModel();

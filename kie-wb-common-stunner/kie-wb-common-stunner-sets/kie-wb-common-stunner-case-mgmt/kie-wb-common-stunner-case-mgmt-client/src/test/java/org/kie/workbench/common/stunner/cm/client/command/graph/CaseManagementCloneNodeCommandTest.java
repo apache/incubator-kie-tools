@@ -36,8 +36,8 @@ public class CaseManagementCloneNodeCommandTest extends CloneNodeCommandTest {
     public void setUp() {
         super.setUp();
 
-        tested = new CaseManagementCloneNodeCommand(candidate,
-                                                    parent.getUUID(),
+        tested = new CaseManagementCloneNodeCommand(graphInstance.containerNode,
+                                                    graphInstance.parentNode.getUUID(),
                                                     position,
                                                     null,
                                                     childrenTraverseProcessorManagedInstance);
@@ -46,7 +46,7 @@ public class CaseManagementCloneNodeCommandTest extends CloneNodeCommandTest {
 
     @Test
     public void testCreateNodeCommands() throws Exception {
-        tested.createNodeCommands(candidate, parent.getUUID(), position);
+        tested.createNodeCommands(graphInstance.containerNode, graphInstance.parentNode.getUUID(), position);
 
         assertEquals(2, tested.getCommands().size());
         assertTrue(RegisterNodeCommand.class.isInstance(tested.getCommands().get(0)));
@@ -55,8 +55,8 @@ public class CaseManagementCloneNodeCommandTest extends CloneNodeCommandTest {
 
     @Test
     public void testCreateCloneChildCommand() throws Exception {
-        final CloneNodeCommand command = tested.createCloneChildCommand(candidate,
-                                                                        parent.getUUID(),
+        final CloneNodeCommand command = tested.createCloneChildCommand(graphInstance.containerNode,
+                                                                        graphInstance.parentNode.getUUID(),
                                                                         position,
                                                                         null,
                                                                         childrenTraverseProcessorManagedInstance);

@@ -46,6 +46,7 @@ import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
 import static org.kie.workbench.common.dmn.backend.definition.v1_1.HrefBuilder.getHref;
+import static org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils.getDefinitionId;
 
 public class DecisionConverter implements NodeConverter<org.kie.dmn.model.api.Decision, org.kie.workbench.common.dmn.api.definition.v1_1.Decision> {
 
@@ -61,7 +62,7 @@ public class DecisionConverter implements NodeConverter<org.kie.dmn.model.api.De
                                                final BiConsumer<String, HasComponentWidths> hasComponentWidthsConsumer) {
         @SuppressWarnings("unchecked")
         final Node<View<Decision>, ?> node = (Node<View<Decision>, ?>) factoryManager.newElement(dmn.getId(),
-                                                                                                 Decision.class).asNode();
+                                                                                                 getDefinitionId(Decision.class)).asNode();
         final Id id = new Id(dmn.getId());
         final Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
         final Name name = new Name(dmn.getName());

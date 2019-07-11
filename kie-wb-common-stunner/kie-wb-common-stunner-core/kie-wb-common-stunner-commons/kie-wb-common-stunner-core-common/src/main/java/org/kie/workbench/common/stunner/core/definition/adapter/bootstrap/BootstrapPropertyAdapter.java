@@ -87,11 +87,6 @@ class BootstrapPropertyAdapter implements PropertyAdapter<Object, Object> {
         return null != getWrapped(type);
     }
 
-    @Override
-    public boolean isPojoModel() {
-        return false;
-    }
-
     private PropertyAdapter<Object, Object> getWrapped(final Object pojo) {
         return getWrapped(pojo.getClass());
     }

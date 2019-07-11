@@ -367,9 +367,8 @@ public class BPMNDiagramMarshallerTest {
                                                       anyString());
         doAnswer(invocationOnMock -> {
             String uuid = (String) invocationOnMock.getArguments()[0];
-            Class type = (Class) invocationOnMock.getArguments()[1];
-            String id = BindableAdapterUtils.getGenericClassName(type);
-            if (BPMNDefinitionSet.class.equals(type)) {
+            String id = (String) invocationOnMock.getArguments()[1];
+            if (BPMN_DEF_SET_ID.equals(id)) {
                 Graph graph = (Graph) bpmnGraphFactory.build(uuid,
                                                              BPMN_DEF_SET_ID);
                 return graph;
@@ -389,7 +388,7 @@ public class BPMNDiagramMarshallerTest {
             }
             return null;
         }).when(applicationFactoryManager).newElement(anyString(),
-                                                      any(Class.class));
+                                                      anyString());
         doAnswer(invocationOnMock -> {
             String uuid = (String) invocationOnMock.getArguments()[0];
             String defSetId = (String) invocationOnMock.getArguments()[1];

@@ -164,11 +164,6 @@ public abstract class AbstractBindableDefinitionAdapter<T> implements BindableDe
     }
 
     @Override
-    public boolean isPojoModel() {
-        return true;
-    }
-
-    @Override
     public int getPriority() {
         return 0;
     }

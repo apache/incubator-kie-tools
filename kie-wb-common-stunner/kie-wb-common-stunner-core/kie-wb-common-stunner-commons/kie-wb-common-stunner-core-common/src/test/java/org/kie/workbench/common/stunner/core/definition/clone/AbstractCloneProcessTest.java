@@ -28,6 +28,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
+import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionId;
 import org.kie.workbench.common.stunner.core.definition.adapter.PropertyAdapter;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 import org.mockito.ArgumentCaptor;
@@ -36,6 +37,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -44,6 +46,9 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public abstract class AbstractCloneProcessTest {
 
+    public static final DefinitionId ID_DEF1 = DefinitionId.build("def1");
+    public static final DefinitionId ID_DEF2 = DefinitionId.build("def2");
+    public static final DefinitionId ID_DEF3 = DefinitionId.build("def3");
     @Mock
     protected FactoryManager factoryManager;
 
@@ -104,6 +109,9 @@ public abstract class AbstractCloneProcessTest {
     @Before
     public void setUp() throws Exception {
         when(adapterManager.forDefinition()).thenReturn(definitionAdapter);
+        when(definitionAdapter.getId(eq(def1))).thenReturn(ID_DEF1);
+        when(definitionAdapter.getId(eq(def2))).thenReturn(ID_DEF2);
+        when(definitionAdapter.getId(eq(def3))).thenReturn(ID_DEF3);
         when(definitionAdapter.getMetaProperty(PropertyMetaTypes.NAME,
                                                def1)).thenReturn(nameProperty1);
         when(definitionAdapter.getMetaProperty(PropertyMetaTypes.NAME,
@@ -115,7 +123,7 @@ public abstract class AbstractCloneProcessTest {
         when(propertyAdapter.getValue(textProperty1)).thenReturn(textValue);
         when(propertyAdapter.getValue(booleanProperty1)).thenReturn(booleanValue);
         when(propertyAdapter.getValue(bindableProperty)).thenReturn(bindablePropertyValue);
-        when(factoryManager.newDefinition(Object.class)).thenReturn(def2);
+        when(factoryManager.newDefinition(anyString())).thenReturn(def2);
 
         when(definitionAdapter.getProperties(def1)).thenReturn(buildSet(nameProperty1,
                                                                         textProperty1,

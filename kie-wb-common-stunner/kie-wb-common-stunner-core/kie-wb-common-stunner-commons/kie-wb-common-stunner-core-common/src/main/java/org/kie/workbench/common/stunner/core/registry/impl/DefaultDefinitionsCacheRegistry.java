@@ -55,15 +55,6 @@ public class DefaultDefinitionsCacheRegistry
     }
 
     @Override
-    public Object getDefinitionByType(final Class<Object> type) {
-        DefinitionHolder holder = definitionsByType.get(type.getName());
-        if (null == holder) {
-            holder = registerInstance(factoryManager.newDefinition(type));
-        }
-        return holder.instance;
-    }
-
-    @Override
     public Object getDefinitionById(final String id) {
         return getDefinitionHolder(id).instance;
     }

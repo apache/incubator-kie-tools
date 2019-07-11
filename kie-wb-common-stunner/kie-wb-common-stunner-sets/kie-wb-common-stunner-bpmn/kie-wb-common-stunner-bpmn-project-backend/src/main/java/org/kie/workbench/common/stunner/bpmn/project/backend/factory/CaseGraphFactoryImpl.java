@@ -48,6 +48,8 @@ import org.kie.workbench.common.stunner.core.graph.processing.index.GraphIndexBu
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.kie.workbench.common.stunner.core.util.UUID;
 
+import static org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils.getDefinitionId;
+
 @Dependent
 @Typed(CaseGraphFactoryImpl.class)
 public class CaseGraphFactoryImpl extends BPMNGraphFactoryImpl {
@@ -81,7 +83,7 @@ public class CaseGraphFactoryImpl extends BPMNGraphFactoryImpl {
     protected List<Command> buildInitialisationCommands() {
         final List<Command> commands = new ArrayList<>();
         final Node<Definition<BPMNDiagram>, Edge> diagramNode =
-                (Node<Definition<BPMNDiagram>, Edge>) factoryManager.newElement(UUID.uuid(), getDiagramType());
+                (Node<Definition<BPMNDiagram>, Edge>) factoryManager.newElement(UUID.uuid(), getDefinitionId(getDiagramType()));
 
         final ServiceTask milestone = serviceTaskFactory.buildItem("Milestone");
         final DefinitionAdapter<Object> adapter =

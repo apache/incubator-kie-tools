@@ -41,12 +41,14 @@ import org.kie.workbench.common.stunner.core.graph.processing.index.GraphIndexBu
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.core.util.UUID;
 
+import static org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils.getDefinitionId;
+
 @ApplicationScoped
 public class DMNGraphFactoryImpl
         extends AbstractGraphFactory
         implements DMNGraphFactory {
 
-    private static final Class<DMNDiagram> DIAGRAM_TYPE = DMNDiagram.class;
+    private static final String DIAGRAM_ID = getDefinitionId(DMNDiagram.class);
 
     private final DefinitionManager definitionManager;
     private final GraphCommandManager graphCommandManager;
@@ -112,7 +114,7 @@ public class DMNGraphFactoryImpl
     protected List<Command> buildInitialisationCommands() {
         final List<Command> commands = new ArrayList<>();
         final Node<Definition<DMNDiagram>, Edge> diagramNode = (Node<Definition<DMNDiagram>, Edge>) factoryManager.newElement(UUID.uuid(),
-                                                                                                                              DIAGRAM_TYPE);
+                                                                                                                              DIAGRAM_ID);
         commands.add(graphCommandFactory.addNode(diagramNode));
 
         return commands;

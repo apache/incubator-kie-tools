@@ -45,6 +45,8 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
+import static org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils.getDefinitionId;
+
 public class DecisionServiceConverter implements NodeConverter<org.kie.dmn.model.api.DecisionService, org.kie.workbench.common.dmn.api.definition.v1_1.DecisionService> {
 
     private FactoryManager factoryManager;
@@ -59,7 +61,7 @@ public class DecisionServiceConverter implements NodeConverter<org.kie.dmn.model
                                                       final BiConsumer<String, HasComponentWidths> hasComponentWidthsConsumer) {
         @SuppressWarnings("unchecked")
         final Node<View<DecisionService>, ?> node = (Node<View<DecisionService>, ?>) factoryManager.newElement(dmn.getId(),
-                                                                                                               DecisionService.class).asNode();
+                                                                                                               getDefinitionId(DecisionService.class)).asNode();
         final Id id = new Id(dmn.getId());
         final Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
         final Name name = new Name(dmn.getName());

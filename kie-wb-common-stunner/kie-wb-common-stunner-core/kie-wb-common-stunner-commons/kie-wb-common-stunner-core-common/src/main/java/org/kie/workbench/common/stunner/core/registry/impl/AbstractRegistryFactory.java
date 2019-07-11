@@ -26,7 +26,7 @@ import org.kie.workbench.common.stunner.core.factory.Factory;
 import org.kie.workbench.common.stunner.core.registry.RegistryFactory;
 import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
 import org.kie.workbench.common.stunner.core.registry.definition.AdapterRegistry;
-import org.kie.workbench.common.stunner.core.registry.definition.TypeDefinitionRegistry;
+import org.kie.workbench.common.stunner.core.registry.definition.DefinitionRegistry;
 import org.kie.workbench.common.stunner.core.registry.definition.TypeDefinitionSetRegistry;
 import org.kie.workbench.common.stunner.core.registry.diagram.DiagramRegistry;
 import org.kie.workbench.common.stunner.core.registry.factory.FactoryRegistry;
@@ -54,7 +54,7 @@ public abstract class AbstractRegistryFactory implements RegistryFactory {
     }
 
     @Override
-    public <T> TypeDefinitionRegistry<T> newDefinitionRegistry() {
+    public <T> DefinitionRegistry<T> newDefinitionRegistry() {
         return DefinitionMapRegistry.build(adapterManager);
     }
 

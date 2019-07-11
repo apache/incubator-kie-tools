@@ -33,15 +33,7 @@ public interface FactoryManager {
      * @param <T> The definition instance type ( Eg. Task )
      * @return A new definition instance.
      */
-    <T> T newDefinition(final String id);
-
-    /**
-     * Creates a new Definition by a given type, if the domain model is based on java POJO classes.
-     * @param type The definition type ( Eg: Task.class )
-     * @param <T> The definition instance type ( Eg. Task )
-     * @return A new definition instance.
-     */
-    <T> T newDefinition(final Class<T> type);
+    <T> T newDefinition(String id);
 
     /**
      * Creates a new graph element for the given Definition identifier.
@@ -49,41 +41,20 @@ public interface FactoryManager {
      * @param id The definition identifier.
      * @return A new graph, node or edge which content is based on the a Definition.
      */
-    Element<?> newElement(final String uuid,
-                          final String id);
-
-    /**
-     * Creates a new graph element for the given Definition type.
-     * @param uuid The element unique identifier.
-     * @param type The definition type.
-     * @return A new graph, node or edge which content is based on the a Definition.
-     */
-    Element<?> newElement(final String uuid,
-                          final Class<?> type);
+    Element<?> newElement(String uuid,
+                          String id);
 
     /**
      * Creates a new diagram for the given Definition Set identifier.
      * @param name The unique diagram's name.
-     * @param id The definition set identifier.
+     * @param definitionSetId The definition set identifier.
      * @param metadata The diagram metadata.
      * @param <D> The diagram type.
      * @return A new diagram instance.
      */
-    <M extends Metadata, D extends Diagram> D newDiagram(final String name,
-                                                         final String id,
-                                                         final M metadata);
-
-    /**
-     * Creates a new diagram for the given Definition Set type.
-     * @param name The unique diagram's name.
-     * @param type The definition set type.
-     * @param metadata The diagram metadata.
-     * @param <D> The diagram type.
-     * @return A new diagram instance.
-     */
-    <M extends Metadata, D extends Diagram> D newDiagram(final String name,
-                                                         final Class<?> type,
-                                                         final M metadata);
+    <M extends Metadata, D extends Diagram> D newDiagram(String name,
+                                                         String definitionSetId,
+                                                         M metadata);
 
     /**
      * The registry that handles all different factories.

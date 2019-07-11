@@ -49,10 +49,6 @@ public class CloneNodeCommandTest extends AbstractCloneCommandTest {
 
     protected CloneNodeCommand cloneNodeCommand;
 
-    protected Node<View, Edge> candidate;
-
-    protected Node<View, Edge> parent;
-
     protected Point2D position;
 
     @Captor
@@ -62,11 +58,9 @@ public class CloneNodeCommandTest extends AbstractCloneCommandTest {
     public void setUp() {
         super.setUp();
 
-        candidate = graphInstance.containerNode;
-        parent = graphInstance.parentNode;
-        candidate.setContent(candidateContent);
+        graphInstance.containerNode.setContent(candidateContent);
         this.position = new Point2D(1, 1);
-        this.cloneNodeCommand = new CloneNodeCommand(candidate, parent.getUUID(), position, null, childrenTraverseProcessorManagedInstance);
+        this.cloneNodeCommand = new CloneNodeCommand(graphInstance.containerNode, graphInstance.parentNode.getUUID(), position, null, childrenTraverseProcessorManagedInstance);
     }
 
     @Test
@@ -84,7 +78,7 @@ public class CloneNodeCommandTest extends AbstractCloneCommandTest {
         AddChildNodeCommand addChildCommand = (AddChildNodeCommand) cloneNodeCommand.getCommands().stream().filter(command -> command instanceof AddChildNodeCommand).findFirst().get();
         assertNotNull(addChildCommand);
         assertEquals(addChildCommand.getCandidate(), clone);
-        assertEquals(addChildCommand.getParent(graphCommandExecutionContext), parent);
+        assertEquals(addChildCommand.getParent(graphCommandExecutionContext), graphInstance.parentNode);
         if (addChildCommand.getLocation() != null) {
             assertEquals(addChildCommand.getLocation().getX(), position.getX(), 0);
             assertEquals(addChildCommand.getLocation().getY(), position.getY(), 0);

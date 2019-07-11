@@ -41,6 +41,7 @@ import org.kie.workbench.common.stunner.core.graph.impl.NodeImpl;
 import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpmn2;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.di;
+import static org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils.getDefinitionId;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -70,7 +71,7 @@ public class CaseManagementRootProcessConverterTest {
         node.setContent(content);
 
         FactoryManager factoryManager = mock(FactoryManager.class);
-        when(factoryManager.newElement(anyString(), eq(CaseManagementDiagram.class))).thenReturn(node);
+        when(factoryManager.newElement(anyString(), eq(getDefinitionId(CaseManagementDiagram.class)))).thenReturn(node);
 
         TypedFactoryManager typedFactoryManager = new TypedFactoryManager(factoryManager);
 

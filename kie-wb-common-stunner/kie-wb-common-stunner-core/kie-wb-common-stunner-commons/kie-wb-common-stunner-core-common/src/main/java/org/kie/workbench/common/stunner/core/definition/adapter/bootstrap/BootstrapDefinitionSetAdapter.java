@@ -72,11 +72,6 @@ class BootstrapDefinitionSetAdapter implements DefinitionSetAdapter<Object> {
         return null != getWrapped(type);
     }
 
-    @Override
-    public boolean isPojoModel() {
-        return false;
-    }
-
     private DefinitionSetAdapter<Object> getWrapped(final Object pojo) {
         return getWrapped(pojo.getClass());
     }

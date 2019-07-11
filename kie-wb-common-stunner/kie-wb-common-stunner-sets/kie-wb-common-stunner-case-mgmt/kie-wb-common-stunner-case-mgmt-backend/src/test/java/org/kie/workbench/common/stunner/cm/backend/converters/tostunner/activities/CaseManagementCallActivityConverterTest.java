@@ -40,6 +40,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpmn2;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.di;
+import static org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils.getDefinitionId;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -70,10 +71,10 @@ public class CaseManagementCallActivityConverterTest {
 
     @Test
     public void testCreateNode_case() throws Exception {
-        String id = UUID.randomUUID().toString();
+        String uuid = UUID.randomUUID().toString();
 
         CallActivity callActivity = bpmn2.createCallActivity();
-        callActivity.setId(id);
+        callActivity.setId(uuid);
         CustomElement.isCase.of(callActivity).set(Boolean.TRUE);
 
         CallActivityPropertyReader propertyReader = new CallActivityPropertyReader(callActivity,
@@ -82,15 +83,16 @@ public class CaseManagementCallActivityConverterTest {
 
         tested.createNode(callActivity, propertyReader);
 
-        verify(factoryManager).newElement(eq(id), eq(CaseReusableSubprocess.class));
+        verify(factoryManager).newElement(eq(uuid),
+                                          eq(getDefinitionId(CaseReusableSubprocess.class)));
     }
 
     @Test
     public void testCreateNode_process() throws Exception {
-        String id = UUID.randomUUID().toString();
+        String uuid = UUID.randomUUID().toString();
 
         CallActivity callActivity = bpmn2.createCallActivity();
-        callActivity.setId(id);
+        callActivity.setId(uuid);
         CustomElement.isCase.of(callActivity).set(Boolean.FALSE);
 
         CallActivityPropertyReader propertyReader = new CallActivityPropertyReader(callActivity,
@@ -99,15 +101,15 @@ public class CaseManagementCallActivityConverterTest {
 
         tested.createNode(callActivity, propertyReader);
 
-        verify(factoryManager).newElement(eq(id), eq(ProcessReusableSubprocess.class));
+        verify(factoryManager).newElement(eq(uuid), eq(getDefinitionId(ProcessReusableSubprocess.class)));
     }
 
     @Test
     public void testCreateReusableSubprocessTaskExecutionSet_case() throws Exception {
-        String id = UUID.randomUUID().toString();
+        String uuid = UUID.randomUUID().toString();
 
         CallActivity callActivity = bpmn2.createCallActivity();
-        callActivity.setId(id);
+        callActivity.setId(uuid);
         CustomElement.isCase.of(callActivity).set(Boolean.TRUE);
 
         CallActivityPropertyReader propertyReader = new CallActivityPropertyReader(callActivity,
@@ -123,10 +125,10 @@ public class CaseManagementCallActivityConverterTest {
 
     @Test
     public void testCreateReusableSubprocessTaskExecutionSet_process() throws Exception {
-        String id = UUID.randomUUID().toString();
+        String uuid = UUID.randomUUID().toString();
 
         CallActivity callActivity = bpmn2.createCallActivity();
-        callActivity.setId(id);
+        callActivity.setId(uuid);
         CustomElement.isCase.of(callActivity).set(Boolean.FALSE);
 
         CallActivityPropertyReader propertyReader = new CallActivityPropertyReader(callActivity,

@@ -63,20 +63,6 @@ public class ClientFactoryService {
         }
     }
 
-    public <T> void newDefinition(final Class<T> type,
-                                  final ServiceCallback<T> callback) {
-        final T def = clientFactoryManager.newDefinition(type);
-        if (null != def) {
-            callback.onSuccess(def);
-        } else {
-            factoryServiceCaller.call((T t) -> callback.onSuccess(t),
-                                      (message, throwable) -> {
-                                          callback.onError(new ClientRuntimeError(throwable));
-                                          return false;
-                                      }).newDefinition(type);
-        }
-    }
-
     public <T> void newElement(final String uuid,
                                final String definitionId,
                                final ServiceCallback<Element> callback) {
@@ -91,23 +77,6 @@ public class ClientFactoryService {
                                           return false;
                                       }).newElement(uuid,
                                                     definitionId);
-        }
-    }
-
-    public <T> void newElement(final String uuid,
-                               final Class<T> type,
-                               final ServiceCallback<Element> callback) {
-        final Element element = clientFactoryManager.newElement(uuid,
-                                                                type);
-        if (null != element) {
-            callback.onSuccess(element);
-        } else {
-            factoryServiceCaller.call((Element t) -> callback.onSuccess(t),
-                                      (message, throwable) -> {
-                                          callback.onError(new ClientRuntimeError(throwable));
-                                          return false;
-                                      }).newElement(uuid,
-                                                    type);
         }
     }
 
@@ -127,26 +96,6 @@ public class ClientFactoryService {
                                           return false;
                                       }).newDiagram(uuid,
                                                     id,
-                                                    metadata);
-        }
-    }
-
-    public <M extends Metadata, D extends Diagram> void newDiagram(final String uuid,
-                                                                   final Class<?> type,
-                                                                   final M metadata,
-                                                                   final ServiceCallback<D> callback) {
-        final D diagram = clientFactoryManager.newDiagram(uuid,
-                                                          type,
-                                                          metadata);
-        if (null != diagram) {
-            callback.onSuccess(diagram);
-        } else {
-            factoryServiceCaller.call((D d) -> callback.onSuccess(d),
-                                      (message, throwable) -> {
-                                          callback.onError(new ClientRuntimeError(throwable));
-                                          return false;
-                                      }).newDiagram(uuid,
-                                                    type,
                                                     metadata);
         }
     }

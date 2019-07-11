@@ -46,6 +46,8 @@ import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.kie.workbench.common.stunner.core.util.UUID;
 
+import static org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils.getDefinitionId;
+
 /**
  * The custom factory for BPMN graphs.
  * It initializes the BPMN graph with a new Diagram node instance, which represents the main process.
@@ -57,6 +59,8 @@ import org.kie.workbench.common.stunner.core.util.UUID;
 public class BPMNGraphFactoryImpl
         extends AbstractGraphFactory
         implements BPMNGraphFactory {
+
+    public static final String START_EVENT_ID = getDefinitionId(StartNoneEvent.class);
 
     protected final DefinitionManager definitionManager;
     private final RuleManager ruleManager;
@@ -132,9 +136,9 @@ public class BPMNGraphFactoryImpl
     protected List<Command> buildInitialisationCommands() {
         final List<Command> commands = new ArrayList<>();
         final Node<Definition<BPMNDiagram>, Edge> diagramNode = (Node<Definition<BPMNDiagram>, Edge>) factoryManager.newElement(UUID.uuid(),
-                                                                                                                                diagramType);
+                                                                                                                                getDefinitionId(diagramType));
         final Node<Definition<StartNoneEvent>, Edge> startEventNode = (Node<Definition<StartNoneEvent>, Edge>) factoryManager.newElement(UUID.uuid(),
-                                                                                                                                         StartNoneEvent.class);
+                                                                                                                                         START_EVENT_ID);
         commands.add(graphCommandFactory.addNode(diagramNode));
         commands.add(graphCommandFactory.addChildNode(diagramNode,
                                                       startEventNode,

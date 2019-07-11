@@ -36,8 +36,9 @@ public abstract class AbstractCloneProcess implements CloneProcess {
         return clone(source, createEmptyClone(source));
     }
 
+    @SuppressWarnings("unchecked")
     private <T> T createEmptyClone(T source) {
         Objects.requireNonNull(source, "Source cannot be null");
-        return (T) factoryManager.newDefinition(source.getClass());
+        return (T) factoryManager.newDefinition(adapterManager.forDefinition().getId(source).value());
     }
 }

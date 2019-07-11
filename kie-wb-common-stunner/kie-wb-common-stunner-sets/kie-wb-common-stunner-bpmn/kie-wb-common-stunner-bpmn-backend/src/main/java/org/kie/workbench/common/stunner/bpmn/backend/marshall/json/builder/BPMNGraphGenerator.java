@@ -59,6 +59,8 @@ import org.kie.workbench.common.stunner.core.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils.getDefinitionSetId;
+
 /**
  * Support for a basic single process hierarchy
  */
@@ -152,7 +154,7 @@ public class BPMNGraphGenerator extends JsonGenerator {
 
     public Graph<DefinitionSet, Node> createGraph() {
         Graph<DefinitionSet, Node> graph = (Graph<DefinitionSet, Node>) factoryManager.newElement(UUID.uuid(),
-                                                                                                  diagramDefinitionSetClass);
+                                                                                                  getDefinitionSetId(diagramDefinitionSetClass));
         builderContext
                 // Initialize the builder context.
                 .init(graph)

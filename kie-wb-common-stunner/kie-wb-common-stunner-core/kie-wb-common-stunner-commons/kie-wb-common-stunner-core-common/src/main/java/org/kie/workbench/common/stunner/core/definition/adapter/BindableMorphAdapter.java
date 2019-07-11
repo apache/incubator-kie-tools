@@ -81,11 +81,6 @@ public abstract class BindableMorphAdapter<S> extends AbstractMorphAdapter<S> {
     }
 
     @Override
-    public boolean isPojoModel() {
-        return true;
-    }
-
-    @Override
     protected Iterable<String> getTargets(final Class<?> type,
                                           final String definitionId,
                                           final String baseId) {

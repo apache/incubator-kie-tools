@@ -33,6 +33,8 @@ import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
+import static org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils.getDefinitionId;
+
 public class TextAnnotationConverter implements NodeConverter<org.kie.dmn.model.api.TextAnnotation, org.kie.workbench.common.dmn.api.definition.v1_1.TextAnnotation> {
 
     private FactoryManager factoryManager;
@@ -47,7 +49,7 @@ public class TextAnnotationConverter implements NodeConverter<org.kie.dmn.model.
                                                      final BiConsumer<String, HasComponentWidths> hasComponentWidthsConsumer) {
         @SuppressWarnings("unchecked")
         final Node<View<TextAnnotation>, ?> node = (Node<View<TextAnnotation>, ?>) factoryManager.newElement(dmn.getId(),
-                                                                                                             TextAnnotation.class).asNode();
+                                                                                                             getDefinitionId(TextAnnotation.class)).asNode();
         final Id id = new Id(dmn.getId());
         final Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
         final Text text = new Text(dmn.getText());

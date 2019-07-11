@@ -59,6 +59,7 @@ import static org.kie.workbench.common.stunner.cm.util.CaseManagementUtils.ORIGI
 import static org.kie.workbench.common.stunner.cm.util.CaseManagementUtils.ORIGIN_Y;
 import static org.kie.workbench.common.stunner.cm.util.CaseManagementUtils.STAGE_HEIGHT;
 import static org.kie.workbench.common.stunner.cm.util.CaseManagementUtils.STAGE_WIDTH;
+import static org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils.getDefinitionId;
 
 /**
  * The custom factory for Case Management graphs.
@@ -66,6 +67,10 @@ import static org.kie.workbench.common.stunner.cm.util.CaseManagementUtils.STAGE
 @Dependent
 public class CaseManagementGraphFactoryImpl extends AbstractGraphFactory implements CaseManagementGraphFactory {
 
+    public static String START_EVENT_ID = getDefinitionId(StartNoneEvent.class);
+    public static String SUBPROCESS_ID = getDefinitionId(AdHocSubprocess.class);
+    public static String END_EVENT_ID = getDefinitionId(EndNoneEvent.class);
+    public static String SEQ_FLOW_ID = getDefinitionId(SequenceFlow.class);
     private static final double CONNECTION_LOCATION_X = 475d;
     private static final double CONNECTION_LOCATION_Y = 475d;
 
@@ -150,28 +155,28 @@ public class CaseManagementGraphFactoryImpl extends AbstractGraphFactory impleme
         final List<Command> commands = new ArrayList<>();
 
         final Node<Definition<CaseManagementDiagram>, Edge> diagramNode =
-                (Node<Definition<CaseManagementDiagram>, Edge>) factoryManager.newElement(UUID.uuid(), diagramType);
+                (Node<Definition<CaseManagementDiagram>, Edge>) factoryManager.newElement(UUID.uuid(), getDefinitionId(diagramType));
 
         final Node<View<StartNoneEvent>, Edge> startEventNode =
-                (Node<View<StartNoneEvent>, Edge>) factoryManager.newElement(UUID.uuid(), StartNoneEvent.class);
+                (Node<View<StartNoneEvent>, Edge>) factoryManager.newElement(UUID.uuid(), START_EVENT_ID);
         startEventNode.getContent().setBounds(
                 Bounds.create(ORIGIN_X, ORIGIN_Y, ORIGIN_X + EVENT_WIDTH, ORIGIN_Y + EVENT_HEIGHT));
 
         final Node<View<AdHocSubprocess>, Edge> stageNode =
-                (Node<View<AdHocSubprocess>, Edge>) factoryManager.newElement(UUID.uuid(), AdHocSubprocess.class);
+                (Node<View<AdHocSubprocess>, Edge>) factoryManager.newElement(UUID.uuid(), SUBPROCESS_ID);
         stageNode.getContent().setBounds(
                 Bounds.create(ORIGIN_X + EVENT_WIDTH + GAP, ORIGIN_Y, ORIGIN_X + EVENT_WIDTH + STAGE_WIDTH + GAP, ORIGIN_Y + STAGE_HEIGHT));
 
         final Node<View<EndNoneEvent>, Edge> endEventNode =
-                (Node<View<EndNoneEvent>, Edge>) factoryManager.newElement(UUID.uuid(), EndNoneEvent.class);
+                (Node<View<EndNoneEvent>, Edge>) factoryManager.newElement(UUID.uuid(), END_EVENT_ID);
         endEventNode.getContent().setBounds(
                 Bounds.create(ORIGIN_X + EVENT_WIDTH + STAGE_WIDTH + GAP * 2, ORIGIN_Y, ORIGIN_X + EVENT_WIDTH * 2 + STAGE_WIDTH + GAP * 2, ORIGIN_Y + EVENT_HEIGHT));
 
         final Edge<View<SequenceFlow>, Node> startEventEdge =
-                (Edge<View<SequenceFlow>, Node>) factoryManager.newElement(UUID.uuid(), SequenceFlow.class);
+                (Edge<View<SequenceFlow>, Node>) factoryManager.newElement(UUID.uuid(), SEQ_FLOW_ID);
 
         final Edge<View<SequenceFlow>, Node> endEventEdge =
-                (Edge<View<SequenceFlow>, Node>) factoryManager.newElement(UUID.uuid(), SequenceFlow.class);
+                (Edge<View<SequenceFlow>, Node>) factoryManager.newElement(UUID.uuid(), SEQ_FLOW_ID);
 
         commands.add(graphCommandFactory.addNode(diagramNode));
         commands.add(graphCommandFactory.addChildNode(diagramNode, startEventNode));

@@ -21,7 +21,6 @@ import java.util.LinkedList;
 
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionId;
-import org.kie.workbench.common.stunner.core.definition.adapter.exception.NotPojoTypeException;
 import org.kie.workbench.common.stunner.core.registry.definition.AdapterRegistry;
 
 public class BindableAdapterUtils {
@@ -33,10 +32,6 @@ public class BindableAdapterUtils {
 
     public static String getDefinitionId(final Class<?> type,
                                          final AdapterRegistry registry) {
-        if (null != registry &&
-                !registry.getDefinitionAdapter(type).isPojoModel()) {
-            throw new NotPojoTypeException(type);
-        }
         return getGenericClassName(type);
     }
 
@@ -76,10 +71,6 @@ public class BindableAdapterUtils {
 
     public static String getDefinitionSetId(final Class<?> type,
                                             final AdapterRegistry registry) {
-        if (null != registry &&
-                !registry.getDefinitionSetAdapter(type).isPojoModel()) {
-            throw new NotPojoTypeException(type);
-        }
         return getGenericClassName(type);
     }
 
@@ -90,19 +81,11 @@ public class BindableAdapterUtils {
 
     public static String getPropertySetId(final Class<?> type,
                                           final DefinitionManager definitionManager) {
-        if (null != definitionManager &&
-                !definitionManager.adapters().registry().getPropertySetAdapter(type).isPojoModel()) {
-            throw new NotPojoTypeException(type);
-        }
         return getGenericClassName(type);
     }
 
     public static String getPropertyId(final Class<?> type,
                                        final DefinitionManager definitionManager) {
-        if (null != definitionManager &&
-                !definitionManager.adapters().registry().getPropertyAdapter(type).isPojoModel()) {
-            throw new NotPojoTypeException(type);
-        }
         return getGenericClassName(type);
     }
 

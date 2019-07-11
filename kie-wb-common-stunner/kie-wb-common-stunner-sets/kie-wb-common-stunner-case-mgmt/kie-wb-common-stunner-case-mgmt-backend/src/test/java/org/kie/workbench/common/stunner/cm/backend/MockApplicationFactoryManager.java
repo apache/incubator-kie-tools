@@ -67,40 +67,11 @@ public class MockApplicationFactoryManager extends BackendFactoryManager {
 
     @Override
     public Element<?> newElement(String uuid, String id) {
-        if (CaseManagementDefinitionSet.class.getName().equals(id)) {
+        if (CM_DEF_SET_ID.equals(id)) {
             Graph graph = graphFactory.build(uuid, CM_DEF_SET_ID);
             return graph;
         }
-        Object model = testScopeModelFactory.accepts(id) ? testScopeModelFactory.build(id) : null;
-        if (null != model) {
-            Class<? extends ElementFactory> element = BackendDefinitionAdapter.getGraphFactory(model.getClass());
-            if (element.isAssignableFrom(NodeFactory.class)) {
-                return viewNodeFactory.build(uuid, model);
-            } else if (element.isAssignableFrom(EdgeFactory.class)) {
-                return connectionEdgeFactory.build(uuid, model);
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public Element<?> newElement(String uuid, Class<?> type) {
-        String id = BindableAdapterUtils.getGenericClassName(type);
-        if (CaseManagementDefinitionSet.class.equals(type)) {
-            Graph graph = graphFactory.build(uuid, CM_DEF_SET_ID);
-            return graph;
-        }
-        Object model;
-        if (testScopeModelFactory.accepts(id)) {
-            model = testScopeModelFactory.build(id);
-            // fallback to reflection if no builder is present
-            // (this should be moved to `testScopeModelFactory`)
-            if (model == null) {
-                model = invokeEmptyConstructor(type, id);
-            }
-        } else {
-            model = serviceTaskFactory.build(id);
-        }
+        Object model = testScopeModelFactory.accepts(id) ? testScopeModelFactory.build(id) : serviceTaskFactory.build(id);
         if (null != model) {
             Class<? extends ElementFactory> element = BackendDefinitionAdapter.getGraphFactory(model.getClass());
             if (element.isAssignableFrom(NodeFactory.class)) {

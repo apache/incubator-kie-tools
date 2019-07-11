@@ -20,12 +20,10 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 import org.kie.workbench.common.stunner.backend.definition.factory.TestScopeModelFactory;
-import org.kie.workbench.common.stunner.bpmn.BPMNDefinitionSet;
 import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTaskFactory;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.backend.BackendFactoryManager;
 import org.kie.workbench.common.stunner.core.backend.definition.adapter.reflect.BackendDefinitionAdapter;
-import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.DiagramImpl;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
@@ -69,44 +67,11 @@ public class MockApplicationFactoryManager extends BackendFactoryManager {
 
     @Override
     public Element<?> newElement(String uuid, String id) {
-        if (BPMNDefinitionSet.class.getName().equals(id)) {
+        if (BPMN_DEF_SET_ID.equals(id)) {
             Graph graph = bpmnGraphFactory.build(uuid, BPMN_DEF_SET_ID);
             return graph;
         }
-        Object model = testScopeModelFactory.accepts(id) ? testScopeModelFactory.build(id) : null;
-        if (null != model) {
-            Class<? extends ElementFactory> element = BackendDefinitionAdapter.getGraphFactory(model.getClass());
-            if (element.isAssignableFrom(NodeFactory.class)) {
-                Node node = viewNodeFactory.build(uuid,
-                                                  model);
-                return node;
-            } else if (element.isAssignableFrom(EdgeFactory.class)) {
-                Edge edge = connectionEdgeFactory.build(uuid,
-                                                        model);
-                return edge;
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public Element<?> newElement(String uuid, Class<?> type) {
-        String id = BindableAdapterUtils.getGenericClassName(type);
-        if (BPMNDefinitionSet.class.equals(type)) {
-            Graph graph = bpmnGraphFactory.build(uuid, BPMN_DEF_SET_ID);
-            return graph;
-        }
-        Object model;
-        if (testScopeModelFactory.accepts(id)) {
-            model = testScopeModelFactory.build(id);
-            // fallback to reflection if no builder is present
-            // (this should be moved to `testScopeModelFactory`)
-            if (model == null) {
-                model = invokeEmptyConstructor(type, id);
-            }
-        } else {
-            model = serviceTaskFactory.build(id);
-        }
+        Object model = testScopeModelFactory.accepts(id) ? testScopeModelFactory.build(id) : serviceTaskFactory.build(id);
         if (null != model) {
             Class<? extends ElementFactory> element = BackendDefinitionAdapter.getGraphFactory(model.getClass());
             if (element.isAssignableFrom(NodeFactory.class)) {

@@ -43,6 +43,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils.getDefinitionId;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
@@ -91,7 +92,7 @@ public class DecisionConverterTest {
         final View<Decision> view = new ViewImpl<>(new Decision(), Bounds.create());
         factoryNode.setContent(view);
 
-        when(factoryManager.newElement(anyString(), eq(Decision.class))).thenReturn(element);
+        when(factoryManager.newElement(anyString(), eq(getDefinitionId(Decision.class)))).thenReturn(element);
         when(element.asNode()).thenReturn(factoryNode);
 
         final org.kie.dmn.model.api.Decision dmn = new TDecision();

@@ -92,11 +92,6 @@ public abstract class DefinitionAdapterWrapper<T, A extends DefinitionAdapter<T>
     }
 
     @Override
-    public boolean isPojoModel() {
-        return adapter.isPojoModel();
-    }
-
-    @Override
     public int getPriority() {
         return adapter.getPriority();
     }

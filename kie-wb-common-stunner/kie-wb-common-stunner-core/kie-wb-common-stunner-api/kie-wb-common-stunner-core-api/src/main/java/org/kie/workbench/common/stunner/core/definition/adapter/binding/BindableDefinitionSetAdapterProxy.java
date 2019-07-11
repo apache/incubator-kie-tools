@@ -30,9 +30,4 @@ public abstract class BindableDefinitionSetAdapterProxy<T> extends DefinitionSet
         super(adapterFactory.newBindableDefinitionSetAdapter());
         setBindings(adapter);
     }
-
-    @Override
-    public boolean isPojoModel() {
-        return true;
-    }
 }

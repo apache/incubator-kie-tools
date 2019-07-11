@@ -45,6 +45,7 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
 import static org.kie.workbench.common.dmn.backend.definition.v1_1.HrefBuilder.getHref;
+import static org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils.getDefinitionId;
 
 public class BusinessKnowledgeModelConverter implements NodeConverter<org.kie.dmn.model.api.BusinessKnowledgeModel, org.kie.workbench.common.dmn.api.definition.v1_1.BusinessKnowledgeModel> {
 
@@ -60,7 +61,7 @@ public class BusinessKnowledgeModelConverter implements NodeConverter<org.kie.dm
                                                              final BiConsumer<String, HasComponentWidths> hasComponentWidthsConsumer) {
         @SuppressWarnings("unchecked")
         final Node<View<BusinessKnowledgeModel>, ?> node = (Node<View<BusinessKnowledgeModel>, ?>) factoryManager.newElement(dmn.getId(),
-                                                                                                                             BusinessKnowledgeModel.class).asNode();
+                                                                                                                             getDefinitionId(BusinessKnowledgeModel.class)).asNode();
         final Id id = new Id(dmn.getId());
         final Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
         final Name name = new Name(dmn.getName());

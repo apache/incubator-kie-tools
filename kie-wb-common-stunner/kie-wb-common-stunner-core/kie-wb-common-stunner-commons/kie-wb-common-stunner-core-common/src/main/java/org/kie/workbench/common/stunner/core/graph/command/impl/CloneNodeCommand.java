@@ -34,6 +34,7 @@ import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.impl.AbstractCompositeCommand;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
+import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionId;
 import org.kie.workbench.common.stunner.core.definition.clone.CloneManager;
 import org.kie.workbench.common.stunner.core.definition.clone.ClonePolicy;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -100,6 +101,7 @@ public class CloneNodeCommand extends AbstractGraphCompositeCommand {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     protected AbstractCompositeCommand<GraphCommandExecutionContext, RuleViolation> initialize(GraphCommandExecutionContext context) {
         //getting the node parent
         Optional<String> parentUUID = getParentUUID();
@@ -108,7 +110,8 @@ public class CloneNodeCommand extends AbstractGraphCompositeCommand {
         }
 
         final Object bean = candidate.getContent().getDefinition();
-        clone = (Node<View, Edge>) context.getFactoryManager().newElement(UUID.uuid(), bean.getClass()).asNode();
+        final DefinitionId definitionId = context.getDefinitionManager().adapters().forDefinition().getId(bean);
+        clone = (Node<View, Edge>) context.getFactoryManager().newElement(UUID.uuid(), definitionId.value()).asNode();
 
         cloneNodeContentWithProperties(context);
 

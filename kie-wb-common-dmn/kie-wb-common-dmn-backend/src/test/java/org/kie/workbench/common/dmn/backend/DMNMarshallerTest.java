@@ -265,7 +265,7 @@ public class DMNMarshallerTest {
         doAnswer(invocationOnMock -> {
             String uuid = (String) invocationOnMock.getArguments()[0];
             String id = (String) invocationOnMock.getArguments()[1];
-            if (DMNDefinitionSet.class.getName().equals(id)) {
+            if (DMN_DEF_SET_ID.equals(id)) {
                 // Emulate DMNGraphFactoryImpl, that adds a DMNDiagram to new Graphs
                 // Please note this is different from the stunner jbpm test which this dmn test is based on
                 Graph graph = (Graph) dmnGraphFactory.build(uuid,
@@ -292,31 +292,6 @@ public class DMNMarshallerTest {
             return null;
         }).when(applicationFactoryManager).newElement(anyString(),
                                                       anyString());
-        doAnswer(invocationOnMock -> {
-            String uuid = (String) invocationOnMock.getArguments()[0];
-            Class type = (Class) invocationOnMock.getArguments()[1];
-            String id = BindableAdapterUtils.getGenericClassName(type);
-            if (DMNDefinitionSet.class.equals(type)) {
-                Graph graph = dmnGraphFactory.build(uuid,
-                                                    DMN_DEF_SET_ID);
-                return graph;
-            }
-            Object model = testScopeModelFactory.accepts(id) ? testScopeModelFactory.build(id) : null;
-            if (null != model) {
-                Class<? extends ElementFactory> element = BackendDefinitionAdapter.getGraphFactory(model.getClass());
-                if (element.isAssignableFrom(NodeFactory.class)) {
-                    Node node = viewNodeFactory.build(uuid,
-                                                      model);
-                    return node;
-                } else if (element.isAssignableFrom(EdgeFactory.class)) {
-                    Edge edge = connectionEdgeFactory.build(uuid,
-                                                            model);
-                    return edge;
-                }
-            }
-            return null;
-        }).when(applicationFactoryManager).newElement(anyString(),
-                                                      any(Class.class));
         doAnswer(invocationOnMock -> {
             String uuid = (String) invocationOnMock.getArguments()[0];
             String defSetId = (String) invocationOnMock.getArguments()[1];
@@ -1775,7 +1750,7 @@ public class DMNMarshallerTest {
         View content = (View) decisionNode.getContent();
         content.setBounds(org.kie.workbench.common.stunner.core.graph.content.Bounds.create(200, 200, 300, 250));
         final String irID = "irID";
-        Edge myEdge = applicationFactoryManager.newElement(irID, org.kie.workbench.common.dmn.api.definition.v1_1.InformationRequirement.class).asEdge();
+        Edge myEdge = applicationFactoryManager.newElement(irID, DMNMarshaller.INFO_REQ_ID).asEdge();
         myEdge.setSourceNode(inputDataNode);
         myEdge.setTargetNode(decisionNode);
         inputDataNode.getOutEdges().add(myEdge);
@@ -1835,7 +1810,7 @@ public class DMNMarshallerTest {
         content.setBounds(org.kie.workbench.common.stunner.core.graph.content.Bounds.create(200, 200, 300, 250));
         final String edgeID = "edgeID";
         final String associationID = "associationID";
-        Edge myEdge = applicationFactoryManager.newElement(edgeID, org.kie.workbench.common.dmn.api.definition.v1_1.Association.class).asEdge();
+        Edge myEdge = applicationFactoryManager.newElement(edgeID, DMNMarshaller.ASSOCIATION_ID).asEdge();
         final View<?> edgeView = (View<?>) myEdge.getContent();
         ((Association) edgeView.getDefinition()).setId(new Id(associationID));
         myEdge.setSourceNode(inputDataNode);

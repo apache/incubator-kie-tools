@@ -30,9 +30,4 @@ public abstract class BindablePropertyAdapterProxy<T, V> extends PropertyAdapter
         super(adapterFactory.newBindablePropertyAdapter());
         setBindings(adapter);
     }
-
-    @Override
-    public boolean isPojoModel() {
-        return true;
-    }
 }

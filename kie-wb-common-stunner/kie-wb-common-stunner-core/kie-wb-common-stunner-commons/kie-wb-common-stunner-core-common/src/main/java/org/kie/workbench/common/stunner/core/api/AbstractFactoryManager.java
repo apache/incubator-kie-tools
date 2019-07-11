@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.stunner.core.api;
 
-import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.factory.definition.DefinitionFactory;
@@ -52,12 +51,6 @@ public abstract class AbstractFactoryManager {
         return factory.build(id);
     }
 
-    public <T> T newDefinition(final Class<T> type) {
-        final String id = BindableAdapterUtils.getDefinitionId(type,
-                                                               definitionManager.adapters().registry());
-        return newDefinition(id);
-    }
-
     public Element<?> newElement(final String uuid,
                                  final String id) {
         return newElement(uuid, id, null);
@@ -69,13 +62,6 @@ public abstract class AbstractFactoryManager {
         final Object defSet = getDefinitionSet(id);
         final boolean isDefSet = null != defSet;
         return !isDefSet ? doBuildElement(uuid, id) : doBuildGraph(uuid, id, defSet, metadata);
-    }
-
-    public Element<?> newElement(final String uuid,
-                                 final Class<?> type) {
-        final String id = BindableAdapterUtils.getGenericClassName(type);
-        return newElement(uuid,
-                          id);
     }
 
     private Object getDefinitionSet(final String id) {
@@ -103,16 +89,6 @@ public abstract class AbstractFactoryManager {
                                                        "metadata type [" + metadata.getClass() + "]");
         }
         return factory;
-    }
-
-    public <M extends Metadata, D extends Diagram> D newDiagram(final String uuid,
-                                                                final Class<?> type,
-                                                                final M metadata) {
-        final String id = BindableAdapterUtils.getDefinitionSetId(type,
-                                                                  definitionManager.adapters().registry());
-        return newDiagram(uuid,
-                          id,
-                          metadata);
     }
 
     public FactoryRegistry registry() {

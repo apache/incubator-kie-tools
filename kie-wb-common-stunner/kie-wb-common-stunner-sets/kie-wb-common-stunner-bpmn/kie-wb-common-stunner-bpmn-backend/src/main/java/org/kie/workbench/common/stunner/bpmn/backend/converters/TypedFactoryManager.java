@@ -25,6 +25,9 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
+import static org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils.getDefinitionId;
+import static org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils.getDefinitionSetId;
+
 /**
  * A type-safe wrapper to a FactoryManager.
  * <p>
@@ -43,15 +46,18 @@ public class TypedFactoryManager {
         return factoryManager;
     }
 
+    @SuppressWarnings("unchecked")
     public <R, U extends R> Node<View<R>, Edge> newNode(String s, Class<U> aClass) {
-        return (Node<View<R>, Edge>) factoryManager.newElement(s, aClass);
+        return (Node<View<R>, Edge>) factoryManager.newElement(s, getDefinitionId(aClass));
     }
 
+    @SuppressWarnings("unchecked")
     public <R, U extends R> Edge<View<R>, Node> newEdge(String s, Class<U> aClass) {
-        return (Edge<View<R>, Node>) factoryManager.newElement(s, aClass);
+        return (Edge<View<R>, Node>) factoryManager.newElement(s, getDefinitionId(aClass));
     }
 
+    @SuppressWarnings("unchecked")
     public Diagram<Graph<DefinitionSet, Node>, Metadata> newDiagram(String s, Class<?> aClass, Metadata metadata) {
-        return factoryManager.newDiagram(s, aClass, metadata);
+        return factoryManager.newDiagram(s, getDefinitionSetId(aClass), metadata);
     }
 }

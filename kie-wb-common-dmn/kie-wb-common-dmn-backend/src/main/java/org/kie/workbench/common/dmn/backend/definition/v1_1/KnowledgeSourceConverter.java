@@ -40,6 +40,7 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
 import static org.kie.workbench.common.dmn.backend.definition.v1_1.HrefBuilder.getHref;
+import static org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils.getDefinitionId;
 
 public class KnowledgeSourceConverter implements NodeConverter<org.kie.dmn.model.api.KnowledgeSource, org.kie.workbench.common.dmn.api.definition.v1_1.KnowledgeSource> {
 
@@ -55,7 +56,7 @@ public class KnowledgeSourceConverter implements NodeConverter<org.kie.dmn.model
                                                       final BiConsumer<String, HasComponentWidths> hasComponentWidthsConsumer) {
         @SuppressWarnings("unchecked")
         final Node<View<KnowledgeSource>, ?> node = (Node<View<KnowledgeSource>, ?>) factoryManager.newElement(dmn.getId(),
-                                                                                                               KnowledgeSource.class).asNode();
+                                                                                                               getDefinitionId(KnowledgeSource.class)).asNode();
         final Id id = new Id(dmn.getId());
         final Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
         final Name name = new Name(dmn.getName());

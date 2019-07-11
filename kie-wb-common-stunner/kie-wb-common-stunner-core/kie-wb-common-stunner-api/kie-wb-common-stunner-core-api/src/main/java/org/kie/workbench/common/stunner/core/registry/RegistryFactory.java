@@ -21,7 +21,7 @@ import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.factory.Factory;
 import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
 import org.kie.workbench.common.stunner.core.registry.definition.AdapterRegistry;
-import org.kie.workbench.common.stunner.core.registry.definition.TypeDefinitionRegistry;
+import org.kie.workbench.common.stunner.core.registry.definition.DefinitionRegistry;
 import org.kie.workbench.common.stunner.core.registry.definition.TypeDefinitionSetRegistry;
 import org.kie.workbench.common.stunner.core.registry.diagram.DiagramRegistry;
 import org.kie.workbench.common.stunner.core.registry.factory.FactoryRegistry;
@@ -45,7 +45,7 @@ public interface RegistryFactory {
     /**
      * Creates a new registry instance for definitions.
      */
-    <T> TypeDefinitionRegistry<T> newDefinitionRegistry();
+    <T> DefinitionRegistry<T> newDefinitionRegistry();
 
     /**
      * Creates a new registry instance for commands.

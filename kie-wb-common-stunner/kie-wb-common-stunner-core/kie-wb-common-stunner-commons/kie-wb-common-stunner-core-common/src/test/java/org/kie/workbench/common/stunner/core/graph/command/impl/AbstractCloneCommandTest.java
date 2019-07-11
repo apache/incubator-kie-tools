@@ -19,6 +19,8 @@ package org.kie.workbench.common.stunner.core.graph.command.impl;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.core.TestingGraphInstanceBuilder;
 import org.kie.workbench.common.stunner.core.TestingGraphMockHandler;
+import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionId;
+import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 import org.kie.workbench.common.stunner.core.definition.clone.CloneManager;
 import org.kie.workbench.common.stunner.core.definition.clone.ClonePolicy;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -38,9 +40,10 @@ import org.kie.workbench.common.stunner.core.util.UUID;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 
-import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 
 public abstract class AbstractCloneCommandTest extends AbstractGraphCommandTest {
@@ -110,7 +113,10 @@ public abstract class AbstractCloneCommandTest extends AbstractGraphCommandTest 
                     return graphIndex;
                 });
 
-        //edge mock
+        doAnswer(invocationOnMock -> {
+            Object o = invocationOnMock.getArguments()[0];
+            return DefinitionId.build(BindableAdapterUtils.getDefinitionId(o.getClass()));
+        }).when(definitionAdapter).getId(anyObject());
         connectorContent = new ViewConnectorImpl(connectorDefinition, Bounds.create(1d, 1d, 1d, 1d));
         sourceConnection = MagnetConnection.Builder.atCenter(graphInstance.startNode);
         connectorContent.setSourceConnection(sourceConnection);
@@ -125,7 +131,7 @@ public abstract class AbstractCloneCommandTest extends AbstractGraphCommandTest 
         when(graphCommandExecutionContext.getGraphIndex()).thenReturn(graphIndex);
         when(candidateContent.getDefinition()).thenReturn(definition);
         when(candidateContent.getBounds()).thenReturn(candidateBounds);
-        when(factoryManager.newElement(anyString(), any(Class.class))).thenReturn(cloneElement);
+        when(factoryManager.newElement(anyString(), anyString())).thenReturn(cloneElement);
         when(cloneElement.asNode()).thenReturn(clone);
         when(cloneElement.asEdge()).thenReturn(cloneEdge);
         when(cloneEdge.getContent()).thenReturn(connectorContent);

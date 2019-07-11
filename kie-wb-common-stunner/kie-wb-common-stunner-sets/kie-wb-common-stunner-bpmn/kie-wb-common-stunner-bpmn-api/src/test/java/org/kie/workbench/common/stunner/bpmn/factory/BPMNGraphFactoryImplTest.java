@@ -42,6 +42,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils.getDefinitionId;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -93,9 +94,9 @@ public class BPMNGraphFactoryImplTest {
         final Node diagramNode = mock(Node.class);
         final Node startEventNode = mock(Node.class);
         when(factoryManager.newElement(anyString(),
-                                       eq(BPMNDiagramImpl.class))).thenReturn(diagramNode);
+                                       eq(getDefinitionId(BPMNDiagramImpl.class)))).thenReturn(diagramNode);
         when(factoryManager.newElement(anyString(),
-                                       eq(StartNoneEvent.class))).thenReturn(startEventNode);
+                                       eq(getDefinitionId(StartNoneEvent.class)))).thenReturn(startEventNode);
         final Graph<DefinitionSet, Node> graph = tested.build("uuid1",
                                                               "defSetId");
         assertNotNull(graph);

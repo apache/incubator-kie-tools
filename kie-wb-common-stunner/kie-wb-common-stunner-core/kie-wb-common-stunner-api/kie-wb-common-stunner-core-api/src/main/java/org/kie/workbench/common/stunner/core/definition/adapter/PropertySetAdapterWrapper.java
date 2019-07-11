@@ -52,11 +52,6 @@ public abstract class PropertySetAdapterWrapper<T, A extends PropertySetAdapter<
     }
 
     @Override
-    public boolean isPojoModel() {
-        return false;
-    }
-
-    @Override
     public int getPriority() {
         return adapter.getPriority();
     }

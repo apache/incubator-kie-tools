@@ -53,6 +53,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
+import static org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils.getDefinitionId;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -136,7 +137,7 @@ public class CaseGraphFactoryImplTest {
         when(registry.getDefinitionAdapter(ServiceTask.class)).thenReturn(adapter);
         when(adapter.getId(milestone)).thenReturn(DefinitionId.build(MILESTONE_ID));
         when(factoryManager.newElement(anyString(),
-                                       eq(BPMNDiagramImpl.class))).thenReturn(diagramNode);
+                                       eq(getDefinitionId(BPMNDiagramImpl.class)))).thenReturn(diagramNode);
         when(factoryManager.newElement(anyString(),
                                        eq(MILESTONE_ID))).thenReturn(milestoneNode);
         when(diagramNode.getContent()).thenReturn(diagramContent);

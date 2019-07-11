@@ -19,16 +19,13 @@ package org.kie.workbench.common.stunner.cm.factory;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
-import org.kie.workbench.common.stunner.bpmn.definition.SequenceFlow;
-import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.factory.BPMNGraphFactoryImpl;
-import org.kie.workbench.common.stunner.cm.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
+import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -103,27 +100,27 @@ public class CaseManagementGraphFactoryImplTest {
     public void testBuild() {
         final Node diagramNode = mock(Node.class);
         when(factoryManager.newElement(anyString(),
-                                       eq(CaseManagementDiagram.class))).thenReturn(diagramNode);
+                                       eq(BindableAdapterUtils.getDefinitionId(CaseManagementDiagram.class)))).thenReturn(diagramNode);
 
         final Node stageNode = mock(Node.class);
         when(factoryManager.newElement(anyString(),
-                                       eq(AdHocSubprocess.class))).thenReturn(stageNode);
+                                       eq(CaseManagementGraphFactoryImpl.SUBPROCESS_ID))).thenReturn(stageNode);
         when(stageNode.getContent()).thenReturn(mock(View.class));
 
         final Node startEventNode = mock(Node.class);
         when(factoryManager.newElement(anyString(),
-                                       eq(StartNoneEvent.class))).thenReturn(startEventNode);
+                                       eq(CaseManagementGraphFactoryImpl.START_EVENT_ID))).thenReturn(startEventNode);
         when(startEventNode.getContent()).thenReturn(mock(View.class));
 
         final Node endEventNode = mock(Node.class);
         when(factoryManager.newElement(anyString(),
-                                       eq(EndNoneEvent.class))).thenReturn(endEventNode);
+                                       eq(CaseManagementGraphFactoryImpl.END_EVENT_ID))).thenReturn(endEventNode);
         when(endEventNode.getContent()).thenReturn(mock(View.class));
 
         final Edge startEventEdge = mock(Edge.class);
         final Edge endEventEdge = mock(Edge.class);
         when(factoryManager.newElement(anyString(),
-                                       eq(SequenceFlow.class))).thenReturn(startEventEdge, endEventEdge);
+                                       eq(CaseManagementGraphFactoryImpl.SEQ_FLOW_ID))).thenReturn(startEventEdge, endEventEdge);
 
         final Graph<DefinitionSet, Node> graph = factory.build("uuid1", "defSetId");
 
