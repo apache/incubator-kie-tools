@@ -22,12 +22,12 @@ import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.Unmarshalling;
 import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.BPMNDiagramMarshallerBase;
 import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.Marshaller;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseCatchingIntermediateEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.AssignmentsInfo;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.BaseCancellingEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.core.definition.service.DiagramMarshaller;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -54,10 +54,12 @@ public abstract class CatchingIntermediateEvent<T extends BaseCatchingIntermedia
 
     private static final int DEFAULT_AMOUNT_OF_INCOME_EDGES = 1;
 
+    private Marshaller marshallerType;
     protected DiagramMarshaller<Graph, Metadata, Diagram<Graph, Metadata>> marshaller = null;
 
     CatchingIntermediateEvent(Marshaller marshallerType) {
         super.init();
+        this.marshallerType = marshallerType;
         switch (marshallerType) {
             case OLD:
                 marshaller = oldMarshaller;
@@ -73,18 +75,6 @@ public abstract class CatchingIntermediateEvent<T extends BaseCatchingIntermedia
         return Arrays.asList(new Object[][]{
                 {OLD}, {NEW}
         });
-    }
-
-    @Test
-    public void testMigration() throws Exception {
-        Diagram<Graph, Metadata> oldDiagram = Unmarshalling.unmarshall(oldMarshaller, getBpmnCatchingIntermediateEventFilePath());
-        Diagram<Graph, Metadata> newDiagram = Unmarshalling.unmarshall(newMarshaller, getBpmnCatchingIntermediateEventFilePath());
-
-        // Doesn't work, due to old Marshaller and new Marshaller have different BPMNDefinitionSet uuids
-        // assertEquals(oldDiagram.getGraph(), newDiagram.getGraph());
-
-        // Let's check nodes only.
-        assertDiagramEquals(oldDiagram, newDiagram, getBpmnCatchingIntermediateEventFilePath());
     }
 
     @Test
@@ -216,5 +206,23 @@ public abstract class CatchingIntermediateEvent<T extends BaseCatchingIntermedia
 
     protected int getDefaultAmountOfIncomdeEdges() {
         return DEFAULT_AMOUNT_OF_INCOME_EDGES;
+    }
+
+    protected Marshaller getMarshallerType() {
+        return this.marshallerType;
+    }
+
+    protected void assertTimerEventSlaDueDate(BaseCancellingEventExecutionSet executionSet, String slaDueDate) {
+        if (getMarshallerType() == Marshaller.NEW) {
+            assertNotNull(executionSet.getSlaDueDate());
+            assertEquals(slaDueDate, executionSet.getSlaDueDate().getValue());
+        }
+    }
+
+    protected void assertEventCancelActivity(BaseCancellingEventExecutionSet executionSet, boolean isCancelling) {
+        if (getMarshallerType() == Marshaller.NEW) {
+            assertNotNull(executionSet.getCancelActivity());
+            assertEquals(isCancelling, executionSet.getCancelActivity().getValue());
+        }
     }
 }

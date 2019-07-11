@@ -30,6 +30,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.event.error.Can
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.error.ErrorEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.error.ErrorRef;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.error.InterruptingErrorEventExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 
@@ -88,6 +89,7 @@ public class ProcessErrorRefProviderTest
     private Node mockIntermediateErrorEventCatchingNode(String errorRefValue) {
         IntermediateErrorEventCatching event = new IntermediateErrorEventCatching();
         event.setExecutionSet(new CancellingErrorEventExecutionSet(new CancelActivity(true),
+                                                                   new SLADueDate(),
                                                                    new ErrorRef(errorRefValue)));
         return mockNode(event);
     }

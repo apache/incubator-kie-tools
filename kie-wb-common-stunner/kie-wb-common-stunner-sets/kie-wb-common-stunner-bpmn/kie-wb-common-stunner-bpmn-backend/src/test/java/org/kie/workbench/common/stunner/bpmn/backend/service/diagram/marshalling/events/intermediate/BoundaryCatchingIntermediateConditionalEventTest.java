@@ -41,6 +41,8 @@ public class BoundaryCatchingIntermediateConditionalEventTest extends BoundaryCa
     private static final String EMPTY_WITH_EDGES_TOP_LEVEL_EVENT_ID = "_F114AEE8-DA28-4A26-8B77-1E69AA39BB63";
     private static final String FILLED_WITH_EDGES_TOP_LEVEL_EVENT_ID = "_A1BB3E61-B2BD-4EA2-AF80-73EAC4DF5F3E";
 
+    private static final String SLA_DUE_DATE = "12/25/1983";
+
     private static final int AMOUNT_OF_NODES_IN_DIAGRAM = 31;
 
     private static final String CONDITION_EXPRESSION_SCRIPT_DEFAULT_VALUE = null;
@@ -70,7 +72,8 @@ public class BoundaryCatchingIntermediateConditionalEventTest extends BoundaryCa
                                            CONDITION_EXPRESSION_SCRIPT,
                                            CONDITION_EXPRESSION_LANGUAGE,
                                            CONDITION_ERPRESSION_TYPE,
-                                           CANCELLING);
+                                           CANCELLING,
+                                           SLA_DUE_DATE);
     }
 
     @Test
@@ -88,7 +91,8 @@ public class BoundaryCatchingIntermediateConditionalEventTest extends BoundaryCa
                                            CONDITION_EXPRESSION_SCRIPT_DEFAULT_VALUE,
                                            CONDITION_EXPRESSION_LANGUAGE,
                                            CONDITION_ERPRESSION_TYPE,
-                                           NON_CANCELLING);
+                                           NON_CANCELLING,
+                                           EMPTY_VALUE);
     }
 
     @Test
@@ -110,7 +114,8 @@ public class BoundaryCatchingIntermediateConditionalEventTest extends BoundaryCa
                                            CONDITION_EXPRESSION_SCRIPT,
                                            CONDITION_EXPRESSION_LANGUAGE,
                                            CONDITION_ERPRESSION_TYPE,
-                                           CANCELLING);
+                                           CANCELLING,
+                                           SLA_DUE_DATE);
     }
 
     @Test
@@ -128,7 +133,8 @@ public class BoundaryCatchingIntermediateConditionalEventTest extends BoundaryCa
                                            CONDITION_EXPRESSION_SCRIPT_DEFAULT_VALUE,
                                            CONDITION_EXPRESSION_LANGUAGE,
                                            CONDITION_ERPRESSION_TYPE,
-                                           NON_CANCELLING);
+                                           NON_CANCELLING,
+                                           EMPTY_VALUE);
     }
 
     @Test
@@ -150,7 +156,8 @@ public class BoundaryCatchingIntermediateConditionalEventTest extends BoundaryCa
                                            CONDITION_EXPRESSION_SCRIPT,
                                            CONDITION_EXPRESSION_LANGUAGE,
                                            CONDITION_ERPRESSION_TYPE,
-                                           CANCELLING);
+                                           CANCELLING,
+                                           SLA_DUE_DATE);
     }
 
     @Test
@@ -168,7 +175,8 @@ public class BoundaryCatchingIntermediateConditionalEventTest extends BoundaryCa
                                            CONDITION_EXPRESSION_SCRIPT_DEFAULT_VALUE,
                                            CONDITION_EXPRESSION_LANGUAGE,
                                            CONDITION_ERPRESSION_TYPE,
-                                           NON_CANCELLING);
+                                           NON_CANCELLING,
+                                           EMPTY_VALUE);
     }
 
     @Test
@@ -186,7 +194,8 @@ public class BoundaryCatchingIntermediateConditionalEventTest extends BoundaryCa
                                            CONDITION_EXPRESSION_SCRIPT_DEFAULT_VALUE,
                                            CONDITION_EXPRESSION_LANGUAGE,
                                            CONDITION_ERPRESSION_TYPE,
-                                           NON_CANCELLING);
+                                           NON_CANCELLING,
+                                           EMPTY_VALUE);
     }
 
     @Test
@@ -208,7 +217,8 @@ public class BoundaryCatchingIntermediateConditionalEventTest extends BoundaryCa
                                            CONDITION_EXPRESSION_SCRIPT,
                                            CONDITION_EXPRESSION_LANGUAGE,
                                            CONDITION_ERPRESSION_TYPE,
-                                           CANCELLING);
+                                           CANCELLING,
+                                           SLA_DUE_DATE);
     }
 
     @Override
@@ -265,16 +275,18 @@ public class BoundaryCatchingIntermediateConditionalEventTest extends BoundaryCa
                                                     String conditionExpressionScript,
                                                     String conditionExpressionLanguage,
                                                     String conditionExpressionType,
-                                                    boolean isCancelling) {
+                                                    boolean isCancelling,
+                                                    String slaDueDate) {
         assertNotNull(executionSet);
         assertNotNull(executionSet.getConditionExpression());
         assertNotNull(executionSet.getConditionExpression().getValue());
         assertNotNull(executionSet.getConditionExpression().getType());
-        assertNotNull(executionSet.getCancelActivity());
 
         assertEquals(conditionExpressionLanguage, executionSet.getConditionExpression().getValue().getLanguage());
         assertEquals(conditionExpressionScript, executionSet.getConditionExpression().getValue().getScript());
         assertEquals(conditionExpressionType, executionSet.getConditionExpression().getType().getName());
-        assertEquals(isCancelling, executionSet.getCancelActivity().getValue());
+
+        assertEventCancelActivity(executionSet, isCancelling);
+        assertTimerEventSlaDueDate(executionSet, slaDueDate);
     }
 }

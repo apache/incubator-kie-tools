@@ -16,20 +16,28 @@
 
 package org.kie.workbench.common.stunner.bpmn.definition;
 
+import java.util.Objects;
+
+import javax.validation.Valid;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.CircleDimensionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.Radius;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.BaseCancellingEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
+import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
+import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers.nestedForms.AbstractEmbeddedFormsInitializer.COLLAPSIBLE_CONTAINER;
 import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers.nestedForms.AbstractEmbeddedFormsInitializer.FIELD_CONTAINER_PARAM;
@@ -45,21 +53,29 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 )
 public class IntermediateCompensationEvent extends BaseCatchingIntermediateEvent {
 
+    @PropertySet
+    @FormField(afterElement = "general")
+    @Valid
+    protected BaseCancellingEventExecutionSet executionSet;
+
     public IntermediateCompensationEvent() {
         this(new BPMNGeneralSet(""),
              new BackgroundSet(),
              new FontSet(),
-             new CircleDimensionSet(new Radius()));
+             new CircleDimensionSet(new Radius()),
+             new BaseCancellingEventExecutionSet());
     }
 
     public IntermediateCompensationEvent(final @MapsTo("general") BPMNGeneralSet general,
                                          final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
                                          final @MapsTo("fontSet") FontSet fontSet,
-                                         final @MapsTo("dimensionsSet") CircleDimensionSet dimensionsSet) {
+                                         final @MapsTo("dimensionsSet") CircleDimensionSet dimensionsSet,
+                                         final @MapsTo("executionSet") BaseCancellingEventExecutionSet executionSet) {
         super(general,
               backgroundSet,
               fontSet,
               dimensionsSet);
+        this.executionSet = executionSet;
     }
 
     @Override
@@ -69,9 +85,18 @@ public class IntermediateCompensationEvent extends BaseCatchingIntermediateEvent
         labels.remove("sequence_start");
     }
 
+    public BaseCancellingEventExecutionSet getExecutionSet() {
+        return executionSet;
+    }
+
+    public void setExecutionSet(BaseCancellingEventExecutionSet executionSet) {
+        this.executionSet = executionSet;
+    }
+
     @Override
     public int hashCode() {
-        return super.hashCode();
+        return HashUtil.combineHashCodes(super.hashCode(),
+                                         Objects.hashCode(executionSet));
     }
 
     @Override
@@ -81,7 +106,8 @@ public class IntermediateCompensationEvent extends BaseCatchingIntermediateEvent
         }
         if (o instanceof IntermediateCompensationEvent) {
             IntermediateCompensationEvent other = (IntermediateCompensationEvent) o;
-            return super.equals(other);
+            return super.equals(other)  &&
+                   Objects.equals(executionSet, other.executionSet);
         }
         return false;
     }

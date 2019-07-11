@@ -30,6 +30,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.event.message.C
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.message.InterruptingMessageEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.message.MessageEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.message.MessageRef;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 import org.kie.workbench.common.stunner.core.graph.Element;
 
 public class ProcessMessageRefProviderTest
@@ -87,6 +88,7 @@ public class ProcessMessageRefProviderTest
     private Element mockIntermediateMessageEventCatchingNode(String messageRefValue) {
         IntermediateMessageEventCatching event = new IntermediateMessageEventCatching();
         event.setExecutionSet(new CancellingMessageEventExecutionSet(new CancelActivity(true),
+                                                                     new SLADueDate(),
                                                                      new MessageRef(messageRefValue)));
         return mockNode(event);
     }

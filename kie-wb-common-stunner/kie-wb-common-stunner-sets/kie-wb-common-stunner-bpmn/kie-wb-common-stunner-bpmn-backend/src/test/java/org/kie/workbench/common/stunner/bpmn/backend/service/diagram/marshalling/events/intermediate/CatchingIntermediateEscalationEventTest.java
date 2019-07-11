@@ -41,6 +41,8 @@ public class CatchingIntermediateEscalationEventTest extends CatchingIntermediat
     private static final String EMPTY_WITH_INCOME_TOP_LEVEL_EVENT_ID = "_C9A91991-AF34-489E-A7C9-1840DF0D8E6E";
     private static final String FILLED_WITH_INCOME_TOP_LEVEL_EVENT_ID = "_13BC7C98-398C-47CE-B4FE-CF388F7159BC";
 
+    private static final String SLA_DUE_DATE = "12/25/1983";
+
     private static final int AMOUNT_OF_NODES_IN_DIAGRAM = 23;
 
     public CatchingIntermediateEscalationEventTest(Marshaller marshallerType) {
@@ -63,7 +65,7 @@ public class CatchingIntermediateEscalationEventTest extends CatchingIntermediat
                                                                                      HAS_NO_INCOME_EDGE,
                                                                                      HAS_OUTGOING_EDGE);
         assertGeneralSet(filledTopEvent.getGeneral(), EVENT_NAME, EVENT_DOCUMENTATION);
-        assertEscalationEventExecutionSet(filledTopEvent.getExecutionSet(), EVENT_REF, CANCELLING);
+        assertEscalationEventExecutionSet(filledTopEvent.getExecutionSet(), EVENT_REF, CANCELLING, SLA_DUE_DATE);
         assertDataIOSet(filledTopEvent.getDataIOSet(), EVENT_DATA_OUTPUT);
     }
 
@@ -78,7 +80,7 @@ public class CatchingIntermediateEscalationEventTest extends CatchingIntermediat
                                                                                     HAS_NO_INCOME_EDGE,
                                                                                     HAS_OUTGOING_EDGE);
         assertGeneralSet(emptyTopEvent.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
-        assertEscalationEventExecutionSet(emptyTopEvent.getExecutionSet(), EMPTY_VALUE, CANCELLING);
+        assertEscalationEventExecutionSet(emptyTopEvent.getExecutionSet(), EMPTY_VALUE, CANCELLING, EMPTY_VALUE);
         assertDataIOSet(emptyTopEvent.getDataIOSet(), EMPTY_VALUE);
     }
 
@@ -98,7 +100,7 @@ public class CatchingIntermediateEscalationEventTest extends CatchingIntermediat
                                                                                             HAS_NO_INCOME_EDGE,
                                                                                             HAS_OUTGOING_EDGE);
         assertGeneralSet(filledSubprocessEvent.getGeneral(), EVENT_NAME, EVENT_DOCUMENTATION);
-        assertEscalationEventExecutionSet(filledSubprocessEvent.getExecutionSet(), EVENT_REF, CANCELLING);
+        assertEscalationEventExecutionSet(filledSubprocessEvent.getExecutionSet(), EVENT_REF, CANCELLING, SLA_DUE_DATE);
         assertDataIOSet(filledSubprocessEvent.getDataIOSet(), EVENT_DATA_OUTPUT);
     }
 
@@ -113,7 +115,7 @@ public class CatchingIntermediateEscalationEventTest extends CatchingIntermediat
                                                                                            HAS_NO_INCOME_EDGE,
                                                                                            HAS_OUTGOING_EDGE);
         assertGeneralSet(emptySubprocessEvent.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
-        assertEscalationEventExecutionSet(emptySubprocessEvent.getExecutionSet(), EMPTY_VALUE, CANCELLING);
+        assertEscalationEventExecutionSet(emptySubprocessEvent.getExecutionSet(), EMPTY_VALUE, CANCELLING, EMPTY_VALUE);
         assertDataIOSet(emptySubprocessEvent.getDataIOSet(), EMPTY_VALUE);
     }
 
@@ -133,7 +135,7 @@ public class CatchingIntermediateEscalationEventTest extends CatchingIntermediat
                                                                                             HAS_INCOME_EDGE,
                                                                                             HAS_OUTGOING_EDGE);
         assertGeneralSet(filledSubprocessEvent.getGeneral(), EVENT_NAME, EVENT_DOCUMENTATION);
-        assertEscalationEventExecutionSet(filledSubprocessEvent.getExecutionSet(), EVENT_REF, CANCELLING);
+        assertEscalationEventExecutionSet(filledSubprocessEvent.getExecutionSet(), EVENT_REF, CANCELLING, SLA_DUE_DATE);
         assertDataIOSet(filledSubprocessEvent.getDataIOSet(), EVENT_DATA_OUTPUT);
     }
 
@@ -148,7 +150,7 @@ public class CatchingIntermediateEscalationEventTest extends CatchingIntermediat
                                                                                  HAS_INCOME_EDGE,
                                                                                  HAS_OUTGOING_EDGE);
         assertGeneralSet(emptyEvent.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
-        assertEscalationEventExecutionSet(emptyEvent.getExecutionSet(), EMPTY_VALUE, CANCELLING);
+        assertEscalationEventExecutionSet(emptyEvent.getExecutionSet(), EMPTY_VALUE, CANCELLING, EMPTY_VALUE);
         assertDataIOSet(emptyEvent.getDataIOSet(), EMPTY_VALUE);
     }
 
@@ -163,7 +165,7 @@ public class CatchingIntermediateEscalationEventTest extends CatchingIntermediat
                                                                                            HAS_INCOME_EDGE,
                                                                                            HAS_OUTGOING_EDGE);
         assertGeneralSet(emptySubprocessEvent.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
-        assertEscalationEventExecutionSet(emptySubprocessEvent.getExecutionSet(), EMPTY_VALUE, CANCELLING);
+        assertEscalationEventExecutionSet(emptySubprocessEvent.getExecutionSet(), EMPTY_VALUE, CANCELLING, EMPTY_VALUE);
         assertDataIOSet(emptySubprocessEvent.getDataIOSet(), EMPTY_VALUE);
     }
 
@@ -183,7 +185,7 @@ public class CatchingIntermediateEscalationEventTest extends CatchingIntermediat
                                                                                             HAS_INCOME_EDGE,
                                                                                             HAS_OUTGOING_EDGE);
         assertGeneralSet(filledSubprocessEvent.getGeneral(), EVENT_NAME, EVENT_DOCUMENTATION);
-        assertEscalationEventExecutionSet(filledSubprocessEvent.getExecutionSet(), EVENT_REF, CANCELLING);
+        assertEscalationEventExecutionSet(filledSubprocessEvent.getExecutionSet(), EVENT_REF, CANCELLING, SLA_DUE_DATE);
         assertDataIOSet(filledSubprocessEvent.getDataIOSet(), EVENT_DATA_OUTPUT);
     }
 
@@ -237,11 +239,12 @@ public class CatchingIntermediateEscalationEventTest extends CatchingIntermediat
         return EMPTY_WITH_INCOME_SUBPROCESS_LEVEL_EVENT_ID;
     }
 
-    private void assertEscalationEventExecutionSet(CancellingEscalationEventExecutionSet executionSet, String escalationRef, boolean isCancelling) {
+    private void assertEscalationEventExecutionSet(CancellingEscalationEventExecutionSet executionSet, String escalationRef, boolean isCancelling, String slaDueDate) {
         assertNotNull(executionSet);
         assertNotNull(executionSet.getEscalationRef());
-        assertNotNull(executionSet.getCancelActivity());
         assertEquals(escalationRef, executionSet.getEscalationRef().getValue());
-        assertEquals(isCancelling, executionSet.getCancelActivity().getValue());
+
+        assertEventCancelActivity(executionSet, isCancelling);
+        assertTimerEventSlaDueDate(executionSet, slaDueDate);
     }
 }

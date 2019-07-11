@@ -45,6 +45,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.event.signal.Si
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.signal.SignalScope;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.timer.TimerSettings;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.timer.TimerSettingsValue;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpmn2;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.Scripts.asCData;
@@ -199,6 +200,10 @@ public abstract class EventPropertyWriter extends PropertyWriter {
         CompensateEventDefinition compensationEventDefinition =
                 bpmn2.createCompensateEventDefinition();
         addEventDefinition(compensationEventDefinition);
+    }
+
+    public void addSlaDueDate(SLADueDate slaDueDate) {
+        CustomElement.slaDueDate.of(flowElement).set(slaDueDate.getValue());
     }
 
     protected abstract void addEventDefinition(EventDefinition eventDefinition);

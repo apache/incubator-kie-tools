@@ -32,6 +32,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.event.escalatio
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.escalation.EscalationEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.escalation.EscalationRef;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.escalation.InterruptingEscalationEventExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -101,6 +102,7 @@ public class ProcessEscalationRefProviderTest extends AbstractProcessFilteredNod
     private Node mockIntermediateEscalationEventCatchingNode(String escalationRefValue) {
         IntermediateEscalationEvent event = new IntermediateEscalationEvent();
         event.setExecutionSet(new CancellingEscalationEventExecutionSet(new CancelActivity(true),
+                                                                        new SLADueDate(),
                                                                         new EscalationRef(escalationRefValue)));
         return mockNode(event);
     }

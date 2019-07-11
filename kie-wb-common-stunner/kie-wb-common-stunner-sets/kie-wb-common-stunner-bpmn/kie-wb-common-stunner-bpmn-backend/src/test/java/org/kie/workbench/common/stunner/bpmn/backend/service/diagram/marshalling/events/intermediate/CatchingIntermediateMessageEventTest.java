@@ -41,6 +41,8 @@ public class CatchingIntermediateMessageEventTest extends CatchingIntermediateEv
     private static final String EMPTY_WITH_INCOME_TOP_LEVEL_EVENT_ID = "663A5EEE-9A2F-4E49-8D50-9C4FD5318854";
     private static final String FILLED_WITH_INCOME_TOP_LEVEL_EVENT_ID = "FEDEDC9B-C4EE-47B1-89F2-95F9593E534F";
 
+    private static final String SLA_DUE_DATE = "12/25/1983";
+
     private static final int AMOUNT_OF_NODES_IN_DIAGRAM = 23;
 
     public CatchingIntermediateMessageEventTest(Marshaller marshallerType) {
@@ -63,7 +65,7 @@ public class CatchingIntermediateMessageEventTest extends CatchingIntermediateEv
                                                                                           HAS_NO_INCOME_EDGE,
                                                                                           HAS_OUTGOING_EDGE);
         assertGeneralSet(filledTopEvent.getGeneral(), EVENT_NAME, EVENT_DOCUMENTATION);
-        assertMessageEventExecutionSet(filledTopEvent.getExecutionSet(), EVENT_REF, CANCELLING);
+        assertMessageEventExecutionSet(filledTopEvent.getExecutionSet(), EVENT_REF, CANCELLING, SLA_DUE_DATE);
         assertDataIOSet(filledTopEvent.getDataIOSet(), EVENT_DATA_OUTPUT);
     }
 
@@ -78,7 +80,7 @@ public class CatchingIntermediateMessageEventTest extends CatchingIntermediateEv
                                                                                          HAS_NO_INCOME_EDGE,
                                                                                          HAS_OUTGOING_EDGE);
         assertGeneralSet(emptyTopEvent.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
-        assertMessageEventExecutionSet(emptyTopEvent.getExecutionSet(), EMPTY_VALUE, CANCELLING);
+        assertMessageEventExecutionSet(emptyTopEvent.getExecutionSet(), EMPTY_VALUE, CANCELLING, EMPTY_VALUE);
         assertDataIOSet(emptyTopEvent.getDataIOSet(), EMPTY_VALUE);
     }
 
@@ -98,7 +100,7 @@ public class CatchingIntermediateMessageEventTest extends CatchingIntermediateEv
                                                                                                  HAS_NO_INCOME_EDGE,
                                                                                                  HAS_OUTGOING_EDGE);
         assertGeneralSet(filledSubprocessEvent.getGeneral(), EVENT_NAME, EVENT_DOCUMENTATION);
-        assertMessageEventExecutionSet(filledSubprocessEvent.getExecutionSet(), EVENT_REF, CANCELLING);
+        assertMessageEventExecutionSet(filledSubprocessEvent.getExecutionSet(), EVENT_REF, CANCELLING, SLA_DUE_DATE);
         assertDataIOSet(filledSubprocessEvent.getDataIOSet(), EVENT_DATA_OUTPUT);
     }
 
@@ -113,7 +115,7 @@ public class CatchingIntermediateMessageEventTest extends CatchingIntermediateEv
                                                                                                 HAS_NO_INCOME_EDGE,
                                                                                                 HAS_OUTGOING_EDGE);
         assertGeneralSet(emptySubprocessEvent.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
-        assertMessageEventExecutionSet(emptySubprocessEvent.getExecutionSet(), EMPTY_VALUE, CANCELLING);
+        assertMessageEventExecutionSet(emptySubprocessEvent.getExecutionSet(), EMPTY_VALUE, CANCELLING, EMPTY_VALUE);
         assertDataIOSet(emptySubprocessEvent.getDataIOSet(), EMPTY_VALUE);
     }
 
@@ -133,7 +135,7 @@ public class CatchingIntermediateMessageEventTest extends CatchingIntermediateEv
                                                                                                  HAS_INCOME_EDGE,
                                                                                                  HAS_OUTGOING_EDGE);
         assertGeneralSet(filledSubprocessEvent.getGeneral(), EVENT_NAME, EVENT_DOCUMENTATION);
-        assertMessageEventExecutionSet(filledSubprocessEvent.getExecutionSet(), EVENT_REF, CANCELLING);
+        assertMessageEventExecutionSet(filledSubprocessEvent.getExecutionSet(), EVENT_REF, CANCELLING, SLA_DUE_DATE);
         assertDataIOSet(filledSubprocessEvent.getDataIOSet(), EVENT_DATA_OUTPUT);
     }
 
@@ -148,7 +150,7 @@ public class CatchingIntermediateMessageEventTest extends CatchingIntermediateEv
                                                                                       HAS_INCOME_EDGE,
                                                                                       HAS_OUTGOING_EDGE);
         assertGeneralSet(emptyEvent.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
-        assertMessageEventExecutionSet(emptyEvent.getExecutionSet(), EMPTY_VALUE, CANCELLING);
+        assertMessageEventExecutionSet(emptyEvent.getExecutionSet(), EMPTY_VALUE, CANCELLING, EMPTY_VALUE);
         assertDataIOSet(emptyEvent.getDataIOSet(), EMPTY_VALUE);
     }
 
@@ -163,7 +165,7 @@ public class CatchingIntermediateMessageEventTest extends CatchingIntermediateEv
                                                                                                 HAS_INCOME_EDGE,
                                                                                                 HAS_OUTGOING_EDGE);
         assertGeneralSet(emptySubprocessEvent.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
-        assertMessageEventExecutionSet(emptySubprocessEvent.getExecutionSet(), EMPTY_VALUE, CANCELLING);
+        assertMessageEventExecutionSet(emptySubprocessEvent.getExecutionSet(), EMPTY_VALUE, CANCELLING, EMPTY_VALUE);
         assertDataIOSet(emptySubprocessEvent.getDataIOSet(), EMPTY_VALUE);
     }
 
@@ -183,7 +185,7 @@ public class CatchingIntermediateMessageEventTest extends CatchingIntermediateEv
                                                                                                  HAS_INCOME_EDGE,
                                                                                                  HAS_OUTGOING_EDGE);
         assertGeneralSet(filledSubprocessEvent.getGeneral(), EVENT_NAME, EVENT_DOCUMENTATION);
-        assertMessageEventExecutionSet(filledSubprocessEvent.getExecutionSet(), EVENT_REF, CANCELLING);
+        assertMessageEventExecutionSet(filledSubprocessEvent.getExecutionSet(), EVENT_REF, CANCELLING, SLA_DUE_DATE);
         assertDataIOSet(filledSubprocessEvent.getDataIOSet(), EVENT_DATA_OUTPUT);
     }
 
@@ -237,11 +239,12 @@ public class CatchingIntermediateMessageEventTest extends CatchingIntermediateEv
         return EMPTY_WITH_INCOME_SUBPROCESS_LEVEL_EVENT_ID;
     }
 
-    private void assertMessageEventExecutionSet(CancellingMessageEventExecutionSet executionSet, String eventName, boolean isCancelling) {
+    private void assertMessageEventExecutionSet(CancellingMessageEventExecutionSet executionSet, String eventName, boolean isCancelling, String slaDueDate) {
         assertNotNull(executionSet);
         assertNotNull(executionSet.getMessageRef());
-        assertNotNull(executionSet.getCancelActivity());
         assertEquals(eventName, executionSet.getMessageRef().getValue());
-        assertEquals(isCancelling, executionSet.getCancelActivity().getValue());
+
+        assertEventCancelActivity(executionSet, isCancelling);
+        assertTimerEventSlaDueDate(executionSet, slaDueDate);
     }
 }

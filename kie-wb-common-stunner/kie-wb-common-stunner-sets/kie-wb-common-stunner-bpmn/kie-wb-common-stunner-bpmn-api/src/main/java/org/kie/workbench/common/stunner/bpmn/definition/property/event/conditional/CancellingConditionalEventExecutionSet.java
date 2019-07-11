@@ -27,7 +27,9 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.stunner.bpmn.definition.property.common.ConditionExpression;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.BaseCancellingEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.CancelActivity;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeValue;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
@@ -37,12 +39,7 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 @Bindable
 @PropertySet
 @FormDefinition(startElement = "cancelActivity")
-public class CancellingConditionalEventExecutionSet {
-
-    @Property
-    @FormField
-    @Valid
-    private CancelActivity cancelActivity;
+public class CancellingConditionalEventExecutionSet extends BaseCancellingEventExecutionSet {
 
     @Property
     @FormField(afterElement = "cancelActivity",
@@ -52,22 +49,16 @@ public class CancellingConditionalEventExecutionSet {
 
     public CancellingConditionalEventExecutionSet() {
         this(new CancelActivity(true),
+             new SLADueDate(),
              new ConditionExpression(new ScriptTypeValue("drools",
                                                          "")));
     }
 
     public CancellingConditionalEventExecutionSet(final @MapsTo("cancelActivity") CancelActivity cancelActivity,
+                                                  final @MapsTo("slaDueDate") SLADueDate slaDueDate,
                                                   final @MapsTo("conditionExpression") ConditionExpression conditionExpression) {
-        this.cancelActivity = cancelActivity;
+        super(cancelActivity, slaDueDate);
         this.conditionExpression = conditionExpression;
-    }
-
-    public CancelActivity getCancelActivity() {
-        return cancelActivity;
-    }
-
-    public void setCancelActivity(CancelActivity cancelActivity) {
-        this.cancelActivity = cancelActivity;
     }
 
     public ConditionExpression getConditionExpression() {
@@ -80,7 +71,7 @@ public class CancellingConditionalEventExecutionSet {
 
     @Override
     public int hashCode() {
-        return HashUtil.combineHashCodes(Objects.hashCode(cancelActivity),
+        return HashUtil.combineHashCodes(super.hashCode(),
                                          Objects.hashCode(conditionExpression));
     }
 
@@ -88,10 +79,8 @@ public class CancellingConditionalEventExecutionSet {
     public boolean equals(Object o) {
         if (o instanceof CancellingConditionalEventExecutionSet) {
             CancellingConditionalEventExecutionSet other = (CancellingConditionalEventExecutionSet) o;
-            return Objects.equals(cancelActivity,
-                                  other.cancelActivity) &&
-                    Objects.equals(conditionExpression,
-                                   other.conditionExpression);
+            return super.equals(other) &&
+                    Objects.equals(conditionExpression, other.conditionExpression);
         }
         return false;
     }

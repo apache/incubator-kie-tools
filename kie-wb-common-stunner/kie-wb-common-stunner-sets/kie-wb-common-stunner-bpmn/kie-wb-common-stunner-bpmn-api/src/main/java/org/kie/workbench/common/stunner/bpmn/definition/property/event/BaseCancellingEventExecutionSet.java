@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.workbench.common.stunner.bpmn.definition.property.event.timer;
+
+package org.kie.workbench.common.stunner.bpmn.definition.property.event;
 
 import java.util.Objects;
 
@@ -24,8 +25,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
-import org.kie.workbench.common.stunner.bpmn.definition.property.event.BaseCancellingEventExecutionSet;
-import org.kie.workbench.common.stunner.bpmn.definition.property.event.CancelActivity;
+import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
@@ -35,46 +35,57 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 @Bindable
 @PropertySet
 @FormDefinition(startElement = "cancelActivity")
-public class CancellingTimerEventExecutionSet extends BaseCancellingEventExecutionSet {
+public class BaseCancellingEventExecutionSet implements BPMNPropertySet {
+
+    @Property
+    @FormField
+    @Valid
+    private CancelActivity cancelActivity;
 
     @Property
     @FormField(afterElement = "cancelActivity")
     @Valid
-    private TimerSettings timerSettings;
+    private SLADueDate slaDueDate;
 
-    public CancellingTimerEventExecutionSet() {
+    public BaseCancellingEventExecutionSet() {
         this(new CancelActivity(),
-             new SLADueDate(),
-             new TimerSettings());
+             new SLADueDate());
     }
 
-    public CancellingTimerEventExecutionSet(final @MapsTo("cancelActivity") CancelActivity cancelActivity,
-                                            final @MapsTo("slaDueDate") SLADueDate slaDueDate,
-                                            final @MapsTo("timerSettings") TimerSettings timerSettings) {
-        super(cancelActivity, slaDueDate);
-        this.timerSettings = timerSettings;
+    public BaseCancellingEventExecutionSet(final @MapsTo("cancelActivity") CancelActivity cancelActivity,
+                                           final @MapsTo("slaDueDate") SLADueDate slaDueDate) {
+        this.cancelActivity = cancelActivity;
+        this.slaDueDate = slaDueDate;
     }
 
-    public TimerSettings getTimerSettings() {
-        return timerSettings;
+    public CancelActivity getCancelActivity() {
+        return cancelActivity;
     }
 
-    public void setTimerSettings(final TimerSettings timerSettings) {
-        this.timerSettings = timerSettings;
+    public void setCancelActivity(CancelActivity cancelActivity) {
+        this.cancelActivity = cancelActivity;
+    }
+
+    public SLADueDate getSlaDueDate() {
+        return slaDueDate;
+    }
+
+    public void setSlaDueDate(SLADueDate slaDueDate) {
+        this.slaDueDate = slaDueDate;
     }
 
     @Override
     public int hashCode() {
-        return HashUtil.combineHashCodes(super.hashCode(),
-                                         Objects.hashCode(timerSettings));
+        return HashUtil.combineHashCodes(Objects.hashCode(cancelActivity),
+                                         Objects.hashCode(slaDueDate));
     }
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof CancellingTimerEventExecutionSet) {
-            CancellingTimerEventExecutionSet other = (CancellingTimerEventExecutionSet) o;
-            return super.equals(other) &&
-                    Objects.equals(timerSettings, other.timerSettings);
+        if (o instanceof BaseCancellingEventExecutionSet) {
+            BaseCancellingEventExecutionSet other = (BaseCancellingEventExecutionSet) o;
+            return Objects.equals(cancelActivity, other.cancelActivity) &&
+                    Objects.equals(slaDueDate, other.slaDueDate);
         }
         return false;
     }

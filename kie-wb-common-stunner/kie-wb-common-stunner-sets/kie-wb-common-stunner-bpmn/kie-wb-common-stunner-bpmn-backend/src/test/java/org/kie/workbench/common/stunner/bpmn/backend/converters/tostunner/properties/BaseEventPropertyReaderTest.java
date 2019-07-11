@@ -69,6 +69,9 @@ public abstract class BaseEventPropertyReaderTest {
     protected static final String SCOPE_ELEMENT_NAME = "customScope";
     protected static final String SCOPE = "SCOPE";
 
+    protected static final String SLADUEDATE_ELEMENT_NAME = "customSLADueDate";
+    protected static final String SLADUEDATE = "12/25/1983";
+
     protected static final String TIME_CYCLE_LANGUAGE = "TIME_CYCLE_LANGUAGE";
     protected static final String TIME_CYCLE = "TIME_CYCLE";
     protected static final String TIME_DATE = "TIME_DATE";
@@ -217,5 +220,13 @@ public abstract class BaseEventPropertyReaderTest {
 
         List<EventDefinition> result = EventPropertyReader.combineEventDefinitions(eventDefinitions, eventDefinitionsRefs);
         assertEquals(eventDefinitions, result);
+    }
+
+    @Test
+    public void testSLADueDate() {
+        List<ExtensionAttributeValue> extensionValues = mockExtensionValues(DroolsPackage.Literals.DOCUMENT_ROOT__META_DATA, SLADUEDATE_ELEMENT_NAME, SLADUEDATE);
+        Event eventMock = getCurrentEventMock();
+        when(eventMock.getExtensionValues()).thenReturn(extensionValues);
+        assertEquals(SLADUEDATE, propertyReader.getSlaDueDate());
     }
 }

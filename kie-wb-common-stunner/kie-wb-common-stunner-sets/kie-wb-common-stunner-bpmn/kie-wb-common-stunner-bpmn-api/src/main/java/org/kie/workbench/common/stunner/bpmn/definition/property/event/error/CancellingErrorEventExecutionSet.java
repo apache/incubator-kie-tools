@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.stunner.bpmn.definition.property.event.error;
 
+import java.util.Objects;
+
 import javax.validation.Valid;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
@@ -24,8 +26,9 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.annotations.field.selector.SelectorDataProvider;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
-import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.BaseCancellingEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.CancelActivity;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 import org.kie.workbench.common.stunner.bpmn.forms.model.ComboBoxFieldType;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
@@ -36,10 +39,7 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 @PropertySet
 @FormDefinition(startElement = "errorRef",
         policy = FieldPolicy.ONLY_MARKED)
-public class CancellingErrorEventExecutionSet implements BPMNPropertySet {
-
-    @Property
-    private CancelActivity cancelActivity;
+public class CancellingErrorEventExecutionSet extends BaseCancellingEventExecutionSet {
 
     @Property
     @FormField(type = ComboBoxFieldType.class)
@@ -51,22 +51,16 @@ public class CancellingErrorEventExecutionSet implements BPMNPropertySet {
     private ErrorRef errorRef;
 
     public CancellingErrorEventExecutionSet() {
-        this(new CancelActivity(true),
+        this(new CancelActivity(),
+             new SLADueDate(),
              new ErrorRef());
     }
 
     public CancellingErrorEventExecutionSet(final @MapsTo("cancelActivity") CancelActivity cancelActivity,
+                                            final @MapsTo("slaDueDate") SLADueDate slaDueDate,
                                             final @MapsTo("errorRef") ErrorRef errorRef) {
-        this.cancelActivity = cancelActivity;
+        super(cancelActivity, slaDueDate);
         this.errorRef = errorRef;
-    }
-
-    public CancelActivity getCancelActivity() {
-        return cancelActivity;
-    }
-
-    public void setCancelActivity(CancelActivity cancelActivity) {
-        this.cancelActivity = cancelActivity;
     }
 
     public ErrorRef getErrorRef() {
@@ -79,15 +73,16 @@ public class CancellingErrorEventExecutionSet implements BPMNPropertySet {
 
     @Override
     public int hashCode() {
-        return HashUtil.combineHashCodes(cancelActivity.hashCode(),
-                                         errorRef.hashCode());
+        return HashUtil.combineHashCodes(super.hashCode(),
+                                         Objects.hashCode(errorRef));
     }
 
     @Override
     public boolean equals(Object o) {
         if (o instanceof CancellingErrorEventExecutionSet) {
             CancellingErrorEventExecutionSet other = (CancellingErrorEventExecutionSet) o;
-            return cancelActivity.equals(other.cancelActivity) && errorRef.equals(other.errorRef);
+            return super.equals(other) &&
+                    Objects.equals(errorRef, other.errorRef);
         }
         return false;
     }

@@ -41,6 +41,8 @@ public class CatchingIntermediateConditionalEventTest extends CatchingIntermedia
     private static final String EMPTY_WITH_EDGES_TOP_LEVEL_EVENT_ID = "_1CE0925E-8DF3-4B38-A419-8F74ACDB869A";
     private static final String FILLED_WITH_EDGES_TOP_LEVEL_EVENT_ID = "_4DA840DF-0635-4BFF-B06A-6BAB3E5545B9";
 
+    private static final String SLA_DUE_DATE = "12/25/1983";
+
     private static final int AMOUNT_OF_NODES_IN_DIAGRAM = 19;
 
     private static final String CONDITION_EXPRESSION_SCRIPT_DEFAULT_VALUE = null;
@@ -70,7 +72,8 @@ public class CatchingIntermediateConditionalEventTest extends CatchingIntermedia
                                            CONDITION_EXPRESSION_SCRIPT,
                                            CONDITION_EXPRESSION_LANGUAGE,
                                            CONDITION_ERPRESSION_TYPE,
-                                           CANCELLING);
+                                           CANCELLING,
+                                           SLA_DUE_DATE);
     }
 
     @Test
@@ -88,7 +91,8 @@ public class CatchingIntermediateConditionalEventTest extends CatchingIntermedia
                                            CONDITION_EXPRESSION_SCRIPT_DEFAULT_VALUE,
                                            CONDITION_EXPRESSION_LANGUAGE,
                                            CONDITION_ERPRESSION_TYPE,
-                                           CANCELLING);
+                                           CANCELLING,
+                                           EMPTY_VALUE);
     }
 
     @Test
@@ -110,7 +114,8 @@ public class CatchingIntermediateConditionalEventTest extends CatchingIntermedia
                                            CONDITION_EXPRESSION_SCRIPT,
                                            CONDITION_EXPRESSION_LANGUAGE,
                                            CONDITION_ERPRESSION_TYPE,
-                                           CANCELLING);
+                                           CANCELLING,
+                                           SLA_DUE_DATE);
     }
 
     @Test
@@ -128,7 +133,8 @@ public class CatchingIntermediateConditionalEventTest extends CatchingIntermedia
                                            CONDITION_EXPRESSION_SCRIPT_DEFAULT_VALUE,
                                            CONDITION_EXPRESSION_LANGUAGE,
                                            CONDITION_ERPRESSION_TYPE,
-                                           CANCELLING);
+                                           CANCELLING,
+                                           EMPTY_VALUE);
     }
 
     @Test
@@ -150,7 +156,8 @@ public class CatchingIntermediateConditionalEventTest extends CatchingIntermedia
                                            CONDITION_EXPRESSION_SCRIPT,
                                            CONDITION_EXPRESSION_LANGUAGE,
                                            CONDITION_ERPRESSION_TYPE,
-                                           CANCELLING);
+                                           CANCELLING,
+                                           SLA_DUE_DATE);
     }
 
     @Test
@@ -168,7 +175,8 @@ public class CatchingIntermediateConditionalEventTest extends CatchingIntermedia
                                            CONDITION_EXPRESSION_SCRIPT_DEFAULT_VALUE,
                                            CONDITION_EXPRESSION_LANGUAGE,
                                            CONDITION_ERPRESSION_TYPE,
-                                           CANCELLING);
+                                           CANCELLING,
+                                           EMPTY_VALUE);
     }
 
     @Test
@@ -186,7 +194,8 @@ public class CatchingIntermediateConditionalEventTest extends CatchingIntermedia
                                            CONDITION_EXPRESSION_SCRIPT_DEFAULT_VALUE,
                                            CONDITION_EXPRESSION_LANGUAGE,
                                            CONDITION_ERPRESSION_TYPE,
-                                           CANCELLING);
+                                           CANCELLING,
+                                           EMPTY_VALUE);
     }
 
     @Test
@@ -208,7 +217,8 @@ public class CatchingIntermediateConditionalEventTest extends CatchingIntermedia
                                            CONDITION_EXPRESSION_SCRIPT,
                                            CONDITION_EXPRESSION_LANGUAGE,
                                            CONDITION_ERPRESSION_TYPE,
-                                           CANCELLING);
+                                           CANCELLING,
+                                           SLA_DUE_DATE);
     }
 
     @Test
@@ -289,16 +299,18 @@ public class CatchingIntermediateConditionalEventTest extends CatchingIntermedia
                                                     String conditionExpressionScript,
                                                     String conditionExpressionLanguage,
                                                     String conditionExpressionType,
-                                                    boolean isCancelling) {
+                                                    boolean isCancelling,
+                                                    String slaDueDate) {
         assertNotNull(executionSet);
         assertNotNull(executionSet.getConditionExpression());
         assertNotNull(executionSet.getConditionExpression().getValue());
         assertNotNull(executionSet.getConditionExpression().getType());
-        assertNotNull(executionSet.getCancelActivity());
 
         assertEquals(conditionExpressionLanguage, executionSet.getConditionExpression().getValue().getLanguage());
         assertEquals(conditionExpressionScript, executionSet.getConditionExpression().getValue().getScript());
         assertEquals(conditionExpressionType, executionSet.getConditionExpression().getType().getName());
-        assertEquals(isCancelling, executionSet.getCancelActivity().getValue());
+
+        assertEventCancelActivity(executionSet, isCancelling);
+        assertTimerEventSlaDueDate(executionSet, slaDueDate);
     }
 }

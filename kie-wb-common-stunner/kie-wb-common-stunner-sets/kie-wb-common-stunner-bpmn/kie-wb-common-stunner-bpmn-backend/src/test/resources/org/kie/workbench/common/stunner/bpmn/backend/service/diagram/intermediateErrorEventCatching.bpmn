@@ -1,35 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/bpmn20" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:bpsim="http://www.bpsim.org/schemas/1.0" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:drools="http://www.jboss.org/drools" id="_tT6r4MYMEeeBN4hT1O1Xjg" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd" exporter="jBPM Designer" exporterVersion="6.2.0" targetNamespace="http://www.omg.org/bpmn20">
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/bpmn20" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:bpsim="http://www.bpsim.org/schemas/1.0" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:drools="http://www.jboss.org/drools" id="_A6bxsHvPEemdR4hRAZrprQ" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd http://www.omg.org/spec/DD/20100524/DC DC.xsd http://www.omg.org/spec/DD/20100524/DI DI.xsd " exporter="jBPM Process Modeler" exporterVersion="2.0" targetNamespace="http://www.omg.org/bpmn20">
   <bpmn2:itemDefinition id="_errorVarItem" structureRef="String"/>
+  <bpmn2:itemDefinition id="_80A2A7A9-7C68-408C-BE3B-467562A2C139_theErrorEventOutputOutputXItem" structureRef="String"/>
   <bpmn2:error id="MyError" errorCode="MyError"/>
-  <bpmn2:process id="Evaluation.intermediateErrorCatching" drools:packageName="org.jbpm" drools:version="1.0" name="intermediateErrorCatching" isExecutable="true">
-    <bpmn2:property id="errorVar" itemSubjectRef="_errorVarItem"/>
-    <bpmn2:intermediateCatchEvent id="80A2A7A9-7C68-408C-BE3B-467562A2C139" drools:boundaryca="true" name="MyErrorCatchingEvent">
+  <bpmn2:process id="Evaluation.intermediateErrorCatching" drools:packageName="org.jbpm" drools:version="1.0" drools:adHoc="false" name="intermediateErrorCatching" isExecutable="true">
+    <bpmn2:property id="errorVar" itemSubjectRef="_errorVarItem" name="errorVar"/>
+    <bpmn2:intermediateCatchEvent id="80A2A7A9-7C68-408C-BE3B-467562A2C139" name="MyErrorCatchingEvent">
+      <bpmn2:documentation id="_A6bxsXvPEemdR4hRAZrprQ"><![CDATA[MyErrorCatchingEventDocumentation]]></bpmn2:documentation>
       <bpmn2:extensionElements>
         <drools:metaData name="elementname">
           <drools:metaValue><![CDATA[MyErrorCatchingEvent]]></drools:metaValue>
         </drools:metaData>
+        <drools:metaData name="customSLADueDate">
+          <drools:metaValue><![CDATA[12/25/1983]]></drools:metaValue>
+        </drools:metaData>
       </bpmn2:extensionElements>
-      <bpmn2:documentation id="_tT6r4cYMEeeBN4hT1O1Xjg"><![CDATA[MyErrorCatchingEventDocumentation]]></bpmn2:documentation>
-      <bpmn2:dataOutput id="80A2A7A9-7C68-408C-BE3B-467562A2C139_theErrorEventOutput" drools:dtype="String" name="theErrorEventOutput"/>
-      <bpmn2:dataOutputAssociation id="_tT6r48YMEeeBN4hT1O1Xjg">
-        <bpmn2:sourceRef>80A2A7A9-7C68-408C-BE3B-467562A2C139_theErrorEventOutput</bpmn2:sourceRef>
+      <bpmn2:dataOutput id="80A2A7A9-7C68-408C-BE3B-467562A2C139_theErrorEventOutputOutputX" drools:dtype="String" itemSubjectRef="_80A2A7A9-7C68-408C-BE3B-467562A2C139_theErrorEventOutputOutputXItem" name="theErrorEventOutput"/>
+      <bpmn2:dataOutputAssociation id="_A6bxs3vPEemdR4hRAZrprQ">
+        <bpmn2:sourceRef>80A2A7A9-7C68-408C-BE3B-467562A2C139_theErrorEventOutputOutputX</bpmn2:sourceRef>
         <bpmn2:targetRef>errorVar</bpmn2:targetRef>
       </bpmn2:dataOutputAssociation>
-      <bpmn2:outputSet id="_tT6r4sYMEeeBN4hT1O1Xjg">
-        <bpmn2:dataOutputRefs>80A2A7A9-7C68-408C-BE3B-467562A2C139_theErrorEventOutput</bpmn2:dataOutputRefs>
+      <bpmn2:outputSet id="_A6bxsnvPEemdR4hRAZrprQ">
+        <bpmn2:dataOutputRefs>80A2A7A9-7C68-408C-BE3B-467562A2C139_theErrorEventOutputOutputX</bpmn2:dataOutputRefs>
       </bpmn2:outputSet>
-      <bpmn2:errorEventDefinition id="_tT6r5MYMEeeBN4hT1O1Xjg" drools:erefname="MyError" errorRef="MyError"/>
+      <bpmn2:errorEventDefinition id="_A6bxtHvPEemdR4hRAZrprQ" drools:erefname="MyError" errorRef="MyError"/>
     </bpmn2:intermediateCatchEvent>
   </bpmn2:process>
-  <bpmndi:BPMNDiagram id="_tT6r5cYMEeeBN4hT1O1Xjg">
-    <bpmndi:BPMNPlane id="_tT6r5sYMEeeBN4hT1O1Xjg" bpmnElement="Evaluation.intermediateErrorCatching">
-      <bpmndi:BPMNShape id="_tT6r58YMEeeBN4hT1O1Xjg" bpmnElement="80A2A7A9-7C68-408C-BE3B-467562A2C139">
-        <dc:Bounds height="28.0" width="28.0" x="114.0" y="171.0"/>
+  <bpmndi:BPMNDiagram id="_A6bxtXvPEemdR4hRAZrprQ">
+    <bpmndi:BPMNPlane id="_A6bxtnvPEemdR4hRAZrprQ" bpmnElement="Evaluation.intermediateErrorCatching">
+      <bpmndi:BPMNShape id="shape_80A2A7A9-7C68-408C-BE3B-467562A2C139" bpmnElement="80A2A7A9-7C68-408C-BE3B-467562A2C139">
+        <dc:Bounds height="56.0" width="56.0" x="114.0" y="171.0"/>
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
-  <bpmn2:relationship id="_tT6r6MYMEeeBN4hT1O1Xjg" type="BPSimData">
+  <bpmn2:relationship id="_A6cYwHvPEemdR4hRAZrprQ" type="BPSimData">
     <bpmn2:extensionElements>
       <bpsim:BPSimData>
         <bpsim:Scenario xsi:type="bpsim:Scenario" id="default" name="Simulationscenario">
@@ -37,7 +41,7 @@
         </bpsim:Scenario>
       </bpsim:BPSimData>
     </bpmn2:extensionElements>
-    <bpmn2:source>_tT6r4MYMEeeBN4hT1O1Xjg</bpmn2:source>
-    <bpmn2:target>_tT6r4MYMEeeBN4hT1O1Xjg</bpmn2:target>
+    <bpmn2:source>_A6bxsHvPEemdR4hRAZrprQ</bpmn2:source>
+    <bpmn2:target>_A6bxsHvPEemdR4hRAZrprQ</bpmn2:target>
   </bpmn2:relationship>
 </bpmn2:definitions>

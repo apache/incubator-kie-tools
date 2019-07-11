@@ -33,6 +33,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.event.signal.In
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.signal.ScopedSignalEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.signal.SignalRef;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.signal.SignalScope;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -103,6 +104,7 @@ public class ProcessSignalRefProviderTest
     private Node mockIntermediateSignalEventCatchingNode(String signalRefValue) {
         IntermediateSignalEventCatching event = new IntermediateSignalEventCatching();
         event.setExecutionSet(new CancellingSignalEventExecutionSet(new CancelActivity(true),
+                                                                    new SLADueDate(),
                                                                     new SignalRef(signalRefValue)));
         return mockNode(event);
     }

@@ -27,8 +27,9 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.annotations.field.selector.SelectorDataProvider;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
-import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.BaseCancellingEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.CancelActivity;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 import org.kie.workbench.common.stunner.bpmn.forms.model.ComboBoxFieldType;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
@@ -39,12 +40,7 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 @PropertySet
 @FormDefinition(startElement = "cancelActivity",
         policy = FieldPolicy.ONLY_MARKED)
-public class CancellingEscalationEventExecutionSet implements BPMNPropertySet {
-
-    @Property
-    @FormField
-    @Valid
-    private CancelActivity cancelActivity;
+public class CancellingEscalationEventExecutionSet extends BaseCancellingEventExecutionSet {
 
     @Property
     @FormField(type = ComboBoxFieldType.class,
@@ -59,21 +55,15 @@ public class CancellingEscalationEventExecutionSet implements BPMNPropertySet {
 
     public CancellingEscalationEventExecutionSet() {
         this(new CancelActivity(true),
+             new SLADueDate(),
              new EscalationRef());
     }
 
     public CancellingEscalationEventExecutionSet(final @MapsTo("cancelActivity") CancelActivity cancelActivity,
+                                                 final @MapsTo("slaDueDate") SLADueDate slaDueDate,
                                                  final @MapsTo("escalationRef") EscalationRef escalationRef) {
-        this.cancelActivity = cancelActivity;
+        super(cancelActivity, slaDueDate);
         this.escalationRef = escalationRef;
-    }
-
-    public CancelActivity getCancelActivity() {
-        return cancelActivity;
-    }
-
-    public void setCancelActivity(CancelActivity cancelActivity) {
-        this.cancelActivity = cancelActivity;
     }
 
     public EscalationRef getEscalationRef() {
@@ -86,18 +76,15 @@ public class CancellingEscalationEventExecutionSet implements BPMNPropertySet {
 
     @Override
     public int hashCode() {
-        return HashUtil.combineHashCodes(Objects.hashCode(cancelActivity),
+        return HashUtil.combineHashCodes(super.hashCode(),
                                          Objects.hashCode(escalationRef));
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
         if (o instanceof CancellingEscalationEventExecutionSet) {
             CancellingEscalationEventExecutionSet other = (CancellingEscalationEventExecutionSet) o;
-            return Objects.equals(cancelActivity, other.cancelActivity) &&
+            return super.equals(other) &&
                     Objects.equals(escalationRef, other.escalationRef);
         }
         return false;

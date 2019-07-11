@@ -52,6 +52,8 @@ public class CatchingIntermediateTimerEventTest extends CatchingIntermediateEven
     private static final String FILLED_WITH_INCOME_SUBPROCESS_LEVEL_EVENT_MULTIPLE_ID = "F50012CC-6345-489B-8052-6BB895163C20";
     private static final String FILLED_WITH_INCOME_SUBPROCESS_LEVEL_EVENT_SPECIFIC_DATE_ID = "3B5B9E49-E238-485D-9303-8BD0B3310D94";
 
+    private static final String SLA_DUE_DATE = "12/25/1983";
+
     private static final int AMOUNT_OF_NODES_IN_DIAGRAM = 45;
 
     public CatchingIntermediateTimerEventTest(Marshaller marshallerType) {
@@ -62,16 +64,16 @@ public class CatchingIntermediateTimerEventTest extends CatchingIntermediateEven
     @Override
     public void testUnmarshallTopLevelEventFilledProperties() throws Exception {
         final String EVENT_NAME_AFTER_DURATION = "timer01 name ~!@#$%^&*()_+-=[]\\{}|;':\",./<>?`";
-        final String EVENT_DOCUMENTATION_AFTER_DURATION = "timer01 doc \n ~!@#$%^&*()_+`1234567890-=[]\\{}|;':\",./<>?";
+        final String EVENT_DOCUMENTATION_AFTER_DURATION = "timer01 doc\n ~!@#$%^&*()_+`1234567890-=[]\\{}|;':\",./<>?";
         final String EVENT_TIMER_VALUE_AFTER_DURATION = "PT1H15M";
 
         final String EVENT_NAME_MULTIPLE = "timer03 name ~!@#$%^&*()_+-=[]\\{}|;':\",./<>?`";
-        final String EVENT_DOCUMENTATION_MULTIPLE = "timer03 doc \n ~!@#$%^&*()_+`1234567890-=[]\\{}|;':\",./<>?";
+        final String EVENT_DOCUMENTATION_MULTIPLE = "timer03 doc\n ~!@#$%^&*()_+`1234567890-=[]\\{}|;':\",./<>?";
         final String EVENT_TIMER_VALUE_MULTIPLE = "5m10s";
         final String EVENT_TIMER_VALUE_LANGUAGE_MULTIPLE = "cron";
 
         final String EVENT_NAME_SPECIFIC_DATE = "timer02 name ~!@#$%^&*()_+-=[]\\{}|;':\",./<>?`";
-        final String EVENT_DOCUMENTATION_SPECIFIC_DATE = "timer02 doc \n ~!@#$%^&*()_+`1234567890-=[]\\{}|;':\",./<>?";
+        final String EVENT_DOCUMENTATION_SPECIFIC_DATE = "timer02 doc\n ~!@#$%^&*()_+`1234567890-=[]\\{}|;':\",./<>?";
         final String EVENT_TIMER_VALUE_SPECIFIC_DATE = "2018-08-13T15:10:27+02:00";
 
         Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_CATCHING_INTERMEDIATE_EVENT_FILE_PATH);
@@ -82,21 +84,21 @@ public class CatchingIntermediateTimerEventTest extends CatchingIntermediateEven
                                                                                              HAS_NO_INCOME_EDGE,
                                                                                              HAS_OUTGOING_EDGE);
         assertGeneralSet(filledTopEventAfterDuration.getGeneral(), EVENT_NAME_AFTER_DURATION, EVENT_DOCUMENTATION_AFTER_DURATION);
-        assertTimerEventAfterDuration(filledTopEventAfterDuration.getExecutionSet(), EVENT_TIMER_VALUE_AFTER_DURATION, CANCELLING);
+        assertTimerEventAfterDuration(filledTopEventAfterDuration.getExecutionSet(), EVENT_TIMER_VALUE_AFTER_DURATION, CANCELLING, SLA_DUE_DATE);
 
         IntermediateTimerEvent filledTopEventMultiple = getCatchingIntermediateNodeById(diagram,
                                                                                         FILLED_TOP_LEVEL_EVENT_MULTIPLE_ID,
                                                                                         HAS_NO_INCOME_EDGE,
                                                                                         HAS_OUTGOING_EDGE);
         assertGeneralSet(filledTopEventMultiple.getGeneral(), EVENT_NAME_MULTIPLE, EVENT_DOCUMENTATION_MULTIPLE);
-        assertTimerEventMultiple(filledTopEventMultiple.getExecutionSet(), EVENT_TIMER_VALUE_MULTIPLE, EVENT_TIMER_VALUE_LANGUAGE_MULTIPLE, CANCELLING);
+        assertTimerEventMultiple(filledTopEventMultiple.getExecutionSet(), EVENT_TIMER_VALUE_MULTIPLE, EVENT_TIMER_VALUE_LANGUAGE_MULTIPLE, CANCELLING, SLA_DUE_DATE);
 
         IntermediateTimerEvent filledTopEventSpecificDate = getCatchingIntermediateNodeById(diagram,
                                                                                             FILLED_TOP_LEVEL_EVENT_SPECIFIC_DATE_ID,
                                                                                             HAS_NO_INCOME_EDGE,
                                                                                             HAS_OUTGOING_EDGE);
         assertGeneralSet(filledTopEventSpecificDate.getGeneral(), EVENT_NAME_SPECIFIC_DATE, EVENT_DOCUMENTATION_SPECIFIC_DATE);
-        assertTimerEventSpecificDate(filledTopEventSpecificDate.getExecutionSet(), EVENT_TIMER_VALUE_SPECIFIC_DATE, CANCELLING);
+        assertTimerEventSpecificDate(filledTopEventSpecificDate.getExecutionSet(), EVENT_TIMER_VALUE_SPECIFIC_DATE, CANCELLING, SLA_DUE_DATE);
     }
 
     @Test
@@ -110,80 +112,24 @@ public class CatchingIntermediateTimerEventTest extends CatchingIntermediateEven
                                                                                HAS_NO_INCOME_EDGE,
                                                                                HAS_OUTGOING_EDGE);
         assertGeneralSet(emptyTopEvent.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
-        assertTimerEventEmpty(emptyTopEvent.getExecutionSet(), CANCELLING);
-    }
-
-    @Test
-    @Override
-    public void testUnmarshallSubprocessLevelEventFilledProperties() throws Exception {
-        final String EVENT_NAME_AFTER_DURATION = "timer07 name ~!@#$%^&*()_+-=[]\\{}|;':\",./<>?`";
-        final String EVENT_DOCUMENTATION_AFTER_DURATION = "timer07 doc \n ~!@#$%^&*()_+`1234567890-=[]\\{}|;':\",./<>?";
-        final String EVENT_TIMER_VALUE_AFTER_DURATION = "PT1H15M";
-
-        final String EVENT_NAME_MULTIPLE = "timer09 name ~!@#$%^&*()_+-=[]\\{}|;':\",./<>?`";
-        final String EVENT_DOCUMENTATION_MULTIPLE = "timer09 doc \n ~!@#$%^&*()_+`1234567890-=[]\\{}|;':\",./<>?";
-        final String EVENT_TIMER_VALUE_MULTIPLE = "R3/PT8M3S";
-        //  "none" is a "not a cron" for engine and represents ISO in GUI
-        final String EVENT_TIMER_VALUE_LANGUAGE_MULTIPLE = "none";
-
-        final String EVENT_NAME_SPECIFIC_DATE = "timer08 name ~!@#$%^&*()_+-=[]\\{}|;':\",./<>?`";
-        final String EVENT_DOCUMENTATION_SPECIFIC_DATE = "timer08 doc \n ~!@#$%^&*()_+`1234567890-=[]\\{}|;':\",./<>?";
-        final String EVENT_TIMER_VALUE_SPECIFIC_DATE = "2018-08-13T16:20:14+02:00";
-
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_CATCHING_INTERMEDIATE_EVENT_FILE_PATH);
-        assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
-
-        IntermediateTimerEvent filledSubprocessEventAfterDuration = getCatchingIntermediateNodeById(diagram,
-                                                                                                    FILLED_SUBPROCESS_LEVEL_EVENT_AFTER_DURATION_ID,
-                                                                                                    HAS_NO_INCOME_EDGE,
-                                                                                                    HAS_OUTGOING_EDGE);
-        assertGeneralSet(filledSubprocessEventAfterDuration.getGeneral(), EVENT_NAME_AFTER_DURATION, EVENT_DOCUMENTATION_AFTER_DURATION);
-        assertTimerEventAfterDuration(filledSubprocessEventAfterDuration.getExecutionSet(), EVENT_TIMER_VALUE_AFTER_DURATION, CANCELLING);
-
-        IntermediateTimerEvent filledSubprocessEventMultiple = getCatchingIntermediateNodeById(diagram,
-                                                                                               FILLED_SUBPROCESS_LEVEL_EVENT_MULTIPLE_ID,
-                                                                                               HAS_NO_INCOME_EDGE,
-                                                                                               HAS_OUTGOING_EDGE);
-        assertGeneralSet(filledSubprocessEventMultiple.getGeneral(), EVENT_NAME_MULTIPLE, EVENT_DOCUMENTATION_MULTIPLE);
-        assertTimerEventMultiple(filledSubprocessEventMultiple.getExecutionSet(), EVENT_TIMER_VALUE_MULTIPLE, EVENT_TIMER_VALUE_LANGUAGE_MULTIPLE, CANCELLING);
-
-        IntermediateTimerEvent filledSubprocessEventSpecificDate = getCatchingIntermediateNodeById(diagram,
-                                                                                                   FILLED_SUBPROCESS_LEVEL_EVENT_SPECIFIC_DATE_ID,
-                                                                                                   HAS_NO_INCOME_EDGE,
-                                                                                                   HAS_OUTGOING_EDGE);
-        assertGeneralSet(filledSubprocessEventSpecificDate.getGeneral(), EVENT_NAME_SPECIFIC_DATE, EVENT_DOCUMENTATION_SPECIFIC_DATE);
-        assertTimerEventSpecificDate(filledSubprocessEventSpecificDate.getExecutionSet(), EVENT_TIMER_VALUE_SPECIFIC_DATE, CANCELLING);
-    }
-
-    @Test
-    @Override
-    public void testUnmarshallSubprocessLevelEventEmptyProperties() throws Exception {
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_CATCHING_INTERMEDIATE_EVENT_FILE_PATH);
-        assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
-
-        IntermediateTimerEvent emptySubprocessEvent = getCatchingIntermediateNodeById(diagram,
-                                                                                      EMPTY_SUBPROCESS_LEVEL_EVENT_ID,
-                                                                                      HAS_NO_INCOME_EDGE,
-                                                                                      HAS_OUTGOING_EDGE);
-        assertGeneralSet(emptySubprocessEvent.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
-        assertTimerEventEmpty(emptySubprocessEvent.getExecutionSet(), CANCELLING);
+        assertTimerEventEmpty(emptyTopEvent.getExecutionSet(), CANCELLING, EMPTY_VALUE);
     }
 
     @Test
     @Override
     public void testUnmarshallTopLevelEventWithEdgesFilledProperties() throws Exception {
         final String EVENT_NAME_AFTER_DURATION = "timer04 name ~!@#$%^&*()_+-=[]\\{}|;':\",./<>?`";
-        final String EVENT_DOCUMENTATION_AFTER_DURATION = "timer04 doc \n ~!@#$%^&*()_+`1234567890-=[]\\{}|;':\",./<>?";
+        final String EVENT_DOCUMENTATION_AFTER_DURATION = "timer04 doc\n ~!@#$%^&*()_+`1234567890-=[]\\{}|;':\",./<>?";
         final String EVENT_TIMER_VALUE_AFTER_DURATION = "PT1H15M";
 
         final String EVENT_NAME_MULTIPLE = "timer06 name ~!@#$%^&*()_+-=[]\\{}|;':\",./<>?`";
-        final String EVENT_DOCUMENTATION_MULTIPLE = "timer06 doc \n ~!@#$%^&*()_+`1234567890-=[]\\{}|;':\",./<>?";
+        final String EVENT_DOCUMENTATION_MULTIPLE = "timer06 doc\n ~!@#$%^&*()_+`1234567890-=[]\\{}|;':\",./<>?";
         final String EVENT_TIMER_VALUE_MULTIPLE = "R3/PT8M3S";
         //  "none" is a "not a cron" for engine and represents ISO in GUI
         final String EVENT_TIMER_VALUE_LANGUAGE_MULTIPLE = "none";
 
         final String EVENT_NAME_SPECIFIC_DATE = "timer05 name ~!@#$%^&*()_+-=[]\\{}|;':\",./<>?`";
-        final String EVENT_DOCUMENTATION_SPECIFIC_DATE = "timer05 doc \n ~!@#$%^&*()_+`1234567890-=[]\\{}|;':\",./<>?";
+        final String EVENT_DOCUMENTATION_SPECIFIC_DATE = "timer05 doc\n ~!@#$%^&*()_+`1234567890-=[]\\{}|;':\",./<>?";
         final String EVENT_TIMER_VALUE_SPECIFIC_DATE = "2018-08-13T15:05:02+02:00";
 
         Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_CATCHING_INTERMEDIATE_EVENT_FILE_PATH);
@@ -194,21 +140,21 @@ public class CatchingIntermediateTimerEventTest extends CatchingIntermediateEven
                                                                                              HAS_INCOME_EDGE,
                                                                                              HAS_OUTGOING_EDGE);
         assertGeneralSet(filledTopEventAfterDuration.getGeneral(), EVENT_NAME_AFTER_DURATION, EVENT_DOCUMENTATION_AFTER_DURATION);
-        assertTimerEventAfterDuration(filledTopEventAfterDuration.getExecutionSet(), EVENT_TIMER_VALUE_AFTER_DURATION, CANCELLING);
+        assertTimerEventAfterDuration(filledTopEventAfterDuration.getExecutionSet(), EVENT_TIMER_VALUE_AFTER_DURATION, CANCELLING, SLA_DUE_DATE);
 
         IntermediateTimerEvent filledTopEventMultiple = getCatchingIntermediateNodeById(diagram,
                                                                                         FILLED_WITH_INCOME_TOP_LEVEL_EVENT_MULTIPLE_ID,
                                                                                         HAS_INCOME_EDGE,
                                                                                         HAS_OUTGOING_EDGE);
         assertGeneralSet(filledTopEventMultiple.getGeneral(), EVENT_NAME_MULTIPLE, EVENT_DOCUMENTATION_MULTIPLE);
-        assertTimerEventMultiple(filledTopEventMultiple.getExecutionSet(), EVENT_TIMER_VALUE_MULTIPLE, EVENT_TIMER_VALUE_LANGUAGE_MULTIPLE, CANCELLING);
+        assertTimerEventMultiple(filledTopEventMultiple.getExecutionSet(), EVENT_TIMER_VALUE_MULTIPLE, EVENT_TIMER_VALUE_LANGUAGE_MULTIPLE, CANCELLING, SLA_DUE_DATE);
 
         IntermediateTimerEvent filledTopEventSpecificDate = getCatchingIntermediateNodeById(diagram,
                                                                                             FILLED_WITH_INCOME_TOP_LEVEL_EVENT_SPECIFIC_DATE_ID,
                                                                                             HAS_INCOME_EDGE,
                                                                                             HAS_OUTGOING_EDGE);
         assertGeneralSet(filledTopEventSpecificDate.getGeneral(), EVENT_NAME_SPECIFIC_DATE, EVENT_DOCUMENTATION_SPECIFIC_DATE);
-        assertTimerEventSpecificDate(filledTopEventSpecificDate.getExecutionSet(), EVENT_TIMER_VALUE_SPECIFIC_DATE, CANCELLING);
+        assertTimerEventSpecificDate(filledTopEventSpecificDate.getExecutionSet(), EVENT_TIMER_VALUE_SPECIFIC_DATE, CANCELLING, SLA_DUE_DATE);
     }
 
     @Test
@@ -222,7 +168,79 @@ public class CatchingIntermediateTimerEventTest extends CatchingIntermediateEven
                                                                             HAS_INCOME_EDGE,
                                                                             HAS_OUTGOING_EDGE);
         assertGeneralSet(emptyEvent.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
-        assertTimerEventEmpty(emptyEvent.getExecutionSet(), CANCELLING);
+        assertTimerEventEmpty(emptyEvent.getExecutionSet(), CANCELLING, EMPTY_VALUE);
+    }
+
+    @Test
+    @Override
+    public void testMarshallTopLevelEventFilledProperties() throws Exception {
+        checkEventMarshalling(FILLED_TOP_LEVEL_EVENT_AFTER_DURATION_ID, HAS_NO_INCOME_EDGE, HAS_OUTGOING_EDGE);
+        checkEventMarshalling(FILLED_TOP_LEVEL_EVENT_MULTIPLE_ID, HAS_NO_INCOME_EDGE, HAS_OUTGOING_EDGE);
+        checkEventMarshalling(FILLED_TOP_LEVEL_EVENT_SPECIFIC_DATE_ID, HAS_NO_INCOME_EDGE, HAS_OUTGOING_EDGE);
+    }
+
+    @Test
+    @Override
+    public void testMarshallTopLevelEventWithEdgesFilledProperties() throws Exception {
+        checkEventMarshalling(FILLED_WITH_INCOME_TOP_LEVEL_EVENT_AFTER_DURATION_ID, HAS_INCOME_EDGE, HAS_OUTGOING_EDGE);
+        checkEventMarshalling(FILLED_WITH_INCOME_TOP_LEVEL_EVENT_MULTIPLE_ID, HAS_INCOME_EDGE, HAS_OUTGOING_EDGE);
+        checkEventMarshalling(FILLED_WITH_INCOME_TOP_LEVEL_EVENT_SPECIFIC_DATE_ID, HAS_INCOME_EDGE, HAS_OUTGOING_EDGE);
+    }
+
+    @Test
+    @Override
+    public void testUnmarshallSubprocessLevelEventFilledProperties() throws Exception {
+        final String EVENT_NAME_AFTER_DURATION = "timer07 name ~!@#$%^&*()_+-=[]\\{}|;':\",./<>?`";
+        final String EVENT_DOCUMENTATION_AFTER_DURATION = "timer07 doc\n ~!@#$%^&*()_+`1234567890-=[]\\{}|;':\",./<>?";
+        final String EVENT_TIMER_VALUE_AFTER_DURATION = "PT1H15M";
+
+        final String EVENT_NAME_MULTIPLE = "timer09 name ~!@#$%^&*()_+-=[]\\{}|;':\",./<>?`";
+        final String EVENT_DOCUMENTATION_MULTIPLE = "timer09 doc\n ~!@#$%^&*()_+`1234567890-=[]\\{}|;':\",./<>?";
+        final String EVENT_TIMER_VALUE_MULTIPLE = "R3/PT8M3S";
+        //  "none" is a "not a cron" for engine and represents ISO in GUI
+        final String EVENT_TIMER_VALUE_LANGUAGE_MULTIPLE = "none";
+
+        final String EVENT_NAME_SPECIFIC_DATE = "timer08 name ~!@#$%^&*()_+-=[]\\{}|;':\",./<>?`";
+        final String EVENT_DOCUMENTATION_SPECIFIC_DATE = "timer08 doc\n ~!@#$%^&*()_+`1234567890-=[]\\{}|;':\",./<>?";
+        final String EVENT_TIMER_VALUE_SPECIFIC_DATE = "2018-08-13T16:20:14+02:00";
+
+        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_CATCHING_INTERMEDIATE_EVENT_FILE_PATH);
+        assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
+
+        IntermediateTimerEvent filledSubprocessEventAfterDuration = getCatchingIntermediateNodeById(diagram,
+                                                                                                    FILLED_SUBPROCESS_LEVEL_EVENT_AFTER_DURATION_ID,
+                                                                                                    HAS_NO_INCOME_EDGE,
+                                                                                                    HAS_OUTGOING_EDGE);
+        assertGeneralSet(filledSubprocessEventAfterDuration.getGeneral(), EVENT_NAME_AFTER_DURATION, EVENT_DOCUMENTATION_AFTER_DURATION);
+        assertTimerEventAfterDuration(filledSubprocessEventAfterDuration.getExecutionSet(), EVENT_TIMER_VALUE_AFTER_DURATION, CANCELLING, SLA_DUE_DATE);
+
+        IntermediateTimerEvent filledSubprocessEventMultiple = getCatchingIntermediateNodeById(diagram,
+                                                                                               FILLED_SUBPROCESS_LEVEL_EVENT_MULTIPLE_ID,
+                                                                                               HAS_NO_INCOME_EDGE,
+                                                                                               HAS_OUTGOING_EDGE);
+        assertGeneralSet(filledSubprocessEventMultiple.getGeneral(), EVENT_NAME_MULTIPLE, EVENT_DOCUMENTATION_MULTIPLE);
+        assertTimerEventMultiple(filledSubprocessEventMultiple.getExecutionSet(), EVENT_TIMER_VALUE_MULTIPLE, EVENT_TIMER_VALUE_LANGUAGE_MULTIPLE, CANCELLING, SLA_DUE_DATE);
+
+        IntermediateTimerEvent filledSubprocessEventSpecificDate = getCatchingIntermediateNodeById(diagram,
+                                                                                                   FILLED_SUBPROCESS_LEVEL_EVENT_SPECIFIC_DATE_ID,
+                                                                                                   HAS_NO_INCOME_EDGE,
+                                                                                                   HAS_OUTGOING_EDGE);
+        assertGeneralSet(filledSubprocessEventSpecificDate.getGeneral(), EVENT_NAME_SPECIFIC_DATE, EVENT_DOCUMENTATION_SPECIFIC_DATE);
+        assertTimerEventSpecificDate(filledSubprocessEventSpecificDate.getExecutionSet(), EVENT_TIMER_VALUE_SPECIFIC_DATE, CANCELLING, SLA_DUE_DATE);
+    }
+
+    @Test
+    @Override
+    public void testUnmarshallSubprocessLevelEventEmptyProperties() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_CATCHING_INTERMEDIATE_EVENT_FILE_PATH);
+        assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
+
+        IntermediateTimerEvent emptySubprocessEvent = getCatchingIntermediateNodeById(diagram,
+                                                                                      EMPTY_SUBPROCESS_LEVEL_EVENT_ID,
+                                                                                      HAS_NO_INCOME_EDGE,
+                                                                                      HAS_OUTGOING_EDGE);
+        assertGeneralSet(emptySubprocessEvent.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
+        assertTimerEventEmpty(emptySubprocessEvent.getExecutionSet(), CANCELLING, EMPTY_VALUE);
     }
 
     @Test
@@ -236,23 +254,23 @@ public class CatchingIntermediateTimerEventTest extends CatchingIntermediateEven
                                                                                       HAS_INCOME_EDGE,
                                                                                       HAS_OUTGOING_EDGE);
         assertGeneralSet(emptySubprocessEvent.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
-        assertTimerEventEmpty(emptySubprocessEvent.getExecutionSet(), CANCELLING);
+        assertTimerEventEmpty(emptySubprocessEvent.getExecutionSet(), CANCELLING, EMPTY_VALUE);
     }
 
     @Test
     @Override
     public void testUnmarshallSubprocessLevelEventWithEdgesFilledProperties() throws Exception {
         final String EVENT_NAME_AFTER_DURATION = "timer10 name ~!@#$%^&*()_+-=[]\\{}|;':\",./<>?`";
-        final String EVENT_DOCUMENTATION_AFTER_DURATION = "timer10 doc \n ~!@#$%^&*()_+`1234567890-=[]\\{}|;':\",./<>?";
+        final String EVENT_DOCUMENTATION_AFTER_DURATION = "timer10 doc\n ~!@#$%^&*()_+`1234567890-=[]\\{}|;':\",./<>?";
         final String EVENT_TIMER_VALUE_AFTER_DURATION = "PT1H15M";
 
         final String EVENT_NAME_MULTIPLE = "timer12 name ~!@#$%^&*()_+-=[]\\{}|;':\",./<>?`";
-        final String EVENT_DOCUMENTATION_MULTIPLE = "timer12 doc \n ~!@#$%^&*()_+`1234567890-=[]\\{}|;':\",./<>?";
+        final String EVENT_DOCUMENTATION_MULTIPLE = "timer12 doc\n ~!@#$%^&*()_+`1234567890-=[]\\{}|;':\",./<>?";
         final String EVENT_TIMER_VALUE_MULTIPLE = "5m4s";
         final String EVENT_TIMER_VALUE_LANGUAGE_MULTIPLE = "cron";
 
         final String EVENT_NAME_SPECIFIC_DATE = "timer11 name ~!@#$%^&*()_+-=[]\\{}|;':\",./<>?`";
-        final String EVENT_DOCUMENTATION_SPECIFIC_DATE = "timer11 doc \n ~!@#$%^&*()_+`1234567890-=[]\\{}|;':\",./<>?";
+        final String EVENT_DOCUMENTATION_SPECIFIC_DATE = "timer11 doc\n ~!@#$%^&*()_+`1234567890-=[]\\{}|;':\",./<>?";
         final String EVENT_TIMER_VALUE_SPECIFIC_DATE = "2018-08-13T15:35:13+02:00";
 
         Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_CATCHING_INTERMEDIATE_EVENT_FILE_PATH);
@@ -263,29 +281,21 @@ public class CatchingIntermediateTimerEventTest extends CatchingIntermediateEven
                                                                                              HAS_INCOME_EDGE,
                                                                                              HAS_OUTGOING_EDGE);
         assertGeneralSet(filledTopEventAfterDuration.getGeneral(), EVENT_NAME_AFTER_DURATION, EVENT_DOCUMENTATION_AFTER_DURATION);
-        assertTimerEventAfterDuration(filledTopEventAfterDuration.getExecutionSet(), EVENT_TIMER_VALUE_AFTER_DURATION, CANCELLING);
+        assertTimerEventAfterDuration(filledTopEventAfterDuration.getExecutionSet(), EVENT_TIMER_VALUE_AFTER_DURATION, CANCELLING, SLA_DUE_DATE);
 
         IntermediateTimerEvent filledTopEventMultiple = getCatchingIntermediateNodeById(diagram,
                                                                                         FILLED_WITH_INCOME_SUBPROCESS_LEVEL_EVENT_MULTIPLE_ID,
                                                                                         HAS_INCOME_EDGE,
                                                                                         HAS_OUTGOING_EDGE);
         assertGeneralSet(filledTopEventMultiple.getGeneral(), EVENT_NAME_MULTIPLE, EVENT_DOCUMENTATION_MULTIPLE);
-        assertTimerEventMultiple(filledTopEventMultiple.getExecutionSet(), EVENT_TIMER_VALUE_MULTIPLE, EVENT_TIMER_VALUE_LANGUAGE_MULTIPLE, CANCELLING);
+        assertTimerEventMultiple(filledTopEventMultiple.getExecutionSet(), EVENT_TIMER_VALUE_MULTIPLE, EVENT_TIMER_VALUE_LANGUAGE_MULTIPLE, CANCELLING, SLA_DUE_DATE);
 
         IntermediateTimerEvent filledTopEventSpecificDate = getCatchingIntermediateNodeById(diagram,
                                                                                             FILLED_WITH_INCOME_SUBPROCESS_LEVEL_EVENT_SPECIFIC_DATE_ID,
                                                                                             HAS_INCOME_EDGE,
                                                                                             HAS_OUTGOING_EDGE);
         assertGeneralSet(filledTopEventSpecificDate.getGeneral(), EVENT_NAME_SPECIFIC_DATE, EVENT_DOCUMENTATION_SPECIFIC_DATE);
-        assertTimerEventSpecificDate(filledTopEventSpecificDate.getExecutionSet(), EVENT_TIMER_VALUE_SPECIFIC_DATE, CANCELLING);
-    }
-
-    @Test
-    @Override
-    public void testMarshallTopLevelEventFilledProperties() throws Exception {
-        checkEventMarshalling(FILLED_TOP_LEVEL_EVENT_AFTER_DURATION_ID, HAS_NO_INCOME_EDGE, HAS_OUTGOING_EDGE);
-        checkEventMarshalling(FILLED_TOP_LEVEL_EVENT_MULTIPLE_ID, HAS_NO_INCOME_EDGE, HAS_OUTGOING_EDGE);
-        checkEventMarshalling(FILLED_TOP_LEVEL_EVENT_SPECIFIC_DATE_ID, HAS_NO_INCOME_EDGE, HAS_OUTGOING_EDGE);
+        assertTimerEventSpecificDate(filledTopEventSpecificDate.getExecutionSet(), EVENT_TIMER_VALUE_SPECIFIC_DATE, CANCELLING, SLA_DUE_DATE);
     }
 
     @Test
@@ -294,14 +304,6 @@ public class CatchingIntermediateTimerEventTest extends CatchingIntermediateEven
         checkEventMarshalling(FILLED_SUBPROCESS_LEVEL_EVENT_AFTER_DURATION_ID, HAS_NO_INCOME_EDGE, HAS_OUTGOING_EDGE);
         checkEventMarshalling(FILLED_SUBPROCESS_LEVEL_EVENT_MULTIPLE_ID, HAS_NO_INCOME_EDGE, HAS_OUTGOING_EDGE);
         checkEventMarshalling(FILLED_SUBPROCESS_LEVEL_EVENT_SPECIFIC_DATE_ID, HAS_NO_INCOME_EDGE, HAS_OUTGOING_EDGE);
-    }
-
-    @Test
-    @Override
-    public void testMarshallTopLevelEventWithEdgesFilledProperties() throws Exception {
-        checkEventMarshalling(FILLED_WITH_INCOME_TOP_LEVEL_EVENT_AFTER_DURATION_ID, HAS_INCOME_EDGE, HAS_OUTGOING_EDGE);
-        checkEventMarshalling(FILLED_WITH_INCOME_TOP_LEVEL_EVENT_MULTIPLE_ID, HAS_INCOME_EDGE, HAS_OUTGOING_EDGE);
-        checkEventMarshalling(FILLED_WITH_INCOME_TOP_LEVEL_EVENT_SPECIFIC_DATE_ID, HAS_INCOME_EDGE, HAS_OUTGOING_EDGE);
     }
 
     @Test
@@ -366,19 +368,20 @@ public class CatchingIntermediateTimerEventTest extends CatchingIntermediateEven
         return EMPTY_WITH_INCOME_SUBPROCESS_LEVEL_EVENT_ID;
     }
 
-    private void assertTimerEventMultiple(CancellingTimerEventExecutionSet executionSet, String timerValue, String timeCycleLanguage, boolean isCancelling) {
+    private void assertTimerEventMultiple(CancellingTimerEventExecutionSet executionSet, String timerValue, String timeCycleLanguage, boolean isCancelling, String slaDueDate) {
         assertNotNull(executionSet);
         assertNotNull(executionSet.getTimerSettings());
-        assertNotNull(executionSet.getCancelActivity());
         assertEquals(timerValue, executionSet.getTimerSettings().getValue().getTimeCycle());
         assertEquals(timeCycleLanguage, executionSet.getTimerSettings().getValue().getTimeCycleLanguage());
-        assertEquals(isCancelling, executionSet.getCancelActivity().getValue());
 
         assertNull(executionSet.getTimerSettings().getValue().getTimeDuration());
         assertNull(executionSet.getTimerSettings().getValue().getTimeDate());
+
+        assertEventCancelActivity(executionSet, isCancelling);
+        assertTimerEventSlaDueDate(executionSet, slaDueDate);
     }
 
-    private void assertTimerEventAfterDuration(CancellingTimerEventExecutionSet executionSet, String timerValue, boolean isCancelling) {
+    private void assertTimerEventAfterDuration(CancellingTimerEventExecutionSet executionSet, String timerValue, boolean isCancelling, String slaDueDate) {
         assertNotNull(executionSet);
         assertNotNull(executionSet.getTimerSettings());
         assertNotNull(executionSet.getCancelActivity());
@@ -388,9 +391,12 @@ public class CatchingIntermediateTimerEventTest extends CatchingIntermediateEven
         assertNull(executionSet.getTimerSettings().getValue().getTimeDate());
         assertNull(executionSet.getTimerSettings().getValue().getTimeCycle());
         assertNull(executionSet.getTimerSettings().getValue().getTimeCycleLanguage());
+
+        assertEventCancelActivity(executionSet, isCancelling);
+        assertTimerEventSlaDueDate(executionSet, slaDueDate);
     }
 
-    private void assertTimerEventSpecificDate(CancellingTimerEventExecutionSet executionSet, String dateValue, boolean isCancelling) {
+    private void assertTimerEventSpecificDate(CancellingTimerEventExecutionSet executionSet, String dateValue, boolean isCancelling, String slaDueDate) {
         assertNotNull(executionSet);
         assertNotNull(executionSet.getTimerSettings());
         assertNotNull(executionSet.getCancelActivity());
@@ -400,9 +406,12 @@ public class CatchingIntermediateTimerEventTest extends CatchingIntermediateEven
         assertNull(executionSet.getTimerSettings().getValue().getTimeCycle());
         assertNull(executionSet.getTimerSettings().getValue().getTimeDuration());
         assertNull(executionSet.getTimerSettings().getValue().getTimeCycleLanguage());
+
+        assertEventCancelActivity(executionSet, isCancelling);
+        assertTimerEventSlaDueDate(executionSet, slaDueDate);
     }
 
-    private void assertTimerEventEmpty(CancellingTimerEventExecutionSet executionSet, boolean isCancelling) {
+    private void assertTimerEventEmpty(CancellingTimerEventExecutionSet executionSet, boolean isCancelling, String slaDueDate) {
         assertNotNull(executionSet);
         assertNotNull(executionSet.getTimerSettings());
         assertNotNull(executionSet.getCancelActivity());
@@ -412,5 +421,8 @@ public class CatchingIntermediateTimerEventTest extends CatchingIntermediateEven
         assertNull(executionSet.getTimerSettings().getValue().getTimeCycle());
         assertNull(executionSet.getTimerSettings().getValue().getTimeDuration());
         assertNull(executionSet.getTimerSettings().getValue().getTimeCycleLanguage());
+
+        assertEventCancelActivity(executionSet, isCancelling);
+        assertTimerEventSlaDueDate(executionSet, slaDueDate);
     }
 }

@@ -43,6 +43,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEvent
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.BaseCancellingEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.CancelActivity;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.conditional.CancellingConditionalEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.error.CancellingErrorEventExecutionSet;
@@ -58,6 +59,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.event.timer.Tim
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Documentation;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
@@ -117,142 +119,167 @@ public class IntermediateCatchEventConverter {
 
     private BpmnNode errorEvent(CatchEvent event, ErrorEventDefinition e) {
         String nodeId = event.getId();
-        Node<View<IntermediateErrorEventCatching>, Edge> node = factoryManager.newNode(nodeId, IntermediateErrorEventCatching.class);
+        Node<View<IntermediateErrorEventCatching>, Edge> node =
+                factoryManager.newNode(nodeId, IntermediateErrorEventCatching.class);
 
         IntermediateErrorEventCatching definition = node.getContent().getDefinition();
         CatchEventPropertyReader p = propertyReaderFactory.of(event);
 
-        definition.setGeneral(new BPMNGeneralSet(
-                new Name(p.getName()),
-                new Documentation(p.getDocumentation())
-        ));
+        definition.setGeneral(
+                new BPMNGeneralSet(
+                        new Name(p.getName()),
+                        new Documentation(p.getDocumentation())
+                )
+        );
+        definition.setBackgroundSet(p.getBackgroundSet());
+        definition.setFontSet(p.getFontSet());
+        definition.setDimensionsSet(p.getCircleDimensionSet());
 
         definition.setDataIOSet(
-                new DataIOSet(
-                        p.getAssignmentsInfo()));
+                new DataIOSet(p.getAssignmentsInfo())
+        );
 
-        definition.setExecutionSet(new CancellingErrorEventExecutionSet(
-                new CancelActivity(p.isCancelActivity()),
-                new ErrorRef(EventDefinitionReader.errorRefOf(e))
-        ));
+        definition.setExecutionSet(
+                new CancellingErrorEventExecutionSet(
+                        new CancelActivity(p.isCancelActivity()),
+                        new SLADueDate(p.getSlaDueDate()),
+                        new ErrorRef(EventDefinitionReader.errorRefOf(e))
+                )
+        );
 
         node.getContent().setBounds(p.getBounds());
-
-        definition.setDimensionsSet(p.getCircleDimensionSet());
-        definition.setFontSet(p.getFontSet());
-        definition.setBackgroundSet(p.getBackgroundSet());
 
         return BpmnNode.of(node, p);
     }
 
     private BpmnNode signalEvent(CatchEvent event, SignalEventDefinition e) {
         String nodeId = event.getId();
-        Node<View<IntermediateSignalEventCatching>, Edge> node = factoryManager.newNode(nodeId, IntermediateSignalEventCatching.class);
+        Node<View<IntermediateSignalEventCatching>, Edge> node =
+                factoryManager.newNode(nodeId, IntermediateSignalEventCatching.class);
 
         IntermediateSignalEventCatching definition = node.getContent().getDefinition();
         CatchEventPropertyReader p = propertyReaderFactory.of(event);
 
-        definition.setGeneral(new BPMNGeneralSet(
-                new Name(p.getName()),
-                new Documentation(p.getDocumentation())
-        ));
+        definition.setGeneral(
+                new BPMNGeneralSet(
+                        new Name(p.getName()),
+                        new Documentation(p.getDocumentation())
+                )
+        );
+        definition.setBackgroundSet(p.getBackgroundSet());
+        definition.setFontSet(p.getFontSet());
+        definition.setDimensionsSet(p.getCircleDimensionSet());
 
         definition.setDataIOSet(new DataIOSet(
                 p.getAssignmentsInfo()
         ));
 
-        definition.setExecutionSet(new CancellingSignalEventExecutionSet(
-                new CancelActivity(p.isCancelActivity()),
-                new SignalRef(p.getSignalRef())
-        ));
+        definition.setExecutionSet(
+                new CancellingSignalEventExecutionSet(
+                        new CancelActivity(p.isCancelActivity()),
+                        new SLADueDate(p.getSlaDueDate()),
+                        new SignalRef(p.getSignalRef())
+                )
+        );
 
         node.getContent().setBounds(p.getBounds());
-
-        definition.setDimensionsSet(p.getCircleDimensionSet());
-        definition.setFontSet(p.getFontSet());
-        definition.setBackgroundSet(p.getBackgroundSet());
 
         return BpmnNode.of(node, p);
     }
 
     private BpmnNode timerEvent(CatchEvent event, TimerEventDefinition e) {
         String nodeId = event.getId();
-        Node<View<IntermediateTimerEvent>, Edge> node = factoryManager.newNode(nodeId, IntermediateTimerEvent.class);
+        Node<View<IntermediateTimerEvent>, Edge> node =
+                factoryManager.newNode(nodeId, IntermediateTimerEvent.class);
 
         IntermediateTimerEvent definition = node.getContent().getDefinition();
         CatchEventPropertyReader p = propertyReaderFactory.of(event);
 
-        definition.setGeneral(new BPMNGeneralSet(
-                new Name(p.getName()),
-                new Documentation(p.getDocumentation())
-        ));
+        definition.setGeneral(
+                new BPMNGeneralSet(
+                        new Name(p.getName()),
+                        new Documentation(p.getDocumentation())
+                )
+        );
+        definition.setBackgroundSet(p.getBackgroundSet());
+        definition.setFontSet(p.getFontSet());
+        definition.setDimensionsSet(p.getCircleDimensionSet());
 
-        definition.setExecutionSet(new CancellingTimerEventExecutionSet(
-                new CancelActivity(p.isCancelActivity()),
-                new TimerSettings(p.getTimerSettings(e))
-        ));
+        definition.setExecutionSet(
+                new CancellingTimerEventExecutionSet(
+                        new CancelActivity(p.isCancelActivity()),
+                        new SLADueDate(p.getSlaDueDate()),
+                        new TimerSettings(p.getTimerSettings(e))
+                )
+        );
 
         node.getContent().setBounds(p.getBounds());
-
-        definition.setDimensionsSet(p.getCircleDimensionSet());
-        definition.setFontSet(p.getFontSet());
-        definition.setBackgroundSet(p.getBackgroundSet());
 
         return BpmnNode.of(node, p);
     }
 
     private BpmnNode messageEvent(CatchEvent event, MessageEventDefinition e) {
         String nodeId = event.getId();
-        Node<View<IntermediateMessageEventCatching>, Edge> node = factoryManager.newNode(nodeId, IntermediateMessageEventCatching.class);
+        Node<View<IntermediateMessageEventCatching>, Edge> node =
+                factoryManager.newNode(nodeId, IntermediateMessageEventCatching.class);
 
         IntermediateMessageEventCatching definition = node.getContent().getDefinition();
         CatchEventPropertyReader p = propertyReaderFactory.of(event);
 
-        definition.setGeneral(new BPMNGeneralSet(
-                new Name(p.getName()),
-                new Documentation(p.getDocumentation())
-        ));
+        definition.setGeneral(
+                new BPMNGeneralSet(
+                        new Name(p.getName()),
+                        new Documentation(p.getDocumentation())
+                )
+        );
+        definition.setBackgroundSet(p.getBackgroundSet());
+        definition.setFontSet(p.getFontSet());
+        definition.setDimensionsSet(p.getCircleDimensionSet());
 
-        definition.setDataIOSet(new DataIOSet(
-                p.getAssignmentsInfo()
-        ));
+        definition.setDataIOSet(
+                new DataIOSet(p.getAssignmentsInfo())
+        );
 
-        definition.setExecutionSet(new CancellingMessageEventExecutionSet(
-                new CancelActivity(p.isCancelActivity()),
-                new MessageRef(EventDefinitionReader.messageRefOf(e))
-        ));
+        definition.setExecutionSet(
+                new CancellingMessageEventExecutionSet(
+                        new CancelActivity(p.isCancelActivity()),
+                        new SLADueDate(p.getSlaDueDate()),
+                        new MessageRef(EventDefinitionReader.messageRefOf(e))
+                )
+        );
 
         node.getContent().setBounds(p.getBounds());
-
-        definition.setDimensionsSet(p.getCircleDimensionSet());
-        definition.setFontSet(p.getFontSet());
-        definition.setBackgroundSet(p.getBackgroundSet());
 
         return BpmnNode.of(node, p);
     }
 
     private BpmnNode conditionalEvent(CatchEvent event, ConditionalEventDefinition e) {
         String nodeId = event.getId();
-        Node<View<IntermediateConditionalEvent>, Edge> node = factoryManager.newNode(nodeId, IntermediateConditionalEvent.class);
+        Node<View<IntermediateConditionalEvent>, Edge> node =
+                factoryManager.newNode(nodeId, IntermediateConditionalEvent.class);
 
         IntermediateConditionalEvent definition = node.getContent().getDefinition();
         CatchEventPropertyReader p = propertyReaderFactory.of(event);
 
-        definition.setGeneral(new BPMNGeneralSet(
-                new Name(p.getName()),
-                new Documentation(p.getDocumentation())
-        ));
+        definition.setGeneral(
+                new BPMNGeneralSet(
+                        new Name(p.getName()),
+                        new Documentation(p.getDocumentation())
+                )
+        );
+        definition.setBackgroundSet(p.getBackgroundSet());
+        definition.setFontSet(p.getFontSet());
+        definition.setDimensionsSet(p.getCircleDimensionSet());
 
-        definition.setExecutionSet(new CancellingConditionalEventExecutionSet(
-                new CancelActivity(p.isCancelActivity()),
-                p.getConditionExpression(e)
-        ));
+        definition.setExecutionSet(
+                new CancellingConditionalEventExecutionSet(
+                        new CancelActivity(p.isCancelActivity()),
+                        new SLADueDate(p.getSlaDueDate()),
+                        p.getConditionExpression(e)
+                )
+        );
 
         node.getContent().setBounds(p.getBounds());
-
-        definition.setDimensionsSet(p.getCircleDimensionSet());
-        definition.setFontSet(p.getFontSet());
-        definition.setBackgroundSet(p.getBackgroundSet());
 
         return BpmnNode.of(node, p);
     }
@@ -260,30 +287,36 @@ public class IntermediateCatchEventConverter {
     private BpmnNode escalationEvent(CatchEvent event,
                                      EscalationEventDefinition e) {
         String nodeId = event.getId();
-        Node<View<IntermediateEscalationEvent>, Edge> node = factoryManager.newNode(nodeId,
-                                                                                    IntermediateEscalationEvent.class);
+        Node<View<IntermediateEscalationEvent>, Edge> node =
+                factoryManager.newNode(nodeId, IntermediateEscalationEvent.class);
 
         IntermediateEscalationEvent definition = node.getContent().getDefinition();
         CatchEventPropertyReader p = propertyReaderFactory.of(event);
 
-        definition.setGeneral(new BPMNGeneralSet(
-                new Name(p.getName()),
-                new Documentation(p.getDocumentation())
-        ));
+        definition.setGeneral(
+                new BPMNGeneralSet(
+                        new Name(p.getName()),
+                        new Documentation(p.getDocumentation())
+                )
+        );
+        definition.setBackgroundSet(p.getBackgroundSet());
+        definition.setFontSet(p.getFontSet());
+        definition.setDimensionsSet(p.getCircleDimensionSet());
 
         definition.setDataIOSet(
-                new DataIOSet(p.getAssignmentsInfo()));
+                new DataIOSet(p.getAssignmentsInfo())
+        );
 
-        definition.setExecutionSet(new CancellingEscalationEventExecutionSet(
-                new CancelActivity(p.isCancelActivity()),
-                new EscalationRef(EventDefinitionReader.escalationRefOf(e))
-        ));
+        definition.setExecutionSet(
+                new CancellingEscalationEventExecutionSet(
+                        new CancelActivity(p.isCancelActivity()),
+                        new SLADueDate(p.getSlaDueDate()),
+                        new EscalationRef(EventDefinitionReader.escalationRefOf(e))
+                )
+        );
 
         node.getContent().setBounds(p.getBounds());
 
-        definition.setDimensionsSet(p.getCircleDimensionSet());
-        definition.setFontSet(p.getFontSet());
-        definition.setBackgroundSet(p.getBackgroundSet());
 
         return BpmnNode.of(node, p);
     }
@@ -291,22 +324,29 @@ public class IntermediateCatchEventConverter {
     private BpmnNode compensationEvent(CatchEvent event,
                                        CompensateEventDefinition e) {
         String nodeId = event.getId();
-        Node<View<IntermediateCompensationEvent>, Edge> node = factoryManager.newNode(nodeId,
-                                                                                      IntermediateCompensationEvent.class);
+        Node<View<IntermediateCompensationEvent>, Edge> node =
+                factoryManager.newNode(nodeId, IntermediateCompensationEvent.class);
 
         IntermediateCompensationEvent definition = node.getContent().getDefinition();
         CatchEventPropertyReader p = propertyReaderFactory.of(event);
 
-        definition.setGeneral(new BPMNGeneralSet(
-                new Name(p.getName()),
-                new Documentation(p.getDocumentation())
-        ));
+        definition.setGeneral(
+                new BPMNGeneralSet(
+                        new Name(p.getName()),
+                        new Documentation(p.getDocumentation())
+                )
+        );
+        definition.setBackgroundSet(p.getBackgroundSet());
+        definition.setFontSet(p.getFontSet());
+        definition.setDimensionsSet(p.getCircleDimensionSet());
+
+        CancelActivity cancelActivity = new CancelActivity(false);
+        SLADueDate slaDueDate = new SLADueDate(p.getSlaDueDate());
+        BaseCancellingEventExecutionSet executionSet =
+                new BaseCancellingEventExecutionSet(cancelActivity, slaDueDate);
+        definition.setExecutionSet(executionSet);
 
         node.getContent().setBounds(p.getBounds());
-
-        definition.setDimensionsSet(p.getCircleDimensionSet());
-        definition.setFontSet(p.getFontSet());
-        definition.setBackgroundSet(p.getBackgroundSet());
 
         return BpmnNode.of(node, p);
     }

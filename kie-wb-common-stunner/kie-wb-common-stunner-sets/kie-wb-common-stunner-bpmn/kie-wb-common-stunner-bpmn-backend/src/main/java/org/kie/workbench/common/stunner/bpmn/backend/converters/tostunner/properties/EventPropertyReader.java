@@ -107,6 +107,8 @@ public abstract class EventPropertyReader extends FlowElementPropertyReader {
                 .orElse(new SimulationAttributeSet());
     }
 
+    public String getSlaDueDate() { return CustomElement.slaDueDate.of(element).get(); }
+
     public static ConditionExpression getConditionExpression(ConditionalEventDefinition conditionalEvent) {
         if (conditionalEvent.getCondition() instanceof FormalExpression) {
             FormalExpression formalExpression = (FormalExpression) conditionalEvent.getCondition();

@@ -21,11 +21,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.client.forms.filters.BPMNDiagramFilterProvider;
+import org.kie.workbench.common.stunner.bpmn.client.forms.filters.CatchingIntermediateEventFilterProvider;
+import org.kie.workbench.common.stunner.bpmn.client.forms.filters.StartEventFilterProvider;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
+import org.kie.workbench.common.stunner.bpmn.definition.BaseCatchingIntermediateEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.BaseStartEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
 import org.kie.workbench.common.stunner.core.client.ManagedInstanceStub;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
-import org.kie.workbench.common.stunner.core.graph.Element;
-import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.forms.client.formFilters.FormFiltersProviderFactory;
 import org.kie.workbench.common.stunner.forms.client.formFilters.StunnerFormElementFilterProvider;
 import org.mockito.Mock;
@@ -49,16 +53,32 @@ public class StunnerBPMNEntryPointTest {
     @Mock
     private BPMNDiagramFilterProvider bpmnDiagramFilterProvider;
 
-    @Mock
-    private Element<? extends Definition<?>> element;
-
     private BPMNDiagramImpl diagramDef;
+
+    @Mock
+    private CatchingIntermediateEventFilterProvider catchingIntermediateEventFilterProvider;
+
+    private BaseCatchingIntermediateEvent intermediateEventDef;
+
+    @Mock
+    private StartEventFilterProvider startEventFilterProvider;
+
+    private BaseStartEvent startEventDef;
 
     @Before
     public void setUp() throws Exception {
         diagramDef = new BPMNDiagramImpl();
         when(bpmnDiagramFilterProvider.getDefinitionType()).thenReturn((Class) BPMNDiagramImpl.class);
-        managedFilters = new ManagedInstanceStub(bpmnDiagramFilterProvider);
+
+        intermediateEventDef = new IntermediateTimerEvent();
+        when(catchingIntermediateEventFilterProvider.getDefinitionType()).thenReturn((Class) IntermediateTimerEvent.class);
+
+        startEventDef = new StartNoneEvent();
+        when(startEventFilterProvider.getDefinitionType()).thenReturn((Class) StartNoneEvent.class);
+
+        managedFilters = new ManagedInstanceStub(bpmnDiagramFilterProvider,
+                                                 startEventFilterProvider,
+                                                 catchingIntermediateEventFilterProvider);
         tested = new StunnerBPMNEntryPoint(sessionManager, managedFilters);
     }
 
@@ -67,6 +87,12 @@ public class StunnerBPMNEntryPointTest {
         tested.init();
         FormFiltersProviderFactory.getFilterForDefinition(UUID, diagramDef);
         verify(bpmnDiagramFilterProvider).provideFilters(UUID, diagramDef);
+
+        FormFiltersProviderFactory.getFilterForDefinition(UUID, startEventDef);
+        verify(startEventFilterProvider).provideFilters(UUID, startEventDef);
+
+        FormFiltersProviderFactory.getFilterForDefinition(UUID, intermediateEventDef);
+        verify(catchingIntermediateEventFilterProvider).provideFilters(UUID, intermediateEventDef);
     }
 }
 

@@ -28,6 +28,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.IntermediateEscalationEv
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.BaseCancellingEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.conditional.CancellingConditionalEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.error.CancellingErrorEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.escalation.CancellingEscalationEventExecutionSet;
@@ -72,14 +73,16 @@ public class IntermediateCatchEventConverter {
         p.setName(general.getName().getValue());
         p.setDocumentation(general.getDocumentation().getValue());
 
-        p.setAssignmentsInfo(
-                definition.getDataIOSet().getAssignmentsinfo());
+        p.setAssignmentsInfo(definition.getDataIOSet().getAssignmentsinfo());
 
         CancellingErrorEventExecutionSet executionSet = definition.getExecutionSet();
         p.setCancelActivity(executionSet.getCancelActivity().getValue());
-        p.addError(executionSet.getErrorRef());
+        p.addSlaDueDate(executionSet.getSlaDueDate());
 
         p.setAbsoluteBounds(n);
+
+        p.addError(executionSet.getErrorRef());
+
         return p;
     }
 
@@ -98,9 +101,12 @@ public class IntermediateCatchEventConverter {
 
         CancellingSignalEventExecutionSet executionSet = definition.getExecutionSet();
         p.setCancelActivity(executionSet.getCancelActivity().getValue());
-        p.addSignal(definition.getExecutionSet().getSignalRef());
+        p.addSlaDueDate(executionSet.getSlaDueDate());
 
         p.setAbsoluteBounds(n);
+
+        p.addSignal(definition.getExecutionSet().getSignalRef());
+
         return p;
     }
 
@@ -116,9 +122,12 @@ public class IntermediateCatchEventConverter {
 
         CancellingTimerEventExecutionSet executionSet = definition.getExecutionSet();
         p.setCancelActivity(executionSet.getCancelActivity().getValue());
-        p.addTimer(executionSet.getTimerSettings());
+        p.addSlaDueDate(executionSet.getSlaDueDate());
 
         p.setAbsoluteBounds(n);
+
+        p.addTimer(executionSet.getTimerSettings());
+
         return p;
     }
 
@@ -132,14 +141,16 @@ public class IntermediateCatchEventConverter {
         p.setName(general.getName().getValue());
         p.setDocumentation(general.getDocumentation().getValue());
 
-        p.setAssignmentsInfo(
-                definition.getDataIOSet().getAssignmentsinfo());
+        p.setAssignmentsInfo(definition.getDataIOSet().getAssignmentsinfo());
 
         CancellingMessageEventExecutionSet executionSet = definition.getExecutionSet();
         p.setCancelActivity(executionSet.getCancelActivity().getValue());
-        p.addMessage(executionSet.getMessageRef());
+        p.addSlaDueDate(executionSet.getSlaDueDate());
 
         p.setAbsoluteBounds(n);
+
+        p.addMessage(executionSet.getMessageRef());
+
         return p;
     }
 
@@ -155,9 +166,11 @@ public class IntermediateCatchEventConverter {
 
         CancellingConditionalEventExecutionSet executionSet = definition.getExecutionSet();
         p.setCancelActivity(executionSet.getCancelActivity().getValue());
-        p.addCondition(executionSet.getConditionExpression());
+        p.addSlaDueDate(executionSet.getSlaDueDate());
 
         p.setAbsoluteBounds(n);
+
+        p.addCondition(executionSet.getConditionExpression());
         return p;
     }
 
@@ -176,9 +189,11 @@ public class IntermediateCatchEventConverter {
 
         CancellingEscalationEventExecutionSet executionSet = definition.getExecutionSet();
         p.setCancelActivity(executionSet.getCancelActivity().getValue());
-        p.addEscalation(executionSet.getEscalationRef());
+        p.addSlaDueDate(executionSet.getSlaDueDate());
 
         p.setAbsoluteBounds(n);
+
+        p.addEscalation(executionSet.getEscalationRef());
         return p;
     }
 
@@ -192,9 +207,12 @@ public class IntermediateCatchEventConverter {
         p.setName(general.getName().getValue());
         p.setDocumentation(general.getDocumentation().getValue());
 
+        BaseCancellingEventExecutionSet executionSet = definition.getExecutionSet();
+        p.addSlaDueDate(executionSet.getSlaDueDate());
+        p.setAbsoluteBounds(n);
+
         p.addCompensation();
 
-        p.setAbsoluteBounds(n);
         return p;
     }
 
