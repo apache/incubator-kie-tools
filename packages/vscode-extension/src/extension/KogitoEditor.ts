@@ -43,7 +43,6 @@ export class KogitoEditor {
     this.envelopeBusOuterMessageHandler = new EnvelopeBusOuterMessageHandler(
       {
         postMessage: msg => {
-          //FIXME: Do not attempt to send messages if panel is disposed.
           this.panel.webview.postMessage(msg);
         }
       },
