@@ -331,13 +331,24 @@ public class ClassMethodInspectorTest {
     public static class ParentClass {
 
         public void aParentMethod() {
+        }
 
+        protected void aParentProtectedMethod() {
+        }
+
+        private void aParentPrivateMethod() {
         }
     }
 
     public static class ChildClass extends ParentClass {
 
         public void aChildMethod() {
+        }
+
+        protected void aChildProtectedMethod() {
+        }
+
+        private void aChildPrivateMethod() {
         }
     }
 }
