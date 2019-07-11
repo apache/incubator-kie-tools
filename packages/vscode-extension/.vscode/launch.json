@@ -18,18 +18,14 @@
 			"preLaunchTask": "npm: watch"
 		},
 		{
-			"name": "Extension Tests",
+			"name": "Integration Tests",
 			"type": "extensionHost",
 			"request": "launch",
 			"runtimeExecutable": "${execPath}",
 			"args": [
 				"--extensionDevelopmentPath=${workspaceFolder}",
-				"--extensionTestsPath=${workspaceFolder}/out/test"
-			],
-			"outFiles": [
-				"${workspaceFolder}/dist/test/*/.js"
-			],
-			"preLaunchTask": "npm: watch"
+				"--extensionTestsPath=${workspaceFolder}/__tests__/out/suite"
+			]
 		}
 	]
 }
