@@ -52,20 +52,25 @@
     "build:fast": "rm -rf dist && webpack",
     "compile": "webpack",
     "watch": "webpack",
-    "build:prod": "yarn run build --mode production && yarn run pack-extension"
+    "test:it": "rm -rf __tests__/out && tsc -p __tests__ && node __tests__/out/main.js",
+    "build:prod": "yarn run build --mode production && yarn run test:it && yarn run pack-extension"
   },
   "devDependencies": {
     "vsce": "1.59.0",
-    "@types/mocha": "2.2.42",
+    "@types/mocha": "5.2.7",
     "@types/node": "10.12.21",
     "tslint": "5.12.1",
     "typescript": "3.3.1",
     "webpack": "4.15.1",
     "webpack-cli": "3.0.8",
     "@types/vscode": "^1.33.0",
-    "vscode": "1.1.28",
     "vscode-test": "1.0.0",
-    "copy-webpack-plugin": "5.0.3"
+    "copy-webpack-plugin": "5.0.3",
+    "jest": "23.5.0",
+    "mocha": "6.1.4",
+    "jest-junit": "6.3.0",
+    "glob": "7.1.4",
+    "@types/glob": "7.1.1"
   },
   "dependencies": {
     "appformer-js-core": "0.0.0",
