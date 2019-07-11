@@ -816,7 +816,6 @@
 
   <modules>
     <module>uberfire-archetype</module>
-    <module>uberfire-bom</module>
     <module>uberfire-commons</module>
     <module>uberfire-api</module>
     <module>uberfire-client-api</module>
@@ -849,14 +848,6 @@
 
   <dependencyManagement>
     <dependencies>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-platform-bom</artifactId>
-        <version>${version.org.kie}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-
       <dependency>
         <groupId>org.uberfire</groupId>
         <artifactId>uberfire-bom</artifactId>
