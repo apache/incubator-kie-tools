@@ -16,9 +16,12 @@
 
 package org.kie.workbench.common.dmn.backend.common;
 
-import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -121,6 +124,30 @@ public class DMNMarshallerImportsHelperImpl implements DMNMarshallerImportsHelpe
     }
 
     @Override
+    public Map<Import, String> getImportXML(final Metadata metadata,
+                                            final List<Import> imports) {
+
+        final Map<Import, String> importXML = new HashMap<>();
+
+        if (imports.size() > 0) {
+            for (final String xml : getOtherDMNDiagramsXML(metadata)) {
+                try (StringReader sr = toStringReader(xml)) {
+                    final Definitions definitions = marshaller.unmarshal(sr);
+                    findImportByDefinitions(definitions, imports).ifPresent(anImport -> {
+                        importXML.put(anImport, xml);
+                    });
+                }
+            }
+        }
+
+        return importXML;
+    }
+
+    StringReader toStringReader(final String xml) {
+        return new StringReader(xml);
+    }
+
+    @Override
     public List<DRGElement> getImportedDRGElements(final Map<Import, Definitions> importDefinitions) {
 
         final List<DRGElement> importedNodes = new ArrayList<>();
@@ -159,7 +186,7 @@ public class DMNMarshallerImportsHelperImpl implements DMNMarshallerImportsHelpe
         return pathsHelper
                 .getDMNModelsPaths(workspaceProject)
                 .stream()
-                .map(path -> loadPath(path).map(marshaller::unmarshal).orElse(null))
+                .map(path -> loadPath(path).map(this::toInputStreamReader).map(marshaller::unmarshal).orElse(null))
                 .filter(Objects::nonNull)
                 .filter(definitions -> Objects.equals(definitions.getNamespace(), namespace))
                 .findAny();
@@ -266,46 +293,69 @@ public class DMNMarshallerImportsHelperImpl implements DMNMarshallerImportsHelpe
     }
 
     List<Definitions> getOtherDMNDiagramsDefinitions(final Metadata metadata) {
-
         final List<Path> diagramPaths = pathsHelper.getDMNModelsPaths(getProject(metadata));
-
         return diagramPaths
                 .stream()
                 .filter(path -> !Objects.equals(metadata.getPath(), path))
-                .map(path -> loadPath(path).map(marshaller::unmarshal).orElse(null))
+                .map(path -> loadPath(path).orElse(null))
+                .filter(Objects::nonNull)
+                .map(this::toDefinitions)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
+    }
+
+    Definitions toDefinitions(final InputStream inputStream) {
+        try (InputStream inputStreamAutoClosable = inputStream;
+             InputStreamReader reader = toInputStreamReader(inputStreamAutoClosable)) {
+            return marshaller.unmarshal(reader);
+        } catch (IOException ioe) {
+            //Swallow. null is returned by default.
+        }
+        return null;
     }
 
     List<Path> getPMMLDocumentPaths(final Metadata metadata) {
         return pathsHelper.getPMMLModelsPaths(getProject(metadata));
     }
 
-    Optional<InputStreamReader> loadPath(final Path path) {
+    InputStreamReader toInputStreamReader(final InputStream inputStream) {
+        return new InputStreamReader(inputStream);
+    }
 
-        InputStreamReader mutableInputStream = null;
+    List<String> getOtherDMNDiagramsXML(final Metadata metadata) {
+        final List<Path> diagramPaths = pathsHelper.getDMNModelsPaths(getProject(metadata));
+        return diagramPaths
+                .stream()
+                .filter(path -> !Objects.equals(metadata.getPath(), path))
+                .map(path -> loadPath(path).orElse(null))
+                .filter(Objects::nonNull)
+                .map(this::toString)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+    }
 
+    Optional<InputStream> loadPath(final Path path) {
         try {
-
-            final byte[] bytes = ioService.readAllBytes(convertPath(path));
-            final ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
-            mutableInputStream = new InputStreamReader(inputStream);
-
-            return Optional.of(mutableInputStream);
+            return Optional.ofNullable(ioService.newInputStream(convertPath(path)));
         } catch (final Exception e) {
-            closeInputStreamReader(mutableInputStream);
             return Optional.empty();
         }
     }
 
-    void closeInputStreamReader(final InputStreamReader mutableInputStream) {
-        if (mutableInputStream != null) {
-            try {
-                mutableInputStream.close();
-            } catch (final IOException e) {
-                // Ignore.
+    String toString(final InputStream inputStream) {
+        try (InputStream inputStreamAutoClosable = inputStream;
+             ByteArrayOutputStream result = new ByteArrayOutputStream()) {
+            final byte[] buffer = new byte[1024];
+            int length;
+            while ((length = inputStreamAutoClosable.read(buffer)) != -1) {
+                result.write(buffer, 0, length);
             }
+
+            return result.toString(StandardCharsets.UTF_8.name());
+        } catch (IOException ioe) {
+            //Swallow. null is returned by default.
         }
+        return null;
     }
 
     private WorkspaceProject getProject(final Metadata metadata) {

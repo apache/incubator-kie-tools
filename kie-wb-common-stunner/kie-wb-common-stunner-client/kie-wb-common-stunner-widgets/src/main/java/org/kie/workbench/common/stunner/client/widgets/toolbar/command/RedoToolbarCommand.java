@@ -16,6 +16,7 @@
 package org.kie.workbench.common.stunner.client.widgets.toolbar.command;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
 import org.gwtbootstrap3.client.ui.constants.IconRotate;
@@ -32,7 +33,7 @@ public class RedoToolbarCommand extends AbstractToolbarCommand<EditorSession, Re
 
     @Inject
     public RedoToolbarCommand(final DefinitionUtils definitionUtils,
-                              final ManagedInstance<RedoSessionCommand> command,
+                              final @Any ManagedInstance<RedoSessionCommand> command,
                               final ClientTranslationService translationService) {
         super(definitionUtils,
               command,

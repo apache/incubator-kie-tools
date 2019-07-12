@@ -132,12 +132,22 @@
 
     <dependency>
       <groupId>org.kie</groupId>
+      <artifactId>kie-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie</groupId>
       <artifactId>kie-dmn-feel</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-dmn-core</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-dmn-validation</artifactId>
     </dependency>
 
     <dependency>
@@ -277,7 +287,6 @@
       <artifactId>mockito-core</artifactId>
       <scope>test</scope>
     </dependency>
-
 
     <dependency>
       <groupId>org.kie</groupId>

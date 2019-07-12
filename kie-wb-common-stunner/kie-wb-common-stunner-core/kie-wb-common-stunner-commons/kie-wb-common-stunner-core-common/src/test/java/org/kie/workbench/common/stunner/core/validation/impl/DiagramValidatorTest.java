@@ -54,7 +54,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class DiagramValidatorlTest {
+public class DiagramValidatorTest {
 
     public static final String MODEL_VIOLATION = "model violation";
     public static final String RULE_VIOLATION = "rule violation";
@@ -163,13 +163,94 @@ public class DiagramValidatorlTest {
                                   any(Consumer.class));
     }
 
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testValidateDiagramOneRuleViolationEmptyModelViolations() {
+        final TestingGraphInstanceBuilder.TestGraph1 graph1 = TestingGraphInstanceBuilder.newGraph1(graphTestHandler);
+        when(diagram.getGraph()).thenReturn(graphTestHandler.graph);
+
+        //"Empty" model violation
+        doAnswer(invocationOnMock -> {
+            final Consumer<Collection<ModelBeanViolation>> validationsConsumer =
+                    (Consumer<Collection<ModelBeanViolation>>) invocationOnMock.getArguments()[1];
+            validationsConsumer.accept(Collections.emptyList());
+            return null;
+        }).when(modelValidator).validate(eq(graph1.intermNode),
+                                         any(Consumer.class));
+
+        //graph violation
+        RuleViolation ruleViolation = mock(RuleViolation.class);
+        when(ruleViolation.getViolationType()).thenReturn(Violation.Type.ERROR);
+        when(ruleViolation.getMessage()).thenReturn(RULE_VIOLATION);
+        when(graphTestHandler.ruleManager.evaluate(any(RuleSet.class),
+                                                   any(RuleEvaluationContext.class))).thenReturn(new DefaultRuleViolations().addViolation(ruleViolation));
+
+        tested.validate(diagram,
+                        violations -> assertElementError(violations,
+                                                         TestingGraphInstanceBuilder.INTERM_NODE_UUID));
+
+        verify(modelValidator,
+               times(1)).validate(eq(graph1.startNode),
+                                  any(Consumer.class));
+        verify(modelValidator,
+               times(1)).validate(eq(graph1.intermNode),
+                                  any(Consumer.class));
+        verify(modelValidator,
+               times(1)).validate(eq(graph1.endNode),
+                                  any(Consumer.class));
+        verify(modelValidator,
+               times(1)).validate(eq(graph1.edge1),
+                                  any(Consumer.class));
+        verify(modelValidator,
+               times(1)).validate(eq(graph1.edge2),
+                                  any(Consumer.class));
+        verify(modelValidator,
+               times(1)).validate(eq(graphTestHandler.graph),
+                                  any(Consumer.class));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testValidateDiagramZeroRuleViolationsEmptyModelViolations() {
+        final TestingGraphInstanceBuilder.TestGraph1 graph1 = TestingGraphInstanceBuilder.newGraph1(graphTestHandler);
+        when(diagram.getGraph()).thenReturn(graphTestHandler.graph);
+
+        //"Empty" model violation
+        doAnswer(invocationOnMock -> {
+            final Consumer<Collection<ModelBeanViolation>> validationsConsumer =
+                    (Consumer<Collection<ModelBeanViolation>>) invocationOnMock.getArguments()[1];
+            validationsConsumer.accept(Collections.emptyList());
+            return null;
+        }).when(modelValidator).validate(eq(graph1.intermNode),
+                                         any(Consumer.class));
+
+        tested.validate(diagram,
+                        violations -> assertTrue(violations.isEmpty()));
+
+        verify(modelValidator,
+               times(1)).validate(eq(graph1.startNode),
+                                  any(Consumer.class));
+        verify(modelValidator,
+               times(1)).validate(eq(graph1.intermNode),
+                                  any(Consumer.class));
+        verify(modelValidator,
+               times(1)).validate(eq(graph1.endNode),
+                                  any(Consumer.class));
+        verify(modelValidator,
+               times(1)).validate(eq(graph1.edge1),
+                                  any(Consumer.class));
+        verify(modelValidator,
+               times(1)).validate(eq(graph1.edge2),
+                                  any(Consumer.class));
+        verify(modelValidator,
+               times(1)).validate(eq(graphTestHandler.graph),
+                                  any(Consumer.class));
+    }
+
     private void assertNoErrors(final
                                 Collection<DiagramElementViolation<RuleViolation>> violations) {
         assertNotNull(violations);
-        assertFalse(violations.stream()
-                            .filter(v -> Violation.Type.ERROR.equals(v.getViolationType()))
-                            .findAny()
-                            .isPresent());
+        assertFalse(violations.stream().anyMatch(v -> Violation.Type.ERROR.equals(v.getViolationType())));
     }
 
     private void assertElementError(final

@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.core.validation.impl;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -78,18 +79,24 @@ public abstract class AbstractDiagramValidator
                 // If the underlying bean is a Definition, it accomplishes JSR303 validations.
                 modelValidator.validate(element,
                                         modelViolations -> {
-                                            violations.get().add(new ElementViolationImpl.Builder()
-                                                                         .setUuid(element.getUUID())
-                                                                         .setGraphViolations(ruleViolations)
-                                                                         .setModelViolations(modelViolations)
-                                                                         .build());
+                                            if ((Objects.nonNull(ruleViolations) && !ruleViolations.isEmpty()) || (Objects.nonNull(modelViolations) && !modelViolations.isEmpty())) {
+                                                //Don't add a ElementViolation if there are no rule or model violations
+                                                violations.get().add(new ElementViolationImpl.Builder()
+                                                                             .setUuid(element.getUUID())
+                                                                             .setGraphViolations(ruleViolations)
+                                                                             .setModelViolations(modelViolations)
+                                                                             .build());
+                                            }
                                         });
             } else {
                 // Otherwise, no need not perform bean validation.
-                violations.get().add(new ElementViolationImpl.Builder()
-                                             .setUuid(element.getUUID())
-                                             .setGraphViolations(ruleViolations)
-                                             .build());
+                if (Objects.nonNull(ruleViolations) && !ruleViolations.isEmpty()) {
+                    //Don't add a ElementViolation if there are no rule or model violations
+                    violations.get().add(new ElementViolationImpl.Builder()
+                                                 .setUuid(element.getUUID())
+                                                 .setGraphViolations(ruleViolations)
+                                                 .build());
+                }
             }
         };
     }

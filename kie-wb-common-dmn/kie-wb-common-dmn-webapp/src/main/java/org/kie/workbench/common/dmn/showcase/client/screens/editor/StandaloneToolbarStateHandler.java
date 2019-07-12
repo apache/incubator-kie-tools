@@ -31,7 +31,6 @@ public class StandaloneToolbarStateHandler implements ToolbarStateHandler {
     private boolean switchGridToolbarCommandEnabled = false;
     private boolean undoToolbarCommandEnabled = false;
     private boolean redoToolbarCommandEnabled = false;
-    private boolean validateToolbarCommandEnabled = false;
     private boolean exportToPngToolbarCommandEnabled = false;
     private boolean exportToJpgToolbarCommandEnabled = false;
     private boolean exportToPdfToolbarCommandEnabled = false;
@@ -53,7 +52,6 @@ public class StandaloneToolbarStateHandler implements ToolbarStateHandler {
         this.switchGridToolbarCommandEnabled = toolbar.isEnabled(toolbar.getSwitchGridToolbarCommand());
         this.undoToolbarCommandEnabled = toolbar.isEnabled(toolbar.getUndoToolbarCommand());
         this.redoToolbarCommandEnabled = toolbar.isEnabled(toolbar.getRedoToolbarCommand());
-        this.validateToolbarCommandEnabled = toolbar.isEnabled(toolbar.getValidateCommand());
         this.exportToPngToolbarCommandEnabled = toolbar.isEnabled((ToolbarCommand) toolbar.getExportToPngToolbarCommand());
         this.exportToJpgToolbarCommandEnabled = toolbar.isEnabled((ToolbarCommand) toolbar.getExportToJpgToolbarCommand());
         this.exportToPdfToolbarCommandEnabled = toolbar.isEnabled((ToolbarCommand) toolbar.getExportToPdfToolbarCommand());
@@ -73,8 +71,6 @@ public class StandaloneToolbarStateHandler implements ToolbarStateHandler {
         enableToolbarCommand(toolbar.getUndoToolbarCommand(),
                              false);
         enableToolbarCommand(toolbar.getRedoToolbarCommand(),
-                             false);
-        enableToolbarCommand(toolbar.getValidateCommand(),
                              false);
         enableToolbarCommand(toolbar.getExportToPngToolbarCommand(),
                              false);
@@ -106,8 +102,6 @@ public class StandaloneToolbarStateHandler implements ToolbarStateHandler {
                              undoToolbarCommandEnabled);
         enableToolbarCommand(toolbar.getRedoToolbarCommand(),
                              redoToolbarCommandEnabled);
-        enableToolbarCommand(toolbar.getValidateCommand(),
-                             validateToolbarCommandEnabled);
         enableToolbarCommand(toolbar.getExportToPngToolbarCommand(),
                              exportToPngToolbarCommandEnabled);
         enableToolbarCommand(toolbar.getExportToJpgToolbarCommand(),

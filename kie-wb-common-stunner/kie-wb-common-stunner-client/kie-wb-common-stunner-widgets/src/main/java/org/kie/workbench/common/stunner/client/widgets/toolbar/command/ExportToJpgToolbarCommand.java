@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.client.widgets.toolbar.command;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
 import org.gwtbootstrap3.client.ui.constants.IconType;
@@ -34,7 +35,7 @@ public class ExportToJpgToolbarCommand extends AbstractToolbarCommand<AbstractSe
 
     @Inject
     public ExportToJpgToolbarCommand(final DefinitionUtils definitionUtils,
-                                     final ManagedInstance<ExportToJpgSessionCommand> command,
+                                     final @Any ManagedInstance<ExportToJpgSessionCommand> command,
                                      final ClientTranslationService translationService) {
         super(definitionUtils,
               command,

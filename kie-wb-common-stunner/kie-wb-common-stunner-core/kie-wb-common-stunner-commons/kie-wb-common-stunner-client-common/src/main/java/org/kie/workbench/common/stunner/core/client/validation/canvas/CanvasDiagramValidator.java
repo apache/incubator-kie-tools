@@ -73,20 +73,27 @@ public class CanvasDiagramValidator<H extends AbstractCanvasHandler> {
         final Diagram diagram = canvasHandler.getDiagram();
         final String name = diagram.getName();
         final String title = diagram.getMetadata().getTitle();
-        final boolean valid = elementViolations
-                .stream()
-                .flatMap(v -> Stream.of(v.getDomainViolations(), v.getGraphViolations(), v.getModelViolations()))
-                .flatMap(Collection::stream)
-                .filter(v -> v instanceof ElementViolation)
-                .map(v -> (ElementViolation) v)
-                .map(v -> applyViolation(canvasHandler, v))
-                .anyMatch(Boolean.FALSE::equals);
+
+        // See {@link Stream#anyMatch(Predicate)}. "...If the stream is empty then {@code false} is returned..."
+        // Therefore we also need to check if there are any violations at all.
+        final boolean valid =
+                getElementViolationsStream(elementViolations).count() == 0 ||
+                        getElementViolationsStream(elementViolations)
+                                .map(v -> applyViolation(canvasHandler, v))
+                                .anyMatch(Boolean.FALSE::equals);
 
         if (valid) {
             validationSuccessEvent.fire(new CanvasValidationSuccessEvent(uuid, name, title));
         } else {
             validationFailEvent.fire(new CanvasValidationFailEvent(uuid, name, title, elementViolations));
         }
+    }
+
+    private Stream<ElementViolation> getElementViolationsStream(final Collection<DiagramElementViolation<RuleViolation>> elementViolations) {
+        return elementViolations
+                .stream()
+                .flatMap(v -> Stream.of(v.getDomainViolations(), v.getGraphViolations(), v.getModelViolations()))
+                .flatMap(Collection::stream);
     }
 
     private boolean applyViolation(final H canvasHandler,

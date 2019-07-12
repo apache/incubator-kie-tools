@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.client.widgets.toolbar.command;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
 import org.gwtbootstrap3.client.ui.constants.IconType;
@@ -32,7 +33,7 @@ public class PerformAutomaticLayoutToolbarCommand extends AbstractToolbarCommand
 
     @Inject
     public PerformAutomaticLayoutToolbarCommand(final DefinitionUtils definitionUtils,
-                                                final ManagedInstance<PerformAutomaticLayoutCommand> commands,
+                                                final @Any ManagedInstance<PerformAutomaticLayoutCommand> commands,
                                                 final ClientTranslationService translationService) {
         super(definitionUtils, commands, translationService);
     }

@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.client.widgets.toolbar.command;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
 import org.gwtbootstrap3.client.ui.constants.IconType;
@@ -32,7 +33,7 @@ public class CutToolbarCommand extends AbstractToolbarCommand<EditorSession, Cut
 
     @Inject
     public CutToolbarCommand(final DefinitionUtils definitionUtils,
-                             final ManagedInstance<CutSelectionSessionCommand> command,
+                             final @Any ManagedInstance<CutSelectionSessionCommand> command,
                              final ClientTranslationService translationService) {
         super(definitionUtils,
               command,

@@ -68,6 +68,7 @@ public class Notifications implements IsWidget {
     public void init() {
         view.init(this);
         notificationsObserver.onNotification(this::add);
+        notificationsObserver.onValidationFailed(this::add);
         buildViewColumns();
     }
 
@@ -154,7 +155,7 @@ public class Notifications implements IsWidget {
         final Column<Notification, String> messageColumn = new Column<Notification, String>(messageCell) {
             @Override
             public String getValue(final Notification object) {
-                return getNotificationSourceMessage(object);
+                return getNotificationMessage(object);
             }
         };
         messageColumn.setSortable(false);
@@ -162,10 +163,8 @@ public class Notifications implements IsWidget {
     }
 
     @SuppressWarnings("unchecked")
-    private String getNotificationSourceMessage(final Notification notification) {
-        return notification.getSource().isPresent() ?
-                notification.getSource().toString() :
-                "-- No source --";
+    private String getNotificationMessage(final Notification notification) {
+        return notification.getMessage();
     }
 
     @SuppressWarnings("unchecked")

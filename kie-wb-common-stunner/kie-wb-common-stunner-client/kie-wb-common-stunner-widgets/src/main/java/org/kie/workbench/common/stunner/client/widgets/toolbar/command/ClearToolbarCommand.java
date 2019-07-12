@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.client.widgets.toolbar.command;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
 import org.gwtbootstrap3.client.ui.constants.IconType;
@@ -32,7 +33,7 @@ public class ClearToolbarCommand extends AbstractToolbarCommand<EditorSession, C
 
     @Inject
     public ClearToolbarCommand(final DefinitionUtils definitionUtils,
-                               final ManagedInstance<ClearSessionCommand> clearSessionCommand,
+                               final @Any ManagedInstance<ClearSessionCommand> clearSessionCommand,
                                final ClientTranslationService translationService) {
         super(definitionUtils,
               clearSessionCommand,

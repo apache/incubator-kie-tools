@@ -19,6 +19,7 @@ import java.lang.annotation.Annotation;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -163,6 +164,13 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
         this.openDiagramLayoutExecutor = openDiagramLayoutExecutor;
         this.includedModelsPage = includedModelsPage;
         this.importsPageProvider = importsPageProvider;
+    }
+
+    @Override
+    @PostConstruct
+    public void init() {
+        super.init();
+        getMenuSessionItems().setErrorConsumer(e -> hideLoadingViews());
     }
 
     @OnStartup

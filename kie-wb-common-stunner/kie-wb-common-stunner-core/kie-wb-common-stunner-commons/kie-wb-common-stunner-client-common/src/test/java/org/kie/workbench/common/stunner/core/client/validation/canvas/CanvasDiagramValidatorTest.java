@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.core.client.validation.canvas;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.function.Consumer;
 
 import org.junit.Before;
@@ -42,6 +43,7 @@ import org.uberfire.mocks.EventSourceMock;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -115,6 +117,7 @@ public class CanvasDiagramValidatorTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void validateFailed() {
         ArgumentCaptor<Consumer> captor = ArgumentCaptor.forClass(Consumer.class);
         ArgumentCaptor<CanvasValidationFailEvent> captorEvent = ArgumentCaptor.forClass(CanvasValidationFailEvent.class);
@@ -131,6 +134,7 @@ public class CanvasDiagramValidatorTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void validateSuccess() {
         when(domainViolation.getViolationType()).thenReturn(Violation.Type.INFO);
         when(ruleViolation.getViolationType()).thenReturn(Violation.Type.INFO);
@@ -142,6 +146,51 @@ public class CanvasDiagramValidatorTest {
         tested.validate(canvasHandler, callback);
         verify(diagramValidator).validate(eq(diagram), captor.capture());
         captor.getValue().accept(violations);
+        verify(callback).accept(violations);
+        verify(successEvent).fire(captorEvent.capture());
+        CanvasValidationSuccessEvent event = captorEvent.getValue();
+        assertEquals(event.getDiagramName(), NAME);
+        assertEquals(event.getDiagramTitle(), TITLE);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void validateSuccessNoElementViolations() {
+        final ArgumentCaptor<Consumer> captor = ArgumentCaptor.forClass(Consumer.class);
+        final ArgumentCaptor<CanvasValidationSuccessEvent> captorEvent = ArgumentCaptor.forClass(CanvasValidationSuccessEvent.class);
+        violations = Collections.emptyList();
+
+        tested.validate(canvasHandler, callback);
+
+        verify(diagramValidator).validate(eq(diagram), captor.capture());
+
+        captor.getValue().accept(violations);
+
+        verify(callback).accept(violations);
+        verify(successEvent).fire(captorEvent.capture());
+        CanvasValidationSuccessEvent event = captorEvent.getValue();
+        assertEquals(event.getDiagramName(), NAME);
+        assertEquals(event.getDiagramTitle(), TITLE);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void validateSuccessNoDomainGraphModelViolations() {
+        final ArgumentCaptor<Consumer> captor = ArgumentCaptor.forClass(Consumer.class);
+        final ArgumentCaptor<CanvasValidationSuccessEvent> captorEvent = ArgumentCaptor.forClass(CanvasValidationSuccessEvent.class);
+        reset(violation);
+
+        when(violation.getUUID()).thenReturn(UUID);
+        when(violation.getDomainViolations()).thenReturn(Collections.emptyList());
+        when(violation.getGraphViolations()).thenReturn(Collections.emptyList());
+        when(violation.getModelViolations()).thenReturn(Collections.emptyList());
+
+        tested.validate(canvasHandler, callback);
+
+        verify(diagramValidator).validate(eq(diagram), captor.capture());
+
+        captor.getValue().accept(violations);
+
         verify(callback).accept(violations);
         verify(successEvent).fire(captorEvent.capture());
         CanvasValidationSuccessEvent event = captorEvent.getValue();

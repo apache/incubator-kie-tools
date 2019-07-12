@@ -16,7 +16,11 @@
 
 package org.kie.workbench.common.dmn.backend.common;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.StringReader;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -160,6 +164,65 @@ public class DMNMarshallerImportsHelperImplTest {
         helper.getPMMLDocumentPaths(metadata);
 
         verify(projectService).resolveProject(projectPath);
+    }
+
+    @Test
+    public void testGetImportXML() throws java.io.IOException {
+        final String xml1 = "<some xml/>";
+        final String xml2 = "<some other xml/>";
+
+        final Metadata metadata = mock(Metadata.class);
+        final Import import1 = mock(Import.class);
+
+        final Path path1 = makePath("../file1.dmn");
+        final Path path2 = makePath("../file2.dmn");
+
+        //Mock loading of XML files in Project
+        final InputStream inputStream1 = mock(InputStream.class);
+        final InputStream inputStream2 = mock(InputStream.class);
+        final InputStreamReader inputStreamReader1 = mock(InputStreamReader.class);
+        final InputStreamReader inputStreamReader2 = mock(InputStreamReader.class);
+        final List<Path> paths = asList(path1, path2);
+
+        when(pathsHelper.getDMNModelsPaths(any())).thenReturn(paths);
+        when(inputStream1.read(any())).thenAnswer(i -> {
+            final byte[] buffer = (byte[]) i.getArguments()[0];
+            final byte[] bytes = xml1.getBytes();
+            System.arraycopy(bytes, 0, buffer, 0, bytes.length);
+            return bytes.length;
+        }).thenReturn(-1);
+        when(inputStream2.read(any())).thenAnswer(i -> {
+            final byte[] buffer = (byte[]) i.getArguments()[0];
+            final byte[] bytes = xml2.getBytes();
+            System.arraycopy(bytes, 0, buffer, 0, bytes.length);
+            return bytes.length;
+        }).thenReturn(-1);
+
+        doReturn(Optional.of(inputStream1)).when(helper).loadPath(path1);
+        doReturn(Optional.of(inputStream2)).when(helper).loadPath(path2);
+        doReturn(inputStreamReader1).when(helper).toInputStreamReader(inputStream1);
+        doReturn(inputStreamReader2).when(helper).toInputStreamReader(inputStream2);
+
+        //Mock retrieval of Definitions from XML files in Project
+        final StringReader stringReader1 = mock(StringReader.class);
+        final StringReader stringReader2 = mock(StringReader.class);
+        final Definitions definitions1 = mock(Definitions.class);
+        final Definitions definitions2 = mock(Definitions.class);
+
+        doReturn(stringReader1).when(helper).toStringReader(xml1);
+        doReturn(stringReader2).when(helper).toStringReader(xml2);
+        when(marshaller.unmarshal(stringReader1)).thenReturn(definitions1);
+        when(marshaller.unmarshal(stringReader2)).thenReturn(definitions2);
+        when(import1.getNamespace()).thenReturn("://namespace1");
+        when(definitions1.getNamespace()).thenReturn("://namespace1");
+        when(definitions2.getNamespace()).thenReturn("://namespace2-not-imported");
+
+        final List<Import> imports = Collections.singletonList(import1);
+
+        final Map<Import, String> importXML = helper.getImportXML(metadata, imports);
+
+        assertEquals(1, importXML.size());
+        assertEquals(xml1, importXML.get(import1));
     }
 
     @Test
@@ -318,6 +381,9 @@ public class DMNMarshallerImportsHelperImplTest {
         final Path path2 = makePath("../file2.dmn");
         final Path path3 = makePath("../file3.dmn");
         final Path path4 = makePath("../file4.dmn");
+        final InputStream inputStream1 = mock(InputStream.class);
+        final InputStream inputStream2 = mock(InputStream.class);
+        final InputStream inputStream3 = mock(InputStream.class);
         final InputStreamReader inputStreamReader1 = mock(InputStreamReader.class);
         final InputStreamReader inputStreamReader2 = mock(InputStreamReader.class);
         final InputStreamReader inputStreamReader3 = mock(InputStreamReader.class);
@@ -328,9 +394,12 @@ public class DMNMarshallerImportsHelperImplTest {
 
         when(pathsHelper.getDMNModelsPaths(any())).thenReturn(paths);
         when(metadata.getPath()).thenReturn(path2);
-        doReturn(Optional.of(inputStreamReader1)).when(helper).loadPath(path1);
-        doReturn(Optional.of(inputStreamReader2)).when(helper).loadPath(path2);
-        doReturn(Optional.of(inputStreamReader3)).when(helper).loadPath(path3);
+        doReturn(Optional.of(inputStream1)).when(helper).loadPath(path1);
+        doReturn(Optional.of(inputStream2)).when(helper).loadPath(path2);
+        doReturn(Optional.of(inputStream3)).when(helper).loadPath(path3);
+        doReturn(inputStreamReader1).when(helper).toInputStreamReader(inputStream1);
+        doReturn(inputStreamReader2).when(helper).toInputStreamReader(inputStream2);
+        doReturn(inputStreamReader3).when(helper).toInputStreamReader(inputStream3);
         doReturn(Optional.empty()).when(helper).loadPath(path4);
         when(marshaller.unmarshal(inputStreamReader1)).thenReturn(definitions1);
         when(marshaller.unmarshal(inputStreamReader2)).thenReturn(definitions2);
@@ -349,6 +418,9 @@ public class DMNMarshallerImportsHelperImplTest {
         final Path path1 = makePath("../file1.dmn");
         final Path path2 = makePath("../file2.dmn");
         final Path path3 = makePath("../file3.dmn");
+        final InputStream inputStream1 = mock(InputStream.class);
+        final InputStream inputStream2 = mock(InputStream.class);
+        final InputStream inputStream3 = mock(InputStream.class);
         final InputStreamReader inputStreamReader1 = mock(InputStreamReader.class);
         final InputStreamReader inputStreamReader2 = mock(InputStreamReader.class);
         final InputStreamReader inputStreamReader3 = mock(InputStreamReader.class);
@@ -360,9 +432,12 @@ public class DMNMarshallerImportsHelperImplTest {
         when(projectService.resolveProject(any(Path.class))).thenThrow(new NullPointerException());
         when(pathsHelper.getDMNModelsPaths(any())).thenReturn(paths);
         when(metadata.getPath()).thenReturn(path2);
-        doReturn(Optional.of(inputStreamReader1)).when(helper).loadPath(path1);
-        doReturn(Optional.of(inputStreamReader2)).when(helper).loadPath(path2);
-        doReturn(Optional.of(inputStreamReader3)).when(helper).loadPath(path3);
+        doReturn(Optional.of(inputStream1)).when(helper).loadPath(path1);
+        doReturn(Optional.of(inputStream2)).when(helper).loadPath(path2);
+        doReturn(Optional.of(inputStream3)).when(helper).loadPath(path3);
+        doReturn(inputStreamReader1).when(helper).toInputStreamReader(inputStream1);
+        doReturn(inputStreamReader2).when(helper).toInputStreamReader(inputStream2);
+        doReturn(inputStreamReader3).when(helper).toInputStreamReader(inputStream3);
         when(marshaller.unmarshal(inputStreamReader1)).thenReturn(definitions1);
         when(marshaller.unmarshal(inputStreamReader2)).thenReturn(definitions2);
         when(marshaller.unmarshal(inputStreamReader3)).thenReturn(definitions3);
@@ -382,12 +457,12 @@ public class DMNMarshallerImportsHelperImplTest {
         final byte[] contentBytes = expectedContent.getBytes();
 
         doReturn(nioPath).when(helper).convertPath(path);
-        when(ioService.readAllBytes(nioPath)).thenReturn(contentBytes);
+        when(ioService.newInputStream(nioPath)).thenReturn(new ByteArrayInputStream(contentBytes));
 
-        final Optional<InputStreamReader> inputStreamReader = helper.loadPath(path);
+        final Optional<InputStream> inputStream = helper.loadPath(path);
 
-        assertTrue(inputStreamReader.isPresent());
-        assertEquals(expectedContent, new Scanner(inputStreamReader.get()).next());
+        assertTrue(inputStream.isPresent());
+        assertEquals(expectedContent, new Scanner(new InputStreamReader(inputStream.get())).next());
     }
 
     @Test
@@ -397,22 +472,11 @@ public class DMNMarshallerImportsHelperImplTest {
         final org.uberfire.java.nio.file.Path nioPath = mock(org.uberfire.java.nio.file.Path.class);
 
         doReturn(nioPath).when(helper).convertPath(path);
-        when(ioService.readAllBytes(nioPath)).thenThrow(new IOException());
+        when(ioService.newInputStream(nioPath)).thenThrow(new IOException());
 
-        final Optional<InputStreamReader> inputStreamReader = helper.loadPath(path);
+        final Optional<InputStream> inputStream = helper.loadPath(path);
 
-        verify(helper).closeInputStreamReader(any());
-        assertFalse(inputStreamReader.isPresent());
-    }
-
-    @Test
-    public void testCloseInputStreamReader() throws Exception {
-
-        final InputStreamReader mutableInputStream = mock(InputStreamReader.class);
-
-        helper.closeInputStreamReader(mutableInputStream);
-
-        verify(mutableInputStream).close();
+        assertFalse(inputStream.isPresent());
     }
 
     @Test
@@ -425,6 +489,9 @@ public class DMNMarshallerImportsHelperImplTest {
         final Path path2 = makePath("../file2.dmn");
         final Path path3 = makePath("../file3.dmn");
         final Path path4 = makePath("../file4.dmn");
+        final InputStream inputStream1 = mock(InputStream.class);
+        final InputStream inputStream2 = mock(InputStream.class);
+        final InputStream inputStream3 = mock(InputStream.class);
         final InputStreamReader inputStreamReader1 = mock(InputStreamReader.class);
         final InputStreamReader inputStreamReader2 = mock(InputStreamReader.class);
         final InputStreamReader inputStreamReader3 = mock(InputStreamReader.class);
@@ -436,9 +503,12 @@ public class DMNMarshallerImportsHelperImplTest {
         final List<Path> paths = asList(path1, path2, path3, path4);
 
         when(pathsHelper.getDMNModelsPaths(any())).thenReturn(paths);
-        doReturn(Optional.of(inputStreamReader1)).when(helper).loadPath(path1);
-        doReturn(Optional.of(inputStreamReader2)).when(helper).loadPath(path2);
-        doReturn(Optional.of(inputStreamReader3)).when(helper).loadPath(path3);
+        doReturn(Optional.of(inputStream1)).when(helper).loadPath(path1);
+        doReturn(Optional.of(inputStream2)).when(helper).loadPath(path2);
+        doReturn(Optional.of(inputStream3)).when(helper).loadPath(path3);
+        doReturn(inputStreamReader1).when(helper).toInputStreamReader(inputStream1);
+        doReturn(inputStreamReader2).when(helper).toInputStreamReader(inputStream2);
+        doReturn(inputStreamReader3).when(helper).toInputStreamReader(inputStream3);
         doReturn(Optional.empty()).when(helper).loadPath(path4);
         when(marshaller.unmarshal(inputStreamReader1)).thenReturn(definitions1);
         when(marshaller.unmarshal(inputStreamReader2)).thenReturn(definitions2);

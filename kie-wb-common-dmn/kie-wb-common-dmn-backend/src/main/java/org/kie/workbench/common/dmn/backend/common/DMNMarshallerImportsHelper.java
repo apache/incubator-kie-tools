@@ -52,6 +52,15 @@ public interface DMNMarshallerImportsHelper {
                                                        final List<Import> imports);
 
     /**
+     * This method loads {@link String} of all imported XML files from a list of imports.
+     * @param metadata represents the metadata from the main DMN model.
+     * @param imports represent the list of imported files.
+     * @return a map {@link String} indexed by {@link Import}s.
+     */
+    Map<Import, String> getImportXML(final Metadata metadata,
+                                     final List<Import> imports);
+
+    /**
      * This method extract a list of {@link DRGElement}s from the <code>importDefinitions</code> map.
      * @param importDefinitions is a map of {@link Definitions} indexed by {@link Import}.
      * @return a list of imported {@link DRGElement}s.

@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.project.client.editor;
 
 import java.lang.annotation.Annotation;
+import java.util.function.Consumer;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import com.google.gwtmockito.WithClassesToStub;
@@ -48,6 +49,7 @@ import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectEdi
 import org.kie.workbench.common.widgets.client.docks.DefaultEditorDock;
 import org.kie.workbench.common.workbench.client.PerspectiveIds;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.uberfire.client.workbench.widgets.multipage.MultiPageEditor;
@@ -61,6 +63,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.inOrder;
@@ -126,6 +129,9 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
 
     @Mock
     private DefaultEditorDock docks;
+
+    @Captor
+    private ArgumentCaptor<Consumer<String>> errorConsumerCaptor;
 
     @Before
     public void before() {
@@ -197,6 +203,19 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
     @Override
     protected AbstractProjectEditorMenuSessionItems getMenuSessionItems() {
         return dmnProjectMenuSessionItems;
+    }
+
+    @Test
+    public void testInit() {
+        diagramEditor.init();
+
+        //DMNProjectEditorMenuSessionItems.setErrorConsumer(..) is called several times so just check the last invocation
+        verify(dmnProjectMenuSessionItems, atLeast(1)).setErrorConsumer(errorConsumerCaptor.capture());
+
+        errorConsumerCaptor.getValue().accept("ERROR");
+
+        verify(view).hideBusyIndicator();
+        verify(errorPopupPresenter, never()).showMessage(anyString());
     }
 
     @Test
