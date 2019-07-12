@@ -597,6 +597,7 @@ public class BPMNDirectDiagramMarshallerTest {
                      startNoneEvent.getGeneral().getName().getValue());
         assertEquals("MyStartNoneEventDocumentation",
                      startNoneEvent.getGeneral().getDocumentation().getValue());
+        assertEquals("12/25/1983", startNoneEvent.getExecutionSet().getSlaDueDate().getValue());
     }
 
     @Test
@@ -610,8 +611,8 @@ public class BPMNDirectDiagramMarshallerTest {
         Node<? extends Definition, ?> startTimerEventNode = diagram.getGraph().getNode("_49ADC988-B63D-4AEB-B811-67969F305FD0");
         StartTimerEvent startTimerEvent = (StartTimerEvent) startTimerEventNode.getContent().getDefinition();
         IsInterrupting isInterrupting = startTimerEvent.getExecutionSet().getIsInterrupting();
-        assertEquals(false,
-                     isInterrupting.getValue());
+        assertEquals(false, isInterrupting.getValue());
+        assertEquals("12/25/1983", startTimerEvent.getExecutionSet().getSlaDueDate().getValue());
     }
 
     @Test
@@ -628,6 +629,7 @@ public class BPMNDirectDiagramMarshallerTest {
         SignalRef signalRef = startSignalEvent.getExecutionSet().getSignalRef();
         assertEquals("sig1",
                      signalRef.getValue());
+        assertEquals("12/25/1983", startSignalEvent.getExecutionSet().getSlaDueDate().getValue());
     }
 
     @Test
@@ -648,6 +650,7 @@ public class BPMNDirectDiagramMarshallerTest {
         assertNotNull(startErrorEvent.getExecutionSet().getErrorRef());
         assertEquals("MyError",
                      startErrorEvent.getExecutionSet().getErrorRef().getValue());
+        assertEquals("12/25/1983", startErrorEvent.getExecutionSet().getSlaDueDate().getValue());
 
         DataIOSet dataIOSet = startErrorEvent.getDataIOSet();
         AssignmentsInfo assignmentsInfo = dataIOSet.getAssignmentsinfo();
@@ -672,6 +675,7 @@ public class BPMNDirectDiagramMarshallerTest {
                      messageRef.getValue());
         assertEquals(true,
                      isInterrupting.getValue());
+        assertEquals("12/25/1983", startMessageEvent.getExecutionSet().getSlaDueDate().getValue());
         DataIOSet dataIOSet = startMessageEvent.getDataIOSet();
         AssignmentsInfo assignmentsInfo = dataIOSet.getAssignmentsinfo();
         assertEquals("||StartMessageEventOutputVar1:String||[dout]StartMessageEventOutputVar1->var1",
@@ -702,6 +706,7 @@ public class BPMNDirectDiagramMarshallerTest {
                      startConditionalEvent.getExecutionSet().getConditionExpression().getValue().getScript());
         assertEquals(true,
                      startConditionalEvent.getExecutionSet().getIsInterrupting().getValue());
+        assertEquals("12/25/1983", startConditionalEvent.getExecutionSet().getSlaDueDate().getValue());
     }
 
     @Test
@@ -726,6 +731,8 @@ public class BPMNDirectDiagramMarshallerTest {
                      startEscalationEvent.getExecutionSet().getEscalationRef().getValue());
         assertEquals(true,
                      startEscalationEvent.getExecutionSet().getIsInterrupting().getValue());
+        assertEquals("12/25/1983", startEscalationEvent.getExecutionSet().getSlaDueDate().getValue());
+
         DataIOSet dataIOSet = startEscalationEvent.getDataIOSet();
         AssignmentsInfo assignmentsInfo = dataIOSet.getAssignmentsinfo();
         assertEquals("||escalationOutput:String||[dout]escalationOutput->processVar1",
@@ -749,7 +756,8 @@ public class BPMNDirectDiagramMarshallerTest {
                      startCompensationEvent.getGeneral().getName().getValue());
         assertEquals("StartCompensationEventDocumentation",
                      startCompensationEvent.getGeneral().getDocumentation().getValue());
-        assertFalse(startCompensationEvent.getIsInterrupting().getValue());
+        assertFalse(startCompensationEvent.getExecutionSet().getIsInterrupting().getValue());
+        assertEquals("12/25/1983", startCompensationEvent.getExecutionSet().getSlaDueDate().getValue());
     }
 
     @Test
@@ -1139,6 +1147,7 @@ public class BPMNDirectDiagramMarshallerTest {
         assertNotNull(eventExecutionSet.getErrorRef());
         assertEquals("Error1", eventExecutionSet.getErrorRef().getValue());
         assertEquals(true, eventExecutionSet.getIsInterrupting().getValue());
+        assertEquals("12/25/1983", eventExecutionSet.getSlaDueDate().getValue());
 
         DataIOSet eventDataIOSet = startErrorEvent.getDataIOSet();
         AssignmentsInfo assignmentsInfo = eventDataIOSet.getAssignmentsinfo();
@@ -1157,6 +1166,7 @@ public class BPMNDirectDiagramMarshallerTest {
         assertNotNull(emptyExecutionSet.getErrorRef());
         assertEquals("", emptyExecutionSet.getErrorRef().getValue());
         assertEquals(false, emptyExecutionSet.getIsInterrupting().getValue());
+        assertEquals("", emptyExecutionSet.getSlaDueDate().getValue());
 
         DataIOSet emptyDataIOSet = emptyErrorEvent.getDataIOSet();
         AssignmentsInfo emptyAssignmentsInfo = emptyDataIOSet.getAssignmentsinfo();
@@ -2377,6 +2387,10 @@ public class BPMNDirectDiagramMarshallerTest {
         assertTrue(result.contains("<drools:metaValue><![CDATA[MyStartNoneEvent]]></drools:metaValue>"));
         assertTrue(result.contains("<![CDATA[MyStartNoneEventDocumentation]]></bpmn2:documentation>"));
         assertTrue(result.contains("</bpmn2:startEvent>"));
+
+        assertTrue(result.contains("<drools:metaData name=\"customSLADueDate\">"));
+        assertTrue(result.contains("<drools:metaValue><![CDATA[12/25/1983]]></drools:metaValue>"));
+        assertTrue(result.contains("</drools:metaData>"));
     }
 
     @Test
@@ -2391,6 +2405,10 @@ public class BPMNDirectDiagramMarshallerTest {
         assertTrue(result.contains("name=\"StartTimer\" isInterrupting=\"false\">"));
         assertTrue(result.contains("P4H</bpmn2:timeDuration>"));
         assertTrue(result.contains("language=\"cron\">*/2 * * * *</bpmn2:timeCycle>"));
+
+        assertTrue(result.contains("<drools:metaData name=\"customSLADueDate\">"));
+        assertTrue(result.contains("<drools:metaValue><![CDATA[12/25/1983]]></drools:metaValue>"));
+        assertTrue(result.contains("</drools:metaData>"));
     }
 
     @Test
@@ -2407,6 +2425,10 @@ public class BPMNDirectDiagramMarshallerTest {
         assertTrue(result.contains("<bpmn2:signal id=\"_47718ea6-a6a4-3ceb-9e93-2111bdad0b8c\" name=\"sig1\"/>"));
         assertTrue(result.contains("<bpmn2:signalEventDefinition"));
         assertTrue(result.contains("signalRef=\"_47718ea6-a6a4-3ceb-9e93-2111bdad0b8c\"/>"));
+
+        assertTrue(result.contains("<drools:metaData name=\"customSLADueDate\">"));
+        assertTrue(result.contains("<drools:metaValue><![CDATA[12/25/1983]]></drools:metaValue>"));
+        assertTrue(result.contains("</drools:metaData>"));
     }
 
     @Test
@@ -2427,6 +2449,10 @@ public class BPMNDirectDiagramMarshallerTest {
         assertTrue(result.contains("![CDATA[StartConditionalEventConditionExpression]]></bpmn2:condition>"));
         assertTrue(result.contains("</bpmn2:condition>"));
         assertTrue(result.contains("</bpmn2:conditionalEventDefinition>"));
+
+        assertTrue(result.contains("<drools:metaData name=\"customSLADueDate\">"));
+        assertTrue(result.contains("<drools:metaValue><![CDATA[12/25/1983]]></drools:metaValue>"));
+        assertTrue(result.contains("</drools:metaData>"));
     }
 
     @Test
@@ -2446,6 +2472,10 @@ public class BPMNDirectDiagramMarshallerTest {
         assertTrue(result.contains("drools:esccode=\"EscalationCode\""));
         assertTrue(result.contains("<bpmn2:escalation"));
         assertTrue(result.contains("escalationCode=\"EscalationCode\""));
+
+        assertTrue(result.contains("<drools:metaData name=\"customSLADueDate\">"));
+        assertTrue(result.contains("<drools:metaValue><![CDATA[12/25/1983]]></drools:metaValue>"));
+        assertTrue(result.contains("</drools:metaData>"));
     }
 
     @Test
@@ -2463,6 +2493,10 @@ public class BPMNDirectDiagramMarshallerTest {
         assertTrue(result.contains("<drools:metaValue><![CDATA[StartCompensationEventName]]></drools:metaValue>"));
         assertTrue(result.contains("<![CDATA[StartCompensationEventDocumentation]]></bpmn2:documentation>"));
         assertTrue(result.contains("<bpmn2:compensateEventDefinition"));
+
+        assertTrue(result.contains("<drools:metaData name=\"customSLADueDate\">"));
+        assertTrue(result.contains("<drools:metaValue><![CDATA[12/25/1983]]></drools:metaValue>"));
+        assertTrue(result.contains("</drools:metaData>"));
     }
 
     @Test
@@ -2482,6 +2516,10 @@ public class BPMNDirectDiagramMarshallerTest {
         assertTrue(result.contains("<bpmn2:error"));
         assertTrue(result.contains("id=\"MyError\""));
         assertTrue(result.contains("errorCode=\"MyError\""));
+
+        assertTrue(result.contains("<drools:metaData name=\"customSLADueDate\">"));
+        assertTrue(result.contains("<drools:metaValue><![CDATA[12/25/1983]]></drools:metaValue>"));
+        assertTrue(result.contains("</drools:metaData>"));
     }
 
     @Test
@@ -2514,6 +2552,10 @@ public class BPMNDirectDiagramMarshallerTest {
         assertTrue(result.contains("<bpmn2:message "));
         assertTrue(result.contains(" name=\"msgref\""));
         assertTrue(result.contains("<bpmn2:messageEventDefinition"));
+
+        assertTrue(result.contains("<drools:metaData name=\"customSLADueDate\">"));
+        assertTrue(result.contains("<drools:metaValue><![CDATA[12/25/1983]]></drools:metaValue>"));
+        assertTrue(result.contains("</drools:metaData>"));
     }
 
     @Test

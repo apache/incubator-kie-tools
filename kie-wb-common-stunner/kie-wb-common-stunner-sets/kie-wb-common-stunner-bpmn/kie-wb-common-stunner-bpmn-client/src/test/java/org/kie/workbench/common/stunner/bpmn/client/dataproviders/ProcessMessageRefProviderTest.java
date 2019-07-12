@@ -81,6 +81,7 @@ public class ProcessMessageRefProviderTest
     private Element mockStartMessageEventNode(String messageRefValue) {
         StartMessageEvent event = new StartMessageEvent();
         event.setExecutionSet(new InterruptingMessageEventExecutionSet(new IsInterrupting(true),
+                                                                       new SLADueDate(),
                                                                        new MessageRef(messageRefValue)));
         return mockNode(event);
     }

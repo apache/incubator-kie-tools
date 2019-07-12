@@ -43,6 +43,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartSignalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartTimerEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.BaseStartEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.IsInterrupting;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.conditional.InterruptingConditionalEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.error.ErrorRef;
@@ -58,6 +59,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.event.timer.Tim
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Documentation;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
@@ -93,247 +95,196 @@ public class StartEventConverter {
         }
     }
 
-    private BpmnNode errorEvent(
-            StartEvent event,
-            ErrorEventDefinition e) {
-        Node<View<StartErrorEvent>, Edge> node =
-                factoryManager.newNode(event.getId(), StartErrorEvent.class);
-
-        StartErrorEvent definition = node.getContent().getDefinition();
-        EventPropertyReader p = propertyReaderFactory.of(event);
-
-        definition.setGeneral(new BPMNGeneralSet(
-                new Name(p.getName()),
-                new Documentation(p.getDocumentation())
-        ));
-
-        definition.setDataIOSet(new DataIOSet(
-                p.getAssignmentsInfo()
-        ));
-
-        definition.setExecutionSet(new InterruptingErrorEventExecutionSet(
-                new IsInterrupting(event.isIsInterrupting()),
-                new ErrorRef(EventDefinitionReader.errorRefOf(e))
-        ));
-
-        definition.setSimulationSet(p.getSimulationSet());
-
-        node.getContent().setBounds(p.getBounds());
-
-        definition.setDimensionsSet(p.getCircleDimensionSet());
-        definition.setFontSet(p.getFontSet());
-        definition.setBackgroundSet(p.getBackgroundSet());
-
-        return BpmnNode.of(node, p);
-    }
-
-    private BpmnNode timerEvent(
-            StartEvent event,
-            TimerEventDefinition e) {
-        Node<View<StartTimerEvent>, Edge> node =
-                factoryManager.newNode(event.getId(), StartTimerEvent.class);
-
-        StartTimerEvent definition = node.getContent().getDefinition();
-        EventPropertyReader p = propertyReaderFactory.of(event);
-
-        definition.setGeneral(new BPMNGeneralSet(
-                new Name(p.getName()),
-                new Documentation(p.getDocumentation())
-        ));
-
-        definition.setExecutionSet(new InterruptingTimerEventExecutionSet(
-                new IsInterrupting(event.isIsInterrupting()),
-                new TimerSettings(p.getTimerSettings(e))
-        ));
-
-        definition.setSimulationSet(p.getSimulationSet());
-
-        node.getContent().setBounds(p.getBounds());
-
-        definition.setDimensionsSet(p.getCircleDimensionSet());
-        definition.setFontSet(p.getFontSet());
-        definition.setBackgroundSet(p.getBackgroundSet());
-
-        return BpmnNode.of(node, p);
-    }
-
-    private BpmnNode messageEvent(
-            StartEvent event,
-            MessageEventDefinition e) {
-        Node<View<StartMessageEvent>, Edge> node =
-                factoryManager.newNode(event.getId(), StartMessageEvent.class);
-
-        StartMessageEvent definition = node.getContent().getDefinition();
-        EventPropertyReader p = propertyReaderFactory.of(event);
-
-        definition.setGeneral(new BPMNGeneralSet(
-                new Name(p.getName()),
-                new Documentation(p.getDocumentation())
-        ));
-
-        definition.setDataIOSet(new DataIOSet(
-                p.getAssignmentsInfo()
-        ));
-
-        definition.setExecutionSet(new InterruptingMessageEventExecutionSet(
-                new IsInterrupting(event.isIsInterrupting()),
-                new MessageRef(EventDefinitionReader.messageRefOf(e))
-        ));
-
-        definition.setSimulationSet(p.getSimulationSet());
-
-        node.getContent().setBounds(p.getBounds());
-
-        definition.setFontSet(p.getFontSet());
-        definition.setBackgroundSet(p.getBackgroundSet());
-        definition.setDimensionsSet(p.getCircleDimensionSet());
-
-        return BpmnNode.of(node, p);
-    }
-
-    private BpmnNode signalEvent(
-            StartEvent event,
-            SignalEventDefinition e) {
-        Node<View<StartSignalEvent>, Edge> node =
-                factoryManager.newNode(event.getId(), StartSignalEvent.class);
-
-        StartSignalEvent definition = node.getContent().getDefinition();
-        EventPropertyReader p = propertyReaderFactory.of(event);
-
-        definition.setGeneral(new BPMNGeneralSet(
-                new Name(p.getName()),
-                new Documentation(p.getDocumentation())
-        ));
-
-        definition.setDataIOSet(new DataIOSet(
-                p.getAssignmentsInfo()
-        ));
-
-        definition.setExecutionSet(new InterruptingSignalEventExecutionSet(
-                new IsInterrupting(event.isIsInterrupting()),
-                new SignalRef(p.getSignalRef())
-        ));
-
-        definition.setSimulationSet(p.getSimulationSet());
-
-        node.getContent().setBounds(p.getBounds());
-
-        definition.setDimensionsSet(p.getCircleDimensionSet());
-        definition.setFontSet(p.getFontSet());
-        definition.setBackgroundSet(p.getBackgroundSet());
-
-        return BpmnNode.of(node, p);
-    }
-
     private BpmnNode noneEvent(StartEvent event) {
-        Node<View<StartNoneEvent>, Edge> node =
-                factoryManager.newNode(event.getId(), StartNoneEvent.class);
+        Node<View<StartNoneEvent>, Edge> node = factoryManager.newNode(event.getId(), StartNoneEvent.class);
+
         StartNoneEvent definition = node.getContent().getDefinition();
         EventPropertyReader p = propertyReaderFactory.of(event);
 
-        definition.setGeneral(new BPMNGeneralSet(
-                new Name(p.getName()),
-                new Documentation(p.getDocumentation())
-        ));
-
+        definition.setGeneral(new BPMNGeneralSet(new Name(p.getName()), new Documentation(p.getDocumentation())));
+        definition.setBackgroundSet(p.getBackgroundSet());
+        definition.setFontSet(p.getFontSet());
+        definition.setDimensionsSet(p.getCircleDimensionSet());
         definition.setSimulationSet(p.getSimulationSet());
-        definition.setIsInterrupting(new IsInterrupting(event.isIsInterrupting()));
+
+        IsInterrupting isInterrupting = new IsInterrupting(event.isIsInterrupting());
+        SLADueDate slaDueDate = new SLADueDate(p.getSlaDueDate());
+        BaseStartEventExecutionSet baseStartEventExecutionSet =
+                new BaseStartEventExecutionSet(isInterrupting, slaDueDate);
+        definition.setExecutionSet(baseStartEventExecutionSet);
 
         node.getContent().setBounds(p.getBounds());
-
-        definition.setDimensionsSet(p.getCircleDimensionSet());
-        definition.setFontSet(p.getFontSet());
-        definition.setBackgroundSet(p.getBackgroundSet());
 
         return BpmnNode.of(node, p);
     }
 
-    private BpmnNode conditionalEvent(
-            StartEvent event,
-            ConditionalEventDefinition e) {
-        Node<View<StartConditionalEvent>, Edge> node =
-                factoryManager.newNode(event.getId(), StartConditionalEvent.class);
-
-        StartConditionalEvent definition = node.getContent().getDefinition();
-        EventPropertyReader p = propertyReaderFactory.of(event);
-
-        definition.setGeneral(new BPMNGeneralSet(
-                new Name(p.getName()),
-                new Documentation(p.getDocumentation())
-        ));
-
-        definition.setExecutionSet(new InterruptingConditionalEventExecutionSet(
-                new IsInterrupting(event.isIsInterrupting()),
-                p.getConditionExpression(e))
-        );
-
-        definition.setSimulationSet(p.getSimulationSet());
-
-        node.getContent().setBounds(p.getBounds());
-
-        definition.setDimensionsSet(p.getCircleDimensionSet());
-        definition.setFontSet(p.getFontSet());
-        definition.setBackgroundSet(p.getBackgroundSet());
-
-        return BpmnNode.of(node, p);
-    }
-
-    private BpmnNode escalationEvent(
-            StartEvent event,
-            EscalationEventDefinition e) {
-        Node<View<StartEscalationEvent>, Edge> node =
-                factoryManager.newNode(event.getId(), StartEscalationEvent.class);
-
-        StartEscalationEvent definition = node.getContent().getDefinition();
-        EventPropertyReader p = propertyReaderFactory.of(event);
-
-        definition.setGeneral(new BPMNGeneralSet(
-                new Name(p.getName()),
-                new Documentation(p.getDocumentation())
-        ));
-
-        definition.setDataIOSet(new DataIOSet(
-                p.getAssignmentsInfo()
-        ));
-
-        definition.setExecutionSet(new InterruptingEscalationEventExecutionSet(
-                new IsInterrupting(event.isIsInterrupting()),
-                new EscalationRef(EventDefinitionReader.escalationRefOf(e)))
-        );
-
-        definition.setSimulationSet(p.getSimulationSet());
-
-        node.getContent().setBounds(p.getBounds());
-
-        definition.setDimensionsSet(p.getCircleDimensionSet());
-        definition.setFontSet(p.getFontSet());
-        definition.setBackgroundSet(p.getBackgroundSet());
-
-        return BpmnNode.of(node, p);
-    }
-
-    private BpmnNode compensationEvent(
-            StartEvent event,
-            CompensateEventDefinition e) {
+    private BpmnNode compensationEvent(StartEvent event, CompensateEventDefinition e) {
         Node<View<StartCompensationEvent>, Edge> node =
                 factoryManager.newNode(event.getId(), StartCompensationEvent.class);
 
         StartCompensationEvent definition = node.getContent().getDefinition();
         EventPropertyReader p = propertyReaderFactory.of(event);
 
-        definition.setGeneral(new BPMNGeneralSet(
-                new Name(p.getName()),
-                new Documentation(p.getDocumentation())
-        ));
-
+        definition.setGeneral(new BPMNGeneralSet(new Name(p.getName()), new Documentation(p.getDocumentation())));
+        definition.setBackgroundSet(p.getBackgroundSet());
+        definition.setFontSet(p.getFontSet());
+        definition.setDimensionsSet(p.getCircleDimensionSet());
         definition.setSimulationSet(p.getSimulationSet());
-        definition.setIsInterrupting(new IsInterrupting(false));
+
+        IsInterrupting isInterrupting = new IsInterrupting(event.isIsInterrupting());
+        SLADueDate slaDueDate = new SLADueDate(p.getSlaDueDate());
+        BaseStartEventExecutionSet baseStartEventExecutionSet =
+                new BaseStartEventExecutionSet(isInterrupting, slaDueDate);
+        definition.setExecutionSet(baseStartEventExecutionSet);
 
         node.getContent().setBounds(p.getBounds());
 
-        definition.setDimensionsSet(p.getCircleDimensionSet());
-        definition.setFontSet(p.getFontSet());
+        return BpmnNode.of(node, p);
+    }
+
+    private BpmnNode signalEvent(StartEvent event, SignalEventDefinition e) {
+        Node<View<StartSignalEvent>, Edge> node = factoryManager.newNode(event.getId(), StartSignalEvent.class);
+
+        StartSignalEvent definition = node.getContent().getDefinition();
+        EventPropertyReader p = propertyReaderFactory.of(event);
+
+        definition.setGeneral(new BPMNGeneralSet(new Name(p.getName()), new Documentation(p.getDocumentation())));
         definition.setBackgroundSet(p.getBackgroundSet());
+        definition.setFontSet(p.getFontSet());
+        definition.setDimensionsSet(p.getCircleDimensionSet());
+        definition.setSimulationSet(p.getSimulationSet());
+        definition.setDataIOSet(new DataIOSet(p.getAssignmentsInfo()));
+
+        IsInterrupting isInterrupting = new IsInterrupting(event.isIsInterrupting());
+        SLADueDate slaDueDate = new SLADueDate(p.getSlaDueDate());
+        SignalRef signalRef = new SignalRef(p.getSignalRef());
+        InterruptingSignalEventExecutionSet executionSet =
+                new InterruptingSignalEventExecutionSet(isInterrupting, slaDueDate, signalRef);
+        definition.setExecutionSet(executionSet);
+
+        node.getContent().setBounds(p.getBounds());
+
+        return BpmnNode.of(node, p);
+    }
+
+    private BpmnNode timerEvent(StartEvent event, TimerEventDefinition e) {
+        Node<View<StartTimerEvent>, Edge> node = factoryManager.newNode(event.getId(), StartTimerEvent.class);
+
+        StartTimerEvent definition = node.getContent().getDefinition();
+        EventPropertyReader p = propertyReaderFactory.of(event);
+
+        definition.setGeneral(new BPMNGeneralSet(new Name(p.getName()), new Documentation(p.getDocumentation())));
+        definition.setBackgroundSet(p.getBackgroundSet());
+        definition.setFontSet(p.getFontSet());
+        definition.setDimensionsSet(p.getCircleDimensionSet());
+        definition.setSimulationSet(p.getSimulationSet());
+
+        IsInterrupting isInterrupting = new IsInterrupting(event.isIsInterrupting());
+        SLADueDate slaDueDate = new SLADueDate(p.getSlaDueDate());
+        TimerSettings timerSettings = new TimerSettings(p.getTimerSettings(e));
+        InterruptingTimerEventExecutionSet executionSet =
+                new InterruptingTimerEventExecutionSet(isInterrupting, slaDueDate, timerSettings);
+        definition.setExecutionSet(executionSet);
+
+        node.getContent().setBounds(p.getBounds());
+
+        return BpmnNode.of(node, p);
+    }
+
+    private BpmnNode conditionalEvent(StartEvent event, ConditionalEventDefinition e) {
+        Node<View<StartConditionalEvent>, Edge> node = factoryManager.newNode(event.getId(), StartConditionalEvent.class);
+
+        StartConditionalEvent definition = node.getContent().getDefinition();
+        EventPropertyReader p = propertyReaderFactory.of(event);
+
+        definition.setGeneral(new BPMNGeneralSet(new Name(p.getName()), new Documentation(p.getDocumentation())));
+        definition.setBackgroundSet(p.getBackgroundSet());
+        definition.setFontSet(p.getFontSet());
+        definition.setDimensionsSet(p.getCircleDimensionSet());
+        definition.setSimulationSet(p.getSimulationSet());
+
+        IsInterrupting isInterrupting = new IsInterrupting(event.isIsInterrupting());
+        SLADueDate slaDueDate = new SLADueDate(p.getSlaDueDate());
+        InterruptingConditionalEventExecutionSet executionSet =
+                new InterruptingConditionalEventExecutionSet(isInterrupting, slaDueDate, p.getConditionExpression(e));
+        definition.setExecutionSet(executionSet);
+
+        node.getContent().setBounds(p.getBounds());
+
+        return BpmnNode.of(node, p);
+    }
+
+    private BpmnNode errorEvent(StartEvent event, ErrorEventDefinition e) {
+        Node<View<StartErrorEvent>, Edge> node = factoryManager.newNode(event.getId(), StartErrorEvent.class);
+
+        StartErrorEvent definition = node.getContent().getDefinition();
+        EventPropertyReader p = propertyReaderFactory.of(event);
+
+        definition.setGeneral(new BPMNGeneralSet(new Name(p.getName()), new Documentation(p.getDocumentation())));
+        definition.setBackgroundSet(p.getBackgroundSet());
+        definition.setFontSet(p.getFontSet());
+        definition.setDimensionsSet(p.getCircleDimensionSet());
+        definition.setSimulationSet(p.getSimulationSet());
+        definition.setDataIOSet(new DataIOSet(p.getAssignmentsInfo()));
+
+        IsInterrupting isInterrupting = new IsInterrupting(event.isIsInterrupting());
+        SLADueDate slaDueDate = new SLADueDate(p.getSlaDueDate());
+        ErrorRef errorRef = new ErrorRef(EventDefinitionReader.errorRefOf(e));
+        InterruptingErrorEventExecutionSet executionSet =
+                new InterruptingErrorEventExecutionSet(isInterrupting, slaDueDate, errorRef);
+        definition.setExecutionSet(executionSet);
+
+        node.getContent().setBounds(p.getBounds());
+
+        return BpmnNode.of(node, p);
+    }
+
+    private BpmnNode escalationEvent(StartEvent event, EscalationEventDefinition e) {
+        Node<View<StartEscalationEvent>, Edge> node = factoryManager.newNode(event.getId(), StartEscalationEvent.class);
+
+        StartEscalationEvent definition = node.getContent().getDefinition();
+        EventPropertyReader p = propertyReaderFactory.of(event);
+
+        definition.setGeneral(new BPMNGeneralSet(new Name(p.getName()), new Documentation(p.getDocumentation())));
+        definition.setBackgroundSet(p.getBackgroundSet());
+        definition.setFontSet(p.getFontSet());
+        definition.setDimensionsSet(p.getCircleDimensionSet());
+        definition.setSimulationSet(p.getSimulationSet());
+        definition.setDataIOSet(new DataIOSet(p.getAssignmentsInfo()));
+
+        IsInterrupting isInterrupting = new IsInterrupting(event.isIsInterrupting());
+        SLADueDate slaDueDate = new SLADueDate(p.getSlaDueDate());
+        EscalationRef escalationRef = new EscalationRef(EventDefinitionReader.escalationRefOf(e));
+        InterruptingEscalationEventExecutionSet executionSet =
+                new InterruptingEscalationEventExecutionSet(isInterrupting, slaDueDate, escalationRef);
+        definition.setExecutionSet(executionSet);
+
+        node.getContent().setBounds(p.getBounds());
+
+        return BpmnNode.of(node, p);
+    }
+
+    private BpmnNode messageEvent(StartEvent event, MessageEventDefinition e) {
+        Node<View<StartMessageEvent>, Edge> node = factoryManager.newNode(event.getId(), StartMessageEvent.class);
+
+        StartMessageEvent definition = node.getContent().getDefinition();
+        EventPropertyReader p = propertyReaderFactory.of(event);
+
+        definition.setGeneral(new BPMNGeneralSet(new Name(p.getName()),new Documentation(p.getDocumentation())));
+        definition.setBackgroundSet(p.getBackgroundSet());
+        definition.setFontSet(p.getFontSet());
+        definition.setDimensionsSet(p.getCircleDimensionSet());
+        definition.setSimulationSet(p.getSimulationSet());
+        definition.setDataIOSet(new DataIOSet(p.getAssignmentsInfo()));
+
+        IsInterrupting isInterrupting = new IsInterrupting(event.isIsInterrupting());
+        SLADueDate slaDueDate = new SLADueDate(p.getSlaDueDate());
+        MessageRef messageRef = new MessageRef(EventDefinitionReader.messageRefOf(e));
+        InterruptingMessageEventExecutionSet executionSet =
+                new InterruptingMessageEventExecutionSet(isInterrupting, slaDueDate, messageRef);
+        definition.setExecutionSet(executionSet);
+
+        node.getContent().setBounds(p.getBounds());
 
         return BpmnNode.of(node, p);
     }

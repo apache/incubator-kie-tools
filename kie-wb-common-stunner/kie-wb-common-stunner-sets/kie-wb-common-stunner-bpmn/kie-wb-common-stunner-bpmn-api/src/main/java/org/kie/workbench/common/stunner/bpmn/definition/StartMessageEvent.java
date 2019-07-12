@@ -93,22 +93,6 @@ public class StartMessageEvent extends BaseStartEvent implements DataIOModel {
         this.executionSet = executionSet;
     }
 
-    @Override
-    public boolean hasOutputVars() {
-        return true;
-    }
-
-    @Override
-    public boolean isSingleOutputVar() {
-        return true;
-    }
-
-    @Override
-    protected void initLabels() {
-        super.initLabels();
-        labels.add("messageflow_end");
-    }
-
     public InterruptingMessageEventExecutionSet getExecutionSet() {
         return executionSet;
     }
@@ -123,6 +107,22 @@ public class StartMessageEvent extends BaseStartEvent implements DataIOModel {
 
     public void setDataIOSet(DataIOSet dataIOSet) {
         this.dataIOSet = dataIOSet;
+    }
+
+    @Override
+    public boolean hasOutputVars() {
+        return true;
+    }
+
+    @Override
+    public boolean isSingleOutputVar() {
+        return true;
+    }
+
+    @Override
+    protected void initLabels() {
+        super.initLabels();
+        labels.add("messageflow_end");
     }
 
     @Override

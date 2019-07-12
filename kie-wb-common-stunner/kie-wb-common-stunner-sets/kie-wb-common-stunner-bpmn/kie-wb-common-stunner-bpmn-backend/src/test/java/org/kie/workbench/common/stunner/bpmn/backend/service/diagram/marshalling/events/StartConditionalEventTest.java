@@ -36,6 +36,8 @@ public class StartConditionalEventTest extends StartEvent<StartConditionalEvent>
     private static final String FILLED_SUBPROCESS_LEVEL_EVENT_ID = "_C5369C96-8531-4D05-88DA-9261189D70B2";
     private static final String EMPTY_SUBPROCESS_LEVEL_EVENT_ID = "_AC859BAB-5995-4125-9C6E-A4A3B9476020";
 
+    private static final String SLA_DUE_DATE = "12/25/1983";
+
     private static final int AMOUNT_OF_NODES_IN_DIAGRAM = 10;
 
     private static final String CONDITION_EXPRESSION_SCRIPT_DEFAULT_VALUE = null;
@@ -62,7 +64,8 @@ public class StartConditionalEventTest extends StartEvent<StartConditionalEvent>
                                            CONDITION_EXPRESSION_SCRIPT,
                                            CONDITION_EXPRESSION_LANGUAGE,
                                            CONDITION_ERPRESSION_TYPE,
-                                           INTERRUPTING);
+                                           INTERRUPTING,
+                                           SLA_DUE_DATE);
     }
 
     @Test
@@ -77,7 +80,8 @@ public class StartConditionalEventTest extends StartEvent<StartConditionalEvent>
                                            CONDITION_EXPRESSION_SCRIPT_DEFAULT_VALUE,
                                            CONDITION_EXPRESSION_LANGUAGE,
                                            CONDITION_ERPRESSION_TYPE,
-                                           INTERRUPTING);
+                                           INTERRUPTING,
+                                           EMPTY_VALUE);
     }
 
     @Test
@@ -96,7 +100,8 @@ public class StartConditionalEventTest extends StartEvent<StartConditionalEvent>
                                            CONDITION_EXPRESSION_SCRIPT,
                                            CONDITION_EXPRESSION_LANGUAGE,
                                            CONDITION_ERPRESSION_TYPE,
-                                           INTERRUPTING);
+                                           INTERRUPTING,
+                                           SLA_DUE_DATE);
     }
 
     @Test
@@ -111,7 +116,8 @@ public class StartConditionalEventTest extends StartEvent<StartConditionalEvent>
                                            CONDITION_EXPRESSION_SCRIPT_DEFAULT_VALUE,
                                            CONDITION_EXPRESSION_LANGUAGE,
                                            CONDITION_ERPRESSION_TYPE,
-                                           NON_INTERRUPTING);
+                                           NON_INTERRUPTING,
+                                           EMPTY_VALUE);
     }
 
     @Override
@@ -148,16 +154,18 @@ public class StartConditionalEventTest extends StartEvent<StartConditionalEvent>
                                                     String conditionExpressionScript,
                                                     String conditionExpressionLanguage,
                                                     String conditionExpressionType,
-                                                    boolean isInterrupting) {
+                                                    boolean isInterrupting,
+                                                    String slaDueDate) {
         assertNotNull(executionSet);
         assertNotNull(executionSet.getConditionExpression());
         assertNotNull(executionSet.getConditionExpression().getValue());
         assertNotNull(executionSet.getConditionExpression().getType());
-        assertNotNull(executionSet.getIsInterrupting());
 
         assertEquals(conditionExpressionLanguage, executionSet.getConditionExpression().getValue().getLanguage());
         assertEquals(conditionExpressionScript, executionSet.getConditionExpression().getValue().getScript());
         assertEquals(conditionExpressionType, executionSet.getConditionExpression().getType().getName());
-        assertEquals(isInterrupting, executionSet.getIsInterrupting().getValue());
+
+        assertStartEventIsInterrupting(executionSet, isInterrupting);
+        assertStartEventSlaDueDate(executionSet, slaDueDate);
     }
 }

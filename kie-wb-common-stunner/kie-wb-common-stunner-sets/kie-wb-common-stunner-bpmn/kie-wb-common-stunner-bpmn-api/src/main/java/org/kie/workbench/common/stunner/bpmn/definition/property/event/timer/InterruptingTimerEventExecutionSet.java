@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.stunner.bpmn.definition.property.event.timer;
 
+import java.util.Objects;
+
 import javax.validation.Valid;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
@@ -22,8 +24,9 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
-import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.BaseStartEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.IsInterrupting;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
@@ -32,11 +35,7 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 @Bindable
 @PropertySet
 @FormDefinition(startElement = "isInterrupting")
-public class InterruptingTimerEventExecutionSet implements BPMNPropertySet {
-
-    @Property
-    @FormField
-    private IsInterrupting isInterrupting;
+public class InterruptingTimerEventExecutionSet extends BaseStartEventExecutionSet {
 
     @Property
     @FormField(afterElement = "isInterrupting")
@@ -45,21 +44,15 @@ public class InterruptingTimerEventExecutionSet implements BPMNPropertySet {
 
     public InterruptingTimerEventExecutionSet() {
         this(new IsInterrupting(true),
+             new SLADueDate(),
              new TimerSettings());
     }
 
     public InterruptingTimerEventExecutionSet(final @MapsTo("isInterrupting") IsInterrupting isInterrupting,
+                                              final @MapsTo("slaDueDate") SLADueDate slaDueDate,
                                               final @MapsTo("timerSettings") TimerSettings timerSettings) {
-        this.isInterrupting = isInterrupting;
+        super(isInterrupting, slaDueDate);
         this.timerSettings = timerSettings;
-    }
-
-    public IsInterrupting getIsInterrupting() {
-        return isInterrupting;
-    }
-
-    public void setIsInterrupting(IsInterrupting isInterrupting) {
-        this.isInterrupting = isInterrupting;
     }
 
     public TimerSettings getTimerSettings() {
@@ -72,16 +65,16 @@ public class InterruptingTimerEventExecutionSet implements BPMNPropertySet {
 
     @Override
     public int hashCode() {
-        return HashUtil.combineHashCodes(isInterrupting.hashCode(),
-                                         timerSettings.hashCode());
+        return HashUtil.combineHashCodes(super.hashCode(),
+                                         Objects.hashCode(timerSettings));
     }
 
     @Override
     public boolean equals(Object o) {
         if (o instanceof InterruptingTimerEventExecutionSet) {
             InterruptingTimerEventExecutionSet other = (InterruptingTimerEventExecutionSet) o;
-            return isInterrupting.equals(other.isInterrupting) &&
-                    timerSettings.equals(other.timerSettings);
+            return super.equals(other) &&
+                    Objects.equals(timerSettings, other.timerSettings);
         }
         return false;
     }

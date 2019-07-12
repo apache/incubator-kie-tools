@@ -71,8 +71,8 @@ public class StartEscalationEvent extends BaseStartEvent {
              new FontSet(),
              new CircleDimensionSet(new Radius()),
              new SimulationAttributeSet(),
-             new InterruptingEscalationEventExecutionSet(),
-             new DataIOSet());
+             new DataIOSet(),
+             new InterruptingEscalationEventExecutionSet());
     }
 
     public StartEscalationEvent(final @MapsTo("general") BPMNGeneralSet general,
@@ -80,8 +80,8 @@ public class StartEscalationEvent extends BaseStartEvent {
                                 final @MapsTo("fontSet") FontSet fontSet,
                                 final @MapsTo("dimensionsSet") CircleDimensionSet dimensionsSet,
                                 final @MapsTo("simulationSet") SimulationAttributeSet simulationSet,
-                                final @MapsTo("executionSet") InterruptingEscalationEventExecutionSet executionSet,
-                                final @MapsTo("dataIOSet") DataIOSet dataIOSet) {
+                                final @MapsTo("dataIOSet") DataIOSet dataIOSet,
+                                final @MapsTo("executionSet") InterruptingEscalationEventExecutionSet executionSet) {
         super(general,
               backgroundSet,
               fontSet,
@@ -89,16 +89,6 @@ public class StartEscalationEvent extends BaseStartEvent {
               simulationSet);
         this.executionSet = executionSet;
         this.dataIOSet = dataIOSet;
-    }
-
-    @Override
-    public boolean hasOutputVars() {
-        return true;
-    }
-
-    @Override
-    public boolean isSingleOutputVar() {
-        return true;
     }
 
     public InterruptingEscalationEventExecutionSet getExecutionSet() {
@@ -115,6 +105,16 @@ public class StartEscalationEvent extends BaseStartEvent {
 
     public void setDataIOSet(DataIOSet dataIOSet) {
         this.dataIOSet = dataIOSet;
+    }
+
+    @Override
+    public boolean hasOutputVars() {
+        return true;
+    }
+
+    @Override
+    public boolean isSingleOutputVar() {
+        return true;
     }
 
     @Override

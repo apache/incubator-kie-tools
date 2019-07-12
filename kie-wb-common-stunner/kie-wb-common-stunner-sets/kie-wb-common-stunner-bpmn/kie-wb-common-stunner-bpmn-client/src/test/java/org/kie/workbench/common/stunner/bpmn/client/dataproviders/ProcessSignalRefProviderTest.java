@@ -97,6 +97,7 @@ public class ProcessSignalRefProviderTest
     private Node mockStartSignalEventNode(String signalRefValue) {
         StartSignalEvent event = new StartSignalEvent();
         event.setExecutionSet(new InterruptingSignalEventExecutionSet(new IsInterrupting(true),
+                                                                      new SLADueDate(),
                                                                       new SignalRef(signalRefValue)));
         return mockNode(event);
     }

@@ -82,6 +82,7 @@ public class ProcessErrorRefProviderTest
     private Element mockStartErrorEventNode(String errorRefValue) {
         StartErrorEvent event = new StartErrorEvent();
         event.setExecutionSet(new InterruptingErrorEventExecutionSet(new IsInterrupting(true),
+                                                                     new SLADueDate(),
                                                                      new ErrorRef(errorRefValue)));
         return mockNode(event);
     }

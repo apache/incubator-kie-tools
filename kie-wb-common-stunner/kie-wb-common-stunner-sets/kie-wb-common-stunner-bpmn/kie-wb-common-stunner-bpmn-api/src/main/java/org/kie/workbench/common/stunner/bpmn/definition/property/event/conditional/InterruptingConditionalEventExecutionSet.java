@@ -27,9 +27,10 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.checkBox.type.CheckBoxFieldType;
 import org.kie.workbench.common.stunner.bpmn.definition.property.common.ConditionExpression;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.BaseStartEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.IsInterrupting;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeValue;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
@@ -40,14 +41,7 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 @PropertySet
 @FormDefinition(startElement = "isInterrupting",
         policy = FieldPolicy.ONLY_MARKED)
-public class InterruptingConditionalEventExecutionSet {
-
-    @Property
-    @FormField(
-            type = CheckBoxFieldType.class
-    )
-    @Valid
-    private IsInterrupting isInterrupting;
+public class InterruptingConditionalEventExecutionSet extends BaseStartEventExecutionSet {
 
     @Property
     @FormField(afterElement = "isInterrupting",
@@ -56,23 +50,17 @@ public class InterruptingConditionalEventExecutionSet {
     private ConditionExpression conditionExpression;
 
     public InterruptingConditionalEventExecutionSet() {
-        this(new IsInterrupting(true),
+        this(new IsInterrupting(),
+             new SLADueDate(),
              new ConditionExpression(new ScriptTypeValue("drools",
                                                          "")));
     }
 
     public InterruptingConditionalEventExecutionSet(final @MapsTo("isInterrupting") IsInterrupting isInterrupting,
+                                                    final @MapsTo("slaDueDate") SLADueDate slaDueDate,
                                                     final @MapsTo("conditionExpression") ConditionExpression conditionExpression) {
-        this.isInterrupting = isInterrupting;
+        super(isInterrupting, slaDueDate);
         this.conditionExpression = conditionExpression;
-    }
-
-    public IsInterrupting getIsInterrupting() {
-        return isInterrupting;
-    }
-
-    public void setIsInterrupting(IsInterrupting isInterrupting) {
-        this.isInterrupting = isInterrupting;
     }
 
     public ConditionExpression getConditionExpression() {
@@ -85,7 +73,7 @@ public class InterruptingConditionalEventExecutionSet {
 
     @Override
     public int hashCode() {
-        return HashUtil.combineHashCodes(Objects.hashCode(isInterrupting),
+        return HashUtil.combineHashCodes(super.hashCode(),
                                          Objects.hashCode(conditionExpression));
     }
 
@@ -93,10 +81,8 @@ public class InterruptingConditionalEventExecutionSet {
     public boolean equals(Object o) {
         if (o instanceof InterruptingConditionalEventExecutionSet) {
             InterruptingConditionalEventExecutionSet other = (InterruptingConditionalEventExecutionSet) o;
-            return Objects.equals(isInterrupting,
-                                  other.isInterrupting) &&
-                    Objects.equals(conditionExpression,
-                                   other.conditionExpression);
+            return super.equals(other) &&
+                    Objects.equals(conditionExpression, other.conditionExpression);
         }
         return false;
     }

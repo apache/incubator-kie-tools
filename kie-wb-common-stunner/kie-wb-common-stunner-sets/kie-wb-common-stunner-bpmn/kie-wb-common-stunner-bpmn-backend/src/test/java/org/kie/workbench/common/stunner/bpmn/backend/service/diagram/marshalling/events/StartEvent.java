@@ -22,12 +22,12 @@ import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.Unmarshalling;
 import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.BPMNDiagramMarshallerBase;
 import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.Marshaller;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseStartEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.AssignmentsInfo;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.BaseStartEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.core.definition.service.DiagramMarshaller;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -48,10 +48,13 @@ public abstract class StartEvent<T extends BaseStartEvent> extends BPMNDiagramMa
     static final boolean NON_INTERRUPTING = false;
     static final boolean INTERRUPTING = true;
 
+    private Marshaller marshallerType;
+
     protected DiagramMarshaller<Graph, Metadata, Diagram<Graph, Metadata>> marshaller = null;
 
     StartEvent(Marshaller marshallerType) {
         super.init();
+        this.marshallerType = marshallerType;
         switch (marshallerType) {
             case OLD:
                 marshaller = oldMarshaller;
@@ -68,18 +71,6 @@ public abstract class StartEvent<T extends BaseStartEvent> extends BPMNDiagramMa
                 // New (un)marshaller is disabled for now due to found incompleteness
                 {OLD}, {NEW}
         });
-    }
-
-    @Test
-    public void testMigration() throws Exception {
-        Diagram<Graph, Metadata> oldDiagram = Unmarshalling.unmarshall(oldMarshaller, getBpmnStartEventFilePath());
-        Diagram<Graph, Metadata> newDiagram = Unmarshalling.unmarshall(newMarshaller, getBpmnStartEventFilePath());
-
-        // Doesn't work, due to old Marshaller and new Marshaller have different BPMNDefinitionSet uuids
-        // assertEquals(oldDiagram.getGraph(), newDiagram.getGraph());
-
-        // Let's check nodes only.
-        assertDiagramEquals(oldDiagram, newDiagram, getBpmnStartEventFilePath());
     }
 
     @Test
@@ -161,5 +152,23 @@ public abstract class StartEvent<T extends BaseStartEvent> extends BPMNDiagramMa
         assertDiagram(marshalledDiagram, AMOUNT_OF_NODES_IN_DIAGRAM);
 
         assertNodesEqualsAfterMarshalling(initialDiagram, marshalledDiagram, nodeID, startNodeType);
+    }
+
+    protected Marshaller getMarshallerType() {
+        return this.marshallerType;
+    }
+
+    protected void assertStartEventSlaDueDate(BaseStartEventExecutionSet executionSet, String slaDueDate) {
+        if (getMarshallerType() == Marshaller.NEW) {
+            assertNotNull(executionSet.getSlaDueDate());
+            assertEquals(slaDueDate, executionSet.getSlaDueDate().getValue());
+        }
+    }
+
+    protected void assertStartEventIsInterrupting(BaseStartEventExecutionSet executionSet, boolean isInterrupting) {
+        if (getMarshallerType() == Marshaller.NEW) {
+            assertNotNull(executionSet.getIsInterrupting());
+            assertEquals(isInterrupting, executionSet.getIsInterrupting().getValue());
+        }
     }
 }

@@ -18,22 +18,27 @@ package org.kie.workbench.common.stunner.bpmn.client.forms.filters;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.adf.engine.shared.FormElementFilter;
+import org.kie.workbench.common.stunner.bpmn.definition.BaseStartEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EventSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.MultipleInstanceSubprocess;
+import org.kie.workbench.common.stunner.bpmn.definition.StartCompensationEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.StartConditionalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartErrorEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.StartEscalationEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartMessageEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartSignalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartTimerEvent;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.graph.Edge;
-import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
@@ -63,9 +68,6 @@ public class StartEventFilterProviderFactoryTest {
     private ClientSession session;
 
     @Mock
-    private Element element;
-
-    @Mock
     private Definition definition;
 
     @Mock
@@ -82,6 +84,9 @@ public class StartEventFilterProviderFactoryTest {
 
     @Mock
     private Child child;
+
+    @Mock
+    private View view;
 
     @Mock
     private View parentView;
@@ -103,6 +108,7 @@ public class StartEventFilterProviderFactoryTest {
         when(canvasHandler.getGraphIndex()).thenReturn(graphIndex);
         when(canvasHandler.getGraphIndex().getNode(ELEMENT_UUID)).thenReturn(node);
         when(node.getInEdges()).thenReturn(inEdges);
+        when(node.getContent()).thenReturn(view);
         when(edge.getContent()).thenReturn(child);
         when(edge.getSourceNode()).thenReturn(parentNode);
         when(parentNode.asNode()).thenReturn(parentNode);
@@ -110,44 +116,43 @@ public class StartEventFilterProviderFactoryTest {
     }
 
     @Test
-    public void testStartMessageEventFilterProviderShowIsInterruptingField() {
-        testStartEventFilterProviderShowIsInterruptingField(StartMessageEvent.class);
+    public void testFilterProviderShowIsInterruptingField() {
+        BaseStartEvent[] testedClasses = {
+                new StartSignalEvent(),
+                new StartTimerEvent(),
+                new StartConditionalEvent(),
+                new StartEscalationEvent(),
+                new StartMessageEvent()
+        };
+
+        when(parentView.getDefinition()).thenReturn(eventSubprocess);
+        Stream.of(testedClasses).forEach(startEvent -> testStartEventFilterProviderShowIsInterruptingField(startEvent));
     }
 
     @Test
-    public void testStartErrorEventFilterProviderShowIsInterruptingField() {
-        testStartEventFilterProviderShowIsInterruptingField(StartErrorEvent.class);
-    }
+    public void testFilterProviderHideIsInterruptingField() {
+        BaseStartEvent[] test1Classes = {
+                new StartNoneEvent(),
+                new StartCompensationEvent(),
+                new StartSignalEvent(),
+                new StartTimerEvent(),
+                new StartConditionalEvent(),
+                new StartErrorEvent(),
+                new StartEscalationEvent(),
+                new StartMessageEvent()
+        };
+        when(parentView.getDefinition()).thenReturn(otherNode);
+        Stream.of(test1Classes).
+                forEach(catchingIntermediateEvent ->
+                                testStartEventFilterProviderHideIsInterruptingField(catchingIntermediateEvent));
 
-    @Test
-    public void testStartSignalEventFilterProviderShowIsInterruptingField() {
-        testStartEventFilterProviderShowIsInterruptingField(StartSignalEvent.class);
-    }
-
-    @Test
-    public void testStartTimerEventFilterProviderShowIsInterruptingField() {
-        testStartEventFilterProviderShowIsInterruptingField(StartTimerEvent.class);
-    }
-
-    @Test
-    public void testStartMessageEventFilterProviderHideIsInterruptingField() {
-        testStartEventFilterProviderHideIsInterruptingField(StartMessageEvent.class);
-    }
-
-    @Test
-    public void testStartErrorEventFilterProviderHideIsInterruptingField() {
-        testStartEventFilterProviderHideIsInterruptingField(StartErrorEvent.class);
-    }
-
-    @Test
-    public void testStartSignalEventFilterProviderHideIsInterruptingField() {
-
-        testStartEventFilterProviderHideIsInterruptingField(StartSignalEvent.class);
-    }
-
-    @Test
-    public void testStartTimerEventFilterProviderHideIsInterruptingField() {
-        testStartEventFilterProviderHideIsInterruptingField(StartTimerEvent.class);
+        BaseStartEvent[] test2Classes = {
+                new StartNoneEvent(),
+                new StartCompensationEvent(),
+                new StartErrorEvent(),
+        };
+        when(parentView.getDefinition()).thenReturn(eventSubprocess);
+        Stream.of(test2Classes).forEach(clazz -> testStartEventFilterProviderHideIsInterruptingField(clazz));
     }
 
     @Test
@@ -173,40 +178,37 @@ public class StartEventFilterProviderFactoryTest {
         assertFalse(formElementFilter.getPredicate().test(definition));
     }
 
-    private void testStartEventFilterProviderShowIsInterruptingField(Class<?> filterClass) {
-        when(parentView.getDefinition()).thenReturn(eventSubprocess);
+    private void testStartEventFilterProviderShowIsInterruptingField(BaseStartEvent filterEvent) {
+        when(view.getDefinition()).thenReturn(filterEvent);
 
+        Class<?> filterClass = filterEvent.getClass();
         startEventFilterProvider = new StartEventFilterProvider(sessionManager, filterClass);
-        assertEquals(filterClass,
-                     startEventFilterProvider.getDefinitionType());
+        assertEquals(filterClass, startEventFilterProvider.getDefinitionType());
 
         Collection<FormElementFilter> formElementFilters = startEventFilterProvider.provideFilters(ELEMENT_UUID, definition);
 
         FormElementFilter formElementFilter = formElementFilters.iterator().next();
 
-        assertEquals(1,
-                     formElementFilters.size());
-        assertEquals(ELEMENT_NAME,
-                     formElementFilter.getElementName());
+        assertEquals(1, formElementFilters.size());
+        assertEquals(ELEMENT_NAME, formElementFilter.getElementName());
 
         assertTrue(formElementFilter.getPredicate().test(definition));
     }
 
-    private void testStartEventFilterProviderHideIsInterruptingField(Class<?> filterClass) {
+    private void testStartEventFilterProviderHideIsInterruptingField(BaseStartEvent filterEvent) {
         when(parentView.getDefinition()).thenReturn(otherNode);
+        when(view.getDefinition()).thenReturn(filterEvent);
 
+        Class<?> filterClass = filterEvent.getClass();
         startEventFilterProvider = new StartEventFilterProvider(sessionManager, filterClass);
-        assertEquals(filterClass,
-                     startEventFilterProvider.getDefinitionType());
+        assertEquals(filterClass, startEventFilterProvider.getDefinitionType());
 
         Collection<FormElementFilter> formElementFilters = startEventFilterProvider.provideFilters(ELEMENT_UUID, definition);
 
         FormElementFilter formElementFilter = formElementFilters.iterator().next();
 
-        assertEquals(1,
-                     formElementFilters.size());
-        assertEquals(ELEMENT_NAME,
-                     formElementFilter.getElementName());
+        assertEquals(1, formElementFilters.size());
+        assertEquals(ELEMENT_NAME, formElementFilter.getElementName());
 
         assertFalse(formElementFilter.getPredicate().test(definition));
     }

@@ -108,18 +108,13 @@ import org.kie.workbench.common.stunner.bpmn.definition.StartEscalationEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartMessageEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartSignalEvent;
-import org.kie.workbench.common.stunner.bpmn.definition.StartTimerEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.AssignmentsInfo;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.DiagramSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.IsInterrupting;
-import org.kie.workbench.common.stunner.bpmn.definition.property.event.error.InterruptingErrorEventExecutionSet;
-import org.kie.workbench.common.stunner.bpmn.definition.property.event.message.InterruptingMessageEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.message.MessageRef;
-import org.kie.workbench.common.stunner.bpmn.definition.property.event.signal.InterruptingSignalEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.signal.SignalRef;
-import org.kie.workbench.common.stunner.bpmn.definition.property.event.timer.InterruptingTimerEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocSubprocessTaskExecutionSet;
@@ -185,7 +180,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -653,21 +647,6 @@ public class BPMNDiagramMarshallerTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testUnmarshallStartTimerEvent() throws Exception {
-        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_STARTTIMEREVENT);
-        assertDiagram(diagram,
-                      4);
-        assertEquals("StartTimerEvent",
-                     diagram.getMetadata().getTitle());
-        Node<? extends Definition, ?> startTimerEventNode = diagram.getGraph().getNode("_49ADC988-B63D-4AEB-B811-67969F305FD0");
-        StartTimerEvent startTimerEvent = (StartTimerEvent) startTimerEventNode.getContent().getDefinition();
-        IsInterrupting isInterrupting = startTimerEvent.getExecutionSet().getIsInterrupting();
-        assertEquals(false,
-                     isInterrupting.getValue());
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
     public void testUnmarshallStartSignalEvent() throws Exception {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_STARTSIGNALEVENT);
         assertDiagram(diagram,
@@ -758,183 +737,6 @@ public class BPMNDiagramMarshallerTest {
         AssignmentsInfo assignmentsInfo = dataIOSet.getAssignmentsinfo();
         assertEquals("||escalationOutput:String||[dout]escalationOutput->processVar1",
                      assignmentsInfo.getValue());
-    }
-
-    @Test
-    public void testUnmarshallIsInterruptingStartErrorEvent() throws Exception {
-        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_EVENT_SUBPROCESS_STARTERROREVENT);
-        assertDiagram(diagram, 7);
-        assertEquals("EventSubprocessStartErrorEvent", diagram.getMetadata().getTitle());
-
-        // Check first start event with all FILLED properties
-        Node<? extends Definition, ?> startEventNode = diagram.getGraph().getNode("9ABD5C04-C6E2-4DF3-829F-ADB283330AD6");
-        StartErrorEvent startErrorEvent = (StartErrorEvent) startEventNode.getContent().getDefinition();
-        BPMNGeneralSet eventGeneralSet = startErrorEvent.getGeneral();
-        assertNotNull(eventGeneralSet);
-        assertEquals("StartErrorEvent", eventGeneralSet.getName().getValue());
-        assertEquals("Some not empty\nDocumentation\n~`!@#$%^&*()_+=-{}|[]\\:\";'<>/?.,",
-                     eventGeneralSet.getDocumentation().getValue());
-
-        InterruptingErrorEventExecutionSet eventExecutionSet = startErrorEvent.getExecutionSet();
-        assertNotNull(eventExecutionSet);
-        assertNotNull(eventExecutionSet.getErrorRef());
-        assertEquals("Error1", eventExecutionSet.getErrorRef().getValue());
-        assertEquals(true, eventExecutionSet.getIsInterrupting().getValue());
-
-        DataIOSet eventDataIOSet = startErrorEvent.getDataIOSet();
-        AssignmentsInfo assignmentsInfo = eventDataIOSet.getAssignmentsinfo();
-        assertEquals("||Var1:String||[dout]Var1->Var1", assignmentsInfo.getValue());
-
-        // Check second start event with all EMPTY properties
-        Node<? extends Definition, ?> emptyEventNode = diagram.getGraph().getNode("50B93E5E-C05D-40DD-BF48-2B6AE919763E");
-        StartErrorEvent emptyErrorEvent = (StartErrorEvent) emptyEventNode.getContent().getDefinition();
-        BPMNGeneralSet emptyEventGeneralSet = emptyErrorEvent.getGeneral();
-        assertNotNull(emptyEventGeneralSet);
-        assertEquals("", emptyEventGeneralSet.getName().getValue());
-        assertEquals("", emptyEventGeneralSet.getDocumentation().getValue());
-
-        InterruptingErrorEventExecutionSet emptyExecutionSet = emptyErrorEvent.getExecutionSet();
-        assertNotNull(emptyExecutionSet);
-        assertNotNull(emptyExecutionSet.getErrorRef());
-        assertEquals("", emptyExecutionSet.getErrorRef().getValue());
-        assertEquals(false, emptyExecutionSet.getIsInterrupting().getValue());
-
-        DataIOSet emptyDataIOSet = emptyErrorEvent.getDataIOSet();
-        AssignmentsInfo emptyAssignmentsInfo = emptyDataIOSet.getAssignmentsinfo();
-        assertEquals("", emptyAssignmentsInfo.getValue());
-    }
-
-    @Test
-    public void testUnmarshallIsInterruptingStartMessageEvent() throws Exception {
-        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_EVENT_SUBPROCESS_STARTMESSAGEEVENT);
-        assertDiagram(diagram, 7);
-        assertEquals("EventSubprocessStartMessageEvent", diagram.getMetadata().getTitle());
-
-        // Check first start event with all FILLED properties
-        Node<? extends Definition, ?> startEventNode = diagram.getGraph().getNode("_77E79714-F32A-4BE7-B0D2-15178F5244F0");
-        StartMessageEvent startMessageEvent = (StartMessageEvent) startEventNode.getContent().getDefinition();
-        BPMNGeneralSet eventGeneralSet = startMessageEvent.getGeneral();
-        assertNotNull(eventGeneralSet);
-        assertEquals("StartMessageEvent", eventGeneralSet.getName().getValue());
-        assertEquals("Some not empty\nDocumentation\n~`!@#$%^&*()_+=-{}|[]\\:\";'<>/?.,",
-                     eventGeneralSet.getDocumentation().getValue());
-
-        InterruptingMessageEventExecutionSet eventExecutionSet = startMessageEvent.getExecutionSet();
-        assertNotNull(eventExecutionSet);
-        assertNotNull(eventExecutionSet.getMessageRef());
-        assertEquals("Message1", eventExecutionSet.getMessageRef().getValue());
-        assertEquals(true, eventExecutionSet.getIsInterrupting().getValue());
-
-        DataIOSet eventDataIOSet = startMessageEvent.getDataIOSet();
-        AssignmentsInfo assignmentsInfo = eventDataIOSet.getAssignmentsinfo();
-        assertEquals("||Var1:String||[dout]Var1->Var1", assignmentsInfo.getValue());
-
-        // Check second start event with all EMPTY properties
-        Node<? extends Definition, ?> emptyEventNode = diagram.getGraph().getNode("_E4563AE4-5F70-4283-A5AC-C9AB14F15EBA");
-        StartMessageEvent emptyMessageEvent = (StartMessageEvent) emptyEventNode.getContent().getDefinition();
-        BPMNGeneralSet emptyEventGeneralSet = emptyMessageEvent.getGeneral();
-        assertNotNull(emptyEventGeneralSet);
-        assertEquals("", emptyEventGeneralSet.getName().getValue());
-        assertEquals("", emptyEventGeneralSet.getDocumentation().getValue());
-
-        InterruptingMessageEventExecutionSet emptyExecutionSet = emptyMessageEvent.getExecutionSet();
-        assertNotNull(emptyExecutionSet);
-        assertNotNull(emptyExecutionSet.getMessageRef());
-        assertEquals("", emptyExecutionSet.getMessageRef().getValue());
-        assertEquals(false, emptyExecutionSet.getIsInterrupting().getValue());
-
-        DataIOSet emptyDataIOSet = emptyMessageEvent.getDataIOSet();
-        AssignmentsInfo emptyAssignmentsInfo = emptyDataIOSet.getAssignmentsinfo();
-        assertEquals("", emptyAssignmentsInfo.getValue());
-    }
-
-    @Test
-    public void testUnmarshallIsInterruptingStartSignalEvent() throws Exception {
-        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_EVENT_SUBPROCESS_STARTSIGNALEVENT);
-        assertDiagram(diagram, 7);
-        assertEquals("EventSubprocessStartSignalEvent", diagram.getMetadata().getTitle());
-
-        // Check first start event with all FILLED properties
-        Node<? extends Definition, ?> startEventNode = diagram.getGraph().getNode("_B6B3A062-F04A-4E45-A08B-C1F0971C3DF9");
-        StartSignalEvent startSignalEvent = (StartSignalEvent) startEventNode.getContent().getDefinition();
-        BPMNGeneralSet eventGeneralSet = startSignalEvent.getGeneral();
-        assertNotNull(eventGeneralSet);
-        assertEquals("StartSignalEvent", eventGeneralSet.getName().getValue());
-        assertEquals("Some not empty\nDocumentation\n~`!@#$%^&*()_+=-{}|[]\\:\";'<>/?.,",
-                     eventGeneralSet.getDocumentation().getValue());
-
-        InterruptingSignalEventExecutionSet eventExecutionSet = startSignalEvent.getExecutionSet();
-        assertNotNull(eventExecutionSet);
-        assertNotNull(eventExecutionSet.getSignalRef());
-        assertEquals("Signal1", eventExecutionSet.getSignalRef().getValue());
-        assertEquals(true, eventExecutionSet.getIsInterrupting().getValue());
-
-        DataIOSet eventDataIOSet = startSignalEvent.getDataIOSet();
-        AssignmentsInfo assignmentsInfo = eventDataIOSet.getAssignmentsinfo();
-        assertEquals("||Var1:String||[dout]Var1->Var1", assignmentsInfo.getValue());
-
-        // Check second start event with all EMPTY properties
-        Node<? extends Definition, ?> emptyEventNode = diagram.getGraph().getNode("_A8B9513C-D237-4BDA-B7BC-7C79F7D12BB5");
-        StartSignalEvent emptySignalEvent = (StartSignalEvent) emptyEventNode.getContent().getDefinition();
-        BPMNGeneralSet emptyEventGeneralSet = emptySignalEvent.getGeneral();
-        assertNotNull(emptyEventGeneralSet);
-        assertEquals("", emptyEventGeneralSet.getName().getValue());
-        assertEquals("", emptyEventGeneralSet.getDocumentation().getValue());
-
-        InterruptingSignalEventExecutionSet emptyExecutionSet = emptySignalEvent.getExecutionSet();
-        assertNotNull(emptyExecutionSet);
-        assertNotNull(emptyExecutionSet.getSignalRef());
-        assertEquals("", emptyExecutionSet.getSignalRef().getValue());
-        assertEquals(false, emptyExecutionSet.getIsInterrupting().getValue());
-
-        DataIOSet emptyDataIOSet = emptySignalEvent.getDataIOSet();
-        AssignmentsInfo emptyAssignmentsInfo = emptyDataIOSet.getAssignmentsinfo();
-        assertEquals("", emptyAssignmentsInfo.getValue());
-    }
-
-    @Test
-    public void testUnmarshallIsInterruptingStartTimerEvent() throws Exception {
-        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_EVENT_SUBPROCESS_STARTTIMEREVENT);
-        assertDiagram(diagram, 7);
-        assertEquals("EventSubprocessStartTimerEvent", diagram.getMetadata().getTitle());
-
-        // Check first start event with all FILLED properties
-        Node<? extends Definition, ?> startEventNode = diagram.getGraph().getNode("_4A4F40C5-C9F1-4761-BD95-C61DDBDC9C19");
-        StartTimerEvent startTimerEvent = (StartTimerEvent) startEventNode.getContent().getDefinition();
-        BPMNGeneralSet eventGeneralSet = startTimerEvent.getGeneral();
-        assertNotNull(eventGeneralSet);
-        assertEquals("StartTimerEvent", eventGeneralSet.getName().getValue());
-        assertEquals("Some not empty\nDocumentation\n~`!@#$%^&*()_+=-{}|[]\\:\";'<>/?.,",
-                     eventGeneralSet.getDocumentation().getValue());
-
-        InterruptingTimerEventExecutionSet eventExecutionSet = startTimerEvent.getExecutionSet();
-        assertNotNull(eventExecutionSet);
-        assertNotNull(eventExecutionSet.getTimerSettings());
-
-        assertEquals("*/2 * * * *", eventExecutionSet.getTimerSettings().getValue().getTimeCycle());
-        assertEquals("cron", eventExecutionSet.getTimerSettings().getValue().getTimeCycleLanguage());
-        assertEquals("201702081535", eventExecutionSet.getTimerSettings().getValue().getTimeDate());
-        assertEquals("P4H", eventExecutionSet.getTimerSettings().getValue().getTimeDuration());
-
-        assertEquals(true, eventExecutionSet.getIsInterrupting().getValue());
-
-        // Check second start event with all EMPTY properties
-        Node<? extends Definition, ?> emptyEventNode = diagram.getGraph().getNode("_BF94EA1F-519D-4E52-AB2A-C7687E11ABDC");
-        StartTimerEvent emptyTimerEvent = (StartTimerEvent) emptyEventNode.getContent().getDefinition();
-        BPMNGeneralSet emptyEventGeneralSet = emptyTimerEvent.getGeneral();
-        assertNotNull(emptyEventGeneralSet);
-        assertEquals("", emptyEventGeneralSet.getName().getValue());
-        assertEquals("", emptyEventGeneralSet.getDocumentation().getValue());
-
-        InterruptingTimerEventExecutionSet emptyExecutionSet = emptyTimerEvent.getExecutionSet();
-        assertNotNull(emptyExecutionSet);
-        assertNotNull(emptyExecutionSet.getTimerSettings());
-        assertNull(emptyExecutionSet.getTimerSettings().getValue().getTimeCycle());
-        assertNull(emptyExecutionSet.getTimerSettings().getValue().getTimeCycleLanguage());
-        assertNull(emptyExecutionSet.getTimerSettings().getValue().getTimeDate());
-        assertNull(emptyExecutionSet.getTimerSettings().getValue().getTimeDuration());
-
-        assertEquals(false, emptyExecutionSet.getIsInterrupting().getValue());
     }
 
     @Test
@@ -2449,26 +2251,6 @@ public class BPMNDiagramMarshallerTest {
         assertTrue(result.contains("drools:esccode=\"EscalationCode\""));
         assertTrue(result.contains("<bpmn2:escalation"));
         assertTrue(result.contains("escalationCode=\"EscalationCode\""));
-    }
-
-    @Test
-    public void testMarshallStartErrorEventEvent() throws Exception {
-        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_STARTERROREVENT);
-        String result = tested.marshall(diagram);
-        assertDiagram(result,
-                      1,
-                      2,
-                      1);
-
-        assertTrue(result.contains("<bpmn2:startEvent"));
-        assertTrue(result.contains(" name=\"MyStartErrorEvent\""));
-        assertTrue(result.contains("<bpmn2:errorEventDefinition"));
-        assertTrue(result.contains("errorRef=\"MyError\""));
-        assertTrue(result.contains("drools:erefname=\"MyError\""));
-        assertTrue(result.contains("<bpmn2:error"));
-        assertTrue(result.contains("id=\"MyError\""));
-        assertTrue(result.contains("errorCode=\"MyError\""));
-        assertFalse(result.contains("isInterrupting"));
     }
 
     @Test

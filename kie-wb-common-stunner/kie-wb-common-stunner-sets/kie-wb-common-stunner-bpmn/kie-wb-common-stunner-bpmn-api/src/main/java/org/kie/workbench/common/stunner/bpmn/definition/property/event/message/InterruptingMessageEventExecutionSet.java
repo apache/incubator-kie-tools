@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.stunner.bpmn.definition.property.event.message;
 
+import java.util.Objects;
+
 import javax.validation.Valid;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
@@ -23,9 +25,9 @@ import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.annotations.field.selector.SelectorDataProvider;
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.checkBox.type.CheckBoxFieldType;
-import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.BaseStartEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.IsInterrupting;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 import org.kie.workbench.common.stunner.bpmn.forms.model.ComboBoxFieldType;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
@@ -35,12 +37,7 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 @Bindable
 @PropertySet
 @FormDefinition(startElement = "isInterrupting")
-public class InterruptingMessageEventExecutionSet implements BPMNPropertySet {
-
-    @Property
-    @FormField(type = CheckBoxFieldType.class)
-    @Valid
-    private IsInterrupting isInterrupting;
+public class InterruptingMessageEventExecutionSet extends BaseStartEventExecutionSet {
 
     @Property
     @FormField(type = ComboBoxFieldType.class,
@@ -53,22 +50,16 @@ public class InterruptingMessageEventExecutionSet implements BPMNPropertySet {
     private MessageRef messageRef;
 
     public InterruptingMessageEventExecutionSet() {
-        this(new IsInterrupting(true),
+        this(new IsInterrupting(),
+             new SLADueDate(),
              new MessageRef());
     }
 
     public InterruptingMessageEventExecutionSet(final @MapsTo("isInterrupting") IsInterrupting isInterrupting,
+                                                final @MapsTo("slaDueDate") SLADueDate slaDueDate,
                                                 final @MapsTo("messageRef") MessageRef messageRef) {
-        this.isInterrupting = isInterrupting;
+        super(isInterrupting, slaDueDate);
         this.messageRef = messageRef;
-    }
-
-    public IsInterrupting getIsInterrupting() {
-        return isInterrupting;
-    }
-
-    public void setIsInterrupting(IsInterrupting isInterrupting) {
-        this.isInterrupting = isInterrupting;
     }
 
     public MessageRef getMessageRef() {
@@ -81,16 +72,16 @@ public class InterruptingMessageEventExecutionSet implements BPMNPropertySet {
 
     @Override
     public int hashCode() {
-        return HashUtil.combineHashCodes(isInterrupting.hashCode(),
-                                         messageRef.hashCode());
+        return HashUtil.combineHashCodes(super.hashCode(),
+                                         Objects.hashCode(messageRef));
     }
 
     @Override
     public boolean equals(Object o) {
         if (o instanceof InterruptingMessageEventExecutionSet) {
             InterruptingMessageEventExecutionSet other = (InterruptingMessageEventExecutionSet) o;
-            return (other.isInterrupting == null ? isInterrupting == null : other.isInterrupting.equals(isInterrupting)) &&
-                    (other.messageRef == null ? messageRef == null : other.messageRef.equals(messageRef));
+            return super.equals(other) &&
+                    Objects.equals(messageRef, other.messageRef);
         }
         return false;
     }

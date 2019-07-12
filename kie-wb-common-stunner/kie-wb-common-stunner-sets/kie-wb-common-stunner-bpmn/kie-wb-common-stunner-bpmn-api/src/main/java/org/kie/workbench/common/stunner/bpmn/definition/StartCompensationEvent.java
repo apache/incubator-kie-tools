@@ -18,21 +18,26 @@ package org.kie.workbench.common.stunner.bpmn.definition;
 
 import java.util.Objects;
 
+import javax.validation.Valid;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.CircleDimensionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.Radius;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.BaseStartEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.IsInterrupting;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationAttributeSet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
-import org.kie.workbench.common.stunner.core.definition.annotation.Property;
+import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
@@ -51,8 +56,10 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 )
 public class StartCompensationEvent extends BaseStartEvent {
 
-    @Property
-    private IsInterrupting isInterrupting = new IsInterrupting(false);
+    @PropertySet
+    @FormField(afterElement = "general")
+    @Valid
+    protected BaseStartEventExecutionSet executionSet;
 
     public StartCompensationEvent() {
         this(new BPMNGeneralSet(""),
@@ -60,7 +67,8 @@ public class StartCompensationEvent extends BaseStartEvent {
              new FontSet(),
              new CircleDimensionSet(new Radius()),
              new SimulationAttributeSet(),
-             new IsInterrupting(false));
+             new BaseStartEventExecutionSet(new IsInterrupting(false),
+                                            new SLADueDate()));
     }
 
     public StartCompensationEvent(final @MapsTo("general") BPMNGeneralSet general,
@@ -68,27 +76,27 @@ public class StartCompensationEvent extends BaseStartEvent {
                                   final @MapsTo("fontSet") FontSet fontSet,
                                   final @MapsTo("dimensionsSet") CircleDimensionSet dimensionsSet,
                                   final @MapsTo("simulationSet") SimulationAttributeSet simulationSet,
-                                  final @MapsTo("isInterrupting") IsInterrupting isInterrupting) {
+                                  final @MapsTo("executionSet") BaseStartEventExecutionSet executionSet) {
         super(general,
               backgroundSet,
               fontSet,
               dimensionsSet,
               simulationSet);
-        this.isInterrupting = isInterrupting;
+        this.executionSet = executionSet;
     }
 
-    public IsInterrupting getIsInterrupting() {
-        return isInterrupting;
+    public BaseStartEventExecutionSet getExecutionSet() {
+        return executionSet;
     }
 
-    public void setIsInterrupting(IsInterrupting isInterrupting) {
-        this.isInterrupting = isInterrupting;
+    public void setExecutionSet(BaseStartEventExecutionSet executionSet) {
+        this.executionSet = executionSet;
     }
 
     @Override
     public int hashCode() {
         return HashUtil.combineHashCodes(super.hashCode(),
-                                         Objects.hashCode(isInterrupting));
+                                         Objects.hashCode(executionSet));
     }
 
     @Override
@@ -99,8 +107,7 @@ public class StartCompensationEvent extends BaseStartEvent {
         if (o instanceof StartCompensationEvent) {
             StartCompensationEvent other = (StartCompensationEvent) o;
             return super.equals(other) &&
-                    Objects.equals(isInterrupting,
-                                   other.isInterrupting);
+                    Objects.equals(executionSet, other.executionSet);
         }
         return false;
     }

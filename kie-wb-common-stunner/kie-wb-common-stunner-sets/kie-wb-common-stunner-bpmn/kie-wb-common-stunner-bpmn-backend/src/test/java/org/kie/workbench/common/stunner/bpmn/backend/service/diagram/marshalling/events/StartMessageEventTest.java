@@ -36,6 +36,8 @@ public class StartMessageEventTest extends StartEvent<StartMessageEvent> {
     private static final String FILLED_SUBPROCESS_LEVEL_EVENT_ID = "464FB8BC-F752-4428-A3DC-D5DDCEE2353F";
     private static final String EMPTY_SUBPROCESS_LEVEL_EVENT_ID = "372D12E1-30F9-4504-8ED5-5F7D1735FEDB";
 
+    private static final String SLA_DUE_DATE = "12/25/1983";
+
     private static final int AMOUNT_OF_NODES_IN_DIAGRAM = 11;
 
     public StartMessageEventTest(Marshaller marshallerType) {
@@ -55,7 +57,7 @@ public class StartMessageEventTest extends StartEvent<StartMessageEvent> {
 
         StartMessageEvent filledTop = getStartNodeById(diagram, FILLED_TOP_LEVEL_EVENT_ID, StartMessageEvent.class);
         assertGeneralSet(filledTop.getGeneral(), EVENT_NAME, EVENT_DOCUMENTATION);
-        assertMessageEventExecutionSet(filledTop.getExecutionSet(), EVENT_REF, INTERRUPTING);
+        assertMessageEventExecutionSet(filledTop.getExecutionSet(), EVENT_REF, INTERRUPTING, SLA_DUE_DATE);
         assertDataIOSet(filledTop.getDataIOSet(), EVENT_DATA_OUTPUT);
     }
 
@@ -67,7 +69,7 @@ public class StartMessageEventTest extends StartEvent<StartMessageEvent> {
 
         StartMessageEvent emptyTop = getStartNodeById(diagram, EMPTY_TOP_LEVEL_EVENT_ID, StartMessageEvent.class);
         assertGeneralSet(emptyTop.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
-        assertMessageEventExecutionSet(emptyTop.getExecutionSet(), EMPTY_VALUE, NON_INTERRUPTING);
+        assertMessageEventExecutionSet(emptyTop.getExecutionSet(), EMPTY_VALUE, NON_INTERRUPTING, EMPTY_VALUE);
         assertDataIOSet(emptyTop.getDataIOSet(), EMPTY_VALUE);
     }
 
@@ -84,7 +86,7 @@ public class StartMessageEventTest extends StartEvent<StartMessageEvent> {
 
         StartMessageEvent filledSubprocess = getStartNodeById(diagram, FILLED_SUBPROCESS_LEVEL_EVENT_ID, StartMessageEvent.class);
         assertGeneralSet(filledSubprocess.getGeneral(), EVENT_NAME, EVENT_DOCUMENTATION);
-        assertMessageEventExecutionSet(filledSubprocess.getExecutionSet(), EVENT_REF, INTERRUPTING);
+        assertMessageEventExecutionSet(filledSubprocess.getExecutionSet(), EVENT_REF, INTERRUPTING, SLA_DUE_DATE);
         assertDataIOSet(filledSubprocess.getDataIOSet(), EVENT_DATA_OUTPUT);
     }
 
@@ -96,7 +98,7 @@ public class StartMessageEventTest extends StartEvent<StartMessageEvent> {
 
         StartMessageEvent emptySubprocess = getStartNodeById(diagram, EMPTY_SUBPROCESS_LEVEL_EVENT_ID, StartMessageEvent.class);
         assertGeneralSet(emptySubprocess.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
-        assertMessageEventExecutionSet(emptySubprocess.getExecutionSet(), EMPTY_VALUE, NON_INTERRUPTING);
+        assertMessageEventExecutionSet(emptySubprocess.getExecutionSet(), EMPTY_VALUE, NON_INTERRUPTING, EMPTY_VALUE);
         assertDataIOSet(emptySubprocess.getDataIOSet(), EMPTY_VALUE);
     }
 
@@ -130,10 +132,12 @@ public class StartMessageEventTest extends StartEvent<StartMessageEvent> {
         return StartMessageEvent.class;
     }
 
-    private void assertMessageEventExecutionSet(InterruptingMessageEventExecutionSet executionSet, String eventName, boolean isInterrupting) {
+    private void assertMessageEventExecutionSet(InterruptingMessageEventExecutionSet executionSet, String eventName, boolean isInterrupting, String slaDueDate) {
         assertNotNull(executionSet);
         assertNotNull(executionSet.getMessageRef());
         assertEquals(eventName, executionSet.getMessageRef().getValue());
-        assertEquals(isInterrupting, executionSet.getIsInterrupting().getValue());
+
+        assertStartEventIsInterrupting(executionSet, isInterrupting);
+        assertStartEventSlaDueDate(executionSet, slaDueDate);
     }
 }

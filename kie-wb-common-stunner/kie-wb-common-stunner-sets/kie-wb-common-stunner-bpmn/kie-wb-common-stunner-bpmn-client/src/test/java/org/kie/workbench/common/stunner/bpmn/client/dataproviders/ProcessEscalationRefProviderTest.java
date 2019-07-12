@@ -95,6 +95,7 @@ public class ProcessEscalationRefProviderTest extends AbstractProcessFilteredNod
     private Node mockStartEscalationEventNode(String escalationRefValue) {
         StartEscalationEvent event = new StartEscalationEvent();
         event.setExecutionSet(new InterruptingEscalationEventExecutionSet(new IsInterrupting(true),
+                                                                          new SLADueDate(),
                                                                           new EscalationRef(escalationRefValue)));
         return mockNode(event);
     }

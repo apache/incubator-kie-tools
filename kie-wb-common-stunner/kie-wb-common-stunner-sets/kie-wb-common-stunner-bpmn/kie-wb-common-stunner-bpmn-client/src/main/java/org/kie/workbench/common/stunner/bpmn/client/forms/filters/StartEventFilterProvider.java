@@ -15,6 +15,7 @@
  */
 package org.kie.workbench.common.stunner.bpmn.client.forms.filters;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.function.Predicate;
@@ -22,6 +23,11 @@ import java.util.function.Supplier;
 
 import org.kie.workbench.common.forms.adf.engine.shared.FormElementFilter;
 import org.kie.workbench.common.stunner.bpmn.definition.EventSubprocess;
+import org.kie.workbench.common.stunner.bpmn.definition.StartConditionalEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.StartEscalationEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.StartMessageEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.StartSignalEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.StartTimerEvent;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -50,9 +56,12 @@ public class StartEventFilterProvider implements StunnerFormElementFilterProvide
     @Override
     @SuppressWarnings("unchecked")
     public Collection<FormElementFilter> provideFilters(String elementUUID, Object definition) {
-        Predicate predicate = o -> isParentAnEventSubProcess(elementUUID);
+        Predicate parentPredicate = o -> isParentAnEventSubProcess(elementUUID);
+        Predicate isInterruptingPredicate = o -> isInterruptingEnabled(elementUUID);
+        Predicate predicate = parentPredicate.and(isInterruptingPredicate);
+
         FormElementFilter isInterruptingFilter = new FormElementFilter("executionSet.isInterrupting",
-                                                                       predicate);
+                                                                       parentPredicate.and(predicate));
         return Collections.singletonList(isInterruptingFilter);
     }
 
@@ -72,5 +81,30 @@ public class StartEventFilterProvider implements StunnerFormElementFilterProvide
                     .equals(EventSubprocess.class);
         }
         return false;
+    }
+
+    @SuppressWarnings("unchecked")
+    private boolean isInterruptingEnabled(final String uuid) {
+        ArrayList<Class> isInterruptingEnabledClasses = new ArrayList();
+        isInterruptingEnabledClasses.add(StartSignalEvent.class);
+        isInterruptingEnabledClasses.add(StartTimerEvent.class);
+        isInterruptingEnabledClasses.add(StartConditionalEvent.class);
+        isInterruptingEnabledClasses.add(StartEscalationEvent.class);
+        isInterruptingEnabledClasses.add(StartMessageEvent.class);
+
+        AbstractCanvasHandler canvasHandler = (AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler();
+        Node<View<?>, Edge> node = canvasHandler.getGraphIndex().getNode(uuid);
+
+        Class startEventClass = null;
+        if (null != node &&
+            null != node.getContent() &&
+            node.getContent() instanceof View) {
+            startEventClass = ((Node<View<?>, Edge>) node)
+                              .getContent()
+                              .getDefinition()
+                              .getClass();
+        }
+
+        return isInterruptingEnabledClasses.contains(startEventClass);
     }
 }

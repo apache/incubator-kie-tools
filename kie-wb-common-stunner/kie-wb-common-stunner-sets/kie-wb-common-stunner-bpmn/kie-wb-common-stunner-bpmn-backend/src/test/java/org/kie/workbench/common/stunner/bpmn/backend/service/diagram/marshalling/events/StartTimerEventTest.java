@@ -41,6 +41,8 @@ public class StartTimerEventTest extends StartEvent<StartTimerEvent> {
     private static final String FILLED_SUBPROCESS_LEVEL_EVENT_AFTER_DURATION_ID = "20DDDE81-D3E0-4534-A6A5-F25B36466078";
     private static final String EMPTY_SUBPROCESS_LEVEL_EVENT_ID = "3958A858-7E9F-4A1C-862F-711DE3033A14";
 
+    private static final String SLA_DUE_DATE = "12/25/1983";
+
     private static final int AMOUNT_OF_NODES_IN_DIAGRAM = 21;
 
     public StartTimerEventTest(Marshaller marshallerType) {
@@ -74,19 +76,19 @@ public class StartTimerEventTest extends StartEvent<StartTimerEvent> {
 
         StartTimerEvent filledTopMultiple = getStartNodeById(diagram, FILLED_TOP_LEVEL_EVENT_MULTIPLE_ID, StartTimerEvent.class);
         assertGeneralSet(filledTopMultiple.getGeneral(), EVENT_NAME_MULTIPLE, EVENT_DOCUMENTATION_MULTIPLE);
-        assertTimerEventMultiple(filledTopMultiple.getExecutionSet(), TIMER_VALUE_MULTIPLE, TIMER_VALUE_LANGUAGE_MULTIPLE, INTERRUPTING);
+        assertTimerEventMultiple(filledTopMultiple.getExecutionSet(), TIMER_VALUE_MULTIPLE, TIMER_VALUE_LANGUAGE_MULTIPLE, INTERRUPTING, SLA_DUE_DATE);
         // Should be uncommented after https://issues.jboss.org/browse/JBPM-7038 will be fixed
         //final String timerDataOutputMultiple = "||hello:String||[dout]hello->processVar";
 
         StartTimerEvent filledTopSpecificDate = getStartNodeById(diagram, FILLED_TOP_LEVEL_EVENT_SPECIFIC_DATE_ID, StartTimerEvent.class);
         assertGeneralSet(filledTopSpecificDate.getGeneral(), EVENT_NAME_SPECIFIC_DATE, EVENT_DOCUMENTATION_SPECIFIC_DATE);
-        assertTimerEventSpecificDate(filledTopSpecificDate.getExecutionSet(), TIMER_VALUE_SPECIFIC_DATE, INTERRUPTING);
+        assertTimerEventSpecificDate(filledTopSpecificDate.getExecutionSet(), TIMER_VALUE_SPECIFIC_DATE, INTERRUPTING, SLA_DUE_DATE);
         // Should be uncommented after https://issues.jboss.org/browse/JBPM-7038 will be fixed
         //final String timerDataOutputSpecificDate = "||hello:String||[dout]hello->processVar";
 
         StartTimerEvent filledTopAfterDuration = getStartNodeById(diagram, FILLED_TOP_LEVEL_EVENT_AFTER_DURATION_ID, StartTimerEvent.class);
         assertGeneralSet(filledTopAfterDuration.getGeneral(), EVENT_NAME_AFTER_DURATION, EVENT_DOCUMENTATION_AFTER_DURATION);
-        assertTimerEventAfterDuration(filledTopAfterDuration.getExecutionSet(), TIMER_VALUE_AFTER_DURATION, INTERRUPTING);
+        assertTimerEventAfterDuration(filledTopAfterDuration.getExecutionSet(), TIMER_VALUE_AFTER_DURATION, INTERRUPTING, SLA_DUE_DATE);
         // Know issue. Should be uncommented after https://issues.jboss.org/browse/JBPM-7038 will be fixed
         //assertDataIOSet(filledTopSpecificDate.getDataIOSet(), timerDataOutputDuration);
     }
@@ -99,7 +101,7 @@ public class StartTimerEventTest extends StartEvent<StartTimerEvent> {
 
         StartTimerEvent emptyTop = getStartNodeById(diagram, EMPTY_TOP_LEVEL_EVENT_ID, StartTimerEvent.class);
         assertGeneralSet(emptyTop.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
-        assertTimerEventEmpty(emptyTop.getExecutionSet(), NON_INTERRUPTING);
+        assertTimerEventEmpty(emptyTop.getExecutionSet(), NON_INTERRUPTING, EMPTY_VALUE);
         // Know issue. Should be uncommented after https://issues.jboss.org/browse/JBPM-7038 will be fixed
         //assertDataIOSet(emptySubprocess.getDataIOSet(), EMPTY_VALUE);
     }
@@ -132,19 +134,19 @@ public class StartTimerEventTest extends StartEvent<StartTimerEvent> {
 
         StartTimerEvent filledTopMultiple = getStartNodeById(diagram, FILLED_SUBPROCESS_LEVEL_EVENT_MULTIPLE_ID, StartTimerEvent.class);
         assertGeneralSet(filledTopMultiple.getGeneral(), EVENT_NAME_MULTIPLE, EVENT_DOCUMENTATION_MULTIPLE);
-        assertTimerEventMultiple(filledTopMultiple.getExecutionSet(), TIMER_VALUE_MULTIPLE, TIMER_VALUE_LANGUAGE_MULTIPLE, INTERRUPTING);
+        assertTimerEventMultiple(filledTopMultiple.getExecutionSet(), TIMER_VALUE_MULTIPLE, TIMER_VALUE_LANGUAGE_MULTIPLE, INTERRUPTING, SLA_DUE_DATE);
         // Know issue. Should be uncommented after https://issues.jboss.org/browse/JBPM-7038 will be fixed
         //assertDataIOSet(filledTopMultiple.getDataIOSet(), timerDataOutputMultiple);
 
         StartTimerEvent filledTopSpecificDate = getStartNodeById(diagram, FILLED_SUBPROCESS_LEVEL_EVENT_SPECIFIC_DATE_ID, StartTimerEvent.class);
         assertGeneralSet(filledTopSpecificDate.getGeneral(), EVENT_NAME_SPECIFIC_DATE, EVENT_DOCUMENTATION_SPECIFIC_DATE);
-        assertTimerEventSpecificDate(filledTopSpecificDate.getExecutionSet(), TIMER_VALUE_SPECIFIC_DATE, INTERRUPTING);
+        assertTimerEventSpecificDate(filledTopSpecificDate.getExecutionSet(), TIMER_VALUE_SPECIFIC_DATE, INTERRUPTING, SLA_DUE_DATE);
         // Know issue. Should be uncommented after https://issues.jboss.org/browse/JBPM-7038 will be fixed
         //assertDataIOSet(filledTopSpecificDate.getDataIOSet(), timerDataOutputSpecificDate);
 
         StartTimerEvent filledTopAfterDuration = getStartNodeById(diagram, FILLED_SUBPROCESS_LEVEL_EVENT_AFTER_DURATION_ID, StartTimerEvent.class);
         assertGeneralSet(filledTopAfterDuration.getGeneral(), EVENT_NAME_AFTER_DURATION, EVENT_DOCUMENTATION_AFTER_DURATION);
-        assertTimerEventAfterDuration(filledTopAfterDuration.getExecutionSet(), TIMER_VALUE_AFTER_DURATION, INTERRUPTING);
+        assertTimerEventAfterDuration(filledTopAfterDuration.getExecutionSet(), TIMER_VALUE_AFTER_DURATION, INTERRUPTING, SLA_DUE_DATE);
         // Know issue. Should be uncommented after https://issues.jboss.org/browse/JBPM-7038 will be fixed
         //assertDataIOSet(filledTopSpecificDate.getDataIOSet(), timerDataOutputDuration);
     }
@@ -157,7 +159,7 @@ public class StartTimerEventTest extends StartEvent<StartTimerEvent> {
 
         StartTimerEvent emptySubprocess = getStartNodeById(diagram, EMPTY_SUBPROCESS_LEVEL_EVENT_ID, StartTimerEvent.class);
         assertGeneralSet(emptySubprocess.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
-        assertTimerEventEmpty(emptySubprocess.getExecutionSet(), NON_INTERRUPTING);
+        assertTimerEventEmpty(emptySubprocess.getExecutionSet(), NON_INTERRUPTING, EMPTY_VALUE);
         // Know issue. Should be uncommented after https://issues.jboss.org/browse/JBPM-7038 will be fixed
         //assertDataIOSet(emptySubprocess.getDataIOSet(), EMPTY_VALUE);
     }
@@ -210,47 +212,55 @@ public class StartTimerEventTest extends StartEvent<StartTimerEvent> {
         return StartTimerEvent.class;
     }
 
-    private void assertTimerEventMultiple(InterruptingTimerEventExecutionSet executionSet, String timerValue, String timeCycleLanguage, boolean isInterrupting) {
+    private void assertTimerEventMultiple(InterruptingTimerEventExecutionSet executionSet, String timerValue, String timeCycleLanguage, boolean isInterrupting, String slaDueDate) {
         assertNotNull(executionSet);
         assertNotNull(executionSet.getTimerSettings());
         assertEquals(timerValue, executionSet.getTimerSettings().getValue().getTimeCycle());
         assertEquals(timeCycleLanguage, executionSet.getTimerSettings().getValue().getTimeCycleLanguage());
-        assertEquals(isInterrupting, executionSet.getIsInterrupting().getValue());
 
         assertNull(executionSet.getTimerSettings().getValue().getTimeDuration());
         assertNull(executionSet.getTimerSettings().getValue().getTimeDate());
+
+        assertStartEventIsInterrupting(executionSet, isInterrupting);
+        assertStartEventSlaDueDate(executionSet, slaDueDate);
     }
 
-    private void assertTimerEventAfterDuration(InterruptingTimerEventExecutionSet executionSet, String timerValue, boolean isInterrupting) {
+    private void assertTimerEventAfterDuration(InterruptingTimerEventExecutionSet executionSet, String timerValue, boolean isInterrupting, String slaDueDate) {
         assertNotNull(executionSet);
         assertNotNull(executionSet.getTimerSettings());
         assertEquals(timerValue, executionSet.getTimerSettings().getValue().getTimeDuration());
-        assertEquals(isInterrupting, executionSet.getIsInterrupting().getValue());
 
         assertNull(executionSet.getTimerSettings().getValue().getTimeDate());
         assertNull(executionSet.getTimerSettings().getValue().getTimeCycle());
         assertNull(executionSet.getTimerSettings().getValue().getTimeCycleLanguage());
+
+        assertStartEventIsInterrupting(executionSet, isInterrupting);
+        assertStartEventSlaDueDate(executionSet, slaDueDate);
     }
 
-    private void assertTimerEventSpecificDate(InterruptingTimerEventExecutionSet executionSet, String dateValue, boolean isInterrupting) {
+    private void assertTimerEventSpecificDate(InterruptingTimerEventExecutionSet executionSet, String dateValue, boolean isInterrupting, String slaDueDate) {
         assertNotNull(executionSet);
         assertNotNull(executionSet.getTimerSettings());
         assertEquals(dateValue, executionSet.getTimerSettings().getValue().getTimeDate());
-        assertEquals(isInterrupting, executionSet.getIsInterrupting().getValue());
 
         assertNull(executionSet.getTimerSettings().getValue().getTimeCycle());
         assertNull(executionSet.getTimerSettings().getValue().getTimeDuration());
         assertNull(executionSet.getTimerSettings().getValue().getTimeCycleLanguage());
+
+        assertStartEventIsInterrupting(executionSet, isInterrupting);
+        assertStartEventSlaDueDate(executionSet, slaDueDate);
     }
 
-    private void assertTimerEventEmpty(InterruptingTimerEventExecutionSet executionSet, boolean isInterrupting) {
+    private void assertTimerEventEmpty(InterruptingTimerEventExecutionSet executionSet, boolean isInterrupting, String slaDueDate) {
         assertNotNull(executionSet);
         assertNotNull(executionSet.getTimerSettings());
-        assertEquals(isInterrupting, executionSet.getIsInterrupting().getValue());
 
         assertNull(executionSet.getTimerSettings().getValue().getTimeDate());
         assertNull(executionSet.getTimerSettings().getValue().getTimeCycle());
         assertNull(executionSet.getTimerSettings().getValue().getTimeDuration());
         assertNull(executionSet.getTimerSettings().getValue().getTimeCycleLanguage());
+
+        assertStartEventIsInterrupting(executionSet, isInterrupting);
+        assertStartEventSlaDueDate(executionSet, slaDueDate);
     }
 }

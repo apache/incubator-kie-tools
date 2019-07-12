@@ -36,6 +36,8 @@ public class StartEscalationEventTest extends StartEvent<StartEscalationEvent> {
     private static final String FILLED_SUBPROCESS_LEVEL_EVENT_ID = "_A983FF22-5128-4C06-9D47-AB7525DF8039";
     private static final String EMPTY_SUBPROCESS_LEVEL_EVENT_ID = "_1DC85B0B-28D9-4EAC-A53C-F0C1303E2B19";
 
+    private static final String SLA_DUE_DATE = "12/25/1983";
+
     private static final int AMOUNT_OF_NODES_IN_DIAGRAM = 10;
 
     public StartEscalationEventTest(Marshaller marshallerType) {
@@ -55,7 +57,7 @@ public class StartEscalationEventTest extends StartEvent<StartEscalationEvent> {
 
         StartEscalationEvent filledTop = getStartNodeById(diagram, FILLED_TOP_LEVEL_EVENT_ID, StartEscalationEvent.class);
         assertGeneralSet(filledTop.getGeneral(), EVENT_NAME, EVENT_DOCUMENTATION);
-        assertEscalationEventExecutionSet(filledTop.getExecutionSet(), ESCALATION_REF, INTERRUPTING);
+        assertEscalationEventExecutionSet(filledTop.getExecutionSet(), ESCALATION_REF, INTERRUPTING, SLA_DUE_DATE);
         assertDataIOSet(filledTop.getDataIOSet(), EVENT_DATA_OUTPUT);
     }
 
@@ -67,7 +69,7 @@ public class StartEscalationEventTest extends StartEvent<StartEscalationEvent> {
 
         StartEscalationEvent emptyTop = getStartNodeById(diagram, EMPTY_TOP_LEVEL_EVENT_ID, StartEscalationEvent.class);
         assertGeneralSet(emptyTop.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
-        assertEscalationEventExecutionSet(emptyTop.getExecutionSet(), EMPTY_VALUE, INTERRUPTING);
+        assertEscalationEventExecutionSet(emptyTop.getExecutionSet(), EMPTY_VALUE, INTERRUPTING, EMPTY_VALUE);
         assertDataIOSet(emptyTop.getDataIOSet(), EMPTY_VALUE);
     }
 
@@ -84,7 +86,7 @@ public class StartEscalationEventTest extends StartEvent<StartEscalationEvent> {
 
         StartEscalationEvent filledSubprocess = getStartNodeById(diagram, FILLED_SUBPROCESS_LEVEL_EVENT_ID, StartEscalationEvent.class);
         assertGeneralSet(filledSubprocess.getGeneral(), EVENT_NAME, EVENT_DOCUMENTATION);
-        assertEscalationEventExecutionSet(filledSubprocess.getExecutionSet(), ESCALATION_REF, INTERRUPTING);
+        assertEscalationEventExecutionSet(filledSubprocess.getExecutionSet(), ESCALATION_REF, INTERRUPTING, SLA_DUE_DATE);
         assertDataIOSet(filledSubprocess.getDataIOSet(), EVENT_DATA_OUTPUT);
     }
 
@@ -96,7 +98,7 @@ public class StartEscalationEventTest extends StartEvent<StartEscalationEvent> {
 
         StartEscalationEvent emptySubprocess = getStartNodeById(diagram, EMPTY_SUBPROCESS_LEVEL_EVENT_ID, StartEscalationEvent.class);
         assertGeneralSet(emptySubprocess.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
-        assertEscalationEventExecutionSet(emptySubprocess.getExecutionSet(), EMPTY_VALUE, NON_INTERRUPTING);
+        assertEscalationEventExecutionSet(emptySubprocess.getExecutionSet(), EMPTY_VALUE, NON_INTERRUPTING, EMPTY_VALUE);
         assertDataIOSet(emptySubprocess.getDataIOSet(), EMPTY_VALUE);
     }
 
@@ -130,11 +132,12 @@ public class StartEscalationEventTest extends StartEvent<StartEscalationEvent> {
         return StartEscalationEvent.class;
     }
 
-    private void assertEscalationEventExecutionSet(InterruptingEscalationEventExecutionSet executionSet, String escalationRef, boolean isInterrupting) {
+    private void assertEscalationEventExecutionSet(InterruptingEscalationEventExecutionSet executionSet, String escalationRef, boolean isInterrupting, String slaDueDate) {
         assertNotNull(executionSet);
         assertNotNull(executionSet.getEscalationRef());
-        assertNotNull(executionSet.getIsInterrupting());
         assertEquals(escalationRef, executionSet.getEscalationRef().getValue());
-        assertEquals(isInterrupting, executionSet.getIsInterrupting().getValue());
+
+        assertStartEventIsInterrupting(executionSet, isInterrupting);
+        assertStartEventSlaDueDate(executionSet, slaDueDate);
     }
 }
