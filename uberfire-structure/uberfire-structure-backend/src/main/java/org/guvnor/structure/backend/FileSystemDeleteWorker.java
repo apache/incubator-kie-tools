@@ -6,6 +6,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
+
 import javax.ejb.Schedule;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
@@ -18,9 +20,8 @@ import org.guvnor.structure.backend.organizationalunit.config.SpaceConfigStorage
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.organizationalunit.RemoveOrganizationalUnitEvent;
-import org.guvnor.structure.organizationalunit.config.SpaceConfigStorage;
+import org.guvnor.structure.organizationalunit.config.SpaceConfigStorageBatch;
 import org.guvnor.structure.organizationalunit.config.SpaceConfigStorageRegistry;
-import org.guvnor.structure.organizationalunit.config.SpaceInfo;
 import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryService;
@@ -225,12 +226,12 @@ public class FileSystemDeleteWorker {
     }
 
     private void removeRepositoryFromSpaceInfo(Repository repo) {
-        SpaceConfigStorage spaceConfigStorage = this.registry.get(repo.getSpace().getName());
-        spaceConfigStorage.startBatch();
-        SpaceInfo spaceInfo = this.registry.get(repo.getSpace().getName()).loadSpaceInfo();
-        spaceInfo.removeRepository(repo.getAlias());
-        spaceConfigStorage.saveSpaceInfo(spaceInfo);
-        spaceConfigStorage.endBatch();
+        registry.getBatch(repo.getSpace().getName())
+                .run(context -> {
+                    context.getSpaceInfo().removeRepository(repo.getAlias());
+                    context.saveSpaceInfo();
+                    return null;
+                });
     }
 
     private File getSystemRepository() {

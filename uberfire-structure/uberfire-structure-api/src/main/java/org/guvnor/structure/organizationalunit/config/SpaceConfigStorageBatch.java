@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,13 +16,16 @@
 
 package org.guvnor.structure.organizationalunit.config;
 
-public interface SpaceConfigStorageRegistry {
+import java.util.function.Function;
 
-    SpaceConfigStorage get(final String spaceName);
+public interface SpaceConfigStorageBatch {
 
-    SpaceConfigStorageBatch getBatch(final String spaceName);
+    <T> T run(Function<SpaceConfigStorageBatchContext, T> consumer);
 
-    void remove(final String spaceName);
+    interface SpaceConfigStorageBatchContext {
 
-    boolean exist(String name);
+        SpaceInfo getSpaceInfo();
+
+        void saveSpaceInfo();
+    }
 }

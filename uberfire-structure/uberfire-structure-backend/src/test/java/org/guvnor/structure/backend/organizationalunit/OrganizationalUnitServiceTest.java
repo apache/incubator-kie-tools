@@ -24,8 +24,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+
 import javax.enterprise.event.Event;
 
+import org.assertj.core.api.Assertions;
+import org.assertj.core.api.Condition;
+import org.guvnor.structure.backend.organizationalunit.config.SpaceConfigStorageRegistryImpl;
 import org.guvnor.structure.contributors.Contributor;
 import org.guvnor.structure.contributors.ContributorType;
 import org.guvnor.structure.contributors.SpaceContributorsUpdatedEvent;
@@ -66,13 +70,34 @@ import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.spaces.Space;
 import org.uberfire.spaces.SpacesAPI;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyBoolean;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class OrganizationalUnitServiceTest {
+
+    private static final String SPACE_NAME = "space";
+    private static final String DEFAULT_GROUP_ID = "default.group.id";
+
+    private static final String REPO_A = "repoA";
+    private static final String REPO_B = "repoB";
+
+    private static final String ROLES = "security:roles";
+    private static final String ADMIN = "admin";
 
     @Mock
     private RepositoryService repositoryService;
@@ -118,6 +143,11 @@ public class OrganizationalUnitServiceTest {
     private SpaceConfigStorageRegistry spaceConfigStorageRegistry;
 
     @Mock
+    private SpaceConfigStorage spaceConfigStorage;
+
+    private SpaceInfo spaceInfo;
+
+    @Mock
     private FileSystem systemFS;
 
     @Mock
@@ -128,21 +158,21 @@ public class OrganizationalUnitServiceTest {
     @Before
     public void setUp() throws Exception {
 
-        doAnswer(invocationOnMock -> {
-            final SpaceConfigStorage spaceConfigStorage = mock(SpaceConfigStorage.class);
-            doReturn(new SpaceInfo((String) invocationOnMock.getArguments()[0],
-                                   "defaultGroupId",
-                                   Collections.emptyList(),
-                                   Collections.emptyList(),
-                                   Collections.emptyList())).when(spaceConfigStorage).loadSpaceInfo();
-            doReturn(true)
-                    .when(spaceConfigStorage).isInitialized();
-            return spaceConfigStorage;
-        }).when(spaceConfigStorageRegistry).get(any());
+        spaceInfo = new SpaceInfo(SPACE_NAME,
+                                  DEFAULT_GROUP_ID,
+                                  new ArrayList<>(),
+                                  new ArrayList<>(),
+                                  new ArrayList<>());
 
-        doAnswer(invocationOnMock -> true).when(spaceConfigStorageRegistry).exist(anyString());
+        when(spaceConfigStorage.loadSpaceInfo()).thenReturn(spaceInfo);
+        when(spaceConfigStorage.isInitialized()).thenReturn(true);
+
+        when(spaceConfigStorageRegistry.get(anyString())).thenReturn(spaceConfigStorage);
+        when(spaceConfigStorageRegistry.getBatch(anyString())).thenReturn(new SpaceConfigStorageRegistryImpl.SpaceStorageBatchImpl(spaceConfigStorage));
+        when(spaceConfigStorageRegistry.exist(anyString())).thenReturn(true);
 
         sessionInfo = new SessionInfoMock();
+
         organizationalUnitFactory = spy(new OrganizationalUnitFactoryImpl(repositoryService,
                                                                           spacesAPI));
         organizationalUnitService = spy(new OrganizationalUnitServiceImpl(organizationalUnitFactory,
@@ -194,8 +224,7 @@ public class OrganizationalUnitServiceTest {
 
     @Test
     public void testSecuredOrgUnitsToCollaborators() {
-        when(orgUnit.getContributors()).thenReturn(Collections.singletonList(new Contributor("admin",
-                                                                                             ContributorType.OWNER)));
+        when(orgUnit.getContributors()).thenReturn(Collections.singletonList(new Contributor(ADMIN, ContributorType.OWNER)));
         doReturn(Collections.singletonList(orgUnit)).when(organizationalUnitService).getAllOrganizationalUnits(anyBoolean());
 
         Collection<OrganizationalUnit> orgUnits = organizationalUnitService.getOrganizationalUnits();
@@ -211,8 +240,8 @@ public class OrganizationalUnitServiceTest {
                 .when(organizationalUnitService)
                 .spaceDirectoryExists(anyString());
 
-        final OrganizationalUnit ou = organizationalUnitService.createOrganizationalUnit("space1",
-                                                                                         "default.group.id");
+        final OrganizationalUnit ou = organizationalUnitService.createOrganizationalUnit(SPACE_NAME,
+                                                                                         DEFAULT_GROUP_ID);
 
         assertNull(ou);
 
@@ -223,41 +252,37 @@ public class OrganizationalUnitServiceTest {
     @Test
     public void createValidOrganizationalUnitTest() {
         List<Contributor> contributors = new ArrayList<>();
-        contributors.add(new Contributor("admin",
+        contributors.add(new Contributor(ADMIN,
                                          ContributorType.ADMIN));
 
         setOUCreationPermission(true);
 
-        final OrganizationalUnit ou = organizationalUnitService.createOrganizationalUnit("name",
-                                                                                         "default.group.id",
+        final OrganizationalUnit ou = organizationalUnitService.createOrganizationalUnit(SPACE_NAME,
+                                                                                         DEFAULT_GROUP_ID,
                                                                                          new ArrayList<>(),
                                                                                          contributors);
 
         assertNotNull(ou);
         verify(organizationalUnitFactory).newOrganizationalUnit(any());
-        assertEquals("name",
-                     ou.getName());
-        assertEquals("default.group.id",
-                     ou.getDefaultGroupId());
-        assertEquals(contributors,
-                     ou.getContributors());
+        assertEquals(SPACE_NAME, ou.getName());
+        assertEquals(DEFAULT_GROUP_ID, ou.getDefaultGroupId());
+        assertEquals(contributors, ou.getContributors());
     }
 
     @Test
     public void removeOrganizationalUnitRemovesRepositories() throws Exception {
         Repository repoA = mock(Repository.class);
         Repository repoB = mock(Repository.class);
-        List<Repository> repos = Arrays.asList(repoA,
-                                               repoB);
-        when(repoA.getAlias()).thenReturn("A");
-        when(repoB.getAlias()).thenReturn("B");
+        List<Repository> repos = Arrays.asList(repoA, repoB);
+        when(repoA.getAlias()).thenReturn(REPO_A);
+        when(repoB.getAlias()).thenReturn(REPO_B);
 
-        Space space = new Space("A");
+        Space space = new Space(SPACE_NAME);
         when(orgUnit.getRepositories()).thenReturn(repos);
         when(orgUnit.getSpace()).thenReturn(space);
 
         ConfigGroup configGroup = new ConfigGroup();
-        configGroup.setName("A");
+        configGroup.setName(SPACE_NAME);
         when(configurationService.getConfiguration(ConfigType.SPACE)).thenReturn(Collections.singletonList(configGroup));
 
         final JGitPathImpl configPath = mock(JGitPathImpl.class);
@@ -274,30 +299,175 @@ public class OrganizationalUnitServiceTest {
         doReturn(fileSystem).when(configPath).getFileSystem();
         doReturn(configPath).when(ioService).get(any(URI.class));
 
-        doReturn(orgUnit).when(organizationalUnitService).getOrganizationalUnit("A");
+        doReturn(orgUnit).when(organizationalUnitService).getOrganizationalUnit(SPACE_NAME);
 
-        organizationalUnitService.removeOrganizationalUnit("A");
+        organizationalUnitService.removeOrganizationalUnit(SPACE_NAME);
 
-        verify(repoService).removeRepositories(eq(space),
-                                               eq(new HashSet<>(Arrays.asList("A",
-                                                                              "B"))));
+        verify(repoService).removeRepositories(eq(space), eq(new HashSet<>(Arrays.asList(REPO_A, REPO_B))));
+
         ArgumentCaptor<RemoveOrganizationalUnitEvent> eventCaptor = ArgumentCaptor.forClass(RemoveOrganizationalUnitEvent.class);
         verify(removeOrganizationalUnitEvent).fire(eventCaptor.capture());
+
         RemoveOrganizationalUnitEvent event = eventCaptor.getValue();
-        assertEquals(repos,
-                     event.getOrganizationalUnit().getRepositories());
+        assertEquals(repos, event.getOrganizationalUnit().getRepositories());
     }
 
     @Test
     public void testOnRemoveOrgUnit() {
 
-        String spaceName = "A";
-        OrganizationalUnit organizationalUnit = new OrganizationalUnitImpl(spaceName,
-                                                                           "groupId");
-        RemoveOrganizationalUnitEvent event = new RemoveOrganizationalUnitEvent(organizationalUnit,
-                                                                                "admin");
+        OrganizationalUnit organizationalUnit = new OrganizationalUnitImpl(SPACE_NAME, DEFAULT_GROUP_ID);
+        RemoveOrganizationalUnitEvent event = new RemoveOrganizationalUnitEvent(organizationalUnit, ADMIN);
         this.organizationalUnitService.onRemoveOrganizationalUnit(event);
-        verify(this.spaceConfigStorageRegistry).remove(spaceName);
+        verify(this.spaceConfigStorageRegistry).remove(SPACE_NAME);
+    }
+
+    @Test
+    public void testUpdateOrganizationalUnit() {
+        final String newGroupId = "newGroupId";
+
+        OrganizationalUnit organizationalUnit = organizationalUnitService.updateOrganizationalUnit(SPACE_NAME, newGroupId, Collections.emptyList());
+
+        Assertions.assertThat(organizationalUnit)
+                .hasFieldOrPropertyWithValue("name", SPACE_NAME)
+                .hasFieldOrPropertyWithValue("defaultGroupId", newGroupId);
+
+        Assertions.assertThat(spaceInfo)
+                .hasFieldOrPropertyWithValue("name", SPACE_NAME)
+                .hasFieldOrPropertyWithValue("defaultGroupId", newGroupId);
+
+        verify(spaceConfigStorage).startBatch();
+        verify(spaceConfigStorage).saveSpaceInfo(eq(spaceInfo));
+        verify(spaceConfigStorage).endBatch();
+    }
+
+    @Test
+    public void testAddGroup() {
+        OrganizationalUnit organizationalUnit = new OrganizationalUnitImpl(SPACE_NAME, DEFAULT_GROUP_ID);
+
+        organizationalUnitService.addGroup(organizationalUnit, ROLES);
+
+        ArgumentCaptor<UpdatedOrganizationalUnitEvent> captor = ArgumentCaptor.forClass(UpdatedOrganizationalUnitEvent.class);
+        verify(updatedOrganizationalUnitEvent).fire(captor.capture());
+        assertSame(ADMIN, captor.getValue().getUserName());
+
+        Assertions.assertThat(captor.getValue().getOrganizationalUnit())
+                .hasFieldOrPropertyWithValue("name", SPACE_NAME)
+                .hasFieldOrPropertyWithValue("defaultGroupId", DEFAULT_GROUP_ID);
+
+        Assertions.assertThat(captor.getValue().getOrganizationalUnit().getGroups())
+                .hasSize(1)
+                .containsExactly(ROLES);
+
+        verify(spaceConfigStorage).startBatch();
+        verify(spaceConfigStorage).saveSpaceInfo(eq(spaceInfo));
+        verify(spaceConfigStorage).endBatch();
+
+        Assertions.assertThat(spaceInfo.getSecurityGroups())
+                .hasSize(1)
+                .contains(ROLES);
+    }
+
+    @Test
+    public void testRemoveGroup() {
+        testAddGroup();
+
+        OrganizationalUnit organizationalUnit = new OrganizationalUnitImpl(SPACE_NAME, DEFAULT_GROUP_ID);
+
+        organizationalUnitService.removeGroup(organizationalUnit, ROLES);
+
+        ArgumentCaptor<UpdatedOrganizationalUnitEvent> captor = ArgumentCaptor.forClass(UpdatedOrganizationalUnitEvent.class);
+        verify(updatedOrganizationalUnitEvent, times(2)).fire(captor.capture());
+        assertSame(ADMIN, captor.getValue().getUserName());
+
+        Assertions.assertThat(captor.getValue().getOrganizationalUnit())
+                .hasFieldOrPropertyWithValue("name", SPACE_NAME)
+                .hasFieldOrPropertyWithValue("defaultGroupId", DEFAULT_GROUP_ID);
+
+        Assertions.assertThat(captor.getValue().getOrganizationalUnit().getGroups())
+                .isEmpty();
+
+        verify(spaceConfigStorage, times(2)).startBatch();
+        verify(spaceConfigStorage, times(2)).saveSpaceInfo(eq(spaceInfo));
+        verify(spaceConfigStorage, times(2)).endBatch();
+    }
+
+    @Test
+    public void testAddRepository() {
+        OrganizationalUnit organizationalUnit = new OrganizationalUnitImpl(SPACE_NAME, DEFAULT_GROUP_ID);
+
+        Repository repoA = mock(Repository.class);
+        when(repoA.getAlias()).thenReturn(REPO_A);
+
+        organizationalUnitService.addRepository(organizationalUnit, repoA);
+
+        checkRepos(1, REPO_A, false);
+
+        ArgumentCaptor<RepoAddedToOrganizationalUnitEvent> captor = ArgumentCaptor.forClass(RepoAddedToOrganizationalUnitEvent.class);
+        verify(repoAddedToOrgUnitEvent).fire(captor.capture());
+        assertSame(repoA, captor.getValue().getRepository());
+
+        verify(spaceConfigStorage).startBatch();
+        verify(spaceConfigStorage).saveSpaceInfo(eq(spaceInfo));
+        verify(spaceConfigStorage).endBatch();
+
+        Repository repoB = mock(Repository.class);
+        when(repoB.getAlias()).thenReturn(REPO_B);
+
+        organizationalUnitService.addRepository(organizationalUnit, repoB);
+
+        checkRepos(2, REPO_B, false);
+
+        captor = ArgumentCaptor.forClass(RepoAddedToOrganizationalUnitEvent.class);
+        verify(repoAddedToOrgUnitEvent, times(2)).fire(captor.capture());
+        assertSame(repoB, captor.getValue().getRepository());
+
+        verify(spaceConfigStorage, times(2)).startBatch();
+        verify(spaceConfigStorage, times(2)).saveSpaceInfo(eq(spaceInfo));
+        verify(spaceConfigStorage, times(2)).endBatch();
+    }
+
+    @Test
+    public void testRemoveRepository() {
+        testAddRepository(); // Adding repos
+
+        OrganizationalUnit organizationalUnit = new OrganizationalUnitImpl(SPACE_NAME, DEFAULT_GROUP_ID);
+
+        Repository repoA = mock(Repository.class);
+        when(repoA.getAlias()).thenReturn(REPO_A);
+
+        organizationalUnitService.removeRepository(organizationalUnit, repoA);
+
+        checkRepos(2, REPO_A, true);
+
+        ArgumentCaptor<RepoRemovedFromOrganizationalUnitEvent> captor = ArgumentCaptor.forClass(RepoRemovedFromOrganizationalUnitEvent.class);
+        verify(repoRemovedFromOrgUnitEvent).fire(captor.capture());
+        assertSame(repoA, captor.getValue().getRepository());
+
+        verify(spaceConfigStorage, times(3)).startBatch();
+        verify(spaceConfigStorage, times(3)).saveSpaceInfo(eq(spaceInfo));
+        verify(spaceConfigStorage, times(3)).endBatch();
+
+        Repository repoB = mock(Repository.class);
+        when(repoB.getAlias()).thenReturn(REPO_B);
+
+        organizationalUnitService.removeRepository(organizationalUnit, repoB);
+
+        checkRepos(2, REPO_B, true);
+
+        captor = ArgumentCaptor.forClass(RepoRemovedFromOrganizationalUnitEvent.class);
+        verify(repoRemovedFromOrgUnitEvent, times(2)).fire(captor.capture());
+        assertSame(repoB, captor.getValue().getRepository());
+
+        verify(spaceConfigStorage, times(4)).startBatch();
+        verify(spaceConfigStorage, times(4)).saveSpaceInfo(eq(spaceInfo));
+        verify(spaceConfigStorage, times(4)).endBatch();
+    }
+
+    private void checkRepos(final int expectedRepos, final String repoName, final boolean deleted) {
+        Assertions.assertThat(spaceInfo.getRepositories())
+                .hasSize(expectedRepos)
+                .areAtLeastOne(new Condition<>(repositoryInfo -> repositoryInfo.getName().equals(repoName) && repositoryInfo.isDeleted() == deleted, "RepositoryInfo {name: '" + repoName + "', deleted: " + deleted + "}"));
+
     }
 
     private void setOUCreationPermission(final boolean hasPermission) {

@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -335,40 +336,39 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
     public OrganizationalUnit updateOrganizationalUnit(String name,
                                                        String defaultGroupId,
                                                        Collection<Contributor> contributors) {
-        final SpaceConfigStorage spaceConfigStorage = spaceConfigStorageRegistry.get(name);
-        final SpaceInfo spaceInfo = spaceConfigStorage.loadSpaceInfo();
 
-        if (spaceInfo != null) {
-            OrganizationalUnit updatedOrganizationalUnit = null;
-            try {
-                // As per loadOrganizationalUnits(), all Organizational Units should have the default group id value set
-                String _defaultGroupId = defaultGroupId == null || defaultGroupId.trim().isEmpty() ?
-                        spaceInfo.getDefaultGroupId() : defaultGroupId;
-                spaceInfo.setDefaultGroupId(_defaultGroupId);
+        return spaceConfigStorageRegistry.getBatch(name)
+                .run(context -> {
+                    OrganizationalUnit updatedOrganizationalUnit = null;
+                    try {
+                        SpaceInfo spaceInfo = context.getSpaceInfo();
 
-                if (contributors != null) {
-                    spaceInfo.setContributors(contributors);
-                }
+                        // As per loadOrganizationalUnits(), all Organizational Units should have the default group id value set
+                        String _defaultGroupId = defaultGroupId == null || defaultGroupId.trim().isEmpty() ?
+                                spaceInfo.getDefaultGroupId() : defaultGroupId;
+                        spaceInfo.setDefaultGroupId(_defaultGroupId);
 
-                spaceConfigStorage.saveSpaceInfo(spaceInfo);
+                        if (contributors != null) {
+                            spaceInfo.setContributors(contributors);
+                        }
 
-                updatedOrganizationalUnit = getOrganizationalUnit(name);
+                        context.saveSpaceInfo();
 
-                checkChildrenRepositoryContributors(updatedOrganizationalUnit);
+                        updatedOrganizationalUnit = getOrganizationalUnit(name);
 
-                return updatedOrganizationalUnit;
-            } finally {
-                if (updatedOrganizationalUnit != null) {
-                    updatedOrganizationalUnitEvent.fire(new UpdatedOrganizationalUnitEvent(updatedOrganizationalUnit,
-                                                                                           getUserInfo(sessionInfo)));
-                    if (contributors != null) {
-                        spaceContributorsUpdatedEvent.fire(new SpaceContributorsUpdatedEvent(updatedOrganizationalUnit));
+                        checkChildrenRepositoryContributors(updatedOrganizationalUnit);
+
+                        return updatedOrganizationalUnit;
+                    } finally {
+                        if (updatedOrganizationalUnit != null) {
+                            updatedOrganizationalUnitEvent.fire(new UpdatedOrganizationalUnitEvent(updatedOrganizationalUnit,
+                                                                                                   getUserInfo(sessionInfo)));
+                            if (contributors != null) {
+                                spaceContributorsUpdatedEvent.fire(new SpaceContributorsUpdatedEvent(updatedOrganizationalUnit));
+                            }
+                        }
                     }
-                }
-            }
-        } else {
-            throw new IllegalArgumentException("OrganizationalUnit " + name + " not found");
-        }
+                });
     }
 
     private void checkChildrenRepositoryContributors(final OrganizationalUnit updatedOrganizationalUnit) {
@@ -386,99 +386,97 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
     @Override
     public void addRepository(final OrganizationalUnit organizationalUnit,
                               final Repository repository) {
-        final SpaceConfigStorage spaceConfigStorage = spaceConfigStorageRegistry.get(organizationalUnit.getName());
-        final SpaceInfo spaceInfo = spaceConfigStorage.loadSpaceInfo();
 
-        if (spaceInfo != null) {
-            try {
-                spaceInfo.getRepositories().add(new RepositoryInfo(repository.getAlias(),
-                                                                   false,
-                                                                   new RepositoryConfiguration(repository.getEnvironment())));
-                spaceConfigStorage.saveSpaceInfo(spaceInfo);
-            } finally {
-                repoAddedToOrgUnitEvent.fire(new RepoAddedToOrganizationalUnitEvent(organizationalUnit,
-                                                                                    repository,
-                                                                                    getUserInfo(sessionInfo)));
-            }
-        } else {
-            throw new IllegalArgumentException("OrganizationalUnit " + organizationalUnit.getName() + " not found");
-        }
+        spaceConfigStorageRegistry.getBatch(organizationalUnit.getName())
+                .run(context -> {
+                    try {
+                        context.getSpaceInfo().getRepositories().add(new RepositoryInfo(repository.getAlias(),
+                                                                                        false,
+                                                                                        new RepositoryConfiguration(repository.getEnvironment())));
+
+                        context.saveSpaceInfo();
+                    } finally {
+                        repoAddedToOrgUnitEvent.fire(new RepoAddedToOrganizationalUnitEvent(organizationalUnit,
+                                                                                            repository,
+                                                                                            getUserInfo(sessionInfo)));
+                    }
+
+                    return null;
+                });
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
     public void removeRepository(final OrganizationalUnit organizationalUnit,
                                  final Repository repository) {
-        final SpaceConfigStorage spaceConfigStorage = spaceConfigStorageRegistry.get(organizationalUnit.getName());
-        final SpaceInfo spaceInfo = spaceConfigStorage.loadSpaceInfo();
 
-        if (spaceInfo != null) {
-            try {
-                spaceInfo.getRepositories()
-                        .stream()
-                        .filter(repositoryInfo -> repositoryInfo.getName().equals(repository.getAlias()) && !repositoryInfo.isDeleted())
-                        .findFirst()
-                        .orElseThrow(() -> new RuntimeException("Repository not found"))
-                        .setDeleted(true);
-                spaceConfigStorage.saveSpaceInfo(spaceInfo);
-            } finally {
-                repoRemovedFromOrgUnitEvent.fire(new RepoRemovedFromOrganizationalUnitEvent(organizationalUnit,
-                                                                                            repository,
-                                                                                            getUserInfo(sessionInfo)));
-            }
-        } else {
-            throw new IllegalArgumentException("OrganizationalUnit " + organizationalUnit.getName() + " not found");
-        }
+        spaceConfigStorageRegistry.getBatch(organizationalUnit.getName())
+                .run(context -> {
+                    try {
+                        context.getSpaceInfo().getRepositories()
+                                .stream()
+                                .filter(repositoryInfo -> repositoryInfo.getName().equals(repository.getAlias()) && !repositoryInfo.isDeleted())
+                                .findFirst()
+                                .orElseThrow(() -> new RuntimeException("Repository not found"))
+                                .setDeleted(true);
+
+                        context.saveSpaceInfo();
+
+                        return null;
+                    } finally {
+                        repoRemovedFromOrgUnitEvent.fire(new RepoRemovedFromOrganizationalUnitEvent(organizationalUnit,
+                                                                                                    repository,
+                                                                                                    getUserInfo(sessionInfo)));
+                    }
+                });
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
     public void addGroup(final OrganizationalUnit organizationalUnit,
                          final String group) {
-        final SpaceConfigStorage spaceConfigStorage = spaceConfigStorageRegistry.get(organizationalUnit.getName());
-        final SpaceInfo spaceInfo = spaceConfigStorage.loadSpaceInfo();
 
-        if (spaceInfo != null) {
-            OrganizationalUnit updatedOrganizationalUnit = null;
-            try {
-                spaceInfo.getSecurityGroups().add(group);
-                spaceConfigStorage.saveSpaceInfo(spaceInfo);
+        spaceConfigStorageRegistry.getBatch(organizationalUnit.getName())
+                .run(context -> {
+                    OrganizationalUnit updatedOrganizationalUnit = null;
+                    try {
+                        context.getSpaceInfo().getSecurityGroups().add(group);
+                        context.saveSpaceInfo();
 
-                updatedOrganizationalUnit = getOrganizationalUnit(organizationalUnit.getName());
-            } finally {
-                if (updatedOrganizationalUnit != null) {
-                    updatedOrganizationalUnitEvent.fire(new UpdatedOrganizationalUnitEvent(updatedOrganizationalUnit,
-                                                                                           getUserInfo(sessionInfo)));
-                }
-            }
-        } else {
-            throw new IllegalArgumentException("OrganizationalUnit " + organizationalUnit.getName() + " not found");
-        }
+                        updatedOrganizationalUnit = getOrganizationalUnit(organizationalUnit.getName());
+
+                        return null;
+                    } finally {
+                        if (updatedOrganizationalUnit != null) {
+                            updatedOrganizationalUnitEvent.fire(new UpdatedOrganizationalUnitEvent(updatedOrganizationalUnit,
+                                                                                                   getUserInfo(sessionInfo)));
+                        }
+                    }
+                });
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
     public void removeGroup(final OrganizationalUnit organizationalUnit,
                             final String group) {
-        final SpaceConfigStorage spaceConfigStorage = spaceConfigStorageRegistry.get(organizationalUnit.getName());
-        final SpaceInfo spaceInfo = spaceConfigStorage.loadSpaceInfo();
 
-        if (spaceInfo != null) {
-            OrganizationalUnit updatedOrganizationalUnit = null;
-            try {
-                spaceInfo.getSecurityGroups().remove(group);
-                spaceConfigStorage.saveSpaceInfo(spaceInfo);
+        spaceConfigStorageRegistry.getBatch(organizationalUnit.getName())
+                .run(context -> {
+                    OrganizationalUnit updatedOrganizationalUnit = null;
+                    try {
+                        context.getSpaceInfo().getSecurityGroups().remove(group);
+                        context.saveSpaceInfo();
 
-                updatedOrganizationalUnit = getOrganizationalUnit(organizationalUnit.getName());
-            } finally {
-                if (updatedOrganizationalUnit != null) {
-                    updatedOrganizationalUnitEvent.fire(new UpdatedOrganizationalUnitEvent(updatedOrganizationalUnit,
-                                                                                           getUserInfo(sessionInfo)));
-                }
-            }
-        } else {
-            throw new IllegalArgumentException("OrganizationalUnit " + organizationalUnit.getName() + " not found");
-        }
+                        updatedOrganizationalUnit = getOrganizationalUnit(organizationalUnit.getName());
+                    } finally {
+                        if (updatedOrganizationalUnit != null) {
+                            updatedOrganizationalUnitEvent.fire(new UpdatedOrganizationalUnitEvent(updatedOrganizationalUnit,
+                                                                                                   getUserInfo(sessionInfo)));
+                        }
+                    }
+
+                    return null;
+                });
     }
 
     @Override
