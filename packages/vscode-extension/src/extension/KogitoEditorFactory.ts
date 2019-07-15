@@ -52,7 +52,7 @@ export class KogitoEditorFactory {
     return vscode.window.createWebviewPanel(
       "kogito-editor",
       panelTitle,
-      { viewColumn: vscode.ViewColumn.Active, preserveFocus: true },
+      { viewColumn: vscode.ViewColumn.Active, preserveFocus: false },
       { enableCommandUris: true, enableScripts: true, retainContextWhenHidden: true }
     );
   }

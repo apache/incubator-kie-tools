@@ -112,6 +112,18 @@ export class KogitoEditor {
     return this.router.getRelativePathTo("dist/webview/index.js");
   }
 
+  public hasPath(path: string) {
+    return this.path === path;
+  }
+
+  public isActive() {
+    return this.panel.active;
+  }
+
+  public viewColumn() {
+    return this.panel.viewColumn;
+  }
+
   public setupWebviewContent() {
     this.panel.webview.html = `
         <!DOCTYPE html>

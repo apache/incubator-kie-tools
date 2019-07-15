@@ -23,11 +23,7 @@ export class KogitoEditorsExtension {
   private readonly editorStore: KogitoEditorStore;
   private readonly editorFactory: KogitoEditorFactory;
 
-  constructor(
-    context: vscode.ExtensionContext,
-    editorStore: KogitoEditorStore,
-    editorFactory: KogitoEditorFactory
-  ) {
+  constructor(context: vscode.ExtensionContext, editorStore: KogitoEditorStore, editorFactory: KogitoEditorFactory) {
     this.context = context;
     this.editorStore = editorStore;
     this.editorFactory = editorFactory;
@@ -50,7 +46,12 @@ export class KogitoEditorsExtension {
   }
 
   public registerCustomSaveAllCommand() {
-    //TODO: Implement
+    this.context.subscriptions.push(
+      vscode.commands.registerCommand("workbench.action.files.saveAll", () => {
+        this.editorStore.openEditors.forEach(e => e.requestSave());
+        return vscode.workspace.saveAll(true);
+      })
+    );
   }
 
   public startReplacingTextEditorsByKogitoEditorsAsTheyOpenIfLanguageIsSupported() {
@@ -60,18 +61,38 @@ export class KogitoEditorsExtension {
           return;
         }
 
-        if (this.supportsLanguage(textEditor.document.languageId)) {
-          this.replaceTextEditorByKogitoEditor(textEditor);
+        if (!this.supportsLanguage(textEditor.document.languageId)) {
+          return;
         }
+
+        const path = textEditor.document.uri.path;
+        const openEditor = this.editorStore.get(path);
+
+        if (!openEditor) {
+          this.closeActiveTextEditor().then(() => this.editorFactory.openNew(path));
+          return;
+        }
+
+        if (textEditor.viewColumn === openEditor.viewColumn()) {
+          this.closeActiveTextEditor();
+          //FIXME: Focus on existing KogitoEditor
+          //
+          // commented because this line below causes the webview content to reload and
+          // this may result in data loss.
+          // so far that's the best we've got and we'll not use it.
+          //
+          // (openEditor as any).panel.reveal(openEditor.viewColumn(), false);
+          return;
+        }
+
+        //editor opened on different viewColumn, so we leave it
+        //open so that people can edit it as text if they want
       })
     );
   }
 
-  private replaceTextEditorByKogitoEditor(textEditor: vscode.TextEditor) {
-    vscode.commands.executeCommand("workbench.action.closeActiveEditor").then(() => {
-      this.editorFactory.openNew(textEditor.document.uri.path);
-      return Promise.resolve();
-    });
+  private closeActiveTextEditor() {
+    return vscode.commands.executeCommand("workbench.action.closeActiveEditor");
   }
 
   private supportsLanguage(languageId: string) {

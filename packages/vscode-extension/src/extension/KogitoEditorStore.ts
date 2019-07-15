@@ -53,5 +53,23 @@ export class KogitoEditorStore {
     }
 
     this.openEditors.delete(editor);
+
+    this.openEditors.forEach(e => {
+      if (e.isActive()) {
+        this.setActive(e);
+      }
+    });
+  }
+
+  public get(path: string) {
+    let found: KogitoEditor | undefined;
+
+    this.openEditors.forEach(editor => {
+      if (editor.hasPath(path)) {
+        found = editor;
+      }
+    });
+
+    return found;
   }
 }
