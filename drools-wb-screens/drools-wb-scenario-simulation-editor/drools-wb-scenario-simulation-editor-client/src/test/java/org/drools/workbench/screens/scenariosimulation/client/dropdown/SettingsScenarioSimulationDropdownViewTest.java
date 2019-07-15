@@ -18,18 +18,25 @@ package org.drools.workbench.screens.scenariosimulation.client.dropdown;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.uberfire.client.views.pfly.selectpicker.JQuerySelectPicker;
 
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.DEFAULT_VALUE;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class ScenarioSimulationDropdownViewTest extends AbstractScenarioSimulationDropdownViewTest {
+public class SettingsScenarioSimulationDropdownViewTest extends AbstractScenarioSimulationDropdownViewTest {
 
     @Before
     public void setup() {
         super.setup();
-        assetsDropdownView = spy(new ScenarioSimulationDropdownView(nativeSelectMock,
+        assetsDropdownView = spy(new SettingsScenarioSimulationDropdownView(nativeSelectMock,
                                                                     htmlOptionElementMock,
                                                                     translationServiceMock) {
             {
@@ -47,5 +54,19 @@ public class ScenarioSimulationDropdownViewTest extends AbstractScenarioSimulati
             }
 
         });
+    }
+
+    @Test
+    public void initialize() {
+        ((SettingsScenarioSimulationDropdownView) assetsDropdownView).initialize(DEFAULT_VALUE);
+        verify(dropdownMock, times(1)).selectpicker(eq("val"), eq(DEFAULT_VALUE));
+        verify(dropdownMock, times(1)).selectpicker(eq("show"));
+    }
+
+    @Test
+    public void clear() {
+        assetsDropdownView.clear();
+        verify(assetsDropdownView, times(1)).refreshSelectPicker();
+        verify(nativeSelectMock, never()).appendChild(any());
     }
 }

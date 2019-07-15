@@ -19,29 +19,33 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import elemental2.dom.HTMLOptionElement;
 import elemental2.dom.HTMLSelectElement;
-import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.kie.workbench.common.widgets.client.assets.dropdown.KieAssetsDropdownView;
 
 @Dependent
 @Templated(value = "/org/kie/workbench/common/widgets/client/assets/dropdown/KieAssetsDropdownView.html")
-@Named(ScenarioSimulationDropdownView.BEAN_NAME)
-public class ScenarioSimulationDropdownView extends KieAssetsDropdownView implements ScenarioSimulationDropdown.View {
+@Named(SettingsScenarioSimulationDropdownView.BEAN_NAME)
+public class SettingsScenarioSimulationDropdownView extends ScenarioSimulationDropdownView implements ScenarioSimulationDropdown.View {
 
-    final public static String BEAN_NAME = "ScenarioDropdownView";
+    final public static String BEAN_NAME = "SettingsDropdownView";
 
     @Inject
-    public ScenarioSimulationDropdownView(HTMLSelectElement nativeSelect,
-                                          HTMLOptionElement htmlOptionElement,
-                                          TranslationService translationService) {
+    public SettingsScenarioSimulationDropdownView(HTMLSelectElement nativeSelect,
+                                                  HTMLOptionElement htmlOptionElement,
+                                                  TranslationService translationService) {
         super(nativeSelect, htmlOptionElement, translationService);
     }
 
-    public IsWidget asWidget() {
-        return ElementWrapperWidget.getWidget(getElement());
+    public void initialize(String value) {
+        dropdown().selectpicker("val", value);
+        dropdown().selectpicker("show");
+    }
+
+    @Override
+    public void clear() {
+        removeChildren(nativeSelect);
+        refreshSelectPicker();
     }
 }

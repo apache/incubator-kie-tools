@@ -18,6 +18,7 @@ package org.drools.workbench.screens.scenariosimulation.client.rightpanel;
 
 import com.google.gwt.dom.client.ButtonElement;
 import com.google.gwt.dom.client.DivElement;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.dom.client.LabelElement;
 import com.google.gwt.dom.client.SpanElement;
@@ -37,6 +38,8 @@ public interface SettingsView
         void setSaveCommand(Command saveCommand);
     }
 
+    void setupDropdown(Element dropdownElement);
+
     LabelElement getNameLabel();
 
     InputElement getFileName();
@@ -55,7 +58,9 @@ public interface SettingsView
 
     LabelElement getDmnFileLabel();
 
-    InputElement getDmnFilePath();
+    DivElement getDmnFilePathPlaceholder();
+
+    SpanElement getDmnFilePathErrorLabel();
 
     LabelElement getDmnNamespaceLabel();
 

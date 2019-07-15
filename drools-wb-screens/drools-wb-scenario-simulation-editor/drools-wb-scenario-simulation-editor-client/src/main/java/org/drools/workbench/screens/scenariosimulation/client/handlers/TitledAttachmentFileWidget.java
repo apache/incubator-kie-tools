@@ -75,7 +75,6 @@ public class TitledAttachmentFileWidget extends Composite {
     }
 
     public void updateAssetList() {
-        scenarioSimulationDropdown.clear();
         scenarioSimulationDropdown.loadAssets();
     }
 

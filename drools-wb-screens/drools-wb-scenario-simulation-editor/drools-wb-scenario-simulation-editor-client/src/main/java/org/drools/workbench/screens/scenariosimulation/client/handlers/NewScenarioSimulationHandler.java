@@ -20,6 +20,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -77,7 +78,7 @@ public class NewScenarioSimulationHandler
                                         final Caller<ScenarioSimulationService> scenarioSimulationService,
                                         final AuthorizationManager authorizationManager,
                                         final SessionInfo sessionInfo,
-                                        final ScenarioSimulationDropdown scenarioSimulationDropdown) {
+                                        @Named(ScenarioSimulationDropdown.BEAN_NAME) final ScenarioSimulationDropdown scenarioSimulationDropdown) {
         this.resourceType = resourceType;
         this.authorizationManager = authorizationManager;
         this.sessionInfo = sessionInfo;

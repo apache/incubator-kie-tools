@@ -16,130 +16,34 @@
 
 package org.drools.workbench.screens.scenariosimulation.client.dropdown;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import elemental2.dom.HTMLElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.widgets.client.assets.dropdown.KieAssetsDropdownItem;
-import org.mockito.Mock;
-import org.uberfire.mvp.Command;
 
-import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.DEFAULT_VALUE;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.isA;
-import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class ScenarioSimulationDropdownTest extends AbstractScenarioSimulationDropdownTest {
 
-    @Mock
-    private ScenarioSimulationDropdownView viewMock;
-
-    @Mock
-    private ScenarioSimulationAssetsDropdownProvider dataProviderMock;
-
-    @Mock
-    private HTMLElement htmlElementMock;
-
-    @Mock
-    private Command onValueChangeHandlerMock;
-
-    private ScenarioSimulationDropdown scenarioSimulationDropdown;
-
-    private List<KieAssetsDropdownItem> assetList = IntStream.range(0, 3)
-            .mapToObj(i -> new KieAssetsDropdownItem("File_" + i + ".txt", "", DEFAULT_VALUE, new HashMap<>()))
-            .collect(Collectors.toList());
-
     @Before
     public void setup() {
-        super.setup();
-        when(viewMock.getElement()).thenReturn(htmlElementMock);
-        when(viewMock.getValue()).thenReturn(DEFAULT_VALUE);
-        scenarioSimulationDropdown = spy(new ScenarioSimulationDropdown(viewMock, dataProviderMock) {
+        viewMock = mock(ScenarioSimulationDropdownView.class);
+        assetsDropdown = spy(new ScenarioSimulationDropdown((ScenarioSimulationDropdownView) viewMock, dataProviderMock) {
             {
                 onValueChangeHandler = onValueChangeHandlerMock;
                 this.kieAssets.addAll(assetList);
             }
         });
+        super.setup();
     }
 
     @Test
-    public void init() {
-        scenarioSimulationDropdown.init();
-        verify(viewMock, times(1)).init(eq(scenarioSimulationDropdown));
-    }
-
-    @Test
-    public void loadAssets() {
-        scenarioSimulationDropdown.loadAssets();
-        verify(scenarioSimulationDropdown, times(1)).clear();
-        verify(scenarioSimulationDropdown, times(1)).initializeDropdown();
-    }
-
-    @Test
-    public void initialize() {
-        scenarioSimulationDropdown.initialize();
-        verify(viewMock, times(1)).refreshSelectPicker();
-    }
-
-    @Test
-    public void clear() {
-        scenarioSimulationDropdown.clear();
-        verify(viewMock, times(1)).clear();
-    }
-
-    @Test
-    public void getElement() {
-        final HTMLElement retrieved = scenarioSimulationDropdown.getElement();
-        verify(viewMock, times(1)).getElement();
-        assertEquals(htmlElementMock, retrieved);
-    }
-
-    @Test
-    public void getValue() {
-        when(viewMock.getValue()).thenReturn(DEFAULT_VALUE);
-        Optional<KieAssetsDropdownItem> retrieved = scenarioSimulationDropdown.getValue();
-        assertNotNull(retrieved);
-        assertTrue(retrieved.isPresent());
-        verify(viewMock, times(1)).getValue();
-        reset(viewMock);
-        when(viewMock.getValue()).thenReturn("UNKNOWN");
-        retrieved = scenarioSimulationDropdown.getValue();
-        assertNotNull(retrieved);
-        assertFalse(retrieved.isPresent());
-    }
-
-    @Test
-    public void onValueChanged() {
-        scenarioSimulationDropdown.onValueChanged();
-        verify(onValueChangeHandlerMock, times(1)).execute();
-    }
-
-    @Test
-    public void addValue() {
-        scenarioSimulationDropdown.addValue(kieAssetsDropdownItemMock);
-        verify(viewMock, times(1)).addValue(eq(kieAssetsDropdownItemMock));
-    }
-
-    @Test
-    public void initializeDropdown() {
-        scenarioSimulationDropdown.initializeDropdown();
-        verify(dataProviderMock, times(1)).getItems(isA(Consumer.class));
+    public void asWidget() {
+        ((ScenarioSimulationDropdown) assetsDropdown).asWidget();
+        verify(((ScenarioSimulationDropdownView) viewMock), times(1)).asWidget();
     }
 }

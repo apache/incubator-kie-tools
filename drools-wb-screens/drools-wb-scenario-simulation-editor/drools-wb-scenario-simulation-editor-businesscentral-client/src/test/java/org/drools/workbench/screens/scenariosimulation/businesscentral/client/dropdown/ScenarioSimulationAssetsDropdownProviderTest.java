@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.drools.workbench.screens.scenariosimulation.client.dropdown.AbstractScenarioSimulationDropdownTest;
 import org.drools.workbench.screens.scenariosimulation.service.ScenarioSimulationService;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.jboss.errai.common.client.api.Caller;
@@ -54,7 +53,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class ScenarioSimulationAssetsDropdownProviderTest extends AbstractScenarioSimulationDropdownTest {
+public class ScenarioSimulationAssetsDropdownProviderTest {
 
     @Mock
     private Caller<ScenarioSimulationService> scenarioSimulationServiceCallerMock;
@@ -78,14 +77,13 @@ public class ScenarioSimulationAssetsDropdownProviderTest extends AbstractScenar
     private AssetQueryService.Invoker<AssetQueryResult> invokerMock;
 
     @Mock
-    Consumer<List<KieAssetsDropdownItem>> assetListConsumerMock;
+    private Consumer<List<KieAssetsDropdownItem>> assetListConsumerMock;
 
     private ScenarioSimulationAssetsDropdownProviderBCImpl scenarioSimulationAssetsDropdownProvider;
     private ProjectAssetsQuery projectAssetsQuery;
 
     @Before
     public void setup() {
-        super.setup();
         when(scenarioSimulationServiceCallerMock.call(any())).thenReturn(scenarioSimulationServiceMock);
         when(libraryPlacesMock.getActiveWorkspace()).thenReturn(workspaceProjectMock);
         when(workspaceProjectMock.getRootPath()).thenReturn(rootPathMock);

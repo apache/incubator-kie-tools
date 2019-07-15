@@ -17,15 +17,20 @@ package org.drools.workbench.screens.scenariosimulation.client.dropdown;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.widgets.client.assets.dropdown.AbstractKieAssetsDropdown;
 
 @Dependent
+@Named(ScenarioSimulationDropdown.BEAN_NAME)
 public class ScenarioSimulationDropdown extends AbstractKieAssetsDropdown {
 
+    final public static String BEAN_NAME = "ScenarioDropdown";
+
     @Inject
-    public ScenarioSimulationDropdown(ScenarioSimulationDropdownView view, ScenarioSimulationAssetsDropdownProvider dataProvider) {
+    public ScenarioSimulationDropdown(@Named(ScenarioSimulationDropdownView.BEAN_NAME) ScenarioSimulationDropdownView view,
+                                      ScenarioSimulationAssetsDropdownProvider dataProvider) {
         super(view, dataProvider);
     }
 

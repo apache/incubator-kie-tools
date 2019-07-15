@@ -22,11 +22,14 @@ import java.util.function.Supplier;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import com.google.gwt.dom.client.Style;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.model.SimulationDescriptor;
+import org.drools.workbench.screens.scenariosimulation.client.dropdown.SettingsScenarioSimulationDropdown;
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
+import org.kie.workbench.common.widgets.client.assets.dropdown.KieAssetsDropdownItem;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.mvp.Command;
 
@@ -45,20 +48,26 @@ public class SettingsPresenter extends AbstractSubDockPresenter<SettingsView> im
 
     protected Command saveCommand;
 
+    protected SettingsScenarioSimulationDropdown settingsScenarioSimulationDropdown;
+
     public SettingsPresenter() {
         //Zero argument constructor for CDI
         title = ScenarioSimulationEditorConstants.INSTANCE.settings();
     }
 
     @Inject
-    public SettingsPresenter(SettingsView view) {
+    public SettingsPresenter(@Named(SettingsScenarioSimulationDropdown.BEAN_NAME) SettingsScenarioSimulationDropdown settingsScenarioSimulationDropdown,
+                             SettingsView view) {
         super(view);
         title = ScenarioSimulationEditorConstants.INSTANCE.settings();
+        this.settingsScenarioSimulationDropdown = settingsScenarioSimulationDropdown;
     }
 
     @PostConstruct
     public void init() {
         view.getSkipFromBuildLabel().setInnerText(ScenarioSimulationEditorConstants.INSTANCE.skipSimulation());
+        view.setupDropdown(settingsScenarioSimulationDropdown.asWidget().asWidget().getElement());
+        settingsScenarioSimulationDropdown.init();
     }
 
     @Override
@@ -67,6 +76,7 @@ public class SettingsPresenter extends AbstractSubDockPresenter<SettingsView> im
         view.getScenarioType().setInnerText(scenarioType.name());
         view.getFileName().setValue(fileName);
         view.getSkipFromBuild().setChecked(simulationDescriptor.isSkipFromBuild());
+        view.getSaveButton().setDisabled(false);
         switch (scenarioType) {
             case RULE:
                 setRuleSettings(simulationDescriptor);
@@ -99,6 +109,7 @@ public class SettingsPresenter extends AbstractSubDockPresenter<SettingsView> im
     @Override
     public void reset() {
         view.reset();
+        settingsScenarioSimulationDropdown.clear();
     }
 
     protected void setRuleSettings(SimulationDescriptor simulationDescriptor) {
@@ -112,9 +123,13 @@ public class SettingsPresenter extends AbstractSubDockPresenter<SettingsView> im
     protected void setDMNSettings(SimulationDescriptor simulationDescriptor) {
         view.getRuleSettings().getStyle().setDisplay(Style.Display.NONE);
         view.getDmnSettings().getStyle().setDisplay(Style.Display.INLINE);
-        view.getDmnFilePath().setValue(Optional.ofNullable(simulationDescriptor.getDmnFilePath()).orElse(""));
         view.getDmnName().setValue(Optional.ofNullable(simulationDescriptor.getDmnName()).orElse(""));
         view.getDmnNamespace().setValue(Optional.ofNullable(simulationDescriptor.getDmnNamespace()).orElse(""));
+        view.getDmnFilePathErrorLabel().getStyle().setDisplay(Style.Display.NONE);
+        view.getDmnFilePathErrorLabel().setInnerText("");
+        settingsScenarioSimulationDropdown.registerOnMissingValueHandler(this::setDmnErrorPath);
+        settingsScenarioSimulationDropdown.registerOnChangeHandler(this::validateDmnPath);
+        settingsScenarioSimulationDropdown.loadAssets(simulationDescriptor.getDmnFilePath());
     }
 
     protected void saveRuleSettings() {
@@ -124,7 +139,39 @@ public class SettingsPresenter extends AbstractSubDockPresenter<SettingsView> im
     }
 
     protected void saveDMNSettings() {
-        simulationDescriptor.setDmnFilePath(getCleanValue(() -> view.getDmnFilePath().getValue()));
+       String value = settingsScenarioSimulationDropdown.getValue().map(KieAssetsDropdownItem::getValue).orElse("");
+       simulationDescriptor.setDmnFilePath(getCleanValue(() -> value));
+    }
+
+    /**
+     * It sets an error message to <code>dmnPathErrorLabel</code> span element and it disables the <code>saveButton</code>
+     * This method should be called in case of INVALID DMN file path.
+     */
+    protected void setDmnErrorPath() {
+        view.getDmnFilePathErrorLabel().getStyle().setDisplay(Style.Display.INLINE);
+        view.getDmnFilePathErrorLabel().setInnerText(
+                ScenarioSimulationEditorConstants.INSTANCE.dmnPathErrorLabel(simulationDescriptor.getDmnFilePath()));
+        view.getSaveButton().setDisabled(true);
+    }
+
+    /**
+     * It checks if a user selected DMN path is valid or not. If valid, it enables the <code>saveButton</code>
+     * and it clears the <code>dmnPathErrorLabel</code> span element. If not valid, the otherwise.
+     * This method should be called everytime a value is selected in <code>{@link SettingsScenarioSimulationDropdown}</code> widget
+     */
+    protected void validateDmnPath() {
+        final Optional<KieAssetsDropdownItem> value = settingsScenarioSimulationDropdown.getValue();
+        String selectedPath = value.map(KieAssetsDropdownItem::getValue).orElse(null);
+        boolean isValid = selectedPath != null && !selectedPath.isEmpty();
+        if (!isValid) {
+            view.getDmnFilePathErrorLabel().getStyle().setDisplay(Style.Display.INLINE);
+            view.getDmnFilePathErrorLabel().setInnerText(ScenarioSimulationEditorConstants.INSTANCE.chooseValidDMNAsset());
+            view.getSaveButton().setDisabled(true);
+        } else {
+            view.getDmnFilePathErrorLabel().getStyle().setDisplay(Style.Display.NONE);
+            view.getDmnFilePathErrorLabel().setInnerText("");
+            view.getSaveButton().setDisabled(false);
+        }
     }
 
     private String getCleanValue(Supplier<String> supplier) {

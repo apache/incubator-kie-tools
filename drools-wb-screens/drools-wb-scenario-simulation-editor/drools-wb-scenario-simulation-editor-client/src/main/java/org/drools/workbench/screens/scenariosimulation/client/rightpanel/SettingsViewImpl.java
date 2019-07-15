@@ -21,6 +21,7 @@ import javax.enterprise.context.ApplicationScoped;
 import com.google.gwt.dom.client.ButtonElement;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.dom.client.LabelElement;
 import com.google.gwt.dom.client.SpanElement;
@@ -66,8 +67,11 @@ public class SettingsViewImpl
     @DataField("dmnFileLabel")
     protected LabelElement dmnFileLabel = Document.get().createLabelElement();
 
-    @DataField("dmnFilePath")
-    protected InputElement dmnFilePath = Document.get().createTextInputElement();
+    @DataField("dmnFilePathPlaceholder")
+    protected DivElement dmnFilePathPlaceholder = Document.get().createDivElement();
+
+    @DataField("dmnFilePathErrorLabel")
+    protected SpanElement dmnFilePathErrorLabel = Document.get().createSpanElement();
 
     @DataField("dmnNamespaceLabel")
     protected LabelElement dmnNamespaceLabel = Document.get().createLabelElement();
@@ -102,6 +106,11 @@ public class SettingsViewImpl
     }
 
     @Override
+    public void setupDropdown(final Element dropdownElement) {
+        dmnFilePathPlaceholder.appendChild(dropdownElement);
+    }
+
+    @Override
     public Presenter getPresenter() {
         return presenter;
     }
@@ -112,11 +121,13 @@ public class SettingsViewImpl
         fileName.setValue("");
         dmnName.setValue("");
         dmnNamespace.setValue("");
-        dmnFilePath.setValue("");
+        dmnFilePathErrorLabel.getStyle().setDisplay(Style.Display.NONE);
+        dmnFilePathErrorLabel.setInnerText("");
         skipFromBuild.setChecked(false);
         stateless.setChecked(false);
         dmnSettings.getStyle().setDisplay(Style.Display.NONE);
         ruleSettings.getStyle().setDisplay(Style.Display.NONE);
+        saveButton.setDisabled(false);
     }
 
     @Override
@@ -165,8 +176,13 @@ public class SettingsViewImpl
     }
 
     @Override
-    public InputElement getDmnFilePath() {
-        return dmnFilePath;
+    public DivElement getDmnFilePathPlaceholder() {
+        return dmnFilePathPlaceholder;
+    }
+
+    @Override
+    public SpanElement getDmnFilePathErrorLabel() {
+        return dmnFilePathErrorLabel;
     }
 
     @Override

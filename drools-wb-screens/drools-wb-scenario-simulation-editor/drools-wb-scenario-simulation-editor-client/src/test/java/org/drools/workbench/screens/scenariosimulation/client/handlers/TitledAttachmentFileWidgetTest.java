@@ -66,7 +66,6 @@ public class TitledAttachmentFileWidgetTest extends AbstractNewScenarioTest {
         titledAttachmentFileWidget.selectedPath = "SELECTED_PATH";
         assertNotNull(titledAttachmentFileWidget.selectedPath);
         titledAttachmentFileWidget.clearStatus();
-        verify(scenarioSimulationDropdownMock, times(1)).clear();
         verify(titledAttachmentFileWidget, times(1)).updateAssetList();
         verify(errorLabelMock, times(1)).setText(eq(null));
         assertNull(titledAttachmentFileWidget.selectedPath);
@@ -75,7 +74,6 @@ public class TitledAttachmentFileWidgetTest extends AbstractNewScenarioTest {
     @Test
     public void updateAssetList() {
         titledAttachmentFileWidget.updateAssetList();
-        verify(scenarioSimulationDropdownMock, times(1)).clear();
         verify(scenarioSimulationDropdownMock, times(1)).loadAssets();
     }
 

@@ -16,14 +16,18 @@
 
 package org.drools.workbench.screens.scenariosimulation.client.rightpanel;
 
+import java.util.Optional;
+
 import com.google.gwt.dom.client.Style;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.model.SimulationDescriptor;
+import org.drools.workbench.screens.scenariosimulation.client.dropdown.SettingsScenarioSimulationDropdown;
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.widgets.client.assets.dropdown.KieAssetsDropdownItem;
 import org.mockito.Mock;
 import org.uberfire.mvp.Command;
 
@@ -35,6 +39,7 @@ import static org.drools.workbench.screens.scenariosimulation.client.TestPropert
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.RULE_FLOW_GROUP;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -55,6 +60,9 @@ public class SettingsPresenterTest extends AbstractSettingsTest {
     @Mock
     private Command saveCommandMock;
 
+    @Mock
+    private SettingsScenarioSimulationDropdown settingsScenarioSimulationDropdownMock;
+
     @Before
     public void setup() {
         super.setup();
@@ -67,7 +75,8 @@ public class SettingsPresenterTest extends AbstractSettingsTest {
         when(settingsViewMock.getRuleFlowGroup()).thenReturn(ruleFlowGroupMock);
         when(settingsViewMock.getDmnSettings()).thenReturn(dmnSettingsMock);
         when(settingsViewMock.getDmnFileLabel()).thenReturn(dmnModelLabelMock);
-        when(settingsViewMock.getDmnFilePath()).thenReturn(dmnFilePathMock);
+        when(settingsViewMock.getDmnFilePathPlaceholder()).thenReturn(dmnFilePathPlaceholderMock);
+        when(settingsViewMock.getDmnFilePathErrorLabel()).thenReturn(dmnFilePathErrorLabelMock);
         when(settingsViewMock.getDmnNamespaceLabel()).thenReturn(dmnNamespaceLabelMock);
         when(settingsViewMock.getDmnNamespace()).thenReturn(dmnNamespaceMock);
         when(settingsViewMock.getDmnNameLabel()).thenReturn(dmnNameLabelMock);
@@ -83,9 +92,13 @@ public class SettingsPresenterTest extends AbstractSettingsTest {
         when(simulationDescriptorMock.getDmnName()).thenReturn(DMN_NAME);
         when(simulationDescriptorMock.isStateless()).thenReturn(true);
 
-        this.settingsPresenter = spy(new SettingsPresenter(settingsViewMock) {
+        KieAssetsDropdownItem item = new KieAssetsDropdownItem("DMNFile", "", DMN_FILE_PATH, null);
+        when(settingsScenarioSimulationDropdownMock.getValue()).thenReturn(Optional.of(item));
+
+        this.settingsPresenter = spy(new SettingsPresenter(settingsScenarioSimulationDropdownMock, settingsViewMock) {
             {
                 this.simulationDescriptor = simulationDescriptorMock;
+                this.settingsScenarioSimulationDropdown = settingsScenarioSimulationDropdownMock;
                 this.saveCommand = saveCommandMock;
             }
         });
@@ -141,6 +154,7 @@ public class SettingsPresenterTest extends AbstractSettingsTest {
         verify(settingsViewMock, times(1)).getFileName();
         verify(fileNameMock, times(1)).setValue(eq(FILE_NAME));
         verify(skipFromBuildMock, times(1)).setChecked(eq(true));
+        verify(saveButtonMock, times(1)).setDisabled(eq(false));
         verify(settingsPresenter, times(1)).setRuleSettings(simulationDescriptorMock);
     }
 
@@ -153,6 +167,7 @@ public class SettingsPresenterTest extends AbstractSettingsTest {
         verify(settingsViewMock, times(1)).getFileName();
         verify(fileNameMock, times(1)).setValue(eq(FILE_NAME));
         verify(skipFromBuildMock, times(1)).setChecked(eq(false));
+        verify(saveButtonMock, times(1)).setDisabled(eq(false));
         verify(settingsPresenter, times(1)).setRuleSettings(simulationDescriptorMock);
     }
 
@@ -165,6 +180,7 @@ public class SettingsPresenterTest extends AbstractSettingsTest {
         verify(settingsViewMock, times(1)).getFileName();
         verify(fileNameMock, times(1)).setValue(eq(FILE_NAME));
         verify(skipFromBuildMock, times(1)).setChecked(eq(true));
+        verify(saveButtonMock, times(1)).setDisabled(eq(false));
         verify(settingsPresenter, times(1)).setDMNSettings(simulationDescriptorMock);
     }
 
@@ -177,6 +193,7 @@ public class SettingsPresenterTest extends AbstractSettingsTest {
         verify(settingsViewMock, times(1)).getFileName();
         verify(fileNameMock, times(1)).setValue(eq(FILE_NAME));
         verify(skipFromBuildMock, times(1)).setChecked(eq(false));
+        verify(saveButtonMock, times(1)).setDisabled(eq(false));
         verify(settingsPresenter, times(1)).setDMNSettings(simulationDescriptorMock);
     }
 
@@ -201,12 +218,16 @@ public class SettingsPresenterTest extends AbstractSettingsTest {
         verify(ruleSettingsStyleMock, times(1)).setDisplay(eq(Style.Display.NONE));
         verify(settingsViewMock, times(1)).getDmnSettings();
         verify(dmnSettingsStyleMock, times(1)).setDisplay(eq(Style.Display.INLINE));
-        verify(settingsViewMock, times(1)).getDmnFilePath();
-        verify(dmnFilePathMock, times(1)).setValue(eq(DMN_FILE_PATH));
         verify(settingsViewMock, times(1)).getDmnName();
         verify(dmnNameMock, times(1)).setValue(eq(DMN_NAME));
         verify(settingsViewMock, times(1)).getDmnNamespace();
         verify(dmnNamespaceMock, times(1)).setValue(eq(DMN_NAMESPACE));
+        verify(settingsViewMock, times(2)).getDmnFilePathErrorLabel();
+        verify(dmnFilePathErrorLabelStyleMock, times(1)).setDisplay(eq(Style.Display.NONE));
+        verify(dmnFilePathErrorLabelMock, times(1)).setInnerText(eq(""));
+        verify(settingsScenarioSimulationDropdownMock, times(1)).registerOnMissingValueHandler(isA(Command.class));
+        verify(settingsScenarioSimulationDropdownMock, times(1)).registerOnChangeHandler(isA(Command.class));
+        verify(settingsScenarioSimulationDropdownMock, times(1)).loadAssets(eq(DMN_FILE_PATH));
     }
 
     @Test
@@ -223,7 +244,7 @@ public class SettingsPresenterTest extends AbstractSettingsTest {
     @Test
     public void saveDMNSettings() {
         settingsPresenter.saveDMNSettings();
-        verify(settingsViewMock, times(1)).getDmnFilePath();
+        verify(settingsScenarioSimulationDropdownMock, times(1)).getValue();
         verify(simulationDescriptorMock, times(1)).setDmnFilePath(eq(DMN_FILE_PATH));
     }
 
@@ -231,5 +252,37 @@ public class SettingsPresenterTest extends AbstractSettingsTest {
     public void resetTest() {
         settingsPresenter.reset();
         verify(settingsViewMock, times(1)).reset();
+        verify(settingsScenarioSimulationDropdownMock, times(1)).clear();
     }
+
+    @Test
+    public void setDmnErrorPath() {
+        settingsPresenter.setDmnErrorPath();
+        verify(simulationDescriptorMock, times(1)).getDmnFilePath();
+        verify(dmnFilePathErrorLabelStyleMock, times(1)).setDisplay(eq(Style.Display.INLINE));
+        verify(dmnFilePathErrorLabelMock, times(1)).setInnerText(
+                eq(ScenarioSimulationEditorConstants.INSTANCE.dmnPathErrorLabel(simulationDescriptorMock.getDmnFilePath())));
+        verify(saveButtonMock, times(1)).setDisabled(eq(true));
+    }
+
+    @Test
+    public void validateDmnPath_Valid() {
+        settingsPresenter.validateDmnPath();
+        verify(settingsScenarioSimulationDropdownMock, times(1)).getValue();
+        verify(dmnFilePathErrorLabelStyleMock, times(1)).setDisplay(eq(Style.Display.NONE));
+        verify(dmnFilePathErrorLabelMock, times(1)).setInnerText(eq(""));
+        verify(saveButtonMock, times(1)).setDisabled(eq(false));
+    }
+
+    @Test
+    public void validateDmnPath_Invalid() {
+        KieAssetsDropdownItem item = new KieAssetsDropdownItem("DMNFile", "", "", null);
+        when(settingsScenarioSimulationDropdownMock.getValue()).thenReturn(Optional.of(item));
+        settingsPresenter.validateDmnPath();
+        verify(settingsScenarioSimulationDropdownMock, times(1)).getValue();
+        verify(dmnFilePathErrorLabelStyleMock, times(1)).setDisplay(eq(Style.Display.INLINE));
+        verify(dmnFilePathErrorLabelMock, times(1)).setInnerText(eq(ScenarioSimulationEditorConstants.INSTANCE.chooseValidDMNAsset()));
+        verify(saveButtonMock, times(1)).setDisabled(eq(true));
+    }
+
 }
