@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.workbench.client.test;
 
+import java.util.Objects;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -26,15 +28,22 @@ import org.uberfire.client.annotations.DefaultPosition;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
+import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
 import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.Position;
 
 @ApplicationScoped
-@WorkbenchScreen(identifier = "org.kie.guvnor.TestResults", preferredWidth = 437)
+@WorkbenchScreen(identifier = TestRunnerReportingScreen.IDENTIFIER, preferredWidth = 437)
 public class TestRunnerReportingScreen {
+
+    public static final String IDENTIFIER = "org.kie.guvnor.TestResults";
 
     @Inject
     private TestRunnerReportingPanel panel;
+
+    @Inject
+    private PlaceManager placeManager;
 
     public TestRunnerReportingScreen() {
         //Zero argument constructor for CDI
@@ -53,6 +62,12 @@ public class TestRunnerReportingScreen {
     @WorkbenchPartView
     public Widget asWidget() {
         return panel.asWidget();
+    }
+
+    public void onPlaceGainFocusEvent(final @Observes PlaceGainFocusEvent placeGainFocusEvent) {
+        if (!Objects.equals(placeGainFocusEvent.getPlace().getIdentifier(), IDENTIFIER)) {
+            placeManager.closePlace(IDENTIFIER);
+        }
     }
 
     public void onTestRun(final @Observes TestResultMessage testResultMessage) {
