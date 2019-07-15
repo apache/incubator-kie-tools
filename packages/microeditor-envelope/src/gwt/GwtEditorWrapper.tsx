@@ -30,25 +30,25 @@ export class GwtEditorWrapper extends AppFormer.Editor {
     this.gwtEditor = gwtEditor;
   }
 
-  public af_onOpen(): void {
+  public af_onOpen() {
     this.removeBusinessCentralHeaderPanel();
     this.removeBusinessCentralPanelHeader();
   }
 
-  public af_componentRoot(): AppFormer.Element {
+  public af_componentRoot() {
     //Component will already be rendered when the script loads.
     return <></>;
   }
 
-  public getContent(): Promise<string> {
+  public getContent() {
     return this.gwtEditor.getContent();
   }
 
-  public isDirty(): boolean {
+  public isDirty() {
     return this.gwtEditor.isDirty();
   }
 
-  public setContent(content: string): Promise<void> {
+  public setContent(content: string) {
     //FIXME: Make setContent return a promise.
     this.gwtEditor.setContent(content.trim());
     return Promise.resolve();
