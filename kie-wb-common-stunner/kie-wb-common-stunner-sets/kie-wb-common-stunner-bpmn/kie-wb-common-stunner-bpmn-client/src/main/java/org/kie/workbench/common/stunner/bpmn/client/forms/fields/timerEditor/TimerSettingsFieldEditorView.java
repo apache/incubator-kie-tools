@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.bpmn.client.forms.fields.timerEditor;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.function.Supplier;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -51,37 +52,39 @@ public class TimerSettingsFieldEditorView
         implements IsElement,
                    TimerSettingsFieldEditorPresenter.View {
 
-    public static final String EMPTY_VALUE = "";
+    static final String EMPTY_VALUE = "";
 
-    private static final String TimeDuration_Placeholder = "TimerSettingsFieldEditorView.TimeDuration_Placeholder";
+    static final String TimeDuration_Placeholder = "TimerSettingsFieldEditorView.TimeDuration_Placeholder";
 
-    private static final String DurationTimer_Help_Header = "TimerSettingsFieldEditorView.DurationTimer_Help_Header";
+    static final String DurationTimer_Help_Header = "TimerSettingsFieldEditorView.DurationTimer_Help_Header";
 
-    private static final String DurationTimer_Help_Line_1 = "TimerSettingsFieldEditorView.DurationTimer_Help_Line_1";
+    static final String DurationTimer_Help_Line_1 = "TimerSettingsFieldEditorView.DurationTimer_Help_Line_1";
 
-    private static final String TimeCycle_Placeholder = "TimerSettingsFieldEditorView.TimeCycle_Placeholder";
+    static final String TimeCycle_Placeholder = "TimerSettingsFieldEditorView.TimeCycle_Placeholder";
 
-    private static final String TimeDate_Placeholder = "TimerSettingsFieldEditorView.TimeDate_Placeholder";
+    static final String TimeDate_Placeholder = "TimerSettingsFieldEditorView.TimeDate_Placeholder";
 
-    private static final String TimeDateTimePicker_Placeholder = "TimerSettingsFieldEditorView.TimeDateTimePicker_Placeholder";
+    static final String TimeDateTimePicker_Placeholder = "TimerSettingsFieldEditorView.TimeDateTimePicker_Placeholder";
 
-    private static final String MultipleTimer_Help_Header = "TimerSettingsFieldEditorView.MultipleTimer_Help_Header";
+    static final String MultipleTimer_Help_Header = "TimerSettingsFieldEditorView.MultipleTimer_Help_Header";
 
-    private static final String MultipleTimer_Help_Line1 = "TimerSettingsFieldEditorView.MultipleTimer_Help_Line1";
+    static final String MultipleTimer_Help_Line1 = "TimerSettingsFieldEditorView.MultipleTimer_Help_Line1";
 
-    private static final String MultipleTimer_Help_Line2 = "TimerSettingsFieldEditorView.MultipleTimer_Help_Line2";
+    static final String MultipleTimer_Help_Line2 = "TimerSettingsFieldEditorView.MultipleTimer_Help_Line2";
 
-    private static final String DateTimer_Help_Header = "TimerSettingsFieldEditorView.DateTimer_Help_Header";
+    static final String MultipleTimer_Help_Line3 = "TimerSettingsFieldEditorView.MultipleTimer_Help_Line3";
 
-    public static final String DateTimer_Help_Line1 = "TimerSettingsFieldEditorView.DateTimer_Help_Line1";
+    static final String DateTimer_Help_Header = "TimerSettingsFieldEditorView.DateTimer_Help_Header";
 
-    private static final String Expression_Help_Line = "TimerSettingsFieldEditorView.Expression_Help_Line";
+    static final String DateTimer_Help_Line1 = "TimerSettingsFieldEditorView.DateTimer_Help_Line1";
 
-    private static final String PLACEHOLDER_ATTR = "placeholder";
+    static final String Expression_Help_Line = "TimerSettingsFieldEditorView.Expression_Help_Line";
 
-    private static final String DATA_CONTENT_ATTR = "data-content";
+    static final String PLACEHOLDER_ATTR = "placeholder";
 
-    private DateTimeFormat isoDateTimeFormat = DateTimeFormat.getFormat("yyyy-MM-dd'T'HH:mm:ssZZZ");
+    static final String DATA_CONTENT_ATTR = "data-content";
+
+    static final DateTimeFormat isoDateTimeFormat = DateTimeFormat.getFormat("yyyy-MM-dd'T'HH:mm:ssZZZ");
 
     @Inject
     @DataField("duration-timer")
@@ -153,6 +156,8 @@ public class TimerSettingsFieldEditorView
 
     @Inject
     private ClientTranslationService translationService;
+
+    private Supplier<Option> optionSupplier = () -> (Option) Window.getDocument().createElement("option");
 
     private TimerSettingsFieldEditorPresenter presenter;
 
@@ -343,6 +348,7 @@ public class TimerSettingsFieldEditorView
         return buildHtmlHelpText(translationService.getValue(MultipleTimer_Help_Header),
                                  translationService.getValue(MultipleTimer_Help_Line1),
                                  translationService.getValue(MultipleTimer_Help_Line2),
+                                 translationService.getValue(MultipleTimer_Help_Line3),
                                  translationService.getValue(Expression_Help_Line));
     }
 
@@ -364,10 +370,21 @@ public class TimerSettingsFieldEditorView
 
     private Option newOption(final String text,
                              final String value) {
-        final Option option = (Option) Window.getDocument().createElement("option");
+        final Option option = newOption();
         option.setTextContent(text);
         option.setValue(value);
         return option;
+    }
+
+    private Option newOption() {
+        return optionSupplier.get();
+    }
+
+    /**
+     * For testing purposes
+     */
+    void setOptionSupplier(Supplier<Option> optionSupplier) {
+        this.optionSupplier = optionSupplier;
     }
 
     private String buildHtmlHelpText(String header,
@@ -388,42 +405,42 @@ public class TimerSettingsFieldEditorView
     }
 
     @EventHandler("multiple-timer")
-    private void onMultipleTimerChange(@ForEvent("change") final Event event) {
+    void onMultipleTimerChange(@ForEvent("change") final Event event) {
         presenter.onMultipleTimerSelected();
     }
 
     @EventHandler("duration-timer")
-    private void onDurationTimerChange(@ForEvent("change") final Event event) {
+    void onDurationTimerChange(@ForEvent("change") final Event event) {
         presenter.onDurationTimerSelected();
     }
 
     @EventHandler("date-timer")
-    private void onDateTimerSelected(@ForEvent("change") final Event event) {
+    void onDateTimerChange(@ForEvent("change") final Event event) {
         presenter.onDateTimerSelected();
     }
 
     @EventHandler("time-duration")
-    private void onTimeDurationChange(@ForEvent("change") final Event event) {
+    void onTimeDurationChange(@ForEvent("change") final Event event) {
         presenter.onTimerDurationChange();
     }
 
     @EventHandler("time-cycle")
-    private void onTimeCycleChange(@ForEvent("change") final Event event) {
+    void onTimeCycleChange(@ForEvent("change") final Event event) {
         presenter.onTimeCycleChange();
     }
 
     @EventHandler("time-cycle-language")
-    private void onTimeCycleLanguageChange(@ForEvent("change") final Event event) {
+    void onTimeCycleLanguageChange(@ForEvent("change") final Event event) {
         presenter.onTimeCycleLanguageChange();
     }
 
     @EventHandler("time-date")
-    private void onTimeDateChange(@ForEvent("change") final Event event) {
+    void onTimeDateChange(@ForEvent("change") final Event event) {
         presenter.onTimeDateChange();
     }
 
     @EventHandler("time-date-time-picker-button")
-    private void onShowDateTimePicker(@ForEvent("click") final Event event) {
+    void onShowDateTimePicker(@ForEvent("click") final Event event) {
         presenter.onShowTimeDateTimePicker();
     }
 }

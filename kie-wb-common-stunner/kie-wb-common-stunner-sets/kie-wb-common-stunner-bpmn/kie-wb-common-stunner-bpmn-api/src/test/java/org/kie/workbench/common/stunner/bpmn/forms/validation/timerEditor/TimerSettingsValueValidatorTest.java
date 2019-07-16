@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.bpmn.forms.validation;
+package org.kie.workbench.common.stunner.bpmn.forms.validation.timerEditor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -168,6 +168,24 @@ public class TimerSettingsValueValidatorTest
             "etc"
     };
 
+    private static final String[] VALID_QUARTZ_CRON_TIME_CYCLE_DURATIONS = {
+            "0 15 10 * * ? 2005",
+            "0 0 0 1 * ?",
+            "19 15 10 4 Apr ?",
+            "0 43 9 ? * 5L",
+    };
+
+    private static final String[] INVALID_QUARTZ_CRON_TIME_CYCLE_DURATIONS = {
+            "* * * * Foo ?",
+            "* * * * Jan-Foo ?",
+            "0 0 * * * *",
+            "0 0 * 4 * *",
+            "0 0 * * * 4",
+            "0 43 9 1,5,29,L * ?",
+            "0 43 9 ? * SAT,SUN,L",
+            "0 43 9 ? * 6,7,L",
+    };
+
     @Override
     protected void gwtSetUp() throws Exception {
         super.gwtSetUp();
@@ -255,9 +273,12 @@ public class TimerSettingsValueValidatorTest
     public void testValidateCronTimeCycle() {
         clear();
         loadValidTestElements(VALID_CRON_TIME_CYCLE_DURATIONS);
+        loadValidTestElements(VALID_QUARTZ_CRON_TIME_CYCLE_DURATIONS);
         loadValidTestElements(VALID_EXPRESSIONS);
         loadInvalidTestElements(TimerSettingsValueValidator.CronTimeCycleInvalid,
                                 INVALID_CRON_TIME_CYCLE_DURATIONS);
+        loadInvalidTestElements(TimerSettingsValueValidator.CronTimeCycleInvalid,
+                                INVALID_QUARTZ_CRON_TIME_CYCLE_DURATIONS);
         loadInvalidTestElements(TimerSettingsValueValidator.CronTimeCycleInvalid,
                                 INVALID_EXPRESSIONS);
         testElements.forEach(testElement -> {

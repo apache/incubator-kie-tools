@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.bpmn.forms.validation;
+package org.kie.workbench.common.stunner.bpmn.forms.validation.timerEditor;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 import com.google.gwt.regexp.shared.RegExp;
+import org.kie.soup.commons.cron.CronExpression;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.timer.TimerSettingsValue;
 
 public class TimerSettingsValueValidator
@@ -114,31 +115,39 @@ public class TimerSettingsValueValidator
         return true;
     }
 
-    private boolean looksLikeExpression(final String value) {
+    private static boolean looksLikeExpression(final String value) {
         return hasSomething(value) && (value.startsWith("#{") || value.contains("{") || value.contains("}"));
     }
 
-    private boolean isValidExpression(final String value) {
+    private static boolean isValidExpression(final String value) {
         return hasSomething(value) && expressionExpr.test(value) && value.length() > 3;
     }
 
-    private boolean isValidDuration(final String value) {
+    private static boolean isValidDuration(final String value) {
         return hasSomething(value) && durationExpr.test(value);
     }
 
-    private boolean isValidRepetableInterval(final String value) {
+    private static boolean isValidRepetableInterval(final String value) {
         return hasSomething(value) && repetableIntervalExpr.test(value);
     }
 
-    private boolean isValidCronExpression(final String value) {
+    private static boolean isValidCronExpression(final String value) {
+        return isValidBPMNCronExpression(value) || isValidQuartzExpression(value);
+    }
+
+    private static boolean isValidBPMNCronExpression(final String value) {
         return hasSomething(value) && cronIntervalExpr.test(value) && !value.endsWith(" ");
     }
 
-    private boolean isValidTimeDate(final String value) {
+    private static boolean isValidQuartzExpression(final String value) {
+        return hasSomething(value) && CronExpression.isValidExpression(value);
+    }
+
+    private static boolean isValidTimeDate(final String value) {
         return hasSomething(value) && dateTimeExpr.test(value);
     }
 
-    private boolean hasSomething(final String value) {
+    private static boolean hasSomething(final String value) {
         return value != null && !value.trim().isEmpty();
     }
 }
