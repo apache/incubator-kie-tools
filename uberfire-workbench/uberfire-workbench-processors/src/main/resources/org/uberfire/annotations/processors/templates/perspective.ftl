@@ -33,6 +33,7 @@ import java.util.Map;
 import org.uberfire.client.annotations.Perspective;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.common.client.dom.DOMUtil;
+import org.uberfire.client.mvp.IsTemplatePerspective;
 </#if>
 import org.uberfire.client.mvp.AbstractWorkbenchPerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
@@ -72,6 +73,9 @@ import org.jboss.errai.ioc.client.api.Shared;
 @Dependent
 @Generated("org.uberfire.annotations.processors.WorkbenchPerspectiveProcessor")
 @Named("${identifier}")
+<#if isTemplate>
+@IsTemplatePerspective
+</#if>
 <#if beanActivatorClass??>
 @ActivatedBy(${beanActivatorClass}.class)
 </#if>

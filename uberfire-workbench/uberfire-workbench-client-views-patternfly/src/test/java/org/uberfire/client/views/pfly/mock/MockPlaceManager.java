@@ -97,6 +97,12 @@ public class MockPlaceManager implements PlaceManager {
     }
 
     @Override
+    public void goTo(String id,
+                     HTMLElement addTo) {
+        throw new UnsupportedOperationException("Not implemented.");
+    }
+
+    @Override
     public void goTo(PlaceRequest place,
                      HTMLElement addTo) {
         throw new UnsupportedOperationException("Not implemented.");

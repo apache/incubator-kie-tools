@@ -32,6 +32,7 @@ import java.util.Map;
 import org.uberfire.client.annotations.Perspective;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.common.client.dom.DOMUtil;
+import org.uberfire.client.mvp.IsTemplatePerspective;
 import org.uberfire.client.mvp.AbstractWorkbenchPerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
 
@@ -51,6 +52,7 @@ import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 @Dependent
 @Generated("org.uberfire.annotations.processors.WorkbenchPerspectiveProcessor")
 @Named("HomePerspective")
+@IsTemplatePerspective
 /*
  * WARNING! This class is generated. Do not modify.
  */

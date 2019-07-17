@@ -18,6 +18,7 @@ package org.uberfire.annotations.processors;
 
 import org.uberfire.client.annotations.WorkbenchPerspective;
 import org.uberfire.client.annotations.WorkbenchEditor;
+import org.uberfire.client.annotations.WorkbenchClientEditor;
 import org.uberfire.client.annotations.WorkbenchContext;
 import org.uberfire.client.annotations.WorkbenchPopup;
 import org.uberfire.client.annotations.WorkbenchScreen;
@@ -34,6 +35,7 @@ import org.uberfire.experimental.definition.annotations.ExperimentalFeature;
 @WorkbenchScreen(identifier = "sample")
 @WorkbenchSplashScreen(identifier = "sample")
 @ExperimentalFeature
+@WorkbenchClientEditor(identifier = "sample")
 public class AnnotatedWithEverything {
 
 }

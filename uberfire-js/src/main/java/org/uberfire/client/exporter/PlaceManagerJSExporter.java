@@ -18,6 +18,7 @@ package org.uberfire.client.exporter;
 
 import javax.enterprise.context.ApplicationScoped;
 
+import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.mvp.PlaceManager;
@@ -32,6 +33,13 @@ public class PlaceManagerJSExporter implements UberfireJSExporter {
         placeManager.goTo(new DefaultPlaceRequest(place));
     }
 
+    public static void goTo(final String place,
+                            final HTMLElement element) {
+        final SyncBeanManager beanManager = IOC.getBeanManager();
+        final PlaceManager placeManager = beanManager.lookupBean(PlaceManager.class).getInstance();
+        placeManager.goTo(place, element);
+    }
+
     @Override
     public void export() {
         publish();
@@ -39,5 +47,6 @@ public class PlaceManagerJSExporter implements UberfireJSExporter {
 
     private native void publish() /*-{
         $wnd.$goToPlace = @org.uberfire.client.exporter.PlaceManagerJSExporter::goTo(Ljava/lang/String;);
+        $wnd.$goToScreen = @org.uberfire.client.exporter.PlaceManagerJSExporter::goTo(Ljava/lang/String;Lorg/jboss/errai/common/client/dom/HTMLElement;);
     }-*/;
 }

@@ -35,6 +35,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.util.GWTEditorNativeRegister;
 import org.uberfire.client.workbench.events.NewPerspectiveEvent;
 import org.uberfire.client.workbench.events.NewWorkbenchScreenEvent;
 import org.uberfire.client.workbench.type.ClientResourceType;
@@ -74,6 +75,9 @@ public class ResourceTypeManagerCacheTest {
     @Mock
     private ExperimentalActivitiesAuthorizationManager experimentalActivitiesAuthorizationManager;
 
+    @Mock
+    private GWTEditorNativeRegister gwtEditorNativeRegister;
+
     private ActivityBeansCache activityBeansCache;
 
     private EditorDef defaultEditorDef;
@@ -104,7 +108,8 @@ public class ResourceTypeManagerCacheTest {
                                                     newPerspectiveEventEvent,
                                                     newWorkbenchScreenEvent,
                                                     resourceTypeManagerCache,
-                                                    experimentalActivitiesAuthorizationManager);
+                                                    experimentalActivitiesAuthorizationManager,
+                                                    gwtEditorNativeRegister);
 
         modelEditorDef = registerResourceType(MODEL_CATEGORY, ModelEditorActivity.class, MODEL_TYPE, "1");
         formEditorDef = registerResourceType(FORM_CATEGORY, FormEditorActivity.class, FORM_TYPE, "2");

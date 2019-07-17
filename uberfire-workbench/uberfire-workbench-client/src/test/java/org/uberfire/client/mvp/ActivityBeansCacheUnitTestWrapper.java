@@ -24,22 +24,35 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.enterprise.context.ApplicationScoped;
+
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
+import org.uberfire.client.annotations.WorkbenchClientEditor;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.workbench.category.Undefined;
 
 import static org.mockito.Mockito.*;
 
-@IsSplashScreen
+
 public class ActivityBeansCacheUnitTestWrapper extends ActivityBeansCache {
+
+
+    @IsSplashScreen
+    @ApplicationScoped
+    private static class SplashScreenForTesting {
+
+    }
+
+    @IsClientEditor
+    private static class ClientEditor {
+
+    }
 
     private String idMock;
     private SyncBeanDef mockDef;
-    private SplashScreenActivity splashScreenActivity;
+    private Activity activity;
     private Collection<SyncBeanDef<Activity>> availableActivities = new HashSet<SyncBeanDef<Activity>>();
-    private List<ActivityAndMetaInfo> activitiesAndMetaInfo = new ArrayList<ActivityAndMetaInfo>();
     private Pair<Integer, List<String>> metaInfo;
-    private boolean mockSplashcreen = true;
 
     public ActivityBeansCacheUnitTestWrapper() {
         this.resourceTypeManagerCache = new ResourceTypeManagerCache(new CategoriesManagerCache(new Undefined()));
@@ -50,14 +63,31 @@ public class ActivityBeansCacheUnitTestWrapper extends ActivityBeansCache {
         availableActivities.add(mockDef);
     }
 
-    public void mockSplashScreenBehaviour() {
-        mockSplashcreen = true;
+    @Override
+    void registerGwtEditorProvider() {
+        //do nothing
+    }
 
-        Set<Annotation> annotations = new HashSet<Annotation>(Arrays.asList(ActivityBeansCacheUnitTestWrapper.class.getAnnotations()));
+    @Override
+    void registerGwtClientBean(String id, SyncBeanDef<Activity> activityBean) {
+        //do nothing
+    }
+
+    public void mockSplashScreenBehaviour() {
+        Set<Annotation> annotations = new HashSet<Annotation>(Arrays.asList(SplashScreenForTesting.class.getAnnotations()));
         when(mockDef.getQualifiers()).thenReturn(annotations);
 
-        splashScreenActivity = mock(AbstractSplashScreenActivity.class);
-        when(mockDef.getInstance()).thenReturn(splashScreenActivity);
+        activity = mock(AbstractSplashScreenActivity.class);
+        when(mockDef.getInstance()).thenReturn(activity);
+    }
+
+    public void mockClientEditorBehaviour() {
+        Set<Annotation> annotations = new HashSet<Annotation>(Arrays.asList(ClientEditor.class.getAnnotations()));
+        when(mockDef.getQualifiers()).thenReturn(annotations);
+
+        activity = mock(WorkbenchClientEditorActivity.class);
+        when(mockDef.getInstance()).thenReturn(activity);
+        when(activity.getIdentifier()).thenReturn(idMock);
     }
 
     public void createActivitiesAndMetaInfo(int priority1,
@@ -85,8 +115,8 @@ public class ActivityBeansCacheUnitTestWrapper extends ActivityBeansCache {
         return mockDef;
     }
 
-    public SplashScreenActivity getSplashScreenActivity() {
-        return splashScreenActivity;
+    public Activity getActivity() {
+        return activity;
     }
 
     public String getIdMock() {
@@ -105,8 +135,6 @@ public class ActivityBeansCacheUnitTestWrapper extends ActivityBeansCache {
     }
 
     public void mockActivityBehaviour() {
-        mockSplashcreen = false;
-
         metaInfo = mock(Pair.class);
         when(metaInfo.getK1()).thenReturn(new Integer(1));
         when(metaInfo.getK2()).thenReturn(new ArrayList<String>());

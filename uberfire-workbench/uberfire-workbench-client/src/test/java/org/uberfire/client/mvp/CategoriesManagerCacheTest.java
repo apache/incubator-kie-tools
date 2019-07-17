@@ -29,6 +29,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.client.util.GWTEditorNativeRegister;
 import org.uberfire.client.workbench.events.NewPerspectiveEvent;
 import org.uberfire.client.workbench.events.NewWorkbenchScreenEvent;
 import org.uberfire.client.workbench.type.ClientResourceType;
@@ -57,11 +58,15 @@ public class CategoriesManagerCacheTest {
     @Mock
     private ExperimentalActivitiesAuthorizationManager experimentalActivitiesAuthorizationManager;
 
+    @Mock
+    private GWTEditorNativeRegister gwtEditorNativeRegister;
+
     private ResourceTypeManagerCache resourceTypeManagerCache;
 
     private ActivityBeansCache activityBeansCache;
 
     private Undefined undefinedCategory;
+
 
     @Before
     public void setUp() {
@@ -71,7 +76,8 @@ public class CategoriesManagerCacheTest {
                                                     newPerspectiveEventEvent,
                                                     newWorkbenchScreenEvent,
                                                     resourceTypeManagerCache,
-                                                    experimentalActivitiesAuthorizationManager);
+                                                    experimentalActivitiesAuthorizationManager,
+                                                    gwtEditorNativeRegister);
     }
 
     @Test

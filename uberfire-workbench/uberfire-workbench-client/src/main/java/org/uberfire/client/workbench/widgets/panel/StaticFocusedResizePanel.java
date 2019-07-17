@@ -16,8 +16,6 @@
 
 package org.uberfire.client.workbench.widgets.panel;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.HasFocusHandlers;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
@@ -40,13 +38,10 @@ public class StaticFocusedResizePanel
 
     public StaticFocusedResizePanel() {
         initWidget(container);
-        container.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(final ClickEvent event) {
-                if (partDefinition != null) {
-                    SelectionEvent.fire(StaticFocusedResizePanel.this,
-                                        partDefinition);
-                }
+        container.addClickHandler(event -> {
+            if (partDefinition != null) {
+                SelectionEvent.fire(StaticFocusedResizePanel.this,
+                                    partDefinition);
             }
         });
         container.getElement().addClassName(CSSLocatorsUtils.buildLocator("qe", "static-workbench-panel-view"));

@@ -418,6 +418,9 @@ public class PanelManagerImpl implements PanelManager {
 
     @SuppressWarnings("unused")
     private void onChangeTitleWidgetEvent(@Observes ChangeTitleWidgetEvent event) {
+        if (event.getPlaceRequest() == null){
+            return;
+        }
         final PlaceRequest place = event.getPlaceRequest();
         final IsWidget titleDecoration = event.getTitleDecoration();
         final String title = event.getTitle();

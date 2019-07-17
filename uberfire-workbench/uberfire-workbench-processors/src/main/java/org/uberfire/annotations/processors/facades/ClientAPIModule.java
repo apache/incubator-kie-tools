@@ -48,6 +48,7 @@ public class ClientAPIModule {
     public static final String workbenchScreen = "org.uberfire.client.annotations.WorkbenchScreen";
     public static final String workbenchContext = "org.uberfire.client.annotations.WorkbenchContext";
     public static final String workbenchEditor = "org.uberfire.client.annotations.WorkbenchEditor";
+    public static final String workbenchClientEditor = "org.uberfire.client.annotations.WorkbenchClientEditor";
     public static final String defaultPosition = "org.uberfire.client.annotations.DefaultPosition";
     public static final String workbenchPartTitle = "org.uberfire.client.annotations.WorkbenchPartTitle";
     public static final String workbenchContextId = "org.uberfire.client.annotations.WorkbenchContextId";
@@ -127,6 +128,10 @@ public class ClientAPIModule {
 
     public static String getWorkbenchEditorClass() {
         return workbenchEditor;
+    }
+
+    public static String getWorkbenchClientEditorClass() {
+        return workbenchClientEditor;
     }
 
     public static String getWorkbenchPopupClass() {

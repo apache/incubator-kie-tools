@@ -593,6 +593,11 @@ public class ListBarWidgetImpl
         closeButton.setVisible(false);
     }
 
+    @Override
+    public void disableExpandPart() {
+        maximizeButton.setVisible(false);
+    }
+
     Collection<PartDefinition> getUnselectedParts() {
         return parts;
     }

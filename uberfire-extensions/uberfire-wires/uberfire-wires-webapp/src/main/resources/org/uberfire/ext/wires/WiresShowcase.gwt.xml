@@ -53,6 +53,8 @@
   <inherits name="org.uberfire.experimental.UberfireExperimentalAPI"/>
   <inherits name="org.uberfire.experimental.UberfireExperimentalClient"/>
 
+  <inherits name="org.uberfire.ssh.UberfireSSHClient"/>
+
   <!-- Specify the application specific style sheet. -->
   <set-property name="user.agent" value="safari"/>
   <stylesheet src='css/uberfire-showcase.css'/>

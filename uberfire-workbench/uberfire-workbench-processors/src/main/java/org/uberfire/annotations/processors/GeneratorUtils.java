@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.inject.Qualifier;
 import javax.lang.model.element.AnnotationMirror;
@@ -122,6 +123,28 @@ public class GeneratorUtils {
         }
 
         return zeroArgMethod;
+    }
+
+    public static ExecutableElement getSetContentMethodName(TypeElement classElement, ProcessingEnvironment processingEnvironment) {
+        final Types typeUtils = processingEnvironment.getTypeUtils();
+        final TypeMirror requiredReturnType = typeUtils.getNoType(TypeKind.VOID);
+
+        return getUniqueAnnotatedMethod(
+                classElement,
+                processingEnvironment,
+                APIModule.getSetContentClass(),
+                requiredReturnType,
+                new String[]{"java.lang.String"});
+    }
+
+    public static ExecutableElement getGetContentMethodName(TypeElement classElement, ProcessingEnvironment processingEnvironment) {
+        return getUniqueAnnotatedMethod(classElement,
+                                        processingEnvironment,
+                                        APIModule.getGetContentClass(),
+                                        new TypeMirror[]{
+                                                processingEnvironment.getElementUtils().getTypeElement("elemental2.promise.Promise").asType()
+                                        },
+                                        NO_PARAMS);
     }
 
     /**

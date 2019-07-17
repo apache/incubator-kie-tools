@@ -121,7 +121,7 @@
 
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-security-client</artifactId>
+      <artifactId>uberfire-security-client-backend</artifactId>
       <scope>provided</scope>
     </dependency>
 
@@ -276,6 +276,11 @@
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-preferences-client</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-preferences-client-backend</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -506,8 +511,6 @@
             <compileSourcesArtifact>org.uberfire:uberfire-nio2-model</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-io</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.uberfire:uberfire-preferences-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.uberfire:uberfire-preferences-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-js</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:appformer-js-bridge</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-security-api</compileSourcesArtifact>
@@ -522,6 +525,7 @@
 
             <!-- UF-ext -->
             <compileSourcesArtifact>org.uberfire:uberfire-preferences-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-preferences-client-backend</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-preferences-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-preferences-ui-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-runtime-plugins-api</compileSourcesArtifact>

@@ -30,6 +30,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.uberfire.client.util.GWTEditorNativeRegister;
 import org.uberfire.client.workbench.annotations.AssociatedResources;
 import org.uberfire.client.workbench.events.NewPerspectiveEvent;
 import org.uberfire.client.workbench.events.NewWorkbenchScreenEvent;
@@ -84,6 +85,9 @@ public class ActivityBeansCacheActivatedByTest {
     @Mock
     private ExperimentalActivitiesAuthorizationManager experimentalActivitiesAuthorizationManager;
 
+    @Mock
+    private GWTEditorNativeRegister gwtEditorNativeRegister;
+
     private ActiveSplashScreenActivity activeSplashScreenActivity;
     private SyncBeanDef activeSplashScreenActivityBean;
     private SyncBeanDef nonActiveSplashScreenActivityBean;
@@ -106,7 +110,8 @@ public class ActivityBeansCacheActivatedByTest {
                                                     newPerspectiveEventEvent,
                                                     newWorkbenchScreenEventEvent,
                                                     resourceTypeManagerCache,
-                                                    experimentalActivitiesAuthorizationManager);
+                                                    experimentalActivitiesAuthorizationManager,
+                                                    gwtEditorNativeRegister);
 
         activeSplashScreenActivity = mock(ActiveSplashScreenActivity.class);
         activeSplashScreenActivityBean = mockSplashScreenActivityBean(ActiveSplashScreenActivity.class,

@@ -19,6 +19,7 @@ package org.uberfire.client.authz;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PopupActivity;
 import org.uberfire.client.mvp.SplashScreenActivity;
+import org.uberfire.client.mvp.WorkbenchClientEditorActivity;
 import org.uberfire.client.mvp.WorkbenchEditorActivity;
 import org.uberfire.client.mvp.WorkbenchScreenActivity;
 
@@ -86,6 +87,11 @@ public interface WorkbenchController {
      * Creates a brand new instance for checking actions over {@link WorkbenchEditorActivity} instances.
      */
     ActivityCheck editor(WorkbenchEditorActivity editor);
+
+    /**
+     * Creates a brand new instance for checking actions over {@link WorkbenchClientEditorActivity} instances.
+     */
+    ActivityCheck editor(WorkbenchClientEditorActivity editor);
 
     /**
      * Creates a brand new instance for checking actions over {@link SplashScreenActivity} instances.

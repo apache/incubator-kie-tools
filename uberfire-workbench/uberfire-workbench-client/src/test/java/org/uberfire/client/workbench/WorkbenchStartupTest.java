@@ -20,6 +20,7 @@ import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.Collections;
 import javax.enterprise.event.Event;
+import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -35,6 +36,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.slf4j.Logger;
+import org.uberfire.client.mvp.ActivityBeansCache;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.ApplicationReadyEvent;
@@ -96,6 +98,8 @@ public class WorkbenchStartupTest {
     PerspectiveActivity perspectiveActivity2;
     @Mock
     Logger logger;
+    @Mock
+    ActivityBeansCache activityBeansCache;
 
     @Before
     public void setup() {

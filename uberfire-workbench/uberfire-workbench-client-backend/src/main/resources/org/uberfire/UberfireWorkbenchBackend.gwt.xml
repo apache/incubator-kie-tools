@@ -21,5 +21,6 @@
   <!-- GuvnorNG API common interfaces -->
   <inherits name="org.uberfire.UberfireWorkbench"/>
   <inherits name="org.uberfire.UberfireBackend"/>
+  <inherits name="org.uberfire.security.UberfireSecurityClientBackend"/>
 
 </module>

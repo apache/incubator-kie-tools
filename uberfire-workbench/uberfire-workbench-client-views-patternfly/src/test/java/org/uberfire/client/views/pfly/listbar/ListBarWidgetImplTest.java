@@ -41,6 +41,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
+import org.uberfire.client.views.pfly.maximize.MaximizeToggleButton;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.commons.data.Pair;
@@ -90,6 +91,7 @@ public class ListBarWidgetImplTest {
         listBar.titleDropDown = mock(PartListDropdown.class);
         listBar.content = mock(PanelBody.class);
         listBar.header = mock(PanelHeader.class);
+        listBar.maximizeButton = mock(MaximizeToggleButton.class);
 
         final Element element = mock(Element.class);
         final Style style = mock(Style.class);
@@ -476,5 +478,11 @@ public class ListBarWidgetImplTest {
                    parts.get(0));
         assertSame(listBar.parts.get(0),
                    parts.get(1));
+    }
+
+    @Test
+    public void disableExpandPart() {
+        listBar.disableExpandPart();
+        verify(listBar.maximizeButton).setVisible(false);
     }
 }

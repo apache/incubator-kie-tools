@@ -78,6 +78,12 @@
 
     <dependency>
       <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-security-client-backend</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
       <artifactId>uberfire-workbench-client</artifactId>
       <scope>provided</scope>
     </dependency>

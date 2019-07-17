@@ -44,6 +44,11 @@
 
     <dependency>
       <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-security-client-backend</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
       <artifactId>uberfire-workbench-client-backend</artifactId>
     </dependency>
   </dependencies>

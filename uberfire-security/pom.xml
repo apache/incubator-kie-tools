@@ -33,5 +33,6 @@
     <module>uberfire-security-api</module>
     <module>uberfire-security-client</module>
     <module>uberfire-security-codegen</module>
+    <module>uberfire-security-client-backend</module>
   </modules>
 </project>

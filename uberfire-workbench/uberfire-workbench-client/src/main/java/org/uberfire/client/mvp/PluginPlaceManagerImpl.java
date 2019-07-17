@@ -132,6 +132,12 @@ public class PluginPlaceManagerImpl implements PlaceManager {
     }
 
     @Override
+    public void goTo(String id,
+                     HTMLElement addTo) {
+        fail();
+    }
+
+    @Override
     public void goTo(PlaceRequest place,
                      HTMLElement addTo) {
         fail();

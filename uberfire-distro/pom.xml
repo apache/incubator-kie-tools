@@ -55,11 +55,11 @@
     </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-security-client</artifactId>
+      <artifactId>uberfire-security-client-backend</artifactId>
     </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-security-client</artifactId>
+      <artifactId>uberfire-security-client-backend</artifactId>
       <classifier>sources</classifier>
     </dependency>
     <dependency>

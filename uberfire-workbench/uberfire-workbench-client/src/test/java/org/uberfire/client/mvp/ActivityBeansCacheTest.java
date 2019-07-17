@@ -31,6 +31,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.client.util.GWTEditorNativeRegister;
 import org.uberfire.client.workbench.events.NewPerspectiveEvent;
 import org.uberfire.client.workbench.events.NewWorkbenchScreenEvent;
 import org.uberfire.client.workbench.type.ClientResourceType;
@@ -60,6 +61,9 @@ public class ActivityBeansCacheTest {
     @Mock
     private ExperimentalActivitiesAuthorizationManager experimentalActivitiesAuthorizationManager;
 
+    @Mock
+    private GWTEditorNativeRegister gwtEditorNativeRegister;
+
     @InjectMocks
     ActivityBeansCache cache;
 
@@ -67,11 +71,14 @@ public class ActivityBeansCacheTest {
     public void setUp() {
         resourceTypeManagerCache = new ResourceTypeManagerCache(categoriesManagerCache);
 
-        cache = new ActivityBeansCache(iocManager,
+        cache = spy(new ActivityBeansCache(iocManager,
                                        newPerspectiveEventEvent,
                                        newWorkbenchScreenEvent,
                                        resourceTypeManagerCache,
-                                       experimentalActivitiesAuthorizationManager);
+                                       experimentalActivitiesAuthorizationManager,
+                                       gwtEditorNativeRegister));
+
+        doNothing().when(cache).registerGwtEditorProvider();
     }
 
     @Test
@@ -83,7 +90,21 @@ public class ActivityBeansCacheTest {
 
         assertEquals(cache.getMockDef(),
                      cache.getActivity(cache.getIdMock()));
-        assertTrue(cache.getSplashScreens().contains(cache.getSplashScreenActivity()));
+        assertTrue(cache.getSplashScreens().contains(cache.getActivity()));
+    }
+
+    @Test
+    public void initShouldCacheClientEditors() throws Exception {
+        ActivityBeansCacheUnitTestWrapper cache = spy(new ActivityBeansCacheUnitTestWrapper());
+        cache.mockClientEditorBehaviour();
+
+        cache.init();
+
+        verify(cache).registerGwtClientBean(eq("mockDef1"), any());
+
+        assertEquals(cache.getMockDef(),
+                     cache.getActivity(cache.getIdMock()));
+        assertTrue(cache.getActivitiesById().contains(cache.getActivity().getIdentifier()));
     }
 
     @Test
@@ -253,4 +274,10 @@ public class ActivityBeansCacheTest {
         assertEquals(perspectiveActivities.size(),
                      1);
     }
+
+    @Test
+    public void getActivitiesNull() {
+        assertNull(cache.getActivity((String) null));
+    }
+
 }

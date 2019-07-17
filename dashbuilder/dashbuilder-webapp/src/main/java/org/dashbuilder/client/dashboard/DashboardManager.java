@@ -134,7 +134,7 @@ public class DashboardManager {
         for (String activityId : activityBeansCache.getActivitiesById()) {
 
             SyncBeanDef<Activity> activityDef = activityBeansCache.getActivity(activityId);
-            if (activityDef.getBeanClass().equals(DashboardPerspectiveActivity.class)) {
+            if (activityDef != null && activityDef.getBeanClass().equals(DashboardPerspectiveActivity.class)) {
                 activities.add((DashboardPerspectiveActivity) activityDef.getInstance());
             }
         }

@@ -24,6 +24,7 @@ import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PopupActivity;
 import org.uberfire.client.mvp.SplashScreenActivity;
+import org.uberfire.client.mvp.WorkbenchClientEditorActivity;
 import org.uberfire.client.mvp.WorkbenchEditorActivity;
 import org.uberfire.client.mvp.WorkbenchScreenActivity;
 import org.uberfire.security.ResourceRef;
@@ -104,6 +105,13 @@ public class DefaultWorkbenchController implements WorkbenchController {
 
     @Override
     public ActivityCheck editor(WorkbenchEditorActivity editor) {
+        return new ActivityCheck(authorizationManager,
+                                 editor,
+                                 user);
+    }
+
+    @Override
+    public ActivityCheck editor(WorkbenchClientEditorActivity editor) {
         return new ActivityCheck(authorizationManager,
                                  editor,
                                  user);

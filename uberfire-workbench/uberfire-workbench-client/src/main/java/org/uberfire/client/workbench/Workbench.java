@@ -29,15 +29,10 @@ import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.event.logical.shared.ResizeEvent;
-import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.Window.ClosingEvent;
-import com.google.gwt.user.client.Window.ClosingHandler;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import org.jboss.errai.bus.client.api.ClientMessageBus;
-import org.jboss.errai.bus.client.framework.ClientMessageBusImpl;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EnabledByProperty;
 import org.jboss.errai.ioc.client.api.EntryPoint;
@@ -47,6 +42,7 @@ import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.slf4j.Logger;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.mvp.ActivityBeansCache;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.resources.WorkbenchResources;
@@ -123,6 +119,8 @@ public class Workbench {
     @Inject
     private Event<ApplicationReadyEvent> appReady;
     private boolean isStandaloneMode = false;
+    @Inject
+    private ActivityBeansCache activityBeansCache;
     @Inject
     private SyncBeanManager iocManager;
     @Inject
@@ -209,53 +207,48 @@ public class Workbench {
 
     private void bootstrap() {
         logger.info("Starting workbench...");
-        ((SessionInfoImpl) currentSession()).setId(((ClientMessageBusImpl) bus).getSessionId());
-
-        layout.setMarginWidgets(isStandaloneMode,
-                                headersToKeep);
-        layout.onBootstrap();
-
-        addLayoutToRootPanel(layout);
+        ((SessionInfoImpl) currentSession()).setId(bus.getSessionId());
 
         //Lookup PerspectiveProviders and if present launch it to set-up the Workbench
         if (!isStandaloneMode) {
             final PerspectiveActivity homePerspective = getHomePerspectiveActivity();
+            appReady.fire(new ApplicationReadyEvent());
             if (homePerspective != null) {
-                appReady.fire(new ApplicationReadyEvent());
+                layout.setMarginWidgets(isStandaloneMode, headersToKeep);
+                layout.onBootstrap();
+                addLayoutToRootPanel(layout);
                 placeManager.goTo(new DefaultPlaceRequest(homePerspective.getIdentifier()));
             } else {
-                logger.error("No home perspective available!");
+                activityBeansCache.noOp();
+                logger.warn("No home perspective available!");
             }
         } else {
+            layout.setMarginWidgets(isStandaloneMode,
+                                    headersToKeep);
+            layout.onBootstrap();
+
+            addLayoutToRootPanel(layout);
             handleStandaloneMode(Window.Location.getParameterMap());
         }
 
         // Ensure orderly shutdown when Window is closed (eg. saves workbench state)
-        Window.addWindowClosingHandler(new ClosingHandler() {
-
-            @Override
-            public void onWindowClosing(ClosingEvent event) {
-                workbenchCloseHandler.onWindowClose(workbenchCloseCommand);
-            }
-        });
+        Window.addWindowClosingHandler(event -> workbenchCloseHandler.onWindowClose(workbenchCloseCommand));
 
         // Resizing the Window should resize everything
-        Window.addResizeHandler(new ResizeHandler() {
-            @Override
-            public void onResize(ResizeEvent event) {
-                layout.resizeTo(event.getWidth(),
-                                event.getHeight());
-            }
-        });
+        Window.addResizeHandler(event -> layout.resizeTo(event.getWidth(),
+                                                         event.getHeight()));
 
         // Defer the initial resize call until widgets are rendered and sizes are available
-        Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
-            @Override
-            public void execute() {
-                layout.onResize();
-            }
-        });
+        Scheduler.get().scheduleDeferred(() -> layout.onResize());
+
+        notifyJSReady();
     }
+
+    private native void notifyJSReady() /*-{
+        if ($wnd.appFormerGwtFinishedLoading) {
+            $wnd.appFormerGwtFinishedLoading();
+        }
+    }-*/;
 
     // TODO add tests for standalone startup vs. full startup
     void handleStandaloneMode(final Map<String, List<String>> parameters) {
@@ -332,14 +325,7 @@ public class Workbench {
             }
         }
         // The home perspective has always priority over the default
-        PerspectiveActivity targetPerspective = homePerspective != null ? homePerspective : defaultPerspective;
-
-        // Check access rights
-        if (targetPerspective != null && authorizationManager.authorize(targetPerspective,
-                                                                        identity)) {
-            return targetPerspective;
-        }
-        return null;
+        return homePerspective != null ? homePerspective : defaultPerspective;
     }
 
     @Produces

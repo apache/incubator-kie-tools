@@ -108,6 +108,10 @@ public interface PlaceManager {
               final HasWidgets addTo);
 
     @JsIgnore
+    void goTo(final String id,
+              final HTMLElement addTo);
+
+    @JsIgnore
     void goTo(final PlaceRequest place,
               final HTMLElement addTo);
 

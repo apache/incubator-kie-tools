@@ -17,7 +17,9 @@
 package org.uberfire.preferences.client.store;
 
 import java.util.Collection;
+
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 
 import org.jboss.errai.common.client.api.Caller;
@@ -36,6 +38,7 @@ import org.uberfire.preferences.shared.impl.PreferenceScopeResolutionStrategyInf
  * Client implementation for {@link PreferenceBeanStore}. It just pass along the method calls to the backend
  * implementation, with the proper callbacks.
  */
+@Alternative
 @ApplicationScoped
 public class PreferenceBeanStoreImpl implements PreferenceBeanStore {
 
