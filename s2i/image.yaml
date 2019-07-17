@@ -1,7 +1,7 @@
 schema_version: 1
 
 name: "kogito-image-real-name-on-overrides-file"
-version: "1.0"
+version: "0.2.0"
 from: "centos:latest"
 
 labels:

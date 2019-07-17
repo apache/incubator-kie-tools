@@ -15,18 +15,18 @@ items:
       openshift.io/provider-display-name: Kie Group.
   spec:
     tags:
-    - name: '1.0'
+    - name: '0.2.0'
       annotations:
         description: Runtime image for Kogito based on Quarkus native image
         iconClass: icon-jbpm
         tags: builder,runtime,kogito,quarkus
         supports: quarkus
-        version: '1.0'
+        version: '0.2.0'
       referencePolicy:
         type: Local
       from:
         kind: DockerImage
-        name: quay.io/kiegroup/kogito-quarkus-centos:1.0
+        name: quay.io/kiegroup/kogito-quarkus-centos:0.2.0
 - kind: ImageStream
   apiVersion: v1
   metadata:
@@ -36,18 +36,18 @@ items:
       openshift.io/provider-display-name: Kie Group.
   spec:
     tags:
-    - name: '1.0'
+    - name: '0.2.0'
       annotations:
         description: Platform for building Kogito based on Quarkus
         iconClass: icon-jbpm
         tags: builder,kogito,quarkus
         supports: quarkus
-        version: '1.0'
+        version: '0.2.0'
       referencePolicy:
         type: Local
       from:
         kind: DockerImage
-        name: quay.io/kiegroup/kogito-quarkus-centos-s2i:1.0
+        name: quay.io/kiegroup/kogito-quarkus-centos-s2i:0.2.0
 - kind: ImageStream
   apiVersion: v1
   metadata:
@@ -57,18 +57,18 @@ items:
       openshift.io/provider-display-name: Kie Group.
   spec:
     tags:
-    - name: '1.0'
+    - name: '0.2.0'
       annotations:
         description: Platform for building Kogito based on Quarkus
         iconClass: icon-jbpm
         tags: builder,runtime,kogito,springboot
         supports: springboot
-        version: '1.0'
+        version: '0.2.0'
       referencePolicy:
         type: Local
       from:
         kind: DockerImage
-        name: quay.io/kiegroup/kogito-springboot-centos:1.0
+        name: quay.io/kiegroup/kogito-springboot-centos:0.2.0
 - kind: ImageStream
   apiVersion: v1
   metadata:
@@ -78,15 +78,15 @@ items:
       openshift.io/provider-display-name: Kie Group.
   spec:
     tags:
-    - name: '1.0'
+    - name: '0.2.0'
       annotations:
         description: Platform for building Kogito based on Quarkus
         iconClass: icon-jbpm
         tags: builder,kogito,springboot
         supports: springboot
-        version: '1.0'
+        version: '0.2.0'
       referencePolicy:
         type: Local
       from:
         kind: DockerImage
-        name: quay.io/kiegroup/kogito-springboot-centos-s2i:1.0
+        name: quay.io/kiegroup/kogito-springboot-centos-s2i:0.2.0

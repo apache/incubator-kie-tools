@@ -162,7 +162,7 @@ MAVEN_MIRROR_URL environment variable when starting a new build.
 
 ## Building the images locally:
 
-CeKit2 or 3 (Not fully tested) and docker-squash are required to build the images, how to install: https://docs.cekit.io/en/latest/handbook/installation/instructions.html
+CeKit3 is required to build the images, how to install: https://docs.cekit.io/en/latest/handbook/installation/instructions.html
 
 To build all images:
 ```bash
@@ -172,11 +172,6 @@ $ make
 To build a single image, use `make build image-name`, example:
 ```bash
 $ make kogito-quarkus-centos
-```
-
-To build all images using cekit3:
-```bash
-$ make build-cekit3
 ```
 
 Testing the images (WIP):
