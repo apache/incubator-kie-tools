@@ -16,10 +16,6 @@
 
 package org.uberfire.ext.editor.commons.client.file.popups;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.ext.editor.commons.client.file.popups.commons.ToggleCommentPresenter;
 import org.uberfire.ext.editor.commons.client.validation.ValidationErrorReason;
@@ -27,15 +23,20 @@ import org.uberfire.ext.editor.commons.client.validation.Validator;
 import org.uberfire.ext.editor.commons.client.validation.ValidatorWithReasonCallback;
 import org.uberfire.mvp.ParameterizedCommand;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
-@Dependent
+@ApplicationScoped
 public class DeletePopUpPresenter {
 
     private Validator validator;
     private ParameterizedCommand<String> command;
     private View view;
     private ToggleCommentPresenter toggleCommentPresenter;
+    private boolean opened = false;
 
     @Inject
     public DeletePopUpPresenter(View view,
@@ -58,10 +59,12 @@ public class DeletePopUpPresenter {
                      final ParameterizedCommand<String> command) {
         this.validator = validator == null ? defaultValidator() : validator;
         this.command = command;
+        this.opened = true;
         view.show();
     }
 
     public void cancel() {
+        this.opened = false;
         view.hide();
     }
 
@@ -71,6 +74,10 @@ public class DeletePopUpPresenter {
 
     public ParameterizedCommand<String> getCommand() {
         return command;
+    }
+
+    public boolean isOpened() {
+        return opened;
     }
 
     public void delete() {
@@ -96,6 +103,7 @@ public class DeletePopUpPresenter {
             public void onSuccess() {
                 command.execute(comment);
                 view.hide();
+                opened = false;
             }
 
             @Override

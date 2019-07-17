@@ -16,18 +16,6 @@
 
 package org.uberfire.ext.editor.commons.client;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.ui.IsWidget;
 import elemental2.promise.Promise;
@@ -45,6 +33,7 @@ import org.uberfire.ext.editor.commons.client.event.ConcurrentDeleteAcceptedEven
 import org.uberfire.ext.editor.commons.client.event.ConcurrentDeleteIgnoredEvent;
 import org.uberfire.ext.editor.commons.client.event.ConcurrentRenameAcceptedEvent;
 import org.uberfire.ext.editor.commons.client.event.ConcurrentRenameIgnoredEvent;
+import org.uberfire.ext.editor.commons.client.file.popups.DeletePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
 import org.uberfire.ext.editor.commons.client.menu.BasicFileMenuBuilder;
 import org.uberfire.ext.editor.commons.client.menu.DownloadMenuItem;
@@ -66,16 +55,15 @@ import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
 
-import static org.uberfire.ext.editor.commons.client.menu.MenuItems.COPY;
-import static org.uberfire.ext.editor.commons.client.menu.MenuItems.DELETE;
-import static org.uberfire.ext.editor.commons.client.menu.MenuItems.DOWNLOAD;
-import static org.uberfire.ext.editor.commons.client.menu.MenuItems.HISTORY;
-import static org.uberfire.ext.editor.commons.client.menu.MenuItems.RENAME;
-import static org.uberfire.ext.editor.commons.client.menu.MenuItems.SAVE;
-import static org.uberfire.ext.editor.commons.client.menu.MenuItems.VALIDATE;
-import static org.uberfire.ext.widgets.common.client.common.ConcurrentChangePopup.newConcurrentDelete;
-import static org.uberfire.ext.widgets.common.client.common.ConcurrentChangePopup.newConcurrentRename;
-import static org.uberfire.ext.widgets.common.client.common.ConcurrentChangePopup.newConcurrentUpdate;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
+import static org.uberfire.ext.editor.commons.client.menu.MenuItems.*;
+import static org.uberfire.ext.widgets.common.client.common.ConcurrentChangePopup.*;
 
 public abstract class BaseEditor<T, M> {
 
@@ -130,6 +118,9 @@ public abstract class BaseEditor<T, M> {
 
     @Inject
     protected Promises promises;
+
+    @Inject
+    protected DeletePopUpPresenter deletePopUpPresenter;
 
     protected Set<MenuItems> menuItems = new HashSet<>();
 
@@ -402,15 +393,7 @@ public abstract class BaseEditor<T, M> {
             }
         });
 
-        path.onConcurrentDelete(new ParameterizedCommand<ObservablePath.OnConcurrentDelete>() {
-            @Override
-            public void execute(final ObservablePath.OnConcurrentDelete info) {
-                newConcurrentDelete(info.getPath(),
-                                    info.getIdentity(),
-                                    onConcurrentDeleteIgnoreCommand(path),
-                                    onConcurrentDeleteCloseCommand(path)).show();
-            }
-        });
+        path.onConcurrentDelete(this::onConcurrentDelete);
     }
 
     Command onConcurrentRenameIgnoreCommand(final ObservablePath path) {
@@ -427,18 +410,33 @@ public abstract class BaseEditor<T, M> {
         };
     }
 
+    void onConcurrentDelete(final ObservablePath.OnConcurrentDelete info) {
+        newConcurrentDelete(info.getPath(),
+                            info.getIdentity(),
+                            onConcurrentDeleteIgnoreCommand(path),
+                            onConcurrentDeleteCloseCommand(path)).show();
+    }
+
     Command onConcurrentDeleteIgnoreCommand(final ObservablePath path) {
         return () -> {
             disableMenus();
+            disableDeletePopup();
             concurrentDeleteIgnoredEvent.fire(new ConcurrentDeleteIgnoredEvent(path));
         };
     }
 
     Command onConcurrentDeleteCloseCommand(final ObservablePath path) {
         return () -> {
+            disableDeletePopup();
             placeManager.closePlace(place);
             concurrentDeleteAcceptedEvent.fire(new ConcurrentDeleteAcceptedEvent(path));
         };
+    }
+
+    private void disableDeletePopup() {
+        if (deletePopUpPresenter.isOpened()) {
+            deletePopUpPresenter.cancel();
+        }
     }
 
     private void onDelete() {
