@@ -30,8 +30,11 @@ import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.project.service.ModuleRepositoryResolver;
 import org.guvnor.common.services.project.service.ModuleService;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
+import org.guvnor.structure.backend.organizationalunit.config.SpaceConfigStorageRegistryImpl;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
+import org.guvnor.structure.organizationalunit.config.SpaceConfigStorage;
+import org.guvnor.structure.organizationalunit.config.SpaceConfigStorageRegistry;
 import org.guvnor.structure.organizationalunit.impl.OrganizationalUnitImpl;
 import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.Repository;
@@ -79,6 +82,12 @@ public class WorkspaceProjectServiceImplTest {
     @Mock
     ModuleRepositoryResolver repositoryResolver;
 
+    @Mock
+    SpaceConfigStorageRegistry spaceConfigStorageRegistry;
+
+    @Mock
+    SpaceConfigStorage spaceConfigStorage;
+
     SpacesAPI spaces = new SpacesAPIImpl();
 
     Space space1;
@@ -98,12 +107,17 @@ public class WorkspaceProjectServiceImplTest {
         doReturn(moduleService).when(moduleServices).get();
         doReturn(allRepositories).when(repositoryService).getAllRepositoriesFromAllUserSpaces();
 
+        when(spaceConfigStorageRegistry.get(anyString())).thenReturn(spaceConfigStorage);
+        when(spaceConfigStorageRegistry.getBatch(anyString())).thenReturn(new SpaceConfigStorageRegistryImpl.SpaceStorageBatchImpl(spaceConfigStorage));
+        when(spaceConfigStorageRegistry.exist(anyString())).thenReturn(true);
+
         workspaceProjectService = new WorkspaceProjectServiceImpl(organizationalUnitService,
                                                                   repositoryService,
                                                                   spaces,
                                                                   new EventSourceMock<>(),
                                                                   moduleServices,
-                                                                  repositoryResolver);
+                                                                  repositoryResolver,
+                                                                  spaceConfigStorageRegistry);
     }
 
     private void setUpOUs() {
@@ -349,6 +363,11 @@ public class WorkspaceProjectServiceImplTest {
                                                      any(),
                                                      any()))
                 .thenReturn(this.repository1);
+
+        when(repositoryService.createRepository(any(), anyString(), anyString(), any(), any())).thenReturn(repository2);
+
+        doReturn(Optional.of(mock(Branch.class))).when(repository2).getDefaultBranch();
+        when(repository2.getAlias()).thenReturn(repository1);
 
         when(this.moduleService.newModule(any(),
                                           any(),

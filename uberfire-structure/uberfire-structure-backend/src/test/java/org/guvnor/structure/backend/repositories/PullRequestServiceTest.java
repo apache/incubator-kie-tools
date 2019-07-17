@@ -81,11 +81,22 @@ public class PullRequestServiceTest {
                                                         String.class);
             GitMetadataImpl metadata = invocationOnMock.getArgumentAt(1,
                                                                       GitMetadataImpl.class);
+            storage.write(key, metadata, true);
+
+            return null;
+        }).when(storage).write(anyString(), any());
+
+        doAnswer(invocationOnMock -> {
+            String key = invocationOnMock.getArgumentAt(0,
+                                                        String.class);
+            GitMetadataImpl metadata = invocationOnMock.getArgumentAt(1,
+                                                                      GitMetadataImpl.class);
             metadatas.put(key,
                           metadata);
             return null;
         }).when(storage).write(anyString(),
-                               any());
+                               any(),
+                               anyBoolean());
 
         doAnswer(invocationOnMock -> {
             String key = invocationOnMock.getArgumentAt(0,
@@ -225,7 +236,8 @@ public class PullRequestServiceTest {
                                                       "parent/a",
                                                       "master");
         doThrow(new RuntimeException("Mocked exception")).when(this.storage).write(any(String.class),
-                                                                                   any(GitMetadata.class));
+                                                                                   any(GitMetadata.class),
+                                                                                   anyBoolean());
         try {
             pullRequest = service.createPullRequest("test-realm",
                                                     "child/a",

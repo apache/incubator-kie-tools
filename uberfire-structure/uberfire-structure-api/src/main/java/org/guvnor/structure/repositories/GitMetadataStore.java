@@ -36,12 +36,33 @@ public interface GitMetadataStore {
                String origin);
 
     /**
+     * Writes the meta information about a repository and its origin.
+     * The origin must be in organizationalUnit/repositoryName format
+     * @param name The name of the repository
+     * @param origin The name of the origin in organizationalUnit/repositoryName format
+     * @param lock Determines if the FileSystem should be locked or not
+     */
+    void write(String name,
+               String origin,
+               boolean lock);
+
+    /**
      * Writes the meta information about a repository.
      * @param name The name of the repository
      * @param metadata The metadata object that stores information about repository
      */
     void write(String name,
                GitMetadata metadata);
+
+    /**
+     * Writes the meta information about a repository.
+     * @param name The name of the repository
+     * @param metadata The metadata object that stores information about repository
+     * @param lock Determines if the FileSystem should be locked or not
+     */
+    void write(String name,
+               GitMetadata metadata,
+               boolean lock);
 
     /**
      * Reads the git metadata from repository.

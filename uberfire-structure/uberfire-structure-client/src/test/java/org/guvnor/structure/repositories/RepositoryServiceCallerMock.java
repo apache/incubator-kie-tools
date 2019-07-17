@@ -194,6 +194,7 @@ public class RepositoryServiceCallerMock
                                            String alias,
                                            RepositoryEnvironmentConfigurations configurations,
                                            Collection<Contributor> contributors) throws RepositoryAlreadyExistsException {
+
             Repository result = repositoryService.createRepository(organizationalUnit,
                                                                    scheme,
                                                                    alias,

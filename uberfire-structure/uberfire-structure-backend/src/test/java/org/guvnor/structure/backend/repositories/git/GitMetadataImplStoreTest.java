@@ -50,6 +50,17 @@ public class GitMetadataImplStoreTest {
                                                  spaces);
 
         metadatas = new HashMap<>();
+
+        doAnswer(invocationOnMock -> {
+            String key = invocationOnMock.getArgumentAt(0,
+                                                        String.class);
+            GitMetadataImpl metadata = invocationOnMock.getArgumentAt(1,
+                                                                      GitMetadataImpl.class);
+            storage.write(key, metadata, true);
+
+            return null;
+        }).when(storage).write(anyString(), any());
+
         doAnswer(invocationOnMock -> {
             String key = invocationOnMock.getArgumentAt(0,
                                                         String.class);
@@ -59,7 +70,8 @@ public class GitMetadataImplStoreTest {
                           metadata);
             return null;
         }).when(storage).write(anyString(),
-                               any());
+                               any(),
+                               anyBoolean());
 
         doAnswer(invocationOnMock -> {
             String key = invocationOnMock.getArgumentAt(0,
@@ -85,7 +97,8 @@ public class GitMetadataImplStoreTest {
         metadataStore.write("test/repo",
                             "");
         verify(storage).write(eq("/test/repo.metadata"),
-                              anyObject());
+                              anyObject(),
+                              anyBoolean());
     }
 
     @Test
@@ -93,7 +106,8 @@ public class GitMetadataImplStoreTest {
         metadataStore.write("/test/repo",
                             "");
         verify(storage).write(eq("/test/repo.metadata"),
-                              anyObject());
+                              anyObject(),
+                              anyBoolean());
     }
 
     @Test

@@ -27,5 +27,7 @@ public interface SpaceConfigStorageBatch {
         SpaceInfo getSpaceInfo();
 
         void saveSpaceInfo();
+
+        Object getOwner();
     }
 }

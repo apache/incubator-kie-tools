@@ -71,6 +71,11 @@ public class GitMetadataStoreImpl implements GitMetadataStore {
     public void write(String name,
                       String origin) {
 
+        write(name, origin, true);
+    }
+
+    @Override
+    public void write(String name, String origin, boolean lock) {
         GitMetadataImpl repositoryMetadata = (GitMetadataImpl) this.read(name).orElse(new GitMetadataImpl(name));
         this.removeForkFromOrigin(repositoryMetadata);
         GitMetadataImpl newRepositoryMetadata = new GitMetadataImpl(name,
@@ -87,18 +92,26 @@ public class GitMetadataStoreImpl implements GitMetadataStore {
             this.write(origin,
                        new GitMetadataImpl(origin,
                                            originMetadata.getOrigin(),
-                                           forks));
+                                           forks),
+                       lock);
         }
 
         this.write(name,
-                   newRepositoryMetadata);
+                   newRepositoryMetadata,
+                   lock);
     }
 
     @Override
     public void write(String name,
                       GitMetadata metadata) {
+        write(name, metadata, true);
+    }
+
+    @Override
+    public void write(String name, GitMetadata metadata, boolean lock) {
         this.storage.write(buildPath(name),
-                           metadata);
+                           metadata,
+                           lock);
     }
 
     @Override

@@ -28,7 +28,6 @@ import javax.inject.Inject;
 import org.guvnor.structure.organizationalunit.config.SpaceConfigStorage;
 import org.guvnor.structure.organizationalunit.config.SpaceConfigStorageBatch;
 import org.guvnor.structure.organizationalunit.config.SpaceConfigStorageRegistry;
-import org.guvnor.structure.organizationalunit.config.SpaceInfo;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
@@ -94,34 +93,25 @@ public class SpaceConfigStorageRegistryImpl implements SpaceConfigStorageRegistr
         @Override
         public <T> T run(final Function<SpaceConfigStorageBatchContext, T> function) {
             checkNotNull("function", function);
-            try {
-                spaceConfigStorage.startBatch();
 
-                return function.apply(new SpaceConfigStorageBatchContextImpl(spaceConfigStorage));
+            final SpaceConfigStorageBatchContext context = ActiveSpaceConfigStorageBatchContextRegistry.getCurrentBatch(spaceConfigStorage, this);
+
+            try {
+                if (isMine(context)) {
+                    spaceConfigStorage.startBatch();
+                }
+
+                return function.apply(context);
             } finally {
-                spaceConfigStorage.endBatch();
+                if (isMine(context)) {
+                    spaceConfigStorage.endBatch();
+                    ActiveSpaceConfigStorageBatchContextRegistry.clearCurrentBatch();
+                }
             }
         }
-    }
 
-    private static class SpaceConfigStorageBatchContextImpl implements SpaceConfigStorageBatch.SpaceConfigStorageBatchContext {
-
-        private SpaceConfigStorage spaceConfigStorage;
-        private SpaceInfo info;
-
-        public SpaceConfigStorageBatchContextImpl(SpaceConfigStorage spaceConfigStorage) {
-            this.spaceConfigStorage = spaceConfigStorage;
-            this.info = spaceConfigStorage.loadSpaceInfo();
-        }
-
-        @Override
-        public SpaceInfo getSpaceInfo() {
-            return info;
-        }
-
-        @Override
-        public void saveSpaceInfo() {
-            spaceConfigStorage.saveSpaceInfo(info);
+        private boolean isMine(SpaceConfigStorageBatchContext context) {
+            return context.getOwner().equals(this);
         }
     }
 }
