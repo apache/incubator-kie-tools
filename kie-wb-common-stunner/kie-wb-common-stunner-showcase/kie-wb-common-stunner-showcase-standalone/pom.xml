@@ -868,6 +868,11 @@
       <artifactId>uberfire-preferences-client</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-preferences-client-backend</artifactId>
+    </dependency>
+
     <!-- GWT and extensions. -->
 
     <dependency>
@@ -951,6 +956,7 @@
             <compileSourcesArtifact>org.uberfire:uberfire-simple-docks-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-preferences-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-preferences-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-preferences-client-backend</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-backend-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-structure-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-structure-client</compileSourcesArtifact>
