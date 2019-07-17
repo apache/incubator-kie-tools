@@ -15,6 +15,7 @@
  */
 package org.uberfire.commons.cluster;
 
+
 import java.util.Properties;
 
 import javax.naming.Context;
@@ -31,12 +32,16 @@ public class ClusterParameters {
     public static final String APPFORMER_JMS_USERNAME = "appformer-jms-username";
     public static final String APPFORMER_JMS_PASSWORD = "appformer-jms-password";
 
+    //The specified value must be a positive long corresponding to the time the message must be delivered (in milliseconds)
+    public static final String APPFORMER_JMS_THROTTLE = "appformer-jms-throttle";
+
     private final Properties initialContextFactory = new Properties();
     private final ConnectionMode connectionMode;
     private final String providerUrl;
     private final String jmsConnectionFactoryJndiName;
     private final String jmsUserName;
     private final String jmsPassword;
+    private long jmsThrottle;
 
     public ClusterParameters() {
         ConnectionMode connectionMode;
@@ -55,6 +60,13 @@ public class ClusterParameters {
         this.providerUrl = System.getProperty(APPFORMER_PROVIDER_URL, "tcp://localhost:61616");
         this.jmsUserName = System.getProperty(APPFORMER_JMS_USERNAME);
         this.jmsPassword = System.getProperty(APPFORMER_JMS_PASSWORD);
+
+        String throttleParameter = System.getProperty(APPFORMER_JMS_THROTTLE, "1000");
+        try {
+            this.jmsThrottle = Long.valueOf(throttleParameter);
+        } catch (NumberFormatException e) {
+            this.jmsThrottle = -1;
+        }
     }
 
     public boolean isAppFormerClustered() {
@@ -84,4 +96,9 @@ public class ClusterParameters {
     public String getJmsPassword() {
         return jmsPassword;
     }
+
+    public long getJmsThrottle() {
+        return jmsThrottle;
+    }
+
 }

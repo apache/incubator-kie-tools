@@ -144,6 +144,9 @@ public class ClusterJMSService implements ClusterService {
                                                         channel,
                                                         session);
             ObjectMessage objectMessage = session.createObjectMessage(object);
+            if (clusterParameters.getJmsThrottle() > 0) {
+                objectMessage.setLongProperty("_AMQ_SCHED_DELIVERY", System.currentTimeMillis() + clusterParameters.getJmsThrottle());
+            }
             MessageProducer messageProducer = session.createProducer(destination);
             messageProducer.send(objectMessage);
         } catch (JMSException e) {
