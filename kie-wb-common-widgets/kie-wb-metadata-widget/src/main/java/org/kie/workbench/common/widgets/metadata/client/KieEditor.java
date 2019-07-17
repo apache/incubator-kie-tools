@@ -55,7 +55,6 @@ import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.client.workbench.widgets.multipage.Page;
 import org.uberfire.ext.editor.commons.client.BaseEditor;
 import org.uberfire.ext.editor.commons.client.file.popups.CopyPopUpPresenter;
-import org.uberfire.ext.editor.commons.client.file.popups.DeletePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.RenamePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.menu.MenuItems;
@@ -103,8 +102,6 @@ public abstract class KieEditor<T>
     protected WorkspaceProjectContext workbenchContext;
     @Inject
     protected SavePopUpPresenter savePopUpPresenter;
-    @Inject
-    protected DeletePopUpPresenter deletePopUpPresenter;
     @Inject
     protected RenamePopUpPresenter renamePopUpPresenter;
     @Inject
