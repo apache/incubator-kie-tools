@@ -15,7 +15,7 @@ modules:
   install:
   - name: add-kogito-user
   - name: graalvm
-    version: "1.0.0-rc16"
+    version: "19.0.2"
   - name: maven
     version: "3.6.0"
   - name: kogito-quarkus-centos-s2i

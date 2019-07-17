@@ -1,0 +1,9 @@
+#!/bin/sh
+set -e
+
+SOURCES_DIR=/tmp/artifacts
+
+tar xzf ${SOURCES_DIR}/graalvm-ce-linux-amd64-${GRAALVM_VERSION}.tar.gz -C /usr/share
+mv /usr/share/graalvm-ce-${GRAALVM_VERSION} /usr/share/graalvm
+
+/usr/share/graalvm/bin/gu -L install ${SOURCES_DIR}/native-image-installable-svm-linux-amd64-${GRAALVM_VERSION}.jar
