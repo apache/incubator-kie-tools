@@ -34,10 +34,13 @@ import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
+import org.guvnor.structure.backend.organizationalunit.config.SpaceConfigStorageRegistryImpl;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.organizationalunit.config.RepositoryConfiguration;
 import org.guvnor.structure.organizationalunit.config.RepositoryInfo;
+import org.guvnor.structure.organizationalunit.config.SpaceConfigStorage;
+import org.guvnor.structure.organizationalunit.config.SpaceConfigStorageRegistry;
 import org.guvnor.structure.organizationalunit.impl.OrganizationalUnitImpl;
 import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.EnvironmentParameters;
@@ -69,6 +72,7 @@ import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.io.IOService;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.rpc.SessionInfo;
+import org.uberfire.spaces.Space;
 
 import static org.junit.Assert.*;
 import static org.kie.workbench.common.screens.examples.backend.server.ImportUtils.makeGitRepository;
@@ -121,6 +125,18 @@ public class ExamplesServiceImplTest {
     @Mock
     private ImportProjectValidators validators;
 
+    @Mock
+    private SpaceConfigStorageRegistry spaceConfigStorageRegistry;
+
+    @Mock
+    private SpaceConfigStorage spaceConfigStorage;
+
+    @Mock
+    private OrganizationalUnit ou;
+
+    @Mock
+    private Space space;
+
     private ExamplesServiceImpl service;
 
     @Captor
@@ -128,6 +144,13 @@ public class ExamplesServiceImplTest {
 
     @Before
     public void setup() {
+
+        when(spaceConfigStorageRegistry.get(anyString())).thenReturn(spaceConfigStorage);
+        when(spaceConfigStorageRegistry.getBatch(anyString())).thenReturn(new SpaceConfigStorageRegistryImpl.SpaceStorageBatchImpl(spaceConfigStorage));
+        when(spaceConfigStorageRegistry.exist(anyString())).thenReturn(true);
+
+        when(ou.getSpace()).thenReturn(space);
+        when(space.getName()).thenReturn("ou");
 
         service = spy(new ExamplesServiceImpl(ioService,
                                               repositoryFactory,
@@ -138,7 +161,8 @@ public class ExamplesServiceImplTest {
                                               metadataService,
                                               newProjectEvent,
                                               projectScreenService,
-                                              validators));
+                                              validators,
+                                              spaceConfigStorageRegistry));
 
         when(this.validators.getValidators()).thenReturn(new ArrayList<>());
 
@@ -349,8 +373,6 @@ public class ExamplesServiceImplTest {
         final ImportProject exModule = mock(ImportProject.class);
         doReturn("module").when(exModule).getName();
         final List<ImportProject> exModules = Collections.singletonList(exModule);
-        final OrganizationalUnit ou = mock(OrganizationalUnit.class);
-        doReturn("ou").when(ou).getName();
         final GitRepository repository = mock(GitRepository.class);
         final Path repositoryRoot = mock(Path.class);
         final Path moduleRoot = mock(Path.class);
@@ -401,8 +423,7 @@ public class ExamplesServiceImplTest {
         doReturn("project 2").when(exProject1).getName();
         final List<ImportProject> exProjects = Arrays.asList(exProject1,
                                                              exProject2);
-        final OrganizationalUnit ou = mock(OrganizationalUnit.class);
-        doReturn("ou").when(ou).getName();
+
         final GitRepository repository1 = mock(GitRepository.class);
         final Path repositoryRoot = mock(Path.class);
         final Path module1Root = mock(Path.class);

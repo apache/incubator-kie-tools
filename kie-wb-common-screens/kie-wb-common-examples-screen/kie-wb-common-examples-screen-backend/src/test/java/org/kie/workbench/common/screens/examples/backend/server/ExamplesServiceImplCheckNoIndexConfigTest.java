@@ -23,7 +23,10 @@ import javax.enterprise.event.Event;
 import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
+import org.guvnor.structure.backend.organizationalunit.config.SpaceConfigStorageRegistryImpl;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
+import org.guvnor.structure.organizationalunit.config.SpaceConfigStorage;
+import org.guvnor.structure.organizationalunit.config.SpaceConfigStorageRegistry;
 import org.guvnor.structure.repositories.EnvironmentParameters;
 import org.guvnor.structure.repositories.RepositoryCopier;
 import org.guvnor.structure.server.repositories.RepositoryFactory;
@@ -83,6 +86,12 @@ public class ExamplesServiceImplCheckNoIndexConfigTest {
     @Mock
     private ImportProjectValidators validators;
 
+    @Mock
+    private SpaceConfigStorageRegistry spaceConfigStorageRegistry;
+
+    @Mock
+    private SpaceConfigStorage spaceConfigStorage;
+
     @Captor
     private ArgumentCaptor<Map<String, Object>> captor;
 
@@ -90,6 +99,10 @@ public class ExamplesServiceImplCheckNoIndexConfigTest {
 
     @Before
     public void setup() {
+        when(spaceConfigStorageRegistry.get(anyString())).thenReturn(spaceConfigStorage);
+        when(spaceConfigStorageRegistry.getBatch(anyString())).thenReturn(new SpaceConfigStorageRegistryImpl.SpaceStorageBatchImpl(spaceConfigStorage));
+        when(spaceConfigStorageRegistry.exist(anyString())).thenReturn(true);
+
         service = spy(new ExamplesServiceImpl(ioService,
                                               repositoryFactory,
                                               moduleService,
@@ -99,7 +112,8 @@ public class ExamplesServiceImplCheckNoIndexConfigTest {
                                               metadataService,
                                               newProjectEvent,
                                               projectScreenService,
-                                              validators));
+                                              validators,
+                                              spaceConfigStorageRegistry));
 
         when(validators.getValidators()).thenReturn(new ArrayList<>());
     }

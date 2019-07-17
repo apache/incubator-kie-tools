@@ -26,6 +26,7 @@ import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.service.ModuleRepositoryResolver;
 import org.guvnor.common.services.project.service.ModuleService;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
+import org.guvnor.structure.organizationalunit.config.SpaceConfigStorageRegistry;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.uberfire.spaces.SpacesAPI;
 
@@ -42,12 +43,14 @@ public class MigrationWorkspaceProjectServiceImpl extends WorkspaceProjectServic
                                                 final SpacesAPI spaces,
                                                 final Event<NewProjectEvent> newProjectEvent,
                                                 final Instance<ModuleService<? extends Module>> moduleServices,
-                                                final ModuleRepositoryResolver repositoryResolver) {
+                                                final ModuleRepositoryResolver repositoryResolver,
+                                                final SpaceConfigStorageRegistry spaceConfigStorageRegistry) {
         super(organizationalUnitService,
               repositoryService,
               spaces,
               newProjectEvent,
               moduleServices,
-              repositoryResolver);
+              repositoryResolver,
+              spaceConfigStorageRegistry);
     }
 }
