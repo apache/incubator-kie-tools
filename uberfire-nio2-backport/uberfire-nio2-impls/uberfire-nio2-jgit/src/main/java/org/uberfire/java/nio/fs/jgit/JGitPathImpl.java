@@ -168,20 +168,18 @@ public class JGitPathImpl extends AbstractPath<JGitFileSystem>
     }
 
     @Override
-    public File toFile()
-            throws UnsupportedOperationException {
+    public File toFile() {
         if (file == null) {
             synchronized (this) {
                 if (isRegularFile()) {
                     try {
                         file = File.createTempFile("git",
                                                    "temp");
-                        final InputStream in = getFileSystem().provider().newInputStream(this);
-                        final OutputStream out = new FileOutputStream(file);
-                        internalCopy(in,
-                                     out);
-                        in.close();
-                        out.close();
+                        try (final InputStream in = getFileSystem().provider().newInputStream(this);
+                             final OutputStream out = new FileOutputStream(file)) {
+                            internalCopy(in,
+                                         out);
+                        }
                     } catch (final Exception ex) {
                         file = null;
                     }

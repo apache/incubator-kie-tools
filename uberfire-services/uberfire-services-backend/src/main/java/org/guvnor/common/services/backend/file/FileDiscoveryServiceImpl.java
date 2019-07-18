@@ -57,16 +57,17 @@ public class FileDiscoveryServiceImpl implements FileDiscoveryService {
         }
 
         //Path represents a Folder, so check and recursively add it's content, if applicable
-        final DirectoryStream<Path> paths = Files.newDirectoryStream(pathToSearch);
-        for (final Path path : paths) {
-            if (Files.isRegularFile(path)) {
-                if (filter.accept(path)) {
-                    discoveredFiles.add(path);
+        try (final DirectoryStream<Path> paths = Files.newDirectoryStream(pathToSearch)) {
+            for (final Path path : paths) {
+                if (Files.isRegularFile(path)) {
+                    if (filter.accept(path)) {
+                        discoveredFiles.add(path);
+                    }
+                } else if (recursive && Files.isDirectory(path)) {
+                    discoveredFiles.addAll(discoverFiles(path,
+                                                         filter,
+                                                         recursive));
                 }
-            } else if (recursive && Files.isDirectory(path)) {
-                discoveredFiles.addAll(discoverFiles(path,
-                                                     filter,
-                                                     recursive));
             }
         }
 

@@ -141,10 +141,9 @@ public abstract class AbstractErrorAbsorbingProcessor extends AbstractProcessor 
                                    final String className,
                                    final StringBuffer code) throws IOException {
         JavaFileObject jfo = processingEnv.getFiler().createSourceFile(packageName + "." + className);
-        Writer w = jfo.openWriter();
-        BufferedWriter bw = new BufferedWriter(w);
-        bw.append(code);
-        bw.close();
-        w.close();
+        try (Writer w = jfo.openWriter();
+             BufferedWriter bw = new BufferedWriter(w)) {
+            bw.append(code);
+        }
     }
 }

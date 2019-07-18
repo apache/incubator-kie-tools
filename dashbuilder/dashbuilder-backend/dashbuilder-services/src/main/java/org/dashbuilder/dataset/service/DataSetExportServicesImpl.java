@@ -16,6 +16,7 @@
 package org.dashbuilder.dataset.service;
 
 import java.io.BufferedWriter;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.math.BigDecimal;
@@ -132,15 +133,16 @@ public class DataSetExportServicesImpl implements DataSetExportServices {
             String tempCsvFile = uuidGenerator.newUuid() + ".csv";
             Path tempCsvPath = gitStorage.createTempFile(tempCsvFile);
 
-            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(tempCsvPath)));
-            CSVWriter writer = new CSVWriter(bw,
-                    DEFAULT_SEPARATOR_CHAR.charAt(0),
-                    DEFAULT_QUOTE_CHAR.charAt(0),
-                    DEFAULT_ESCAPE_CHAR.charAt(0));
-            writer.writeAll(lines);
-            writer.close();
-            writer.flush();
-            writer.close();
+            try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(tempCsvPath)));
+                 CSVWriter writer = new CSVWriter(bw,
+                                                  DEFAULT_SEPARATOR_CHAR.charAt(0),
+                                                  DEFAULT_QUOTE_CHAR.charAt(0),
+                                                  DEFAULT_ESCAPE_CHAR.charAt(0))
+                 ) {
+                     writer.writeAll(lines);
+                     writer.flush();
+            }
+
             return Paths.convert(tempCsvPath);
         }
         catch (Exception e) {

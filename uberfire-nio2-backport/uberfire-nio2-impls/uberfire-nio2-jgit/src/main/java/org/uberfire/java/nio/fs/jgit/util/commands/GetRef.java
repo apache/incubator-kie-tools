@@ -19,6 +19,7 @@ package org.uberfire.java.nio.fs.jgit.util.commands;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectIdRef;
 import org.eclipse.jgit.lib.ObjectLoader;
+import org.eclipse.jgit.lib.ObjectReader;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 
@@ -43,13 +44,16 @@ public class GetRef {
             }
             final ObjectId treeRef = repo.resolve(name + "^{tree}");
             if (treeRef != null) {
-                final ObjectLoader loader = repo.getObjectDatabase().newReader().open(treeRef);
-                if (loader.getType() == OBJ_TREE) {
-                    return new ObjectIdRef.PeeledTag(Ref.Storage.NEW,
-                                                     name,
-                                                     ObjectId.fromString(name),
-                                                     treeRef);
+                try (final ObjectReader objectReader = repo.getObjectDatabase().newReader()) {
+                    final ObjectLoader loader = objectReader.open(treeRef);
+                    if (loader.getType() == OBJ_TREE) {
+                        return new ObjectIdRef.PeeledTag(Ref.Storage.NEW,
+                                                         name,
+                                                         ObjectId.fromString(name),
+                                                         treeRef);
+                    }
                 }
+
             }
         } catch (final Exception ignored) {
         }
