@@ -117,6 +117,7 @@ public class IntermediateMessageEventCatching extends BaseCatchingIntermediateEv
     protected void initLabels() {
         super.initLabels();
         labels.add("messageflow_end");
+        labels.add("FromEventbasedGateway");
     }
 
     @Override

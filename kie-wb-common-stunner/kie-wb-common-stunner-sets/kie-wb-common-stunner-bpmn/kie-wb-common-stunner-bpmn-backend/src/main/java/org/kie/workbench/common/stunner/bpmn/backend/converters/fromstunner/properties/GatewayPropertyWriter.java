@@ -87,9 +87,20 @@ public class GatewayPropertyWriter extends PropertyWriter {
         }
     }
 
+    public void setGatewayDirection(GatewayDirection direction) {
+        gateway.setGatewayDirection(direction);
+    }
+
     private long countEdges(List<Edge> inEdges) {
         return inEdges.stream()
                 .filter(e -> e.getContent() instanceof ViewConnector)
                 .count();
+    }
+
+    /**
+     * For testing purposes.
+     */
+    String getDefaultGatewayId() {
+        return defaultGatewayId;
     }
 }

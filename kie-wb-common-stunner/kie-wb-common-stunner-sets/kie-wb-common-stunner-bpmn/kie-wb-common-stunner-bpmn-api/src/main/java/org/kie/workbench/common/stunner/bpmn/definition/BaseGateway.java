@@ -16,13 +16,12 @@
 
 package org.kie.workbench.common.stunner.bpmn.definition;
 
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
 import javax.validation.Valid;
 
-import org.jboss.errai.common.client.api.annotations.MapsTo;
-import org.kie.soup.commons.util.Sets;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.CircleDimensionSet;
@@ -56,29 +55,33 @@ public abstract class BaseGateway implements BPMNViewDefinition {
     protected CircleDimensionSet dimensionsSet;
 
     @Labels
-    protected final Set<String> labels = new Sets.Builder<String>()
-            .add("all")
-            .add("lane_child")
-            .add("sequence_start")
-            .add("sequence_end")
-            .add("choreography_sequence_start")
-            .add("choreography_sequence_end")
-            .add("fromtoall")
-            .add("GatewaysMorph")
-            .add("cm_nop")
-            .build();
+    protected final Set<String> labels = new HashSet<>();
 
     public BaseGateway() {
+        initLabels();
     }
 
-    public BaseGateway(final @MapsTo("general") BPMNGeneralSet general,
-                       final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
-                       final @MapsTo("fontSet") FontSet fontSet,
-                       final @MapsTo("dimensionsSet") CircleDimensionSet dimensionsSet) {
+    public BaseGateway(BPMNGeneralSet general,
+                       BackgroundSet backgroundSet,
+                       FontSet fontSet,
+                       CircleDimensionSet dimensionsSet) {
+        this();
         this.general = general;
         this.backgroundSet = backgroundSet;
         this.fontSet = fontSet;
         this.dimensionsSet = dimensionsSet;
+    }
+
+    protected void initLabels() {
+        labels.add("all");
+        labels.add("lane_child");
+        labels.add("sequence_start");
+        labels.add("sequence_end");
+        labels.add("choreography_sequence_start");
+        labels.add("choreography_sequence_end");
+        labels.add("fromtoall");
+        labels.add("GatewaysMorph");
+        labels.add("cm_nop");
     }
 
     public String getCategory() {
@@ -133,6 +136,9 @@ public abstract class BaseGateway implements BPMNViewDefinition {
 
     @Override
     public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
         if (o instanceof BaseGateway) {
             BaseGateway other = (BaseGateway) o;
             return Objects.equals(general,

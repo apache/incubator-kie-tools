@@ -16,12 +16,14 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.gateways;
 
+import org.eclipse.bpmn2.EventBasedGateway;
 import org.eclipse.bpmn2.Gateway;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.Match;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.TypedFactoryManager;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.BpmnNode;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.GatewayPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.PropertyReaderFactory;
+import org.kie.workbench.common.stunner.bpmn.definition.EventGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.InclusiveGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.ParallelGateway;
@@ -49,6 +51,7 @@ public class GatewayConverter {
                 .when(org.eclipse.bpmn2.ParallelGateway.class, this::parallelGateway)
                 .when(org.eclipse.bpmn2.ExclusiveGateway.class, this::exclusiveGateway)
                 .when(org.eclipse.bpmn2.InclusiveGateway.class, this::inclusiveGateway)
+                .when(org.eclipse.bpmn2.EventBasedGateway.class, this::eventGateway)
                 .apply(gateway).value();
     }
 
@@ -106,6 +109,25 @@ public class GatewayConverter {
 
         node.getContent().setBounds(p.getBounds());
         ParallelGateway definition = node.getContent().getDefinition();
+
+        definition.setGeneral(new BPMNGeneralSet(
+                new Name(p.getName()),
+                new Documentation(p.getDocumentation())
+        ));
+
+        definition.setDimensionsSet(p.getCircleDimensionSet());
+        definition.setFontSet(p.getFontSet());
+        definition.setBackgroundSet(p.getBackgroundSet());
+
+        return BpmnNode.of(node, p);
+    }
+
+    private BpmnNode eventGateway(EventBasedGateway eventGateway) {
+        Node<View<EventGateway>, Edge> node = factoryManager.newNode(eventGateway.getId(), EventGateway.class);
+        GatewayPropertyReader p = propertyReaderFactory.of(eventGateway);
+
+        node.getContent().setBounds(p.getBounds());
+        EventGateway definition = node.getContent().getDefinition();
 
         definition.setGeneral(new BPMNGeneralSet(
                 new Name(p.getName()),

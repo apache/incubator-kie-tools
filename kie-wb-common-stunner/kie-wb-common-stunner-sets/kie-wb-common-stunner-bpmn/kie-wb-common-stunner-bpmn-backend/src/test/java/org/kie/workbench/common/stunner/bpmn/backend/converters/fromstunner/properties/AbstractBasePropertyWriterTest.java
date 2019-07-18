@@ -40,6 +40,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -79,6 +80,12 @@ public abstract class AbstractBasePropertyWriterTest<W extends BasePropertyWrite
     @Test
     public void testGetId() {
         assertEquals(ID, propertyWriter.getId());
+    }
+
+    @Test
+    public void testSetId() {
+        propertyWriter.setId(ID);
+        verify(element).setId(ID);
     }
 
     @Test

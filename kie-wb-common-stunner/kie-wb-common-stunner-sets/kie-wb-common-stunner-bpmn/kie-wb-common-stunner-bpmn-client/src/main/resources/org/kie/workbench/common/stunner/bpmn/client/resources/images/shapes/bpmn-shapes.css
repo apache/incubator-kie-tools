@@ -73,6 +73,19 @@
      fill: #ec7a08;
 }
 
+#eventGateway #gateway-background {
+    opacity: 1;
+    fill: #fef4ea;
+}
+#eventGateway #gateway {
+    opacity: 1;
+    fill: #ec7a08;
+}
+#eventGateway #event {
+    opacity: 1;
+    fill: #ec7a08;
+}
+
 .lane_background {
     fill: #f2f2f2;
 }

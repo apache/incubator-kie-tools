@@ -85,6 +85,12 @@ public class IntermediateSignalEventCatching extends BaseCatchingIntermediateEve
         this.executionSet = executionSet;
     }
 
+    @Override
+    protected void initLabels() {
+        super.initLabels();
+        labels.add("FromEventbasedGateway");
+    }
+
     public CancellingSignalEventExecutionSet getExecutionSet() {
         return executionSet;
     }

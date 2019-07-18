@@ -29,6 +29,14 @@ import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.util.FeatureMap;
 import org.jboss.drools.MetaDataType;
+import org.kie.workbench.common.stunner.bpmn.definition.BPMNViewDefinition;
+import org.kie.workbench.common.stunner.core.graph.Edge;
+import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
+import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.graph.content.view.ViewImpl;
+import org.kie.workbench.common.stunner.core.graph.impl.NodeImpl;
+import org.kie.workbench.common.stunner.core.util.UUID;
 import org.mockito.Mockito;
 
 import static org.junit.Assert.assertEquals;
@@ -114,5 +122,23 @@ public class TestUtils {
         PoissonDistributionType distributionType = mock(PoissonDistributionType.class);
         when(distributionType.getMean()).thenReturn(mean);
         return distributionType;
+    }
+
+    public static <T extends BPMNViewDefinition> Node<View<T>, ?> newNode(T definition) {
+        return newNode(UUID.uuid(), definition);
+    }
+
+    public static <T extends BPMNViewDefinition> Node<View<T>, ?> newNode(String UUID, T definition) {
+        Node<View<T>, ?> node = new NodeImpl<>(UUID);
+        node.setContent(new ViewImpl<T>(definition, org.kie.workbench.common.stunner.core.graph.content.Bounds.create()));
+        return node;
+    }
+
+    public static <T extends BPMNViewDefinition> Edge mockEdge(Node<View<T>, ?> sourceNode, Node<View<T>, ?> targetNode) {
+        Edge edge = mock(Edge.class);
+        when(edge.getContent()).thenReturn(mock(Child.class));
+        when(edge.getSourceNode()).thenReturn(sourceNode);
+        when(edge.getTargetNode()).thenReturn(targetNode);
+        return edge;
     }
 }

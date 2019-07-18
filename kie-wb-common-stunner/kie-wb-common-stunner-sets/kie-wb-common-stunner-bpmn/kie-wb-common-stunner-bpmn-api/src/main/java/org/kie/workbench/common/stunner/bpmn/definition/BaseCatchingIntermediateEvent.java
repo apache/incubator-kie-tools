@@ -83,7 +83,6 @@ public abstract class BaseCatchingIntermediateEvent
         labels.add("to_task_event");
         labels.add("from_task_event");
         labels.add("fromtoall");
-        labels.add("FromEventbasedGateway");
         labels.add("IntermediateEventOnSubprocessBoundary");
         labels.add("IntermediateEventOnActivityBoundary");
         labels.add("EventOnChoreographyActivityBoundary");

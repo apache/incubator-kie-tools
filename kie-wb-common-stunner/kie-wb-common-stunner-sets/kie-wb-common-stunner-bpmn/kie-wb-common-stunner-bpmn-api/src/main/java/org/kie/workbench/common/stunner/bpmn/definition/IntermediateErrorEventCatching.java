@@ -89,7 +89,6 @@ public class IntermediateErrorEventCatching extends BaseCatchingIntermediateEven
     protected void initLabels() {
         super.initLabels();
         labels.remove("sequence_end");
-        labels.remove("FromEventbasedGateway");
     }
 
     public DataIOSet getDataIOSet() {

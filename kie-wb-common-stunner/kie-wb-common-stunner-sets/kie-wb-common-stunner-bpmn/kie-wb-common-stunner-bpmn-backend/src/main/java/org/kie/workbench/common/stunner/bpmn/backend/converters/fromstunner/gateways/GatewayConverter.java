@@ -16,11 +16,13 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.gateways;
 
+import org.eclipse.bpmn2.GatewayDirection;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.NodeMatch;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.GatewayPropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.PropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.PropertyWriterFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseGateway;
+import org.kie.workbench.common.stunner.bpmn.definition.EventGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.InclusiveGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.ParallelGateway;
@@ -44,13 +46,13 @@ public class GatewayConverter {
                 .when(ParallelGateway.class, this::parallel)
                 .when(ExclusiveGateway.class, this::exclusive)
                 .when(InclusiveGateway.class, this::inclusive)
+                .when(EventGateway.class, this::event)
                 .apply(node).value();
     }
 
     private PropertyWriter inclusive(Node<View<InclusiveGateway>, ?> n) {
-        org.eclipse.bpmn2.InclusiveGateway gateway = bpmn2.createInclusiveGateway();
-        GatewayPropertyWriter p = propertyWriterFactory.of(gateway);
-        gateway.setId(n.getUUID());
+        GatewayPropertyWriter p = propertyWriterFactory.of(bpmn2.createInclusiveGateway());
+        p.setId(n.getUUID());
 
         InclusiveGateway definition = n.getContent().getDefinition();
 
@@ -69,9 +71,8 @@ public class GatewayConverter {
     }
 
     private PropertyWriter exclusive(Node<View<ExclusiveGateway>, ?> n) {
-        org.eclipse.bpmn2.ExclusiveGateway gateway = bpmn2.createExclusiveGateway();
-        GatewayPropertyWriter p = propertyWriterFactory.of(gateway);
-        gateway.setId(n.getUUID());
+        GatewayPropertyWriter p = propertyWriterFactory.of(bpmn2.createExclusiveGateway());
+        p.setId(n.getUUID());
 
         ExclusiveGateway definition = n.getContent().getDefinition();
 
@@ -90,13 +91,28 @@ public class GatewayConverter {
     }
 
     private PropertyWriter parallel(Node<View<ParallelGateway>, ?> n) {
-        org.eclipse.bpmn2.ParallelGateway gateway = bpmn2.createParallelGateway();
-        GatewayPropertyWriter p = propertyWriterFactory.of(gateway);
-        gateway.setId(n.getUUID());
+        GatewayPropertyWriter p = propertyWriterFactory.of(bpmn2.createParallelGateway());
+        p.setId(n.getUUID());
 
         ParallelGateway definition = n.getContent().getDefinition();
 
         p.setGatewayDirection(n);
+
+        BPMNGeneralSet general = definition.getGeneral();
+        p.setName(general.getName().getValue());
+        p.setDocumentation(general.getDocumentation().getValue());
+
+        p.setAbsoluteBounds(n);
+
+        return p;
+    }
+
+    private PropertyWriter event(Node<View<EventGateway>, ?> n) {
+        GatewayPropertyWriter p = propertyWriterFactory.of(bpmn2.createEventBasedGateway());
+        p.setId(n.getUUID());
+        p.setGatewayDirection(GatewayDirection.DIVERGING);
+
+        EventGateway definition = n.getContent().getDefinition();
 
         BPMNGeneralSet general = definition.getGeneral();
         p.setName(general.getName().getValue());

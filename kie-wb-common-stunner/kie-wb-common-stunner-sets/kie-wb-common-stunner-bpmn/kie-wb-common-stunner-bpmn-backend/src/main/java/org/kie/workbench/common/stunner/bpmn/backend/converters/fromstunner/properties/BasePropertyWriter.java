@@ -58,6 +58,10 @@ public abstract class BasePropertyWriter {
         return this.baseElement.getId();
     }
 
+    public void setId(String id) {
+        baseElement.setId(id);
+    }
+
     protected void setBounds(Bounds rect) {
         this.shape = di.createBPMNShape();
         shape.setId(Ids.bpmnShape(getId()));

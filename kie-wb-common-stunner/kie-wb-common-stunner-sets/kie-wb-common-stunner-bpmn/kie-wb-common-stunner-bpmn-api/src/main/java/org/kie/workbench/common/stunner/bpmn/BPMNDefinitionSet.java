@@ -32,6 +32,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.EndMessageEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndSignalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.EventGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.EventSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.GenericServiceTask;
@@ -113,6 +114,7 @@ import org.kie.workbench.common.stunner.core.rule.annotation.Occurrences;
                 ParallelGateway.class,
                 ExclusiveGateway.class,
                 InclusiveGateway.class,
+                EventGateway.class,
                 ReusableSubprocess.class,
                 EmbeddedSubprocess.class,
                 EventSubprocess.class,

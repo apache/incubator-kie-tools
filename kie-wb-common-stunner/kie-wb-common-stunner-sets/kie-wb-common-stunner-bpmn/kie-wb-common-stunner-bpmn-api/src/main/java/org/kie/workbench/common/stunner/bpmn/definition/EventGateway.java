@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,28 +16,20 @@
 
 package org.kie.workbench.common.stunner.bpmn.definition;
 
-import java.util.Objects;
-
-import javax.validation.Valid;
-
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
-import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.CircleDimensionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.Radius;
-import org.kie.workbench.common.stunner.bpmn.definition.property.event.conditional.CancellingConditionalEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
-import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
-import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers.nestedForms.AbstractEmbeddedFormsInitializer.COLLAPSIBLE_CONTAINER;
 import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers.nestedForms.AbstractEmbeddedFormsInitializer.FIELD_CONTAINER_PARAM;
@@ -45,67 +37,36 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 @Portable
 @Bindable
 @Definition(graphFactory = NodeFactory.class)
-@Morph(base = BaseCatchingIntermediateEvent.class)
+@Morph(base = BaseGateway.class)
 @FormDefinition(
         startElement = "general",
         policy = FieldPolicy.ONLY_MARKED,
         defaultFieldSettings = {@FieldParam(name = FIELD_CONTAINER_PARAM, value = COLLAPSIBLE_CONTAINER)}
 )
-public class IntermediateConditionalEvent extends BaseCatchingIntermediateEvent {
+public class EventGateway extends BaseGateway {
 
-    @PropertySet
-    @FormField(afterElement = "general")
-    @Valid
-    protected CancellingConditionalEventExecutionSet executionSet;
-
-    public IntermediateConditionalEvent() {
+    public EventGateway() {
         this(new BPMNGeneralSet(""),
              new BackgroundSet(),
              new FontSet(),
-             new CircleDimensionSet(new Radius()),
-             new CancellingConditionalEventExecutionSet());
+             new CircleDimensionSet(new Radius()));
     }
 
-    public IntermediateConditionalEvent(final @MapsTo("general") BPMNGeneralSet general,
-                                        final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
-                                        final @MapsTo("fontSet") FontSet fontSet,
-                                        final @MapsTo("dimensionsSet") CircleDimensionSet dimensionsSet,
-                                        final @MapsTo("executionSet") CancellingConditionalEventExecutionSet executionSet) {
+    public EventGateway(final @MapsTo("general") BPMNGeneralSet general,
+                        final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
+                        final @MapsTo("fontSet") FontSet fontSet,
+                        final @MapsTo("dimensionsSet") CircleDimensionSet dimensionsSet) {
         super(general,
               backgroundSet,
               fontSet,
               dimensionsSet);
-        this.executionSet = executionSet;
     }
 
     @Override
     protected void initLabels() {
         super.initLabels();
-        labels.add("FromEventbasedGateway");
-    }
-
-    public CancellingConditionalEventExecutionSet getExecutionSet() {
-        return executionSet;
-    }
-
-    public void setExecutionSet(CancellingConditionalEventExecutionSet executionSet) {
-        this.executionSet = executionSet;
-    }
-
-    @Override
-    public int hashCode() {
-        return HashUtil.combineHashCodes(super.hashCode(),
-                                         executionSet.hashCode());
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o instanceof IntermediateConditionalEvent) {
-            IntermediateConditionalEvent other = (IntermediateConditionalEvent) o;
-            return super.equals(other) &&
-                    Objects.equals(executionSet,
-                                   other.executionSet);
-        }
-        return false;
+        labels.remove("sequence_start");
+        labels.remove("choreography_sequence_start");
+        labels.add("Exclusive_Eventbased_Gateway");
     }
 }

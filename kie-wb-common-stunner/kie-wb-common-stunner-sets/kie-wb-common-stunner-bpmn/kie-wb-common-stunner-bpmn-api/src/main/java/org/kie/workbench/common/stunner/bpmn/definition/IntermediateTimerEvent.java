@@ -76,6 +76,12 @@ public class IntermediateTimerEvent extends BaseCatchingIntermediateEvent {
         this.executionSet = executionSet;
     }
 
+    @Override
+    protected void initLabels() {
+        super.initLabels();
+        labels.add("FromEventbasedGateway");
+    }
+
     public CancellingTimerEventExecutionSet getExecutionSet() {
         return executionSet;
     }

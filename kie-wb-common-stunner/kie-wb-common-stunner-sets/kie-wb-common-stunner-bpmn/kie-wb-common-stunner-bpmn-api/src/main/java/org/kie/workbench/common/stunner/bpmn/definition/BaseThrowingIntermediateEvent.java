@@ -68,7 +68,6 @@ public abstract class BaseThrowingIntermediateEvent
         labels.add("to_task_event");
         labels.add("from_task_event");
         labels.add("fromtoall");
-        labels.add("FromEventbasedGateway");
         labels.add("IntermediateEventsMorph");
         labels.add("cmnop");
         labels.add("IntermediateEventThrowing");

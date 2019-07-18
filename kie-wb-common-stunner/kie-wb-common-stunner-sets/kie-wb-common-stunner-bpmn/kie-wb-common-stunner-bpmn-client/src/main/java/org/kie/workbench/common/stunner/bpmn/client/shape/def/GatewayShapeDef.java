@@ -22,6 +22,7 @@ import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNGlyphFactory;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseGateway;
+import org.kie.workbench.common.stunner.bpmn.definition.EventGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.InclusiveGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.ParallelGateway;
@@ -46,7 +47,9 @@ public class GatewayShapeDef
                     .put(ExclusiveGateway.class,
                          BPMNSVGViewFactory::exclusiveGateway)
                     .put(InclusiveGateway.class,
-                         BPMNSVGViewFactory::inclusiveGateway);
+                         BPMNSVGViewFactory::inclusiveGateway)
+                    .put(EventGateway.class,
+                         BPMNSVGViewFactory::eventGateway);
 
     public static final Map<Class<? extends BaseGateway>, Glyph> GLYPHS =
             new Maps.Builder<Class<? extends BaseGateway>, Glyph>()
@@ -56,6 +59,8 @@ public class GatewayShapeDef
                          BPMNGlyphFactory.GATEWAY_EXCLUSIVE)
                     .put(InclusiveGateway.class,
                          BPMNGlyphFactory.GATEWAY_INCLUSIVE)
+                    .put(EventGateway.class,
+                         BPMNGlyphFactory.GATEWAY_EVENT)
                     .build();
 
     @Override

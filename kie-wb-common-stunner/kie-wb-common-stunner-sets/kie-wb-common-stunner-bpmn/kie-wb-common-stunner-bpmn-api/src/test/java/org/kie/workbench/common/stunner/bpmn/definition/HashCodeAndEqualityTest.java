@@ -704,7 +704,6 @@ public class HashCodeAndEqualityTest {
                      b.hashCode());
     }
 
-
     @Test
     public void testSequenceFlowEquals() {
         SequenceFlow a = new SequenceFlow();
@@ -2363,6 +2362,19 @@ public class HashCodeAndEqualityTest {
                               new Association(new BPMNGeneralSet(), new BackgroundSet(), new FontSet()))
                 .addFalseCase(new Association(),
                               new Association(null, null, null))
+                .test();
+    }
+
+    @Test
+    public void testEventGatewayEqualsAndHashCode() {
+        TestCaseBuilder.newTestCase()
+                .addTrueCase(new EventGateway(), new EventGateway())
+                .addTrueCase(new EventGateway(new BPMNGeneralSet("name", "documentation"), new BackgroundSet(), new FontSet(), new CircleDimensionSet()),
+                             new EventGateway(new BPMNGeneralSet("name", "documentation"), new BackgroundSet(), new FontSet(), new CircleDimensionSet()))
+                .addFalseCase(new EventGateway(new BPMNGeneralSet("name", "documentation"), new BackgroundSet(), new FontSet(), new CircleDimensionSet()),
+                              new EventGateway(new BPMNGeneralSet("name1", "documentation"), new BackgroundSet(), new FontSet(), new CircleDimensionSet()))
+                .addFalseCase(new EventGateway(new BPMNGeneralSet("name", "documentation"), new BackgroundSet(), new FontSet(), new CircleDimensionSet()),
+                              new EventGateway(new BPMNGeneralSet("name", "documentation1"), new BackgroundSet(), new FontSet(), new CircleDimensionSet()))
                 .test();
     }
 

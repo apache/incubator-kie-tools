@@ -51,6 +51,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.EndMessageEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndSignalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.EventGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.EventSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.GenericServiceTask;
@@ -204,6 +205,9 @@ public class BPMNShapeFactory
                           new GatewayShapeDef(),
                           () -> svgShapeFactory)
                 .delegate(InclusiveGateway.class,
+                          new GatewayShapeDef(),
+                          () -> svgShapeFactory)
+                .delegate(EventGateway.class,
                           new GatewayShapeDef(),
                           () -> svgShapeFactory)
                 .delegate(Lane.class,

@@ -66,6 +66,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.EndMessageEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndSignalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.EventGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.EventSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.InclusiveGateway;
@@ -245,6 +246,7 @@ public class BPMNDirectDiagramMarshallerTest {
     private static final String ARIS_COLLAPSED_SUBPROCESS_IN_LANE = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/aris/ARIS_COLLAPSED_SUBPROCESS_IN_LANE.bpmn";
     private static final String BPMN_LOG_TASK_JBPM_DESIGNER = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/logtask.bpmn";
     private static final String BPMN_SERVICETASKS_JBPM_DESIGNER = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/serviceTasksJBPMDeginer.bpmn";
+    private static final String BPMN_EVENT_GATEWAY = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/eventGateway.bpmn";
 
     private static final String NEW_LINE = System.lineSeparator();
 
@@ -3894,6 +3896,59 @@ public class BPMNDirectDiagramMarshallerTest {
         reassignment = reassignmentsInfo.getValue().getValues().get(1);
         assertEquals("[users:Forms,HR|groups:director,guest]@[22h]", reassignment.toCDATAFormat());
         assertEquals("NotCompletedReassign", reassignment.getType());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testUnmarshallEventGateway() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_EVENT_GATEWAY);
+        assertDiagram(diagram, 7);
+        assertEquals(diagram.getMetadata().getTitle(), "TestEventGateway");
+        Graph graph = diagram.getGraph();
+        Node<? extends Definition, ?> gatewayNode = graph.getNode("_AFDF2596-C521-4753-AC22-2DCCAD391F98");
+        assertTrue(gatewayNode.getContent().getDefinition() instanceof EventGateway);
+        EventGateway eventGateway = (EventGateway) gatewayNode.getContent().getDefinition();
+        assertEquals("EventGatewayName", eventGateway.getGeneral().getName().getValue());
+        assertEquals("EventGatewayDocumentation", eventGateway.getGeneral().getDocumentation().getValue());
+        SequenceFlow inSequenceFlow = gatewayNode.getInEdges().stream()
+                .filter(edge -> "_E805280D-5862-4F56-B02A-E34F7D519050".equals(edge.getUUID()))
+                .map(edge -> (SequenceFlow) ((ViewConnector) edge.getContent()).getDefinition())
+                .findFirst().orElseThrow(() -> new Exception("Expected sequenceFlow: _E805280D-5862-4F56-B02A-E34F7D519050 was not found"));
+        SequenceFlow outSequenceFlow1 = gatewayNode.getOutEdges().stream()
+                .filter(edge -> "_CCEF6352-760D-4641-B9C9-0B01FD4DD704".equals(edge.getUUID()))
+                .map(edge -> (SequenceFlow) ((ViewConnector) edge.getContent()).getDefinition())
+                .findFirst().orElseThrow(() -> new Exception("Expected sequenceFlow: _CCEF6352-760D-4641-B9C9-0B01FD4DD704 was not found"));
+        SequenceFlow outSequenceFlow2 = gatewayNode.getOutEdges().stream()
+                .filter(edge -> "_1CD28E0D-1910-45FE-9AEC-932FA28C77AA".equals(edge.getUUID()))
+                .map(edge -> (SequenceFlow) ((ViewConnector) edge.getContent()).getDefinition())
+                .findFirst().orElseThrow(() -> new Exception("Expected sequenceFlow: _1CD28E0D-1910-45FE-9AEC-932FA28C77AA was not found"));
+
+        assertNotNull(inSequenceFlow);
+        assertEquals("inSequence", inSequenceFlow.getGeneral().getName().getValue());
+        assertNotNull(outSequenceFlow1);
+        assertEquals("outSequence1", outSequenceFlow1.getGeneral().getName().getValue());
+        assertNotNull(outSequenceFlow2);
+        assertEquals("outSequence2", outSequenceFlow2.getGeneral().getName().getValue());
+    }
+
+    @Test
+    public void testMarshallEventGateway() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_EVENT_GATEWAY);
+        assertDiagram(diagram, 7);
+
+        String result = tested.marshall(diagram);
+        assertDiagram(result, 1, 6, 5);
+
+        assertTrue(result.contains("<bpmn2:eventBasedGateway id=\"_AFDF2596-C521-4753-AC22-2DCCAD391F98\" name=\"EventGatewayName\" gatewayDirection=\"Diverging\">"));
+        assertTrue(result.contains("<![CDATA[EventGatewayDocumentation]]></bpmn2:documentation>"));
+        assertTrue(result.contains("<drools:metaValue><![CDATA[EventGatewayName]]></drools:metaValue>"));
+        assertTrue(result.contains("<bpmn2:incoming>_E805280D-5862-4F56-B02A-E34F7D519050</bpmn2:incoming>"));
+        assertTrue(result.contains("<bpmn2:outgoing>_1CD28E0D-1910-45FE-9AEC-932FA28C77AA</bpmn2:outgoing>"));
+        assertTrue(result.contains("<bpmn2:outgoing>_CCEF6352-760D-4641-B9C9-0B01FD4DD704</bpmn2:outgoing>"));
+        assertTrue(result.contains("</bpmn2:eventBasedGateway>"));
+        assertTrue(result.contains("<bpmn2:sequenceFlow id=\"_E805280D-5862-4F56-B02A-E34F7D519050\" name=\"inSequence\" sourceRef=\"_FC7A4CF4-08CC-4F85-A518-34E67416160C\" targetRef=\"_AFDF2596-C521-4753-AC22-2DCCAD391F98\">"));
+        assertTrue(result.contains("<bpmn2:sequenceFlow id=\"_CCEF6352-760D-4641-B9C9-0B01FD4DD704\" name=\"outSequence1\" sourceRef=\"_AFDF2596-C521-4753-AC22-2DCCAD391F98\" targetRef=\"_F2D949C2-84FE-4AF9-A4B2-C2DC917C1050\">"));
+        assertTrue(result.contains("<bpmn2:sequenceFlow id=\"_1CD28E0D-1910-45FE-9AEC-932FA28C77AA\" name=\"outSequence2\" sourceRef=\"_AFDF2596-C521-4753-AC22-2DCCAD391F98\" targetRef=\"_19AA4F91-684B-495F-9880-DA506E0696FE\">"));
     }
 
     private List<Node> getNodes(Diagram<Graph, Metadata> diagram) {
