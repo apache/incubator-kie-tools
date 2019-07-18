@@ -404,14 +404,15 @@ public class LibraryServiceImpl implements LibraryService {
     }
 
     @Override
-    public List<String> getAllUsers() {
+    public synchronized List<String> getAllUsers() {
         try {
             final List<User> users = userManagerService.search(new SearchRequestImpl("",
                                                                                      1,
                                                                                      Integer.MAX_VALUE)).getResults();
             return users.stream().map(User::getIdentifier).collect(Collectors.toList());
-        } catch (NoImplementationAvailableException e) {
-            return Collections.singletonList("admin");
+        } catch (Exception e) {
+            log.error("Error while searching all users: ", e);
+            return Collections.emptyList();
         }
     }
 

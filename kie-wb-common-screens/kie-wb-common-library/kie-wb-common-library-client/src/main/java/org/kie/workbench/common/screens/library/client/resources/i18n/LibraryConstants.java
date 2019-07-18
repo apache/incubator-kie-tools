@@ -498,7 +498,10 @@ public class LibraryConstants {
     public static final String BranchDeleted = "BranchDeleted";
 
     @TranslationKey(defaultValue = "")
-    public static final String InvalidUsername = "InvalidUsername";
+    public static final String EmptyName = "EmptyName";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ProjectInvalidContributorName = "ProjectInvalidContributorName";
 
     @TranslationKey(defaultValue = "")
     public static final String ContributorTypeOwner = "ContributorTypeOwner";

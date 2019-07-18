@@ -35,6 +35,7 @@ import org.guvnor.structure.repositories.RepositoryService;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
+import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.uberfire.client.promise.Promises;
 import org.uberfire.rpc.SessionInfo;
@@ -120,6 +121,16 @@ public class ProjectContributorsListServiceImpl implements ContributorsListServi
     @Override
     public void onExternalChange(final Consumer<Collection<Contributor>> contributorsConsumer) {
         this.contributorsConsumerForExternalChange = contributorsConsumer;
+    }
+
+    @Override
+    public boolean requireValidUsername() {
+        return true;
+    }
+
+    @Override
+    public String getInvalidNameMessageConstant() {
+        return LibraryConstants.ProjectInvalidContributorName;
     }
 
     public void onRepositoryContributorsUpdatedEvent(@Observes final RepositoryContributorsUpdatedEvent repositoryContributorsUpdatedEvent) {

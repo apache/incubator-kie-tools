@@ -19,31 +19,21 @@ package org.kie.workbench.common.screens.library.client.screens.organizationalun
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Consumer;
 
-import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
-import org.guvnor.structure.client.security.OrganizationalUnitController;
 import org.guvnor.structure.contributors.Contributor;
 import org.guvnor.structure.contributors.ContributorType;
-import org.guvnor.structure.events.AfterEditOrganizationalUnitEvent;
-import org.guvnor.structure.organizationalunit.OrganizationalUnit;
-import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.screens.library.api.LibraryService;
-import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.client.promise.Promises;
-import org.uberfire.mocks.CallerMock;
 import org.uberfire.promise.SyncPromises;
 
-import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 

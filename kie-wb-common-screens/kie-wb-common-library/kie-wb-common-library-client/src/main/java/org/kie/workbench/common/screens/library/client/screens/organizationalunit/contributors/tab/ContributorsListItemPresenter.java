@@ -17,9 +17,7 @@
 package org.kie.workbench.common.screens.library.client.screens.organizationalunit.contributors.tab;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -27,10 +25,6 @@ import javax.inject.Inject;
 import elemental2.promise.Promise;
 import org.guvnor.structure.contributors.Contributor;
 import org.guvnor.structure.contributors.ContributorType;
-import org.guvnor.structure.events.AfterEditOrganizationalUnitEvent;
-import org.guvnor.structure.organizationalunit.OrganizationalUnit;
-import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
-import org.jboss.errai.common.client.api.Caller;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.uberfire.client.mvp.UberElemental;
 import org.uberfire.client.promise.Promises;
@@ -65,7 +59,7 @@ public class ContributorsListItemPresenter {
 
         String getSaveSuccessMessage();
 
-        String getInvalidNameMessage();
+        String getEmptyNameMessage();
 
         String getInvalidRoleMessage();
 
@@ -78,6 +72,8 @@ public class ContributorsListItemPresenter {
         String getDuplicatedContributorMessage();
 
         String getContributorTypeNotAllowedMessage();
+
+        String getTranslation(String key);
     }
 
     private View view;
@@ -168,10 +164,16 @@ public class ContributorsListItemPresenter {
     private Promise<Boolean> isValid(final Contributor contributor,
                                      final List<Contributor> currentContributors) {
         return contributorsListService.canEditContributors(currentContributors, contributor.getType()).then(canEditContributors -> {
-            final boolean emptyName = contributor.getUsername() == null;
-            final boolean validUsername = !emptyName && parentPresenter.getValidUsernames().contains(contributor.getUsername());
-            if (emptyName || !validUsername) {
-                notificationEvent.fire(new NotificationEvent(view.getInvalidNameMessage(),
+            final boolean emptyName = contributor.getUsername() == null || contributor.getUsername().isEmpty();
+            if (emptyName) {
+                notificationEvent.fire(new NotificationEvent(view.getEmptyNameMessage(),
+                                                             NotificationEvent.NotificationType.ERROR));
+                return promises.resolve(false);
+            }
+
+            final boolean validUsername = !contributorsListService.requireValidUsername() || parentPresenter.getValidUsernames().contains(contributor.getUsername());
+            if (!validUsername) {
+                notificationEvent.fire(new NotificationEvent(view.getTranslation(contributorsListService.getInvalidNameMessageConstant()),
                                                              NotificationEvent.NotificationType.ERROR));
                 return promises.resolve(false);
             }

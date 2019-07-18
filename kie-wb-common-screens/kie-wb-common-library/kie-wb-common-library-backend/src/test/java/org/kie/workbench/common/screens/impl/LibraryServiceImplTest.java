@@ -47,6 +47,7 @@ import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.guvnor.structure.repositories.RepositoryUpdatedEvent;
 import org.guvnor.structure.security.RepositoryAction;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -76,6 +77,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.commons.cluster.ClusterService;
+import org.uberfire.ext.security.management.api.AbstractEntityManager;
 import org.uberfire.ext.security.management.api.service.UserManagerService;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileSystem;
@@ -796,6 +798,30 @@ public class LibraryServiceImplTest {
         libraryService.removeBranch(project, masterBranch);
 
         verify(ioService).delete(baseBranchPath);
+    }
+
+    @Test
+    public void getAllUsersSuccessTest() {
+        final User user = mock(User.class);
+        doReturn("admin").when(user).getIdentifier();
+        final List<User> users = Collections.singletonList(user);
+        final AbstractEntityManager.SearchResponse<User> searchResponse = mock(AbstractEntityManager.SearchResponse.class);
+        doReturn(users).when(searchResponse).getResults();
+        doReturn(searchResponse).when(userManagerService).search(any());
+
+        final List<String> allUsers = libraryService.getAllUsers();
+
+        assertEquals(1, allUsers.size());
+        assertEquals("admin", allUsers.get(0));
+    }
+
+    @Test
+    public void getAllUsersWithExceptionTest() {
+        doThrow(new RuntimeException()).when(userManagerService).search(any());
+
+        final List<String> allUsers = libraryService.getAllUsers();
+
+        assertTrue(allUsers.isEmpty());
     }
 
     private Branch makeBranch(final String branchName,

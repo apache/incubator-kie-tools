@@ -35,6 +35,7 @@ import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
+import org.uberfire.client.views.pfly.widgets.InputAutocomplete;
 import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 
 import static org.uberfire.client.views.pfly.selectpicker.JQuerySelectPicker.$;
@@ -62,12 +63,8 @@ public class ContributorsListItemView implements ContributorsListItemPresenter.V
     HTMLElement role;
 
     @Inject
-    @DataField("name-select")
-    HTMLSelectElement nameSelect;
-
-    @Inject
-    @DataField("name-select-option")
-    HTMLOptionElement nameSelectOption;
+    @DataField("name-input-container")
+    HTMLDivElement nameInputContainer;
 
     @Inject
     @DataField("role-select")
@@ -89,23 +86,18 @@ public class ContributorsListItemView implements ContributorsListItemPresenter.V
     @DataField("cancel")
     HTMLButtonElement cancel;
 
+    @Inject
+    InputAutocomplete nameInput;
+
     @Override
     public void init(final ContributorsListItemPresenter presenter) {
         this.presenter = presenter;
-        setupUsersDropdown();
-        setupSelectUserName();
+        setupUsersAutocomplete();
     }
 
-    private void setupUsersDropdown() {
-        nameSelect.innerHTML = "";
-        presenter.getUserNames().stream().map(this::makeOption).forEach(nameSelect::appendChild);
-    }
-
-    private HTMLOptionElement makeOption(String username) {
-        final HTMLOptionElement option = (HTMLOptionElement) nameSelectOption.cloneNode(false);
-        option.text = username;
-        option.value = username;
-        return option;
+    private void setupUsersAutocomplete() {
+        nameInput.setup(presenter::getUserNames);
+        nameInputContainer.appendChild(nameInput.getElement());
     }
 
     public void setupAddMode() {
@@ -128,7 +120,7 @@ public class ContributorsListItemView implements ContributorsListItemPresenter.V
 
     @Override
     public String getName() {
-        return nameSelect.value;
+        return nameInput.getValue();
     }
 
     @Override
@@ -147,8 +139,8 @@ public class ContributorsListItemView implements ContributorsListItemPresenter.V
     }
 
     @Override
-    public String getInvalidNameMessage() {
-        return ts.format(LibraryConstants.InvalidUsername);
+    public String getEmptyNameMessage() {
+        return ts.format(LibraryConstants.EmptyName);
     }
 
     @Override
@@ -182,6 +174,11 @@ public class ContributorsListItemView implements ContributorsListItemPresenter.V
     }
 
     @Override
+    public String getTranslation(final String key) {
+        return ts.format(key);
+    }
+
+    @Override
     public void showActions() {
         presenter.canEditContributors().then(canEditContributors -> {
             edit.hidden = !canEditContributors;
@@ -202,7 +199,7 @@ public class ContributorsListItemView implements ContributorsListItemPresenter.V
     @EventHandler("edit")
     public void edit(final ClickEvent clickEvent) {
         presenter.edit();
-        setSelectPickerValue(getSelectUserName(), presenter.getContributor().getUsername());
+        nameInput.setValue(presenter.getContributor().getUsername());
         roleSelect.value = presenter.getContributor().getType().name();
     }
 
@@ -224,7 +221,7 @@ public class ContributorsListItemView implements ContributorsListItemPresenter.V
     public void viewMode() {
         name.hidden = false;
         role.hidden = false;
-        hideSelectUserName();
+        nameInput.getElement().hidden = true;
         roleSelect.hidden = true;
 
         showActions();
@@ -235,7 +232,7 @@ public class ContributorsListItemView implements ContributorsListItemPresenter.V
     public void editMode() {
         name.hidden = true;
         role.hidden = true;
-        showSelectUserName();
+        nameInput.getElement().hidden = false;
         roleSelect.hidden = false;
 
         hideActions();
@@ -263,31 +260,5 @@ public class ContributorsListItemView implements ContributorsListItemPresenter.V
     @Override
     public void hideBusyIndicator() {
         BusyPopup.close();
-    }
-
-    void hideSelectUserName() {
-        triggerPickerAction(getSelectUserName(), "hide");
-    }
-
-    void showSelectUserName() {
-        triggerPickerAction(getSelectUserName(), "show");
-    }
-
-    void setupSelectUserName() {
-        triggerPickerAction(getSelectUserName(), "refresh");
-    }
-
-    Element getSelectUserName() {
-        return getElement().querySelector("[data-field='name-select']");
-    }
-
-    void triggerPickerAction(final Element element,
-                             final String method) {
-        $(element).selectpicker(method);
-    }
-
-    void setSelectPickerValue(final Element element,
-                              final String value) {
-        $(element).selectpicker("val", value);
     }
 }

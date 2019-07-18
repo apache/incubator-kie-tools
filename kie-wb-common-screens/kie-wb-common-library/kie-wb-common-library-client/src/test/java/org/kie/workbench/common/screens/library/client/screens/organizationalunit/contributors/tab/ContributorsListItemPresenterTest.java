@@ -31,9 +31,7 @@ import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.mockito.stubbing.Answer;
 import org.uberfire.client.promise.Promises;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.promise.SyncPromises;
@@ -54,12 +52,17 @@ public class ContributorsListItemPresenterTest {
     @Mock
     private EventSourceMock<NotificationEvent> notificationEvent;
 
+    @Mock
+    private ContributorsListService contributorsListService;
+
     @Captor
     private ArgumentCaptor<List<Contributor>> contributorsArgumentCaptor;
 
     private Promises promises;
 
     private ContributorsListItemPresenter presenter;
+
+    private Contributor persistedContributor;
 
     @Before
     public void setup() {
@@ -68,6 +71,14 @@ public class ContributorsListItemPresenterTest {
                                                       libraryPlaces,
                                                       notificationEvent,
                                                       promises);
+
+        persistedContributor = new Contributor("admin", ContributorType.OWNER);
+        doAnswer(invocationOnMock -> {
+            final List<Contributor> contributors = new ArrayList<>();
+            contributors.add(persistedContributor);
+            invocationOnMock.getArgumentAt(0, Consumer.class).accept(contributors);
+            return null;
+        }).when(contributorsListService).getContributors(any());
     }
 
     @Test
@@ -110,15 +121,7 @@ public class ContributorsListItemPresenterTest {
         final ContributorsListPresenter parentPresenter = mock(ContributorsListPresenter.class);
         doReturn(Arrays.asList("admin", "newContributor")).when(parentPresenter).getValidUsernames();
 
-        final ContributorsListService contributorsListService = mock(ContributorsListService.class);
         doReturn(promises.resolve(true)).when(contributorsListService).canEditContributors(any(), any());
-        final Contributor contributor1 = new Contributor("admin", ContributorType.OWNER);
-        doAnswer(invocationOnMock -> {
-            final List<Contributor> contributors = new ArrayList<>();
-            contributors.add(contributor1);
-            invocationOnMock.getArgumentAt(0, Consumer.class).accept(contributors);
-            return null;
-        }).when(contributorsListService).getContributors(any());
 
         presenter.setupNew(parentPresenter,
                            contributorsListService);
@@ -143,15 +146,7 @@ public class ContributorsListItemPresenterTest {
         final ContributorsListPresenter parentPresenter = mock(ContributorsListPresenter.class);
         doReturn(Arrays.asList("admin", "newName")).when(parentPresenter).getValidUsernames();
 
-        final ContributorsListService contributorsListService = mock(ContributorsListService.class);
         doReturn(promises.resolve(true)).when(contributorsListService).canEditContributors(any(), any());
-        final Contributor persistedContributor = new Contributor("admin", ContributorType.OWNER);
-        doAnswer(invocationOnMock -> {
-            final List<Contributor> contributors = new ArrayList<>();
-            contributors.add(persistedContributor);
-            invocationOnMock.getArgumentAt(0, Consumer.class).accept(contributors);
-            return null;
-        }).when(contributorsListService).getContributors(any());
 
         presenter.setup(persistedContributor,
                         parentPresenter,
@@ -168,21 +163,51 @@ public class ContributorsListItemPresenterTest {
     }
 
     @Test
-    public void saveInvalidContributorTest() {
+    public void saveEmptyContributorTest() {
+        doReturn("").when(view).getName();
+        doReturn(ContributorType.OWNER).when(view).getRole();
+
+        final ContributorsListPresenter parentPresenter = mock(ContributorsListPresenter.class);
+        doReturn(Arrays.asList("admin")).when(parentPresenter).getValidUsernames();
+
+        doReturn(promises.resolve(true)).when(contributorsListService).canEditContributors(any(), any());
+
+        presenter.setup(persistedContributor,
+                        parentPresenter,
+                        contributorsListService);
+        presenter.save();
+
+        verify(contributorsListService, never()).saveContributors(any(), any(), any());
+    }
+
+    @Test
+    public void saveNonUserWhenValidUserNotRequiredContributorTest() {
         doReturn("notUser").when(view).getName();
         doReturn(ContributorType.OWNER).when(view).getRole();
 
         final ContributorsListPresenter parentPresenter = mock(ContributorsListPresenter.class);
         doReturn(Arrays.asList("admin")).when(parentPresenter).getValidUsernames();
 
-        final ContributorsListService contributorsListService = mock(ContributorsListService.class);
-        final Contributor persistedContributor = new Contributor("admin", ContributorType.OWNER);
-        doAnswer(invocationOnMock -> {
-            final List<Contributor> contributors = new ArrayList<>();
-            contributors.add(persistedContributor);
-            invocationOnMock.getArgumentAt(0, Consumer.class).accept(contributors);
-            return null;
-        }).when(contributorsListService).getContributors(any());
+        doReturn(false).when(contributorsListService).requireValidUsername();
+        doReturn(promises.resolve(true)).when(contributorsListService).canEditContributors(any(), any());
+
+        presenter.setup(persistedContributor,
+                        parentPresenter,
+                        contributorsListService);
+        presenter.save();
+
+        verify(contributorsListService).saveContributors(any(), any(), any());
+    }
+
+    @Test
+    public void saveNonUserWhenValidUserRequiredContributorTest() {
+        doReturn("notUser").when(view).getName();
+        doReturn(ContributorType.OWNER).when(view).getRole();
+
+        final ContributorsListPresenter parentPresenter = mock(ContributorsListPresenter.class);
+        doReturn(Arrays.asList("admin")).when(parentPresenter).getValidUsernames();
+
+        doReturn(true).when(contributorsListService).requireValidUsername();
         doReturn(promises.resolve(true)).when(contributorsListService).canEditContributors(any(), any());
 
         presenter.setup(persistedContributor,

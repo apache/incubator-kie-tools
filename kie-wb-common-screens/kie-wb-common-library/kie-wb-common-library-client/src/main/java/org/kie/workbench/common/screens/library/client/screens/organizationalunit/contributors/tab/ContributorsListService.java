@@ -40,4 +40,8 @@ public interface ContributorsListService {
     void getValidUsernames(Consumer<List<String>> validUsernamesConsumer);
 
     void onExternalChange(final Consumer<Collection<Contributor>> contributorsConsumer);
+
+    boolean requireValidUsername();
+
+    String getInvalidNameMessageConstant();
 }

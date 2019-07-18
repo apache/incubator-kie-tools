@@ -130,6 +130,16 @@ public class SpaceContributorsListServiceImpl implements ContributorsListService
         this.contributorsConsumerForExternalChange = contributorsConsumer;
     }
 
+    @Override
+    public boolean requireValidUsername() {
+        return false;
+    }
+
+    @Override
+    public String getInvalidNameMessageConstant() {
+        return "";
+    }
+
     public void onSpaceContributorsUpdatedEvent(@Observes final SpaceContributorsUpdatedEvent spaceContributorsUpdatedEvent) {
         if (this.contributorsConsumerForExternalChange != null
                 && spaceContributorsUpdatedEvent.getOrganizationalUnit().getName().equals(libraryPlaces.getActiveSpace().getName())) {
