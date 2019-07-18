@@ -41,4 +41,7 @@ public interface PatternFlyClientBundle extends ClientBundle {
 
     @Source("org/uberfire/client/views/static/d3/d3.min.js")
     TextResource d3();
+
+    @Source("org/uberfire/client/views/static/jquery-ui/jquery-ui.min.js")
+    TextResource jQueryUI();
 }
