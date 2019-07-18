@@ -91,10 +91,6 @@
       <artifactId>uberfire-backend-server</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-commons</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.kie.soup</groupId>
       <artifactId>kie-soup-commons</artifactId>
     </dependency>
@@ -113,11 +109,6 @@
     </dependency>
 
     <dependency>
-      <groupId>com.thoughtworks.xstream</groupId>
-      <artifactId>xstream</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>org.kie.workbench.services</groupId>
       <artifactId>kie-wb-common-datamodel-backend</artifactId>
     </dependency>
@@ -125,11 +116,6 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-wb-guided-rule-editor-backend</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-project-backend</artifactId>
     </dependency>
 
     <dependency>
@@ -180,12 +166,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.jboss.spec.javax.servlet</groupId>
-      <artifactId>jboss-servlet-api_3.1_spec</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-cdi</artifactId>
       <scope>test</scope>
@@ -200,18 +180,6 @@
     <dependency>
       <groupId>org.kie.workbench.widgets</groupId>
       <artifactId>kie-wb-common-ui</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-testing-utils</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-ssh-api</artifactId>
       <scope>test</scope>
     </dependency>
 

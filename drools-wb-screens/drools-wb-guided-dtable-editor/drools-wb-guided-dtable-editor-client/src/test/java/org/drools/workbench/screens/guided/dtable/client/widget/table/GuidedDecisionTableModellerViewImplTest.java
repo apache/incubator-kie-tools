@@ -16,10 +16,11 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.table;
 
+import java.util.HashMap;
+
 import com.ait.lienzo.client.core.mediator.Mediators;
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Transform;
-import com.google.gwt.dev.util.collect.HashMap;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;

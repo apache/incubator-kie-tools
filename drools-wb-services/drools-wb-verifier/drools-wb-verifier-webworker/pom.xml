@@ -20,35 +20,7 @@
   </properties>
 
   <dependencies>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-simple</artifactId>
-      <scope>test</scope>
-    </dependency>
 
-
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-workbench-models-guided-dtable</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.drools</groupId>
-          <artifactId>drools-compiler</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-verifier-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-verifier-core</artifactId>
-    </dependency>
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-wb-verifier-guided-decision-table-adapter</artifactId>
@@ -67,16 +39,6 @@
       <artifactId>errai-jaxrs-client</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-commons</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.soup</groupId>
-      <artifactId>kie-soup-commons</artifactId>
-    </dependency>
-
     <!-- GWT and GWT Extensions -->
     <dependency>
       <groupId>com.google.gwt</groupId>
@@ -87,17 +49,6 @@
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-dev</artifactId>
       <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.google.gwt.gwtmockito</groupId>
-      <artifactId>gwtmockito</artifactId>
-      <scope>test</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>ant</groupId>
-          <artifactId>ant</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
 
     <dependency>

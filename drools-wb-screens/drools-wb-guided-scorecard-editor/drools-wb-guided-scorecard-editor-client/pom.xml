@@ -31,10 +31,6 @@
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-workbench-models-datamodel-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
       <artifactId>drools-workbench-models-guided-scorecard</artifactId>
       <exclusions>
         <exclusion>
@@ -50,10 +46,6 @@
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-services-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-structure-client</artifactId>
     </dependency>
     <dependency>
       <groupId>org.jboss.errai</groupId>
@@ -120,12 +112,6 @@
 
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-workbench-processors</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
       <artifactId>uberfire-commons-editor-api</artifactId>
     </dependency>
 
@@ -137,18 +123,6 @@
     </dependency>
 
     <!-- Test scope dependencies -->
-    <dependency>
-      <groupId>org.kie.workbench.services</groupId>
-      <artifactId>kie-wb-common-datamodel-backend</artifactId>
-      <scope>test</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>jakarta-regexp</groupId>
-          <artifactId>jakarta-regexp</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-
     <dependency>
       <groupId>com.google.gwt.gwtmockito</groupId>
       <artifactId>gwtmockito</artifactId>

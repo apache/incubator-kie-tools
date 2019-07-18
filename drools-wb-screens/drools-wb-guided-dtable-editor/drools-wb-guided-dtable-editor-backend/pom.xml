@@ -31,10 +31,6 @@
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-workbench-models-commons</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
       <artifactId>drools-workbench-models-datamodel-api</artifactId>
     </dependency>
     <dependency>
@@ -109,11 +105,6 @@
 
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-wb-guided-template-editor-api</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.drools</groupId>
       <artifactId>drools-wb-workitems-editor-api</artifactId>
     </dependency>
 
@@ -143,11 +134,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-internal</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>org.kie.workbench.services</groupId>
       <artifactId>kie-wb-common-refactoring-backend</artifactId>
     </dependency>
@@ -161,6 +147,13 @@
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-commons-editor-backend</artifactId>
     </dependency>
+
+    <!-- Warned by dependency:analyze -->
+    <dependency>
+      <groupId>org.kie.soup</groupId>
+      <artifactId>kie-soup-project-datamodel-commons</artifactId>
+    </dependency>
+    <!-- End dependency:analyze requirements -->
 
     <!-- Test dependencies -->
     <dependency>
@@ -213,20 +206,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.jboss.spec.javax.servlet</groupId>
-      <artifactId>jboss-servlet-api_3.1_spec</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-wb-workitems-editor-backend</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-ssh-api</artifactId>
       <scope>test</scope>
     </dependency>
 

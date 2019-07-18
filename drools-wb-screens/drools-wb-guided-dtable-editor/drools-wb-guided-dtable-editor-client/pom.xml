@@ -22,10 +22,6 @@
 
     <!-- dependencies added because of new illegal transitive dependency check -->
     <dependency>
-      <groupId>com.allen-sauer.gwt.dnd</groupId>
-      <artifactId>gwt-dnd</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.gwtbootstrap3</groupId>
       <artifactId>gwtbootstrap3</artifactId>
     </dependency>
@@ -69,14 +65,6 @@
     </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-structure-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-structure-client</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
       <artifactId>uberfire-message-console-client</artifactId>
     </dependency>
     <dependency>
@@ -102,10 +90,6 @@
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-ui</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-jaxrs-client</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.workbench.services</groupId>
@@ -216,11 +200,6 @@
 
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-workingset-api</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
       <artifactId>uberfire-widgets-core-client</artifactId>
     </dependency>
 
@@ -280,12 +259,6 @@
 
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-workbench-processors</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
       <artifactId>uberfire-workbench-client-views-patternfly</artifactId>
       <scope>provided</scope>
     </dependency>
@@ -294,6 +267,24 @@
       <groupId>com.google.elemental2</groupId>
       <artifactId>elemental2-promise</artifactId>
     </dependency>
+
+    <!-- Warned by dependency:analyze -->
+    <dependency>
+      <groupId>org.powermock</groupId>
+      <artifactId>powermock-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.soup</groupId>
+      <artifactId>kie-soup-project-datamodel-commons</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-verifier-core</artifactId>
+    </dependency>
+    <!-- End dependency:analyze requirements -->
 
     <dependency>
       <groupId>org.powermock</groupId>

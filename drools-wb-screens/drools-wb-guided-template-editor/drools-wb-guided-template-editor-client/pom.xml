@@ -53,10 +53,6 @@
       <artifactId>uberfire-services-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-structure-client</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-common</artifactId>
     </dependency>
@@ -118,11 +114,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-workingset-api</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>org.kie.workbench.widgets</groupId>
       <artifactId>kie-wb-decorated-grid-widget</artifactId>
     </dependency>
@@ -130,12 +121,6 @@
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-commons-editor-client</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-workbench-processors</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <dependency>

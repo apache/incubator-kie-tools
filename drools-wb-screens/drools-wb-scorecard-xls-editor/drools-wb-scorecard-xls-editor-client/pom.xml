@@ -74,10 +74,6 @@
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-commons</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.kie.soup</groupId>
-      <artifactId>kie-soup-commons</artifactId>
-    </dependency>
 
     <dependency>
       <groupId>org.drools</groupId>
@@ -87,11 +83,6 @@
     <dependency>
       <groupId>org.kie.workbench.widgets</groupId>
       <artifactId>kie-wb-metadata-widget</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.workbench.widgets</groupId>
-      <artifactId>kie-wb-config-resource-widget</artifactId>
     </dependency>
 
     <dependency>
@@ -107,12 +98,6 @@
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-commons-editor-client</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-workbench-processors</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <!-- GWT and GWT Extensions -->

@@ -49,10 +49,6 @@
       <artifactId>uberfire-services-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-structure-client</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-bus</artifactId>
     </dependency>
@@ -65,16 +61,8 @@
       <artifactId>errai-ioc</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-security-server</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-widgets-commons</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.workbench.services</groupId>
-      <artifactId>kie-wb-common-services-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
@@ -93,10 +81,6 @@
       <artifactId>uberfire-message-console-client</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.soup</groupId>
-      <artifactId>kie-soup-commons</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-workbench-client</artifactId>
     </dependency>
@@ -113,23 +97,12 @@
 
     <dependency>
       <groupId>org.kie.workbench.widgets</groupId>
-      <artifactId>kie-wb-config-resource-widget</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.workbench.widgets</groupId>
       <artifactId>kie-wb-common-ui</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-commons-editor-client</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-workbench-processors</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <dependency>

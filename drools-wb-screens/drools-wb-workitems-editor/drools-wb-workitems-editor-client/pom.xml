@@ -32,10 +32,6 @@
     </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-structure-client</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
       <artifactId>uberfire-services-api</artifactId>
     </dependency>
     <dependency>
@@ -49,10 +45,6 @@
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-widgets-commons</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-commons</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.soup</groupId>
@@ -89,12 +81,6 @@
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-commons-editor-client</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-workbench-processors</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <dependency>

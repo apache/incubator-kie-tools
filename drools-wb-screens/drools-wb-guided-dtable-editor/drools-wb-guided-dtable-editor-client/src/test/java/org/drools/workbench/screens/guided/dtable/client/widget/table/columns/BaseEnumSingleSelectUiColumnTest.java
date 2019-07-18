@@ -17,13 +17,13 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.table.columns;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.google.gwt.dev.util.collect.HashMap;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTablePresenter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.listbox.ListBoxStringSingletonDOMElementFactory;

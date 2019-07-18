@@ -27,10 +27,6 @@
       <artifactId>gwtbootstrap3</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.gwtbootstrap3</groupId>
-      <artifactId>gwtbootstrap3-extras</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.kie.soup</groupId>
       <artifactId>kie-soup-project-datamodel-api</artifactId>
     </dependency>
@@ -45,10 +41,6 @@
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-services-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-structure-client</artifactId>
     </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
@@ -126,12 +118,6 @@
 
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-workbench-processors</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
       <artifactId>uberfire-commons-editor-api</artifactId>
     </dependency>
 
@@ -141,6 +127,18 @@
       <artifactId>gwt-user</artifactId>
       <scope>provided</scope>
     </dependency>
+
+    <!-- Warned by dependency:analyze -->
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-workbench-models-commons</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.soup</groupId>
+      <artifactId>kie-soup-project-datamodel-commons</artifactId>
+    </dependency>
+    <!-- End dependency:analyze requirements -->
 
     <dependency>
       <groupId>com.google.gwt.gwtmockito</groupId>

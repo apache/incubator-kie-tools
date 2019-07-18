@@ -38,10 +38,7 @@
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-api</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-commons</artifactId>
-    </dependency>
+
     <dependency>
       <groupId>org.kie.soup</groupId>
       <artifactId>kie-soup-commons</artifactId>
@@ -62,15 +59,6 @@
       <artifactId>uberfire-commons-editor-api</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>org.kie.workbench.services</groupId>
-      <artifactId>kie-wb-common-datamodel-api</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.workbench.services</groupId>
-      <artifactId>kie-wb-common-services-api</artifactId>
-    </dependency>
   </dependencies>
 
 </project>

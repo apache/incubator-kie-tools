@@ -24,10 +24,6 @@
     <!-- dependencies added because of new illegal transitive dependency check -->
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
       <artifactId>drools-workbench-models-datamodel-api</artifactId>
     </dependency>
     <dependency>
@@ -89,18 +85,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-project-api</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>org.kie.workbench.services</groupId>
       <artifactId>kie-wb-common-services-backend</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.jbpm</groupId>
-      <artifactId>jbpm-bpmn2</artifactId>
     </dependency>
 
     <dependency>
@@ -113,30 +99,12 @@
       <artifactId>uberfire-commons-editor-backend</artifactId>
     </dependency>
 
-    <!-- Weld Modules. For tests only -->
-    <dependency>
-      <groupId>org.jboss.weld.se</groupId>
-      <artifactId>weld-se-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-
+    <!-- Warned by dependency:analyze -->
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-nio2-fs</artifactId>
-      <scope>test</scope>
+      <artifactId>uberfire-structure-backend</artifactId>
     </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-ssh-api</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-ssh-backend</artifactId>
-      <scope>test</scope>
-    </dependency>
+    <!-- End dependency:analyze requirements -->
 
   </dependencies>
 

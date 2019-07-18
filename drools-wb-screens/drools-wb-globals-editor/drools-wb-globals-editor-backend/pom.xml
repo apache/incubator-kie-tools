@@ -31,18 +31,6 @@
       <artifactId>kie-soup-project-datamodel-commons</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-compiler</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-workbench-models-commons</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-workbench-models-datamodel-api</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-project-api</artifactId>
     </dependency>
@@ -87,10 +75,6 @@
       <artifactId>uberfire-commons</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.soup</groupId>
-      <artifactId>kie-soup-commons</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-io</artifactId>
     </dependency>
@@ -127,6 +111,14 @@
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-commons-editor-api</artifactId>
     </dependency>
+
+
+    <!-- Warned by dependency:analyze -->
+    <dependency>
+      <groupId>org.kie.workbench.services</groupId>
+      <artifactId>kie-wb-common-refactoring-api</artifactId>
+    </dependency>
+    <!-- End dependency:analyze requirements -->
 
     <!-- Test dependencies -->
     <dependency>

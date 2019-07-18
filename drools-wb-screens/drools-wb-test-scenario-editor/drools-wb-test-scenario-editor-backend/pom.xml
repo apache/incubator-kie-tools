@@ -28,10 +28,6 @@
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-workbench-models-datamodel-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
       <artifactId>drools-workbench-models-test-scenarios</artifactId>
     </dependency>
     <dependency>
@@ -49,10 +45,6 @@
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-bus</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-security-server</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
@@ -87,10 +79,6 @@
       <artifactId>uberfire-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-commons</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.kie.soup</groupId>
       <artifactId>kie-soup-commons</artifactId>
     </dependency>
@@ -98,10 +86,7 @@
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-io</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-nio2-api</artifactId>
-    </dependency>
+
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-nio2-model</artifactId>
@@ -141,6 +126,18 @@
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-commons-editor-api</artifactId>
     </dependency>
+
+    <!-- Warned by dependency:analyze -->
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-internal</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.soup</groupId>
+      <artifactId>kie-soup-project-datamodel-commons</artifactId>
+    </dependency>
+    <!-- End dependency:analyze requirements -->
 
     <!-- Test dependencies -->
     <dependency>
