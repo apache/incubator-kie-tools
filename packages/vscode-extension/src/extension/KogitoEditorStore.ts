@@ -49,6 +49,10 @@ export class KogitoEditorStore {
 
   public close(editor: KogitoEditor) {
     this.openEditors.delete(editor);
+
+    if (this.isActive(editor)) {
+      this.setNoneActive();
+    }
   }
 
   public get(path: string) {

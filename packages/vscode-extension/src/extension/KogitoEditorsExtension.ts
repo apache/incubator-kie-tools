@@ -31,16 +31,13 @@ export class KogitoEditorsExtension {
 
   public registerCustomSaveCommand() {
     this.context.subscriptions.push(
-      vscode.commands.registerCommand("workbench.action.files.save", () => {
-        // If a kogito editor is active, its content is saved manually.
-        this.editorStore.withActive(editor => editor.requestSave());
-
+      vscode.commands.registerCommand("workbench.action.files.save", async () => {
         // If a text editor is active, we save it normally.
         if (vscode.window.activeTextEditor) {
-          vscode.window.activeTextEditor.document.save();
+          await vscode.window.activeTextEditor.document.save();
         }
-
-        return Promise.resolve();
+        // If a kogito editor is active, its content is saved manually.
+        this.editorStore.withActive(editor => editor.requestSave());
       })
     );
   }

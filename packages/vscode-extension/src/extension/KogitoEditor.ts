@@ -21,6 +21,8 @@ import { EnvelopeBusOuterMessageHandler } from "appformer-js-microeditor-envelop
 import { KogitoEditorStore } from "./KogitoEditorStore";
 
 export class KogitoEditor {
+  private static readonly DIRTY_INDICATOR = " *";
+
   private readonly path: string;
   private readonly context: vscode.ExtensionContext;
   private readonly router: LocalRouter;
@@ -60,9 +62,22 @@ export class KogitoEditor {
         },
         receive_contentRequest: () => {
           self.respond_contentRequest(fs.readFileSync(this.path).toString());
+        },
+        receive_dirtyIndicatorChange: (isDirty: boolean) => {
+          this.updateDirtyIndicator(isDirty);
         }
       })
     );
+  }
+
+  private updateDirtyIndicator(isDirty: boolean) {
+    const titleWithoutDirtyIndicator = this.panel.title.endsWith(KogitoEditor.DIRTY_INDICATOR)
+      ? this.panel.title.slice(0, -KogitoEditor.DIRTY_INDICATOR.length)
+      : this.panel.title;
+
+    this.panel.title = isDirty
+      ? `${titleWithoutDirtyIndicator}${KogitoEditor.DIRTY_INDICATOR}`
+      : titleWithoutDirtyIndicator;
   }
 
   public requestSave() {

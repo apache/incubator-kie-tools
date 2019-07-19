@@ -44,6 +44,9 @@ beforeEach(() => {
       },
       receive_contentResponse: (content: string) => {
         receivedMessages.push("contentResponse_" + content);
+      },
+      receive_dirtyIndicatorChange(isDirty: boolean): void {
+        receivedMessages.push("dirtyIndicatorChange_" + isDirty);
       }
     })
   );
@@ -108,6 +111,11 @@ describe("receive", () => {
   test("content response", () => {
     handler.receive({ type: EnvelopeBusMessageType.RETURN_CONTENT, data: "foo" });
     expect(receivedMessages).toEqual(["contentResponse_foo"]);
+  });
+
+  test("dirty indicator change notification", () => {
+    handler.receive({ type: EnvelopeBusMessageType.NOTIFY_DIRTY_INDICATOR_CHANGE, data: true });
+    expect(receivedMessages).toEqual(["dirtyIndicatorChange_true"]);
   });
 });
 

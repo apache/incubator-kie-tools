@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-import { GwtEditor } from "../gwt/GwtEditor";
 import { GwtEditorWrapper } from "../gwt/GwtEditorWrapper";
-import { DummyEditor } from "./DummyEditor";
 
 const MockEditor = jest.fn(() => ({
   getContent: jest.fn(),
@@ -44,7 +42,7 @@ describe("GwtEditorWrapper", () => {
     document.body.appendChild(parent);
 
     wrapper.af_onOpen();
-    
+
     const removedHeaderPanel = document.getElementById("workbenchHeaderPanel");
     const removedListBarHeader = document.querySelector(".panel-heading.uf-listbar-panel-header");
     expect(removedHeaderPanel).toBeFalsy();
@@ -56,7 +54,7 @@ describe("GwtEditorWrapper", () => {
     expect(removedHeaderPanel).toBeFalsy();
 
     wrapper.af_onOpen();
-    
+
     removedHeaderPanel = document.getElementById("workbenchHeaderPanel");
     expect(removedHeaderPanel).toBeFalsy();
   });
