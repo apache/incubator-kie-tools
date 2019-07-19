@@ -40,8 +40,8 @@ import org.drools.workbench.models.guided.template.shared.TemplateModel;
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.soup.project.datamodel.imports.Import;
 import org.kie.workbench.common.services.refactoring.ResourceReference;
-import org.kie.workbench.common.services.refactoring.SharedPart;
 import org.kie.workbench.common.services.refactoring.backend.server.impact.ResourceReferenceCollector;
+import org.kie.workbench.common.services.refactoring.backend.server.indexing.AttributeIndexBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
 import org.kie.workbench.common.services.refactoring.service.PartType;
 import org.kie.workbench.common.services.refactoring.service.ResourceType;
@@ -101,20 +101,7 @@ public class GuidedRuleTemplateIndexVisitor extends ResourceReferenceCollector {
     }
 
     private void visitRuleAttribute(final RuleAttribute attr) {
-        PartType type = PartType.getPartTypeFromAttribueDescrName(attr.getAttributeName());
-        switch (type) {
-            case AGENDA_GROUP:
-            case ACTIVATION_GROUP:
-            case RULEFLOW_GROUP:
-            case ENTRY_POINT:
-                SharedPart sharedRef = new SharedPart(attr.getValue(),
-                                                      type);
-                builder.addGenerator(sharedRef);
-                break;
-            // OCRAM: finish
-            default:
-//                logger.info("Not processing attribute: " + descr.getName());
-        }
+        new AttributeIndexBuilder(builder).visit(attr.getAttributeName(), attr.getValue());
     }
 
     //ActionInsertFact, ActionSetField, ActionUpdateField

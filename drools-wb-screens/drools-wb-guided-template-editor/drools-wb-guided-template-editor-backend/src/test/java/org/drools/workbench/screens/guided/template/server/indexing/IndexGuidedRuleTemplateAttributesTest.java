@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.lucene.search.Query;
+import org.drools.workbench.models.datamodel.rule.RuleAttribute;
 import org.drools.workbench.models.guided.template.backend.RuleTemplateModelXMLPersistenceImpl;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
 import org.drools.workbench.screens.guided.template.type.GuidedRuleTemplateResourceTypeDefinition;
@@ -49,6 +50,13 @@ public class IndexGuidedRuleTemplateAttributesTest extends BaseIndexingTest<Guid
                                                                                           add(new Import("org.drools.workbench.screens.guided.template.server.indexing.classes.Mortgage"));
                                                                                       }},
                                                                                       "template1");
+
+
+        model.addAttribute(new RuleAttribute("salience",
+                                             "100"));
+        model.addAttribute(new RuleAttribute("dialect",
+                                             "java"));
+
         final String xml = RuleTemplateModelXMLPersistenceImpl.getInstance().marshal(model);
         ioService().write(path,
                           xml);
