@@ -316,34 +316,7 @@ public class PackageDescrIndexVisitor extends ResourceReferenceCollector {
     }
 
     protected void visit(final AttributeDescr descr) {
-        String attr = descr.getName();
-        switch (attr) {
-            case "no-loop":
-            case "lock-on-active":
-            case "salience":
-            case "auto-focus":
-            case "dialect":
-            case "date-effective":
-            case "date-expires":
-            case "enabled":
-            case "duration":
-            case "timer":
-            case "calendars":
-                return;
-        }
-
-        PartType type = PartType.getPartTypeFromAttribueDescrName(descr.getName());
-        switch (type) {
-            case AGENDA_GROUP:
-            case ACTIVATION_GROUP:
-            case RULEFLOW_GROUP:
-                SharedPart sharedRef = new SharedPart(descr.getValue(),
-                                                      type);
-                builder.addGenerator(sharedRef);
-                break;
-            default:
-                throw new UnsupportedOperationException("Unsupported attribute encountered: " + descr.getName());
-        }
+        new AttributeIndexBuilder(builder).visit(descr);
     }
 
     protected void visit(final BehaviorDescr descr) {
