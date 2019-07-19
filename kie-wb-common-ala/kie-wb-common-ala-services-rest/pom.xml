@@ -19,7 +19,7 @@
   <parent>
     <groupId>org.kie.workbench</groupId>
     <artifactId>kie-wb-common-ala</artifactId>
-    <version>7.24.0-SNAPSHOT</version>
+    <version>7.25.0-SNAPSHOT</version>
   </parent>
   <artifactId>kie-wb-common-ala-services-rest</artifactId>
   <name>KIE Workbench Common ALA :: Services REST Impl</name>
