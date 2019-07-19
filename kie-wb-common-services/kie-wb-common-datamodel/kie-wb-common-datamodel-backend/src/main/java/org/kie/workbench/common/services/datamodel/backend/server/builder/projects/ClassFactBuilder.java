@@ -40,8 +40,6 @@ import org.kie.workbench.common.services.datamodel.backend.server.builder.util.B
  */
 public class ClassFactBuilder extends BaseFactBuilder {
 
-    private final ClassToGenericClassConverter typeSystemConverter = new JavaTypeSystemTranslator();
-
     private final Map<String, List<MethodInfo>> methodInformation = new HashMap<String, List<MethodInfo>>();
     private final Map<String, String> fieldParametersType = new HashMap<String, String>();
 

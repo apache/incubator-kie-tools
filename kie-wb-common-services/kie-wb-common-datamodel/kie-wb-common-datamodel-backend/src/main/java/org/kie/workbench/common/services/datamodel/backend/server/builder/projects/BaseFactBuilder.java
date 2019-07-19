@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -11,7 +11,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 package org.kie.workbench.common.services.datamodel.backend.server.builder.projects;
 
@@ -34,13 +34,13 @@ import org.kie.soup.project.datamodel.oracle.TypeSource;
 public abstract class BaseFactBuilder implements FactBuilder {
 
     protected final ModuleDataModelOracleBuilder builder;
-
+    protected final Function<String, TypeSource> typeSourceResolver;
     private final String type;
     private final List<ModelField> fields = new ArrayList<ModelField>();
-
     private final boolean isCollection;
     private final boolean isEvent;
-    protected final Function<String, TypeSource> typeSourceResolver;
+
+    protected final ClassToGenericClassConverter typeSystemConverter = new JavaTypeSystemTranslator();
 
     public BaseFactBuilder(final ModuleDataModelOracleBuilder builder,
                            final Class<?> clazz,
@@ -53,11 +53,11 @@ public abstract class BaseFactBuilder implements FactBuilder {
         this.typeSourceResolver = typeSourceResolver;
 
         addField(new ModelField(DataType.TYPE_THIS,
-                                type,
+                                this.type,
                                 ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
                                 ModelField.FIELD_ORIGIN.SELF,
                                 FieldAccessorsAndMutators.ACCESSOR,
-                                DataType.TYPE_THIS));
+                                typeSystemConverter.translateClassToGenericType(clazz)));
     }
 
     public BaseFactBuilder(final ModuleDataModelOracleBuilder builder,
@@ -76,7 +76,7 @@ public abstract class BaseFactBuilder implements FactBuilder {
                                 ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
                                 ModelField.FIELD_ORIGIN.SELF,
                                 FieldAccessorsAndMutators.ACCESSOR,
-                                DataType.TYPE_THIS));
+                                type));
     }
 
     private boolean isCollection(final Class<?> clazz) {

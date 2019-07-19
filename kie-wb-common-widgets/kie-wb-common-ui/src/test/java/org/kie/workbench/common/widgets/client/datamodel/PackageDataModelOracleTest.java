@@ -100,7 +100,7 @@ public class PackageDataModelOracleTest {
                                        }
                                    });
 
-        assertEquals(DataType.TYPE_THIS,
+        assertEquals("TestDataTypes",
                      oracle.getFieldType(TestDataTypes.class.getSimpleName(),
                                          "this"));
         assertEquals(DataType.TYPE_STRING,
@@ -198,7 +198,7 @@ public class PackageDataModelOracleTest {
                                        }
                                    });
 
-        assertEquals(DataType.TYPE_THIS,
+        assertEquals("TestSuperClass",
                      oracle.getFieldType(TestSuperClass.class.getSimpleName(),
                                          "this"));
         assertEquals(TestSuperClass.class.getSimpleName(),
@@ -272,7 +272,7 @@ public class PackageDataModelOracleTest {
                                        }
                                    });
 
-        assertEquals(DataType.TYPE_THIS,
+        assertEquals("TestSubClass",
                      oracle.getFieldType(TestSubClass.class.getSimpleName(),
                                          "this"));
         assertEquals(TestSubClass.class.getSimpleName(),
@@ -349,7 +349,7 @@ public class PackageDataModelOracleTest {
                                        }
                                    });
 
-        assertEquals(DataType.TYPE_THIS,
+        assertEquals("TestDelegatedClass",
                      oracle.getFieldType(TestDelegatedClass.class.getSimpleName(),
                                          "this"));
         assertEquals(TestDelegatedClass.class.getSimpleName(),
@@ -409,7 +409,7 @@ public class PackageDataModelOracleTest {
                                        }
                                    });
 
-        assertEquals(DataType.TYPE_THIS,
+        assertEquals("TestSuperClass.NestedClass",
                      oracle.getFieldType("TestSuperClass.NestedClass",
                                          "this"));
         assertEquals("TestSuperClass.NestedClass",
@@ -477,7 +477,7 @@ public class PackageDataModelOracleTest {
                                        }
                                    });
 
-        assertEquals(DataType.TYPE_THIS,
+        assertEquals("TestSuperClass.NestedClass",
                      oracle.getFieldType("TestSuperClass.NestedClass",
                                          "this"));
         assertEquals("TestSuperClass.NestedClass",
