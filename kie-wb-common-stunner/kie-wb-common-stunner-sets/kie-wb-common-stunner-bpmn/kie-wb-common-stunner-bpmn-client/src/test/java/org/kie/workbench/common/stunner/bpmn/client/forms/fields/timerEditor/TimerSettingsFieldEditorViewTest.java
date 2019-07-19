@@ -426,28 +426,46 @@ public class TimerSettingsFieldEditorViewTest {
     }
 
     @Test
-    public void testParseFromISOSuccessful() {
+    public void testParseFromISO1() {
+        testParseFromISO(2019, Calendar.DECEMBER, 25, 9, 10, 15);
+    }
+
+    @Test
+    public void testParseFromISO2() {
+        testParseFromISO(2019, Calendar.AUGUST, 25, 9, 10, 15);
+    }
+
+    /**
+     * @param year
+     * @param month from 0..11
+     * @param hour
+     * @param minute
+     * @param second
+     */
+    private void testParseFromISO(int year, int month, int dayOfMonth, int hour, int minute, int second) {
         GregorianCalendar calendar = new GregorianCalendar(TimeZone.getDefault());
-        calendar.set(Calendar.YEAR, 2019);
-        calendar.set(Calendar.MONTH, Calendar.DECEMBER);
-        calendar.set(Calendar.DAY_OF_MONTH, 25);
-        calendar.set(Calendar.HOUR, 9);
+        calendar.set(Calendar.YEAR, year);
+        calendar.set(Calendar.MONTH, month);
+        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+        calendar.set(Calendar.HOUR, hour);
         calendar.set(Calendar.AM_PM, Calendar.AM);
-        calendar.set(Calendar.MINUTE, 10);
-        calendar.set(Calendar.SECOND, 15);
+        calendar.set(Calendar.MINUTE, minute);
+        calendar.set(Calendar.SECOND, second);
         int zone = calendar.get(Calendar.ZONE_OFFSET) / 60 / 60 / 1000;
+        int daylightSaving = calendar.get(Calendar.DST_OFFSET) / 60 / 60 / 1000;
+        zone = zone + daylightSaving;
         String currentValue = calendar.get(Calendar.YEAR) + "-" + fullInt(calendar.get(Calendar.MONTH) + 1) + "-" + fullInt(calendar.get(Calendar.DAY_OF_MONTH)) +
                 "T" + fullInt(calendar.get(Calendar.HOUR)) + ":" + fullInt(calendar.get(Calendar.MINUTE)) + ":" + fullInt(calendar.get(Calendar.SECOND)) + (zone >= 0 ? "+" : "-") + fullInt(abs(zone)) + ":00";
 
         Date date = view.parseFromISO(currentValue);
         GregorianCalendar result = new GregorianCalendar(TimeZone.getDefault());
         result.setTime(date);
-        assertEquals(2019, result.get(Calendar.YEAR));
-        assertEquals(Calendar.DECEMBER, result.get(Calendar.MONTH));
-        assertEquals(25, result.get(Calendar.DAY_OF_MONTH));
-        assertEquals(9, result.get(Calendar.HOUR));
-        assertEquals(10, result.get(Calendar.MINUTE));
-        assertEquals(15, result.get(Calendar.SECOND));
+        assertEquals(year, result.get(Calendar.YEAR));
+        assertEquals(month, result.get(Calendar.MONTH));
+        assertEquals(dayOfMonth, result.get(Calendar.DAY_OF_MONTH));
+        assertEquals(hour, result.get(Calendar.HOUR));
+        assertEquals(minute, result.get(Calendar.MINUTE));
+        assertEquals(second, result.get(Calendar.SECOND));
     }
 
     @Test
@@ -457,16 +475,35 @@ public class TimerSettingsFieldEditorViewTest {
     }
 
     @Test
-    public void testFormatToISO() {
+    public void testFormatISO1() {
+        testFormatToISO(2019, Calendar.DECEMBER, 25, 9, 10, 15);
+    }
+
+    @Test
+    public void testFormatISO2() {
+        testFormatToISO(2019, Calendar.AUGUST, 25, 9, 10, 15);
+    }
+
+    /**
+     * @param year
+     * @param month from 0..11
+     * @param hour
+     * @param minute
+     * @param second
+     */
+    private void testFormatToISO(int year, int month, int dayOfMonth, int hour, int minute, int second) {
         GregorianCalendar calendar = new GregorianCalendar(TimeZone.getDefault());
-        calendar.set(Calendar.YEAR, 2019);
-        calendar.set(Calendar.MONTH, Calendar.DECEMBER);
-        calendar.set(Calendar.DAY_OF_MONTH, 25);
-        calendar.set(Calendar.HOUR, 9);
+        calendar.set(Calendar.YEAR, year);
+        calendar.set(Calendar.MONTH, month);
+        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+        calendar.set(Calendar.HOUR, hour);
         calendar.set(Calendar.AM_PM, Calendar.AM);
-        calendar.set(Calendar.MINUTE, 10);
-        calendar.set(Calendar.SECOND, 15);
+        calendar.set(Calendar.MINUTE, minute);
+        calendar.set(Calendar.SECOND, second);
+
         int zone = calendar.get(Calendar.ZONE_OFFSET) / 60 / 60 / 1000;
+        int daylightSaving = calendar.get(Calendar.DST_OFFSET) / 60 / 60 / 1000;
+        zone = zone + daylightSaving;
         Date date = calendar.getTime();
         String expectedValue = calendar.get(Calendar.YEAR) + "-" + fullInt(calendar.get(Calendar.MONTH) + 1) + "-" + fullInt(calendar.get(Calendar.DAY_OF_MONTH)) +
                 "T" + fullInt(calendar.get(Calendar.HOUR)) + ":" + fullInt(calendar.get(Calendar.MINUTE)) + ":" + fullInt(calendar.get(Calendar.SECOND)) + (zone >= 0 ? "+" : "-") + fullInt(abs(zone)) + ":00";
