@@ -48,17 +48,7 @@ export class KogitoEditorStore {
   }
 
   public close(editor: KogitoEditor) {
-    if (this.isActive(editor)) {
-      this.setNoneActive();
-    }
-
     this.openEditors.delete(editor);
-
-    this.openEditors.forEach(e => {
-      if (e.isActive()) {
-        this.setActive(e);
-      }
-    });
   }
 
   public get(path: string) {

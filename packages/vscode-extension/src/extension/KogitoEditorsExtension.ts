@@ -49,7 +49,7 @@ export class KogitoEditorsExtension {
     this.context.subscriptions.push(
       vscode.commands.registerCommand("workbench.action.files.saveAll", () => {
         this.editorStore.openEditors.forEach(e => e.requestSave());
-        return vscode.workspace.saveAll(true);
+        return vscode.workspace.saveAll(false);
       })
     );
   }
@@ -66,14 +66,14 @@ export class KogitoEditorsExtension {
         }
 
         const path = textEditor.document.uri.path;
-        const openEditor = this.editorStore.get(path);
+        const openKogitoEditor = this.editorStore.get(path);
 
-        if (!openEditor) {
+        if (!openKogitoEditor) {
           this.closeActiveTextEditor().then(() => this.editorFactory.openNew(path));
           return;
         }
 
-        if (textEditor.viewColumn === openEditor.viewColumn()) {
+        if (textEditor.viewColumn === openKogitoEditor.viewColumn()) {
           this.closeActiveTextEditor();
           //FIXME: Focus on existing KogitoEditor
           //

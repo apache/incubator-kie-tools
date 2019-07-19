@@ -7,7 +7,7 @@
   "types": "./dist/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kiegroup/appformer-js.git"
+    "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
     "appformer-js-core": "0.0.0",

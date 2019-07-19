@@ -18,7 +18,7 @@ import { Component } from "./Component";
 import { ComponentTypes } from "./ComponentTypes";
 
 /**
- * Screen component API. Implement this class to create a Screen.
+ * Editor component API. Implement this class to create an Editor.
  */
 export abstract class Editor extends Component {
   public af_componentTitle?: string = undefined;

@@ -24,6 +24,7 @@ export function activate(context: vscode.ExtensionContext) {
   console.info("Extension is alive.");
 
   const router = new LocalRouter(context);
+
   const editorStore = new KogitoEditorStore();
   const editorFactory = new KogitoEditorFactory(context, router, editorStore);
   const extension = new KogitoEditorsExtension(context, editorStore, editorFactory);
