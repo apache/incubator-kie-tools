@@ -177,6 +177,11 @@ describe("send", () => {
     handler.respond_contentRequest("some");
     expect(sentMessages).toEqual([[{ type: EnvelopeBusMessageType.RETURN_CONTENT, data: "some" }, "tgt-orgn"]]);
   });
+
+  test("notify dirtyIndicatorChange", () => {
+    handler.notify_dirtyIndicatorChange(true);
+    expect(sentMessages).toEqual([[{ type: EnvelopeBusMessageType.NOTIFY_DIRTY_INDICATOR_CHANGE, data: true }, "tgt-orgn"]]);
+  });
 });
 
 async function incomingMessage(message: any) {
