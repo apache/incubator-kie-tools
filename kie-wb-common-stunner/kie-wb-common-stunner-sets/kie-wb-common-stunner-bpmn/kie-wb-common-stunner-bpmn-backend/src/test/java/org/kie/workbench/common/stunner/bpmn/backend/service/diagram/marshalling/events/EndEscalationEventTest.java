@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.events;
 
 import org.junit.Test;
-import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.Marshaller;
 import org.kie.workbench.common.stunner.bpmn.definition.EndEscalationEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.escalation.EscalationEventExecutionSet;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -27,7 +26,7 @@ import org.kie.workbench.common.stunner.core.graph.Graph;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class EndEscalationEventTest extends EndEvent<EndEscalationEvent> {
+public class EndEscalationEventTest extends EndEventTest<EndEscalationEvent> {
 
     private static final String BPMN_END_EVENT_FILE_PATH = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/endEscalationEvents.bpmn";
 
@@ -42,10 +41,6 @@ public class EndEscalationEventTest extends EndEvent<EndEscalationEvent> {
     private static final String FILLED_WITH_INCOME_SUBPROCESS_LEVEL_EVENT_ID = "_3933F591-35FA-45A7-84DB-7DCE49FF87B7";
 
     private static final int AMOUNT_OF_NODES_IN_DIAGRAM = 14;
-
-    public EndEscalationEventTest(Marshaller marshallerType) {
-        super(marshallerType);
-    }
 
     @Test
     @Override

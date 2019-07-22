@@ -23,7 +23,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.stunner.bpmn.definition.Lane;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
-import org.kie.workbench.common.stunner.core.definition.service.DiagramMarshaller;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -33,7 +32,7 @@ import org.kie.workbench.common.stunner.core.graph.content.definition.Definition
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class LaneTest extends BPMNDiagramMarshallerBase {
+public class LaneTest extends BPMNDiagramMarshallerBaseTest {
 
     private static final String BPMN_LANE_FILE_PATH = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/lanesProcess.bpmn";
 
@@ -45,12 +44,9 @@ public class LaneTest extends BPMNDiagramMarshallerBase {
 
     private static final String EMPTY_VALUE = "";
 
-    private DiagramMarshaller<Graph, Metadata, Diagram<Graph, Metadata>> marshaller;
-
     @Before
     public void setUp() {
         super.init();
-        this.marshaller = newMarshaller;
     }
 
     @Test

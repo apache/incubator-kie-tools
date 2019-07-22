@@ -36,8 +36,8 @@ import org.eclipse.bpmn2.impl.LaneImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.stunner.backend.definition.factory.TestScopeModelFactory;
 import org.kie.workbench.common.stunner.bpmn.BPMNDefinitionSet;
+import org.kie.workbench.common.stunner.bpmn.backend.BPMNTestDefinitionFactory;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.TypedFactoryManager;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.BaseConverterFactory;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.BpmnNode;
@@ -45,47 +45,24 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.Conver
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.BasePropertyReader;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.PropertyReaderFactory;
-import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.MockApplicationFactoryManager;
-import org.kie.workbench.common.stunner.core.api.DefinitionManager;
-import org.kie.workbench.common.stunner.core.backend.BackendFactoryManager;
-import org.kie.workbench.common.stunner.core.backend.definition.adapter.reflect.BackendDefinitionAdapter;
-import org.kie.workbench.common.stunner.core.backend.definition.adapter.reflect.BackendDefinitionSetAdapter;
-import org.kie.workbench.common.stunner.core.backend.definition.adapter.reflect.BackendPropertyAdapter;
-import org.kie.workbench.common.stunner.core.backend.definition.adapter.reflect.BackendPropertySetAdapter;
-import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
-import org.kie.workbench.common.stunner.core.factory.impl.EdgeFactoryImpl;
-import org.kie.workbench.common.stunner.core.factory.impl.GraphFactoryImpl;
-import org.kie.workbench.common.stunner.core.factory.impl.NodeFactoryImpl;
+import org.kie.workbench.common.stunner.core.backend.StunnerTestingGraphBackendAPI;
 import org.kie.workbench.common.stunner.core.graph.impl.NodeImpl;
-import org.kie.workbench.common.stunner.core.registry.definition.AdapterRegistry;
-import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ProcessConverterDelegateTest {
 
-    private TypedFactoryManager typedFactoryManager;
-
     @Mock
     private PropertyReaderFactory propertyReaderFactory;
 
-    private BackendFactoryManager applicationFactoryManager;
-
     private DefinitionResolver definitionResolver;
-
-    @Mock
-    private DefinitionManager definitionManager;
-
-    @Mock
-    private AdapterManager adapterManager;
 
     private BaseConverterFactory factory;
 
@@ -106,13 +83,10 @@ public class ProcessConverterDelegateTest {
     private ProcessConverterDelegate converterDelegate;
 
     @Mock
-    private AdapterRegistry adapterRegistry;
-
-    @Mock
     private Definitions definitions;
 
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
         parentNode = new BpmnNode.Simple(new NodeImpl<>("ParentNode"), basePropertyReader);
         when(diagram.getPlane()).thenReturn(plane);
         List<RootElement> rootElements = Collections.singletonList(process);
@@ -122,52 +96,14 @@ public class ProcessConverterDelegateTest {
         when(definitions.getRelationships()).thenReturn(Collections.emptyList());
 
         definitionResolver = new DefinitionResolver(definitions, Collections.emptyList());
-
-        // Graph utils.
-        when(definitionManager.adapters()).thenReturn(adapterManager);
-        when(adapterManager.registry()).thenReturn(adapterRegistry);
-
-        TestScopeModelFactory testScopeModelFactory = new TestScopeModelFactory(new BPMNDefinitionSet.BPMNDefinitionSetBuilder().build());
-        DefinitionUtils definitionUtils = new DefinitionUtils(definitionManager,
-                                                              null);
-        // Definition manager.
-        final BackendDefinitionAdapter definitionAdapter = new BackendDefinitionAdapter(definitionUtils);
-        final BackendDefinitionSetAdapter definitionSetAdapter = new BackendDefinitionSetAdapter(definitionAdapter);
-        final BackendPropertySetAdapter propertySetAdapter = new BackendPropertySetAdapter();
-        final BackendPropertyAdapter propertyAdapter = new BackendPropertyAdapter();
-        mockAdapterManager(definitionAdapter, definitionSetAdapter, propertySetAdapter, propertyAdapter);
-        mockAdapterRegistry(definitionAdapter, definitionSetAdapter, propertySetAdapter, propertyAdapter);
-        applicationFactoryManager = new MockApplicationFactoryManager(
-                definitionManager,
-                new GraphFactoryImpl(definitionManager),
-                testScopeModelFactory,
-                new EdgeFactoryImpl(definitionManager),
-                new NodeFactoryImpl(definitionUtils)
-        );
-        applicationFactoryManager = new MockApplicationFactoryManager(
-                definitionManager,
-                new GraphFactoryImpl(definitionManager),
-                testScopeModelFactory,
-                new EdgeFactoryImpl(definitionManager),
-                new NodeFactoryImpl(definitionUtils)
-        );
-        typedFactoryManager = new TypedFactoryManager(applicationFactoryManager);
+        StunnerTestingGraphBackendAPI api = StunnerTestingGraphBackendAPI.build(BPMNDefinitionSet.class,
+                                                                                new BPMNTestDefinitionFactory());
+        TypedFactoryManager typedFactoryManager = new TypedFactoryManager(api.getFactoryManager());
         factory = new ConverterFactory(definitionResolver, typedFactoryManager);
-        converterDelegate = new ProcessConverterDelegate(typedFactoryManager, propertyReaderFactory, definitionResolver, factory);
-    }
-
-    private void mockAdapterRegistry(BackendDefinitionAdapter definitionAdapter, BackendDefinitionSetAdapter definitionSetAdapter, BackendPropertySetAdapter propertySetAdapter, BackendPropertyAdapter propertyAdapter) {
-        when(adapterRegistry.getDefinitionSetAdapter(any(Class.class))).thenReturn(definitionSetAdapter);
-        when(adapterRegistry.getDefinitionAdapter(any(Class.class))).thenReturn(definitionAdapter);
-        when(adapterRegistry.getPropertySetAdapter(any(Class.class))).thenReturn(propertySetAdapter);
-        when(adapterRegistry.getPropertyAdapter(any(Class.class))).thenReturn(propertyAdapter);
-    }
-
-    private void mockAdapterManager(BackendDefinitionAdapter definitionAdapter, BackendDefinitionSetAdapter definitionSetAdapter, BackendPropertySetAdapter propertySetAdapter, BackendPropertyAdapter propertyAdapter) {
-        when(adapterManager.forDefinitionSet()).thenReturn(definitionSetAdapter);
-        when(adapterManager.forDefinition()).thenReturn(definitionAdapter);
-        when(adapterManager.forPropertySet()).thenReturn(propertySetAdapter);
-        when(adapterManager.forProperty()).thenReturn(propertyAdapter);
+        converterDelegate = new ProcessConverterDelegate(typedFactoryManager,
+                                                         propertyReaderFactory,
+                                                         definitionResolver,
+                                                         factory);
     }
 
     @Test

@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.events;
 
 import org.junit.Test;
-import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.Marshaller;
 import org.kie.workbench.common.stunner.bpmn.definition.StartEscalationEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.escalation.InterruptingEscalationEventExecutionSet;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -27,7 +26,7 @@ import org.kie.workbench.common.stunner.core.graph.Graph;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class StartEscalationEventTest extends StartEvent<StartEscalationEvent> {
+public class StartEscalationEventTest extends StartEventTest<StartEscalationEvent> {
 
     private static final String BPMN_START_EVENT_FILE_PATH = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/escalationStartEvents.bpmn";
 
@@ -39,10 +38,6 @@ public class StartEscalationEventTest extends StartEvent<StartEscalationEvent> {
     private static final String SLA_DUE_DATE = "12/25/1983";
 
     private static final int AMOUNT_OF_NODES_IN_DIAGRAM = 10;
-
-    public StartEscalationEventTest(Marshaller marshallerType) {
-        super(marshallerType);
-    }
 
     @Test
     @Override

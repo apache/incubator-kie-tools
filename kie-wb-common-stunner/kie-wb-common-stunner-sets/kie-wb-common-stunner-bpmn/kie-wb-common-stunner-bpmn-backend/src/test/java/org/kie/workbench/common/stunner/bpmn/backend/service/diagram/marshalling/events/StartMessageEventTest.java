@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.events;
 
 import org.junit.Test;
-import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.Marshaller;
 import org.kie.workbench.common.stunner.bpmn.definition.StartMessageEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.message.InterruptingMessageEventExecutionSet;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -27,7 +26,7 @@ import org.kie.workbench.common.stunner.core.graph.Graph;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class StartMessageEventTest extends StartEvent<StartMessageEvent> {
+public class StartMessageEventTest extends StartEventTest<StartMessageEvent> {
 
     private static final String BPMN_START_EVENT_FILE_PATH = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/messageStartEvents.bpmn";
 
@@ -39,10 +38,6 @@ public class StartMessageEventTest extends StartEvent<StartMessageEvent> {
     private static final String SLA_DUE_DATE = "12/25/1983";
 
     private static final int AMOUNT_OF_NODES_IN_DIAGRAM = 11;
-
-    public StartMessageEventTest(Marshaller marshallerType) {
-        super(marshallerType);
-    }
 
     @Test
     @Override

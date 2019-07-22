@@ -19,7 +19,6 @@ package org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshallin
 import java.util.List;
 
 import org.junit.Test;
-import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.Marshaller;
 import org.kie.workbench.common.stunner.bpmn.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocSubprocessTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeValue;
@@ -28,9 +27,8 @@ import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assume.assumeFalse;
 
-public class AdHocSubProcessTest extends SubProcess<AdHocSubprocess> {
+public class AdHocSubProcessTest extends SubProcessTest<AdHocSubprocess> {
 
     private static final String BPMN_SUB_PROCESS_FILE_PATH = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/adHocSubProcesses.bpmn";
 
@@ -80,89 +78,11 @@ public class AdHocSubProcessTest extends SubProcess<AdHocSubprocess> {
             "System.out.println(\"`&(^*&^(\\n\\r\");\n" +
             "Object o = kcontext.getVariable(\"hello_world\");";
 
-    private static final String IGNORE_MESSAGE_FOR_INHERETED_TEST = "There is a bug in old marshaller. Once, the bug is fixed, the " +
-            "method should be removed only from this class, not from its superclass.\n" +
-            "For more information see https://issues.jboss.org/browse/JBPM-8462";
-
-    private static final String IGNORE_MESSAGE_FOR_TEST = "There is a bug in old marshaller. Once, the bug is fixed, the test should not be ignored any more.\n" +
-            "For more information see https://issues.jboss.org/browse/JBPM-8462";
-
-    private static Diagram<Graph, Metadata> oldDiagram;
-    private static Diagram<Graph, Metadata> oldRoundTripDiagram;
-
-    private static Diagram<Graph, Metadata> newDiagram;
-    private static Diagram<Graph, Metadata> newRoundTripDiagram;
-
-    public AdHocSubProcessTest(Marshaller marshallerType) throws Exception {
-        super(marshallerType, marshallers());
-    }
-
-    @Override
-    Diagram<Graph, Metadata> getNewDiagram() {
-        return newDiagram;
-    }
-
-    @Override
-    void setNewDiagram(Diagram<Graph, Metadata> diagram) {
-        newDiagram = diagram;
-    }
-
-    @Override
-    Diagram<Graph, Metadata> getNewRoundTripDiagram() {
-        return newRoundTripDiagram;
-    }
-
-    @Override
-    void setNewRoundTripDiagram(Diagram<Graph, Metadata> diagram) {
-        newRoundTripDiagram = diagram;
-    }
-
-    @Override
-    Diagram<Graph, Metadata> getOldDiagram() {
-        return oldDiagram;
-    }
-
-    @Override
-    void setOldDiagram(Diagram<Graph, Metadata> diagram) {
-        oldDiagram = diagram;
-    }
-
-    @Override
-    Diagram<Graph, Metadata> getOldRoundTripDiagram() {
-        return oldRoundTripDiagram;
-    }
-
-    @Override
-    void setOldRoundTripDiagram(Diagram<Graph, Metadata> diagram) {
-        oldRoundTripDiagram = diagram;
+    public AdHocSubProcessTest() throws Exception {
     }
 
     @Test
-    @Override
-    public void testMarshallSubProcessLevelEmptyPropertiesSubProcess() {
-        assumeFalse(IGNORE_MESSAGE_FOR_INHERETED_TEST, isCurrentMarshallerOld());
-        super.testMarshallSubProcessLevelEmptyPropertiesSubProcess();
-    }
-
-    @Test
-    @Override
-    public void testMarshallTopLevelEmptyPropertiesSubProcess() {
-        assumeFalse(IGNORE_MESSAGE_FOR_INHERETED_TEST, isCurrentMarshallerOld());
-        super.testMarshallTopLevelEmptyPropertiesSubProcess();
-    }
-
-    @Test
-    @Override
-    public void testMarshallTopLevelFilledPropertiesSubProcess() {
-        assumeFalse(IGNORE_MESSAGE_FOR_INHERETED_TEST, isCurrentMarshallerOld());
-        super.testMarshallTopLevelFilledPropertiesSubProcess();
-    }
-
-    @Test
-    @Override
     public void testUnmarshallTopLevelEmptyPropertiesSubProcess() {
-        assumeFalse(IGNORE_MESSAGE_FOR_TEST, isCurrentMarshallerOld());
-
         Diagram<Graph, Metadata> diagram = getDiagram();
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
 
@@ -184,7 +104,6 @@ public class AdHocSubProcessTest extends SubProcess<AdHocSubprocess> {
     }
 
     @Test
-    @Override
     public void testUnmarshallTopLevelFilledPropertiesSubProcess() {
         final String SUB_PROCESS_NAME_JAVA = "Ad-hoc sub-process01 name ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
         final String SUB_PROCESS_DOCUMENTATION_JAVA = "Ad-hoc sub-process01 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
@@ -250,7 +169,6 @@ public class AdHocSubProcessTest extends SubProcess<AdHocSubprocess> {
     }
 
     @Test
-    @Override
     public void testUnmarshallTopLevelSubProcessWithEdges() {
         final String SUB_PROCESS_NAME = "Sub-process07";
 
@@ -275,10 +193,7 @@ public class AdHocSubProcessTest extends SubProcess<AdHocSubprocess> {
     }
 
     @Test
-    @Override
     public void testUnmarshallSubProcessLevelEmptyPropertiesSubProcess() {
-        assumeFalse(IGNORE_MESSAGE_FOR_TEST, isCurrentMarshallerOld());
-
         Diagram<Graph, Metadata> diagram = getDiagram();
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
 
@@ -300,7 +215,6 @@ public class AdHocSubProcessTest extends SubProcess<AdHocSubprocess> {
     }
 
     @Test
-    @Override
     public void testUnmarshallSubProcessLevelFilledPropertiesSubProcess() {
         final String SUB_PROCESS_NAME_JAVA = "Ad-hoc sub-process04 name ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
         final String SUB_PROCESS_DOCUMENTATION_JAVA = "Ad-hoc sub-process04 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
@@ -366,7 +280,6 @@ public class AdHocSubProcessTest extends SubProcess<AdHocSubprocess> {
     }
 
     @Test
-    @Override
     public void testUnmarshallSubProcessLevelSubProcessWithEdges() {
         final String SUB_PROCESS_NAME = "Sub-process08";
 

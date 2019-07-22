@@ -58,9 +58,9 @@ public class EdgeFactoryImplTest {
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
         this.testingkHelper = new TestingGraphMockHandler();
-        when(testingkHelper.definitionAdapter.getId(eq(definition))).thenReturn(DefinitionId.build(ID));
-        when(testingkHelper.definitionAdapter.getLabels(eq(definition))).thenReturn(LABELS);
-        this.tested = new EdgeFactoryImpl(testingkHelper.definitionManager);
+        when(testingkHelper.getDefinitionAdapter().getId(eq(definition))).thenReturn(DefinitionId.build(ID));
+        when(testingkHelper.getDefinitionAdapter().getLabels(eq(definition))).thenReturn(LABELS);
+        this.tested = new EdgeFactoryImpl(testingkHelper.getDefinitionManager());
     }
 
     @Test

@@ -17,17 +17,13 @@
 package org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.tasks;
 
 import org.junit.Test;
-import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.Marshaller;
 import org.kie.workbench.common.stunner.bpmn.definition.ScriptTask;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTaskExecutionSet;
-import org.kie.workbench.common.stunner.core.diagram.Diagram;
-import org.kie.workbench.common.stunner.core.diagram.Metadata;
-import org.kie.workbench.common.stunner.core.graph.Graph;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class ScriptTaskTest extends Task<ScriptTask> {
+public class ScriptTaskTest extends TaskTest<ScriptTask> {
 
     private static final String BPMN_TASK_FILE_PATH = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/scriptTasks.bpmn";
 
@@ -72,14 +68,7 @@ public class ScriptTaskTest extends Task<ScriptTask> {
     private static final boolean IS_ADHOC_AUTOSTART = true;
     private static final boolean IS_NOT_ADHOC_AUTOSTART = false;
 
-    private static Diagram<Graph, Metadata> oldDiagram;
-    private static Diagram<Graph, Metadata> oldRoundTripDiagram;
-
-    private static Diagram<Graph, Metadata> newDiagram;
-    private static Diagram<Graph, Metadata> newRoundTripDiagram;
-
-    public ScriptTaskTest(Marshaller marshallerType) throws Exception {
-        super(marshallerType, marshallers());
+    public ScriptTaskTest() throws Exception {
     }
 
     @Test
@@ -488,46 +477,6 @@ public class ScriptTaskTest extends Task<ScriptTask> {
                                      TASK_SCRIPT_MVEL_LANGUAGE,
                                      IS_ASYNC,
                                      IS_ADHOC_AUTOSTART);
-    }
-
-    @Override
-    Diagram<Graph, Metadata> getOldDiagram() {
-        return oldDiagram;
-    }
-
-    @Override
-    void setOldDiagram(Diagram<Graph, Metadata> diagram) {
-        oldDiagram = diagram;
-    }
-
-    @Override
-    Diagram<Graph, Metadata> getOldRoundTripDiagram() {
-        return oldRoundTripDiagram;
-    }
-
-    @Override
-    void setOldRoundTripDiagram(Diagram<Graph, Metadata> diagram) {
-        oldRoundTripDiagram = diagram;
-    }
-
-    @Override
-    Diagram<Graph, Metadata> getNewDiagram() {
-        return newDiagram;
-    }
-
-    @Override
-    void setNewDiagram(Diagram<Graph, Metadata> diagram) {
-        newDiagram = diagram;
-    }
-
-    @Override
-    Diagram<Graph, Metadata> getNewRoundTripDiagram() {
-        return newRoundTripDiagram;
-    }
-
-    @Override
-    void setNewRoundTripDiagram(Diagram<Graph, Metadata> diagram) {
-        newRoundTripDiagram = diagram;
     }
 
     @Test

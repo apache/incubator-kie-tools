@@ -73,9 +73,9 @@ public class CommonDomainTargetNodeLookupTest {
         when(definitionsRegistry.getLabels(eq(TestingGraphInstanceBuilder.DEF1_ID))).thenReturn(TestingGraphInstanceBuilder.DEF1_LABELS);
         when(definitionsRegistry.getLabels(eq(TestingGraphInstanceBuilder.DEF2_ID))).thenReturn(TestingGraphInstanceBuilder.DEF2_LABELS);
 
-        tested = new CommonDomainLookups(graphTestHandler.definitionUtils,
+        tested = new CommonDomainLookups(graphTestHandler.getDefinitionUtils(),
                                          definitionsRegistry,
-                                         graphTestHandler.ruleManager,
+                                         graphTestHandler.getRuleManager(),
                                          cacheBuilder)
                 .setDomain("ds1");
     }

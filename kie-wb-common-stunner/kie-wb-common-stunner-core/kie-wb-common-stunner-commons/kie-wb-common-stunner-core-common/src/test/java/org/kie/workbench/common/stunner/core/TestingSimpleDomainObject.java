@@ -45,21 +45,21 @@ public class TestingSimpleDomainObject implements DomainObject {
     public TestingSimpleDomainObject(final TestingGraphMockHandler graphMockHandler) {
         propertySet = new SomePropertySetBean();
         nameProperty = new SomePropertyBean();
-        when(graphMockHandler.definitionAdapter.accepts(eq(TestingSimpleDomainObject.class))).thenReturn(true);
-        when(graphMockHandler.definitionAdapter.accepts(eq(SomePropertySetBean.class))).thenReturn(false);
-        when(graphMockHandler.definitionAdapter.accepts(eq(SomePropertyBean.class))).thenReturn(false);
-        when(graphMockHandler.propertyAdapter.accepts(eq(SomePropertyBean.class))).thenReturn(true);
-        when(graphMockHandler.propertyAdapter.accepts(eq(SomePropertySetBean.class))).thenReturn(false);
-        when(graphMockHandler.propertyAdapter.accepts(eq(TestingSimpleDomainObject.class))).thenReturn(false);
-        when(graphMockHandler.propertySetAdapter.accepts(eq(SomePropertySetBean.class))).thenReturn(true);
-        when(graphMockHandler.propertySetAdapter.accepts(eq(SomePropertyBean.class))).thenReturn(false);
-        when(graphMockHandler.propertySetAdapter.accepts(eq(TestingSimpleDomainObject.class))).thenReturn(false);
-        when(graphMockHandler.propertySetAdapter.getId(eq(propertySet))).thenReturn(PROPERTY_SET);
-        when(graphMockHandler.propertyAdapter.getId(eq(nameProperty))).thenReturn(NAME);
-        when(graphMockHandler.definitionAdapter.getProperty(eq(this), eq(PROPERTY_SET))).thenReturn(Optional.of(propertySet));
-        when(graphMockHandler.propertySetAdapter.getProperty(eq(propertySet), eq(NAME))).thenReturn(Optional.of(nameProperty));
-        when(graphMockHandler.definitionAdapter.getNameField(eq(this))).thenReturn(Optional.of(NAME_FIELD));
-        when(graphMockHandler.definitionAdapter.getMetaProperty(eq(PropertyMetaTypes.NAME), eq(this))).thenReturn(nameProperty);
+        when(graphMockHandler.getDefinitionAdapter().accepts(eq(TestingSimpleDomainObject.class))).thenReturn(true);
+        when(graphMockHandler.getDefinitionAdapter().accepts(eq(SomePropertySetBean.class))).thenReturn(false);
+        when(graphMockHandler.getDefinitionAdapter().accepts(eq(SomePropertyBean.class))).thenReturn(false);
+        when(graphMockHandler.getPropertyAdapter().accepts(eq(SomePropertyBean.class))).thenReturn(true);
+        when(graphMockHandler.getPropertyAdapter().accepts(eq(SomePropertySetBean.class))).thenReturn(false);
+        when(graphMockHandler.getPropertyAdapter().accepts(eq(TestingSimpleDomainObject.class))).thenReturn(false);
+        when(graphMockHandler.getPropertySetAdapter().accepts(eq(SomePropertySetBean.class))).thenReturn(true);
+        when(graphMockHandler.getPropertySetAdapter().accepts(eq(SomePropertyBean.class))).thenReturn(false);
+        when(graphMockHandler.getPropertySetAdapter().accepts(eq(TestingSimpleDomainObject.class))).thenReturn(false);
+        when(graphMockHandler.getPropertySetAdapter().getId(eq(propertySet))).thenReturn(PROPERTY_SET);
+        when(graphMockHandler.getPropertyAdapter().getId(eq(nameProperty))).thenReturn(NAME);
+        when(graphMockHandler.getDefinitionAdapter().getProperty(eq(this), eq(PROPERTY_SET))).thenReturn(Optional.of(propertySet));
+        when(graphMockHandler.getPropertySetAdapter().getProperty(eq(propertySet), eq(NAME))).thenReturn(Optional.of(nameProperty));
+        when(graphMockHandler.getDefinitionAdapter().getNameField(eq(this))).thenReturn(Optional.of(NAME_FIELD));
+        when(graphMockHandler.getDefinitionAdapter().getMetaProperty(eq(PropertyMetaTypes.NAME), eq(this))).thenReturn(nameProperty);
     }
 
     public SomePropertySetBean getPropertySet() {

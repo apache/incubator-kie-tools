@@ -16,20 +16,16 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.forms.gen.util;
 
-import org.eclipse.emf.common.util.EList;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.stunner.bpmn.backend.BaseDiagramMarshaller;
 import org.kie.workbench.common.stunner.bpmn.backend.BaseDirectDiagramMarshaller;
-import org.kie.workbench.common.stunner.bpmn.backend.legacy.resource.JBPMBpmn2ResourceImpl;
 import org.kie.workbench.common.stunner.core.backend.service.AbstractDefinitionSetService;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -39,9 +35,6 @@ public class FormGenerationModelProviderHelperTest {
 
     @Mock
     private AbstractDefinitionSetService backendService;
-
-    @Mock
-    private BaseDiagramMarshaller oldMarshaller;
 
     @Mock
     private BaseDirectDiagramMarshaller newMarshaller;
@@ -58,21 +51,7 @@ public class FormGenerationModelProviderHelperTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testGenerate_oldMasharller() throws Exception {
-        when(backendService.getDiagramMarshaller()).thenReturn(oldMarshaller);
-
-        final JBPMBpmn2ResourceImpl resource = mock(JBPMBpmn2ResourceImpl.class);
-        when(resource.getContents()).thenReturn(mock(EList.class));
-        when(oldMarshaller.marshallToBpmn2Resource(eq(diagram))).thenReturn(resource);
-
-        tested.generate(diagram);
-
-        verify(oldMarshaller, times(1)).marshallToBpmn2Resource(eq(diagram));
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void testGenerate_newMasharller() throws Exception {
+    public void testGenerate_masharller() throws Exception {
         when(backendService.getDiagramMarshaller()).thenReturn(newMarshaller);
 
         tested.generate(diagram);

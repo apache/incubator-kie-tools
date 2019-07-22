@@ -42,7 +42,7 @@ public class ParentTypesMatcherTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testMatchParentTypeAsParentNodeBean() {
-        ParentTypesMatcher tested = new ParentTypesMatcher(() -> graphTestHandler.definitionManager,
+        ParentTypesMatcher tested = new ParentTypesMatcher(() -> graphTestHandler.getDefinitionManager(),
                                                            GraphUtils::getParent,
                                                            new Class[]{TestingGraphInstances.ParentNodeBean.class});
         assertTrue(tested.matcher().test(graph.startNode, graph.intermNode));
@@ -56,7 +56,7 @@ public class ParentTypesMatcherTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testMatchParentTypeAsContainerNodeBean() {
-        ParentTypesMatcher tested = new ParentTypesMatcher(() -> graphTestHandler.definitionManager,
+        ParentTypesMatcher tested = new ParentTypesMatcher(() -> graphTestHandler.getDefinitionManager(),
                                                            GraphUtils::getParent,
                                                            new Class[]{TestingGraphInstances.ContainerNodeBean.class});
         assertTrue(tested.matcher().test(graph.startNode, graph.intermNode));
@@ -73,7 +73,7 @@ public class ParentTypesMatcherTest {
         graphTestHandler
                 .removeChild(graph.containerNode, graph.intermNode)
                 .setChild(graph.parentNode, graph.intermNode);
-        ParentTypesMatcher tested = new ParentTypesMatcher(() -> graphTestHandler.definitionManager,
+        ParentTypesMatcher tested = new ParentTypesMatcher(() -> graphTestHandler.getDefinitionManager(),
                                                            GraphUtils::getParent,
                                                            new Class[]{TestingGraphInstances.ContainerNodeBean.class});
         assertFalse(tested.matcher().test(graph.startNode, graph.intermNode));

@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.events;
 
 import org.junit.Test;
-import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.Marshaller;
 import org.kie.workbench.common.stunner.bpmn.definition.StartErrorEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.error.InterruptingErrorEventExecutionSet;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -27,7 +26,7 @@ import org.kie.workbench.common.stunner.core.graph.Graph;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class StartErrorEventTest extends StartEvent<StartErrorEvent> {
+public class StartErrorEventTest extends StartEventTest<StartErrorEvent> {
 
     private static final String BPMN_START_EVENT_FILE_PATH = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/startErrorEvents.bpmn";
 
@@ -39,10 +38,6 @@ public class StartErrorEventTest extends StartEvent<StartErrorEvent> {
     private static final String SLA_DUE_DATE = "12/25/1983";
 
     private static final int AMOUNT_OF_NODES_IN_DIAGRAM = 11;
-
-    public StartErrorEventTest(Marshaller marshallerType) {
-        super(marshallerType);
-    }
 
     @Test
     @Override

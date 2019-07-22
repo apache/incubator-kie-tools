@@ -61,14 +61,14 @@ public abstract class AbstractGraphCommandTest {
     @SuppressWarnings("unchecked")
     public void init() {
         testingGraphMockHandler = new TestingGraphMockHandler();
-        definitionManager = testingGraphMockHandler.definitionManager;
-        adapterManager = testingGraphMockHandler.adapterManager;
-        adapterRegistry = testingGraphMockHandler.adapterRegistry;
-        definitionAdapter = testingGraphMockHandler.definitionAdapter;
-        propertyAdapter = testingGraphMockHandler.propertyAdapter;
-        propertySetAdapter = testingGraphMockHandler.propertySetAdapter;
-        factoryManager = testingGraphMockHandler.factoryManager;
-        ruleManager = testingGraphMockHandler.ruleManager;
+        definitionManager = testingGraphMockHandler.getDefinitionManager();
+        adapterManager = testingGraphMockHandler.getAdapterManager();
+        adapterRegistry = testingGraphMockHandler.getAdapterRegistry();
+        definitionAdapter = testingGraphMockHandler.getDefinitionAdapter();
+        propertyAdapter = testingGraphMockHandler.getPropertyAdapter();
+        propertySetAdapter = testingGraphMockHandler.getPropertySetAdapter();
+        factoryManager = testingGraphMockHandler.getFactoryManager();
+        ruleManager = testingGraphMockHandler.getRuleManager();
         graphIndex = testingGraphMockHandler.graphIndex;
         graph = testingGraphMockHandler.graph;
         ruleSet = testingGraphMockHandler.ruleSet;

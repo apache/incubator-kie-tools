@@ -23,7 +23,6 @@ import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.dd.di.DiagramElement;
 import org.junit.Test;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.DefinitionsConverter;
-import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.Marshaller;
 import org.kie.workbench.common.stunner.bpmn.definition.EmbeddedSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.property.subProcess.execution.EmbeddedSubprocessExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeValue;
@@ -33,7 +32,7 @@ import org.kie.workbench.common.stunner.core.graph.Graph;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class EmbeddedSubProcessTest extends SubProcess<EmbeddedSubprocess> {
+public class EmbeddedSubProcessTest extends SubProcessTest<EmbeddedSubprocess> {
 
     private static final String BPMN_SUB_PROCESS_FILE_PATH = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/embeddedSubProcesses.bpmn";
 
@@ -76,58 +75,10 @@ public class EmbeddedSubProcessTest extends SubProcess<EmbeddedSubprocess> {
             "System.out.println(\"`&(^*&^(\\n\\r\");\n" +
             "Object o = kcontext.getVariable(\"hello_world\");";
 
-    private static Diagram<Graph, Metadata> oldDiagram;
-    private static Diagram<Graph, Metadata> oldRoundTripDiagram;
-
-    private static Diagram<Graph, Metadata> newDiagram;
-    private static Diagram<Graph, Metadata> newRoundTripDiagram;
-
-    public EmbeddedSubProcessTest(Marshaller marshallerType) throws Exception {
-        super(marshallerType, marshallers());
-    }
-
-    @Override
-    Diagram<Graph, Metadata> getNewDiagram() {
-        return newDiagram;
-    }
-
-    @Override
-    void setNewDiagram(Diagram<Graph, Metadata> diagram) {
-        newDiagram = diagram;
-    }
-
-    @Override
-    Diagram<Graph, Metadata> getNewRoundTripDiagram() {
-        return newRoundTripDiagram;
-    }
-
-    @Override
-    void setNewRoundTripDiagram(Diagram<Graph, Metadata> diagram) {
-        newRoundTripDiagram = diagram;
-    }
-
-    @Override
-    Diagram<Graph, Metadata> getOldDiagram() {
-        return oldDiagram;
-    }
-
-    @Override
-    void setOldDiagram(Diagram<Graph, Metadata> diagram) {
-        oldDiagram = diagram;
-    }
-
-    @Override
-    Diagram<Graph, Metadata> getOldRoundTripDiagram() {
-        return oldRoundTripDiagram;
-    }
-
-    @Override
-    void setOldRoundTripDiagram(Diagram<Graph, Metadata> diagram) {
-        oldRoundTripDiagram = diagram;
+    public EmbeddedSubProcessTest() throws Exception {
     }
 
     @Test
-    @Override
     public void testUnmarshallTopLevelEmptyPropertiesSubProcess() {
         Diagram<Graph, Metadata> diagram = getDiagram();
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
@@ -148,7 +99,6 @@ public class EmbeddedSubProcessTest extends SubProcess<EmbeddedSubprocess> {
     }
 
     @Test
-    @Override
     public void testUnmarshallTopLevelFilledPropertiesSubProcess() {
         final String SUB_PROCESS_NAME_JAVA = "Embedded process01 name ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
         final String SUB_PROCESS_DOCUMENTATION_JAVA = "Embedded process01 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
@@ -208,7 +158,6 @@ public class EmbeddedSubProcessTest extends SubProcess<EmbeddedSubprocess> {
     }
 
     @Test
-    @Override
     public void testUnmarshallTopLevelSubProcessWithEdges() {
         final String SUB_PROCESS_NAME = "Sub-process07";
 
@@ -231,7 +180,6 @@ public class EmbeddedSubProcessTest extends SubProcess<EmbeddedSubprocess> {
     }
 
     @Test
-    @Override
     public void testUnmarshallSubProcessLevelEmptyPropertiesSubProcess() {
         Diagram<Graph, Metadata> diagram = getDiagram();
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
@@ -252,7 +200,6 @@ public class EmbeddedSubProcessTest extends SubProcess<EmbeddedSubprocess> {
     }
 
     @Test
-    @Override
     public void testUnmarshallSubProcessLevelFilledPropertiesSubProcess() {
         final String SUB_PROCESS_NAME_JAVA = "Embedded process04 name ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
         final String SUB_PROCESS_DOCUMENTATION_JAVA = "Embedded process04 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
@@ -312,7 +259,6 @@ public class EmbeddedSubProcessTest extends SubProcess<EmbeddedSubprocess> {
     }
 
     @Test
-    @Override
     public void testUnmarshallSubProcessLevelSubProcessWithEdges() {
         final String SUB_PROCESS_NAME = "Sub-process08";
 

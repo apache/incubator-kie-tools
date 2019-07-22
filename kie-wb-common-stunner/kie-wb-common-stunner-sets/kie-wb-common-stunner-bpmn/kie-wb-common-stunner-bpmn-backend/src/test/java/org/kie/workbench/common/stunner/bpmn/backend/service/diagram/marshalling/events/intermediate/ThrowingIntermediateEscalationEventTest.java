@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.events.intermediate;
 
 import org.junit.Test;
-import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.Marshaller;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateEscalationEventThrowing;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.escalation.EscalationEventExecutionSet;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -27,7 +26,7 @@ import org.kie.workbench.common.stunner.core.graph.Graph;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class ThrowingIntermediateEscalationEventTest extends ThrowingIntermediateEvent<IntermediateEscalationEventThrowing> {
+public class ThrowingIntermediateEscalationEventTest extends ThrowingIntermediateEventTest<IntermediateEscalationEventThrowing> {
 
     private static final String BPMN_THROWING_INTERMEDIATE_EVENT_FILE_PATH = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/throwingIntermediateEscalationEvents.bpmn";
 
@@ -42,10 +41,6 @@ public class ThrowingIntermediateEscalationEventTest extends ThrowingIntermediat
     private static final String FILLED_WITH_INCOME_SUBPROCESS_LEVEL_EVENT_ID = "_CBE4DC6E-49DD-4B50-A970-352C5D412BBD";
 
     private static final int AMOUNT_OF_NODES_IN_DIAGRAM = 23;
-
-    public ThrowingIntermediateEscalationEventTest(Marshaller marshallerType) {
-        super(marshallerType);
-    }
 
     @Test
     @Override

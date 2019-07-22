@@ -21,7 +21,7 @@ import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.Process;
 import org.junit.Test;
 import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.Unmarshalling;
-import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.BPMNDiagramMarshallerBase;
+import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.BPMNDiagramMarshallerBaseTest;
 import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTask;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
@@ -31,7 +31,7 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
 import static org.junit.Assert.assertEquals;
 
-public class ServiceTaskTest extends BPMNDiagramMarshallerBase {
+public class ServiceTaskTest extends BPMNDiagramMarshallerBaseTest {
 
     private static final String BPMN_SERVICE_TASK_PROPERTIES_FILE_PATH =
             "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/serviceTask.bpmn";
@@ -45,7 +45,7 @@ public class ServiceTaskTest extends BPMNDiagramMarshallerBase {
     @Test
     @SuppressWarnings("unchecked")
     public void testBasicUnmarshall() throws Exception {
-        Diagram<Graph, Metadata> d = unmarshall(newMarshaller, BPMN_SERVICE_TASK_PROPERTIES_FILE_PATH);
+        Diagram<Graph, Metadata> d = unmarshall(marshaller, BPMN_SERVICE_TASK_PROPERTIES_FILE_PATH);
         Node<View<ServiceTask>, ?> node = d.getGraph().getNode(SERVICE_TASK_ID);
         ServiceTask definition = node.getContent().getDefinition();
         assertEquals("Custom Email", definition.getGeneral().getName().getValue());
@@ -54,7 +54,7 @@ public class ServiceTaskTest extends BPMNDiagramMarshallerBase {
 
     @Test
     public void testBasicMarshall() throws Exception {
-        Diagram<Graph, Metadata> d = unmarshall(newMarshaller, BPMN_SERVICE_TASK_PROPERTIES_FILE_PATH);
+        Diagram<Graph, Metadata> d = unmarshall(marshaller, BPMN_SERVICE_TASK_PROPERTIES_FILE_PATH);
 
         Definitions definitions = convertToDefinitions(d);
 
@@ -73,9 +73,9 @@ public class ServiceTaskTest extends BPMNDiagramMarshallerBase {
     @Test
     @SuppressWarnings("unchecked")
     public void testBasicBidi() throws Exception {
-        Diagram<Graph, Metadata> d = unmarshall(newMarshaller, BPMN_SERVICE_TASK_PROPERTIES_FILE_PATH);
-        String marshall = newMarshaller.marshall(d);
-        Diagram<Graph, Metadata> d2 = Unmarshalling.unmarshall(newMarshaller, new StringInputStream(marshall));
+        Diagram<Graph, Metadata> d = unmarshall(marshaller, BPMN_SERVICE_TASK_PROPERTIES_FILE_PATH);
+        String marshall = marshaller.marshall(d);
+        Diagram<Graph, Metadata> d2 = Unmarshalling.unmarshall(marshaller, new StringInputStream(marshall));
 
         Node<View<ServiceTask>, ?> node = d2.getGraph().getNode(SERVICE_TASK_ID);
 

@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.events;
 
 import org.junit.Test;
-import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.Marshaller;
 import org.kie.workbench.common.stunner.bpmn.definition.EndErrorEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.error.ErrorEventExecutionSet;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -27,7 +26,7 @@ import org.kie.workbench.common.stunner.core.graph.Graph;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class EndErrorEventTest extends EndEvent<EndErrorEvent> {
+public class EndErrorEventTest extends EndEventTest<EndErrorEvent> {
 
     private static final String BPMN_END_EVENT_FILE_PATH = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/endErrorEvents.bpmn";
 
@@ -42,10 +41,6 @@ public class EndErrorEventTest extends EndEvent<EndErrorEvent> {
     private static final String FILLED_WITH_INCOME_SUBPROCESS_LEVEL_EVENT_ID = "_1FC5A7E1-A787-47D4-9B81-5FF13441E814";
 
     private static final int AMOUNT_OF_NODES_IN_DIAGRAM = 14;
-
-    public EndErrorEventTest(Marshaller marshallerType) {
-        super(marshallerType);
-    }
 
     @Test
     @Override

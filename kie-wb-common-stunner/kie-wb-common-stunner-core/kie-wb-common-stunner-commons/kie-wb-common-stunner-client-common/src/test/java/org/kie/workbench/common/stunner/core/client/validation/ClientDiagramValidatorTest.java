@@ -16,8 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.client.validation;
 
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Objects;
 
 import org.junit.Before;
@@ -73,12 +73,15 @@ public class ClientDiagramValidatorTest {
         this.graphTestHandler = new TestingGraphMockHandler();
         treeWalkTraverseProcessor = new TreeWalkTraverseProcessorImpl();
         backendViolation = new ElementViolationImpl.Builder().setUuid(uuid).build();
-        Collection<DiagramElementViolation<RuleViolation>> violations = Arrays.asList(backendViolation);
+        Collection<DiagramElementViolation<RuleViolation>> violations = Collections.singletonList(backendViolation);
         when(diagram.getName()).thenReturn("Test diagram");
         when(diagram.getMetadata()).thenReturn(metadata);
         when(validationService.validate(diagram)).thenReturn(violations);
-        clientDiagramValidator = new ClientDiagramValidator(graphTestHandler.definitionManager, graphTestHandler.ruleManager,
-                                                            treeWalkTraverseProcessor, modelValidator, new CallerMock<>(validationService));
+        clientDiagramValidator = new ClientDiagramValidator(graphTestHandler.getDefinitionManager(),
+                                                            graphTestHandler.getRuleManager(),
+                                                            treeWalkTraverseProcessor,
+                                                            modelValidator,
+                                                            new CallerMock<>(validationService));
     }
 
     @Test

@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.events.intermediate;
 
 import org.junit.Test;
-import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.Marshaller;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateConditionalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.conditional.CancellingConditionalEventExecutionSet;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -27,7 +26,7 @@ import org.kie.workbench.common.stunner.core.graph.Graph;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class BoundaryCatchingIntermediateConditionalEventTest extends BoundaryCatchingIntermediateEvent<IntermediateConditionalEvent> {
+public class BoundaryCatchingIntermediateConditionalEventTest extends BoundaryCatchingIntermediateEventTest<IntermediateConditionalEvent> {
 
     private static final String BPMN_CATCHING_INTERMEDIATE_EVENT_FILE_PATH = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/boundaryConditionalEvents.bpmn";
 
@@ -48,10 +47,6 @@ public class BoundaryCatchingIntermediateConditionalEventTest extends BoundaryCa
     private static final String CONDITION_EXPRESSION_SCRIPT_DEFAULT_VALUE = null;
     private static final String CONDITION_EXPRESSION_LANGUAGE = "drools";
     private static final String CONDITION_ERPRESSION_TYPE = "stunner.bpmn.ScriptType";
-
-    public BoundaryCatchingIntermediateConditionalEventTest(Marshaller marshallerType) {
-        super(marshallerType);
-    }
 
     @Test
     @Override

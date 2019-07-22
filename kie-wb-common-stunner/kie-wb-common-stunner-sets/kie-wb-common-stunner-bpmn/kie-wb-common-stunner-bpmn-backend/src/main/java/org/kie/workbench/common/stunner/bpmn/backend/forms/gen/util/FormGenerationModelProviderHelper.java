@@ -19,7 +19,6 @@ package org.kie.workbench.common.stunner.bpmn.backend.forms.gen.util;
 import java.io.IOException;
 
 import org.eclipse.bpmn2.Definitions;
-import org.kie.workbench.common.stunner.bpmn.backend.BaseDiagramMarshaller;
 import org.kie.workbench.common.stunner.bpmn.backend.BaseDirectDiagramMarshaller;
 import org.kie.workbench.common.stunner.core.backend.service.AbstractDefinitionSetService;
 import org.kie.workbench.common.stunner.core.definition.service.DiagramMarshaller;
@@ -36,11 +35,6 @@ public class FormGenerationModelProviderHelper {
     @SuppressWarnings("unchecked")
     public Definitions generate(final Diagram diagram) throws IOException {
         DiagramMarshaller diagramMarshaller = backendService.getDiagramMarshaller();
-        if (diagramMarshaller instanceof BaseDiagramMarshaller) {
-            return (Definitions) ((BaseDiagramMarshaller) diagramMarshaller).marshallToBpmn2Resource(diagram).getContents().get(0);
-        } else if (diagramMarshaller instanceof BaseDirectDiagramMarshaller) {
-            return ((BaseDirectDiagramMarshaller) diagramMarshaller).marshallToBpmn2Definitions(diagram);
-        }
-        throw new IOException("Unexpected diagram marshaller type: " + diagramMarshaller.getMetadataMarshaller().getClass());
+        return ((BaseDirectDiagramMarshaller) diagramMarshaller).marshallToBpmn2Definitions(diagram);
     }
 }

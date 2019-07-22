@@ -18,10 +18,8 @@ package org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshallin
 
 import java.util.List;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.DeclarationList;
-import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.Marshaller;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeValue;
@@ -38,7 +36,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-public class UserTaskTest extends Task<UserTask> {
+public class UserTaskTest extends TaskTest<UserTask> {
 
     private static final String BPMN_TASK_FILE_PATH = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/userTasks.bpmn";
 
@@ -85,17 +83,7 @@ public class UserTaskTest extends Task<UserTask> {
     private static final boolean AD_HOC_AUTOSTART = true;
     private static final boolean NOT_AD_HOC_AUTOSTART = false;
 
-    private final Marshaller _marshallerType;
-
-    private static Diagram<Graph, Metadata> oldDiagram;
-    private static Diagram<Graph, Metadata> oldRoundTripDiagram;
-
-    private static Diagram<Graph, Metadata> newDiagram;
-    private static Diagram<Graph, Metadata> newRoundTripDiagram;
-
-    public UserTaskTest(Marshaller marshallerType) throws Exception {
-        super(marshallerType, marshallers());
-        this._marshallerType = marshallerType;
+    public UserTaskTest() throws Exception {
     }
 
     @Test
@@ -106,58 +94,12 @@ public class UserTaskTest extends Task<UserTask> {
                 "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/userTaskProperties.bpmn";
         final String DIAGRAM_ID = "_pfJ-8O50EeiVSc03Fghuww";
 
-        Diagram<Graph, Metadata> d = unmarshall(newMarshaller, BPMN_USER_TASK_PROPERTIES_FILE_PATH);
+        Diagram<Graph, Metadata> d = unmarshall(marshaller, BPMN_USER_TASK_PROPERTIES_FILE_PATH);
         Node<View<BPMNDiagramImpl>, ?> node = d.getGraph().getNode(DIAGRAM_ID);
         ProcessData processData = node.getContent().getDefinition().getProcessData();
         ProcessVariables processVariables = processData.getProcessVariables();
         DeclarationList declarationList = DeclarationList.fromString(processVariables.getValue());
         assertTrue(declarationList.getDeclarations().isEmpty());
-    }
-
-    @Override
-    Diagram<Graph, Metadata> getOldDiagram() {
-        return oldDiagram;
-    }
-
-    @Override
-    void setOldDiagram(Diagram<Graph, Metadata> diagram) {
-        oldDiagram = diagram;
-    }
-
-    @Override
-    Diagram<Graph, Metadata> getOldRoundTripDiagram() {
-        return oldRoundTripDiagram;
-    }
-
-    @Override
-    void setOldRoundTripDiagram(Diagram<Graph, Metadata> diagram) {
-        oldRoundTripDiagram = diagram;
-    }
-
-    @Override
-    Diagram<Graph, Metadata> getNewDiagram() {
-        return newDiagram;
-    }
-
-    @Override
-    void setNewDiagram(Diagram<Graph, Metadata> diagram) {
-        newDiagram = diagram;
-    }
-
-    @Override
-    Diagram<Graph, Metadata> getNewRoundTripDiagram() {
-        return newRoundTripDiagram;
-    }
-
-    @Override
-    void setNewRoundTripDiagram(Diagram<Graph, Metadata> diagram) {
-        newRoundTripDiagram = diagram;
-    }
-
-    @Ignore("Test is ignored, because new and old marshaller User Task nodes will differ anyway. Because different " +
-            "properties supported by them")
-    @Test
-    public void testMigration() {
     }
 
     @Test
@@ -1282,10 +1224,8 @@ public class UserTaskTest extends Task<UserTask> {
         assertNotNull(onEntryScriptTypeValues.get(0));
         assertNotNull(onExitScriptTypeValues.get(0));
 
-        if (_marshallerType == Marshaller.NEW) {
-            assertNotNull(executionSet.getContent().getValue());
-            assertNotNull(executionSet.getSlaDueDate().getValue());
-        }
+        assertNotNull(executionSet.getContent().getValue());
+        assertNotNull(executionSet.getSlaDueDate().getValue());
 
         assertEquals(taskName, executionSet.getTaskName().getValue());
         assertEquals(subject, executionSet.getSubject().getValue());
@@ -1304,9 +1244,7 @@ public class UserTaskTest extends Task<UserTask> {
         assertEquals(onExitActionScriptValue, onExitScriptTypeValues.get(0).getScript());
         assertEquals(onExitActionScriptLanguage, onExitScriptTypeValues.get(0).getLanguage());
 
-        if (_marshallerType == Marshaller.NEW) {
-            assertEquals(content, executionSet.getContent().getValue());
-            assertEquals(slaDueDate, executionSet.getSlaDueDate().getValue());
-        }
+        assertEquals(content, executionSet.getContent().getValue());
+        assertEquals(slaDueDate, executionSet.getSlaDueDate().getValue());
     }
 }

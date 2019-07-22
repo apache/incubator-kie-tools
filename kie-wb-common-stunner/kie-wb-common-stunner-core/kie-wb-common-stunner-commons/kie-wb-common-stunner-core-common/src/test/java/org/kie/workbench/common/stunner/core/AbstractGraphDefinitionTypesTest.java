@@ -82,6 +82,7 @@ public class AbstractGraphDefinitionTypesTest {
     protected Node nodeB;
     protected Node nodeC;
 
+    @SuppressWarnings("unchecked")
     protected void setup() throws Exception {
         this.graphHandler = new TestingGraphMockHandler();
         this.rootDefinition = new RootDefinition();
@@ -90,12 +91,12 @@ public class AbstractGraphDefinitionTypesTest {
         this.definitionA = new DefinitionA();
         this.definitionB = new DefinitionB();
         this.definitionC = new DefinitionC();
-        when(graphHandler.definitionAdapter.getId(eq(rootDefinition))).thenReturn(DefinitionId.build(DEF_ROOT_ID));
-        when(graphHandler.definitionAdapter.getId(eq(parentDefinition))).thenReturn(DefinitionId.build(DEF_PARENT_ID));
-        when(graphHandler.definitionAdapter.getId(eq(gradParentDefinition))).thenReturn(DefinitionId.build(DEF_GRAND_PARENT_ID));
-        when(graphHandler.definitionAdapter.getId(eq(definitionA))).thenReturn(DefinitionId.build(DEF_A_ID));
-        when(graphHandler.definitionAdapter.getId(eq(definitionB))).thenReturn(DefinitionId.build(DEF_B_ID));
-        when(graphHandler.definitionAdapter.getId(eq(definitionC))).thenReturn(DefinitionId.build(DEF_C_ID));
+        when(graphHandler.getDefinitionAdapter().getId(eq(rootDefinition))).thenReturn(DefinitionId.build(DEF_ROOT_ID));
+        when(graphHandler.getDefinitionAdapter().getId(eq(parentDefinition))).thenReturn(DefinitionId.build(DEF_PARENT_ID));
+        when(graphHandler.getDefinitionAdapter().getId(eq(gradParentDefinition))).thenReturn(DefinitionId.build(DEF_GRAND_PARENT_ID));
+        when(graphHandler.getDefinitionAdapter().getId(eq(definitionA))).thenReturn(DefinitionId.build(DEF_A_ID));
+        when(graphHandler.getDefinitionAdapter().getId(eq(definitionB))).thenReturn(DefinitionId.build(DEF_B_ID));
+        when(graphHandler.getDefinitionAdapter().getId(eq(definitionC))).thenReturn(DefinitionId.build(DEF_C_ID));
         this.rootNode = newViewNode(ROOT_UUID,
                                     rootDefinition,
                                     0,

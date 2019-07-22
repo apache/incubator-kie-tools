@@ -41,15 +41,15 @@ public class DefinitionUtilsTest {
     public void setUp() throws Exception {
         graphMockHandler = new TestingGraphMockHandler();
         domainObject = new TestingSimpleDomainObject(graphMockHandler);
-        tested = new DefinitionUtils(graphMockHandler.definitionManager,
-                                     new DefaultDefinitionsCacheRegistry(graphMockHandler.factoryManager,
-                                                                         graphMockHandler.adapterManager));
+        tested = new DefinitionUtils(graphMockHandler.getDefinitionManager(),
+                                     new DefaultDefinitionsCacheRegistry(graphMockHandler.getFactoryManager(),
+                                                                         graphMockHandler.getAdapterManager()));
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void getNameFromField() {
-        when(graphMockHandler.propertyAdapter.getValue(domainObject.getNameProperty())).thenReturn("nameValue");
+        when(graphMockHandler.getPropertyAdapter().getValue(domainObject.getNameProperty())).thenReturn("nameValue");
         final String name = tested.getName(domainObject);
         assertEquals("nameValue", name);
     }
@@ -63,7 +63,7 @@ public class DefinitionUtilsTest {
     @Test
     @SuppressWarnings("unchecked")
     public void getNameIdentifierFromMetadata() {
-        when(graphMockHandler.definitionAdapter.getNameField(eq(domainObject))).thenReturn(Optional.empty());
+        when(graphMockHandler.getDefinitionAdapter().getNameField(eq(domainObject))).thenReturn(Optional.empty());
         final String nameIdentifier = tested.getNameIdentifier(domainObject);
         assertEquals(TestingSimpleDomainObject.NAME, nameIdentifier);
     }

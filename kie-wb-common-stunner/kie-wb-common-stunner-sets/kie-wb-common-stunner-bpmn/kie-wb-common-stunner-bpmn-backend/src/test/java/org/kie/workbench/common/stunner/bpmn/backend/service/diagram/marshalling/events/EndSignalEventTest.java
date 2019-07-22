@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.events;
 
 import org.junit.Test;
-import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.Marshaller;
 import org.kie.workbench.common.stunner.bpmn.definition.EndSignalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.signal.ScopedSignalEventExecutionSet;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -27,7 +26,7 @@ import org.kie.workbench.common.stunner.core.graph.Graph;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class EndSignalEventTest extends EndEvent<EndSignalEvent> {
+public class EndSignalEventTest extends EndEventTest<EndSignalEvent> {
 
     private static final String BPMN_END_EVENT_FILE_PATH = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/endSignalEvents.bpmn";
 
@@ -57,10 +56,6 @@ public class EndSignalEventTest extends EndEvent<EndSignalEvent> {
     private static final String EVENT_SIGNAL_SCOPE_PROCESS_INSTANCE = "processInstance";
     private static final String EVENT_SIGNAL_SCOPE_PROJECT = "project";
     private static final String EVENT_SIGNAL_SCOPE_EXTERNAL = "external";
-
-    public EndSignalEventTest(Marshaller marshallerType) {
-        super(marshallerType);
-    }
 
     @Test
     @Override

@@ -17,13 +17,12 @@
 package org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.nodes;
 
 import org.junit.Test;
-import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.Marshaller;
 import org.kie.workbench.common.stunner.bpmn.definition.ParallelGateway;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 
-public class ParallelGatewayTest extends GatewayNode<ParallelGateway> {
+public class ParallelGatewayTest extends GatewayNodeTest<ParallelGateway> {
 
     private static final String BPMN_PARALLEL_GATEWAY_FILE_PATH = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/parallelGateways.bpmn";
 
@@ -36,12 +35,10 @@ public class ParallelGatewayTest extends GatewayNode<ParallelGateway> {
     private static final String NAME = "Some name ~`!@#$%^&*()_+=-{}|\\][:\";'?><,./";
     private static final String EMPTY = "";
 
-    public ParallelGatewayTest(Marshaller marshallerType) {
-        super(marshallerType);
+    public ParallelGatewayTest() {
     }
 
     @Test
-    @Override
     public void testUnmarshallTopLevelGatewayFilledProperties() throws Exception {
         Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_PARALLEL_GATEWAY_FILE_PATH);
         assertDiagram(diagram, DIAGRAM_NODE_SIZE);
@@ -51,7 +48,6 @@ public class ParallelGatewayTest extends GatewayNode<ParallelGateway> {
     }
 
     @Test
-    @Override
     public void testUnmarshallTopLevelEmptyGatewayProperties() throws Exception {
         Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_PARALLEL_GATEWAY_FILE_PATH);
         assertDiagram(diagram, DIAGRAM_NODE_SIZE);
@@ -61,7 +57,6 @@ public class ParallelGatewayTest extends GatewayNode<ParallelGateway> {
     }
 
     @Test
-    @Override
     public void testUnmarshallSubprocessLevelGatewayFilledProperties() throws Exception {
         Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_PARALLEL_GATEWAY_FILE_PATH);
         assertDiagram(diagram, DIAGRAM_NODE_SIZE);
@@ -71,7 +66,6 @@ public class ParallelGatewayTest extends GatewayNode<ParallelGateway> {
     }
 
     @Test
-    @Override
     public void testUnmarshallSubprocessLevelGatewayEmptyProperties() throws Exception {
         Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_PARALLEL_GATEWAY_FILE_PATH);
         assertDiagram(diagram, DIAGRAM_NODE_SIZE);

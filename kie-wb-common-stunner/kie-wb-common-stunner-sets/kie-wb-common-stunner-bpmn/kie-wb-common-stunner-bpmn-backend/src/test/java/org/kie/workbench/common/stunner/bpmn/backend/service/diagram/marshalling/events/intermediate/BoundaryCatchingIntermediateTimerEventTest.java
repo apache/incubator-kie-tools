@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.events.intermediate;
 
 import org.junit.Test;
-import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.Marshaller;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.timer.CancellingTimerEventExecutionSet;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -28,7 +27,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-public class BoundaryCatchingIntermediateTimerEventTest extends BoundaryCatchingIntermediateEvent<IntermediateTimerEvent> {
+public class BoundaryCatchingIntermediateTimerEventTest extends BoundaryCatchingIntermediateEventTest<IntermediateTimerEvent> {
 
     private static final String BPMN_CATCHING_INTERMEDIATE_EVENT_FILE_PATH = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/boundaryTimerEvents.bpmn";
 
@@ -55,10 +54,6 @@ public class BoundaryCatchingIntermediateTimerEventTest extends BoundaryCatching
     private static final String SLA_DUE_DATE = "12/25/1983";
 
     private static final int AMOUNT_OF_NODES_IN_DIAGRAM = 47;
-
-    public BoundaryCatchingIntermediateTimerEventTest(Marshaller marshallerType) {
-        super(marshallerType);
-    }
 
     @Test
     @Override

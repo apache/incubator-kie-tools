@@ -66,7 +66,7 @@ public class ConnectorParentsMatchConnectionHandlerTest extends AbstractGraphDef
     public void setup() throws Exception {
         super.setup();
         this.graph = graphHandler.graph;
-        when(graphHandler.definitionAdapter.getId(eq(connectorDef))).thenReturn(DefinitionId.build(DEF_EDGE_ID));
+        when(graphHandler.getDefinitionAdapter().getId(eq(connectorDef))).thenReturn(DefinitionId.build(DEF_EDGE_ID));
         this.connector = graphHandler.newEdge(EDGE_UUID,
                                               Optional.of(connectorDef));
         GraphEvaluationState state = new StatefulGraphEvaluationState(graph);
@@ -74,7 +74,7 @@ public class ConnectorParentsMatchConnectionHandlerTest extends AbstractGraphDef
         when(connectionContext.getConnector()).thenReturn(connector);
         when(ruleExtension.getId()).thenReturn(DEF_EDGE_ID);
         when(ruleExtension.getArguments()).thenReturn(new String[]{"violation1"});
-        tested = new ConnectorParentsMatchConnectionHandler(graphHandler.definitionManager);
+        tested = new ConnectorParentsMatchConnectionHandler(graphHandler.getDefinitionManager());
     }
 
     @Test

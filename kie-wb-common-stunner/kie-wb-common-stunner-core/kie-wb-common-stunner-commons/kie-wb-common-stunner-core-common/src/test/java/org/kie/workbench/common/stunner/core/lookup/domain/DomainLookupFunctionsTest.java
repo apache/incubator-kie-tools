@@ -95,7 +95,7 @@ public class DomainLookupFunctionsTest {
         when(cache.getConnectionRules()).thenReturn(Collections.singletonList(permittedConnections));
         when(context.getDefinitionsRegistry()).thenReturn(definitionsCache);
         TestingGraphMockHandler graphTestHandler = new TestingGraphMockHandler();
-        when(context.getDefinitionManager()).thenReturn(graphTestHandler.definitionManager);
+        when(context.getDefinitionManager()).thenReturn(graphTestHandler.getDefinitionManager());
         graph1Instance = TestingGraphInstanceBuilder.newGraph1(graphTestHandler);
 
         when(definitionsCache.getLabels(eq(DEF_ID1))).thenReturn(Collections.singleton(ROLE1));

@@ -202,6 +202,6 @@ public class GraphUtilsTest {
     }
 
     private DefinitionManager getDefinitionManager() {
-        return graphTestHandler.definitionManager;
+        return graphTestHandler.getDefinitionManager();
     }
 }

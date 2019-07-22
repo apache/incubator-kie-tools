@@ -17,13 +17,12 @@
 package org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.events;
 
 import org.junit.Test;
-import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.Marshaller;
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 
-public class EndTerminateEventTest extends EndEvent<EndTerminateEvent> {
+public class EndTerminateEventTest extends EndEventTest<EndTerminateEvent> {
 
     private static final String BPMN_END_EVENT_FILE_PATH = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/endTerminateEvents.bpmn";
 
@@ -38,10 +37,6 @@ public class EndTerminateEventTest extends EndEvent<EndTerminateEvent> {
     private static final String FILLED_WITH_INCOME_SUBPROCESS_LEVEL_EVENT_ID = "_C910096C-ED66-47E1-A274-163759FF51BD";
 
     private static final int AMOUNT_OF_NODES_IN_DIAGRAM = 14;
-
-    public EndTerminateEventTest(Marshaller marshallerType) {
-        super(marshallerType);
-    }
 
     @Test
     @Override

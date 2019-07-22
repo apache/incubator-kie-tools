@@ -21,6 +21,8 @@ import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.factory.definition.DefinitionFactory;
 import org.kie.workbench.common.stunner.core.factory.diagram.DiagramFactory;
 import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
+import org.kie.workbench.common.stunner.core.factory.graph.GraphFactory;
+import org.kie.workbench.common.stunner.core.factory.impl.DiagramFactoryImpl;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
@@ -85,8 +87,7 @@ public abstract class AbstractFactoryManager {
         final DiagramFactory<M, ?> factory = registry().getDiagramFactory(defSetid,
                                                                           metadata.getMetadataType());
         if (null == factory) {
-            throw new IllegalArgumentException("No diagram factory found for [" + defSetid + "] and " +
-                                                       "metadata type [" + metadata.getClass() + "]");
+            return (DiagramFactory<M, ?>) new DiagramFactoryImpl();
         }
         return factory;
     }
@@ -115,7 +116,9 @@ public abstract class AbstractFactoryManager {
                                                               final Object defSet,
                                                               final Metadata metadata) {
         final Class<? extends ElementFactory> factoryType = definitionManager.adapters().forDefinitionSet().getGraphFactoryType(defSet);
-        final ElementFactory<String, DefinitionSet, Element<DefinitionSet>> factory = factoryRegistry.getElementFactory(factoryType);
+        final ElementFactory<String, DefinitionSet, Element<DefinitionSet>> _factory = factoryRegistry.getElementFactory(factoryType);
+        final ElementFactory<String, DefinitionSet, Element<DefinitionSet>> factory = null != _factory ? _factory :
+                factoryRegistry.getElementFactory(GraphFactory.class);
         return (Element<C>) factory.build(uuid, defSetId, metadata);
     }
 }

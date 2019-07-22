@@ -18,22 +18,17 @@ package org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshallin
 
 import java.util.List;
 
-import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.Marshaller;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.BusinessRuleTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.RuleLanguage;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeValue;
-import org.kie.workbench.common.stunner.core.diagram.Diagram;
-import org.kie.workbench.common.stunner.core.diagram.Metadata;
-import org.kie.workbench.common.stunner.core.graph.Graph;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class BusinessRuleTaskTest extends Task<BusinessRuleTask> {
+public class BusinessRuleTaskTest extends TaskTest<BusinessRuleTask> {
 
     private static final String BPMN_TASK_FILE_PATH = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/businessRuleTasks.bpmn";
 
@@ -72,7 +67,6 @@ public class BusinessRuleTaskTest extends Task<BusinessRuleTask> {
     private static final int AMOUNT_OF_NODES_IN_DIAGRAM = 70;
 
     private static final String EMPTY_TASK_DATA_INPUT_OUTPUT = "||||";
-    private static final String DMN_TASK_DATA_INPUT_OUTPUT = "|namespace:java.lang.String,decision:java.lang.String,model:java.lang.String|||[din]namespace=Namespace,[din]decision=DecisionName,[din]model=DMNModelName";
     private static final String TASK_SCRIPT_JAVA_LANGUAGE = "java";
     private static final String TASK_SCRIPT_JAVASCRIPT_LANGUAGE = "javascript";
     private static final String TASK_SCRIPT_MVEL_LANGUAGE = "mvel";
@@ -81,60 +75,7 @@ public class BusinessRuleTaskTest extends Task<BusinessRuleTask> {
     private static final boolean AD_HOC_AUTOSTART = true;
     private static final boolean NOT_AD_HOC_AUTOSTART = false;
 
-    private final Marshaller marshallerType;
-    private static Diagram<Graph, Metadata> oldDiagram;
-    private static Diagram<Graph, Metadata> oldRoundTripDiagram;
-
-    private static Diagram<Graph, Metadata> newDiagram;
-    private static Diagram<Graph, Metadata> newRoundTripDiagram;
-
-    public BusinessRuleTaskTest(Marshaller marshallerType) throws Exception {
-        super(marshallerType, marshallers());
-        this.marshallerType = marshallerType;
-    }
-
-    @Override
-    Diagram<Graph, Metadata> getOldDiagram() {
-        return oldDiagram;
-    }
-
-    @Override
-    void setOldDiagram(Diagram<Graph, Metadata> diagram) {
-        oldDiagram = diagram;
-    }
-
-    @Override
-    Diagram<Graph, Metadata> getOldRoundTripDiagram() {
-        return oldRoundTripDiagram;
-    }
-
-    @Override
-    void setOldRoundTripDiagram(Diagram<Graph, Metadata> diagram) {
-        oldRoundTripDiagram = diagram;
-    }
-
-    @Override
-    Diagram<Graph, Metadata> getNewDiagram() {
-        return newDiagram;
-    }
-
-    @Override
-    void setNewDiagram(Diagram<Graph, Metadata> diagram) {
-        newDiagram = diagram;
-    }
-
-    @Override
-    Diagram<Graph, Metadata> getNewRoundTripDiagram() {
-        return newRoundTripDiagram;
-    }
-
-    @Override
-    void setNewRoundTripDiagram(Diagram<Graph, Metadata> diagram) {
-        newRoundTripDiagram = diagram;
-    }
-
-    @Ignore("Test is ignored, Business Rule Task has properties that are not supported by the old marshallers.")
-    public void testMigration() {
+    public BusinessRuleTaskTest() throws Exception {
     }
 
     @Test
@@ -797,13 +738,7 @@ public class BusinessRuleTaskTest extends Task<BusinessRuleTask> {
                                            IS_NOT_ASYNC,
                                            NOT_AD_HOC_AUTOSTART);
 
-        if (marshallerType == Marshaller.NEW) {
-            assertDataIOSet(emptyTopLevelTask.getDataIOSet(), EMPTY_TASK_DATA_INPUT_OUTPUT);
-        }
-
-        if (marshallerType == Marshaller.OLD) {
-            assertDataIOSet(emptyTopLevelTask.getDataIOSet(), DMN_TASK_DATA_INPUT_OUTPUT);
-        }
+        assertDataIOSet(emptyTopLevelTask.getDataIOSet(), EMPTY_TASK_DATA_INPUT_OUTPUT);
     }
 
     @Test
@@ -969,15 +904,11 @@ public class BusinessRuleTaskTest extends Task<BusinessRuleTask> {
         assertNotNull(onEntryScriptTypeValues.get(0));
         assertNotNull(onExitScriptTypeValues.get(0));
 
-        if (marshallerType == Marshaller.NEW) {
-            assertEquals(ruleLanguage, executionSet.getRuleLanguage().getValue());
-            assertEquals(ruleFlowGroup, executionSet.getRuleFlowGroup().getValue());
-            assertEquals(namespace, executionSet.getNamespace().getValue());
-            assertEquals(decisionName, executionSet.getDecisionName().getValue());
-            assertEquals(dmnModelName, executionSet.getDmnModelName().getValue());
-        } else if (marshallerType == Marshaller.OLD) {
-            assertEquals(ruleFlowGroup, executionSet.getRuleFlowGroup().getValue());
-        }
+        assertEquals(ruleLanguage, executionSet.getRuleLanguage().getValue());
+        assertEquals(ruleFlowGroup, executionSet.getRuleFlowGroup().getValue());
+        assertEquals(namespace, executionSet.getNamespace().getValue());
+        assertEquals(decisionName, executionSet.getDecisionName().getValue());
+        assertEquals(dmnModelName, executionSet.getDmnModelName().getValue());
 
         assertEquals(onEntryActionScriptValue, onEntryScriptTypeValues.get(0).getScript());
         assertEquals(onEntryActionScriptLanguage, onEntryScriptTypeValues.get(0).getLanguage());

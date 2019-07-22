@@ -74,17 +74,17 @@ public class GraphValidatorImplTest {
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
         this.graphTestHandler = new TestingGraphMockHandler();
-        when(graphTestHandler.definitionSetRegistry.getDefinitionSetById(eq(DEF_SET_ID))).thenReturn(defSetBean);
-        when(graphTestHandler.ruleAdapter.getRuleSet(eq(defSetBean))).thenReturn(graphTestHandler.ruleSet);
-        this.tested = new GraphValidatorImpl(graphTestHandler.definitionManager,
-                                             graphTestHandler.ruleManager,
+        when(graphTestHandler.getDefinitionSetRegistry().getDefinitionSetById(eq(DEF_SET_ID))).thenReturn(defSetBean);
+        when(graphTestHandler.getRuleAdapter().getRuleSet(eq(defSetBean))).thenReturn(graphTestHandler.ruleSet);
+        this.tested = new GraphValidatorImpl(graphTestHandler.getDefinitionManager(),
+                                             graphTestHandler.getRuleManager(),
                                              new TreeWalkTraverseProcessorImpl());
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testValidateGraph1() {
-        final RuleManager ruleManager = graphTestHandler.ruleManager;
+        final RuleManager ruleManager = graphTestHandler.getRuleManager();
         final RuleSet ruleSet = graphTestHandler.ruleSet;
         final Graph<DefinitionSet, Node> graph = graphTestHandler.graph;
         final TestingGraphInstanceBuilder.TestGraph1 testGraph1 = TestingGraphInstanceBuilder.newGraph1(graphTestHandler);
@@ -148,7 +148,7 @@ public class GraphValidatorImplTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testValidateGraph2() {
-        final RuleManager ruleManager = graphTestHandler.ruleManager;
+        final RuleManager ruleManager = graphTestHandler.getRuleManager();
         final RuleSet ruleSet = graphTestHandler.ruleSet;
         final Graph<DefinitionSet, Node> graph = graphTestHandler.graph;
         final TestingGraphInstanceBuilder.TestGraph2 testGraph2 = TestingGraphInstanceBuilder.newGraph2(graphTestHandler);

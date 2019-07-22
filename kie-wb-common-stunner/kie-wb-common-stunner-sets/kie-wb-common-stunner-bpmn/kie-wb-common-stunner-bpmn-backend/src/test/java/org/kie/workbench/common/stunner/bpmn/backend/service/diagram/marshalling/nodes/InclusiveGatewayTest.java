@@ -17,13 +17,12 @@
 package org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.nodes;
 
 import org.junit.Test;
-import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.Marshaller;
 import org.kie.workbench.common.stunner.bpmn.definition.InclusiveGateway;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 
-public class InclusiveGatewayTest extends GatewayNode<InclusiveGateway> {
+public class InclusiveGatewayTest extends GatewayNodeTest<InclusiveGateway> {
 
     private static final String BPMN_INCLUSIVE_GATEWAY_FILE_PATH = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/inclusiveGateways.bpmn";
 
@@ -38,12 +37,10 @@ public class InclusiveGatewayTest extends GatewayNode<InclusiveGateway> {
     private static final String NAME = "Some name ~`!@#$%^&*()_+=-{}|\\][:\";'?><,./";
     private static final String EMPTY = "";
 
-    public InclusiveGatewayTest(Marshaller marshallerType) {
-        super(marshallerType);
+    public InclusiveGatewayTest() {
     }
 
     @Test
-    @Override
     public void testUnmarshallTopLevelGatewayFilledProperties() throws Exception {
         Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_INCLUSIVE_GATEWAY_FILE_PATH);
         assertDiagram(diagram, DIAGRAM_NODE_SIZE);
@@ -54,7 +51,6 @@ public class InclusiveGatewayTest extends GatewayNode<InclusiveGateway> {
     }
 
     @Test
-    @Override
     public void testUnmarshallTopLevelEmptyGatewayProperties() throws Exception {
         Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_INCLUSIVE_GATEWAY_FILE_PATH);
         assertDiagram(diagram, DIAGRAM_NODE_SIZE);
@@ -65,7 +61,6 @@ public class InclusiveGatewayTest extends GatewayNode<InclusiveGateway> {
     }
 
     @Test
-    @Override
     public void testUnmarshallSubprocessLevelGatewayFilledProperties() throws Exception {
         Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_INCLUSIVE_GATEWAY_FILE_PATH);
         assertDiagram(diagram, DIAGRAM_NODE_SIZE);
@@ -76,7 +71,6 @@ public class InclusiveGatewayTest extends GatewayNode<InclusiveGateway> {
     }
 
     @Test
-    @Override
     public void testUnmarshallSubprocessLevelGatewayEmptyProperties() throws Exception {
         Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_INCLUSIVE_GATEWAY_FILE_PATH);
         assertDiagram(diagram, DIAGRAM_NODE_SIZE);

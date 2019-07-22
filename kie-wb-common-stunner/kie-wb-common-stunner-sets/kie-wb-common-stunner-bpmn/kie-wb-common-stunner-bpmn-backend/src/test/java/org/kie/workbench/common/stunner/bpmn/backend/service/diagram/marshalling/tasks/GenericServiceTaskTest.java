@@ -22,14 +22,14 @@ import org.eclipse.bpmn2.impl.ServiceTaskImpl;
 import org.junit.Test;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomAttribute;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.DefinitionsConverter;
-import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.BPMNDiagramMarshallerBase;
+import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.BPMNDiagramMarshallerBaseTest;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 
 import static junit.framework.TestCase.assertEquals;
 
-public class GenericServiceTaskTest extends BPMNDiagramMarshallerBase {
+public class GenericServiceTaskTest extends BPMNDiagramMarshallerBaseTest {
 
     private static final String BPMN_FILE_PATH = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/genericServiceTasks.bpmn";
     private static final String TASK_ID = "_414AEBA5-ED00-492E-B6E9-62331732B7B3";
@@ -40,7 +40,7 @@ public class GenericServiceTaskTest extends BPMNDiagramMarshallerBase {
 
     @Test
     public void marshallServiceTask() throws Exception {
-        Diagram<Graph, Metadata> d = unmarshall(newMarshaller, BPMN_FILE_PATH);
+        Diagram<Graph, Metadata> d = unmarshall(marshaller, BPMN_FILE_PATH);
 
         DefinitionsConverter definitionsConverter =
                 new DefinitionsConverter(d.getGraph());

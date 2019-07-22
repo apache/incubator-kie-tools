@@ -17,15 +17,11 @@
 package org.kie.workbench.common.stunner.cm.backend.forms.gen;
 
 import org.eclipse.bpmn2.Definitions;
-import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.ecore.EObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.stunner.bpmn.backend.legacy.resource.JBPMBpmn2ResourceImpl;
 import org.kie.workbench.common.stunner.cm.CaseManagementDefinitionSet;
 import org.kie.workbench.common.stunner.cm.backend.CaseManagementBackendService;
-import org.kie.workbench.common.stunner.cm.backend.CaseManagementDiagramMarshaller;
 import org.kie.workbench.common.stunner.cm.backend.CaseManagementDirectDiagramMarshaller;
 import org.kie.workbench.common.stunner.cm.backend.forms.gen.util.CaseManagementFormGenerationModelProviderHelper;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -37,7 +33,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -46,9 +41,6 @@ import static org.mockito.Mockito.when;
 public class CaseManagementFormGenerationModelProviderTest {
 
     private static final String ID = "id";
-
-    @Mock
-    private CaseManagementDiagramMarshaller cmDiagramMarshaller;
 
     @Mock
     private CaseManagementDirectDiagramMarshaller cmDirectDiagramMarshaller;
@@ -87,22 +79,6 @@ public class CaseManagementFormGenerationModelProviderTest {
     @Test
     public void testAccepts() throws Exception {
         assertTrue(tested.accepts(diagram));
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void testGenerateForCaseManagementDiagramMarshaller() throws Exception {
-        JBPMBpmn2ResourceImpl bpmn2Resource = mock(JBPMBpmn2ResourceImpl.class);
-        EList<EObject> contents = mock(EList.class);
-
-        when(cmDiagramMarshaller.marshallToBpmn2Resource(diagram)).thenReturn(bpmn2Resource);
-        when(bpmn2Resource.getContents()).thenReturn(contents);
-        when(contents.get(0)).thenReturn(definitions);
-
-        when(cmBackendService.getDiagramMarshaller()).thenReturn(cmDiagramMarshaller);
-        Definitions result = tested.generate(diagram);
-        verify(cmDiagramMarshaller).marshallToBpmn2Resource(diagram);
-        assertEquals(result, definitions);
     }
 
     @Test

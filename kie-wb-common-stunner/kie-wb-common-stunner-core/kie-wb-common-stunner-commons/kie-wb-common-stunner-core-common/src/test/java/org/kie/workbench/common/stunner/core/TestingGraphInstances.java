@@ -222,8 +222,8 @@ public class TestingGraphInstances {
 
     public static ContextualGraphCommandExecutionContext createExecutionContext(TestingGraphMockHandler graphTestHandler) {
         RuleManager ruleManager = configureDomain(graphTestHandler);
-        return new ContextualGraphCommandExecutionContext(graphTestHandler.definitionManager,
-                                                          graphTestHandler.factoryManager,
+        return new ContextualGraphCommandExecutionContext(graphTestHandler.getDefinitionManager(),
+                                                          graphTestHandler.getFactoryManager(),
                                                           ruleManager,
                                                           graphTestHandler.graphIndex,
                                                           graphTestHandler.ruleSet);
@@ -257,8 +257,8 @@ public class TestingGraphInstances {
 
         RuleManager ruleManager = graphTestHandler.createRuleManagerImplementation();
 
-        ConnectorParentsMatchConnectionHandler connectionHandler = new ConnectorParentsMatchConnectionHandler(graphTestHandler.definitionManager);
-        ConnectorParentsMatchContainmentHandler containmentHandler = new ConnectorParentsMatchContainmentHandler(graphTestHandler.definitionManager, new TreeWalkTraverseProcessorImpl());
+        ConnectorParentsMatchConnectionHandler connectionHandler = new ConnectorParentsMatchConnectionHandler(graphTestHandler.getDefinitionManager());
+        ConnectorParentsMatchContainmentHandler containmentHandler = new ConnectorParentsMatchContainmentHandler(graphTestHandler.getDefinitionManager(), new TreeWalkTraverseProcessorImpl());
         RuleExtensionMultiHandler multiHandler = new RuleExtensionMultiHandler();
         ConnectorParentsMatchHandler matchHandler = new ConnectorParentsMatchHandler(connectionHandler, containmentHandler, multiHandler);
         matchHandler.init();

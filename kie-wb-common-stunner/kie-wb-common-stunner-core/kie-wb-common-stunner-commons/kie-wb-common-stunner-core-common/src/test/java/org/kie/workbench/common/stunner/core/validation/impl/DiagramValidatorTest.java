@@ -73,8 +73,8 @@ public class DiagramValidatorTest {
     private class TestDiagramValidator extends AbstractDiagramValidator {
 
         private TestDiagramValidator() {
-            super(graphTestHandler.definitionManager,
-                  graphTestHandler.ruleManager,
+            super(graphTestHandler.getDefinitionManager(),
+                  graphTestHandler.getRuleManager(),
                   new TreeWalkTraverseProcessorImpl(),
                   modelValidator);
         }
@@ -137,8 +137,8 @@ public class DiagramValidatorTest {
         RuleViolation ruleViolation = mock(RuleViolation.class);
         when(ruleViolation.getViolationType()).thenReturn(Violation.Type.ERROR);
         when(ruleViolation.getMessage()).thenReturn(RULE_VIOLATION);
-        when(graphTestHandler.ruleManager.evaluate(any(RuleSet.class),
-                                                   any(RuleEvaluationContext.class))).thenReturn(new DefaultRuleViolations().addViolation(ruleViolation));
+        when(graphTestHandler.getRuleManager().evaluate(any(RuleSet.class),
+                                                        any(RuleEvaluationContext.class))).thenReturn(new DefaultRuleViolations().addViolation(ruleViolation));
 
         tested.validate(diagram,
                         violations -> assertElementError(violations,
@@ -182,8 +182,8 @@ public class DiagramValidatorTest {
         RuleViolation ruleViolation = mock(RuleViolation.class);
         when(ruleViolation.getViolationType()).thenReturn(Violation.Type.ERROR);
         when(ruleViolation.getMessage()).thenReturn(RULE_VIOLATION);
-        when(graphTestHandler.ruleManager.evaluate(any(RuleSet.class),
-                                                   any(RuleEvaluationContext.class))).thenReturn(new DefaultRuleViolations().addViolation(ruleViolation));
+        when(graphTestHandler.getRuleManager().evaluate(any(RuleSet.class),
+                                                        any(RuleEvaluationContext.class))).thenReturn(new DefaultRuleViolations().addViolation(ruleViolation));
 
         tested.validate(diagram,
                         violations -> assertElementError(violations,

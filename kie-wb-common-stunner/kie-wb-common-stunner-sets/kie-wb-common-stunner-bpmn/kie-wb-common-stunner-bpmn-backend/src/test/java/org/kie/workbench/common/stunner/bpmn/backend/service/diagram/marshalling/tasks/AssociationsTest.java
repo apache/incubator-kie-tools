@@ -31,7 +31,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Defi
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Ids;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.CatchEventPropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.FlatVariableScope;
-import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.BPMNDiagramMarshallerBase;
+import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.BPMNDiagramMarshallerBaseTest;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.AssignmentsInfo;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -43,7 +43,7 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import static junit.framework.TestCase.assertEquals;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpmn2;
 
-public class AssociationsTest extends BPMNDiagramMarshallerBase {
+public class AssociationsTest extends BPMNDiagramMarshallerBaseTest {
 
     private static final String BPMN_FILE_PATH = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/associationsAndAssignments.bpmn";
     private static final String TASK_ID = "_5E1F51EC-B398-4BF7-B32D-45FB6CE4731A";
@@ -55,7 +55,7 @@ public class AssociationsTest extends BPMNDiagramMarshallerBase {
     @Test
     @SuppressWarnings("unchecked")
     public void parseAssociations() throws Exception {
-        Diagram<Graph, Metadata> d = unmarshall(newMarshaller, BPMN_FILE_PATH);
+        Diagram<Graph, Metadata> d = unmarshall(marshaller, BPMN_FILE_PATH);
         Node<View<UserTask>, ?> node = d.getGraph().getNode(TASK_ID);
         UserTask definition = node.getContent().getDefinition();
         AssignmentsInfo assignmentsinfo = definition.getExecutionSet().getAssignmentsinfo();
@@ -83,7 +83,7 @@ public class AssociationsTest extends BPMNDiagramMarshallerBase {
 
     @Test
     public void marshallAssociations() throws Exception {
-        Diagram<Graph, Metadata> d = unmarshall(newMarshaller, BPMN_FILE_PATH);
+        Diagram<Graph, Metadata> d = unmarshall(marshaller, BPMN_FILE_PATH);
 
         DefinitionsConverter definitionsConverter =
                 new DefinitionsConverter(d.getGraph());

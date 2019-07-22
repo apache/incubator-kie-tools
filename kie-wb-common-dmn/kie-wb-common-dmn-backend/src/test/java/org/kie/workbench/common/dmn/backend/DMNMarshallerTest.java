@@ -115,6 +115,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.TextAnnotation;
 import org.kie.workbench.common.dmn.api.editors.included.DMNImportTypes;
 import org.kie.workbench.common.dmn.api.editors.included.PMMLDocumentMetadata;
+import org.kie.workbench.common.dmn.api.factory.DMNGraphFactoryImpl;
 import org.kie.workbench.common.dmn.api.graph.DMNDiagramUtils;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
@@ -123,33 +124,15 @@ import org.kie.workbench.common.dmn.backend.definition.v1_1.DecisionConverter;
 import org.kie.workbench.common.dmn.backend.definition.v1_1.InputDataConverter;
 import org.kie.workbench.common.dmn.backend.definition.v1_1.TextAnnotationConverter;
 import org.kie.workbench.common.dmn.backend.producers.DMNMarshallerProducer;
-import org.kie.workbench.common.stunner.backend.definition.factory.TestScopeModelFactory;
-import org.kie.workbench.common.stunner.core.api.DefinitionManager;
-import org.kie.workbench.common.stunner.core.backend.BackendFactoryManager;
-import org.kie.workbench.common.stunner.core.backend.definition.adapter.reflect.BackendDefinitionAdapter;
-import org.kie.workbench.common.stunner.core.backend.definition.adapter.reflect.BackendDefinitionSetAdapter;
-import org.kie.workbench.common.stunner.core.backend.definition.adapter.reflect.BackendPropertyAdapter;
-import org.kie.workbench.common.stunner.core.backend.definition.adapter.reflect.BackendPropertySetAdapter;
+import org.kie.workbench.common.stunner.core.backend.StunnerTestingGraphBackendAPI;
 import org.kie.workbench.common.stunner.core.backend.service.XMLEncoderDiagramMetadataMarshaller;
-import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.DiagramImpl;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
-import org.kie.workbench.common.stunner.core.diagram.MetadataImpl;
-import org.kie.workbench.common.stunner.core.factory.graph.EdgeFactory;
-import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
-import org.kie.workbench.common.stunner.core.factory.graph.GraphFactory;
-import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
-import org.kie.workbench.common.stunner.core.factory.impl.EdgeFactoryImpl;
-import org.kie.workbench.common.stunner.core.factory.impl.GraphFactoryImpl;
-import org.kie.workbench.common.stunner.core.factory.impl.NodeFactoryImpl;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.command.GraphCommandManager;
-import org.kie.workbench.common.stunner.core.graph.command.GraphCommandManagerImpl;
-import org.kie.workbench.common.stunner.core.graph.command.impl.GraphCommandFactory;
 import org.kie.workbench.common.stunner.core.graph.content.Bound;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
@@ -161,9 +144,7 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewImpl;
 import org.kie.workbench.common.stunner.core.graph.impl.EdgeImpl;
-import org.kie.workbench.common.stunner.core.registry.definition.AdapterRegistry;
-import org.kie.workbench.common.stunner.core.registry.impl.DefinitionsCacheRegistry;
-import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
+import org.kie.workbench.common.stunner.core.graph.processing.index.map.MapIndexBuilder;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.slf4j.Logger;
@@ -183,8 +164,6 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyList;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -197,113 +176,22 @@ import static org.mockito.Mockito.when;
 public class DMNMarshallerTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(DMNMarshallerTest.class);
-
     private static final String DMN_DEF_SET_ID = BindableAdapterUtils.getDefinitionSetId(DMNDefinitionSet.class);
 
     @Mock
-    DefinitionManager definitionManager;
+    private DMNMarshallerImportsHelper dmnMarshallerImportsHelper;
 
-    @Mock
-    AdapterManager adapterManager;
-
-    @Mock
-    AdapterRegistry adapterRegistry;
-
-    @Mock
-    BackendFactoryManager applicationFactoryManager;
-
-    @Mock
-    DefinitionsCacheRegistry definitionsRegistry;
-
-    @Mock
-    DMNMarshallerImportsHelper dmnMarshallerImportsHelper;
-
-    EdgeFactory<Object> connectionEdgeFactory;
-    NodeFactory<Object> viewNodeFactory;
-    DefinitionUtils definitionUtils;
-
-    GraphCommandManager commandManager;
-    GraphCommandFactory commandFactory;
-
-    GraphFactory dmnGraphFactory;
-
-    TestScopeModelFactory testScopeModelFactory;
+    private StunnerTestingGraphBackendAPI api;
 
     @Before
     @SuppressWarnings("unchecked")
-    public void setup() {
-        // Graph utils.
-        when(definitionManager.adapters()).thenReturn(adapterManager);
-        when(adapterManager.registry()).thenReturn(adapterRegistry);
-        definitionUtils = new DefinitionUtils(definitionManager,
-                                              definitionsRegistry);
-        testScopeModelFactory = new TestScopeModelFactory(new DMNDefinitionSet.DMNDefinitionSetBuilder().build());
-        // Definition manager.
-        final BackendDefinitionAdapter definitionAdapter = new BackendDefinitionAdapter(definitionUtils);
-        final BackendDefinitionSetAdapter definitionSetAdapter = new BackendDefinitionSetAdapter(definitionAdapter);
-        final BackendPropertySetAdapter propertySetAdapter = new BackendPropertySetAdapter();
-        final BackendPropertyAdapter propertyAdapter = new BackendPropertyAdapter();
-        when(adapterManager.forDefinitionSet()).thenReturn(definitionSetAdapter);
-        when(adapterManager.forDefinition()).thenReturn(definitionAdapter);
-        when(adapterManager.forPropertySet()).thenReturn(propertySetAdapter);
-        when(adapterManager.forProperty()).thenReturn(propertyAdapter);
-        when(adapterRegistry.getDefinitionSetAdapter(any(Class.class))).thenReturn(definitionSetAdapter);
-        when(adapterRegistry.getDefinitionAdapter(any(Class.class))).thenReturn(definitionAdapter);
-        when(adapterRegistry.getPropertySetAdapter(any(Class.class))).thenReturn(propertySetAdapter);
-        when(adapterRegistry.getPropertyAdapter(any(Class.class))).thenReturn(propertyAdapter);
-        commandManager = new GraphCommandManagerImpl(null,
-                                                     null,
-                                                     null);
-        commandFactory = new GraphCommandFactory();
-        connectionEdgeFactory = new EdgeFactoryImpl(definitionManager);
-        viewNodeFactory = new NodeFactoryImpl(definitionUtils);
-        dmnGraphFactory = new GraphFactoryImpl(definitionManager);
-        doAnswer(invocationOnMock -> {
-            String id = (String) invocationOnMock.getArguments()[0];
-            return testScopeModelFactory.build(id);
-        }).when(applicationFactoryManager).newDefinition(anyString());
-        doAnswer(invocationOnMock -> {
-            String uuid = (String) invocationOnMock.getArguments()[0];
-            String id = (String) invocationOnMock.getArguments()[1];
-            if (DMN_DEF_SET_ID.equals(id)) {
-                // Emulate DMNGraphFactoryImpl, that adds a DMNDiagram to new Graphs
-                // Please note this is different from the stunner jbpm test which this dmn test is based on
-                Graph graph = (Graph) dmnGraphFactory.build(uuid,
-                                                            DMN_DEF_SET_ID);
-                DMNDiagram model = new DMNDiagram();
-                Node node = viewNodeFactory.build(uuid,
-                                                  model);
-                graph.addNode(node);
-                return graph;
-            }
-            Object model = testScopeModelFactory.accepts(id) ? testScopeModelFactory.build(id) : null;
-            if (null != model) {
-                Class<? extends ElementFactory> element = BackendDefinitionAdapter.getGraphFactory(model.getClass());
-                if (element.isAssignableFrom(NodeFactory.class)) {
-                    Node node = viewNodeFactory.build(uuid,
-                                                      model);
-                    return node;
-                } else if (element.isAssignableFrom(EdgeFactory.class)) {
-                    Edge edge = connectionEdgeFactory.build(uuid,
-                                                            model);
-                    return edge;
-                }
-            }
-            return null;
-        }).when(applicationFactoryManager).newElement(anyString(),
-                                                      anyString());
-        doAnswer(invocationOnMock -> {
-            String uuid = (String) invocationOnMock.getArguments()[0];
-            String defSetId = (String) invocationOnMock.getArguments()[1];
-            final Graph graph = (Graph) applicationFactoryManager.newElement(uuid,
-                                                                             defSetId);
-            final DiagramImpl result = new DiagramImpl(uuid,
-                                                       new MetadataImpl.MetadataImplBuilder(defSetId).build());
-            result.setGraph(graph);
-            return result;
-        }).when(applicationFactoryManager).newDiagram(anyString(),
-                                                      anyString(),
-                                                      any(Metadata.class));
+    public void setup() throws Exception {
+        api = StunnerTestingGraphBackendAPI.build(DMNDefinitionSet.class);
+        api.getFactoryManager().registry().register(new DMNGraphFactoryImpl(api.getDefinitionManager(),
+                                                                            api.getFactoryManager(),
+                                                                            api.commandManager,
+                                                                            api.commandFactory,
+                                                                            new MapIndexBuilder()));
     }
 
     /**
@@ -330,8 +218,8 @@ public class DMNMarshallerTest {
     public void testLoan() throws IOException {
         roundTripUnmarshalMarshalThenUnmarshalDMN(getClass().getResourceAsStream("/Loan Pre-Qualification.dmn"));
         DMNMarshaller m = getDMNMarshaller();
-        Graph<?, ?> g = m.unmarshall(null, this.getClass().getResourceAsStream("/Loan Pre-Qualification.dmn"));
-        DiagramImpl diagram = new DiagramImpl("", null);
+        Graph<?, ?> g = m.unmarshall(createMetadata(), this.getClass().getResourceAsStream("/Loan Pre-Qualification.dmn"));
+        DiagramImpl diagram = createDiagram();
         diagram.setGraph(g);
         String mString = m.marshall(diagram);
         final KieServices ks = KieServices.Factory.get();
@@ -382,10 +270,9 @@ public class DMNMarshallerTest {
 
         // additionally, check the marshalled is still DMN executable as expected
         DMNMarshaller m = getDMNMarshaller();
-        Graph<?, ?> g = m.unmarshall(null,
+        Graph<?, ?> g = m.unmarshall(createMetadata(),
                                      this.getClass().getResourceAsStream("/diamondDMN12.dmn"));
-        DiagramImpl diagram = new DiagramImpl("",
-                                              null);
+        DiagramImpl diagram = createDiagram();
         diagram.setGraph(g);
 
         String mString = m.marshall(diagram);
@@ -536,12 +423,12 @@ public class DMNMarshallerTest {
     public void test_decisionservice_1outputDecision() throws IOException {
         final DMNMarshaller m = getDMNMarshaller();
         @SuppressWarnings("unchecked")
-        final Graph<?, Node<?, ?>> g = m.unmarshall(null, this.getClass().getResourceAsStream("/DROOLS-3372.dmn"));
+        final Graph<?, Node<?, ?>> g = m.unmarshall(createMetadata(), this.getClass().getResourceAsStream("/DROOLS-3372.dmn"));
         Node<?, ?> nodeDS = g.getNode("_659a06e2-ae80-496c-8783-f790a640bb49");
         Node<?, ?> nodeDecisionPostfix = g.getNode("_3a69915a-30af-4de3-a07f-6be514f53caa");
         moveNode(nodeDecisionPostfix, 0, -280);
         makeNodeChildOf(nodeDecisionPostfix, nodeDS);
-        DiagramImpl diagram = new DiagramImpl("", null);
+        DiagramImpl diagram = createDiagram();
         diagram.setGraph(g);
         String mString = m.marshall(diagram);
         LOG.debug("MARSHALLED ROUNDTRIP RESULTING xml:\n{}\n", mString);
@@ -566,7 +453,7 @@ public class DMNMarshallerTest {
     public void test_decisionservice_1outputDecision1encapsulatedDecision() throws IOException {
         final DMNMarshaller m = getDMNMarshaller();
         @SuppressWarnings("unchecked")
-        final Graph<?, Node<?, ?>> g = m.unmarshall(null, this.getClass().getResourceAsStream("/DROOLS-3372.dmn"));
+        final Graph<?, Node<?, ?>> g = m.unmarshall(createMetadata(), this.getClass().getResourceAsStream("/DROOLS-3372.dmn"));
         Node<?, ?> nodeDS = g.getNode("_659a06e2-ae80-496c-8783-f790a640bb49");
         Node<?, ?> nodeDecisionPostfix = g.getNode("_3a69915a-30af-4de3-a07f-6be514f53caa");
         Node<?, ?> nodeDecisionPrefix = g.getNode("_afce4fb3-9a7c-4791-bbfe-63d4b76bd61a");
@@ -574,7 +461,7 @@ public class DMNMarshallerTest {
         makeNodeChildOf(nodeDecisionPostfix, nodeDS);
         moveNode(nodeDecisionPrefix, 0, -170);
         makeNodeChildOf(nodeDecisionPrefix, nodeDS);
-        DiagramImpl diagram = new DiagramImpl("", null);
+        DiagramImpl diagram = createDiagram();
         diagram.setGraph(g);
         String mString = m.marshall(diagram);
         LOG.debug("MARSHALLED ROUNDTRIP RESULTING xml:\n{}\n", mString);
@@ -600,7 +487,7 @@ public class DMNMarshallerTest {
     public void test_decisionservice2_1outputDecision1encapsulatedDecision() throws IOException {
         final DMNMarshaller m = getDMNMarshaller();
         @SuppressWarnings("unchecked")
-        final Graph<?, Node<?, ?>> g = m.unmarshall(null, this.getClass().getResourceAsStream("/DROOLS-3372bis.dmn"));
+        final Graph<?, Node<?, ?>> g = m.unmarshall(createMetadata(), this.getClass().getResourceAsStream("/DROOLS-3372bis.dmn"));
         Node<?, ?> nodeDS = g.getNode("_659a06e2-ae80-496c-8783-f790a640bb49");
         Node<?, ?> nodeDecisionPostfix = g.getNode("_3a69915a-30af-4de3-a07f-6be514f53caa");
         Node<?, ?> nodeDecisionPrefix = g.getNode("_afce4fb3-9a7c-4791-bbfe-63d4b76bd61a");
@@ -608,7 +495,7 @@ public class DMNMarshallerTest {
         makeNodeChildOf(nodeDecisionPostfix, nodeDS);
         moveNode(nodeDecisionPrefix, 0, -170);
         makeNodeChildOf(nodeDecisionPrefix, nodeDS);
-        DiagramImpl diagram = new DiagramImpl("", null);
+        DiagramImpl diagram = createDiagram();
         diagram.setGraph(g);
         String mString = m.marshall(diagram);
         LOG.debug("MARSHALLED ROUNDTRIP RESULTING xml:\n{}\n", mString);
@@ -638,7 +525,7 @@ public class DMNMarshallerTest {
     public void test_decisionservice2_remove_1outputDecision1encapsulatedDecision() throws IOException {
         final DMNMarshaller m = getDMNMarshaller();
         @SuppressWarnings("unchecked")
-        final Graph<?, Node<?, ?>> g = m.unmarshall(null, this.getClass().getResourceAsStream("/DROOLS-3372bis.dmn"));
+        final Graph<?, Node<?, ?>> g = m.unmarshall(createMetadata(), this.getClass().getResourceAsStream("/DROOLS-3372bis.dmn"));
         Node<?, ?> nodeDS = g.getNode("_659a06e2-ae80-496c-8783-f790a640bb49");
         Node<?, ?> nodeDecisionPostfix = g.getNode("_3a69915a-30af-4de3-a07f-6be514f53caa");
         Node<?, ?> nodeDecisionPrefix = g.getNode("_afce4fb3-9a7c-4791-bbfe-63d4b76bd61a");
@@ -646,7 +533,7 @@ public class DMNMarshallerTest {
         makeNodeChildOf(nodeDecisionPostfix, nodeDS);
         moveNode(nodeDecisionPrefix, 0, -170);
         makeNodeChildOf(nodeDecisionPrefix, nodeDS);
-        DiagramImpl diagram = new DiagramImpl("", null);
+        DiagramImpl diagram = createDiagram();
         Node<?, ?> nodeEncaps1 = g.getNode("_ca9d65e7-a5fa-4a13-98b7-8404f4601147");
         moveNode(nodeEncaps1, 0, +400);
         removeNodeChildOf(nodeEncaps1, nodeDS);
@@ -825,13 +712,12 @@ public class DMNMarshallerTest {
 
         // first unmarshal from DMN XML to Stunner DMN Graph
         @SuppressWarnings("unchecked")
-        Graph<?, Node<?, ?>> g = m.unmarshall(null,
+        Graph<?, Node<?, ?>> g = m.unmarshall(createMetadata(),
                                               dmnXmlInputStream);
         checkGraphConsumer.accept(g);
 
         // round trip to Stunner DMN Graph back to DMN XML
-        DiagramImpl diagram = new DiagramImpl("",
-                                              null);
+        DiagramImpl diagram = createDiagram();
         diagram.setGraph(g);
 
         String mString = m.marshall(diagram);
@@ -839,7 +725,7 @@ public class DMNMarshallerTest {
 
         // now unmarshal once more, from the marshalled just done above, back again to Stunner DMN Graph to complete check for round-trip
         @SuppressWarnings("unchecked")
-        Graph<?, Node<?, ?>> g2 = m.unmarshall(null,
+        Graph<?, Node<?, ?>> g2 = m.unmarshall(createMetadata(),
                                                new StringInputStream(mString));
         checkGraphConsumer.accept(g2);
     }
@@ -1282,12 +1168,11 @@ public class DMNMarshallerTest {
 
         // first unmarshal from DMN XML to Stunner DMN Graph
         @SuppressWarnings("unchecked")
-        Graph<?, Node<?, ?>> g = m.unmarshall(null,
+        Graph<?, Node<?, ?>> g = m.unmarshall(createMetadata(),
                                               new ReaderInputStream(new StringReader(xml)));
 
         // round trip to Stunner DMN Graph back to DMN XML
-        DiagramImpl diagram = new DiagramImpl("",
-                                              null);
+        DiagramImpl diagram = createDiagram();
         diagram.setGraph(g);
 
         String mString = m.marshall(diagram);
@@ -1343,12 +1228,11 @@ public class DMNMarshallerTest {
 
         // first unmarshal from DMN XML to Stunner DMN Graph
         @SuppressWarnings("unchecked")
-        Graph<?, Node<?, ?>> g = m.unmarshall(null,
+        Graph<?, Node<?, ?>> g = m.unmarshall(createMetadata(),
                                               new ReaderInputStream(new StringReader(xml)));
 
         // round trip to Stunner DMN Graph back to DMN XML
-        DiagramImpl diagram = new DiagramImpl("",
-                                              null);
+        DiagramImpl diagram = createDiagram();
         diagram.setGraph(g);
 
         String mString = m.marshall(diagram);
@@ -1430,7 +1314,7 @@ public class DMNMarshallerTest {
         final DMNMarshaller m = getDMNMarshaller();
 
         @SuppressWarnings("unchecked")
-        final Graph<?, Node<?, ?>> g = m.unmarshall(null,
+        final Graph<?, Node<?, ?>> g = m.unmarshall(createMetadata(),
                                                     this.getClass().getResourceAsStream("/DROOLS-2372.dmn"));
 
         final Stream<Node<?, ?>> stream = StreamSupport.stream(Spliterators.spliteratorUnknownSize(g.nodes().iterator(), Spliterator.ORDERED),
@@ -1558,7 +1442,7 @@ public class DMNMarshallerTest {
 
         // -- Stunner side.
         DMNMarshaller m = getDMNMarshaller();
-        Graph<?, ?> g = m.unmarshall(null, this.getClass().getResourceAsStream("/wrong_context.dmn"));
+        Graph<?, ?> g = m.unmarshall(createMetadata(), this.getClass().getResourceAsStream("/wrong_context.dmn"));
 
         Node<?, ?> decisionNode = g.getNode("_653b3426-933a-4050-9568-ab2a66b43c36");
         assertNodeContentDefinitionIs(decisionNode, Decision.class);
@@ -1596,7 +1480,7 @@ public class DMNMarshallerTest {
 
         // -- Stunner side.
         DMNMarshaller m = getDMNMarshaller();
-        Graph<?, ?> g = m.unmarshall(null, this.getClass().getResourceAsStream("/wrong_decision.dmn"));
+        Graph<?, ?> g = m.unmarshall(createMetadata(), this.getClass().getResourceAsStream("/wrong_decision.dmn"));
 
         Node<?, ?> decisionNode = g.getNode("_cce32679-9395-444d-a4bf-96af8ee727a0");
         assertNodeContentDefinitionIs(decisionNode, Decision.class);
@@ -1614,8 +1498,8 @@ public class DMNMarshallerTest {
     public void testOtherElements() throws IOException, XPathExpressionException {
         String original = new Scanner(this.getClass().getResourceAsStream("/dummy.dmn")).useDelimiter("\\A").next();
         DMNMarshaller marshaller = getDMNMarshaller();
-        DiagramImpl diagram = new DiagramImpl("", null);
-        diagram.setGraph(marshaller.unmarshall(null, getClass().getResourceAsStream("/dummy.dmn")));
+        DiagramImpl diagram = createDiagram();
+        diagram.setGraph(marshaller.unmarshall(createMetadata(), getClass().getResourceAsStream("/dummy.dmn")));
         String roundtripped = marshaller.marshall(diagram);
         LOG.debug(roundtripped);
         XPath xpathOriginal = namespaceAwareXPath(
@@ -1697,7 +1581,7 @@ public class DMNMarshallerTest {
 
         final String marshalledSource = marshaller.marshall(mockedDiagram);
 
-        final Graph<?, Node<View, ?>> unmarshalledGraph = marshaller.unmarshall(null,
+        final Graph<?, Node<View, ?>> unmarshalledGraph = marshaller.unmarshall(createMetadata(),
                                                                                 new StringInputStream(marshalledSource));
         assertThat(unmarshalledGraph.nodes()).hasSize(2);
 
@@ -1728,9 +1612,7 @@ public class DMNMarshallerTest {
     public void testStunnerConstellationButtonCausingPoint2DbeingNull() throws IOException {
         final BiConsumer<String, HasComponentWidths> hasComponentWidthsConsumer = (uuid, hcw) -> {/*NOP*/};
 
-        Diagram diagram = applicationFactoryManager.newDiagram("testDiagram",
-                                                               BindableAdapterUtils.getDefinitionSetId(DMNDefinitionSet.class),
-                                                               null);
+        Diagram diagram = createDiagram();
         Graph g = diagram.getGraph();
         Node diagramRoot = DMNMarshaller.findDMNDiagramRoot(g);
         testAugmentWithNSPrefixes(((DMNDiagram) ((View<?>) diagramRoot.getContent()).getDefinition()).getDefinitions());
@@ -1738,19 +1620,19 @@ public class DMNMarshallerTest {
         org.kie.dmn.model.api.InputData dmnInputData = new TInputData();
         dmnInputData.setId("inputDataID");
         dmnInputData.setName(dmnInputData.getId());
-        Node inputDataNode = new InputDataConverter(applicationFactoryManager).nodeFromDMN(dmnInputData,
-                                                                                           hasComponentWidthsConsumer);
+        Node inputDataNode = new InputDataConverter(api.getFactoryManager()).nodeFromDMN(dmnInputData,
+                                                                                         hasComponentWidthsConsumer);
         org.kie.dmn.model.api.Decision dmnDecision = new TDecision();
         dmnDecision.setId("decisionID");
         dmnDecision.setName(dmnDecision.getId());
-        Node decisionNode = new DecisionConverter(applicationFactoryManager).nodeFromDMN(dmnDecision,
-                                                                                         hasComponentWidthsConsumer);
+        Node decisionNode = new DecisionConverter(api.getFactoryManager()).nodeFromDMN(dmnDecision,
+                                                                                       hasComponentWidthsConsumer);
         g.addNode(inputDataNode);
         g.addNode(decisionNode);
         View content = (View) decisionNode.getContent();
         content.setBounds(org.kie.workbench.common.stunner.core.graph.content.Bounds.create(200, 200, 300, 250));
         final String irID = "irID";
-        Edge myEdge = applicationFactoryManager.newElement(irID, DMNMarshaller.INFO_REQ_ID).asEdge();
+        Edge myEdge = api.getFactoryManager().newElement(irID, DMNMarshaller.INFO_REQ_ID).asEdge();
         myEdge.setSourceNode(inputDataNode);
         myEdge.setTargetNode(decisionNode);
         inputDataNode.getOutEdges().add(myEdge);
@@ -1788,9 +1670,7 @@ public class DMNMarshallerTest {
     public void testAssociationEdgeDMNDI() throws IOException {
         final BiConsumer<String, HasComponentWidths> hasComponentWidthsConsumer = (uuid, hcw) -> {/*NOP*/};
 
-        Diagram diagram = applicationFactoryManager.newDiagram("testDiagram",
-                                                               BindableAdapterUtils.getDefinitionSetId(DMNDefinitionSet.class),
-                                                               null);
+        Diagram diagram = createDiagram();
         Graph g = diagram.getGraph();
         Node diagramRoot = DMNMarshaller.findDMNDiagramRoot(g);
         testAugmentWithNSPrefixes(((DMNDiagram) ((View<?>) diagramRoot.getContent()).getDefinition()).getDefinitions());
@@ -1798,19 +1678,19 @@ public class DMNMarshallerTest {
         org.kie.dmn.model.api.InputData dmnInputData = new TInputData();
         dmnInputData.setId("inputDataID");
         dmnInputData.setName(dmnInputData.getId());
-        Node inputDataNode = new InputDataConverter(applicationFactoryManager).nodeFromDMN(dmnInputData,
-                                                                                           hasComponentWidthsConsumer);
+        Node inputDataNode = new InputDataConverter(api.getFactoryManager()).nodeFromDMN(dmnInputData,
+                                                                                         hasComponentWidthsConsumer);
         org.kie.dmn.model.api.TextAnnotation dmnTextAnnotation = new TTextAnnotation();
         dmnTextAnnotation.setId("textAnnotationID");
-        Node textAnnotationNode = new TextAnnotationConverter(applicationFactoryManager).nodeFromDMN(dmnTextAnnotation,
-                                                                                                     hasComponentWidthsConsumer);
+        Node textAnnotationNode = new TextAnnotationConverter(api.getFactoryManager()).nodeFromDMN(dmnTextAnnotation,
+                                                                                                   hasComponentWidthsConsumer);
         g.addNode(inputDataNode);
         g.addNode(textAnnotationNode);
         View content = (View) textAnnotationNode.getContent();
         content.setBounds(org.kie.workbench.common.stunner.core.graph.content.Bounds.create(200, 200, 300, 250));
         final String edgeID = "edgeID";
         final String associationID = "associationID";
-        Edge myEdge = applicationFactoryManager.newElement(edgeID, DMNMarshaller.ASSOCIATION_ID).asEdge();
+        Edge myEdge = api.getFactoryManager().newElement(edgeID, DMNMarshaller.ASSOCIATION_ID).asEdge();
         final View<?> edgeView = (View<?>) myEdge.getContent();
         ((Association) edgeView.getDefinition()).setId(new Id(associationID));
         myEdge.setSourceNode(inputDataNode);
@@ -2263,7 +2143,7 @@ public class DMNMarshallerTest {
 
         final String marshalledSource = marshaller.marshall(mockedDiagram);
 
-        final Graph<?, Node<View, ?>> unmarshalledGraph = marshaller.unmarshall(null, new StringInputStream(marshalledSource));
+        final Graph<?, Node<View, ?>> unmarshalledGraph = marshaller.unmarshall(createMetadata(), new StringInputStream(marshalledSource));
 
         assertNotNull(unmarshalledGraph);
 
@@ -2292,7 +2172,7 @@ public class DMNMarshallerTest {
                                                      final String edgeUUID,
                                                      final Consumer<MagnetConnection> sourceMagnetConsumer,
                                                      final Consumer<MagnetConnection> targetMagnetConsumer) {
-        final DiagramImpl diagram = new DiagramImpl("dmn graph", null);
+        final DiagramImpl diagram = createDiagram();
         final Graph<DefinitionSet, Node> graph = mock(Graph.class);
 
         final Node<View, Edge> diagramNode = mock(Node.class);
@@ -2365,8 +2245,8 @@ public class DMNMarshallerTest {
     }
 
     @SuppressWarnings("unchecked")
-    private static Diagram<Graph, Metadata> newDiagramDecisionWithExpression(final Expression expression) {
-        final Diagram<Graph, Metadata> diagram = new DiagramImpl("dmn graph", null);
+    private Diagram<Graph, Metadata> newDiagramDecisionWithExpression(final Expression expression) {
+        final Diagram<Graph, Metadata> diagram = createDiagram();
         final Graph<DefinitionSet, Node> graph = mock(Graph.class);
 
         final Node<View, ?> diagramNode = mock(Node.class);
@@ -2442,7 +2322,7 @@ public class DMNMarshallerTest {
 
     private DMNMarshaller getDMNMarshaller() {
         return new DMNMarshaller(new XMLEncoderDiagramMetadataMarshaller(),
-                                 applicationFactoryManager,
+                                 api.getFactoryManager(),
                                  dmnMarshallerImportsHelper,
                                  getMarshaller());
     }
@@ -2455,5 +2335,15 @@ public class DMNMarshallerTest {
         InputSource expected = new InputSource(new StringReader(expectedXml));
         InputSource actual = new InputSource(new StringReader(actualXml));
         assertEquals(xpathOriginal.compile(xpathExpression).evaluate(expected), xpathRoundtrip.compile(xpathExpression).evaluate(actual));
+    }
+
+    private DiagramImpl createDiagram() {
+        return api.getFactoryManager().newDiagram("dmnDiagram",
+                                                  DMN_DEF_SET_ID,
+                                                  createMetadata());
+    }
+
+    private static Metadata createMetadata() {
+        return mock(Metadata.class);
     }
 }

@@ -1,14 +1,8 @@
 # BPMN Backend
 
-- Experimental Marshallers
-    
-    Disable with flag:
-    
-        -Dbpmn.marshaller.legacy=true
-        
-    - Entry point: `BPMNDirectDiagramMarshaller` which implements `DiagramMarshaller`
-    - Actual unmarshalling from XML is delegated to Eclipse BPMN2 library
-    - Mapping between Eclipse BPMN2 data model to Stunner BPMN data model is performed through **Converter** classes
+- Entry point: `BPMNDirectDiagramMarshaller` which implements `DiagramMarshaller`
+- Actual unmarshalling from XML is delegated to Eclipse BPMN2 library
+- Mapping between Eclipse BPMN2 data model to Stunner BPMN data model is performed through **Converter** classes
 
 ## Unmarshalling
 

@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.events.intermediate;
 
 import org.junit.Test;
-import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.Marshaller;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventThrowing;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.signal.ScopedSignalEventExecutionSet;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -27,7 +26,7 @@ import org.kie.workbench.common.stunner.core.graph.Graph;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class ThrowingIntermediateSignalEventTest extends ThrowingIntermediateEvent<IntermediateSignalEventThrowing> {
+public class ThrowingIntermediateSignalEventTest extends ThrowingIntermediateEventTest<IntermediateSignalEventThrowing> {
 
     private static final String BPMN_THROWING_INTERMEDIATE_EVENT_FILE_PATH = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/throwingIntermediateSignalEvents.bpmn";
 
@@ -57,10 +56,6 @@ public class ThrowingIntermediateSignalEventTest extends ThrowingIntermediateEve
     private static final String EVENT_SIGNAL_SCOPE_PROCESS_INSTANCE = "processInstance";
     private static final String EVENT_SIGNAL_SCOPE_PROJECT = "project";
     private static final String EVENT_SIGNAL_SCOPE_EXTERNAL = "external";
-
-    public ThrowingIntermediateSignalEventTest(Marshaller marshallerType) {
-        super(marshallerType);
-    }
 
     @Test
     @Override

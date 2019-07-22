@@ -19,7 +19,6 @@ package org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshallin
 import java.util.List;
 
 import org.junit.Test;
-import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.Marshaller;
 import org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.BaseReusableSubprocessTaskExecutionSet;
@@ -30,7 +29,7 @@ import org.kie.workbench.common.stunner.core.graph.Graph;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ReusableSubProcessTest extends SubProcess<ReusableSubprocess> {
+public class ReusableSubProcessTest extends SubProcessTest<ReusableSubprocess> {
 
     private static final String BPMN_SUB_PROCESS_FILE_PATH = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/reusableSubProcesses.bpmn";
 
@@ -81,58 +80,10 @@ public class ReusableSubProcessTest extends SubProcess<ReusableSubprocess> {
             "System.out.println(\"`&(^*&^(\\n\\r\");\n" +
             "Object o = kcontext.getVariable(\"hello_world\");";
 
-    private static Diagram<Graph, Metadata> oldDiagram;
-    private static Diagram<Graph, Metadata> oldRoundTripDiagram;
-
-    private static Diagram<Graph, Metadata> newDiagram;
-    private static Diagram<Graph, Metadata> newRoundTripDiagram;
-
-    public ReusableSubProcessTest(Marshaller marshallerType) throws Exception {
-        super(marshallerType, marshallers());
-    }
-
-    @Override
-    Diagram<Graph, Metadata> getNewDiagram() {
-        return newDiagram;
-    }
-
-    @Override
-    void setNewDiagram(Diagram<Graph, Metadata> diagram) {
-        newDiagram = diagram;
-    }
-
-    @Override
-    Diagram<Graph, Metadata> getNewRoundTripDiagram() {
-        return newRoundTripDiagram;
-    }
-
-    @Override
-    void setNewRoundTripDiagram(Diagram<Graph, Metadata> diagram) {
-        newRoundTripDiagram = diagram;
-    }
-
-    @Override
-    Diagram<Graph, Metadata> getOldDiagram() {
-        return oldDiagram;
-    }
-
-    @Override
-    void setOldDiagram(Diagram<Graph, Metadata> diagram) {
-        oldDiagram = diagram;
-    }
-
-    @Override
-    Diagram<Graph, Metadata> getOldRoundTripDiagram() {
-        return oldRoundTripDiagram;
-    }
-
-    @Override
-    void setOldRoundTripDiagram(Diagram<Graph, Metadata> diagram) {
-        oldRoundTripDiagram = diagram;
+    public ReusableSubProcessTest() throws Exception {
     }
 
     @Test
-    @Override
     public void testUnmarshallTopLevelEmptyPropertiesSubProcess() {
         Diagram<Graph, Metadata> diagram = getDiagram();
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
@@ -156,7 +107,6 @@ public class ReusableSubProcessTest extends SubProcess<ReusableSubprocess> {
     }
 
     @Test
-    @Override
     public void testUnmarshallTopLevelFilledPropertiesSubProcess() {
         final String SUB_PROCESS_NAME = "Reusable process01 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
         final String SUB_PROCESS_DOCUMENTATION = "Reusable process01 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
@@ -219,7 +169,6 @@ public class ReusableSubProcessTest extends SubProcess<ReusableSubprocess> {
     }
 
     @Test
-    @Override
     public void testUnmarshallTopLevelSubProcessWithEdges() {
         final String SUB_PROCESS_NAME = "Sub-process";
 
@@ -245,7 +194,6 @@ public class ReusableSubProcessTest extends SubProcess<ReusableSubprocess> {
     }
 
     @Test
-    @Override
     public void testUnmarshallSubProcessLevelEmptyPropertiesSubProcess() {
         Diagram<Graph, Metadata> diagram = getDiagram();
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
@@ -269,7 +217,6 @@ public class ReusableSubProcessTest extends SubProcess<ReusableSubprocess> {
     }
 
     @Test
-    @Override
     public void testUnmarshallSubProcessLevelFilledPropertiesSubProcess() {
         final String SUB_PROCESS_NAME = "Reusable process03 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
         final String SUB_PROCESS_DOCUMENTATION = "Reusable process03 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
@@ -332,7 +279,6 @@ public class ReusableSubProcessTest extends SubProcess<ReusableSubprocess> {
     }
 
     @Test
-    @Override
     public void testUnmarshallSubProcessLevelSubProcessWithEdges() {
         final String SUB_PROCESS_NAME = "Sub-process";
 

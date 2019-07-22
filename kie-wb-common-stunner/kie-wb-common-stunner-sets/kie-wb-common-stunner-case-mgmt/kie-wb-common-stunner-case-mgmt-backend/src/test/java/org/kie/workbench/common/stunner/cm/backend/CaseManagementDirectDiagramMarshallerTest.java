@@ -22,7 +22,6 @@ import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.stunner.backend.definition.factory.TestScopeModelFactory;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.TypedFactoryManager;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
 import org.kie.workbench.common.stunner.bpmn.backend.workitem.service.WorkItemDefinitionBackendService;
@@ -30,6 +29,7 @@ import org.kie.workbench.common.stunner.cm.CaseManagementDefinitionSet;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.backend.BackendFactoryManager;
+import org.kie.workbench.common.stunner.core.backend.StunnerTestingModelFactory;
 import org.kie.workbench.common.stunner.core.backend.definition.adapter.reflect.BackendDefinitionAdapter;
 import org.kie.workbench.common.stunner.core.backend.definition.adapter.reflect.BackendDefinitionSetAdapter;
 import org.kie.workbench.common.stunner.core.backend.definition.adapter.reflect.BackendPropertyAdapter;
@@ -87,8 +87,8 @@ public class CaseManagementDirectDiagramMarshallerTest {
                 .thenReturn(new DefaultRuleViolations());
 
         DefinitionUtils definitionUtils = new DefinitionUtils(definitionManager, null);
-        TestScopeModelFactory testScopeModelFactory =
-                new TestScopeModelFactory(new CaseManagementDefinitionSet.CaseManagementDefinitionSetBuilder().build());
+        StunnerTestingModelFactory testScopeModelFactory =
+                new StunnerTestingModelFactory(new CaseManagementDefinitionSet.CaseManagementDefinitionSetBuilder().build());
         // Definition manager.
         final BackendDefinitionAdapter definitionAdapter = new BackendDefinitionAdapter(definitionUtils);
         final BackendDefinitionSetAdapter definitionSetAdapter = new BackendDefinitionSetAdapter(definitionAdapter);

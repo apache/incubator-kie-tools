@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.events;
 
 import org.junit.Test;
-import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.Marshaller;
 import org.kie.workbench.common.stunner.bpmn.definition.StartConditionalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.conditional.InterruptingConditionalEventExecutionSet;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -27,7 +26,7 @@ import org.kie.workbench.common.stunner.core.graph.Graph;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class StartConditionalEventTest extends StartEvent<StartConditionalEvent> {
+public class StartConditionalEventTest extends StartEventTest<StartConditionalEvent> {
 
     private static final String BPMN_CONDITIONAL_EVENT_FILE_PATH = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/startConditionalEvents.bpmn";
 
@@ -43,10 +42,6 @@ public class StartConditionalEventTest extends StartEvent<StartConditionalEvent>
     private static final String CONDITION_EXPRESSION_SCRIPT_DEFAULT_VALUE = null;
     private static final String CONDITION_EXPRESSION_LANGUAGE = "drools";
     private static final String CONDITION_ERPRESSION_TYPE = "stunner.bpmn.ScriptType";
-
-    public StartConditionalEventTest(Marshaller marshallerType) {
-        super(marshallerType);
-    }
 
     @Test
     @Override

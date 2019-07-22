@@ -48,8 +48,8 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.BaseCo
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.BpmnNode;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.GraphBuilder;
-import org.kie.workbench.common.stunner.bpmn.backend.legacy.resource.JBPMBpmn2ResourceFactoryImpl;
-import org.kie.workbench.common.stunner.bpmn.backend.legacy.resource.JBPMBpmn2ResourceImpl;
+import org.kie.workbench.common.stunner.bpmn.backend.resource.JBPMBpmn2Resource;
+import org.kie.workbench.common.stunner.bpmn.backend.resource.JBPMBpmn2ResourceFactory;
 import org.kie.workbench.common.stunner.bpmn.backend.workitem.service.WorkItemDefinitionBackendService;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
@@ -67,13 +67,6 @@ import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/*
- * "Direct" in the name "BaseDirectDiagramMarshaller" means "skipping json encoding".
- * The old BPMNDiagramMarshaller went through an additional step converting XML into JSON for legacy reasons.
- * The reason for the new version, beside a necessary spring cleaning, was to remove this extra step.
- * So the new version is "Direct" as in "it doesn't go through the extra step".
- *
- */
 public abstract class BaseDirectDiagramMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram<Graph, Metadata>> {
 
     private static final Logger LOG = LoggerFactory.getLogger(BaseDirectDiagramMarshaller.class);
@@ -198,7 +191,7 @@ public abstract class BaseDirectDiagramMarshaller implements DiagramMarshaller<G
 
         ResourceSet rSet = new ResourceSetImpl();
 
-        rSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("bpmn2", new JBPMBpmn2ResourceFactoryImpl());
+        rSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("bpmn2", new JBPMBpmn2ResourceFactory());
 
         Bpmn2Resource resource = (Bpmn2Resource) rSet.createResource(URI.createURI("virtual.bpmn2"));
 
@@ -218,24 +211,24 @@ public abstract class BaseDirectDiagramMarshaller implements DiagramMarshaller<G
         final ResourceSet resourceSet = new ResourceSetImpl();
         Resource.Factory.Registry resourceFactoryRegistry = resourceSet.getResourceFactoryRegistry();
         resourceFactoryRegistry.getExtensionToFactoryMap().put(
-                Resource.Factory.Registry.DEFAULT_EXTENSION, new JBPMBpmn2ResourceFactoryImpl());
+                Resource.Factory.Registry.DEFAULT_EXTENSION, new JBPMBpmn2ResourceFactory());
 
         EPackage.Registry packageRegistry = resourceSet.getPackageRegistry();
         packageRegistry.put("http://www.omg.org/spec/BPMN/20100524/MODEL", Bpmn2Package.eINSTANCE);
         packageRegistry.put("http://www.jboss.org/drools", DroolsPackage.eINSTANCE);
 
-        final JBPMBpmn2ResourceImpl resource = (JBPMBpmn2ResourceImpl) resourceSet
+        final JBPMBpmn2Resource resource = (JBPMBpmn2Resource) resourceSet
                 .createResource(URI.createURI("inputStream://dummyUriWithValidSuffix.xml"));
 
-        resource.getDefaultLoadOptions().put(JBPMBpmn2ResourceImpl.OPTION_ENCODING, "UTF-8");
+        resource.getDefaultLoadOptions().put(JBPMBpmn2Resource.OPTION_ENCODING, "UTF-8");
         resource.setEncoding("UTF-8");
 
         final Map<String, Object> options = new HashMap<>();
-        options.put(JBPMBpmn2ResourceImpl.OPTION_ENCODING, "UTF-8");
-        options.put(JBPMBpmn2ResourceImpl.OPTION_DEFER_IDREF_RESOLUTION, true);
-        options.put(JBPMBpmn2ResourceImpl.OPTION_DISABLE_NOTIFY, true);
-        options.put(JBPMBpmn2ResourceImpl.OPTION_PROCESS_DANGLING_HREF,
-                    JBPMBpmn2ResourceImpl.OPTION_PROCESS_DANGLING_HREF_RECORD);
+        options.put(JBPMBpmn2Resource.OPTION_ENCODING, "UTF-8");
+        options.put(JBPMBpmn2Resource.OPTION_DEFER_IDREF_RESOLUTION, true);
+        options.put(JBPMBpmn2Resource.OPTION_DISABLE_NOTIFY, true);
+        options.put(JBPMBpmn2Resource.OPTION_PROCESS_DANGLING_HREF,
+                    JBPMBpmn2Resource.OPTION_PROCESS_DANGLING_HREF_RECORD);
 
         try {
             resource.load(inputStream, options);

@@ -19,11 +19,11 @@ package org.kie.workbench.common.stunner.cm.backend;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-import org.kie.workbench.common.stunner.backend.definition.factory.TestScopeModelFactory;
 import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTaskFactory;
 import org.kie.workbench.common.stunner.cm.CaseManagementDefinitionSet;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.backend.BackendFactoryManager;
+import org.kie.workbench.common.stunner.core.backend.StunnerTestingModelFactory;
 import org.kie.workbench.common.stunner.core.backend.definition.adapter.reflect.BackendDefinitionAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -42,14 +42,14 @@ public class MockApplicationFactoryManager extends BackendFactoryManager {
     static final String CM_DEF_SET_ID = BindableAdapterUtils.getDefinitionSetId(CaseManagementDefinitionSet.class);
 
     private final GraphFactory graphFactory;
-    private final TestScopeModelFactory testScopeModelFactory;
+    private final StunnerTestingModelFactory testScopeModelFactory;
     private final EdgeFactory<Object> connectionEdgeFactory;
     private final NodeFactory<Object> viewNodeFactory;
     private final ServiceTaskFactory serviceTaskFactory;
 
     public MockApplicationFactoryManager(final DefinitionManager definitionManager,
                                          final GraphFactory graphFactory,
-                                         final TestScopeModelFactory testScopeModelFactory,
+                                         final StunnerTestingModelFactory testScopeModelFactory,
                                          final EdgeFactory<Object> connectionEdgeFactory,
                                          final NodeFactory<Object> viewNodeFactory) {
         super(definitionManager);

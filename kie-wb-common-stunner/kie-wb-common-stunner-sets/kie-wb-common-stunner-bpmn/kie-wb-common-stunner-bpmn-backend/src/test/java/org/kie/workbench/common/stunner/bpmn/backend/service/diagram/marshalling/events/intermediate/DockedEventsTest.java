@@ -20,11 +20,8 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.BPMNDiagramMarshallerBase;
+import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.BPMNDiagramMarshallerBaseTest;
 import org.kie.workbench.common.stunner.core.command.Command;
-import org.kie.workbench.common.stunner.core.diagram.Diagram;
-import org.kie.workbench.common.stunner.core.diagram.Metadata;
-import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.command.impl.UpdateElementPositionCommand;
 import org.mockito.ArgumentCaptor;
 
@@ -34,7 +31,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-public class DockedEventsTest extends BPMNDiagramMarshallerBase {
+public class DockedEventsTest extends BPMNDiagramMarshallerBaseTest {
 
     private static final String JBPM_7645 = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/JBPM_7645.bpmn";
 
@@ -47,11 +44,9 @@ public class DockedEventsTest extends BPMNDiagramMarshallerBase {
     public void testDockedElementProcessingOrder() throws Exception {
         final String TASK_ID = "_02DDF5FF-E1E4-4DA3-9971-70CFB158A08C";
         final String DOCKED_NODE_ID = "_6A26F0A2-3368-4769-B9E9-A6290530ED8F";
-
-        Diagram<Graph, Metadata> diagram = unmarshall(newMarshaller, JBPM_7645);
-
+        unmarshall(marshaller, JBPM_7645);
         ArgumentCaptor<Command> cmd = ArgumentCaptor.forClass(Command.class);
-        verify(commandManager, times(8)).execute(any(), cmd.capture());
+        verify(api.commandManager, times(8)).execute(any(), cmd.capture());
         List<Command> commands = cmd.getAllValues();
         List<UpdateElementPositionCommand> posCmds = commands.stream()
                 .filter(UpdateElementPositionCommand.class::isInstance)

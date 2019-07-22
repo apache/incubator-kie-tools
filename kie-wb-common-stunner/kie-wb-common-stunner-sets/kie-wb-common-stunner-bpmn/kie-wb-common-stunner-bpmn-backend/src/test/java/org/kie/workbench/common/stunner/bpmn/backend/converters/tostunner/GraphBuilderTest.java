@@ -27,79 +27,43 @@ import org.eclipse.bpmn2.di.BPMNShape;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.stunner.backend.definition.factory.TestScopeModelFactory;
 import org.kie.workbench.common.stunner.bpmn.BPMNDefinitionSet;
+import org.kie.workbench.common.stunner.bpmn.backend.BPMNTestDefinitionFactory;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.TypedFactoryManager;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.BasePropertyReader;
-import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.MockApplicationFactoryManager;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNViewDefinition;
 import org.kie.workbench.common.stunner.bpmn.definition.EmbeddedSubprocess;
-import org.kie.workbench.common.stunner.core.api.DefinitionManager;
-import org.kie.workbench.common.stunner.core.backend.BackendFactoryManager;
-import org.kie.workbench.common.stunner.core.backend.definition.adapter.reflect.BackendDefinitionAdapter;
-import org.kie.workbench.common.stunner.core.backend.definition.adapter.reflect.BackendDefinitionSetAdapter;
-import org.kie.workbench.common.stunner.core.backend.definition.adapter.reflect.BackendPropertyAdapter;
-import org.kie.workbench.common.stunner.core.backend.definition.adapter.reflect.BackendPropertySetAdapter;
-import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
+import org.kie.workbench.common.stunner.core.backend.StunnerTestingGraphBackendAPI;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.diagram.MetadataImpl;
-import org.kie.workbench.common.stunner.core.factory.impl.EdgeFactoryImpl;
-import org.kie.workbench.common.stunner.core.factory.impl.GraphFactoryImpl;
-import org.kie.workbench.common.stunner.core.factory.impl.NodeFactoryImpl;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.command.GraphCommandManager;
-import org.kie.workbench.common.stunner.core.graph.command.GraphCommandManagerImpl;
-import org.kie.workbench.common.stunner.core.graph.command.impl.GraphCommandFactory;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewImpl;
-import org.kie.workbench.common.stunner.core.registry.definition.AdapterRegistry;
-import org.kie.workbench.common.stunner.core.rule.RuleEvaluationContext;
-import org.kie.workbench.common.stunner.core.rule.RuleManager;
-import org.kie.workbench.common.stunner.core.rule.RuleSet;
-import org.kie.workbench.common.stunner.core.rule.violations.DefaultRuleViolations;
-import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.dc;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class GraphBuilderTest {
 
+    private static final String BPMN_ID = BindableAdapterUtils.getDefinitionSetId(BPMNDefinitionSet.class);
     private static final String DIAGRAM_UUID = "DIAGRAM_UUID";
     private static final String SUBPROCESS1_ID = "SUBPROCESS1_ID";
     private static final String SUBPROCESS2_ID = "SUBPROCESS2_ID";
     private static final String SUBPROCESS3_ID = "SUBPROCESS3_ID";
 
-    private TypedFactoryManager typedFactoryManager;
-
-    private BackendFactoryManager applicationFactoryManager;
-
     private DefinitionResolver definitionResolver;
-
-    @Mock
-    private DefinitionManager definitionManager;
-
-    @Mock
-    private AdapterManager adapterManager;
-
-    @Mock
-    private RuleManager rulesManager;
-
-    private GraphCommandFactory commandFactory;
-
-    private GraphCommandManager commandManager;
 
     @Mock
     private org.eclipse.bpmn2.Process process;
@@ -111,9 +75,6 @@ public class GraphBuilderTest {
     private BPMNPlane plane;
 
     @Mock
-    private AdapterRegistry adapterRegistry;
-
-    @Mock
     private Definitions definitions;
 
     private Graph<DefinitionSet, Node> graph;
@@ -121,7 +82,8 @@ public class GraphBuilderTest {
     private GraphBuilder graphBuilder;
 
     @Before
-    public void setUp() {
+    @SuppressWarnings("unchecked")
+    public void setUp() throws Exception {
         when(diagram.getPlane()).thenReturn(plane);
         List<RootElement> rootElements = Collections.singletonList(process);
         List<BPMNDiagram> diagrams = Collections.singletonList(diagram);
@@ -129,55 +91,25 @@ public class GraphBuilderTest {
         when(definitions.getRootElements()).thenReturn(rootElements);
         when(definitions.getDiagrams()).thenReturn(diagrams);
         when(definitions.getRelationships()).thenReturn(Collections.emptyList());
-
         definitionResolver = new DefinitionResolver(definitions, Collections.emptyList());
-
-        // Graph utils.
-        when(definitionManager.adapters()).thenReturn(adapterManager);
-        when(adapterManager.registry()).thenReturn(adapterRegistry);
-        when(rulesManager.evaluate(any(RuleSet.class),
-                                   any(RuleEvaluationContext.class))).thenReturn(new DefaultRuleViolations());
-
-        commandManager = new GraphCommandManagerImpl(null,
-                                                     null,
-                                                     null);
-        commandFactory = new GraphCommandFactory();
-
-        TestScopeModelFactory testScopeModelFactory = new TestScopeModelFactory(new BPMNDefinitionSet.BPMNDefinitionSetBuilder().build());
-        DefinitionUtils definitionUtils = new DefinitionUtils(definitionManager, null);
-        // Definition manager.
-        final BackendDefinitionAdapter definitionAdapter = new BackendDefinitionAdapter(definitionUtils);
-        final BackendDefinitionSetAdapter definitionSetAdapter = new BackendDefinitionSetAdapter(definitionAdapter);
-        final BackendPropertySetAdapter propertySetAdapter = new BackendPropertySetAdapter();
-        final BackendPropertyAdapter propertyAdapter = new BackendPropertyAdapter();
-        mockAdapterManager(definitionAdapter, definitionSetAdapter, propertySetAdapter, propertyAdapter);
-        mockAdapterRegistry(definitionAdapter, definitionSetAdapter, propertySetAdapter, propertyAdapter);
-        applicationFactoryManager = new MockApplicationFactoryManager(
-                definitionManager,
-                new GraphFactoryImpl(definitionManager),
-                testScopeModelFactory,
-                new EdgeFactoryImpl(definitionManager),
-                new NodeFactoryImpl(definitionUtils)
-        );
-        applicationFactoryManager = new MockApplicationFactoryManager(
-                definitionManager,
-                new GraphFactoryImpl(definitionManager),
-                testScopeModelFactory,
-                new EdgeFactoryImpl(definitionManager),
-                new NodeFactoryImpl(definitionUtils)
-        );
-        typedFactoryManager = new TypedFactoryManager(applicationFactoryManager);
-
+        StunnerTestingGraphBackendAPI api = StunnerTestingGraphBackendAPI.build(BPMNDefinitionSet.class,
+                                                                                new BPMNTestDefinitionFactory());
+        TypedFactoryManager typedFactoryManager = new TypedFactoryManager(api.getFactoryManager());
         Metadata metadata =
                 new MetadataImpl.MetadataImplBuilder(
                         BindableAdapterUtils.getDefinitionSetId(BPMNDefinitionSet.class)).build();
         Diagram<Graph<DefinitionSet, Node>, Metadata> diagram =
-                typedFactoryManager.newDiagram(
+                api.getFactoryManager().newDiagram(
                         definitionResolver.getDefinitions().getId(),
-                        BPMNDefinitionSet.class,
+                        BPMN_ID,
                         metadata);
         graph = diagram.getGraph();
-        graphBuilder = new GraphBuilder(graph, definitionManager, typedFactoryManager, rulesManager, commandFactory, commandManager);
+        graphBuilder = new GraphBuilder(graph,
+                                        api.getDefinitionManager(),
+                                        typedFactoryManager,
+                                        api.getRuleManager(),
+                                        api.commandFactory,
+                                        api.commandManager);
     }
 
     @Test
@@ -250,22 +182,6 @@ public class GraphBuilderTest {
         Bounds bounds = node.getContent().getBounds();
         assertEquals(x, bounds.getUpperLeft().getX(), 0);
         assertEquals(y, bounds.getUpperLeft().getY(), 0);
-    }
-
-    @SuppressWarnings("unchecked")
-    private void mockAdapterRegistry(BackendDefinitionAdapter definitionAdapter, BackendDefinitionSetAdapter definitionSetAdapter, BackendPropertySetAdapter propertySetAdapter, BackendPropertyAdapter propertyAdapter) {
-        when(adapterRegistry.getDefinitionSetAdapter(any(Class.class))).thenReturn(definitionSetAdapter);
-        when(adapterRegistry.getDefinitionAdapter(any(Class.class))).thenReturn(definitionAdapter);
-        when(adapterRegistry.getPropertySetAdapter(any(Class.class))).thenReturn(propertySetAdapter);
-        when(adapterRegistry.getPropertyAdapter(any(Class.class))).thenReturn(propertyAdapter);
-    }
-
-    @SuppressWarnings("unchecked")
-    private void mockAdapterManager(BackendDefinitionAdapter definitionAdapter, BackendDefinitionSetAdapter definitionSetAdapter, BackendPropertySetAdapter propertySetAdapter, BackendPropertyAdapter propertyAdapter) {
-        when(adapterManager.forDefinitionSet()).thenReturn(definitionSetAdapter);
-        when(adapterManager.forDefinition()).thenReturn(definitionAdapter);
-        when(adapterManager.forPropertySet()).thenReturn(propertySetAdapter);
-        when(adapterManager.forProperty()).thenReturn(propertyAdapter);
     }
 
     public static BpmnNode mockBpmnNode(Node<? extends View<? extends BPMNViewDefinition>, ?> node) {

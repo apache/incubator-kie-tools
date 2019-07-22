@@ -18,7 +18,6 @@ package org.kie.workbench.common.stunner.core.graph.command.impl;
 
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.core.TestingGraphInstanceBuilder;
-import org.kie.workbench.common.stunner.core.TestingGraphMockHandler;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionId;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 import org.kie.workbench.common.stunner.core.definition.clone.CloneManager;
@@ -39,6 +38,7 @@ import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.Tree
 import org.kie.workbench.common.stunner.core.util.UUID;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
@@ -98,25 +98,25 @@ public abstract class AbstractCloneCommandTest extends AbstractGraphCommandTest 
     public void setUp() {
         super.init();
 
+        MockitoAnnotations.initMocks(this);
+
         //creating the mock graph for test
-        TestingGraphMockHandler handler = new TestingGraphMockHandler();
-        graphInstance = TestingGraphInstanceBuilder.newGraph3(handler);
-        graph = graphInstance.graph;
-        graphIndex = handler.graphIndex;
+        graphInstance = TestingGraphInstanceBuilder.newGraph3(testingGraphMockHandler);
 
         //mocking the clone nodes on the graphIndex
         ArgumentCaptor<Node> nodeArgumentCaptor = ArgumentCaptor.forClass(Node.class);
-        when(handler.graphIndex.addNode(nodeArgumentCaptor.capture())).thenAnswer(
+        when(testingGraphMockHandler.graphIndex.addNode(nodeArgumentCaptor.capture())).thenAnswer(
                 t -> {
                     //Node node = (Node)t.getArguments()[0];
                     when(graphIndex.getNode(eq(nodeArgumentCaptor.getValue().getUUID()))).thenReturn(nodeArgumentCaptor.getValue());
                     return graphIndex;
                 });
-
         doAnswer(invocationOnMock -> {
             Object o = invocationOnMock.getArguments()[0];
             return DefinitionId.build(BindableAdapterUtils.getDefinitionId(o.getClass()));
         }).when(definitionAdapter).getId(anyObject());
+
+        //edge mock
         connectorContent = new ViewConnectorImpl(connectorDefinition, Bounds.create(1d, 1d, 1d, 1d));
         sourceConnection = MagnetConnection.Builder.atCenter(graphInstance.startNode);
         connectorContent.setSourceConnection(sourceConnection);

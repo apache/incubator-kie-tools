@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.subprocesses;
 
 import org.junit.Test;
-import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.Marshaller;
 import org.kie.workbench.common.stunner.bpmn.definition.EventSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.property.subProcess.execution.EventSubprocessExecutionSet;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -25,9 +24,8 @@ import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assume.assumeFalse;
 
-public class EventSubProcessTest extends SubProcess<EventSubprocess> {
+public class EventSubProcessTest extends SubProcessTest<EventSubprocess> {
 
     private static final String BPMN_SUB_PROCESS_FILE_PATH = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/eventSubProcesses.bpmn";
 
@@ -42,64 +40,7 @@ public class EventSubProcessTest extends SubProcess<EventSubprocess> {
 
     private static final int AMOUNT_OF_NODES_IN_DIAGRAM = 17;
 
-    private static Diagram<Graph, Metadata> oldDiagram;
-    private static Diagram<Graph, Metadata> oldRoundTripDiagram;
-
-    private static Diagram<Graph, Metadata> newDiagram;
-    private static Diagram<Graph, Metadata> newRoundTripDiagram;
-
-    public EventSubProcessTest(Marshaller marshallerType) throws Exception {
-        super(marshallerType, marshallers());
-    }
-
-    @Override
-    Diagram<Graph, Metadata> getNewDiagram() {
-        return newDiagram;
-    }
-
-    @Override
-    void setNewDiagram(Diagram<Graph, Metadata> diagram) {
-        newDiagram = diagram;
-    }
-
-    @Override
-    Diagram<Graph, Metadata> getNewRoundTripDiagram() {
-        return newRoundTripDiagram;
-    }
-
-    @Override
-    void setNewRoundTripDiagram(Diagram<Graph, Metadata> diagram) {
-        newRoundTripDiagram = diagram;
-    }
-
-    @Override
-    Diagram<Graph, Metadata> getOldDiagram() {
-        return oldDiagram;
-    }
-
-    @Override
-    void setOldDiagram(Diagram<Graph, Metadata> diagram) {
-        oldDiagram = diagram;
-    }
-
-    @Override
-    Diagram<Graph, Metadata> getOldRoundTripDiagram() {
-        return oldRoundTripDiagram;
-    }
-
-    @Override
-    void setOldRoundTripDiagram(Diagram<Graph, Metadata> diagram) {
-        oldRoundTripDiagram = diagram;
-    }
-
-    @Test
-    @Override
-    public void testMarshallTopLevelFilledPropertiesSubProcess() {
-        final String ignoreMessage = "There is a bug in old marshaller. Once, the bug is fixed, the " +
-                "method should be removed only from this class, not from its superclass.\n" +
-                "For more information see https://issues.jboss.org/browse/JBPM-8467";
-        assumeFalse(ignoreMessage, isCurrentMarshallerOld());
-        super.testMarshallTopLevelFilledPropertiesSubProcess();
+    public EventSubProcessTest() throws Exception {
     }
 
     @Test
@@ -117,7 +58,6 @@ public class EventSubProcessTest extends SubProcess<EventSubprocess> {
     }
 
     @Test
-    @Override
     public void testUnmarshallTopLevelEmptyPropertiesSubProcess() {
         Diagram<Graph, Metadata> diagram = getDiagram();
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
@@ -135,7 +75,6 @@ public class EventSubProcessTest extends SubProcess<EventSubprocess> {
     }
 
     @Test
-    @Override
     public void testUnmarshallTopLevelFilledPropertiesSubProcess() {
         final String SUB_PROCESS_NAME = "Event process01 name ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
         final String SUB_PROCESS_DOCUMENTATION = "Event process01 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
@@ -157,7 +96,6 @@ public class EventSubProcessTest extends SubProcess<EventSubprocess> {
     }
 
     @Test
-    @Override
     public void testUnmarshallTopLevelSubProcessWithEdges() {
         final String SUB_PROCESS_NAME = "Event Sub-process";
 
@@ -177,7 +115,6 @@ public class EventSubProcessTest extends SubProcess<EventSubprocess> {
     }
 
     @Test
-    @Override
     public void testUnmarshallSubProcessLevelEmptyPropertiesSubProcess() {
         Diagram<Graph, Metadata> diagram = getDiagram();
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
@@ -195,7 +132,6 @@ public class EventSubProcessTest extends SubProcess<EventSubprocess> {
     }
 
     @Test
-    @Override
     public void testUnmarshallSubProcessLevelFilledPropertiesSubProcess() {
         final String SUB_PROCESS_NAME = "Event process02 name ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
         final String SUB_PROCESS_DOCUMENTATION = "Event process02 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
@@ -217,7 +153,6 @@ public class EventSubProcessTest extends SubProcess<EventSubprocess> {
     }
 
     @Test
-    @Override
     public void testUnmarshallSubProcessLevelSubProcessWithEdges() {
         final String SUB_PROCESS_NAME = "Event Sub-process";
 

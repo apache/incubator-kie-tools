@@ -64,8 +64,8 @@ public class NodeFactoryImplTest {
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
         this.testingkHelper = new TestingGraphMockHandler();
-        when(testingkHelper.definitionAdapter.getLabels(eq(definition))).thenReturn(LABELS);
-        when(definitionUtils.getDefinitionManager()).thenReturn(testingkHelper.definitionManager);
+        when(testingkHelper.getDefinitionAdapter().getLabels(eq(definition))).thenReturn(LABELS);
+        when(definitionUtils.getDefinitionManager()).thenReturn(testingkHelper.getDefinitionManager());
         when(definitionUtils.buildBounds(eq(definition),
                                          anyDouble(),
                                          anyDouble())).thenReturn(BOUNDS);
@@ -79,8 +79,9 @@ public class NodeFactoryImplTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testBuild() {
-        when(testingkHelper.definitionAdapter.getId(eq(definition))).thenReturn(DefinitionId.build(DEF_ID));
+        when(testingkHelper.getDefinitionAdapter().getId(eq(definition))).thenReturn(DefinitionId.build(DEF_ID));
         final Node<Definition<Object>, Edge> node = tested.build(UUID,
                                                                  definition);
         assertNotNull(node);
@@ -94,9 +95,10 @@ public class NodeFactoryImplTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testBuildDynamicDefinition() {
-        when(testingkHelper.definitionAdapter.getId(eq(definition))).thenReturn(DefinitionId.build(DEF_TYPE_ID,
-                                                                                                   DEF_ID));
+        when(testingkHelper.getDefinitionAdapter().getId(eq(definition))).thenReturn(DefinitionId.build(DEF_TYPE_ID,
+                                                                                                        DEF_ID));
         final Node<Definition<Object>, Edge> node = tested.build(UUID,
                                                                  definition);
         assertNotNull(node);

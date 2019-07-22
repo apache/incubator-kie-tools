@@ -17,14 +17,14 @@
 package org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.definitions;
 
 import org.junit.Test;
-import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.BPMNDiagramMarshallerBase;
+import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.BPMNDiagramMarshallerBaseTest;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 
 import static junit.framework.TestCase.assertTrue;
 
-public class DefinitionsTest extends BPMNDiagramMarshallerBase {
+public class DefinitionsTest extends BPMNDiagramMarshallerBaseTest {
 
     private static final String BPMN_BASIC_FILE_PATH = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/basic.bpmn";
 
@@ -34,15 +34,15 @@ public class DefinitionsTest extends BPMNDiagramMarshallerBase {
 
     @Test
     public void definitionsShouldContainTargetNamespace() throws Exception {
-        Diagram<Graph, Metadata> d = unmarshall(newMarshaller, BPMN_BASIC_FILE_PATH);
-        String marshall = newMarshaller.marshall(d);
+        Diagram<Graph, Metadata> d = unmarshall(marshaller, BPMN_BASIC_FILE_PATH);
+        String marshall = marshaller.marshall(d);
         assertTrue(marshall.contains("targetNamespace"));
     }
 
     @Test
     public void definitionsShouldContainSchemaLocation() throws Exception {
-        Diagram<Graph, Metadata> d = unmarshall(newMarshaller, BPMN_BASIC_FILE_PATH);
-        String marshall = newMarshaller.marshall(d);
+        Diagram<Graph, Metadata> d = unmarshall(marshaller, BPMN_BASIC_FILE_PATH);
+        String marshall = marshaller.marshall(d);
         assertTrue(marshall.contains("schemaLocation"));
     }
 }

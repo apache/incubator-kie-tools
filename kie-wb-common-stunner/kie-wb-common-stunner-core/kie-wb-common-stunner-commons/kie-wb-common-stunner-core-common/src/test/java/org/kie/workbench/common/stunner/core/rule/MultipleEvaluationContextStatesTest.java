@@ -102,8 +102,8 @@ public class MultipleEvaluationContextStatesTest {
         graphTestHandler.ruleSet.getRules().add(connectionRule);
 
         RuleManager ruleManager = graphTestHandler.createRuleManagerImplementation();
-        return new ContextualGraphCommandExecutionContext(graphTestHandler.definitionManager,
-                                                          graphTestHandler.factoryManager,
+        return new ContextualGraphCommandExecutionContext(graphTestHandler.getDefinitionManager(),
+                                                          graphTestHandler.getFactoryManager(),
                                                           ruleManager,
                                                           graphTestHandler.graphIndex,
                                                           graphTestHandler.ruleSet);

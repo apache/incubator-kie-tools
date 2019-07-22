@@ -16,14 +16,18 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.elements;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.ExtensionAttributeValue;
 import org.eclipse.emf.ecore.util.FeatureMap;
+import org.jboss.drools.DroolsPackage;
+import org.jboss.drools.MetaDataType;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
-import org.kie.workbench.common.stunner.bpmn.backend.legacy.util.Utils;
 
 public abstract class ElementDefinition<T> {
 
@@ -48,7 +52,7 @@ public abstract class ElementDefinition<T> {
     public abstract void setValue(BaseElement element, T value);
 
     protected Optional<java.lang.String> getStringValue(BaseElement element) {
-        return Optional.ofNullable(Utils.getMetaDataValue(element.getExtensionValues(), name));
+        return Optional.ofNullable(getMetaDataValue(element.getExtensionValues(), name));
     }
 
     protected abstract void setStringValue(BaseElement element, String value);
@@ -65,5 +69,31 @@ public abstract class ElementDefinition<T> {
 
     public CustomElement<T> of(BaseElement element) {
         return new CustomElement<>(this, element);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static String getMetaDataValue(final List<ExtensionAttributeValue> extensionValues,
+                                           final String metaDataName) {
+        if (extensionValues != null) {
+            return extensionValues.stream()
+                    .map(ExtensionAttributeValue::getValue)
+                    .flatMap((Function<FeatureMap, Stream<?>>) extensionElements -> {
+                        List o = (List) extensionElements.get(DroolsPackage.Literals.DOCUMENT_ROOT__META_DATA, true);
+                        return o.stream();
+                    })
+                    .filter(metaType -> isMetaType((MetaDataType) metaType, metaDataName))
+                    .findFirst()
+                    .map(m -> ((MetaDataType) m).getMetaValue())
+                    .orElse(null);
+        }
+        return null;
+    }
+
+    private static boolean isMetaType(MetaDataType metaType,
+                                      final String metaDataName) {
+        return metaType.getName() != null &&
+                metaType.getName().equals(metaDataName) &&
+                metaType.getMetaValue() != null &&
+                metaType.getMetaValue().length() > 0;
     }
 }
