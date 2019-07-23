@@ -14,10 +14,19 @@
  * limitations under the License.
  */
 
-import * as AppFormer from "appformer-js-core";
-import { LanguageData } from "appformer-js-core";
-import { EnvelopeBusInnerMessageHandler } from "./EnvelopeBusInnerMessageHandler";
+import * as MicroEditorEnvelope from "appformer-js-microeditor-envelope";
+import { GwtEditorWrapperFactory } from "./gwt/GwtEditorWrapperFactory";
+import { AppFormerGwtApi } from "./gwt/AppFormerGwtApi";
 
-export interface EditorFactory<T extends LanguageData> {
-  createEditor(languageData: T, messageBus: EnvelopeBusInnerMessageHandler): Promise<AppFormer.Editor>;
+declare global {
+  export const acquireVsCodeApi: any;
 }
+
+const appFormerGwtApi = new AppFormerGwtApi();
+appFormerGwtApi.setClientSideOnly(true);
+
+MicroEditorEnvelope.init({
+  container: document.getElementById("envelope-app")!,
+  busApi: acquireVsCodeApi(),
+  editorFactory: new GwtEditorWrapperFactory(appFormerGwtApi)
+});

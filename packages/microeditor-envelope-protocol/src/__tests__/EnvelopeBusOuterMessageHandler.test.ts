@@ -131,7 +131,7 @@ describe("send", () => {
   });
 
   test("respond languageRequest", () => {
-    const languageData = { editorId: "id", gwtModuleName: "name", erraiDomain: "domain", resources: [] };
+    const languageData = { type: "dummy", editorId: "id", gwtModuleName: "name", erraiDomain: "domain", resources: [] };
     handler.respond_languageRequest(languageData);
     expect(sentMessages).toEqual([{ type: EnvelopeBusMessageType.RETURN_LANGUAGE, data: languageData }]);
   });

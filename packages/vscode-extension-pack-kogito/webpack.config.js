@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *        http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,19 +16,19 @@
 
 const path = require("path");
 const CircularDependencyPlugin = require("circular-dependency-plugin");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
 
-module.exports = {
+const commonConfig = {
   mode: "development",
-  devtool: "inline-source-map",
-  entry: {
-    index: "./src/index.ts",
-  },
   output: {
     path: path.resolve(__dirname, "./dist"),
     filename: "[name].js",
-    library: "AppFormer.MicroEditorEnvelope",
+    library: "AppFormer.VsCodePack",
     libraryTarget: "umd",
     umdNamedDefine: true
+  },
+  externals: {
+    vscode: "commonjs vscode"
   },
   plugins: [
     new CircularDependencyPlugin({
@@ -37,20 +37,6 @@ module.exports = {
       cwd: process.cwd() // set the current working directory for displaying module paths
     })
   ],
-  externals: {
-    react: {
-      root: "React", //indicates global variable
-      commonjs: "react",
-      commonjs2: "react",
-      amd: "react"
-    },
-    "react-dom": {
-      root: "ReactDOM", //indicates global variable
-      commonjs: "react-dom",
-      commonjs2: "react-dom",
-      amd: "react-dom"
-    }
-  },
   module: {
     rules: [
       {
@@ -67,27 +53,32 @@ module.exports = {
       }
     ]
   },
-  devServer: {
-    historyApiFallback: {
-      disableDotRule: true
-    },
-    disableHostCheck: true,
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
-      "Access-Control-Allow-Headers": "X-Requested-With, content-type, Authorization"
-    },
-    watchContentBase: true,
-    contentBase: [
-      path.join(__dirname, "static"),
-      path.join(__dirname, "../../node_modules/@patternfly/patternfly/"),
-    ],
-    index: "static/index.html",
-    compress: true,
-    port: 9000
-  },
   resolve: {
     extensions: [".tsx", ".ts", ".js", ".jsx"],
     modules: [path.resolve("../../node_modules"), path.resolve("./node_modules"), path.resolve("./src")]
   }
 };
+
+module.exports = [
+  {
+    ...commonConfig,
+    mode: "production",
+    target: "node",
+    entry: {
+      "extension/extension": "./src/extension/extension.ts"
+    },
+    plugins: [
+    ]
+  },
+  {
+    ...commonConfig,
+    mode: "production",
+    target: "web",
+    entry: {
+      "webview/index": "./src/webview/index.ts"
+    },
+    plugins: [
+        new CopyWebpackPlugin([{from: "src/resources/dmn", to: "webview/editors/dmn"}])
+    ]
+  }
+];

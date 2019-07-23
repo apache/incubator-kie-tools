@@ -16,69 +16,48 @@
 
 const path = require("path");
 const CircularDependencyPlugin = require("circular-dependency-plugin");
-const CopyWebpackPlugin = require("copy-webpack-plugin");
-
-const commonConfig = {
-  mode: "development",
-  output: {
-    path: path.resolve(__dirname, "./dist"),
-    filename: "[name].js",
-    library: "AppFormer.VsCode",
-    libraryTarget: "umd",
-    umdNamedDefine: true
-  },
-  externals: {
-    vscode: "commonjs vscode"
-  },
-  plugins: [
-    new CircularDependencyPlugin({
-      exclude: /node_modules/, // exclude detection of files based on a RegExp
-      failOnError: false, // add errors to webpack instead of warnings
-      cwd: process.cwd() // set the current working directory for displaying module paths
-    })
-  ],
-  module: {
-    rules: [
-      {
-        test: /\.tsx?$/,
-        loader: "ts-loader",
-        options: {
-          configFile: path.resolve("./tsconfig.json")
-        }
-      },
-      {
-        test: /\.jsx?$/,
-        exclude: /node_modules/,
-        use: ["babel-loader"]
-      }
-    ]
-  },
-  resolve: {
-    extensions: [".tsx", ".ts", ".js", ".jsx"],
-    modules: [path.resolve("../../node_modules"), path.resolve("./node_modules"), path.resolve("./src")]
-  }
-};
 
 module.exports = [
   {
-    ...commonConfig,
-    mode: "production",
-    target: "node",
+    mode: "development",
     entry: {
-      "extension/extension": "./src/extension/extension.ts"
+      index: "./src/index.ts"
+    },
+    target: 'node',
+    output: {
+      path: path.resolve(__dirname, "./dist"),
+      filename: "[name].js",
+      libraryTarget: "commonjs",
+    },
+    externals: {
+      vscode: "commonjs vscode"
     },
     plugins: [
-    ]
-  },
-  {
-    ...commonConfig,
-    mode: "production",
-    target: "web",
-    entry: {
-      "webview/index": "./src/webview/index.ts"
+      new CircularDependencyPlugin({
+        exclude: /node_modules/, // exclude detection of files based on a RegExp
+        failOnError: false, // add errors to webpack instead of warnings
+        cwd: process.cwd() // set the current working directory for displaying module paths
+      })
+    ],
+    module: {
+      rules: [
+        {
+          test: /\.tsx?$/,
+          loader: "ts-loader",
+          options: {
+            configFile: path.resolve("./tsconfig.json")
+          }
+        },
+        {
+          test: /\.jsx?$/,
+          exclude: /node_modules/,
+          use: ["babel-loader"]
+        }
+      ]
     },
-    plugins: [
-        new CopyWebpackPlugin([{from: "src/resources/dmn", to: "webview/editors/dmn"}])
-    ]
+    resolve: {
+      extensions: [".tsx", ".ts", ".js", ".jsx"],
+      modules: [path.resolve("../../node_modules"), path.resolve("./node_modules"), path.resolve("./src")]
+    }
   }
 ];

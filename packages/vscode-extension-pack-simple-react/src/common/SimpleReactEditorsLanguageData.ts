@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-import * as AppFormer from "appformer-js-core";
 import { LanguageData } from "appformer-js-core";
-import { EnvelopeBusInnerMessageHandler } from "./EnvelopeBusInnerMessageHandler";
 
-export interface EditorFactory<T extends LanguageData> {
-  createEditor(languageData: T, messageBus: EnvelopeBusInnerMessageHandler): Promise<AppFormer.Editor>;
+export interface SimpleReactEditorsLanguageData extends LanguageData {
+  type: string;
 }

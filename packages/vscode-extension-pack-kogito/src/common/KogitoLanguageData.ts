@@ -14,10 +14,17 @@
  * limitations under the License.
  */
 
-import * as AppFormer from "appformer-js-core";
 import { LanguageData } from "appformer-js-core";
-import { EnvelopeBusInnerMessageHandler } from "./EnvelopeBusInnerMessageHandler";
 
-export interface EditorFactory<T extends LanguageData> {
-  createEditor(languageData: T, messageBus: EnvelopeBusInnerMessageHandler): Promise<AppFormer.Editor>;
+export interface KogitoLanguageData extends LanguageData {
+  type: string;
+  editorId: string;
+  gwtModuleName: string;
+  erraiDomain: string;
+  resources: Resource[];
+}
+
+export interface Resource {
+  type: "css" | "js";
+  paths: string[];
 }

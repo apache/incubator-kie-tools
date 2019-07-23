@@ -16,7 +16,7 @@
 
 import { EnvelopeBusInnerMessageHandler } from "../EnvelopeBusInnerMessageHandler";
 import { EnvelopeBusMessageType } from "appformer-js-microeditor-envelope-protocol";
-import { LanguageData } from "appformer-js-microeditor-router";
+import { LanguageData } from "appformer-js-core";
 
 let handler: EnvelopeBusInnerMessageHandler;
 let receivedMessages: any[];

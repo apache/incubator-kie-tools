@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-export * from "./appformer";
 export * from "./core";
+export * from "./appformer";
+export * from "./router";
 
 const self = this;
 

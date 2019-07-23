@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-import * as AppFormer from "appformer-js-core";
-import { LanguageData } from "appformer-js-core";
-import { EnvelopeBusInnerMessageHandler } from "./EnvelopeBusInnerMessageHandler";
+export interface Router<T extends LanguageData> {
+  getLanguageData(fileExtension: string): T | undefined;
+  getRelativePathTo(uri: string): string;
+}
 
-export interface EditorFactory<T extends LanguageData> {
-  createEditor(languageData: T, messageBus: EnvelopeBusInnerMessageHandler): Promise<AppFormer.Editor>;
+export interface LanguageData {
+  type: string
 }

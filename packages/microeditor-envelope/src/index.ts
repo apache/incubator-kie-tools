@@ -17,19 +17,19 @@
 import * as ReactDOM from "react-dom";
 import { EditorEnvelopeController } from "./EditorEnvelopeController";
 import { EnvelopeBusApi } from "appformer-js-microeditor-envelope-protocol";
-import { AppFormerGwtApi } from "./gwt/AppFormerGwtApi";
-import { GwtEditorWrapperFactory } from "./gwt/GwtEditorWrapperFactory";
 import { SpecialDomElements } from "./SpecialDomElements";
 import { Renderer } from "./Renderer";
 import { ReactElement } from "react";
+import { EditorFactory } from "./EditorFactory";
 
 export interface Args {
   container: HTMLElement;
   busApi: EnvelopeBusApi;
-  clientSideOnly: boolean;
+  editorFactory: EditorFactory<any>;
 }
 
-export * from "./EnvelopeBusInnerMessageHandler"
+export * from "./EditorFactory";
+export * from "./EnvelopeBusInnerMessageHandler";
 
 class ReactDomRenderer implements Renderer {
   public render(element: ReactElement, container: HTMLElement, callback: () => void) {
@@ -40,15 +40,12 @@ class ReactDomRenderer implements Renderer {
 export function init(args: Args) {
   const specialDomElements = new SpecialDomElements();
   const renderer = new ReactDomRenderer();
-  const appFormerGwtApi = new AppFormerGwtApi();
-  const editorFactory = new GwtEditorWrapperFactory(appFormerGwtApi);
   const editorEnvelopeController = new EditorEnvelopeController(
     args.busApi,
-    editorFactory,
+    args.editorFactory,
     specialDomElements,
     renderer
   );
 
-  appFormerGwtApi.setClientSideOnly(args.clientSideOnly);
   return editorEnvelopeController.start(args.container);
 }

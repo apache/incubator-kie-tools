@@ -14,10 +14,15 @@
  * limitations under the License.
  */
 
-import * as AppFormer from "appformer-js-core";
-import { LanguageData } from "appformer-js-core";
-import { EnvelopeBusInnerMessageHandler } from "./EnvelopeBusInnerMessageHandler";
+import * as MicroEditorEnvelope from "appformer-js-microeditor-envelope";
+import { SimpleReactEditorsFactory } from "./SimpleReactEditorsFactory";
 
-export interface EditorFactory<T extends LanguageData> {
-  createEditor(languageData: T, messageBus: EnvelopeBusInnerMessageHandler): Promise<AppFormer.Editor>;
+declare global {
+  export const acquireVsCodeApi: any;
 }
+
+MicroEditorEnvelope.init({
+  container: document.getElementById("envelope-app")!,
+  busApi: acquireVsCodeApi(),
+  editorFactory: new SimpleReactEditorsFactory()
+});

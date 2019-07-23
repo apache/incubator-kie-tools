@@ -1,5 +1,5 @@
 {
-  "name": "appformer-js-vscode-extension",
+  "name": "appformer-js-vscode-extension-pack-kogito",
   "displayName": "KIE :: Kogito Editors",
   "description": "",
   "version": "0.0.0",
@@ -18,8 +18,7 @@
     "*"
   ],
   "publisher": "kiegroup",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "./dist/extension/extension.js",
   "contributes": {
     "languages": [
       {
@@ -47,12 +46,15 @@
     ]
   },
   "scripts": {
+    "pack-extension": "vsce package --yarn -o ./dist/kiegroup_kogito_editors.vsix",
+    "vscode:prepublish": "yarn run build",
     "build": "yarn run build:fast",
     "build:fast": "rm -rf dist && webpack",
     "compile": "webpack",
     "watch": "webpack",
-    "test": "echo 'No tests to run.'",
-    "build:prod": "yarn run build --mode production"
+    "test": "jest",
+    "test:it": "rm -rf tests-it/out && tsc -p tests-it && node tests-it/out/main.js",
+    "build:prod": "yarn run build --mode production && yarn run test:it && yarn run pack-extension"
   },
   "jest-junit": {
     "outputDirectory": "./target"
@@ -81,6 +83,7 @@
   },
   "dependencies": {
     "appformer-js-core": "0.0.0",
+    "appformer-js-vscode-extension": "0.0.0",
     "appformer-js-microeditor-envelope-protocol": "0.0.0",
     "appformer-js-microeditor-envelope": "0.0.0"
   }
