@@ -16,7 +16,6 @@
 
 import { AppFormerGwtApi } from "../gwt/AppFormerGwtApi";
 import { GwtEditorWrapperFactory } from "../gwt/GwtEditorWrapperFactory";
-import { AssertionError } from "assert";
 import { LanguageData, Resource } from "appformer-js-microeditor-router/src";
 
 const delay = (ms: number) => {
@@ -25,7 +24,7 @@ const delay = (ms: number) => {
 
 const appFormerGwtApi: AppFormerGwtApi = {
   setErraiDomain: jest.fn(),
-  onFinishedLoading: (callback: () => Promise<any>) => window.appFormerGwtFinishedLoading = callback,
+  onFinishedLoading: (callback: () => Promise<any>) => (window.appFormerGwtFinishedLoading = callback),
   getEditor: jest.fn(),
   setClientSideOnly: jest.fn()
 };
@@ -38,14 +37,14 @@ const cssResource: Resource = {
 const jsResource: Resource = {
   type: "js",
   paths: ["resource.js"]
-}
+};
 
 const testLanguageData: LanguageData = {
   editorId: "editorID",
   gwtModuleName: "moduleName",
   erraiDomain: "erraiDomain",
   resources: [cssResource, jsResource]
-}
+};
 
 const gwtEditorWrapperFactory: GwtEditorWrapperFactory = new GwtEditorWrapperFactory(appFormerGwtApi);
 
@@ -53,10 +52,10 @@ describe("GwtEditorWrapperFactory", () => {
   test("create editor", async () => {
     const res = jest.fn();
 
-    gwtEditorWrapperFactory.createEditor(testLanguageData).then(res)
+    gwtEditorWrapperFactory.createEditor(testLanguageData, undefined as any).then(res);
 
-    const links = document.body.getElementsByTagName('link');
-    const scripts = document.getElementsByTagName('script');
+    const links = document.body.getElementsByTagName("link");
+    const scripts = document.getElementsByTagName("script");
     expect(links.length).toBe(1);
     expect(scripts.length).toBe(1);
     expect(links[0].href).toContain(cssResource.paths[0]);

@@ -20,6 +20,7 @@ import * as AppFormer from "appformer-js-core";
 import { GwtEditorWrapper } from "./GwtEditorWrapper";
 import { EditorFactory } from "../EditorFactory";
 import { Resource } from "appformer-js-microeditor-router";
+import {EnvelopeBusInnerMessageHandler} from "../EnvelopeBusInnerMessageHandler";
 
 export class GwtEditorWrapperFactory implements EditorFactory {
   private readonly appFormerGwtApi: AppFormerGwtApi;
@@ -28,7 +29,7 @@ export class GwtEditorWrapperFactory implements EditorFactory {
     this.appFormerGwtApi = appFormerGwtApi;
   }
 
-  public createEditor(languageData: LanguageData) {
+  public createEditor(languageData: LanguageData, messageBus: EnvelopeBusInnerMessageHandler) {
     return new Promise<AppFormer.Editor>(res => {
       this.appFormerGwtApi.setErraiDomain(languageData.erraiDomain); //needed only for backend communication
 

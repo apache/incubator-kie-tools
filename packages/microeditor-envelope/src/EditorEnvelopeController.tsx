@@ -61,7 +61,7 @@ export class EditorEnvelopeController {
       },
       receive_languageResponse: (languageData: LanguageData) => {
         this.editorFactory
-          .createEditor(languageData)
+          .createEditor(languageData, this.envelopeBusInnerMessageHandler)
           .then(editor => this.open(editor))
           .then(() => self.request_contentResponse());
       }

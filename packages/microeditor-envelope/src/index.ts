@@ -29,6 +29,8 @@ export interface Args {
   clientSideOnly: boolean;
 }
 
+export * from "./EnvelopeBusInnerMessageHandler"
+
 class ReactDomRenderer implements Renderer {
   public render(element: ReactElement, container: HTMLElement, callback: () => void) {
     ReactDOM.render(element, container, callback);
