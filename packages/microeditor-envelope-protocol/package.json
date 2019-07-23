@@ -10,8 +10,8 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
-    "appformer-js-core": "^0.1.0",
-    "appformer-js-microeditor-router": "^0.1.0"
+    "appformer-js-core": "0.1.0",
+    "appformer-js-microeditor-router": "0.1.0"
   },
   "scripts": {
     "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}'",

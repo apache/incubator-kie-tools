@@ -71,9 +71,9 @@
     "webpack-cli": "3.0.8"
   },
   "dependencies": {
-    "appformer-js-core": "^0.1.0",
-    "appformer-js-microeditor-envelope": "^0.1.0",
-    "appformer-js-microeditor-envelope-protocol": "^0.1.0",
-    "appformer-js-microeditor-router": "^0.1.0"
+    "appformer-js-core": "0.1.0",
+    "appformer-js-microeditor-envelope": "0.1.0",
+    "appformer-js-microeditor-envelope-protocol": "0.1.0",
+    "appformer-js-microeditor-router": "0.1.0"
   }
 }
