@@ -1,6 +1,6 @@
 {
   "name": "appformer-js-microeditor-router",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "",
   "license": "Apache-2.0",
   "main": "./dist/index.js",
@@ -8,8 +8,6 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/kiegroup/kogito-tooling.git"
-  },
-  "dependencies": {
   },
   "scripts": {
     "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}'",
