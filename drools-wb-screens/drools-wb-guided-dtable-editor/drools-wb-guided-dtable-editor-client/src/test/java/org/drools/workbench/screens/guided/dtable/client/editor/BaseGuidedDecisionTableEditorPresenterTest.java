@@ -100,7 +100,7 @@ public class BaseGuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisi
                                                       columnsPage,
                                                       saveAndRenameCommandBuilder,
                                                       alertsButtonMenuItemBuilder,
-                                                      downloadMenuItem,
+                                                      downloadMenuItemBuilder,
                                                       elemental2DomUtil,
                                                       editorSearchIndex,
                                                       searchBarComponent) {

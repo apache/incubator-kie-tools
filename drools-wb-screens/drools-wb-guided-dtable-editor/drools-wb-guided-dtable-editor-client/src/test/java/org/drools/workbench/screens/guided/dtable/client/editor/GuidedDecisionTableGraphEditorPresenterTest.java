@@ -230,7 +230,7 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
                                                            columnsPage,
                                                            saveAndRenameCommandBuilder,
                                                            alertsButtonMenuItemBuilder,
-                                                           downloadMenuItem) {
+                                                           downloadMenuItemBuilder) {
             {
                 workbenchContext = GuidedDecisionTableGraphEditorPresenterTest.this.workbenchContext;
                 projectController = GuidedDecisionTableGraphEditorPresenterTest.this.projectController;
@@ -1674,7 +1674,7 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
                                                            columnsPage,
                                                            saveAndRenameCommandBuilder,
                                                            alertsButtonMenuItemBuilder,
-                                                           downloadMenuItem);
+                                                           downloadMenuItemBuilder);
     }
 
     private static class OnSaveSetupDataHolder {

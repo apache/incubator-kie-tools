@@ -77,7 +77,7 @@ import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
 import org.uberfire.ext.editor.commons.client.menu.BasicFileMenuBuilder;
 import org.uberfire.ext.editor.commons.client.menu.BasicFileMenuBuilderImpl;
-import org.uberfire.ext.editor.commons.client.menu.DownloadMenuItem;
+import org.uberfire.ext.editor.commons.client.menu.DownloadMenuItemBuilder;
 import org.uberfire.ext.editor.commons.client.menu.RestoreVersionCommandProvider;
 import org.uberfire.ext.editor.commons.client.menu.common.SaveAndRenameCommandBuilder;
 import org.uberfire.ext.editor.commons.client.validation.DefaultFileNameValidator;
@@ -262,7 +262,7 @@ public class GuidedDecisionTableEditorMenusTest {
     protected AlertsButtonMenuItemBuilder alertsButtonMenuItemBuilder;
 
     @Mock
-    protected DownloadMenuItem downloadMenuItem;
+    protected DownloadMenuItemBuilder downloadMenuItem;
 
     @Mock
     protected MenuItem downloadMenuItemButton;

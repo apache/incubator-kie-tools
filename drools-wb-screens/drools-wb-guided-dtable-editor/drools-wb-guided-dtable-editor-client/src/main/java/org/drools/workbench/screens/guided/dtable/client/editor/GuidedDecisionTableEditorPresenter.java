@@ -72,7 +72,7 @@ import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UpdatedLockStatusEvent;
-import org.uberfire.ext.editor.commons.client.menu.DownloadMenuItem;
+import org.uberfire.ext.editor.commons.client.menu.DownloadMenuItemBuilder;
 import org.uberfire.ext.editor.commons.client.menu.common.SaveAndRenameCommandBuilder;
 import org.uberfire.ext.wires.core.grids.client.util.GridHighlightHelper;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
@@ -121,7 +121,7 @@ public class GuidedDecisionTableEditorPresenter extends BaseGuidedDecisionTableE
                                               final ColumnsPage columnsPage,
                                               final SaveAndRenameCommandBuilder<GuidedDecisionTable52, Metadata> saveAndRenameCommandBuilder,
                                               final AlertsButtonMenuItemBuilder alertsButtonMenuItemBuilder,
-                                              final DownloadMenuItem downloadMenuItem,
+                                              final DownloadMenuItemBuilder downloadMenuItemBuilder,
                                               final Elemental2DomUtil util,
                                               final EditorSearchIndex<GuidedDecisionTableSearchableElement> editorSearchIndex,
                                               final SearchBarComponent<GuidedDecisionTableSearchableElement> searchBarComponent) {
@@ -142,7 +142,7 @@ public class GuidedDecisionTableEditorPresenter extends BaseGuidedDecisionTableE
               placeManager,
               columnsPage,
               alertsButtonMenuItemBuilder,
-              downloadMenuItem);
+              downloadMenuItemBuilder);
 
         this.saveAndRenameCommandBuilder = saveAndRenameCommandBuilder;
         this.util = util;

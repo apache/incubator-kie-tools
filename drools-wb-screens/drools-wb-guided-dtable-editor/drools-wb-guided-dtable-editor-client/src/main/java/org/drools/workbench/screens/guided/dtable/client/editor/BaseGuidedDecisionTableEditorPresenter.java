@@ -67,7 +67,7 @@ import org.uberfire.client.workbench.widgets.multipage.MultiPageEditor;
 import org.uberfire.client.workbench.widgets.multipage.Page;
 import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
-import org.uberfire.ext.editor.commons.client.menu.DownloadMenuItem;
+import org.uberfire.ext.editor.commons.client.menu.DownloadMenuItemBuilder;
 import org.uberfire.ext.editor.commons.client.menu.MenuItems;
 import org.uberfire.ext.editor.commons.client.validation.DefaultFileNameValidator;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
@@ -126,7 +126,7 @@ public abstract class BaseGuidedDecisionTableEditorPresenter extends KieMultiple
                                                   final PlaceManager placeManager,
                                                   final ColumnsPage columnsPage,
                                                   final AlertsButtonMenuItemBuilder alertsButtonMenuItemBuilder,
-                                                  final DownloadMenuItem downloadMenuItem) {
+                                                  final DownloadMenuItemBuilder downloadMenuItemBuilder) {
         super(view);
         this.view = view;
         this.service = service;
@@ -145,7 +145,7 @@ public abstract class BaseGuidedDecisionTableEditorPresenter extends KieMultiple
         this.placeManager = placeManager;
         this.columnsPage = columnsPage;
         this.alertsButtonMenuItemBuilder = alertsButtonMenuItemBuilder;
-        this.downloadMenuItem = downloadMenuItem;
+        this.downloadMenuItemBuilder = downloadMenuItemBuilder;
     }
 
     @Override

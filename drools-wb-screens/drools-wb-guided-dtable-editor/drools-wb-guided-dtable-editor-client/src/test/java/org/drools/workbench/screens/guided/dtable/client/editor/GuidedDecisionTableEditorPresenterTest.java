@@ -103,7 +103,7 @@ public class GuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisionTa
                                                       columnsPage,
                                                       saveAndRenameCommandBuilder,
                                                       alertsButtonMenuItemBuilder,
-                                                      downloadMenuItem,
+                                                      downloadMenuItemBuilder,
                                                       elemental2DomUtil,
                                                       editorSearchIndex,
                                                       searchBarComponent) {
@@ -224,6 +224,14 @@ public class GuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisionTa
         verify(fileMenuBuilder,
                times(1)).addNewTopLevelMenu(eq(versionManagerMenuItem));
         verify(fileMenuBuilder).addNewTopLevelMenu(alertsButtonMenuItem);
+    }
+
+    @Test
+    public void testDownloads() {
+        presenter.makeMenuBar();
+        presenter.makeMenuBar();
+
+        verify(downloadMenuItemBuilder).build(any());
     }
 
     @Test

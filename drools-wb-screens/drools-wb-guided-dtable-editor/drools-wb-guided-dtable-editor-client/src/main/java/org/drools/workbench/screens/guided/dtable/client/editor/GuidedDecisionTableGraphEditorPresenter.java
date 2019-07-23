@@ -85,7 +85,7 @@ import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.SaveInProgressEvent;
 import org.uberfire.client.mvp.UpdatedLockStatusEvent;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
-import org.uberfire.ext.editor.commons.client.menu.DownloadMenuItem;
+import org.uberfire.ext.editor.commons.client.menu.DownloadMenuItemBuilder;
 import org.uberfire.ext.editor.commons.client.menu.MenuItems;
 import org.uberfire.ext.editor.commons.client.menu.common.SaveAndRenameCommandBuilder;
 import org.uberfire.ext.editor.commons.client.resources.i18n.CommonConstants;
@@ -157,7 +157,7 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
                                                    final ColumnsPage columnsPage,
                                                    final SaveAndRenameCommandBuilder<List<GuidedDecisionTableEditorContent>, Metadata> saveAndRenameCommandBuilder,
                                                    final AlertsButtonMenuItemBuilder alertsButtonMenuItemBuilder,
-                                                   final DownloadMenuItem downloadMenuItem) {
+                                                   final DownloadMenuItemBuilder downloadMenuItem) {
         super(view,
               service,
               docks,

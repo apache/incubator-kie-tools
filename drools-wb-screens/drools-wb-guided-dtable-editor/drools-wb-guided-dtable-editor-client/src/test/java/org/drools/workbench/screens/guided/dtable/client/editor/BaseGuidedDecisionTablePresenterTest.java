@@ -85,7 +85,7 @@ import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
 import org.uberfire.ext.editor.commons.client.menu.BasicFileMenuBuilder;
 import org.uberfire.ext.editor.commons.client.menu.BasicFileMenuBuilderImpl;
-import org.uberfire.ext.editor.commons.client.menu.DownloadMenuItem;
+import org.uberfire.ext.editor.commons.client.menu.DownloadMenuItemBuilder;
 import org.uberfire.ext.editor.commons.client.menu.RestoreVersionCommandProvider;
 import org.uberfire.ext.editor.commons.client.validation.DefaultFileNameValidator;
 import org.uberfire.ext.editor.commons.version.VersionService;
@@ -231,7 +231,7 @@ public abstract class BaseGuidedDecisionTablePresenterTest<P extends BaseGuidedD
     protected BusyIndicatorView busyIndicatorView;
 
     @Mock
-    protected DownloadMenuItem downloadMenuItem;
+    protected DownloadMenuItemBuilder downloadMenuItemBuilder;
 
     @Mock
     protected MenuItem downloadMenuItemButton;
@@ -348,7 +348,7 @@ public abstract class BaseGuidedDecisionTablePresenterTest<P extends BaseGuidedD
 
         when(workbenchContext.getActiveOrganizationalUnit()).thenReturn(Optional.empty());
         when(workbenchContext.getActiveWorkspaceProject()).thenReturn(Optional.of(mock(WorkspaceProject.class)));
-        when(downloadMenuItem.build(any())).thenReturn(downloadMenuItemButton);
+        when(downloadMenuItemBuilder.build(any())).thenReturn(downloadMenuItemButton);
 
         when(modellerView.asWidget()).thenReturn(modellerViewWidget);
         when(modellerViewWidget.getElement()).thenReturn(modellerViewWidgetElement);
