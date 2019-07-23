@@ -13,16 +13,12 @@ Kogito
 [![License](https://img.shields.io/github/license/kiegroup/kogito-tooling.svg)](https://github.com/kiegroup/kogito-tooling/blob/master/LICENSE-ASL-2.0.txt)
 [![Twitter Follow](https://img.shields.io/twitter/follow/kogito_kie.svg?label=Follow&style=social)](https://twitter.com/kogito_kie?lang=en)
 
-Kogito Tooling
---------------
-TODO
-
 Quick Links
 -----------
 
 **Homepage:** http://kogito.kie.org
 
-**Wiki:** TODO
+**Wiki:** https://github.com/kiegroup/kogito-tooling/wiki
 
 **JIRA:** https://issues.jboss.org/projects/KOGITO
 
@@ -34,12 +30,44 @@ Quick Links
 Getting Started
 ---------------
 
-Make sure that you have node and yarn installed.
+This module contains a number of examples that you can take a look at and try out yourself.
+ Please take a look at the readme of each individual example for more details on how the example works and how to run it yourself (either locally or on Kubernetes):
+- jBPM + Quarkus Hello World: [README.md](https://github.com/kiegroup/kogito-examples/tree/master/jbpm-quarkus-helloworld/README.md)
+- jBPM + Quarkus: [README.md](https://github.com/kiegroup/kogito-examples/tree/master/jbpm-quarkus-example/README.md)
+- jBPM + Spring Boot: [README.md](https://github.com/kiegroup/kogito-examples/tree/master/jbpm-springboot-example/README.md)
+- jBPM + Drools + Quarkus: [README.md](https://github.com/kiegroup/kogito-examples/tree/master/onboarding-example/readme.md) - Onboarding example combining one process and two decision services
+- Polyglot Drools with GraalVM: [README.md](https://github.com/kiegroup/kogito-examples/tree/master/drools-polyglot-example/README.md)
+- Drools + Quarkus: [README.md](https://github.com/kiegroup/kogito-examples/tree/master/drools-quarkus-example/README.md)
+- Drools + Quarkus with Unit: [README.md](https://github.com/kiegroup/kogito-examples/tree/master/drools-quarkus-unit-example/README.md)
 
 Building from source
 --------------------
 
-`yarn run init && yarn run build:prod`
+Check out the source:
+```
+git clone git@github.com:kiegroup/kogito-tooling.git
+```
+
+> If you don't have a GitHub account use this command instead:
+> ```
+> git clone https://github.com/kiegroup/kogito-tooling.git
+> ```
+
+Build with Yarn:
+```bash
+cd kogito-tooling
+yarn run init
+
+#prod
+yarn run build:prod
+
+# dev
+yarn run build # skips integration tests and production packing
+yarn run build:fast # skips lint and unit tests
+```
+
+> Final artifacts will be on `packages/*/dist` directories.
+
 
 Contributing to Kogito
 --------------------
