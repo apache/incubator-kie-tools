@@ -22,6 +22,9 @@ import java.util.Optional;
 
 import javax.enterprise.event.Event;
 
+import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.ui.Widget;
+import elemental2.dom.HTMLElement;
 import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.editor.menu.EditMenuBuilder;
@@ -29,6 +32,7 @@ import org.drools.workbench.screens.guided.dtable.client.editor.menu.InsertMenuB
 import org.drools.workbench.screens.guided.dtable.client.editor.menu.RadarMenuBuilder;
 import org.drools.workbench.screens.guided.dtable.client.editor.menu.ViewMenuBuilder;
 import org.drools.workbench.screens.guided.dtable.client.editor.page.ColumnsPage;
+import org.drools.workbench.screens.guided.dtable.client.editor.search.GuidedDecisionTableSearchableElement;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableModellerView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTablePresenter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
@@ -42,15 +46,20 @@ import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.messageconsole.client.console.widget.button.AlertsButtonMenuItemBuilder;
 import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
+import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
+import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilderImpl;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
+import org.kie.workbench.common.widgets.client.search.common.EditorSearchIndex;
+import org.kie.workbench.common.widgets.client.search.component.SearchBarComponent;
 import org.kie.workbench.common.widgets.configresource.client.widget.bound.ImportsWidgetPresenter;
 import org.kie.workbench.common.widgets.metadata.client.KieMultipleDocumentEditorWrapperView;
 import org.kie.workbench.common.widgets.metadata.client.menu.RegisteredDocumentsMenuBuilder;
@@ -92,6 +101,7 @@ import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuItem;
 
 import static org.junit.Assert.fail;
+import static org.kie.workbench.common.services.shared.preferences.ApplicationPreferences.DATE_FORMAT;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.eq;
@@ -269,7 +279,31 @@ public abstract class BaseGuidedDecisionTablePresenterTest<P extends BaseGuidedD
     protected AlertsButtonMenuItemBuilder alertsButtonMenuItemBuilder;
 
     @Mock
+    protected Elemental2DomUtil elemental2DomUtil;
+
+    @Mock
+    protected EditorSearchIndex<GuidedDecisionTableSearchableElement> editorSearchIndex;
+
+    @Mock
+    protected SearchBarComponent<GuidedDecisionTableSearchableElement> searchBarComponent;
+
+    @Mock
     protected MenuItem alertsButtonMenuItem;
+
+    @Mock
+    protected Widget modellerViewWidget;
+
+    @Mock
+    protected Element modellerViewWidgetElement;
+
+    @Mock
+    protected HTMLElement modellerViewElement;
+
+    @Mock
+    protected SearchBarComponent.View searchBarView;
+
+    @Mock
+    protected HTMLElement searchBarViewHTMLElement;
 
     protected Promises promises;
 
@@ -277,6 +311,9 @@ public abstract class BaseGuidedDecisionTablePresenterTest<P extends BaseGuidedD
 
     @Before
     public void setup() {
+
+        ApplicationPreferences.setUp(new Maps.Builder<String, String>().put(DATE_FORMAT, "dd/mm/yy").build());
+
         this.promises = new SyncPromises();
         this.dtServiceCaller = new CallerMock<>(dtService);
         this.versionServiceCaller = new CallerMock<>(versionService);
@@ -312,6 +349,12 @@ public abstract class BaseGuidedDecisionTablePresenterTest<P extends BaseGuidedD
         when(workbenchContext.getActiveOrganizationalUnit()).thenReturn(Optional.empty());
         when(workbenchContext.getActiveWorkspaceProject()).thenReturn(Optional.of(mock(WorkspaceProject.class)));
         when(downloadMenuItem.build(any())).thenReturn(downloadMenuItemButton);
+
+        when(modellerView.asWidget()).thenReturn(modellerViewWidget);
+        when(modellerViewWidget.getElement()).thenReturn(modellerViewWidgetElement);
+        when(elemental2DomUtil.asHTMLElement(modellerViewWidgetElement)).thenReturn(modellerViewElement);
+        when(searchBarComponent.getView()).thenReturn(searchBarView);
+        when(searchBarView.getElement()).thenReturn(searchBarViewHTMLElement);
 
         doReturn(alertsButtonMenuItem).when(alertsButtonMenuItemBuilder).build();
         doReturn(currentPerspective).when(perspectiveManager).getCurrentPerspective();

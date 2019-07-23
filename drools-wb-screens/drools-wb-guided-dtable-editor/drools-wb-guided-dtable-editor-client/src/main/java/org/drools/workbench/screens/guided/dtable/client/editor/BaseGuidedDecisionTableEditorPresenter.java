@@ -230,7 +230,11 @@ public abstract class BaseGuidedDecisionTableEditorPresenter extends KieMultiple
         viewMenuBuilder.setModeller(modeller);
         insertMenuBuilder.setModeller(modeller);
         radarMenuBuilder.setModeller(modeller);
-        view.setModellerView(modeller.getView());
+        view.setModellerView(getModellerView());
+    }
+
+    protected GuidedDecisionTableModellerView getModellerView() {
+        return modeller.getView();
     }
 
     protected void onStartup(final ObservablePath path,

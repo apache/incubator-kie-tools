@@ -17,12 +17,18 @@
 package org.drools.workbench.screens.guided.dtable.client.editor;
 
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.workbench.screens.guided.dtable.client.editor.search.GuidedDecisionTableSearchableElement;
 import org.drools.workbench.screens.guided.dtable.client.type.GuidedDTableResourceType;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableModellerView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectedEvent;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
@@ -42,16 +48,21 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.ext.editor.commons.client.menu.BasicFileMenuBuilder;
 import org.uberfire.ext.editor.commons.client.menu.common.SaveAndRenameCommandBuilder;
+import org.uberfire.ext.wires.core.grids.client.model.GridData;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.menu.MenuItem;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
@@ -59,6 +70,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class GuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisionTablePresenterTest<GuidedDecisionTableEditorPresenter> {
@@ -91,7 +103,10 @@ public class GuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisionTa
                                                       columnsPage,
                                                       saveAndRenameCommandBuilder,
                                                       alertsButtonMenuItemBuilder,
-                                                      downloadMenuItem) {
+                                                      downloadMenuItem,
+                                                      elemental2DomUtil,
+                                                      editorSearchIndex,
+                                                      searchBarComponent) {
             {
                 workbenchContext = GuidedDecisionTableEditorPresenterTest.this.workbenchContext;
                 projectController = GuidedDecisionTableEditorPresenterTest.this.projectController;
@@ -103,6 +118,85 @@ public class GuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisionTa
                 return mock(Command.class);
             }
         };
+    }
+
+    @Test
+    public void testInit() {
+
+        final Supplier<Boolean> isDirty = () -> true;
+        final Command noResultsFoundCallback = () -> {/* Nothing. */};
+
+        doReturn(isDirty).when(presenter).getIsDirtySupplier();
+        doReturn(noResultsFoundCallback).when(presenter).getNoResultsFoundCallback();
+
+        // init is called on @Before
+
+        editorSearchIndex.setNoResultsFoundCallback(noResultsFoundCallback);
+        editorSearchIndex.setIsDirtySupplier(isDirty);
+        verify(editorSearchIndex).registerSubIndex(presenter);
+        verify(searchBarComponent).init(editorSearchIndex);
+    }
+
+    @Test
+    public void testGetNoResultsFoundCallback() {
+
+        final GridWidget gridWidget = mock(GridWidget.class);
+        final GridData gridData = mock(GridData.class);
+
+        when(modellerView.getGridWidgets()).thenReturn(new HashSet<>(singletonList(gridWidget)));
+        when(gridWidget.getModel()).thenReturn(gridData);
+
+        presenter.getNoResultsFoundCallback().execute();
+
+        verify(gridData).clearSelections();
+        verify(gridWidget).draw();
+    }
+
+    @Test
+    public void testGetModellerView() {
+
+        final GuidedDecisionTableModellerView actual = presenter.getModellerView();
+
+        // appendChild is called more than one time due to @Before setup
+        verify(modellerViewElement, atLeastOnce()).appendChild(searchBarViewHTMLElement);
+        assertEquals(modellerView, actual);
+    }
+
+    @Test
+    public void testGetSearchableElements() {
+
+        final GuidedDecisionTable52 model = mock(GuidedDecisionTable52.class);
+        final Supplier<GuidedDecisionTable52> modelSupplier = () -> model;
+        final List<DTCellValue52> row1 = asList(new DTCellValue52("cell 1"), new DTCellValue52("cell 2"));
+        final List<DTCellValue52> row2 = asList(new DTCellValue52("cell 3"), new DTCellValue52("cell 4"));
+        final List<List<DTCellValue52>> data = asList(row1, row2);
+
+        doReturn(modelSupplier).when(presenter).getContentSupplier();
+        when(model.getData()).thenReturn(data);
+
+        final List<GuidedDecisionTableSearchableElement> elements = presenter.getSearchableElements();
+
+        assertEquals(4, elements.size());
+
+        assertEquals("cell 1", elements.get(0).getValue());
+        assertEquals("cell 2", elements.get(1).getValue());
+        assertEquals("cell 3", elements.get(2).getValue());
+        assertEquals("cell 4", elements.get(3).getValue());
+
+        assertEquals(0, elements.get(0).getRow());
+        assertEquals(0, elements.get(1).getRow());
+        assertEquals(1, elements.get(2).getRow());
+        assertEquals(1, elements.get(3).getRow());
+
+        assertEquals(0, elements.get(0).getColumn());
+        assertEquals(1, elements.get(1).getColumn());
+        assertEquals(0, elements.get(2).getColumn());
+        assertEquals(1, elements.get(3).getColumn());
+
+        assertEquals(modeller, elements.get(0).getModeller());
+        assertEquals(modeller, elements.get(1).getModeller());
+        assertEquals(modeller, elements.get(2).getModeller());
+        assertEquals(modeller, elements.get(3).getModeller());
     }
 
     @Test

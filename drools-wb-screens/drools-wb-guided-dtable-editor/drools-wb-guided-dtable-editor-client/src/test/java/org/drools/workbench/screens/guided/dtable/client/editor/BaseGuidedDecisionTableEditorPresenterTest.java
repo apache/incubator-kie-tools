@@ -100,7 +100,10 @@ public class BaseGuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisi
                                                       columnsPage,
                                                       saveAndRenameCommandBuilder,
                                                       alertsButtonMenuItemBuilder,
-                                                      downloadMenuItem) {
+                                                      downloadMenuItem,
+                                                      elemental2DomUtil,
+                                                      editorSearchIndex,
+                                                      searchBarComponent) {
             {
                 promises = BaseGuidedDecisionTableEditorPresenterTest.this.promises;
                 projectController = BaseGuidedDecisionTableEditorPresenterTest.this.projectController;
@@ -123,6 +126,11 @@ public class BaseGuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisi
                times(1)).setModeller(eq(modeller));
         verify(view,
                times(1)).setModellerView(eq(modellerView));
+    }
+
+    @Test
+    public void testGetModellerView() {
+        assertEquals(modellerView, presenter.getModellerView());
     }
 
     @Test
