@@ -45,7 +45,7 @@ public class DMNDiagramHelper {
     }
 
     public List<DRGElement> getNodes(final Diagram diagram) {
-        return dmnDiagramUtils.getNodes(diagram);
+        return dmnDiagramUtils.getDRGElements(diagram);
     }
 
     public List<ItemDefinition> getItemDefinitions(final Diagram diagram) {

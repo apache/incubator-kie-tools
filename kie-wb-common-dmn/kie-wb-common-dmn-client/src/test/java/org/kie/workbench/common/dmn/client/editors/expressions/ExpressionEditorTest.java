@@ -46,6 +46,7 @@ import org.mockito.Mock;
 import org.uberfire.mvp.Command;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -285,5 +286,17 @@ public class ExpressionEditorTest {
         testedEditor.handleCanvasElementUpdated(event);
 
         verify(view, never()).setExpressionNameText(any(Optional.class));
+    }
+
+    @Test
+    public void testIsActiveWhenExpressionEditorIsNotActive() {
+        testedEditor.setExitCommand(null);
+        assertFalse(testedEditor.isActive());
+    }
+
+    @Test
+    public void testIsActiveWhenExpressionEditorIsActive() {
+        testedEditor.setExitCommand(mock(Command.class));
+        assertTrue(testedEditor.isActive());
     }
 }

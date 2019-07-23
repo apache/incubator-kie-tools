@@ -100,7 +100,7 @@ public class DMNDiagramUtilsTest {
 
         when(definition.getDefinition()).thenReturn(drgElement);
 
-        final List<DRGElement> actualNodes = utils.getNodes(diagram);
+        final List<DRGElement> actualNodes = utils.getDRGElements(diagram);
         final List<DRGElement> expectedNodes = singletonList(drgElement);
 
         assertEquals(expectedNodes, actualNodes);

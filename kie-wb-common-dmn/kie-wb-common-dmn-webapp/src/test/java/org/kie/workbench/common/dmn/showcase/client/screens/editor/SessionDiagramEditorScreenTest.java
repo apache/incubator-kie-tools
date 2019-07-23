@@ -19,8 +19,11 @@ package org.kie.workbench.common.dmn.showcase.client.screens.editor;
 import java.util.List;
 import java.util.function.Consumer;
 
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import elemental2.dom.HTMLElement;
+import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,6 +31,8 @@ import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorDock;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
 import org.kie.workbench.common.dmn.client.editors.included.IncludedModelsPage;
 import org.kie.workbench.common.dmn.client.editors.included.imports.IncludedModelsPageStateProviderImpl;
+import org.kie.workbench.common.dmn.client.editors.search.DMNEditorSearchIndex;
+import org.kie.workbench.common.dmn.client.editors.search.DMNSearchableElement;
 import org.kie.workbench.common.dmn.client.editors.types.DataTypePageTabActiveEvent;
 import org.kie.workbench.common.dmn.client.editors.types.DataTypesPage;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.DataTypeEditModeToggleEvent;
@@ -46,6 +51,7 @@ import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.documentation.DocumentationPage;
 import org.kie.workbench.common.stunner.core.documentation.DocumentationView;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
+import org.kie.workbench.common.widgets.client.search.component.SearchBarComponent;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorWrapperView;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -121,6 +127,15 @@ public class SessionDiagramEditorScreenTest {
     @Mock
     private DocumentationView<Diagram> documentationView;
 
+    @Mock
+    private Elemental2DomUtil util;
+
+    @Mock
+    private DMNEditorSearchIndex editorSearchIndex;
+
+    @Mock
+    private SearchBarComponent<DMNSearchableElement> searchBarComponent;
+
     private SessionDiagramEditorScreen editor;
 
     @Before
@@ -165,7 +180,10 @@ public class SessionDiagramEditorScreenTest {
                                                     layoutExecutor,
                                                     includedModelsPage,
                                                     importsPageProvider,
-                                                    documentationView));
+                                                    documentationView,
+                                                    util,
+                                                    editorSearchIndex,
+                                                    searchBarComponent));
     }
 
     @Test
@@ -175,6 +193,7 @@ public class SessionDiagramEditorScreenTest {
         final MultiPageEditor multiPageEditor = mock(MultiPageEditor.class);
         final DocumentationPage documentationPage = mock(DocumentationPage.class);
 
+        doNothing().when(editor).setupSearchComponent();
         doReturn(documentationPage).when(editor).getDocumentationPage();
         when(kieView.getMultiPage()).thenReturn(multiPageEditor);
         when(screenPanelView.asWidget()).thenReturn(screenPanelWidget);
@@ -182,12 +201,36 @@ public class SessionDiagramEditorScreenTest {
         editor.init();
 
         verify(decisionNavigatorDock).init(AuthoringPerspective.PERSPECTIVE_ID);
+        verify(searchBarComponent).init(editorSearchIndex);
         verify(kieView).setPresenter(editor);
         verify(kieView).clear();
         verify(kieView).addMainEditorPage(screenPanelWidget);
         verify(multiPageEditor).addPage(dataTypesPage);
         verify(multiPageEditor).addPage(includedModelsPage);
         verify(multiPageEditor).addPage(documentationPage);
+        verify(editor).setupSearchComponent();
+    }
+
+    @Test
+    public void testSetupSearchComponent() {
+
+        final SessionPresenter.View view = mock(SessionPresenter.View.class);
+        final HTMLElement htmlElement = mock(HTMLElement.class);
+        final Widget widget = mock(Widget.class);
+        final Element element = mock(Element.class);
+        final SearchBarComponent.View searchBarView = mock(SearchBarComponent.View.class);
+        final HTMLElement searchBarViewHTMLElement = mock(HTMLElement.class);
+
+        when(presenter.getView()).thenReturn(view);
+        when(view.asWidget()).thenReturn(widget);
+        when(widget.getElement()).thenReturn(element);
+        when(util.asHTMLElement(element)).thenReturn(htmlElement);
+        when(searchBarComponent.getView()).thenReturn(searchBarView);
+        when(searchBarView.getElement()).thenReturn(searchBarViewHTMLElement);
+
+        editor.setupSearchComponent();
+
+        verify(htmlElement).appendChild(searchBarViewHTMLElement);
     }
 
     @Test

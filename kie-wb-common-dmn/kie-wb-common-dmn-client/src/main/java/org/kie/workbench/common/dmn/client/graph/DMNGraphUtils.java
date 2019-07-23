@@ -19,6 +19,7 @@ package org.kie.workbench.common.dmn.client.graph;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -30,6 +31,7 @@ import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.graph.Node;
 
 @Dependent
 public class DMNGraphUtils {
@@ -90,7 +92,15 @@ public class DMNGraphUtils {
     }
 
     public List<DRGElement> getDRGElements(final Diagram diagram) {
-        return dmnDiagramUtils.getNodes(diagram);
+        return dmnDiagramUtils.getDRGElements(diagram);
+    }
+
+    public Stream<Node> getNodeStream(final Diagram diagram) {
+        return dmnDiagramUtils.getNodeStream(diagram);
+    }
+
+    public Stream<Node> getNodeStream() {
+        return getNodeStream(getDiagram());
     }
 
     public Optional<ClientSession> getCurrentSession() {

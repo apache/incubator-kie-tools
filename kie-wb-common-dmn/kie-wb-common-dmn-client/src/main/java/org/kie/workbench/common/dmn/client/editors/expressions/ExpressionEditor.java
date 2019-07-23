@@ -153,4 +153,8 @@ public class ExpressionEditor implements ExpressionEditorView.Presenter {
     Optional<Command> getExitCommand() {
         return exitCommand;
     }
+
+    public boolean isActive() {
+        return exitCommand.isPresent();
+    }
 }

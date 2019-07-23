@@ -29,12 +29,18 @@ import javax.inject.Inject;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
+import elemental2.dom.Element;
+import elemental2.dom.HTMLElement;
+import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.commands.general.NavigateToExpressionEditorCommand;
 import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorDock;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
 import org.kie.workbench.common.dmn.client.editors.included.IncludedModelsPage;
 import org.kie.workbench.common.dmn.client.editors.included.imports.IncludedModelsPageStateProviderImpl;
+import org.kie.workbench.common.dmn.client.editors.search.DMNEditorSearchIndex;
+import org.kie.workbench.common.dmn.client.editors.search.DMNSearchableElement;
 import org.kie.workbench.common.dmn.client.editors.toolbar.ToolbarStateHandler;
 import org.kie.workbench.common.dmn.client.editors.types.DataTypePageTabActiveEvent;
 import org.kie.workbench.common.dmn.client.editors.types.DataTypesPage;
@@ -78,6 +84,7 @@ import org.kie.workbench.common.stunner.core.validation.DiagramElementViolation;
 import org.kie.workbench.common.stunner.core.validation.Violation;
 import org.kie.workbench.common.stunner.core.validation.impl.ValidationUtils;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
+import org.kie.workbench.common.widgets.client.search.component.SearchBarComponent;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorWrapperView;
 import org.uberfire.client.annotations.WorkbenchContextId;
 import org.uberfire.client.annotations.WorkbenchMenu;
@@ -123,6 +130,9 @@ public class SessionDiagramEditorScreen implements KieEditorWrapperView.KieEdito
     private final IncludedModelsPage includedModelsPage;
     private final IncludedModelsPageStateProviderImpl importsPageProvider;
     private final DocumentationView<Diagram> documentationView;
+    private final Elemental2DomUtil util;
+    private final DMNEditorSearchIndex editorSearchIndex;
+    private final SearchBarComponent<DMNSearchableElement> searchBarComponent;
 
     private PlaceRequest placeRequest;
     private String title = "Authoring Screen";
@@ -148,7 +158,10 @@ public class SessionDiagramEditorScreen implements KieEditorWrapperView.KieEdito
                                       final OpenDiagramLayoutExecutor layoutExecutor,
                                       final IncludedModelsPage includedModelsPage,
                                       final IncludedModelsPageStateProviderImpl importsPageProvider,
-                                      final @DMNEditor DocumentationView<Diagram> documentationView) {
+                                      final @DMNEditor DocumentationView<Diagram> documentationView,
+                                      final Elemental2DomUtil util,
+                                      final DMNEditorSearchIndex editorSearchIndex,
+                                      final SearchBarComponent<DMNSearchableElement> searchBarComponent) {
         this.definitionManager = definitionManager;
         this.clientFactoryServices = clientFactoryServices;
         this.diagramService = diagramService;
@@ -169,17 +182,35 @@ public class SessionDiagramEditorScreen implements KieEditorWrapperView.KieEdito
         this.includedModelsPage = includedModelsPage;
         this.importsPageProvider = importsPageProvider;
         this.documentationView = documentationView;
+        this.util = util;
+        this.editorSearchIndex = editorSearchIndex;
+        this.searchBarComponent = searchBarComponent;
     }
 
     @PostConstruct
     public void init() {
         decisionNavigatorDock.init(AuthoringPerspective.PERSPECTIVE_ID);
+        searchBarComponent.init(editorSearchIndex);
+
         kieView.setPresenter(this);
         kieView.clear();
         kieView.addMainEditorPage(screenPanelView.asWidget());
         kieView.getMultiPage().addPage(dataTypesPage);
         kieView.getMultiPage().addPage(includedModelsPage);
         kieView.getMultiPage().addPage(getDocumentationPage());
+
+        setupSearchComponent();
+    }
+
+    void setupSearchComponent() {
+        final Widget view = presenter.getView().asWidget();
+        final HTMLElement modellerViewElement = util.asHTMLElement(view.getElement());
+
+        modellerViewElement.appendChild(getSearchElement());
+    }
+
+    private Element getSearchElement() {
+        return searchBarComponent.getView().getElement();
     }
 
     DocumentationPage getDocumentationPage() {

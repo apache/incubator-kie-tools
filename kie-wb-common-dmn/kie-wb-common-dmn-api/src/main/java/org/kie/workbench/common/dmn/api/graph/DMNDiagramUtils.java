@@ -40,7 +40,7 @@ public class DMNDiagramUtils {
         //CDI proxy
     }
 
-    public List<DRGElement> getNodes(final Diagram diagram) {
+    public List<DRGElement> getDRGElements(final Diagram diagram) {
         return getDefinitionStream(diagram)
                 .filter(d -> d instanceof DRGElement)
                 .map(d -> (DRGElement) d)
@@ -75,7 +75,7 @@ public class DMNDiagramUtils {
     }
 
     @SuppressWarnings("unchecked")
-    private Stream<Node> getNodeStream(final Diagram diagram) {
+    public Stream<Node> getNodeStream(final Diagram diagram) {
         final Graph<?, Node> graph = diagram.getGraph();
         return StreamSupport.stream(graph.nodes().spliterator(), false);
     }

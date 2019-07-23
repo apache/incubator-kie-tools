@@ -67,7 +67,7 @@ public class DMNDiagramHelperTest {
         final DRGElement drgElement = mock(DRGElement.class);
         final List<DRGElement> expectedNodes = singletonList(drgElement);
 
-        when(dmnDiagramUtils.getNodes(diagram)).thenReturn(expectedNodes);
+        when(dmnDiagramUtils.getDRGElements(diagram)).thenReturn(expectedNodes);
 
         final List<DRGElement> actualNodes = helper.getNodes(diagram);
 

@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.client.graph;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -28,6 +29,7 @@ import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.graph.Node;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -110,10 +112,22 @@ public class DMNGraphUtilsTest {
     public void testGetDRGElements() {
 
         final List<DRGElement> expectedDRGElements = asList(mock(DRGElement.class), mock(DRGElement.class));
-        when(dmnDiagramUtils.getNodes(diagram)).thenReturn(expectedDRGElements);
+        when(dmnDiagramUtils.getDRGElements(diagram)).thenReturn(expectedDRGElements);
 
         final List<DRGElement> actualDRGElements = utils.getDRGElements();
 
         assertEquals(expectedDRGElements, actualDRGElements);
+    }
+
+    @Test
+    public void testGetNodeStream() {
+
+        final Stream<Node> expectedStream = Stream.of(mock(Node.class));
+
+        when(dmnDiagramUtils.getNodeStream(diagram)).thenReturn(expectedStream);
+
+        final Stream<Node> actualStream = utils.getNodeStream();
+
+        assertEquals(expectedStream, actualStream);
     }
 }
