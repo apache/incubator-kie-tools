@@ -37,9 +37,14 @@ public class InputAutocomplete implements IsElement {
     @Inject
     private JQueryElementalProducer.JQuery<InputAutocompleteElement> jQuery;
 
-    public void setup(final Supplier<List<String>> options) {
+    public void setup(final Supplier<List<String>> optionsSupplier) {
         final InputAutocompleteOptions inputAutocompleteOptions = new InputAutocompleteOptions();
-        inputAutocompleteOptions.setSource((String[]) options.get().toArray());
+        List<String> options = optionsSupplier.get();
+        if (options != null) {
+            String[] optionsArray = options.stream()
+                    .toArray(String[]::new);
+            inputAutocompleteOptions.setSource(optionsArray);
+        }
 
         jQuery.wrap(getElement()).autocomplete(inputAutocompleteOptions);
     }
