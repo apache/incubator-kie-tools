@@ -83,7 +83,6 @@ public class ExamplesServiceImpl extends BaseProjectImportService implements Exa
     private ExampleRepository playgroundRepository;
     private ProjectScreenService projectScreenService;
     private ImportProjectValidators validators;
-    private SpaceConfigStorageRegistry spaceConfigStorageRegistry;
 
     @Inject
     public ExamplesServiceImpl(final @Named("ioStrategy") IOService ioService,
@@ -103,7 +102,8 @@ public class ExamplesServiceImpl extends BaseProjectImportService implements Exa
               validators,
               moduleService,
               projectService,
-              projectScreenService);
+              projectScreenService,
+              spaceConfigStorageRegistry);
 
         this.ioService = ioService;
         this.repositoryFactory = repositoryFactory;
@@ -115,7 +115,6 @@ public class ExamplesServiceImpl extends BaseProjectImportService implements Exa
         this.newProjectEvent = newProjectEvent;
         this.projectScreenService = projectScreenService;
         this.validators = validators;
-        this.spaceConfigStorageRegistry = spaceConfigStorageRegistry;
     }
 
     @PostConstruct

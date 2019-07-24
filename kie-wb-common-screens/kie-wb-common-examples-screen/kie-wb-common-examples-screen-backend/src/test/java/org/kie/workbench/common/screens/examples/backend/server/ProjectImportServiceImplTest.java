@@ -34,9 +34,12 @@ import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
+import org.guvnor.structure.backend.organizationalunit.config.SpaceConfigStorageRegistryImpl;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.organizationalunit.config.RepositoryInfo;
+import org.guvnor.structure.organizationalunit.config.SpaceConfigStorage;
+import org.guvnor.structure.organizationalunit.config.SpaceConfigStorageRegistry;
 import org.guvnor.structure.organizationalunit.impl.OrganizationalUnitImpl;
 import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.EnvironmentParameters;
@@ -111,6 +114,18 @@ public class ProjectImportServiceImplTest {
     @Mock
     private RepositoryService repoService;
 
+    @Mock
+    private SpaceConfigStorageRegistry spaceConfigStorageRegistry;
+
+    @Mock
+    private SpaceConfigStorage spaceConfigStorage;
+
+    @Mock
+    private OrganizationalUnit organizationalUnit;
+
+    @Mock
+    private Space space;
+
     @Before
     public void setup() {
         service = spy(new ProjectImportServiceImpl(ioService,
@@ -122,7 +137,16 @@ public class ProjectImportServiceImplTest {
                                                    projectService,
                                                    projectScreenService,
                                                    newProjectEvent,
-                                                   repoService));
+                                                   repoService,
+                                                   spaceConfigStorageRegistry));
+
+        when(spaceConfigStorageRegistry.get(anyString())).thenReturn(spaceConfigStorage);
+        when(spaceConfigStorageRegistry.getBatch(anyString())).thenReturn(new SpaceConfigStorageRegistryImpl.SpaceStorageBatchImpl(spaceConfigStorage));
+        when(spaceConfigStorageRegistry.exist(anyString())).thenReturn(true);
+
+        when(organizationalUnit.getName()).thenReturn("ou");
+        when(organizationalUnit.getSpace()).thenReturn(space);
+        when(space.getName()).thenReturn("ou");
     }
 
     @Test
@@ -287,7 +311,6 @@ public class ProjectImportServiceImplTest {
 
     @Test
     public void testImportProjects_ProjectImport() {
-        final OrganizationalUnit ou = mock(OrganizationalUnit.class);
         final ImportProject exProject1 = mock(ImportProject.class);
         final ImportProject exProject2 = mock(ImportProject.class);
         final List<ImportProject> exProjects = Arrays.asList(exProject1,
@@ -297,7 +320,6 @@ public class ProjectImportServiceImplTest {
         final Path module1Root = mock(Path.class);
         final Path module2Root = mock(Path.class);
 
-        when(ou.getName()).thenReturn("ou");
         when(exProject1.getName()).thenReturn("project1");
         when(exProject1.getRoot()).thenReturn(module1Root);
         when(exProject2.getName()).thenReturn("project2");
@@ -314,7 +336,7 @@ public class ProjectImportServiceImplTest {
         when(module1Root.toURI()).thenReturn("default:///module1");
         when(module2Root.toURI()).thenReturn("default:///module2");
 
-        when(ouService.getOrganizationalUnit(eq("ou"))).thenReturn(ou);
+        when(ouService.getOrganizationalUnit(eq("ou"))).thenReturn(organizationalUnit);
 
         WorkspaceProject project1 = mock(WorkspaceProject.class);
         when(project1.getName()).thenReturn("project1");
@@ -324,34 +346,28 @@ public class ProjectImportServiceImplTest {
         when(project2.getName()).thenReturn("project2");
         when(project2.getBranch()).thenReturn(master.get());
 
-        doReturn(project1).when(service).importProject(eq(ou),
-                                                       eq(exProject1));
+        doReturn(project1).when(service).importProject(eq(organizationalUnit), eq(exProject1));
 
-        doReturn(project2).when(service).importProject(eq(ou),
-                                                       eq(exProject2));
+        doReturn(project2).when(service).importProject(eq(organizationalUnit), eq(exProject2));
         final WorkspaceProject project = spy(new WorkspaceProject());
         doReturn("project").when(project).getName();
         doReturn(project).when(projectService).resolveProject(repository1);
 
-        final WorkspaceProjectContextChangeEvent event = service.importProjects(ou,
-                                                                                exProjects);
+        final WorkspaceProjectContextChangeEvent event = service.importProjects(organizationalUnit, exProjects);
 
-        assertEquals(ou,
-                     event.getOrganizationalUnit());
-        assertEquals(null,
-                     event.getWorkspaceProject());
+        assertEquals(organizationalUnit, event.getOrganizationalUnit());
+        assertEquals(null, event.getWorkspaceProject());
 
-        verify(ouService,
-               never()).createOrganizationalUnit(eq("ou"),
-                                                 eq(""));
-        verify(service,
-               times(2)).importProject(eq(ou),
-                                       any());
+        verify(ouService, never()).createOrganizationalUnit(eq("ou"), eq(""));
+        verify(service, times(2)).importProject(eq(organizationalUnit), any());
+
+        verify(spaceConfigStorage).startBatch();
+        verify(spaceConfigStorage).endBatch();
+
     }
 
     @Test
     public void importProjectWithCredentialsTest() {
-        final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
         final Repository repo = mock(Repository.class);
         final WorkspaceProject project = mock(WorkspaceProject.class);
 
@@ -403,7 +419,6 @@ public class ProjectImportServiceImplTest {
         final String password = "fakePassword";
         final List<String> branches = Arrays.asList("master");
 
-        final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
         final ImportProject importProject = mock(ImportProject.class);
         final Path rootPath = mock(Path.class);
         final org.uberfire.java.nio.file.Path convertedRootPath = mock(org.uberfire.java.nio.file.Path.class);
@@ -436,7 +451,6 @@ public class ProjectImportServiceImplTest {
         final String password = null;
         final List<String> branches = Arrays.asList("master");
 
-        final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
         final ImportProject importProject = mock(ImportProject.class);
         final Path rootPath = mock(Path.class);
         final org.uberfire.java.nio.file.Path convertedRootPath = mock(org.uberfire.java.nio.file.Path.class);
@@ -468,7 +482,6 @@ public class ProjectImportServiceImplTest {
 
     @Test
     public void importProjectWithoutCredentialsTest() {
-        final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
         final Repository repo = mock(Repository.class);
         final WorkspaceProject project = mock(WorkspaceProject.class);
 

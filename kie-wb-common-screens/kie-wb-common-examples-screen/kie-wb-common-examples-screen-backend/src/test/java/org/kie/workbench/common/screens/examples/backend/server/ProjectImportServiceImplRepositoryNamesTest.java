@@ -31,8 +31,11 @@ import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
+import org.guvnor.structure.backend.organizationalunit.config.SpaceConfigStorageRegistryImpl;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
+import org.guvnor.structure.organizationalunit.config.SpaceConfigStorage;
+import org.guvnor.structure.organizationalunit.config.SpaceConfigStorageRegistry;
 import org.guvnor.structure.organizationalunit.impl.OrganizationalUnitImpl;
 import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.RepositoryService;
@@ -58,6 +61,7 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.io.IOService;
 import org.uberfire.rpc.SessionInfo;
+import org.uberfire.spaces.Space;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
@@ -100,6 +104,9 @@ public class ProjectImportServiceImplRepositoryNamesTest {
     @Mock
     private OrganizationalUnit organizationalUnit;
 
+    @Mock
+    private Space space;
+
     private List<ImportProject> importProjects;
 
     @Captor
@@ -119,6 +126,12 @@ public class ProjectImportServiceImplRepositoryNamesTest {
     @Mock
     private RepositoryService repoService;
 
+    @Mock
+    private SpaceConfigStorageRegistry spaceConfigStorageRegistry;
+
+    @Mock
+    private SpaceConfigStorage spaceConfigStorage;
+
     @Before
     public void setup() {
         service = spy(new ProjectImportServiceImpl(ioService,
@@ -130,7 +143,12 @@ public class ProjectImportServiceImplRepositoryNamesTest {
                                                    projectService,
                                                    projectScreenService,
                                                    newProjectEvent,
-                                                   repoService));
+                                                   repoService,
+                                                   spaceConfigStorageRegistry));
+
+        when(spaceConfigStorageRegistry.get(anyString())).thenReturn(spaceConfigStorage);
+        when(spaceConfigStorageRegistry.getBatch(anyString())).thenReturn(new SpaceConfigStorageRegistryImpl.SpaceStorageBatchImpl(spaceConfigStorage));
+        when(spaceConfigStorageRegistry.exist(anyString())).thenReturn(true);
 
         when(validators.getValidators()).thenReturn(new ArrayList<>());
 
@@ -163,6 +181,8 @@ public class ProjectImportServiceImplRepositoryNamesTest {
         final Path module1Root = mock(Path.class);
 
         when(organizationalUnit.getName()).thenReturn("ou");
+        when(organizationalUnit.getSpace()).thenReturn(space);
+        when(space.getName()).thenReturn("ou");
         when(exProject1.getName()).thenReturn("module1");
         when(exProject1.getRoot()).thenReturn(module1Root);
 
@@ -287,7 +307,9 @@ public class ProjectImportServiceImplRepositoryNamesTest {
                                           modelCapture.capture(),
                                           any());
         final ProjectScreenModel model = modelCapture.getValue();
-        assertEquals(module_2,
-                     model.getPOM().getName());
+        assertEquals(module_2, model.getPOM().getName());
+
+        verify(spaceConfigStorage).startBatch();
+        verify(spaceConfigStorage).endBatch();
     }
 }

@@ -34,6 +34,7 @@ import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.config.RepositoryConfiguration;
 import org.guvnor.structure.organizationalunit.config.RepositoryInfo;
+import org.guvnor.structure.organizationalunit.config.SpaceConfigStorageRegistry;
 import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.EnvironmentParameters;
 import org.guvnor.structure.repositories.Repository;
@@ -65,13 +66,15 @@ public abstract class BaseProjectImportService implements ImportService {
     protected KieModuleService moduleService;
     protected WorkspaceProjectService projectService;
     protected ProjectScreenService projectScreenService;
+    protected SpaceConfigStorageRegistry spaceConfigStorageRegistry;
 
     public BaseProjectImportService(final IOService ioService,
                                     final MetadataService metadataService,
                                     final ImportProjectValidators validators,
                                     final KieModuleService moduleService,
                                     final WorkspaceProjectService projectService,
-                                    final ProjectScreenService projectScreenService) {
+                                    final ProjectScreenService projectScreenService,
+                                    final SpaceConfigStorageRegistry spaceConfigStorageRegistry) {
         this.ioService = ioService;
 
         this.metadataService = metadataService;
@@ -79,6 +82,7 @@ public abstract class BaseProjectImportService implements ImportService {
         this.moduleService = moduleService;
         this.projectService = projectService;
         this.projectScreenService = projectScreenService;
+        this.spaceConfigStorageRegistry = spaceConfigStorageRegistry;
     }
 
     protected String getRepositoryAlias(String url) {

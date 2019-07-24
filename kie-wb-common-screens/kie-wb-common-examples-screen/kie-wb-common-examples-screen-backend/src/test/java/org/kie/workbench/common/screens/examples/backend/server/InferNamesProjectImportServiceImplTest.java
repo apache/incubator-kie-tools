@@ -20,6 +20,7 @@ package org.kie.workbench.common.screens.examples.backend.server;
 import org.guvnor.common.services.project.backend.server.utils.PathUtil;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
+import org.guvnor.structure.organizationalunit.config.SpaceConfigStorageRegistry;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.guvnor.structure.server.config.ConfigurationFactory;
 import org.guvnor.structure.server.repositories.RepositoryFactory;
@@ -97,7 +98,8 @@ public class InferNamesProjectImportServiceImplTest {
             mock(WorkspaceProjectService.class),
             mock(ProjectScreenService.class),
             mock(Event.class),
-            mock(RepositoryService.class));
+            mock(RepositoryService.class),
+            mock(SpaceConfigStorageRegistry.class));
 
     @Test
     public void test() {
