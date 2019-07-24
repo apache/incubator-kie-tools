@@ -411,7 +411,7 @@ public class LibraryServiceImpl implements LibraryService {
                                                                                      Integer.MAX_VALUE)).getResults();
             return users.stream().map(User::getIdentifier).collect(Collectors.toList());
         } catch (Exception e) {
-            log.error("Error while searching all users: ", e);
+            log.error("Error while searching all users: " + e.getClass().getCanonicalName() );
             return Collections.emptyList();
         }
     }
