@@ -16,6 +16,7 @@
 package org.kie.workbench.common.dmn.project.client.editor;
 
 import java.lang.annotation.Annotation;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -54,10 +55,13 @@ import org.kie.workbench.common.stunner.core.client.components.layout.OpenDiagra
 import org.kie.workbench.common.stunner.core.client.error.DiagramClientErrorHandler;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.session.Session;
+import org.kie.workbench.common.stunner.core.client.session.command.ClientSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
 import org.kie.workbench.common.stunner.core.diagram.DiagramParsingException;
 import org.kie.workbench.common.stunner.core.documentation.DocumentationView;
+import org.kie.workbench.common.stunner.core.rule.RuleViolation;
+import org.kie.workbench.common.stunner.core.validation.DiagramElementViolation;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectDiagramEditor;
 import org.kie.workbench.common.stunner.project.client.editor.event.OnDiagramFocusEvent;
@@ -85,6 +89,7 @@ import org.uberfire.lifecycle.OnLostFocus;
 import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnStartup;
+import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.menu.Menus;
 
@@ -180,6 +185,7 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
         decisionNavigatorDock.init(PerspectiveIds.LIBRARY);
     }
 
+    @Override
     protected String getDiagramParsingErrorMessage(final DiagramParsingException e) {
         return getTranslationService().getValue(DMNProjectClientConstants.DMNDiagramParsingErrorMessage);
     }
@@ -228,6 +234,29 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
     public void open(final ProjectDiagram diagram) {
         this.layoutHelper.applyLayout(diagram, openDiagramLayoutExecutor);
         super.open(diagram);
+    }
+
+    /**
+     * Stunner validates diagrams before saving them. If a {@see Violation.Type.ERROR} is reported by the underlying
+     * validation implementation Stunner prevents saving of the diagram. DMN's validation reports errors for states
+     * that can be successfully saved as they represent a partially authored diagram. Therefore override Stunners
+     * behavior and prevent saving of DMN diagrams containing errors.
+     * @param continueSaveOnceValid
+     * @return
+     */
+    @Override
+    protected ClientSessionCommand.Callback<Collection<DiagramElementViolation<RuleViolation>>> getSaveAfterValidationCallback(final Command continueSaveOnceValid) {
+        return new ClientSessionCommand.Callback<Collection<DiagramElementViolation<RuleViolation>>>() {
+            @Override
+            public void onSuccess() {
+                continueSaveOnceValid.execute();
+            }
+
+            @Override
+            public void onError(final Collection<DiagramElementViolation<RuleViolation>> violations) {
+                continueSaveOnceValid.execute();
+            }
+        };
     }
 
     @OnOpen

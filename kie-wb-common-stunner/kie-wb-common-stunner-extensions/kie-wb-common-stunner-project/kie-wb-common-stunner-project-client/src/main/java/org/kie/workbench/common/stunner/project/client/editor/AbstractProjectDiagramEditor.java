@@ -66,7 +66,7 @@ import org.kie.workbench.common.stunner.core.documentation.DocumentationView;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 import org.kie.workbench.common.stunner.core.validation.DiagramElementViolation;
-import org.kie.workbench.common.stunner.core.validation.Violation;
+import org.kie.workbench.common.stunner.core.validation.Violation.Type;
 import org.kie.workbench.common.stunner.core.validation.impl.ValidationUtils;
 import org.kie.workbench.common.stunner.project.client.editor.event.OnDiagramFocusEvent;
 import org.kie.workbench.common.stunner.project.client.editor.event.OnDiagramLoseFocusEvent;
@@ -228,23 +228,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
             menuSessionItems
                     .getCommands()
                     .getValidateSessionCommand()
-                    .execute(new ClientSessionCommand.Callback<Collection<DiagramElementViolation<RuleViolation>>>() {
-                        @Override
-                        public void onSuccess() {
-                            continueSaveOnceValid.execute();
-                        }
-
-                        @Override
-                        public void onError(final Collection<DiagramElementViolation<RuleViolation>> violations) {
-                            final Violation.Type maxSeverity = ValidationUtils.getMaxSeverity(violations);
-                            if (maxSeverity.equals(Violation.Type.ERROR)) {
-                                onValidationFailed(violations);
-                            } else {
-                                // Allow saving when only warnings founds.
-                                continueSaveOnceValid.execute();
-                            }
-                        }
-                    });
+                    .execute(getSaveAfterValidationCallback(continueSaveOnceValid));
         });
         proxy.setSaveAfterUserConfirmationConsumer((commitMessage) -> {
             // Perform update operation remote call.
@@ -293,6 +277,31 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         });
 
         return proxy;
+    }
+
+    /**
+     * Gets the callback to execute following validation of the diagram before saving.
+     * The default implementation continues with the save process if {@see Type.WARNING} are found, but
+     * aborts the save process if any {@see Type.ERROR} is present to guarantee the diagram's consistency.
+     */
+    protected ClientSessionCommand.Callback<Collection<DiagramElementViolation<RuleViolation>>> getSaveAfterValidationCallback(final Command continueSaveOnceValid) {
+        return new ClientSessionCommand.Callback<Collection<DiagramElementViolation<RuleViolation>>>() {
+            @Override
+            public void onSuccess() {
+                continueSaveOnceValid.execute();
+            }
+
+            @Override
+            public void onError(final Collection<DiagramElementViolation<RuleViolation>> violations) {
+                final Type maxSeverity = ValidationUtils.getMaxSeverity(violations);
+                if (maxSeverity.equals(Type.ERROR)) {
+                    onValidationFailed(violations);
+                } else {
+                    // Allow saving when only warnings founds.
+                    continueSaveOnceValid.execute();
+                }
+            }
+        };
     }
 
     protected ProjectDiagramEditorProxy makeXmlEditorProxy() {
@@ -429,9 +438,6 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
      * This method is called just once clicking on save.
      * Before starting the save process, let's perform a diagram validation
      * to check all it's valid.
-     * It's allowed to continue with the save process event if warnings found,
-     * but cannot save if any error is present in order to
-     * guarantee the diagram's consistency.
      */
     @Override
     protected void save() {
