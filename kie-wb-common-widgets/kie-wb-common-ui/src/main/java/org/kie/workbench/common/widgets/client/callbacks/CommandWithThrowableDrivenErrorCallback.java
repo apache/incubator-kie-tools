@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.kie.workbench.common.widgets.client.callbacks;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,13 +35,25 @@ public class CommandWithThrowableDrivenErrorCallback extends HasBusyIndicatorDef
 
     }
 
+    private final CommandWithThrowable defaultCommand;
     private final Map<Class<? extends Throwable>, CommandWithThrowable> commands = new HashMap<Class<? extends Throwable>, CommandWithThrowable>();
 
     public CommandWithThrowableDrivenErrorCallback(final HasBusyIndicator view,
                                                    final Map<Class<? extends Throwable>, CommandWithThrowable> commands) {
+        this(view, commands, null);
+    }
+
+    public CommandWithThrowableDrivenErrorCallback(final HasBusyIndicator view,
+                                                   final Map<Class<? extends Throwable>, CommandWithThrowable> commands,
+                                                   final CommandWithThrowable defaultCommand) {
         super(view);
-        this.commands.putAll(PortablePreconditions.checkNotNull("commands",
-                                                                commands));
+        this.commands.putAll(PortablePreconditions.checkNotNull("commands", commands));
+        this.defaultCommand = defaultCommand;
+    }
+
+    public CommandWithThrowableDrivenErrorCallback(HasBusyIndicator view, CommandWithThrowable defaultCommand) {
+        super(view);
+        this.defaultCommand = defaultCommand;
     }
 
     @Override
@@ -55,7 +67,12 @@ public class CommandWithThrowableDrivenErrorCallback extends HasBusyIndicatorDef
                 return false;
             }
         }
-        return super.error(message,
-                           throwable);
+
+        if (defaultCommand != null) {
+            defaultCommand.execute(throwable);
+            return false;
+        }
+
+        return super.error(message, throwable);
     }
 }

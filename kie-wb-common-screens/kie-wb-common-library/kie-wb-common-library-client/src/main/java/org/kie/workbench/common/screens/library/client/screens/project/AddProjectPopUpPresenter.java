@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.screens.library.client.screens.project;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.PostConstruct;
@@ -34,15 +35,18 @@ import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.screens.library.api.LibraryInfo;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.api.preferences.LibraryPreferences;
+import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.screens.projecteditor.client.util.KiePOMDefaultOptions;
 import org.kie.workbench.common.screens.projecteditor.client.wizard.POMBuilder;
 import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.kie.workbench.common.widgets.client.callbacks.CommandWithThrowableDrivenErrorCallback;
 import org.uberfire.client.mvp.UberElement;
+import org.uberfire.client.views.pfly.widgets.ErrorPopup;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
@@ -128,6 +132,10 @@ public class AddProjectPopUpPresenter {
 
     private Caller<ValidationService> validationService;
 
+    private ErrorPopup errorPopup;
+
+    private TranslationService translationService;
+
     LibraryInfo libraryInfo;
 
     ParameterizedCommand<WorkspaceProject> successCallback;
@@ -143,7 +151,9 @@ public class AddProjectPopUpPresenter {
                                     final Event<NewProjectEvent> newProjectEvent,
                                     final LibraryPreferences libraryPreferences,
                                     final ConflictingRepositoriesPopup conflictingRepositoriesPopup,
-                                    final Caller<ValidationService> validationService) {
+                                    final Caller<ValidationService> validationService,
+                                    final ErrorPopup errorPopup,
+                                    final TranslationService translationService) {
         this.libraryService = libraryService;
         this.busyIndicatorView = busyIndicatorView;
         this.notificationEvent = notificationEvent;
@@ -155,6 +165,8 @@ public class AddProjectPopUpPresenter {
         this.libraryPreferences = libraryPreferences;
         this.conflictingRepositoriesPopup = conflictingRepositoriesPopup;
         this.validationService = validationService;
+        this.errorPopup = errorPopup;
+        this.translationService = translationService;
     }
 
     @PostConstruct
@@ -208,12 +220,20 @@ public class AddProjectPopUpPresenter {
                                endProjectCreation();
                                getSuccessCallback().execute(project);
                            };
-                           final ErrorCallback<?> errorCallback = getErrorCallback();
+
+                           Map<Class<? extends Throwable>, CommandWithThrowableDrivenErrorCallback.CommandWithThrowable> errors = new HashMap<Class<? extends Throwable>, CommandWithThrowableDrivenErrorCallback.CommandWithThrowable>() {{
+                               put(GAVAlreadyExistsException.class, exception -> handleGAVAlreadyExistsException((GAVAlreadyExistsException) exception));
+                               put(FileAlreadyExistsException.class, exception -> handleFileExistsException((FileAlreadyExistsException) exception));
+                           }};
+
+                           final ErrorCallback<?> errorCallback = new CommandWithThrowableDrivenErrorCallback(busyIndicatorView, errors, throwable -> handleUnexpectedException(name, throwable));
+
                            final POM pom = setDefaultPOM(groupId,
                                                          artifactId,
                                                          version,
                                                          name, 
                                                          description);
+
                            libraryService.call((WorkspaceProject project) -> successCallback.execute(project),
                                                errorCallback).createProject(projectContext.getActiveOrganizationalUnit()
                                                                                           .orElseThrow(() -> new IllegalStateException("Cannot create new project without an active organizational unit.")),
@@ -344,34 +364,27 @@ public class AddProjectPopUpPresenter {
         };
     }
 
-    private ErrorCallback<?> getErrorCallback() {
-
-        Map<Class<? extends Throwable>, CommandWithThrowableDrivenErrorCallback.CommandWithThrowable> errors = new HashMap<Class<? extends Throwable>, CommandWithThrowableDrivenErrorCallback.CommandWithThrowable>() {{
-            put(GAVAlreadyExistsException.class,
-                parameter -> {
-                    GAVAlreadyExistsException exception = (GAVAlreadyExistsException) parameter;
-                    endProjectCreation();
-                    conflictingRepositoriesPopup.setContent(exception.getGAV(),
-                                                            ((GAVAlreadyExistsException) parameter).getRepositories(),
-                                                            () -> {
-                                                                conflictingRepositoriesPopup.hide();
-                                                                createProject(DeploymentMode.FORCED);
-                                                            });
-                    conflictingRepositoriesPopup.show();
-                });
-            put(FileAlreadyExistsException.class,
-                parameter -> {
-                    endProjectCreation();
-                    view.showError(view.getDuplicatedProjectMessage());
-                });
-        }};
-
-        return createErrorCallback(errors);
+    private void handleGAVAlreadyExistsException(final GAVAlreadyExistsException exception) {
+        endProjectCreation();
+        conflictingRepositoriesPopup.setContent(exception.getGAV(),
+                                                exception.getRepositories(),
+                                                () -> {
+                                                    conflictingRepositoriesPopup.hide();
+                                                    createProject(DeploymentMode.FORCED);
+                                                });
+        conflictingRepositoriesPopup.show();
     }
 
-    ErrorCallback<?> createErrorCallback(Map<Class<? extends Throwable>, CommandWithThrowableDrivenErrorCallback.CommandWithThrowable> errors) {
-        return new CommandWithThrowableDrivenErrorCallback(busyIndicatorView,
-                                                           errors);
+    private void handleUnexpectedException(final String project, final Throwable throwable) {
+        view.hide();
+        endProjectCreation();
+        busyIndicatorView.hideBusyIndicator();
+        errorPopup.showError(translationService.format(LibraryConstants.ErrorCreatingPoject, project), Arrays.toString(throwable.getStackTrace()));
+    }
+
+    private void handleFileExistsException(final FileAlreadyExistsException exception) {
+        endProjectCreation();
+        view.showError(view.getDuplicatedProjectMessage());
     }
 
     boolean isDuplicatedProjectName(Throwable throwable) {

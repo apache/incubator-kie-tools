@@ -27,6 +27,7 @@ import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,6 +41,7 @@ import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.client.views.pfly.widgets.ErrorPopup;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
 import org.uberfire.mocks.CallerMock;
@@ -89,6 +91,12 @@ public class AddProjectPopUpPresenterTest {
     private ValidationService validationService;
     private CallerMock<ValidationService> validationServiceCaller;
 
+    @Mock
+    private ErrorPopup errorPopup;
+
+    @Mock
+    private TranslationService translationService;
+
     private AddProjectPopUpPresenter presenter;
 
     private LibraryInfo libraryInfo;
@@ -119,7 +127,9 @@ public class AddProjectPopUpPresenterTest {
                                                      newProjectEvent,
                                                      libraryPreferences,
                                                      conflictingRepositoriesPopup,
-                                                     validationServiceCaller));
+                                                     validationServiceCaller,
+                                                     errorPopup,
+                                                     translationService));
 
         doReturn("baseUrl").when(presenter).getBaseURL();
 
@@ -282,6 +292,27 @@ public class AddProjectPopUpPresenterTest {
         verify(libraryPlaces,
                never()).goToProject(any(WorkspaceProject.class));
         verify(view).setAddButtonEnabled(true);
+    }
+
+    @Test
+    public void testCreateProjectWithUnexpectedError() {
+        doReturn("test").when(view).getName();
+        doReturn("description").when(view).getDescription();
+
+        doThrow(new IllegalStateException("New repository should always have a branch."))
+                .when(libraryService).createProject(any(), any(), any());
+
+        presenter.add();
+
+        verify(view).hide();
+        verify(view).setAddButtonEnabled(true);
+        verify(view).hideBusyIndicator();
+
+        verify(busyIndicatorView).hideBusyIndicator();
+
+        verify(errorPopup).showError(anyString(), anyString());
+
+        verify(translationService).format(anyString(), anyString());
     }
 
     @Test
