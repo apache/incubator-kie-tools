@@ -4,12 +4,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
+import java.util.function.Consumer;
+
 import javax.enterprise.event.Event;
 
 import org.guvnor.common.services.project.events.RepositoryContributorsUpdatedEvent;
 import org.guvnor.structure.backend.organizationalunit.config.SpaceConfigStorageRegistryImpl;
 import org.guvnor.structure.contributors.Contributor;
 import org.guvnor.structure.contributors.ContributorType;
+import org.guvnor.structure.organizationalunit.OrganizationalUnit;
+import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.organizationalunit.config.RepositoryConfiguration;
 import org.guvnor.structure.organizationalunit.config.RepositoryInfo;
 import org.guvnor.structure.organizationalunit.config.SpaceConfigStorage;
@@ -17,11 +21,14 @@ import org.guvnor.structure.organizationalunit.config.SpaceConfigStorageBatch;
 import org.guvnor.structure.organizationalunit.config.SpaceConfigStorageRegistry;
 import org.guvnor.structure.organizationalunit.config.SpaceInfo;
 import org.guvnor.structure.repositories.Branch;
+import org.guvnor.structure.repositories.GitMetadataStore;
 import org.guvnor.structure.repositories.Repository;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
@@ -48,6 +55,12 @@ public class RepositoryServiceImplTest {
     @Mock
     private Event<RepositoryContributorsUpdatedEvent> updatedEvent;
 
+    @Mock
+    private GitMetadataStore gitMetadataStore;
+
+    @Mock
+    private OrganizationalUnitService organizationalUnitService;
+
     @InjectMocks
     @Spy
     private RepositoryServiceImpl repositoryService;
@@ -57,6 +70,11 @@ public class RepositoryServiceImplTest {
 
     @Captor
     private ArgumentCaptor<RepositoryInfo> configCaptor;
+
+    @Before
+    public void setUp() {
+        doAnswer(invocationOnMock -> null).when(gitMetadataStore).delete(anyString());
+    }
 
     @Test
     public void testNotCreateNewAliasIfNecessary() {
@@ -147,5 +165,26 @@ public class RepositoryServiceImplTest {
         verify(spaceConfigStorage).startBatch();
         verify(spaceConfigStorage).saveSpaceInfo(any());
         verify(spaceConfigStorage).endBatch();
+    }
+
+    @Test
+    public void testDoRemoveInOrder() {
+
+        Consumer<Repository> notification = mock(Consumer.class);
+        OrganizationalUnit orgUnit = mock(OrganizationalUnit.class);
+        String alias = "alias";
+        Optional<RepositoryInfo> repositoryConfig = Optional.of(mock(RepositoryInfo.class));
+
+        doAnswer(invocationOnMock -> null).when(repositoryService).close(any());
+        when(configuredRepositories.getRepositoryByRepositoryAlias(any(), anyString())).thenReturn(repository);
+        when(repository.getAlias()).thenReturn(alias);
+        when(orgUnit.getRepositories()).thenReturn(Collections.singletonList(repository));
+
+        InOrder inOrder = inOrder(this.organizationalUnitService, notification);
+
+        this.repositoryService.doRemoveRepository(orgUnit, alias, repositoryConfig, notification, false);
+
+        inOrder.verify(this.organizationalUnitService).removeRepository(any(), any());
+        inOrder.verify(notification).accept(repository);
     }
 }
