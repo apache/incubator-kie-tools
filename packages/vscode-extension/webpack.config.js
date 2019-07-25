@@ -29,10 +29,7 @@ module.exports = {
     filename: "[name].js",
     libraryTarget: "commonjs2"
   },
-  externals: [
-    { vscode: "commonjs vscode" },
-    nodeExternals({ importType: "commonjs2", modulesDir: "../../node_modules" })
-  ],
+  externals: [{ vscode: "commonjs vscode" }, nodeExternals({ modulesDir: "../../node_modules" })],
   plugins: [
     new CircularDependencyPlugin({
       exclude: /node_modules/, // exclude detection of files based on a RegExp
