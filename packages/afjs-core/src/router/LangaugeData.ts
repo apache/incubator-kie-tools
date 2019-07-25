@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 
-import { LanguageData } from "./LangaugeData";
-
-export interface Router<T extends LanguageData> {
-  getLanguageData(fileExtension: string): T | undefined;
-  getRelativePathTo(uri: string): string;
+export interface LanguageData {
+  type: string;
 }

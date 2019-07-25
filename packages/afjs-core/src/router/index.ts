@@ -15,3 +15,4 @@
  */
 
 export * from "./Router";
+export * from "./LangaugeData";
