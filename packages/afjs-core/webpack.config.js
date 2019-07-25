@@ -15,35 +15,20 @@
  */
 
 const path = require("path");
+const nodeExternals = require("webpack-node-externals");
 const CircularDependencyPlugin = require("circular-dependency-plugin");
 
 module.exports = {
   mode: "development",
-  devtool: "inline-source-map",
   entry: {
-    "index": "./src/index.ts"
+    index: "./src/index.ts"
   },
   output: {
     path: path.resolve(__dirname, "./dist"),
     filename: "[name].js",
-    library: "AppFormer.Core",
-    libraryTarget: "umd",
-    umdNamedDefine: true
+    libraryTarget: "commonjs2"
   },
-  externals: {
-    react: {
-      root: "React", //indicates global variable
-      commonjs: "react",
-      commonjs2: "react",
-      amd: "react"
-    },
-    "react-dom": {
-      root: "ReactDOM", //indicates global variable
-      commonjs: "react-dom",
-      commonjs2: "react-dom",
-      amd: "react-dom"
-    }
-  },
+  externals: [nodeExternals({ modulesDir: "../../node_modules" })],
   plugins: [
     new CircularDependencyPlugin({
       exclude: /node_modules/, // exclude detection of files based on a RegExp

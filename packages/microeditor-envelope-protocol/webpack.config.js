@@ -15,11 +15,11 @@
  */
 
 const path = require("path");
+const nodeExternals = require("webpack-node-externals");
 const CircularDependencyPlugin = require("circular-dependency-plugin");
 
 module.exports = {
   mode: "development",
-  devtool: "inline-source-map",
   entry: {
     index: "./src/index.ts"
   },
@@ -28,6 +28,7 @@ module.exports = {
     filename: "[name].js",
     libraryTarget: "commonjs2"
   },
+  externals: [nodeExternals({ modulesDir: "../../node_modules" })],
   plugins: [
     new CircularDependencyPlugin({
       exclude: /node_modules/, // exclude detection of files based on a RegExp

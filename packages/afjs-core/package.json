@@ -40,6 +40,7 @@
     "typescript": "2.9.2",
     "watch": "1.0.2",
     "webpack": "4.15.1",
-    "webpack-cli": "3.0.8"
+    "webpack-cli": "3.0.8",
+    "webpack-node-externals": "1.7.2"
   }
 }
