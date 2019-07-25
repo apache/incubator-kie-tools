@@ -1,0 +1,40 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`EditorEnvelopeView after loading stops 1`] = `
+<Fragment>
+  <Portal
+    containerInfo={<div />}
+  >
+    <LoadingScreen
+      visible={false}
+    />
+  </Portal>
+</Fragment>
+`;
+
+exports[`EditorEnvelopeView after loading stops and editor is set 1`] = `
+<Fragment>
+  <Portal
+    containerInfo={<div />}
+  >
+    <LoadingScreen
+      visible={false}
+    />
+  </Portal>
+  <DummyEditorComponent
+    exposing={[Function]}
+  />
+</Fragment>
+`;
+
+exports[`EditorEnvelopeView first open 1`] = `
+<Fragment>
+  <Portal
+    containerInfo={<div />}
+  >
+    <LoadingScreen
+      visible={true}
+    />
+  </Portal>
+</Fragment>
+`;

@@ -1,0 +1,79 @@
+{
+  "name": "appformer-js-vscode-extension",
+  "displayName": "KIE :: Kogito Editors",
+  "description": "",
+  "version": "0.1.0",
+  "license": "Apache-2.0",
+  "engines": {
+    "vscode": "^1.33.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kogito-tooling.git"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "*"
+  ],
+  "publisher": "kiegroup",
+  "main": "./dist/extension/extension.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "dmn",
+        "extensions": [
+          ".dmn"
+        ],
+        "aliases": [
+          "dmn",
+          "Decision Model Notation"
+        ]
+      },
+      {
+        "id": "bpmn",
+        "extensions": [
+          ".bpmn",
+          ".bpmn2"
+        ],
+        "aliases": [
+          "bpmn",
+          "bpmn2",
+          "Business Process Model and Notation"
+        ]
+      }
+    ]
+  },
+  "scripts": {
+    "pack-extension": "vsce package --yarn -o ./dist/kiegroup_kogito_editors.vsix",
+    "vscode:prepublish": "yarn run build",
+    "build": "yarn run build:fast",
+    "build:fast": "rm -rf dist && webpack",
+    "compile": "webpack",
+    "watch": "webpack",
+    "test:it": "rm -rf __tests__/out && tsc -p __tests__ && node __tests__/out/main.js",
+    "build:prod": "yarn run build --mode production && yarn run test:it && yarn run pack-extension"
+  },
+  "devDependencies": {
+    "@types/glob": "7.1.1",
+    "@types/mocha": "5.2.7",
+    "@types/node": "10.12.21",
+    "@types/vscode": "^1.33.0",
+    "copy-webpack-plugin": "5.0.3",
+    "glob": "7.1.4",
+    "mocha": "6.1.4",
+    "tslint": "5.12.1",
+    "typescript": "3.3.1",
+    "vsce": "1.59.0",
+    "vscode-test": "1.0.0",
+    "webpack": "4.15.1",
+    "webpack-cli": "3.0.8"
+  },
+  "dependencies": {
+    "appformer-js-core": "0.1.0",
+    "appformer-js-microeditor-envelope": "0.1.0",
+    "appformer-js-microeditor-envelope-protocol": "0.1.0",
+    "appformer-js-microeditor-router": "0.1.0"
+  }
+}
