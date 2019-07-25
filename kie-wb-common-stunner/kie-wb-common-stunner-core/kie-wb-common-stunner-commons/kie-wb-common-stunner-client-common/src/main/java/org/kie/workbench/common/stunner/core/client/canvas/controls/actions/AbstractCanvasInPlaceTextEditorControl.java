@@ -22,6 +22,7 @@ import javax.enterprise.event.Observes;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
+import org.kie.workbench.common.forms.adf.definitions.DynamicReadOnly;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
@@ -46,6 +47,7 @@ import org.kie.workbench.common.stunner.core.client.shape.view.event.TextExitEve
 import org.kie.workbench.common.stunner.core.client.shape.view.event.TextExitHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
 import org.kie.workbench.common.stunner.core.graph.Element;
+import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.uberfire.mvp.Command;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
@@ -107,9 +109,11 @@ public abstract class AbstractCanvasInPlaceTextEditorControl
                         final TextDoubleClickHandler clickHandler = new TextDoubleClickHandler() {
                             @Override
                             public void handle(final TextDoubleClickEvent event) {
-                                AbstractCanvasInPlaceTextEditorControl.this.show(element,
-                                                                                 event.getClientX(),
-                                                                                 event.getClientY());
+                                if (!allowOnlyVisualChanges(element)) {
+                                    AbstractCanvasInPlaceTextEditorControl.this.show(element,
+                                                                                     event.getClientX(),
+                                                                                     event.getClientY());
+                                }
                             }
                         };
                         hasEventHandlers.addHandler(ViewEventType.TEXT_DBL_CLICK,
@@ -146,6 +150,17 @@ public abstract class AbstractCanvasInPlaceTextEditorControl
                 }
             }
         }
+    }
+
+    boolean allowOnlyVisualChanges(final Element element) {
+
+        if (element.getContent() instanceof Definition) {
+            final Definition definition = (Definition) element.getContent();
+            if (definition.getDefinition() instanceof DynamicReadOnly) {
+                return ((DynamicReadOnly) definition.getDefinition()).isAllowOnlyVisualChange();
+            }
+        }
+        return false;
     }
 
     @Override
