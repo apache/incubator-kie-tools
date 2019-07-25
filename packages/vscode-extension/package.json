@@ -2,7 +2,7 @@
   "name": "appformer-js-vscode-extension",
   "displayName": "KIE :: Kogito Editors",
   "description": "",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "license": "Apache-2.0",
   "engines": {
     "vscode": "^1.33.0"
@@ -58,30 +58,30 @@
     "outputDirectory": "./target"
   },
   "devDependencies": {
-    "vsce": "1.59.0",
+    "@types/glob": "7.1.1",
     "@types/mocha": "5.2.7",
     "@types/node": "10.12.21",
-    "tslint": "5.12.1",
-    "typescript": "3.3.1",
-    "webpack": "4.15.1",
-    "webpack-cli": "3.0.8",
     "@types/vscode": "^1.33.0",
-    "vscode-test": "1.0.0",
-    "copy-webpack-plugin": "5.0.3",
-    "mocha": "6.1.4",
-    "glob": "7.1.4",
-    "@types/glob": "7.1.1",
     "babel-core": "6.26.3",
     "babel-loader": "7.1.5",
     "babel-preset-env": "1.7.0",
     "babel-preset-react": "6.24.1",
+    "copy-webpack-plugin": "5.0.3",
+    "glob": "7.1.4",
     "jest": "23.5.0",
     "jest-junit": "6.3.0",
-    "ts-jest": "23.1.3"
+    "mocha": "6.1.4",
+    "ts-jest": "23.1.3",
+    "tslint": "5.12.1",
+    "typescript": "3.3.1",
+    "vsce": "1.59.0",
+    "vscode-test": "1.0.0",
+    "webpack": "4.15.1",
+    "webpack-cli": "3.0.8"
   },
   "dependencies": {
-    "appformer-js-core": "0.0.0",
-    "appformer-js-microeditor-envelope-protocol": "0.0.0",
-    "appformer-js-microeditor-envelope": "0.0.0"
+    "appformer-js-core": "0.1.0",
+    "appformer-js-microeditor-envelope": "0.1.0",
+    "appformer-js-microeditor-envelope-protocol": "0.1.0"
   }
 }
