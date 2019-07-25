@@ -36,7 +36,7 @@ import org.uberfire.ext.editor.commons.client.event.ConcurrentRenameIgnoredEvent
 import org.uberfire.ext.editor.commons.client.file.popups.DeletePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
 import org.uberfire.ext.editor.commons.client.menu.BasicFileMenuBuilder;
-import org.uberfire.ext.editor.commons.client.menu.DownloadMenuItem;
+import org.uberfire.ext.editor.commons.client.menu.DownloadMenuItemBuilder;
 import org.uberfire.ext.editor.commons.client.menu.MenuItems;
 import org.uberfire.ext.editor.commons.client.menu.common.SaveAndRenameCommandBuilder;
 import org.uberfire.ext.editor.commons.client.resources.i18n.CommonConstants;
@@ -114,7 +114,7 @@ public abstract class BaseEditor<T, M> {
     protected Event<ConcurrentRenameIgnoredEvent> concurrentRenameIgnoredEvent;
 
     @Inject
-    private DownloadMenuItem downloadMenuItem;
+    private DownloadMenuItemBuilder downloadMenuItemBuilder;
 
     @Inject
     protected Promises promises;
@@ -261,7 +261,7 @@ public abstract class BaseEditor<T, M> {
     }
 
     protected MenuItem downloadMenuItem() {
-        return downloadMenuItem.build(getPathSupplier());
+        return downloadMenuItemBuilder.build(getPathSupplier());
     }
 
     Command getOnSave() {

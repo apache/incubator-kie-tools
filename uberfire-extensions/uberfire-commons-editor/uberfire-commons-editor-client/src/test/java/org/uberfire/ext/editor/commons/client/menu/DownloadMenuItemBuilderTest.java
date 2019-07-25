@@ -40,7 +40,7 @@ import static org.mockito.Mockito.when;
 
 @WithClassesToStub({URL.class})
 @RunWith(GwtMockitoTestRunner.class)
-public class DownloadMenuItemTest {
+public class DownloadMenuItemBuilderTest {
 
     @Mock
     private TranslationService translationService;
@@ -50,11 +50,11 @@ public class DownloadMenuItemTest {
 
     private Supplier<Path> pathSupplier = () -> path;
 
-    private DownloadMenuItem downloadMenuItem;
+    private DownloadMenuItemBuilder downloadMenuItemBuilder;
 
     @Before
     public void setup() {
-        downloadMenuItem = spy(new DownloadMenuItem(translationService));
+        downloadMenuItemBuilder = spy(new DownloadMenuItemBuilder(translationService));
     }
 
     @Test
@@ -64,23 +64,23 @@ public class DownloadMenuItemTest {
         final Command menuItemCommand = () -> {/* Nothing */};
 
         when(translationService.format(Constants.DownloadMenuItem_Download)).thenReturn(caption);
-        doReturn(menuItemCommand).when(downloadMenuItem).makeMenuItemCommand(pathSupplier);
+        doReturn(menuItemCommand).when(downloadMenuItemBuilder).makeMenuItemCommand(pathSupplier);
 
-        downloadMenuItem.build(pathSupplier);
+        downloadMenuItemBuilder.build(pathSupplier);
 
-        verify(downloadMenuItem).makeMenuItem(eq(caption), eq(menuItemCommand));
+        verify(downloadMenuItemBuilder).makeMenuItem(eq(caption), eq(menuItemCommand));
     }
 
     @Test
     public void testMenuItemCommand() {
 
-        final Command command = downloadMenuItem.makeMenuItemCommand(pathSupplier);
+        final Command command = downloadMenuItemBuilder.makeMenuItemCommand(pathSupplier);
 
-        doNothing().when(downloadMenuItem).open(any());
+        doNothing().when(downloadMenuItemBuilder).open(any());
 
         command.execute();
 
-        verify(downloadMenuItem).download(pathSupplier);
+        verify(downloadMenuItemBuilder).download(pathSupplier);
     }
 
     @Test
@@ -89,10 +89,10 @@ public class DownloadMenuItemTest {
         final String expectedDownloadURL = "defaulteditor/download?path=default://master@MySpace/Mortgages/src/main/resources/rule.drl";
 
         when(path.toURI()).thenReturn("default://master@MySpace/Mortgages/src/main/resources/rule.drl");
-        doNothing().when(downloadMenuItem).open(any());
+        doNothing().when(downloadMenuItemBuilder).open(any());
 
-        downloadMenuItem.download(pathSupplier);
+        downloadMenuItemBuilder.download(pathSupplier);
 
-        verify(downloadMenuItem).open(eq(expectedDownloadURL));
+        verify(downloadMenuItemBuilder).open(eq(expectedDownloadURL));
     }
 }

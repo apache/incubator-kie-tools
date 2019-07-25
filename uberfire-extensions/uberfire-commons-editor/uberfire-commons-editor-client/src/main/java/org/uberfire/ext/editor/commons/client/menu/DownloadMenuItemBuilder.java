@@ -31,12 +31,12 @@ import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
 
 @Dependent
-public class DownloadMenuItem {
+public class DownloadMenuItemBuilder {
 
     private TranslationService translationService;
 
     @Inject
-    public DownloadMenuItem(final TranslationService translationService) {
+    public DownloadMenuItemBuilder(final TranslationService translationService) {
         this.translationService = translationService;
     }
 
