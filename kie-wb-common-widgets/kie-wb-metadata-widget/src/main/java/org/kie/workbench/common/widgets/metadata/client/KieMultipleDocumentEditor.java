@@ -16,10 +16,6 @@
 
 package org.kie.workbench.common.widgets.metadata.client;
 
-import static org.uberfire.ext.widgets.common.client.common.ConcurrentChangePopup.newConcurrentDelete;
-import static org.uberfire.ext.widgets.common.client.common.ConcurrentChangePopup.newConcurrentRename;
-import static org.uberfire.ext.widgets.common.client.common.ConcurrentChangePopup.newConcurrentUpdate;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -60,7 +56,7 @@ import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.ext.editor.commons.client.BaseEditorView;
 import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
-import org.uberfire.ext.editor.commons.client.menu.DownloadMenuItem;
+import org.uberfire.ext.editor.commons.client.menu.DownloadMenuItemBuilder;
 import org.uberfire.ext.editor.commons.client.menu.MenuItems;
 import org.uberfire.ext.editor.commons.client.resources.i18n.CommonConstants;
 import org.uberfire.ext.editor.commons.client.validation.DefaultFileNameValidator;
@@ -74,6 +70,10 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
+
+import static org.uberfire.ext.widgets.common.client.common.ConcurrentChangePopup.newConcurrentDelete;
+import static org.uberfire.ext.widgets.common.client.common.ConcurrentChangePopup.newConcurrentRename;
+import static org.uberfire.ext.widgets.common.client.common.ConcurrentChangePopup.newConcurrentUpdate;
 
 /**
  * A base for Multi-Document-Interface editors. This base implementation adds default Menus for Save", "Copy",
@@ -93,7 +93,7 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
     protected Event<ChangeTitleWidgetEvent> changeTitleEvent;
     protected WorkspaceProjectContext workbenchContext;
     protected SavePopUpPresenter savePopUpPresenter;
-    protected DownloadMenuItem downloadMenuItem;
+    protected DownloadMenuItemBuilder downloadMenuItemBuilder;
 
     protected FileMenuBuilder fileMenuBuilder;
     protected VersionRecordManager versionRecordManager;
@@ -111,6 +111,7 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
     private MenuItem saveMenuItem;
     private MenuItem versionMenuItem;
     private MenuItem registeredDocumentsMenuItem;
+    private MenuItem downloadMenuItem;
 
     protected Menus menus;
 
@@ -163,8 +164,8 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
     }
 
     @Inject
-    protected void setDownloadMenuItem(final DownloadMenuItem downloadMenuItem) {
-        this.downloadMenuItem = downloadMenuItem;
+    protected void setDownloadMenuItemBuilder(final DownloadMenuItemBuilder downloadMenuItemBuilder) {
+        this.downloadMenuItemBuilder = downloadMenuItemBuilder;
     }
 
     @Inject
@@ -527,7 +528,11 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
     }
 
     private MenuItem downloadMenuItem() {
-        return downloadMenuItem.build(() -> getActiveDocument().getLatestPath());
+        if (downloadMenuItem == null) {
+            downloadMenuItem = downloadMenuItemBuilder
+                    .build(() -> getActiveDocument().getLatestPath());
+        }
+        return downloadMenuItem;
     }
 
     /**

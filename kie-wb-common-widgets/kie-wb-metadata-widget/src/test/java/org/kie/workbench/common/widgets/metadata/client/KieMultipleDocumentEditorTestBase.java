@@ -42,7 +42,7 @@ import org.uberfire.ext.editor.commons.client.file.popups.RenamePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
 import org.uberfire.ext.editor.commons.client.menu.BasicFileMenuBuilder;
 import org.uberfire.ext.editor.commons.client.menu.BasicFileMenuBuilderImpl;
-import org.uberfire.ext.editor.commons.client.menu.DownloadMenuItem;
+import org.uberfire.ext.editor.commons.client.menu.DownloadMenuItemBuilder;
 import org.uberfire.ext.editor.commons.client.menu.RestoreVersionCommandProvider;
 import org.uberfire.ext.editor.commons.client.validation.DefaultFileNameValidator;
 import org.uberfire.ext.editor.commons.version.VersionService;
@@ -138,7 +138,7 @@ abstract class KieMultipleDocumentEditorTestBase {
     protected EventSourceMock<NotificationEvent> notificationEvent;
 
     @Mock
-    protected DownloadMenuItem downloadMenuItem;
+    protected DownloadMenuItemBuilder downloadMenuItemBuilder;
 
     @Mock
     protected MenuItem downloadMenuItemButton;
@@ -190,7 +190,7 @@ abstract class KieMultipleDocumentEditorTestBase {
         wrapped.setFileMenuBuilder(fileMenuBuilder);
         wrapped.setFileNameValidator(fileNameValidator);
         wrapped.setAssetUpdateValidator(assetUpdateValidator);
-        wrapped.setDownloadMenuItem(downloadMenuItem);
+        wrapped.setDownloadMenuItemBuilder(downloadMenuItemBuilder);
         wrapped.setPromises(promises);
 
         this.editor = spy(wrapped);
@@ -205,7 +205,7 @@ abstract class KieMultipleDocumentEditorTestBase {
         when(workbenchContext.getActiveRepositoryRoot()).thenReturn(Optional.empty());
         when(workbenchContext.getActivePackage()).thenReturn(Optional.empty());
 
-        when(downloadMenuItem.build(any())).thenReturn(downloadMenuItemButton);
+        when(downloadMenuItemBuilder.build(any())).thenReturn(downloadMenuItemButton);
     }
 
     protected TestDocument createTestDocument() {
