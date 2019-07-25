@@ -166,11 +166,10 @@ public class WorkspaceProjectServiceImpl
                                        final DeploymentMode mode,
                                        final List<Contributor> contributors) {
 
-
         return spaceConfigStorageRegistry.getBatch(organizationalUnit.getSpace().getName())
                 .run(context -> {
-                    String newName = this.createFreshProjectName(organizationalUnit,
-                                                                 pom.getName());
+                    final String newName = this.createFreshProjectName(organizationalUnit, pom.getName());
+
                     pom.setName(newName);
 
                     if (DeploymentMode.VALIDATED.equals(mode)) {
@@ -180,16 +179,16 @@ public class WorkspaceProjectServiceImpl
                     String repositoryAlias = this.createFreshRepositoryAlias(organizationalUnit, pom.getName());
 
                     final Repository repository = repositoryService.createRepository(organizationalUnit,
-                                                              "git",
-                                                              repositoryAlias,
-                                                              new RepositoryEnvironmentConfigurations(),
-                                                              contributors != null ? contributors : Collections.emptyList());
-
-                    if (!repository.getDefaultBranch().isPresent()) {
-                        throw new IllegalStateException("New repository should always have a branch.");
-                    }
+                                                                                     "git",
+                                                                                     repositoryAlias,
+                                                                                     new RepositoryEnvironmentConfigurations(),
+                                                                                     contributors != null ? contributors : Collections.emptyList());
 
                     try {
+                        if (!repository.getDefaultBranch().isPresent()) {
+                            throw new IllegalStateException("New repository should always have a branch.");
+                        }
+
                         final Module module = moduleService.newModule(repository.getDefaultBranch().get().getPath(),
                                                                       pom,
                                                                       mode);
@@ -203,8 +202,7 @@ public class WorkspaceProjectServiceImpl
 
                         return workspaceProject;
                     } catch (Exception e) {
-                        this.repositoryService.removeRepository(this.spaces.getSpace(organizationalUnit.getName()),
-                                                                repository.getAlias());
+                        this.repositoryService.removeRepository(this.spaces.getSpace(organizationalUnit.getName()), repository.getAlias());
                         throw ExceptionUtilities.handleException(e);
                     }
                 });

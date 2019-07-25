@@ -17,11 +17,12 @@ package org.guvnor.common.services.project.backend.server;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -29,6 +30,7 @@ import java.util.Optional;
 
 import javax.enterprise.inject.Instance;
 
+import org.assertj.core.api.Assertions;
 import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.Module;
@@ -38,6 +40,7 @@ import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.common.services.project.service.ModuleRepositoryResolver;
 import org.guvnor.common.services.project.service.ModuleService;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
+import org.guvnor.common.services.shared.exceptions.GenericPortableException;
 import org.guvnor.structure.backend.organizationalunit.config.SpaceConfigStorageRegistryImpl;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
@@ -188,6 +191,32 @@ public class WorkspaceProjectServiceImplNewWorkspaceWorkspaceProjectTest {
                                                    any(),
                                                    any());
         verify(spaceConfigStorage).endBatch();
+    }
+
+    @Test
+    public void testNewProjectErrorRepositoryWithoutDefaultBranch() {
+        when(repository.getDefaultBranch()).thenReturn(Optional.empty());
+
+        testNewProjectError(GenericPortableException.class, "New repository should always have a branch.");
+    }
+
+
+    @Test
+    public void testNewProjectErrorCreatingModule() {
+        final String errorMessage = "Impossible to create module";
+
+        doThrow(new IllegalStateException(errorMessage)).when(moduleService).newModule(any(), any(), any());
+
+        testNewProjectError(GenericPortableException.class, errorMessage);
+    }
+
+    private void testNewProjectError(final Class<? extends Exception> expectedExceptionType, final String expectedMessage) {
+        Assertions.assertThatThrownBy(() -> workspaceProjectService.newProject(ou, pom))
+                .isInstanceOf(expectedExceptionType)
+                .hasMessage(expectedMessage);
+
+        verify(repositoryService).removeRepository(any(), anyString());
+        verify(newProjectEvent, never()).fire(any());
     }
 
     @Test
