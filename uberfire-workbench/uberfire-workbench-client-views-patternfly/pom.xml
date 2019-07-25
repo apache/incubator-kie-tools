@@ -323,27 +323,6 @@
               <overWriteSnapshots>true</overWriteSnapshots>
             </configuration>
           </execution>
-          <execution>
-            <id>unpack-jquery-ui</id>
-            <phase>process-resources</phase>
-            <goals>
-              <goal>unpack</goal>
-            </goals>
-            <configuration>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>org.webjars.bower</groupId>
-                  <artifactId>jquery-ui</artifactId>
-                  <version>${version.org.webjars.bower.jqueryui}</version>
-                  <type>jar</type>
-                  <overWrite>true</overWrite>
-                  <outputDirectory>${project.build.directory}/jquery-ui</outputDirectory>
-                </artifactItem>
-              </artifactItems>
-              <overWriteReleases>false</overWriteReleases>
-              <overWriteSnapshots>true</overWriteSnapshots>
-            </configuration>
-          </execution>
         </executions>
       </plugin>
       <plugin>
@@ -457,25 +436,6 @@
                   <directory>${project.build.directory}/d3/META-INF/resources/webjars/d3/${version.org.webjars.bower.d3js}/</directory>
                   <includes>
                     <include>d3.min.js</include>
-                  </includes>
-                </resource>
-              </resources>
-            </configuration>
-          </execution>
-          <execution>
-            <id>copy-jquery-ui-resources</id>
-            <phase>process-resources</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${project.build.outputDirectory}/org/uberfire/client/views/static/jquery-ui</outputDirectory>
-              <resources>
-                <resource>
-                  <directory>${project.build.directory}/jquery-ui/META-INF/resources/webjars/jquery-ui/${version.org.webjars.bower.jqueryui}/</directory>
-                  <includes>
-                    <include>jquery-ui.min.js</include>
-                    <include>themes/base/jquery-ui.min.css</include>
                   </includes>
                 </resource>
               </resources>
