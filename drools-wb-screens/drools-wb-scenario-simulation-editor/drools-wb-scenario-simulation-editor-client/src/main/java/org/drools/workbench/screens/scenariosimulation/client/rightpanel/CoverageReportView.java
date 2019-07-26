@@ -37,11 +37,13 @@ public interface CoverageReportView
 
     void setEmptyStatusText(String value);
 
-    HTMLElement getDecisionList();
+    HTMLElement getList();
 
     HTMLDivElement getDonutChart();
 
     HTMLUListElement getScenarioList();
+
+    void initText(ScenarioSimulationModel.Type type);
 
     interface Presenter extends SubDockView.Presenter {
 

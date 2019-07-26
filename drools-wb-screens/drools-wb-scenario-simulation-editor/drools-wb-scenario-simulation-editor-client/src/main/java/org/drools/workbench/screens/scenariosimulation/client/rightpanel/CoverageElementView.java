@@ -18,20 +18,20 @@ package org.drools.workbench.screens.scenariosimulation.client.rightpanel;
 
 import elemental2.dom.HTMLElement;
 
-public interface CoverageDecisionElementView {
+public interface CoverageElementView {
 
-    HTMLElement getDecisionDescription();
+    HTMLElement getDescription();
 
-    HTMLElement getDecisionNumberOfTime();
+    HTMLElement getNumberOfTime();
 
     interface Presenter {
 
-        void initDecisionList(HTMLElement decisionList);
+        void initElementList(HTMLElement elementList);
 
-        void addDecisionElementView(String decisionDescription, String decisionValue);
+        void addElementView(String description, String value);
     }
 
-    void setDescriptionValue(String decisionDescription);
+    void setDescriptionValue(String description);
 
-    void setDecisionValue(String decisionValue);
+    void setElementValue(String numberOfTime);
 }

@@ -22,34 +22,34 @@ import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 /**
- * This class is used to represent a single row in the coverage decision section
+ * This class is used to represent a single row in the coverage decision/rule section
  */
 @Templated
-public class CoverageDecisionElementViewImpl implements CoverageDecisionElementView {
+public class CoverageElementViewImpl implements CoverageElementView {
 
-    @DataField("decisionDescription")
-    protected HTMLElement decisionDescription = (HTMLElement) DomGlobal.document.createElement("dt");
+    @DataField
+    protected HTMLElement description = (HTMLElement) DomGlobal.document.createElement("dt");
 
-    @DataField("decisionNumberOfTime")
-    protected HTMLElement decisionNumberOfTime = (HTMLElement) DomGlobal.document.createElement("dd");
+    @DataField
+    protected HTMLElement numberOfTime = (HTMLElement) DomGlobal.document.createElement("dd");
 
     @Override
-    public void setDescriptionValue(String decisionDescription) {
-        this.decisionDescription.textContent = decisionDescription;
+    public void setDescriptionValue(String description) {
+        this.description.textContent = description;
     }
 
     @Override
-    public void setDecisionValue(String decisionValue) {
-        this.decisionNumberOfTime.textContent = decisionValue;
+    public void setElementValue(String numberOfTime) {
+        this.numberOfTime.textContent = numberOfTime;
     }
 
     @Override
-    public HTMLElement getDecisionDescription() {
-        return decisionDescription;
+    public HTMLElement getDescription() {
+        return description;
     }
 
     @Override
-    public HTMLElement getDecisionNumberOfTime() {
-        return decisionNumberOfTime;
+    public HTMLElement getNumberOfTime() {
+        return numberOfTime;
     }
 }

@@ -16,7 +16,6 @@
 
 package org.drools.workbench.screens.scenariosimulation.client.rightpanel;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 
 import com.google.gwt.user.client.ui.Composite;
@@ -28,6 +27,7 @@ import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.Sce
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
+import static org.drools.scenariosimulation.api.model.ScenarioSimulationModel.Type;
 import static org.drools.workbench.screens.scenariosimulation.client.utils.ConstantHolder.HIDDEN;
 
 @ApplicationScoped
@@ -57,7 +57,7 @@ public class CoverageReportViewImpl
     protected HTMLElement reportCoverage = (HTMLElement) DomGlobal.document.createElement("dd");
 
     @DataField
-    protected HTMLElement decisionList = (HTMLElement) DomGlobal.document.createElement("dl");
+    protected HTMLElement list = (HTMLElement) DomGlobal.document.createElement("dl");
 
     @DataField
     protected HTMLDivElement donutChart = (HTMLDivElement) DomGlobal.document.createElement("div");
@@ -75,20 +75,27 @@ public class CoverageReportViewImpl
     protected HTMLDivElement summarySection = (HTMLDivElement) DomGlobal.document.createElement("div");
 
     @DataField
-    protected HTMLDivElement decisionListSection = (HTMLDivElement) DomGlobal.document.createElement("div");
+    protected HTMLDivElement listSection = (HTMLDivElement) DomGlobal.document.createElement("div");
 
     @DataField
     protected HTMLDivElement scenarioListSection = (HTMLDivElement) DomGlobal.document.createElement("div");
 
     @DataField
-    protected HTMLElement numberOfTimesDecisionEvaluated = (HTMLElement) DomGlobal.document.createElement("span");
+    protected HTMLElement numberOfTimesElementEvaluated = (HTMLElement) DomGlobal.document.createElement("span");
 
-    @PostConstruct
-    protected void postConstruct() {
-        reportAvailableLabel.textContent = ScenarioSimulationEditorConstants.INSTANCE.reportAvailableLabel();
-        reportExecutedLabel.textContent = ScenarioSimulationEditorConstants.INSTANCE.reportExecutedLabel();
-        reportCoverageLabel.textContent = ScenarioSimulationEditorConstants.INSTANCE.reportCoverageLabel();
-        numberOfTimesDecisionEvaluated.textContent = ScenarioSimulationEditorConstants.INSTANCE.numberOfTimesDecisionEvaluated();
+    @Override
+    public void initText(Type type) {
+        if (Type.DMN.equals(type)) {
+            reportAvailableLabel.textContent = ScenarioSimulationEditorConstants.INSTANCE.reportAvailableLabel();
+            reportExecutedLabel.textContent = ScenarioSimulationEditorConstants.INSTANCE.reportExecutedLabel();
+            reportCoverageLabel.textContent = ScenarioSimulationEditorConstants.INSTANCE.reportCoverageLabel();
+            numberOfTimesElementEvaluated.textContent = ScenarioSimulationEditorConstants.INSTANCE.numberOfTimesDecisionEvaluated();
+        } else {
+            reportAvailableLabel.textContent = ScenarioSimulationEditorConstants.INSTANCE.reportAvailableRuleLabel();
+            reportExecutedLabel.textContent = ScenarioSimulationEditorConstants.INSTANCE.reportExecutedRuleLabel();
+            reportCoverageLabel.textContent = ScenarioSimulationEditorConstants.INSTANCE.reportCoverageRuleLabel();
+            numberOfTimesElementEvaluated.textContent = ScenarioSimulationEditorConstants.INSTANCE.numberOfTimesRulesFired();
+        }
     }
 
     @Override
@@ -111,7 +118,7 @@ public class CoverageReportViewImpl
     public void hide() {
         emptyStatus.classList.remove(HIDDEN);
         summarySection.classList.add(HIDDEN);
-        decisionListSection.classList.add(HIDDEN);
+        listSection.classList.add(HIDDEN);
         scenarioListSection.classList.add(HIDDEN);
     }
 
@@ -119,7 +126,7 @@ public class CoverageReportViewImpl
     public void show() {
         emptyStatus.classList.add(HIDDEN);
         summarySection.classList.remove(HIDDEN);
-        decisionListSection.classList.remove(HIDDEN);
+        listSection.classList.remove(HIDDEN);
         scenarioListSection.classList.remove(HIDDEN);
     }
 
@@ -144,8 +151,8 @@ public class CoverageReportViewImpl
     }
 
     @Override
-    public HTMLElement getDecisionList() {
-        return decisionList;
+    public HTMLElement getList() {
+        return list;
     }
 
     @Override

@@ -262,6 +262,8 @@ public interface ScenarioSimulationEditorConstants
 
     String decisionsEvaluated();
 
+    String rulesFired();
+
     String coverageNotSupportedForRule();
 
     String runATestToSeeCoverageReport();
@@ -284,6 +286,14 @@ public interface ScenarioSimulationEditorConstants
 
     String numberOfTimesDecisionEvaluated();
 
+    String reportAvailableRuleLabel();
+
+    String reportExecutedRuleLabel();
+
+    String reportCoverageRuleLabel();
+
+    String numberOfTimesRulesFired();
+
     String errorReason();
 
     String keep();
@@ -297,4 +307,8 @@ public interface ScenarioSimulationEditorConstants
     String errorPopoverMessageFailedWithException(String errorMsg);
 
     String skipSimulation();
+
+    String noDecisionsAvailable();
+
+    String noRulesAvailable();
 }

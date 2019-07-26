@@ -16,11 +16,12 @@
 
 package org.drools.workbench.screens.scenariosimulation.client.rightpanel;
 
-import java.util.List;
+import java.util.Map;
 
 import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLLIElement;
 import elemental2.dom.HTMLUListElement;
+import org.drools.scenariosimulation.api.model.ScenarioSimulationModel.Type;
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
 
 public interface CoverageScenarioListView {
@@ -29,7 +30,7 @@ public interface CoverageScenarioListView {
 
     HTMLLIElement getScenarioElement();
 
-    HTMLUListElement getDecisionElement();
+    HTMLUListElement getScenarioContentList();
 
     HTMLElement getFaAngleRight();
 
@@ -43,7 +44,7 @@ public interface CoverageScenarioListView {
 
         void clear();
 
-        void addScenarioGroup(ScenarioWithIndex key, List<String> value);
+        void addScenarioGroup(ScenarioWithIndex key, Map<String, Integer> value, Type type);
 
         void onElementClick(CoverageScenarioListView coverageScenarioListView);
     }

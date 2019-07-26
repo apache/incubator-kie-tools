@@ -30,7 +30,7 @@ import static org.drools.workbench.screens.scenariosimulation.client.utils.Const
 import static org.drools.workbench.screens.scenariosimulation.client.utils.ConstantHolder.HIDDEN;
 
 /**
- * This class is used to represent a single scenario with all its own decisions
+ * This class is used to represent a single scenario with all its own decisions/rules
  */
 @Templated
 public class CoverageScenarioListViewImpl implements CoverageScenarioListView {
@@ -39,7 +39,7 @@ public class CoverageScenarioListViewImpl implements CoverageScenarioListView {
     protected HTMLLIElement scenarioElement = (HTMLLIElement) DomGlobal.document.createElement("li");
 
     @DataField
-    protected HTMLUListElement decisionElement = (HTMLUListElement) DomGlobal.document.createElement("ul");
+    protected HTMLUListElement scenarioContentList = (HTMLUListElement) DomGlobal.document.createElement("ul");
 
     @DataField
     protected HTMLElement faAngleRight = (HTMLElement) DomGlobal.document.createElement("span");
@@ -62,8 +62,8 @@ public class CoverageScenarioListViewImpl implements CoverageScenarioListView {
     }
 
     @Override
-    public HTMLUListElement getDecisionElement() {
-        return decisionElement;
+    public HTMLUListElement getScenarioContentList() {
+        return scenarioContentList;
     }
 
     @Override
@@ -73,7 +73,7 @@ public class CoverageScenarioListViewImpl implements CoverageScenarioListView {
 
     @Override
     public boolean isVisible() {
-        return !decisionElement.classList.contains(HIDDEN);
+        return !scenarioContentList.classList.contains(HIDDEN);
     }
 
     @Override
@@ -81,11 +81,11 @@ public class CoverageScenarioListViewImpl implements CoverageScenarioListView {
         if (visible) {
             faAngleRight.classList.remove(FA_ANGLE_RIGHT);
             faAngleRight.classList.add(FA_ANGLE_DOWN);
-            decisionElement.classList.remove(HIDDEN);
+            scenarioContentList.classList.remove(HIDDEN);
         } else {
             faAngleRight.classList.remove(FA_ANGLE_DOWN);
             faAngleRight.classList.add(FA_ANGLE_RIGHT);
-            decisionElement.classList.add(HIDDEN);
+            scenarioContentList.classList.add(HIDDEN);
         }
     }
 }

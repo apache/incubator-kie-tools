@@ -23,31 +23,31 @@ import elemental2.dom.HTMLElement;
 import org.drools.workbench.screens.scenariosimulation.client.utils.ViewsProvider;
 
 @Dependent
-public class CoverageDecisionElementPresenter implements CoverageDecisionElementView.Presenter {
+public class CoverageElementPresenter implements CoverageElementView.Presenter {
 
     @Inject
     protected ViewsProvider viewsProvider;
 
-    private HTMLElement decisionList;
+    private HTMLElement elementList;
 
     @Override
-    public void initDecisionList(HTMLElement decisionList) {
-        this.decisionList = decisionList;
+    public void initElementList(HTMLElement elementList) {
+        this.elementList = elementList;
     }
 
     @Override
-    public void addDecisionElementView(String decisionDescription, String decisionValue) {
-        CoverageDecisionElementView coverageDecisionElementView = viewsProvider.getDecisionElementView();
-        coverageDecisionElementView.setDescriptionValue(decisionDescription);
-        coverageDecisionElementView.setDecisionValue(decisionValue);
+    public void addElementView(String description, String value) {
+        CoverageElementView coverageElementView = viewsProvider.getCoverageElementView();
+        coverageElementView.setDescriptionValue(description);
+        coverageElementView.setElementValue(value);
 
-        this.decisionList.appendChild(coverageDecisionElementView.getDecisionDescription());
-        this.decisionList.appendChild(coverageDecisionElementView.getDecisionNumberOfTime());
+        this.elementList.appendChild(coverageElementView.getDescription());
+        this.elementList.appendChild(coverageElementView.getNumberOfTime());
     }
 
     public void clear() {
-        while (decisionList.firstChild != null) {
-            decisionList.removeChild(decisionList.firstChild);
+        while (elementList.firstChild != null) {
+            elementList.removeChild(elementList.firstChild);
         }
     }
 }

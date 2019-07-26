@@ -27,7 +27,7 @@ import org.drools.workbench.screens.scenariosimulation.client.collectioneditor.e
 import org.drools.workbench.screens.scenariosimulation.client.editor.menu.MenuItemView;
 import org.drools.workbench.screens.scenariosimulation.client.popover.ErrorReportPopoverView;
 import org.drools.workbench.screens.scenariosimulation.client.popup.FileUploadPopup;
-import org.drools.workbench.screens.scenariosimulation.client.rightpanel.CoverageDecisionElementView;
+import org.drools.workbench.screens.scenariosimulation.client.rightpanel.CoverageElementView;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.CoverageScenarioListView;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.FieldItemView;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.ListGroupItemView;
@@ -46,7 +46,7 @@ public class ViewsProvider {
     private ManagedInstance<FieldItemView> fieldItemViewInstance;
 
     @Inject
-    private ManagedInstance<CoverageDecisionElementView> decisionElementViewInstance;
+    private ManagedInstance<CoverageElementView> decisionElementViewInstance;
 
     @Inject
     private ManagedInstance<ListGroupItemView> listGroupItemViewInstance;
@@ -118,7 +118,7 @@ public class ViewsProvider {
         return fileUploadPopupInstance.get();
     }
 
-    public CoverageDecisionElementView getDecisionElementView() {
+    public CoverageElementView getCoverageElementView() {
         return decisionElementViewInstance.get();
     }
 
