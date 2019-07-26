@@ -15,13 +15,17 @@
   -->
 
 <div>
-    <div data-field="documentation-panel" class="documentation-panel">
+    <div id="documentation-panel" data-field="documentation-panel" class="documentation-panel">
         <div class="documentation-header">
-            <button data-field="print-button" class="btn btn-default">
+            <button data-field="print-button" class="btn btn-default print-button">
                 <i class="fa pficon-print"></i>
                 <span data-i18n-key="Print"></span>
             </button>
+            <button data-field="download-html-file" class="btn btn-default download-html-button">
+                <i class="fa fa-file"></i>
+                <span data-i18n-key="DownloadHtmlFile"></span>
+            </button>
         </div>
-        <div data-field="documentation-content"></div>
+        <div id="documentation-content" data-field="documentation-content"></div>
     </div>
 </div>

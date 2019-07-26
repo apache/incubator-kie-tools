@@ -27,6 +27,7 @@ import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.editors.documentation.common.DMNDocumentationService;
+import org.kie.workbench.common.dmn.client.editors.documentation.common.HTMLDownloadHelper;
 import org.kie.workbench.common.stunner.core.client.util.PrintHelper;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.documentation.DefaultDiagramDocumentationView;
@@ -40,6 +41,8 @@ import static org.kie.workbench.common.stunner.core.documentation.model.Document
 @Templated
 public class DMNDocumentationView extends DefaultDiagramDocumentationView {
 
+    static final String DOCUMENTATION_FILENAME = "Documentation";
+
     @DataField("documentation-panel")
     private final HTMLDivElement documentationPanel;
 
@@ -49,21 +52,30 @@ public class DMNDocumentationView extends DefaultDiagramDocumentationView {
     @DataField("print-button")
     private final HTMLButtonElement printButton;
 
+    @DataField("download-html-file")
+    private final HTMLButtonElement downloadHtmlFile;
+
     private final PrintHelper printHelper;
 
     private final DMNDocumentationService documentationService;
+
+    private final HTMLDownloadHelper downloadHelper;
 
     @Inject
     public DMNDocumentationView(final HTMLDivElement documentationPanel,
                                 final HTMLDivElement documentationContent,
                                 final HTMLButtonElement printButton,
+                                final HTMLButtonElement downloadHtmlFile,
                                 final PrintHelper printHelper,
-                                final DMNDocumentationService documentationService) {
+                                final DMNDocumentationService documentationService,
+                                final HTMLDownloadHelper downloadHelper) {
         this.documentationPanel = documentationPanel;
         this.documentationContent = documentationContent;
         this.printButton = printButton;
+        this.downloadHtmlFile = downloadHtmlFile;
         this.printHelper = printHelper;
         this.documentationService = documentationService;
+        this.downloadHelper = downloadHelper;
     }
 
     @Override
@@ -82,10 +94,27 @@ public class DMNDocumentationView extends DefaultDiagramDocumentationView {
         printHelper.print(documentationContent);
     }
 
+    @EventHandler("download-html-file")
+    public void onDownloadHtmlFile(final ClickEvent e) {
+        final String html = getCurrentDocumentationHTML();
+        downloadHelper.download(getCurrentDocumentationFilename(), html);
+    }
+
+    String getCurrentDocumentationHTML() {
+        return documentationContent.innerHTML;
+    }
+
     private String getDocumentationHTML() {
         return getDiagram()
                 .map(documentationService::generate)
                 .map(DocumentationOutput::getValue)
                 .orElse(EMPTY.getValue());
+    }
+
+    String getCurrentDocumentationFilename() {
+        return getDiagram()
+                .map(diagram -> documentationService.processDocumentation(diagram))
+                .map(dmnDocumentation -> DOCUMENTATION_FILENAME + "-" + dmnDocumentation.getFileName())
+                .orElse(DOCUMENTATION_FILENAME);
     }
 }
