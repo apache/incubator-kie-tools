@@ -19,7 +19,6 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -42,20 +41,17 @@ import org.dashbuilder.dataset.json.DataSetDefJSONMarshaller;
 import org.dashbuilder.dataset.uuid.UUIDGenerator;
 import org.dashbuilder.exception.ExceptionManager;
 import org.dashbuilder.scheduler.SchedulerCDI;
-import org.uberfire.backend.server.spaces.SpacesAPIImpl;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.FileSystem;
-import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
 import org.uberfire.java.nio.file.FileVisitResult;
 import org.uberfire.java.nio.file.Files;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.SimpleFileVisitor;
 import org.uberfire.java.nio.file.StandardDeleteOption;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
-import org.uberfire.spaces.SpacesAPI;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 import static org.uberfire.java.nio.file.Files.walkFileTree;
@@ -71,7 +67,6 @@ public class DataSetDefRegistryCDI extends DataSetDefRegistryImpl implements CSV
     public static final String DATASET_EXT = ".dset";
     public static final String CSV_EXT = ".csv";
 
-    protected SpacesAPI spacesAPI;
     protected int maxCsvLength;
     protected IOService ioService;
     protected ExceptionManager exceptionManager;
@@ -91,9 +86,9 @@ public class DataSetDefRegistryCDI extends DataSetDefRegistryImpl implements CSV
     @Inject
     public DataSetDefRegistryCDI(@Config("10485760" /* 10 Mb */) int maxCsvLength,
                                  @Named("ioStrategy") IOService ioService,
+                                 @Named("datasetsFS") FileSystem fileSystem,
                                  DataSetProviderRegistryCDI dataSetProviderRegistry,
                                  SchedulerCDI scheduler,
-                                 SpacesAPI spacesAPI,
                                  ExceptionManager exceptionManager,
                                  Event<DataSetDefModifiedEvent> dataSetDefModifiedEvent,
                                  Event<DataSetDefRegisteredEvent> dataSetDefRegisteredEvent,
@@ -102,10 +97,10 @@ public class DataSetDefRegistryCDI extends DataSetDefRegistryImpl implements CSV
 
         super(dataSetProviderRegistry,
               scheduler);
-        this.spacesAPI = spacesAPI;
         this.uuidGenerator = DataSetCore.get().getUuidGenerator();
         this.maxCsvLength = maxCsvLength;
         this.ioService = ioService;
+        this.fileSystem = fileSystem;
         this.exceptionManager = exceptionManager;
         this.dataSetDefModifiedEvent = dataSetDefModifiedEvent;
         this.dataSetDefRegisteredEvent = dataSetDefRegisteredEvent;
@@ -147,22 +142,7 @@ public class DataSetDefRegistryCDI extends DataSetDefRegistryImpl implements CSV
     }
 
     protected void initFileSystem() {
-        try {
-            fileSystem = ioService.newFileSystem(spacesAPI.resolveFileSystemURI(SpacesAPI.Scheme.DEFAULT,
-                                                                                SpacesAPI.DEFAULT_SPACE,
-                                                                                "datasets"),
-                                                 new HashMap<String, Object>() {{
-                                                     put("init",
-                                                         Boolean.TRUE);
-                                                     put("internal",
-                                                         Boolean.TRUE);
-                                                 }});
-        } catch (FileSystemAlreadyExistsException e) {
-            fileSystem = ioService.getFileSystem(spacesAPI.resolveFileSystemURI(SpacesAPI.Scheme.DEFAULT,
-                                                                                SpacesAPI.DEFAULT_SPACE,
-                                                                                "datasets"));
-        }
-        this.root = fileSystem.getRootDirectories().iterator().next();
+        root = fileSystem.getRootDirectories().iterator().next();
     }
 
     protected void registerDataSetDefs() {

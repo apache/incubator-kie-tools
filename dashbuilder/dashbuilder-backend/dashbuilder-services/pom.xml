@@ -64,11 +64,11 @@
       <groupId>org.dashbuilder</groupId>
       <artifactId>dashbuilder-navigation-api</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>org.dashbuilder</groupId>
       <artifactId>dashbuilder-displayer-api</artifactId>
-    </dependency>    
+    </dependency>
 
     <dependency>
       <groupId>org.kie.soup</groupId>
@@ -128,6 +128,11 @@
 
     <dependency>
       <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-nio2-fs</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
       <artifactId>uberfire-backend-api</artifactId>
     </dependency>
 
@@ -145,7 +150,7 @@
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-io</artifactId>
     </dependency>
-    
+
     <!-- CSV Export. -->
     <dependency>
       <groupId>net.sf.opencsv</groupId>

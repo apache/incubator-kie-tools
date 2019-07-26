@@ -46,6 +46,8 @@ public interface PluginServices extends SupportsDelete,
 
     Collection<Plugin> listPlugins();
 
+    Collection<Plugin> listPlugins(final PluginType type);
+
     Plugin createNewPlugin(final String name,
                            final PluginType type);
 
