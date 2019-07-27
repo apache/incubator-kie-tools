@@ -30,6 +30,7 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.field.selector
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.type.ListBoxFieldType;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.type.TextAreaFieldType;
 import org.kie.workbench.common.stunner.bpmn.definition.property.subProcess.IsCase;
+import org.kie.workbench.common.stunner.bpmn.forms.model.ComboBoxFieldType;
 import org.kie.workbench.common.stunner.bpmn.forms.model.MultipleInstanceVariableFieldType;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
@@ -47,7 +48,7 @@ public class ReusableSubprocessTaskExecutionSet implements BaseReusableSubproces
     @SelectorDataProvider(
             type = SelectorDataProvider.ProviderType.REMOTE,
             className = "org.kie.workbench.common.stunner.bpmn.backend.dataproviders.CalledElementFormProvider")
-    @FormField(type = ListBoxFieldType.class
+    @FormField(type = ComboBoxFieldType.class
     )
     @Valid
     protected CalledElement calledElement;
