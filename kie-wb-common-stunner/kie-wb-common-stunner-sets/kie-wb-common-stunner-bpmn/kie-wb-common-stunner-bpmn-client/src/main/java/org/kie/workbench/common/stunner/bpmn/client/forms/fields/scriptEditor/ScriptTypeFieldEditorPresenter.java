@@ -44,6 +44,8 @@ public class ScriptTypeFieldEditorPresenter
 
     private static final String DROOLS = "drools";
 
+    private static final String FEEL = "feel";
+
     public interface View extends UberElement<ScriptTypeFieldEditorPresenter> {
 
         void setScript(String script);
@@ -116,6 +118,8 @@ public class ScriptTypeFieldEditorPresenter
                                    MVEL));
             options.add(new Pair<>(DROOLS,
                                    DROOLS));
+            options.add(new Pair<>(FEEL,
+                                   FEEL));
         } else if (mode == DROOLS_CONDITION) {
             options.add(new Pair<>(DROOLS,
                                    DROOLS));

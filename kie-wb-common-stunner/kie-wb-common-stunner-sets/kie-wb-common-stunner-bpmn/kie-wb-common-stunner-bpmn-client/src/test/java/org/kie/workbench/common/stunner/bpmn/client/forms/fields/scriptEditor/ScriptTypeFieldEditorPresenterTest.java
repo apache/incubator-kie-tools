@@ -85,7 +85,8 @@ public class ScriptTypeFieldEditorPresenterTest
         verifyOptionsWhereSet("java",
                               "javascript",
                               "mvel",
-                              "drools");
+                              "drools",
+                              "feel");
     }
 
     @Test

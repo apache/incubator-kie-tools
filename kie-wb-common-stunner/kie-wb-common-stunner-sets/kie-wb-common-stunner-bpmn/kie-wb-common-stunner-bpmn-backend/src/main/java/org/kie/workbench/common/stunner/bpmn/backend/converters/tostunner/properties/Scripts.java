@@ -39,6 +39,7 @@ import static org.jboss.drools.DroolsPackage.Literals.DOCUMENT_ROOT__ON_ENTRY_SC
 import static org.jboss.drools.DroolsPackage.Literals.DOCUMENT_ROOT__ON_EXIT_SCRIPT;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.droolsFactory;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.Scripts.LANGUAGE.DROOLS;
+import static org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.Scripts.LANGUAGE.FEEL;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.Scripts.LANGUAGE.JAVA;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.Scripts.LANGUAGE.JAVASCRIPT;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.Scripts.LANGUAGE.MVEL;
@@ -49,7 +50,8 @@ public class Scripts {
         JAVA("java", "http://www.java.com/java"),
         JAVASCRIPT("javascript", "http://www.javascript.com/javascript"),
         MVEL("mvel", "http://www.mvel.org/2.0"),
-        DROOLS("drools", "http://www.jboss.org/drools/rule");
+        DROOLS("drools", "http://www.jboss.org/drools/rule"),
+        FEEL("feel", "http://www.omg.org/spec/FEEL/20140401");
 
         private final String language;
 
@@ -118,6 +120,8 @@ public class Scripts {
             return JAVASCRIPT.format();
         } else if (DROOLS.language().equals(language)) {
             return DROOLS.format();
+        } else if (FEEL.language().equals(language)) {
+            return FEEL.format();
         } else {
             return defaultValue;
         }
@@ -140,6 +144,8 @@ public class Scripts {
             return JAVASCRIPT.language();
         } else if (DROOLS.format().equals(format)) {
             return DROOLS.language();
+        } else if (FEEL.format().equals(format)) {
+            return FEEL.language();
         } else {
             return defaultValue;
         }

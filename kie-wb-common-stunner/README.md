@@ -161,8 +161,8 @@ The following assumes that the Standalone Showcase will be utilized. Some eviden
         -XX:CompileThreshold=7000
         -Djava.util.prefs.syncInterval=200000
         -Dorg.uberfire.nio.git.dir=/tmp/project/dir
-        -Derrai.jboss.home=/[YOUR_DIR_LOCATION]/kie-wb-common/kie-wb-common-stunner/kie-wb-common-stunner-showcase/kie-wb-common-stunner-showcase-project/target/wildfly-14.0.1.Final
-        -Derrai.jboss.args="-b 0.0.0.0 -bmanagement 0.0.0.0"
+        -Derrai.jboss.home=/[YOUR_DIR_LOCATION]/kie-wb-common/kie-wb-common-stunner/kie-wb-common-stunner-showcase/kie-wb-common-stunner-showcase-standalone/target/wildfly-14.0.1.Final
+        
 
 8. Change *Dev Mode parameters* to the following:
 
@@ -171,7 +171,7 @@ The following assumes that the Standalone Showcase will be utilized. Some eviden
 10. Ensure that the *with JavaScript debugger* checkbox is **NOT** checked, as Chrome debugger will be used instead.
 11. Under *Before launch*, click the plus (+) sign.
 12. Select *Run Maven Goal*.
-13. Change the working directory to /[YOUR_DIR_LOCATION]/kie-wb-common/kie-wb-common-stunner/.
+13. Change the working directory to /[YOUR_DIR_LOCATION]/kie-wb-common/kie-wb-common-stunner/kie-wb-common-stunner-showcase/kie-wb-common-stunner-showcase-standalone/.
 14. Change *Command line* value to 'clean process-resources', then hit *OK*.
 15. Select the newly added Maven entry in the *Before launch* section, then click the UP arrow underneath so that it moves **above** the *Make* entry.
 16. Click *Apply* and/or *OK*.
