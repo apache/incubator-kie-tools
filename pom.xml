@@ -78,7 +78,7 @@
       <dependency>
         <groupId>org.uberfire</groupId>
         <artifactId>uberfire-bom</artifactId>
-        <version>${version.org.uberfire}</version>
+        <version>${version.org.kie}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
