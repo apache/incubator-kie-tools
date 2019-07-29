@@ -45,10 +45,6 @@ startDateTime=`date +%s`
 cd $uberfireTopLevelDir
 mvnVersionsSet $newVersion
 
-# fix leftovers not covered by the first run
-cd $uberfireTopLevelDir/uberfire-bom
-mvnVersionsSet $newVersion
-
 endDateTime=`date +%s`
 spentSeconds=`expr $endDateTime - $startDateTime`
 

@@ -931,12 +931,7 @@
       <dependency>
         <groupId>org.uberfire</groupId>
         <artifactId>uberfire-bom</artifactId>
-        <!-- Using ${uberfire.version} instead of ${project.version} enables easier way to create hot fixes
-             (one-off patches). This pom is a parent for all uberfire modules, so when version is changed in
-             one of them, the ${project.version} property changes too and therefore also required version of
-             uberfire-bom. Usage of  this property makes it possible to change version of the (sub)module
-             and still use the original version of uberfire-bom. -->
-        <version>${uberfire.version}</version>
+        <version>${version.org.kie}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>

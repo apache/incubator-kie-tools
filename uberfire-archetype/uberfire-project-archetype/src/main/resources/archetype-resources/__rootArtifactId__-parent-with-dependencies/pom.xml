@@ -17,6 +17,7 @@
 
   <properties>
     <version.org.uberfire>${project.version}</version.org.uberfire>
+    <version.org.kie>${version.org.kie}</version.org.kie>
 
     <version.de.benediktmeurer.gwt-slf4j>${version.de.benediktmeurer.gwt-slf4j}</version.de.benediktmeurer.gwt-slf4j>
     <version.ch.qos.logback>${version.ch.qos.logback}</version.ch.qos.logback>
@@ -100,7 +101,7 @@
         <groupId>org.uberfire</groupId>
         <artifactId>uberfire-bom</artifactId>
         <type>pom</type>
-        <version>\${version.org.uberfire}</version>
+        <version>\${version.org.kie}</version>
         <scope>import</scope>
       </dependency>
 
