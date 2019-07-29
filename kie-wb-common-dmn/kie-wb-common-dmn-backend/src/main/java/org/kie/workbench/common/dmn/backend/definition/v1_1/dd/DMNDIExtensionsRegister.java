@@ -33,12 +33,17 @@ public class DMNDIExtensionsRegister implements DMNExtensionRegister {
 
     static final String COMPONENT_WIDTH_ALIAS = "width";
 
+    static final String EXTERNAL_LINK_ALIAS = "attachment";
+
     @Override
     public void registerExtensionConverters(final XStream xStream) {
         xStream.processAnnotations(ComponentsWidthsExtension.class);
         xStream.processAnnotations(ComponentWidths.class);
+        xStream.processAnnotations(ExternalLink.class);
         xStream.alias(COMPONENT_WIDTH_ALIAS, Double.class);
+        xStream.alias(EXTERNAL_LINK_ALIAS, ExternalLink.class);
 
+        xStream.registerConverter(new ExternalLinksConverter(xStream));
         xStream.registerConverter(new ComponentWidthsConverter(xStream));
     }
 
@@ -61,6 +66,10 @@ public class DMNDIExtensionsRegister implements DMNExtensionRegister {
                                            COMPONENT_WIDTH_ALIAS,
                                            prefix),
                                  COMPONENT_WIDTH_ALIAS);
+            qmap.registerMapping(new QName(KIE.getUri(),
+                                           EXTERNAL_LINK_ALIAS,
+                                           prefix),
+                                 EXTERNAL_LINK_ALIAS);
         }
     }
 }

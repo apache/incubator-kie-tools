@@ -71,6 +71,9 @@ public class KnowledgeSourceConverter implements NodeConverter<org.kie.dmn.model
                                                        new FontSet(),
                                                        new GeneralRectangleDimensionsSet());
         node.getContent().setDefinition(ks);
+
+        DMNExternalLinksToExtensionElements.loadExternalLinksFromExtensionElements(dmn, ks);
+
         return node;
     }
 
@@ -84,6 +87,7 @@ public class KnowledgeSourceConverter implements NodeConverter<org.kie.dmn.model
         result.setName(source.getName().getValue());
         result.setType(source.getType().getValue());
         result.setLocationURI(source.getLocationURI().getValue());
+        DMNExternalLinksToExtensionElements.loadExternalLinksIntoExtensionElements(source, result);
         // DMN spec table 2: Requirements connection rules
         final List<Edge<?, ?>> inEdges = (List<Edge<?, ?>>) node.getInEdges();
         for (Edge<?, ?> e : inEdges) {

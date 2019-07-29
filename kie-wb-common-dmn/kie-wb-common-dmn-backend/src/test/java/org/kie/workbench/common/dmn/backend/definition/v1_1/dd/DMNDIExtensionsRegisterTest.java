@@ -15,6 +15,7 @@
  */
 package org.kie.workbench.common.dmn.backend.definition.v1_1.dd;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.xml.namespace.QName;
@@ -37,9 +38,11 @@ import static org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumen
 import static org.kie.workbench.common.dmn.backend.definition.v1_1.dd.DMNDIExtensionsRegister.COMPONENTS_WIDTHS_EXTENSION_ALIAS;
 import static org.kie.workbench.common.dmn.backend.definition.v1_1.dd.DMNDIExtensionsRegister.COMPONENT_WIDTHS_ALIAS;
 import static org.kie.workbench.common.dmn.backend.definition.v1_1.dd.DMNDIExtensionsRegister.COMPONENT_WIDTH_ALIAS;
+import static org.kie.workbench.common.dmn.backend.definition.v1_1.dd.DMNDIExtensionsRegister.EXTERNAL_LINK_ALIAS;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -71,10 +74,14 @@ public class DMNDIExtensionsRegisterTest {
 
         verify(xStream).processAnnotations(eq(ComponentsWidthsExtension.class));
         verify(xStream).processAnnotations(eq(ComponentWidths.class));
+        verify(xStream).processAnnotations(eq(ExternalLink.class));
         verify(xStream).alias(eq(COMPONENT_WIDTH_ALIAS), eq(Double.class));
-        verify(xStream).registerConverter(converterCaptor.capture());
+        verify(xStream, times(2)).registerConverter(converterCaptor.capture());
+        verify(xStream).alias(eq(EXTERNAL_LINK_ALIAS), eq(ExternalLink.class));
 
-        assertThat(converterCaptor.getValue()).isInstanceOf(ComponentWidthsConverter.class);
+        final List<Converter> values = converterCaptor.getAllValues();
+        assertThat(values).hasAtLeastOneElementOfType(ComponentWidthsConverter.class);
+        assertThat(values).hasAtLeastOneElementOfType(ExternalLinksConverter.class);
     }
 
     @Test
@@ -104,5 +111,12 @@ public class DMNDIExtensionsRegisterTest {
         assertThat(qName3.getNamespaceURI()).isEqualTo(KIE.getUri());
         assertThat(qName3.getLocalPart()).isEqualTo(COMPONENT_WIDTH_ALIAS);
         assertThat(qName3.getPrefix()).isEqualTo(KIE.getPrefix());
+
+        verify(qmap).registerMapping(qNameCaptor.capture(),
+                                     eq(EXTERNAL_LINK_ALIAS));
+        final QName qName4 = qNameCaptor.getValue();
+        assertThat(qName4.getNamespaceURI()).isEqualTo(KIE.getUri());
+        assertThat(qName4.getLocalPart()).isEqualTo(EXTERNAL_LINK_ALIAS);
+        assertThat(qName4.getPrefix()).isEqualTo(KIE.getPrefix());
     }
 }

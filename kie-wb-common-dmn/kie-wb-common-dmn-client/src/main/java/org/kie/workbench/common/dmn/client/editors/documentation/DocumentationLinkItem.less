@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,20 +14,19 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.widgets.grid.controls;
+[data-i18n-prefix="DocumentationLinkItem."] {
 
-import java.util.Optional;
+  .documentation-links {
+    height: 60px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+  }
 
-public interface HasCellEditorControls {
+  .col-md-10 {
+    padding: 0;
+  }
 
-    interface Editor<T> extends PopupEditorControls {
-
-        void bind(final T bound,
-                  final int uiRowIndex,
-                  final int uiColumnIndex);
-    }
-
-    default Optional<Editor> getEditor() {
-        return Optional.empty();
-    }
+  .delete-link {
+    color: #777777;
+  }
 }

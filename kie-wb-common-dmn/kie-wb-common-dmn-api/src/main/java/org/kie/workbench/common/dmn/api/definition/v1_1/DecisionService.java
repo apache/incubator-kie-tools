@@ -282,6 +282,9 @@ public class DecisionService extends DRGElement implements HasVariable<Informati
         if (inputDecision != null ? !inputDecision.equals(that.inputDecision) : that.inputDecision != null) {
             return false;
         }
+        if (linksHolder != null ? !linksHolder.equals(that.linksHolder) : that.linksHolder != null) {
+            return false;
+        }
         return inputData != null ? inputData.equals(that.inputData) : that.inputData == null;
     }
 
@@ -295,7 +298,8 @@ public class DecisionService extends DRGElement implements HasVariable<Informati
                                          outputDecision != null ? outputDecision.hashCode() : 0,
                                          encapsulatedDecision != null ? encapsulatedDecision.hashCode() : 0,
                                          inputDecision != null ? inputDecision.hashCode() : 0,
-                                         inputData != null ? inputData.hashCode() : 0);
+                                         inputData != null ? inputData.hashCode() : 0,
+                                         linksHolder != null ? linksHolder.hashCode() : 0);
     }
 
     private void setVariableParent() {

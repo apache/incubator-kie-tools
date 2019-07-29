@@ -17,11 +17,17 @@ package org.kie.workbench.common.dmn.api.definition.v1_1;
 
 import java.util.Arrays;
 
+import javax.validation.Valid;
+
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
+import org.kie.workbench.common.dmn.api.property.dmn.DocumentationLinksFieldType;
+import org.kie.workbench.common.dmn.api.property.dmn.DocumentationLinksHolder;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.rules.NoInputNodesInImportedDecisionRule;
 import org.kie.workbench.common.forms.adf.definitions.DynamicReadOnly;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
+import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.rule.annotation.RuleExtension;
 
 @RuleExtension(handler = NoInputNodesInImportedDecisionRule.class)
@@ -38,7 +44,13 @@ public abstract class DRGElement extends NamedElement implements DynamicReadOnly
 
     protected boolean allowOnlyVisualChange;
 
+    @Property
+    @FormField(afterElement = "description", type = DocumentationLinksFieldType.class)
+    @Valid
+    protected DocumentationLinksHolder linksHolder;
+
     public DRGElement() {
+        this.linksHolder = new DocumentationLinksHolder();
     }
 
     public DRGElement(final Id id,
@@ -47,6 +59,7 @@ public abstract class DRGElement extends NamedElement implements DynamicReadOnly
         super(id,
               description,
               name);
+        this.linksHolder = new DocumentationLinksHolder();
     }
 
     @Override
@@ -74,5 +87,13 @@ public abstract class DRGElement extends NamedElement implements DynamicReadOnly
 
     protected boolean isReadonlyField(final String fieldName) {
         return Arrays.stream(READONLY_FIELDS).anyMatch(f -> f.equalsIgnoreCase(fieldName));
+    }
+
+    public DocumentationLinksHolder getLinksHolder() {
+        return linksHolder;
+    }
+
+    public void setLinksHolder(final DocumentationLinksHolder linksHolder) {
+        this.linksHolder = linksHolder;
     }
 }

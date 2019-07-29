@@ -88,6 +88,8 @@ public class DecisionServiceConverter implements NodeConverter<org.kie.dmn.model
             informationItem.setParent(decisionService);
         }
 
+        DMNExternalLinksToExtensionElements.loadExternalLinksFromExtensionElements(dmn, decisionService);
+
         return node;
     }
 
@@ -173,6 +175,8 @@ public class DecisionServiceConverter implements NodeConverter<org.kie.dmn.model
         reconcileExistingAndCandidate(ds.getInputDecision(), existing_inputDecision, candidate_inputDecision);
         reconcileExistingAndCandidate(ds.getEncapsulatedDecision(), existing_encapsulatedDecision, candidate_encapsulatedDecision);
         reconcileExistingAndCandidate(ds.getOutputDecision(), existing_outputDecision, candidate_outputDecision);
+
+        DMNExternalLinksToExtensionElements.loadExternalLinksIntoExtensionElements(source, ds);
 
         return ds;
     }

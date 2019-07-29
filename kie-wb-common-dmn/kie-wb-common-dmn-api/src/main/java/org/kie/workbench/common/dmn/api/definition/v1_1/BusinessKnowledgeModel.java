@@ -249,6 +249,9 @@ public class BusinessKnowledgeModel extends DRGElement implements HasVariable<In
         if (fontSet != null ? !fontSet.equals(that.fontSet) : that.fontSet != null) {
             return false;
         }
+        if (linksHolder != null ? !linksHolder.equals(that.linksHolder) : that.linksHolder != null) {
+            return false;
+        }
         return dimensionsSet != null ? dimensionsSet.equals(that.dimensionsSet) : that.dimensionsSet == null;
     }
 
@@ -261,7 +264,8 @@ public class BusinessKnowledgeModel extends DRGElement implements HasVariable<In
                                          encapsulatedLogic != null ? encapsulatedLogic.hashCode() : 0,
                                          backgroundSet != null ? backgroundSet.hashCode() : 0,
                                          fontSet != null ? fontSet.hashCode() : 0,
-                                         dimensionsSet != null ? dimensionsSet.hashCode() : 0);
+                                         dimensionsSet != null ? dimensionsSet.hashCode() : 0,
+                                         linksHolder != null ? linksHolder.hashCode() : 0);
     }
 
     private void setVariableParent() {

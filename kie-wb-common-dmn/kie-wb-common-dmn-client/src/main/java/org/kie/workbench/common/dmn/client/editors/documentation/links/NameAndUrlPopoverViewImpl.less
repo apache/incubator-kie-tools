@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,21 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+[data-i18n-prefix="NameAndUrlPopoverViewImpl."] {
 
-package org.kie.workbench.common.dmn.client.widgets.grid.controls;
+  #popover-container {
+    display: inline;
+  }
 
-import java.util.Optional;
+  #popover-container .popover {
+    min-width: 450px;
+  }
 
-public interface HasCellEditorControls {
+  .kie-dmn-name-and-url-type-container #kieName {
+    width: 100%;
+  }
 
-    interface Editor<T> extends PopupEditorControls {
+  .kie-dmn-name-and-url-type-container #kieDataType {
+    width: 100%;
+  }
 
-        void bind(final T bound,
-                  final int uiRowIndex,
-                  final int uiColumnIndex);
-    }
+  .attachment-tip {
+    opacity: .75;
+    font-size: .85em;
+    font-style: italic;
+  }
 
-    default Optional<Editor> getEditor() {
-        return Optional.empty();
-    }
+  .buttons-container {
+    margin-top: 20px;
+    margin-bottom: 15px;
+    float: right;
+  }
 }

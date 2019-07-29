@@ -90,6 +90,7 @@ public class DecisionConverter implements NodeConverter<org.kie.dmn.model.api.De
             expression.setParent(decision);
         }
 
+        DMNExternalLinksToExtensionElements.loadExternalLinksFromExtensionElements(dmn, decision);
         return node;
     }
 
@@ -169,6 +170,9 @@ public class DecisionConverter implements NodeConverter<org.kie.dmn.model.api.De
                 }
             }
         }
+
+        DMNExternalLinksToExtensionElements.loadExternalLinksIntoExtensionElements(source, d);
+
         return d;
     }
 }

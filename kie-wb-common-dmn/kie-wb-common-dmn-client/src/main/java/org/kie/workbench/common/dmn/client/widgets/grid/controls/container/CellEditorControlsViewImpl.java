@@ -37,7 +37,7 @@ import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.kie.workbench.common.dmn.client.widgets.grid.controls.HasCellEditorControls;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.PopupEditorControls;
 
 @Templated
 @ApplicationScoped
@@ -63,7 +63,7 @@ public class CellEditorControlsViewImpl implements CellEditorControlsView {
         }
     };
 
-    private Optional<HasCellEditorControls.Editor> activeEditor = Optional.empty();
+    private Optional<PopupEditorControls> activeEditor = Optional.empty();
 
     private Optional<ElementWrapperWidget<?>> elementWrapperWidget = Optional.empty();
 
@@ -120,7 +120,7 @@ public class CellEditorControlsViewImpl implements CellEditorControlsView {
     }
 
     @Override
-    public void show(final HasCellEditorControls.Editor<?> editor,
+    public void show(final PopupEditorControls editor,
                      final Optional<String> editorTitle,
                      final int x,
                      final int y) {
@@ -138,7 +138,7 @@ public class CellEditorControlsViewImpl implements CellEditorControlsView {
 
     @Override
     public void hide() {
-        activeEditor.ifPresent(HasCellEditorControls.Editor::hide);
+        activeEditor.ifPresent(PopupEditorControls::hide);
         activeEditor = Optional.empty();
     }
 

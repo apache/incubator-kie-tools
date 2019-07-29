@@ -20,11 +20,12 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.HasCellEditorControls;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.PopupEditorControls;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 
 public interface CellEditorControlsView extends org.jboss.errai.ui.client.local.api.IsElement {
 
-    void show(final HasCellEditorControls.Editor<?> editor,
+    void show(final PopupEditorControls editor,
               final Optional<String> editorTitle,
               final int x,
               final int y);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,20 +14,16 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.widgets.grid.controls;
+package org.kie.workbench.common.dmn.api.property.dmn;
 
-import java.util.Optional;
+import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
 
-public interface HasCellEditorControls {
+public class DocumentationLinksPropertyType implements PropertyType {
 
-    interface Editor<T> extends PopupEditorControls {
+    public static final String name = "org.kie.workbench.common.dmn.api.property.dmn.DocumentationLinks";
 
-        void bind(final T bound,
-                  final int uiRowIndex,
-                  final int uiColumnIndex);
-    }
-
-    default Optional<Editor> getEditor() {
-        return Optional.empty();
+    @Override
+    public String getName() {
+        return name;
     }
 }

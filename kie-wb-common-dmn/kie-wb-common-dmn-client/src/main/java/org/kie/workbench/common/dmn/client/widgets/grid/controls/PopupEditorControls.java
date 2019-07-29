@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,16 +18,11 @@ package org.kie.workbench.common.dmn.client.widgets.grid.controls;
 
 import java.util.Optional;
 
-public interface HasCellEditorControls {
+import org.jboss.errai.common.client.api.IsElement;
 
-    interface Editor<T> extends PopupEditorControls {
+public interface PopupEditorControls extends IsElement {
 
-        void bind(final T bound,
-                  final int uiRowIndex,
-                  final int uiColumnIndex);
-    }
+    void show(final Optional<String> editorTitle);
 
-    default Optional<Editor> getEditor() {
-        return Optional.empty();
-    }
+    void hide();
 }

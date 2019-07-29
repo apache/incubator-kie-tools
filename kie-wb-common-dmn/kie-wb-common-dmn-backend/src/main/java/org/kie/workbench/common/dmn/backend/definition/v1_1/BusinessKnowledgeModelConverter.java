@@ -91,6 +91,8 @@ public class BusinessKnowledgeModelConverter implements NodeConverter<org.kie.dm
                                               functionDefinition);
         }
 
+        DMNExternalLinksToExtensionElements.loadExternalLinksFromExtensionElements(dmn, bkm);
+
         return node;
     }
 
@@ -102,6 +104,7 @@ public class BusinessKnowledgeModelConverter implements NodeConverter<org.kie.dm
         result.setId(source.getId().getValue());
         result.setDescription(DescriptionPropertyConverter.dmnFromWB(source.getDescription()));
         result.setName(source.getName().getValue());
+        DMNExternalLinksToExtensionElements.loadExternalLinksIntoExtensionElements(source, result);
         final org.kie.dmn.model.api.InformationItem variable = InformationItemPrimaryPropertyConverter.dmnFromWB(source.getVariable(), source);
         if (variable != null) {
             variable.setParent(result);
