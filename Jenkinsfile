@@ -2,7 +2,7 @@
 
 pipeline {
     agent {
-        label 'submarine-static || kie-rhel7'
+        label 'kogito-tooling-test'
     }
     tools {
         nodejs "nodejs-11.0.0"
@@ -24,6 +24,8 @@ pipeline {
             steps {
                 sh "npm install -g yarn"
                 sh "yarn install"
+                sh "export XAUTHORITY=$HOME/.Xauthority"
+                sh "chmod 600 $HOME/.vnc/passwd"
             }
         }
         stage('Build kogito-tooling') {
@@ -32,7 +34,7 @@ pipeline {
                     script {
                         githubscm.checkoutIfExists('kogito-tooling', "$CHANGE_AUTHOR", "$CHANGE_BRANCH", 'kiegroup', "$CHANGE_TARGET")
                         wrap([$class: 'Xvnc', takeScreenshot: false, useXauthority: true]) {
-                            sh('yarn run build:prod')
+                            sh('yarn run init && yarn build:prod')
                         }
                     }
                 }
