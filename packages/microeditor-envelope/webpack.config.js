@@ -52,22 +52,6 @@ module.exports = {
       }
     ]
   },
-  devServer: {
-    historyApiFallback: {
-      disableDotRule: true
-    },
-    disableHostCheck: true,
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
-      "Access-Control-Allow-Headers": "X-Requested-With, content-type, Authorization"
-    },
-    watchContentBase: true,
-    contentBase: [path.join(__dirname, "static"), path.join(__dirname, "../../node_modules/@patternfly/patternfly/")],
-    index: "static/index.html",
-    compress: true,
-    port: 9000
-  },
   resolve: {
     extensions: [".tsx", ".ts", ".js", ".jsx"],
     modules: [path.resolve("../../node_modules"), path.resolve("./node_modules"), path.resolve("./src")]
