@@ -20,6 +20,7 @@ const CircularDependencyPlugin = require("circular-dependency-plugin");
 
 module.exports = {
   mode: "development",
+  devtool: "inline-source-map",
   entry: {
     index: "./src/index.ts"
   },
@@ -28,6 +29,7 @@ module.exports = {
     filename: "[name].js",
     libraryTarget: "commonjs2"
   },
+  externals: [nodeExternals({ modulesDir: "../../node_modules" })],
   plugins: [
     new CircularDependencyPlugin({
       exclude: /node_modules/, // exclude detection of files based on a RegExp
@@ -35,7 +37,6 @@ module.exports = {
       cwd: process.cwd() // set the current working directory for displaying module paths
     })
   ],
-  externals: [nodeExternals({ modulesDir: "../../node_modules" })],
   module: {
     rules: [
       {

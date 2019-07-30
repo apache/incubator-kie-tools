@@ -20,6 +20,7 @@ const CircularDependencyPlugin = require("circular-dependency-plugin");
 
 module.exports = {
   mode: "development",
+  devtool: "inline-source-map",
   entry: {
     index: "./src/index.ts"
   },
@@ -42,7 +43,7 @@ module.exports = {
         test: /\.tsx?$/,
         loader: "ts-loader",
         options: {
-          configFile: path.resolve("./tsconfig.webpack.json")
+          configFile: path.resolve("./tsconfig.json")
         }
       },
       {

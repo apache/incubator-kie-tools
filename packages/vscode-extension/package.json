@@ -52,7 +52,7 @@
     "compile": "webpack",
     "watch": "webpack",
     "test": "echo 'No tests to run.'",
-    "build:prod": "yarn run build --mode production"
+    "build:prod": "yarn run build --mode production --devtool none"
   },
   "jest-junit": {
     "outputDirectory": "./target"

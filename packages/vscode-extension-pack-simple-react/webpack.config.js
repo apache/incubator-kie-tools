@@ -16,10 +16,10 @@
 
 const path = require("path");
 const CircularDependencyPlugin = require("circular-dependency-plugin");
-const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 const commonConfig = {
   mode: "development",
+  devtool: "inline-source-map",
   output: {
     path: path.resolve(__dirname, "./dist"),
     filename: "[name].js",
@@ -62,7 +62,6 @@ const commonConfig = {
 module.exports = [
   {
     ...commonConfig,
-    mode: "production",
     target: "node",
     entry: {
       "extension/extension": "./src/extension/extension.ts"
@@ -71,7 +70,6 @@ module.exports = [
   },
   {
     ...commonConfig,
-    mode: "production",
     target: "web",
     entry: {
       "webview/index": "./src/webview/index.ts"
