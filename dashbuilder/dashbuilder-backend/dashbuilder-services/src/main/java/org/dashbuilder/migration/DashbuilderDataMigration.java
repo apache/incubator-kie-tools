@@ -28,14 +28,13 @@ import javax.inject.Named;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.spaces.SpacesAPIImpl;
+import org.uberfire.commons.cluster.ClusterParameters;
 import org.uberfire.commons.services.cdi.Startup;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
-import org.uberfire.java.nio.file.Paths;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
 import org.uberfire.java.nio.file.SimpleFileVisitor;
-import org.uberfire.java.nio.file.StandardDeleteOption;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystem;
 import org.uberfire.java.nio.file.FileVisitResult;
@@ -55,6 +54,8 @@ public class DashbuilderDataMigration {
     private FileSystem pluginsFS;
     private FileSystem perspectivesFS;
     private FileSystem navigationFS;
+
+    private ClusterParameters clusterParameters = new ClusterParameters();
 
     public DashbuilderDataMigration() {
 
@@ -77,12 +78,28 @@ public class DashbuilderDataMigration {
 
     @PostConstruct
     private void init() {
-        migrateDatasets();
-        migratePerspectives();
-        migrateNavigation();
+        try{
+            if (!clusterParameters.isAppFormerClustered()) {
+                migrateDatasets();
+                migratePerspectives();
+                migrateNavigation();
+            }
+        }
+        catch (Exception e) {
+            LOGGER.error("Failed during dashbuilder migration process.");
+            LOGGER.debug("Error during dashbuilder migration", e);
+        }
     }
 
     private void migrateDatasets() {
+        FileSystem oldDatasetsFS = lookupOldDataSetsFS();
+
+        migrateDatasets(oldDatasetsFS, datasetsFS);
+
+        cleanupDataSets(oldDatasetsFS);
+    }
+
+    private FileSystem lookupOldDataSetsFS() {
         FileSystem oldDatasetsFS;
         URI uri = new SpacesAPIImpl().resolveFileSystemURI(
                 SpacesAPI.Scheme.DEFAULT,
@@ -94,18 +111,29 @@ public class DashbuilderDataMigration {
                     uri,
                     new HashMap<String, Object>() {{
                         put("init", Boolean.TRUE);
+                        put("internal",
+                                Boolean.TRUE);
                     }});
         } catch (FileSystemAlreadyExistsException e) {
             oldDatasetsFS = ioService.getFileSystem(uri);
         }
+        return oldDatasetsFS;
+    }
 
-        migrateDatasets(oldDatasetsFS, datasetsFS);
-
+    private void cleanupDataSets(FileSystem oldDatasetsFS) {
         Path oldDatasetsRoot = getRoot(oldDatasetsFS);
         if (oldDatasetsRoot != null) {
-            JGitFileSystem fs = (JGitFileSystem) oldDatasetsFS;
-            Path path = Paths.get("file://" + fs.getGit().getRepository().getDirectory().getAbsolutePath());
-            Files.delete(path, StandardDeleteOption.NON_EMPTY_DIRECTORIES);
+            if (oldDatasetsFS instanceof JGitFileSystem) {
+                try {
+                    Path fsPath = oldDatasetsFS.getPath("");
+                    Files.delete(fsPath);
+
+                } catch (Exception e) {
+                    LOGGER.error("Failed to remove the datasets git repository.");
+                    LOGGER.debug("Error during dashbuilder migration", e);
+                }
+
+            }
         }
     }
 
