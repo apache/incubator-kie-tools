@@ -20,7 +20,16 @@ import { KogitoEditorFactory } from "./KogitoEditorFactory";
 import { KogitoEditorsExtension } from "./KogitoEditorsExtension";
 import { Router } from "appformer-js-core";
 
-export function startKogitoExtension(args: {
+
+/**
+ * Starts a Kogito extension.
+ *
+ *  @param args.extensionName The extension name. Used to fetch the extension configuration for supported languages.
+ *  @param args.webviewLocation The relative path to search for an "index.js" file for the WebView panel.
+ *  @param args.context The vscode.ExtensionContext provided on the activate method of the extensin.
+ *  @param args.router The Router to be used to find resources for each language.
+ */
+export function startExtension(args: {
   extensionName: string;
   webviewLocation: string;
   context: vscode.ExtensionContext;

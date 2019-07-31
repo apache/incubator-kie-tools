@@ -16,7 +16,23 @@
 
 import { LanguageData } from "./LangaugeData";
 
+/**
+ * Responsible for returning a LanguageData for a file extension. When opening an Editor,
+ * the LanguageData returned is used to find the resources needed for that editor to work.
+ *
+ * The LanguageData returned should be a custom class that implements LanguageData.
+ */
 export interface Router<T extends LanguageData> {
+  /**
+   * Returns the custom LanguageData class for a specific file extension.
+   * @param fileExtension The file extension (i.e. "txt", or "png")
+   */
   getLanguageData(fileExtension: string): T | undefined;
+
+
+  /**
+   * Responsible for transforming a relative URI path to an absolute URL inside the context of the application.
+   * @param uri The relative path URI.
+   */
   getRelativePathTo(uri: string): string;
 }

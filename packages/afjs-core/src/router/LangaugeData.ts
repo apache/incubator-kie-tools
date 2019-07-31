@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 
+/**
+ * Contains information about the resources of an Editor.
+ *
+ * Can be sub-classed with more information if needed.
+ */
 export interface LanguageData {
   type: string;
 }

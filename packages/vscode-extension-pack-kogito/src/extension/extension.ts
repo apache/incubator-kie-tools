@@ -16,12 +16,12 @@
 
 import * as vscode from "vscode";
 import { KogitoRouter } from "./KogitoRouter";
-import { startKogitoExtension } from "appformer-js-vscode-extension";
+import * as KogitoVsCode from "appformer-js-vscode-extension";
 
 export function activate(context: vscode.ExtensionContext) {
   console.info("Extension is alive.");
 
-  startKogitoExtension({
+  KogitoVsCode.startExtension({
     extensionName: "kiegroup.appformer-js-vscode-extension-pack-kogito",
     webviewLocation: "dist/webview/index.js",
     context: context,

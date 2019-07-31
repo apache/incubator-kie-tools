@@ -22,12 +22,6 @@ import { Renderer } from "./Renderer";
 import { ReactElement } from "react";
 import { EditorFactory } from "./EditorFactory";
 
-export interface Args {
-  container: HTMLElement;
-  busApi: EnvelopeBusApi;
-  editorFactory: EditorFactory<any>;
-}
-
 export * from "./EditorFactory";
 export * from "./EnvelopeBusInnerMessageHandler";
 
@@ -37,7 +31,13 @@ class ReactDomRenderer implements Renderer {
   }
 }
 
-export function init(args: Args) {
+/**
+ * Starts the envelope at a container. Uses busApi to send messages out of the envelope and creates editors based on the editorFactory provided.
+ * @param args.container The DOM element where the envelope should be rendered.
+ * @param args.busApi The implementation of EnvelopeBusApi to send messages out of the envelope.
+ * @param args.editorFactory The factory of Editors using a LanguageData implementation.
+ */
+export function init(args: { container: HTMLElement; busApi: EnvelopeBusApi; editorFactory: EditorFactory<any> }) {
   const specialDomElements = new SpecialDomElements();
   const renderer = new ReactDomRenderer();
   const editorEnvelopeController = new EditorEnvelopeController(

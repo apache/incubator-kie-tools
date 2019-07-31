@@ -29,7 +29,7 @@ export class SimpleReactEditorsFactory implements MicroEditorEnvelope.EditorFact
       case "react":
         return Promise.resolve(new ReactReadonlyAppFormerEditor(messageBus));
       default:
-        throw new Error("Only react editors are supported on this extension.");
+        throw new Error(`Unknown type ${languageData.type}`);
     }
   }
 }
@@ -99,7 +99,7 @@ class ReactReadonlyEditor extends React.Component<Props, State> {
     });
   }
 
-  //saving triggers this method
+  //saving triggers this method, so we also update the originalContent by calling `this.setContent`
   public getContent() {
     return this.setContent(this.state.content).then(() => this.state.content);
   }
