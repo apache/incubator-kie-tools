@@ -3,7 +3,7 @@
 <config xmlns="http://zanata.org/namespace/config/">
   <url>https://vendors.zanata.redhat.com/</url>
   <project>drools-wb</project>
-  <project-version>7.24.0</project-version>
+  <project-version>7.25.0</project-version>
   <project-type>utf8properties</project-type>
 
   <locales>
