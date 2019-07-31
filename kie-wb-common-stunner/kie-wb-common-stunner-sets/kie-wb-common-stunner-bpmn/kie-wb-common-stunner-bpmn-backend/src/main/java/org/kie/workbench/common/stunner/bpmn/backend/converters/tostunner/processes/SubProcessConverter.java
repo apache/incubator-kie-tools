@@ -22,6 +22,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.Defini
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.AdHocSubProcessPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.PropertyReaderFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.AdHocSubprocess;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocActivationCondition;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocAutostart;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocCompletionCondition;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocOrdering;
@@ -58,7 +59,8 @@ public class SubProcessConverter extends BaseSubProcessConverter<AdHocSubprocess
 
     @Override
     protected AdHocSubprocessTaskExecutionSet createAdHocSubprocessTaskExecutionSet(AdHocSubProcessPropertyReader p) {
-        return new AdHocSubprocessTaskExecutionSet(new AdHocCompletionCondition(p.getAdHocCompletionCondition()),
+        return new AdHocSubprocessTaskExecutionSet(new AdHocActivationCondition(p.getAdHocActivationCondition()),
+                                                   new AdHocCompletionCondition(p.getAdHocCompletionCondition()),
                                                    new AdHocOrdering(p.getAdHocOrdering()),
                                                    new AdHocAutostart(p.isAdHocAutostart()),
                                                    new OnEntryAction(p.getOnEntryAction()),

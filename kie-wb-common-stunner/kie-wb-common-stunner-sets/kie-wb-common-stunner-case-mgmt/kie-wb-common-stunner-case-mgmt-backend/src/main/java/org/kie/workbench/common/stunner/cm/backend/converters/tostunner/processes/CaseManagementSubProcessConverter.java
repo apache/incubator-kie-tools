@@ -26,6 +26,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocOrder
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnEntryAction;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnExitAction;
 import org.kie.workbench.common.stunner.cm.definition.AdHocSubprocess;
+import org.kie.workbench.common.stunner.cm.definition.property.task.AdHocActivationCondition;
 import org.kie.workbench.common.stunner.cm.definition.property.task.AdHocCompletionCondition;
 import org.kie.workbench.common.stunner.cm.definition.property.task.AdHocSubprocessTaskExecutionSet;
 import org.kie.workbench.common.stunner.cm.definition.property.variables.ProcessData;
@@ -59,7 +60,8 @@ public class CaseManagementSubProcessConverter extends BaseSubProcessConverter<A
 
     @Override
     protected AdHocSubprocessTaskExecutionSet createAdHocSubprocessTaskExecutionSet(AdHocSubProcessPropertyReader p) {
-        return new AdHocSubprocessTaskExecutionSet(new AdHocCompletionCondition(p.getAdHocCompletionCondition()),
+        return new AdHocSubprocessTaskExecutionSet(new AdHocActivationCondition(p.getAdHocActivationCondition()),
+                                                   new AdHocCompletionCondition(p.getAdHocCompletionCondition()),
                                                    new AdHocOrdering(p.getAdHocOrdering()),
                                                    new AdHocAutostart(p.isAdHocAutostart()),
                                                    new OnEntryAction(p.getOnEntryAction()),

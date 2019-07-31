@@ -20,8 +20,10 @@ import org.eclipse.bpmn2.AdHocOrdering;
 import org.eclipse.bpmn2.AdHocSubProcess;
 import org.eclipse.bpmn2.FormalExpression;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.BaseAdHocActivationCondition;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.BaseAdHocCompletionCondition;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeValue;
+import org.kie.workbench.common.stunner.core.util.StringUtils;
 
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpmn2;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.Scripts.asCData;
@@ -34,6 +36,12 @@ public class AdHocSubProcessPropertyWriter extends SubProcessPropertyWriter {
     public AdHocSubProcessPropertyWriter(AdHocSubProcess process, VariableScope variableScope) {
         super(process, variableScope);
         this.process = process;
+    }
+
+    public void setAdHocActivationCondition(BaseAdHocActivationCondition adHocActivationCondition) {
+        if (StringUtils.nonEmpty(adHocActivationCondition.getValue())) {
+            CustomElement.customActivationCondition.of(flowElement).set(adHocActivationCondition.getValue());
+        }
     }
 
     public void setAdHocOrdering(org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocOrdering value) {

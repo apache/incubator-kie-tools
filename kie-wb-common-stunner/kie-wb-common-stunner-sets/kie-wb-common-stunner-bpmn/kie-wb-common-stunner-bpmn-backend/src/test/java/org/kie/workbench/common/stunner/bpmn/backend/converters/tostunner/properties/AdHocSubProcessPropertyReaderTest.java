@@ -38,6 +38,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpmn2;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.di;
+import static org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.Scripts.asCData;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -138,5 +139,17 @@ public class AdHocSubProcessPropertyReaderTest {
                                                    definitionResolverReal);
 
         assertFalse(tested.isAdHocAutostart());
+    }
+
+    @Test
+    public void testIsAdHocActivationCondition() {
+        AdHocSubProcess adHocSubProcess = bpmn2.createAdHocSubProcess();
+        CustomElement.customActivationCondition.of(adHocSubProcess).set("some condition");
+
+        tested = new AdHocSubProcessPropertyReader(adHocSubProcess,
+                                                   definitionResolverReal.getDiagram(),
+                                                   definitionResolverReal);
+
+        assertEquals(asCData("some condition"), tested.getAdHocActivationCondition());
     }
 }

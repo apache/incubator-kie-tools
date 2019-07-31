@@ -32,6 +32,10 @@ public class AdHocSubProcessPropertyReader extends SubProcessPropertyReader {
         this.process = element;
     }
 
+    public String getAdHocActivationCondition() {
+        return CustomElement.customActivationCondition.of(element).get();
+    }
+
     public ScriptTypeValue getAdHocCompletionCondition() {
         if (process.getCompletionCondition() instanceof FormalExpression) {
             FormalExpression completionCondition = (FormalExpression) process.getCompletionCondition();

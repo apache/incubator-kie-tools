@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,19 +16,10 @@
 
 package org.kie.workbench.common.stunner.bpmn.definition.property.task;
 
-import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
+import org.kie.workbench.common.stunner.bpmn.definition.BPMNProperty;
 
-public interface BaseAdHocSubprocessTaskExecutionSet extends BPMNPropertySet {
+public interface BaseAdHocActivationCondition extends BPMNProperty {
 
-    BaseAdHocActivationCondition getAdHocActivationCondition();
+    String getValue();
 
-    BaseAdHocCompletionCondition getAdHocCompletionCondition();
-
-    AdHocOrdering getAdHocOrdering();
-
-    OnEntryAction getOnEntryAction();
-
-    OnExitAction getOnExitAction();
-
-    AdHocAutostart getAdHocAutostart();
 }

@@ -127,6 +127,7 @@ public class SubProcessConverter extends ProcessConverterDelegate {
         p.setProcessVariables(processData.getProcessVariables());
 
         BaseAdHocSubprocessTaskExecutionSet executionSet = definition.getExecutionSet();
+        p.setAdHocActivationCondition(executionSet.getAdHocActivationCondition());
         p.setAdHocCompletionCondition(executionSet.getAdHocCompletionCondition());
         p.setAdHocOrdering(executionSet.getAdHocOrdering());
         p.setOnEntryAction(executionSet.getOnEntryAction());

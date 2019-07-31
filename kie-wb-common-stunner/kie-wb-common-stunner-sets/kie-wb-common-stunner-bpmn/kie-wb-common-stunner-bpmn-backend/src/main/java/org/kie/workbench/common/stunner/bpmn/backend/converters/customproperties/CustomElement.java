@@ -48,6 +48,7 @@ public class CustomElement<T> {
     public static final MetadataTypeDefinition<String> slaDueDate = new StringElement("customSLADueDate", "");
     public static final GlobalVariablesElement globalVariables = new GlobalVariablesElement("customGlobalVariables");
     public static final MetadataTypeDefinition<Boolean> isCase = new BooleanElement("case", Boolean.FALSE);
+    public static final MetadataTypeDefinition<String> customActivationCondition = new StringElement("customActivationCondition", "");
 
     private final ElementDefinition<T> elementDefinition;
     private final BaseElement element;

@@ -29,6 +29,7 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.annotations.SkipFormField;
 import org.kie.workbench.common.forms.adf.definitions.annotations.field.selector.SelectorDataProvider;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.type.ListBoxFieldType;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.type.TextAreaFieldType;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
@@ -36,11 +37,18 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 @Portable
 @Bindable
 @PropertySet
-@FormDefinition(startElement = "adHocCompletionCondition")
+@FormDefinition(startElement = "adHocActivationCondition")
 public class AdHocSubprocessTaskExecutionSet implements BaseAdHocSubprocessTaskExecutionSet {
 
     @Property
-    @FormField(settings = {@FieldParam(name = "mode", value = "COMPLETION_CONDITION")})
+    @FormField(type = TextAreaFieldType.class,
+            settings = {@FieldParam(name = "rows", value = "5")})
+    @Valid
+    private AdHocActivationCondition adHocActivationCondition;
+
+    @Property
+    @FormField(afterElement = "adHocActivationCondition",
+            settings = {@FieldParam(name = "mode", value = "COMPLETION_CONDITION")})
     @Valid
     private AdHocCompletionCondition adHocCompletionCondition;
 
@@ -75,27 +83,36 @@ public class AdHocSubprocessTaskExecutionSet implements BaseAdHocSubprocessTaskE
     private OnExitAction onExitAction;
 
     public AdHocSubprocessTaskExecutionSet() {
-        this(new AdHocCompletionCondition(new ScriptTypeValue("mvel",
-                                                              "autocomplete")),
+        this(new AdHocActivationCondition(),
+             new AdHocCompletionCondition(new ScriptTypeValue("mvel", "autocomplete")),
              new AdHocOrdering("Sequential"),
              new AdHocAutostart(),
-             new OnEntryAction(new ScriptTypeListValue().addValue(new ScriptTypeValue("java",
-                                                                                      ""))),
-             new OnExitAction(new ScriptTypeListValue().addValue(new ScriptTypeValue("java",
-                                                                                     ""))));
+             new OnEntryAction(new ScriptTypeListValue().addValue(new ScriptTypeValue("java", ""))),
+             new OnExitAction(new ScriptTypeListValue().addValue(new ScriptTypeValue("java", ""))));
     }
 
-    public AdHocSubprocessTaskExecutionSet(final @MapsTo("adHocCompletionCondition") AdHocCompletionCondition adHocCompletionCondition,
+    public AdHocSubprocessTaskExecutionSet(final @MapsTo("adHocActivationCondition") AdHocActivationCondition adHocActivationCondition,
+                                           final @MapsTo("adHocCompletionCondition") AdHocCompletionCondition adHocCompletionCondition,
                                            final @MapsTo("adHocOrdering") AdHocOrdering adHocOrdering,
                                            final @MapsTo("adHocAutostart") AdHocAutostart adHocAutostart,
                                            final @MapsTo("onEntryAction") OnEntryAction onEntryAction,
                                            final @MapsTo("onExitAction") OnExitAction onExitAction) {
+        this.adHocActivationCondition = adHocActivationCondition;
         this.adHocCompletionCondition = adHocCompletionCondition;
         this.adHocOrdering = adHocOrdering;
         this.adHocAutostart = adHocAutostart;
         this.onEntryAction = onEntryAction;
         this.onEntryAction = onEntryAction;
         this.onExitAction = onExitAction;
+    }
+
+    @Override
+    public AdHocActivationCondition getAdHocActivationCondition() {
+        return adHocActivationCondition;
+    }
+
+    public void setAdHocActivationCondition(AdHocActivationCondition adHocActivationCondition) {
+        this.adHocActivationCondition = adHocActivationCondition;
     }
 
     @Override
@@ -145,25 +162,25 @@ public class AdHocSubprocessTaskExecutionSet implements BaseAdHocSubprocessTaskE
 
     @Override
     public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
         if (o instanceof AdHocSubprocessTaskExecutionSet) {
             AdHocSubprocessTaskExecutionSet other = (AdHocSubprocessTaskExecutionSet) o;
-            return Objects.equals(adHocCompletionCondition,
-                                  other.adHocCompletionCondition) &&
-                    Objects.equals(adHocOrdering,
-                                   other.adHocOrdering) &&
-                    Objects.equals(adHocAutostart,
-                                   other.adHocAutostart) &&
-                    Objects.equals(onEntryAction,
-                                   other.onEntryAction) &&
-                    Objects.equals(onExitAction,
-                                   other.onExitAction);
+            return Objects.equals(adHocActivationCondition, other.adHocActivationCondition) &&
+                    Objects.equals(adHocCompletionCondition, other.adHocCompletionCondition) &&
+                    Objects.equals(adHocOrdering, other.adHocOrdering) &&
+                    Objects.equals(adHocAutostart, other.adHocAutostart) &&
+                    Objects.equals(onEntryAction, other.onEntryAction) &&
+                    Objects.equals(onExitAction, other.onExitAction);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return HashUtil.combineHashCodes(Objects.hashCode(adHocCompletionCondition),
+        return HashUtil.combineHashCodes(Objects.hashCode(adHocActivationCondition),
+                                         Objects.hashCode(adHocCompletionCondition),
                                          Objects.hashCode(adHocOrdering),
                                          Objects.hashCode(adHocAutostart),
                                          Objects.hashCode(onEntryAction),

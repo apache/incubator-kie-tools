@@ -53,6 +53,9 @@
         <drools:metaData name="elementname">
           <drools:metaValue><![CDATA[AdHocSubprocess1]]></drools:metaValue>
         </drools:metaData>
+        <drools:metaData name="customActivationCondition">
+          <drools:metaValue><![CDATA[com.myteam.test.Person(name == "someName")]]></drools:metaValue>
+        </drools:metaData>
         <drools:onEntry-script scriptFormat="http://www.mvel.org/2.0">
           <drools:script><![CDATA[System.out.println("onEntryAction");]]></drools:script>
         </drools:onEntry-script>

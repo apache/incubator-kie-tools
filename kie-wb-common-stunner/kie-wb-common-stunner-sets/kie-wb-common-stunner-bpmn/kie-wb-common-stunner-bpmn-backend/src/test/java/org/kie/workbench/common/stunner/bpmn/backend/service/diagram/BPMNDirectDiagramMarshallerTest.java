@@ -1745,12 +1745,16 @@ public class BPMNDirectDiagramMarshallerTest {
         assertEquals("AdHocSubprocess1Documentation",
                      generalSet.getDocumentation().getValue());
 
+        assertNotNull(executionSet.getAdHocActivationCondition());
+        assertNotNull(executionSet.getAdHocActivationCondition().getValue());
         assertNotNull(executionSet.getAdHocCompletionCondition());
         assertNotNull(executionSet.getAdHocCompletionCondition().getValue());
         assertNotNull(executionSet.getAdHocOrdering());
         assertNotNull(executionSet.getOnEntryAction());
         assertNotNull(executionSet.getOnExitAction());
 
+        assertEquals("com.myteam.test.Person(name == \"someName\")",
+                     executionSet.getAdHocActivationCondition().getValue());
         assertEquals("autocomplete",
                      executionSet.getAdHocCompletionCondition().getValue().getScript());
         assertEquals("drools",
@@ -2917,6 +2921,9 @@ public class BPMNDirectDiagramMarshallerTest {
 
         assertTrue(result.contains("<bpmn2:adHocSubProcess id=\"_B65DDF51-9822-4B12-8669-2018A845A01B\""));
         assertTrue(result.contains("name=\"AdHocSubprocess1\""));
+
+        assertTrue(result.contains("<drools:metaData name=\"customActivationCondition\">"));
+        assertTrue(result.contains("<drools:metaValue><![CDATA[com.myteam.test.Person(name == \"someName\")]]></drools:metaValue>"));
 
         assertTrue(result.contains("<drools:onEntry-script scriptFormat=\"http://www.mvel.org/2.0\">"));
         assertTrue(result.contains("<drools:script><![CDATA[System.out.println(\"onEntryAction\");]]></drools:script>"));
