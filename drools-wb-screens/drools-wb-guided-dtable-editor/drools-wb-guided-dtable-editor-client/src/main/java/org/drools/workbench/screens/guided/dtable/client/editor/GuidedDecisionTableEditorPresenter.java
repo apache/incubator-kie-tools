@@ -31,7 +31,6 @@ import javax.inject.Inject;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.ui.IsWidget;
-import elemental2.dom.Element;
 import elemental2.dom.HTMLElement;
 import elemental2.promise.Promise;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
@@ -42,6 +41,7 @@ import org.drools.workbench.screens.guided.dtable.client.editor.menu.RadarMenuBu
 import org.drools.workbench.screens.guided.dtable.client.editor.menu.ViewMenuBuilder;
 import org.drools.workbench.screens.guided.dtable.client.editor.page.ColumnsPage;
 import org.drools.workbench.screens.guided.dtable.client.editor.search.GuidedDecisionTableSearchableElement;
+import org.drools.workbench.screens.guided.dtable.client.editor.search.SearchableElementFactory;
 import org.drools.workbench.screens.guided.dtable.client.type.GuidedDTableResourceType;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableModellerView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
@@ -54,7 +54,6 @@ import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.messageconsole.client.console.widget.button.AlertsButtonMenuItemBuilder;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
@@ -96,11 +95,11 @@ public class GuidedDecisionTableEditorPresenter extends BaseGuidedDecisionTableE
 
     private final SaveAndRenameCommandBuilder<GuidedDecisionTable52, Metadata> saveAndRenameCommandBuilder;
 
-    private final Elemental2DomUtil util;
-
     private final EditorSearchIndex<GuidedDecisionTableSearchableElement> editorSearchIndex;
 
     private final SearchBarComponent<GuidedDecisionTableSearchableElement> searchBarComponent;
+
+    private final SearchableElementFactory searchableElementFactory;
 
     @Inject
     public GuidedDecisionTableEditorPresenter(final View view,
@@ -122,9 +121,9 @@ public class GuidedDecisionTableEditorPresenter extends BaseGuidedDecisionTableE
                                               final SaveAndRenameCommandBuilder<GuidedDecisionTable52, Metadata> saveAndRenameCommandBuilder,
                                               final AlertsButtonMenuItemBuilder alertsButtonMenuItemBuilder,
                                               final DownloadMenuItemBuilder downloadMenuItemBuilder,
-                                              final Elemental2DomUtil util,
                                               final EditorSearchIndex<GuidedDecisionTableSearchableElement> editorSearchIndex,
-                                              final SearchBarComponent<GuidedDecisionTableSearchableElement> searchBarComponent) {
+                                              final SearchBarComponent<GuidedDecisionTableSearchableElement> searchBarComponent,
+                                              final SearchableElementFactory searchableElementFactory) {
         super(view,
               service,
               docks,
@@ -145,9 +144,9 @@ public class GuidedDecisionTableEditorPresenter extends BaseGuidedDecisionTableE
               downloadMenuItemBuilder);
 
         this.saveAndRenameCommandBuilder = saveAndRenameCommandBuilder;
-        this.util = util;
         this.editorSearchIndex = editorSearchIndex;
         this.searchBarComponent = searchBarComponent;
+        this.searchableElementFactory = searchableElementFactory;
     }
 
     @Override
@@ -157,7 +156,15 @@ public class GuidedDecisionTableEditorPresenter extends BaseGuidedDecisionTableE
         editorSearchIndex.setIsDirtySupplier(getIsDirtySupplier());
         editorSearchIndex.setNoResultsFoundCallback(getNoResultsFoundCallback());
         editorSearchIndex.registerSubIndex(this);
+
+        setupSearchComponent();
+    }
+
+    private void setupSearchComponent() {
+        final HTMLElement element = searchBarComponent.getView().getElement();
+
         searchBarComponent.init(editorSearchIndex);
+        getKieEditorWrapperMultiPage().addTabBarWidget(getWidget(element));
     }
 
     Command getNoResultsFoundCallback() {
@@ -199,21 +206,6 @@ public class GuidedDecisionTableEditorPresenter extends BaseGuidedDecisionTableE
     }
 
     @Override
-    protected GuidedDecisionTableModellerView getModellerView() {
-
-        final GuidedDecisionTableModellerView view = super.getModellerView();
-        final HTMLElement modellerViewElement = util.asHTMLElement(view.asWidget().getElement());
-
-        modellerViewElement.appendChild(getSearchElement());
-
-        return view;
-    }
-
-    private Element getSearchElement() {
-        return searchBarComponent.getView().getElement();
-    }
-
-    @Override
     public List<GuidedDecisionTableSearchableElement> getSearchableElements() {
 
         final List<GuidedDecisionTableSearchableElement> searchableElements = new ArrayList<>();
@@ -221,30 +213,19 @@ public class GuidedDecisionTableEditorPresenter extends BaseGuidedDecisionTableE
         final List<List<DTCellValue52>> data = model.getData();
 
         for (int row = 0, dataSize = data.size(); row < dataSize; row++) {
-            for (int line = 0; line < data.get(row).size(); line++) {
-
-                final DTCellValue52 cellValue52 = data.get(row).get(line);
-                final GuidedDecisionTableSearchableElement searchableElement = makeSearchable(row, line, cellValue52);
-
-                searchableElements.add(searchableElement);
+            for (int column = 0; column < data.get(row).size(); column++) {
+                searchableElements.add(makeSearchableElement(data, row, column));
             }
         }
 
         return searchableElements;
     }
 
-    private GuidedDecisionTableSearchableElement makeSearchable(final int row,
-                                                                final int column,
-                                                                final DTCellValue52 cellValue52) {
-
-        final GuidedDecisionTableSearchableElement searchableElement = new GuidedDecisionTableSearchableElement();
-
-        searchableElement.setCellValue52(cellValue52);
-        searchableElement.setRow(row);
-        searchableElement.setColumn(column);
-        searchableElement.setModeller(modeller);
-
-        return searchableElement;
+    private GuidedDecisionTableSearchableElement makeSearchableElement(final List<List<DTCellValue52>> data,
+                                                                       final int row,
+                                                                       final int column) {
+        final DTCellValue52 cellValue52 = data.get(row).get(column);
+        return searchableElementFactory.makeSearchableElement(row, column, cellValue52, modeller);
     }
 
     protected RemoteCallback<GuidedDecisionTableEditorContent> getLoadContentSuccessCallback(final ObservablePath path,

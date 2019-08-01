@@ -16,33 +16,13 @@
 
 package org.drools.workbench.screens.guided.dtable.client.editor.search;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.function.Function;
-import java.util.stream.Stream;
-
-import com.ait.lienzo.client.core.shape.IDrawable;
-import com.ait.lienzo.client.core.shape.IPrimitive;
-import com.google.gwt.i18n.client.DateTimeFormat;
-import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableModellerView;
-import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.widgets.client.search.common.Searchable;
-import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
-import org.uberfire.ext.wires.core.grids.client.model.GridRow;
-import org.uberfire.ext.wires.core.grids.client.util.GridHighlightHelper;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
-import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPanel;
 import org.uberfire.mvp.Command;
 
 public class GuidedDecisionTableSearchableElement implements Searchable {
 
-    private static final String NONE = "";
-
-    private final DateTimeFormat formatter = getFormat();
-
-    private DTCellValue52 cellValue52;
+    private String value;
 
     private Integer row;
 
@@ -50,113 +30,16 @@ public class GuidedDecisionTableSearchableElement implements Searchable {
 
     private GuidedDecisionTableModellerView.Presenter modeller;
 
-    public void setCellValue52(final DTCellValue52 cellValue52) {
-        this.cellValue52 = cellValue52;
-    }
+    private GuidedDecisionTableGridHighlightHelper highlightHelper;
 
     @Override
     public boolean matches(final String text) {
         return getValue().toUpperCase().contains(text.toUpperCase());
     }
 
-    public String getValue() {
-        return convertDTCellValueToString(cellValue52);
-    }
-
     @Override
     public Command onFound() {
-        return () -> {
-            double paddingX = getPaddingX(column);
-            double paddingY = getPaddingY(row);
-            highlightHelper()
-                    .withMinX(getMinX())
-                    .withMinY(getMinY())
-                    .withPaddingX(paddingX)
-                    .withPaddingY(paddingY)
-                    .highlight(row, column);
-        };
-    }
-
-    private double getPaddingY(final Integer row) {
-
-        final List<GridRow> rows = getGridWidget().getModel().getRows();
-        final double titleRowHeight = getHeight(rows, 0);
-        final double headerRowHeight = getHeight(rows, 1);
-        final double subHeaderRowHeight = getHeight(rows, 2);
-        final double currentRowHeight = getHeight(rows, row);
-
-        return titleRowHeight + headerRowHeight + subHeaderRowHeight + currentRowHeight;
-    }
-
-    private double getPaddingX(final Integer column) {
-
-        final List<GridColumn<?>> columns = getGridWidget().getModel().getColumns();
-        final double idColumnWidth = getWidth(columns, 0);
-        final double descriptionColumnWidth = getWidth(columns, 1);
-        final double currentColumnWidth = getWidth(columns, column);
-
-        return idColumnWidth + descriptionColumnWidth + currentColumnWidth;
-    }
-
-    String convertDTCellValueToString(final DTCellValue52 cellValue52) {
-
-        final String stringValue = cellValue52.getStringValue();
-        final String numericValue = getStringValue(cellValue52.getNumericValue());
-        final String booleanValue = getStringValue(cellValue52.getBooleanValue());
-        final String dateValue = getStringValue(cellValue52.getDateValue());
-
-        return nonNull(stringValue, numericValue, booleanValue, dateValue);
-    }
-
-    private String nonNull(final String... values) {
-        return Stream.of(values).filter(Objects::nonNull).findFirst().orElse(NONE);
-    }
-
-    private String getStringValue(final Number number) {
-        return number == null ? null : number.toString();
-    }
-
-    private String getStringValue(final Boolean bool) {
-        return bool == null ? null : bool.toString();
-    }
-
-    private String getStringValue(final Date date) {
-        return date == null ? null : formatter.format(date);
-    }
-
-    private DateTimeFormat getFormat() {
-        return DateTimeFormat.getFormat(ApplicationPreferences.getDroolsDateFormat());
-    }
-
-    public void setRow(final int row) {
-        this.row = row;
-    }
-
-    public void setColumn(final int column) {
-        this.column = column;
-    }
-
-    private Double getMinX() {
-        return mapVisibleGridWidgetsAndGetMin(IPrimitive::getX);
-    }
-
-    private Double getMinY() {
-        return mapVisibleGridWidgetsAndGetMin(IPrimitive::getY);
-    }
-
-    private Double mapVisibleGridWidgetsAndGetMin(final Function<GridWidget, Double> mapper) {
-        return getVisibleGridWidgets()
-                .map(mapper)
-                .reduce(Double::min)
-                .orElseThrow(UnsupportedOperationException::new);
-    }
-
-    private Stream<GridWidget> getVisibleGridWidgets() {
-        return getView()
-                .getGridLayerView()
-                .getGridWidgets()
-                .stream()
-                .filter(IDrawable::isVisible);
+        return () -> highlightHelper.highlight(getRow(), getColumn(), getModeller());
     }
 
     @Override
@@ -170,7 +53,7 @@ public class GuidedDecisionTableSearchableElement implements Searchable {
 
         final GuidedDecisionTableSearchableElement that = (GuidedDecisionTableSearchableElement) o;
 
-        if (!cellValue52.equals(that.cellValue52)) {
+        if (!value.equals(that.value)) {
             return false;
         }
         if (!row.equals(that.row)) {
@@ -181,7 +64,7 @@ public class GuidedDecisionTableSearchableElement implements Searchable {
 
     @Override
     public int hashCode() {
-        int result = cellValue52.hashCode();
+        int result = value.hashCode();
         result = ~~result;
         result = 31 * result + row.hashCode();
         result = ~~result;
@@ -190,38 +73,28 @@ public class GuidedDecisionTableSearchableElement implements Searchable {
         return result;
     }
 
-    GridHighlightHelper highlightHelper() {
-        return makeGridHighlightHelper(getGridPanel(), getGridWidget());
+    public void setValue(final String value) {
+        this.value = value;
     }
 
-    GridHighlightHelper makeGridHighlightHelper(final GridLienzoPanel gridPanel,
-                                                final GridWidget gridWidget) {
-        return new GridHighlightHelper(gridPanel, gridWidget);
+    public void setRow(final int row) {
+        this.row = row;
     }
 
-    private GridWidget getGridWidget() {
-        return getView()
-                .getGridWidgets()
-                .stream()
-                .filter(GridWidget::isSelected)
-                .findFirst()
-                .orElseThrow(UnsupportedOperationException::new);
-    }
-
-    private GridLienzoPanel getGridPanel() {
-        return getView().getGridPanel();
-    }
-
-    private GuidedDecisionTableModellerView getView() {
-        return getModeller().getView();
+    public void setColumn(final int column) {
+        this.column = column;
     }
 
     public void setModeller(final GuidedDecisionTableModellerView.Presenter modeller) {
         this.modeller = modeller;
     }
 
-    public GuidedDecisionTableModellerView.Presenter getModeller() {
-        return modeller;
+    void setHighlightHelper(final GuidedDecisionTableGridHighlightHelper highlightHelper) {
+        this.highlightHelper = highlightHelper;
+    }
+
+    public String getValue() {
+        return value;
     }
 
     public int getRow() {
@@ -232,19 +105,11 @@ public class GuidedDecisionTableSearchableElement implements Searchable {
         return column;
     }
 
-    private double getWidth(final List<GridColumn<?>> columns,
-                            final int index) {
-        if (index < columns.size()) {
-            return columns.get(index).getWidth();
-        }
-        return 0;
+    public GuidedDecisionTableGridHighlightHelper getHighlightHelper() {
+        return highlightHelper;
     }
 
-    private double getHeight(final List<GridRow> rows,
-                             final int index) {
-        if (index < rows.size()) {
-            return rows.get(index).getHeight();
-        }
-        return 0;
+    public GuidedDecisionTableModellerView.Presenter getModeller() {
+        return modeller;
     }
 }

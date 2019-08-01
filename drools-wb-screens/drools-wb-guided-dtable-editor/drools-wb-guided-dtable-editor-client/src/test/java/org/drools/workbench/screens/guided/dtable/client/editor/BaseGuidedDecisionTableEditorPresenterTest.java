@@ -101,9 +101,9 @@ public class BaseGuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisi
                                                       saveAndRenameCommandBuilder,
                                                       alertsButtonMenuItemBuilder,
                                                       downloadMenuItemBuilder,
-                                                      elemental2DomUtil,
                                                       editorSearchIndex,
-                                                      searchBarComponent) {
+                                                      searchBarComponent,
+                                                      searchableElementFactory) {
             {
                 promises = BaseGuidedDecisionTableEditorPresenterTest.this.promises;
                 projectController = BaseGuidedDecisionTableEditorPresenterTest.this.projectController;

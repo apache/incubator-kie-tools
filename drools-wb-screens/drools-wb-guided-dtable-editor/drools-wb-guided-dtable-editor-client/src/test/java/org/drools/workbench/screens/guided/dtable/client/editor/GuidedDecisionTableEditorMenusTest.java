@@ -33,6 +33,7 @@ import org.drools.workbench.screens.guided.dtable.client.editor.menu.RadarMenuVi
 import org.drools.workbench.screens.guided.dtable.client.editor.menu.ViewMenuBuilder;
 import org.drools.workbench.screens.guided.dtable.client.editor.page.ColumnsPage;
 import org.drools.workbench.screens.guided.dtable.client.editor.search.GuidedDecisionTableSearchableElement;
+import org.drools.workbench.screens.guided.dtable.client.editor.search.SearchableElementFactory;
 import org.drools.workbench.screens.guided.dtable.client.type.GuidedDTableResourceType;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableModellerView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectedEvent;
@@ -45,7 +46,7 @@ import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.messageconsole.client.console.widget.button.AlertsButtonMenuItemBuilder;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.dom.HTMLElement;
-import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
+import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
@@ -70,6 +71,7 @@ import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.promise.Promises;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
+import org.uberfire.client.workbench.widgets.multipage.MultiPageEditor;
 import org.uberfire.ext.editor.commons.client.file.popups.CopyPopUpPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.DeletePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.RenamePopUpPresenter;
@@ -109,6 +111,7 @@ import org.uberfire.workbench.model.menu.Menus;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
@@ -277,7 +280,7 @@ public class GuidedDecisionTableEditorMenusTest {
     protected PerspectiveManager perspectiveManager;
 
     @Mock
-    protected Elemental2DomUtil elemental2DomUtil;
+    protected SearchableElementFactory searchableElementFactory;
 
     @Mock
     protected EditorSearchIndex<GuidedDecisionTableSearchableElement> editorSearchIndex;
@@ -292,7 +295,13 @@ public class GuidedDecisionTableEditorMenusTest {
     protected Element modellerViewWidgetElement;
 
     @Mock
-    protected elemental2.dom.HTMLElement modellerViewElement;
+    protected elemental2.dom.HTMLElement searchBarViewHTMLElement;
+
+    @Mock
+    protected MultiPageEditor multiPageEditor;
+
+    @Mock
+    protected ElementWrapperWidget searchBarComponentWidget;
 
     @Mock
     protected SearchBarComponent.View searchBarView;
@@ -357,8 +366,8 @@ public class GuidedDecisionTableEditorMenusTest {
         when(menuItemWithIconView.getElement()).thenReturn(mock(HTMLElement.class));
         when(modellerView.asWidget()).thenReturn(modellerViewWidget);
         when(modellerViewWidget.getElement()).thenReturn(modellerViewWidgetElement);
-        when(elemental2DomUtil.asHTMLElement(modellerViewWidgetElement)).thenReturn(modellerViewElement);
         when(searchBarComponent.getView()).thenReturn(searchBarView);
+        when(searchBarView.getElement()).thenReturn(searchBarViewHTMLElement);
 
         this.dtServiceCaller = new CallerMock<>(dtService);
         this.versionServiceCaller = new CallerMock<>(versionService);
@@ -399,9 +408,9 @@ public class GuidedDecisionTableEditorMenusTest {
                                                                                                   saveAndRenameCommandBuilder,
                                                                                                   alertsButtonMenuItemBuilder,
                                                                                                   downloadMenuItem,
-                                                                                                  elemental2DomUtil,
                                                                                                   editorSearchIndex,
-                                                                                                  searchBarComponent) {
+                                                                                                  searchBarComponent,
+                                                                                                  searchableElementFactory) {
             {
                 promises = GuidedDecisionTableEditorMenusTest.this.promises;
             }
@@ -428,6 +437,9 @@ public class GuidedDecisionTableEditorMenusTest {
 
         when(workbenchContext.getActiveOrganizationalUnit()).thenReturn(Optional.empty());
         when(workbenchContext.getActiveWorkspaceProject()).thenReturn(Optional.empty());
+
+        doReturn(searchBarComponentWidget).when(presenter).getWidget(searchBarViewHTMLElement);
+        doReturn(multiPageEditor).when(presenter).getKieEditorWrapperMultiPage();
 
         presenter.init();
         presenter.setupMenuBar();

@@ -26,6 +26,7 @@ import javax.enterprise.event.Observes;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.ProvidesResize;
 import com.google.gwt.user.client.ui.RequiresResize;
+import elemental2.dom.HTMLElement;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.editor.menu.EditMenuBuilder;
 import org.drools.workbench.screens.guided.dtable.client.editor.menu.InsertMenuBuilder;
@@ -44,6 +45,7 @@ import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.guvnor.messageconsole.client.console.widget.button.AlertsButtonMenuItemBuilder;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
@@ -520,6 +522,10 @@ public abstract class BaseGuidedDecisionTableEditorPresenter extends KieMultiple
             radarMenuItem = radarMenuBuilder.build();
         }
         return radarMenuItem;
+    }
+
+    protected ElementWrapperWidget<?> getWidget(final HTMLElement element) {
+        return ElementWrapperWidget.getWidget(element);
     }
 
     @Override

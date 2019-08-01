@@ -32,7 +32,9 @@ import org.drools.workbench.screens.guided.dtable.client.editor.menu.InsertMenuB
 import org.drools.workbench.screens.guided.dtable.client.editor.menu.RadarMenuBuilder;
 import org.drools.workbench.screens.guided.dtable.client.editor.menu.ViewMenuBuilder;
 import org.drools.workbench.screens.guided.dtable.client.editor.page.ColumnsPage;
+import org.drools.workbench.screens.guided.dtable.client.editor.search.GuidedDecisionTableGridHighlightHelper;
 import org.drools.workbench.screens.guided.dtable.client.editor.search.GuidedDecisionTableSearchableElement;
+import org.drools.workbench.screens.guided.dtable.client.editor.search.SearchableElementFactory;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableModellerView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTablePresenter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
@@ -46,7 +48,7 @@ import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.messageconsole.client.console.widget.button.AlertsButtonMenuItemBuilder;
 import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
+import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.junit.Before;
 import org.junit.Rule;
@@ -279,13 +281,11 @@ public abstract class BaseGuidedDecisionTablePresenterTest<P extends BaseGuidedD
     protected AlertsButtonMenuItemBuilder alertsButtonMenuItemBuilder;
 
     @Mock
-    protected Elemental2DomUtil elemental2DomUtil;
-
-    @Mock
     protected EditorSearchIndex<GuidedDecisionTableSearchableElement> editorSearchIndex;
 
     @Mock
     protected SearchBarComponent<GuidedDecisionTableSearchableElement> searchBarComponent;
+
 
     @Mock
     protected MenuItem alertsButtonMenuItem;
@@ -297,15 +297,20 @@ public abstract class BaseGuidedDecisionTablePresenterTest<P extends BaseGuidedD
     protected Element modellerViewWidgetElement;
 
     @Mock
-    protected HTMLElement modellerViewElement;
-
-    @Mock
     protected SearchBarComponent.View searchBarView;
 
     @Mock
     protected HTMLElement searchBarViewHTMLElement;
 
+    @Mock
+    protected ElementWrapperWidget searchBarComponentWidget;
+
+    @Mock
+    private GuidedDecisionTableGridHighlightHelper highlightHelper;
+
     protected Promises promises;
+
+    protected SearchableElementFactory searchableElementFactory;
 
     protected P presenter;
 
@@ -317,6 +322,7 @@ public abstract class BaseGuidedDecisionTablePresenterTest<P extends BaseGuidedD
         this.promises = new SyncPromises();
         this.dtServiceCaller = new CallerMock<>(dtService);
         this.versionServiceCaller = new CallerMock<>(versionService);
+        searchableElementFactory = new SearchableElementFactory(highlightHelper);
 
         final P wrapped = getPresenter();
 
@@ -352,10 +358,10 @@ public abstract class BaseGuidedDecisionTablePresenterTest<P extends BaseGuidedD
 
         when(modellerView.asWidget()).thenReturn(modellerViewWidget);
         when(modellerViewWidget.getElement()).thenReturn(modellerViewWidgetElement);
-        when(elemental2DomUtil.asHTMLElement(modellerViewWidgetElement)).thenReturn(modellerViewElement);
         when(searchBarComponent.getView()).thenReturn(searchBarView);
         when(searchBarView.getElement()).thenReturn(searchBarViewHTMLElement);
 
+        doReturn(searchBarComponentWidget).when(presenter).getWidget(searchBarViewHTMLElement);
         doReturn(alertsButtonMenuItem).when(alertsButtonMenuItemBuilder).build();
         doReturn(currentPerspective).when(perspectiveManager).getCurrentPerspective();
         doReturn(promises.resolve(true)).when(projectController).canUpdateProject(any());

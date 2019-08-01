@@ -28,7 +28,6 @@ import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.editor.search.GuidedDecisionTableSearchableElement;
 import org.drools.workbench.screens.guided.dtable.client.type.GuidedDTableResourceType;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableModellerView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectedEvent;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
@@ -62,7 +61,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
@@ -104,9 +102,9 @@ public class GuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisionTa
                                                       saveAndRenameCommandBuilder,
                                                       alertsButtonMenuItemBuilder,
                                                       downloadMenuItemBuilder,
-                                                      elemental2DomUtil,
                                                       editorSearchIndex,
-                                                      searchBarComponent) {
+                                                      searchBarComponent,
+                                                      searchableElementFactory) {
             {
                 workbenchContext = GuidedDecisionTableEditorPresenterTest.this.workbenchContext;
                 projectController = GuidedDecisionTableEditorPresenterTest.this.projectController;
@@ -135,6 +133,7 @@ public class GuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisionTa
         editorSearchIndex.setIsDirtySupplier(isDirty);
         verify(editorSearchIndex).registerSubIndex(presenter);
         verify(searchBarComponent).init(editorSearchIndex);
+        verify(multiPageEditor).addTabBarWidget(searchBarComponentWidget);
     }
 
     @Test
@@ -154,12 +153,7 @@ public class GuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisionTa
 
     @Test
     public void testGetModellerView() {
-
-        final GuidedDecisionTableModellerView actual = presenter.getModellerView();
-
-        // appendChild is called more than one time due to @Before setup
-        verify(modellerViewElement, atLeastOnce()).appendChild(searchBarViewHTMLElement);
-        assertEquals(modellerView, actual);
+        assertEquals(modellerView, presenter.getModellerView());
     }
 
     @Test
