@@ -148,5 +148,7 @@ public interface ListGroupItemView extends IsWidget,
         void setInstanceAssigned(String factName, boolean assigned);
 
         void reset();
+
+        String getFilterTerm();
     }
 }

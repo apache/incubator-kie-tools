@@ -126,7 +126,9 @@ public class ScenarioSimulationGridHeaderUtilities {
                                                                final Integer uiColumnIndex,
                                                                final String columnGroup) {
         if (!scenarioGridColumn.isInstanceAssigned()) {
-            String complexSearch = getExistingInstances(columnGroup, scenarioGrid.getModel());
+            String complexSearch = getExistingInstances(columnGroup,
+                                                        scenarioGrid.getModel().getSimulation().get().getSimulationDescriptor().getType(),
+                                                        scenarioGrid.getModel().getColumns());
             return new EnableTestToolsEvent(complexSearch, true);
         } else if (Objects.equals(clickedScenarioHeaderMetadata.getMetadataType(), ScenarioHeaderMetaData.MetadataType.PROPERTY)) {
             List<String> propertyNameElements = null;
@@ -140,15 +142,19 @@ public class ScenarioSimulationGridHeaderUtilities {
         }
     }
 
-    public static String getExistingInstances(final String group, final ScenarioGridModel scenarioGridModel) {
-        final boolean isDMN = scenarioGridModel.getSimulation().get().getSimulationDescriptor().getType().equals(ScenarioSimulationModel.Type.DMN);
-        return String.join(";", scenarioGridModel.getColumns()
+    public static String getExistingInstances(final String group,
+                                              final ScenarioSimulationModel.Type scenarioType,
+                                              final List<GridColumn<?>> columns) {
+        final boolean isDMN = ScenarioSimulationModel.Type.DMN.equals(scenarioType);
+        return String.join(";", columns
                 .stream()
-                .filter(gridColumn -> {
-                    GridColumn.HeaderMetaData m = ((ScenarioGridColumn) gridColumn).getInformationHeaderMetaData();
-                    return isDMN || group.equals(m.getColumnGroup());
+                .map(column -> (ScenarioGridColumn) column)
+                .filter(scenarioGridColumn -> {
+                    GridColumn.HeaderMetaData m = scenarioGridColumn.getInformationHeaderMetaData();
+                    String columnGroup = ScenarioSimulationUtils.getOriginalColumnGroup(group);
+                    return isDMN || columnGroup.equals(m.getColumnGroup());
                 })
-                .map(gridColumn -> ((ScenarioGridColumn) gridColumn).getInformationHeaderMetaData().getTitle())
+                .map(scenarioGridColumn -> scenarioGridColumn.getInformationHeaderMetaData().getTitle())
                 .collect(Collectors.toSet()));
     }
 

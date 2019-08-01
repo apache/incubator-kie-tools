@@ -126,7 +126,7 @@ public class TestToolsViewImpl
 
     @EventHandler("clearSearchButton")
     public void onClearSearchButtonClick(ClickEvent event) {
-        presenter.onClearSearch();
+        presenter.onUndoSearch();
     }
 
     @EventHandler("inputSearch")

@@ -40,7 +40,7 @@ import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.Fact
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 
 import static org.drools.scenariosimulation.api.model.FactMapping.getPropertyPlaceHolder;
-import static org.drools.workbench.screens.scenariosimulation.client.utils.ScenarioSimulationUtils.getPropertyMetaDataGroup;
+import static org.drools.workbench.screens.scenariosimulation.client.utils.ScenarioSimulationUtils.getColumnSubGroup;
 import static org.drools.workbench.screens.scenariosimulation.client.utils.ScenarioSimulationUtils.getPropertyNameElementsWithoutAlias;
 
 /**
@@ -149,14 +149,14 @@ public abstract class AbstractSelectedColumnCommand extends AbstractScenarioSimu
 
     /**
      * Sets the metadata for an instance header on a given <code>ScenarioGridColumn</code>.
-     * @param scenarioGridColumn
-     * @param aliasName
-     * @param factIdentifier
+     * @param selectedColumn The selected <code>ScenarioGridColumn</code> where the command was launched
+     * @param aliasName The title to assign to the selected column
+     * @param factIdentifier The <code>FactIdentifier</code> to assign to the selected column
      */
-    protected void setInstanceHeaderMetaData(ScenarioGridColumn scenarioGridColumn, String aliasName, FactIdentifier factIdentifier) {
-        scenarioGridColumn.getInformationHeaderMetaData().setTitle(aliasName);
-        scenarioGridColumn.setInstanceAssigned(true);
-        scenarioGridColumn.setFactIdentifier(factIdentifier);
+    protected void setInstanceHeaderMetaData(ScenarioGridColumn selectedColumn, String aliasName, FactIdentifier factIdentifier) {
+        selectedColumn.getInformationHeaderMetaData().setTitle(aliasName);
+        selectedColumn.setInstanceAssigned(true);
+        selectedColumn.setFactIdentifier(factIdentifier);
     }
 
     /**
@@ -216,7 +216,7 @@ public abstract class AbstractSelectedColumnCommand extends AbstractScenarioSimu
                         setInstanceHeaderMetaData(scenarioGridColumn, instanceAliasName, factIdentifier);
                     }
                 });
-        selectedColumn.getPropertyHeaderMetaData().setColumnGroup(getPropertyMetaDataGroup(selectedColumn.getInformationHeaderMetaData().getColumnGroup()));
+        selectedColumn.getPropertyHeaderMetaData().setColumnGroup(getColumnSubGroup(selectedColumn.getInformationHeaderMetaData().getColumnGroup()));
         String editableCellPlaceholder = ScenarioSimulationUtils.getPlaceholder(propertyClass);
         setPropertyMetaData(selectedColumn.getPropertyHeaderMetaData(), propertyTitle, false, selectedColumn, editableCellPlaceholder);
         selectedColumn.setPropertyAssigned(true);

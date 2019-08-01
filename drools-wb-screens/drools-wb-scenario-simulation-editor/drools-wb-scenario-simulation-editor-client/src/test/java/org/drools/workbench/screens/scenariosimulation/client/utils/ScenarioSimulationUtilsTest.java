@@ -29,6 +29,7 @@ import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGr
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.COLUMN_GROUP;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.COLUMN_GROUP_FIRST;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.COLUMN_ID;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.COLUMN_INSTANCE_TITLE_FIRST;
@@ -44,6 +45,20 @@ import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class ScenarioSimulationUtilsTest extends AbstractUtilsTest {
+
+    @Test
+    public void getColumnSubGroup() {
+        String subGroup = ScenarioSimulationUtils.getColumnSubGroup(COLUMN_GROUP);
+        assertEquals(subGroup, COLUMN_GROUP + "-0");
+        String subGroup2 = ScenarioSimulationUtils.getColumnSubGroup(COLUMN_GROUP);
+        assertEquals(subGroup2, COLUMN_GROUP + "-1");
+    }
+
+    @Test
+    public void getOriginalColumnGroup() {
+        String subGroup = ScenarioSimulationUtils.getOriginalColumnGroup(COLUMN_GROUP + "-3");
+        assertEquals(subGroup, COLUMN_GROUP);
+    }
 
     @Test
     public void getScenarioGridColumn2() {

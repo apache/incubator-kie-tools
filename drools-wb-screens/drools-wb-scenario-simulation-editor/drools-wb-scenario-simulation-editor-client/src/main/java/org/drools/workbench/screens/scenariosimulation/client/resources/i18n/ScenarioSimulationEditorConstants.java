@@ -311,4 +311,6 @@ public interface ScenarioSimulationEditorConstants
     String noDecisionsAvailable();
 
     String noRulesAvailable();
+
+    String instanceTitleAssignedError(String title);
 }

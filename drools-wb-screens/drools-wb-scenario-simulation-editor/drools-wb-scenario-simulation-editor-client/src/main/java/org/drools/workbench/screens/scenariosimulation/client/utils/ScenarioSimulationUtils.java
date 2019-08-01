@@ -42,8 +42,23 @@ public class ScenarioSimulationUtils {
 
     protected static AtomicInteger subGroupCounter = new AtomicInteger(0);
 
-    public static String getPropertyMetaDataGroup(String columnGroup) {
+    /**
+     * Given a columnGroup, it creates a new subGroup with the following format: 'columnGroupName-x'.
+     * @param columnGroup
+     * @return
+     */
+    public static String getColumnSubGroup(String columnGroup) {
         return columnGroup + "-" + subGroupCounter.getAndIncrement();
+    }
+
+    /**
+     * Given a columnGroup, it returns the original group name, removing the the subgroup part (added in
+     * <code>getColumnSubGroup</code> with the following format: 'columnGroupName-x'
+     * @param columnGroup
+     * @return
+     */
+    public static String getOriginalColumnGroup(String columnGroup) {
+        return columnGroup.contains("-") ? columnGroup.substring(0, columnGroup.indexOf("-")) : columnGroup;
     }
 
     /**
@@ -216,7 +231,7 @@ public class ScenarioSimulationUtils {
         // The "property" header
         instanceHeader.newLevel()
                 .setColumnTitle(propertyTitle)
-                .setColumnGroup(getPropertyMetaDataGroup(columnGroup))
+                .setColumnGroup(getColumnSubGroup(columnGroup))
                 .setReadOnly(false)
                 .setInstanceHeader(false)
                 .setPropertyHeader(true);

@@ -131,7 +131,7 @@ public class TestToolsViewImplTest {
     public void onClearSearchButtonClick() {
         testToolsView.init(testToolsPresenterMock);
         testToolsView.onClearSearchButtonClick(mock(ClickEvent.class));
-        verify(testToolsPresenterMock, times(1)).onClearSearch();
+        verify(testToolsPresenterMock, times(1)).onUndoSearch();
     }
 
     @Test

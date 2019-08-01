@@ -17,6 +17,7 @@ package org.drools.workbench.screens.scenariosimulation.client.handlers;
 
 import com.ait.lienzo.client.core.types.Point2D;
 import org.drools.workbench.screens.scenariosimulation.client.metadata.ScenarioHeaderMetaData;
+import org.drools.workbench.screens.scenariosimulation.client.utils.ScenarioSimulationUtils;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGrid;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridPanel;
@@ -84,10 +85,7 @@ public abstract class AbstractScenarioSimulationGridPanelHandler  {
         if (clickedScenarioHeaderMetadata == null) {
             return false;
         }
-        String group = clickedScenarioHeaderMetadata.getColumnGroup();
-        if (group.contains("-")) {
-            group = group.substring(0, group.indexOf("-"));
-        }
+        String group = ScenarioSimulationUtils.getOriginalColumnGroup(clickedScenarioHeaderMetadata.getColumnGroup());
         switch (group) {
             case "GIVEN":
             case "EXPECT":

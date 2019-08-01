@@ -85,6 +85,13 @@ public class TestToolsPresenter extends AbstractSubDockPresenter<TestToolsView> 
     }
 
     @Override
+    public void onUndoSearch() {
+        view.clearInputSearch();
+        view.hideClearButton();
+        onPerfectMatchSearchedEvent(listGroupItemPresenter.getFilterTerm(), true);
+    }
+
+    @Override
     public void onClearNameField() {
         view.clearNameField();
     }
@@ -319,22 +326,22 @@ public class TestToolsPresenter extends AbstractSubDockPresenter<TestToolsView> 
     }
 
     @Override
-    public void onEnableEditorTab(String factName, List<String> propertyNameElements, boolean notEqualsSearch) {
+    public void onEnableEditorTab(String filterTerm, List<String> propertyNameElements, boolean notEqualsSearch) {
         onDisableEditorTab();
-        onPerfectMatchSearchedEvent(factName, notEqualsSearch);
-        listGroupItemPresenter.enable(factName);
+        onPerfectMatchSearchedEvent(filterTerm, notEqualsSearch);
+        listGroupItemPresenter.enable(filterTerm);
         editingColumnEnabled = true;
         view.enableEditorTab();
         /* If notEqualsSearch is TRUE, then the instance is not assigned for the selected column.
          * Therefore, it isn't necessary to search through the maps to check it. In that case, the search is activated.
          */
         if (!notEqualsSearch) {
-            updateInstanceIsAssignedStatus(factName);
+            updateInstanceIsAssignedStatus(filterTerm);
         } else {
             view.enableSearch();
         }
         if (propertyNameElements != null && !notEqualsSearch) {
-            listGroupItemPresenter.selectProperty(factName, propertyNameElements);
+            listGroupItemPresenter.selectProperty(filterTerm, propertyNameElements);
         }
     }
 
@@ -352,7 +359,7 @@ public class TestToolsPresenter extends AbstractSubDockPresenter<TestToolsView> 
     public void setSelectedElement(ListGroupItemView selected) {
         selectedListGroupItemView = selected;
         selectedFieldItemView = null;
-        if (selectedListGroupItemView.isInstanceAssigned()) {
+        if (filterTerm(selected.getFactName(), listGroupItemPresenter.getFilterTerm(), false)) {
             view.disableAddButton();
         } else {
             view.enableAddButton();
@@ -363,7 +370,13 @@ public class TestToolsPresenter extends AbstractSubDockPresenter<TestToolsView> 
     public void setSelectedElement(FieldItemView selected) {
         selectedFieldItemView = selected;
         selectedListGroupItemView = null;
-        view.enableAddButton();
+        String factName = selectedFieldItemView.getFullPath().split("\\.")[0];
+        boolean isFactNameAssigned = listGroupItemPresenter.isInstanceAssigned(factName);
+        if (filterTerm(factName, listGroupItemPresenter.getFilterTerm(), isFactNameAssigned)) {
+            view.disableAddButton();
+        } else {
+            view.enableAddButton();
+        }
     }
 
     @Override
@@ -436,6 +449,13 @@ public class TestToolsPresenter extends AbstractSubDockPresenter<TestToolsView> 
         updateSimpleJavaInstanceFieldListSeparator();
     }
 
+    /**
+     * It determines if a key (factTitle) is present or not in the search variable.
+     * @param key It's the title of the fact to search
+     * @param search It represents a concatenation of titles, with ";" as separator
+     * @param notEqualsSearch It establishes the method logic: to check if a key is present or not in search string
+     * @return
+     */
     protected boolean filterTerm(String key, String search, boolean notEqualsSearch) {
         List<String> terms = Arrays.asList(search.split(";"));
         if (notEqualsSearch) {

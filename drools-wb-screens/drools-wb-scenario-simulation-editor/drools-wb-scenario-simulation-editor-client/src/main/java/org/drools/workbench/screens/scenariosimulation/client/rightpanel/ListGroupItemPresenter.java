@@ -42,18 +42,21 @@ public class ListGroupItemPresenter implements ListGroupItemView.Presenter {
 
     private AtomicBoolean disabled = new AtomicBoolean(true);
 
-    private String factName = null;
+    /* In case of a selected column with <b>assigned</b> Instance, it contains its related Instance title.
+       Otherwise, in case of a <b>NOT assigned</b> Instance, it contains all the titles assigned to other columns of
+       the same group with the following syntax: "TITLE1;TITLE2;.." */
+    private String filterTerm = null;
 
     @Override
     public void enable() {
         this.disabled.set(false);
-        factName = null;
+        filterTerm = null;
     }
 
     @Override
-    public void enable(String factName) {
+    public void enable(String filterTerm) {
         this.disabled.set(false);
-        this.factName = factName;
+        this.filterTerm = filterTerm;
     }
 
     @Override
@@ -108,7 +111,7 @@ public class ListGroupItemPresenter implements ListGroupItemView.Presenter {
     @Override
     public void disable() {
         this.disabled.set(true);
-        factName = null;
+        filterTerm = null;
         listGroupItemViewMap.values().forEach(ListGroupItemView::closeRow);
         unselectAll();
         fieldItemPresenter.unselectAll();
@@ -172,6 +175,11 @@ public class ListGroupItemPresenter implements ListGroupItemView.Presenter {
     public void reset() {
         fieldItemPresenter.reset();
         listGroupItemViewMap.clear();
+    }
+
+    @Override
+    public String getFilterTerm() {
+        return filterTerm;
     }
 
     /**

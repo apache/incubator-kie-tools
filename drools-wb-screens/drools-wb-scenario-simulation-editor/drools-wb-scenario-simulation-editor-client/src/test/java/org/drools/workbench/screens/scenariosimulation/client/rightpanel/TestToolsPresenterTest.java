@@ -41,7 +41,10 @@ import org.mockito.Mock;
 import static junit.framework.TestCase.assertNull;
 import static junit.framework.TestCase.assertTrue;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.FACT_NAME;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.FACT_NAME_2;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.FACT_PACKAGE;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.FILTER_TERM;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.PROPERTY_NAME;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -168,6 +171,17 @@ public class TestToolsPresenterTest extends AbstractTestToolsTest {
         testToolsPresenter.onClearSearch();
         verify(testToolsViewMock, times(1)).clearInputSearch();
         verify(testToolsViewMock, times(1)).hideClearButton();
+        verify(testToolsPresenter, times(1)).onSearchedEvent(eq(""));
+    }
+
+    @Test
+    public void onUndoSearch() {
+        when(listGroupItemPresenterMock.getFilterTerm()).thenReturn(FILTER_TERM);
+        testToolsPresenter.onUndoSearch();
+        verify(testToolsViewMock, times(1)).clearInputSearch();
+        verify(testToolsViewMock, times(1)).hideClearButton();
+        verify(listGroupItemPresenterMock, times(1)).getFilterTerm();
+        verify(testToolsPresenter, times(1)).onPerfectMatchSearchedEvent(eq(FILTER_TERM), eq(true));
     }
 
     @Test
@@ -462,23 +476,77 @@ public class TestToolsPresenterTest extends AbstractTestToolsTest {
     }
 
     @Test
-    public void setSelectedElement_WithInstanceAssigned() {
-        when(selectedListGroupItemViewMock.isInstanceAssigned()).thenReturn(true);
+    public void setSelectedElement_InstanceAssigned() {
+        when(selectedListGroupItemViewMock.getFactName()).thenReturn(FACT_NAME);
+        when(listGroupItemPresenterMock.getFilterTerm()).thenReturn(FILTER_TERM);
         testToolsPresenter.setSelectedElement(selectedListGroupItemViewMock);
-        verify(selectedListGroupItemViewMock, times(1)).isInstanceAssigned();
+        verify(testToolsPresenter, times(1)).filterTerm(eq(FACT_NAME), eq(FILTER_TERM), eq(false));
         verify(testToolsViewMock, times(1)).disableAddButton();
         assertNull(testToolsPresenter.selectedFieldItemView);
         assertEquals(selectedListGroupItemViewMock, testToolsPresenter.selectedListGroupItemView);
     }
 
     @Test
-    public void setSelectedElement_WithoutInstanceAssigned() {
-        when(selectedListGroupItemViewMock.isInstanceAssigned()).thenReturn(false);
+    public void setSelectedElement_InstanceNotAssigned() {
+        when(selectedListGroupItemViewMock.getFactName()).thenReturn(FACT_NAME_2);
+        when(listGroupItemPresenterMock.getFilterTerm()).thenReturn(FILTER_TERM);
         testToolsPresenter.setSelectedElement(selectedListGroupItemViewMock);
-        verify(selectedListGroupItemViewMock, times(1)).isInstanceAssigned();
+        verify(testToolsPresenter, times(1)).filterTerm(eq(FACT_NAME_2), eq(FILTER_TERM), eq(false));
         verify(testToolsViewMock, times(1)).enableAddButton();
         assertNull(testToolsPresenter.selectedFieldItemView);
         assertEquals(selectedListGroupItemViewMock, testToolsPresenter.selectedListGroupItemView);
+    }
+
+    @Test
+    public void setSelectedElementProperty_InstanceAssigned() {
+        when(listGroupItemPresenterMock.isInstanceAssigned(FACT_NAME)).thenReturn(true);
+        when(selectedFieldItemViewMock.getFullPath()).thenReturn(FACT_NAME);
+        when(listGroupItemPresenterMock.getFilterTerm()).thenReturn(FILTER_TERM);
+        testToolsPresenter.setSelectedElement(selectedFieldItemViewMock);
+        verify(listGroupItemPresenterMock, times(1)).isInstanceAssigned(eq(FACT_NAME));
+        verify(testToolsPresenter, times(1)).filterTerm(FACT_NAME, FILTER_TERM, true);
+        verify(testToolsViewMock, times(1)).enableAddButton();
+        assertNull(testToolsPresenter.selectedListGroupItemView);
+        assertEquals(selectedFieldItemViewMock, testToolsPresenter.selectedFieldItemView);
+    }
+
+    @Test
+    public void setSelectedElementProperty_InstanceNotAssignedFactNameAlreadyAssigned() {
+        when(listGroupItemPresenterMock.isInstanceAssigned(FACT_NAME)).thenReturn(false);
+        when(selectedFieldItemViewMock.getFullPath()).thenReturn(FACT_NAME);
+        when(listGroupItemPresenterMock.getFilterTerm()).thenReturn(FILTER_TERM);
+        testToolsPresenter.setSelectedElement(selectedFieldItemViewMock);
+        verify(listGroupItemPresenterMock, times(1)).isInstanceAssigned(eq(FACT_NAME));
+        verify(testToolsPresenter, times(1)).filterTerm(eq(FACT_NAME), eq(FILTER_TERM), eq(false));
+        verify(testToolsViewMock, times(1)).disableAddButton();
+        assertNull(testToolsPresenter.selectedListGroupItemView);
+        assertEquals(selectedFieldItemViewMock, testToolsPresenter.selectedFieldItemView);
+    }
+
+    @Test
+    public void setSelectedElementProperty_InstanceNotAssignedFactNameAlreadyAssigned_NestedProperties() {
+        when(listGroupItemPresenterMock.isInstanceAssigned(FACT_NAME)).thenReturn(false);
+        when(selectedFieldItemViewMock.getFullPath()).thenReturn(FACT_NAME + "." + PROPERTY_NAME);
+        when(listGroupItemPresenterMock.getFilterTerm()).thenReturn(FILTER_TERM);
+        testToolsPresenter.setSelectedElement(selectedFieldItemViewMock);
+        verify(listGroupItemPresenterMock, times(1)).isInstanceAssigned(eq(FACT_NAME));
+        verify(testToolsPresenter, times(1)).filterTerm(eq(FACT_NAME), eq(FILTER_TERM), eq(false));
+        verify(testToolsViewMock, times(1)).disableAddButton();
+        assertNull(testToolsPresenter.selectedListGroupItemView);
+        assertEquals(selectedFieldItemViewMock, testToolsPresenter.selectedFieldItemView);
+    }
+
+    @Test
+    public void setSelectedElementProperty_InstanceNotAssignedFactNameNotAssigned() {
+        when(listGroupItemPresenterMock.isInstanceAssigned(FACT_NAME_2)).thenReturn(false);
+        when(selectedFieldItemViewMock.getFullPath()).thenReturn(FACT_NAME_2);
+        when(listGroupItemPresenterMock.getFilterTerm()).thenReturn(FILTER_TERM);
+        testToolsPresenter.setSelectedElement(selectedFieldItemViewMock);
+        verify(listGroupItemPresenterMock, times(1)).isInstanceAssigned(eq(FACT_NAME_2));
+        verify(testToolsPresenter, times(1)).filterTerm(eq(FACT_NAME_2), eq(FILTER_TERM), eq(false));
+        verify(testToolsViewMock, times(1)).enableAddButton();
+        assertNull(testToolsPresenter.selectedListGroupItemView);
+        assertEquals(selectedFieldItemViewMock, testToolsPresenter.selectedFieldItemView);
     }
 
     @Test

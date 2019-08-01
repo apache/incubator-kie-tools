@@ -19,6 +19,7 @@ import com.ait.lienzo.client.core.types.Point2D;
 import org.drools.workbench.screens.scenariosimulation.client.metadata.ScenarioHeaderMetaData;
 import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
 import org.drools.workbench.screens.scenariosimulation.client.utils.ScenarioSimulationGridHeaderUtilities;
+import org.drools.workbench.screens.scenariosimulation.client.utils.ScenarioSimulationUtils;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGrid;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridCell;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
@@ -70,10 +71,7 @@ public class CommonEditHandler {
         if (clickedScenarioHeaderMetadata == null) {
             return false;
         }
-        String group = clickedScenarioHeaderMetadata.getColumnGroup();
-        if (group.contains("-")) {
-            group = group.substring(0, group.indexOf("-"));
-        }
+        String group = ScenarioSimulationUtils.getOriginalColumnGroup(clickedScenarioHeaderMetadata.getColumnGroup());
         switch (group) {
             case "GIVEN":
             case "EXPECT":

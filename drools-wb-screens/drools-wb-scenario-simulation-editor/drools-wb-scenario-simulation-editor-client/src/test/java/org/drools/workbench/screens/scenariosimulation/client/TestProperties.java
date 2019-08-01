@@ -120,11 +120,13 @@ public class TestProperties {
     public static final String VALUE_1 = MULTIPART_VALUE + "_1";
 
     public static final String FACT_NAME = "FACT_NAME";
+    public static final String FACT_NAME_2 = "FACT_NAME_2";
     public static final String FIELD_NAME = "FIELD_NAME";
 
     public static final String FILE_CONTENT = "FILE_CONTENT";
 
     public static final String FULL_FACT_CLASSNAME = "FULL_FACT_CLASSNAME";
+    public static final String FILTER_TERM = FULL_CLASS_NAME_1 + ";" + FACT_NAME + ";" + FULL_FACT_CLASSNAME;
 
     public static final String STRING_CLASS_NAME = String.class.getCanonicalName();
     public static final String NUMBER_CLASS_NAME = Number.class.getCanonicalName();

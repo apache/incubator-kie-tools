@@ -284,10 +284,7 @@ public class ScenarioGrid extends BaseGridWidget {
         if (scenarioGridColumn.isInstanceAssigned() && scenarioHeaderMetaData.getMetadataType().equals(ScenarioHeaderMetaData.MetadataType.INSTANCE)) {
             eventBus.fireEvent(new ReloadTestToolsEvent(true, true));
         } else {
-            String group = scenarioHeaderMetaData.getColumnGroup();
-            if (group.contains("-")) {
-                group = group.substring(0, group.indexOf("-"));
-            }
+            String group = ScenarioSimulationUtils.getOriginalColumnGroup(scenarioHeaderMetaData.getColumnGroup());
             final EnableTestToolsEvent enableTestToolsEvent = getEnableTestToolsEvent(this,
                                                                                       scenarioGridColumn,
                                                                                       scenarioHeaderMetaData,
