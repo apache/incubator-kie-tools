@@ -16,48 +16,159 @@
 
 package org.kie.workbench.common.widgets.client.search.component;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import javax.inject.Named;
 
-import elemental2.dom.HTMLFormElement;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import elemental2.dom.HTMLButtonElement;
+import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLInputElement;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+
+import static com.google.gwt.event.dom.client.KeyCodes.KEY_ENTER;
+import static com.google.gwt.event.dom.client.KeyCodes.KEY_ESCAPE;
+import static org.kie.workbench.common.widgets.client.resources.i18n.KieWorkbenchWidgetsConstants.SearchBarComponentView_Find;
 
 @Templated
 @Dependent
 public class SearchBarComponentView implements SearchBarComponent.View {
 
-    private SearchBarComponent<?> presenter;
+    static final String HIDDEN = "hidden";
 
-    @DataField("search-form")
-    private final HTMLFormElement searchForm;
+    @DataField("search-container")
+    private final HTMLButtonElement searchContainer;
+
+    @DataField("search-button")
+    private final HTMLButtonElement searchButton;
+
+    @DataField("prev-element")
+    private final HTMLButtonElement prevElement;
+
+    @DataField("next-element")
+    private final HTMLButtonElement nextElement;
+
+    @DataField("close-search")
+    private final HTMLButtonElement closeSearch;
 
     @DataField("search-input")
     private final HTMLInputElement inputElement;
 
+    @DataField("current-result")
+    private final HTMLElement currentResult;
+
+    @DataField("total-of-results")
+    private final HTMLElement totalOfResults;
+
+    private final TranslationService translationService;
+
+    private SearchBarComponent<?> presenter;
+
     @Inject
-    public SearchBarComponentView(final HTMLFormElement searchForm,
-                                  final HTMLInputElement inputElement) {
-        this.searchForm = searchForm;
+    public SearchBarComponentView(final HTMLButtonElement searchButton,
+                                  final HTMLButtonElement searchContainer,
+                                  final HTMLButtonElement prevElement,
+                                  final HTMLButtonElement nextElement,
+                                  final HTMLButtonElement closeSearch,
+                                  final HTMLInputElement inputElement,
+                                  final TranslationService translationService,
+                                  final @Named("span") HTMLElement currentResult,
+                                  final @Named("span") HTMLElement totalOfResults) {
+        this.searchButton = searchButton;
+        this.searchContainer = searchContainer;
+        this.prevElement = prevElement;
+        this.nextElement = nextElement;
+        this.closeSearch = closeSearch;
         this.inputElement = inputElement;
-    }
-
-    @PostConstruct
-    public void init() {
-        searchForm.onsubmit = (e) -> {
-            onSubmit();
-            return false;
-        };
-    }
-
-    private void onSubmit() {
-        presenter.search(inputElement.value);
+        this.translationService = translationService;
+        this.currentResult = currentResult;
+        this.totalOfResults = totalOfResults;
     }
 
     @Override
-    public void init(final SearchBarComponent presenter) {
-        this.presenter = presenter;
+    public void init(final SearchBarComponent searchBarComponent) {
+
+        presenter = searchBarComponent;
+        inputElement.placeholder = translationService.format(SearchBarComponentView_Find);
+
+        disableSearch();
+    }
+
+    @EventHandler("search-button")
+    public void onSearchButtonClick(final ClickEvent clickEvent) {
+        toggle();
+        clickEvent.preventDefault();
+    }
+
+    @EventHandler("next-element")
+    public void onNextElementClick(final ClickEvent clickEvent) {
+        presenter.nextResult();
+        clickEvent.preventDefault();
+    }
+
+    @EventHandler("prev-element")
+    public void onPrevElementClick(final ClickEvent clickEvent) {
+        presenter.previousResult();
+        clickEvent.preventDefault();
+    }
+
+    @EventHandler("close-search")
+    public void onCloseSearchClick(final ClickEvent clickEvent) {
+        disableSearch();
+        clickEvent.preventDefault();
+    }
+
+    @EventHandler("search-input")
+    public void onSearchInputKeyPress(final KeyUpEvent keyEvent) {
+        final int keyCode = keyEvent.getNativeKeyCode();
+        switch (keyCode) {
+            case KEY_ENTER:
+                search(inputElement.value);
+                break;
+            case KEY_ESCAPE:
+                disableSearch();
+                break;
+        }
+    }
+
+    @Override
+    public void setCurrentResultNumber(final Integer currentResultNumber) {
+        currentResult.textContent = currentResultNumber.toString();
+    }
+
+    @Override
+    public void setTotalOfResultsNumber(final Integer totalOfResultsNumber) {
+        totalOfResults.textContent = totalOfResultsNumber.toString();
+    }
+
+    private void search(final String value) {
+        presenter.search(value);
+    }
+
+    private void toggle() {
+        if (isContainerHidden()) {
+            enableSearch();
+        } else {
+            disableSearch();
+        }
+    }
+
+    private void enableSearch() {
+        searchContainer.classList.remove(HIDDEN);
+        inputElement.focus();
+    }
+
+    void disableSearch() {
+        searchContainer.classList.add(HIDDEN);
+        inputElement.value = "";
+        presenter.resetIndex();
+    }
+
+    private boolean isContainerHidden() {
+        return searchContainer.classList.contains(HIDDEN);
     }
 }

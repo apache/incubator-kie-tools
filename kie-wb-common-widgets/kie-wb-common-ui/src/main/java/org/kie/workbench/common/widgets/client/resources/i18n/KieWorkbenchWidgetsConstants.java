@@ -67,4 +67,7 @@ public interface KieWorkbenchWidgetsConstants {
 
     @TranslationKey(defaultValue = "")
     String KieAssetsDropdownView_Select = "KieAssetsDropdownView.Select";
+
+    @TranslationKey(defaultValue = "")
+    String SearchBarComponentView_Find = "SearchBarComponentView.Find";
 }

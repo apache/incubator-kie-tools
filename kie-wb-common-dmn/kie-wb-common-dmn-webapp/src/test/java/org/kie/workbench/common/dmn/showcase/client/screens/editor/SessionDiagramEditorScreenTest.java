@@ -19,11 +19,11 @@ package org.kie.workbench.common.dmn.showcase.client.screens.editor;
 import java.util.List;
 import java.util.function.Consumer;
 
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import elemental2.dom.HTMLElement;
 import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
+import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -136,11 +136,22 @@ public class SessionDiagramEditorScreenTest {
     @Mock
     private SearchBarComponent<DMNSearchableElement> searchBarComponent;
 
+    @Mock
+    private SearchBarComponent.View searchBarComponentView;
+
+    @Mock
+    private HTMLElement searchBarComponentViewElement;
+
+    @Mock
+    private ElementWrapperWidget searchBarComponentWidget;
+
     private SessionDiagramEditorScreen editor;
 
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
+        when(searchBarComponent.getView()).thenReturn(searchBarComponentView);
+        when(searchBarComponentView.getElement()).thenReturn(searchBarComponentViewElement);
         doReturn(presenter).when(presenter).withToolbar(anyBoolean());
         doReturn(presenter).when(presenter).withPalette(anyBoolean());
         doReturn(presenter).when(presenter).displayNotifications(any());
@@ -184,6 +195,8 @@ public class SessionDiagramEditorScreenTest {
                                                     util,
                                                     editorSearchIndex,
                                                     searchBarComponent));
+
+        doReturn(searchBarComponentWidget).when(editor).getWidget(searchBarComponentViewElement);
     }
 
     @Test
@@ -193,7 +206,6 @@ public class SessionDiagramEditorScreenTest {
         final MultiPageEditor multiPageEditor = mock(MultiPageEditor.class);
         final DocumentationPage documentationPage = mock(DocumentationPage.class);
 
-        doNothing().when(editor).setupSearchComponent();
         doReturn(documentationPage).when(editor).getDocumentationPage();
         when(kieView.getMultiPage()).thenReturn(multiPageEditor);
         when(screenPanelView.asWidget()).thenReturn(screenPanelWidget);
@@ -214,23 +226,14 @@ public class SessionDiagramEditorScreenTest {
     @Test
     public void testSetupSearchComponent() {
 
-        final SessionPresenter.View view = mock(SessionPresenter.View.class);
-        final HTMLElement htmlElement = mock(HTMLElement.class);
-        final Widget widget = mock(Widget.class);
-        final Element element = mock(Element.class);
-        final SearchBarComponent.View searchBarView = mock(SearchBarComponent.View.class);
-        final HTMLElement searchBarViewHTMLElement = mock(HTMLElement.class);
+        final MultiPageEditor multiPageEditor = mock(MultiPageEditor.class);
 
-        when(presenter.getView()).thenReturn(view);
-        when(view.asWidget()).thenReturn(widget);
-        when(widget.getElement()).thenReturn(element);
-        when(util.asHTMLElement(element)).thenReturn(htmlElement);
-        when(searchBarComponent.getView()).thenReturn(searchBarView);
-        when(searchBarView.getElement()).thenReturn(searchBarViewHTMLElement);
+        when(kieView.getMultiPage()).thenReturn(multiPageEditor);
 
         editor.setupSearchComponent();
 
-        verify(htmlElement).appendChild(searchBarViewHTMLElement);
+        verify(searchBarComponent).init(editorSearchIndex);
+        verify(multiPageEditor).addTabBarWidget(searchBarComponentWidget);
     }
 
     @Test

@@ -26,7 +26,9 @@ import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class SearchBarComponentTest {
@@ -41,7 +43,7 @@ public class SearchBarComponentTest {
 
     @Before
     public void setup() {
-        component = new SearchBarComponent<>(view);
+        component = spy(new SearchBarComponent<>(view));
         component.init(index);
     }
 
@@ -64,6 +66,7 @@ public class SearchBarComponentTest {
         component.search(term);
 
         verify(index, never()).search(term);
+        verify(component).updateViewNumber();
     }
 
     @Test
@@ -74,5 +77,48 @@ public class SearchBarComponentTest {
         component.search(term);
 
         verify(index).search(term);
+        verify(component).updateViewNumber();
+    }
+
+    @Test
+    public void testNextResult() {
+
+        component.nextResult();
+
+        verify(index).nextResult();
+        verify(component).updateViewNumber();
+    }
+
+    @Test
+    public void testPreviousResult() {
+
+        component.previousResult();
+
+        verify(index).previousResult();
+        verify(component).updateViewNumber();
+    }
+
+    @Test
+    public void testResetIndex() {
+
+        component.resetIndex();
+
+        verify(index).reset();
+        verify(component).updateViewNumber();
+    }
+
+    @Test
+    public void testUpdateViewNumber() {
+
+        final int currentResultNumber = 2;
+        final int totalOfResultsNumber = 4;
+
+        when(index.getCurrentResultNumber()).thenReturn(currentResultNumber);
+        when(index.getTotalOfResultsNumber()).thenReturn(totalOfResultsNumber);
+
+        component.updateViewNumber();
+
+        verify(view).setCurrentResultNumber(currentResultNumber);
+        verify(view).setTotalOfResultsNumber(totalOfResultsNumber);
     }
 }

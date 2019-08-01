@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.widgets.client.search.component;
 
+import java.util.Optional;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -52,12 +54,48 @@ public class SearchBarComponent<T extends Searchable> {
 
     void search(final String term) {
         if (!term.isEmpty()) {
-            editorSearchIndex.search(term);
+            getEditorSearchIndex().search(term);
         }
+        updateViewNumber();
+    }
+
+    void nextResult() {
+        getEditorSearchIndex().nextResult();
+        updateViewNumber();
+    }
+
+    void previousResult() {
+        getEditorSearchIndex().previousResult();
+        updateViewNumber();
+    }
+
+    void resetIndex() {
+        editorSearchIndex().ifPresent(EditorSearchIndex::reset);
+        updateViewNumber();
+    }
+
+    void updateViewNumber() {
+
+        final int currentResultNumber = editorSearchIndex().map(EditorSearchIndex::getCurrentResultNumber).orElse(0);
+        final int totalOfResultsNumber = editorSearchIndex().map(EditorSearchIndex::getTotalOfResultsNumber).orElse(0);
+
+        view.setCurrentResultNumber(currentResultNumber);
+        view.setTotalOfResultsNumber(totalOfResultsNumber);
+    }
+
+    private EditorSearchIndex<T> getEditorSearchIndex() {
+        return editorSearchIndex().orElseThrow(UnsupportedOperationException::new);
+    }
+
+    private Optional<EditorSearchIndex<T>> editorSearchIndex() {
+        return Optional.ofNullable(editorSearchIndex);
     }
 
     public interface View extends UberElemental<SearchBarComponent>,
                                   IsElement {
 
+        void setCurrentResultNumber(final Integer currentResultNumber);
+
+        void setTotalOfResultsNumber(final Integer totalOfResultsNumber);
     }
 }

@@ -21,16 +21,17 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import org.uberfire.mvp.Command;
-
-import static org.kie.workbench.common.widgets.client.search.common.JavaStreamHelper.indexedStream;
 
 public abstract class BaseEditorSearchIndex<T extends Searchable> implements EditorSearchIndex<T> {
 
     private final List<HasSearchableElements<T>> hasSearchableElementsList = new ArrayList<>();
 
-    private SearchResult<T> currentResult;
+    private List<T> results = new ArrayList<>();
+
+    private T currentResult;
 
     private String currentTerm;
 
@@ -52,12 +53,13 @@ public abstract class BaseEditorSearchIndex<T extends Searchable> implements Edi
     public void search(final String term) {
 
         final boolean isNewSearch = !Objects.equals(term, currentTerm);
-        final Optional<SearchResult<T>> result;
+        final Optional<T> result;
 
         if (isNewSearch) {
-            result = findFirstElement(term);
+            loadSearchResults(term);
+            result = getFirstSearchResult();
         } else {
-            result = findNextElement(term);
+            result = findNextElement();
         }
 
         currentResult = result.orElse(null);
@@ -66,56 +68,22 @@ public abstract class BaseEditorSearchIndex<T extends Searchable> implements Edi
         triggerOnFoundCommand();
     }
 
-    private Optional<SearchResult<T>> findNextElement(final String term) {
-
-        final SearchResult<T>[] firstElement = new SearchResult[1];
-        final List<T> searchableElements = getSearchableElements();
-        final Optional<SearchResult<T>> next =
-                indexedStream(searchableElements)
-                        .filter((index, element) -> {
-                            final boolean matches = element.matches(term);
-                            if (matches && firstElement[0] == null) {
-                                firstElement[0] = new SearchResult<>(index, element);
-                            }
-                            return matches && index > currentResult.index;
-                        })
-                        .findFirst()
-                        .map(tuple -> new SearchResult<>(tuple.getIndex(), tuple.getElement()));
-
-        if (next.isPresent()) {
-            return next;
-        } else {
-            return Optional.ofNullable(firstElement[0]);
-        }
+    @Override
+    public int getCurrentResultNumber() {
+        return results.size() > 0 ? getCurrentResultIndex() + 1 : 0;
     }
 
-    private Optional<SearchResult<T>> findFirstElement(final String term) {
-
-        final List<T> searchableElements = getSearchableElements();
-
-        return indexedStream(searchableElements)
-                .filter((index, element) -> element.matches(term))
-                .map(tuple -> new SearchResult<>(tuple.getIndex(), tuple.getElement()))
-                .findFirst();
+    @Override
+    public int getTotalOfResultsNumber() {
+        return results.size();
     }
 
-    private void triggerOnFoundCommand() {
-        if (getCurrentResult().isPresent()) {
-            getCurrentResult().get().element.onFound().execute();
-        } else {
-            triggerNoResultsFoundCommand();
-        }
+    @Override
+    public void reset() {
+        results = new ArrayList<>();
+        currentTerm = "";
+        triggerNoResultsFoundCommand();
     }
-
-    private void triggerNoResultsFoundCommand() {
-        noResultsFoundCallback.execute();
-    }
-
-    private Optional<SearchResult> getCurrentResult() {
-        return Optional.ofNullable(currentResult);
-    }
-
-    protected abstract List<T> getSearchableElements();
 
     @Override
     public void setNoResultsFoundCallback(final Command callback) {
@@ -132,15 +100,92 @@ public abstract class BaseEditorSearchIndex<T extends Searchable> implements Edi
         return isDirtySupplier.get();
     }
 
-    class SearchResult<R extends Searchable> {
+    @Override
+    public void nextResult() {
+        final Optional<T> result = findNextElement();
+        currentResult = result.orElse(null);
+        triggerOnFoundCommand();
+    }
 
-        private final int index;
-        private final R element;
+    @Override
+    public void previousResult() {
+        final Optional<T> result = findPreviousElement();
+        currentResult = result.orElse(null);
+        triggerOnFoundCommand();
+    }
 
-        SearchResult(final int index,
-                     final R element) {
-            this.index = index;
-            this.element = element;
+    List<T> getResults() {
+        return results;
+    }
+
+    String getCurrentTerm() {
+        return currentTerm;
+    }
+
+    private Optional<T> getFirstSearchResult() {
+        if (results.size() > 0) {
+            return Optional.of(results.get(0));
+        } else {
+            return Optional.empty();
         }
     }
+
+    private Optional<T> getLastSearchResult() {
+        final int totalOfResults = results.size();
+        if (totalOfResults > 0) {
+            return Optional.of(results.get(totalOfResults - 1));
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    private Optional<T> findNextElement() {
+        final int nextElementIndex = getCurrentResultIndex() + 1;
+        if (nextElementIndex < results.size()) {
+            return Optional.of(results.get(nextElementIndex));
+        } else {
+            return getFirstSearchResult();
+        }
+    }
+
+    private Optional<T> findPreviousElement() {
+        final int previousElementIndex = getCurrentResultIndex() - 1;
+        if (previousElementIndex >= 0) {
+            return Optional.of(results.get(previousElementIndex));
+        } else {
+            return getLastSearchResult();
+        }
+    }
+
+    private Integer getCurrentResultIndex() {
+        return getCurrentResult().map(c -> results.indexOf(c)).orElse(0);
+    }
+
+    private void loadSearchResults(final String term) {
+
+        final List<T> searchableElements = getSearchableElements();
+
+        results = searchableElements
+                .stream()
+                .filter(element -> element.matches(term))
+                .collect(Collectors.toList());
+    }
+
+    private void triggerOnFoundCommand() {
+        if (getCurrentResult().isPresent()) {
+            getCurrentResult().get().onFound().execute();
+        } else {
+            triggerNoResultsFoundCommand();
+        }
+    }
+
+    private void triggerNoResultsFoundCommand() {
+        noResultsFoundCallback.execute();
+    }
+
+    private Optional<T> getCurrentResult() {
+        return Optional.ofNullable(currentResult);
+    }
+
+    protected abstract List<T> getSearchableElements();
 }

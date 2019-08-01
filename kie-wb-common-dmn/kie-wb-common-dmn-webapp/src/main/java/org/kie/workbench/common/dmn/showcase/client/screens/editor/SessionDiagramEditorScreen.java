@@ -29,10 +29,9 @@ import javax.inject.Inject;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
-import elemental2.dom.Element;
 import elemental2.dom.HTMLElement;
 import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
+import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.commands.general.NavigateToExpressionEditorCommand;
 import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorDock;
@@ -190,7 +189,6 @@ public class SessionDiagramEditorScreen implements KieEditorWrapperView.KieEdito
     @PostConstruct
     public void init() {
         decisionNavigatorDock.init(AuthoringPerspective.PERSPECTIVE_ID);
-        searchBarComponent.init(editorSearchIndex);
 
         kieView.setPresenter(this);
         kieView.clear();
@@ -203,14 +201,10 @@ public class SessionDiagramEditorScreen implements KieEditorWrapperView.KieEdito
     }
 
     void setupSearchComponent() {
-        final Widget view = presenter.getView().asWidget();
-        final HTMLElement modellerViewElement = util.asHTMLElement(view.getElement());
+        final HTMLElement element = searchBarComponent.getView().getElement();
 
-        modellerViewElement.appendChild(getSearchElement());
-    }
-
-    private Element getSearchElement() {
-        return searchBarComponent.getView().getElement();
+        searchBarComponent.init(editorSearchIndex);
+        kieView.getMultiPage().addTabBarWidget(getWidget(element));
     }
 
     DocumentationPage getDocumentationPage() {
@@ -552,6 +546,10 @@ public class SessionDiagramEditorScreen implements KieEditorWrapperView.KieEdito
             LOGGER.log(level,
                        message);
         }
+    }
+
+    ElementWrapperWidget<?> getWidget(final HTMLElement element) {
+        return ElementWrapperWidget.getWidget(element);
     }
 
     private final class ScreenPresenterCallback implements SessionPresenter.SessionPresenterCallback<Diagram> {

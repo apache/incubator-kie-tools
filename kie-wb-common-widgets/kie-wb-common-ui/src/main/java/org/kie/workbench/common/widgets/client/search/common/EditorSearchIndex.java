@@ -46,8 +46,8 @@ public interface EditorSearchIndex<T extends Searchable> {
     void registerSubIndex(final HasSearchableElements<T> hasSearchableElements);
 
     /**
-     * Searches for any {@link Searchable} that satisfies the parameter, to finally trigger the <code>onFound</code>
-     * callback.
+     * Searches for any {@link Searchable} that satisfies the parameter, and triggers the <code>onFound</code>
+     * callback for the first result.
      * @param term the string that will trigger the search
      */
     void search(final String term);
@@ -69,4 +69,33 @@ public interface EditorSearchIndex<T extends Searchable> {
      * @return true if the index is dirty.
      */
     boolean isDirty();
+
+    /**
+     * Triggers the <code>onFound</code> callback for the next result.
+     */
+    void nextResult();
+
+    /**
+     * Triggers the <code>onFound</code> callback for the previous result.
+     */
+    void previousResult();
+
+    /**
+     * Returns the number of the current result.
+     * @return a int value representing the number of current result.
+     */
+    int getCurrentResultNumber();
+
+    /**
+     * Returns the number of results.
+     * @return a int value representing the number of results.
+     */
+    int getTotalOfResultsNumber();
+
+    /**
+     * Resets the index state.
+     * It affects the <code>isDirty</code>, the <code>nextResult</code>, the <code>previousResult</code>,
+     * the <code>getCurrentResultNumber</code>, and the <code>getTotalOfResultsNumber</code> method.
+     */
+    void reset();
 }

@@ -14,40 +14,34 @@
   ~ limitations under the License.
   -->
 
-<div class="kie-search-bar" style="display: none">
+<div>
+    <div class="form-group toolbar-pf-find kie-toolbar-find">
 
-    <!-- TODO: https://issues.jboss.org/browse/DROOLS-4306 -->
-    <!-- Enabling the search bar: document.querySelector('.kie-search-bar').style.display = "" -->
+        <button data-field="search-button" class="btn btn-link btn-find" type="button">
+            <span class="fa fa-search"></span>
+        </button>
 
-    <style type="text/css">
+        <div data-field="search-container" class="hidden find-pf-dropdown-container kie-find-pf-dropdown-container">
 
-        .kie-search-bar {
-            position: fixed;
-            width: 400px;
-            background: white;
-            border: 1px solid #CCC;
-            left: calc(100vw / 2 - 200px);
-            top: 200px;
-            padding: 20px;
-            box-shadow: 0 5px 5px rgba(0, 0, 0, .1);
-            z-index: 1;
-        }
+            <input data-field="search-input" type="text" class="form-control">
+            <span class="find-pf-nums">
+                <span data-field="current-result">0</span>
+                <span data-i18n-key="Of"></span>
+                <span data-field="total-of-results">0</span>
+            </span>
 
-        .kie-search-bar input {
-            padding: 5px;
-        }
-
-        .kie-search-bar input,
-        .kie-search-bar label {
-            width: 100%;
-            font-weight: normal;
-        }
-
-    </style>
-
-    <form data-field="search-form">
-        <label>
-            <input data-field="search-input" placeholder="Search..." type="text"/>
-        </label>
-    </form>
+            <div class="find-pf-buttons">
+                <button data-field="prev-element" class="btn btn-link" type="button">
+                    <span class="fa fa-angle-up"></span>
+                </button>
+                <button data-field="next-element" class="btn btn-link" type="button">
+                    <span class="fa fa-angle-down"></span>
+                </button>
+                <div class="find-splitter"></div>
+                <button data-field="close-search" class="btn btn-link btn-find-close" type="button">
+                    <span class="pficon pficon-close"></span>
+                </button>
+            </div>
+        </div>
+    </div>
 </div>

@@ -22,6 +22,7 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.uberfire.mvp.Command;
@@ -147,6 +148,79 @@ public class BaseEditorSearchIndexTest {
                                                                                       hasSearchableElements2);
 
         assertEquals(expectedSubIndexes, actualSubIndexes);
+    }
+
+    @Test
+    public void testNextResult() {
+
+        index.search("Element");
+
+        times(4, () -> index.nextResult());
+
+        final InOrder inOrder = Mockito.inOrder(searchable1, searchable2, searchable3, searchable4);
+
+        inOrder.verify(searchable1).onFound();
+        inOrder.verify(searchable2).onFound();
+        inOrder.verify(searchable3).onFound();
+        inOrder.verify(searchable4).onFound();
+        inOrder.verify(searchable1).onFound();
+        inOrder.verifyNoMoreInteractions();
+        verify(noResultsFoundCallback, never()).execute();
+    }
+
+    @Test
+    public void testPreviousResult() {
+
+        index.search("Element");
+
+        times(4, () -> index.previousResult());
+
+        final InOrder inOrder = Mockito.inOrder(searchable1, searchable4, searchable3, searchable2);
+
+        inOrder.verify(searchable1).onFound();
+        inOrder.verify(searchable4).onFound();
+        inOrder.verify(searchable3).onFound();
+        inOrder.verify(searchable2).onFound();
+        inOrder.verify(searchable1).onFound();
+        inOrder.verifyNoMoreInteractions();
+        verify(noResultsFoundCallback, never()).execute();
+    }
+
+    @Test
+    public void testNextResultWhenSearchHasNoResult() {
+        index.nextResult();
+        verify(noResultsFoundCallback).execute();
+    }
+
+    @Test
+    public void testPreviousResultWhenSearchHasNoResult() {
+        index.previousResult();
+        verify(noResultsFoundCallback).execute();
+    }
+
+    @Test
+    public void testGetCurrentResultNumber() {
+        index.search("Element 2");
+        assertEquals(1, index.getCurrentResultNumber());
+    }
+
+    @Test
+    public void testGetTotalOfResultsNumber() {
+        index.search("Element");
+        assertEquals(4, index.getTotalOfResultsNumber());
+    }
+
+    @Test
+    public void testReset() {
+
+        index.search("Element");
+
+        index.reset();
+
+        assertEquals(0, index.getTotalOfResultsNumber());
+        assertEquals(0, index.getCurrentResultNumber());
+        assertEquals("", index.getCurrentTerm());
+        assertEquals(0, index.getResults().size());
     }
 
     private void times(final int times,
