@@ -35,11 +35,6 @@
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
     </dependency>
-    <!-- This is a transient dependency of org.apache.velocity:velocity -->
-    <dependency>
-      <groupId>commons-lang</groupId>
-      <artifactId>commons-lang</artifactId>
-    </dependency>
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-core</artifactId>
