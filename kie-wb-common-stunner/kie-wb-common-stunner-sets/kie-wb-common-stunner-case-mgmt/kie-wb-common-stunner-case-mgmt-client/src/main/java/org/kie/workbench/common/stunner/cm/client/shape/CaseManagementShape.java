@@ -16,12 +16,21 @@
 
 package org.kie.workbench.common.stunner.cm.client.shape;
 
+import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementSvgShapeDef;
 import org.kie.workbench.common.stunner.svg.client.shape.impl.SVGShapeImpl;
 import org.kie.workbench.common.stunner.svg.client.shape.view.impl.SVGShapeViewImpl;
 
 public class CaseManagementShape extends SVGShapeImpl {
 
-    public CaseManagementShape(SVGShapeViewImpl view) {
+    private CaseManagementSvgShapeDef shapeDef;
+
+    public CaseManagementShape(SVGShapeViewImpl view, CaseManagementSvgShapeDef shapeDef) {
         super(view);
+
+        this.shapeDef = shapeDef;
+    }
+
+    public CaseManagementSvgShapeDef getShapeDef() {
+        return shapeDef;
     }
 }

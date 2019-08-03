@@ -18,15 +18,18 @@ package org.kie.workbench.common.stunner.cm.client.shape.def;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 
 import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.BaseDimensionedShapeDef;
 import org.kie.workbench.common.stunner.cm.client.resources.CaseManagementSVGGlyphFactory;
 import org.kie.workbench.common.stunner.cm.client.resources.CaseManagementSVGViewFactory;
+import org.kie.workbench.common.stunner.cm.client.shape.view.handler.SubprocessViewHandler;
 import org.kie.workbench.common.stunner.cm.definition.CaseReusableSubprocess;
 import org.kie.workbench.common.stunner.cm.definition.ProcessReusableSubprocess;
 import org.kie.workbench.common.stunner.cm.definition.ReusableSubprocess;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
+import org.kie.workbench.common.stunner.core.client.shape.view.handler.CompositeShapeViewHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.handler.FontHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.handler.SizeHandler;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
@@ -61,6 +64,14 @@ public final class CaseManagementSvgSubprocessShapeDef extends BaseDimensionedSh
         return newFontHandlerBuilder()
                 .margin(HasTitle.HorizontalAlignment.LEFT, 30d)
                 .build();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public BiConsumer<ReusableSubprocess, SVGShapeView> viewHandler() {
+        return new CompositeShapeViewHandler<ReusableSubprocess, SVGShapeView>()
+                .register(newViewAttributesHandler())
+                .register(new SubprocessViewHandler())::handle;
     }
 
     @Override

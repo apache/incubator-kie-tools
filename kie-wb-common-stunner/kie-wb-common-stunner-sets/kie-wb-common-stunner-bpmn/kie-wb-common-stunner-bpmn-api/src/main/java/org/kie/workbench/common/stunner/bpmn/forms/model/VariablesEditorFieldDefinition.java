@@ -29,6 +29,8 @@ public class VariablesEditorFieldDefinition extends AbstractFieldDefinition {
 
     private String defaultValue;
 
+    private boolean caseFileVariable;
+
     public VariablesEditorFieldDefinition() {
         super(String.class.getName());
     }
@@ -46,10 +48,19 @@ public class VariablesEditorFieldDefinition extends AbstractFieldDefinition {
         this.defaultValue = defaultValue;
     }
 
+    public boolean isCaseFileVariable() {
+        return caseFileVariable;
+    }
+
+    public void setCaseFileVariable(boolean caseFileVariable) {
+        this.caseFileVariable = caseFileVariable;
+    }
+
     @Override
     protected void doCopyFrom(FieldDefinition other) {
         if (other instanceof VariablesEditorFieldDefinition) {
             this.setDefaultValue(((VariablesEditorFieldDefinition) other).getDefaultValue());
+            this.setCaseFileVariable(((VariablesEditorFieldDefinition) other).isCaseFileVariable());
         }
     }
 }

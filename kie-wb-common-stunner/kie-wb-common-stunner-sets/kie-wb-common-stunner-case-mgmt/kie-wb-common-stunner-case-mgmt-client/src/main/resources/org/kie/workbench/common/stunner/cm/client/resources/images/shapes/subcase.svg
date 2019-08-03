@@ -32,6 +32,12 @@
     c-28.6,0-60.4,14.4-73.9,33.4c-6.4,9-4.3,21.5,4.7,27.9s21.5,4.3,27.9-4.7c4.8-6.8,23.3-16.6,41.3-16.6h216.2c0.4,0,0.8,0,1.1,0
     L344.4,283.4z"/>
   </g>
+
+  <g class="subcase_group" stunner:transform="non-scalable" stunner:layout="BOTTOM" transform="translate(66,72) scale(0.035,0.035)">
+    <path id="subcaseReusableMIIMultipleInstanceIconParallel" class="subcase_group_icon" d="M92,44v424c0,6.6-5.4,12-12,12H48c-6.6,0-12-5.4-12-12V44c0-6.6,5.4-12,12-12h32C86.6,32,92,37.4,92,44z M252,44v424 c0,6.6-5.4,12-12,12h-32c-6.6,0-12-5.4-12-12V44c0-6.6,5.4-12,12-12h32C246.6,32,252,37.4,252,44z M412,44v424c0,6.6-5.4,12-12,12      h-32c-6.6,0-12-5.4-12-12V44c0-6.6,5.4-12,12-12h32C406.6,32,412,37.4,412,44z"/>
+    <path id="subcaseReusableMIIMultipleInstanceIconSequential" class="subcase_group_icon" d="M468 92l-424 0c-6.6 0-12-5.4-12-12L32 48c0-6.6 5.4-12 12-12L468 36c6.6 0 12 5.4 12 12l0 32C480 86.6 474.6 92 468 92zM468 252l-424 0c-6.6 0-12-5.4-12-12l0-32c0-6.6 5.4-12 12-12L468 196c6.6 0 12 5.4 12 12l0 32C480 246.6 474.6 252 468 252zM468 412l-424 0c-6.6 0-12-5.4-12-12l0-32c0-6.6 5.4-12 12-12L468 356c6.6 0 12 5.4 12 12l0 32C480 406.6 474.6 412 468 412z"/>
+  </g>
+
   <defs>
     <filter id="selectShadow" height="300%" width="300%" x="-75%" y="-75%">
       <!-- Thicken out the original shape -->

@@ -29,6 +29,12 @@
     <path class="subprocess_group_icon" d="M380,80H40C17.9,80,0,97.9,0,120v180c0,22.1,17.9,40,40,40h340c22.1,0,40-17.9,40-40V120
 	  C420,97.9,402.1,80,380,80z M380,300h-80.1v-40c0-22.1-17.9-40-40-40H160c-22.1,0-40,17.9-40,40v40H40V120h340V300z"/>
   </g>
+
+  <g class="subprocess_group" stunner:transform="non-scalable" stunner:layout="BOTTOM" transform="translate(66,72) scale(0.035,0.035)">
+    <path id="subprocessReusableMIIMultipleInstanceIconParallel" class="subprocess_group_icon" d="M92,44v424c0,6.6-5.4,12-12,12H48c-6.6,0-12-5.4-12-12V44c0-6.6,5.4-12,12-12h32C86.6,32,92,37.4,92,44z M252,44v424 c0,6.6-5.4,12-12,12h-32c-6.6,0-12-5.4-12-12V44c0-6.6,5.4-12,12-12h32C246.6,32,252,37.4,252,44z M412,44v424c0,6.6-5.4,12-12,12      h-32c-6.6,0-12-5.4-12-12V44c0-6.6,5.4-12,12-12h32C406.6,32,412,37.4,412,44z"/>
+    <path id="subprocessReusableMIIMultipleInstanceIconSequential" class="subprocess_group_icon" d="M468 92l-424 0c-6.6 0-12-5.4-12-12L32 48c0-6.6 5.4-12 12-12L468 36c6.6 0 12 5.4 12 12l0 32C480 86.6 474.6 92 468 92zM468 252l-424 0c-6.6 0-12-5.4-12-12l0-32c0-6.6 5.4-12 12-12L468 196c6.6 0 12 5.4 12 12l0 32C480 246.6 474.6 252 468 252zM468 412l-424 0c-6.6 0-12-5.4-12-12l0-32c0-6.6 5.4-12 12-12L468 356c6.6 0 12 5.4 12 12l0 32C480 406.6 474.6 412 468 412z"/>
+  </g>
+
   <defs>
     <filter id="selectShadow" height="300%" width="300%" x="-75%" y="-75%">
       <!-- Thicken out the original shape -->

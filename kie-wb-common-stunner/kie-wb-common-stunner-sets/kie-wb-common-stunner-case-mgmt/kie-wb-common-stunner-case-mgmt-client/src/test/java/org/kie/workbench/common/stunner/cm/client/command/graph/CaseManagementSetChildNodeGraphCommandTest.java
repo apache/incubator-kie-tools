@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.cm.client.command.graph;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -329,8 +330,8 @@ public class CaseManagementSetChildNodeGraphCommandTest extends CaseManagementAb
 
     @Test
     public void testResizeNodes() {
-        final Node stage = createNode(AdHocSubprocess.class, 5.0, 5.0, 225.0, 225.0);
-        final Node task = createNode(UserTask.class, 5.0, 5.0, 75.0, 75.0);
+        final Node stage = createNode(AdHocSubprocess.class, 1.0, 1.0, 25.0, 25.0);
+        final Node task = createNode(UserTask.class, 1.0, 1.0, 5.0, 5.0);
 
         final CaseManagementSetChildNodeGraphCommand command = new CaseManagementSetChildNodeGraphCommand(stage,
                                                                                                           task,
@@ -338,17 +339,23 @@ public class CaseManagementSetChildNodeGraphCommandTest extends CaseManagementAb
                                                                                                           originalParent,
                                                                                                           originalIndex);
 
+        final Edge childEdge = mock(Edge.class);
+        when(childEdge.getContent()).thenReturn(mock(Child.class));
+        when(childEdge.getTargetNode()).thenReturn(task);
+        when(stage.getOutEdges()).thenReturn(Collections.singletonList(childEdge));
+
         command.resizeNodes();
 
-        assertEquals(Optional.of(Bounds.create(5.0, 5.0, 225.0, 225.0)), command.originalParentBounds);
-        assertEquals(Optional.of(Bounds.create(5.0, 5.0, 75.0, 75.0)), command.originalBounds);
-        assertEquals(Bounds.create(5.0, 5.0, 225.0, 225.0), ((View) stage.getContent()).getBounds());
+        assertEquals(Optional.of(Bounds.create(1.0, 1.0, 25.0, 25.0)), command.originalParentBounds);
+        assertEquals(1, command.originalBounds.size());
+        assertEquals(Optional.of(Bounds.create(1.0, 1.0, 5.0, 5.0)), command.originalBounds.get(task.getUUID()));
+        assertEquals(Bounds.create(1.0, 1.0, 1.0 + CHILD_WIDTH + STAGE_GAP * 2, 1.0 + CHILD_HEIGHT + STAGE_GAP * 2), ((View) stage.getContent()).getBounds());
         assertEquals(Bounds.create(STAGE_GAP, STAGE_GAP, STAGE_GAP + CHILD_WIDTH, STAGE_GAP + CHILD_HEIGHT), ((View) task.getContent()).getBounds());
 
         command.undoResizeNodes();
 
-        assertEquals(Bounds.create(5.0, 5.0, 225.0, 225.0), ((View) stage.getContent()).getBounds());
-        assertEquals(Bounds.create(5.0, 5.0, 75.0, 75.0), ((View) task.getContent()).getBounds());
+        assertEquals(Bounds.create(1.0, 1.0, 25.0, 25.0), ((View) stage.getContent()).getBounds());
+        assertEquals(Bounds.create(1.0, 1.0, 5.0, 5.0), ((View) task.getContent()).getBounds());
     }
 
     private <T> Node createNode(Class<T> nClass) {

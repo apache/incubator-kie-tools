@@ -23,6 +23,7 @@ import javax.validation.Valid;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
@@ -57,7 +58,8 @@ public class CaseManagementSet implements BPMNPropertySet {
 
     @Property
     @FormField(
-            type = VariablesEditorFieldType.class
+            type = VariablesEditorFieldType.class,
+            settings = {@FieldParam(name = "caseFileVariable", value = "true")}
     )
     @Valid
     private CaseFileVariables caseFileVariables;

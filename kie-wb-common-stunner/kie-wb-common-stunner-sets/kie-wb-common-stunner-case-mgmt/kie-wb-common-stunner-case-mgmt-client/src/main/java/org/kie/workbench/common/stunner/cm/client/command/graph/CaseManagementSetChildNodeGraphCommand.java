@@ -17,13 +17,15 @@
 package org.kie.workbench.common.stunner.cm.client.command.graph;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-import java.util.OptionalDouble;
 import java.util.OptionalInt;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.SequenceFlow;
@@ -67,7 +69,7 @@ public class CaseManagementSetChildNodeGraphCommand extends AbstractGraphCommand
     Optional<Node<View<?>, Edge>> originalIn;
     Optional<Node<View<?>, Edge>> originalOut;
     Optional<Bounds> originalParentBounds;
-    Optional<Bounds> originalBounds;
+    Map<String, Optional<Bounds>> originalBounds;
 
     public CaseManagementSetChildNodeGraphCommand(final Node<View<?>, Edge> parent,
                                                   final Node<View<?>, Edge> child,
@@ -86,7 +88,7 @@ public class CaseManagementSetChildNodeGraphCommand extends AbstractGraphCommand
         this.originalIn = Optional.empty();
         this.originalOut = Optional.empty();
         this.originalParentBounds = Optional.empty();
-        this.originalBounds = Optional.empty();
+        this.originalBounds = new HashMap<>();
     }
 
     @Override
@@ -354,48 +356,52 @@ public class CaseManagementSetChildNodeGraphCommand extends AbstractGraphCommand
         return GraphCommandResultBuilder.SUCCESS;
     }
 
+    @SuppressWarnings("unchecked")
     void resizeNodes() {
-        if (isSubStageNode(child)) {
+        if (isStageNode(parent) && isSubStageNode(child)) {
+            final List<Node> childNodes = parent.getOutEdges().stream()
+                    .filter(childPredicate()).map(Edge::getTargetNode).collect(Collectors.toList());
+
+            childNodes.stream().forEach(cNode -> {
+                final Bounds cBounds = ((Node<View, Edge>) cNode).getContent().getBounds();
+                originalBounds.put(cNode.getUUID(),
+                                   Optional.of(Bounds.create(cBounds.getUpperLeft().getX(), cBounds.getUpperLeft().getY(),
+                                                             cBounds.getLowerRight().getX(), cBounds.getLowerRight().getY())));
+            });
+
+            IntStream.range(0, childNodes.size()).forEach(i -> {
+                final Node<View, Edge> childNode = childNodes.get(i);
+
+                final double cx = STAGE_GAP;
+                final double cy = STAGE_GAP + (STAGE_GAP + CHILD_HEIGHT) * i;
+
+                // set stage child bounds
+                childNode.getContent().setBounds(
+                        Bounds.create(cx, cy, cx + CHILD_WIDTH, cy + CHILD_HEIGHT));
+            });
+
             Bounds pBounds = parent.getContent().getBounds();
             originalParentBounds = Optional.of(Bounds.create(pBounds.getUpperLeft().getX(), pBounds.getUpperLeft().getY(),
                                                              pBounds.getLowerRight().getX(), pBounds.getLowerRight().getY()));
-            Bounds cBounds = child.getContent().getBounds();
-            originalBounds = Optional.of(Bounds.create(cBounds.getUpperLeft().getX(), cBounds.getUpperLeft().getY(),
-                                                       cBounds.getLowerRight().getX(), cBounds.getLowerRight().getY()));
 
-            double childOY = getChildY();
-
-            Bounds childBounds = Bounds.create(STAGE_GAP, childOY, STAGE_GAP + CHILD_WIDTH, childOY + CHILD_HEIGHT);
-            child.getContent().setBounds(childBounds);
-
-            double parentOH = pBounds.getHeight();
-            double childH = childOY + CHILD_HEIGHT + STAGE_GAP;
-            double parentH = parentOH > childH ? parentOH : childH;
-
-            double parentOW = pBounds.getWidth();
-            double childW = CHILD_WIDTH + STAGE_GAP * 2;
-            double parentW = parentOW > childW ? parentOW : childW;
-
-            Bounds parentBounds = Bounds.create(pBounds.getUpperLeft().getX(), pBounds.getUpperLeft().getY(),
-                                                pBounds.getUpperLeft().getX() + parentW, pBounds.getUpperLeft().getY() + parentH);
+            Bounds parentBounds = Bounds.create(pBounds.getUpperLeft().getX(),
+                                                pBounds.getUpperLeft().getY(),
+                                                pBounds.getUpperLeft().getX() + CHILD_WIDTH + STAGE_GAP * 2,
+                                                pBounds.getUpperLeft().getY() + STAGE_GAP + (STAGE_GAP + CHILD_HEIGHT) * childNodes.size());
             parent.getContent().setBounds(parentBounds);
         }
     }
 
-    private double getChildY() {
-        final OptionalDouble maxY = parent.getOutEdges().stream()
-                .filter(childPredicate())
-                .filter(e -> !child.getUUID().equals(e.getTargetNode().getUUID()))
-                .mapToDouble(e -> ((View) e.getTargetNode().getContent())
-                        .getBounds().getLowerRight().getY())
-                .max();
-
-        return maxY.orElse(0.0) + STAGE_GAP;
-    }
-
+    @SuppressWarnings("unchecked")
     void undoResizeNodes() {
         originalParentBounds.ifPresent(b -> parent.getContent().setBounds(b));
-        originalBounds.ifPresent(b -> child.getContent().setBounds(b));
+
+        parent.getOutEdges().stream()
+                .filter(childPredicate()).map(Edge::getTargetNode)
+                .forEach(cNode -> {
+                    final Optional<Bounds> cBounds = originalBounds.get(cNode.getUUID());
+                    cBounds.ifPresent(b -> ((Node<View, Edge>) cNode).getContent().setBounds(b));
+                });
     }
 
     public OptionalInt getIndex() {

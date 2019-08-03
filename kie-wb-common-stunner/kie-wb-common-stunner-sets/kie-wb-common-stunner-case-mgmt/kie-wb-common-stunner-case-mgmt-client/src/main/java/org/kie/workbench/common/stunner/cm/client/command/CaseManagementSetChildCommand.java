@@ -91,16 +91,20 @@ public class CaseManagementSetChildCommand extends org.kie.workbench.common.stun
                 return OptionalInt.of(i + 1);
             }
         }).orElseGet(() -> {
-            if (canvasIndex.isPresent() && canvasIndex.getAsInt() == 0 && isStage(parent, getCandidate())) {
-                // If add a Stage to the start, find the StartNoneEvent
-                List<Node<View<?>, Edge>> childNodes = ((Node<View<?>, Edge>) parent).getOutEdges().stream()
-                        .map(e -> (Node<View<?>, Edge>) e.getTargetNode()).collect(Collectors.toList());
-                for (int i = 0, n = childNodes.size(); i < n; i++) {
-                    if (childNodes.get(i).getContent().getDefinition() instanceof StartNoneEvent) {
-                        return OptionalInt.of(++i);
+            if (canvasIndex.isPresent() && canvasIndex.getAsInt() == 0 ) {
+                if (isStage(parent, getCandidate())) {
+                    // If add a Stage to the start, find the StartNoneEvent
+                    List<Node<View<?>, Edge>> childNodes = ((Node<View<?>, Edge>) parent).getOutEdges().stream()
+                            .map(e -> (Node<View<?>, Edge>) e.getTargetNode()).collect(Collectors.toList());
+                    for (int i = 0, n = childNodes.size(); i < n; i++) {
+                        if (childNodes.get(i).getContent().getDefinition() instanceof StartNoneEvent) {
+                            return OptionalInt.of(++i);
+                        }
                     }
+                    return OptionalInt.of(0);
+                } else {
+                    return canvasIndex;
                 }
-                return OptionalInt.of(0);
             } else {
                 return OptionalInt.empty();
             }

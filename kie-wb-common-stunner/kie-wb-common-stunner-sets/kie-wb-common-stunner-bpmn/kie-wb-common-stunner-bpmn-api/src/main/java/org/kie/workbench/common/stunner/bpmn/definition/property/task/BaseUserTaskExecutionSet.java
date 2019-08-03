@@ -49,6 +49,20 @@ public interface BaseUserTaskExecutionSet extends BPMNPropertySet {
 
     AdHocAutostart getAdHocAutostart();
 
+    IsMultipleInstance getIsMultipleInstance();
+
+    MultipleInstanceExecutionMode getMultipleInstanceExecutionMode();
+
+    MultipleInstanceCollectionInput getMultipleInstanceCollectionInput();
+
+    MultipleInstanceDataInput getMultipleInstanceDataInput();
+
+    MultipleInstanceCollectionOutput getMultipleInstanceCollectionOutput();
+
+    MultipleInstanceDataOutput getMultipleInstanceDataOutput();
+
+    MultipleInstanceCompletionCondition getMultipleInstanceCompletionCondition();
+
     OnEntryAction getOnEntryAction();
 
     OnExitAction getOnExitAction();

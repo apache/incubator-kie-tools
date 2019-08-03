@@ -155,7 +155,7 @@ public class ReusableSubprocessConverterTest {
 
     @Test
     public void testToFlowElementNonMI() {
-        ((ReusableSubprocessTaskExecutionSet) node.getContent().getDefinition().getExecutionSet()).getIsMultipleInstance().setValue(false);
+        node.getContent().getDefinition().getExecutionSet().getIsMultipleInstance().setValue(false);
         assertEquals(propertyWriter, converter.toFlowElement(node));
         verifyCommonValues();
         verify(propertyWriter, never()).setIsSequential(anyBoolean());

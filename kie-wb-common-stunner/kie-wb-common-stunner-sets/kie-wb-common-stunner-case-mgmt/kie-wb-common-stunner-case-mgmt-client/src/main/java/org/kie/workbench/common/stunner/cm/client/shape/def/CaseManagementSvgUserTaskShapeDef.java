@@ -17,12 +17,15 @@
 package org.kie.workbench.common.stunner.cm.client.shape.def;
 
 import java.util.Optional;
+import java.util.function.BiConsumer;
 
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.BaseDimensionedShapeDef;
 import org.kie.workbench.common.stunner.cm.client.resources.CaseManagementSVGGlyphFactory;
 import org.kie.workbench.common.stunner.cm.client.resources.CaseManagementSVGViewFactory;
+import org.kie.workbench.common.stunner.cm.client.shape.view.handler.TaskViewHandler;
 import org.kie.workbench.common.stunner.cm.definition.UserTask;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
+import org.kie.workbench.common.stunner.core.client.shape.view.handler.CompositeShapeViewHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.handler.FontHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.handler.SizeHandler;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
@@ -39,6 +42,14 @@ public final class CaseManagementSvgUserTaskShapeDef extends BaseDimensionedShap
                 .minWidth(e -> 50d)
                 .minHeight(e -> 50d)
                 .build();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public BiConsumer<UserTask, SVGShapeView> viewHandler() {
+        return new CompositeShapeViewHandler<UserTask, SVGShapeView>()
+                .register(newViewAttributesHandler())
+                .register(new TaskViewHandler())::handle;
     }
 
     @Override

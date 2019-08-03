@@ -51,7 +51,7 @@ public class CaseManagementSetChildCommandTest extends CaseManagementAbstractCom
     private int index;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         super.setup();
 
         this.parent = CommandTestUtils.makeNode("uuid1",
@@ -75,7 +75,7 @@ public class CaseManagementSetChildCommandTest extends CaseManagementAbstractCom
     }
 
     @Test
-    public void testNewGraphCommand() throws Exception {
+    public void testExecute_graphCommand() {
         assertCommandSuccess(command.execute(canvasHandler));
 
         assertEquals(1,
@@ -94,7 +94,7 @@ public class CaseManagementSetChildCommandTest extends CaseManagementAbstractCom
     }
 
     @Test
-    public void testNewCanvasCommand() throws Exception {
+    public void testExecute_canvasCommand() {
         assertCommandSuccess(command.execute(canvasHandler));
 
         verify(canvasHandler).addChild(eq(parent),
@@ -103,7 +103,18 @@ public class CaseManagementSetChildCommandTest extends CaseManagementAbstractCom
     }
 
     @Test
-    public void testNewGraphCommand_moveForward() throws Exception {
+    public void testNewGraphCommand() {
+        final Command graphCommand = command.newGraphCommand(canvasHandler);
+        assertTrue(graphCommand instanceof CaseManagementSetChildNodeGraphCommand);
+
+        final CaseManagementSetChildNodeGraphCommand cmGraphCommand = (CaseManagementSetChildNodeGraphCommand) graphCommand;
+        assertTrue(cmGraphCommand.getIndex().isPresent());
+        assertEquals(0, cmGraphCommand.getIndex().getAsInt());
+        assertFalse(cmGraphCommand.getOriginalIndex().isPresent());
+    }
+
+    @Test
+    public void testNewGraphCommand_moveForward() {
         final Node last = mock(Node.class);
         final Edge lEdge = mock(Edge.class);
         when(lEdge.getTargetNode()).thenReturn(last);
@@ -126,7 +137,7 @@ public class CaseManagementSetChildCommandTest extends CaseManagementAbstractCom
     }
 
     @Test
-    public void testNewGraphCommand_moveBackward() throws Exception {
+    public void testNewGraphCommand_moveBackward() {
         final Edge cEdge = mock(Edge.class);
         when(cEdge.getTargetNode()).thenReturn(candidate);
         parent.getOutEdges().add(cEdge);
@@ -149,7 +160,7 @@ public class CaseManagementSetChildCommandTest extends CaseManagementAbstractCom
     }
 
     @Test
-    public void testNewGraphCommand_addNew() throws Exception {
+    public void testNewGraphCommand_addNew() {
         command = new CaseManagementSetChildCommand(parent, candidate, Optional.empty(), OptionalInt.empty(), Optional.empty(), null);
 
         final Command graphCommand = command.newGraphCommand(canvasHandler);
@@ -161,7 +172,7 @@ public class CaseManagementSetChildCommandTest extends CaseManagementAbstractCom
     }
 
     @Test
-    public void testNewGraphCommand_addNewStage() throws Exception {
+    public void testNewGraphCommand_addNewStage() {
         final Node childNode = mock(Node.class);
         final View cContent = mock(View.class);
         when(childNode.getContent()).thenReturn(cContent);

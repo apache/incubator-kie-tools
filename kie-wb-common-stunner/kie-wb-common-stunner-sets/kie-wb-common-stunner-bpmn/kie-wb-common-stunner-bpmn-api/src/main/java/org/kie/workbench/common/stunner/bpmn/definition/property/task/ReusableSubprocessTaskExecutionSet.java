@@ -272,62 +272,77 @@ public class ReusableSubprocessTaskExecutionSet implements BaseReusableSubproces
         this.adHocAutostart = adHocAutostart;
     }
 
+    @Override
     public IsMultipleInstance getIsMultipleInstance() {
         return isMultipleInstance;
     }
 
+    @Override
     public void setIsMultipleInstance(IsMultipleInstance isMultipleInstance) {
         this.isMultipleInstance = isMultipleInstance;
     }
 
+    @Override
     public MultipleInstanceExecutionMode getMultipleInstanceExecutionMode() {
         return multipleInstanceExecutionMode;
     }
 
+    @Override
     public void setMultipleInstanceExecutionMode(MultipleInstanceExecutionMode multipleInstanceExecutionMode) {
         this.multipleInstanceExecutionMode = multipleInstanceExecutionMode;
     }
 
+    @Override
     public MultipleInstanceCollectionInput getMultipleInstanceCollectionInput() {
         return multipleInstanceCollectionInput;
     }
 
+    @Override
     public void setMultipleInstanceCollectionInput(MultipleInstanceCollectionInput multipleInstanceCollectionInput) {
         this.multipleInstanceCollectionInput = multipleInstanceCollectionInput;
     }
 
+    @Override
     public MultipleInstanceDataInput getMultipleInstanceDataInput() {
         return multipleInstanceDataInput;
     }
 
+    @Override
     public void setMultipleInstanceDataInput(MultipleInstanceDataInput multipleInstanceDataInput) {
         this.multipleInstanceDataInput = multipleInstanceDataInput;
     }
 
+    @Override
     public MultipleInstanceCollectionOutput getMultipleInstanceCollectionOutput() {
         return multipleInstanceCollectionOutput;
     }
 
+    @Override
     public void setMultipleInstanceCollectionOutput(MultipleInstanceCollectionOutput multipleInstanceCollectionOutput) {
         this.multipleInstanceCollectionOutput = multipleInstanceCollectionOutput;
     }
 
+    @Override
     public MultipleInstanceDataOutput getMultipleInstanceDataOutput() {
         return multipleInstanceDataOutput;
     }
 
+    @Override
     public void setMultipleInstanceDataOutput(MultipleInstanceDataOutput multipleInstanceDataOutput) {
         this.multipleInstanceDataOutput = multipleInstanceDataOutput;
     }
 
+    @Override
     public MultipleInstanceCompletionCondition getMultipleInstanceCompletionCondition() {
         return multipleInstanceCompletionCondition;
     }
 
+    @Override
     public void setMultipleInstanceCompletionCondition(MultipleInstanceCompletionCondition multipleInstanceCompletionCondition) {
         this.multipleInstanceCompletionCondition = multipleInstanceCompletionCondition;
     }
 
+    @Override
     public OnEntryAction getOnEntryAction() {
         return onEntryAction;
     }

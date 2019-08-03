@@ -192,6 +192,9 @@ public class CaseManagementCanvasHandler<D extends Diagram, C extends WiresCanva
             if (applyProperties) {
                 applyElementTitle(caseManagementShape,
                                   candidate);
+
+                applyProperties(caseManagementShape,
+                                candidate);
             }
 
             caseManagementShape.getShapeView().refresh();
@@ -206,6 +209,15 @@ public class CaseManagementCanvasHandler<D extends Diagram, C extends WiresCanva
         final TextPropertyProvider textPropertyProvider = this.getTextPropertyProviderFactory().getProvider(candidate);
         final String name = textPropertyProvider.getText(candidate);
         ((CaseManagementShapeView) shape.getShapeView()).setLabel(name);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void applyProperties(final CaseManagementShape shape,
+                                 final Element candidate) {
+        shape.getShapeDef()
+                .viewHandler()
+                .accept(((Element<? extends View>) candidate).getContent().getDefinition(),
+                        shape.getShapeView());
     }
 
     @Override

@@ -28,6 +28,13 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.Content;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.CreatedBy;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.Description;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.IsAsync;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.IsMultipleInstance;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceCollectionInput;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceCollectionOutput;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceCompletionCondition;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceDataInput;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceDataOutput;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceExecutionMode;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnEntryAction;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnExitAction;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.Skippable;
@@ -65,6 +72,13 @@ public class CaseManagementTaskConverter extends BaseTaskConverter<UserTask, Use
                                         new Description(p.getDescription()),
                                         new CreatedBy(p.getCreatedBy()),
                                         new AdHocAutostart(p.isAdHocAutostart()),
+                                        new IsMultipleInstance(p.isMultipleInstance()),
+                                        new MultipleInstanceExecutionMode(p.isSequential()),
+                                        new MultipleInstanceCollectionInput(p.getCollectionInput()),
+                                        new MultipleInstanceDataInput(p.getDataInput()),
+                                        new MultipleInstanceCollectionOutput(p.getCollectionOutput()),
+                                        new MultipleInstanceDataOutput(p.getDataOutput()),
+                                        new MultipleInstanceCompletionCondition(p.getCompletionCondition()),
                                         new OnEntryAction(p.getOnEntryAction()),
                                         new OnExitAction(p.getOnExitAction()),
                                         new Content(p.getContent()),

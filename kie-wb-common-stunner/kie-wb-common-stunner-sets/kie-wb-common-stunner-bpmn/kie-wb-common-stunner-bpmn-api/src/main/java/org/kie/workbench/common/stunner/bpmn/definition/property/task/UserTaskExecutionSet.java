@@ -425,10 +425,12 @@ public class UserTaskExecutionSet implements BaseUserTaskExecutionSet {
         this.adHocAutostart = adHocAutostart;
     }
 
+    @Override
     public IsMultipleInstance getIsMultipleInstance() {
         return isMultipleInstance;
     }
 
+    @Override
     public MultipleInstanceExecutionMode getMultipleInstanceExecutionMode() {
         return multipleInstanceExecutionMode;
     }
@@ -441,6 +443,7 @@ public class UserTaskExecutionSet implements BaseUserTaskExecutionSet {
         this.isMultipleInstance = isMultipleInstance;
     }
 
+    @Override
     public MultipleInstanceCollectionInput getMultipleInstanceCollectionInput() {
         return multipleInstanceCollectionInput;
     }
@@ -449,6 +452,7 @@ public class UserTaskExecutionSet implements BaseUserTaskExecutionSet {
         this.multipleInstanceCollectionInput = multipleInstanceCollectionInput;
     }
 
+    @Override
     public MultipleInstanceDataInput getMultipleInstanceDataInput() {
         return multipleInstanceDataInput;
     }
@@ -457,6 +461,7 @@ public class UserTaskExecutionSet implements BaseUserTaskExecutionSet {
         this.multipleInstanceDataInput = multipleInstanceDataInput;
     }
 
+    @Override
     public MultipleInstanceCollectionOutput getMultipleInstanceCollectionOutput() {
         return multipleInstanceCollectionOutput;
     }
@@ -465,6 +470,7 @@ public class UserTaskExecutionSet implements BaseUserTaskExecutionSet {
         this.multipleInstanceCollectionOutput = multipleInstanceCollectionOutput;
     }
 
+    @Override
     public MultipleInstanceDataOutput getMultipleInstanceDataOutput() {
         return multipleInstanceDataOutput;
     }
@@ -473,6 +479,7 @@ public class UserTaskExecutionSet implements BaseUserTaskExecutionSet {
         this.multipleInstanceDataOutput = multipleInstanceDataOutput;
     }
 
+    @Override
     public MultipleInstanceCompletionCondition getMultipleInstanceCompletionCondition() {
         return multipleInstanceCompletionCondition;
     }

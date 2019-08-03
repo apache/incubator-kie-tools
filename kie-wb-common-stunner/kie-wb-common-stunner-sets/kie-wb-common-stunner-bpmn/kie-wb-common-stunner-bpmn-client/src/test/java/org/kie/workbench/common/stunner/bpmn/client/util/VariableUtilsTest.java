@@ -18,14 +18,17 @@ package org.kie.workbench.common.stunner.bpmn.client.util;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseCatchingIntermediateEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseEndEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.BaseReusableSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseStartEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseThrowingIntermediateEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.BaseUserTask;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
 import org.kie.workbench.common.stunner.bpmn.definition.EndErrorEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndEscalationEvent;
@@ -66,17 +69,26 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
+import static org.kie.workbench.common.stunner.bpmn.client.util.VariableUtils.FindVariableUsagesFlag;
+import static org.kie.workbench.common.stunner.bpmn.client.util.VariableUtils.findVariableUsages;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class VariableUtilsTest {
 
+    private static final String CASE_FILE_VARIABLE_PREFIX = "caseFile_";
     private static final String NODE_NAME = "NODE_NAME";
     private static final String ASSIGNMENTS_INFO_VALUE = "|input1:String,input3:String||output2:String,output3:String|[din]var1->input1,[din]var3->input3,[dout]output2->var2,[dout]output3->var3";
+    private static final String ASSIGNMENTS_INFO_VALUE_CFV = "|input1:String,input3:String||output2:String,output3:String|[din]"
+            + CASE_FILE_VARIABLE_PREFIX + "var1->input1,[din]" + CASE_FILE_VARIABLE_PREFIX + "var3->input3,[dout]output2->"
+            + CASE_FILE_VARIABLE_PREFIX + "var2,[dout]output3->" + CASE_FILE_VARIABLE_PREFIX + "var3";
     private static final String EVENT_INPUT_ASSIGNMENTS_INFO_VALUE = "|input1:String|||[din]var1->input1";
+    private static final String EVENT_INPUT_ASSIGNMENTS_INFO_VALUE_CFV = "|input1:String|||[din]" + CASE_FILE_VARIABLE_PREFIX + "var1->input1";
     private static final String EVENT_OUTPUT_ASSIGNMENTS_INFO_VALUE = "||output1:var1||[dout]output1->var1";
+    private static final String EVENT_OUTPUT_ASSIGNMENTS_INFO_VALUE_CFV = "||output1:var1||[dout]output1->" + CASE_FILE_VARIABLE_PREFIX + "var1";
     private static final String COLLECTION = "COLLECTION";
+    private static final String COLLECTION_CFV = CASE_FILE_VARIABLE_PREFIX + COLLECTION;
 
     @Mock
     private Graph graph;
@@ -87,8 +99,18 @@ public class VariableUtilsTest {
     }
 
     @Test
+    public void testFindVariableUsagesForBusinessRuleTask_caseFileVariable() {
+        testFindVariableUsagesForTask_caseFileVariable(mockBusinessRuleTask(NODE_NAME, ASSIGNMENTS_INFO_VALUE_CFV));
+    }
+
+    @Test
     public void testFindVariableUsagesForUserTask() {
         testFindVariableUsagesForTask(mockUserTask(NODE_NAME, ASSIGNMENTS_INFO_VALUE));
+    }
+
+    @Test
+    public void testFindVariableUsagesForUserTask_caseFileVariable() {
+        testFindVariableUsagesForTask_caseFileVariable(mockUserTask(NODE_NAME, ASSIGNMENTS_INFO_VALUE_CFV));
     }
 
     @Test
@@ -97,8 +119,18 @@ public class VariableUtilsTest {
     }
 
     @Test
+    public void testFindVariableUsagesForUserTaskInputCollection_caseFileVariable() {
+        testFindVariableUsagesForTaskCollections_caseFileVariable(mockUserTask(NODE_NAME, ASSIGNMENTS_INFO_VALUE, COLLECTION_CFV, null), COLLECTION, COLLECTION_CFV, null);
+    }
+
+    @Test
     public void testFindVariableUsagesForUserTaskOutputCollection() {
         testFindVariableUsagesForTaskCollections(mockUserTask(NODE_NAME, ASSIGNMENTS_INFO_VALUE, null, COLLECTION), COLLECTION, null, COLLECTION);
+    }
+
+    @Test
+    public void testFindVariableUsagesForUserTaskOutputCollection_caseFileVariable() {
+        testFindVariableUsagesForTaskCollections_caseFileVariable(mockUserTask(NODE_NAME, ASSIGNMENTS_INFO_VALUE, null, COLLECTION_CFV), COLLECTION, null, COLLECTION_CFV);
     }
 
     @Test
@@ -107,8 +139,18 @@ public class VariableUtilsTest {
     }
 
     @Test
+    public void testFindVariableUsagesForUserTaskInputOutputCollection_caseFileVariable() {
+        testFindVariableUsagesForTaskCollections_caseFileVariable(mockUserTask(NODE_NAME, ASSIGNMENTS_INFO_VALUE, COLLECTION_CFV, COLLECTION_CFV), COLLECTION, COLLECTION_CFV, COLLECTION_CFV);
+    }
+
+    @Test
     public void testFindVariableUsagesForServiceTask() {
         testFindVariableUsagesForTask(mockServiceTask(NODE_NAME, ASSIGNMENTS_INFO_VALUE));
+    }
+
+    @Test
+    public void testFindVariableUsagesForServiceTask_caseFileVariable() {
+        testFindVariableUsagesForTask_caseFileVariable(mockServiceTask(NODE_NAME, ASSIGNMENTS_INFO_VALUE_CFV));
     }
 
     @Test
@@ -117,8 +159,18 @@ public class VariableUtilsTest {
     }
 
     @Test
+    public void testFindVariableUsagesForEndErrorEvent_caseFileVariable() {
+        testFindVariableUsagesForEventWithInput_caseFileVariable(mockEndErrorEvent(NODE_NAME, EVENT_INPUT_ASSIGNMENTS_INFO_VALUE_CFV));
+    }
+
+    @Test
     public void testFindVariableUsagesForEndEscalationEvent() {
         testFindVariableUsagesForEventWithInput(mockEndEscalationEvent(NODE_NAME, EVENT_INPUT_ASSIGNMENTS_INFO_VALUE));
+    }
+
+    @Test
+    public void testFindVariableUsagesForEndEscalationEvent_caseFileVariable() {
+        testFindVariableUsagesForEventWithInput_caseFileVariable(mockEndEscalationEvent(NODE_NAME, EVENT_INPUT_ASSIGNMENTS_INFO_VALUE_CFV));
     }
 
     @Test
@@ -127,8 +179,18 @@ public class VariableUtilsTest {
     }
 
     @Test
+    public void testFindVariableUsagesForEndMessageEvent_caseFileVariable() {
+        testFindVariableUsagesForEventWithInput_caseFileVariable(mockEndMessageEvent(NODE_NAME, EVENT_INPUT_ASSIGNMENTS_INFO_VALUE_CFV));
+    }
+
+    @Test
     public void testFindVariableUsagesForEndSignalEvent() {
         testFindVariableUsagesForEventWithInput(mockEndSignalEvent(NODE_NAME, EVENT_INPUT_ASSIGNMENTS_INFO_VALUE));
+    }
+
+    @Test
+    public void testFindVariableUsagesForEndSignalEvent_caseFileVariable() {
+        testFindVariableUsagesForEventWithInput_caseFileVariable(mockEndSignalEvent(NODE_NAME, EVENT_INPUT_ASSIGNMENTS_INFO_VALUE_CFV));
     }
 
     private void testFindVariableUsagesForEventWithInput(Object event) {
@@ -137,9 +199,20 @@ public class VariableUtilsTest {
         testFindVariableUsages("var1", nodes, expectedUsages);
     }
 
+    private void testFindVariableUsagesForEventWithInput_caseFileVariable(Object event) {
+        List<Node> nodes = mockNodeList(event);
+        List<VariableUsage> expectedUsages = Arrays.asList(new VariableUsage(CASE_FILE_VARIABLE_PREFIX + "var1", VariableUsage.USAGE_TYPE.INPUT_VARIABLE, nodes.get(0), NODE_NAME));
+        testFindVariableUsages_caseFileVariable("var1", nodes, expectedUsages);
+    }
+
     @Test
     public void testFindVariableUsagesForIntermediateErrorEventCatching() {
         testFindVariableUsagesForEventWithOutput(mockIntermediateErrorEventCatching(NODE_NAME, EVENT_OUTPUT_ASSIGNMENTS_INFO_VALUE));
+    }
+
+    @Test
+    public void testFindVariableUsagesForIntermediateErrorEventCatching_caseFileVariable() {
+        testFindVariableUsagesForEventWithOutput_caseFileVariable(mockIntermediateErrorEventCatching(NODE_NAME, EVENT_OUTPUT_ASSIGNMENTS_INFO_VALUE_CFV));
     }
 
     @Test
@@ -148,8 +221,18 @@ public class VariableUtilsTest {
     }
 
     @Test
+    public void testFindVariableUsagesForIntermediateMessageEventCatching_caseFileVariable() {
+        testFindVariableUsagesForEventWithOutput_caseFileVariable(mockIntermediateMessageEventCatching(NODE_NAME, EVENT_OUTPUT_ASSIGNMENTS_INFO_VALUE_CFV));
+    }
+
+    @Test
     public void testFindVariableUsagesForIntermediateSignalEventCatching() {
         testFindVariableUsagesForEventWithOutput(mockIntermediateSignalEventCatching(NODE_NAME, EVENT_OUTPUT_ASSIGNMENTS_INFO_VALUE));
+    }
+
+    @Test
+    public void testFindVariableUsagesForIntermediateSignalEventCatching_caseFileVariable() {
+        testFindVariableUsagesForEventWithOutput_caseFileVariable(mockIntermediateSignalEventCatching(NODE_NAME, EVENT_OUTPUT_ASSIGNMENTS_INFO_VALUE_CFV));
     }
 
     @Test
@@ -158,8 +241,18 @@ public class VariableUtilsTest {
     }
 
     @Test
+    public void testFindVariableUsagesForIntermediateEscalationEvent_caseFileVariable() {
+        testFindVariableUsagesForEventWithOutput_caseFileVariable(mockIntermediateEscalationEvent(NODE_NAME, EVENT_OUTPUT_ASSIGNMENTS_INFO_VALUE_CFV));
+    }
+
+    @Test
     public void testFindVariableUsagesForIntermediateEscalationEventThrowing() {
         testFindVariableUsagesForEventWithInput(mockIntermediateEscalationEventThrowing(NODE_NAME, EVENT_INPUT_ASSIGNMENTS_INFO_VALUE));
+    }
+
+    @Test
+    public void testFindVariableUsagesForIntermediateEscalationEventThrowing_caseFileVariable() {
+        testFindVariableUsagesForEventWithInput_caseFileVariable(mockIntermediateEscalationEventThrowing(NODE_NAME, EVENT_INPUT_ASSIGNMENTS_INFO_VALUE_CFV));
     }
 
     @Test
@@ -168,8 +261,18 @@ public class VariableUtilsTest {
     }
 
     @Test
+    public void testFindVariableUsagesForIntermediateMessageEventThrowing_caseFileVariable() {
+        testFindVariableUsagesForEventWithInput_caseFileVariable(mockIntermediateMessageEventThrowing(NODE_NAME, EVENT_INPUT_ASSIGNMENTS_INFO_VALUE_CFV));
+    }
+
+    @Test
     public void testFindVariableUsagesForIntermediateSignalEventThrowing() {
         testFindVariableUsagesForEventWithInput(mockIntermediateSignalEventThrowing(NODE_NAME, EVENT_INPUT_ASSIGNMENTS_INFO_VALUE));
+    }
+
+    @Test
+    public void testFindVariableUsagesForIntermediateSignalEventThrowing_caseFileVariable() {
+        testFindVariableUsagesForEventWithInput_caseFileVariable(mockIntermediateSignalEventThrowing(NODE_NAME, EVENT_INPUT_ASSIGNMENTS_INFO_VALUE_CFV));
     }
 
     @Test
@@ -178,8 +281,18 @@ public class VariableUtilsTest {
     }
 
     @Test
+    public void testFindVariableUsagesForStartErrorEvent_caseFileVariable() {
+        testFindVariableUsagesForEventWithOutput_caseFileVariable(mockStartErrorEvent(NODE_NAME, EVENT_OUTPUT_ASSIGNMENTS_INFO_VALUE_CFV));
+    }
+
+    @Test
     public void testFindVariableUsagesForStartEscalationEvent() {
         testFindVariableUsagesForEventWithOutput(mockStartEscalationEvent(NODE_NAME, EVENT_OUTPUT_ASSIGNMENTS_INFO_VALUE));
+    }
+
+    @Test
+    public void testFindVariableUsagesForStartEscalationEvent_caseFileVariable() {
+        testFindVariableUsagesForEventWithOutput_caseFileVariable(mockStartEscalationEvent(NODE_NAME, EVENT_OUTPUT_ASSIGNMENTS_INFO_VALUE_CFV));
     }
 
     @Test
@@ -188,8 +301,18 @@ public class VariableUtilsTest {
     }
 
     @Test
+    public void testFindVariableUsagesForStartMessageEvent_caseFileVariable() {
+        testFindVariableUsagesForEventWithOutput_caseFileVariable(mockStartMessageEvent(NODE_NAME, EVENT_OUTPUT_ASSIGNMENTS_INFO_VALUE_CFV));
+    }
+
+    @Test
     public void testFindVariableUsagesForStartSignalEvent() {
         testFindVariableUsagesForEventWithOutput(mockStartSignalEvent(NODE_NAME, EVENT_OUTPUT_ASSIGNMENTS_INFO_VALUE));
+    }
+
+    @Test
+    public void testFindVariableUsagesForStartSignalEvent_caseFileVariable() {
+        testFindVariableUsagesForEventWithOutput_caseFileVariable(mockStartSignalEvent(NODE_NAME, EVENT_OUTPUT_ASSIGNMENTS_INFO_VALUE_CFV));
     }
 
     private void testFindVariableUsagesForEventWithOutput(Object event) {
@@ -198,9 +321,20 @@ public class VariableUtilsTest {
         testFindVariableUsages("var1", nodes, expectedUsages);
     }
 
+    private void testFindVariableUsagesForEventWithOutput_caseFileVariable(Object event) {
+        List<Node> nodes = mockNodeList(event);
+        List<VariableUsage> expectedUsages = Arrays.asList(new VariableUsage(CASE_FILE_VARIABLE_PREFIX + "var1", VariableUsage.USAGE_TYPE.OUTPUT_VARIABLE, nodes.get(0), NODE_NAME));
+        testFindVariableUsages_caseFileVariable("var1", nodes, expectedUsages);
+    }
+
     @Test
     public void testFindVariableUsagesForReusableSubprocess() {
         testFindVariableUsagesForTask(mockReusableSubprocess(NODE_NAME, ASSIGNMENTS_INFO_VALUE));
+    }
+
+    @Test
+    public void testFindVariableUsagesForReusableSubprocess_caseFileVariable() {
+        testFindVariableUsagesForTask_caseFileVariable(mockReusableSubprocess(NODE_NAME, ASSIGNMENTS_INFO_VALUE_CFV));
     }
 
     @Test
@@ -209,13 +343,28 @@ public class VariableUtilsTest {
     }
 
     @Test
+    public void testFindVariableUsagesForReusableSubprocessInputCollection_caseFileVariable() {
+        testFindVariableUsagesForTaskCollections_caseFileVariable(mockReusableSubprocess(NODE_NAME, ASSIGNMENTS_INFO_VALUE, COLLECTION_CFV, null), COLLECTION, COLLECTION_CFV, null);
+    }
+
+    @Test
     public void testFindVariableUsagesForReusableSubprocessOutputCollection() {
         testFindVariableUsagesForTaskCollections(mockReusableSubprocess(NODE_NAME, ASSIGNMENTS_INFO_VALUE, null, COLLECTION), COLLECTION, null, COLLECTION);
     }
 
     @Test
+    public void testFindVariableUsagesForReusableSubprocessOutputCollection_caseFileVariable() {
+        testFindVariableUsagesForTaskCollections_caseFileVariable(mockReusableSubprocess(NODE_NAME, ASSIGNMENTS_INFO_VALUE, null, COLLECTION_CFV), COLLECTION, null, COLLECTION_CFV);
+    }
+
+    @Test
     public void testFindVariableUsagesForReusableSuprocessTaskInputOutputCollection() {
         testFindVariableUsagesForTaskCollections(mockReusableSubprocess(NODE_NAME, ASSIGNMENTS_INFO_VALUE, COLLECTION, COLLECTION), COLLECTION, COLLECTION, COLLECTION);
+    }
+
+    @Test
+    public void testFindVariableUsagesForReusableSuprocessTaskInputOutputCollection_caseFileVariable() {
+        testFindVariableUsagesForTaskCollections_caseFileVariable(mockReusableSubprocess(NODE_NAME, ASSIGNMENTS_INFO_VALUE, COLLECTION_CFV, COLLECTION_CFV), COLLECTION, COLLECTION_CFV, COLLECTION_CFV);
     }
 
     @Test
@@ -226,10 +375,24 @@ public class VariableUtilsTest {
     }
 
     @Test
+    public void testFindVariableUsagesForMultipleInstanceSubProcessWithOnlyInput_caseFileVariable() {
+        List<Node> nodes = mockNodeList(mockMultipleInstanceSubprocess(NODE_NAME, CASE_FILE_VARIABLE_PREFIX + "var1", null));
+        List<VariableUsage> expectedUsages = Arrays.asList(new VariableUsage(CASE_FILE_VARIABLE_PREFIX + "var1", VariableUsage.USAGE_TYPE.MULTIPLE_INSTANCE_INPUT_COLLECTION, nodes.get(0), NODE_NAME));
+        testFindVariableUsages_caseFileVariable("var1", nodes, expectedUsages);
+    }
+
+    @Test
     public void testFindVariableUsagesForMultipleInstanceSubProcessWithOnlyOutput() {
         List<Node> nodes = mockNodeList(mockMultipleInstanceSubprocess(NODE_NAME, null, "var1"));
         List<VariableUsage> expectedUsages = Arrays.asList(new VariableUsage("var1", VariableUsage.USAGE_TYPE.MULTIPLE_INSTANCE_OUTPUT_COLLECTION, nodes.get(0), NODE_NAME));
         testFindVariableUsages("var1", nodes, expectedUsages);
+    }
+
+    @Test
+    public void testFindVariableUsagesForMultipleInstanceSubProcessWithOnlyOutput_caseFileVariable() {
+        List<Node> nodes = mockNodeList(mockMultipleInstanceSubprocess(NODE_NAME, null, CASE_FILE_VARIABLE_PREFIX + "var1"));
+        List<VariableUsage> expectedUsages = Arrays.asList(new VariableUsage(CASE_FILE_VARIABLE_PREFIX + "var1", VariableUsage.USAGE_TYPE.MULTIPLE_INSTANCE_OUTPUT_COLLECTION, nodes.get(0), NODE_NAME));
+        testFindVariableUsages_caseFileVariable("var1", nodes, expectedUsages);
     }
 
     @Test
@@ -240,9 +403,23 @@ public class VariableUtilsTest {
         testFindVariableUsages("var1", nodes, expectedUsages);
     }
 
+    @Test
+    public void testFindVariableUsagesForMultipleInstanceSubProcessWithInputAndOutput_caseFileVariable() {
+        List<Node> nodes = mockNodeList(mockMultipleInstanceSubprocess(NODE_NAME, CASE_FILE_VARIABLE_PREFIX + "var1", CASE_FILE_VARIABLE_PREFIX + "var1"));
+        List<VariableUsage> expectedUsages = Arrays.asList(new VariableUsage(CASE_FILE_VARIABLE_PREFIX + "var1", VariableUsage.USAGE_TYPE.MULTIPLE_INSTANCE_INPUT_COLLECTION, nodes.get(0), NODE_NAME),
+                                                           new VariableUsage(CASE_FILE_VARIABLE_PREFIX + "var1", VariableUsage.USAGE_TYPE.MULTIPLE_INSTANCE_OUTPUT_COLLECTION, nodes.get(0), NODE_NAME));
+        testFindVariableUsages_caseFileVariable("var1", nodes, expectedUsages);
+    }
+
     private void testFindVariableUsages(String variableName, List<Node> nodes, List<VariableUsage> expectedUsages) {
         when(graph.nodes()).thenReturn(nodes);
-        Collection<VariableUsage> result = VariableUtils.findVariableUsages(graph, variableName);
+        Collection<VariableUsage> result = findVariableUsages(graph, variableName, EnumSet.noneOf(FindVariableUsagesFlag.class));
+        assertEquals(expectedUsages, result);
+    }
+
+    private void testFindVariableUsages_caseFileVariable(String variableName, List<Node> nodes, List<VariableUsage> expectedUsages) {
+        when(graph.nodes()).thenReturn(nodes);
+        Collection<VariableUsage> result = findVariableUsages(graph, variableName, EnumSet.of(FindVariableUsagesFlag.CASE_FILE_VARIABLE));
         assertEquals(expectedUsages, result);
     }
 
@@ -256,11 +433,28 @@ public class VariableUtilsTest {
         testFindVariableUsages("var3", nodes, expectedUsages);
     }
 
+    private void testFindVariableUsagesForTask_caseFileVariable(Object task) {
+        List<Node> nodes = mockNodeList(task);
+        List<VariableUsage> expectedUsages = Arrays.asList(new VariableUsage(CASE_FILE_VARIABLE_PREFIX + "var1", VariableUsage.USAGE_TYPE.INPUT_VARIABLE, nodes.get(0), NODE_NAME));
+        testFindVariableUsages_caseFileVariable("var1", nodes, expectedUsages);
+        expectedUsages = Arrays.asList(new VariableUsage(CASE_FILE_VARIABLE_PREFIX + "var2", VariableUsage.USAGE_TYPE.OUTPUT_VARIABLE, nodes.get(0), NODE_NAME));
+        testFindVariableUsages_caseFileVariable("var2", nodes, expectedUsages);
+        expectedUsages = Arrays.asList(new VariableUsage(CASE_FILE_VARIABLE_PREFIX + "var3", VariableUsage.USAGE_TYPE.INPUT_OUTPUT_VARIABLE, nodes.get(0), NODE_NAME));
+        testFindVariableUsages_caseFileVariable("var3", nodes, expectedUsages);
+    }
+
     private void testFindVariableUsagesForTaskCollections(Object task, String var, String inputCollection, String outputCollection) {
         List<Node> nodes = mockNodeList(task);
         List<VariableUsage> expectedUsages = new ArrayList<>();
         addInputOutputCollections(expectedUsages, inputCollection, outputCollection, nodes.get(0));
         testFindVariableUsages(var, nodes, expectedUsages);
+    }
+
+    private void testFindVariableUsagesForTaskCollections_caseFileVariable(Object task, String var, String inputCollection, String outputCollection) {
+        List<Node> nodes = mockNodeList(task);
+        List<VariableUsage> expectedUsages = new ArrayList<>();
+        addInputOutputCollections(expectedUsages, inputCollection, outputCollection, nodes.get(0));
+        testFindVariableUsages_caseFileVariable(var, nodes, expectedUsages);
     }
 
     private void addInputOutputCollections(List<VariableUsage> expectedResult, String inputCollection, String outputCollection, Node node) {
@@ -286,11 +480,11 @@ public class VariableUtilsTest {
         return result;
     }
 
-    private UserTask mockUserTask(String name, String assignmentsInfoValue) {
+    private BaseUserTask mockUserTask(String name, String assignmentsInfoValue) {
         return mockUserTask(name, assignmentsInfoValue, null, null);
     }
 
-    private UserTask mockUserTask(String name, String assignmentsInfoValue, String inputCollection, String outputCollection) {
+    private BaseUserTask mockUserTask(String name, String assignmentsInfoValue, String inputCollection, String outputCollection) {
         UserTask result = mock(UserTask.class);
         TaskGeneralSet generalSet = mockTaskGeneralSet(name);
         when(result.getGeneral()).thenReturn(generalSet);
@@ -482,11 +676,11 @@ public class VariableUtilsTest {
         return result;
     }
 
-    private ReusableSubprocess mockReusableSubprocess(String name, String assignmentsInfoValue) {
+    private BaseReusableSubprocess mockReusableSubprocess(String name, String assignmentsInfoValue) {
         return mockReusableSubprocess(name, assignmentsInfoValue, null, null);
     }
 
-    private ReusableSubprocess mockReusableSubprocess(String name, String assignmentsInfoValue, String inputCollection, String outputCollection) {
+    private BaseReusableSubprocess mockReusableSubprocess(String name, String assignmentsInfoValue, String inputCollection, String outputCollection) {
         ReusableSubprocess result = mock(ReusableSubprocess.class);
         BPMNGeneralSet generalSet = mockGeneralSet(name);
         when(result.getGeneral()).thenReturn(generalSet);

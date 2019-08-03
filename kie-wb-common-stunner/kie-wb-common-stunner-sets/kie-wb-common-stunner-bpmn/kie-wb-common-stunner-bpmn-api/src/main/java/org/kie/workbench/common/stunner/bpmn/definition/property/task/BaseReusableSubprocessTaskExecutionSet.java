@@ -51,4 +51,32 @@ public interface BaseReusableSubprocessTaskExecutionSet extends BPMNPropertySet 
     AdHocAutostart getAdHocAutostart();
 
     void setAdHocAutostart(AdHocAutostart adHocAutostart);
+
+    IsMultipleInstance getIsMultipleInstance();
+
+    void setIsMultipleInstance(IsMultipleInstance isMultipleInstance);
+
+    MultipleInstanceExecutionMode getMultipleInstanceExecutionMode();
+
+    void setMultipleInstanceExecutionMode(MultipleInstanceExecutionMode multipleInstanceExecutionMode);
+
+    MultipleInstanceCollectionInput getMultipleInstanceCollectionInput();
+
+    void setMultipleInstanceCollectionInput(MultipleInstanceCollectionInput multipleInstanceCollectionInput);
+
+    MultipleInstanceDataInput getMultipleInstanceDataInput();
+
+    void setMultipleInstanceDataInput(MultipleInstanceDataInput multipleInstanceDataInput);
+
+    MultipleInstanceCollectionOutput getMultipleInstanceCollectionOutput();
+
+    void setMultipleInstanceCollectionOutput(MultipleInstanceCollectionOutput multipleInstanceCollectionOutput);
+
+    MultipleInstanceDataOutput getMultipleInstanceDataOutput();
+
+    void setMultipleInstanceDataOutput(MultipleInstanceDataOutput multipleInstanceDataOutput);
+
+    MultipleInstanceCompletionCondition getMultipleInstanceCompletionCondition();
+
+    void setMultipleInstanceCompletionCondition(MultipleInstanceCompletionCondition multipleInstanceCompletionCondition);
 }

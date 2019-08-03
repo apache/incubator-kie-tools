@@ -17,9 +17,11 @@
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.variablesEditor;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -41,6 +43,9 @@ import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 
+import static org.kie.workbench.common.stunner.bpmn.client.util.VariableUtils.FindVariableUsagesFlag;
+import static org.kie.workbench.common.stunner.bpmn.client.util.VariableUtils.FindVariableUsagesFlag.CASE_FILE_VARIABLE;
+
 @Dependent
 public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorFieldDefinition, DefaultFormGroup>
         implements VariablesEditorWidgetView.Presenter {
@@ -55,6 +60,8 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
     private Graph graph;
     private Path path;
 
+    private Set<FindVariableUsagesFlag> findVariableUsagesFlags;
+
     private final ErrorPopupPresenter errorPopupPresenter;
 
     @Inject
@@ -64,6 +71,7 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
         this.view = variablesEditor;
         this.sessionManager = sessionManager;
         this.errorPopupPresenter = errorPopupPresenter;
+        this.findVariableUsagesFlags = EnumSet.noneOf(FindVariableUsagesFlag.class);
     }
 
     @Override
@@ -82,6 +90,10 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
         graph = diagram.getGraph();
 
         formGroup.render(view.asWidget(), field);
+
+        if (field != null && field.isCaseFileVariable()) {
+            findVariableUsagesFlags = EnumSet.of(CASE_FILE_VARIABLE);
+        }
 
         return formGroup;
     }
@@ -216,7 +228,7 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
 
     @Override
     public boolean isBoundToNodes(String name) {
-        return VariableUtils.findVariableUsages(graph, name).size() > 0;
+        return VariableUtils.findVariableUsages(graph, name, findVariableUsagesFlags).size() > 0;
     }
 
     @Override

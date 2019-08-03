@@ -47,31 +47,31 @@ public class CaseManagementShapeCommand {
     static {
         final Map<Class, Command> cmShapeTypes = new HashMap<>();
 
-        cmShapeTypes.put(CaseManagementDiagram.class, (CaseManagementShapeView shapeView) -> {
+        cmShapeTypes.put(CaseManagementDiagram.class, (CaseManagementShapeView shapeView, CaseManagementSvgShapeDef shapeDef) -> {
             shapeView.setLabel(DIAGRAM);
             shapeView.setLayoutHandler(new HorizontalStackLayoutManager());
-            return new CaseManagementShape(shapeView);
+            return new CaseManagementShape(shapeView, shapeDef);
         });
-        cmShapeTypes.put(AdHocSubprocess.class, (CaseManagementShapeView shapeView) -> {
+        cmShapeTypes.put(AdHocSubprocess.class, (CaseManagementShapeView shapeView, CaseManagementSvgShapeDef shapeDef) -> {
             shapeView.setLabel(STAGE);
             shapeView.setLayoutHandler(new VerticalStackLayoutManager());
 
-            return new CaseManagementShape(shapeView);
+            return new CaseManagementShape(shapeView, shapeDef);
         });
-        cmShapeTypes.put(ProcessReusableSubprocess.class, (CaseManagementShapeView shapeView) -> {
+        cmShapeTypes.put(ProcessReusableSubprocess.class, (CaseManagementShapeView shapeView, CaseManagementSvgShapeDef shapeDef) -> {
             shapeView.setLabel(SUBPROCESS);
             shapeView.setLayoutHandler(ILayoutHandler.NONE);
-            return new CaseManagementShape(shapeView);
+            return new CaseManagementShape(shapeView, shapeDef);
         });
-        cmShapeTypes.put(CaseReusableSubprocess.class, (CaseManagementShapeView shapeView) -> {
+        cmShapeTypes.put(CaseReusableSubprocess.class, (CaseManagementShapeView shapeView, CaseManagementSvgShapeDef shapeDef) -> {
             shapeView.setLabel(SUBCASE);
             shapeView.setLayoutHandler(ILayoutHandler.NONE);
-            return new CaseManagementShape(shapeView);
+            return new CaseManagementShape(shapeView, shapeDef);
         });
-        cmShapeTypes.put(UserTask.class, (CaseManagementShapeView shapeView) -> {
+        cmShapeTypes.put(UserTask.class, (CaseManagementShapeView shapeView, CaseManagementSvgShapeDef shapeDef) -> {
             shapeView.setLabel(USER_TASK);
             shapeView.setLayoutHandler(ILayoutHandler.NONE);
-            return new CaseManagementShape(shapeView);
+            return new CaseManagementShape(shapeView, shapeDef);
         });
         CM_SHAPE_TYPES = Collections.unmodifiableMap(cmShapeTypes);
     }
@@ -82,7 +82,7 @@ public class CaseManagementShapeCommand {
             return null;
         }
         applyShapeViewHandlers(definition, shapeView, shapeDef);
-        return command.configure(shapeView);
+        return command.configure(shapeView, shapeDef);
     }
 
     private static void applyShapeViewHandlers(Object definition, CaseManagementShapeView shapeView, CaseManagementSvgShapeDef shapeDef) {
@@ -95,6 +95,6 @@ public class CaseManagementShapeCommand {
 
     interface Command {
 
-        CaseManagementShape configure(CaseManagementShapeView shapeView);
+        CaseManagementShape configure(CaseManagementShapeView shapeView, CaseManagementSvgShapeDef shapeDef);
     }
 }

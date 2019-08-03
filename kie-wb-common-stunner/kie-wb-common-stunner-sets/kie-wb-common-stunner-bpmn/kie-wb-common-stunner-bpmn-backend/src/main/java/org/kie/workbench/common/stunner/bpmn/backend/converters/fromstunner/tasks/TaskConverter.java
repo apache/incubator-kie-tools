@@ -38,7 +38,6 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.BaseUserTa
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.BusinessRuleTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.RuleLanguage;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTaskExecutionSet;
-import org.kie.workbench.common.stunner.bpmn.definition.property.task.UserTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTask;
 import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTaskExecutionSet;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -151,16 +150,13 @@ public class TaskConverter {
         p.setAsync(executionSet.getIsAsync().getValue());
         p.setCreatedBy(executionSet.getCreatedBy().getValue());
         p.setAdHocAutostart(executionSet.getAdHocAutostart().getValue());
-        if (executionSet instanceof UserTaskExecutionSet) {
-            UserTaskExecutionSet taskExecutionSet = (UserTaskExecutionSet) executionSet;
-            if (Boolean.TRUE.equals(taskExecutionSet.getIsMultipleInstance().getValue())) {
-                p.setIsSequential(taskExecutionSet.getMultipleInstanceExecutionMode().isSequential());
-                p.setCollectionInput(taskExecutionSet.getMultipleInstanceCollectionInput().getValue());
-                p.setInput(taskExecutionSet.getMultipleInstanceDataInput().getValue());
-                p.setCollectionOutput(taskExecutionSet.getMultipleInstanceCollectionOutput().getValue());
-                p.setOutput(taskExecutionSet.getMultipleInstanceDataOutput().getValue());
-                p.setCompletionCondition(taskExecutionSet.getMultipleInstanceCompletionCondition().getValue());
-            }
+        if (Boolean.TRUE.equals(executionSet.getIsMultipleInstance().getValue())) {
+            p.setIsSequential(executionSet.getMultipleInstanceExecutionMode().isSequential());
+            p.setCollectionInput(executionSet.getMultipleInstanceCollectionInput().getValue());
+            p.setInput(executionSet.getMultipleInstanceDataInput().getValue());
+            p.setCollectionOutput(executionSet.getMultipleInstanceCollectionOutput().getValue());
+            p.setOutput(executionSet.getMultipleInstanceDataOutput().getValue());
+            p.setCompletionCondition(executionSet.getMultipleInstanceCompletionCondition().getValue());
         }
         p.setOnEntryAction(executionSet.getOnEntryAction());
         p.setOnExitAction(executionSet.getOnExitAction());

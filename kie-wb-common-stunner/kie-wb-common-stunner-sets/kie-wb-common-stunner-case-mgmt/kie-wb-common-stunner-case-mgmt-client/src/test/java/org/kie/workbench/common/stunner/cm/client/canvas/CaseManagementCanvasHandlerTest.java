@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.cm.client.canvas;
 
 import java.util.Collections;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
@@ -26,6 +27,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNViewDefinition;
 import org.kie.workbench.common.stunner.cm.client.shape.CaseManagementShape;
+import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementSvgShapeDef;
 import org.kie.workbench.common.stunner.cm.client.shape.view.CaseManagementShapeView;
 import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
 import org.kie.workbench.common.stunner.core.client.api.ClientDefinitionManager;
@@ -131,6 +133,9 @@ public class CaseManagementCanvasHandlerTest {
     @Mock
     private Transform transform;
 
+    @Mock
+    private BiConsumer viewHandler;
+
     private static final double X = 10.0d;
     private static final double Y = 20.0d;
 
@@ -204,14 +209,16 @@ public class CaseManagementCanvasHandlerTest {
     @SuppressWarnings("unchecked")
     private CaseManagementShape makeShape() {
         final CaseManagementShapeView shapeView = mock(CaseManagementShapeView.class);
-        return new CaseManagementShape(shapeView);
+        final CaseManagementSvgShapeDef shapeDef = mock(CaseManagementSvgShapeDef.class);
+        when(shapeDef.viewHandler()).thenReturn(viewHandler);
+        return new CaseManagementShape(shapeView, shapeDef);
     }
 
     @SuppressWarnings("unchecked")
     private Node<View<BPMNViewDefinition>, Edge> makeNode(final String uuid,
                                                           final CaseManagementShape shape) {
         final Node<View<BPMNViewDefinition>, Edge> node = new NodeImpl<>(uuid);
-        node.setContent(new ViewImpl(new CaseManagementDiagram(),
+        node.setContent(new ViewImpl(spy(new CaseManagementDiagram()),
                                      Bounds.create(0d, 0d, 10d, 20d)));
         shape.setUUID(uuid);
         when(canvas.getShape(eq(uuid))).thenReturn(shape);
@@ -354,10 +361,12 @@ public class CaseManagementCanvasHandlerTest {
                                      true,
                                      mutationContext);
 
-        verify(shape.getShapeView(),
+        final CaseManagementShapeView shapeView = (CaseManagementShapeView) shape.getShapeView();
+
+        verify(shapeView,
                times(1)).refresh();
 
-        verify((CaseManagementShapeView) shape.getShapeView(),
+        verify(shapeView,
                times(1)).setLabel(eq(name));
 
         verify(shape,
@@ -368,6 +377,10 @@ public class CaseManagementCanvasHandlerTest {
 
         verify(canvasElementUpdatedEvent,
                times(1)).fire(any());
+
+        verify(viewHandler,
+               times(1)).accept(eq(node.getContent().getDefinition()),
+                                eq(shapeView));
     }
 
     @Test
@@ -389,10 +402,12 @@ public class CaseManagementCanvasHandlerTest {
                                      true,
                                      mutationContext);
 
-        verify(shape.getShapeView(),
+        final CaseManagementShapeView shapeView = (CaseManagementShapeView) shape.getShapeView();
+
+        verify(shapeView,
                times(1)).refresh();
 
-        verify((CaseManagementShapeView) shape.getShapeView(),
+        verify(shapeView,
                times(1)).setLabel(eq(name));
 
         verify(shape,
@@ -403,6 +418,10 @@ public class CaseManagementCanvasHandlerTest {
 
         verify(canvasElementUpdatedEvent,
                times(1)).fire(any());
+
+        verify(viewHandler,
+               times(1)).accept(eq(node.getContent().getDefinition()),
+                                eq(shapeView));
     }
 
     @SuppressWarnings("unchecked")

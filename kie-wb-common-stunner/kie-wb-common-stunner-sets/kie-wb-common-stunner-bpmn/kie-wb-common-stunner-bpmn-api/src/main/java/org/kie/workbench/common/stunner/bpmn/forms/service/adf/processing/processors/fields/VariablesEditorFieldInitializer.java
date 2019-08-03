@@ -38,5 +38,7 @@ public class VariablesEditorFieldInitializer implements FieldInitializer<Variabl
                            FormGenerationContext context) {
         field.setDefaultValue(fieldElement.getParams().getOrDefault("defaultValue",
                                                                     ""));
+        field.setCaseFileVariable(Boolean.parseBoolean(fieldElement.getParams().getOrDefault("caseFileVariable",
+                                                                                             "false")));
     }
 }
