@@ -16,14 +16,20 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties;
 
+import java.util.Locale;
+
 import org.eclipse.bpmn2.BaseElement;
 import org.junit.Test;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Package;
+import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 
 import static org.junit.Assert.assertEquals;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpmn2;
 
 public class CustomAttributeTest {
+
+    private static final double POINT2D_X_COORDINATE = 1.0;
+    private static final double POINT2D_Y_COORDINATE = 2.0;
 
     @Test
     public void packageNameSetEmpty() {
@@ -43,7 +49,33 @@ public class CustomAttributeTest {
         assertEquals(null, packageName.get());
     }
 
-    public BaseElement createBaseElement() {
+    @Test
+    public void dockerInfoSet() {
+        CustomAttribute<Point2D> dockerInfo = createDockerInfoAttribute();
+        Point2D point2D = new Point2D(POINT2D_X_COORDINATE, POINT2D_Y_COORDINATE);
+        dockerInfo.set(point2D);
+        assertEquals(point2D, dockerInfo.get());
+    }
+
+    @Test
+    public void dockerInfoSetLocalization() {
+        Locale defaultLocale = Locale.getDefault();
+        Locale.setDefault(new Locale("cs", "CZ"));
+
+        CustomAttribute<Point2D> dockerInfo = createDockerInfoAttribute();
+        Point2D point2D = new Point2D(POINT2D_X_COORDINATE, POINT2D_Y_COORDINATE);
+        dockerInfo.set(point2D);
+        assertEquals(point2D, dockerInfo.get());
+
+        Locale.setDefault(defaultLocale);
+    }
+
+    private CustomAttribute<Point2D> createDockerInfoAttribute() {
+        BaseElement baseElement = bpmn2.createBoundaryEvent();
+        return CustomAttribute.dockerInfo.of(baseElement);
+    }
+
+    private BaseElement createBaseElement() {
         return bpmn2.createTask();
     }
 }

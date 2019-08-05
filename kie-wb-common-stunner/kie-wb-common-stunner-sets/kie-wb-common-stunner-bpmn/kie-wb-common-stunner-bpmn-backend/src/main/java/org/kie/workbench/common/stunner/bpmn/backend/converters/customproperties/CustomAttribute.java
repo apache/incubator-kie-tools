@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties;
 
+import java.util.Locale;
 import java.util.Optional;
 
 import org.eclipse.bpmn2.BaseElement;
@@ -99,7 +100,7 @@ public class CustomAttribute<T> {
 
         @Override
         public void setValue(BaseElement element, Point2D value) {
-            setStringValue(element, String.format("%.1f^%.1f|", value.getX(), value.getY()));
+            setStringValue(element, String.format(Locale.ENGLISH, "%.1f^%.1f|", value.getX(), value.getY()));
         }
     };
 
