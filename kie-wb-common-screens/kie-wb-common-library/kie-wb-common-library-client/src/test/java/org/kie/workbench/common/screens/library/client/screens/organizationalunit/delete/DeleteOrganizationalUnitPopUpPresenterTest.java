@@ -141,4 +141,29 @@ public class DeleteOrganizationalUnitPopUpPresenterTest {
 
         verify(view).hide();
     }
+
+    @Test
+    public void currentOrganizationalUnitRemovedTest() {
+        final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
+        doReturn("ou-name").when(organizationalUnit).getName();
+
+        presenter.organizationalUnit = organizationalUnit;
+
+        presenter.onOrganizationalUnitRemoved(new AfterDeleteOrganizationalUnitEvent(organizationalUnit));
+
+        verify(view).hide();
+    }
+
+    @Test
+    public void anotherOrganizationalUnitRemovedTest() {
+        final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
+        doReturn("ou-name").when(organizationalUnit).getName();
+
+        presenter.organizationalUnit = mock(OrganizationalUnit.class);
+        doReturn("another-ou-name").when(organizationalUnit).getName();
+
+        presenter.onOrganizationalUnitRemoved(new AfterDeleteOrganizationalUnitEvent(organizationalUnit));
+
+        verify(view, never()).hide();
+    }
 }

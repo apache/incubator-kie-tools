@@ -18,6 +18,7 @@ package org.kie.workbench.common.screens.library.client.screens.organizationalun
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.guvnor.structure.client.security.OrganizationalUnitController;
@@ -112,5 +113,11 @@ public class DeleteOrganizationalUnitPopUpPresenter {
 
     public void cancel() {
         view.hide();
+    }
+
+    public void onOrganizationalUnitRemoved(@Observes final AfterDeleteOrganizationalUnitEvent removedOrganizationalUnitEvent) {
+        if (removedOrganizationalUnitEvent.getOrganizationalUnit().getName().equals(organizationalUnit.getName())) {
+            cancel();
+        }
     }
 }
