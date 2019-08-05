@@ -30,6 +30,7 @@ import org.drools.scenariosimulation.api.model.FactMapping;
 import org.drools.scenariosimulation.api.model.FactMappingType;
 import org.drools.scenariosimulation.api.model.Scenario;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
+import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
 import org.drools.scenariosimulation.api.model.Simulation;
 import org.drools.scenariosimulation.api.model.SimulationDescriptor;
 import org.drools.scenariosimulation.api.utils.ScenarioSimulationSharedUtils;
@@ -38,6 +39,8 @@ import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.Fact
 import org.drools.workbench.screens.scenariosimulation.service.DMNTypeService;
 import org.uberfire.backend.vfs.Path;
 
+import static org.drools.scenariosimulation.api.model.FactMappingType.EXPECT;
+import static org.drools.scenariosimulation.api.model.FactMappingType.GIVEN;
 import static org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree.Type;
 
 @ApplicationScoped
@@ -54,9 +57,8 @@ public class DMNSimulationCreationStrategy implements SimulationCreationStrategy
         SimulationDescriptor simulationDescriptor = toReturn.getSimulationDescriptor();
         simulationDescriptor.setType(ScenarioSimulationModel.Type.DMN);
         simulationDescriptor.setDmnFilePath(dmnFilePath);
-        Scenario scenario = createScenario(toReturn, simulationDescriptor);
+        ScenarioWithIndex scenarioWithIndex = createScenario(toReturn, simulationDescriptor);
 
-        int row = toReturn.getUnmodifiableScenarios().indexOf(scenario);
         AtomicInteger id = new AtomicInteger(1);
         final Collection<FactModelTree> visibleFactTrees = factModelTuple.getVisibleFacts().values();
         final Map<String, FactModelTree> hiddenValues = factModelTuple.getHiddenFacts();
@@ -67,11 +69,62 @@ public class DMNSimulationCreationStrategy implements SimulationCreationStrategy
             return aType.equals(bType) ? 0 : (Type.INPUT.equals(aType) ? -1 : 1);
         }).forEach(factModelTree -> {
             FactIdentifier factIdentifier = new FactIdentifier(factModelTree.getFactName(), factModelTree.getFactName());
-            FactMappingExtractor factMappingExtractor = new FactMappingExtractor(factIdentifier, row, id, convert(factModelTree.getType()), simulationDescriptor, scenario);
+            FactMappingExtractor factMappingExtractor = new FactMappingExtractor(factIdentifier, scenarioWithIndex.getIndex(), id, convert(factModelTree.getType()), simulationDescriptor, scenarioWithIndex.getScenario());
             addToScenario(factMappingExtractor, factModelTree, new ArrayList<>(), hiddenValues);
         });
 
+        addEmptyColumnsIfNeeded(toReturn, scenarioWithIndex);
+
         return toReturn;
+    }
+
+    /**
+     * If DMN model is empty, contains only inputs or only outputs this method add one GIVEN and/or EXPECT empty column
+     * @param simulation
+     * @param scenarioWithIndex
+     */
+    protected void addEmptyColumnsIfNeeded(Simulation simulation, ScenarioWithIndex scenarioWithIndex) {
+        boolean hasGiven = false;
+        boolean hasExpect = false;
+        SimulationDescriptor simulationDescriptor = simulation.getSimulationDescriptor();
+        for (FactMapping factMapping : simulationDescriptor.getFactMappings()) {
+            FactMappingType factMappingType = factMapping.getExpressionIdentifier().getType();
+            if (!hasGiven && GIVEN.equals(factMappingType)) {
+                hasGiven = true;
+            } else if (!hasExpect && EXPECT.equals(factMappingType)) {
+                hasExpect = true;
+            }
+        }
+        if (!hasGiven) {
+            createEmptyColumn(simulationDescriptor,
+                              scenarioWithIndex,
+                              1,
+                              GIVEN,
+                              findNewIndexOfGroup(simulationDescriptor, GIVEN));
+        }
+        if (!hasExpect) {
+            createEmptyColumn(simulationDescriptor,
+                              scenarioWithIndex,
+                              2,
+                              EXPECT,
+                              findNewIndexOfGroup(simulationDescriptor, EXPECT));
+        }
+    }
+
+    protected int findNewIndexOfGroup(SimulationDescriptor simulationDescriptor, FactMappingType factMappingType) {
+        List<FactMapping> factMappings = simulationDescriptor.getFactMappings();
+        if (GIVEN.equals(factMappingType)) {
+            for (int i = 0; i < factMappings.size(); i += 1) {
+                if (EXPECT.equals(factMappings.get(i).getExpressionIdentifier().getType())) {
+                    return i;
+                }
+            }
+            return factMappings.size();
+        } else if (EXPECT.equals(factMappingType)) {
+            return factMappings.size();
+        } else {
+            throw new IllegalArgumentException("This method can be invoked only with GIVEN or EXPECT as FactMappingType");
+        }
     }
 
     // Indirection for test
@@ -161,9 +214,9 @@ public class DMNSimulationCreationStrategy implements SimulationCreationStrategy
     static private FactMappingType convert(Type modelTreeType) {
         switch (modelTreeType) {
             case INPUT:
-                return FactMappingType.GIVEN;
+                return GIVEN;
             case DECISION:
-                return FactMappingType.EXPECT;
+                return EXPECT;
             default:
                 throw new IllegalArgumentException("Impossible to map");
         }
