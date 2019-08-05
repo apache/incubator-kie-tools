@@ -19,7 +19,7 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.function;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.FunctionDefinition;
+import org.kie.workbench.common.dmn.api.definition.model.FunctionDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.kindselector.HasKindSelectControl;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.kindselector.KindPopoverView;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditablePopupHeaderMetaData;

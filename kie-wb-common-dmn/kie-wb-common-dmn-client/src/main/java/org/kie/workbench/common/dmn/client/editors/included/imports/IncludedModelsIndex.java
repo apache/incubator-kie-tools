@@ -22,7 +22,7 @@ import java.util.Map;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.Import;
+import org.kie.workbench.common.dmn.api.definition.model.Import;
 import org.kie.workbench.common.dmn.client.editors.included.BaseIncludedModelActiveRecord;
 
 @ApplicationScoped

@@ -24,7 +24,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.jboss.errai.ui.client.local.spi.TranslationService;
-import org.kie.workbench.common.dmn.api.definition.v1_1.BuiltinAggregator;
+import org.kie.workbench.common.dmn.api.definition.model.BuiltinAggregator;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 
 @ApplicationScoped

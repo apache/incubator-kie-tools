@@ -24,7 +24,7 @@ import javax.enterprise.context.Dependent;
 
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
+import org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 
 @Dependent

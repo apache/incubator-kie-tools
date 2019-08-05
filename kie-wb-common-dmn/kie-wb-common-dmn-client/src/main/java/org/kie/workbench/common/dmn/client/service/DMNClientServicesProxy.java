@@ -18,7 +18,7 @@ package org.kie.workbench.common.dmn.client.service;
 import java.util.List;
 
 import elemental2.dom.DomGlobal;
-import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
+import org.kie.workbench.common.dmn.api.definition.model.ItemDefinition;
 import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedModel;
 import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedNode;
 import org.kie.workbench.common.dmn.api.editors.included.IncludedModel;

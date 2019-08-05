@@ -18,7 +18,7 @@ package org.kie.workbench.common.dmn.api.definition;
 
 import java.util.List;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
+import org.kie.workbench.common.dmn.api.definition.model.Expression;
 
 public interface HasComponentWidths {
 

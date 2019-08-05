@@ -27,8 +27,8 @@ import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
-import org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType;
-import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
+import org.kie.workbench.common.dmn.api.definition.model.ConstraintType;
+import org.kie.workbench.common.dmn.api.definition.model.ItemDefinition;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;

@@ -22,7 +22,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
+import org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.client.editors.types.DataTypePickerWidget;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.FormGroup;

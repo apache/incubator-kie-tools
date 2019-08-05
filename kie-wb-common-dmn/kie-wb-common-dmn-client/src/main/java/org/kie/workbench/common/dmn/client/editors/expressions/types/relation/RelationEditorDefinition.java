@@ -26,10 +26,10 @@ import javax.inject.Inject;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
-import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
-import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Relation;
+import org.kie.workbench.common.dmn.api.definition.model.Expression;
+import org.kie.workbench.common.dmn.api.definition.model.InformationItem;
+import org.kie.workbench.common.dmn.api.definition.model.LiteralExpression;
+import org.kie.workbench.common.dmn.api.definition.model.Relation;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.BaseEditorDefinition;
@@ -105,7 +105,7 @@ public class RelationEditorDefinition extends BaseEditorDefinition<Relation, Rel
         expression.ifPresent(relation -> {
             final InformationItem column = new InformationItem();
             column.getName().setValue(RelationDefaultValueUtilities.getNewColumnName(relation));
-            final org.kie.workbench.common.dmn.api.definition.v1_1.List row = new org.kie.workbench.common.dmn.api.definition.v1_1.List();
+            final org.kie.workbench.common.dmn.api.definition.model.List row = new org.kie.workbench.common.dmn.api.definition.model.List();
             final LiteralExpression literalExpression = new LiteralExpression();
             row.getExpression().add(literalExpression);
             relation.getColumn().add(column);

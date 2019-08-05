@@ -18,7 +18,7 @@ package org.kie.workbench.common.dmn.client.editors.types.common.events;
 
 import java.util.List;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
+import org.kie.workbench.common.dmn.api.definition.model.ItemDefinition;
 import org.uberfire.workbench.events.UberFireEvent;
 
 import static java.util.Collections.emptyList;

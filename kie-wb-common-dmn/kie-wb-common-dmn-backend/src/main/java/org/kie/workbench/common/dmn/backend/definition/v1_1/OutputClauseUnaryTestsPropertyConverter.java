@@ -18,9 +18,9 @@ package org.kie.workbench.common.dmn.backend.definition.v1_1;
 
 import javax.xml.namespace.QName;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
-import org.kie.workbench.common.dmn.api.definition.v1_1.OutputClauseUnaryTests;
+import org.kie.workbench.common.dmn.api.definition.model.ConstraintType;
+import org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase;
+import org.kie.workbench.common.dmn.api.definition.model.OutputClauseUnaryTests;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Text;
 

@@ -25,8 +25,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.DRGElement;
-import org.kie.workbench.common.dmn.api.definition.v1_1.TextAnnotation;
+import org.kie.workbench.common.dmn.api.definition.model.DRGElement;
+import org.kie.workbench.common.dmn.api.definition.model.TextAnnotation;
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasFocusedShapeEvent;

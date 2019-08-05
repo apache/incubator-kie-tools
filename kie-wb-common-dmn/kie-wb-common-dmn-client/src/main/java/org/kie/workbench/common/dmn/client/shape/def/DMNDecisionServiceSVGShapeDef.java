@@ -15,7 +15,7 @@
  */
 package org.kie.workbench.common.dmn.client.shape.def;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionService;
+import org.kie.workbench.common.dmn.api.definition.model.DecisionService;
 import org.kie.workbench.common.dmn.client.resources.DMNDecisionServiceSVGViewFactory;
 
 public interface DMNDecisionServiceSVGShapeDef

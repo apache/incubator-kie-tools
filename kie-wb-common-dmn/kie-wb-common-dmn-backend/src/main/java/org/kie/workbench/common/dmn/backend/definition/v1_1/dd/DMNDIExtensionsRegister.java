@@ -23,7 +23,7 @@ import org.kie.dmn.api.marshalling.DMNExtensionRegister;
 import org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase;
 import org.kie.dmn.model.v1_2.TDefinitions;
 
-import static org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase.Namespace.KIE;
+import static org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase.Namespace.KIE;
 
 public class DMNDIExtensionsRegister implements DMNExtensionRegister {
 

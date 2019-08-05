@@ -27,7 +27,7 @@ import org.jboss.errai.common.client.dom.UnorderedList;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.kie.workbench.common.dmn.api.definition.v1_1.FunctionDefinition;
+import org.kie.workbench.common.dmn.api.definition.model.FunctionDefinition;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorTextItemView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.popover.AbstractPopoverViewImpl;
 import org.uberfire.client.views.pfly.widgets.JQueryProducer;

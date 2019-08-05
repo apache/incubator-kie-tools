@@ -52,19 +52,19 @@ import org.kie.dmn.model.v1_2.dmndi.DiagramElement;
 import org.kie.workbench.common.dmn.api.DMNDefinitionSet;
 import org.kie.workbench.common.dmn.api.definition.DMNViewDefinition;
 import org.kie.workbench.common.dmn.api.definition.HasComponentWidths;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Association;
-import org.kie.workbench.common.dmn.api.definition.v1_1.BusinessKnowledgeModel;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DMNDiagram;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DMNElement;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DRGElement;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionService;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Definitions;
-import org.kie.workbench.common.dmn.api.definition.v1_1.InputData;
-import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
-import org.kie.workbench.common.dmn.api.definition.v1_1.KnowledgeSource;
-import org.kie.workbench.common.dmn.api.definition.v1_1.TextAnnotation;
+import org.kie.workbench.common.dmn.api.definition.model.Association;
+import org.kie.workbench.common.dmn.api.definition.model.BusinessKnowledgeModel;
+import org.kie.workbench.common.dmn.api.definition.model.DMNDiagram;
+import org.kie.workbench.common.dmn.api.definition.model.DMNElement;
+import org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase;
+import org.kie.workbench.common.dmn.api.definition.model.DRGElement;
+import org.kie.workbench.common.dmn.api.definition.model.Decision;
+import org.kie.workbench.common.dmn.api.definition.model.DecisionService;
+import org.kie.workbench.common.dmn.api.definition.model.Definitions;
+import org.kie.workbench.common.dmn.api.definition.model.InputData;
+import org.kie.workbench.common.dmn.api.definition.model.ItemDefinition;
+import org.kie.workbench.common.dmn.api.definition.model.KnowledgeSource;
+import org.kie.workbench.common.dmn.api.definition.model.TextAnnotation;
 import org.kie.workbench.common.dmn.api.editors.included.PMMLDocumentMetadata;
 import org.kie.workbench.common.dmn.api.property.background.BackgroundSet;
 import org.kie.workbench.common.dmn.api.property.background.BgColour;
@@ -193,9 +193,9 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
         }
     }
 
-    public static final String INFO_REQ_ID = getDefinitionId(org.kie.workbench.common.dmn.api.definition.v1_1.InformationRequirement.class);
-    public static final String KNOWLEDGE_REQ_ID = getDefinitionId(org.kie.workbench.common.dmn.api.definition.v1_1.KnowledgeRequirement.class);
-    public static final String AUTH_REQ_ID = getDefinitionId(org.kie.workbench.common.dmn.api.definition.v1_1.AuthorityRequirement.class);
+    public static final String INFO_REQ_ID = getDefinitionId(org.kie.workbench.common.dmn.api.definition.model.InformationRequirement.class);
+    public static final String KNOWLEDGE_REQ_ID = getDefinitionId(org.kie.workbench.common.dmn.api.definition.model.KnowledgeRequirement.class);
+    public static final String AUTH_REQ_ID = getDefinitionId(org.kie.workbench.common.dmn.api.definition.model.AuthorityRequirement.class);
     public static final String ASSOCIATION_ID = getDefinitionId(Association.class);
 
     @Override
@@ -828,7 +828,7 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
             if (node.getContent() instanceof View<?>) {
                 View<?> view = (View<?>) node.getContent();
                 if (view.getDefinition() instanceof DRGElement) {
-                    DRGElement n = (org.kie.workbench.common.dmn.api.definition.v1_1.DRGElement) view.getDefinition();
+                    DRGElement n = (org.kie.workbench.common.dmn.api.definition.model.DRGElement) view.getDefinition();
                     if (view.getDefinition() instanceof DynamicReadOnly) {
                         final DynamicReadOnly def = (DynamicReadOnly) view.getDefinition();
                         if (!def.isAllowOnlyVisualChange()) {
@@ -939,7 +939,7 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
         definitions.getItemDefinition().removeIf(ItemDefinition::isAllowOnlyVisualChange);
     }
 
-    List<org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition> getWbImportedItemDefinitions(final Map<Import, org.kie.dmn.model.api.Definitions> importDefinitions) {
+    List<org.kie.workbench.common.dmn.api.definition.model.ItemDefinition> getWbImportedItemDefinitions(final Map<Import, org.kie.dmn.model.api.Definitions> importDefinitions) {
         return dmnMarshallerImportsHelper
                 .getImportedItemDefinitions(importDefinitions)
                 .stream()

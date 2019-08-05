@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.dtable;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable;
+import org.kie.workbench.common.dmn.api.definition.model.DecisionTable;
 
 public class DecisionTableUIModelMapperHelper {
 

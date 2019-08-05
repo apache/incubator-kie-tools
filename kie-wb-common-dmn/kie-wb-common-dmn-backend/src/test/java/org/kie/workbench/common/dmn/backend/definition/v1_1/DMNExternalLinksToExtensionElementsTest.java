@@ -43,7 +43,7 @@ public class DMNExternalLinksToExtensionElementsTest {
     public void testLoadExternalLinksFromExtensionElements() {
 
         final org.kie.dmn.model.api.DRGElement source = mock(org.kie.dmn.model.api.DRGElement.class);
-        final org.kie.workbench.common.dmn.api.definition.v1_1.DRGElement target = mock(org.kie.workbench.common.dmn.api.definition.v1_1.DRGElement.class);
+        final org.kie.workbench.common.dmn.api.definition.model.DRGElement target = mock(org.kie.workbench.common.dmn.api.definition.model.DRGElement.class);
 
         final DMNElement.ExtensionElements extensionElements = mock(DMNElement.ExtensionElements.class);
         final List<Object> externalLinks = new ArrayList<>();
@@ -93,7 +93,7 @@ public class DMNExternalLinksToExtensionElementsTest {
     @Test
     public void testLoadExternalLinksIntoExtensionElements() {
 
-        final org.kie.workbench.common.dmn.api.definition.v1_1.DRGElement source = mock(org.kie.workbench.common.dmn.api.definition.v1_1.DRGElement.class);
+        final org.kie.workbench.common.dmn.api.definition.model.DRGElement source = mock(org.kie.workbench.common.dmn.api.definition.model.DRGElement.class);
         final org.kie.dmn.model.api.DRGElement target = mock(org.kie.dmn.model.api.DRGElement.class);
 
         final DocumentationLinksHolder linksHolder = mock(DocumentationLinksHolder.class);

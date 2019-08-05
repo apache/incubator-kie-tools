@@ -21,10 +21,10 @@ import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
-import org.kie.workbench.common.dmn.api.definition.v1_1.List;
-import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Relation;
+import org.kie.workbench.common.dmn.api.definition.model.InformationItem;
+import org.kie.workbench.common.dmn.api.definition.model.List;
+import org.kie.workbench.common.dmn.api.definition.model.LiteralExpression;
+import org.kie.workbench.common.dmn.api.definition.model.Relation;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.relation.RelationColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.relation.RelationUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
@@ -305,7 +305,7 @@ public class AddRelationRowCommandTest {
     @Test
     public void testCanvasCommandUndoWithColumns() {
         relation.getColumn().add(new InformationItem());
-        relation.getRow().add(new org.kie.workbench.common.dmn.api.definition.v1_1.List());
+        relation.getRow().add(new org.kie.workbench.common.dmn.api.definition.model.List());
         uiModel.appendColumn(uiModelColumn);
         uiModel.appendRow(new BaseGridRow());
         uiModelMapper.fromDMNModel(0, 0);

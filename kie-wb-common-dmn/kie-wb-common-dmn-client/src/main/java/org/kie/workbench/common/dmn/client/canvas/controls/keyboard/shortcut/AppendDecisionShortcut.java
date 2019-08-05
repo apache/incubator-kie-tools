@@ -19,8 +19,8 @@ package org.kie.workbench.common.dmn.client.canvas.controls.keyboard.shortcut;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
-import org.kie.workbench.common.dmn.api.definition.v1_1.InputData;
+import org.kie.workbench.common.dmn.api.definition.model.Decision;
+import org.kie.workbench.common.dmn.api.definition.model.InputData;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeysMatcher;

@@ -24,7 +24,7 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.dmn.api.definition.v1_1.FunctionDefinition;
+import org.kie.workbench.common.dmn.api.definition.model.FunctionDefinition;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorTextItemView;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;

@@ -18,7 +18,7 @@ package org.kie.workbench.common.dmn.client.commands.factory.graph;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
+import org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.client.property.dmn.DefaultValueUtilities;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;

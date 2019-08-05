@@ -24,7 +24,7 @@ import java.util.function.Consumer;
 
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
-import org.kie.workbench.common.dmn.api.definition.v1_1.OutputClause;
+import org.kie.workbench.common.dmn.api.definition.model.OutputClause;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;

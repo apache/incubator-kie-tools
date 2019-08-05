@@ -19,9 +19,9 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.relation;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
-import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Relation;
+import org.kie.workbench.common.dmn.api.definition.model.Expression;
+import org.kie.workbench.common.dmn.api.definition.model.LiteralExpression;
+import org.kie.workbench.common.dmn.api.definition.model.Relation;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
@@ -56,7 +56,7 @@ public class RelationUIModelMapper extends BaseUIModelMapper<Relation> {
                                           columnIndex).setSelectionStrategy(RowSelectionStrategy.INSTANCE);
                     break;
                 case INFORMATION_ITEM:
-                    final org.kie.workbench.common.dmn.api.definition.v1_1.List row = relation.getRow().get(rowIndex);
+                    final org.kie.workbench.common.dmn.api.definition.model.List row = relation.getRow().get(rowIndex);
                     final int iiIndex = RelationUIModelMapperHelper.getInformationItemIndex(relation, columnIndex);
                     final Expression e = row.getExpression().get(iiIndex);
                     final Optional<Expression> expression = Optional.ofNullable(e);
@@ -85,7 +85,7 @@ public class RelationUIModelMapper extends BaseUIModelMapper<Relation> {
                 case ROW_INDEX:
                     break;
                 case INFORMATION_ITEM:
-                    final org.kie.workbench.common.dmn.api.definition.v1_1.List row = relation.getRow().get(rowIndex);
+                    final org.kie.workbench.common.dmn.api.definition.model.List row = relation.getRow().get(rowIndex);
                     final int iiIndex = RelationUIModelMapperHelper.getInformationItemIndex(relation, columnIndex);
                     final Expression e = row.getExpression().get(iiIndex);
                     final Optional<Expression> expression = Optional.ofNullable(e);

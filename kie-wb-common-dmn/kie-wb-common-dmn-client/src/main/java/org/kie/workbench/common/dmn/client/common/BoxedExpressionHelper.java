@@ -19,9 +19,9 @@ package org.kie.workbench.common.dmn.client.common;
 import java.util.Optional;
 
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
-import org.kie.workbench.common.dmn.api.definition.v1_1.BusinessKnowledgeModel;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
+import org.kie.workbench.common.dmn.api.definition.model.BusinessKnowledgeModel;
+import org.kie.workbench.common.dmn.api.definition.model.Decision;
+import org.kie.workbench.common.dmn.api.definition.model.Expression;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;

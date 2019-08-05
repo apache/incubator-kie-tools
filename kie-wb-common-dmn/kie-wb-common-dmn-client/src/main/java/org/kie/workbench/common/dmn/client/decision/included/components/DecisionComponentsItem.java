@@ -21,7 +21,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DRGElement;
+import org.kie.workbench.common.dmn.api.definition.model.DRGElement;
 import org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper;
 import org.uberfire.client.mvp.UberElemental;
 

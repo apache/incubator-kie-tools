@@ -27,10 +27,10 @@ import javax.inject.Inject;
 
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
-import org.kie.workbench.common.dmn.api.definition.v1_1.ContextEntry;
-import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpressionPMMLDocument;
-import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpressionPMMLDocumentModel;
+import org.kie.workbench.common.dmn.api.definition.model.Context;
+import org.kie.workbench.common.dmn.api.definition.model.ContextEntry;
+import org.kie.workbench.common.dmn.api.definition.model.LiteralExpressionPMMLDocument;
+import org.kie.workbench.common.dmn.api.definition.model.LiteralExpressionPMMLDocumentModel;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;

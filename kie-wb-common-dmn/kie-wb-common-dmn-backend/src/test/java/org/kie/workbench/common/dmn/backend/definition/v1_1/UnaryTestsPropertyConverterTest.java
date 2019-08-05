@@ -23,19 +23,19 @@ import javax.xml.namespace.QName;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
-import org.kie.workbench.common.dmn.api.definition.v1_1.IsUnaryTests;
-import org.kie.workbench.common.dmn.api.definition.v1_1.UnaryTests;
+import org.kie.workbench.common.dmn.api.definition.model.ConstraintType;
+import org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase;
+import org.kie.workbench.common.dmn.api.definition.model.IsUnaryTests;
+import org.kie.workbench.common.dmn.api.definition.model.UnaryTests;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Text;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
-import static org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType.ENUMERATION;
-import static org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType.EXPRESSION;
-import static org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType.RANGE;
+import static org.kie.workbench.common.dmn.api.definition.model.ConstraintType.ENUMERATION;
+import static org.kie.workbench.common.dmn.api.definition.model.ConstraintType.EXPRESSION;
+import static org.kie.workbench.common.dmn.api.definition.model.ConstraintType.RANGE;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)

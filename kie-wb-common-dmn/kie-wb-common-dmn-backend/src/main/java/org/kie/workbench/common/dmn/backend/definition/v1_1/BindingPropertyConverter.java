@@ -20,9 +20,9 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import org.kie.workbench.common.dmn.api.definition.HasComponentWidths;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Binding;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
-import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
+import org.kie.workbench.common.dmn.api.definition.model.Binding;
+import org.kie.workbench.common.dmn.api.definition.model.Expression;
+import org.kie.workbench.common.dmn.api.definition.model.InformationItem;
 import org.kie.workbench.common.dmn.backend.definition.v1_1.dd.ComponentWidths;
 
 public class BindingPropertyConverter {

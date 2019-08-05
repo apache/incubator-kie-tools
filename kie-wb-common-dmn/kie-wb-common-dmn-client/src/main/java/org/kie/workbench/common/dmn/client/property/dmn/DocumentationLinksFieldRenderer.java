@@ -19,7 +19,7 @@ package org.kie.workbench.common.dmn.client.property.dmn;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.DRGElement;
+import org.kie.workbench.common.dmn.api.definition.model.DRGElement;
 import org.kie.workbench.common.dmn.client.editors.documentation.DocumentationLinksWidget;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.FormGroup;

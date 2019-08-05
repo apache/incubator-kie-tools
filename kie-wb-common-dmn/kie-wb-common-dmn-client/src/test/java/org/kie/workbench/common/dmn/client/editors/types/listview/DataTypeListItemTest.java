@@ -25,7 +25,7 @@ import elemental2.dom.HTMLElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
+import org.kie.workbench.common.dmn.api.definition.model.ItemDefinition;
 import org.kie.workbench.common.dmn.client.editors.types.DataTypeChangedEvent;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManager;

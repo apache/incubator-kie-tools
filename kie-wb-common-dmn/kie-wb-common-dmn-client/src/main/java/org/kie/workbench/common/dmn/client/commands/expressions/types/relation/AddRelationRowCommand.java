@@ -18,9 +18,9 @@ package org.kie.workbench.common.dmn.client.commands.expressions.types.relation;
 
 import java.util.stream.IntStream;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.List;
-import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Relation;
+import org.kie.workbench.common.dmn.api.definition.model.List;
+import org.kie.workbench.common.dmn.api.definition.model.LiteralExpression;
+import org.kie.workbench.common.dmn.api.definition.model.Relation;
 import org.kie.workbench.common.dmn.client.commands.VetoExecutionCommand;
 import org.kie.workbench.common.dmn.client.commands.VetoUndoCommand;
 import org.kie.workbench.common.dmn.client.commands.util.CommandUtils;

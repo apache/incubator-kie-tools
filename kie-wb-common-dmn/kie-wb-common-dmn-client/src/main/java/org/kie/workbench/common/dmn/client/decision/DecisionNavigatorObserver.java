@@ -22,7 +22,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
+import org.kie.workbench.common.dmn.api.definition.model.Expression;
 import org.kie.workbench.common.dmn.client.decision.tree.DecisionNavigatorTreePresenter;
 import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;

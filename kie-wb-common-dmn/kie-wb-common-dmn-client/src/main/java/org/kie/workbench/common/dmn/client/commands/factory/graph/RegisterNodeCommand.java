@@ -16,10 +16,10 @@
 
 package org.kie.workbench.common.dmn.client.commands.factory.graph;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.BusinessKnowledgeModel;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
-import org.kie.workbench.common.dmn.api.definition.v1_1.FunctionDefinition;
-import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
+import org.kie.workbench.common.dmn.api.definition.model.BusinessKnowledgeModel;
+import org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase;
+import org.kie.workbench.common.dmn.api.definition.model.FunctionDefinition;
+import org.kie.workbench.common.dmn.api.definition.model.LiteralExpression;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.KindUtilities;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;

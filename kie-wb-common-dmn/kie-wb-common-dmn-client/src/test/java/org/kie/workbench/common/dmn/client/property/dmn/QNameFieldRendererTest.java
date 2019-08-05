@@ -21,7 +21,7 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
+import org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.client.editors.types.DataTypePickerWidget;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.def.DefaultFormGroup;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;

@@ -16,11 +16,11 @@
 
 package org.kie.workbench.common.dmn.client.canvas.controls.keyboard.shortcut;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.BusinessKnowledgeModel;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
-import org.kie.workbench.common.dmn.api.definition.v1_1.InputData;
-import org.kie.workbench.common.dmn.api.definition.v1_1.KnowledgeSource;
-import org.kie.workbench.common.dmn.api.definition.v1_1.TextAnnotation;
+import org.kie.workbench.common.dmn.api.definition.model.BusinessKnowledgeModel;
+import org.kie.workbench.common.dmn.api.definition.model.Decision;
+import org.kie.workbench.common.dmn.api.definition.model.InputData;
+import org.kie.workbench.common.dmn.api.definition.model.KnowledgeSource;
+import org.kie.workbench.common.dmn.api.definition.model.TextAnnotation;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 

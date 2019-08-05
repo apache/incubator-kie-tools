@@ -30,7 +30,7 @@ import com.ait.lienzo.shared.core.types.DataURLType;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.HasVariable;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DRGElement;
+import org.kie.workbench.common.dmn.api.definition.model.DRGElement;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.client.common.BoxedExpressionHelper;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionContainerGrid;

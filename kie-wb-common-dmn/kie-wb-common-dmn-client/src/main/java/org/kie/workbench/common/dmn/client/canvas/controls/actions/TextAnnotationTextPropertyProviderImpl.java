@@ -19,7 +19,7 @@ package org.kie.workbench.common.dmn.client.canvas.controls.actions;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.TextAnnotation;
+import org.kie.workbench.common.dmn.api.definition.model.TextAnnotation;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;

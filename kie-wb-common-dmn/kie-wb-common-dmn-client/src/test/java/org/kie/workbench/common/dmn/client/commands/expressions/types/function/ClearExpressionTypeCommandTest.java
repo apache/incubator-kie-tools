@@ -18,7 +18,7 @@ package org.kie.workbench.common.dmn.client.commands.expressions.types.function;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.dmn.api.definition.v1_1.FunctionDefinition;
+import org.kie.workbench.common.dmn.api.definition.model.FunctionDefinition;
 import org.kie.workbench.common.dmn.client.commands.general.BaseClearExpressionCommandTest;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.FunctionUIModelMapper;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.KindUtilities;

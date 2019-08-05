@@ -22,9 +22,9 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.Import;
-import org.kie.workbench.common.dmn.api.definition.v1_1.ImportDMN;
-import org.kie.workbench.common.dmn.api.definition.v1_1.ImportPMML;
+import org.kie.workbench.common.dmn.api.definition.model.Import;
+import org.kie.workbench.common.dmn.api.definition.model.ImportDMN;
+import org.kie.workbench.common.dmn.api.definition.model.ImportPMML;
 import org.kie.workbench.common.dmn.client.editors.included.BaseIncludedModelActiveRecord;
 import org.kie.workbench.common.dmn.client.editors.included.DMNIncludedModelActiveRecord;
 import org.kie.workbench.common.dmn.client.editors.included.DefaultIncludedModelActiveRecord;

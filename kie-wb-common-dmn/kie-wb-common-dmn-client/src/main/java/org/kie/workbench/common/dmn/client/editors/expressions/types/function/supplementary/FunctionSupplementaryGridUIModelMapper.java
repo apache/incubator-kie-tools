@@ -19,7 +19,7 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.function.s
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
+import org.kie.workbench.common.dmn.api.definition.model.Context;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ContextUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;

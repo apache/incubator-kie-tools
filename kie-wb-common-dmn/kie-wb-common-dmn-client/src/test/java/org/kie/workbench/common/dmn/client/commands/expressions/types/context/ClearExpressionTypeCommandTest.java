@@ -17,7 +17,7 @@
 package org.kie.workbench.common.dmn.client.commands.expressions.types.context;
 
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
+import org.kie.workbench.common.dmn.api.definition.model.Context;
 import org.kie.workbench.common.dmn.client.commands.general.BaseClearExpressionCommandTest;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ContextUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;

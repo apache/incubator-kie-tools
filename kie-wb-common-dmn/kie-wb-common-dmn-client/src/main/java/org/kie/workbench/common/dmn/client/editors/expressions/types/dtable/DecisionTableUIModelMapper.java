@@ -19,8 +19,8 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.dtable;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionRule;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable;
+import org.kie.workbench.common.dmn.api.definition.model.DecisionRule;
+import org.kie.workbench.common.dmn.api.definition.model.DecisionTable;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.DecisionTableUIModelMapperHelper.DecisionTableSection;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;

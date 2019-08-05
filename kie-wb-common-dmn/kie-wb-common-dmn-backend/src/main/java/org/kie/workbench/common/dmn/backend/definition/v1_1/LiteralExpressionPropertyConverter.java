@@ -16,9 +16,9 @@
 
 package org.kie.workbench.common.dmn.backend.definition.v1_1;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.ImportedValues;
-import org.kie.workbench.common.dmn.api.definition.v1_1.IsLiteralExpression;
-import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
+import org.kie.workbench.common.dmn.api.definition.model.ImportedValues;
+import org.kie.workbench.common.dmn.api.definition.model.IsLiteralExpression;
+import org.kie.workbench.common.dmn.api.definition.model.LiteralExpression;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.ExpressionLanguage;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;

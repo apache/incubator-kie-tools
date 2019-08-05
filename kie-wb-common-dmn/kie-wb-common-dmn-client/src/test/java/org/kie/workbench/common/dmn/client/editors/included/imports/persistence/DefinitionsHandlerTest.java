@@ -24,7 +24,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.soup.commons.util.Maps;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Definitions;
+import org.kie.workbench.common.dmn.api.definition.model.Definitions;
 import org.kie.workbench.common.dmn.client.editors.included.BaseIncludedModelActiveRecord;
 import org.kie.workbench.common.dmn.client.editors.included.imports.IncludedModelsPageStateProviderImpl;
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;

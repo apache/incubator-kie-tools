@@ -18,7 +18,7 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.relation;
 import java.util.Optional;
 
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
+import org.kie.workbench.common.dmn.api.definition.model.InformationItem;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.BaseColumnHeaderMetaDataContextMenuTest;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;

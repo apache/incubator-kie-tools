@@ -26,7 +26,7 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import org.jboss.errai.ui.client.local.spi.TranslationService;
-import org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType;
+import org.kie.workbench.common.dmn.api.definition.model.ConstraintType;
 import org.kie.workbench.common.forms.dynamic.model.config.SelectorData;
 import org.kie.workbench.common.forms.dynamic.model.config.SelectorDataProvider;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;

@@ -19,7 +19,7 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types;
 import java.util.ArrayList;
 import java.util.Optional;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
+import org.kie.workbench.common.dmn.api.definition.model.Expression;
 
 public class ExpressionEditorDefinitions extends ArrayList<ExpressionEditorDefinition<Expression>> {
 

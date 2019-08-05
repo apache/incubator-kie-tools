@@ -19,8 +19,8 @@ package org.kie.workbench.common.dmn.client.commands.expressions.types.function;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.FunctionDefinition;
-import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
+import org.kie.workbench.common.dmn.api.definition.model.FunctionDefinition;
+import org.kie.workbench.common.dmn.api.definition.model.InformationItem;
 import org.kie.workbench.common.dmn.client.commands.VetoExecutionCommand;
 import org.kie.workbench.common.dmn.client.commands.VetoUndoCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;

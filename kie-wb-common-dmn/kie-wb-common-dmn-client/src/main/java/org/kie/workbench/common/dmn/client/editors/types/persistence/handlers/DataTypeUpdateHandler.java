@@ -22,7 +22,7 @@ import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
+import org.kie.workbench.common.dmn.api.definition.model.ItemDefinition;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManager;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.DataTypeStore;

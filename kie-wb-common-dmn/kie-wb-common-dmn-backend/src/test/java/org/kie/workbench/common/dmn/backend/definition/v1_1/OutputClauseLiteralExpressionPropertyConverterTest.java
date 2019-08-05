@@ -16,7 +16,7 @@
 package org.kie.workbench.common.dmn.backend.definition.v1_1;
 
 import org.kie.dmn.model.api.LiteralExpression;
-import org.kie.workbench.common.dmn.api.definition.v1_1.OutputClauseLiteralExpression;
+import org.kie.workbench.common.dmn.api.definition.model.OutputClauseLiteralExpression;
 
 public class OutputClauseLiteralExpressionPropertyConverterTest extends BaseLiteralExpressionPropertyConverterTest<OutputClauseLiteralExpression> {
 

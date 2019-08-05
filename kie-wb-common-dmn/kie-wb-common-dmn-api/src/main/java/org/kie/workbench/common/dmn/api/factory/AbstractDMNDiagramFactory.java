@@ -18,9 +18,9 @@ package org.kie.workbench.common.dmn.api.factory;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.DMNDiagram;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Definitions;
+import org.kie.workbench.common.dmn.api.definition.model.DMNDiagram;
+import org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase;
+import org.kie.workbench.common.dmn.api.definition.model.Definitions;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.Text;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;

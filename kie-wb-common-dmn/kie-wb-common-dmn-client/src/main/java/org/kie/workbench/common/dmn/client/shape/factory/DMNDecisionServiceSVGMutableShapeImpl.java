@@ -15,7 +15,7 @@
  */
 package org.kie.workbench.common.dmn.client.shape.factory;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionService;
+import org.kie.workbench.common.dmn.api.definition.model.DecisionService;
 import org.kie.workbench.common.dmn.client.shape.def.DMNDecisionServiceSVGShapeDef;
 import org.kie.workbench.common.dmn.client.shape.view.decisionservice.DecisionServiceSVGShapeView;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;

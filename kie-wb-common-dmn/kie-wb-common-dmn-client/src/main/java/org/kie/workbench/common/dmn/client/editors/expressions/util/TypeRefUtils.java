@@ -19,8 +19,8 @@ package org.kie.workbench.common.dmn.client.editors.expressions.util;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.kie.workbench.common.dmn.api.definition.HasVariable;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
+import org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase;
+import org.kie.workbench.common.dmn.api.definition.model.Expression;
 
 public class TypeRefUtils {
 

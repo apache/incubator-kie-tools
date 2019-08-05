@@ -30,7 +30,7 @@ import javax.inject.Inject;
 import elemental2.dom.HTMLElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Import;
+import org.kie.workbench.common.dmn.api.definition.model.Import;
 import org.kie.workbench.common.dmn.api.editors.included.DMNImportTypes;
 import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedModel;
 import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedNode;

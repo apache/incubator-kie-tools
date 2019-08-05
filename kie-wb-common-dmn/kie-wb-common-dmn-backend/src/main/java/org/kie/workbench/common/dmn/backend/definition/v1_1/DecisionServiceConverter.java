@@ -24,13 +24,13 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import org.kie.workbench.common.dmn.api.definition.HasComponentWidths;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DMNElementReference;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DRGElement;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionService;
-import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItemPrimary;
-import org.kie.workbench.common.dmn.api.definition.v1_1.InputData;
-import org.kie.workbench.common.dmn.api.definition.v1_1.KnowledgeRequirement;
+import org.kie.workbench.common.dmn.api.definition.model.DMNElementReference;
+import org.kie.workbench.common.dmn.api.definition.model.DRGElement;
+import org.kie.workbench.common.dmn.api.definition.model.Decision;
+import org.kie.workbench.common.dmn.api.definition.model.DecisionService;
+import org.kie.workbench.common.dmn.api.definition.model.InformationItemPrimary;
+import org.kie.workbench.common.dmn.api.definition.model.InputData;
+import org.kie.workbench.common.dmn.api.definition.model.KnowledgeRequirement;
 import org.kie.workbench.common.dmn.api.property.background.BackgroundSet;
 import org.kie.workbench.common.dmn.api.property.dimensions.DecisionServiceRectangleDimensionsSet;
 import org.kie.workbench.common.dmn.api.property.dmn.DecisionServiceDividerLineY;
@@ -47,7 +47,7 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
 import static org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils.getDefinitionId;
 
-public class DecisionServiceConverter implements NodeConverter<org.kie.dmn.model.api.DecisionService, org.kie.workbench.common.dmn.api.definition.v1_1.DecisionService> {
+public class DecisionServiceConverter implements NodeConverter<org.kie.dmn.model.api.DecisionService, org.kie.workbench.common.dmn.api.definition.model.DecisionService> {
 
     private FactoryManager factoryManager;
 

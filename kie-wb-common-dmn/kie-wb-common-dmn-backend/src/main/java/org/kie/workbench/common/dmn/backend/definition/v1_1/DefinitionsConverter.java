@@ -19,10 +19,10 @@ package org.kie.workbench.common.dmn.backend.definition.v1_1;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Definitions;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Import;
-import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
+import org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase;
+import org.kie.workbench.common.dmn.api.definition.model.Definitions;
+import org.kie.workbench.common.dmn.api.definition.model.Import;
+import org.kie.workbench.common.dmn.api.definition.model.ItemDefinition;
 import org.kie.workbench.common.dmn.api.editors.included.PMMLDocumentMetadata;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;

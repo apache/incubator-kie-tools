@@ -22,8 +22,8 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import org.kie.workbench.common.dmn.api.definition.HasComponentWidths;
-import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Relation;
+import org.kie.workbench.common.dmn.api.definition.model.InformationItem;
+import org.kie.workbench.common.dmn.api.definition.model.Relation;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
@@ -41,8 +41,8 @@ public class RelationPropertyConverter {
         final List<org.kie.dmn.model.api.List> row = dmn.getRow();
 
         final List<InformationItem> convertedColumn = column.stream().map(InformationItemPropertyConverter::wbFromDMN).collect(Collectors.toList());
-        final List<org.kie.workbench.common.dmn.api.definition.v1_1.List> convertedRow = row.stream().map(r -> ListPropertyConverter.wbFromDMN(r,
-                                                                                                                                               hasComponentWidthsConsumer)).collect(Collectors.toList());
+        final List<org.kie.workbench.common.dmn.api.definition.model.List> convertedRow = row.stream().map(r -> ListPropertyConverter.wbFromDMN(r,
+                                                                                                                                                hasComponentWidthsConsumer)).collect(Collectors.toList());
 
         final Relation result = new Relation(id, description, typeRef, convertedColumn, convertedRow);
         for (InformationItem c : convertedColumn) {
@@ -50,7 +50,7 @@ public class RelationPropertyConverter {
                 c.setParent(result);
             }
         }
-        for (org.kie.workbench.common.dmn.api.definition.v1_1.List r : convertedRow) {
+        for (org.kie.workbench.common.dmn.api.definition.model.List r : convertedRow) {
             if (r != null) {
                 r.setParent(result);
             }
@@ -74,7 +74,7 @@ public class RelationPropertyConverter {
             result.getColumn().add(iitemConverted);
         }
 
-        for (org.kie.workbench.common.dmn.api.definition.v1_1.List list : wb.getRow()) {
+        for (org.kie.workbench.common.dmn.api.definition.model.List list : wb.getRow()) {
             final org.kie.dmn.model.api.List listConverted = ListPropertyConverter.dmnFromWB(list,
                                                                                              componentWidthsConsumer);
             if (listConverted != null) {

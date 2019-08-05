@@ -18,7 +18,7 @@ package org.kie.workbench.common.dmn.client.widgets.grid.model;
 
 import java.util.List;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
+import org.kie.workbench.common.dmn.api.definition.model.Expression;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseGrid;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;

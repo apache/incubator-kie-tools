@@ -23,8 +23,8 @@ import java.util.function.Supplier;
 import com.ait.lienzo.client.core.shape.Group;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
-import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
+import org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase;
+import org.kie.workbench.common.dmn.api.definition.model.InformationItem;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.client.editors.expressions.util.RendererUtils;
@@ -35,7 +35,7 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCell;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 
-import static org.kie.workbench.common.dmn.api.definition.v1_1.common.HasTypeRefHelper.getNotNullHasTypeRefs;
+import static org.kie.workbench.common.dmn.api.definition.model.common.HasTypeRefHelper.getNotNullHasTypeRefs;
 
 public class InformationItemCell extends ContextGridCell<InformationItemCell.HasNameCell> {
 

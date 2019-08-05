@@ -23,9 +23,9 @@ import java.util.Optional;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.Definitions;
-import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
-import org.kie.workbench.common.dmn.api.definition.v1_1.UnaryTests;
+import org.kie.workbench.common.dmn.api.definition.model.Definitions;
+import org.kie.workbench.common.dmn.api.definition.model.ItemDefinition;
+import org.kie.workbench.common.dmn.api.definition.model.UnaryTests;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.property.dmn.Text;
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;

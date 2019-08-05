@@ -22,10 +22,10 @@ import org.kie.dmn.model.api.ImportedValues;
 import org.kie.dmn.model.api.LiteralExpression;
 import org.kie.dmn.model.v1_2.TImportedValues;
 import org.kie.dmn.model.v1_2.TLiteralExpression;
-import org.kie.workbench.common.dmn.api.definition.v1_1.IsLiteralExpression;
+import org.kie.workbench.common.dmn.api.definition.model.IsLiteralExpression;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase.Namespace.KIE;
+import static org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase.Namespace.KIE;
 
 public abstract class BaseLiteralExpressionPropertyConverterTest<T extends IsLiteralExpression> {
 

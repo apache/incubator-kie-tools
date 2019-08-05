@@ -22,7 +22,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.kie.soup.commons.util.Lists;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Relation;
+import org.kie.workbench.common.dmn.api.definition.model.Relation;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.MoveColumnsCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.MoveRowsCommand;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;

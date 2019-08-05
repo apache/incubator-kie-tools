@@ -28,8 +28,8 @@ import javax.inject.Inject;
 
 import elemental2.dom.HTMLDivElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Definitions;
-import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
+import org.kie.workbench.common.dmn.api.definition.model.Definitions;
+import org.kie.workbench.common.dmn.api.definition.model.ItemDefinition;
 import org.kie.workbench.common.dmn.api.property.dmn.Text;
 import org.kie.workbench.common.dmn.client.editors.common.RemoveHelper;
 import org.kie.workbench.common.dmn.client.editors.common.messages.FlashMessages;

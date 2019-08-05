@@ -15,10 +15,10 @@
  */
 package org.kie.workbench.common.dmn.client.editors.expressions.types.dtable;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionRule;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable;
-import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
-import org.kie.workbench.common.dmn.api.definition.v1_1.UnaryTests;
+import org.kie.workbench.common.dmn.api.definition.model.DecisionRule;
+import org.kie.workbench.common.dmn.api.definition.model.DecisionTable;
+import org.kie.workbench.common.dmn.api.definition.model.LiteralExpression;
+import org.kie.workbench.common.dmn.api.definition.model.UnaryTests;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 
 public class DecisionRuleFactory {

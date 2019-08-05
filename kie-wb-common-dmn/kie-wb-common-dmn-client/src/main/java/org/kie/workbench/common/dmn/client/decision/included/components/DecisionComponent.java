@@ -19,7 +19,7 @@ package org.kie.workbench.common.dmn.client.decision.included.components;
 import java.util.Map;
 
 import org.kie.soup.commons.util.Maps;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DRGElement;
+import org.kie.workbench.common.dmn.api.definition.model.DRGElement;
 import org.kie.workbench.common.stunner.core.client.shape.ImageDataUriGlyph;
 
 import static org.kie.workbench.common.dmn.client.shape.def.DMNSVGShapeDefImpl.GLYPHS_PALETTE;

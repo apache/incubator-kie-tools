@@ -20,7 +20,7 @@ import javax.xml.namespace.QName;
 
 import org.junit.Test;
 import org.kie.dmn.model.v1_2.TItemDefinition;
-import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
+import org.kie.workbench.common.dmn.api.definition.model.ItemDefinition;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;

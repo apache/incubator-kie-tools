@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.relation;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.Relation;
+import org.kie.workbench.common.dmn.api.definition.model.Relation;
 
 public class RelationUIModelMapperHelper {
 

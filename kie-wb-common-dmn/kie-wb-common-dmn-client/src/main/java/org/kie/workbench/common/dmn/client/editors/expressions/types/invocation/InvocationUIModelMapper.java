@@ -19,10 +19,10 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.invocation
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.Binding;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
-import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Invocation;
+import org.kie.workbench.common.dmn.api.definition.model.Binding;
+import org.kie.workbench.common.dmn.api.definition.model.Expression;
+import org.kie.workbench.common.dmn.api.definition.model.InformationItem;
+import org.kie.workbench.common.dmn.api.definition.model.Invocation;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;

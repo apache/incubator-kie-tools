@@ -25,7 +25,7 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.jboss.errai.ui.client.local.spi.TranslationService;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DMNDiagram;
+import org.kie.workbench.common.dmn.api.definition.model.DMNDiagram;
 import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorItem;
 import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorPresenter;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;

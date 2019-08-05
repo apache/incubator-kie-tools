@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.editors.included.imports.persistence;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.DRGElement;
+import org.kie.workbench.common.dmn.api.definition.model.DRGElement;
 
 public interface DRGElementHandler {
 

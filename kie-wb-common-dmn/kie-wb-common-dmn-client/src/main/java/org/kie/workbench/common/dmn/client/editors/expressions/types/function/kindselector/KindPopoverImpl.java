@@ -22,7 +22,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.jboss.errai.common.client.dom.HTMLElement;
-import org.kie.workbench.common.dmn.api.definition.v1_1.FunctionDefinition;
+import org.kie.workbench.common.dmn.api.definition.model.FunctionDefinition;
 
 @ApplicationScoped
 public class KindPopoverImpl implements KindPopoverView.Presenter {

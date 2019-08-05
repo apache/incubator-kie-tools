@@ -16,13 +16,13 @@
 
 package org.kie.workbench.common.dmn.backend.definition.v1_1;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.BuiltinAggregator;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionRule;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTableOrientation;
-import org.kie.workbench.common.dmn.api.definition.v1_1.HitPolicy;
-import org.kie.workbench.common.dmn.api.definition.v1_1.InputClause;
-import org.kie.workbench.common.dmn.api.definition.v1_1.OutputClause;
+import org.kie.workbench.common.dmn.api.definition.model.BuiltinAggregator;
+import org.kie.workbench.common.dmn.api.definition.model.DecisionRule;
+import org.kie.workbench.common.dmn.api.definition.model.DecisionTable;
+import org.kie.workbench.common.dmn.api.definition.model.DecisionTableOrientation;
+import org.kie.workbench.common.dmn.api.definition.model.HitPolicy;
+import org.kie.workbench.common.dmn.api.definition.model.InputClause;
+import org.kie.workbench.common.dmn.api.definition.model.OutputClause;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;

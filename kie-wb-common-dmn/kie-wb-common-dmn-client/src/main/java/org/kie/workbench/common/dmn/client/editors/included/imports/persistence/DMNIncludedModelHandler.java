@@ -25,8 +25,8 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.dmn.api.definition.HasVariable;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DRGElement;
-import org.kie.workbench.common.dmn.api.definition.v1_1.IsInformationItem;
+import org.kie.workbench.common.dmn.api.definition.model.DRGElement;
+import org.kie.workbench.common.dmn.api.definition.model.IsInformationItem;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;

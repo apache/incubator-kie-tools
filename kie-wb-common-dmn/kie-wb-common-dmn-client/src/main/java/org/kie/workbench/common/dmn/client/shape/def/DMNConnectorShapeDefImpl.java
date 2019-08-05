@@ -21,10 +21,10 @@ import java.util.function.BiConsumer;
 
 import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.dmn.api.definition.DMNDefinition;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Association;
-import org.kie.workbench.common.dmn.api.definition.v1_1.AuthorityRequirement;
-import org.kie.workbench.common.dmn.api.definition.v1_1.InformationRequirement;
-import org.kie.workbench.common.dmn.api.definition.v1_1.KnowledgeRequirement;
+import org.kie.workbench.common.dmn.api.definition.model.Association;
+import org.kie.workbench.common.dmn.api.definition.model.AuthorityRequirement;
+import org.kie.workbench.common.dmn.api.definition.model.InformationRequirement;
+import org.kie.workbench.common.dmn.api.definition.model.KnowledgeRequirement;
 import org.kie.workbench.common.dmn.client.resources.DMNSVGGlyphFactory;
 import org.kie.workbench.common.dmn.client.shape.view.handlers.DMNViewHandlers;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;

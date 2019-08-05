@@ -20,7 +20,7 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import com.google.gwt.user.client.ui.RequiresResize;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
+import org.kie.workbench.common.dmn.api.definition.model.Expression;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;

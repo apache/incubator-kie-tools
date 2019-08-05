@@ -20,7 +20,7 @@ import java.util.Map;
 
 import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.dmn.api.definition.DMNDefinition;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionService;
+import org.kie.workbench.common.dmn.api.definition.model.DecisionService;
 import org.kie.workbench.common.dmn.api.property.dimensions.GeneralRectangleDimensionsSet;
 import org.kie.workbench.common.dmn.client.resources.DMNDecisionServiceSVGViewFactory;
 import org.kie.workbench.common.dmn.client.resources.DMNSVGGlyphFactory;

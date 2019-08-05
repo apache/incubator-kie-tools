@@ -34,7 +34,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase.Namespace.KIE;
+import static org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase.Namespace.KIE;
 import static org.kie.workbench.common.dmn.backend.definition.v1_1.dd.DMNDIExtensionsRegister.COMPONENTS_WIDTHS_EXTENSION_ALIAS;
 import static org.kie.workbench.common.dmn.backend.definition.v1_1.dd.DMNDIExtensionsRegister.COMPONENT_WIDTHS_ALIAS;
 import static org.kie.workbench.common.dmn.backend.definition.v1_1.dd.DMNDIExtensionsRegister.COMPONENT_WIDTH_ALIAS;

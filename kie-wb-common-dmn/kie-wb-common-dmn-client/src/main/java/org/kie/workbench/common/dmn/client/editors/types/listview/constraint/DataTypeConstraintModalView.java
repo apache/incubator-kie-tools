@@ -31,7 +31,7 @@ import elemental2.dom.Node;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType;
+import org.kie.workbench.common.dmn.api.definition.model.ConstraintType;
 import org.kie.workbench.common.dmn.client.editors.common.RemoveHelper;
 import org.uberfire.client.views.pfly.selectpicker.JQuery;
 import org.uberfire.client.views.pfly.selectpicker.JQuerySelectPicker;

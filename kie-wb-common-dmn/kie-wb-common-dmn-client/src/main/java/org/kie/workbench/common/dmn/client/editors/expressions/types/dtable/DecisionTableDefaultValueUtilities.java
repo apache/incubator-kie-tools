@@ -18,10 +18,10 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.dtable;
 
 import java.util.Optional;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable;
-import org.kie.workbench.common.dmn.api.definition.v1_1.InputClause;
-import org.kie.workbench.common.dmn.api.definition.v1_1.InputClauseLiteralExpression;
-import org.kie.workbench.common.dmn.api.definition.v1_1.OutputClause;
+import org.kie.workbench.common.dmn.api.definition.model.DecisionTable;
+import org.kie.workbench.common.dmn.api.definition.model.InputClause;
+import org.kie.workbench.common.dmn.api.definition.model.InputClauseLiteralExpression;
+import org.kie.workbench.common.dmn.api.definition.model.OutputClause;
 import org.kie.workbench.common.dmn.client.property.dmn.DefaultValueUtilities;
 
 public class DecisionTableDefaultValueUtilities {

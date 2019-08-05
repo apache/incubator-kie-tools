@@ -24,8 +24,8 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
-import org.kie.workbench.common.dmn.api.definition.v1_1.NamedElement;
+import org.kie.workbench.common.dmn.api.definition.model.ItemDefinition;
+import org.kie.workbench.common.dmn.api.definition.model.NamedElement;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.client.editors.types.common.ItemDefinitionUtils;

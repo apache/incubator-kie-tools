@@ -20,7 +20,7 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
+import org.kie.workbench.common.dmn.api.definition.model.ItemDefinition;
 import org.kie.workbench.common.dmn.api.editors.types.BuiltInTypeUtils;
 
 public class ImportedItemDefinitionConverter {

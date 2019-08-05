@@ -25,13 +25,13 @@ import java.util.function.Consumer;
 import javax.xml.namespace.QName;
 
 import org.kie.workbench.common.dmn.api.definition.HasComponentWidths;
-import org.kie.workbench.common.dmn.api.definition.v1_1.BusinessKnowledgeModel;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DRGElement;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionService;
-import org.kie.workbench.common.dmn.api.definition.v1_1.FunctionDefinition;
-import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItemPrimary;
-import org.kie.workbench.common.dmn.api.definition.v1_1.KnowledgeRequirement;
-import org.kie.workbench.common.dmn.api.definition.v1_1.KnowledgeSource;
+import org.kie.workbench.common.dmn.api.definition.model.BusinessKnowledgeModel;
+import org.kie.workbench.common.dmn.api.definition.model.DRGElement;
+import org.kie.workbench.common.dmn.api.definition.model.DecisionService;
+import org.kie.workbench.common.dmn.api.definition.model.FunctionDefinition;
+import org.kie.workbench.common.dmn.api.definition.model.InformationItemPrimary;
+import org.kie.workbench.common.dmn.api.definition.model.KnowledgeRequirement;
+import org.kie.workbench.common.dmn.api.definition.model.KnowledgeSource;
 import org.kie.workbench.common.dmn.api.property.background.BackgroundSet;
 import org.kie.workbench.common.dmn.api.property.dimensions.GeneralRectangleDimensionsSet;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
@@ -47,7 +47,7 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import static org.kie.workbench.common.dmn.backend.definition.v1_1.HrefBuilder.getHref;
 import static org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils.getDefinitionId;
 
-public class BusinessKnowledgeModelConverter implements NodeConverter<org.kie.dmn.model.api.BusinessKnowledgeModel, org.kie.workbench.common.dmn.api.definition.v1_1.BusinessKnowledgeModel> {
+public class BusinessKnowledgeModelConverter implements NodeConverter<org.kie.dmn.model.api.BusinessKnowledgeModel, org.kie.workbench.common.dmn.api.definition.model.BusinessKnowledgeModel> {
 
     private FactoryManager factoryManager;
 

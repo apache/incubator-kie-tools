@@ -30,7 +30,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.Import;
+import org.kie.workbench.common.dmn.api.definition.model.Import;
 import org.kie.workbench.common.dmn.api.editors.included.DMNImportTypes;
 import org.kie.workbench.common.dmn.api.editors.included.PMMLDocumentMetadata;
 import org.kie.workbench.common.dmn.api.editors.included.PMMLIncludedModel;

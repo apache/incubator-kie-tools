@@ -40,7 +40,7 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DRGElement;
+import org.kie.workbench.common.dmn.api.definition.model.DRGElement;
 import org.kie.workbench.common.dmn.api.property.dmn.DMNExternalLink;
 import org.kie.workbench.common.dmn.api.property.dmn.DocumentationLinks;
 import org.kie.workbench.common.dmn.client.editors.common.RemoveHelper;

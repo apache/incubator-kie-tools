@@ -24,7 +24,7 @@ import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Import;
+import org.kie.workbench.common.dmn.api.definition.model.Import;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.editors.common.messages.FlashMessage;
 import org.kie.workbench.common.dmn.client.editors.common.persistence.RecordEngine;

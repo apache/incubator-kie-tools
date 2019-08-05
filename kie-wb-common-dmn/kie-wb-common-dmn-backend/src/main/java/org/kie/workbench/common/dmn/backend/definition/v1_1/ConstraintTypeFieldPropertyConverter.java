@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.dmn.backend.definition.v1_1;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType;
+import org.kie.workbench.common.dmn.api.definition.model.ConstraintType;
 
 public class ConstraintTypeFieldPropertyConverter {
 

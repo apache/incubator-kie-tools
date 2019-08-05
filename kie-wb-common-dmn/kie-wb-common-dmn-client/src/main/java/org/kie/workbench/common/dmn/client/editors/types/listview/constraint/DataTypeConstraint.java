@@ -24,7 +24,7 @@ import javax.inject.Inject;
 
 import elemental2.dom.HTMLElement;
 import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
-import org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType;
+import org.kie.workbench.common.dmn.api.definition.model.ConstraintType;
 import org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItem;
 import org.uberfire.client.mvp.UberElemental;
 

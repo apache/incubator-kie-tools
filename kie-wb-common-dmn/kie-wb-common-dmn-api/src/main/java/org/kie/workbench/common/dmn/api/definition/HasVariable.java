@@ -15,8 +15,8 @@
  */
 package org.kie.workbench.common.dmn.api.definition;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
-import org.kie.workbench.common.dmn.api.definition.v1_1.IsInformationItem;
+import org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase;
+import org.kie.workbench.common.dmn.api.definition.model.IsInformationItem;
 
 public interface HasVariable<T extends IsInformationItem> {
 

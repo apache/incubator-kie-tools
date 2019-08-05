@@ -24,15 +24,15 @@ import java.util.function.Consumer;
 import javax.xml.namespace.QName;
 
 import org.kie.workbench.common.dmn.api.definition.HasComponentWidths;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
-import org.kie.workbench.common.dmn.api.definition.v1_1.FunctionDefinition;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Invocation;
-import org.kie.workbench.common.dmn.api.definition.v1_1.IsLiteralExpression;
-import org.kie.workbench.common.dmn.api.definition.v1_1.List;
-import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Relation;
+import org.kie.workbench.common.dmn.api.definition.model.Context;
+import org.kie.workbench.common.dmn.api.definition.model.DecisionTable;
+import org.kie.workbench.common.dmn.api.definition.model.Expression;
+import org.kie.workbench.common.dmn.api.definition.model.FunctionDefinition;
+import org.kie.workbench.common.dmn.api.definition.model.Invocation;
+import org.kie.workbench.common.dmn.api.definition.model.IsLiteralExpression;
+import org.kie.workbench.common.dmn.api.definition.model.List;
+import org.kie.workbench.common.dmn.api.definition.model.LiteralExpression;
+import org.kie.workbench.common.dmn.api.definition.model.Relation;
 import org.kie.workbench.common.dmn.backend.definition.v1_1.dd.ComponentWidths;
 
 public class ExpressionPropertyConverter {

@@ -26,7 +26,7 @@ import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
+import org.kie.workbench.common.dmn.api.definition.model.ItemDefinition;
 import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedModel;
 import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedModelsService;
 import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedNode;

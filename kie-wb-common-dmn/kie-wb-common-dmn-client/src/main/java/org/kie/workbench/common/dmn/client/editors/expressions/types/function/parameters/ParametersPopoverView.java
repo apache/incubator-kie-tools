@@ -18,7 +18,7 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.function.p
 
 import java.util.List;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
+import org.kie.workbench.common.dmn.api.definition.model.InformationItem;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.HasCellEditorControls;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.popover.PopoverView;

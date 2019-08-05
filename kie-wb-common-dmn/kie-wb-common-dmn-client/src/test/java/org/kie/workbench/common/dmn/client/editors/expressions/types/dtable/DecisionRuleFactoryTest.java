@@ -19,16 +19,16 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionRule;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable;
-import org.kie.workbench.common.dmn.api.definition.v1_1.InputClause;
-import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
-import org.kie.workbench.common.dmn.api.definition.v1_1.OutputClause;
-import org.kie.workbench.common.dmn.api.definition.v1_1.UnaryTests;
+import org.kie.workbench.common.dmn.api.definition.model.ConstraintType;
+import org.kie.workbench.common.dmn.api.definition.model.DecisionRule;
+import org.kie.workbench.common.dmn.api.definition.model.DecisionTable;
+import org.kie.workbench.common.dmn.api.definition.model.InputClause;
+import org.kie.workbench.common.dmn.api.definition.model.LiteralExpression;
+import org.kie.workbench.common.dmn.api.definition.model.OutputClause;
+import org.kie.workbench.common.dmn.api.definition.model.UnaryTests;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType.NONE;
+import static org.kie.workbench.common.dmn.api.definition.model.ConstraintType.NONE;
 
 public class DecisionRuleFactoryTest {
 

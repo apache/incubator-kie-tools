@@ -19,10 +19,10 @@ package org.kie.workbench.common.dmn.client.commands.expressions.types.dtable;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable;
-import org.kie.workbench.common.dmn.api.definition.v1_1.InputClause;
-import org.kie.workbench.common.dmn.api.definition.v1_1.InputClauseLiteralExpression;
-import org.kie.workbench.common.dmn.api.definition.v1_1.UnaryTests;
+import org.kie.workbench.common.dmn.api.definition.model.DecisionTable;
+import org.kie.workbench.common.dmn.api.definition.model.InputClause;
+import org.kie.workbench.common.dmn.api.definition.model.InputClauseLiteralExpression;
+import org.kie.workbench.common.dmn.api.definition.model.UnaryTests;
 import org.kie.workbench.common.dmn.client.commands.VetoExecutionCommand;
 import org.kie.workbench.common.dmn.client.commands.VetoUndoCommand;
 import org.kie.workbench.common.dmn.client.commands.util.CommandUtils;

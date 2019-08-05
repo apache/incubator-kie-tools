@@ -18,9 +18,9 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.invocation
 
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Binding;
-import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Invocation;
+import org.kie.workbench.common.dmn.api.definition.model.Binding;
+import org.kie.workbench.common.dmn.api.definition.model.InformationItem;
+import org.kie.workbench.common.dmn.api.definition.model.Invocation;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

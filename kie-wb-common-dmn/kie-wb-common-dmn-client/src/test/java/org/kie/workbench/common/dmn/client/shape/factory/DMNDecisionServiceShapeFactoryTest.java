@@ -24,7 +24,7 @@ import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionService;
+import org.kie.workbench.common.dmn.api.definition.model.DecisionService;
 import org.kie.workbench.common.dmn.client.resources.DMNDecisionServiceSVGViewFactory;
 import org.kie.workbench.common.dmn.client.shape.def.DMNDecisionServiceSVGShapeDef;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGPrimitiveShape;

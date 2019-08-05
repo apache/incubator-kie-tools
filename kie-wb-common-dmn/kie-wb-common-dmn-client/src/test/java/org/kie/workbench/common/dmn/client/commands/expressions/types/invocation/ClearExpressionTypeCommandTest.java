@@ -17,7 +17,7 @@
 package org.kie.workbench.common.dmn.client.commands.expressions.types.invocation;
 
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Invocation;
+import org.kie.workbench.common.dmn.api.definition.model.Invocation;
 import org.kie.workbench.common.dmn.client.commands.general.BaseClearExpressionCommandTest;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.invocation.InvocationUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;

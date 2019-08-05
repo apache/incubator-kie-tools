@@ -20,16 +20,16 @@ import java.util.Objects;
 
 import javax.xml.namespace.QName;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
-import org.kie.workbench.common.dmn.api.definition.v1_1.IsUnaryTests;
-import org.kie.workbench.common.dmn.api.definition.v1_1.UnaryTests;
+import org.kie.workbench.common.dmn.api.definition.model.ConstraintType;
+import org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase;
+import org.kie.workbench.common.dmn.api.definition.model.IsUnaryTests;
+import org.kie.workbench.common.dmn.api.definition.model.UnaryTests;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.ExpressionLanguage;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Text;
 
-import static org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType.NONE;
+import static org.kie.workbench.common.dmn.api.definition.model.ConstraintType.NONE;
 
 public class UnaryTestsPropertyConverter {
 

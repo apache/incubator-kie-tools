@@ -23,7 +23,7 @@ import javax.inject.Inject;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.HasVariable;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DMNElement;
+import org.kie.workbench.common.dmn.api.definition.model.DMNElement;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.forms.adf.definitions.DynamicReadOnly;

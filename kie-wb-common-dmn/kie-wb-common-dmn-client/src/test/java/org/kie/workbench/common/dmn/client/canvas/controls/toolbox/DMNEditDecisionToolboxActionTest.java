@@ -20,7 +20,7 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
+import org.kie.workbench.common.dmn.api.definition.model.Decision;
 import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;

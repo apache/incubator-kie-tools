@@ -18,7 +18,7 @@ package org.kie.workbench.common.dmn.client.shape.factory;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionService;
+import org.kie.workbench.common.dmn.api.definition.model.DecisionService;
 import org.kie.workbench.common.dmn.client.resources.DMNDecisionServiceSVGViewFactory;
 import org.kie.workbench.common.dmn.client.shape.def.DMNDecisionServiceSVGShapeDef;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeDefFactory;

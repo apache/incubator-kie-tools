@@ -18,7 +18,7 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.dtable;
 import java.util.Optional;
 
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.dmn.api.definition.v1_1.OutputClause;
+import org.kie.workbench.common.dmn.api.definition.model.OutputClause;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.BaseColumnHeaderMetaDataContextMenuTest;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;

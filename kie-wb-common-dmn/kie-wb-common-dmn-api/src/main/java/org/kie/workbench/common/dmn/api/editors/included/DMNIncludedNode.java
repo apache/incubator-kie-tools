@@ -18,7 +18,7 @@ package org.kie.workbench.common.dmn.api.editors.included;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DRGElement;
+import org.kie.workbench.common.dmn.api.definition.model.DRGElement;
 
 @Portable
 public class DMNIncludedNode {

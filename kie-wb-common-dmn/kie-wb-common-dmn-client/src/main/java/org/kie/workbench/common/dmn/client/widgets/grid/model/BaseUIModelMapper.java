@@ -19,7 +19,7 @@ package org.kie.workbench.common.dmn.client.widgets.grid.model;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
+import org.kie.workbench.common.dmn.api.definition.model.Expression;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 
 public abstract class BaseUIModelMapper<E extends Expression> implements UIModelMapper {

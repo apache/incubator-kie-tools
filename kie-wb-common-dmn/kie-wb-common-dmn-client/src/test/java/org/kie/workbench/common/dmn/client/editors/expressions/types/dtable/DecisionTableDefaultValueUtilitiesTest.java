@@ -18,10 +18,10 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.dtable;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable;
-import org.kie.workbench.common.dmn.api.definition.v1_1.InputClause;
-import org.kie.workbench.common.dmn.api.definition.v1_1.InputClauseLiteralExpression;
-import org.kie.workbench.common.dmn.api.definition.v1_1.OutputClause;
+import org.kie.workbench.common.dmn.api.definition.model.DecisionTable;
+import org.kie.workbench.common.dmn.api.definition.model.InputClause;
+import org.kie.workbench.common.dmn.api.definition.model.InputClauseLiteralExpression;
+import org.kie.workbench.common.dmn.api.definition.model.OutputClause;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

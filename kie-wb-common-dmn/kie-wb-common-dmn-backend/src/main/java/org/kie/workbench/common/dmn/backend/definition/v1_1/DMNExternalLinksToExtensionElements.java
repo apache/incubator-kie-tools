@@ -30,7 +30,7 @@ import org.kie.workbench.common.dmn.backend.definition.v1_1.dd.ExternalLink;
 class DMNExternalLinksToExtensionElements {
 
     static void loadExternalLinksFromExtensionElements(final org.kie.dmn.model.api.DRGElement source,
-                                                       final org.kie.workbench.common.dmn.api.definition.v1_1.DRGElement target) {
+                                                       final org.kie.workbench.common.dmn.api.definition.model.DRGElement target) {
 
         if (!Objects.isNull(source.getExtensionElements())) {
             for (final Object obj : source.getExtensionElements().getAny()) {
@@ -46,7 +46,7 @@ class DMNExternalLinksToExtensionElements {
         }
     }
 
-    static void loadExternalLinksIntoExtensionElements(final org.kie.workbench.common.dmn.api.definition.v1_1.DRGElement source,
+    static void loadExternalLinksIntoExtensionElements(final org.kie.workbench.common.dmn.api.definition.model.DRGElement source,
                                                        final org.kie.dmn.model.api.DRGElement target) {
 
         if (Objects.isNull(source.getLinksHolder()) || Objects.isNull(source.getLinksHolder().getValue())) {

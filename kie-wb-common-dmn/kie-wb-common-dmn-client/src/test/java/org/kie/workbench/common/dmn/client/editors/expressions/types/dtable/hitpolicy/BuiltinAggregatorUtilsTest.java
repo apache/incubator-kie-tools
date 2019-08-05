@@ -22,7 +22,7 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.dmn.api.definition.v1_1.BuiltinAggregator;
+import org.kie.workbench.common.dmn.api.definition.model.BuiltinAggregator;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;

@@ -21,10 +21,10 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import org.kie.workbench.common.dmn.api.definition.HasComponentWidths;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DRGElement;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
-import org.kie.workbench.common.dmn.api.definition.v1_1.InputData;
-import org.kie.workbench.common.dmn.api.definition.v1_1.KnowledgeSource;
+import org.kie.workbench.common.dmn.api.definition.model.DRGElement;
+import org.kie.workbench.common.dmn.api.definition.model.Decision;
+import org.kie.workbench.common.dmn.api.definition.model.InputData;
+import org.kie.workbench.common.dmn.api.definition.model.KnowledgeSource;
 import org.kie.workbench.common.dmn.api.property.background.BackgroundSet;
 import org.kie.workbench.common.dmn.api.property.dimensions.GeneralRectangleDimensionsSet;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
@@ -42,7 +42,7 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import static org.kie.workbench.common.dmn.backend.definition.v1_1.HrefBuilder.getHref;
 import static org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils.getDefinitionId;
 
-public class KnowledgeSourceConverter implements NodeConverter<org.kie.dmn.model.api.KnowledgeSource, org.kie.workbench.common.dmn.api.definition.v1_1.KnowledgeSource> {
+public class KnowledgeSourceConverter implements NodeConverter<org.kie.dmn.model.api.KnowledgeSource, org.kie.workbench.common.dmn.api.definition.model.KnowledgeSource> {
 
     private FactoryManager factoryManager;
 

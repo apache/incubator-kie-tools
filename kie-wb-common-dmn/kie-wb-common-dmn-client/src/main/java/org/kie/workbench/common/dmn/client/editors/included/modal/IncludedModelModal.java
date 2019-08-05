@@ -28,7 +28,7 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import elemental2.dom.HTMLElement;
-import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
+import org.kie.workbench.common.dmn.api.definition.model.ItemDefinition;
 import org.kie.workbench.common.dmn.api.editors.included.DMNImportTypes;
 import org.kie.workbench.common.dmn.client.api.included.legacy.DMNIncludeModelsClient;
 import org.kie.workbench.common.dmn.client.decision.events.RefreshDecisionComponents;

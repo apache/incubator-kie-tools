@@ -23,8 +23,8 @@ import java.util.stream.Collectors;
 
 import com.ait.lienzo.client.core.shape.Group;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
-import org.kie.workbench.common.dmn.api.definition.v1_1.FunctionDefinition;
-import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
+import org.kie.workbench.common.dmn.api.definition.model.FunctionDefinition;
+import org.kie.workbench.common.dmn.api.definition.model.InformationItem;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.parameters.HasParametersControl;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.parameters.ParametersPopoverView;
 import org.kie.workbench.common.dmn.client.editors.expressions.util.RendererUtils;

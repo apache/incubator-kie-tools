@@ -24,7 +24,7 @@ import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Invocation;
+import org.kie.workbench.common.dmn.api.definition.model.Invocation;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.invocation.MoveRowsCommand;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;

@@ -18,9 +18,9 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.context;
 
 import java.util.stream.Collectors;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
-import org.kie.workbench.common.dmn.api.definition.v1_1.ContextEntry;
-import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
+import org.kie.workbench.common.dmn.api.definition.model.Context;
+import org.kie.workbench.common.dmn.api.definition.model.ContextEntry;
+import org.kie.workbench.common.dmn.api.definition.model.InformationItem;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.property.dmn.DefaultValueUtilities;
 

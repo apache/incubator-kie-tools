@@ -18,8 +18,8 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.function;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.workbench.common.dmn.api.definition.v1_1.FunctionDefinition;
-import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
+import org.kie.workbench.common.dmn.api.definition.model.FunctionDefinition;
+import org.kie.workbench.common.dmn.api.definition.model.InformationItem;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

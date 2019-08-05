@@ -21,8 +21,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
-import org.kie.workbench.common.dmn.api.definition.v1_1.ContextEntry;
+import org.kie.workbench.common.dmn.api.definition.model.Context;
+import org.kie.workbench.common.dmn.api.definition.model.ContextEntry;
 import org.kie.workbench.common.dmn.client.commands.VetoExecutionCommand;
 import org.kie.workbench.common.dmn.client.commands.VetoUndoCommand;
 import org.kie.workbench.common.dmn.client.commands.util.CommandUtils;

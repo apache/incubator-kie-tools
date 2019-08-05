@@ -19,7 +19,7 @@ package org.kie.workbench.common.dmn.api.property.dmn;
 import java.util.HashSet;
 
 import org.junit.Test;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
+import org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 
 import static org.junit.Assert.assertEquals;

@@ -23,7 +23,7 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Import;
+import org.kie.workbench.common.dmn.api.definition.model.Import;
 import org.kie.workbench.common.dmn.client.editors.included.BaseIncludedModelActiveRecord;
 import org.mockito.Mock;
 

@@ -90,29 +90,29 @@ import org.kie.dmn.model.v1_2.TItemDefinition;
 import org.kie.dmn.model.v1_2.TTextAnnotation;
 import org.kie.workbench.common.dmn.api.DMNDefinitionSet;
 import org.kie.workbench.common.dmn.api.definition.HasComponentWidths;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Association;
-import org.kie.workbench.common.dmn.api.definition.v1_1.AuthorityRequirement;
-import org.kie.workbench.common.dmn.api.definition.v1_1.BusinessKnowledgeModel;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
-import org.kie.workbench.common.dmn.api.definition.v1_1.ContextEntry;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DMNDiagram;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DMNElement;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase.Namespace;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionService;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
-import org.kie.workbench.common.dmn.api.definition.v1_1.FunctionDefinition;
-import org.kie.workbench.common.dmn.api.definition.v1_1.ImportDMN;
-import org.kie.workbench.common.dmn.api.definition.v1_1.ImportPMML;
-import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
-import org.kie.workbench.common.dmn.api.definition.v1_1.InformationRequirement;
-import org.kie.workbench.common.dmn.api.definition.v1_1.InputData;
-import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
-import org.kie.workbench.common.dmn.api.definition.v1_1.KnowledgeRequirement;
-import org.kie.workbench.common.dmn.api.definition.v1_1.KnowledgeSource;
-import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
-import org.kie.workbench.common.dmn.api.definition.v1_1.TextAnnotation;
+import org.kie.workbench.common.dmn.api.definition.model.Association;
+import org.kie.workbench.common.dmn.api.definition.model.AuthorityRequirement;
+import org.kie.workbench.common.dmn.api.definition.model.BusinessKnowledgeModel;
+import org.kie.workbench.common.dmn.api.definition.model.Context;
+import org.kie.workbench.common.dmn.api.definition.model.ContextEntry;
+import org.kie.workbench.common.dmn.api.definition.model.DMNDiagram;
+import org.kie.workbench.common.dmn.api.definition.model.DMNElement;
+import org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase;
+import org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase.Namespace;
+import org.kie.workbench.common.dmn.api.definition.model.Decision;
+import org.kie.workbench.common.dmn.api.definition.model.DecisionService;
+import org.kie.workbench.common.dmn.api.definition.model.Expression;
+import org.kie.workbench.common.dmn.api.definition.model.FunctionDefinition;
+import org.kie.workbench.common.dmn.api.definition.model.ImportDMN;
+import org.kie.workbench.common.dmn.api.definition.model.ImportPMML;
+import org.kie.workbench.common.dmn.api.definition.model.InformationItem;
+import org.kie.workbench.common.dmn.api.definition.model.InformationRequirement;
+import org.kie.workbench.common.dmn.api.definition.model.InputData;
+import org.kie.workbench.common.dmn.api.definition.model.ItemDefinition;
+import org.kie.workbench.common.dmn.api.definition.model.KnowledgeRequirement;
+import org.kie.workbench.common.dmn.api.definition.model.KnowledgeSource;
+import org.kie.workbench.common.dmn.api.definition.model.LiteralExpression;
+import org.kie.workbench.common.dmn.api.definition.model.TextAnnotation;
 import org.kie.workbench.common.dmn.api.editors.included.DMNImportTypes;
 import org.kie.workbench.common.dmn.api.editors.included.PMMLDocumentMetadata;
 import org.kie.workbench.common.dmn.api.factory.DMNGraphFactoryImpl;
@@ -1411,7 +1411,7 @@ public class DMNMarshallerTest {
                      "_f330b756-e84e-401d-ac3a-2e72e710d4ed",
                      ((DMNElement) ((Decision) ((View<?>) decisionNode.getContent()).getDefinition()).getParent()).getId().getValue());
 
-        final org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable dtable = (org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable) ((Decision) ((View<?>) decisionNode.getContent()).getDefinition()).getExpression();
+        final org.kie.workbench.common.dmn.api.definition.model.DecisionTable dtable = (org.kie.workbench.common.dmn.api.definition.model.DecisionTable) ((Decision) ((View<?>) decisionNode.getContent()).getDefinition()).getExpression();
         dtable.getRule().forEach(rule -> rule.getInputEntry().forEach(ie -> assertEquals(ie.getParent(), rule)));
         dtable.getRule().forEach(rule -> rule.getOutputEntry().forEach(ie -> assertEquals(ie.getParent(), rule)));
         dtable.getRule().forEach(rule -> assertEquals(rule.getParent(), dtable));
@@ -1822,7 +1822,7 @@ public class DMNMarshallerTest {
         final DMNMarshaller marshaller = spy(getDMNMarshaller());
         final List<org.kie.dmn.model.api.DRGElement> importedDrgElements = mock(List.class);
         final Node node = mock(Node.class);
-        final org.kie.workbench.common.dmn.api.definition.v1_1.DRGElement element = mock(org.kie.workbench.common.dmn.api.definition.v1_1.DRGElement.class);
+        final org.kie.workbench.common.dmn.api.definition.model.DRGElement element = mock(org.kie.workbench.common.dmn.api.definition.model.DRGElement.class);
         doReturn(Optional.of(element)).when(marshaller).getDRGElement(node);
         doReturn(expected).when(marshaller).isImportedDRGElement(importedDrgElements, element);
 
@@ -1859,7 +1859,7 @@ public class DMNMarshallerTest {
         when(imported.getId()).thenReturn("id");
         importedDrgElements.add(imported);
 
-        final org.kie.workbench.common.dmn.api.definition.v1_1.DRGElement drgElement = mock(org.kie.workbench.common.dmn.api.definition.v1_1.DRGElement.class);
+        final org.kie.workbench.common.dmn.api.definition.model.DRGElement drgElement = mock(org.kie.workbench.common.dmn.api.definition.model.DRGElement.class);
         final Id id = mock(Id.class);
         when(id.getValue()).thenReturn("id");
         when(drgElement.getId()).thenReturn(id);
@@ -1963,11 +1963,11 @@ public class DMNMarshallerTest {
     @Test
     public void testLoadImportedItemDefinitions() {
 
-        final org.kie.workbench.common.dmn.api.definition.v1_1.Definitions definitions = mock(org.kie.workbench.common.dmn.api.definition.v1_1.Definitions.class);
-        final org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition itemDefinition1 = mock(org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition.class);
-        final org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition itemDefinition2 = mock(org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition.class);
-        final List<org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition> expectedItemDefinitions = asList(itemDefinition1, itemDefinition2);
-        final List<org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition> actualItemDefinitions = new ArrayList<>();
+        final org.kie.workbench.common.dmn.api.definition.model.Definitions definitions = mock(org.kie.workbench.common.dmn.api.definition.model.Definitions.class);
+        final org.kie.workbench.common.dmn.api.definition.model.ItemDefinition itemDefinition1 = mock(org.kie.workbench.common.dmn.api.definition.model.ItemDefinition.class);
+        final org.kie.workbench.common.dmn.api.definition.model.ItemDefinition itemDefinition2 = mock(org.kie.workbench.common.dmn.api.definition.model.ItemDefinition.class);
+        final List<org.kie.workbench.common.dmn.api.definition.model.ItemDefinition> expectedItemDefinitions = asList(itemDefinition1, itemDefinition2);
+        final List<org.kie.workbench.common.dmn.api.definition.model.ItemDefinition> actualItemDefinitions = new ArrayList<>();
         final Map<Import, org.kie.dmn.model.api.Definitions> importDefinitions = new HashMap<>();
         final DMNMarshaller dmnMarshaller = spy(getDMNMarshaller());
 
@@ -1982,12 +1982,12 @@ public class DMNMarshallerTest {
     @Test
     public void testCleanImportedItemDefinitions() {
 
-        final org.kie.workbench.common.dmn.api.definition.v1_1.Definitions definitions = mock(org.kie.workbench.common.dmn.api.definition.v1_1.Definitions.class);
-        final org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition itemDefinition1 = mock(org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition.class);
-        final org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition itemDefinition2 = mock(org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition.class);
-        final org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition itemDefinition3 = mock(org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition.class);
-        final List<org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition> actualItemDefinitions = new ArrayList<>(asList(itemDefinition1, itemDefinition2, itemDefinition3));
-        final List<org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition> expectedItemDefinitions = asList(itemDefinition1, itemDefinition3);
+        final org.kie.workbench.common.dmn.api.definition.model.Definitions definitions = mock(org.kie.workbench.common.dmn.api.definition.model.Definitions.class);
+        final org.kie.workbench.common.dmn.api.definition.model.ItemDefinition itemDefinition1 = mock(org.kie.workbench.common.dmn.api.definition.model.ItemDefinition.class);
+        final org.kie.workbench.common.dmn.api.definition.model.ItemDefinition itemDefinition2 = mock(org.kie.workbench.common.dmn.api.definition.model.ItemDefinition.class);
+        final org.kie.workbench.common.dmn.api.definition.model.ItemDefinition itemDefinition3 = mock(org.kie.workbench.common.dmn.api.definition.model.ItemDefinition.class);
+        final List<org.kie.workbench.common.dmn.api.definition.model.ItemDefinition> actualItemDefinitions = new ArrayList<>(asList(itemDefinition1, itemDefinition2, itemDefinition3));
+        final List<org.kie.workbench.common.dmn.api.definition.model.ItemDefinition> expectedItemDefinitions = asList(itemDefinition1, itemDefinition3);
         final DMNMarshaller dmnMarshaller = getDMNMarshaller();
 
         when(itemDefinition1.isAllowOnlyVisualChange()).thenReturn(false);
@@ -2109,8 +2109,8 @@ public class DMNMarshallerTest {
         final Diagram mockDiagram = mock(Diagram.class);
         when(mockDiagram.getGraph()).thenReturn(graph);
 
-        final org.kie.workbench.common.dmn.api.definition.v1_1.Definitions definitions = utils.getDefinitions(mockDiagram);
-        final List<org.kie.workbench.common.dmn.api.definition.v1_1.Import> imports = definitions.getImport();
+        final org.kie.workbench.common.dmn.api.definition.model.Definitions definitions = utils.getDefinitions(mockDiagram);
+        final List<org.kie.workbench.common.dmn.api.definition.model.Import> imports = definitions.getImport();
         assertTrue(imports.get(0) instanceof ImportDMN);
         assertTrue(imports.get(1) instanceof ImportPMML);
 
@@ -2238,7 +2238,7 @@ public class DMNMarshallerTest {
         assertThat(componentWidths.get(3)).isEqualTo(250.0);
     }
 
-    private static void testAugmentWithNSPrefixes(org.kie.workbench.common.dmn.api.definition.v1_1.Definitions definitions) {
+    private static void testAugmentWithNSPrefixes(org.kie.workbench.common.dmn.api.definition.model.Definitions definitions) {
         for (Namespace nsp : DMNModelInstrumentedBase.Namespace.values()) {
             definitions.getNsContext().put(nsp.getPrefix(), nsp.getUri());
         }

@@ -18,9 +18,9 @@ package org.kie.workbench.common.dmn.backend.definition.v1_1;
 
 import org.kie.dmn.model.api.LiteralExpression;
 import org.kie.dmn.model.api.UnaryTests;
-import org.kie.workbench.common.dmn.api.definition.v1_1.OutputClause;
-import org.kie.workbench.common.dmn.api.definition.v1_1.OutputClauseLiteralExpression;
-import org.kie.workbench.common.dmn.api.definition.v1_1.OutputClauseUnaryTests;
+import org.kie.workbench.common.dmn.api.definition.model.OutputClause;
+import org.kie.workbench.common.dmn.api.definition.model.OutputClauseLiteralExpression;
+import org.kie.workbench.common.dmn.api.definition.model.OutputClauseUnaryTests;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;

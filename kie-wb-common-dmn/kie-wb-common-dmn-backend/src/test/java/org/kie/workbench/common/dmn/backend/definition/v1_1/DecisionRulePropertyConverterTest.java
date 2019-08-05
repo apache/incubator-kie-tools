@@ -41,7 +41,7 @@ public class DecisionRulePropertyConverterTest {
         dmn.getInputEntry().add(inputEntry);
         dmn.getOutputEntry().add(outputEntry);
 
-        final org.kie.workbench.common.dmn.api.definition.v1_1.DecisionRule wb = DecisionRulePropertyConverter.wbFromDMN(dmn);
+        final org.kie.workbench.common.dmn.api.definition.model.DecisionRule wb = DecisionRulePropertyConverter.wbFromDMN(dmn);
 
         assertEquals(ID, wb.getId().getValue());
         assertEquals(DESCRIPTION, wb.getDescription().getValue());
@@ -51,9 +51,9 @@ public class DecisionRulePropertyConverterTest {
 
     @Test
     public void testDmnFromWb() {
-        final org.kie.workbench.common.dmn.api.definition.v1_1.UnaryTests inputEntry = new org.kie.workbench.common.dmn.api.definition.v1_1.UnaryTests();
-        final org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression outputEntry = new org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression();
-        final org.kie.workbench.common.dmn.api.definition.v1_1.DecisionRule wb = new org.kie.workbench.common.dmn.api.definition.v1_1.DecisionRule();
+        final org.kie.workbench.common.dmn.api.definition.model.UnaryTests inputEntry = new org.kie.workbench.common.dmn.api.definition.model.UnaryTests();
+        final org.kie.workbench.common.dmn.api.definition.model.LiteralExpression outputEntry = new org.kie.workbench.common.dmn.api.definition.model.LiteralExpression();
+        final org.kie.workbench.common.dmn.api.definition.model.DecisionRule wb = new org.kie.workbench.common.dmn.api.definition.model.DecisionRule();
         wb.getId().setValue(ID);
         wb.getDescription().setValue(DESCRIPTION);
         wb.getInputEntry().add(inputEntry);

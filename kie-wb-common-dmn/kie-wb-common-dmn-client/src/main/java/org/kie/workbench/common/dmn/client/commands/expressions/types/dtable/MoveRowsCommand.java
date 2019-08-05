@@ -21,8 +21,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionRule;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable;
+import org.kie.workbench.common.dmn.api.definition.model.DecisionRule;
+import org.kie.workbench.common.dmn.api.definition.model.DecisionTable;
 import org.kie.workbench.common.dmn.client.commands.VetoExecutionCommand;
 import org.kie.workbench.common.dmn.client.commands.VetoUndoCommand;
 import org.kie.workbench.common.dmn.client.commands.util.CommandUtils;

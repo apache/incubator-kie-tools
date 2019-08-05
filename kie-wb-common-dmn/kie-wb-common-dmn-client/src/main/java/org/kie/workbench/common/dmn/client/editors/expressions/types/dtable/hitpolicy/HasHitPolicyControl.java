@@ -16,8 +16,8 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.hitpolicy;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.BuiltinAggregator;
-import org.kie.workbench.common.dmn.api.definition.v1_1.HitPolicy;
+import org.kie.workbench.common.dmn.api.definition.model.BuiltinAggregator;
+import org.kie.workbench.common.dmn.api.definition.model.HitPolicy;
 import org.uberfire.mvp.Command;
 
 public interface HasHitPolicyControl {

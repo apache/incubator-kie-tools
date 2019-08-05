@@ -30,13 +30,13 @@ import org.kie.dmn.model.v1_2.TList;
 import org.kie.dmn.model.v1_2.TLiteralExpression;
 import org.kie.dmn.model.v1_2.TRelation;
 import org.kie.workbench.common.dmn.api.definition.HasComponentWidths;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
-import org.kie.workbench.common.dmn.api.definition.v1_1.FunctionDefinition;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Invocation;
-import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Relation;
+import org.kie.workbench.common.dmn.api.definition.model.Context;
+import org.kie.workbench.common.dmn.api.definition.model.DecisionTable;
+import org.kie.workbench.common.dmn.api.definition.model.Expression;
+import org.kie.workbench.common.dmn.api.definition.model.FunctionDefinition;
+import org.kie.workbench.common.dmn.api.definition.model.Invocation;
+import org.kie.workbench.common.dmn.api.definition.model.LiteralExpression;
+import org.kie.workbench.common.dmn.api.definition.model.Relation;
 import org.kie.workbench.common.dmn.backend.definition.v1_1.dd.ComponentWidths;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -157,12 +157,12 @@ public class ExpressionPropertyConverterTest {
         final org.kie.dmn.model.api.List dmn = new TList();
         dmn.setId(EXPRESSION_UUID);
 
-        assertWBFromDMNConversion(dmn, org.kie.workbench.common.dmn.api.definition.v1_1.List.class);
+        assertWBFromDMNConversion(dmn, org.kie.workbench.common.dmn.api.definition.model.List.class);
     }
 
     @Test
     public void testDMNFromWB_ListConversion() {
-        final org.kie.workbench.common.dmn.api.definition.v1_1.List wb = new org.kie.workbench.common.dmn.api.definition.v1_1.List();
+        final org.kie.workbench.common.dmn.api.definition.model.List wb = new org.kie.workbench.common.dmn.api.definition.model.List();
         final List<Double> wbComponentWidths = wb.getComponentWidths();
         wbComponentWidths.set(0, 200.0);
         wb.getId().setValue(EXPRESSION_UUID);

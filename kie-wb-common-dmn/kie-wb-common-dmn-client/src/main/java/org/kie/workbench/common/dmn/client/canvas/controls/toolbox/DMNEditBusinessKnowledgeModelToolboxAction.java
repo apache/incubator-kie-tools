@@ -22,7 +22,7 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.BusinessKnowledgeModel;
+import org.kie.workbench.common.dmn.api.definition.model.BusinessKnowledgeModel;
 import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;

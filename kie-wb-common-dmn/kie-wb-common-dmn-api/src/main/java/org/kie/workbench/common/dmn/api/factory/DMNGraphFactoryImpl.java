@@ -21,7 +21,7 @@ import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.DMNDiagram;
+import org.kie.workbench.common.dmn.api.definition.model.DMNDiagram;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.command.Command;

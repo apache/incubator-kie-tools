@@ -18,9 +18,9 @@ package org.kie.workbench.common.dmn.backend.editors.common;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DRGElement;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
-import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItemPrimary;
+import org.kie.workbench.common.dmn.api.definition.model.DRGElement;
+import org.kie.workbench.common.dmn.api.definition.model.Decision;
+import org.kie.workbench.common.dmn.api.definition.model.InformationItemPrimary;
 import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedNode;
 import org.kie.workbench.common.dmn.api.editors.included.IncludedModel;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;

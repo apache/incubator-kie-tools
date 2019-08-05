@@ -22,7 +22,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.kie.soup.commons.util.Lists;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable;
+import org.kie.workbench.common.dmn.api.definition.model.DecisionTable;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.MoveColumnsCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.MoveRowsCommand;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;

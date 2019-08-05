@@ -20,7 +20,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import org.kie.workbench.common.dmn.api.definition.HasComponentWidths;
-import org.kie.workbench.common.dmn.api.definition.v1_1.TextAnnotation;
+import org.kie.workbench.common.dmn.api.definition.model.TextAnnotation;
 import org.kie.workbench.common.dmn.api.property.background.BackgroundSet;
 import org.kie.workbench.common.dmn.api.property.dimensions.GeneralRectangleDimensionsSet;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
@@ -35,7 +35,7 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
 import static org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils.getDefinitionId;
 
-public class TextAnnotationConverter implements NodeConverter<org.kie.dmn.model.api.TextAnnotation, org.kie.workbench.common.dmn.api.definition.v1_1.TextAnnotation> {
+public class TextAnnotationConverter implements NodeConverter<org.kie.dmn.model.api.TextAnnotation, org.kie.workbench.common.dmn.api.definition.model.TextAnnotation> {
 
     private FactoryManager factoryManager;
 

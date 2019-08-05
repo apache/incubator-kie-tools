@@ -23,9 +23,9 @@ import java.util.stream.StreamSupport;
 
 import javax.enterprise.context.Dependent;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.DMNDiagram;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DRGElement;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Definitions;
+import org.kie.workbench.common.dmn.api.definition.model.DMNDiagram;
+import org.kie.workbench.common.dmn.api.definition.model.DRGElement;
+import org.kie.workbench.common.dmn.api.definition.model.Definitions;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;

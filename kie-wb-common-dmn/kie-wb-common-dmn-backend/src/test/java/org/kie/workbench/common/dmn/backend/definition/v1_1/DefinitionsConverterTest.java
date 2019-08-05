@@ -27,9 +27,9 @@ import org.kie.dmn.model.api.Import;
 import org.kie.dmn.model.api.ItemDefinition;
 import org.kie.dmn.model.v1_2.TImport;
 import org.kie.soup.commons.util.Maps;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Definitions;
-import org.kie.workbench.common.dmn.api.definition.v1_1.ImportDMN;
+import org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase;
+import org.kie.workbench.common.dmn.api.definition.model.Definitions;
+import org.kie.workbench.common.dmn.api.definition.model.ImportDMN;
 import org.kie.workbench.common.dmn.api.editors.included.DMNImportTypes;
 import org.kie.workbench.common.dmn.api.editors.included.PMMLDocumentMetadata;
 import org.kie.workbench.common.dmn.api.property.dmn.Text;
@@ -71,7 +71,7 @@ public class DefinitionsConverterTest {
         final Definitions wb = DefinitionsConverter.wbFromDMN(apiDefinitions, importDefinitions, pmmlDocuments);
         final String defaultNs = wb.getNsContext().get(DMNModelInstrumentedBase.Namespace.DEFAULT.getPrefix());
         final String namespace = wb.getNamespace().getValue();
-        final List<org.kie.workbench.common.dmn.api.definition.v1_1.Import> imports = wb.getImport();
+        final List<org.kie.workbench.common.dmn.api.definition.model.Import> imports = wb.getImport();
 
         assertEquals(defaultNs, namespace);
         assertEquals(1, imports.size());

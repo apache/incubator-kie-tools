@@ -23,10 +23,10 @@ import javax.inject.Inject;
 
 import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.dmn.api.definition.DMNDefinition;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Association;
-import org.kie.workbench.common.dmn.api.definition.v1_1.AuthorityRequirement;
-import org.kie.workbench.common.dmn.api.definition.v1_1.InformationRequirement;
-import org.kie.workbench.common.dmn.api.definition.v1_1.KnowledgeRequirement;
+import org.kie.workbench.common.dmn.api.definition.model.Association;
+import org.kie.workbench.common.dmn.api.definition.model.AuthorityRequirement;
+import org.kie.workbench.common.dmn.api.definition.model.InformationRequirement;
+import org.kie.workbench.common.dmn.api.definition.model.KnowledgeRequirement;
 import org.kie.workbench.common.dmn.client.shape.DMNConnectorShape;
 import org.kie.workbench.common.dmn.client.shape.def.DMNConnectorShapeDef;
 import org.kie.workbench.common.dmn.client.shape.def.DMNShapeDef;

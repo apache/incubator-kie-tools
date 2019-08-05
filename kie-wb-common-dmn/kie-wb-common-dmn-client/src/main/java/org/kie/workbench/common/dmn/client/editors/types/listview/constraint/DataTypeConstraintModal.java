@@ -25,7 +25,7 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType;
+import org.kie.workbench.common.dmn.api.definition.model.ConstraintType;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.DataTypeConstraintComponent;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.DataTypeConstraintParserWarningEvent;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.enumeration.DataTypeConstraintEnumeration;
@@ -36,10 +36,10 @@ import org.kie.workbench.common.stunner.core.util.StringUtils;
 import org.uberfire.ext.editor.commons.client.file.popups.elemental2.Elemental2Modal;
 import org.uberfire.mvp.Command;
 
-import static org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType.ENUMERATION;
-import static org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType.EXPRESSION;
-import static org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType.NONE;
-import static org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType.RANGE;
+import static org.kie.workbench.common.dmn.api.definition.model.ConstraintType.ENUMERATION;
+import static org.kie.workbench.common.dmn.api.definition.model.ConstraintType.EXPRESSION;
+import static org.kie.workbench.common.dmn.api.definition.model.ConstraintType.NONE;
+import static org.kie.workbench.common.dmn.api.definition.model.ConstraintType.RANGE;
 import static org.kie.workbench.common.stunner.core.util.StringUtils.isEmpty;
 
 @Dependent

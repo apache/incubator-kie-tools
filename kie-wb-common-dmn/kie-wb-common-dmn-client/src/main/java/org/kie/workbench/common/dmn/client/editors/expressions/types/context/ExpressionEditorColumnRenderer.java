@@ -21,7 +21,7 @@ import java.util.Optional;
 import com.ait.lienzo.client.core.shape.Group;
 import com.google.gwt.core.client.GWT;
 import org.kie.soup.commons.validation.PortablePreconditions;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
+import org.kie.workbench.common.dmn.api.definition.model.Expression;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;

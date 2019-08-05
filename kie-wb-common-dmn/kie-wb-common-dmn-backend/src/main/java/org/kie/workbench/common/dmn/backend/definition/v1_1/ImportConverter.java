@@ -24,9 +24,9 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.kie.dmn.model.api.Definitions;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Import;
-import org.kie.workbench.common.dmn.api.definition.v1_1.ImportDMN;
-import org.kie.workbench.common.dmn.api.definition.v1_1.ImportPMML;
+import org.kie.workbench.common.dmn.api.definition.model.Import;
+import org.kie.workbench.common.dmn.api.definition.model.ImportDMN;
+import org.kie.workbench.common.dmn.api.definition.model.ImportPMML;
 import org.kie.workbench.common.dmn.api.editors.included.DMNImportTypes;
 import org.kie.workbench.common.dmn.api.editors.included.PMMLDocumentMetadata;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;

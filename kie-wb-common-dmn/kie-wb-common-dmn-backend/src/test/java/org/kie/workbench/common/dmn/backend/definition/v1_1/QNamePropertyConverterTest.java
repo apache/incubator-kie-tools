@@ -24,7 +24,7 @@ import org.junit.Test;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.Decision;
 import org.kie.dmn.model.v1_1.TDefinitions;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase.Namespace;
+import org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase.Namespace;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 

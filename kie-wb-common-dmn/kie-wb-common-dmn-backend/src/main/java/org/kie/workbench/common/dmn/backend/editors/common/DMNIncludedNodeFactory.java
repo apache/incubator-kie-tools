@@ -19,9 +19,9 @@ package org.kie.workbench.common.dmn.backend.editors.common;
 import javax.enterprise.context.Dependent;
 
 import org.kie.workbench.common.dmn.api.definition.HasVariable;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DRGElement;
-import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItemPrimary;
-import org.kie.workbench.common.dmn.api.definition.v1_1.IsInformationItem;
+import org.kie.workbench.common.dmn.api.definition.model.DRGElement;
+import org.kie.workbench.common.dmn.api.definition.model.InformationItemPrimary;
+import org.kie.workbench.common.dmn.api.definition.model.IsInformationItem;
 import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedNode;
 import org.kie.workbench.common.dmn.api.editors.included.IncludedModel;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;

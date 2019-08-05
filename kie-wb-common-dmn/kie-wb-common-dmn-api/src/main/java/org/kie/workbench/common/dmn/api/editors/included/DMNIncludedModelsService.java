@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.jboss.errai.bus.server.annotations.Remote;
-import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
+import org.kie.workbench.common.dmn.api.definition.model.ItemDefinition;
 import org.uberfire.backend.vfs.Path;
 
 /**

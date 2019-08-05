@@ -27,8 +27,8 @@ import java.util.function.Predicate;
 import com.ait.lienzo.client.core.types.Point2D;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
+import org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase;
+import org.kie.workbench.common.dmn.api.definition.model.Expression;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.InformationItemCell;
@@ -45,7 +45,7 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellEditContext;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 
-import static org.kie.workbench.common.dmn.api.definition.v1_1.common.HasTypeRefHelper.getNotNullHasTypeRefs;
+import static org.kie.workbench.common.dmn.api.definition.model.common.HasTypeRefHelper.getNotNullHasTypeRefs;
 
 public abstract class EditableNameAndDataTypeColumn<G extends BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>> extends DMNSimpleGridColumn<G, InformationItemCell.HasNameCell> {
 

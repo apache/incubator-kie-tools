@@ -17,9 +17,9 @@
 package org.kie.workbench.common.dmn.backend.definition.v1_1;
 
 import org.kie.dmn.model.api.UnaryTests;
-import org.kie.workbench.common.dmn.api.definition.v1_1.InputClause;
-import org.kie.workbench.common.dmn.api.definition.v1_1.InputClauseLiteralExpression;
-import org.kie.workbench.common.dmn.api.definition.v1_1.InputClauseUnaryTests;
+import org.kie.workbench.common.dmn.api.definition.model.InputClause;
+import org.kie.workbench.common.dmn.api.definition.model.InputClauseLiteralExpression;
+import org.kie.workbench.common.dmn.api.definition.model.InputClauseUnaryTests;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.stunner.core.util.StringUtils;

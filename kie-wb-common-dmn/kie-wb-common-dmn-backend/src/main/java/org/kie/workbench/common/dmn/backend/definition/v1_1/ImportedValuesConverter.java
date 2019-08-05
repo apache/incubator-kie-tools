@@ -18,7 +18,7 @@ package org.kie.workbench.common.dmn.backend.definition.v1_1;
 
 import java.util.UUID;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.ImportedValues;
+import org.kie.workbench.common.dmn.api.definition.model.ImportedValues;
 import org.kie.workbench.common.dmn.api.property.dmn.ExpressionLanguage;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.LocationURI;

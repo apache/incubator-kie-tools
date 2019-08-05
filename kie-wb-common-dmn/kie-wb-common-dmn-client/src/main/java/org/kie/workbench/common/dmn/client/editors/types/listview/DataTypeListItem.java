@@ -27,7 +27,7 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import elemental2.dom.HTMLElement;
-import org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType;
+import org.kie.workbench.common.dmn.api.definition.model.ConstraintType;
 import org.kie.workbench.common.dmn.client.editors.types.DataTypeChangedEvent;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManager;

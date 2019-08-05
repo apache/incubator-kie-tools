@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.Invocation;
+import org.kie.workbench.common.dmn.api.definition.model.Invocation;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.invocation.MoveRowsCommand;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DelegatingGridData;

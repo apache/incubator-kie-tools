@@ -23,8 +23,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.jboss.errai.common.client.dom.HTMLElement;
-import org.kie.workbench.common.dmn.api.definition.v1_1.BuiltinAggregator;
-import org.kie.workbench.common.dmn.api.definition.v1_1.HitPolicy;
+import org.kie.workbench.common.dmn.api.definition.model.BuiltinAggregator;
+import org.kie.workbench.common.dmn.api.definition.model.HitPolicy;
 
 @ApplicationScoped
 public class HitPolicyPopoverImpl implements HitPolicyPopoverView.Presenter {

@@ -16,7 +16,7 @@
 package org.kie.workbench.common.dmn.backend.definition.v1_1.dd;
 
 import org.junit.Test;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
+import org.kie.workbench.common.dmn.api.definition.model.Decision;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.Bound;

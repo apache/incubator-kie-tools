@@ -18,8 +18,8 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.hit
 
 import java.util.List;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.BuiltinAggregator;
-import org.kie.workbench.common.dmn.api.definition.v1_1.HitPolicy;
+import org.kie.workbench.common.dmn.api.definition.model.BuiltinAggregator;
+import org.kie.workbench.common.dmn.api.definition.model.HitPolicy;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.HasCellEditorControls;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.popover.PopoverView;
 import org.uberfire.client.mvp.UberElement;

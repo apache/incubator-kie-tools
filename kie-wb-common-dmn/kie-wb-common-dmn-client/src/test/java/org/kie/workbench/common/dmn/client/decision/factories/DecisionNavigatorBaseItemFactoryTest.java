@@ -26,7 +26,7 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DMNDiagram;
+import org.kie.workbench.common.dmn.api.definition.model.DMNDiagram;
 import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorItem;
 import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorPresenter;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;

@@ -24,7 +24,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.kie.soup.commons.util.Sets;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Categories;
+import org.kie.workbench.common.dmn.api.definition.model.Categories;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.components.palette.AbstractPaletteDefinitionBuilder;

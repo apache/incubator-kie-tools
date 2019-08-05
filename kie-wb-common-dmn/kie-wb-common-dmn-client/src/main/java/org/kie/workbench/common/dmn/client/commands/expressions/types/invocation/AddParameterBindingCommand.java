@@ -18,9 +18,9 @@ package org.kie.workbench.common.dmn.client.commands.expressions.types.invocatio
 
 import java.util.stream.IntStream;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.Binding;
-import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Invocation;
+import org.kie.workbench.common.dmn.api.definition.model.Binding;
+import org.kie.workbench.common.dmn.api.definition.model.InformationItem;
+import org.kie.workbench.common.dmn.api.definition.model.Invocation;
 import org.kie.workbench.common.dmn.client.commands.VetoExecutionCommand;
 import org.kie.workbench.common.dmn.client.commands.VetoUndoCommand;
 import org.kie.workbench.common.dmn.client.commands.util.CommandUtils;

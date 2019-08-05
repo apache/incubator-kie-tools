@@ -22,8 +22,8 @@ import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.Definitions;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Import;
+import org.kie.workbench.common.dmn.api.definition.model.Definitions;
+import org.kie.workbench.common.dmn.api.definition.model.Import;
 import org.kie.workbench.common.dmn.client.editors.included.BaseIncludedModelActiveRecord;
 import org.kie.workbench.common.dmn.client.editors.included.IncludedModelsPage;
 import org.kie.workbench.common.dmn.client.editors.included.common.IncludedModelsPageStateProvider;

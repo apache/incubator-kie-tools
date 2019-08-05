@@ -18,10 +18,10 @@ package org.kie.workbench.common.dmn.backend.definition.v1_1;
 
 import java.util.Map;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.DMNDiagram;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DRGElement;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Definitions;
+import org.kie.workbench.common.dmn.api.definition.model.DMNDiagram;
+import org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase;
+import org.kie.workbench.common.dmn.api.definition.model.DRGElement;
+import org.kie.workbench.common.dmn.api.definition.model.Definitions;
 
 public class HrefBuilder {
 
