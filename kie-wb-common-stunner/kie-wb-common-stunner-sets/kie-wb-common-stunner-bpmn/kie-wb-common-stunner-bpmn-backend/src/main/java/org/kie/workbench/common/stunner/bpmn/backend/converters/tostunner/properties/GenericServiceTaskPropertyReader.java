@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.prope
 import org.eclipse.bpmn2.ServiceTask;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomAttribute;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
 import org.kie.workbench.common.stunner.bpmn.definition.property.service.GenericServiceTaskValue;
 
@@ -47,5 +48,9 @@ public class GenericServiceTaskPropertyReader extends TaskPropertyReader {
             value.setServiceInterface(CustomAttribute.serviceInterface.of(task).get());
         }
         return value;
+    }
+
+    public String getSlaDueDate() {
+        return CustomElement.slaDueDate.of(element).get();
     }
 }

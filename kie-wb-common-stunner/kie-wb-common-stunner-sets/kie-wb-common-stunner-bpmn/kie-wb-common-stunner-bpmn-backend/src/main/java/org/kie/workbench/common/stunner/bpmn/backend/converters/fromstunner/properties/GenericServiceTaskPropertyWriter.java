@@ -22,6 +22,7 @@ import org.eclipse.bpmn2.Message;
 import org.eclipse.bpmn2.Operation;
 import org.eclipse.bpmn2.ServiceTask;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomAttribute;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
 
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpmn2;
 
@@ -73,5 +74,9 @@ public class GenericServiceTaskPropertyWriter extends ActivityPropertyWriter {
         iface.setImplementationRef(serviceInterface);
         iface.setName(serviceInterface);
         iface.setId(task.getId() + "_ServiceInterface");
+    }
+
+    public void setSlaDueDate(String value) {
+        CustomElement.slaDueDate.of(baseElement).set(value);
     }
 }

@@ -33,6 +33,9 @@ import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunn
 @RunWith(MockitoJUnitRunner.class)
 public class GenericServiceTaskPropertyReaderTest {
 
+    private final static String SLA_DUE_DATE = "12/25/1983";
+    private final static String SLA_DUE_DATE_CDATA = "<![CDATA[12/25/1983]]>";
+
     private GenericServiceTaskPropertyReader reader;
 
     @Mock
@@ -48,6 +51,7 @@ public class GenericServiceTaskPropertyReaderTest {
         writer.setServiceImplementation("WebService");
         writer.setServiceInterface("setServiceInterface");
         writer.setServiceOperation("setServiceOperation");
+        writer.setSlaDueDate(SLA_DUE_DATE);
         reader = new GenericServiceTaskPropertyReader(serviceTask, diagram, definitionResolver);
     }
 
@@ -57,5 +61,6 @@ public class GenericServiceTaskPropertyReaderTest {
         assertEquals("setServiceOperation", task.getServiceOperation());
         assertEquals("setServiceInterface", task.getServiceInterface());
         assertEquals("WebService", task.getServiceImplementation());
+        assertEquals(SLA_DUE_DATE_CDATA, reader.getSlaDueDate());
     }
 }

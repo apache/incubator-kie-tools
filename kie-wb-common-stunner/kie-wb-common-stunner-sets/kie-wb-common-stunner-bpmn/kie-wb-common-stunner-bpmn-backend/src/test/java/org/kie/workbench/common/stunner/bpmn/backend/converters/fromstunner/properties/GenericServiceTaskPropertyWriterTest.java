@@ -20,11 +20,15 @@ import org.eclipse.bpmn2.ServiceTask;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomAttribute;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
 
 import static org.junit.Assert.assertEquals;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpmn2;
 
 public class GenericServiceTaskPropertyWriterTest {
+
+    private final static String SLA_DUE_DATE = "12/25/1983";
+    private final static String SLA_DUE_DATE_CDATA = "<![CDATA[12/25/1983]]>";
 
     private GenericServiceTaskPropertyWriter w;
 
@@ -41,10 +45,12 @@ public class GenericServiceTaskPropertyWriterTest {
         w.setServiceImplementation("Java");
         w.setServiceOperation("setServiceOperation");
         w.setServiceInterface("setServiceInterface");
+        w.setSlaDueDate(SLA_DUE_DATE);
 
         assertEquals("Java", CustomAttribute.serviceImplementation.of(serviceTask).get());
         assertEquals("setServiceOperation", CustomAttribute.serviceOperation.of(serviceTask).get());
         assertEquals("setServiceInterface", CustomAttribute.serviceInterface.of(serviceTask).get());
+        assertEquals(SLA_DUE_DATE_CDATA, CustomElement.slaDueDate.of(serviceTask).get());
     }
 
     @Test
@@ -52,9 +58,11 @@ public class GenericServiceTaskPropertyWriterTest {
         w.setServiceImplementation("WebService");
         w.setServiceOperation("setServiceOperation");
         w.setServiceInterface("setServiceInterface");
+        w.setSlaDueDate(SLA_DUE_DATE);
 
         assertEquals("##WebService", CustomAttribute.serviceImplementation.of(serviceTask).get());
         assertEquals("setServiceOperation", CustomAttribute.serviceOperation.of(serviceTask).get());
         assertEquals("setServiceInterface", CustomAttribute.serviceInterface.of(serviceTask).get());
+        assertEquals(SLA_DUE_DATE_CDATA, CustomElement.slaDueDate.of(serviceTask).get());
     }
 }

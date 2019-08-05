@@ -39,6 +39,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.ScriptTask;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Documentation;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.TaskGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.service.GenericServiceTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.service.GenericServiceTaskInfo;
@@ -132,7 +133,7 @@ public abstract class BaseTaskConverter<U extends BaseUserTask<S>, S extends Bas
         GenericServiceTask definition = node.getContent().getDefinition();
         GenericServiceTaskPropertyReader p = propertyReaderFactory.of(task);
 
-        if(p == null) {
+        if (p == null) {
             throw new NullPointerException(task.getClass().getCanonicalName());
         }
 
@@ -142,7 +143,8 @@ public abstract class BaseTaskConverter<U extends BaseUserTask<S>, S extends Bas
         ));
 
         definition.setExecutionSet(new GenericServiceTaskExecutionSet(
-                new GenericServiceTaskInfo(p.getGenericServiceTask())
+                new GenericServiceTaskInfo(p.getGenericServiceTask()),
+                new SLADueDate(p.getSlaDueDate())
         ));
 
         node.getContent().setBounds(p.getBounds());

@@ -18,12 +18,15 @@ package org.kie.workbench.common.stunner.bpmn.definition.property.service;
 
 import java.util.Objects;
 
+import javax.validation.Valid;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 import org.kie.workbench.common.stunner.bpmn.forms.model.GenericServiceTaskEditorFieldType;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
@@ -41,17 +44,26 @@ public class GenericServiceTaskExecutionSet implements BPMNPropertySet {
     )
     private GenericServiceTaskInfo genericServiceTaskInfo;
 
+    @Property
+    @FormField(afterElement = "genericServiceTaskInfo")
+    @Valid
+    private SLADueDate slaDueDate;
+
     public GenericServiceTaskExecutionSet() {
-        this(new GenericServiceTaskInfo());
+        this(new GenericServiceTaskInfo(),
+             new SLADueDate());
     }
 
-    public GenericServiceTaskExecutionSet(final @MapsTo("genericServiceTaskInfo") GenericServiceTaskInfo genericServiceTaskInfo) {
+    public GenericServiceTaskExecutionSet(final @MapsTo("genericServiceTaskInfo") GenericServiceTaskInfo genericServiceTaskInfo,
+                                          final @MapsTo("slaDueDate") SLADueDate slaDueDate) {
         this.genericServiceTaskInfo = genericServiceTaskInfo;
+        this.slaDueDate = slaDueDate;
     }
 
     @Override
     public int hashCode() {
-        return HashUtil.combineHashCodes(Objects.hashCode(genericServiceTaskInfo));
+        return HashUtil.combineHashCodes(Objects.hashCode(genericServiceTaskInfo),
+                                         Objects.hashCode(slaDueDate));
     }
 
     public GenericServiceTaskInfo getGenericServiceTaskInfo() {
@@ -62,11 +74,20 @@ public class GenericServiceTaskExecutionSet implements BPMNPropertySet {
         this.genericServiceTaskInfo = genericServiceTaskInfo;
     }
 
+    public SLADueDate getSlaDueDate() {
+        return slaDueDate;
+    }
+
+    public void setSlaDueDate(SLADueDate slaDueDate) {
+        this.slaDueDate = slaDueDate;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o instanceof GenericServiceTaskExecutionSet) {
             GenericServiceTaskExecutionSet other = (GenericServiceTaskExecutionSet) o;
-            return Objects.equals(genericServiceTaskInfo, other.genericServiceTaskInfo);
+            return Objects.equals(genericServiceTaskInfo, other.genericServiceTaskInfo) &&
+                    Objects.equals(slaDueDate, other.slaDueDate);
         }
         return false;
     }
