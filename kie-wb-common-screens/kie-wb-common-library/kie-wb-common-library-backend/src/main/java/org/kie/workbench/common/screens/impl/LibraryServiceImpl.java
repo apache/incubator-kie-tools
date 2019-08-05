@@ -460,13 +460,21 @@ public class LibraryServiceImpl implements LibraryService {
     @Override
     public void removeBranch(final WorkspaceProject project,
                              final Branch branch) {
-        final org.uberfire.java.nio.file.Path branchPath = pathUtil.convert(branch.getPath());
-        ioService.delete(branchPath);
-        deleteBranchPermissions(project.getSpace().getName(),
-                                project.getRepository().getIdentifier(),
-                                branch.getName());
-        this.repositoryUpdatedEvent.fire(new RepositoryUpdatedEvent(repoService.getRepositoryFromSpace(project.getSpace(),
-                                                                                                       project.getRepository().getAlias())));
+        try {
+            ioService.startBatch(pathUtil.convert(branch.getPath()).getFileSystem());
+
+            repoService.getRepositoryFromSpace(project.getSpace(), project.getRepository().getAlias()).getBranch(branch.getName()).ifPresent(updatedBranch -> {
+                final org.uberfire.java.nio.file.Path branchPath = pathUtil.convert(branch.getPath());
+                ioService.delete(branchPath);
+                deleteBranchPermissions(project.getSpace().getName(),
+                                        project.getRepository().getIdentifier(),
+                                        branch.getName());
+                this.repositoryUpdatedEvent.fire(new RepositoryUpdatedEvent(repoService.getRepositoryFromSpace(project.getSpace(),
+                                                                                                               project.getRepository().getAlias())));
+            });
+        } finally {
+            ioService.endBatch();
+        }
     }
 
     @Override

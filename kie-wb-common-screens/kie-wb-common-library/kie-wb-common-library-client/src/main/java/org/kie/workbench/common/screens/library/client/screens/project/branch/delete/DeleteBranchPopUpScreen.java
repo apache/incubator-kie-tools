@@ -89,13 +89,6 @@ public class DeleteBranchPopUpScreen {
         libraryService.call(v -> {
                                 view.hideBusyIndicator();
                                 view.hide();
-
-                                final Optional<Branch> defaultBranch = libraryPlaces.getActiveWorkspace().getRepository().getDefaultBranch();
-                                if (defaultBranch.isPresent()) {
-                                    libraryPlaces.goToProject(libraryPlaces.getActiveWorkspace(), defaultBranch.get());
-                                } else {
-                                    libraryPlaces.goToLibrary();
-                                }
                             },
                             new HasBusyIndicatorDefaultErrorCallback(view)).removeBranch(libraryPlaces.getActiveWorkspace(), branch);
     }

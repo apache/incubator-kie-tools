@@ -93,21 +93,6 @@ public class DeleteBranchPopUpScreenTest {
 
         verify(this.view, never()).showError(anyString());
         verify(this.libraryService).removeBranch(project, branch);
-        verify(libraryPlaces).goToProject(project, branch);
-        verify(libraryPlaces, never()).goToLibrary();
-    }
-
-    @Test
-    public void testDeleteActionWithNoDefaultBranch() {
-        when(project.getRepository().getDefaultBranch()).thenReturn(Optional.empty());
-        when(this.view.getConfirmedName()).thenReturn("myBranch");
-        this.presenter.show(branch);
-        this.presenter.delete();
-
-        verify(this.view, never()).showError(anyString());
-        verify(this.libraryService).removeBranch(project, branch);
-        verify(libraryPlaces, never()).goToProject(project, branch);
-        verify(libraryPlaces).goToLibrary();
     }
 
     @Test

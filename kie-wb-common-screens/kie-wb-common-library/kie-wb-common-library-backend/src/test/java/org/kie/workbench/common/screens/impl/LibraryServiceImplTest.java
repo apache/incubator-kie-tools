@@ -781,23 +781,26 @@ public class LibraryServiceImplTest {
 
     @Test
     public void removeBranchTest() {
-        final Branch masterBranch = makeBranch("master", "repo1");
+        final Branch otherBranch = makeBranch("repo1-branch1", "repo1");
         final org.uberfire.java.nio.file.Path baseBranchPath = mock(org.uberfire.java.nio.file.Path.class);
         final FileSystem fileSystem = mock(FileSystem.class);
         final FileSystemProvider fileSystemProvider = mock(FileSystemProvider.class);
         doReturn(fileSystemProvider).when(fileSystem).provider();
         doReturn(fileSystem).when(baseBranchPath).getFileSystem();
-        doReturn(baseBranchPath).when(pathUtil).convert(masterBranch.getPath());
+        doReturn(baseBranchPath).when(pathUtil).convert(otherBranch.getPath());
 
         final WorkspaceProject project = mock(WorkspaceProject.class);
         doReturn(repo1).when(project).getRepository();
-        doReturn(new Space("my-space")).when(project).getSpace();
-
+        final Space space = new Space("my-space");
+        doReturn(space).when(project).getSpace();
         doReturn(mock(SpaceConfigStorage.class)).when(spaceConfigStorageRegistry).get("my-space");
+        doReturn(repo1).when(repositoryService).getRepositoryFromSpace(space, "repo_created_by_user");
 
-        libraryService.removeBranch(project, masterBranch);
+        libraryService.removeBranch(project, otherBranch);
 
+        verify(ioService).startBatch(fileSystem);
         verify(ioService).delete(baseBranchPath);
+        verify(ioService).endBatch();
     }
 
     @Test
