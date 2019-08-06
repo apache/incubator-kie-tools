@@ -44,7 +44,6 @@ export class KogitoEditorFactory {
     editor.setupPanelActiveStatusChange();
     editor.setupPanelOnDidDispose();
     editor.setupWebviewContent();
-    return editor;
   }
 
   private openNewPanel(path: string) {

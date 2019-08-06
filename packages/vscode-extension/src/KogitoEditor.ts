@@ -142,6 +142,10 @@ export class KogitoEditor {
     return this.panel.viewColumn;
   }
 
+  public focus() {
+    this.panel.reveal(this.viewColumn(), true);
+  }
+
   public setupWebviewContent() {
     this.panel.webview.html = `
         <!DOCTYPE html>
