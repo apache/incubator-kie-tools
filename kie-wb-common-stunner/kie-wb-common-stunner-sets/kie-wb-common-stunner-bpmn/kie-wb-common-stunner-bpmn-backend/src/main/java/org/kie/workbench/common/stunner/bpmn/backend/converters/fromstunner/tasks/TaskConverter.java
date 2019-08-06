@@ -61,7 +61,8 @@ public class TaskConverter {
                 .when(BaseUserTask.class, this::userTask)
                 .when(ServiceTask.class, this::serviceTask)
                 .when(GenericServiceTask.class, this::genericServiceTask)
-                .apply(node).value();
+                .apply(node)
+                .value();
     }
 
     private PropertyWriter genericServiceTask(Node<View<GenericServiceTask>, ?> n) {

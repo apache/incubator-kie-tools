@@ -36,6 +36,7 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.marshaller.MarshallingRequest;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -85,7 +86,7 @@ public class GatewayConverterTest {
         when(propertyReader.getCircleDimensionSet()).thenReturn(circleDimensionSet);
         when(propertyReader.getFontSet()).thenReturn(fontSet);
         when(propertyReader.getBackgroundSet()).thenReturn(backgroundSet);
-        converter = new GatewayConverter(factoryManager, readerFactory);
+        converter = new GatewayConverter(factoryManager, readerFactory, MarshallingRequest.Mode.AUTO);
     }
 
     @Test
@@ -117,7 +118,7 @@ public class GatewayConverterTest {
         when(factoryManager.newNode(UUID, (Class<D>) gatewayDefinition.getClass())).thenReturn(node);
 
         eclipseGateway.setId(UUID);
-        BpmnNode bpmnNode = converter.convert(eclipseGateway);
+        BpmnNode bpmnNode = converter.convert(eclipseGateway).value();
         assertEquals(UUID, bpmnNode.value().getUUID());
         D result = (D) bpmnNode.value().getContent().getDefinition();
         assertCommonValues(result, node);

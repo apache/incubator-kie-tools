@@ -161,16 +161,15 @@ public abstract class InitializedVariable {
         }
 
         public DataInputAssociation getDataInputAssociation() {
-            DataInputAssociation dataInputAssociation =
-                    bpmn2.createDataInputAssociation();
-
-            dataInputAssociation
-                    .getSourceRef()
-                    .add(scope.lookup(sourceVariable).getTypedIdentifier());
-
-            dataInputAssociation
-                    .setTargetRef(getDataInput());
-            return dataInputAssociation;
+            DataInputAssociation dataInputAssociation = bpmn2.createDataInputAssociation();
+            return scope.lookup(sourceVariable)
+                    .map(variable -> dataInputAssociation.getSourceRef().add(variable.getTypedIdentifier()))
+                    .map(added -> {
+                        dataInputAssociation.setTargetRef(getDataInput());
+                        return added;
+                    })
+                    .map(added -> dataInputAssociation)
+                    .orElse(null);
         }
     }
 
@@ -196,8 +195,9 @@ public abstract class InitializedVariable {
         }
 
         public DataOutputAssociation getDataOutputAssociation() {
-            VariableScope.Variable variable = scope.lookup(targetVariable);
-            return associationOf(variable.getTypedIdentifier(), dataOutput);
+            return scope.lookup(targetVariable)
+                    .map(variable -> associationOf(variable.getTypedIdentifier(), dataOutput))
+                    .orElse(null);
         }
     }
 

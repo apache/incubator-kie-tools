@@ -18,38 +18,51 @@ package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner;
 
 import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.CallActivity;
+import org.eclipse.bpmn2.DataObject;
+import org.eclipse.bpmn2.DataObjectReference;
+import org.eclipse.bpmn2.DataStoreReference;
 import org.eclipse.bpmn2.EndEvent;
 import org.eclipse.bpmn2.FlowElement;
 import org.eclipse.bpmn2.Gateway;
 import org.eclipse.bpmn2.IntermediateCatchEvent;
 import org.eclipse.bpmn2.IntermediateThrowEvent;
-import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.StartEvent;
 import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.Task;
+import org.eclipse.bpmn2.TextAnnotation;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.BPMNElementDecorators;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.Match;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.Result;
 
-public class FlowElementConverter {
+public class FlowElementConverter extends AbstractConverter {
 
     private final BaseConverterFactory converterFactory;
 
     public FlowElementConverter(BaseConverterFactory converterFactory) {
+        super(converterFactory.getDefinitionResolver().getMode());
         this.converterFactory = converterFactory;
     }
 
     public Result<BpmnNode> convertNode(FlowElement flowElement) {
-        return Match.of(FlowElement.class, BpmnNode.class)
+        return Match.of(FlowElement.class, Result.class)
                 .when(StartEvent.class, converterFactory.startEventConverter()::convert)
                 .when(EndEvent.class, converterFactory.endEventConverter()::convert)
                 .when(BoundaryEvent.class, converterFactory.intermediateCatchEventConverter()::convertBoundaryEvent)
-                .when(IntermediateCatchEvent.class, converterFactory.intermediateCatchEventConverter()::convertIntermediateCatchEvent)
+                .when(IntermediateCatchEvent.class, converterFactory.intermediateCatchEventConverter()::convert)
                 .when(IntermediateThrowEvent.class, converterFactory.intermediateThrowEventConverter()::convert)
                 .when(Task.class, converterFactory.taskConverter()::convert)
                 .when(Gateway.class, converterFactory.gatewayConverter()::convert)
                 .when(SubProcess.class, converterFactory.subProcessConverter()::convertSubProcess)
                 .when(CallActivity.class, converterFactory.callActivityConverter()::convert)
-                .ignore(SequenceFlow.class)
-                .apply(flowElement);
+                .ignore(DataStoreReference.class)
+                .ignore(DataObjectReference.class)
+                .ignore(DataObject.class)
+                .ignore(TextAnnotation.class)
+                .defaultValue(Result.ignored("FlowElement not found", getNotFoundMessage(flowElement)))
+                .inputDecorator(BPMNElementDecorators.flowElementDecorator())
+                .outputDecorator(BPMNElementDecorators.resultBpmnDecorator())
+                .mode(getMode())
+                .apply(flowElement)
+                .value();
     }
 }

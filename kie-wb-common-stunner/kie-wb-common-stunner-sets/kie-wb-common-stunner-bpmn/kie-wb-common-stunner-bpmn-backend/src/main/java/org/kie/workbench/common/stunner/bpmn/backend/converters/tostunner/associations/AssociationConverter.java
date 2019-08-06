@@ -18,9 +18,11 @@ package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.assoc
 
 import java.util.Map;
 
+import org.kie.workbench.common.stunner.bpmn.backend.converters.Result;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.TypedFactoryManager;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.BpmnEdge;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.BpmnNode;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.EdgeConverter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.AssociationPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.PropertyReaderFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.Association;
@@ -30,8 +32,9 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.marshaller.MarshallingMessageKeys;
 
-public class AssociationConverter {
+public class AssociationConverter implements EdgeConverter<org.eclipse.bpmn2.Association> {
 
     private final PropertyReaderFactory propertyReaderFactory;
     private TypedFactoryManager factoryManager;
@@ -42,8 +45,9 @@ public class AssociationConverter {
         this.propertyReaderFactory = propertyReaderFactory;
     }
 
-    public BpmnEdge convertEdge(org.eclipse.bpmn2.Association association,
-                                Map<String, BpmnNode> nodes) {
+    @Override
+    public Result<BpmnEdge> convertEdge(org.eclipse.bpmn2.Association association,
+                                        Map<String, BpmnNode> nodes) {
         Edge<View<Association>, Node> edge = factoryManager.newEdge(association.getId(),
                                                                     Association.class);
 
@@ -55,13 +59,7 @@ public class AssociationConverter {
                 new Documentation(p.getDocumentation())
         ));
 
-        return BpmnEdge.of(
-                edge,
-                nodes.get(p.getSourceId()),
-                p.getSourceConnection(),
-                p.getControlPoints(),
-                nodes.get(p.getTargetId()),
-                p.getTargetConnection(),
-                p);
+        return result(nodes, edge, p, "Association ignored from " + p.getSourceId() + " to " + p.getTargetId(),
+                      MarshallingMessageKeys.associationIgnored);
     }
 }

@@ -19,13 +19,21 @@ package org.kie.workbench.common.stunner.bpmn.backend.converters.custompropertie
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import org.kie.workbench.common.stunner.core.util.StringUtils;
 
 import static java.util.stream.Collectors.toList;
 
 public class AssociationList {
 
+    public static final String REGEX_DELIMITER = ",\\[";
+    public static final String RANDOM_DELIMITER = UUID.randomUUID().toString();
+    public static final String REPLACE_DELIMITER_AVOID_CONFLICTS = RANDOM_DELIMITER + ",[";
+    public static final String REPLACED_DELIMITER = RANDOM_DELIMITER + ",";
     private final List<AssociationDeclaration> inputs;
     private final List<AssociationDeclaration> outputs;
 
@@ -52,14 +60,14 @@ public class AssociationList {
     }
 
     public static AssociationList fromString(String encoded) {
-        if (encoded.isEmpty()) {
-            return new AssociationList();
-        } else {
-            return new AssociationList(
-                    Arrays.stream(encoded.split(","))
-                            .map(AssociationDeclaration::fromString)
-                            .collect(toList()));
-        }
+        return Optional.ofNullable(encoded)
+                .filter(StringUtils::nonEmpty)
+                .map(s -> new AssociationList(
+                        Arrays.stream(s.replaceAll(REGEX_DELIMITER, REPLACE_DELIMITER_AVOID_CONFLICTS)
+                                              .split(REPLACED_DELIMITER))
+                                .map(AssociationDeclaration::fromString)
+                                .collect(toList())))
+                .orElse(new AssociationList());
     }
 
     public List<AssociationDeclaration> getInputs() {

@@ -19,7 +19,6 @@ package org.kie.workbench.common.stunner.bpmn.integration.backend.service;
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.project.model.Package;
@@ -63,6 +62,8 @@ import org.uberfire.java.nio.file.FileSystem;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyObject;
@@ -188,31 +189,31 @@ public class IntegrationServiceImplTest {
         when(diagramFactory.build(eq(NAME), any(ProjectMetadata.class), eq(graph))).thenReturn(diagram);
 
         List<MarshallingMessage> messages = new ArrayList<>();
-        MarshallingResponse response = mockResponse(MarshallingResponse.State.SUCCESS, messages, Optional.of(graph));
+        MarshallingResponse response = mockResponse(MarshallingResponse.State.SUCCESS, messages, graph);
         MarshallingResponse result = prepareTestGetDiagramByPath(response, null);
 
         assertEquals(MarshallingResponse.State.SUCCESS, result.getState());
         assertEquals(messages, result.getMessages());
-        assertTrue(result.getResult().isPresent());
-        assertEquals(diagram, result.getResult().get());
+        assertNotNull(result.getResult());
+        assertEquals(diagram, result.getResult());
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testGetDiagramByPathWithError() {
         List<MarshallingMessage> messages = new ArrayList<>();
-        MarshallingResponse response = mockResponse(MarshallingResponse.State.ERROR, messages, Optional.empty());
+        MarshallingResponse response = mockResponse(MarshallingResponse.State.ERROR, messages, null);
         MarshallingResponse result = prepareTestGetDiagramByPath(response, null);
 
         assertEquals(MarshallingResponse.State.ERROR, result.getState());
         assertEquals(messages, result.getMessages());
-        assertFalse(result.getResult().isPresent());
+        assertNull(result.getResult());
     }
 
     @Test
     public void testGetDiagramByPathWithUnexpectedError() {
         List<MarshallingMessage> messages = new ArrayList<>();
-        MarshallingResponse response = mockResponse(MarshallingResponse.State.ERROR, messages, Optional.empty());
+        MarshallingResponse response = mockResponse(MarshallingResponse.State.ERROR, messages, null);
         RuntimeException unexpectedError = new RuntimeException("Unexpected error");
         expectedException.expectMessage("An error was produced while diagram loading from file " + PATH_URI);
         prepareTestGetDiagramByPath(response, unexpectedError);
@@ -346,7 +347,8 @@ public class IntegrationServiceImplTest {
         return result;
     }
 
-    private static MarshallingResponse mockResponse(MarshallingResponse.State state, List<MarshallingMessage> messages, Optional result) {
+    private static MarshallingResponse mockResponse(MarshallingResponse.State state,
+                                                    List<MarshallingMessage> messages, Graph result) {
         MarshallingResponse response = mock(MarshallingResponse.class);
         when(response.getState()).thenReturn(state);
         when(response.getMessages()).thenReturn(messages);

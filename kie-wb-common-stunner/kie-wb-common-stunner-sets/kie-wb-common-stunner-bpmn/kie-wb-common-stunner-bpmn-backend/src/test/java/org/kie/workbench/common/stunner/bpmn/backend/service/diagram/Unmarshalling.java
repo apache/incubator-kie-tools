@@ -26,8 +26,8 @@ import org.kie.workbench.common.stunner.core.diagram.DiagramImpl;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.diagram.MetadataImpl;
 import org.kie.workbench.common.stunner.core.graph.Graph;
-import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
+import org.kie.workbench.common.stunner.core.marshaller.MarshallingRequest;
+import org.kie.workbench.common.stunner.core.marshaller.MarshallingResponse;
 import org.kie.workbench.common.stunner.core.util.UUID;
 
 public class Unmarshalling {
@@ -46,8 +46,14 @@ public class Unmarshalling {
                 new MetadataImpl.MetadataImplBuilder(
                         BindableAdapterUtils.getDefinitionSetId(BPMNDefinitionSet.class)).build();
         DiagramImpl diagram = new DiagramImpl(UUID.uuid(), metadata);
-        Graph<DefinitionSet, Node> graph = tested.unmarshall(metadata, is);
-        diagram.setGraph(graph);
+        MarshallingResponse<Graph> response =
+                tested.unmarshallWithValidation(MarshallingRequest.builder()
+                                                        .mode(MarshallingRequest.Mode.AUTO)
+                                                        .input(is)
+                                                        .metadata(metadata)
+                                                        .build());
+
+        diagram.setGraph(response.getResult());
 
         return diagram;
     }

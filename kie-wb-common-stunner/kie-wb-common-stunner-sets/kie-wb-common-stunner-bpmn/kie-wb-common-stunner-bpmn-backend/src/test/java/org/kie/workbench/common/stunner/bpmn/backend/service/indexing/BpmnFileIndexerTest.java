@@ -234,7 +234,7 @@ public class BpmnFileIndexerTest extends BaseIndexingTest<BPMNDefinitionSetResou
                         }
                     }
                     if (!foundId) {
-                        fail("Process with ID <" + expectedId + " not found in results for " + FindBpmnProcessIdsQuery.NAME);
+                        fail("Process with PARENT_ID <" + expectedId + " not found in results for " + FindBpmnProcessIdsQuery.NAME);
                     }
                 }
             } catch (IllegalArgumentException e) {

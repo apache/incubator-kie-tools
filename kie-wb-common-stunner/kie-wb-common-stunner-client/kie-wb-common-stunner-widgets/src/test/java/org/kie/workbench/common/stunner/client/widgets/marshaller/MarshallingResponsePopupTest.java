@@ -168,8 +168,12 @@ public class MarshallingResponsePopupTest {
                 .message(MESSAGE)
                 .messageArguments(messageArguments)
                 .build();
-        when(translationService.getValue(MESSAGE_KEY, messageArguments)).thenReturn(MESSAGE_TRANSLATION);
+        when(translationService.getValue(MESSAGE_KEY, toArray(messageArguments))).thenReturn(MESSAGE_TRANSLATION);
         assertEquals(MESSAGE_TRANSLATION, popup.displayableValue(message));
+    }
+
+    private Object[] toArray(List<?> messageArguments) {
+        return messageArguments.toArray(new Object[0]);
     }
 
     @Test
@@ -180,7 +184,8 @@ public class MarshallingResponsePopupTest {
                 .message(MESSAGE)
                 .messageArguments(messageArguments)
                 .build();
-        when(translationService.getValue(MESSAGE_KEY, messageArguments)).thenReturn("!!!" + MESSAGE_KEY + "!!!");
+        when(translationService.getValue(MESSAGE_KEY, toArray(messageArguments)))
+                .thenReturn("!!!" + MESSAGE_KEY + "!!!");
         assertEquals(MESSAGE, popup.displayableValue(message));
     }
 
@@ -215,7 +220,7 @@ public class MarshallingResponsePopupTest {
                                .message(key)
                                .messageArguments(arguments)
                                .build());
-            when(translationService.getValue(key, arguments)).thenReturn(MESSAGE_TRANSLATION);
+            when(translationService.getValue(key, toArray((arguments)))).thenReturn(MESSAGE_TRANSLATION);
         }
         return result;
     }

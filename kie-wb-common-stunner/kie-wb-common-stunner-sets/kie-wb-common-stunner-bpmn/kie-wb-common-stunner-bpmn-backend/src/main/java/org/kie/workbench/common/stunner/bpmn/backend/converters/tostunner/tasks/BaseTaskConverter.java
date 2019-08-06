@@ -16,19 +16,24 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.tasks;
 
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
+import org.eclipse.bpmn2.ManualTask;
+import org.eclipse.bpmn2.ReceiveTask;
+import org.eclipse.bpmn2.SendTask;
 import org.eclipse.bpmn2.Task;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.BPMNElementDecorators;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.Match;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.Result;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.TypedFactoryManager;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomAttribute;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.AbstractConverter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.BpmnNode;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.NodeConverter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.BusinessRuleTaskPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.GenericServiceTaskPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.PropertyReaderFactory;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.ScriptTaskPropertyReader;
-import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.ServiceTaskPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.TaskPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.UserTaskPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseUserTask;
@@ -63,68 +68,80 @@ import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTaskExecutionSet;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.marshaller.MarshallingRequest.Mode;
 import org.kie.workbench.common.stunner.core.util.StringUtils;
 
-public abstract class BaseTaskConverter<U extends BaseUserTask<S>, S extends BaseUserTaskExecutionSet> {
+public abstract class BaseTaskConverter<U extends BaseUserTask<S>, S extends BaseUserTaskExecutionSet>
+        extends AbstractConverter implements NodeConverter<Task> {
 
     protected final TypedFactoryManager factoryManager;
     private final PropertyReaderFactory propertyReaderFactory;
 
-    public BaseTaskConverter(TypedFactoryManager factoryManager, PropertyReaderFactory propertyReaderFactory) {
+    public BaseTaskConverter(TypedFactoryManager factoryManager, PropertyReaderFactory propertyReaderFactory,
+                             Mode mode) {
+        super(mode);
         this.factoryManager = factoryManager;
         this.propertyReaderFactory = propertyReaderFactory;
     }
 
-    public BpmnNode convert(org.eclipse.bpmn2.Task task) {
+    @Override
+    public Result<BpmnNode> convert(org.eclipse.bpmn2.Task task) {
         return Match.of(Task.class, BpmnNode.class)
                 .when(org.eclipse.bpmn2.BusinessRuleTask.class, this::businessRuleTask)
                 .when(org.eclipse.bpmn2.ScriptTask.class, this::scriptTask)
                 .when(org.eclipse.bpmn2.UserTask.class, this::userTask)
                 .when(org.eclipse.bpmn2.ServiceTask.class, this::serviceTaskResolver)
-                .missing(org.eclipse.bpmn2.ManualTask.class)
-                .orElse(this::fallback)
-                .apply(task).value();
+                .whenExactly(org.eclipse.bpmn2.impl.TaskImpl.class, this::defaultTaskResolver)
+                .missing(ManualTask.class)
+                .missing(SendTask.class)
+                .missing(ReceiveTask.class)
+                .orElse(this::defaultTaskResolver)
+                .inputDecorator(BPMNElementDecorators.flowElementDecorator())
+                .outputDecorator(BPMNElementDecorators.bpmnNodeDecorator())
+                .mode(getMode())
+                .apply(task);
     }
 
     private BpmnNode jbpmServiceTask(org.eclipse.bpmn2.Task task) {
-        Node<View<ServiceTask>, Edge> node = factoryManager.newNode(task.getId(), ServiceTask.class);
+        return propertyReaderFactory
+                .ofCustom(task)
+                .map(p -> {
+                    final Node<View<ServiceTask>, Edge> node = factoryManager.newNode(task.getId(), ServiceTask.class);
+                    final ServiceTask definition = node.getContent().getDefinition();
+                    definition.setName(p.getServiceTaskName());
+                    definition.getTaskType().setRawType(p.getServiceTaskName());
+                    definition.setDescription(p.getServiceTaskDescription());
+                    definition.setCategory(p.getServiceTaskCategory());
+                    definition.setDefaultHandler(p.getServiceTaskDefaultHandler());
 
-        ServiceTask definition = node.getContent().getDefinition();
-        ServiceTaskPropertyReader p = propertyReaderFactory.ofCustom(task)
-                .orElseThrow(() -> new NoSuchElementException("Cannot find WorkItemDefinition for " + task.getName()));
+                    definition.setGeneral(new TaskGeneralSet(
+                            new Name(p.getName()),
+                            new Documentation(p.getDocumentation())
+                    ));
 
-        definition.setName(p.getServiceTaskName());
-        definition.getTaskType().setRawType(p.getServiceTaskName());
-        definition.setDescription(p.getServiceTaskDescription());
-        definition.setCategory(p.getServiceTaskCategory());
-        definition.setDefaultHandler(p.getServiceTaskDefaultHandler());
+                    definition.setDataIOSet(new DataIOSet(
+                            p.getAssignmentsInfo()
+                    ));
 
-        definition.setGeneral(new TaskGeneralSet(
-                new Name(p.getName()),
-                new Documentation(p.getDocumentation())
-        ));
+                    definition.setExecutionSet(new ServiceTaskExecutionSet(
+                            new TaskName(p.getTaskName()),
+                            new IsAsync(p.isAsync()),
+                            new AdHocAutostart(p.isAdHocAutoStart()),
+                            new OnEntryAction(p.getOnEntryAction()),
+                            new OnExitAction(p.getOnExitAction())
+                    ));
 
-        definition.setDataIOSet(new DataIOSet(
-                p.getAssignmentsInfo()
-        ));
+                    definition.setSimulationSet(p.getSimulationSet());
 
-        definition.setExecutionSet(new ServiceTaskExecutionSet(
-                new TaskName(p.getTaskName()),
-                new IsAsync(p.isAsync()),
-                new AdHocAutostart(p.isAdHocAutoStart()),
-                new OnEntryAction(p.getOnEntryAction()),
-                new OnExitAction(p.getOnExitAction())
-        ));
+                    node.getContent().setBounds(p.getBounds());
 
-        definition.setSimulationSet(p.getSimulationSet());
+                    definition.setDimensionsSet(p.getRectangleDimensionsSet());
+                    definition.setBackgroundSet(p.getBackgroundSet());
+                    definition.setFontSet(p.getFontSet());
 
-        node.getContent().setBounds(p.getBounds());
-
-        definition.setDimensionsSet(p.getRectangleDimensionsSet());
-        definition.setBackgroundSet(p.getBackgroundSet());
-        definition.setFontSet(p.getFontSet());
-
-        return BpmnNode.of(node, p);
+                    return BpmnNode.of(node, p);
+                })
+                .orElseGet(() -> noneTask(task));
     }
 
     BpmnNode bpmnServiceTask(org.eclipse.bpmn2.ServiceTask task) {
@@ -268,7 +285,8 @@ public abstract class BaseTaskConverter<U extends BaseUserTask<S>, S extends Bas
         return BpmnNode.of(node, p);
     }
 
-    private BpmnNode fallback(Task task) {
+    private BpmnNode defaultTaskResolver(Task task) {
+        //in case serviceTaskName attribute is present handle as a Service Task, default is a None Task
         return Optional.ofNullable(CustomAttribute.serviceTaskName.of(task).get())
                 .filter(StringUtils::nonEmpty)
                 .filter(name -> propertyReaderFactory.ofCustom(task).isPresent())
@@ -276,7 +294,7 @@ public abstract class BaseTaskConverter<U extends BaseUserTask<S>, S extends Bas
                 .orElseGet(() -> noneTask(task));
     }
 
-    BpmnNode serviceTaskResolver(org.eclipse.bpmn2.Task task) {
+    private BpmnNode serviceTaskResolver(org.eclipse.bpmn2.Task task) {
         if (StringUtils.nonEmpty(CustomAttribute.serviceImplementation.of(task).get())) {
             return bpmnServiceTask((org.eclipse.bpmn2.ServiceTask) task);
         } else {

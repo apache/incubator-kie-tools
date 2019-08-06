@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.associations;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -40,6 +41,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -80,7 +82,6 @@ public class AssociationConverterTest {
 
     private AssociationConverter associationConverter;
 
-    @Mock
     private Map<String, BpmnNode> nodes;
 
     @Mock
@@ -113,24 +114,50 @@ public class AssociationConverterTest {
         when(associationReader.getTargetConnection()).thenReturn(targetConnection);
         when(associationReader.getControlPoints()).thenReturn(controlPoints);
 
-        when(nodes.get(SOURCE_ID)).thenReturn(sourceNode);
-        when(nodes.get(TARGET_ID)).thenReturn(targetNode);
-
         associationConverter = new AssociationConverter(factoryManager, propertyReaderFactory);
+        nodes = new HashMap<>();
+        nodes.put(SOURCE_ID, sourceNode);
+        nodes.put(TARGET_ID, targetNode);
     }
 
     @Test
     public void testConvertEdge() {
         associationConverter.convertEdge(association, nodes);
         verify(definition).setGeneral(generalSetCaptor.capture());
-
         assertEquals(ASSOCIATION_DOCUMENTATION, generalSetCaptor.getValue().getDocumentation().getValue());
+        assertEdgeWithConnections();
+    }
 
-        BpmnEdge.Simple result = (BpmnEdge.Simple) associationConverter.convertEdge(association, nodes);
+    private void assertEdgeWithConnections() {
+        BpmnEdge.Simple result = (BpmnEdge.Simple) associationConverter.convertEdge(association, nodes).value();
         assertEquals(sourceNode, result.getSource());
         assertEquals(targetNode, result.getTarget());
         assertEquals(sourceConnection, result.getSourceConnection());
         assertEquals(targetConnection, result.getTargetConnection());
         assertEquals(controlPoints, result.getControlPoints());
+    }
+
+    @Test
+    public void testConvertIgnoredEdge() {
+        //assert connections
+        assertEdgeWithConnections();
+
+        //now remove the source node
+        nodes.remove(SOURCE_ID);
+
+        BpmnEdge.Simple result = (BpmnEdge.Simple) associationConverter.convertEdge(association, nodes).value();
+        assertNull(result);
+
+        //add source node and remove target
+        nodes.put(SOURCE_ID, sourceNode);
+        nodes.remove(TARGET_ID);
+
+        result = (BpmnEdge.Simple) associationConverter.convertEdge(association, nodes).value();
+        assertNull(result);
+
+        //adding both again
+        nodes.put(SOURCE_ID, sourceNode);
+        nodes.put(TARGET_ID, targetNode);
+        assertEdgeWithConnections();
     }
 }

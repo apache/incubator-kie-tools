@@ -20,6 +20,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.eclipse.bpmn2.SubProcess;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.Result;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.ResultComposer;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.TypedFactoryManager;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.BaseConverterFactory;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.BpmnNode;
@@ -71,7 +73,7 @@ public abstract class BaseSubProcessConverter<A extends BaseAdHocSubprocess<P, S
                                                      converterFactory);
     }
 
-    public BpmnNode convertSubProcess(SubProcess subProcess) {
+    public Result<BpmnNode> convertSubProcess(SubProcess subProcess) {
         BpmnNode subProcessRoot;
         if (subProcess instanceof org.eclipse.bpmn2.AdHocSubProcess) {
             subProcessRoot = convertAdHocSubProcess((org.eclipse.bpmn2.AdHocSubProcess) subProcess);
@@ -83,16 +85,17 @@ public abstract class BaseSubProcessConverter<A extends BaseAdHocSubprocess<P, S
             subProcessRoot = convertEmbeddedSubprocessNode(subProcess);
         }
 
-        Map<String, BpmnNode> nodes = delegate.convertChildNodes(subProcessRoot,
-                                                                 subProcess.getFlowElements(),
-                                                                 subProcess.getLaneSets());
+        Result<Map<String, BpmnNode>> nodesResult = delegate.convertChildNodes(subProcessRoot,
+                                                                               subProcess.getFlowElements(),
+                                                                               subProcess.getLaneSets());
+        Map<String, BpmnNode> nodes = nodesResult.value();
 
-        delegate.convertEdges(subProcessRoot,
-                              Stream.concat(subProcess.getFlowElements().stream(),
-                                            subProcess.getArtifacts().stream()).collect(Collectors.toList()),
-                              nodes);
+        Result<Boolean> edgesResult = delegate.convertEdges(subProcessRoot,
+                                                            Stream.concat(subProcess.getFlowElements().stream(),
+                                                                          subProcess.getArtifacts().stream()).collect(Collectors.toList()),
+                                                            nodes);
 
-        return subProcessRoot;
+        return ResultComposer.compose(subProcessRoot, nodesResult, edgesResult);
     }
 
     private BpmnNode convertMultInstanceSubprocessNode(SubProcess subProcess) {

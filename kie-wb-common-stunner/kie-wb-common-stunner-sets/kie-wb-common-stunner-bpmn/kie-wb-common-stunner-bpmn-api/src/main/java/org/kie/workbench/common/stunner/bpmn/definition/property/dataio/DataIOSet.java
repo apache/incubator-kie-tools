@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.bpmn.definition.property.dataio;
 
+import java.util.Objects;
+
 import javax.validation.Valid;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
@@ -65,7 +67,7 @@ public class DataIOSet implements BPMNPropertySet {
 
     @Override
     public int hashCode() {
-        return assignmentsinfo.hashCode();
+        return Objects.hash(getAssignmentsinfo());
     }
 
     @Override

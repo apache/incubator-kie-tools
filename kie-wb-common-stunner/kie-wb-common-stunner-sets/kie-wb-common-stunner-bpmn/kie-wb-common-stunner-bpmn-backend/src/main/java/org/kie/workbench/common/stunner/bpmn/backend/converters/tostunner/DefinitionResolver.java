@@ -39,6 +39,7 @@ import org.eclipse.bpmn2.di.BPMNPlane;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.emf.ecore.util.FeatureMap;
 import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinition;
+import org.kie.workbench.common.stunner.core.marshaller.MarshallingRequest.Mode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,11 +72,13 @@ public class DefinitionResolver {
     private final BPMNDiagram diagram;
     private final double resolutionFactor;
     private final boolean jbpm;
+    private final Mode mode;
 
     public DefinitionResolver(
             Definitions definitions,
             Collection<WorkItemDefinition> workItemDefinitions,
-            boolean jbpm) {
+            boolean jbpm,
+            Mode mode) {
         this.definitions = definitions;
         this.signals = initSignals(definitions);
         this.simulationParameters = initSimulationParameters(definitions);
@@ -84,11 +87,12 @@ public class DefinitionResolver {
         this.diagram = findDiagram();
         this.resolutionFactor = calculateResolutionFactor(diagram);
         this.jbpm = jbpm;
+        this.mode = mode;
     }
 
     public DefinitionResolver(Definitions definitions,
                               Collection<WorkItemDefinition> workItemDefinitions) {
-        this(definitions, workItemDefinitions, true);
+        this(definitions, workItemDefinitions, true, Mode.AUTO);
     }
 
     public BPMNDiagram getDiagram() {
@@ -109,6 +113,10 @@ public class DefinitionResolver {
 
     public Process getProcess() {
         return process;
+    }
+
+    public Mode getMode() {
+        return mode;
     }
 
     public Collection<WorkItemDefinition> getWorkItemDefinitions() {
@@ -225,7 +233,10 @@ public class DefinitionResolver {
         return plane.getPlaneElement().stream()
                 .filter(dia -> dia instanceof BPMNEdge)
                 .map(edge -> (BPMNEdge) edge)
+                .filter(edge -> edge.getBpmnElement() != null)
+                .filter(edge -> edge.getBpmnElement().getId() != null)
                 .filter(edge -> edge.getBpmnElement().getId().equals(elementId))
+
                 .findFirst().orElse(null);
     }
 

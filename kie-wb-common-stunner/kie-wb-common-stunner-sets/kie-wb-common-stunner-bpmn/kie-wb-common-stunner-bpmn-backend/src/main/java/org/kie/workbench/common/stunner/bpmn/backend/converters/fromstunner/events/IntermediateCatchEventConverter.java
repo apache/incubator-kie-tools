@@ -60,7 +60,8 @@ public class IntermediateCatchEventConverter {
                 .when(IntermediateEscalationEvent.class, this::escalationEvent)
                 .when(IntermediateCompensationEvent.class, this::compensationEvent)
 
-                .apply(node).value();
+                .apply(node)
+                .value();
     }
 
     private PropertyWriter errorEvent(Node<View<IntermediateErrorEventCatching>, ?> n) {

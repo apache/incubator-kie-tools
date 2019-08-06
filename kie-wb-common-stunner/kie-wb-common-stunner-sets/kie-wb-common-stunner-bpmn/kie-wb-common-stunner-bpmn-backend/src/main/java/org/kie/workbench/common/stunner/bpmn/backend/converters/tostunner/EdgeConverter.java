@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,37 +18,42 @@ package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner;
 
 import java.util.Map;
 
-import org.eclipse.bpmn2.Association;
 import org.eclipse.bpmn2.BaseElement;
-import org.eclipse.bpmn2.BoundaryEvent;
-import org.eclipse.bpmn2.SequenceFlow;
-import org.kie.workbench.common.stunner.bpmn.backend.converters.Match;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.Result;
-import org.kie.workbench.common.stunner.bpmn.backend.converters.TypedFactoryManager;
-import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.associations.AssociationConverter;
-import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.events.BoundaryEventConverter;
-import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.PropertyReaderFactory;
-import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.sequenceflows.SequenceFlowConverter;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.EdgePropertyReader;
+import org.kie.workbench.common.stunner.core.graph.Edge;
+import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.marshaller.MarshallingMessage;
+import org.kie.workbench.common.stunner.core.validation.Violation;
 
-public class EdgeConverter {
+public interface EdgeConverter<T extends BaseElement> {
 
-    private final SequenceFlowConverter sequenceFlowConverter;
-    private final BoundaryEventConverter boundaryEventConverter;
-    private final AssociationConverter associationConverter;
+    Result<BpmnEdge> convertEdge(T element, Map<String, BpmnNode> nodes);
 
-    public EdgeConverter(
-            TypedFactoryManager factoryManager,
-            PropertyReaderFactory propertyReaderFactory) {
-        this.sequenceFlowConverter = new SequenceFlowConverter(factoryManager, propertyReaderFactory);
-        this.boundaryEventConverter = new BoundaryEventConverter();
-        this.associationConverter = new AssociationConverter(factoryManager, propertyReaderFactory);
+    default Result<BpmnEdge> result(Map<String, BpmnNode> nodes, Edge<? extends View<?>, Node> edge,
+                                    EdgePropertyReader p, String errorMessage, String messageKey) {
+        return valid(nodes, p.getSourceId(), p.getTargetId()) ?
+                Result.success(BpmnEdge.of(
+                        edge,
+                        nodes.get(p.getSourceId()),
+                        p.getSourceConnection(),
+                        p.getControlPoints(),
+                        nodes.get(p.getTargetId()),
+                        p.getTargetConnection(),
+                        p))
+                : Result.ignored(errorMessage,
+                                 MarshallingMessage
+                                         .builder()
+                                         .message(errorMessage)
+                                         .messageKey(messageKey)
+                                         .messageArguments(p.getSourceId(),
+                                                           p.getTargetId())
+                                         .type(Violation.Type.WARNING)
+                                         .build());
     }
 
-    public Result<BpmnEdge> convertEdge(BaseElement baseElement, Map<String, BpmnNode> nodes) {
-        return Match.of(BaseElement.class, BpmnEdge.class)
-                .when(SequenceFlow.class, e -> sequenceFlowConverter.convertEdge(e, nodes))
-                .when(BoundaryEvent.class, e -> boundaryEventConverter.convertEdge(e, nodes))
-                .when(Association.class, e -> associationConverter.convertEdge(e, nodes))
-                .apply(baseElement);
+    default boolean valid(Map<String, BpmnNode> nodes, String parentId, String childId) {
+        return nodes.containsKey(parentId) && nodes.containsKey(childId);
     }
 }

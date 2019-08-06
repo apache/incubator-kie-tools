@@ -16,8 +16,12 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.lanes;
 
+import java.util.Optional;
+
+import org.kie.workbench.common.stunner.bpmn.backend.converters.Result;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.TypedFactoryManager;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.BpmnNode;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.NodeConverter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.LanePropertyReader;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.PropertyReaderFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.Lane;
@@ -27,8 +31,11 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.marshaller.MarshallingMessage;
+import org.kie.workbench.common.stunner.core.marshaller.MarshallingMessageKeys;
+import org.kie.workbench.common.stunner.core.validation.Violation;
 
-public class LaneConverter {
+public class LaneConverter implements NodeConverter<org.eclipse.bpmn2.Lane> {
 
     private final TypedFactoryManager typedFactoryManager;
     private PropertyReaderFactory propertyReaderFactory;
@@ -38,15 +45,24 @@ public class LaneConverter {
         this.propertyReaderFactory = propertyReaderFactory;
     }
 
-    public BpmnNode convert(org.eclipse.bpmn2.Lane lane) {
+    public Result<BpmnNode> convert(org.eclipse.bpmn2.Lane lane) {
         return convert(lane, propertyReaderFactory.of(lane));
     }
 
-    public BpmnNode convert(org.eclipse.bpmn2.Lane lane, org.eclipse.bpmn2.Lane parent) {
-        return convert(lane, propertyReaderFactory.of(lane, parent));
+    public Result<BpmnNode> convert(org.eclipse.bpmn2.Lane lane, org.eclipse.bpmn2.Lane parent) {
+        final Result<BpmnNode> result = convert(lane, propertyReaderFactory.of(lane, parent));
+        return Optional.ofNullable(result.value())
+                .map(value -> Result.success(value, MarshallingMessage.builder()
+                        .message(String.format("Child Lane Set %s Converted to Lane %s", parent.getName(),
+                                               lane.getName()))
+                        .messageKey(MarshallingMessageKeys.childLaneSetConverted)
+                        .messageArguments(lane.getName(), parent.getName())
+                        .type(Violation.Type.WARNING)
+                        .build()))
+                .get();
     }
 
-    private BpmnNode convert(org.eclipse.bpmn2.Lane lane, LanePropertyReader p) {
+    private Result<BpmnNode> convert(org.eclipse.bpmn2.Lane lane, LanePropertyReader p) {
         Node<View<Lane>, Edge> node = typedFactoryManager.newNode(lane.getId(), Lane.class);
         Lane definition = node.getContent().getDefinition();
 
@@ -61,6 +77,6 @@ public class LaneConverter {
         definition.setFontSet(p.getFontSet());
         definition.setBackgroundSet(p.getBackgroundSet());
 
-        return BpmnNode.of(node, p);
+        return Result.success(BpmnNode.of(node, p));
     }
 }

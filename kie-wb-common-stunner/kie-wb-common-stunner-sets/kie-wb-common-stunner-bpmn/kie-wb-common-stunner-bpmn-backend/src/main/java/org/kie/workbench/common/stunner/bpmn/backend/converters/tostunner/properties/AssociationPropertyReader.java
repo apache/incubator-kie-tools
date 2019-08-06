@@ -26,7 +26,7 @@ import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
 import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 
-public class AssociationPropertyReader extends BasePropertyReader {
+public class AssociationPropertyReader extends BasePropertyReader implements EdgePropertyReader {
 
     private final DefinitionResolver definitionResolver;
     private final Association association;
@@ -42,14 +42,17 @@ public class AssociationPropertyReader extends BasePropertyReader {
         this.definitionResolver = definitionResolver;
     }
 
+    @Override
     public String getSourceId() {
         return association.getSourceRef().getId();
     }
 
+    @Override
     public String getTargetId() {
         return association.getTargetRef().getId();
     }
 
+    @Override
     public Connection getSourceConnection() {
         Point2D sourcePosition = PropertyReaderUtils.getSourcePosition(definitionResolver,
                                                                        element.getId(),
@@ -60,6 +63,7 @@ public class AssociationPropertyReader extends BasePropertyReader {
                 .setAuto(PropertyReaderUtils.isAutoConnectionSource(element));
     }
 
+    @Override
     public Connection getTargetConnection() {
         Point2D targetPosition = PropertyReaderUtils.getTargetPosition(definitionResolver,
                                                                        element.getId(),
@@ -70,6 +74,7 @@ public class AssociationPropertyReader extends BasePropertyReader {
                 .setAuto(PropertyReaderUtils.isAutoConnectionTarget(element));
     }
 
+    @Override
     public List<Point2D> getControlPoints() {
         return PropertyReaderUtils.getControlPoints(definitionResolver,
                                                     element.getId());

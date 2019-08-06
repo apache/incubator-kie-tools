@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.bpmn.integration.backend.service;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Collections;
+import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -179,7 +180,9 @@ public class IntegrationServiceImpl implements IntegrationService {
                         .result(null)
                         .build();
             } else {
-                final Graph<DefinitionSet, ?> graph = marshallingResponse.getResult().orElseThrow(() -> new RuntimeException("Unexpected error, diagram parsing api must return a value"));
+                final Graph<DefinitionSet, ?> graph =
+                        Optional.ofNullable(marshallingResponse.getResult())
+                                .orElseThrow(() -> new RuntimeException("Unexpected error, diagram parsing api must return a value"));
                 final DiagramFactory<ProjectMetadata, ?> factory =
                         factoryManager.registry().getDiagramFactory(graph.getContent().getDefinition(), ProjectMetadata.class);
                 final ProjectDiagram diagram = (ProjectDiagram) factory.build(name, metadata, graph);

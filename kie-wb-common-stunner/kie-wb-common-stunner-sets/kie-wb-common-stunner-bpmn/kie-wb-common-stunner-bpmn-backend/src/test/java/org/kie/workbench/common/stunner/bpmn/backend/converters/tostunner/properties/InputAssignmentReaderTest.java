@@ -29,7 +29,7 @@ import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunn
 
 public class InputAssignmentReaderTest {
 
-    public static final String ID = "ID";
+    public static final String ID = "PARENT_ID";
 
     @Test
     public void urlEncodeConstants() throws UnsupportedEncodingException {

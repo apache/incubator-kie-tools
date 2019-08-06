@@ -24,6 +24,7 @@ import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.dd.dc.Point;
 import org.junit.Test;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.Result;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.BasePropertyReader;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.SequenceFlowPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
@@ -41,6 +42,9 @@ import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
 import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.marshaller.MarshallingMessage;
+import org.kie.workbench.common.stunner.core.marshaller.MarshallingMessageKeys;
+import org.kie.workbench.common.stunner.core.validation.Violation;
 
 import static org.junit.Assert.assertEquals;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.dc;
@@ -178,7 +182,7 @@ public class ProcessPostConverterTest {
 
         ProcessPostConverter postConverter = new ProcessPostConverter();
         when(definitionResolver.getResolutionFactor()).thenReturn(2d);
-        postConverter.postConvert(rootNode, definitionResolver);
+        Result<BpmnNode> result = postConverter.postConvert(rootNode, definitionResolver);
 
         Bounds startEventBounds = startEventNode.value().getContent().getBounds();
         //preserves original position
@@ -249,6 +253,13 @@ public class ProcessPostConverterTest {
         assertEquals(28, edgeTask3BoundaryEventToTask4.getSourceConnection().getLocation().getY(), 0);
         assertEquals(task4Node.value().getContent().getBounds().getUpperLeft().getX() + taskWidth / 2, controlPoints.get(0).getX(), 0);
         assertEquals(task3Node.value().getContent().getBounds().getLowerRight().getY(), controlPoints.get(0).getY(), 0);
+
+        //assert the message result
+        List<MarshallingMessage> messages = result.messages();
+        assertEquals(1, messages.size());
+        MarshallingMessage message = messages.get(0);
+        assertEquals(Violation.Type.WARNING, message.getViolationType());
+        assertEquals(MarshallingMessageKeys.collapsedElementExpanded, message.getMessageKey());
     }
 
     private static Point mockPoint(float x, float y) {

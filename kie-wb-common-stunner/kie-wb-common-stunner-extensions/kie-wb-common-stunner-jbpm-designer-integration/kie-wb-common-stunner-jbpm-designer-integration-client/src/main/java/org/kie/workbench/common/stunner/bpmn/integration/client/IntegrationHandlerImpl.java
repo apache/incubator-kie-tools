@@ -135,7 +135,7 @@ public class IntegrationHandlerImpl implements IntegrationHandler {
 
     private void onGetDiagramByPathSuccess(MarshallingResponse<ProjectDiagram> response, Path path, PlaceRequest place) {
         if (response.isSuccess()) {
-            final ProjectDiagram diagram = response.getResult().orElse(null);
+            final ProjectDiagram diagram = response.getResult();
             if (diagram == null) {
                 errorPopup.showMessage(translationService.getValue(IntegrationClientConstants.MigrateToStunnerNoDiagramHasBeenReturned));
             } else {

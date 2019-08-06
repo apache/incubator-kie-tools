@@ -21,14 +21,18 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.dd.dc.Point;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.Result;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.SequenceFlowPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.definition.AdHocSubprocess;
+import org.kie.workbench.common.stunner.bpmn.definition.BPMNBaseInfo;
+import org.kie.workbench.common.stunner.bpmn.definition.BPMNViewDefinition;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.EmbeddedSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.EventSubprocess;
@@ -36,11 +40,17 @@ import org.kie.workbench.common.stunner.bpmn.definition.Lane;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.Height;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.RectangleDimensionsSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.Width;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
+import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.Bound;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
 import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
+import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.marshaller.MarshallingMessage;
+import org.kie.workbench.common.stunner.core.marshaller.MarshallingMessageKeys;
+import org.kie.workbench.common.stunner.core.validation.Violation;
 
 public class ProcessPostConverter {
 
@@ -50,11 +60,12 @@ public class ProcessPostConverter {
     ProcessPostConverter() {
     }
 
-    public void postConvert(BpmnNode rootNode, DefinitionResolver definitionResolver) {
+    public Result<BpmnNode> postConvert(BpmnNode rootNode, DefinitionResolver definitionResolver) {
         if (definitionResolver.getResolutionFactor() != 1) {
             context = PostConverterContext.of(rootNode, definitionResolver.isJbpm());
             adjustAllEdgeConnections(rootNode, true);
             if (context.hasCollapsedNodes()) {
+
                 List<LaneInfo> laneInfos = new ArrayList<>();
                 new ArrayList<>(rootNode.getChildren()).stream()
                         .filter(ProcessPostConverter::isLane)
@@ -79,8 +90,25 @@ public class ProcessPostConverter {
                     adjustLane(laneInfo.getLane(), laneInfo.getPadding());
                 });
                 adjustAllEdgeConnections(rootNode, false);
+
+                return Result.success(rootNode, resizedChildren.stream()
+                        .map(n -> MarshallingMessage.builder()
+                                .message("Collapsed node was resized " + n.value().getContent().getDefinition())
+                                .messageKey(MarshallingMessageKeys.collapsedElementExpanded)
+                                .messageArguments(n.value().getUUID(),
+                                                  Optional.ofNullable(n.value())
+                                                          .map(Node::getContent)
+                                                          .map(View::getDefinition)
+                                                          .map(BPMNViewDefinition::getGeneral)
+                                                          .map(BPMNBaseInfo::getName)
+                                                          .map(Name::getValue)
+                                                          .orElse(""))
+                                .type(Violation.Type.WARNING)
+                                .build())
+                        .toArray(MarshallingMessage[]::new));
             }
         }
+        return Result.success(rootNode);
     }
 
     private static class PostConverterContext {

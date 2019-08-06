@@ -32,7 +32,7 @@ import static org.mockito.Mockito.when;
 public class ItemNameReaderTest {
 
     private static String NAME = "NAME";
-    private static String ID = "ID";
+    private static String ID = "PARENT_ID";
 
     @Mock
     private Property property;

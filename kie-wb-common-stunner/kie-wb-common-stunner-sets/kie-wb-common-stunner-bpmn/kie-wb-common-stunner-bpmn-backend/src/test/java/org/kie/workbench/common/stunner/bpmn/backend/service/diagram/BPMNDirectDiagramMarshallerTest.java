@@ -147,6 +147,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.kie.workbench.common.stunner.bpmn.backend.service.diagram.Assertions.assertDiagram;
@@ -158,74 +159,87 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class BPMNDirectDiagramMarshallerTest {
 
-    private static final String BPMN_BASIC = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/basic.bpmn";
-    private static final String BPMN_EVALUATION = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/evaluation.bpmn";
-    private static final String BPMN_LANES = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/lanes.bpmn";
-    private static final String BPMN_BOUNDARY_EVENTS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/boundaryIntmEvent.bpmn";
-    private static final String BPMN_NOT_BOUNDARY_EVENTS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/notBoundaryIntmEvent.bpmn";
-    private static final String BPMN_PROCESSVARIABLES = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/processVariables.bpmn";
-    private static final String BPMN_GLOBALVARIABLES = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/globalVariables.bpmn";
-    private static final String BPMN_USERTASKASSIGNMENTS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/userTaskAssignments.bpmn";
-    private static final String BPMN_USERTASK_MI = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/userTaskMI.bpmn";
-    private static final String BPMN_BUSINESSRULETASKASSIGNMENTS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/businessRuleTaskAssignments.bpmn";
-    private static final String BPMN_STARTNONEEVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/startNoneEvent.bpmn";
-    private static final String BPMN_STARTTIMEREVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/startTimerEvent.bpmn";
-    private static final String BPMN_STARTSIGNALEVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/startSignalEvent.bpmn";
-    private static final String BPMN_STARTMESSAGEEVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/startMessageEvent.bpmn";
-    private static final String BPMN_STARTERROREVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/startErrorEvent.bpmn";
-    private static final String BPMN_STARTCONDITIONALEVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/startConditionalEvent.bpmn";
-    private static final String BPMN_STARTESCALATIONEVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/startEscalationEvent.bpmn";
-    private static final String BPMN_STARTCOMPENSATIONEVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/startCompensationEvent.bpmn";
-    private static final String BPMN_INTERMEDIATE_SIGNAL_EVENTCATCHING = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/intermediateSignalEventCatching.bpmn";
-    private static final String BPMN_INTERMEDIATE_ERROR_EVENTCATCHING = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/intermediateErrorEventCatching.bpmn";
-    private static final String BPMN_INTERMEDIATE_SIGNAL_EVENTTHROWING = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/intermediateSignalEventThrowing.bpmn";
-    private static final String BPMN_INTERMEDIATE_MESSAGE_EVENTCATCHING = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/intermediateMessageEventCatching.bpmn";
-    private static final String BPMN_INTERMEDIATE_MESSAGE_EVENTTHROWING = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/intermediateMessageEventThrowing.bpmn";
-    private static final String BPMN_INTERMEDIATE_TIMER_EVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/intermediateTimerEvent.bpmn";
-    private static final String BPMN_INTERMEDIATE_CONDITIONAL_EVENTS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/intermediateConditionalEvents.bpmn";
-    private static final String BPMN_INTERMEDIATE_ESCALATION_EVENTS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/intermediateEscalationEvents.bpmn";
-    private static final String BPMN_INTERMEDIATE_COMPENSATION_EVENTS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/intermediateCompensationEvents.bpmn";
-    private static final String BPMN_INTERMEDIATE_COMPENSATION_EVENTS_WITH_ASSOCIATION = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/intermediateCompensationEventsWithAssociation.bpmn";
-    private static final String BPMN_INTERMEDIATE_ESCALATION_EVENTTHROWING = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/intermediateEscalationEventThrowing.bpmn";
-    private static final String BPMN_INTERMEDIATE_COMPENSATION_EVENTTHROWING = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/intermediateCompensationEventThrowing.bpmn";
-    private static final String BPMN_ENDSIGNALEVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/endSignalEvent.bpmn";
-    private static final String BPMN_ENDMESSAGEEVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/endMessageEvent.bpmn";
-    private static final String BPMN_ENDNONEEVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/endNoneEvent.bpmn";
-    private static final String BPMN_ENDTERMINATEEVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/endTerminateEvent.bpmn";
-    private static final String BPMN_ENDESCALATIONEVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/endEscalationEvent.bpmn";
-    private static final String BPMN_ENDCOMPENSATIONEVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/endCompensationEvent.bpmn";
-    private static final String BPMN_PROCESSPROPERTIES = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/processProperties.bpmn";
-    private static final String BPMN_BUSINESSRULETASKRULEFLOWGROUP = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/businessRuleTask.bpmn";
-    private static final String BPMN_EVENT_SUBPROCESS_STARTERROREVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/isInterruptingStartErrorEvent.bpmn";
-    private static final String BPMN_REUSABLE_SUBPROCESS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/reusableSubprocessCalledElement.bpmn";
-    private static final String BPMN_REUSABLE_SUBPROCESS_MI = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/reusableSubProcessMI.bpmn";
-    private static final String BPMN_EMBEDDED_SUBPROCESS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/embeddedSubprocess.bpmn";
-    private static final String BPMN_EVENT_SUBPROCESS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/eventSubprocess.bpmn";
-    private static final String BPMN_ADHOC_SUBPROCESS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/adHocSubProcess.bpmn";
-    private static final String BPMN_MULTIPLE_INSTANCE_SUBPROCESS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/multipleInstanceSubprocess.bpmn";
-    private static final String BPMN_SCRIPTTASK = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/scriptTask.bpmn";
-    private static final String BPMN_USERTASKASSIGNEES = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/userTaskAssignees.bpmn";
-    private static final String BPMN_USERTASKPROPERTIES = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/userTaskProperties.bpmn";
-    private static final String BPMN_SEQUENCEFLOW = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/sequenceFlow.bpmn";
-    private static final String BPMN_XORGATEWAY = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/xorGateway.bpmn";
-    private static final String BPMN_INCLUSIVE_GATEWAY = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/inclusiveGateway.bpmn";
-    private static final String BPMN_TIMER_EVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/timerEvent.bpmn";
-    private static final String BPMN_SIMULATIONPROPERTIES = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/simulationProperties.bpmn";
-    private static final String BPMN_MAGNETDOCKERS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/magnetDockers.bpmn";
-    private static final String BPMN_MAGNETSINLANE = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/magnetsInLane.bpmn";
-    private static final String BPMN_ENDERROR_EVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/endErrorEvent.bpmn";
-    private static final String BPMN_EVENT_DEFINITION_REF = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/eventDefinitionRef.bpmn";
-    private static final String BPMN_SERVICE_TASKS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/serviceTasks.bpmn";
-    private static final String BPMN_NESTED_SUBPROCESSES = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/nestedSubprocesses.bpmn";
-    private static final String BPMN_REASSIGNMENT_NOTIFICATION = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/reassignmentAndNotification.bpmn";
-    private static final String BPMN_ARIS_LANES_1 = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/aris/ARIS_LANES_1.bpmn";
-    private static final String BPMN_ARIS_LANES_2 = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/aris/ARIS_LANES_2.bpmn";
-    private static final String BPMN_ARIS_LANES_3 = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/aris/ARIS_LANES_3.bpmn";
-    private static final String ARIS_MULTIPLE_COLLAPSED_SUBPROCESSES = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/aris/ARIS_MULTIPLE_COLLAPSED_SUBPROCESSES.bpmn";
-    private static final String ARIS_NESTED_COLLAPSED_SUBPROCESSES = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/aris/ARIS_NESTED_COLLAPSED_SUBPROCESES.bpmn";
-    private static final String ARIS_COLLAPSED_SUBPROCESS_IN_LANE = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/aris/ARIS_COLLAPSED_SUBPROCESS_IN_LANE.bpmn";
-    private static final String BPMN_LOG_TASK_JBPM_DESIGNER = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/logtask.bpmn";
-    private static final String BPMN_SERVICETASKS_JBPM_DESIGNER = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/serviceTasksJBPMDeginer.bpmn";
+    private static final String PATH_DIAGRAM = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram";
+
+    //unsupported
+    private static final String BPMN_MANUAL_TASK = PATH_DIAGRAM + "/unsupported/manualTask.bpmn";
+    private static final String BPMN_SEND_TASK = PATH_DIAGRAM + "/unsupported/sendTask.bpmn";
+    private static final String BPMN_RECEIVED_TASK = PATH_DIAGRAM + "/unsupported/receivedTask.bpmn";
+    private static final String BPMN_CHILDLANESET = PATH_DIAGRAM + "/unsupported/4.6.10.10_P1_v3.bpmn";
+    private static final String EXECUTION = PATH_DIAGRAM + "/unsupported/Execution.bpmn";
+    private static final String BPMN_DATASTORE = PATH_DIAGRAM + "/unsupported/TestDataStore.bpmn";
+    private static final String JBPM_DESIGNER_ALL_ELEMENTS = PATH_DIAGRAM + "/unsupported/jbpmDesigner1.bpmn";
+    private static final String BPMN_DATAOBJECT = PATH_DIAGRAM + "/unsupported/dataObject1.bpmn";
+
+    //supported
+    private static final String BPMN_BASIC = PATH_DIAGRAM + "/basic.bpmn";
+    private static final String BPMN_EVALUATION = PATH_DIAGRAM + "/evaluation.bpmn";
+    private static final String BPMN_LANES = PATH_DIAGRAM + "/lanes.bpmn";
+    private static final String BPMN_BOUNDARY_EVENTS = PATH_DIAGRAM + "/boundaryIntmEvent.bpmn";
+    private static final String BPMN_NOT_BOUNDARY_EVENTS = PATH_DIAGRAM + "/notBoundaryIntmEvent.bpmn";
+    private static final String BPMN_PROCESSVARIABLES = PATH_DIAGRAM + "/processVariables.bpmn";
+    private static final String BPMN_GLOBALVARIABLES = PATH_DIAGRAM + "/globalVariables.bpmn";
+    private static final String BPMN_USERTASKASSIGNMENTS = PATH_DIAGRAM + "/userTaskAssignments.bpmn";
+    private static final String BPMN_USERTASK_MI = PATH_DIAGRAM + "/userTaskMI.bpmn";
+    private static final String BPMN_BUSINESSRULETASKASSIGNMENTS = PATH_DIAGRAM + "/businessRuleTaskAssignments.bpmn";
+    private static final String BPMN_STARTNONEEVENT = PATH_DIAGRAM + "/startNoneEvent.bpmn";
+    private static final String BPMN_STARTTIMEREVENT = PATH_DIAGRAM + "/startTimerEvent.bpmn";
+    private static final String BPMN_STARTSIGNALEVENT = PATH_DIAGRAM + "/startSignalEvent.bpmn";
+    private static final String BPMN_STARTMESSAGEEVENT = PATH_DIAGRAM + "/startMessageEvent.bpmn";
+    private static final String BPMN_STARTERROREVENT = PATH_DIAGRAM + "/startErrorEvent.bpmn";
+    private static final String BPMN_STARTCONDITIONALEVENT = PATH_DIAGRAM + "/startConditionalEvent.bpmn";
+    private static final String BPMN_STARTESCALATIONEVENT = PATH_DIAGRAM + "/startEscalationEvent.bpmn";
+    private static final String BPMN_STARTCOMPENSATIONEVENT = PATH_DIAGRAM + "/startCompensationEvent.bpmn";
+    private static final String BPMN_INTERMEDIATE_SIGNAL_EVENTCATCHING = PATH_DIAGRAM + "/intermediateSignalEventCatching.bpmn";
+    private static final String BPMN_INTERMEDIATE_ERROR_EVENTCATCHING = PATH_DIAGRAM + "/intermediateErrorEventCatching.bpmn";
+    private static final String BPMN_INTERMEDIATE_SIGNAL_EVENTTHROWING = PATH_DIAGRAM + "/intermediateSignalEventThrowing.bpmn";
+    private static final String BPMN_INTERMEDIATE_MESSAGE_EVENTCATCHING = PATH_DIAGRAM + "/intermediateMessageEventCatching.bpmn";
+    private static final String BPMN_INTERMEDIATE_MESSAGE_EVENTTHROWING = PATH_DIAGRAM + "/intermediateMessageEventThrowing.bpmn";
+    private static final String BPMN_INTERMEDIATE_TIMER_EVENT = PATH_DIAGRAM + "/intermediateTimerEvent.bpmn";
+    private static final String BPMN_INTERMEDIATE_CONDITIONAL_EVENTS = PATH_DIAGRAM + "/intermediateConditionalEvents.bpmn";
+    private static final String BPMN_INTERMEDIATE_ESCALATION_EVENTS = PATH_DIAGRAM + "/intermediateEscalationEvents.bpmn";
+    private static final String BPMN_INTERMEDIATE_COMPENSATION_EVENTS = PATH_DIAGRAM + "/intermediateCompensationEvents.bpmn";
+    private static final String BPMN_INTERMEDIATE_COMPENSATION_EVENTS_WITH_ASSOCIATION = PATH_DIAGRAM + "/intermediateCompensationEventsWithAssociation.bpmn";
+    private static final String BPMN_INTERMEDIATE_ESCALATION_EVENTTHROWING = PATH_DIAGRAM + "/intermediateEscalationEventThrowing.bpmn";
+    private static final String BPMN_INTERMEDIATE_COMPENSATION_EVENTTHROWING = PATH_DIAGRAM + "/intermediateCompensationEventThrowing.bpmn";
+    private static final String BPMN_ENDSIGNALEVENT = PATH_DIAGRAM + "/endSignalEvent.bpmn";
+    private static final String BPMN_ENDMESSAGEEVENT = PATH_DIAGRAM + "/endMessageEvent.bpmn";
+    private static final String BPMN_ENDNONEEVENT = PATH_DIAGRAM + "/endNoneEvent.bpmn";
+    private static final String BPMN_ENDTERMINATEEVENT = PATH_DIAGRAM + "/endTerminateEvent.bpmn";
+    private static final String BPMN_ENDESCALATIONEVENT = PATH_DIAGRAM + "/endEscalationEvent.bpmn";
+    private static final String BPMN_ENDCOMPENSATIONEVENT = PATH_DIAGRAM + "/endCompensationEvent.bpmn";
+    private static final String BPMN_PROCESSPROPERTIES = PATH_DIAGRAM + "/processProperties.bpmn";
+    private static final String BPMN_BUSINESSRULETASKRULEFLOWGROUP = PATH_DIAGRAM + "/businessRuleTask.bpmn";
+    private static final String BPMN_EVENT_SUBPROCESS_STARTERROREVENT = PATH_DIAGRAM + "/isInterruptingStartErrorEvent.bpmn";
+    private static final String BPMN_REUSABLE_SUBPROCESS = PATH_DIAGRAM + "/reusableSubprocessCalledElement.bpmn";
+    private static final String BPMN_REUSABLE_SUBPROCESS_MI = PATH_DIAGRAM + "/reusableSubProcessMI.bpmn";
+    private static final String BPMN_EMBEDDED_SUBPROCESS = PATH_DIAGRAM + "/embeddedSubprocess.bpmn";
+    private static final String BPMN_EVENT_SUBPROCESS = PATH_DIAGRAM + "/eventSubprocess.bpmn";
+    private static final String BPMN_ADHOC_SUBPROCESS = PATH_DIAGRAM + "/adHocSubProcess.bpmn";
+    private static final String BPMN_MULTIPLE_INSTANCE_SUBPROCESS = PATH_DIAGRAM + "/multipleInstanceSubprocess.bpmn";
+    private static final String BPMN_SCRIPTTASK = PATH_DIAGRAM + "/scriptTask.bpmn";
+    private static final String BPMN_USERTASKASSIGNEES = PATH_DIAGRAM + "/userTaskAssignees.bpmn";
+    private static final String BPMN_USERTASKPROPERTIES = PATH_DIAGRAM + "/userTaskProperties.bpmn";
+    private static final String BPMN_SEQUENCEFLOW = PATH_DIAGRAM + "/sequenceFlow.bpmn";
+    private static final String BPMN_XORGATEWAY = PATH_DIAGRAM + "/xorGateway.bpmn";
+    private static final String BPMN_INCLUSIVE_GATEWAY = PATH_DIAGRAM + "/inclusiveGateway.bpmn";
+    private static final String BPMN_TIMER_EVENT = PATH_DIAGRAM + "/timerEvent.bpmn";
+    private static final String BPMN_SIMULATIONPROPERTIES = PATH_DIAGRAM + "/simulationProperties.bpmn";
+    private static final String BPMN_MAGNETDOCKERS = PATH_DIAGRAM + "/magnetDockers.bpmn";
+    private static final String BPMN_MAGNETSINLANE = PATH_DIAGRAM + "/magnetsInLane.bpmn";
+    private static final String BPMN_ENDERROR_EVENT = PATH_DIAGRAM + "/endErrorEvent.bpmn";
+    private static final String BPMN_EVENT_DEFINITION_REF = PATH_DIAGRAM + "/eventDefinitionRef.bpmn";
+    private static final String BPMN_SERVICE_TASKS = PATH_DIAGRAM + "/serviceTasks.bpmn";
+    private static final String BPMN_NESTED_SUBPROCESSES = PATH_DIAGRAM + "/nestedSubprocesses.bpmn";
+    private static final String BPMN_REASSIGNMENT_NOTIFICATION = PATH_DIAGRAM + "/reassignmentAndNotification.bpmn";
+    private static final String BPMN_ARIS_LANES_1 = PATH_DIAGRAM + "/aris/ARIS_LANES_1.bpmn";
+    private static final String BPMN_ARIS_LANES_2 = PATH_DIAGRAM + "/aris/ARIS_LANES_2.bpmn";
+    private static final String BPMN_ARIS_LANES_3 = PATH_DIAGRAM + "/aris/ARIS_LANES_3.bpmn";
+    private static final String ARIS_MULTIPLE_COLLAPSED_SUBPROCESSES = PATH_DIAGRAM + "/aris/ARIS_MULTIPLE_COLLAPSED_SUBPROCESSES.bpmn";
+    private static final String ARIS_NESTED_COLLAPSED_SUBPROCESSES = PATH_DIAGRAM + "/aris/ARIS_NESTED_COLLAPSED_SUBPROCESES.bpmn";
+    private static final String ARIS_COLLAPSED_SUBPROCESS_IN_LANE = PATH_DIAGRAM + "/aris/ARIS_COLLAPSED_SUBPROCESS_IN_LANE.bpmn";
+    private static final String BPMN_LOG_TASK_JBPM_DESIGNER = PATH_DIAGRAM + "/logtask.bpmn";
+    private static final String BPMN_SERVICETASKS_JBPM_DESIGNER = PATH_DIAGRAM + "/serviceTasksJBPMDeginer.bpmn";
     private static final String BPMN_EVENT_GATEWAY = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/eventGateway.bpmn";
 
     private static final String NEW_LINE = System.lineSeparator();
@@ -257,6 +271,100 @@ public class BPMNDirectDiagramMarshallerTest {
                                                  stunnerAPI.commandManager);
     }
 
+    //Unsupported nodes
+    @Test
+    public void testManualTask() throws Exception {
+        final Diagram<Graph, Metadata> diagram = unmarshall(BPMN_MANUAL_TASK);
+        final String result = tested.marshall(diagram);
+        final String uuid = "_25DC90B5-E0BA-4D32-842E-DD11CE507B01";
+        final Node<? extends Definition, ?> element = diagram.getGraph().getNode(uuid);
+        assertDiagram(diagram, 4);
+        assertTrue(element.getContent().getDefinition() instanceof NoneTask);
+        assertTrue(result.contains("<bpmn2:task id=\"$uuid\" name=\"manual\">\n".replace("$uuid", uuid)));
+    }
+
+    @Test
+    public void testSendTask() throws Exception {
+        final Diagram<Graph, Metadata> diagram = unmarshall(BPMN_SEND_TASK);
+        final String result = tested.marshall(diagram);
+        final String uuid = "_25DC90B5-E0BA-4D32-842E-DD11CE507B01";
+        final Node<? extends Definition, ?> element = diagram.getGraph().getNode(uuid);
+        assertDiagram(diagram, 4);
+        assertTrue(element.getContent().getDefinition() instanceof NoneTask);
+        assertTrue(result.contains("<bpmn2:task id=\"$uuid\" name=\"send\">\n".replace("$uuid", uuid)));
+    }
+
+    @Test
+    public void testReceiveTask() throws Exception {
+        final Diagram<Graph, Metadata> diagram = unmarshall(BPMN_RECEIVED_TASK);
+        final String result = tested.marshall(diagram);
+        final String uuid = "_25DC90B5-E0BA-4D32-842E-DD11CE507B01";
+        final Node<? extends Definition, ?> element = diagram.getGraph().getNode(uuid);
+        assertDiagram(diagram, 4);
+        assertTrue(element.getContent().getDefinition() instanceof NoneTask);
+        assertTrue(result.contains("<bpmn2:task id=\"$uuid\" name=\"received\">\n".replace("$uuid", uuid)));
+    }
+
+    @Test
+    public void testDataObject() throws Exception {
+        final Diagram<Graph, Metadata> diagram = unmarshall(BPMN_DATAOBJECT);
+        final String result = tested.marshall(diagram);
+        final String uuid = "dataObject1";
+        final Node<? extends Definition, ?> element = diagram.getGraph().getNode(uuid);
+        assertNull(element);
+        assertDiagram(diagram, 4);
+        assertFalse(result.contains("<bpmn2:dataObject id=\"dataObject1\""));
+    }
+
+    @Test
+    public void testDataStore() throws Exception {
+        final Diagram<Graph, Metadata> diagram = unmarshall(BPMN_DATASTORE);
+        final String result = tested.marshall(diagram);
+        final String uuid = "ID-f701d630-7adb-11e9-74db-069646171c32";
+        final Node<? extends Definition, ?> element = diagram.getGraph().getNode(uuid);
+        assertNull(element);
+        assertDiagram(diagram, 2);
+        assertFalse(result.contains("<semantic:dataStore name=\"Data store\" id=\"ID-f701d630-7adb-11e9-74db-069646171c32\"/>"));
+    }
+
+    @Test
+    public void testChildLaneSet() throws Exception {
+        final Diagram<Graph, Metadata> diagram = unmarshall(BPMN_CHILDLANESET);
+        final String result = tested.marshall(diagram);
+
+        final List<String> uudis = Arrays.asList("ID-d840fb6a-2566-11e9-4768-06332ceaf548",
+                                                 "ID-953d72f2-0f1d-11e7-62b5-d0bf9cf32000",
+                                                 "ID-bd86bfb8-3391-11e9-4932-0200a2035cb6");
+
+        assertTrue(uudis.stream()
+                           .map(diagram.getGraph()::getNode)
+                           .map(Node::getContent)
+                           .map(Definition.class::cast)
+                           .map(Definition::getDefinition)
+                           .allMatch(Lane.class::isInstance));
+
+        assertDiagram(diagram, 57);
+        assertTrue(uudis.stream()
+                           .allMatch(uuid -> result.contains("<bpmn2:lane id=\"$uuid\"".replace("$uuid", uuid))));
+    }
+
+    @Test
+    public void testExecution() throws Exception {
+        final Diagram<Graph, Metadata> diagram = unmarshall(EXECUTION);
+        String result = tested.marshall(diagram);
+        assertDiagram(diagram, 20);
+    }
+
+    @Test
+    public void testJBPMAllElements() throws Exception {
+        //assert no errors unmarshalling all elements
+        final Diagram<Graph, Metadata> diagram = unmarshall(JBPM_DESIGNER_ALL_ELEMENTS);
+        assertDiagram(diagram, 66);
+    }
+
+    //END Unsupported nodes
+
+    // 4 nodes expected: BPMNDiagram, StartNode, Task and EndNode
     @Test
     @SuppressWarnings("unchecked")
     public void testUnmarshallBasic() throws Exception {
@@ -2823,7 +2931,7 @@ public class BPMNDirectDiagramMarshallerTest {
 
     @Test
     public void testMarshallEmbeddedSubprocessDuplicateElements() throws Exception {
-        String f = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/subprocessDuplicateElements.bpmn";
+        String f = PATH_DIAGRAM + "/subprocessDuplicateElements.bpmn";
         Diagram<Graph, Metadata> diagram = unmarshall(f);
         String result = tested.marshall(diagram);
 
@@ -2835,7 +2943,7 @@ public class BPMNDirectDiagramMarshallerTest {
 
     @Test
     public void testMarshallEmbeddedSubprocessNestedDuplicates() throws Exception {
-        String f = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/subprocessNested.bpmn";
+        String f = PATH_DIAGRAM + "/subprocessNested.bpmn";
         Diagram<Graph, Metadata> diagram = unmarshall(f);
 
         String result = tested.marshall(diagram);

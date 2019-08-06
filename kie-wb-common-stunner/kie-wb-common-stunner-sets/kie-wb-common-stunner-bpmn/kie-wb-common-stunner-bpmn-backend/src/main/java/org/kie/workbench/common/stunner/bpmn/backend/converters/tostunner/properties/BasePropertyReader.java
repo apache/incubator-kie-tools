@@ -39,7 +39,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSize;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 
-public class BasePropertyReader {
+public class BasePropertyReader implements PropertyReader {
 
     protected final BaseElement element;
     protected final BPMNShape shape;
@@ -56,6 +56,7 @@ public class BasePropertyReader {
         this.resolutionFactor = resolutionFactor;
     }
 
+    @Override
     public String getDocumentation() {
         return element.getDocumentation().stream()
                 .findFirst()
@@ -63,10 +64,12 @@ public class BasePropertyReader {
                 .orElse("");
     }
 
+    @Override
     public String getDescription() {
         return CustomElement.description.of(element).get();
     }
 
+    @Override
     public FontSet getFontSet() {
         final FontFamily fontFamily = new FontFamily();
         final FontColor fontColor = new FontColor(optionalAttribute("fontcolor")
@@ -78,6 +81,7 @@ public class BasePropertyReader {
         return new FontSet(fontFamily, fontColor, fontSize, fontBorderSize, fontBorderColor);
     }
 
+    @Override
     public BackgroundSet getBackgroundSet() {
         return new BackgroundSet(
                 new BgColor(optionalAttribute("bgcolor")
@@ -111,6 +115,7 @@ public class BasePropertyReader {
                 .findFirst();
     }
 
+    @Override
     public Bounds getBounds() {
         if (shape == null) {
             return Bounds.create();
@@ -126,6 +131,7 @@ public class BasePropertyReader {
         return Bounds.create(x, y, x + width, y + height);
     }
 
+    @Override
     public CircleDimensionSet getCircleDimensionSet() {
         if (shape == null) {
             return new CircleDimensionSet();
@@ -134,6 +140,7 @@ public class BasePropertyReader {
                 shape.getBounds().getWidth() * resolutionFactor / 2d));
     }
 
+    @Override
     public RectangleDimensionsSet getRectangleDimensionsSet() {
         if (shape == null) {
             return new RectangleDimensionsSet();
@@ -143,14 +150,17 @@ public class BasePropertyReader {
                                           bounds.getHeight() * resolutionFactor);
     }
 
+    @Override
     public boolean isExpanded() {
         return shape.isIsExpanded();
     }
 
+    @Override
     public BaseElement getElement() {
         return element;
     }
 
+    @Override
     public BPMNShape getShape() {
         return shape;
     }

@@ -19,17 +19,33 @@ package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.event
 import java.util.Map;
 
 import org.eclipse.bpmn2.BoundaryEvent;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.Result;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.BpmnEdge;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.BpmnNode;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.EdgeConverter;
+import org.kie.workbench.common.stunner.core.marshaller.MarshallingMessage;
+import org.kie.workbench.common.stunner.core.marshaller.MarshallingMessageKeys;
+import org.kie.workbench.common.stunner.core.validation.Violation;
 
 /**
  * A boundary event is also a sort-of-edge.
  * This converter generates the "edge" part of a boundary event.
  * The node part is converted by the {@link IntermediateCatchEventConverter}
  */
-public class BoundaryEventConverter {
+public class BoundaryEventConverter implements EdgeConverter<BoundaryEvent> {
 
-    public BpmnEdge convertEdge(BoundaryEvent e, Map<String, BpmnNode> nodes) {
-        return BpmnEdge.docked(nodes.get(e.getAttachedToRef().getId()), nodes.get(e.getId()));
+    @Override
+    public Result<BpmnEdge> convertEdge(BoundaryEvent event, Map<String, BpmnNode> nodes) {
+        String parentId = event.getAttachedToRef().getId();
+        String childId = event.getId();
+        return valid(nodes, parentId, childId)
+                ? Result.success(BpmnEdge.docked(nodes.get(parentId), nodes.get(childId)))
+                : Result.ignored("Boundary ignored",
+                                 MarshallingMessage.builder()
+                                         .message("Boundary ignored")
+                                         .messageKey(MarshallingMessageKeys.boundaryIgnored)
+                                         .messageArguments(childId, parentId)
+                                         .type(Violation.Type.WARNING)
+                                         .build());
     }
 }

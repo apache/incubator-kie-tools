@@ -134,7 +134,7 @@ public class CallActivityConverterTest {
     @SuppressWarnings("unchecked")
     public void testConvertMI() {
         when(propertyReader.isMultipleInstance()).thenReturn(true);
-        BpmnNode bpmnNode = converter.convert(callActivity);
+        BpmnNode bpmnNode = converter.convert(callActivity).value();
         Node<View<ReusableSubprocess>, Edge> result = (Node<View<ReusableSubprocess>, Edge>) bpmnNode.value();
         assertCommonValues(result);
 
@@ -158,7 +158,7 @@ public class CallActivityConverterTest {
         when(propertyReader.getDataOutput()).thenReturn(null);
         when(propertyReader.getCompletionCondition()).thenReturn(null);
 
-        BpmnNode bpmnNode = converter.convert(callActivity);
+        BpmnNode bpmnNode = converter.convert(callActivity).value();
         Node<View<ReusableSubprocess>, Edge> result = (Node<View<ReusableSubprocess>, Edge>) bpmnNode.value();
         assertCommonValues(result);
 

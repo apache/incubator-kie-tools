@@ -21,6 +21,7 @@ import java.util.Optional;
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.emf.ecore.impl.EAttributeImpl;
 import org.eclipse.emf.ecore.impl.EStructuralFeatureImpl;
+import org.eclipse.emf.ecore.util.FeatureMap;
 
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.metaData;
 
@@ -44,10 +45,11 @@ public abstract class AttributeDefinition<T> {
 
     public abstract void setValue(BaseElement element, T value);
 
-    Optional<java.lang.String> getStringValue(BaseElement element) {
+    Optional<String> getStringValue(BaseElement element) {
         return element.getAnyAttribute().stream()
                 .filter(e -> this.name().equals(e.getEStructuralFeature().getName()))
-                .map(e -> e.getValue().toString())
+                .map(FeatureMap.Entry::getValue)
+                .map(String::valueOf)
                 .findFirst();
     }
 

@@ -46,7 +46,7 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public abstract class AbstractBasePropertyWriterTest<W extends BasePropertyWriter, E extends BaseElement> {
 
-    protected static final String ID = "ID";
+    protected static final String ID = "PARENT_ID";
     protected static final Double X1 = 1d;
     protected static final Double Y1 = 2d;
     protected static final Double X2 = 10d;

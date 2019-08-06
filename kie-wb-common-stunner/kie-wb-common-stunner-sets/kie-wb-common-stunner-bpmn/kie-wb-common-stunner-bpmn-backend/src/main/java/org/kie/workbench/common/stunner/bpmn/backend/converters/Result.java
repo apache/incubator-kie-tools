@@ -16,25 +16,41 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.kie.workbench.common.stunner.core.marshaller.MarshallingMessage;
 
 public interface Result<T> {
 
-    static <R> Result<R> of(R value) {
-        return new Success<>(value);
+    static <R> Result<R> of(R value, MarshallingMessage... messages) {
+        return success(value, messages);
     }
 
-    static <R> Result<R> success(R value) {
-        return new Success<>(value);
+    static <R> Result<R> success(R value, MarshallingMessage... messages) {
+        return new Success<>(value, messages);
     }
 
-    static <R> Result<R> failure(String reason) {
-        return new Failure<>(reason);
+    static <R> Result<R> failure(String reason, MarshallingMessage... messages) {
+        return new Failure<>(reason, messages);
     }
 
-    static <U> Result<U> ignored(String reason) {
-        return new Ignored<>(reason);
+    static <R> Result<R> failure(String reason, R defaultValue, MarshallingMessage... messages) {
+        return new Failure<>(reason, defaultValue, messages);
+    }
+
+    static <U> Result<U> ignored(String reason, MarshallingMessage... messages) {
+        return new Ignored<>(reason, messages);
+    }
+
+    static <U> Result<U> ignored(String reason, U defaultValue, MarshallingMessage... messages) {
+        return new Ignored<>(reason, defaultValue, messages);
     }
 
     boolean isFailure();
@@ -51,14 +67,14 @@ public interface Result<T> {
         return !isIgnored();
     }
 
-    default T value() {
-        return asSuccess().value();
-    }
+    T value();
+
+    List<MarshallingMessage> messages();
+
+    Result<T> setMessages(MarshallingMessage... messages);
 
     default void ifSuccess(Consumer<T> consumer) {
-        if (isSuccess()) {
-            consumer.accept(asSuccess().value());
-        }
+        Optional.ofNullable(value()).ifPresent(consumer::accept);
     }
 
     default void ifFailure(Consumer<String> consumer) {
@@ -73,11 +89,33 @@ public interface Result<T> {
 
     Ignored<T> asIgnored();
 
-    class Success<T> implements Result<T> {
+    abstract class AbstractResult<T> implements Result<T> {
+
+        private List<MarshallingMessage> messages;
+
+        AbstractResult(MarshallingMessage... messages) {
+            this.messages = new ArrayList<>();
+            this.messages.addAll(Arrays.asList(messages));
+        }
+
+        @Override
+        public List<MarshallingMessage> messages() {
+            return messages;
+        }
+
+        @Override
+        public Result<T> setMessages(MarshallingMessage... messages) {
+            this.messages = Stream.of(messages).collect(Collectors.toList());
+            return this;
+        }
+    }
+
+    class Success<T> extends AbstractResult<T> {
 
         private final T value;
 
-        Success(T value) {
+        Success(T value, MarshallingMessage... messages) {
+            super((messages));
             this.value = value;
         }
 
@@ -111,12 +149,19 @@ public interface Result<T> {
         }
     }
 
-    class Ignored<T> implements Result<T> {
+    class Ignored<T> extends AbstractResult<T> {
 
         private final String reason;
+        private final T defaultValue;
 
-        Ignored(String reason) {
+        Ignored(String reason, MarshallingMessage... messages) {
+            this(reason, null, messages);
+        }
+
+        Ignored(String reason, T defaultValue, MarshallingMessage... messages) {
+            super(messages);
             this.reason = reason;
+            this.defaultValue = defaultValue;
         }
 
         public String reason() {
@@ -147,14 +192,26 @@ public interface Result<T> {
         public boolean isFailure() {
             return false;
         }
+
+        @Override
+        public T value() {
+            return defaultValue;
+        }
     }
 
-    class Failure<T> implements Result<T> {
+    class Failure<T> extends AbstractResult<T> {
 
         private final String reason;
+        private final T defaultValue;
 
-        Failure(String reason) {
+        Failure(String reason, MarshallingMessage... messages) {
+            this(reason, null, messages);
+        }
+
+        Failure(String reason, T defaultValue, MarshallingMessage... messages) {
+            super(messages);
             this.reason = reason;
+            this.defaultValue = defaultValue;
         }
 
         public String reason() {
@@ -184,6 +241,11 @@ public interface Result<T> {
 
         public boolean isFailure() {
             return true;
+        }
+
+        @Override
+        public T value() {
+            return defaultValue;
         }
     }
 }

@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.enterprise.inject.Instance;
@@ -173,18 +174,17 @@ public abstract class AbstractVFSDiagramService<M extends Metadata, D extends Di
                             services.getDiagramMarshaller().unmarshallWithValidation(MarshallingRequest.builder()
                                                                                              .metadata(metadata)
                                                                                              .input(is)
-                                                                                             .mode(MarshallingRequest.Mode.ERROR)
+                                                                                             .mode(MarshallingRequest.Mode.AUTO)
                                                                                              .build());
                     final Graph<DefinitionSet, ?> graph =
-                            marshallingResponse.getResult()
-                                    .orElseThrow(()-> new RuntimeException(marshallingResponse.getMessages().toString()));
+                            Optional.ofNullable(marshallingResponse.getResult())
+                                    .orElseThrow(() -> new RuntimeException(marshallingResponse.getMessages().toString()));
 
                     final DiagramFactory<M, ?> factory =
                             factoryManager.registry().getDiagramFactory(graph.getContent().getDefinition(),
-                                                                                               getMetadataType());
-                    return (D) factory.build(name,
-                                             metadata,
-                                             graph);
+                                                                        getMetadataType());
+
+                    return (D) factory.build(name, metadata, graph);
                 } catch (Exception e) {
                     LOG.error("Cannot unmarshall diagram for diagram's path [" + file + "]", e);
                     final String xml = getIoService().readAllString(Paths.convert(file));

@@ -47,13 +47,13 @@ public class InitializedVariableTest {
         String expected = "<<<#!!!#>>>";
         String encoded = URLEncoder.encode(expected, "UTF-8");
 
-        VariableDeclaration variable = new VariableDeclaration("ID", "Object");
+        VariableDeclaration variable = new VariableDeclaration("PARENT_ID", "Object");
         InputConstant c = new InputConstant("PARENT", variable, encoded);
 
         Assignment assignment = c.getDataInputAssociation().getAssignment().get(0);
 
         FormalExpression to = (FormalExpression) assignment.getTo();
-        assertEquals(Ids.dataInput("PARENT", "ID"), to.getBody());
+        assertEquals(Ids.dataInput("PARENT", "PARENT_ID"), to.getBody());
 
         FormalExpression from = (FormalExpression) assignment.getFrom();
         assertEquals(asCData(expected), from.getBody());

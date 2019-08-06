@@ -19,9 +19,12 @@ package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.BasePropertyReader;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNViewDefinition;
+import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.slf4j.Logger;
@@ -130,7 +133,21 @@ public abstract class BpmnNode {
         return edges;
     }
 
-    public void addEdge(BpmnEdge bpmnEdge) {
-        edges.add(bpmnEdge);
+    public boolean addEdge(BpmnEdge bpmnEdge) {
+        return edges.add(bpmnEdge);
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("BpmnNode{");
+        sb.append("value=").append(Optional.ofNullable(value)
+                                           .map(Element::getContent)
+                                           .filter(Objects::nonNull)
+                                           .map(View::getDefinition)
+                                           .filter(Objects::nonNull)
+                                           .map(BPMNViewDefinition::toString)
+                                           .orElse(""));
+        sb.append('}');
+        return sb.toString();
     }
 }

@@ -31,7 +31,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
@@ -53,7 +53,7 @@ public class DiagramMarshallerTest {
     private MarshallingRequest request;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         request = MarshallingRequest.builder()
                 .metadata(metadata)
                 .input(input)
@@ -82,7 +82,7 @@ public class DiagramMarshallerTest {
 
         final MarshallingResponse response = tested.unmarshallWithValidation(request);
         verify(tested).unmarshall(metadata, input);
-        assertEquals(response.getResult().orElse(null), graph);
+        assertEquals(response.getResult(), graph);
         assertEquals(response.getState(), MarshallingResponse.State.SUCCESS);
     }
 
@@ -107,7 +107,7 @@ public class DiagramMarshallerTest {
 
         final MarshallingResponse response = tested.unmarshallWithValidation(request);
         verify(tested).unmarshall(metadata, input);
-        assertFalse(response.getResult().isPresent());
+        assertNull(response.getResult());
         assertEquals(response.getState(), MarshallingResponse.State.ERROR);
         assertEquals(response.getMessages().size(), 1);
         final MarshallingMessage marshallingMessage =

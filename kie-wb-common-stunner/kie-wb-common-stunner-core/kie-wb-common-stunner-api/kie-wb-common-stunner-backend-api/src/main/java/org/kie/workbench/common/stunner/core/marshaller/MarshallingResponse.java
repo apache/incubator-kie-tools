@@ -19,7 +19,6 @@ package org.kie.workbench.common.stunner.core.marshaller;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -39,10 +38,10 @@ public class MarshallingResponse<T> {
 
     private final List<MarshallingMessage> messages;
     private final State state;
-    private final Optional<T> result;
+    private final T result;
 
     private MarshallingResponse(@MapsTo("messages") List<MarshallingMessage> messages,
-                                @MapsTo("state") State state, @MapsTo("result") Optional<T> result) {
+                                @MapsTo("state") State state, @MapsTo("result") T result) {
         this.messages = messages;
         this.state = state;
         this.result = result;
@@ -56,7 +55,7 @@ public class MarshallingResponse<T> {
         return state;
     }
 
-    public Optional<T> getResult() {
+    public T getResult() {
         return result;
     }
 
@@ -106,7 +105,7 @@ public class MarshallingResponse<T> {
 
         private final List<MarshallingMessage> messages = new ArrayList<>();
         private State state;
-        private Optional<T> result = Optional.empty();
+        private T result;
 
         public MarshallingResponseBuilder<T> messages(List<MarshallingMessage> messages) {
             this.messages.addAll(messages);
@@ -124,7 +123,7 @@ public class MarshallingResponse<T> {
         }
 
         public MarshallingResponseBuilder<T> result(T result) {
-            this.result = Optional.ofNullable(result);
+            this.result = result;
             return this;
         }
 

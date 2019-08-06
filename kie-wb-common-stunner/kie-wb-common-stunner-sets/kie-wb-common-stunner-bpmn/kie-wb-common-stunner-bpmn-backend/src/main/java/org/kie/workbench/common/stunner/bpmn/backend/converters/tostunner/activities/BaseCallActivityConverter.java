@@ -16,8 +16,10 @@
 package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.activities;
 
 import org.eclipse.bpmn2.CallActivity;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.Result;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.TypedFactoryManager;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.BpmnNode;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.NodeConverter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.CallActivityPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.PropertyReaderFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseReusableSubprocess;
@@ -31,7 +33,7 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
 public abstract class BaseCallActivityConverter<R extends BaseReusableSubprocess,
-        E extends BaseReusableSubprocessTaskExecutionSet> {
+        E extends BaseReusableSubprocessTaskExecutionSet> implements NodeConverter<CallActivity> {
 
     protected final TypedFactoryManager factoryManager;
     private final PropertyReaderFactory propertyReaderFactory;
@@ -43,7 +45,7 @@ public abstract class BaseCallActivityConverter<R extends BaseReusableSubprocess
     }
 
     @SuppressWarnings("unchecked")
-    public BpmnNode convert(CallActivity activity) {
+    public Result<BpmnNode> convert(CallActivity activity) {
         CallActivityPropertyReader p = propertyReaderFactory.of(activity);
 
         Node<View<R>, Edge> node = createNode(activity, p);
@@ -67,7 +69,7 @@ public abstract class BaseCallActivityConverter<R extends BaseReusableSubprocess
         definition.setFontSet(p.getFontSet());
         definition.setBackgroundSet(p.getBackgroundSet());
 
-        return BpmnNode.of(node, p);
+        return Result.success(BpmnNode.of(node, p));
     }
 
     protected abstract Node<View<R>, Edge> createNode(CallActivity activity, CallActivityPropertyReader p);

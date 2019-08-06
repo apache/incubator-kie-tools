@@ -19,7 +19,7 @@ package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.pro
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -63,13 +63,8 @@ public class FlatVariableScope implements VariableScope {
         return variable;
     }
 
-    public Variable lookup(String identifier) {
-        Variable variable = variables.get(identifier);
-        if (variable == null) {
-            throw new NoSuchElementException("Undeclared variable " + identifier);
-        } else {
-            return variable;
-        }
+    public Optional<Variable> lookup(String identifier) {
+        return Optional.ofNullable(variables.get(identifier));
     }
 
     public Collection<Variable> getVariables(String scopeId) {

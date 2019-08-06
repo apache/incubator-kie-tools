@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<semantic:definitions xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:semantic="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" id="Definitions_ID-d1fb61d1-7adb-11e9-74db-069646171c32" name="TestDataStore" targetNamespace="http://www.softwareag.com/aris/bpmn2" exporter="ARIS" exporterVersion="10.0.0.1299281">
+    <semantic:dataStore name="Data store" id="ID-f701d630-7adb-11e9-74db-069646171c32"/>
+    <semantic:process name="TestDataStore" id="Process_ID-d1fb61d1-7adb-11e9-74db-069646171c32">
+        <semantic:dataStoreReference dataStoreRef="ID-f701d630-7adb-11e9-74db-069646171c32" name="Data store" id="Reference_ID-f701d630-7adb-11e9-74db-069646171c32"/>
+        <semantic:task name="Task" id="ID-f701d632-7adb-11e9-74db-069646171c32">
+            <semantic:ioSpecification>
+                <semantic:dataInput id="DataInput_ID-f701d632-7adb-11e9-74db-069646171c32"/>
+                <semantic:inputSet>
+                    <semantic:dataInputRefs>DataInput_ID-f701d632-7adb-11e9-74db-069646171c32</semantic:dataInputRefs>
+                </semantic:inputSet>
+                <semantic:outputSet/>
+            </semantic:ioSpecification>
+            <semantic:dataInputAssociation id="ID-f701d634-7adb-11e9-74db-069646171c32">
+                <semantic:sourceRef>Reference_ID-f701d630-7adb-11e9-74db-069646171c32</semantic:sourceRef>
+                <semantic:targetRef>DataInput_ID-f701d632-7adb-11e9-74db-069646171c32</semantic:targetRef>
+            </semantic:dataInputAssociation>
+        </semantic:task>
+    </semantic:process>
+    <bpmndi:BPMNDiagram name="TestDataStore" resolution="72.0" id="ID-d1fb61d1-7adb-11e9-74db-069646171c32">
+        <bpmndi:BPMNPlane bpmnElement="Process_ID-d1fb61d1-7adb-11e9-74db-069646171c32" id="Plane_ID-d1fb61d1-7adb-11e9-74db-069646171c32">
+            <bpmndi:BPMNShape bpmnElement="Reference_ID-f701d630-7adb-11e9-74db-069646171c32" id="Shape_Reference_ID-f701d630-7adb-11e9-74db-069646171c32">
+                <dc:Bounds x="556.44" y="85.04" width="49.32" height="56.69"/>
+                <bpmndi:BPMNLabel labelStyle="ArisFontStyleSheet_0_d7b815f4-04df-4971-8f01-03fe21c67159">
+                    <dc:Bounds x="608.6" y="107.72" width="43.37" height="11.62"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="ID-f701d632-7adb-11e9-74db-069646171c32" id="Shape_ID-f701d632-7adb-11e9-74db-069646171c32">
+                <dc:Bounds x="344.69" y="170.08" width="104.31" height="64.06"/>
+                <bpmndi:BPMNLabel labelStyle="ArisFontStyleSheet_0_d7b815f4-04df-4971-8f01-03fe21c67159">
+                    <dc:Bounds x="386.93" y="196.44" width="20.13" height="11.62"/>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge bpmnElement="ID-f701d634-7adb-11e9-74db-069646171c32" id="Edge_ID-f701d634-7adb-11e9-74db-069646171c32">
+                <di:waypoint x="556.44" y="113.39"/>
+                <di:waypoint x="474.24" y="113.39"/>
+                <di:waypoint x="474.24" y="202.11"/>
+                <di:waypoint x="449.01" y="202.11"/>
+            </bpmndi:BPMNEdge>
+        </bpmndi:BPMNPlane>
+        <bpmndi:BPMNLabelStyle id="ArisFontStyleSheet_0_d7b815f4-04df-4971-8f01-03fe21c67159">
+            <dc:Font name="Arial" size="11.0" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
+        </bpmndi:BPMNLabelStyle>
+    </bpmndi:BPMNDiagram>
+</semantic:definitions>

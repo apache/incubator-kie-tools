@@ -40,7 +40,7 @@ public class Exceptions {
         try {
             return supplier.get();
         } catch (Exception e) {
-            LOGGER.info("Exception swallowed", e);
+            LOGGER.debug("Exception swallowed", e.getMessage());
             return defaultReturn;
         }
     }

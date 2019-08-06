@@ -42,7 +42,7 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class DefinitionResolverTest {
 
-    private static final String ID = "ID";
+    private static final String ID = "PARENT_ID";
 
     @Mock
     private Definitions definitions;

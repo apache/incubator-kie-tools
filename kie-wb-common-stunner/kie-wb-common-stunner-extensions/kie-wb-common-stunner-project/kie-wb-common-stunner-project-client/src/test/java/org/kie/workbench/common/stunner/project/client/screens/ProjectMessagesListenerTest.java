@@ -177,6 +177,7 @@ public class ProjectMessagesListenerTest {
         projectMessagesListener.clearMessages(mock(AbstractNotification.class));
         verify(unpublishMessagesEvent).fire(eventCaptor.capture());
         assertEquals(eventCaptor.getValue().getMessageType(), ProjectMessagesListener.MESSAGE_TYPE + PATH);
+        assertEquals(eventCaptor.getValue().isShowSystemConsole(), false);
     }
 
     @Test

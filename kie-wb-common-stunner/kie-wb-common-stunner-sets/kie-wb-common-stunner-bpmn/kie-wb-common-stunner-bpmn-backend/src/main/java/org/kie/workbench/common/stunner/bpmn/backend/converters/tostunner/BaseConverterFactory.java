@@ -27,6 +27,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.proces
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.processes.BaseSubProcessConverter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.PropertyReaderFactory;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.tasks.BaseTaskConverter;
+import org.kie.workbench.common.stunner.core.marshaller.MarshallingRequest;
 
 public abstract class BaseConverterFactory {
 
@@ -34,7 +35,7 @@ public abstract class BaseConverterFactory {
     protected final TypedFactoryManager factoryManager;
     protected final PropertyReaderFactory propertyReaderFactory;
 
-    private final EdgeConverter edgeConverter;
+    private final EdgeConverterManager edgeConverter;
 
     private final FlowElementConverter flowElementConverter;
     private final StartEventConverter startEventConverter;
@@ -51,22 +52,26 @@ public abstract class BaseConverterFactory {
         this.factoryManager = factoryManager;
         this.propertyReaderFactory = propertyReaderFactory;
 
+        final MarshallingRequest.Mode mode = definitionResolver.getMode();
         this.flowElementConverter = new FlowElementConverter(this);
 
-        this.startEventConverter = new StartEventConverter(factoryManager, propertyReaderFactory);
-        this.intermediateCatchEventConverter = new IntermediateCatchEventConverter(factoryManager, propertyReaderFactory);
-        this.intermediateThrowEventConverter = new IntermediateThrowEventConverter(factoryManager, propertyReaderFactory);
-        this.endEventConverter = new EndEventConverter(factoryManager, propertyReaderFactory);
+        this.startEventConverter = new StartEventConverter(factoryManager, propertyReaderFactory,
+                                                           mode);
+        this.intermediateCatchEventConverter = new IntermediateCatchEventConverter(factoryManager,
+                                                                                   propertyReaderFactory, mode);
+        this.intermediateThrowEventConverter = new IntermediateThrowEventConverter(factoryManager,
+                                                                                   propertyReaderFactory, mode);
+        this.endEventConverter = new EndEventConverter(factoryManager, propertyReaderFactory, mode);
         this.laneConverter = new LaneConverter(factoryManager, propertyReaderFactory);
-        this.gatewayConverter = new GatewayConverter(factoryManager, propertyReaderFactory);
-        this.edgeConverter = new EdgeConverter(factoryManager, propertyReaderFactory);
+        this.gatewayConverter = new GatewayConverter(factoryManager, propertyReaderFactory, mode);
+        this.edgeConverter = new EdgeConverterManager(factoryManager, propertyReaderFactory, mode);
     }
 
     public FlowElementConverter flowElementConverter() {
         return flowElementConverter;
     }
 
-    public EdgeConverter edgeConverter() {
+    public EdgeConverterManager edgeConverter() {
         return edgeConverter;
     }
 
@@ -104,5 +109,9 @@ public abstract class BaseConverterFactory {
 
     public ProcessPostConverter newProcessPostConverter() {
         return new ProcessPostConverter();
+    }
+
+    public DefinitionResolver getDefinitionResolver() {
+        return definitionResolver;
     }
 }

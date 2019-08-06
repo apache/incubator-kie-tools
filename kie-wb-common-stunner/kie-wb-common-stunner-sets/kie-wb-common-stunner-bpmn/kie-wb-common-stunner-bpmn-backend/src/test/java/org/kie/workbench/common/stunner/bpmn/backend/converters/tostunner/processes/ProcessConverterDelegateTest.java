@@ -16,28 +16,39 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.processes;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.Bpmn2Factory;
+import org.eclipse.bpmn2.DataObject;
 import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.FlowElement;
 import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.Lane;
 import org.eclipse.bpmn2.LaneSet;
+import org.eclipse.bpmn2.ManualTask;
 import org.eclipse.bpmn2.RootElement;
+import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.Task;
 import org.eclipse.bpmn2.di.BPMNDiagram;
+import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.di.BPMNPlane;
+import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.bpmn2.impl.LaneImpl;
+import org.eclipse.dd.dc.Bounds;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.stunner.bpmn.BPMNDefinitionSet;
 import org.kie.workbench.common.stunner.bpmn.backend.BPMNTestDefinitionFactory;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.Result;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.TypedFactoryManager;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.BaseConverterFactory;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.BpmnNode;
@@ -47,10 +58,14 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.proper
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.PropertyReaderFactory;
 import org.kie.workbench.common.stunner.core.backend.StunnerTestingGraphBackendAPI;
 import org.kie.workbench.common.stunner.core.graph.impl.NodeImpl;
+import org.kie.workbench.common.stunner.core.marshaller.MarshallingMessage;
+import org.kie.workbench.common.stunner.core.marshaller.MarshallingMessageKeys;
+import org.kie.workbench.common.stunner.core.validation.Violation;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -94,7 +109,7 @@ public class ProcessConverterDelegateTest {
         when(definitions.getRootElements()).thenReturn(rootElements);
         when(definitions.getDiagrams()).thenReturn(diagrams);
         when(definitions.getRelationships()).thenReturn(Collections.emptyList());
-
+        when(plane.getPlaneElement()).thenReturn(new ArrayList<>());
         definitionResolver = new DefinitionResolver(definitions, Collections.emptyList());
         StunnerTestingGraphBackendAPI api = StunnerTestingGraphBackendAPI.build(BPMNDefinitionSet.class,
                                                                                 new BPMNTestDefinitionFactory());
@@ -104,6 +119,67 @@ public class ProcessConverterDelegateTest {
                                                          propertyReaderFactory,
                                                          definitionResolver,
                                                          factory);
+    }
+
+    @Test
+    public void testConvertEdges() {
+        Task task1 = mockTask("1");
+        Task task2 = mockTask("2");
+        BpmnNode task1Node = mockTaskNode(task1);
+        BpmnNode task2Node = mockTaskNode(task2);
+        SequenceFlow sequenceFlow = mockSequenceFlow("seq1", task1, task2);
+        List<BaseElement> elements = Arrays.asList(sequenceFlow, task1, task2);
+
+        //ignored because there the tasks are not on the nodes map
+        assertFalse(converterDelegate.convertEdges(parentNode, elements, new HashMap<>()).value());
+
+        //convert with all nodes
+        Map<String, BpmnNode> nodes = new Maps.Builder<String, BpmnNode>().put(task1.getId(), task1Node).put(task2.getId(), task2Node).build();
+        assertTrue(converterDelegate.convertEdges(parentNode, elements, nodes).value());
+    }
+
+    private BpmnNode.Simple mockTaskNode(Task task) {
+        BPMNShape shape = mock(BPMNShape.class);
+        when(shape.getBounds()).thenReturn(mock(Bounds.class));
+        plane.getPlaneElement().add(shape);
+        when(shape.getBpmnElement()).thenReturn(task);
+        return new BpmnNode.Simple(new NodeImpl<>(task.getId()), basePropertyReader);
+    }
+
+    private SequenceFlow mockSequenceFlow(String id, FlowNode source, FlowNode target) {
+        SequenceFlow sequenceFlow = Bpmn2Factory.eINSTANCE.createSequenceFlow();
+        sequenceFlow.setSourceRef(source);
+        sequenceFlow.setTargetRef(target);
+        sequenceFlow.setId(id);
+
+        BPMNEdge shape = mock(BPMNEdge.class);
+        when(shape.getWaypoint()).thenReturn(Collections.emptyList());
+        plane.getPlaneElement().add(shape);
+        when(shape.getBpmnElement()).thenReturn(sequenceFlow);
+        return sequenceFlow;
+    }
+
+    @Test
+    public void testConvertEdgesIgnoredNonEdgeElement() {
+        Map<String, BpmnNode> nodes = new HashMap<>();
+        List<BaseElement> elements = Arrays.asList(mockTask("1"));
+        assertFalse(converterDelegate.convertEdges(parentNode, elements, nodes).value());
+    }
+
+    @Test
+    public void testConvertUnsupportedChildNodes() {
+        List<LaneSet> laneSets = Collections.emptyList();
+        //adding 2 supported and 2 unsupported elements
+        List<FlowElement> flowElements = Arrays.asList(mockTask("1"),
+                                                       mockTask("2"),
+                                                       mockUnsupportedTask("3"),
+                                                       mockUnsupportedDataObject("4"));
+
+        Result<Map<String, BpmnNode>> result = converterDelegate.convertChildNodes(parentNode, flowElements, laneSets);
+        List<MarshallingMessage> messages = result.messages();
+        //check one message per unsupported element
+        assertEquals(2, messages.size());
+        assertTrue(messages.stream().map(MarshallingMessage::getViolationType).allMatch(Violation.Type.WARNING::equals));
     }
 
     @Test
@@ -143,7 +219,8 @@ public class ProcessConverterDelegateTest {
                                                        task3_1_1_2_1, task3_1_2_1, task3_2_1, task3_2_2);
         List<LaneSet> laneSets = Arrays.asList(laneSet1, laneSet2);
 
-        Map<String, BpmnNode> nodes = converterDelegate.convertChildNodes(parentNode, flowElements, laneSets);
+        Result<Map<String, BpmnNode>> result = converterDelegate.convertChildNodes(parentNode, flowElements, laneSets);
+        Map<String, BpmnNode> nodes = result.value();
         assertEquals(10, nodes.size());
 
         assertEquals(9, parentNode.getChildren().size());
@@ -173,6 +250,13 @@ public class ProcessConverterDelegateTest {
         BpmnNode lane3_2Node = getChildById(parentNode, lane3_2.getId());
         assertHasChildren(lane3_2Node);
         assertHasChildren(lane3_2Node, task3_2_1.getId(), task3_2_2.getId());
+
+        //assert messages for converted lane sets
+        List<MarshallingMessage> messages = result.messages();
+        assertEquals(4, messages.size());
+        assertTrue(messages.stream()
+                           .map(MarshallingMessage::getMessageKey)
+                           .allMatch(MarshallingMessageKeys.childLaneSetConverted::equals));
     }
 
     private static void assertHasChildren(BpmnNode bpmnNode, String... nodeIds) {
@@ -187,6 +271,18 @@ public class ProcessConverterDelegateTest {
         Task task = Bpmn2Factory.eINSTANCE.createTask();
         task.setId(id);
         return task;
+    }
+
+    private static Task mockUnsupportedTask(String id) {
+        ManualTask task = Bpmn2Factory.eINSTANCE.createManualTask();
+        task.setId(id);
+        return task;
+    }
+
+    private static DataObject mockUnsupportedDataObject(String id) {
+        DataObject element = Bpmn2Factory.eINSTANCE.createDataObject();
+        element.setId(id);
+        return element;
     }
 
     private static LaneSet mockLaneSet(String name, Lane... children) {

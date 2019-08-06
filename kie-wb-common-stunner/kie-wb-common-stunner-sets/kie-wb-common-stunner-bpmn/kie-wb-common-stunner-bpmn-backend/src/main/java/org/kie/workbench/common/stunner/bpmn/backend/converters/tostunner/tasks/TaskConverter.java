@@ -44,11 +44,13 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.UserTaskEx
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.marshaller.MarshallingRequest.Mode;
 
 public class TaskConverter extends BaseTaskConverter<UserTask, UserTaskExecutionSet> {
 
-    public TaskConverter(TypedFactoryManager factoryManager, PropertyReaderFactory propertyReaderFactory) {
-        super(factoryManager, propertyReaderFactory);
+    public TaskConverter(TypedFactoryManager factoryManager, PropertyReaderFactory propertyReaderFactory,
+                         Mode mode) {
+        super(factoryManager, propertyReaderFactory, mode);
     }
 
     @Override

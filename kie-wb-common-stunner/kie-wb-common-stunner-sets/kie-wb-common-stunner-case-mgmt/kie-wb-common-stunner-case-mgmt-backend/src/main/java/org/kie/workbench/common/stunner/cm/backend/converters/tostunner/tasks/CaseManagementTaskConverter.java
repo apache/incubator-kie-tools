@@ -45,11 +45,12 @@ import org.kie.workbench.common.stunner.cm.definition.property.task.UserTaskExec
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.marshaller.MarshallingRequest;
 
 public class CaseManagementTaskConverter extends BaseTaskConverter<UserTask, UserTaskExecutionSet> {
 
     public CaseManagementTaskConverter(TypedFactoryManager factoryManager, PropertyReaderFactory propertyReaderFactory) {
-        super(factoryManager, propertyReaderFactory);
+        super(factoryManager, propertyReaderFactory, MarshallingRequest.Mode.AUTO);
     }
 
     @Override

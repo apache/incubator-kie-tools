@@ -17,18 +17,21 @@
 package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.processes;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.FlowElement;
 import org.eclipse.bpmn2.Lane;
 import org.eclipse.bpmn2.LaneSet;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.Result;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.ResultComposer;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.TypedFactoryManager;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.BaseConverterFactory;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.BpmnEdge;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.BpmnNode;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.PropertyReaderFactory;
@@ -60,69 +63,93 @@ final class ProcessConverterDelegate {
         this.converterFactory = factory;
     }
 
-    Map<String, BpmnNode> convertChildNodes(
+    Result<Map<String, BpmnNode>> convertChildNodes(
             BpmnNode firstNode,
             List<FlowElement> flowElements,
             List<LaneSet> laneSets) {
 
-        Map<String, BpmnNode> freeFloatingNodes =
-                convertFlowElements(flowElements);
+        final Result<Map<String, BpmnNode>> flowElementsResult = convertFlowElements(flowElements);
+        final Map<String, BpmnNode> freeFloatingNodes = flowElementsResult.value();
 
-        freeFloatingNodes.values()
+        freeFloatingNodes
+                .values()
                 .forEach(n -> n.setParent(firstNode));
 
-        convertLaneSets(laneSets, freeFloatingNodes, firstNode);
+        final Result laneSetsResult = convertLaneSets(laneSets, freeFloatingNodes, firstNode);
 
-        return freeFloatingNodes;
+        return ResultComposer.compose(freeFloatingNodes, flowElementsResult, laneSetsResult);
     }
 
-    void convertEdges(BpmnNode processRoot, List<BaseElement> flowElements, Map<String, BpmnNode> nodes) {
-        flowElements.stream()
+    Result<Boolean> convertEdges(BpmnNode processRoot, List<BaseElement> flowElements, Map<String, BpmnNode> nodes) {
+
+        List<Result<BpmnEdge>> results = flowElements.stream()
                 .map(e -> converterFactory.edgeConverter().convertEdge(e, nodes))
                 .filter(Result::isSuccess)
-                .map(Result::value)
-                .forEach(processRoot::addEdge);
+                .collect(Collectors.toList());
+
+        boolean value = results.size() > 0 ?
+                results.stream()
+                        .map(Result::value)
+                        .filter(Objects::nonNull)
+                        .map(processRoot::addEdge)
+                        .allMatch(Boolean.TRUE::equals)
+                : false;
+
+        return ResultComposer.compose(value, results);
     }
 
-    private Map<String, BpmnNode> convertFlowElements(List<FlowElement> flowElements) {
-        LinkedHashMap<String, BpmnNode> result = new LinkedHashMap<>();
-
-        flowElements
+    private Result<Map<String, BpmnNode>> convertFlowElements(List<FlowElement> flowElements) {
+        final List<Result<BpmnNode>> results = flowElements
                 .stream()
                 .map(converterFactory.flowElementConverter()::convertNode)
-                .filter(Result::isSuccess)
+                .collect(Collectors.toList());
+
+        final Map<String, BpmnNode> resultMap = results.stream()
                 .map(Result::value)
-                .forEach(n -> result.put(n.value().getUUID(), n));
+                .filter(Objects::nonNull)
+                .collect(Collectors.toMap(n -> n.value().getUUID(), n -> n));
 
-        return result;
+        return ResultComposer.compose(resultMap, results);
     }
 
-    private void convertLaneSets(List<LaneSet> laneSets, Map<String, BpmnNode> freeFloatingNodes, BpmnNode firstDiagramNode) {
-        laneSets.forEach(laneSet -> convertLaneSet(laneSet, new ArrayList<>(), freeFloatingNodes, firstDiagramNode));
+    private Result convertLaneSets(List<LaneSet> laneSets, Map<String, BpmnNode> freeFloatingNodes, BpmnNode firstDiagramNode) {
+        final Result[] results = laneSets.stream()
+                .map(laneSet -> convertLaneSet(laneSet, new ArrayList<>(), freeFloatingNodes, firstDiagramNode))
+                .toArray(Result[]::new);
+        return ResultComposer.compose(laneSets, results);
     }
 
-    private void convertLane(Lane lane, List<Lane> parents, Map<String, BpmnNode> freeFloatingNodes, BpmnNode firstDiagramNode) {
+    private Result<BpmnNode> convertLane(Lane lane, List<Lane> parents, Map<String, BpmnNode> freeFloatingNodes, BpmnNode firstDiagramNode) {
         if (lane.getChildLaneSet() != null) {
             parents.add(lane);
-            convertLaneSet(lane.getChildLaneSet(), parents, freeFloatingNodes, firstDiagramNode);
+            Result<LaneSet> laneSetResult = convertLaneSet(lane.getChildLaneSet(), parents, freeFloatingNodes, firstDiagramNode);
             parents.removeIf(parent -> Objects.equals(parent.getId(), lane.getId()));
+            return ResultComposer.compose(null, laneSetResult);
         } else {
-            BpmnNode laneNode;
+            Result<BpmnNode> laneResult;
             if (!parents.isEmpty() && lane != parents.get(0)) {
-                laneNode = converterFactory.laneConverter().convert(lane, parents.get(0));
+                laneResult = converterFactory.laneConverter().convert(lane, parents.get(0));
             } else {
-                laneNode = converterFactory.laneConverter().convert(lane);
+                laneResult = converterFactory.laneConverter().convert(lane);
             }
-            laneNode.setParent(firstDiagramNode);
-            lane.getFlowNodeRefs().forEach(node -> freeFloatingNodes.get(node.getId()).setParent(laneNode));
+            final Optional<BpmnNode> value = Optional.ofNullable(laneResult.value());
+            value.ifPresent(laneNode -> laneNode.setParent(firstDiagramNode));
+            value.ifPresent(laneNode -> lane.getFlowNodeRefs()
+                    .forEach(node -> freeFloatingNodes.get(node.getId()).setParent(laneNode)));
+            return laneResult;
         }
     }
 
-    private void convertLaneSet(LaneSet laneSet, List<Lane> parents, Map<String, BpmnNode> freeFloatingNodes, BpmnNode firstDiagramNode) {
-        laneSet.getLanes().forEach(lane -> convertLane(lane, parents, freeFloatingNodes, firstDiagramNode));
+    private Result<LaneSet> convertLaneSet(LaneSet laneSet, List<Lane> parents, Map<String, BpmnNode> freeFloatingNodes,
+                                           BpmnNode firstDiagramNode) {
+        Result[] results = laneSet.getLanes()
+                .stream()
+                .map(lane -> convertLane(lane, parents, freeFloatingNodes, firstDiagramNode)).toArray(Result[]::new);
+
+        return ResultComposer.compose(laneSet, results);
     }
 
-    void postConvert(BpmnNode processRoot) {
-        converterFactory.newProcessPostConverter().postConvert(processRoot, definitionResolver);
+    Result<BpmnNode> postConvert(BpmnNode processRoot) {
+        return converterFactory.newProcessPostConverter().postConvert(processRoot, definitionResolver);
     }
 }

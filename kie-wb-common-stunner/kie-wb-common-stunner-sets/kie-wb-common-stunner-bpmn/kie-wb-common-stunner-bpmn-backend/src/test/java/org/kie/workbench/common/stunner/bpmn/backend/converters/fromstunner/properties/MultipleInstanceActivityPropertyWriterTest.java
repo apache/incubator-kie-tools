@@ -66,7 +66,7 @@ public class MultipleInstanceActivityPropertyWriterTest {
         activity.setId(ACTIVITY_ID);
         variableScope = mock(VariableScope.class);
         VariableScope.Variable variable = mock(VariableScope.Variable.class);
-        when(variableScope.lookup(PROPERTY_ID)).thenReturn(variable);
+        when(variableScope.lookup(PROPERTY_ID)).thenReturn(Optional.of(variable));
         Property property = mockProperty(PROPERTY_ID, ITEM_ID);
         when(variable.getTypedIdentifier()).thenReturn(property);
         writer = new MultipleInstanceActivityPropertyWriter(activity, variableScope);

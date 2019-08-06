@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.marshaller;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -73,7 +74,7 @@ public class MarshallingMessage implements DomainViolation {
         this.messageArguments = messageArguments;
     }
 
-    public static MarshallingMessageBuilder builder(){
+    public static MarshallingMessageBuilder builder() {
         return new MarshallingMessageBuilder();
     }
 
@@ -114,6 +115,10 @@ public class MarshallingMessage implements DomainViolation {
         public MarshallingMessageBuilder messageArguments(List<?> messageArguments) {
             this.messageArguments = messageArguments;
             return this;
+        }
+
+        public MarshallingMessageBuilder messageArguments(String... messageArguments) {
+            return this.messageArguments(Arrays.asList(messageArguments));
         }
 
         public MarshallingMessage build() {

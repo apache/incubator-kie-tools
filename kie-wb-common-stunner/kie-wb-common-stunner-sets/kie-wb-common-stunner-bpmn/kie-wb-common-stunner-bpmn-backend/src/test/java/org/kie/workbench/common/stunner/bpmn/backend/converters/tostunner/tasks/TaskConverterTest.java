@@ -16,9 +16,15 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.tasks;
 
+import org.eclipse.bpmn2.Bpmn2Factory;
+import org.eclipse.bpmn2.Task;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.Result;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.BpmnNode;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.TaskPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.UserTaskPropertyReader;
+import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
 import org.kie.workbench.common.stunner.bpmn.definition.property.assignee.Actors;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
@@ -31,7 +37,9 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.marshaller.MarshallingRequest;
 import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -39,9 +47,11 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public class TaskConverterTest extends BaseTaskConverterTest {
 
     private static final String NAME = "NAME";
@@ -128,13 +138,13 @@ public class TaskConverterTest extends BaseTaskConverterTest {
 
     @Override
     protected BaseTaskConverter createTaskConverter() {
-        return new TaskConverter(factoryManager, propertyReaderFactory);
+        return new TaskConverter(factoryManager, propertyReaderFactory, MarshallingRequest.Mode.AUTO);
     }
 
     @Test
     public void testConvertUserTaskMI() {
         when(userTaskPropertyReader.isMultipleInstance()).thenReturn(true);
-        BpmnNode node = tested.convert(userTask);
+        BpmnNode node = (BpmnNode) tested.convert(userTask).value();
         UserTask result = (UserTask) node.value().getContent().getDefinition();
         assertCommonValues(result);
         assertTrue(result.getExecutionSet().getIsMultipleInstance().getValue());
@@ -155,7 +165,7 @@ public class TaskConverterTest extends BaseTaskConverterTest {
         when(userTaskPropertyReader.getCollectionOutput()).thenReturn(null);
         when(userTaskPropertyReader.getDataOutput()).thenReturn(null);
         when(userTaskPropertyReader.getCompletionCondition()).thenReturn(null);
-        BpmnNode node = tested.convert(userTask);
+        BpmnNode node = (BpmnNode) tested.convert(userTask).value();
         UserTask result = (UserTask) node.value().getContent().getDefinition();
         assertCommonValues(result);
         assertFalse(result.getExecutionSet().getIsMultipleInstance().getValue());
@@ -186,6 +196,43 @@ public class TaskConverterTest extends BaseTaskConverterTest {
         assertEquals(ON_EXIT_ACTION, result.getExecutionSet().getOnExitAction().getValue());
         assertEquals(CONTENT, result.getExecutionSet().getContent().getValue());
         assertEquals(SLA_DUE_DATE, result.getExecutionSet().getSlaDueDate().getValue());
+    }
+
+    @Test
+    public void testConvertManualTask() {
+        testConvertToDefaultTask(Bpmn2Factory.eINSTANCE.createManualTask());
+    }
+
+    @Test
+    public void testConvertReceiveTask() {
+        testConvertToDefaultTask(Bpmn2Factory.eINSTANCE.createReceiveTask());
+    }
+
+    @Test
+    public void testConvertSendTask() {
+        testConvertToDefaultTask(Bpmn2Factory.eINSTANCE.createSendTask());
+    }
+
+    @Test
+    public void testConvertNoneTask() {
+        testConvertToDefaultTask(Bpmn2Factory.eINSTANCE.createTask());
+    }
+
+    private void testConvertToDefaultTask(Task task) {
+        TaskPropertyReader reader = mock(TaskPropertyReader.class);
+        when(propertyReaderFactory.of(task)).thenReturn(reader);
+
+        Node<View<NoneTask>, Edge> taskNode = mock(Node.class);
+        when(factoryManager.newNode(anyString(), eq(NoneTask.class))).thenReturn(taskNode);
+
+        View<NoneTask> taskContent = mock(View.class);
+        when(taskNode.getContent()).thenReturn(taskContent);
+        NoneTask taskDef = mock(NoneTask.class);
+        when(taskContent.getDefinition()).thenReturn(taskDef);
+
+        Result<BpmnNode> result = tested.convert(task);
+        verify(factoryManager).newNode(anyString(), eq(NoneTask.class));
+        assertTrue(result.value().value().getContent().getDefinition() instanceof NoneTask);
     }
 }
 

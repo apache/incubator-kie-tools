@@ -61,7 +61,8 @@ public class StartEventConverter {
                 .when(StartConditionalEvent.class, this::conditionalEvent)
                 .when(StartEscalationEvent.class, this::escalationEvent)
                 .when(StartCompensationEvent.class, this::compensationEvent)
-                .apply(node).value();
+                .apply(node)
+                .value();
     }
 
     private PropertyWriter noneEvent(Node<View<StartNoneEvent>, ?> n) {

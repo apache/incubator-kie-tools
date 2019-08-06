@@ -47,7 +47,8 @@ public class GatewayConverter {
                 .when(ExclusiveGateway.class, this::exclusive)
                 .when(InclusiveGateway.class, this::inclusive)
                 .when(EventGateway.class, this::event)
-                .apply(node).value();
+                .apply(node)
+                .value();
     }
 
     private PropertyWriter inclusive(Node<View<InclusiveGateway>, ?> n) {

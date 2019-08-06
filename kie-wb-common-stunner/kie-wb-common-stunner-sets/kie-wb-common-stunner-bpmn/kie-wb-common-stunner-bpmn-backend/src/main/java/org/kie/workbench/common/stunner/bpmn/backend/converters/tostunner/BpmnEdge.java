@@ -18,7 +18,7 @@ package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner;
 
 import java.util.List;
 
-import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.BasePropertyReader;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.PropertyReader;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
@@ -32,7 +32,7 @@ public interface BpmnEdge {
             BpmnNode source, Connection sourceConnection,
             List<Point2D> controlPoints,
             BpmnNode target, Connection targetConnection,
-            BasePropertyReader propertyReader) {
+            PropertyReader propertyReader) {
         return new BpmnEdge.Simple(edge, source, sourceConnection, controlPoints, target, targetConnection, propertyReader);
     }
 
@@ -54,9 +54,9 @@ public interface BpmnEdge {
         private final List<Point2D> controlPoints;
         private final BpmnNode target;
         private final Connection targetConnection;
-        private final BasePropertyReader propertyReader;
+        private final PropertyReader propertyReader;
 
-        private Simple(Edge<? extends View<?>, Node> edge, BpmnNode source, Connection sourceConnection, List<Point2D> controlPoints, BpmnNode target, Connection targetConnection, BasePropertyReader propertyReader) {
+        private Simple(Edge<? extends View<?>, Node> edge, BpmnNode source, Connection sourceConnection, List<Point2D> controlPoints, BpmnNode target, Connection targetConnection, PropertyReader propertyReader) {
             this.edge = edge;
             this.source = source;
             this.sourceConnection = sourceConnection;
@@ -95,7 +95,7 @@ public interface BpmnEdge {
             return false;
         }
 
-        public BasePropertyReader getPropertyReader() {
+        public PropertyReader getPropertyReader() {
             return propertyReader;
         }
     }

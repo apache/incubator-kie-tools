@@ -27,8 +27,11 @@ import org.eclipse.bpmn2.IntermediateThrowEvent;
 import org.eclipse.bpmn2.MessageEventDefinition;
 import org.eclipse.bpmn2.SignalEventDefinition;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.Match;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.Result;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.TypedFactoryManager;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.AbstractConverter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.BpmnNode;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.NodeConverter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.EventDefinitionReader;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.EventPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.PropertyReaderFactory;
@@ -53,18 +56,22 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.marshaller.MarshallingRequest.Mode;
 
-public class IntermediateThrowEventConverter {
+public class IntermediateThrowEventConverter extends AbstractConverter implements NodeConverter<IntermediateThrowEvent> {
 
     private final TypedFactoryManager factoryManager;
     private final PropertyReaderFactory propertyReaderFactory;
 
-    public IntermediateThrowEventConverter(TypedFactoryManager factoryManager, PropertyReaderFactory propertyReaderFactory) {
+    public IntermediateThrowEventConverter(TypedFactoryManager factoryManager,
+                                           PropertyReaderFactory propertyReaderFactory,
+                                           Mode mode) {
+        super(mode);
         this.factoryManager = factoryManager;
         this.propertyReaderFactory = propertyReaderFactory;
     }
 
-    public BpmnNode convert(IntermediateThrowEvent event) {
+    public Result<BpmnNode> convert(IntermediateThrowEvent event) {
         ThrowEventPropertyReader p = propertyReaderFactory.of(event);
         List<EventDefinition> eventDefinitions = p.getEventDefinitions();
         switch (eventDefinitions.size()) {
@@ -78,7 +85,8 @@ public class IntermediateThrowEventConverter {
                         .when(CompensateEventDefinition.class, e -> compensationEvent(event, e))
                         .missing(ErrorEventDefinition.class)
                         .missing(ConditionalEventDefinition.class)
-                        .apply(eventDefinitions.get(0)).value();
+                        .mode(getMode())
+                        .apply(eventDefinitions.get(0));
             default:
                 throw new UnsupportedOperationException("Multiple definitions not supported for intermediate throw event");
         }

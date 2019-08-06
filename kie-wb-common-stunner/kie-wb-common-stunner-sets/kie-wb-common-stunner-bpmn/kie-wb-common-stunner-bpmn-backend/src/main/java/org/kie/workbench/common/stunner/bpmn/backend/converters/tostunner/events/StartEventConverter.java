@@ -28,8 +28,11 @@ import org.eclipse.bpmn2.SignalEventDefinition;
 import org.eclipse.bpmn2.StartEvent;
 import org.eclipse.bpmn2.TimerEventDefinition;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.Match;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.Result;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.TypedFactoryManager;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.AbstractConverter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.BpmnNode;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.NodeConverter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.CatchEventPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.EventDefinitionReader;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.EventPropertyReader;
@@ -63,23 +66,26 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueD
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.marshaller.MarshallingRequest.Mode;
 
-public class StartEventConverter {
+public class StartEventConverter extends AbstractConverter implements NodeConverter<StartEvent> {
 
     private final TypedFactoryManager factoryManager;
     private final PropertyReaderFactory propertyReaderFactory;
 
-    public StartEventConverter(TypedFactoryManager factoryManager, PropertyReaderFactory propertyReaderFactory) {
+    public StartEventConverter(TypedFactoryManager factoryManager, PropertyReaderFactory propertyReaderFactory,
+                               Mode mode) {
+        super(mode);
         this.factoryManager = factoryManager;
         this.propertyReaderFactory = propertyReaderFactory;
     }
 
-    public BpmnNode convert(StartEvent event) {
+    public Result<BpmnNode> convert(StartEvent event) {
         CatchEventPropertyReader p = propertyReaderFactory.of(event);
         List<EventDefinition> eventDefinitions = p.getEventDefinitions();
         switch (eventDefinitions.size()) {
             case 0:
-                return noneEvent(event);
+                return Result.success(noneEvent(event));
             case 1:
                 return Match.of(EventDefinition.class, BpmnNode.class)
                         .when(SignalEventDefinition.class, e -> signalEvent(event, e))
@@ -89,7 +95,8 @@ public class StartEventConverter {
                         .when(ConditionalEventDefinition.class, e -> conditionalEvent(event, e))
                         .when(EscalationEventDefinition.class, e -> escalationEvent(event, e))
                         .when(CompensateEventDefinition.class, e -> compensationEvent(event, e))
-                        .apply(eventDefinitions.get(0)).value();
+                        .mode(getMode())
+                        .apply(eventDefinitions.get(0));
             default:
                 throw new UnsupportedOperationException("Multiple event definitions not supported for start event");
         }

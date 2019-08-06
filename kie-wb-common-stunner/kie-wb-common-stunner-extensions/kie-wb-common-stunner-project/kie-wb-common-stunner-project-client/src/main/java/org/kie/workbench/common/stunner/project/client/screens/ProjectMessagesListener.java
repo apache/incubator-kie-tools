@@ -109,6 +109,7 @@ public class ProjectMessagesListener {
     protected void clearMessages(AbstractNotification notification) {
         final UnpublishMessagesEvent unpublishMessagesEvent = new UnpublishMessagesEvent();
         unpublishMessagesEvent.setMessageType(getMessageType(getDiagramPath()));
+        unpublishMessagesEvent.setShowSystemConsole(false);
         this.unpublishMessagesEvent.fire(unpublishMessagesEvent);
     }
 }

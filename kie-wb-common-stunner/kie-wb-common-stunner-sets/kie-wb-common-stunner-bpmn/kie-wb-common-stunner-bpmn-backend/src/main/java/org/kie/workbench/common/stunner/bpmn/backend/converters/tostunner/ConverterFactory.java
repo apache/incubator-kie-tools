@@ -51,6 +51,6 @@ public class ConverterFactory
 
     @Override
     public TaskConverter taskConverter() {
-        return new TaskConverter(factoryManager, propertyReaderFactory);
+        return new TaskConverter(factoryManager, propertyReaderFactory, definitionResolver.getMode());
     }
 }

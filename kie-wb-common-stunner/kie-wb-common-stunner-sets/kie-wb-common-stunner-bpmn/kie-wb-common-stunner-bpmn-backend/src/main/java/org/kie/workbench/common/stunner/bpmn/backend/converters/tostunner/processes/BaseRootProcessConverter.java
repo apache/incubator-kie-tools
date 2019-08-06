@@ -21,6 +21,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.eclipse.bpmn2.Process;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.Result;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.ResultComposer;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.TypedFactoryManager;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.BaseConverterFactory;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.BpmnNode;
@@ -56,23 +58,24 @@ public abstract class BaseRootProcessConverter<D extends BPMNDiagram<S, P>,
                                                      factory);
     }
 
-    public BpmnNode convertProcess() {
+    public Result<BpmnNode> convertProcess() {
         Process process = delegate.definitionResolver.getProcess();
         String definitionsId = delegate.definitionResolver.getDefinitions().getId();
         BpmnNode processRoot = convertProcessNode(definitionsId, process);
 
-        Map<String, BpmnNode> nodes = delegate.convertChildNodes(processRoot,
-                                                                 process.getFlowElements(),
-                                                                 process.getLaneSets());
+        Result<Map<String, BpmnNode>> nodesResult = delegate.convertChildNodes(processRoot,
+                                                                             process.getFlowElements(),
+                                                                             process.getLaneSets());
+        Map<String, BpmnNode> nodes = nodesResult.value();
 
-        delegate.convertEdges(processRoot,
-                              Stream.concat(process.getFlowElements().stream(),
-                                            process.getArtifacts().stream()).collect(Collectors.toList()),
-                              nodes);
+        Result<Boolean> edgesResult = delegate.convertEdges(processRoot,
+                                                              Stream.concat(process.getFlowElements().stream(),
+                                                                            process.getArtifacts().stream()).collect(Collectors.toList()),
+                                                              nodes);
 
-        delegate.postConvert(processRoot);
+        Result<BpmnNode> postConvertResult = delegate.postConvert(processRoot);
 
-        return processRoot;
+        return ResultComposer.compose(processRoot, nodesResult, edgesResult, postConvertResult);
     }
 
     private BpmnNode convertProcessNode(String id, Process process) {

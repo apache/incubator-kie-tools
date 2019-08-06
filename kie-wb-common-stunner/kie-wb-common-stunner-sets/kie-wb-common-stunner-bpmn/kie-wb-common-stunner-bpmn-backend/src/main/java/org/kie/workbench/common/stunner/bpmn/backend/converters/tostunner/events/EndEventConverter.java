@@ -28,8 +28,11 @@ import org.eclipse.bpmn2.MessageEventDefinition;
 import org.eclipse.bpmn2.SignalEventDefinition;
 import org.eclipse.bpmn2.TerminateEventDefinition;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.Match;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.Result;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.TypedFactoryManager;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.AbstractConverter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.BpmnNode;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.NodeConverter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.EventDefinitionReader;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.EventPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.PropertyReaderFactory;
@@ -59,23 +62,26 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.marshaller.MarshallingRequest.Mode;
 
-public class EndEventConverter {
+public class EndEventConverter extends AbstractConverter implements NodeConverter<EndEvent> {
 
     private final TypedFactoryManager factoryManager;
     private final PropertyReaderFactory propertyReaderFactory;
 
-    public EndEventConverter(TypedFactoryManager factoryManager, PropertyReaderFactory propertyReaderFactory) {
+    public EndEventConverter(TypedFactoryManager factoryManager, PropertyReaderFactory propertyReaderFactory,
+                             Mode mode) {
+        super(mode);
         this.factoryManager = factoryManager;
         this.propertyReaderFactory = propertyReaderFactory;
     }
 
-    public BpmnNode convert(EndEvent event) {
+    public Result<BpmnNode> convert(EndEvent event) {
         ThrowEventPropertyReader p = propertyReaderFactory.of(event);
         List<EventDefinition> eventDefinitions = p.getEventDefinitions();
         switch (eventDefinitions.size()) {
             case 0:
-                return endNoneEvent(event);
+                return Result.success(endNoneEvent(event));
             case 1:
                 return Match.of(EventDefinition.class, BpmnNode.class)
                         .when(TerminateEventDefinition.class, e -> terminateEndEvent(event, e))
@@ -85,7 +91,8 @@ public class EndEventConverter {
                         .when(EscalationEventDefinition.class, e -> escalationEventDefinition(event, e))
                         .when(CompensateEventDefinition.class, e -> compensationEventDefinition(event, e))
                         .missing(CancelEventDefinition.class)
-                        .apply(eventDefinitions.get(0)).value();
+                        .mode(getMode())
+                        .apply(eventDefinitions.get(0));
             default:
                 throw new UnsupportedOperationException("Multiple event definitions not supported for end event");
         }
