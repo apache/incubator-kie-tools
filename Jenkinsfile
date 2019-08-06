@@ -54,6 +54,7 @@ pipeline {
         }
         always {
             junit '**/**/junit.xml'
+            junit '**/**/vscode-it-test-report.xml'
             cleanWs()
         }
     }
