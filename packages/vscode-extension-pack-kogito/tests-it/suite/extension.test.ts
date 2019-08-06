@@ -19,13 +19,15 @@ import * as assert from "assert";
 import * as __path from "path";
 import { afterEach } from "mocha";
 
-const workspace = __path.resolve(__dirname, "../../test-workspace");
+const NONE = "";
+
+const testWorkspace = __path.resolve(__dirname, "../../test-workspace");
 
 const delay = (ms: number) => {
   return new Promise(res => setTimeout(res, ms));
 };
 
-function waitForActiveTextEditorChanges(length: number) {
+function editorStackWithLength(length: number) {
   const openedEditors: string[] = [];
 
   return new Promise(resolve => {
@@ -33,7 +35,7 @@ function waitForActiveTextEditorChanges(length: number) {
       if (textEditor) {
         openedEditors.push(textEditor.document.fileName);
       } else {
-        openedEditors.push("");
+        openedEditors.push(NONE);
       }
 
       if (openedEditors.length === length) {
@@ -45,7 +47,11 @@ function waitForActiveTextEditorChanges(length: number) {
 }
 
 function open(txtFile: string) {
-  vscode.commands.executeCommand("vscode.open", vscode.Uri.file(txtFile));
+  return vscode.commands.executeCommand("vscode.open", vscode.Uri.file(txtFile));
+}
+
+function openForTheFirstTime(txtFile: string) {
+  return vscode.commands.executeCommand("vscode.open", vscode.Uri.file(txtFile)).then(() => delay(500));
 }
 
 suite("vscode extension :: integration tests", () => {
@@ -53,26 +59,40 @@ suite("vscode extension :: integration tests", () => {
     await vscode.commands.executeCommand("workbench.action.closeAllEditors");
   });
 
-  test("open dmn file", async () => {
-    const textEditorOpenedAndClosed = waitForActiveTextEditorChanges(2);
+  test("open text file", async () => {
+    const editorStack = editorStackWithLength(1);
 
-    const dmnFile = `${workspace}/demo.dmn`;
-    open(dmnFile);
+    const txtFile = `${testWorkspace}/example.txt`;
+    await open(txtFile);
 
-    const expt  = await textEditorOpenedAndClosed;
-
-    assert.deepStrictEqual([dmnFile, ""], expt);
-
-    await delay(1000);
+    assert.deepStrictEqual([txtFile], await editorStack);
+    assert.strictEqual(vscode.window.activeTextEditor.document.uri.path, txtFile);
+    assert.strictEqual(vscode.window.visibleTextEditors.length, 1);
   });
 
-  test("open text file", async () => {
-    const textEditorOpened = waitForActiveTextEditorChanges(1);
+  test("open custom editor", async () => {
+    const editorStack = editorStackWithLength(2);
 
-    const txtFile = `${workspace}/example.txt`;
-    open(txtFile);
+    const dmnFile = `${testWorkspace}/demo.dmn`;
+    await openForTheFirstTime(dmnFile);
 
-    assert.deepStrictEqual([txtFile], await textEditorOpened);
-    console.info("editor opened correctly");
+    assert.deepStrictEqual([dmnFile, NONE], await editorStack);
+    assert.strictEqual(vscode.window.activeTextEditor, undefined);
+    assert.strictEqual(vscode.window.visibleTextEditors.length, 0);
+  });
+
+  test("reopen custom editor", async () => {
+    const editorStack = editorStackWithLength(6);
+
+    const dmnFile = `${testWorkspace}/demo.dmn`;
+    const txtFile = `${testWorkspace}/example.txt`;
+
+    await openForTheFirstTime(dmnFile);
+    await open(txtFile);
+    await open(dmnFile);
+
+    assert.deepStrictEqual([dmnFile, NONE, txtFile, NONE, dmnFile, NONE], await editorStack);
+    assert.strictEqual(vscode.window.activeTextEditor, undefined);
+    assert.strictEqual(vscode.window.visibleTextEditors.length, 0);
   });
 });
