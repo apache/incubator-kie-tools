@@ -26,12 +26,14 @@ import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConsta
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DMNDocumentationI18n_DmnModel;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DMNDocumentationI18n_DmnModelDocumentation;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DMNDocumentationI18n_DrdComponents;
+import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DMNDocumentationI18n_ExternalLinks;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DMNDocumentationI18n_GeneratedBy;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DMNDocumentationI18n_GeneratedFrom;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DMNDocumentationI18n_GeneratedOn;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DMNDocumentationI18n_Namespace;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DMNDocumentationI18n_NoDRDs;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DMNDocumentationI18n_NoDataTypes;
+import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DMNDocumentationI18n_NoExternalLinks;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DMNDocumentationI18n_TableOfContents;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
@@ -61,6 +63,10 @@ public class DMNDocumentationI18n {
 
     private String diagramDoesNotHaveElements;
 
+    private String noExternalLinks;
+
+    private String externalLinks;
+
     @JsOverlay
     public static DMNDocumentationI18n create(final TranslationService translationService) {
 
@@ -78,6 +84,8 @@ public class DMNDocumentationI18n {
         i18n.noDataTypes = translationService.format(DMNDocumentationI18n_NoDataTypes);
         i18n.noDRDs = translationService.format(DMNDocumentationI18n_NoDRDs);
         i18n.diagramDoesNotHaveElements = translationService.format(DMNDocumentationI18n_DiagramDoesNotHaveElements);
+        i18n.noExternalLinks = translationService.format(DMNDocumentationI18n_NoExternalLinks);
+        i18n.externalLinks = translationService.format(DMNDocumentationI18n_ExternalLinks);
 
         return i18n;
     }
@@ -140,5 +148,15 @@ public class DMNDocumentationI18n {
     @JsOverlay
     public final String getDiagramDoesNotHaveElements() {
         return diagramDoesNotHaveElements;
+    }
+
+    @JsOverlay
+    public final String getNoExternalLinks() {
+        return noExternalLinks;
+    }
+
+    @JsOverlay
+    public final String getExternalLinks() {
+        return externalLinks;
     }
 }

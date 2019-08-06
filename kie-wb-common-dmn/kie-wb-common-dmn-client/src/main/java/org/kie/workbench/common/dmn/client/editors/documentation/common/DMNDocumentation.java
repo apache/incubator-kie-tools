@@ -157,7 +157,7 @@ public class DMNDocumentation implements DiagramDocumentation {
 
     @JsOverlay
     @SuppressWarnings("unchecked")
-    private static <T> Array<T> asJsArray(final List<T> javaList) {
+    static <T> Array<T> asJsArray(final List<T> javaList) {
         final Array<T> jsArray = new Array<>();
         javaList.forEach(jsArray::push);
         return jsArray;

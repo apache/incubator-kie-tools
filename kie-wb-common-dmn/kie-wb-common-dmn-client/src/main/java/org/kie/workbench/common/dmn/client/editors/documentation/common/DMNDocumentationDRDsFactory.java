@@ -31,6 +31,7 @@ import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.HasVariable;
 import org.kie.workbench.common.dmn.api.definition.model.DRGElement;
+import org.kie.workbench.common.dmn.api.property.dmn.DMNExternalLink;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.client.common.BoxedExpressionHelper;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionContainerGrid;
@@ -123,8 +124,21 @@ public class DMNDocumentationDRDsFactory {
         final String description = getDescription(drgElement);
         final String type = getType(drgElement);
         final String image = getNodeImage(diagram, node);
+        final List<DMNDocumentationExternalLink> externalLinks = getExternalLinks(drgElement);
+        return DMNDocumentationDRD.create(name, type, description, image, externalLinks, !externalLinks.isEmpty());
+    }
 
-        return DMNDocumentationDRD.create(name, type, description, image);
+    private List<DMNDocumentationExternalLink> getExternalLinks(final DRGElement drgElement) {
+        final List<DMNDocumentationExternalLink> list = new ArrayList<>();
+
+        if (!Objects.isNull(drgElement.getLinksHolder())
+                && !Objects.isNull(drgElement.getLinksHolder().getValue())) {
+            for (final DMNExternalLink link : drgElement.getLinksHolder().getValue().getLinks()) {
+                list.add(DMNDocumentationExternalLink.create(link.getDescription(), link.getUrl()));
+            }
+        }
+
+        return list;
     }
 
     private String getType(final DRGElement drgElement) {

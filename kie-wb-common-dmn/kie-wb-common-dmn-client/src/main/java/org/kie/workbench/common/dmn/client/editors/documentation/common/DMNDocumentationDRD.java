@@ -16,9 +16,14 @@
 
 package org.kie.workbench.common.dmn.client.editors.documentation.common;
 
+import java.util.List;
+
+import elemental2.core.Array;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
+
+import static org.kie.workbench.common.dmn.client.editors.documentation.common.DMNDocumentation.asJsArray;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
 public class DMNDocumentationDRD {
@@ -31,6 +36,10 @@ public class DMNDocumentationDRD {
 
     private String drdBoxedExpressionImage;
 
+    private Array<DMNDocumentationExternalLink> drdExternalLinks;
+
+    private boolean hasExternalLinks;
+
     private DMNDocumentationDRD() {
 
     }
@@ -39,7 +48,9 @@ public class DMNDocumentationDRD {
     public static DMNDocumentationDRD create(final String drdName,
                                              final String drdType,
                                              final String drdDescription,
-                                             final String drdBoxedExpressionImage) {
+                                             final String drdBoxedExpressionImage,
+                                             final List<DMNDocumentationExternalLink> externalLinks,
+                                             final boolean hasExternalLinks) {
 
         final DMNDocumentationDRD drd = new DMNDocumentationDRD();
 
@@ -47,6 +58,8 @@ public class DMNDocumentationDRD {
         drd.drdType = drdType;
         drd.drdDescription = drdDescription;
         drd.drdBoxedExpressionImage = drdBoxedExpressionImage;
+        drd.drdExternalLinks = asJsArray(externalLinks);
+        drd.hasExternalLinks = hasExternalLinks;
 
         return drd;
     }
@@ -69,5 +82,15 @@ public class DMNDocumentationDRD {
     @JsOverlay
     public final String getDrdBoxedExpressionImage() {
         return drdBoxedExpressionImage;
+    }
+
+    @JsOverlay
+    public final Array<DMNDocumentationExternalLink> getDrdExternalLinks() {
+        return drdExternalLinks;
+    }
+
+    @JsOverlay
+    public final boolean getHasExternalLinks() {
+        return hasExternalLinks;
     }
 }

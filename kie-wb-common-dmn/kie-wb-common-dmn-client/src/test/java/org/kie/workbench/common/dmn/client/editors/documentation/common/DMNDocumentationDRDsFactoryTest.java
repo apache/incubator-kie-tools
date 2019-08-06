@@ -29,7 +29,9 @@ import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.model.Decision;
 import org.kie.workbench.common.dmn.api.definition.model.InformationItemPrimary;
 import org.kie.workbench.common.dmn.api.definition.model.InputData;
+import org.kie.workbench.common.dmn.api.property.dmn.DMNExternalLink;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
+import org.kie.workbench.common.dmn.api.property.dmn.DocumentationLinksHolder;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.client.common.BoxedExpressionHelper;
@@ -49,6 +51,8 @@ import org.mockito.Mock;
 import static freemarker.template.utility.Collections12.singletonList;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType.BOOLEAN;
 import static org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType.UNDEFINED;
 import static org.kie.workbench.common.dmn.client.editors.documentation.common.DMNDocumentationDRDsFactory.NONE;
@@ -122,6 +126,10 @@ public class DMNDocumentationDRDsFactoryTest {
         final InformationItemPrimary variable1 = new InformationItemPrimary();
         final QName typeRef1 = BOOLEAN.asQName();
         final String image1 = "<image1>";
+        final DMNExternalLink externalLink = new DMNExternalLink();
+        final DocumentationLinksHolder linksHolder = new DocumentationLinksHolder();
+        linksHolder.getValue().addLink(externalLink);
+        drgElement2.setLinksHolder(linksHolder);
 
         when(expressionHelper.getDefinition(node1)).thenReturn(drgElement1);
         when(expressionHelper.getDefinition(node2)).thenReturn(drgElement2);
@@ -154,6 +162,9 @@ public class DMNDocumentationDRDsFactoryTest {
         assertEquals(UNDEFINED.getName(), documentationDRD2.getDrdType());
         assertEquals(name2, documentationDRD2.getDrdName());
         assertEquals(NONE, documentationDRD2.getDrdBoxedExpressionImage());
+
+        assertFalse(documentationDRD1.getHasExternalLinks());
+        assertTrue(documentationDRD2.getHasExternalLinks());
 
         verify(factory).setExpressionContainerGrid(diagram, nodeUUID2);
     }

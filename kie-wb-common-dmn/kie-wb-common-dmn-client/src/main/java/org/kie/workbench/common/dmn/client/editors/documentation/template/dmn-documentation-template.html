@@ -64,6 +64,10 @@
             color: #717171;
         }
 
+        .kie-dmn-documentation ul.data-types li span.normal {
+            font-weight: normal;
+        }
+
         .kie-dmn-documentation ul.data-types li:last-child {
             border-bottom: 1px solid #E5EEF5;
         }
@@ -111,6 +115,10 @@
 
         .kie-dmn-documentation .pagebreak {
             border-bottom: 1px solid #DDDDDD;
+        }
+
+        .kie-dmn-documentation .external-links-title {
+            font-weight: bold;
         }
 
         @media screen {
@@ -224,6 +232,20 @@
             {{/drdType}}
         </h4>
         <p>{{drdDescription}}</p>
+        <ul class="data-types">
+            {{#hasExternalLinks}}
+            <p class="external-links-title">{{i18n.externalLinks}}</p>
+            {{/hasExternalLinks}}
+            {{#drdExternalLinks}}
+            <li style="padding-left: calc(30px * {{level}})">
+                <span class="normal">{{description}}</span>
+                <a href="{{url}}">({{url}})</a>
+            </li>
+            {{/drdExternalLinks}}
+            {{^drdExternalLinks}}
+            <li class="no-results">{{i18n.noExternalLinks}}</li>
+            {{/drdExternalLinks}}
+        </ul>
         {{#drdBoxedExpressionImage}}
         <img src="{{drdBoxedExpressionImage}}" alt="{{drdName}}" class="diagram-image"/>
         {{/drdBoxedExpressionImage}}

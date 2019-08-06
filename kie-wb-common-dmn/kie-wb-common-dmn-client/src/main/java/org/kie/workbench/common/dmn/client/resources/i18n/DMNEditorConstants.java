@@ -401,6 +401,12 @@ public class DMNEditorConstants {
     public static final String DMNDocumentationI18n_NoDataTypes = "DMNDocumentationI18n.NoDataTypes";
 
     @TranslationKey(defaultValue = "")
+    public static final String DMNDocumentationI18n_NoExternalLinks = "DMNDocumentationI18n.NoExternalLinks";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DMNDocumentationI18n_ExternalLinks = "DMNDocumentationI18n.ExternalLinks";
+
+    @TranslationKey(defaultValue = "")
     public static final String DMNDocumentationI18n_NoDRDs = "DMNDocumentationI18n.NoDRDs";
 
     @TranslationKey(defaultValue = "")
