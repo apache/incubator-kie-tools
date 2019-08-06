@@ -46,12 +46,12 @@ function editorStackWithLength(length: number) {
   });
 }
 
-function open(txtFile: string) {
-  return vscode.commands.executeCommand("vscode.open", vscode.Uri.file(txtFile));
+function open(path: string) {
+  return vscode.commands.executeCommand("vscode.open", vscode.Uri.file(path));
 }
 
-function openForTheFirstTime(txtFile: string) {
-  return vscode.commands.executeCommand("vscode.open", vscode.Uri.file(txtFile)).then(() => delay(500));
+function openForTheFirstTime(path: string) {
+  return open(path).then(() => delay(500));
 }
 
 suite("vscode extension :: integration tests", () => {
