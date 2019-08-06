@@ -19,31 +19,16 @@ package org.kie.workbench.common.stunner.cm.client.forms.filters;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.stunner.bpmn.client.forms.filters.MultipleInstanceNodeFilterProvider;
+import org.kie.workbench.common.stunner.bpmn.client.forms.filters.BaseReusableSubProcessFilterProvider;
 import org.kie.workbench.common.stunner.cm.definition.ProcessReusableSubprocess;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 
-public class ProcessReusableSubProcessFilterProvider extends MultipleInstanceNodeFilterProvider {
-
-    public ProcessReusableSubProcessFilterProvider() {
-        this(null, null);
-    }
+public class ProcessReusableSubProcessFilterProvider extends BaseReusableSubProcessFilterProvider<ProcessReusableSubprocess> {
 
     @Inject
     public ProcessReusableSubProcessFilterProvider(final SessionManager sessionManager,
                                                    final Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent) {
-        super(sessionManager, refreshFormPropertiesEvent);
-    }
-
-    @Override
-    public boolean isMultipleInstance(Object definition) {
-        final ProcessReusableSubprocess subProcess = (ProcessReusableSubprocess) definition;
-        return subProcess.getExecutionSet().getIsMultipleInstance().getValue();
-    }
-
-    @Override
-    public Class<?> getDefinitionType() {
-        return ProcessReusableSubprocess.class;
+        super(sessionManager, refreshFormPropertiesEvent, ProcessReusableSubprocess.class);
     }
 }

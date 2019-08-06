@@ -40,9 +40,9 @@ public abstract class MultipleInstanceNodeFilterProvider implements StunnerFormE
     static final String MULTIPLE_INSTANCE_COMPLETION_CONDITION = "executionSet.multipleInstanceCompletionCondition";
     static final String MULTIPLE_INSTANCE_EXECUTION_MODE = "executionSet.multipleInstanceExecutionMode";
 
-    private final SessionManager sessionManager;
+    protected final SessionManager sessionManager;
 
-    private final Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent;
+    protected final Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent;
 
     public MultipleInstanceNodeFilterProvider() {
         this(null, null);
@@ -71,10 +71,12 @@ public abstract class MultipleInstanceNodeFilterProvider implements StunnerFormE
     }
 
     void onFormFieldChanged(@Observes final FormFieldChanged formFieldChanged) {
-        if (!IS_MULTIPLE_INSTANCE.equals(formFieldChanged.getName())) {
-            return;
+        applyFormFieldChange(formFieldChanged);
+    }
+
+    protected void applyFormFieldChange(final FormFieldChanged formFieldChanged) {
+        if (IS_MULTIPLE_INSTANCE.equals(formFieldChanged.getName())) {
+            refreshFormPropertiesEvent.fire(new RefreshFormPropertiesEvent(sessionManager.getCurrentSession(), formFieldChanged.getUuid()));
         }
-        refreshFormPropertiesEvent.fire(new RefreshFormPropertiesEvent(sessionManager.getCurrentSession(),
-                                                                       formFieldChanged.getUuid()));
     }
 }

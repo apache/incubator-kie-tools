@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.stunner.cm.definition.property.task;
 
+import java.util.Objects;
+
 import javax.validation.Valid;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
@@ -28,6 +30,7 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.field.selector
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.type.ListBoxFieldType;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.type.TextAreaFieldType;
 import org.kie.workbench.common.stunner.bpmn.definition.property.subProcess.IsCase;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.AbortParent;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocAutostart;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.BaseReusableSubprocessTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.CalledElement;
@@ -84,6 +87,13 @@ public class CaseReusableSubprocessTaskExecutionSet
     @Property
     @FormField(
             afterElement = "independent"
+    )
+    @Valid
+    protected AbortParent abortParent;
+
+    @Property
+    @FormField(
+            afterElement = "abortParent"
     )
     @Valid
     protected WaitForCompletion waitForCompletion;
@@ -187,6 +197,7 @@ public class CaseReusableSubprocessTaskExecutionSet
         this(new CalledElement(),
              new IsCase(true),
              new Independent(),
+             new AbortParent(),
              new WaitForCompletion(),
              new IsAsync(),
              new AdHocAutostart(),
@@ -204,6 +215,7 @@ public class CaseReusableSubprocessTaskExecutionSet
     public CaseReusableSubprocessTaskExecutionSet(final @MapsTo("calledElement") CalledElement calledElement,
                                                   final @MapsTo("isCase") IsCase isCase,
                                                   final @MapsTo("independent") Independent independent,
+                                                  final @MapsTo("abortParent") AbortParent abortParent,
                                                   final @MapsTo("waitForCompletion") WaitForCompletion waitForCompletion,
                                                   final @MapsTo("isAsync") IsAsync isAsync,
                                                   final @MapsTo("adHocAutostart") AdHocAutostart adHocAutostart,
@@ -219,6 +231,7 @@ public class CaseReusableSubprocessTaskExecutionSet
         this.calledElement = calledElement;
         this.isCase = isCase;
         this.independent = independent;
+        this.abortParent = abortParent;
         this.waitForCompletion = waitForCompletion;
         this.isAsync = isAsync;
         this.adHocAutostart = adHocAutostart;
@@ -261,6 +274,16 @@ public class CaseReusableSubprocessTaskExecutionSet
     @Override
     public void setIndependent(final Independent independent) {
         this.independent = independent;
+    }
+
+    @Override
+    public AbortParent getAbortParent() {
+        return abortParent;
+    }
+
+    @Override
+    public void setAbortParent(final AbortParent abortParent) {
+        this.abortParent = abortParent;
     }
 
     @Override
@@ -385,42 +408,47 @@ public class CaseReusableSubprocessTaskExecutionSet
 
     @Override
     public int hashCode() {
-        return HashUtil.combineHashCodes(calledElement.hashCode(),
-                                         isCase.hashCode(),
-                                         independent.hashCode(),
-                                         waitForCompletion.hashCode(),
-                                         isAsync.hashCode(),
-                                         adHocAutostart.hashCode(),
-                                         isMultipleInstance.hashCode(),
-                                         multipleInstanceExecutionMode.hashCode(),
-                                         multipleInstanceCollectionInput.hashCode(),
-                                         multipleInstanceDataInput.hashCode(),
-                                         multipleInstanceCollectionOutput.hashCode(),
-                                         multipleInstanceDataOutput.hashCode(),
-                                         multipleInstanceCompletionCondition.hashCode(),
-                                         onEntryAction.hashCode(),
-                                         onExitAction.hashCode());
+        return HashUtil.combineHashCodes(Objects.hashCode(calledElement),
+                                         Objects.hashCode(isCase),
+                                         Objects.hashCode(independent),
+                                         Objects.hashCode(abortParent),
+                                         Objects.hashCode(waitForCompletion),
+                                         Objects.hashCode(isAsync),
+                                         Objects.hashCode(adHocAutostart),
+                                         Objects.hashCode(isMultipleInstance),
+                                         Objects.hashCode(multipleInstanceExecutionMode),
+                                         Objects.hashCode(multipleInstanceCollectionInput),
+                                         Objects.hashCode(multipleInstanceDataInput),
+                                         Objects.hashCode(multipleInstanceCollectionOutput),
+                                         Objects.hashCode(multipleInstanceDataOutput),
+                                         Objects.hashCode(multipleInstanceCompletionCondition),
+                                         Objects.hashCode(onEntryAction),
+                                         Objects.hashCode(onExitAction));
     }
 
     @Override
     public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
         if (o instanceof CaseReusableSubprocessTaskExecutionSet) {
             CaseReusableSubprocessTaskExecutionSet other = (CaseReusableSubprocessTaskExecutionSet) o;
-            return calledElement.equals(other.calledElement) &&
-                    isCase.equals(other.isCase) &&
-                    independent.equals(other.independent) &&
-                    waitForCompletion.equals(other.waitForCompletion) &&
-                    isAsync.equals(other.isAsync) &&
-                    adHocAutostart.equals(other.adHocAutostart) &&
-                    isMultipleInstance.equals(other.isMultipleInstance) &&
-                    multipleInstanceExecutionMode.equals(other.multipleInstanceExecutionMode) &&
-                    multipleInstanceCollectionInput.equals(other.multipleInstanceCollectionInput) &&
-                    multipleInstanceDataInput.equals(other.multipleInstanceDataInput) &&
-                    multipleInstanceCollectionOutput.equals(other.multipleInstanceCollectionOutput) &&
-                    multipleInstanceDataOutput.equals(other.multipleInstanceDataOutput) &&
-                    multipleInstanceCompletionCondition.equals(other.multipleInstanceCompletionCondition) &&
-                    onEntryAction.equals(other.onEntryAction) &&
-                    onExitAction.equals(other.onExitAction);
+            return Objects.equals(calledElement, other.calledElement) &&
+                    Objects.equals(isCase, other.isCase) &&
+                    Objects.equals(independent, other.independent) &&
+                    Objects.equals(abortParent, other.abortParent) &&
+                    Objects.equals(waitForCompletion, other.waitForCompletion) &&
+                    Objects.equals(isAsync, other.isAsync) &&
+                    Objects.equals(adHocAutostart, other.adHocAutostart) &&
+                    Objects.equals(isMultipleInstance, other.isMultipleInstance) &&
+                    Objects.equals(multipleInstanceExecutionMode, other.multipleInstanceExecutionMode) &&
+                    Objects.equals(multipleInstanceCollectionInput, other.multipleInstanceCollectionInput) &&
+                    Objects.equals(multipleInstanceDataInput, other.multipleInstanceDataInput) &&
+                    Objects.equals(multipleInstanceCollectionOutput, other.multipleInstanceCollectionOutput) &&
+                    Objects.equals(multipleInstanceDataOutput, other.multipleInstanceDataOutput) &&
+                    Objects.equals(multipleInstanceCompletionCondition, other.multipleInstanceCompletionCondition) &&
+                    Objects.equals(onEntryAction, other.onEntryAction) &&
+                    Objects.equals(onExitAction, other.onExitAction);
         }
         return false;
     }

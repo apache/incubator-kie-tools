@@ -21,6 +21,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.activi
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.CallActivityPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.PropertyReaderFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.property.subProcess.IsCase;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.AbortParent;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocAutostart;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.BaseReusableSubprocessTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.CalledElement;
@@ -66,6 +67,7 @@ public class CaseManagementCallActivityConverter extends BaseCallActivityConvert
                 new CaseReusableSubprocessTaskExecutionSet(new CalledElement(activity.getCalledElement()),
                                                            new IsCase(true),
                                                            new Independent(p.isIndependent()),
+                                                           new AbortParent(p.isAbortParent()),
                                                            new WaitForCompletion(p.isWaitForCompletion()),
                                                            new IsAsync(p.isAsync()),
                                                            new AdHocAutostart(p.isAdHocAutostart()),
@@ -81,6 +83,7 @@ public class CaseManagementCallActivityConverter extends BaseCallActivityConvert
                 new ProcessReusableSubprocessTaskExecutionSet(new CalledElement(activity.getCalledElement()),
                                                               new IsCase(false),
                                                               new Independent(p.isIndependent()),
+                                                              new AbortParent(p.isAbortParent()),
                                                               new WaitForCompletion(p.isWaitForCompletion()),
                                                               new IsAsync(p.isAsync()),
                                                               new AdHocAutostart(p.isAdHocAutostart()),

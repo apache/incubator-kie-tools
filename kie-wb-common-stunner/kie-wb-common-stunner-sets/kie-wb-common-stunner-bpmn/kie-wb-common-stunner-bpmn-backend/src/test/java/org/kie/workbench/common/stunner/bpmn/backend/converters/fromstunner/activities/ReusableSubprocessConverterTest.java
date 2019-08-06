@@ -34,6 +34,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.subProcess.IsCase;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.AbortParent;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocAutostart;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.CalledElement;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.Independent;
@@ -78,6 +79,7 @@ public class ReusableSubprocessConverterTest {
     private static final String DOCUMENTATION = "DOCUMENTATION";
     private static final String CALLED_ELEMENT = "CALLED_ELEMENT";
     private static final Boolean INDEPENDENT = Boolean.TRUE;
+    private static final Boolean ABORT_PARENT = Boolean.TRUE;
     private static final Boolean IS_CASE = Boolean.FALSE;
     private static final Boolean WAIT_FOR_COMPLETION = Boolean.TRUE;
     private static final Boolean IS_ASYNC = Boolean.TRUE;
@@ -118,6 +120,7 @@ public class ReusableSubprocessConverterTest {
                                                                      new ReusableSubprocessTaskExecutionSet(new CalledElement(CALLED_ELEMENT),
                                                                                                             new IsCase(IS_CASE),
                                                                                                             new Independent(INDEPENDENT),
+                                                                                                            new AbortParent(ABORT_PARENT),
                                                                                                             new WaitForCompletion(WAIT_FOR_COMPLETION),
                                                                                                             new IsAsync(IS_ASYNC),
                                                                                                             new AdHocAutostart(IS_ADHOC_AUTOSTART),
@@ -234,5 +237,37 @@ public class ReusableSubprocessConverterTest {
         final PropertyWriter propertyWriter = tested.toFlowElement(node);
         assertTrue(CallActivityPropertyWriter.class.isInstance(propertyWriter));
         assertFalse(CustomElement.autoStart.of(propertyWriter.getFlowElement()).get());
+    }
+
+    @Test
+    public void testToFlowElementWhenIndependentTrueAbortParentTrue() {
+        testToFlowElementForAbortParent(true, true, true);
+    }
+
+    @Test
+    public void testToFlowElementWhenIndependentTrueAbortParentFalse() {
+        testToFlowElementForAbortParent(true, false, true);
+    }
+
+    @Test
+    public void testToFlowElementWhenIndependentFalseAbortParentTrue() {
+        testToFlowElementForAbortParent(false, true, true);
+    }
+
+    @Test
+    public void testToFlowElementWhenIndependentFalseAbortParentFalse() {
+        testToFlowElementForAbortParent(false, false, false);
+    }
+
+    private void testToFlowElementForAbortParent(boolean independent, boolean abortParent, boolean expectedAbortParent) {
+        final ReusableSubprocess definition = new ReusableSubprocess();
+        definition.getExecutionSet().setIndependent(new Independent(independent));
+        definition.getExecutionSet().setAbortParent(new AbortParent(abortParent));
+        final View<BaseReusableSubprocess> view = new ViewImpl<>(definition, Bounds.create());
+        final Node<View<BaseReusableSubprocess>, ?> node = new NodeImpl<>(java.util.UUID.randomUUID().toString());
+        node.setContent(view);
+
+        final PropertyWriter propertyWriter = tested.toFlowElement(node);
+        assertEquals(expectedAbortParent, CustomElement.abortParent.of(propertyWriter.getFlowElement()).get());
     }
 }

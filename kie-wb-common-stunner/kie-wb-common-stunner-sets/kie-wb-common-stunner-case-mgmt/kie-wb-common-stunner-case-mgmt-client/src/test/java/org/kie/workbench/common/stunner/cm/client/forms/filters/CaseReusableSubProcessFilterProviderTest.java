@@ -16,33 +16,24 @@
 
 package org.kie.workbench.common.stunner.cm.client.forms.filters;
 
-import org.kie.workbench.common.stunner.bpmn.client.forms.filters.MultipleInstanceNodeFilterProvider;
-import org.kie.workbench.common.stunner.bpmn.client.forms.filters.MultipleInstanceNodeFilterProviderTest;
+import org.kie.workbench.common.stunner.bpmn.client.forms.filters.BaseReusableSubProcessFilterProvider;
+import org.kie.workbench.common.stunner.bpmn.client.forms.filters.BaseReusableSubProcessFilterProviderTest;
 import org.kie.workbench.common.stunner.cm.definition.CaseReusableSubprocess;
 
-public class CaseReusableSubProcessFilterProviderTest extends MultipleInstanceNodeFilterProviderTest {
-
-    @Override
-    protected MultipleInstanceNodeFilterProvider newFilterProvider() {
-        return new CaseReusableSubProcessFilterProvider(sessionManager, refreshFormPropertiesEvent);
-    }
-
-    @Override
-    protected Object newNonMultipleInstanceDefinition() {
-        CaseReusableSubprocess subprocess = new CaseReusableSubprocess();
-        subprocess.getExecutionSet().getIsMultipleInstance().setValue(false);
-        return subprocess;
-    }
-
-    @Override
-    protected Object newMultipleInstanceDefinition() {
-        CaseReusableSubprocess subprocess = new CaseReusableSubprocess();
-        subprocess.getExecutionSet().getIsMultipleInstance().setValue(true);
-        return subprocess;
-    }
+public class CaseReusableSubProcessFilterProviderTest extends BaseReusableSubProcessFilterProviderTest<CaseReusableSubprocess> {
 
     @Override
     protected Class<?> getExpectedDefinitionType() {
         return CaseReusableSubprocess.class;
+    }
+
+    @Override
+    protected CaseReusableSubprocess newReusableSubProcess() {
+        return new CaseReusableSubprocess();
+    }
+
+    @Override
+    protected BaseReusableSubProcessFilterProvider<CaseReusableSubprocess> newReusableSubProcessFilterProvider() {
+        return new CaseReusableSubProcessFilterProvider(sessionManager, refreshFormPropertiesEvent);
     }
 }

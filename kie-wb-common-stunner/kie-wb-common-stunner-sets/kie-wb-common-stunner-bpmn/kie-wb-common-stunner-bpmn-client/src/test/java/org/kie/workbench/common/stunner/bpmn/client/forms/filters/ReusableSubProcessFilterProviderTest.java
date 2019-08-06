@@ -18,29 +18,20 @@ package org.kie.workbench.common.stunner.bpmn.client.forms.filters;
 
 import org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess;
 
-public class ReusableSubProcessFilterProviderTest extends MultipleInstanceNodeFilterProviderTest {
-
-    @Override
-    protected MultipleInstanceNodeFilterProvider newFilterProvider() {
-        return new ReusableSubProcessFilterProvider(sessionManager, refreshFormPropertiesEvent);
-    }
-
-    @Override
-    protected Object newNonMultipleInstanceDefinition() {
-        ReusableSubprocess subprocess = new ReusableSubprocess();
-        subprocess.getExecutionSet().getIsMultipleInstance().setValue(false);
-        return subprocess;
-    }
-
-    @Override
-    protected Object newMultipleInstanceDefinition() {
-        ReusableSubprocess subprocess = new ReusableSubprocess();
-        subprocess.getExecutionSet().getIsMultipleInstance().setValue(true);
-        return subprocess;
-    }
+public class ReusableSubProcessFilterProviderTest extends BaseReusableSubProcessFilterProviderTest<ReusableSubprocess> {
 
     @Override
     protected Class<?> getExpectedDefinitionType() {
         return ReusableSubprocess.class;
+    }
+
+    @Override
+    protected ReusableSubprocess newReusableSubProcess() {
+        return new ReusableSubprocess();
+    }
+
+    @Override
+    protected BaseReusableSubProcessFilterProvider<ReusableSubprocess> newReusableSubProcessFilterProvider() {
+        return new ReusableSubProcessFilterProvider(sessionManager, refreshFormPropertiesEvent);
     }
 }

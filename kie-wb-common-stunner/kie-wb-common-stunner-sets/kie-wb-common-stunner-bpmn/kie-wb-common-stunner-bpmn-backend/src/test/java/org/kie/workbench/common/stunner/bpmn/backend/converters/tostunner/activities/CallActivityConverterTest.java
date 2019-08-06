@@ -58,6 +58,7 @@ public class CallActivityConverterTest {
     private static final String DOCUMENTATION = "DOCUMENTATION";
     private static final String CALLED_ELEMENT = "CALLED_ELEMENT";
     private static final Boolean INDEPENDENT = Boolean.TRUE;
+    private static final Boolean ABORT_PARENT = Boolean.TRUE;
     private static final Boolean WAIT_FOR_COMPLETION = Boolean.TRUE;
     private static final Boolean IS_ASYNC = Boolean.TRUE;
     private static final Boolean SEQUENTIAL = Boolean.TRUE;
@@ -116,6 +117,7 @@ public class CallActivityConverterTest {
         when(propertyReader.getFontSet()).thenReturn(FONT_SET);
         when(propertyReader.getBackgroundSet()).thenReturn(BACKGROUND_SET);
         when(propertyReader.isIndependent()).thenReturn(INDEPENDENT);
+        when(propertyReader.isAbortParent()).thenReturn(ABORT_PARENT);
         when(propertyReader.isWaitForCompletion()).thenReturn(WAIT_FOR_COMPLETION);
         when(propertyReader.isAsync()).thenReturn(IS_ASYNC);
         when(propertyReader.isSequential()).thenReturn(SEQUENTIAL);
@@ -183,6 +185,7 @@ public class CallActivityConverterTest {
         assertEquals(BACKGROUND_SET, result.getContent().getDefinition().getBackgroundSet());
         assertEquals(CALLED_ELEMENT, result.getContent().getDefinition().getExecutionSet().getCalledElement().getValue());
         assertEquals(INDEPENDENT, result.getContent().getDefinition().getExecutionSet().getIndependent().getValue());
+        assertEquals(ABORT_PARENT, result.getContent().getDefinition().getExecutionSet().getAbortParent().getValue());
         assertEquals(WAIT_FOR_COMPLETION, result.getContent().getDefinition().getExecutionSet().getWaitForCompletion().getValue());
         assertEquals(IS_ASYNC, result.getContent().getDefinition().getExecutionSet().getIsAsync().getValue());
         assertEquals(ON_ENTRY_ACTION, result.getContent().getDefinition().getExecutionSet().getOnEntryAction().getValue());

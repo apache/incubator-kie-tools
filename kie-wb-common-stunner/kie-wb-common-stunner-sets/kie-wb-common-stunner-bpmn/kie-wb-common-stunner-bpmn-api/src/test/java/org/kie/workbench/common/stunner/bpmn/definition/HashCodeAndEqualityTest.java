@@ -71,6 +71,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.notification.No
 import org.kie.workbench.common.stunner.bpmn.definition.property.reassignment.ReassignmentsInfo;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationAttributeSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.subProcess.IsCase;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.AbortParent;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocActivationCondition;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocAutostart;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocCompletionCondition;
@@ -1343,6 +1344,7 @@ public class HashCodeAndEqualityTest {
                 .addTrueCase(new ReusableSubprocessTaskExecutionSet(new CalledElement(),
                                                                     new IsCase(),
                                                                     new Independent(),
+                                                                    new AbortParent(),
                                                                     new WaitForCompletion(),
                                                                     new IsAsync(),
                                                                     new AdHocAutostart(),
@@ -1358,6 +1360,7 @@ public class HashCodeAndEqualityTest {
                              new ReusableSubprocessTaskExecutionSet(new CalledElement(),
                                                                     new IsCase(),
                                                                     new Independent(),
+                                                                    new AbortParent(),
                                                                     new WaitForCompletion(),
                                                                     new IsAsync(),
                                                                     new AdHocAutostart(),
@@ -2389,6 +2392,18 @@ public class HashCodeAndEqualityTest {
                 .addTrueCase(new AdHocActivationCondition("value1"), new AdHocActivationCondition("value1"))
                 .addFalseCase(new AdHocActivationCondition("value1"), new AdHocActivationCondition("value2"))
                 .addFalseCase(new AdHocActivationCondition("value1"), new AdHocActivationCondition(null))
+                .test();
+    }
+
+    @Test
+    public void testAbortParentEqualsAndHashCode() {
+        TestCaseBuilder.newTestCase()
+                .addTrueCase(new AbortParent(), new AbortParent())
+                .addTrueCase(new AbortParent(true), new AbortParent(true))
+                .addTrueCase(new AbortParent(false), new AbortParent(false))
+                .addTrueCase(new AbortParent(true), new AbortParent())
+                .addFalseCase(new AbortParent(false), new AbortParent())
+                .addFalseCase(new AbortParent(true), new AbortParent(false))
                 .test();
     }
 

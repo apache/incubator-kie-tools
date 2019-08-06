@@ -27,6 +27,7 @@ import org.junit.Test;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpmn2;
@@ -107,5 +108,25 @@ public class CallActivityPropertyReaderTest {
                                                 definitionResolver);
 
         assertFalse(tested.isAdHocAutostart());
+    }
+
+    @Test
+    public void testAbortParentTrue() {
+        testAbortParent(true);
+    }
+
+    @Test
+    public void testAbortParentFalse() {
+        testAbortParent(false);
+    }
+
+    private void testAbortParent(boolean value) {
+        CallActivity callActivity = bpmn2.createCallActivity();
+        CustomElement.abortParent.of(callActivity).set(value);
+
+        tested = new CallActivityPropertyReader(callActivity,
+                                                definitionResolver.getDiagram(),
+                                                definitionResolver);
+        assertEquals(value, tested.isAbortParent());
     }
 }

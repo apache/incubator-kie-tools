@@ -17,6 +17,9 @@
         <drools:metaData name="customAsync">
           <drools:metaValue><![CDATA[true]]></drools:metaValue>
         </drools:metaData>
+        <drools:metaData name="customAbortParent">
+          <drools:metaValue><![CDATA[false]]></drools:metaValue>
+        </drools:metaData>
       </bpmn2:extensionElements>
       <bpmn2:incoming>_0159322F-C02D-4751-8C0E-2512D48EEBB7</bpmn2:incoming>
       <bpmn2:outgoing>_7E18FB7B-605E-4DBC-895A-D8709E26F681</bpmn2:outgoing>

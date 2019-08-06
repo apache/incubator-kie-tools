@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.pro
 import org.junit.Test;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpmn2;
@@ -55,5 +56,20 @@ public class CallActivityPropertyWriterTest {
         tested.setAdHocAutostart(Boolean.FALSE);
 
         assertFalse(CustomElement.autoStart.of(tested.getFlowElement()).get());
+    }
+
+    @Test
+    public void testAbortParentTrue() {
+        tested.setAbortParent(true);
+    }
+
+    @Test
+    public void testAbortParentFalse() {
+        tested.setAbortParent(false);
+    }
+
+    private void testAbortParent(boolean value) {
+        tested.setAbortParent(value);
+        assertEquals(value, CustomElement.abortParent.of(tested.getElement()).get());
     }
 }

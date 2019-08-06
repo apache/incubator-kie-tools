@@ -44,6 +44,10 @@ public class CallActivityPropertyWriter extends MultipleInstanceActivityProperty
         CustomAttribute.independent.of(activity).set(independent);
     }
 
+    public void setAbortParent(Boolean abortParent) {
+        CustomElement.abortParent.of(activity).set(abortParent);
+    }
+
     public void setWaitForCompletion(Boolean waitForCompletion) {
         CustomAttribute.waitForCompletion.of(activity).set(waitForCompletion);
     }

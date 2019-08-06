@@ -16,33 +16,24 @@
 
 package org.kie.workbench.common.stunner.cm.client.forms.filters;
 
-import org.kie.workbench.common.stunner.bpmn.client.forms.filters.MultipleInstanceNodeFilterProvider;
-import org.kie.workbench.common.stunner.bpmn.client.forms.filters.MultipleInstanceNodeFilterProviderTest;
+import org.kie.workbench.common.stunner.bpmn.client.forms.filters.BaseReusableSubProcessFilterProvider;
+import org.kie.workbench.common.stunner.bpmn.client.forms.filters.BaseReusableSubProcessFilterProviderTest;
 import org.kie.workbench.common.stunner.cm.definition.ProcessReusableSubprocess;
 
-public class ProcessReusableSubProcessFilterProviderTest extends MultipleInstanceNodeFilterProviderTest {
-
-    @Override
-    protected MultipleInstanceNodeFilterProvider newFilterProvider() {
-        return new ProcessReusableSubProcessFilterProvider(sessionManager, refreshFormPropertiesEvent);
-    }
-
-    @Override
-    protected Object newNonMultipleInstanceDefinition() {
-        ProcessReusableSubprocess subprocess = new ProcessReusableSubprocess();
-        subprocess.getExecutionSet().getIsMultipleInstance().setValue(false);
-        return subprocess;
-    }
-
-    @Override
-    protected Object newMultipleInstanceDefinition() {
-        ProcessReusableSubprocess subprocess = new ProcessReusableSubprocess();
-        subprocess.getExecutionSet().getIsMultipleInstance().setValue(true);
-        return subprocess;
-    }
+public class ProcessReusableSubProcessFilterProviderTest extends BaseReusableSubProcessFilterProviderTest<ProcessReusableSubprocess> {
 
     @Override
     protected Class<?> getExpectedDefinitionType() {
         return ProcessReusableSubprocess.class;
+    }
+
+    @Override
+    protected ProcessReusableSubprocess newReusableSubProcess() {
+        return new ProcessReusableSubprocess();
+    }
+
+    @Override
+    protected BaseReusableSubProcessFilterProvider<ProcessReusableSubprocess> newReusableSubProcessFilterProvider() {
+        return new ProcessReusableSubProcessFilterProvider(sessionManager, refreshFormPropertiesEvent);
     }
 }

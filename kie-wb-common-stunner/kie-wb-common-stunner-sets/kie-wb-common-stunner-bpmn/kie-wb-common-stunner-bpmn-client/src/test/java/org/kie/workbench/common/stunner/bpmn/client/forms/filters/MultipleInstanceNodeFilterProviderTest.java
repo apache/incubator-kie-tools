@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.bpmn.client.forms.filters;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -86,17 +87,22 @@ public abstract class MultipleInstanceNodeFilterProviderTest {
 
     @Test
     public void testProvideFiltersForMultipleInstanceDefinition() {
-        testProvideFilters(UUID, newMultipleInstanceDefinition(), true);
+        testProvideFilters(UUID, newMultipleInstanceDefinition(), true, 6);
     }
 
     @Test
     public void testProvideFiltersForNonMultipleInstanceDefinition() {
-        testProvideFilters(UUID, newNonMultipleInstanceDefinition(), false);
+        testProvideFilters(UUID, newNonMultipleInstanceDefinition(), false, 6);
     }
 
-    protected void testProvideFilters(String elementUUID, Object definition, boolean expectedValue) {
+    protected List<FormElementFilter> testProvideFilters(String elementUUID, Object definition, boolean expectedValue, int expectedSize) {
         ArrayList<FormElementFilter> filters = new ArrayList<>(filterProvider.provideFilters(elementUUID, definition));
-        assertEquals(6, filters.size());
+        assertExpectedMIFilters(expectedSize, definition, expectedValue, filters);
+        return filters;
+    }
+
+    protected void assertExpectedMIFilters(int expectedSize, Object definition, boolean expectedValue, ArrayList<FormElementFilter> filters) {
+        assertEquals(expectedSize, filters.size());
         assertExpectedFilter(MULTIPLE_INSTANCE_COLLECTION_INPUT, expectedValue, definition, filters.get(0));
         assertExpectedFilter(MULTIPLE_INSTANCE_DATA_INPUT, expectedValue, definition, filters.get(1));
         assertExpectedFilter(MULTIPLE_INSTANCE_COLLECTION_OUTPUT, expectedValue, definition, filters.get(2));
@@ -115,6 +121,10 @@ public abstract class MultipleInstanceNodeFilterProviderTest {
     public void testOnFormFieldChangedForMultipleInstance() {
         FormFieldChanged formFieldChanged = mockFormFieldChanged(IS_MULTIPLE_INSTANCE, UUID);
         filterProvider.onFormFieldChanged(formFieldChanged);
+        verifyFieldChangeFired();
+    }
+
+    protected void verifyFieldChangeFired() {
         verify(refreshFormPropertiesEvent).fire(fieldChangedCaptor.capture());
         assertEquals(currentSession, fieldChangedCaptor.getValue().getSession());
         assertEquals(UUID, fieldChangedCaptor.getValue().getUuid());

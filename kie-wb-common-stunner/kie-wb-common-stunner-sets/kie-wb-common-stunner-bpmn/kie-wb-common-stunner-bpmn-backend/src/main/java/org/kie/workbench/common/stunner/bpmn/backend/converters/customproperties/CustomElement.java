@@ -49,6 +49,7 @@ public class CustomElement<T> {
     public static final GlobalVariablesElement globalVariables = new GlobalVariablesElement("customGlobalVariables");
     public static final MetadataTypeDefinition<Boolean> isCase = new BooleanElement("case", Boolean.FALSE);
     public static final MetadataTypeDefinition<String> customActivationCondition = new StringElement("customActivationCondition", "");
+    public static final MetadataTypeDefinition<Boolean> abortParent = new BooleanElement("customAbortParent", true);
 
     private final ElementDefinition<T> elementDefinition;
     private final BaseElement element;

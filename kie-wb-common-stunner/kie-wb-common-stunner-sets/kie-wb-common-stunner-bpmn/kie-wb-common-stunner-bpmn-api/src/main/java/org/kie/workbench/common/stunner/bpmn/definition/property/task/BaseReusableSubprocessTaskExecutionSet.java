@@ -24,6 +24,10 @@ public interface BaseReusableSubprocessTaskExecutionSet extends BPMNPropertySet 
 
     Independent getIndependent();
 
+    AbortParent getAbortParent();
+
+    void setAbortParent(final AbortParent abortParent);
+
     WaitForCompletion getWaitForCompletion();
 
     void setCalledElement(final CalledElement calledElement);

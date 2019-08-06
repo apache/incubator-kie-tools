@@ -36,6 +36,7 @@ import org.kie.workbench.common.stunner.cm.definition.property.task.CaseReusable
 import org.kie.workbench.common.stunner.cm.definition.property.task.ProcessReusableSubprocessTaskExecutionSet;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpmn2;
@@ -140,5 +141,49 @@ public class CaseManagementCallActivityConverterTest {
 
         assertTrue(ProcessReusableSubprocessTaskExecutionSet.class.isInstance(result));
         assertFalse(result.getIsCase().getValue());
+    }
+
+    @Test
+    public void testCreateReusableSubprocessTaskExecutionSetWhenAbortParentTrue_case() {
+        testAbortParent(true, true);
+    }
+
+    @Test
+    public void testCreateReusableSubprocessTaskExecutionSetWhenAbortParentFalse_case() {
+        testAbortParent(false, true);
+    }
+
+    @Test
+    public void testCreateReusableSubprocessTaskExecutionSetWhenAbortParentTrue_process() {
+        testAbortParent(true, false);
+    }
+
+    @Test
+    public void testCreateReusableSubprocessTaskExecutionSetWhenAbortParentFalse_process() {
+        testAbortParent(false, false);
+    }
+
+    private void testAbortParent(boolean abortParent, boolean isCase) {
+        String uuid = UUID.randomUUID().toString();
+
+        CallActivity callActivity = bpmn2.createCallActivity();
+        callActivity.setId(uuid);
+        CustomElement.isCase.of(callActivity).set(isCase);
+        CustomElement.abortParent.of(callActivity).set(abortParent);
+
+        CallActivityPropertyReader propertyReader = new CallActivityPropertyReader(callActivity,
+                                                                                   definitionResolver.getDiagram(),
+                                                                                   definitionResolver);
+
+        BaseReusableSubprocessTaskExecutionSet result =
+                tested.createReusableSubprocessTaskExecutionSet(callActivity, propertyReader);
+
+        assertEquals(isCase, result.getIsCase().getValue());
+        assertEquals(abortParent, result.getAbortParent().getValue());
+        if (isCase) {
+            assertTrue(CaseReusableSubprocessTaskExecutionSet.class.isInstance(result));
+        } else {
+            assertTrue(ProcessReusableSubprocessTaskExecutionSet.class.isInstance(result));
+        }
     }
 }

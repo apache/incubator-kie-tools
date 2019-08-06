@@ -39,6 +39,10 @@ public class CallActivityPropertyReader extends MultipleInstanceActivityProperty
         return CustomAttribute.independent.of(element).get();
     }
 
+    public boolean isAbortParent() {
+        return CustomElement.abortParent.of(element).get();
+    }
+
     public boolean isWaitForCompletion() {
         return CustomAttribute.waitForCompletion.of(element).get();
     }
