@@ -68,6 +68,12 @@ yarn run build:fast # skips lint and unit tests
 
 > Final artifacts will be on `packages/*/dist` directories.
 
+Known issues
+--------------------
+- Flicker when opening or restoring DMN/BPMN editors.
+- Unable to detect 'dirty' state on DMN/BPMN editors.
+- Copy/paste diagram parts between DMN/BPMN editors.
+
 
 Contributing to Kogito
 --------------------
