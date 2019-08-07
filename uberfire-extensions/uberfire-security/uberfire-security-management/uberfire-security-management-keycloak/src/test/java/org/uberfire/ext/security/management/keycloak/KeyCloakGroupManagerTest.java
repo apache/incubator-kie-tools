@@ -185,6 +185,13 @@ public class KeyCloakGroupManagerTest extends DefaultKeyCloakTest {
                     ROLE + 49);
     }
 
+    @Test
+    public void testCreateGroup() {
+        String groupName = "newgroup";
+        Group newgroup = groupsManager.create(SecurityManagementUtils.createGroup("newgroup"));
+        assertGroup(newgroup, groupName);
+    }
+
     @Test(expected = UnsupportedServiceCapabilityException.class)
     public void testUpdateGroup() {
         groupsManager.update(SecurityManagementUtils.createGroup("id1"));

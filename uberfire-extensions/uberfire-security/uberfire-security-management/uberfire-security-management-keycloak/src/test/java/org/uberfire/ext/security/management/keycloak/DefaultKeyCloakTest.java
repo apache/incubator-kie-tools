@@ -17,6 +17,7 @@
 package org.uberfire.ext.security.management.keycloak;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -196,19 +197,19 @@ public abstract class DefaultKeyCloakTest extends BaseKeyCloakTest {
         when(userRepresentation.getEmail()).thenReturn(mail);
         when(userRepresentation.isEmailVerified()).thenReturn(true);
         when(userRepresentation.isEnabled()).thenReturn(true);
-        Map<String, Object> attributes = new HashMap<String, Object>(6);
+        Map<String, List<String>> attributes = new HashMap<String, List<String>>(6);
         attributes.put(BaseKeyCloakManager.ATTRIBUTE_USER_ID,
-                       id);
+                       Arrays.asList(id));
         attributes.put(BaseKeyCloakManager.ATTRIBUTE_USER_FIRST_NAME,
-                       fName);
+                       Arrays.asList(fName));
         attributes.put(BaseKeyCloakManager.ATTRIBUTE_USER_LAST_NAME,
-                       lName);
+                       Arrays.asList(lName));
         attributes.put(BaseKeyCloakManager.ATTRIBUTE_USER_ENABLED,
-                       "true");
+                       Arrays.asList("true"));
         attributes.put(BaseKeyCloakManager.ATTRIBUTE_USER_EMAIL,
-                       mail);
+                       Arrays.asList(mail));
         attributes.put(BaseKeyCloakManager.ATTRIBUTE_USER_EMAIL_VERIFIED,
-                       "true");
+                       Arrays.asList("true"));
         when(userRepresentation.getAttributes()).thenReturn(attributes);
     }
 

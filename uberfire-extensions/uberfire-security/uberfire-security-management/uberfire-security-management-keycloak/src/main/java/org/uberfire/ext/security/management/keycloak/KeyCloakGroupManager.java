@@ -116,10 +116,7 @@ public class KeyCloakGroupManager extends BaseKeyCloakManager implements GroupMa
                      entity);
         consumeRealm(realmResource -> {
             final RolesResource rolesResource = realmResource.roles();
-            final RoleRepresentation roleRepresentation = new RoleRepresentation();
-            roleRepresentation.setName(entity.getName());
-            roleRepresentation.setDescription(entity.getName());
-            roleRepresentation.setScopeParamRequired(false);
+            final RoleRepresentation roleRepresentation = new RoleRepresentation(entity.getName(), entity.getName(), Boolean.FALSE);
             roleRepresentation.setId(entity.getName());
             roleRepresentation.setComposite(false);
             final ClientResponse response = (ClientResponse) rolesResource.create(roleRepresentation);

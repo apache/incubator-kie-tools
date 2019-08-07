@@ -205,12 +205,11 @@ public abstract class BaseKeyCloakManager {
                          Boolean.toString(isEmailVerified));
         user.setProperty(ATTRIBUTE_USER_ENABLED,
                          Boolean.toString(isEnabled));
-        final Map<String, Object> attrs = userRepresentation.getAttributes();
+        final Map<String, List<String>> attrs = userRepresentation.getAttributes();
         if (attrs != null && !attrs.isEmpty()) {
-            for (final Map.Entry<String, Object> entry : attrs.entrySet()) {
-                final String v = entry.getValue() != null ? entry.getValue().toString() : null;
-                user.setProperty(entry.getKey(),
-                                 v);
+            for (final Map.Entry<String, List<String>> entry : attrs.entrySet()) {
+                final String v = entry.getValue() != null ? String.join(", ",entry.getValue()) : null;
+                user.setProperty(entry.getKey(), v);
             }
         }
     }
