@@ -29,6 +29,8 @@ import static org.junit.Assert.assertNotNull;
 
 public abstract class BaseServiceTaskTest<T extends BaseServiceTask> extends TaskTest<T> {
 
+    protected static final String SLA_DUE_DATE = "12/25/1983";
+
     public BaseServiceTaskTest() throws Exception {
     }
 
@@ -38,12 +40,14 @@ public abstract class BaseServiceTaskTest<T extends BaseServiceTask> extends Tas
                                        String onExitActionScriptValue,
                                        String onExitActionScriptLanguage,
                                        boolean isAsync,
-                                       boolean adHocAutostart) {
+                                       boolean adHocAutostart,
+                                       String slaDueDate) {
         assertNotNull(executionSet);
         assertNotNull(executionSet.getOnEntryAction());
         assertNotNull(executionSet.getOnExitAction());
         assertNotNull(executionSet.getIsAsync());
         assertNotNull(executionSet.getAdHocAutostart());
+        assertNotNull(executionSet.getSlaDueDate());
 
         assertNotNull(executionSet.getOnEntryAction().getValue());
         assertNotNull(executionSet.getOnExitAction().getValue());
@@ -62,6 +66,7 @@ public abstract class BaseServiceTaskTest<T extends BaseServiceTask> extends Tas
         assertEquals(onExitActionScriptLanguage, onExitScriptTypeValues.get(0).getLanguage());
         assertEquals(isAsync, executionSet.getIsAsync().getValue());
         assertEquals(adHocAutostart, executionSet.getAdHocAutostart().getValue());
+        assertEquals(slaDueDate, executionSet.getSlaDueDate().getValue());
     }
 
     protected void assertDataIOSet(DataIOSet dataIOSet, String value) {

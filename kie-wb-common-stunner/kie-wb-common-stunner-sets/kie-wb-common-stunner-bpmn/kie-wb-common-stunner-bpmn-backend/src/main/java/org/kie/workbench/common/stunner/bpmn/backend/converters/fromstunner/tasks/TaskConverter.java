@@ -118,6 +118,7 @@ public class TaskConverter {
         p.setOnEntryAction(executionSet.getOnEntryAction());
         p.setOnExitAction(executionSet.getOnExitAction());
         p.setAdHocAutostart(executionSet.getAdHocAutostart().getValue());
+        p.setSlaDueDate(executionSet.getSlaDueDate().getValue());
 
         p.setSimulationSet(definition.getSimulationSet());
 
@@ -187,6 +188,7 @@ public class TaskConverter {
         p.setOnEntryAction(executionSet.getOnEntryAction());
         p.setOnExitAction(executionSet.getOnExitAction());
         p.setAdHocAutostart(executionSet.getAdHocAutostart().getValue());
+        p.setSlaDueDate(executionSet.getSlaDueDate().getValue());
 
         RuleLanguage ruleLanguage = executionSet.getRuleLanguage();
         p.setImplementation(ruleLanguage);

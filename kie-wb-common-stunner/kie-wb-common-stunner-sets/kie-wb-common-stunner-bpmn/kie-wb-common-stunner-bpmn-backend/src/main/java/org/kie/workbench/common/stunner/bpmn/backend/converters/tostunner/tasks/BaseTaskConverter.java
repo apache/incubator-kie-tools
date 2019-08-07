@@ -128,8 +128,9 @@ public abstract class BaseTaskConverter<U extends BaseUserTask<S>, S extends Bas
                             new IsAsync(p.isAsync()),
                             new AdHocAutostart(p.isAdHocAutoStart()),
                             new OnEntryAction(p.getOnEntryAction()),
-                            new OnExitAction(p.getOnExitAction())
-                    ));
+                            new OnExitAction(p.getOnExitAction()),
+                            new SLADueDate(p.getSlaDueDate())
+        ));
 
                     definition.setSimulationSet(p.getSimulationSet());
 
@@ -217,7 +218,8 @@ public abstract class BaseTaskConverter<U extends BaseUserTask<S>, S extends Bas
                 new OnEntryAction(p.getOnEntryAction()),
                 new OnExitAction(p.getOnExitAction()),
                 new IsAsync(p.isAsync()),
-                new AdHocAutostart(p.isAdHocAutoStart())
+                new AdHocAutostart(p.isAdHocAutoStart()),
+                new SLADueDate(p.getSlaDueDate())
         ));
 
         definition.setSimulationSet(p.getSimulationSet());

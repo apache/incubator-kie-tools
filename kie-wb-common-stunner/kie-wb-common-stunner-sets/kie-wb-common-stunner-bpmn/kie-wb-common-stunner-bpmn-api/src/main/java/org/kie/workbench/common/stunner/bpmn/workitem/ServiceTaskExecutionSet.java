@@ -27,6 +27,7 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.annotations.SkipFormField;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocAutostart;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.IsAsync;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnEntryAction;
@@ -71,6 +72,11 @@ public class ServiceTaskExecutionSet implements BPMNPropertySet {
     @Valid
     private OnExitAction onExitAction;
 
+    @Property
+    @FormField(afterElement = "onExitAction")
+    @Valid
+    private SLADueDate slaDueDate;
+
     public ServiceTaskExecutionSet() {
         this(new TaskName("Service Task"),
              new IsAsync(),
@@ -78,19 +84,22 @@ public class ServiceTaskExecutionSet implements BPMNPropertySet {
              new OnEntryAction(new ScriptTypeListValue().addValue(new ScriptTypeValue("java",
                                                                                       ""))),
              new OnExitAction(new ScriptTypeListValue().addValue(new ScriptTypeValue("java",
-                                                                                     ""))));
+                                                                                     ""))),
+             new SLADueDate());
     }
 
     public ServiceTaskExecutionSet(final @MapsTo("taskName") TaskName taskName,
                                    final @MapsTo("isAsync") IsAsync isAsync,
                                    final @MapsTo("adHocAutostart") AdHocAutostart adHocAutostart,
                                    final @MapsTo("onEntryAction") OnEntryAction onEntryAction,
-                                   final @MapsTo("onExitAction") OnExitAction onExitAction) {
+                                   final @MapsTo("onExitAction") OnExitAction onExitAction,
+                                   final @MapsTo("slaDueDate") SLADueDate slaDueDate) {
         this.taskName = taskName;
         this.isAsync = isAsync;
         this.adHocAutostart = adHocAutostart;
         this.onEntryAction = onEntryAction;
         this.onExitAction = onExitAction;
+        this.slaDueDate = slaDueDate;
     }
 
     public TaskName getTaskName() {
@@ -133,29 +142,34 @@ public class ServiceTaskExecutionSet implements BPMNPropertySet {
         this.onExitAction = onExitAction;
     }
 
+    public SLADueDate getSlaDueDate() {
+        return slaDueDate;
+    }
+
+    public void setSlaDueDate(SLADueDate slaDueDate) {
+        this.slaDueDate = slaDueDate;
+    }
+
     @Override
     public int hashCode() {
         return HashUtil.combineHashCodes(Objects.hashCode(taskName),
                                          Objects.hashCode(isAsync),
                                          Objects.hashCode(adHocAutostart),
                                          Objects.hashCode(onEntryAction),
-                                         Objects.hashCode(onExitAction));
+                                         Objects.hashCode(onExitAction),
+                                         Objects.hashCode(slaDueDate));
     }
 
     @Override
     public boolean equals(Object o) {
         if (o instanceof ServiceTaskExecutionSet) {
             ServiceTaskExecutionSet other = (ServiceTaskExecutionSet) o;
-            return Objects.equals(taskName,
-                                  other.taskName) &&
-                    Objects.equals(isAsync,
-                                   other.isAsync) &&
-                    Objects.equals(adHocAutostart,
-                                   other.adHocAutostart) &&
-                    Objects.equals(onEntryAction,
-                                   other.onEntryAction) &&
-                    Objects.equals(onExitAction,
-                                   other.onExitAction);
+            return Objects.equals(taskName, other.taskName) &&
+                    Objects.equals(isAsync, other.isAsync) &&
+                    Objects.equals(adHocAutostart, other.adHocAutostart) &&
+                    Objects.equals(onEntryAction, other.onEntryAction) &&
+                    Objects.equals(onExitAction, other.onExitAction) &&
+                    Objects.equals(slaDueDate, other.slaDueDate);
         }
         return false;
     }

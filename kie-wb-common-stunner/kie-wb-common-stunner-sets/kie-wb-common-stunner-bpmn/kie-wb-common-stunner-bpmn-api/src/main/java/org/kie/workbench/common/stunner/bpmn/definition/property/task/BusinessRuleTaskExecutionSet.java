@@ -28,6 +28,7 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.annotations.field.selector.SelectorDataProvider;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.type.ListBoxFieldType;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 import org.kie.workbench.common.stunner.bpmn.forms.model.ComboBoxFieldType;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
@@ -44,10 +45,6 @@ public class BusinessRuleTaskExecutionSet implements BPMNPropertySet {
     public static final String NAMESPACE = "namespace";
     public static final String DECISON_NAME = "decisionName";
     public static final String DMN_MODEL_NAME = "dmnModelName";
-    public static final String ON_ENTRY_ACTION = "onEntryAction";
-    public static final String ON_EXIT_ACTION = "onExitAction";
-    public static final String ASYNC = "isAsync";
-    public static final String ADHOC_AUTOSTART = "adHocAutostart";
 
     @Property
     @FormField(
@@ -114,6 +111,11 @@ public class BusinessRuleTaskExecutionSet implements BPMNPropertySet {
     @Valid
     private AdHocAutostart adHocAutostart;
 
+    @Property
+    @FormField(afterElement = "adHocAutostart")
+    @Valid
+    private SLADueDate slaDueDate;
+
     public BusinessRuleTaskExecutionSet() {
         this(new RuleLanguage(),
              new RuleFlowGroup(),
@@ -125,7 +127,8 @@ public class BusinessRuleTaskExecutionSet implements BPMNPropertySet {
              new OnExitAction(new ScriptTypeListValue().addValue(new ScriptTypeValue("java",
                                                                                      ""))),
              new IsAsync(),
-             new AdHocAutostart());
+             new AdHocAutostart(),
+             new SLADueDate());
     }
 
     public BusinessRuleTaskExecutionSet(final @MapsTo("ruleLanguage") RuleLanguage ruleLanguage,
@@ -136,7 +139,8 @@ public class BusinessRuleTaskExecutionSet implements BPMNPropertySet {
                                         final @MapsTo("onEntryAction") OnEntryAction onEntryAction,
                                         final @MapsTo("onExitAction") OnExitAction onExitAction,
                                         final @MapsTo("isAsync") IsAsync isAsync,
-                                        final @MapsTo("adHocAutostart") AdHocAutostart adHocAutostart) {
+                                        final @MapsTo("adHocAutostart") AdHocAutostart adHocAutostart,
+                                        final @MapsTo("slaDueDate") SLADueDate slaDueDate) {
         this.ruleLanguage = ruleLanguage;
         this.ruleFlowGroup = ruleFlowGroup;
         this.namespace = namespace;
@@ -146,6 +150,7 @@ public class BusinessRuleTaskExecutionSet implements BPMNPropertySet {
         this.onExitAction = onExitAction;
         this.isAsync = isAsync;
         this.adHocAutostart = adHocAutostart;
+        this.slaDueDate = slaDueDate;
     }
 
     public RuleLanguage getRuleLanguage() {
@@ -220,6 +225,14 @@ public class BusinessRuleTaskExecutionSet implements BPMNPropertySet {
         this.adHocAutostart = adHocAutostart;
     }
 
+    public SLADueDate getSlaDueDate() {
+        return slaDueDate;
+    }
+
+    public void setSlaDueDate(SLADueDate slaDueDate) {
+        this.slaDueDate = slaDueDate;
+    }
+
     @Override
     public int hashCode() {
         return HashUtil.combineHashCodes(Objects.hashCode(ruleLanguage),
@@ -230,7 +243,8 @@ public class BusinessRuleTaskExecutionSet implements BPMNPropertySet {
                                          Objects.hashCode(onEntryAction),
                                          Objects.hashCode(onExitAction),
                                          Objects.hashCode(isAsync),
-                                         Objects.hashCode(adHocAutostart));
+                                         Objects.hashCode(adHocAutostart),
+                                         Objects.hashCode(slaDueDate));
     }
 
     @Override
@@ -245,7 +259,8 @@ public class BusinessRuleTaskExecutionSet implements BPMNPropertySet {
                     Objects.equals(onEntryAction, other.onEntryAction) &&
                     Objects.equals(onExitAction, other.onExitAction) &&
                     Objects.equals(isAsync, other.isAsync) &&
-                    Objects.equals(adHocAutostart, other.adHocAutostart);
+                    Objects.equals(adHocAutostart, other.adHocAutostart) &&
+                    Objects.equals(slaDueDate, other.slaDueDate);
         }
         return false;
     }

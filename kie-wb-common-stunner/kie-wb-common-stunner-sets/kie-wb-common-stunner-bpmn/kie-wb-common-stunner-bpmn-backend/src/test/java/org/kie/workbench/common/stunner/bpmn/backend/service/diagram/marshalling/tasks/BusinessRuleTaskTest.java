@@ -75,6 +75,8 @@ public class BusinessRuleTaskTest extends TaskTest<BusinessRuleTask> {
     private static final boolean AD_HOC_AUTOSTART = true;
     private static final boolean NOT_AD_HOC_AUTOSTART = false;
 
+    private static final String SLA_DUE_DATE = "12/25/1983";
+
     public BusinessRuleTaskTest() throws Exception {
     }
 
@@ -117,7 +119,8 @@ public class BusinessRuleTaskTest extends TaskTest<BusinessRuleTask> {
                                            TASK_ON_EXIT_ACTION_JAVA,
                                            TASK_SCRIPT_JAVA_LANGUAGE,
                                            IS_ASYNC,
-                                           AD_HOC_AUTOSTART);
+                                           AD_HOC_AUTOSTART,
+                                           SLA_DUE_DATE);
         assertDataIOSet(filledTopLevelTaskJava.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
 
         BusinessRuleTask filledTopLevelTaskJavascript = getTaskNodeById(getDiagram(),
@@ -136,7 +139,8 @@ public class BusinessRuleTaskTest extends TaskTest<BusinessRuleTask> {
                                            TASK_ON_EXIT_ACTION_JAVASCRIPT,
                                            TASK_SCRIPT_JAVASCRIPT_LANGUAGE,
                                            IS_ASYNC,
-                                           AD_HOC_AUTOSTART);
+                                           AD_HOC_AUTOSTART,
+                                           SLA_DUE_DATE);
         assertDataIOSet(filledTopLevelTaskJavascript.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
 
         BusinessRuleTask filledTopLevelTaskMvel = getTaskNodeById(getDiagram(),
@@ -155,7 +159,8 @@ public class BusinessRuleTaskTest extends TaskTest<BusinessRuleTask> {
                                            TASK_ON_EXIT_ACTION_MVEL,
                                            TASK_SCRIPT_MVEL_LANGUAGE,
                                            IS_ASYNC,
-                                           AD_HOC_AUTOSTART);
+                                           AD_HOC_AUTOSTART,
+                                           SLA_DUE_DATE);
         assertDataIOSet(filledTopLevelTaskMvel.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
     }
 
@@ -180,7 +185,8 @@ public class BusinessRuleTaskTest extends TaskTest<BusinessRuleTask> {
                                            EMPTY_VALUE,
                                            TASK_SCRIPT_JAVA_LANGUAGE,
                                            IS_NOT_ASYNC,
-                                           NOT_AD_HOC_AUTOSTART);
+                                           NOT_AD_HOC_AUTOSTART,
+                                           EMPTY_VALUE);
         assertDataIOSet(emptyTopLevelTask.getDataIOSet(), EMPTY_TASK_DATA_INPUT_OUTPUT);
     }
 
@@ -223,7 +229,8 @@ public class BusinessRuleTaskTest extends TaskTest<BusinessRuleTask> {
                                            TASK_ON_EXIT_ACTION_JAVA,
                                            TASK_SCRIPT_JAVA_LANGUAGE,
                                            IS_ASYNC,
-                                           AD_HOC_AUTOSTART);
+                                           AD_HOC_AUTOSTART,
+                                           SLA_DUE_DATE);
         assertDataIOSet(filledSubprocessLevelTaskJava.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
 
         BusinessRuleTask filledSubprocessLevelTaskJavascript = getTaskNodeById(getDiagram(),
@@ -242,7 +249,7 @@ public class BusinessRuleTaskTest extends TaskTest<BusinessRuleTask> {
                                            TASK_ON_EXIT_ACTION_JAVASCRIPT,
                                            TASK_SCRIPT_JAVASCRIPT_LANGUAGE,
                                            IS_ASYNC,
-                                           AD_HOC_AUTOSTART);
+                                           AD_HOC_AUTOSTART, SLA_DUE_DATE);
         assertDataIOSet(filledSubprocessLevelTaskJavascript.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
 
         BusinessRuleTask filledSubprocessLevelTaskMvel = getTaskNodeById(getDiagram(),
@@ -261,7 +268,7 @@ public class BusinessRuleTaskTest extends TaskTest<BusinessRuleTask> {
                                            TASK_ON_EXIT_ACTION_MVEL,
                                            TASK_SCRIPT_MVEL_LANGUAGE,
                                            IS_ASYNC,
-                                           AD_HOC_AUTOSTART);
+                                           AD_HOC_AUTOSTART, SLA_DUE_DATE);
         assertDataIOSet(filledSubprocessLevelTaskMvel.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
     }
 
@@ -286,7 +293,8 @@ public class BusinessRuleTaskTest extends TaskTest<BusinessRuleTask> {
                                            EMPTY_VALUE,
                                            TASK_SCRIPT_JAVA_LANGUAGE,
                                            IS_NOT_ASYNC,
-                                           NOT_AD_HOC_AUTOSTART);
+                                           NOT_AD_HOC_AUTOSTART,
+                                           EMPTY_VALUE);
         assertDataIOSet(emptySubprocessLevelTask.getDataIOSet(), EMPTY_TASK_DATA_INPUT_OUTPUT);
     }
 
@@ -329,7 +337,8 @@ public class BusinessRuleTaskTest extends TaskTest<BusinessRuleTask> {
                                            TASK_ON_EXIT_ACTION_JAVA,
                                            TASK_SCRIPT_JAVA_LANGUAGE,
                                            IS_ASYNC,
-                                           AD_HOC_AUTOSTART);
+                                           AD_HOC_AUTOSTART,
+                                           SLA_DUE_DATE);
         assertDataIOSet(filledTopLevelTaskJava.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
 
         BusinessRuleTask filledTopLevelTaskJavascript = getTaskNodeById(getDiagram(),
@@ -348,7 +357,8 @@ public class BusinessRuleTaskTest extends TaskTest<BusinessRuleTask> {
                                            TASK_ON_EXIT_ACTION_JAVASCRIPT,
                                            TASK_SCRIPT_JAVASCRIPT_LANGUAGE,
                                            IS_ASYNC,
-                                           AD_HOC_AUTOSTART);
+                                           AD_HOC_AUTOSTART,
+                                           SLA_DUE_DATE);
         assertDataIOSet(filledTopLevelTaskJavascript.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
 
         BusinessRuleTask filledTopLevelTaskMvel = getTaskNodeById(getDiagram(),
@@ -367,7 +377,8 @@ public class BusinessRuleTaskTest extends TaskTest<BusinessRuleTask> {
                                            TASK_ON_EXIT_ACTION_MVEL,
                                            TASK_SCRIPT_MVEL_LANGUAGE,
                                            IS_ASYNC,
-                                           AD_HOC_AUTOSTART);
+                                           AD_HOC_AUTOSTART,
+                                           SLA_DUE_DATE);
         assertDataIOSet(filledTopLevelTaskMvel.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
     }
 
@@ -392,7 +403,8 @@ public class BusinessRuleTaskTest extends TaskTest<BusinessRuleTask> {
                                            EMPTY_VALUE,
                                            TASK_SCRIPT_JAVA_LANGUAGE,
                                            IS_NOT_ASYNC,
-                                           NOT_AD_HOC_AUTOSTART);
+                                           NOT_AD_HOC_AUTOSTART,
+                                           EMPTY_VALUE);
         assertDataIOSet(emptyTopLevelTask.getDataIOSet(), EMPTY_TASK_DATA_INPUT_OUTPUT);
     }
 
@@ -417,7 +429,8 @@ public class BusinessRuleTaskTest extends TaskTest<BusinessRuleTask> {
                                            EMPTY_VALUE,
                                            TASK_SCRIPT_JAVA_LANGUAGE,
                                            IS_NOT_ASYNC,
-                                           NOT_AD_HOC_AUTOSTART);
+                                           NOT_AD_HOC_AUTOSTART,
+                                           EMPTY_VALUE);
         assertDataIOSet(emptySubprocessLevelTask.getDataIOSet(), EMPTY_TASK_DATA_INPUT_OUTPUT);
     }
 
@@ -460,7 +473,8 @@ public class BusinessRuleTaskTest extends TaskTest<BusinessRuleTask> {
                                            TASK_ON_EXIT_ACTION_JAVA,
                                            TASK_SCRIPT_JAVA_LANGUAGE,
                                            IS_ASYNC,
-                                           AD_HOC_AUTOSTART);
+                                           AD_HOC_AUTOSTART,
+                                           SLA_DUE_DATE);
         assertDataIOSet(filledSubprocessLevelTaskJava.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
 
         BusinessRuleTask filledSubprocessLevelTaskJavascript = getTaskNodeById(getDiagram(),
@@ -479,7 +493,8 @@ public class BusinessRuleTaskTest extends TaskTest<BusinessRuleTask> {
                                            TASK_ON_EXIT_ACTION_JAVASCRIPT,
                                            TASK_SCRIPT_JAVASCRIPT_LANGUAGE,
                                            IS_ASYNC,
-                                           AD_HOC_AUTOSTART);
+                                           AD_HOC_AUTOSTART,
+                                           SLA_DUE_DATE);
         assertDataIOSet(filledSubprocessLevelTaskJavascript.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
 
         BusinessRuleTask filledSubprocessLevelTaskMvel = getTaskNodeById(getDiagram(),
@@ -498,7 +513,8 @@ public class BusinessRuleTaskTest extends TaskTest<BusinessRuleTask> {
                                            TASK_ON_EXIT_ACTION_MVEL,
                                            TASK_SCRIPT_MVEL_LANGUAGE,
                                            IS_ASYNC,
-                                           AD_HOC_AUTOSTART);
+                                           AD_HOC_AUTOSTART,
+                                           SLA_DUE_DATE);
         assertDataIOSet(filledSubprocessLevelTaskMvel.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
     }
 
@@ -541,7 +557,8 @@ public class BusinessRuleTaskTest extends TaskTest<BusinessRuleTask> {
                                            TASK_ON_EXIT_ACTION_JAVA,
                                            TASK_SCRIPT_JAVA_LANGUAGE,
                                            IS_ASYNC,
-                                           AD_HOC_AUTOSTART);
+                                           AD_HOC_AUTOSTART,
+                                           SLA_DUE_DATE);
         assertDataIOSet(filledTopLevelTaskJava.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
 
         BusinessRuleTask filledTopLevelTaskJavascript = getTaskNodeById(getDiagram(),
@@ -560,7 +577,8 @@ public class BusinessRuleTaskTest extends TaskTest<BusinessRuleTask> {
                                            TASK_ON_EXIT_ACTION_JAVASCRIPT,
                                            TASK_SCRIPT_JAVASCRIPT_LANGUAGE,
                                            IS_ASYNC,
-                                           AD_HOC_AUTOSTART);
+                                           AD_HOC_AUTOSTART,
+                                           SLA_DUE_DATE);
         assertDataIOSet(filledTopLevelTaskJavascript.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
 
         BusinessRuleTask filledTopLevelTaskMvel = getTaskNodeById(getDiagram(),
@@ -579,7 +597,8 @@ public class BusinessRuleTaskTest extends TaskTest<BusinessRuleTask> {
                                            TASK_ON_EXIT_ACTION_MVEL,
                                            TASK_SCRIPT_MVEL_LANGUAGE,
                                            IS_ASYNC,
-                                           AD_HOC_AUTOSTART);
+                                           AD_HOC_AUTOSTART,
+                                           SLA_DUE_DATE);
         assertDataIOSet(filledTopLevelTaskMvel.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
     }
 
@@ -604,7 +623,8 @@ public class BusinessRuleTaskTest extends TaskTest<BusinessRuleTask> {
                                            EMPTY_VALUE,
                                            TASK_SCRIPT_JAVA_LANGUAGE,
                                            IS_NOT_ASYNC,
-                                           NOT_AD_HOC_AUTOSTART);
+                                           NOT_AD_HOC_AUTOSTART,
+                                           EMPTY_VALUE);
         assertDataIOSet(emptyTopLevelTask.getDataIOSet(), EMPTY_TASK_DATA_INPUT_OUTPUT);
     }
 
@@ -629,7 +649,8 @@ public class BusinessRuleTaskTest extends TaskTest<BusinessRuleTask> {
                                            EMPTY_VALUE,
                                            TASK_SCRIPT_JAVA_LANGUAGE,
                                            IS_NOT_ASYNC,
-                                           NOT_AD_HOC_AUTOSTART);
+                                           NOT_AD_HOC_AUTOSTART,
+                                           EMPTY_VALUE);
         assertDataIOSet(emptySubprocessLevelTask.getDataIOSet(), EMPTY_TASK_DATA_INPUT_OUTPUT);
     }
 
@@ -672,7 +693,8 @@ public class BusinessRuleTaskTest extends TaskTest<BusinessRuleTask> {
                                            TASK_ON_EXIT_ACTION_JAVA,
                                            TASK_SCRIPT_JAVA_LANGUAGE,
                                            IS_ASYNC,
-                                           AD_HOC_AUTOSTART);
+                                           AD_HOC_AUTOSTART,
+                                           SLA_DUE_DATE);
         assertDataIOSet(filledSubprocessLevelTaskJava.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
 
         BusinessRuleTask filledSubprocessLevelTaskJavascript = getTaskNodeById(getDiagram(),
@@ -691,7 +713,8 @@ public class BusinessRuleTaskTest extends TaskTest<BusinessRuleTask> {
                                            TASK_ON_EXIT_ACTION_JAVASCRIPT,
                                            TASK_SCRIPT_JAVASCRIPT_LANGUAGE,
                                            IS_ASYNC,
-                                           AD_HOC_AUTOSTART);
+                                           AD_HOC_AUTOSTART,
+                                           SLA_DUE_DATE);
         assertDataIOSet(filledSubprocessLevelTaskJavascript.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
 
         BusinessRuleTask filledSubprocessLevelTaskMvel = getTaskNodeById(getDiagram(),
@@ -710,7 +733,8 @@ public class BusinessRuleTaskTest extends TaskTest<BusinessRuleTask> {
                                            TASK_ON_EXIT_ACTION_MVEL,
                                            TASK_SCRIPT_MVEL_LANGUAGE,
                                            IS_ASYNC,
-                                           AD_HOC_AUTOSTART);
+                                           AD_HOC_AUTOSTART,
+                                           SLA_DUE_DATE);
         assertDataIOSet(filledSubprocessLevelTaskMvel.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
     }
 
@@ -736,7 +760,8 @@ public class BusinessRuleTaskTest extends TaskTest<BusinessRuleTask> {
                                            EMPTY_VALUE,
                                            TASK_SCRIPT_JAVA_LANGUAGE,
                                            IS_NOT_ASYNC,
-                                           NOT_AD_HOC_AUTOSTART);
+                                           NOT_AD_HOC_AUTOSTART,
+                                           SLA_DUE_DATE);
 
         assertDataIOSet(emptyTopLevelTask.getDataIOSet(), EMPTY_TASK_DATA_INPUT_OUTPUT);
     }
@@ -881,7 +906,8 @@ public class BusinessRuleTaskTest extends TaskTest<BusinessRuleTask> {
                                                     String onExitActionScriptValue,
                                                     String onExitActionScriptLanguage,
                                                     boolean isAsync,
-                                                    boolean adHocAutostart) {
+                                                    boolean adHocAutostart,
+                                                    String slaDueDate) {
         assertNotNull(executionSet);
         assertNotNull(executionSet.getRuleLanguage());
         assertNotNull(executionSet.getRuleFlowGroup());
@@ -892,6 +918,7 @@ public class BusinessRuleTaskTest extends TaskTest<BusinessRuleTask> {
         assertNotNull(executionSet.getOnExitAction());
         assertNotNull(executionSet.getIsAsync());
         assertNotNull(executionSet.getAdHocAutostart());
+        assertNotNull(executionSet.getSlaDueDate());
 
         assertNotNull(executionSet.getOnEntryAction().getValue());
         assertNotNull(executionSet.getOnExitAction().getValue());
@@ -909,6 +936,7 @@ public class BusinessRuleTaskTest extends TaskTest<BusinessRuleTask> {
         assertEquals(namespace, executionSet.getNamespace().getValue());
         assertEquals(decisionName, executionSet.getDecisionName().getValue());
         assertEquals(dmnModelName, executionSet.getDmnModelName().getValue());
+        assertEquals(slaDueDate, executionSet.getSlaDueDate().getValue());
 
         assertEquals(onEntryActionScriptValue, onEntryScriptTypeValues.get(0).getScript());
         assertEquals(onEntryActionScriptLanguage, onEntryScriptTypeValues.get(0).getLanguage());

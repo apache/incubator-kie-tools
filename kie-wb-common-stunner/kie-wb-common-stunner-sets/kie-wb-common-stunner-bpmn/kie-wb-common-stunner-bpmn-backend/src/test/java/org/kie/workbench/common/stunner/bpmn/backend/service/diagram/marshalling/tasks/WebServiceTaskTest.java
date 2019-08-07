@@ -101,7 +101,8 @@ public class WebServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
                                       TASK_ON_EXIT_ACTION_JAVA,
                                       TASK_SCRIPT_JAVA_LANGUAGE,
                                       IS_ASYNC,
-                                      AD_HOC_AUTOSTART);
+                                      AD_HOC_AUTOSTART,
+                                      SLA_DUE_DATE);
         assertDataIOSet(filledTopLevelTaskJava.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
 
         ServiceTask filledTopLevelTaskJavascript = getTaskNodeById(getDiagram(),
@@ -115,7 +116,8 @@ public class WebServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
                                       TASK_ON_EXIT_ACTION_JAVASCRIPT,
                                       TASK_SCRIPT_JAVASCRIPT_LANGUAGE,
                                       IS_ASYNC,
-                                      AD_HOC_AUTOSTART);
+                                      AD_HOC_AUTOSTART,
+                                      SLA_DUE_DATE);
         assertDataIOSet(filledTopLevelTaskJavascript.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
 
         ServiceTask filledTopLevelTaskMvel = getTaskNodeById(getDiagram(),
@@ -129,7 +131,8 @@ public class WebServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
                                       TASK_ON_EXIT_ACTION_MVEL,
                                       TASK_SCRIPT_MVEL_LANGUAGE,
                                       IS_ASYNC,
-                                      AD_HOC_AUTOSTART);
+                                      AD_HOC_AUTOSTART,
+                                      SLA_DUE_DATE);
         assertDataIOSet(filledTopLevelTaskMvel.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
     }
 
@@ -154,7 +157,8 @@ public class WebServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
                                       EMPTY_VALUE,
                                       TASK_SCRIPT_JAVA_LANGUAGE,
                                       IS_NOT_ASYNC,
-                                      NOT_AD_HOC_AUTOSTART);
+                                      NOT_AD_HOC_AUTOSTART,
+                                      EMPTY_VALUE);
         assertDataIOSet(emptyTopLevelTask.getDataIOSet(), EMPTY_TASK_DATA_INPUT_OUTPUT);
     }
 
@@ -191,7 +195,8 @@ public class WebServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
                                       TASK_ON_EXIT_ACTION_JAVA,
                                       TASK_SCRIPT_JAVA_LANGUAGE,
                                       IS_ASYNC,
-                                      AD_HOC_AUTOSTART);
+                                      AD_HOC_AUTOSTART,
+                                      SLA_DUE_DATE);
         assertDataIOSet(filledSubprocessLevelTaskJava.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
 
         ServiceTask filledSubprocessLevelTaskJavascript = getTaskNodeById(getDiagram(),
@@ -205,7 +210,8 @@ public class WebServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
                                       TASK_ON_EXIT_ACTION_JAVASCRIPT,
                                       TASK_SCRIPT_JAVASCRIPT_LANGUAGE,
                                       IS_ASYNC,
-                                      AD_HOC_AUTOSTART);
+                                      AD_HOC_AUTOSTART,
+                                      SLA_DUE_DATE);
         assertDataIOSet(filledSubprocessLevelTaskJavascript.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
 
         ServiceTask filledSubprocessLevelTaskMvel = getTaskNodeById(getDiagram(),
@@ -219,7 +225,8 @@ public class WebServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
                                       TASK_ON_EXIT_ACTION_MVEL,
                                       TASK_SCRIPT_MVEL_LANGUAGE,
                                       IS_ASYNC,
-                                      AD_HOC_AUTOSTART);
+                                      AD_HOC_AUTOSTART,
+                                      SLA_DUE_DATE);
         assertDataIOSet(filledSubprocessLevelTaskMvel.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
     }
 
@@ -243,7 +250,8 @@ public class WebServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
                                       EMPTY_VALUE,
                                       TASK_SCRIPT_JAVA_LANGUAGE,
                                       IS_NOT_ASYNC,
-                                      NOT_AD_HOC_AUTOSTART);
+                                      NOT_AD_HOC_AUTOSTART,
+                                      EMPTY_VALUE);
         assertDataIOSet(emptySubprocessLevelTask.getDataIOSet(), EMPTY_TASK_DATA_INPUT_OUTPUT);
     }
 
@@ -280,7 +288,8 @@ public class WebServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
                                       TASK_ON_EXIT_ACTION_JAVA,
                                       TASK_SCRIPT_JAVA_LANGUAGE,
                                       IS_ASYNC,
-                                      AD_HOC_AUTOSTART);
+                                      AD_HOC_AUTOSTART,
+                                      SLA_DUE_DATE);
         assertDataIOSet(filledTopLevelTaskJava.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
 
         ServiceTask filledTopLevelTaskJavascript = getTaskNodeById(getDiagram(),
@@ -294,7 +303,8 @@ public class WebServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
                                       TASK_ON_EXIT_ACTION_JAVASCRIPT,
                                       TASK_SCRIPT_JAVASCRIPT_LANGUAGE,
                                       IS_ASYNC,
-                                      AD_HOC_AUTOSTART);
+                                      AD_HOC_AUTOSTART,
+                                      SLA_DUE_DATE);
         assertDataIOSet(filledTopLevelTaskJavascript.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
 
         ServiceTask filledTopLevelTaskMvel = getTaskNodeById(getDiagram(),
@@ -308,7 +318,7 @@ public class WebServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
                                       TASK_ON_EXIT_ACTION_MVEL,
                                       TASK_SCRIPT_MVEL_LANGUAGE,
                                       IS_ASYNC,
-                                      AD_HOC_AUTOSTART);
+                                      AD_HOC_AUTOSTART, SLA_DUE_DATE);
         assertDataIOSet(filledTopLevelTaskMvel.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
     }
 
@@ -332,7 +342,8 @@ public class WebServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
                                       EMPTY_VALUE,
                                       TASK_SCRIPT_JAVA_LANGUAGE,
                                       IS_NOT_ASYNC,
-                                      NOT_AD_HOC_AUTOSTART);
+                                      NOT_AD_HOC_AUTOSTART,
+                                      EMPTY_VALUE);
         assertDataIOSet(emptyTopLevelTask.getDataIOSet(), EMPTY_TASK_DATA_INPUT_OUTPUT);
     }
 
@@ -356,7 +367,8 @@ public class WebServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
                                       EMPTY_VALUE,
                                       TASK_SCRIPT_JAVA_LANGUAGE,
                                       IS_NOT_ASYNC,
-                                      NOT_AD_HOC_AUTOSTART);
+                                      NOT_AD_HOC_AUTOSTART,
+                                      EMPTY_VALUE);
         assertDataIOSet(emptySubprocessLevelTask.getDataIOSet(), EMPTY_TASK_DATA_INPUT_OUTPUT);
     }
 
@@ -393,7 +405,8 @@ public class WebServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
                                       TASK_ON_EXIT_ACTION_JAVA,
                                       TASK_SCRIPT_JAVA_LANGUAGE,
                                       IS_ASYNC,
-                                      AD_HOC_AUTOSTART);
+                                      AD_HOC_AUTOSTART,
+                                      SLA_DUE_DATE);
         assertDataIOSet(filledSubprocessLevelTaskJava.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
 
         ServiceTask filledSubprocessLevelTaskJavascript = getTaskNodeById(getDiagram(),
@@ -407,7 +420,8 @@ public class WebServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
                                       TASK_ON_EXIT_ACTION_JAVASCRIPT,
                                       TASK_SCRIPT_JAVASCRIPT_LANGUAGE,
                                       IS_ASYNC,
-                                      AD_HOC_AUTOSTART);
+                                      AD_HOC_AUTOSTART,
+                                      SLA_DUE_DATE);
         assertDataIOSet(filledSubprocessLevelTaskJavascript.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
 
         ServiceTask filledSubprocessLevelTaskMvel = getTaskNodeById(getDiagram(),
@@ -421,7 +435,8 @@ public class WebServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
                                       TASK_ON_EXIT_ACTION_MVEL,
                                       TASK_SCRIPT_MVEL_LANGUAGE,
                                       IS_ASYNC,
-                                      AD_HOC_AUTOSTART);
+                                      AD_HOC_AUTOSTART,
+                                      SLA_DUE_DATE);
         assertDataIOSet(filledSubprocessLevelTaskMvel.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
     }
 
@@ -458,7 +473,8 @@ public class WebServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
                                       TASK_ON_EXIT_ACTION_JAVA,
                                       TASK_SCRIPT_JAVA_LANGUAGE,
                                       IS_ASYNC,
-                                      AD_HOC_AUTOSTART);
+                                      AD_HOC_AUTOSTART,
+                                      SLA_DUE_DATE);
         assertDataIOSet(filledTopLevelTaskJava.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
 
         ServiceTask filledTopLevelTaskJavascript = getTaskNodeById(getDiagram(),
@@ -472,7 +488,8 @@ public class WebServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
                                       TASK_ON_EXIT_ACTION_JAVASCRIPT,
                                       TASK_SCRIPT_JAVASCRIPT_LANGUAGE,
                                       IS_ASYNC,
-                                      AD_HOC_AUTOSTART);
+                                      AD_HOC_AUTOSTART,
+                                      SLA_DUE_DATE);
         assertDataIOSet(filledTopLevelTaskJavascript.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
 
         ServiceTask filledTopLevelTaskMvel = getTaskNodeById(getDiagram(),
@@ -486,7 +503,8 @@ public class WebServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
                                       TASK_ON_EXIT_ACTION_MVEL,
                                       TASK_SCRIPT_MVEL_LANGUAGE,
                                       IS_ASYNC,
-                                      AD_HOC_AUTOSTART);
+                                      AD_HOC_AUTOSTART,
+                                      SLA_DUE_DATE);
         assertDataIOSet(filledTopLevelTaskMvel.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
     }
 
@@ -510,7 +528,8 @@ public class WebServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
                                       EMPTY_VALUE,
                                       TASK_SCRIPT_JAVA_LANGUAGE,
                                       IS_NOT_ASYNC,
-                                      NOT_AD_HOC_AUTOSTART);
+                                      NOT_AD_HOC_AUTOSTART,
+                                      EMPTY_VALUE);
         assertDataIOSet(emptyTopLevelTask.getDataIOSet(), EMPTY_TASK_DATA_INPUT_OUTPUT);
     }
 
@@ -534,7 +553,8 @@ public class WebServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
                                       EMPTY_VALUE,
                                       TASK_SCRIPT_JAVA_LANGUAGE,
                                       IS_NOT_ASYNC,
-                                      NOT_AD_HOC_AUTOSTART);
+                                      NOT_AD_HOC_AUTOSTART,
+                                      EMPTY_VALUE);
         assertDataIOSet(emptySubprocessLevelTask.getDataIOSet(), EMPTY_TASK_DATA_INPUT_OUTPUT);
     }
 
@@ -571,7 +591,8 @@ public class WebServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
                                       TASK_ON_EXIT_ACTION_JAVA,
                                       TASK_SCRIPT_JAVA_LANGUAGE,
                                       IS_ASYNC,
-                                      AD_HOC_AUTOSTART);
+                                      AD_HOC_AUTOSTART,
+                                      SLA_DUE_DATE);
         assertDataIOSet(filledSubprocessLevelTaskJava.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
 
         ServiceTask filledSubprocessLevelTaskJavascript = getTaskNodeById(getDiagram(),
@@ -585,7 +606,8 @@ public class WebServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
                                       TASK_ON_EXIT_ACTION_JAVASCRIPT,
                                       TASK_SCRIPT_JAVASCRIPT_LANGUAGE,
                                       IS_ASYNC,
-                                      AD_HOC_AUTOSTART);
+                                      AD_HOC_AUTOSTART,
+                                      SLA_DUE_DATE);
         assertDataIOSet(filledSubprocessLevelTaskJavascript.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
 
         ServiceTask filledSubprocessLevelTaskMvel = getTaskNodeById(getDiagram(),
@@ -599,7 +621,8 @@ public class WebServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
                                       TASK_ON_EXIT_ACTION_MVEL,
                                       TASK_SCRIPT_MVEL_LANGUAGE,
                                       IS_ASYNC,
-                                      AD_HOC_AUTOSTART);
+                                      AD_HOC_AUTOSTART,
+                                      SLA_DUE_DATE);
         assertDataIOSet(filledSubprocessLevelTaskMvel.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
     }
 

@@ -85,4 +85,8 @@ public class BusinessRuleTaskPropertyWriter extends ActivityPropertyWriter {
     public void setAdHocAutostart(Boolean value) {
         CustomElement.autoStart.of(baseElement).set(value);
     }
+
+    public void setSlaDueDate(String value) {
+        CustomElement.slaDueDate.of(baseElement).set(value);
+    }
 }

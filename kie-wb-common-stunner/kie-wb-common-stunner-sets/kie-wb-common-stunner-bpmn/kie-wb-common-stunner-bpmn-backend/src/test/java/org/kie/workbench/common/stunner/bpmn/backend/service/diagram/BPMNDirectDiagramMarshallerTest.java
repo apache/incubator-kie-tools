@@ -114,12 +114,14 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.reassignment.Re
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocSubprocessTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.BaseReusableSubprocessTaskExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.BusinessRuleTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ReusableSubprocessTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskTypes;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.UserTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessData;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessVariables;
 import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTask;
+import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinitionRegistry;
 import org.kie.workbench.common.stunner.core.StunnerTestingGraphAPI;
 import org.kie.workbench.common.stunner.core.backend.StunnerTestingGraphBackendAPI;
@@ -393,6 +395,10 @@ public class BPMNDirectDiagramMarshallerTest {
 
         Node<? extends Definition, ?> log = diagram.getGraph().getNode("_AE76ACC9-CCD0-425D-BD40-5E4F3533A1DF");
         assertTrue(log.getContent().getDefinition() instanceof ServiceTask);
+
+        ServiceTask serviceTask = (ServiceTask) log.getContent().getDefinition();
+
+        validateServiceTask(serviceTask.getExecutionSet(), "12/25/1983");
     }
 
     @Test
@@ -410,6 +416,24 @@ public class BPMNDirectDiagramMarshallerTest {
         assertTrue(rest.getContent().getDefinition() instanceof ServiceTask);
         assertTrue(ws.getContent().getDefinition() instanceof ServiceTask);
         assertTrue(log.getContent().getDefinition() instanceof ServiceTask);
+
+        ServiceTask emailTask = (ServiceTask) email.getContent().getDefinition();
+        ServiceTask restTask = (ServiceTask) rest.getContent().getDefinition();
+        ServiceTask wsTask = (ServiceTask) ws.getContent().getDefinition();
+        ServiceTask logTask = (ServiceTask) log.getContent().getDefinition();
+
+        validateServiceTask(emailTask.getExecutionSet(), "12/25/1983");
+        validateServiceTask(restTask.getExecutionSet(), "12/25/1983");
+        validateServiceTask(wsTask.getExecutionSet(), "12/25/1983");
+        validateServiceTask(logTask.getExecutionSet(), "12/25/1983");
+    }
+
+    private void validateServiceTask(ServiceTaskExecutionSet serviceTaskExecutionSet,
+                                     String slaDueDateValue) {
+        assertNotNull(serviceTaskExecutionSet);
+
+        assertNotNull(serviceTaskExecutionSet.getSlaDueDate());
+        assertEquals(serviceTaskExecutionSet.getSlaDueDate().getValue(), slaDueDateValue);
     }
 
     @Test
@@ -601,6 +625,11 @@ public class BPMNDirectDiagramMarshallerTest {
         BusinessRuleTask businessRuleTask = (BusinessRuleTask) businessRuleNode.getContent().getDefinition();
         assertEquals(businessRuleTask.getTaskType().getValue(),
                      TaskTypes.BUSINESS_RULE);
+
+        BusinessRuleTaskExecutionSet executionSet = businessRuleTask.getExecutionSet();
+        assertNotNull(executionSet.getSlaDueDate());
+        assertEquals(executionSet.getSlaDueDate().getValue(), "12/25/1983");
+
         DataIOSet dataIOSet = businessRuleTask.getDataIOSet();
         AssignmentsInfo assignmentsinfo = dataIOSet.getAssignmentsinfo();
         assertEquals(assignmentsinfo.getValue(),
@@ -1662,6 +1691,7 @@ public class BPMNDirectDiagramMarshallerTest {
         assertNotNull(businessRuleTask);
         assertNotNull(businessRuleTask.getExecutionSet());
         assertNotNull(businessRuleTask.getExecutionSet().getRuleFlowGroup());
+        assertNotNull(businessRuleTask.getExecutionSet().getSlaDueDate());
         assertNotNull(businessRuleTask.getGeneral());
         assertNotNull(businessRuleTask.getGeneral().getName());
         assertEquals(businessRuleTask.getTaskType().getValue(),
@@ -1687,6 +1717,7 @@ public class BPMNDirectDiagramMarshallerTest {
 
         assertEquals("java",
                      businessRuleTask.getExecutionSet().getOnExitAction().getValue().getValues().get(0).getLanguage());
+        assertEquals("12/25/1983", businessRuleTask.getExecutionSet().getSlaDueDate().getValue());
     }
 
     @Test
@@ -2402,6 +2433,9 @@ public class BPMNDirectDiagramMarshallerTest {
         assertTrue(result.contains("<bpmn2:dataInputRefs>_45C2C340-D1D0-4D63-8419-EF38F9E73507_input2InputX</bpmn2:dataInputRefs>"));
         assertTrue(result.contains("<bpmn2:dataOutputRefs>_45C2C340-D1D0-4D63-8419-EF38F9E73507_output1OutputX</bpmn2:dataOutputRefs>"));
         assertTrue(result.contains("<bpmn2:dataOutputRefs>_45C2C340-D1D0-4D63-8419-EF38F9E73507_output2OutputX</bpmn2:dataOutputRefs>"));
+        assertTrue(result.contains("<drools:metaData name=\"customSLADueDate\">"));
+        assertTrue(result.contains("<drools:metaValue><![CDATA[12/25/1983]]></drools:metaValue>"));
+        assertTrue(result.contains("</drools:metaData>"));
     }
 
     @Test
@@ -3211,6 +3245,12 @@ public class BPMNDirectDiagramMarshallerTest {
         assertTrue(flatResult.contains("<drools:script><![CDATA[System.out.println(\"Hello\");]]></drools:script>"));
 
         assertTrue(flatResult.contains("<drools:script><![CDATA[System.out.println(\"Bye\");]]></drools:script>"));
+
+        assertTrue(result.contains("<drools:metaData name=\"customSLADueDate\">"));
+
+        assertTrue(result.contains("<drools:metaValue><![CDATA[12/25/1983]]></drools:metaValue>"));
+
+        assertTrue(result.contains("</drools:metaData>"));
     }
 
     @Test
@@ -3563,6 +3603,9 @@ public class BPMNDirectDiagramMarshallerTest {
                      log.getGeneral().getName().getValue());
         assertEquals(WorkItemDefinitionMockRegistry.LOG.getDocumentation(),
                      log.getGeneral().getDocumentation().getValue());
+
+        assertNotNull(email.getExecutionSet().getSlaDueDate());
+        assertEquals(email.getExecutionSet().getSlaDueDate().getValue(), "12/25/1983");
     }
 
     @Test
@@ -3900,6 +3943,9 @@ public class BPMNDirectDiagramMarshallerTest {
                       3);
         assertTrue(result.contains("drools:taskName=\"Email\""));
         assertTrue(result.contains("drools:taskName=\"Log\""));
+        assertTrue(result.contains("<drools:metaData name=\"customSLADueDate\">"));
+        assertTrue(result.contains("<drools:metaValue><![CDATA[12/25/1983]]></drools:metaValue>"));
+        assertTrue(result.contains("</drools:metaData>"));
     }
 
     @Test
