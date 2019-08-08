@@ -71,7 +71,7 @@ yarn run build:fast # skips lint and unit tests
 Known issues
 --------------------
 - Flicker when opening or restoring DMN/BPMN editors.
-- Unable to detect 'dirty' state on DMN/BPMN editors.
+- Unable to detect 'dirty' state on DMN/BPMN editors. This means that when closing an editor with changes, we can't show a warning popup to remind the user to save it before closing.
 - Copy/paste diagram parts between DMN/BPMN editors.
 
 
