@@ -57,6 +57,8 @@ public class PMMLIncludedDocumentFactoryTest {
 
     private static final String MODEL_NAME = "pmmlModel";
 
+    private static final String MODEL_CLASS_NAME = "PmmlModelClassName";
+
     private static final String MODEL_PACKAGE = "pmmlModelPackage";
 
     private static final String INPUT_FIELD_PREFIX = "input";
@@ -161,6 +163,7 @@ public class PMMLIncludedDocumentFactoryTest {
 
     private PMMLModelInfo makePMMLModelInfo() {
         return new PMMLModelInfo(MODEL_NAME,
+                                 MODEL_CLASS_NAME,
                                  makePMMLModelInputFieldNames(),
                                  Collections.emptyList(),
                                  Collections.emptyList());
