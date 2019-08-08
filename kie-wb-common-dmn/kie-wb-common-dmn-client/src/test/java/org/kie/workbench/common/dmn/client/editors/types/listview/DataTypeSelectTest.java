@@ -59,6 +59,7 @@ public class DataTypeSelectTest {
     @Before
     public void setup() {
         dataTypeSelect = spy(new DataTypeSelect(view, dataTypeUtils, dataTypeManager));
+        when(dataTypeManager.structure()).thenReturn("Structure");
     }
 
     @Test

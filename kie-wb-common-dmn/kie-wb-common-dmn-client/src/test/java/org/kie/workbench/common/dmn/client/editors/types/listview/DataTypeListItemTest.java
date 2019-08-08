@@ -115,16 +115,15 @@ public class DataTypeListItemTest {
     public void setup() {
 
         dataTypeManager = spy(new DataTypeManager(null, null, itemDefinitionStore, null, null, null, null, null));
-        listItem = spy(new DataTypeListItem(view, dataTypeSelectComponent, dataTypeConstraintComponent, dataTypeListComponent, dataTypeManager, confirmation, nameFormatValidator, editModeToggleEvent, dataTypeChangedEvent));
-        listItem.init(dataTypeList);
-
         doReturn(structure).when(dataTypeManager).structure();
+
+        listItem = spy(new DataTypeListItem(view, dataTypeSelectComponent, dataTypeConstraintComponent, dataTypeListComponent, dataTypeManager, confirmation, nameFormatValidator, editModeToggleEvent, dataTypeChangedEvent));
+        listItem.setup();
+        listItem.init(dataTypeList);
     }
 
     @Test
     public void testSetup() {
-        listItem.setup();
-
         verify(view).init(listItem);
     }
 
@@ -922,7 +921,7 @@ public class DataTypeListItemTest {
     }
 
     @Test
-    public void testRefreshConstraintComponentWhenSelectedTypeIsALIst() {
+    public void testRefreshConstraintComponentWhenSelectedTypeIsAList() {
 
         when(dataTypeListComponent.getValue()).thenReturn(true);
 
@@ -939,6 +938,156 @@ public class DataTypeListItemTest {
         listItem.refreshConstraintComponent();
 
         verify(dataTypeConstraintComponent).enable();
+    }
+
+    @Test
+    public void testRefreshConstraintComponentWhenTypeIsIndirectTypeOfCanNotHaveConstraints() {
+
+        doReturn(true).when(listItem).isIndirectCanNotHaveConstraintType();
+
+        listItem.refreshConstraintComponent();
+
+        verify(dataTypeConstraintComponent).disable();
+    }
+
+    @Test
+    public void testIsIndirectTypeOfWhenIsBoolean() {
+
+        final String currentValue = "tIndirectBoolean";
+        final DataType dataType1 = mock(DataType.class);
+        final List<DataType> customDataTypes = asList(dataType1);
+
+        when(dataType1.getName()).thenReturn(currentValue);
+        when(dataType1.getType()).thenReturn(BOOLEAN.getName());
+
+        when(dataTypeSelectComponent.getValue()).thenReturn(currentValue);
+        when(dataTypeSelectComponent.getCustomDataTypes()).thenReturn(customDataTypes);
+
+        final boolean actual = listItem.isIndirectCanNotHaveConstraintType();
+
+        assertTrue(actual);
+    }
+
+    @Test
+    public void testIsIndirectTypeOfWhenIsBooleanRecursive() {
+
+        // some(tIndirectType) -> tIndirectType(tIndirectBoolean) -> tIndirectBoolean(boolean)
+        final String indirectType = "tIndirectType";
+        final String tBoolean = "tIndirectBoolean";
+        final DataType dataType1 = mock(DataType.class);
+        final DataType dataType2 = mock(DataType.class);
+        final List<DataType> customDataTypes = asList(dataType1, dataType2);
+
+        when(dataType1.getName()).thenReturn(indirectType);
+        when(dataType1.getType()).thenReturn(tBoolean);
+        when(dataType2.getName()).thenReturn(tBoolean);
+        when(dataType2.getType()).thenReturn(BOOLEAN.getName());
+
+        when(dataTypeSelectComponent.getValue()).thenReturn(indirectType);
+        when(dataTypeSelectComponent.getCustomDataTypes()).thenReturn(customDataTypes);
+
+        final boolean actual = listItem.isIndirectCanNotHaveConstraintType();
+
+        assertTrue(actual);
+    }
+
+    @Test
+    public void testIsIndirectTypeOfWhenIsStructureRecursive() {
+
+        // some(tIndirectType) -> tIndirectType(tIndirectStructure) -> tIndirectStructure(Structure)
+        final String indirectType = "tIndirectType";
+        final String tIndirectStructure = "tIndirectStructure";
+        final DataType dataType1 = mock(DataType.class);
+        final DataType dataType2 = mock(DataType.class);
+        final List<DataType> customDataTypes = asList(dataType1, dataType2);
+
+        when(dataType1.getName()).thenReturn(indirectType);
+        when(dataType1.getType()).thenReturn(tIndirectStructure);
+        when(dataType2.getName()).thenReturn(tIndirectStructure);
+        when(dataType2.getType()).thenReturn(structure);
+        when(dataTypeSelectComponent.getValue()).thenReturn(indirectType);
+        when(dataTypeSelectComponent.getCustomDataTypes()).thenReturn(customDataTypes);
+
+        final boolean actual = listItem.isIndirectCanNotHaveConstraintType();
+
+        assertTrue(actual);
+    }
+
+    @Test
+    public void testIsIndirectTypeOfWhenIsStructure() {
+
+        final String currentValue = "tIndirectStructure";
+        final DataType dataType1 = mock(DataType.class);
+        final List<DataType> customDataTypes = asList(dataType1);
+
+        when(dataType1.getName()).thenReturn(currentValue);
+        when(dataType1.getType()).thenReturn(structure);
+
+        when(dataTypeSelectComponent.getValue()).thenReturn(currentValue);
+        when(dataTypeSelectComponent.getCustomDataTypes()).thenReturn(customDataTypes);
+
+        final boolean actual = listItem.isIndirectCanNotHaveConstraintType();
+
+        assertTrue(actual);
+    }
+
+    @Test
+    public void testIsIndirectTypeOfWhenIsContextRecursive() {
+
+        // some(tIndirectType) -> tIndirectType(tIndirectContext) -> tIndirectContext(Context)
+        final String indirectType = "tIndirectType";
+        final String tIndirectContext = "tIndirectContext";
+        final DataType dataType1 = mock(DataType.class);
+        final DataType dataType2 = mock(DataType.class);
+        final List<DataType> customDataTypes = asList(dataType1, dataType2);
+
+        when(dataType1.getName()).thenReturn(indirectType);
+        when(dataType1.getType()).thenReturn(tIndirectContext);
+        when(dataType2.getName()).thenReturn(tIndirectContext);
+        when(dataType2.getType()).thenReturn(CONTEXT.getName());
+
+        when(dataTypeSelectComponent.getValue()).thenReturn(indirectType);
+        when(dataTypeSelectComponent.getCustomDataTypes()).thenReturn(customDataTypes);
+
+        final boolean actual = listItem.isIndirectCanNotHaveConstraintType();
+
+        assertTrue(actual);
+    }
+
+    @Test
+    public void testIsIndirectTypeOfWhenIsContext() {
+
+        final String currentValue = "tIndirectContext";
+        final DataType dataType1 = mock(DataType.class);
+        final List<DataType> customDataTypes = asList(dataType1);
+
+        when(dataType1.getName()).thenReturn(currentValue);
+        when(dataType1.getType()).thenReturn(CONTEXT.getName());
+
+        when(dataTypeSelectComponent.getValue()).thenReturn(currentValue);
+        when(dataTypeSelectComponent.getCustomDataTypes()).thenReturn(customDataTypes);
+
+        final boolean actual = listItem.isIndirectCanNotHaveConstraintType();
+
+        assertTrue(actual);
+    }
+
+    @Test
+    public void testIsIndirectTypeOfWhenIsOtherType() {
+
+        final String currentValue = "tIndirectOtherType";
+        final DataType dataType1 = mock(DataType.class);
+        final List<DataType> customDataTypes = asList(dataType1);
+
+        when(dataType1.getName()).thenReturn(currentValue);
+        when(dataType1.getType()).thenReturn(STRING.getName());
+
+        when(dataTypeSelectComponent.getValue()).thenReturn(currentValue);
+        when(dataTypeSelectComponent.getCustomDataTypes()).thenReturn(customDataTypes);
+
+        final boolean actual = listItem.isIndirectCanNotHaveConstraintType();
+
+        assertFalse(actual);
     }
 
     @Test

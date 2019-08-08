@@ -16,8 +16,10 @@
 
 package org.kie.workbench.common.dmn.client.editors.types.listview;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -83,6 +85,8 @@ public class DataTypeListItem {
 
     private ConstraintType oldConstraintType;
 
+    private String[] canNotHaveConstraintTypes;
+
     @Inject
     public DataTypeListItem(final View view,
                             final DataTypeSelect dataTypeSelectComponent,
@@ -108,6 +112,11 @@ public class DataTypeListItem {
     @PostConstruct
     void setup() {
         view.init(this);
+        canNotHaveConstraintTypes = new String[]{
+                BOOLEAN.getName(),
+                dataTypeManager.structure(),
+                CONTEXT.getName()
+        };
     }
 
     public void init(final DataTypeList dataTypeList) {
@@ -170,6 +179,10 @@ public class DataTypeListItem {
 
     public int getLevel() {
         return level;
+    }
+
+    public String[] getCanNotHaveConstraintTypes() {
+        return canNotHaveConstraintTypes;
     }
 
     void expandOrCollapseSubTypes() {
@@ -485,23 +498,53 @@ public class DataTypeListItem {
     }
 
     void refreshConstraintComponent() {
-        if (isBooleanType() || isStructureType() || isContextType() || isList()) {
+        if (canNotHaveConstraint()) {
             dataTypeConstraintComponent.disable();
         } else {
             dataTypeConstraintComponent.enable();
         }
     }
 
-    private boolean isBooleanType() {
-        return Objects.equals(BOOLEAN.getName(), getType());
+    private boolean canNotHaveConstraint() {
+        if (isList()) {
+            return true;
+        }
+
+        if (Stream.of(getCanNotHaveConstraintTypes())
+                .filter(type -> Objects.equals(type, getType()))
+                .findFirst()
+                .isPresent()) {
+            return true;
+        }
+
+        if (isIndirectCanNotHaveConstraintType()) {
+            return true;
+        }
+
+        return false;
     }
 
     private boolean isStructureType() {
         return Objects.equals(dataTypeManager.structure(), getType());
     }
 
-    private boolean isContextType() {
-        return Objects.equals(CONTEXT.getName(), getType());
+    boolean isIndirectCanNotHaveConstraintType() {
+        final String currentValue = dataTypeSelectComponent.getValue();
+        return isIndirectTypeOf(currentValue, getCanNotHaveConstraintTypes());
+    }
+
+    private boolean isIndirectTypeOf(final String currentValue, final String... types) {
+        final List<DataType> customDataTypes = dataTypeSelectComponent.getCustomDataTypes();
+        final Optional<DataType> customType = customDataTypes.stream()
+                .filter(d -> d.getName().equals(currentValue))
+                .findFirst();
+
+        if (customType.isPresent()) {
+            final String type = customType.get().getType();
+            return Arrays.stream(types).anyMatch(t -> t.equals(type)) || isIndirectTypeOf(type, types);
+        }
+
+        return false;
     }
 
     public interface View extends UberElemental<DataTypeListItem> {
