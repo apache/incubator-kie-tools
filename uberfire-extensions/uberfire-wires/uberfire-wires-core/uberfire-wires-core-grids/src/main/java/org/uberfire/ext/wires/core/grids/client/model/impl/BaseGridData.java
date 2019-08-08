@@ -18,12 +18,12 @@ package org.uberfire.ext.wires.core.grids.client.model.impl;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.OptionalInt;
+import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
@@ -121,10 +121,11 @@ public class BaseGridData implements GridData {
 
         removeColumn(column);
 
-        //Destroy column data
+        //Destroy column related cell
         for (GridRow row : rows) {
             ((BaseGridRow) row).deleteCell(index);
-            final Map<Integer, GridCell<?>> clone = new HashMap<Integer, GridCell<?>>(row.getCells());
+            //Shift all cells according to the removed one
+            final Map<Integer, GridCell<?>> clone = new TreeMap<>(row.getCells());
             for (Map.Entry<Integer, GridCell<?>> e : clone.entrySet()) {
                 if (e.getKey() > index) {
                     ((BaseGridRow) row).deleteCell(e.getKey());

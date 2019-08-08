@@ -16,9 +16,11 @@
 
 package org.uberfire.ext.wires.core.grids.client.model.impl;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.OptionalDouble;
+import java.util.stream.IntStream;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
@@ -27,6 +29,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
@@ -297,6 +300,55 @@ public class BaseGridDataTest {
         reset(data);
         data.deleteColumn(column);
 
+        verify(data, times(2))
+                .internalRefreshWidth(booleanArgumentCaptor.capture(), optionalDoubleArgumentCaptor.capture());
+        assertTrue(booleanArgumentCaptor.getAllValues().stream().allMatch(elem -> elem));
+        assertFalse(optionalDoubleArgumentCaptor.getAllValues().stream().allMatch(OptionalDouble::isPresent));
+    }
+
+    @Test
+    public void deleteColumn_checkColumnsAndCellsShifting() {
+        BaseGridData data = spy(baseGridData);
+        final BaseGridColumn<String> column = new BaseGridColumn<>(header, columnRenderer, 100.0);
+        final BaseGridColumn<String> column2 = new BaseGridColumn<>(header, columnRenderer, 100.0);
+        final BaseGridColumn<String> column3 = new BaseGridColumn<>(header, columnRenderer, 100.0);
+        final BaseGridColumn<String> column4 = new BaseGridColumn<>(header, columnRenderer, 100.0);
+        data.appendColumn(column);
+        data.appendColumn(column2);
+        data.appendColumn(column3);
+        data.appendColumn(column4);
+        final BaseGridRow row = new BaseGridRow();
+        data.appendRow(row);
+        BaseGridCell cell = new BaseGridCell(new BaseGridCellValue(""));
+        BaseGridCell cell2 = new BaseGridCell(new BaseGridCellValue(""));
+        BaseGridCell cell3 = new BaseGridCell(new BaseGridCellValue(""));
+        BaseGridCell cell4 = new BaseGridCell(new BaseGridCellValue(""));
+        data.setCell(0,0, () -> cell);
+        data.setCell(0,1, () -> cell2);
+        data.setCell(0,2, () -> cell3);
+        data.setCell(0,3, () -> cell4);
+
+        assertTrue(data.getColumnCount() == 4);
+        assertSame(data.getColumns().get(0), column);
+        assertSame(data.getColumns().get(1), column2);
+        assertSame(data.getColumns().get(2), column3);
+        assertSame(data.getColumns().get(3), column4);
+        assertTrue(data.getRow(0).getCells().size() == 4);
+        assertSame(data.getRow(0).getCells().get(0), cell);
+        assertSame(data.getRow(0).getCells().get(1), cell2);
+        assertSame(data.getRow(0).getCells().get(2), cell3);
+        assertSame(data.getRow(0).getCells().get(3), cell4);
+
+        data.deleteColumn(column2);
+
+        assertTrue(data.getColumnCount() == 3);
+        assertSame(data.getColumns().get(0), column);
+        assertSame(data.getColumns().get(1), column3);
+        assertSame(data.getColumns().get(2), column4);
+        assertTrue(data.getRow(0).getCells().size() == 3);
+        assertSame(data.getRow(0).getCells().get(0), cell);
+        assertSame(data.getRow(0).getCells().get(1), cell3);
+        assertSame(data.getRow(0).getCells().get(2), cell4);
         verify(data, times(2))
                 .internalRefreshWidth(booleanArgumentCaptor.capture(), optionalDoubleArgumentCaptor.capture());
         assertTrue(booleanArgumentCaptor.getAllValues().stream().allMatch(elem -> elem));
