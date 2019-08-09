@@ -29,6 +29,7 @@ import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.TermQuery;
 import org.junit.Test;
 import org.uberfire.commons.async.DescriptiveThreadFactory;
+import org.uberfire.ext.metadata.engine.BatchIndexListener;
 import org.uberfire.ext.metadata.engine.Observer;
 import org.uberfire.ext.metadata.io.BatchIndex;
 import org.uberfire.ext.metadata.io.MetadataConfigBuilder;
@@ -213,6 +214,17 @@ public class BatchIndexTest extends BaseIndexTest {
                        Executors.newCachedThreadPool(new DescriptiveThreadFactory()),
                        indexersFactory(),
                        indexerDispatcherFactory(config.getIndexEngine()),
+                       new BatchIndexListener() {
+                           @Override
+                           public void notifyIndexIngStarted(KCluster kCluster, Path path) {
+
+                           }
+
+                           @Override
+                           public void notifyIndexIngFinished(KCluster kCluster, Path path) {
+
+                           }
+                       },
                        DublinCoreView.class).run(ioService().get("git://elastic-temp-repo-test/").getFileSystem(),
                                                  () -> {
                                                      try {

@@ -32,6 +32,7 @@ import java.util.stream.StreamSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.commons.async.DescriptiveRunnable;
+import org.uberfire.ext.metadata.engine.BatchIndexListener;
 import org.uberfire.ext.metadata.engine.MetaIndexEngine;
 import org.uberfire.ext.metadata.engine.Observer;
 import org.uberfire.ext.metadata.io.IndexableIOEvent.DeletedFileEvent;
@@ -88,6 +89,7 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
              executorService,
              indexersFactory,
              dispatcherFactory,
+             new NOPBatchIndexListener(),
              views);
     }
 
@@ -104,6 +106,7 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
              executorService,
              indexersFactory,
              dispatcherFactory,
+             new NOPBatchIndexListener(),
              views);
     }
 
@@ -120,6 +123,7 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
              executorService,
              indexersFactory,
              dispatcherFactory,
+             new NOPBatchIndexListener(),
              views);
     }
 
@@ -138,6 +142,7 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
              executorService,
              indexersFactory,
              dispatcherFactory,
+             new NOPBatchIndexListener(),
              views);
     }
 
@@ -147,6 +152,7 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
                                 final ExecutorService executorService,
                                 final IndexersFactory indexersFactory,
                                 final IndexerDispatcherFactory dispatcherFactory,
+                                final BatchIndexListener batchIndexListener,
                                 final Class<? extends FileAttributeView>... views) {
         super();
         this.indexEngine = checkNotNull("indexEngine",
@@ -161,6 +167,7 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
                                          executorService,
                                          indexersFactory,
                                          dispatcherFactory,
+                                         batchIndexListener,
                                          views);
         ensureCoreIndexerExists();
     }
@@ -172,6 +179,7 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
                                 final ExecutorService executorService,
                                 final IndexersFactory indexersFactory,
                                 final IndexerDispatcherFactory dispatcherFactory,
+                                final BatchIndexListener batchIndexListener,
                                 final Class<? extends FileAttributeView>... views) {
         super(id);
         this.indexEngine = checkNotNull("indexEngine",
@@ -185,6 +193,7 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
                                          executorService,
                                          indexersFactory,
                                          dispatcherFactory,
+                                         batchIndexListener,
                                          views);
         ensureCoreIndexerExists();
     }
@@ -196,6 +205,7 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
                                 final ExecutorService executorService,
                                 final IndexersFactory indexersFactory,
                                 final IndexerDispatcherFactory dispatcherFactory,
+                                final BatchIndexListener batchIndexListener,
                                 final Class<? extends FileAttributeView>... views) {
         super(watchService);
         this.indexEngine = checkNotNull("indexEngine",
@@ -210,6 +220,7 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
                                          executorService,
                                          indexersFactory,
                                          dispatcherFactory,
+                                         batchIndexListener,
                                          views);
         ensureCoreIndexerExists();
     }
@@ -222,6 +233,7 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
                                 final ExecutorService executorService,
                                 final IndexersFactory indexersFactory,
                                 final IndexerDispatcherFactory dispatcherFactory,
+                                final BatchIndexListener batchIndexListener,
                                 final Class<? extends FileAttributeView>... views) {
         super(id,
               watchService);
@@ -237,6 +249,7 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
                                          executorService,
                                          indexersFactory,
                                          dispatcherFactory,
+                                         batchIndexListener,
                                          views);
         ensureCoreIndexerExists();
     }
@@ -552,6 +565,19 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
 
         @Override
         public void error(final String message) {
+            //Do nothing.
+        }
+    }
+
+    private static class NOPBatchIndexListener implements BatchIndexListener {
+
+        @Override
+        public void notifyIndexIngStarted(KCluster kCluster, Path path) {
+            //Do nothing.
+        }
+
+        @Override
+        public void notifyIndexIngFinished(KCluster kCluster, Path path) {
             //Do nothing.
         }
     }

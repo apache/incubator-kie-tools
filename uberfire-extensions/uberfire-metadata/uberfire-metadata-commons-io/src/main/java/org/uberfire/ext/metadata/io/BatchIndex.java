@@ -24,6 +24,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.commons.async.DescriptiveRunnable;
+import org.uberfire.ext.metadata.engine.BatchIndexListener;
 import org.uberfire.ext.metadata.engine.MetaIndexEngine;
 import org.uberfire.ext.metadata.engine.Observer;
 import org.uberfire.ext.metadata.io.IndexerDispatcher.IndexerDispatcherFactory;
@@ -53,6 +54,7 @@ public final class BatchIndex {
     private final ExecutorService executorService;
     private final IndexersFactory indexersFactory;
     private final IndexerDispatcherFactory dispatcherFactory;
+    private final BatchIndexListener batchIndexListener;
 
     @SafeVarargs
     public BatchIndex(final MetaIndexEngine indexEngine,
@@ -60,6 +62,7 @@ public final class BatchIndex {
                       final ExecutorService executorService,
                       final IndexersFactory indexersFactory,
                       final IndexerDispatcherFactory dispatcherFactory,
+                      final BatchIndexListener batchIndexListener,
                       final Class<? extends FileAttributeView>... views) {
         this.indexersFactory = indexersFactory;
         this.dispatcherFactory = dispatcherFactory;
@@ -68,6 +71,8 @@ public final class BatchIndex {
         this.observer = checkNotNull("observer",
                                      observer);
         this.views = views;
+
+        this.batchIndexListener = batchIndexListener;
 
         this.executorService = executorService;
     }
@@ -136,12 +141,21 @@ public final class BatchIndex {
 
                     queueIndexingEvents(rootPath, dispatcher);
 
-
                     if (!indexDisposed.get()) {
                         logInformation("Starting indexing of " + cluster.getClusterId() + " ...");
+
+                        if (batchIndexListener != null) {
+                            batchIndexListener.notifyIndexIngStarted(cluster, rootPath);
+                        }
+
                         dispatcher.schedule(executorService)
                         .thenRun(() -> {
                             logInformation("Completed indexing of " + cluster.getClusterId());
+
+                            if (batchIndexListener != null) {
+                                batchIndexListener.notifyIndexIngFinished(cluster, rootPath);
+                            }
+
                             if (callback != null) {
                                 callback.run();
                             }
