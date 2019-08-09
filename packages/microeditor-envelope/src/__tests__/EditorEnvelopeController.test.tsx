@@ -18,7 +18,7 @@ import { EditorEnvelopeController } from "../EditorEnvelopeController";
 import { SpecialDomElements } from "../SpecialDomElements";
 import { mount } from "enzyme";
 import { EnvelopeBusMessage, EnvelopeBusMessageType } from "appformer-js-microeditor-envelope-protocol/src";
-import { LanguageData } from "appformer-js-microeditor-router/src";
+import { LanguageData } from "appformer-js-core";
 import { DummyEditor } from "./DummyEditor";
 
 let loadingScreenContainer: HTMLElement;

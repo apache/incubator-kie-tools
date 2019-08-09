@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { LanguageData } from "appformer-js-microeditor-router";
+import { LanguageData } from "appformer-js-core";
 import { EnvelopeBusMessage } from "./EnvelopeBusMessage";
 import { EnvelopeBusMessageType } from "./EnvelopeBusMessageType";
 import { EnvelopeBusApi } from "./EnvelopeBusApi";

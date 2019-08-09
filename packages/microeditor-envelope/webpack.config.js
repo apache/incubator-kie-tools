@@ -15,22 +15,21 @@
  */
 
 const path = require("path");
+const nodeExternals = require("webpack-node-externals");
 const CircularDependencyPlugin = require("circular-dependency-plugin");
 
 module.exports = {
   mode: "development",
   devtool: "inline-source-map",
   entry: {
-    index: "./src/index.ts",
-    "standaloneIndex": "./src/standalone/index.ts"
+    index: "./src/index.ts"
   },
   output: {
     path: path.resolve(__dirname, "./dist"),
     filename: "[name].js",
-    library: "AppFormer.MicroEditorEnvelope",
-    libraryTarget: "umd",
-    umdNamedDefine: true
+    libraryTarget: "commonjs2"
   },
+  externals: [nodeExternals({ modulesDir: "../../node_modules" })],
   plugins: [
     new CircularDependencyPlugin({
       exclude: /node_modules/, // exclude detection of files based on a RegExp
@@ -53,25 +52,6 @@ module.exports = {
         use: ["babel-loader"]
       }
     ]
-  },
-  devServer: {
-    historyApiFallback: {
-      disableDotRule: true
-    },
-    disableHostCheck: true,
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
-      "Access-Control-Allow-Headers": "X-Requested-With, content-type, Authorization"
-    },
-    watchContentBase: true,
-    contentBase: [
-      path.join(__dirname, "static"),
-      path.join(__dirname, "../../node_modules/@patternfly/patternfly/"),
-    ],
-    index: "static/index.html",
-    compress: true,
-    port: 9000
   },
   resolve: {
     extensions: [".tsx", ".ts", ".js", ".jsx"],

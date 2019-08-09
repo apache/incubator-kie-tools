@@ -15,21 +15,22 @@
  */
 
 const path = require("path");
+const nodeExternals = require("webpack-node-externals");
 const CircularDependencyPlugin = require("circular-dependency-plugin");
-const CopyWebpackPlugin = require("copy-webpack-plugin");
 
-const commonConfig = {
+module.exports = {
   mode: "development",
+  devtool: "inline-source-map",
+  entry: {
+    index: "./src/index.ts"
+  },
+  target: "node",
   output: {
     path: path.resolve(__dirname, "./dist"),
     filename: "[name].js",
-    library: "AppFormer.VsCode",
-    libraryTarget: "umd",
-    umdNamedDefine: true
+    libraryTarget: "commonjs2"
   },
-  externals: {
-    vscode: "commonjs vscode"
-  },
+  externals: [{ vscode: "commonjs vscode" }, nodeExternals({ modulesDir: "../../node_modules" })],
   plugins: [
     new CircularDependencyPlugin({
       exclude: /node_modules/, // exclude detection of files based on a RegExp
@@ -58,27 +59,3 @@ const commonConfig = {
     modules: [path.resolve("../../node_modules"), path.resolve("./node_modules"), path.resolve("./src")]
   }
 };
-
-module.exports = [
-  {
-    ...commonConfig,
-    mode: "production",
-    target: "node",
-    entry: {
-      "extension/extension": "./src/extension/extension.ts"
-    },
-    plugins: [
-    ]
-  },
-  {
-    ...commonConfig,
-    mode: "production",
-    target: "web",
-    entry: {
-      "webview/index": "./src/webview/index.ts"
-    },
-    plugins: [
-        new CopyWebpackPlugin([{from: "src/resources/dmn", to: "webview/editors/dmn"}])
-    ]
-  }
-];

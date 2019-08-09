@@ -14,10 +14,20 @@
  * limitations under the License.
  */
 
-import { LanguageData } from "appformer-js-microeditor-router";
 import * as AppFormer from "appformer-js-core";
-import {EnvelopeBusInnerMessageHandler} from "./EnvelopeBusInnerMessageHandler";
+import { LanguageData } from "appformer-js-core";
+import { EnvelopeBusInnerMessageHandler } from "./EnvelopeBusInnerMessageHandler";
 
-export interface EditorFactory {
-  createEditor(languageData: LanguageData, messageBus: EnvelopeBusInnerMessageHandler): Promise<AppFormer.Editor>;
+/**
+ * Factory of Editors to be created inside the envelope.
+ */
+export interface EditorFactory<T extends LanguageData> {
+
+  /**
+   * Returns an Editor based on a LanguageData.
+   * Receives a messageBus to be used by the Editor to communicate with the outside of the envelope.
+   * @param languageData The custom LanguageData
+   * @param messageBus The message bus
+   */
+  createEditor(languageData: T, messageBus: EnvelopeBusInnerMessageHandler): Promise<AppFormer.Editor>;
 }

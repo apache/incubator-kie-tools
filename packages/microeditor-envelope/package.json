@@ -15,17 +15,15 @@
     "@types/react-dom": "16.8.2",
     "appformer-js-core": "0.1.0",
     "appformer-js-microeditor-envelope-protocol": "0.1.0",
-    "appformer-js-microeditor-router": "0.1.0",
     "react": "16.8.0",
     "react-dom": "16.8.4"
   },
   "scripts": {
     "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}'",
     "test": "jest",
-    "build": "yarn run lint && yarn test && yarn run build:fast",
     "build:fast": "rm -rf dist && webpack",
-    "build:prod": "yarn run build --mode production",
-    "start": "webpack-dev-server -d --host 0.0.0.0"
+    "build": "yarn run lint && yarn test && yarn run build:fast",
+    "build:prod": "yarn run build --mode production --devtool none"
   },
   "babel": {
     "presets": [
@@ -60,6 +58,6 @@
     "watch": "1.0.2",
     "webpack": "4.15.1",
     "webpack-cli": "3.0.8",
-    "webpack-dev-server": "3.2.1"
+    "webpack-node-externals": "1.7.2"
   }
 }

@@ -15,7 +15,7 @@
  */
 
 import { EnvelopeBusApi, EnvelopeBusMessage, EnvelopeBusMessageType } from "appformer-js-microeditor-envelope-protocol";
-import { LanguageData } from "appformer-js-microeditor-router";
+import { LanguageData } from "appformer-js-core";
 
 export interface Impl {
   receive_contentResponse(content: string): void;

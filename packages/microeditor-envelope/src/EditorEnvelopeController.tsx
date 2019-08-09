@@ -16,10 +16,10 @@
 
 import * as React from "react";
 import * as AppFormer from "appformer-js-core";
+import { LanguageData } from "appformer-js-core";
 import { EditorEnvelopeView } from "./EditorEnvelopeView";
 import { EnvelopeBusInnerMessageHandler } from "./EnvelopeBusInnerMessageHandler";
 import { EnvelopeBusApi } from "appformer-js-microeditor-envelope-protocol";
-import { LanguageData } from "appformer-js-microeditor-router";
 import { EditorFactory } from "./EditorFactory";
 import { SpecialDomElements } from "./SpecialDomElements";
 import { Renderer } from "./Renderer";
@@ -27,7 +27,7 @@ import { Renderer } from "./Renderer";
 export class EditorEnvelopeController {
   public static readonly ESTIMATED_TIME_TO_WAIT_AFTER_EMPTY_SET_CONTENT = 100;
 
-  private readonly editorFactory: EditorFactory;
+  private readonly editorFactory: EditorFactory<any>;
   private readonly specialDomElements: SpecialDomElements;
   private readonly envelopeBusInnerMessageHandler: EnvelopeBusInnerMessageHandler;
 
@@ -36,7 +36,7 @@ export class EditorEnvelopeController {
 
   constructor(
     busApi: EnvelopeBusApi,
-    editorFactory: EditorFactory,
+    editorFactory: EditorFactory<any>,
     specialDomElements: SpecialDomElements,
     renderer: Renderer
   ) {

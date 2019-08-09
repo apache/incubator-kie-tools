@@ -18,9 +18,9 @@
   "scripts": {
     "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}'",
     "test": "echo 'No tests to run'",
-    "build": "yarn run lint && yarn test && yarn run build:fast",
     "build:fast": "rm -rf dist && webpack",
-    "build:prod": "yarn run build --mode production"
+    "build": "yarn run lint && yarn test && yarn run build:fast",
+    "build:prod": "yarn run build --mode production --devtool none"
   },
   "babel": {
     "presets": [
@@ -40,6 +40,7 @@
     "typescript": "2.9.2",
     "watch": "1.0.2",
     "webpack": "4.15.1",
-    "webpack-cli": "3.0.8"
+    "webpack-cli": "3.0.8",
+    "webpack-node-externals": "1.7.2"
   }
 }
