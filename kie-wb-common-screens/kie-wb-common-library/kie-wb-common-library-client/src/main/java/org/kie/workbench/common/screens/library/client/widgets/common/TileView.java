@@ -26,6 +26,7 @@ import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
 import org.uberfire.mvp.Command;
 
 @Templated
@@ -61,22 +62,19 @@ public class TileView implements TileWidget.View,
     }
 
     @Override
-    public void setup(final String label,
-                      final String description,
-                      final String circleLabel,
-                      final String circleDescription,
-                      final Command selectCommand) {
+    public void setup(String label, String description, Command selectCommand) {
         this.label.setTextContent(label);
         this.description.setTextContent(description);
         this.description.setTitle(description);
         this.card.setOnclick(event -> selectCommand.execute());
+        circle.setHidden(true);
+    }
 
-        if (circleLabel != null) {
-            this.circle.setTextContent(circleLabel);
-            this.circle.setTitle(circleDescription);
-        } else {
-            this.circle.setHidden(true);
-        }
+    @Override
+    public void setNumberOfAssets(Integer numberOfAssets) {
+        circle.setHidden(false);
+        this.circle.setTextContent(String.valueOf(numberOfAssets));
+        this.circle.setTitle(ts.format(LibraryConstants.NumberOfAssets, numberOfAssets));
     }
 
     @Override

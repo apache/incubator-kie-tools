@@ -44,14 +44,12 @@ public class TileWidgetTest {
 
         presenter.init("label",
                        "description",
-                       "circleLabel",
-                       "circleDescription",
                        selectCommand);
+
+        verify(view).init(presenter);
 
         verify(view).setup("label",
                            "description",
-                           "circleLabel",
-                           "circleDescription",
                            selectCommand);
     }
 }

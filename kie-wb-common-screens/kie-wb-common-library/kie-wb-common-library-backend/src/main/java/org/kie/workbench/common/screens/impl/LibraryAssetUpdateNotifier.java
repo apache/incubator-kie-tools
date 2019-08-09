@@ -28,6 +28,7 @@ import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.kie.workbench.common.screens.library.api.ProjectAssetListUpdated;
 import org.kie.workbench.common.screens.library.api.Remote;
 import org.kie.workbench.common.screens.library.api.index.Constants;
+import org.kie.workbench.common.services.refactoring.model.index.events.IndexingFinishedEvent;
 import org.slf4j.Logger;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.ext.metadata.event.BatchIndexEvent;
@@ -93,4 +94,13 @@ public class LibraryAssetUpdateNotifier {
               });
     }
 
+    private void onProjectIndexingFinishedEvent(@Observes IndexingFinishedEvent event) {
+        WorkspaceProject project = projectService.resolveProject(event.getPath());
+
+        if (project == null) {
+            throw new IllegalStateException("Cannot resolve Project for KClusterId: '" + event.getkClusterId() + "' and path: '" + event.getPath().toString() + "'.");
+        }
+
+        assetListUpdateEvent.fire(new ProjectAssetListUpdated(project));
+    }
 }

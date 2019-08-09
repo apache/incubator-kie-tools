@@ -30,6 +30,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -76,6 +77,7 @@ import org.kie.workbench.common.services.refactoring.backend.server.query.standa
 import org.kie.workbench.common.services.refactoring.backend.server.query.standard.LibraryValueFileExtensionIndexTerm;
 import org.kie.workbench.common.services.refactoring.backend.server.query.standard.LibraryValueFileNameIndexTerm;
 import org.kie.workbench.common.services.refactoring.backend.server.query.standard.LibraryValueRepositoryRootIndexTerm;
+import org.kie.workbench.common.services.refactoring.model.index.events.IndexingFinishedEvent;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRequest;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRow;
@@ -196,15 +198,9 @@ public class LibraryServiceImpl implements LibraryService {
 
     @Override
     public LibraryInfo getLibraryInfo(final OrganizationalUnit organizationalUnit) {
-        final Collection<WorkspaceProject> projects = projectService.getAllWorkspaceProjects(organizationalUnit).stream()
+        final List<WorkspaceProject> projects = projectService.getAllWorkspaceProjects(organizationalUnit).stream()
                 .filter(p -> userCanReadProject(p))
                 .collect(Collectors.toList());
-
-        projects.stream().forEach(p -> {
-            if (p.getMainModule() != null) {
-                p.getMainModule().setNumberOfAssets(getNumberOfAssets(p));
-            }
-        });
 
         return new LibraryInfo(projects);
     }

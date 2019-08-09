@@ -174,8 +174,12 @@ public class ProjectImportServiceImpl extends BaseProjectImportService implement
                             .map(exampleProject -> {
                                 WorkspaceProject project = this.importProject(activeOU,
                                                                               exampleProject);
-                                return this.renameIfNecessary(activeOU,
+                                project = this.renameIfNecessary(activeOU,
                                                               project);
+
+                                newProjectEvent.fire(new NewProjectEvent(project));
+
+                                return project;
                             })
                             .collect(Collectors.toList());
 

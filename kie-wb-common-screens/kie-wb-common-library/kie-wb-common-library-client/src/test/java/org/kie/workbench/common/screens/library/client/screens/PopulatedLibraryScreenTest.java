@@ -30,6 +30,7 @@ import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryRemovedEvent;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,8 +43,10 @@ import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.screens.library.client.widgets.common.TileWidget;
 import org.kie.workbench.common.screens.library.client.widgets.library.AddProjectButtonPresenter;
 import org.mockito.Answers;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.stubbing.Answer;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.spaces.Space;
 
@@ -52,6 +55,11 @@ import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PopulatedLibraryScreenTest {
+
+    private static final String SPACE_NAME = "dora";
+    private static final String PROJECT_1 = "project1Name";
+    private static final String PROJECT_2 = "project2Name";
+    private static final String PROJECT_3 = "project3Name";
 
     @Mock
     private PopulatedLibraryScreen.View view;
@@ -67,7 +75,7 @@ public class PopulatedLibraryScreenTest {
     private ProjectController projectController;
 
     @Mock
-    private ManagedInstance<TileWidget> tileWidgets;
+    private ManagedInstance<TileWidget<WorkspaceProject>> tileWidgets;
 
     @Mock
     private AddProjectButtonPresenter addProjectButtonPresenter;
@@ -108,9 +116,9 @@ public class PopulatedLibraryScreenTest {
 
         doReturn(true).when(projectController).canCreateProjects(any());
 
-        project1 = mockProject("project1Name");
-        project2 = mockProject("project2Name");
-        project3 = mockProject("project3Name");
+        project1 = mockProject(PROJECT_1);
+        project2 = mockProject(PROJECT_2);
+        project3 = mockProject(PROJECT_3);
 
         final List<WorkspaceProject> projects = new ArrayList<>();
         projects.add(project1);
@@ -127,7 +135,19 @@ public class PopulatedLibraryScreenTest {
         doReturn(libraryInfo).when(libraryService).getLibraryInfo(organizationalUnit);
 
         doReturn(mock(TileWidget.View.class)).when(tileWidget).getView();
-        doReturn(tileWidget).when(tileWidgets).get();
+
+        when(tileWidgets.get()).thenAnswer((Answer<TileWidget<WorkspaceProject>>) invocationOnMock -> {
+            TileWidget tile = mock(TileWidget.class);
+
+            doReturn(mock(TileWidget.View.class)).when(tile).getView();
+
+            doAnswer((Answer<Void>) invocationOnMock1 -> {
+                when(tile.getContent()).thenReturn(invocationOnMock1.getArgumentAt(0, WorkspaceProject.class));
+                return null;
+            }).when(tile).setContent(any());
+
+            return tile;
+        });
         doReturn(mock(AddProjectButtonPresenter.View.class)).when(addProjectButtonPresenter).getView();
 
         libraryScreen.setup();
@@ -152,29 +172,18 @@ public class PopulatedLibraryScreenTest {
         verify(view).clearFilterText();
         verify(view).clearProjects();
 
-        verify(tileWidget,
-               times(3)).init(any(),
-                              any(),
-                              any(),
-                              any(),
-                              any());
-        verify(tileWidget).init(eq("project1Name"),
-                                any(),
-                                any(),
-                                any(),
-                                any());
-        verify(tileWidget).init(eq("project2Name"),
-                                any(),
-                                any(),
-                                any(),
-                                any());
-        verify(tileWidget).init(eq("project3Name"),
-                                any(),
-                                any(),
-                                any(),
-                                any());
-        verify(view,
-               times(3)).addProject(any());
+        verify(tileWidgets, times(3)).get();
+
+        TileWidget<WorkspaceProject> first = libraryScreen.libraryTiles.first();
+        verify(first).init(eq(PROJECT_1), any(), any());
+
+        TileWidget<WorkspaceProject> second = libraryScreen.libraryTiles.higher(first);
+        verify(second).init(eq(PROJECT_2), any(), any());
+
+        TileWidget<WorkspaceProject> last = libraryScreen.libraryTiles.last();
+        verify(last).init(eq(PROJECT_3), any(), any());
+
+        verify(view, times(3)).addProject(any());
     }
 
     @Test
@@ -187,7 +196,7 @@ public class PopulatedLibraryScreenTest {
     @Test
     public void filterProjectsTest() {
         assertEquals(3,
-                     libraryScreen.projects.size());
+                     libraryScreen.libraryTiles.size());
         assertEquals(1,
                      libraryScreen.filterProjects("project1").size());
         assertEquals(1,
@@ -197,112 +206,162 @@ public class PopulatedLibraryScreenTest {
     }
 
     @Test
-    public void onNewProjectShouldCallRefreshProjects() {
+    public void onNewProjectMiddleWithAssetCountUpdate() {
 
-        setupProjectContext("dora");
+        setupProjectContext(SPACE_NAME);
 
-        doNothing().when(libraryScreen).refreshProjects();
+        libraryScreen.onNewProjectEvent(setupNewProjectEvent(SPACE_NAME, "doraProject"));
 
-        libraryScreen.onNewProjectEvent(setupNewProjectEvent("dora"));
+        Assert.assertEquals(4, libraryScreen.getProjectsCount());
 
-        //one for @Setup
-        verify(libraryScreen,
-               times(2)).refreshProjects();
+        verify(tileWidgets, times(4)).get();
+
+        verify(view).addProject(any(), any());
+
+        verify(projectCountUpdateEvent, times(2)).fire(any());
     }
 
     @Test
-    public void onNewProjectShouldNeverCallShowProjectsForDifferentSpaces() {
+    public void onNewProjectLastWithAssetCountUpdate() {
 
-        setupProjectContext("dora");
+        setupProjectContext(SPACE_NAME);
+
+        libraryScreen.onNewProjectEvent(setupNewProjectEvent(SPACE_NAME, "zzzz"));
+
+        Assert.assertEquals(4, libraryScreen.getProjectsCount());
+
+        verify(tileWidgets, times(4)).get();
+
+        verify(view, times(4)).addProject(any());
+
+        verify(projectCountUpdateEvent, times(2)).fire(any());
+    }
+
+    @Test
+    public void onNewProjectAlreadyPresent() {
+
+        setupProjectContext(SPACE_NAME);
+
+        libraryScreen.onNewProjectEvent(new NewProjectEvent(project1));
+
+        Assert.assertEquals(3, libraryScreen.getProjectsCount());
+
+        verify(tileWidgets, times(3)).get();
+
+        verify(view, never()).addProject(any(), any());
+
+        verify(projectCountUpdateEvent).fire(any());
+    }
+
+    @Test
+    public void onNewProjectFromDifferentSpace() {
+
+        setupProjectContext(SPACE_NAME);
 
         doNothing().when(libraryScreen).setup();
-        doNothing().when(libraryScreen).refreshProjects();
 
-        libraryScreen.onNewProjectEvent(setupNewProjectEvent("bento"));
+        libraryScreen.onNewProjectEvent(setupNewProjectEvent("bento", "bento"));
 
-        //one for @Setup
-        verify(libraryScreen,
-               times(1)).refreshProjects();
+        // Checking if the view has been rendered only one time (before the new project event)
+        Assert.assertEquals(3, libraryScreen.getProjectsCount());
+
+        verify(view, times(1)).clearProjects();
+        verify(projectCountUpdateEvent, times(1)).fire(any());
+        verify(view, times(3)).addProject(any());
     }
 
     @Test
     public void onRepositoryRemovedShouldCallShowProjects() {
+        setupProjectContext(SPACE_NAME);
 
-        setupProjectContext("dora");
+        libraryScreen.onRepositoryRemovedEvent(createRepositoryRemovedEvent(SPACE_NAME, PROJECT_1));
 
-        doNothing().when(libraryScreen).refreshProjects();
+        Assert.assertEquals(2, libraryScreen.getProjectsCount());
 
-        libraryScreen.onRepositoryRemovedEvent(createRepositoryRemovedEvent("dora"));
+        verify(tileWidgets, times(3)).get();
 
-        //one for @Setup
-        verify(libraryScreen,
-               times(2)).refreshProjects();
+        verify(view).removeProject(any());
+        verify(projectCountUpdateEvent, times(2)).fire(any());
     }
+
 
     @Test
     public void onRepositoryRemovedShouldNeverCallShowProjectsForDifferentSpaces() {
 
-        setupProjectContext("dora");
+        setupProjectContext(SPACE_NAME);
 
-        doNothing().when(libraryScreen).refreshProjects();
+        libraryScreen.onRepositoryRemovedEvent(createRepositoryRemovedEvent("bento", "bento"));
 
-        libraryScreen.onRepositoryRemovedEvent(createRepositoryRemovedEvent("bento"));
+        // Checking if the view has been rendered only one time (before the project removed event)
+        Assert.assertEquals(3, libraryScreen.getProjectsCount());
 
-        //one for @Setup
-        verify(libraryScreen,
-               times(1)).refreshProjects();
+        verify(view, times(1)).clearProjects();
+        verify(projectCountUpdateEvent, times(1)).fire(any());
+        verify(view, times(3)).addProject(any());
     }
 
     @Test
     public void testOnAssetListUpdated() {
 
-        doNothing().when(libraryScreen).refreshProjects();
+        setupProjectContext(SPACE_NAME);
 
-        libraryScreen.onAssetListUpdated(createAssetListUpdatedEvent("project1Name"));
-        // Setup and Asset Update refreshProjects
-        verify(libraryScreen,
-               times(2)).refreshProjects();
+        libraryScreen.onAssetListUpdated(new ProjectAssetListUpdated(project1));
+
+        ArgumentCaptor<WorkspaceProject> projectCaptor = ArgumentCaptor.forClass(WorkspaceProject.class);
+
+        verify(libraryService, times(4)).getNumberOfAssets(projectCaptor.capture());
+
+        Assert.assertSame(project1, projectCaptor.getValue());
+
+        verify(libraryScreen.libraryTiles.first(), times(2)).setNumberOfAssets(anyInt());
     }
 
     @Test
     public void testOnAssetListUpdatedDifferentSpace() {
-        doNothing().when(libraryScreen).refreshProjects();
 
-        libraryScreen.onAssetListUpdated(createAssetListUpdatedEvent("project4Name"));
-        // Only Setup refreshProjects
-        verify(libraryScreen,
-               times(1)).refreshProjects();
+        libraryScreen.onAssetListUpdated(createAssetListUpdatedEvent(SPACE_NAME, "project4Name"));
+
+        verify(libraryService, times(3)).getNumberOfAssets(any(WorkspaceProject.class));
     }
 
-    private ProjectAssetListUpdated createAssetListUpdatedEvent(String projectName) {
+    private ProjectAssetListUpdated createAssetListUpdatedEvent(String spaceName, String projectName) {
         ProjectAssetListUpdated projectAssetListUpdated = mock(ProjectAssetListUpdated.class);
         WorkspaceProject project = this.mockProject(projectName);
+        when(project.getSpace()).thenReturn(new Space(spaceName));
         when(projectAssetListUpdated.getProject()).thenReturn(project);
         return projectAssetListUpdated;
     }
 
     private void setupProjectContext(String spaceName) {
         OrganizationalUnit ouMock = mock(OrganizationalUnit.class);
-        when(ouMock.getSpace()).thenReturn(new Space(spaceName));
+        final Space space = new Space(spaceName);
+        when(ouMock.getSpace()).thenReturn(space);
         Optional<OrganizationalUnit> ou = Optional.of(ouMock);
+
+        when(project1.getSpace()).thenReturn(space);
+        when(project2.getSpace()).thenReturn(space);
+        when(project3.getSpace()).thenReturn(space);
 
         when(projectContext.getActiveOrganizationalUnit()).thenReturn(ou);
     }
 
-    private NewProjectEvent setupNewProjectEvent(String spaceName) {
+    private NewProjectEvent setupNewProjectEvent(String spaceName, String projectName) {
         NewProjectEvent newProjectEvent = mock(NewProjectEvent.class);
-        WorkspaceProject context = mock(WorkspaceProject.class);
-        when(context.getSpace()).thenReturn(new Space(spaceName));
+        WorkspaceProject workspaceProject = mock(WorkspaceProject.class);
 
-        when(newProjectEvent.getWorkspaceProject()).thenReturn(context);
+        when(workspaceProject.getSpace()).thenReturn(new Space(spaceName));
+        when(workspaceProject.getName()).thenReturn(projectName);
+
+        when(newProjectEvent.getWorkspaceProject()).thenReturn(workspaceProject);
         return newProjectEvent;
     }
 
-    private RepositoryRemovedEvent createRepositoryRemovedEvent(String spaceName) {
+    private RepositoryRemovedEvent createRepositoryRemovedEvent(String spaceName, String repositoryIdentifier) {
 
         RepositoryRemovedEvent repositoryRemovedEvent = mock(RepositoryRemovedEvent.class);
         Repository repository = mock(Repository.class);
         when(repository.getSpace()).thenReturn(new Space(spaceName));
+        when(repository.getIdentifier()).thenReturn(repositoryIdentifier);
 
         when(repositoryRemovedEvent.getRepository()).thenReturn(repository);
         return repositoryRemovedEvent;

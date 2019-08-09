@@ -18,6 +18,7 @@ package org.kie.workbench.common.screens.library.client.screens;
 import javax.inject.Inject;
 
 import com.google.gwt.event.dom.client.KeyUpEvent;
+import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.common.client.dom.Input;
@@ -27,6 +28,7 @@ import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
+import org.kie.workbench.common.screens.library.client.widgets.common.TileWidget;
 import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 
 @Templated
@@ -63,8 +65,18 @@ public class PopulatedLibraryView implements PopulatedLibraryScreen.View,
     }
 
     @Override
-    public void addProject(final HTMLElement project) {
-        projectList.appendChild(project);
+    public void addProject(final TileWidget<WorkspaceProject> project) {
+        projectList.appendChild(project.getView().getElement());
+    }
+
+    @Override
+    public void addProject(TileWidget<WorkspaceProject> tileToAdd, TileWidget<WorkspaceProject> tileAfter) {
+        projectList.insertBefore(tileToAdd.getView().getElement(), tileAfter.getView().getElement());
+    }
+
+    @Override
+    public void removeProject(TileWidget<WorkspaceProject> tile) {
+        projectList.removeChild(tile.getView().getElement());
     }
 
     @Override
@@ -75,12 +87,6 @@ public class PopulatedLibraryView implements PopulatedLibraryScreen.View,
     @Override
     public void clearFilterText() {
         this.filterText.setValue("");
-    }
-
-    @Override
-    public String getNumberOfAssetsMessage(int numberOfAssets) {
-        return ts.format(LibraryConstants.NumberOfAssets,
-                         numberOfAssets);
     }
 
     @EventHandler("filter-text")

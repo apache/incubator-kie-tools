@@ -16,11 +16,14 @@
 
 package org.kie.workbench.common.screens.library.client.screens;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
+import java.util.TreeSet;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -32,6 +35,7 @@ import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
+import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryRemovedEvent;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -52,18 +56,22 @@ import org.uberfire.spaces.Space;
 
 public class PopulatedLibraryScreen {
 
+    private static final Comparator<TileWidget<WorkspaceProject>> comparator = Comparator.comparing(tile -> tile.getContent().getName().toUpperCase());
+
     public interface View extends UberElement<PopulatedLibraryScreen>,
                                   HasBusyIndicator {
 
         void clearProjects();
 
-        void addProject(HTMLElement project);
+        void addProject(TileWidget<WorkspaceProject> tile);
+
+        void addProject(TileWidget<WorkspaceProject> tileToAdd, TileWidget<WorkspaceProject> tileAfter);
+
+        void removeProject(TileWidget<WorkspaceProject> tile);
 
         void addAction(HTMLElement action);
 
         void clearFilterText();
-
-        String getNumberOfAssetsMessage(int numberOfAssets);
     }
 
     private View view;
@@ -77,11 +85,11 @@ public class PopulatedLibraryScreen {
     private WorkspaceProjectContext projectContext;
     private Event<ProjectCountUpdate> projectCountUpdateEvent;
 
-    private ManagedInstance<TileWidget> tileWidgets;
+    private ManagedInstance<TileWidget<WorkspaceProject>> tileWidgets;
 
     private AddProjectButtonPresenter addProjectButtonPresenter;
 
-    List<WorkspaceProject> projects;
+    TreeSet<TileWidget<WorkspaceProject>> libraryTiles = new TreeSet<>(comparator);
 
     @Inject
     public PopulatedLibraryScreen(final View view,
@@ -89,7 +97,7 @@ public class PopulatedLibraryScreen {
                                   final Caller<LibraryService> libraryService,
                                   final ProjectController projectController,
                                   final WorkspaceProjectContext projectContext,
-                                  final ManagedInstance<TileWidget> tileWidgets,
+                                  final ManagedInstance<TileWidget<WorkspaceProject>> tileWidgets,
                                   final AddProjectButtonPresenter addProjectButtonPresenter,
                                   final Event<ProjectCountUpdate> projectCountUpdateEvent) {
         this.view = view;
@@ -98,7 +106,6 @@ public class PopulatedLibraryScreen {
         this.projectController = projectController;
         this.projectContext = projectContext;
         this.projectCountUpdateEvent = projectCountUpdateEvent;
-        this.projects = Collections.emptyList();
         this.tileWidgets = tileWidgets;
         this.addProjectButtonPresenter = addProjectButtonPresenter;
     }
@@ -110,11 +117,7 @@ public class PopulatedLibraryScreen {
             view.addAction(addProjectButtonPresenter.getView().getElement());
         }
 
-        refreshProjects();
-    }
-
-    void refreshProjects() {
-        libraryService.call((RemoteCallback<LibraryInfo>) this::updateLibrary)
+        libraryService.call((RemoteCallback<LibraryInfo>) this::setupLibrary)
                 .getLibraryInfo(getOrganizationalUnit());
     }
 
@@ -123,20 +126,21 @@ public class PopulatedLibraryScreen {
                 .orElseThrow(() -> new IllegalStateException("Cannot get library info without an active organizational unit."));
     }
 
-    private void updateLibrary(final LibraryInfo libraryInfo) {
-        projects = new ArrayList<>(libraryInfo.getProjects());
+    private void setupLibrary(final LibraryInfo libraryInfo) {
         view.clearFilterText();
-        setupProjects();
+
+        libraryTiles.clear();
+
+        libraryInfo.getProjects().stream()
+                .map(this::createProjectWidget)
+                .collect(Collectors.toCollection(() -> libraryTiles));
+
+        updateView(libraryTiles);
     }
 
-    private void setupProjects() {
-        projects.sort(Comparator.comparing(p -> p.getName().toUpperCase()));
-        updateView(projects);
-    }
-
-    public List<WorkspaceProject> filterProjects(final String filter) {
-        List<WorkspaceProject> filteredProjects = projects.stream()
-                .filter(p -> p.getName().toUpperCase().contains(filter.toUpperCase()))
+    public List<TileWidget<WorkspaceProject>> filterProjects(final String filter) {
+        List<TileWidget<WorkspaceProject>> filteredProjects = libraryTiles.stream()
+                .filter(p -> p.getContent().getName().toUpperCase().contains(filter.toUpperCase()))
                 .collect(Collectors.toList());
 
         updateView(filteredProjects);
@@ -144,36 +148,37 @@ public class PopulatedLibraryScreen {
         return filteredProjects;
     }
 
-    private void updateView(final List<WorkspaceProject> projects) {
+    private void updateView(Collection<TileWidget<WorkspaceProject>> projects) {
         view.clearProjects();
+
         this.projectCountUpdateEvent.fire(new ProjectCountUpdate(projects.size(),
                                                                  this.getOrganizationalUnit().getSpace()));
-        projects.stream().forEach(project -> {
 
-            final TileWidget tileWidget = createProjectWidget(project);
-            view.addProject(tileWidget.getView().getElement());
+        projects.forEach(project -> {
+            view.addProject(project);
         });
-
     }
 
-    private TileWidget createProjectWidget(final WorkspaceProject project) {
-        final TileWidget tileWidget = tileWidgets.get();
+    private TileWidget<WorkspaceProject> createProjectWidget(final WorkspaceProject project) {
+        final TileWidget<WorkspaceProject> tileWidget = tileWidgets.get();
+
+        tileWidget.setContent(project);
 
         if (project.getMainModule() != null) {
             final POM pom = project.getMainModule().getPom();
-            tileWidget.init(project.getName(),
-                            pom != null ? pom.getDescription() : "",
-                            String.valueOf(project.getMainModule().getNumberOfAssets()),
-                            view.getNumberOfAssetsMessage(project.getMainModule().getNumberOfAssets()),
-                            selectCommand(project));
+            tileWidget.init(project.getName(), pom != null ? pom.getDescription() : "", selectCommand(project));
+            updateAssetCount(tileWidget);
         } else {
-            tileWidget.init(project.getName(),
-                            "",
-                            "0",
-                            "0",
-                            selectCommand(project));
+            tileWidget.init(project.getName(), "", selectCommand(project));
         }
+
+        libraryTiles.add(tileWidget);
+
         return tileWidget;
+    }
+
+    private void updateAssetCount(final TileWidget<WorkspaceProject> tileWidget) {
+        libraryService.call((RemoteCallback<Integer>) tileWidget::setNumberOfAssets).getNumberOfAssets(tileWidget.getContent());
     }
 
     public boolean userCanCreateProjects() {
@@ -181,7 +186,7 @@ public class PopulatedLibraryScreen {
     }
 
     public int getProjectsCount() {
-        return projects.size();
+        return libraryTiles.size();
     }
 
     Command selectCommand(final WorkspaceProject project) {
@@ -194,36 +199,67 @@ public class PopulatedLibraryScreen {
 
     public void onNewProjectEvent(@Observes NewProjectEvent e) {
 
-        projectContext.getActiveOrganizationalUnit().ifPresent(p -> {
-            if (eventOnCurrentSpace(p,
-                                    e.getWorkspaceProject().getSpace())) {
-                refreshProjects();
+        projectContext.getActiveOrganizationalUnit().ifPresent(organizationalUnit -> {
+            if (eventOnCurrentSpace(organizationalUnit, e.getWorkspaceProject().getSpace())) {
+
+                Optional<TileWidget<WorkspaceProject>> workspaceOptional = findTile(e.getWorkspaceProject());
+
+                // Checking if the project is already there
+                if (workspaceOptional.isPresent()) {
+                    return;
+                }
+
+                TileWidget<WorkspaceProject> tile = createProjectWidget(e.getWorkspaceProject());
+
+                Optional<TileWidget<WorkspaceProject>> optional = Optional.ofNullable(libraryTiles.higher(tile));
+
+                if (optional.isPresent()) {
+                    view.addProject(tile, optional.get());
+                } else {
+                    view.addProject(tile);
+                }
+
+                this.projectCountUpdateEvent.fire(new ProjectCountUpdate(libraryTiles.size(), this.getOrganizationalUnit().getSpace()));
             }
         });
     }
 
     public void onRepositoryRemovedEvent(@Observes RepositoryRemovedEvent e) {
         projectContext.getActiveOrganizationalUnit().ifPresent(p -> {
-            if (eventOnCurrentSpace(p,
-                                    e.getRepository().getSpace())) {
-                refreshProjects();
+            if (eventOnCurrentSpace(p, e.getRepository().getSpace())) {
+                findTile(e.getRepository()).ifPresent(tile -> {
+                    view.removeProject(tile);
+                    libraryTiles.remove(tile);
+                    tileWidgets.destroy(tile);
+                    this.projectCountUpdateEvent.fire(new ProjectCountUpdate(libraryTiles.size(), this.getOrganizationalUnit().getSpace()));
+                });
             }
         });
     }
 
-    boolean eventOnCurrentSpace(OrganizationalUnit p,
+    private Optional<TileWidget<WorkspaceProject>> findTile(WorkspaceProject project) {
+        return findTile(tile -> tile.getContent().equals(project));
+    }
+
+    private Optional<TileWidget<WorkspaceProject>> findTile(Repository repository) {
+        return findTile(tile -> tile.getContent().getRepository().getIdentifier().equals(repository.getIdentifier()));
+    }
+
+    private Optional<TileWidget<WorkspaceProject>> findTile(Predicate<TileWidget<WorkspaceProject>> filter) {
+        return libraryTiles.stream()
+                .filter(filter)
+                .findAny();
+    }
+
+    boolean eventOnCurrentSpace(OrganizationalUnit organizationalUnit,
                                 Space space) {
-        return p.getSpace().getName().equalsIgnoreCase(space.getName());
+        return organizationalUnit.getSpace().getName().equalsIgnoreCase(space.getName());
     }
 
     public void onAssetListUpdated(@Observes @Routed ProjectAssetListUpdated event) {
-        libraryService.call((LibraryInfo libraryInfo) -> {
-            boolean anyMatch = libraryInfo.getProjects()
-                    .stream()
-                    .anyMatch(workspaceProject -> event.getProject().getRepository().getIdentifier().equals(workspaceProject.getRepository().getIdentifier()));
-            if (anyMatch) {
-                refreshProjects();
-            }
-        }).getLibraryInfo(this.getOrganizationalUnit());
+        if (event.getProject().getSpace().equals(getOrganizationalUnit().getSpace())) {
+            findTile(event.getProject())
+                    .ifPresent(this::updateAssetCount);
+        }
     }
 }

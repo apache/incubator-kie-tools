@@ -135,6 +135,7 @@ public class LibraryScreenTest {
 
     @Test
     public void setupTest() {
+        when(view.isProjectsTabActive()).thenReturn(true);
         final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
         doReturn("name").when(organizationalUnit).getName();
         doReturn(Optional.of(organizationalUnit)).when(projectContext).getActiveOrganizationalUnit();
@@ -143,8 +144,11 @@ public class LibraryScreenTest {
 
         verify(view).init(libraryScreen);
         verify(view).setTitle("name");
-        verify(contributorsListPresenter).setup(eq(spaceContributorsListService),
-                                                any());
+        verify(contributorsListPresenter).setup(eq(spaceContributorsListService), any());
+
+        verify(view).setProjectsCount(0);
+        verify(view).isProjectsTabActive();
+        verify(view).updateContent(any());
     }
 
     @Test
@@ -272,8 +276,7 @@ public class LibraryScreenTest {
         libraryScreen.showProjects();
 
         verify(view).updateContent(emptyLibraryScreenElement);
-        verify(view,
-               times(2)).setProjectsCount(0);
+        verify(view, times(1)).setProjectsCount(0);
     }
 
     @Test

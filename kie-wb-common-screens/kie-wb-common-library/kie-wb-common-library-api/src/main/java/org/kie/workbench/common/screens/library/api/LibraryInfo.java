@@ -15,7 +15,7 @@
  */
 package org.kie.workbench.common.screens.library.api;
 
-import java.util.Collection;
+import java.util.List;
 
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
@@ -26,14 +26,13 @@ import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull
 @Portable
 public class LibraryInfo {
 
-    private Collection<WorkspaceProject> projects;
+    private List<WorkspaceProject> projects;
 
-    public LibraryInfo(@MapsTo("projects") final Collection<WorkspaceProject> projects) {
-        this.projects = checkNotNull("projects",
-                                     projects);
+    public LibraryInfo(@MapsTo("projects") final List<WorkspaceProject> projects) {
+        this.projects = checkNotNull("projects", projects);
     }
 
-    public Collection<WorkspaceProject> getProjects() {
+    public List<WorkspaceProject> getProjects() {
         return projects;
     }
 

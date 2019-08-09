@@ -39,6 +39,7 @@ import org.uberfire.commons.concurrent.Unmanaged;
 import org.uberfire.commons.services.cdi.Startup;
 import org.uberfire.commons.services.cdi.StartupType;
 import org.uberfire.ext.metadata.MetadataConfig;
+import org.uberfire.ext.metadata.engine.BatchIndexListener;
 import org.uberfire.ext.metadata.engine.IndexerScheduler.Factory;
 import org.uberfire.ext.metadata.event.BatchIndexEvent;
 import org.uberfire.ext.metadata.io.ConstrainedIndexerScheduler.ConstraintBuilder;
@@ -70,6 +71,7 @@ public class DefaultApplicationScopedProducer implements ApplicationScopedProduc
     private IndexersFactory indexersFactory;
     private IndexerDispatcherFactory dispatcherFactory;
     private Event<BatchIndexEvent> batchIndexEvent;
+    private BatchIndexListener batchIndexListener;
 
     public DefaultApplicationScopedProducer() {
         if (System.getProperty("org.uberfire.watcher.autostart") == null) {
@@ -90,7 +92,8 @@ public class DefaultApplicationScopedProducer implements ApplicationScopedProduc
                                             DefaultIndexEngineObserver defaultIndexEngineObserver,
                                             IndexersFactory indexersFactory,
                                             Event<BatchIndexEvent> batchIndexEvent,
-                                            @Unmanaged ExecutorService executorService) {
+                                            @Unmanaged ExecutorService executorService,
+                                            BatchIndexListener batchIndexListener) {
         this();
         this.config = config;
         this.watchService = watchService;
@@ -99,6 +102,7 @@ public class DefaultApplicationScopedProducer implements ApplicationScopedProduc
         this.indexersFactory = indexersFactory;
         this.batchIndexEvent = batchIndexEvent;
         this.executorService = executorService;
+        this.batchIndexListener = batchIndexListener;
     }
 
     @PostConstruct
@@ -114,6 +118,7 @@ public class DefaultApplicationScopedProducer implements ApplicationScopedProduc
                                                   executorService,
                                                   indexersFactory,
                                                   dispatcherFactory,
+                                                  batchIndexListener,
                                                   DublinCoreView.class,
                                                   VersionAttributeView.class,
                                                   OtherMetaView.class);

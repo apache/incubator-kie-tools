@@ -18,23 +18,26 @@ package org.kie.workbench.common.screens.library.client.widgets.common;
 
 import javax.inject.Inject;
 
+import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.mvp.Command;
 
-public class TileWidget {
+public class TileWidget<CONTENT> {
 
     public interface View extends UberElement<TileWidget> {
 
         void setup(String label,
                    String description,
-                   String circleLabel,
-                   String circleDescription,
                    Command selectCommand);
 
         boolean isSelected();
 
         void setSelected(boolean selected);
+
+        void setNumberOfAssets(Integer numberOfAssets);
     }
+
+    private CONTENT content;
 
     private View view;
 
@@ -47,17 +50,25 @@ public class TileWidget {
 
     public void init(final String label,
                      final String description,
-                     final String circleLabel,
-                     final String circleDescription,
                      final Command selectCommand) {
+
         this.label = label;
 
         view.init(this);
+
         view.setup(label,
                    description,
-                   circleLabel,
-                   circleDescription,
                    selectCommand);
+
+        view.setNumberOfAssets(0);
+    }
+
+    public CONTENT getContent() {
+        return content;
+    }
+
+    public void setContent(CONTENT content) {
+        this.content = content;
     }
 
     public boolean isSelected() {
@@ -70,6 +81,10 @@ public class TileWidget {
 
     public String getLabel() {
         return label;
+    }
+
+    public void setNumberOfAssets(Integer numberOfAssets) {
+        view.setNumberOfAssets(numberOfAssets);
     }
 
     public View getView() {

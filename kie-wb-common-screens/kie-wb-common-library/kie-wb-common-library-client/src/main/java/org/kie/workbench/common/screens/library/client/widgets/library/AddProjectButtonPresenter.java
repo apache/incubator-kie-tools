@@ -110,11 +110,8 @@ public class AddProjectButtonPresenter {
 
     public void addProject() {
         if (userCanCreateProjects()) {
-            libraryPlaces.closeAllPlacesOrNothing(() -> {
-                libraryPlaces.goToLibrary();
-                final AddProjectPopUpPresenter addProjectPopUpPresenter = addProjectPopUpPresenters.get();
-                addProjectPopUpPresenter.show();
-            });
+            final AddProjectPopUpPresenter addProjectPopUpPresenter = addProjectPopUpPresenters.get();
+            addProjectPopUpPresenter.show();
         }
     }
 

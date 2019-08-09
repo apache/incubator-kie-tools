@@ -609,11 +609,9 @@ public class LibraryPlacesTest {
         libraryPlaces.goToLibrary();
 
         verify(libraryPlaces).closeLibraryPlaces();
-        verify(placeManager).goTo(eq(part),
-                                  any(PanelDefinition.class));
+        verify(placeManager).goTo(eq(part), any(PanelDefinition.class));
         verify(libraryBreadcrumbs).setupForSpace(activeOrganizationalUnit);
-        verify(projectContextChangeEvent,
-               never()).fire(any(WorkspaceProjectContextChangeEvent.class));
+        verify(projectContextChangeEvent).fire(any(WorkspaceProjectContextChangeEvent.class));
     }
 
     @Test

@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.screens.library.client.screens;
 
-import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -24,12 +23,12 @@ import javax.inject.Inject;
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.common.services.project.events.NewProjectEvent;
-import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.structure.client.security.OrganizationalUnitController;
 import org.guvnor.structure.contributors.SpaceContributorsUpdatedEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.RepositoryRemovedEvent;
 import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.screens.library.api.LibraryService;
@@ -50,7 +49,6 @@ import org.uberfire.spaces.Space;
         owningPerspective = LibraryPerspective.class)
 public class LibraryScreen {
 
-    protected List<WorkspaceProject> projects;
     private View view;
     private ManagedInstance<DeleteOrganizationalUnitPopUpPresenter> deleteOrganizationalUnitPopUpPresenters;
     private ProjectController projectController;
@@ -94,9 +92,13 @@ public class LibraryScreen {
 
     @PostConstruct
     public void init() {
+
+        final OrganizationalUnit activeOU = projectContext.getActiveOrganizationalUnit()
+                .orElseThrow(() -> new IllegalStateException("Cannot initialize library screen without an active organizational unit."));
+
         view.init(this);
-        view.setTitle(projectContext.getActiveOrganizationalUnit()
-                              .orElseThrow(() -> new IllegalStateException("Cannot initialize library screen without an active organizational unit.")).getName());
+        view.setTitle(activeOU.getName());
+
         showProjects();
 
         contributorsListPresenter.setup(spaceContributorsListService,
@@ -114,10 +116,7 @@ public class LibraryScreen {
 
     public void importProject() {
         if (userCanCreateProjects()) {
-            libraryPlaces.closeAllPlacesOrNothing(() -> {
-                libraryPlaces.goToLibrary();
-                libraryPlaces.goToImportRepositoryPopUp();
-            });
+            libraryPlaces.goToImportRepositoryPopUp();
         }
     }
 
@@ -130,23 +129,18 @@ public class LibraryScreen {
     }
 
     public void showProjects() {
-        view.setProjectsCount(0);
         final OrganizationalUnit activeOU = projectContext.getActiveOrganizationalUnit()
                 .orElseThrow(() -> new IllegalStateException("Cannot try to query library projects without an active organizational unit."));
-        final boolean cachedHasProjects = !activeOU.getRepositories().isEmpty();
-        if (cachedHasProjects) {
+
+        libraryService.call((RemoteCallback<Boolean>) this::setLibraryProjectScreen).hasProjects(activeOU);
+    }
+
+    private void setLibraryProjectScreen(boolean hasProjects) {
+        if (hasProjects) {
             showPopulatedLibraryScreen();
         } else {
             showEmptyLibraryScreen();
         }
-        // Now do a call and possibly update if this is different
-        libraryService.call((Boolean hasProjects) -> {
-            if (hasProjects && !cachedHasProjects) {
-                showPopulatedLibraryScreen();
-            } else if (!hasProjects && cachedHasProjects) {
-                showEmptyLibraryScreen();
-            }
-        }).hasProjects(activeOU);
     }
 
     private void showEmptyLibraryScreen() {
