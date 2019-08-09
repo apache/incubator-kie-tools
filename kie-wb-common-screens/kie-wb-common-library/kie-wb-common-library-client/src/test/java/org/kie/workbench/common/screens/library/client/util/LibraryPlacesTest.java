@@ -35,6 +35,7 @@ import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.guvnor.structure.client.security.OrganizationalUnitController;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
+import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryRemovedEvent;
@@ -193,6 +194,10 @@ public class LibraryPlacesTest {
     @Mock
     private LibraryInternalPreferences libraryInternalPreferences;
 
+    @Mock
+    private OrganizationalUnitService organizationalUnitService;
+    private Caller<OrganizationalUnitService> organizationalUnitServiceCaller;
+
     @Captor
     private ArgumentCaptor<WorkspaceProjectContextChangeEvent> projectContextChangeEventArgumentCaptor;
 
@@ -215,6 +220,7 @@ public class LibraryPlacesTest {
         libraryServiceCaller = new CallerMock<>(libraryService);
         vfsServiceCaller = new CallerMock<>(vfsService);
         repositoryServiceCaller = new CallerMock<>(repositoryService);
+        organizationalUnitServiceCaller = new CallerMock<>(organizationalUnitService);
 
         libraryBreadcrumbs = spy(new LibraryBreadcrumbs(breadcrumbs,
                                                         translationUtils,
@@ -243,7 +249,8 @@ public class LibraryPlacesTest {
                                               libraryInternalPreferences,
                                               repositoryServiceCaller,
                                               new SyncPromises(),
-                                              mock(OrganizationalUnitController.class)) {
+                                              mock(OrganizationalUnitController.class),
+                                              organizationalUnitServiceCaller) {
 
             @Override
             protected Map<String, List<String>> getParameterMap() {
@@ -482,6 +489,17 @@ public class LibraryPlacesTest {
         verify(placeManager).goTo(eq(part),
                                   any(PanelDefinition.class));
         verify(libraryBreadcrumbs).setupForSpacesScreen();
+    }
+
+    @Test
+    public void goToSpaceTest() {
+        doReturn(activeOrganizationalUnit).when(organizationalUnitService).getOrganizationalUnit(any());
+
+        libraryPlaces.nativeGoToSpace("space");
+
+        verify(projectContextChangeEvent).fire(projectContextChangeEventArgumentCaptor.capture());
+        assertEquals(activeOrganizationalUnit, projectContextChangeEventArgumentCaptor.getValue().getOrganizationalUnit());
+        verify(libraryPlaces).goToLibrary();
     }
 
     @Test
