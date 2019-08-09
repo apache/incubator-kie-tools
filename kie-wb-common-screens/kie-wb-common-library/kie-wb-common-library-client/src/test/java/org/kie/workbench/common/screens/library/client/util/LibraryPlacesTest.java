@@ -497,7 +497,7 @@ public class LibraryPlacesTest {
 
         libraryPlaces.nativeGoToSpace("space");
 
-        verify(projectContextChangeEvent).fire(projectContextChangeEventArgumentCaptor.capture());
+        verify(projectContextChangeEvent, times(2)).fire(projectContextChangeEventArgumentCaptor.capture());
         assertEquals(activeOrganizationalUnit, projectContextChangeEventArgumentCaptor.getValue().getOrganizationalUnit());
         verify(libraryPlaces).goToLibrary();
     }
