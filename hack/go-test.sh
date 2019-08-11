@@ -3,5 +3,6 @@
 if [[ -z ${CI} ]]; then
     ./hack/go-vet.sh
     ./hack/go-fmt.sh
+    ./hack/go-lint.sh
 fi
-go test ./... -count=1
+go test ./pkg/... -count=1
