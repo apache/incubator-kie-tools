@@ -23,7 +23,7 @@ import { GwtEditorRoutes } from "appformer-js-gwt-editors-common";
 function init() {
   const githubEditor = document.querySelector(".js-code-editor") as HTMLElement;
   if (!githubEditor) {
-    console.info("Not GitHub edit page.");
+    console.debug("Not GitHub edit page.");
     return;
   }
 
@@ -41,10 +41,6 @@ function init() {
     console.info(`No enhanced editor available for "${openFileExtension}" format.`);
     return;
   }
-
-  //**!!!!**
-  //REMEMBER: open /Applications/Google\ Chrome.app --args --allow-running-insecure-content
-  //**!!!!**
 
   document.body.appendChild(document.createElement("div")).setAttribute("id", "kogito-container");
 

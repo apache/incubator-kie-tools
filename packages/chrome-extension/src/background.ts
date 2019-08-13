@@ -17,7 +17,7 @@
 import HttpHeader = chrome.webRequest.HttpHeader;
 
 chrome.runtime.onInstalled.addListener(() => {
-  console.log("AppFormer.js chrome extension is running.");
+  console.log("Kogito Tooling extension is running.");
 });
 
 function removeHeader(headers: HttpHeader[], name: string) {
