@@ -23,9 +23,14 @@ export class KogitoEditorFactory {
   private readonly context: vscode.ExtensionContext;
   private readonly editorStore: KogitoEditorStore;
   private readonly webviewLocation: string;
-  private readonly router: Router<any>;
+  private readonly router: Router;
 
-  constructor(context: vscode.ExtensionContext, router: Router<any>, webviewLocation: string, editorStore: KogitoEditorStore) {
+  constructor(
+    context: vscode.ExtensionContext,
+    router: Router,
+    webviewLocation: string,
+    editorStore: KogitoEditorStore
+  ) {
     this.context = context;
     this.editorStore = editorStore;
     this.router = router;

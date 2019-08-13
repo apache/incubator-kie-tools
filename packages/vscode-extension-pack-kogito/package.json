@@ -49,7 +49,7 @@
     "pack-extension": "vsce package --yarn -o ./dist/kiegroup_kogito_editors_$npm_package_version.vsix",
     "compile": "webpack",
     "watch": "webpack",
-    "test": "jest",
+    "test": "echo 'No tests to run.'",
     "test:it": "rm -rf tests-it/out && tsc -p tests-it && node tests-it/out/main.js",
     "build:fast": "rm -rf dist && webpack",
     "build": "yarn run build:fast",
@@ -82,6 +82,8 @@
   },
   "dependencies": {
     "appformer-js-core": "0.1.0",
+    "appformer-js-gwt-editors": "0.1.0",
+    "appformer-js-gwt-editors-common": "0.1.0",
     "appformer-js-microeditor-envelope": "0.1.0",
     "appformer-js-microeditor-envelope-protocol": "0.1.0",
     "appformer-js-vscode-extension": "0.1.0"

@@ -19,7 +19,7 @@ import * as vscode from "vscode";
 import * as __path from "path";
 import { SimpleReactEditorsLanguageData } from "../common/SimpleReactEditorsLanguageData";
 
-export class SimpleReactEditorsRouter implements Router<SimpleReactEditorsLanguageData> {
+export class SimpleReactEditorsRouter implements Router {
   private readonly context: vscode.ExtensionContext;
   private readonly languageDataByFileExtension: Map<string, SimpleReactEditorsLanguageData>;
 

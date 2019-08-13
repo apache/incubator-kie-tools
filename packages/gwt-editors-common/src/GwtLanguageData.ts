@@ -16,7 +16,7 @@
 
 import { LanguageData } from "appformer-js-core";
 
-export interface KogitoLanguageData extends LanguageData {
+export interface GwtLanguageData extends LanguageData {
   type: string;
   editorId: string;
   gwtModuleName: string;

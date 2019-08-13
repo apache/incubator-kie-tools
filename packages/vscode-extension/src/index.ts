@@ -20,7 +20,6 @@ import { KogitoEditorFactory } from "./KogitoEditorFactory";
 import { KogitoEditorsExtension } from "./KogitoEditorsExtension";
 import { Router } from "appformer-js-core";
 
-
 /**
  * Starts a Kogito extension.
  *
@@ -33,7 +32,7 @@ export function startExtension(args: {
   extensionName: string;
   webviewLocation: string;
   context: vscode.ExtensionContext;
-  router: Router<any>;
+  router: Router;
 }) {
   const editorStore = new KogitoEditorStore();
   const editorFactory = new KogitoEditorFactory(args.context, args.router, args.webviewLocation, editorStore);

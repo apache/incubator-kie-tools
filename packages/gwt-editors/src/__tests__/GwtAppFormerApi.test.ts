@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { AppFormerGwtApi } from '../webview/gwt/AppFormerGwtApi';
-import { DummyEditor } from './DummyEditor';
+import { GwtAppFormerApi } from "../GwtAppFormerApi";
+import { DummyEditor } from "./DummyEditor";
 import * as AppFormer from "appformer-js-core";
-import { GwtEditor } from '../webview/gwt/GwtEditor';
+import { GwtEditor } from "../GwtEditor";
 
 class DummyGwtEditor {
   private wrappedEditor: AppFormer.Editor;
@@ -33,7 +33,7 @@ class DummyGwtEditor {
 const dummyEditor = new DummyEditor();
 const dummyGwtEditor = new DummyGwtEditor(dummyEditor);
 const editorId = "dummy editor";
-const appFormerGwtApi = new AppFormerGwtApi();
+const appFormerGwtApi = new GwtAppFormerApi();
 
 window.gwtEditorBeans = new Map<string, { get(): GwtEditor }>();
 window.gwtEditorBeans.set(editorId, dummyGwtEditor);

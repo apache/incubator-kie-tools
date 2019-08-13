@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,18 +14,13 @@
  * limitations under the License.
  */
 
-import * as MicroEditorEnvelope from "appformer-js-microeditor-envelope";
-import { GwtAppFormerApi, GwtEditorWrapperFactory } from "appformer-js-gwt-editors";
-
-declare global {
-  export const acquireVsCodeApi: any;
-}
-
-const gwtAppFormerApi = new GwtAppFormerApi();
-gwtAppFormerApi.setClientSideOnly(true);
-
-MicroEditorEnvelope.init({
-  container: document.getElementById("envelope-app")!,
-  busApi: acquireVsCodeApi(),
-  editorFactory: new GwtEditorWrapperFactory(gwtAppFormerApi)
-});
+module.exports = {
+  reporters: ["default", "jest-junit"],
+  moduleDirectories: ["node_modules", "src"],
+  moduleFileExtensions: ["js", "jsx", "ts", "tsx"],
+  testRegex: "/__tests__/.*\\.test\\.(jsx?|tsx?)$",
+  transform: {
+    "^.+\\.jsx?$": "babel-jest",
+    "^.+\\.tsx?$": "ts-jest"
+  }
+};

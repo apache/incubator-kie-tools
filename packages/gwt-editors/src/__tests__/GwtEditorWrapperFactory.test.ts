@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-import { AppFormerGwtApi } from "../webview/gwt/AppFormerGwtApi";
-import { GwtEditorWrapperFactory } from "../webview/gwt/GwtEditorWrapperFactory";
-import { Resource, KogitoLanguageData } from "../common/KogitoLanguageData";
+import { GwtAppFormerApi } from "../GwtAppFormerApi";
+import { GwtEditorWrapperFactory } from "../GwtEditorWrapperFactory";
+import { GwtLanguageData, Resource } from "appformer-js-gwt-editors-common";
 
 const delay = (ms: number) => {
   return new Promise(res => setTimeout(res, ms));
 };
 
-const appFormerGwtApi: AppFormerGwtApi = {
+const gwtAppFormerApi: GwtAppFormerApi = {
   setErraiDomain: jest.fn(),
   onFinishedLoading: (callback: () => Promise<any>) => (window.appFormerGwtFinishedLoading = callback),
   getEditor: jest.fn(),
@@ -39,7 +39,7 @@ const jsResource: Resource = {
   paths: ["resource.js"]
 };
 
-const testLanguageData: KogitoLanguageData = {
+const testLanguageData: GwtLanguageData = {
   type: "dummy",
   editorId: "editorID",
   gwtModuleName: "moduleName",
@@ -47,7 +47,7 @@ const testLanguageData: KogitoLanguageData = {
   resources: [cssResource, jsResource]
 };
 
-const gwtEditorWrapperFactory: GwtEditorWrapperFactory = new GwtEditorWrapperFactory(appFormerGwtApi);
+const gwtEditorWrapperFactory: GwtEditorWrapperFactory = new GwtEditorWrapperFactory(gwtAppFormerApi);
 
 describe("GwtEditorWrapperFactory", () => {
   test("create editor", async () => {

@@ -26,7 +26,7 @@ export class KogitoEditor {
   private readonly path: string;
   private readonly webviewLocation: string;
   private readonly context: vscode.ExtensionContext;
-  private readonly router: Router<any>;
+  private readonly router: Router;
   private readonly panel: vscode.WebviewPanel;
   private readonly editorStore: KogitoEditorStore;
   private readonly envelopeBusOuterMessageHandler: EnvelopeBusOuterMessageHandler;
@@ -35,7 +35,7 @@ export class KogitoEditor {
     path: string,
     panel: vscode.WebviewPanel,
     context: vscode.ExtensionContext,
-    router: Router<any>,
+    router: Router,
     webviewLocation: string,
     editorStore: KogitoEditorStore
   ) {

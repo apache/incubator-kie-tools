@@ -26,7 +26,7 @@ declare global {
   }
 }
 
-export class AppFormerGwtApi {
+export class GwtAppFormerApi {
   public setErraiDomain(backendDomain: string): void {
     window.erraiBusApplicationRoot = backendDomain;
   }

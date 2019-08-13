@@ -14,71 +14,23 @@
  * limitations under the License.
  */
 
-import { Router } from "appformer-js-core";
+import { LanguageData, Router, Routes } from "appformer-js-core";
 import * as vscode from "vscode";
 import * as __path from "path";
-import { KogitoLanguageData } from "../common/KogitoLanguageData";
 
-const dmnGwtModuleName = "org.kie.workbench.common.dmn.showcase.DMNShowcase";
-const dmnDistPath = `dist/webview/editors/dmn/`;
-const bpmnGwtModuleName = "org.kie.workbench.common.stunner.standalone.StunnerStandaloneShowcase";
-const bpmnDistPath = `dist/webview/editors/bpmn/`;
-
-export class KogitoRouter implements Router<KogitoLanguageData> {
+export class KogitoRouter implements Router {
   private readonly context: vscode.ExtensionContext;
-  private readonly languageDataByFileExtension: Map<string, KogitoLanguageData>;
+  private readonly languageDataByFileExtension: Map<string, LanguageData>;
 
-  constructor(context: vscode.ExtensionContext) {
+  constructor(context: vscode.ExtensionContext, ...routesArray: Routes[]) {
     this.context = context;
-    this.languageDataByFileExtension = new Map<string, KogitoLanguageData>([
-      [
-        "dmn",
-        {
-          type: "gwt",
-          editorId: "DMNDiagramEditor",
-          gwtModuleName: dmnGwtModuleName,
-          erraiDomain: "",
-          resources: [
-            {
-              type: "css",
-              paths: [this.getRelativePathTo(`${dmnDistPath}${dmnGwtModuleName}/css/patternfly.min.css`)]
-            },
-            {
-              type: "js",
-              paths: [
-                this.getRelativePathTo(`${dmnDistPath}/${dmnGwtModuleName}/ace/ace.js`),
-                this.getRelativePathTo(`${dmnDistPath}/${dmnGwtModuleName}/ace/theme-chrome.js`),
-                this.getRelativePathTo(`${dmnDistPath}/${dmnGwtModuleName}/${dmnGwtModuleName}.nocache.js`)
-              ]
-            }
-          ]
-        }
-      ],
-      [
-        //FIXME: BPMN doesn't have a client-side only editor yet.
-        "bpmn",
-        {
-          type: "gwt",
-          editorId: "BPMNStandaloneDiagramEditor",
-          gwtModuleName: bpmnGwtModuleName,
-          erraiDomain: "",
-          resources: [
-            {
-              type: "css",
-              paths: [this.getRelativePathTo(`${bpmnDistPath}/${bpmnGwtModuleName}/css/patternfly.min.css`)]
-            },
-            {
-              type: "js",
-              paths: [
-                this.getRelativePathTo(`${bpmnDistPath}/${bpmnGwtModuleName}/ace/ace.js`),
-                this.getRelativePathTo(`${bpmnDistPath}/${bpmnGwtModuleName}/ace/theme-chrome.js`),
-                this.getRelativePathTo(`${bpmnDistPath}/${bpmnGwtModuleName}/${bpmnGwtModuleName}.nocache.js`)
-              ]
-            }
-          ]
-        }
-      ]
-    ]);
+
+    const allLanguageData = new Map<string, any>();
+    routesArray.reduce((map, routes) => {
+      routes.getRoutes(this).forEach((v, k) => map.set(k, v));
+      return map;
+    }, allLanguageData);
+    this.languageDataByFileExtension = allLanguageData;
   }
 
   public getRelativePathTo(uri: string) {

@@ -22,17 +22,27 @@ import { LanguageData } from "./LangaugeData";
  *
  * The LanguageData returned should be a custom class that implements LanguageData.
  */
-export interface Router<T extends LanguageData> {
+export interface Router {
   /**
    * Returns the custom LanguageData class for a specific file extension.
    * @param fileExtension The file extension (i.e. "txt", or "png")
    */
-  getLanguageData(fileExtension: string): T | undefined;
-
+  getLanguageData(fileExtension: string): LanguageData | undefined;
 
   /**
    * Responsible for transforming a relative URI path to an absolute URL inside the context of the application.
    * @param uri The relative path URI.
    */
   getRelativePathTo(uri: string): string;
+}
+
+/**
+ * Exports the routes for a file extension
+ */
+export interface Routes {
+  /**
+   * Returns the routes for a file extension as a Map
+   * @param router Router that will decide the relative path to prepend on the resources URLs
+   */
+  getRoutes(router: Router): Map<string, LanguageData>;
 }

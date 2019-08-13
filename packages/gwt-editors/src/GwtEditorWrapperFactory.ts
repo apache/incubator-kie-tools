@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-import { AppFormerGwtApi } from "./AppFormerGwtApi";
+import { GwtAppFormerApi } from "./GwtAppFormerApi";
 import * as AppFormer from "appformer-js-core";
 import * as MicroEditorEnvelope from "appformer-js-microeditor-envelope";
+import { EnvelopeBusInnerMessageHandler } from "appformer-js-microeditor-envelope";
 import { GwtEditorWrapper } from "./GwtEditorWrapper";
-import { Resource, KogitoLanguageData } from "../../common/KogitoLanguageData";
-import {EnvelopeBusInnerMessageHandler} from "appformer-js-microeditor-envelope";
+import { GwtLanguageData, Resource } from "appformer-js-gwt-editors-common";
 
-export class GwtEditorWrapperFactory implements MicroEditorEnvelope.EditorFactory<KogitoLanguageData> {
-  private readonly appFormerGwtApi: AppFormerGwtApi;
+export class GwtEditorWrapperFactory implements MicroEditorEnvelope.EditorFactory<GwtLanguageData> {
+  private readonly appFormerGwtApi: GwtAppFormerApi;
 
-  constructor(appFormerGwtApi: AppFormerGwtApi) {
+  constructor(appFormerGwtApi: GwtAppFormerApi) {
     this.appFormerGwtApi = appFormerGwtApi;
   }
 
-  public createEditor(languageData: KogitoLanguageData, messageBus: EnvelopeBusInnerMessageHandler) {
+  public createEditor(languageData: GwtLanguageData, messageBus: EnvelopeBusInnerMessageHandler) {
     return new Promise<AppFormer.Editor>(res => {
       this.appFormerGwtApi.setErraiDomain(languageData.erraiDomain); //needed only for backend communication
 

@@ -14,18 +14,5 @@
  * limitations under the License.
  */
 
-import * as MicroEditorEnvelope from "appformer-js-microeditor-envelope";
-import { GwtAppFormerApi, GwtEditorWrapperFactory } from "appformer-js-gwt-editors";
-
-declare global {
-  export const acquireVsCodeApi: any;
-}
-
-const gwtAppFormerApi = new GwtAppFormerApi();
-gwtAppFormerApi.setClientSideOnly(true);
-
-MicroEditorEnvelope.init({
-  container: document.getElementById("envelope-app")!,
-  busApi: acquireVsCodeApi(),
-  editorFactory: new GwtEditorWrapperFactory(gwtAppFormerApi)
-});
+export * from "./GwtLanguageData";
+export * from "./GwtEditorRoutes";
