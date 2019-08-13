@@ -465,7 +465,7 @@ public class ScenarioSimulationServiceImpl
                              new GAV("org.kie", "kie-dmn-core", kieVersion));
     }
 
-    protected ScenarioSimulationModel unmarshalInternal(String content) {
+    protected ScenarioSimulationModel unmarshalInternal(String content) throws Exception {
         return ScenarioSimulationXMLPersistence.getInstance().unmarshal(content);
     }
 
