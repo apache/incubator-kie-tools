@@ -18,11 +18,16 @@ import { Router, Routes } from "appformer-js-core";
 import { GwtLanguageData } from "./GwtLanguageData";
 
 const dmnGwtModuleName = "org.kie.workbench.common.dmn.showcase.DMNShowcase";
-const dmnDistPath = `dist/webview/editors/dmn/`;
 const bpmnGwtModuleName = "org.kie.workbench.common.stunner.standalone.StunnerStandaloneShowcase";
-const bpmnDistPath = `dist/webview/editors/bpmn/`;
-
 export class GwtEditorRoutes implements Routes {
+  private readonly dmnLocation: string;
+  private readonly bpmnLocation: string;
+
+  constructor(args: { dmnLocation: string; bpmnLocation: string }) {
+    this.dmnLocation = args.dmnLocation;
+    this.bpmnLocation = args.bpmnLocation;
+  }
+
   public getRoutes(router: Router) {
     return new Map<string, GwtLanguageData>([
       [
@@ -35,14 +40,14 @@ export class GwtEditorRoutes implements Routes {
           resources: [
             {
               type: "css",
-              paths: [router.getRelativePathTo(`${dmnDistPath}${dmnGwtModuleName}/css/patternfly.min.css`)]
+              paths: [router.getRelativePathTo(`${this.dmnLocation}${dmnGwtModuleName}/css/patternfly.min.css`)]
             },
             {
               type: "js",
               paths: [
-                router.getRelativePathTo(`${dmnDistPath}/${dmnGwtModuleName}/ace/ace.js`),
-                router.getRelativePathTo(`${dmnDistPath}/${dmnGwtModuleName}/ace/theme-chrome.js`),
-                router.getRelativePathTo(`${dmnDistPath}/${dmnGwtModuleName}/${dmnGwtModuleName}.nocache.js`)
+                router.getRelativePathTo(`${this.dmnLocation}/${dmnGwtModuleName}/ace/ace.js`),
+                router.getRelativePathTo(`${this.dmnLocation}/${dmnGwtModuleName}/ace/theme-chrome.js`),
+                router.getRelativePathTo(`${this.dmnLocation}/${dmnGwtModuleName}/${dmnGwtModuleName}.nocache.js`)
               ]
             }
           ]
@@ -59,14 +64,14 @@ export class GwtEditorRoutes implements Routes {
           resources: [
             {
               type: "css",
-              paths: [router.getRelativePathTo(`${bpmnDistPath}/${bpmnGwtModuleName}/css/patternfly.min.css`)]
+              paths: [router.getRelativePathTo(`${this.bpmnLocation}/${bpmnGwtModuleName}/css/patternfly.min.css`)]
             },
             {
               type: "js",
               paths: [
-                router.getRelativePathTo(`${bpmnDistPath}/${bpmnGwtModuleName}/ace/ace.js`),
-                router.getRelativePathTo(`${bpmnDistPath}/${bpmnGwtModuleName}/ace/theme-chrome.js`),
-                router.getRelativePathTo(`${bpmnDistPath}/${bpmnGwtModuleName}/${bpmnGwtModuleName}.nocache.js`)
+                router.getRelativePathTo(`${this.bpmnLocation}/${bpmnGwtModuleName}/ace/ace.js`),
+                router.getRelativePathTo(`${this.bpmnLocation}/${bpmnGwtModuleName}/ace/theme-chrome.js`),
+                router.getRelativePathTo(`${this.bpmnLocation}/${bpmnGwtModuleName}/${bpmnGwtModuleName}.nocache.js`)
               ]
             }
           ]

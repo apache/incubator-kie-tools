@@ -1,0 +1,40 @@
+{
+  "name": "Kogito Tooling",
+  "version": "0.1.0",
+  "manifest_version": 2,
+  "description": "Kogito Tooling",
+  "chrome_url_overrides": {
+    "newtab": "newtab/home.html"
+  },
+  "content_scripts": [
+    {
+      "run_at": "document_end",
+      "js": ["resources/codemirror.js", "contentscript.js"],
+      "matches": ["https://github.com/*"],
+      "all_frames": true
+    }
+  ],
+  "web_accessible_resources": [
+    "envelope/*.html",
+    "envelope/*.js",
+    "editors/*.html",
+    "editors/*.css",
+    "editors/*.js",
+    "resources/*.js",
+    "resources/*.html",
+    "resources/*.css"
+  ],
+  "permissions": [
+    "webRequestBlocking",
+    "webRequest",
+    "https://*/*",
+    "http://*/*",
+    "tabs",
+    "declarativeContent",
+    "background"
+  ],
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": true
+  }
+}

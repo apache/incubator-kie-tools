@@ -26,7 +26,13 @@ export function activate(context: vscode.ExtensionContext) {
     extensionName: "kiegroup.appformer-js-vscode-extension-pack-kogito",
     webviewLocation: "dist/webview/index.js",
     context: context,
-    router: new KogitoRouter(context, new GwtEditorRoutes())
+    router: new KogitoRouter(
+      context,
+      new GwtEditorRoutes({
+        dmnLocation: `dist/webview/editors/dmn`,
+        bpmnLocation: `dist/webview/editors/bpmn`
+      })
+    )
   });
 
   console.info("Extension is successfully setup.");
