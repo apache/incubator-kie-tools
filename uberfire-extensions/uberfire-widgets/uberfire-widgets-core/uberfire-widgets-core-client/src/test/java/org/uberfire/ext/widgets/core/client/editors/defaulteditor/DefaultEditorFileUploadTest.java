@@ -16,6 +16,8 @@
 
 package org.uberfire.ext.widgets.core.client.editors.defaulteditor;
 
+import java.util.function.Consumer;
+
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.gwtbootstrap3.client.ui.Form;
@@ -45,10 +47,10 @@ public class DefaultEditorFileUploadTest {
     private FileUploadFormEncoder formEncoder;
 
     @Mock
-    private Command successCallback;
+    private Consumer<String> successCallback;
 
     @Mock
-    private Command errorCallback;
+    private Consumer<String> errorCallback;
 
     @Before
     public void setup() {

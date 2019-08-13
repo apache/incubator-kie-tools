@@ -180,7 +180,7 @@ public class ObservablePathImplTest {
         verify(observablePathImpl).executeConcurrentDeleteCommand(pathPlaceRequest.getPath(),
                                                                   RESOURCE_SESSION_ID,
                                                                   identityUser);
-        verify(observablePathImpl).executeConcurrentRenameCommand(destinationPath,
+        verify(observablePathImpl).executeConcurrentRenameCommand(pathPlaceRequest.getPath(),
                                                                   destinationPath,
                                                                   RESOURCE_SESSION_ID,
                                                                   identityUser);

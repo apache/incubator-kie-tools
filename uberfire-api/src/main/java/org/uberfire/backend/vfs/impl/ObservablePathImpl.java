@@ -246,8 +246,8 @@ public class ObservablePathImpl implements ObservablePath,
                             executeDeleteCommands();
                             break;
                         case RENAME:
-                            path = ((ResourceRenamed) change).getDestinationPath();
                             executeRenameCommands();
+                            path = ((ResourceRenamed) change).getDestinationPath();
                             break;
                         case UPDATE:
                             executeUpdateCommands();
@@ -269,11 +269,11 @@ public class ObservablePathImpl implements ObservablePath,
                                                            batchEvent.getSessionInfo().getIdentity());
                             break;
                         case RENAME:
-                            path = ((ResourceRenamed) change).getDestinationPath();
                             executeConcurrentRenameCommand(path,
                                                            ((ResourceRenamed) change).getDestinationPath(),
                                                            batchEvent.getSessionInfo().getId(),
                                                            batchEvent.getSessionInfo().getIdentity());
+                            path = ((ResourceRenamed) change).getDestinationPath();
                             break;
                         case UPDATE:
                             executeConcurrentUpdateCommand(path,

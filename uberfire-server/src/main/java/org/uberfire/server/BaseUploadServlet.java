@@ -49,9 +49,9 @@ public abstract class BaseUploadServlet extends BaseFilteredServlet {
     }
 
     protected void writeResponse(HttpServletResponse response,
-                                 String ok) throws IOException {
+                                 String content) throws IOException {
         response.setContentType("text/html");
-        response.getWriter().write(ok);
+        response.getWriter().write(content);
         response.getWriter().flush();
     }
 

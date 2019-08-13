@@ -18,6 +18,7 @@ package org.uberfire.ext.widgets.core.client.editors.defaulteditor;
 
 import java.util.Iterator;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -41,8 +42,8 @@ public abstract class DefaultEditorFileUploadBase
     Form form;
     @UiField(provided = true)
     FileUpload fileUpload;
-    private Command successCallback;
-    private Command errorCallback;
+    private Consumer<String> successCallback;
+    private Consumer<String> errorCallback;
     private FileUploadFormEncoder formEncoder = new FileUploadFormEncoder();
 
     public DefaultEditorFileUploadBase() {
@@ -74,9 +75,11 @@ public abstract class DefaultEditorFileUploadBase
 
         form.addSubmitCompleteHandler(event -> {
             if (isUploadSuccessful(event)) {
-                executeCallback(successCallback);
+                executeCallback(successCallback,
+                                event.getResults());
             } else {
-                executeCallback(errorCallback);
+                executeCallback(errorCallback,
+                                event.getResults());
             }
         });
     }
@@ -99,7 +102,8 @@ public abstract class DefaultEditorFileUploadBase
         String fileName = fileUpload.getFilename();
         if (isNullOrEmpty(fileName)) {
             Window.alert(CoreConstants.INSTANCE.SelectFileToUpload());
-            executeCallback(errorCallback);
+            executeCallback(errorCallback,
+                            "");
             return false;
         }
         return true;
@@ -125,8 +129,8 @@ public abstract class DefaultEditorFileUploadBase
 
     protected abstract Map<String, String> getParameters();
 
-    public void upload(final Command successCallback,
-                       final Command errorCallback) {
+    public void upload(final Consumer<String> successCallback,
+                       final Consumer<String> errorCallback) {
         this.successCallback = successCallback;
         this.errorCallback = errorCallback;
         fileUpload.upload();
@@ -136,11 +140,12 @@ public abstract class DefaultEditorFileUploadBase
         return fileUpload.getFilename();
     }
 
-    private void executeCallback(final Command callback) {
+    private void executeCallback(final Consumer<String> callback,
+                                 final String result) {
         if (callback == null) {
             return;
         }
-        callback.execute();
+        callback.accept(result);
     }
 
     interface DefaultEditorFileUploadBaseBinder

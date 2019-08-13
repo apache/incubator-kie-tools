@@ -18,6 +18,8 @@ package org.uberfire.mvp.impl;
 
 import java.util.Map;
 
+import javax.annotation.PreDestroy;
+
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.uberfire.backend.vfs.IsVersioned;
@@ -136,5 +138,10 @@ public class PathPlaceRequest extends DefaultPlaceRequest {
     @Override
     public String toString() {
         return "PathPlaceRequest[\"" + identifier + "\" " + parameters + "\" " + path + "]";
+    }
+
+    @PreDestroy
+    public void preDestroy() {
+        getPath().dispose();
     }
 }

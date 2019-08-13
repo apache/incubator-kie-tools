@@ -40,6 +40,7 @@ public class FileUploadServlet
 
     private static final String RESPONSE_OK = "OK";
     private static final String RESPONSE_FAIL = "FAIL";
+    private static final String RESPONSE_CONFLICT = "CONFLICT";
 
     @Inject
     @Named("ioStrategy")
@@ -94,9 +95,22 @@ public class FileUploadServlet
 
         final Path path = ioService.get(uri);
 
-        writeFile(ioService,
-                  path,
-                  fileItem);
+        try {
+            ioService.startBatch(path.getFileSystem());
+
+            if (ioService.exists(path)) {
+                writeResponse(response,
+                              RESPONSE_CONFLICT);
+                response.sendError(HttpServletResponse.SC_CONFLICT);
+                return;
+            }
+
+            writeFile(ioService,
+                      path,
+                      fileItem);
+        } finally {
+            ioService.endBatch();
+        }
 
         writeResponse(response,
                       RESPONSE_OK);

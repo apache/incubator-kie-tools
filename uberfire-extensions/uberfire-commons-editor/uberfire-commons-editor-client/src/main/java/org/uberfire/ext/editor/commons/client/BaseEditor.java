@@ -47,6 +47,7 @@ import org.uberfire.ext.editor.commons.service.support.SupportsDelete;
 import org.uberfire.ext.editor.commons.service.support.SupportsRename;
 import org.uberfire.ext.editor.commons.service.support.SupportsSaveAndRename;
 import org.uberfire.ext.editor.commons.version.events.RestoreEvent;
+import org.uberfire.ext.widgets.common.client.common.ConcurrentChangePopup;
 import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
@@ -121,6 +122,8 @@ public abstract class BaseEditor<T, M> {
 
     @Inject
     protected DeletePopUpPresenter deletePopUpPresenter;
+
+    protected ConcurrentChangePopup concurrentChangePopup;
 
     protected Set<MenuItems> menuItems = new HashSet<>();
 
@@ -382,22 +385,26 @@ public abstract class BaseEditor<T, M> {
             }
         });
 
-        path.onConcurrentRename(new ParameterizedCommand<ObservablePath.OnConcurrentRenameEvent>() {
-            @Override
-            public void execute(final ObservablePath.OnConcurrentRenameEvent info) {
-                newConcurrentRename(info.getSource(),
-                                    info.getTarget(),
-                                    info.getIdentity(),
-                                    onConcurrentRenameIgnoreCommand(path),
-                                    onConcurrentRenameCloseCommand(path)).show();
-            }
-        });
+        path.onConcurrentRename(this::onConcurrentRename);
 
         path.onConcurrentDelete(this::onConcurrentDelete);
     }
 
+    void onConcurrentRename(final ObservablePath.OnConcurrentRenameEvent info) {
+        baseView.hideBusyIndicator();
+        if (concurrentChangePopup == null) {
+            concurrentChangePopup = newConcurrentRename(info.getSource(),
+                                                        info.getTarget(),
+                                                        info.getIdentity(),
+                                                        onConcurrentRenameIgnoreCommand(path),
+                                                        onConcurrentRenameCloseCommand(path));
+        }
+        concurrentChangePopup.show();
+    }
+
     Command onConcurrentRenameIgnoreCommand(final ObservablePath path) {
         return () -> {
+            concurrentChangePopup = null;
             disableMenus();
             concurrentRenameIgnoredEvent.fire(new ConcurrentRenameIgnoredEvent(path));
         };
@@ -405,20 +412,26 @@ public abstract class BaseEditor<T, M> {
 
     Command onConcurrentRenameCloseCommand(final ObservablePath path) {
         return () -> {
+            concurrentChangePopup = null;
             reload();
             concurrentRenameAcceptedEvent.fire(new ConcurrentRenameAcceptedEvent(path));
         };
     }
 
     void onConcurrentDelete(final ObservablePath.OnConcurrentDelete info) {
-        newConcurrentDelete(info.getPath(),
-                            info.getIdentity(),
-                            onConcurrentDeleteIgnoreCommand(path),
-                            onConcurrentDeleteCloseCommand(path)).show();
+        baseView.hideBusyIndicator();
+        if (concurrentChangePopup == null) {
+            concurrentChangePopup = newConcurrentDelete(info.getPath(),
+                                                        info.getIdentity(),
+                                                        onConcurrentDeleteIgnoreCommand(path),
+                                                        onConcurrentDeleteCloseCommand(path));
+        }
+        concurrentChangePopup.show();
     }
 
     Command onConcurrentDeleteIgnoreCommand(final ObservablePath path) {
         return () -> {
+            concurrentChangePopup = null;
             disableMenus();
             disableDeletePopup();
             concurrentDeleteIgnoredEvent.fire(new ConcurrentDeleteIgnoredEvent(path));
@@ -427,6 +440,7 @@ public abstract class BaseEditor<T, M> {
 
     Command onConcurrentDeleteCloseCommand(final ObservablePath path) {
         return () -> {
+            concurrentChangePopup = null;
             disableDeletePopup();
             placeManager.closePlace(place);
             concurrentDeleteAcceptedEvent.fire(new ConcurrentDeleteAcceptedEvent(path));

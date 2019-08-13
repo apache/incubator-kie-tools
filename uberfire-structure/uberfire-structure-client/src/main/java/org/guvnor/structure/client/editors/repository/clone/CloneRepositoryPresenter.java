@@ -26,9 +26,9 @@ import javax.inject.Inject;
 
 import org.guvnor.structure.client.editors.repository.RepositoryPreferences;
 import org.guvnor.structure.events.AfterCreateOrganizationalUnitEvent;
-import org.guvnor.structure.events.AfterDeleteOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
+import org.guvnor.structure.organizationalunit.RemoveOrganizationalUnitEvent;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryAlreadyExistsException;
 import org.guvnor.structure.repositories.RepositoryEnvironmentConfigurations;
@@ -103,7 +103,7 @@ public class CloneRepositoryPresenter implements CloneRepositoryView.Presenter {
                                          organizationalUnit);
     }
 
-    public void onDeleteOrganizationalUnit(@Observes final AfterDeleteOrganizationalUnitEvent event) {
+    public void onDeleteOrganizationalUnit(@Observes final RemoveOrganizationalUnitEvent event) {
         final OrganizationalUnit organizationalUnit = event.getOrganizationalUnit();
         if (organizationalUnit == null) {
             return;

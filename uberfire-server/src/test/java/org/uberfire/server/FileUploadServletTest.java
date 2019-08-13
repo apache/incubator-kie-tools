@@ -278,14 +278,14 @@ public class FileUploadServletTest {
         URI expectedURI = new URI(targetFolderName.replaceAll("\\s", "%20") + "/" + FileServletUtil.encodeFileName(targetFileName));
 
         verify(ioService,
-               times(1)).startBatch(eq(fileSystem));
+               times(2)).startBatch(eq(fileSystem));
         verify(ioService,
                times(1)).get(eq(expectedURI));
         verify(ioService,
                times(1)).write(any(Path.class),
                                eq(fileContent.getBytes()));
         verify(ioService,
-               times(1)).endBatch();
+               times(2)).endBatch();
 
         printWriter.flush();
         assertEquals("OK",
@@ -329,14 +329,14 @@ public class FileUploadServletTest {
         URI expectedURI = new URI(FileServletUtil.encodeFileNamePart(targetPath));
 
         verify(ioService,
-               times(1)).startBatch(eq(fileSystem));
+               times(2)).startBatch(eq(fileSystem));
         verify(ioService,
                times(1)).get(eq(expectedURI));
         verify(ioService,
                times(1)).write(any(Path.class),
                                eq(fileContent.getBytes()));
         verify(ioService,
-               times(1)).endBatch();
+               times(2)).endBatch();
 
         printWriter.flush();
         assertEquals("OK",
