@@ -816,7 +816,6 @@
       <id>run-code-coverage</id>
       <properties>
         <jacoco.excludes>*Lexer</jacoco.excludes>
-        <jacoco.exec.file>${project.build.directory}/jacoco.exec</jacoco.exec.file>
       </properties>
 
       <dependencyManagement>
@@ -847,7 +846,7 @@
               <version>${version.jacoco.plugin}</version>
               <configuration>
                 <append>true</append>
-                <destFile>${jacoco.exec.file}</destFile>
+                <dataFile>${jacoco.exec.file}</dataFile>
                 <excludes>
                   <exclude>${jacoco.excludes}</exclude>
                 </excludes>
