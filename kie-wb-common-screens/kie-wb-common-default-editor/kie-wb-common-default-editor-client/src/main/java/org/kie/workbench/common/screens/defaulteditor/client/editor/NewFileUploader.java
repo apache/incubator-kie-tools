@@ -37,6 +37,7 @@ import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.ext.widgets.core.client.editors.defaulteditor.DefaultEditorNewFileUpload;
+import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.type.AnyResourceTypeDefinition;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
@@ -129,14 +130,20 @@ public class NewFileUploader
             options.setFolderPath(path);
             options.setFileName(targetFileName);
 
-            options.upload(() -> {
+            options.upload(result -> {
                                busyIndicatorView.hideBusyIndicator();
                                presenter.complete();
                                notifySuccess();
                                newResourceSuccessEvent.fire(new NewResourceSuccessEvent(newPath));
                                placeManager.goTo(newPath);
                            },
-                           () -> busyIndicatorView.hideBusyIndicator());
+                           result -> {
+                                busyIndicatorView.hideBusyIndicator();
+                                if (result.equals("CONFLICT")) {
+                                    notificationEvent.fire(new NotificationEvent(CommonConstants.INSTANCE.SorryAnItemOfThatNameAlreadyExistsInTheRepositoryPleaseChooseAnother(),
+                                                                                 NotificationEvent.NotificationType.ERROR));
+                                }
+                           });
         };
     }
 

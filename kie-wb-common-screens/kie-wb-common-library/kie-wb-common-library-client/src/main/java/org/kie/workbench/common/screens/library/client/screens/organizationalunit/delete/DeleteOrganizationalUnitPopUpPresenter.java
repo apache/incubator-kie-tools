@@ -22,9 +22,9 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.guvnor.structure.client.security.OrganizationalUnitController;
-import org.guvnor.structure.events.AfterDeleteOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
+import org.guvnor.structure.organizationalunit.RemoveOrganizationalUnitEvent;
 import org.jboss.errai.common.client.api.Caller;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.uberfire.client.mvp.UberElement;
@@ -58,8 +58,6 @@ public class DeleteOrganizationalUnitPopUpPresenter {
 
     private OrganizationalUnitController organizationalUnitController;
 
-    private Event<AfterDeleteOrganizationalUnitEvent> afterDeleteOrganizationalUnitEvent;
-
     private Event<NotificationEvent> notificationEvent;
 
     private LibraryPlaces libraryPlaces;
@@ -70,13 +68,11 @@ public class DeleteOrganizationalUnitPopUpPresenter {
     public DeleteOrganizationalUnitPopUpPresenter(final View view,
                                                   final Caller<OrganizationalUnitService> organizationalUnitService,
                                                   final OrganizationalUnitController organizationalUnitController,
-                                                  final Event<AfterDeleteOrganizationalUnitEvent> afterDeleteOrganizationalUnitEvent,
                                                   final Event<NotificationEvent> notificationEvent,
                                                   final LibraryPlaces libraryPlaces) {
         this.view = view;
         this.organizationalUnitService = organizationalUnitService;
         this.organizationalUnitController = organizationalUnitController;
-        this.afterDeleteOrganizationalUnitEvent = afterDeleteOrganizationalUnitEvent;
         this.notificationEvent = notificationEvent;
         this.libraryPlaces = libraryPlaces;
     }
@@ -102,11 +98,11 @@ public class DeleteOrganizationalUnitPopUpPresenter {
 
         view.showBusyIndicator(view.getDeletingMessage());
         organizationalUnitService.call(v -> {
-                                           afterDeleteOrganizationalUnitEvent.fire(new AfterDeleteOrganizationalUnitEvent(organizationalUnit));
                                            view.hideBusyIndicator();
                                            notificationEvent.fire(new NotificationEvent(view.getDeleteSuccessMessage(),
                                                                                         NotificationEvent.NotificationType.SUCCESS));
                                            view.hide();
+                                           libraryPlaces.goToOrganizationalUnits();
                                        },
                                        new HasBusyIndicatorDefaultErrorCallback(view)).removeOrganizationalUnit(organizationalUnit.getName());
     }
@@ -115,7 +111,7 @@ public class DeleteOrganizationalUnitPopUpPresenter {
         view.hide();
     }
 
-    public void onOrganizationalUnitRemoved(@Observes final AfterDeleteOrganizationalUnitEvent removedOrganizationalUnitEvent) {
+    public void onOrganizationalUnitRemoved(@Observes final RemoveOrganizationalUnitEvent removedOrganizationalUnitEvent) {
         if (removedOrganizationalUnitEvent.getOrganizationalUnit().getName().equals(organizationalUnit.getName())) {
             cancel();
         }

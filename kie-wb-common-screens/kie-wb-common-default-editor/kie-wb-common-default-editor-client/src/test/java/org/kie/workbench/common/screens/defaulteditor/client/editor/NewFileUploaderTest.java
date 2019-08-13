@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.screens.defaulteditor.client.editor;
 
+import java.util.function.Consumer;
 import javax.enterprise.event.Event;
 
 import com.google.gwtmockito.GwtMock;
@@ -126,8 +127,8 @@ public class NewFileUploaderTest {
         verify(options,
                times(1)).setFileName("file.txt");
         verify(options,
-               times(1)).upload(any(Command.class),
-                                any(Command.class));
+               times(1)).upload(any(Consumer.class),
+                                any(Consumer.class));
     }
 
     @Test
@@ -143,13 +144,13 @@ public class NewFileUploaderTest {
         verify(options,
                times(1)).setFileName("file.txt");
         verify(options,
-               times(1)).upload(any(Command.class),
-                                any(Command.class));
+               times(1)).upload(any(Consumer.class),
+                                any(Consumer.class));
     }
 
     @Test
     public void testCreateSuccess() {
-        final ArgumentCaptor<Command> commandArgumentCaptor = ArgumentCaptor.forClass(Command.class);
+        final ArgumentCaptor<Consumer> commandArgumentCaptor = ArgumentCaptor.forClass(Consumer.class);
         final ArgumentCaptor<Path> pathArgumentCaptor = ArgumentCaptor.forClass(Path.class);
         final ArgumentCaptor<NewResourceSuccessEvent> newResourceSuccessEventArgumentCaptor = ArgumentCaptor.forClass(NewResourceSuccessEvent.class);
 
@@ -163,13 +164,13 @@ public class NewFileUploaderTest {
                times(1)).showBusyIndicator(any(String.class));
         verify(options,
                times(1)).upload(commandArgumentCaptor.capture(),
-                                any(Command.class));
+                                any(Consumer.class));
 
         //Emulate a successful upload
-        final Command command = commandArgumentCaptor.getValue();
+        final Consumer command = commandArgumentCaptor.getValue();
         assertNotNull(command);
 
-        command.execute();
+        command.accept("OK");
 
         verify(busyIndicatorView,
                times(1)).hideBusyIndicator();
@@ -191,7 +192,7 @@ public class NewFileUploaderTest {
 
     @Test
     public void testCreateFailure() {
-        final ArgumentCaptor<Command> commandArgumentCaptor = ArgumentCaptor.forClass(Command.class);
+        final ArgumentCaptor<Consumer> commandArgumentCaptor = ArgumentCaptor.forClass(Consumer.class);
 
         uploader.create(pkg,
                         "file",
@@ -202,14 +203,14 @@ public class NewFileUploaderTest {
         verify(busyIndicatorView,
                times(1)).showBusyIndicator(any(String.class));
         verify(options,
-               times(1)).upload(any(Command.class),
+               times(1)).upload(any(Consumer.class),
                                 commandArgumentCaptor.capture());
 
         //Emulate a successful upload
-        final Command command = commandArgumentCaptor.getValue();
+        final Consumer command = commandArgumentCaptor.getValue();
         assertNotNull(command);
 
-        command.execute();
+        command.accept("FAIL");
 
         verify(busyIndicatorView,
                times(1)).hideBusyIndicator();
@@ -230,7 +231,7 @@ public class NewFileUploaderTest {
         verify(busyIndicatorView,
                never()).showBusyIndicator(any(String.class));
         verify(options,
-               never()).upload(any(Command.class),
-                               any(Command.class));
+               never()).upload(any(Consumer.class),
+                               any(Consumer.class));
     }
 }

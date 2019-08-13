@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -40,9 +39,9 @@ import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.guvnor.messageconsole.client.console.MessageConsoleScreen;
 import org.guvnor.structure.client.security.OrganizationalUnitController;
-import org.guvnor.structure.events.AfterDeleteOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
+import org.guvnor.structure.organizationalunit.RemoveOrganizationalUnitEvent;
 import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryRemovedEvent;
@@ -357,8 +356,9 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
                 .isPresent();
     }
 
-    public void onOrganizationalUnitRemoved(@Observes final AfterDeleteOrganizationalUnitEvent removedOrganizationalUnitEvent) {
-        if (isLibraryPerspectiveOpen()) {
+    public void onOrganizationalUnitRemoved(@Observes final RemoveOrganizationalUnitEvent removedOrganizationalUnitEvent) {
+        final String loggedUser = sessionInfo.getIdentity().getIdentifier();
+        if (isLibraryPerspectiveOpen() && !loggedUser.equals(removedOrganizationalUnitEvent.getUserName())) {
             projectContext.getActiveOrganizationalUnit()
                     .filter(active -> active.equals(removedOrganizationalUnitEvent.getOrganizationalUnit()))
                     .ifPresent(active -> this.goToOrganizationalUnits());

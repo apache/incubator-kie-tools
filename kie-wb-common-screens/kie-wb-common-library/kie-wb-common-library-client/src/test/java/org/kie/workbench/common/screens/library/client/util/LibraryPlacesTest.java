@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-
 import javax.enterprise.event.Event;
 
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
@@ -36,6 +35,7 @@ import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.guvnor.structure.client.security.OrganizationalUnitController;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
+import org.guvnor.structure.organizationalunit.RemoveOrganizationalUnitEvent;
 import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryRemovedEvent;
@@ -93,23 +93,11 @@ import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singleton;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class LibraryPlacesTest {
@@ -494,6 +482,7 @@ public class LibraryPlacesTest {
     @Test
     public void goToSpaceTest() {
         doReturn(activeOrganizationalUnit).when(organizationalUnitService).getOrganizationalUnit(any());
+        doReturn(Optional.of(activeOrganizationalUnit)).when(projectContext).getActiveOrganizationalUnit();
 
         libraryPlaces.nativeGoToSpace("space");
 
@@ -928,5 +917,33 @@ public class LibraryPlacesTest {
 
         verify(repositoryService).removeRepository(activeSpace, activeRepository.getAlias());
         verify(view).hideBusyIndicator();
+    }
+
+    @Test
+    public void onOrganizationalUnitRemovedByLoggedUserTest() {
+        doReturn(PlaceStatus.OPEN).when(placeManager).getStatus(LibraryPlaces.LIBRARY_PERSPECTIVE);
+
+        libraryPlaces.onOrganizationalUnitRemoved(new RemoveOrganizationalUnitEvent(activeOrganizationalUnit, user.getIdentifier()));
+
+        verify(libraryPlaces, never()).goToOrganizationalUnits();
+    }
+
+    @Test
+    public void onOrganizationalUnitRemovedByOtherUserTest() {
+        doReturn(PlaceStatus.OPEN).when(placeManager).getStatus(LibraryPlaces.LIBRARY_PERSPECTIVE);
+
+        libraryPlaces.onOrganizationalUnitRemoved(new RemoveOrganizationalUnitEvent(activeOrganizationalUnit, "another-user"));
+
+        verify(libraryPlaces).goToOrganizationalUnits();
+    }
+
+    @Test
+    public void onOrganizationalUnitRemovedWithLibraryClosedTest() {
+        doReturn(PlaceStatus.CLOSE).when(placeManager).getStatus(anyString());
+        doReturn(PlaceStatus.CLOSE).when(placeManager).getStatus(any(PlaceRequest.class));
+
+        libraryPlaces.onOrganizationalUnitRemoved(new RemoveOrganizationalUnitEvent(activeOrganizationalUnit, "another-user"));
+
+        verify(libraryPlaces, never()).goToOrganizationalUnits();
     }
 }

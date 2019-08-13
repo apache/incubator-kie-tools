@@ -17,9 +17,9 @@
 package org.kie.workbench.common.screens.library.client.screens.organizationalunit.delete;
 
 import org.guvnor.structure.client.security.OrganizationalUnitController;
-import org.guvnor.structure.events.AfterDeleteOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
+import org.guvnor.structure.organizationalunit.RemoveOrganizationalUnitEvent;
 import org.jboss.errai.common.client.api.Caller;
 import org.junit.Before;
 import org.junit.Test;
@@ -50,9 +50,6 @@ public class DeleteOrganizationalUnitPopUpPresenterTest {
     private OrganizationalUnitController organizationalUnitController;
 
     @Mock
-    private EventSourceMock<AfterDeleteOrganizationalUnitEvent> afterDeleteOrganizationalUnitEvent;
-
-    @Mock
     private EventSourceMock<NotificationEvent> notificationEvent;
 
     @Mock
@@ -74,7 +71,6 @@ public class DeleteOrganizationalUnitPopUpPresenterTest {
         presenter = spy(new DeleteOrganizationalUnitPopUpPresenter(view,
                                                                    organizationalUnitServiceCaller,
                                                                    organizationalUnitController,
-                                                                   afterDeleteOrganizationalUnitEvent,
                                                                    notificationEvent,
                                                                    libraryPlaces));
     }
@@ -128,10 +124,10 @@ public class DeleteOrganizationalUnitPopUpPresenterTest {
         presenter.delete();
 
         verify(view).showBusyIndicator(anyString());
-        verify(afterDeleteOrganizationalUnitEvent).fire(any());
         verify(view).hideBusyIndicator();
         verify(notificationEvent).fire(any());
         verify(view).hide();
+        verify(libraryPlaces).goToOrganizationalUnits();
         verify(organizationalUnitService).removeOrganizationalUnit(presenter.organizationalUnit.getName());
     }
 
@@ -149,7 +145,7 @@ public class DeleteOrganizationalUnitPopUpPresenterTest {
 
         presenter.organizationalUnit = organizationalUnit;
 
-        presenter.onOrganizationalUnitRemoved(new AfterDeleteOrganizationalUnitEvent(organizationalUnit));
+        presenter.onOrganizationalUnitRemoved(new RemoveOrganizationalUnitEvent(organizationalUnit, "admin"));
 
         verify(view).hide();
     }
@@ -162,7 +158,7 @@ public class DeleteOrganizationalUnitPopUpPresenterTest {
         presenter.organizationalUnit = mock(OrganizationalUnit.class);
         doReturn("another-ou-name").when(organizationalUnit).getName();
 
-        presenter.onOrganizationalUnitRemoved(new AfterDeleteOrganizationalUnitEvent(organizationalUnit));
+        presenter.onOrganizationalUnitRemoved(new RemoveOrganizationalUnitEvent(organizationalUnit, "admin"));
 
         verify(view, never()).hide();
     }

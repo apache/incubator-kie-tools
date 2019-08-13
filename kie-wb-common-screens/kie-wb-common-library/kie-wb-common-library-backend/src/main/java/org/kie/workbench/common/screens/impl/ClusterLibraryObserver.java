@@ -22,7 +22,6 @@ import javax.inject.Inject;
 
 import org.guvnor.structure.backend.config.OrgUnit;
 import org.guvnor.structure.config.SystemRepositoryChangedEvent;
-import org.guvnor.structure.events.AfterDeleteOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.NewOrganizationalUnitEvent;
 import org.kie.workbench.common.screens.library.api.ProjectCountUpdate;
 import org.kie.workbench.common.screens.library.api.sync.ClusterLibraryEvent;
@@ -53,10 +52,6 @@ public class ClusterLibraryObserver {
         if (clusterService.isAppFormerClustered()) {
             clusterLibraryEvent.fire(new ClusterLibraryEvent());
         }
-    }
-
-    public void onAfterDeleteOrganizationalUnitEvent(@Observes AfterDeleteOrganizationalUnitEvent afterDeleteOrganizationalUnitEvent) {
-        // This empty method is to make a Client side event available within cluster.
     }
 
     public void onNewOrganizationalUnitEvent(@Observes NewOrganizationalUnitEvent newOrganizationalUnitEvent) {
