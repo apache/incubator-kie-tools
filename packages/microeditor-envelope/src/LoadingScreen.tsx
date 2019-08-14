@@ -16,6 +16,7 @@
 
 import * as React from "react";
 import { useState } from "react";
+import { Alert } from "@patternfly/react-core";
 
 export const FADE_OUT_DELAY = 400;
 
@@ -43,6 +44,7 @@ export function LoadingScreen(props: { visible: boolean }) {
             ...cssAnimation
           }}
         >
+          <Alert title="Loading area" className="pf-u-m-lg" />
           <span style={{ fontFamily: "Helvetica", color: "white", fontSize: "12pt" }}>Loading...</span>
         </div>
       )}

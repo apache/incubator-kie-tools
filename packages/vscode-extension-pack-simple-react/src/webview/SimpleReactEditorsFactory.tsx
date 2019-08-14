@@ -19,6 +19,7 @@ import * as AppFormer from "appformer-js-core";
 import * as MicroEditorEnvelope from "appformer-js-microeditor-envelope";
 import { EnvelopeBusInnerMessageHandler } from "appformer-js-microeditor-envelope";
 import { SimpleReactEditorsLanguageData } from "../common/SimpleReactEditorsLanguageData";
+import { Alert } from "@patternfly/react-core";
 
 export class SimpleReactEditorsFactory implements MicroEditorEnvelope.EditorFactory<SimpleReactEditorsLanguageData> {
   public createEditor(
@@ -110,11 +111,14 @@ class ReactReadonlyEditor extends React.Component<Props, State> {
 
   public render() {
     return (
+      <>
+      <Alert title="Main area" className="pf-u-m-lg" />
       <textarea
         style={{ width: "100%", height: "100%" }}
         value={this.state.content}
         onInput={(e: any) => this.updateContent(e.target.value)}
       />
+      </>
     );
   }
 }
