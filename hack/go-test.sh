@@ -5,4 +5,4 @@ if [[ -z ${CI} ]]; then
     ./hack/go-fmt.sh
     ./hack/go-lint.sh
 fi
-go test ./pkg/... -count=1
+go test ./pkg/... ./cmd/... -count=1
