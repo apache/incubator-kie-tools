@@ -143,17 +143,21 @@
             <thead>
             <tr>
                 <th width="10%">Name</th>
-                <th width="90%">Type</th>
+                <th width="50%">Type</th>
+                <th width="40%">KPI</th>
+
             </tr>
             </thead>
             <tbody>
 
-            {{#variables}}
+            {{#tripplets}}
             <tr>
-                <td>{{key}}</td>
-                <td>{{value}}</td>
+                <td>{{name}}</td>
+                <td>{{type}}</td>
+                <td>{{kpi}}</td>
             </tr>
-            {{/variables}}
+            {{/tripplets}}
+
 
             </tbody>
         </table>

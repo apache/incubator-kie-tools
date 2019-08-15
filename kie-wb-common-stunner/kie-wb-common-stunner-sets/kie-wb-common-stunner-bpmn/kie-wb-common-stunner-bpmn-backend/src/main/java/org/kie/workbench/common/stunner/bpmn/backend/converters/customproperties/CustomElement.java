@@ -30,6 +30,7 @@ public class CustomElement<T> {
     public static final MetadataTypeDefinition<Boolean> autoStart = new BooleanElement("customAutoStart", false);
     public static final MetadataTypeDefinition<Boolean> autoConnectionSource = new BooleanElement("isAutoConnection.source", false);
     public static final MetadataTypeDefinition<Boolean> autoConnectionTarget = new BooleanElement("isAutoConnection.target", false);
+    public static final MetadataTypeDefinition<Boolean> customKPI = new BooleanElement("customKPI", false);
     public static final MetadataTypeDefinition<String> description = new StringElement("customDescription", "");
     public static final MetadataTypeDefinition<String> scope = new StringElement("customScope", "");
     public static final MetadataTypeDefinition<String> name = new StringElement("elementname", "") {

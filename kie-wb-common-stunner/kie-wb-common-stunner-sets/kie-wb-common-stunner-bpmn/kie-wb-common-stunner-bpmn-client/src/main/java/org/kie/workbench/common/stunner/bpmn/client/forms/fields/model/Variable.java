@@ -35,6 +35,8 @@ public class Variable {
 
     private String customDataType;
 
+    private boolean kpi;
+
     public Variable(VariableType variableType) {
         this.variableType = variableType;
     }
@@ -55,6 +57,19 @@ public class Variable {
         this.customDataType = customDataType;
     }
 
+
+    public Variable(final String name,
+                    final VariableType variableType,
+                    final String dataType,
+                    final String customDataType,
+                    final boolean kpi) {
+        this.name = name;
+        this.variableType = variableType;
+        this.dataType = dataType;
+        this.customDataType = customDataType;
+        this.kpi = kpi;
+    }
+
     public Variable(final VariableRow row,
                     final Map<String, String> mapDataTypeDisplayNamesToNames) {
         this.name = row.getName();
@@ -65,6 +80,7 @@ public class Variable {
             this.dataType = row.getDataTypeDisplayName();
         }
         this.customDataType = row.getCustomDataType();
+        this.kpi = row.getKpi();
     }
 
     public VariableType getVariableType() {
@@ -91,6 +107,14 @@ public class Variable {
         this.dataType = dataType;
     }
 
+    public boolean getKpi() {
+        return kpi;
+    }
+
+    public void setKpi(boolean kpi) {
+        this.kpi = kpi;
+    }
+
     public String getCustomDataType() {
         return customDataType;
     }
@@ -106,6 +130,9 @@ public class Variable {
                 sb.append(':').append(customDataType);
             } else if (dataType != null && !dataType.isEmpty()) {
                 sb.append(':').append(dataType);
+            }
+            if (this.getVariableType() == Variable.VariableType.PROCESS && (customDataType != null || dataType != null)) {
+                sb.append(":").append(kpi);
             }
             return sb.toString();
         }
@@ -128,7 +155,7 @@ public class Variable {
             String name = varParts[0];
             if (!name.isEmpty()) {
                 var.setName(name);
-                if (varParts.length == 2) {
+                if (varParts.length == 2 || varParts.length == 3) {
                     String dataType = varParts[1];
                     if (!dataType.isEmpty()) {
                         if (dataTypes != null && dataTypes.contains(dataType)) {
@@ -136,6 +163,9 @@ public class Variable {
                         } else {
                             var.setCustomDataType(dataType);
                         }
+                    }
+                    if (varParts.length == 3) {
+                        var.kpi = Boolean.parseBoolean(varParts[2]);
                     }
                 }
             }
@@ -174,6 +204,9 @@ public class Variable {
         if (getDataType() != null ? !getDataType().equals(variable.getDataType()) : variable.getDataType() != null) {
             return false;
         }
+        if (kpi != variable.kpi) {
+            return false;
+        }
         return getCustomDataType() != null ? getCustomDataType().equals(variable.getCustomDataType()) : variable.getCustomDataType() == null;
     }
 
@@ -183,6 +216,7 @@ public class Variable {
         result = 31 * result + (getName() != null ? getName().hashCode() : 0);
         result = 31 * result + (getDataType() != null ? getDataType().hashCode() : 0);
         result = 31 * result + (getCustomDataType() != null ? getCustomDataType().hashCode() : 0);
+        result = 31 * result +  Boolean.hashCode(kpi);
         return result;
     }
 }

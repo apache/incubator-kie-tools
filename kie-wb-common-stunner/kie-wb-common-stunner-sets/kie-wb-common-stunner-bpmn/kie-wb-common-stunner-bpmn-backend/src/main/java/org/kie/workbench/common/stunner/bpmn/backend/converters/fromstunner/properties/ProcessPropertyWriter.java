@@ -186,7 +186,10 @@ public class ProcessPropertyWriter extends BasePropertyWriter implements Element
         List<Property> properties = process.getProperties();
         declarationList.getDeclarations().forEach(decl -> {
             VariableScope.Variable variable =
-                    variableScope.declare(this.process.getId(), decl.getIdentifier(), decl.getType());
+                    variableScope.declare(this.process.getId(), decl.getIdentifier(), decl.getType(), decl.getKpi());
+            if (Boolean.parseBoolean(decl.getKpi())) {
+                CustomElement.customKPI.of(variable.getTypedIdentifier()).set(true);
+            }
             properties.add(variable.getTypedIdentifier());
             this.itemDefinitions.add(variable.getTypeDeclaration());
         });

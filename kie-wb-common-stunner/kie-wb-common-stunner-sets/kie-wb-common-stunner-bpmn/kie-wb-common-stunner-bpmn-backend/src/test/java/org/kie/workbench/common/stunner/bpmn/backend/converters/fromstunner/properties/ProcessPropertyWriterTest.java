@@ -23,11 +23,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.ProcessPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseFileVariables;
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseIdPrefix;
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseRoles;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.GlobalVariables;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessVariables;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -134,6 +136,17 @@ public class ProcessPropertyWriterTest {
         p.setGlobalVariables(globalVariables);
         String globalVariablesString = CustomElement.globalVariables.of(p.getProcess()).get();
         assertThat(globalVariablesString).isEqualTo("GV1:Boolean,GV2:Boolean,GV3:Integer");
+    }
+
+    @Test
+    public void processVariables() {
+        ProcessVariables processVariables = new ProcessVariables("GV1:Boolean:true,GV2:Boolean:true,GV3:Integer:false");
+        p.setProcessVariables(processVariables);
+
+        final ProcessPropertyReader pp = new ProcessPropertyReader(
+                p.getProcess(), p.getBpmnDiagram(), p.getShape(), 1.0);
+        String processVariablesString =  pp.getProcessVariables();
+        assertThat(processVariablesString).isEqualTo("GV1:Boolean:true,GV2:Boolean:true,GV3:Integer:false");
     }
 
     @Test

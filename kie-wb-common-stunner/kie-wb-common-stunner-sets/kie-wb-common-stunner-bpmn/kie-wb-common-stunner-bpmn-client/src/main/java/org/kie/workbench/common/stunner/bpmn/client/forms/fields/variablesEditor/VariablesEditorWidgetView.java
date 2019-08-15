@@ -76,4 +76,6 @@ public interface VariablesEditorWidgetView extends IsWidget {
     void removeVariable(final VariableRow variableRow);
 
     void setReadOnly(final boolean readOnly);
+
+    void setKPINotEnabled();
 }

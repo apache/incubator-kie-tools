@@ -25,6 +25,8 @@ import javax.inject.Inject;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.text.shared.Renderer;
+import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLInputElement;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.ValueListBox;
@@ -114,6 +116,15 @@ public class VariableListItemWidgetViewImpl implements VariableListItemWidgetVie
     @DataField
     protected Button deleteButton;
 
+    @Inject
+    @DataField
+    @Bound
+    protected HTMLInputElement kpi;
+
+    @Inject
+    @DataField
+    protected HTMLDivElement kpiTD;
+
     /**
      * Required for implementation of Delete button.
      */
@@ -181,6 +192,9 @@ public class VariableListItemWidgetViewImpl implements VariableListItemWidgetVie
                 event.preventDefault();
             }
         });
+
+        kpi.addEventListener("change", (evt) -> notifyModelChanged());
+
     }
 
     @Override
@@ -238,6 +252,7 @@ public class VariableListItemWidgetViewImpl implements VariableListItemWidgetVie
         deleteButton.setEnabled(!readOnly);
         dataTypeComboBox.setReadOnly(readOnly);
         name.setEnabled(!readOnly);
+        kpi.disabled = readOnly;
     }
 
     private boolean isDuplicateName(final String name) {
@@ -280,5 +295,12 @@ public class VariableListItemWidgetViewImpl implements VariableListItemWidgetVie
         } else if (!oldValue.equals(currentValue)) {
             parentWidget.notifyModelChanged();
         }
+    }
+
+    @Override
+    public void setKPINotEnabled() {
+        this.kpi.disabled = true;
+        this.kpi.remove();
+        this.kpiTD.remove();
     }
 }

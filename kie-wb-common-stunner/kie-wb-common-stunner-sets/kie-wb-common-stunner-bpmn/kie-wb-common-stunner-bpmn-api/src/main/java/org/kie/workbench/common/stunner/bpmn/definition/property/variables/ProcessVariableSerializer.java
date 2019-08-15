@@ -23,20 +23,32 @@ import java.util.stream.Stream;
 
 public class ProcessVariableSerializer {
 
-    public static Map<String, String> deserialize(String serializedVariables) {
+    public static Map<String, VariableInfo> deserialize(String serializedVariables) {
         return Stream.of(serializedVariables.split(","))
                 .filter(s -> !s.isEmpty()) // "" makes no sense
                 .map(ProcessVariableSerializer::deserializeVariable)
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
-    private static Map.Entry<String, String> deserializeVariable(String encoded) {
+    private static Map.Entry<String, VariableInfo> deserializeVariable(String encoded) {
         String[] split = encoded.split(":");
         String identifier = split[0];
-        String type = (split.length == 2) ? split[1] : "";
+        String type = (split.length == 2 || split.length == 3) ? split[1] : "";
         if (identifier.isEmpty()) {
             throw new IllegalArgumentException("Variable identifier cannot be empty. Given: '" + encoded + "'");
         }
-        return new AbstractMap.SimpleEntry<>(identifier, type);
+
+        String kpi = split[2];
+        return new AbstractMap.SimpleEntry<>(identifier, new ProcessVariableSerializer.VariableInfo(type, kpi));
+    }
+
+    static public class VariableInfo {
+        public String type;
+        public String kpi;
+
+        VariableInfo(String type, String kpi) {
+            this.type = type;
+            this.kpi = kpi;
+        }
     }
 }

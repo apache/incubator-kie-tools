@@ -63,6 +63,12 @@ public class FlatVariableScope implements VariableScope {
         return variable;
     }
 
+    public Variable declare(String scopeId, String identifier, String type, String kpi) {
+        Variable variable = new Variable(scopeId, identifier, type, kpi);
+        variables.put(identifier, variable);
+        return variable;
+    }
+
     public Optional<Variable> lookup(String identifier) {
         return Optional.ofNullable(variables.get(identifier));
     }

@@ -98,6 +98,11 @@ public class SubProcessPropertyWriter extends MultipleInstanceActivityPropertyWr
         declarationList.getDeclarations().forEach(decl -> {
             VariableScope.Variable variable =
                     variableScope.declare(this.process.getId(), decl.getIdentifier(), decl.getType());
+
+            if (Boolean.parseBoolean(decl.getKpi())) {
+                CustomElement.customKPI.of(variable.getTypedIdentifier()).set(true);
+            }
+
             properties.add(variable.getTypedIdentifier());
             this.itemDefinitions.add(variable.getTypeDeclaration());
         });

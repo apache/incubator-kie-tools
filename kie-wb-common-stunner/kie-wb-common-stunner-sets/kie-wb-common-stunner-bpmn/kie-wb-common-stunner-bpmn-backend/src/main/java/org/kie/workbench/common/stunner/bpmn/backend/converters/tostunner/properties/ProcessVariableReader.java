@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 
 import org.eclipse.bpmn2.ItemDefinition;
 import org.eclipse.bpmn2.Property;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
 
 class ProcessVariableReader {
 
@@ -35,9 +36,11 @@ class ProcessVariableReader {
 
     private static String toProcessVariableString(Property p) {
         String processVariableName = getProcessVariableName(p);
+        boolean kpi = CustomElement.customKPI.of(p).get();
+
         return Optional.ofNullable(p.getItemSubjectRef())
                 .map(ItemDefinition::getStructureRef)
-                .map(type -> processVariableName + ":" + type)
+                .map(type -> processVariableName + ":" + type + ":" + kpi)
                 .orElse(processVariableName);
     }
 

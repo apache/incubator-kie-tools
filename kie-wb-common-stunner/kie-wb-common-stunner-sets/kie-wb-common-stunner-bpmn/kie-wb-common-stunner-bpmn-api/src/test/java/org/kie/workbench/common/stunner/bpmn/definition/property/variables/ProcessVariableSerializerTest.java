@@ -24,13 +24,17 @@ import static org.junit.Assert.assertEquals;
 
 public class ProcessVariableSerializerTest {
 
-    private static final String VARIABLE = "PV1:java.lang.String,PV2:java.lang.Boolean";
+    private static final String VARIABLE = "PV1:java.lang.String:false,PV2:java.lang.Boolean:false";
 
     @Test
     public void deserialize() {
-        final Map<String, String> deserialized = ProcessVariableSerializer.deserialize(VARIABLE);
+        final Map<String, ProcessVariableSerializer.VariableInfo> deserialized = ProcessVariableSerializer.deserialize(VARIABLE);
         assertEquals(deserialized.size(), 2);
-        assertEquals(deserialized.get("PV1"), "java.lang.String");
-        assertEquals(deserialized.get("PV2"), "java.lang.Boolean");
+        assertEquals(deserialized.get("PV1").type, "java.lang.String");
+        assertEquals(deserialized.get("PV1").kpi, "false");
+
+        assertEquals(deserialized.get("PV2").type, "java.lang.Boolean");
+        assertEquals(deserialized.get("PV2").kpi, "false");
+
     }
 }

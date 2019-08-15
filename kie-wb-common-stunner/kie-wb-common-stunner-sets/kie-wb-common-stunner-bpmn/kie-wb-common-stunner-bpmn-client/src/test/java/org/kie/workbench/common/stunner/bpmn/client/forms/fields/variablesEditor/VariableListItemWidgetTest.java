@@ -22,6 +22,7 @@ import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockito;
+import elemental2.dom.HTMLInputElement;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.ValueListBox;
@@ -60,6 +61,8 @@ public class VariableListItemWidgetTest {
 
     ComboBox dataTypeComboBox;
 
+    HTMLInputElement kpi;
+
     @GwtMock
     VariableNameTextBox name;
 
@@ -79,6 +82,7 @@ public class VariableListItemWidgetTest {
         dataType = mock(ValueListBox.class);
         customDataType = mock(CustomDataTypeTextBox.class);
         dataTypeComboBox = mock(ComboBox.class);
+        kpi = mock(HTMLInputElement.class);
         widget = GWT.create(VariableListItemWidgetViewImpl.class);
         VariableRow variableRow = new VariableRow();
         widget.dataType = dataType;
@@ -87,6 +91,7 @@ public class VariableListItemWidgetTest {
         widget.name = name;
         widget.deleteButton = deleteButton;
         widget.variableRow = variable;
+        widget.kpi = kpi;
         Mockito.doCallRealMethod().when(widget).setTextBoxModelValue(any(TextBox.class),
                                                                      anyString());
         Mockito.doCallRealMethod().when(widget).setListBoxModelValue(any(ValueListBox.class),
@@ -206,5 +211,23 @@ public class VariableListItemWidgetTest {
         verify(dataTypeComboBox).setListBoxValues(dataTypeListBoxValues);
         verify(dataTypeComboBox).addCustomValueToListBoxValues(sCustomType,
                                                                "");
+    }
+
+    @Test
+    public void testSetKPI() {
+        String sDataType = "Boolean";
+        widget.setListBoxModelValue(widget.dataType,
+                                    sDataType);
+        kpi.checked = true;
+        String returnedDataType1 = widget.getDataTypeDisplayName();
+        assertEquals(sDataType,
+                     returnedDataType1);
+        String returnedDataType2 = widget.getModelValue(widget.dataType);
+        assertEquals(sDataType,
+                     returnedDataType2);
+        boolean returnedDataType3 = widget.kpi.checked;
+        assertEquals(true,
+                     returnedDataType3);
+
     }
 }

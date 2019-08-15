@@ -273,9 +273,43 @@ public class VariablesEditorFieldRendererTest {
                                          "org.veg.Potato",
                                          null));
         String s = variablesEditor.serializeVariables(variableRows);
-        assertEquals("var1:String,var2:Integer,var3:org.veg.Potato",
+        assertEquals("var1:String:false,var2:Integer:false,var3:org.veg.Potato:false",
                      s);
     }
+
+    @Test
+    public void testSerializeVariablesWithKPI() {
+        Map<String, String> mapDataTypeDisplayNamesToNames = new HashMap<String, String>();
+        mapDataTypeDisplayNamesToNames.put("String",
+                                           "String");
+        mapDataTypeDisplayNamesToNames.put("Integer",
+                                           "Integer");
+        mapDataTypeDisplayNamesToNames.put("Potato [org.veg]",
+                                           "org.veg.Potato");
+        variablesEditor.mapDataTypeDisplayNamesToNames = mapDataTypeDisplayNamesToNames;
+
+        List<VariableRow> variableRows = new ArrayList<VariableRow>();
+        variableRows.add(new VariableRow(Variable.VariableType.PROCESS,
+                                         "var1",
+                                         "String",
+                                         null,
+                                         true));
+        variableRows.add(new VariableRow(Variable.VariableType.PROCESS,
+                                         "var2",
+                                         "Integer",
+                                         null,
+                                         true
+        ));
+        variableRows.add(new VariableRow(Variable.VariableType.PROCESS,
+                                         "var3",
+                                         "org.veg.Potato",
+                                         null,
+                                         true));
+        String s = variablesEditor.serializeVariables(variableRows);
+        assertEquals("var1:String:true,var2:Integer:true,var3:org.veg.Potato:true",
+                     s);
+    }
+
 
     @Test
     public void testIsDuplicateName() {

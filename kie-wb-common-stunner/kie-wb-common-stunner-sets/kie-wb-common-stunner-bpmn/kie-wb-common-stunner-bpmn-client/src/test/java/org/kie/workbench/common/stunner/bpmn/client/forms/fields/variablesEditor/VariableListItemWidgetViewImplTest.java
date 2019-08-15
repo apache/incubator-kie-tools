@@ -25,6 +25,7 @@ import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockito;
+import elemental2.dom.HTMLInputElement;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.ValueListBox;
@@ -79,6 +80,9 @@ public class VariableListItemWidgetViewImplTest {
     @GwtMock
     private Button deleteButton;
 
+    @Mock
+    private HTMLInputElement kpi;
+
     private CustomDataTypeTextBox customDataType;
 
     private ValueListBox<String> dataType;
@@ -117,6 +121,8 @@ public class VariableListItemWidgetViewImplTest {
         view.variableRow = variableRow;
         view.name = name;
         view.deleteButton = deleteButton;
+        kpi = mock(HTMLInputElement.class);
+        view.kpi = kpi;
         view.customDataType = customDataType;
         view.dataType = dataType;
         view.dataTypeComboBox = dataTypeComboBox;
@@ -139,6 +145,8 @@ public class VariableListItemWidgetViewImplTest {
         doCallRealMethod().when(view).handleDeleteButton(any(ClickEvent.class));
         doCallRealMethod().when(view).setReadOnly(anyBoolean());
         doCallRealMethod().when(view).notifyModelChanged();
+        doCallRealMethod().when(view).setKPINotEnabled();
+
         VariableRow row = new VariableRow();
         doReturn(row).when(variableRow).getModel();
     }
@@ -169,6 +177,8 @@ public class VariableListItemWidgetViewImplTest {
         row.setCustomDataType(null);
         row.setDataTypeDisplayName(DATA_TYPE_NAME);
         row.setVariableType(Variable.VariableType.PROCESS);
+        row.setKpi(true);
+        kpi.click();
         doReturn(row).when(variableRow).getModel();
         view.setModel(row);
         verify(variableRow,
@@ -179,6 +189,8 @@ public class VariableListItemWidgetViewImplTest {
                never()).setValue(DATA_TYPE_NAME);
         verify(dataType,
                times(1)).setValue(DATA_TYPE_NAME);
+        verify(kpi,
+               times(1)).click();
     }
 
     @Test
@@ -304,4 +316,5 @@ public class VariableListItemWidgetViewImplTest {
         verify(name,
                times(1)).setEnabled(true);
     }
+
 }

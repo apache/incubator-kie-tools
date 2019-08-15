@@ -30,8 +30,13 @@ public class VariableDeclaration {
     private final Property typedIdentifier;
     private String identifier;
     private String type;
+    private String kpi;
 
     public VariableDeclaration(String identifier, String type) {
+        this(identifier, type, "");
+    }
+
+    public VariableDeclaration(String identifier, String type, String kpi) {
         this.setIdentifier(identifier);
         this.type = type;
 
@@ -43,17 +48,28 @@ public class VariableDeclaration {
         this.typedIdentifier.setId(Ids.typedIdentifier("GLOBAL", this.getIdentifier()));
         this.typedIdentifier.setName(identifier);
         this.typedIdentifier.setItemSubjectRef(typeDeclaration);
+        this.kpi = kpi;
     }
 
     public static VariableDeclaration fromString(String encoded) {
         String[] split = encoded.split(":");
         String identifier = split[0];
-        String type = (split.length == 2) ? split[1] : "";
+        String type = (split.length == 2 || split.length == 3) ? split[1] : "";
         if (identifier.isEmpty()) {
             throw new IllegalArgumentException("Variable identifier cannot be empty. Given: '" + encoded + "'");
         }
-        return new VariableDeclaration(identifier, type);
+        String kpi = "";
+
+        if (split.length == 3) {
+            kpi = split[2];
+        }
+
+        return new VariableDeclaration(identifier, type, kpi);
     }
+
+    public String getKpi() { return kpi; }
+
+    public void setKpi(String kpi) { this.kpi = kpi; }
 
     public String getIdentifier() {
         return identifier;
@@ -82,10 +98,14 @@ public class VariableDeclaration {
 
     @Override
     public String toString() {
+        String kpiString = "";
+        if (kpi != null && !kpi.isEmpty()) {
+            kpiString = ":" + kpi;
+        }
         if (type == null || type.isEmpty()) {
-            return typedIdentifier.getName();
+            return typedIdentifier.getName() + kpiString;
         } else {
-            return typedIdentifier.getName() + ":" + type;
+            return typedIdentifier.getName() + ":" + type + kpiString;
         }
     }
 
@@ -99,12 +119,13 @@ public class VariableDeclaration {
         }
         VariableDeclaration that = (VariableDeclaration) o;
         return Objects.equals(identifier, that.identifier) &&
-                Objects.equals(type, that.type);
+                Objects.equals(type, that.type) &&
+                Objects.equals(kpi, that.kpi);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(identifier, type);
+        return Objects.hash(identifier, type, kpi);
     }
 }
 

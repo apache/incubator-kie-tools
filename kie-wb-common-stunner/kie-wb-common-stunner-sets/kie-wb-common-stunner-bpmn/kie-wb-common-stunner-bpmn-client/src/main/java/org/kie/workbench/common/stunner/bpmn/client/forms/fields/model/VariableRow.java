@@ -33,14 +33,25 @@ public class VariableRow {
 
     private String customDataType;
 
+    public boolean getKpi() {
+        return kpi;
+    }
+
+    public void setKpi(boolean kpi) {
+        this.kpi = kpi;
+    }
+
+    private boolean kpi;
+
     // Field which is incremented for each row.
     // Required to implement equals function which needs a unique field
     private static long lastId = 0;
 
     public VariableRow() {
-        this(Variable.VariableType.PROCESS, null, null, null);
+        this(Variable.VariableType.PROCESS, null, null, null, false);
         this.id = lastId++;
     }
+
 
     public VariableRow(final Variable.VariableType variableType,
                        final String name,
@@ -51,6 +62,19 @@ public class VariableRow {
         this.name = name;
         this.dataTypeDisplayName = dataTypeDisplayName;
         this.customDataType = customDataType;
+    }
+
+    public VariableRow(final Variable.VariableType variableType,
+                       final String name,
+                       final String dataTypeDisplayName,
+                       final String customDataType,
+                       final boolean isKPI) {
+        this.id = lastId++;
+        this.variableType = variableType;
+        this.name = name;
+        this.dataTypeDisplayName = dataTypeDisplayName;
+        this.customDataType = customDataType;
+        this.kpi = isKPI;
     }
 
     public VariableRow(final Variable variable,
@@ -64,7 +88,9 @@ public class VariableRow {
             this.dataTypeDisplayName = variable.getDataType();
         }
         this.customDataType = variable.getCustomDataType();
+        this.kpi = variable.getKpi();
     }
+
 
     public long getId() {
         return id;
@@ -128,6 +154,6 @@ public class VariableRow {
 
     @Override
     public String toString() {
-        return "VariableRow [variableType=" + variableType.toString() + ", name=" + name + ", dataTypeDisplayName=" + dataTypeDisplayName + ", customDataType=" + customDataType + "]";
+        return "VariableRow [variableType=" + variableType.toString() + ", name=" + name + ", dataTypeDisplayName=" + dataTypeDisplayName + ", customDataType=" + customDataType + ", kpi=" + kpi + "]";
     }
 }

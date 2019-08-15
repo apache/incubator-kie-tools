@@ -28,14 +28,17 @@ public class VariableDeclarationTest {
 
     private static final String CONSTRUCTOR_IDENTIFIER = "Variable Declaration Test";
     private static final String CONSTRUCTOR_TYPE = "Integer";
+    private static final String CONSTRUCTOR_KPI = "false";
+
     private static final String VAR_IDENTIFIER = "Variable-Declaration-Test";
     private static final String VAR_NAME = "Variable Declaration Test";
+    private static final String VAR_KPI = "false";
 
     private VariableDeclaration tested;
 
     @Before
     public void setup() {
-        tested = new VariableDeclaration(CONSTRUCTOR_IDENTIFIER, CONSTRUCTOR_TYPE);
+        tested = new VariableDeclaration(CONSTRUCTOR_IDENTIFIER, CONSTRUCTOR_TYPE, CONSTRUCTOR_KPI);
     }
 
     @Test
@@ -49,4 +52,12 @@ public class VariableDeclarationTest {
         String name = tested.getTypedIdentifier().getName();
         assertEquals(name, VAR_NAME);
     }
+
+    @Test
+    public void testKPI() {
+        String kpi = tested.getKpi();
+        assertEquals(kpi, VAR_KPI);
+    }
+
+
 }

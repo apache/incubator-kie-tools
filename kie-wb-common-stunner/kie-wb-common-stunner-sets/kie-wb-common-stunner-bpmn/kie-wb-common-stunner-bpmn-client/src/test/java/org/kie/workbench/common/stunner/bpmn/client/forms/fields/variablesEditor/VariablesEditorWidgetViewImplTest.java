@@ -90,6 +90,9 @@ public class VariablesEditorWidgetViewImplTest {
     @GwtMock
     private ListWidget<VariableRow, VariableListItemWidgetViewImpl> variableRows;
 
+    @GwtMock
+    private TableCellElement kpith;
+
     private VariablesEditorWidgetViewImpl view;
 
     @Captor
@@ -111,6 +114,7 @@ public class VariablesEditorWidgetViewImplTest {
         view.nameth = nameth;
         view.datatypeth = datatypeth;
         view.notification = notification;
+        view.kpith = kpith;
         doCallRealMethod().when(view).setVariableRows(any(List.class));
         doCallRealMethod().when(view).init(any(VariablesEditorWidgetView.Presenter.class));
         doCallRealMethod().when(view).handleAddVarButton(any(ClickEvent.class));

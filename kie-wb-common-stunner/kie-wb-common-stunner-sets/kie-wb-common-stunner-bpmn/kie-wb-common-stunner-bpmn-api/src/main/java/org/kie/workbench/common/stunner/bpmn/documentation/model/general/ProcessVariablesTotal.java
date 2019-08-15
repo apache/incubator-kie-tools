@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.bpmn.documentation.model.general;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessVariableSerializer;
 import org.kie.workbench.common.stunner.core.client.util.js.KeyValue;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
@@ -27,6 +28,7 @@ public class ProcessVariablesTotal {
     private Integer total;
     private Integer totalVariables;
     private KeyValue[] variables;
+    private VariableTriplets[] tripplets;
 
     private ProcessVariablesTotal() {
 
@@ -38,6 +40,7 @@ public class ProcessVariablesTotal {
         instance.total = total;
         instance.totalVariables = totalVariables;
         instance.variables = variables;
+        instance.tripplets = instance.getVariablesAsTriplets();
         return instance;
     }
 
@@ -52,7 +55,36 @@ public class ProcessVariablesTotal {
     }
 
     @JsOverlay
-    public final KeyValue[] getVariables() {
-        return variables;
+    public final KeyValue[] getVariables() { return variables; }
+
+    @JsOverlay
+    public final VariableTriplets[] getVariablesAsTriplets() {
+        final VariableTriplets[] triplets = new VariableTriplets[variables.length];
+        for (int i = 0; i < variables.length; i++) {
+            final ProcessVariableSerializer.VariableInfo info = (ProcessVariableSerializer.VariableInfo) variables[i].getValue();
+            triplets[i] = VariableTriplets.create(variables[i].getKey(),
+                                               info.type,
+                                               info.kpi == null || info.kpi.isEmpty() ? "false" : info.kpi);
+        }
+        return triplets;
+    }
+
+    @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
+    public static class VariableTriplets {
+        public Object name;
+        public Object type;
+        public Object kpi;
+
+        private VariableTriplets() {
+        }
+
+        @JsOverlay
+        public static final VariableTriplets create(final Object name, final Object type, final Object kpi) {
+            final VariableTriplets instance = new VariableTriplets();
+            instance.name = name;
+            instance.type = type;
+            instance.kpi = kpi;
+            return instance;
+        }
     }
 }
