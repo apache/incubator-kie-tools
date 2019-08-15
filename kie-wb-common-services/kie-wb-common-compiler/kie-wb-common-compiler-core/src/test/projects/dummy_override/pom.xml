@@ -37,7 +37,7 @@
       </plugin>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>${version.org.apache.maven.plugins.maven-compiler-plugin}</version>
+        <version>${version.compiler.plugin}</version>
         <configuration>
           <skipMain>true</skipMain>
           <skip>true</skip>
