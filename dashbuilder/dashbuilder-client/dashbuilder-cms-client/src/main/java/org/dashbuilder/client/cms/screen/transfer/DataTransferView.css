@@ -1,0 +1,11 @@
+@charset "UTF-8";
+
+.data-transfer-view .card-pf-view {
+	height: 200px;
+	position: relative;
+}
+
+.data-transfer-view .card-pf-items:last-child {
+	position: absolute;
+	bottom: 15px;
+}

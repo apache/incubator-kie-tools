@@ -3,10 +3,23 @@
     "http://google-web-toolkit.googlecode.com/svn/tags/2.5.0/distro-source/core/src/gwt-module.dtd">
 <module>
 
+  <inherits name='com.google.gwt.user.User'/>
+  <inherits name="com.google.gwt.i18n.I18N"/>
+
+  <inherits name="org.jboss.errai.common.ErraiCommon"/>
+  <inherits name='org.jboss.errai.bus.ErraiBus'/>
+  <inherits name='org.jboss.errai.ioc.Container'/>
+  <inherits name="org.jboss.errai.ui.UI"/>
+
   <inherits name="org.uberfire.UberfireClientAll"/>
+  <inherits name="org.uberfire.UberfireAPI"/>
+  <inherits name="org.uberfire.commons.UberfireCommons"/>
   <inherits name="org.uberfire.ext.plugin.RuntimePluginClient"/>
+
   <inherits name="org.dashbuilder.CommonClient"/>
   <inherits name="org.dashbuilder.NavigationClient"/>
   <inherits name="org.dashbuilder.ServicesAPI"/>
+
+  <source path='client'/>
 
 </module>

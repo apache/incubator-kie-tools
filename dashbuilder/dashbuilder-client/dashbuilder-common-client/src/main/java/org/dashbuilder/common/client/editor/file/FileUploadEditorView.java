@@ -12,6 +12,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.Widget;
+
 import org.gwtbootstrap3.client.ui.Tooltip;
 import org.gwtbootstrap3.client.ui.constants.Placement;
 import org.uberfire.ext.widgets.common.client.common.FileUpload;
@@ -55,19 +56,19 @@ public class FileUploadEditorView extends Composite implements FileUploadEditor.
     org.gwtbootstrap3.client.ui.Icon loadingIcon;
 
     FileUploadEditor presenter;
-    
+
     @Override
     public void init(final FileUploadEditor presenter) {
         this.presenter = presenter;
     }
-    
+
     @UiConstructor
     public FileUploadEditorView() {
         fileUpload = createFileUpload();
         initWidget(Binder.BINDER.createAndBindUi(this));
         initFormPanel();
     }
-    
+
     private FileUpload createFileUpload() {
         return new FileUpload( new Command() {
             @Override
@@ -76,7 +77,7 @@ public class FileUploadEditorView extends Composite implements FileUploadEditor.
             }
         }, true );
     }
-    
+
     private void initFormPanel() {
         formPanel.setEncoding( FormPanel.ENCODING_MULTIPART );
         formPanel.setMethod( FormPanel.METHOD_POST );
@@ -94,7 +95,6 @@ public class FileUploadEditorView extends Composite implements FileUploadEditor.
             @Override
             public void onSubmitComplete(final FormPanel.SubmitCompleteEvent event) {
                 presenter.onSubmitComplete(event.getResults());
-                
             }
         });
     }
@@ -168,6 +168,18 @@ public class FileUploadEditorView extends Composite implements FileUploadEditor.
     public FileUploadEditor.View clearError() {
         mainPanel.removeStyleName(STYLE_ERROR);
         errorTooltip.setTitle("");
+        return this;
+    }
+    
+    @Override
+    public FileUploadEditor.View setAccept(String type) {
+        fileUpload.setAccept(type);
+        return this;
+    }
+
+    @Override
+    public FileUploadEditor.View clear() {
+        fileUpload.clear();
         return this;
     }
 }

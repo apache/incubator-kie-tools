@@ -70,7 +70,7 @@ public class NavTreeImpl implements NavTree {
     @Override
     public NavTree getItemAsTree(String id) {
         NavItem item = getItemById(id);
-        return id != null ? NavFactory.get().createNavTree(item) : null;
+        return item != null ? NavFactory.get().createNavTree(item) : null;
     }
 
     @Override

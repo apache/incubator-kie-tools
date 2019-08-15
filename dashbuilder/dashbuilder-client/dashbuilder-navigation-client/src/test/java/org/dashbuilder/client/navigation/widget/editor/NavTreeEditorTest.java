@@ -8,7 +8,7 @@ import org.dashbuilder.client.navigation.NavigationManager;
 import org.dashbuilder.client.navigation.event.NavItemEditCancelledEvent;
 import org.dashbuilder.client.navigation.event.NavItemEditStartedEvent;
 import org.dashbuilder.client.navigation.event.NavItemGotoEvent;
-import org.dashbuilder.client.navigation.event.NavTreeChangedEvent;
+import org.dashbuilder.navigation.event.NavTreeChangedEvent;
 import org.dashbuilder.client.navigation.event.NavTreeLoadedEvent;
 import org.dashbuilder.client.navigation.impl.NavigationManagerImpl;
 import org.dashbuilder.client.navigation.plugin.PerspectivePluginManager;

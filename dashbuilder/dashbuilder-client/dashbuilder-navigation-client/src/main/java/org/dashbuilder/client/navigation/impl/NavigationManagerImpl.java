@@ -24,7 +24,7 @@ import javax.inject.Inject;
 
 import org.dashbuilder.client.navigation.NavigationManager;
 import org.dashbuilder.client.navigation.event.NavItemGotoEvent;
-import org.dashbuilder.client.navigation.event.NavTreeChangedEvent;
+import org.dashbuilder.navigation.event.NavTreeChangedEvent;
 import org.dashbuilder.client.navigation.event.NavTreeLoadedEvent;
 import org.dashbuilder.navigation.NavItem;
 import org.dashbuilder.navigation.NavTree;
@@ -114,5 +114,10 @@ public class NavigationManagerImpl implements NavigationManager {
         if (navController.canRead(navItem)) {
             navItemGotoEvent.fire(new NavItemGotoEvent(navItem));
         }
+    }
+
+    @Override
+    public void update(NavTree navTree) {
+        this.defaultNavTree = navTree;
     }
 }

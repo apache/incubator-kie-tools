@@ -28,7 +28,7 @@ import static org.uberfire.workbench.events.NotificationEvent.NotificationType.S
  * <li>Error messages - Show validation error messages.</li>
  * <li>Dashbuilder File Upload Servlet integration - It uses the UF Dashbuilder servlet for uploading files and provides a listener to obtain the uploaded file path.</li>
  * </ul>
- * 
+ *
  * @since 0.4.0
  */
 @Dependent
@@ -37,27 +37,30 @@ public class FileUploadEditor implements IsWidget, LeafAttributeEditor<String> {
     public interface View extends UberView<FileUploadEditor> {
 
         View addHelpContent(final String title, final String content, final Placement placement);
-        
+
         View setFileUploadName(String name);
-            
+
         View setFileUploadVisible(boolean visible);
 
         View setFileLabelText(String text);
-        
+
         View setFileLabelVisible(boolean visible);
 
         View setLoadingImageVisible(boolean visible);
-        
+
         String getFileName();
-        
+
         View setFormAction(String action);
-        
+
         View submit();
 
         View showError(final SafeHtml message);
 
         View clearError();
-        
+
+        View setAccept(String type);
+
+        View clear();
     }
 
     public interface FileUploadEditorCallback {
@@ -70,10 +73,10 @@ public class FileUploadEditor implements IsWidget, LeafAttributeEditor<String> {
     Event<NotificationEvent> workbenchNotification;
     Event<org.dashbuilder.common.client.event.ValueChangeEvent<String>> valueChangeEvent;
     public View view;
-    
+
     String value;
     FileUploadEditorCallback callback;
-    
+
     @Inject
     public FileUploadEditor(final Event<org.dashbuilder.common.client.event.ValueChangeEvent<String>> valueChangeEvent,
                             final Event<NotificationEvent> workbenchNotification,
@@ -157,7 +160,7 @@ public class FileUploadEditor implements IsWidget, LeafAttributeEditor<String> {
         assert callback != null;
         return callback.getUploadFileUrl();
     }
-    
+
     boolean onSubmit() {
         final String fileName = view.getFileName();
         if ( isNullOrEmpty( fileName ) ) {
@@ -168,7 +171,7 @@ public class FileUploadEditor implements IsWidget, LeafAttributeEditor<String> {
         }
         return true;
     }
-    
+
     void onSubmitComplete(final String results) {
         view.clearError();
         view.setFileUploadVisible(true);
@@ -184,7 +187,7 @@ public class FileUploadEditor implements IsWidget, LeafAttributeEditor<String> {
             workbenchNotification.fire(new NotificationEvent(DashbuilderCommonConstants.INSTANCE.uploadFailedAlreadyExists(), ERROR));
         }
     }
-    
+
     void fileUploadHandler() {
         final String _f = getUploadFileName();
         final String _a = getUploadFileUrl();
@@ -197,20 +200,23 @@ public class FileUploadEditor implements IsWidget, LeafAttributeEditor<String> {
     private boolean isNullOrEmpty( final String fileName ) {
         return fileName == null || "".equals( fileName );
     }
-    
+
     void onValueChanged(final String value) {
         // Check value is not same one as current.
         if (this.value != null && this.value.equals(value)) return;
-        
+
         // Clear error messages on the view.
         view.clearError();
-                
+
         // Set the new value.
         String before = this.value;
         this.value = value;
 
         // Fire the value change event.
         valueChangeEvent.fire(new org.dashbuilder.common.client.event.ValueChangeEvent<String>(this, before, this.value));
-        
+    }
+
+    public void setAccept(String type) {
+        view.setAccept(type);
     }
 }

@@ -22,6 +22,7 @@ import java.util.Collection;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -486,5 +487,12 @@ public class DataSetDefRegistryCDI extends DataSetDefRegistryImpl implements CSV
 
     protected Path resolveCsvTempPath(CSVDataSetDef def) {
         return resolveTempPath(def.getUUID() + CSV_EXT);
+    }
+
+    void onDataSetDefRegisteredEvent(@Observes DataSetDefRegisteredEvent event) {
+        DataSetDef def = event.getDataSetDef();
+        dataSetDefMap.put(
+            def.getUUID(),
+            new DataSetDefEntry(def));
     }
 }

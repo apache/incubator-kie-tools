@@ -23,7 +23,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Widget;
 import org.dashbuilder.client.navigation.NavigationManager;
-import org.dashbuilder.client.navigation.event.NavTreeChangedEvent;
+import org.dashbuilder.navigation.event.NavTreeChangedEvent;
 import org.dashbuilder.navigation.NavDivider;
 import org.dashbuilder.navigation.NavGroup;
 import org.dashbuilder.navigation.NavItem;
@@ -313,6 +313,7 @@ public abstract class BaseNavWidget implements NavWidget {
     // Listen to changes in the navigation tree
 
     public void onNavTreeChanged(@Observes final NavTreeChangedEvent event) {
+        navigationManager.update(event.getNavTree());
         refresh();
     }
 

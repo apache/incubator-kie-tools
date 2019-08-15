@@ -19,7 +19,7 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.dashbuilder.client.cms.resources.i18n.ContentManagerI18n;
 import org.dashbuilder.client.navigation.NavigationManager;
 import org.dashbuilder.client.navigation.event.NavTreeLoadedEvent;
-import org.dashbuilder.client.navigation.event.PerspectivePluginsChangedEvent;
+import org.dashbuilder.navigation.event.PerspectivePluginsChangedEvent;
 import org.dashbuilder.client.navigation.widget.editor.NavItemEditorSettings;
 import org.dashbuilder.client.navigation.widget.editor.NavTreeEditor;
 import org.dashbuilder.navigation.NavTree;
@@ -80,8 +80,17 @@ public class NavigationExplorerScreenTest {
     @Test
     public void testOnPerspectivesChanged() {
         navigationExplorerScreen.init();
+        when(navigationManager.getNavTree()).thenReturn(navTree);
         navigationExplorerScreen.onPerspectivesChanged(new PerspectivePluginsChangedEvent());
 
-        verify(navTreeEditor).edit(any(NavTree.class));
+        verify(navTreeEditor, times(1)).edit(any(NavTree.class));
+    }
+
+    @Test
+    public void testOnPerspectivesChangedWithNullNavTree() {
+        navigationExplorerScreen.init();
+        navigationExplorerScreen.onPerspectivesChanged(new PerspectivePluginsChangedEvent());
+
+        verify(navTreeEditor, times(0)).edit(any(NavTree.class));
     }
 }

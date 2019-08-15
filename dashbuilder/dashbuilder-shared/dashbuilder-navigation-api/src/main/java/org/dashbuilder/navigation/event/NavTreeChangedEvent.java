@@ -13,11 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.dashbuilder.client.navigation.event;
+package org.dashbuilder.navigation.event;
+
+import org.dashbuilder.navigation.NavTree;
+import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
- * Event fired when a perspective plugin is either added, renamed or deleted.
+ * Event fired when the application navigation tree is changed
  */
-public class PerspectivePluginsChangedEvent {
 
+@Portable
+public class NavTreeChangedEvent {
+
+    private NavTree navTree;
+
+    public NavTreeChangedEvent() {
+
+    }
+
+    public NavTreeChangedEvent(NavTree navTree) {
+        this.navTree = navTree;
+    }
+
+    public NavTree getNavTree() {
+        return navTree;
+    }
 }

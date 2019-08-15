@@ -13,22 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.dashbuilder.client.navigation.event;
-
-import org.dashbuilder.navigation.NavTree;
+package org.dashbuilder.navigation.event;
 
 /**
- * Event fired when the application navigation tree is changed
+ * Event fired when a perspective plugin is either added, renamed or deleted.
  */
-public class NavTreeChangedEvent {
+public class PerspectivePluginsChangedEvent {
 
-    private NavTree navTree;
-
-    public NavTreeChangedEvent(NavTree navTree) {
-        this.navTree = navTree;
-    }
-
-    public NavTree getNavTree() {
-        return navTree;
-    }
 }

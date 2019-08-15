@@ -40,4 +40,6 @@ public interface NavigationManager {
     void secure(List<NavItem> itemList, boolean removeEmptyGroups);
 
     void navItemClicked(NavItem navItem);
+
+    void update(NavTree navTree);
 }

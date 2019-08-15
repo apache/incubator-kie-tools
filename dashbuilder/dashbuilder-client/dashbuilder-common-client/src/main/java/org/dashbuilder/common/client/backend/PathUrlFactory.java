@@ -13,16 +13,32 @@ import org.uberfire.backend.vfs.Path;
 public class PathUrlFactory {
 
     private static final String UPLOAD_SERVLET_URL = "defaulteditor/upload";
-    private static final String EXPORT_SERVLET_URL = "defaulteditor/download";
+    private static final String DOWNLOAD_SERVLET_URL = "defaulteditor/download";
+
+    private String getUrl(String context, String path) {
+        return new StringBuilder(GWT.getModuleBaseURL())
+            .append(context)
+            .append("?")
+            .append("path")
+            .append("=")
+            .append(URL.encode(path))
+            .toString();
+    }
 
     /**
      * <p>Returns the download URL for a given file provided by a servlet method.</p>
      * @param path The path of the file.
      */
     public String getDownloadFileUrl(final Path path) {
-        final StringBuilder sb = new StringBuilder(GWT.getModuleBaseURL() + EXPORT_SERVLET_URL);
-        sb.append("?").append("path").append("=").append(URL.encode(path.toURI()));
-        return sb.toString();
+        return getUrl(DOWNLOAD_SERVLET_URL, path.toURI());
+    }
+
+    /**
+     * <p>Returns the download URL for a given file provided by a servlet method.</p>
+     * @param path The path of the file.
+     */
+    public String getDownloadFileUrl(final String path) {
+        return getUrl(DOWNLOAD_SERVLET_URL, path);
     }
 
     /**
@@ -30,8 +46,6 @@ public class PathUrlFactory {
      * @param path The path of the file.
      */
     public String getUploadFileUrl(String path) {
-        final StringBuilder sb = new StringBuilder(GWT.getModuleBaseURL() + UPLOAD_SERVLET_URL);
-        sb.append("?").append("path").append("=").append(URL.encode(path));
-        return sb.toString();
+        return getUrl(UPLOAD_SERVLET_URL, path);
     }
 }
