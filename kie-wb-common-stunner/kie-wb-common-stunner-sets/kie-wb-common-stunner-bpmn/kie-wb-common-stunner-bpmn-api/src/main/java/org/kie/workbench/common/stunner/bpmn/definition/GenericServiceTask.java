@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.bpmn.definition;
 
+import javax.validation.Valid;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
@@ -24,6 +26,8 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOModel;
+import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.RectangleDimensionsSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Documentation;
@@ -53,7 +57,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
         startElement = "general",
         defaultFieldSettings = {@FieldParam(name = FIELD_CONTAINER_PARAM, value = COLLAPSIBLE_CONTAINER)}
 )
-public class GenericServiceTask extends BaseTask {
+public class GenericServiceTask extends BaseTask implements DataIOModel {
 
     @PropertySet
     @FormField(
@@ -61,10 +65,14 @@ public class GenericServiceTask extends BaseTask {
     )
     protected GenericServiceTaskExecutionSet executionSet;
 
+    @Valid
+    protected DataIOSet dataIOSet;
+
     public GenericServiceTask() {
         this(new TaskGeneralSet(new Name("Service Task"),
                                 new Documentation("")),
              new GenericServiceTaskExecutionSet(),
+             new DataIOSet(),
              new BackgroundSet(),
              new FontSet(),
              new RectangleDimensionsSet(),
@@ -74,6 +82,7 @@ public class GenericServiceTask extends BaseTask {
 
     public GenericServiceTask(final @MapsTo("general") TaskGeneralSet general,
                               final @MapsTo("executionSet") GenericServiceTaskExecutionSet executionSet,
+                              final @MapsTo("dataIOSet") DataIOSet dataIOSet,
                               final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
                               final @MapsTo("fontSet") FontSet fontSet,
                               final @MapsTo("dimensionsSet") RectangleDimensionsSet dimensionsSet,
@@ -86,6 +95,7 @@ public class GenericServiceTask extends BaseTask {
               simulationSet,
               taskType);
         this.executionSet = executionSet;
+        this.dataIOSet = dataIOSet;
     }
 
     public GenericServiceTaskExecutionSet getExecutionSet() {
@@ -97,8 +107,33 @@ public class GenericServiceTask extends BaseTask {
     }
 
     @Override
+    public boolean hasInputVars() {
+        return true;
+    }
+
+    @Override
+    public boolean isSingleInputVar() {
+        return false;
+    }
+
+    @Override
+    public boolean hasOutputVars() {
+        return true;
+    }
+
+    @Override
+    public boolean isSingleOutputVar() {
+        return false;
+    }
+
+    public void setDataIOSet(final DataIOSet dataIOSet) {
+        this.dataIOSet = dataIOSet;
+    }
+
+    @Override
     public int hashCode() {
         return HashUtil.combineHashCodes(super.hashCode(),
+                                         dataIOSet.hashCode(),
                                          executionSet.hashCode());
     }
 
@@ -107,6 +142,7 @@ public class GenericServiceTask extends BaseTask {
         if (o instanceof GenericServiceTask) {
             GenericServiceTask other = (GenericServiceTask) o;
             return super.equals(other) &&
+                    dataIOSet.equals(other.dataIOSet) &&
                     executionSet.equals(other.executionSet);
         }
         return false;

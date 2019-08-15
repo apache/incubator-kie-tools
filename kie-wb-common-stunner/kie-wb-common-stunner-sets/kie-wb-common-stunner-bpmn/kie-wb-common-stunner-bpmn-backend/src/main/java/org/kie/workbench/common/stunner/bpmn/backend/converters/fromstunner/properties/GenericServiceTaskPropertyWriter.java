@@ -23,10 +23,13 @@ import org.eclipse.bpmn2.Operation;
 import org.eclipse.bpmn2.ServiceTask;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomAttribute;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.Scripts;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnEntryAction;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnExitAction;
 
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpmn2;
 
-public class GenericServiceTaskPropertyWriter extends ActivityPropertyWriter {
+public class GenericServiceTaskPropertyWriter extends MultipleInstanceActivityPropertyWriter {
 
     private final ServiceTask task;
     private final Interface iface;
@@ -76,7 +79,23 @@ public class GenericServiceTaskPropertyWriter extends ActivityPropertyWriter {
         iface.setId(task.getId() + "_ServiceInterface");
     }
 
-    public void setSlaDueDate(String value) {
-        CustomElement.slaDueDate.of(baseElement).set(value);
+    public void setAdHocAutostart(boolean autoStart) {
+        CustomElement.autoStart.of(task).set(autoStart);
+    }
+
+    public void setAsync(boolean async) {
+        CustomElement.async.of(task).set(async);
+    }
+
+    public void setSLADueDate(String slaDueDate) {
+        CustomElement.slaDueDate.of(task).set(slaDueDate);
+    }
+
+    public void setOnEntryAction(OnEntryAction onEntryAction) {
+        Scripts.setOnEntryAction(task, onEntryAction);
+    }
+
+    public void setOnExitAction(OnExitAction onExitAction) {
+        Scripts.setOnExitAction(task, onExitAction);
     }
 }

@@ -55,6 +55,13 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.DecisionNa
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.DmnModelName;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.EmptyTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.IsAsync;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.IsMultipleInstance;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceCollectionInput;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceCollectionOutput;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceCompletionCondition;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceDataInput;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceDataOutput;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceExecutionMode;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.Namespace;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnEntryAction;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnExitAction;
@@ -162,16 +169,30 @@ public abstract class BaseTaskConverter<U extends BaseUserTask<S>, S extends Bas
 
         definition.setExecutionSet(new GenericServiceTaskExecutionSet(
                 new GenericServiceTaskInfo(p.getGenericServiceTask()),
-                new SLADueDate(p.getSlaDueDate())
-        ));
+                p.getAssignmentsInfo(),
+                new AdHocAutostart(p.isAdHocAutostart()),
+                new IsAsync(p.isAsync()),
+                new IsMultipleInstance(p.isMultipleInstance()),
+                new MultipleInstanceExecutionMode(p.isSequential()),
+                new MultipleInstanceCollectionInput(p.getCollectionInput()),
+                new MultipleInstanceDataInput(p.getDataInput()),
+                new MultipleInstanceCollectionOutput(p.getCollectionOutput()),
+                new MultipleInstanceDataOutput(p.getDataOutput()),
+                new MultipleInstanceCompletionCondition(p.getCompletionCondition()),
+                new OnEntryAction(p.getOnEntryAction()),
+                new OnExitAction(p.getOnExitAction()),
+                new SLADueDate(p.getSLADueDate())));
 
         node.getContent().setBounds(p.getBounds());
 
         definition.setDimensionsSet(p.getRectangleDimensionsSet());
         definition.setBackgroundSet(p.getBackgroundSet());
         definition.setFontSet(p.getFontSet());
-
         definition.setSimulationSet(p.getSimulationSet());
+
+        definition.setDataIOSet(new DataIOSet(
+                p.getAssignmentsInfo()
+        ));
 
         return BpmnNode.of(node, p);
     }

@@ -18,7 +18,21 @@ package org.kie.workbench.common.stunner.bpmn.definition.property.service;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.AssignmentsInfo;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocAutostart;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.IsAsync;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.IsMultipleInstance;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceCollectionInput;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceCollectionOutput;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceCompletionCondition;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceDataInput;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceDataOutput;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceExecutionMode;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnEntryAction;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnExitAction;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeListValue;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeValue;
 import org.mockito.MockitoAnnotations;
 
 import static org.junit.Assert.assertEquals;
@@ -41,9 +55,36 @@ public class GenericServiceTaskExecutionSetTest {
         assertEquals(a.hashCode(),
                      b.hashCode());
 
-        GenericServiceTaskExecutionSet c = new GenericServiceTaskExecutionSet(new GenericServiceTaskInfo(),
+        GenericServiceTaskExecutionSet c = new GenericServiceTaskExecutionSet(new GenericServiceTaskInfo(),new AssignmentsInfo(),
+                                                                              new AdHocAutostart(),
+                                                                              new IsAsync(),
+                                                                              new IsMultipleInstance(false),
+                                                                              new MultipleInstanceExecutionMode(false),
+                                                                              new MultipleInstanceCollectionInput(),
+                                                                              new MultipleInstanceDataInput(),
+                                                                              new MultipleInstanceCollectionOutput(),
+                                                                              new MultipleInstanceDataOutput(),
+                                                                              new MultipleInstanceCompletionCondition(),
+                                                                              new OnEntryAction(new ScriptTypeListValue().addValue(new ScriptTypeValue("java",
+                                                                                                                                                       ""))),
+                                                                              new OnExitAction(new ScriptTypeListValue().addValue(new ScriptTypeValue("java",
+                                                                                                                                                      ""))),
                                                                               new SLADueDate(SLA_DUE_DATE_1));
         GenericServiceTaskExecutionSet d = new GenericServiceTaskExecutionSet(new GenericServiceTaskInfo(),
+                                                                              new AssignmentsInfo(),
+                                                                              new AdHocAutostart(),
+                                                                              new IsAsync(),
+                                                                              new IsMultipleInstance(false),
+                                                                              new MultipleInstanceExecutionMode(false),
+                                                                              new MultipleInstanceCollectionInput(),
+                                                                              new MultipleInstanceDataInput(),
+                                                                              new MultipleInstanceCollectionOutput(),
+                                                                              new MultipleInstanceDataOutput(),
+                                                                              new MultipleInstanceCompletionCondition(),
+                                                                              new OnEntryAction(new ScriptTypeListValue().addValue(new ScriptTypeValue("java",
+                                                                                                                                                       ""))),
+                                                                              new OnExitAction(new ScriptTypeListValue().addValue(new ScriptTypeValue("java",
+                                                                                                                                                      ""))),
                                                                               new SLADueDate(SLA_DUE_DATE_1));
         assertEquals(c.hashCode(),
                      d.hashCode());
@@ -56,8 +97,36 @@ public class GenericServiceTaskExecutionSetTest {
         assertEquals(a, b);
 
         GenericServiceTaskExecutionSet c = new GenericServiceTaskExecutionSet(new GenericServiceTaskInfo(),
+                                                                              new AssignmentsInfo(),
+                                                                              new AdHocAutostart(),
+                                                                              new IsAsync(),
+                                                                              new IsMultipleInstance(false),
+                                                                              new MultipleInstanceExecutionMode(false),
+                                                                              new MultipleInstanceCollectionInput(),
+                                                                              new MultipleInstanceDataInput(),
+                                                                              new MultipleInstanceCollectionOutput(),
+                                                                              new MultipleInstanceDataOutput(),
+                                                                              new MultipleInstanceCompletionCondition(),
+                                                                              new OnEntryAction(new ScriptTypeListValue().addValue(new ScriptTypeValue("java",
+                                                                                                                                                       ""))),
+                                                                              new OnExitAction(new ScriptTypeListValue().addValue(new ScriptTypeValue("java",
+                                                                                                                                                      ""))),
                                                                               new SLADueDate(SLA_DUE_DATE_1));
         GenericServiceTaskExecutionSet d = new GenericServiceTaskExecutionSet(new GenericServiceTaskInfo(),
+                                                                              new AssignmentsInfo(),
+                                                                              new AdHocAutostart(),
+                                                                              new IsAsync(),
+                                                                              new IsMultipleInstance(false),
+                                                                              new MultipleInstanceExecutionMode(false),
+                                                                              new MultipleInstanceCollectionInput(),
+                                                                              new MultipleInstanceDataInput(),
+                                                                              new MultipleInstanceCollectionOutput(),
+                                                                              new MultipleInstanceDataOutput(),
+                                                                              new MultipleInstanceCompletionCondition(),
+                                                                              new OnEntryAction(new ScriptTypeListValue().addValue(new ScriptTypeValue("java",
+                                                                                                                                                       ""))),
+                                                                              new OnExitAction(new ScriptTypeListValue().addValue(new ScriptTypeValue("java",
+                                                                                                                                                      ""))),
                                                                               new SLADueDate(SLA_DUE_DATE_1));
         assertEquals(c, d);
     }
@@ -71,8 +140,36 @@ public class GenericServiceTaskExecutionSetTest {
         assertNotEquals(a, b);
 
         GenericServiceTaskExecutionSet c = new GenericServiceTaskExecutionSet(new GenericServiceTaskInfo(),
+                                                                              new AssignmentsInfo(),
+                                                                              new AdHocAutostart(),
+                                                                              new IsAsync(),
+                                                                              new IsMultipleInstance(false),
+                                                                              new MultipleInstanceExecutionMode(false),
+                                                                              new MultipleInstanceCollectionInput(),
+                                                                              new MultipleInstanceDataInput(),
+                                                                              new MultipleInstanceCollectionOutput(),
+                                                                              new MultipleInstanceDataOutput(),
+                                                                              new MultipleInstanceCompletionCondition(),
+                                                                              new OnEntryAction(new ScriptTypeListValue().addValue(new ScriptTypeValue("java",
+                                                                                                                                                       ""))),
+                                                                              new OnExitAction(new ScriptTypeListValue().addValue(new ScriptTypeValue("java",
+                                                                                                                                                      ""))),
                                                                               new SLADueDate(SLA_DUE_DATE_1));
         GenericServiceTaskExecutionSet d = new GenericServiceTaskExecutionSet(new GenericServiceTaskInfo(),
+                                                                              new AssignmentsInfo(),
+                                                                              new AdHocAutostart(),
+                                                                              new IsAsync(),
+                                                                              new IsMultipleInstance(false),
+                                                                              new MultipleInstanceExecutionMode(false),
+                                                                              new MultipleInstanceCollectionInput(),
+                                                                              new MultipleInstanceDataInput(),
+                                                                              new MultipleInstanceCollectionOutput(),
+                                                                              new MultipleInstanceDataOutput(),
+                                                                              new MultipleInstanceCompletionCondition(),
+                                                                              new OnEntryAction(new ScriptTypeListValue().addValue(new ScriptTypeValue("java",
+                                                                                                                                                       ""))),
+                                                                              new OnExitAction(new ScriptTypeListValue().addValue(new ScriptTypeValue("java",
+                                                                                                                                                      ""))),
                                                                               new SLADueDate(SLA_DUE_DATE_2));
         assertNotEquals(c, d);
     }
@@ -85,8 +182,36 @@ public class GenericServiceTaskExecutionSetTest {
         assertEquals(a, b);
 
         GenericServiceTaskExecutionSet c = new GenericServiceTaskExecutionSet(new GenericServiceTaskInfo(),
+                                                                              new AssignmentsInfo(),
+                                                                              new AdHocAutostart(),
+                                                                              new IsAsync(),
+                                                                              new IsMultipleInstance(false),
+                                                                              new MultipleInstanceExecutionMode(false),
+                                                                              new MultipleInstanceCollectionInput(),
+                                                                              new MultipleInstanceDataInput(),
+                                                                              new MultipleInstanceCollectionOutput(),
+                                                                              new MultipleInstanceDataOutput(),
+                                                                              new MultipleInstanceCompletionCondition(),
+                                                                              new OnEntryAction(new ScriptTypeListValue().addValue(new ScriptTypeValue("java",
+                                                                                                                                                       ""))),
+                                                                              new OnExitAction(new ScriptTypeListValue().addValue(new ScriptTypeValue("java",
+                                                                                                                                                      ""))),
                                                                               new SLADueDate(SLA_DUE_DATE_1));
         GenericServiceTaskExecutionSet d = new GenericServiceTaskExecutionSet(new GenericServiceTaskInfo(),
+                                                                              new AssignmentsInfo(),
+                                                                              new AdHocAutostart(),
+                                                                              new IsAsync(),
+                                                                              new IsMultipleInstance(false),
+                                                                              new MultipleInstanceExecutionMode(false),
+                                                                              new MultipleInstanceCollectionInput(),
+                                                                              new MultipleInstanceDataInput(),
+                                                                              new MultipleInstanceCollectionOutput(),
+                                                                              new MultipleInstanceDataOutput(),
+                                                                              new MultipleInstanceCompletionCondition(),
+                                                                              new OnEntryAction(new ScriptTypeListValue().addValue(new ScriptTypeValue("java",
+                                                                                                                                                       ""))),
+                                                                              new OnExitAction(new ScriptTypeListValue().addValue(new ScriptTypeValue("java",
+                                                                                                                                                      ""))),
                                                                               new SLADueDate(SLA_DUE_DATE_1));
         assertEquals(c, d);
     }
@@ -101,6 +226,20 @@ public class GenericServiceTaskExecutionSetTest {
     public void testGetSlaDueDate() {
         GenericServiceTaskExecutionSet a = new GenericServiceTaskExecutionSet(
                 new GenericServiceTaskInfo(),
+                new AssignmentsInfo(),
+                new AdHocAutostart(),
+                new IsAsync(),
+                new IsMultipleInstance(false),
+                new MultipleInstanceExecutionMode(false),
+                new MultipleInstanceCollectionInput(),
+                new MultipleInstanceDataInput(),
+                new MultipleInstanceCollectionOutput(),
+                new MultipleInstanceDataOutput(),
+                new MultipleInstanceCompletionCondition(),
+                new OnEntryAction(new ScriptTypeListValue().addValue(new ScriptTypeValue("java",
+                                                                                         ""))),
+                new OnExitAction(new ScriptTypeListValue().addValue(new ScriptTypeValue("java",
+                                                                                        ""))),
                 new SLADueDate(SLA_DUE_DATE_1));
         assertEquals(SLA_DUE_DATE_1, a.getSlaDueDate().getValue());
     }

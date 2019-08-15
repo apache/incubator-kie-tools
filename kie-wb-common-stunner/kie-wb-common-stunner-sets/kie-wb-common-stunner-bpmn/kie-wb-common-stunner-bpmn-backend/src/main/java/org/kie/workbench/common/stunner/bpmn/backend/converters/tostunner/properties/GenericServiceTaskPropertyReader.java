@@ -23,7 +23,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
 import org.kie.workbench.common.stunner.bpmn.definition.property.service.GenericServiceTaskValue;
 
-public class GenericServiceTaskPropertyReader extends TaskPropertyReader {
+public class GenericServiceTaskPropertyReader extends MultipleInstanceActivityPropertyReader {
 
     private final ServiceTask task;
 
@@ -50,7 +50,15 @@ public class GenericServiceTaskPropertyReader extends TaskPropertyReader {
         return value;
     }
 
-    public String getSlaDueDate() {
+    public boolean isAsync() {
+        return CustomElement.async.of(element).get();
+    }
+
+    public boolean isAdHocAutostart() {
+        return CustomElement.autoStart.of(element).get();
+    }
+
+    public String getSLADueDate() {
         return CustomElement.slaDueDate.of(element).get();
     }
 }

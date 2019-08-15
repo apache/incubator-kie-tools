@@ -23,11 +23,16 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.GenericServiceTaskPropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
+import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.AssignmentsInfo;
 import org.kie.workbench.common.stunner.bpmn.definition.property.service.GenericServiceTaskValue;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnEntryAction;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnExitAction;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeListValue;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpmn2;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -51,7 +56,20 @@ public class GenericServiceTaskPropertyReaderTest {
         writer.setServiceImplementation("WebService");
         writer.setServiceInterface("setServiceInterface");
         writer.setServiceOperation("setServiceOperation");
-        writer.setSlaDueDate(SLA_DUE_DATE);
+        writer.setSLADueDate(SLA_DUE_DATE);
+        writer.setAsync(false);
+        writer.setAdHocAutostart(true);
+
+        OnEntryAction onEntryAction = new OnEntryAction();
+        onEntryAction.setValue(new ScriptTypeListValue());
+        writer.setOnEntryAction(onEntryAction);
+
+        OnExitAction onExitAction = new OnExitAction();
+        onExitAction.setValue(new ScriptTypeListValue());
+        writer.setOnExitAction(onExitAction);
+
+        writer.setAssignmentsInfo(new AssignmentsInfo());
+
         reader = new GenericServiceTaskPropertyReader(serviceTask, diagram, definitionResolver);
     }
 
@@ -61,6 +79,12 @@ public class GenericServiceTaskPropertyReaderTest {
         assertEquals("setServiceOperation", task.getServiceOperation());
         assertEquals("setServiceInterface", task.getServiceInterface());
         assertEquals("WebService", task.getServiceImplementation());
-        assertEquals(SLA_DUE_DATE_CDATA, reader.getSlaDueDate());
+        assertEquals(SLA_DUE_DATE_CDATA, reader.getSLADueDate());
+
+        assertEquals(false, reader.isAsync());
+        assertEquals(true, reader.isAdHocAutostart());
+        assertNotNull(reader.getOnEntryAction());
+        assertNotNull(reader.getOnExitAction());
+        assertNotNull(reader.getAssignmentsInfo());
     }
 }

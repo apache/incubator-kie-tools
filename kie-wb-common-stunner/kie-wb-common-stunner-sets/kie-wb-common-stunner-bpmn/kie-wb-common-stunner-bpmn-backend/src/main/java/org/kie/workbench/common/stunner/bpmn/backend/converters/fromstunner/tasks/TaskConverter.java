@@ -90,7 +90,20 @@ public class TaskConverter {
         p.setServiceOperation(executionSet.getGenericServiceTaskInfo()
                                       .getValue()
                                       .getServiceOperation());
-        p.setSlaDueDate(executionSet.getSlaDueDate().getValue());
+        p.setAsync(executionSet.getIsAsync().getValue());
+        p.setAdHocAutostart(executionSet.getAdHocAutostart().getValue());
+        if (Boolean.TRUE.equals(executionSet.getIsMultipleInstance().getValue())) {
+            p.setIsSequential(executionSet.getMultipleInstanceExecutionMode().isSequential());
+            p.setCollectionInput(executionSet.getMultipleInstanceCollectionInput().getValue());
+            p.setInput(executionSet.getMultipleInstanceDataInput().getValue());
+            p.setCollectionOutput(executionSet.getMultipleInstanceCollectionOutput().getValue());
+            p.setOutput(executionSet.getMultipleInstanceDataOutput().getValue());
+            p.setCompletionCondition(executionSet.getMultipleInstanceCompletionCondition().getValue());
+        }
+        p.setOnEntryAction(executionSet.getOnEntryAction());
+        p.setOnExitAction(executionSet.getOnExitAction());
+        p.setSLADueDate(executionSet.getSlaDueDate().getValue());
+        p.setAssignmentsInfo(executionSet.getAssignmentsinfo());
         return p;
     }
 

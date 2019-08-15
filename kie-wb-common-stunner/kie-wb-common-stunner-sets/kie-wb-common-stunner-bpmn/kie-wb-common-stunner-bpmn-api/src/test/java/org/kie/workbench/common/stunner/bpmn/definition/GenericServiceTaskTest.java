@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.bpmn.definition;
 
 import org.junit.Test;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.RectangleDimensionsSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Documentation;
@@ -37,6 +38,7 @@ public class GenericServiceTaskTest {
         GenericServiceTask genericServiceTask = new GenericServiceTask(new TaskGeneralSet(new Name("Service Task"),
                                                                                           new Documentation("")),
                                                                        new GenericServiceTaskExecutionSet(),
+                                                                       new DataIOSet(),
                                                                        new BackgroundSet(),
                                                                        new FontSet(),
                                                                        new RectangleDimensionsSet(),
