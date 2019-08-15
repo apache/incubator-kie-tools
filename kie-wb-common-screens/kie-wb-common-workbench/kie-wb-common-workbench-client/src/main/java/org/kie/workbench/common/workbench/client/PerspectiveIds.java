@@ -44,4 +44,5 @@ public interface PerspectiveIds {
     String EXPERIMENTAL_FEATURES = "ExperimentalFeaturesPerspective";
     String SSH_KEYS_EDITOR = "SSHKeysEditorPerspective";
     String SERVICE_TASK_ADMIN = "ServiceTaskAdminPerspective";
+    String DATA_TRANSFER = "DataTransferPerspective";
 }

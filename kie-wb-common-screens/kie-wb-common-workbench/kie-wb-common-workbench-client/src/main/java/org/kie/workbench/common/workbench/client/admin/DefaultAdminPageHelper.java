@@ -91,7 +91,7 @@ public class DefaultAdminPageHelper {
 
     @Inject
     private ClientExperimentalFeaturesRegistryService experimentalFeaturesService;
-    
+
     @Inject
     Caller<ProfileService> profileService;
 
@@ -118,12 +118,34 @@ public class DefaultAdminPageHelper {
         addStunnerPreferences(stunnerEnabled);
         addExperimentalPreferences();
         addSSHKeys();
-        addProfilePreferences(); 
+        addProfilePreferences();
+        addDataTransferPerspective();
     }
-    
+
+    private void addDataTransferPerspective() {
+        boolean authorized = authorizationManager.authorize(
+            WorkbenchFeatures.ACCESS_DATA_TRANSFER,
+            sessionInfo.getIdentity());
+
+        if (!authorized) {
+            return;
+        }
+
+        adminPage.addTool(
+            "root",
+            constants.DataTransfer(),
+            new Sets.Builder().add("pficon").add("pficon-import").build(),
+            "services",
+            () -> {
+                Command cmd = () -> placeManager.goTo(PerspectiveIds.DATA_TRANSFER);
+                cmd.execute();
+                addAdminBreadcrumbs(PerspectiveIds.DATA_TRANSFER, constants.DataTransfer(), cmd);
+            });
+    }
+
     private void addProfilePreferences() {
         final boolean canEditProfilePreferences = authorizationManager.authorize(WorkbenchFeatures.EDIT_PROFILE_PREFERENCES,
-                sessionInfo.getIdentity());
+                                                                                 sessionInfo.getIdentity());
         profileService.call((Boolean force) -> {
             if (canEditProfilePreferences && !force) {
                 adminPage.addPreference("root",
@@ -357,7 +379,7 @@ public class DefaultAdminPageHelper {
                                 "general",
                                 scopeFactory.createScope(GuvnorPreferenceScopes.GLOBAL),
                                 AdminPageOptions.WITH_BREADCRUMBS);
-        
+
         adminPage.addTool("root",
                                 constants.ServiceTasksAdministration(),
                                 new Sets.Builder().add("fa").add("fa-cogs").build(),

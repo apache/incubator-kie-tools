@@ -65,6 +65,7 @@ public class DefaultAdminPageHelperTest {
     private static String EXPERIMENTAL_SETTINGS = "ExperimentalSettings";
     private static String MANAGE_PREFERENCES = "ManagePreferences";
     private static String SERTIVCE_TASKS_ADMIN = "ServiceTasksAdministration";
+    private static String DATA_TRANSFER = "DataTransfer";
 
     @Mock
     private AdminPage adminPage;
@@ -89,10 +90,10 @@ public class DefaultAdminPageHelperTest {
 
     @Mock
     private PreferenceScope globalScope;
-    
+
     @Mock
     ProfileService profileService;
-    
+
     CallerMock<ProfileService> profileServiceCaller;
 
     @Before
@@ -325,7 +326,7 @@ public class DefaultAdminPageHelperTest {
                                   eq("general"),
                                   any(Command.class));
     }
-    
+
     @Test
     public void profilePreferencesWasAddedWithPermissionTest() {
         doReturn(true).when(authorizationManager).authorize(eq(WorkbenchFeatures.EDIT_PROFILE_PREFERENCES),
@@ -333,16 +334,16 @@ public class DefaultAdminPageHelperTest {
         defaultAdminPageHelper.setup();
         verifyProfilePreferenceAdded(true);
     }
-    
+
     @Test
     public void profilePreferencesWasNotAddedTest() {
         doReturn(false).when(authorizationManager).authorize(eq(WorkbenchFeatures.EDIT_PROFILE_PREFERENCES),
                 any());
-        
+
         defaultAdminPageHelper.setup();
         verifyProfilePreferenceAdded(false);
-    }    
-    
+    }
+
     @Test
     public void profilePreferencesWasNotAddedWithPermissionWithForceTest() {
         when(profileService.isForce()).thenReturn(true);
@@ -350,7 +351,7 @@ public class DefaultAdminPageHelperTest {
                 any());
         defaultAdminPageHelper.setup();
         verifyProfilePreferenceAdded(false);
-    }    
+    }
 
     @Test
     public void stunnerPreferencesWasAddedTest() {
@@ -361,7 +362,7 @@ public class DefaultAdminPageHelperTest {
         defaultAdminPageHelper.setup(true,
                                      true,
                                      true);
-        verifyStunnerPreferencesWasAdded(2);        
+        verifyStunnerPreferencesWasAdded(2);
     }
 
     @Test
@@ -385,6 +386,25 @@ public class DefaultAdminPageHelperTest {
     @Test
     public void experimentalFeaturesWasNotAddedTest() {
         verifyExperimentalFeatureAdded(false, false);
+    }
+
+    @Test
+    public void dataTransferAddedTest() {
+        doReturn(true).when(authorizationManager).authorize(eq(WorkbenchFeatures.ACCESS_DATA_TRANSFER), any());
+        defaultAdminPageHelper.setup();
+        verifyDataTransferAdded(true);
+    }
+
+    @Test
+    public void dataTransferNotAddedTest() {
+        doReturn(false).when(authorizationManager).authorize(eq(WorkbenchFeatures.ACCESS_DATA_TRANSFER), any());
+        defaultAdminPageHelper.setup();
+        verifyDataTransferAdded(false);
+    }
+
+    private void verifyDataTransferAdded(boolean expected) {
+        verify(adminPage, expected ? times(1) : never())
+            .addTool(eq("root"), eq(DATA_TRANSFER), any(), eq("services"), any(Command.class));
     }
 
     private void verifyExperimentalFeatureAdded(final boolean addExperimental, final boolean addFeatures) {
@@ -414,7 +434,7 @@ public class DefaultAdminPageHelperTest {
                                                                         eq("advanced"),
                                                                         any(Command.class));
     }
-    
+
     private void verifyProfilePreferenceAdded(boolean authorized) {
         verify(adminPage, authorized ? times(1) : never()).addPreference(eq("root"),
                                         eq(PROFILE_PREFERENCES),
@@ -502,7 +522,7 @@ public class DefaultAdminPageHelperTest {
                                                 eq(AdminPageOptions.WITH_BREADCRUMBS));
     }
 
-    
+
     private void verifyServiceTasksAdminWasAdded() {
         verify(adminPage,
                times(1)).addTool(eq("root"),
@@ -511,7 +531,7 @@ public class DefaultAdminPageHelperTest {
                                                 eq("services"),
                                                 any());
     }
-    
+
     private void verifyServiceTasksAdminWasNotAdded() {
         verify(adminPage,
                never()).addTool(eq("root"),
@@ -531,7 +551,7 @@ public class DefaultAdminPageHelperTest {
                                                     }
                                                 });
     }
-    
+
     private void mockProfileService() {
         defaultAdminPageHelper.profileService = new CallerMock<ProfileService>(profileService);
     }

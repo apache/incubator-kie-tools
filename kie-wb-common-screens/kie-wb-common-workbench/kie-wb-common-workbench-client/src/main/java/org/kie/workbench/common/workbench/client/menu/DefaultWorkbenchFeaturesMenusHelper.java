@@ -276,6 +276,10 @@ public class DefaultWorkbenchFeaturesMenusHelper {
     }
 
     public TopLevelMenusBuilder<MenuBuilder> buildMenusFromNavTree(NavTree navTree) {
+        if (navTree == null) {
+            return null;
+        }
+
         MenuBuilder<TopLevelMenusBuilder<MenuBuilder>> builder = null;
         for (NavItem navItem : navTree.getRootItems()) {
 

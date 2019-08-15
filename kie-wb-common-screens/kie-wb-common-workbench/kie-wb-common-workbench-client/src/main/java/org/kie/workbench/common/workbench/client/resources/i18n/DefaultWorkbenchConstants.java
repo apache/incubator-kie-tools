@@ -172,4 +172,10 @@ public interface DefaultWorkbenchConstants
     String EditProfilePreferencesHelp();
 
     String ServiceTasksAdministration();
+
+    String DataTransfer();
+
+    String AccessDataTransfer();
+
+    String AccessDataTransferHelp();
 }

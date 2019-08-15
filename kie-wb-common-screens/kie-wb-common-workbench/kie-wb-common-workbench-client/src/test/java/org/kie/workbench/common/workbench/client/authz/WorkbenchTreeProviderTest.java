@@ -33,19 +33,20 @@ import static org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures.
 import static org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures.GUIDED_DECISION_TABLE_EDIT_COLUMNS;
 import static org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures.PLANNER_AVAILABLE;
 import static org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures.EDIT_PROFILE_PREFERENCES;
+import static org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures.ACCESS_DATA_TRANSFER;
 import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class WorkbenchTreeProviderTest {
 
     private static final String[] FEATURES_NAMES = {
-
-            EDIT_SOURCES,
-            PLANNER_AVAILABLE,
-            JAR_DOWNLOAD,
-            EDIT_GLOBAL_PREFERENCES,
-            GUIDED_DECISION_TABLE_EDIT_COLUMNS,
-            EDIT_PROFILE_PREFERENCES
+        EDIT_SOURCES,
+        PLANNER_AVAILABLE,
+        JAR_DOWNLOAD,
+        EDIT_GLOBAL_PREFERENCES,
+        GUIDED_DECISION_TABLE_EDIT_COLUMNS,
+        EDIT_PROFILE_PREFERENCES,
+        ACCESS_DATA_TRANSFER
     };
 
     private DefaultPermissionManager permissionManager;
