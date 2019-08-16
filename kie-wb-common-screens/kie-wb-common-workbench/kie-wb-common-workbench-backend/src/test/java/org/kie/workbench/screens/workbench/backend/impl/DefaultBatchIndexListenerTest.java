@@ -22,6 +22,7 @@ import java.net.URISyntaxException;
 
 import javax.enterprise.event.Event;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -68,6 +69,11 @@ public class DefaultBatchIndexListenerTest {
         when(kCluster.getClusterId()).thenReturn(KCLUSTER_ID);
 
         indexListener = new DefaultBatchIndexListener(indexingStartedEventEvent, indexingFinishedEventEvent);
+    }
+
+    @After
+    public void cleanup() {
+        fileSystemTestingUtils.cleanup();
     }
 
     @Test
