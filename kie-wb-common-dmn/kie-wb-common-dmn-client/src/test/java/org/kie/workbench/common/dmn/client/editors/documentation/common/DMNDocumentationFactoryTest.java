@@ -123,6 +123,8 @@ public class DMNDocumentationFactoryTest {
         final String admin = "admin";
         final String currentDate = "2 January 1992";
         final String namespace = "://namespace";
+        final String expectedDroolsLogo = "droolsLogo";
+        final String expectedSupportedByRedHatLogo = "supportedByRedHatLogo";
         final List<DRGElement> drgElements = singletonList(mock(DRGElement.class));
         final ItemDefinition uuid = makeItemDefinition("tUUID", "String");
         final ItemDefinition id = makeItemDefinition("id", "tUUID");
@@ -159,6 +161,8 @@ public class DMNDocumentationFactoryTest {
         assertEquals(image, documentation.getDiagramImage());
         assertEquals(admin, documentation.getCurrentUser());
         assertEquals(currentDate, documentation.getCurrentDate());
+        assertEquals(expectedDroolsLogo, documentation.getDroolsLogoURI());
+        assertEquals(expectedSupportedByRedHatLogo, documentation.getSupportedByRedHatLogoURI());
         assertEquals(i18n, documentation.getI18n());
         assertNotNull(documentation.getModuleName());
         assertNotNull(documentation.getDataTypes());

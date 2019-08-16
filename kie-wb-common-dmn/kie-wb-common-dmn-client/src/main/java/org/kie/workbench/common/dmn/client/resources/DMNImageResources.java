@@ -43,6 +43,11 @@ public interface DMNImageResources extends ClientBundleWithLookup {
 
     String TEXT_ANNOTATION_TOOLBOX = "images/icons/text-annotation-toolbox.png";
 
+    // Logos
+    String DROOLS_LOGO = "images/logos/drools-logo.svg";
+
+    String SUPPORTED_BY_RED_HAT_LOGO = "images/logos/supported-by-red-hat-logo.svg";
+
     DMNImageResources INSTANCE = GWT.create(DMNImageResources.class);
 
     String SVG_MIME_TYPE = "image/svg+xml";
@@ -101,4 +106,12 @@ public interface DMNImageResources extends ClientBundleWithLookup {
     @ClientBundle.Source(DMNDecisionServiceSVGViewFactory.DECISION_SERVICE_PALETTE)
     @DataResource.MimeType(SVG_MIME_TYPE)
     DataResource decisionServicePalette();
+
+    @ClientBundle.Source(DROOLS_LOGO)
+    @DataResource.MimeType(SVG_MIME_TYPE)
+    DataResource droolsLogo();
+
+    @ClientBundle.Source(SUPPORTED_BY_RED_HAT_LOGO)
+    @DataResource.MimeType(SVG_MIME_TYPE)
+    DataResource supportedByRedHatLogo();
 }

@@ -21,19 +21,18 @@
     <link type="text/css" rel="stylesheet" href="{{&moduleName}}/css/patternfly.min.css" media="print"/>
     <style type="text/css">
 
+        <!--
+        /* General spacing */
+        -->
         .kie-dmn-documentation {
-            padding: 20px 30px;
-        }
-
-        .kie-dmn-documentation .cover {
-            text-align: center;
-            margin: 150px auto;
+            padding: 50px;
         }
 
         .kie-dmn-documentation h1,
         .kie-dmn-documentation h2,
         .kie-dmn-documentation .table-of-contents {
             font-weight: 600;
+            margin: 30px 0 20px;
         }
 
         .kie-dmn-documentation ol,
@@ -41,22 +40,104 @@
             padding: 10px 15px;
         }
 
-        .kie-dmn-documentation ol.table-of-contents li {
-            margin-bottom: 10px;
-        }
-
         .kie-dmn-documentation .diagram-image {
             max-width: 100%;
         }
 
+        .kie-dmn-documentation .pagebreak {
+            border-bottom: 1px solid #DDDDDD;
+        }
+
+        .kie-dmn-documentation .external-links-title {
+            font-weight: bold;
+        }
+
+        <!--
+        /* Font Size */
+        -->
+
+        .kie-dmn-documentation h1,
+        .kie-dmn-documentation h2 {
+            font-size: 26px;
+        }
+
+        .kie-dmn-documentation p,
+        .kie-dmn-documentation li,
+        .kie-dmn-documentation .cover ul {
+            font-size: 14px;
+        }
+
+        <!--
+        /* Cover */
+        -->
+        .kie-dmn-documentation .cover ul {
+            color: #1A1919;
+            list-style: none;
+            padding: 0;
+        }
+
+        .kie-dmn-documentation .cover ul li {
+            border-bottom: 1px solid #9E9F9E;
+            padding: 7px;
+        }
+
+        .kie-dmn-documentation .cover ul li,
+        .kie-dmn-documentation .cover ul li b {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .kie-dmn-documentation .cover ul li b,
+        .kie-dmn-documentation .cover ul li.li-header {
+            font-weight: 600;
+        }
+
+        .kie-dmn-documentation .cover ul li.li-header {
+            background-color: #E4E4E3;
+            border-bottom: 1px solid #9E9F9E;
+        }
+
+        .kie-dmn-documentation .cover ul li b {
+            display: inline-block;
+            vertical-align: middle;
+            width: 20%;
+        }
+
+        .kie-dmn-documentation .cover .drools-logo {
+            width: 300px;
+            max-width: 50%;
+            margin: 200px 0 100px;
+        }
+
+        .kie-dmn-documentation .cover .supported-by-red-hat-logo {
+            width: 230px;
+            max-width: 40%;
+            float: right;
+            margin: 15px;
+        }
+
+        <!--
+        /* Table of Contents */
+        -->
+        .kie-dmn-documentation ol.table-of-contents li {
+            margin-bottom: 10px;
+        }
+
+        <!--
+        /* Data Types */
+        -->
         .kie-dmn-documentation ul.data-types {
             list-style: none;
         }
 
         .kie-dmn-documentation ul.data-types li {
-            padding-top: 10px;
-            padding-bottom: 10px;
-            border-top: 1px solid #E5EEF5;
+            padding: 10px;
+            border-top: 1px solid #9E9F9E;
+        }
+
+        .kie-dmn-documentation ul.data-types li.structure-data-type {
+            background-color: #DEF2FF;
         }
 
         .kie-dmn-documentation ul.data-types li span.sub-text {
@@ -69,19 +150,27 @@
         }
 
         .kie-dmn-documentation ul.data-types li:last-child {
-            border-bottom: 1px solid #E5EEF5;
+            border-bottom: 1px solid #9E9F9E;
         }
 
         .kie-dmn-documentation ul.data-types li span {
             display: inline-block;
+            vertical-align: middle;
             font-weight: bold;
             padding-right: 5px;
+            width: 25%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .kie-dmn-documentation ul.data-types li span + span {
             font-weight: normal;
         }
 
+        <!--
+        /* No results */
+        -->
         .kie-dmn-documentation .no-results {
             font-style: italic;
             opacity: 0.75;
@@ -92,6 +181,18 @@
             margin-left: -15px;
         }
 
+        <!--
+        /* Icons */
+        -->
+        .kie-dmn-documentation .fa {
+            font-weight: bold;
+            margin-right: 3px;
+            vertical-align: middle;
+        }
+
+        <!--
+        /* DRD components */
+        -->
         .kie-dmn-documentation .drd-component {
             padding: 10px 0 20px;
         }
@@ -113,12 +214,13 @@
             padding-top: 5px;
         }
 
-        .kie-dmn-documentation .pagebreak {
-            border-bottom: 1px solid #DDDDDD;
-        }
-
-        .kie-dmn-documentation .external-links-title {
-            font-weight: bold;
+        <!--
+        /* Media Queries */
+        -->
+        @media (max-width: 2100px) {
+            .kie-dmn-documentation .cover .supported-by-red-hat-logo {
+                margin-top: 30px;
+            }
         }
 
         @media screen {
@@ -133,9 +235,23 @@
         }
 
         @media print {
+
             .kie-dmn-documentation .pagebreak {
                 margin: 25px 0;
                 page-break-before: always;
+            }
+
+            .kie-dmn-documentation .cover ul li.li-header,
+            .kie-dmn-documentation ul.data-types li.structure-data-type {
+                -webkit-print-color-adjust: exact !important;
+            }
+
+            .kie-dmn-documentation .cover ul li.li-header {
+                background-color: #E4E4E3 !important;
+            }
+
+            .kie-dmn-documentation ul.data-types li.structure-data-type {
+                background-color: #DEF2FF !important;
             }
         }
     </style>
@@ -149,14 +265,32 @@
 
     <div class="cover">
 
-        <h1>{{i18n.dmnModelDocumentation}}</h1>
+        <img src="{{supportedByRedHatLogoURI}}" class="supported-by-red-hat-logo" alt="">
+        <img src="{{droolsLogoURI}}" class="drools-logo" alt="">
 
-        <h2>{{diagramName}}</h2>
+        <h1>{{diagramName}}</h1>
 
-        <h3>{{i18n.namespace}} <b>{{namespace}}</b></h3>
-        <h3>{{i18n.generatedOn}} <b>{{currentDate}}</b></h3>
-        <h3>{{i18n.generatedBy}} <b>{{currentUser}}</b></h3>
-        <h3>{{i18n.generatedFrom}} <b>{{fileName}}</b></h3>
+        <ul>
+            <li class="li-header">
+                {{i18n.dmnModelDocumentation}}
+            </li>
+            <li>
+                <b>{{i18n.namespace}}</b>
+                {{namespace}}
+            </li>
+            <li>
+                <b>{{i18n.generatedOn}}</b>
+                {{currentDate}}
+            </li>
+            <li>
+                <b>{{i18n.generatedBy}}</b>
+                {{currentUser}}
+            </li>
+            <li>
+                <b>{{i18n.generatedFrom}}</b>
+                {{fileName}}
+            </li>
+        </ul>
     </div>
 
     <div class="pagebreak"></div>
@@ -198,9 +332,9 @@
 
     <ul class="data-types">
         {{#dataTypes}}
-        <li style="padding-left: calc(30px * {{level}})">
+        <li class="{{#isTopLevel}}structure-data-type{{/isTopLevel}}" style="padding-left: calc(30px * {{level}} + 10px)">
             {{#isTopLevel}}
-            &#9656;&nbsp;
+            <i class="fa fa-angle-right"></i>
             {{/isTopLevel}}
             <span>{{name}}</span>
             <span>({{type}})</span>
@@ -223,7 +357,7 @@
     {{#drds}}
     <div class="drd-component">
         <h4>
-            &#9656;
+            <i class="fa fa-angle-right"></i>
             {{drdName}}
             {{#drdType}}
             <span>

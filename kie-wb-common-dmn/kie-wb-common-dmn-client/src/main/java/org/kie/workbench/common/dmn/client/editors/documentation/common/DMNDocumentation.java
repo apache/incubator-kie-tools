@@ -19,14 +19,21 @@ package org.kie.workbench.common.dmn.client.editors.documentation.common;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.resources.client.DataResource;
 import elemental2.core.Array;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import org.kie.workbench.common.stunner.core.documentation.model.DiagramDocumentation;
 
+import static org.kie.workbench.common.dmn.client.resources.DMNImageResources.INSTANCE;
+
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
 public class DMNDocumentation implements DiagramDocumentation {
+
+    private String droolsLogoURI;
+
+    private String supportedByRedHatLogoURI;
 
     private String namespace;
 
@@ -73,6 +80,8 @@ public class DMNDocumentation implements DiagramDocumentation {
 
         final DMNDocumentation dmn = new DMNDocumentation();
 
+        dmn.droolsLogoURI = getURI(INSTANCE.droolsLogo());
+        dmn.supportedByRedHatLogoURI = getURI(INSTANCE.supportedByRedHatLogo());
         dmn.namespace = namespace;
         dmn.diagramName = diagramName;
         dmn.diagramDescription = diagramDescription;
@@ -153,6 +162,21 @@ public class DMNDocumentation implements DiagramDocumentation {
     @JsOverlay
     public final DMNDocumentationI18n getI18n() {
         return i18n;
+    }
+
+    @JsOverlay
+    public final String getDroolsLogoURI() {
+        return droolsLogoURI;
+    }
+
+    @JsOverlay
+    public final String getSupportedByRedHatLogoURI() {
+        return supportedByRedHatLogoURI;
+    }
+
+    @JsOverlay
+    private static String getURI(final DataResource dataResource) {
+        return dataResource.getSafeUri().asString();
     }
 
     @JsOverlay

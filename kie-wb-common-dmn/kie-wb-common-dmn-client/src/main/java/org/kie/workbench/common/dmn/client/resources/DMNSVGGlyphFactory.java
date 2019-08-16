@@ -51,4 +51,8 @@ public interface DMNSVGGlyphFactory {
     ImageDataUriGlyph TEXT_ANNOTATION_PALETTE = ImageDataUriGlyph.create(DMNImageResources.INSTANCE.textAnnotationPalette().getSafeUri());
 
     ImageDataUriGlyph DECISION_SERVICE_PALETTE = ImageDataUriGlyph.create(DMNImageResources.INSTANCE.decisionServicePalette().getSafeUri());
+
+    ImageDataUriGlyph DROOLS_LOGO = ImageDataUriGlyph.create(DMNImageResources.INSTANCE.droolsLogo().getSafeUri());
+
+    ImageDataUriGlyph SUPPORTED_BY_RED_HAT_LOGO = ImageDataUriGlyph.create(DMNImageResources.INSTANCE.supportedByRedHatLogo().getSafeUri());
 }
