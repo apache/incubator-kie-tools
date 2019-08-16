@@ -30,10 +30,6 @@ public class GridHighlightHelper {
 
     private double paddingY = 0d;
 
-    private double minX = 0d;
-
-    private double minY = 0d;
-
     private boolean isPinnedGrid = false;
 
     private final GridLienzoPanel gridPanel;
@@ -81,16 +77,6 @@ public class GridHighlightHelper {
         return this;
     }
 
-    public GridHighlightHelper withMinX(final double minX) {
-        this.minX = minX;
-        return this;
-    }
-
-    public GridHighlightHelper withMinY(final double minY) {
-        this.minY = minY;
-        return this;
-    }
-
     private void select(final int row,
                         final int column) {
         gridWidget.selectCell(row, column, false, false);
@@ -135,12 +121,16 @@ public class GridHighlightHelper {
         return x - (getTransform().getTranslateX() / getTransform().getScaleX());
     }
 
-    private double calculateColumnOffset(final int column) {
-        return -(getMinX() + getRendererHelper().getColumnOffset(column) - getPaddingX());
+    double calculateColumnOffset(final int column) {
+        final double offset = getRendererHelper().getColumnOffset(column);
+        final double x = getGridWidget().getX() + offset;
+        return -(x - getPaddingX());
     }
 
-    private double calculateRowOffset(final int row) {
-        return -(getMinY() + getRendererHelper().getRowOffset(row) - getPaddingY());
+    double calculateRowOffset(final int row) {
+        final double offset = getRendererHelper().getRowOffset(row);
+        final double y = getGridWidget().getY() + offset;
+        return -(y - getPaddingY());
     }
 
     private BaseGridRendererHelper getRendererHelper() {
@@ -175,20 +165,12 @@ public class GridHighlightHelper {
         return gridWidget;
     }
 
-    private double getPaddingX() {
+    double getPaddingX() {
         return paddingX;
     }
 
-    private double getPaddingY() {
+    double getPaddingY() {
         return paddingY;
-    }
-
-    private double getMinX() {
-        return minX;
-    }
-
-    private double getMinY() {
-        return minY;
     }
 
     private DefaultGridLayer getDefaultGridLayer() {

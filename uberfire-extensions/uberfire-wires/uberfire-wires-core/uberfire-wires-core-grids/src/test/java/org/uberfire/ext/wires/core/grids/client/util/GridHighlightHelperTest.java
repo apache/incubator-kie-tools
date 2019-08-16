@@ -30,6 +30,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.DefaultGridLayer;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPanel;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
@@ -140,14 +141,11 @@ public class GridHighlightHelperTest {
 
         doNothing().when(highlightHelper).moveCanvasTo(anyInt(), anyInt());
 
-        highlightHelper
-                .withMinX(-256)
-                .withMinY(-512)
-                .withPinnedGrid().highlight(row, column);
+        highlightHelper.withPinnedGrid().highlight(row, column);
 
         verify(gridWidget).selectCell(row, column, false, false);
         verify(gridWidget).draw();
-        verify(highlightHelper).moveCanvasTo(0, 0);
+        verify(highlightHelper).moveCanvasTo(-63, -126);
     }
 
     @Test
@@ -163,21 +161,6 @@ public class GridHighlightHelperTest {
         verify(gridWidget).selectCell(row, column, false, false);
         verify(gridWidget).draw();
         verify(highlightHelper).moveCanvasTo(64, -64);
-    }
-
-    @Test
-    public void testHighlightWithMinValues() {
-
-        doNothing().when(highlightHelper).moveCanvasTo(anyInt(), anyInt());
-
-        highlightHelper
-                .withMinX(-256)
-                .withMinY(-512)
-                .highlight(row, column);
-
-        verify(gridWidget).selectCell(row, column, false, false);
-        verify(gridWidget).draw();
-        verify(highlightHelper).moveCanvasTo(193, 386);
     }
 
     @Test
@@ -248,5 +231,35 @@ public class GridHighlightHelperTest {
 
         verify(model).clearSelections();
         verify(gridWidget).draw();
+    }
+
+    @Test
+    public void testCalculateRowOffset() {
+
+        final double widgetY = -32;
+        final double paddingY = 20;
+        final double expected = -(widgetY + rowOffset - paddingY);
+
+        when(highlightHelper.getPaddingY()).thenReturn(paddingY);
+        when(gridWidget.getY()).thenReturn(widgetY);
+
+        final double actual = highlightHelper.calculateRowOffset(row);
+
+        assertEquals(expected, actual, 0.01d);
+    }
+
+    @Test
+    public void testCalculateColumnOffset() {
+
+        final double widgetX = -67;
+        final double paddingX = 12;
+        final double expected = -(widgetX + columnOffset - paddingX);
+
+        when(highlightHelper.getPaddingX()).thenReturn(paddingX);
+        when(gridWidget.getX()).thenReturn(widgetX);
+
+        final double actual = highlightHelper.calculateColumnOffset(column);
+
+        assertEquals(expected, actual, 0.01d);
     }
 }
