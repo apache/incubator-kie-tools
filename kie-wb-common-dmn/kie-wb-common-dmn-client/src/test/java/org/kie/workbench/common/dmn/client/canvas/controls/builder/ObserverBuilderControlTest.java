@@ -22,8 +22,10 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.HasVariable;
+import org.kie.workbench.common.dmn.api.definition.model.BusinessKnowledgeModel;
 import org.kie.workbench.common.dmn.api.definition.model.DMNElement;
 import org.kie.workbench.common.dmn.api.definition.model.Expression;
+import org.kie.workbench.common.dmn.api.definition.model.FunctionDefinition;
 import org.kie.workbench.common.dmn.api.definition.model.IsInformationItem;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
@@ -140,6 +142,28 @@ public class ObserverBuilderControlTest {
     }
 
     @Test
+    public void testUpdateEncapsulatedLogicFromDefinition() {
+
+        final Element element = mock(Element.class);
+        final View elementContent = mock(View.class);
+        final BusinessKnowledgeModel newBusinessKnowledgeModel = mock(BusinessKnowledgeModel.class);
+        final BusinessKnowledgeModel businessKnowledgeModel = mock(BusinessKnowledgeModel.class);
+        final FunctionDefinition functionDefinition = mock(FunctionDefinition.class);
+
+        when(element.getContent()).thenReturn(elementContent);
+        when(elementContent.getDefinition()).thenReturn(newBusinessKnowledgeModel);
+        when(businessKnowledgeModel.getEncapsulatedLogic()).thenReturn(functionDefinition);
+        when(newBusinessKnowledgeModel.getName()).thenReturn(new Name());
+        when(businessKnowledgeModel.getName()).thenReturn(new Name());
+        when(newBusinessKnowledgeModel.getId()).thenReturn(new Id());
+        when(businessKnowledgeModel.getId()).thenReturn(new Id());
+
+        observerBuilderControl.updateElementFromDefinition(element, businessKnowledgeModel);
+
+        verify(newBusinessKnowledgeModel).setEncapsulatedLogic(functionDefinition);
+    }
+
+    @Test
     @SuppressWarnings("unchecked")
     public void testUpdateVariableFromDefinition() {
 
@@ -158,4 +182,3 @@ public class ObserverBuilderControlTest {
         verify(newHasVariable).setVariable(isInformationItem);
     }
 }
-

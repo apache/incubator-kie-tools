@@ -43,17 +43,30 @@ public class RegisterNodeCommand extends org.kie.workbench.common.stunner.core.g
             final Node<?, Edge> candidate = getCandidate();
             if (candidate.getContent() instanceof View) {
                 final DMNModelInstrumentedBase dmnModel = (DMNModelInstrumentedBase) ((View) candidate.getContent()).getDefinition();
-                if (dmnModel instanceof BusinessKnowledgeModel) {
-                    final FunctionDefinition function = new FunctionDefinition();
-                    KindUtilities.setKind(function, FunctionDefinition.Kind.FEEL);
-                    ((BusinessKnowledgeModel) dmnModel).setEncapsulatedLogic(function);
 
-                    final LiteralExpression le = new LiteralExpression();
-                    function.setExpression(le);
-                    le.setParent(function);
+                if (dmnModel instanceof BusinessKnowledgeModel) {
+                    setupEncapsulatedLogicIfNodeIsNew((BusinessKnowledgeModel) dmnModel);
                 }
             }
         }
         return results;
+    }
+
+    private void setupEncapsulatedLogicIfNodeIsNew(final BusinessKnowledgeModel businessKnowledgeModel) {
+        final boolean isNewNode = businessKnowledgeModel.getEncapsulatedLogic() == null;
+        if (isNewNode) {
+            setupEncapsulatedLogic(businessKnowledgeModel);
+        }
+    }
+
+    private void setupEncapsulatedLogic(final BusinessKnowledgeModel businessKnowledgeModel) {
+
+        final LiteralExpression le = new LiteralExpression();
+        final FunctionDefinition function = new FunctionDefinition();
+
+        KindUtilities.setKind(function, FunctionDefinition.Kind.FEEL);
+        function.setExpression(le);
+        le.setParent(function);
+        businessKnowledgeModel.setEncapsulatedLogic(function);
     }
 }

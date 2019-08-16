@@ -23,6 +23,7 @@ import javax.inject.Inject;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.HasVariable;
+import org.kie.workbench.common.dmn.api.definition.model.BusinessKnowledgeModel;
 import org.kie.workbench.common.dmn.api.definition.model.DMNElement;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
@@ -81,6 +82,10 @@ public class ObserverBuilderControl extends org.kie.workbench.common.stunner.cor
 
         if (newDefinition instanceof HasVariable && definition instanceof HasVariable) {
             ((HasVariable) newDefinition).setVariable(((HasVariable) definition).getVariable());
+        }
+
+        if (newDefinition instanceof BusinessKnowledgeModel && definition instanceof BusinessKnowledgeModel) {
+            ((BusinessKnowledgeModel) newDefinition).setEncapsulatedLogic(((BusinessKnowledgeModel) definition).getEncapsulatedLogic());
         }
 
         if (newDefinition instanceof HasExpression && definition instanceof HasExpression) {

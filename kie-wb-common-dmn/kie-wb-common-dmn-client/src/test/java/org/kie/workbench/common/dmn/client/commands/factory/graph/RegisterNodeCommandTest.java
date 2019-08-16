@@ -20,11 +20,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.model.BusinessKnowledgeModel;
-import org.kie.workbench.common.dmn.api.definition.model.DMNDiagram;
 import org.kie.workbench.common.dmn.api.definition.model.Decision;
 import org.kie.workbench.common.dmn.api.definition.model.Expression;
 import org.kie.workbench.common.dmn.api.definition.model.FunctionDefinition;
 import org.kie.workbench.common.dmn.api.definition.model.LiteralExpression;
+import org.kie.workbench.common.dmn.api.property.dmn.Id;
+import org.kie.workbench.common.dmn.api.property.dmn.Text;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.KindUtilities;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -34,6 +35,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
@@ -45,9 +47,6 @@ public class RegisterNodeCommandTest extends AbstractGraphCommandTest {
 
     @Mock
     private View candidateContent;
-
-    @Mock
-    private DMNDiagram parentDefinition;
 
     private Decision decision = spy(new Decision());
 
@@ -74,6 +73,34 @@ public class RegisterNodeCommandTest extends AbstractGraphCommandTest {
         assertThat(expression).isInstanceOf(LiteralExpression.class);
         assertThat(expression.getParent()).isEqualTo(encapsulatedLogic);
         assertThat(KindUtilities.getKind(encapsulatedLogic)).isEqualTo(FunctionDefinition.Kind.FEEL);
+    }
+
+    @Test
+    public void testExecuteWithBusinessKnowledgeModelNodeWhenNodeIsNotNew() {
+
+        final FunctionDefinition functionDefinition = new FunctionDefinition();
+        final LiteralExpression literalExpression = makeLiteralExpression("123");
+
+        when(candidateContent.getDefinition()).thenReturn(businessKnowledgeModel);
+        doReturn(functionDefinition).when(businessKnowledgeModel).getEncapsulatedLogic();
+        functionDefinition.setExpression(literalExpression);
+        literalExpression.setParent(functionDefinition);
+
+        assertThat(command.execute(graphCommandExecutionContext).getType()).isEqualTo(CommandResult.Type.INFO);
+
+        final FunctionDefinition encapsulatedLogic = businessKnowledgeModel.getEncapsulatedLogic();
+        final Expression expression = encapsulatedLogic.getExpression();
+
+        assertThat(expression).isEqualTo(makeLiteralExpression("123"));
+        assertThat(expression.getParent()).isEqualTo(encapsulatedLogic);
+        assertThat(KindUtilities.getKind(encapsulatedLogic)).isEqualTo(FunctionDefinition.Kind.FEEL);
+    }
+
+    private LiteralExpression makeLiteralExpression(final String text) {
+        final LiteralExpression expression = new LiteralExpression();
+        expression.setId(new Id("0"));
+        expression.setText(new Text(text));
+        return expression;
     }
 
     @Test
