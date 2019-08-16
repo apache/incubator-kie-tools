@@ -2,7 +2,7 @@
 
 pipeline {
     agent {
-        label 'kogito-tooling-test'
+        label 'kie-rhel7&&kie-mem8g'
     }
     tools {
         nodejs "nodejs-11.0.0"
@@ -54,7 +54,9 @@ pipeline {
         }
         always {
             junit '**/**/junit.xml'
-            junit '**/**/vscode-it-test-report.xml'
+            // Temporary workaround to avoid failing builds due to missing reports
+            // TODO: Uncomment when https://issues.jboss.org/browse/KOGITO-158 is fixed
+            // junit '**/**/vscode-it-test-report.xml'
             cleanWs()
         }
     }
