@@ -1,0 +1,56 @@
+# Sample Swarm config for KIE Drools Workbench
+swarm:
+  management:
+    blocking:
+      timeout: 900 # This might need to be higher if the jar has timeout issues on startup
+    security-realms:
+      ApplicationRealm: # almost the same as default config in WildFly 10.1.0.Final
+        local-authentication:
+          default-user: local
+          allowed-users: local
+          skip-group-loading: true
+        sasasasasasasasasasasasasasasasasasasasasasasasasasasaproperties-authentication:
+          path: application-users.properties
+          plain-text: true
+        properties-authorization:
+          path: application-roles.properties
+# Optional logging
+  logging:
+    console-handlers:
+      CONSOLE:
+        level: INFO
+        named-formatter: COLOR_PATTERN
+    pattern-formatters:
+      PATTERN:
+        pattern: "%d{yyyy-MM-dd HH:mm:ss,SSS} %-5p [%c] (%t) %s%e%n"
+      COLOR_PATTERN:
+        pattern: "%K{level}%d{HH:mm:ss,SSS} %-5p [%c] (%t) %s%e%n"
+    periodic-rotating-file-handlers:
+      FILE:
+        file:
+          path: server.log
+        suffix: .yyyy-MM-dd
+        named-formatter: PATTERN
+    root-logger:
+      handlers:
+      - CONSOLE
+      - FILE
+  security:
+    security-domains:
+      other:
+        classic-authentication:
+          login-modules:
+            kieLoginModule:
+              code: org.kie.security.jaas.KieLoginModule
+              flag: optional
+              module: deployment.standalone-editor.war
+
+# This configuration is required to make the users system work.
+org:
+  uberfire:
+    ext:
+      security:
+        management:
+          wildfly:
+            cli:
+              user: admin

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2018 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~    http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<beans xmlns="http://xmlns.jcp.org/xml/ns/javaee" bean-discovery-mode="all">
+  <!-- These exclusions are added to avoid deploying this project's client-side classes to the server -->
+  <scan>
+    <!-- These exclusions were added by Errai to avoid deploying client-side classes to the server -->
+    <!-- End of Errai exclusions -->
+
+
+    <!-- Stunner. -->
+    <exclude name="org.kie.workbench.common.stunner.core.client.**"/>
+    <exclude name="org.kie.workbench.common.stunner.core.validation.canvas.**"/>
+    <exclude name="org.kie.workbench.common.stunner.client.**"/>
+    <exclude name="org.kie.workbench.common.stunner.lienzo.**"/>
+    <exclude name="org.kie.workbench.common.stunner.client.workbench.**"/>
+    <exclude name="org.kie.workbench.common.stunner.shapes.client.**"/>
+    <exclude name="org.kie.workbench.common.stunner.svg.client.**"/>
+    <exclude name="org.kie.workbench.common.stunner.bpmn.StunnerBPMNEntryPoint"/>
+    <exclude name="org.kie.workbench.common.stunner.bpmn.client.**"/>
+    <exclude name="org.kie.workbench.common.stunner.standalone.client.**"/>
+    <exclude name="org.kie.workbench.common.stunner.forms.client.**"/>
+
+    <!-- Exclude all guvnor & kie project stuff, not just client side.-->
+    <exclude name="org.kie.workbench.common.stunner.bpmn.project.**"/>
+    <exclude name="org.kie.workbench.common.stunner.project.**"/>
+
+    <!-- Lienzo. -->
+    <exclude name="com.ait.lienzo.**"/>
+
+    <!-- KIE WB Common Forms. -->
+    <exclude name="org.kie.workbench.common.forms.client.**"/>
+    <exclude name="org.kie.workbench.common.forms.common.client.**"/>
+    <exclude name="org.kie.workbench.common.forms.dynamic.client.**"/>
+    <exclude name="org.kie.workbench.common.forms.crud.client.**"/>
+    <exclude name="org.kie.workbench.common.forms.processing.engine.handling.**"/>
+    <exclude name="org.kie.workbench.common.forms.common.rendering.client.**"/>
+
+    <!-- KIE WB Common Screens. -->
+    <exclude name="org.kie.workbench.common.workbench.client.**"/>
+    <exclude name="org.kie.workbench.common.screens.contributors.client.**"/>
+    <exclude name="org.kie.workbench.common.screens.datamodeller.client.**"/>
+    <exclude name="org.kie.workbench.common.screens.datasource.management.client.**"/>
+    <exclude name="org.kie.workbench.common.screens.defaulteditor.client.**"/>
+    <exclude name="org.kie.workbench.common.screens.examples.client.**"/>
+    <exclude name="org.kie.workbench.common.screens.home.client.**"/>
+    <exclude name="org.kie.workbench.common.screens.javaeditor.client.**"/>
+    <exclude name="org.kie.workbench.common.screens.projecteditor.client.**"/>
+    <exclude name="org.kie.workbench.common.screens.explorer.client.**"/>
+    <exclude name="org.kie.workbench.common.screens.projectimportsscreen.client.**"/>
+    <exclude name="org.kie.workbench.common.screens.search.client.**"/>
+    <exclude name="org.kie.workbench.common.screens.server.management.**"/>
+
+    <!-- KIE WB Common Widgets. -->
+    <exclude name="org.kie.workbench.common.widgets.client.**"/>
+    <exclude name="org.kie.workbench.common.widgets.configresource.client.**"/>
+    <exclude name="org.kie.workbench.common.widgets.decoratedgrid.client.**"/>
+    <exclude name="org.kie.workbench.common.widgets.metadata.client.**"/>
+
+  </scan>
+</beans>
