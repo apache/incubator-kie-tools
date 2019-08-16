@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.cm.backend.converters.tostunner.processes;
+package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.processes;
 
 import java.util.Collections;
 
@@ -22,7 +22,6 @@ import org.eclipse.bpmn2.AdHocOrdering;
 import org.eclipse.bpmn2.AdHocSubProcess;
 import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.FormalExpression;
-import org.eclipse.bpmn2.MultiInstanceLoopCharacteristics;
 import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.junit.Before;
@@ -31,18 +30,18 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.Result;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.TypedFactoryManager;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.BpmnNode;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.ConverterFactory;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.AdHocSubProcessPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.PropertyReaderFactory;
+import org.kie.workbench.common.stunner.bpmn.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.EmbeddedSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.EventSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.MultipleInstanceSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocSubprocessTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.BaseSubprocessTaskExecutionSet;
-import org.kie.workbench.common.stunner.cm.backend.converters.tostunner.CaseManagementConverterFactory;
-import org.kie.workbench.common.stunner.cm.definition.AdHocSubprocess;
-import org.kie.workbench.common.stunner.cm.definition.property.task.AdHocSubprocessTaskExecutionSet;
-import org.kie.workbench.common.stunner.cm.definition.property.variables.ProcessData;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessData;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
@@ -60,13 +59,13 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class CaseManagementSubProcessConverterTest {
+public class SubProcessConverterTest {
 
-    private static final String SLA_DUE_DATE = "12/25/1983";
+    private final String SLA_DUE_DATE = "12/25/1983";
 
     private DefinitionResolver definitionResolver;
 
-    private CaseManagementSubProcessConverter tested;
+    private SubProcessConverter tested;
 
     @Before
     public void setUp() {
@@ -110,19 +109,19 @@ public class CaseManagementSubProcessConverterTest {
 
         TypedFactoryManager typedFactoryManager = new TypedFactoryManager(factoryManager);
 
-        tested = new CaseManagementSubProcessConverter(typedFactoryManager,
-                                                       new PropertyReaderFactory(definitionResolver),
-                                                       definitionResolver,
-                                                       new CaseManagementConverterFactory(definitionResolver, typedFactoryManager));
+        tested = new SubProcessConverter(typedFactoryManager,
+                                         new PropertyReaderFactory(definitionResolver),
+                                         definitionResolver,
+                                         new ConverterFactory(definitionResolver, typedFactoryManager));
     }
 
     @Test
-    public void testCreateNode() {
+    public void createNode() {
         assertTrue(AdHocSubprocess.class.isInstance(tested.createNode("id").getContent().getDefinition()));
     }
 
     @Test
-    public void testCreateProcessData() {
+    public void createProcessData() {
         assertTrue(ProcessData.class.isInstance(tested.createProcessData("id")));
     }
 
@@ -141,12 +140,12 @@ public class CaseManagementSubProcessConverterTest {
     @Test
     public void testConvertAdHocSubprocessNode_SlaDueDate() {
         SubProcess subProcess = bpmn2.createAdHocSubProcess();
-        subProcess.setTriggeredByEvent(Boolean.TRUE);
         CustomElement.slaDueDate.setValue(subProcess, SLA_DUE_DATE);
 
         Result<BpmnNode> result = tested.convertSubProcess(subProcess);
         BpmnNode node = result.value();
         AdHocSubprocess adHocSubprocess = (AdHocSubprocess) node.value().getContent().getDefinition();
+
         assertNotNull(adHocSubprocess);
         assertBaseSubprocessExecutionSet(adHocSubprocess.getExecutionSet());
     }
@@ -154,15 +153,15 @@ public class CaseManagementSubProcessConverterTest {
     @Test
     public void testConvertMultInstanceSubprocessNode_SlaDueDate() {
         SubProcess subProcess = bpmn2.createSubProcess();
-        MultiInstanceLoopCharacteristics loopCharacteristics = bpmn2.createMultiInstanceLoopCharacteristics();
-        subProcess.setLoopCharacteristics(loopCharacteristics);
+        subProcess.setLoopCharacteristics(bpmn2.createMultiInstanceLoopCharacteristics());
         CustomElement.slaDueDate.setValue(subProcess, SLA_DUE_DATE);
 
         Result<BpmnNode> result = tested.convertSubProcess(subProcess);
         BpmnNode node = result.value();
-        MultipleInstanceSubprocess miSubProcces = (MultipleInstanceSubprocess) node.value().getContent().getDefinition();
-        assertNotNull(miSubProcces);
-        assertBaseSubprocessExecutionSet(miSubProcces.getExecutionSet());
+        MultipleInstanceSubprocess miSubProcess = (MultipleInstanceSubprocess) node.value().getContent().getDefinition();
+
+        assertNotNull(miSubProcess);
+        assertBaseSubprocessExecutionSet(miSubProcess.getExecutionSet());
     }
 
     @Test
@@ -172,9 +171,10 @@ public class CaseManagementSubProcessConverterTest {
 
         Result<BpmnNode> result = tested.convertSubProcess(subProcess);
         BpmnNode node = result.value();
-        EmbeddedSubprocess embeddedSubProcces = (EmbeddedSubprocess) node.value().getContent().getDefinition();
-        assertNotNull(embeddedSubProcces);
-        assertBaseSubprocessExecutionSet(embeddedSubProcces.getExecutionSet());
+        EmbeddedSubprocess embeddedSubprocess = (EmbeddedSubprocess) node.value().getContent().getDefinition();
+        assertNotNull(embeddedSubprocess);
+
+        assertBaseSubprocessExecutionSet(embeddedSubprocess.getExecutionSet());
     }
 
     @Test
@@ -186,6 +186,7 @@ public class CaseManagementSubProcessConverterTest {
         Result<BpmnNode> result = tested.convertSubProcess(subProcess);
         BpmnNode node = result.value();
         EventSubprocess eventSubprocess = (EventSubprocess) node.value().getContent().getDefinition();
+
         assertNotNull(eventSubprocess);
         assertBaseSubprocessExecutionSet(eventSubprocess.getExecutionSet());
     }

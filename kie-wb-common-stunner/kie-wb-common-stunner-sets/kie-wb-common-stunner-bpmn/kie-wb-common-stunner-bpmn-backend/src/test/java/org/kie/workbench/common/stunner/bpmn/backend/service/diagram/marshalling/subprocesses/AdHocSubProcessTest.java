@@ -78,6 +78,8 @@ public class AdHocSubProcessTest extends SubProcessTest<AdHocSubprocess> {
             "System.out.println(\"`&(^*&^(\\n\\r\");\n" +
             "Object o = kcontext.getVariable(\"hello_world\");";
 
+    private static final String SLA_DUE_DATE = "12/25/1983";
+
     public AdHocSubProcessTest() throws Exception {
     }
 
@@ -99,7 +101,8 @@ public class AdHocSubProcessTest extends SubProcessTest<AdHocSubprocess> {
                                           EMPTY_VALUE,
                                           SUBPROCESS_SCRIPT_JAVA_LANGUAGE,
                                           EMPTY_VALUE,
-                                          SUBPROCESS_SCRIPT_JAVA_LANGUAGE);
+                                          SUBPROCESS_SCRIPT_JAVA_LANGUAGE,
+                                          EMPTY_VALUE);
         assertSubProcessProcessData(topLevelSubProcess.getProcessData(), EMPTY_VALUE);
     }
 
@@ -132,7 +135,8 @@ public class AdHocSubProcessTest extends SubProcessTest<AdHocSubprocess> {
                                           SUBPROCESS_ON_ENTRY_ACTION_JAVA,
                                           SUBPROCESS_SCRIPT_JAVA_LANGUAGE,
                                           SUBPROCESS_ON_EXIT_ACTION_JAVA,
-                                          SUBPROCESS_SCRIPT_JAVA_LANGUAGE);
+                                          SUBPROCESS_SCRIPT_JAVA_LANGUAGE,
+                                          SLA_DUE_DATE);
         assertSubProcessProcessData(topLevelSubProcessJava.getProcessData(), SUB_PROCESS_VARIABLES_JAVA);
 
         AdHocSubprocess topLevelSubProcessJavascript = getSubProcessNodeById(diagram,
@@ -148,7 +152,8 @@ public class AdHocSubProcessTest extends SubProcessTest<AdHocSubprocess> {
                                           SUBPROCESS_ON_ENTRY_ACTION_JAVASCRIPT,
                                           SUBPROCESS_SCRIPT_JAVASCRIPT_LANGUAGE,
                                           SUBPROCESS_ON_EXIT_ACTION_JAVASCRIPT,
-                                          SUBPROCESS_SCRIPT_JAVASCRIPT_LANGUAGE);
+                                          SUBPROCESS_SCRIPT_JAVASCRIPT_LANGUAGE,
+                                          SLA_DUE_DATE);
         assertSubProcessProcessData(topLevelSubProcessJavascript.getProcessData(), SUB_PROCESS_VARIABLES_JAVASCRIPT);
 
         AdHocSubprocess topLevelSubProcessMVEL = getSubProcessNodeById(diagram,
@@ -164,7 +169,8 @@ public class AdHocSubProcessTest extends SubProcessTest<AdHocSubprocess> {
                                           SUBPROCESS_ON_ENTRY_ACTION_MVEL,
                                           SUBPROCESS_SCRIPT_MVEL_LANGUAGE,
                                           SUBPROCESS_ON_EXIT_ACTION_MVEL,
-                                          SUBPROCESS_SCRIPT_MVEL_LANGUAGE);
+                                          SUBPROCESS_SCRIPT_MVEL_LANGUAGE,
+                                          SLA_DUE_DATE);
         assertSubProcessProcessData(topLevelSubProcessMVEL.getProcessData(), SUB_PROCESS_VARIABLES_MVEL);
     }
 
@@ -188,7 +194,8 @@ public class AdHocSubProcessTest extends SubProcessTest<AdHocSubprocess> {
                                           EMPTY_VALUE,
                                           SUBPROCESS_SCRIPT_JAVA_LANGUAGE,
                                           EMPTY_VALUE,
-                                          SUBPROCESS_SCRIPT_JAVA_LANGUAGE);
+                                          SUBPROCESS_SCRIPT_JAVA_LANGUAGE,
+                                          EMPTY_VALUE);
         assertSubProcessProcessData(topLevelSubProcess.getProcessData(), EMPTY_VALUE);
     }
 
@@ -210,7 +217,8 @@ public class AdHocSubProcessTest extends SubProcessTest<AdHocSubprocess> {
                                           EMPTY_VALUE,
                                           SUBPROCESS_SCRIPT_JAVA_LANGUAGE,
                                           EMPTY_VALUE,
-                                          SUBPROCESS_SCRIPT_JAVA_LANGUAGE);
+                                          SUBPROCESS_SCRIPT_JAVA_LANGUAGE,
+                                          EMPTY_VALUE);
         assertSubProcessProcessData(subProcessLevelSubProcess.getProcessData(), EMPTY_VALUE);
     }
 
@@ -243,7 +251,8 @@ public class AdHocSubProcessTest extends SubProcessTest<AdHocSubprocess> {
                                           SUBPROCESS_ON_ENTRY_ACTION_JAVA,
                                           SUBPROCESS_SCRIPT_JAVA_LANGUAGE,
                                           SUBPROCESS_ON_EXIT_ACTION_JAVA,
-                                          SUBPROCESS_SCRIPT_JAVA_LANGUAGE);
+                                          SUBPROCESS_SCRIPT_JAVA_LANGUAGE,
+                                          SLA_DUE_DATE);
         assertSubProcessProcessData(subProcessLevelSubProcessJava.getProcessData(), SUB_PROCESS_VARIABLES_JAVA);
 
         AdHocSubprocess subProcessLevelSubProcessJavascript = getSubProcessNodeById(diagram,
@@ -259,7 +268,8 @@ public class AdHocSubProcessTest extends SubProcessTest<AdHocSubprocess> {
                                           SUBPROCESS_ON_ENTRY_ACTION_JAVASCRIPT,
                                           SUBPROCESS_SCRIPT_JAVASCRIPT_LANGUAGE,
                                           SUBPROCESS_ON_EXIT_ACTION_JAVASCRIPT,
-                                          SUBPROCESS_SCRIPT_JAVASCRIPT_LANGUAGE);
+                                          SUBPROCESS_SCRIPT_JAVASCRIPT_LANGUAGE,
+                                          SLA_DUE_DATE);
         assertSubProcessProcessData(subProcessLevelSubProcessJavascript.getProcessData(), SUB_PROCESS_VARIABLES_JAVASCRIPT);
 
         AdHocSubprocess subProcessLevelSubProcessMVEL = getSubProcessNodeById(diagram,
@@ -275,7 +285,8 @@ public class AdHocSubProcessTest extends SubProcessTest<AdHocSubprocess> {
                                           SUBPROCESS_ON_ENTRY_ACTION_MVEL,
                                           SUBPROCESS_SCRIPT_MVEL_LANGUAGE,
                                           SUBPROCESS_ON_EXIT_ACTION_MVEL,
-                                          SUBPROCESS_SCRIPT_MVEL_LANGUAGE);
+                                          SUBPROCESS_SCRIPT_MVEL_LANGUAGE,
+                                          SLA_DUE_DATE);
         assertSubProcessProcessData(subProcessLevelSubProcessMVEL.getProcessData(), SUB_PROCESS_VARIABLES_MVEL);
     }
 
@@ -299,7 +310,8 @@ public class AdHocSubProcessTest extends SubProcessTest<AdHocSubprocess> {
                                           EMPTY_VALUE,
                                           SUBPROCESS_SCRIPT_JAVA_LANGUAGE,
                                           EMPTY_VALUE,
-                                          SUBPROCESS_SCRIPT_JAVA_LANGUAGE);
+                                          SUBPROCESS_SCRIPT_JAVA_LANGUAGE,
+                                          EMPTY_VALUE);
         assertSubProcessProcessData(subProcessLevelSubProcess.getProcessData(), EMPTY_VALUE);
     }
 
@@ -354,7 +366,8 @@ public class AdHocSubProcessTest extends SubProcessTest<AdHocSubprocess> {
                                                    String onEntryActionScriptValue,
                                                    String onEntryActionScriptLanguage,
                                                    String onExitActionScriptValue,
-                                                   String onExitActionScriptLanguage) {
+                                                   String onExitActionScriptLanguage,
+                                                   String slaDueDate) {
         assertThat(executionSet).isNotNull();
 
         assertThat(executionSet.getAdHocCompletionCondition()).isNotNull();
@@ -382,5 +395,8 @@ public class AdHocSubProcessTest extends SubProcessTest<AdHocSubprocess> {
         assertThat(onEntryScriptTypeValues.get(0).getLanguage()).isEqualTo(onEntryActionScriptLanguage);
         assertThat(onExitScriptTypeValues.get(0).getScript()).isEqualTo(onExitActionScriptValue);
         assertThat(onExitScriptTypeValues.get(0).getLanguage()).isEqualTo(onExitActionScriptLanguage);
+
+        assertThat(executionSet.getSlaDueDate()).isNotNull();
+        assertThat(executionSet.getSlaDueDate().getValue()).isEqualTo(slaDueDate);
     }
 }

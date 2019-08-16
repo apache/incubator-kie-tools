@@ -78,7 +78,7 @@ public class SubProcessConverter extends ProcessConverterDelegate {
         return processRootResult;
     }
 
-    private SubProcessPropertyWriter convertMultipleInstanceSubprocessNode(Node<View<MultipleInstanceSubprocess>, ?> n) {
+    protected SubProcessPropertyWriter convertMultipleInstanceSubprocessNode(Node<View<MultipleInstanceSubprocess>, ?> n) {
         SubProcess process = bpmn2.createSubProcess();
         process.setId(n.getUUID());
 
@@ -103,6 +103,7 @@ public class SubProcessConverter extends ProcessConverterDelegate {
         p.setOnEntryAction(executionSet.getOnEntryAction());
         p.setOnExitAction(executionSet.getOnExitAction());
         p.setAsync(executionSet.getIsAsync().getValue());
+        p.setSlaDueDate(executionSet.getSlaDueDate());
 
         p.setSimulationSet(definition.getSimulationSet());
 
@@ -132,6 +133,7 @@ public class SubProcessConverter extends ProcessConverterDelegate {
         p.setAdHocOrdering(executionSet.getAdHocOrdering());
         p.setOnEntryAction(executionSet.getOnEntryAction());
         p.setOnExitAction(executionSet.getOnExitAction());
+        p.setSlaDueDate(executionSet.getSlaDueDate());
 
         p.setSimulationSet(definition.getSimulationSet());
 
@@ -142,7 +144,7 @@ public class SubProcessConverter extends ProcessConverterDelegate {
         return p;
     }
 
-    private SubProcessPropertyWriter convertEventSubprocessNode(Node<View<EventSubprocess>, ?> n) {
+    protected SubProcessPropertyWriter convertEventSubprocessNode(Node<View<EventSubprocess>, ?> n) {
         SubProcess process = bpmn2.createSubProcess();
         process.setId(n.getUUID());
 
@@ -160,6 +162,7 @@ public class SubProcessConverter extends ProcessConverterDelegate {
 
         EventSubprocessExecutionSet executionSet = definition.getExecutionSet();
         p.setAsync(executionSet.getIsAsync().getValue());
+        p.setSlaDueDate(executionSet.getSlaDueDate());
 
         p.setSimulationSet(definition.getSimulationSet());
 
@@ -168,7 +171,7 @@ public class SubProcessConverter extends ProcessConverterDelegate {
         return p;
     }
 
-    private SubProcessPropertyWriter convertEmbeddedSubprocessNode(Node<View<EmbeddedSubprocess>, ?> n) {
+    protected SubProcessPropertyWriter convertEmbeddedSubprocessNode(Node<View<EmbeddedSubprocess>, ?> n) {
         SubProcess process = bpmn2.createSubProcess();
         process.setId(n.getUUID());
 
@@ -185,6 +188,7 @@ public class SubProcessConverter extends ProcessConverterDelegate {
         p.setOnEntryAction(executionSet.getOnEntryAction());
         p.setOnExitAction(executionSet.getOnExitAction());
         p.setAsync(executionSet.getIsAsync().getValue());
+        p.setSlaDueDate(executionSet.getSlaDueDate());
 
         ProcessData processData = definition.getProcessData();
         p.setProcessVariables(processData.getProcessVariables());

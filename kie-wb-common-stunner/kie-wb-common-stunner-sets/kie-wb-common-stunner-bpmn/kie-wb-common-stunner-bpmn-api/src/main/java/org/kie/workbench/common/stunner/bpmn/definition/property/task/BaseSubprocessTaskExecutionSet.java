@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.workbench.common.stunner.bpmn.definition.property.subProcess.execution;
+
+package org.kie.workbench.common.stunner.bpmn.definition.property.task;
 
 import java.util.Objects;
 
@@ -24,9 +25,8 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
+import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
-import org.kie.workbench.common.stunner.bpmn.definition.property.task.BaseSubprocessTaskExecutionSet;
-import org.kie.workbench.common.stunner.bpmn.definition.property.task.IsAsync;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
@@ -34,45 +34,40 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 @Portable
 @Bindable
 @PropertySet
-@FormDefinition(startElement = "isAsync")
-public class EventSubprocessExecutionSet extends BaseSubprocessTaskExecutionSet {
+@FormDefinition
+public class BaseSubprocessTaskExecutionSet implements BPMNPropertySet {
 
     @Property
-    @FormField
+    @FormField(afterElement = "isAsync")
     @Valid
-    private IsAsync isAsync;
+    protected SLADueDate slaDueDate;
 
-    public EventSubprocessExecutionSet() {
-        this(new IsAsync(),
-             new SLADueDate());
+    public BaseSubprocessTaskExecutionSet() {
+        this(new SLADueDate());
     }
 
-    public EventSubprocessExecutionSet(final @MapsTo("isAsync") IsAsync isAsync,
-                                       final @MapsTo("slaDueDate") SLADueDate slaDueDate) {
-        super(slaDueDate);
-        this.isAsync = isAsync;
+    public BaseSubprocessTaskExecutionSet(final @MapsTo("slaDueDate") SLADueDate slaDueDate) {
+        this.slaDueDate = slaDueDate;
     }
 
-    public IsAsync getIsAsync() {
-        return isAsync;
+    public SLADueDate getSlaDueDate() {
+        return slaDueDate;
     }
 
-    public void setIsAsync(IsAsync isAsync) {
-        this.isAsync = isAsync;
+    public void setSlaDueDate(final SLADueDate slaDueDate) {
+        this.slaDueDate = slaDueDate;
     }
 
     @Override
     public int hashCode() {
-        return HashUtil.combineHashCodes(super.hashCode(),
-                                         Objects.hashCode(isAsync));
+        return HashUtil.combineHashCodes(Objects.hashCode(slaDueDate));
     }
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof EventSubprocessExecutionSet) {
-            EventSubprocessExecutionSet other = (EventSubprocessExecutionSet) o;
-            return super.equals(other) &&
-                    Objects.equals(isAsync, other.isAsync);
+        if (o instanceof BaseSubprocessTaskExecutionSet) {
+            BaseSubprocessTaskExecutionSet other = (BaseSubprocessTaskExecutionSet) o;
+            return Objects.equals(slaDueDate, other.slaDueDate);
         }
         return false;
     }

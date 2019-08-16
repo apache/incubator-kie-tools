@@ -21,6 +21,7 @@ import org.eclipse.bpmn2.FormalExpression;
 import org.junit.Test;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.Scripts;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocActivationCondition;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocCompletionCondition;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocOrdering;
@@ -88,5 +89,14 @@ public class AdHocSubProcessPropertyWriterTest {
         FormalExpression expression = (FormalExpression) ((AdHocSubProcess) tested.getFlowElement()).getCompletionCondition();
         assertEquals(condition.getValue().getLanguage(), Scripts.scriptLanguageFromUri(expression.getLanguage()));
         assertEquals(asCData(condition.getValue().getScript()), expression.getBody());
+    }
+
+    @Test
+    public void testSetSlaDueDate() {
+        String slaDueDate = "12/25/1983";
+        tested.setSlaDueDate(new SLADueDate(slaDueDate));
+
+        String result = CustomElement.slaDueDate.of(tested.getFlowElement()).get();
+        assertTrue(result.contains(slaDueDate));
     }
 }

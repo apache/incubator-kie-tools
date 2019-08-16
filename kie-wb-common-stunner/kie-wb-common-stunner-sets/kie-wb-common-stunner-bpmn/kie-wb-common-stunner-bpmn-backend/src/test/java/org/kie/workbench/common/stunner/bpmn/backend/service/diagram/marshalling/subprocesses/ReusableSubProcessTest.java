@@ -80,6 +80,8 @@ public class ReusableSubProcessTest extends SubProcessTest<ReusableSubprocess> {
             "System.out.println(\"`&(^*&^(\\n\\r\");\n" +
             "Object o = kcontext.getVariable(\"hello_world\");";
 
+    private static final String SLA_DUE_DATE = "12/25/1983";
+
     public ReusableSubProcessTest() throws Exception {
     }
 
@@ -102,7 +104,8 @@ public class ReusableSubProcessTest extends SubProcessTest<ReusableSubprocess> {
                                              EMPTY_VALUE,
                                              TASK_SCRIPT_JAVA_LANGUAGE,
                                              EMPTY_VALUE,
-                                             TASK_SCRIPT_JAVA_LANGUAGE);
+                                             TASK_SCRIPT_JAVA_LANGUAGE,
+                                             EMPTY_VALUE);
         assertDataIOSet(topLevelSubProcess.getDataIOSet(), DEFAULT_SUB_PROCESS_DATA_INPUT_OUTPUT);
     }
 
@@ -130,7 +133,8 @@ public class ReusableSubProcessTest extends SubProcessTest<ReusableSubprocess> {
                                              TASK_ON_ENTRY_ACTION_JAVA,
                                              TASK_SCRIPT_JAVA_LANGUAGE,
                                              TASK_ON_EXIT_ACTION_JAVA,
-                                             TASK_SCRIPT_JAVA_LANGUAGE);
+                                             TASK_SCRIPT_JAVA_LANGUAGE,
+                                             SLA_DUE_DATE);
         assertDataIOSet(topLevelSubProcessJava.getDataIOSet(), SUB_PROCESS_DATA_INPUT_OUTPUT);
 
         ReusableSubprocess topLevelSubProcessJavascript = getSubProcessNodeById(diagram,
@@ -147,7 +151,8 @@ public class ReusableSubProcessTest extends SubProcessTest<ReusableSubprocess> {
                                              TASK_ON_ENTRY_ACTION_JAVASCRIPT,
                                              TASK_SCRIPT_JAVASCRIPT_LANGUAGE,
                                              TASK_ON_EXIT_ACTION_JAVASCRIPT,
-                                             TASK_SCRIPT_JAVASCRIPT_LANGUAGE);
+                                             TASK_SCRIPT_JAVASCRIPT_LANGUAGE,
+                                             SLA_DUE_DATE);
         assertDataIOSet(topLevelSubProcessJavascript.getDataIOSet(), SUB_PROCESS_DATA_INPUT_OUTPUT);
 
         ReusableSubprocess topLevelSubProcessMVEL = getSubProcessNodeById(diagram,
@@ -164,7 +169,8 @@ public class ReusableSubProcessTest extends SubProcessTest<ReusableSubprocess> {
                                              TASK_ON_ENTRY_ACTION_MVEL,
                                              TASK_SCRIPT_MVEL_LANGUAGE,
                                              TASK_ON_EXIT_ACTION_MVEL,
-                                             TASK_SCRIPT_MVEL_LANGUAGE);
+                                             TASK_SCRIPT_MVEL_LANGUAGE,
+                                             SLA_DUE_DATE);
         assertDataIOSet(topLevelSubProcessMVEL.getDataIOSet(), SUB_PROCESS_DATA_INPUT_OUTPUT);
     }
 
@@ -189,7 +195,8 @@ public class ReusableSubProcessTest extends SubProcessTest<ReusableSubprocess> {
                                              TASK_ON_ENTRY_ACTION_JAVA,
                                              TASK_SCRIPT_JAVA_LANGUAGE,
                                              TASK_ON_EXIT_ACTION_JAVA,
-                                             TASK_SCRIPT_JAVA_LANGUAGE);
+                                             TASK_SCRIPT_JAVA_LANGUAGE,
+                                             EMPTY_VALUE);
         assertDataIOSet(topLevelSubProcessJava.getDataIOSet(), DEFAULT_SUB_PROCESS_DATA_INPUT_OUTPUT);
     }
 
@@ -212,7 +219,8 @@ public class ReusableSubProcessTest extends SubProcessTest<ReusableSubprocess> {
                                              EMPTY_VALUE,
                                              TASK_SCRIPT_JAVA_LANGUAGE,
                                              EMPTY_VALUE,
-                                             TASK_SCRIPT_JAVA_LANGUAGE);
+                                             TASK_SCRIPT_JAVA_LANGUAGE,
+                                             EMPTY_VALUE);
         assertDataIOSet(subProcessLevelSubProcess.getDataIOSet(), DEFAULT_SUB_PROCESS_DATA_INPUT_OUTPUT);
     }
 
@@ -240,7 +248,8 @@ public class ReusableSubProcessTest extends SubProcessTest<ReusableSubprocess> {
                                              TASK_ON_ENTRY_ACTION_JAVA,
                                              TASK_SCRIPT_JAVA_LANGUAGE,
                                              TASK_ON_EXIT_ACTION_JAVA,
-                                             TASK_SCRIPT_JAVA_LANGUAGE);
+                                             TASK_SCRIPT_JAVA_LANGUAGE,
+                                             SLA_DUE_DATE);
         assertDataIOSet(subProcessLevelSubProcessJava.getDataIOSet(), SUB_PROCESS_DATA_INPUT_OUTPUT);
 
         ReusableSubprocess subProcessLevelSubProcessJavascript = getSubProcessNodeById(diagram,
@@ -257,7 +266,8 @@ public class ReusableSubProcessTest extends SubProcessTest<ReusableSubprocess> {
                                              TASK_ON_ENTRY_ACTION_JAVASCRIPT,
                                              TASK_SCRIPT_JAVASCRIPT_LANGUAGE,
                                              TASK_ON_EXIT_ACTION_JAVASCRIPT,
-                                             TASK_SCRIPT_JAVASCRIPT_LANGUAGE);
+                                             TASK_SCRIPT_JAVASCRIPT_LANGUAGE,
+                                             SLA_DUE_DATE);
         assertDataIOSet(subProcessLevelSubProcessJavascript.getDataIOSet(), SUB_PROCESS_DATA_INPUT_OUTPUT);
 
         ReusableSubprocess subProcessLevelSubProcessMVEL = getSubProcessNodeById(diagram,
@@ -274,7 +284,8 @@ public class ReusableSubProcessTest extends SubProcessTest<ReusableSubprocess> {
                                              TASK_ON_ENTRY_ACTION_MVEL,
                                              TASK_SCRIPT_MVEL_LANGUAGE,
                                              TASK_ON_EXIT_ACTION_MVEL,
-                                             TASK_SCRIPT_MVEL_LANGUAGE);
+                                             TASK_SCRIPT_MVEL_LANGUAGE,
+                                             SLA_DUE_DATE);
         assertDataIOSet(subProcessLevelSubProcessMVEL.getDataIOSet(), SUB_PROCESS_DATA_INPUT_OUTPUT);
     }
 
@@ -299,7 +310,8 @@ public class ReusableSubProcessTest extends SubProcessTest<ReusableSubprocess> {
                                              TASK_ON_ENTRY_ACTION_JAVA,
                                              TASK_SCRIPT_JAVA_LANGUAGE,
                                              TASK_ON_EXIT_ACTION_JAVA,
-                                             TASK_SCRIPT_JAVA_LANGUAGE);
+                                             TASK_SCRIPT_JAVA_LANGUAGE,
+                                             EMPTY_VALUE);
         assertDataIOSet(subProcessLevelSubProcessJava.getDataIOSet(), DEFAULT_SUB_PROCESS_DATA_INPUT_OUTPUT);
     }
 
@@ -367,12 +379,14 @@ public class ReusableSubProcessTest extends SubProcessTest<ReusableSubprocess> {
                                                       String onEntryActionScriptValue,
                                                       String onEntryActionScriptLanguage,
                                                       String onExitActionScriptValue,
-                                                      String onExitActionScriptLanguage) {
+                                                      String onExitActionScriptLanguage,
+                                                      String slaDueDate) {
         assertThat(executionSet).isNotNull();
         assertThat(executionSet.getCalledElement()).isNotNull();
         assertThat(executionSet.getIndependent()).isNotNull();
         assertThat(executionSet.getIsAsync()).isNotNull();
         assertThat(executionSet.getWaitForCompletion()).isNotNull();
+        assertThat(executionSet.getSlaDueDate()).isNotNull();
 
         assertThat(executionSet.getOnEntryAction()).isNotNull();
         assertThat(executionSet.getOnExitAction()).isNotNull();
@@ -391,6 +405,7 @@ public class ReusableSubProcessTest extends SubProcessTest<ReusableSubprocess> {
         assertThat(executionSet.getIndependent().getValue()).isEqualTo(independent);
         assertThat(executionSet.getIsAsync().getValue()).isEqualTo(isAsync);
         assertThat(executionSet.getWaitForCompletion().getValue()).isEqualTo(waitForCompletion);
+        assertThat(executionSet.getSlaDueDate().getValue()).contains(slaDueDate);
 
         assertThat(onEntryScriptTypeValues.get(0).getScript()).isEqualTo(onEntryActionScriptValue);
         assertThat(onEntryScriptTypeValues.get(0).getLanguage()).isEqualTo(onEntryActionScriptLanguage);

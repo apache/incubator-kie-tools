@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.bpmn.definition.property.task;
 
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 
 public interface BaseAdHocSubprocessTaskExecutionSet extends BPMNPropertySet {
 
@@ -31,4 +32,6 @@ public interface BaseAdHocSubprocessTaskExecutionSet extends BPMNPropertySet {
     OnExitAction getOnExitAction();
 
     AdHocAutostart getAdHocAutostart();
+
+    SLADueDate getSlaDueDate();
 }

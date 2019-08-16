@@ -40,7 +40,7 @@ public class CallActivityPropertyReaderTest {
     private CallActivityPropertyReader tested;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         Definitions definitions = bpmn2.createDefinitions();
         definitions.getRootElements().add(bpmn2.createProcess());
         BPMNDiagram bpmnDiagram = di.createBPMNDiagram();
@@ -51,7 +51,7 @@ public class CallActivityPropertyReaderTest {
     }
 
     @Test
-    public void testIsCase_true() throws Exception {
+    public void testIsCase_true() {
         String id = UUID.randomUUID().toString();
 
         CallActivity callActivity = bpmn2.createCallActivity();
@@ -66,7 +66,7 @@ public class CallActivityPropertyReaderTest {
     }
 
     @Test
-    public void testIsCase_false() throws Exception {
+    public void testIsCase_false() {
         String id = UUID.randomUUID().toString();
 
         CallActivity callActivity = bpmn2.createCallActivity();
@@ -81,7 +81,7 @@ public class CallActivityPropertyReaderTest {
     }
 
     @Test
-    public void testIsAdHocAutostart_true() throws Exception {
+    public void testIsAdHocAutostart_true() {
         String id = UUID.randomUUID().toString();
 
         CallActivity callActivity = bpmn2.createCallActivity();
@@ -96,7 +96,7 @@ public class CallActivityPropertyReaderTest {
     }
 
     @Test
-    public void testIsAdHocAutostart_false() throws Exception {
+    public void testIsAdHocAutostart_false() {
         String id = UUID.randomUUID().toString();
 
         CallActivity callActivity = bpmn2.createCallActivity();
@@ -128,5 +128,19 @@ public class CallActivityPropertyReaderTest {
                                                 definitionResolver.getDiagram(),
                                                 definitionResolver);
         assertEquals(value, tested.isAbortParent());
+    }
+
+    @Test
+    public void testGetSlaDueDate() {
+        String rawSlaDueDate = "12/25/1983";
+
+        CallActivity callActivity = bpmn2.createCallActivity();
+        CustomElement.slaDueDate.of(callActivity).set(rawSlaDueDate);
+
+        tested = new CallActivityPropertyReader(callActivity,
+                                                definitionResolver.getDiagram(),
+                                                definitionResolver);
+
+        assertTrue(tested.getSlaDueDate().contains(rawSlaDueDate));
     }
 }

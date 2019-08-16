@@ -1833,6 +1833,9 @@ public class BPMNDirectDiagramMarshallerTest {
 
         assertEquals("true",
                      reusableSubprocess.getExecutionSet().getIsAsync().getValue().toString());
+
+        final String SLA_DUE_DATE = "12/25/1983";
+        assertEquals(SLA_DUE_DATE, executionSet.getSlaDueDate().getValue());
     }
 
     @Test
@@ -1854,6 +1857,9 @@ public class BPMNDirectDiagramMarshallerTest {
         assertEquals("theOutputCollection", executionSet.getMultipleInstanceCollectionOutput().getValue());
         assertEquals("theOutputVariable", executionSet.getMultipleInstanceDataOutput().getValue());
         assertEquals("theCompletionCondition", executionSet.getMultipleInstanceCompletionCondition().getValue());
+
+        final String SLA_DUE_DATE = "12/25/1983";
+        assertEquals(SLA_DUE_DATE, executionSet.getSlaDueDate().getValue());
     }
 
     @Test
@@ -1920,6 +1926,9 @@ public class BPMNDirectDiagramMarshallerTest {
 
         assertEquals("subProcessVar1:String:false,subProcessVar2:String:false",
                      processData.getProcessVariables().getValue());
+
+        final String SLA_DUE_DATE = "12/25/1983";
+        assertEquals(SLA_DUE_DATE, executionSet.getSlaDueDate().getValue());
     }
 
     @Test
@@ -2963,7 +2972,12 @@ public class BPMNDirectDiagramMarshallerTest {
                       9,
                       7);
 
+        final String SLA_DUE_DATE = "12/25/1983";
+
         assertTrue(result.contains("<bpmn2:subProcess id=\"_C3EBE7F1-8E57-4BB1-B380-40BB02E9464E\" "));
+        assertTrue(result.contains("<drools:metaData name=\"customSLADueDate\">"));
+        assertTrue(result.contains("<drools:metaValue><![CDATA[" + SLA_DUE_DATE + "]]></drools:metaValue>"));
+        assertTrue(result.contains("</drools:metaData>"));
     }
 
     @Test
@@ -3025,6 +3039,9 @@ public class BPMNDirectDiagramMarshallerTest {
         assertTrue(result.contains("<bpmn2:completionCondition xsi:type=\"bpmn2:tFormalExpression\""));
         assertTrue(result.contains("<![CDATA[a=b]]></bpmn2:completionCondition>"));
         assertTrue(result.contains("</bpmn2:multiInstanceLoopCharacteristics>"));
+        assertTrue(result.contains("<drools:metaData name=\"customSLADueDate\">"));
+        assertTrue(result.contains("<drools:metaValue><![CDATA[12/25/1983]]></drools:metaValue>"));
+        assertTrue(result.contains("</drools:metaData>"));
     }
 
     private int countOccurrences(String input, String lookup) {
@@ -3048,8 +3065,12 @@ public class BPMNDirectDiagramMarshallerTest {
                       1,
                       1,
                       0);
+        final String SLA_DUE_DATE = "12/25/1983";
 
         assertTrue(result.contains("<bpmn2:subProcess id=\"_DF031493-5F1C-4D2B-9916-2FEABB1FADFF\""));
+        assertTrue(result.contains("<drools:metaData name=\"customSLADueDate\">"));
+        assertTrue(result.contains("<drools:metaValue><![CDATA[" + SLA_DUE_DATE + "]]></drools:metaValue>"));
+        assertTrue(result.contains("</drools:metaData>"));
     }
 
     @Test
@@ -3080,6 +3101,11 @@ public class BPMNDirectDiagramMarshallerTest {
 
         assertTrue(result.contains("<bpmn2:completionCondition xsi:type=\"bpmn2:tFormalExpression\""));
         assertTrue(result.contains("language=\"http://www.jboss.org/drools/rule\"><![CDATA[autocomplete]]></bpmn2:completionCondition>"));
+
+        final String SLA_DUE_DATE = "12/25/1983";
+        assertTrue(result.contains("<drools:metaData name=\"customSLADueDate\">"));
+        assertTrue(result.contains("<drools:metaValue><![CDATA[" + SLA_DUE_DATE + "]]></drools:metaValue>"));
+        assertTrue(result.contains("</drools:metaData>"));
     }
 
     @Test
@@ -3507,6 +3533,12 @@ public class BPMNDirectDiagramMarshallerTest {
             }
         }
         assertNotNull(subprocess);
+
+        Node<? extends Definition, ?> embeddedSubprocessNode = diagram.getGraph().getNode("_C3EBE7F1-8E57-4BB1-B380-40BB02E9464E");
+        EmbeddedSubprocess embeddedSubprocess = (EmbeddedSubprocess) embeddedSubprocessNode.getContent().getDefinition();
+
+        final String SLA_DUE_DATE = "12/25/1983";
+        assertEquals(SLA_DUE_DATE, embeddedSubprocess.getExecutionSet().getSlaDueDate().getValue());
     }
 
     @Test
@@ -3516,6 +3548,7 @@ public class BPMNDirectDiagramMarshallerTest {
                       2);
         assertEquals("MultipleInstanceSubprocess",
                      diagram.getMetadata().getTitle());
+
         Node<? extends Definition, ?> multipleInstanceSubprocessNode = diagram.getGraph().getNode("_2316CEC1-C1F7-41B1-8C91-3CE73ADE5571");
         MultipleInstanceSubprocess multipleInstanceSubprocess = (MultipleInstanceSubprocess) multipleInstanceSubprocessNode.getContent().getDefinition();
 
@@ -3534,6 +3567,10 @@ public class BPMNDirectDiagramMarshallerTest {
                      multipleInstanceSubprocess.getExecutionSet().getOnExitAction().getValue().getValues().get(0).getLanguage());
         assertTrue(multipleInstanceSubprocess.getExecutionSet().getIsAsync().getValue());
         assertEquals("mi-var1:String:false", multipleInstanceSubprocess.getProcessData().getProcessVariables().getValue());
+        assertEquals(Boolean.TRUE, multipleInstanceSubprocess.getExecutionSet().getIsAsync().getValue());
+
+        final String SLA_DUE_DATE = "12/25/1983";
+        assertEquals(SLA_DUE_DATE, multipleInstanceSubprocess.getExecutionSet().getSlaDueDate().getValue());
     }
 
     @Test
@@ -3549,6 +3586,9 @@ public class BPMNDirectDiagramMarshallerTest {
         assertTrue(eventSubprocess.getExecutionSet().getIsAsync().getValue());
         assertEquals(eventSubprocess.getProcessData().getProcessVariables().getValue(),
                      "Var1:String:false");
+
+        final String SLA_DUE_DATE = "12/25/1983";
+        assertEquals(SLA_DUE_DATE, eventSubprocess.getExecutionSet().getSlaDueDate().getValue());
     }
 
     @Test

@@ -152,4 +152,18 @@ public class AdHocSubProcessPropertyReaderTest {
 
         assertEquals(asCData("some condition"), tested.getAdHocActivationCondition());
     }
+
+    @Test
+    public void testGetSlaDueDate() {
+        String rawSlaDueDate = "12/25/1983";
+
+        AdHocSubProcess adHocSubProcess = bpmn2.createAdHocSubProcess();
+        CustomElement.slaDueDate.of(adHocSubProcess).set(rawSlaDueDate);
+
+        tested = new AdHocSubProcessPropertyReader(adHocSubProcess,
+                                                   definitionResolverReal.getDiagram(),
+                                                   definitionResolverReal);
+
+        assertTrue(tested.getSlaDueDate().contains(rawSlaDueDate));
+    }
 }

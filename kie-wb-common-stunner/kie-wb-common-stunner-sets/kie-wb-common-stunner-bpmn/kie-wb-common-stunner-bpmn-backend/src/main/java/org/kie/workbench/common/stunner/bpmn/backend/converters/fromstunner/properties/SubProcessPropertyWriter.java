@@ -35,6 +35,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.proper
 import org.kie.workbench.common.stunner.bpmn.definition.BaseAdHocSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.EmbeddedSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.EventSubprocess;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnEntryAction;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnExitAction;
@@ -131,6 +132,10 @@ public class SubProcessPropertyWriter extends MultipleInstanceActivityPropertyWr
 
     public void setAsync(Boolean isAsync) {
         CustomElement.async.of(flowElement).set(isAsync);
+    }
+
+    public void setSlaDueDate(SLADueDate slaDueDate) {
+        CustomElement.slaDueDate.of(flowElement).set(slaDueDate.getValue());
     }
 
     @Override

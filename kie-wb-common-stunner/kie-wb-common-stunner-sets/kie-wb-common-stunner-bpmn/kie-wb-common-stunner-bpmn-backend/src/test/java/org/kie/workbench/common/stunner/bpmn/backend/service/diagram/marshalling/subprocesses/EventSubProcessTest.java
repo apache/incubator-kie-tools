@@ -40,6 +40,8 @@ public class EventSubProcessTest extends SubProcessTest<EventSubprocess> {
 
     private static final int AMOUNT_OF_NODES_IN_DIAGRAM = 17;
 
+    private static final String SLA_DUE_DATE = "12/25/1983";
+
     public EventSubProcessTest() throws Exception {
     }
 
@@ -69,8 +71,8 @@ public class EventSubProcessTest extends SubProcessTest<EventSubprocess> {
 
         assertGeneralSet(topLevelSubProcess.getGeneral(), DEFAULT_NAME, DEFAULT_DOCUMENTATION);
         assertEventSubProcessExecutionSet(topLevelSubProcess.getExecutionSet(),
-                                          IS_NOT_ASYNC
-        );
+                                          IS_NOT_ASYNC,
+                                          EMPTY_VALUE);
         assertSubProcessProcessData(topLevelSubProcess.getProcessData(), EMPTY_VALUE);
     }
 
@@ -90,8 +92,8 @@ public class EventSubProcessTest extends SubProcessTest<EventSubprocess> {
 
         assertGeneralSet(topLevelSubProcessJava.getGeneral(), SUB_PROCESS_NAME, SUB_PROCESS_DOCUMENTATION);
         assertEventSubProcessExecutionSet(topLevelSubProcessJava.getExecutionSet(),
-                                          IS_ASYNC
-        );
+                                          IS_ASYNC,
+                                          SLA_DUE_DATE);
         assertSubProcessProcessData(topLevelSubProcessJava.getProcessData(), SUB_PROCESS_VARIABLES);
     }
 
@@ -109,8 +111,8 @@ public class EventSubProcessTest extends SubProcessTest<EventSubprocess> {
 
         assertGeneralSet(topLevelSubProcess.getGeneral(), SUB_PROCESS_NAME, DEFAULT_DOCUMENTATION);
         assertEventSubProcessExecutionSet(topLevelSubProcess.getExecutionSet(),
-                                          IS_NOT_ASYNC
-        );
+                                          IS_NOT_ASYNC,
+                                          EMPTY_VALUE);
         assertSubProcessProcessData(topLevelSubProcess.getProcessData(), EMPTY_VALUE);
     }
 
@@ -126,8 +128,8 @@ public class EventSubProcessTest extends SubProcessTest<EventSubprocess> {
 
         assertGeneralSet(subProcessLevelSubProcess.getGeneral(), DEFAULT_NAME, DEFAULT_DOCUMENTATION);
         assertEventSubProcessExecutionSet(subProcessLevelSubProcess.getExecutionSet(),
-                                          IS_NOT_ASYNC
-        );
+                                          IS_NOT_ASYNC,
+                                          EMPTY_VALUE);
         assertSubProcessProcessData(subProcessLevelSubProcess.getProcessData(), EMPTY_VALUE);
     }
 
@@ -147,8 +149,8 @@ public class EventSubProcessTest extends SubProcessTest<EventSubprocess> {
 
         assertGeneralSet(subProcessLevelSubProcessJava.getGeneral(), SUB_PROCESS_NAME, SUB_PROCESS_DOCUMENTATION);
         assertEventSubProcessExecutionSet(subProcessLevelSubProcessJava.getExecutionSet(),
-                                          IS_ASYNC
-        );
+                                          IS_ASYNC,
+                                          SLA_DUE_DATE);
         assertSubProcessProcessData(subProcessLevelSubProcessJava.getProcessData(), SUB_PROCESS_VARIABLES);
     }
 
@@ -166,8 +168,8 @@ public class EventSubProcessTest extends SubProcessTest<EventSubprocess> {
 
         assertGeneralSet(subProcessLevelSubProcess.getGeneral(), SUB_PROCESS_NAME, DEFAULT_DOCUMENTATION);
         assertEventSubProcessExecutionSet(subProcessLevelSubProcess.getExecutionSet(),
-                                          IS_NOT_ASYNC
-        );
+                                          IS_NOT_ASYNC,
+                                          EMPTY_VALUE);
         assertSubProcessProcessData(subProcessLevelSubProcess.getProcessData(), EMPTY_VALUE);
     }
 
@@ -212,9 +214,12 @@ public class EventSubProcessTest extends SubProcessTest<EventSubprocess> {
     }
 
     private void assertEventSubProcessExecutionSet(EventSubprocessExecutionSet executionSet,
-                                                   boolean isAsync) {
+                                                   boolean isAsync,
+                                                   String slaDueDate) {
         assertThat(executionSet).isNotNull();
         assertThat(executionSet.getIsAsync()).isNotNull();
         assertThat(executionSet.getIsAsync().getValue()).isEqualTo(isAsync);
+        assertThat(executionSet.getSlaDueDate()).isNotNull();
+        assertThat(executionSet.getSlaDueDate().getValue()).isEqualTo(slaDueDate);
     }
 }

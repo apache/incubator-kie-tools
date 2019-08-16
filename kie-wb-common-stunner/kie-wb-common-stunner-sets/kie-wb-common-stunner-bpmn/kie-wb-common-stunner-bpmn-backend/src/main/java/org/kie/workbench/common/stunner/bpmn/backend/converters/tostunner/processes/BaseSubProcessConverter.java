@@ -37,6 +37,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.MultipleInstanceSubproce
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Documentation;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 import org.kie.workbench.common.stunner.bpmn.definition.property.subProcess.execution.EmbeddedSubprocessExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.subProcess.execution.EventSubprocessExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.BaseAdHocSubprocessTaskExecutionSet;
@@ -119,7 +120,8 @@ public abstract class BaseSubProcessConverter<A extends BaseAdHocSubprocess<P, S
                                                                new OnEntryAction(p.getOnEntryAction()),
                                                                new OnExitAction(p.getOnExitAction()),
                                                                new IsMultipleInstance(true),
-                                                               new IsAsync(p.isAsync())
+                                                               new IsAsync(p.isAsync()),
+                                                               new SLADueDate(p.getSlaDueDate())
                 ));
 
         definition.setProcessData(new ProcessData(new ProcessVariables(p.getProcessVariables())));
@@ -172,7 +174,8 @@ public abstract class BaseSubProcessConverter<A extends BaseAdHocSubprocess<P, S
 
         definition.setExecutionSet(new EmbeddedSubprocessExecutionSet(new OnEntryAction(p.getOnEntryAction()),
                                                                       new OnExitAction(p.getOnExitAction()),
-                                                                      new IsAsync(p.isAsync())
+                                                                      new IsAsync(p.isAsync()),
+                                                                      new SLADueDate(p.getSlaDueDate())
         ));
 
         definition.setProcessData(new ProcessData(new ProcessVariables(p.getProcessVariables())));
@@ -199,7 +202,8 @@ public abstract class BaseSubProcessConverter<A extends BaseAdHocSubprocess<P, S
                                                  new Documentation(p.getDocumentation())
         ));
 
-        definition.setExecutionSet(new EventSubprocessExecutionSet(new IsAsync(p.isAsync())));
+        definition.setExecutionSet(new EventSubprocessExecutionSet(new IsAsync(p.isAsync()),
+                                                                   new SLADueDate(p.getSlaDueDate())));
 
         definition.setProcessData(new ProcessData(new ProcessVariables(p.getProcessVariables())));
 

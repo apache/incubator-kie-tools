@@ -58,4 +58,8 @@ public class CallActivityPropertyReader extends MultipleInstanceActivityProperty
     public boolean isAdHocAutostart() {
         return CustomElement.autoStart.of(element).get();
     }
+
+    public String getSlaDueDate() {
+        return CustomElement.slaDueDate.of(element).get();
+    }
 }

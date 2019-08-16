@@ -29,9 +29,11 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.annotations.field.selector.SelectorDataProvider;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.type.ListBoxFieldType;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.type.TextAreaFieldType;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocAutostart;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocOrdering;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.BaseAdHocSubprocessTaskExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.BaseSubprocessTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnEntryAction;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnExitAction;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeListValue;
@@ -44,7 +46,9 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 @Bindable
 @PropertySet
 @FormDefinition(startElement = "adHocActivationCondition")
-public class AdHocSubprocessTaskExecutionSet implements BaseAdHocSubprocessTaskExecutionSet {
+public class AdHocSubprocessTaskExecutionSet
+        extends BaseSubprocessTaskExecutionSet
+        implements BaseAdHocSubprocessTaskExecutionSet {
 
     @Property
     @FormField(type = TextAreaFieldType.class,
@@ -97,7 +101,8 @@ public class AdHocSubprocessTaskExecutionSet implements BaseAdHocSubprocessTaskE
              new OnEntryAction(new ScriptTypeListValue().addValue(new ScriptTypeValue("java",
                                                                                       ""))),
              new OnExitAction(new ScriptTypeListValue().addValue(new ScriptTypeValue("java",
-                                                                                     ""))));
+                                                                                     ""))),
+             new SLADueDate());
     }
 
     public AdHocSubprocessTaskExecutionSet(final @MapsTo("adHocActivationCondition") AdHocActivationCondition adHocActivationCondition,
@@ -105,7 +110,9 @@ public class AdHocSubprocessTaskExecutionSet implements BaseAdHocSubprocessTaskE
                                            final @MapsTo("adHocOrdering") AdHocOrdering adHocOrdering,
                                            final @MapsTo("adHocAutostart") AdHocAutostart adHocAutostart,
                                            final @MapsTo("onEntryAction") OnEntryAction onEntryAction,
-                                           final @MapsTo("onExitAction") OnExitAction onExitAction) {
+                                           final @MapsTo("onExitAction") OnExitAction onExitAction,
+                                           final @MapsTo("slaDueDate") SLADueDate slaDueDate) {
+        super(slaDueDate);
         this.adHocActivationCondition = adHocActivationCondition;
         this.adHocCompletionCondition = adHocCompletionCondition;
         this.adHocOrdering = adHocOrdering;
@@ -176,7 +183,8 @@ public class AdHocSubprocessTaskExecutionSet implements BaseAdHocSubprocessTaskE
         }
         if (o instanceof AdHocSubprocessTaskExecutionSet) {
             AdHocSubprocessTaskExecutionSet other = (AdHocSubprocessTaskExecutionSet) o;
-            return Objects.equals(adHocActivationCondition, other.adHocActivationCondition) &&
+            return super.equals(other) &&
+                    Objects.equals(adHocActivationCondition, other.adHocActivationCondition) &&
                     Objects.equals(adHocCompletionCondition, other.adHocCompletionCondition) &&
                     Objects.equals(adHocOrdering, other.adHocOrdering) &&
                     Objects.equals(adHocAutostart, other.adHocAutostart) &&
@@ -188,7 +196,8 @@ public class AdHocSubprocessTaskExecutionSet implements BaseAdHocSubprocessTaskE
 
     @Override
     public int hashCode() {
-        return HashUtil.combineHashCodes(Objects.hashCode(adHocActivationCondition),
+        return HashUtil.combineHashCodes(super.hashCode(),
+                                         Objects.hashCode(adHocActivationCondition),
                                          Objects.hashCode(adHocCompletionCondition),
                                          Objects.hashCode(adHocOrdering),
                                          Objects.hashCode(adHocAutostart),

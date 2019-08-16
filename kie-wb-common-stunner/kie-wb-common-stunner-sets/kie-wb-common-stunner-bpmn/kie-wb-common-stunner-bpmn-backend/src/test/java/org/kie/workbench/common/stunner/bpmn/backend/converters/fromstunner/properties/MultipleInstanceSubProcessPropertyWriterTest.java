@@ -20,12 +20,19 @@ import org.eclipse.bpmn2.FormalExpression;
 import org.eclipse.bpmn2.MultiInstanceLoopCharacteristics;
 import org.eclipse.bpmn2.SubProcess;
 import org.junit.Test;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpmn2;
 
 public class MultipleInstanceSubProcessPropertyWriterTest {
+
+    private MultipleInstanceSubProcessPropertyWriter tested =
+            new MultipleInstanceSubProcessPropertyWriter(bpmn2.createSubProcess(),
+                                                         new FlatVariableScope());
 
     @Test
     public void nullInputOutputsShouldNotThrow() {
@@ -58,5 +65,14 @@ public class MultipleInstanceSubProcessPropertyWriterTest {
                 (FormalExpression) loopCharacteristics.getCompletionCondition();
 
         assertThat(expected).isEqualTo(completionCondition.getBody());
+    }
+
+    @Test
+    public void testSetSlaDueDate() {
+        String slaDueDate = "12/25/1983";
+        tested.setSlaDueDate(new SLADueDate(slaDueDate));
+
+        String result = CustomElement.slaDueDate.of(tested.getFlowElement()).get();
+        assertTrue(result.contains(slaDueDate));
     }
 }

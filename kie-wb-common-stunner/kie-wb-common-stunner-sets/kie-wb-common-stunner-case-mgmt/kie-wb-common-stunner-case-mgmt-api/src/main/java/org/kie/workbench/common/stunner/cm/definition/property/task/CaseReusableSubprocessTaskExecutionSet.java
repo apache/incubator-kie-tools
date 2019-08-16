@@ -29,10 +29,12 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.SkipFormField;
 import org.kie.workbench.common.forms.adf.definitions.annotations.field.selector.SelectorDataProvider;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.type.ListBoxFieldType;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.type.TextAreaFieldType;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 import org.kie.workbench.common.stunner.bpmn.definition.property.subProcess.IsCase;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AbortParent;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocAutostart;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.BaseReusableSubprocessTaskExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.BaseSubprocessTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.CalledElement;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.Independent;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.IsAsync;
@@ -60,6 +62,7 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
         startElement = "calledElement"
 )
 public class CaseReusableSubprocessTaskExecutionSet
+        extends BaseSubprocessTaskExecutionSet
         implements BaseReusableSubprocessTaskExecutionSet {
 
     @Property
@@ -209,7 +212,8 @@ public class CaseReusableSubprocessTaskExecutionSet
              new MultipleInstanceDataOutput(),
              new MultipleInstanceCompletionCondition(),
              new OnEntryAction(new ScriptTypeListValue().addValue(new ScriptTypeValue("java", ""))),
-             new OnExitAction(new ScriptTypeListValue().addValue(new ScriptTypeValue("java", ""))));
+             new OnExitAction(new ScriptTypeListValue().addValue(new ScriptTypeValue("java", ""))),
+             new SLADueDate());
     }
 
     public CaseReusableSubprocessTaskExecutionSet(final @MapsTo("calledElement") CalledElement calledElement,
@@ -227,7 +231,9 @@ public class CaseReusableSubprocessTaskExecutionSet
                                                   final @MapsTo("multipleInstanceDataOutput") MultipleInstanceDataOutput multipleInstanceDataOutput,
                                                   final @MapsTo("multipleInstanceCompletionCondition") MultipleInstanceCompletionCondition multipleInstanceCompletionCondition,
                                                   final @MapsTo("onEntryAction") OnEntryAction onEntryAction,
-                                                  final @MapsTo("onExitAction") OnExitAction onExitAction) {
+                                                  final @MapsTo("onExitAction") OnExitAction onExitAction,
+                                                  final @MapsTo("slaDueDate") SLADueDate slaDueDate) {
+        super(slaDueDate);
         this.calledElement = calledElement;
         this.isCase = isCase;
         this.independent = independent;
@@ -408,7 +414,8 @@ public class CaseReusableSubprocessTaskExecutionSet
 
     @Override
     public int hashCode() {
-        return HashUtil.combineHashCodes(Objects.hashCode(calledElement),
+        return HashUtil.combineHashCodes(super.hashCode(),
+                                         Objects.hashCode(calledElement),
                                          Objects.hashCode(isCase),
                                          Objects.hashCode(independent),
                                          Objects.hashCode(abortParent),
@@ -433,7 +440,8 @@ public class CaseReusableSubprocessTaskExecutionSet
         }
         if (o instanceof CaseReusableSubprocessTaskExecutionSet) {
             CaseReusableSubprocessTaskExecutionSet other = (CaseReusableSubprocessTaskExecutionSet) o;
-            return Objects.equals(calledElement, other.calledElement) &&
+            return super.equals(other) &&
+                    Objects.equals(calledElement, other.calledElement) &&
                     Objects.equals(isCase, other.isCase) &&
                     Objects.equals(independent, other.independent) &&
                     Objects.equals(abortParent, other.abortParent) &&

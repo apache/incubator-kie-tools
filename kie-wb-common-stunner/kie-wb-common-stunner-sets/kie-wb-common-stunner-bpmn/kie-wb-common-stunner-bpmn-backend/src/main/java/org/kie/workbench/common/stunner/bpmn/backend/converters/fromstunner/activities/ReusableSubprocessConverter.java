@@ -58,6 +58,7 @@ public class ReusableSubprocessConverter {
             p.setAbortParent(executionSet.getAbortParent().getValue());
         }
         p.setWaitForCompletion(executionSet.getWaitForCompletion().getValue());
+        p.setSlaDueDate(executionSet.getSlaDueDate());
 
         p.setAssignmentsInfo(definition.getDataIOSet().getAssignmentsinfo());
 

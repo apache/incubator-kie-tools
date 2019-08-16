@@ -22,6 +22,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.Defini
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.AdHocSubProcessPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.PropertyReaderFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.AdHocSubprocess;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocActivationCondition;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocAutostart;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocCompletionCondition;
@@ -64,6 +65,7 @@ public class SubProcessConverter extends BaseSubProcessConverter<AdHocSubprocess
                                                    new AdHocOrdering(p.getAdHocOrdering()),
                                                    new AdHocAutostart(p.isAdHocAutostart()),
                                                    new OnEntryAction(p.getOnEntryAction()),
-                                                   new OnExitAction(p.getOnExitAction()));
+                                                   new OnExitAction(p.getOnExitAction()),
+                                                   new SLADueDate(p.getSlaDueDate()));
     }
 }

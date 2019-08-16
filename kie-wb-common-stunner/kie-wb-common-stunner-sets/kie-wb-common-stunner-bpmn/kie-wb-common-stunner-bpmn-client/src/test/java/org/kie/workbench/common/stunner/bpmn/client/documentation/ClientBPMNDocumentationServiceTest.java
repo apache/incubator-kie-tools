@@ -363,7 +363,8 @@ public class ClientBPMNDocumentationServiceTest {
                                                                                                                                                                 SCRIPT))),
                                                                                        new OnExitAction(new ScriptTypeListValue().addValue(new ScriptTypeValue(LANGUAGE,
                                                                                                                                                                SCRIPT))),
-                                                                                       new IsAsync(false)),
+                                                                                       new IsAsync(false),
+                                                                                       new SLADueDate()),
                                                     new ProcessData(SUB_PROCESS_VARIABLES));
 
         nodes = Arrays.asList(createNode(bpmnDiagram), createNode(userTask), createNode(embeddedSubprocess));

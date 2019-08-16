@@ -32,6 +32,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSe
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.RectangleDimensionsSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.subProcess.IsCase;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AbortParent;
@@ -96,6 +97,7 @@ public class ReusableSubprocessConverterTest {
     private static final Bounds BOUNDS = Bounds.create();
     private static final SimulationSet SIMULATION_SET = new SimulationSet();
     private static final AssignmentsInfo ASSIGNMENTS_INFO = new AssignmentsInfo();
+    private static final String SLA_DUE_DATE = "12/25/1983";
 
     @Mock
     private PropertyWriterFactory propertyWriterFactory;
@@ -132,7 +134,8 @@ public class ReusableSubprocessConverterTest {
                                                                                                             new MultipleInstanceDataOutput(DATA_OUTPUT),
                                                                                                             new MultipleInstanceCompletionCondition(COMPLETION_CONDITION),
                                                                                                             ON_ENTRY_ACTION,
-                                                                                                            ON_EXIT_ACTION),
+                                                                                                            ON_EXIT_ACTION,
+                                                                                                            new SLADueDate(SLA_DUE_DATE)),
                                                                      ioSet,
                                                                      new BackgroundSet(),
                                                                      new FontSet(),
@@ -269,5 +272,18 @@ public class ReusableSubprocessConverterTest {
 
         final PropertyWriter propertyWriter = tested.toFlowElement(node);
         assertEquals(expectedAbortParent, CustomElement.abortParent.of(propertyWriter.getFlowElement()).get());
+    }
+
+    @Test
+    public void testToFlowElement_slaDueDate() {
+        final ReusableSubprocess definition = new ReusableSubprocess();
+        definition.getExecutionSet().setSlaDueDate(new SLADueDate(SLA_DUE_DATE));
+        final View<BaseReusableSubprocess> view = new ViewImpl<>(definition, Bounds.create());
+        final Node<View<BaseReusableSubprocess>, ?> node = new NodeImpl<>(java.util.UUID.randomUUID().toString());
+        node.setContent(view);
+
+        final PropertyWriter propertyWriter = tested.toFlowElement(node);
+        assertTrue(CallActivityPropertyWriter.class.isInstance(propertyWriter));
+        assertTrue(CustomElement.slaDueDate.of(propertyWriter.getFlowElement()).get().contains(SLA_DUE_DATE));
     }
 }

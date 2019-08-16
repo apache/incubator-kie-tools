@@ -48,6 +48,8 @@ import static org.mockito.Mockito.verify;
 
 public class CaseManagementCallActivityConverterTest {
 
+    private static final String SLA_DUE_DATE = "12/25/1983";
+
     private DefinitionResolver definitionResolver;
 
     private FactoryManager factoryManager;
@@ -55,7 +57,7 @@ public class CaseManagementCallActivityConverterTest {
     private CaseManagementCallActivityConverter tested;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         Definitions definitions = bpmn2.createDefinitions();
         definitions.getRootElements().add(bpmn2.createProcess());
         BPMNDiagram bpmnDiagram = di.createBPMNDiagram();
@@ -71,7 +73,7 @@ public class CaseManagementCallActivityConverterTest {
     }
 
     @Test
-    public void testCreateNode_case() throws Exception {
+    public void testCreateNode_case() {
         String uuid = UUID.randomUUID().toString();
 
         CallActivity callActivity = bpmn2.createCallActivity();
@@ -89,7 +91,7 @@ public class CaseManagementCallActivityConverterTest {
     }
 
     @Test
-    public void testCreateNode_process() throws Exception {
+    public void testCreateNode_process() {
         String uuid = UUID.randomUUID().toString();
 
         CallActivity callActivity = bpmn2.createCallActivity();
@@ -106,12 +108,10 @@ public class CaseManagementCallActivityConverterTest {
     }
 
     @Test
-    public void testCreateReusableSubprocessTaskExecutionSet_case() throws Exception {
-        String uuid = UUID.randomUUID().toString();
-
+    public void testCreateReusableSubprocessTaskExecutionSet_case() {
         CallActivity callActivity = bpmn2.createCallActivity();
-        callActivity.setId(uuid);
         CustomElement.isCase.of(callActivity).set(Boolean.TRUE);
+        CustomElement.slaDueDate.of(callActivity).set(SLA_DUE_DATE);
 
         CallActivityPropertyReader propertyReader = new CallActivityPropertyReader(callActivity,
                                                                                    definitionResolver.getDiagram(),
@@ -122,15 +122,14 @@ public class CaseManagementCallActivityConverterTest {
 
         assertTrue(CaseReusableSubprocessTaskExecutionSet.class.isInstance(result));
         assertTrue(result.getIsCase().getValue());
+        assertTrue(result.getSlaDueDate().getValue().contains(SLA_DUE_DATE));
     }
 
     @Test
-    public void testCreateReusableSubprocessTaskExecutionSet_process() throws Exception {
-        String uuid = UUID.randomUUID().toString();
-
+    public void testCreateReusableSubprocessTaskExecutionSet_process() {
         CallActivity callActivity = bpmn2.createCallActivity();
-        callActivity.setId(uuid);
         CustomElement.isCase.of(callActivity).set(Boolean.FALSE);
+        CustomElement.slaDueDate.of(callActivity).set(SLA_DUE_DATE);
 
         CallActivityPropertyReader propertyReader = new CallActivityPropertyReader(callActivity,
                                                                                    definitionResolver.getDiagram(),
@@ -141,6 +140,7 @@ public class CaseManagementCallActivityConverterTest {
 
         assertTrue(ProcessReusableSubprocessTaskExecutionSet.class.isInstance(result));
         assertFalse(result.getIsCase().getValue());
+        assertTrue(result.getSlaDueDate().getValue().contains(SLA_DUE_DATE));
     }
 
     @Test

@@ -34,6 +34,10 @@ public class SubProcessPropertyReader extends MultipleInstanceActivityPropertyRe
         return CustomElement.async.of(element).get();
     }
 
+    public String getSlaDueDate() {
+        return CustomElement.slaDueDate.of(element).get();
+    }
+
     public String getProcessVariables() {
         return ProcessVariableReader.getProcessVariables(process.getProperties());
     }

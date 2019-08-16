@@ -20,6 +20,7 @@ import org.eclipse.bpmn2.CallActivity;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomAttribute;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.Scripts;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnEntryAction;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnExitAction;
 
@@ -66,5 +67,9 @@ public class CallActivityPropertyWriter extends MultipleInstanceActivityProperty
 
     public void setAdHocAutostart(boolean autoStart) {
         CustomElement.autoStart.of(flowElement).set(autoStart);
+    }
+
+    public void setSlaDueDate(SLADueDate slaDueDate) {
+        CustomElement.slaDueDate.of(flowElement).set(slaDueDate.getValue());
     }
 }

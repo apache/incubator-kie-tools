@@ -20,6 +20,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.TypedFactoryMana
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.activities.BaseCallActivityConverter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.CallActivityPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.PropertyReaderFactory;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 import org.kie.workbench.common.stunner.bpmn.definition.property.subProcess.IsCase;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AbortParent;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocAutostart;
@@ -79,7 +80,8 @@ public class CaseManagementCallActivityConverter extends BaseCallActivityConvert
                                                            new MultipleInstanceDataOutput(p.getDataOutput()),
                                                            new MultipleInstanceCompletionCondition(p.getCompletionCondition()),
                                                            new OnEntryAction(p.getOnEntryAction()),
-                                                           new OnExitAction(p.getOnExitAction())) :
+                                                           new OnExitAction(p.getOnExitAction()),
+                                                           new SLADueDate(p.getSlaDueDate())) :
                 new ProcessReusableSubprocessTaskExecutionSet(new CalledElement(activity.getCalledElement()),
                                                               new IsCase(false),
                                                               new Independent(p.isIndependent()),
@@ -95,6 +97,7 @@ public class CaseManagementCallActivityConverter extends BaseCallActivityConvert
                                                               new MultipleInstanceDataOutput(p.getDataOutput()),
                                                               new MultipleInstanceCompletionCondition(p.getCompletionCondition()),
                                                               new OnEntryAction(p.getOnEntryAction()),
-                                                              new OnExitAction(p.getOnExitAction()));
+                                                              new OnExitAction(p.getOnExitAction()),
+                                                              new SLADueDate(p.getSlaDueDate()));
     }
 }

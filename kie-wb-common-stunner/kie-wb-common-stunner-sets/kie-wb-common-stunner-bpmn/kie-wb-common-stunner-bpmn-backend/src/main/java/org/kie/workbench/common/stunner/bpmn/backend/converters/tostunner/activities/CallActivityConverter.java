@@ -21,6 +21,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.TypedFactoryMana
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.CallActivityPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.PropertyReaderFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 import org.kie.workbench.common.stunner.bpmn.definition.property.subProcess.IsCase;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AbortParent;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocAutostart;
@@ -72,6 +73,7 @@ public class CallActivityConverter extends BaseCallActivityConverter<ReusableSub
                                                       new MultipleInstanceDataOutput(p.getDataOutput()),
                                                       new MultipleInstanceCompletionCondition(p.getCompletionCondition()),
                                                       new OnEntryAction(p.getOnEntryAction()),
-                                                      new OnExitAction(p.getOnExitAction()));
+                                                      new OnExitAction(p.getOnExitAction()),
+                                                      new SLADueDate(p.getSlaDueDate()));
     }
 }

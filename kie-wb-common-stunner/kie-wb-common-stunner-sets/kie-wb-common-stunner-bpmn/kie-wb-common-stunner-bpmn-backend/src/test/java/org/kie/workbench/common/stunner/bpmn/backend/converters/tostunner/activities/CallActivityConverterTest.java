@@ -75,6 +75,7 @@ public class CallActivityConverterTest {
     private static final FontSet FONT_SET = new FontSet();
     private static final BackgroundSet BACKGROUND_SET = new BackgroundSet();
     private static final AssignmentsInfo ASSIGNMENTS_INFO = new AssignmentsInfo();
+    private static final String SLA_DUE_DATE = "12/25/1983";
 
     @Mock
     private TypedFactoryManager factoryManager;
@@ -128,6 +129,7 @@ public class CallActivityConverterTest {
         when(propertyReader.getCompletionCondition()).thenReturn(COMPLETION_CONDITION);
         when(propertyReader.getOnEntryAction()).thenReturn(ON_ENTRY_ACTION);
         when(propertyReader.getOnExitAction()).thenReturn(ON_EXIT_ACTION);
+        when(propertyReader.getSlaDueDate()).thenReturn(SLA_DUE_DATE);
 
         converter = new CallActivityConverter(factoryManager, propertyReaderFactory);
     }
@@ -190,5 +192,6 @@ public class CallActivityConverterTest {
         assertEquals(IS_ASYNC, result.getContent().getDefinition().getExecutionSet().getIsAsync().getValue());
         assertEquals(ON_ENTRY_ACTION, result.getContent().getDefinition().getExecutionSet().getOnEntryAction().getValue());
         assertEquals(ON_EXIT_ACTION, result.getContent().getDefinition().getExecutionSet().getOnExitAction().getValue());
+        assertEquals(SLA_DUE_DATE, result.getContent().getDefinition().getExecutionSet().getSlaDueDate().getValue());
     }
 }

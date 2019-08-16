@@ -16,6 +16,7 @@
 package org.kie.workbench.common.stunner.bpmn.definition.property.task;
 
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 import org.kie.workbench.common.stunner.bpmn.definition.property.subProcess.IsCase;
 
 public interface BaseReusableSubprocessTaskExecutionSet extends BPMNPropertySet {
@@ -83,4 +84,6 @@ public interface BaseReusableSubprocessTaskExecutionSet extends BPMNPropertySet 
     MultipleInstanceCompletionCondition getMultipleInstanceCompletionCondition();
 
     void setMultipleInstanceCompletionCondition(MultipleInstanceCompletionCondition multipleInstanceCompletionCondition);
+
+    SLADueDate getSlaDueDate();
 }

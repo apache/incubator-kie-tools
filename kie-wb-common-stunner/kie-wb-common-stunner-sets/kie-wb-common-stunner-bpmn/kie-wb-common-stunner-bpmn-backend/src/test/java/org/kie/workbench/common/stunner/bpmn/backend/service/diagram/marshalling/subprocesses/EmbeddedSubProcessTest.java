@@ -75,6 +75,8 @@ public class EmbeddedSubProcessTest extends SubProcessTest<EmbeddedSubprocess> {
             "System.out.println(\"`&(^*&^(\\n\\r\");\n" +
             "Object o = kcontext.getVariable(\"hello_world\");";
 
+    private static final String SLA_DUE_DATE = "12/25/1983";
+
     public EmbeddedSubProcessTest() throws Exception {
     }
 
@@ -94,7 +96,8 @@ public class EmbeddedSubProcessTest extends SubProcessTest<EmbeddedSubprocess> {
                                              EMPTY_VALUE,
                                              SUBPROCESS_SCRIPT_JAVA_LANGUAGE,
                                              EMPTY_VALUE,
-                                             SUBPROCESS_SCRIPT_JAVA_LANGUAGE);
+                                             SUBPROCESS_SCRIPT_JAVA_LANGUAGE,
+                                             EMPTY_VALUE);
         assertSubProcessProcessData(topLevelSubProcess.getProcessData(), EMPTY_VALUE);
     }
 
@@ -125,7 +128,8 @@ public class EmbeddedSubProcessTest extends SubProcessTest<EmbeddedSubprocess> {
                                              SUBPROCESS_ON_ENTRY_ACTION_JAVA,
                                              SUBPROCESS_SCRIPT_JAVA_LANGUAGE,
                                              SUBPROCESS_ON_EXIT_ACTION_JAVA,
-                                             SUBPROCESS_SCRIPT_JAVA_LANGUAGE);
+                                             SUBPROCESS_SCRIPT_JAVA_LANGUAGE,
+                                             SLA_DUE_DATE);
         assertSubProcessProcessData(topLevelSubProcessJava.getProcessData(), SUB_PROCESS_VARIABLES_JAVA);
 
         EmbeddedSubprocess topLevelSubProcessJavascript = getSubProcessNodeById(diagram,
@@ -139,7 +143,8 @@ public class EmbeddedSubProcessTest extends SubProcessTest<EmbeddedSubprocess> {
                                              SUBPROCESS_ON_ENTRY_ACTION_JAVASCRIPT,
                                              SUBPROCESS_SCRIPT_JAVASCRIPT_LANGUAGE,
                                              SUBPROCESS_ON_EXIT_ACTION_JAVASCRIPT,
-                                             SUBPROCESS_SCRIPT_JAVASCRIPT_LANGUAGE);
+                                             SUBPROCESS_SCRIPT_JAVASCRIPT_LANGUAGE,
+                                             SLA_DUE_DATE);
         assertSubProcessProcessData(topLevelSubProcessJavascript.getProcessData(), SUB_PROCESS_VARIABLES_JAVASCRIPT);
 
         EmbeddedSubprocess topLevelSubProcessMVEL = getSubProcessNodeById(diagram,
@@ -153,7 +158,8 @@ public class EmbeddedSubProcessTest extends SubProcessTest<EmbeddedSubprocess> {
                                              SUBPROCESS_ON_ENTRY_ACTION_MVEL,
                                              SUBPROCESS_SCRIPT_MVEL_LANGUAGE,
                                              SUBPROCESS_ON_EXIT_ACTION_MVEL,
-                                             SUBPROCESS_SCRIPT_MVEL_LANGUAGE);
+                                             SUBPROCESS_SCRIPT_MVEL_LANGUAGE,
+                                             SLA_DUE_DATE);
         assertSubProcessProcessData(topLevelSubProcessMVEL.getProcessData(), SUB_PROCESS_VARIABLES_MVEL);
     }
 
@@ -175,7 +181,8 @@ public class EmbeddedSubProcessTest extends SubProcessTest<EmbeddedSubprocess> {
                                              EMPTY_VALUE,
                                              SUBPROCESS_SCRIPT_JAVA_LANGUAGE,
                                              EMPTY_VALUE,
-                                             SUBPROCESS_SCRIPT_JAVA_LANGUAGE);
+                                             SUBPROCESS_SCRIPT_JAVA_LANGUAGE,
+                                             EMPTY_VALUE);
         assertSubProcessProcessData(topLevelSubProcess.getProcessData(), EMPTY_VALUE);
     }
 
@@ -195,7 +202,8 @@ public class EmbeddedSubProcessTest extends SubProcessTest<EmbeddedSubprocess> {
                                              EMPTY_VALUE,
                                              SUBPROCESS_SCRIPT_JAVA_LANGUAGE,
                                              EMPTY_VALUE,
-                                             SUBPROCESS_SCRIPT_JAVA_LANGUAGE);
+                                             SUBPROCESS_SCRIPT_JAVA_LANGUAGE,
+                                             EMPTY_VALUE);
         assertSubProcessProcessData(subProcessLevelSubProcess.getProcessData(), EMPTY_VALUE);
     }
 
@@ -226,7 +234,8 @@ public class EmbeddedSubProcessTest extends SubProcessTest<EmbeddedSubprocess> {
                                              SUBPROCESS_ON_ENTRY_ACTION_JAVA,
                                              SUBPROCESS_SCRIPT_JAVA_LANGUAGE,
                                              SUBPROCESS_ON_EXIT_ACTION_JAVA,
-                                             SUBPROCESS_SCRIPT_JAVA_LANGUAGE);
+                                             SUBPROCESS_SCRIPT_JAVA_LANGUAGE,
+                                             SLA_DUE_DATE);
         assertSubProcessProcessData(subProcessLevelSubProcessJava.getProcessData(), SUB_PROCESS_VARIABLES_JAVA);
 
         EmbeddedSubprocess subProcessLevelSubProcessJavascript = getSubProcessNodeById(diagram,
@@ -240,7 +249,8 @@ public class EmbeddedSubProcessTest extends SubProcessTest<EmbeddedSubprocess> {
                                              SUBPROCESS_ON_ENTRY_ACTION_JAVASCRIPT,
                                              SUBPROCESS_SCRIPT_JAVASCRIPT_LANGUAGE,
                                              SUBPROCESS_ON_EXIT_ACTION_JAVASCRIPT,
-                                             SUBPROCESS_SCRIPT_JAVASCRIPT_LANGUAGE);
+                                             SUBPROCESS_SCRIPT_JAVASCRIPT_LANGUAGE,
+                                             SLA_DUE_DATE);
         assertSubProcessProcessData(subProcessLevelSubProcessJavascript.getProcessData(), SUB_PROCESS_VARIABLES_JAVASCRIPT);
 
         EmbeddedSubprocess subProcessLevelSubProcessMVEL = getSubProcessNodeById(diagram,
@@ -254,7 +264,8 @@ public class EmbeddedSubProcessTest extends SubProcessTest<EmbeddedSubprocess> {
                                              SUBPROCESS_ON_ENTRY_ACTION_MVEL,
                                              SUBPROCESS_SCRIPT_MVEL_LANGUAGE,
                                              SUBPROCESS_ON_EXIT_ACTION_MVEL,
-                                             SUBPROCESS_SCRIPT_MVEL_LANGUAGE);
+                                             SUBPROCESS_SCRIPT_MVEL_LANGUAGE,
+                                             SLA_DUE_DATE);
         assertSubProcessProcessData(subProcessLevelSubProcessMVEL.getProcessData(), SUB_PROCESS_VARIABLES_MVEL);
     }
 
@@ -276,7 +287,8 @@ public class EmbeddedSubProcessTest extends SubProcessTest<EmbeddedSubprocess> {
                                              EMPTY_VALUE,
                                              SUBPROCESS_SCRIPT_JAVA_LANGUAGE,
                                              EMPTY_VALUE,
-                                             SUBPROCESS_SCRIPT_JAVA_LANGUAGE);
+                                             SUBPROCESS_SCRIPT_JAVA_LANGUAGE,
+                                             EMPTY_VALUE);
         assertSubProcessProcessData(subProcessLevelSubProcess.getProcessData(), EMPTY_VALUE);
     }
 
@@ -329,9 +341,12 @@ public class EmbeddedSubProcessTest extends SubProcessTest<EmbeddedSubprocess> {
                                                       String onEntryActionScriptValue,
                                                       String onEntryActionScriptLanguage,
                                                       String onExitActionScriptValue,
-                                                      String onExitActionScriptLanguage) {
+                                                      String onExitActionScriptLanguage,
+                                                      String slaDueDate) {
         assertThat(executionSet).isNotNull();
+
         assertThat(executionSet.getIsAsync()).isNotNull();
+        assertThat(executionSet.getSlaDueDate()).isNotNull();
 
         assertThat(executionSet.getOnEntryAction()).isNotNull();
         assertThat(executionSet.getOnExitAction()).isNotNull();
@@ -347,6 +362,7 @@ public class EmbeddedSubProcessTest extends SubProcessTest<EmbeddedSubprocess> {
         assertThat(onExitScriptTypeValues.get(0)).isNotNull();
 
         assertThat(executionSet.getIsAsync().getValue()).isEqualTo(isAsync);
+        assertThat(executionSet.getSlaDueDate().getValue()).isEqualTo(slaDueDate);
 
         assertThat(onEntryScriptTypeValues.get(0).getScript()).isEqualTo(onEntryActionScriptValue);
         assertThat(onEntryScriptTypeValues.get(0).getLanguage()).isEqualTo(onEntryActionScriptLanguage);

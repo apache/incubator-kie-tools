@@ -71,6 +71,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.notification.No
 import org.kie.workbench.common.stunner.bpmn.definition.property.reassignment.ReassignmentsInfo;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationAttributeSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.subProcess.IsCase;
+import org.kie.workbench.common.stunner.bpmn.definition.property.subProcess.execution.EmbeddedSubprocessExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.subProcess.execution.EventSubprocessExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AbortParent;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocActivationCondition;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocAutostart;
@@ -689,6 +691,18 @@ public class HashCodeAndEqualityTest {
     }
 
     @Test
+    public void testEventSubprocessTaskExecutionSetEqualsAndHashCode() {
+        TestCaseBuilder.newTestCase()
+                .addTrueCase(new EventSubprocessExecutionSet(),
+                             new EventSubprocessExecutionSet())
+                .addTrueCase(new EventSubprocessExecutionSet(new IsAsync(),
+                                                             new SLADueDate()),
+                             new EventSubprocessExecutionSet(new IsAsync(),
+                                                             new SLADueDate()))
+                .test();
+    }
+
+    @Test
     public void testScriptTaskEquals() {
         ScriptTask a = new ScriptTask();
         ScriptTask b = new ScriptTask();
@@ -945,6 +959,22 @@ public class HashCodeAndEqualityTest {
     }
 
     @Test
+    public void testEmbeddedSubprocessTaskExecutionSetEqualsAndHashCode() {
+        TestCaseBuilder.newTestCase()
+                .addTrueCase(new EmbeddedSubprocessExecutionSet(),
+                             new EmbeddedSubprocessExecutionSet())
+                .addTrueCase(new EmbeddedSubprocessExecutionSet(new OnEntryAction(),
+                                                                new OnExitAction(),
+                                                                new IsAsync(),
+                                                                new SLADueDate()),
+                             new EmbeddedSubprocessExecutionSet(new OnEntryAction(),
+                                                                new OnExitAction(),
+                                                                new IsAsync(),
+                                                                new SLADueDate()))
+                .test();
+    }
+
+    @Test
     public void testMultipleInstanceSubprocessEquals() {
         final String MULTIPLE_INSTANCE_COLLECTION_INPUT = "multiple Instance collection input";
         final String MULTIPLE_INSTANCE_COLLECTION_OUTPUT = "multiple Instance collection output";
@@ -970,7 +1000,8 @@ public class HashCodeAndEqualityTest {
                  new OnEntryAction(ON_ENTRY_ACTION),
                  new OnExitAction(ON_EXIT_ACTION),
                  new IsMultipleInstance(true),
-                 new IsAsync(IS_ASYNC));
+                 new IsAsync(IS_ASYNC),
+                 new SLADueDate());
 
         final MultipleInstanceSubprocessTaskExecutionSet B_EXECUTION_SET = new MultipleInstanceSubprocessTaskExecutionSet(
                 new MultipleInstanceExecutionMode(),
@@ -982,7 +1013,8 @@ public class HashCodeAndEqualityTest {
                 new OnEntryAction(ON_ENTRY_ACTION),
                 new OnExitAction(ON_EXIT_ACTION),
                 new IsMultipleInstance(true),
-                new IsAsync(IS_ASYNC));
+                new IsAsync(IS_ASYNC),
+                new SLADueDate());
 
         final MultipleInstanceSubprocessTaskExecutionSet C_EXECUTION_SET = new MultipleInstanceSubprocessTaskExecutionSet(
                 new MultipleInstanceExecutionMode(),
@@ -994,7 +1026,8 @@ public class HashCodeAndEqualityTest {
                 new OnEntryAction(ON_ENTRY_ACTION),
                 new OnExitAction(ON_EXIT_ACTION),
                 new IsMultipleInstance(true),
-                new IsAsync(IS_ASYNC));
+                new IsAsync(IS_ASYNC),
+                new SLADueDate());
 
         final MultipleInstanceSubprocessTaskExecutionSet D_EXECUTION_SET = new MultipleInstanceSubprocessTaskExecutionSet(
                 new MultipleInstanceExecutionMode(),
@@ -1006,7 +1039,8 @@ public class HashCodeAndEqualityTest {
                 new OnEntryAction(ON_ENTRY_ACTION),
                 new OnExitAction(ON_EXIT_ACTION),
                 new IsMultipleInstance(true),
-                new IsAsync(IS_ASYNC));
+                new IsAsync(IS_ASYNC),
+                new SLADueDate());
 
         final MultipleInstanceSubprocessTaskExecutionSet E_EXECUTION_SET = new MultipleInstanceSubprocessTaskExecutionSet(
                 new MultipleInstanceExecutionMode(),
@@ -1018,7 +1052,8 @@ public class HashCodeAndEqualityTest {
                 new OnEntryAction(ON_ENTRY_ACTION),
                 new OnExitAction(ON_EXIT_ACTION),
                 new IsMultipleInstance(true),
-                new IsAsync(IS_ASYNC));
+                new IsAsync(IS_ASYNC),
+                new SLADueDate());
 
         final MultipleInstanceSubprocessTaskExecutionSet F_EXECUTION_SET = new MultipleInstanceSubprocessTaskExecutionSet(
                 new MultipleInstanceExecutionMode(),
@@ -1030,7 +1065,8 @@ public class HashCodeAndEqualityTest {
                 new OnEntryAction(ON_ENTRY_ACTION),
                 new OnExitAction(ON_EXIT_ACTION),
                 new IsMultipleInstance(true),
-                new IsAsync(IS_ASYNC));
+                new IsAsync(IS_ASYNC),
+                new SLADueDate());
 
         final MultipleInstanceSubprocessTaskExecutionSet G_EXECUTION_SET = new MultipleInstanceSubprocessTaskExecutionSet(
                 new MultipleInstanceExecutionMode(),
@@ -1042,7 +1078,8 @@ public class HashCodeAndEqualityTest {
                 new OnEntryAction(ON_ENTRY_ACTION),
                 new OnExitAction(ON_EXIT_ACTION),
                 new IsMultipleInstance(true),
-                new IsAsync(IS_ASYNC));
+                new IsAsync(IS_ASYNC),
+                new SLADueDate());
 
         final MultipleInstanceSubprocessTaskExecutionSet H_EXECUTION_SET
                 = new MultipleInstanceSubprocessTaskExecutionSet
@@ -1056,7 +1093,8 @@ public class HashCodeAndEqualityTest {
                                                                                           ""))),
                  new OnExitAction(ON_EXIT_ACTION),
                  new IsMultipleInstance(true),
-                 new IsAsync(IS_ASYNC));
+                 new IsAsync(IS_ASYNC),
+                 new SLADueDate());
 
         final MultipleInstanceSubprocessTaskExecutionSet I_EXECUTION_SET
                 = new MultipleInstanceSubprocessTaskExecutionSet
@@ -1070,7 +1108,8 @@ public class HashCodeAndEqualityTest {
                  new OnExitAction(new ScriptTypeListValue().addValue(new ScriptTypeValue("other language",
                                                                                          ""))),
                  new IsMultipleInstance(true),
-                 new IsAsync(IS_ASYNC));
+                 new IsAsync(IS_ASYNC),
+                 new SLADueDate());
 
         final MultipleInstanceSubprocessTaskExecutionSet J_EXECUTION_SET
                 = new MultipleInstanceSubprocessTaskExecutionSet
@@ -1083,7 +1122,8 @@ public class HashCodeAndEqualityTest {
                  new OnEntryAction(ON_ENTRY_ACTION),
                  new OnExitAction(ON_EXIT_ACTION),
                  new IsMultipleInstance(true),
-                 new IsAsync(false));
+                 new IsAsync(false),
+                 new SLADueDate());
 
         final String PROCESS_DATA = "some value";
         final ProcessData A_PROCESS_DATA = new ProcessData(new ProcessVariables(PROCESS_DATA));
@@ -1333,7 +1373,7 @@ public class HashCodeAndEqualityTest {
     }
 
     @Test
-    public void testAdHocSubprocessTaskExecutionSEtSetEqualsAndHashCode() {
+    public void testAdHocSubprocessTaskExecutionSetEqualsAndHashCode() {
         TestCaseBuilder.newTestCase()
                 .addTrueCase(new AdHocSubprocessTaskExecutionSet(),
                              new AdHocSubprocessTaskExecutionSet())
@@ -1343,13 +1383,15 @@ public class HashCodeAndEqualityTest {
                                                                  new AdHocOrdering(),
                                                                  new AdHocAutostart(),
                                                                  new OnEntryAction(),
-                                                                 new OnExitAction()),
+                                                                 new OnExitAction(),
+                                                                 new SLADueDate()),
                              new AdHocSubprocessTaskExecutionSet(new AdHocActivationCondition(),
                                                                  new AdHocCompletionCondition(),
                                                                  new AdHocOrdering(),
                                                                  new AdHocAutostart(),
                                                                  new OnEntryAction(),
-                                                                 new OnExitAction()))
+                                                                 new OnExitAction(),
+                                                                 new SLADueDate()))
                 .test();
     }
 
@@ -1374,7 +1416,8 @@ public class HashCodeAndEqualityTest {
                                                                     new MultipleInstanceDataOutput(),
                                                                     new MultipleInstanceCompletionCondition(),
                                                                     new OnEntryAction(),
-                                                                    new OnExitAction()),
+                                                                    new OnExitAction(),
+                                                                    new SLADueDate()),
                              new ReusableSubprocessTaskExecutionSet(new CalledElement(),
                                                                     new IsCase(),
                                                                     new Independent(),
@@ -1390,7 +1433,8 @@ public class HashCodeAndEqualityTest {
                                                                     new MultipleInstanceDataOutput(),
                                                                     new MultipleInstanceCompletionCondition(),
                                                                     new OnEntryAction(),
-                                                                    new OnExitAction()))
+                                                                    new OnExitAction(),
+                                                                    new SLADueDate()))
                 .test();
     }
 
@@ -1565,7 +1609,8 @@ public class HashCodeAndEqualityTest {
                                                                             new OnEntryAction(),
                                                                             new OnExitAction(),
                                                                             new IsMultipleInstance(),
-                                                                            new IsAsync()),
+                                                                            new IsAsync(),
+                                                                            new SLADueDate()),
                              new MultipleInstanceSubprocessTaskExecutionSet(new MultipleInstanceExecutionMode(),
                                                                             new MultipleInstanceCollectionInput(),
                                                                             new MultipleInstanceCollectionOutput(),
@@ -1575,7 +1620,8 @@ public class HashCodeAndEqualityTest {
                                                                             new OnEntryAction(),
                                                                             new OnExitAction(),
                                                                             new IsMultipleInstance(),
-                                                                            new IsAsync()))
+                                                                            new IsAsync(),
+                                                                            new SLADueDate()))
                 .addFalseCase(new MultipleInstanceSubprocessTaskExecutionSet(new MultipleInstanceExecutionMode(true),
                                                                              new MultipleInstanceCollectionInput(),
                                                                              new MultipleInstanceCollectionOutput(),
@@ -1585,7 +1631,8 @@ public class HashCodeAndEqualityTest {
                                                                              new OnEntryAction(),
                                                                              new OnExitAction(),
                                                                              new IsMultipleInstance(),
-                                                                             new IsAsync()),
+                                                                             new IsAsync(),
+                                                                             new SLADueDate()),
                               new MultipleInstanceSubprocessTaskExecutionSet(new MultipleInstanceExecutionMode(false),
                                                                              new MultipleInstanceCollectionInput(),
                                                                              new MultipleInstanceCollectionOutput(),
@@ -1595,7 +1642,8 @@ public class HashCodeAndEqualityTest {
                                                                              new OnEntryAction(),
                                                                              new OnExitAction(),
                                                                              new IsMultipleInstance(),
-                                                                             new IsAsync()))
+                                                                             new IsAsync(),
+                                                                             new SLADueDate()))
                 .test();
     }
 

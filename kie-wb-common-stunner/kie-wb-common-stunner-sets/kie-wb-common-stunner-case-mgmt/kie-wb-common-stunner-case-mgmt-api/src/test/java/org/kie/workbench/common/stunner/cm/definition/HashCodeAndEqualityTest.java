@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.cm.definition;
 
 import org.junit.Test;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocAutostart;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocOrdering;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnEntryAction;
@@ -34,7 +35,6 @@ import org.kie.workbench.common.stunner.cm.definition.property.task.UserTaskExec
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
-
 import static org.kie.workbench.common.stunner.core.util.EqualsAndHashCodeTestUtils.TestCaseBuilder;
 
 public class HashCodeAndEqualityTest {
@@ -205,7 +205,7 @@ public class HashCodeAndEqualityTest {
     }
 
     @Test
-    public void testAdHocSubprocessTaskExecutionSEtSetEqualsAndHashCode() {
+    public void testAdHocSubprocessTaskExecutionSetEqualsAndHashCode() {
         TestCaseBuilder.newTestCase()
                 .addTrueCase(new AdHocSubprocessTaskExecutionSet(),
                              new AdHocSubprocessTaskExecutionSet())
@@ -215,13 +215,15 @@ public class HashCodeAndEqualityTest {
                                                                  new AdHocOrdering(),
                                                                  new AdHocAutostart(),
                                                                  new OnEntryAction(),
-                                                                 new OnExitAction()),
+                                                                 new OnExitAction(),
+                                                                 new SLADueDate()),
                              new AdHocSubprocessTaskExecutionSet(new AdHocActivationCondition(),
                                                                  new AdHocCompletionCondition(),
                                                                  new AdHocOrdering(),
                                                                  new AdHocAutostart(),
                                                                  new OnEntryAction(),
-                                                                 new OnExitAction()))
+                                                                 new OnExitAction(),
+                                                                 new SLADueDate()))
                 .test();
     }
 

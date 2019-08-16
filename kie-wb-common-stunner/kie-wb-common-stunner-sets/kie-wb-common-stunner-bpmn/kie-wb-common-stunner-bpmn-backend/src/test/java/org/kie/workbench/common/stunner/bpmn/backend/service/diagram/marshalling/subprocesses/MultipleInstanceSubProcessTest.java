@@ -78,6 +78,8 @@ public class MultipleInstanceSubProcessTest extends SubProcessTest<MultipleInsta
             "System.out.println(\"`&(^*&^(\\n\\r\");\n" +
             "Object o = kcontext.getVariable(\"hello_world\");";
 
+    private static final String SLA_DUE_DATE = "12/25/1983";
+
     public MultipleInstanceSubProcessTest() throws Exception {
     }
 
@@ -102,7 +104,8 @@ public class MultipleInstanceSubProcessTest extends SubProcessTest<MultipleInsta
                                                      EMPTY_VALUE,
                                                      SUBPROCESS_SCRIPT_JAVA_LANGUAGE,
                                                      EMPTY_VALUE,
-                                                     SUBPROCESS_SCRIPT_JAVA_LANGUAGE);
+                                                     SUBPROCESS_SCRIPT_JAVA_LANGUAGE,
+                                                     EMPTY_VALUE);
         assertSubProcessProcessData(topLevelSubProcess.getProcessData(), EMPTY_VALUE);
     }
 
@@ -138,7 +141,8 @@ public class MultipleInstanceSubProcessTest extends SubProcessTest<MultipleInsta
                                                      SUBPROCESS_ON_ENTRY_ACTION_JAVA,
                                                      SUBPROCESS_SCRIPT_JAVA_LANGUAGE,
                                                      SUBPROCESS_ON_EXIT_ACTION_JAVA,
-                                                     SUBPROCESS_SCRIPT_JAVA_LANGUAGE);
+                                                     SUBPROCESS_SCRIPT_JAVA_LANGUAGE,
+                                                     SLA_DUE_DATE);
         assertSubProcessProcessData(topLevelSubProcessJava.getProcessData(), SUB_PROCESS_VARIABLES_JAVA);
 
         MultipleInstanceSubprocess topLevelSubProcessJavascript = getSubProcessNodeById(diagram,
@@ -157,7 +161,8 @@ public class MultipleInstanceSubProcessTest extends SubProcessTest<MultipleInsta
                                                      SUBPROCESS_ON_ENTRY_ACTION_JAVASCRIPT,
                                                      SUBPROCESS_SCRIPT_JAVASCRIPT_LANGUAGE,
                                                      SUBPROCESS_ON_EXIT_ACTION_JAVASCRIPT,
-                                                     SUBPROCESS_SCRIPT_JAVASCRIPT_LANGUAGE);
+                                                     SUBPROCESS_SCRIPT_JAVASCRIPT_LANGUAGE,
+                                                     SLA_DUE_DATE);
         assertSubProcessProcessData(topLevelSubProcessJavascript.getProcessData(), SUB_PROCESS_VARIABLES_JAVASCRIPT);
 
         MultipleInstanceSubprocess topLevelSubProcessMVEL = getSubProcessNodeById(diagram,
@@ -176,7 +181,8 @@ public class MultipleInstanceSubProcessTest extends SubProcessTest<MultipleInsta
                                                      SUBPROCESS_ON_ENTRY_ACTION_MVEL,
                                                      SUBPROCESS_SCRIPT_MVEL_LANGUAGE,
                                                      SUBPROCESS_ON_EXIT_ACTION_MVEL,
-                                                     SUBPROCESS_SCRIPT_MVEL_LANGUAGE);
+                                                     SUBPROCESS_SCRIPT_MVEL_LANGUAGE,
+                                                     SLA_DUE_DATE);
         assertSubProcessProcessData(topLevelSubProcessMVEL.getProcessData(), SUB_PROCESS_VARIABLES_MVEL);
     }
 
@@ -203,7 +209,8 @@ public class MultipleInstanceSubProcessTest extends SubProcessTest<MultipleInsta
                                                      EMPTY_VALUE,
                                                      SUBPROCESS_SCRIPT_JAVA_LANGUAGE,
                                                      EMPTY_VALUE,
-                                                     SUBPROCESS_SCRIPT_JAVA_LANGUAGE);
+                                                     SUBPROCESS_SCRIPT_JAVA_LANGUAGE,
+                                                     EMPTY_VALUE);
         assertSubProcessProcessData(topLevelSubProcess.getProcessData(), EMPTY_VALUE);
     }
 
@@ -228,7 +235,8 @@ public class MultipleInstanceSubProcessTest extends SubProcessTest<MultipleInsta
                                                      EMPTY_VALUE,
                                                      SUBPROCESS_SCRIPT_JAVA_LANGUAGE,
                                                      EMPTY_VALUE,
-                                                     SUBPROCESS_SCRIPT_JAVA_LANGUAGE);
+                                                     SUBPROCESS_SCRIPT_JAVA_LANGUAGE,
+                                                     EMPTY_VALUE);
         assertSubProcessProcessData(subProcessLevelSubProcess.getProcessData(), EMPTY_VALUE);
     }
 
@@ -264,7 +272,8 @@ public class MultipleInstanceSubProcessTest extends SubProcessTest<MultipleInsta
                                                      SUBPROCESS_ON_ENTRY_ACTION_JAVA,
                                                      SUBPROCESS_SCRIPT_JAVA_LANGUAGE,
                                                      SUBPROCESS_ON_EXIT_ACTION_JAVA,
-                                                     SUBPROCESS_SCRIPT_JAVA_LANGUAGE);
+                                                     SUBPROCESS_SCRIPT_JAVA_LANGUAGE,
+                                                     SLA_DUE_DATE);
         assertSubProcessProcessData(subProcessLevelSubProcessJava.getProcessData(), SUB_PROCESS_VARIABLES_JAVA);
 
         MultipleInstanceSubprocess subProcessLevelSubProcessJavascript = getSubProcessNodeById(diagram,
@@ -283,7 +292,8 @@ public class MultipleInstanceSubProcessTest extends SubProcessTest<MultipleInsta
                                                      SUBPROCESS_ON_ENTRY_ACTION_JAVASCRIPT,
                                                      SUBPROCESS_SCRIPT_JAVASCRIPT_LANGUAGE,
                                                      SUBPROCESS_ON_EXIT_ACTION_JAVASCRIPT,
-                                                     SUBPROCESS_SCRIPT_JAVASCRIPT_LANGUAGE);
+                                                     SUBPROCESS_SCRIPT_JAVASCRIPT_LANGUAGE,
+                                                     SLA_DUE_DATE);
         assertSubProcessProcessData(subProcessLevelSubProcessJavascript.getProcessData(), SUB_PROCESS_VARIABLES_JAVASCRIPT);
 
         MultipleInstanceSubprocess subProcessLevelSubProcessMVEL = getSubProcessNodeById(diagram,
@@ -302,7 +312,8 @@ public class MultipleInstanceSubProcessTest extends SubProcessTest<MultipleInsta
                                                      SUBPROCESS_ON_ENTRY_ACTION_MVEL,
                                                      SUBPROCESS_SCRIPT_MVEL_LANGUAGE,
                                                      SUBPROCESS_ON_EXIT_ACTION_MVEL,
-                                                     SUBPROCESS_SCRIPT_MVEL_LANGUAGE);
+                                                     SUBPROCESS_SCRIPT_MVEL_LANGUAGE,
+                                                     SLA_DUE_DATE);
         assertSubProcessProcessData(subProcessLevelSubProcessMVEL.getProcessData(), SUB_PROCESS_VARIABLES_MVEL);
     }
 
@@ -329,7 +340,8 @@ public class MultipleInstanceSubProcessTest extends SubProcessTest<MultipleInsta
                                                      EMPTY_VALUE,
                                                      SUBPROCESS_SCRIPT_JAVA_LANGUAGE,
                                                      EMPTY_VALUE,
-                                                     SUBPROCESS_SCRIPT_JAVA_LANGUAGE);
+                                                     SUBPROCESS_SCRIPT_JAVA_LANGUAGE,
+                                                     EMPTY_VALUE);
         assertSubProcessProcessData(subProcessLevelSubProcess.getProcessData(), EMPTY_VALUE);
     }
 
@@ -387,14 +399,17 @@ public class MultipleInstanceSubProcessTest extends SubProcessTest<MultipleInsta
                                                               String onEntryActionScriptValue,
                                                               String onEntryActionScriptLanguage,
                                                               String onExitActionScriptValue,
-                                                              String onExitActionScriptLanguage) {
+                                                              String onExitActionScriptLanguage,
+                                                              String slaDueDate) {
         assertThat(executionSet).isNotNull();
+
         assertThat(executionSet.getMultipleInstanceCollectionInput()).isNotNull();
         assertThat(executionSet.getMultipleInstanceCollectionOutput()).isNotNull();
         assertThat(executionSet.getMultipleInstanceDataInput()).isNotNull();
         assertThat(executionSet.getMultipleInstanceDataOutput()).isNotNull();
         assertThat(executionSet.getMultipleInstanceCompletionCondition()).isNotNull();
         assertThat(executionSet.getIsAsync()).isNotNull();
+        assertThat(executionSet.getSlaDueDate()).isNotNull();
 
         assertThat(executionSet.getOnEntryAction()).isNotNull();
         assertThat(executionSet.getOnExitAction()).isNotNull();
@@ -416,6 +431,7 @@ public class MultipleInstanceSubProcessTest extends SubProcessTest<MultipleInsta
         assertThat(executionSet.getMultipleInstanceCompletionCondition().getValue()).isEqualTo(multipleInstanceCompletionCondition);
 
         assertThat(executionSet.getIsAsync().getValue()).isEqualTo(isAsync);
+        assertThat(executionSet.getSlaDueDate().getValue()).isEqualTo(slaDueDate);
 
         assertThat(onEntryScriptTypeValues.get(0).getScript()).isEqualTo(onEntryActionScriptValue);
         assertThat(onEntryScriptTypeValues.get(0).getLanguage()).isEqualTo(onEntryActionScriptLanguage);

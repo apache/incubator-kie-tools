@@ -30,7 +30,7 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.SkipFormField;
 import org.kie.workbench.common.forms.adf.definitions.annotations.field.selector.SelectorDataProvider;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.type.ListBoxFieldType;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.type.TextAreaFieldType;
-import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 import org.kie.workbench.common.stunner.bpmn.forms.model.MultipleInstanceVariableFieldType;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
@@ -42,7 +42,7 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 @FormDefinition(
         startElement = "multipleInstanceExecutionMode"
 )
-public class MultipleInstanceSubprocessTaskExecutionSet implements BPMNPropertySet {
+public class MultipleInstanceSubprocessTaskExecutionSet extends BaseSubprocessTaskExecutionSet {
 
     @Property
     @Valid
@@ -140,7 +140,8 @@ public class MultipleInstanceSubprocessTaskExecutionSet implements BPMNPropertyS
              new OnExitAction(new ScriptTypeListValue().addValue(new ScriptTypeValue("java",
                                                                                      ""))),
              new IsMultipleInstance(true),
-             new IsAsync());
+             new IsAsync(),
+             new SLADueDate());
     }
 
     public MultipleInstanceSubprocessTaskExecutionSet(final @MapsTo("multipleInstanceExecutionMode") MultipleInstanceExecutionMode multipleInstanceExecutionMode,
@@ -152,9 +153,9 @@ public class MultipleInstanceSubprocessTaskExecutionSet implements BPMNPropertyS
                                                       final @MapsTo("onEntryAction") OnEntryAction onEntryAction,
                                                       final @MapsTo("onExitAction") OnExitAction onExitAction,
                                                       final @MapsTo("isMultipleInstance") IsMultipleInstance isMultipleInstance,
-                                                      final @MapsTo("isAsync") IsAsync isAsync
-
-    ) {
+                                                      final @MapsTo("isAsync") IsAsync isAsync,
+                                                      final @MapsTo("slaDueDate") SLADueDate slaDueDate) {
+        super(slaDueDate);
         this.multipleInstanceExecutionMode = multipleInstanceExecutionMode;
         this.multipleInstanceCollectionInput = multipleInstanceCollectionInput;
         this.multipleInstanceCollectionOutput = multipleInstanceCollectionOutput;
@@ -249,7 +250,8 @@ public class MultipleInstanceSubprocessTaskExecutionSet implements BPMNPropertyS
 
     @Override
     public int hashCode() {
-        return HashUtil.combineHashCodes(Objects.hashCode(multipleInstanceExecutionMode),
+        return HashUtil.combineHashCodes(super.hashCode(),
+                                         Objects.hashCode(multipleInstanceExecutionMode),
                                          Objects.hashCode(multipleInstanceCollectionInput),
                                          Objects.hashCode(multipleInstanceCollectionOutput),
                                          Objects.hashCode(multipleInstanceDataInput),
@@ -265,7 +267,8 @@ public class MultipleInstanceSubprocessTaskExecutionSet implements BPMNPropertyS
     public boolean equals(Object o) {
         if (o instanceof MultipleInstanceSubprocessTaskExecutionSet) {
             MultipleInstanceSubprocessTaskExecutionSet other = (MultipleInstanceSubprocessTaskExecutionSet) o;
-            return Objects.equals(multipleInstanceExecutionMode, other.multipleInstanceExecutionMode) &&
+            return super.equals(other) &&
+                    Objects.equals(multipleInstanceExecutionMode, other.multipleInstanceExecutionMode) &&
                     Objects.equals(multipleInstanceCollectionInput, other.multipleInstanceCollectionInput) &&
                     Objects.equals(multipleInstanceCollectionOutput, other.multipleInstanceCollectionOutput) &&
                     Objects.equals(multipleInstanceDataInput, other.multipleInstanceDataInput) &&
