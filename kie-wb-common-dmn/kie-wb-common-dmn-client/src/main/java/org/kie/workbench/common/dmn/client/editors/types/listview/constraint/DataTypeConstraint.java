@@ -23,6 +23,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import elemental2.dom.HTMLElement;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
 import org.kie.workbench.common.dmn.api.definition.model.ConstraintType;
 import org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItem;
@@ -37,7 +38,9 @@ public class DataTypeConstraint {
 
     private final View view;
 
-    private final DataTypeConstraintModal constraintModal;
+    private final ManagedInstance<DataTypeConstraintModal> constraintModalManagedInstance;
+
+    private DataTypeConstraintModal constraintModal;
 
     private boolean isEditModeEnabled = false;
 
@@ -49,9 +52,9 @@ public class DataTypeConstraint {
 
     @Inject
     public DataTypeConstraint(final View view,
-                              final DataTypeConstraintModal constraintModal) {
+                              final ManagedInstance<DataTypeConstraintModal> constraintModalManagedInstance) {
         this.view = view;
-        this.constraintModal = constraintModal;
+        this.constraintModalManagedInstance = constraintModalManagedInstance;
     }
 
     @PostConstruct
@@ -119,8 +122,8 @@ public class DataTypeConstraint {
     }
 
     void openModal() {
-        constraintModal.load(getListItem().getType(), getValue(), getConstraintType());
-        constraintModal.show(getOnShowConsumer());
+        constraintModal().load(getListItem().getType(), getValue(), getConstraintType());
+        constraintModal().show(getOnShowConsumer());
     }
 
     BiConsumer<String, ConstraintType> getOnShowConsumer() {
@@ -151,6 +154,26 @@ public class DataTypeConstraint {
                                final ConstraintType type) {
         constraintValue = value;
         constraintType = type;
+    }
+
+    DataTypeConstraintModal constraintModal() {
+        /*
+         * The 'constraintModal' field is lazily instantiated for performance reasons.
+         * When the Data Type list has many Data Types, the 'DataTypeConstraintModal' instantiation
+         * considerably decreases the performance of the Data Type list. So, this approach postpones initialization.
+         * */
+        if (constraintModal == null) {
+            constraintModal = constraintModalManagedInstance.get();
+        }
+        return constraintModal;
+    }
+
+    /**
+     * DO NOT CALL THIS METHOD.
+     * This method is used just for testing.
+     */
+    DataTypeConstraintModal getConstraintModal() {
+        return constraintModal;
     }
 
     public interface View extends UberElemental<DataTypeConstraint>,

@@ -20,6 +20,7 @@ import java.util.function.BiConsumer;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import elemental2.dom.HTMLElement;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,6 +31,9 @@ import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.dmn.api.definition.model.ConstraintType.ENUMERATION;
 import static org.mockito.Mockito.doReturn;
@@ -45,13 +49,17 @@ public class DataTypeConstraintTest {
     private DataTypeConstraint.View view;
 
     @Mock
+    private ManagedInstance<DataTypeConstraintModal> constraintModalManagedInstance;
+
+    @Mock
     private DataTypeConstraintModal constraintModal;
 
     private DataTypeConstraint dataTypeConstraint;
 
     @Before
     public void setup() {
-        dataTypeConstraint = spy(new DataTypeConstraint(view, constraintModal));
+        dataTypeConstraint = spy(new DataTypeConstraint(view, constraintModalManagedInstance));
+        when(constraintModalManagedInstance.get()).thenReturn(constraintModal);
     }
 
     @Test
@@ -212,5 +220,18 @@ public class DataTypeConstraintTest {
     public void testEnable() {
         dataTypeConstraint.enable();
         verify(view).enable();
+    }
+
+    @Test
+    public void testGetConstraintModal() {
+
+        assertNull(dataTypeConstraint.getConstraintModal());
+
+        final DataTypeConstraintModal firstCallResult = dataTypeConstraint.constraintModal();
+        final DataTypeConstraintModal secondCallResult = dataTypeConstraint.constraintModal();
+
+        assertNotNull(dataTypeConstraint.getConstraintModal());
+        assertSame(dataTypeConstraint.getConstraintModal(), firstCallResult);
+        assertSame(dataTypeConstraint.getConstraintModal(), secondCallResult);
     }
 }
