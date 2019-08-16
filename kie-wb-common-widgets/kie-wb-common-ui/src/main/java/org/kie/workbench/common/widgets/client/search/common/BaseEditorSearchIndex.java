@@ -39,6 +39,8 @@ public abstract class BaseEditorSearchIndex<T extends Searchable> implements Edi
 
     private Command noResultsFoundCallback = () -> {/* Nothing */};
 
+    private Command clearCurrentResultsCallback = () -> {/* Nothing */};
+
     @Override
     public List<HasSearchableElements<T>> getSubIndexes() {
         return hasSearchableElementsList;
@@ -52,6 +54,7 @@ public abstract class BaseEditorSearchIndex<T extends Searchable> implements Edi
     @Override
     public void search(final String term) {
 
+        triggerClearCurrentResultsCallback();
         final boolean isNewSearch = !Objects.equals(term, currentTerm);
         final Optional<T> result;
 
@@ -88,6 +91,11 @@ public abstract class BaseEditorSearchIndex<T extends Searchable> implements Edi
     @Override
     public void setNoResultsFoundCallback(final Command callback) {
         noResultsFoundCallback = callback;
+    }
+
+    @Override
+    public void setClearCurrentResultsCallback(final Command callback) {
+        clearCurrentResultsCallback = callback;
     }
 
     @Override
@@ -172,6 +180,7 @@ public abstract class BaseEditorSearchIndex<T extends Searchable> implements Edi
     }
 
     private void triggerOnFoundCommand() {
+        triggerClearCurrentResultsCallback();
         if (getCurrentResult().isPresent()) {
             getCurrentResult().get().onFound().execute();
         } else {
@@ -181,6 +190,10 @@ public abstract class BaseEditorSearchIndex<T extends Searchable> implements Edi
 
     private void triggerNoResultsFoundCommand() {
         noResultsFoundCallback.execute();
+    }
+
+    private void triggerClearCurrentResultsCallback() {
+        clearCurrentResultsCallback.execute();
     }
 
     private Optional<T> getCurrentResult() {

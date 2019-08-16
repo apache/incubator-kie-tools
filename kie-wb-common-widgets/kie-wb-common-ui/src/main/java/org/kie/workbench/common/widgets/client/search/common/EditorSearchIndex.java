@@ -59,6 +59,12 @@ public interface EditorSearchIndex<T extends Searchable> {
     void setNoResultsFoundCallback(final Command callback);
 
     /**
+     * Sets the callback that will be triggered when the current search results needs to be cleared.
+     * @param callback the callback that will be triggered
+     */
+    void setClearCurrentResultsCallback(final Command callback);
+
+    /**
      * Sets the <code>isDirty</code> logic.
      * @param isDirtySupplier represents the <code>isDirty</code> logic.
      */
