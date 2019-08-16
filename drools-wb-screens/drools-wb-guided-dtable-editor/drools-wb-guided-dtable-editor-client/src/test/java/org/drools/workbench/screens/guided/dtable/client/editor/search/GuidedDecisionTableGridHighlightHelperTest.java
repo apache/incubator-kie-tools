@@ -21,6 +21,7 @@ import java.util.HashSet;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableModellerView;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -119,8 +120,11 @@ public class GuidedDecisionTableGridHighlightHelperTest {
         final double column2Width = 110;
         final int row = 3;
         final int column = 1;
+        final GuidedDecisionTableView widget = mock(GuidedDecisionTableView.class);
+        final double paddingX = 310;
+        final double paddingY = 406;
 
-        doReturn(highlightHelper).when(helper).highlightHelper(modeller);
+        doReturn(highlightHelper).when(helper).highlightHelper(modeller, widget);
         when(gridWidget2.getModel()).thenReturn(model);
         when(model.getColumns()).thenReturn(asList(column1, column2));
         when(model.getRows()).thenReturn(asList(gridRow1, gridRow2, gridRow3, gridRow4));
@@ -130,12 +134,14 @@ public class GuidedDecisionTableGridHighlightHelperTest {
         when(gridRow4.getHeight()).thenReturn(gridRow4Height);
         when(column1.getWidth()).thenReturn(column1Width);
         when(column2.getWidth()).thenReturn(column2Width);
-        when(highlightHelper.withMinX(minX)).thenReturn(highlightHelper);
-        when(highlightHelper.withMinY(minY)).thenReturn(highlightHelper);
-        when(highlightHelper.withPaddingX(310)).thenReturn(highlightHelper);
-        when(highlightHelper.withPaddingY(406)).thenReturn(highlightHelper);
 
-        helper.highlight(row, column, modeller);
+        when(highlightHelper.withPaddingX(paddingX)).thenReturn(highlightHelper);
+        when(highlightHelper.withPaddingY(paddingY)).thenReturn(highlightHelper);
+
+        doReturn(paddingX).when(helper).getPaddingX(column, modeller, widget);
+        doReturn(paddingY).when(helper).getPaddingY(row, modeller, widget);
+
+        helper.highlight(row, column, widget, modeller);
 
         verify(highlightHelper).highlight(row, column);
     }

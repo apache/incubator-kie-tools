@@ -18,6 +18,7 @@ package org.drools.workbench.screens.guided.dtable.client.editor.search;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableModellerView;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,6 +26,7 @@ import org.mockito.Mock;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
@@ -61,6 +63,7 @@ public class GuidedDecisionTableSearchableElementTest {
     @Test
     public void testOnFound() {
 
+        final GuidedDecisionTableView widget = mock(GuidedDecisionTableView.class);
         final int row = 2;
         final int column = 4;
 
@@ -68,9 +71,10 @@ public class GuidedDecisionTableSearchableElementTest {
         element.setHighlightHelper(highlightHelper);
         element.setRow(row);
         element.setColumn(column);
+        element.setWidget(widget);
 
         element.onFound().execute();
 
-        verify(highlightHelper).highlight(row, column, modeller);
+        verify(highlightHelper).highlight(row, column, widget, modeller);
     }
 }
