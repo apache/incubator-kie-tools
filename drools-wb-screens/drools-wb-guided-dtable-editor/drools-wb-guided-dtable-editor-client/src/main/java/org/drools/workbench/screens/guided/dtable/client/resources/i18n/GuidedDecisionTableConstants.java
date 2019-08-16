@@ -363,4 +363,8 @@ public interface GuidedDecisionTableConstants
     String TablePinnedModeHelp();
 
     String PinnedMode();
+
+    String TableConvertedSuccessfully();
+
+    String Convert();
 }

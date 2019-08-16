@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,21 +14,18 @@
  * limitations under the License.
  */
 
-package org.drools.workbench.screens.dtablexls.backend.server;
+package org.drools.workbench.screens.guided.dtable.backend.server.util;
 
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.stream.Collectors;
 
-import org.drools.workbench.screens.dtablexls.service.DecisionTableXLSService;
-import org.uberfire.backend.vfs.Path;
+import org.apache.commons.io.IOUtils;
 
-public interface ExtendedDecisionTableXLSService extends DecisionTableXLSService {
+public class TestUtil {
 
-    InputStream load( final Path path,
-                      final String sessionId );
-
-    Path save( final Path resource,
-               final InputStream content,
-               final String sessionId,
-               final String comment );
-
+    public static String loadResource(final InputStream in) throws
+            Exception {
+        return IOUtils.readLines(in, StandardCharsets.UTF_8).stream().collect(Collectors.joining(System.lineSeparator()));
+    }
 }

@@ -31,6 +31,7 @@ import org.drools.workbench.screens.guided.dtable.client.type.GuidedDTableResour
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectedEvent;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
+import org.drools.workbench.screens.guided.dtable.shared.XLSConversionResult;
 import org.guvnor.common.services.project.categories.Decision;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
@@ -73,13 +74,11 @@ import static org.mockito.Mockito.when;
 @RunWith(GwtMockitoTestRunner.class)
 public class GuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisionTablePresenterTest<GuidedDecisionTableEditorPresenter> {
 
-    private GuidedDTableResourceType resourceType = new GuidedDTableResourceType(new Decision());
-
-    @Mock
-    private SaveAndRenameCommandBuilder<GuidedDecisionTable52, Metadata> saveAndRenameCommandBuilder;
-
     @Mock
     protected AuthoringWorkbenchDocks docks;
+    private GuidedDTableResourceType resourceType = new GuidedDTableResourceType(new Decision());
+    @Mock
+    private SaveAndRenameCommandBuilder<GuidedDecisionTable52, Metadata> saveAndRenameCommandBuilder;
 
     @Override
     protected GuidedDecisionTableEditorPresenter getPresenter() {
@@ -390,5 +389,25 @@ public class GuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisionTa
         final AsyncPackageDataModelOracle oracle = dtDocument.getDataModelOracle();
         final Imports imports = dtDocument.getModel().getImports();
         verify(importsWidget).setContent(same(oracle), same(imports), eq(false));
+    }
+
+    @Test
+    public void showConversionSuccess() {
+        doReturn(new XLSConversionResult()).when(dtService).convert(any());
+
+        presenter.onConvert();
+
+        verify(view).showConversionSuccess();
+        verify(view, never()).showConversionMessage(any());
+    }
+
+    @Test
+    public void showConversionMessage() {
+        doReturn(new XLSConversionResult("failed")).when(dtService).convert(any());
+
+        presenter.onConvert();
+
+        verify(view, never()).showConversionSuccess();
+        verify(view).showConversionMessage("failed");
     }
 }

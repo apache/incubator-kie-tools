@@ -543,5 +543,9 @@ public abstract class BaseGuidedDecisionTableEditorPresenter extends KieMultiple
                                   IsWidget {
 
         void setModellerView(final GuidedDecisionTableModellerView view);
+
+        void showConversionSuccess();
+
+        void showConversionMessage(final String message);
     }
 }

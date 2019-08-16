@@ -16,6 +16,8 @@
 
 package org.drools.workbench.screens.dtablexls.service;
 
+import java.io.InputStream;
+
 import org.drools.workbench.models.guided.dtable.shared.conversion.ConversionResult;
 import org.guvnor.common.services.shared.validation.ValidationService;
 import org.jboss.errai.bus.server.annotations.Remote;
@@ -36,5 +38,10 @@ public interface DecisionTableXLSService
     DecisionTableXLSContent loadContent( final Path path );
 
     String getSource( final Path path );
+
+    Path create( final Path resource,
+                 final InputStream content,
+                 final String sessionId,
+                 final String comment );
 
 }

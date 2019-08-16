@@ -16,6 +16,7 @@
 
 package org.drools.workbench.screens.dtablexls.client.editor;
 
+import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
 
@@ -327,6 +328,14 @@ public class DecisionTableXLSEditorPresenterTest {
 
             @Override
             public String getSource(Path path) {
+                return null;
+            }
+
+            @Override
+            public Path create(Path resource,
+                               InputStream content,
+                               String sessionId,
+                               String comment) {
                 return null;
             }
 

@@ -30,10 +30,12 @@ import javax.inject.Named;
 import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
 import org.drools.workbench.models.guided.dtable.backend.GuidedDTXMLPersistence;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.workbench.screens.guided.dtable.backend.server.conversion.DecisionTableGuidedToDecisionTableXLSConverter;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorGraphModel;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEditorService;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableGraphEditorService;
+import org.drools.workbench.screens.guided.dtable.shared.XLSConversionResult;
 import org.drools.workbench.screens.guided.dtable.type.GuidedDTableGraphResourceTypeDefinition;
 import org.drools.workbench.screens.workitems.service.WorkItemsEditorService;
 import org.guvnor.common.services.backend.config.SafeSessionInfo;
@@ -89,6 +91,7 @@ public class GuidedDecisionTableEditorServiceImpl
     private CommentedOptionFactory commentedOptionFactory;
     private SafeSessionInfo safeSessionInfo;
     private SaveAndRenameServiceImpl<GuidedDecisionTable52, Metadata> saveAndRenameService;
+    private DecisionTableGuidedToDecisionTableXLSConverter decisionTableGuidedToDecisionTableXLSConverter;
 
     public GuidedDecisionTableEditorServiceImpl() {
         //Zero parameter constructor for CDI
@@ -104,6 +107,7 @@ public class GuidedDecisionTableEditorServiceImpl
                                                 final KieModuleService moduleService,
                                                 final VersionRecordService versionRecordService,
                                                 final GuidedDecisionTableGraphEditorService dtableGraphService,
+                                                final DecisionTableGuidedToDecisionTableXLSConverter decisionTableGuidedToDecisionTableXLSConverter,
                                                 final GuidedDTableGraphResourceTypeDefinition dtableGraphType,
                                                 final Event<ResourceOpenedEvent> resourceOpenedEvent,
                                                 final GenericValidator genericValidator,
@@ -119,6 +123,7 @@ public class GuidedDecisionTableEditorServiceImpl
         this.moduleService = moduleService;
         this.versionRecordService = versionRecordService;
         this.dtableGraphService = dtableGraphService;
+        this.decisionTableGuidedToDecisionTableXLSConverter = decisionTableGuidedToDecisionTableXLSConverter;
         this.dtableGraphType = dtableGraphType;
         this.resourceOpenedEvent = resourceOpenedEvent;
         this.genericValidator = genericValidator;
@@ -274,6 +279,15 @@ public class GuidedDecisionTableEditorServiceImpl
             throw ExceptionUtilities.handleException(e);
         } finally {
             ioService.endBatch();
+        }
+    }
+
+    @Override
+    public XLSConversionResult convert(final Path path) {
+        try {
+            return decisionTableGuidedToDecisionTableXLSConverter.convert(path);
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 

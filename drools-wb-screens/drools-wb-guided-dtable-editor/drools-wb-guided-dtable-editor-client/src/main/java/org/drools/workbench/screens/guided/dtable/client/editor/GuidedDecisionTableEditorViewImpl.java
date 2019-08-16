@@ -17,6 +17,8 @@
 package org.drools.workbench.screens.guided.dtable.client.editor;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
@@ -25,8 +27,11 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableModellerView;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
+import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
+import org.uberfire.workbench.events.NotificationEvent;
 
 /**
  * Guided Decision Table Editor View implementation
@@ -36,31 +41,28 @@ public class GuidedDecisionTableEditorViewImpl
         extends KieEditorViewImpl
         implements GuidedDecisionTableEditorPresenter.View {
 
-    interface GuidedDecisionTableEditorViewImplUiBinder extends UiBinder<Widget, GuidedDecisionTableEditorViewImpl> {
-
-    }
-
-    private static GuidedDecisionTableEditorViewImplUiBinder uiBinder = GWT.create( GuidedDecisionTableEditorViewImplUiBinder.class );
-
+    private static GuidedDecisionTableEditorViewImplUiBinder uiBinder = GWT.create(GuidedDecisionTableEditorViewImplUiBinder.class);
     @UiField
     SimpleLayoutPanel container;
+    @Inject
+    private Event<NotificationEvent> notificationEvent;
 
     public GuidedDecisionTableEditorViewImpl() {
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
 
         //Disable LockManager's default "Lock on Demand" behaviour
-        container.getElement().setAttribute( "data-uf-lock",
-                                             "false" );
+        container.getElement().setAttribute("data-uf-lock",
+                                            "false");
 
-        addAttachHandler( new AttachEvent.Handler() {
+        addAttachHandler(new AttachEvent.Handler() {
             @Override
-            public void onAttachOrDetach( final AttachEvent event ) {
-                if ( event.isAttached() ) {
-                    getElement().getParentElement().getStyle().setHeight( 100.0, Style.Unit.PCT );
-                    getElement().getParentElement().getStyle().setWidth( 100.0, Style.Unit.PCT );
+            public void onAttachOrDetach(final AttachEvent event) {
+                if (event.isAttached()) {
+                    getElement().getParentElement().getStyle().setHeight(100.0, Style.Unit.PCT);
+                    getElement().getParentElement().getStyle().setWidth(100.0, Style.Unit.PCT);
                 }
             }
-        } );
+        });
     }
 
     @Override
@@ -69,8 +71,21 @@ public class GuidedDecisionTableEditorViewImpl
     }
 
     @Override
-    public void setModellerView( final GuidedDecisionTableModellerView view ) {
-        container.setWidget( view );
+    public void setModellerView(final GuidedDecisionTableModellerView view) {
+        container.setWidget(view);
     }
 
+    @Override
+    public void showConversionSuccess() {
+        notificationEvent.fire(new NotificationEvent(GuidedDecisionTableConstants.INSTANCE.TableConvertedSuccessfully()));
+    }
+
+    @Override
+    public void showConversionMessage(final String message) {
+        ErrorPopup.showMessage(message);
+    }
+
+    interface GuidedDecisionTableEditorViewImplUiBinder extends UiBinder<Widget, GuidedDecisionTableEditorViewImpl> {
+
+    }
 }

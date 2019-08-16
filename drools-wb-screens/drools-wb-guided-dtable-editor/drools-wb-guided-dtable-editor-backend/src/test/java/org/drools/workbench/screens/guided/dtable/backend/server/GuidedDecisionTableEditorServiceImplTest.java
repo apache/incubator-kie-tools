@@ -29,6 +29,7 @@ import javax.enterprise.event.Event;
 
 import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.workbench.screens.guided.dtable.backend.server.conversion.DecisionTableGuidedToDecisionTableXLSConverter;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorGraphModel;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableGraphEditorService;
@@ -159,6 +160,7 @@ public class GuidedDecisionTableEditorServiceImplTest {
                                                            moduleService,
                                                            versionRecordService,
                                                            dtableGraphService,
+                                                           mock(DecisionTableGuidedToDecisionTableXLSConverter.class),
                                                            dtGraphType,
                                                            resourceOpenedEvent,
                                                            genericValidator,

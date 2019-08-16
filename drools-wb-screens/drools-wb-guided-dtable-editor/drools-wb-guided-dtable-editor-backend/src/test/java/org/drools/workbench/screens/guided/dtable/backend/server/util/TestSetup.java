@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,21 +14,24 @@
  * limitations under the License.
  */
 
-package org.drools.workbench.screens.dtablexls.backend.server;
+package org.drools.workbench.screens.guided.dtable.backend.server.util;
 
-import java.io.InputStream;
+import javax.annotation.Priority;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Alternative;
+import javax.enterprise.inject.Produces;
 
 import org.drools.workbench.screens.dtablexls.service.DecisionTableXLSService;
-import org.uberfire.backend.vfs.Path;
 
-public interface ExtendedDecisionTableXLSService extends DecisionTableXLSService {
+import static org.mockito.Mockito.mock;
 
-    InputStream load( final Path path,
-                      final String sessionId );
+@ApplicationScoped
+@Priority(1)
+public class TestSetup {
 
-    Path save( final Path resource,
-               final InputStream content,
-               final String sessionId,
-               final String comment );
-
+    @Produces
+    @Alternative
+    public DecisionTableXLSService decisionTableXLSService() {
+        return mock(DecisionTableXLSService.class);
+    }
 }

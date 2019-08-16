@@ -18,6 +18,7 @@ package org.drools.workbench.screens.guided.dtable.service;
 
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
+import org.drools.workbench.screens.guided.dtable.shared.XLSConversionResult;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.validation.ValidationService;
 import org.jboss.errai.bus.server.annotations.Remote;
@@ -51,4 +52,7 @@ public interface GuidedDecisionTableEditorService
                                    final GuidedDecisionTable52 model,
                                    final Metadata metadata,
                                    final String comment);
+
+    XLSConversionResult convert(final Path path);
+
 }
