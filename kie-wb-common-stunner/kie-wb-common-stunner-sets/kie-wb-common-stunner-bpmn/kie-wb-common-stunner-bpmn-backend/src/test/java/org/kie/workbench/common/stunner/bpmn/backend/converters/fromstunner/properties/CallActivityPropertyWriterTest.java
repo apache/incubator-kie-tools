@@ -20,7 +20,6 @@ import org.junit.Test;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpmn2;
@@ -69,9 +68,10 @@ public class CallActivityPropertyWriterTest {
         tested.setAbortParent(false);
     }
 
-    private void testAbortParent(boolean value) {
-        tested.setAbortParent(value);
-        assertEquals(value, CustomElement.abortParent.of(tested.getElement()).get());
+    @Test
+    public void testSetIsAsync() {
+        tested.setAsync(Boolean.TRUE);
+        assertTrue(CustomElement.async.of(tested.getFlowElement()).get());
     }
 
     @Test
@@ -79,7 +79,6 @@ public class CallActivityPropertyWriterTest {
         String slaDueDate = "12/25/1983";
         tested.setSlaDueDate(new SLADueDate(slaDueDate));
 
-        String result = CustomElement.slaDueDate.of(tested.getFlowElement()).get();
-        assertTrue(result.contains(slaDueDate));
+        assertTrue(CustomElement.slaDueDate.of(tested.getFlowElement()).get().contains(slaDueDate));
     }
 }

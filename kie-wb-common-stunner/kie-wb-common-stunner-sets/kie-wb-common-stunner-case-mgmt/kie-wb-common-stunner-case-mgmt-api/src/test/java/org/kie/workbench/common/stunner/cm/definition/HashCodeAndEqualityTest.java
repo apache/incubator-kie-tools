@@ -20,6 +20,7 @@ import org.junit.Test;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocAutostart;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocOrdering;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.IsAsync;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnEntryAction;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnExitAction;
 import org.kie.workbench.common.stunner.cm.definition.property.diagram.DiagramSet;
@@ -216,6 +217,7 @@ public class HashCodeAndEqualityTest {
                                                                  new AdHocAutostart(),
                                                                  new OnEntryAction(),
                                                                  new OnExitAction(),
+                                                                 new IsAsync(),
                                                                  new SLADueDate()),
                              new AdHocSubprocessTaskExecutionSet(new AdHocActivationCondition(),
                                                                  new AdHocCompletionCondition(),
@@ -223,6 +225,7 @@ public class HashCodeAndEqualityTest {
                                                                  new AdHocAutostart(),
                                                                  new OnEntryAction(),
                                                                  new OnExitAction(),
+                                                                 new IsAsync(),
                                                                  new SLADueDate()))
                 .test();
     }

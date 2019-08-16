@@ -53,11 +53,6 @@ public class EmbeddedSubprocessExecutionSet extends BaseSubprocessTaskExecutionS
     @Valid
     private OnExitAction onExitAction;
 
-    @Property
-    @FormField(afterElement = "onExitAction")
-    @Valid
-    private IsAsync isAsync;
-
     public EmbeddedSubprocessExecutionSet() {
         this(new OnEntryAction(new ScriptTypeListValue().addValue(new ScriptTypeValue("java",
                                                                                       ""))),
@@ -71,10 +66,9 @@ public class EmbeddedSubprocessExecutionSet extends BaseSubprocessTaskExecutionS
                                           final @MapsTo("onExitAction") OnExitAction onExitAction,
                                           final @MapsTo("isAsync") IsAsync isAsync,
                                           final @MapsTo("slaDueDate") SLADueDate slaDueDate) {
-        super(slaDueDate);
+        super(isAsync, slaDueDate);
         this.onEntryAction = onEntryAction;
         this.onExitAction = onExitAction;
-        this.isAsync = isAsync;
     }
 
     public OnEntryAction getOnEntryAction() {
@@ -93,20 +87,11 @@ public class EmbeddedSubprocessExecutionSet extends BaseSubprocessTaskExecutionS
         this.onExitAction = onExitAction;
     }
 
-    public IsAsync getIsAsync() {
-        return isAsync;
-    }
-
-    public void setIsAsync(IsAsync isAsync) {
-        this.isAsync = isAsync;
-    }
-
     @Override
     public int hashCode() {
         return HashUtil.combineHashCodes(super.hashCode(),
                                          Objects.hashCode(onEntryAction),
-                                         Objects.hashCode(onExitAction),
-                                         Objects.hashCode(isAsync));
+                                         Objects.hashCode(onExitAction));
     }
 
     @Override
@@ -115,8 +100,7 @@ public class EmbeddedSubprocessExecutionSet extends BaseSubprocessTaskExecutionS
             EmbeddedSubprocessExecutionSet other = (EmbeddedSubprocessExecutionSet) o;
             return super.equals(other) &&
                     Objects.equals(onEntryAction, other.onEntryAction) &&
-                    Objects.equals(onExitAction, other.onExitAction) &&
-                    Objects.equals(isAsync, other.isAsync);
+                    Objects.equals(onExitAction, other.onExitAction);
         }
         return false;
     }

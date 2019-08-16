@@ -102,13 +102,6 @@ public class CaseReusableSubprocessTaskExecutionSet
     protected WaitForCompletion waitForCompletion;
 
     @Property
-    @FormField(
-            afterElement = "waitForCompletion"
-    )
-    @Valid
-    protected IsAsync isAsync;
-
-    @Property
     @FormField(afterElement = "isAsync")
     @Valid
     private AdHocAutostart adHocAutostart;
@@ -233,13 +226,12 @@ public class CaseReusableSubprocessTaskExecutionSet
                                                   final @MapsTo("onEntryAction") OnEntryAction onEntryAction,
                                                   final @MapsTo("onExitAction") OnExitAction onExitAction,
                                                   final @MapsTo("slaDueDate") SLADueDate slaDueDate) {
-        super(slaDueDate);
+        super(isAsync, slaDueDate);
         this.calledElement = calledElement;
         this.isCase = isCase;
         this.independent = independent;
         this.abortParent = abortParent;
         this.waitForCompletion = waitForCompletion;
-        this.isAsync = isAsync;
         this.adHocAutostart = adHocAutostart;
         this.isMultipleInstance = isMultipleInstance;
         this.multipleInstanceExecutionMode = multipleInstanceExecutionMode;
@@ -300,16 +292,6 @@ public class CaseReusableSubprocessTaskExecutionSet
     @Override
     public void setWaitForCompletion(final WaitForCompletion waitForCompletion) {
         this.waitForCompletion = waitForCompletion;
-    }
-
-    @Override
-    public IsAsync getIsAsync() {
-        return isAsync;
-    }
-
-    @Override
-    public void setIsAsync(IsAsync isAsync) {
-        this.isAsync = isAsync;
     }
 
     @Override
@@ -420,7 +402,6 @@ public class CaseReusableSubprocessTaskExecutionSet
                                          Objects.hashCode(independent),
                                          Objects.hashCode(abortParent),
                                          Objects.hashCode(waitForCompletion),
-                                         Objects.hashCode(isAsync),
                                          Objects.hashCode(adHocAutostart),
                                          Objects.hashCode(isMultipleInstance),
                                          Objects.hashCode(multipleInstanceExecutionMode),
@@ -446,7 +427,6 @@ public class CaseReusableSubprocessTaskExecutionSet
                     Objects.equals(independent, other.independent) &&
                     Objects.equals(abortParent, other.abortParent) &&
                     Objects.equals(waitForCompletion, other.waitForCompletion) &&
-                    Objects.equals(isAsync, other.isAsync) &&
                     Objects.equals(adHocAutostart, other.adHocAutostart) &&
                     Objects.equals(isMultipleInstance, other.isMultipleInstance) &&
                     Objects.equals(multipleInstanceExecutionMode, other.multipleInstanceExecutionMode) &&

@@ -131,6 +131,18 @@ public class CallActivityPropertyReaderTest {
     }
 
     @Test
+    public void testIsAsync() {
+        CallActivity callActivity = bpmn2.createCallActivity();
+        CustomElement.async.of(callActivity).set(Boolean.TRUE);
+
+        tested = new CallActivityPropertyReader(callActivity,
+                                                definitionResolver.getDiagram(),
+                                                definitionResolver);
+
+        assertTrue(tested.isAsync());
+    }
+
+    @Test
     public void testGetSlaDueDate() {
         String rawSlaDueDate = "12/25/1983";
 

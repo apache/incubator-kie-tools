@@ -34,6 +34,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocAutos
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocOrdering;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.BaseAdHocSubprocessTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.BaseSubprocessTaskExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.IsAsync;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnEntryAction;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnExitAction;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeListValue;
@@ -102,6 +103,7 @@ public class AdHocSubprocessTaskExecutionSet
                                                                                       ""))),
              new OnExitAction(new ScriptTypeListValue().addValue(new ScriptTypeValue("java",
                                                                                      ""))),
+             new IsAsync(),
              new SLADueDate());
     }
 
@@ -111,8 +113,9 @@ public class AdHocSubprocessTaskExecutionSet
                                            final @MapsTo("adHocAutostart") AdHocAutostart adHocAutostart,
                                            final @MapsTo("onEntryAction") OnEntryAction onEntryAction,
                                            final @MapsTo("onExitAction") OnExitAction onExitAction,
+                                           final @MapsTo("isAsync") IsAsync isAsync,
                                            final @MapsTo("slaDueDate") SLADueDate slaDueDate) {
-        super(slaDueDate);
+        super(isAsync, slaDueDate);
         this.adHocActivationCondition = adHocActivationCondition;
         this.adHocCompletionCondition = adHocCompletionCondition;
         this.adHocOrdering = adHocOrdering;

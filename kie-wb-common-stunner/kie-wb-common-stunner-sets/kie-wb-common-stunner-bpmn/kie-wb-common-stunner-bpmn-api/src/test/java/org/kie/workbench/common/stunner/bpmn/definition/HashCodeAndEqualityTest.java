@@ -1384,6 +1384,7 @@ public class HashCodeAndEqualityTest {
                                                                  new AdHocAutostart(),
                                                                  new OnEntryAction(),
                                                                  new OnExitAction(),
+                                                                 new IsAsync(),
                                                                  new SLADueDate()),
                              new AdHocSubprocessTaskExecutionSet(new AdHocActivationCondition(),
                                                                  new AdHocCompletionCondition(),
@@ -1391,6 +1392,7 @@ public class HashCodeAndEqualityTest {
                                                                  new AdHocAutostart(),
                                                                  new OnEntryAction(),
                                                                  new OnExitAction(),
+                                                                 new IsAsync(),
                                                                  new SLADueDate()))
                 .test();
     }

@@ -33,5 +33,7 @@ public interface BaseAdHocSubprocessTaskExecutionSet extends BPMNPropertySet {
 
     AdHocAutostart getAdHocAutostart();
 
+    IsAsync getIsAsync();
+
     SLADueDate getSlaDueDate();
 }

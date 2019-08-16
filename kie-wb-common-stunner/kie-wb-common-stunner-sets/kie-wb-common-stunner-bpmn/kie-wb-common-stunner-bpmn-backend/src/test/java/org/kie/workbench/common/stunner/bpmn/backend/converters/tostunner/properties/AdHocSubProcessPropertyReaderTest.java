@@ -154,6 +154,18 @@ public class AdHocSubProcessPropertyReaderTest {
     }
 
     @Test
+    public void testIsAsync() {
+        AdHocSubProcess adHocSubProcess = bpmn2.createAdHocSubProcess();
+        CustomElement.async.of(adHocSubProcess).set(Boolean.TRUE);
+
+        tested = new AdHocSubProcessPropertyReader(adHocSubProcess,
+                                                   definitionResolverReal.getDiagram(),
+                                                   definitionResolverReal);
+
+        assertTrue(tested.isAsync());
+    }
+
+    @Test
     public void testGetSlaDueDate() {
         String rawSlaDueDate = "12/25/1983";
 

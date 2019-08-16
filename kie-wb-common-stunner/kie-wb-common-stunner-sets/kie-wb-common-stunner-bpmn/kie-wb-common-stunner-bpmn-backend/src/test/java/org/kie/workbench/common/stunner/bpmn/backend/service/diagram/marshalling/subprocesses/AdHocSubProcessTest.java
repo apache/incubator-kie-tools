@@ -102,6 +102,7 @@ public class AdHocSubProcessTest extends SubProcessTest<AdHocSubprocess> {
                                           SUBPROCESS_SCRIPT_JAVA_LANGUAGE,
                                           EMPTY_VALUE,
                                           SUBPROCESS_SCRIPT_JAVA_LANGUAGE,
+                                          IS_NOT_ASYNC,
                                           EMPTY_VALUE);
         assertSubProcessProcessData(topLevelSubProcess.getProcessData(), EMPTY_VALUE);
     }
@@ -136,6 +137,7 @@ public class AdHocSubProcessTest extends SubProcessTest<AdHocSubprocess> {
                                           SUBPROCESS_SCRIPT_JAVA_LANGUAGE,
                                           SUBPROCESS_ON_EXIT_ACTION_JAVA,
                                           SUBPROCESS_SCRIPT_JAVA_LANGUAGE,
+                                          IS_ASYNC,
                                           SLA_DUE_DATE);
         assertSubProcessProcessData(topLevelSubProcessJava.getProcessData(), SUB_PROCESS_VARIABLES_JAVA);
 
@@ -153,6 +155,7 @@ public class AdHocSubProcessTest extends SubProcessTest<AdHocSubprocess> {
                                           SUBPROCESS_SCRIPT_JAVASCRIPT_LANGUAGE,
                                           SUBPROCESS_ON_EXIT_ACTION_JAVASCRIPT,
                                           SUBPROCESS_SCRIPT_JAVASCRIPT_LANGUAGE,
+                                          IS_ASYNC,
                                           SLA_DUE_DATE);
         assertSubProcessProcessData(topLevelSubProcessJavascript.getProcessData(), SUB_PROCESS_VARIABLES_JAVASCRIPT);
 
@@ -170,6 +173,7 @@ public class AdHocSubProcessTest extends SubProcessTest<AdHocSubprocess> {
                                           SUBPROCESS_SCRIPT_MVEL_LANGUAGE,
                                           SUBPROCESS_ON_EXIT_ACTION_MVEL,
                                           SUBPROCESS_SCRIPT_MVEL_LANGUAGE,
+                                          IS_ASYNC,
                                           SLA_DUE_DATE);
         assertSubProcessProcessData(topLevelSubProcessMVEL.getProcessData(), SUB_PROCESS_VARIABLES_MVEL);
     }
@@ -195,6 +199,7 @@ public class AdHocSubProcessTest extends SubProcessTest<AdHocSubprocess> {
                                           SUBPROCESS_SCRIPT_JAVA_LANGUAGE,
                                           EMPTY_VALUE,
                                           SUBPROCESS_SCRIPT_JAVA_LANGUAGE,
+                                          IS_NOT_ASYNC,
                                           EMPTY_VALUE);
         assertSubProcessProcessData(topLevelSubProcess.getProcessData(), EMPTY_VALUE);
     }
@@ -218,6 +223,7 @@ public class AdHocSubProcessTest extends SubProcessTest<AdHocSubprocess> {
                                           SUBPROCESS_SCRIPT_JAVA_LANGUAGE,
                                           EMPTY_VALUE,
                                           SUBPROCESS_SCRIPT_JAVA_LANGUAGE,
+                                          IS_NOT_ASYNC,
                                           EMPTY_VALUE);
         assertSubProcessProcessData(subProcessLevelSubProcess.getProcessData(), EMPTY_VALUE);
     }
@@ -252,6 +258,7 @@ public class AdHocSubProcessTest extends SubProcessTest<AdHocSubprocess> {
                                           SUBPROCESS_SCRIPT_JAVA_LANGUAGE,
                                           SUBPROCESS_ON_EXIT_ACTION_JAVA,
                                           SUBPROCESS_SCRIPT_JAVA_LANGUAGE,
+                                          IS_ASYNC,
                                           SLA_DUE_DATE);
         assertSubProcessProcessData(subProcessLevelSubProcessJava.getProcessData(), SUB_PROCESS_VARIABLES_JAVA);
 
@@ -269,6 +276,7 @@ public class AdHocSubProcessTest extends SubProcessTest<AdHocSubprocess> {
                                           SUBPROCESS_SCRIPT_JAVASCRIPT_LANGUAGE,
                                           SUBPROCESS_ON_EXIT_ACTION_JAVASCRIPT,
                                           SUBPROCESS_SCRIPT_JAVASCRIPT_LANGUAGE,
+                                          IS_ASYNC,
                                           SLA_DUE_DATE);
         assertSubProcessProcessData(subProcessLevelSubProcessJavascript.getProcessData(), SUB_PROCESS_VARIABLES_JAVASCRIPT);
 
@@ -286,6 +294,7 @@ public class AdHocSubProcessTest extends SubProcessTest<AdHocSubprocess> {
                                           SUBPROCESS_SCRIPT_MVEL_LANGUAGE,
                                           SUBPROCESS_ON_EXIT_ACTION_MVEL,
                                           SUBPROCESS_SCRIPT_MVEL_LANGUAGE,
+                                          IS_ASYNC,
                                           SLA_DUE_DATE);
         assertSubProcessProcessData(subProcessLevelSubProcessMVEL.getProcessData(), SUB_PROCESS_VARIABLES_MVEL);
     }
@@ -311,6 +320,7 @@ public class AdHocSubProcessTest extends SubProcessTest<AdHocSubprocess> {
                                           SUBPROCESS_SCRIPT_JAVA_LANGUAGE,
                                           EMPTY_VALUE,
                                           SUBPROCESS_SCRIPT_JAVA_LANGUAGE,
+                                          IS_NOT_ASYNC,
                                           EMPTY_VALUE);
         assertSubProcessProcessData(subProcessLevelSubProcess.getProcessData(), EMPTY_VALUE);
     }
@@ -367,6 +377,7 @@ public class AdHocSubProcessTest extends SubProcessTest<AdHocSubprocess> {
                                                    String onEntryActionScriptLanguage,
                                                    String onExitActionScriptValue,
                                                    String onExitActionScriptLanguage,
+                                                   Boolean isAsync,
                                                    String slaDueDate) {
         assertThat(executionSet).isNotNull();
 
@@ -398,5 +409,8 @@ public class AdHocSubProcessTest extends SubProcessTest<AdHocSubprocess> {
 
         assertThat(executionSet.getSlaDueDate()).isNotNull();
         assertThat(executionSet.getSlaDueDate().getValue()).isEqualTo(slaDueDate);
+
+        assertThat(executionSet.getIsAsync()).isNotNull();
+        assertThat(executionSet.getIsAsync().getValue()).isEqualTo(isAsync);
     }
 }

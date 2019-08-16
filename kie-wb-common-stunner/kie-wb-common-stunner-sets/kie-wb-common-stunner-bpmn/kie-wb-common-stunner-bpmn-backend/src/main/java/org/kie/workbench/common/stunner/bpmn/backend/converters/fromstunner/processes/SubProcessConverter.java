@@ -133,6 +133,7 @@ public class SubProcessConverter extends ProcessConverterDelegate {
         p.setAdHocOrdering(executionSet.getAdHocOrdering());
         p.setOnEntryAction(executionSet.getOnEntryAction());
         p.setOnExitAction(executionSet.getOnExitAction());
+        p.setAsync(executionSet.getIsAsync().getValue());
         p.setSlaDueDate(executionSet.getSlaDueDate());
 
         p.setSimulationSet(definition.getSimulationSet());

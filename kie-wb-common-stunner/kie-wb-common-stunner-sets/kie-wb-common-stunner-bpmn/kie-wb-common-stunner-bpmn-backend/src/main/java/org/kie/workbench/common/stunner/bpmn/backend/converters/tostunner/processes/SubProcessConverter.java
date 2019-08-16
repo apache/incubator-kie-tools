@@ -28,6 +28,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocAutos
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocCompletionCondition;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocOrdering;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocSubprocessTaskExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.IsAsync;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnEntryAction;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnExitAction;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessData;
@@ -66,6 +67,7 @@ public class SubProcessConverter extends BaseSubProcessConverter<AdHocSubprocess
                                                    new AdHocAutostart(p.isAdHocAutostart()),
                                                    new OnEntryAction(p.getOnEntryAction()),
                                                    new OnExitAction(p.getOnExitAction()),
+                                                   new IsAsync(p.isAsync()),
                                                    new SLADueDate(p.getSlaDueDate()));
     }
 }

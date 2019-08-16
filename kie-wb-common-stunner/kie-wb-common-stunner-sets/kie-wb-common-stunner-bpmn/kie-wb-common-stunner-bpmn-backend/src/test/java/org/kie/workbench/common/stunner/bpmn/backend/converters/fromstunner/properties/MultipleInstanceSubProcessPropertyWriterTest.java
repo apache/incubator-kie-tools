@@ -68,11 +68,16 @@ public class MultipleInstanceSubProcessPropertyWriterTest {
     }
 
     @Test
+    public void testSetIsAsync() {
+        tested.setAsync(Boolean.TRUE);
+        assertTrue(CustomElement.async.of(tested.getFlowElement()).get());
+    }
+
+    @Test
     public void testSetSlaDueDate() {
         String slaDueDate = "12/25/1983";
         tested.setSlaDueDate(new SLADueDate(slaDueDate));
 
-        String result = CustomElement.slaDueDate.of(tested.getFlowElement()).get();
-        assertTrue(result.contains(slaDueDate));
+        assertTrue(CustomElement.slaDueDate.of(tested.getFlowElement()).get().contains(slaDueDate));
     }
 }

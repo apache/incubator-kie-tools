@@ -275,14 +275,20 @@ public class ReusableSubprocessConverterTest {
     }
 
     @Test
-    public void testToFlowElement_slaDueDate() {
+    public void testToFlowElement() {
         final ReusableSubprocess definition = new ReusableSubprocess();
         definition.getExecutionSet().setSlaDueDate(new SLADueDate(SLA_DUE_DATE));
+        definition.getExecutionSet().setIsAsync(new IsAsync(Boolean.TRUE));
+
         final View<BaseReusableSubprocess> view = new ViewImpl<>(definition, Bounds.create());
         final Node<View<BaseReusableSubprocess>, ?> node = new NodeImpl<>(java.util.UUID.randomUUID().toString());
         node.setContent(view);
 
         final PropertyWriter propertyWriter = tested.toFlowElement(node);
+
+        assertTrue(CallActivityPropertyWriter.class.isInstance(propertyWriter));
+        assertTrue(CustomElement.async.of(propertyWriter.getFlowElement()).get());
+
         assertTrue(CallActivityPropertyWriter.class.isInstance(propertyWriter));
         assertTrue(CustomElement.slaDueDate.of(propertyWriter.getFlowElement()).get().contains(SLA_DUE_DATE));
     }

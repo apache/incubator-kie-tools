@@ -92,11 +92,16 @@ public class AdHocSubProcessPropertyWriterTest {
     }
 
     @Test
+    public void testSetAsync() {
+        tested.setAsync(true);
+        assertTrue(CustomElement.async.of(tested.getFlowElement()).get());
+    }
+
+    @Test
     public void testSetSlaDueDate() {
         String slaDueDate = "12/25/1983";
         tested.setSlaDueDate(new SLADueDate(slaDueDate));
 
-        String result = CustomElement.slaDueDate.of(tested.getFlowElement()).get();
-        assertTrue(result.contains(slaDueDate));
+        assertTrue(CustomElement.slaDueDate.of(tested.getFlowElement()).get().contains(slaDueDate));
     }
 }

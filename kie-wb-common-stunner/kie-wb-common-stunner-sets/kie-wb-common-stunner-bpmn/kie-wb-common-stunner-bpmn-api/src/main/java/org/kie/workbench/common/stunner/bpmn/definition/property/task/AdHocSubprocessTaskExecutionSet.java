@@ -92,6 +92,7 @@ public class AdHocSubprocessTaskExecutionSet
              new AdHocAutostart(),
              new OnEntryAction(new ScriptTypeListValue().addValue(new ScriptTypeValue("java", ""))),
              new OnExitAction(new ScriptTypeListValue().addValue(new ScriptTypeValue("java", ""))),
+             new IsAsync(),
              new SLADueDate());
     }
 
@@ -101,8 +102,9 @@ public class AdHocSubprocessTaskExecutionSet
                                            final @MapsTo("adHocAutostart") AdHocAutostart adHocAutostart,
                                            final @MapsTo("onEntryAction") OnEntryAction onEntryAction,
                                            final @MapsTo("onExitAction") OnExitAction onExitAction,
+                                           final @MapsTo("isAsync") IsAsync isAsync,
                                            final @MapsTo("slaDueDate") SLADueDate slaDueDate) {
-        super(slaDueDate);
+        super(isAsync, slaDueDate);
         this.adHocActivationCondition = adHocActivationCondition;
         this.adHocCompletionCondition = adHocCompletionCondition;
         this.adHocOrdering = adHocOrdering;

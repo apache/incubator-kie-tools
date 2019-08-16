@@ -38,7 +38,6 @@ import org.kie.workbench.common.stunner.bpmn.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.EmbeddedSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.EventSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.MultipleInstanceSubprocess;
-import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocSubprocessTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.BaseSubprocessTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessData;
@@ -138,8 +137,9 @@ public class SubProcessConverterTest {
     }
 
     @Test
-    public void testConvertAdHocSubprocessNode_SlaDueDate() {
+    public void testConvertAdHocSubprocessNode() {
         SubProcess subProcess = bpmn2.createAdHocSubProcess();
+        CustomElement.async.setValue(subProcess, Boolean.TRUE);
         CustomElement.slaDueDate.setValue(subProcess, SLA_DUE_DATE);
 
         Result<BpmnNode> result = tested.convertSubProcess(subProcess);
@@ -151,9 +151,10 @@ public class SubProcessConverterTest {
     }
 
     @Test
-    public void testConvertMultInstanceSubprocessNode_SlaDueDate() {
+    public void testConvertMultInstanceSubprocessNode() {
         SubProcess subProcess = bpmn2.createSubProcess();
         subProcess.setLoopCharacteristics(bpmn2.createMultiInstanceLoopCharacteristics());
+        CustomElement.async.setValue(subProcess, Boolean.TRUE);
         CustomElement.slaDueDate.setValue(subProcess, SLA_DUE_DATE);
 
         Result<BpmnNode> result = tested.convertSubProcess(subProcess);
@@ -165,8 +166,9 @@ public class SubProcessConverterTest {
     }
 
     @Test
-    public void testConvertEmbeddedSubprocessNode_SlaDueDate() {
+    public void testConvertEmbeddedSubprocessNode() {
         SubProcess subProcess = bpmn2.createSubProcess();
+        CustomElement.async.setValue(subProcess, Boolean.TRUE);
         CustomElement.slaDueDate.setValue(subProcess, SLA_DUE_DATE);
 
         Result<BpmnNode> result = tested.convertSubProcess(subProcess);
@@ -178,9 +180,10 @@ public class SubProcessConverterTest {
     }
 
     @Test
-    public void testConvertEventSubprocessNode_SlaDueDate() {
+    public void testConvertEventSubprocessNode() {
         SubProcess subProcess = bpmn2.createSubProcess();
         subProcess.setTriggeredByEvent(Boolean.TRUE);
+        CustomElement.async.setValue(subProcess, Boolean.TRUE);
         CustomElement.slaDueDate.setValue(subProcess, SLA_DUE_DATE);
 
         Result<BpmnNode> result = tested.convertSubProcess(subProcess);
@@ -194,8 +197,10 @@ public class SubProcessConverterTest {
     private void assertBaseSubprocessExecutionSet(BaseSubprocessTaskExecutionSet executionSet) {
         assertNotNull(executionSet);
 
-        SLADueDate slaDueDate = executionSet.getSlaDueDate();
-        assertNotNull(slaDueDate);
-        assertTrue(slaDueDate.getValue().contains(SLA_DUE_DATE));
+        assertNotNull(executionSet.getIsAsync());
+        assertTrue(executionSet.getIsAsync().getValue());
+
+        assertNotNull(executionSet.getSlaDueDate());
+        assertTrue(executionSet.getSlaDueDate().getValue().contains(SLA_DUE_DATE));
     }
 }

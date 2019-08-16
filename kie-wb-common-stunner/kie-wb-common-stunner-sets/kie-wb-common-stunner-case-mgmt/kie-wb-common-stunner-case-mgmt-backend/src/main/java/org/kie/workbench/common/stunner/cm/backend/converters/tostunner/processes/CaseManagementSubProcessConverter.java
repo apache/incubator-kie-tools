@@ -25,6 +25,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.proper
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocAutostart;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocOrdering;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.IsAsync;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnEntryAction;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnExitAction;
 import org.kie.workbench.common.stunner.cm.definition.AdHocSubprocess;
@@ -68,6 +69,7 @@ public class CaseManagementSubProcessConverter extends BaseSubProcessConverter<A
                                                    new AdHocAutostart(p.isAdHocAutostart()),
                                                    new OnEntryAction(p.getOnEntryAction()),
                                                    new OnExitAction(p.getOnExitAction()),
+                                                   new IsAsync(p.isAsync()),
                                                    new SLADueDate(p.getSlaDueDate()));
     }
 }

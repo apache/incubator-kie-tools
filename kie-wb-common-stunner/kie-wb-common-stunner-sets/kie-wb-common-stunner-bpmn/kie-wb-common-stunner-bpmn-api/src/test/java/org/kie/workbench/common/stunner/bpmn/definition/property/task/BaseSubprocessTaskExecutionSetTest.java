@@ -25,9 +25,30 @@ import static org.junit.Assert.assertEquals;
 public class BaseSubprocessTaskExecutionSetTest {
 
     @Test
+    public void testGetIsAsync() {
+        BaseSubprocessTaskExecutionSet a = new BaseSubprocessTaskExecutionSet();
+        Assert.assertEquals(new IsAsync(), a.getIsAsync());
+    }
+
+    @Test
+    public void testSetIsAsync() {
+        final IsAsync isAsyncFalse = new IsAsync(false);
+        final IsAsync isAsyncTrue = new IsAsync(true);
+
+        final BaseSubprocessTaskExecutionSet a = new BaseSubprocessTaskExecutionSet();
+        a.setIsAsync(isAsyncFalse);
+
+        final BaseSubprocessTaskExecutionSet b = new BaseSubprocessTaskExecutionSet();
+        b.setIsAsync(isAsyncTrue);
+
+        Assert.assertEquals(isAsyncFalse, a.getIsAsync());
+        Assert.assertEquals(isAsyncTrue, b.getIsAsync());
+    }
+
+    @Test
     public void testGetSlaDueDate() {
         BaseSubprocessTaskExecutionSet a = new BaseSubprocessTaskExecutionSet();
-        Assert.assertEquals(a.getSlaDueDate(), new SLADueDate());
+        Assert.assertEquals(new SLADueDate(), a.getSlaDueDate());
     }
 
     @Test
@@ -38,7 +59,7 @@ public class BaseSubprocessTaskExecutionSetTest {
         final BaseSubprocessTaskExecutionSet a = new BaseSubprocessTaskExecutionSet();
         a.setSlaDueDate(slaDueDate);
 
-        Assert.assertEquals(a.getSlaDueDate(), slaDueDate);
+        Assert.assertEquals(slaDueDate, a.getSlaDueDate());
     }
 
     @Test

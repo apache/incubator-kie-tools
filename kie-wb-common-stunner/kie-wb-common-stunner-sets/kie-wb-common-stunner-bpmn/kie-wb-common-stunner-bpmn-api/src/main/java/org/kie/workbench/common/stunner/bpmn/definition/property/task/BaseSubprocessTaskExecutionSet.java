@@ -38,16 +38,32 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 public class BaseSubprocessTaskExecutionSet implements BPMNPropertySet {
 
     @Property
+    @FormField
+    @Valid
+    private IsAsync isAsync;
+
+    @Property
     @FormField(afterElement = "isAsync")
     @Valid
     protected SLADueDate slaDueDate;
 
     public BaseSubprocessTaskExecutionSet() {
-        this(new SLADueDate());
+        this(new IsAsync(),
+             new SLADueDate());
     }
 
-    public BaseSubprocessTaskExecutionSet(final @MapsTo("slaDueDate") SLADueDate slaDueDate) {
+    public BaseSubprocessTaskExecutionSet(final @MapsTo("isAsync") IsAsync isAsync,
+                                          final @MapsTo("slaDueDate") SLADueDate slaDueDate) {
+        this.isAsync = isAsync;
         this.slaDueDate = slaDueDate;
+    }
+
+    public IsAsync getIsAsync() {
+        return isAsync;
+    }
+
+    public void setIsAsync(IsAsync isAsync) {
+        this.isAsync = isAsync;
     }
 
     public SLADueDate getSlaDueDate() {
@@ -60,14 +76,16 @@ public class BaseSubprocessTaskExecutionSet implements BPMNPropertySet {
 
     @Override
     public int hashCode() {
-        return HashUtil.combineHashCodes(Objects.hashCode(slaDueDate));
+        return HashUtil.combineHashCodes(Objects.hashCode(isAsync),
+                                         Objects.hashCode(slaDueDate));
     }
 
     @Override
     public boolean equals(Object o) {
         if (o instanceof BaseSubprocessTaskExecutionSet) {
             BaseSubprocessTaskExecutionSet other = (BaseSubprocessTaskExecutionSet) o;
-            return Objects.equals(slaDueDate, other.slaDueDate);
+            return Objects.equals(isAsync, other.isAsync) &&
+                    Objects.equals(slaDueDate, other.slaDueDate);
         }
         return false;
     }

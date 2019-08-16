@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties;
 
 import java.util.Collections;
-import java.util.UUID;
 
 import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.SubProcess;
@@ -49,12 +48,22 @@ public class EventSubprocessPropertyReaderTest {
     }
 
     @Test
+    public void testIsAsync() {
+        SubProcess eventSubProcess = bpmn2.createSubProcess();
+        CustomElement.async.of(eventSubProcess).set(Boolean.TRUE);
+
+        tested = new SubProcessPropertyReader(eventSubProcess,
+                                              definitionResolverReal.getDiagram(),
+                                              definitionResolverReal);
+
+        assertTrue(tested.isAsync());
+    }
+
+    @Test
     public void testGetSlaDueDate() {
-        String id = UUID.randomUUID().toString();
         String rawSlaDueDate = "12/25/1983";
 
         SubProcess eventSubProcess = bpmn2.createSubProcess();
-        eventSubProcess.setId(id);
         CustomElement.slaDueDate.of(eventSubProcess).set(rawSlaDueDate);
 
         tested = new SubProcessPropertyReader(eventSubProcess,

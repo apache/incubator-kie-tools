@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties;
 
 import java.util.Collections;
-import java.util.UUID;
 
 import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.SubProcess;
@@ -87,13 +86,24 @@ public class MultipleInstanceSubProcessPropertyReaderTest {
     }
 
     @Test
+    public void testIsAsync() {
+        SubProcess multipleInstanceSubProcess = bpmn2.createSubProcess();
+        multipleInstanceSubProcess.setLoopCharacteristics(bpmn2.createMultiInstanceLoopCharacteristics());
+        CustomElement.async.of(multipleInstanceSubProcess).set(Boolean.TRUE);
+
+        tested = new MultipleInstanceSubProcessPropertyReader(multipleInstanceSubProcess,
+                                                              definitionResolverReal.getDiagram(),
+                                                              definitionResolverReal);
+
+        assertTrue(tested.isAsync());
+    }
+
+    @Test
     public void testGetSlaDueDate() {
-        String id = UUID.randomUUID().toString();
         String rawSlaDueDate = "12/25/1983";
 
         SubProcess multipleInstanceSubProcess = bpmn2.createSubProcess();
         multipleInstanceSubProcess.setLoopCharacteristics(bpmn2.createMultiInstanceLoopCharacteristics());
-        multipleInstanceSubProcess.setId(id);
         CustomElement.slaDueDate.of(multipleInstanceSubProcess).set(rawSlaDueDate);
 
         tested = new MultipleInstanceSubProcessPropertyReader(multipleInstanceSubProcess,

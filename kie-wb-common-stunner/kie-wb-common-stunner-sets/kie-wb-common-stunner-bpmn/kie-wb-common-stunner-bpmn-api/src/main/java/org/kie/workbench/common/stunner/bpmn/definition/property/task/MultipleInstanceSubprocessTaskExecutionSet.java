@@ -118,13 +118,6 @@ public class MultipleInstanceSubprocessTaskExecutionSet extends BaseSubprocessTa
     private OnExitAction onExitAction;
 
     @Property
-    @FormField(
-            afterElement = "onExitAction"
-    )
-    @Valid
-    private IsAsync isAsync;
-
-    @Property
     @SkipFormField
     private IsMultipleInstance isMultipleInstance;
 
@@ -155,7 +148,7 @@ public class MultipleInstanceSubprocessTaskExecutionSet extends BaseSubprocessTa
                                                       final @MapsTo("isMultipleInstance") IsMultipleInstance isMultipleInstance,
                                                       final @MapsTo("isAsync") IsAsync isAsync,
                                                       final @MapsTo("slaDueDate") SLADueDate slaDueDate) {
-        super(slaDueDate);
+        super(isAsync, slaDueDate);
         this.multipleInstanceExecutionMode = multipleInstanceExecutionMode;
         this.multipleInstanceCollectionInput = multipleInstanceCollectionInput;
         this.multipleInstanceCollectionOutput = multipleInstanceCollectionOutput;
@@ -165,7 +158,6 @@ public class MultipleInstanceSubprocessTaskExecutionSet extends BaseSubprocessTa
         this.onEntryAction = onEntryAction;
         this.onExitAction = onExitAction;
         this.isMultipleInstance = isMultipleInstance;
-        this.isAsync = isAsync;
     }
 
     public MultipleInstanceExecutionMode getMultipleInstanceExecutionMode() {
@@ -240,14 +232,6 @@ public class MultipleInstanceSubprocessTaskExecutionSet extends BaseSubprocessTa
         this.onExitAction = onExitAction;
     }
 
-    public IsAsync getIsAsync() {
-        return isAsync;
-    }
-
-    public void setIsAsync(final IsAsync isAsync) {
-        this.isAsync = isAsync;
-    }
-
     @Override
     public int hashCode() {
         return HashUtil.combineHashCodes(super.hashCode(),
@@ -259,8 +243,7 @@ public class MultipleInstanceSubprocessTaskExecutionSet extends BaseSubprocessTa
                                          Objects.hashCode(multipleInstanceCompletionCondition),
                                          Objects.hashCode(onEntryAction),
                                          Objects.hashCode(onExitAction),
-                                         Objects.hashCode(isMultipleInstance),
-                                         Objects.hashCode(isAsync));
+                                         Objects.hashCode(isMultipleInstance));
     }
 
     @Override
@@ -276,8 +259,7 @@ public class MultipleInstanceSubprocessTaskExecutionSet extends BaseSubprocessTa
                     Objects.equals(multipleInstanceCompletionCondition, other.multipleInstanceCompletionCondition) &&
                     Objects.equals(onEntryAction, other.onEntryAction) &&
                     Objects.equals(onExitAction, other.onExitAction) &&
-                    Objects.equals(isMultipleInstance, other.isMultipleInstance) &&
-                    Objects.equals(isAsync, other.isAsync);
+                    Objects.equals(isMultipleInstance, other.isMultipleInstance);
         }
         return false;
     }

@@ -1927,6 +1927,8 @@ public class BPMNDirectDiagramMarshallerTest {
         assertEquals("subProcessVar1:String:false,subProcessVar2:String:false",
                      processData.getProcessVariables().getValue());
 
+        assertTrue(executionSet.getIsAsync().getValue());
+
         final String SLA_DUE_DATE = "12/25/1983";
         assertEquals(SLA_DUE_DATE, executionSet.getSlaDueDate().getValue());
     }
@@ -3101,6 +3103,10 @@ public class BPMNDirectDiagramMarshallerTest {
 
         assertTrue(result.contains("<bpmn2:completionCondition xsi:type=\"bpmn2:tFormalExpression\""));
         assertTrue(result.contains("language=\"http://www.jboss.org/drools/rule\"><![CDATA[autocomplete]]></bpmn2:completionCondition>"));
+
+        assertTrue(result.contains("<drools:metaData name=\"customAsync\">"));
+        assertTrue(result.contains("<drools:metaValue><![CDATA[true]]></drools:metaValue>"));
+        assertTrue(result.contains("</drools:metaData>"));
 
         final String SLA_DUE_DATE = "12/25/1983";
         assertTrue(result.contains("<drools:metaData name=\"customSLADueDate\">"));

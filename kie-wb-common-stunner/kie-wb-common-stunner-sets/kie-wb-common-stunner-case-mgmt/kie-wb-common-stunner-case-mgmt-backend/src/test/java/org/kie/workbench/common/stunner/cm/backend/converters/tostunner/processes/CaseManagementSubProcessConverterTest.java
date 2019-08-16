@@ -142,6 +142,7 @@ public class CaseManagementSubProcessConverterTest {
     public void testConvertAdHocSubprocessNode_SlaDueDate() {
         SubProcess subProcess = bpmn2.createAdHocSubProcess();
         subProcess.setTriggeredByEvent(Boolean.TRUE);
+        CustomElement.async.setValue(subProcess, Boolean.TRUE);
         CustomElement.slaDueDate.setValue(subProcess, SLA_DUE_DATE);
 
         Result<BpmnNode> result = tested.convertSubProcess(subProcess);

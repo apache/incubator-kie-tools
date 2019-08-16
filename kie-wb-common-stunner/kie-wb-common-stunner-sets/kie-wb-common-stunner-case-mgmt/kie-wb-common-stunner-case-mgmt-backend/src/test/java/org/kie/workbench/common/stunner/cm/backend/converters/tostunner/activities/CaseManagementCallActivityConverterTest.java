@@ -111,6 +111,7 @@ public class CaseManagementCallActivityConverterTest {
     public void testCreateReusableSubprocessTaskExecutionSet_case() {
         CallActivity callActivity = bpmn2.createCallActivity();
         CustomElement.isCase.of(callActivity).set(Boolean.TRUE);
+        CustomElement.async.of(callActivity).set(Boolean.TRUE);
         CustomElement.slaDueDate.of(callActivity).set(SLA_DUE_DATE);
 
         CallActivityPropertyReader propertyReader = new CallActivityPropertyReader(callActivity,
@@ -122,6 +123,7 @@ public class CaseManagementCallActivityConverterTest {
 
         assertTrue(CaseReusableSubprocessTaskExecutionSet.class.isInstance(result));
         assertTrue(result.getIsCase().getValue());
+        assertTrue(result.getIsAsync().getValue());
         assertTrue(result.getSlaDueDate().getValue().contains(SLA_DUE_DATE));
     }
 
@@ -129,6 +131,7 @@ public class CaseManagementCallActivityConverterTest {
     public void testCreateReusableSubprocessTaskExecutionSet_process() {
         CallActivity callActivity = bpmn2.createCallActivity();
         CustomElement.isCase.of(callActivity).set(Boolean.FALSE);
+        CustomElement.async.of(callActivity).set(Boolean.TRUE);
         CustomElement.slaDueDate.of(callActivity).set(SLA_DUE_DATE);
 
         CallActivityPropertyReader propertyReader = new CallActivityPropertyReader(callActivity,
@@ -140,6 +143,7 @@ public class CaseManagementCallActivityConverterTest {
 
         assertTrue(ProcessReusableSubprocessTaskExecutionSet.class.isInstance(result));
         assertFalse(result.getIsCase().getValue());
+        assertTrue(result.getIsAsync().getValue());
         assertTrue(result.getSlaDueDate().getValue().contains(SLA_DUE_DATE));
     }
 
