@@ -20,6 +20,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.event.dom.client.ClickEvent;
+import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLButtonElement;
 import elemental2.dom.HTMLDivElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
@@ -80,7 +81,8 @@ public class DMNDocumentationView extends DefaultDiagramDocumentationView {
 
     @Override
     public DocumentationView<Diagram> refresh() {
-        documentationContent.innerHTML = getDocumentationHTML();
+        refreshDocumentationHTML();
+        refreshDocumentationHTMLAfter200ms();
         return this;
     }
 
@@ -116,5 +118,19 @@ public class DMNDocumentationView extends DefaultDiagramDocumentationView {
                 .map(diagram -> documentationService.processDocumentation(diagram))
                 .map(dmnDocumentation -> DOCUMENTATION_FILENAME + "-" + dmnDocumentation.getFileName())
                 .orElse(DOCUMENTATION_FILENAME);
+    }
+
+    void refreshDocumentationHTML() {
+        documentationContent.innerHTML = getDocumentationHTML();
+    }
+
+    void refreshDocumentationHTMLAfter200ms() {
+        // The canvas takes some milliseconds to be fully refreshed.
+        setTimeout((w) -> refreshDocumentationHTML(), 200);
+    }
+
+    void setTimeout(final DomGlobal.SetTimeoutCallbackFn callback,
+                    final int delay) {
+        DomGlobal.setTimeout(callback, delay);
     }
 }

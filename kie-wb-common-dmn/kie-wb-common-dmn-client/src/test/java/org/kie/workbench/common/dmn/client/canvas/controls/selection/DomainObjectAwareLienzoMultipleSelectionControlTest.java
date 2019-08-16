@@ -20,6 +20,7 @@ import java.util.Optional;
 
 import com.ait.lienzo.client.core.event.OnEventHandlers;
 import com.ait.lienzo.client.core.shape.Viewport;
+import com.ait.lienzo.client.core.shape.wires.SelectionManager;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
@@ -41,6 +42,9 @@ import org.mockito.Mock;
 import org.uberfire.mocks.EventSourceMock;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
@@ -86,6 +90,9 @@ public class DomainObjectAwareLienzoMultipleSelectionControlTest {
     private DomainObject domainObject;
 
     @Mock
+    private SelectionManager selectionManager;
+
+    @Mock
     private EventSourceMock<CanvasSelectionEvent> canvasSelectionEvent;
 
     @Mock
@@ -100,7 +107,7 @@ public class DomainObjectAwareLienzoMultipleSelectionControlTest {
         when(lienzoLayer.getViewport()).thenReturn(lienzoViewport);
         when(lienzoViewport.getOnEventHandlers()).thenReturn(lienzoOnEventHandlers);
 
-        final WiresManager wiresManager = WiresManager.get(lienzoLayer);
+        final WiresManager wiresManager = spy(WiresManager.get(lienzoLayer));
 
         this.control = new DomainObjectAwareLienzoMultipleSelectionControl(canvasSelectionEvent,
                                                                            clearSelectionEvent);
@@ -116,6 +123,8 @@ public class DomainObjectAwareLienzoMultipleSelectionControlTest {
         when(element.getUUID()).thenReturn(ELEMENT_UUID);
         when(element.getContent()).thenReturn(new ViewImpl<>(definition,
                                                              Bounds.create(0, 0, 10, 10)));
+
+        doReturn(selectionManager).when(wiresManager).getSelectionManager();
 
         control.init(canvasHandler);
         control.register(element);
@@ -204,6 +213,7 @@ public class DomainObjectAwareLienzoMultipleSelectionControlTest {
         control.handleCanvasClearSelectionEvent(event);
 
         assertThat(control.getSelectedItemDefinition()).isNotPresent();
+        verify(selectionManager).clearSelection();
     }
 
     @Test

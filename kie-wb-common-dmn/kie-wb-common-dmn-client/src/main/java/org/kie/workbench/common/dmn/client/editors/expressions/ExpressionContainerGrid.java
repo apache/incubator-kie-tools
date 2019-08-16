@@ -298,13 +298,17 @@ public class ExpressionContainerGrid extends BaseGrid<Expression> {
     }
 
     void selectExpressionEditorFirstCell() {
-        final GridCellValue<?> value = model.getCell(0, 0).getValue();
-        final Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>> grid = ((ExpressionCellValue) value).getValue();
+        final Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>> grid = getBaseExpressionGrid();
         grid.ifPresent(beg -> {
             //It's not possible to set-up GridLayer for ExpressionContainerGrid in Unit Tests so defensively handle nulls
             Optional.ofNullable(getLayer()).ifPresent(layer -> ((DMNGridLayer) layer).select(beg));
             beg.selectFirstCell();
         });
+    }
+
+    public Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>> getBaseExpressionGrid() {
+        final GridCellValue<?> value = model.getCell(0, 0).getValue();
+        return ((ExpressionCellValue) value).getValue();
     }
 
     @Override

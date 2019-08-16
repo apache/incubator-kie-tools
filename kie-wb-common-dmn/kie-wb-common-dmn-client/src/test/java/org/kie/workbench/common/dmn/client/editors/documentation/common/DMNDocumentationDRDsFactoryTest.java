@@ -29,6 +29,7 @@ import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.model.Decision;
 import org.kie.workbench.common.dmn.api.definition.model.InformationItemPrimary;
 import org.kie.workbench.common.dmn.api.definition.model.InputData;
+import org.kie.workbench.common.dmn.api.definition.model.LiteralExpression;
 import org.kie.workbench.common.dmn.api.property.dmn.DMNExternalLink;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.DocumentationLinksHolder;
@@ -38,7 +39,10 @@ import org.kie.workbench.common.dmn.client.common.BoxedExpressionHelper;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionContainerGrid;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorViewImpl;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.literal.LiteralExpressionUIModelMapper;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
+import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -47,6 +51,7 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.impl.NodeImpl;
 import org.mockito.Mock;
+import org.uberfire.ext.wires.core.grids.client.model.GridData;
 
 import static freemarker.template.utility.Collections12.singletonList;
 import static java.util.Arrays.asList;
@@ -89,6 +94,12 @@ public class DMNDocumentationDRDsFactoryTest {
     private ExpressionContainerGrid expressionContainerGrid;
 
     @Mock
+    private BaseExpressionGrid<LiteralExpression, DMNGridData, LiteralExpressionUIModelMapper> expressionGrid;
+
+    @Mock
+    private GridData gridData;
+
+    @Mock
     private Graph graph;
 
     @Mock
@@ -104,6 +115,8 @@ public class DMNDocumentationDRDsFactoryTest {
         when(expressionEditor.getView()).thenReturn(editorView);
         when(editorView.getExpressionContainerGrid()).thenReturn(expressionContainerGrid);
         when(expressionContainerGrid.getViewport()).thenReturn(viewport);
+        when(expressionContainerGrid.getBaseExpressionGrid()).thenReturn(Optional.of(expressionGrid));
+        when(expressionGrid.getModel()).thenReturn(gridData);
         when(diagram.getGraph()).thenReturn(graph);
 
         factory = spy(new DMNDocumentationDRDsFactory(sessionManager, expressionHelper));
@@ -209,6 +222,16 @@ public class DMNDocumentationDRDsFactoryTest {
         factory.setExpressionContainerGrid(diagram, uuid);
 
         verify(expressionContainerGrid).setExpression(uuid, hasExpression, Optional.of(drgElement), false);
+        verify(factory).clearSelections(expressionContainerGrid);
+    }
+
+    @Test
+    public void testClearSelections() {
+
+        factory.clearSelections(expressionContainerGrid);
+
+        verify(expressionGrid.getModel()).clearSelections();
+        verify(expressionGrid).draw();
     }
 
     @Test

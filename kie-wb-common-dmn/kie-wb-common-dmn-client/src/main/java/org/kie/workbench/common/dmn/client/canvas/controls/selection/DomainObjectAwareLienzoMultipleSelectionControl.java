@@ -113,6 +113,7 @@ public class DomainObjectAwareLienzoMultipleSelectionControl<H extends AbstractC
     protected void handleCanvasClearSelectionEvent(final CanvasClearSelectionEvent event) {
         selectedDomainObject = Optional.empty();
         super.handleCanvasClearSelectionEvent(event);
+        super.onClearSelection();
     }
 
     void handleDomainObjectSelectedEvent(final @Observes DomainObjectSelectionEvent event) {

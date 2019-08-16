@@ -90,6 +90,13 @@ public class DMNDocumentationDRDsFactory {
         return viewport.toDataURL(DataURLType.PNG);
     }
 
+    void clearSelections(final ExpressionContainerGrid grid) {
+        grid.getBaseExpressionGrid().ifPresent(expressionGrid -> {
+            expressionGrid.getModel().clearSelections();
+            expressionGrid.draw();
+        });
+    }
+
     void setExpressionContainerGrid(final Diagram diagram,
                                     final String uuid) {
 
@@ -97,8 +104,10 @@ public class DMNDocumentationDRDsFactory {
         final Object definition = expressionHelper.getDefinition(node);
         final HasExpression hasExpression = expressionHelper.getHasExpression(node);
         final Optional<HasName> hasName = Optional.of((HasName) definition);
+        final ExpressionContainerGrid grid = getExpressionContainerGrid();
 
-        getExpressionContainerGrid().setExpression(node.getUUID(), hasExpression, hasName, false);
+        grid.setExpression(node.getUUID(), hasExpression, hasName, false);
+        clearSelections(grid);
     }
 
     private List<DMNDocumentationDRD> createDMNDocumentationDRDs(final Diagram diagram) {

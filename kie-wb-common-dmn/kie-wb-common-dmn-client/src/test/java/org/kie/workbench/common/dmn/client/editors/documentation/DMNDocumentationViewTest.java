@@ -20,6 +20,7 @@ import java.util.Optional;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLButtonElement;
 import elemental2.dom.HTMLDivElement;
 import org.junit.Before;
@@ -30,11 +31,17 @@ import org.kie.workbench.common.dmn.client.editors.documentation.common.HTMLDown
 import org.kie.workbench.common.stunner.core.client.util.PrintHelper;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.documentation.model.DocumentationOutput;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.stunner.core.documentation.model.DocumentationOutput.EMPTY;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -65,6 +72,9 @@ public class DMNDocumentationViewTest {
     @Mock
     private HTMLDownloadHelper downloadHelper;
 
+    @Captor
+    private ArgumentCaptor<DomGlobal.SetTimeoutCallbackFn> callback;
+
     private DMNDocumentationView view;
 
     @Before
@@ -73,7 +83,18 @@ public class DMNDocumentationViewTest {
     }
 
     @Test
-    public void testRefreshWhenDiagramIsPresent() {
+    public void testRefresh() {
+
+        doNothing().when(view).setTimeout(any(), anyInt());
+
+        view.refresh();
+
+        verify(view).refreshDocumentationHTML();
+        verify(view).refreshDocumentationHTMLAfter200ms();
+    }
+
+    @Test
+    public void testRefreshDocumentationHTMLWhenDiagramIsPresent() {
 
         final String expectedHTML = "<html />";
         final DocumentationOutput output = new DocumentationOutput(expectedHTML);
@@ -83,7 +104,7 @@ public class DMNDocumentationViewTest {
 
         documentationContent.innerHTML = "something";
 
-        view.refresh();
+        view.refreshDocumentationHTML();
 
         final String actualHTML = documentationContent.innerHTML;
 
@@ -91,7 +112,7 @@ public class DMNDocumentationViewTest {
     }
 
     @Test
-    public void testRefreshWhenDiagramIsNotPresent() {
+    public void testRefreshDocumentationHTMLWhenDiagramIsNotPresent() {
 
         final String expectedHTML = EMPTY.getValue();
 
@@ -99,11 +120,23 @@ public class DMNDocumentationViewTest {
 
         documentationContent.innerHTML = "something";
 
-        view.refresh();
+        view.refreshDocumentationHTML();
 
         final String actualHTML = documentationContent.innerHTML;
 
         assertEquals(expectedHTML, actualHTML);
+    }
+
+    @Test
+    public void testRefreshDocumentationHTMLAfter200ms() {
+
+        doNothing().when(view).setTimeout(any(), anyInt());
+
+        view.refreshDocumentationHTMLAfter200ms();
+
+        verify(view).setTimeout(callback.capture(), eq(200));
+        callback.getValue().onInvoke(new Object());
+        verify(view).refreshDocumentationHTML();
     }
 
     @Test
