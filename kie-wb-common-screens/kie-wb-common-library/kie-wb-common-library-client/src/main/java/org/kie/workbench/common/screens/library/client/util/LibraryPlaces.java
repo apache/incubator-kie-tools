@@ -20,7 +20,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -59,7 +58,6 @@ import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.api.ProjectAssetListUpdated;
 import org.kie.workbench.common.screens.library.api.Remote;
 import org.kie.workbench.common.screens.library.api.Routed;
-import org.kie.workbench.common.screens.library.api.preferences.LibraryInternalPreferences;
 import org.kie.workbench.common.screens.library.client.events.AssetDetailEvent;
 import org.kie.workbench.common.screens.library.client.perspective.LibraryPerspective;
 import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
@@ -165,8 +163,6 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
 
     private SessionInfo sessionInfo;
 
-    private LibraryInternalPreferences libraryInternalPreferences;
-
     private Caller<RepositoryService> repositoryService;
 
     private OrganizationalUnitController organizationalUnitController;
@@ -199,7 +195,6 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
                          final @Source(Source.Kind.EXTERNAL) Event<ImportProjectsSetupEvent> importProjectsSetupEvent,
                          final LibraryBreadcrumbs libraryBreadcrumbs,
                          final SessionInfo sessionInfo,
-                         final LibraryInternalPreferences libraryInternalPreferences,
                          final Caller<RepositoryService> repositoryService,
                          final Promises promises,
                          final OrganizationalUnitController organizationalUnitController,
@@ -223,7 +218,6 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
         this.importProjectsSetupEvent = importProjectsSetupEvent;
         this.libraryBreadcrumbs = libraryBreadcrumbs;
         this.sessionInfo = sessionInfo;
-        this.libraryInternalPreferences = libraryInternalPreferences;
         this.repositoryService = repositoryService;
         this.promises = promises;
         this.organizationalUnitController = organizationalUnitController;
@@ -427,12 +421,7 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
             return promises.create((res, rej) -> {
                 libraryService.call(
                         (RemoteCallback<OrganizationalUnit>) organizationalUnit -> {
-                            if (organizationalUnit == null) {
-                                this.goToOrganizationalUnits();
-                            } else {
-                                projectContextChangeEvent.fire(new WorkspaceProjectContextChangeEvent(organizationalUnit));
-                                setupLibraryPerspective();
-                            }
+                            this.goToOrganizationalUnits();
                             res.onInvoke((IThenable<Void>) null);
                         },
                         (message, throwable) -> {
@@ -477,16 +466,12 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
         if (projectContext.getActiveWorkspaceProject()
                 .map(activeProject -> !activeProject.equals(project))
                 .orElse(true)) {
-            libraryInternalPreferences.load(loadedLibraryInternalPreferences -> {
-                                                closeAllPlacesOrNothing(() -> {
-                                                    projectContextChangeEvent.fire(new WorkspaceProjectContextChangeEvent(project,
-                                                                                                                          project.getMainModule()));
-                                                    goToProject(project,
-                                                                loadedLibraryInternalPreferences.getLastBranchOpened(project).orElse(project.getBranch()));
-                                                });
-                                            },
-                                            error -> {
-                                            });
+            closeAllPlacesOrNothing(() -> {
+                projectContextChangeEvent.fire(new WorkspaceProjectContextChangeEvent(project,
+                                                                                      project.getMainModule()));
+                goToProject(project,
+                            project.getBranch());
+            });
         } else {
             goToProject();
         }
@@ -494,23 +479,7 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
 
     public void goToProject(final WorkspaceProject project,
                             final Branch branch) {
-        libraryInternalPreferences.load(loadedLibraryInternalPreferences -> {
-                                            final Optional<Branch> lastBranchOpened = loadedLibraryInternalPreferences.getLastBranchOpened(project);
-                                            final Command goToProjectCommand = () -> projectService.call((RemoteCallback<WorkspaceProject>) this::goToProject).resolveProject(project.getSpace(),
-                                                                                                                                                                              branch);
-
-                                            if (!lastBranchOpened.isPresent() || !lastBranchOpened.get().equals(branch)) {
-                                                loadedLibraryInternalPreferences.setLastBranchOpened(project,
-                                                                                                     branch);
-                                                loadedLibraryInternalPreferences.save(goToProjectCommand,
-                                                                                      error -> {
-                                                                                      });
-                                            } else {
-                                                goToProjectCommand.execute();
-                                            }
-                                        },
-                                        error -> {
-                                        });
+        projectService.call((RemoteCallback<WorkspaceProject>) this::goToProject).resolveProject(project.getSpace(), branch);
     }
 
     void goToProject() {

@@ -30,30 +30,19 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.library.api.SpacesScreenService;
-import org.kie.workbench.common.screens.library.api.preferences.LibraryInternalPreferencesPortableGeneratedImpl;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.mocks.SessionInfoMock;
-import org.uberfire.preferences.shared.bean.PreferenceBeanServerStore;
 import org.uberfire.rpc.SessionInfo;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SpacesScreenServiceImplTest {
 
     @Mock
     private OrganizationalUnitService organizationalUnitService;
-
-    @Mock
-    private PreferenceBeanServerStore preferenceBeanServerStore;
 
     private SessionInfo sessionInfo;
 
@@ -63,7 +52,6 @@ public class SpacesScreenServiceImplTest {
     public void before() {
         sessionInfo = new SessionInfoMock();
         spacesScreenService = spy(new SpacesScreenServiceImpl(organizationalUnitService,
-                                                              preferenceBeanServerStore,
                                                               sessionInfo));
     }
 
@@ -79,13 +67,6 @@ public class SpacesScreenServiceImplTest {
         final OrganizationalUnitImpl space = new OrganizationalUnitImpl("test", "org.test");
         doReturn(space).when(organizationalUnitService).getOrganizationalUnit("test", true);
         assertEquals(space, spacesScreenService.getSpace("test"));
-    }
-
-    @Test
-    public void testSavePreference() {
-        final LibraryInternalPreferencesPortableGeneratedImpl newPreference = new LibraryInternalPreferencesPortableGeneratedImpl();
-        doNothing().when(preferenceBeanServerStore).save(newPreference);
-        assertEquals(200, spacesScreenService.savePreference(newPreference).getStatus());
     }
 
     @Test

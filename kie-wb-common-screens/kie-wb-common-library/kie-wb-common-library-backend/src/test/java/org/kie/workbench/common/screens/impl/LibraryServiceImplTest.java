@@ -61,7 +61,6 @@ import org.kie.workbench.common.screens.library.api.AssetQueryResult.ResultType;
 import org.kie.workbench.common.screens.library.api.LibraryInfo;
 import org.kie.workbench.common.screens.library.api.OrganizationalUnitRepositoryInfo;
 import org.kie.workbench.common.screens.library.api.ProjectAssetsQuery;
-import org.kie.workbench.common.screens.library.api.preferences.LibraryInternalPreferences;
 import org.kie.workbench.common.screens.library.api.preferences.LibraryOrganizationalUnitPreferences;
 import org.kie.workbench.common.screens.library.api.preferences.LibraryPreferences;
 import org.kie.workbench.common.screens.library.api.preferences.LibraryProjectPreferences;
@@ -117,9 +116,6 @@ public class LibraryServiceImplTest {
 
     @Mock
     private LibraryPreferences preferences;
-
-    @Mock
-    private LibraryInternalPreferences internalPreferences;
 
     @Mock
     private ExplorerServiceHelper explorerServiceHelper;
@@ -227,7 +223,6 @@ public class LibraryServiceImplTest {
                                                     moduleService,
                                                     examplesService,
                                                     ioService,
-                                                    internalPreferences,
                                                     userManagerService,
                                                     indexOracle,
                                                     repositoryService,

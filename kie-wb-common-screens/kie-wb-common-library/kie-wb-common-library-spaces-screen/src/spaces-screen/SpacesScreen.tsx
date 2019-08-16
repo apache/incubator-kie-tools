@@ -56,14 +56,7 @@ export class SpacesScreen extends React.Component<Props, State> {
         );
         return Promise.resolve();
     } else {
-        return this.showLoadingPopupWhile(
-            Service.updateLibraryPreference({
-                projectExplorerExpanded: false,
-                lastOpenedOrganizationalUnit: space.name
-            }).then(() => {
-                return LibraryPlaces.goToSpace(space.name);
-            })
-        );
+        return this.showLoadingPopupWhile(LibraryPlaces.goToSpace(space.name));
     }
   }
 

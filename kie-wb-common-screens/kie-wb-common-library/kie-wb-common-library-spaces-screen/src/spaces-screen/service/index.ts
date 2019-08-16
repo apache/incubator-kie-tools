@@ -50,15 +50,3 @@ export function createSpace(newSpace: {
     body: JSON.stringify(newSpace)
   });
 }
-
-export function updateLibraryPreference(preference: {
-  projectExplorerExpanded: boolean;
-  lastOpenedOrganizationalUnit: string;
-}): Promise<Response> {
-  return fetch("rest/spacesScreen/libraryPreference", {
-    credentials: "same-origin",
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(preference)
-  });
-}

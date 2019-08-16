@@ -30,7 +30,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -71,13 +70,11 @@ import org.kie.workbench.common.screens.library.api.LibraryInfo;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.api.OrganizationalUnitRepositoryInfo;
 import org.kie.workbench.common.screens.library.api.ProjectAssetsQuery;
-import org.kie.workbench.common.screens.library.api.preferences.LibraryInternalPreferences;
 import org.kie.workbench.common.screens.library.api.preferences.LibraryPreferences;
 import org.kie.workbench.common.services.refactoring.backend.server.query.standard.FindAllLibraryAssetsQuery;
 import org.kie.workbench.common.services.refactoring.backend.server.query.standard.LibraryValueFileExtensionIndexTerm;
 import org.kie.workbench.common.services.refactoring.backend.server.query.standard.LibraryValueFileNameIndexTerm;
 import org.kie.workbench.common.services.refactoring.backend.server.query.standard.LibraryValueRepositoryRootIndexTerm;
-import org.kie.workbench.common.services.refactoring.model.index.events.IndexingFinishedEvent;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRequest;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRow;
@@ -88,7 +85,6 @@ import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.commons.cluster.ClusterService;
-import org.uberfire.ext.security.management.api.exception.NoImplementationAvailableException;
 import org.uberfire.ext.security.management.api.service.UserManagerService;
 import org.uberfire.ext.security.management.impl.SearchRequestImpl;
 import org.uberfire.io.IOService;
@@ -109,9 +105,6 @@ public class LibraryServiceImpl implements LibraryService {
     private RefactoringQueryService refactoringQueryService;
     private OrganizationalUnitService ouService;
     private LibraryPreferences preferences;
-
-    private LibraryInternalPreferences internalPreferences;
-
     private AuthorizationManager authorizationManager;
     private SessionInfo sessionInfo;
     private ExplorerServiceHelper explorerServiceHelper;
@@ -143,7 +136,6 @@ public class LibraryServiceImpl implements LibraryService {
                               final KieModuleService moduleService,
                               final ExamplesService examplesService,
                               @Named("ioStrategy") final IOService ioService,
-                              final LibraryInternalPreferences internalPreferences,
                               final UserManagerService userManagerService,
                               final IndexStatusOracle indexOracle,
                               final RepositoryService repoService,
@@ -163,7 +155,6 @@ public class LibraryServiceImpl implements LibraryService {
         this.moduleService = moduleService;
         this.examplesService = examplesService;
         this.ioService = ioService;
-        this.internalPreferences = internalPreferences;
         this.userManagerService = userManagerService;
         this.indexOracle = indexOracle;
         this.repoService = repoService;
@@ -531,11 +522,6 @@ public class LibraryServiceImpl implements LibraryService {
         return preferences;
     }
 
-    LibraryInternalPreferences getInternalPreferences() {
-        internalPreferences.load();
-        return internalPreferences;
-    }
-
     POM createPOM(final String projectName,
                   final String projectDescription,
                   final GAV gav) {
@@ -576,10 +562,7 @@ public class LibraryServiceImpl implements LibraryService {
 
     @Override
     public OrganizationalUnit getDefaultOrganizationalUnit() {
-        String defaultOUIdentifier = getInternalPreferences().getLastOpenedOrganizationalUnit();
-        if (defaultOUIdentifier == null || defaultOUIdentifier.isEmpty()) {
-            defaultOUIdentifier = getPreferences().getOrganizationalUnitPreferences().getName();
-        }
+        final String defaultOUIdentifier = getPreferences().getOrganizationalUnitPreferences().getName();
 
         final List<OrganizationalUnit> organizationalUnits = getOrganizationalUnits();
         final Optional<OrganizationalUnit> defaultOU = getOrganizationalUnit(defaultOUIdentifier,

@@ -25,7 +25,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.screens.library.api.preferences.LibraryInternalPreferences;
 import org.kie.workbench.common.widgets.client.docks.WorkbenchDocksHandler;
 import org.kie.workbench.common.workbench.client.docks.test.TestWorkbenchDocksHandler;
 import org.kie.workbench.common.workbench.client.events.LayoutEditorFocusEvent;
@@ -39,18 +38,8 @@ import org.uberfire.client.workbench.events.PlaceHiddenEvent;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyBoolean;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class AuthoringWorkbenchDocksTest {
@@ -62,9 +51,6 @@ public class AuthoringWorkbenchDocksTest {
 
     @Mock
     private PlaceRequest placeRequest;
-
-    @Mock
-    private LibraryInternalPreferences libraryInternalPreferences;
 
     @Mock
     private ManagedInstance<WorkbenchDocksHandler> handlers;
@@ -85,8 +71,7 @@ public class AuthoringWorkbenchDocksTest {
         when(handlers.iterator()).thenReturn(list.iterator());
 
         authoringWorkbenchDocks = spy(new AuthoringWorkbenchDocks(uberfireDocks,
-                                                                  handlers,
-                                                                  libraryInternalPreferences));
+                                                                  handlers));
 
         authoringWorkbenchDocks.initialize();
 
@@ -226,58 +211,6 @@ public class AuthoringWorkbenchDocksTest {
         authoringWorkbenchDocks.clear();
     }
 
-    @Test
-    public void projectExplorerExpandedEvent_NotProjectExplorerDock() {
-        final UberfireDocksInteractionEvent uberfireDocksInteractionEvent = createUberfireDocksInteractionEvent(mock(UberfireDock.class),
-                                                                                                                UberfireDocksInteractionEvent.InteractionType.OPENED);
-
-        authoringWorkbenchDocks.projectExplorerExpandedEvent(uberfireDocksInteractionEvent);
-
-        verify(authoringWorkbenchDocks,
-               never()).setProjectExplorerExpandedPreference(anyBoolean());
-    }
-
-    @Test
-    public void projectExplorerExpandedEvent_SelectedInteraction() {
-        final UberfireDocksInteractionEvent uberfireDocksInteractionEvent = createUberfireDocksInteractionEvent(authoringWorkbenchDocks.projectExplorerDock,
-                                                                                                                UberfireDocksInteractionEvent.InteractionType.OPENED);
-
-        authoringWorkbenchDocks.projectExplorerExpandedEvent(uberfireDocksInteractionEvent);
-
-        verify(authoringWorkbenchDocks).setProjectExplorerExpandedPreference(true);
-    }
-
-    @Test
-    public void projectExplorerExpandedEvent_DeselectedInteraction() {
-        final UberfireDocksInteractionEvent uberfireDocksInteractionEvent = createUberfireDocksInteractionEvent(authoringWorkbenchDocks.projectExplorerDock,
-                                                                                                                UberfireDocksInteractionEvent.InteractionType.CLOSED);
-
-        authoringWorkbenchDocks.projectExplorerExpandedEvent(uberfireDocksInteractionEvent);
-
-        verify(authoringWorkbenchDocks).setProjectExplorerExpandedPreference(false);
-    }
-
-    @Test
-    public void projectExplorerExpandedEvent_ResizeInteraction() {
-        final UberfireDocksInteractionEvent uberfireDocksInteractionEvent = createUberfireDocksInteractionEvent(authoringWorkbenchDocks.projectExplorerDock,
-                                                                                                                UberfireDocksInteractionEvent.InteractionType.RESIZED);
-
-        authoringWorkbenchDocks.projectExplorerExpandedEvent(uberfireDocksInteractionEvent);
-
-        verify(authoringWorkbenchDocks,
-               never()).setProjectExplorerExpandedPreference(anyBoolean());
-    }
-
-    @Test
-    public void projectExplorerExpandedEvent_WithNullTargetDock() {
-        final UberfireDocksInteractionEvent uberfireDocksInteractionEvent = createUberfireDocksInteractionEvent(UberfireDockPosition.WEST,
-                                                                                                                UberfireDocksInteractionEvent.InteractionType.RESIZED);
-
-        authoringWorkbenchDocks.projectExplorerExpandedEvent(uberfireDocksInteractionEvent);
-
-        verify(authoringWorkbenchDocks,
-               never()).setProjectExplorerExpandedPreference(anyBoolean());
-    }
 
     @Test
     public void expandAuthoringDock() {

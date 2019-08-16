@@ -17,7 +17,6 @@
 package org.kie.workbench.common.workbench.client.docks;
 
 import java.util.Collection;
-
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
@@ -26,9 +25,7 @@ import javax.inject.Inject;
 
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.kie.workbench.common.screens.library.api.preferences.LibraryInternalPreferences;
 import org.kie.workbench.common.widgets.client.docks.AuthoringEditorDock;
-import org.kie.workbench.common.widgets.client.docks.EditorDock;
 import org.kie.workbench.common.widgets.client.docks.WorkbenchDocksHandler;
 import org.kie.workbench.common.workbench.client.events.LayoutEditorFocusEvent;
 import org.kie.workbench.common.workbench.client.resources.i18n.DefaultWorkbenchConstants;
@@ -36,7 +33,6 @@ import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
 import org.uberfire.client.workbench.docks.UberfireDockReadyEvent;
 import org.uberfire.client.workbench.docks.UberfireDocks;
-import org.uberfire.client.workbench.docks.UberfireDocksInteractionEvent;
 import org.uberfire.client.workbench.events.PlaceHiddenEvent;
 import org.uberfire.ext.layout.editor.client.LayoutComponentPaletteScreen;
 import org.uberfire.mvp.PlaceRequest;
@@ -56,8 +52,6 @@ public class AuthoringWorkbenchDocks
 
     protected UberfireDock componentPaletteDock;
 
-    protected LibraryInternalPreferences libraryInternalPreferences;
-
     protected String currentPerspectiveIdentifier = null;
 
     protected boolean projectExplorerEnabled = true;
@@ -72,11 +66,9 @@ public class AuthoringWorkbenchDocks
 
     @Inject
     public AuthoringWorkbenchDocks(final UberfireDocks uberfireDocks,
-                                   final ManagedInstance<WorkbenchDocksHandler> installedHandlers,
-                                   final LibraryInternalPreferences libraryInternalPreferences) {
+                                   final ManagedInstance<WorkbenchDocksHandler> installedHandlers) {
         this.uberfireDocks = uberfireDocks;
         this.installedHandlers = installedHandlers;
-        this.libraryInternalPreferences = libraryInternalPreferences;
     }
 
     @PostConstruct
@@ -171,18 +163,9 @@ public class AuthoringWorkbenchDocks
 
     @Override
     public void show() {
-
         uberfireDocks.show(UberfireDockPosition.WEST,
                            authoringPerspectiveIdentifier);
         projectExplorerEnabled = true;
-
-        libraryInternalPreferences.load(loadedLibraryInternalPreferences -> {
-                                            if (loadedLibraryInternalPreferences.isProjectExplorerExpanded()) {
-                                                expandProjectExplorer();
-                                            }
-                                        },
-                                        parameter -> {
-                                        });
     }
 
     public void expandProjectExplorer() {
@@ -198,32 +181,6 @@ public class AuthoringWorkbenchDocks
         if (dockToOpen != null) {
             uberfireDocks.open(dockToOpen);
         }
-    }
-
-    public void projectExplorerExpandedEvent(@Observes final UberfireDocksInteractionEvent uberfireDocksInteractionEvent) {
-        final UberfireDock targetDock = uberfireDocksInteractionEvent.getTargetDock();
-        if (targetDock == null) {
-            return;
-        }
-        if (targetDock.equals(projectExplorerDock)) {
-            final UberfireDocksInteractionEvent.InteractionType interactionType = uberfireDocksInteractionEvent.getType();
-            if (interactionType.equals(UberfireDocksInteractionEvent.InteractionType.OPENED)) {
-                setProjectExplorerExpandedPreference(true);
-            } else if (interactionType.equals(UberfireDocksInteractionEvent.InteractionType.CLOSED)) {
-                setProjectExplorerExpandedPreference(false);
-            }
-        }
-    }
-
-    void setProjectExplorerExpandedPreference(final boolean expand) {
-        libraryInternalPreferences.load(loadedLibraryInternalPreferences -> {
-                                            if (expand != loadedLibraryInternalPreferences.isProjectExplorerExpanded()) {
-                                                loadedLibraryInternalPreferences.setProjectExplorerExpanded(expand);
-                                                loadedLibraryInternalPreferences.save();
-                                            }
-                                        },
-                                        error -> {
-                                        });
     }
 
     private void refreshWestDocks(boolean showComponentPalette, UberfireDock dockToOpen) {
