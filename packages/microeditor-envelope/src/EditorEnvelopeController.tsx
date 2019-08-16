@@ -25,7 +25,7 @@ import { SpecialDomElements } from "./SpecialDomElements";
 import { Renderer } from "./Renderer";
 
 export class EditorEnvelopeController {
-  public static readonly ESTIMATED_TIME_TO_WAIT_AFTER_EMPTY_SET_CONTENT = 100;
+  public static readonly ESTIMATED_TIME_TO_WAIT_AFTER_EMPTY_SET_CONTENT = 10;
 
   private readonly editorFactory: EditorFactory<any>;
   private readonly specialDomElements: SpecialDomElements;
@@ -49,7 +49,7 @@ export class EditorEnvelopeController {
         if (editor) {
           editor
             .setContent("")
-            .then(() => this.waitForEmptySetContentThenSetLoadingFinished())
+            .finally(() => this.waitForEmptySetContentThenSetLoadingFinished())
             .then(() => editor.setContent(content));
         }
       },

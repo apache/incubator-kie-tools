@@ -67,8 +67,7 @@ module.exports = [
     entry: {
       "extension/extension": "./src/extension/extension.ts"
     },
-    plugins: [
-    ]
+    plugins: []
   },
   {
     ...commonConfig,
@@ -77,7 +76,10 @@ module.exports = [
       "webview/index": "./src/webview/index.ts"
     },
     plugins: [
-        new CopyWebpackPlugin([{from: "src/resources/dmn", to: "webview/editors/dmn"}])
+      new CopyWebpackPlugin([
+        { from: "src/resources/dmn", to: "webview/editors/dmn" },
+        { from: "src/resources/bpmn", to: "webview/editors/bpmn" }
+      ])
     ]
   }
 ];

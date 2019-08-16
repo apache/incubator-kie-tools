@@ -18,7 +18,7 @@ import { Router, Routes } from "appformer-js-core";
 import { GwtLanguageData } from "./GwtLanguageData";
 
 const dmnGwtModuleName = "org.kie.workbench.common.dmn.showcase.DMNShowcase";
-const bpmnGwtModuleName = "org.kie.workbench.common.stunner.standalone.StunnerStandaloneShowcase";
+const bpmnGwtModuleName = "org.kie.workbench.common.stunner.kogito.StunnerStandaloneShowcase";
 export class GwtEditorRoutes implements Routes {
   private readonly dmnLocation: string;
   private readonly bpmnLocation: string;
@@ -58,7 +58,7 @@ export class GwtEditorRoutes implements Routes {
         "bpmn",
         {
           type: "gwt",
-          editorId: "BPMNStandaloneDiagramEditor",
+          editorId: "BPMNDiagramEditor",
           gwtModuleName: bpmnGwtModuleName,
           erraiDomain: "",
           resources: [

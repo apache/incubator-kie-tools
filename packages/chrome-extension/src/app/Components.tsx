@@ -128,9 +128,11 @@ function ToolbarButtons() {
 
   return (
     <>
-      <button className={"btn btn-sm"} style={{ marginLeft: "4px", float: "right" }} onClick={goFullScreen}>
-        Fullscreen
-      </button>
+      {!textMode && (
+        <button className={"btn btn-sm"} style={{ marginLeft: "4px", float: "right" }} onClick={goFullScreen}>
+          Fullscreen
+        </button>
+      )}
       {!textMode && (
         <button className={"btn btn-sm"} style={{ marginLeft: "4px", float: "right" }} onClick={seeAsText}>
           See as text
