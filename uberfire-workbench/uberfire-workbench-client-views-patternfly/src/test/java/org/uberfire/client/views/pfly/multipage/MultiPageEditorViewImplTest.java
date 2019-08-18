@@ -20,33 +20,46 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.gwtbootstrap3.client.shared.event.TabShownEvent;
 import org.gwtbootstrap3.client.ui.NavTabs;
+import org.gwtbootstrap3.client.ui.TabListItem;
 import org.gwtbootstrap3.client.ui.TabPane;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.uberfire.client.views.pfly.tab.TabPanelEntry;
 import org.uberfire.client.workbench.widgets.multipage.Page;
 import org.uberfire.client.workbench.widgets.multipage.PageView;
+import org.uberfire.mocks.EventSourceMock;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyInt;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class MultiPageEditorViewImplTest {
-
-    @Mock
-    private TabPanelEntry.DropDownTabListItem dropDownTabListItem;
-
-    @Mock
-    private TabPane contentPane;
 
     @Mock
     private Page page;
 
     @Mock
     private TabPanelEntry tab;
+
+    @Mock
+    private EventSourceMock<MultiPageEditorSelectedPageEvent> selectedPageEvent;
+
+    @Captor
+    private ArgumentCaptor<MultiPageEditorSelectedPageEvent> pageEvent;
 
     private MultiPageEditorViewImpl view;
 
@@ -163,5 +176,31 @@ public class MultiPageEditorViewImplTest {
 
         verify(widget).removeStyleName("disabled");
         verify(style).clearProperty("pointerEvents");
+    }
+
+    @Test
+    public void testGetTabShownHandler() {
+
+        final TabListItem tab = mock(TabListItem.class);
+        final TabShownEvent event = mock(TabShownEvent.class);
+        final TabPanelEntry tabPanelEntry = mock(TabPanelEntry.class);
+        final TabPane tabPane = mock(TabPane.class);
+        final PageViewImpl page = mock(PageViewImpl.class);
+        final int pageIndex = 42;
+
+        when(event.getTab()).thenReturn(tab);
+        when(tabPanelEntry.getContentPane()).thenReturn(tabPane);
+        when(tabPane.getWidget(0)).thenReturn(page);
+        when(tab.getTabIndex()).thenReturn(pageIndex);
+        doReturn(tabPanelEntry).when(view).findEntryForTabWidget(tab);
+
+        view.enableSelectedPageEvent(selectedPageEvent);
+
+        view.getTabShownHandler().onShown(event);
+
+        verify(view).onResize();
+        verify(selectedPageEvent).fire(pageEvent.capture());
+        verify(page).onLostFocus();
+        assertEquals(pageIndex, pageEvent.getValue().getSelectedPage());
     }
 }

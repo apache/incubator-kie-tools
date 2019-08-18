@@ -16,14 +16,17 @@
 
 package org.uberfire.client.views.pfly.multipage;
 
+import java.util.Optional;
+
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.shared.event.TabShowEvent;
 import org.gwtbootstrap3.client.shared.event.TabShowHandler;
-import org.gwtbootstrap3.client.shared.event.TabShownEvent;
 import org.gwtbootstrap3.client.shared.event.TabShownHandler;
+import org.gwtbootstrap3.client.ui.TabListItem;
 import org.uberfire.client.views.pfly.tab.ResizeTabPanel;
 import org.uberfire.client.views.pfly.tab.TabPanelEntry;
 import org.uberfire.client.workbench.widgets.multipage.MultiPageEditorView;
@@ -33,6 +36,8 @@ import org.uberfire.client.workbench.widgets.multipage.Page;
 @Dependent
 @Multiple
 public class MultiPageEditorViewImpl extends ResizeTabPanel implements MultiPageEditorView {
+
+    private Event<MultiPageEditorSelectedPageEvent> selectedPageEvent;
 
     @Override
     public void init() {
@@ -49,19 +54,14 @@ public class MultiPageEditorViewImpl extends ResizeTabPanel implements MultiPage
             }
         });
 
-        this.addShownHandler(new TabShownHandler() {
-
-            @Override
-            public void onShown(TabShownEvent e) {
-                onResize();
-                final TabPanelEntry tabPanelEntry = MultiPageEditorViewImpl.this.findEntryForTabWidget(e.getTab());
-                final PageViewImpl page = (PageViewImpl) tabPanelEntry.getContentPane().getWidget(0);
-                page.onLostFocus();
-            }
-        });
+        this.addShownHandler(getTabShownHandler());
 
         this.tabBar.addStyleName("nav-tabs-pf");
         this.addStyleName("uf-multi-page-editor");
+    }
+
+    public void enableSelectedPageEvent(final Event<MultiPageEditorSelectedPageEvent> selectedPageEvent) {
+        this.selectedPageEvent = selectedPageEvent;
     }
 
     public void addPage(final Page page) {
@@ -144,5 +144,25 @@ public class MultiPageEditorViewImpl extends ResizeTabPanel implements MultiPage
 
     private Style style(final Widget tab) {
         return tab.getElement().getStyle();
+    }
+
+    TabShownHandler getTabShownHandler() {
+        return event -> {
+            onResize();
+
+            final TabListItem tab = event.getTab();
+            final TabPanelEntry tabPanelEntry = findEntryForTabWidget(tab);
+            final PageViewImpl page = (PageViewImpl) tabPanelEntry.getContentPane().getWidget(0);
+
+            getSelectedPageEvent().ifPresent(selectedPageEvent -> {
+                selectedPageEvent.fire(new MultiPageEditorSelectedPageEvent(tab.getTabIndex()));
+            });
+
+            page.onLostFocus();
+        };
+    }
+
+    private Optional<Event<MultiPageEditorSelectedPageEvent>> getSelectedPageEvent() {
+        return Optional.ofNullable(selectedPageEvent);
     }
 }

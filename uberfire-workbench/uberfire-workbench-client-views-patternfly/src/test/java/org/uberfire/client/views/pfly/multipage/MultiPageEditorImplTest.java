@@ -17,28 +17,33 @@
 package org.uberfire.client.views.pfly.multipage;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.uberfire.client.workbench.widgets.multipage.MultiPageEditorView;
 import org.uberfire.client.workbench.widgets.multipage.Page;
+import org.uberfire.mocks.EventSourceMock;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class MultiPageEditorImplTest {
 
-    private MultiPageEditorImpl editor;
+    @Mock
+    private MultiPageEditorViewImpl view;
 
     @Mock
-    private MultiPageEditorView view;
+    private EventSourceMock<MultiPageEditorSelectedPageEvent> selectedPageEvent;
 
-    @Before
-    public void setup() {
-        editor = spy(new MultiPageEditorImpl());
+    @InjectMocks
+    private MultiPageEditorImpl editor = spy(new MultiPageEditorImpl());
 
-        doReturn(view).when(editor).getView();
+    @Test
+    public void testInit() {
+        editor.init();
+        verify(view).enableSelectedPageEvent(selectedPageEvent);
     }
 
     @Test
