@@ -26,17 +26,12 @@ import org.kie.workbench.common.widgets.client.search.common.BaseEditorSearchInd
 @Dependent
 public class GuidedDecisionTableEditorSearchIndex extends BaseEditorSearchIndex<GuidedDecisionTableSearchableElement> {
 
-    private List<GuidedDecisionTableSearchableElement> searchableElements;
-
     @Override
     protected List<GuidedDecisionTableSearchableElement> getSearchableElements() {
-        if (isDirty() || searchableElements == null) {
-            searchableElements = loadSearchableElements();
-        }
-        return searchableElements;
+        return loadSearchableElements();
     }
 
-    List<GuidedDecisionTableSearchableElement> loadSearchableElements() {
+    private List<GuidedDecisionTableSearchableElement> loadSearchableElements() {
         return getSubIndexes()
                 .stream()
                 .flatMap(elements -> elements.getSearchableElements().stream())

@@ -32,6 +32,7 @@ import org.drools.workbench.screens.guided.dtable.client.editor.menu.RadarMenuBu
 import org.drools.workbench.screens.guided.dtable.client.editor.menu.RadarMenuView;
 import org.drools.workbench.screens.guided.dtable.client.editor.menu.ViewMenuBuilder;
 import org.drools.workbench.screens.guided.dtable.client.editor.page.ColumnsPage;
+import org.drools.workbench.screens.guided.dtable.client.editor.search.GuidedDecisionTableEditorSearchIndex;
 import org.drools.workbench.screens.guided.dtable.client.editor.search.GuidedDecisionTableSearchableElement;
 import org.drools.workbench.screens.guided.dtable.client.editor.search.SearchableElementFactory;
 import org.drools.workbench.screens.guided.dtable.client.type.GuidedDTableResourceType;
@@ -56,7 +57,6 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilderImpl;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
-import org.kie.workbench.common.widgets.client.search.common.EditorSearchIndex;
 import org.kie.workbench.common.widgets.client.search.component.SearchBarComponent;
 import org.kie.workbench.common.widgets.configresource.client.widget.bound.ImportsWidgetPresenter;
 import org.kie.workbench.common.widgets.metadata.client.KieMultipleDocumentEditorWrapperView;
@@ -283,7 +283,7 @@ public class GuidedDecisionTableEditorMenusTest {
     protected SearchableElementFactory searchableElementFactory;
 
     @Mock
-    protected EditorSearchIndex<GuidedDecisionTableSearchableElement> editorSearchIndex;
+    protected GuidedDecisionTableEditorSearchIndex editorSearchIndex;
 
     @Mock
     protected SearchBarComponent<GuidedDecisionTableSearchableElement> searchBarComponent;

@@ -121,18 +121,34 @@ public class GuidedDecisionTableEditorPresenterTest extends BaseGuidedDecisionTa
     public void testInit() {
 
         final Supplier<Boolean> isDirty = () -> true;
+        final Supplier<Integer> currentHashCode = () -> 123;
         final Command noResultsFoundCallback = () -> {/* Nothing. */};
 
         doReturn(isDirty).when(presenter).getIsDirtySupplier();
         doReturn(noResultsFoundCallback).when(presenter).getNoResultsFoundCallback();
+        doReturn(currentHashCode).when(presenter).getCurrentHashCodeSupplier();
 
-        // init is called on @Before
+        presenter.init();
 
-        editorSearchIndex.setNoResultsFoundCallback(noResultsFoundCallback);
-        editorSearchIndex.setIsDirtySupplier(isDirty);
-        verify(editorSearchIndex).registerSubIndex(presenter);
-        verify(searchBarComponent).init(editorSearchIndex);
-        verify(multiPageEditor).addTabBarWidget(searchBarComponentWidget);
+        verify(editorSearchIndex).setNoResultsFoundCallback(noResultsFoundCallback);
+        verify(editorSearchIndex).setCurrentAssetHashcodeSupplier(currentHashCode);
+        verify(editorSearchIndex, times(2)).registerSubIndex(presenter);
+        verify(searchBarComponent, times(2)).init(editorSearchIndex);
+        verify(multiPageEditor, times(2)).addTabBarWidget(searchBarComponentWidget);
+    }
+
+    @Test
+    public void testGetCurrentHashCode() {
+
+        final GuidedDecisionTableView.Presenter activeDocument = mock(GuidedDecisionTableView.Presenter.class);
+        final Integer expectedHashcode = 123;
+
+        doReturn(activeDocument).when(presenter).getActiveDocument();
+        doReturn(expectedHashcode).when(presenter).currentHashCode(activeDocument);
+
+        final Integer actualHashcode = presenter.getCurrentHashCodeSupplier().get();
+
+        assertEquals(expectedHashcode, actualHashcode);
     }
 
     @Test

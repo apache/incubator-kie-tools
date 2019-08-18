@@ -40,6 +40,7 @@ import org.drools.workbench.screens.guided.dtable.client.editor.menu.InsertMenuB
 import org.drools.workbench.screens.guided.dtable.client.editor.menu.RadarMenuBuilder;
 import org.drools.workbench.screens.guided.dtable.client.editor.menu.ViewMenuBuilder;
 import org.drools.workbench.screens.guided.dtable.client.editor.page.ColumnsPage;
+import org.drools.workbench.screens.guided.dtable.client.editor.search.GuidedDecisionTableEditorSearchIndex;
 import org.drools.workbench.screens.guided.dtable.client.editor.search.GuidedDecisionTableSearchableElement;
 import org.drools.workbench.screens.guided.dtable.client.editor.search.SearchableElementFactory;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
@@ -59,7 +60,6 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
-import org.kie.workbench.common.widgets.client.search.common.EditorSearchIndex;
 import org.kie.workbench.common.widgets.client.search.common.HasSearchableElements;
 import org.kie.workbench.common.widgets.client.search.component.SearchBarComponent;
 import org.kie.workbench.common.workbench.client.docks.AuthoringWorkbenchDocks;
@@ -99,7 +99,7 @@ public class GuidedDecisionTableEditorPresenter extends BaseGuidedDecisionTableE
 
     private final SaveAndRenameCommandBuilder<GuidedDecisionTable52, Metadata> saveAndRenameCommandBuilder;
 
-    private final EditorSearchIndex<GuidedDecisionTableSearchableElement> editorSearchIndex;
+    private final GuidedDecisionTableEditorSearchIndex editorSearchIndex;
 
     private final SearchBarComponent<GuidedDecisionTableSearchableElement> searchBarComponent;
     private final SearchableElementFactory searchableElementFactory;
@@ -125,7 +125,7 @@ public class GuidedDecisionTableEditorPresenter extends BaseGuidedDecisionTableE
                                               final SaveAndRenameCommandBuilder<GuidedDecisionTable52, Metadata> saveAndRenameCommandBuilder,
                                               final AlertsButtonMenuItemBuilder alertsButtonMenuItemBuilder,
                                               final DownloadMenuItemBuilder downloadMenuItemBuilder,
-                                              final EditorSearchIndex<GuidedDecisionTableSearchableElement> editorSearchIndex,
+                                              final GuidedDecisionTableEditorSearchIndex editorSearchIndex,
                                               final SearchBarComponent<GuidedDecisionTableSearchableElement> searchBarComponent,
                                               final SearchableElementFactory searchableElementFactory) {
         super(view,
@@ -157,11 +157,15 @@ public class GuidedDecisionTableEditorPresenter extends BaseGuidedDecisionTableE
     @PostConstruct
     public void init() {
         super.init();
-        editorSearchIndex.setIsDirtySupplier(getIsDirtySupplier());
+        editorSearchIndex.setCurrentAssetHashcodeSupplier(getCurrentHashCodeSupplier());
         editorSearchIndex.setNoResultsFoundCallback(getNoResultsFoundCallback());
         editorSearchIndex.registerSubIndex(this);
 
         setupSearchComponent();
+    }
+
+    protected Supplier<Integer> getCurrentHashCodeSupplier() {
+        return () -> currentHashCode(getActiveDocument());
     }
 
     private void setupSearchComponent() {

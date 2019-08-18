@@ -44,6 +44,7 @@ import org.drools.workbench.screens.guided.dtable.client.editor.menu.InsertMenuB
 import org.drools.workbench.screens.guided.dtable.client.editor.menu.RadarMenuBuilder;
 import org.drools.workbench.screens.guided.dtable.client.editor.menu.ViewMenuBuilder;
 import org.drools.workbench.screens.guided.dtable.client.editor.page.ColumnsPage;
+import org.drools.workbench.screens.guided.dtable.client.editor.search.GuidedDecisionTableEditorSearchIndex;
 import org.drools.workbench.screens.guided.dtable.client.editor.search.GuidedDecisionTableSearchableElement;
 import org.drools.workbench.screens.guided.dtable.client.editor.search.SearchableElementFactory;
 import org.drools.workbench.screens.guided.dtable.client.type.GuidedDTableGraphResourceType;
@@ -73,7 +74,6 @@ import org.kie.workbench.common.widgets.client.callbacks.CommandDrivenErrorCallb
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
-import org.kie.workbench.common.widgets.client.search.common.EditorSearchIndex;
 import org.kie.workbench.common.widgets.client.search.common.HasSearchableElements;
 import org.kie.workbench.common.widgets.client.search.component.SearchBarComponent;
 import org.kie.workbench.common.widgets.metadata.client.validation.AssetUpdateValidator;
@@ -134,7 +134,7 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
     private final Event<SaveInProgressEvent> saveInProgressEvent;
     private final LockManager lockManager;
     private final SaveAndRenameCommandBuilder<List<GuidedDecisionTableEditorContent>, Metadata> saveAndRenameCommandBuilder;
-    private final EditorSearchIndex<GuidedDecisionTableSearchableElement> editorSearchIndex;
+    private final GuidedDecisionTableEditorSearchIndex editorSearchIndex;
     private final SearchBarComponent<GuidedDecisionTableSearchableElement> searchBarComponent;
     private final SearchableElementFactory searchableElementFactory;
     protected ObservablePath.OnConcurrentUpdateEvent concurrentUpdateSessionInfo = null;
@@ -171,7 +171,7 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
                                                    final SaveAndRenameCommandBuilder<List<GuidedDecisionTableEditorContent>, Metadata> saveAndRenameCommandBuilder,
                                                    final AlertsButtonMenuItemBuilder alertsButtonMenuItemBuilder,
                                                    final DownloadMenuItemBuilder downloadMenuItem,
-                                                   final EditorSearchIndex<GuidedDecisionTableSearchableElement> editorSearchIndex,
+                                                   final GuidedDecisionTableEditorSearchIndex editorSearchIndex,
                                                    final SearchBarComponent<GuidedDecisionTableSearchableElement> searchBarComponent,
                                                    final SearchableElementFactory searchableElementFactory) {
         super(view,
@@ -223,7 +223,7 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
         });
 
         registeredDocumentsMenuBuilder.setNewDocumentCommand(this::onNewDocument);
-        editorSearchIndex.setIsDirtySupplier(getIsDirtySupplier());
+        editorSearchIndex.setCurrentAssetHashcodeSupplier(getCurrentHashCodeSupplier());
         editorSearchIndex.setNoResultsFoundCallback(getNoResultsFoundCallback());
         editorSearchIndex.setClearCurrentResultsCallback(getClearCurrentResultsCallback());
         editorSearchIndex.registerSubIndex(this);
@@ -232,10 +232,29 @@ public class GuidedDecisionTableGraphEditorPresenter extends BaseGuidedDecisionT
         setupSearchComponent();
     }
 
+    Supplier<Integer> getCurrentHashCodeSupplier() {
+        return () -> combineHashCodes(getAvailableDecisionTables()
+                                              .stream()
+                                              .map(this::currentHashCode)
+                                              .collect(Collectors.toList()));
+    }
+
+    // TODO: Use HashUtil here when https://issues.jboss.org/browse/DROOLS-4442 is done.
+    int combineHashCodes(final List<Integer> hashcodes) {
+        int out = 0;
+        for (int hashcode : hashcodes) {
+            int seed = 1500450271;
+            seed = ~~(~~(out * seed) + ~~(hashcode & seed));
+            seed = ~~(out ^ seed - hashcode);
+            out = ~~(hashcode ^ seed - out);
+        }
+        return out;
+    }
+
     private Command getClearCurrentResultsCallback() {
-        return () ->{
+        return () -> {
             final GuidedDecisionTableModellerView view = modeller.getView();
-            for(GridWidget gridWidget : view.getGridWidgets()){
+            for (GridWidget gridWidget : view.getGridWidgets()) {
                 gridWidget.getModel().clearSelections();
             }
         };

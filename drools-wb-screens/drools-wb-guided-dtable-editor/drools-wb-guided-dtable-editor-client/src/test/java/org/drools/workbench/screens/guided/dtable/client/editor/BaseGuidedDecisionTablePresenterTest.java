@@ -32,6 +32,7 @@ import org.drools.workbench.screens.guided.dtable.client.editor.menu.InsertMenuB
 import org.drools.workbench.screens.guided.dtable.client.editor.menu.RadarMenuBuilder;
 import org.drools.workbench.screens.guided.dtable.client.editor.menu.ViewMenuBuilder;
 import org.drools.workbench.screens.guided.dtable.client.editor.page.ColumnsPage;
+import org.drools.workbench.screens.guided.dtable.client.editor.search.GuidedDecisionTableEditorSearchIndex;
 import org.drools.workbench.screens.guided.dtable.client.editor.search.GuidedDecisionTableGridHighlightHelper;
 import org.drools.workbench.screens.guided.dtable.client.editor.search.GuidedDecisionTableSearchableElement;
 import org.drools.workbench.screens.guided.dtable.client.editor.search.SearchableElementFactory;
@@ -60,7 +61,6 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilderImpl;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
-import org.kie.workbench.common.widgets.client.search.common.EditorSearchIndex;
 import org.kie.workbench.common.widgets.client.search.component.SearchBarComponent;
 import org.kie.workbench.common.widgets.configresource.client.widget.bound.ImportsWidgetPresenter;
 import org.kie.workbench.common.widgets.metadata.client.KieMultipleDocumentEditorWrapperView;
@@ -281,11 +281,10 @@ public abstract class BaseGuidedDecisionTablePresenterTest<P extends BaseGuidedD
     protected AlertsButtonMenuItemBuilder alertsButtonMenuItemBuilder;
 
     @Mock
-    protected EditorSearchIndex<GuidedDecisionTableSearchableElement> editorSearchIndex;
+    protected GuidedDecisionTableEditorSearchIndex editorSearchIndex;
 
     @Mock
     protected SearchBarComponent<GuidedDecisionTableSearchableElement> searchBarComponent;
-
 
     @Mock
     protected MenuItem alertsButtonMenuItem;

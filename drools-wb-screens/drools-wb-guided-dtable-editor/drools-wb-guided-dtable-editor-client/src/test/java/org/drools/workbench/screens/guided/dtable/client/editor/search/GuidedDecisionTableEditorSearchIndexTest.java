@@ -27,11 +27,7 @@ import org.mockito.Mock;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class GuidedDecisionTableEditorSearchIndexTest {
@@ -53,50 +49,22 @@ public class GuidedDecisionTableEditorSearchIndexTest {
     @Mock
     private GuidedDecisionTableSearchableElement element5;
 
-    private List<GuidedDecisionTableSearchableElement> expectedElements;
-
     @Before
     public void setup() {
 
         searchIndex = spy(new GuidedDecisionTableEditorSearchIndex());
-        expectedElements = asList(element1, element2, element3, element4, element5);
 
-        searchIndex.setIsDirtySupplier(() -> false);
         searchIndex.registerSubIndex(new FakeHasSearchableElements(asList(element1, element2)));
         searchIndex.registerSubIndex(new FakeHasSearchableElements(asList(element3, element4, element5)));
     }
 
     @Test
-    public void testGetSearchableElementsWhenItsTheFirstCall() {
+    public void testGetSearchableElements() {
 
         final List<GuidedDecisionTableSearchableElement> actualElements = searchIndex.getSearchableElements();
+        final List<GuidedDecisionTableSearchableElement> expectedElements = asList(element1, element2, element3, element4, element5);
 
-        verify(searchIndex, times(1)).loadSearchableElements();
         assertEquals(expectedElements, actualElements);
-    }
-
-    @Test
-    public void testGetSearchableElementsWhenItsTheSecondCall() {
-
-        final List<GuidedDecisionTableSearchableElement> firstResult = searchIndex.getSearchableElements();
-        final List<GuidedDecisionTableSearchableElement> secondResult = searchIndex.getSearchableElements();
-
-        verify(searchIndex, times(1)).loadSearchableElements();
-        assertEquals(expectedElements, firstResult);
-        assertSame(firstResult, secondResult);
-    }
-
-    @Test
-    public void testGetSearchableElementsWhenItsDirtyCall() {
-
-        searchIndex.setIsDirtySupplier(() -> true);
-
-        final List<GuidedDecisionTableSearchableElement> firstResult = searchIndex.getSearchableElements();
-        final List<GuidedDecisionTableSearchableElement> secondResult = searchIndex.getSearchableElements();
-
-        verify(searchIndex, times(2)).loadSearchableElements();
-        assertEquals(expectedElements, firstResult);
-        assertNotSame(firstResult, secondResult);
     }
 
     class FakeHasSearchableElements implements HasSearchableElements<GuidedDecisionTableSearchableElement> {

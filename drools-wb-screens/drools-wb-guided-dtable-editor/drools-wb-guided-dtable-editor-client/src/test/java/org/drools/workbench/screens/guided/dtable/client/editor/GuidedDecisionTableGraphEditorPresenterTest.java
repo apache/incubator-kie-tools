@@ -90,6 +90,7 @@ import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuItem;
 
+import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -278,6 +279,26 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
                times(1)).setRemoveDocumentCommand(any(ParameterizedCommand.class));
         verify(registeredDocumentsMenuBuilder,
                times(1)).setNewDocumentCommand(any(Command.class));
+    }
+
+    @Test
+    public void testGetCurrentHashCode() {
+
+        final GuidedDecisionTableView.Presenter activeDocument1 = mock(GuidedDecisionTableView.Presenter.class);
+        final GuidedDecisionTableView.Presenter activeDocument2 = mock(GuidedDecisionTableView.Presenter.class);
+        final Integer activeDocument1Hashcode = 123;
+        final Integer activeDocument2Hashcode = 456;
+        final Integer expectedHashcode = 789;
+
+        doReturn(asSet(activeDocument1, activeDocument2)).when(presenter).getAvailableDecisionTables();
+        doReturn(123).when(presenter).currentHashCode(activeDocument1);
+        doReturn(456).when(presenter).currentHashCode(activeDocument2);
+        doReturn(expectedHashcode).when(presenter).combineHashCodes(asList(activeDocument1Hashcode, activeDocument2Hashcode));
+        doReturn(expectedHashcode).when(presenter).combineHashCodes(asList(activeDocument2Hashcode, activeDocument1Hashcode));
+
+        final Integer actualHashcode = presenter.getCurrentHashCodeSupplier().get();
+
+        assertEquals(expectedHashcode, actualHashcode);
     }
 
     @Test
@@ -1610,9 +1631,9 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
         assertFalse(isDirtySupplier.get());
     }
 
-    private HashSet<GuidedDecisionTableView.Presenter> asSet(final GuidedDecisionTableView.Presenter presenter) {
+    private HashSet<GuidedDecisionTableView.Presenter> asSet(final GuidedDecisionTableView.Presenter... presenter) {
         return new HashSet<GuidedDecisionTableView.Presenter>() {{
-            add(presenter);
+            this.addAll(asList(presenter));
         }};
     }
 
