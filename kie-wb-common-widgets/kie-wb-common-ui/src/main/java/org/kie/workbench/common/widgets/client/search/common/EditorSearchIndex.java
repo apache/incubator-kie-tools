@@ -17,7 +17,6 @@
 package org.kie.workbench.common.widgets.client.search.common;
 
 import java.util.List;
-import java.util.function.Supplier;
 
 import org.uberfire.mvp.Command;
 
@@ -65,10 +64,10 @@ public interface EditorSearchIndex<T extends Searchable> {
     void setClearCurrentResultsCallback(final Command callback);
 
     /**
-     * Sets the <code>isDirty</code> logic.
-     * @param isDirtySupplier represents the <code>isDirty</code> logic.
+     * This method is used by the <code>isDirty</code> logic.
+     * @return the asset hashcode.
      */
-    void setIsDirtySupplier(final Supplier<Boolean> isDirtySupplier);
+    Integer getCurrentAssetHashcode();
 
     /**
      * Check if the index is dirty.

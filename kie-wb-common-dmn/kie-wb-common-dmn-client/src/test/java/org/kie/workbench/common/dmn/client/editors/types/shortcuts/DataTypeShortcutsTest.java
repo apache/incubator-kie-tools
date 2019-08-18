@@ -639,4 +639,17 @@ public class DataTypeShortcutsTest {
         shortcuts.disable();
         assertTrue(shortcuts.isNotEnabled());
     }
+
+    @Test
+    public void testReset() {
+        shortcuts.reset();
+        verify(listShortcuts).reset();
+    }
+
+    @Test
+    public void testHighlight() {
+        final Element element = mock(Element.class);
+        shortcuts.highlight(element);
+        verify(listShortcuts).highlight(element);
+    }
 }

@@ -93,12 +93,20 @@ public class DataTypeShortcuts {
 
             final Element dataTypeElement = getDataTypeRowElement(event);
             if (dataTypeElement != null) {
-                listShortcuts.highlight(dataTypeElement);
+                highlight(dataTypeElement);
             }
             listShortcuts.focusIn();
         } else {
-            listShortcuts.reset();
+            reset();
         }
+    }
+
+    public void reset() {
+        listShortcuts.reset();
+    }
+
+    public void highlight(final Element element) {
+        listShortcuts.highlight(element);
     }
 
     public void enable() {

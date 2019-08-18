@@ -102,24 +102,28 @@ public class SearchBarComponentView implements SearchBarComponent.View {
     public void onSearchButtonClick(final ClickEvent clickEvent) {
         toggle();
         clickEvent.preventDefault();
+        clickEvent.stopPropagation();
     }
 
     @EventHandler("next-element")
     public void onNextElementClick(final ClickEvent clickEvent) {
         presenter.nextResult();
         clickEvent.preventDefault();
+        clickEvent.stopPropagation();
     }
 
     @EventHandler("prev-element")
     public void onPrevElementClick(final ClickEvent clickEvent) {
         presenter.previousResult();
         clickEvent.preventDefault();
+        clickEvent.stopPropagation();
     }
 
     @EventHandler("close-search")
     public void onCloseSearchClick(final ClickEvent clickEvent) {
         disableSearch();
         clickEvent.preventDefault();
+        clickEvent.stopPropagation();
     }
 
     @EventHandler("search-input")
@@ -145,6 +149,13 @@ public class SearchBarComponentView implements SearchBarComponent.View {
         totalOfResults.textContent = totalOfResultsNumber.toString();
     }
 
+    @Override
+    public void disableSearch() {
+        searchContainer.classList.add(HIDDEN);
+        inputElement.value = "";
+        presenter.resetIndex();
+    }
+
     private void search(final String value) {
         presenter.search(value);
     }
@@ -160,12 +171,6 @@ public class SearchBarComponentView implements SearchBarComponent.View {
     private void enableSearch() {
         searchContainer.classList.remove(HIDDEN);
         inputElement.focus();
-    }
-
-    void disableSearch() {
-        searchContainer.classList.add(HIDDEN);
-        inputElement.value = "";
-        presenter.resetIndex();
     }
 
     private boolean isContainerHidden() {

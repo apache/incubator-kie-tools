@@ -17,6 +17,7 @@ package org.kie.workbench.common.dmn.showcase.client.screens.editor;
 
 import java.util.Collection;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -30,7 +31,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.user.client.ui.IsWidget;
 import elemental2.dom.HTMLElement;
-import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.commands.general.NavigateToExpressionEditorCommand;
@@ -90,6 +90,7 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
+import org.uberfire.client.views.pfly.multipage.MultiPageEditorSelectedPageEvent;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 import org.uberfire.lifecycle.OnClose;
@@ -107,7 +108,7 @@ import org.uberfire.workbench.model.menu.Menus;
 public class SessionDiagramEditorScreen implements KieEditorWrapperView.KieEditorWrapperPresenter {
 
     public static final String SCREEN_ID = "SessionDiagramEditorScreen";
-    private static final int DATA_TYPES_PAGE_INDEX = 1;
+    static final int DATA_TYPES_PAGE_INDEX = 1;
     private static Logger LOGGER = Logger.getLogger(SessionDiagramEditorScreen.class.getName());
     private final DefinitionManager definitionManager;
     private final ClientFactoryService clientFactoryServices;
@@ -129,7 +130,6 @@ public class SessionDiagramEditorScreen implements KieEditorWrapperView.KieEdito
     private final IncludedModelsPage includedModelsPage;
     private final IncludedModelsPageStateProviderImpl importsPageProvider;
     private final DocumentationView<Diagram> documentationView;
-    private final Elemental2DomUtil util;
     private final DMNEditorSearchIndex editorSearchIndex;
     private final SearchBarComponent<DMNSearchableElement> searchBarComponent;
 
@@ -158,7 +158,6 @@ public class SessionDiagramEditorScreen implements KieEditorWrapperView.KieEdito
                                       final IncludedModelsPage includedModelsPage,
                                       final IncludedModelsPageStateProviderImpl importsPageProvider,
                                       final @DMNEditor DocumentationView<Diagram> documentationView,
-                                      final Elemental2DomUtil util,
                                       final DMNEditorSearchIndex editorSearchIndex,
                                       final SearchBarComponent<DMNSearchableElement> searchBarComponent) {
         this.definitionManager = definitionManager;
@@ -181,7 +180,6 @@ public class SessionDiagramEditorScreen implements KieEditorWrapperView.KieEdito
         this.includedModelsPage = includedModelsPage;
         this.importsPageProvider = importsPageProvider;
         this.documentationView = documentationView;
-        this.util = util;
         this.editorSearchIndex = editorSearchIndex;
         this.searchBarComponent = searchBarComponent;
     }
@@ -197,7 +195,24 @@ public class SessionDiagramEditorScreen implements KieEditorWrapperView.KieEdito
         kieView.getMultiPage().addPage(includedModelsPage);
         kieView.getMultiPage().addPage(getDocumentationPage());
 
+        setupEditorSearchIndex();
         setupSearchComponent();
+    }
+
+    private void setupEditorSearchIndex() {
+        editorSearchIndex.setCurrentAssetHashcodeSupplier(getHashcodeSupplier());
+        editorSearchIndex.setIsDataTypesTabActiveSupplier(getIsDataTypesTabActiveSupplier());
+    }
+
+    Supplier<Integer> getHashcodeSupplier() {
+        return () -> getDiagram().hashCode();
+    }
+
+    Supplier<Boolean> getIsDataTypesTabActiveSupplier() {
+        return () -> {
+            final int selectedPageIndex = kieView.getMultiPage().selectedPage();
+            return selectedPageIndex == DATA_TYPES_PAGE_INDEX;
+        };
     }
 
     void setupSearchComponent() {
@@ -372,6 +387,14 @@ public class SessionDiagramEditorScreen implements KieEditorWrapperView.KieEdito
                 .build();
     }
 
+    public void onMultiPageEditorSelectedPageEvent(final @Observes MultiPageEditorSelectedPageEvent event) {
+        searchBarComponent.disableSearch();
+    }
+
+    public void onRefreshFormPropertiesEvent(final @Observes RefreshFormPropertiesEvent event) {
+        searchBarComponent.disableSearch();
+    }
+
     private void load(final String name,
                       final Command callback) {
         BusyPopup.showMessage("Loading");
@@ -523,7 +546,8 @@ public class SessionDiagramEditorScreen implements KieEditorWrapperView.KieEdito
         }
     }
 
-    private void onEditExpressionEvent(final @Observes EditExpressionEvent event) {
+    void onEditExpressionEvent(final @Observes EditExpressionEvent event) {
+        searchBarComponent.disableSearch();
         if (isSameSession(event.getSession())) {
             final DMNSession session = sessionManager.getCurrentSession();
             final ExpressionEditorView.Presenter expressionEditor = session.getExpressionEditor();

@@ -31,8 +31,10 @@ import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.Text;
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasFocusedShapeEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.mockito.Mock;
@@ -55,6 +57,12 @@ public class DMNGraphSubIndexTest {
 
     @Mock
     private EventSourceMock<CanvasFocusedShapeEvent> canvasFocusedSelectionEvent;
+
+    @Mock
+    private EventSourceMock<CanvasClearSelectionEvent> canvasClearSelectionEventEvent;
+
+    @Mock
+    private EventSourceMock<DomainObjectSelectionEvent> domainObjectSelectionEvent;
 
     @Mock
     private Node node1;
@@ -134,7 +142,7 @@ public class DMNGraphSubIndexTest {
     @Before
     public void setup() {
 
-        index = new DMNGraphSubIndex(graphUtils, canvasSelectionEvent, canvasFocusedSelectionEvent);
+        index = new DMNGraphSubIndex(graphUtils, canvasSelectionEvent, canvasFocusedSelectionEvent, canvasClearSelectionEventEvent, domainObjectSelectionEvent);
 
         when(node1.getUUID()).thenReturn(uuid1);
         when(node2.getUUID()).thenReturn(uuid2);
@@ -193,5 +201,14 @@ public class DMNGraphSubIndexTest {
 
         verify(canvasSelectionEvent, times(5)).fire(any(CanvasSelectionEvent.class));
         verify(canvasFocusedSelectionEvent, times(5)).fire(any(CanvasFocusedShapeEvent.class));
+    }
+
+    @Test
+    public void testOnNoResultsFound() {
+
+        index.onNoResultsFound();
+
+        verify(canvasClearSelectionEventEvent).fire(any(CanvasClearSelectionEvent.class));
+        verify(domainObjectSelectionEvent).fire(any(DomainObjectSelectionEvent.class));
     }
 }

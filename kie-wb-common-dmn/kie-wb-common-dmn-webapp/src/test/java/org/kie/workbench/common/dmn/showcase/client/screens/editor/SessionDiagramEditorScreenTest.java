@@ -18,11 +18,11 @@ package org.kie.workbench.common.dmn.showcase.client.screens.editor;
 
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import elemental2.dom.HTMLElement;
-import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,6 +36,7 @@ import org.kie.workbench.common.dmn.client.editors.search.DMNSearchableElement;
 import org.kie.workbench.common.dmn.client.editors.types.DataTypePageTabActiveEvent;
 import org.kie.workbench.common.dmn.client.editors.types.DataTypesPage;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.DataTypeEditModeToggleEvent;
+import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
 import org.kie.workbench.common.dmn.client.session.DMNEditorSession;
 import org.kie.workbench.common.dmn.showcase.client.perspectives.AuthoringPerspective;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
@@ -47,6 +48,7 @@ import org.kie.workbench.common.stunner.core.client.components.layout.LayoutHelp
 import org.kie.workbench.common.stunner.core.client.components.layout.OpenDiagramLayoutExecutor;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.diagram.DiagramImpl;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.documentation.DocumentationPage;
 import org.kie.workbench.common.stunner.core.documentation.DocumentationView;
@@ -59,6 +61,7 @@ import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.uberfire.client.views.pfly.multipage.MultiPageEditorSelectedPageEvent;
 import org.uberfire.client.workbench.widgets.multipage.MultiPageEditor;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
@@ -67,6 +70,9 @@ import org.uberfire.workbench.model.menu.Menus;
 
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.kie.workbench.common.dmn.showcase.client.screens.editor.SessionDiagramEditorScreen.DATA_TYPES_PAGE_INDEX;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyString;
@@ -126,9 +132,6 @@ public class SessionDiagramEditorScreenTest {
 
     @Mock
     private DocumentationView<Diagram> documentationView;
-
-    @Mock
-    private Elemental2DomUtil util;
 
     @Mock
     private DMNEditorSearchIndex editorSearchIndex;
@@ -192,7 +195,6 @@ public class SessionDiagramEditorScreenTest {
                                                     includedModelsPage,
                                                     importsPageProvider,
                                                     documentationView,
-                                                    util,
                                                     editorSearchIndex,
                                                     searchBarComponent));
 
@@ -205,7 +207,11 @@ public class SessionDiagramEditorScreenTest {
         final Widget screenPanelWidget = mock(Widget.class);
         final MultiPageEditor multiPageEditor = mock(MultiPageEditor.class);
         final DocumentationPage documentationPage = mock(DocumentationPage.class);
+        final Supplier<Boolean> isDataTypesTabActiveSupplier = () -> true;
+        final Supplier<Integer> hashcodeSupplier = () -> 123;
 
+        doReturn(hashcodeSupplier).when(editor).getHashcodeSupplier();
+        doReturn(isDataTypesTabActiveSupplier).when(editor).getIsDataTypesTabActiveSupplier();
         doReturn(documentationPage).when(editor).getDocumentationPage();
         when(kieView.getMultiPage()).thenReturn(multiPageEditor);
         when(screenPanelView.asWidget()).thenReturn(screenPanelWidget);
@@ -220,7 +226,43 @@ public class SessionDiagramEditorScreenTest {
         verify(multiPageEditor).addPage(dataTypesPage);
         verify(multiPageEditor).addPage(includedModelsPage);
         verify(multiPageEditor).addPage(documentationPage);
+        verify(editorSearchIndex).setIsDataTypesTabActiveSupplier(isDataTypesTabActiveSupplier);
+        verify(editorSearchIndex).setCurrentAssetHashcodeSupplier(hashcodeSupplier);
         verify(editor).setupSearchComponent();
+    }
+
+    @Test
+    public void testGetHashcodeSupplier() {
+
+        final Diagram diagram = new DiagramImpl("something", null);
+        final Integer expectedHashcode = diagram.hashCode();
+
+        doReturn(diagram).when(editor).getDiagram();
+
+        final Integer actualHashcode = editor.getHashcodeSupplier().get();
+
+        assertEquals(expectedHashcode, actualHashcode);
+    }
+
+    @Test
+    public void testGetIsDataTypesTabActiveSupplierWhenDataTypesTabIsActive() {
+
+        final MultiPageEditor multiPageEditor = mock(MultiPageEditor.class);
+
+        when(kieView.getMultiPage()).thenReturn(multiPageEditor);
+        when(multiPageEditor.selectedPage()).thenReturn(DATA_TYPES_PAGE_INDEX);
+
+        assertTrue(editor.getIsDataTypesTabActiveSupplier().get());
+    }
+
+    @Test
+    public void testGetIsDataTypesTabActiveSupplierWhenDataTypesTabIsNotActive() {
+        final MultiPageEditor multiPageEditor = mock(MultiPageEditor.class);
+
+        when(kieView.getMultiPage()).thenReturn(multiPageEditor);
+        when(multiPageEditor.selectedPage()).thenReturn(DATA_TYPES_PAGE_INDEX + 1);
+
+        assertFalse(editor.getIsDataTypesTabActiveSupplier().get());
     }
 
     @Test
@@ -371,5 +413,23 @@ public class SessionDiagramEditorScreenTest {
 
         assertEquals("Documentation", documentationPage.getLabel());
         assertEquals(documentationView, documentationPage.getDocumentationView());
+    }
+
+    @Test
+    public void testOnEditExpressionEvent() {
+        editor.onEditExpressionEvent(mock(EditExpressionEvent.class));
+        verify(searchBarComponent).disableSearch();
+    }
+
+    @Test
+    public void testOnMultiPageEditorSelectedPageEvent() {
+        editor.onMultiPageEditorSelectedPageEvent(mock(MultiPageEditorSelectedPageEvent.class));
+        verify(searchBarComponent).disableSearch();
+    }
+
+    @Test
+    public void testOnRefreshFormPropertiesEvent() {
+        editor.onRefreshFormPropertiesEvent(mock(RefreshFormPropertiesEvent.class));
+        verify(searchBarComponent).disableSearch();
     }
 }

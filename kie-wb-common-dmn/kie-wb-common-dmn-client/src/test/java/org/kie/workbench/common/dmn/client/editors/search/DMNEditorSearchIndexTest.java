@@ -23,19 +23,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditor;
-import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
-import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
-import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
 import org.mockito.Mock;
-import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -52,22 +47,13 @@ public class DMNEditorSearchIndexTest {
     private DMNGridSubIndex gridSubIndex;
 
     @Mock
+    private DMNDataTypesSubIndex dataTypesSubIndex;
+
+    @Mock
     private SessionManager sessionManager;
 
     @Mock
     private DMNSession dmnSession;
-
-    @Mock
-    private DMNGraphUtils graphUtils;
-
-    @Mock
-    private DMNGridHelper dmnGridHelper;
-
-    @Mock
-    private EventSourceMock<CanvasClearSelectionEvent> canvasClearSelectionEventEvent;
-
-    @Mock
-    private EventSourceMock<DomainObjectSelectionEvent> domainObjectSelectionEvent;
 
     @Mock
     private ExpressionEditor expressionEditor;
@@ -78,7 +64,7 @@ public class DMNEditorSearchIndexTest {
 
     @Before
     public void setup() {
-        searchIndex = spy(new DMNEditorSearchIndex(graphSubIndex, gridSubIndex, sessionManager, graphUtils, dmnGridHelper, canvasClearSelectionEventEvent, domainObjectSelectionEvent));
+        searchIndex = spy(new DMNEditorSearchIndex(graphSubIndex, gridSubIndex, dataTypesSubIndex, sessionManager));
 
         when(sessionManager.getCurrentSession()).thenReturn(dmnSession);
         when(dmnSession.getExpressionEditor()).thenReturn(expressionEditor);
@@ -96,6 +82,51 @@ public class DMNEditorSearchIndexTest {
         verify(searchIndex).registerSubIndex(graphSubIndex);
         verify(searchIndex).registerSubIndex(gridSubIndex);
         verify(searchIndex).setNoResultsFoundCallback(noResultsFoundCallback);
+    }
+
+    @Test
+    public void testGetNoResultsFoundCallbackWhenDataTypesTabIsActive() {
+
+        when(expressionEditor.isActive()).thenReturn(true);
+        searchIndex.setIsDataTypesTabActiveSupplier(() -> true);
+
+        searchIndex.getNoResultsFoundCallback().execute();
+
+        verify(dataTypesSubIndex).onNoResultsFound();
+    }
+
+    @Test
+    public void testGetNoResultsFoundCallbackWhenExpressionEditorIsActive() {
+
+        when(expressionEditor.isActive()).thenReturn(true);
+
+        searchIndex.getNoResultsFoundCallback().execute();
+
+        verify(gridSubIndex).onNoResultsFound();
+    }
+
+    @Test
+    public void testGetNoResultsFoundCallbackWhenExpressionEditorIsNotActive() {
+
+        when(expressionEditor.isActive()).thenReturn(false);
+
+        searchIndex.getNoResultsFoundCallback().execute();
+
+        verify(graphSubIndex).onNoResultsFound();
+    }
+
+    @Test
+    public void testGetSearchableElementsWhenDataTypesTabIsActive() {
+
+        when(expressionEditor.isActive()).thenReturn(true);
+        when(dataTypesSubIndex.getSearchableElements()).thenReturn(expectedElements);
+        when(gridSubIndex.getSearchableElements()).thenReturn(emptyList());
+        when(graphSubIndex.getSearchableElements()).thenReturn(emptyList());
+        searchIndex.setIsDataTypesTabActiveSupplier(() -> true);
+
+        final List<DMNSearchableElement> actualElements = searchIndex.getSearchableElements();
+
+        assertEquals(expectedElements, actualElements);
     }
 
     @Test
@@ -120,26 +151,5 @@ public class DMNEditorSearchIndexTest {
         final List<DMNSearchableElement> actualElements = searchIndex.getSearchableElements();
 
         assertEquals(expectedElements, actualElements);
-    }
-
-    @Test
-    public void testGetNoResultsFoundCallbackWhenExpressionEditorIsActive() {
-
-        when(expressionEditor.isActive()).thenReturn(true);
-
-        searchIndex.getNoResultsFoundCallback().execute();
-
-        verify(dmnGridHelper).clearSelections();
-    }
-
-    @Test
-    public void testGetNoResultsFoundCallbackWhenExpressionEditorIsNotActive() {
-
-        when(expressionEditor.isActive()).thenReturn(false);
-
-        searchIndex.getNoResultsFoundCallback().execute();
-
-        verify(canvasClearSelectionEventEvent).fire(any(CanvasClearSelectionEvent.class));
-        verify(domainObjectSelectionEvent).fire(any(DomainObjectSelectionEvent.class));
     }
 }

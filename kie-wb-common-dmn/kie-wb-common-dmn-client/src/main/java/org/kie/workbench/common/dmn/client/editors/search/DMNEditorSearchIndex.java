@@ -17,22 +17,21 @@
 package org.kie.workbench.common.dmn.client.editors.search;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.dmn.api.definition.NOPDomainObject;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditor;
-import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
-import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
-import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
 import org.kie.workbench.common.widgets.client.search.common.BaseEditorSearchIndex;
 import org.uberfire.mvp.Command;
+
+import static org.kie.workbench.common.dmn.client.editors.search.DMNEditorSearchIndex.SearchContext.BOXED_EXPRESSION;
+import static org.kie.workbench.common.dmn.client.editors.search.DMNEditorSearchIndex.SearchContext.DATA_TYPES;
+import static org.kie.workbench.common.dmn.client.editors.search.DMNEditorSearchIndex.SearchContext.GRAPH;
 
 @Dependent
 public class DMNEditorSearchIndex extends BaseEditorSearchIndex<DMNSearchableElement> {
@@ -41,31 +40,21 @@ public class DMNEditorSearchIndex extends BaseEditorSearchIndex<DMNSearchableEle
 
     private final DMNGridSubIndex gridSubIndex;
 
+    private final DMNDataTypesSubIndex dataTypesSubIndex;
+
     private final SessionManager sessionManager;
 
-    private final DMNGraphUtils graphUtils;
-
-    private final DMNGridHelper dmnGridHelper;
-
-    private final Event<CanvasClearSelectionEvent> canvasClearSelectionEventEvent;
-
-    private final Event<DomainObjectSelectionEvent> domainObjectSelectionEvent;
+    private Supplier<Boolean> isDataTypesTabActiveSupplier = () -> false;
 
     @Inject
     public DMNEditorSearchIndex(final DMNGraphSubIndex graphSubIndex,
                                 final DMNGridSubIndex gridSubIndex,
-                                final SessionManager sessionManager,
-                                final DMNGraphUtils graphUtils,
-                                final DMNGridHelper dmnGridHelper,
-                                final Event<CanvasClearSelectionEvent> canvasClearSelectionEventEvent,
-                                final Event<DomainObjectSelectionEvent> domainObjectSelectionEvent) {
+                                final DMNDataTypesSubIndex dataTypesSubIndex,
+                                final SessionManager sessionManager) {
         this.graphSubIndex = graphSubIndex;
         this.gridSubIndex = gridSubIndex;
+        this.dataTypesSubIndex = dataTypesSubIndex;
         this.sessionManager = sessionManager;
-        this.graphUtils = graphUtils;
-        this.dmnGridHelper = dmnGridHelper;
-        this.canvasClearSelectionEventEvent = canvasClearSelectionEventEvent;
-        this.domainObjectSelectionEvent = domainObjectSelectionEvent;
     }
 
     @PostConstruct
@@ -75,36 +64,45 @@ public class DMNEditorSearchIndex extends BaseEditorSearchIndex<DMNSearchableEle
         setNoResultsFoundCallback(getNoResultsFoundCallback());
     }
 
-    Command getNoResultsFoundCallback() {
-        return () -> {
-            if (getExpressionEditor().isActive()) {
-                clearGridSelection();
-            } else {
-                clearGraphSelection();
-            }
-        };
-    }
-
-    private void clearGraphSelection() {
-        canvasClearSelectionEventEvent.fire(new CanvasClearSelectionEvent(getCanvasHandler()));
-        domainObjectSelectionEvent.fire(new DomainObjectSelectionEvent(getCanvasHandler(), new NOPDomainObject()));
-    }
-
-    private CanvasHandler getCanvasHandler() {
-        return graphUtils.getCanvasHandler();
-    }
-
-    private void clearGridSelection() {
-        dmnGridHelper.clearSelections();
-    }
-
     @Override
     protected List<DMNSearchableElement> getSearchableElements() {
-        if (getExpressionEditor().isActive()) {
-            return gridSubIndex.getSearchableElements();
-        } else {
-            return graphSubIndex.getSearchableElements();
+        return getSubIndex().getSearchableElements();
+    }
+
+    Command getNoResultsFoundCallback() {
+        return () -> getSubIndex().onNoResultsFound();
+    }
+
+    private DMNSubIndex getSubIndex() {
+        final SearchContext searchContext = currentSearchContext();
+        switch (searchContext) {
+            case BOXED_EXPRESSION:
+                return gridSubIndex;
+            case DATA_TYPES:
+                return dataTypesSubIndex;
+            case GRAPH:
+                return graphSubIndex;
+            default:
+                throw new UnsupportedOperationException("Unsupported search context: " + searchContext);
         }
+    }
+
+    public void setIsDataTypesTabActiveSupplier(final Supplier<Boolean> isDataTypesTabActiveSupplier) {
+        this.isDataTypesTabActiveSupplier = isDataTypesTabActiveSupplier;
+    }
+
+    public Supplier<Boolean> getIsDataTypesTabActiveSupplier() {
+        return isDataTypesTabActiveSupplier;
+    }
+
+    private SearchContext currentSearchContext() {
+        if (getIsDataTypesTabActiveSupplier().get()) {
+            return DATA_TYPES;
+        }
+        if (getExpressionEditor().isActive()) {
+            return BOXED_EXPRESSION;
+        }
+        return GRAPH;
     }
 
     private ExpressionEditor getExpressionEditor() {
@@ -113,5 +111,11 @@ public class DMNEditorSearchIndex extends BaseEditorSearchIndex<DMNSearchableEle
 
     private DMNSession getCurrentSession() {
         return sessionManager.getCurrentSession();
+    }
+
+    enum SearchContext {
+        BOXED_EXPRESSION,
+        DATA_TYPES,
+        GRAPH
     }
 }

@@ -19,6 +19,7 @@ import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
@@ -83,6 +84,7 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.views.pfly.multipage.MultiPageEditorSelectedPageEvent;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
@@ -107,7 +109,7 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
 
     public static final String EDITOR_ID = "DMNDiagramEditor";
 
-    private static final int DATA_TYPES_PAGE_INDEX = 3;
+    static final int DATA_TYPES_PAGE_INDEX = 3;
 
     private final SessionManager sessionManager;
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
@@ -187,6 +189,8 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
     public void init() {
         super.init();
         getMenuSessionItems().setErrorConsumer(e -> hideLoadingViews());
+        editorSearchIndex.setCurrentAssetHashcodeSupplier(getGetCurrentContentHashSupplier());
+        editorSearchIndex.setIsDataTypesTabActiveSupplier(getIsDataTypesTabActiveSupplier());
     }
 
     @OnStartup
@@ -233,6 +237,25 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
         super.hideDocks();
         decisionNavigatorDock.close();
         decisionNavigatorDock.resetContent();
+    }
+
+    public void onMultiPageEditorSelectedPageEvent(final @Observes MultiPageEditorSelectedPageEvent event) {
+        searchBarComponent.disableSearch();
+    }
+
+    public void onRefreshFormPropertiesEvent(final @Observes RefreshFormPropertiesEvent event) {
+        searchBarComponent.disableSearch();
+    }
+
+    Supplier<Boolean> getIsDataTypesTabActiveSupplier() {
+        return () -> {
+            final int selectedPageIndex = kieView.getMultiPage().selectedPage();
+            return selectedPageIndex == DATA_TYPES_PAGE_INDEX;
+        };
+    }
+
+    Supplier<Integer> getGetCurrentContentHashSupplier() {
+        return this::getCurrentContentHash;
     }
 
     void setupSearchComponent() {
@@ -370,6 +393,7 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
     }
 
     void onEditExpressionEvent(final @Observes EditExpressionEvent event) {
+        searchBarComponent.disableSearch();
         if (isSameSession(event.getSession())) {
             final DMNSession session = sessionManager.getCurrentSession();
             final ExpressionEditorView.Presenter expressionEditor = session.getExpressionEditor();

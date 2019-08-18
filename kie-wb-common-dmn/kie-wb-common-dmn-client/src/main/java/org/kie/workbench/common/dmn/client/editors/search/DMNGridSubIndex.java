@@ -25,14 +25,13 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.InformationItemCell.HasNameAndDataTypeCell;
-import org.kie.workbench.common.widgets.client.search.common.HasSearchableElements;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 
 @ApplicationScoped
-public class DMNGridSubIndex implements HasSearchableElements<DMNSearchableElement> {
+public class DMNGridSubIndex implements DMNSubIndex {
 
     private final DMNGridHelper dmnGridHelper;
 
@@ -106,5 +105,10 @@ public class DMNGridSubIndex implements HasSearchableElements<DMNSearchableEleme
         }
 
         return "";
+    }
+
+    @Override
+    public void onNoResultsFound() {
+        dmnGridHelper.clearSelections();
     }
 }

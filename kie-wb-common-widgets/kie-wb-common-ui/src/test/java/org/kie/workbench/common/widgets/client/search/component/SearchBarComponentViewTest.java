@@ -115,6 +115,7 @@ public class SearchBarComponentViewTest {
         verify(searchContainer.classList).add(HIDDEN);
         verify(presenter).resetIndex();
         verify(clickEvent).preventDefault();
+        verify(clickEvent).stopPropagation();
     }
 
     @Test
@@ -128,6 +129,7 @@ public class SearchBarComponentViewTest {
         verify(searchContainer.classList).remove(HIDDEN);
         verify(inputElement).focus();
         verify(clickEvent).preventDefault();
+        verify(clickEvent).stopPropagation();
     }
 
     @Test
@@ -139,6 +141,7 @@ public class SearchBarComponentViewTest {
 
         verify(presenter).nextResult();
         verify(clickEvent).preventDefault();
+        verify(clickEvent).stopPropagation();
     }
 
     @Test
@@ -150,6 +153,7 @@ public class SearchBarComponentViewTest {
 
         verify(presenter).previousResult();
         verify(clickEvent).preventDefault();
+        verify(clickEvent).stopPropagation();
     }
 
     @Test
@@ -161,6 +165,7 @@ public class SearchBarComponentViewTest {
 
         verify(view, times(2)).disableSearch(); // 2 times, since 'view.init(presenter);' is called in the setup method
         verify(clickEvent).preventDefault();
+        verify(clickEvent).stopPropagation();
     }
 
     @Test

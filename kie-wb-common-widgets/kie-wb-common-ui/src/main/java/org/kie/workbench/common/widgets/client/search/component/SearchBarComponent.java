@@ -52,6 +52,10 @@ public class SearchBarComponent<T extends Searchable> {
         return view;
     }
 
+    public void disableSearch() {
+        view.disableSearch();
+    }
+
     void search(final String term) {
         if (!term.isEmpty()) {
             getEditorSearchIndex().search(term);
@@ -97,5 +101,7 @@ public class SearchBarComponent<T extends Searchable> {
         void setCurrentResultNumber(final Integer currentResultNumber);
 
         void setTotalOfResultsNumber(final Integer totalOfResultsNumber);
+
+        void disableSearch();
     }
 }

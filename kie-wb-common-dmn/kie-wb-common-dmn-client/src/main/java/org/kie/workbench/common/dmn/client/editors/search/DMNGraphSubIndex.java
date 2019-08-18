@@ -25,19 +25,21 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import org.kie.workbench.common.dmn.api.definition.NOPDomainObject;
 import org.kie.workbench.common.dmn.api.definition.model.DRGElement;
 import org.kie.workbench.common.dmn.api.definition.model.TextAnnotation;
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasFocusedShapeEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
-import org.kie.workbench.common.widgets.client.search.common.HasSearchableElements;
 import org.uberfire.mvp.Command;
 
 @ApplicationScoped
-public class DMNGraphSubIndex implements HasSearchableElements<DMNSearchableElement> {
+public class DMNGraphSubIndex implements DMNSubIndex {
 
     private final DMNGraphUtils graphUtils;
 
@@ -45,13 +47,21 @@ public class DMNGraphSubIndex implements HasSearchableElements<DMNSearchableElem
 
     private final Event<CanvasFocusedShapeEvent> canvasFocusedSelectionEvent;
 
+    private final Event<CanvasClearSelectionEvent> canvasClearSelectionEventEvent;
+
+    private final Event<DomainObjectSelectionEvent> domainObjectSelectionEvent;
+
     @Inject
     public DMNGraphSubIndex(final DMNGraphUtils graphUtils,
                             final Event<CanvasSelectionEvent> canvasSelectionEvent,
-                            final Event<CanvasFocusedShapeEvent> canvasFocusedSelectionEvent) {
+                            final Event<CanvasFocusedShapeEvent> canvasFocusedSelectionEvent,
+                            final Event<CanvasClearSelectionEvent> canvasClearSelectionEventEvent,
+                            final Event<DomainObjectSelectionEvent> domainObjectSelectionEvent) {
         this.graphUtils = graphUtils;
         this.canvasSelectionEvent = canvasSelectionEvent;
         this.canvasFocusedSelectionEvent = canvasFocusedSelectionEvent;
+        this.canvasClearSelectionEventEvent = canvasClearSelectionEventEvent;
+        this.domainObjectSelectionEvent = domainObjectSelectionEvent;
     }
 
     @Override
@@ -101,5 +111,13 @@ public class DMNGraphSubIndex implements HasSearchableElements<DMNSearchableElem
 
     private Optional<CanvasHandler> getCanvasHandler() {
         return Optional.ofNullable(graphUtils.getCanvasHandler());
+    }
+
+    @Override
+    public void onNoResultsFound() {
+        getCanvasHandler().ifPresent(canvasHandler -> {
+            canvasClearSelectionEventEvent.fire(new CanvasClearSelectionEvent(canvasHandler));
+            domainObjectSelectionEvent.fire(new DomainObjectSelectionEvent(canvasHandler, new NOPDomainObject()));
+        });
     }
 }
