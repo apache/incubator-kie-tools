@@ -9,11 +9,13 @@ import (
 	"testing"
 	"time"
 
+	"github.com/kiegroup/kogito-cloud-operator/pkg/client/meta"
+	"github.com/kiegroup/kogito-cloud-operator/pkg/controller/kogitoapp/builder"
+
 	"github.com/stretchr/testify/assert"
 
 	"github.com/kiegroup/kogito-cloud-operator/pkg/apis"
 	v1alpha1 "github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
-	"github.com/kiegroup/kogito-cloud-operator/pkg/controller/kogitoapp/definitions"
 	appsv1 "github.com/openshift/api/apps/v1"
 	framework "github.com/operator-framework/operator-sdk/pkg/test"
 	"github.com/operator-framework/operator-sdk/pkg/test/e2eutil"
@@ -105,7 +107,7 @@ func kogitoOperatorHappyPathTest(t *testing.T, f *framework.Framework, ctx *fram
 		return err
 	}
 
-	bc, _ := definitions.NewBuildConfigS2I(exampleKogitoOperator)
+	bc, _ := builder.NewBuildConfigS2I(exampleKogitoOperator)
 	err = f.Client.Get(goctx.TODO(), types.NamespacedName{Name: bc.Name, Namespace: namespace}, &bc)
 	if err != nil {
 		log.Fatalf("Impossible to find bc '%s' in namespace '%s'", bc.Name, namespace)
@@ -113,7 +115,7 @@ func kogitoOperatorHappyPathTest(t *testing.T, f *framework.Framework, ctx *fram
 	}
 
 	dc := appsv1.DeploymentConfig{}
-	definitions.SetGroupVersionKind(&dc.TypeMeta, definitions.KindDeploymentConfig)
+	meta.SetGroupVersionKind(&dc.TypeMeta, meta.KindDeploymentConfig)
 
 	//wait for the build to finish
 	for i := 1; i <= 60; i++ {
