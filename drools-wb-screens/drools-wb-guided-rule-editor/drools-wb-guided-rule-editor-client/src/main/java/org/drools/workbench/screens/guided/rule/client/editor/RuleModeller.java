@@ -749,17 +749,9 @@ public class RuleModeller extends Composite
         addPattern.setTitle(title);
         addPattern.addClickHandler(addBelowListener);
 
-        Image moveDown = CommonAltedImages.INSTANCE.MoveDown();
-        moveDown.setTitle(GuidedRuleEditorResources.CONSTANTS.MoveDown());
-        moveDown.addClickHandler(moveDownListener);
-
-        Image moveUp = CommonAltedImages.INSTANCE.MoveUp();
-        moveUp.setTitle(GuidedRuleEditorResources.CONSTANTS.MoveUp());
-        moveUp.addClickHandler(moveUpListener);
-
         hp.add(addPattern);
-        hp.add(moveDown);
-        hp.add(moveUp);
+        hp.add(new MoveDownButton(moveDownListener));
+        hp.add(new MoveUpButton(moveUpListener));
 
         layout.setWidget(currentLayoutRow,
                          4,

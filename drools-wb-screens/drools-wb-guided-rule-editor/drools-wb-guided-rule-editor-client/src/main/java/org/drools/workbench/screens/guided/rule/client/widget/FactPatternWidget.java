@@ -57,6 +57,8 @@ import org.drools.workbench.screens.guided.rule.client.editor.CEPWindowOperators
 import org.drools.workbench.screens.guided.rule.client.editor.ConstraintValueEditor;
 import org.drools.workbench.screens.guided.rule.client.editor.ExpressionTypeChangeEvent;
 import org.drools.workbench.screens.guided.rule.client.editor.ExpressionTypeChangeHandler;
+import org.drools.workbench.screens.guided.rule.client.editor.MoveDownButton;
+import org.drools.workbench.screens.guided.rule.client.editor.MoveUpButton;
 import org.drools.workbench.screens.guided.rule.client.editor.OperatorSelection;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.drools.workbench.screens.guided.rule.client.editor.factPattern.Connectives;
@@ -205,6 +207,18 @@ public class FactPatternWidget extends RuleModellerWidget {
                 table.setWidget(currentRow,
                                 6,
                                 clear);
+                table.setWidget(currentRow,
+                                7,
+                                new MoveUpButton(event -> {
+                                    hasConstraints.moveUp(currentRow);
+                                    getModeller().refreshWidget();
+                                }));
+                table.setWidget(currentRow,
+                                8,
+                                new MoveDownButton(event -> {
+                                    hasConstraints.moveDown(currentRow);
+                                    getModeller().refreshWidget();
+                                }));
             }
         }
     }
@@ -372,6 +386,7 @@ public class FactPatternWidget extends RuleModellerWidget {
         FlexTable inner = new FlexTable();
         if (nested != null) {
             for (int i = 0; i < nested.length; i++) {
+                final int currentId = i;
                 this.renderFieldConstraint(inner,
                                            i,
                                            nested[i],
@@ -397,6 +412,18 @@ public class FactPatternWidget extends RuleModellerWidget {
                     inner.setWidget(i,
                                     6,
                                     clear);
+                    inner.setWidget(i,
+                                    7,
+                                    new MoveDownButton(event -> {
+                                        constraint.moveDown(currentRow);
+                                        getModeller().refreshWidget();
+                                    }));
+                    inner.setWidget(i,
+                                    8,
+                                    new MoveUpButton(event -> {
+                                        constraint.moveUp(currentRow);
+                                        getModeller().refreshWidget();
+                                    }));
                 }
             }
         }
