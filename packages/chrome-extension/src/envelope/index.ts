@@ -28,5 +28,5 @@ MicroEditorEnvelope.init({
       window.parent.postMessage(message, targetOrigin!, _);
     }
   },
-  editorFactory: new GwtEditorWrapperFactory(gwtAppFormerApi)
+  editorFactory: new GwtEditorWrapperFactory(gwtAppFormerApi),
 });

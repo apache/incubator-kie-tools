@@ -28,6 +28,10 @@ export class GwtEditorWrapperFactory implements MicroEditorEnvelope.EditorFactor
     this.appFormerGwtApi = appFormerGwtApi;
   }
 
+  private delay(ms: number) {
+    return new Promise(res => setTimeout(res, ms));
+  }
+
   public createEditor(languageData: GwtLanguageData, messageBus: EnvelopeBusInnerMessageHandler) {
     return new Promise<AppFormer.Editor>(res => {
       this.appFormerGwtApi.setErraiDomain(languageData.erraiDomain); //needed only for backend communication
@@ -44,21 +48,35 @@ export class GwtEditorWrapperFactory implements MicroEditorEnvelope.EditorFactor
   }
 
   private loadResource(resource: Resource) {
-    resource.paths.forEach(path => {
-      switch (resource.type) {
-        case "css":
-          const link = document.createElement("link");
-          link.href = path;
-          link.rel = "text/css";
-          document.body.appendChild(link);
-          break;
-        case "js":
-          const script = document.createElement("script");
-          script.src = path;
-          script.type = "text/javascript";
-          document.body.appendChild(script);
-          break;
-      }
-    });
+    let i = 0; //  set your counter to 1
+
+    const myLoop = () => {
+      setTimeout(() => {
+        console.info(resource.paths[i]);
+        try {
+          switch (resource.type) {
+            case "css":
+              const link = document.createElement("link");
+              link.href = resource.paths[i];
+              link.rel = "text/css";
+              document.body.appendChild(link);
+              break;
+            case "js":
+              const script = document.createElement("script");
+              script.src = resource.paths[i];
+              script.type = "text/javascript";
+              document.body.appendChild(script);
+              break;
+          }
+        } finally {
+          i++;
+          if (i < resource.paths[i].length) {
+            myLoop(); //  ..  again which will trigger another
+          }
+        }
+      }, 200);
+    };
+
+    myLoop();
   }
 }

@@ -1,1 +1,0 @@
-$wnd.org_kie_workbench_common_stunner_kogito_StunnerStandaloneShowcase.runAsyncCallback2('XZy(C0b)(2);\n//# sourceMappingURL=sourcemaps/57889DB2ED47B910583D77DE2AFB6077_sourceMap2.json \n//# sourceURL=org.kie.workbench.common.stunner.kogito.StunnerStandaloneShowcase-2.js\n')

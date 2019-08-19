@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright 2016 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~  http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.4.0//EN"
+    "http://google-web-toolkit.googlecode.com/svn/tags/2.5.0/distro-source/core/src/gwt-module.dtd">
+<module>
+
+  <!-- Uberfire dependencies -->
+  <inherits name="org.uberfire.UberfireClient"/>
+  <inherits name="org.uberfire.UberfireBackend"/>
+  <inherits name="org.uberfire.client.views.PatternFlyTheme"/>
+  <inherits name="org.uberfire.experimental.UberfireExperimentalAPI"/>
+  <inherits name="org.uberfire.experimental.UberfireExperimentalClient"/>
+  <inherits name="org.uberfire.ext.plugin.RuntimePluginClient"/>
+  <inherits name="org.uberfire.ext.widgets.core.UberfireWidgetsCore"/>
+  <inherits name="org.uberfire.ext.preferences.UberfirePreferences"/>
+  <inherits name="org.uberfire.preferences.UberfirePreferencesClient"/>
+
+  <!-- Errai, Drools etc -->
+  <inherits name="org.kie.workbench.common.profile.ProfileAPI"/>
+  <inherits name="org.kie.workbench.common.services.datamodel.KieWorkbenchCommonDataModelAPI"/>
+  <inherits name="org.kie.workbench.common.submarine.SubmarineClient"/>
+  <inherits name="org.kie.workbench.common.widgets.KieWorkbenchWidgetsCommon"/>
+  <inherits name="org.guvnor.common.services.project.GuvnorProjectClient"/>
+
+  <!-- Stunner -->
+  <inherits name="org.kie.workbench.common.stunner.client.StunnerWidgets"/>
+  <inherits name="org.kie.workbench.common.stunner.submarine.StunnerSubmarineClient"/>
+
+  <!-- Form modeler -->
+  <inherits name="org.kie.workbench.common.stunner.forms.StunnerFormsClient"/>
+  <inherits name="org.kie.workbench.common.forms.dynamic.DynamicFormsClient"/>
+
+  <!-- BPMN -->
+  <inherits name="org.kie.workbench.common.stunner.bpmn.StunnerBpmnClient"/>
+
+  <extend-property name="locale" values="es"/>
+  <extend-property name="locale" values="fr"/>
+  <extend-property name="locale" values="ja"/>
+  <extend-property name="locale" values="pt_BR"/>
+  <extend-property name="locale" values="zh_CN"/>
+  <extend-property name="locale" values="de"/>
+
+  <!-- We don't need to support IE10 or older -->
+  <!-- There is no "ie11" permutation. IE11 uses the Firefox one (gecko1_8) -->
+  <set-property name="user.agent" value="gecko1_8,safari"/>
+
+  <!-- To change the default logLevel -->
+  <set-property name="gwt.logging.logLevel" value="SEVERE"/>
+  <!-- To enable logging -->
+  <set-property name="gwt.logging.enabled" value="TRUE"/>
+
+  <!-- Specify the paths for translatable code -->
+  <source path="client"/>
+
+  <define-linker name="dil" class="com.google.gwt.core.linker.DirectInstallLinker"/>
+  <add-linker name="dil" />
+  <!--<set-property name="ClientBundle.enableInlining" value="false" />-->
+
+</module>

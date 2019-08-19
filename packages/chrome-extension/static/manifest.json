@@ -17,9 +17,9 @@
   "web_accessible_resources": [
     "envelope/*.html",
     "envelope/*.js",
-    "editors/*.html",
-    "editors/*.css",
-    "editors/*.js",
+    "editors/**/*.html",
+    "editors/**/*.css",
+    "editors/**/*.js",
     "resources/*.js",
     "resources/*.html",
     "resources/*.css"

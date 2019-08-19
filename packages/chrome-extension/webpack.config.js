@@ -38,6 +38,10 @@ module.exports = {
       { from: "./static/newtab", to: "./newtab" },
       { from: "./static/resources", to: "./resources" },
       { from: "./static/envelope", to: "./envelope" }
+    ]),
+    new CopyPlugin([
+      { from: "../unpacked-kie-editors/dmn", to: "./editors/dmn" },
+      { from: "../unpacked-kie-editors/bpmn", to: "./editors/bpmn" }
     ])
   ],
   module: {

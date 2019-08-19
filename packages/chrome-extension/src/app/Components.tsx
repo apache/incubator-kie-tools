@@ -17,14 +17,31 @@
 import { findContainers, getGitHubEditor } from "./utils";
 import * as ReactDOM from "react-dom";
 import * as React from "react";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { EnvelopeBusOuterMessageHandler } from "appformer-js-microeditor-envelope-protocol";
 import { Router } from "appformer-js-core/src";
 
+interface GlobalContextType {
+  fullscreen: boolean;
+  textMode: boolean;
+}
+
+const GlobalContext = React.createContext<[GlobalContextType, (g: GlobalContextType) => void]>([
+  {
+    fullscreen: false,
+    textMode: false
+  },
+  (g: GlobalContextType) => {
+    /**/
+  }
+]);
+
 export function ChromeExtensionApp(props: { openFileExtension: string; githubEditor: HTMLElement; router: Router }) {
+  const [globalState, setGlobalState] = useState({ fullscreen: false, textMode: false });
+
   const containers = findContainers();
   return (
-    <>
+    <GlobalContext.Provider value={[globalState, setGlobalState]}>
       {ReactDOM.createPortal(<ToolbarButtons />, containers.fullScreenButton)}
       {ReactDOM.createPortal(
         <KogitoEditorIframe
@@ -34,7 +51,7 @@ export function ChromeExtensionApp(props: { openFileExtension: string; githubEdi
         />,
         containers.iframe
       )}
-    </>
+    </GlobalContext.Provider>
   );
 }
 
@@ -62,8 +79,8 @@ function KogitoEditorIframe(props: { openFileExtension: string; githubEditor: HT
         getGitHubEditor().CodeMirror.setValue(content);
       },
       receive_contentRequest: () => {
-        const githubEditorContent = getGitHubEditor().CodeMirror.getValue() || "";
-        self.respond_contentRequest(githubEditorContent);
+        // const githubEditorContent = getGitHubEditor().CodeMirror.getValue() || "";
+        self.respond_contentRequest("");
       },
       receive_dirtyIndicatorChange(isDirty: boolean) {
         console.info(`Dirty indicator changed to ${isDirty}`);
@@ -109,38 +126,38 @@ function KogitoEditorIframe(props: { openFileExtension: string; githubEditor: HT
 }
 
 function ToolbarButtons() {
-  const [textMode, setTextMode] = useState(false);
+  const [globalContext, setGlobalContext] = useContext(GlobalContext);
 
   const goFullScreen = (e: any) => {
     e.preventDefault();
-    console.info("Went full screen");
+    setGlobalContext({ ...globalContext, fullscreen: true });
   };
 
   const seeAsText = (e: any) => {
     e.preventDefault();
-    setTextMode(true);
+    setGlobalContext({ ...globalContext, textMode: true });
   };
 
-  const seeAsDiagram = (e: any) => {
+  const seeAsKogito = (e: any) => {
     e.preventDefault();
-    setTextMode(false);
+    setGlobalContext({ ...globalContext, textMode: false });
   };
 
   return (
     <>
-      {!textMode && (
+      {!globalContext.textMode && (
         <button className={"btn btn-sm"} style={{ marginLeft: "4px", float: "right" }} onClick={goFullScreen}>
           Fullscreen
         </button>
       )}
-      {!textMode && (
+      {!globalContext.textMode && (
         <button className={"btn btn-sm"} style={{ marginLeft: "4px", float: "right" }} onClick={seeAsText}>
           See as text
         </button>
       )}
-      {textMode && (
-        <button className={"btn btn-sm"} style={{ marginLeft: "4px", float: "right" }} onClick={seeAsDiagram}>
-          See as diagram
+      {globalContext.textMode && (
+        <button className={"btn btn-sm"} style={{ marginLeft: "4px", float: "right" }} onClick={seeAsKogito}>
+          See as custom editor
         </button>
       )}
     </>

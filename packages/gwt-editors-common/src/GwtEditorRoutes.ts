@@ -69,8 +69,13 @@ export class GwtEditorRoutes implements Routes {
             {
               type: "js",
               paths: [
+                router.getRelativePathTo(`${this.bpmnLocation}/${bpmnGwtModuleName}/js/jquery-1.12.0.min.cache.js`),
                 router.getRelativePathTo(`${this.bpmnLocation}/${bpmnGwtModuleName}/ace/ace.js`),
                 router.getRelativePathTo(`${this.bpmnLocation}/${bpmnGwtModuleName}/ace/theme-chrome.js`),
+                router.getRelativePathTo(`${this.bpmnLocation}/${bpmnGwtModuleName}/ace/ext-language_tools.js`),
+                router.getRelativePathTo(`${this.bpmnLocation}/${bpmnGwtModuleName}/bootstrap-select/js/bootstrap-select.min.js`),
+                router.getRelativePathTo(`${this.bpmnLocation}/${bpmnGwtModuleName}/js/patternfly.min.js`),
+                router.getRelativePathTo(`${this.bpmnLocation}/${bpmnGwtModuleName}/js/bootstrap-3.3.6.min.cache.js`),
                 router.getRelativePathTo(`${this.bpmnLocation}/${bpmnGwtModuleName}/${bpmnGwtModuleName}.nocache.js`)
               ]
             }
