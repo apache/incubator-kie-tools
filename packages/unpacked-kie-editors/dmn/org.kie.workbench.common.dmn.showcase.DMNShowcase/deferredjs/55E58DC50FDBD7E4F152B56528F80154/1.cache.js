@@ -1,1 +1,0 @@
-$wnd.org_kie_workbench_common_dmn_showcase_DMNShowcase.runAsyncCallback1("var qFc=h_g(wTw,'RunAsyncCallback');dug(13615,1,{13730:1});_.Im=function INi(){null.b6()};var Kbd=f_g(wfx,'AsyncBeanFactory/1',13615,WRc);wSw(I1b)(1);\n//# sourceURL=org.kie.workbench.common.dmn.showcase.DMNShowcase-1.js\n")

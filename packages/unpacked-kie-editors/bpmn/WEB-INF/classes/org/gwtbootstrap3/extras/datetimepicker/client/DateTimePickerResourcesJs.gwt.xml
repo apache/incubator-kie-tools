@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<module>
-  <public path="resource">
-    <include name="js/bootstrap-datetimepicker-2.3.8.min.cache.js"/>
-  </public>
-</module>
