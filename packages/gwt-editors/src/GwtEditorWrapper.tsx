@@ -53,7 +53,7 @@ export class GwtEditorWrapper extends AppFormer.Editor {
       //FIXME: Make setContent return a promise.
       this.gwtEditor.setContent(content.trim());
     } catch (e) {
-      return Promise.reject("Error during set content");
+      return Promise.reject(e);
     }
 
     return Promise.resolve();

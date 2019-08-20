@@ -48,7 +48,7 @@ export class GwtEditorWrapperFactory implements MicroEditorEnvelope.EditorFactor
   }
 
   private loadResource(resource: Resource) {
-    let i = 0; //  set your counter to 1
+    let i = 0;
 
     const myLoop = () => {
       setTimeout(() => {
@@ -70,11 +70,11 @@ export class GwtEditorWrapperFactory implements MicroEditorEnvelope.EditorFactor
           }
         } finally {
           i++;
-          if (i < resource.paths[i].length) {
-            myLoop(); //  ..  again which will trigger another
+          if (i < resource.paths.length) {
+            myLoop();
           }
         }
-      }, 200);
+      }, 0);
     };
 
     myLoop();

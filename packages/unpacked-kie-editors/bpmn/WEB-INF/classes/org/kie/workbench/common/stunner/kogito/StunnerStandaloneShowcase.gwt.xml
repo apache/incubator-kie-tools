@@ -44,6 +44,8 @@
   <!-- Form modeler -->
   <inherits name="org.kie.workbench.common.stunner.forms.StunnerFormsClient"/>
   <inherits name="org.kie.workbench.common.forms.dynamic.DynamicFormsClient"/>
+  <inherits name="com.ait.tooling.nativetools.NativeToolsResourcesJs"/>
+  <inherits name="org.gwtbootstrap3.extras.datetimepicker.client.DateTimePickerResourcesJs"/>
 
   <!-- BPMN -->
   <inherits name="org.kie.workbench.common.stunner.bpmn.StunnerBpmnClient"/>
@@ -67,8 +69,6 @@
   <!-- Specify the paths for translatable code -->
   <source path="client"/>
 
-  <define-linker name="dil" class="com.google.gwt.core.linker.DirectInstallLinker"/>
-  <add-linker name="dil" />
-  <!--<set-property name="ClientBundle.enableInlining" value="false" />-->
+  <add-linker name="direct_install" />
 
 </module>

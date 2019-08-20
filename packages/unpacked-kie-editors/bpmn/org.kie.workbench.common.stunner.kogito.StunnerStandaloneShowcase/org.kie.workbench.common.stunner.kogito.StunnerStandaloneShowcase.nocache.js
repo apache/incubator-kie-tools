@@ -331,7 +331,7 @@ function org_kie_workbench_common_stunner_kogito_StunnerStandaloneShowcase(){
     }
     var strongName;
     try {
-      strongName = '4D71E949E7C134E8C77BA95C81D45B8D';
+      strongName = 'D7CDBC81E5055942F8C0673DEACA06AD';
       var idx = strongName.indexOf(':');
       if (idx != -1) {
         softPermutationId = parseInt(strongName.substring(idx + 1), 10);
