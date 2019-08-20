@@ -113,7 +113,7 @@ public class SearchBarComponentViewTest {
 
         assertEquals("", inputElement.value);
         verify(searchContainer.classList).add(HIDDEN);
-        verify(presenter).resetIndex();
+        verify(presenter).closeIndex();
         verify(clickEvent).preventDefault();
         verify(clickEvent).stopPropagation();
     }

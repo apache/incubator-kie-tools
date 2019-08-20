@@ -73,8 +73,8 @@ public class SearchBarComponent<T extends Searchable> {
         updateViewNumber();
     }
 
-    void resetIndex() {
-        editorSearchIndex().ifPresent(EditorSearchIndex::reset);
+    void closeIndex() {
+        editorSearchIndex().ifPresent(EditorSearchIndex::close);
         updateViewNumber();
     }
 

@@ -250,6 +250,12 @@ public class DMNGridSubIndexTest {
         verify(dmnGridHelper).clearSelections();
     }
 
+    @Test
+    public void testOnSearchClosed() {
+        index.onSearchClosed();
+        verify(dmnGridHelper).focusGridPanel();
+    }
+
     private Set<GridWidget> asSet(final GridWidget... a) {
         return new HashSet<>(asList(a));
     }

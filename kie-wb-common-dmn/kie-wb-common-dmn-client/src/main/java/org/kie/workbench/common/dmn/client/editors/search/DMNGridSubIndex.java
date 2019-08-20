@@ -49,6 +49,11 @@ public class DMNGridSubIndex implements DMNSubIndex {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public void onSearchClosed() {
+        dmnGridHelper.focusGridPanel();
+    }
+
     private List<DMNSearchableElement> getSearchableElements(final GridWidget gridWidget) {
 
         final List<DMNSearchableElement> elements = new ArrayList<>();

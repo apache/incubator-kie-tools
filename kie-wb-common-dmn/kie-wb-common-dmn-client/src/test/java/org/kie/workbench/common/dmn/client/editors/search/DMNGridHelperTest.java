@@ -143,6 +143,13 @@ public class DMNGridHelperTest {
         assertEquals(expectedGridWidgets, actualGridWidgets);
     }
 
+    @Test
+    public void testFocusGridPanel() {
+        helper.focusGridPanel();
+
+        verify(gridPanel).setFocus(true);
+    }
+
     private Set<GridWidget> asSet(final GridWidget... a) {
         return new HashSet<>(asList(a));
     }

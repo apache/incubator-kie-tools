@@ -51,6 +51,10 @@ public class DMNGridHelper {
                 .highlight(row, column);
     }
 
+    public void focusGridPanel() {
+        getGridPanel().setFocus(true);
+    }
+
     private double getIdColumnWidth(final GridWidget gridWidget,
                                     final int column) {
 

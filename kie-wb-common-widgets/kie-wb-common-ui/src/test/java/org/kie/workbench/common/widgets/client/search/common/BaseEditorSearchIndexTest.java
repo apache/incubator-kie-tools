@@ -49,6 +49,9 @@ public class BaseEditorSearchIndexTest {
     @Mock
     private Command noResultsFoundCallback;
 
+    @Mock
+    private Command searchClosedCallback;
+
     private Supplier<Integer> currentAssetHashcodeSupplier;
 
     private FakeEditorSearchIndex index;
@@ -75,6 +78,7 @@ public class BaseEditorSearchIndexTest {
 
         index = new FakeEditorSearchIndex(searchableElements);
         index.setNoResultsFoundCallback(noResultsFoundCallback);
+        index.setSearchClosedCallback(searchClosedCallback);
         index.setCurrentAssetHashcodeSupplier(currentAssetHashcodeSupplier);
     }
 
@@ -239,16 +243,17 @@ public class BaseEditorSearchIndexTest {
     }
 
     @Test
-    public void testReset() {
+    public void testClose() {
 
         index.search("Element");
 
-        index.reset();
+        index.close();
 
         assertEquals(0, index.getTotalOfResultsNumber());
         assertEquals(0, index.getCurrentResultNumber());
         assertEquals("", index.getCurrentTerm());
         assertEquals(0, index.getResults().size());
+        verify(searchClosedCallback).execute();
     }
 
     private void times(final int times,

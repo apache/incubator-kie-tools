@@ -28,4 +28,8 @@ public interface DMNSubIndex extends HasSearchableElements<DMNSearchableElement>
      * and this sub-index is active.
      */
     void onNoResultsFound();
+
+    default void onSearchClosed() {
+
+    }
 }

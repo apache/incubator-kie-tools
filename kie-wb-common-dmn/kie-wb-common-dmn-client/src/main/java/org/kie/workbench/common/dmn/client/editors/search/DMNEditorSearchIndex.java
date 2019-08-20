@@ -62,6 +62,7 @@ public class DMNEditorSearchIndex extends BaseEditorSearchIndex<DMNSearchableEle
         registerSubIndex(graphSubIndex);
         registerSubIndex(gridSubIndex);
         setNoResultsFoundCallback(getNoResultsFoundCallback());
+        setSearchClosedCallback(getSearchClosedCallback());
     }
 
     @Override
@@ -71,6 +72,14 @@ public class DMNEditorSearchIndex extends BaseEditorSearchIndex<DMNSearchableEle
 
     Command getNoResultsFoundCallback() {
         return () -> getSubIndex().onNoResultsFound();
+    }
+
+    public void setIsDataTypesTabActiveSupplier(final Supplier<Boolean> isDataTypesTabActiveSupplier) {
+        this.isDataTypesTabActiveSupplier = isDataTypesTabActiveSupplier;
+    }
+
+    Command getSearchClosedCallback() {
+        return () -> getSubIndex().onSearchClosed();
     }
 
     private DMNSubIndex getSubIndex() {
@@ -85,10 +94,6 @@ public class DMNEditorSearchIndex extends BaseEditorSearchIndex<DMNSearchableEle
             default:
                 throw new UnsupportedOperationException("Unsupported search context: " + searchContext);
         }
-    }
-
-    public void setIsDataTypesTabActiveSupplier(final Supplier<Boolean> isDataTypesTabActiveSupplier) {
-        this.isDataTypesTabActiveSupplier = isDataTypesTabActiveSupplier;
     }
 
     public Supplier<Boolean> getIsDataTypesTabActiveSupplier() {

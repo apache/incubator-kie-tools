@@ -57,6 +57,8 @@ public interface EditorSearchIndex<T extends Searchable> {
      */
     void setNoResultsFoundCallback(final Command callback);
 
+    void setSearchClosedCallback(final Command callback);
+
     /**
      * Sets the callback that will be triggered when the current search results needs to be cleared.
      * @param callback the callback that will be triggered
@@ -102,5 +104,5 @@ public interface EditorSearchIndex<T extends Searchable> {
      * It affects the <code>isDirty</code>, the <code>nextResult</code>, the <code>previousResult</code>,
      * the <code>getCurrentResultNumber</code>, and the <code>getTotalOfResultsNumber</code> method.
      */
-    void reset();
+    void close();
 }

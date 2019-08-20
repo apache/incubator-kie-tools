@@ -101,9 +101,9 @@ public class SearchBarComponentTest {
     @Test
     public void testResetIndex() {
 
-        component.resetIndex();
+        component.closeIndex();
 
-        verify(index).reset();
+        verify(index).close();
         verify(component).updateViewNumber();
     }
 

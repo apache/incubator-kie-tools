@@ -153,7 +153,7 @@ public class SearchBarComponentView implements SearchBarComponent.View {
     public void disableSearch() {
         searchContainer.classList.add(HIDDEN);
         inputElement.value = "";
-        presenter.resetIndex();
+        presenter.closeIndex();
     }
 
     private void search(final String value) {

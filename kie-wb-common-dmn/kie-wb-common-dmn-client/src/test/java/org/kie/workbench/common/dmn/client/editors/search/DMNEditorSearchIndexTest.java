@@ -74,20 +74,22 @@ public class DMNEditorSearchIndexTest {
     public void testInit() {
 
         final Command noResultsFoundCallback = mock(Command.class);
+        final Command searchClosedCallback = mock(Command.class);
 
         doReturn(noResultsFoundCallback).when(searchIndex).getNoResultsFoundCallback();
+        doReturn(searchClosedCallback).when(searchIndex).getSearchClosedCallback();
 
         searchIndex.init();
 
         verify(searchIndex).registerSubIndex(graphSubIndex);
         verify(searchIndex).registerSubIndex(gridSubIndex);
         verify(searchIndex).setNoResultsFoundCallback(noResultsFoundCallback);
+        verify(searchIndex).setSearchClosedCallback(searchClosedCallback);
     }
 
     @Test
     public void testGetNoResultsFoundCallbackWhenDataTypesTabIsActive() {
 
-        when(expressionEditor.isActive()).thenReturn(true);
         searchIndex.setIsDataTypesTabActiveSupplier(() -> true);
 
         searchIndex.getNoResultsFoundCallback().execute();
@@ -113,6 +115,33 @@ public class DMNEditorSearchIndexTest {
         searchIndex.getNoResultsFoundCallback().execute();
 
         verify(graphSubIndex).onNoResultsFound();
+    }
+
+    @Test
+    public void testSearchClosedCallbackExpressionEditorIsActive() {
+        when(expressionEditor.isActive()).thenReturn(true);
+
+        searchIndex.getSearchClosedCallback().execute();
+
+        verify(gridSubIndex).onSearchClosed();
+    }
+
+    @Test
+    public void testSearchClosedCallbackDataTypeEditorIsActive() {
+        searchIndex.setIsDataTypesTabActiveSupplier(() -> true);
+
+        searchIndex.getSearchClosedCallback().execute();
+
+        verify(dataTypesSubIndex).onSearchClosed();
+    }
+
+    @Test
+    public void testSearchClosedCallbackGraphEditorIsActive() {
+        when(expressionEditor.isActive()).thenReturn(false);
+
+        searchIndex.getSearchClosedCallback().execute();
+
+        verify(graphSubIndex).onSearchClosed();
     }
 
     @Test

@@ -43,6 +43,8 @@ public abstract class BaseEditorSearchIndex<T extends Searchable> implements Edi
 
     private Supplier<Integer> currentAssetHashcodeSupplier;
 
+    private Command searchClosedCallback = () -> {/* Nothing */};
+
     @Override
     public List<HasSearchableElements<T>> getSubIndexes() {
         return hasSearchableElementsList;
@@ -84,10 +86,10 @@ public abstract class BaseEditorSearchIndex<T extends Searchable> implements Edi
     }
 
     @Override
-    public void reset() {
+    public void close() {
         results = new ArrayList<>();
         currentTerm = "";
-        triggerNoResultsFoundCommand();
+        triggerSearchClosedCommand();
     }
 
     @Override
@@ -98,6 +100,11 @@ public abstract class BaseEditorSearchIndex<T extends Searchable> implements Edi
     @Override
     public void setClearCurrentResultsCallback(final Command callback) {
         clearCurrentResultsCallback = callback;
+    }
+
+    @Override
+    public void setSearchClosedCallback(final Command searchClosedCallback) {
+        this.searchClosedCallback = searchClosedCallback;
     }
 
     @Override
@@ -215,6 +222,10 @@ public abstract class BaseEditorSearchIndex<T extends Searchable> implements Edi
 
     private void triggerClearCurrentResultsCallback() {
         clearCurrentResultsCallback.execute();
+    }
+
+    private void triggerSearchClosedCommand() {
+        searchClosedCallback.execute();
     }
 
     private Optional<T> getCurrentResult() {
