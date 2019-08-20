@@ -25,6 +25,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import elemental2.promise.Promise;
+import org.drools.scenariosimulation.api.model.AuditLog;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
 import org.drools.scenariosimulation.api.model.Simulation;
@@ -41,6 +42,7 @@ import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationM
 import org.drools.workbench.screens.scenariosimulation.model.SimulationRunResult;
 import org.drools.workbench.screens.scenariosimulation.service.DMNTypeService;
 import org.drools.workbench.screens.scenariosimulation.service.ImportExportService;
+import org.drools.workbench.screens.scenariosimulation.service.RunnerReportService;
 import org.drools.workbench.screens.scenariosimulation.service.ScenarioSimulationService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.common.client.api.Caller;
@@ -87,6 +89,7 @@ public class ScenarioSimulationEditorBusinessCentralWrapper extends KieEditor<Sc
     private Caller<ScenarioSimulationService> service;
     private Caller<DMNTypeService> dmnTypeService;
     private Caller<ImportExportService> importExportService;
+    private Caller<RunnerReportService> runnerReportService;
 
     public ScenarioSimulationEditorBusinessCentralWrapper() {
         //Zero-parameter constructor for CDI proxies
@@ -99,12 +102,14 @@ public class ScenarioSimulationEditorBusinessCentralWrapper extends KieEditor<Sc
                                                           final AsyncPackageDataModelOracleFactory oracleFactory,
                                                           final PlaceManager placeManager,
                                                           final Caller<DMNTypeService> dmnTypeService,
-                                                          final Caller<ImportExportService> importExportService) {
+                                                          final Caller<ImportExportService> importExportService,
+                                                          final Caller<RunnerReportService> runnerReportService) {
         super(scenarioSimulationEditorPresenter.getView());
         this.scenarioSimulationEditorPresenter = scenarioSimulationEditorPresenter;
         this.dmnTypeService = dmnTypeService;
         this.service = service;
         this.importExportService = importExportService;
+        this.runnerReportService = runnerReportService;
         this.importsWidget = importsWidget;
         this.oracleFactory = oracleFactory;
         this.placeManager = placeManager;
@@ -178,6 +183,12 @@ public class ScenarioSimulationEditorBusinessCentralWrapper extends KieEditor<Sc
     public void onExportToCsv(RemoteCallback<Object> exportCallBack, ScenarioSimulationHasBusyIndicatorDefaultErrorCallback scenarioSimulationHasBusyIndicatorDefaultErrorCallback, Simulation simulation) {
         importExportService.call(exportCallBack, scenarioSimulationHasBusyIndicatorDefaultErrorCallback)
                 .exportSimulation(CSV, simulation);
+    }
+
+    @Override
+    public void onDownloadReportToCsv(RemoteCallback<Object> exportCallBack, ScenarioSimulationHasBusyIndicatorDefaultErrorCallback scenarioSimulationHasBusyIndicatorDefaultErrorCallback, AuditLog auditLog) {
+        runnerReportService.call(exportCallBack, scenarioSimulationHasBusyIndicatorDefaultErrorCallback)
+                .getReport(auditLog);
     }
 
     @Override

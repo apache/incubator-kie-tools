@@ -30,6 +30,7 @@ import javax.inject.Inject;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import elemental2.dom.DomGlobal;
+import org.drools.scenariosimulation.api.model.AuditLog;
 import org.drools.scenariosimulation.api.model.FactMapping;
 import org.drools.scenariosimulation.api.model.FactMappingType;
 import org.drools.scenariosimulation.api.model.Scenario;
@@ -388,7 +389,6 @@ public class ScenarioSimulationEditorPresenter {
         scenarioSimulationEditorWrapper.onExportToCsv(getExportCallBack(), new ScenarioSimulationHasBusyIndicatorDefaultErrorCallback(view), context.getStatus().getSimulation());
     }
 
-
     protected RemoteCallback<Object> getExportCallBack() {
         return rawResult -> {
             TextContent textContent = TextContent.create((String) rawResult);
@@ -501,6 +501,9 @@ public class ScenarioSimulationEditorPresenter {
         Type type = dataManagementStrategy instanceof AbstractDMODataManagementStrategy ? Type.RULE : Type.DMN;
         SimulationRunMetadata simulationRunMetadata = lastRunResult != null ? lastRunResult.getSimulationRunMetadata() : null;
         presenter.populateCoverageReport(type, simulationRunMetadata);
+        if (simulationRunMetadata != null && simulationRunMetadata.getAuditLog() != null) {
+            presenter.setDownloadReportCommand(getDownloadReportCommand(simulationRunMetadata.getAuditLog() ));
+        }
     }
 
     public String getJsonModel(ScenarioSimulationModel model) {
@@ -529,6 +532,10 @@ public class ScenarioSimulationEditorPresenter {
 
     protected Command getSaveCommand() {
         return () -> scenarioSimulationEditorWrapper.wrappedSave(ConstantHolder.SAVE);
+    }
+
+    protected Command getDownloadReportCommand(AuditLog auditLog) {
+        return () -> scenarioSimulationEditorWrapper.onDownloadReportToCsv(getExportCallBack(), new ScenarioSimulationHasBusyIndicatorDefaultErrorCallback(view), auditLog);
     }
 
     /**

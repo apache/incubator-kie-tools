@@ -20,6 +20,11 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import elemental2.dom.HTMLButtonElement;
+import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLUListElement;
+import org.drools.scenariosimulation.api.model.AuditLog;
 import org.drools.scenariosimulation.api.model.Scenario;
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
 import org.drools.scenariosimulation.api.model.SimulationRunMetadata;
@@ -30,17 +35,21 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.uberfire.mvp.Command;
 
 import static org.drools.scenariosimulation.api.model.ScenarioSimulationModel.Type;
 import static org.jgroups.util.Util.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.endsWith;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class CoverageReportPresenterTest {
@@ -56,6 +65,21 @@ public class CoverageReportPresenterTest {
 
     @Mock
     protected CoverageReportView coverageReportViewMock;
+
+    @Mock
+    private HTMLDivElement donutChartMock;
+
+    @Mock
+    private HTMLElement list;
+
+    @Mock
+    private HTMLUListElement scenarioList;
+
+    @Mock
+    private HTMLButtonElement downloadReportButtonMock;
+
+    @Mock
+    private Command downloadReportCommandMock;
 
     @InjectMocks
     protected CoverageReportPresenter presenter;
@@ -78,6 +102,7 @@ public class CoverageReportPresenterTest {
 
     private Map<String, Integer> outputCounterLocal;
     private Map<ScenarioWithIndex, Map<String, Integer>> scenarioCounterLocal;
+    private AuditLog auditLog;
     private int availableLocal;
     private int executedLocal;
     private double coverageLocal;
@@ -85,6 +110,11 @@ public class CoverageReportPresenterTest {
     @Before
     public void setup() {
         presenterSpy = spy(presenter);
+        presenterSpy.downloadReportCommand = downloadReportCommandMock;
+        when(coverageReportViewMock.getDonutChart()).thenReturn(donutChartMock);
+        when(coverageReportViewMock.getList()).thenReturn(list);
+        when(coverageReportViewMock.getScenarioList()).thenReturn(scenarioList);
+        when(coverageReportViewMock.getDownloadReportButton()).thenReturn(downloadReportButtonMock);
 
         availableLocal = 10;
         executedLocal = 6;
@@ -100,7 +130,16 @@ public class CoverageReportPresenterTest {
         scenario2Data.put("d2", 1);
         scenarioCounterLocal.put(new ScenarioWithIndex(1, new Scenario()), scenario1Data);
         scenarioCounterLocal.put(new ScenarioWithIndex(2, new Scenario()), scenario2Data);
-        simulationRunMetadataLocal = new SimulationRunMetadata(availableLocal, executedLocal, outputCounterLocal, scenarioCounterLocal);
+        simulationRunMetadataLocal = new SimulationRunMetadata(availableLocal, executedLocal, outputCounterLocal, scenarioCounterLocal, auditLog);
+    }
+
+    @Test
+    public void init() {
+        presenterSpy.init();
+        verify(coverageReportDonutPresenterMock, times(1)).init(eq(donutChartMock));
+        verify(coverageElementPresenterMock, times(1)).initElementList(eq(list));
+        verify(coverageScenarioListPresenterMock, times(1)).initScenarioList(eq(scenarioList));
+        verify(presenterSpy, times(1)).resetDownload();
     }
 
     @Test
@@ -194,5 +233,25 @@ public class CoverageReportPresenterTest {
     public void resetTest() {
         presenterSpy.reset();
         verify(coverageReportViewMock, times(1)).reset();
+        verify(presenterSpy, times(1)).resetDownload();
+    }
+
+    @Test
+    public void onDownloadButtonClicked() {
+        presenterSpy.onDownloadReportButtonClicked();
+        verify(downloadReportCommandMock, times(1)).execute();
+    }
+
+    @Test
+    public void onDownloadButtonClicked_NoCommandAssigned() {
+        presenterSpy.downloadReportCommand = null;
+        verify(downloadReportCommandMock, never()).execute();
+    }
+
+    @Test
+    public void resetDownload() {
+        presenterSpy.resetDownload();
+        assertTrue(downloadReportButtonMock.disabled);
+        assertNull(presenterSpy.downloadReportCommand);
     }
 }

@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.drools.scenariosimulation.api.model.AuditLog;
 import org.drools.scenariosimulation.api.model.Scenario;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
@@ -35,6 +36,7 @@ import org.drools.workbench.screens.scenariosimulation.client.type.ScenarioSimul
 import org.drools.workbench.screens.scenariosimulation.model.SimulationRunResult;
 import org.drools.workbench.screens.scenariosimulation.service.ImportExportService;
 import org.drools.workbench.screens.scenariosimulation.service.ImportExportType;
+import org.drools.workbench.screens.scenariosimulation.service.RunnerReportService;
 import org.drools.workbench.screens.scenariosimulation.service.ScenarioSimulationService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.messageconsole.client.console.widget.button.AlertsButtonMenuItemBuilder;
@@ -113,9 +115,12 @@ public class ScenarioSimulationEditorBusinessCentralWrapperTest extends Abstract
     private MenuItem alertsButtonMenuItemMock;
     @Mock
     private Metadata metaDataMock;
+    @Mock
+    private AuditLog auditLog;
 
     private CallerMock<ScenarioSimulationService> scenarioSimulationCaller;
     private CallerMock<ImportExportService> importExportCaller;
+    private CallerMock<RunnerReportService> runnerReportServiceCaller;
     private Promises promises;
     private ScenarioSimulationEditorBusinessCentralWrapper scenarioSimulationEditorBusinessClientWrapper;
 
@@ -125,13 +130,15 @@ public class ScenarioSimulationEditorBusinessCentralWrapperTest extends Abstract
         promises = new SyncPromises();
         scenarioSimulationCaller = spy(new CallerMock<>(scenarioSimulationServiceMock));
         importExportCaller = spy(new CallerMock<>(importExportServiceMock));
+        runnerReportServiceCaller = spy(new CallerMock<>(runnerReportServiceMock));
         scenarioSimulationEditorBusinessClientWrapper = spy(new ScenarioSimulationEditorBusinessCentralWrapper(scenarioSimulationCaller,
                                                                                                                scenarioSimulationEditorPresenter,
                                                                                                                importsWidgetPresenterMock,
                                                                                                                oracleFactoryMock,
                                                                                                                placeManagerMock,
                                                                                                                new CallerMock<>(dmnTypeServiceMock),
-                                                                                                               importExportCaller) {
+                                                                                                               importExportCaller,
+                                                                                                               runnerReportServiceCaller) {
             {
                 this.kieView = kieViewMock;
                 this.overviewWidget = overviewWidgetPresenterMock;
@@ -203,6 +210,15 @@ public class ScenarioSimulationEditorBusinessCentralWrapperTest extends Abstract
         scenarioSimulationEditorBusinessClientWrapper.onExportToCsv(remoteCallback, errorCallback, simulationMock);
         verify(importExportCaller, times(1)).call(eq(remoteCallback), eq(errorCallback));
         verify(importExportServiceMock, times(1)).exportSimulation(eq(ImportExportType.CSV), eq(simulationMock));
+    }
+
+    @Test
+    public void onDownloadReportToCSV() {
+        RemoteCallback<Object> remoteCallback = mock(RemoteCallback.class);
+        ScenarioSimulationHasBusyIndicatorDefaultErrorCallback errorCallback = mock(ScenarioSimulationHasBusyIndicatorDefaultErrorCallback.class);
+        scenarioSimulationEditorBusinessClientWrapper.onDownloadReportToCsv(remoteCallback, errorCallback, auditLog);
+        verify(runnerReportServiceCaller, times(1)).call(eq(remoteCallback), eq(errorCallback));
+        verify(runnerReportServiceMock, times(1)).getReport(eq(auditLog));
     }
 
     @Test
