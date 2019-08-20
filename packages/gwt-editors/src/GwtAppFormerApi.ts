@@ -46,6 +46,5 @@ export class GwtAppFormerApi {
 
   public setClientSideOnly(clientSideOnly: boolean) {
     window.erraiBusRemoteCommunicationEnabled = !clientSideOnly;
-    console.info(window.erraiBusRemoteCommunicationEnabled);
   }
 }

@@ -28,10 +28,6 @@ export class GwtEditorWrapperFactory implements MicroEditorEnvelope.EditorFactor
     this.appFormerGwtApi = appFormerGwtApi;
   }
 
-  private delay(ms: number) {
-    return new Promise(res => setTimeout(res, ms));
-  }
-
   public createEditor(languageData: GwtLanguageData, messageBus: EnvelopeBusInnerMessageHandler) {
     return new Promise<AppFormer.Editor>(res => {
       this.appFormerGwtApi.setErraiDomain(languageData.erraiDomain); //needed only for backend communication
