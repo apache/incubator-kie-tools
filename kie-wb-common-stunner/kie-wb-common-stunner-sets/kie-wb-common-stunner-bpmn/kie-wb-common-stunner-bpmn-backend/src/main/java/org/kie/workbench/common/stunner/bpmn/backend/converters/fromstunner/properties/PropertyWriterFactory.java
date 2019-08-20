@@ -33,6 +33,7 @@ import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.ServiceTask;
 import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.Task;
+import org.eclipse.bpmn2.TextAnnotation;
 import org.eclipse.bpmn2.ThrowEvent;
 import org.eclipse.bpmn2.UserTask;
 
@@ -118,5 +119,9 @@ public class PropertyWriterFactory {
 
     public GenericServiceTaskPropertyWriter of(ServiceTask e) {
         return new GenericServiceTaskPropertyWriter(e, variableScope);
+    }
+
+    public TextAnnotationPropertyWriter of(TextAnnotation e) {
+        return new TextAnnotationPropertyWriter(e, variableScope);
     }
 }

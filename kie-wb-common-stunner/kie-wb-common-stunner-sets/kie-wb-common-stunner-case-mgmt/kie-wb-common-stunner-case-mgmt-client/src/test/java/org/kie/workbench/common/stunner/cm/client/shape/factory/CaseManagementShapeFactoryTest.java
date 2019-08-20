@@ -28,9 +28,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.SequenceFlowConnectorDef;
-import org.kie.workbench.common.stunner.bpmn.definition.Association;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
+import org.kie.workbench.common.stunner.bpmn.definition.DirectionalAssociation;
 import org.kie.workbench.common.stunner.bpmn.definition.EmbeddedSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.EndCompensationEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndErrorEvent;
@@ -95,6 +95,7 @@ import org.kie.workbench.common.stunner.shapes.client.factory.BasicShapesFactory
 import org.kie.workbench.common.stunner.shapes.client.view.AbstractConnectorView;
 import org.kie.workbench.common.stunner.shapes.client.view.PictureShapeView;
 import org.kie.workbench.common.stunner.shapes.client.view.ShapeViewFactory;
+import org.kie.workbench.common.stunner.shapes.def.ConnectorShapeDef;
 import org.kie.workbench.common.stunner.svg.client.shape.factory.SVGShapeFactory;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGPrimitiveShape;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeViewResource;
@@ -283,7 +284,8 @@ public class CaseManagementShapeFactoryTest {
         when(basicViewFactory.pictureFromUri(any(SafeUri.class),
                                              anyDouble(),
                                              anyDouble())).thenReturn(pictureShapeView);
-        when(basicViewFactory.connector(anyDouble(),
+        when(basicViewFactory.connector(any(ConnectorShapeDef.Direction.class),
+                                        anyDouble(),
                                         anyDouble(),
                                         anyDouble(),
                                         anyDouble())).thenReturn(connectorShapeView);
@@ -593,9 +595,9 @@ public class CaseManagementShapeFactoryTest {
 
     @Test
     public void checkAssociation() {
-        assertShapeConstructionNotSupported(new Association(),
+        assertShapeConstructionNotSupported(new DirectionalAssociation(),
                                             connectorAssertions);
-        assertShapeGlyph(new Association());
+        assertShapeGlyph(new DirectionalAssociation());
     }
 
     @SuppressWarnings("unchecked")

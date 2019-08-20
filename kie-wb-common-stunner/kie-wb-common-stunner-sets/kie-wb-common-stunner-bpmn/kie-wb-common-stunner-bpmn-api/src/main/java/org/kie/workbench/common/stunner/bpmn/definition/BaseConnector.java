@@ -59,6 +59,7 @@ public abstract class BaseConnector implements BPMNViewDefinition {
             .add("lane_child")
             .add("ConnectingObjectsMorph")
             .add("cm_nop")
+            .add("connector")
             .build();
 
     protected BaseConnector() {

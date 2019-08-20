@@ -29,7 +29,7 @@ import java.util.stream.Stream;
 import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.dd.dc.Point;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.Result;
-import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.SequenceFlowPropertyReader;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.EdgePropertyReader;
 import org.kie.workbench.common.stunner.bpmn.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNBaseInfo;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNViewDefinition;
@@ -279,7 +279,7 @@ public class ProcessPostConverter {
     }
 
     private static void adjustMagnet(BpmnEdge.Simple edge, boolean targetConnection) {
-        SequenceFlowPropertyReader propertyReader = (SequenceFlowPropertyReader) edge.getPropertyReader();
+        EdgePropertyReader propertyReader = (EdgePropertyReader) edge.getPropertyReader();
         BPMNEdge bpmnEdge = propertyReader.getDefinitionResolver().getEdge(propertyReader.getElement().getId());
 
         if (bpmnEdge.getWaypoint().size() >= 2) {

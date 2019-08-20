@@ -16,8 +16,11 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.shape.def;
 
+import java.util.Optional;
+
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNGlyphFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.Association;
+import org.kie.workbench.common.stunner.bpmn.definition.NonDirectionalAssociation;
 import org.kie.workbench.common.stunner.core.client.shape.common.DashArray;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.client.shape.view.handler.FontHandler;
@@ -50,5 +53,13 @@ public class AssociationConnectorDef
     @Override
     public DashArray getDashArray(final Association element) {
         return DASH_ARRAY;
+    }
+
+    @Override
+    public Direction getDirection(Association definition) {
+        return Optional.ofNullable(definition)
+                .filter(def -> def instanceof NonDirectionalAssociation)
+                .map(def -> Direction.NONE)
+                .orElse(Direction.ONE);
     }
 }

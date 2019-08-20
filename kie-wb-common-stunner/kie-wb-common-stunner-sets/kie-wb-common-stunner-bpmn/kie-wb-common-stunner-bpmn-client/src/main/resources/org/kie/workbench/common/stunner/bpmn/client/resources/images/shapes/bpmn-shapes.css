@@ -95,6 +95,17 @@
     stroke-width: 0.5px;
 }
 
+.text_annotation_main{
+    fill:none;
+    stroke:#000000;
+    stroke-miterlimit:10;
+}
+.text_annotation_background{
+    fill:none;
+    stroke:#000000;
+    stroke-opacity:0;
+}
+
 .task_border {
     stroke: black;
     stroke-width: 1.5px;

@@ -17,11 +17,15 @@
 package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.eclipse.bpmn2.Association;
+import org.eclipse.bpmn2.AssociationDirection;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.util.PropertyReaderUtils;
+import org.kie.workbench.common.stunner.bpmn.definition.DirectionalAssociation;
+import org.kie.workbench.common.stunner.bpmn.definition.NonDirectionalAssociation;
 import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
 import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
@@ -52,6 +56,13 @@ public class AssociationPropertyReader extends BasePropertyReader implements Edg
         return association.getTargetRef().getId();
     }
 
+    public Class<? extends org.kie.workbench.common.stunner.bpmn.definition.Association> getAssociationByDirection() {
+        return Optional.ofNullable(association.getAssociationDirection())
+                .filter(d -> !AssociationDirection.NONE.equals(d))
+                .<Class<? extends org.kie.workbench.common.stunner.bpmn.definition.Association>>map(d -> DirectionalAssociation.class)
+                .orElse(NonDirectionalAssociation.class);
+    }
+
     @Override
     public Connection getSourceConnection() {
         Point2D sourcePosition = PropertyReaderUtils.getSourcePosition(definitionResolver,
@@ -78,5 +89,10 @@ public class AssociationPropertyReader extends BasePropertyReader implements Edg
     public List<Point2D> getControlPoints() {
         return PropertyReaderUtils.getControlPoints(definitionResolver,
                                                     element.getId());
+    }
+
+    @Override
+    public DefinitionResolver getDefinitionResolver() {
+        return definitionResolver;
     }
 }

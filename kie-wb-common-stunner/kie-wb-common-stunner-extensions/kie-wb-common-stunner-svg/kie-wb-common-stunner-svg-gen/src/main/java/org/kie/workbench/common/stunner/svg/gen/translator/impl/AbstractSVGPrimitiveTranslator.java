@@ -126,7 +126,7 @@ public abstract class AbstractSVGPrimitiveTranslator<E extends Element, O extend
         if (!empty && SVGDocumentTranslator.STUNNER_ATTR_TRANSFORM_NON_SCALABLE.equalsIgnoreCase(shapeRaw)) {
             return Optional.of(false);
         }
-        if (!empty && SVGDocumentTranslator.STUNNER_ATTR_TRANSFORM_NON_SCALABLE.equalsIgnoreCase(shapeRaw)) {
+        if (!empty && SVGDocumentTranslator.STUNNER_ATTR_TRANSFORM_SCALABLE.equalsIgnoreCase(shapeRaw)) {
             return Optional.of(true);
         }
         return Optional.empty();

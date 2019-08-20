@@ -45,14 +45,13 @@ public class AssociationConverter implements EdgeConverter<org.eclipse.bpmn2.Ass
         this.propertyReaderFactory = propertyReaderFactory;
     }
 
-    @Override
     public Result<BpmnEdge> convertEdge(org.eclipse.bpmn2.Association association,
                                         Map<String, BpmnNode> nodes) {
-        Edge<View<Association>, Node> edge = factoryManager.newEdge(association.getId(),
-                                                                    Association.class);
+        AssociationPropertyReader p = propertyReaderFactory.of(association);
+
+        Edge<View<Association>, Node> edge = factoryManager.newEdge(association.getId(), p.getAssociationByDirection());
 
         Association definition = edge.getContent().getDefinition();
-        AssociationPropertyReader p = propertyReaderFactory.of(association);
 
         definition.setGeneral(new BPMNGeneralSet(
                 new Name(""),

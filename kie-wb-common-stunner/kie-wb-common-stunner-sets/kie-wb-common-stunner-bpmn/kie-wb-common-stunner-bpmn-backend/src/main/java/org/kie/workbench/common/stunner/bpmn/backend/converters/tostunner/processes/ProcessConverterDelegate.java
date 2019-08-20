@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.FlowElement;
@@ -75,9 +76,14 @@ final class ProcessConverterDelegate {
                 .values()
                 .forEach(n -> n.setParent(firstNode));
 
-        final Result laneSetsResult = convertLaneSets(laneSets, freeFloatingNodes, firstNode);
+        final Result<BpmnNode>[] laneSetsResult = convertLaneSets(laneSets, freeFloatingNodes, firstNode);
 
-        return ResultComposer.compose(freeFloatingNodes, flowElementsResult, laneSetsResult);
+        final Map<String, BpmnNode> lanesMap = Stream.of(laneSetsResult)
+                .filter(Objects::nonNull).map(v -> v.value())
+                .collect(Collectors.toMap(n -> n.value().getUUID(), n -> n));
+        freeFloatingNodes.putAll(lanesMap);
+
+        return ResultComposer.compose(freeFloatingNodes, flowElementsResult, ResultComposer.compose(laneSets, laneSetsResult));
     }
 
     Result<Boolean> convertEdges(BpmnNode processRoot, List<BaseElement> flowElements, Map<String, BpmnNode> nodes) {
@@ -112,19 +118,21 @@ final class ProcessConverterDelegate {
         return ResultComposer.compose(resultMap, results);
     }
 
-    private Result convertLaneSets(List<LaneSet> laneSets, Map<String, BpmnNode> freeFloatingNodes, BpmnNode firstDiagramNode) {
-        final Result[] results = laneSets.stream()
+    private Result<BpmnNode>[] convertLaneSets(List<LaneSet> laneSets, Map<String, BpmnNode> freeFloatingNodes, BpmnNode firstDiagramNode) {
+        final Result<BpmnNode>[] results = laneSets.stream()
                 .map(laneSet -> convertLaneSet(laneSet, new ArrayList<>(), freeFloatingNodes, firstDiagramNode))
+                .flatMap(Stream::of)
                 .toArray(Result[]::new);
-        return ResultComposer.compose(laneSets, results);
+        return results;
     }
 
-    private Result<BpmnNode> convertLane(Lane lane, List<Lane> parents, Map<String, BpmnNode> freeFloatingNodes, BpmnNode firstDiagramNode) {
+    private Result<BpmnNode>[] convertLane(Lane lane, List<Lane> parents, Map<String, BpmnNode> freeFloatingNodes, BpmnNode firstDiagramNode) {
         if (lane.getChildLaneSet() != null) {
             parents.add(lane);
-            Result<LaneSet> laneSetResult = convertLaneSet(lane.getChildLaneSet(), parents, freeFloatingNodes, firstDiagramNode);
+            Result<BpmnNode>[] laneSetResult = convertLaneSet(lane.getChildLaneSet(), parents, freeFloatingNodes, firstDiagramNode);
             parents.removeIf(parent -> Objects.equals(parent.getId(), lane.getId()));
-            return ResultComposer.compose(null, laneSetResult);
+            //return ResultComposer.compose(null, laneSetResult);
+            return laneSetResult;
         } else {
             Result<BpmnNode> laneResult;
             if (!parents.isEmpty() && lane != parents.get(0)) {
@@ -136,17 +144,20 @@ final class ProcessConverterDelegate {
             value.ifPresent(laneNode -> laneNode.setParent(firstDiagramNode));
             value.ifPresent(laneNode -> lane.getFlowNodeRefs()
                     .forEach(node -> freeFloatingNodes.get(node.getId()).setParent(laneNode)));
-            return laneResult;
+            return new Result[]{laneResult};
         }
     }
 
-    private Result<LaneSet> convertLaneSet(LaneSet laneSet, List<Lane> parents, Map<String, BpmnNode> freeFloatingNodes,
-                                           BpmnNode firstDiagramNode) {
-        Result[] results = laneSet.getLanes()
+    private Result<BpmnNode>[] convertLaneSet(LaneSet laneSet, List<Lane> parents, Map<String, BpmnNode> freeFloatingNodes,
+                                              BpmnNode firstDiagramNode) {
+        Result<BpmnNode>[] results = laneSet.getLanes()
                 .stream()
-                .map(lane -> convertLane(lane, parents, freeFloatingNodes, firstDiagramNode)).toArray(Result[]::new);
+                .map(lane -> convertLane(lane, parents, freeFloatingNodes, firstDiagramNode))
+                .flatMap(Stream::of)
+                .toArray(Result[]::new);
 
-        return ResultComposer.compose(laneSet, results);
+        //return ResultComposer.compose(laneSet, results);
+        return results;
     }
 
     Result<BpmnNode> postConvert(BpmnNode processRoot) {

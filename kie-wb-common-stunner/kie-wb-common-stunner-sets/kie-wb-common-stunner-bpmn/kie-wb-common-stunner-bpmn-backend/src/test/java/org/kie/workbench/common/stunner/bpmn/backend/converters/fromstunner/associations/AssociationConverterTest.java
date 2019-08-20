@@ -99,7 +99,8 @@ public class AssociationConverterTest {
 
     @Test
     public void testToFlowElementSuccess() {
-        org.kie.workbench.common.stunner.bpmn.definition.Association association = new org.kie.workbench.common.stunner.bpmn.definition.Association();
+        org.kie.workbench.common.stunner.bpmn.definition.Association association =
+                new org.kie.workbench.common.stunner.bpmn.definition.DirectionalAssociation();
         association.setGeneral(new BPMNGeneralSet("nameValue", "documentationValue"));
         when(connector.getDefinition()).thenReturn(association);
 
@@ -113,7 +114,7 @@ public class AssociationConverterTest {
         verify(associationPropertyWriter).setTarget(pTgt);
         verify(associationPropertyWriter).setConnection(connector);
         verify(associationPropertyWriter).setDocumentation("documentationValue");
-        verify(associationPropertyWriter).setOneDirectionAssociation();
+        verify(associationPropertyWriter).setDirectionAssociation(association);
     }
 
     @Test

@@ -19,7 +19,9 @@ package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.prope
 import java.util.List;
 
 import org.eclipse.bpmn2.Association;
+import org.eclipse.bpmn2.AssociationDirection;
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.di.BPMNPlane;
 import org.junit.Before;
@@ -27,6 +29,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.util.PropertyReaderUtils;
+import org.kie.workbench.common.stunner.bpmn.definition.DirectionalAssociation;
+import org.kie.workbench.common.stunner.bpmn.definition.NonDirectionalAssociation;
 import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.mockito.Mock;
@@ -121,6 +125,24 @@ public class AssociationPropertyReaderTest {
         Connection result = propertyReader.getTargetConnection();
         assertEquals(X, result.getLocation().getX(), 0);
         assertEquals(Y, result.getLocation().getY(), 0);
+    }
+
+    @Test
+    public void testGetAssociationByDirection() {
+        final Association association = Bpmn2Factory.eINSTANCE.createAssociation();
+
+        //null direction
+        association.setAssociationDirection(null);
+        propertyReader = new AssociationPropertyReader(association, bpmnDiagram, definitionResolver);
+        assertEquals(NonDirectionalAssociation.class, propertyReader.getAssociationByDirection());
+
+        //none direction
+        association.setAssociationDirection(AssociationDirection.NONE);
+        assertEquals(NonDirectionalAssociation.class, propertyReader.getAssociationByDirection());
+
+        //one direction
+        association.setAssociationDirection(AssociationDirection.ONE);
+        assertEquals(DirectionalAssociation.class, propertyReader.getAssociationByDirection());
     }
 
     @Test

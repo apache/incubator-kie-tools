@@ -23,6 +23,7 @@ import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.shapes.client.factory.PolyLineConnectorFactory;
+import org.kie.workbench.common.stunner.shapes.def.ConnectorShapeDef;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -35,7 +36,7 @@ public class PolyLineConnectorViewTest {
 
         double[] points = new double[]{0, 0, 10, 10};
         PolyLineConnectorFactory factory = new PolyLineConnectorFactory();
-        Object[] line = PolylineConnectorView.createLine(factory, points);
+        Object[] line = PolylineConnectorView.createLine(factory, ConnectorShapeDef.Direction.ONE, points);
 
         MultiPathDecorator head = (MultiPathDecorator) line[1];
         MultiPath headPath = head.getPath();

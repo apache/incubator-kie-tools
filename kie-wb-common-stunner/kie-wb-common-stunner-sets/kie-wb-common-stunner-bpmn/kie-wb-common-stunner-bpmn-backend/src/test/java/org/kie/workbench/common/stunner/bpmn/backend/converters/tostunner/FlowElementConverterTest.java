@@ -42,6 +42,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.events
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.gateways.GatewayConverter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.processes.SubProcessConverter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.tasks.TaskConverter;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.textannotation.TextAnnotationConverter;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -86,6 +87,9 @@ public class FlowElementConverterTest {
     @Mock
     private CallActivityConverter callActivityConverter;
 
+    @Mock
+    private TextAnnotationConverter textAnnotationConverter;
+
     @Before
     public void setUp() {
         when(converterFactory.startEventConverter()).thenReturn(startEventConverter);
@@ -97,6 +101,8 @@ public class FlowElementConverterTest {
         when(converterFactory.subProcessConverter()).thenReturn(subProcessConverter);
         when(converterFactory.callActivityConverter()).thenReturn(callActivityConverter);
         when(converterFactory.getDefinitionResolver()).thenReturn(definitionResolver);
+        when(converterFactory.textAnnotationConverter()).thenReturn(textAnnotationConverter);
+
         tested = new FlowElementConverter(converterFactory);
     }
 
@@ -138,6 +144,10 @@ public class FlowElementConverterTest {
         CallActivity callActivity = mock(CallActivity.class);
         tested.convertNode(callActivity);
         verify(callActivityConverter).convert(callActivity);
+
+        TextAnnotation textAnnotation = mock(TextAnnotation.class);
+        tested.convertNode(textAnnotation);
+        verify(textAnnotationConverter).convert(textAnnotation);
     }
 
     @Test
@@ -145,7 +155,6 @@ public class FlowElementConverterTest {
         assertUnsupported(DataStoreReference.class);
         assertUnsupported(DataObjectReference.class);
         assertUnsupported(DataObject.class);
-        assertUnsupported(TextAnnotation.class);
     }
 
     private <T extends FlowElement> void assertUnsupported(Class<T> type) {

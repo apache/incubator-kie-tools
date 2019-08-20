@@ -27,6 +27,8 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.prop
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.BasePropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.VariableScope;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNViewDefinition;
+import org.kie.workbench.common.stunner.bpmn.definition.DirectionalAssociation;
+import org.kie.workbench.common.stunner.bpmn.definition.NonDirectionalAssociation;
 import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
@@ -114,7 +116,17 @@ public class AssociationPropertyWriterTest {
         verify(targetWriter).setSource(associationWriter);
     }
 
+    @Test
     public void testSetOneDirectionAssociation() {
+        DirectionalAssociation directionalAssociation = new DirectionalAssociation();
+        associationWriter.setDirectionAssociation(directionalAssociation);
         verify(association).setAssociationDirection(AssociationDirection.ONE);
+    }
+
+    @Test
+    public void testSetNoneDirectionAssociation() {
+        NonDirectionalAssociation nonDirectionalAssociation = new NonDirectionalAssociation();
+        associationWriter.setDirectionAssociation(nonDirectionalAssociation);
+        verify(association).setAssociationDirection(AssociationDirection.NONE);
     }
 }

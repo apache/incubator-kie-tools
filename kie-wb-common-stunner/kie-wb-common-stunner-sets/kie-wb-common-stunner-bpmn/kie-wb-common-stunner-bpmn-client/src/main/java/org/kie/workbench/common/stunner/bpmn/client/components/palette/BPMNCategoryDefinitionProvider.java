@@ -40,7 +40,7 @@ public class BPMNCategoryDefinitionProvider extends DefaultPaletteDefinitionProv
     }
 
     @PostConstruct
-    private void init() {
+    protected void init() {
         this.put(BPMNCategories.START_EVENTS,
                  category -> category
                          .bindToDefinition(StartNoneEvent.class)
@@ -75,6 +75,10 @@ public class BPMNCategoryDefinitionProvider extends DefaultPaletteDefinitionProv
                              .useGlyph(SvgDataUriGlyph.Builder.build(BPMNImageResources.INSTANCE.categorySequence().getSafeUri())))
                 .put(BPMNCategories.SERVICE_TASKS,
                      category -> category
-                             .useGlyph(SvgDataUriGlyph.Builder.build(BPMNImageResources.INSTANCE.categoryServiceTasks().getSafeUri())));
+                             .useGlyph(SvgDataUriGlyph.Builder.build(BPMNImageResources.INSTANCE.categoryServiceTasks().getSafeUri())))
+                .put(BPMNCategories.TEXT_ANNOTATION,
+                     category -> category
+                             .useGlyph(SvgDataUriGlyph.Builder.build(BPMNImageResources.INSTANCE.categoryTextAnnotation().getSafeUri())));
+        ;
     }
 }

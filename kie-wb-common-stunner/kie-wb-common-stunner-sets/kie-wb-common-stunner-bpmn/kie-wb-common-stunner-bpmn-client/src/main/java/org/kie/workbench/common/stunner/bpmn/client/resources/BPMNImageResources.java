@@ -71,6 +71,10 @@ public interface BPMNImageResources extends ClientBundleWithLookup {
     @DataResource.MimeType("image/svg+xml")
     DataResource categoryServiceTasks();
 
+    @ClientBundle.Source("images/categories/text-annotation.svg")
+    @DataResource.MimeType("image/svg+xml")
+    DataResource categoryTextAnnotation();
+
     // **** Icons Sprite ****
 
     @ClientBundle.Source("images/icons/bpmn-icons-sprite.png")

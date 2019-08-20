@@ -29,6 +29,8 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.BpmnEd
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.BpmnNode;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.AssociationPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.PropertyReaderFactory;
+import org.kie.workbench.common.stunner.bpmn.definition.DirectionalAssociation;
+import org.kie.workbench.common.stunner.bpmn.definition.NonDirectionalAssociation;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -99,14 +101,24 @@ public class AssociationConverterTest {
     @Mock
     private List<Point2D> controlPoints;
 
+    @Mock
+    private Edge<View<NonDirectionalAssociation>, Node> edgeNonDirectional;
+
+    @Mock
+    private View<NonDirectionalAssociation> contentNonDirectional;
+
+    @Mock
+    private NonDirectionalAssociation definitionNonDirectional;
+
     @Before
     @SuppressWarnings("unchecked")
     public void setUp() {
         when(association.getId()).thenReturn(ASSOCIATION_ID);
         when(edge.getContent()).thenReturn(content);
         when(content.getDefinition()).thenReturn(definition);
-        when(factoryManager.newEdge(ASSOCIATION_ID, org.kie.workbench.common.stunner.bpmn.definition.Association.class)).thenReturn((Edge) edge);
+        when(factoryManager.newEdge(ASSOCIATION_ID, DirectionalAssociation.class)).thenReturn((Edge) edge);
         when(propertyReaderFactory.of(association)).thenReturn(associationReader);
+        when(associationReader.getAssociationByDirection()).thenAnswer(a -> DirectionalAssociation.class);
         when(associationReader.getDocumentation()).thenReturn(ASSOCIATION_DOCUMENTATION);
         when(associationReader.getSourceId()).thenReturn(SOURCE_ID);
         when(associationReader.getTargetId()).thenReturn(TARGET_ID);
@@ -135,6 +147,18 @@ public class AssociationConverterTest {
         assertEquals(sourceConnection, result.getSourceConnection());
         assertEquals(targetConnection, result.getTargetConnection());
         assertEquals(controlPoints, result.getControlPoints());
+        assertEquals(edge, result.getEdge());
+    }
+
+    @Test
+    public void testConvertEdgeNonDirectional() {
+        when(factoryManager.newEdge(ASSOCIATION_ID, NonDirectionalAssociation.class)).thenReturn((Edge) edgeNonDirectional);
+        when(associationReader.getAssociationByDirection()).thenAnswer(a -> NonDirectionalAssociation.class);
+        when(edgeNonDirectional.getContent()).thenReturn(contentNonDirectional);
+        when(contentNonDirectional.getDefinition()).thenReturn(definitionNonDirectional);
+
+        BpmnEdge.Simple result = (BpmnEdge.Simple) associationConverter.convertEdge(association, nodes).value();
+        assertEquals(edgeNonDirectional, result.getEdge());
     }
 
     @Test

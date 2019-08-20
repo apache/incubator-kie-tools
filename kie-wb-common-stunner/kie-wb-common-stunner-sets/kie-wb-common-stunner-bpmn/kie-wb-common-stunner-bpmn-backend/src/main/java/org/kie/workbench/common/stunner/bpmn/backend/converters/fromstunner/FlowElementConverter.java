@@ -28,6 +28,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.BaseSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseTask;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseThrowingIntermediateEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.Lane;
+import org.kie.workbench.common.stunner.bpmn.definition.TextAnnotation;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
@@ -48,6 +49,7 @@ public class FlowElementConverter {
                 .when(BaseTask.class, converterFactory.taskConverter()::toFlowElement)
                 .when(BaseGateway.class, converterFactory.gatewayConverter()::toFlowElement)
                 .when(BaseReusableSubprocess.class, converterFactory.reusableSubprocessConverter()::toFlowElement)
+                .when(TextAnnotation.class, converterFactory.textAnnotationConverter()::toElement)
                 .ignore(BaseSubprocess.class)
                 .ignore(Lane.class)
                 .apply(node);

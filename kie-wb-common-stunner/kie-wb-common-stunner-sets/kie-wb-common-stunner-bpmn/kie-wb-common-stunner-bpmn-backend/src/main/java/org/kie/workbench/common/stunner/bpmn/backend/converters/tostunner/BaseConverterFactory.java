@@ -27,6 +27,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.proces
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.processes.BaseSubProcessConverter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.PropertyReaderFactory;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.tasks.BaseTaskConverter;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.textannotation.TextAnnotationConverter;
 import org.kie.workbench.common.stunner.core.marshaller.MarshallingRequest;
 
 public abstract class BaseConverterFactory {
@@ -44,6 +45,7 @@ public abstract class BaseConverterFactory {
     private final EndEventConverter endEventConverter;
     private final LaneConverter laneConverter;
     private final GatewayConverter gatewayConverter;
+    private final TextAnnotationConverter textAnnotationConverter;
 
     public BaseConverterFactory(DefinitionResolver definitionResolver,
                                 TypedFactoryManager factoryManager,
@@ -65,6 +67,7 @@ public abstract class BaseConverterFactory {
         this.laneConverter = new LaneConverter(factoryManager, propertyReaderFactory);
         this.gatewayConverter = new GatewayConverter(factoryManager, propertyReaderFactory, mode);
         this.edgeConverter = new EdgeConverterManager(factoryManager, propertyReaderFactory, mode);
+        this.textAnnotationConverter = new TextAnnotationConverter(factoryManager, propertyReaderFactory);
     }
 
     public FlowElementConverter flowElementConverter() {
@@ -113,5 +116,9 @@ public abstract class BaseConverterFactory {
 
     public DefinitionResolver getDefinitionResolver() {
         return definitionResolver;
+    }
+
+    public TextAnnotationConverter textAnnotationConverter(){
+        return textAnnotationConverter;
     }
 }

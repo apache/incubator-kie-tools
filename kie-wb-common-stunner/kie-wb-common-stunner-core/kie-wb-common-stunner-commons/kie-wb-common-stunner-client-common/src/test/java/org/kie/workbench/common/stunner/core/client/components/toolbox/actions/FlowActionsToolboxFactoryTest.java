@@ -21,6 +21,8 @@ import java.util.Iterator;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
@@ -43,7 +45,6 @@ import org.uberfire.mvp.Command;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anySet;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyString;
@@ -57,7 +58,9 @@ public class FlowActionsToolboxFactoryTest {
 
     private static final String DS_ID = "defSetId1";
     private static final String EDGE_ID = "edgeId1";
+    private static final String EDGE_ID2 = "edgeId2";
     private static final String NODE_ID = "nodeId1";
+    private static final String NODE_ID2 = "nodeId2";
     private static final String E_UUID = "e1";
 
     @Mock
@@ -121,14 +124,24 @@ public class FlowActionsToolboxFactoryTest {
         when(element.asNode()).thenReturn(element);
         when(toolboxLookups.get(anyString())).thenReturn(domainLookups);
         when(domainLookups.lookupTargetConnectors(eq(element)))
-                .thenReturn(Collections.singleton(EDGE_ID));
+                .thenReturn(Stream.of(EDGE_ID, EDGE_ID2).collect(Collectors.toSet()));
         when(domainLookups.lookupTargetNodes(eq(graph),
                                              eq(element),
                                              eq(EDGE_ID),
                                              any(Predicate.class)))
                 .thenReturn(Collections.singleton(NODE_ID));
-        when(domainLookups.lookupMorphBaseDefinitions(anySet()))
+        when(domainLookups.lookupTargetNodes(eq(graph),
+                                             eq(element),
+                                             eq(EDGE_ID2),
+                                             any(Predicate.class)))
+                .thenReturn(Collections.singleton(NODE_ID2));
+
+        when(domainLookups.lookupMorphBaseDefinitions(Stream.of(NODE_ID).collect(Collectors.toSet())))
                 .thenReturn(Collections.singleton(NODE_ID));
+
+        when(domainLookups.lookupMorphBaseDefinitions(Stream.of(NODE_ID2).collect(Collectors.toSet())))
+                .thenReturn(Collections.singleton(NODE_ID2));
+
         this.tested = new FlowActionsToolboxFactory(toolboxLookups,
                                                     profileManager,
                                                     () -> createConnectorAction,
@@ -147,35 +160,53 @@ public class FlowActionsToolboxFactoryTest {
         final Optional<Toolbox<?>> toolbox =
                 tested.build(canvasHandler,
                              element);
-        verify(profileManager, times(1)).isDefinitionIdAllowed(eq(metadata));
+        verify(profileManager, times(2)).isDefinitionIdAllowed(eq(metadata));
         verify(domainLookups, times(1)).lookupTargetNodes(eq(graph),
                                                           eq(element),
                                                           eq(EDGE_ID),
+                                                          eq(profileFilter));
+        verify(domainLookups, times(1)).lookupTargetNodes(eq(graph),
+                                                          eq(element),
+                                                          eq(EDGE_ID2),
                                                           eq(profileFilter));
         assertTrue(toolbox.isPresent());
         assertTrue(toolbox.get() instanceof ActionsToolbox);
         final ActionsToolbox actionsToolbox = (ActionsToolbox) toolbox.get();
         assertEquals(E_UUID,
                      actionsToolbox.getElementUUID());
-        assertEquals(2,
+        assertEquals(4,
                      actionsToolbox.size());
         final Iterator actionIt = actionsToolbox.iterator();
         assertEquals(createConnectorAction,
                      actionIt.next());
+        assertEquals(createConnectorAction,
+                     actionIt.next());
         assertEquals(createNodeAction,
                      actionIt.next());
+        assertEquals(createNodeAction,
+                     actionIt.next());
+
         verify(createConnectorAction,
                times(1)).setEdgeId(eq(EDGE_ID));
+        verify(createConnectorAction,
+               times(1)).setEdgeId(eq(EDGE_ID2));
+
         verify(createNodeAction,
                times(1)).setEdgeId(eq(EDGE_ID));
         verify(createNodeAction,
+               times(1)).setEdgeId(eq(EDGE_ID2));
+
+        verify(createNodeAction,
                times(1)).setNodeId(eq(NODE_ID));
+        verify(createNodeAction,
+               times(1)).setNodeId(eq(NODE_ID2));
+
         verify(view,
                times(1)).init(eq(actionsToolbox));
         verify(view,
-               times(2)).addButton(any(Glyph.class),
-                                   anyString(),
-                                   any(Consumer.class));
+               times(actionsToolbox.size())).addButton(any(Glyph.class),
+                                                       anyString(),
+                                                       any(Consumer.class));
     }
 
     @Test

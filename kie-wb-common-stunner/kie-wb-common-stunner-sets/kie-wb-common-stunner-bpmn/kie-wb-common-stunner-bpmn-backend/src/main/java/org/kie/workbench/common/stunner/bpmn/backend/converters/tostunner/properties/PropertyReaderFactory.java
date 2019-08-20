@@ -34,6 +34,7 @@ import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.ServiceTask;
 import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.Task;
+import org.eclipse.bpmn2.TextAnnotation;
 import org.eclipse.bpmn2.ThrowEvent;
 import org.eclipse.bpmn2.UserTask;
 import org.eclipse.bpmn2.di.BPMNDiagram;
@@ -134,5 +135,9 @@ public class PropertyReaderFactory {
 
     public ProcessPropertyReader of(Process el) {
         return new ProcessPropertyReader(el, diagram, definitionResolver.getShape(el.getId()), definitionResolver.getResolutionFactor());
+    }
+
+    public TextAnnotationPropertyReader of(TextAnnotation el) {
+        return new TextAnnotationPropertyReader(el, diagram, definitionResolver.getShape(el.getId()), definitionResolver.getResolutionFactor());
     }
 }

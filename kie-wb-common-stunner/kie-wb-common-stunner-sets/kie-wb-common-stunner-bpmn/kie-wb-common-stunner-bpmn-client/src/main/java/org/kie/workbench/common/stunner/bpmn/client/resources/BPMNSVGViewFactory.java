@@ -38,6 +38,7 @@ public interface BPMNSVGViewFactory {
     String PATH_SUBPROCESS_EVENT = "images/shapes/subprocess-event.svg";
     String PATH_SUBPROCESS_MULTIPLE_INSTANCE = "images/shapes/subprocess-multiple-instance.svg";
     String PATH_RECTANGLE = "images/shapes/rectangle.svg";
+    String PATH_TEXT_ANNOTATION = "images/shapes/text-annotation.svg";
 
     @SVGSource(PATH_TASK)
     SVGShapeViewResource noneTask();
@@ -170,5 +171,8 @@ public interface BPMNSVGViewFactory {
 
     @SVGSource(PATH_TASK)
     SVGShapeViewResource genericServiceTask();
+
+    @SVGSource(PATH_TEXT_ANNOTATION)
+    SVGShapeViewResource textAnnotation();
 
 }

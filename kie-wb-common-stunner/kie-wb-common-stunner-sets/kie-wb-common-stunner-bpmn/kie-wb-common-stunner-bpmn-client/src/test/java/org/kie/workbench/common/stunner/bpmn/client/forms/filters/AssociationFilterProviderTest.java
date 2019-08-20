@@ -22,6 +22,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.adf.engine.shared.FormElementFilter;
+import org.kie.workbench.common.stunner.bpmn.definition.DirectionalAssociation;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
@@ -49,5 +50,6 @@ public class AssociationFilterProviderTest {
         assertEquals("general.name", filter.getElementName());
         Object arbitraryValue = mock(Object.class);
         assertFalse(filter.getPredicate().test(arbitraryValue));
+        assertEquals(DirectionalAssociation.class, filterProvider.getDefinitionType());
     }
 }

@@ -21,6 +21,8 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
@@ -117,26 +119,21 @@ public class FlowActionsToolboxFactory
         // Look for the default connector type and create a button for it.
         final CommonDomainLookups lookup = toolboxDomainLookups.get(defSetId);
         final Set<String> targetConnectors = lookup.lookupTargetConnectors(node);
-        targetConnectors.forEach(connectorDefId -> actions.add(createConnectorActions.get()
-                                                                       .setEdgeId(connectorDefId)));
-
-        // It uses the default connector's identifier, for the actual definition set,
-        // to check the resulting nodes that can be created.
-        // It also groups the resuling nodes to be created by it's morph base type, and just
-        // create an action for each morph target.
-        final String defaultConnectorId = !targetConnectors.isEmpty() ? targetConnectors.iterator().next() : null;
-        if (null != defaultConnectorId) {
-            final Predicate<String> definitionsAllowedFilter = profileManager.isDefinitionIdAllowed(metadata);
-            final Set<String> targets = lookup.lookupTargetNodes(diagram.getGraph(),
-                                                                 node,
-                                                                 defaultConnectorId,
-                                                                 definitionsAllowedFilter);
-            final Set<String> morphTargets = lookup.lookupMorphBaseDefinitions(targets);
-            morphTargets.forEach(defId -> actions.add(createNodeActions.get()
-                                                              .setEdgeId(defaultConnectorId)
-                                                              .setNodeId(defId)));
-        }
-        return actions;
+        return Stream.concat(targetConnectors.stream()
+                                     .map(connectorDefId -> createConnectorActions.get().setEdgeId(connectorDefId)),
+                             targetConnectors.stream()
+                                     .flatMap(defaultConnectorId -> {
+                                         final Predicate<String> definitionsAllowedFilter = profileManager.isDefinitionIdAllowed(metadata);
+                                         final Set<String> targets = lookup.lookupTargetNodes(diagram.getGraph(),
+                                                                                              node,
+                                                                                              defaultConnectorId,
+                                                                                              definitionsAllowedFilter);
+                                         final Set<String> morphTargets = lookup.lookupMorphBaseDefinitions(targets);
+                                         return morphTargets.stream().map(defId -> createNodeActions.get()
+                                                 .setEdgeId(defaultConnectorId)
+                                                 .setNodeId(defId));
+                                     }))
+                .collect(Collectors.toList());
     }
 
     @PreDestroy

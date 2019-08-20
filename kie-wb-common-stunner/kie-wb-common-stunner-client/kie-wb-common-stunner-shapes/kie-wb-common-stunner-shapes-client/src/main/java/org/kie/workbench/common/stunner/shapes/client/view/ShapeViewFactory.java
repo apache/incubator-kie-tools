@@ -21,6 +21,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.safehtml.shared.SafeUri;
 import org.kie.workbench.common.stunner.shapes.client.factory.PictureProvidersManager;
+import org.kie.workbench.common.stunner.shapes.def.ConnectorShapeDef;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
@@ -79,7 +80,7 @@ public class ShapeViewFactory {
         return new PolygonView(radius);
     }
 
-    public AbstractConnectorView connector(final double... points) {
-        return new OrthogonalPolyLineConnectorView(points);
+    public AbstractConnectorView connector(final ConnectorShapeDef.Direction direction, final double... points) {
+        return new OrthogonalPolyLineConnectorView(direction, points);
     }
 }

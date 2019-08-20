@@ -345,7 +345,7 @@ public class BPMNDirectDiagramMarshallerTest {
                            .map(Definition::getDefinition)
                            .allMatch(Lane.class::isInstance));
 
-        assertDiagram(diagram, 57);
+        assertDiagram(diagram, 63);
         assertTrue(uudis.stream()
                            .allMatch(uuid -> result.contains("<bpmn2:lane id=\"$uuid\"".replace("$uuid", uuid))));
     }
@@ -361,7 +361,7 @@ public class BPMNDirectDiagramMarshallerTest {
     public void testJBPMAllElements() throws Exception {
         //assert no errors unmarshalling all elements
         final Diagram<Graph, Metadata> diagram = unmarshall(JBPM_DESIGNER_ALL_ELEMENTS);
-        assertDiagram(diagram, 66);
+        assertDiagram(diagram, 68);
     }
 
     //END Unsupported nodes

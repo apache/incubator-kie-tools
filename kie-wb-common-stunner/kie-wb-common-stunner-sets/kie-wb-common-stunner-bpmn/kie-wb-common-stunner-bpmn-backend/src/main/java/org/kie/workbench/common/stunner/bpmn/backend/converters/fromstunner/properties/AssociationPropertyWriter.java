@@ -16,11 +16,14 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties;
 
+import java.util.Optional;
+
 import org.eclipse.bpmn2.Association;
 import org.eclipse.bpmn2.AssociationDirection;
 import org.eclipse.bpmn2.di.BPMNEdge;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.util.PropertyWriterUtils;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNViewDefinition;
+import org.kie.workbench.common.stunner.bpmn.definition.NonDirectionalAssociation;
 import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
 import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
@@ -70,7 +73,10 @@ public class AssociationPropertyWriter extends BasePropertyWriter {
         pTgt.setSource(this);
     }
 
-    public void setOneDirectionAssociation() {
-        association.setAssociationDirection(AssociationDirection.ONE);
+    public void setDirectionAssociation(org.kie.workbench.common.stunner.bpmn.definition.Association definition) {
+        association.setAssociationDirection(Optional.ofNullable(definition)
+                                                    .filter(NonDirectionalAssociation.class::isInstance)
+                                                    .map(def -> AssociationDirection.NONE)
+                                                    .orElse(AssociationDirection.ONE));
     }
 }

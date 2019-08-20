@@ -17,10 +17,11 @@
 package org.kie.workbench.common.stunner.shapes.client.view;
 
 import org.kie.workbench.common.stunner.shapes.client.factory.PolyLineConnectorFactory;
+import org.kie.workbench.common.stunner.shapes.def.ConnectorShapeDef;
 
 public class PolylineConnectorView extends AbstractConnectorView {
 
     public PolylineConnectorView(double... points) {
-        super(new PolyLineConnectorFactory(), points);
+        super(new PolyLineConnectorFactory(), ConnectorShapeDef.Direction.ONE, points);
     }
 }

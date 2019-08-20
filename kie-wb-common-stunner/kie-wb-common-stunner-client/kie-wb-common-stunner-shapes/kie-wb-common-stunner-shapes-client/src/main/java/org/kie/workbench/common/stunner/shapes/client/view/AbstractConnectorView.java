@@ -25,6 +25,10 @@ import com.ait.lienzo.shared.core.types.ColorName;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.ext.WiresConnectorViewExt;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ShapeViewSupportedEvents;
 import org.kie.workbench.common.stunner.shapes.client.factory.LineConnectorFactory;
+import org.kie.workbench.common.stunner.shapes.def.ConnectorShapeDef;
+
+import static org.kie.workbench.common.stunner.shapes.def.ConnectorShapeDef.Direction.BOTH;
+import static org.kie.workbench.common.stunner.shapes.def.ConnectorShapeDef.Direction.ONE;
 
 public abstract class AbstractConnectorView extends WiresConnectorViewExt<AbstractConnectorView> {
 
@@ -32,8 +36,9 @@ public abstract class AbstractConnectorView extends WiresConnectorViewExt<Abstra
     private static final double DECORATOR_WIDTH = 10;
     private static final double DECORATOR_HEIGHT = 15;
 
-    public AbstractConnectorView(LineConnectorFactory lineFactory, final double... points) {
-        this(createLine(lineFactory, points));
+    public AbstractConnectorView(LineConnectorFactory lineFactory, final ConnectorShapeDef.Direction direction,
+                                 final double... points) {
+        this(createLine(lineFactory, direction, points));
     }
 
     private AbstractConnectorView(final Object[] line) {
@@ -43,19 +48,16 @@ public abstract class AbstractConnectorView extends WiresConnectorViewExt<Abstra
               (MultiPathDecorator) line[2]);
     }
 
-    static Object[] createLine(LineConnectorFactory lineFactory, final double... points) {
+    static Object[] createLine(LineConnectorFactory lineFactory, ConnectorShapeDef.Direction direction,
+                               final double... points) {
+
         // The head decorator must be not visible, as connectors are unidirectional.
-        final MultiPath head = new MultiPath();
-        final MultiPath tail = new MultiPath()
-                .M(DECORATOR_WIDTH,
-                   DECORATOR_HEIGHT)
-                .L(0,
-                   DECORATOR_HEIGHT)
-                .L(DECORATOR_WIDTH / 2,
-                   0)
-                .Z()
-                .setFillColor(ColorName.BLACK)
-                .setFillAlpha(1);
+        final MultiPath head = BOTH.equals(direction)
+                ? getArrowMultiPath()
+                : new MultiPath();
+        final MultiPath tail = BOTH.equals(direction) || ONE.equals(direction)
+                ? getArrowMultiPath()
+                : new MultiPath();
 
         final AbstractDirectionalMultiPointShape<?> line = lineFactory.createLine(Point2DArray.fromArrayOfDouble(points));
 
@@ -66,6 +68,20 @@ public abstract class AbstractConnectorView extends WiresConnectorViewExt<Abstra
 
         final MultiPathDecorator headDecorator = new MultiPathDecorator(head);
         final MultiPathDecorator tailDecorator = new MultiPathDecorator(tail);
+
         return new Object[]{line, headDecorator, tailDecorator};
+    }
+
+    private static MultiPath getArrowMultiPath() {
+        return new MultiPath()
+                .M(DECORATOR_WIDTH,
+                   DECORATOR_HEIGHT)
+                .L(0,
+                   DECORATOR_HEIGHT)
+                .L(DECORATOR_WIDTH / 2,
+                   0)
+                .Z()
+                .setFillColor(ColorName.BLACK)
+                .setFillAlpha(1);
     }
 }

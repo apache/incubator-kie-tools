@@ -2450,15 +2450,28 @@ public class HashCodeAndEqualityTest {
     }
 
     @Test
-    public void testAssociationEqualsAndHashCode() {
+    public void testDirectionalAssociationEqualsAndHashCode() {
         TestCaseBuilder.newTestCase()
-                .addTrueCase(new Association(), new Association())
-                .addTrueCase(new Association(new BPMNGeneralSet(), new BackgroundSet(), new FontSet()),
-                             new Association(new BPMNGeneralSet(), new BackgroundSet(), new FontSet()))
-                .addFalseCase(new Association(),
-                              new Association(new BPMNGeneralSet(), new BackgroundSet(), new FontSet()))
-                .addFalseCase(new Association(),
-                              new Association(null, null, null))
+                .addTrueCase(new DirectionalAssociation(), new DirectionalAssociation())
+                .addTrueCase(new DirectionalAssociation(new BPMNGeneralSet(), new BackgroundSet(), new FontSet()),
+                             new DirectionalAssociation(new BPMNGeneralSet(), new BackgroundSet(), new FontSet()))
+                .addFalseCase(new DirectionalAssociation(),
+                              new DirectionalAssociation(new BPMNGeneralSet(), new BackgroundSet(), new FontSet()))
+                .addFalseCase(new DirectionalAssociation(),
+                              new DirectionalAssociation(null, null, null))
+                .test();
+    }
+
+    @Test
+    public void testNonDirectionalAssociationEqualsAndHashCode() {
+        TestCaseBuilder.newTestCase()
+                .addTrueCase(new DirectionalAssociation(), new DirectionalAssociation())
+                .addTrueCase(new DirectionalAssociation(new BPMNGeneralSet(), new BackgroundSet(), new FontSet()),
+                             new DirectionalAssociation(new BPMNGeneralSet(), new BackgroundSet(), new FontSet()))
+                .addFalseCase(new DirectionalAssociation(),
+                              new DirectionalAssociation(new BPMNGeneralSet(), new BackgroundSet(), new FontSet()))
+                .addFalseCase(new DirectionalAssociation(),
+                              new DirectionalAssociation(null, null, null))
                 .test();
     }
 

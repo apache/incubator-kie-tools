@@ -24,6 +24,12 @@ import org.kie.workbench.common.stunner.core.definition.shape.ShapeDef;
 public interface ConnectorShapeDef<W, V extends ShapeView>
         extends BasicShapeViewDef<W, V> {
 
+    enum Direction {
+        NONE,
+        ONE,
+        BOTH
+    }
+
     String FONT_FAMILY = "Open Sans";
     String FONT_COLOR = "#000000";
     String FONT_STROKE_COLOR = "#393f44";
@@ -31,6 +37,10 @@ public interface ConnectorShapeDef<W, V extends ShapeView>
     double STROKE_SIZE = 0.5d;
 
     ConnectorGlyph GLYPH = ConnectorGlyph.create();
+
+    default Direction getDirection(W definition) {
+        return Direction.ONE;
+    }
 
     @Override
     default Glyph getGlyph(Class<? extends W> type,

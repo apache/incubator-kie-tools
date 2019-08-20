@@ -25,13 +25,15 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.stunner.bpmn.definition.Association;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
+import org.kie.workbench.common.stunner.bpmn.definition.DirectionalAssociation;
 import org.kie.workbench.common.stunner.bpmn.definition.EndSignalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.Lane;
+import org.kie.workbench.common.stunner.bpmn.definition.NonDirectionalAssociation;
 import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
 import org.kie.workbench.common.stunner.bpmn.definition.SequenceFlow;
 import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.TextAnnotation;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
 import org.kie.workbench.common.stunner.bpmn.workitem.IconDefinition;
 import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTask;
@@ -156,10 +158,12 @@ public class BPMNPaletteDefinitionBuilderTest {
         assertTrue(delegate.getItemFilter().test(getId(Lane.class)));
         assertTrue(delegate.getItemFilter().test(getId(StartNoneEvent.class)));
         assertTrue(delegate.getItemFilter().test(getId(EndSignalEvent.class)));
+        assertTrue(delegate.getItemFilter().test(getId(TextAnnotation.class)));
+        assertTrue(delegate.getItemFilter().test(getId(DirectionalAssociation.class)));
+        assertTrue(delegate.getItemFilter().test(getId(NonDirectionalAssociation.class)));
         assertFalse(delegate.getItemFilter().test(getId(BPMNDiagramImpl.class)));
         assertFalse(delegate.getItemFilter().test(getId(SequenceFlow.class)));
         assertFalse(delegate.getItemFilter().test(getId(NoneTask.class)));
-        assertFalse(delegate.getItemFilter().test(getId(Association.class)));
     }
 
     @Test

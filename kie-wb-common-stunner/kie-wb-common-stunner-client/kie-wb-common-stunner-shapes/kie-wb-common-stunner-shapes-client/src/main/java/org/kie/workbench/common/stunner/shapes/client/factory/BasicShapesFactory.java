@@ -132,7 +132,8 @@ public class BasicShapesFactory
     private Shape<ShapeView> newConnector(final Object instance,
                                           final BasicShapeDef shapeDef) {
         final ConnectorShapeDef cShapeDef = (ConnectorShapeDef) shapeDef;
-        final AbstractConnectorView view = shapeViewFactory.connector(0,
+        final AbstractConnectorView view = shapeViewFactory.connector(cShapeDef.getDirection(instance),
+                                                                      0,
                                                                       0,
                                                                       100,
                                                                       100);

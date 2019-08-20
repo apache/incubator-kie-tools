@@ -18,10 +18,11 @@ package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.prope
 
 import java.util.List;
 
+import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
 import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 
-public interface EdgePropertyReader extends PropertyReader{
+public interface EdgePropertyReader extends PropertyReader {
 
     String getSourceId();
 
@@ -32,4 +33,6 @@ public interface EdgePropertyReader extends PropertyReader{
     Connection getTargetConnection();
 
     List<Point2D> getControlPoints();
+
+    DefinitionResolver getDefinitionResolver();
 }
