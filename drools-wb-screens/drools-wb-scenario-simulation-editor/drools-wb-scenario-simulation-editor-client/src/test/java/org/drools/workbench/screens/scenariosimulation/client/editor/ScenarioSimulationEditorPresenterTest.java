@@ -53,6 +53,7 @@ import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToo
 import org.drools.workbench.screens.scenariosimulation.client.type.ScenarioSimulationResourceType;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGrid;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridLayer;
+import org.drools.workbench.screens.scenariosimulation.model.FactMappingValidationError;
 import org.drools.workbench.screens.scenariosimulation.model.SimulationRunResult;
 import org.guvnor.common.services.shared.test.TestResultMessage;
 import org.jboss.errai.common.client.api.ErrorCallback;
@@ -86,6 +87,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.contains;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Matchers.same;
@@ -147,6 +149,8 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
     private DataManagementStrategy dataManagementStrategyMock;
     @Mock
     private TextFileExport textFileExportMock;
+    @Mock
+    private ConfirmPopupPresenter confirmPopupPresenterMock;
     @Captor
     private ArgumentCaptor<List<ScenarioWithIndex>> scenarioWithIndexCaptor;
 
@@ -179,7 +183,7 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
                                                                    testRunnerReportingPanelMock,
                                                                    scenarioSimulationDocksHandlerMock,
                                                                    textFileExportMock,
-                                                                   mock(ConfirmPopupPresenter.class)) {
+                                                                   confirmPopupPresenterMock) {
             {
                 this.path = pathMock;
                 this.scenarioGridPanel = scenarioGridPanelMock;
@@ -546,6 +550,8 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
     @Test
     public void makeMenuBar() {
         presenter.makeMenuBar(fileMenuBuilderMock);
+        verify(fileMenuBuilderMock, times(1)).addValidate(any());
+        verify(presenter, times(1)).getValidateCommand();
         verify(fileMenuBuilderMock, times(1)).addNewTopLevelMenu(runScenarioMenuItemMock);
         verify(fileMenuBuilderMock, times(1)).addNewTopLevelMenu(undoMenuItemMock);
         verify(fileMenuBuilderMock, times(1)).addNewTopLevelMenu(redoMenuItemMock);
@@ -569,7 +575,6 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
         verify(presenter, times(1)).getFileDownloadURL(eq(pathSupplierMock));
         verify(presenter, times(1)).open(eq(DOWNLOAD_URL));
     }
-
 
     @Test
     public void showImportDialog() {
@@ -669,11 +674,13 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
 
     @Test
     public void getModelSuccessCallbackMethod() {
+        presenter.init(scenarioSimulationEditorWrapper, observablePathMock);
         presenter.getModelSuccessCallbackMethod(dataManagementStrategyMock, modelLocal);
         verify(presenter, times(1)).populateRightDocks(TestToolsPresenter.IDENTIFIER);
         verify(presenter, times(1)).populateRightDocks(SettingsPresenter.IDENTIFIER);
         verify(scenarioSimulationViewMock, times(1)).setContent(eq(content.getModel().getSimulation()));
         verify(statusMock, times(1)).setSimulation(eq(content.getModel().getSimulation()));
+        verify(presenter, times(1)).getValidateCommand();
     }
 
     @Test
@@ -703,5 +710,22 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
 
         assertNotNull(scenario.getFactMappingValue(test1.getFactIdentifier(), test1.getExpressionIdentifier()).get().getRawValue());
         assertNull(scenario.getFactMappingValue(test2.getFactIdentifier(), test2.getExpressionIdentifier()).get().getRawValue());
+    }
+
+    @Test
+    public void getValidationCallback() {
+        presenter.getValidationCallback().callback(null);
+        verify(confirmPopupPresenterMock, never()).show(anyString(), anyString());
+
+        List<FactMappingValidationError> validationErrors = new ArrayList<>();
+        presenter.getValidationCallback().callback(validationErrors);
+        verify(confirmPopupPresenterMock, never()).show(anyString(), anyString());
+
+        String errorMessage = "errorMessage";
+        String errorId = "errorId";
+        validationErrors.add(new FactMappingValidationError(errorId, errorMessage));
+        presenter.getValidationCallback().callback(validationErrors);
+        verify(confirmPopupPresenterMock, times(1)).show(anyString(), contains(errorId));
+        verify(confirmPopupPresenterMock, times(1)).show(anyString(), contains(errorMessage));
     }
 }

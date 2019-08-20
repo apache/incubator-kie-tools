@@ -44,6 +44,7 @@ import org.drools.workbench.screens.scenariosimulation.client.editor.strategies.
 import org.drools.workbench.screens.scenariosimulation.client.editor.strategies.DataManagementStrategy;
 import org.drools.workbench.screens.scenariosimulation.client.events.ImportEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.RedoEvent;
+import org.drools.workbench.screens.scenariosimulation.client.events.ScenarioNotificationEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.UndoEvent;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioSimulationDocksHandler;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioSimulationHasBusyIndicatorDefaultErrorCallback;
@@ -64,6 +65,7 @@ import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToo
 import org.drools.workbench.screens.scenariosimulation.client.type.ScenarioSimulationResourceType;
 import org.drools.workbench.screens.scenariosimulation.client.utils.ConstantHolder;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridPanel;
+import org.drools.workbench.screens.scenariosimulation.model.FactMappingValidationError;
 import org.drools.workbench.screens.scenariosimulation.model.SimulationRunResult;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -79,9 +81,11 @@ import org.uberfire.client.mvp.PlaceStatus;
 import org.uberfire.client.workbench.docks.UberfireDocksInteractionEvent;
 import org.uberfire.ext.editor.commons.client.file.exports.TextContent;
 import org.uberfire.ext.editor.commons.client.file.exports.TextFileExport;
+import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuItem;
 
 import static org.drools.scenariosimulation.api.model.ScenarioSimulationModel.Type;
@@ -339,6 +343,7 @@ public class ScenarioSimulationEditorPresenter {
      * @param fileMenuBuilder
      */
     public void makeMenuBar(FileMenuBuilder fileMenuBuilder) {
+        fileMenuBuilder.addValidate(getValidateCommand());
         fileMenuBuilder.addNewTopLevelMenu(view.getRunScenarioMenuItem());
         fileMenuBuilder.addNewTopLevelMenu(view.getUndoMenuItem());
         fileMenuBuilder.addNewTopLevelMenu(view.getRedoMenuItem());
@@ -407,6 +412,42 @@ public class ScenarioSimulationEditorPresenter {
         };
     }
 
+    protected Command getValidateCommand() {
+        return () -> scenarioSimulationEditorWrapper.validate(context.getStatus().getSimulation(), getValidationCallback());
+    }
+
+    protected RemoteCallback<List<FactMappingValidationError>> getValidationCallback() {
+        return result -> {
+            view.hideBusyIndicator();
+
+            if (result != null && result.size() > 0) {
+                StringBuilder errorMessage = new StringBuilder(ScenarioSimulationEditorConstants.INSTANCE.validationErrorMessage());
+                errorMessage.append(":<br/>");
+                for (FactMappingValidationError validationError : result) {
+                    errorMessage.append("<b>");
+                    errorMessage.append(validationError.getErrorId());
+                    errorMessage.append("</b> - ");
+                    errorMessage.append(validationError.getErrorMessage());
+                    errorMessage.append("<br/>");
+                }
+
+                confirmPopupPresenter.show(ScenarioSimulationEditorConstants.INSTANCE.validationErrorTitle(),
+                                           errorMessage.toString());
+            } else {
+                eventBus.fireEvent(new ScenarioNotificationEvent(ScenarioSimulationEditorConstants.INSTANCE.validationSucceed(), NotificationEvent.NotificationType.SUCCESS));
+            }
+        };
+    }
+
+    public ErrorCallback<?> getValidationFailedCallback() {
+        return (message, exception) -> {
+            CustomBusyPopup.close();
+            BusyPopup.close();
+            eventBus.fireEvent(new ScenarioNotificationEvent(ScenarioSimulationEditorConstants.INSTANCE.validationFailedNotification(), NotificationEvent.NotificationType.ERROR));
+            return false;
+        };
+    }
+
     /**
      * Read only columns should not contains any values
      * @param simulation
@@ -470,6 +511,8 @@ public class ScenarioSimulationEditorPresenter {
         view.setContent(model.getSimulation());
         context.getStatus().setSimulation(model.getSimulation());
         CustomBusyPopup.close();
+        // check if structure is valid
+        getValidateCommand().execute();
     }
 
     public ScenarioSimulationResourceType getType() {

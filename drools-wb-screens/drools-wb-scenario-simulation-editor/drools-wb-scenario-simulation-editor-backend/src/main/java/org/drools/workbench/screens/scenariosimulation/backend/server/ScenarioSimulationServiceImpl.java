@@ -39,6 +39,7 @@ import org.drools.scenariosimulation.backend.runner.ScenarioJunitActivator;
 import org.drools.scenariosimulation.backend.util.ImpossibleToFindDMNException;
 import org.drools.scenariosimulation.backend.util.ScenarioSimulationXMLPersistence;
 import org.drools.workbench.screens.scenariosimulation.backend.server.util.ScenarioSimulationBuilder;
+import org.drools.workbench.screens.scenariosimulation.model.FactMappingValidationError;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModelContent;
 import org.drools.workbench.screens.scenariosimulation.model.SimulationRunResult;
 import org.drools.workbench.screens.scenariosimulation.service.DMNTypeService;
@@ -77,6 +78,7 @@ import org.uberfire.rpc.SessionInfo;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
 
 import static org.drools.scenariosimulation.api.model.ScenarioSimulationModel.Type;
+import static org.drools.scenariosimulation.api.model.ScenarioSimulationModel.Type.DMN;
 
 @Service
 @ApplicationScoped
@@ -129,6 +131,9 @@ public class ScenarioSimulationServiceImpl
 
     @Inject
     protected DMNTypeService dmnTypeService;
+
+    @Inject
+    protected ScenarioValidationService scenarioValidationService;
 
     private SafeSessionInfo safeSessionInfo;
 
@@ -207,7 +212,7 @@ public class ScenarioSimulationServiceImpl
 
             ScenarioSimulationModel scenarioSimulationModel = unmarshalInternal(content);
             Simulation simulation = scenarioSimulationModel.getSimulation();
-            if(simulation != null && Type.DMN.equals(simulation.getSimulationDescriptor().getType())) {
+            if (simulation != null && DMN.equals(simulation.getSimulationDescriptor().getType())) {
                 try {
                     dmnTypeService.initializeNameAndNamespace(simulation,
                                                               path,
@@ -336,6 +341,11 @@ public class ScenarioSimulationServiceImpl
                               final ScenarioSimulationModel content,
                               final String comment) {
         return saveAndRenameService.saveAndRename(path, newFileName, metadata, content, comment);
+    }
+
+    @Override
+    public List<FactMappingValidationError> validate(Simulation simulation, Path path) {
+        return scenarioValidationService.validateSimulationStructure(simulation, path);
     }
 
     protected void createActivatorIfNotExist(Path context) {

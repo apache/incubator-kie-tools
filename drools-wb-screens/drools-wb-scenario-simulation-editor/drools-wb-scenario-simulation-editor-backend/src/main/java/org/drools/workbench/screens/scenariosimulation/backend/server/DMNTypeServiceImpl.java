@@ -46,6 +46,8 @@ import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.uberfire.backend.vfs.Path;
 
+import static org.drools.workbench.screens.scenariosimulation.backend.server.util.DMNUtils.getRootType;
+
 @Service
 @ApplicationScoped
 public class DMNTypeServiceImpl
@@ -220,7 +222,7 @@ public class DMNTypeServiceImpl
     private boolean isToBeManagedAsCollection(BaseDMNTypeImpl type) {
         boolean toReturn = type.isCollection();
         if (toReturn) {
-            Type feelType = type.getFeelType();
+            Type feelType = getRootType(type);
             // BuiltInType.UNKNOWN is a special case: it is instantiated as collection but it should be considered as single for editing
             if (feelType instanceof BuiltInType && feelType.equals(BuiltInType.UNKNOWN)) {
                 toReturn = false;
@@ -237,7 +239,7 @@ public class DMNTypeServiceImpl
     private boolean isToBeManagedAsComposite(BaseDMNTypeImpl type) {
         boolean toReturn = type.isComposite();
         if (toReturn) {
-            Type feelType = type.getFeelType();
+            Type feelType = getRootType(type);
             // BuiltInType.CONTEXT is a special case: it is instantiated as composite but has no nested fields so it should be considered as simple for editing
             if (feelType instanceof BuiltInType && feelType.equals(BuiltInType.CONTEXT)) {
                 toReturn = false;
@@ -270,9 +272,9 @@ public class DMNTypeServiceImpl
      * @param fullPropertyPath
      */
     protected void checkTypeSupport(DMNType type,
-                                  boolean alreadyInCollection,
-                                  ErrorHolder errorHolder,
-                                  String fullPropertyPath) {
+                                    boolean alreadyInCollection,
+                                    ErrorHolder errorHolder,
+                                    String fullPropertyPath) {
         if (type.isComposite()) {
             for (Map.Entry<String, DMNType> entry : type.getFields().entrySet()) {
                 String name = entry.getKey();

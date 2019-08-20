@@ -37,7 +37,7 @@ public class JunitRunnerHelper {
         jUnitCore.addListener(new RunListener() {
             @Override
             public void testAssumptionFailure(org.junit.runner.notification.Failure failure) {
-                failureDetails.add(failureToFailure(path,failure));
+                failureDetails.add(failureToFailure(path, failure));
             }
         });
 
@@ -52,7 +52,6 @@ public class JunitRunnerHelper {
         List<org.guvnor.common.services.shared.test.Failure> result = new ArrayList<>();
 
         for (org.junit.runner.notification.Failure failure : failures) {
-
 
             result.add(failureToFailure(path, failure));
         }

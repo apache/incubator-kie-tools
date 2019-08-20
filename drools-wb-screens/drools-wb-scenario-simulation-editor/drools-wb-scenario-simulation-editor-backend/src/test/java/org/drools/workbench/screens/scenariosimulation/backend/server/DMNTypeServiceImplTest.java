@@ -64,7 +64,6 @@ public class DMNTypeServiceImplTest extends AbstractDMNTest {
         assertEquals(MODEL_NAME, simulation.getSimulationDescriptor().getDmnName());
     }
 
-
     @Test
     public void retrieveFactModelTupleDmnList() throws WrongDMNTypeException {
         setDmnModelLocal("dmn-list.dmn", "https://github.com/kiegroup/drools/kie-dmn/_CC8924B0-D729-4D70-9588-039B5824FFE9", "dmn-list");
@@ -90,7 +89,6 @@ public class DMNTypeServiceImplTest extends AbstractDMNTest {
         // Verify each decisionNode has been correctly mapped
         dmnModelLocal.getDecisions().forEach(decisionNode -> verifyFactModelTree(factModelTuple, decisionNode, factModelTuple.getHiddenFacts()));
     }
-
 
     @Test
     public void createTopLevelFactModelTreeSimpleNoCollection() throws WrongDMNTypeException {
