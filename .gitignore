@@ -7,3 +7,5 @@ out/
 **/.DS_Store
 *.log
 yarn.lock
+packages/unpacked-kie-editors/bpmn/
+packages/unpacked-kie-editors/dmn/
