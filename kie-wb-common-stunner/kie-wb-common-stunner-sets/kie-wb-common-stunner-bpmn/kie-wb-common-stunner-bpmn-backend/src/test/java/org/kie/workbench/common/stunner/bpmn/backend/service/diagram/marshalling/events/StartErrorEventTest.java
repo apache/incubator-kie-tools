@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,6 +39,9 @@ public class StartErrorEventTest extends StartEventTest<StartErrorEvent> {
 
     private static final int AMOUNT_OF_NODES_IN_DIAGRAM = 11;
 
+    public StartErrorEventTest() throws Exception {
+    }
+
     @Test
     @Override
     public void testUnmarshallTopLevelEventFilledProperties() throws Exception {
@@ -47,10 +50,10 @@ public class StartErrorEventTest extends StartEventTest<StartErrorEvent> {
         final String ERROR_REF = "Error1";
         final String EVENT_DATA_OUTPUT = "||someVar:String||[dout]someVar->prVar";
 
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_START_EVENT_FILE_PATH);
+        Diagram<Graph, Metadata> diagram = getDiagram();
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        StartErrorEvent filledTop = getStartNodeById(diagram, FILLED_TOP_LEVEL_EVENT_ID, getStartEventType());
+        StartErrorEvent filledTop = getStartNodeById(diagram, FILLED_TOP_LEVEL_EVENT_ID);
         assertGeneralSet(filledTop.getGeneral(), EVENT_NAME, EVENT_DOCUMENTATION);
         assertErrorEventExecutionSet(filledTop.getExecutionSet(), ERROR_REF, INTERRUPTING, SLA_DUE_DATE);
         assertDataIOSet(filledTop.getDataIOSet(), EVENT_DATA_OUTPUT);
@@ -59,10 +62,10 @@ public class StartErrorEventTest extends StartEventTest<StartErrorEvent> {
     @Test
     @Override
     public void testUnmarshallTopLevelEmptyEventProperties() throws Exception {
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_START_EVENT_FILE_PATH);
+        Diagram<Graph, Metadata> diagram = getDiagram();
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        StartErrorEvent emptyTop = getStartNodeById(diagram, EMPTY_TOP_LEVEL_EVENT_ID, getStartEventType());
+        StartErrorEvent emptyTop = getStartNodeById(diagram, EMPTY_TOP_LEVEL_EVENT_ID);
         assertGeneralSet(emptyTop.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
         assertErrorEventExecutionSet(emptyTop.getExecutionSet(), EMPTY_VALUE, NON_INTERRUPTING, EMPTY_VALUE);
         assertDataIOSet(emptyTop.getDataIOSet(), EMPTY_VALUE);
@@ -76,10 +79,10 @@ public class StartErrorEventTest extends StartEventTest<StartErrorEvent> {
         final String EVENT_REF = "Error2";
         final String EVENT_DATA_OUTPUT = "||newVar:String||[dout]newVar->prVar";
 
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_START_EVENT_FILE_PATH);
+        Diagram<Graph, Metadata> diagram = getDiagram();
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        StartErrorEvent filledSubprocess = getStartNodeById(diagram, FILLED_SUBPROCESS_LEVEL_EVENT_ID, getStartEventType());
+        StartErrorEvent filledSubprocess = getStartNodeById(diagram, FILLED_SUBPROCESS_LEVEL_EVENT_ID);
         assertGeneralSet(filledSubprocess.getGeneral(), EVENT_NAME, EVENT_DOCUMENTATION);
         assertErrorEventExecutionSet(filledSubprocess.getExecutionSet(), EVENT_REF, INTERRUPTING, SLA_DUE_DATE);
         assertDataIOSet(filledSubprocess.getDataIOSet(), EVENT_DATA_OUTPUT);
@@ -88,10 +91,10 @@ public class StartErrorEventTest extends StartEventTest<StartErrorEvent> {
     @Test
     @Override
     public void testUnmarshallSubprocessLevelEventEmptyProperties() throws Exception {
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_START_EVENT_FILE_PATH);
+        Diagram<Graph, Metadata> diagram = getDiagram();
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        StartErrorEvent emptySubprocess = getStartNodeById(diagram, EMPTY_SUBPROCESS_LEVEL_EVENT_ID, getStartEventType());
+        StartErrorEvent emptySubprocess = getStartNodeById(diagram, EMPTY_SUBPROCESS_LEVEL_EVENT_ID);
         assertGeneralSet(emptySubprocess.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
         assertErrorEventExecutionSet(emptySubprocess.getExecutionSet(), EMPTY_VALUE, NON_INTERRUPTING, EMPTY_VALUE);
         assertDataIOSet(emptySubprocess.getDataIOSet(), EMPTY_VALUE);

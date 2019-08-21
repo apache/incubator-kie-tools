@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,6 +44,9 @@ public class StartTimerEventTest extends StartEventTest<StartTimerEvent> {
 
     private static final int AMOUNT_OF_NODES_IN_DIAGRAM = 21;
 
+    public StartTimerEventTest() throws Exception {
+    }
+
     @Test
     @Override
     public void testUnmarshallTopLevelEventFilledProperties() throws Exception {
@@ -66,22 +69,22 @@ public class StartTimerEventTest extends StartEventTest<StartTimerEvent> {
         // Should be uncommented after https://issues.jboss.org/browse/JBPM-7038 will be fixed
         //final String timerDataOutputMultiple = "||hello:String||[dout]hello->processVar";
 
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_START_EVENT_FILE_PATH);
+        Diagram<Graph, Metadata> diagram = getDiagram();
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        StartTimerEvent filledTopMultiple = getStartNodeById(diagram, FILLED_TOP_LEVEL_EVENT_MULTIPLE_ID, StartTimerEvent.class);
+        StartTimerEvent filledTopMultiple = getStartNodeById(diagram, FILLED_TOP_LEVEL_EVENT_MULTIPLE_ID);
         assertGeneralSet(filledTopMultiple.getGeneral(), EVENT_NAME_MULTIPLE, EVENT_DOCUMENTATION_MULTIPLE);
         assertTimerEventMultiple(filledTopMultiple.getExecutionSet(), TIMER_VALUE_MULTIPLE, TIMER_VALUE_LANGUAGE_MULTIPLE, INTERRUPTING, SLA_DUE_DATE);
         // Should be uncommented after https://issues.jboss.org/browse/JBPM-7038 will be fixed
         //final String timerDataOutputMultiple = "||hello:String||[dout]hello->processVar";
 
-        StartTimerEvent filledTopSpecificDate = getStartNodeById(diagram, FILLED_TOP_LEVEL_EVENT_SPECIFIC_DATE_ID, StartTimerEvent.class);
+        StartTimerEvent filledTopSpecificDate = getStartNodeById(diagram, FILLED_TOP_LEVEL_EVENT_SPECIFIC_DATE_ID);
         assertGeneralSet(filledTopSpecificDate.getGeneral(), EVENT_NAME_SPECIFIC_DATE, EVENT_DOCUMENTATION_SPECIFIC_DATE);
         assertTimerEventSpecificDate(filledTopSpecificDate.getExecutionSet(), TIMER_VALUE_SPECIFIC_DATE, INTERRUPTING, SLA_DUE_DATE);
         // Should be uncommented after https://issues.jboss.org/browse/JBPM-7038 will be fixed
         //final String timerDataOutputSpecificDate = "||hello:String||[dout]hello->processVar";
 
-        StartTimerEvent filledTopAfterDuration = getStartNodeById(diagram, FILLED_TOP_LEVEL_EVENT_AFTER_DURATION_ID, StartTimerEvent.class);
+        StartTimerEvent filledTopAfterDuration = getStartNodeById(diagram, FILLED_TOP_LEVEL_EVENT_AFTER_DURATION_ID);
         assertGeneralSet(filledTopAfterDuration.getGeneral(), EVENT_NAME_AFTER_DURATION, EVENT_DOCUMENTATION_AFTER_DURATION);
         assertTimerEventAfterDuration(filledTopAfterDuration.getExecutionSet(), TIMER_VALUE_AFTER_DURATION, INTERRUPTING, SLA_DUE_DATE);
         // Know issue. Should be uncommented after https://issues.jboss.org/browse/JBPM-7038 will be fixed
@@ -91,10 +94,10 @@ public class StartTimerEventTest extends StartEventTest<StartTimerEvent> {
     @Test
     @Override
     public void testUnmarshallTopLevelEmptyEventProperties() throws Exception {
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_START_EVENT_FILE_PATH);
+        Diagram<Graph, Metadata> diagram = getDiagram();
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        StartTimerEvent emptyTop = getStartNodeById(diagram, EMPTY_TOP_LEVEL_EVENT_ID, StartTimerEvent.class);
+        StartTimerEvent emptyTop = getStartNodeById(diagram, EMPTY_TOP_LEVEL_EVENT_ID);
         assertGeneralSet(emptyTop.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
         assertTimerEventEmpty(emptyTop.getExecutionSet(), NON_INTERRUPTING, EMPTY_VALUE);
         // Know issue. Should be uncommented after https://issues.jboss.org/browse/JBPM-7038 will be fixed
@@ -124,22 +127,22 @@ public class StartTimerEventTest extends StartEventTest<StartTimerEvent> {
         // Should be uncommented after https://issues.jboss.org/browse/JBPM-7038 will be fixed
         //final String timerDataOutputDuration = "||hello:String||[dout]hello->processVar";
 
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_START_EVENT_FILE_PATH);
+        Diagram<Graph, Metadata> diagram = getDiagram();
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        StartTimerEvent filledTopMultiple = getStartNodeById(diagram, FILLED_SUBPROCESS_LEVEL_EVENT_MULTIPLE_ID, StartTimerEvent.class);
+        StartTimerEvent filledTopMultiple = getStartNodeById(diagram, FILLED_SUBPROCESS_LEVEL_EVENT_MULTIPLE_ID);
         assertGeneralSet(filledTopMultiple.getGeneral(), EVENT_NAME_MULTIPLE, EVENT_DOCUMENTATION_MULTIPLE);
         assertTimerEventMultiple(filledTopMultiple.getExecutionSet(), TIMER_VALUE_MULTIPLE, TIMER_VALUE_LANGUAGE_MULTIPLE, INTERRUPTING, SLA_DUE_DATE);
         // Know issue. Should be uncommented after https://issues.jboss.org/browse/JBPM-7038 will be fixed
         //assertDataIOSet(filledTopMultiple.getDataIOSet(), timerDataOutputMultiple);
 
-        StartTimerEvent filledTopSpecificDate = getStartNodeById(diagram, FILLED_SUBPROCESS_LEVEL_EVENT_SPECIFIC_DATE_ID, StartTimerEvent.class);
+        StartTimerEvent filledTopSpecificDate = getStartNodeById(diagram, FILLED_SUBPROCESS_LEVEL_EVENT_SPECIFIC_DATE_ID);
         assertGeneralSet(filledTopSpecificDate.getGeneral(), EVENT_NAME_SPECIFIC_DATE, EVENT_DOCUMENTATION_SPECIFIC_DATE);
         assertTimerEventSpecificDate(filledTopSpecificDate.getExecutionSet(), TIMER_VALUE_SPECIFIC_DATE, INTERRUPTING, SLA_DUE_DATE);
         // Know issue. Should be uncommented after https://issues.jboss.org/browse/JBPM-7038 will be fixed
         //assertDataIOSet(filledTopSpecificDate.getDataIOSet(), timerDataOutputSpecificDate);
 
-        StartTimerEvent filledTopAfterDuration = getStartNodeById(diagram, FILLED_SUBPROCESS_LEVEL_EVENT_AFTER_DURATION_ID, StartTimerEvent.class);
+        StartTimerEvent filledTopAfterDuration = getStartNodeById(diagram, FILLED_SUBPROCESS_LEVEL_EVENT_AFTER_DURATION_ID);
         assertGeneralSet(filledTopAfterDuration.getGeneral(), EVENT_NAME_AFTER_DURATION, EVENT_DOCUMENTATION_AFTER_DURATION);
         assertTimerEventAfterDuration(filledTopAfterDuration.getExecutionSet(), TIMER_VALUE_AFTER_DURATION, INTERRUPTING, SLA_DUE_DATE);
         // Know issue. Should be uncommented after https://issues.jboss.org/browse/JBPM-7038 will be fixed
@@ -149,10 +152,10 @@ public class StartTimerEventTest extends StartEventTest<StartTimerEvent> {
     @Test
     @Override
     public void testUnmarshallSubprocessLevelEventEmptyProperties() throws Exception {
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_START_EVENT_FILE_PATH);
+        Diagram<Graph, Metadata> diagram = getDiagram();
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        StartTimerEvent emptySubprocess = getStartNodeById(diagram, EMPTY_SUBPROCESS_LEVEL_EVENT_ID, StartTimerEvent.class);
+        StartTimerEvent emptySubprocess = getStartNodeById(diagram, EMPTY_SUBPROCESS_LEVEL_EVENT_ID);
         assertGeneralSet(emptySubprocess.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
         assertTimerEventEmpty(emptySubprocess.getExecutionSet(), NON_INTERRUPTING, EMPTY_VALUE);
         // Know issue. Should be uncommented after https://issues.jboss.org/browse/JBPM-7038 will be fixed
@@ -161,18 +164,18 @@ public class StartTimerEventTest extends StartEventTest<StartTimerEvent> {
 
     @Test
     @Override
-    public void testMarshallTopLevelEventFilledProperties() throws Exception {
-        checkEventMarshalling(StartTimerEvent.class, FILLED_TOP_LEVEL_EVENT_MULTIPLE_ID);
-        checkEventMarshalling(StartTimerEvent.class, FILLED_TOP_LEVEL_EVENT_AFTER_DURATION_ID);
-        checkEventMarshalling(StartTimerEvent.class, FILLED_TOP_LEVEL_EVENT_SPECIFIC_DATE_ID);
+    public void testMarshallTopLevelEventFilledProperties() {
+        checkEventMarshalling(FILLED_TOP_LEVEL_EVENT_MULTIPLE_ID);
+        checkEventMarshalling(FILLED_TOP_LEVEL_EVENT_AFTER_DURATION_ID);
+        checkEventMarshalling(FILLED_TOP_LEVEL_EVENT_SPECIFIC_DATE_ID);
     }
 
     @Test
     @Override
-    public void testMarshallSubprocessLevelEventFilledProperties() throws Exception {
-        checkEventMarshalling(StartTimerEvent.class, FILLED_SUBPROCESS_LEVEL_EVENT_MULTIPLE_ID);
-        checkEventMarshalling(StartTimerEvent.class, FILLED_SUBPROCESS_LEVEL_EVENT_AFTER_DURATION_ID);
-        checkEventMarshalling(StartTimerEvent.class, FILLED_SUBPROCESS_LEVEL_EVENT_SPECIFIC_DATE_ID);
+    public void testMarshallSubprocessLevelEventFilledProperties() {
+        checkEventMarshalling(FILLED_SUBPROCESS_LEVEL_EVENT_MULTIPLE_ID);
+        checkEventMarshalling(FILLED_SUBPROCESS_LEVEL_EVENT_AFTER_DURATION_ID);
+        checkEventMarshalling(FILLED_SUBPROCESS_LEVEL_EVENT_SPECIFIC_DATE_ID);
     }
 
     @Override

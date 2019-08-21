@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,16 +35,19 @@ public class StartNoneEventTest extends StartEventTest<StartNoneEvent> {
     private static final String SLA_DUE_DATE = "12/25/1983";
     private static final int AMOUNT_OF_NODES_IN_DIAGRAM = 11;
 
+    public StartNoneEventTest() throws Exception {
+    }
+
     @Test
     @Override
     public void testUnmarshallTopLevelEventFilledProperties() throws Exception {
         final String EVENT_NAME = "Hello none start event name ~`!@#$%^&*()_+=-{}|\\][:\";'?><,./";
         final String EVENT_DOCUMENTATION = "~`!@#$%^&*()_+=-{}|\\][:\";'?><,./\nDocumentation";
 
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_START_EVENT_FILE_PATH);
+        Diagram<Graph, Metadata> diagram = getDiagram();
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        StartNoneEvent filledTop = getStartNodeById(diagram, FILLED_TOP_LEVEL_EVENT_ID, StartNoneEvent.class);
+        StartNoneEvent filledTop = getStartNodeById(diagram, FILLED_TOP_LEVEL_EVENT_ID);
         assertGeneralSet(filledTop.getGeneral(), EVENT_NAME, EVENT_DOCUMENTATION);
         assertNotNull(filledTop.getExecutionSet());
         assertStartEventSlaDueDate(filledTop.getExecutionSet(), SLA_DUE_DATE);
@@ -53,10 +56,10 @@ public class StartNoneEventTest extends StartEventTest<StartNoneEvent> {
     @Test
     @Override
     public void testUnmarshallTopLevelEmptyEventProperties() throws Exception {
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_START_EVENT_FILE_PATH);
+        Diagram<Graph, Metadata> diagram = getDiagram();
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        StartNoneEvent emptyTop = getStartNodeById(diagram, EMPTY_TOP_LEVEL_EVENT_ID, StartNoneEvent.class);
+        StartNoneEvent emptyTop = getStartNodeById(diagram, EMPTY_TOP_LEVEL_EVENT_ID);
         assertGeneralSet(emptyTop.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
         assertNotNull(emptyTop.getExecutionSet());
         assertStartEventSlaDueDate(emptyTop.getExecutionSet(), EMPTY_VALUE);
@@ -68,10 +71,10 @@ public class StartNoneEventTest extends StartEventTest<StartNoneEvent> {
         final String EVENT_NAME = "It is also not empty ~`!@#$%^&*()_+=-{}|\\][:\";'?><,./";
         final String EVENT_DOCUMENTATION = "Some documentation as well\n~`!@#$%^&*()_+=-{}|\\][:\";'?><,./\n";
 
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_START_EVENT_FILE_PATH);
+        Diagram<Graph, Metadata> diagram = getDiagram();
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        StartNoneEvent filledSubprocess = getStartNodeById(diagram, FILLED_SUBPROCESS_LEVEL_EVENT_ID, StartNoneEvent.class);
+        StartNoneEvent filledSubprocess = getStartNodeById(diagram, FILLED_SUBPROCESS_LEVEL_EVENT_ID);
         assertGeneralSet(filledSubprocess.getGeneral(), EVENT_NAME, EVENT_DOCUMENTATION);
         assertNotNull(filledSubprocess.getExecutionSet());
         assertStartEventSlaDueDate(filledSubprocess.getExecutionSet(), SLA_DUE_DATE);
@@ -80,10 +83,10 @@ public class StartNoneEventTest extends StartEventTest<StartNoneEvent> {
     @Test
     @Override
     public void testUnmarshallSubprocessLevelEventEmptyProperties() throws Exception {
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_START_EVENT_FILE_PATH);
+        Diagram<Graph, Metadata> diagram = getDiagram();
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        StartNoneEvent emptySubprocess = getStartNodeById(diagram, EMPTY_SUBPROCESS_LEVEL_EVENT_ID, StartNoneEvent.class);
+        StartNoneEvent emptySubprocess = getStartNodeById(diagram, EMPTY_SUBPROCESS_LEVEL_EVENT_ID);
         assertGeneralSet(emptySubprocess.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
 
         assertNotNull(emptySubprocess.getExecutionSet());

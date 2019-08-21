@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -37,29 +38,56 @@ public abstract class StartEventTest<T extends BaseStartEvent> extends BPMNDiagr
     static final String EMPTY_VALUE = "";
     static final boolean NON_INTERRUPTING = false;
     static final boolean INTERRUPTING = true;
+    static final int EMPTY_INCOME_EDGES = 1;
+    static final int ONE_OUTCOME_EDGE = 1;
 
-    StartEventTest() {
+    private Diagram<Graph, Metadata> diagram;
+    private Diagram<Graph, Metadata> roundTripDiagram;
+
+    public Diagram<Graph, Metadata> getDiagram() {
+        return diagram;
+    }
+
+    public void setDiagram(Diagram<Graph, Metadata> diagram) {
+        this.diagram = diagram;
+    }
+
+    public Diagram<Graph, Metadata> getRoundTripDiagram() {
+        return roundTripDiagram;
+    }
+
+    public void setRoundTripDiagram(Diagram<Graph, Metadata> diagram) {
+        this.roundTripDiagram = diagram;
+    }
+
+    StartEventTest() throws Exception {
         super.init();
+        marshallDiagramWithNewMarshaller();
+    }
+
+    private void marshallDiagramWithNewMarshaller() throws Exception {
+        setDiagram(unmarshall(marshaller, getBpmnStartEventFilePath()));
+        setRoundTripDiagram(unmarshall(marshaller, getStream(marshaller.marshall(getDiagram()))));
     }
 
     @Test
-    public void testMarshallTopLevelEventFilledProperties() throws Exception {
-        checkEventMarshalling(getStartEventType(), getFilledTopLevelEventId());
+    public void testMarshallTopLevelEventFilledProperties() {
+        checkEventMarshalling(getFilledTopLevelEventId());
     }
 
     @Test
-    public void testMarshallTopLevelEmptyEventProperties() throws Exception {
-        checkEventMarshalling(getStartEventType(), getEmptyTopLevelEventId());
+    public void testMarshallTopLevelEmptyEventProperties() {
+        checkEventMarshalling(getEmptyTopLevelEventId());
     }
 
     @Test
-    public void testMarshallSubprocessLevelEventFilledProperties() throws Exception {
-        checkEventMarshalling(getStartEventType(), getFilledSubprocessLevelEventId());
+    public void testMarshallSubprocessLevelEventFilledProperties() {
+        checkEventMarshalling(getFilledSubprocessLevelEventId());
     }
 
     @Test
-    public void testMarshallSubprocessLevelEventEmptyProperties() throws Exception {
-        checkEventMarshalling(getStartEventType(), getEmptySubprocessLevelEventId());
+    public void testMarshallSubprocessLevelEventEmptyProperties() {
+        checkEventMarshalling(getEmptySubprocessLevelEventId());
     }
 
     public abstract void testUnmarshallTopLevelEventFilledProperties() throws Exception;
@@ -82,18 +110,47 @@ public abstract class StartEventTest<T extends BaseStartEvent> extends BPMNDiagr
 
     abstract String getEmptySubprocessLevelEventId();
 
-    private void assertNodesEqualsAfterMarshalling(Diagram<Graph, Metadata> before, Diagram<Graph, Metadata> after, String nodeId, Class<T> startType) {
-        T nodeBeforeMarshalling = getStartNodeById(before, nodeId, startType);
-        T nodeAfterMarshalling = getStartNodeById(after, nodeId, startType);
-        assertEquals(nodeBeforeMarshalling, nodeAfterMarshalling);
+    T getStartNodeById(Diagram<Graph, Metadata> diagram, String id) {
+        return getStartNodeById(diagram, id, ONE_OUTCOME_EDGE);
     }
 
     @SuppressWarnings("unchecked")
-    T getStartNodeById(Diagram<Graph, Metadata> diagram, String id, Class<T> type) {
+    T getStartNodeById(Diagram<Graph, Metadata> diagram, String id, int outcomeEdges) {
+        Node<? extends Definition, ?> node = getNodeById(diagram, id, outcomeEdges);
+        return getStartEventType().cast(node.getContent().getDefinition());
+    }
+
+    void checkEventMarshalling(String nodeID) {
+        checkEventMarshalling(nodeID, ONE_OUTCOME_EDGE);
+    }
+
+    @SuppressWarnings("unchecked")
+    void checkEventMarshalling(String nodeID, int outcomeEdges) {
+        Diagram<Graph, Metadata> initialDiagram = getDiagram();
+        final int amountOfNodesInDiagram = getNodes(initialDiagram).size();
+
+        Diagram<Graph, Metadata> marshalledDiagram = getRoundTripDiagram();
+        assertDiagram(marshalledDiagram, amountOfNodesInDiagram);
+
+        assertNodesEqualsAfterMarshalling(initialDiagram, marshalledDiagram, nodeID, outcomeEdges);
+    }
+
+    private void assertNodesEqualsAfterMarshalling(Diagram<Graph, Metadata> before,
+                                                   Diagram<Graph, Metadata> after,
+                                                   String nodeId,
+                                                   int outcomeEdges) {
+        T nodeBeforeMarshalling = getStartNodeById(before, nodeId, outcomeEdges);
+        T nodeAfterMarshalling = getStartNodeById(after, nodeId, outcomeEdges);
+        assertThat(nodeAfterMarshalling).isEqualTo(nodeBeforeMarshalling);
+    }
+
+    @SuppressWarnings("unchecked")
+    private Node<? extends Definition, ?> getNodeById(Diagram<Graph, Metadata> diagram, String id, int outcomeEdges) {
         Node<? extends Definition, ?> node = diagram.getGraph().getNode(id);
-        assertNotNull(node);
-        assertEquals(1, node.getOutEdges().size());
-        return type.cast(node.getContent().getDefinition());
+        assertThat(node).isNotNull();
+        assertThat(node.getInEdges()).hasSize(EMPTY_INCOME_EDGES);
+        assertThat(node.getOutEdges()).hasSize(outcomeEdges);
+        return node;
     }
 
     void assertGeneralSet(BPMNGeneralSet generalSet, String nodeName, String documentation) {
@@ -109,18 +166,6 @@ public abstract class StartEventTest<T extends BaseStartEvent> extends BPMNDiagr
         AssignmentsInfo assignmentsInfo = dataIOSet.getAssignmentsinfo();
         assertNotNull(assignmentsInfo);
         assertEquals(value, assignmentsInfo.getValue());
-    }
-
-    @SuppressWarnings("unchecked")
-    void checkEventMarshalling(Class startNodeType, String nodeID) throws Exception {
-        Diagram<Graph, Metadata> initialDiagram = unmarshall(marshaller, getBpmnStartEventFilePath());
-        final int AMOUNT_OF_NODES_IN_DIAGRAM = getNodes(initialDiagram).size();
-        String resultXml = marshaller.marshall(initialDiagram);
-
-        Diagram<Graph, Metadata> marshalledDiagram = unmarshall(marshaller, getStream(resultXml));
-        assertDiagram(marshalledDiagram, AMOUNT_OF_NODES_IN_DIAGRAM);
-
-        assertNodesEqualsAfterMarshalling(initialDiagram, marshalledDiagram, nodeID, startNodeType);
     }
 
     protected void assertStartEventSlaDueDate(BaseStartEventExecutionSet executionSet, String slaDueDate) {

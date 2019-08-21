@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,6 +43,9 @@ public class StartConditionalEventTest extends StartEventTest<StartConditionalEv
     private static final String CONDITION_EXPRESSION_LANGUAGE = "drools";
     private static final String CONDITION_ERPRESSION_TYPE = "stunner.bpmn.ScriptType";
 
+    public StartConditionalEventTest() throws Exception {
+    }
+
     @Test
     @Override
     public void testUnmarshallTopLevelEventFilledProperties() throws Exception {
@@ -50,10 +53,10 @@ public class StartConditionalEventTest extends StartEventTest<StartConditionalEv
         final String EVENT_DOCUMENTATION = "Conditional event01 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
         final String CONDITION_EXPRESSION_SCRIPT = "com.myspace.testproject.Person(name == \"John\")";
 
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_CONDITIONAL_EVENT_FILE_PATH);
+        Diagram<Graph, Metadata> diagram = getDiagram();
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        StartConditionalEvent filledTop = getStartNodeById(diagram, FILLED_TOP_LEVEL_EVENT_ID, StartConditionalEvent.class);
+        StartConditionalEvent filledTop = getStartNodeById(diagram, FILLED_TOP_LEVEL_EVENT_ID);
         assertGeneralSet(filledTop.getGeneral(), EVENT_NAME, EVENT_DOCUMENTATION);
         assertConditionalEventExecutionSet(filledTop.getExecutionSet(),
                                            CONDITION_EXPRESSION_SCRIPT,
@@ -66,10 +69,10 @@ public class StartConditionalEventTest extends StartEventTest<StartConditionalEv
     @Test
     @Override
     public void testUnmarshallTopLevelEmptyEventProperties() throws Exception {
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_CONDITIONAL_EVENT_FILE_PATH);
+        Diagram<Graph, Metadata> diagram = getDiagram();
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        StartConditionalEvent emptyTop = getStartNodeById(diagram, EMPTY_TOP_LEVEL_EVENT_ID, StartConditionalEvent.class);
+        StartConditionalEvent emptyTop = getStartNodeById(diagram, EMPTY_TOP_LEVEL_EVENT_ID);
         assertGeneralSet(emptyTop.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
         assertConditionalEventExecutionSet(emptyTop.getExecutionSet(),
                                            CONDITION_EXPRESSION_SCRIPT_DEFAULT_VALUE,
@@ -86,10 +89,10 @@ public class StartConditionalEventTest extends StartEventTest<StartConditionalEv
         final String EVENT_DOCUMENTATION = "Conditional event02 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
         final String CONDITION_EXPRESSION_SCRIPT = "com.myspace.testproject.Person(name == \"John\")";
 
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_CONDITIONAL_EVENT_FILE_PATH);
+        Diagram<Graph, Metadata> diagram = getDiagram();
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        StartConditionalEvent filledSubprocess = getStartNodeById(diagram, FILLED_SUBPROCESS_LEVEL_EVENT_ID, StartConditionalEvent.class);
+        StartConditionalEvent filledSubprocess = getStartNodeById(diagram, FILLED_SUBPROCESS_LEVEL_EVENT_ID);
         assertGeneralSet(filledSubprocess.getGeneral(), EVENT_NAME, EVENT_DOCUMENTATION);
         assertConditionalEventExecutionSet(filledSubprocess.getExecutionSet(),
                                            CONDITION_EXPRESSION_SCRIPT,
@@ -102,10 +105,10 @@ public class StartConditionalEventTest extends StartEventTest<StartConditionalEv
     @Test
     @Override
     public void testUnmarshallSubprocessLevelEventEmptyProperties() throws Exception {
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_CONDITIONAL_EVENT_FILE_PATH);
+        Diagram<Graph, Metadata> diagram = getDiagram();
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        StartConditionalEvent emptySubprocess = getStartNodeById(diagram, EMPTY_SUBPROCESS_LEVEL_EVENT_ID, StartConditionalEvent.class);
+        StartConditionalEvent emptySubprocess = getStartNodeById(diagram, EMPTY_SUBPROCESS_LEVEL_EVENT_ID);
         assertGeneralSet(emptySubprocess.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
         assertConditionalEventExecutionSet(emptySubprocess.getExecutionSet(),
                                            CONDITION_EXPRESSION_SCRIPT_DEFAULT_VALUE,
