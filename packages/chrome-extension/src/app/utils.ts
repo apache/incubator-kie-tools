@@ -26,16 +26,13 @@ export function getGitHubEditor() {
 export interface ChromeAppContainers {
   iframe: HTMLElement;
   iframeFullscreen: HTMLElement;
-  fullScreenButton: Element;
+  toolbar: Element;
 }
 
 export function findContainers(): ChromeAppContainers {
-  const githubEditorElement = document.querySelector(".file");
-  githubEditorElement!.insertAdjacentHTML("afterend", `<div id="kogito-iframe-container" style="margin:16px"></div>`);
-
   return {
     iframe: document.getElementById("kogito-iframe-container")!,
     iframeFullscreen: document.getElementById("kogito-iframe-fullscreen-container")!,
-    fullScreenButton: document.querySelector(".breadcrumb.d-flex.flex-items-center")!
+    toolbar: document.querySelector(".breadcrumb.d-flex.flex-items-center")!
   };
 }

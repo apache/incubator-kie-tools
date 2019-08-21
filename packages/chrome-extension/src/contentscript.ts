@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import {ChromeRouter} from "./app/ChromeRouter";
+import { ChromeRouter } from "./app/ChromeRouter";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import {ChromeExtensionApp} from "./app/Components";
-import {findContainers} from "./app/utils";
-import {GwtEditorChromeExtensionRoutes} from "./app/GwtEditorChromeExtensionRoutes";
+import { ChromeExtensionApp } from "./app/Components";
+import { findContainers } from "./app/utils";
+import { GwtEditorChromeExtensionRoutes } from "./app/GwtEditorChromeExtensionRoutes";
 
 function init() {
   const githubEditor = document.querySelector(".js-code-editor") as HTMLElement;
@@ -48,7 +48,15 @@ function init() {
   document.body.insertAdjacentHTML(
     "beforeend",
     `<div 
-      id="kogito-container" >
+      id="kogito-container">
+    </div>`
+  );
+
+  document.querySelector(".file")!.insertAdjacentHTML(
+    "afterend",
+    `<div 
+        id="kogito-iframe-container" 
+        style="margin:16px">
     </div>`
   );
 

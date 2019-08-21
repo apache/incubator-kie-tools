@@ -74,8 +74,8 @@ export function ChromeExtensionApp(props: {
 
   return (
     <GlobalContext.Provider value={[globalState, setGlobalState]}>
-      {ReactDOM.createPortal(<ToolbarButtons />, props.containers.fullScreenButton)}
-      {globalState.fullscreen && ReactDOM.createPortal(<FullScreenButtonsBar />, props.containers.iframeFullscreen)}
+      {ReactDOM.createPortal(<Toolbar />, props.containers.toolbar)}
+      {globalState.fullscreen && ReactDOM.createPortal(<FullScreenToolbar />, props.containers.iframeFullscreen)}
       {ReactDOM.createPortal(
         <KogitoEditorIframe
           openFileExtension={props.openFileExtension}
@@ -88,7 +88,7 @@ export function ChromeExtensionApp(props: {
   );
 }
 
-function FullScreenButtonsBar() {
+function FullScreenToolbar() {
   const [globalState, setGlobalState] = useContext(GlobalContext);
 
   const exitFullScreen = () => {
@@ -185,7 +185,7 @@ function KogitoEditorIframe(props: { openFileExtension: string; githubEditor: HT
   );
 }
 
-function ToolbarButtons() {
+function Toolbar() {
   const [globalState, setGlobalState] = useContext(GlobalContext);
 
   const goFullScreen = (e: any) => {
