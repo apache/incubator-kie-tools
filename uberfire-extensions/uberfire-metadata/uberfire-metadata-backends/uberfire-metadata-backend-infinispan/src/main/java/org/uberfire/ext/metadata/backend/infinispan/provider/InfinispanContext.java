@@ -48,6 +48,7 @@ import org.uberfire.ext.metadata.backend.infinispan.proto.KObjectMarshaller;
 import org.uberfire.ext.metadata.backend.infinispan.proto.schema.Schema;
 import org.uberfire.ext.metadata.backend.infinispan.proto.schema.SchemaGenerator;
 import org.uberfire.ext.metadata.backend.infinispan.utils.AttributesUtil;
+import org.uberfire.ext.metadata.backend.infinispan.utils.Retry;
 import org.uberfire.ext.metadata.model.KObject;
 
 import static java.util.stream.Collectors.toList;
@@ -70,11 +71,11 @@ public class InfinispanContext implements Disposable {
     private static final String ORG_KIE = "org.kie.";
     public static final String SASL_MECHANISM = "DIGEST-MD5";
     private static final String CACHE_PREFIX = "appformer_";
-    private final RemoteCacheManager cacheManager;
-    private final KieProtostreamMarshaller marshaller = new KieProtostreamMarshaller();
-    private final SchemaGenerator schemaGenerator;
+    private RemoteCacheManager cacheManager;
+    private KieProtostreamMarshaller marshaller = new KieProtostreamMarshaller();
+    private SchemaGenerator schemaGenerator;
 
-    private final InfinispanConfiguration infinispanConfiguration;
+    private InfinispanConfiguration infinispanConfiguration;
 
     private Logger logger = LoggerFactory.getLogger(InfinispanContext.class);
 
@@ -311,24 +312,27 @@ public class InfinispanContext implements Disposable {
     }
 
     public void loadProtobufSchema(RemoteCache<String, String> metadataCache) {
-        metadataCache.entrySet()
-                .stream()
-                .filter(entry -> !entry.getKey().equals(addCachePrefix(SCHEMA_PROTO)))
-                .forEach((entry) -> {
-                    int index = entry.getKey().lastIndexOf('.');
-                    String protoTypeName = entry.getKey().substring(0,
-                                                                    index);
-                    String proto = entry.getValue();
 
-                    try {
-                        marshaller.registerSchema(protoTypeName,
-                                                  proto,
-                                                  KObject.class);
-                    } catch (IOException e) {
-                        throw new InfinispanException("Can't add protobuf schema <" + protoTypeName + "> to cache",
-                                                      e);
-                    }
-                });
+        new Retry(5, () -> {
+            metadataCache.entrySet()
+                    .stream()
+                    .filter(entry -> !entry.getKey().equals(addCachePrefix(SCHEMA_PROTO)))
+                    .forEach((entry) -> {
+                        int index = entry.getKey().lastIndexOf('.');
+                        String protoTypeName = entry.getKey().substring(0,
+                                                                        index);
+                        String proto = entry.getValue();
+
+                        try {
+                            marshaller.registerSchema(protoTypeName,
+                                                      proto,
+                                                      KObject.class);
+                        } catch (IOException e) {
+                            throw new InfinispanException("Can't add protobuf schema <" + protoTypeName + "> to cache",
+                                                          e);
+                        }
+                    });
+        }).run();
     }
 
     @Override
@@ -356,4 +360,6 @@ public class InfinispanContext implements Disposable {
                                                              schema);
     }
 }
+
+
 

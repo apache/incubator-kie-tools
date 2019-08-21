@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 import org.uberfire.ext.metadata.backend.infinispan.exceptions.InfinispanException;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 public class InfinispanContextTest {
