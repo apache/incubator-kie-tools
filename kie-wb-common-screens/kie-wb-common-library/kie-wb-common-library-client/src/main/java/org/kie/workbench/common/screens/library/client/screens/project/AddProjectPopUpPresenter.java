@@ -16,11 +16,14 @@
 
 package org.kie.workbench.common.screens.library.client.screens.project;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
@@ -32,6 +35,7 @@ import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
+import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -43,8 +47,11 @@ import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryCon
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.screens.projecteditor.client.util.KiePOMDefaultOptions;
 import org.kie.workbench.common.screens.projecteditor.client.wizard.POMBuilder;
+import org.kie.workbench.common.services.refactoring.model.index.events.IndexingFinishedEvent;
 import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.kie.workbench.common.widgets.client.callbacks.CommandWithThrowableDrivenErrorCallback;
+import org.slf4j.Logger;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.client.views.pfly.widgets.ErrorPopup;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
@@ -136,9 +143,17 @@ public class AddProjectPopUpPresenter {
 
     private TranslationService translationService;
 
+    private Caller<WorkspaceProjectService> projectService;
+
+    private Logger logger;
+
     LibraryInfo libraryInfo;
 
     ParameterizedCommand<WorkspaceProject> successCallback;
+
+    Path newProjectPath;
+
+    List<Path> projectsIndexed;
 
     @Inject
     public AddProjectPopUpPresenter(final Caller<LibraryService> libraryService,
@@ -153,7 +168,9 @@ public class AddProjectPopUpPresenter {
                                     final ConflictingRepositoriesPopup conflictingRepositoriesPopup,
                                     final Caller<ValidationService> validationService,
                                     final ErrorPopup errorPopup,
-                                    final TranslationService translationService) {
+                                    final TranslationService translationService,
+                                    final Caller<WorkspaceProjectService> projectService,
+                                    final Logger logger) {
         this.libraryService = libraryService;
         this.busyIndicatorView = busyIndicatorView;
         this.notificationEvent = notificationEvent;
@@ -167,6 +184,10 @@ public class AddProjectPopUpPresenter {
         this.validationService = validationService;
         this.errorPopup = errorPopup;
         this.translationService = translationService;
+        this.projectService = projectService;
+        this.logger = logger;
+        this.newProjectPath = null;
+        this.projectsIndexed = new ArrayList<>();
     }
 
     @PostConstruct
@@ -216,11 +237,6 @@ public class AddProjectPopUpPresenter {
                        artifactId,
                        version,
                        () -> {
-                           final ParameterizedCommand<WorkspaceProject> successCallback = (project) -> {
-                               endProjectCreation();
-                               getSuccessCallback().execute(project);
-                           };
-
                            Map<Class<? extends Throwable>, CommandWithThrowableDrivenErrorCallback.CommandWithThrowable> errors = new HashMap<Class<? extends Throwable>, CommandWithThrowableDrivenErrorCallback.CommandWithThrowable>() {{
                                put(GAVAlreadyExistsException.class, exception -> handleGAVAlreadyExistsException((GAVAlreadyExistsException) exception));
                                put(FileAlreadyExistsException.class, exception -> handleFileExistsException((FileAlreadyExistsException) exception));
@@ -234,12 +250,32 @@ public class AddProjectPopUpPresenter {
                                                          name, 
                                                          description);
 
-                           libraryService.call((WorkspaceProject project) -> successCallback.execute(project),
+                           libraryService.call((WorkspaceProject project) -> {
+                                                   newProjectPath = project.getRootPath();
+                                                   if (projectsIndexed.contains(newProjectPath)) {
+                                                       endProjectCreation();
+                                                       getSuccessCallback().execute(project);
+                                                   }
+                                               },
                                                errorCallback).createProject(projectContext.getActiveOrganizationalUnit()
                                                                                           .orElseThrow(() -> new IllegalStateException("Cannot create new project without an active organizational unit.")),
                                                                             pom,
                                                                             mode);
                        });
+    }
+
+    public void onProjectIndexingFinishedEvent(@Observes IndexingFinishedEvent event) {
+        projectsIndexed.add(event.getPath());
+        if (newProjectPath != null && newProjectPath.equals(event.getPath())) {
+            projectService.call((WorkspaceProject project) -> {
+                                    endProjectCreation();
+                                    getSuccessCallback().execute(project);
+                                },
+                                (o, throwable) -> {
+                                    logger.info("Project path " + event.getPath().toURI() + " not found.");
+                                    return false;
+                                }).resolveProject(event.getPath());
+        }
     }
 
     private void beginProjectCreation() {
@@ -357,7 +393,6 @@ public class AddProjectPopUpPresenter {
 
     public ParameterizedCommand<WorkspaceProject> getProjectCreationSuccessCallback() {
         return project -> {
-            newProjectEvent.fire(new NewProjectEvent(project));
             view.hide();
             notifySuccess();
             libraryPlaces.goToProject(project);

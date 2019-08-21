@@ -3,6 +3,7 @@
 exports[`snapshot of spaces screen with no space 1`] = `
 <Fragment>
   <EmptySpacesScreen
+    canCreateSpace={[Function]}
     onAddSpace={[Function]}
   />
 </Fragment>
@@ -68,6 +69,7 @@ exports[`snapshot of spaces screen with no space but loading 1`] = `
 <Fragment>
   <LoadingPopup />
   <EmptySpacesScreen
+    canCreateSpace={[Function]}
     onAddSpace={[Function]}
   />
 </Fragment>
@@ -80,6 +82,7 @@ exports[`snapshot of spaces screen with no space but loading and popup open 1`] 
     onClose={[Function]}
   />
   <EmptySpacesScreen
+    canCreateSpace={[Function]}
     onAddSpace={[Function]}
   />
 </Fragment>

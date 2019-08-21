@@ -25,7 +25,7 @@ describe("snapshot", () => {
 
   test("of empty spaces screen should match snapshot", () => {
     expect(
-      shallow(<EmptySpacesScreen onAddSpace={jest.fn()} />)
+      shallow(<EmptySpacesScreen onAddSpace={jest.fn()} canCreateSpace={() => true} />)
     ).toMatchSnapshot();
   });
 });

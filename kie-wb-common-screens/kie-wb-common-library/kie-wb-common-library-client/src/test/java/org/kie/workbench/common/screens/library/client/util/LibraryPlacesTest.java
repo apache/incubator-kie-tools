@@ -65,6 +65,7 @@ import org.mockito.Captor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.slf4j.Logger;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
@@ -181,6 +182,9 @@ public class LibraryPlacesTest {
     private OrganizationalUnitService organizationalUnitService;
     private Caller<OrganizationalUnitService> organizationalUnitServiceCaller;
 
+    @Mock
+    private Logger logger;
+
     @Captor
     private ArgumentCaptor<WorkspaceProjectContextChangeEvent> projectContextChangeEventArgumentCaptor;
 
@@ -232,7 +236,8 @@ public class LibraryPlacesTest {
                                               repositoryServiceCaller,
                                               new SyncPromises(),
                                               mock(OrganizationalUnitController.class),
-                                              organizationalUnitServiceCaller) {
+                                              organizationalUnitServiceCaller,
+                                              logger) {
 
             @Override
             protected Map<String, List<String>> getParameterMap() {
