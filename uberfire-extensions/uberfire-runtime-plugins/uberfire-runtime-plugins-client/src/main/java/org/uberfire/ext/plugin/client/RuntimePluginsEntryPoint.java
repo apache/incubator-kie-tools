@@ -16,17 +16,14 @@
 
 package org.uberfire.ext.plugin.client;
 
-import static com.google.gwt.core.client.ScriptInjector.TOP_WINDOW;
-import static org.uberfire.workbench.model.ActivityResourceType.EDITOR;
-import static org.uberfire.workbench.model.ActivityResourceType.PERSPECTIVE;
-import static org.uberfire.workbench.model.ActivityResourceType.POPUP;
-import static org.uberfire.workbench.model.ActivityResourceType.SCREEN;
-
 import java.util.Collection;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
+import com.google.gwt.core.client.ScriptInjector;
+import com.google.gwt.dom.client.StyleInjector;
+import org.jboss.errai.bus.client.util.BusToolsCli;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.EnabledByProperty;
@@ -51,8 +48,11 @@ import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.security.ResourceType;
 import org.uberfire.workbench.model.menu.MenuFactory;
 
-import com.google.gwt.core.client.ScriptInjector;
-import com.google.gwt.dom.client.StyleInjector;
+import static com.google.gwt.core.client.ScriptInjector.TOP_WINDOW;
+import static org.uberfire.workbench.model.ActivityResourceType.EDITOR;
+import static org.uberfire.workbench.model.ActivityResourceType.PERSPECTIVE;
+import static org.uberfire.workbench.model.ActivityResourceType.POPUP;
+import static org.uberfire.workbench.model.ActivityResourceType.SCREEN;
 
 @EntryPoint
 @Bundle("resources/i18n/Constants.properties")
@@ -76,7 +76,12 @@ public class RuntimePluginsEntryPoint {
 
     @PostConstruct
     public void init() {
+        if (!BusToolsCli.isRemoteCommunicationEnabled()) {
+            return;
+        }
+
         WebAppResource.INSTANCE.CSS().ensureInjected();
+
         workbench.addStartupBlocker(RuntimePluginsEntryPoint.class);
         pluginServices.call(new RemoteCallback<Collection<RuntimePlugin>>() {
             @Override

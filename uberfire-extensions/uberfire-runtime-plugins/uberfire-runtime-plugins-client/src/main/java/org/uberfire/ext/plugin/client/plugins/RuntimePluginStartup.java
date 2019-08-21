@@ -1,11 +1,13 @@
 package org.uberfire.ext.plugin.client.plugins;
 
 import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.ScriptInjector;
+import org.jboss.errai.bus.client.util.BusToolsCli;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.EnabledByProperty;
@@ -30,10 +32,17 @@ public class RuntimePluginStartup {
 
     @PostConstruct
     public void init() {
+        if (!BusToolsCli.isRemoteCommunicationEnabled()) {
+            return;
+        }
+
         workbench.addStartupBlocker(RuntimePluginStartup.class);
     }
 
     void startPlugins(@Observes UberfireJSAPIReadyEvent event) {
+        if (!BusToolsCli.isRemoteCommunicationEnabled()) {
+            return;
+        }
 
         runtimePlugins.call(new RemoteCallback<List<RuntimePlugin>>() {
             @Override

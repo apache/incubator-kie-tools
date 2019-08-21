@@ -27,6 +27,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import org.jboss.errai.bus.client.util.BusToolsCli;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.EntryPoint;
@@ -73,6 +74,10 @@ public class PerspectiveEditorGenerator {
 
     @PostConstruct
     public void loadPerspectives() {
+        if (!BusToolsCli.isRemoteCommunicationEnabled()) {
+            return;
+        }
+
         perspectiveServices.call((Collection<LayoutTemplate> response) -> {
             response.forEach(this::generatePerspective);
         }).listLayoutTemplates();
