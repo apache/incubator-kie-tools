@@ -123,7 +123,7 @@ describe("receive", () => {
 
   test("languageResponse", async () => {
     handler.startListening();
-    const languageData = { editorId: "", gwtModuleName: "", erraiDomain: "", resources: [] };
+    const languageData = { editorId: "", gwtModuleName: "", resources: [] };
     await incomingMessage({ type: EnvelopeBusMessageType.RETURN_LANGUAGE, data: languageData });
 
     expect(receivedMessages).toEqual([["languageResponse", languageData]]);

@@ -9,7 +9,7 @@
   "content_scripts": [
     {
       "run_at": "document_end",
-      "js": ["resources/codemirror.js", "contentscript.js"],
+      "js": ["contentscript.js"],
       "matches": ["https://github.com/*"],
       "all_frames": true
     }

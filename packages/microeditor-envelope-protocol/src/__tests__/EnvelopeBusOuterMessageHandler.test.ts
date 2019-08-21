@@ -47,6 +47,9 @@ beforeEach(() => {
       },
       receive_dirtyIndicatorChange(isDirty: boolean): void {
         receivedMessages.push("dirtyIndicatorChange_" + isDirty);
+      },
+      receive_ready(): void {
+        /**/
       }
     })
   );
@@ -131,7 +134,7 @@ describe("send", () => {
   });
 
   test("respond languageRequest", () => {
-    const languageData = { type: "dummy", editorId: "id", gwtModuleName: "name", erraiDomain: "domain", resources: [] };
+    const languageData = { type: "dummy", editorId: "id", gwtModuleName: "name", resources: [] };
     handler.respond_languageRequest(languageData);
     expect(sentMessages).toEqual([{ type: EnvelopeBusMessageType.RETURN_LANGUAGE, data: languageData }]);
   });

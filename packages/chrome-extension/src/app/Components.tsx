@@ -14,50 +14,115 @@
  * limitations under the License.
  */
 
-import { findContainers, getGitHubEditor } from "./utils";
+import { ChromeAppContainers, getGitHubEditor } from "./utils";
 import * as ReactDOM from "react-dom";
 import * as React from "react";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { EnvelopeBusOuterMessageHandler } from "appformer-js-microeditor-envelope-protocol";
 import { Router } from "appformer-js-core/src";
 
 interface GlobalContextType {
   fullscreen: boolean;
   textMode: boolean;
+  textModeEnabled: boolean;
 }
 
-const GlobalContext = React.createContext<[GlobalContextType, (g: GlobalContextType) => void]>([
+const GlobalContext = React.createContext<
+  [GlobalContextType, <K extends keyof GlobalContextType>(g: Pick<GlobalContextType, K>) => void]
+>([
   {
     fullscreen: false,
-    textMode: false
+    textMode: false,
+    textModeEnabled: false
   },
-  (g: GlobalContextType) => {
+  <K extends keyof GlobalContextType>(g: Pick<GlobalContextType, K>) => {
     /**/
   }
 ]);
 
-export function ChromeExtensionApp(props: { openFileExtension: string; githubEditor: HTMLElement; router: Router }) {
-  const [globalState, setGlobalState] = useState({ fullscreen: false, textMode: false });
+export function ChromeExtensionApp(props: {
+  containers: ChromeAppContainers;
+  openFileExtension: string;
+  githubEditor: HTMLElement;
+  router: Router;
+}) {
+  const [globalState, setGlobalState] = useState({ fullscreen: false, textMode: false, textModeEnabled: false });
 
-  const containers = findContainers();
+  useLayoutEffect(
+    () => {
+      if (!globalState.fullscreen) {
+        props.containers.iframeFullscreen.style.display = "none";
+      } else {
+        props.containers.iframeFullscreen.style.display = "block";
+      }
+    },
+    [globalState]
+  );
+
+  useEffect(
+    () => {
+      if (globalState.textMode) {
+        props.githubEditor.style.display = "block";
+        props.containers.iframe.style.display = "none";
+      } else {
+        props.githubEditor.style.display = "none";
+        props.containers.iframe.style.display = "block";
+      }
+    },
+    [globalState]
+  );
+
   return (
     <GlobalContext.Provider value={[globalState, setGlobalState]}>
-      {ReactDOM.createPortal(<ToolbarButtons />, containers.fullScreenButton)}
+      {ReactDOM.createPortal(<ToolbarButtons />, props.containers.fullScreenButton)}
+      {globalState.fullscreen && ReactDOM.createPortal(<FullScreenButtonsBar />, props.containers.iframeFullscreen)}
       {ReactDOM.createPortal(
         <KogitoEditorIframe
           openFileExtension={props.openFileExtension}
           router={props.router}
           githubEditor={props.githubEditor}
         />,
-        containers.iframe
+        globalState.fullscreen ? props.containers.iframeFullscreen : props.containers.iframe
       )}
     </GlobalContext.Provider>
+  );
+}
+
+function FullScreenButtonsBar() {
+  const [globalState, setGlobalState] = useContext(GlobalContext);
+
+  const exitFullScreen = () => {
+    setGlobalState({ ...globalState, fullscreen: false, textModeEnabled: false });
+  };
+
+  return (
+    <div
+      style={{
+        borderRadius: "0 0 10px 10px",
+        backgroundColor: "black",
+        width: "150px",
+        height: "25px",
+        position: "absolute",
+        left: 0,
+        right: 0,
+        margin: "0 auto",
+        zIndex: 1000,
+        boxShadow: "0px 0px 10px 1px black",
+        textAlign: "center"
+      }}
+    >
+      <a href={"#"} style={{ color: "#e2e2e2" }} onClick={exitFullScreen}>
+        Exit full screen
+      </a>
+    </div>
   );
 }
 
 function KogitoEditorIframe(props: { openFileExtension: string; githubEditor: HTMLElement; router: Router }) {
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
   const targetOrigin = chrome.extension.getURL("");
+
+  const [globalState, setGlobalState] = useContext(GlobalContext);
 
   const envelopeBusOuterMessageHandler = new EnvelopeBusOuterMessageHandler(
     {
@@ -84,16 +149,13 @@ function KogitoEditorIframe(props: { openFileExtension: string; githubEditor: HT
       },
       receive_dirtyIndicatorChange(isDirty: boolean) {
         console.info(`Dirty indicator changed to ${isDirty}`);
+      },
+      receive_ready(): void {
+        console.info(`Editor is ready`);
+        setGlobalState({ ...globalState, textModeEnabled: true });
       }
     })
   );
-
-  useEffect(() => {
-    props.githubEditor.style.display = "none";
-    return () => {
-      delete props.githubEditor.style.display;
-    };
-  }, []);
 
   useEffect(() => {
     const listener = (msg: MessageEvent) => envelopeBusOuterMessageHandler.receive(msg.data);
@@ -113,12 +175,10 @@ function KogitoEditorIframe(props: { openFileExtension: string; githubEditor: HT
         id={"kogito-iframe"}
         src={chrome.extension.getURL("envelope/index.html")}
         style={{
-          marginTop: " 10px",
-          marginBottom: " 10px",
-          width: "100%",
-          height: "600px",
-          borderRadius: "4px",
-          border: "1px solid lightgray"
+          width: globalState.fullscreen ? "100vw" : "100%",
+          height: globalState.fullscreen ? "100vh" : "600px",
+          border: globalState.fullscreen ? "0" : "1px solid lightgray",
+          borderRadius: "4px"
         }}
       />
     </>
@@ -126,36 +186,41 @@ function KogitoEditorIframe(props: { openFileExtension: string; githubEditor: HT
 }
 
 function ToolbarButtons() {
-  const [globalContext, setGlobalContext] = useContext(GlobalContext);
+  const [globalState, setGlobalState] = useContext(GlobalContext);
 
   const goFullScreen = (e: any) => {
     e.preventDefault();
-    setGlobalContext({ ...globalContext, fullscreen: true });
+    setGlobalState({ ...globalState, fullscreen: true });
   };
 
   const seeAsText = (e: any) => {
     e.preventDefault();
-    setGlobalContext({ ...globalContext, textMode: true });
+    setGlobalState({ ...globalState, textMode: true });
   };
 
   const seeAsKogito = (e: any) => {
     e.preventDefault();
-    setGlobalContext({ ...globalContext, textMode: false });
+    setGlobalState({ ...globalState, textMode: false });
   };
 
   return (
     <>
-      {!globalContext.textMode && (
+      {!globalState.textMode && (
         <button className={"btn btn-sm"} style={{ marginLeft: "4px", float: "right" }} onClick={goFullScreen}>
           Fullscreen
         </button>
       )}
-      {!globalContext.textMode && (
-        <button className={"btn btn-sm"} style={{ marginLeft: "4px", float: "right" }} onClick={seeAsText}>
+      {!globalState.textMode && (
+        <button
+          disabled={!globalState.textModeEnabled}
+          className={"btn btn-sm"}
+          style={{ marginLeft: "4px", float: "right" }}
+          onClick={seeAsText}
+        >
           See as text
         </button>
       )}
-      {globalContext.textMode && (
+      {globalState.textMode && (
         <button className={"btn btn-sm"} style={{ marginLeft: "4px", float: "right" }} onClick={seeAsKogito}>
           See as custom editor
         </button>

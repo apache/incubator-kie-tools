@@ -22,14 +22,20 @@ export function getGitHubEditor() {
   return realEditor;
 }
 
-export function findContainers() {
+
+export interface ChromeAppContainers {
+  iframe: HTMLElement;
+  iframeFullscreen: HTMLElement;
+  fullScreenButton: Element;
+}
+
+export function findContainers(): ChromeAppContainers {
   const githubEditorElement = document.querySelector(".file");
-  githubEditorElement!
-    .parentElement!.insertBefore(document.createElement("div"), githubEditorElement)
-    .setAttribute("id", "kogito-iframe-container");
+  githubEditorElement!.insertAdjacentHTML("afterend", `<div id="kogito-iframe-container" style="margin:16px"></div>`);
 
   return {
     iframe: document.getElementById("kogito-iframe-container")!,
+    iframeFullscreen: document.getElementById("kogito-iframe-fullscreen-container")!,
     fullScreenButton: document.querySelector(".breadcrumb.d-flex.flex-items-center")!
   };
 }

@@ -29,50 +29,46 @@ export class GwtEditorWrapperFactory implements MicroEditorEnvelope.EditorFactor
   }
 
   public createEditor(languageData: GwtLanguageData, messageBus: EnvelopeBusInnerMessageHandler) {
-    return new Promise<AppFormer.Editor>(res => {
-      this.appFormerGwtApi.setErraiDomain(languageData.erraiDomain); //needed only for backend communication
-
+    const gwtFinishedLoading = new Promise<AppFormer.Editor>(res => {
       this.appFormerGwtApi.onFinishedLoading(() => {
         res(new GwtEditorWrapper(this.appFormerGwtApi.getEditor(languageData.editorId)));
+        messageBus.notify_ready();
         return Promise.resolve();
       });
+    });
 
-      languageData.resources.forEach(resource => {
-        this.loadResource(resource);
-      });
+    return Promise.all(languageData.resources.map(resource => this.loadResource(resource))).then(() => {
+      return gwtFinishedLoading;
     });
   }
 
   private loadResource(resource: Resource) {
-    let i = 0;
-
-    const myLoop = () => {
-      setTimeout(() => {
-        console.info(resource.paths[i]);
-        try {
-          switch (resource.type) {
-            case "css":
-              const link = document.createElement("link");
-              link.href = resource.paths[i];
-              link.rel = "text/css";
-              document.body.appendChild(link);
-              break;
-            case "js":
-              const script = document.createElement("script");
-              script.src = resource.paths[i];
-              script.type = "text/javascript";
-              document.body.appendChild(script);
-              break;
-          }
-        } finally {
-          i++;
-          if (i < resource.paths.length) {
-            myLoop();
-          }
+    switch (resource.type) {
+      case "css":
+        for (const sheet of resource.paths) {
+          const link = document.createElement("link");
+          link.href = sheet;
+          link.rel = "text/css";
+          document.head.appendChild(link);
         }
-      }, 0);
-    };
+        return Promise.resolve();
+      case "js":
+        return this.recursivelyLoadScriptsStartingFrom(resource.paths, 0);
+    }
+  }
 
-    myLoop();
+  private recursivelyLoadScriptsStartingFrom(urls: string[], i: number) {
+    if (i >= urls.length) {
+      return Promise.resolve();
+    }
+
+    return new Promise<void>(res => {
+      const script = document.createElement("script");
+      script.type = "text/javascript";
+      script.async = true;
+      script.src = urls[i];
+      script.addEventListener("load", () => this.recursivelyLoadScriptsStartingFrom(urls, i + 1).then(res), false);
+      document.head.appendChild(script);
+    });
   }
 }

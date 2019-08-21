@@ -23,7 +23,6 @@ const delay = (ms: number) => {
 };
 
 const gwtAppFormerApi: GwtAppFormerApi = {
-  setErraiDomain: jest.fn(),
   onFinishedLoading: (callback: () => Promise<any>) => (window.appFormerGwtFinishedLoading = callback),
   getEditor: jest.fn(),
   setClientSideOnly: jest.fn()
@@ -31,40 +30,73 @@ const gwtAppFormerApi: GwtAppFormerApi = {
 
 const cssResource: Resource = {
   type: "css",
-  paths: ["resource.css"]
+  paths: ["resource1.css", "resource2.css"]
 };
 
 const jsResource: Resource = {
   type: "js",
-  paths: ["resource.js"]
+  paths: [
+    "resource1.js",
+    "resource2.js",
+    "resource3.js",
+    "resource4.js",
+    "resource5.js",
+    "resource1.js",
+    "resource2.js",
+    "resource3.js",
+    "resource4.js",
+    "resource5.js",
+    "resource1.js",
+    "resource2.js",
+    "resource3.js",
+    "resource4.js",
+    "resource5.js"
+  ]
 };
 
 const testLanguageData: GwtLanguageData = {
   type: "dummy",
   editorId: "editorID",
   gwtModuleName: "moduleName",
-  erraiDomain: "erraiDomain",
   resources: [cssResource, jsResource]
 };
 
 const gwtEditorWrapperFactory: GwtEditorWrapperFactory = new GwtEditorWrapperFactory(gwtAppFormerApi);
 
+function waitForNScriptsToLoad(remaining: number) {
+  if (remaining <= 0) {
+    return Promise.resolve();
+  }
+
+  const script = Array.from(document.getElementsByTagName("script")).pop()!;
+  return new Promise<void>(res => {
+    script.addEventListener("load", () => {
+      waitForNScriptsToLoad(remaining - 1).then(res);
+    });
+    script.dispatchEvent(new Event("load"));
+  });
+}
+
 describe("GwtEditorWrapperFactory", () => {
   test("create editor", async () => {
-    const res = jest.fn();
+    const editorCreation = gwtEditorWrapperFactory.createEditor(testLanguageData, {
+      notify_ready: jest.fn()
+    } as any);
 
-    gwtEditorWrapperFactory.createEditor(testLanguageData, undefined as any).then(res);
+    await waitForNScriptsToLoad(jsResource.paths.length);
+    await window.appFormerGwtFinishedLoading();
+    await editorCreation;
 
-    const links = document.body.getElementsByTagName("link");
+    const links = document.getElementsByTagName("link");
+    expect(links.length).toBe(cssResource.paths.length);
+    Array.from(links).forEach((l, i) => {
+      expect(l.href).toContain(cssResource.paths[i]);
+    });
+
     const scripts = document.getElementsByTagName("script");
-    expect(links.length).toBe(1);
-    expect(scripts.length).toBe(1);
-    expect(links[0].href).toContain(cssResource.paths[0]);
-    expect(scripts[0].src).toContain(jsResource.paths[0]);
-
-    window.appFormerGwtFinishedLoading();
-
-    await delay(100);
-    expect(res).toBeCalled();
+    expect(scripts.length).toBe(jsResource.paths.length);
+    Array.from(scripts).forEach((s, i) => {
+      expect(s.src).toContain(jsResource.paths[i]);
+    });
   });
 });

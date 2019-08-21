@@ -21,7 +21,7 @@ module.exports = {
   mode: "development",
   devtool: "inline-source-map",
   entry: {
-    contentscript: "./src/contentscript.tsx",
+    contentscript: "./src/contentscript.ts",
     background: "./src/background.ts",
     "envelope/index": "./src/envelope/index.ts"
   },

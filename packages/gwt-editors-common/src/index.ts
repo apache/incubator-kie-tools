@@ -15,4 +15,14 @@
  */
 
 export * from "./GwtLanguageData";
-export * from "./GwtEditorRoutes";
+
+export const gwtEditors = {
+  dmn: {
+    id:"DMNDiagramEditor",
+    name: "org.kie.workbench.common.dmn.showcase.DMNShowcase"
+  },
+  bpmn: {
+    id:"BPMNDiagramEditor",
+    name: "org.kie.workbench.common.stunner.kogito.StunnerStandaloneShowcase"
+  }
+};

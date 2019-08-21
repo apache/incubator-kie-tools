@@ -26,10 +26,12 @@ export class KogitoRouter implements Router {
     this.context = context;
 
     const allLanguageData = new Map<string, any>();
+
     routesArray.reduce((map, routes) => {
       routes.getRoutes(this).forEach((v, k) => map.set(k, v));
       return map;
     }, allLanguageData);
+
     this.languageDataByFileExtension = allLanguageData;
   }
 

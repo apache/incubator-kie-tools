@@ -68,6 +68,9 @@ export class KogitoEditor {
         },
         receive_dirtyIndicatorChange: (isDirty: boolean) => {
           this.updateDirtyIndicator(isDirty);
+        },
+        receive_ready(): void {
+          /**/
         }
       })
     );

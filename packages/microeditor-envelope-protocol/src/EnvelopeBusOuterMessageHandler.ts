@@ -25,6 +25,7 @@ export interface EnvelopeBusOuterMessageHandlerImpl {
   receive_contentRequest(): void;
   receive_contentResponse(content: string): void;
   receive_dirtyIndicatorChange(isDirty: boolean): void;
+  receive_ready(): void;
 }
 
 export class EnvelopeBusOuterMessageHandler {
@@ -97,6 +98,9 @@ export class EnvelopeBusOuterMessageHandler {
         break;
       case EnvelopeBusMessageType.NOTIFY_DIRTY_INDICATOR_CHANGE:
         this.impl.receive_dirtyIndicatorChange(message.data as boolean);
+        break;
+      case EnvelopeBusMessageType.NOTIFY_READY:
+        this.impl.receive_ready();
         break;
       default:
         console.info(`Unknown message type received: ${message.type}"`);

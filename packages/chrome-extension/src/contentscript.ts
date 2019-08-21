@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-import { ChromeRouter } from "./app/ChromeRouter";
+import {ChromeRouter} from "./app/ChromeRouter";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { ChromeExtensionApp } from "./app/Components";
-import { GwtEditorRoutes } from "appformer-js-gwt-editors-common";
+import {ChromeExtensionApp} from "./app/Components";
+import {findContainers} from "./app/utils";
+import {GwtEditorChromeExtensionRoutes} from "./app/GwtEditorChromeExtensionRoutes";
 
 function init() {
   const githubEditor = document.querySelector(".js-code-editor") as HTMLElement;
@@ -30,22 +31,34 @@ function init() {
   const splitLocationHref = window.location.href.split(".");
   const openFileExtension = splitLocationHref[splitLocationHref.length - 1];
 
-  const gwtEditorRoutes = new GwtEditorRoutes({
-    dmnLocation: `editors/dmn`,
-    bpmnLocation: `editors/bpmn`
-  });
-
-  const router = new ChromeRouter(gwtEditorRoutes);
-
+  const router = new ChromeRouter(new GwtEditorChromeExtensionRoutes());
   if (!router.getLanguageData(openFileExtension)) {
     console.info(`No enhanced editor available for "${openFileExtension}" format.`);
     return;
   }
 
-  document.body.appendChild(document.createElement("div")).setAttribute("id", "kogito-container");
+  document.body.insertAdjacentHTML(
+    "afterbegin",
+    `<div 
+      id="kogito-iframe-fullscreen-container" 
+      style="width:100vw;height:100vh;position:absolute;top:0;z-index:999;border:none;overflow:hidden;">
+    </div>`
+  );
+
+  document.body.insertAdjacentHTML(
+    "beforeend",
+    `<div 
+      id="kogito-container" >
+    </div>`
+  );
 
   ReactDOM.render(
-    <ChromeExtensionApp openFileExtension={openFileExtension} router={router} githubEditor={githubEditor} />,
+    React.createElement(ChromeExtensionApp, {
+      containers: findContainers(),
+      openFileExtension: openFileExtension,
+      router: router,
+      githubEditor: githubEditor
+    }),
     document.getElementById("kogito-container")
   );
 }

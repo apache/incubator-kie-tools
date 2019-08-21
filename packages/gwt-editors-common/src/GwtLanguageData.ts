@@ -20,7 +20,6 @@ export interface GwtLanguageData extends LanguageData {
   type: string;
   editorId: string;
   gwtModuleName: string;
-  erraiDomain: string;
   resources: Resource[];
 }
 
