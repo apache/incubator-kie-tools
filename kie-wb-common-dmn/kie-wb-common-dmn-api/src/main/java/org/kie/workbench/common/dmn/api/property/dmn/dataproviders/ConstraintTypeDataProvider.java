@@ -37,7 +37,7 @@ public class ConstraintTypeDataProvider implements SelectorDataProvider {
 
     private static Map<Object, Integer> valuePosition;
 
-    private static final String KEY_PREFIX = "org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType.";
+    private static final String KEY_PREFIX = "org.kie.workbench.common.dmn.api.definition.model.ConstraintType.";
 
     @Inject
     public ConstraintTypeDataProvider(final TranslationService translationService) {

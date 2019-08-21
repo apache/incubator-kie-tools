@@ -62,7 +62,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 @Definition(graphFactory = NodeFactory.class)
 @FormDefinition(policy = FieldPolicy.ONLY_MARKED,
         defaultFieldSettings = {@FieldParam(name = FIELD_CONTAINER_PARAM, value = COLLAPSIBLE_CONTAINER)},
-        i18n = @I18nSettings(keyPreffix = "org.kie.workbench.common.dmn.api.definition.v1_1.InputClauseLiteralExpression"),
+        i18n = @I18nSettings(keyPreffix = "org.kie.workbench.common.dmn.api.definition.model.InputClauseLiteralExpression"),
         startElement = "text")
 public class InputClauseLiteralExpression extends DMNModelInstrumentedBase implements IsLiteralExpression,
                                                                                       HasTypeRef,

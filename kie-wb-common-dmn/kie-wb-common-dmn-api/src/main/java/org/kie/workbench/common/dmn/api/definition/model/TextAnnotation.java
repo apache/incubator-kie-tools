@@ -52,7 +52,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 @Definition(graphFactory = NodeFactory.class, nameField = "text")
 @FormDefinition(policy = FieldPolicy.ONLY_MARKED,
         defaultFieldSettings = {@FieldParam(name = FIELD_CONTAINER_PARAM, value = COLLAPSIBLE_CONTAINER)},
-        i18n = @I18nSettings(keyPreffix = "org.kie.workbench.common.dmn.api.definition.v1_1.TextAnnotation"),
+        i18n = @I18nSettings(keyPreffix = "org.kie.workbench.common.dmn.api.definition.model.TextAnnotation"),
         startElement = "id")
 public class TextAnnotation extends Artifact implements DMNViewDefinition<GeneralRectangleDimensionsSet>,
                                                         DynamicReadOnly {

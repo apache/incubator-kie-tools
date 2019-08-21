@@ -44,7 +44,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 @PropertySet
 @FormDefinition(policy = FieldPolicy.ONLY_MARKED,
         defaultFieldSettings = {@FieldParam(name = FIELD_CONTAINER_PARAM, value = COLLAPSIBLE_CONTAINER)},
-        i18n = @I18nSettings(keyPreffix = "org.kie.workbench.common.dmn.api.definition.v1_1.OutputClauseUnaryTests"),
+        i18n = @I18nSettings(keyPreffix = "org.kie.workbench.common.dmn.api.definition.model.OutputClauseUnaryTests"),
         startElement = "text")
 public class OutputClauseUnaryTests extends DMNModelInstrumentedBase implements IsUnaryTests,
                                                                                 DMNPropertySet {
