@@ -9,16 +9,13 @@
   "content_scripts": [
     {
       "run_at": "document_end",
+      "css": ["resources/style.css"],
       "js": ["contentscript.js"],
       "matches": ["https://github.com/*"],
       "all_frames": true
     }
   ],
-  "web_accessible_resources": [
-    "envelope/*",
-    "editors/*",
-    "resources/*"
-  ],
+  "web_accessible_resources": ["envelope/*", "editors/*", "resources/*"],
   "permissions": [
     "webRequestBlocking",
     "webRequest",

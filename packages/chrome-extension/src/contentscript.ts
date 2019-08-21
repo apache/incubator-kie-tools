@@ -37,28 +37,9 @@ function init() {
     return;
   }
 
-  document.body.insertAdjacentHTML(
-    "afterbegin",
-    `<div 
-      id="kogito-iframe-fullscreen-container" 
-      style="width:100vw;height:100vh;position:absolute;top:0;z-index:999;border:none;overflow:hidden;">
-    </div>`
-  );
-
-  document.body.insertAdjacentHTML(
-    "beforeend",
-    `<div 
-      id="kogito-container">
-    </div>`
-  );
-
-  document.querySelector(".file")!.insertAdjacentHTML(
-    "afterend",
-    `<div 
-        id="kogito-iframe-container" 
-        style="margin:16px">
-    </div>`
-  );
+  document.body.insertAdjacentHTML("afterbegin", `<div id="kogito-iframe-fullscreen-container"></div>`);
+  document.body.insertAdjacentHTML("beforeend", `<div id="kogito-container"></div>`);
+  document.querySelector(".file")!.insertAdjacentHTML("afterend", `<div id="kogito-iframe-container"</div>`);
 
   ReactDOM.render(
     React.createElement(ChromeExtensionApp, {

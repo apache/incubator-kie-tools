@@ -51,9 +51,9 @@ export function ChromeExtensionApp(props: {
   useLayoutEffect(
     () => {
       if (!globalState.fullscreen) {
-        props.containers.iframeFullscreen.style.display = "none";
+        props.containers.iframeFullscreen.classList.add("hidden");
       } else {
-        props.containers.iframeFullscreen.style.display = "block";
+        props.containers.iframeFullscreen.classList.remove("hidden");
       }
     },
     [globalState]
@@ -62,11 +62,11 @@ export function ChromeExtensionApp(props: {
   useEffect(
     () => {
       if (globalState.textMode) {
-        props.githubEditor.style.display = "block";
-        props.containers.iframe.style.display = "none";
+        props.githubEditor.classList.remove("hidden");
+        props.containers.iframe.classList.add("hidden");
       } else {
-        props.githubEditor.style.display = "none";
-        props.containers.iframe.style.display = "block";
+        props.githubEditor.classList.add("hidden");
+        props.containers.iframe.classList.remove("hidden");
       }
     },
     [globalState]
@@ -96,22 +96,8 @@ function FullScreenToolbar() {
   };
 
   return (
-    <div
-      style={{
-        borderRadius: "0 0 10px 10px",
-        backgroundColor: "black",
-        width: "150px",
-        height: "25px",
-        position: "absolute",
-        left: 0,
-        right: 0,
-        margin: "0 auto",
-        zIndex: 1000,
-        boxShadow: "0px 0px 10px 1px black",
-        textAlign: "center"
-      }}
-    >
-      <a href={"#"} style={{ color: "#e2e2e2" }} onClick={exitFullScreen}>
+    <div id={"kogito-iframe-fullscreen-toolbar"}>
+      <a href={"#"} onClick={exitFullScreen}>
         Exit full screen
       </a>
     </div>
@@ -173,13 +159,8 @@ function KogitoEditorIframe(props: { openFileExtension: string; githubEditor: HT
       <iframe
         ref={iframeRef}
         id={"kogito-iframe"}
+        className={globalState.fullscreen ? "fullscreen" : "not-fullscreen"}
         src={chrome.extension.getURL("envelope/index.html")}
-        style={{
-          width: globalState.fullscreen ? "100vw" : "100%",
-          height: globalState.fullscreen ? "100vh" : "600px",
-          border: globalState.fullscreen ? "0" : "1px solid lightgray",
-          borderRadius: "4px"
-        }}
       />
     </>
   );
@@ -206,22 +187,17 @@ function Toolbar() {
   return (
     <>
       {!globalState.textMode && (
-        <button className={"btn btn-sm"} style={{ marginLeft: "4px", float: "right" }} onClick={goFullScreen}>
-          Fullscreen
+        <button className={"btn btn-sm kogito-button"} onClick={goFullScreen}>
+          Full Screen
         </button>
       )}
       {!globalState.textMode && (
-        <button
-          disabled={!globalState.textModeEnabled}
-          className={"btn btn-sm"}
-          style={{ marginLeft: "4px", float: "right" }}
-          onClick={seeAsText}
-        >
+        <button disabled={!globalState.textModeEnabled} className={"btn btn-sm kogito-button"} onClick={seeAsText}>
           See as text
         </button>
       )}
       {globalState.textMode && (
-        <button className={"btn btn-sm"} style={{ marginLeft: "4px", float: "right" }} onClick={seeAsKogito}>
+        <button className={"btn btn-sm kogito-button"} onClick={seeAsKogito}>
           See as custom editor
         </button>
       )}
