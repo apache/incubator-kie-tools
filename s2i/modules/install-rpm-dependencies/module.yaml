@@ -1,4 +1,5 @@
 schema_version: 1
+version: "0.3.0"
 name: install-rpm-dependencies
 
 execute:
