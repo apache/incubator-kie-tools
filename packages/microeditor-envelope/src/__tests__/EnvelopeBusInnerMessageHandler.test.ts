@@ -182,6 +182,11 @@ describe("send", () => {
     handler.notify_dirtyIndicatorChange(true);
     expect(sentMessages).toEqual([[{ type: EnvelopeBusMessageType.NOTIFY_DIRTY_INDICATOR_CHANGE, data: true }, "tgt-orgn"]]);
   });
+
+  test("notify ready", () => {
+    handler.notify_ready();
+    expect(sentMessages).toEqual([[{ type: EnvelopeBusMessageType.NOTIFY_READY, data: undefined }, "tgt-orgn"]]);
+  });
 });
 
 async function incomingMessage(message: any) {

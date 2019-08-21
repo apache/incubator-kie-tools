@@ -36,20 +36,20 @@ beforeEach(() => {
       pollInit: () => {
         initPollCount++;
       },
-      receive_languageRequest: () => {
+      receive_languageRequest() {
         receivedMessages.push("languageRequest");
       },
-      receive_contentRequest: () => {
+      receive_contentRequest() {
         receivedMessages.push("contentRequest");
       },
-      receive_contentResponse: (content: string) => {
+      receive_contentResponse(content: string) {
         receivedMessages.push("contentResponse_" + content);
       },
-      receive_dirtyIndicatorChange(isDirty: boolean): void {
+      receive_dirtyIndicatorChange(isDirty: boolean) {
         receivedMessages.push("dirtyIndicatorChange_" + isDirty);
       },
-      receive_ready(): void {
-        /**/
+      receive_ready() {
+        receivedMessages.push("ready");
       }
     })
   );
@@ -119,6 +119,11 @@ describe("receive", () => {
   test("dirty indicator change notification", () => {
     handler.receive({ type: EnvelopeBusMessageType.NOTIFY_DIRTY_INDICATOR_CHANGE, data: true });
     expect(receivedMessages).toEqual(["dirtyIndicatorChange_true"]);
+  });
+
+  test("ready notification", () => {
+    handler.receive({ type: EnvelopeBusMessageType.NOTIFY_READY, data: undefined });
+    expect(receivedMessages).toEqual(["ready"]);
   });
 });
 
