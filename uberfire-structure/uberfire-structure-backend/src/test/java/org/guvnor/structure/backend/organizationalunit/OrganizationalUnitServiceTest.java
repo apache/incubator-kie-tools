@@ -54,6 +54,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.io.IOService;
@@ -76,6 +77,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.anyBoolean;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.doAnswer;
@@ -152,6 +154,9 @@ public class OrganizationalUnitServiceTest {
 
     @Mock
     private Event<SpaceContributorsUpdatedEvent> spaceContributorsUpdatedEvent;
+
+    @Captor
+    private ArgumentCaptor<List<Contributor>> contributorsCapture;
 
     private OrganizationalUnitServiceImpl organizationalUnitService;
 
@@ -338,6 +343,33 @@ public class OrganizationalUnitServiceTest {
         verify(spaceConfigStorage).startBatch();
         verify(spaceConfigStorage).saveSpaceInfo(eq(spaceInfo));
         verify(spaceConfigStorage).endBatch();
+    }
+
+    @Test
+    public void testCheckChildrenRepositoryContributors() {
+        OrganizationalUnit organizationalUnit = new OrganizationalUnitImpl(SPACE_NAME, DEFAULT_GROUP_ID);
+        organizationalUnit.getContributors().add(new Contributor("contributor1", ContributorType.OWNER));
+        organizationalUnit.getContributors().add(new Contributor("contributor2", ContributorType.ADMIN));
+        organizationalUnit.getContributors().add(new Contributor("contributor3", ContributorType.CONTRIBUTOR));
+
+        Repository repository = mock(Repository.class);
+        final List<Contributor> repositoryContributors = new ArrayList<>();
+        repositoryContributors.add(new Contributor("contributor1", ContributorType.OWNER));
+        repositoryContributors.add(new Contributor("contributor2", ContributorType.CONTRIBUTOR));
+        repositoryContributors.add(new Contributor("contributor4", ContributorType.ADMIN));
+        doReturn(repositoryContributors).when(repository).getContributors();
+
+        doReturn(Collections.singletonList(repository)).when(repoService).getAllRepositories(any());
+
+        organizationalUnitService.checkChildrenRepositoryContributors(organizationalUnit);
+
+        verify(repoService).updateContributors(same(repository), contributorsCapture.capture());
+        final List<Contributor> updateRepositoryContributors = contributorsCapture.getValue();
+        assertEquals(2, updateRepositoryContributors.size());
+        assertEquals("contributor1", updateRepositoryContributors.get(0).getUsername());
+        assertEquals(ContributorType.OWNER, updateRepositoryContributors.get(0).getType());
+        assertEquals("contributor2", updateRepositoryContributors.get(1).getUsername());
+        assertEquals(ContributorType.CONTRIBUTOR, updateRepositoryContributors.get(1).getType());
     }
 
     @Test

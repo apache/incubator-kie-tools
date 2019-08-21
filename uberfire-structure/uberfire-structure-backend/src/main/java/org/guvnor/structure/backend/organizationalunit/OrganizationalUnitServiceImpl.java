@@ -371,13 +371,16 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
                 });
     }
 
-    private void checkChildrenRepositoryContributors(final OrganizationalUnit updatedOrganizationalUnit) {
+    void checkChildrenRepositoryContributors(final OrganizationalUnit updatedOrganizationalUnit) {
         repositoryService.getAllRepositories(updatedOrganizationalUnit.getSpace()).forEach(repository -> {
-            final List<Contributor> repositoryContributors = new ArrayList<>(repository.getContributors());
-            final boolean repositoryContributorsChanged = repositoryContributors.retainAll(updatedOrganizationalUnit.getContributors());
-            if (repositoryContributorsChanged) {
+            final List<Contributor> updatedRepositoryContributors = repository.getContributors().stream()
+                    .filter(contributor -> updatedOrganizationalUnit.getContributors().stream()
+                            .anyMatch(spaceContributor -> spaceContributor.getUsername().equals(contributor.getUsername())))
+                    .collect(Collectors.toList());
+
+            if (updatedRepositoryContributors.size() != repository.getContributors().size()) {
                 repositoryService.updateContributors(repository,
-                                                     repositoryContributors);
+                                                     updatedRepositoryContributors);
             }
         });
     }

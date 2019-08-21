@@ -296,6 +296,10 @@ public class WorkspaceProjectServiceImpl
         final Repository repository = repositoryService.getRepository(space,
                                                                       Paths.convert(repositoryRoot));
 
+        if (repository == null) {
+            throw new RuntimeException("Repository not found inside space " + space.getName() + " with path " + path.toURI() + " (root path " + repositoryRoot.toUri() + ")");
+        }
+
         final Branch branch = resolveBranch(repositoryRoot,
                                             repository);
 
@@ -316,6 +320,9 @@ public class WorkspaceProjectServiceImpl
 
     private Branch resolveBranch(final org.uberfire.java.nio.file.Path repositoryRoot,
                                  final Repository repository) {
+        if (!repository.getDefaultBranch().isPresent()) {
+            throw new RuntimeException("Default branch not found in repository " + repository.getAlias() + " with path " + repositoryRoot.toUri());
+        }
 
         final Branch defaultBranch = repository.getDefaultBranch().get();
 
