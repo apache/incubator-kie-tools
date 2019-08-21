@@ -1,6 +1,6 @@
 schema_version: 1
 name: graalvm
-version: "19.0.2"
+version: "19.1.1"
 
 envs:
   - name: "JAVA_HOME"
@@ -9,15 +9,15 @@ envs:
     value: "/usr/share/graalvm"
   #version without prefix ce
   - name: "GRAALVM_VERSION"
-    value: "19.0.2"
+    value: "19.1.1"
 
 artifacts:
-- name: graalvm-ce-linux-amd64-19.0.2.tar.gz
-  url: https://github.com/oracle/graal/releases/download/vm-19.0.2/graalvm-ce-linux-amd64-19.0.2.tar.gz
-  md5: fd4d5f28d3fe8391b93681a61f824f16
-- name: native-image-installable-svm-linux-amd64-19.0.2.jar
-  url: https://github.com/oracle/graal/releases/download/vm-19.0.2/native-image-installable-svm-linux-amd64-19.0.2.jar
-  md5: ef96ea375bd7838e3d4cccec9b0f4370
+- name: graalvm-ce-linux-amd64-19.1.1.tar.gz
+  url: https://github.com/oracle/graal/releases/download/vm-19.1.1/graalvm-ce-linux-amd64-19.1.1.tar.gz
+  md5: d3dd24358dc495f83df5cdd2c46bd876
+- name: native-image-installable-svm-linux-amd64-19.1.1.jar
+  url: https://github.com/oracle/graal/releases/download/vm-19.1.1/native-image-installable-svm-linux-amd64-19.1.1.jar
+  md5: 69bf7407dc5115e557901444b10ad03a
 
 execute:
 - script: configure
