@@ -230,10 +230,10 @@ public class NewContainerFormPresenter implements WizardPage {
 
     public boolean isArtifactSupportedByServer() {
         String version = view.getVersion().trim();
-        if (!version.isEmpty()) {
-            if(serverTemplate.getMode().equals(KieServerMode.PRODUCTION)) {
-                return !isSnapshot(version);
-            }
+        if (!version.isEmpty()
+        && serverTemplate != null
+        && serverTemplate.getMode().equals(KieServerMode.PRODUCTION)) {
+            return !isSnapshot(version);
         }
         return true;
     }
