@@ -34,6 +34,7 @@ import org.drools.workbench.models.testscenarios.shared.FixturesMap;
 import org.drools.workbench.models.testscenarios.shared.RetractFact;
 import org.drools.workbench.models.testscenarios.shared.VerifyFact;
 import org.drools.workbench.models.testscenarios.shared.VerifyRuleFired;
+import org.drools.workbench.models.testscenarios.shared.VerifyScorecardScore;
 
 /**
  * Some utility methods as the display logic is a bit hairy.
@@ -76,6 +77,8 @@ public class ScenarioHelper {
             } else if ( fixture instanceof VerifyRuleFired ) {
                 verifyRule.add( fixture );
             } else if ( fixture instanceof VerifyFact ) {
+                verifyFact.add( fixture );
+            } else if ( fixture instanceof VerifyScorecardScore) {
                 verifyFact.add( fixture );
             } else if ( fixture instanceof ExecutionTrace ) {
                 gatherFixtures( output,

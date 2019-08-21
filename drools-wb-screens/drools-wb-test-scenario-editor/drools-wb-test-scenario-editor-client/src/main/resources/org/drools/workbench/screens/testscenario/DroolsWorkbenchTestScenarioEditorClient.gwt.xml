@@ -36,5 +36,6 @@
   <inherits name="org.kie.workbench.common.workbench.KieDefaultWorkbenchClient"/>
 
   <inherits name="org.gwtbootstrap3.extras.select.SelectNoResources"/>
+  <inherits name="org.kie.workbench.common.services.refactoring.KieWorkbenchCommonRefactoringAPI"/>
 
 </module>

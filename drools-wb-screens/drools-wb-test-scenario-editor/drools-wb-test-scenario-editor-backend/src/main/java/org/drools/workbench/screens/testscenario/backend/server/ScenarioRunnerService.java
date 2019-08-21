@@ -193,6 +193,14 @@ public class ScenarioRunnerService
             } else {
                 ksession = sessionService.newKieSession(module,
                                                         ksessionName);
+
+                if (isPMMLScenario(module)) {
+                    /* There is an issue with Scorecards where the first run does not work.
+                    * This is because the tests only passes with clones, this forces the test run to use clones.
+                     */
+                    ksession = sessionService.newKieSession(module,
+                                                            ksessionName);
+                }
             }
         } catch (Exception e) {
             // If for one reason or another we can not load the ksession. Return null
@@ -200,5 +208,9 @@ public class ScenarioRunnerService
         }
 
         return ksession;
+    }
+
+    private boolean isPMMLScenario(KieModule module) {
+        return module.getModuleName() != null;
     }
 }

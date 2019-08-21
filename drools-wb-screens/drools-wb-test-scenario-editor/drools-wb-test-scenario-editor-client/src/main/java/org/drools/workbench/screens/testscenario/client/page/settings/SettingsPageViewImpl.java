@@ -47,12 +47,16 @@ public class SettingsPageViewImpl implements SettingsPage.SettingsPageView {
     @DataField("globals-configuration")
     private HTMLDivElement globalsConfigurationDiv;
 
+    @DataField("scorecard-selector")
+    private HTMLDivElement scoreCardSelectorDiv;
+
     private SettingsPage presenter;
 
     private ScenarioKSessionSelector scenarioKSessionSelector;
 
     private ConfigWidget configWidget;
 
+    private ScorecardSelector scorecardSelector;
     private ExecutionWidget executionWidget;
 
     @Inject
@@ -60,22 +64,27 @@ public class SettingsPageViewImpl implements SettingsPage.SettingsPageView {
                                 final HTMLDivElement sessionConfigurationDiv,
                                 final HTMLDivElement allowedRulesConfigurationDiv,
                                 final HTMLDivElement globalsConfigurationDiv,
+                                final HTMLDivElement scoreCardSelectorDiv,
                                 final Elemental2DomUtil elemental2DomUtil,
                                 final ScenarioKSessionSelector scenarioKSessionSelector,
                                 final ConfigWidget configWidget,
+                                final ScorecardSelector scorecardSelector,
                                 final ExecutionWidget executionWidget) {
         this.root = root;
         this.sessionConfigurationDiv = sessionConfigurationDiv;
         this.allowedRulesConfigurationDiv = allowedRulesConfigurationDiv;
         this.globalsConfigurationDiv = globalsConfigurationDiv;
+        this.scoreCardSelectorDiv = scoreCardSelectorDiv;
         this.elemental2DomUtil = elemental2DomUtil;
         this.scenarioKSessionSelector = scenarioKSessionSelector;
         this.configWidget = configWidget;
+        this.scorecardSelector = scorecardSelector;
         this.executionWidget = executionWidget;
 
         this.elemental2DomUtil.appendWidgetToElement(sessionConfigurationDiv, scenarioKSessionSelector.asWidget());
         this.elemental2DomUtil.appendWidgetToElement(allowedRulesConfigurationDiv, configWidget.asWidget());
         this.elemental2DomUtil.appendWidgetToElement(globalsConfigurationDiv, executionWidget.asWidget());
+        this.elemental2DomUtil.appendWidgetToElement(scoreCardSelectorDiv, scorecardSelector.asWidget());
     }
 
     @Override
@@ -94,5 +103,6 @@ public class SettingsPageViewImpl implements SettingsPage.SettingsPageView {
         configWidget.init(scenarioParentWidget, path, scenario);
         configWidget.show();
         executionWidget.show(ScenarioUtils.findExecutionTrace(scenario));
+        scorecardSelector.init(path, scenario);
     }
 }

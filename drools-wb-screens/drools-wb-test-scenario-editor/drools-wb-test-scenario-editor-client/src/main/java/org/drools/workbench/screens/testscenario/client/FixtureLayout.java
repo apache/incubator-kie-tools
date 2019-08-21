@@ -30,6 +30,7 @@ import org.drools.workbench.models.testscenarios.shared.FixturesMap;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.models.testscenarios.shared.VerifyFact;
 import org.drools.workbench.models.testscenarios.shared.VerifyRuleFired;
+import org.drools.workbench.models.testscenarios.shared.VerifyScorecardScore;
 import org.drools.workbench.screens.testscenario.client.delete.DeleteExecutionTraceButton;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.backend.vfs.Path;
@@ -157,7 +158,7 @@ public class FixtureLayout
     private void addFixtureList(FixtureList fixturesList) {
         Fixture first = fixturesList.get(0);
 
-        if (first instanceof VerifyFact) {
+        if (first instanceof VerifyFact || first instanceof VerifyScorecardScore) {
             setWidget(layoutRow,
                       0,
                       scenarioWidgetComponentCreator.createVerifyFactsPanel(listExecutionTrace,

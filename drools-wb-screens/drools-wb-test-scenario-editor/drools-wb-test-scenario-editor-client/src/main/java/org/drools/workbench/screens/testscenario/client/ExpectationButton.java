@@ -25,6 +25,7 @@ import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.models.testscenarios.shared.VerifyFact;
 import org.drools.workbench.models.testscenarios.shared.VerifyField;
 import org.drools.workbench.models.testscenarios.shared.VerifyRuleFired;
+import org.drools.workbench.models.testscenarios.shared.VerifyScorecardScore;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.drools.workbench.screens.testscenario.client.resources.images.TestScenarioAltedImages;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
@@ -85,6 +86,27 @@ public class ExpectationButton
             addAttribute( TestScenarioConstants.INSTANCE.AnyFactThatMatches(),
                           new AnyFactThatMatchesPanel() );
 
+            if (scenario.getModelName() != null) {
+                addAttribute(TestScenarioConstants.INSTANCE.ScoreCardScore(),
+                             new ScoreCardScorePanel());
+            }
+        }
+
+        class ScoreCardScorePanel extends BasePanel<Widget> {
+
+            @Override
+            public Widget getWidget() {
+                return null; // Not used.
+            }
+
+            protected void initWidgets() {
+                add(add);
+            }
+
+            @Override
+            public Fixture getFixture() {
+                return new VerifyScorecardScore();
+            }
         }
 
         class AnyFactThatMatchesPanel extends ListBoxBasePanel {

@@ -86,6 +86,11 @@ public class GuidedScoreCardIndexVisitor extends ResourceReferenceCollector {
             addSharedReference(ruleFlowGroup,
                                PartType.RULEFLOW_GROUP);
         }
+        String modelName = model.getName();
+        if (modelName != null && !modelName.isEmpty()) {
+            addSharedReference(modelName,
+                               PartType.SCORECARD_MODEL_NAME);
+        }
 
         Imports imports = model.getImports();
         if (imports != null) {
