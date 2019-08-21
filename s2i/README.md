@@ -5,50 +5,49 @@ of builder images to perform the build and to run the result binaries.
 
 Images are grouped by the runtime that will run the binaries and the OS level
 
-## Centos 7
 
 ## Quarkus
 
-### kogito-quarkus-centos-s2i
+### kogito-quarkus-ubi8-s2i
 
 Builder image that is responsible for building the project
 with Apache Maven and generate native image using GraalVM/SubstrateVM
 
-Image location: quay.io/kiegroup/kogito-quarkus-centos-s2i:latest
+Image location: quay.io/kiegroup/kogito-quarkus-ubi8-s2i:latest
 
-For more details have a look at [README.md](modules/kogito-quarkus-centos-s2i/README.md)
+For more details have a look at [README.md](modules/kogito-quarkus-ubi8-s2i/README.md)
 
-### kogito-quarkus-centos
+### kogito-quarkus-ubi8
 
 Runtime image that is responsible for just running the binaries taken from the
 builder image. That approach is giving small and compact image that does not
 not carry on any of the build tools or artefacts (like local maven repository).
 
-Image location: quay.io/kiegroup/kogito-quarkus-centos:latest
+Image location: quay.io/kiegroup/kogito-quarkus-ubi8:latest
 
-For more details have a look at [README.md](kogito-quarkus-centos/README.md)
+For more details have a look at [README.md](kogito-quarkus-ubi8/README.md)
 
 ## SpringBoot
 
-### kogito-springboot-centos-s2i
+### kogito-springboot-ubi8-s2i
 
 Builder image that is responsible for building the project
 with Apache Maven and generate fat jar.
 
-Image location: quay.io/kiegroup/kogito-springboot-centos-s2i:latest
+Image location: quay.io/kiegroup/kogito-springboot-ubi8-s2i:latest
 
-For more details have a look at [README.md](kogito-springboot-centos-s2i/README.md)
+For more details have a look at [README.md](kogito-springboot-ubi8-s2i/README.md)
 
-### kogito-springboot-centos
+### kogito-springboot-ubi8
 
 Runtime image that is responsible for just running the fat jar taken from the
 builder image. It has JRE installed on the container to allow java executable.
 That approach is giving small and compact image that does not
 not carry on any of the build tools or artefacts (like local maven repository).
 
-Image location: quay.io/kiegroup/kogito-springboot-centos:latest
+Image location: quay.io/kiegroup/kogito-springboot-ubi8:latest
 
-For more details have a look at [README.md](kogito-springboot-centos/README.md)
+For more details have a look at [README.md](kogito-springboot-ubi8/README.md)
 
 # Supported source structure
 
@@ -88,7 +87,7 @@ Best way is to use maven archetypes to generate project structure (same archetyp
 Once the images are built and imported into registry (docker hub or internal OpenShift registry)
 new applications can be build and deployed with this few steps
 
-`oc new-build quay.io/kiegroup/kogito-quarkus-centos-s2i~https://github.com/user/project --name=builder-app-name`
+`oc new-build quay.io/kiegroup/kogito-quarkus-ubi8-s2i~https://github.com/user/project --name=builder-app-name`
 
 Modify accordingly following
 - repository is the docker repository the images are available in (could be OpenShift project or docker hub user)
@@ -100,7 +99,7 @@ Modify accordingly following
 
 Once the build is finished, create another build config to produce runtime image
 
-`oc new-build --name app-name --source-image=builder-app-name --source-image-path=/home/kogito/bin:. --image-stream=kogito-quarkus-centos`
+`oc new-build --name app-name --source-image=builder-app-name --source-image-path=/home/kogito/bin:. --image-stream=kogito-quarkus-ubi8`
 
 Modify accordingly following
 - app-name is the final name of the image that will be deployed
@@ -171,7 +170,7 @@ $ make
 
 To build a single image, use `make build image-name`, example:
 ```bash
-$ make kogito-quarkus-centos
+$ make kogito-quarkus-ubi8
 ```
 
 Testing the images (WIP):
@@ -204,7 +203,7 @@ $ docker login -u developer -p $(oc whoami -t) $(minishift openshift registry)
 
 Tag the built image, example
 ```bash
-$ docker tag {IMAGE_ID} $(minishift openshift registry)/{PROJECT}/kogito-quarkus-centos
+$ docker tag {IMAGE_ID} $(minishift openshift registry)/{PROJECT}/kogito-quarkus-ubi8
 ```
 
 Modify accordingly

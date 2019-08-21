@@ -1,4 +1,5 @@
 schema_version: 1
+version: "0.3.0"
 name: add-kogito-user
 execute:
 - script: add-user
@@ -6,3 +7,6 @@ execute:
 envs:
 - name: "KOGITO_HOME"
   value: "/home/kogito"
+- name: "USER"
+  value: "kogito"
+

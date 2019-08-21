@@ -1,0 +1,22 @@
+schema_version: 1
+
+name: "quay.io/kiegroup/kogito-springboot-ubi8-s2i"
+description: "Platform for building Kogito based on SpringBoot"
+
+labels:
+- name: "io.k8s.description"
+  value: "Platform for building Kogito based on SpringBoot"
+- name: "io.k8s.display-name"
+  value: "Kogito based on SpringBoot"
+- name: "io.openshift.tags"
+  value: "builder,kogito,springboot"
+
+modules:
+  install:
+  - name: install-rpm-dependencies
+  - name: add-kogito-user
+  - name: maven
+    version: "3.6.0"
+  - name: java-openjdk
+    version: "1.8.0"
+  - name: kogito-springboot-ubi8-s2i

@@ -1,0 +1,28 @@
+schema_version: 1
+
+name: "quay.io/kiegroup/kogito-quarkus-ubi8-s2i"
+description: "Platform for building Kogito based on Quarkus"
+
+labels:
+- name: "io.k8s.description"
+  value: "Platform for building Kogito based on Quarkus"
+- name: "io.k8s.display-name"
+  value: "Kogito based on Quarkus"
+- name: "io.openshift.tags"
+  value: "builder,kogito,quarkus"
+
+modules:
+  install:
+  - name: install-rpm-dependencies
+  - name: add-kogito-user
+  - name: graalvm
+    version: "19.1.1"
+  - name: maven
+    version: "3.6.0"
+  - name: kogito-quarkus-ubi8-s2i
+
+packages:
+  install:
+  - gcc
+  - glibc-devel
+  - zlib-devel

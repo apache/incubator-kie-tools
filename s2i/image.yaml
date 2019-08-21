@@ -1,8 +1,8 @@
 schema_version: 1
 
 name: "kogito-image-real-name-on-overrides-file"
-version: "0.2.0"
-from: "centos:latest"
+version: "0.3.0"
+from: "registry.redhat.io/ubi8-minimal:latest"
 
 labels:
 - name: "maintainer"
@@ -19,9 +19,7 @@ modules:
   - path: modules
 
 packages:
-  repositories:
-  - name: scl
-    rpm: centos-release-scl
+  manager: microdnf
 
 run:
   user: 1001

@@ -1,0 +1,6 @@
+schema_version: 1
+version: "0.3.0"
+name: kogito-quarkus-ubi8
+execute:
+- script: configure
+

@@ -1,4 +1,0 @@
-schema_version: 1
-name: kogito-springboot-centos-s2i
-execute:
-  - script: configure

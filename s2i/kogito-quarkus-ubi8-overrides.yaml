@@ -1,0 +1,29 @@
+schema_version: 1
+
+name: "quay.io/kiegroup/kogito-quarkus-ubi8"
+description: "Runtime image for Kogito based on Quarkus native image"
+
+labels:
+- name: "io.k8s.description"
+  value: "Runtime image for Kogito based on Quarkus native image"
+- name: "io.k8s.display-name"
+  value: "Kogito based on Quarkus native image"
+- name: "io.openshift.tags"
+  value: "builder,runtime,kogito,quarkus"
+- name: "io.openshift.s2i.assemble-input-files"
+  value: "/home/kogito/bin"
+
+ports:
+- value: 8080
+
+modules:
+  install:
+  - name: install-rpm-dependencies
+  - name: add-kogito-user
+  - name: kogito-quarkus-ubi8
+
+
+## s2i build . quay.io/kiegroup/kogito-quarkus-ubi8-s2i:0.3.0 kogitotest:10.0 --runtime-image quay.io/kiegroup/kogito-quarkus-ubi8:0.3.0
+run:
+  workdir: "/home/kogito/"
+
