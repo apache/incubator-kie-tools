@@ -60,7 +60,7 @@ export class KogitoEditorsExtension {
 
   public startReplacingTextEditorsByKogitoEditorsAsTheyOpenIfLanguageIsSupported() {
     this.context.subscriptions.push(
-      vscode.window.onDidChangeActiveTextEditor((textEditor?: vscode.TextEditor) => {
+      vscode.window.onDidChangeActiveTextEditor(async (textEditor?: vscode.TextEditor) => {
         if (!textEditor) {
           return;
         }
@@ -73,19 +73,14 @@ export class KogitoEditorsExtension {
         const openKogitoEditor = this.editorStore.get(path);
 
         if (!openKogitoEditor) {
-          this.closeActiveTextEditor().then(() => this.editorFactory.openNew(path));
+          await this.closeActiveTextEditor();
+          this.editorFactory.openNew(path);
           return;
         }
 
         if (textEditor.viewColumn === openKogitoEditor.viewColumn()) {
-          this.closeActiveTextEditor();
-          //FIXME: Focus on existing KogitoEditor
-          //
-          // commented because this line below causes the webview content to reload and
-          // this may result in data loss.
-          // so far that's the best we've got and we'll not use it.
-          //
-          // (openEditor as any).panel.reveal(openEditor.viewColumn(), false);
+          await this.closeActiveTextEditor();
+          openKogitoEditor.focus();
           return;
         }
 

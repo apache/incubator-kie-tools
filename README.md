@@ -68,6 +68,12 @@ yarn run build:fast # skips lint and unit tests
 
 > Final artifacts will be on `packages/*/dist` directories.
 
+Known issues
+--------------------
+- [KOGITO-155](https://issues.jboss.org/browse/KOGITO-155) Flicker when opening or restoring DMN/BPMN editors. 
+- [KOGITO-156](https://issues.jboss.org/browse/KOGITO-156) Unable to detect 'dirty' state on DMN/BPMN editors. This means that when closing an editor with changes, we can't show a warning popup to remind the user to save it before closing.
+- [KOGITO-157](https://issues.jboss.org/browse/KOGITO-157) Copy/paste diagram parts between DMN/BPMN editors.
+
 
 Contributing to Kogito
 --------------------
