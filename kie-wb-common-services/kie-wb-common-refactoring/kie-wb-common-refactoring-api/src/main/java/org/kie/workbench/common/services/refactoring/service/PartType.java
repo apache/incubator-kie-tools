@@ -121,6 +121,15 @@ public enum PartType {
     FORM_FIELD("formfield"),
 
     /*
+     * Scorecards
+     */
+
+    /**
+     * A form field
+     */
+    SCORECARD_MODEL_NAME("scorecardModelName"),
+
+    /*
      * Paths
      */
 
