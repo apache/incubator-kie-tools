@@ -19,6 +19,7 @@ package org.kie.workbench.common.dmn.client.editors.types.listview;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import elemental2.dom.HTMLElement;
@@ -421,6 +422,7 @@ public class DataTypeListItemTest {
         doReturn(updatedDataTypes).when(listItem).persist(dataType);
         doReturn(dataType).when(listItem).getDataType();
         doReturn(newDataTypeHash).when(listItem).getNewDataTypeHash(dataType, referenceDataTypeHash);
+        doNothing().when(listItem).insertNewFieldIfDataTypeIsStructure(newDataTypeHash);
         when(dataTypeList.calculateParentHash(dataType)).thenReturn(referenceDataTypeHash);
 
         listItem.doSaveAndCloseEditMode(dataType).execute();
@@ -435,13 +437,14 @@ public class DataTypeListItemTest {
     @Test
     public void testInsertNewFieldIfDataTypeIsStructureWhenDataTypeIsStructure() {
 
+        final DataTypeListItem newListItem = mock(DataTypeListItem.class);
         final DataType dataType = mock(DataType.class);
         final String hash = "hash";
 
-        when(dataTypeSelectComponent.getValue()).thenReturn(structure);
-        when(dataType.getSubDataTypes()).thenReturn(emptyList());
-        doReturn(dataType).when(listItem).getDataType();
-        doNothing().when(listItem).insertNestedField();
+        when(newListItem.getDataType()).thenReturn(dataType);
+        when(dataType.hasSubDataTypes()).thenReturn(false);
+        when(newListItem.isStructureType()).thenReturn(true);
+        when(dataTypeList.findItemByDataTypeHash(hash)).thenReturn(Optional.of(newListItem));
 
         listItem.insertNewFieldIfDataTypeIsStructure(hash);
 
@@ -451,12 +454,14 @@ public class DataTypeListItemTest {
     @Test
     public void testInsertNewFieldIfDataTypeIsStructureWhenDataTypeIsStructureButHasFields() {
 
+        final DataTypeListItem newListItem = mock(DataTypeListItem.class);
         final DataType dataType = mock(DataType.class);
         final String hash = "hash";
 
-        when(dataTypeSelectComponent.getValue()).thenReturn(structure);
-        when(dataType.getSubDataTypes()).thenReturn(asList(mock(DataType.class), mock(DataType.class)));
-        doReturn(dataType).when(listItem).getDataType();
+        when(newListItem.getDataType()).thenReturn(dataType);
+        when(dataType.hasSubDataTypes()).thenReturn(true);
+        when(newListItem.isStructureType()).thenReturn(true);
+        when(dataTypeList.findItemByDataTypeHash(hash)).thenReturn(Optional.of(newListItem));
 
         listItem.insertNewFieldIfDataTypeIsStructure(hash);
 
@@ -466,12 +471,14 @@ public class DataTypeListItemTest {
     @Test
     public void testInsertNewFieldIfDataTypeIsStructureWhenDataTypeIsNotStructure() {
 
+        final DataTypeListItem newListItem = mock(DataTypeListItem.class);
         final DataType dataType = mock(DataType.class);
         final String hash = "hash";
 
-        when(dataTypeSelectComponent.getValue()).thenReturn("String");
-        when(dataType.getSubDataTypes()).thenReturn(emptyList());
-        doReturn(dataType).when(listItem).getDataType();
+        when(newListItem.getDataType()).thenReturn(dataType);
+        when(dataType.hasSubDataTypes()).thenReturn(false);
+        when(newListItem.isStructureType()).thenReturn(false);
+        when(dataTypeList.findItemByDataTypeHash(hash)).thenReturn(Optional.of(newListItem));
 
         listItem.insertNewFieldIfDataTypeIsStructure(hash);
 

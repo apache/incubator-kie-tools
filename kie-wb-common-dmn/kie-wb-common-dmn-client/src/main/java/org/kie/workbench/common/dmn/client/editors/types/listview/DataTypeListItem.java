@@ -278,9 +278,14 @@ public class DataTypeListItem {
     }
 
     void insertNewFieldIfDataTypeIsStructure(final String hash) {
-        if (isStructureType() && getDataType().getSubDataTypes().isEmpty()) {
-            dataTypeList.insertNestedField(hash);
-        }
+
+        final Optional<DataTypeListItem> updatedItem = dataTypeList.findItemByDataTypeHash(hash);
+
+        updatedItem.ifPresent(item -> {
+            if (item.isStructureType() && !item.getDataType().hasSubDataTypes()) {
+                dataTypeList.insertNestedField(hash);
+            }
+        });
     }
 
     List<DataType> persist(final DataType dataType) {
@@ -524,7 +529,7 @@ public class DataTypeListItem {
         return false;
     }
 
-    private boolean isStructureType() {
+    boolean isStructureType() {
         return Objects.equals(dataTypeManager.structure(), getType());
     }
 
