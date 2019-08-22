@@ -21,7 +21,7 @@ import { KogitoLanguageData } from "../common/KogitoLanguageData";
 
 const dmnGwtModuleName = "org.kie.workbench.common.dmn.showcase.DMNShowcase";
 const dmnDistPath = `dist/webview/editors/dmn/`;
-const bpmnGwtModuleName = "org.kie.workbench.common.stunner.standalone.StunnerStandaloneShowcase";
+const bpmnGwtModuleName = "org.kie.workbench.common.stunner.kogito.KogitoBPMNEditor";
 const bpmnDistPath = `dist/webview/editors/bpmn/`;
 
 export class KogitoRouter implements Router<KogitoLanguageData> {
@@ -59,7 +59,7 @@ export class KogitoRouter implements Router<KogitoLanguageData> {
         "bpmn",
         {
           type: "gwt",
-          editorId: "BPMNStandaloneDiagramEditor",
+          editorId: "BPMNDiagramEditor",
           gwtModuleName: bpmnGwtModuleName,
           erraiDomain: "",
           resources: [
