@@ -23,9 +23,11 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import com.google.gwtmockito.WithClassesToStub;
+import org.assertj.core.api.Assertions;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.CompositeFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
+import org.drools.workbench.screens.guided.rule.client.widget.EnumDropDown;
 import org.guvnor.common.services.workingset.client.WorkingSetManager;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.junit.Before;
@@ -154,6 +156,29 @@ public class ConstraintValueEditorTest {
         editor.initDropDownData();
 
         verify(oracle).getEnums(eq(factType), eq(factField), anyMap());
+    }
+
+    @Test
+    public void testInitDropDown_BooleanFieldType() {
+        final String factType = "Car";
+        final String factField = "cheap";
+
+        // reset oracle due to calls in @Before method
+        reset(oracle);
+
+        when(oracle.getFieldType(factType, factField)).thenReturn(DataType.TYPE_BOOLEAN);
+
+        final SingleFieldConstraint singleFieldConstraint = new SingleFieldConstraint() {{
+            setFactType(factType);
+            setFieldName(factField);
+            setConstraintValueType(TYPE_LITERAL);
+        }};
+        final ConstraintValueEditor editor = spy(createEditor(singleFieldConstraint));
+
+        // EnumDropDown should be created because no enumeration loaded and field is Boolean type
+        editor.initDropDownData();
+        editor.refresh();
+        Assertions.assertThat(editor.getConstraintWidget()).isInstanceOf(EnumDropDown.class);
     }
 
     @Test

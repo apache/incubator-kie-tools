@@ -85,22 +85,18 @@ public class ConstraintValueEditor extends Composite {
 
     private static final String DATE_FORMAT = ApplicationPreferences.getDroolsDateFormat();
     private static final DateTimeFormat DATE_FORMATTER = DateTimeFormat.getFormat(DATE_FORMAT);
-
-    private ConstraintValueEditorHelper helper;
-    private WorkingSetManager workingSetManager = null;
-
-    private String factType;
-    private CompositeFieldConstraint constraintList;
-    private String fieldName;
-    private String fieldType;
-
     private final AsyncPackageDataModelOracle oracle;
     private final BaseSingleFieldConstraint constraint;
     private final Panel panel = new SimplePanel();
     private final RuleModel model;
     private final RuleModeller modeller;
     private final EventBus eventBus;
-
+    private ConstraintValueEditorHelper helper;
+    private WorkingSetManager workingSetManager = null;
+    private String factType;
+    private CompositeFieldConstraint constraintList;
+    private String fieldName;
+    private String fieldType;
     private DropDownData dropDownData;
     private boolean readOnly;
 
@@ -726,29 +722,29 @@ public class ConstraintValueEditor extends Composite {
     }
 
     void initDropDownData() {
-        //Set applicable flags and reference data depending upon type
-        if (DataType.TYPE_BOOLEAN.equals(this.fieldType)) {
-            this.isDropDownDataEnum = false;
-            this.dropDownData = DropDownData.create(new String[]{"true", "false"});
-        } else {
-            this.isDropDownDataEnum = true;
 
-            final Map<String, String> currentValueMap = new HashMap<String, String>();
+        this.isDropDownDataEnum = true;
 
-            if (constraintList != null && constraintList.getConstraints() != null) {
-                for (FieldConstraint con : constraintList.getConstraints()) {
-                    if (con instanceof SingleFieldConstraint) {
-                        SingleFieldConstraint sfc = (SingleFieldConstraint) con;
-                        String fieldName = sfc.getFieldName();
-                        currentValueMap.put(fieldName,
-                                            sfc.getValue());
-                    }
+        final Map<String, String> currentValueMap = new HashMap<String, String>();
+
+        if (constraintList != null && constraintList.getConstraints() != null) {
+            for (FieldConstraint con : constraintList.getConstraints()) {
+                if (con instanceof SingleFieldConstraint) {
+                    SingleFieldConstraint sfc = (SingleFieldConstraint) con;
+                    String fieldName = sfc.getFieldName();
+                    currentValueMap.put(fieldName,
+                                        sfc.getValue());
                 }
             }
+        }
 
-            this.dropDownData = oracle.getEnums(this.factType,
-                                                fieldName,
-                                                currentValueMap);
+        this.dropDownData = oracle.getEnums(this.factType,
+                                            fieldName,
+                                            currentValueMap);
+
+        if (DataType.TYPE_BOOLEAN.equals(this.fieldType) && this.dropDownData == null) {
+            this.isDropDownDataEnum = false;
+            this.dropDownData = DropDownData.create(new String[]{"true", "false"});
         }
     }
 

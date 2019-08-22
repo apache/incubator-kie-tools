@@ -36,6 +36,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.Do
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.EnumMultiSelectUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.EnumSingleSelectBigDecimalUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.EnumSingleSelectBigIntegerUiColumn;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.EnumSingleSelectBooleanUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.EnumSingleSelectByteUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.EnumSingleSelectDateUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.EnumSingleSelectDoubleUiColumn;
@@ -54,6 +55,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.Va
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.datepicker.DatePickerSingletonDOMElementFactory;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.listbox.ListBoxBigDecimalSingletonDOMElementFactory;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.listbox.ListBoxBigIntegerSingletonDOMElementFactory;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.listbox.ListBoxBooleanSingletonDOMElementFactory;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.listbox.ListBoxByteSingletonDOMElementFactory;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.listbox.ListBoxDateSingletonDOMElementFactory;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.listbox.ListBoxDoubleSingletonDOMElementFactory;
@@ -66,6 +68,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.do
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.listbox.ListBoxStringSingletonDOMElementFactory;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.textbox.TextBoxBigDecimalSingletonDOMElementFactory;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.textbox.TextBoxBigIntegerSingletonDOMElementFactory;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.textbox.TextBoxBooleanSingletonDOMElementFactory;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.textbox.TextBoxByteSingletonDOMElementFactory;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.textbox.TextBoxDoubleSingletonDOMElementFactory;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.textbox.TextBoxFloatSingletonDOMElementFactory;
@@ -500,13 +503,21 @@ public abstract class BaseColumnConverterImpl implements BaseColumnConverter {
                                                      factType,
                                                      factField);
         } else if (dataType.equals(DataType.DataTypes.BOOLEAN)) {
-            return newBooleanColumn(makeHeaderMetaData(column),
-                                    Math.max(column.getWidth(),
-                                             DEFAULT_COLUMN_WIDTH),
-                                    true,
-                                    !column.isHideColumn(),
-                                    access,
-                                    gridWidget);
+            return new EnumSingleSelectBooleanUiColumn(makeHeaderMetaData(column),
+                                                       Math.max(column.getWidth(),
+                                                                DEFAULT_COLUMN_WIDTH),
+                                                       true,
+                                                       !column.isHideColumn(),
+                                                       access,
+                                                       new ListBoxBooleanSingletonDOMElementFactory(gridPanel,
+                                                                                                    gridLayer,
+                                                                                                    gridWidget),
+                                                       new TextBoxBooleanSingletonDOMElementFactory(gridPanel,
+                                                                                                    gridLayer,
+                                                                                                    gridWidget),
+                                                       presenter,
+                                                       factType,
+                                                       factField);
         } else if (dataType.equals(DataType.DataTypes.DATE)) {
             return new EnumSingleSelectDateUiColumn(makeHeaderMetaData(column),
                                                     Math.max(column.getWidth(),
