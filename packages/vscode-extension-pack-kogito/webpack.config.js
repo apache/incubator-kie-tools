@@ -77,8 +77,8 @@ module.exports = [
     },
     plugins: [
       new CopyWebpackPlugin([
-        { from: "../unpacked-kie-editors/dmn", to: "webview/editors/dmn" },
-        { from: "../unpacked-kie-editors/bpmn", to: "webview/editors/bpmn" }
+        { from: "../unpacked-gwt-editors/dmn", to: "webview/editors/dmn" },
+        { from: "../unpacked-gwt-editors/bpmn", to: "webview/editors/bpmn" }
       ])
     ]
   }
