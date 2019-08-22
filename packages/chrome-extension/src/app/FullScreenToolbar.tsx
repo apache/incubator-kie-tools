@@ -14,15 +14,22 @@
  * limitations under the License.
  */
 
-export * from "./GwtLanguageData";
+import {useContext} from "react";
+import {GlobalContext} from "./GlobalContext";
+import * as React from "react";
 
-export const gwtEditors = {
-  dmn: {
-    id: "DMNDiagramEditor",
-    name: "org.kie.workbench.common.dmn.showcase.DMNShowcase"
-  },
-  bpmn: {
-    id: "BPMNDiagramEditor",
-    name: "org.kie.workbench.common.stunner.kogito.KogitoBPMNEditor"
-  }
-};
+export function FullScreenToolbar() {
+    const [globalState, setGlobalState] = useContext(GlobalContext);
+
+    const exitFullScreen = () => {
+        setGlobalState({ ...globalState, fullscreen: false, textModeEnabled: false });
+    };
+
+    return (
+        <div id={"kogito-iframe-fullscreen-toolbar"}>
+            <a href={"#"} onClick={exitFullScreen}>
+                Exit full screen
+            </a>
+        </div>
+    );
+}

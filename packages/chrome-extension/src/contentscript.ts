@@ -17,7 +17,7 @@
 import { ChromeRouter } from "./app/ChromeRouter";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { ChromeExtensionApp } from "./app/Components";
+import { ChromeExtensionApp } from "./app/ChromeExtensionApp";
 import { findContainers } from "./app/utils";
 import { GwtEditorChromeExtensionRoutes } from "./app/GwtEditorChromeExtensionRoutes";
 

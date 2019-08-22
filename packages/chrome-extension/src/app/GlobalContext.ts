@@ -14,15 +14,23 @@
  * limitations under the License.
  */
 
-export * from "./GwtLanguageData";
+import * as React from "react";
 
-export const gwtEditors = {
-  dmn: {
-    id: "DMNDiagramEditor",
-    name: "org.kie.workbench.common.dmn.showcase.DMNShowcase"
+export interface GlobalContextType {
+  fullscreen: boolean;
+  textMode: boolean;
+  textModeEnabled: boolean;
+}
+
+export const GlobalContext = React.createContext<
+  [GlobalContextType, <K extends keyof GlobalContextType>(g: Pick<GlobalContextType, K>) => void]
+>([
+  {
+    fullscreen: false,
+    textMode: false,
+    textModeEnabled: false
   },
-  bpmn: {
-    id: "BPMNDiagramEditor",
-    name: "org.kie.workbench.common.stunner.kogito.KogitoBPMNEditor"
+  <K extends keyof GlobalContextType>(g: Pick<GlobalContextType, K>) => {
+    /**/
   }
-};
+]);

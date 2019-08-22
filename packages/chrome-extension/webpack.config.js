@@ -40,8 +40,8 @@ module.exports = {
       { from: "./static/envelope", to: "./envelope" }
     ]),
     new CopyPlugin([
-      { from: "../unpacked-kie-editors/dmn", to: "./editors/dmn" },
-      { from: "../unpacked-kie-editors/bpmn", to: "./editors/bpmn" }
+      { from: "../unpacked-gwt-editors/dmn", to: "./editors/dmn" },
+      { from: "../unpacked-gwt-editors/bpmn", to: "./editors/bpmn" }
     ])
   ],
   module: {
