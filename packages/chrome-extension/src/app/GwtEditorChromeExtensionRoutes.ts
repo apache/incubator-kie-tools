@@ -17,8 +17,8 @@
 import { Router, Routes } from "appformer-js-core";
 import { gwtEditors, GwtLanguageData } from "appformer-js-gwt-editors-common";
 
-const dmnLocation = "editors/dmn";
-const bpmnLocation = "editors/bpmn";
+const dmnLocation = "dmn";
+const bpmnLocation = "bpmn";
 
 export class GwtEditorChromeExtensionRoutes implements Routes {
   public getRoutes(router: Router) {

@@ -106,7 +106,7 @@ function FullScreenToolbar() {
 
 function KogitoEditorIframe(props: { openFileExtension: string; githubEditor: HTMLElement; router: Router }) {
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
-  const targetOrigin = chrome.extension.getURL("");
+  const targetOrigin = "https://raw.githubusercontent.com";
 
   const [globalState, setGlobalState] = useContext(GlobalContext);
 
@@ -160,7 +160,7 @@ function KogitoEditorIframe(props: { openFileExtension: string; githubEditor: HT
         ref={iframeRef}
         id={"kogito-iframe"}
         className={globalState.fullscreen ? "fullscreen" : "not-fullscreen"}
-        src={chrome.extension.getURL("envelope/index.html")}
+        src={props.router.getRelativePathTo("envelope/index.html")}
       />
     </>
   );

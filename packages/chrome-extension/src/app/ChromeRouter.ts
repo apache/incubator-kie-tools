@@ -30,7 +30,7 @@ export class ChromeRouter implements Router {
   }
 
   public getRelativePathTo(uri: string): string {
-    return chrome.extension.getURL(uri);
+    return "https://raw.githubusercontent.com/tiagobento/kogito-tooling-gwt-editors/master/" + uri;
   }
 
   public getLanguageData(fileExtension: string) {

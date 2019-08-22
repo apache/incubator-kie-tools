@@ -11,7 +11,7 @@
       "run_at": "document_end",
       "css": ["resources/style.css"],
       "js": ["contentscript.js"],
-      "matches": ["https://github.com/*"],
+      "matches": ["https://github.com/*", "https://raw.githubusercontent.com/*"],
       "all_frames": true
     }
   ],
@@ -25,6 +25,7 @@
     "declarativeContent",
     "background"
   ],
+  "content_security_policy": "script-src 'self' https://raw.githubusercontent.com; object-src 'self'",
   "background": {
     "scripts": ["background.js"],
     "persistent": true

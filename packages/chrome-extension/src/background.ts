@@ -20,6 +20,8 @@ chrome.runtime.onInstalled.addListener(() => {
   console.log("Kogito Tooling extension is running.");
 });
 
+console.info("oi");
+
 function removeHeader(headers: HttpHeader[], name: string) {
   for (let i = 0; i < headers.length; i++) {
     if (headers[i].name.toLowerCase() === name) {
@@ -30,11 +32,36 @@ function removeHeader(headers: HttpHeader[], name: string) {
   }
 }
 
+console.info("adding listener");
 chrome.webRequest.onHeadersReceived.addListener(
-    details => {
-      removeHeader(details.responseHeaders!, "content-security-policy");
-      return { responseHeaders: details.responseHeaders };
-    },
+  details => {
+    if (details.url.endsWith(".js")) {
+    console.info("JS");
+      const header = details.responseHeaders!.find(e => e.name.toLowerCase() === "content-type")!;
+      header.value = "text/javascript";
+    } else if (details.url.endsWith(".css")) {
+    console.info("CSS");
+      const header = details.responseHeaders!.find(e => e.name.toLowerCase() === "content-type")!;
+      header.value = "text/css";
+    } else if (details.url.endsWith(".html")) {
+    console.info("HTML");
+      const header = details.responseHeaders!.find(e => e.name.toLowerCase() === "x-frame-options")!;
+      header.value = "allowall";
+    const header2 = details.responseHeaders!.find(e => e.name.toLowerCase() === "content-type")!;
+    header2.value = "text/html";
+    }
+    return { responseHeaders: details.responseHeaders };
+  },
+  { urls: ["https://raw.githubusercontent.com/*"] },
+  ["blocking", "responseHeaders"]
+);
+
+chrome.webRequest.onHeadersReceived.addListener(
+  details => {
+    removeHeader(details.responseHeaders!, "content-security-policy");
+    removeHeader(details.responseHeaders!, "X-Frame-Options");
+    return { responseHeaders: details.responseHeaders };
+  },
   // request filters
   { urls: ["https://*/*", "http://*/*"] },
   // extraInfoSpec (magic)
