@@ -19,6 +19,7 @@ import java.util.Set;
 
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.soup.project.datamodel.imports.Import;
 
@@ -32,6 +33,22 @@ public class GuidedDecisionTableModelVisitorTest {
     public void useFullClassNameAndOnlyTheClassName() {
         final GuidedDecisionTable52 model = new GuidedDecisionTable52();
         model.getImports().addImport(new Import("org.test.AnotherPerson"));
+        model.getImports().addImport(new Import("org.test.Person"));
+        final Pattern52 pattern52 = mock(Pattern52.class);
+        doReturn("Person").when(pattern52).getFactType();
+
+        model.getConditions().add(pattern52);
+
+        final Set<String> consumedModelClasses = new GuidedDecisionTableModelVisitor(model).getConsumedModelClasses();
+
+        assertTrue(consumedModelClasses.contains("org.test.Person"));
+    }
+
+    @Test
+    @Ignore("DROOLS-4457")
+    public void differentPackagesSameNames() {
+        final GuidedDecisionTable52 model = new GuidedDecisionTable52();
+        model.getImports().addImport(new Import("org.test.demo.Person"));
         model.getImports().addImport(new Import("org.test.Person"));
         final Pattern52 pattern52 = mock(Pattern52.class);
         doReturn("Person").when(pattern52).getFactType();
