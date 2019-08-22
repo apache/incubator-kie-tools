@@ -17,17 +17,22 @@
 import * as React from "react";
 import * as AppFormer from "appformer-js-core";
 import { GwtEditor } from "./GwtEditor";
+import { EnvelopeBusInnerMessageHandler } from "appformer-js-microeditor-envelope";
+
+const KOGITO_JIRA_LINK = "https://issues.jboss.org/projects/KOGITO";
 
 export class GwtEditorWrapper extends AppFormer.Editor {
-  public af_componentTitle: string;
+  public readonly af_componentTitle: string;
 
-  private gwtEditor: GwtEditor;
+  private readonly gwtEditor: GwtEditor;
+  private readonly messageBus: EnvelopeBusInnerMessageHandler;
 
-  constructor(gwtEditor: GwtEditor) {
+  constructor(gwtEditor: GwtEditor, messageBus: EnvelopeBusInnerMessageHandler) {
     super("gwt-editor-wrapper");
     this.af_componentTitle = "GwtEditorWrapper";
     this.af_isReact = true;
     this.gwtEditor = gwtEditor;
+    this.messageBus = messageBus;
   }
 
   public af_onOpen() {
@@ -50,7 +55,14 @@ export class GwtEditorWrapper extends AppFormer.Editor {
 
   public setContent(content: string) {
     //FIXME: Make setContent return a promise.
-    this.gwtEditor.setContent(content.trim());
+    try {
+      this.gwtEditor.setContent(content.trim());
+    } catch (e) {
+      this.messageBus.notify_setContentError(
+        `This file contains a construct that is not yet supported. Please refer to ${KOGITO_JIRA_LINK} and report an issue. Don't forget to upload the current file.`
+      );
+    }
+
     return Promise.resolve();
   }
 

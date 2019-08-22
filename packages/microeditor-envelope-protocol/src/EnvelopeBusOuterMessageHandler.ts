@@ -24,6 +24,7 @@ export interface EnvelopeBusOuterMessageHandlerImpl {
   receive_languageRequest(): void;
   receive_contentRequest(): void;
   receive_contentResponse(content: string): void;
+  receive_setContentError(errorMessage: string): void;
   receive_dirtyIndicatorChange(isDirty: boolean): void;
 }
 
@@ -94,6 +95,9 @@ export class EnvelopeBusOuterMessageHandler {
         break;
       case EnvelopeBusMessageType.REQUEST_CONTENT:
         this.impl.receive_contentRequest();
+        break;
+      case EnvelopeBusMessageType.NOTIFY_SET_CONTENT_ERROR:
+        this.impl.receive_setContentError(message.data as string);
         break;
       case EnvelopeBusMessageType.NOTIFY_DIRTY_INDICATOR_CHANGE:
         this.impl.receive_dirtyIndicatorChange(message.data as boolean);

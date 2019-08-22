@@ -178,6 +178,11 @@ describe("send", () => {
     expect(sentMessages).toEqual([[{ type: EnvelopeBusMessageType.RETURN_CONTENT, data: "some" }, "tgt-orgn"]]);
   });
 
+  test("notify setContentError", () => {
+    handler.notify_setContentError("error msg");
+    expect(sentMessages).toEqual([[{ type: EnvelopeBusMessageType.NOTIFY_SET_CONTENT_ERROR, data: "error msg" }, "tgt-orgn"]]);
+  });
+
   test("notify dirtyIndicatorChange", () => {
     handler.notify_dirtyIndicatorChange(true);
     expect(sentMessages).toEqual([[{ type: EnvelopeBusMessageType.NOTIFY_DIRTY_INDICATOR_CHANGE, data: true }, "tgt-orgn"]]);

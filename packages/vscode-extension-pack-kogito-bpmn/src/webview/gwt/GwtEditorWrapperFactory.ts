@@ -33,7 +33,7 @@ export class GwtEditorWrapperFactory implements MicroEditorEnvelope.EditorFactor
       this.appFormerGwtApi.setErraiDomain(languageData.erraiDomain); //needed only for backend communication
 
       this.appFormerGwtApi.onFinishedLoading(() => {
-        res(new GwtEditorWrapper(this.appFormerGwtApi.getEditor(languageData.editorId)));
+        res(new GwtEditorWrapper(this.appFormerGwtApi.getEditor(languageData.editorId), messageBus));
         return Promise.resolve();
       });
 
