@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ChromeAppContainers } from "./utils";
+import { ChromeAppContainers } from "../utils";
 import * as ReactDOM from "react-dom";
 import * as React from "react";
 import { useEffect, useLayoutEffect, useState } from "react";

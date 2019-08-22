@@ -59,23 +59,8 @@ export class GwtEditorChromeExtensionRoutes implements Routes {
             {
               type: "js",
               paths: [
-                // router.getRelativePathTo(`${bpmnLocation}/${gwtEditors.bpmn.name}/js/jquery-1.12.0.min.cache.js`),
-                // router.getRelativePathTo(`${bpmnLocation}/${gwtEditors.bpmn.name}/js/bootstrap-3.3.6.min.cache.js`),
                 router.getRelativePathTo(`${bpmnLocation}/${gwtEditors.bpmn.name}/ace/ace.js`),
                 router.getRelativePathTo(`${bpmnLocation}/${gwtEditors.bpmn.name}/ace/theme-chrome.js`),
-                // router.getRelativePathTo(`${bpmnLocation}/${gwtEditors.bpmn.name}/ace/ext-language_tools.js`),
-                // router.getRelativePathTo(
-                //   `${bpmnLocation}/${gwtEditors.bpmn.name}/bootstrap-select/js/bootstrap-select.min.js`
-                // ),
-                // router.getRelativePathTo(
-                //   `${bpmnLocation}/${gwtEditors.bpmn.name}/js/bootstrap-datetimepicker-2.3.8.min.cache.js`
-                // ),
-                // router.getRelativePathTo(`${bpmnLocation}/${gwtEditors.bpmn.name}/js/patternfly.min.js`),
-                // router.getRelativePathTo(`${bpmnLocation}/${gwtEditors.bpmn.name}/polyfill/sha_512.js`),
-                // router.getRelativePathTo(`${bpmnLocation}/${gwtEditors.bpmn.name}/polyfill/enc_b64.js`),
-                // router.getRelativePathTo(
-                //   `${bpmnLocation}/${gwtEditors.bpmn.name}/js/typeahead.jquery-0.10.5.min.cache.js`
-                // ),
                 router.getRelativePathTo(`${bpmnLocation}/${gwtEditors.bpmn.name}/${gwtEditors.bpmn.name}.nocache.js`)
               ]
             }

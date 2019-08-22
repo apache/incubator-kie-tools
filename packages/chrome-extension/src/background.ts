@@ -35,20 +35,14 @@ function removeHeader(headers: HttpHeader[], name: string) {
 console.info("adding listener");
 chrome.webRequest.onHeadersReceived.addListener(
   details => {
+    const contentType = details.responseHeaders!.find(e => e.name.toLowerCase() === "content-type")!;
+
     if (details.url.endsWith(".js")) {
-    console.info("JS");
-      const header = details.responseHeaders!.find(e => e.name.toLowerCase() === "content-type")!;
-      header.value = "text/javascript";
+      contentType.value = "text/javascript";
     } else if (details.url.endsWith(".css")) {
-    console.info("CSS");
-      const header = details.responseHeaders!.find(e => e.name.toLowerCase() === "content-type")!;
-      header.value = "text/css";
+      contentType.value = "text/css";
     } else if (details.url.endsWith(".html")) {
-    console.info("HTML");
-      const header = details.responseHeaders!.find(e => e.name.toLowerCase() === "x-frame-options")!;
-      header.value = "allowall";
-    const header2 = details.responseHeaders!.find(e => e.name.toLowerCase() === "content-type")!;
-    header2.value = "text/html";
+      contentType.value = "text/html";
     }
     return { responseHeaders: details.responseHeaders };
   },
@@ -59,11 +53,9 @@ chrome.webRequest.onHeadersReceived.addListener(
 chrome.webRequest.onHeadersReceived.addListener(
   details => {
     removeHeader(details.responseHeaders!, "content-security-policy");
-    removeHeader(details.responseHeaders!, "X-Frame-Options");
+    removeHeader(details.responseHeaders!, "x-frame-options");
     return { responseHeaders: details.responseHeaders };
   },
-  // request filters
-  { urls: ["https://*/*", "http://*/*"] },
-  // extraInfoSpec (magic)
+  { urls: ["https://github.com/*", "https://raw.githubusercontent.com/*"] },
   ["blocking", "responseHeaders", "extraHeaders"]
 );

@@ -19,7 +19,7 @@ import * as React from "react";
 import { useContext, useEffect, useRef } from "react";
 import { GlobalContext } from "./GlobalContext";
 import { EnvelopeBusOuterMessageHandler } from "appformer-js-microeditor-envelope-protocol";
-import { getGitHubEditor } from "./utils";
+import { getGitHubEditor } from "../utils";
 
 export function KogitoEditorIframe(props: { openFileExtension: string; githubEditor: HTMLElement; router: Router }) {
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
