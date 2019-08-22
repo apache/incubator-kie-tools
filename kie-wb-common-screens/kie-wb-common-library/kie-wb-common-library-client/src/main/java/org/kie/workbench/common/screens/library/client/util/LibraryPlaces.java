@@ -458,7 +458,9 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
         final PartDefinitionImpl part = new PartDefinitionImpl(placeRequest);
         part.setSelectable(false);
 
-        projectContextChangeEvent.fire(new WorkspaceProjectContextChangeEvent(activeOu));
+        if (!projectContext.getActiveWorkspaceProject().isPresent()) {
+            projectContextChangeEvent.fire(new WorkspaceProjectContextChangeEvent(activeOu));
+        }
 
         closeLibraryPlaces();
         placeManager.goTo(part,

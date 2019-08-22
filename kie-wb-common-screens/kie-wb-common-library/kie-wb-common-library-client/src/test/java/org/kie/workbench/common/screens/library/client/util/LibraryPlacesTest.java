@@ -475,7 +475,7 @@ public class LibraryPlacesTest {
 
         libraryPlaces.nativeGoToSpace("space");
 
-        verify(projectContextChangeEvent, times(2)).fire(projectContextChangeEventArgumentCaptor.capture());
+        verify(projectContextChangeEvent, times(1)).fire(projectContextChangeEventArgumentCaptor.capture());
         assertEquals(activeOrganizationalUnit, projectContextChangeEventArgumentCaptor.getValue().getOrganizationalUnit());
         verify(libraryPlaces).goToLibrary();
     }
@@ -607,7 +607,7 @@ public class LibraryPlacesTest {
         verify(libraryPlaces).closeLibraryPlaces();
         verify(placeManager).goTo(eq(part), any(PanelDefinition.class));
         verify(libraryBreadcrumbs).setupForSpace(activeOrganizationalUnit);
-        verify(projectContextChangeEvent).fire(any(WorkspaceProjectContextChangeEvent.class));
+        verify(projectContextChangeEvent, never()).fire(any(WorkspaceProjectContextChangeEvent.class));
     }
 
     @Test
