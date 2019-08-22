@@ -89,7 +89,7 @@ public class GuidedDecisionTableModelVisitor {
         }
         String fullyQualifiedClassName = null;
         for (Import imp : imports.getImports()) {
-            if (imp.getType().endsWith(factType)) {
+            if (imp.getType().endsWith("." + factType)) {
                 fullyQualifiedClassName = imp.getType();
                 break;
             }
