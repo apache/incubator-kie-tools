@@ -44,10 +44,11 @@ export function KogitoEditorIframe(props: { openFileExtension: string; githubEdi
       },
       receive_contentResponse(content: string) {
         // enableCommitButton();
-        getGitHubEditor().CodeMirror.setValue(content);
+        // getGitHubEditor().CodeMirror.setValue(content);
       },
       receive_contentRequest() {
         // const githubEditorContent = getGitHubEditor().CodeMirror.getValue() || "";
+        // self.respond_contentRequest(githubEditorContent);
         self.respond_contentRequest(
           (document.querySelector(
             ".form-control.file-editor-textarea.js-blob-contents.js-code-textarea"
