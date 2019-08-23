@@ -38,6 +38,7 @@ export class GwtEditorWrapper extends AppFormer.Editor {
   public af_onOpen() {
     this.removeBusinessCentralHeaderPanel();
     this.removeBusinessCentralPanelHeader();
+    this.removeHeaderIfOnlyOneItemOnTable();
   }
 
   public af_componentRoot() {
@@ -59,7 +60,7 @@ export class GwtEditorWrapper extends AppFormer.Editor {
       this.gwtEditor.setContent(content.trim());
     } catch (e) {
       this.messageBus.notify_setContentError(
-          `This file contains a construct that is not yet supported. Please refer to ${KOGITO_JIRA_LINK} and report an issue. Don't forget to upload the current file.`
+        `This file contains a construct that is not yet supported. Please refer to ${KOGITO_JIRA_LINK} and report an issue. Don't forget to upload the current file.`
       );
     }
 
@@ -78,10 +79,17 @@ export class GwtEditorWrapper extends AppFormer.Editor {
 
   private removeBusinessCentralPanelHeader() {
     setTimeout(() => {
-      const panelHeader = document.querySelector(".panel-heading.uf-listbar-panel-header");
-      if (panelHeader) {
-        panelHeader.remove();
+      const panelHeaderSpan = document.querySelector(".panel-heading.uf-listbar-panel-header span");
+      if (panelHeaderSpan) {
+        panelHeaderSpan.textContent = "";
       }
     }, 100);
+  }
+
+  private removeHeaderIfOnlyOneItemOnTable() {
+    const headerTable = document.querySelector(".tabbable.uf-tabbar-panel.uf-multi-page-editor > table");
+    if (headerTable && headerTable.querySelectorAll("td > ul > li").length <= 1) {
+      headerTable.remove();
+    }
   }
 }
