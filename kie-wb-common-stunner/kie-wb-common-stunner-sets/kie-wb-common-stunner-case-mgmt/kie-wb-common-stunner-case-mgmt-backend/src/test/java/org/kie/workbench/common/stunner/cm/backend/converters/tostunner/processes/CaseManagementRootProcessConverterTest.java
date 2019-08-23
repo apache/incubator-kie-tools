@@ -25,6 +25,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.TypedFactoryManager;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.DefinitionsPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.ProcessPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.PropertyReaderFactory;
 import org.kie.workbench.common.stunner.cm.backend.converters.tostunner.CaseManagementConverterFactory;
@@ -56,7 +57,7 @@ public class CaseManagementRootProcessConverterTest {
     private CaseManagementRootProcessConverter tested;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         Definitions definitions = bpmn2.createDefinitions();
         process = bpmn2.createProcess();
         definitions.getRootElements().add(process);
@@ -82,21 +83,25 @@ public class CaseManagementRootProcessConverterTest {
     }
 
     @Test
-    public void testCreateNode() throws Exception {
+    public void testCreateNode() {
         assertTrue(CaseManagementDiagram.class.isInstance(tested.createNode("id").getContent().getDefinition()));
     }
 
     @Test
-    public void testCreateDiagramSet() throws Exception {
+    public void testCreateDiagramSet() {
         assertTrue(DiagramSet.class.isInstance(tested.createDiagramSet(process,
                                                                        new ProcessPropertyReader(process,
                                                                                                  definitionResolver.getDiagram(),
                                                                                                  definitionResolver.getShape(process.getId()),
-                                                                                                 definitionResolver.getResolutionFactor()))));
+                                                                                                 definitionResolver.getResolutionFactor()),
+                                                                       new DefinitionsPropertyReader(definitionResolver.getDefinitions(),
+                                                                                                     definitionResolver.getDiagram(),
+                                                                                                     definitionResolver.getShape(process.getId()),
+                                                                                                     definitionResolver.getResolutionFactor()))));
     }
 
     @Test
-    public void testCreateProcessData() throws Exception {
+    public void testCreateProcessData() {
         assertTrue(ProcessData.class.isInstance(tested.createProcessData("id")));
     }
 }

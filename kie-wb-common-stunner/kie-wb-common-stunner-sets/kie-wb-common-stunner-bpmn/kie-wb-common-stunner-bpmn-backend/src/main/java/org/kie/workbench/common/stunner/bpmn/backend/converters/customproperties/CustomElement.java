@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.bpmn.backend.converters.custompropertie
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.FlowElement;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.elements.BooleanElement;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.elements.DefaultImportsElement;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.elements.ElementDefinition;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.elements.GlobalVariablesElement;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.elements.MetadataTypeDefinition;
@@ -51,6 +52,7 @@ public class CustomElement<T> {
     public static final MetadataTypeDefinition<Boolean> isCase = new BooleanElement("case", Boolean.FALSE);
     public static final MetadataTypeDefinition<String> customActivationCondition = new StringElement("customActivationCondition", "");
     public static final MetadataTypeDefinition<Boolean> abortParent = new BooleanElement("customAbortParent", true);
+    public static final DefaultImportsElement defaultImports = new DefaultImportsElement("defaultImports");
 
     private final ElementDefinition<T> elementDefinition;
     private final BaseElement element;

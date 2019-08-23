@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.Import;
 import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.dd.dc.Bounds;
@@ -31,6 +32,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.BasePropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNViewDefinition;
+import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports.WSDLImport;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Dock;
@@ -162,5 +164,16 @@ public class PropertyWriterUtilsTest {
         Node<? extends View, Edge> node = mock(Node.class);
         when(node.getInEdges()).thenReturn(inEdges);
         return node;
+    }
+
+    @Test
+    public void toImport() {
+        final String LOCATION = "location";
+        final String NAMESPACE = "namespace";
+        WSDLImport wsdlImport = new WSDLImport(LOCATION, NAMESPACE);
+
+        Import imp = PropertyWriterUtils.toImport(wsdlImport);
+        assertEquals(LOCATION, imp.getLocation());
+        assertEquals(NAMESPACE, imp.getNamespace());
     }
 }

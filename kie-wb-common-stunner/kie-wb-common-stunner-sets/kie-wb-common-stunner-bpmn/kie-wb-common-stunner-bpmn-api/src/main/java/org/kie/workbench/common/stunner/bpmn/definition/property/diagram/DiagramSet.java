@@ -27,9 +27,11 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.type.TextAreaFieldType;
+import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports.Imports;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Documentation;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
+import org.kie.workbench.common.stunner.bpmn.forms.model.ImportsFieldType;
 import org.kie.workbench.common.stunner.bpmn.forms.model.VariablesEditorFieldType;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
@@ -103,7 +105,15 @@ public class DiagramSet implements BaseDiagramSet {
 
     @Property
     @FormField(
-            afterElement = "globalVariables"
+            afterElement = "globalVariables",
+            type = ImportsFieldType.class
+    )
+    @Valid
+    private Imports imports;
+
+    @Property
+    @FormField(
+            afterElement = "imports"
     )
     private Executable executable;
 
@@ -120,6 +130,7 @@ public class DiagramSet implements BaseDiagramSet {
              new AdHoc(),
              new ProcessInstanceDescription(),
              new GlobalVariables(),
+             new Imports(),
              new Executable(),
              new SLADueDate());
     }
@@ -132,6 +143,7 @@ public class DiagramSet implements BaseDiagramSet {
                       final @MapsTo(ADHOC) AdHoc adHoc,
                       final @MapsTo("processInstanceDescription") ProcessInstanceDescription processInstanceDescription,
                       final @MapsTo("globalVariables") GlobalVariables globalVariables,
+                      final @MapsTo("imports") Imports imports,
                       final @MapsTo("executable") Executable executable,
                       final @MapsTo("slaDueDate") SLADueDate slaDueDate) {
         this.name = name;
@@ -142,6 +154,7 @@ public class DiagramSet implements BaseDiagramSet {
         this.adHoc = adHoc;
         this.processInstanceDescription = processInstanceDescription;
         this.globalVariables = globalVariables;
+        this.imports = imports;
         this.executable = executable;
         this.slaDueDate = slaDueDate;
     }
@@ -155,6 +168,7 @@ public class DiagramSet implements BaseDiagramSet {
              new AdHoc(),
              new ProcessInstanceDescription(),
              new GlobalVariables(),
+             new Imports(),
              new Executable(),
              new SLADueDate());
     }
@@ -200,6 +214,11 @@ public class DiagramSet implements BaseDiagramSet {
     }
 
     @Override
+    public Imports getImports() {
+        return imports;
+    }
+
+    @Override
     public Executable getExecutable() {
         return executable;
     }
@@ -241,6 +260,10 @@ public class DiagramSet implements BaseDiagramSet {
         this.globalVariables = globalVariables;
     }
 
+    public void setImports(Imports imports) {
+        this.imports = imports;
+    }
+
     public void setExecutable(final Executable executable) {
         this.executable = executable;
     }
@@ -259,6 +282,7 @@ public class DiagramSet implements BaseDiagramSet {
                                          Objects.hashCode(adHoc),
                                          Objects.hashCode(processInstanceDescription),
                                          Objects.hashCode(globalVariables),
+                                         Objects.hashCode(imports),
                                          Objects.hashCode(executable),
                                          Objects.hashCode(slaDueDate));
     }
@@ -275,6 +299,7 @@ public class DiagramSet implements BaseDiagramSet {
                     Objects.equals(adHoc, other.adHoc) &&
                     Objects.equals(processInstanceDescription, other.processInstanceDescription) &&
                     Objects.equals(globalVariables, other.globalVariables) &&
+                    Objects.equals(imports, other.imports) &&
                     Objects.equals(executable, other.executable) &&
                     Objects.equals(slaDueDate, other.slaDueDate);
         }

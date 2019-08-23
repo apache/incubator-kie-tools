@@ -33,9 +33,11 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.BaseDia
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Executable;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.GlobalVariables;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Id;
+import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports.Imports;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Documentation;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
+import org.kie.workbench.common.stunner.bpmn.forms.model.ImportsFieldType;
 import org.kie.workbench.common.stunner.bpmn.forms.model.VariablesEditorFieldType;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
@@ -105,7 +107,15 @@ public class DiagramSet implements BaseDiagramSet {
 
     @Property
     @FormField(
-            afterElement = "globalVariables"
+            afterElement = "globalVariables",
+            type = ImportsFieldType.class
+    )
+    @Valid
+    private Imports imports;
+
+    @Property
+    @FormField(
+            afterElement = "imports"
     )
     private Executable executable;
 
@@ -123,6 +133,7 @@ public class DiagramSet implements BaseDiagramSet {
              new AdHoc(true),
              new ProcessInstanceDescription(),
              new GlobalVariables(),
+             new Imports(),
              new Executable(),
              new SLADueDate());
     }
@@ -135,6 +146,7 @@ public class DiagramSet implements BaseDiagramSet {
                       final @MapsTo("adHoc") AdHoc adHoc,
                       final @MapsTo("processInstanceDescription") ProcessInstanceDescription processInstanceDescription,
                       final @MapsTo("globalVariables") GlobalVariables globalVariables,
+                      final @MapsTo("imports") Imports imports,
                       final @MapsTo("executable") Executable executable,
                       final @MapsTo("slaDueDate") SLADueDate slaDueDate) {
         this.name = name;
@@ -145,6 +157,7 @@ public class DiagramSet implements BaseDiagramSet {
         this.adHoc = adHoc;
         this.processInstanceDescription = processInstanceDescription;
         this.globalVariables = globalVariables;
+        this.imports = imports;
         this.executable = executable;
         this.slaDueDate = slaDueDate;
     }
@@ -158,6 +171,7 @@ public class DiagramSet implements BaseDiagramSet {
              new AdHoc(true),
              new ProcessInstanceDescription(),
              new GlobalVariables(),
+             new Imports(),
              new Executable(),
              new SLADueDate());
     }
@@ -232,6 +246,15 @@ public class DiagramSet implements BaseDiagramSet {
 
     public void setGlobalVariables(GlobalVariables globalVariables) {
         this.globalVariables = globalVariables;
+    }
+
+    @Override
+    public Imports getImports() {
+        return imports;
+    }
+
+    public void setImports(Imports imports) {
+        this.imports = imports;
     }
 
     @Override

@@ -49,6 +49,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseFileVari
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseIdPrefix;
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseRoles;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.GlobalVariables;
+import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports.DefaultImport;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.BaseProcessVariables;
 
@@ -220,6 +221,10 @@ public class ProcessPropertyWriter extends BasePropertyWriter implements Element
 
     public void setGlobalVariables(GlobalVariables globalVariables) {
         CustomElement.globalVariables.of(process).set(globalVariables.getValue());
+    }
+
+    public void setDefaultImports(List<DefaultImport> imports) {
+        CustomElement.defaultImports.of(process).set(imports);
     }
 
     public void setSlaDueDate(SLADueDate slaDueDate) {

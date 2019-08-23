@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.Process;
@@ -26,6 +27,8 @@ import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.emf.ecore.impl.EAttributeImpl;
 import org.eclipse.emf.ecore.impl.EStructuralFeatureImpl.SimpleFeatureMapEntry;
 import org.eclipse.emf.ecore.util.ExtendedMetaData;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.util.PropertyWriterUtils;
+import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports.WSDLImport;
 
 public class DefinitionsPropertyWriter {
 
@@ -74,6 +77,12 @@ public class DefinitionsPropertyWriter {
         relationship.getSources().add(definitions);
         relationship.getTargets().add(definitions);
         definitions.getRelationships().add(relationship);
+    }
+
+    public void setWSDLImports(List<WSDLImport> wsdlImports) {
+        wsdlImports.stream()
+                .map(PropertyWriterUtils::toImport)
+                .forEach(definitions.getImports()::add);
     }
 
     public void addAllRootElements(Collection<? extends RootElement> rootElements) {

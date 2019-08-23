@@ -27,6 +27,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.TypedFactoryMana
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.BaseConverterFactory;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.BpmnNode;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.DefinitionsPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.ProcessPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.PropertyReaderFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
@@ -82,28 +83,29 @@ public abstract class BaseRootProcessConverter<D extends BPMNDiagram<S, P>,
         Node<View<D>, Edge> diagramNode = createNode(id);
         D definition = diagramNode.getContent().getDefinition();
 
-        ProcessPropertyReader e = delegate.propertyReaderFactory.of(process);
+        DefinitionsPropertyReader d = delegate.propertyReaderFactory.of(delegate.definitionResolver.getDefinitions());
+        ProcessPropertyReader p = delegate.propertyReaderFactory.of(process);
 
-        definition.setDiagramSet(createDiagramSet(process, e));
+        definition.setDiagramSet(createDiagramSet(process, p, d));
 
-        definition.setCaseManagementSet(new CaseManagementSet(new CaseIdPrefix(e.getCaseIdPrefix()),
-                                                              new CaseRoles(e.getCaseRoles()),
-                                                              new CaseFileVariables(e.getCaseFileVariables())
+        definition.setCaseManagementSet(new CaseManagementSet(new CaseIdPrefix(p.getCaseIdPrefix()),
+                                                              new CaseRoles(p.getCaseRoles()),
+                                                              new CaseFileVariables(p.getCaseFileVariables())
         ));
 
-        definition.setProcessData(createProcessData(e.getProcessVariables()));
+        definition.setProcessData(createProcessData(p.getProcessVariables()));
 
-        diagramNode.getContent().setBounds(e.getBounds());
+        diagramNode.getContent().setBounds(p.getBounds());
 
-        definition.setFontSet(e.getFontSet());
-        definition.setBackgroundSet(e.getBackgroundSet());
+        definition.setFontSet(p.getFontSet());
+        definition.setBackgroundSet(p.getBackgroundSet());
 
-        return BpmnNode.of(diagramNode, e);
+        return BpmnNode.of(diagramNode, p);
     }
 
     protected abstract Node<View<D>, Edge> createNode(String id);
 
-    protected abstract S createDiagramSet(Process process, ProcessPropertyReader e);
+    protected abstract S createDiagramSet(Process process, ProcessPropertyReader p, DefinitionsPropertyReader d);
 
     protected abstract P createProcessData(String processVariables);
 }

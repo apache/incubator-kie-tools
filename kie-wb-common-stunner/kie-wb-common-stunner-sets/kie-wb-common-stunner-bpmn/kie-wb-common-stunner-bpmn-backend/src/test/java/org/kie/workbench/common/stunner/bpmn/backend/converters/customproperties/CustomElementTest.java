@@ -83,10 +83,5 @@ public class CustomElementTest {
         public void setValue(BaseElement element, Object value) {
             this.value = value;
         }
-
-        @Override
-        protected void setStringValue(BaseElement element, String value) {
-
-        }
     }
 }

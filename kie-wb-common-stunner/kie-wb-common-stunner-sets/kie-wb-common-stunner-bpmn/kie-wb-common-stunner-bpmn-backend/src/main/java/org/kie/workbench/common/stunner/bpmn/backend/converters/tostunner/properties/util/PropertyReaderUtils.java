@@ -20,10 +20,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.Import;
 import org.eclipse.dd.dc.Bounds;
 import org.eclipse.dd.dc.Point;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
+import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports.WSDLImport;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 
 public class PropertyReaderUtils {
@@ -101,5 +103,9 @@ public class PropertyReaderUtils {
                                           double factor) {
         return Point2D.create((wayPoint.getX() * factor) - (sourceBounds.getX() * factor),
                               (wayPoint.getY() * factor) - (sourceBounds.getY() * factor));
+    }
+
+    public static WSDLImport toWSDLImports(Import imp) {
+        return new WSDLImport(imp.getLocation(), imp.getNamespace());
     }
 }

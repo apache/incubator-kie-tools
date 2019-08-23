@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties;
+package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.util;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.ExtensionAttributeValue;
+import org.eclipse.bpmn2.Import;
 import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.dd.dc.Bounds;
@@ -33,8 +34,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.util.PropertyWriterUtils;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
-import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.util.PropertyReaderUtils;
+import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports.WSDLImport;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -212,6 +214,17 @@ public class PropertyReaderUtilsTest {
             assertEquals(waypoints.get(i).getX() * 0.25d, result.get(i).getX(), 0);
             assertEquals(waypoints.get(i).getY() * 0.25d, result.get(i).getY(), 0);
         }
+    }
+
+    @Test
+    public void toWSDLImports() {
+        final String LOCATION = "location";
+        final String NAMESPACE = "namespace";
+        WSDLImport wsdlImport = new WSDLImport(LOCATION, NAMESPACE);
+
+        Import imp = PropertyWriterUtils.toImport(wsdlImport);
+
+        assertEquals(wsdlImport, PropertyReaderUtils.toWSDLImports(imp));
     }
 
     private void testIsAutoConnectionTarget(String valueToSet, boolean expectedResult) {

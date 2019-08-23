@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.bpmn.definition.property.diagram;
 
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNBaseInfo;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports.Imports;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 
 public interface BaseDiagramSet extends BPMNPropertySet,
@@ -34,6 +35,8 @@ public interface BaseDiagramSet extends BPMNPropertySet,
     BaseProcessInstanceDescription getProcessInstanceDescription();
 
     GlobalVariables getGlobalVariables();
+
+    Imports getImports();
 
     Executable getExecutable();
 

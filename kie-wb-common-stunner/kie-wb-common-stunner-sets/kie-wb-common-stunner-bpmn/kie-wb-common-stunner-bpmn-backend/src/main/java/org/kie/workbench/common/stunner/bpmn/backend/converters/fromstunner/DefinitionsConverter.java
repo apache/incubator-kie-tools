@@ -21,7 +21,11 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.proc
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.DefinitionsPropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.ProcessPropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.PropertyWriterFactory;
+import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
+import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.BaseDiagramSet;
 import org.kie.workbench.common.stunner.core.graph.Graph;
+import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpmn2;
 
@@ -47,14 +51,17 @@ public class DefinitionsConverter {
         Definitions definitions = bpmn2.createDefinitions();
         DefinitionsPropertyWriter p = propertyWriterFactory.of(definitions);
 
-        ProcessPropertyWriter pp =
-                processConverter.convertProcess();
+        ProcessPropertyWriter pp = processConverter.convertProcess();
+        Node<Definition<BPMNDiagram>, ?> node = converterFactory.context.firstNode();
+        BPMNDiagram definition = node.getContent().getDefinition();
+        BaseDiagramSet diagramSet = definition.getDiagramSet();
 
         p.setExporter("jBPM Process Modeler");
         p.setExporterVersion("2.0");
         p.setProcess(pp.getProcess());
         p.setDiagram(pp.getBpmnDiagram());
         p.setRelationship(pp.getRelationship());
+        p.setWSDLImports(diagramSet.getImports().getValue().getWSDLImports());
         p.addAllRootElements(pp.getItemDefinitions());
         p.addAllRootElements(pp.getRootElements());
         p.addAllRootElements(pp.getInterfaces());

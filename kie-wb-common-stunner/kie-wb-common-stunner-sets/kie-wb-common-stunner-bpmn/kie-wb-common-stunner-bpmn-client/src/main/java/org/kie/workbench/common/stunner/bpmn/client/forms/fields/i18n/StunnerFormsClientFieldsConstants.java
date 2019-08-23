@@ -96,4 +96,32 @@ public interface StunnerFormsClientFieldsConstants extends Messages {
     String DuplicatedVariableNameError(String variableName);
 
     String AssignmentNameAlreadyInUseAsMultipleInstanceInputOutputVariable(String assignmentName);
+
+    String Imports();
+
+    String No_Imports();
+
+    String No_Default_Import();
+
+    String Default_Import();
+
+    String Default_Imports();
+
+    String Default_Imports_Title();
+
+    String No_WSDL_Import();
+
+    String WSDL_Import();
+
+    String WSDL_Imports();
+
+    String WSDL_Imports_Title();
+
+    String Duplicate_Import(String location, String namespace);
+
+    String Location();
+
+    String Namespace();
+
+    String ClassName();
 }

@@ -16,12 +16,19 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.elements;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Stream;
+
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.ExtensionAttributeValue;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.impl.EStructuralFeatureImpl;
 import org.eclipse.emf.ecore.util.FeatureMap;
 import org.jboss.drools.DroolsFactory;
+import org.jboss.drools.DroolsPackage;
 import org.jboss.drools.MetaDataType;
 
 import static org.jboss.drools.DroolsPackage.Literals.DOCUMENT_ROOT__META_DATA;
@@ -39,7 +46,24 @@ public abstract class MetadataTypeDefinition<T> extends ElementDefinition<T> {
     @Override
     public abstract void setValue(BaseElement element, T value);
 
-    @Override
+    @SuppressWarnings("unchecked")
+    private static String getMetaDataValue(final List<ExtensionAttributeValue> extensionValues,
+                                           final String metaDataName) {
+        if (extensionValues != null) {
+            return extensionValues.stream()
+                    .map(ExtensionAttributeValue::getValue)
+                    .flatMap((Function<FeatureMap, Stream<?>>) extensionElements -> {
+                        List o = (List) extensionElements.get(DroolsPackage.Literals.DOCUMENT_ROOT__META_DATA, true);
+                        return o.stream();
+                    })
+                    .filter(metaType -> isMetaType((MetaDataType) metaType, metaDataName))
+                    .findFirst()
+                    .map(m -> ((MetaDataType) m).getMetaValue())
+                    .orElse(null);
+        }
+        return null;
+    }
+
     protected void setStringValue(BaseElement element, String value) {
         FeatureMap.Entry extension = extensionOf(
                 DOCUMENT_ROOT__META_DATA, metaDataOf(value));
@@ -55,6 +79,18 @@ public abstract class MetadataTypeDefinition<T> extends ElementDefinition<T> {
         eleMetadata.setName(this.name());
         eleMetadata.setMetaValue(asCData(value));
         return eleMetadata;
+    }
+
+    private static boolean isMetaType(MetaDataType metaType,
+                                      final String metaDataName) {
+        return metaType.getName() != null &&
+                metaType.getName().equals(metaDataName) &&
+                metaType.getMetaValue() != null &&
+                metaType.getMetaValue().length() > 0;
+    }
+
+    protected Optional<String> getStringValue(BaseElement element) {
+        return Optional.ofNullable(getMetaDataValue(element.getExtensionValues(), name()));
     }
 
     public String stripCData(String s) {

@@ -19,6 +19,7 @@ import org.eclipse.bpmn2.Process;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.TypedFactoryManager;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.BaseConverterFactory;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.DefinitionsPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.ProcessPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.PropertyReaderFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
@@ -30,6 +31,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Id;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Package;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.ProcessInstanceDescription;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Version;
+import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports.Imports;
+import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports.ImportsValue;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Documentation;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
@@ -54,17 +57,18 @@ public class RootProcessConverter extends BaseRootProcessConverter<BPMNDiagramIm
     }
 
     @Override
-    protected DiagramSet createDiagramSet(Process process, ProcessPropertyReader e) {
+    protected DiagramSet createDiagramSet(Process process, ProcessPropertyReader p, DefinitionsPropertyReader d) {
         return new DiagramSet(new Name(process.getName()),
-                              new Documentation(e.getDocumentation()),
+                              new Documentation(p.getDocumentation()),
                               new Id(process.getId()),
-                              new Package(e.getPackage()),
-                              new Version(e.getVersion()),
-                              new AdHoc(e.isAdHoc()),
-                              new ProcessInstanceDescription(e.getDescription()),
-                              new GlobalVariables(e.getGlobalVariables()),
+                              new Package(p.getPackage()),
+                              new Version(p.getVersion()),
+                              new AdHoc(p.isAdHoc()),
+                              new ProcessInstanceDescription(p.getDescription()),
+                              new GlobalVariables(p.getGlobalVariables()),
+                              new Imports(new ImportsValue(p.getDefaultImports(), d.getWSDLImports())),
                               new Executable(process.isIsExecutable()),
-                              new SLADueDate(e.getSlaDueDate()));
+                              new SLADueDate(p.getSlaDueDate()));
     }
 
     @Override

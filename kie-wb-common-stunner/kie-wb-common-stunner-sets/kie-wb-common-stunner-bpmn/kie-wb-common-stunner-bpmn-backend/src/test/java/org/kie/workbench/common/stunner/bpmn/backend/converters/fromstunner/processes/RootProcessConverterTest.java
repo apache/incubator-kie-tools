@@ -38,6 +38,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseManageme
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseRoles;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.DiagramSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.GlobalVariables;
+import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports.DefaultImport;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
@@ -46,6 +47,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -130,6 +132,12 @@ public class RootProcessConverterTest {
     public void convertProcessWithGlobalVariables() {
         final ProcessPropertyWriter propertyWriter = converter.convertProcess();
         verify(propertyWriter).setGlobalVariables(any(GlobalVariables.class));
+    }
+
+    @Test
+    public void convertProcessWithImports() {
+        final ProcessPropertyWriter propertyWriter = converter.convertProcess();
+        verify(propertyWriter).setDefaultImports(anyListOf(DefaultImport.class));
     }
 
     @Test

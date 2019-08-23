@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties;
 
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -26,6 +27,7 @@ import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomAttribute;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
+import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports.DefaultImport;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 
 public class ProcessPropertyReader extends BasePropertyReader {
@@ -36,9 +38,8 @@ public class ProcessPropertyReader extends BasePropertyReader {
     public ProcessPropertyReader(Process element, BPMNDiagram diagram, BPMNShape shape, double resolutionFactor) {
         super(element, diagram, shape, resolutionFactor);
         this.process = element;
-        this.flowElements =
-                process.getFlowElements().stream()
-                        .collect(Collectors.toMap(FlowElement::getId, Function.identity()));
+        this.flowElements = process.getFlowElements().stream()
+                .collect(Collectors.toMap(FlowElement::getId, Function.identity()));
     }
 
     public String getPackage() {
@@ -80,6 +81,10 @@ public class ProcessPropertyReader extends BasePropertyReader {
 
     public String getGlobalVariables() {
         return CustomElement.globalVariables.of(process).get();
+    }
+
+    public List<DefaultImport> getDefaultImports() {
+        return CustomElement.defaultImports.of(process).get();
     }
 
     public String getSlaDueDate() {

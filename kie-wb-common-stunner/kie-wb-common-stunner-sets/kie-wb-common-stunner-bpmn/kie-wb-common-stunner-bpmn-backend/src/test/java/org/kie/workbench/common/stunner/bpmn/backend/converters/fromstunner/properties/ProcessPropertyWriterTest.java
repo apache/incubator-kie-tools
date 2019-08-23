@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.di.BPMNShape;
@@ -28,6 +31,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseFileVari
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseIdPrefix;
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseRoles;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.GlobalVariables;
+import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports.DefaultImport;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessVariables;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -155,6 +159,18 @@ public class ProcessPropertyWriterTest {
         p.setSlaDueDate(slaDueDate);
         String slaDueDateString = CustomElement.slaDueDate.of(p.getProcess()).get();
         assertThat(slaDueDateString).isEqualTo("<![CDATA[12/25/1983]]>");
+    }
+
+    @Test
+    public void defaultImports() {
+        List<DefaultImport> defaultImports = new ArrayList<>();
+        defaultImports.add(new DefaultImport("className1"));
+        defaultImports.add(new DefaultImport("className2"));
+        defaultImports.add(new DefaultImport("className3"));
+
+        p.setDefaultImports(defaultImports);
+
+        assertEquals(defaultImports, CustomElement.defaultImports.of(p.getProcess()).get());
     }
 
     @Test

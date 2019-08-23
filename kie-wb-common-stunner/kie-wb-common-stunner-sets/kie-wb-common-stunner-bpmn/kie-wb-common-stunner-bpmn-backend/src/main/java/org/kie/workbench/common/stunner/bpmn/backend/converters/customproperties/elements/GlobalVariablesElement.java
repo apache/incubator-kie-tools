@@ -49,15 +49,13 @@ public class GlobalVariablesElement extends ElementDefinition<String> {
         setStringValue(element, value);
     }
 
-    @Override
-    protected void setStringValue(BaseElement element, String value) {
+    private void setStringValue(BaseElement element, String value) {
         Stream.of(value.split(","))
                 .map(this::extensionOf)
                 .forEach(getExtensionElements(element)::add);
     }
 
-    @Override
-    protected Optional<String> getStringValue(BaseElement element) {
+    private Optional<String> getStringValue(BaseElement element) {
         List<ExtensionAttributeValue> extValues = element.getExtensionValues();
 
         List<FeatureMap> extElementsList = extValues.stream()
@@ -80,13 +78,13 @@ public class GlobalVariablesElement extends ElementDefinition<String> {
         return Optional.ofNullable(globalVariables);
     }
 
-    private FeatureMap.Entry extensionOf(String variable) {
+    protected FeatureMap.Entry extensionOf(String variable) {
         return new EStructuralFeatureImpl.SimpleFeatureMapEntry(
                 (EStructuralFeature.Internal) DOCUMENT_ROOT__GLOBAL,
                 globalTypeDataOf(variable));
     }
 
-    private GlobalType globalTypeDataOf(String variable) {
+    protected GlobalType globalTypeDataOf(String variable) {
         GlobalType globalType = DroolsFactory.eINSTANCE.createGlobalType();
         String[] properties = variable.split(":");
         globalType.setIdentifier(properties[0]);

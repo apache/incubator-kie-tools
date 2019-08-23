@@ -58,8 +58,9 @@ public class RootProcessConverter {
     private ProcessPropertyWriter convertProcessNode(Node<Definition<BPMNDiagram>, ?> node) {
         Process process = bpmn2.createProcess();
 
-        ProcessPropertyWriter p = propertyWriterFactory.of(process);
         BPMNDiagram definition = node.getContent().getDefinition();
+
+        ProcessPropertyWriter p = propertyWriterFactory.of(process);
 
         BaseDiagramSet diagramSet = definition.getDiagramSet();
 
@@ -72,6 +73,8 @@ public class RootProcessConverter {
         p.setAdHoc(diagramSet.getAdHoc().getValue());
         p.setDescription(diagramSet.getProcessInstanceDescription().getValue());
         p.setGlobalVariables(diagramSet.getGlobalVariables());
+        p.setDefaultImports(diagramSet.getImports().getValue().getDefaultImports());
+
         p.setExecutable(diagramSet.getExecutable().getValue());
         p.setSlaDueDate(diagramSet.getSlaDueDate());
 

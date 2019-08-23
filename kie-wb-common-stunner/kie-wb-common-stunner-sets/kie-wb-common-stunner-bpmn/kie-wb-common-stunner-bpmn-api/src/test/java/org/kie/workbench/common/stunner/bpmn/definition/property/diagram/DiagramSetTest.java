@@ -25,9 +25,14 @@ import javax.validation.ValidatorFactory;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports.DefaultImport;
+import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports.Imports;
+import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports.ImportsValue;
+import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports.WSDLImport;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 public class DiagramSetTest {
@@ -87,5 +92,68 @@ public class DiagramSetTest {
         tested.setVersion(new Version(VERSION_INVALID));
         Set<ConstraintViolation<DiagramSet>> violations = this.validator.validate(tested);
         assertEquals(1, violations.size());
+    }
+
+    @Test
+    public void testGetImports() {
+        DiagramSet diagramSet = new DiagramSet();
+        assertEquals(new Imports(), diagramSet.getImports());
+    }
+
+    @Test
+    public void testSetImports() {
+        DefaultImport defaultImport = new DefaultImport("className");
+        WSDLImport wsdlImport = new WSDLImport("location", "namespace");
+
+        ImportsValue importsValue = new ImportsValue();
+        importsValue.addImport(defaultImport);
+        importsValue.addImport(wsdlImport);
+
+        Imports imports = new Imports(importsValue);
+
+        DiagramSet diagramSet = new DiagramSet();
+        diagramSet.setImports(imports);
+
+        assertEquals(imports, diagramSet.getImports());
+    }
+
+    @Test
+    public void testHashCode() {
+        DiagramSet a = new DiagramSet();
+        DiagramSet b = new DiagramSet();
+        assertEquals(a.hashCode(), b.hashCode());
+
+        DefaultImport defaultImport = new DefaultImport("className");
+        WSDLImport wsdlImport = new WSDLImport("location", "namespace");
+
+        ImportsValue importsValue = new ImportsValue();
+        importsValue.addImport(defaultImport);
+        importsValue.addImport(wsdlImport);
+
+        DiagramSet c = new DiagramSet();
+        c.setImports(new Imports(importsValue));
+        DiagramSet d = new DiagramSet();
+
+        assertNotEquals(c.hashCode(), d.hashCode());
+    }
+
+    @Test
+    public void testEquals() {
+        DiagramSet a = new DiagramSet();
+        DiagramSet b = new DiagramSet();
+        assertEquals(a, b);
+
+        DefaultImport defaultImport = new DefaultImport("className");
+        WSDLImport wsdlImport = new WSDLImport("location", "namespace");
+
+        ImportsValue importsValue = new ImportsValue();
+        importsValue.addImport(defaultImport);
+        importsValue.addImport(wsdlImport);
+
+        DiagramSet c = new DiagramSet();
+        c.setImports(new Imports(importsValue));
+        DiagramSet d = new DiagramSet();
+
+        assertNotEquals(c, d);
     }
 }
