@@ -23,6 +23,8 @@ import org.junit.Test;
 import org.kie.workbench.common.stunner.bpmn.definition.property.notification.NotificationValue;
 import org.kie.workbench.common.stunner.core.util.EqualsAndHashCodeTestUtils;
 
+import static org.junit.Assert.assertEquals;
+
 public class NotificationValueTest {
 
     @Test
@@ -130,5 +132,18 @@ public class NotificationValueTest {
                                                     Arrays.asList(new String[]{"foo", "bar", "baz"}),
                                                     Arrays.asList(new String[]{"foo", "bar", "baz"})))
                 .test();
+    }
+
+    @Test
+    public void testNotificationPartialVerticalBar() {
+        NotificationValue test = new NotificationValue("a||||||dssf||sdf|Sdf|sdf|Sdf|SDf",
+                              "1h",
+                              "z|asd|ASd||asd|Asd|asd|",
+                              "me",
+                              "NotStartedNotify",
+                              "me",
+                              Collections.EMPTY_LIST,
+                              Collections.EMPTY_LIST);
+        assertEquals("[from:me|tousers:|togroups:|replyTo:me|subject:z&#124;asd&#124;ASd&#124;&#124;asd&#124;Asd&#124;asd&#124;|body:a&#124;&#124;&#124;&#124;&#124;&#124;dssf&#124;&#124;sdf&#124;Sdf&#124;sdf&#124;Sdf&#124;SDf]@[1h]", test.toCDATAFormat());
     }
 }

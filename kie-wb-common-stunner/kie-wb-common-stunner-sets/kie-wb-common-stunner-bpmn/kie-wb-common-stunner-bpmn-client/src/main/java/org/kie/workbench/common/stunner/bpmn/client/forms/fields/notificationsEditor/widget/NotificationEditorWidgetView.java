@@ -25,6 +25,8 @@ public interface NotificationEditorWidgetView extends IsWidget {
 
         String getNameHeader();
 
+        String getExpirationLabel(String type);
+
         void createOrEdit(NotificationWidgetView parent, NotificationRow row);
     }
 

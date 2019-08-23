@@ -26,6 +26,7 @@ import javax.validation.Validator;
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockito;
 import elemental2.dom.HTMLButtonElement;
+import elemental2.dom.HTMLInputElement;
 import org.gwtbootstrap3.client.ui.TextArea;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.extras.select.client.ui.Option;
@@ -36,6 +37,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.lov.selector.input.MultipleSelectorInput;
+import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Expiration;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.NotificationRow;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.NotificationType;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.notificationsEditor.event.NotificationEvent;
@@ -112,12 +114,21 @@ public class NotificationEditorWidgetTest extends ReflectionUtilsTest {
     @GwtMock
     private Validator validator;
 
+    private Select taskExpiration;
+
+    HTMLInputElement notCompletedInput;
+
+    HTMLInputElement notStartedInput;
+
     @Before
     public void setUp() throws Exception {
         super.setUp();
         GwtMockito.initMocks(this);
 
         modal = mock(BaseModal.class);
+        taskExpiration = mock(Select.class);
+        setFieldValue(view, "taskExpiration", taskExpiration);
+
         notStarted = mock(Option.class);
         notCompleted = mock(Option.class);
         customerBinder = mock(DataBinder.class);
@@ -125,6 +136,8 @@ public class NotificationEditorWidgetTest extends ReflectionUtilsTest {
         searchSelectionFromHandler = mock(SingleLiveSearchSelectionHandler.class);
         multipleLiveSearchSelectionHandlerUsers = mock(MultipleLiveSearchSelectionHandler.class);
         multipleLiveSearchSelectionHandlerGroups = mock(MultipleLiveSearchSelectionHandler.class);
+        notCompletedInput = mock(HTMLInputElement.class);
+        notStartedInput = mock(HTMLInputElement.class);
 
         doNothing().when(modal).hide();
         doNothing().when(modal).show();
@@ -140,13 +153,14 @@ public class NotificationEditorWidgetTest extends ReflectionUtilsTest {
         doCallRealMethod().when(typeSelect).getValue();
 
         doCallRealMethod().when(view).setReadOnly(any(boolean.class));
-        doCallRealMethod().when(view).initTypeSelector();
         doCallRealMethod().when(view).createOrEdit(any(NotificationWidgetView.class), any(NotificationRow.class));
         doCallRealMethod().when(view).save();
 
         setFieldValue(view, "modal", modal);
         setFieldValue(view, "body", body);
         setFieldValue(view, "customerBinder", customerBinder);
+        setFieldValue(view, "notCompletedInput", notCompletedInput);
+        setFieldValue(view, "notStartedInput", notStartedInput);
         setFieldValue(view, "subject", subject);
         setFieldValue(view, "searchSelectionFromHandler", searchSelectionFromHandler);
         setFieldValue(view, "searchSelectionReplyToHandler", searchSelectionReplyToHandler);
@@ -159,8 +173,6 @@ public class NotificationEditorWidgetTest extends ReflectionUtilsTest {
         setFieldValue(view, "customerBinder", customerBinder);
         setFieldValue(view, "typeSelect", typeSelect);
         setFieldValue(view, "notStarted", notStarted);
-        setFieldValue(view, "notCompleted", notCompleted);
-
         setFieldValue(view, "notCompleted", notCompleted);
 
         doCallRealMethod().when(body).setValue(any(String.class));
@@ -181,7 +193,6 @@ public class NotificationEditorWidgetTest extends ReflectionUtilsTest {
 
         when(translationService.getValue(any(String.class))).thenReturn("Notification");
 
-        view.initTypeSelector();
     }
 
     @Test
@@ -208,6 +219,8 @@ public class NotificationEditorWidgetTest extends ReflectionUtilsTest {
     public void testCreateAndSaveEmpty() {
         NotificationRow test = new NotificationRow();
         doNothing().when(view).hide();
+        when(taskExpiration.getValue()).thenReturn(Expiration.EXPRESSION.getName());
+
 
         when(customerBinder.getModel()).thenReturn(test);
         when(notCompleted.getValue()).thenReturn(NotificationType.NotCompletedNotify.getAlias());
@@ -226,6 +239,8 @@ public class NotificationEditorWidgetTest extends ReflectionUtilsTest {
 
     @Test
     public void testCreateAndSave() {
+        when(taskExpiration.getValue()).thenReturn(Expiration.EXPRESSION.getName());
+
         List<String> groups = Arrays.asList("AAA", "BBB", "CCC", "DDD");
         List<String> users = Arrays.asList("aaa", "bbb", "ccc");
 
@@ -252,7 +267,6 @@ public class NotificationEditorWidgetTest extends ReflectionUtilsTest {
         Assert.assertEquals("QWERTY!", test.getBody());
         Assert.assertEquals("admin", test.getReplyTo());
         Assert.assertEquals("admin", test.getFrom());
-        Assert.assertEquals("0h", test.getExpiresAt());
         Assert.assertEquals(NotificationType.NotCompletedNotify, test.getType());
         Assert.assertEquals(groups, test.getGroups());
         Assert.assertEquals(users, test.getUsers());

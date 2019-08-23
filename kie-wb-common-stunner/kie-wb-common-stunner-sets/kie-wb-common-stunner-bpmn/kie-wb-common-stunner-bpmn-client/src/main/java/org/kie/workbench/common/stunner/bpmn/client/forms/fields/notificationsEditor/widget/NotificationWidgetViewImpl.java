@@ -166,7 +166,7 @@ public class NotificationWidgetViewImpl extends Composite implements Notificatio
     }
 
     private void initExpiresAt() {
-        TextCell expiresAt = new TextCell();
+        PopoverTextCell expiresAt = new PopoverTextCell();
         Column<NotificationRow, String> expiresAtColumn = new Column<NotificationRow, String>(
                 expiresAt) {
             @Override

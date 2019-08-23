@@ -22,6 +22,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.jboss.errai.databinding.client.api.Bindable;
+import org.kie.workbench.common.stunner.bpmn.client.forms.fields.notificationsEditor.validation.ValidNotificationValue;
 import org.kie.workbench.common.stunner.bpmn.definition.property.notification.NotificationValue;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
@@ -29,6 +30,7 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
  * Class which is bound to rows in the NotificationEditor
  */
 @Bindable
+@ValidNotificationValue
 public class NotificationRow {
 
     // Field which is incremented for each row.
@@ -37,7 +39,7 @@ public class NotificationRow {
     private long id;
     private String body = "";
 
-    private String expiresAt = "0h";
+    private String expiresAt = "";
 
     private String from = "";
 
@@ -50,6 +52,8 @@ public class NotificationRow {
     private List<String> users = new ArrayList<>();
 
     private NotificationType type = NotificationType.NotCompletedNotify;
+
+    private Expiration expiration;
 
     public NotificationRow() {
         this.id = lastId++;
@@ -152,6 +156,14 @@ public class NotificationRow {
         this.type = type;
     }
 
+    public Expiration getExpiration() {
+        return expiration;
+    }
+
+    public void setExpiration(Expiration expiration) {
+        this.expiration = expiration;
+    }
+
     @Override
     public int hashCode() {
         return HashUtil.combineHashCodes(super.hashCode(),
@@ -184,6 +196,7 @@ public class NotificationRow {
         clone.setReplyTo(getReplyTo());
         clone.setSubject(getSubject());
         clone.setBody(getBody());
+        clone.setExpiration(getExpiration());
         return clone;
     }
 
@@ -193,6 +206,7 @@ public class NotificationRow {
                 "id=" + id +
                 ", body='" + body + '\'' +
                 ", expiresAt='" + expiresAt + '\'' +
+                ", Expiration='" + getExpiration() + '\'' +
                 ", from='" + from + '\'' +
                 ", groups=" + groups.stream().collect(Collectors.joining(",")) +
                 ", replyTo='" + replyTo + '\'' +

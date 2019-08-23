@@ -50,7 +50,7 @@ public class NotificationRowTest {
     public void testToNotificationValue() {
         // Setup
         final NotificationValue expectedResult = new NotificationValue();
-        expectedResult.setExpiresAt("0h");
+        expectedResult.setExpiresAt("");
         expectedResult.setFrom("");
         expectedResult.setBody("");
         expectedResult.setSubject("");

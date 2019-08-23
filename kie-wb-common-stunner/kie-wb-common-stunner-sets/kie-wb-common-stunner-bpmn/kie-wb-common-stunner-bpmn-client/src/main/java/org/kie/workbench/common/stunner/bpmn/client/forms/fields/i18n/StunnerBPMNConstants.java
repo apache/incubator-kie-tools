@@ -88,4 +88,13 @@ public interface StunnerBPMNConstants {
 
     @TranslationKey(defaultValue = "Delete")
     String NOTIFICATION_DELETE = "notification.delete";
+
+    @TranslationKey(defaultValue = "Expression")
+    String NOTIFICATION_EXPIRATION_EXPRESSION_LABEL = "notification.expiration.expression.label";
+
+    @TranslationKey(defaultValue = "Date/time")
+    String NOTIFICATION_EXPIRATION_DATETIME_LABEL = "notification.datetime";
+
+    @TranslationKey(defaultValue = "Time period")
+    String NOTIFICATION_EXPIRATION_TIMEPERIOD_LABEL = "notification.expiration.timeperiod.label";
 }

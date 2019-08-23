@@ -14,62 +14,119 @@
   ~ limitations under the License.
   -->
 
-<div data-field="container">
-    <form>
-
-        <div class="form-group row">
-            <label data-i18n-key="notification.type" for="inputType" class="col-sm-2 col-form-label" style="width: 100px;"></label>
-            <div class="col-sm-4">
-                <div data-field="typeSelect" id="inputType" style="width: 250px;"></div>
+<div data-field="container" class="container">
+    <div class="row">
+        <p style="font-weight: bold;">Task state type</p>
+        <form>
+            <div>
+                <label><input type="radio" data-field="notStartedInput" name="optradio" checked>Not started (Ready or reserved)</label>
+            </div>
+            <div>
+                <label><input type="radio" data-field="notCompletedInput" name="optradio">Not completed (In progress)</label>
+            </div>
+        </form>
+    </div>
+    <div class="row" style="width: 200px;">
+        <p style="font-weight: bold;">Task expiration definition
+            <a data-field="notificationPopover" id="notificationPopover" tabindex="0" role="button" data-toggle="popover" data-trigger="hover" data-html="true" class="popover-pf-info" data-content="This time definition determines when notification will occur" data-placement="top">
+                <span class="glyphicon glyphicon-info-sign"></span>
+            </a>
+        </p>
+        <div data-field="taskExpiration" id="taskExpiration"></div>
+    </div>
+    <div data-field="timeperiodDiv">
+        <div class="row">
+            <p style="margin-top: 5px; font-weight: bold;">Notify</p>
+            <div data-field="periodBox" style="width: 240px;"></div>
+        </div>
+    </div>
+    <div data-field="datetimeDiv" style="display:none; margin-bottom: 10px;">
+        <div class="row">
+            <p style="font-weight: bold; margin-top: 10px;">Notify after task expiration</p>
+            <div class="col-sm-2" style="margin-left: -20px;">
+                <div data-field="dateTimePicker"></div>
+            </div>
+            <div class="col-sm-5" style="margin-left: -20px;">
+                <div data-field="timeZonePicker" style="margin-left: -20px;"></div>
             </div>
         </div>
-
-        <div data-field="periodBox"></div>
-
-        <div class="form-group row">
-            <label data-i18n-key="notification.from" for="from" class="col-sm-2 col-form-label" style="width: 100px;"></label>
-            <div class="col-sm-10">
-                <div id="from" data-field="liveSearchFromDropDown" style="width: 250px;"></div>
+    </div>
+    <div data-field="repeatNotificationsDiv">
+        <div class="row">
+            <div class="form-group">
+                <div class="col-sm-2" style="margin-left: -20px;">
+                    <p style="font-weight: bold;">Notification repeat</p>
+                    <div data-field="repeatNotification"></div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="row" data-field="repeatNotificationPanelDiv" style="display:none;">
+                        <div data-field="notifyEveryPanelDiv">
+                            <p style="font-weight: bold;">Notify every</p>
+                            <div data-field="repeatBox" id="repeatBox"></div>
+                        </div>
+                        <p style="font-weight: bold;">Until</p>
+                        <div class="radio">
+                            <label><input data-field="taskStateChanges" type="radio" name="optradio" checked>Task state changes</label>
+                        </div>
+                        <div class="radio">
+                            <label><input data-field="repeatCountReaches" type="radio" name="optradio">Repeat count reaches</label>
+                        </div>
+                        <div class="form-control" name="period" min="0" type="number" data-field="repeatCount" style="width: 80px; margin-left: 20px;" disabled></div>
+                    </div>
+                </div>
             </div>
         </div>
+    </div>
+    <div class="row" data-field="expressionDiv" style="display:none;">
+        <textarea data-field="expressionTextArea" placeholder="Example of basic expression notation for an interval: P2y10M14dT20h13m" class="form-control" rows="5" style="width:500px; height: 50px; resize: none; margin-top: 20px;"></textarea>
+        <a href="#"><span class="glyphicon glyphicon-question-sign" style="color: grey;"></span></a><span>For syntax requirements for ISO 8601 expressions, see https://www.iso.org/</span>
+    </div>
+    <div class="row" style="width: 500px;">
+        <hr>
+    </div>
 
-        <div class="form-group row">
-            <label data-i18n-key="notification.toUsers" for="users" class="col-sm-2 col-form-label" style="width: 100px;"></label>
-            <div class="col-sm-10">
-                <div id="users" data-field="multipleSelectorInputUsers" style="width: 250px;"></div>
+    <div class="row">
+        <p style="font-weight: bold;">Message</p>
+        <div class="form-group">
+            <div class="col-sm-3" style="margin-left: -20px;">
+                <p>From</p>
+                <select data-field="liveSearchFromDropDown" id="from" style="width: 200px;"></select>
+            </div>
+            <div class="col-sm-3">
+                <p>Reply to (optional)
+                    <a data-field="replyPopover" tabindex="0" role="button" data-toggle="popover" data-trigger="hover" data-html="true" class="popover-pf-info" data-content="An optional user or group that should receive replies to the notification." data-placement="top">
+                        <span class="glyphicon glyphicon-info-sign"></span>
+                    </a>
+                </p>
+                <select data-field="liveSearchReplyToDropDown" id="replyTo" style="width: 200px;"></select>
             </div>
         </div>
-
-        <div class="form-group row">
-            <label data-i18n-key="notification.toGroups" for="groups" class="col-sm-2 col-form-label" style="width: 100px;"></label>
-            <div class="col-sm-10">
-                <div id="groups" data-field="multipleSelectorInputGroups" style="width: 250px;"></div>
+    </div>
+    <div class="row">
+        <div class="form-group">
+            <div class="col-sm-3" style="margin-left: -20px;">
+                <p>To: user(s)</p>
+                <select data-field="multipleSelectorInputUsers" id="toUsers" style="width: 200px;"></select>
+            </div>
+            <div class="col-sm-3">
+                <p>To: group(s)</p>
+                <select data-field="multipleSelectorInputGroups" id="toGroups" style="width: 200px;"></select>
             </div>
         </div>
+    </div>
+    <div class="row">
+        <input data-field="subject" type="text" class="form-control" max='99' placeholder='Enter the subject here.' style=' width:500px;    margin-top: 20px;'>
+    </div>
+    <div class="row">
+        <textarea data-field="body" placeholder="Enter the body of your message here" class="form-control" rows="5" id="comment" style="width:500px; resize: none;   margin-top: 20px;"></textarea>
+    </div>
+    <div class="row" data-field="errorDivPanel" style="width: 500px; margin-top:10px; color:red;">
+    </div>
 
-        <div class="form-group row">
-            <label data-i18n-key="notification.replyTo" for="replyTo" class="col-sm-2 col-form-label" style="width: 100px;"></label>
-            <div class="col-sm-10">
-                <div id="replyTo" data-field="liveSearchReplyToDropDown" style="width: 250px;"></div>
-            </div>
-        </div>
-
-        <div class="form-group row">
-            <label data-i18n-key="notification.subject" for="subject" class="col-sm-2 col-form-label" style="width: 100px;"></label>
-            <div class="col-sm-10">
-                <div id="subject" data-field="subject" style="width: 250px;"></div>
-            </div>
-        </div>
-
-        <div class="form-group row">
-            <label data-i18n-key="notification.body" for="body" class="col-sm-2 col-form-label" style="width: 100px;"></label>
-            <div class="col-sm-10">
-                <div id="body" data-field="body" style="width: 250px; resize: none;"></div>
-            </div>
-        </div>
+    <div class="row" style="width: 500px; margin-top:10px;">
         <div class="text-right">
-            <button data-i18n-key="reassignment.close" type="button" data-field="closeButton" class="btn btn-default"></button>
-            <button data-i18n-key="reassignment.save" type="button" data-field="saveButton" class="btn btn-primary"></button>
+            <button data-i18n-key="reassignment.close" type="button" data-field="closeButton" class="btn btn-default">Cancel</button>
+            <button data-i18n-key="reassignment.save" type="button" data-field="saveButton" class="btn btn-primary">Save</button>
         </div>
-    </form>
+    </div>
 </div>

@@ -93,11 +93,11 @@ public class ParsedNotificationsInfos {
     }
 
     private static void getSubject(NotificationValue notification, String body) {
-        notification.setSubject(parseElement(body, "subject", 4));
+        notification.setSubject(replaceVerticalBar(parseElement(body, "subject", 4)));
     }
 
     private static void getBody(NotificationValue notification, String body) {
-        notification.setBody(parseElement(body, "body", 5));
+        notification.setBody(replaceVerticalBar(parseElement(body, "body", 5)));
     }
 
     private static void parsePeriod(NotificationValue notification, String part) {
@@ -114,6 +114,10 @@ public class ParsedNotificationsInfos {
 
     public static String ofCDATA(NotificationTypeListValue values, AssociationType type) {
         return new ParsedNotificationsInfos.CDATA(values, type).get();
+    }
+
+    private static String replaceVerticalBar(String value) {
+        return value != null ? value.replaceAll("&#124;","|") : null;
     }
 
     private static class CDATA {

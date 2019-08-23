@@ -20,44 +20,33 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
+public enum Expiration {
+    EXPRESSION("Expression"),
+    DATETIME("Date/time"),
+    TIMEPERIOD("Time period");
 
-@Portable
-public enum Duration {
-    MINUTE("minutes", "m"),
-    HOUR("hours", "H"),
-    DAYS("days", "D"),
-    MONTHS("months", "M"),
-    YEARS("years", "Y");
-
-    private static final Map<String, Duration> ENUM_MAP;
+    private static Map<String, Expiration> ENUM_MAP;
 
     static {
-        Map<String, Duration> map = new ConcurrentHashMap<>();
-        for (Duration instance : Duration.values()) {
-            map.put(instance.getAlias(), instance);
+        Map<String, Expiration> map = new ConcurrentHashMap<>();
+        for (Expiration instance : Expiration.values()) {
+            map.put(instance.getName(), instance);
         }
         ENUM_MAP = Collections.unmodifiableMap(map);
     }
 
-    private String type;
+    private String name;
 
-    private String alias;
-
-    Duration(String type, String alias) {
-        this.type = type;
-        this.alias = alias;
+    Expiration(String name) {
+        this.name = name;
     }
 
-    public static Duration get(String name) {
+    public static Expiration get(String name) {
         return ENUM_MAP.get(name);
     }
 
-    public String getType() {
-        return type;
+    public String getName() {
+        return name;
     }
 
-    public String getAlias() {
-        return alias;
-    }
 }

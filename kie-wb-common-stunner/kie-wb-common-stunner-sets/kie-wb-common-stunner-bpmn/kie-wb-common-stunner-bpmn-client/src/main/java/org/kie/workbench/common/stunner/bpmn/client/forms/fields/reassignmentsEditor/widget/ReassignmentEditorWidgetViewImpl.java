@@ -159,7 +159,6 @@ public class ReassignmentEditorWidgetViewImpl extends Composite implements Reass
         modal.setSize(ModalSize.MEDIUM);
         modal.setBody(this);
         modal.setClosable(false);
-        modal.addShowHandler(modalShowEvent -> periodBox.onShow());
         modal.addDomHandler(getEscDomHandler(), KeyDownEvent.getType());
     }
 

@@ -14,17 +14,19 @@
   ~ limitations under the License.
   -->
 <div class="form-group row">
-    <label for="inputPeriod" class="col-sm-2 col-form-label" style="width: 100px;">Period</label>
-    <div class="col-sm-10">
-        <div class="input-group" style="width: 175px;" data-field="divPeriodInputGroup">
-            <input data-field="numberPeriod" style="width: 80px;" id="inputPeriod" class="form-control"
-                   placeholder="period" name="period" min="0"
-                   type="number"/>
-            <div data-field="unitPeriod" class="form-control " name="unit"
-                 id="unitPeriod"></div>
-            <div data-field="error"></div>
-
-        </div>
+    <label for="inputPeriod" data-field="inputPeriodLabel" class="col-sm-2 col-form-label" style="width: 100px;">Period</label>
+    <div class="col-sm-5">
+        <input data-field="numberPeriod" style="width: 80px;" id="inputPeriod" class="form-control"
+               placeholder="period" name="period" min="0"
+               type="number" value="1"/>
     </div>
+    <div class="col-sm-6">
+        <div data-field="unitPeriod" class="form-control " name="unit"
+             id="unitPeriod"></div>
+    </div>
+    <div data-field="error"></div>
+
+</div>
+</div>
 
 </div>

@@ -24,12 +24,10 @@ import java.util.stream.Collectors;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
-import org.kie.workbench.common.stunner.bpmn.forms.validation.notification.ValidNotificationValue;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 @Bindable
-@ValidNotificationValue
 public class NotificationValue {
 
     private String body;
@@ -140,8 +138,8 @@ public class NotificationValue {
                 "|tousers:" + users.stream().collect(Collectors.joining(",")) +
                 "|togroups:" + groups.stream().collect(Collectors.joining(",")) +
                 "|replyTo:" + replyTo +
-                "|subject:" + subject +
-                "|body:" + body +
+                "|subject:" + (subject != null ? subject.replaceAll("\\|","&#124;") : "") +
+                "|body:" + (body != null ? body.replaceAll("\\|","&#124;") : "") +
                 "]@[" + expiresAt + "]";
     }
 

@@ -29,6 +29,10 @@ import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationServic
 public class NotificationEditorWidget implements IsWidget,
                                                  NotificationEditorWidgetView.Presenter {
 
+    private static final String EXPIRATION_PREFIX = "notification.expiration.";
+
+    private static final String EXPIRATION_POSTFIX = ".label";
+
     private NotificationEditorWidgetView view;
 
     private ClientTranslationService translationService;
@@ -49,6 +53,11 @@ public class NotificationEditorWidget implements IsWidget,
     @Override
     public String getNameHeader() {
         return translationService.getValue(StunnerBPMNConstants.NOTIFICATION_LABEL);
+    }
+
+    @Override
+    public String getExpirationLabel(String type) {
+        return translationService.getValue(EXPIRATION_PREFIX + type.toLowerCase() + EXPIRATION_POSTFIX);
     }
 
     @Override
