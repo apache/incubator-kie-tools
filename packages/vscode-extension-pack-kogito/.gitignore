@@ -4,3 +4,4 @@ node_modules
 *.vsix
 dist
 *.dockerimage
+vscode-it-test-report.xml
