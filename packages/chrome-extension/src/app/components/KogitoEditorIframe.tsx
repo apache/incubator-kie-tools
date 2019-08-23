@@ -23,7 +23,7 @@ import { getGitHubEditor } from "../utils";
 
 export function KogitoEditorIframe(props: { openFileExtension: string; githubEditor: HTMLElement; router: Router }) {
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
-  const targetOrigin = "https://raw.githubusercontent.com";
+
 
   const [globalState, setGlobalState] = useContext(GlobalContext);
 
@@ -31,7 +31,7 @@ export function KogitoEditorIframe(props: { openFileExtension: string; githubEdi
     {
       postMessage: msg => {
         if (iframeRef.current && iframeRef.current.contentWindow) {
-          iframeRef.current.contentWindow.postMessage(msg, targetOrigin);
+          iframeRef.current.contentWindow.postMessage(msg, props.router.getTargetOrigin());
         }
       }
     },

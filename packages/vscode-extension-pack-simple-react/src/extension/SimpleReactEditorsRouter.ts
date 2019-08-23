@@ -50,4 +50,8 @@ export class SimpleReactEditorsRouter implements Router {
   public getLanguageData(fileExtension: string) {
     return this.languageDataByFileExtension.get(fileExtension);
   }
+
+  public getTargetOrigin(): string {
+    throw new Error("VSCode Simple React should not depend on external resources");
+  }
 }

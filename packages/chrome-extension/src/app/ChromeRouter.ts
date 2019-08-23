@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-import { LanguageData, Router } from "appformer-js-core";
-import { Routes } from "appformer-js-core";
+import { LanguageData, Router, Routes } from "appformer-js-core";
 
 export class ChromeRouter implements Router {
   private readonly languageDataByFileExtension: Map<string, LanguageData>;
@@ -30,10 +29,14 @@ export class ChromeRouter implements Router {
   }
 
   public getRelativePathTo(uri: string): string {
-    return `https://raw.githubusercontent.com/tiagobento/kogito-tooling-gwt-editors/master/${uri}`;
+    return `${this.getTargetOrigin()}/tiagobento/kogito-tooling-gwt-editors/master/${uri}`;
   }
 
   public getLanguageData(fileExtension: string) {
     return this.languageDataByFileExtension.get(fileExtension);
+  }
+
+  public getTargetOrigin() {
+    return "https://raw.githubusercontent.com";
   }
 }

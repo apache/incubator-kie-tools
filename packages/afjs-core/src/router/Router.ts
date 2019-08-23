@@ -34,6 +34,11 @@ export interface Router {
    * @param uri The relative path URI.
    */
   getRelativePathTo(uri: string): string;
+
+  /**
+   * Returns the domain of the envelope
+   */
+  getTargetOrigin(): string;
 }
 
 /**

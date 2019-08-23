@@ -17,56 +17,30 @@
 import { Router, Routes } from "appformer-js-core";
 import { gwtEditors, GwtLanguageData } from "appformer-js-gwt-editors-common";
 
-const dmnLocation = "dmn";
 const bpmnLocation = "bpmn";
 
 export class GwtEditorChromeExtensionRoutes implements Routes {
   public getRoutes(router: Router) {
-    return new Map<string, GwtLanguageData>([
-      [
-        "dmn",
+    const bpmnLanguageData: GwtLanguageData = {
+      type: "gwt",
+      editorId: gwtEditors.bpmn.id,
+      gwtModuleName: gwtEditors.bpmn.name,
+      resources: [
         {
-          type: "gwt",
-          editorId: gwtEditors.dmn.id,
-          gwtModuleName: gwtEditors.dmn.name,
-          resources: [
-            {
-              type: "css",
-              paths: [router.getRelativePathTo(`${dmnLocation}${gwtEditors.dmn.name}/css/patternfly.min.css`)]
-            },
-            {
-              type: "js",
-              paths: [
-                router.getRelativePathTo(`${dmnLocation}/${gwtEditors.dmn.name}/ace/ace.js`),
-                router.getRelativePathTo(`${dmnLocation}/${gwtEditors.dmn.name}/ace/theme-chrome.js`),
-                router.getRelativePathTo(`${dmnLocation}/${gwtEditors.dmn.name}/${gwtEditors.dmn.name}.nocache.js`)
-              ]
-            }
-          ]
-        }
-      ],
-      [
-        "bpmn",
+          type: "css",
+          paths: [router.getRelativePathTo(`${bpmnLocation}/${gwtEditors.bpmn.name}/css/patternfly.min.css`)]
+        },
         {
-          type: "gwt",
-          editorId: gwtEditors.bpmn.id,
-          gwtModuleName: gwtEditors.bpmn.name,
-          resources: [
-            {
-              type: "css",
-              paths: [router.getRelativePathTo(`${bpmnLocation}/${gwtEditors.bpmn.name}/css/patternfly.min.css`)]
-            },
-            {
-              type: "js",
-              paths: [
-                router.getRelativePathTo(`${bpmnLocation}/${gwtEditors.bpmn.name}/ace/ace.js`),
-                router.getRelativePathTo(`${bpmnLocation}/${gwtEditors.bpmn.name}/ace/theme-chrome.js`),
-                router.getRelativePathTo(`${bpmnLocation}/${gwtEditors.bpmn.name}/${gwtEditors.bpmn.name}.nocache.js`)
-              ]
-            }
+          type: "js",
+          paths: [
+            router.getRelativePathTo(`${bpmnLocation}/${gwtEditors.bpmn.name}/ace/ace.js`),
+            router.getRelativePathTo(`${bpmnLocation}/${gwtEditors.bpmn.name}/ace/theme-chrome.js`),
+            router.getRelativePathTo(`${bpmnLocation}/${gwtEditors.bpmn.name}/${gwtEditors.bpmn.name}.nocache.js`)
           ]
         }
       ]
-    ]);
+    };
+
+    return new Map<string, GwtLanguageData>([["bpmn", bpmnLanguageData], ["bpmn2", bpmnLanguageData]]);
   }
 }

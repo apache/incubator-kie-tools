@@ -15,7 +15,7 @@
  */
 
 import { Router, Routes } from "appformer-js-core";
-import { GwtLanguageData, gwtEditors } from "appformer-js-gwt-editors-common";
+import { gwtEditors, GwtLanguageData } from "appformer-js-gwt-editors-common";
 
 const bpmnDistPath = `dist/webview/editors/bpmn/`;
 

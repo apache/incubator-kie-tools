@@ -18,7 +18,7 @@ import { LanguageData, Router, Routes } from "appformer-js-core";
 import * as vscode from "vscode";
 import * as __path from "path";
 
-export class KogitoRouter implements Router {
+export class VsCodeKogitoRouter implements Router {
   private readonly context: vscode.ExtensionContext;
   private readonly languageDataByFileExtension: Map<string, LanguageData>;
 
@@ -37,11 +37,15 @@ export class KogitoRouter implements Router {
 
   public getRelativePathTo(uri: string) {
     return vscode.Uri.file(__path.join(this.context.extensionPath, ...uri.split("/")))
-        .with({ scheme: "vscode-resource" })
-        .toString();
+      .with({ scheme: "vscode-resource" })
+      .toString();
   }
 
   public getLanguageData(fileExtension: string) {
     return this.languageDataByFileExtension.get(fileExtension);
+  }
+
+  public getTargetOrigin(): string {
+    throw new Error("VSCode Kogito should not depend on external resources");
   }
 }
