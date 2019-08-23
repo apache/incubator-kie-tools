@@ -252,8 +252,10 @@ public class AddProjectPopUpPresenter {
 
                            libraryService.call((WorkspaceProject project) -> {
                                                    newProjectPath = project.getRootPath();
+                                                   endProjectCreation();
+                                                   view.hide();
+                                                   notifySuccess();
                                                    if (projectsIndexed.contains(newProjectPath)) {
-                                                       endProjectCreation();
                                                        getSuccessCallback().execute(project);
                                                    }
                                                },
@@ -268,7 +270,6 @@ public class AddProjectPopUpPresenter {
         projectsIndexed.add(event.getPath());
         if (newProjectPath != null && newProjectPath.equals(event.getPath())) {
             projectService.call((WorkspaceProject project) -> {
-                                    endProjectCreation();
                                     getSuccessCallback().execute(project);
                                 },
                                 (o, throwable) -> {
@@ -393,8 +394,6 @@ public class AddProjectPopUpPresenter {
 
     public ParameterizedCommand<WorkspaceProject> getProjectCreationSuccessCallback() {
         return project -> {
-            view.hide();
-            notifySuccess();
             libraryPlaces.goToProject(project);
         };
     }

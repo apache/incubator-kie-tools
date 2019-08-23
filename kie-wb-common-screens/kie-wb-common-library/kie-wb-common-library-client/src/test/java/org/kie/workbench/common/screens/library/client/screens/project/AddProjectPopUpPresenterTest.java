@@ -193,7 +193,7 @@ public class AddProjectPopUpPresenterTest {
         verify(libraryService).createProject(eq(organizationalUnit),
                                              pomArgumentCaptor.capture(),
                                              eq(DeploymentMode.VALIDATED));
-        verify(view, never()).setAddButtonEnabled(true);
+        verify(view).setAddButtonEnabled(true);
     }
 
     @Test
@@ -216,7 +216,7 @@ public class AddProjectPopUpPresenterTest {
         verify(libraryService).createProject(eq(organizationalUnit),
                                              pomArgumentCaptor.capture(),
                                              eq(DeploymentMode.VALIDATED));
-        verify(view, never()).setAddButtonEnabled(true);
+        verify(view).setAddButtonEnabled(true);
 
         final POM pom = pomArgumentCaptor.getValue();
 
@@ -252,7 +252,7 @@ public class AddProjectPopUpPresenterTest {
         verify(libraryService).createProject(eq(organizationalUnit),
                                              pomArgumentCaptor.capture(),
                                              eq(DeploymentMode.VALIDATED));
-        verify(view, never()).setAddButtonEnabled(true);
+        verify(view).setAddButtonEnabled(true);
         
         final POM pom = pomArgumentCaptor.getValue();
 
@@ -277,9 +277,9 @@ public class AddProjectPopUpPresenterTest {
 
         verify(view).setAddButtonEnabled(false);
         verify(view).showBusyIndicator(anyString());
-        verify(view, never()).setAddButtonEnabled(true);
-        verify(view, never()).hide();
-        verify(notificationEvent, never()).fire(any(NotificationEvent.class));
+        verify(view).setAddButtonEnabled(true);
+        verify(view).hide();
+        verify(notificationEvent).fire(any(NotificationEvent.class));
         verify(libraryPlaces, never()).goToProject(any(WorkspaceProject.class));
     }
 
@@ -542,7 +542,7 @@ public class AddProjectPopUpPresenterTest {
 
         verify(view).setAddButtonEnabled(false);
         verify(view).showBusyIndicator(anyString());
-        verify(view, never()).setAddButtonEnabled(true);
+        verify(view).setAddButtonEnabled(true);
         verify(command, never()).execute(any());
     }
 
