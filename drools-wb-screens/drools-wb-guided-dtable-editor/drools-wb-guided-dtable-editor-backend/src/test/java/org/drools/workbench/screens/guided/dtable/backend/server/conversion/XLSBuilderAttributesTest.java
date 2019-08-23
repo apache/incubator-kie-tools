@@ -137,16 +137,16 @@ public class XLSBuilderAttributesTest
     public void content() {
 
         assertEquals("0", cell(9, 1).getStringCellValue());
-        assertEquals("09-Aug-2019", cell(9, 2).getStringCellValue());
-        assertEquals(true, cell(9, 3).getBooleanCellValue());
-        assertEquals(true, cell(9, 4).getBooleanCellValue());
-        assertEquals("09-Aug-2019", cell(9, 5).getStringCellValue());
+        assertEquals("\"09-Aug-2019\"", cell(9, 2).getStringCellValue());
+        assertEquals("true", cell(9, 3).getStringCellValue());
+        assertEquals("true", cell(9, 4).getStringCellValue());
+        assertEquals("\"09-Aug-2019\"", cell(9, 5).getStringCellValue());
         assertEquals("agenda group cell", cell(9, 6).getStringCellValue());
         assertEquals("activation group cell", cell(9, 7).getStringCellValue());
         assertEquals("", cell(9, 8).getStringCellValue());
         assertEquals("", cell(9, 9).getStringCellValue());
-        assertEquals(true, cell(9, 10).getBooleanCellValue());
-        assertEquals(true, cell(9, 11).getBooleanCellValue());
+        assertEquals("true", cell(9, 10).getStringCellValue());
+        assertEquals("true", cell(9, 11).getStringCellValue());
         assertEquals("rule flow group value", cell(9, 12).getStringCellValue());
         assertEquals("mvel", cell(9, 13).getStringCellValue());
         assertEquals("0", cell(9, 14).getStringCellValue());

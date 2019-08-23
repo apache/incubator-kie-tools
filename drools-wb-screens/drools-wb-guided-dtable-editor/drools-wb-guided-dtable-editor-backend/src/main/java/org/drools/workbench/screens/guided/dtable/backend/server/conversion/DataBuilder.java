@@ -15,14 +15,15 @@
  */
 package org.drools.workbench.screens.guided.dtable.backend.server.conversion;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.drools.core.util.DateUtils;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionRetractFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
@@ -62,10 +63,23 @@ public class DataBuilder {
     public void build() {
 
         for (final List<DTCellValue52> row : dtable.getData()) {
-            int sourceColumnIndex = 0;
-            int targetColumnIndex = -1;
-            final Row xlsRow = sheet.createRow(rowCount);
-            final List<String> addedInserts = new ArrayList<>();
+            new DataRowBuilder(row).build();
+        }
+    }
+
+    class DataRowBuilder {
+
+        private final Row xlsRow = sheet.createRow(rowCount);
+        private final Set<String> addedInserts = new HashSet<>();
+        private final List<DTCellValue52> row;
+        private int sourceColumnIndex = 0;
+        private int targetColumnIndex = -1;
+
+        public DataRowBuilder(List<DTCellValue52> row) {
+            this.row = row;
+        }
+
+        public void build() {
 
             for (final DTCellValue52 cell : row) {
 
@@ -97,60 +111,7 @@ public class DataBuilder {
 
                         final DataType.DataTypes dataType = getColumnDataType(sourceColumnIndex);
 
-                        switch (dataType) {
-
-                            case STRING:
-
-                                if (isTheRealCellValueString(sourceColumnIndex) && cell.getStringValue() != null) {
-
-                                    if (cell.getStringValue() != null && !cell.getStringValue().isEmpty()) {
-
-                                        xlsRow.createCell(targetColumnIndex)
-                                                .setCellValue(String.format("\"%s\"", fixStringValue(cell)));
-                                    }
-                                } else {
-                                    /*
-                                     * Values from lists of dates or enumerations are stored as Strings.
-                                     * For this reason we check the real data type and drop the surrounding "" if the real value was not String.
-                                     */
-                                    xlsRow.createCell(targetColumnIndex)
-                                            .setCellValue(cell.getStringValue());
-                                }
-
-                                break;
-                            case NUMERIC:
-                            case NUMERIC_BIGDECIMAL:
-                            case NUMERIC_BIGINTEGER:
-                            case NUMERIC_BYTE:
-                            case NUMERIC_DOUBLE:
-                            case NUMERIC_FLOAT:
-                            case NUMERIC_INTEGER:
-                            case NUMERIC_LONG:
-                            case NUMERIC_SHORT:
-                                final Number numericValue = cell.getNumericValue();
-                                if (numericValue != null) {
-                                    xlsRow.createCell(targetColumnIndex)
-                                            .setCellValue(numericValue.toString());
-                                }
-                                break;
-                            case DATE:
-                                final Date dateValue = cell.getDateValue();
-                                if (dateValue != null) {
-
-                                    final SimpleDateFormat formatter = new SimpleDateFormat(getDateFormat());
-
-                                    xlsRow.createCell(targetColumnIndex)
-                                            .setCellValue(formatter.format(dateValue));
-                                }
-                                break;
-                            case BOOLEAN:
-                                final Boolean booleanValue = cell.getBooleanValue();
-                                if (booleanValue != null) {
-                                    xlsRow.createCell(targetColumnIndex)
-                                            .setCellValue(booleanValue);
-                                }
-                                break;
-                        }
+                        setValue(cell, dataType);
                     }
                 }
                 sourceColumnIndex++;
@@ -158,31 +119,100 @@ public class DataBuilder {
             }
             rowCount++;
         }
-    }
 
-    private String fixStringValue(DTCellValue52 cell) {
-        if (cell.getStringValue().length() > 2 && cell.getStringValue().startsWith("\"") && cell.getStringValue().endsWith("\"")) {
-            return cell.getStringValue().substring(1, cell.getStringValue().length() - 1);
-        } else {
-            return cell.getStringValue();
+        private void setValue(final DTCellValue52 cell,
+                              final DataType.DataTypes dataType) {
+            switch (dataType) {
+
+                case STRING:
+
+                    setStringValue(cell);
+                    break;
+                case NUMERIC:
+                case NUMERIC_BIGDECIMAL:
+                case NUMERIC_BIGINTEGER:
+                case NUMERIC_BYTE:
+                case NUMERIC_DOUBLE:
+                case NUMERIC_FLOAT:
+                case NUMERIC_INTEGER:
+                case NUMERIC_LONG:
+                case NUMERIC_SHORT:
+                    setNumericValue(cell);
+                    break;
+                case DATE:
+                    setDateValue(cell);
+                    break;
+                case BOOLEAN:
+                    setBooleanValue(cell);
+                    break;
+            }
         }
-    }
 
-    private String getDateFormat() {
-        final String property = System.getProperty(DROOLS_DATE_TIME_FORMAT_KEY);
-        if (property == null) {
-            return DEFAULT_DATE_TIME_FORMAT;
-        } else {
-            return property;
+        private void setNumericValue(final DTCellValue52 cell) {
+            final Number numericValue = cell.getNumericValue();
+            if (numericValue != null) {
+                xlsRow.createCell(targetColumnIndex)
+                        .setCellValue(numericValue.toString());
+            }
         }
-    }
 
-    private boolean isTheRealCellValueString(final int sourceColumnIndex) {
-        return !(dtable.getExpandedColumns().get(sourceColumnIndex) instanceof AttributeCol52)
-                && Objects.equals(DataType.DataTypes.STRING, utilsWithNoRespectForLists.getTypeSafeType(dtable.getExpandedColumns().get(sourceColumnIndex)));
-    }
+        private void setBooleanValue(final DTCellValue52 cell) {
+            final Boolean booleanValue = cell.getBooleanValue();
+            if (booleanValue != null) {
+                xlsRow.createCell(targetColumnIndex)
+                        .setCellValue(booleanValue.toString());
+            }
+        }
 
-    private DataType.DataTypes getColumnDataType(final int columnIndex) {
-        return utilsWithRespectForLists.getTypeSafeType(dtable.getExpandedColumns().get(columnIndex));
+        private void setDateValue(final DTCellValue52 cell) {
+            final Date dateValue = cell.getDateValue();
+            if (dateValue != null) {
+
+                xlsRow.createCell(targetColumnIndex)
+                        .setCellValue(String.format("\"%s\"", DateUtils.format(dateValue)));
+            }
+        }
+
+        private void setStringValue(final DTCellValue52 cell) {
+            if (isTheRealCellValueString(sourceColumnIndex) && cell.getStringValue() != null) {
+
+                if (cell.getStringValue() != null && !cell.getStringValue().isEmpty()) {
+
+                    xlsRow.createCell(targetColumnIndex)
+                            .setCellValue(String.format("\"%s\"", fixStringValue(cell)));
+                }
+            } else {
+                /*
+                 * Values from lists of dates or enumerations are stored as Strings.
+                 * For this reason we check the real data type and drop the surrounding "" if the real value was not String.
+                 */
+                if (Objects.equals(DataType.DataTypes.STRING, cell.getDataType())) {
+
+                    xlsRow.createCell(targetColumnIndex)
+                            .setCellValue(cell.getStringValue());
+                } else {
+
+                    setValue(cell,
+                             cell.getDataType());
+                }
+            }
+        }
+
+        private String fixStringValue(final DTCellValue52 cell) {
+            if (cell.getStringValue().length() > 2 && cell.getStringValue().startsWith("\"") && cell.getStringValue().endsWith("\"")) {
+                return cell.getStringValue().substring(1, cell.getStringValue().length() - 1);
+            } else {
+                return cell.getStringValue();
+            }
+        }
+
+        private boolean isTheRealCellValueString(final int sourceColumnIndex) {
+            return !(dtable.getExpandedColumns().get(sourceColumnIndex) instanceof AttributeCol52)
+                    && Objects.equals(DataType.DataTypes.STRING, utilsWithNoRespectForLists.getTypeSafeType(dtable.getExpandedColumns().get(sourceColumnIndex)));
+        }
+
+        private DataType.DataTypes getColumnDataType(final int columnIndex) {
+            return utilsWithRespectForLists.getTypeSafeType(dtable.getExpandedColumns().get(columnIndex));
+        }
     }
 }
