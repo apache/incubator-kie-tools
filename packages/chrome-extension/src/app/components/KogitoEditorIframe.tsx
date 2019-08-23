@@ -36,24 +36,31 @@ export function KogitoEditorIframe(props: { openFileExtension: string; githubEdi
       }
     },
     self => ({
-      pollInit: () => {
+      pollInit() {
         self.request_initResponse(window.location.origin);
       },
-      receive_languageRequest: () => {
+      receive_languageRequest() {
         self.respond_languageRequest(props.router.getLanguageData(props.openFileExtension));
       },
-      receive_contentResponse: (content: string) => {
+      receive_contentResponse(content: string) {
         // enableCommitButton();
         getGitHubEditor().CodeMirror.setValue(content);
       },
-      receive_contentRequest: () => {
+      receive_contentRequest() {
         // const githubEditorContent = getGitHubEditor().CodeMirror.getValue() || "";
-        self.respond_contentRequest((document.querySelector(".form-control.file-editor-textarea.js-blob-contents.js-code-textarea") as HTMLTextAreaElement)!.textContent!);
+        self.respond_contentRequest(
+          (document.querySelector(
+            ".form-control.file-editor-textarea.js-blob-contents.js-code-textarea"
+          ) as HTMLTextAreaElement)!.textContent!
+        );
+      },
+      receive_setContentError() {
+        console.info("Set content error");
       },
       receive_dirtyIndicatorChange(isDirty: boolean) {
         console.info(`Dirty indicator changed to ${isDirty}`);
       },
-      receive_ready(): void {
+      receive_ready() {
         console.info(`Editor is ready`);
         setGlobalState({ ...globalState, textModeEnabled: true });
       }

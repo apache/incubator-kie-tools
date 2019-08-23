@@ -7,5 +7,5 @@ out/
 **/.DS_Store
 *.log
 yarn.lock
-packages/unpacked-gwt-editors/bpmn/
-packages/unpacked-gwt-editors/dmn/
+packages/unpacked-gwt-editors/dmn
+packages/unpacked-gwt-editors/bpmn

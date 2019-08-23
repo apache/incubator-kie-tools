@@ -66,6 +66,9 @@ export class KogitoEditor {
         receive_contentRequest: () => {
           self.respond_contentRequest(fs.readFileSync(this.path).toString());
         },
+        receive_setContentError: (errorMessage: string) => {
+          vscode.window.showErrorMessage(errorMessage);
+        },
         receive_dirtyIndicatorChange: (isDirty: boolean) => {
           this.updateDirtyIndicator(isDirty);
         },

@@ -23,7 +23,7 @@ export function activate(context: vscode.ExtensionContext) {
   console.info("Extension is alive.");
 
   KogitoVsCode.startExtension({
-    extensionName: "kiegroup.appformer-js-vscode-extension-pack-kogito",
+    extensionName: "kiegroup.appformer-js-vscode-extension-pack-kogito-bpmn",
     webviewLocation: "dist/webview/index.js",
     context: context,
     router: new KogitoRouter(context, new GwtEditorVsCodeRoutes())

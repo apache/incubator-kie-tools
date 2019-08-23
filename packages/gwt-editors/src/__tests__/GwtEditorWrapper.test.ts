@@ -23,13 +23,24 @@ const MockEditor = jest.fn(() => ({
 }));
 
 const mockEditor = new MockEditor();
+const mockMessageBus = { notify_setContentError: jest.fn() };
 
-const wrapper = new GwtEditorWrapper(mockEditor);
+const wrapper = new GwtEditorWrapper(mockEditor, mockMessageBus as any);
 
 describe("GwtEditorWrapper", () => {
-  test("set content", () => {
-    wrapper.setContent(" a content ");
+  test("set content", async () => {
+    await wrapper.setContent(" a content ");
     expect(mockEditor.setContent).toHaveBeenCalledWith("a content");
+  });
+
+  test("set content error", async () => {
+    mockEditor.setContent = jest.fn(() => {
+      throw new Error();
+    });
+
+    await wrapper.setContent(" a content ");
+    expect(mockEditor.setContent).toHaveBeenCalledWith("a content");
+    expect(mockMessageBus.notify_setContentError).toHaveBeenCalled();
   });
 
   test("af_onOpen removes header", () => {

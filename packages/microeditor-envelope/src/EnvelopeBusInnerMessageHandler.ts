@@ -72,6 +72,10 @@ export class EnvelopeBusInnerMessageHandler {
     return this.send({ type: EnvelopeBusMessageType.REQUEST_CONTENT, data: undefined });
   }
 
+  public notify_setContentError(errorMessage: string) {
+    this.send({ type: EnvelopeBusMessageType.NOTIFY_SET_CONTENT_ERROR, data: errorMessage })
+  }
+
   public notify_dirtyIndicatorChange(isDirty: boolean) {
     return this.send({ type: EnvelopeBusMessageType.NOTIFY_DIRTY_INDICATOR_CHANGE, data: isDirty });
   }

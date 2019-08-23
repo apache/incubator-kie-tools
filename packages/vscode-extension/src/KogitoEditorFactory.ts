@@ -52,7 +52,7 @@ export class KogitoEditorFactory {
   }
 
   private openNewPanel(path: string) {
-    const panelTitle = path.split("/").pop()! + " 🦉";
+    const panelTitle = path.split("/").pop()!;
 
     //this will open a panel on vscode's UI.
     return vscode.window.createWebviewPanel(

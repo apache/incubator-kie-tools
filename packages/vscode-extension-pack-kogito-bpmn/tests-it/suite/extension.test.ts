@@ -70,28 +70,28 @@ suite("vscode extension :: integration tests", () => {
     assert.strictEqual(vscode.window.visibleTextEditors.length, 1);
   });
 
-  test("open custom editor", async () => {
+  test("open bpmn editor", async () => {
     const editorStack = editorStackWithLength(2);
 
-    const dmnFile = `${testWorkspace}/demo.dmn`;
-    await openForTheFirstTime(dmnFile);
+    const bpmnFile = `${testWorkspace}/demo.bpmn`;
+    await openForTheFirstTime(bpmnFile);
 
-    assert.deepStrictEqual([dmnFile, NONE], await editorStack);
+    assert.deepStrictEqual([bpmnFile, NONE], await editorStack);
     assert.strictEqual(vscode.window.activeTextEditor, undefined);
     assert.strictEqual(vscode.window.visibleTextEditors.length, 0);
   });
 
-  test("reopen custom editor", async () => {
+  test("reopen bpmn editor", async () => {
     const editorStack = editorStackWithLength(6);
 
-    const dmnFile = `${testWorkspace}/demo.dmn`;
+    const bpmnFile = `${testWorkspace}/demo.bpmn`;
     const txtFile = `${testWorkspace}/example.txt`;
 
-    await openForTheFirstTime(dmnFile);
+    await openForTheFirstTime(bpmnFile);
     await open(txtFile);
-    await open(dmnFile);
+    await open(bpmnFile);
 
-    assert.deepStrictEqual([dmnFile, NONE, txtFile, NONE, dmnFile, NONE], await editorStack);
+    assert.deepStrictEqual([bpmnFile, NONE, txtFile, NONE, bpmnFile, NONE], await editorStack);
     assert.strictEqual(vscode.window.activeTextEditor, undefined);
     assert.strictEqual(vscode.window.visibleTextEditors.length, 0);
   });

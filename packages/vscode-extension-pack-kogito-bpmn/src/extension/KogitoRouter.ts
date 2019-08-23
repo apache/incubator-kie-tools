@@ -37,8 +37,8 @@ export class KogitoRouter implements Router {
 
   public getRelativePathTo(uri: string) {
     return vscode.Uri.file(__path.join(this.context.extensionPath, ...uri.split("/")))
-      .with({ scheme: "vscode-resource" })
-      .toString();
+        .with({ scheme: "vscode-resource" })
+        .toString();
   }
 
   public getLanguageData(fileExtension: string) {
