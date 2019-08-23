@@ -53,19 +53,9 @@
     <uberfire.version>${project.version}</uberfire.version>
     <version.org.kie>7.26.0-SNAPSHOT</version.org.kie>
     <version.org.kie.soup>${version.org.kie}</version.org.kie.soup>
-    <version.com.allen-sauer.gwt.dnd>3.3.3</version.com.allen-sauer.gwt.dnd>
-    <version.com.google.elemental2>1.0.0-beta-1</version.com.google.elemental2>
     <version.com.google.jsinterop.base>1.0.0-beta-1</version.com.google.jsinterop.base>
     <version.org.apache.tomcat>7.0.61</version.org.apache.tomcat>
-    <!-- Version 1.1.0.Final which is coming from ip-bom is not compatible with GWT 2.8.0 -->
-    <version.javax.validation>1.0.0.GA</version.javax.validation>
 
-    <!-- Mockito version downgrade, need changes in tests to upgrade to ip-bom (AF-1800) -->
-    <version.org.mockito>1.10.19</version.org.mockito>
-
-    <!-- Custom Freemarker build with workaround for random concurrent access issue (annotation processors). See AF-600 for more info.-->
-    <version.org.freemarker>2.3.26.jbossorg-1</version.org.freemarker>
-    <version.org.jboss.errai>4.6.0.Final</version.org.jboss.errai>
     <version.org.webjars.bower.org.patternfly>3.18.1</version.org.webjars.bower.org.patternfly>
     <version.org.webjars.bower.google-code-prettify>1.0.4</version.org.webjars.bower.google-code-prettify>
     <version.org.webjars.bower.bootstrap-select>1.10.0</version.org.webjars.bower.bootstrap-select>
@@ -90,10 +80,7 @@
     <version.org.jboss.jboss-dmr>1.4.1.Final</version.org.jboss.jboss-dmr>
     <version.org.jboss.jboss-msc>1.2.7.SP1</version.org.jboss.jboss-msc>
 
-    <version.org.picketlink>2.6.0.Final</version.org.picketlink>
     <version.org.wildfly.security>1.1.3.Final</version.org.wildfly.security>
-    <!-- WildFly version used together with the GWT's Super Dev Mode -->
-    <version.org.wildfly.gwt.sdm>14.0.1.Final</version.org.wildfly.gwt.sdm>
     <!-- Patched WildFly version used for SDM with IntelliJ -->
     <version.org.jboss.errai.wildfly.sdm>14.0.1.Final</version.org.jboss.errai.wildfly.sdm>
 
@@ -118,9 +105,6 @@
 
     <version.io.netty.old>3.10.6.Final</version.io.netty.old>
     <version.org.elasticsearch>5.6.1</version.org.elasticsearch>
-    <version.org.apache.lucene>6.6.1</version.org.apache.lucene>
-    <version.com.unboundid>3.2.0</version.com.unboundid>
-    <version.org.infinispan>9.4.9.Final</version.org.infinispan>
     <version.org.infinispan.protostream>4.2.2.Final</version.org.infinispan.protostream>
 
     <!-- Newer version in ip-bom causes ServiceLoader error -->
@@ -132,10 +116,7 @@
     <revapi.newUberFireVersion>${project.version}</revapi.newUberFireVersion>
 
     <version.com.ahome-it.lienzo-charts>1.0.241-RC1</version.com.ahome-it.lienzo-charts>
-    <!-- Version 4.3.2.Final which is coming from ip-bom is not compatible with with GWT 2.8.0 -->
-    <version.org.hibernate.hibernate-validator>4.1.0.Final</version.org.hibernate.hibernate-validator>
 
-    <version.javax.xml.stream>1.0-2</version.javax.xml.stream>
     <version.com.googlecode.jsonsimple>1.1.1</version.com.googlecode.jsonsimple>
     <version.com.googlecode.jtype>0.1.1</version.com.googlecode.jtype>
 
@@ -146,10 +127,6 @@
 
     <!-- required to fix RHDM-293 -->
     <version.org.apache.logging.log4j.log4j-to-slf4j>2.9.0</version.org.apache.logging.log4j.log4j-to-slf4j>
-
-    <!-- this versions can be removed once these were migrated to jboss-ip-bom > 8.3.0.Final -->
-    <version.org.wildfly>14.0.1.Final</version.org.wildfly>
-    <version.org.wildfly.core>6.0.2.Final</version.org.wildfly.core>
 
     <version.org.arquillian.cube>1.15.3</version.org.arquillian.cube>
 
@@ -943,15 +920,6 @@
         <scope>import</scope>
       </dependency>
 
-      <!-- Errai -->
-      <dependency>
-        <groupId>org.jboss.errai.bom</groupId>
-        <artifactId>errai-internal-bom</artifactId>
-        <version>${version.org.jboss.errai}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-
       <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-jaxrs-client</artifactId>
@@ -959,12 +927,6 @@
         <version>${version.org.jboss.errai}</version>
       </dependency>
 
-      <dependency>
-        <groupId>javax.validation</groupId>
-        <artifactId>validation-api</artifactId>
-        <version>${version.javax.validation}</version>
-        <classifier>sources</classifier>
-      </dependency>
       <dependency>
         <groupId>javax.enterprise</groupId>
         <artifactId>cdi-api</artifactId>
@@ -1064,34 +1026,9 @@
       </dependency>
 
       <dependency>
-        <groupId>com.google.elemental2</groupId>
-        <artifactId>elemental2-core</artifactId>
-        <version>${version.com.google.elemental2}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>com.google.elemental2</groupId>
-        <artifactId>elemental2-dom</artifactId>
-        <version>${version.com.google.elemental2}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>com.google.elemental2</groupId>
-        <artifactId>elemental2-promise</artifactId>
-        <version>${version.com.google.elemental2}</version>
-      </dependency>
-
-      <dependency>
         <groupId>com.google.jsinterop</groupId>
         <artifactId>base</artifactId>
         <version>${version.com.google.jsinterop.base}</version>
-      </dependency>
-
-      <!-- RHDM-588 freemarker -->
-      <dependency>
-        <groupId>org.freemarker</groupId>
-        <artifactId>freemarker</artifactId>
-        <version>${version.org.freemarker}</version>
       </dependency>
 
       <dependency>
@@ -1118,43 +1055,6 @@
             <artifactId>javassist</artifactId>
           </exclusion>
         </exclusions>
-      </dependency>
-
-      <dependency>
-        <groupId>org.picketlink</groupId>
-        <artifactId>picketlink-api</artifactId>
-        <version>${version.org.picketlink}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.picketlink</groupId>
-        <artifactId>picketlink-idm-api</artifactId>
-        <version>${version.org.picketlink}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.picketlink</groupId>
-        <artifactId>picketlink-impl</artifactId>
-        <version>${version.org.picketlink}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.picketlink</groupId>
-        <artifactId>picketlink-idm-impl</artifactId>
-        <version>${version.org.picketlink}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.picketlink</groupId>
-        <artifactId>picketlink-tomcat7-single</artifactId>
-        <version>${version.org.picketlink}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.wildfly.core</groupId>
-        <artifactId>wildfly-controller-client</artifactId>
-        <version>${version.org.wildfly.core}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.core</groupId>
-        <artifactId>wildfly-domain-management</artifactId>
-        <version>${version.org.wildfly.core}</version>
       </dependency>
 
       <dependency>
@@ -1229,47 +1129,7 @@
         <artifactId>netty</artifactId>
         <version>${version.io.netty.old}</version>
       </dependency>
-      <dependency>
-        <groupId>com.unboundid</groupId>
-        <artifactId>unboundid-ldapsdk</artifactId>
-        <version>${version.com.unboundid}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.lucene</groupId>
-        <artifactId>lucene-core</artifactId>
-        <version>${version.org.apache.lucene}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.lucene</groupId>
-        <artifactId>lucene-analyzers-common</artifactId>
-        <version>${version.org.apache.lucene}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.lucene</groupId>
-        <artifactId>lucene-queryparser</artifactId>
-        <version>${version.org.apache.lucene}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.lucene</groupId>
-        <artifactId>lucene-misc</artifactId>
-        <version>${version.org.apache.lucene}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.lucene</groupId>
-        <artifactId>lucene-backward-codecs</artifactId>
-        <version>${version.org.apache.lucene}</version>
-      </dependency>
 
-      <dependency>
-        <groupId>org.infinispan</groupId>
-        <artifactId>infinispan-query-dsl</artifactId>
-        <version>${version.org.infinispan}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.infinispan</groupId>
-        <artifactId>infinispan-remote-query-client</artifactId>
-        <version>${version.org.infinispan}</version>
-      </dependency>
       <dependency>
         <groupId>org.infinispan</groupId>
         <artifactId>infinispan-client-hotrod</artifactId>
@@ -1284,11 +1144,6 @@
             <artifactId>jboss-marshalling-osgi</artifactId>
           </exclusion>
         </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>org.infinispan</groupId>
-        <artifactId>infinispan-query</artifactId>
-        <version>${version.org.infinispan}</version>
       </dependency>
       <dependency>
         <groupId>org.infinispan</groupId>
@@ -1419,23 +1274,6 @@
       </dependency>
 
       <dependency>
-        <groupId>org.hibernate</groupId>
-        <artifactId>hibernate-validator</artifactId>
-        <version>${version.org.hibernate.hibernate-validator}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.hibernate</groupId>
-        <artifactId>hibernate-validator</artifactId>
-        <version>${version.org.hibernate.hibernate-validator}</version>
-        <classifier>sources</classifier>
-      </dependency>
-      <dependency>
-        <groupId>javax.xml.stream</groupId>
-        <artifactId>stax-api</artifactId>
-        <version>${version.javax.xml.stream}</version>
-      </dependency>
-
-      <dependency>
         <groupId>org.apache.httpcomponents</groupId>
         <artifactId>httpclient</artifactId>
         <version>${version.org.apache.httpcomponents.httpclient}</version>
@@ -1559,11 +1397,6 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>${version.junit}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-core</artifactId>
-      <version>${version.org.mockito}</version>
     </dependency>
     <dependency>
       <groupId>org.assertj</groupId>
