@@ -18,6 +18,7 @@ package org.kie.workbench.common.widgets.client.datamodel;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -257,7 +258,13 @@ public class AsyncPackageDataModelOracleImplTest {
                                                       ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
                                                       ModelField.FIELD_ORIGIN.DECLARED,
                                                       FieldAccessorsAndMutators.BOTH,
-                                                      DataType.TYPE_NUMERIC_INTEGER)});
+                                                      DataType.TYPE_NUMERIC_INTEGER),
+                                       new ModelField("registeredSince",
+                                                      Date.class.getName(),
+                                                      ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                                      ModelField.FIELD_ORIGIN.DECLARED,
+                                                      FieldAccessorsAndMutators.BOTH,
+                                                      DataType.TYPE_DATE)});
         payload.setModelFields(addressModelFields);
 
         return payload;
@@ -482,7 +489,7 @@ public class AsyncPackageDataModelOracleImplTest {
         Callback<ModelField[]> callback = spy(new Callback<ModelField[]>() {
             @Override
             public void callback(ModelField[] result) {
-                assertEquals(4,
+                assertEquals(5,
                              result.length);
 
                 assertEquals("homeAddress",
@@ -491,11 +498,14 @@ public class AsyncPackageDataModelOracleImplTest {
                 assertEquals("number",
                              result[1].getName());
 
-                assertEquals("street",
+                assertEquals("registeredSince",
                              result[2].getName());
 
-                assertEquals("this",
+                assertEquals("street",
                              result[3].getName());
+
+                assertEquals("this",
+                             result[4].getName());
 
                 assertEquals("Address",
                              oracle.getFieldClassName("Address",
@@ -521,6 +531,13 @@ public class AsyncPackageDataModelOracleImplTest {
                 assertEquals(DataType.TYPE_NUMERIC_INTEGER,
                              oracle.getFieldType("Address",
                                                  "number"));
+
+                assertEquals(Date.class.getName(),
+                             oracle.getFieldClassName("Address",
+                                                      "registeredSince"));
+                assertEquals(DataType.TYPE_DATE,
+                             oracle.getFieldType("Address",
+                                                 "registeredSince"));
             }
         });
 
@@ -588,6 +605,27 @@ public class AsyncPackageDataModelOracleImplTest {
     }
 
     @Test
+    public void testGetOperatorCompletionsForDate() throws Exception {
+        Callback<String[]> callback = spy(new Callback<String[]>() {
+            @Override
+            public void callback(String[] result) {
+                assertArrayEquals(OracleUtils.joinArrays(OperatorsOracle.COMPARABLE_OPERATORS,
+                                                         OperatorsOracle.EXPLICIT_LIST_OPERATORS,
+                                                         OperatorsOracle.SIMPLE_CEP_OPERATORS),
+                                  result);
+            }
+        });
+
+        oracle.getFieldCompletions("Address",
+                                   mock(Callback.class));
+        oracle.getOperatorCompletions("Address",
+                                      "registeredSince",
+                                      callback);
+
+        verify(callback).callback(any(String[].class));
+    }
+
+    @Test
     public void testGetOperatorCompletionsForThis() throws Exception {
         Callback<String[]> callback = spy(new Callback<String[]>() {
             @Override
@@ -627,7 +665,7 @@ public class AsyncPackageDataModelOracleImplTest {
         Callback<ModelField[]> callback = spy(new Callback<ModelField[]>() {
             @Override
             public void callback(ModelField[] result) {
-                assertEquals(3,
+                assertEquals(4,
                              result.length);
             }
         });

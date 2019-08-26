@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
+
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -749,7 +750,7 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
             callback.callback(OracleUtils.joinArrays(OperatorsOracle.COMPARABLE_OPERATORS,
                                                      OperatorsOracle.EXPLICIT_LIST_OPERATORS));
             return;
-        } else if (fieldType.equals(DataType.TYPE_DATE)) {
+        } else if (DataType.isDate(fieldType)) {
             callback.callback(OracleUtils.joinArrays(OperatorsOracle.COMPARABLE_OPERATORS,
                                                      OperatorsOracle.EXPLICIT_LIST_OPERATORS,
                                                      OperatorsOracle.SIMPLE_CEP_OPERATORS));
@@ -803,7 +804,7 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
         } else if (DataType.isNumeric(fieldType)) {
             callback.callback(OperatorsOracle.COMPARABLE_CONNECTIVES);
             return;
-        } else if (fieldType.equals(DataType.TYPE_DATE)) {
+        } else if (DataType.isDate(fieldType)) {
             callback.callback(OracleUtils.joinArrays(OperatorsOracle.COMPARABLE_CONNECTIVES,
                                                      OperatorsOracle.SIMPLE_CEP_CONNECTIVES));
             return;
