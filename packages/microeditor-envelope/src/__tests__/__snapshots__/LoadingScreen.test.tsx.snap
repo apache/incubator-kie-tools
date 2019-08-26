@@ -4,6 +4,13 @@ exports[`LoadingScreen when just made not visible 1`] = `
 <Fragment>
   <div
     className="loading-screen"
+    onTransitionEnd={[Function]}
+    style={
+      Object {
+        "opacity": 0,
+        "transition": "opacity 400ms",
+      }
+    }
   >
     <Page
       breadcrumb={null}
@@ -53,12 +60,76 @@ exports[`LoadingScreen when just made not visible 1`] = `
 </Fragment>
 `;
 
-exports[`LoadingScreen when not visible after fadeout delay 1`] = `<Fragment />`;
+exports[`LoadingScreen when not visible after fadeout delay 1`] = `
+<Fragment>
+  <div
+    className="loading-screen"
+    onTransitionEnd={[Function]}
+    style={
+      Object {
+        "opacity": 0,
+        "transition": "opacity 400ms",
+      }
+    }
+  >
+    <Page
+      breadcrumb={null}
+      className=""
+      defaultManagedSidebarIsOpen={true}
+      header={null}
+      isManagedSidebar={false}
+      mainContainerId={null}
+      onPageResize={[Function]}
+      sidebar={null}
+      skipToContent={null}
+    >
+      <Bullseye>
+        <EmptyState
+          variant="large"
+        >
+          <div
+            className="pf-u-mb-lg"
+          >
+            <div
+              aria-valuetext="Loading..."
+              className="pf-c-spinner"
+              role="progressbar"
+            >
+              <div
+                className="pf-c-spinner__clipper"
+              />
+              <div
+                className="pf-c-spinner__lead-ball"
+              />
+              <div
+                className="pf-c-spinner__tail-ball"
+              />
+            </div>
+          </div>
+          <Title
+            headingLevel="h5"
+            size="lg"
+          >
+            Loading...
+          </Title>
+          <EmptyStateBody />
+        </EmptyState>
+      </Bullseye>
+    </Page>
+  </div>
+</Fragment>
+`;
 
 exports[`LoadingScreen when visible 1`] = `
 <Fragment>
   <div
     className="loading-screen"
+    onTransitionEnd={[Function]}
+    style={
+      Object {
+        "opacity": 1,
+      }
+    }
   >
     <Page
       breadcrumb={null}

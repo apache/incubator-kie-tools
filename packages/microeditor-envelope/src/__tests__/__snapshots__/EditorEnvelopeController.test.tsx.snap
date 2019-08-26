@@ -9,6 +9,7 @@ exports[`EditorEnvelopeController after received content and set empty first 1`]
     >
       <div
         class="loading-screen"
+        style="opacity: 0; transition: opacity 400ms;"
       >
         <div
           class="pf-c-page"
@@ -66,6 +67,7 @@ exports[`EditorEnvelopeController after received content and set empty first 1`]
       >
         <div
           class="loading-screen"
+          style="opacity: 0; transition: opacity 400ms;"
         >
           <div
             class="pf-c-page"
@@ -121,6 +123,13 @@ exports[`EditorEnvelopeController after received content and set empty first 1`]
     >
       <div
         className="loading-screen"
+        onTransitionEnd={[Function]}
+        style={
+          Object {
+            "opacity": 0,
+            "transition": "opacity 400ms",
+          }
+        }
       >
         <Page
           breadcrumb={null}
@@ -215,6 +224,7 @@ exports[`EditorEnvelopeController opens 1`] = `
     >
       <div
         class="loading-screen"
+        style="opacity: 1;"
       >
         <div
           class="pf-c-page"
@@ -272,6 +282,7 @@ exports[`EditorEnvelopeController opens 1`] = `
       >
         <div
           class="loading-screen"
+          style="opacity: 1;"
         >
           <div
             class="pf-c-page"
@@ -327,6 +338,12 @@ exports[`EditorEnvelopeController opens 1`] = `
     >
       <div
         className="loading-screen"
+        onTransitionEnd={[Function]}
+        style={
+          Object {
+            "opacity": 1,
+          }
+        }
       >
         <Page
           breadcrumb={null}
@@ -414,6 +431,7 @@ exports[`EditorEnvelopeController receives init request 1`] = `
     >
       <div
         class="loading-screen"
+        style="opacity: 1;"
       >
         <div
           class="pf-c-page"
@@ -471,6 +489,7 @@ exports[`EditorEnvelopeController receives init request 1`] = `
       >
         <div
           class="loading-screen"
+          style="opacity: 1;"
         >
           <div
             class="pf-c-page"
@@ -526,6 +545,12 @@ exports[`EditorEnvelopeController receives init request 1`] = `
     >
       <div
         className="loading-screen"
+        onTransitionEnd={[Function]}
+        style={
+          Object {
+            "opacity": 1,
+          }
+        }
       >
         <Page
           breadcrumb={null}
@@ -613,6 +638,7 @@ exports[`EditorEnvelopeController right after received content 1`] = `
     >
       <div
         class="loading-screen"
+        style="opacity: 1;"
       >
         <div
           class="pf-c-page"
@@ -670,6 +696,7 @@ exports[`EditorEnvelopeController right after received content 1`] = `
       >
         <div
           class="loading-screen"
+          style="opacity: 1;"
         >
           <div
             class="pf-c-page"
@@ -725,6 +752,12 @@ exports[`EditorEnvelopeController right after received content 1`] = `
     >
       <div
         className="loading-screen"
+        onTransitionEnd={[Function]}
+        style={
+          Object {
+            "opacity": 1,
+          }
+        }
       >
         <Page
           breadcrumb={null}
