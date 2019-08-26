@@ -67,6 +67,9 @@ const commonConfig = {
       },
       {
         test: /\.s[ac]ss$/i,
+        include: [
+          path.resolve(__dirname, "../../node_modules/@patternfly/patternfly")
+        ],
         use: [
           "style-loader",
           "css-loader",
@@ -76,8 +79,6 @@ const commonConfig = {
       {
         test: /\.css$/,
         include: [
-          path.resolve(__dirname, "src"),
-          path.resolve(__dirname, "../../node_modules/patternfly"),
           path.resolve(__dirname, "../../node_modules/@patternfly/patternfly"),
           path.resolve(__dirname, "../../node_modules/@patternfly/react-styles/css"),
           path.resolve(__dirname, "../../node_modules/@patternfly/react-core/dist/styles/base.css"),
@@ -89,7 +90,6 @@ const commonConfig = {
       {
         test: /\.(svg|ttf|eot|woff|woff2)$/,
         include: [
-          path.resolve(__dirname, "../../node_modules/patternfly/dist/fonts"),
           path.resolve(__dirname, "../../node_modules/@patternfly/react-core/dist/styles/assets/fonts"),
           path.resolve(__dirname, "../../node_modules/@patternfly/react-core/dist/styles/assets/pficon"),
           path.resolve(__dirname, "../../node_modules/@patternfly/patternfly/assets/fonts"),
@@ -101,7 +101,6 @@ const commonConfig = {
         test: /\.(jpg|jpeg|png|gif)$/i,
         include: [
           path.resolve(__dirname, "src"),
-          path.resolve(__dirname, "../../node_modules/patternfly"),
           path.resolve(__dirname, "../../node_modules/@patternfly/patternfly/assets"),
           path.resolve(__dirname, "../../node_modules/@patternfly/react-core/dist/styles/assets/images"),
           path.resolve(__dirname, "../../node_modules/@patternfly/react-styles/css/assets/images"),
