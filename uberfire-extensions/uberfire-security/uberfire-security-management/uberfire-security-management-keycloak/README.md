@@ -59,23 +59,6 @@ Run the following command in order to figure out the versions to use for each of
 
     mvn dependency:list
 
-**Note about JBoss Wildfly / EAP**
-If you are deploying the application in a Wildfly 8.x or an EAP 6.4, you can use the server's RestEasy provided modules instead 
-of adding the `org.jboss.resteasy:resteasy-jaxrs` and `org.jboss.resteasy:resteasy-jackson-provider` specified above, 
-just by adding the dependencies below in *jboss-deployment-descriptor.xml*:                
-
-     <jboss-deployment-structure>
-        <deployment>
-            <dependencies>
-                <module name="org.jboss.resteasy.resteasy-jackson-provider" services="import"/>
-            </dependencies>
-            <!-- Only add this exclusion on Wildfly, keep it for EAP. -->
-            <exclusions>
-                <module name="org.jboss.resteasy.resteasy-jackson2-provider"/>
-            </exclusions>
-        </deployment>
-     </jboss-deployment-structure>
-
 Step 2 - Provider settings
 --------------------------
 
@@ -85,11 +68,10 @@ Once dependencies have been specified as above, let's configure the Keycloak pro
 
 **Using the credentials provider**                   
 
-a) Specify the concrete provider to use by adding a properties file named `security-management.properties` in your web application root classpath. 
+a) Specify the concrete provider to use by setting the Java system property below or by adding a properties file named `security-management.properties` in your web application root classpath
 (e.g. `src/main/resources/security-management.properties`), with the following keys and your concrete provider name as value:                               
 
     org.uberfire.ext.security.management.api.userManagementServices=KCCredentialsUserManagementService
-
 
 b) Specify the following Java system properties at container startup:        
 
