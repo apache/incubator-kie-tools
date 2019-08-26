@@ -39,13 +39,12 @@ export function LoadingScreen(props: { visible: boolean }) {
     cssAnimation = { opacity: 1 };
   } else {
     cssAnimation = { opacity: 0, transition: `opacity ${FADE_OUT_DELAY}ms` };
-    setTimeout(() => setMustRender(false), FADE_OUT_DELAY);
   }
 
   return (
     <>
       {mustRender && (
-        <div className="loading-screen">
+        <div className="loading-screen" style={{ ...cssAnimation }} onTransitionEnd={() => setMustRender(false)}>
           <Page>
           <Bullseye>
             <EmptyState variant={EmptyStateVariant.large}>
