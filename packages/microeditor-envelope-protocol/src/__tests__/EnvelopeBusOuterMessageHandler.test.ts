@@ -45,6 +45,9 @@ beforeEach(() => {
       receive_contentResponse: (content: string) => {
         receivedMessages.push("contentResponse_" + content);
       },
+      receive_setContentError: (errorMessage: string) => {
+        receivedMessages.push("setContentError_" + errorMessage);
+      },
       receive_dirtyIndicatorChange(isDirty: boolean): void {
         receivedMessages.push("dirtyIndicatorChange_" + isDirty);
       }
@@ -111,6 +114,11 @@ describe("receive", () => {
   test("content response", () => {
     handler.receive({ type: EnvelopeBusMessageType.RETURN_CONTENT, data: "foo" });
     expect(receivedMessages).toEqual(["contentResponse_foo"]);
+  });
+
+  test("set content error notification", () => {
+    handler.receive({ type: EnvelopeBusMessageType.NOTIFY_SET_CONTENT_ERROR, data: "errorMsg" });
+    expect(receivedMessages).toEqual(["setContentError_errorMsg"]);
   });
 
   test("dirty indicator change notification", () => {

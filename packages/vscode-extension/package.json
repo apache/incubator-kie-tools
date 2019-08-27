@@ -4,48 +4,13 @@
   "description": "",
   "version": "0.1.0",
   "license": "Apache-2.0",
-  "engines": {
-    "vscode": "^1.33.0"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
-  "categories": [
-    "Other"
-  ],
-  "activationEvents": [
-    "*"
-  ],
   "publisher": "kiegroup",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "contributes": {
-    "languages": [
-      {
-        "id": "dmn",
-        "extensions": [
-          ".dmn"
-        ],
-        "aliases": [
-          "dmn",
-          "Decision Model Notation"
-        ]
-      },
-      {
-        "id": "bpmn",
-        "extensions": [
-          ".bpmn",
-          ".bpmn2"
-        ],
-        "aliases": [
-          "bpmn",
-          "bpmn2",
-          "Business Process Model and Notation"
-        ]
-      }
-    ]
-  },
   "scripts": {
     "build": "yarn run build:fast",
     "build:fast": "rm -rf dist && webpack",

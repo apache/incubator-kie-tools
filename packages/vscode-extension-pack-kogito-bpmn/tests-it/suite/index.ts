@@ -26,7 +26,7 @@ export function run(testsRoot: string, callback: (error: any, failures?: number)
     reporter: "mocha-jenkins-reporter",
     reporterOptions: {
       junit_report_name: "VSCode Extension Tests",
-      junit_report_path: "vscode-it-test-report.xml",
+      junit_report_path: "target/vscode-it-test-report.xml",
       junit_report_stack: 1
     }
   });
