@@ -162,6 +162,9 @@ export class KogitoEditor {
                     overflow: hidden;
                     height: 100%;
                 }
+                .panel-heading.uf-listbar-panel-header span {
+                    color: white !important;
+                }
             </style>
         
             <title></title>

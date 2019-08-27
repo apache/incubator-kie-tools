@@ -3,6 +3,7 @@
 exports[`LoadingScreen when just made not visible 1`] = `
 <Fragment>
   <div
+    onTransitionEnd={[Function]}
     style={
       Object {
         "backgroundColor": "#1e1e1e",
@@ -30,11 +31,41 @@ exports[`LoadingScreen when just made not visible 1`] = `
 </Fragment>
 `;
 
-exports[`LoadingScreen when not visible after fadeout delay 1`] = `<Fragment />`;
+exports[`LoadingScreen when not visible after fadeout delay 1`] = `
+<Fragment>
+  <div
+    onTransitionEnd={[Function]}
+    style={
+      Object {
+        "backgroundColor": "#1e1e1e",
+        "height": "100vh",
+        "opacity": 0,
+        "padding": "40px 0 0 0",
+        "textAlign": "center",
+        "transition": "opacity 400ms",
+        "width": "100vw",
+      }
+    }
+  >
+    <span
+      style={
+        Object {
+          "color": "white",
+          "fontFamily": "Helvetica",
+          "fontSize": "12pt",
+        }
+      }
+    >
+      Loading...
+    </span>
+  </div>
+</Fragment>
+`;
 
 exports[`LoadingScreen when visible 1`] = `
 <Fragment>
   <div
+    onTransitionEnd={[Function]}
     style={
       Object {
         "backgroundColor": "#1e1e1e",

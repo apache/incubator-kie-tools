@@ -40,6 +40,7 @@ exports[`EditorEnvelopeController after received content and set empty first 1`]
       visible={false}
     >
       <div
+        onTransitionEnd={[Function]}
         style={
           Object {
             "backgroundColor": "#1e1e1e",
@@ -117,6 +118,7 @@ exports[`EditorEnvelopeController opens 1`] = `
       visible={true}
     >
       <div
+        onTransitionEnd={[Function]}
         style={
           Object {
             "backgroundColor": "#1e1e1e",
@@ -185,6 +187,7 @@ exports[`EditorEnvelopeController receives init request 1`] = `
       visible={true}
     >
       <div
+        onTransitionEnd={[Function]}
         style={
           Object {
             "backgroundColor": "#1e1e1e",
@@ -253,6 +256,7 @@ exports[`EditorEnvelopeController right after received content 1`] = `
       visible={true}
     >
       <div
+        onTransitionEnd={[Function]}
         style={
           Object {
             "backgroundColor": "#1e1e1e",
