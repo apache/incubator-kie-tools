@@ -37,7 +37,6 @@ export class GwtEditorWrapper extends AppFormer.Editor {
 
   public af_onOpen() {
     this.removeBusinessCentralHeaderPanel();
-    this.removeBusinessCentralPanelHeader();
     this.removeHeaderIfOnlyOneItemOnTable();
   }
 
@@ -75,15 +74,6 @@ export class GwtEditorWrapper extends AppFormer.Editor {
         parentNode.remove();
       }
     }
-  }
-
-  private removeBusinessCentralPanelHeader() {
-    setTimeout(() => {
-      const panelHeaderSpan = document.querySelector(".panel-heading.uf-listbar-panel-header span");
-      if (panelHeaderSpan) {
-        panelHeaderSpan.textContent = "";
-      }
-    }, 500);
   }
 
   private removeHeaderIfOnlyOneItemOnTable() {
