@@ -35,6 +35,7 @@ describe("LoadingScreen", () => {
 
   test("when not visible after fadeout delay", async () => {
     const render = shallow(<LoadingScreen visible={false} />);
+    render.simulate("transitionEnd");
 
     await delay(FADE_OUT_DELAY);
     expect(render).toMatchSnapshot();

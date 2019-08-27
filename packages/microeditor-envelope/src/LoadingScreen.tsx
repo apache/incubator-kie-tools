@@ -30,22 +30,20 @@ export function LoadingScreen(props: { visible: boolean }) {
   }
 
   return (
-    <>
-      {mustRender && (
-        <div
-          style={{
-            width: "100vw",
-            height: "100vh",
-            textAlign: "center",
-            backgroundColor: "#1e1e1e",
-            padding: "40px 0 0 0",
-            ...cssAnimation
-          }}
-          onTransitionEnd={() => setMustRender(false)}
-        >
-          <span style={{ fontFamily: "Helvetica", color: "white", fontSize: "12pt" }}>Loading...</span>
-        </div>
-      )}
-    </>
+    (mustRender && (
+      <div
+        style={{
+          width: "100vw",
+          height: "100vh",
+          textAlign: "center",
+          backgroundColor: "#1e1e1e",
+          padding: "40px 0 0 0",
+          ...cssAnimation
+        }}
+        onTransitionEnd={() => setMustRender(false)}
+      >
+        <span style={{ fontFamily: "Helvetica", color: "white", fontSize: "12pt" }}>Loading...</span>
+      </div>
+    )) || <></>
   );
 }
