@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.RegexpQuery;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TermQuery;
@@ -30,6 +31,7 @@ import org.apache.lucene.search.WildcardQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.ext.metadata.backend.infinispan.ickl.converters.BooleanQueryConverter;
+import org.uberfire.ext.metadata.backend.infinispan.ickl.converters.RegexpQueryConverter;
 import org.uberfire.ext.metadata.backend.infinispan.ickl.converters.TermQueryConverter;
 import org.uberfire.ext.metadata.backend.infinispan.ickl.converters.WildcardQueryConverter;
 
@@ -48,16 +50,19 @@ public class IckleConverter {
     }
 
     public String convert(Query query) {
+        Class<? extends Query> queryClass = query.getClass();
 
-        if (TermQuery.class.isAssignableFrom(query.getClass())) {
-            return new TermQueryConverter((TermQuery) query,
-                                          converterImpl).convert();
-        } else if (WildcardQuery.class.isAssignableFrom(query.getClass())) {
-            return new WildcardQueryConverter((WildcardQuery) query,
-                                              converterImpl).convert();
-        } else if (BooleanQuery.class.isAssignableFrom(query.getClass())) {
-            return new BooleanQueryConverter((BooleanQuery) query,
-                                             this).convert();
+        if (TermQuery.class.isAssignableFrom(queryClass)) {
+            return new TermQueryConverter((TermQuery) query, converterImpl).convert();
+
+        } else if (WildcardQuery.class.isAssignableFrom(queryClass)) {
+            return new WildcardQueryConverter((WildcardQuery) query, converterImpl).convert();
+
+        } else if (BooleanQuery.class.isAssignableFrom(queryClass)) {
+            return new BooleanQueryConverter((BooleanQuery) query, this).convert();
+
+        } else if (RegexpQuery.class.isAssignableFrom(queryClass)) {
+            return new RegexpQueryConverter((RegexpQuery) query).convert();
         }
 
         if (logger.isDebugEnabled()) {

@@ -20,6 +20,7 @@ package org.uberfire.ext.metadata.backend.infinispan.ickl;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.RegexpQuery;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TermQuery;
@@ -141,5 +142,14 @@ public class IcklConverterTest {
             String sortString = this.ickleConverter.sort(sort);
             assertThat(sortString).isEqualTo("order by a__sort__field DESC,another__sort__field ASC");
         }
+    }
+
+    @Test
+    public void testRegexpQuery() {
+        Query query = new RegexpQuery(new Term("libraryFileName", ".*(cmmn|bpmn|bpmn2|bpmn-cm)"));
+
+        String queryString = this.ickleConverter.convert(query);
+
+        assertThat(queryString).isEqualTo("libraryFileName:/.*(cmmn|bpmn|bpmn2|bpmn-cm)/");
     }
 }
