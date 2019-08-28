@@ -43,6 +43,7 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.mocks.EventSourceMock;
 
 import static org.junit.Assert.*;
@@ -97,6 +98,9 @@ public class ExamplesServiceImplCheckNoIndexConfigTest {
 
     private ExamplesServiceImpl service;
 
+    @Mock
+    private FileSystem systemFS;
+
     @Before
     public void setup() {
         when(spaceConfigStorageRegistry.get(anyString())).thenReturn(spaceConfigStorage);
@@ -113,7 +117,8 @@ public class ExamplesServiceImplCheckNoIndexConfigTest {
                                               newProjectEvent,
                                               projectScreenService,
                                               validators,
-                                              spaceConfigStorageRegistry));
+                                              spaceConfigStorageRegistry,
+                                              systemFS));
 
         when(validators.getValidators()).thenReturn(new ArrayList<>());
     }

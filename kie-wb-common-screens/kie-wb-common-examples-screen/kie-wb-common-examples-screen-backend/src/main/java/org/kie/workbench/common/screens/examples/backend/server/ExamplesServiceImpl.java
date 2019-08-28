@@ -18,21 +18,28 @@ package org.kie.workbench.common.screens.examples.backend.server;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.DirectoryStream;
 import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.StreamSupport;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
@@ -60,9 +67,12 @@ import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenServi
 import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.uberfire.backend.server.util.Paths;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.IOException;
+import org.uberfire.java.nio.file.FileSystem;
+import org.uberfire.java.nio.fs.jgit.FileSystemLock;
+import org.uberfire.java.nio.fs.jgit.FileSystemLockManager;
+import org.uberfire.java.nio.fs.jgit.JGitPathImpl;
 
 @Service
 @ApplicationScoped
@@ -70,19 +80,25 @@ public class ExamplesServiceImpl extends BaseProjectImportService implements Exa
 
     private static final Logger logger = LoggerFactory.getLogger(ExamplesServiceImpl.class);
 
+    private static final int LAST_ACCESS_THRESHOLD = 10;
+    private static final TimeUnit LAST_ACCESS_TIME_UNIT = TimeUnit.SECONDS;
+    private static final String LOCK_NAME = "playground.lock";
+    private static final String PREFIX = ".playground-";
+
     private static final String KIE_WB_PLAYGROUND_ZIP = "org/kie/kie-wb-playground/kie-wb-playground.zip";
-    private final Set<Repository> clonedRepositories = new HashSet<>();
+    private static final String DONE_MARKER_NAME = ".done";
+    private static final String DEFAULT_GROUP_ID = "org.kie.playground";
+    private static final String PLAYGROUND_DIRECTORY = ".kie-wb-playground";
     private WorkspaceProjectService projectService;
-    private IOService ioService;
     private RepositoryFactory repositoryFactory;
-    private KieModuleService moduleService;
     private RepositoryCopier repositoryCopier;
     private OrganizationalUnitService ouService;
     private Event<NewProjectEvent> newProjectEvent;
-    private MetadataService metadataService;
+    private final FileSystem systemFS;
     private ExampleRepository playgroundRepository;
-    private ProjectScreenService projectScreenService;
-    private ImportProjectValidators validators;
+    protected String md5;
+    protected String playgroundSpaceName;
+    protected File playgroundRootDirectory;
 
     @Inject
     public ExamplesServiceImpl(final @Named("ioStrategy") IOService ioService,
@@ -95,7 +111,8 @@ public class ExamplesServiceImpl extends BaseProjectImportService implements Exa
                                final Event<NewProjectEvent> newProjectEvent,
                                final ProjectScreenService projectScreenService,
                                final ImportProjectValidators validators,
-                               final SpaceConfigStorageRegistry spaceConfigStorageRegistry) {
+                               final SpaceConfigStorageRegistry spaceConfigStorageRegistry,
+                               final @Named("systemFS") FileSystem systemFS) {
 
         super(ioService,
               metadataService,
@@ -115,76 +132,169 @@ public class ExamplesServiceImpl extends BaseProjectImportService implements Exa
         this.newProjectEvent = newProjectEvent;
         this.projectScreenService = projectScreenService;
         this.validators = validators;
+        this.systemFS = systemFS;
     }
 
     @PostConstruct
     public void initPlaygroundRepository() {
-        try {
-            String userDir = System.getProperty("user.dir");
 
-            File playgroundDirectory = new File(userDir,
-                                                ".kie-wb-playground");
-            if (playgroundDirectory.exists()) {
-                cleanPlaygroundDirectory(playgroundDirectory.toPath());
-            }
+        URL resource = getClass().getClassLoader().getResource(KIE_WB_PLAYGROUND_ZIP);
+        if (resource == null) {
+            logger.warn("Playground repository jar not found on classpath.");
+            return;
+        }
+        String userDir = System.getProperty("user.dir");
+        md5 = calculateMD5(resource);
+
+        playgroundRootDirectory = new File(userDir,
+                                           PLAYGROUND_DIRECTORY);
+
+        // .kie-wb-playground/md5number
+        File playgroundDirectory = new File(playgroundRootDirectory, md5);
+        File doneMarker = new File(playgroundDirectory, DONE_MARKER_NAME);
+
+        this.playgroundSpaceName = PREFIX + md5;
+
+        String repositoryUrl = resolveRepositoryUrl(playgroundDirectory.getAbsolutePath());
+
+        if (!playgroundDirectory.exists()) {
             playgroundDirectory.mkdirs();
+        }
 
-            URL resource = getClass().getClassLoader().getResource(KIE_WB_PLAYGROUND_ZIP);
-            if (resource == null) {
-                logger.warn("Playground repository jar not found on classpath.");
-                return;
+        FileSystemLock physicalLock = createLock();
+
+        try {
+
+            physicalLock.lock();
+
+            if (!doneMarker.exists()) {
+                // unzip folder if is not uncompressed
+                unzipPlayground(resource, playgroundDirectory);
+                doneMarker.createNewFile();
             }
 
-            try (ZipInputStream inputStream = new ZipInputStream(resource.openStream())) {
-                ZipEntry zipEntry = null;
-                while ((zipEntry = inputStream.getNextEntry()) != null) {
-                    byte[] buffer = new byte[1024];
-                    File file = new File(playgroundDirectory,
-                                         zipEntry.getName());
-                    if (zipEntry.isDirectory()) {
-                        file.mkdirs();
-                    } else {
-                        try (FileOutputStream fos = new FileOutputStream(file)) {
-                            int read = -1;
-                            while ((read = inputStream.read(buffer)) != -1) {
-                                fos.write(buffer,
-                                          0,
-                                          read);
-                            }
+            if (!this.existSpace(playgroundSpaceName)) {
+
+                // create space
+                this.createPlaygroundHiddenSpace(md5);
+
+                spaceConfigStorageRegistry.getBatch(playgroundSpaceName).run(spaceConfigStorageBatchContext -> {
+                    // Delete old folders;
+                    this.deleteOldPlaygrounds(md5);
+
+                    // Mark for deletion old playground spaces
+                    this.deleteOldHiddenSpaces(md5);
+
+                    this.cloneRepository(repositoryUrl);
+                    return null;
+                });
+            }
+        } catch (Exception e) {
+            String message = "Can't create examples playground";
+            logger.error(message);
+            throw new ImportExamplesException(message, e);
+        } finally {
+            physicalLock.unlock();
+        }
+
+        playgroundRepository = new ExampleRepository(repositoryUrl);
+    }
+
+    private FileSystemLock createLock() {
+        return FileSystemLockManager.getInstance()
+                .getFileSystemLock(playgroundRootDirectory, LOCK_NAME, LAST_ACCESS_TIME_UNIT, LAST_ACCESS_THRESHOLD);
+    }
+
+    private ExampleRepository unzipPlayground(URL resource, File playgroundDirectory) {
+
+        try (ZipInputStream inputStream = new ZipInputStream(resource.openStream())) {
+            ZipEntry zipEntry;
+            while ((zipEntry = inputStream.getNextEntry()) != null) {
+                byte[] buffer = new byte[1024];
+                File file = new File(playgroundDirectory,
+                                     zipEntry.getName());
+                if (zipEntry.isDirectory()) {
+                    file.mkdirs();
+                } else {
+                    try (FileOutputStream fos = new FileOutputStream(file)) {
+                        int read = -1;
+                        while ((read = inputStream.read(buffer)) != -1) {
+                            fos.write(buffer,
+                                      0,
+                                      read);
                         }
                     }
                 }
-
-                final Git git = Git.init().setBare(false).setDirectory(playgroundDirectory).call();
-                git.add().addFilepattern(".").call();
-                git.commit().setMessage("Initial commit").call();
-
-                String repositoryUrl = resolveRepositoryUrl(playgroundDirectory.getAbsolutePath());
-                playgroundRepository = new ExampleRepository(repositoryUrl);
             }
-        } catch (java.io.IOException | GitAPIException e) {
-            logger.error("Unable to initialize playground git repository. Only custom repository definition will be available in the Workbench.",
+
+            final Git git = Git.init().setBare(false).setDirectory(playgroundDirectory).call();
+            git.add().addFilepattern(".").call();
+            git.commit().setMessage("Initial commit").call();
+
+            String repositoryUrl = resolveRepositoryUrl(playgroundDirectory.getAbsolutePath());
+            return new ExampleRepository(repositoryUrl);
+        } catch (java.io.IOException |
+                GitAPIException e) {
+            String message = "Unable to initialize playground git repository. Only custom repository definition will be available in the Workbench.";
+            logger.error(message,
                          e);
+            throw new ImportExamplesException(message, e);
         }
     }
 
-    private void cleanPlaygroundDirectory(java.nio.file.Path playgroundDirectoryPath) throws java.io.IOException {
-        java.nio.file.Files.walkFileTree(playgroundDirectoryPath,
-                                         new SimpleFileVisitor<java.nio.file.Path>() {
-                                             @Override
-                                             public java.nio.file.FileVisitResult visitFile(java.nio.file.Path file,
-                                                                                            java.nio.file.attribute.BasicFileAttributes attrs) throws java.io.IOException {
-                                                 file.toFile().delete();
-                                                 return java.nio.file.FileVisitResult.CONTINUE;
-                                             }
+    protected void deleteOldHiddenSpaces(String md5) {
+        this.ouService.getAllOrganizationalUnits(false, this::isOldPlayground)
+                .forEach(space -> this.ouService.removeOrganizationalUnit(space.getName()));
+    }
 
-                                             @Override
-                                             public java.nio.file.FileVisitResult postVisitDirectory(java.nio.file.Path dir,
-                                                                                                     java.io.IOException exc) throws java.io.IOException {
-                                                 dir.toFile().delete();
-                                                 return java.nio.file.FileVisitResult.CONTINUE;
-                                             }
-                                         });
+    protected boolean isOldPlayground(OrganizationalUnit ou) {
+        return ou.getName().startsWith(PREFIX) && !ou.getName().endsWith(md5);
+    }
+
+    protected void createPlaygroundHiddenSpace(String md5) {
+        String spaceName = PREFIX + md5;
+        this.ouService.createOrganizationalUnit(spaceName, DEFAULT_GROUP_ID);
+    }
+
+    protected void deleteOldPlaygrounds(String md5) {
+        try {
+            Files.list(this.playgroundRootDirectory.toPath())
+                    .filter(p -> !p.toFile().getAbsolutePath().endsWith(md5))
+                    .forEach(this::cleanPlaygroundDirectory);
+        } catch (Exception e) {
+            throw new ImportExamplesException("Can't delete old playgrounds", e);
+        }
+    }
+
+    protected String calculateMD5(URL resource) {
+        try (InputStream is = resource.openStream()) {
+            return DigestUtils.md5Hex(is);
+        } catch (Exception e) {
+            throw new ImportExamplesException("Can't calculate md5 for playground.zip", e);
+        }
+    }
+
+    private void cleanPlaygroundDirectory(java.nio.file.Path playgroundDirectoryPath) {
+        try {
+            java.nio.file.Files.walkFileTree(playgroundDirectoryPath,
+                                             new SimpleFileVisitor<java.nio.file.Path>() {
+                                                 @Override
+                                                 public java.nio.file.FileVisitResult visitFile(java.nio.file.Path file,
+                                                                                                java.nio.file.attribute.BasicFileAttributes attrs) throws java.io.IOException {
+                                                     file.toFile().delete();
+                                                     return java.nio.file.FileVisitResult.CONTINUE;
+                                                 }
+
+                                                 @Override
+                                                 public java.nio.file.FileVisitResult postVisitDirectory(java.nio.file.Path dir,
+                                                                                                         java.io.IOException exc) throws java.io.IOException {
+                                                     dir.toFile().delete();
+                                                     return java.nio.file.FileVisitResult.CONTINUE;
+                                                 }
+                                             });
+        } catch (Exception e) {
+            throw new ImportExamplesException("Can't delete playground directory: " + playgroundDirectoryPath.toFile().getName(), e);
+        }
     }
 
     protected String resolveRepositoryUrl(final String playgroundDirectoryPath) {
@@ -208,20 +318,27 @@ public class ExamplesServiceImpl extends BaseProjectImportService implements Exa
 
     @Override
     protected Repository resolveGitRepository(final ExampleRepository exampleRepository) {
-        if (exampleRepository.equals(playgroundRepository)) {
-            return clonedRepositories.stream().filter(r -> exampleRepository.getUrl().equals(r.getEnvironment().get("origin"))).findFirst().orElseGet(() -> cloneRepository(exampleRepository.getUrl()));
-        } else {
-            Credentials credentials = exampleRepository.getCredentials();
-            String username = null;
-            String password = null;
-            if (credentials != null) {
-                username = credentials.getUsername();
-                password = credentials.getPassword();
+
+        return spaceConfigStorageRegistry.getBatch(this.playgroundSpaceName).run(spaceConfigStorageBatchContext -> {
+            if (exampleRepository.equals(playgroundRepository)) {
+                return this.ouService.getOrganizationalUnit(this.playgroundSpaceName)
+                        .getRepositories()
+                        .stream()
+                        .findFirst()
+                        .get();
+            } else {
+                Credentials credentials = exampleRepository.getCredentials();
+                String username = null;
+                String password = null;
+                if (credentials != null) {
+                    username = credentials.getUsername();
+                    password = credentials.getPassword();
+                }
+                return cloneRepository(exampleRepository.getUrl(),
+                                       username,
+                                       password);
             }
-            return cloneRepository(exampleRepository.getUrl(),
-                                   username,
-                                   password);
-        }
+        });
     }
 
     private Repository cloneRepository(final String repositoryURL) {
@@ -244,13 +361,18 @@ public class ExamplesServiceImpl extends BaseProjectImportService implements Exa
                                                                            env);
 
             Repository repository = repositoryFactory.newRepository(repositoryConfig);
-            clonedRepositories.add(repository);
+            this.ouService.addRepository(this.ouService.getOrganizationalUnit(this.playgroundSpaceName), repository);
             return repository;
         } catch (final Exception e) {
             logger.error("Error during create repository",
                          e);
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    protected String getDefaultSpace() {
+        return this.playgroundSpaceName;
     }
 
     @Override
@@ -306,21 +428,7 @@ public class ExamplesServiceImpl extends BaseProjectImportService implements Exa
 
     @Override
     public void dispose() {
-        for (final Repository repository : clonedRepositories) {
-            try {
-                if (repository.getDefaultBranch().isPresent()) {
-                    ioService.delete(Paths.convert(repository.getDefaultBranch().get().getPath()).getFileSystem().getPath(null));
-                }
-            } catch (Exception e) {
-                logger.warn("Unable to remove transient Repository '" + repository.getAlias() + "'.",
-                            e);
-            }
-        }
-    }
 
-    // Test getters and setters
-    Set<Repository> getClonedRepositories() {
-        return clonedRepositories;
     }
 
     void setPlaygroundRepository(final ExampleRepository playgroundRepository) {
@@ -332,6 +440,7 @@ public class ExamplesServiceImpl extends BaseProjectImportService implements Exa
 
         return spaceConfigStorageRegistry.getBatch(targetOU.getSpace().getName())
                 .run(context -> {
+
                     WorkspaceProject firstExampleProject = null;
 
                     for (final ImportProject importProject : projects) {
@@ -360,5 +469,22 @@ public class ExamplesServiceImpl extends BaseProjectImportService implements Exa
                     return new WorkspaceProjectContextChangeEvent(firstExampleProject,
                                                                   firstExampleProject.getMainModule());
                 });
+    }
+
+    protected boolean existSpace(String space) {
+        try {
+            DirectoryStream<Path> spaces = Files.newDirectoryStream(getNiogitPath());
+            return StreamSupport.stream(spaces.spliterator(), false)
+                    .filter(s -> s.getFileName().toString().equalsIgnoreCase(space))
+                    .findFirst()
+                    .isPresent();
+        } catch (Exception e) {
+            throw new ImportExamplesException("Can't read spaces directory", e);
+        }
+    }
+
+    protected java.nio.file.Path getNiogitPath() {
+        final JGitPathImpl systemGitPath = (JGitPathImpl) systemFS.getPath("system");
+        return systemGitPath.getFileSystem().getGit().getRepository().getDirectory().getParentFile().getParentFile().toPath();
     }
 }

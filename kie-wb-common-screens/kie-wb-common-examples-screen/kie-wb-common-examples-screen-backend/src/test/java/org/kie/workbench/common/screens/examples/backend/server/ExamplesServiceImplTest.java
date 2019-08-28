@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.screens.examples.backend.server;
 
+import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -25,8 +27,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+
 import javax.enterprise.event.Event;
 
+import org.apache.commons.io.FileUtils;
 import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
 import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.model.Module;
@@ -37,18 +41,16 @@ import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.structure.backend.organizationalunit.config.SpaceConfigStorageRegistryImpl;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
-import org.guvnor.structure.organizationalunit.config.RepositoryConfiguration;
 import org.guvnor.structure.organizationalunit.config.RepositoryInfo;
 import org.guvnor.structure.organizationalunit.config.SpaceConfigStorage;
 import org.guvnor.structure.organizationalunit.config.SpaceConfigStorageRegistry;
 import org.guvnor.structure.organizationalunit.impl.OrganizationalUnitImpl;
 import org.guvnor.structure.repositories.Branch;
-import org.guvnor.structure.repositories.EnvironmentParameters;
-import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryCopier;
 import org.guvnor.structure.repositories.impl.git.GitRepository;
 import org.guvnor.structure.server.repositories.RepositoryFactory;
 import org.jboss.errai.security.shared.api.identity.User;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -64,22 +66,32 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.Spy;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.spaces.Space;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.screens.examples.backend.server.ImportUtils.makeGitRepository;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ExamplesServiceImplTest {
@@ -142,8 +154,13 @@ public class ExamplesServiceImplTest {
     @Captor
     private ArgumentCaptor<RepositoryInfo> captor;
 
+    private Map<String, OrganizationalUnit> organizationalUnits = new HashMap();
+
+    @Mock
+    private FileSystem systemFS;
+
     @Before
-    public void setup() {
+    public void setup() throws Exception {
 
         when(spaceConfigStorageRegistry.get(anyString())).thenReturn(spaceConfigStorage);
         when(spaceConfigStorageRegistry.getBatch(anyString())).thenReturn(new SpaceConfigStorageRegistryImpl.SpaceStorageBatchImpl(spaceConfigStorage));
@@ -162,9 +179,23 @@ public class ExamplesServiceImplTest {
                                               newProjectEvent,
                                               projectScreenService,
                                               validators,
-                                              spaceConfigStorageRegistry));
+                                              spaceConfigStorageRegistry,
+                                              systemFS));
+
+        FileUtils.deleteDirectory(new File(".kie-wb-playground"));
 
         when(this.validators.getValidators()).thenReturn(new ArrayList<>());
+
+        doAnswer(invocationOnMock -> {
+            String spaceName = (String) invocationOnMock.getArguments()[0];
+            String defaultGroupId = (String) invocationOnMock.getArguments()[1];
+            OrganizationalUnitImpl o = new OrganizationalUnitImpl(spaceName, defaultGroupId);
+            organizationalUnits.put(spaceName, o);
+            return o;
+        }).when(ouService).createOrganizationalUnit(anyString(), anyString());
+
+        doAnswer(invocationOnMock -> organizationalUnits.get(invocationOnMock.getArguments()[0]))
+                .when(ouService).getOrganizationalUnit(anyString());
 
         when(ouService.getOrganizationalUnits()).thenReturn(new HashSet<OrganizationalUnit>() {{
             add(new OrganizationalUnitImpl("ou1Name",
@@ -172,23 +203,35 @@ public class ExamplesServiceImplTest {
             add(new OrganizationalUnitImpl("ou2Name",
                                            "ou2GroupId"));
         }});
-        when(moduleService.resolveModule(any(Path.class))).thenAnswer(new Answer<KieModule>() {
-            @Override
-            public KieModule answer(final InvocationOnMock invocationOnMock) throws Throwable {
-                final Path path = (Path) invocationOnMock.getArguments()[0];
-                final KieModule module = new KieModule(path,
-                                                       path,
-                                                       path,
-                                                       path,
-                                                       path,
-                                                       path,
-                                                       mock(POM.class));
-                return module;
-            }
+        when(moduleService.resolveModule(any(Path.class))).thenAnswer((Answer<KieModule>) invocationOnMock -> {
+            final Path path = (Path) invocationOnMock.getArguments()[0];
+            final KieModule module = new KieModule(path,
+                                                   path,
+                                                   path,
+                                                   path,
+                                                   path,
+                                                   path,
+                                                   mock(POM.class));
+            return module;
         });
         when(sessionInfo.getId()).thenReturn("sessionId");
         when(sessionInfo.getIdentity()).thenReturn(user);
         when(user.getIdentifier()).thenReturn("user");
+
+        doAnswer(invocationOnMock -> organizationalUnits.containsKey(invocationOnMock.getArguments()[0]))
+                .when(service).existSpace(any());
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        FileUtils.deleteDirectory(new File(".kie-wb-playground"));
+    }
+
+    @Test
+    public void testMD5Sum() {
+        URL resource = getClass().getClassLoader().getResource("test.zip");
+        String md5 = service.calculateMD5(resource);
+        assertEquals("088947832487928ebbc994abe4e2ac33", md5);
     }
 
     @Test
@@ -503,48 +546,23 @@ public class ExamplesServiceImplTest {
     }
 
     @Test
-    public void resolveGitRepositoryNotClonedBefore() {
-        ExampleRepository playgroundRepository = new ExampleRepository("file:///home/user/folder/.kie-wb-playground");
-        service.setPlaygroundRepository(playgroundRepository);
+    public void testInitializeTwice() {
 
-        RepositoryInfo configGroup = new RepositoryInfo("examples-.kie-wb-playground",
-                                                        false,
-                                                        new RepositoryConfiguration());
+        service.initPlaygroundRepository();
+        service.initPlaygroundRepository();
 
-        Repository repository = mock(Repository.class);
-        when(repositoryFactory.newRepository(captor.capture())).thenReturn(repository);
+        verify(service, times(2)).existSpace(any());
 
-        Repository result = service.resolveGitRepository(playgroundRepository);
-
-        assertEquals(repository,
-                     result);
-        assertEquals(false,
-                     captor.getValue().getConfiguration().get(Boolean.class,
-                                                              EnvironmentParameters.MIRROR));
-
-        verify(repositoryFactory,
-               times(1)).newRepository(any());
+        verify(service, times(1)).createPlaygroundHiddenSpace(any());
     }
 
     @Test
-    public void resolveGitRepositoryClonedBefore() {
-        ExampleRepository playgroundRepository = new ExampleRepository("file:///home/user/folder/.kie-wb-playground");
-        service.setPlaygroundRepository(playgroundRepository);
-
-        GitRepository repository = mock(GitRepository.class);
-        Map<String, Object> repositoryEnvironment = new HashMap<>();
-        repositoryEnvironment.put("origin",
-                                  playgroundRepository.getUrl());
-        when(repository.getEnvironment()).thenReturn(repositoryEnvironment);
-
-        service.getClonedRepositories().add(repository);
-
-        Repository result = service.resolveGitRepository(playgroundRepository);
-
-        assertEquals(repository,
-                     result);
-
-        verify(repositoryFactory,
-               never()).newRepository(any(RepositoryInfo.class));
+    public void testIsOldPlayground() {
+        service.md5 = "1234asd";
+        service.playgroundSpaceName = ".playground-" + service.md5;
+        OrganizationalUnit ou1 = mock(OrganizationalUnit.class);
+        when(ou1.getName()).thenReturn(".playground-1234");
+        assertTrue(service.isOldPlayground(ou1));
     }
 }
+

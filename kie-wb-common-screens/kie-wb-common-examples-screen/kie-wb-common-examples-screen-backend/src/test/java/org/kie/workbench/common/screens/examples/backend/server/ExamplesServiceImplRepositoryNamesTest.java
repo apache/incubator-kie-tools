@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+
 import javax.enterprise.event.Event;
 
 import org.guvnor.common.services.project.events.NewProjectEvent;
@@ -63,6 +64,7 @@ import org.mockito.stubbing.Answer;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.spaces.Space;
@@ -141,6 +143,9 @@ public class ExamplesServiceImplRepositoryNamesTest {
     @Mock
     private ImportProjectValidators validators;
 
+    @Mock
+    private FileSystem systemFS;
+
     @Before
     public void setup() {
         when(ou.getSpace()).thenReturn(space);
@@ -160,7 +165,8 @@ public class ExamplesServiceImplRepositoryNamesTest {
                                               newProjectEvent,
                                               projectScreenService,
                                               validators,
-                                              spaceConfigStorageRegistry));
+                                              spaceConfigStorageRegistry,
+                                              systemFS));
 
         when(validators.getValidators()).thenReturn(new ArrayList<>());
 

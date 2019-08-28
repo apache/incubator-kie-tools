@@ -181,13 +181,17 @@ public abstract class BaseProjectImportService implements ImportService {
                           true);
 
         configuration.add(EnvironmentParameters.SPACE,
-                          SYSTEM);
+                          this.getDefaultSpace());
 
         RepositoryInfo repositoryConfig = new RepositoryInfo(alias,
                                                              false,
                                                              configuration);
 
         return repositoryConfig;
+    }
+
+    protected String getDefaultSpace() {
+        return SYSTEM;
     }
 
     protected Map<String, Object> buildGitEnv(String url,
@@ -200,7 +204,7 @@ public abstract class BaseProjectImportService implements ImportService {
             put(SCHEME,
                 GitRepository.SCHEME.toString());
             put("replaceIfExists",
-                true);
+                false);
             put("username",
                 username);
             put("password",
