@@ -49,6 +49,10 @@ Image location: quay.io/kiegroup/kogito-springboot-ubi8:latest
 
 For more details have a look at [README.md](kogito-springboot-ubi8/README.md)
 
+## Data Index Service
+
+Runtime image that is responsibile for just running the [Data Index Service](https://github.com/kiegroup/kogito-runtimes/wiki/Data-Index-Service). Solely used by the [Kogito Operator](https://github.com/kiegroup/kogito-cloud-operator) to deploy data index capabilities to Kogito Services.
+
 # Supported source structure
 
 Images can be build based on two types of source structure
@@ -156,8 +160,6 @@ already downloaded artifacts. By that improving overall build time significantly
 
 You can also use a maven mirror, if available on your internal network, just set the
 MAVEN_MIRROR_URL environment variable when starting a new build.
-
-
 
 ## Building the images locally:
 

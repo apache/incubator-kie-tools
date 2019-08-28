@@ -1,0 +1,32 @@
+schema_version: 1
+
+name: "quay.io/kiegroup/kogito-data-index"
+description: "Runtime image for Kogito Data Index Service"
+
+labels:
+- name: "io.k8s.description"
+  value: "Runtime image for Kogito Data Index Service"
+- name: "io.k8s.display-name"
+  value: "Kogito Data Index Service"
+- name: "io.openshift.tags"
+  value: "kogito,data-index"
+- name: "io.openshift.expose-services"
+  value: "8180:http"
+
+ports:
+- value: 8180
+
+modules:
+  install:
+  - name: install-rpm-dependencies
+  - name: add-kogito-user
+  - name: kogito-data-index
+
+packages:
+  install:
+  - java-1.8.0-openjdk
+
+run:
+  user: 1001
+  cmd: 
+    - "/home/kogito/bin/start"

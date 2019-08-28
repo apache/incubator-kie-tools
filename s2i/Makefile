@@ -4,7 +4,7 @@ BUILD_ENGINE := docker
 
 # Build all images
 .PHONY: build
-build: kogito-quarkus-ubi8 kogito-quarkus-ubi8-s2i kogito-springboot-ubi8 kogito-springboot-ubi8-s2i
+build: kogito-quarkus-ubi8 kogito-quarkus-ubi8-s2i kogito-springboot-ubi8 kogito-springboot-ubi8-s2i kogito-data-index
 
 kogito-quarkus-ubi8:
 	cekit -v build --overrides-file kogito-quarkus-ubi8-overrides.yaml ${BUILD_ENGINE}
@@ -17,6 +17,9 @@ kogito-springboot-ubi8:
 
 kogito-springboot-ubi8-s2i:
 	cekit -v build --overrides-file kogito-springboot-ubi8-s2i-overrides.yaml ${BUILD_ENGINE}
+
+kogito-data-index:
+	cekit -v build --overrides-file kogito-data-index-overrides.yaml ${BUILD_ENGINE}
 
 
 # Build and test all images
@@ -44,6 +47,8 @@ _push:
 	docker push quay.io/kiegroup/kogito-springboot-ubi8:latest
 	docker push quay.io/kiegroup/kogito-springboot-ubi8-s2i:${IMAGE_VERSION}
 	docker push quay.io/kiegroup/kogito-springboot-ubi8-s2i:latest
+	docker push quay.io/kiegroup/kogito-data-index:${IMAGE_VERSION}
+	docker push quay.io/kiegroup/kogito-data-index:latest
 
 
 # push staging images to quay.io, done before release, this requires permissions under kiegroup organization
@@ -61,3 +66,6 @@ _push-staging:
 
 	docker tag quay.io/kiegroup/kogito-springboot-ubi8-s2i:${IMAGE_VERSION} quay.io/kiegroup/kogito-springboot-ubi8-s2i:${IMAGE_VERSION}-rc1
 	docker push quay.io/kiegroup/kogito-springboot-ubi8-s2i:${IMAGE_VERSION}-rc1
+
+	docker tag quay.io/kiegroup/kogito-data-index:${IMAGE_VERSION} quay.io/kiegroup/kogito-data-index:${IMAGE_VERSION}-rc1
+	docker push quay.io/kiegroup/kogito-data-index:${IMAGE_VERSION}-rc1

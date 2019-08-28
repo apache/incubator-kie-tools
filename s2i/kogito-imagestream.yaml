@@ -90,3 +90,23 @@ items:
       from:
         kind: DockerImage
         name: quay.io/kiegroup/kogito-springboot-ubi8-s2i:0.3.0
+- kind: ImageStream
+  apiVersion: v1
+  metadata:
+    name: kogito-data-index
+    annotations:
+      openshift.io/display-name: Runtime image for the Kogito Data Index Service
+      openshift.io/provider-display-name: Kie Group.
+  spec:
+    tags:
+    - name: '0.3.0'
+      annotations:
+        description: Runtime image for the Kogito Data Index Service
+        iconClass: icon-jbpm
+        tags: kogito,data-index
+        version: '0.3.0'
+      referencePolicy:
+        type: Local
+      from:
+        kind: DockerImage
+        name: quay.io/kiegroup/kogito-data-index:0.3.0

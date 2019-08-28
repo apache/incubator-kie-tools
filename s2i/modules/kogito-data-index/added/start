@@ -1,0 +1,3 @@
+#!/bin/bash -e
+
+java -Dquarkus.http.host=0.0.0.0 -Djava.library.path=$KOGITO_HOME/bin -jar $KOGITO_HOME/bin/*-runner.jar

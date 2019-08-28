@@ -1,0 +1,11 @@
+schema_version: 1
+name: kogito-data-index
+version: "0.3.0"
+
+artifacts:
+- name: data-index-service-0.3.0-runner.jar
+  url: https://repo.maven.apache.org/maven2/org/kie/kogito/data-index-service/0.3.0/data-index-service-0.3.0-runner.jar
+  md5: 12126dee53783fe09279f46f299611a1
+
+execute:
+- script: configure
