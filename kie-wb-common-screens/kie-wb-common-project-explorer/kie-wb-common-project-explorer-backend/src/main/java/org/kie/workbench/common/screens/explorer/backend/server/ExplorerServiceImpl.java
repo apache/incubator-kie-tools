@@ -34,6 +34,8 @@ import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
+import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
+import org.guvnor.structure.organizationalunit.config.SpaceConfigStorageRegistry;
 import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryService;
@@ -122,6 +124,12 @@ public class ExplorerServiceImpl
     @Inject
     @Managed
     private ExecutorService executorService;
+    
+    @Inject
+    SpaceConfigStorageRegistry spaceConfigStorageRegistry;
+    
+    @Inject
+    OrganizationalUnitService organizationalUnitService;
 
     private XStream xs;
 
@@ -329,10 +337,8 @@ public class ExplorerServiceImpl
                                                                                                          "last.user.nav");
         final Collection<org.uberfire.java.nio.file.Path> userNavs = userServicesBackend.getAllUsersData("explorer",
                                                                                                          "user.nav");
-
-        try {
-            ioServiceConfig.startBatch(fileSystem);
-
+        WorkspaceProject project = projectService.resolveProject(module.getRootPath());
+        spaceConfigStorageRegistry.getBatch(project.getSpace().getName()).run(context -> {
             for (org.uberfire.java.nio.file.Path path : userNavs) {
                 final UserExplorerData userContent = helper.loadUserContent(path);
                 if (userContent != null) {
@@ -352,9 +358,9 @@ public class ExplorerServiceImpl
                     }
                 }
             }
-        } finally {
-            ioServiceConfig.endBatch();
-        }
+            return null;
+        });
+
     }
 
     public class OrganizationalUnitNotFoundForURI extends RuntimeException {
