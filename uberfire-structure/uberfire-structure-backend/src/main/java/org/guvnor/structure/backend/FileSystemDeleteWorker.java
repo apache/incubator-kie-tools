@@ -106,7 +106,7 @@ public class FileSystemDeleteWorker {
         try {
             ifDebugEnabled(logger,
                            () -> logger.debug("Removing all deleted repositories"));
-            Collection<OrganizationalUnit> spaces = this.organizationalUnitService.getAllOrganizationalUnits();
+            Collection<OrganizationalUnit> spaces = this.organizationalUnitService.getAllOrganizationalUnits(false, (X) -> true);
             List<Repository> deletedRepositories = spaces.stream()
                     .filter(organizationalUnit -> organizationalUnit != null)
                     .map(organizationalUnit ->

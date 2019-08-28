@@ -16,8 +16,8 @@
 
 package org.guvnor.structure.backend.organizationalunit.config;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.guvnor.structure.organizationalunit.config.SpaceConfigStorage;
 import org.guvnor.structure.organizationalunit.config.SpaceConfigStorageBatch;
@@ -25,7 +25,7 @@ import org.guvnor.structure.organizationalunit.config.SpaceInfo;
 
 public class ActiveSpaceConfigStorageBatchContextRegistry {
 
-    private static Map<Long, SpaceConfigStorageBatchContextImpl> activeContexts = new HashMap<>();
+    private static Map<Long, SpaceConfigStorageBatchContextImpl> activeContexts = new ConcurrentHashMap<>();
 
     public static SpaceConfigStorageBatch.SpaceConfigStorageBatchContext getCurrentBatch(final SpaceConfigStorage spaceConfigStorage,
                                                                                          final SpaceConfigStorageBatch ownerBatch) {

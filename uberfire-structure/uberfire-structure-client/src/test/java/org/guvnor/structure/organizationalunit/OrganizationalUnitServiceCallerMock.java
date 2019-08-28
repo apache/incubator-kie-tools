@@ -18,6 +18,7 @@ package org.guvnor.structure.organizationalunit;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Predicate;
 
 import org.guvnor.structure.contributors.Contributor;
 import org.guvnor.structure.repositories.Repository;
@@ -100,6 +101,13 @@ public class OrganizationalUnitServiceCallerMock
         @Override
         public Collection<OrganizationalUnit> getAllOrganizationalUnits(final boolean includeDeleted) {
             Collection<OrganizationalUnit> result = organizationalUnitService.getAllOrganizationalUnits(includeDeleted);
+            remoteCallback.callback(result);
+            return result;
+        }
+
+        @Override
+        public Collection<OrganizationalUnit> getAllOrganizationalUnits(boolean includeDeleted, Predicate<OrganizationalUnit> filter) {
+            Collection<OrganizationalUnit> result = organizationalUnitService.getAllOrganizationalUnits(includeDeleted, filter);
             remoteCallback.callback(result);
             return result;
         }

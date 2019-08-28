@@ -17,6 +17,7 @@ package org.guvnor.structure.organizationalunit;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Predicate;
 
 import org.guvnor.structure.contributors.Contributor;
 import org.guvnor.structure.repositories.Repository;
@@ -40,6 +41,8 @@ public interface OrganizationalUnitService {
     Collection<OrganizationalUnit> getAllOrganizationalUnits();
 
     Collection<OrganizationalUnit> getAllOrganizationalUnits(final boolean includeDeleted);
+
+    Collection<OrganizationalUnit> getAllOrganizationalUnits(boolean includeDeleted, Predicate<OrganizationalUnit> filter);
 
     Collection<OrganizationalUnit> getAllDeletedOrganizationalUnit();
 

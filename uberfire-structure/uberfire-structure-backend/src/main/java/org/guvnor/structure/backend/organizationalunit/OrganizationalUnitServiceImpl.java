@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -188,6 +189,11 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
 
     @Override
     public Collection<OrganizationalUnit> getAllOrganizationalUnits(final boolean includeDeleted) {
+        return this.getAllOrganizationalUnits(includeDeleted, (ou) -> !ou.getName().startsWith("."));
+    }
+
+    @Override
+    public Collection<OrganizationalUnit> getAllOrganizationalUnits(final boolean includeDeleted, final Predicate<OrganizationalUnit> filter) {
         final List<OrganizationalUnit> spaces = new ArrayList<>();
 
         try (DirectoryStream<java.nio.file.Path> stream = Files.newDirectoryStream(getNiogitPath())) {
@@ -210,7 +216,7 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
                 spaces.addAll(this.getAllDeletedOrganizationalUnit());
             }
 
-            return spaces;
+            return spaces.stream().filter(filter).collect(Collectors.toList());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

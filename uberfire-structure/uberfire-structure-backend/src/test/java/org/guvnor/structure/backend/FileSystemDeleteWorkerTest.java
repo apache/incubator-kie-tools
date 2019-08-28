@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+
 import javax.enterprise.event.Event;
 
 import org.guvnor.structure.backend.organizationalunit.config.SpaceConfigStorageImpl;
@@ -67,8 +68,6 @@ public class FileSystemDeleteWorkerTest {
                                                      this.registry,
                                                      this.removeOrganizationalUnitEvent,
                                                      this.configurationService));
-
-
 
         doAnswer(invocation -> null).when(ioService).delete(any());
         doAnswer(invocation -> null).when(worker).removeRepository(any());
@@ -166,7 +165,7 @@ public class FileSystemDeleteWorkerTest {
         doReturn(space2).when(ou2).getSpace();
 
         doReturn(Arrays.asList(ou1,
-                               ou2)).when(this.ouService).getAllOrganizationalUnits();
+                               ou2)).when(this.ouService).getAllOrganizationalUnits(eq(false), any());
 
         doReturn(Arrays.asList(repo1,
                                repo2)).when(this.repoService).getAllDeletedRepositories(eq(space1));

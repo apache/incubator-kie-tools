@@ -45,6 +45,8 @@ import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryEnvironmentConfigurations;
 import org.guvnor.structure.repositories.RepositoryService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.spaces.Space;
@@ -62,6 +64,7 @@ public class WorkspaceProjectServiceImpl
     private SpacesAPI spaces;
     private ModuleRepositoryResolver repositoryResolver;
     private SpaceConfigStorageRegistry spaceConfigStorageRegistry;
+    private Logger logger = LoggerFactory.getLogger(WorkspaceProjectServiceImpl.class);
 
     public WorkspaceProjectServiceImpl() {
     }
@@ -202,14 +205,22 @@ public class WorkspaceProjectServiceImpl
 
                         return workspaceProject;
                     } catch (Exception e) {
-                        this.repositoryService.removeRepository(this.spaces.getSpace(organizationalUnit.getName()), repository.getAlias());
+                        logger.error("Error trying to create project", e);
+                        logger.error("Error trying to create project " + organizationalUnit.getName() + " - " + repository.getAlias(), e);
+                        try {
+                            this.repositoryService.removeRepository(this.spaces.getSpace(organizationalUnit.getName()), repository.getAlias());
+                        } catch (Exception ex) {
+                            logger.error("Error trying to delete repository", ex);
+                            logger.error("Error trying to delete repository " + organizationalUnit.getName() + " - " + repository.getAlias(), ex);
+                            throw ExceptionUtilities.handleException(ex);
+                        }
                         throw ExceptionUtilities.handleException(e);
                     }
                 });
     }
 
     String createFreshRepositoryAlias(final OrganizationalUnit organizationalUnit,
-                                              final String projectName) {
+                                      final String projectName) {
         int index = 0;
         String suffix = "";
         String repositoryAlias = checkNotNull("project name in pom model", NewWorkspaceProjectUtils.sanitizeProjectName(projectName));
