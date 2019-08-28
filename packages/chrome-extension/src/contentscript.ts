@@ -18,7 +18,6 @@ import { ChromeRouter } from "./app/ChromeRouter";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { ChromeExtensionApp } from "./app/components/ChromeExtensionApp";
-import { findContainers } from "./app/utils";
 import { GwtEditorChromeExtensionRoutes } from "./app/GwtEditorChromeExtensionRoutes";
 
 function init() {
@@ -28,28 +27,55 @@ function init() {
     return;
   }
 
-  const splitLocationHref = window.location.href.split(".");
-  const openFileExtension = splitLocationHref[splitLocationHref.length - 1];
+  const splitLocationHref = window.location.href.split(".").pop();
+  if (!splitLocationHref) {
+    throw new Error();
+  }
+
+  const openFileExtensionRegex = splitLocationHref.match(/[\w\d]+/);
+  if (!openFileExtensionRegex) {
+    throw new Error();
+  }
+
+  const openFileExtension = openFileExtensionRegex.pop();
+  if (!openFileExtension) {
+    throw new Error();
+  }
 
   const router = new ChromeRouter(new GwtEditorChromeExtensionRoutes());
   if (!router.getLanguageData(openFileExtension)) {
     console.info(`No enhanced editor available for "${openFileExtension}" format.`);
     return;
   }
-
-  document.body.insertAdjacentHTML("afterbegin", `<div id="kogito-iframe-fullscreen-container"></div>`);
-  document.body.insertAdjacentHTML("beforeend", `<div id="kogito-container"></div>`);
-  document.querySelector(".file")!.insertAdjacentHTML("afterend", `<div id="kogito-iframe-container"</div>`);
+  const containers = ChromeAppContainers.create();
 
   ReactDOM.render(
     React.createElement(ChromeExtensionApp, {
-      containers: findContainers(),
+      containers: containers,
       openFileExtension: openFileExtension,
       router: router,
       githubEditor: githubEditor
     }),
     document.getElementById("kogito-container")
   );
+}
+
+export class ChromeAppContainers {
+  public readonly iframe: HTMLElement;
+  public readonly iframeFullscreen: HTMLElement;
+  public readonly toolbar: Element;
+
+  public static create() {
+    document.body.insertAdjacentHTML("afterbegin", `<div id="kogito-iframe-fullscreen-container"></div>`);
+    document.body.insertAdjacentHTML("beforeend", `<div id="kogito-container"></div>`);
+    document.querySelector(".file")!.insertAdjacentHTML("afterend", `<div id="kogito-iframe-container"</div>`);
+
+    return {
+      iframe: document.getElementById("kogito-iframe-container")!,
+      iframeFullscreen: document.getElementById("kogito-iframe-fullscreen-container")!,
+      toolbar: document.querySelector(".breadcrumb.d-flex.flex-items-center")!
+    };
+  }
 }
 
 init();

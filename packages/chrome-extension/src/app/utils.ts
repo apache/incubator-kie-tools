@@ -21,18 +21,3 @@ export function getGitHubEditor() {
   }
   return realEditor;
 }
-
-
-export interface ChromeAppContainers {
-  iframe: HTMLElement;
-  iframeFullscreen: HTMLElement;
-  toolbar: Element;
-}
-
-export function findContainers(): ChromeAppContainers {
-  return {
-    iframe: document.getElementById("kogito-iframe-container")!,
-    iframeFullscreen: document.getElementById("kogito-iframe-fullscreen-container")!,
-    toolbar: document.querySelector(".breadcrumb.d-flex.flex-items-center")!
-  };
-}

@@ -20,19 +20,15 @@ chrome.runtime.onInstalled.addListener(() => {
   console.log("Kogito Tooling extension is running.");
 });
 
-console.info("oi");
-
 function removeHeader(headers: HttpHeader[], name: string) {
   for (let i = 0; i < headers.length; i++) {
     if (headers[i].name.toLowerCase() === name) {
-      console.log('Removing "' + name + '" header.');
       headers.splice(i, 1);
       break;
     }
   }
 }
 
-console.info("adding listener");
 chrome.webRequest.onHeadersReceived.addListener(
   details => {
     const contentType = details.responseHeaders!.find(e => e.name.toLowerCase() === "content-type")!;
@@ -49,6 +45,7 @@ chrome.webRequest.onHeadersReceived.addListener(
   { urls: ["https://raw.githubusercontent.com/*"] },
   ["blocking", "responseHeaders"]
 );
+
 
 chrome.webRequest.onHeadersReceived.addListener(
   details => {
