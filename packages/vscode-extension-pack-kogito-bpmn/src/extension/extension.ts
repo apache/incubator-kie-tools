@@ -26,7 +26,7 @@ export function activate(context: vscode.ExtensionContext) {
     extensionName: "kiegroup.appformer-js-vscode-extension-pack-kogito-bpmn",
     webviewLocation: "dist/webview/index.js",
     context: context,
-    router: new VsCodeKogitoRouter(context, new GwtEditorRoutes())
+    router: new VsCodeKogitoRouter(context, new GwtEditorRoutes({ bpmnPath: "dist/webview/editors/bpmn" }))
   });
 
   console.info("Extension is successfully setup.");

@@ -52,7 +52,7 @@ function init() {
     return;
   }
 
-  const router = new ChromeRouter(new GwtEditorRoutes());
+  const router = new ChromeRouter(new GwtEditorRoutes({bpmnPath: "bpmn"}));
   if (!router.getLanguageData(openFileExtension)) {
     console.info(`[Kogito] No enhanced editor available for "${openFileExtension}" format.`);
     return;

@@ -28,10 +28,13 @@ export const editors = {
   }
 };
 
-const bpmnDistPath = `dist/webview/editors/bpmn/`;
-const dmnDistPath = `dist/webview/editors/dmn/`;
-
 export class GwtEditorRoutes implements Routes {
+  private readonly bpmnPath: string;
+
+  constructor(args: { bpmnPath: string }) {
+    this.bpmnPath = args.bpmnPath;
+  }
+
   public getRoutes(router: Router) {
     const bpmnLanguageData: GwtLanguageData = {
       type: "gwt",
@@ -40,14 +43,14 @@ export class GwtEditorRoutes implements Routes {
       resources: [
         {
           type: "css",
-          paths: [router.getRelativePathTo(`${bpmnDistPath}/${editors.bpmn.name}/css/patternfly.min.css`)]
+          paths: [router.getRelativePathTo(`${this.bpmnPath}/${editors.bpmn.name}/css/patternfly.min.css`)]
         },
         {
           type: "js",
           paths: [
-            router.getRelativePathTo(`${bpmnDistPath}/${editors.bpmn.name}/ace/ace.js`),
-            router.getRelativePathTo(`${bpmnDistPath}/${editors.bpmn.name}/ace/theme-chrome.js`),
-            router.getRelativePathTo(`${bpmnDistPath}/${editors.bpmn.name}/${editors.bpmn.name}.nocache.js`)
+            router.getRelativePathTo(`${this.bpmnPath}/${editors.bpmn.name}/ace/ace.js`),
+            router.getRelativePathTo(`${this.bpmnPath}/${editors.bpmn.name}/ace/theme-chrome.js`),
+            router.getRelativePathTo(`${this.bpmnPath}/${editors.bpmn.name}/${editors.bpmn.name}.nocache.js`)
           ]
         }
       ]
