@@ -17,8 +17,7 @@
     "react-dom": "16.8.4",
     "appformer-js-microeditor-envelope": "0.1.0",
     "appformer-js-microeditor-envelope-protocol": "0.1.0",
-    "appformer-js-gwt-editors": "0.1.0",
-    "appformer-js-gwt-editors-common": "0.1.0"
+    "appformer-js-gwt-editors": "0.1.0"
   },
   "scripts": {
     "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}'",

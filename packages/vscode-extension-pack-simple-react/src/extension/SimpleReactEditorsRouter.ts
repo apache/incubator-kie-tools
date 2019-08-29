@@ -19,26 +19,15 @@ import * as vscode from "vscode";
 import * as __path from "path";
 import { SimpleReactEditorsLanguageData } from "../common/SimpleReactEditorsLanguageData";
 
-export class SimpleReactEditorsRouter implements Router {
+export class SimpleReactEditorsRouter extends Router {
   private readonly context: vscode.ExtensionContext;
-  private readonly languageDataByFileExtension: Map<string, SimpleReactEditorsLanguageData>;
 
   constructor(context: vscode.ExtensionContext) {
+    super({
+      getRoutes: () =>
+        new Map<string, SimpleReactEditorsLanguageData>([["dmn", { type: "react" }], ["bpmn", { type: "react" }]])
+    });
     this.context = context;
-    this.languageDataByFileExtension = new Map<string, SimpleReactEditorsLanguageData>([
-      [
-        "dmn",
-        {
-          type: "react"
-        }
-      ],
-      [
-        "bpmn",
-        {
-          type: "react"
-        }
-      ]
-    ]);
   }
 
   public getRelativePathTo(uri: string) {
@@ -48,7 +37,7 @@ export class SimpleReactEditorsRouter implements Router {
   }
 
   public getLanguageData(fileExtension: string) {
-    return this.languageDataByFileExtension.get(fileExtension);
+    return this.getLanguageDataByFileExtension().get(fileExtension);
   }
 
   public getTargetOrigin(): string {

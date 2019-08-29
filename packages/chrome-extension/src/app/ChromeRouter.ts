@@ -14,18 +14,11 @@
  * limitations under the License.
  */
 
-import { LanguageData, Router, Routes } from "appformer-js-core";
+import { Router, Routes } from "appformer-js-core";
 
-export class ChromeRouter implements Router {
-  private readonly languageDataByFileExtension: Map<string, LanguageData>;
-
+export class ChromeRouter extends Router {
   constructor(...routesArray: Routes[]) {
-    const allLanguageData = new Map<string, any>();
-    routesArray.reduce((map, routes) => {
-      routes.getRoutes(this).forEach((v, k) => map.set(k, v));
-      return map;
-    }, allLanguageData);
-    this.languageDataByFileExtension = allLanguageData;
+    super(...routesArray);
   }
 
   public getRelativePathTo(uri: string): string {
@@ -33,7 +26,7 @@ export class ChromeRouter implements Router {
   }
 
   public getLanguageData(fileExtension: string) {
-    return this.languageDataByFileExtension.get(fileExtension);
+    return this.getLanguageDataByFileExtension().get(fileExtension);
   }
 
   public getTargetOrigin() {

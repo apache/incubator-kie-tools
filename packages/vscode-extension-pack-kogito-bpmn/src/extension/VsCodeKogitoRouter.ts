@@ -14,25 +14,16 @@
  * limitations under the License.
  */
 
-import { LanguageData, Router, Routes } from "appformer-js-core";
+import { Router, Routes } from "appformer-js-core";
 import * as vscode from "vscode";
 import * as __path from "path";
 
-export class VsCodeKogitoRouter implements Router {
+export class VsCodeKogitoRouter extends Router {
   private readonly context: vscode.ExtensionContext;
-  private readonly languageDataByFileExtension: Map<string, LanguageData>;
 
   constructor(context: vscode.ExtensionContext, ...routesArray: Routes[]) {
+    super(...routesArray);
     this.context = context;
-
-    const allLanguageData = new Map<string, any>();
-
-    routesArray.reduce((map, routes) => {
-      routes.getRoutes(this).forEach((v, k) => map.set(k, v));
-      return map;
-    }, allLanguageData);
-
-    this.languageDataByFileExtension = allLanguageData;
   }
 
   public getRelativePathTo(uri: string) {
@@ -42,7 +33,7 @@ export class VsCodeKogitoRouter implements Router {
   }
 
   public getLanguageData(fileExtension: string) {
-    return this.languageDataByFileExtension.get(fileExtension);
+    return this.getLanguageDataByFileExtension().get(fileExtension);
   }
 
   public getTargetOrigin(): string {

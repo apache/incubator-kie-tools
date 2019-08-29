@@ -19,7 +19,7 @@ import * as AppFormer from "appformer-js-core";
 import * as MicroEditorEnvelope from "appformer-js-microeditor-envelope";
 import { EnvelopeBusInnerMessageHandler } from "appformer-js-microeditor-envelope";
 import { GwtEditorWrapper } from "./GwtEditorWrapper";
-import { GwtLanguageData, Resource } from "appformer-js-gwt-editors-common";
+import { GwtLanguageData, Resource } from "./GwtLanguageData";
 
 export class GwtEditorWrapperFactory implements MicroEditorEnvelope.EditorFactory<GwtLanguageData> {
   private readonly appFormerGwtApi: GwtAppFormerApi;

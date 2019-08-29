@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Router } from "appformer-js-core/src";
+import { Router } from "appformer-js-core";
 import * as React from "react";
 import { useContext, useEffect, useRef } from "react";
 import { GlobalContext } from "./GlobalContext";

@@ -15,27 +15,39 @@
  */
 
 import { Router, Routes } from "appformer-js-core";
-import { gwtEditors, GwtLanguageData } from "appformer-js-gwt-editors-common";
+import { GwtLanguageData } from "./GwtLanguageData";
 
-const bpmnLocation = "bpmn";
+export const editors = {
+  dmn: {
+    id: "DMNDiagramEditor",
+    name: "org.kie.workbench.common.dmn.showcase.DMNShowcase"
+  },
+  bpmn: {
+    id: "BPMNDiagramEditor",
+    name: "org.kie.workbench.common.stunner.kogito.KogitoBPMNEditor"
+  }
+};
 
-export class GwtEditorChromeExtensionRoutes implements Routes {
+const bpmnDistPath = `dist/webview/editors/bpmn/`;
+const dmnDistPath = `dist/webview/editors/dmn/`;
+
+export class GwtEditorRoutes implements Routes {
   public getRoutes(router: Router) {
     const bpmnLanguageData: GwtLanguageData = {
       type: "gwt",
-      editorId: gwtEditors.bpmn.id,
-      gwtModuleName: gwtEditors.bpmn.name,
+      editorId: editors.bpmn.id,
+      gwtModuleName: editors.bpmn.name,
       resources: [
         {
           type: "css",
-          paths: [router.getRelativePathTo(`${bpmnLocation}/${gwtEditors.bpmn.name}/css/patternfly.min.css`)]
+          paths: [router.getRelativePathTo(`${bpmnDistPath}/${editors.bpmn.name}/css/patternfly.min.css`)]
         },
         {
           type: "js",
           paths: [
-            router.getRelativePathTo(`${bpmnLocation}/${gwtEditors.bpmn.name}/ace/ace.js`),
-            router.getRelativePathTo(`${bpmnLocation}/${gwtEditors.bpmn.name}/ace/theme-chrome.js`),
-            router.getRelativePathTo(`${bpmnLocation}/${gwtEditors.bpmn.name}/${gwtEditors.bpmn.name}.nocache.js`)
+            router.getRelativePathTo(`${bpmnDistPath}/${editors.bpmn.name}/ace/ace.js`),
+            router.getRelativePathTo(`${bpmnDistPath}/${editors.bpmn.name}/ace/theme-chrome.js`),
+            router.getRelativePathTo(`${bpmnDistPath}/${editors.bpmn.name}/${editors.bpmn.name}.nocache.js`)
           ]
         }
       ]

@@ -18,62 +18,86 @@ import { ChromeRouter } from "./app/ChromeRouter";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { ChromeExtensionApp } from "./app/components/ChromeExtensionApp";
-import { GwtEditorChromeExtensionRoutes } from "./app/GwtEditorChromeExtensionRoutes";
+import { GwtEditorRoutes } from "appformer-js-gwt-editors";
 
-function init() {
-  const githubEditor = document.querySelector(".js-code-editor") as HTMLElement;
-  if (!githubEditor) {
-    console.debug("Not GitHub edit page.");
-    return;
-  }
-
-  const splitLocationHref = window.location.href.split(".").pop();
+function extractOpenFileExtension(url: string) {
+  const splitLocationHref = url.split(".").pop();
   if (!splitLocationHref) {
-    throw new Error();
+    return undefined;
   }
 
   const openFileExtensionRegex = splitLocationHref.match(/[\w\d]+/);
   if (!openFileExtensionRegex) {
-    throw new Error();
+    return undefined;
   }
 
   const openFileExtension = openFileExtensionRegex.pop();
   if (!openFileExtension) {
-    throw new Error();
+    return undefined;
   }
 
-  const router = new ChromeRouter(new GwtEditorChromeExtensionRoutes());
-  if (!router.getLanguageData(openFileExtension)) {
-    console.info(`No enhanced editor available for "${openFileExtension}" format.`);
-    return;
-  }
-  const containers = ChromeAppContainers.create();
-
-  ReactDOM.render(
-    React.createElement(ChromeExtensionApp, {
-      containers: containers,
-      openFileExtension: openFileExtension,
-      router: router,
-      githubEditor: githubEditor
-    }),
-    document.getElementById("kogito-container")
-  );
+  return openFileExtension;
 }
 
-export class ChromeAppContainers {
-  public readonly iframe: HTMLElement;
-  public readonly iframeFullscreen: HTMLElement;
-  public readonly toolbar: Element;
+function init() {
+  const githubEditor = document.querySelector(".js-code-editor") as HTMLElement;
+  if (!githubEditor) {
+    console.info(`[Kogito] Not GitHub edit page.`);
+    return;
+  }
 
-  public static create() {
+  const openFileExtension = extractOpenFileExtension(window.location.href);
+  if (!openFileExtension) {
+    console.info(`[Kogito] Unable to determine file extension from URL`);
+    return;
+  }
+
+  const router = new ChromeRouter(new GwtEditorRoutes());
+  if (!router.getLanguageData(openFileExtension)) {
+    console.info(`[Kogito] No enhanced editor available for "${openFileExtension}" format.`);
+    return;
+  }
+
+  const containers = ChromeAppContainersFactory.create();
+  if (!containers.allFound()) {
+    console.info(`[Kogito] One of the necessary GitHub elements was not found.`);
+    return;
+  }
+
+  const app = React.createElement(ChromeExtensionApp, {
+    containers: containers,
+    openFileExtension: openFileExtension,
+    router: router,
+    githubEditor: githubEditor
+  });
+
+  ReactDOM.render(app, containers.main);
+}
+
+export interface ChromeAppContainers {
+  iframe: HTMLElement;
+  iframeFullscreen: HTMLElement;
+  toolbar: Element;
+  main: Element;
+
+  allFound(): boolean;
+}
+
+export class ChromeAppContainersFactory {
+  //FIXME: cannot call twice
+  public static create(): ChromeAppContainers {
     document.body.insertAdjacentHTML("afterbegin", `<div id="kogito-iframe-fullscreen-container"></div>`);
     document.body.insertAdjacentHTML("beforeend", `<div id="kogito-container"></div>`);
     document.querySelector(".file")!.insertAdjacentHTML("afterend", `<div id="kogito-iframe-container"</div>`);
 
     return {
-      iframe: document.getElementById("kogito-iframe-container")!,
+      iframe: document.getElementById("kogito-iframe-container2")!,
       iframeFullscreen: document.getElementById("kogito-iframe-fullscreen-container")!,
-      toolbar: document.querySelector(".breadcrumb.d-flex.flex-items-center")!
+      toolbar: document.querySelector(".breadcrumb.d-flex.flex-items-center")!,
+      main: document.getElementById("kogito-container")!,
+      allFound() {
+        return Object.keys(this).reduce((p, k) => p && !!this[k], true);
+      }
     };
   }
 }

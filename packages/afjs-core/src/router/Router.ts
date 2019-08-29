@@ -22,23 +22,41 @@ import { LanguageData } from "./LangaugeData";
  *
  * The LanguageData returned should be a custom class that implements LanguageData.
  */
-export interface Router {
+export abstract class Router {
+  protected readonly routesArray: Routes[];
+
+  protected constructor(...routesArray: Routes[]) {
+    this.routesArray = routesArray;
+  }
+
+  /**
+   * Returns the LanguageData from the provided routes as a Map indexed by the file extensions.
+   */
+  public getLanguageDataByFileExtension() {
+    const allLanguageData = new Map<string, any>();
+    this.routesArray.reduce((map, routes) => {
+      routes.getRoutes(this).forEach((v, k) => map.set(k, v));
+      return map;
+    }, allLanguageData);
+    return allLanguageData;
+  }
+
   /**
    * Returns the custom LanguageData class for a specific file extension.
    * @param fileExtension The file extension (i.e. "txt", or "png")
    */
-  getLanguageData(fileExtension: string): LanguageData | undefined;
+  public abstract getLanguageData(fileExtension: string): LanguageData | undefined;
 
   /**
    * Responsible for transforming a relative URI path to an absolute URL inside the context of the application.
    * @param uri The relative path URI.
    */
-  getRelativePathTo(uri: string): string;
+  public abstract getRelativePathTo(uri: string): string;
 
   /**
    * Returns the domain of the envelope
    */
-  getTargetOrigin(): string;
+  public abstract getTargetOrigin(): string;
 }
 
 /**

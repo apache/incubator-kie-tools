@@ -73,7 +73,6 @@
   "dependencies": {
     "appformer-js-core": "0.1.0",
     "appformer-js-gwt-editors": "0.1.0",
-    "appformer-js-gwt-editors-common": "0.1.0",
     "appformer-js-microeditor-envelope": "0.1.0",
     "appformer-js-microeditor-envelope-protocol": "0.1.0",
     "appformer-js-vscode-extension": "0.1.0",

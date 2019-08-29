@@ -18,3 +18,5 @@ export * from "./GwtAppFormerApi";
 export * from "./GwtEditor";
 export * from "./GwtEditorWrapper";
 export * from "./GwtEditorWrapperFactory";
+export * from "./GwtLanguageData";
+export * from "./GwtEditorRoutes";

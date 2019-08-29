@@ -18,7 +18,7 @@ import { ChromeAppContainers } from "../../contentscript";
 import * as ReactDOM from "react-dom";
 import * as React from "react";
 import { useEffect, useLayoutEffect, useState } from "react";
-import { Router } from "appformer-js-core/src";
+import { Router } from "appformer-js-core";
 import { GlobalContext } from "./GlobalContext";
 import { KogitoEditorIframe } from "./KogitoEditorIframe";
 import { FullScreenToolbar } from "./FullScreenToolbar";

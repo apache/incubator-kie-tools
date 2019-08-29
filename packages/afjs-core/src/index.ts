@@ -17,17 +17,3 @@
 export * from "./core";
 export * from "./appformer";
 export * from "./router";
-
-const self = this;
-
-declare global {
-  export interface AppFormer {
-    Core: typeof self;
-  }
-  export interface Window {
-    AppFormer: AppFormer;
-  }
-}
-
-// Exposes this module as a global variable
-window.AppFormer = window.AppFormer || { Core: this };
